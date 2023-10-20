@@ -2,117 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 838917D0969
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CEB7D096E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376500AbjJTHXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 03:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
+        id S1376542AbjJTHXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 03:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376499AbjJTHWp (ORCPT
+        with ESMTP id S1376536AbjJTHXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 03:22:45 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA22C199A
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:22:32 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-584042e7f73so292255eaf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:22:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1697786551; x=1698391351; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DQOTSMVYEAXB96lPNmfxUETXmF1nmywj/hDtdToDI6M=;
-        b=Jb/OhA2L1vep8syvG8Ez0j19Zv4UJmFoTgTdokFmzHBwZ4335kx3ycYFl9tkj49v7A
-         SrUVu0Yc5/p72SSDT8YEr2PnSMuCl1nyHZHLEstID6BlZ0u70WTwbmrt/7UcqgzTOO6e
-         +dWWMmXA3qn9iSH47TlsGEyidwCYBBFSAH8RRhJE/Coq9M/mwunuX1rWpNyXgrttUWMf
-         K4IKq7j3n5G6Kj+ZKnUUMfbAUodR7mVgPfnL6tT29PIsDC9qWxw5TMgY5t2hqnsgMGWB
-         P2kOWbRUvHXaDqHm/nal0EmKzjiA+TF32CNinC5qTl5F0m2c2DQV6udtjFn8PRq/ZOS2
-         JuWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697786551; x=1698391351;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DQOTSMVYEAXB96lPNmfxUETXmF1nmywj/hDtdToDI6M=;
-        b=EKcT/B92JcUe6M6jvRWBRKYaq1OhMZwu69BlNTXDxGmwZwmqpyTdw7qIJjq/ZntJiK
-         39tHS6L7mKEj11khUK9/85+1U+SD9HrZ3ZV+FY00QUtsT/nZg7+0+CeR4fSMiFZzyvcE
-         TU9REa7fLF24780F4JmcF+ZVUyGjP7YJhKmknzXSQZjRNfFovDtCc+fDq8vU/gqVNk9T
-         rjSBfo/yt3b1M/P+TAprM3QVjcV2WTnpUXIc5YCWvaDrhvRl/BRwyCvkijd+DhMesL0+
-         3bffebovKM8pGbTWDRpt4oQhObmzgTybG8aIqbyoV1J3Hrg0g+7V+dPe5fD7F3ZLN3YR
-         NS2g==
-X-Gm-Message-State: AOJu0YzvkRHtFvbHfP0TljgjDnNTf3y/QKWaXFUbx80/lQpfs80pIdMo
-        h4rWyuK5ISQ/2dnuPOl37IoVYA==
-X-Google-Smtp-Source: AGHT+IHVpVTtGUUCbE9QtkhDvgB6PWIuexjVRbTOQpUxtFm1xcTHF7ruZ9rqINTCV8Ep/hVGmPBCuA==
-X-Received: by 2002:a05:6871:3316:b0:1e9:9215:3987 with SMTP id nf22-20020a056871331600b001e992153987mr1427367oac.16.1697786550612;
-        Fri, 20 Oct 2023 00:22:30 -0700 (PDT)
-Received: from anup-ubuntu-vm.localdomain ([171.76.83.81])
-        by smtp.gmail.com with ESMTPSA id v12-20020a63f20c000000b005b32d6b4f2fsm828204pgh.81.2023.10.20.00.22.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 00:22:30 -0700 (PDT)
-From:   Anup Patel <apatel@ventanamicro.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>
-Subject: [PATCH v3 9/9] RISC-V: Enable SBI based earlycon support
-Date:   Fri, 20 Oct 2023 12:51:40 +0530
-Message-Id: <20231020072140.900967-10-apatel@ventanamicro.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231020072140.900967-1-apatel@ventanamicro.com>
-References: <20231020072140.900967-1-apatel@ventanamicro.com>
+        Fri, 20 Oct 2023 03:23:25 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A151BE3;
+        Fri, 20 Oct 2023 00:22:55 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 90EB521864;
+        Fri, 20 Oct 2023 07:22:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1697786573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oHUQDoUOG8wAnAcAHyKhIFWzNSj2D39ugT0s3djIGmk=;
+        b=E+Ewv9SMxyIFu71T31LJGtPmf1yB2oBKlF8AOjxQdcqFSnwhaVN2NhuTWC9wGYMQj3QGqJ
+        IzhlDFo+a2IgDXHljoaN2hKXRfBdGcZM3GgNxMohtKN0fUNNNfL1D7fT9+grhBQXevgalR
+        67xHhzKQ3y97WZ4QrqUVijvKQLcQ6gw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1697786573;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oHUQDoUOG8wAnAcAHyKhIFWzNSj2D39ugT0s3djIGmk=;
+        b=Ad1SMC4F86I12S3GpW0lebaCquRNIpFaWuFqIBUUl0QtVj/Guce9nNMky1NbMI/wgMZmEY
+        M2rSeDOrjSCN72AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 36AB313584;
+        Fri, 20 Oct 2023 07:22:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8pbBN8oqMmX5CAAAMHmgww
+        (envelope-from <neilb@suse.de>); Fri, 20 Oct 2023 07:22:50 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
+        jslaby@suse.cz, "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Subject: Re: Linux 6.1.58
+In-reply-to: <2023101518-subscript-entity-be71@gregkh>
+References: <2023101518-subscript-entity-be71@gregkh>
+Date:   Fri, 20 Oct 2023 18:22:47 +1100
+Message-id: <169778656748.20306.1670865069010793541@noble.neil.brown.name>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -7.10
+X-Spamd-Result: default: False [-7.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let us enable SBI based earlycon support in defconfigs for both RV32
-and RV64 so that "earlycon=sbi" can be used again.
+On Mon, 16 Oct 2023, Greg Kroah-Hartman wrote:
+> I'm announcing the release of the 6.1.58 kernel.
+>=20
+> All users of the 6.1 kernel series must upgrade.
+>=20
+> The updated 6.1.y git tree can be found at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linu=
+x-6.1.y
+> and can be browsed at the normal kernel.org git web browser:
+> 	https://git.kernel.org/?p=3Dlinux/kernel/git/stable/linux-stable.git;a=3Ds=
+ummary
+>=20
+> thanks,
+>=20
+> greg k-h
+>=20
+> ------------
+>=20
+>  Makefile                 |    2=20
+>  fs/nfs/direct.c          |  134 ++++++++++++++----------------------------=
+-----
+>  fs/nfs/write.c           |   23 +++-----
+>  include/linux/nfs_page.h |    4 -
+>  lib/test_meminit.c       |    2=20
+>  5 files changed, 55 insertions(+), 110 deletions(-)
+>=20
+> Greg Kroah-Hartman (7):
+>       Revert "NFS: More fixes for nfs_direct_write_reschedule_io()"
+>       Revert "NFS: Use the correct commit info in nfs_join_page_group()"
+>       Revert "NFS: More O_DIRECT accounting fixes for error paths"
+>       Revert "NFS: Fix O_DIRECT locking issues"
+>       Revert "NFS: Fix error handling for O_DIRECT write scheduling"
 
-Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
----
- arch/riscv/configs/defconfig      | 1 +
- arch/riscv/configs/rv32_defconfig | 1 +
- 2 files changed, 2 insertions(+)
+FYI the problem with these NFS patch is now described in comment #4 of
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217999
+which I include below.  They can be reapplied if the "Fix error
+handling..." patch is fixed up as described.
 
-diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index ab86ec3b9eab..f82700da0056 100644
---- a/arch/riscv/configs/defconfig
-+++ b/arch/riscv/configs/defconfig
-@@ -132,6 +132,7 @@ CONFIG_SERIAL_8250_CONSOLE=y
- CONFIG_SERIAL_8250_DW=y
- CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_SERIAL_SH_SCI=y
-+CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
- CONFIG_VIRTIO_CONSOLE=y
- CONFIG_HW_RANDOM=y
- CONFIG_HW_RANDOM_VIRTIO=y
-diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
-index 89b601e253a6..5721af39afd1 100644
---- a/arch/riscv/configs/rv32_defconfig
-+++ b/arch/riscv/configs/rv32_defconfig
-@@ -66,6 +66,7 @@ CONFIG_INPUT_MOUSEDEV=y
- CONFIG_SERIAL_8250=y
- CONFIG_SERIAL_8250_CONSOLE=y
- CONFIG_SERIAL_OF_PLATFORM=y
-+CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
- CONFIG_VIRTIO_CONSOLE=y
- CONFIG_HW_RANDOM=y
- CONFIG_HW_RANDOM_VIRTIO=y
--- 
-2.34.1
+NeilBrown
 
+FYI the cause of this corruption is that the  backport of
+   NFS: Fix error handling for O_DIRECT write scheduling
+
+had an error.
+The backported patch f16fd0b11f0f4d41846b5102b1656ea1fc9ac7a0
+moves "pos +=3D req_len" in nfs_direct_write_schedule_iovec() from after
+    req->wb_index =3D pos >> PAGE_SHIFT;
+to before that statement.  This ->wb_index is wrong.
+Possibly a better way to look at this is the use of "pos" is moved to *after*=
+ it is updated.
+
+The upstream patch 954998b60caa8f2a3bf3abe490de6f08d283687a
+doesn't move the use of pos because
+Commit 70e9db69f927 ("NFS: Clean up O_DIRECT request allocation")
+
+removes the use.
+
+v6.1.56 can be fixed with
+
+diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
+index 5a976fa343df..69134e11e7d0 100644
+--- a/fs/nfs/direct.c
++++ b/fs/nfs/direct.c
+@@ -864,6 +864,8 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs=
+_direct_req *dreq,
+                                result =3D PTR_ERR(req);
+                                break;
+                        }
++                       req->wb_index =3D pos >> PAGE_SHIFT;
++                       req->wb_offset =3D pos & ~PAGE_MASK;
+=20
+                        if (desc.pg_error < 0) {
+                                nfs_free_request(req);
+@@ -883,8 +885,6 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs=
+_direct_req *dreq,
+                        }
+=20
+                        nfs_lock_request(req);
+-                       req->wb_index =3D pos >> PAGE_SHIFT;
+-                       req->wb_offset =3D pos & ~PAGE_MASK;
+                        if (nfs_pageio_add_request(&desc, req))
+                                continue;
