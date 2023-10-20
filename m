@@ -2,119 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C31E27D089A
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 08:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84EA7D089E
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 08:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376298AbjJTGjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 02:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
+        id S1376326AbjJTGkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 02:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjJTGjq (ORCPT
+        with ESMTP id S229644AbjJTGkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 02:39:46 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9E8B8
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 23:39:44 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso591115a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 23:39:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1697783983; x=1698388783; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B2yp/+uoXDPdDZvc0A60oXmXPqC6NUCSNebw398N6I0=;
-        b=XxLFdweuaY6glNwcHvo3S7tU0HFKADCe+pwHRndN3UueSXOtJnXSCiyLSUmRh+Y85R
-         lgS3j5cBmQ5gHiu9Z4d/esviIgP+DPeGQ8th8Y+v9AB2D9KrzOpFI0QTycgibbxnVikY
-         t2UH4odyUE77znhmX/QwYPGF7zk3gTWU0r67wXenzMgsXpc/PvEBhl2WMkMKdiE/ZPwZ
-         qnMmiCL2spjKFRMuMm/tvCX7bxd5rbS/UZKZ0V+tkshfUw/9rtG1+hR2kow3Xs9sg7/P
-         fWxMMLFCT9q6DHfZIJpnJB9UgHtrZgJPLsPZB+MYe82Rrz+PK5kSN36ykgzFpURkZjcT
-         36ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697783983; x=1698388783;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B2yp/+uoXDPdDZvc0A60oXmXPqC6NUCSNebw398N6I0=;
-        b=dDD3qDyA4OeGkZWdMq6hdrNEz+22VDM1kCweuyDVEIHKtPQnzEroE+mngoZ2dnel1C
-         HqXfxUyAZTT2wyth0Ra3RqynWJ00NkBG94uA8nqNp5h3r6ThRj52DChI/bfYdYlI+Ag0
-         AjPX8VDPXsxkLNDkJ3BoNkI5s1r2/e/RaeGppCFnxIteXtkaWBdafeUaYJQSi6GQcW/K
-         7oEMzGsBcMxgxY9Ej/Wpyo5kqCRP0vCR/FaCnlts96doO7xLCbQLm90psVy2Hd+MWszK
-         lo+ZPCoRIkOOFa5cw6ZYiBSL7u2XncB9NvUk6mTnZJlWd4wjk2nVeEg9Y04UjP2jm65d
-         dc/g==
-X-Gm-Message-State: AOJu0YxcWC8YYqH67fANIh4oxb3M/6omZ+6H3bWmZQGVqWF4b/5Ed0JJ
-        fhfDc13hdYy58OCmZrgaP+MfZ7YDep/w7AoAyLztQA==
-X-Google-Smtp-Source: AGHT+IHB35/EOIOr35HN++ZRTCy6gPZn5GdWe6FQtupPL660MqWX2OkTGpZVDEc2RaXXWPPDHowi48EH0tOyEkBNITA=
-X-Received: by 2002:a50:d742:0:b0:53f:6ed5:4dab with SMTP id
- i2-20020a50d742000000b0053f6ed54dabmr805859edj.24.1697783983308; Thu, 19 Oct
- 2023 23:39:43 -0700 (PDT)
+        Fri, 20 Oct 2023 02:40:45 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD8BB8;
+        Thu, 19 Oct 2023 23:40:44 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39K5RU0O001069;
+        Fri, 20 Oct 2023 06:40:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=eRrvJZQUDGz35stEjap4Jn3iAMh2bG2D1penMsVbK4U=;
+ b=OzPJ+G1nMgXK1V87E45faALCgB7lzLwwuWnptdiDXwOxNIyMqNCAB3GWp0fAgkcjge8f
+ LjwWOmVII0Er9MUCe8sUu7UlAI5U/4UY59QTV8P33OSCjdiNIIsuoGF81zqca+IejPw2
+ JxE2NahEhVhSxWPNAU6dsYi7u1Aak31OlII9PCdtr6wxusav+Qlz3Jjltk4ohAbgnXwc
+ 7+Dov5XOr94WsLE+fGTsIsHum5bOl0g9TnpTWq1y1yneOmqSTGaEk5KayaMkgHvvRPVP
+ RYTaD3+LeZ0QBR6Xvtwg96UknYCnLOvhzKkYmsSQI5AXAVyZlAZeYWQT0ZSZKQj4FA3g cQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tubwms15k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 06:40:40 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39K6edbv005792
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 20 Oct 2023 06:40:39 GMT
+Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 19 Oct
+ 2023 23:40:36 -0700
+Message-ID: <b4ce1fdf-0a05-479d-90f8-3a2a2e40b07f@quicinc.com>
+Date:   Fri, 20 Oct 2023 12:10:32 +0530
 MIME-Version: 1.0
-References: <cover.1697779681.git.yan@cloudflare.com> <e721c615e22fc4d3d53bfa230d5d71462ae9c9a8.1697779681.git.yan@cloudflare.com>
- <CANn89iKU6-htPJh3YwvDEDhnVtkXgPOE+2rvzWCbKCpU25kbDw@mail.gmail.com>
-In-Reply-To: <CANn89iKU6-htPJh3YwvDEDhnVtkXgPOE+2rvzWCbKCpU25kbDw@mail.gmail.com>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Fri, 20 Oct 2023 01:39:31 -0500
-Message-ID: <CAO3-PbqtEPQro4wsQbaD-UbF-2RpxsVKVvs3M0X10-oE7K1LXA@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next 1/3] ipv6: remove dst_allfrag test on ipv6 output
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
-        kernel-team@cloudflare.com, Florian Westphal <fw@strlen.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Alexander H Duyck <alexander.duyck@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] clk: qcom: gcc-ipq6018: add QUP6 I2C clock
+Content-Language: en-US
+To:     Robert Marko <robimarko@gmail.com>
+CC:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231015162114.976202-1-robimarko@gmail.com>
+ <f27ff251-58b1-4fc5-8ad5-cd365b7eb976@linaro.org>
+ <8dce62b2-562c-4e00-840b-68e1cc865972@quicinc.com>
+ <CAOX2RU4n8caVL33KkqgYK1_mTZv-oZtd0p=_dzPh-ntBBfH1zA@mail.gmail.com>
+From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+In-Reply-To: <CAOX2RU4n8caVL33KkqgYK1_mTZv-oZtd0p=_dzPh-ntBBfH1zA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: jmVBjfrzfd__PmLg_5gwU4WK0We3gjZk
+X-Proofpoint-ORIG-GUID: jmVBjfrzfd__PmLg_5gwU4WK0We3gjZk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-20_05,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ clxscore=1015 impostorscore=0 malwarescore=0 suspectscore=0
+ mlxlogscore=881 adultscore=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310170001 definitions=main-2310200056
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 1:06=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
-wrote:
+
+On 10/19/2023 7:53 PM, Robert Marko wrote:
+> On Thu, 19 Oct 2023 at 08:46, Kathiravan Thirumoorthy
+> <quic_kathirav@quicinc.com> wrote:
+>>
+>> On 10/19/2023 1:59 AM, Konrad Dybcio wrote:
+>>>
+>>> On 10/15/23 18:20, Robert Marko wrote:
+>>>> QUP6 I2C clock is listed in the dt bindings but it was never included in
+>>>> the GCC driver.
+>>>> So lets add support for it, its intentionally marked to never be
+>>>> disabled
+>>>> as its somehow affecting DVFS and if disabled it sometimes crashes the
+>>>> board.
+>>>>
+>>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+>>>> ---
+>>> Bjorn, would you be able to get an idea of what could be sitting
+>>> on that bus?
+>>>
+>>> Or maybe the IPQ folks could know?
+>>>
+>> Konrad / Robert,
+>>
+>> Similar to IPQ9574, RPM needs this clock to communicate with PMIC over
+>> I2C interface. Discussion happened here[1] is pretty much applicable to
+>> IPQ6018 as well. Based on previous experience, we may need to document
+>> the reason for CLK_IGNORE_UNUSED in driver as well. Nevertheless,
+>>
+>> Reviewed-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+> Thanks for the explanation, it makes sense as I used to control the
+> MP5496 directly
+> via I2C.
 >
-> On Fri, Oct 20, 2023 at 7:32=E2=80=AFAM Yan Zhai <yan@cloudflare.com> wro=
-te:
-> >
-> > dst_allfrag was added before the first git commit:
-> >
-> > https://www.mail-archive.com/bk-commits-head@vger.kernel.org/msg03399.h=
-tml
-> >
-> > The feature would send packets to the fragmentation path if a box
-> > receives a PMTU value with less than 1280 byte. However, since commit
-> > 9d289715eb5c ("ipv6: stop sending PTB packets for MTU < 1280"), such
-> > message would be simply discarded. The feature flag is neither supporte=
-d
-> > in iproute2 utility. In theory one can still manipulate it with direct
-> > netlink message, but it is not ideal because it was based on obsoleted
-> > guidance of RFC-2460 (replaced by RFC-8200).
-> >
-> > The feature test would always return false at the moment, so remove it
-> > from the output path.
+> Is it possible to disable RPM so it doesn't conflict and just use the
+> full MP5496 driver instead?
+> I find the RPM quite limiting as there is no way to actually retrieve
+> the current-voltage.
+
+
+Robert, checked with the team and currently we don't have any option to 
+disable the RPM as such.
+
+
 >
-> What about other callers of dst_allfrag() ?
->
-> This feature seems broken atm.
-
-It is broken as far as I can tell. The reason I removed just one
-caller here is to keep the code simpler and consistent. If I don't do
-so, I ought to test it for both GSO fast path and slow path to be
-logically consistent. Seems an overkill to me. For the removal of the
-rest, I'd hope it could come in as a standalone patch(set) because it
-is not just callers but also those unnecessary flags and tests on IP
-corks and sockets, not quite aligned with this patch's intention. I
-noted you have drafted something like this in the past:
-
-https://lkml.kernel.org/netdev/1335348157.3274.30.camel@edumazet-glaptop/
-
-I guess it might be a good base point to work on as a new patch(set)?
-What's your call on this?
-
-Yan
+> Regards,
+> Robert
+>> [1]
+>> https://lore.kernel.org/linux-arm-msm/2852fc37-284f-6534-f163-45b37b153db1@quicinc.com/
+>>
+>>
+>>> Konrad
