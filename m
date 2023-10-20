@@ -2,228 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4357D1520
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DA47D1524
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 19:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377944AbjJTRtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 13:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
+        id S1377957AbjJTRth convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Oct 2023 13:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjJTRtY (ORCPT
+        with ESMTP id S230026AbjJTRtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 13:49:24 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3FAA3;
-        Fri, 20 Oct 2023 10:49:20 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-457cc01b805so451352137.0;
-        Fri, 20 Oct 2023 10:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697824159; x=1698428959; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tCrUKrBe4ohlQTB10c53pGU4/58DcFanqEbH8HpfhOw=;
-        b=k3jkDQgyOOEGBLncynGx1oKHmRKfTL4IH/3SEE7/IRLCteJhKqo2xAu8NyM/8bPZ3g
-         L1i7MQvGBisWUe4antxtLa/TxuupknQxsOxJsXsHqSOuVKq6pjKZt5GmssTbiIy8riWH
-         m+mMpoLF8X4C4YKC+XRPEhb+HJpqag3gAFO0JBasZtQklz9g1ogh3hc2MC4+dHJDP3SZ
-         Q49gk0wu064j40aG4ow+qiIRahiYEYrRBVNVLy1z9UiHak2z1YBQ45OEhjUZdxZ50tup
-         FAYVmHAbShFqrmHV0ZHyju/viLB3wVkfHvmJviIo8TAPE0RyqVCefWY5OpHA6Yyaz+Y1
-         WuVQ==
+        Fri, 20 Oct 2023 13:49:36 -0400
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70A0D71;
+        Fri, 20 Oct 2023 10:49:33 -0700 (PDT)
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-57de3096e25so98332eaf.1;
+        Fri, 20 Oct 2023 10:49:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697824159; x=1698428959;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tCrUKrBe4ohlQTB10c53pGU4/58DcFanqEbH8HpfhOw=;
-        b=LyRA2qkUkpi9WNrXhfxhqZT2YQ0tKj/633EFvN1eMpWwrWmu4OtQl3cRbE+KDZeaCq
-         loWElDgHszvFN24HlJn4DbnotGLthVUmgk70LJxUnD8GtYZTnIpJIO4A/JGJcbdyIBFv
-         RCAvEyuy0Mgun6i0fAC/B0alOHQiXN9e8npr8rYEuLNrn1gWwhKgnH0vu5VKvxwHZkvL
-         nw+3nRJwS2vRSxa24rkfOUGHk2bOmUYOctOVii0cxMG+0sfAY6N6GF1OHtkg1UsDe77r
-         AB8CPRZAtl4w80W8DbpHXSEUk3rYuTePcxAFiqgWnRJ3f0YJwnDm0vl91/Ef3Awi6FrP
-         Okzg==
-X-Gm-Message-State: AOJu0YyCWLpe31K15ndd1DEAZ+SWnUZ9S+9qzihhfjVdXn/kSFEsIsS5
-        3/Z8akraBwRLQw7FZTKWG2lxSDURkHzXc9UL94E=
-X-Google-Smtp-Source: AGHT+IG+YDJbUucLWpHMjGyz7FRf13DQj6hv3iEc+6Dur5YraL4KHTm4SjlD+Wrbjjp7foJIXDIbYD6FYpflaH7FUx8=
-X-Received: by 2002:a67:cb9b:0:b0:44e:8ae0:3df with SMTP id
- h27-20020a67cb9b000000b0044e8ae003dfmr2333417vsl.3.1697824159203; Fri, 20 Oct
- 2023 10:49:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1697824173; x=1698428973;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=djo7Gv3TAmGl0r7mxIaBCLdombc4a5LIQixNSwzrvLk=;
+        b=F1kZc6JGYhYVxrh/IvSP4teU5mqTOu5dyn8P7QBx+RcY0Ydkt8M+ZjBoSupsF2lHvk
+         7yMa9csaKY3/d7oVCMTkqOCgC2JIyYRUGFoFgg9Ngn1Rewgkhga7Lv1sd84612X6NpuC
+         kCzJWGzhVJDLsULjz77t/irLZx2QPl2/ruAIsilWZFEAWFbAJcui1F/C0Xc7yb3ew5YM
+         uEq62Duh/rV1D/4TrJgFQKw3ORli4GjoCYCBnTNKBwaEPLQxAq101zurOm9fO2Gpyi5W
+         XMmG7/Sx+eFR8P4oxwErqcdd1Fru0qQGK1YNWIv3VHy5LoNAH+wJCOMvGR1HelFH9sGq
+         Nv7A==
+X-Gm-Message-State: AOJu0YwL9MtAkQphXtlEAuvSZwVkr2c2XQX6EjjBsnR1VnLsgM//0I98
+        uefIAbey6I0FKjgfu4XAh1gW5UrlfC2m8AqFpyU=
+X-Google-Smtp-Source: AGHT+IGTGyayG5peke+8T5K+jl5x/DBCQp7C3sOAWMr2yvZBkwWCjWnPDSXMNQ118ALca7MWuxclzMDs9wTEULtm2Z4=
+X-Received: by 2002:a4a:bd18:0:b0:581:e7b8:dd77 with SMTP id
+ n24-20020a4abd18000000b00581e7b8dd77mr2986747oop.1.1697824173256; Fri, 20 Oct
+ 2023 10:49:33 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ab0:3153:0:b0:783:def9:1a3a with HTTP; Fri, 20 Oct 2023
- 10:49:18 -0700 (PDT)
-In-Reply-To: <ZTJmnsAxGDnks2aj@dread.disaster.area>
-References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
- <20230509165657.1735798-23-kent.overstreet@linux.dev> <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
- <20231019153040.lj3anuescvdprcq7@f> <20231019155958.7ek7oyljs6y44ah7@f> <ZTJmnsAxGDnks2aj@dread.disaster.area>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Fri, 20 Oct 2023 19:49:18 +0200
-Message-ID: <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
-Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
+References: <20231019-strncpy-drivers-pnp-pnpacpi-core-c-v1-1-4c634a73bcf3@google.com>
+ <202310191606.93920741B@keescook>
+In-Reply-To: <202310191606.93920741B@keescook>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 20 Oct 2023 19:49:22 +0200
+Message-ID: <CAJZ5v0j5bk+RM3Tvixp5oX48EE_7hDoO5sd-Vrmwu=iz5kO7jQ@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: replace deprecated strncpy with strscpy
+To:     Kees Cook <keescook@chromium.org>,
+        Justin Stitt <justinstitt@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/23, Dave Chinner <david@fromorbit.com> wrote:
-> On Thu, Oct 19, 2023 at 05:59:58PM +0200, Mateusz Guzik wrote:
->> On Thu, Oct 19, 2023 at 05:30:40PM +0200, Mateusz Guzik wrote:
->> > On Tue, May 23, 2023 at 11:28:38AM +0200, Christian Brauner wrote:
->> > > On Tue, 09 May 2023 12:56:47 -0400, Kent Overstreet wrote:
->> > > > Because scalability of the global inode_hash_lock really, really
->> > > > sucks.
->> > > >
->> > > > 32-way concurrent create on a couple of different filesystems
->> > > > before:
->> > > >
->> > > > -   52.13%     0.04%  [kernel]            [k] ext4_create
->> > > >    - 52.09% ext4_create
->> > > >       - 41.03% __ext4_new_inode
->> > > >          - 29.92% insert_inode_locked
->> > > >             - 25.35% _raw_spin_lock
->> > > >                - do_raw_spin_lock
->> > > >                   - 24.97% __pv_queued_spin_lock_slowpath
->> > > >
->> > > > [...]
->> > >
->> > > This is interesting completely independent of bcachefs so we should
->> > > give
->> > > it some testing.
->> > >
->> > > I updated a few places that had outdated comments.
->> > >
->> > > ---
->> > >
->> > > Applied to the vfs.unstable.inode-hash branch of the vfs/vfs.git
->> > > tree.
->> > > Patches in the vfs.unstable.inode-hash branch should appear in
->> > > linux-next soon.
->> > >
->> > > Please report any outstanding bugs that were missed during review in
->> > > a
->> > > new review to the original patch series allowing us to drop it.
->> > >
->> > > It's encouraged to provide Acked-bys and Reviewed-bys even though the
->> > > patch has now been applied. If possible patch trailers will be
->> > > updated.
->> > >
->> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
->> > > branch: vfs.unstable.inode-hash
->> > >
->> > > [22/32] vfs: inode cache conversion to hash-bl
->> > >         https://git.kernel.org/vfs/vfs/c/e3e92d47e6b1
->> >
->> > What, if anything, is blocking this? It is over 5 months now, I don't
->> > see it in master nor -next.
+On Fri, Oct 20, 2023 at 1:06 AM Kees Cook <keescook@chromium.org> wrote:
 >
-> Not having a test machine that can validate my current vfs-scale
-> patchset for 4 of the 5 months makes it hard to measure and
-> demonstrate the efficacy of the changes on a current kernel....
+> On Thu, Oct 19, 2023 at 10:47:58PM +0000, Justin Stitt wrote:
+> > strncpy() is deprecated for use on NUL-terminated destination strings
+> > [1] and as such we should prefer more robust and less ambiguous string
+> > interfaces.
+> >
+> > We know dev->name should be NUL-terminated based on the presence of a
+> > manual NUL-byte assignment.
+> >
+> > NUL-padding is not required as dev is already zero-allocated which
+> > renders any further NUL-byte assignments redundant:
+> > dev = pnp_alloc_dev(&pnpacpi_protocol, num, pnpid); --->
+> >   dev = kzalloc(sizeof(struct pnp_dev), GFP_KERNEL);
+> >
+> > Considering the above, a suitable replacement is `strscpy` [2] due to
+> > the fact that it guarantees NUL-termination on the destination buffer
+> > without unnecessarily NUL-padding. This simplifies the code and makes
+> > the intent/behavior more obvious.
+> >
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
 >
-
-Ok, see below.
-
->> > To be clear there is no urgency as far as I'm concerned, but I did run
->> > into something which is primarily bottlenecked by inode hash lock and
->> > looks like the above should sort it out.
->> >
->> > Looks like the patch was simply forgotten.
->> >
->> > tl;dr can this land in -next please
->>
->> In case you can't be arsed, here is something funny which may convince
->> you to expedite. ;)
->>
->> I did some benching by running 20 processes in parallel, each doing stat
->> on a tree of 1 million files (one tree per proc, 1000 dirs x 1000 files,
->> so 20 mln inodes in total).  Box had 24 cores and 24G RAM.
->>
->> Best times:
->> Linux:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
->> FreeBSD:        3.49s user 345.12s system 1983% cpu 17.573 total
->> OpenBSD:        5.01s user 6463.66s system 2000% cpu 5:23.42 total
->> DragonflyBSD:   11.73s user 1316.76s system 1023% cpu 2:09.78 total
->> OmniosCE:       9.17s user 516.53s system 1550% cpu 33.905 total
->>
->> NetBSD failed to complete the run, OOM-killing workers:
->> http://mail-index.netbsd.org/tech-kern/2023/10/19/msg029242.html
->> OpenBSD is shafted by a big kernel lock, so no surprise it takes a long
->> time.
->>
->> So what I find funny is that Linux needed more time than OmniosCE (an
->> Illumos variant, fork of Solaris).
->>
->> It also needed more time than FreeBSD, which is not necessarily funny
->> but not that great either.
->>
->> All systems were mostly busy contending on locks and in particular Linux
->> was almost exclusively busy waiting on inode hash lock.
+> Looks clean to me!
 >
-> Did you bother to test the patch, or are you just complaining
-> that nobody has already done the work for you?
->
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Why are you giving me attitude?
-
-I ran a test, found the major bottleneck and it turned out there is a
-patch which takes care of it, but its inclusion is stalled without
-further communication. So I asked about it.
-
-> Because if you tested the patch, you'd have realised that by itself
-> it does nothing to improve performance of the concurrent find+stat
-> workload. The lock contention simply moves to the sb_inode_list_lock
-> instead.
->
-
-Is that something you benched? While it may be there is no change,
-going from one bottleneck to another does not automatically mean there
-are no gains in performance.
-
-For example, this thing on FreeBSD used to take over one minute (just
-like on Linux right now), vast majority of which was spent on
-multicore issues. I massaged it down to ~18 seconds, despite it still
-being mostly bottlenecked on locks.
-
-So I benched the hashbl change and it provides a marked improvement:
-stock:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
-patched:  6.34s user 453.87s system 1312% cpu 35.052 total
-
-But indeed as expected it is still bottlenecked on locks.
-
-> IOWs, those sb_inode_list_lock changes haven't been included for the
-> same reason as the hash-bl patches: outside micro-benchmarks, these
-> locks just don't show up in profiles on production machines.
-> Hence there's no urgency to "fix" these lock contention
-> problems despite the ease with which micro-benchmarks can reproduce
-> it...
->
-
-The above is not a made-up microbenchmark though.
-
-I got someone running FreeBSD whose workload mostly consists of
-stating tens of millions of files in parallel and which was suffering
-a lot from perf standpoint -- flamegraphs show that contending on
-locks due to memory reclamation induced by stat calls is almost
-everything that was going on at the time. Said workload probably
-should not do that to begin with (instead have a db with everything it
-normally stats for?), but here we are.
-
-That is to say, while I would not be in position to test Linux in the
-above workload, the problem (high inode turnover in memory) is very
-much real.
-
-All that said, if a real deployment which runs into the problem is
-needed to justify the change, then I can't help (wrong system).
-
--- 
-Mateusz Guzik <mjguzik gmail.com>
+Applied as 6.7 material, thanks!
