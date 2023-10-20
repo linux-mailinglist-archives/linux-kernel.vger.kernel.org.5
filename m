@@ -2,147 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0E67D05C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE387D05C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346776AbjJTAVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 20:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54166 "EHLO
+        id S1346770AbjJTAWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 20:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346748AbjJTAVK (ORCPT
+        with ESMTP id S1346748AbjJTAWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 20:21:10 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3C911F
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:21:08 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-27d21168d26so74463a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697761268; x=1698366068; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AazS8e3mWG6qdiQRzyWIWi2ZxzZq0l/gtqP+3nsv/Jw=;
-        b=FHp5a9aGsUNZjUm8d8jjYNZGyAjt53FYzftWu/t8lLZHuKS/ESqwnZkrquB3aJ/fGv
-         hHa1nKM2Z/mpfNFngMG4QhJ7pot1gOQfU0Gz5hDteOd4NXfad/ekVJKM3Cl+AaJNM+fx
-         5Sly5ZWteChv5dA5MJNTxagT6yjhkv0ZWt3A4nZxJGMu+3z0CNpXa7OALwiqFQFZTKWU
-         DTBQqKbBxXgU3N9qGkieTezxt9LG4rAAlXqRLUbEM4+CTf+x6ig1fKI+Jm0HY5ZGvxVD
-         T3I88VC80A2PjKMDp/txl3DgFAvj/guh8ZYRnK27KgcqKnOm4rU3sxwmC/84g5fkHy9H
-         AXLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697761268; x=1698366068;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AazS8e3mWG6qdiQRzyWIWi2ZxzZq0l/gtqP+3nsv/Jw=;
-        b=cgiLwTNDqfZenaZWD8ytvWTmR+3F4fZ7YXFdBmOS6/K4Z6ECJNssEKFnJw/CgW8mhG
-         9kKcJkxKu09IhhXAVGZyYYI2MZiz1VWvuMJUB86Gj1kPTjrk0avRbQueDuSeRwAC965M
-         ZZCPP7TsgydIo0Bc+utOo1wTQ+/4aHYbST1I+aSPex/WXgqYFXm75yYVaW46cnG7giBd
-         7Oqxvqzz/XBrZLPFSzMcLVcQOkrIot/5P/JA1+2hFWci63DrHhSaMcO6jZNXiz38VD9O
-         tbYEjBydaoKxM1M7kw96qD1lz+SltABM4FmZpqGG1X5lxVmz0ryQnql5Ro/enZSLaAjj
-         v/ww==
-X-Gm-Message-State: AOJu0YzWsRNkVHNEaKTmXa6R9XcIYJwBmaL+bdC42S4gOmPYrW0mgLEs
-        oKOAbLkaAJbS1EF2bTswnrkAtQ==
-X-Google-Smtp-Source: AGHT+IGs8jvjaM8tAopk/BiBZwpdGjzq5RLDH6wWLbZD7+wzqgc9cO8iiFexYNATXB3GHDxFUwhTOA==
-X-Received: by 2002:a17:90b:33c4:b0:274:60c7:e15a with SMTP id lk4-20020a17090b33c400b0027460c7e15amr461810pjb.4.1697761267551;
-        Thu, 19 Oct 2023 17:21:07 -0700 (PDT)
-Received: from octopus ([2400:4050:c3e1:100:8685:4bd3:8dc9:1f68])
-        by smtp.gmail.com with ESMTPSA id cx3-20020a17090afd8300b0027d1366d113sm2060953pjb.43.2023.10.19.17.21.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Oct 2023 17:21:07 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 09:21:02 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     andy.shevchenko@gmail.com
-Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, Oleksii_Moisieiev@epam.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [RFC v2 0/5] gpio: add pinctrl based generic gpio driver
-Message-ID: <ZTHH7vwG7hRneZls@octopus>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        andy.shevchenko@gmail.com, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, Oleksii_Moisieiev@epam.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-References: <20231005025843.508689-1-takahiro.akashi@linaro.org>
- <ZTGfXsLc_Z6yj_HB@surfacebook.localdomain>
+        Thu, 19 Oct 2023 20:22:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94543A3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1697761297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8O1DQaljt+H62I0tLGc0kqUm5sOIzb3IYEn38CgT4Vc=;
+        b=bFFR6l6/71XRV8m8Yd+OqjxPUCEU6pNEoLWI8ts38JxlFY/bDTgHvXUSmTERQXds8hhfAz
+        jzzkG7xUvvrDSg34VfBciB4GL7/UBbFFQJn7H+E6Db1Qaxf+WPWBhtKXBUXF5eLlY1VsK/
+        B1CIdk5G89Rblgh82j9ouz/ICFOEz2s=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-9-bzvGtZerN-G9XP76KmwirQ-1; Thu, 19 Oct 2023 20:21:32 -0400
+X-MC-Unique: bzvGtZerN-G9XP76KmwirQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 33D3E87A9FD;
+        Fri, 20 Oct 2023 00:21:31 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.38])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4AC74111D794;
+        Fri, 20 Oct 2023 00:21:29 +0000 (UTC)
+Date:   Fri, 20 Oct 2023 08:21:26 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
+        Philip Li <philip.li@intel.com>, oe-kbuild@lists.linux.dev,
+        Lorenzo Stoakes <lstoakes@gmail.com>, lkp@intel.com,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: mm/vmalloc.c:3689 vread_iter() error: we previously assumed 'vm'
+ could be null (see line 3667)
+Message-ID: <ZTHIBjMAsKxE4EbK@MiWiFi-R3L-srv>
+References: <f82be227-bfde-439a-b339-1b4ee370d59a@kadam.mountain>
+ <ZS+dSd9Z6/2wU0Eg@MiWiFi-R3L-srv>
+ <89caf59a-d3b9-409d-b1ae-9e370cb9ee7d@kadam.mountain>
+ <ZS/LrhcxcMOgiiX5@MiWiFi-R3L-srv>
+ <ZS/TVMT9ed7OdyNy@rli9-mobl>
+ <ZS/2k6DIMd0tZRgK@MiWiFi-R3L-srv>
+ <20231018085248.6f3f36101cbdfe0990c8b467@linux-foundation.org>
+ <ZTCURc8ZQE+KrTvS@MiWiFi-R3L-srv>
+ <20231019095030.7a1f3c93bc18511f52524aa8@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZTGfXsLc_Z6yj_HB@surfacebook.localdomain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231019095030.7a1f3c93bc18511f52524aa8@linux-foundation.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On Fri, Oct 20, 2023 at 12:27:58AM +0300, andy.shevchenko@gmail.com wrote:
-> Thu, Oct 05, 2023 at 11:58:38AM +0900, AKASHI Takahiro kirjoitti:
-> > This is a revised version of my previous RFC[1]. Although I modified
-> > the commits to make them look SCMI-independent, they are still posted
-> > as RFC because I have never tested them on real hardware.
-> > 
-> > (background)
-> > I'm currently working on implementing SCMI pinctrl/gpio drivers
-> > on U-Boot[2]. Although the pinctrl driver for the kernel[3] was submitted
-> > by EPAM, it doesn't contain the gpio driver and I believe that we should
-> > discuss a couple of points on the kernel side to finalize my design for
-> > U-Boot. 
-> > 
-> > So this RFC is intended for reviews, especially to raise some issues.
-> > 
-> > 1) how to obtain a value on an input pin
-> >    All the existing gpio drivers are set to obtain a value on an input
-> >    pin by accessing the hardware directly. In SCMI case, however, this is
-> >    just impossible in its nature and must be supported via a protocol
-> >    using "Input-value" configuration type. (See the spec[4], table-23.)
-> > 
-> >    The current pinconf framework is missing the feature (the pinconf
-> >    parameter and a helper function). See patch#1, #2 and #3.
-> > 
-> >    Please note that there is an issue around the pin configuration in
-> >    EPAM's current pinctrl driver as I commented[5].
-> > 
-> > 2) DT bindings
-> >    I would like to propose a generic binding for pinctrl based gpio driver.
-> >    This allows a "consumer" driver to handle gpio pins like as other
-> >    normal gpio controllers support. (patch#5)
-> > 
-> > 3) generic GPIO driver
-> >    Based on (2), I tried to prototype a generic driver in patch#4.
-> >    Thanks to a set of existing pinctrl_gpio helper functions, except (1),
-> >    It seems that the driver can be implemented not relying on pin controller
-> >    specific code, at least for SCMI pinctrl.
-> > 
-> > I will appreciate any comments.
+On 10/19/23 at 09:50am, Andrew Morton wrote:
+> On Thu, 19 Oct 2023 10:28:21 +0800 Baoquan He <bhe@redhat.com> wrote:
 > 
-> Any comment here: I'm listed as a designated reviewer of GPIO patches, why am I
-> not Cc'ed on this?
-
-My apologies. I will add you in Cc.
-
-> I definitely have some comments against the code (no DT,
-> though). Please, use (up-to-date) MAINTAINERS in your v3.
-
-Please don't hesitate to make comments here on v2 so that I can
-include your reviews in v3.
-
-Thanks,
--Takahiro Akashi
-
-
+> > I think this is not a real runtime bug. The only chance it can hapen is
+> > when (flags == VMAP_BLOCK) is true. That has been warned and could never
+> > happen. I updated patch log and paste v2 here. 
 > 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+> Thanks, I updated the changelog in-place.
+
+Thanks, Andrew.
+
