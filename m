@@ -2,129 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9BB7D1951
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 00:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599F37D1954
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 00:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbjJTWtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 18:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        id S229990AbjJTWvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 18:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjJTWs7 (ORCPT
+        with ESMTP id S229473AbjJTWvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 18:48:59 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E72D5A;
-        Fri, 20 Oct 2023 15:48:51 -0700 (PDT)
+        Fri, 20 Oct 2023 18:51:19 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2117.outbound.protection.outlook.com [40.107.100.117])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8AD4D57
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:51:13 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q5SRAc86Bj3Web64NTAHTicB880ngEE2Bo06QC2EaxPAS32IpRZMdwyb76qCHEESmNpsZx++dPsUZWjBh9K4E79Z+8vewp/vrdq3qD4AI5wUqgJ73hxXnVh2TrZuYbG891nTo3ALmRuvpAziUsh7RNavh9LeNVayr7o1mYsLVfz2CZpUBfbq196mjmMua7PS/+yitoqgYruKOFJY+AJ/Bud0q7zBac+Maux1+G4oNidd32krpdLTtQJtCVYY+r/FNyORZ1qKC71UDZTakFkB4FXY9+XzYwpF+iSmjRB4eXSSWtk/Az3pgEQ5PWlSyC30FzHZP+L7VLuCJuke68kZog==
+ b=kpKCYMzPgyhPe6+iwZBTgLLsc8gMztuNoQ/XdzlgEdyWN8d6QqYv/EpCLN9BOYhXIDX6Q2/MH/Nwn75nq6O0cEJuWV65qvSUBzrB4Vf1UoCIBcPPdTM3lZbsk1aOfvUNs6/yn1nJ0LajgbxOqKeXbpNkpKiC04hUn2hPtaBSlSw37F2njfelrsqYz8VWUYC642R5ucWrKvUPpcHMhIwlqbxV4QCFmrZ4elmaEVmzeNdVTK3iCDnU1JfVqMCJFG6iSi+G12KswWZBzWsdpLcSSWYGYSpXX+mmdyCaf/6706rqbstNDwJBxujDNiWVDLDobONLf9IYy2MBUHAERHNzdQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X8MvZdK+qdZqZIKPUdjQfdkkRmaIgYp+7AcEJW/95dM=;
- b=ZPMFdJTnj7aSv4/2KdnJ+SwkYw+6trmbPutJr5ROb4PIGzjf8CMH6we+SZDvHe/X9iDl964j5iHBrHJSwPLQvkT10JCz/EopxQGujqvAFJEm2k9cFMRXDpaAk1O/sVx7EO4p4+2IzVwMJpgjTO8PZ+mjS8OgfWYPOmke4r6N2+aQyw3FQgkCsPUCqtDJIfxmJdBDZWvdUm1EHlxqvLf4hzmEea225/aP7q2NHSZBhgS/YHJ1uVujdiw3N5XyM1Mzj+qPBj42aEgymieFgLoaf90WKidagyv/QVZV3f75YGAFE0IrH1k3SkboSLKS1fU1yeQIHA/3sV1/SR1sOgatag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=/MxPvLjhP/TsiDeSYGrnRslet0r4TB+76UMsHvWtNIE=;
+ b=MTWE2Ci9qgIld8UjFFk8JFUR0wnpVCn0cqhSKt5Y7ou8rfmiexgRXBLVxNkEOP4XuTd4bEnCximQ2IpXgPkWOgzhs7Qqy7yIzOzZisrguYTlKp0fYhzzqBeXuJdGIPd5QMohFZkeRlzHy2s2JCFU2zzV7PvEKsF4j2Wsmp9ZeLs6q+vExjZyGxh3i2Zf+YuI1uNQ7a6rn03Fia+C6RsqggtUv6smgrqWsQ6a/gkrm6nkG24u02Sjz/JFAm8wCdOMbc5KUI8QaAyDTFc97tQHCB2JUcSwj7hX5LscynTfQ9bffnuYFI63Wi8OfjRhe5EqWu8tbcQ3FxZedOld7HK63A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X8MvZdK+qdZqZIKPUdjQfdkkRmaIgYp+7AcEJW/95dM=;
- b=xnH4mQxqWZbgd+EkxXHwS301tQTONtuHr0+YnAmtQF/+w+1lNVctnA8BwGfqzr/6gN2kUwQzZRI8cLwmVwtbgxuj35iZf73xYCBXX42HIoqzhy4lMK4JchKOlhO/lsRhc13ScUVSrAgXyhRpyFdoJTrvJQbqvNUgL4+ZrMBlWck=
-Received: from CH0PR03CA0401.namprd03.prod.outlook.com (2603:10b6:610:11b::35)
- by DS0PR12MB7874.namprd12.prod.outlook.com (2603:10b6:8:141::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.21; Fri, 20 Oct
- 2023 22:48:49 +0000
-Received: from DS3PEPF000099D3.namprd04.prod.outlook.com
- (2603:10b6:610:11b:cafe::b6) by CH0PR03CA0401.outlook.office365.com
- (2603:10b6:610:11b::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.24 via Frontend
- Transport; Fri, 20 Oct 2023 22:48:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099D3.mail.protection.outlook.com (10.167.17.4) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6907.20 via Frontend Transport; Fri, 20 Oct 2023 22:48:49 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 20 Oct
- 2023 17:48:48 -0500
-Date:   Fri, 20 Oct 2023 17:48:32 -0500
-From:   Michael Roth <michael.roth@amd.com>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-CC:     <linux-kernel@vger.kernel.org>, <thomas.lendacky@amd.com>,
-        <dhaval.giani@amd.com>, <linux-crypto@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: update AMD CRYPTOGRAPHIC COPROCESSOR (CCP)
- DRIVER - SEV SUPPORT
-Message-ID: <20231020224832.d25md4zv3lw6lble@amd.com>
-References: <20231020212234.458371-1-Ashish.Kalra@amd.com>
+ bh=/MxPvLjhP/TsiDeSYGrnRslet0r4TB+76UMsHvWtNIE=;
+ b=jVT7To9WBiRAAG2ZyXm4ZVlVRLgPJdAGhvwATUELvbdUZiwNxR7bp3BAsvvZuHylDPNkDbBOuemhET9qcsPqpgPLXAe9aX4IMMLZDIELAUDwBFeI9oSXhplzVZF77uHh/mhGf0gEKgHNzVnyppdNoQB1l00asEmArRt39vAZ2pk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
+ CO1PR01MB6792.prod.exchangelabs.com (2603:10b6:303:d5::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6907.27; Fri, 20 Oct 2023 22:51:11 +0000
+Received: from DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::f7a2:1a96:ba3f:d70f]) by DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::f7a2:1a96:ba3f:d70f%4]) with mapi id 15.20.6907.021; Fri, 20 Oct 2023
+ 22:51:11 +0000
+Date:   Fri, 20 Oct 2023 15:50:30 -0700 (PDT)
+From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+cc:     will@kernel.org, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jeremy.linton@arm.com, ilkka@os.amperecomputing.com,
+        renyu.zj@linux.alibaba.com
+Subject: Re: [PATCH 2/3] perf/arm-cmn: Rework DTC counters (again)
+In-Reply-To: <5f6ade76b47f033836d7a36c03555da896dfb4a3.1697824215.git.robin.murphy@arm.com>
+Message-ID: <8e179525-bba-c577-85cf-4aa0a7af436@os.amperecomputing.com>
+References: <cover.1697824215.git.robin.murphy@arm.com> <5f6ade76b47f033836d7a36c03555da896dfb4a3.1697824215.git.robin.murphy@arm.com>
+Content-Type: text/plain; format=flowed; charset=US-ASCII
+X-ClientProxiedBy: CH2PR10CA0015.namprd10.prod.outlook.com
+ (2603:10b6:610:4c::25) To DM5PR0102MB3590.prod.exchangelabs.com
+ (2603:10b6:4:a4::25)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231020212234.458371-1-Ashish.Kalra@amd.com>
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D3:EE_|DS0PR12MB7874:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8aecff5e-d3f0-4c73-4b3a-08dbd1beb9aa
+X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|CO1PR01MB6792:EE_
+X-MS-Office365-Filtering-Correlation-Id: e41a181c-5854-495a-dceb-08dbd1bf0e22
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fTfbuXTIREFa103Y1uqkK81+siVSOqsKqdziS3lXa/3UyD7S+NchMf/dyI3639IsIH/C3uaikI10jhobF98szgCFLdp5GqHWOwDN5IGyqLQeEgT6KyS3a0G1KuN15VLPy5Biyx7f61C3hg5XwL+lZUe/LPyM7WHMPTABp48Nug7erekVc/ZLCkM6bd19j7M1I2ONvLy/NI1D3CPfuR0VRzRjW1PnPG1NZ5x0KnXCDJg34sZ+JwK446g/XX1KM/5IEO8Un2ao7kkRMcaizSda2ss4RC+TS5B0wddB97QGKZweRZNOadOKfdbVp+Rla6FikVIBZuVLWVlLmzb9s5/1u0zzJgM7860zAuuUuTwZOQEAHamXTHJMvhOpNcpbzSCYU8YfazjJmSlce2E0D9W2lVgEcEn2rm185wG5iCFRsKkX/SpOZlmeAhb6iOCW8l4iHYDpyzW2hFSGf0BxmBkFrP7bugVhiw5OHFyiZwQTcm8ZW09q+DKteN4gek/aTT+pv1cqGbd1bHMlB6oVWTUNVHRtuYhhjOMwoIKkJN036lOT0S409T5ytosJ2HHfqVfPQdfvAUGooFyZZxA2XjmkHiOK53wD9X4BHTj2KjmdAEPA4ZsJLUF2+m5rDmUVnvyqBivoynh4K0zuQC7AsMUA3Nx4TBE4ndINjCwHzN3fm/yAnTR/N8obcqfbm+OVHm5bwyTMwQaK7iYld+uKRJH1ZXr5wsHLaMVtJTJ5D/CWqBPiT0Si3yI25dYa9raN4RnGKhHUXRe9uLjiW0hUtV7dFw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(376002)(346002)(136003)(230922051799003)(1800799009)(186009)(82310400011)(64100799003)(451199024)(36840700001)(46966006)(40470700004)(40480700001)(36756003)(40460700003)(316002)(37006003)(6636002)(450100002)(86362001)(81166007)(70586007)(6666004)(356005)(36860700001)(1076003)(70206006)(336012)(16526019)(83380400001)(426003)(8936002)(2616005)(26005)(47076005)(4744005)(82740400003)(54906003)(2906002)(41300700001)(5660300002)(6862004)(4326008)(8676002)(478600001)(44832011)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 22:48:49.1212
+X-Microsoft-Antispam-Message-Info: sIkHyYc5nHPe8VJ5qhKAQ0WWBWrPq7/D8Pb7AnTT7Fw3zNQkd3xhdGDFn0JUnuEMgRClwluCaVmdOAxJFvwzc8x7g3m23OVYjtKxGpbWTyUShwj1+5cnEbdC5Ion17kz+MjI4Jy5lm/3CE/DqB8sHAqZp/XI0W8ooaoa5EHg92PZxLEJberb0MwgN+ZOErxjMluqgHK1L8iLvanddZP2SRaBz/UFwitzJ4cGjrFCxUWMyLlnfiKsIGOvnE/tiZQzU5eFI5HIRnM4phScBa+oKjpZNDh1vFGR87oihXrQVZaI8MvB7pAhJAylSAsHuo3mpWgt9XSngMWHwVTOxKP+aBX2eDPImW3sSXkm2TPaZPL+d7cgG6S3fKF3UWtnCzjTaLXc4/RIaON6sf4FnwmDJVgGVU9JOYounVxSmrbqiOCDaDVahzkS6bmkiN1nkG4zjX2U08OR0tqdIn3ecl9sBpv5XhlFi193T+W10XcXxQkkcfaZ+9gzgSw1u+fGjavSLGsI6BYTAH2NNfsDaozaA6UVFZ6gCuW9fFw8ClOZMPNdEo6jXTrClVLdA6a2qv0S
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(346002)(366004)(376002)(136003)(396003)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(66946007)(66556008)(66476007)(6916009)(478600001)(6486002)(316002)(86362001)(8676002)(5660300002)(8936002)(4326008)(41300700001)(83380400001)(6666004)(38100700002)(6512007)(2906002)(2616005)(6506007)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HR3kVN/L0NKdiGVMTgXkqyH1NpC6OJcAabvrOTdbgfrDBqNKCu/ksPV9s565?=
+ =?us-ascii?Q?8+7oXKyoolnQRku9JPFRS8kvDU5EABTFBixJNdxjSqTU4kh2PDIoaqmzaFcm?=
+ =?us-ascii?Q?/6KgWgPk/UgVsXeVzOlxWEAimPI+hNxVcOLMq+ihi9IndyMTgqvvehFMq7Mj?=
+ =?us-ascii?Q?yMGpKB15KrzVDvEQyWAoIWMAEtY0s5u7qscM0u/EKzy5wibukIWFw1n5Y7m1?=
+ =?us-ascii?Q?2mMVeucrIrr0QPeB1d9hcMqYqwXb3ex7HOX5+l4xqwVdZEBQMmS9yJxuQhQm?=
+ =?us-ascii?Q?S1JTp9jlh5+62h8T2oiDK7QU6ZSoM9oqygp94OrmOSuAy1YhOYywFErGYnFi?=
+ =?us-ascii?Q?Stj9FWl99btrRCoHCVId08gLmHe3M7mSG0yvZ2fygV95Ny8psrob9oOeXYKg?=
+ =?us-ascii?Q?6GOkkfc0Bowib+1wHeMWCuP5CPztwVKgSsR6uYn8ketGBx7gz22JYgRQLVD/?=
+ =?us-ascii?Q?XpPdJx9v7LXqLJtV5QVG8REyFk0mN+CogeS4Yn5cxj0RzmS+a7+7ezMwY2tF?=
+ =?us-ascii?Q?tD+/47aYbxe3uZ+zhASsZo4F1G6TRFmDoxKJC7/fqwkDLiiPlWyCET3QS17N?=
+ =?us-ascii?Q?heEvSZfn9rZf/Tgbv1DNQrifh16hn5zkefWdgz5lLZ5+sNSXjlm5hwKIkAp4?=
+ =?us-ascii?Q?o5Q6H5r+2zgB1IypeDIOECa5Az77Pv8Ve+fwJr5fTRyUc4JRBEHOAYgPA1uX?=
+ =?us-ascii?Q?fYHfxzfBHqcWKOf1dxydRjFufaExqYrRwwMUWx1c8uWvKKX72VC/HVRKd02S?=
+ =?us-ascii?Q?6dz/zaeaEJ1YwjgoyuRxIxvBoY8saHefT98OMx/qsjr0WJsWvW6Apig4PnG5?=
+ =?us-ascii?Q?b4R2dXYtXt1CraFiEviFFX5I2B5TuI6wkumGTFigBOUQmFZ27sWX5xu4UtU2?=
+ =?us-ascii?Q?d8s2/M9AujWa1Pjefm2zhO+v+aTDogDVMU4m8gPh7Zaoq0JsHTAYFutTM/kL?=
+ =?us-ascii?Q?/FKgkOUsAePCTrNnjQXltTx5ln3ys/sMVntBFqmieZRmUQXFIADRoZYPCR9s?=
+ =?us-ascii?Q?uzaI1iqkmy8XuIBSeYXUHKgGIKjoBT4MOWm/JHjA9tPTFM5Z9dLvGg/qXqBs?=
+ =?us-ascii?Q?tLDqBIvTY5eL26PY02T0ls8LOJBnwyPS66/c8Q978I0mcaZTpAPASP1iOV4a?=
+ =?us-ascii?Q?yjKFQv4Sc2s9dTdkm8mYBCuUuw0D/HjrtqjPPfvpoKpZnnlxTwnqDd3KpMJh?=
+ =?us-ascii?Q?J7y9cELpGBO7oGIqduj4P0M9/MXcuYhpz4ayB+SzElbKZLiSK024UvDd3gYE?=
+ =?us-ascii?Q?aSEtQ6/pX0n60JDSGDtkfuGIWO5D6b4b6zMHO8L/niSvSGLYqKL1QzSX2QwJ?=
+ =?us-ascii?Q?i+Z/AypuspfJB5oie1o7eDHk81JPtV0vr+pEwsf5vXCsZwDxcX43Lkq8DGW6?=
+ =?us-ascii?Q?s1776gUP+DC3Jqxwxy06oe8dyJdBm+A5TJrqKuZ2E/xD7h7V/+i0XwvCnlTL?=
+ =?us-ascii?Q?ueq1nBuPhnS7C9srigHFry3HHDqFbTF+e5gKN0s4U3EJyQ2mN7HPXG/yzbyI?=
+ =?us-ascii?Q?q1CMU5rdO/ltCd1w6fjPzPo0hSXE2KzAJVJmQOBwDPNUgX9JiCeMOzfvKTbU?=
+ =?us-ascii?Q?wG1VxK/sBKzetHodwimzghu0EQaNeAGZbUZp5IY0/YHH4evA7gQxm24N1EN7?=
+ =?us-ascii?Q?/YYl/9CB55bF5SIWnSsu7/8=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e41a181c-5854-495a-dceb-08dbd1bf0e22
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 22:51:11.0128
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8aecff5e-d3f0-4c73-4b3a-08dbd1beb9aa
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099D3.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7874
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4GmX4lBrURNow/PnymNt2zSibNu2XsoxYaAL1YAKmrqibaN0ZnxyENwZL4QV3s09VZO6AnHKE2UXy8CnLspwQxtTSQ+1+BHgDCnnMNRSYh/uWxvXF9wK+oGGLyqQS5e1
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR01MB6792
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 09:22:34PM +0000, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> Brijesh is no longer with AMD.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 
-Reviewed-by: Michael Roth <michael.roth@amd.com>
+Hi Robin,
 
+I have one comment, otherwise the patch looks good to me.
+
+On Fri, 20 Oct 2023, Robin Murphy wrote:
+> The bitmap-based scheme for tracking DTC counter usage turns out to be a
+> complete dead-end for its imagined purpose, since by the time we have to
+> keep track of a per-DTC counter index anyway, we already have enough
+> information to make the bitmap itself redundant. Revert the remains of
+> it back to almost the original scheme, but now expanded to track per-DTC
+> indices, in preparation for making use of them in anger.
+>
+> Note that since cycle count events always use a dedicated counter on a
+> single DTC, we reuse the field to encode their DTC index directly.
+>
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 > ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7a7bd8bd80e9..a7c64d36911e 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -907,7 +907,7 @@ F:	drivers/crypto/ccp/
->  F:	include/linux/ccp.h
->  
->  AMD CRYPTOGRAPHIC COPROCESSOR (CCP) DRIVER - SEV SUPPORT
-> -M:	Brijesh Singh <brijesh.singh@amd.com>
-> +M:	Ashish Kalra <ashish.kalra@amd.com>
->  M:	Tom Lendacky <thomas.lendacky@amd.com>
->  L:	linux-crypto@vger.kernel.org
->  S:	Supported
-> -- 
-> 2.25.1
-> 
+> drivers/perf/arm-cmn.c | 126 +++++++++++++++++++++--------------------
+> 1 file changed, 64 insertions(+), 62 deletions(-)
+>
+> diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+> index f1ac8d0cdb3b..675f1638013e 100644
+> --- a/drivers/perf/arm-cmn.c
+> +++ b/drivers/perf/arm-cmn.c
+> @@ -281,16 +281,13 @@ struct arm_cmn_node {
+> 	u16 id, logid;
+> 	enum cmn_node_type type;
+>
+
+....
+
+> @@ -589,8 +586,7 @@ static void arm_cmn_debugfs_init(struct arm_cmn *cmn, int id) {}
+> struct arm_cmn_hw_event {
+> 	struct arm_cmn_node *dn;
+> 	u64 dtm_idx[4];
+> -	unsigned int dtc_idx;
+> -	u8 dtcs_used;
+> +	s8 dtc_idx[CMN_MAX_DTCS];
+> 	u8 num_dns;
+> 	u8 dtm_offset;
+> 	bool wide_sel;
+> @@ -600,6 +596,10 @@ struct arm_cmn_hw_event {
+> #define for_each_hw_dn(hw, dn, i) \
+> 	for (i = 0, dn = hw->dn; i < hw->num_dns; i++, dn++)
+>
+> +/* @i is the DTC number, @idx is the counter index on that DTC */
+> +#define for_each_hw_dtc_idx(hw, i, idx) \
+> +	for (int i = 0, idx; i < CMN_MAX_DTCS; i++) if ((idx = hw->dtc_idx[i]) >= 0)
+
+Isn't that "idx" unnecessary in the initialization?
+
+Cheers, Ilkka
