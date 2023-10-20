@@ -2,249 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 888567D145F
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9827E7D1465
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 18:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjJTQts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 12:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39870 "EHLO
+        id S229797AbjJTQwP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 20 Oct 2023 12:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbjJTQtr (ORCPT
+        with ESMTP id S229576AbjJTQwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 12:49:47 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABEB197;
-        Fri, 20 Oct 2023 09:49:44 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SBr7n3bsHz6J9dR;
-        Sat, 21 Oct 2023 00:46:13 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 20 Oct
- 2023 17:49:41 +0100
-Date:   Fri, 20 Oct 2023 17:49:40 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-CC:     <chengyou@linux.alibaba.com>, <kaishen@linux.alibaba.com>,
-        <helgaas@kernel.org>, <yangyicong@huawei.com>, <will@kernel.org>,
-        <baolin.wang@linux.alibaba.com>, <robin.murphy@arm.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-pci@vger.kernel.org>, <rdunlap@infradead.org>,
-        <mark.rutland@arm.com>, <zhuo.song@linux.alibaba.com>,
-        <renyu.zj@linux.alibaba.com>
-Subject: Re: [PATCH v9 3/4] drivers/perf: add DesignWare PCIe PMU driver
-Message-ID: <20231020174940.0000429e@Huawei.com>
-In-Reply-To: <20231020134230.53342-4-xueshuai@linux.alibaba.com>
-References: <20231020134230.53342-1-xueshuai@linux.alibaba.com>
-        <20231020134230.53342-4-xueshuai@linux.alibaba.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 20 Oct 2023 12:52:13 -0400
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41EFCA;
+        Fri, 20 Oct 2023 09:52:11 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-57de3096e25so90192eaf.1;
+        Fri, 20 Oct 2023 09:52:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697820731; x=1698425531;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=psILNHinFhubd7kf1xu/dppnYDWKXA3Ybjqll4DLjw0=;
+        b=w24jwbxTNrd6oh/gZRoYUFGYk0zPOUo72sqiF10MJJ5xSwoIbsP0PF0BeLuRgNcFkn
+         PcLxjAACK7lk/2r/m2lCF/9Ez/AUtaJ8/p1KmoUCgbGKlkdE+lBrO+OnQcoFWZlamkHu
+         ExlRTQRzdfElty2Kre/y1N49+yDi/1f9gT5bC95bKxmqcEjwgwg0slGz+OYrxPhlEd7b
+         Zj/a0aw0QSVNa7sR3qzqCzKuGVnWQFSTg2j8qJn6DrIS5dpoy6bBbDkRg6JS21anXLl5
+         f1DcuXlIKGZnfWp8KrwhLn82dxhZcBYjvemZp22v/lsEw9cA5sDMUaqOICF5112MlejO
+         xOYg==
+X-Gm-Message-State: AOJu0YxB3c+PgdK8gL9+aycBMWf7qcO+gLfnvanOKvh6YPp+LzcWjeNm
+        2K1WKw6wImGwLxv51zxovL8n5TcN1fH5tfgnHco=
+X-Google-Smtp-Source: AGHT+IGh0cmdaOOYZFwyTinjpHRLVyGaQdJ8C+chdN0KihO5maTrIgG7O0UmbbjbnDR2+SuI/Pn6JwhLUpC07VMZzYY=
+X-Received: by 2002:a4a:e7d1:0:b0:583:ec88:e0 with SMTP id y17-20020a4ae7d1000000b00583ec8800e0mr2657273oov.0.1697820730971;
+ Fri, 20 Oct 2023 09:52:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <E1qtq2W-00AJ8T-Mm@rmk-PC.armlinux.org.uk> <95A91316-0210-41D6-B8E2-4EE958066FFB@oracle.com>
+In-Reply-To: <95A91316-0210-41D6-B8E2-4EE958066FFB@oracle.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 20 Oct 2023 18:52:00 +0200
+Message-ID: <CAJZ5v0hfJkbE=TNpNWnVZsxzB4Hd-BCwQrJ+Lc3B95S9-KQezg@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: Use the acpi_device_is_present() helper in more places
+To:     Miguel Luis <miguel.luis@oracle.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "x86@kernel.org" <x86@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "jianyong.wu@arm.com" <jianyong.wu@arm.com>,
+        "justin.he@arm.com" <justin.he@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 21:42:29 +0800
-Shuai Xue <xueshuai@linux.alibaba.com> wrote:
+On Fri, Oct 20, 2023 at 4:52 PM Miguel Luis <miguel.luis@oracle.com> wrote:
+>
+> Hi Russell,
+>
+> > On 20 Oct 2023, at 13:59, Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> >
+> > From: James Morse <james.morse@arm.com>
+> >
+> > acpi_device_is_present() checks the present or functional bits
+> > from the cached copy of _STA.
+> >
+> > A few places open-code this check. Use the helper instead to
+> > improve readability.
+> >
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > Reviewed-by: Gavin Shan <gshan@redhat.com>
+> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > ---
+> > Jonathan Cameron suggests "Pull this one out and send it upstream in
+> > advance of the rest" so let's do that. See
+> > https://lore.kernel.org/r/20230914130455.00004434@Huawei.com/
+> >
+> > So, let's get this upstream to reduce the number of outstanding patches
+> > for aarch64 vcpu hotplug.
+> >
+> > drivers/acpi/scan.c | 4 ++--
+> > 1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> > index 691d4b7686ee..ed01e19514ef 100644
+> > --- a/drivers/acpi/scan.c
+> > +++ b/drivers/acpi/scan.c
+> > @@ -304,7 +304,7 @@ static int acpi_scan_device_check(struct acpi_device *adev)
+> > int error;
+> >
+> > acpi_bus_get_status(adev);
+> > - if (adev->status.present || adev->status.functional) {
+> > + if (acpi_device_is_present(adev)) {
+> > /*
+> > * This function is only called for device objects for which
+> > * matching scan handlers exist.  The only situation in which
+> > @@ -338,7 +338,7 @@ static int acpi_scan_bus_check(struct acpi_device *adev, void *not_used)
+> > int error;
+> >
+> > acpi_bus_get_status(adev);
+> > - if (!(adev->status.present || adev->status.functional)) {
+> > + if (!acpi_device_is_present(adev)) {
+>
+> Reviewed-by: Miguel Luis <miguel.luis@oracle.com>
 
-> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
-> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
-> Core controller IP which provides statistics feature. The PMU is a PCIe
-> configuration space register block provided by each PCIe Root Port in a
-> Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
-> injection, and Statistics).
-> 
-> To facilitate collection of statistics the controller provides the
-> following two features for each Root Port:
-> 
-> - one 64-bit counter for Time Based Analysis (RX/TX data throughput and
->   time spent in each low-power LTSSM state) and
-> - one 32-bit counter for Event Counting (error and non-error events for
->   a specified lane)
-> 
-> Note: There is no interrupt for counter overflow.
-> 
-> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
-> named based the BDF of Root Port. For example,
-> 
->     30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
-> 
-> the PMU device name for this Root Port is dwc_rootport_3018.
-> 
-> Example usage of counting PCIe RX TLP data payload (Units of bytes)::
-> 
->     $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
-> 
-> average RX bandwidth can be calculated like this:
-> 
->     PCIe TX Bandwidth = Rx_PCIe_TLP_Data_Payload / Measure_Time_Window
-> 
-> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-LGTM other than some really trivial stuff inline if you are doing a v10
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-
-> +static int dwc_pcie_pmu_probe(struct platform_device *plat_dev)
-> +{
-> +	struct pci_dev *pdev = NULL;
-> +	struct dwc_pcie_pmu *pcie_pmu;
-> +	bool notify = false;
-> +	char *name;
-> +	u32 bdf;
-> +	int ret;
-> +
-> +	/* Match the rootport with VSEC_RAS_DES_ID, and register a PMU for it */
-> +	for_each_pci_dev(pdev) {
-> +		u16 vsec;
-> +		u32 val;
-> +
-> +		if (!(pci_is_pcie(pdev) &&
-> +		      pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT))
-> +			continue;
-> +
-> +		vsec = pci_find_vsec_capability(pdev, PCI_VENDOR_ID_ALIBABA,
-> +						DWC_PCIE_VSEC_RAS_DES_ID);
-> +		if (!vsec)
-> +			continue;
-> +
-> +		pci_read_config_dword(pdev, vsec + PCI_VNDR_HEADER, &val);
-> +		if (PCI_VNDR_HEADER_REV(val) != 0x04)
-> +			continue;
-> +		pci_dbg(pdev,
-> +			"Detected PCIe Vendor-Specific Extended Capability RAS DES\n");
-> +
-> +		bdf = PCI_DEVID(pdev->bus->number, pdev->devfn);
-> +		name = devm_kasprintf(&plat_dev->dev, GFP_KERNEL, "dwc_rootport_%x",
-> +				      bdf);
-> +		if (!name) {
-> +			ret = -ENOMEM;
-> +			goto out;
-> +		}
-> +
-> +		/* All checks passed, go go go */
-> +		pcie_pmu = devm_kzalloc(&plat_dev->dev, sizeof(*pcie_pmu), GFP_KERNEL);
-> +		if (!pcie_pmu) {
-> +			ret = -ENOMEM;
-> +			goto out;
-> +		}
-> +
-> +		pcie_pmu->pdev = pdev;
-> +		pcie_pmu->ras_des_offset = vsec;
-> +		pcie_pmu->nr_lanes = pcie_get_width_cap(pdev);
-> +		pcie_pmu->on_cpu = -1;
-> +		pcie_pmu->pmu = (struct pmu){
-> +			.module		= THIS_MODULE,
-> +			.attr_groups	= dwc_pcie_attr_groups,
-> +			.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
-> +			.task_ctx_nr	= perf_invalid_context,
-> +			.event_init	= dwc_pcie_pmu_event_init,
-> +			.add		= dwc_pcie_pmu_event_add,
-> +			.del		= dwc_pcie_pmu_event_del,
-> +			.start		= dwc_pcie_pmu_event_start,
-> +			.stop		= dwc_pcie_pmu_event_stop,
-> +			.read		= dwc_pcie_pmu_event_update,
-> +		};
-> +
-> +		/* Add this instance to the list used by the offline callback */
-> +		ret = cpuhp_state_add_instance(dwc_pcie_pmu_hp_state,
-> +					       &pcie_pmu->cpuhp_node);
-> +		if (ret) {
-> +			pci_err(pdev,
-> +				"Error %d registering hotplug @%x\n", ret, bdf);
-> +			goto out;
-> +		}
-> +
-> +		/* Unwind when platform driver removes */
-> +		ret = devm_add_action_or_reset(
-> +			&plat_dev->dev, dwc_pcie_pmu_remove_cpuhp_instance,
-> +			&pcie_pmu->cpuhp_node);
-> +		if (ret)
-> +			goto out;
-> +
-> +		ret = perf_pmu_register(&pcie_pmu->pmu, name, -1);
-> +		if (ret) {
-> +			pci_err(pdev,
-> +				"Error %d registering PMU @%x\n", ret, bdf);
-> +			goto out;
-> +		}
-> +
-> +		/* Cache PMU to handle pci device hotplug */
-> +		list_add(&pcie_pmu->pmu_node, &dwc_pcie_pmu_head);
-> +		pcie_pmu->registered = true;
-> +		notify = true;
-> +
-> +		ret = devm_add_action_or_reset(
-> +			&plat_dev->dev, dwc_pcie_pmu_unregister_pmu, pcie_pmu);
-
-line wrapping is a bit ugly - I would move the &plat_dev->dev to previous line.
-and I think you can get away with aligning the rest just after the (
-
-
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
-> +	if (notify && !bus_register_notifier(&pci_bus_type, &dwc_pcie_pmu_nb))
-> +		return devm_add_action_or_reset(
-> +			&plat_dev->dev, dwc_pcie_pmu_unregister_nb, NULL);
-> +
-> +	return 0;
-> +
-> +out:
-> +	pci_dev_put(pdev);
-> +
-> +	return ret;
-> +}
-
-
-
-> +static int __init dwc_pcie_pmu_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN,
-> +				      "perf/dwc_pcie_pmu:online",
-> +				      dwc_pcie_pmu_online_cpu,
-> +				      dwc_pcie_pmu_offline_cpu);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	dwc_pcie_pmu_hp_state = ret;
-> +
-> +	ret = platform_driver_register(&dwc_pcie_pmu_driver);
-> +	if (ret)
-> +		goto platform_driver_register_err;
-> +
-> +	dwc_pcie_pmu_dev = platform_device_register_simple(
-> +				"dwc_pcie_pmu", PLATFORM_DEVID_NONE, NULL, 0);
-> +	if (IS_ERR(dwc_pcie_pmu_dev)) {
-> +		ret = PTR_ERR(dwc_pcie_pmu_dev);
-> +		goto platform_device_register_error;
-> +	}
-> +
-> +	return 0;
-> +
-> +platform_device_register_error:
-
-Trivial but I'd standardize on err or error, not mix them.
-
-> +	platform_driver_unregister(&dwc_pcie_pmu_driver);
-> +platform_driver_register_err:
-> +	cpuhp_remove_multi_state(dwc_pcie_pmu_hp_state);
-> +
-> +	return ret;
-> +}
-
+Applied as 6.7 material, thanks!
