@@ -2,164 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6987D09CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EDDC7D09D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 09:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376440AbjJTHx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 03:53:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34410 "EHLO
+        id S1376422AbjJTHzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 03:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376406AbjJTHx5 (ORCPT
+        with ESMTP id S230371AbjJTHzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 03:53:57 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C851E8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:53:56 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53d8320f0easo683848a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 00:53:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697788434; x=1698393234; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bS/fNgE7HshzP+B9hnPB+4ZnJQH4ERzD9aTrrrvTVT8=;
-        b=GP2GwcJo2uXAUB0otWhLkpEBj4FzJFmHuWiERCzrfho1CMtlQoceWCqGaqW6j7jN2R
-         lqklM+0CqA4vPQ4ZPS6EGJTpgMxMoeCBla013Klq+7/AnuvCEKvtutwbOee+It/u5VXY
-         Wc5WdjKh9XeV+CKI6db29fykGUoH0DuT0phAFUGnY2MCyIGRTdDjY2UV0jekffwsaNcl
-         BaTQAhJHAar8uw5Ivs9xEOvWdOPf4wkfcDbLlMVzYvan5XWcrEh5l+RsTwiXFkY0yJso
-         WWaj+ru+VrCf+iWBabf56thYwlaCwmRzldFDbgNDCjKlzsOqYGysyUDDUBDZqQbyGLvl
-         tinw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697788434; x=1698393234;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bS/fNgE7HshzP+B9hnPB+4ZnJQH4ERzD9aTrrrvTVT8=;
-        b=tKyNbz7ddQpO/b/aDVtuFLiqxZ3s8+YdMhSWzucJjNvka9N4XLxEUVMY8BZhkVCsPG
-         eOYtfeuWDm8RU9G8dDx1AqdDVTtxQIp4obcgXlQhKOdIkJg4B7aL8GoHdD+brQ8D6tG/
-         x3h5qP7y+wSUinxlWkCUsNM8IloXUYQFIJfpwIlzWUDS9TBzQnPIjUhmnQl7TlJb2oLR
-         p5dlcaqCThc84BlqzCoL7ZnbCjlx3bNi/DK/kP068nB0E/cBlyPylN1M9I4HUi8pOJW1
-         e9qAkqdZ4pGrOm/zDocnWuTg9Dj+xKKZB5MrTVvH7ifL2fzE7LmlVNhR1XTXc2X5k+VK
-         0Uiw==
-X-Gm-Message-State: AOJu0Yyy49bqxxgyMoIGMo81NugEqY0kV0hPxXN7A7Vj4iLLAO65bjO6
-        LCXtb+PvxJrEjQA+FMJF0ZM=
-X-Google-Smtp-Source: AGHT+IHEZcchen6ixd0kxn0P/WuskUEvLQh08rQ5h0owCPRMbI8OftiFjd5PUwd0QBfuw1foK2JYgw==
-X-Received: by 2002:a17:907:2cc4:b0:9c3:d356:ad0c with SMTP id hg4-20020a1709072cc400b009c3d356ad0cmr742899ejc.24.1697788434435;
-        Fri, 20 Oct 2023 00:53:54 -0700 (PDT)
-Received: from gmail.com (1F2EF7B2.nat.pool.telekom.hu. [31.46.247.178])
-        by smtp.gmail.com with ESMTPSA id 17-20020a170906019100b009ad8d444be4sm964958ejb.43.2023.10.20.00.53.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 00:53:53 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 20 Oct 2023 09:53:51 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH 3/3] sched: Update ->next_balance correctly during
- newidle balance
-Message-ID: <ZTIyD8EuhSmF4JFr@gmail.com>
-References: <20231020014031.919742-1-joel@joelfernandes.org>
- <20231020014031.919742-3-joel@joelfernandes.org>
+        Fri, 20 Oct 2023 03:55:53 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3CBE8;
+        Fri, 20 Oct 2023 00:55:51 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id AABB2660734F;
+        Fri, 20 Oct 2023 08:55:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697788550;
+        bh=0c2z7sk1bqZ1kYpcBZ8rifCI5ElDpfSDLTU9DxlgN9A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DaE1iuAOfw41MEP9QbDlwfaur5zRugIhl6yLcjWN9IRb3VkOYDiI6NVilalU9E/zS
+         Nrp9t9+edMN+7piU+KVpE9FGe6FmTQWPJjWev5l0G/vnEJ7+PxUjOMLJycl0Sueqmb
+         GL2j3nRBsqUC9soCI2KT5vumxLlNkE6Bhz8inT9c7j7J+ijydVix0PtwLQHg653fxx
+         9gFd0V929+J30P+k4fbpC9PFw0J5LPAwp+nsPfYRVzXhqHGhLTUbdpDsEVeuL3q9Q3
+         ImFZvPHi3QwzFiNzjRWGNAO77lsm7kGJnjnJBnDHZuhZ9PBLK6L7IwBoB1ZJt6IVM+
+         mYkWHxdIJwLZw==
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     matthias.bgg@gmail.com
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, allen-kh.cheng@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wenst@chromium.org,
+        kernel@collabora.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH] arm64: dts: mediatek: mt8186: Add I2C arbiter clocks to i2c 1/2/5
+Date:   Fri, 20 Oct 2023 09:55:40 +0200
+Message-ID: <20231020075540.15191-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231020014031.919742-3-joel@joelfernandes.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The I2C busses 1, 2 and 5 have got a separated arbiter clock: add it
+to their respective nodes.
 
-* Joel Fernandes (Google) <joel@joelfernandes.org> wrote:
+Fixes: 2e78620b1350 ("arm64: dts: Add MediaTek MT8186 dts and evaluation board and Makefile")
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8186.dtsi | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-> From: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>
-> 
-> When newidle balancing triggers, we see that it constantly clobbers 
-> rq->next_balance even when there is no newidle balance happening due to 
-> the cost estimates.  Due to this, we see that periodic load balance 
-> (rebalance_domains) may trigger way more often when the CPU is going in 
-> and out of idle at a high rate but is no really idle. Repeatedly 
-> triggering load balance there is a bad idea as it is a heavy operation. 
-> It also causes increases in softirq.
-> 
-> Another issue is ->last_balance is not updated after newidle balance 
-> causing mistakes in the ->next_balance calculations.
-> 
-> Fix by updating last_balance when a newidle load balance actually happens 
-> and then updating next_balance. This is also how it is done in other load 
-> balance paths.
-> 
-> Testing shows a significant drop in softirqs when running:
-> cyclictest -i 100 -d 100 --latency=1000 -D 5 -t -m  -q
-> 
-> Goes from ~6k to ~800.
-> 
-> Cc: Suleiman Souhlal <suleiman@google.com>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
-> Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/sched/fair.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 8e276d12c3cb..b147ad09126a 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -12076,11 +12076,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  
->  	if (!READ_ONCE(this_rq->rd->overload) ||
->  	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
-> -
-> -		if (sd)
-> -			update_next_balance(sd, &next_balance);
->  		rcu_read_unlock();
-> -
->  		goto out;
->  	}
->  	rcu_read_unlock();
-> @@ -12095,8 +12091,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  		int continue_balancing = 1;
->  		u64 domain_cost;
->  
-> -		update_next_balance(sd, &next_balance);
-> -
->  		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
->  			break;
->  
-> @@ -12109,6 +12103,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  			t1 = sched_clock_cpu(this_cpu);
->  			domain_cost = t1 - t0;
->  			update_newidle_cost(sd, domain_cost);
-> +			sd->last_balance = jiffies;
-> +			update_next_balance(sd, &next_balance);
->  
->  			curr_cost += domain_cost;
->  			t0 = t1;
+diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+index f04ae70c470a..af6f6687de35 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+@@ -1224,8 +1224,9 @@ i2c1: i2c@11008000 {
+ 			      <0 0x10200200 0 0x100>;
+ 			interrupts = <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH 0>;
+ 			clocks = <&imp_iic_wrap CLK_IMP_IIC_WRAP_AP_CLOCK_I2C1>,
+-				 <&infracfg_ao CLK_INFRA_AO_AP_DMA>;
+-			clock-names = "main", "dma";
++				 <&infracfg_ao CLK_INFRA_AO_AP_DMA>,
++				 <&infracfg_ao CLK_INFRA_AO_I2C1_ARBITER>;
++			clock-names = "main", "dma", "arb";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+@@ -1238,8 +1239,9 @@ i2c2: i2c@11009000 {
+ 			      <0 0x10200300 0 0x180>;
+ 			interrupts = <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH 0>;
+ 			clocks = <&imp_iic_wrap CLK_IMP_IIC_WRAP_AP_CLOCK_I2C2>,
+-				 <&infracfg_ao CLK_INFRA_AO_AP_DMA>;
+-			clock-names = "main", "dma";
++				 <&infracfg_ao CLK_INFRA_AO_AP_DMA>,
++				 <&infracfg_ao CLK_INFRA_AO_I2C2_ARBITER>;
++			clock-names = "main", "dma", "arb";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+@@ -1280,8 +1282,9 @@ i2c5: i2c@11016000 {
+ 			      <0 0x10200700 0 0x100>;
+ 			interrupts = <GIC_SPI 354 IRQ_TYPE_LEVEL_HIGH 0>;
+ 			clocks = <&imp_iic_wrap CLK_IMP_IIC_WRAP_AP_CLOCK_I2C5>,
+-				 <&infracfg_ao CLK_INFRA_AO_AP_DMA>;
+-			clock-names = "main", "dma";
++				 <&infracfg_ao CLK_INFRA_AO_AP_DMA>,
++				 <&infracfg_ao CLK_INFRA_AO_I2C5_ARBITER>;
++			clock-names = "main", "dma", "arb";
+ 			clock-div = <1>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-- 
+2.42.0
 
-Okay, I'm applying patches #2 and #3, without #1: it should be safe
-out of order, but let me know if I missed something ...
-
-Thanks,
-
-	Ingo
