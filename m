@@ -2,125 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC407D16C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 22:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352A37D16C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 22:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbjJTUG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 16:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
+        id S230117AbjJTUHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 16:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjJTUG4 (ORCPT
+        with ESMTP id S230043AbjJTUHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 16:06:56 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7ADD57
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 13:06:53 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507c5249d55so1682647e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 13:06:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1697832412; x=1698437212; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FJwcfh7XT4p/d8xdEQd3o4yb8QA8P7Clkcjdf6k/CEg=;
-        b=EfK/H/GLHx0/aqNqd/ehf8SerD5bueKNAIIvBIi/aGQCOt1XlGC78879l7Zp7buCuL
-         t2CV3kMlUg1OVKtRm9uNuIoRI+jylsojzmhVpdG7jt/RF28GUQkpJqfmQYQpuga5Npo8
-         yLM/mZfrOpsTh504cehZyfwfrx15cTdPW5KAA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697832412; x=1698437212;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FJwcfh7XT4p/d8xdEQd3o4yb8QA8P7Clkcjdf6k/CEg=;
-        b=kYkp1VN2pGdZa8WE95UZ9CYorF/MGNlocH0BkIwWJMbXvVE90hTud6NWRkZDBl1sep
-         l2s9BjIj43YBZ464A42meh369u+xaSQ/LJZYTRAa7188EdNSjGy5qMlvZGrFGaeqt+sY
-         pfyBx9sBaEF1yhpz3VQUkNlvgM51tAVIeTw03ux+XqIKTb8M9tkGwl7n59wgRQCZeIzx
-         YSHFp+VQqogDM3uS+BiKe9hw1op095YsOm0D1u8Cj83IIzuJldNDJ39mrE3Sp8vV+hwT
-         iOaFb0BJPykx/kYbQ/yKtZzibmNwpN0Dd00CG1arfPo6PaWINtADaRGpsEJav1zTO1WZ
-         ybdw==
-X-Gm-Message-State: AOJu0Yxt5l6utcaPmS/VRDAE+lzE9p+HeYQe10GrOPfp/jlZ9lnrZase
-        +bmIUyXugA7nHiwDQNYGu0Jc9Xhm7vV00D/PziX2CWnY
-X-Google-Smtp-Source: AGHT+IFyjjvDPDWXiFuUjYu0Y0XO2gBTorEWps76Y0F/VhNIaMJBuk3GrMxdQbmSr+83hzsI7VJ4eA==
-X-Received: by 2002:a05:6512:2098:b0:4fe:ecd:4950 with SMTP id t24-20020a056512209800b004fe0ecd4950mr1728880lfr.1.1697832412058;
-        Fri, 20 Oct 2023 13:06:52 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id u26-20020ac248ba000000b0050420eff124sm503537lfg.152.2023.10.20.13.06.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Oct 2023 13:06:51 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-507c78d258fso1683681e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 13:06:51 -0700 (PDT)
-X-Received: by 2002:a17:907:c1f:b0:9ba:65e:752b with SMTP id
- ga31-20020a1709070c1f00b009ba065e752bmr2061794ejc.39.1697832390868; Fri, 20
- Oct 2023 13:06:30 -0700 (PDT)
+        Fri, 20 Oct 2023 16:07:21 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D19D63;
+        Fri, 20 Oct 2023 13:07:18 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5F1395C0040;
+        Fri, 20 Oct 2023 16:07:17 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 20 Oct 2023 16:07:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1697832437; x=1697918837; bh=krgRG5ssPVrKu1an7h2M8y5D/EOyXr2xu6O
+        1a2sTjg4=; b=BXBnjeZtYkZ/AwNYLeUxSVzX8yFEAxcqK/bYd/7us0Ezas47U00
+        jHjcHlIoqkDdriTshuakzddt+3Q/FyaF6FwiDMI6oiUXJ/BoOK2nrjbf/8uz7ABl
+        cdh2LUU32dScffQulKc8UUcc88ajZFrUlM2s8h5AQy/UgfoGeMzBL07NV+vcJCcX
+        pJkW5bD2xSCDdhvccdO75ShOHQGXAZ6I1QXer0+N8AUCrnCRvxL+7bD54oQxSXVc
+        r0MLGvQbtjZ9I+Ymk3IKeOzmwHFtWP/5TjQ3J/hMhuFeJ7NsxR+QG0PEkYesbBRX
+        16gzuVLWjT3iEGCRazEIPAysmBLeZKB/kRQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1697832437; x=1697918837; bh=krgRG5ssPVrKu1an7h2M8y5D/EOyXr2xu6O
+        1a2sTjg4=; b=bKKQDZX+o61ziEh51I5e2IjOUU5kWhBjRoa/w0GEWg/MzuyoAmP
+        OgyHLQqdTlDDb9wA3VPKRKpMnIxmcvu8SwnUQgJ+uvkPTfh4snUtjz3OTEWwwK4h
+        r539oOsgvXwJ7HIzMFAx8KCH/Chs1oU3UEuKac+Ck4FUXfAYXkX+fN+TQWjsKT8d
+        32EzA+K9ZnZPOqVenDkETTf7tuBawHw2nkT4C7TsqmtG34/ElGae3XRQu3BNyFJK
+        cgLCo+09EzJJuITZv8TeXXAEJskaiekml9L8f/5Dq8Bp/zd6T3h6fek/2xJiF6qB
+        UbTmhtbug7h/pRHTKkT0fn5PTaGYhCeSYGA==
+X-ME-Sender: <xms:9N0yZRdRnPrIXrKERB59DvvzWrVt3SMUiueStJiCB8eCMFV0PwNkTQ>
+    <xme:9N0yZfNMkyBoC6975-_XfRxnXfld9ATQlZEjKNldjJC6sX02pVTAWY_1K5MWn7e9I
+    PyB4ys7emVNHUZqmYM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeekgddugeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:9d0yZahtPtfag39CovwLGtWQj9SUQ3J5QhAYwYd1Qn2Xs7c8rXcRzg>
+    <xmx:9d0yZa8M3ccq1mPBxC-3jgx1tRywgwAVIj6MHKq3Fqk0RNyMPadigA>
+    <xmx:9d0yZdtkG2J2EQFsgTK3OEbM5YKxMSgZfi-W91FVBP9BPHPzppLSvg>
+    <xmx:9d0yZdO06buusJ0x7Rs0_amFYTX0Zj-VZtCSLuK4vHozRyH3jQrPhw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D0424B6008D; Fri, 20 Oct 2023 16:07:16 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
 MIME-Version: 1.0
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org> <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
- <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
- <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
- <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
- <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
- <20231019-fluor-skifahren-ec74ceb6c63e@brauner> <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
- <ZTGncMVw19QVJzI6@dread.disaster.area> <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
-In-Reply-To: <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 20 Oct 2023 13:06:13 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjma9_TSwXosG7GBXQaZ465VH1t4a4iQ8J=PFpE=4bhVA@mail.gmail.com>
-Message-ID: <CAHk-=wjma9_TSwXosG7GBXQaZ465VH1t4a4iQ8J=PFpE=4bhVA@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Message-Id: <5e45b11b-853d-49e6-a355-251dc1362676@app.fastmail.com>
+In-Reply-To: <CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpoR1RQ@mail.gmail.com>
+References: <20231020132749.1398012-1-arnd@kernel.org>
+ <CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpoR1RQ@mail.gmail.com>
+Date:   Fri, 20 Oct 2023 22:06:56 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Alexei Starovoitov" <alexei.starovoitov@gmail.com>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Yonghong Song" <yonghong.song@linux.dev>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Andrii Nakryiko" <andrii@kernel.org>,
+        "Chuyi Zhou" <zhouchuyi@bytedance.com>,
+        "Tejun Heo" <tj@kernel.org>,
+        "Martin KaFai Lau" <martin.lau@linux.dev>,
+        "Song Liu" <song@kernel.org>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        "KP Singh" <kpsingh@kernel.org>,
+        "Stanislav Fomichev" <sdf@google.com>,
+        "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>,
+        "Oleg Nesterov" <oleg@redhat.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bpf: hide cgroup functions for configs without cgroups
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 at 05:12, Jeff Layton <jlayton@kernel.org> wrote:.
+On Fri, Oct 20, 2023, at 19:26, Alexei Starovoitov wrote:
+> On Fri, Oct 20, 2023 at 6:27=E2=80=AFAM Arnd Bergmann <arnd@kernel.org=
+> wrote:
+>> @@ -904,6 +904,7 @@ __diag_push();
+>>  __diag_ignore_all("-Wmissing-prototypes",
+>>                   "Global functions as their definitions will be in v=
+mlinux BTF");
+>>
+>> +#ifdef CONFIG_CGROUPS
+>>  __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
+>>                 struct cgroup_subsys_state *css, unsigned int flags)
+>>  {
+>> @@ -947,6 +948,7 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct=
+ bpf_iter_css_task *it)
+>>         css_task_iter_end(kit->css_it);
+>>         bpf_mem_free(&bpf_global_ma, kit->css_it);
+>>  }
+>> +#endif
 >
-> I'd _really_ like to see a proper change counter added before it's
-> merged, or at least space in the on-disk inode reserved for one until we
-> can get it plumbed in.
+> Did you actually test build it without cgroups and with bpf+btf?
+> I suspect the resolve_btfid step should be failing the build.
+> It needs
+> #ifdef CONFIG_CGROUPS
+> around BTF_ID_FLAGS(func, bpf_iter_css_task*
 
-Hmm. Can we not perhaps just do an in-memory change counter, and try
-to initialize it to a random value when instantiating an inode? Do we
-even *require* on-disk format changes?
+No, I did test with a few hundred random configurations, but it
+looks like CONFIG_DEBUG_INFO_BTF is always disabled
+in my builds because I force-disable CONFIG_DEBUG_INFO
+to speed up my builds.
 
-So on reboot, the inode would count as "changed" as far any remote
-user is concerned. It would flush client caches, but isn't that what
-you'd want anyway? I'd hate to waste lots of memory, but maybe people
-would be ok with just a 32-bit random value. And if not...
+I tried reproducing it with CONFIG_DEBUG_INFO_BTF enabled
+and it didn't immediately fail but it clearly makes sense that
+we'd need another #ifdef.
 
-But I actually came into this whole discussion purely through the
-inode timestamp side, so I may *entirely* miss what the change counter
-requirements for NFSd actually are. If it needs to be stable across
-reboots, my idea is clearly complete garbage.
-
-You can now all jump on me and point out my severe intellectual
-limitations. Please use small words when you do ;)
-
-              Linus
+      Arnd
