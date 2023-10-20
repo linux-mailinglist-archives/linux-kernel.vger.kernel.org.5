@@ -2,208 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A897D0BFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 271357D0BFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 11:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376745AbjJTJfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 05:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
+        id S1376736AbjJTJfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 05:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376679AbjJTJff (ORCPT
+        with ESMTP id S1376803AbjJTJfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 05:35:35 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B29D5F;
-        Fri, 20 Oct 2023 02:35:33 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 09:35:30 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1697794531;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VJBidDb/QtN17wByyp8wJnXKcC34UkVDm+skWkkNe8g=;
-        b=M1xpLQHRaA+9Da5H4q3J22KQkindPDPefJ9qK4JWl+GtRgP2OQIS7b/afKCwu/sRjVR6nj
-        rUESx+kImYF2HdkcRwM3OIBOd27GDpg/SMozwAD1iBO3OS496Nknx/uYV2/8VBRgTrSl6w
-        DgqdpQVTE5QYCUHdLFeFhvhmrMWZeyM81AB04tKod4vqpcgInRNiBFGub34dKx/0L8Hdo5
-        1V4pdUG3b/xllKiH97S+v/9VbI5fUwNX/pZz4ZUDBxgwxsFxK8aYXRiU97+zxeJdsa7HoK
-        anfqq86BCEUpYyltIcMhuGwgSiCxtF/q3M2/BrGdYBZOrH4aLfGj7++aHwVH1A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1697794531;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VJBidDb/QtN17wByyp8wJnXKcC34UkVDm+skWkkNe8g=;
-        b=u6ymRRUn934Pg4b36Iue8E+RkbOgxLyUB9JRXyYyI1AvHsRSCX4Hl7BgOBi00LZQER2Bdo
-        oFurvsjEx43pGaBg==
-From:   "tip-bot2 for Linus Torvalds" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/percpu] x86/fpu: Clean up FPU switching in the middle of
- task switching
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231018184227.446318-1-ubizjak@gmail.com>
-References: <20231018184227.446318-1-ubizjak@gmail.com>
+        Fri, 20 Oct 2023 05:35:46 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19318D55
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 02:35:41 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qtlut-0003Mz-MB; Fri, 20 Oct 2023 11:35:39 +0200
+Message-ID: <c9b79a69-bdc1-4457-900d-709a15d99568@leemhuis.info>
+Date:   Fri, 20 Oct 2023 11:35:38 +0200
 MIME-Version: 1.0
-Message-ID: <169779453061.3135.15807882372245530063.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad
+ L570
+Content-Language: en-US, de-DE
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     Linux Regressions <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jaak Ristioja <jaak@ristioja.ee>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+References: <7c50e051-eba2-09fc-da9f-023d592de457@ristioja.ee>
+ <31bdf7b1-0ed9-4217-b459-1d857e53120b@leemhuis.info>
+ <CAAhV-H7fRpykesVUEyaTpVnFiGwpP+fPbtdrp6JwfgD=bDp06Q@mail.gmail.com>
+ <CAAhV-H7XCmbgS=N4-SE8FnASAws8hnDRZsQJgXE+dwyARaqzNw@mail.gmail.com>
+ <ZSO9uArAtsPMPeTP@debian.me>
+ <CAAhV-H5GbidUx8YanUc7S9oGqBkDd53xeT=2O4aCuX7KpM-+8A@mail.gmail.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <CAAhV-H5GbidUx8YanUc7S9oGqBkDd53xeT=2O4aCuX7KpM-+8A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1697794542;f9661a6a;
+X-HE-SMSGID: 1qtlut-0003Mz-MB
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/percpu branch of tip:
+On 09.10.23 10:54, Huacai Chen wrote:
+> On Mon, Oct 9, 2023 at 4:45 PM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+>> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen wrote:
+>>> On Tue, Sep 26, 2023 at 10:31 PM Huacai Chen <chenhuacai@kernel.org> wrote:
+>>>> On Tue, Sep 26, 2023 at 7:15 PM Linux regression tracking (Thorsten
+>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+>>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
+>>>>>>
+>>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (Integrated Intel HD
+>>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U) results in a blank
+>>>>>> screen after boot until the display manager starts... if it does start
+>>>>>> at all. Using the nomodeset kernel parameter seems to be a workaround.
+>>>>>>
+>>>>>> I've bisected this to commit 60aebc9559492cea6a9625f514a8041717e3a2e4
+>>>>>> ("drivers/firmware: Move sysfb_init() from device_initcall to
+>>>>>> subsys_initcall_sync").
+>>>>>
+>>>>> Hmmm, no reaction since it was posted a while ago, unless I'm missing
+>>>>> something.
+>>>>>
+>>>>> Huacai Chen, did you maybe miss this report? The problem is apparently
+>>>>> caused by a commit of yours (that Javier applied), you hence should look
+>>>>> into this.
+>>>> I'm sorry but it looks very strange, could you please share your config file?
+>>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes things work fine
+>>> again. So I guess the reason:
+>>
+>> Did Jaak reply privately? It should have been disclosed in public
+>> ML here instead.
+> Yes, he replied privately, and disabling DRM_SIMPLEDRM was suggested by me.
 
-Commit-ID:     24b8a23638cbf92449c353f828b1d309548c78f4
-Gitweb:        https://git.kernel.org/tip/24b8a23638cbf92449c353f828b1d309548c78f4
-Author:        Linus Torvalds <torvalds@linux-foundation.org>
-AuthorDate:    Wed, 18 Oct 2023 20:41:58 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 20 Oct 2023 11:24:22 +02:00
+Well, this to me still looks a lot (please correct me if I'm wrong) like
+regression that should be fixed, as DRM_SIMPLEDRM was enabled beforehand
+if I understood things correctly. Or is there a proper fix for this
+already in the works and I just missed this? Or is there some good
+reason why this won't/can't be fixed?
 
-x86/fpu: Clean up FPU switching in the middle of task switching
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
-It happens to work, but it's very very wrong, because our 'current'
-macro is magic that is supposedly loading a stable value.
+#regzbot poke
 
-It just happens to be not quite stable enough and the compilers
-re-load the value enough for this code to work.  But it's wrong.
-
-The whole
-
-        struct fpu *prev_fpu = &prev->fpu;
-
-thing in __switch_to() is pretty ugly. There's no reason why we
-should look at that 'prev_fpu' pointer there, or pass it down.
-
-And it only generates worse code, in how it loads 'current' when
-__switch_to() has the right task pointers.
-
-The attached patch not only cleans this up, it actually
-generates better code too:
-
- (a) it removes one push/pop pair at entry/exit because there's one
-     less register used (no 'current')
-
- (b) it removes that pointless load of 'current' because it just uses
-     the right argument:
-
-	-       movq    %gs:pcpu_hot(%rip), %r12
-	-       testq   $16384, (%r12)
-	+       testq   $16384, (%rdi)
-
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20231018184227.446318-1-ubizjak@gmail.com
----
- arch/x86/include/asm/fpu/sched.h | 10 ++++++----
- arch/x86/kernel/process_32.c     |  7 +++----
- arch/x86/kernel/process_64.c     |  7 +++----
- 3 files changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/arch/x86/include/asm/fpu/sched.h b/arch/x86/include/asm/fpu/sched.h
-index ca6e5e5..c485f19 100644
---- a/arch/x86/include/asm/fpu/sched.h
-+++ b/arch/x86/include/asm/fpu/sched.h
-@@ -37,10 +37,12 @@ extern void fpu_flush_thread(void);
-  * The FPU context is only stored/restored for a user task and
-  * PF_KTHREAD is used to distinguish between kernel and user threads.
-  */
--static inline void switch_fpu_prepare(struct fpu *old_fpu, int cpu)
-+static inline void switch_fpu_prepare(struct task_struct *old, int cpu)
- {
- 	if (cpu_feature_enabled(X86_FEATURE_FPU) &&
--	    !(current->flags & (PF_KTHREAD | PF_USER_WORKER))) {
-+	    !(old->flags & (PF_KTHREAD | PF_USER_WORKER))) {
-+		struct fpu *old_fpu = &old->thread.fpu;
-+
- 		save_fpregs_to_fpstate(old_fpu);
- 		/*
- 		 * The save operation preserved register state, so the
-@@ -60,10 +62,10 @@ static inline void switch_fpu_prepare(struct fpu *old_fpu, int cpu)
-  * Delay loading of the complete FPU state until the return to userland.
-  * PKRU is handled separately.
-  */
--static inline void switch_fpu_finish(void)
-+static inline void switch_fpu_finish(struct task_struct *new)
- {
- 	if (cpu_feature_enabled(X86_FEATURE_FPU))
--		set_thread_flag(TIF_NEED_FPU_LOAD);
-+		set_tsk_thread_flag(new, TIF_NEED_FPU_LOAD);
- }
- 
- #endif /* _ASM_X86_FPU_SCHED_H */
-diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
-index 708c87b..0917c7f 100644
---- a/arch/x86/kernel/process_32.c
-+++ b/arch/x86/kernel/process_32.c
-@@ -156,13 +156,12 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
- {
- 	struct thread_struct *prev = &prev_p->thread,
- 			     *next = &next_p->thread;
--	struct fpu *prev_fpu = &prev->fpu;
- 	int cpu = smp_processor_id();
- 
- 	/* never put a printk in __switch_to... printk() calls wake_up*() indirectly */
- 
--	if (!test_thread_flag(TIF_NEED_FPU_LOAD))
--		switch_fpu_prepare(prev_fpu, cpu);
-+	if (!test_tsk_thread_flag(prev_p, TIF_NEED_FPU_LOAD))
-+		switch_fpu_prepare(prev_p, cpu);
- 
- 	/*
- 	 * Save away %gs. No need to save %fs, as it was saved on the
-@@ -209,7 +208,7 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
- 
- 	raw_cpu_write(pcpu_hot.current_task, next_p);
- 
--	switch_fpu_finish();
-+	switch_fpu_finish(next_p);
- 
- 	/* Load the Intel cache allocation PQR MSR. */
- 	resctrl_sched_in(next_p);
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 33b2687..1553e19 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -562,14 +562,13 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
- {
- 	struct thread_struct *prev = &prev_p->thread;
- 	struct thread_struct *next = &next_p->thread;
--	struct fpu *prev_fpu = &prev->fpu;
- 	int cpu = smp_processor_id();
- 
- 	WARN_ON_ONCE(IS_ENABLED(CONFIG_DEBUG_ENTRY) &&
- 		     this_cpu_read(pcpu_hot.hardirq_stack_inuse));
- 
--	if (!test_thread_flag(TIF_NEED_FPU_LOAD))
--		switch_fpu_prepare(prev_fpu, cpu);
-+	if (!test_tsk_thread_flag(prev_p, TIF_NEED_FPU_LOAD))
-+		switch_fpu_prepare(prev_p, cpu);
- 
- 	/* We must save %fs and %gs before load_TLS() because
- 	 * %fs and %gs may be cleared by load_TLS().
-@@ -623,7 +622,7 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
- 	raw_cpu_write(pcpu_hot.current_task, next_p);
- 	raw_cpu_write(pcpu_hot.top_of_stack, task_top_of_stack(next_p));
- 
--	switch_fpu_finish();
-+	switch_fpu_finish(next_p);
- 
- 	/* Reload sp0. */
- 	update_task_stack(next_p);
+>>> When SIMPLEDRM takes over the framebuffer, the screen is blank (don't
+>>> know why). And before 60aebc9559492cea6a9625f ("drivers/firmware: Move
+>>> sysfb_init() from device_initcall to subsys_initcall_sync") there is
+>>> no platform device created for SIMPLEDRM at early stage, so it seems
+>>> also "no problem".
+>>
+>> I don't understand above. You mean that after that commit the platform
+>> device is also none, right?
+> No. The SIMPLEDRM driver needs a platform device to work, and that
+> commit makes the platform device created earlier. So, before that
+> commit, SIMPLEDRM doesn't work, but the screen isn't blank; after that
+> commit, SIMPLEDRM works, but the screen is blank.
+> 
+> Huacai
+>>
+>> Confused...
+>>
+>> --
+>> An old man doll... just what I always wanted! - Clara
+> 
+> 
