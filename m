@@ -2,72 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C297D1643
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 460CE7D1644
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 21:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbjJTTWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 15:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50224 "EHLO
+        id S229881AbjJTTWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 15:22:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjJTTWC (ORCPT
+        with ESMTP id S229812AbjJTTWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 15:22:02 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3DE1A8
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:21:50 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7ac9c1522so17639787b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 12:21:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1697829710; x=1698434510; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qALOrG6vepevyfdTV65I5X2dgTb+XRjcAA0K1wR5V78=;
-        b=avyZOTCxSheiio0cQy8we9ioz7bsEXKOaiDle56ZEEWD3VeroRzhHAwYc4FvxMOp12
-         6CrHrDFoZI556Xdrb+S2T5Ipy7xAkWN04RAjc+wKelNnx4Na7l02arP7YLwqEOlWkcLu
-         ufExZn8FipZ9QPhE6+UsYRwJOzotnuX2LtpRfueFfT7c+RsLaTToycOE76C2GsF/xJEl
-         tfvQOgfzs64n6rTLv5nYP0b59jcO8nmPxEhTxl24l20Ip3H8LyAD4Ep0H6ZSorrfw7MD
-         fKicyMxWnxHFtvh1B2OEIGKDclqoQG7f/L2eLd/m7g8/v2/0IzLiZ2W7N6nckd6Ot7ao
-         Le2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697829710; x=1698434510;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qALOrG6vepevyfdTV65I5X2dgTb+XRjcAA0K1wR5V78=;
-        b=JEd036jt1kOaNkVXAjyQ4X4YjsmlevLlhA2q/JdXpUlqoGUgw1mGXpugxO1179Cxdx
-         5sszsOSnUh6HgJz5AGflqwLaXOaIYJAVAC9feN1joC9sG1puIbkDlP3DjAvM1ROyZBt3
-         MbM9Q59f3K5WhYRBOKcjfvl97TQeq4Da5Cx+5XnbhT93EmatHUboYxt1mT17J1Bi5RmV
-         DnkHTYz5GwlqvIv3uLFBU/pOq/jS7K/UniJy6RiukrTH+W01yluszYaWwu6AdI7u5gkp
-         tYWPIdB+GMWLSBGXpaeD0tOuSKBJvsvOuipr9iaOWYRd3pB0+2Q4Oe3z++2YIV7hAUAz
-         Ep6A==
-X-Gm-Message-State: AOJu0YzZW7b8WvBkA2oK82yQ4+en5WlhXCD8s3921L4N9c2K7GhyBLRP
-        +OH6IlsjY49eR7aTpPFxVOd6U/UfYGGRAY+etw==
-X-Google-Smtp-Source: AGHT+IF0gbKlBuVYWFSDhK1cHQbvO0vJ+f+8x3DRXak9PN8AwNgsgu3tNhmxk4ZIHpRQ+61kd2848nUx67nBfQ58iQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:d110:0:b0:d9c:c9a8:8c27 with SMTP
- id i16-20020a25d110000000b00d9cc9a88c27mr57393ybg.13.1697829709856; Fri, 20
- Oct 2023 12:21:49 -0700 (PDT)
-Date:   Fri, 20 Oct 2023 19:21:46 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAErTMmUC/x3NwQqDQAwE0F+RnBtYIyj2V0oPyxptoF2XpLUV8
- d+NPQ3vMDMbGKuwwbXaQHkRkzk76ksF6RHzxCiDGyhQUwcKaG/Nqaw4qCyshmX+sqJ9Snmu6BW dnK+Y45kJqWm7tuOxpz6BjxblUX7/w9t93w+Y0Zw+gAAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1697829708; l=2442;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=Mdqt94cfpfyPw2z8vNiZUw0jKlb6Y4rhrl6QkPkNsjg=; b=eGMemd00Wx/G5iPloPDERokDgu99pfw0hb8wRp5tP7bzTbL5R7kAwXrl89cUd53z1hIPdIRS8
- PsuJh/QEPMuD+eAqiCuQ/YtrDg+fE0fCywNIJFMoI5Bm2NEFlO3Dq6u
-X-Mailer: b4 0.12.3
-Message-ID: <20231020-strncpy-drivers-power-supply-charger-manager-c-v1-1-698f73bcad2a@google.com>
-Subject: [PATCH] power: supply: charger-manager: replace deprecated strncpy
- with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        Fri, 20 Oct 2023 15:22:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0A4D41;
+        Fri, 20 Oct 2023 12:22:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FC81C433C8;
+        Fri, 20 Oct 2023 19:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697829729;
+        bh=tURciTQclBfgEIbO47BJ7qrPj5Gyb3NVEPoOlslHMzM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=odQm5THCIczSy3qQHKgscLkiFBw00Ekbo2mzdQf96X5KdbdJUMbO0AtEIVwMiCTcr
+         B1PMTsYqwd2tGwRK/8pO3c8GHlFJFQbC9HWxogQtxKO7r+0T+eaB046bTk+5+dRzpA
+         f+Lk3+WmFrbVqcy9qM/++UYniBvi+Bh5kRZ3QIBP/hLmfTlJSWUUIF3pBrrU4lczSt
+         /Pt/Ew3srWcfzUA+/1RSfDuUnE/QUnC/7zawcQfFvBS8TR/FmffXaKVuZzqCcklZeW
+         /fE2eQSQlYCU2jJvsw4Xpn0TbYZYzaC4/RYwL8rTmXIPIc8TCdqd5BiVdPAg0gNy1p
+         B9Mg3zerYd2jQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A8904CE0AE2; Fri, 20 Oct 2023 12:22:08 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 12:22:08 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Pedro Falcato <pedro.falcato@gmail.com>
+Cc:     rcu@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Remove unused macros from rcupdate.h
+Message-ID: <b2a15247-fbe6-47bd-9857-5d5163834dfc@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231020173015.30509-1-pedro.falcato@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231020173015.30509-1-pedro.falcato@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,66 +57,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Fri, Oct 20, 2023 at 06:30:15PM +0100, Pedro Falcato wrote:
+> ulong2long, USHORT_CMP_GE and USHORT_CMP_LT are redundant and have been
+> unused for quite a few releases.
+> 
+> Signed-off-by: Pedro Falcato <pedro.falcato@gmail.com>
+> ---
+> Just a boring chore patch that cleans up a few unused macros.
+> 
+> I'm *very* interested in knowing how that ulong2long macro came along,
+> though. What was wrong with '(long) a'?
 
-We expect cm->psy_name_buf to be NUL-terminated based on its usage with
-format strings:
-1522: cm->charger_psy_desc.name = cm->psy_name_buf;
-...
-1587: dev_err(&pdev->dev, "Cannot register charger-manager with name \"%s\"\n",
-1587:   cm->charger_psy_desc.name);
+Signed integer overflow, if I remember correctly.  But the Linux-kernel
+build process forced signed integer overflow to be defined.
 
-Moreover, NUL-padding is not required as `cm` is already zero-allocated
-and thus any future NUL-byte assignments (like what strncpy() will do)
-are redundant:
-1437: cm = devm_kzalloc(&pdev->dev, sizeof(*cm), GFP_KERNEL);
+Queued for v6.8, thank you!
 
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
+							Thanx, Paul
 
-Let's also opt for the more idiomatic strscpy() usage of:
-strscpy(dest, src, sizeof(dest)).
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/power/supply/charger-manager.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
-index 5fa6ba7f41e1..085d5277bc19 100644
---- a/drivers/power/supply/charger-manager.c
-+++ b/drivers/power/supply/charger-manager.c
-@@ -1516,9 +1516,11 @@ static int charger_manager_probe(struct platform_device *pdev)
- 	memcpy(&cm->charger_psy_desc, &psy_default, sizeof(psy_default));
- 
- 	if (!desc->psy_name)
--		strncpy(cm->psy_name_buf, psy_default.name, PSY_NAME_MAX);
-+		strscpy(cm->psy_name_buf, psy_default.name,
-+			sizeof(cm->psy_name_buf));
- 	else
--		strncpy(cm->psy_name_buf, desc->psy_name, PSY_NAME_MAX);
-+		strscpy(cm->psy_name_buf, desc->psy_name,
-+			sizeof(cm->psy_name_buf));
- 	cm->charger_psy_desc.name = cm->psy_name_buf;
- 
- 	/* Allocate for psy properties because they may vary */
-
----
-base-commit: bb55d7f7f7445abcc8db50e6a65d4315e79f75c7
-change-id: 20231020-strncpy-drivers-power-supply-charger-manager-c-236767ef929c
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+>  include/linux/rcupdate.h | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 5e5f920ade9..b9b6b828115 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -34,9 +34,6 @@
+>  
+>  #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
+>  #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
+> -#define ulong2long(a)		(*(long *)(&(a)))
+> -#define USHORT_CMP_GE(a, b)	(USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
+> -#define USHORT_CMP_LT(a, b)	(USHRT_MAX / 2 < (unsigned short)((a) - (b)))
+>  
+>  /* Exported common interfaces */
+>  void call_rcu(struct rcu_head *head, rcu_callback_t func);
+> -- 
+> 2.42.0
+> 
