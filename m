@@ -2,365 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1979D7D0FEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C237D0FF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 14:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377276AbjJTMwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 08:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
+        id S1377296AbjJTMzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 08:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377282AbjJTMwe (ORCPT
+        with ESMTP id S1377017AbjJTMzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 08:52:34 -0400
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE83D5B;
-        Fri, 20 Oct 2023 05:52:31 -0700 (PDT)
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6c7b3adbeb6so525575a34.0;
-        Fri, 20 Oct 2023 05:52:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697806351; x=1698411151;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xn9e38NL+2yw7cE8Hne2rqONLjHxjfyoCpZSa/4tQ4w=;
-        b=TYYXxwqyZlRA9ogTwZAcH5+M1HU0uNuFftUkmEQlZkcU2/r/mROe9G/RTDNyCKPpvF
-         S3vU87LOjuEDq1S72LDllZfvm0hnSlCNapRl/UmCid5tuILkpVSGHbdkCf3+pv+1iE1X
-         PeiAJ86pXSEJuZuddiKYejWjhC5qwvfeNLN/tTw+PiOCZD71cTyzMMIZPTZslWPiI0iR
-         eMnJ0BSa9CvzY0mBebiPU556rL4Tiny7uf670djpDdI3IuAGsI2r1AXLgeYn+Fr4fthX
-         Gp6CPpsKpr8EjTa8ahqUDpeKJLqiNxS9QY6DfzoJYcD1QnF6ngYhrDS2797WR+/jC3fE
-         VvIA==
-X-Gm-Message-State: AOJu0YzEW2hwb7ncjoNJ7eMsD78ylHaomZ3YjjeQqXZ5IJbrSgti+/t9
-        +AO2MZhy9mpbqPNurBjv6w==
-X-Google-Smtp-Source: AGHT+IFron30buBMuGXE9aKsFvb6BnHdDTlQ+OFGLIcRg4wTZiiSvINrW5JAcCDc1w70jnOFpuJgEw==
-X-Received: by 2002:a9d:63d9:0:b0:6c4:c026:a658 with SMTP id e25-20020a9d63d9000000b006c4c026a658mr1704794otl.26.1697806350742;
-        Fri, 20 Oct 2023 05:52:30 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id b15-20020a9d6b8f000000b006cd0aa45fb4sm306486otq.55.2023.10.20.05.52.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 05:52:30 -0700 (PDT)
-Received: (nullmailer pid 2930703 invoked by uid 1000);
-        Fri, 20 Oct 2023 12:52:28 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Joel Stanley <joel@jms.id.au>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Andrew Jeffery <andrew@codeconstruct.com.au>,
-        Inki Dae <inki.dae@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marek Vasut <marex@denx.de>, Stefan Agner <stefan@agner.ch>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH] drm: Use device_get_match_data()
-Date:   Fri, 20 Oct 2023 07:52:13 -0500
-Message-ID: <20231020125214.2930329-1-robh@kernel.org>
-X-Mailer: git-send-email 2.42.0
+        Fri, 20 Oct 2023 08:55:45 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCCD9F;
+        Fri, 20 Oct 2023 05:55:42 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4658B5C0B39;
+        Fri, 20 Oct 2023 08:55:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 20 Oct 2023 08:55:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1697806542; x=1697892942; bh=JrP4OJD8fPdXF4emMGv5dlwmzRtZ3Wzrsc0
+        lqDZ4fxU=; b=fIXxtgV/kZPOplIHH7rOYkaStqdvbWfyCNZ2Pq9eKNPJIJAA3WM
+        YYnSPETFaHL5eaonMI46L8cUFXutC6z2Y2sSmvIlI71mZnwHlgLxk1VNZTHZsk+Z
+        WzlNT+KOSg0O0roohmEuvULXrxRMSecSRj4WdJ1r4HNL4GI2jiihGBTZfDylsWRB
+        6xBf7HnoCpkbezwuYvltQPmqefvebxbyCNL+KTRi2sOgDj+ovWNIUJy7y5JXbEkW
+        O+CFOQgi4vfFvScP/Px01aWOAXahBmVskn8YGE8vzF+93e1onI6xDDlg41w7jm8m
+        xgWlQ+jBcqsMt9pgP8Mk+hendOuB8iTDOpA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1697806542; x=1697892942; bh=JrP4OJD8fPdXF4emMGv5dlwmzRtZ3Wzrsc0
+        lqDZ4fxU=; b=RSSgDYDCmxdp9hbtu7RwRfEA1fs8I26uGcleZ81ddoE3yWFfeHu
+        j6QEjBe/yTlVXlKOxcJ0UBkgtJ407pPwBEBEJdQeyOKh2b+AAGaCLWIsKDvWtwL/
+        DIQqYeZiku8aAhlzhU5doWEYa9LuoH8+B7QkPOXCIqnNghGyczTc1h1zU3ekI0j3
+        vuEKADyIJTVPept3qCZDO9tq52+oDHOtkCW0A5VDybD2lddMA5RSjDjMSmhJ0h7G
+        Xia+qKKC9LGOqkqACSmIgVSP8cXyI7vO4Yml9mmKBfnWvIpqLfZYOZ8qlwxri7ZS
+        8NOdP0dlhExxY1fRBE5z/+rukhenWCSFPpQ==
+X-ME-Sender: <xms:zXgyZXemfRB_G3f83C62sEOKagtd05pJBVSHhqZAqj5hwXllV931zQ>
+    <xme:zXgyZdPmuNi1dZnQqOkENkfTi8zv1MEyZNgPJiATTl-eRbBartGK0jKH9ZbMlwYn_
+    A9muW1OgIn4>
+X-ME-Received: <xmr:zXgyZQgyACIef1meG8ouP7-0RwaRYmArJHgMf_lwjKOnDzRB5WsY1w6S8Tksy_xwxHr3P0PNVxUixydjwLgmO5oWqigooRkpthJWs046WZ3k22W_-r2cGQm8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeekgdehiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthekredttdefjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    duueeugfffuedtvdevueekieeuuddtvdevueffkedtueetudegfeduueehueevvdenucff
+    ohhmrghinhepghhithhhuhgsrdgtohhmpdhtuhigsghoohhtrdgtohhmpdhlihhnrghroh
+    drohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pehrrghvvghnsehthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:zXgyZY_pS_sTwcDuX9lUfgr5ULDNIH36fktMY8i0B3l_jkFdozwxJg>
+    <xmx:zXgyZTuwQMFog_LAav6qNDvafQar9Y6PyK06hiSlB4abqByxwTr0pg>
+    <xmx:zXgyZXGnKogLAdJJlrXX_-D0vPyFdyQVvCmeuKIk44pIBytBXi0z0A>
+    <xmx:zngyZc_LxSLcRrUFzanMN6FHgHFvA1qyb4jlnsujhB1Wugq65MHwkg>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 20 Oct 2023 08:55:35 -0400 (EDT)
+Message-ID: <2fd96f3f-1325-9faa-1dfd-4208a1b062c5@themaw.net>
+Date:   Fri, 20 Oct 2023 20:55:32 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: autofs: add autofs_parse_fd()
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, linux-fsdevel@vger.kernel.org,
+        autofs@vger.kernel.org, Bill O'Donnell <bodonnel@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+References: <CA+G9fYt75r4i39DuB4E3y6jRLaLoSEHGbBcJy=AQZBQ2SmBbiQ@mail.gmail.com>
+ <71adfca4-4e80-4a93-b480-3031e26db409@app.fastmail.com>
+ <CA+G9fYtFqCX82L=oLvTpOQRWfz6CUKb79ybBncULkK2gK3aTrg@mail.gmail.com>
+ <6dde13bc-590d-483c-950c-4d8aeee98823@app.fastmail.com>
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <6dde13bc-590d-483c-950c-4d8aeee98823@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use preferred device_get_match_data() instead of of_match_device() to
-get the driver match data in a single step. With this, adjust the
-includes to explicitly include the correct headers. That also serves as
-preparation to remove implicit includes within the DT headers
-(of_device.h in particular).
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- drivers/gpu/drm/armada/armada_crtc.c    | 24 +++++++-----------------
- drivers/gpu/drm/aspeed/aspeed_gfx_drv.c | 10 ++++------
- drivers/gpu/drm/exynos/exynos_drm_gsc.c |  9 +++++----
- drivers/gpu/drm/imx/ipuv3/imx-ldb.c     |  9 ++++-----
- drivers/gpu/drm/mxsfb/mxsfb_drv.c       | 10 +++-------
- drivers/gpu/drm/omapdrm/dss/dispc.c     |  4 ++--
- drivers/gpu/drm/omapdrm/dss/dss.c       |  5 +++--
- 7 files changed, 28 insertions(+), 43 deletions(-)
+On 20/10/23 17:02, Arnd Bergmann wrote:
+> On Fri, Oct 20, 2023, at 09:48, Naresh Kamboju wrote:
+>> On Fri, 20 Oct 2023 at 12:07, Arnd Bergmann <arnd@arndb.de> wrote:
+>>> On Thu, Oct 19, 2023, at 17:27, Naresh Kamboju wrote:
+>>>> The qemu-x86_64 and x86_64 booting with 64bit kernel and 32bit rootfs we call
+>>>> it as compat mode boot testing. Recently it started to failed to get login
+>>>> prompt.
+>>>>
+>>>> We have not seen any kernel crash logs.
+>>>>
+>>>> Anders, bisection is pointing to first bad commit,
+>>>> 546694b8f658 autofs: add autofs_parse_fd()
+>>>>
+>>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>>> Reported-by: Anders Roxell <anders.roxell@linaro.org>
+>>> I tried to find something in that commit that would be different
+>>> in compat mode, but don't see anything at all -- this appears
+>>> to be just a simple refactoring of the code, unlike the commits
+>>> that immediately follow it and that do change the mount
+>>> interface.
+>>>
+>>> Unfortunately this makes it impossible to just revert the commit
+>>> on top of linux-next. Can you double-check your bisection by
+>>> testing 546694b8f658 and the commit before it again?
+>> I will try your suggested ways.
+>>
+>> Is this information helpful ?
+>> Linux-next the regression started happening from next-20230925.
+>>
+>> GOOD: next-20230925
+>> BAD: next-20230926
+>>
+>> $ git log --oneline next-20230925..next-20230926 -- fs/autofs/
+>> dede367149c4 autofs: fix protocol sub version setting
+>> e6ec453bd0f0 autofs: convert autofs to use the new mount api
+>> 1f50012d9c63 autofs: validate protocol version
+>> 9b2731666d1d autofs: refactor parse_options()
+>> 7efd93ea790e autofs: reformat 0pt enum declaration
+>> a7467430b4de autofs: refactor super block info init
+>> 546694b8f658 autofs: add autofs_parse_fd()
+>> bc69fdde0ae1 autofs: refactor autofs_prepare_pipe()
+> Right, and it looks like the bottom five patches of this
+> should be fairly harmless as they only try to move code
+> around in preparation of the later changes, and even the
+> other ones should not cause any difference between a 32-bit
+> or a 64-bit /sbin/mount binary.
+>
+> If the native (full 64-bit or full 32-bit) test run still
+> works with the same version, there may be some other difference
+> here.
+>
+>>> What are the exact mount options you pass to autofs in your fstab?
+>> mount output shows like this,
+>> systemd-1 on /proc/sys/fs/binfmt_misc type autofs
+>> (rw,relatime,fd=30,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=1421)
+> This is only the binfmt-misc mount, which should not
+> prevent your rootfs from getting mounted, but it's possible
+> that failure to mount this prevents you from running
+> 32-bit binaries.
+>
+> I see this comes from the "proc-sys-fs-binfmt_misc.automount"
+> service in systemd.  I see this is defined in
+> https://github.com/systemd/systemd/blob/main/units/proc-sys-fs-binfmt_misc.automount
+> but I don't know exactly what its purpose is here. On a
+> 64-bit system, you normally use compat_binfmt_elf.ko to run
+> 32-bit binaries, and this does not require any specific mount
+> points. Alternatively, you could use binfmt_misc.ko with
+> the procfs mount to configure running arbitrary binary
+> formats such as arm32 on x86_64 with qemu-user emulation.
+>
+> I double-checked your rootfs image from
+> https://storage.tuxboot.com/debian/bookworm/i386/rootfs.ext4.xz
+> to ensure that this indeed contains i386 executables rather than
+> arm32 ones, and that is all fine.
+>
+> I also see in your log file at
+> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230926/testrun/20125035/suite/boot/test/gcc-13-lkftconfig-compat/log
+> that it is running the i386 binaries from the rootfs, but
+> it does get stuck soon after trying to set up the binfmt-misc
+> mount at the end of the log:
+>
+> [[0;32m  OK  [0m] Reached target [0;1;39mlocal-fs.target[0m - Local File Systems.
+>           Starting [0;1;39msystemd-binfmt.seâ€¦et Up Additional Binary Formats...
+>           Starting [0;1;39msystemd-tmpfiles-â€¦ Volatile Files and Directories...
+>           Starting [0;1;39msystemd-udevd.serâ€¦ger for Device Events and Files...
+> [   15.869404] igb 0000:01:00.0 eno1: renamed from eth0 (while UP)
+> [   15.883753] igb 0000:02:00.0 eno2: renamed from eth1
+> [   20.053885] (udev-worker) (175) used greatest stack depth: 12416 bytes left
+> quit
 
-diff --git a/drivers/gpu/drm/armada/armada_crtc.c b/drivers/gpu/drm/armada/armada_crtc.c
-index 15dd667aa2e7..f2886e6f631b 100644
---- a/drivers/gpu/drm/armada/armada_crtc.c
-+++ b/drivers/gpu/drm/armada/armada_crtc.c
-@@ -7,8 +7,9 @@
- #include <linux/clk.h>
- #include <linux/component.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- 
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
-@@ -1012,26 +1013,17 @@ armada_lcd_bind(struct device *dev, struct device *master, void *data)
- 	int irq = platform_get_irq(pdev, 0);
- 	const struct armada_variant *variant;
- 	struct device_node *port = NULL;
-+	struct device_node *np, *parent = dev->of_node;
- 
- 	if (irq < 0)
- 		return irq;
- 
--	if (!dev->of_node) {
--		const struct platform_device_id *id;
- 
--		id = platform_get_device_id(pdev);
--		if (!id)
--			return -ENXIO;
--
--		variant = (const struct armada_variant *)id->driver_data;
--	} else {
--		const struct of_device_id *match;
--		struct device_node *np, *parent = dev->of_node;
--
--		match = of_match_device(dev->driver->of_match_table, dev);
--		if (!match)
--			return -ENXIO;
-+	variant = device_get_match_data(dev);
-+	if (!variant)
-+		return -ENXIO;
- 
-+	if (parent) {
- 		np = of_get_child_by_name(parent, "ports");
- 		if (np)
- 			parent = np;
-@@ -1041,8 +1033,6 @@ armada_lcd_bind(struct device *dev, struct device *master, void *data)
- 			dev_err(dev, "no port node found in %pOF\n", parent);
- 			return -ENXIO;
- 		}
--
--		variant = match->data;
- 	}
- 
- 	return armada_drm_crtc_create(drm, dev, res, irq, variant, port);
-diff --git a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-index 78122b35a0cb..a7a6b70220eb 100644
---- a/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-+++ b/drivers/gpu/drm/aspeed/aspeed_gfx_drv.c
-@@ -6,10 +6,10 @@
- #include <linux/irq.h>
- #include <linux/mfd/syscon.h>
- #include <linux/module.h>
--#include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/of_reserved_mem.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
- 
-@@ -143,7 +143,6 @@ static int aspeed_gfx_load(struct drm_device *drm)
- 	struct aspeed_gfx *priv = to_aspeed_gfx(drm);
- 	struct device_node *np = pdev->dev.of_node;
- 	const struct aspeed_gfx_config *config;
--	const struct of_device_id *match;
- 	struct resource *res;
- 	int ret;
- 
-@@ -152,10 +151,9 @@ static int aspeed_gfx_load(struct drm_device *drm)
- 	if (IS_ERR(priv->base))
- 		return PTR_ERR(priv->base);
- 
--	match = of_match_device(aspeed_gfx_match, &pdev->dev);
--	if (!match)
-+	config = device_get_match_data(&pdev->dev);
-+	if (!config)
- 		return -EINVAL;
--	config = match->data;
- 
- 	priv->dac_reg = config->dac_reg;
- 	priv->int_clr_reg = config->int_clear_reg;
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_gsc.c b/drivers/gpu/drm/exynos/exynos_drm_gsc.c
-index 34cdabc30b4f..35771fb4e85d 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_gsc.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_gsc.c
-@@ -11,9 +11,10 @@
- #include <linux/component.h>
- #include <linux/kernel.h>
- #include <linux/mfd/syscon.h>
--#include <linux/of_device.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/property.h>
- #include <linux/regmap.h>
- 
- #include <drm/drm_fourcc.h>
-@@ -103,7 +104,7 @@ struct gsc_context {
- 	unsigned int			num_formats;
- 
- 	void __iomem	*regs;
--	const char	**clk_names;
-+	const char	*const *clk_names;
- 	struct clk	*clocks[GSC_MAX_CLOCKS];
- 	int		num_clocks;
- 	struct gsc_scaler	sc;
-@@ -1217,7 +1218,7 @@ static const unsigned int gsc_tiled_formats[] = {
- static int gsc_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct gsc_driverdata *driver_data;
-+	const struct gsc_driverdata *driver_data;
- 	struct exynos_drm_ipp_formats *formats;
- 	struct gsc_context *ctx;
- 	int num_formats, ret, i, j;
-@@ -1226,7 +1227,7 @@ static int gsc_probe(struct platform_device *pdev)
- 	if (!ctx)
- 		return -ENOMEM;
- 
--	driver_data = (struct gsc_driverdata *)of_device_get_match_data(dev);
-+	driver_data = device_get_match_data(dev);
- 	ctx->dev = dev;
- 	ctx->num_clocks = driver_data->num_clocks;
- 	ctx->clk_names = driver_data->clk_names;
-diff --git a/drivers/gpu/drm/imx/ipuv3/imx-ldb.c b/drivers/gpu/drm/imx/ipuv3/imx-ldb.c
-index 989eca32d325..53840ab054c7 100644
---- a/drivers/gpu/drm/imx/ipuv3/imx-ldb.c
-+++ b/drivers/gpu/drm/imx/ipuv3/imx-ldb.c
-@@ -12,8 +12,10 @@
- #include <linux/mfd/syscon.h>
- #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/regmap.h>
- #include <linux/videodev2.h>
- 
-@@ -617,7 +619,6 @@ static int imx_ldb_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct device_node *np = dev->of_node;
--	const struct of_device_id *of_id = of_match_device(imx_ldb_dt_ids, dev);
- 	struct device_node *child;
- 	struct imx_ldb *imx_ldb;
- 	int dual;
-@@ -638,9 +639,7 @@ static int imx_ldb_probe(struct platform_device *pdev)
- 	regmap_write(imx_ldb->regmap, IOMUXC_GPR2, 0);
- 
- 	imx_ldb->dev = dev;
--
--	if (of_id)
--		imx_ldb->lvds_mux = of_id->data;
-+	imx_ldb->lvds_mux = device_get_match_data(dev);
- 
- 	dual = of_property_read_bool(np, "fsl,dual-channel");
- 	if (dual)
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-index 625c1bfc4173..b483ef48216a 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-@@ -11,9 +11,10 @@
- #include <linux/clk.h>
- #include <linux/dma-mapping.h>
- #include <linux/io.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/pm_runtime.h>
- 
- #include <drm/drm_atomic_helper.h>
-@@ -346,18 +347,13 @@ MODULE_DEVICE_TABLE(of, mxsfb_dt_ids);
- static int mxsfb_probe(struct platform_device *pdev)
- {
- 	struct drm_device *drm;
--	const struct of_device_id *of_id =
--			of_match_device(mxsfb_dt_ids, &pdev->dev);
- 	int ret;
- 
--	if (!pdev->dev.of_node)
--		return -ENODEV;
--
- 	drm = drm_dev_alloc(&mxsfb_driver, &pdev->dev);
- 	if (IS_ERR(drm))
- 		return PTR_ERR(drm);
- 
--	ret = mxsfb_load(drm, of_id->data);
-+	ret = mxsfb_load(drm, device_get_match_data(&pdev->dev));
- 	if (ret)
- 		goto err_free;
- 
-diff --git a/drivers/gpu/drm/omapdrm/dss/dispc.c b/drivers/gpu/drm/omapdrm/dss/dispc.c
-index c26aab4939fa..993691b3cc7e 100644
---- a/drivers/gpu/drm/omapdrm/dss/dispc.c
-+++ b/drivers/gpu/drm/omapdrm/dss/dispc.c
-@@ -22,11 +22,11 @@
- #include <linux/hardirq.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/property.h>
- #include <linux/sizes.h>
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/component.h>
- #include <linux/sys_soc.h>
- #include <drm/drm_fourcc.h>
-@@ -4765,7 +4765,7 @@ static int dispc_bind(struct device *dev, struct device *master, void *data)
- 	if (soc)
- 		dispc->feat = soc->data;
- 	else
--		dispc->feat = of_match_device(dispc_of_match, &pdev->dev)->data;
-+		dispc->feat = device_get_match_data(&pdev->dev);
- 
- 	r = dispc_errata_i734_wa_init(dispc);
- 	if (r)
-diff --git a/drivers/gpu/drm/omapdrm/dss/dss.c b/drivers/gpu/drm/omapdrm/dss/dss.c
-index 02955f976845..988888e164d7 100644
---- a/drivers/gpu/drm/omapdrm/dss/dss.c
-+++ b/drivers/gpu/drm/omapdrm/dss/dss.c
-@@ -22,12 +22,13 @@
- #include <linux/pinctrl/consumer.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/property.h>
- #include <linux/gfp.h>
- #include <linux/sizes.h>
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/of_platform.h>
- #include <linux/of_graph.h>
- #include <linux/regulator/consumer.h>
- #include <linux/suspend.h>
-@@ -1445,7 +1446,7 @@ static int dss_probe(struct platform_device *pdev)
- 	if (soc)
- 		dss->feat = soc->data;
- 	else
--		dss->feat = of_match_device(dss_of_match, &pdev->dev)->data;
-+		dss->feat = device_get_match_data(&pdev->dev);
- 
- 	/* Map I/O registers, get and setup clocks. */
- 	dss->base = devm_platform_ioremap_resource(pdev, 0);
--- 
-2.42.0
+Were there any console log messages at the time the problem occurred?
 
+
+>
+> I'm a bit out of ideas at that point, my best guess now is
+> that your bisection points to something in autofs that makes
+> it hang while setting up autofs, but that neither autofs
+> nor binfmt-misc are actually being used otherwise.
+>
+> Maybe you can try to modify your rootfs to disable or remove
+> the systemd-binfmt.service, to confirm that autofs is not
+> actually needed here but does cause the crash?
+>
+>       Arnd
