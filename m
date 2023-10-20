@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ED97D05D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623FC7D05DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 02:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346788AbjJTAhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 19 Oct 2023 20:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
+        id S1346787AbjJTAiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 19 Oct 2023 20:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346721AbjJTAhl (ORCPT
+        with ESMTP id S235577AbjJTAiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 19 Oct 2023 20:37:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FDBA3
-        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697762259; x=1729298259;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=U5Og3gFNFr48uYUyi8zgfbrV3Xvg5s1tnliY0dXezHM=;
-  b=lfK18NYChQg1S7AAtlvN8aMra3GJTsGzGibe2F/KOblOfOYCqdL4w0Ic
-   6smS33NWDh85o2Qf7L9b+MMeRbjeRmUhiPsqsYF9Di8InAcvPBjfq528Z
-   VdraO/Ll99u7WjG8v92VkTBaMMFTuE82Ashemvq8wjc/h1WMzo+1OVpGD
-   //+Svc7PD/Fx5luzlocT4Rrf7ro9R2IuCy0isSBR+ascYOtVlf++FIelo
-   6c/QxpLsbhqlKYM/V0hDiLLAjhfF/GuFJOFJ4DA21ulq71sK46TANWXim
-   tg7mrEUhCOeoL7k04kZd2mzszIPQW0WgC1/wM1oH9mckkCAlWDM7Js7xJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="385279692"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="385279692"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2023 17:37:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10868"; a="733784111"
-X-IronPort-AV: E=Sophos;i="6.03,238,1694761200"; 
-   d="scan'208";a="733784111"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 19 Oct 2023 17:37:37 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtdWB-0002mU-0J;
-        Fri, 20 Oct 2023 00:37:35 +0000
-Date:   Fri, 20 Oct 2023 08:37:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:mmap_sem.2023.10.18a 18/31]
- kernel/locking/qspinlock.c:741:23: warning: no previous declaration for
- '__pv_spinlock_dump'
-Message-ID: <202310200814.xePmkBus-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 19 Oct 2023 20:38:17 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9ACA3
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:38:14 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6b1cec068a9so307467b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 17:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1697762294; x=1698367094; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=H40udxrnn6fdY9pib9PfDMy1TSaBomffUjfkk2BSewI=;
+        b=uCkYPNl3tvavX87RL4G0bB5+gAcFj9MtCSa/4E50M+RmSxxDvlzuvn5GQgd7Ai1tfh
+         olkBliyoBcguL9K3jiTy4D2iqi+hTyoDdV0TRfkOWju/HM31p9/eDQ+x8y8pCFv0ZevS
+         TQPbm5v1KZuxeu5y5Nd+58oHbFDP3Q7pHJeNGZZRpfKEy4a6GobeuXm9F9ZU6775QiQD
+         4//A+KJo8TvRdo/QR/BJawvRKOEnCsWKsBGKoJR11KFOmDn3e/bChcwUawIfGIxEoJ0o
+         ljeKsbFOYyiVpWXiobNuOgt7C741Mwi2mx/FjUqoWNTK0f8+5vT9NtUJmC2P9s7JD09N
+         Pa1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697762294; x=1698367094;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H40udxrnn6fdY9pib9PfDMy1TSaBomffUjfkk2BSewI=;
+        b=lnPlkgrw1qc7nds8Ye7itfgv9NtyAo8hN34zvKHrHN1pNqdDbE+TAuV+yrgSgm3bjI
+         pUBf+Z/CUg+zLg3gch/rIzy2U0Soe00zf74kSVWl5ozAj4MWwnnXbytkCrVZyI2GcrRI
+         Tty1VOvsS6XzYnL+BQ30ob3X7C0GjSOp/4SUaynQ72UjEEKawABrL+P6hXkNghER0DmV
+         8wmlnV0n+aKABbJB6AiyYfx4Rij2lW1zOx4SR91/KhnAG+YWteq1aSt2LThSf1RDpnEg
+         xMf3uYpBS2z+oPPRqSr9C2GPmhLDLOyGo7OQNch+fZpnMPmpAdbbE/XmIZNWet10qld2
+         zXEQ==
+X-Gm-Message-State: AOJu0YwcgXy3OrZ6IUd6kaFpeDGJg8H53IZwtHijrRDU74b7I5TO5pBw
+        tSolVyl4QGQmgU/SIvG3SJNfb/7pTwg=
+X-Google-Smtp-Source: AGHT+IELL9viuq8UdFZWvwSbupP45GkAT2WZYjJlTmGqxOPsDTd4Blod3iQrgTe1E56Y3r+imx7ll3zjC1c=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:bc6:b0:6b5:a01f:f7fb with SMTP id
+ x6-20020a056a000bc600b006b5a01ff7fbmr7196pfu.6.1697762294368; Thu, 19 Oct
+ 2023 17:38:14 -0700 (PDT)
+Date:   Thu, 19 Oct 2023 17:38:12 -0700
+In-Reply-To: <47c8a177d81762e0561fc47cc274076de901edbf.1696926843.git.isaku.yamahata@intel.com>
+Mime-Version: 1.0
+References: <cover.1696926843.git.isaku.yamahata@intel.com> <47c8a177d81762e0561fc47cc274076de901edbf.1696926843.git.isaku.yamahata@intel.com>
+Message-ID: <ZTHL9NQ87LNdB8qk@google.com>
+Subject: Re: [PATCH 09/12] KVM: X86: Add debugfs to inject machine check on VM exit
+From:   Sean Christopherson <seanjc@google.com>
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-coco@lists.linux.dev, Chao Peng <chao.p.peng@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git mmap_sem.2023.10.18a
-head:   4015256f2bc734d4175381762282784597f41cfa
-commit: 851f9c70733ed644c8a03d8f93f9876942181bee [18/31] EXP qspinlock: Add spinlock_dump() to dump lock state
-config: x86_64-randconfig-016-20231020 (https://download.01.org/0day-ci/archive/20231020/202310200814.xePmkBus-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231020/202310200814.xePmkBus-lkp@intel.com/reproduce)
+On Tue, Oct 10, 2023, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> The KVM/x86 handles machine-check in the guest specially.  It sets up the
+> guest so that vcpu exits from running guests, checks the exit reason and,
+> manually raises the machine check by calling do_machine_check().
+> 
+> To test the KVM machine check execution path, KVM wants to inject the
+> machine check in the context of vcpu instead of the context of the process
+> of MCE injection.  Wire up the MCE injection framework for KVM to trigger
+> MCE in the vcpu context.  Add a kvm vcpu debugfs entry for an operator to
+> tell KVM to inject MCE.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310200814.xePmkBus-lkp@intel.com/
+But this isn't "injecting" a #MC, it's just having KVM call do_machine_check()
+before enabling IRQs after a VM-Exit.  I don't see how that is interesting enough
+to warrant a dedicated knob and code in KVM's run loop.
 
-All warnings (new ones prefixed by >>):
-
->> kernel/locking/qspinlock.c:741:23: warning: no previous declaration for '__pv_spinlock_dump' [-Wmissing-declarations]
-    #define spinlock_dump __pv_spinlock_dump
-                          ^
-   kernel/locking/qspinlock.c:691:6: note: in expansion of macro 'spinlock_dump'
-    void spinlock_dump(spinlock_t *sp, bool full)
-         ^~~~~~~~~~~~~
-
-
-vim +/__pv_spinlock_dump +741 kernel/locking/qspinlock.c
-
-   737	
-   738	#undef  queued_spin_lock_slowpath
-   739	#define queued_spin_lock_slowpath	__pv_queued_spin_lock_slowpath
-   740	#define queued_spin_lock_slowpath_diags	__pv_queued_spin_lock_slowpath_diags
- > 741	#define spinlock_dump	__pv_spinlock_dump
-   742	#define tail_to_cpu	__pv_tail_to_cpu
-   743	#define tail_to_idx	__pv_tail_to_idx
-   744	#define next_to_prev	__pv_next_to_prev
-   745	#define next_to_cpu_idx	__pv_next_to_cpu_idx
-   746	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> @@ -10814,6 +10823,11 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  		fpu_sync_guest_vmexit_xfd_state();
+>  
+>  	static_call(kvm_x86_handle_exit_irqoff)(vcpu);
+> +	if (unlikely(req_mce_inject)) {
+> +		mce_call_atomic_injector_chain(smp_processor_id());
+> +		kvm_machine_check();
+> +		mce_inject_unlock();
+> +	}
+>  
+>  	if (vcpu->arch.guest_fpu.xfd_err)
+>  		wrmsrl(MSR_IA32_XFD_ERR, 0);
+> -- 
+> 2.25.1
+> 
