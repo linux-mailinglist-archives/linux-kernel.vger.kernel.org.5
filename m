@@ -2,226 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B617D18D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 00:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403157D18EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 00:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbjJTWFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 18:05:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
+        id S230378AbjJTWHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 18:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjJTWFb (ORCPT
+        with ESMTP id S230021AbjJTWHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 18:05:31 -0400
-Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E5A2D5A;
-        Fri, 20 Oct 2023 15:05:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1697839530; x=1729375530;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=UrG7wAJTNfPv/EmdWc9yPkjGkJXDdRrLhNkNloKxEks=;
-  b=KY+TWkPwLvC74ni7NxYw+22trriSyMToT82yQojM4/7BbbjluElCN6tk
-   mERzXTx9L74Td6tj+eSbzqLNWpuNNP4nV+bns7RLyRxP4cMOYZ65FBlzQ
-   boiVWjkAsiOD7FMCy83rNKhCqvO8denCg9Qp9Ywmq54xqm9bFnhFGxmdI
-   g=;
-X-IronPort-AV: E=Sophos;i="6.03,239,1694736000"; 
-   d="scan'208";a="247031581"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-e651a362.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 22:05:26 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
-        by email-inbound-relay-iad-1d-m6i4x-e651a362.us-east-1.amazon.com (Postfix) with ESMTPS id 0409083EBB;
-        Fri, 20 Oct 2023 22:05:22 +0000 (UTC)
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.38.20:28453]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.2.182:2525] with esmtp (Farcaster)
- id f2e074f0-09d5-4b31-bdff-5b7c3ef7aa84; Fri, 20 Oct 2023 22:05:21 +0000 (UTC)
-X-Farcaster-Flow-ID: f2e074f0-09d5-4b31-bdff-5b7c3ef7aa84
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Fri, 20 Oct 2023 22:05:21 +0000
-Received: from 88665a182662.ant.amazon.com (10.142.223.91) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.39;
- Fri, 20 Oct 2023 22:05:19 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     <ivan@cloudflare.com>
-CC:     <edumazet@google.com>, <kernel-team@cloudflare.com>,
-        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <pabeni@redhat.com>, <kuniyu@amazon.com>
-Subject: Re: wait_for_unix_gc can cause CPU overload for well behaved programs
-Date:   Fri, 20 Oct 2023 15:05:11 -0700
-Message-ID: <20231020220511.45854-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CABWYdi1kiu1g1mAq6DpQWczg78tMzaVFnytNMemZATFHqYSqYw@mail.gmail.com>
-References: <CABWYdi1kiu1g1mAq6DpQWczg78tMzaVFnytNMemZATFHqYSqYw@mail.gmail.com>
+        Fri, 20 Oct 2023 18:07:09 -0400
+Received: from sonic315-27.consmr.mail.ne1.yahoo.com (sonic315-27.consmr.mail.ne1.yahoo.com [66.163.190.153])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44410D5A
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 15:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1697839624; bh=0ziqnC6GtzppY59+9/AQV5xoPS6hUBAE5tIKAAtv07A=; h=Date:Subject:To:References:From:In-Reply-To:From:Subject:Reply-To; b=WxUl7WlF4yZKsC600cW2yjh3Lmn9uAVCLv2BZa9S1lt+vtHHkcxbfPS6yNZNvw6bQoka/VUDbjpLcCVOKLVY3P56s6v0PWUAe6nfjyVv6rcybsfX6Dcot8QzGj4FzWEExYa3mVe3twhxW6AVNcs9J26rFOYXQRE/1aV9vg3vnqB9+gtADmKqXd5J3lgWL2w5ef3v7oVITLsVJtGBTWc5L+sMoavT32+5fKhCa0p3mWL2jljkmAgRbfGvx8A8FpKKK9FJUwpTVKSL/HfVi3giko+d2W5/okd7xsJumpsoH7UegrH8ktywlp4d1bRHH6eNlLt1uOSNNvz2Txd+oXY5YQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1697839624; bh=oQqhBinfNM6VlQ1VEno3Uml3fC6K79cvhV4wwFgAV33=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=VvSPdmLyeEoH8RUfpG/6fKY9ooE7mZ8VW4c/d/yPuYXzpjBYvh5uNXebA6lSDbNIMSRNlaXCRVdK4gFCKRChSGnn9MAwbO1a8duksk8UwhJZ/y+DbPPAdB5l57HXooeug+KbKIlkRFF3gN+mRdnr6yhP3sz6hTaczu56IHwEYDGOmQ5bkk6SzC1PxhXEoiLLXuDw2AR4bZ3WiAExDtGDXatf5jCvUoDueOXk9QsfDa1BIIDahwWBN2HipMkxXbyeQwkw2tOFbTZpD+s6AQkhPmX/DPZEqcucjZt51DxRHZnPY6kgc8A4QeVt1Kcff1ZBDpiU5MlAqaYSutsntUvGfg==
+X-YMail-OSG: qCqCNKcVM1l75hTPi4rL5OfOmLoSxq00dd2rSya8UJeuCuhnF1ZAxUohwWAtzf6
+ o5PanJiy99GbuRx4KoRADpJL.6uzKRfF8esAs2ANW9vKCbedf8dz_XBWeE_qi87SbnRrhfA5e.QU
+ NAjoeF9oRVljHBGqXqWBPKY7q5ptY8oWHxQPdA9P1qrI4RaDv7ZN_XyrGAKp5ZdLS7_A0EMZGtwd
+ .rb6qUz5JJZ9k1vnDLW0KfHS1ROyLcF_u7MeCVp2vTM5TqwvVy51yIuwCKlhzD0t3UqTi0PyknWX
+ wASgFKHliKCObBEUvEG80NoSluWbvKryxhmZ2mRIFcpadZiJ4Q0i47EFWisy.iJqnh2E84BqioCY
+ XE4o639ryX89RTJ_4JhTMsu3UYn7KEGFxwzsE0W70iBaBPhSwNZPx_HFVLrtO4jDrYCroj4qDxNg
+ FKV5BeoV.jtvXjAlCpj5.LtAUPEcVeC8B8sQ65vIOl9Mv1pznWPe2r0kTU1Ci3TUaXMXDlxTXwCZ
+ YBlY9VO9TuZ6ArYUT3qtiOnaRa_Q9HPA9rDHaykVmzmx38KN4bF_j2smQtXGRBaEYnBfBkym6U3F
+ rfVqgb6tfklNlvpAM3278_IvsmLBIf4yLie0r4eGOHkoUIIg1ZL.5Cfr.9Rf2i5BXxb7JUBrlZNo
+ RUqdmb2UhfFXkWtgPVWZ9u2NMM3cUIoBvQnKUAcRNDy57UqmjSoioJu1E83KMiA.3i1SfzVlJ9_I
+ 2ykjhdvENQ.8PqgIFsNYqSTd.32tXLx.zFwCPOPYZfnADC8tYNAT45YXwlozcUmXg1G3aAdvW5Gz
+ uyniidVXGZXwHd.vYTgwOzQjHRDJTTbPteXKuwQmLCjAaRqLBg6ouccGU65UCuyE0_3Kg1JPBtlh
+ RBpnQUsYW0bsIbHVAl2yDfR2s6XVPazH4AKGnAJf.6vnJ0MlqPJQA2Yrh97iA_qpFqbhB4jYtQF6
+ Z1PL2sIde5nsJfZRy56dqn_yd321cNzeoFiiMwuB5jXWsDlVaBGQow0zLVb0WKKbJsI8APMr4DdT
+ 8GNWf5UoLHLva7mCVYv0xpID5DUdpf0HrFbFFiqwjrkspAbnHv8SbkO2YIgn2NM_Tp3jyN3ubhnz
+ _lnaPByZkgeMVqO6XI4QAoZAKHRENx5hixyS3ENMG_2b.OfKB89vGbwnR_gPG6NdXP.NGa72gqFg
+ ci_pV9h_9NuVbWDBAdHtLjvQW6wVjmhbP4KIkEamaO_6aPEKgskpFAV51ooNWYxtAlLAC6NStl4R
+ IXO_5mbWf0FlNa.zgVBaBRT6InCbFs7ad9hqUJCyA22MLpw8NZC1xeoVplN7PVZGY8nre_BQYZBe
+ m_6Ld8_RiiTEbVzNMqIUcoAfHL7O0lKfFx3121P0nrv9dKYNjbD0ZhCN5NKWstGpKvRtxI.2uVKW
+ GbjnlPBaAbxt248FtxE.wE.HbVjdvgxnI.TBZKXxGWt0xbK7RtkFKnYSXs1aGzk3CTacbjxCfMSf
+ Oir68lcnheeoyGDAI261XpckB7ctpqsKrnGTouvJ8X9pAzcG040A0Md.saoNWPq99_knrgimYGFn
+ 9dj_MvJz4i08Pl6riy7skjaz3Y.e35ijw0UQ0v6EybzAapupDMAhDEuad8cz4C6ArYliGg300LAJ
+ e2QpbcJVDhRh4XGFJgZ.Swsjwu_HZfIqienB8CROOSziUx5tE6gPzKDMp5hr8erhn2JKii9L_yMp
+ ukHVc7bK8ZkV.NiUJraDniBZ9uz7vcW0fm6HV4SgaJKJR9W5m5UclFgzJDbm3znZGw8_UxYol5Qt
+ 6bNJD_nj6xsijUvtb9nnapGNNM_DcM58yTaDBL2Kophgnv_HDtTiEVIvmO_4VcN8Pgkzh2blYpfZ
+ Kc1dy0iqlktjnS.btekvkCrkWJoY9BLXTLnuf2xcDVmSno4XUAQ.NXUf24pI0NEj_ieJLjM7I1DT
+ JW6p8ngMKAvQD31UYowPvF.JNBSnxXSJmPV.tzbbSOLA41tKVF2MJkiL.wxNw6SzhLUNr7aBtzvn
+ m2x8s3lxXVtsDz7S8X64BnmxqTK1TG_UEJyTzx4FWSdWlhmCWhjfOMBhkR6nLtkuUaMHVdwXzaCr
+ N.w1FHciMr_cTvTBtqQsHPx8drEoCcObLAs00pSuBaBFj2lZszjbfg0wBjiU5eEwzAE27aCje_j8
+ MIYWMwxYCCZKC0m2fcbT1nvvuPtcjQdq8idMXPsCCAp5k5Xp7SA0Sc_QF7QO6jF8EMPL7S_1.CGw
+ 7Iv13vBaJmCLAPeDJFjhkc4YvAu54SRY09OBizuiY_bL1tIFXEUcFEGPcg0EgQ3fL_jwrKOYcBtK
+ vt.rqQao8eA--
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: cb3359e9-1952-4f3d-9dbe-04a415f4cd58
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Fri, 20 Oct 2023 22:07:04 +0000
+Received: by hermes--production-ne1-68668bc7f7-bm5xs (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 8af551ea7d173eec0b0ab5b18ea32b26;
+          Fri, 20 Oct 2023 22:07:03 +0000 (UTC)
+Message-ID: <499aa925-f1fc-43de-ad5c-2fab28fb38e7@schaufler-ca.com>
+Date:   Fri, 20 Oct 2023 15:07:01 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.142.223.91]
-X-ClientProxiedBy: EX19D037UWC002.ant.amazon.com (10.13.139.250) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/4] vduse: validate block features only with block
+ devices
+Content-Language: en-US
+To:     Maxime Coquelin <maxime.coquelin@redhat.com>, mst@redhat.com,
+        jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        xieyongji@bytedance.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        david.marchand@redhat.com, lulu@redhat.com,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20231020155819.24000-1-maxime.coquelin@redhat.com>
+ <20231020155819.24000-2-maxime.coquelin@redhat.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20231020155819.24000-2-maxime.coquelin@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21797 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ivan Babrou <ivan@cloudflare.com>
-Date: Thu, 19 Oct 2023 15:35:01 -0700
-> Hello,
-> 
-> We have observed this issue twice (2019 and 2023): a well behaved
-> service that doesn't pass any file descriptors around starts to spend
-> a ton of CPU time in wait_for_unix_gc.
-> 
-> The cause of this is that the unix send path unconditionally calls
-> wait_for_unix_gc, which is a global garbage collection. If any
-> misbehaved program exists on a system, it can force extra work for
-> well behaved programs.
-> 
-> This behavior is not new: 9915672d4127 ("af_unix: limit
-> unix_tot_inflight") is from 2010.
-> 
-> I managed to come up with a repro for this behavior:
-> 
-> * https://gist.github.com/bobrik/82e5722261920c9f23d9402b88a0bb27
-> 
-> It also includes a flamegraph illustrating the issue. It's all in one
-> program for convenience, but in reality the offender not picking up
-> SCM_RIGHTS messages and the suffering program just minding its own
-> business are separate.
-> 
-> It is also non-trivial to find the offender when this happens as it
-> can be completely idle while wrecking havoc for the rest of the
-> system.
-> 
-> I don't think it's fair to penalize every unix_stream_sendmsg like
-> this. The 16k threshold also doesn't feel very flexible, surely
-> computers are bigger these days and can handle more.
+On 10/20/2023 8:58 AM, Maxime Coquelin wrote:
+> This patch is preliminary work to enable network device
+> type support to VDUSE.
+>
+> As VIRTIO_BLK_F_CONFIG_WCE shares the same value as
+> VIRTIO_NET_F_HOST_TSO4, we need to restrict its check
+> to Virtio-blk device type.
+>
+> Acked-by: Jason Wang <jasowang@redhat.com>
+> Reviewed-by: Xie Yongji <xieyongji@bytedance.com>
+> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
+> ---
+>  drivers/vdpa/vdpa_user/vduse_dev.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
+> index df7869537ef1..5b3879976b3d 100644
+> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> @@ -1662,13 +1662,14 @@ static bool device_is_allowed(u32 device_id)
+>  	return false;
+>  }
+>  
+> -static bool features_is_valid(u64 features)
+> +static bool features_is_valid(struct vduse_dev_config *config)
 
-Probably we could do the gc async and enforce the penalty only on
-the offender by checking user->unix_inflight.
+This should either be features_are_valid() or feature_is_valid().
+Correct pluralization is important in the English language.
 
-compile test only:
-
----8<---
-diff --git a/include/net/af_unix.h b/include/net/af_unix.h
-index 824c258143a3..a119f37953cc 100644
---- a/include/net/af_unix.h
-+++ b/include/net/af_unix.h
-@@ -12,8 +12,9 @@ void unix_inflight(struct user_struct *user, struct file *fp);
- void unix_notinflight(struct user_struct *user, struct file *fp);
- void unix_destruct_scm(struct sk_buff *skb);
- void io_uring_destruct_scm(struct sk_buff *skb);
--void unix_gc(void);
- void wait_for_unix_gc(void);
-+void unix_gc_start(void);
-+void unix_gc_stop(void);
- struct sock *unix_get_socket(struct file *filp);
- struct sock *unix_peer_get(struct sock *sk);
- 
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 3e8a04a13668..56db096b13f1 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -681,7 +681,7 @@ static void unix_release_sock(struct sock *sk, int embrion)
- 	 */
- 
- 	if (READ_ONCE(unix_tot_inflight))
--		unix_gc();		/* Garbage collect fds */
-+		unix_gc_start(); /* Garbage collect fds */
- }
- 
- static void init_peercred(struct sock *sk)
-@@ -3683,6 +3683,7 @@ static int __init af_unix_init(void)
- 
- static void __exit af_unix_exit(void)
- {
-+	unix_gc_stop();
- 	sock_unregister(PF_UNIX);
- 	proto_unregister(&unix_dgram_proto);
- 	proto_unregister(&unix_stream_proto);
-diff --git a/net/unix/garbage.c b/net/unix/garbage.c
-index 2405f0f9af31..fb24d62fe34a 100644
---- a/net/unix/garbage.c
-+++ b/net/unix/garbage.c
-@@ -185,24 +185,26 @@ static void inc_inflight_move_tail(struct unix_sock *u)
- 		list_move_tail(&u->link, &gc_candidates);
- }
- 
--static bool gc_in_progress;
- #define UNIX_INFLIGHT_TRIGGER_GC 16000
- 
-+static void unix_gc(struct work_struct *work);
-+static DECLARE_WORK(unix_gc_work, unix_gc);
-+
- void wait_for_unix_gc(void)
- {
--	/* If number of inflight sockets is insane,
--	 * force a garbage collect right now.
--	 * Paired with the WRITE_ONCE() in unix_inflight(),
--	 * unix_notinflight() and gc_in_progress().
--	 */
--	if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC &&
--	    !READ_ONCE(gc_in_progress))
--		unix_gc();
--	wait_event(unix_gc_wait, gc_in_progress == false);
-+	struct user_struct *user = get_uid(current_user());
-+
-+	if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC)
-+		schedule_work(&unix_gc_work);
-+
-+	if (!READ_ONCE(user->unix_inflight))
-+		return;
-+
-+	flush_work(&unix_gc_work);
- }
- 
- /* The external entry point: unix_gc() */
--void unix_gc(void)
-+static void unix_gc(struct work_struct *work)
- {
- 	struct sk_buff *next_skb, *skb;
- 	struct unix_sock *u;
-@@ -213,13 +215,6 @@ void unix_gc(void)
- 
- 	spin_lock(&unix_gc_lock);
- 
--	/* Avoid a recursive GC. */
--	if (gc_in_progress)
--		goto out;
--
--	/* Paired with READ_ONCE() in wait_for_unix_gc(). */
--	WRITE_ONCE(gc_in_progress, true);
--
- 	/* First, select candidates for garbage collection.  Only
- 	 * in-flight sockets are considered, and from those only ones
- 	 * which don't have any external reference.
-@@ -325,11 +320,15 @@ void unix_gc(void)
- 	/* All candidates should have been detached by now. */
- 	BUG_ON(!list_empty(&gc_candidates));
- 
--	/* Paired with READ_ONCE() in wait_for_unix_gc(). */
--	WRITE_ONCE(gc_in_progress, false);
-+	spin_unlock(&unix_gc_lock);
-+}
- 
--	wake_up(&unix_gc_wait);
-+void unix_gc_start(void)
-+{
-+	schedule_work(&unix_gc_work);
-+}
- 
-- out:
--	spin_unlock(&unix_gc_lock);
-+void __exit unix_gc_stop(void)
-+{
-+	flush_work(&unix_gc_work);
- }
----8<---
+>  {
+> -	if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
+> +	if (!(config->features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
+>  		return false;
+>  
+>  	/* Now we only support read-only configuration space */
+> -	if (features & (1ULL << VIRTIO_BLK_F_CONFIG_WCE))
+> +	if ((config->device_id == VIRTIO_ID_BLOCK) &&
+> +			(config->features & (1ULL << VIRTIO_BLK_F_CONFIG_WCE)))
+>  		return false;
+>  
+>  	return true;
+> @@ -1695,7 +1696,7 @@ static bool vduse_validate_config(struct vduse_dev_config *config)
+>  	if (!device_is_allowed(config->device_id))
+>  		return false;
+>  
+> -	if (!features_is_valid(config->features))
+> +	if (!features_is_valid(config))
+>  		return false;
+>  
+>  	return true;
