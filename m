@@ -2,58 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1687D1274
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A307D1275
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377663AbjJTPTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 11:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39572 "EHLO
+        id S1377675AbjJTPT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 11:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377620AbjJTPTS (ORCPT
+        with ESMTP id S1377620AbjJTPT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 11:19:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FF791
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:19:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697815156; x=1729351156;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=UxTf/46sBy4sdiELY9ZpGd/y59k5LsJYvf7S3OTAvvY=;
-  b=PEGj6eblqL9aX6p//3mkzxnxAlfNgQgoKNg7ZfCNAi0vhixstBJUwNSs
-   8YdRi3YqGCqg1atAg19lcBMpUWAk3TMhuwepL2+aOI8xz89TkxFJDrFQM
-   4XeNBWiRmvyIQF+X8SfXCSom9fcBnlkHoi58IC6aVdUAoA6uEgLJgjL12
-   6Pu5+cZXWJ+6WWdV31B7qg8Pd6YcnA2OjEW3fPKQA3JULiOdN/PvGUeJk
-   4z38lnxN8Gku76h+BrVhDm2bn2RC3YxTGpC8ygzLchLz471Awp8IibviP
-   w+kqosxedO5RHIaiN6gamRsYNCTbcr5HKKXDqRDgyHy96nNIhGZeS3zyv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="366743865"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="366743865"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 08:19:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="1004636891"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="1004636891"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 20 Oct 2023 08:19:14 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qtrHM-0003f0-2H;
-        Fri, 20 Oct 2023 15:19:12 +0000
-Date:   Fri, 20 Oct 2023 23:18:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: kernel/context_tracking.c:126:39: sparse: sparse: incorrect type in
- initializer (different address spaces)
-Message-ID: <202310202343.ARtbp2kg-lkp@intel.com>
+        Fri, 20 Oct 2023 11:19:28 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29645D55
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:19:26 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5b852632be4so29793a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 08:19:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697815165; x=1698419965; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yXhmtsd7v35VsKDTvdSZ2foO72l9HxK/7NMvbj357Oc=;
+        b=QEltRJ17lV9C8l8ZncfVwjXjdgfQIWCXoLLpXZfXy2mCRDe8LJjbc0yDWG14/9xwPf
+         g/9CIXVd0tzFiHyWUJZKCwa8FbXgy4nckO0Fg09Lfuf6OGK2QCSA7gOdHZiyOgDHEeHx
+         aANid33mJ/4vQyoxA7IrskLpOsN8MKshHgkRWWrd5tilG6ZAuVAjkM8pVu7h2sCuscdO
+         f16UnCPThQoWcQf8gtYsTq8Z0LOZMik2kiueUZICOzmVOoJXzWWCPpBivEk70YSsS2hn
+         lu7JOjTc4RdYvzoX7wpBlu9B7nkXgcQJWlQ6o0MCi96Fl8sNtMWgXwOOWCyRICyIERId
+         MaTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697815165; x=1698419965;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yXhmtsd7v35VsKDTvdSZ2foO72l9HxK/7NMvbj357Oc=;
+        b=kk6UnjgyTDNLuO4qn73WiABJ0BIy1VWQRGEzCf35YDGGQygkyjH85DcohZnstAiyh1
+         kk+yK0thfuUTpfpWAj3lX9er37EMUqTtZ1fVF3DYqssBdNEUslwMoHROXQE+fK8Ly3Sd
+         9Jl4lLYUq0fs3XalVp3sfiVipUSf+uM1h37GB4RgMTwBJq8lrhi7wkZF2H9Hqo00NzIQ
+         7giY4GEMKouay1bMnKMAwTlWUVcwdxV46YwTfVepIH8EUtPtX1rIpVcViv4GH5IlufMe
+         x7bD9a5i/F18F7llRpQ7lSKf2D5NITbjkfGK7h6zYSOZtYkrljs+irC3zo5Y61HvokxS
+         CUiQ==
+X-Gm-Message-State: AOJu0YwhxJWk3Nf2El824sG9OMRGUdIo4KJmDe4wnQ2VAYiVm2uQ+XM3
+        peb3Gq4BeajqisYg7PnO1X8IOA==
+X-Google-Smtp-Source: AGHT+IE6s6NkBDf7TGkQ+jf9gxmZjQduI9EXHQyK2mEMbBuoJLYncEiyFKNJSrCv2CwYF2o28pDQRA==
+X-Received: by 2002:a05:6a21:7881:b0:16e:26fd:7c02 with SMTP id bf1-20020a056a21788100b0016e26fd7c02mr2448569pzc.2.1697815165551;
+        Fri, 20 Oct 2023 08:19:25 -0700 (PDT)
+Received: from [10.4.4.198] ([139.177.225.251])
+        by smtp.gmail.com with ESMTPSA id 25-20020a17090a031900b0026b3a86b0d5sm1732974pje.33.2023.10.20.08.19.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 08:19:24 -0700 (PDT)
+Message-ID: <58a42dfb-38f8-4935-ac4d-4ec34c3c9504@bytedance.com>
+Date:   Fri, 20 Oct 2023 23:19:20 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: KASAN: slab-use-after-free Read in radix_tree_lookup in&after
+ Linux Kernel 6.4-rc6
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Zhang Zhiyu <zhiyuzhang999@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, secalert@redhat.com
+References: <CALf2hKtDJGqmsiSykbX8EEfbthwt6a4Bs98m60dUkS7URW-C8g@mail.gmail.com>
+ <CALf2hKucyJjmgE8Ry50RvytMtWz8gVXGXwoECvoVYph7xkEDEQ@mail.gmail.com>
+ <ZTI5tzh_tgCBnr35@alley> <ZTJz4/hddcv1J6pJ@casper.infradead.org>
+ <ad7f2b88-d483-47d9-9f62-12b55805e1a3@bytedance.com>
+ <ZTKVfoQZplpB8rki@casper.infradead.org>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <ZTKVfoQZplpB8rki@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,95 +80,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   ce55c22ec8b223a90ff3e084d842f73cfba35588
-commit: 481461f5109919babbb393d6f68002936b8e2493 linux/export.h: make <linux/export.h> independent of CONFIG_MODULES
-date:   3 months ago
-config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231020/202310202343.ARtbp2kg-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231020/202310202343.ARtbp2kg-lkp@intel.com/reproduce)
+Hi Matthew,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310202343.ARtbp2kg-lkp@intel.com/
+On 2023/10/20 22:58, Matthew Wilcox wrote:
+> On Fri, Oct 20, 2023 at 09:51:18PM +0800, Qi Zheng wrote:
+>> Hi all,
+>>
+>> On 2023/10/20 20:34, Matthew Wilcox wrote:
+>>> On Fri, Oct 20, 2023 at 10:26:31AM +0200, Petr Mladek wrote:
+>>>> Adding Matthew into Cc in the hope that he is still familiar with the
+>>>> code. Also adding Andrew who accepts patches.
+>>>
+>>> oh joy.  i love dealing with cves.
+>>>
+>>>>>> I agree, this issue looks to be in kernel-core radix tree code in ./lib/radix-tree.c in two of any places.
+>>>
+>>> the radix tree code is the victim here.  maybe also the perpetrator, but
+>>> it's rather hard to say.
+>>>
+>>> shrink_slab_memcg()
+>>> 	down_read_trylock(&shrinker_rwsem)
+>>> 	shrinker = idr_find(&shrinker_idr, i);
+>>>
+>>> i assume is the path to this bug.  the reporter didn't run the
+>>> stacktrace through scripts/decode_stacktrace.sh so it's less useful than
+>>> we might want.
+>>>
+>>> prealloc_memcg_shrinker() calls idr_alloc and idr_remove under
+>>> shrinker_rwsem in write mode, so that should be fine.
+>>>
+>>> unregister_memcg_shrinker() calls idr_remove after asserting &shrinker_rwsem
+>>> is held (although not asserting that it's held for write ... hmm ... but
+>>> both callers appear to hold it for write anyway)
+>>>
+>>> so i don't see why we'd get a UAF here.
+>>>
+>>> anyway, adding Qi Zheng to the cc since they're responsible for the
+>>> shrinker code.
+>>
+>> Thanks for CC'ing me, I'd be happy to troubleshoot any issues that may
+>> be shrinker related.
+>>
+>> Between v6.4-rc1 and v6.4 versions, we briefly implemented lockless slab
+>> shrink using the SRCU method. In these versions, we call idr_alloc and
+>> idr_remove under shrinker_mutex, and idr_find under srcu_read_lock.
+>>
+>> These are all legitimate uses of the IDR APIs and the shrinker_idr
+>> will never be destroyed, so at a quick glance I didn't see why it would
+>> cause UAF here.
+> 
+> I'm not an expert on how all the RCU flavours interact, but I don't
+> think that's safe.  The IDR (radix tree) will RCU-free nodes, but I
+> don't think holding the srcu_read_lock is enough to prevent the nodes
+> being freed.  
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/context_tracking.c:126:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:126:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:126:39: sparse:     got struct context_tracking *
-   kernel/context_tracking.c:165:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:165:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:165:39: sparse:     got struct context_tracking *
-   kernel/context_tracking.c:206:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:206:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:206:39: sparse:     got struct context_tracking *
-   kernel/context_tracking.c:261:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got struct context_tracking * @@
-   kernel/context_tracking.c:261:39: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   kernel/context_tracking.c:261:39: sparse:     got struct context_tracking *
---
->> arch/x86/kernel/cpu/bugs.c:64:9: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long long * @@
-   arch/x86/kernel/cpu/bugs.c:64:9: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   arch/x86/kernel/cpu/bugs.c:64:9: sparse:     got unsigned long long *
-   arch/x86/kernel/cpu/bugs.c:74:13: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long long * @@
-   arch/x86/kernel/cpu/bugs.c:74:13: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   arch/x86/kernel/cpu/bugs.c:74:13: sparse:     got unsigned long long *
-   arch/x86/kernel/cpu/bugs.c:77:9: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long long * @@
-   arch/x86/kernel/cpu/bugs.c:77:9: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   arch/x86/kernel/cpu/bugs.c:77:9: sparse:     got unsigned long long *
-   arch/x86/kernel/cpu/bugs.c:89:16: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned long long * @@
-   arch/x86/kernel/cpu/bugs.c:89:16: sparse:     expected void const [noderef] __percpu *__vpp_verify
-   arch/x86/kernel/cpu/bugs.c:89:16: sparse:     got unsigned long long *
+Oh, Indeed, I just saw the Documeentation/RCU/checklist.rst:
 
-vim +126 kernel/context_tracking.c
+```
+	If the updater uses call_rcu() or synchronize_rcu(), then
+	the corresponding readers may use:  (1) rcu_read_lock() and
+	rcu_read_unlock(), (2) any pair of primitives that disables
+	and re-enables softirq, for example, rcu_read_lock_bh() and
+	rcu_read_unlock_bh(), or (3) any pair of primitives that disables
+	and re-enables preemption, for example, rcu_read_lock_sched() and
+	rcu_read_unlock_sched().  If the updater uses synchronize_srcu()
+	or call_srcu(), then the corresponding readers must use
+	srcu_read_lock() and srcu_read_unlock(), and with the same
+	srcu_struct.
+```
 
-172114552701b8 Frederic Weisbecker 2022-06-08  115  
-172114552701b8 Frederic Weisbecker 2022-06-08  116  /*
-172114552701b8 Frederic Weisbecker 2022-06-08  117   * Enter an RCU extended quiescent state, which can be either the
-172114552701b8 Frederic Weisbecker 2022-06-08  118   * idle loop or adaptive-tickless usermode execution.
-172114552701b8 Frederic Weisbecker 2022-06-08  119   *
-172114552701b8 Frederic Weisbecker 2022-06-08  120   * We crowbar the ->dynticks_nmi_nesting field to zero to allow for
-172114552701b8 Frederic Weisbecker 2022-06-08  121   * the possibility of usermode upcalls having messed up our count
-172114552701b8 Frederic Weisbecker 2022-06-08  122   * of interrupt nesting level during the prior busy period.
-172114552701b8 Frederic Weisbecker 2022-06-08  123   */
-171476775d32a4 Frederic Weisbecker 2022-06-08  124  static void noinstr ct_kernel_exit(bool user, int offset)
-172114552701b8 Frederic Weisbecker 2022-06-08  125  {
-172114552701b8 Frederic Weisbecker 2022-06-08 @126  	struct context_tracking *ct = this_cpu_ptr(&context_tracking);
-172114552701b8 Frederic Weisbecker 2022-06-08  127  
-172114552701b8 Frederic Weisbecker 2022-06-08  128  	WARN_ON_ONCE(ct_dynticks_nmi_nesting() != DYNTICK_IRQ_NONIDLE);
-172114552701b8 Frederic Weisbecker 2022-06-08  129  	WRITE_ONCE(ct->dynticks_nmi_nesting, 0);
-172114552701b8 Frederic Weisbecker 2022-06-08  130  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
-172114552701b8 Frederic Weisbecker 2022-06-08  131  		     ct_dynticks_nesting() == 0);
-172114552701b8 Frederic Weisbecker 2022-06-08  132  	if (ct_dynticks_nesting() != 1) {
-172114552701b8 Frederic Weisbecker 2022-06-08  133  		// RCU will still be watching, so just do accounting and leave.
-172114552701b8 Frederic Weisbecker 2022-06-08  134  		ct->dynticks_nesting--;
-172114552701b8 Frederic Weisbecker 2022-06-08  135  		return;
-172114552701b8 Frederic Weisbecker 2022-06-08  136  	}
-172114552701b8 Frederic Weisbecker 2022-06-08  137  
-172114552701b8 Frederic Weisbecker 2022-06-08  138  	instrumentation_begin();
-172114552701b8 Frederic Weisbecker 2022-06-08  139  	lockdep_assert_irqs_disabled();
-172114552701b8 Frederic Weisbecker 2022-06-08  140  	trace_rcu_dyntick(TPS("Start"), ct_dynticks_nesting(), 0, ct_dynticks());
-172114552701b8 Frederic Weisbecker 2022-06-08  141  	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
-172114552701b8 Frederic Weisbecker 2022-06-08  142  	rcu_preempt_deferred_qs(current);
-172114552701b8 Frederic Weisbecker 2022-06-08  143  
-171476775d32a4 Frederic Weisbecker 2022-06-08  144  	// instrumentation for the noinstr ct_kernel_exit_state()
-171476775d32a4 Frederic Weisbecker 2022-06-08  145  	instrument_atomic_write(&ct->state, sizeof(ct->state));
-172114552701b8 Frederic Weisbecker 2022-06-08  146  
-172114552701b8 Frederic Weisbecker 2022-06-08  147  	instrumentation_end();
-172114552701b8 Frederic Weisbecker 2022-06-08  148  	WRITE_ONCE(ct->dynticks_nesting, 0); /* Avoid irq-access tearing. */
-172114552701b8 Frederic Weisbecker 2022-06-08  149  	// RCU is watching here ...
-171476775d32a4 Frederic Weisbecker 2022-06-08  150  	ct_kernel_exit_state(offset);
-172114552701b8 Frederic Weisbecker 2022-06-08  151  	// ... but is no longer watching here.
-172114552701b8 Frederic Weisbecker 2022-06-08  152  	rcu_dynticks_task_enter();
-172114552701b8 Frederic Weisbecker 2022-06-08  153  }
-172114552701b8 Frederic Weisbecker 2022-06-08  154  
+> I think you'd need to take the rcu_read_lock() around
+> the call to idr_find().
+For latest RCU+refcount method, we call idr_find() under
+rcu_read_lock(), so it's safe.
 
-:::::: The code at line 126 was first introduced by commit
-:::::: 172114552701b85d5c3b1a089a73ee85d0d7786b rcu/context-tracking: Move RCU-dynticks internal functions to context_tracking
+Thanks,
+Qi
 
-:::::: TO: Frederic Weisbecker <frederic@kernel.org>
-:::::: CC: Paul E. McKenney <paulmck@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+>> Anyway I will keep working on this issue, and it would be nice if
+>> there was a way to reproduce it.
+> 
+> So I think the CVE is inappropriately issued.  The SRCU code was added in
+> v6.4-rc1 and removed before v6.4.  I don't think CVEs are appropriate for
+> bugs which only existed in development kernels.  How do we revoke CVEs?
