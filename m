@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2307D08B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 08:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A007D08A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 08:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376355AbjJTGq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 02:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
+        id S1376319AbjJTGn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 02:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235622AbjJTGq0 (ORCPT
+        with ESMTP id S229644AbjJTGnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 02:46:26 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2671598;
-        Thu, 19 Oct 2023 23:46:25 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39K5OJtP024300;
-        Fri, 20 Oct 2023 06:46:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : from : subject : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ehATourjSW2RB4zjc0CeHK506bFDAo3dFHe2K8h+9Es=;
- b=Gy9D9VWZeeLWc3gH97WqhufNxf0jfHgwYr4O+WuLGkM8ShWMXa248CPOgRsdjuNZAhpS
- o8T0ZGj5/gvinCTU/aQABT+btCbMF0PKkRnJydawG3S+s2xRnhzK744PQxS1Vq7Jtggt
- 0Uf50ttJ/JQ6cmNfEwvfe5YYENlqLJJNp3BBQFNe63G+LsKZx5gplTK6X1E/3aayq4/k
- mEOfYl0EAmiO941D8hZaTuh7JDl7KZA6wcJS0oBi5upaXOkS+dqh9sbQw5yR9/IKM66y
- cbOWCWiti0dz+yAQUDCMq24LLiWueSKFvrJhDEXM4WSjiE9q8KNJDhUzYk9pT9UxU1ab EQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tubwkh1sg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 06:46:05 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39K6k43X006291
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 20 Oct 2023 06:46:04 GMT
-Received: from [10.216.18.86] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 19 Oct
- 2023 23:45:57 -0700
-Message-ID: <3bc7ed02-709a-4216-b077-82082f6729e5@quicinc.com>
-Date:   Fri, 20 Oct 2023 12:15:52 +0530
+        Fri, 20 Oct 2023 02:43:25 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D29D49
+        for <linux-kernel@vger.kernel.org>; Thu, 19 Oct 2023 23:43:22 -0700 (PDT)
+Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SBZfc4g5RzcdDh;
+        Fri, 20 Oct 2023 14:38:32 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 20 Oct
+ 2023 14:43:18 +0800
+From:   ZhaoLong Wang <wangzhaolong1@huawei.com>
+To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <chengzhihao1@huawei.com>, <wangzhaolong1@huawei.com>,
+        <yi.zhang@huawei.com>, <yangerkun@huawei.com>
+Subject: [PATCH v3 0/5] ubi: Enhanced fault injection capability for the UBI driver
+Date:   Fri, 20 Oct 2023 14:47:58 +0800
+Message-ID: <20231020064803.643399-1-wangzhaolong1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Maramaina Naresh <quic_mnaresh@quicinc.com>
-Subject: Re: [PATCH V1 0/4] Add per-cpu PM QoS support for QCOM UFS
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_cang@quicinc.com>, <quic_nguyenb@quicinc.com>
-References: <1696952947-18062-1-git-send-email-quic_mnaresh@quicinc.com>
- <23c91551-9d94-4ec6-85eb-be1e2af20dc7@acm.org>
-Content-Language: en-US
-In-Reply-To: <23c91551-9d94-4ec6-85eb-be1e2af20dc7@acm.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: UmNAVeBex0NdLO1uq4C4oY4VBxeS1BvJ
-X-Proofpoint-ORIG-GUID: UmNAVeBex0NdLO1uq4C4oY4VBxeS1BvJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-20_05,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- adultscore=0 mlxlogscore=868 impostorscore=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 clxscore=1015 priorityscore=1501 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310200057
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+The existing fault injection capability of UBI is too simple.
+It uses hard-coded fault probability values and lacks other
+configurable options. As a result, these interfaces are difficult
+to use when digging defects in the abnormal path of code and
+reproducing some problems.
 
-Thank you for reviewing the patch.  This is not specific to the Qualcomm 
-driver.
+The kernel provides a powerful fault injection framework, which
+provides rich configurable fault injection attributes during runtime.
+So it can be used to improve the fault injection capability of the 
+UBI driver.
 
-We will move this feature to core UFS.
+This series of patches refactor the existing fault injection interface
+and add some fault injection types to help testers and developers
+find potential problems in the code.
 
-Thanks,
+This series of patches enhance the existing fault injection interface
+and retain the old debugfs interface, and add some fault injection types
+to help testers and developers Look for potential problems in the code.
 
-Naresh.
+V2:
+ - Retain the old fault injection interface.
 
-On 10/12/2023 2:26 AM, Bart Van Assche wrote:
-> On 10/10/23 08:49, Maramaina Naresh wrote:
->> Add per-cpu PM QoS support for ufs. This improves random io performance
->> by 20% for ufs.
->
-> What in this patch series (other than the DT-bindings) is specific to
-> the Qualcomm driver? If the answer is not much: please move this
-> functionality into the UFS driver core.
->
-> Thanks,
->
-> Bart.
->
+v3:
+ 1. Corrects the initialization of the error mask, which should start at 1.
+ 2. Change the read format of the mask value to readable hexadecimal.
+ 3. The interface definition style is consistent when the new interface is added.
+ 4. Redundant CONFIG_MTD_UBI_FAULT_INJECTION macro are removed.
+ 5. Correct the fault injection hook position error: ubi_io_read_data -> ubi_io_write_data.
+ 6. UBI_IO_BITFLIPS is returned in ubi_io_read() in advance to prevent the 
+    return value from being overwritten.
+ 7. In the last commit, example of the use of fail_function is given.
+
+ZhaoLong Wang (5):
+  ubi: Use the fault injection framework to enhance the fault injection
+    capability
+  ubi: Split io_failures into write_failure and erase_failure
+  ubi: Add six fault injection type for testing
+  ubi: Reserve sufficient buffer length for the input mask
+  mtd: Add several functions to the fail_function list
+
+ drivers/mtd/mtdcore.c   |   5 +
+ drivers/mtd/ubi/Kconfig |   9 ++
+ drivers/mtd/ubi/debug.c | 107 ++++++++++++--
+ drivers/mtd/ubi/debug.h | 304 +++++++++++++++++++++++++++++++++++++---
+ drivers/mtd/ubi/io.c    |  86 +++++++++++-
+ drivers/mtd/ubi/ubi.h   |  45 +++---
+ 6 files changed, 497 insertions(+), 59 deletions(-)
+
+-- 
+2.31.1
+
