@@ -2,369 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 918B97D1336
-	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A59D7D1338
+	for <lists+linux-kernel@lfdr.de>; Fri, 20 Oct 2023 17:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377813AbjJTPzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 11:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
+        id S1377756AbjJTPzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 11:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377756AbjJTPzU (ORCPT
+        with ESMTP id S1377736AbjJTPze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 11:55:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFE4D8;
-        Fri, 20 Oct 2023 08:55:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F3C2C433C8;
-        Fri, 20 Oct 2023 15:55:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697817317;
-        bh=JslEm74PNuvaS9aYgnB/x1wmpt26tjbIUfcouSqB2f8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JyDAtWgw4uC6xSS+dMpivGIQjDJfi+oYCRMnMpFJYyUk7K9mlmu9P8WXVvkx/RQHN
-         bXxOGQNFB5yNHFDwVrXdIy5Rut5Syo8ULUxP4avrMrFE2vl5o/h07/1Qw+FVB6e05r
-         j9cmm28WZqlf47s+skQKnp2Zn3ILfI3M6yhQ0XyieDwkqODkMTr26LdoJo7R5Krfo/
-         up9lyyMyNqFbJxFnp4ylFBxhwMX06sxt3+Tq+CFE8ucj5ZM0DwtmFsJh5zqqQMKo4N
-         HkYlOh103CHTPpMdKZnsbKZ3Sh6hE1/LEejOZ6pjCXuuVQiaxX8DrDdors/n+VDHSJ
-         +wHMITRCfux5Q==
-Date:   Fri, 20 Oct 2023 16:55:13 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
-Subject: Re: [RESEND PATCH v2] dt-bindings: mfd: armltd: Move Arm board
- syscon's to separate schema
-Message-ID: <20231020-rockiness-droop-1a970663c407@spud>
-References: <20231020142252.3113716-2-robh@kernel.org>
+        Fri, 20 Oct 2023 11:55:34 -0400
+Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F99ED65;
+        Fri, 20 Oct 2023 08:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=4Wxr8YyJBV
+        Ji9dsEnvrWsVWlX7GW5YDL5ggU4ht88YY=; h=date:references:in-reply-to:
+        subject:cc:to:from; d=openbsd.org; b=5uh8cM/3362zsHWWsOJQQ46mNmFkN73zH
+        KtMFfu5/V5BQjgUqramyy6DLokJoEDDFiTXDZ9iUmZ33ICuFYcRAWnD1u1Dy6mL5GBBpzV
+        cK0utCgesrjOUEgYntUsl8hY0EbCeuyTBqgYTMKlXmvilryrzM8byogl9HLQCThr3rMysD
+        L82kOgtwM7VU3G72B8IDyDKGiKO5YgnzU3kOkbpogCOzuEGaVauGn0Zg2M1eCSwbcPzmIM
+        GVGqBq3zKy+Lc0W0r82Inq0AQq5NBneSdFBScYh0F+MKxTGmaENtL7eSiIGg+yuhmKUFy/
+        CQE/qsUjQmJsRTTtKDVa+NXOPLbbg==
+Received: from cvs.openbsd.org (localhost [127.0.0.1])
+        by cvs.openbsd.org (OpenSMTPD) with ESMTP id 8d5b7bfa;
+        Fri, 20 Oct 2023 09:55:28 -0600 (MDT)
+From:   "Theo de Raadt" <deraadt@openbsd.org>
+To:     =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FStephen=5FR=3DC3=3DB6ttger=3F=3D?= 
+        <sroettger@google.com>
+cc:     Jeff Xu <jeffxu@google.com>, Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        jeffxu@chromium.org, akpm@linux-foundation.org,
+        keescook@chromium.org, jorgelo@chromium.org, groeck@chromium.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, jannh@google.com, surenb@google.com,
+        alex.sierra@amd.com, apopple@nvidia.com,
+        aneesh.kumar@linux.ibm.com, axelrasmussen@google.com,
+        ben@decadent.org.uk, catalin.marinas@arm.com, david@redhat.com,
+        dwmw@amazon.co.uk, ying.huang@intel.com, hughd@google.com,
+        joey.gouly@arm.com, corbet@lwn.net, wangkefeng.wang@huawei.com,
+        Liam.Howlett@oracle.com, lstoakes@gmail.com, mawupeng1@huawei.com,
+        linmiaohe@huawei.com, namit@vmware.com, peterx@redhat.com,
+        peterz@infradead.org, ryan.roberts@arm.com, shr@devkernel.io,
+        vbabka@suse.cz, xiujianfeng@huawei.com, yu.ma@intel.com,
+        zhangpeng362@huawei.com, dave.hansen@intel.com, luto@kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/8] Introduce mseal() syscall
+In-reply-to: <CAEAAPHbB0yZfpXGMib4bbH8z5diKfur5M6mAfZuB6qi9UVpcPw@mail.gmail.com>
+References: <20231016143828.647848-1-jeffxu@chromium.org> <CAHk-=whFZoap+DBTYvJx6ohqPwn11Puzh7q4huFWDX9vBwXHgg@mail.gmail.com> <CALmYWFtTDAb_kpZdAe_xspqwNgK1NWJmjTxaTC=jDEMzfe297Q@mail.gmail.com> <CAHk-=wj87GMTH=5901ob=SjQqegAm2JYBE7E4J7skJzE64U-wQ@mail.gmail.com> <55960.1697566804@cvs.openbsd.org> <CALmYWFs81T=XnT=AXQTo0+9FXo=OBAV_4rrYPSn9-16O-gBTZg@mail.gmail.com> <95482.1697587015@cvs.openbsd.org> <CALmYWFtQX57Z7ttKxrdXQH4QupFn4vi5KfizUBH9NkmP-S1JDw@mail.gmail.com> <ZS/3GCKvNn5qzhC4@casper.infradead.org> <CALmYWFu_uY=cWzAQaLtS0CdNrm+cO7tKz4sY2Ff02WQ8mGUUXw@mail.gmail.com> <7071.1697661373@cvs.openbsd.org> <CAEAAPHbB0yZfpXGMib4bbH8z5diKfur5M6mAfZuB6qi9UVpcPw@mail.gmail.com>
+Comments: In-reply-to =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FStephen=5FR=3DC3=3DB6?=
+ =?us-ascii?Q?ttger=3F=3D?= <sroettger@google.com>
+   message dated "Thu, 19 Oct 2023 10:28:32 +0200."
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0tFA3imV+0ln9Bep"
-Content-Disposition: inline
-In-Reply-To: <20231020142252.3113716-2-robh@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 20 Oct 2023 09:55:28 -0600
+Message-ID: <20251.1697817328@cvs.openbsd.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Stephen R=C3=B6ttger <sroettger@google.com> wrote:
 
---0tFA3imV+0ln9Bep
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Oct 20, 2023 at 09:22:51AM -0500, Rob Herring wrote:
-> The Arm Ltd board bindings are a bit unusual in that they define child
-> nodes for various syscon's. The schemas are also incomplete as they lack
-> constraints on having additional properties and some properties are
-> missing. As the bindings for the different platforms only vary by
-> compatibles, combine them into a single schema doc.
+> > > IMO: The approaches mimmutable() and mseal() took are different, but
+> > > we all want to seal the memory from attackers and make the linux
+> > > application safer.
+> >
+> > I think you are building mseal for chrome, and chrome alone.
+> >
+> > I do not think this will work out for the rest of the application space
+> > because
+> >
+> > 1) it is too complicated
+> > 2) experience with mimmutable() says that applications don't do any of =
+it
+> >    themselves, it is all in execve(), libc initialization, and ld.so.
+> >    You don't strike me as an execve, libc, or ld.so developer.
 >=20
-> Add the "arm,im-pd1-syscon" compatible which was not documented. Add
-> "ranges", "#address-cells", and "#size-cells properties which were
-> missing.
->=20
-> With this, fix the error exposed in the register-bit-led binding.
->=20
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> We do want to build this in a way that it can be applied automatically by=
+ ld.so
+> and we appreciate all your feedback on this.
 
-In case the lack of tag from Krzysztof were impeding things, rather than
-your email being borked:
+Hi Stephen,
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+I am pretty sure your mechanism will be useable by ld.so.
 
-Thanks,
-Conor.
+What bothers me is the complex many-bits approach may encourage people
+to set only a subset of the bits, and then believe they have a security
+primitive.
 
-> ---
->  .../bindings/arm/arm,integrator.yaml          | 39 -----------
->  .../devicetree/bindings/arm/arm,realview.yaml | 37 ----------
->  .../bindings/arm/arm,versatile.yaml           | 40 +++--------
->  .../bindings/leds/register-bit-led.yaml       |  2 +-
->  .../mfd/arm,dev-platforms-syscon.yaml         | 67 +++++++++++++++++++
->  5 files changed, 76 insertions(+), 109 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mfd/arm,dev-platfor=
-ms-syscon.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/arm,integrator.yaml b/=
-Documentation/devicetree/bindings/arm/arm,integrator.yaml
-> index 98ff5698ae1f..1bdbd1b7ee38 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,integrator.yaml
-> +++ b/Documentation/devicetree/bindings/arm/arm,integrator.yaml
-> @@ -40,45 +40,6 @@ properties:
->          items:
->            - const: arm,integrator-sp
-> =20
-> -  core-module@10000000:
-> -    type: object
-> -    description: the root node in the Integrator platforms must contain
-> -      a core module child node. They are always at physical address
-> -      0x10000000 in all the Integrator variants.
-> -    properties:
-> -      compatible:
-> -        items:
-> -          - const: arm,core-module-integrator
-> -          - const: syscon
-> -          - const: simple-mfd
-> -      reg:
-> -        maxItems: 1
-> -
-> -    required:
-> -      - compatible
-> -      - reg
-> -
-> -patternProperties:
-> -  "^syscon@[0-9a-f]+$":
-> -    description: All Integrator boards must provide a system controller =
-as a
-> -      node in the root of the device tree.
-> -    type: object
-> -    properties:
-> -      compatible:
-> -        items:
-> -          - enum:
-> -              - arm,integrator-ap-syscon
-> -              - arm,integrator-cp-syscon
-> -              - arm,integrator-sp-syscon
-> -          - const: syscon
-> -      reg:
-> -        maxItems: 1
-> -
-> -    required:
-> -      - compatible
-> -      - reg
-> -
-> -
->  required:
->    - compatible
->    - core-module@10000000
-> diff --git a/Documentation/devicetree/bindings/arm/arm,realview.yaml b/Do=
-cumentation/devicetree/bindings/arm/arm,realview.yaml
-> index 8d3ed2e4ed31..d1bdee98f9af 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,realview.yaml
-> +++ b/Documentation/devicetree/bindings/arm/arm,realview.yaml
-> @@ -75,43 +75,6 @@ properties:
->          type: object
->          description: All RealView boards must provide a syscon system co=
-ntroller
->            node inside the soc node.
-> -        properties:
-> -          compatible:
-> -            oneOf:
-> -              - items:
-> -                  - const: arm,realview-eb11mp-revb-syscon
-> -                  - const: arm,realview-eb-syscon
-> -                  - const: syscon
-> -                  - const: simple-mfd
-> -              - items:
-> -                  - const: arm,realview-eb11mp-revc-syscon
-> -                  - const: arm,realview-eb-syscon
-> -                  - const: syscon
-> -                  - const: simple-mfd
-> -              - items:
-> -                  - const: arm,realview-eb-syscon
-> -                  - const: syscon
-> -                  - const: simple-mfd
-> -              - items:
-> -                  - const: arm,realview-pb1176-syscon
-> -                  - const: syscon
-> -                  - const: simple-mfd
-> -              - items:
-> -                  - const: arm,realview-pb11mp-syscon
-> -                  - const: syscon
-> -                  - const: simple-mfd
-> -              - items:
-> -                  - const: arm,realview-pba8-syscon
-> -                  - const: syscon
-> -                  - const: simple-mfd
-> -              - items:
-> -                  - const: arm,realview-pbx-syscon
-> -                  - const: syscon
-> -                  - const: simple-mfd
-> -
-> -        required:
-> -          - compatible
-> -          - reg
-> =20
->      required:
->        - compatible
-> diff --git a/Documentation/devicetree/bindings/arm/arm,versatile.yaml b/D=
-ocumentation/devicetree/bindings/arm/arm,versatile.yaml
-> index 13e52ba92060..7a3caf6af200 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,versatile.yaml
-> +++ b/Documentation/devicetree/bindings/arm/arm,versatile.yaml
-> @@ -14,6 +14,14 @@ description: |+
->    with various pluggable interface boards, in essence the Versatile PB v=
-ersion
->    is a superset of the Versatile AB version.
-> =20
-> +  The root node in the Versatile platforms must contain a core module ch=
-ild
-> +  node. They are always at physical address 0x10000000 in all the Versat=
-ile
-> +  variants.
-> +
-> +  When fitted with the IB2 Interface Board, the Versatile AB will presen=
-t an
-> +  optional system controller node which controls the extra peripherals o=
-n the
-> +  interface board.
-> +
->  properties:
->    $nodename:
->      const: '/'
-> @@ -32,38 +40,6 @@ properties:
->          items:
->            - const: arm,versatile-pb
-> =20
-> -  core-module@10000000:
-> -    type: object
-> -    description: the root node in the Versatile platforms must contain
-> -      a core module child node. They are always at physical address
-> -      0x10000000 in all the Versatile variants.
-> -    properties:
-> -      compatible:
-> -        items:
-> -          - const: arm,core-module-versatile
-> -          - const: syscon
-> -          - const: simple-mfd
-> -      reg:
-> -        maxItems: 1
-> -
-> -    required:
-> -      - compatible
-> -      - reg
-> -
-> -patternProperties:
-> -  "^syscon@[0-9a-f]+$":
-> -    type: object
-> -    description: When fitted with the IB2 Interface Board, the Versatile
-> -      AB will present an optional system controller node which controls =
-the
-> -      extra peripherals on the interface board.
-> -    properties:
-> -      compatible:
-> -        contains:
-> -          const: arm,versatile-ib2-syscon
-> -    required:
-> -      - compatible
-> -      - reg
-> -
->  required:
->    - compatible
->    - core-module@10000000
-> diff --git a/Documentation/devicetree/bindings/leds/register-bit-led.yaml=
- b/Documentation/devicetree/bindings/leds/register-bit-led.yaml
-> index ed26ec19ecbd..20930d327ae9 100644
-> --- a/Documentation/devicetree/bindings/leds/register-bit-led.yaml
-> +++ b/Documentation/devicetree/bindings/leds/register-bit-led.yaml
-> @@ -60,7 +60,7 @@ examples:
->    - |
-> =20
->      syscon@10000000 {
-> -        compatible =3D "arm,realview-pb1176-syscon", "syscon";
-> +        compatible =3D "arm,realview-pb1176-syscon", "syscon", "simple-m=
-fd";
->          reg =3D <0x10000000 0x1000>;
->          #address-cells =3D <1>;
->          #size-cells =3D <1>;
-> diff --git a/Documentation/devicetree/bindings/mfd/arm,dev-platforms-sysc=
-on.yaml b/Documentation/devicetree/bindings/mfd/arm,dev-platforms-syscon.ya=
-ml
-> new file mode 100644
-> index 000000000000..46b164ae0831
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/arm,dev-platforms-syscon.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/arm,dev-platforms-syscon.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Arm Ltd Developer Platforms System Controllers
-> +
-> +maintainers:
-> +  - Linus Walleij <linus.walleij@linaro.org>
-> +
-> +description:
-> +  The Arm Ltd Integrator, Realview, and Versatile families of developer
-> +  platforms are contain various system controller blocks. Often these bl=
-ocks
-> +  are part of a daughterboard or motherboard module.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - arm,integrator-ap-syscon
-> +              - arm,integrator-cp-syscon
-> +              - arm,integrator-sp-syscon
-> +              - arm,im-pd1-syscon
-> +          - const: syscon
-> +      - items:
-> +          - enum:
-> +              - arm,core-module-integrator
-> +              - arm,integrator-ap-syscon
-> +              - arm,integrator-cp-syscon
-> +              - arm,integrator-sp-syscon
-> +              - arm,realview-eb-syscon
-> +              - arm,realview-pb1176-syscon
-> +              - arm,realview-pb11mp-syscon
-> +              - arm,realview-pba8-syscon
-> +              - arm,realview-pbx-syscon
-> +              - arm,versatile-ib2-syscon
-> +          - const: syscon
-> +          - const: simple-mfd
-> +      - items:
-> +          - enum:
-> +              - arm,realview-eb11mp-revb-syscon
-> +              - arm,realview-eb11mp-revc-syscon
-> +          - const: arm,realview-eb-syscon
-> +          - const: syscon
-> +          - const: simple-mfd
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  ranges: true
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties:
-> +  type: object
-> +
-> +...
-> --=20
-> 2.42.0
->=20
+Partial sealing is not safe.  I define partial sealing as "blocking munmap,
+but not mprotect".  Or "blocking mprotect, but not madvise or mmap".
 
---0tFA3imV+0ln9Bep
-Content-Type: application/pgp-signature; name="signature.asc"
+In Message-id <ZS/3GCKvNn5qzhC4@casper.infradead.org> Matthew stated there
+that there are two aspects being locked: which object is mapped, and the
+permission of that mapping.  When additional system calls msync() and madvi=
+se()
+are included in the picture, there are 3 actions being prevented:
 
------BEGIN PGP SIGNATURE-----
+ - Can someone replace the object
+ - Can someone change the permission
+ - Can someone throw away the cached pages, reverting to original
+   content of the object (that is the madvise / msync)
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTKi4AAKCRB4tDGHoIJi
-0j2cAPwLD6sIlzJ86DBUtwb2UgPLvmFt7EwN+ePp07GGbvosTQD/WBEQMZpog1TC
-aeqP0EmQ8vb/tq+YZJEsPKxE80qYUgY=
-=J1Fe
------END PGP SIGNATURE-----
+In Message-id: <CAG48ez3ShUYey+ZAFsU2i1RpQn0a5eOs2hzQ426FkcgnfUGLvA@mail.gm=
+ail.com>
+Jan reminded us of this piece.  I'm taking this as a long-standing security
+hole in some sub-operations of msync/madvise which can write to data regions
+that aren't actually writeable.  Sub-operations with this problem are MADV_=
+FREE,
+MADV_DONTNEED, POSIX_MADV_DONTNEED, MS_INVALIDATE.. on Linux MADV_WIPEONFOR=
+K,
+and probably a whole bunch of others.  I am testing OpenBSD changes which
+demand PROT_WRITE permission for these sub-operations.  Perhaps some systems
+are already careful.
 
---0tFA3imV+0ln9Bep--
+If you leave any of these operators available, the object is not actually s=
+ealed
+against abuse.  I believe an attacker will simply switch to a different ope=
+rator
+(mmap, munmap, mprotect, madvise, msync) to achieve a similar objective of
+damaging the permission or contents.
+
+Since mseal() is designed to create partial sealings, the name of the propo=
+sed
+system call really smells.
+
+> The intention of
+> splitting the sealing
+> by syscall was to provide flexibility while still allowing ld.so to
+> seal all operations.
+
+Yes, you will have ld.so set all the bits, and the same in C runtime
+initialization.  If you convince glibc to stop make the stack executable
+in dlopen(), the kernel could automatically do it.. With Linux backwards
+compat management, getting there would be an extremely long long long
+roadmap.  But anyways the idea would be "set all the bits".  Because otherw=
+ise
+the object or data isn't safe.
+
+> Does Linus' proposal to just split munmap / mprotect sealing address your
+> complexity concerns? ld.so would always use both flags which should then =
+behave
+> similar to mimmutable().
+
+No, I think it is weak, because it isn't sealed.
+
+A seperate mail in the thread from you says this is about chrome wanting
+to use PKU on RWX objects.  I think that's the reason for wanting to
+seperate the sealing (I haven't heard of other applications wanting that).
+How about we explore that in the other subthread..
+
