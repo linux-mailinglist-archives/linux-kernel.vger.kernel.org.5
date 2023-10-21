@@ -2,369 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E427D1D7B
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 16:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B257D1D82
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 16:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbjJUOba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 10:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
+        id S231240AbjJUOh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 10:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbjJUOb1 (ORCPT
+        with ESMTP id S229583AbjJUOhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 10:31:27 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 833C0D6B
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:31:21 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3226cc3e324so1395995f8f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:31:21 -0700 (PDT)
+        Sat, 21 Oct 2023 10:37:55 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338A0D5B
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:37:53 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9becde9ea7bso614352866b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:37:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=aceart.de; s=google; t=1697898680; x=1698503480; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vEdsvcnRCtzaJRF8/fcLniBSlcoD/EU26r1797EAi0g=;
-        b=UuOBPDWXRi5RdcbEmkl7pKjDLq/7Xpe5WV3to8O5lqNk7Yqekq0+kgQo4/pnSyrfV0
-         R8vSjZj88ilsuVYmDmlDmZNnu5wpbjSdEGii8sjVc8D2JlBgWH/F67bbl0gYSYDr2tou
-         iIpHzvWgvSgvE+MtOoEttd8+Hljjarw5xDou8sgMHP/cnkWMHezXoEdfLeiMRs3vGDUJ
-         GyEp/yRheTYyVK8+KwNMpTYbIxFBhtM5pTH/NVkvAnAwFyVmOWwT4d23ru3nXKL6Rfw1
-         Itj0h2V2u+v1wKb/In8D+pZwPASPDdJzZQzUcDzic1kMN8417T1BXqnSjCV3w1r6yi8m
-         Mx1w==
+        d=gmail.com; s=20230601; t=1697899071; x=1698503871; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=A4pUxzTEqmI0KLXHFsmhEKj3JzjklMT09D9RoLa7I6c=;
+        b=S2dF3fOApsGDVC4AAnbIVELBtIy3n3L+K2+CBXQOm3/4NglDjBGE57CdQeweJAfs1V
+         M70WMRxE0AkEuAio/VA0SNAos8avgIXw4iT3oiWbKouGc/Ft4Udp1DKaTcgGCMPgAAwP
+         iiF9XCP98U+soe3HO0g6xvWEziePwXvCzptrpglbm4pgCa3UxHhJvFFJ3xwOrylcoRQJ
+         gmv2mvRTqjttcwh/7jqpEWrS8OzT4E8ZTYG9b5v2O+NQLISaVGP7p5qTtWYbwmzr4puC
+         1/vdZx2g6R8V2m6Bhz1UPmb82SRmh0QkRX7O8dMZH6FgWByY71T+TSnyOoAp0HlwPCW3
+         E5xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697898680; x=1698503480;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vEdsvcnRCtzaJRF8/fcLniBSlcoD/EU26r1797EAi0g=;
-        b=Tnz7uhLztBj3KszBlx1Gad+qMIFdiOHb7ePwhwoDXnkRvFm86l0TgtjpPpNCWP+ihB
-         +6LuuubTt9sIU3DNMVQXeiZFLNqGGYKQBjzI/WcDPj0YtGPu78JzlrSeOl6QtuAg02DY
-         G1h2aIGEA6anVQZW2VOJAHIc1A1BHiZYeDcpAZRzwPIksL+58byk1BdEPioST+OUNVb9
-         dnRP40992WtwxYFj1FVoYFzgmsYrH4dYPLzq/0lm7959rKDdf/F3PnKmp7X5sGlv9caK
-         oBEMZ4c8oCSueouInPrrSH5PeVrWsmq2p7MTjg27tdOusLTrUwEfCb4l++okpSjDuV++
-         QiWA==
-X-Gm-Message-State: AOJu0YyCIkOVg7fGrhsiH8LTFXN0pZ/AFw5WFJ1ZAWQm7sO97s5slAl/
-        p61+cLGspihlsXE52FKNlTyivAEOlnW+J59/XI/hRyn3
-X-Google-Smtp-Source: AGHT+IEXvFAzkZ7YvjWvEMB1Qn0ukiDRTVTG7SBdY0dCn1jAaGuuAayvcAUZkuUPg2AgXobK/sLQRw==
-X-Received: by 2002:a5d:670c:0:b0:32d:82b4:1957 with SMTP id o12-20020a5d670c000000b0032d82b41957mr3697249wru.40.1697898679753;
-        Sat, 21 Oct 2023 07:31:19 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8070:d89:b820:87f5:4b33:b582:39f3])
-        by smtp.gmail.com with ESMTPSA id u3-20020a5d5143000000b003296b488961sm3793917wrt.31.2023.10.21.07.31.19
+        d=1e100.net; s=20230601; t=1697899071; x=1698503871;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=A4pUxzTEqmI0KLXHFsmhEKj3JzjklMT09D9RoLa7I6c=;
+        b=ByGR16h81Vm4S7h1AqmE5OT8DqWIhfeufgePyfvtBpkDXzIjf2rCB0vRIWrIuJ6BT2
+         2RjD2Q89XraAG5dFMWWlnWeGQUGF99ldBThAS2ICYKJbVG9urzkEADt1VQb6NKRFOu1y
+         LA+KWhXIHknfMQRNBKr6dxQJWSIP7OSgZxXkhlOxJpPbvHnziAma/ncCwn050p1AnPlw
+         pKkFYtAQ1QUnTplBgBP1k1Ik5XLT5TqZhv35KZY062f5y1PZfOKzWjP2K8ry1nOgmpHu
+         YhrocAdl7DLQpHyOUxN3WIF/biM1B2k8h+keAzWGuRatpoowoUA+PIRSRkZmA6RT6lJI
+         XNMQ==
+X-Gm-Message-State: AOJu0YzUzSI/1nWm28myYIoiP46Oim8ovT9OP6aj72eAsFc6i/9c0ys+
+        Djg7fSP8b225DNVyNzEm6vs=
+X-Google-Smtp-Source: AGHT+IHvLQNt373iKnkUAMMv0uqeQhkSSPh0nhT/+40a0VuR41cjvm2XLzULUe48pAzrCzCy5zWmzw==
+X-Received: by 2002:a17:906:f291:b0:9c7:6523:407b with SMTP id gu17-20020a170906f29100b009c76523407bmr4677146ejb.17.1697899071232;
+        Sat, 21 Oct 2023 07:37:51 -0700 (PDT)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id p26-20020a170906229a00b009b65a698c16sm3703310eja.220.2023.10.21.07.37.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 07:31:19 -0700 (PDT)
-From:   Lukas Walter <lukas.walter@aceart.de>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Lukas Walter <lukas.walter@aceart.de>,
-        Raymond Hackley <raymondhackley@protonmail.com>
-Subject: [PATCH 2/2] arm64: dts: qcom: msm8939-huawei-kiwi: Add initial device tree
-Date:   Sat, 21 Oct 2023 16:30:25 +0200
-Message-ID: <20231021143025.77088-2-lukas.walter@aceart.de>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231021143025.77088-1-lukas.walter@aceart.de>
-References: <20231021143025.77088-1-lukas.walter@aceart.de>
+        Sat, 21 Oct 2023 07:37:50 -0700 (PDT)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>, Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nadav Amit <namit@vmware.com>
+Subject: [PATCH -tip v2] x86/percpu: Introduce const-qualified const_pcpu_hot
+Date:   Sat, 21 Oct 2023 16:36:59 +0200
+Message-ID: <20231021143739.843941-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This dts adds support for Huawei Honor 5X / GR5 (2016) smartphone
-released in 2015.
+Some variables in pcpu_hot, currently current_task and top_of_stack
+are actually per-thread variables implemented as per-cpu variables
+and thus stable for the duration of the respective task.  There is
+already an attempt to eliminate redundant reads from these variables
+using this_cpu_read_stable() asm macro, which hides the dependency
+on the read memory address. However, the compiler has limited ability
+to eliminate asm common subexpressions, so this approach results in a
+limited success.
 
-Add device tree with initial support for:
+The solution is to allow more aggressive elimination by aliasing
+pcpu_hot into a const-qualified const_pcpu_hot, and to read stable
+per-cpu variables from this constant copy.
 
-- GPIO keys
-- Hall sensor
-- SDHCI (internal and external storage)
-- WCNSS (BT/WIFI)
-- Sensors (accelerometer and proximity)
-- Vibrator
-- Touchscreen
+The current per-cpu infrastructure does not support reads from
+const-qualified variables. However, when the compiler supports segment
+qualifiers, it is possible to declare the const-aliased variable in
+the relevant named address space. The compiler considers access to the
+variable, declared in this way, as a read from a constant location,
+and will optimize reads from the variable accordingly.
 
-Signed-off-by: Raymond Hackley <raymondhackley@protonmail.com>
-Signed-off-by: Lukas Walter <lukas.walter@aceart.de>
+By implementing constant-qualified const_pcpu_hot, the compiler can
+eliminate redundant reads from the constant variables, reducing the
+number of loads from current_task from 3766 to 3217 on a test build,
+a 14.6% reduction.
+
+The reduction of loads translates to the following code savings:
+
+   text    data     bss     dec     hex filename
+25477353        4389456  808452 30675261        1d4113d vmlinux-old.o
+25476074        4389440  808452 30673966        1d40c2e vmlinux-new.o
+
+representing a code size reduction of 1279 bytes.
 ---
-Changes in v2:
-- Switch Signed-off-by order
-- Specify reserved-memory region usage
----
- arch/arm64/boot/dts/qcom/Makefile             |   1 +
- .../boot/dts/qcom/msm8939-huawei-kiwi.dts     | 242 ++++++++++++++++++
- 2 files changed, 243 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/msm8939-huawei-kiwi.dts
+v2: Export const_pcpu_hot symbol.
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index d6cb840b7050..1b3057c1a68d 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -45,6 +45,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-thwc-uf896.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-thwc-ufi001c.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-wingtech-wt88047.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-yiming-uz801v3.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-huawei-kiwi.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-longcheer-l9100.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-samsung-a7.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-sony-xperia-kanuti-tulip.dtb
-diff --git a/arch/arm64/boot/dts/qcom/msm8939-huawei-kiwi.dts b/arch/arm64/boot/dts/qcom/msm8939-huawei-kiwi.dts
-new file mode 100644
-index 000000000000..3cec51891aed
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8939-huawei-kiwi.dts
-@@ -0,0 +1,242 @@
-+// SPDX-License-Identifier: GPL-2.0-only
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: Denys Vlasenko <dvlasenk@redhat.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Co-developed-by: Nadav Amit <namit@vmware.com>
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+---
+ arch/x86/include/asm/current.h   | 7 +++++++
+ arch/x86/include/asm/percpu.h    | 6 +++---
+ arch/x86/include/asm/processor.h | 3 +++
+ arch/x86/kernel/cpu/common.c     | 1 +
+ arch/x86/kernel/vmlinux.lds.S    | 1 +
+ include/linux/compiler.h         | 2 +-
+ 6 files changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/include/asm/current.h b/arch/x86/include/asm/current.h
+index a1168e7b69e5..0538d2436673 100644
+--- a/arch/x86/include/asm/current.h
++++ b/arch/x86/include/asm/current.h
+@@ -36,8 +36,15 @@ static_assert(sizeof(struct pcpu_hot) == 64);
+ 
+ DECLARE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot);
+ 
++/* const-qualified alias to pcpu_hot, aliased by linker. */
++DECLARE_PER_CPU_ALIGNED(const struct pcpu_hot __percpu_seg_override,
++			const_pcpu_hot);
 +
-+/dts-v1/;
+ static __always_inline struct task_struct *get_current(void)
+ {
++	if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
++		return const_pcpu_hot.current_task;
 +
-+#include "msm8939-pm8916.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
+ 	return this_cpu_read_stable(pcpu_hot.current_task);
+ }
+ 
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index bbcc1ca737f0..630bb912a46b 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -413,9 +413,9 @@ do {									\
+  * accessed while this_cpu_read_stable() allows the value to be cached.
+  * this_cpu_read_stable() is more efficient and can be used if its value
+  * is guaranteed to be valid across cpus.  The current users include
+- * get_current() and get_thread_info() both of which are actually
+- * per-thread variables implemented as per-cpu variables and thus
+- * stable for the duration of the respective task.
++ * pcpu_hot.current_task and pcpu_hot.top_of_stack, both of which are
++ * actually per-thread variables implemented as per-cpu variables and
++ * thus stable for the duration of the respective task.
+  */
+ #define this_cpu_read_stable_1(pcp)	percpu_stable_op(1, "mov", pcp)
+ #define this_cpu_read_stable_2(pcp)	percpu_stable_op(2, "mov", pcp)
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index ae81a7191c1c..a807025a4dee 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -533,6 +533,9 @@ static __always_inline unsigned long current_top_of_stack(void)
+ 	 *  and around vm86 mode and sp0 on x86_64 is special because of the
+ 	 *  entry trampoline.
+ 	 */
++	if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
++		return pcpu_hot.top_of_stack;
 +
-+/ {
-+	model = "Huawei Honor 5X / GR5 (2016)";
-+	compatible = "huawei,kiwi", "qcom,msm8939";
-+	chassis-type = "handset";
-+
-+	aliases {
-+		mmc0 = &sdhc_1; /* SDC1 eMMC slot */
-+		mmc1 = &sdhc_2; /* SDC2 SD card slot */
-+		serial0 = &blsp_uart2;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0";
-+	};
-+
-+	reserved-memory {
-+		qseecom_mem: qseecom@84a00000 {
-+			reg = <0x0 0x84a00000 0x0 0x1600000>;
-+			no-map;
-+		};
-+	};
-+
-+	gpio-hall-sensor {
-+		compatible = "gpio-keys";
-+
-+		pinctrl-0 = <&gpio_hall_sensor_default>;
-+		pinctrl-names = "default";
-+
-+		label = "GPIO Hall Effect Sensor";
-+
-+		event-hall-sensor {
-+			label = "Hall Effect Sensor";
-+			gpios = <&tlmm 69 GPIO_ACTIVE_LOW>;
-+			linux,input-type = <EV_SW>;
-+			linux,code = <SW_LID>;
-+			linux,can-disable;
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		pinctrl-0 = <&gpio_keys_default>;
-+		pinctrl-names = "default";
-+
-+		label = "GPIO Buttons";
-+
-+		button-volume-up {
-+			label = "Volume Up";
-+			gpios = <&tlmm 107 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_VOLUMEUP>;
-+		};
-+	};
-+
-+	usb_id: usb-id {
-+		compatible = "linux,extcon-usb-gpio";
-+		id-gpios = <&tlmm 110 GPIO_ACTIVE_HIGH>;
-+		pinctrl-0 = <&usb_id_default>;
-+		pinctrl-names = "default";
-+	};
-+};
-+
-+&blsp_i2c2 {
-+	status = "okay";
-+
-+	accelerometer@1e {
-+		compatible = "kionix,kx023-1025";
-+		reg = <0x1e>;
-+
-+		vdd-supply = <&pm8916_l17>;
-+		vddio-supply = <&pm8916_l6>;
-+		pinctrl-0 = <&accel_int_default>;
-+		pinctrl-names = "default";
-+		mount-matrix = "-1", "0", "0",
-+			       "0", "1", "0",
-+			       "0", "0", "1";
-+	};
-+
-+	proximity@39 {
-+		compatible = "avago,apds9930";
-+		reg = <0x39>;
-+
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <113 IRQ_TYPE_EDGE_FALLING>;
-+
-+		vdd-supply = <&pm8916_l17>;
-+		vddio-supply = <&pm8916_l6>;
-+
-+		led-max-microamp = <25000>;
-+		amstaos,proximity-diodes = <0>;
-+
-+		pinctrl-0 = <&prox_irq_default>;
-+		pinctrl-names = "default";
-+	};
-+};
-+
-+&blsp_i2c5 {
-+	status = "okay";
-+
-+	touchscreen@1c {
-+		compatible = "cypress,tt21000";
-+
-+		reg = <0x1c>;
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
-+
-+		reset-gpios = <&tlmm 12 GPIO_ACTIVE_LOW>;
-+
-+		/*
-+		 * NOTE: vdd is not directly supplied by pm8916_l16, it seems to be a
-+		 * fixed regulator that is automatically enabled by pm8916_l16.
-+		 */
-+		vdd-supply = <&pm8916_l16>;
-+		vddio-supply = <&pm8916_l16>;
-+
-+		pinctrl-0 = <&touchscreen_default>;
-+		pinctrl-names = "default";
-+	};
-+};
-+
-+&blsp_uart2 {
-+	status = "okay";
-+};
-+
-+&pm8916_l8 {
-+	regulator-min-microvolt = <2950000>;
-+	regulator-max-microvolt = <2950000>;
-+};
-+
-+&pm8916_resin {
-+	linux,code = <KEY_VOLUMEDOWN>;
-+	status = "okay";
-+};
-+
-+&pm8916_rpm_regulators {
-+	pm8916_l16: l16 {
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+	};
-+
-+	pm8916_l17: l17 {
-+		regulator-min-microvolt = <2850000>;
-+		regulator-max-microvolt = <2850000>;
-+	};
-+};
-+
-+&pm8916_vib {
-+	status = "okay";
-+};
-+
-+&sdhc_1 {
-+	status = "okay";
-+};
-+
-+&sdhc_2 {
-+	pinctrl-0 = <&sdc2_default &sdc2_cd_default>;
-+	pinctrl-1 = <&sdc2_sleep &sdc2_cd_default>;
-+	pinctrl-names = "default", "sleep";
-+
-+	cd-gpios = <&tlmm 38 GPIO_ACTIVE_HIGH>;
-+
-+	status = "okay";
-+};
-+
-+&usb {
-+	extcon = <&usb_id>, <&usb_id>;
-+	status = "okay";
-+};
-+
-+&usb_hs_phy {
-+	extcon = <&usb_id>;
-+};
-+
-+&wcnss {
-+	status = "okay";
-+};
-+
-+&wcnss_iris {
-+	compatible = "qcom,wcn3620";
-+};
-+
-+&wcnss_mem {
-+	status = "okay";
-+};
-+
-+&tlmm {
-+	accel_int_default: accel-int-default-state {
-+		pins = "gpio115";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	gpio_hall_sensor_default: gpio-hall-sensor-default-state {
-+		pins = "gpio69";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	gpio_keys_default: gpio-keys-default-state {
-+		pins = "gpio107";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-pull-up;
-+	};
-+
-+	prox_irq_default: prox-irq-default-state {
-+		pins = "gpio113";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	sdc2_cd_default: sdc2-cd-default-state {
-+		pins = "gpio38";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	touchscreen_default: touchscreen-default-state {
-+		pins = "gpio12", "gpio13";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	usb_id_default: usb-id-default-state {
-+		pins = "gpio110";
-+		function = "gpio";
-+		drive-strength = <8>;
-+		bias-pull-up;
-+	};
-+};
+ 	return this_cpu_read_stable(pcpu_hot.top_of_stack);
+ }
+ 
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index b14fc8c1c953..9058da9ae011 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -2049,6 +2049,7 @@ DEFINE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot) = {
+ 	.top_of_stack	= TOP_OF_INIT_STACK,
+ };
+ EXPORT_PER_CPU_SYMBOL(pcpu_hot);
++EXPORT_PER_CPU_SYMBOL(const_pcpu_hot);
+ 
+ #ifdef CONFIG_X86_64
+ DEFINE_PER_CPU_FIRST(struct fixed_percpu_data,
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 54a5596adaa6..1239be7cc8d8 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -46,6 +46,7 @@ ENTRY(phys_startup_64)
+ #endif
+ 
+ jiffies = jiffies_64;
++const_pcpu_hot = pcpu_hot;
+ 
+ #if defined(CONFIG_X86_64)
+ /*
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index d7779a18b24f..bf9815eaf4aa 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -212,7 +212,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+  */
+ #define ___ADDRESSABLE(sym, __attrs) \
+ 	static void * __used __attrs \
+-		__UNIQUE_ID(__PASTE(__addressable_,sym)) = (void *)&sym;
++	__UNIQUE_ID(__PASTE(__addressable_,sym)) = (void *)(uintptr_t)&sym;
+ #define __ADDRESSABLE(sym) \
+ 	___ADDRESSABLE(sym, __section(".discard.addressable"))
+ 
 -- 
-2.42.0
+2.41.0
 
