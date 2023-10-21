@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B127D19FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 02:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10ECD7D19FE
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 02:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233204AbjJUAjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 20:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
+        id S231875AbjJUAjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 20:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233194AbjJUAjD (ORCPT
+        with ESMTP id S231543AbjJUAjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 20:39:03 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AEFD73
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 17:38:57 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1ead2e6fab7so983517fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 17:38:57 -0700 (PDT)
+        Fri, 20 Oct 2023 20:39:41 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB17D76
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 17:39:39 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-6b2dff02dfcso1254118b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 17:39:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tweaklogic.com; s=google; t=1697848736; x=1698453536; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sSq0LiQ9DQKIgfiPKxfox3yrdlP/6a1Wky/bubnJNtk=;
-        b=SCeLXvxHn0BCXH+fUhPrq1qZ+Sc4igPf4/jnNbvV8IU1zEke/EPqd4ZwVgewUx5nSB
-         tLVNfRueIvrBeNGdYrvk1QxOVaXv5NAUqBo2G4bvHcwCLUdE3AikZ+iPH1OaQU5wnBZT
-         t5dVDcU52XbZYLhoAx7Ku8JsjjarXjhtso8sMRwIcYwhF33fgycSXPLT1OqnohvBg4YZ
-         zYVdJRMhRmrukmmBSt/FWTtnyknSEHio2wJggoXsfXXyOQpmvwMQEwXBHvhTtE+OhLzT
-         DYeOLHBOfUNOgkwFt0RiblcRnTodRXednti72xrFyJbaRW0YtEumlQi1qml+eaMqOsG3
-         MzWA==
+        d=google.com; s=20230601; t=1697848779; x=1698453579; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=A/Jh0cabROh3tBKqefsJctpoBdTf5cZ3huGDHpuMVOI=;
+        b=4ld123CNY/JRU0GxIH5bWSsiyVhgdQYuR81bzcQtAQ3S7k5XbBIXuccNLRET/R35NR
+         ElqOSLAfe2WZ79gKq+b/byymiZxemWaYnJdvvwOO6KHHZltkTBIarzRGLVN/eDO80K6i
+         6rZufvWqKGTBAxGv5YibU8+fdhfaMZp2N/FzBfRevoFU3Ikbtg87DjPPjrStaViUua5A
+         Z6TJ4yriEd7kyTp0HLx+lRJhA2npMyD/KFis01ienEf9+0hq0mqS7nyAd9pdh0PrrVSw
+         XN/dB1Lc3KYC8H5nQXrgEEo3vr2YulovZZ1rS/WA5a5o/avo/exShmwNybxjcqpDy5z3
+         4RIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697848736; x=1698453536;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sSq0LiQ9DQKIgfiPKxfox3yrdlP/6a1Wky/bubnJNtk=;
-        b=Vw0LpuSkiUmUsIoK16ICh1eZqnT/lVLiGbwJrvs6DGwYwMQM9kCKcxla6dsTlg8rzC
-         eoxXa2EfBg7WH8YU89c82s5zVoOfonLwo6BiiEijx3OHQTSXxBqSNvYIrEYwXlZnhxuH
-         IA0yMrnS4JoiLKi6cJVoLIB1AByOV7injPRafflRQ0NpfY3bT4bhSYfPL4UzwHCCKMcA
-         jwliyxPuJDXCUfw5s6sD0GicaNkpL9h6iuzv6Ja6A6jdOjvxa7JUbcmWHOIv2xBlrYIz
-         DVqxqSAurLv8r0hWl4P7sRQcHEZdWaS5Xw+UZngd49VP5zOCLvVpDE9YzdC3v4iXobTR
-         JnGw==
-X-Gm-Message-State: AOJu0YzSYy95bQGSen2G3yEjFtJ2LMTQZLdyCES55o3hh8NRzMdoOeu8
-        955S1EemWxj4OWXa9Z/vKol/JpTxYGtZsNiqfJ4=
-X-Google-Smtp-Source: AGHT+IGDsFGs9Jk018Kwmxob0O23QAjKaUSRVq/R/vkP5Pxc/Mm7q+JwePrfACOZ5D53ZrLy4UpBjg==
-X-Received: by 2002:a05:6870:4949:b0:1ea:8b10:247e with SMTP id fl9-20020a056870494900b001ea8b10247emr4638798oab.27.1697848736400;
-        Fri, 20 Oct 2023 17:38:56 -0700 (PDT)
-Received: from ?IPV6:2403:580d:82f4:0:9012:790b:50f:4eda? (2403-580d-82f4-0-9012-790b-50f-4eda.ip6.aussiebb.net. [2403:580d:82f4:0:9012:790b:50f:4eda])
-        by smtp.gmail.com with ESMTPSA id k194-20020a6284cb000000b006926e3dc2besm2226644pfd.108.2023.10.20.17.38.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Oct 2023 17:38:56 -0700 (PDT)
-Message-ID: <35d74411-9b67-4c41-ae68-6042519a17b3@tweaklogic.com>
-Date:   Sat, 21 Oct 2023 11:08:50 +1030
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: iio: light: Squash APDS9300 and APDS9960
- schemas
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, matt@ranostay.org
-References: <20231019080437.94849-1-subhajit.ghosh@tweaklogic.com>
- <472aa31d-7d6c-41df-86e6-d17f05998256@linaro.org>
- <6b721019-c98e-d926-04a9-e71f9ea20762@tweaklogic.com>
- <eedc5ebf-f8e5-4cbf-b394-c260d2fc53c8@linaro.org>
-From:   Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-In-Reply-To: <eedc5ebf-f8e5-4cbf-b394-c260d2fc53c8@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1697848779; x=1698453579;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A/Jh0cabROh3tBKqefsJctpoBdTf5cZ3huGDHpuMVOI=;
+        b=ND7z+Mwo15F5Cm2dGpPgbdMbmuH0gT14o/iCBV+3oCOfaROBlhFIRrHBbAzeMoD7yd
+         bc6qQKfC4Sd6BwY2Evn+8SIbEFdqrpMOfSqahCTQdzMeKfqy92lOU90kyS1scaRBxlhs
+         KnOiM0aBEUxu7BzDkMygRmCBPxfPsHrZ9mMWpoRfDIvOMgALMJM5eaMv6ODVaBFv7ubz
+         jY2SZhSG82A+RopcLovDixGUem56haZdceW+0LYlmnkZvmJ/BSxb8Qjokpl34CXvVPt4
+         Krhzm4lyBd2ZRmjYJbNIKav9pPBSJU7GwroJWTicnI6aS45dfxoPVaC42sRot4A72+J5
+         Ymsw==
+X-Gm-Message-State: AOJu0Yx/o3JWYLkxcDA6UycpmlvX3lLT9gaVNovY6oR6F9745t4sWV1r
+        A1jmJXZBuh6m9diHg3n4AQdehW27xco=
+X-Google-Smtp-Source: AGHT+IERTF/boS7m9A3yc+dkON4idgDVIRwkZ/vsTNZeATPA/9tJXZk8bTQe9YOPYHXiWU+IfFb3az19u/8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:3244:b0:6be:2a8a:abb7 with SMTP id
+ bn4-20020a056a00324400b006be2a8aabb7mr93757pfb.1.1697848779063; Fri, 20 Oct
+ 2023 17:39:39 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 17:39:37 -0700
+In-Reply-To: <20230914063325.85503-3-weijiang.yang@intel.com>
+Mime-Version: 1.0
+References: <20230914063325.85503-1-weijiang.yang@intel.com> <20230914063325.85503-3-weijiang.yang@intel.com>
+Message-ID: <ZTMdyR8e63sCTKWc@google.com>
+Subject: Re: [PATCH v6 02/25] x86/fpu/xstate: Fix guest fpstate allocation
+ size calculation
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dave.hansen@intel.com,
+        peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> of apds9300 handles both situations whether interrupt bindings are provided or not, whereas,
->> apds9960 requires an interrupt binding for probe() to be successful. I thought it would
->> be appropriate to add that in the schema.
+On Thu, Sep 14, 2023, Yang Weijiang wrote:
+> Fix guest xsave area allocation size from fpu_user_cfg.default_size to
+> fpu_kernel_cfg.default_size so that the xsave area size is consistent
+> with fpstate->size set in __fpstate_reset().
 > 
-> Not explained in commit msg.
+> With the fix, guest fpstate size is sufficient for KVM supported guest
+> xfeatures.
 > 
-> Best regards,
-> Krzysztof
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> ---
+>  arch/x86/kernel/fpu/core.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-Yes, I will add all these point in my next commit message in apds9306 patch series rather than
-a separate patch as suggested by Conor.
+> diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+> index a86d37052a64..a42d8ad26ce6 100644
+> --- a/arch/x86/kernel/fpu/core.c
+> +++ b/arch/x86/kernel/fpu/core.c
+> @@ -220,7 +220,9 @@ bool fpu_alloc_guest_fpstate(struct fpu_guest *gfpu)
+>  	struct fpstate *fpstate;
+>  	unsigned int size;
+>  
+> -	size = fpu_user_cfg.default_size + ALIGN(offsetof(struct fpstate, regs), 64);
+> +	size = fpu_kernel_cfg.default_size +
+> +	       ALIGN(offsetof(struct fpstate, regs), 64);
 
-Regards,
-Subhajit Ghosh
+Shouldn't all the other calculations in this function also switch to fpu_kernel_cfg?
+At the very least, this looks wrong when paired with the above:
+
+	gfpu->uabi_size		= sizeof(struct kvm_xsave);
+	if (WARN_ON_ONCE(fpu_user_cfg.default_size > gfpu->uabi_size))
+		gfpu->uabi_size = fpu_user_cfg.default_size;
