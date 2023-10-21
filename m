@@ -2,142 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C83277D1E7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 19:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7798F7D1E88
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 19:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbjJURGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 13:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
+        id S231794AbjJURPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 13:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJURGt (ORCPT
+        with ESMTP id S229784AbjJURPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 13:06:49 -0400
-Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03C8F4
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:06:45 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id uFQvqTkB8Bo7OuFQvqjLbi; Sat, 21 Oct 2023 19:06:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1697908003;
-        bh=uy9rKGXC9pVvC/rWHxA/Lky5Qfo0J4plguAT77M6c0E=;
-        h=From:To:Cc:Subject:Date;
-        b=Iv8iVbAFNffdrdJXskC8W3teIYrEDdSHlLmFpXJJKVhCWU6rdIP4bNTywwu2Dc/FM
-         Y6S3Xu3/rFa/RQdEaJh+doF8unrzOlIMUS6VJLvxV9iOMkvCoK/r/B2LeKOW+ghYzr
-         XPjVY5OLtgidLo3P1vhiyRBHQFs4ujVAGoJvXjqe7dTqNEMwiM5XpjI5Cs80BDv3lm
-         U++OHUfO1ukV7GT1irym5H8lcl3DG/GWKVu830HMVphWbWqBzcYxr4EpHUBRyFX9u5
-         PtUmBp65B94G5nhB2hgRwfTU+VA+jC8MPT8MWQq6dzryUOyRiam7yYqT5jDLMxKqVX
-         TTv62Wd8swC3g==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 21 Oct 2023 19:06:43 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     keescook@chromium.org, Robert Richter <rric@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Temerkhanov <s.temerkhanov@gmail.com>
-Cc:     linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Borislav Petkov <bp@suse.de>, linux-edac@vger.kernel.org
-Subject: [PATCH] EDAC/thunderx: Fix some potential buffer overflow in thunderx_ocx_com_threaded_isr()
-Date:   Sat, 21 Oct 2023 19:06:34 +0200
-Message-Id: <a787355ac896903935dd85ac96cddf1a0afa87af.1697903882.git.christophe.jaillet@wanadoo.fr>
+        Sat, 21 Oct 2023 13:15:52 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C639124;
+        Sat, 21 Oct 2023 10:15:47 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9becde9ea7bso632539566b.0;
+        Sat, 21 Oct 2023 10:15:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697908546; x=1698513346; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SYVq2ZPazJDWbniLyYRNjUBhJddUsd8744HXa1msGVw=;
+        b=TIK1rH0+zDgIJDMw8gvdqSTo7G9/BwIrkWep/wMxuR00xE7MOCtflMptMin43S8jVs
+         DWVZBVcx9jD/UdhkvVFnbo3mFAhvR7vgI0FYg5wgo/Bw+5SZqB0TBO27EsusQn2uwnzu
+         oDuLgMKilvNpr1anzZIsTjh52K8VAWlTKk2YKKC1n1FHw4Z33N7hAu1GTcqU/kQdySPA
+         4ftLrvnjVse4Nsaf38Hhtfuut9nzIH5RUeTGby0fJFXmOTAgclxhWDSw/4zPghL/pohh
+         AItGh1Z4hALCjVRfNdFY5P3KxRX389NQSAR9juFL+9rdHNMGdy4Pqr311foKwOBKDo7J
+         kESw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697908546; x=1698513346;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SYVq2ZPazJDWbniLyYRNjUBhJddUsd8744HXa1msGVw=;
+        b=Z558oVuaQv1faDmwG6PbJvNoxYKoO6w3x/NCupUM4WnmC6thJ8M3BGuzbIY+hJsoRl
+         vL948vE82kO5HAzL7FltnYgnZchIqzt+9ylbF+EMz4PDLuRLKP/q82SkvMSX4ZqbhyeV
+         6GKa0p6xPL/A1Gxum8REqmG6mJntMZGivB23CpSp06ErHRKtF3gFD5K98jMIObGEce6b
+         6qJ7IrxzamK2fujYuzBNFa5SlrPSdWU4FRzQhD9Felhi7Jrf2az8gSmuXp4YI2fqNd87
+         j+vE5+I02hVWIQaVgkI1r8kjYYjLyO635rhmDTc3EDncRXvEG5iA4eD2Cjt0Mpw5Au1l
+         EGyg==
+X-Gm-Message-State: AOJu0Yw9INj2XmbOXhhukpgBkJzNLUSYCQx+ZSPHtB2o7jApqhDHhsv2
+        6dLieCbTVIFK+2UCayzIt4jDCl3pUFtglA==
+X-Google-Smtp-Source: AGHT+IEh/1SUOV+kWD84qsjX/cvZMRrPM3Yt1mkdcpK7e8t2yu8K8/cQQ1lkh7VcRyns7yK5FRBpNA==
+X-Received: by 2002:a17:906:4fc7:b0:9bf:c00f:654a with SMTP id i7-20020a1709064fc700b009bfc00f654amr4311336ejw.24.1697908545586;
+        Sat, 21 Oct 2023 10:15:45 -0700 (PDT)
+Received: from localhost.localdomain ([95.90.240.24])
+        by smtp.gmail.com with ESMTPSA id f20-20020a17090660d400b009a1c05bd672sm3823964ejk.127.2023.10.21.10.15.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Oct 2023 10:15:44 -0700 (PDT)
+From:   Nik Bune <n2h9z4@gmail.com>
+To:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        skhan@linuxfoundation.org, t-kristo@ti.com
+Cc:     Nik Bune <n2h9z4@gmail.com>, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: watchdog: davinci-wdt: convert txt to yaml
+Date:   Sat, 21 Oct 2023 19:13:23 +0200
+Message-Id: <20231021171323.113208-1-n2h9z4@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncat() usage in thunderx_ocx_com_threaded_isr() is wrong.
-The size given to strncat() is the maximum number of bytes that can be
-written, excluding the trailing NULL.
+Convert txt file to yaml.
+Add maintainers list. Took from ti,rti-wdt.yaml file. 
 
-Here, the size of the 'msg' buffer is used (i.e. OCX_MESSAGE_SIZE), not
-the space that is remaining.
-The space for the ending NULL is also not taken into account.
-
-in order to fix it:
-   - call decode_register() before the snprintf() calls
-   - use scnprintf() instead of snprintf() and compute, in the 'remaining'
-     variable, the space that is still available in the 'msg' buffer
-   - add a %s at the end of the format strings and append directly the
-     result of decode_register() stored in 'other'
-   - write directly at the right position in the 'msg' buffer when
-     appending some data in the for loop.
-
-Doing so, all usages of strncat() are removed.
-
-Fixes: 41003396f932 ("EDAC, thunderx: Add Cavium ThunderX EDAC driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Nik Bune <n2h9z4@gmail.com>
 ---
-This is cross-compile tested only.
-Review with care.
----
- drivers/edac/thunderx_edac.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ .../bindings/watchdog/davinci-wdt.txt         | 24 ---------
+ .../bindings/watchdog/ti,davinci-wdt.yaml     | 50 +++++++++++++++++++
+ 2 files changed, 50 insertions(+), 24 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
+ create mode 100644 Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
 
-diff --git a/drivers/edac/thunderx_edac.c b/drivers/edac/thunderx_edac.c
-index b9c5772da959..9544836dbd19 100644
---- a/drivers/edac/thunderx_edac.c
-+++ b/drivers/edac/thunderx_edac.c
-@@ -1111,6 +1111,7 @@ static irqreturn_t thunderx_ocx_com_threaded_isr(int irq, void *irq_id)
- 
- 	unsigned long tail;
- 	struct ocx_com_err_ctx *ctx;
-+	size_t remaining;
- 	int lane;
- 	char *msg;
- 	char *other;
-@@ -1127,27 +1128,26 @@ static irqreturn_t thunderx_ocx_com_threaded_isr(int irq, void *irq_id)
- 				ARRAY_SIZE(ocx->com_err_ctx));
- 		ctx = &ocx->com_err_ctx[tail];
- 
--		snprintf(msg, OCX_MESSAGE_SIZE, "%s: OCX_COM_INT: %016llx",
--			ocx->edac_dev->ctl_name, ctx->reg_com_int);
+diff --git a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt b/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
+deleted file mode 100644
+index aa10b8ec36e2..000000000000
+--- a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
++++ /dev/null
+@@ -1,24 +0,0 @@
+-Texas Instruments DaVinci/Keystone Watchdog Timer (WDT) Controller
 -
- 		decode_register(other, OCX_OTHER_SIZE,
- 				ocx_com_errors, ctx->reg_com_int);
- 
--		strncat(msg, other, OCX_MESSAGE_SIZE);
-+		remaining = OCX_MESSAGE_SIZE;
-+		remaining -= scnprintf(msg, remaining, "%s: OCX_COM_INT: %016llx%s",
-+				       ocx->edac_dev->ctl_name, ctx->reg_com_int,
-+				       other);
- 
- 		for (lane = 0; lane < OCX_RX_LANES; lane++)
- 			if (ctx->reg_com_int & BIT(lane)) {
--				snprintf(other, OCX_OTHER_SIZE,
--					 "\n\tOCX_LNE_INT[%02d]: %016llx OCX_LNE_STAT11[%02d]: %016llx",
--					 lane, ctx->reg_lane_int[lane],
--					 lane, ctx->reg_lane_stat11[lane]);
+-Required properties:
+-- compatible : Should be "ti,davinci-wdt", "ti,keystone-wdt"
+-- reg : Should contain WDT registers location and length
 -
--				strncat(msg, other, OCX_MESSAGE_SIZE);
+-Optional properties:
+-- timeout-sec : Contains the watchdog timeout in seconds
+-- clocks : the clock feeding the watchdog timer.
+-	   Needed if platform uses clocks.
+-	   See clock-bindings.txt
 -
- 				decode_register(other, OCX_OTHER_SIZE,
- 						ocx_lane_errors,
- 						ctx->reg_lane_int[lane]);
--				strncat(msg, other, OCX_MESSAGE_SIZE);
+-Documentation:
+-Davinci DM646x - https://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
+-Keystone - https://www.ti.com/lit/ug/sprugv5a/sprugv5a.pdf
+-
+-Examples:
+-
+-wdt: wdt@2320000 {
+-	compatible = "ti,davinci-wdt";
+-	reg = <0x02320000 0x80>;
+-	timeout-sec = <30>;
+-	clocks = <&clkwdtimer0>;
+-};
+diff --git a/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml b/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
+new file mode 100644
+index 000000000000..357c1effff49
+--- /dev/null
++++ b/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
+@@ -0,0 +1,50 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/watchdog/ti,davinci-wdt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+				remaining -= scnprintf(msg + (OCX_MESSAGE_SIZE - remaining),
-+						       remaining,
-+						       "\n\tOCX_LNE_INT[%02d]: %016llx OCX_LNE_STAT11[%02d]: %016llx%s",
-+						       lane, ctx->reg_lane_int[lane],
-+						       lane, ctx->reg_lane_stat11[lane],
-+						       other);
- 			}
- 
- 		if (ctx->reg_com_int & OCX_COM_INT_CE)
++title: Texas Instruments DaVinci/Keystone Watchdog Timer (WDT) Controller
++
++description: |
++  Documentation:
++  Davinci DM646x - https://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
++  Keystone - https://www.ti.com/lit/ug/sprugv5a/sprugv5a
++
++maintainers:
++  - Tero Kristo <t-kristo@ti.com>
++
++allOf:
++  - $ref: watchdog.yaml#
++
++properties:
++  compatible:
++    enum:
++      - ti,davinci-wdt
++      - ti,keystone-wdt
++
++  reg:
++    maxItems: 1
++
++  timeout-sec: true
++
++  clocks:
++    description:
++      the clock feeding the watchdog timer.
++      Needed if platform uses clocks.
++      See clock-bindings.txt
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    watchdog@2320000 {
++        compatible = "ti,davinci-wdt";
++        reg = <0x02320000 0x80>;
++        timeout-sec = <30>;
++        clocks = <&clkwdtimer0>;
++    };
 -- 
 2.34.1
-
