@@ -2,81 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A517D1D4A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 15:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D41ED7D1D64
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 16:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbjJUNqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 09:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
+        id S230307AbjJUOI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 10:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJUNp6 (ORCPT
+        with ESMTP id S229478AbjJUOI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 09:45:58 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F7CD63;
-        Sat, 21 Oct 2023 06:45:54 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4SCMpB3zqnz9v7gY;
-        Sat, 21 Oct 2023 21:32:50 +0800 (CST)
-Received: from [10.45.152.169] (unknown [10.45.152.169])
-        by APP1 (Coremail) with SMTP id LxC2BwBXY5Tr1TNlii2lAg--.49572S2;
-        Sat, 21 Oct 2023 14:45:29 +0100 (CET)
-Message-ID: <596cb20e-a03c-cc69-d525-719d5a5b4c12@huaweicloud.com>
-Date:   Sat, 21 Oct 2023 15:45:16 +0200
+        Sat, 21 Oct 2023 10:08:26 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A4C1A8
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:08:24 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1quCe3-0005gd-Ey; Sat, 21 Oct 2023 16:08:03 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1quCe2-003GVr-E8; Sat, 21 Oct 2023 16:08:02 +0200
+Received: from mfe by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1quCe2-00FcKc-BI; Sat, 21 Oct 2023 16:08:02 +0200
+Date:   Sat, 21 Oct 2023 16:08:02 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: freescale: debix-som: Add heartbeat LED
+Message-ID: <20231021140802.4nyyaxclcrqv5n7b@pengutronix.de>
+References: <20231021005100.3490929-1-kieran.bingham@ideasonboard.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH memory-model] docs: memory-barriers: Add note on compiler
- transformation and address deps
-To:     paulmck@kernel.org
-Cc:     Akira Yokosawa <akiyks@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <ceaeba0a-fc30-4635-802a-668c859a58b2@paulmck-laptop>
- <4110a58a-8db5-57c4-2f5a-e09ee054baaa@huaweicloud.com>
- <1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com>
- <f363d6e0-5682-43e7-9a3f-6b896c3cd920@paulmck-laptop>
- <b96cfbc1-f6b0-2fa6-b72d-d57c34bbf14b@huaweicloud.com>
- <2694e6e1-3282-4a69-b955-06afd7d7f87f@paulmck-laptop>
- <03ea8aea-2d0c-48ab-bb0d-e585571f1926@gmail.com>
- <8322165e-c287-6e43-239e-3fcd0b375c1e@huaweicloud.com>
- <f2a94468-b99a-412b-9336-60a76f04cda3@paulmck-laptop>
-From:   Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-In-Reply-To: <f2a94468-b99a-412b-9336-60a76f04cda3@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwBXY5Tr1TNlii2lAg--.49572S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wry7Wr4xuF45Wr4rtw1kXwb_yoW8CF1UpF
-        ZxGa1vyFZ8Ar4xArsFqw45XFyjvry3JF15Xr1rGrykA398ZF15AFZ29r1j9wsxZrsak3yj
-        vw4aqa9xZr98XaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UdxhLUUUUU=
-X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231021005100.3490929-1-kieran.bingham@ideasonboard.com>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,63 +63,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kieran,
 
-Am 10/20/2023 um 7:56 PM schrieb Paul E. McKenney:
-> On Fri, Oct 20, 2023 at 06:13:34PM +0200, Jonas Oberhauser wrote:
->> Am 10/20/2023 um 5:24 PM schrieb Akira Yokosawa:
->>> Hi Paul,
->>>
->>> On 2023/10/20 22:57, Paul E. McKenney wrote:
->>> [...]
->>>> So if there are things that rcu_dereference.rst is missing, they do
->>>> need to be added.
->>> As far as I can see, there is no mention of "address dependency"
->>> in rcu_dereference.rst.
->>> Yes, I see the discussion in rcu_dereference.rst is all about how
->>> not to break address dependency by proper uses of rcu_dereference()
->>> and its friends.  But that might not be obvious for readers who
->>> followed the references placed in memory-barriers.txt.
->>>
->>> Using the term "address dependency" somewhere in rcu_dereference.rst
->>> should help such readers, I guess.
->> I think that's a good point.
-> How about the commit shown at the end of this email,
+On 23-10-21, Kieran Bingham wrote:
+> Map the 'RUN' LED present on the Debix-SOM as a heartbeat.
+> 
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> ---
+>  .../dts/freescale/imx8mp-debix-som-a.dtsi     | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a.dtsi
+> index bc312aa1bfc8..c9a81486da48 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a.dtsi
+> @@ -20,6 +20,19 @@ reg_usdhc2_vmmc: regulator-usdhc2 {
+>  		gpio = <&gpio2 19 GPIO_ACTIVE_HIGH>;
+>  		enable-active-high;
+>  	};
+> +
+> +	gpio-leds {
+> +		compatible = "gpio-leds";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_gpio_led>;
+> +
+> +		status {
 
+according the bindings-doc, this should be:
 
-I think it's very clear.
+		'led-status' or 'led-0'
 
+> +			label = "yellow:status";
 
-> with a Reported-by for both of you?
+label is deprecated, instead function and color should be used.
 
-I haven't reported anything.
+With that fixed feel to add my:
 
+Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
 
->>> [...]
->>>>> Thanks for the response, I started thinking my mails aren't getting through
->>>>> again.
->>> Jonas, FWIW, your email archived at
->>>
->>>       https://lore.kernel.org/linux-doc/1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com/
->>>
->>> didn't reach my gmail inbox.  I looked for it in the spam folder,
->>> but couldn't find it there either.
->>> [...]
->>
->> Thanks Akira!
->>
->> I wrote the gmail support a while ago, but no response.
->>
->> Currently no idea who to talk to... Oh well.
-> Your emails used to end up in my spam folder quite frequently, but
-> they have been coming through since you changed your email address.
-
-
-In return, I receive all mail from the mailing list, if is also 
-addressed to me, twice.
-So it evens out, somehow? (I suspect this is a configuration error in my 
-mail filters on my side though)
-
-Have a lot of fun,
-
-     jonas
-
+> +			gpios = <&gpio3 16 GPIO_ACTIVE_HIGH>;
+> +			default-state = "on";
+> +			linux,default-trigger = "heartbeat";
+> +		};
+> +	};
+>  };
+>  
+>  &A53_0 {
+> @@ -203,6 +216,12 @@ &wdog1 {
+>  };
+>  
+>  &iomuxc {
+> +	pinctrl_gpio_led: gpioledgrp {
+> +		fsl,pins = <
+> +			MX8MP_IOMUXC_NAND_READY_B__GPIO3_IO16		0x19
+> +		>;
+> +	};
+> +
+>  	pinctrl_i2c1: i2c1grp {
+>  		fsl,pins = <
+>  			MX8MP_IOMUXC_I2C1_SCL__I2C1_SCL			0x400001c2
+> -- 
+> 2.34.1
+> 
+> 
