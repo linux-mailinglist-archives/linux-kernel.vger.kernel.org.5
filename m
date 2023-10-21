@@ -2,235 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5013E7D1ABC
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 06:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03467D1AC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 06:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbjJUEY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 00:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
+        id S230283AbjJUEdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 00:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJUEYz (ORCPT
+        with ESMTP id S229500AbjJUEdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 00:24:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F58B13E
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 21:24:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697862290; x=1729398290;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/xtcIvW+X1tCAEbYXB/UAq+tVHxEp+II2zI7H+ilc5k=;
-  b=DBB7BOvmPNGUz71o+RA0cZfk8mYGfKHzUDZji2ILB4Rhe5g8UXxtNx+b
-   OIRAvKpBHoqB6W1bYYrM7lGNF4R3D/kvmGIHy6+U0Lx38rdUaDeeW+RVA
-   GQQDS+Tquer8vHfqZXJalgwpu7TQHqbPta6wgMdox70OkmUAoHTtUvRwm
-   DiT1U32tyGXbDZ76ftgE1q8FdAimnvE0VAZoMM9piwwr9rdDCbg4XWK1C
-   GEx7hQzupmqCQ+2SQMl0tkcPw9a0PUb2NVJr7+EZ0u9JlxDvMqfOoEEh8
-   xicBI/womGCd6XSEMSUuqGL9V8J6TvTFF8aNsVGOXi46WoBYxnv3zVa/n
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="472833180"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="472833180"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 21:24:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="1088931720"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="1088931720"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 20 Oct 2023 21:24:48 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qu3Xa-0004PU-06;
-        Sat, 21 Oct 2023 04:24:46 +0000
-Date:   Sat, 21 Oct 2023 12:24:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christoph =?iso-8859-1?Q?B=F6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: drivers/block/drbd/drbd_actlog.c:1015: warning: Function parameter
- or member 'peer_device' not described in 'drbd_try_rs_begin_io'
-Message-ID: <202310211241.qQivM1uZ-lkp@intel.com>
+        Sat, 21 Oct 2023 00:33:40 -0400
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6DED5F
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 21:33:36 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VuYfkpw_1697862809;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VuYfkpw_1697862809)
+          by smtp.aliyun-inc.com;
+          Sat, 21 Oct 2023 12:33:30 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     mgorman@techsingularity.net, hughd@google.com, vbabka@suse.cz,
+        ying.huang@intel.com, ziy@nvidia.com, fengwei.yin@intel.com,
+        baolin.wang@linux.alibaba.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] mm: migrate: record the mlocked page status to remove unnecessary lru drain
+Date:   Sat, 21 Oct 2023 12:33:22 +0800
+Message-Id: <06e9153a7a4850352ec36602df3a3a844de45698.1697859741.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+When doing compaction, I found the lru_add_drain() is an obvious hotspot
+when migrating pages. The distribution of this hotspot is as follows:
+   - 18.75% compact_zone
+      - 17.39% migrate_pages
+         - 13.79% migrate_pages_batch
+            - 11.66% migrate_folio_move
+               - 7.02% lru_add_drain
+                  + 7.02% lru_add_drain_cpu
+               + 3.00% move_to_new_folio
+                 1.23% rmap_walk
+            + 1.92% migrate_folio_unmap
+         + 3.20% migrate_pages_sync
+      + 0.90% isolate_migratepages
 
-FYI, the error/warning still remains.
+The lru_add_drain() was added by commit c3096e6782b7 ("mm/migrate:
+__unmap_and_move() push good newpage to LRU") to drain the newpage to LRU
+immediately, to help to build up the correct newpage->mlock_count in
+remove_migration_ptes() for mlocked pages. However, if there are no mlocked
+pages are migrating, then we can avoid this lru drain operation, especailly
+for the heavy concurrent scenarios.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
-commit: 0d11f3cf279c5ad20a41f29242f170ba3c02f2da drbd: Pass a peer device to the resync and online verify functions
-date:   7 months ago
-config: x86_64-randconfig-r015-20230828 (https://download.01.org/0day-ci/archive/20231021/202310211241.qQivM1uZ-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231021/202310211241.qQivM1uZ-lkp@intel.com/reproduce)
+So we can record the source pages' mlocked status in migrate_folio_unmap(),
+and only drain the lru list when the mlocked status is set in migrate_folio_move().
+In addition, the page was already isolated from lru when migrating, so checking
+the mlocked status is stable by folio_test_mlocked() in migrate_folio_unmap().
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310211241.qQivM1uZ-lkp@intel.com/
+After this patch, I can see the hotpot of the lru_add_drain() is gone:
+   - 9.41% migrate_pages_batch
+      - 6.15% migrate_folio_move
+         - 3.64% move_to_new_folio
+            + 1.80% migrate_folio_extra
+            + 1.70% buffer_migrate_folio
+         + 1.41% rmap_walk
+         + 0.62% folio_add_lru
+      + 3.07% migrate_folio_unmap
 
-All warnings (new ones prefixed by >>):
+Meanwhile, the compaction latency shows some improvements when running
+thpscale:
+                            base                   patched
+Amean     fault-both-1      1131.22 (   0.00%)     1112.55 *   1.65%*
+Amean     fault-both-3      2489.75 (   0.00%)     2324.15 *   6.65%*
+Amean     fault-both-5      3257.37 (   0.00%)     3183.18 *   2.28%*
+Amean     fault-both-7      4257.99 (   0.00%)     4079.04 *   4.20%*
+Amean     fault-both-12     6614.02 (   0.00%)     6075.60 *   8.14%*
+Amean     fault-both-18    10607.78 (   0.00%)     8978.86 *  15.36%*
+Amean     fault-both-24    14911.65 (   0.00%)    11619.55 *  22.08%*
+Amean     fault-both-30    14954.67 (   0.00%)    14925.66 *   0.19%*
+Amean     fault-both-32    16654.87 (   0.00%)    15580.31 *   6.45%*
 
->> drivers/block/drbd/drbd_actlog.c:1015: warning: Function parameter or member 'peer_device' not described in 'drbd_try_rs_begin_io'
->> drivers/block/drbd/drbd_actlog.c:1015: warning: Excess function parameter 'device' description in 'drbd_try_rs_begin_io'
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+Changes from v2:
+ - Use BIT() to define macros.
+ - Simplify handing page_was_mapped and page_was_mlocked variables with
+introducing old_page_state variable.
 
+Changes from v1:
+ - Use separate flags in __migrate_folio_record() to avoid to pack flags
+in each call site per Ying.
+---
+ mm/migrate.c | 48 +++++++++++++++++++++++++++++-------------------
+ 1 file changed, 29 insertions(+), 19 deletions(-)
 
-vim +1015 drivers/block/drbd/drbd_actlog.c
-
-b411b3637fa71f Philipp Reisner      2009-09-25  1004  
-b411b3637fa71f Philipp Reisner      2009-09-25  1005  /**
-b411b3637fa71f Philipp Reisner      2009-09-25  1006   * drbd_try_rs_begin_io() - Gets an extent in the resync LRU cache, does not sleep
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1007   * @device:	DRBD device.
-b411b3637fa71f Philipp Reisner      2009-09-25  1008   * @sector:	The sector number.
-b411b3637fa71f Philipp Reisner      2009-09-25  1009   *
-b411b3637fa71f Philipp Reisner      2009-09-25  1010   * Gets an extent in the resync LRU cache, sets it to BME_NO_WRITES, then
-b411b3637fa71f Philipp Reisner      2009-09-25  1011   * tries to set it to BME_LOCKED. Returns 0 upon success, and -EAGAIN
-b411b3637fa71f Philipp Reisner      2009-09-25  1012   * if there is still application IO going on in this area.
-b411b3637fa71f Philipp Reisner      2009-09-25  1013   */
-0d11f3cf279c5a Christoph Böhmwalder 2023-03-30  1014  int drbd_try_rs_begin_io(struct drbd_peer_device *peer_device, sector_t sector)
-b411b3637fa71f Philipp Reisner      2009-09-25 @1015  {
-0d11f3cf279c5a Christoph Böhmwalder 2023-03-30  1016  	struct drbd_device *device = peer_device->device;
-b411b3637fa71f Philipp Reisner      2009-09-25  1017  	unsigned int enr = BM_SECT_TO_EXT(sector);
-b411b3637fa71f Philipp Reisner      2009-09-25  1018  	const unsigned int al_enr = enr*AL_EXT_PER_BM_SECT;
-b411b3637fa71f Philipp Reisner      2009-09-25  1019  	struct lc_element *e;
-b411b3637fa71f Philipp Reisner      2009-09-25  1020  	struct bm_extent *bm_ext;
-b411b3637fa71f Philipp Reisner      2009-09-25  1021  	int i;
-0d11f3cf279c5a Christoph Böhmwalder 2023-03-30  1022  	bool throttle = drbd_rs_should_slow_down(peer_device, sector, true);
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1023  
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1024  	/* If we need to throttle, a half-locked (only marked BME_NO_WRITES,
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1025  	 * not yet BME_LOCKED) extent needs to be kicked out explicitly if we
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1026  	 * need to throttle. There is at most one such half-locked extent,
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1027  	 * which is remembered in resync_wenr. */
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1028  
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1029  	if (throttle && device->resync_wenr != enr)
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1030  		return -EAGAIN;
-b411b3637fa71f Philipp Reisner      2009-09-25  1031  
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1032  	spin_lock_irq(&device->al_lock);
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1033  	if (device->resync_wenr != LC_FREE && device->resync_wenr != enr) {
-b411b3637fa71f Philipp Reisner      2009-09-25  1034  		/* in case you have very heavy scattered io, it may
-b411b3637fa71f Philipp Reisner      2009-09-25  1035  		 * stall the syncer undefined if we give up the ref count
-b411b3637fa71f Philipp Reisner      2009-09-25  1036  		 * when we try again and requeue.
-b411b3637fa71f Philipp Reisner      2009-09-25  1037  		 *
-b411b3637fa71f Philipp Reisner      2009-09-25  1038  		 * if we don't give up the refcount, but the next time
-b411b3637fa71f Philipp Reisner      2009-09-25  1039  		 * we are scheduled this extent has been "synced" by new
-b411b3637fa71f Philipp Reisner      2009-09-25  1040  		 * application writes, we'd miss the lc_put on the
-b411b3637fa71f Philipp Reisner      2009-09-25  1041  		 * extent we keep the refcount on.
-b411b3637fa71f Philipp Reisner      2009-09-25  1042  		 * so we remembered which extent we had to try again, and
-b411b3637fa71f Philipp Reisner      2009-09-25  1043  		 * if the next requested one is something else, we do
-b411b3637fa71f Philipp Reisner      2009-09-25  1044  		 * the lc_put here...
-b411b3637fa71f Philipp Reisner      2009-09-25  1045  		 * we also have to wake_up
-b411b3637fa71f Philipp Reisner      2009-09-25  1046  		 */
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1047  		e = lc_find(device->resync, device->resync_wenr);
-b411b3637fa71f Philipp Reisner      2009-09-25  1048  		bm_ext = e ? lc_entry(e, struct bm_extent, lce) : NULL;
-b411b3637fa71f Philipp Reisner      2009-09-25  1049  		if (bm_ext) {
-0b0ba1efc7b887 Andreas Gruenbacher  2011-06-27  1050  			D_ASSERT(device, !test_bit(BME_LOCKED, &bm_ext->flags));
-0b0ba1efc7b887 Andreas Gruenbacher  2011-06-27  1051  			D_ASSERT(device, test_bit(BME_NO_WRITES, &bm_ext->flags));
-b411b3637fa71f Philipp Reisner      2009-09-25  1052  			clear_bit(BME_NO_WRITES, &bm_ext->flags);
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1053  			device->resync_wenr = LC_FREE;
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1054  			if (lc_put(device->resync, &bm_ext->lce) == 0) {
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1055  				bm_ext->flags = 0;
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1056  				device->resync_locked--;
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1057  			}
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1058  			wake_up(&device->al_wait);
-b411b3637fa71f Philipp Reisner      2009-09-25  1059  		} else {
-d01801710265cf Andreas Gruenbacher  2011-07-03  1060  			drbd_alert(device, "LOGIC BUG\n");
-b411b3637fa71f Philipp Reisner      2009-09-25  1061  		}
-b411b3637fa71f Philipp Reisner      2009-09-25  1062  	}
-b411b3637fa71f Philipp Reisner      2009-09-25  1063  	/* TRY. */
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1064  	e = lc_try_get(device->resync, enr);
-b411b3637fa71f Philipp Reisner      2009-09-25  1065  	bm_ext = e ? lc_entry(e, struct bm_extent, lce) : NULL;
-b411b3637fa71f Philipp Reisner      2009-09-25  1066  	if (bm_ext) {
-b411b3637fa71f Philipp Reisner      2009-09-25  1067  		if (test_bit(BME_LOCKED, &bm_ext->flags))
-b411b3637fa71f Philipp Reisner      2009-09-25  1068  			goto proceed;
-b411b3637fa71f Philipp Reisner      2009-09-25  1069  		if (!test_and_set_bit(BME_NO_WRITES, &bm_ext->flags)) {
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1070  			device->resync_locked++;
-b411b3637fa71f Philipp Reisner      2009-09-25  1071  		} else {
-b411b3637fa71f Philipp Reisner      2009-09-25  1072  			/* we did set the BME_NO_WRITES,
-b411b3637fa71f Philipp Reisner      2009-09-25  1073  			 * but then could not set BME_LOCKED,
-b411b3637fa71f Philipp Reisner      2009-09-25  1074  			 * so we tried again.
-b411b3637fa71f Philipp Reisner      2009-09-25  1075  			 * drop the extra reference. */
-b411b3637fa71f Philipp Reisner      2009-09-25  1076  			bm_ext->lce.refcnt--;
-0b0ba1efc7b887 Andreas Gruenbacher  2011-06-27  1077  			D_ASSERT(device, bm_ext->lce.refcnt > 0);
-b411b3637fa71f Philipp Reisner      2009-09-25  1078  		}
-b411b3637fa71f Philipp Reisner      2009-09-25  1079  		goto check_al;
-b411b3637fa71f Philipp Reisner      2009-09-25  1080  	} else {
-b411b3637fa71f Philipp Reisner      2009-09-25  1081  		/* do we rather want to try later? */
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1082  		if (device->resync_locked > device->resync->nr_elements-3)
-b411b3637fa71f Philipp Reisner      2009-09-25  1083  			goto try_again;
-b411b3637fa71f Philipp Reisner      2009-09-25  1084  		/* Do or do not. There is no try. -- Yoda */
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1085  		e = lc_get(device->resync, enr);
-b411b3637fa71f Philipp Reisner      2009-09-25  1086  		bm_ext = e ? lc_entry(e, struct bm_extent, lce) : NULL;
-b411b3637fa71f Philipp Reisner      2009-09-25  1087  		if (!bm_ext) {
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1088  			const unsigned long rs_flags = device->resync->flags;
-b411b3637fa71f Philipp Reisner      2009-09-25  1089  			if (rs_flags & LC_STARVING)
-d01801710265cf Andreas Gruenbacher  2011-07-03  1090  				drbd_warn(device, "Have to wait for element"
-b411b3637fa71f Philipp Reisner      2009-09-25  1091  				     " (resync LRU too small?)\n");
-46a15bc3ec425b Lars Ellenberg       2011-02-21  1092  			BUG_ON(rs_flags & LC_LOCKED);
-b411b3637fa71f Philipp Reisner      2009-09-25  1093  			goto try_again;
-b411b3637fa71f Philipp Reisner      2009-09-25  1094  		}
-b411b3637fa71f Philipp Reisner      2009-09-25  1095  		if (bm_ext->lce.lc_number != enr) {
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1096  			bm_ext->rs_left = drbd_bm_e_weight(device, enr);
-b411b3637fa71f Philipp Reisner      2009-09-25  1097  			bm_ext->rs_failed = 0;
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1098  			lc_committed(device->resync);
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1099  			wake_up(&device->al_wait);
-0b0ba1efc7b887 Andreas Gruenbacher  2011-06-27  1100  			D_ASSERT(device, test_bit(BME_LOCKED, &bm_ext->flags) == 0);
-b411b3637fa71f Philipp Reisner      2009-09-25  1101  		}
-b411b3637fa71f Philipp Reisner      2009-09-25  1102  		set_bit(BME_NO_WRITES, &bm_ext->flags);
-0b0ba1efc7b887 Andreas Gruenbacher  2011-06-27  1103  		D_ASSERT(device, bm_ext->lce.refcnt == 1);
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1104  		device->resync_locked++;
-b411b3637fa71f Philipp Reisner      2009-09-25  1105  		goto check_al;
-b411b3637fa71f Philipp Reisner      2009-09-25  1106  	}
-b411b3637fa71f Philipp Reisner      2009-09-25  1107  check_al:
-b411b3637fa71f Philipp Reisner      2009-09-25  1108  	for (i = 0; i < AL_EXT_PER_BM_SECT; i++) {
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1109  		if (lc_is_used(device->act_log, al_enr+i))
-b411b3637fa71f Philipp Reisner      2009-09-25  1110  			goto try_again;
-b411b3637fa71f Philipp Reisner      2009-09-25  1111  	}
-b411b3637fa71f Philipp Reisner      2009-09-25  1112  	set_bit(BME_LOCKED, &bm_ext->flags);
-b411b3637fa71f Philipp Reisner      2009-09-25  1113  proceed:
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1114  	device->resync_wenr = LC_FREE;
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1115  	spin_unlock_irq(&device->al_lock);
-b411b3637fa71f Philipp Reisner      2009-09-25  1116  	return 0;
-b411b3637fa71f Philipp Reisner      2009-09-25  1117  
-b411b3637fa71f Philipp Reisner      2009-09-25  1118  try_again:
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1119  	if (bm_ext) {
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1120  		if (throttle) {
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1121  			D_ASSERT(device, !test_bit(BME_LOCKED, &bm_ext->flags));
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1122  			D_ASSERT(device, test_bit(BME_NO_WRITES, &bm_ext->flags));
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1123  			clear_bit(BME_NO_WRITES, &bm_ext->flags);
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1124  			device->resync_wenr = LC_FREE;
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1125  			if (lc_put(device->resync, &bm_ext->lce) == 0) {
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1126  				bm_ext->flags = 0;
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1127  				device->resync_locked--;
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1128  			}
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1129  			wake_up(&device->al_wait);
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1130  		} else
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1131  			device->resync_wenr = enr;
-ad3fee790088d3 Lars Ellenberg       2013-12-20  1132  	}
-b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1133  	spin_unlock_irq(&device->al_lock);
-b411b3637fa71f Philipp Reisner      2009-09-25  1134  	return -EAGAIN;
-b411b3637fa71f Philipp Reisner      2009-09-25  1135  }
-b411b3637fa71f Philipp Reisner      2009-09-25  1136  
-
-:::::: The code at line 1015 was first introduced by commit
-:::::: b411b3637fa71fce9cf2acf0639009500f5892fe The DRBD driver
-
-:::::: TO: Philipp Reisner <philipp.reisner@linbit.com>
-:::::: CC: Jens Axboe <jens.axboe@oracle.com>
-
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 125194f5af0f..35a88334bb3c 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1027,22 +1027,28 @@ union migration_ptr {
+ 	struct anon_vma *anon_vma;
+ 	struct address_space *mapping;
+ };
++
++enum {
++	PAGE_WAS_MAPPED = BIT(0),
++	PAGE_WAS_MLOCKED = BIT(1),
++};
++
+ static void __migrate_folio_record(struct folio *dst,
+-				   unsigned long page_was_mapped,
++				   unsigned long old_page_state,
+ 				   struct anon_vma *anon_vma)
+ {
+ 	union migration_ptr ptr = { .anon_vma = anon_vma };
+ 	dst->mapping = ptr.mapping;
+-	dst->private = (void *)page_was_mapped;
++	dst->private = (void *)old_page_state;
+ }
+ 
+ static void __migrate_folio_extract(struct folio *dst,
+-				   int *page_was_mappedp,
++				   int *old_page_state,
+ 				   struct anon_vma **anon_vmap)
+ {
+ 	union migration_ptr ptr = { .mapping = dst->mapping };
+ 	*anon_vmap = ptr.anon_vma;
+-	*page_was_mappedp = (unsigned long)dst->private;
++	*old_page_state = (unsigned long)dst->private;
+ 	dst->mapping = NULL;
+ 	dst->private = NULL;
+ }
+@@ -1103,7 +1109,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+ {
+ 	struct folio *dst;
+ 	int rc = -EAGAIN;
+-	int page_was_mapped = 0;
++	int old_page_state = 0;
+ 	struct anon_vma *anon_vma = NULL;
+ 	bool is_lru = !__folio_test_movable(src);
+ 	bool locked = false;
+@@ -1157,6 +1163,8 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+ 		folio_lock(src);
+ 	}
+ 	locked = true;
++	if (folio_test_mlocked(src))
++		old_page_state |= PAGE_WAS_MLOCKED;
+ 
+ 	if (folio_test_writeback(src)) {
+ 		/*
+@@ -1206,7 +1214,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+ 	dst_locked = true;
+ 
+ 	if (unlikely(!is_lru)) {
+-		__migrate_folio_record(dst, page_was_mapped, anon_vma);
++		__migrate_folio_record(dst, old_page_state, anon_vma);
+ 		return MIGRATEPAGE_UNMAP;
+ 	}
+ 
+@@ -1232,11 +1240,11 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+ 		VM_BUG_ON_FOLIO(folio_test_anon(src) &&
+ 			       !folio_test_ksm(src) && !anon_vma, src);
+ 		try_to_migrate(src, mode == MIGRATE_ASYNC ? TTU_BATCH_FLUSH : 0);
+-		page_was_mapped = 1;
++		old_page_state |= PAGE_WAS_MAPPED;
+ 	}
+ 
+ 	if (!folio_mapped(src)) {
+-		__migrate_folio_record(dst, page_was_mapped, anon_vma);
++		__migrate_folio_record(dst, old_page_state, anon_vma);
+ 		return MIGRATEPAGE_UNMAP;
+ 	}
+ 
+@@ -1248,7 +1256,8 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
+ 	if (rc == -EAGAIN)
+ 		ret = NULL;
+ 
+-	migrate_folio_undo_src(src, page_was_mapped, anon_vma, locked, ret);
++	migrate_folio_undo_src(src, old_page_state & PAGE_WAS_MAPPED,
++			       anon_vma, locked, ret);
+ 	migrate_folio_undo_dst(dst, dst_locked, put_new_folio, private);
+ 
+ 	return rc;
+@@ -1261,12 +1270,12 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
+ 			      struct list_head *ret)
+ {
+ 	int rc;
+-	int page_was_mapped = 0;
++	int old_page_state = 0;
+ 	struct anon_vma *anon_vma = NULL;
+ 	bool is_lru = !__folio_test_movable(src);
+ 	struct list_head *prev;
+ 
+-	__migrate_folio_extract(dst, &page_was_mapped, &anon_vma);
++	__migrate_folio_extract(dst, &old_page_state, &anon_vma);
+ 	prev = dst->lru.prev;
+ 	list_del(&dst->lru);
+ 
+@@ -1287,10 +1296,10 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
+ 	 * isolated from the unevictable LRU: but this case is the easiest.
+ 	 */
+ 	folio_add_lru(dst);
+-	if (page_was_mapped)
++	if (old_page_state & PAGE_WAS_MLOCKED)
+ 		lru_add_drain();
+ 
+-	if (page_was_mapped)
++	if (old_page_state & PAGE_WAS_MAPPED)
+ 		remove_migration_ptes(src, dst, false);
+ 
+ out_unlock_both:
+@@ -1322,11 +1331,12 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
+ 	 */
+ 	if (rc == -EAGAIN) {
+ 		list_add(&dst->lru, prev);
+-		__migrate_folio_record(dst, page_was_mapped, anon_vma);
++		__migrate_folio_record(dst, old_page_state, anon_vma);
+ 		return rc;
+ 	}
+ 
+-	migrate_folio_undo_src(src, page_was_mapped, anon_vma, true, ret);
++	migrate_folio_undo_src(src, old_page_state & PAGE_WAS_MAPPED,
++			       anon_vma, true, ret);
+ 	migrate_folio_undo_dst(dst, true, put_new_folio, private);
+ 
+ 	return rc;
+@@ -1799,12 +1809,12 @@ static int migrate_pages_batch(struct list_head *from,
+ 	dst = list_first_entry(&dst_folios, struct folio, lru);
+ 	dst2 = list_next_entry(dst, lru);
+ 	list_for_each_entry_safe(folio, folio2, &unmap_folios, lru) {
+-		int page_was_mapped = 0;
++		int old_page_state = 0;
+ 		struct anon_vma *anon_vma = NULL;
+ 
+-		__migrate_folio_extract(dst, &page_was_mapped, &anon_vma);
+-		migrate_folio_undo_src(folio, page_was_mapped, anon_vma,
+-				       true, ret_folios);
++		__migrate_folio_extract(dst, &old_page_state, &anon_vma);
++		migrate_folio_undo_src(folio, old_page_state & PAGE_WAS_MAPPED,
++				       anon_vma, true, ret_folios);
+ 		list_del(&dst->lru);
+ 		migrate_folio_undo_dst(dst, true, put_new_folio, private);
+ 		dst = dst2;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
+
