@@ -2,72 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF367D19DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 02:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E72C7D19E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 02:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbjJUAVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 20:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
+        id S233227AbjJUAXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 20:23:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbjJUAVo (ORCPT
+        with ESMTP id S233197AbjJUAW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 20:21:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACB91BF
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 17:21:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 042E5C433C8;
-        Sat, 21 Oct 2023 00:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697847702;
-        bh=JLVCFPS9n2+33q7bJ21lPZev0WogxM0z1ufKw+/bbgQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HUzv6kl8RuaD6IsYol/bRb7WqlHaJzdRft7iXYjLlVHPgY2W0lt7tDek+fSceK4Pb
-         LmSIbvb/r+yRWvdifgAHzTMrP5QNs4dagHauTRoGiOVXtOMcRM/ecdUAPmQngSl+f4
-         Bs7fQEHYvKUpntZz3LwwQEBS/dJjnpUeqKzmT1SEBL3W+x2clk998+28Pd/4qNa5uj
-         950IH/xcUnZN5reojytbMSrkpNDOuYD/SJgHggV9ydQrvdaQq8MVjtehEhwxZqdjjb
-         CmIg0pwJmH87axy8QtYE4zLEg3f7lhk6h9xBX6igOslR9WSnUpxsseWMFrUc5doVJA
-         QuqKoSBqneE4A==
-Date:   Fri, 20 Oct 2023 17:21:41 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Florian Fainelli <florian.fainelli@broadcom.com>
-Cc:     netdev@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        linux-kernel@vger.kernel.org (open list:ARM/Mediatek SoC support),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support)
-Subject: Re: [PATCH net-next v6 1/2] net: dsa: Use conduit and user terms
-Message-ID: <20231020172141.0efaeb20@kernel.org>
-In-Reply-To: <20231018175820.455893-2-florian.fainelli@broadcom.com>
-References: <20231018175820.455893-1-florian.fainelli@broadcom.com>
-        <20231018175820.455893-2-florian.fainelli@broadcom.com>
+        Fri, 20 Oct 2023 20:22:59 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B79D6F;
+        Fri, 20 Oct 2023 17:22:57 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c9daca2b85so10894995ad.1;
+        Fri, 20 Oct 2023 17:22:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697847777; x=1698452577; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=J8csCcqyPHN70OIAcTNByKOiiEN1AgXGu+ekIk5zwHk=;
+        b=NQltEtuWeprwGPNFmRm5v4J2x/mGURgoNBkm9XwxwGSAt2QaUtzjSRG40st9Z+AYJg
+         K/vlRdInkqhmApDisJ++ME4p+QSpO/Rr1S5FqYQgVpvNO/jxqs/k5LwUvqw5V0o3NBNd
+         dy1w0UOhmha5K5+egMKhOI5SOBUTBAagx8lYDAnhi5NU/ZfZn9Jtb9MHJSolGzE71TPM
+         ZoGvsONtQ/EfEbemldgdO/M806zlG48w39rg+bz3P/tS0KhGoiuIGouhYDZX+wUm8/UJ
+         /6Av4bq2qLdy3f2rX67DYxn45c5EkkcWKBpBEcUVx2NWBcdeD4aSwUjsQRnZaWp+3F/F
+         SXsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697847777; x=1698452577;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J8csCcqyPHN70OIAcTNByKOiiEN1AgXGu+ekIk5zwHk=;
+        b=f/pz1DgjCBc8m1aLx7eVzvrOCE6iN3TdhSwkLwaXlL+K8qAuK86sZ/fyofdO1uChxj
+         UqSCiC9SgMvfflh8eiMmeh1EhIOiTpODR9ONjWre4oN45C/FEb/ujXSw1jaIZyB8qZdw
+         j816wDwUR/x+eZ3DwievnrPoZ1wK1h6WNTwXWYCPcJ3Tk+fLPOogJrWDGDIXTs9lFqK2
+         dV8fsClzE3/Xvk1GqTD2nqZ6d0Vkt0MiIAE+re3Iv9e+1Fe3JBV+DyHvrJZA6fT3YXqE
+         Mm94wf7ztxCNbiQxjWpYsWGwtxpDi38fmfxtrU4ILOZ/fNdKdfAWeoDYBo+WLK8BmGK5
+         SAlg==
+X-Gm-Message-State: AOJu0Yz8BJ3lbCFLzXgtTf22SQUZcwIXA3HVMxNiD+U6gytBLYcNN+MC
+        95nKgFZWjFZx9mxtjqVOT9M=
+X-Google-Smtp-Source: AGHT+IHl4cDpMdS+msHDwp9Hd2ycipZBByb1z2hLNQf1gb3LrZi8K0JuoHhIEIeqL+vQvblEvGzhOQ==
+X-Received: by 2002:a17:903:189:b0:1c9:c879:ee74 with SMTP id z9-20020a170903018900b001c9c879ee74mr4694936plg.26.1697847777088;
+        Fri, 20 Oct 2023 17:22:57 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::4:a906])
+        by smtp.gmail.com with ESMTPSA id h1-20020a170902704100b001c61921d4d2sm2060761plt.302.2023.10.20.17.22.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Oct 2023 17:22:56 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 20 Oct 2023 14:22:54 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Khazhismel Kumykov <khazhy@chromium.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+        Yu Kuai <yukuai3@huawei.com>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        oleg@redhat.com, linan122@huawei.com,
+        Khazhismel Kumykov <khazhy@google.com>
+Subject: Re: [PATCH] blk-throttle: check for overflow in
+ calculate_bytes_allowed
+Message-ID: <ZTMZ3nOXHyv73uvY@slm.duckdns.org>
+References: <20231020223617.2739774-1-khazhy@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231020223617.2739774-1-khazhy@google.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Oct 2023 10:58:19 -0700 Florian Fainelli wrote:
-> Use more inclusive terms throughout the DSA subsystem by moving away
-> from "master" which is replaced by "conduit" and "slave" which is
-> replaced by "user". No functional changes.
+On Fri, Oct 20, 2023 at 03:36:17PM -0700, Khazhismel Kumykov wrote:
+> Inexact, we may reject some not-overflowing values incorrectly, but
+> they'll be on the order of exabytes allowed anyways.
 > 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Acked-by: Stephen Hemminger <stephen@networkplumber.org>
-> Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> This fixes divide error crash on x86 if bps_limit is not configured or
+> is set too high in the rare case that jiffy_elapsed is greater than HZ.
+> 
+> Fixes: e8368b57c006 ("blk-throttle: use calculate_io/bytes_allowed() for throtl_trim_slice()")
+> Fixes: 8d6bbaada2e0 ("blk-throttle: prevent overflow while calculating wait time")
+> Signed-off-by: Khazhismel Kumykov <khazhy@google.com>
 
-This got marked as Changes Requested, I think it no longer applies :S
+Acked-by: Tejun Heo <tj@kernel.org>
+
+Thanks.
+
+-- 
+tejun
