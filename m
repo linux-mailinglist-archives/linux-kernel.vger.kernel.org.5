@@ -2,225 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8407D1B8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 09:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DE47D1B93
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 09:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbjJUHtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 03:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60168 "EHLO
+        id S229861AbjJUHw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 03:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJUHtD (ORCPT
+        with ESMTP id S229472AbjJUHw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 03:49:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB52D63
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 00:48:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697874538; x=1729410538;
-  h=date:from:to:cc:subject:message-id;
-  bh=TyuXRMkBOM9f/dSwgdgaRaqbXS2/wgfn06hjXk/mVYA=;
-  b=Xg5fc3H5nkrKoNbxM0WDMy9QG/vFVmiOPDTOAZMr5YddN9fCbIAUCZVL
-   OPDouFS5Lm76J7nkVymcwceCNU4rBQ/2zOV0GGjEm36e6YTTGgZMD6P1+
-   YcMPbQQuwCN1ruz3bz37rj6CKyLK9BDO7OjmW98tSfaA0T9bTSMfRdtS5
-   guyuhjiqIi9W470VUHBHjVSgVFCI6ZwNd+5K5tDqms2hLoARiTdJqaYds
-   XOXXdDdGe3EK1NgMx1MQZQHNx/d+X0x1gkgl0g/h08SNeEHQOBSlbfOgF
-   i4XFD2yLKXLYxTM4u/dGmkDurlLG3X9VI0JX8MxQxJcu7Zsa5QJnaq6Hs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="371686531"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="371686531"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2023 00:48:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="787002366"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="787002366"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 21 Oct 2023 00:48:56 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qu6j8-0004aA-1I;
-        Sat, 21 Oct 2023 07:48:54 +0000
-Date:   Sat, 21 Oct 2023 15:48:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:mmap_sem.2023.10.18a] BUILD REGRESSION
- 4015256f2bc734d4175381762282784597f41cfa
-Message-ID: <202310211557.E69wdliB-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sat, 21 Oct 2023 03:52:27 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D31D66;
+        Sat, 21 Oct 2023 00:52:24 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SCDFF5wBtz4f3mHR;
+        Sat, 21 Oct 2023 15:52:17 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAXrt0ygzNl84cpDg--.7754S4;
+        Sat, 21 Oct 2023 15:52:20 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     bvanassche@acm.org, hch@lst.de, kbusch@kernel.org,
+        ming.lei@redhat.com, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH RFC v2 0/8] blk-mq: improve tag fair sharing
+Date:   Sat, 21 Oct 2023 23:47:58 +0800
+Message-Id: <20231021154806.4019417-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAXrt0ygzNl84cpDg--.7754S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Aryxur4rAw48ArWktF48Crg_yoW8tFy8pF
+        W3Ka1fGw4xtrW2qr43Z3y0qa4Fqw4kCF45Krn3X345Ar1Ykrs2q3Wvqr4rZFyxJrs3AFsr
+        XF4jyr98CFWUJ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9q14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4I
+        kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+        WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+        0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWr
+        Jr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJbIYCTnIWIevJa73UjIFyTuYvjTRNgAwUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git mmap_sem.2023.10.18a
-branch HEAD: 4015256f2bc734d4175381762282784597f41cfa  EXP TESTING: introduce delay between getting a VMA and using it in show_map
+From: Yu Kuai <yukuai3@huawei.com>
 
-Error/Warning reports:
+Current implementation:
+ - a counter active_queues record how many queue/hctx is sharing tags,
+ and it's updated while issue new IO, and cleared in
+ blk_mq_timeout_work().
+ - if active_queues is more than 1, then tags is fair shared to each
+ node;
 
-https://lore.kernel.org/oe-kbuild-all/202310200320.JSEpTicA-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202310200814.xePmkBus-lkp@intel.com
+New implementation:
+ - a new field 'available_tags' is added to each node, and it's
+ calculate in slow path, hence fast path won't be affected, patch 5;
+ - a new counter 'busy_queues' is added to blk_mq_tags, and it's updated
+ while fail to get driver tag, and it's also cleared in
+ blk_mq_timeout_work(), and tag sharing will based on 'busy_queues'
+ instead of 'active_queues', patch 6,7;
+ - a new counter 'busy_count' is added to each node to record how many
+ times a node failed to get driver tag, and it's used to judge if a node
+ is busy and need more tags, patch 8;
+ - a new timer is added to blk_mq_tags, it will start if any node failed
+ to get driver tag, and timer function will be used to borrow tags and
+ return borrowed tags, patch 8;
 
-Error/Warning: (recently discovered and may have been fixed)
+A simple test, 32 tags with two shared node:
+[global]
+ioengine=libaio
+iodepth=2
+bs=4k
+direct=1
+rw=randrw
+group_reporting
 
-kernel/locking/qspinlock.c:741:23: warning: no previous declaration for '__pv_spinlock_dump' [-Wmissing-declarations]
-task_mmu.c:(.text+0x614): undefined reference to `__bad_udelay'
-task_mmu.c:(.text+0x6c4): undefined reference to `__bad_udelay'
-task_mmu.c:(.text+0x87c): undefined reference to `__bad_udelay'
+[sda]
+numjobs=32
+filename=/dev/sda
 
-Error/Warning ids grouped by kconfigs:
+[sdb]
+numjobs=1
+filename=/dev/sdb
 
-gcc_recent_errors
-|-- arm-allmodconfig
-|   `-- task_mmu.c:(.text):undefined-reference-to-__bad_udelay
-|-- arm-allyesconfig
-|   `-- task_mmu.c:(.text):undefined-reference-to-__bad_udelay
-|-- arm-defconfig
-|   `-- task_mmu.c:(.text):undefined-reference-to-__bad_udelay
-|-- arm-randconfig-002-20231019
-|   `-- task_mmu.c:(.text):undefined-reference-to-__bad_udelay
-`-- x86_64-randconfig-016-20231020
-    `-- kernel-locking-qspinlock.c:warning:no-previous-declaration-for-__pv_spinlock_dump
+Test result(monitor new debugfs entry):
 
-elapsed time: 3394m
+time    active          available
+        sda     sdb     sda     sdb
+0       0       0       32      32
+1       16      2       16      16      -> start fair sharing
+2       19      2       20      16
+3       24      2       24      16
+4       26      2       28      16      -> borrow 32/8=4 tags each round
+5       28      2       28      16      -> save at lease 4 tags for sdb
 
-configs tested: 125
-configs skipped: 2
+Yu Kuai (8):
+  blk-mq: factor out a structure from blk_mq_tags
+  blk-mq: factor out a structure to store information for tag sharing
+  blk-mq: add a helper to initialize shared_tag_info
+  blk-mq: support to track active queues from blk_mq_tags
+  blk-mq: precalculate available tags for hctx_may_queue()
+  blk-mq: add new helpers blk_mq_driver_tag_busy/idle()
+  blk-mq-tag: delay tag sharing until fail to get driver tag
+  blk-mq-tag: allow shared queue/hctx to get more driver tags
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231019   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                   randconfig-001-20231019   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                              allnoconfig   gcc  
-i386         buildonly-randconfig-001-20231020   gcc  
-i386         buildonly-randconfig-002-20231020   gcc  
-i386         buildonly-randconfig-003-20231020   gcc  
-i386         buildonly-randconfig-004-20231020   gcc  
-i386         buildonly-randconfig-005-20231020   gcc  
-i386         buildonly-randconfig-006-20231020   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-011-20231019   gcc  
-i386                  randconfig-012-20231019   gcc  
-i386                  randconfig-013-20231019   gcc  
-i386                  randconfig-014-20231019   gcc  
-i386                  randconfig-015-20231019   gcc  
-i386                  randconfig-016-20231019   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231019   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231019   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231019   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231019   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231019   gcc  
-x86_64       buildonly-randconfig-002-20231019   gcc  
-x86_64       buildonly-randconfig-003-20231019   gcc  
-x86_64       buildonly-randconfig-004-20231019   gcc  
-x86_64       buildonly-randconfig-005-20231019   gcc  
-x86_64       buildonly-randconfig-006-20231019   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231019   gcc  
-x86_64                randconfig-002-20231019   gcc  
-x86_64                randconfig-003-20231019   gcc  
-x86_64                randconfig-004-20231019   gcc  
-x86_64                randconfig-005-20231019   gcc  
-x86_64                randconfig-006-20231019   gcc  
-x86_64                randconfig-011-20231020   gcc  
-x86_64                randconfig-012-20231020   gcc  
-x86_64                randconfig-013-20231020   gcc  
-x86_64                randconfig-014-20231020   gcc  
-x86_64                randconfig-015-20231020   gcc  
-x86_64                randconfig-016-20231020   gcc  
-x86_64                randconfig-071-20231020   gcc  
-x86_64                randconfig-072-20231020   gcc  
-x86_64                randconfig-073-20231020   gcc  
-x86_64                randconfig-074-20231020   gcc  
-x86_64                randconfig-075-20231020   gcc  
-x86_64                randconfig-076-20231020   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
+ block/blk-core.c       |   2 -
+ block/blk-mq-debugfs.c |  30 +++++-
+ block/blk-mq-tag.c     | 226 +++++++++++++++++++++++++++++++++++++++--
+ block/blk-mq.c         |  12 ++-
+ block/blk-mq.h         |  64 +++++++-----
+ include/linux/blk-mq.h |  36 +++++--
+ include/linux/blkdev.h |  11 +-
+ 7 files changed, 328 insertions(+), 53 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
