@@ -2,338 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFCD7D1AAC
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 05:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6E77D1A8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 04:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbjJUDqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 23:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
+        id S233044AbjJUCZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 22:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJUDqJ (ORCPT
+        with ESMTP id S231234AbjJUCZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 23:46:09 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF6ED78
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 20:45:42 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c87a85332bso12183125ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 20:45:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1697859942; x=1698464742; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U9uxYMKTxKvAZ2PVIZvEz2M4dTYUC9IaNrlDNTSDoYg=;
-        b=ex1dqEKMLN36xWxNpX9ZptBr9UAwkDSyicEz7Ay8j6TIooDUx7yX6BlHICwcvd0TUT
-         b7DbyXuNr5pLIXeb+0fVOWLRtgkMQ3hEfWmyHzDAvST5h3c+nEjfNy2CCpJVobczXg26
-         WXNhLkRgWwn4ylYU5WNuXh0x07gkbUNvBICZR0IIGAP3Qnp/BfBLTln98wh8GVpqv2fO
-         IgAtILmt6Can+N8QDIvmzl52ssD9D65W7IGFjRPgT7+wP2VHqVWwA2IEswjfBI+pwmn5
-         rdqESWgsMUgWdkBUG+d649VqXMEt6uJ2LhQkUdf5oaPZcoAT0NcxIismPDcziYXQijX0
-         0qFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697859942; x=1698464742;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=U9uxYMKTxKvAZ2PVIZvEz2M4dTYUC9IaNrlDNTSDoYg=;
-        b=WnpuIqtrUBjY4LBzNP1bAOXmhgtIPFWvs3REQFRqRLcGMx3WPvvyGRE7ohxemuxzdX
-         4iZlhhaFWHW9h0YCRZKJ8XDUO7VcUlkvfzLr6JK6t90ZCcvLCce1Sqi3DxT1Jy6rjJtI
-         tVoHzK/1DW0RH1liwEW3CbBTMzVOSvdVbuvzCr5jwQ8d1RJIIp8gK4F7qxD57qxGsvSB
-         BtDPC/GDpf6rCfjQ6qsKx9Od/HmHnLe40Z66EXCLQKL3scycQk7jd3SPaEzZhVLNRoD5
-         Z0qRDmCg93wz2DJK4QwegFF83IVG2Qwboa7Xx3uFYZNZdvSR4VxL92Lpm2htOq471fSZ
-         HKTg==
-X-Gm-Message-State: AOJu0YwPUVBxfzwFD46aoQ+KIiySkCWIzO2LUOxYc/eQgCZa1PpZ5xXE
-        BqKxTtbz8nWAakRdvcEEu/45ig==
-X-Google-Smtp-Source: AGHT+IEPgEKf+VqSvbRUu6NXhy4ExhwWjrYgcSEAMq3SQF7IDoHIGoRip7xhILwNMXJ2sXDTO86uWg==
-X-Received: by 2002:a17:902:d0c2:b0:1ca:b26a:9729 with SMTP id n2-20020a170902d0c200b001cab26a9729mr3692531pln.38.1697859941685;
-        Fri, 20 Oct 2023 20:45:41 -0700 (PDT)
-Received: from [10.254.107.145] ([139.177.225.237])
-        by smtp.gmail.com with ESMTPSA id h14-20020a170902f54e00b001c62e3e1286sm2245528plf.166.2023.10.20.20.45.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Oct 2023 20:45:41 -0700 (PDT)
-Message-ID: <b13dc48f-11ab-451b-812f-17b5e8faf521@bytedance.com>
-Date:   Sat, 21 Oct 2023 11:45:32 +0800
+        Fri, 20 Oct 2023 22:25:21 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92379D7E;
+        Fri, 20 Oct 2023 19:25:18 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SC4zl34hDz4f3mK2;
+        Sat, 21 Oct 2023 10:25:07 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAnt9aHNjNlZ+cUDg--.5642S4;
+        Sat, 21 Oct 2023 10:25:12 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     song@kernel.org
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH -next v2 0/6] md: remove rcu protection to access rdev from conf
+Date:   Sat, 21 Oct 2023 18:20:53 +0800
+Message-Id: <20231021102059.3198284-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpf: hide cgroup functions for configs without cgroups
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Yonghong Song <yonghong.song@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20231020132749.1398012-1-arnd@kernel.org>
- <CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpoR1RQ@mail.gmail.com>
- <5e45b11b-853d-49e6-a355-251dc1362676@app.fastmail.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <5e45b11b-853d-49e6-a355-251dc1362676@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-CM-TRANSID: gCh0CgAnt9aHNjNlZ+cUDg--.5642S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXw1fGFy8Jr1rWr4rJr1DZFb_yoW5Xw1fpa
+        yftFy3W3yUJrW5XrWDJa9rCw15Jw40q3yqy343W348Za4Y9r92vw1rtFy8ZFy5CFZIyFWU
+        Xa4UWrsrXFyUAF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7sRi
+        Pl1DUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        KHOP_HELO_FCRDNS,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Yu Kuai <yukuai3@huawei.com>
 
-在 2023/10/21 04:06, Arnd Bergmann 写道:
-> On Fri, Oct 20, 2023, at 19:26, Alexei Starovoitov wrote:
->> On Fri, Oct 20, 2023 at 6:27 AM Arnd Bergmann <arnd@kernel.org> wrote:
->>> @@ -904,6 +904,7 @@ __diag_push();
->>>   __diag_ignore_all("-Wmissing-prototypes",
->>>                    "Global functions as their definitions will be in vmlinux BTF");
->>>
->>> +#ifdef CONFIG_CGROUPS
->>>   __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
->>>                  struct cgroup_subsys_state *css, unsigned int flags)
->>>   {
->>> @@ -947,6 +948,7 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
->>>          css_task_iter_end(kit->css_it);
->>>          bpf_mem_free(&bpf_global_ma, kit->css_it);
->>>   }
->>> +#endif
->>
->> Did you actually test build it without cgroups and with bpf+btf?
->> I suspect the resolve_btfid step should be failing the build.
->> It needs
->> #ifdef CONFIG_CGROUPS
->> around BTF_ID_FLAGS(func, bpf_iter_css_task*
-> 
-> No, I did test with a few hundred random configurations, but it
-> looks like CONFIG_DEBUG_INFO_BTF is always disabled
-> in my builds because I force-disable CONFIG_DEBUG_INFO
-> to speed up my builds.
-> 
-> I tried reproducing it with CONFIG_DEBUG_INFO_BTF enabled
-> and it didn't immediately fail but it clearly makes sense that
-> we'd need another #ifdef.
-> 
->        Arnd
+The lifetime of rdev:
 
-seems the same problem also reported by kernel-robot:
+1. md_import_device() generate a rdev based on underlying disk;
 
-tree: 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-head:   2030579113a1b1b5bfd7ff24c0852847836d8fd1
-commit: 9c66dc94b62aef23300f05f63404afb8990920b4 [13777/13906] bpf: 
-Introduce css_task open-coded iterator kfuncs
-config: hexagon-randconfig-r003-20230725 
-(https://download.01.org/0day-ci/archive/20231021/202310211011.pTzXR2o9-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git 
-ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): 
-(https://download.01.org/0day-ci/archive/20231021/202310211011.pTzXR2o9-lkp@intel.com/reproduce)
+   mddev_lock()
+   rdev = kzalloc();
+   rdev->bdev = blkdev_get_by_dev();
+   mddev_unlock()
 
-If you fix the issue in a separate patch/commit (i.e. not just a new 
-version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: 
-https://lore.kernel.org/oe-kbuild-all/202310211011.pTzXR2o9-lkp@intel.com/
+2. bind_rdev_to_array() add this rdev to mddev->disks;
 
-All errors (new ones prefixed by >>):
+   mddev_lock()
+   kobject_add(&rdev->kobj, &mddev->kobj, ...);
+   list_add_rcu(&rdev->same_set, &mddev->disks);
+   mddev_unlock()
 
-    In file included from kernel/bpf/task_iter.c:9:
-    In file included from include/linux/filter.h:9:
-    In file included from include/linux/bpf.h:31:
-    In file included from include/linux/memcontrol.h:13:
-    In file included from include/linux/cgroup.h:26:
-    In file included from include/linux/kernel_stat.h:9:
-    In file included from include/linux/interrupt.h:11:
-    In file included from include/linux/hardirq.h:11:
-    In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-    In file included from include/asm-generic/hardirq.h:17:
-    In file included from include/linux/irq.h:20:
-    In file included from include/linux/io.h:13:
-    In file included from arch/hexagon/include/asm/io.h:337:
-    include/asm-generic/io.h:547:31: warning: performing pointer 
-arithmetic on a null pointer has undefined behavior 
-[-Wnull-pointer-arithmetic]
-            val = __raw_readb(PCI_IOBASE + addr);
-                              ~~~~~~~~~~ ^
-    include/asm-generic/io.h:560:61: warning: performing pointer 
-arithmetic on a null pointer has undefined behavior 
-[-Wnull-pointer-arithmetic]
-            val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + 
-addr));
-                                                            ~~~~~~~~~~ ^
-    include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded 
-from macro '__le16_to_cpu'
-    #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                      ^
-    In file included from kernel/bpf/task_iter.c:9:
-    In file included from include/linux/filter.h:9:
-    In file included from include/linux/bpf.h:31:
-    In file included from include/linux/memcontrol.h:13:
-    In file included from include/linux/cgroup.h:26:
-    In file included from include/linux/kernel_stat.h:9:
-    In file included from include/linux/interrupt.h:11:
-    In file included from include/linux/hardirq.h:11:
-    In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-    In file included from include/asm-generic/hardirq.h:17:
-    In file included from include/linux/irq.h:20:
-    In file included from include/linux/io.h:13:
-    In file included from arch/hexagon/include/asm/io.h:337:
-    include/asm-generic/io.h:573:61: warning: performing pointer 
-arithmetic on a null pointer has undefined behavior 
-[-Wnull-pointer-arithmetic]
-            val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + 
-addr));
-                                                            ~~~~~~~~~~ ^
-    include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded 
-from macro '__le32_to_cpu'
-    #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                      ^
-    In file included from kernel/bpf/task_iter.c:9:
-    In file included from include/linux/filter.h:9:
-    In file included from include/linux/bpf.h:31:
-    In file included from include/linux/memcontrol.h:13:
-    In file included from include/linux/cgroup.h:26:
-    In file included from include/linux/kernel_stat.h:9:
-    In file included from include/linux/interrupt.h:11:
-    In file included from include/linux/hardirq.h:11:
-    In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-    In file included from include/asm-generic/hardirq.h:17:
-    In file included from include/linux/irq.h:20:
-    In file included from include/linux/io.h:13:
-    In file included from arch/hexagon/include/asm/io.h:337:
-    include/asm-generic/io.h:584:33: warning: performing pointer 
-arithmetic on a null pointer has undefined behavior 
-[-Wnull-pointer-arithmetic]
-            __raw_writeb(value, PCI_IOBASE + addr);
-                                ~~~~~~~~~~ ^
-    include/asm-generic/io.h:594:59: warning: performing pointer 
-arithmetic on a null pointer has undefined behavior 
-[-Wnull-pointer-arithmetic]
-            __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + 
-addr);
-                                                          ~~~~~~~~~~ ^
-    include/asm-generic/io.h:604:59: warning: performing pointer 
-arithmetic on a null pointer has undefined behavior 
-[-Wnull-pointer-arithmetic]
-            __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + 
-addr);
-                                                          ~~~~~~~~~~ ^
- >> kernel/bpf/task_iter.c:919:7: error: use of undeclared identifier 
-'CSS_TASK_ITER_PROCS'
-            case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-                 ^
- >> kernel/bpf/task_iter.c:919:29: error: use of undeclared identifier 
-'CSS_TASK_ITER_THREADED'
-            case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-                                       ^
-    kernel/bpf/task_iter.c:920:7: error: use of undeclared identifier 
-'CSS_TASK_ITER_PROCS'
-            case CSS_TASK_ITER_PROCS:
-                 ^
- >> kernel/bpf/task_iter.c:927:46: error: invalid application of 
-'sizeof' to an incomplete type 'struct css_task_iter'
-            kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct 
-css_task_iter));
-                                                        ^ 
-~~~~~~~~~~~~~~~~~~~~~~
-    kernel/bpf/task_iter.c:902:9: note: forward declaration of 'struct 
-css_task_iter'
-            struct css_task_iter *css_it;
-                   ^
- >> kernel/bpf/task_iter.c:930:2: error: call to undeclared function 
-'css_task_iter_start'; ISO C99 and later do not support implicit 
-function declarations [-Wimplicit-function-declaration]
-            css_task_iter_start(css, flags, kit->css_it);
-            ^
-    kernel/bpf/task_iter.c:930:2: note: did you mean '__sg_page_iter_start'?
-    include/linux/scatterlist.h:573:6: note: '__sg_page_iter_start' 
-declared here
-    void __sg_page_iter_start(struct sg_page_iter *piter,
-         ^
- >> kernel/bpf/task_iter.c:940:9: error: call to undeclared function 
-'css_task_iter_next'; ISO C99 and later do not support implicit function 
-declarations [-Wimplicit-function-declaration]
-            return css_task_iter_next(kit->css_it);
-                   ^
- >> kernel/bpf/task_iter.c:940:9: error: incompatible integer to pointer 
-conversion returning 'int' from a function with result type 'struct 
-task_struct *' [-Wint-conversion]
-            return css_task_iter_next(kit->css_it);
-                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- >> kernel/bpf/task_iter.c:949:2: error: call to undeclared function 
-'css_task_iter_end'; ISO C99 and later do not support implicit function 
-declarations [-Wimplicit-function-declaration]
-            css_task_iter_end(kit->css_it);
-            ^
-    6 warnings and 8 errors generated.
+3. remove_and_add_spares() add this rdev to conf;
 
+   mddev_lock()
+   rdev_addable();
+   pers->hot_add_disk();
+   rcu_assign_pointer(conf->rdev, rdev);
+   mddev_unlock()
 
-vim +/CSS_TASK_ITER_PROCS +919 kernel/bpf/task_iter.c
+4. Use this array with rdev;
 
-    904	
-    905	__diag_push();
-    906	__diag_ignore_all("-Wmissing-prototypes",
-    907			  "Global functions as their definitions will be in vmlinux BTF");
-    908	
-    909	__bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
-    910			struct cgroup_subsys_state *css, unsigned int flags)
-    911	{
-    912		struct bpf_iter_css_task_kern *kit = (void *)it;
-    913	
-    914		BUILD_BUG_ON(sizeof(struct bpf_iter_css_task_kern) != 
-sizeof(struct bpf_iter_css_task));
-    915		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_task_kern) !=
-    916						__alignof__(struct bpf_iter_css_task));
-    917		kit->css_it = NULL;
-    918		switch (flags) {
-  > 919		case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-  > 920		case CSS_TASK_ITER_PROCS:
-    921		case 0:
-    922			break;
-    923		default:
-    924			return -EINVAL;
-    925		}
-    926	
-  > 927		kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct 
-css_task_iter));
-    928		if (!kit->css_it)
-    929			return -ENOMEM;
-  > 930		css_task_iter_start(css, flags, kit->css_it);
-    931		return 0;
-    932	}
-    933	
-    934	__bpf_kfunc struct task_struct *bpf_iter_css_task_next(struct 
-bpf_iter_css_task *it)
-    935	{
-    936		struct bpf_iter_css_task_kern *kit = (void *)it;
-    937	
-    938		if (!kit->css_it)
-    939			return NULL;
-  > 940		return css_task_iter_next(kit->css_it);
-    941	}
-    942	
-    943	__bpf_kfunc void bpf_iter_css_task_destroy(struct 
-bpf_iter_css_task *it)
-    944	{
-    945		struct bpf_iter_css_task_kern *kit = (void *)it;
-    946	
-    947		if (!kit->css_it)
-    948			return;
-  > 949		css_task_iter_end(kit->css_it);
-    950		bpf_mem_free(&bpf_global_ma, kit->css_it);
-    951	}
-    952	
+5. remove_and_add_spares() remove rdev from conf;
+
+   mddev_lock()
+   // triggered by sysfs/ioctl
+   rdev_removeable();
+   pers->hot_remove_disk();
+    rcu_assign_pointer(conf->rdev, NULL);
+    synchronize_rcu();
+   mddev_unlock()
+
+   // triggered by daemon
+   mddev_lock()
+   rdev_removeable();
+   synchronize_rcu(); -> this can't protect accessing rdev from conf
+   pers->hot_remove_disk();
+    rcu_assign_pointer(conf->rdev, NULL);
+   mddev_unlock()
+
+6. md_kick_rdev_from_array() remove rdev from mddev->disks;
+
+   mddev_lock()
+   list_del_rcu(&rdev->same_set);
+   synchronize_rcu();
+   list_add(&rdev->same_set, &mddev->deleting)
+   mddev_unlock()
+    export_rdev
+
+There are two separate rcu protection for rdev, and this pathset remove
+the protection of conf(step 3 and 5), because it's safe to access rdev
+from conf in following cases:
+
+ - If 'reconfig_mutex' is held, because rdev can't be added or rmoved to
+ conf;
+ - If there is normal IO inflight, because mddev_suspend() will wait for
+ IO to be done and prevent rdev to be added or removed to conf;
+ - If sync thread is running, because remove_and_add_spares() can only be
+ called from daemon thread when sync thread is done, and
+ 'MD_RECOVERY_RUNNING' is also checked for ioctl/sysfs;
+ - if any spinlock or rcu_read_lock() is held, because synchronize_rcu()
+ from step 6 prevent rdev to be freed until spinlock is released or
+ rcu_read_unlock();
+
+Yu Kuai (6):
+  md: remove useless debug code to print configuration
+  md: remove flag RemoveSynchronized
+  md/raid1: remove rcu protection to access rdev from conf
+  md/raid10: remove rcu protection to access rdev from conf
+  md/raid5: remove rcu protection to access rdev from conf
+  md/md-multipath: remove rcu protection to access rdev from conf
+
+ drivers/md/md-multipath.c |  29 ++---
+ drivers/md/md.c           |  37 +-----
+ drivers/md/raid1.c        |  94 ++++-----------
+ drivers/md/raid10.c       | 248 +++++++++-----------------------------
+ drivers/md/raid5-cache.c  |  11 +-
+ drivers/md/raid5-ppl.c    |  16 +--
+ drivers/md/raid5.c        | 225 ++++++++++------------------------
+ drivers/md/raid5.h        |   4 +-
+ 8 files changed, 163 insertions(+), 501 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
 
