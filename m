@@ -2,175 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EDB7D1AA9
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 05:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFCD7D1AAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 05:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbjJUDmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 23:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        id S231181AbjJUDqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 23:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJUDmx (ORCPT
+        with ESMTP id S229500AbjJUDqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 23:42:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71392D76;
-        Fri, 20 Oct 2023 20:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697859768; x=1729395768;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8PNS9IwLu/TMYdHnEZRKjglbKlVyBvxRYtzA2v+FvTs=;
-  b=OYJNHGdjDY2uQiHI8RUMRE96033TPKS43bG7HrdlZVc9Uj9Khx8+0xOQ
-   BZBHufg2v1/Y1BFIZ2thkU3zva7Ayd4Q1YfRRyaMiBhrDCOPfy3Rj2jrp
-   IRaC9TcKyHfJrVQMnmUKEglAfBIYeDoTO5feQho+bLYhhLFyx7SbMoBae
-   L9ZZrb43oORBr1QsxXchuLO1Pk+CCyDAe9d2pImo1orAS1r2/XQu9rRbG
-   1agwxgzBq/BZzMHPuGfr7pUE0T493Shm9rQfQp8iETqrS8xPsRzHdMmuK
-   LEFGnjNg9nURigYqH4S5tp657aQpt1+yk97N3pQ1hJjxTE/Q9+ra7q6r1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="371676306"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="371676306"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 20:42:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="881243647"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="881243647"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 20 Oct 2023 20:42:45 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qu2st-0004LK-1q;
-        Sat, 21 Oct 2023 03:42:43 +0000
-Date:   Sat, 21 Oct 2023 11:42:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        mhi@lists.linux.dev
-Cc:     oe-kbuild-all@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH] bus: mhi: ep: Add support for interrupt moderation timer
-Message-ID: <202310211125.dCDfH087-lkp@intel.com>
-References: <20231019080911.57938-1-manivannan.sadhasivam@linaro.org>
+        Fri, 20 Oct 2023 23:46:09 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF6ED78
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 20:45:42 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c87a85332bso12183125ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 20:45:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1697859942; x=1698464742; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U9uxYMKTxKvAZ2PVIZvEz2M4dTYUC9IaNrlDNTSDoYg=;
+        b=ex1dqEKMLN36xWxNpX9ZptBr9UAwkDSyicEz7Ay8j6TIooDUx7yX6BlHICwcvd0TUT
+         b7DbyXuNr5pLIXeb+0fVOWLRtgkMQ3hEfWmyHzDAvST5h3c+nEjfNy2CCpJVobczXg26
+         WXNhLkRgWwn4ylYU5WNuXh0x07gkbUNvBICZR0IIGAP3Qnp/BfBLTln98wh8GVpqv2fO
+         IgAtILmt6Can+N8QDIvmzl52ssD9D65W7IGFjRPgT7+wP2VHqVWwA2IEswjfBI+pwmn5
+         rdqESWgsMUgWdkBUG+d649VqXMEt6uJ2LhQkUdf5oaPZcoAT0NcxIismPDcziYXQijX0
+         0qFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697859942; x=1698464742;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=U9uxYMKTxKvAZ2PVIZvEz2M4dTYUC9IaNrlDNTSDoYg=;
+        b=WnpuIqtrUBjY4LBzNP1bAOXmhgtIPFWvs3REQFRqRLcGMx3WPvvyGRE7ohxemuxzdX
+         4iZlhhaFWHW9h0YCRZKJ8XDUO7VcUlkvfzLr6JK6t90ZCcvLCce1Sqi3DxT1Jy6rjJtI
+         tVoHzK/1DW0RH1liwEW3CbBTMzVOSvdVbuvzCr5jwQ8d1RJIIp8gK4F7qxD57qxGsvSB
+         BtDPC/GDpf6rCfjQ6qsKx9Od/HmHnLe40Z66EXCLQKL3scycQk7jd3SPaEzZhVLNRoD5
+         Z0qRDmCg93wz2DJK4QwegFF83IVG2Qwboa7Xx3uFYZNZdvSR4VxL92Lpm2htOq471fSZ
+         HKTg==
+X-Gm-Message-State: AOJu0YwPUVBxfzwFD46aoQ+KIiySkCWIzO2LUOxYc/eQgCZa1PpZ5xXE
+        BqKxTtbz8nWAakRdvcEEu/45ig==
+X-Google-Smtp-Source: AGHT+IEPgEKf+VqSvbRUu6NXhy4ExhwWjrYgcSEAMq3SQF7IDoHIGoRip7xhILwNMXJ2sXDTO86uWg==
+X-Received: by 2002:a17:902:d0c2:b0:1ca:b26a:9729 with SMTP id n2-20020a170902d0c200b001cab26a9729mr3692531pln.38.1697859941685;
+        Fri, 20 Oct 2023 20:45:41 -0700 (PDT)
+Received: from [10.254.107.145] ([139.177.225.237])
+        by smtp.gmail.com with ESMTPSA id h14-20020a170902f54e00b001c62e3e1286sm2245528plf.166.2023.10.20.20.45.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 20:45:41 -0700 (PDT)
+Message-ID: <b13dc48f-11ab-451b-812f-17b5e8faf521@bytedance.com>
+Date:   Sat, 21 Oct 2023 11:45:32 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019080911.57938-1-manivannan.sadhasivam@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpf: hide cgroup functions for configs without cgroups
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Yonghong Song <yonghong.song@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231020132749.1398012-1-arnd@kernel.org>
+ <CAADnVQL-zoFPPOVu3nM981gKxRu7Q3G3LTRsKstJEeahpoR1RQ@mail.gmail.com>
+ <5e45b11b-853d-49e6-a355-251dc1362676@app.fastmail.com>
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <5e45b11b-853d-49e6-a355-251dc1362676@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Manivannan,
+Hello,
 
-kernel test robot noticed the following build errors:
+在 2023/10/21 04:06, Arnd Bergmann 写道:
+> On Fri, Oct 20, 2023, at 19:26, Alexei Starovoitov wrote:
+>> On Fri, Oct 20, 2023 at 6:27 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>>> @@ -904,6 +904,7 @@ __diag_push();
+>>>   __diag_ignore_all("-Wmissing-prototypes",
+>>>                    "Global functions as their definitions will be in vmlinux BTF");
+>>>
+>>> +#ifdef CONFIG_CGROUPS
+>>>   __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
+>>>                  struct cgroup_subsys_state *css, unsigned int flags)
+>>>   {
+>>> @@ -947,6 +948,7 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
+>>>          css_task_iter_end(kit->css_it);
+>>>          bpf_mem_free(&bpf_global_ma, kit->css_it);
+>>>   }
+>>> +#endif
+>>
+>> Did you actually test build it without cgroups and with bpf+btf?
+>> I suspect the resolve_btfid step should be failing the build.
+>> It needs
+>> #ifdef CONFIG_CGROUPS
+>> around BTF_ID_FLAGS(func, bpf_iter_css_task*
+> 
+> No, I did test with a few hundred random configurations, but it
+> looks like CONFIG_DEBUG_INFO_BTF is always disabled
+> in my builds because I force-disable CONFIG_DEBUG_INFO
+> to speed up my builds.
+> 
+> I tried reproducing it with CONFIG_DEBUG_INFO_BTF enabled
+> and it didn't immediately fail but it clearly makes sense that
+> we'd need another #ifdef.
+> 
+>        Arnd
 
-[auto build test ERROR on mani-mhi/mhi-next]
-[also build test ERROR on linus/master v6.6-rc6 next-20231020]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+seems the same problem also reported by kernel-robot:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Manivannan-Sadhasivam/bus-mhi-ep-Add-support-for-interrupt-moderation-timer/20231019-161023
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git mhi-next
-patch link:    https://lore.kernel.org/r/20231019080911.57938-1-manivannan.sadhasivam%40linaro.org
-patch subject: [PATCH] bus: mhi: ep: Add support for interrupt moderation timer
-config: x86_64-buildonly-randconfig-003-20231021 (https://download.01.org/0day-ci/archive/20231021/202310211125.dCDfH087-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231021/202310211125.dCDfH087-lkp@intel.com/reproduce)
+tree: 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+head:   2030579113a1b1b5bfd7ff24c0852847836d8fd1
+commit: 9c66dc94b62aef23300f05f63404afb8990920b4 [13777/13906] bpf: 
+Introduce css_task open-coded iterator kfuncs
+config: hexagon-randconfig-r003-20230725 
+(https://download.01.org/0day-ci/archive/20231021/202310211011.pTzXR2o9-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git 
+ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): 
+(https://download.01.org/0day-ci/archive/20231021/202310211011.pTzXR2o9-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
+If you fix the issue in a separate patch/commit (i.e. not just a new 
+version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310211125.dCDfH087-lkp@intel.com/
+| Closes: 
+https://lore.kernel.org/oe-kbuild-all/202310211011.pTzXR2o9-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   drivers/bus/mhi/ep/main.c: In function 'mhi_ep_send_event':
->> drivers/bus/mhi/ep/main.c:71:52: error: 'struct mhi_ep_ring' has no member named 'intmod_work'; did you mean 'intmodt_work'?
-      71 |                         cancel_delayed_work(&ring->intmod_work);
-         |                                                    ^~~~~~~~~~~
-         |                                                    intmodt_work
-   drivers/bus/mhi/ep/main.c:76:46: error: 'struct mhi_ep_ring' has no member named 'intmod_work'; did you mean 'intmodt_work'?
-      76 |                 schedule_delayed_work(&ring->intmod_work, msecs_to_jiffies(ring->intmodt));
-         |                                              ^~~~~~~~~~~
-         |                                              intmodt_work
+    In file included from kernel/bpf/task_iter.c:9:
+    In file included from include/linux/filter.h:9:
+    In file included from include/linux/bpf.h:31:
+    In file included from include/linux/memcontrol.h:13:
+    In file included from include/linux/cgroup.h:26:
+    In file included from include/linux/kernel_stat.h:9:
+    In file included from include/linux/interrupt.h:11:
+    In file included from include/linux/hardirq.h:11:
+    In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+    In file included from include/asm-generic/hardirq.h:17:
+    In file included from include/linux/irq.h:20:
+    In file included from include/linux/io.h:13:
+    In file included from arch/hexagon/include/asm/io.h:337:
+    include/asm-generic/io.h:547:31: warning: performing pointer 
+arithmetic on a null pointer has undefined behavior 
+[-Wnull-pointer-arithmetic]
+            val = __raw_readb(PCI_IOBASE + addr);
+                              ~~~~~~~~~~ ^
+    include/asm-generic/io.h:560:61: warning: performing pointer 
+arithmetic on a null pointer has undefined behavior 
+[-Wnull-pointer-arithmetic]
+            val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + 
+addr));
+                                                            ~~~~~~~~~~ ^
+    include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded 
+from macro '__le16_to_cpu'
+    #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
+                                                      ^
+    In file included from kernel/bpf/task_iter.c:9:
+    In file included from include/linux/filter.h:9:
+    In file included from include/linux/bpf.h:31:
+    In file included from include/linux/memcontrol.h:13:
+    In file included from include/linux/cgroup.h:26:
+    In file included from include/linux/kernel_stat.h:9:
+    In file included from include/linux/interrupt.h:11:
+    In file included from include/linux/hardirq.h:11:
+    In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+    In file included from include/asm-generic/hardirq.h:17:
+    In file included from include/linux/irq.h:20:
+    In file included from include/linux/io.h:13:
+    In file included from arch/hexagon/include/asm/io.h:337:
+    include/asm-generic/io.h:573:61: warning: performing pointer 
+arithmetic on a null pointer has undefined behavior 
+[-Wnull-pointer-arithmetic]
+            val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + 
+addr));
+                                                            ~~~~~~~~~~ ^
+    include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded 
+from macro '__le32_to_cpu'
+    #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
+                                                      ^
+    In file included from kernel/bpf/task_iter.c:9:
+    In file included from include/linux/filter.h:9:
+    In file included from include/linux/bpf.h:31:
+    In file included from include/linux/memcontrol.h:13:
+    In file included from include/linux/cgroup.h:26:
+    In file included from include/linux/kernel_stat.h:9:
+    In file included from include/linux/interrupt.h:11:
+    In file included from include/linux/hardirq.h:11:
+    In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
+    In file included from include/asm-generic/hardirq.h:17:
+    In file included from include/linux/irq.h:20:
+    In file included from include/linux/io.h:13:
+    In file included from arch/hexagon/include/asm/io.h:337:
+    include/asm-generic/io.h:584:33: warning: performing pointer 
+arithmetic on a null pointer has undefined behavior 
+[-Wnull-pointer-arithmetic]
+            __raw_writeb(value, PCI_IOBASE + addr);
+                                ~~~~~~~~~~ ^
+    include/asm-generic/io.h:594:59: warning: performing pointer 
+arithmetic on a null pointer has undefined behavior 
+[-Wnull-pointer-arithmetic]
+            __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + 
+addr);
+                                                          ~~~~~~~~~~ ^
+    include/asm-generic/io.h:604:59: warning: performing pointer 
+arithmetic on a null pointer has undefined behavior 
+[-Wnull-pointer-arithmetic]
+            __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + 
+addr);
+                                                          ~~~~~~~~~~ ^
+ >> kernel/bpf/task_iter.c:919:7: error: use of undeclared identifier 
+'CSS_TASK_ITER_PROCS'
+            case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+                 ^
+ >> kernel/bpf/task_iter.c:919:29: error: use of undeclared identifier 
+'CSS_TASK_ITER_THREADED'
+            case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+                                       ^
+    kernel/bpf/task_iter.c:920:7: error: use of undeclared identifier 
+'CSS_TASK_ITER_PROCS'
+            case CSS_TASK_ITER_PROCS:
+                 ^
+ >> kernel/bpf/task_iter.c:927:46: error: invalid application of 
+'sizeof' to an incomplete type 'struct css_task_iter'
+            kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct 
+css_task_iter));
+                                                        ^ 
+~~~~~~~~~~~~~~~~~~~~~~
+    kernel/bpf/task_iter.c:902:9: note: forward declaration of 'struct 
+css_task_iter'
+            struct css_task_iter *css_it;
+                   ^
+ >> kernel/bpf/task_iter.c:930:2: error: call to undeclared function 
+'css_task_iter_start'; ISO C99 and later do not support implicit 
+function declarations [-Wimplicit-function-declaration]
+            css_task_iter_start(css, flags, kit->css_it);
+            ^
+    kernel/bpf/task_iter.c:930:2: note: did you mean '__sg_page_iter_start'?
+    include/linux/scatterlist.h:573:6: note: '__sg_page_iter_start' 
+declared here
+    void __sg_page_iter_start(struct sg_page_iter *piter,
+         ^
+ >> kernel/bpf/task_iter.c:940:9: error: call to undeclared function 
+'css_task_iter_next'; ISO C99 and later do not support implicit function 
+declarations [-Wimplicit-function-declaration]
+            return css_task_iter_next(kit->css_it);
+                   ^
+ >> kernel/bpf/task_iter.c:940:9: error: incompatible integer to pointer 
+conversion returning 'int' from a function with result type 'struct 
+task_struct *' [-Wint-conversion]
+            return css_task_iter_next(kit->css_it);
+                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ >> kernel/bpf/task_iter.c:949:2: error: call to undeclared function 
+'css_task_iter_end'; ISO C99 and later do not support implicit function 
+declarations [-Wimplicit-function-declaration]
+            css_task_iter_end(kit->css_it);
+            ^
+    6 warnings and 8 errors generated.
 
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for VIDEO_OV7670
-   Depends on [n]: MEDIA_SUPPORT [=y] && VIDEO_DEV [=y] && VIDEO_CAMERA_SENSOR [=n]
-   Selected by [y]:
-   - VIDEO_CAFE_CCIC [=y] && MEDIA_SUPPORT [=y] && MEDIA_PLATFORM_SUPPORT [=y] && MEDIA_PLATFORM_DRIVERS [=y] && V4L_PLATFORM_DRIVERS [=y] && PCI [=y] && I2C [=y] && VIDEO_DEV [=y] && COMMON_CLK [=y]
 
+vim +/CSS_TASK_ITER_PROCS +919 kernel/bpf/task_iter.c
 
-vim +71 drivers/bus/mhi/ep/main.c
-
-    27	
-    28	static int mhi_ep_send_event(struct mhi_ep_cntrl *mhi_cntrl, u32 ring_idx,
-    29				     struct mhi_ring_element *el, bool bei)
-    30	{
-    31		struct device *dev = &mhi_cntrl->mhi_dev->dev;
-    32		union mhi_ep_ring_ctx *ctx;
-    33		struct mhi_ep_ring *ring;
-    34		int ret;
-    35	
-    36		mutex_lock(&mhi_cntrl->event_lock);
-    37		ring = &mhi_cntrl->mhi_event[ring_idx].ring;
-    38		ctx = (union mhi_ep_ring_ctx *)&mhi_cntrl->ev_ctx_cache[ring_idx];
-    39		if (!ring->started) {
-    40			ret = mhi_ep_ring_start(mhi_cntrl, ring, ctx);
-    41			if (ret) {
-    42				dev_err(dev, "Error starting event ring (%u)\n", ring_idx);
-    43				goto err_unlock;
-    44			}
-    45		}
-    46	
-    47		/* Add element to the event ring */
-    48		ret = mhi_ep_ring_add_element(ring, el);
-    49		if (ret) {
-    50			dev_err(dev, "Error adding element to event ring (%u)\n", ring_idx);
-    51			goto err_unlock;
-    52		}
-    53	
-    54		mutex_unlock(&mhi_cntrl->event_lock);
-    55	
-    56		/*
-    57		 * As per the MHI specification, section 4.3, Interrupt moderation:
-    58		 *
-    59		 * 1. If BEI flag is not set, cancel any pending intmodt work if started
-    60		 * for the event ring and raise IRQ immediately.
-    61		 *
-    62		 * 2. If both BEI and intmodt are set, and if no IRQ is pending for the
-    63		 * same event ring, start the IRQ delayed work as per the value of
-    64		 * intmodt. If previous IRQ is pending, then do nothing as the pending
-    65		 * IRQ is enough for the host to process the current event ring element.
-    66		 *
-    67		 * 3. If BEI is set and intmodt is not set, no need to raise IRQ.
-    68		 */
-    69		if (!bei) {
-    70			if (READ_ONCE(ring->irq_pending))
-  > 71				cancel_delayed_work(&ring->intmod_work);
-    72	
-    73			mhi_cntrl->raise_irq(mhi_cntrl, ring->irq_vector);
-    74		} else if (ring->intmodt && !READ_ONCE(ring->irq_pending)) {
-    75			WRITE_ONCE(ring->irq_pending, true);
-    76			schedule_delayed_work(&ring->intmod_work, msecs_to_jiffies(ring->intmodt));
-    77		}
-    78	
-    79		return 0;
-    80	
-    81	err_unlock:
-    82		mutex_unlock(&mhi_cntrl->event_lock);
-    83	
-    84		return ret;
-    85	}
-    86	
+    904	
+    905	__diag_push();
+    906	__diag_ignore_all("-Wmissing-prototypes",
+    907			  "Global functions as their definitions will be in vmlinux BTF");
+    908	
+    909	__bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
+    910			struct cgroup_subsys_state *css, unsigned int flags)
+    911	{
+    912		struct bpf_iter_css_task_kern *kit = (void *)it;
+    913	
+    914		BUILD_BUG_ON(sizeof(struct bpf_iter_css_task_kern) != 
+sizeof(struct bpf_iter_css_task));
+    915		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_task_kern) !=
+    916						__alignof__(struct bpf_iter_css_task));
+    917		kit->css_it = NULL;
+    918		switch (flags) {
+  > 919		case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
+  > 920		case CSS_TASK_ITER_PROCS:
+    921		case 0:
+    922			break;
+    923		default:
+    924			return -EINVAL;
+    925		}
+    926	
+  > 927		kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct 
+css_task_iter));
+    928		if (!kit->css_it)
+    929			return -ENOMEM;
+  > 930		css_task_iter_start(css, flags, kit->css_it);
+    931		return 0;
+    932	}
+    933	
+    934	__bpf_kfunc struct task_struct *bpf_iter_css_task_next(struct 
+bpf_iter_css_task *it)
+    935	{
+    936		struct bpf_iter_css_task_kern *kit = (void *)it;
+    937	
+    938		if (!kit->css_it)
+    939			return NULL;
+  > 940		return css_task_iter_next(kit->css_it);
+    941	}
+    942	
+    943	__bpf_kfunc void bpf_iter_css_task_destroy(struct 
+bpf_iter_css_task *it)
+    944	{
+    945		struct bpf_iter_css_task_kern *kit = (void *)it;
+    946	
+    947		if (!kit->css_it)
+    948			return;
+  > 949		css_task_iter_end(kit->css_it);
+    950		bpf_mem_free(&bpf_global_ma, kit->css_it);
+    951	}
+    952	
 
 -- 
 0-DAY CI Kernel Test Service
 https://github.com/intel/lkp-tests/wiki
+
