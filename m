@@ -2,94 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EACC87D1A4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 03:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8797D1A50
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 03:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjJUBcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 21:32:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
+        id S230385AbjJUBeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 21:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbjJUBcm (ORCPT
+        with ESMTP id S229603AbjJUBd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 21:32:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4902FD68
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 18:32:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697851957; x=1729387957;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=70i1/C+fbIE2VpSwskddcgtUORM3772WnaPj85EQ9bk=;
-  b=HQKKfZCg4n1MtDsa76TVBtUlgQyI6gcG+Vq1k/3pmASwH0Jxp2lSdMWT
-   78en9vU2hEIuz+x3yDHb/ZLTErXYNHq1IcMh0YUVRqSk9opKgpMUzreC/
-   +5UMmnxB54k+U7UeijIor01MalK/CYCWwkZliKBznlM+fo8OdXDnAJc8y
-   qXZ9n446p1Egtm8gZLPkNozl+d+i6A3h8FP49sofPzf2MCQ+hMGLA1Kmg
-   imM67WJrr5gqu6HvBDEJrkrEha9LzJRUWVjTi69LzWakFFLiuZm0xkjqE
-   vO4CqsYBuLsaL/pfvfMdTirIUGaknGcNv8Tt60PSivJZVTyEkQ3syrSu0
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="383808087"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="383808087"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 18:32:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="848253825"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="848253825"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.255.30.224]) ([10.255.30.224])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 18:32:34 -0700
-Message-ID: <2201ae4d-b825-49a5-ba73-c6b310e2969c@linux.intel.com>
-Date:   Sat, 21 Oct 2023 09:32:32 +0800
+        Fri, 20 Oct 2023 21:33:59 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3E1D6B
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 18:33:50 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32dd70c5401so997583f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 18:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1697852029; x=1698456829; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=wP00KfvRO60bKi1m/vumqMsRoXBxuB7/0hGkLJkn4Rs=;
+        b=e6BIQZe+GWrmrEbwUcpuLmxMieJsQDGDLHMxYLjxwAhmtYCkRlj/k8YQME7rPSuo8d
+         XN3UijpQtMJCCwukP4CBFtnEv3Q7vU4YHS6GcZVpmjDvJEk9KPOj4/leuy7h/bU1wuj+
+         LliSTozp3CkEEi8xjeKw6sFEQArtjx5WNN4f0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697852029; x=1698456829;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :content-language:subject:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wP00KfvRO60bKi1m/vumqMsRoXBxuB7/0hGkLJkn4Rs=;
+        b=JbLuR+LrSOHxEtis8pfRB0RHXDsQEsMKCfyuuiBspQw18GHlhbVMDIny2vbSzqO0Z2
+         hcWwOsiEejwnb/qbt5MDdlxC7/+nrL/WYr2qWSNqdnnxcPG1/UZEnAW4B/EY4nZ4+N5n
+         ICX3WkiQlt9viy2Z5SKZRdxICKDw7DigydtSnrXWxmRj+Ic9ahyvqR7bdrEbZicBUtEM
+         3H0X/hKwOUm3TVQ4IjnRdOWUHGJkzf8exQRGh6JSCL9cMFuUUq03KEd5s68O6Q3/4IVN
+         R4nkUNNpgIQh5NgZLKf1vOdQcDq5Z4yG4xTJ/8HHRGz957knOpoxsKuuWFjUQb1x1xVw
+         ISaA==
+X-Gm-Message-State: AOJu0YxHDMI8B+jrSFJRppeeIsIn/WlFEMR3PslJdp+YDrQ1nPZ5SQbC
+        BUVMuJuix3xJBydx0e6FAz+lig==
+X-Google-Smtp-Source: AGHT+IHZQaFBbihIlPQPu+px25kJmIzETBz4j5wK9iAvo7tfjB1eyqbwgFV3QClfsHkrm1bly2Ad4w==
+X-Received: by 2002:a5d:4bd0:0:b0:32d:9cf7:77e1 with SMTP id l16-20020a5d4bd0000000b0032d9cf777e1mr2868494wrt.9.1697852028759;
+        Fri, 20 Oct 2023 18:33:48 -0700 (PDT)
+Received: from [192.168.1.10] (host-92-26-107-252.as13285.net. [92.26.107.252])
+        by smtp.gmail.com with ESMTPSA id dj18-20020a0560000b1200b0032d96dd703bsm2758980wrb.70.2023.10.20.18.33.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 18:33:48 -0700 (PDT)
+Message-ID: <bdfefc38-c010-4423-b129-3f153078fd67@citrix.com>
+Date:   Sat, 21 Oct 2023 02:33:47 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com, joro@8bytes.org, will@kernel.org,
-        robin.murphy@arm.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, yi.l.liu@intel.com
-Subject: Re: [PATCH 0/2] iommufd: Only enforce_cache_coherency when allocating
- hwpt
-Content-Language: en-US
-To:     Nicolin Chen <nicolinc@nvidia.com>, jgg@nvidia.com,
-        kevin.tian@intel.com
-References: <cover.1697848510.git.nicolinc@nvidia.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <cover.1697848510.git.nicolinc@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: [RESEND][PATCH 1/6] x86/bugs: Add asm helpers for executing VERW
+Content-Language: en-GB
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+References: <20231020-delay-verw-v1-0-cff54096326d@linux.intel.com>
+ <20231020-delay-verw-v1-1-cff54096326d@linux.intel.com>
+ <f620c7d4-6345-4ad0-8a45-c8089e3c34df@citrix.com>
+ <20231021011859.c2rtc4vl7l2cl4q6@desk>
+Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
+ 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
+ 6+ahAA==
+In-Reply-To: <20231021011859.c2rtc4vl7l2cl4q6@desk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/21 8:37, Nicolin Chen wrote:
-> https://lore.kernel.org/linux-iommu/20231020135501.GG3952@nvidia.com/
-> The conversation above concluded that a hwpt should only enforce cache
-> coherency per device at the stage of its allocation, and it should not
-> be changed or updated in the attach/replace routines.
-> 
-> Add two patches dropping the enforce_cache_coherency calls from attach
-> and replce routines respectively, since they were introduced with two
-> different commits.
-> 
-> Nicolin Chen (2):
->    iommufd/device: Drop enforce_cache_coherency in
->      iommufd_device_do_replace
->    iommufd/device: Drop enforce_cache_coherency in
->      iommufd_hw_pagetable_attach
-> 
->   drivers/iommu/iommufd/device.c          | 19 ++-----------------
->   drivers/iommu/iommufd/hw_pagetable.c    |  2 +-
->   drivers/iommu/iommufd/iommufd_private.h |  1 -
->   3 files changed, 3 insertions(+), 19 deletions(-)
+On 21/10/2023 2:18 am, Pawan Gupta wrote:
+> On Sat, Oct 21, 2023 at 12:55:45AM +0100, Andrew Cooper wrote:
+>> Also it avoids playing games with hiding data inside an instruction.
+>> It's a neat trick, but the neater trick is avoid it whenever possible.
+> Thanks for the pointers. I think verw in 32-bit mode won't be able to
+> address the operand outside of 4GB range.
 
-Hi Kevin and Jason,
+And?  In a 32bit kernel, what lives outside of a 4G range?
 
-With these two fixes, there's no issue in the intel driver any more. Do
-I understand it right?
+> Maybe this is fine or could it
+> be a problem addressing from e.g. KVM module?
 
-Best regards,
-baolu
+RIP-relative addressing is disp32.  Which is the same as it is for
+direct calls.
+
+So if your module is far enough away for VERW to have issues, you've got
+far more basic problems to solve first.
+
+~Andrew
