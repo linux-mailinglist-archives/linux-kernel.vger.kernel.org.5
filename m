@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9A97D1AB9
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 06:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5013E7D1ABC
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 06:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbjJUEPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 00:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
+        id S230419AbjJUEY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 00:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJUEPA (ORCPT
+        with ESMTP id S229500AbjJUEYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 00:15:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D03FA
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 21:14:55 -0700 (PDT)
+        Sat, 21 Oct 2023 00:24:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F58B13E
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 21:24:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697861695; x=1729397695;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Fe4KExRFqaxG2mDtYcispdgsjIekNHa5OBkLNgCVLRo=;
-  b=GRUJ/LcTybexL7CfCA8C4yZWBHnCxhdFeJKf8Rg7tADPZepWwT+Q73DA
-   4Ik86yRMkS9211JXwklpF6je7u7J8VE+8COAsX3TU0pOFEoc2OxZpQA87
-   uVjm+gg3lWALKgJ1jUM+KKvoi8JbfEEniwOehKeJQnbAqBVY60WDN4Rgs
-   LHH42lME5YVJrz1iPRWqPvci7wtLYzKwIuDe4ND+HGdJJm36SQpCr8QJR
-   Rz5syU/2DqN/WMT8Xjil891AFLjbRHoXkAdUEpcMgOYWgt5DiR5W+eE0Q
-   vzTyLkCoUIpYexgVBX5tzF154RCG9VyL0fcUiDgBCHYj08McILqRrKXp6
+  t=1697862290; x=1729398290;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/xtcIvW+X1tCAEbYXB/UAq+tVHxEp+II2zI7H+ilc5k=;
+  b=DBB7BOvmPNGUz71o+RA0cZfk8mYGfKHzUDZji2ILB4Rhe5g8UXxtNx+b
+   OIRAvKpBHoqB6W1bYYrM7lGNF4R3D/kvmGIHy6+U0Lx38rdUaDeeW+RVA
+   GQQDS+Tquer8vHfqZXJalgwpu7TQHqbPta6wgMdox70OkmUAoHTtUvRwm
+   DiT1U32tyGXbDZ76ftgE1q8FdAimnvE0VAZoMM9piwwr9rdDCbg4XWK1C
+   GEx7hQzupmqCQ+2SQMl0tkcPw9a0PUb2NVJr7+EZ0u9JlxDvMqfOoEEh8
+   xicBI/womGCd6XSEMSUuqGL9V8J6TvTFF8aNsVGOXi46WoBYxnv3zVa/n
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="5226936"
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="472833180"
 X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="5226936"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 21:14:50 -0700
+   d="scan'208";a="472833180"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 21:24:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="792590882"
-X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="792590882"
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="1088931720"
+X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
+   d="scan'208";a="1088931720"
 Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 20 Oct 2023 21:14:47 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 20 Oct 2023 21:24:48 -0700
 Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qu3Nt-0004Op-23;
-        Sat, 21 Oct 2023 04:14:45 +0000
-Date:   Sat, 21 Oct 2023 12:13:48 +0800
+        id 1qu3Xa-0004PU-06;
+        Sat, 21 Oct 2023 04:24:46 +0000
+Date:   Sat, 21 Oct 2023 12:24:22 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: vmlinux.o: warning: objtool: cfi_staa_resume+0x169: cfi_build_cmd()
- is missing a __noreturn annotation
-Message-ID: <202310211207.aIbizp9p-lkp@intel.com>
+To:     Christoph =?iso-8859-1?Q?B=F6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: drivers/block/drbd/drbd_actlog.c:1015: warning: Function parameter
+ or member 'peer_device' not described in 'drbd_try_rs_begin_io'
+Message-ID: <202310211241.qQivM1uZ-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -62,187 +66,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hi Christoph,
 
 FYI, the error/warning still remains.
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
-commit: 719a937b7003933de1298ffa4b881dd6a234e244 iov_iter: Mark copy_iovec_from_user() noclone
-date:   3 months ago
-config: x86_64-randconfig-a013-20220829 (https://download.01.org/0day-ci/archive/20231021/202310211207.aIbizp9p-lkp@intel.com/config)
+commit: 0d11f3cf279c5ad20a41f29242f170ba3c02f2da drbd: Pass a peer device to the resync and online verify functions
+date:   7 months ago
+config: x86_64-randconfig-r015-20230828 (https://download.01.org/0day-ci/archive/20231021/202310211241.qQivM1uZ-lkp@intel.com/config)
 compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231021/202310211207.aIbizp9p-lkp@intel.com/reproduce)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231021/202310211241.qQivM1uZ-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310211207.aIbizp9p-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310211241.qQivM1uZ-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
->> vmlinux.o: warning: objtool: cfi_staa_resume+0x169: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_write_buffer+0x1d0: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_unlock_oneblock+0x132: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_lock_oneblock+0x132: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_erase_oneblock+0x10b: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_read_onechip+0x118: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: jedec_reset+0x95: cfi_send_gen_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: cfi_jedec_setup+0x3ae: cfi_build_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: jedec_probe_chip+0x2ec: cfi_send_gen_cmd() is missing a __noreturn annotation
->> vmlinux.o: warning: objtool: do_erase_oneblock.cold+0x0: unreachable instruction
->> vmlinux.o: warning: objtool: jedec_probe_chip.cold+0x0: unreachable instruction
+>> drivers/block/drbd/drbd_actlog.c:1015: warning: Function parameter or member 'peer_device' not described in 'drbd_try_rs_begin_io'
+>> drivers/block/drbd/drbd_actlog.c:1015: warning: Excess function parameter 'device' description in 'drbd_try_rs_begin_io'
 
 
-objdump-func vmlinux.o cfi_staa_resume:
-0000 000000000221ac30 <cfi_staa_resume>:
-0000  221ac30:	f3 0f 1e fa          	endbr64
-0004  221ac34:	48 b8 00 00 00 00 00 fc ff df 	movabs $0xdffffc0000000000,%rax
-000e  221ac3e:	41 57                	push   %r15
-0010  221ac40:	41 56                	push   %r14
-0012  221ac42:	41 55                	push   %r13
-0014  221ac44:	41 54                	push   %r12
-0016  221ac46:	55                   	push   %rbp
-0017  221ac47:	53                   	push   %rbx
-0018  221ac48:	48 89 fb             	mov    %rdi,%rbx
-001b  221ac4b:	48 81 c7 90 01 00 00 	add    $0x190,%rdi
-0022  221ac52:	48 89 fa             	mov    %rdi,%rdx
-0025  221ac55:	48 c1 ea 03          	shr    $0x3,%rdx
-0029  221ac59:	48 83 ec 30          	sub    $0x30,%rsp
-002d  221ac5d:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-0031  221ac61:	0f 85 f1 01 00 00    	jne    221ae58 <cfi_staa_resume+0x228>
-0037  221ac67:	48 8b 83 90 01 00 00 	mov    0x190(%rbx),%rax
-003e  221ac6e:	48 8d 78 60          	lea    0x60(%rax),%rdi
-0042  221ac72:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
-0047  221ac77:	48 b8 00 00 00 00 00 fc ff df 	movabs $0xdffffc0000000000,%rax
-0051  221ac81:	48 89 fa             	mov    %rdi,%rdx
-0054  221ac84:	48 c1 ea 03          	shr    $0x3,%rdx
-0058  221ac88:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-005c  221ac8c:	0f 85 bc 01 00 00    	jne    221ae4e <cfi_staa_resume+0x21e>
-0062  221ac92:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
-0067  221ac97:	4c 8b 78 60          	mov    0x60(%rax),%r15
-006b  221ac9b:	49 8d 47 40          	lea    0x40(%r15),%rax
-006f  221ac9f:	48 89 c2             	mov    %rax,%rdx
-0072  221aca2:	48 89 04 24          	mov    %rax,(%rsp)
-0076  221aca6:	48 b8 00 00 00 00 00 fc ff df 	movabs $0xdffffc0000000000,%rax
-0080  221acb0:	48 c1 ea 03          	shr    $0x3,%rdx
-0084  221acb4:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax
-0088  221acb8:	84 c0                	test   %al,%al
-008a  221acba:	74 08                	je     221acc4 <cfi_staa_resume+0x94>
-008c  221acbc:	3c 03                	cmp    $0x3,%al
-008e  221acbe:	0f 8e 57 01 00 00    	jle    221ae1b <cfi_staa_resume+0x1eb>
-0094  221acc4:	41 8b 47 40          	mov    0x40(%r15),%eax
-0098  221acc8:	31 db                	xor    %ebx,%ebx
-009a  221acca:	85 c0                	test   %eax,%eax
-009c  221accc:	0f 8e 3a 01 00 00    	jle    221ae0c <cfi_staa_resume+0x1dc>
-00a2  221acd2:	49 bc 00 00 00 00 00 fc ff df 	movabs $0xdffffc0000000000,%r12
-00ac  221acdc:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
-00b1  221ace1:	48 83 c0 18          	add    $0x18,%rax
-00b5  221ace5:	48 89 44 24 20       	mov    %rax,0x20(%rsp)
-00ba  221acea:	48 c1 e8 03          	shr    $0x3,%rax
-00be  221acee:	4c 01 e0             	add    %r12,%rax
-00c1  221acf1:	48 89 44 24 18       	mov    %rax,0x18(%rsp)
-00c6  221acf6:	eb 2e                	jmp    221ad26 <cfi_staa_resume+0xf6>
-00c8  221acf8:	48 89 ef             	mov    %rbp,%rdi
-00cb  221acfb:	83 c3 01             	add    $0x1,%ebx
-00ce  221acfe:	e8 00 00 00 00       	call   221ad03 <cfi_staa_resume+0xd3>	221acff: R_X86_64_PLT32	mutex_unlock-0x4
-00d3  221ad03:	48 8b 04 24          	mov    (%rsp),%rax
-00d7  221ad07:	48 c1 e8 03          	shr    $0x3,%rax
-00db  221ad0b:	42 0f b6 04 20       	movzbl (%rax,%r12,1),%eax
-00e0  221ad10:	84 c0                	test   %al,%al
-00e2  221ad12:	74 08                	je     221ad1c <cfi_staa_resume+0xec>
-00e4  221ad14:	3c 03                	cmp    $0x3,%al
-00e6  221ad16:	0f 8e 0d 01 00 00    	jle    221ae29 <cfi_staa_resume+0x1f9>
-00ec  221ad1c:	41 39 5f 40          	cmp    %ebx,0x40(%r15)
-00f0  221ad20:	0f 8e e6 00 00 00    	jle    221ae0c <cfi_staa_resume+0x1dc>
-00f6  221ad26:	4c 63 eb             	movslq %ebx,%r13
-00f9  221ad29:	31 f6                	xor    %esi,%esi
-00fb  221ad2b:	4f 8d 44 ad 00       	lea    0x0(%r13,%r13,4),%r8
-0100  221ad30:	49 c1 e0 06          	shl    $0x6,%r8
-0104  221ad34:	4b 8d ac 07 90 00 00 00 	lea    0x90(%r15,%r8,1),%rbp
-010c  221ad3c:	4d 89 c6             	mov    %r8,%r14
-010f  221ad3f:	48 89 ef             	mov    %rbp,%rdi
-0112  221ad42:	e8 00 00 00 00       	call   221ad47 <cfi_staa_resume+0x117>	221ad43: R_X86_64_PLT32	mutex_lock_nested-0x4
-0117  221ad47:	4f 8d 54 37 74       	lea    0x74(%r15,%r14,1),%r10
-011c  221ad4c:	4c 89 d0             	mov    %r10,%rax
-011f  221ad4f:	48 c1 e8 03          	shr    $0x3,%rax
-0123  221ad53:	42 0f b6 14 20       	movzbl (%rax,%r12,1),%edx
-0128  221ad58:	4c 89 d0             	mov    %r10,%rax
-012b  221ad5b:	83 e0 07             	and    $0x7,%eax
-012e  221ad5e:	83 c0 03             	add    $0x3,%eax
-0131  221ad61:	38 d0                	cmp    %dl,%al
-0133  221ad63:	7c 08                	jl     221ad6d <cfi_staa_resume+0x13d>
-0135  221ad65:	84 d2                	test   %dl,%dl
-0137  221ad67:	0f 85 ca 00 00 00    	jne    221ae37 <cfi_staa_resume+0x207>
-013d  221ad6d:	4b 8d 44 ad 00       	lea    0x0(%r13,%r13,4),%rax
-0142  221ad72:	48 c1 e0 06          	shl    $0x6,%rax
-0146  221ad76:	41 83 7c 07 74 0c    	cmpl   $0xc,0x74(%r15,%rax,1)
-014c  221ad7c:	0f 85 76 ff ff ff    	jne    221acf8 <cfi_staa_resume+0xc8>
-0152  221ad82:	48 8b 74 24 08       	mov    0x8(%rsp),%rsi
-0157  221ad87:	4c 89 fa             	mov    %r15,%rdx
-015a  221ad8a:	bf ff 00 00 00       	mov    $0xff,%edi
-015f  221ad8f:	4c 89 54 24 10       	mov    %r10,0x10(%rsp)
-0164  221ad94:	e8 00 00 00 00       	call   221ad99 <cfi_staa_resume+0x169>	221ad95: R_X86_64_PLT32	cfi_build_cmd-0x4
-0169  221ad99:	48 8b 4c 24 18       	mov    0x18(%rsp),%rcx
-016e  221ad9e:	4c 8b 54 24 10       	mov    0x10(%rsp),%r10
-0173  221ada3:	80 39 00             	cmpb   $0x0,(%rcx)
-0176  221ada6:	0f 85 c3 00 00 00    	jne    221ae6f <cfi_staa_resume+0x23f>
-017c  221adac:	48 8b 4c 24 08       	mov    0x8(%rsp),%rcx
-0181  221adb1:	48 8b 51 18          	mov    0x18(%rcx),%rdx
-0185  221adb5:	48 89 02             	mov    %rax,(%rdx)
-0188  221adb8:	0f ae f0             	mfence
-018b  221adbb:	4c 89 d0             	mov    %r10,%rax
-018e  221adbe:	48 c1 e8 03          	shr    $0x3,%rax
-0192  221adc2:	42 0f b6 14 20       	movzbl (%rax,%r12,1),%edx
-0197  221adc7:	4c 89 d0             	mov    %r10,%rax
-019a  221adca:	83 e0 07             	and    $0x7,%eax
-019d  221adcd:	83 c0 03             	add    $0x3,%eax
-01a0  221add0:	38 d0                	cmp    %dl,%al
-01a2  221add2:	7c 08                	jl     221addc <cfi_staa_resume+0x1ac>
-01a4  221add4:	84 d2                	test   %dl,%dl
-01a6  221add6:	0f 85 86 00 00 00    	jne    221ae62 <cfi_staa_resume+0x232>
-01ac  221addc:	4b 8d 44 ad 00       	lea    0x0(%r13,%r13,4),%rax
-01b1  221ade1:	4b 8d bc 37 30 01 00 00 	lea    0x130(%r15,%r14,1),%rdi
-01b9  221ade9:	31 c9                	xor    %ecx,%ecx
-01bb  221adeb:	ba 01 00 00 00       	mov    $0x1,%edx
-01c0  221adf0:	48 c1 e0 06          	shl    $0x6,%rax
-01c4  221adf4:	be 03 00 00 00       	mov    $0x3,%esi
-01c9  221adf9:	41 c7 44 07 74 00 00 00 00 	movl   $0x0,0x74(%r15,%rax,1)
-01d2  221ae02:	e8 00 00 00 00       	call   221ae07 <cfi_staa_resume+0x1d7>	221ae03: R_X86_64_PLT32	__wake_up-0x4
-01d7  221ae07:	e9 ec fe ff ff       	jmp    221acf8 <cfi_staa_resume+0xc8>
-01dc  221ae0c:	48 83 c4 30          	add    $0x30,%rsp
-01e0  221ae10:	5b                   	pop    %rbx
-01e1  221ae11:	5d                   	pop    %rbp
-01e2  221ae12:	41 5c                	pop    %r12
-01e4  221ae14:	41 5d                	pop    %r13
-01e6  221ae16:	41 5e                	pop    %r14
-01e8  221ae18:	41 5f                	pop    %r15
-01ea  221ae1a:	c3                   	ret
-01eb  221ae1b:	48 8b 3c 24          	mov    (%rsp),%rdi
-01ef  221ae1f:	e8 00 00 00 00       	call   221ae24 <cfi_staa_resume+0x1f4>	221ae20: R_X86_64_PLT32	__asan_report_load4_noabort-0x4
-01f4  221ae24:	e9 9b fe ff ff       	jmp    221acc4 <cfi_staa_resume+0x94>
-01f9  221ae29:	48 8b 3c 24          	mov    (%rsp),%rdi
-01fd  221ae2d:	e8 00 00 00 00       	call   221ae32 <cfi_staa_resume+0x202>	221ae2e: R_X86_64_PLT32	__asan_report_load4_noabort-0x4
-0202  221ae32:	e9 e5 fe ff ff       	jmp    221ad1c <cfi_staa_resume+0xec>
-0207  221ae37:	4c 89 d7             	mov    %r10,%rdi
-020a  221ae3a:	4c 89 54 24 10       	mov    %r10,0x10(%rsp)
-020f  221ae3f:	e8 00 00 00 00       	call   221ae44 <cfi_staa_resume+0x214>	221ae40: R_X86_64_PLT32	__asan_report_load4_noabort-0x4
-0214  221ae44:	4c 8b 54 24 10       	mov    0x10(%rsp),%r10
-0219  221ae49:	e9 1f ff ff ff       	jmp    221ad6d <cfi_staa_resume+0x13d>
-021e  221ae4e:	e8 00 00 00 00       	call   221ae53 <cfi_staa_resume+0x223>	221ae4f: R_X86_64_PLT32	__asan_report_load8_noabort-0x4
-0223  221ae53:	e9 3a fe ff ff       	jmp    221ac92 <cfi_staa_resume+0x62>
-0228  221ae58:	e8 00 00 00 00       	call   221ae5d <cfi_staa_resume+0x22d>	221ae59: R_X86_64_PLT32	__asan_report_load8_noabort-0x4
-022d  221ae5d:	e9 05 fe ff ff       	jmp    221ac67 <cfi_staa_resume+0x37>
-0232  221ae62:	4c 89 d7             	mov    %r10,%rdi
-0235  221ae65:	e8 00 00 00 00       	call   221ae6a <cfi_staa_resume+0x23a>	221ae66: R_X86_64_PLT32	__asan_report_store4_noabort-0x4
-023a  221ae6a:	e9 6d ff ff ff       	jmp    221addc <cfi_staa_resume+0x1ac>
-023f  221ae6f:	48 8b 7c 24 20       	mov    0x20(%rsp),%rdi
-0244  221ae74:	48 89 44 24 28       	mov    %rax,0x28(%rsp)
-0249  221ae79:	e8 00 00 00 00       	call   221ae7e <cfi_staa_resume+0x24e>	221ae7a: R_X86_64_PLT32	__asan_report_load8_noabort-0x4
-024e  221ae7e:	48 8b 44 24 28       	mov    0x28(%rsp),%rax
-0253  221ae83:	4c 8b 54 24 10       	mov    0x10(%rsp),%r10
-0258  221ae88:	e9 1f ff ff ff       	jmp    221adac <cfi_staa_resume+0x17c>
-025d  221ae8d:	0f 1f 00             	nopl   (%rax)
+vim +1015 drivers/block/drbd/drbd_actlog.c
+
+b411b3637fa71f Philipp Reisner      2009-09-25  1004  
+b411b3637fa71f Philipp Reisner      2009-09-25  1005  /**
+b411b3637fa71f Philipp Reisner      2009-09-25  1006   * drbd_try_rs_begin_io() - Gets an extent in the resync LRU cache, does not sleep
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1007   * @device:	DRBD device.
+b411b3637fa71f Philipp Reisner      2009-09-25  1008   * @sector:	The sector number.
+b411b3637fa71f Philipp Reisner      2009-09-25  1009   *
+b411b3637fa71f Philipp Reisner      2009-09-25  1010   * Gets an extent in the resync LRU cache, sets it to BME_NO_WRITES, then
+b411b3637fa71f Philipp Reisner      2009-09-25  1011   * tries to set it to BME_LOCKED. Returns 0 upon success, and -EAGAIN
+b411b3637fa71f Philipp Reisner      2009-09-25  1012   * if there is still application IO going on in this area.
+b411b3637fa71f Philipp Reisner      2009-09-25  1013   */
+0d11f3cf279c5a Christoph Böhmwalder 2023-03-30  1014  int drbd_try_rs_begin_io(struct drbd_peer_device *peer_device, sector_t sector)
+b411b3637fa71f Philipp Reisner      2009-09-25 @1015  {
+0d11f3cf279c5a Christoph Böhmwalder 2023-03-30  1016  	struct drbd_device *device = peer_device->device;
+b411b3637fa71f Philipp Reisner      2009-09-25  1017  	unsigned int enr = BM_SECT_TO_EXT(sector);
+b411b3637fa71f Philipp Reisner      2009-09-25  1018  	const unsigned int al_enr = enr*AL_EXT_PER_BM_SECT;
+b411b3637fa71f Philipp Reisner      2009-09-25  1019  	struct lc_element *e;
+b411b3637fa71f Philipp Reisner      2009-09-25  1020  	struct bm_extent *bm_ext;
+b411b3637fa71f Philipp Reisner      2009-09-25  1021  	int i;
+0d11f3cf279c5a Christoph Böhmwalder 2023-03-30  1022  	bool throttle = drbd_rs_should_slow_down(peer_device, sector, true);
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1023  
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1024  	/* If we need to throttle, a half-locked (only marked BME_NO_WRITES,
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1025  	 * not yet BME_LOCKED) extent needs to be kicked out explicitly if we
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1026  	 * need to throttle. There is at most one such half-locked extent,
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1027  	 * which is remembered in resync_wenr. */
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1028  
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1029  	if (throttle && device->resync_wenr != enr)
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1030  		return -EAGAIN;
+b411b3637fa71f Philipp Reisner      2009-09-25  1031  
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1032  	spin_lock_irq(&device->al_lock);
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1033  	if (device->resync_wenr != LC_FREE && device->resync_wenr != enr) {
+b411b3637fa71f Philipp Reisner      2009-09-25  1034  		/* in case you have very heavy scattered io, it may
+b411b3637fa71f Philipp Reisner      2009-09-25  1035  		 * stall the syncer undefined if we give up the ref count
+b411b3637fa71f Philipp Reisner      2009-09-25  1036  		 * when we try again and requeue.
+b411b3637fa71f Philipp Reisner      2009-09-25  1037  		 *
+b411b3637fa71f Philipp Reisner      2009-09-25  1038  		 * if we don't give up the refcount, but the next time
+b411b3637fa71f Philipp Reisner      2009-09-25  1039  		 * we are scheduled this extent has been "synced" by new
+b411b3637fa71f Philipp Reisner      2009-09-25  1040  		 * application writes, we'd miss the lc_put on the
+b411b3637fa71f Philipp Reisner      2009-09-25  1041  		 * extent we keep the refcount on.
+b411b3637fa71f Philipp Reisner      2009-09-25  1042  		 * so we remembered which extent we had to try again, and
+b411b3637fa71f Philipp Reisner      2009-09-25  1043  		 * if the next requested one is something else, we do
+b411b3637fa71f Philipp Reisner      2009-09-25  1044  		 * the lc_put here...
+b411b3637fa71f Philipp Reisner      2009-09-25  1045  		 * we also have to wake_up
+b411b3637fa71f Philipp Reisner      2009-09-25  1046  		 */
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1047  		e = lc_find(device->resync, device->resync_wenr);
+b411b3637fa71f Philipp Reisner      2009-09-25  1048  		bm_ext = e ? lc_entry(e, struct bm_extent, lce) : NULL;
+b411b3637fa71f Philipp Reisner      2009-09-25  1049  		if (bm_ext) {
+0b0ba1efc7b887 Andreas Gruenbacher  2011-06-27  1050  			D_ASSERT(device, !test_bit(BME_LOCKED, &bm_ext->flags));
+0b0ba1efc7b887 Andreas Gruenbacher  2011-06-27  1051  			D_ASSERT(device, test_bit(BME_NO_WRITES, &bm_ext->flags));
+b411b3637fa71f Philipp Reisner      2009-09-25  1052  			clear_bit(BME_NO_WRITES, &bm_ext->flags);
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1053  			device->resync_wenr = LC_FREE;
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1054  			if (lc_put(device->resync, &bm_ext->lce) == 0) {
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1055  				bm_ext->flags = 0;
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1056  				device->resync_locked--;
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1057  			}
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1058  			wake_up(&device->al_wait);
+b411b3637fa71f Philipp Reisner      2009-09-25  1059  		} else {
+d01801710265cf Andreas Gruenbacher  2011-07-03  1060  			drbd_alert(device, "LOGIC BUG\n");
+b411b3637fa71f Philipp Reisner      2009-09-25  1061  		}
+b411b3637fa71f Philipp Reisner      2009-09-25  1062  	}
+b411b3637fa71f Philipp Reisner      2009-09-25  1063  	/* TRY. */
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1064  	e = lc_try_get(device->resync, enr);
+b411b3637fa71f Philipp Reisner      2009-09-25  1065  	bm_ext = e ? lc_entry(e, struct bm_extent, lce) : NULL;
+b411b3637fa71f Philipp Reisner      2009-09-25  1066  	if (bm_ext) {
+b411b3637fa71f Philipp Reisner      2009-09-25  1067  		if (test_bit(BME_LOCKED, &bm_ext->flags))
+b411b3637fa71f Philipp Reisner      2009-09-25  1068  			goto proceed;
+b411b3637fa71f Philipp Reisner      2009-09-25  1069  		if (!test_and_set_bit(BME_NO_WRITES, &bm_ext->flags)) {
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1070  			device->resync_locked++;
+b411b3637fa71f Philipp Reisner      2009-09-25  1071  		} else {
+b411b3637fa71f Philipp Reisner      2009-09-25  1072  			/* we did set the BME_NO_WRITES,
+b411b3637fa71f Philipp Reisner      2009-09-25  1073  			 * but then could not set BME_LOCKED,
+b411b3637fa71f Philipp Reisner      2009-09-25  1074  			 * so we tried again.
+b411b3637fa71f Philipp Reisner      2009-09-25  1075  			 * drop the extra reference. */
+b411b3637fa71f Philipp Reisner      2009-09-25  1076  			bm_ext->lce.refcnt--;
+0b0ba1efc7b887 Andreas Gruenbacher  2011-06-27  1077  			D_ASSERT(device, bm_ext->lce.refcnt > 0);
+b411b3637fa71f Philipp Reisner      2009-09-25  1078  		}
+b411b3637fa71f Philipp Reisner      2009-09-25  1079  		goto check_al;
+b411b3637fa71f Philipp Reisner      2009-09-25  1080  	} else {
+b411b3637fa71f Philipp Reisner      2009-09-25  1081  		/* do we rather want to try later? */
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1082  		if (device->resync_locked > device->resync->nr_elements-3)
+b411b3637fa71f Philipp Reisner      2009-09-25  1083  			goto try_again;
+b411b3637fa71f Philipp Reisner      2009-09-25  1084  		/* Do or do not. There is no try. -- Yoda */
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1085  		e = lc_get(device->resync, enr);
+b411b3637fa71f Philipp Reisner      2009-09-25  1086  		bm_ext = e ? lc_entry(e, struct bm_extent, lce) : NULL;
+b411b3637fa71f Philipp Reisner      2009-09-25  1087  		if (!bm_ext) {
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1088  			const unsigned long rs_flags = device->resync->flags;
+b411b3637fa71f Philipp Reisner      2009-09-25  1089  			if (rs_flags & LC_STARVING)
+d01801710265cf Andreas Gruenbacher  2011-07-03  1090  				drbd_warn(device, "Have to wait for element"
+b411b3637fa71f Philipp Reisner      2009-09-25  1091  				     " (resync LRU too small?)\n");
+46a15bc3ec425b Lars Ellenberg       2011-02-21  1092  			BUG_ON(rs_flags & LC_LOCKED);
+b411b3637fa71f Philipp Reisner      2009-09-25  1093  			goto try_again;
+b411b3637fa71f Philipp Reisner      2009-09-25  1094  		}
+b411b3637fa71f Philipp Reisner      2009-09-25  1095  		if (bm_ext->lce.lc_number != enr) {
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1096  			bm_ext->rs_left = drbd_bm_e_weight(device, enr);
+b411b3637fa71f Philipp Reisner      2009-09-25  1097  			bm_ext->rs_failed = 0;
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1098  			lc_committed(device->resync);
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1099  			wake_up(&device->al_wait);
+0b0ba1efc7b887 Andreas Gruenbacher  2011-06-27  1100  			D_ASSERT(device, test_bit(BME_LOCKED, &bm_ext->flags) == 0);
+b411b3637fa71f Philipp Reisner      2009-09-25  1101  		}
+b411b3637fa71f Philipp Reisner      2009-09-25  1102  		set_bit(BME_NO_WRITES, &bm_ext->flags);
+0b0ba1efc7b887 Andreas Gruenbacher  2011-06-27  1103  		D_ASSERT(device, bm_ext->lce.refcnt == 1);
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1104  		device->resync_locked++;
+b411b3637fa71f Philipp Reisner      2009-09-25  1105  		goto check_al;
+b411b3637fa71f Philipp Reisner      2009-09-25  1106  	}
+b411b3637fa71f Philipp Reisner      2009-09-25  1107  check_al:
+b411b3637fa71f Philipp Reisner      2009-09-25  1108  	for (i = 0; i < AL_EXT_PER_BM_SECT; i++) {
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1109  		if (lc_is_used(device->act_log, al_enr+i))
+b411b3637fa71f Philipp Reisner      2009-09-25  1110  			goto try_again;
+b411b3637fa71f Philipp Reisner      2009-09-25  1111  	}
+b411b3637fa71f Philipp Reisner      2009-09-25  1112  	set_bit(BME_LOCKED, &bm_ext->flags);
+b411b3637fa71f Philipp Reisner      2009-09-25  1113  proceed:
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1114  	device->resync_wenr = LC_FREE;
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1115  	spin_unlock_irq(&device->al_lock);
+b411b3637fa71f Philipp Reisner      2009-09-25  1116  	return 0;
+b411b3637fa71f Philipp Reisner      2009-09-25  1117  
+b411b3637fa71f Philipp Reisner      2009-09-25  1118  try_again:
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1119  	if (bm_ext) {
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1120  		if (throttle) {
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1121  			D_ASSERT(device, !test_bit(BME_LOCKED, &bm_ext->flags));
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1122  			D_ASSERT(device, test_bit(BME_NO_WRITES, &bm_ext->flags));
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1123  			clear_bit(BME_NO_WRITES, &bm_ext->flags);
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1124  			device->resync_wenr = LC_FREE;
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1125  			if (lc_put(device->resync, &bm_ext->lce) == 0) {
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1126  				bm_ext->flags = 0;
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1127  				device->resync_locked--;
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1128  			}
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1129  			wake_up(&device->al_wait);
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1130  		} else
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1131  			device->resync_wenr = enr;
+ad3fee790088d3 Lars Ellenberg       2013-12-20  1132  	}
+b30ab7913b0a7b Andreas Gruenbacher  2011-07-03  1133  	spin_unlock_irq(&device->al_lock);
+b411b3637fa71f Philipp Reisner      2009-09-25  1134  	return -EAGAIN;
+b411b3637fa71f Philipp Reisner      2009-09-25  1135  }
+b411b3637fa71f Philipp Reisner      2009-09-25  1136  
+
+:::::: The code at line 1015 was first introduced by commit
+:::::: b411b3637fa71fce9cf2acf0639009500f5892fe The DRBD driver
+
+:::::: TO: Philipp Reisner <philipp.reisner@linbit.com>
+:::::: CC: Jens Axboe <jens.axboe@oracle.com>
 
 -- 
 0-DAY CI Kernel Test Service
