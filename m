@@ -2,137 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 381907D1CF0
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 13:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD797D1CEE
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 13:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbjJUL6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 07:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42894 "EHLO
+        id S230090AbjJUL5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 07:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjJUL6A (ORCPT
+        with ESMTP id S230177AbjJUL5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 07:58:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5DA01A4
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 04:57:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697889436;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8A5YPNn+IwEItuJ1G2OC4z10xXdMM8+6p/08c4lncco=;
-        b=W3nghjZcUpHI6UR+rrPvtNvoqT0bfKMtaW1oskB0u7S9T+ko7XOi9waorEU6Vq7/1tsZVw
-        BwZBGwW924H4QIF35AvKGOldk9C2ksB+faUi9CsBQlKek9dHdPwFbFYBXGUB0eSIMHPg4X
-        OQN8GvEgfqN9BgmSynmlnBx9sH3TAbQ=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-148-vvbtxOsqPlCQ7JjE3rmTkA-1; Sat, 21 Oct 2023 07:57:10 -0400
-X-MC-Unique: vvbtxOsqPlCQ7JjE3rmTkA-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-507cb169766so1651819e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 04:57:10 -0700 (PDT)
+        Sat, 21 Oct 2023 07:57:31 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84692D51;
+        Sat, 21 Oct 2023 04:57:29 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b2ec9a79bdso1261356b6e.3;
+        Sat, 21 Oct 2023 04:57:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697889449; x=1698494249; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FxNz9djPi2ZFZLmpxAIXb8X9Wg3dZxfYM3EqSIAWSDg=;
+        b=g2wq64GTFlf+UyXvUUFB9kuU+pZT6wzK6Pap1BkVrO4ySfk+Jb07lTia+G9yU4dO1z
+         /MMOSzEDUUSFfNTrc7XkoaJ5J0zcsF/U3wbp9s+2WMosCYKGvQiJvEYouQFQ8oFPUuMl
+         SV2otip1MSjEZTIweOOzlUk/y6LjDnty5XD9S1G+8ZqWq0jSpaVua66SRockqb6w0kLX
+         S4tgpcmW+5EWBN9+GziZ8iw36cXFMt0Pl+1azsewGSxsYCsGU4bpfZ7MHQynGrYuBiB9
+         ci/d8yi1U5ilUKcMwnjai/NJCqBwkSDAlCoafEXop2fqz0PYvRNvJH/cCpD5iYS6m7+j
+         S9Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697889429; x=1698494229;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8A5YPNn+IwEItuJ1G2OC4z10xXdMM8+6p/08c4lncco=;
-        b=URch8uCovVcQkuxlO+UJi/XkxnpcD0JrDrCKQzvwTtlOOZ5+SU2bZ9fOPrFoS3JFvb
-         29ilSQmIpEtYRGVqYgqrO/MC5GYD/5zZM3+9SN9qv4v0Luhgp6Tw9Ce69DWnd+ipAXfn
-         rUz0SPRy77aykHcLSXkMBAZ4rgFCi7SuRnax/0HvBU/+Hv/eekQU2pj336IqfDjeIvp8
-         8PPfL4t1bmdHYK0n/vZtmf2dMEq7NDEVbnQ/AYF6F7QG10gTM8c36O9p0rxskxw0vnUl
-         ruYUW/EdprJOzxPG+XeE0jMY5jcIA6wRjKCYhXA7/92JZ4SdgHK1hkuTNcK7JdAmLJ1T
-         QCpg==
-X-Gm-Message-State: AOJu0YyeL6L9ZlOdRzArbqJNLamuJAhvBGtA9f+8Wx+I2SwBeNLV1+y0
-        AV4byWMgU4pDtY1vMgYKc8EdUSDQ7IeeZ4Ye8yImRSEY/fR3ipuaEwROE5dNtzMNFAERlbmCwB+
-        zfGAlMvXQlP3//pqV6sGwiH0n
-X-Received: by 2002:a19:6742:0:b0:507:9a00:c169 with SMTP id e2-20020a196742000000b005079a00c169mr3461927lfj.5.1697889428944;
-        Sat, 21 Oct 2023 04:57:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGRg2tiyoJnYcPUczv2CKzX9otDeCiprhYPsEiOsrC6j2ShP6Mn99ICxaoSBra/sl4K9VMnBw==
-X-Received: by 2002:a19:6742:0:b0:507:9a00:c169 with SMTP id e2-20020a196742000000b005079a00c169mr3461922lfj.5.1697889428601;
-        Sat, 21 Oct 2023 04:57:08 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id w21-20020a50d795000000b0053e4d1cbc6esm3392994edi.55.2023.10.21.04.57.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Oct 2023 04:57:06 -0700 (PDT)
-Message-ID: <acf1fade-7693-9332-03b1-626f4949f9ff@redhat.com>
-Date:   Sat, 21 Oct 2023 13:57:05 +0200
+        d=1e100.net; s=20230601; t=1697889449; x=1698494249;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FxNz9djPi2ZFZLmpxAIXb8X9Wg3dZxfYM3EqSIAWSDg=;
+        b=aSMCREsOWMiXVw7wl3wAYVWjMvyhI8q4+L8miPTlHYbU4UaGsE0LcIHT7ZNgtmMCDV
+         qUvXxP+PlGeiH2+ooo7Rpdl7ItwJxZfuC7JqTax4f5RdSvuBJ/XhF+QyHfIUUE6uMiNj
+         f8tUXK8TG34E91nT0CkFutfxXAPnRql3M7JTehqtl09o7a5HOs0+9PsqlnfhfD0cKjjR
+         sm1Z1wrUOTypOirmE8KAW2gCXUuOHzWVxNPeOG0z0FR5QCz2GiFkBxBZMWhq26V50/tz
+         fZiG9ssFu6bGAJscD9cMRD4FLeyKOGbalZpug/UI1/vpDBClesfjgH0U7w3E9E+R9cWZ
+         o1dg==
+X-Gm-Message-State: AOJu0Yxowp8z0ODbeAessnMHK8BFwYRD0f4S8HE28PAtKmb0CMnV81vY
+        +81c4+bxW9WRKjDFHASuSPYvyWYy2TfNw8BzXK4=
+X-Google-Smtp-Source: AGHT+IErCwbPPf2d1W2hR6YumknJe5gd9sptBaKAtjtmuKDZW7EB8QqNK+Wv7inqupTOwAHWQSjuO7Mf4Y/mKTyWbuk=
+X-Received: by 2002:a05:6808:12:b0:3ae:a81:55ba with SMTP id
+ u18-20020a056808001200b003ae0a8155bamr4812229oic.22.1697889448746; Sat, 21
+ Oct 2023 04:57:28 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH RESEND] staging: media: atomisp: Removed duplicate comment
- and fixed comment format
-To:     Jonathan Bergh <bergh.jonathan@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+References: <20231015162114.976202-1-robimarko@gmail.com> <f27ff251-58b1-4fc5-8ad5-cd365b7eb976@linaro.org>
+ <8dce62b2-562c-4e00-840b-68e1cc865972@quicinc.com> <CAOX2RU4n8caVL33KkqgYK1_mTZv-oZtd0p=_dzPh-ntBBfH1zA@mail.gmail.com>
+ <b4ce1fdf-0a05-479d-90f8-3a2a2e40b07f@quicinc.com>
+In-Reply-To: <b4ce1fdf-0a05-479d-90f8-3a2a2e40b07f@quicinc.com>
+From:   Robert Marko <robimarko@gmail.com>
+Date:   Sat, 21 Oct 2023 13:57:17 +0200
+Message-ID: <CAOX2RU7Z1BS0u_k=cx58oq8RODPV=a3kV26OsbYpkDaN1atixg@mail.gmail.com>
+Subject: Re: [PATCH] clk: qcom: gcc-ipq6018: add QUP6 I2C clock
+To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>, agross@kernel.org,
+        andersson@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231021110058.85013-1-bergh.jonathan@gmail.com>
-Content-Language: en-US, nl
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231021110058.85013-1-bergh.jonathan@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+On Fri, 20 Oct 2023 at 08:40, Kathiravan Thirumoorthy
+<quic_kathirav@quicinc.com> wrote:
+>
+>
+> On 10/19/2023 7:53 PM, Robert Marko wrote:
+> > On Thu, 19 Oct 2023 at 08:46, Kathiravan Thirumoorthy
+> > <quic_kathirav@quicinc.com> wrote:
+> >>
+> >> On 10/19/2023 1:59 AM, Konrad Dybcio wrote:
+> >>>
+> >>> On 10/15/23 18:20, Robert Marko wrote:
+> >>>> QUP6 I2C clock is listed in the dt bindings but it was never included in
+> >>>> the GCC driver.
+> >>>> So lets add support for it, its intentionally marked to never be
+> >>>> disabled
+> >>>> as its somehow affecting DVFS and if disabled it sometimes crashes the
+> >>>> board.
+> >>>>
+> >>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> >>>> ---
+> >>> Bjorn, would you be able to get an idea of what could be sitting
+> >>> on that bus?
+> >>>
+> >>> Or maybe the IPQ folks could know?
+> >>>
+> >> Konrad / Robert,
+> >>
+> >> Similar to IPQ9574, RPM needs this clock to communicate with PMIC over
+> >> I2C interface. Discussion happened here[1] is pretty much applicable to
+> >> IPQ6018 as well. Based on previous experience, we may need to document
+> >> the reason for CLK_IGNORE_UNUSED in driver as well. Nevertheless,
+> >>
+> >> Reviewed-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+> > Thanks for the explanation, it makes sense as I used to control the
+> > MP5496 directly
+> > via I2C.
+> >
+> > Is it possible to disable RPM so it doesn't conflict and just use the
+> > full MP5496 driver instead?
+> > I find the RPM quite limiting as there is no way to actually retrieve
+> > the current-voltage.
+>
+>
+> Robert, checked with the team and currently we don't have any option to
+> disable the RPM as such.
 
-On 10/21/23 13:00, Jonathan Bergh wrote:
-> Fixed the following issues:
->  * Removed a duplicate comment
->  * Fixed up minor comment format issue
-> 
-> Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+Thanks for checking.
 
-Thank you for your patch, but please don't resend
-it every week.
-
-I did see the original patch and it looks fine but
-I have not had any time to work in atomisp support
-recently and this does not seem like something
-which needs to get merged urgently.
-
-I'll pick this up next time I have time to do
-a bunch of atomisp work.
+BTW, is there any information you could share on the USB GDSC-s?
+I tried converting them to GDSC-s like IPQ8074 has, but it seems that
+they have different features.
+It would be great to use proper GSDC support instead of manually
+setting bits during GCC probe.
 
 Regards,
-
-Hans
-
-
-> ---
->  drivers/staging/media/atomisp/i2c/gc2235.h | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/i2c/gc2235.h b/drivers/staging/media/atomisp/i2c/gc2235.h
-> index 55ea422291ba..ade28950db73 100644
-> --- a/drivers/staging/media/atomisp/i2c/gc2235.h
-> +++ b/drivers/staging/media/atomisp/i2c/gc2235.h
-> @@ -74,9 +74,6 @@
->  #define GC2235_COARSE_INTG_TIME_MIN 1
->  #define GC2235_COARSE_INTG_TIME_MAX_MARGIN 6
->  
-> -/*
-> - * GC2235 System control registers
-> - */
->  /*
->   * GC2235 System control registers
->   */
-> @@ -167,7 +164,7 @@ enum gc2235_tok_type {
->  	GC2235_TOK_MASK = 0xfff0
->  };
->  
-> -/**
-> +/*
->   * struct gc2235_reg - MI sensor  register format
->   * @type: type of the register
->   * @reg: 8-bit offset to register
-
+Robert
+>
+>
+> >
+> > Regards,
+> > Robert
+> >> [1]
+> >> https://lore.kernel.org/linux-arm-msm/2852fc37-284f-6534-f163-45b37b153db1@quicinc.com/
+> >>
+> >>
+> >>> Konrad
