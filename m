@@ -2,41 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C32E17D1C46
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 11:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312407D1C4B
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 11:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbjJUJsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 05:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
+        id S229803AbjJUJxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 05:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbjJUJsk (ORCPT
+        with ESMTP id S229478AbjJUJxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 05:48:40 -0400
+        Sat, 21 Oct 2023 05:53:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F3613E
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 02:48:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF3BCC433C7;
-        Sat, 21 Oct 2023 09:48:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1BDDF;
+        Sat, 21 Oct 2023 02:53:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDFA6C433C7;
+        Sat, 21 Oct 2023 09:53:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697881715;
-        bh=LWyKW1uK7K8s4xmPcXxHy2ZlSq7/79IXRHSU/lV9Cpk=;
+        s=korg; t=1697881990;
+        bh=mrT5GpV3SwVBG0NEQcFncjHx8JIGzumjfarKK3/zPpY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Btu82OJjszJ0E63UkiKXGBlda/QUAuCXb4Fi/Af0AZj9mWjpB5gjxjfxGDOC3EgNz
-         u6Fc17Zaq1WLuuFE//XcYxJWR0+0NeB9rZ9eJv2FfaDh0YN15gYMw7EEYrc1ZWmn8I
-         15NIpJO2CKN/9gc2bckhrdn6veyKMETwxxzz+btA=
-Date:   Sat, 21 Oct 2023 11:48:32 +0200
+        b=XQUfqk2XyDiusR+W6lW+Q18MRIBKR7ypUhuiYan+uDqIp52Vim3U2kkhAuYCMYjgp
+         sErTKBDjrPw6IdDBjRJd6VvOhuaOW+fbsNUU0y8LbnaaSj7Mxm4Yd4BKzsGMDsEm3X
+         +XggNO9HVx+GdUm4H0k9ZmJPD4F5BGib5CN/ndDs=
+Date:   Sat, 21 Oct 2023 11:53:07 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
-Cc:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: greybus: Alignment should match open parenthesis
-Message-ID: <2023102131-slacker-lily-28ff@gregkh>
-References: <20231019213949.GA2922@ubuntu>
+To:     Benjamin Poirier <benjamin.poirier@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Ian Kent <raven@themaw.net>,
+        Sven Joachim <svenjoac@gmx.de>,
+        Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>,
+        Sumitra Sharma <sumitraartsy@gmail.com>,
+        Ricardo Lopes <ricardoapl.dev@gmail.com>,
+        Dan Carpenter <error27@gmail.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Coiby Xu <coiby.xu@gmail.com>
+Subject: Re: [PATCH 0/2] staging: qlge: Remove qlge
+Message-ID: <2023102158-unison-depth-0db6@gregkh>
+References: <20231020124457.312449-1-benjamin.poirier@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231019213949.GA2922@ubuntu>
+In-Reply-To: <20231020124457.312449-1-benjamin.poirier@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -47,45 +60,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 02:39:49PM -0700, Nandha Kumar Singaram wrote:
-> Adhere to linux coding style. Reported by checkpatch.pl:
-> CHECK: Alignment should match open parenthesis
-> 
-> Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
-> ---
->  drivers/staging/greybus/camera.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
-> index cdbb42cd413b..405c8e78aa72 100644
-> --- a/drivers/staging/greybus/camera.c
-> +++ b/drivers/staging/greybus/camera.c
-> @@ -220,7 +220,7 @@ static int gb_camera_operation_sync_flags(struct gb_connection *connection,
->  }
->  
->  static int gb_camera_get_max_pkt_size(struct gb_camera *gcam,
-> -		struct gb_camera_configure_streams_response *resp)
-> +				      struct gb_camera_configure_streams_response *resp)
->  {
->  	unsigned int max_pkt_size = 0;
->  	unsigned int i;
-> @@ -267,8 +267,7 @@ static int gb_camera_get_max_pkt_size(struct gb_camera *gcam,
->   * Validate the stream configuration response verifying padding is correctly
->   * set and the returned number of streams is supported
->   */
-> -static const int gb_camera_configure_streams_validate_response(
-> -		struct gb_camera *gcam,
-> +static const int gb_camera_configure_streams_validate_response(struct gb_camera *gcam,
+On Fri, Oct 20, 2023 at 08:44:55AM -0400, Benjamin Poirier wrote:
+> Remove the qlge driver from staging. The TODO file is first updated to
+> reflect the current status, in case the removal is later reverted.
 
-Why change this line?
-
-It's fine, but then:
-
->  		struct gb_camera_configure_streams_response *resp,
->  		unsigned int nstreams)
-
-These lines are not fixed up?
-
-thanks,
+Thanks for this, now applied!
 
 greg k-h
