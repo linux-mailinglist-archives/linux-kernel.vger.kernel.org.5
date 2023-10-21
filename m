@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 257857D2076
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 01:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E407D2046
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 00:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbjJUXYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 19:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
+        id S229644AbjJUWSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 18:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJUXYA (ORCPT
+        with ESMTP id S229437AbjJUWSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 19:24:00 -0400
-X-Greylist: delayed 7799 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 21 Oct 2023 16:23:55 PDT
-Received: from 5.mo550.mail-out.ovh.net (5.mo550.mail-out.ovh.net [178.33.45.107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C5BD66
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 16:23:54 -0700 (PDT)
-Received: from director3.ghost.mail-out.ovh.net (unknown [10.108.20.16])
-        by mo550.mail-out.ovh.net (Postfix) with ESMTP id 9CD29279A7
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 20:56:02 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-ldttx (unknown [10.110.171.251])
-        by director3.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 70F781FD3E;
-        Sat, 21 Oct 2023 20:56:02 +0000 (UTC)
-Received: from RCM-web9.webmail.mail.ovh.net ([151.80.29.21])
-        by ghost-submission-6684bf9d7b-ldttx with ESMTPSA
-        id xDA3GuI6NGU7EAAASqWlTg
-        (envelope-from <rafal@milecki.pl>); Sat, 21 Oct 2023 20:56:02 +0000
+        Sat, 21 Oct 2023 18:18:49 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF32AD
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 15:18:47 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso1428499f8f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 15:18:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697926725; x=1698531525; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BeP8FAJB4LBtTMfR08jqyQhrVoE0AYbnRicZ8aW/tbA=;
+        b=gD5AlzmA0y+vMtBXY0DHnb2w5i6Ws8BubVX+2HPo//P+4iwpBb0zVvFsJEvPle6XVX
+         lA/uAiHu/XFpGskJq0hBaHkvEDTtfPEgx52hDt4U/r/JNc/v7joENtam3lk4nY4SH9l2
+         I8LwZ/JVENh59tumEZuEJ6AZbfa6XkDu5JBlhvI9wzugDLpVmyNGbikiSnk5W7mKVlIC
+         h+Shi2508BMsuSxjAQx726PAqwwF96Bw4WEVbevi8JYJ06whXgUjypV7UL5zcAlpKJEZ
+         J97XXV7Yooe332mZWOb9FNptjBB6CqHtf1dxG4YQ2bpmqhWier6Hfi36cfI7lgzXTuTH
+         ZsrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697926725; x=1698531525;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BeP8FAJB4LBtTMfR08jqyQhrVoE0AYbnRicZ8aW/tbA=;
+        b=E2St6qqbzct1N2rdyKt20R4A74lnwhElIygfRpOn7zyxjqUMOT24MiB9vqy95A349V
+         ycObbmDFb2pQ0x7ZZ5qnssQw1kAYI6nC6ZPZZt+MSolifBRhDNhldhj4KWGK1m8R72fg
+         6D9vn2RnuJOVa51YrK48OazPmvzmuuW3oYrouixooZXd28oAGWzm7Lt31hkaUPdwYYPx
+         RsGeC1Pi/afncUX4rmyM6pYORkKnjnMOa+YpUBXghJ6tjA4yR3TemgeJc2CWZyYNKsMU
+         7TYsQo7GomDeAHrNe/eBxsEqQqcXCszjv1Vup2gBp6As6SYHtonak/jzFwrjUf9OgKzS
+         fOSQ==
+X-Gm-Message-State: AOJu0YxLlqtavmur/I6VjclUAlKZQFgIkW2yEn6JKeBOPbDi5vq/aknz
+        NgUQt/FSTAJjqYkxnTKMCA==
+X-Google-Smtp-Source: AGHT+IHiMSLkGvJiij/dtWNYTD7+mKUOnqJj/iaaCuZAsSHsT6sQ21KZrodJguYiymwoGdLWY8RTxw==
+X-Received: by 2002:a5d:6d44:0:b0:31f:f753:5897 with SMTP id k4-20020a5d6d44000000b0031ff7535897mr3359024wri.59.1697926725347;
+        Sat, 21 Oct 2023 15:18:45 -0700 (PDT)
+Received: from octux.home ([2a00:23c8:881a:8601:d29:30a8:9a8e:f4a6])
+        by smtp.gmail.com with ESMTPSA id a6-20020adfeec6000000b0032da8fb0d05sm4437064wrp.110.2023.10.21.15.18.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Oct 2023 15:18:45 -0700 (PDT)
+Date:   Sat, 21 Oct 2023 23:18:43 +0100
+From:   Jules Irenge <jbi.octave@gmail.com>
+To:     tglx@linutronix.de
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        petr.pavlu@suse.com
+Subject: [PATCH] x86/kprobes: Remove unnecessary extern keyword
+Message-ID: <ZTROQyJ4xp75e0dA@octux.home>
 MIME-Version: 1.0
-Date:   Sat, 21 Oct 2023 22:56:02 +0200
-From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     srinivas.kandagatla@linaro.org, linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 4/6] Revert "nvmem: add new config option"
-In-Reply-To: <2023102113-posted-pronounce-97fb@gregkh>
-References: <20231020105545.216052-1-srinivas.kandagatla@linaro.org>
- <20231020105545.216052-5-srinivas.kandagatla@linaro.org>
- <2023102100-tile-spinning-fa1b@gregkh>
- <ef93205165ac15b4d6ea14a5e9f22cd9@milecki.pl>
- <2023102113-posted-pronounce-97fb@gregkh>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <f25aed85cf262324eb19f2ff56175cd0@milecki.pl>
-X-Sender: rafal@milecki.pl
-X-Originating-IP: 31.11.218.106
-X-Webmail-UserID: rafal@milecki.pl
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 4242953799873833764
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrkedtgdduheduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvvefujghffgfkgihitgfgsehtkehjtddtreejnecuhfhrohhmpeftrghfrghlucfoihhlvggtkhhiuceorhgrfhgrlhesmhhilhgvtghkihdrphhlqeenucggtffrrghtthgvrhhnpeejvdelgfeutdfhfeelheegfedtleduleeuvdfgfeefvefhvedtheetjeetfeehgeenucfkphepuddvjedrtddrtddruddpfedurdduuddrvddukedruddtiedpudehuddrkedtrddvledrvddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeorhgrfhgrlhesmhhilhgvtghkihdrphhlqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheehtddpmhhouggvpehsmhhtphhouhht
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-21 22:51, Greg KH wrote:
-> On Sat, Oct 21, 2023 at 10:31:55PM +0200, Rafał Miłecki wrote:
->> On 2023-10-21 19:18, Greg KH wrote:
->> > On Fri, Oct 20, 2023 at 11:55:43AM +0100, srinivas.kandagatla@linaro.org
->> > wrote:
->> > > From: Rafał Miłecki <rafal@milecki.pl>
->> > >
->> > > This reverts commit 517f14d9cf3533d5ab4fded195ab6f80a92e378f.
->> > >
->> > > It seems that "no_of_node" config option was added to help mtd's case.
->> > >
->> > > DT nodes of MTD partitions (that are also NVMEM devices) may contain
->> > > subnodes that SHOULD NOT be treated as NVMEM fixed cells. To prevent
->> > > NVMEM core code from parsing them "no_of_node" was set to true and
->> > > that
->> > > made for_each_child_of_node() in NVMEM a no-op.
->> > >
->> > > With the introduction of "add_legacy_fixed_of_cells" config option
->> > > things got more explicit. MTD subsystem simply tells NVMEM when to
->> > > look
->> > > for fixed cells and there is no need to hack "of_node" pointer
->> > > anymore.
->> > >
->> > > Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> > > Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
->> > > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> >
->> > Why isn't this also marked for stable trees?
->> 
->> I think it's explained in commit message but maybe it's not clear
->> enough?
-> 
-> It's not, I just read it again and can't figure it out, sorry.
-> 
->> This revert (PATCH 4/6) is possible only with the previous PATCH 2/6
->> applied first. In other words "no_of_node" config option can be 
->> dropped
->> only after adding "add_legacy_fixed_of_cells" config option.
-> 
-> Ah, ok, that's not obvious :)
-> 
->> Since adding "add_legacy_fixed_of_cells" is not a bug/regression fix I
->> didn't mark it for stable and so I couldn't mark revert for stable.
-> 
-> That's fine, but can you please resend this with a better changelog 
-> that
-> makes it obvious why now we can revert the old patch, otherwise the
-> autobot will come along and attempt to backport it to stable as well.
+Sparse reports a warning at arch_unoptimize_kprobes()
 
-Oops, my bad then. I'll resend tomorrow. Thanks for quick answer!
+warning: function "arch_unoptimize_kprobes"
+with external linkage has definition
 
+The reason is the function is already declared in the header file
+as extern
+
+Remove unnecessary "extern" keyword
+
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+---
+ arch/x86/kernel/kprobes/opt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
+index 517821b48391..f20ea996abbf 100644
+--- a/arch/x86/kernel/kprobes/opt.c
++++ b/arch/x86/kernel/kprobes/opt.c
+@@ -526,8 +526,8 @@ void arch_unoptimize_kprobe(struct optimized_kprobe *op)
+  * Recover original instructions and breakpoints from relative jumps.
+  * Caller must call with locking kprobe_mutex.
+  */
+-extern void arch_unoptimize_kprobes(struct list_head *oplist,
+-				    struct list_head *done_list)
++void arch_unoptimize_kprobes(struct list_head *oplist,
++			     struct list_head *done_list)
+ {
+ 	struct optimized_kprobe *op, *tmp;
+ 
 -- 
-Rafał Miłecki
+2.41.0
+
