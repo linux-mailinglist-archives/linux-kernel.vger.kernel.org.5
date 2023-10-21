@@ -2,50 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C797D1C00
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 11:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2C27D1C01
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 11:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbjJUJLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 05:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40334 "EHLO
+        id S229821AbjJUJOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 05:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjJUJK7 (ORCPT
+        with ESMTP id S229583AbjJUJOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 05:10:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5EE10CA;
-        Sat, 21 Oct 2023 02:10:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D006C433C8;
-        Sat, 21 Oct 2023 09:10:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697879454;
-        bh=nooTBPOV1b+3XpXMfXZty/WQcMVOJOlAfpiWnEipiEc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kKTI2ON2rmB5eb4ObvDDX1t0PcfbaSEMyu/9J0GRvxDyH8xScoKFABoQbpBG5rSG3
-         vqZ/5EaVpSc+tHKUXsayXQOB0DiP+315ltStRGGovA3VodQwXq8BhvZ5aQ9ISuxijO
-         vwgpObedYh3EOCVIwVdD0QRpjgza1lnMtf6aYbQA=
-Date:   Sat, 21 Oct 2023 11:10:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     David Matlack <dmatlack@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>, stable@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pattara Teerapong <pteerapong@google.com>,
-        David Stevens <stevensd@google.com>,
-        Yiwei Zhang <zzyiwei@google.com>,
-        Paul Hsia <paulhsia@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Stop zapping invalidated TDP MMU roots
- asynchronously
-Message-ID: <2023102145-unstylish-vertigo-ab7c@gregkh>
-References: <20231019201138.2076865-1-seanjc@google.com>
- <ZTLMcmj-ycWhZuTX@google.com>
+        Sat, 21 Oct 2023 05:14:09 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2243B0
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 02:14:06 -0700 (PDT)
+Received: (from willy@localhost)
+        by mail.home.local (8.17.1/8.17.1/Submit) id 39L9DcfV028421;
+        Sat, 21 Oct 2023 11:13:38 +0200
+Date:   Sat, 21 Oct 2023 11:13:38 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tools/nolibc: Add Linux specific waitpid() flags
+Message-ID: <ZTOWQnFwrQufHUyw@1wt.eu>
+References: <20231020-nolibc-waitpid-flags-v1-1-8137072dae14@kernel.org>
+ <633402b0-7167-465f-99c6-d959b5f48073@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZTLMcmj-ycWhZuTX@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <633402b0-7167-465f-99c6-d959b5f48073@t-8ch.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,36 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 11:52:34AM -0700, David Matlack wrote:
-> On 2023-10-19 01:11 PM, Sean Christopherson wrote:
-> > [ Upstream commit 0df9dab891ff0d9b646d82e4fe038229e4c02451 ]
-> > 
-> > Stop zapping invalidate TDP MMU roots via work queue now that KVM
-> > preserves TDP MMU roots until they are explicitly invalidated.  Zapping
-> > roots asynchronously was effectively a workaround to avoid stalling a vCPU
-> > for an extended during if a vCPU unloaded a root, which at the time
-> > happened whenever the guest toggled CR0.WP (a frequent operation for some
-> > guest kernels).
-> > 
-> [...]
-> > 
-> > Reported-by: Pattara Teerapong <pteerapong@google.com>
-> > Cc: David Stevens <stevensd@google.com>
-> > Cc: Yiwei Zhang<zzyiwei@google.com>
-> > Cc: Paul Hsia <paulhsia@google.com>
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > Message-Id: <20230916003916.2545000-4-seanjc@google.com>
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: David Matlack <dmatlack@google.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+Hi Thomas,
+
+On Sat, Oct 21, 2023 at 11:00:20AM +0200, Thomas Weißschuh  wrote:
+> Hi,
+> 
+> Oct 20, 2023 23:57:01 Mark Brown <broonie@kernel.org>:
+> 
+> > Linux defines a few custom flags for waitpid(), make them available to
+> > nolibc based programs.
+> >
+> > Signed-off-by: Mark Brown <broonie@kernel.org>
 > > ---
+> > tools/include/nolibc/types.h | 5 ++++-
+> > 1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/include/nolibc/types.h b/tools/include/nolibc/types.h
+> > index 8cfc4c860fa4..801ea0bb186e 100644
+> > --- a/tools/include/nolibc/types.h
+> > +++ b/tools/include/nolibc/types.h
+> > @@ -109,7 +109,10 @@
+> > #define WIFSIGNALED(status) ((status) - 1 < 0xff)
+> >
+> > /* waitpid() flags */
+> > -#define WNOHANG      1
+> > +#define WNOHANG      0x00000001
+> > +#define __WNOTHREAD  0x20000000
+> > +#define __WALL       0x40000000
+> > +#define __WCLONE     0x80000000
 > 
-> Reviewed-by: David Matlack <dmatlack@google.com>
-> Tested-by: David Matlack <dmatlack@google.com>
-> 
-> (Ran all KVM selftests and kvm-unit-tests with lockdep enabled.)
+> Wouldn't it be easier to include linux/wait.h instead?
 
-Thanks, now queued up.
+That's indeed the trend we should follow whenever possible. We've got
+caught a few times in the past with build errors depending on the
+includes ordering due to such redefinitions. I don't know if that's the
+case for these ones (nor if including linux/wait.h would cause other
+breakage) but it's worth considering at least.
 
-greg k-h
+The difficulty here is that originally nolibc did not *explicitly* depend
+on UAPI headers, and was supposed to be self-sufficient (that was the
+main point). Adapting to multiple archs caused the addition of ifdefs
+all around, then trying to standardize the include file names instead
+of just "nolibc.h" caused conflicts with programs already including
+linux/anything.h. Anyway now we depend on linux/lots-of-stuff so I
+think it's worth continuing in that direction so that we don't replicate
+the UAPI maintenance effort.
+
+Cheers,
+Willy
