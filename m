@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBDC7D1BC0
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 10:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC837D1BC5
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 10:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbjJUIci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 04:32:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38190 "EHLO
+        id S229885AbjJUIiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 04:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJUIch (ORCPT
+        with ESMTP id S229478AbjJUIh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 04:32:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F88AD41
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 01:32:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89683C433CA;
-        Sat, 21 Oct 2023 08:32:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697877151;
-        bh=Vpe9tfQgQxRbhCoBRZ9xHcY/STSOXh13F1NBpsIiYdQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jSbTag0ZKZ6MdnEnlEq/BZsN8CloPB7+s5Z6d040K+0Sinm72AYj7OBbAHw4NTa7G
-         lC3Z4+TYmxt8RfOWfvePI4+PScc3q5MVvJdFXWDzkAE01tPnd7LIS9HhOKc5xVaWGo
-         Wm/aSIr4Ucaay0A2rRVIUN9EYL2cd7v+P5LVMZw0=
-Date:   Sat, 21 Oct 2023 10:32:29 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jonathan Bergh <bergh.jonathan@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: octeon: Fix warnings due to introduction of new
- typedefs
-Message-ID: <2023102111-sneak-abreast-8061@gregkh>
-References: <20231021081409.67570-1-bergh.jonathan@gmail.com>
+        Sat, 21 Oct 2023 04:37:59 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6CED55
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 01:37:57 -0700 (PDT)
+Received: from dggpeml500002.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SCF9D52JxzNp0N;
+        Sat, 21 Oct 2023 16:33:52 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpeml500002.china.huawei.com (7.185.36.158) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Sat, 21 Oct 2023 16:37:53 +0800
+From:   Junhao He <hejunhao3@huawei.com>
+To:     <suzuki.poulose@arm.com>, <james.clark@arm.com>
+CC:     <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <jonathan.cameron@huawei.com>, <yangyicong@huawei.com>,
+        <prime.zeng@hisilicon.com>, <hejunhao3@huawei.com>
+Subject: [PATCH v2 0/4] Fixed some issues and cleanup of ultrasoc-smb
+Date:   Sat, 21 Oct 2023 16:38:18 +0800
+Message-ID: <20231021083822.18239-1-hejunhao3@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231021081409.67570-1-bergh.jonathan@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500002.china.huawei.com (7.185.36.158)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 21, 2023 at 10:14:09AM +0200, Jonathan Bergh wrote:
-> This patch fixes warnings relating to introduction of new typedefs in the
-> octeon driver. The following changes are made:
->  * Update the existing enum and struct definitions to remove the typedefs
->  * Update the inline and remaining function implementations to remove
->    the typedefs
-> 
-> Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
-> ---
->  drivers/staging/octeon/ethernet.c     |  6 ++--
->  drivers/staging/octeon/octeon-stubs.h | 48 +++++++++++++--------------
->  2 files changed, 27 insertions(+), 27 deletions(-)
-> 
+Fix the Three issues listed below and use guards to cleanup
+a) Fixed the BUG of atomic-sleep
+b) Fixed uninitialized before use buf_hw_base
+c) Fixed use unreset SMB buffer
 
-Hi,
+Changes since V1:
+ * Add comment for remove lock from smb_read()
+ * Move reset buffer to before register sink
+ * Remove patch "simplify the code for check to_copy valid"
+ * Add two new patches
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Link to V1: https://lore.kernel.org/lkml/20231012094706.21565-1-hejunhao3@huawei.com/
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Junhao He (4):
+  coresight: ultrasoc-smb: Fix sleep while close preempt in enable_smb
+  coresight: ultrasoc-smb: Config SMB buffer before register sink
+  coresight: ultrasoc-smb: Fix uninitialized before use buf_hw_base
+  coresight: ultrasoc-smb: Use guards to cleanup
 
-- Your patch did many different things all at once, making it difficult
-  to review.  All Linux kernel patches need to only do one thing at a
-  time.  If you need to do multiple things (such as clean up all coding
-  style issues in a file/driver), do it in a sequence of patches, each
-  one doing only one thing.  This will make it easier to review the
-  patches to ensure that they are correct, and to help alleviate any
-  merge issues that larger patches can cause.
+ drivers/hwtracing/coresight/ultrasoc-smb.c | 108 +++++++--------------
+ drivers/hwtracing/coresight/ultrasoc-smb.h |   6 +-
+ 2 files changed, 37 insertions(+), 77 deletions(-)
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+-- 
+2.33.0
 
-thanks,
-
-greg k-h's patch email bot
