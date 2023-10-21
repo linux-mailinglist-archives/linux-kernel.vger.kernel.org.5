@@ -2,131 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 843717D1C69
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 12:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD647D1C6B
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 12:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbjJUKPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 06:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
+        id S231140AbjJUKQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 06:16:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231250AbjJUKP1 (ORCPT
+        with ESMTP id S230216AbjJUKQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 06:15:27 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAB110D5
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 03:15:15 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5079eed8bfbso2317375e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 03:15:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697883314; x=1698488114; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OzDHqn7UNaJzOjgCcjrENJmpRSweOhwpG6H5CfyFDbc=;
-        b=DgcHoxtWbIxRFvKJyMy8A4MyHnWN/rab08Eyo/x/7dsKpn7gNcmR5cwdXshkg5Nes9
-         q7weat9GaRFX76Mptfi1VgUc8Fox/EEhzBwHB8k7FO9S2JsEHVO+Qx8PNT2Getevs6mf
-         QUsijHc32hB8FLaBVU4Iwd9ASXtEKlHLXqP39VRDNgNRFj1XpDt3udOXJDidRD9i4BeW
-         Yjs5gctd9rC5hw2BYNzIKEeKlEORteSJs7TWkAA7wvybhMoYU48AGMteL7di0fXAEZhh
-         4qPKuMfnw92JUJ3iIVKa4APKl/s6FDVeaTt9w6PHDqK0zOjhCDBj7xsAm+Zc6SBI5BWQ
-         HAPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697883314; x=1698488114;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OzDHqn7UNaJzOjgCcjrENJmpRSweOhwpG6H5CfyFDbc=;
-        b=sCm73HhJXTHBDOW1Rx+SlQjpbPrccDCDznLUiRvBE+fuV5t/cLLxkzvIdc4VIuB7H5
-         J1XaY5iogxXpNd/rNDLaQO419bIrQ/3iHy9nM7aWXI75nzrv83flUyXDdgO4JUz6YFjd
-         3qoqACOG0Jv/jO3s3mL2qZTSub/7sbMGFVIBhh8MFV683QhfD8bNELM0Fi5arefC/XRX
-         ruf/unS9QtwvF7z6HUBFktHQSphLNVVBRaf8BVH1+ZQZd6cpC0SLtU5aVq6SOvZ3Sbqg
-         5IEx8DxCozhZsdqelhdonlhdf72eKNlgBmArKbjIH+h4ayYuNBK/Lc95TOXeu+tW/ScY
-         hMgQ==
-X-Gm-Message-State: AOJu0YzQz0KMHJIsN4mJdeo7yxonYdiufMzIjNV70Z9HOyAeMrvyJWHW
-        MczNqPtXJ6bG7S5VCHvkigw=
-X-Google-Smtp-Source: AGHT+IHDPVY4sNcclDFYWhFX/VrTw2vslXmMeCj+Hasg4Lr25V58WfbCv/H1hTrGtHIo3nN9NFVlIg==
-X-Received: by 2002:a05:6512:baa:b0:500:acf1:b432 with SMTP id b42-20020a0565120baa00b00500acf1b432mr3336978lfv.63.1697883313787;
-        Sat, 21 Oct 2023 03:15:13 -0700 (PDT)
-Received: from HP-ENVY-Notebook.lan (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
-        by smtp.googlemail.com with ESMTPSA id d18-20020a056512369200b005007e7211f7sm803114lfs.21.2023.10.21.03.15.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 03:15:13 -0700 (PDT)
-From:   Jonathan Bergh <bergh.jonathan@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jonathan Bergh <bergh.jonathan@gmail.com>
-Subject: [PATCH v3 7/7] staging: octeon: Fix introduction of new typedef cvmx_pko_port_status_t in octeon driver
-Date:   Sat, 21 Oct 2023 12:12:38 +0200
-Message-Id: <20231021101238.81466-8-bergh.jonathan@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231021101238.81466-1-bergh.jonathan@gmail.com>
-References: <20231021101238.81466-1-bergh.jonathan@gmail.com>
+        Sat, 21 Oct 2023 06:16:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D1810FC
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 03:15:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2484C433C8;
+        Sat, 21 Oct 2023 10:15:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697883338;
+        bh=xE0tYUlCrfmA5ifWfxBsHGThFtSt5cm5A10aM2uArNs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZNrC8WRT6OA/H2vcGgO2NLbvKH7IiXL6J9wRT+BNNZ2qyFCDI+Fa6vk4Pe8BaCt/6
+         jiCDihCdWQq2LENnubfRV+HuqBI0jQel8x65j1Fq79hogoQ7yeqwLU6PFWc8vyk4f3
+         yCITKQ0u4J/rBeG2jDSOSS966GtmGy6nixvMIMo4=
+Date:   Sat, 21 Oct 2023 12:15:35 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Hardik Gajjar <hgajjar@de.adit-jv.com>, mathias.nyman@intel.com,
+        yangyingliang@huawei.com, jinpu.wang@ionos.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        erosca@de.adit-jv.com
+Subject: Re: [PATCH v4] usb: core: hub: Add quirks for reducing device
+ address timeout
+Message-ID: <2023102105-attribute-pajamas-a0dc@gregkh>
+References: <2023101155-unframed-satirical-f7ec@gregkh>
+ <20231011164525.97616-1-hgajjar@de.adit-jv.com>
+ <2023101620-shaky-sensitize-9708@gregkh>
+ <20231017161021.GA62775@vmlxhi-118.adit-jv.com>
+ <2023101750-bless-humorous-45c7@gregkh>
+ <6c25beed-06fe-4be0-b51a-18e159d25072@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6c25beed-06fe-4be0-b51a-18e159d25072@rowland.harvard.edu>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch removes the introduction of a new struct typedef
-cvmx_pko_port_status_t in the octeon driver and then fixes the
-implementations which used it.
+On Tue, Oct 17, 2023 at 02:59:54PM -0400, Alan Stern wrote:
+> On Tue, Oct 17, 2023 at 06:53:44PM +0200, Greg KH wrote:
+> > On Tue, Oct 17, 2023 at 06:10:21PM +0200, Hardik Gajjar wrote:
+> > > More logs and detailed in patch V1:
+> > > https://lore.kernel.org/linux-usb/20230818092353.124658-1-hgajjar@de.adit-jv.com/T/#m452ec9dad94e8181fdb050cd29483dd89437f7c1
+> > > > 
+> > > > > Achieving this is impossible in scenarios where the set_address is
+> > > > > not successful and waits for a timeout.
+> > > > 
+> > > > Agreed, broken hardware is a pain, but if your device is allowed to take
+> > > > longer, it can, and will, so you have to support that.
+> > > > 
+> > > The problem is not caused by the device taking an extended amount of time to
+> > > process the 'set_address' request. Instead, the issue lies in the absence of
+> > > any activity on the upstream bus until a timeout occurs.
+> > 
+> > So, a broken device.  Why are you then adding the hub to the quirk list
+> > and not the broken device?  We are used to adding broken devices to
+> > qurik lists all the time, this shouldn't be new.
+> 
+> Adding a quirk for the device isn't feasible, because the problem occurs 
+> before the device has been initialized and enumerated.  The kernel 
+> doesn't know anything about the device at this point; only that it has 
+> just connected.
 
-Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
----
-Changelog:                                                                 
-v1 -> v2: Fix breaking change spread across multiple patches                
-v2 -> v3: Break changes up into individual patches for each removed        
-          typedef
+Ah, ick, you are right, but we do know the "broken hub" id, so that
+makes a bit more sense.  Should this be a hub-only type quirk?
 
- drivers/staging/octeon/ethernet.c     | 2 +-
- drivers/staging/octeon/octeon-stubs.h | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> > > This situation arises when the host has already transmitted the 'set_address' command to the hub,
+> > > assuming that the device operates at full speed. However, the device connected
+> > > to the hub undergoes a state change from full speed to high-speed during this process.
+> > 
+> > During which process?  While the set-address happens?  That feels like a
+> > hub bug then.
+> > 
+> > > > > The shortened address device timeout quirks provide the flexibility
+> > > > > to align with a 3-second time limit in the event of errors.
+> > > > > By swiftly triggering a failure response and swiftly initiating
+> > > > > retry procedures, these quirks ensure efficient and rapid recovery,
+> > > > > particularly in automotive contexts where rapid smartphone enumeration
+> > > > > and screen projection are vital.
+> > > > 
+> > > > Screen projection is a requirement that you should not be relying on USB
+> > > > for as USB has a different set of required timeouts, right?  This sounds
+> > > > like a bad hardware design, if not an impossible one.
+> > > > 
+> > > 
+> > > Screen projection for us means displaying the connected phone on the screen and
+> > > launching Carplay and Android Auto for the user. This works perfectly in nearly all
+> > > cases, except in scenarios like this one where a combination of a special hub and
+> > > a specific phone model is causing the issue
+> > 
+> > So which is broken, the hub or phone?
+> 
+> It sounds like both of them are broken to some extent, although we can't 
+> tell for sure without seeing what's actually happening on the USB bus 
+> (i.e., bus analyzer output):
+> 
+> 	The phone seems to take too long to activate its high-speed
+> 	terminations and deactivate the full-speed terminations.
+> 
+> 	The hub doesn't seem to realize that the phone has disconnected 
+> 	its full-speed connection and switched to high-speed.
+> 
+> But without real data, these are just best guesses.
 
-diff --git a/drivers/staging/octeon/ethernet.c b/drivers/staging/octeon/ethernet.c
-index 8c48acab49e4..8e1f4b987a25 100644
---- a/drivers/staging/octeon/ethernet.c
-+++ b/drivers/staging/octeon/ethernet.c
-@@ -202,7 +202,7 @@ EXPORT_SYMBOL(cvm_oct_free_work);
- static struct net_device_stats *cvm_oct_common_get_stats(struct net_device *dev)
- {
- 	struct cvmx_pip_port_status rx_status;
--	cvmx_pko_port_status_t tx_status;
-+	struct cvmx_pko_port_status tx_status;
- 	struct octeon_ethernet *priv = netdev_priv(dev);
- 
- 	if (priv->port < CVMX_PIP_NUM_INPUT_PORTS) {
-diff --git a/drivers/staging/octeon/octeon-stubs.h b/drivers/staging/octeon/octeon-stubs.h
-index 33a0e1d5f961..cf7f77061eb9 100644
---- a/drivers/staging/octeon/octeon-stubs.h
-+++ b/drivers/staging/octeon/octeon-stubs.h
-@@ -409,11 +409,11 @@ struct cvmx_pip_port_status {
- 	uint16_t inb_errors;
- };
- 
--typedef struct {
-+struct cvmx_pko_port_status {
- 	uint32_t packets;
- 	uint64_t octets;
- 	uint64_t doorbell;
--} cvmx_pko_port_status_t;
-+};
- 
- union cvmx_pip_frm_len_chkx {
- 	uint64_t u64;
-@@ -1262,7 +1262,7 @@ static inline void cvmx_pip_get_port_status(uint64_t port_num, uint64_t clear,
- { }
- 
- static inline void cvmx_pko_get_port_status(uint64_t port_num, uint64_t clear,
--					    cvmx_pko_port_status_t *status)
-+					    struct cvmx_pko_port_status *status)
- { }
- 
- static inline enum cvmx_helper_interface_mode cvmx_helper_interface_get_mode(int
--- 
-2.40.1
+Agreed, Hardik, can you look at some bus traces to figure out where the
+root problem here is?
 
+thanks,
+
+greg k-h
