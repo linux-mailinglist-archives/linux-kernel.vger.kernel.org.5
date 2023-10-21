@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2F17D1C1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 11:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4487D1C16
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 11:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbjJUJ2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 05:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38012 "EHLO
+        id S230309AbjJUJ2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 05:28:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbjJUJ2e (ORCPT
+        with ESMTP id S230143AbjJUJ22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 05:28:34 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA96D76
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 02:28:31 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39L5Oo6K023901;
-        Sat, 21 Oct 2023 09:28:20 GMT
+        Sat, 21 Oct 2023 05:28:28 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6984BE
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 02:28:26 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39L5xAlM017524;
+        Sat, 21 Oct 2023 09:28:22 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2023-03-30;
- bh=XMke14vYG8UhRAuK8/FbiZ7AEIT4nF/4fIUeZ85zpTE=;
- b=fzHvb7F5SlWoKTdm48UF9vUnpOg2SDxFkTj/7mL1TiWElm5CaZIxELBDA6dXZzK0B31o
- gAlBlUyzThzC6oCzc1tlXqJ85EtinOOukGM+eCYPUmknLySWNJT6XznPgdf7Q2dNaudW
- l7ea2C0USn9pkZYg+nBDMytNgGZdioticg1uukqLOOcMVncWgaaJC4+zf3TOVkI66/Ht
- 3psvPOEqfOy3cvod9wnyXelOpkP66E1mEKYcAO3MY7ZoKuDWDSfiLlxJN17GcheQGfsF
- AxxhFjNYrA5M1/hIAPLqHUyln5lljK0MsK/Kq5gml00izyE+BV5Gh3tg3y0g01MroHPA 1g== 
+ bh=9k2d/53CGD70zPcIiDbCkVndsu3gKKkDw/PStLhE0u4=;
+ b=i2dc6FI57+dY0rmhyAKqtVLjzrSqTeE1x7w1h4zzMdHFEFvuL3VPofdox1zF0F5SgLRL
+ qx7jlUfD4HBwgA0V9UjzLzBpqx15uC15Ni5MQog0zAtVYN6ToOFmbEBny4cX4h+rHG9J
+ 4cDt2ikXWzrbu4XYup6zfhT48z2tmMsgltuxxM/+Ephv08rUQEMVkVzD7cuKStWzE8mV
+ 9ZlJOqe/zHaMMNvvvNnaGIIqoAYww8yIvfy3yMkfX06oJlGvMloYExE2qDZnGK5Ej7So
+ MukBTWFjvv04HRXPrXI1Q2Helzobd3tAlAhMcRj5MSZ07gcedDvUeLkNLzLny+rVyteA Hw== 
 Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv6pcrbv6-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv76u0ce9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 21 Oct 2023 09:28:20 +0000
+        Sat, 21 Oct 2023 09:28:21 +0000
 Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39L6FU6E019120;
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39L6FU6F019120;
         Sat, 21 Oct 2023 09:28:20 GMT
 Received: from ban25x6uut24.us.oracle.com (ban25x6uut24.us.oracle.com [10.153.73.24])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tv532gf44-3;
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tv532gf44-4;
         Sat, 21 Oct 2023 09:28:20 +0000
 From:   Si-Wei Liu <si-wei.liu@oracle.com>
 To:     jasowang@redhat.com, mst@redhat.com, eperezma@redhat.com,
         sgarzare@redhat.com, dtatulea@nvidia.com
 Cc:     virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/7] vhost-vdpa: reset vendor specific mapping to initial state in .release
-Date:   Sat, 21 Oct 2023 02:25:14 -0700
-Message-Id: <1697880319-4937-3-git-send-email-si-wei.liu@oracle.com>
+Subject: [PATCH v4 3/7] vhost-vdpa: introduce IOTLB_PERSIST backend feature bit
+Date:   Sat, 21 Oct 2023 02:25:15 -0700
+Message-Id: <1697880319-4937-4-git-send-email-si-wei.liu@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1697880319-4937-1-git-send-email-si-wei.liu@oracle.com>
 References: <1697880319-4937-1-git-send-email-si-wei.liu@oracle.com>
@@ -58,8 +58,8 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwa
  mlxscore=0 suspectscore=0 phishscore=0 adultscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
  definitions=main-2310210086
-X-Proofpoint-GUID: PZpPIxEzfvIjigMl35SlSAAYSgzW_BtQ
-X-Proofpoint-ORIG-GUID: PZpPIxEzfvIjigMl35SlSAAYSgzW_BtQ
+X-Proofpoint-GUID: l2G47ZhkMO855DXzzu_-8ZUWp845ufay
+X-Proofpoint-ORIG-GUID: l2G47ZhkMO855DXzzu_-8ZUWp845ufay
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
@@ -70,56 +70,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Devices with on-chip IOMMU or vendor specific IOTLB implementation may
-need to restore iotlb mapping to the initial or default state using the
-.reset_map op, as it's desirable for some parent devices to not work
-with DMA ops and maintain a simple IOMMU model with .reset_map. In
-particular, device reset should not cause mapping to go away on such
-IOTLB model, so persistent mapping is implied across reset. Before the
-userspace process using vhost-vdpa is gone, give it a chance to reset
-iotlb back to the initial state in vhost_vdpa_cleanup().
+Userspace needs this feature flag to distinguish if vhost-vdpa iotlb in
+the kernel can be trusted to persist IOTLB mapping across vDPA reset.
+Without it, userspace has no way to tell apart if it's running on an
+older kernel, which could silently drop all iotlb mapping across vDPA
+reset, especially with broken parent driver implementation for the
+.reset driver op. The broken driver may incorrectly drop all mappings of
+its own as part of .reset, which inadvertently ends up with corrupted
+mapping state between vhost-vdpa userspace and the kernel. As a
+workaround, to make the mapping behaviour predictable across reset,
+userspace has to pro-actively remove all mappings before vDPA reset, and
+then restore all the mappings afterwards. This workaround is done
+unconditionally on top of all parent drivers today, due to the parent
+driver implementation issue and no means to differentiate.  This
+workaround had been utilized in QEMU since day one when the
+corresponding vhost-vdpa userspace backend came to the world.
+
+There are 3 cases that backend may claim this feature bit on for:
+
+- parent device that has to work with platform IOMMU
+- parent device with on-chip IOMMU that has the expected
+  .reset_map support in driver
+- parent device with vendor specific IOMMU implementation with
+  persistent IOTLB mapping already that has to specifically
+  declare this backend feature
+
+The reason why .reset_map is being one of the pre-condition for
+persistent iotlb is because without it, vhost-vdpa can't switch back
+iotlb to the initial state later on, especially for the on-chip IOMMU
+case which starts with identity mapping at device creation. virtio-vdpa
+requires on-chip IOMMU to perform 1:1 passthrough translation from PA to
+IOVA as-is to begin with, and .reset_map is the only means to turn back
+iotlb to the identity mapping mode after vhost-vdpa is gone.
+
+The difference in behavior did not matter as QEMU unmaps all the memory
+unregistering the memory listener at vhost_vdpa_dev_start( started =
+false), but the backend acknowledging this feature flag allows QEMU to
+make sure it is safe to skip this unmap & map in the case of vhost stop
+& start cycle.
+
+In that sense, this feature flag is actually a signal for userspace to
+know that the driver bug has been solved. Not offering it indicates that
+userspace cannot trust the kernel will retain the maps.
 
 Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
 Acked-by: Eugenio Pérez <eperezma@redhat.com>
 ---
- drivers/vhost/vdpa.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/vhost/vdpa.c             | 15 +++++++++++++++
+ include/uapi/linux/vhost_types.h |  2 ++
+ 2 files changed, 17 insertions(+)
 
 diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 851535f57b95..c6bfe9bdde42 100644
+index c6bfe9bdde42..acc7c74ba7d6 100644
 --- a/drivers/vhost/vdpa.c
 +++ b/drivers/vhost/vdpa.c
-@@ -131,6 +131,15 @@ static struct vhost_vdpa_as *vhost_vdpa_find_alloc_as(struct vhost_vdpa *v,
- 	return vhost_vdpa_alloc_as(v, asid);
+@@ -439,6 +439,15 @@ static u64 vhost_vdpa_get_backend_features(const struct vhost_vdpa *v)
+ 		return ops->get_backend_features(vdpa);
  }
  
-+static void vhost_vdpa_reset_map(struct vhost_vdpa *v, u32 asid)
++static bool vhost_vdpa_has_persistent_map(const struct vhost_vdpa *v)
 +{
 +	struct vdpa_device *vdpa = v->vdpa;
 +	const struct vdpa_config_ops *ops = vdpa->config;
 +
-+	if (ops->reset_map)
-+		ops->reset_map(vdpa, asid);
++	return (!ops->set_map && !ops->dma_map) || ops->reset_map ||
++	       vhost_vdpa_get_backend_features(v) & BIT_ULL(VHOST_BACKEND_F_IOTLB_PERSIST);
 +}
 +
- static int vhost_vdpa_remove_as(struct vhost_vdpa *v, u32 asid)
+ static long vhost_vdpa_set_features(struct vhost_vdpa *v, u64 __user *featurep)
  {
- 	struct vhost_vdpa_as *as = asid_to_as(v, asid);
-@@ -140,6 +149,14 @@ static int vhost_vdpa_remove_as(struct vhost_vdpa *v, u32 asid)
+ 	struct vdpa_device *vdpa = v->vdpa;
+@@ -726,6 +735,7 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
+ 			return -EFAULT;
+ 		if (features & ~(VHOST_VDPA_BACKEND_FEATURES |
+ 				 BIT_ULL(VHOST_BACKEND_F_DESC_ASID) |
++				 BIT_ULL(VHOST_BACKEND_F_IOTLB_PERSIST) |
+ 				 BIT_ULL(VHOST_BACKEND_F_SUSPEND) |
+ 				 BIT_ULL(VHOST_BACKEND_F_RESUME) |
+ 				 BIT_ULL(VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK)))
+@@ -742,6 +752,9 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
+ 		if ((features & BIT_ULL(VHOST_BACKEND_F_DESC_ASID)) &&
+ 		     !vhost_vdpa_has_desc_group(v))
+ 			return -EOPNOTSUPP;
++		if ((features & BIT_ULL(VHOST_BACKEND_F_IOTLB_PERSIST)) &&
++		     !vhost_vdpa_has_persistent_map(v))
++			return -EOPNOTSUPP;
+ 		vhost_set_backend_features(&v->vdev, features);
+ 		return 0;
+ 	}
+@@ -797,6 +810,8 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
+ 			features |= BIT_ULL(VHOST_BACKEND_F_RESUME);
+ 		if (vhost_vdpa_has_desc_group(v))
+ 			features |= BIT_ULL(VHOST_BACKEND_F_DESC_ASID);
++		if (vhost_vdpa_has_persistent_map(v))
++			features |= BIT_ULL(VHOST_BACKEND_F_IOTLB_PERSIST);
+ 		features |= vhost_vdpa_get_backend_features(v);
+ 		if (copy_to_user(featurep, &features, sizeof(features)))
+ 			r = -EFAULT;
+diff --git a/include/uapi/linux/vhost_types.h b/include/uapi/linux/vhost_types.h
+index 18ad6ae7ab5c..d7656908f730 100644
+--- a/include/uapi/linux/vhost_types.h
++++ b/include/uapi/linux/vhost_types.h
+@@ -190,5 +190,7 @@ struct vhost_vdpa_iova_range {
+  * buffers may reside. Requires VHOST_BACKEND_F_IOTLB_ASID.
+  */
+ #define VHOST_BACKEND_F_DESC_ASID    0x7
++/* IOTLB don't flush memory mapping across device reset */
++#define VHOST_BACKEND_F_IOTLB_PERSIST  0x8
  
- 	hlist_del(&as->hash_link);
- 	vhost_vdpa_iotlb_unmap(v, &as->iotlb, 0ULL, 0ULL - 1, asid);
-+	/*
-+	 * Devices with vendor specific IOMMU may need to restore
-+	 * iotlb to the initial or default state, which cannot be
-+	 * cleaned up in the all range unmap call above. Give them
-+	 * a chance to clean up or reset the map to the desired
-+	 * state.
-+	 */
-+	vhost_vdpa_reset_map(v, asid);
- 	kfree(as);
- 
- 	return 0;
+ #endif
 -- 
 2.39.3
 
