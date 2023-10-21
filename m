@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C0B7D1FDB
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 23:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16C27D1FDF
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 23:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbjJUVji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 17:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        id S230079AbjJUVsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 17:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjJUVjh (ORCPT
+        with ESMTP id S229437AbjJUVsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 17:39:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEAF9C
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 14:39:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F80EC433C7;
-        Sat, 21 Oct 2023 21:39:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697924372;
-        bh=OesIK1vv18YxMVOSsbR7a6z1lzp5vKkXkAr5iUOU4gQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XN/Cr27wTTA0dfxotwyX0jawH2jDB3Yf2mW29gITgTplMuylccMy0+DCUbc63rbv+
-         IKtOWpA7DuZCPm21gBcczxwLCHkEMrfik6dzTikXnCtsNx8H5yRgl7FlWdFZsxxsGZ
-         3UvysTqlBhiHNlZFSxr5+4+GAEgH24nshvI6SlUo=
-Date:   Sat, 21 Oct 2023 23:39:29 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Gary Rookard <garyrookard@fastmail.org>
-Cc:     philipp.g.hortmann@gmail.com, linux-staging@lists.linux.dev,
+        Sat, 21 Oct 2023 17:48:51 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8530D7A
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 14:48:47 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c8a1541232so16953925ad.0
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 14:48:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697924927; x=1698529727; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lUY/6aiz/kuqBCZnsp6ZXSxXydVcwFjt2+x9XvheJnQ=;
+        b=NBE+qQN7m7FXJaL/NpiV08vhH+B26EkM8q/Ljw+8wvlJT/6Dp5wntiSxewos+VDwMQ
+         IwRbnooMm9ib49tS43sc9EbuuwADKm5SACCQ/XQdFOwhm5FVqQ1OjCwZJSD6gyNfp7SX
+         EIvzRMO24Jk00qd+NnNkcRa8yIAfpac3BhtSfD/Qn2+lISEnBwiPISlBg/ub5HSurgut
+         VwkBQoKcNx81XhYevhqS4MVgtiJ7eyxPph0mjKelEOjveaGvMC5VKXaFrJ3Uz5f/EtpZ
+         M3bpOa9MsYAgkKkWWHRSbulT9aE8tl1zU7KMDCE7lQNYiHFVpCpN3ZXg9ivKZSvttFfF
+         RLpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697924927; x=1698529727;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lUY/6aiz/kuqBCZnsp6ZXSxXydVcwFjt2+x9XvheJnQ=;
+        b=hNO8JhGshK8Rk40uEGblXg/GsAfY3rP2f5+oubldzIRmXeBY55CV3sIT3y39Xh6CSk
+         +m9EQQjLGOdciHkPDjRhq4hj9PtdcZM2fxpU/SQLvgepJOqYFQ1yoEjXshdf1+8WVXT7
+         B/qr02gPVTr010Zqpj1YErwyuhpiFMsG4dXZDwhUf95ReThxlWzXC9R4Az73bxU10Rb2
+         06gpwpdTY8PS/aqMoX+VU/AaeGpjLbS5ajm/GDEq2a5tD2mtoYnkgITM5kj3BeEAhACl
+         G4KF6gnwh3Hv9ciJuFRfv0OFZc+O5ebTyH5bQldvPTAVtDrnmq/X8ONoKEPOpyCucW7/
+         1zTQ==
+X-Gm-Message-State: AOJu0Yw2FAUCfAcWRmx9285L8MtKWyX4pmytZ3JsyDirijPoGxpaAkeF
+        mOBL/jKtordU96O657P+iic=
+X-Google-Smtp-Source: AGHT+IEZd9SN83EFFxrJuxljhGwxuZ4exyWb83Q2VVJHLmEQIDMjLqdOV1BIKqIgpjkUfG9ZCE44sg==
+X-Received: by 2002:a17:902:cec4:b0:1ca:2caa:aca6 with SMTP id d4-20020a170902cec400b001ca2caaaca6mr6514621plg.68.1697924927110;
+        Sat, 21 Oct 2023 14:48:47 -0700 (PDT)
+Received: from ubuntu ([122.167.9.184])
+        by smtp.gmail.com with ESMTPSA id c15-20020a170902d48f00b001c5eb2c4d8csm3542882plg.160.2023.10.21.14.48.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Oct 2023 14:48:46 -0700 (PDT)
+Date:   Sat, 21 Oct 2023 14:48:40 -0700
+From:   Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+To:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: rtl8192e: renamed variable TxCountToDataRate
-Message-ID: <2023102107-tipping-dosage-5062@gregkh>
-References: <20231021213202.6244-1-garyrookard@fastmail.org>
+Cc:     kumaran.4353@gmail.com
+Subject: [PATCH] staging: greybus: avoid macro argument precedence issues
+Message-ID: <20231021214840.GA6557@ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231021213202.6244-1-garyrookard@fastmail.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 21, 2023 at 05:32:02PM -0400, Gary Rookard wrote:
-> Renamed from Pascal/CamelCase to Snake case the variable
-> TxCountDataRate, TxCountDataRate -> tx_count_data_rate.
-> 
-> Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
-> Driver rtl8192e compiles.
-> 
-> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
-> ---
->  drivers/staging/rtl8192e/rtl819x_HTProc.c    | 2 +-
->  drivers/staging/rtl8192e/rtllib.h            | 2 +-
->  drivers/staging/rtl8192e/rtllib_softmac_wx.c | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
+Adhere to linux coding style, added parentheses around
+macro argument 'gcam'.
+CHECK: Macro argument 'gcam' may be better as '(gcam)' to
+avoid precedence issues
 
+Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+---
+ drivers/staging/greybus/camera.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Hi,
+diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
+index cdbb42cd413b..ae49e37a87e9 100644
+--- a/drivers/staging/greybus/camera.c
++++ b/drivers/staging/greybus/camera.c
+@@ -180,9 +180,9 @@ static const struct gb_camera_fmt_info *gb_camera_get_format_info(u16 gb_fmt)
+ 
+ #define GB_CAMERA_MAX_SETTINGS_SIZE	8192
+ 
+-#define gcam_dbg(gcam, format...)	dev_dbg(&gcam->bundle->dev, format)
+-#define gcam_info(gcam, format...)	dev_info(&gcam->bundle->dev, format)
+-#define gcam_err(gcam, format...)	dev_err(&gcam->bundle->dev, format)
++#define gcam_dbg(gcam, format...)	dev_dbg(&(gcam)->bundle->dev, format)
++#define gcam_info(gcam, format...)	dev_info(&(gcam)->bundle->dev, format)
++#define gcam_err(gcam, format...)	dev_err(&(gcam)->bundle->dev, format)
+ 
+ static int gb_camera_operation_sync_flags(struct gb_connection *connection,
+ 					  int type, unsigned int flags,
+-- 
+2.25.1
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
