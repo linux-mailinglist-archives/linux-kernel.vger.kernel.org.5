@@ -2,47 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 804B67D1DFC
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8FD7D1E11
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231571AbjJUPwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 11:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35634 "EHLO
+        id S231688AbjJUPzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 11:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJUPwy (ORCPT
+        with ESMTP id S231604AbjJUPzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 11:52:54 -0400
+        Sat, 21 Oct 2023 11:55:44 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B7913E;
-        Sat, 21 Oct 2023 08:52:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE97FC433C8;
-        Sat, 21 Oct 2023 15:52:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196D61A4;
+        Sat, 21 Oct 2023 08:55:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CD7FC433C7;
+        Sat, 21 Oct 2023 15:55:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697903572;
-        bh=7TjlB9aoSZ9815DfMrxuJtQz6zC044xTw1Yj6BKuTms=;
+        s=k20201202; t=1697903742;
+        bh=hwuLjwamauGBX49+ZMEyvP+u0WgatDfDReunLsuxivY=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=b+K6XEqRGp9d0Vz81r4ZvvvUwfHB/srqOevZyaZHtrUXW1zBBo9BU3ofEhSIzRiu5
-         XPlvWw0voHmJ190ioNpvb4aHCYxAu21mqv9+JwVYDqLO2U2gctBpG0FkLRZ3MKWads
-         P4r7msdXsstOtlp/uySkQbIbUjl9Dn5cl3D1YD5o1+FeG7t9xU5X8Ddtey7VA9l3Bz
-         zPbHPH9z6vz//V106s86txXmPxUQFlt0aA2HiEDNaRYOfCsMjLCVTQSRZjZ+cUR3Ch
-         5+yhzOxqyLLlnuSUSUwweWkoCf3LRrp7lyjSxoYL97odTfxFJ4CjoUjvbFiUSAOEBH
-         m5DqsV34bGngA==
-Date:   Sat, 21 Oct 2023 16:52:45 +0100
+        b=LQ56t8Gyrec0S5bFF2ewoXMPh25xVNQ1SmvlkIqX34Z1/2BtczQkEa9Y9TlKNm9iN
+         YY6QhRK/6vDJF9Ic3FUdcEWfIlkJXZIH5/B8sx63M3EZ2Xz6ovqHu+Sw5GPfpzL/0R
+         Pn83s+adJAuWQ/kkHWT3KEwscIoVC72AmVw0rDSURZ3t2BH+Tux2etXdYcpbzPLr48
+         ru3CD/Hbryl1++oqedwq2g9xXCfQprOPk7DgdW4KQtdGBOOFOsFtrQsvtYQuZBJooQ
+         tua2FKpDbgiotYrJsGQenYGVMp3nLzsqY3G/W1vfyA48Q3juySSCmIYDUWeuMOR8Au
+         2k9hqccy4Gv2Q==
+Date:   Sat, 21 Oct 2023 16:55:35 +0100
 From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andreas Klinger <ak@it-klinger.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+To:     Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         Lars-Peter Clausen <lars@metafoo.de>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sergei Korolev <dssoftsk@gmail.com>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iio: bmp280: fix eoc interrupt usage
-Message-ID: <20231021165245.4f6c9aa3@jic23-huawei>
-In-Reply-To: <ZTFkKl6Qu4vpfcC4@anderl>
-References: <20231018152816.56589-1-ak@it-klinger.de>
-        <20231019162209.18872-1-ak@it-klinger.de>
-        <ZTFfRaShatWdxGB9@smile.fi.intel.com>
-        <ZTFkKl6Qu4vpfcC4@anderl>
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] Sanity-check available_scan_masks array
+Message-ID: <20231021165535.34dcb94b@jic23-huawei>
+In-Reply-To: <cover.1697452986.git.mazziesaccount@gmail.com>
+References: <cover.1697452986.git.mazziesaccount@gmail.com>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -56,50 +50,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 19:15:22 +0200
-Andreas Klinger <ak@it-klinger.de> wrote:
+On Mon, 16 Oct 2023 14:04:11 +0300
+Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 
-> Hi Andy,
+> Sanity-check available_scan_masks array
 > 
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> schrieb am Do, 19. Okt 19:54:
-> > On Thu, Oct 19, 2023 at 06:22:09PM +0200, Andreas Klinger wrote:  
-> > > Only the bmp085 can have an End-Of-Conversion (EOC) interrupt. But the
-> > > bmp085 and bmp180 share the same chip id. Therefore it's necessary to
-> > > distinguish the case in which the interrupt is set.
-> > > 
-> > > Fix the if statement so that only when the interrupt is set and the chip
-> > > id is recognized the interrupt is requested.
-> > > 
-> > > This bug exists since the support of EOC interrupt was introduced.  
-> >   
-> > > Fixes: aae953949651 ("iio: pressure: bmp280: add support for BMP085 EOC interrupt")  
-> > 
-> > As Jonathan already commented, this is part of a tag block below...
-> >   
-> > > Also add a link to bmp085 datasheet for reference.
-> > >   
-> > 
-> > ...somewhere here.
-> >   
-> > > Suggested-by: Sergei Korolev <dssoftsk@gmail.com>
-> > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > > Signed-off-by: Andreas Klinger <ak@it-klinger.de>
-> > > ---
-> > >  v1 -> v2: Remove extra space (seen by Andy)  
-> > 
-> > 
-> > And seems Jonathan mentioned that this is already fixed in his tree.
-> > Did I understand that correctly?  
+> The available_scan_masks is an array of bitmasks representing the
+> channels which can be simultaneously(*) scanned by a driver from the
+> device. Following special characteristics apply:
 > 
-> I just read it in the archive. For some reason I didn't get Jonathans mail
-> yesterday. Sorry for the spam.
+> - When IIO is scanning through the array it will use the first mask
+>   which can be used to scan all enabled channels. This means drivers
+>   should order the array in the order of the preference. This does also
+>   mean that a mask which is a subset of a mask located earler in array
+>   will never be used because the earlier one will be picked by the core.
+> - Masks wider than size of long are supported only to some extent. The
+>   code scanning through the array will interpret the first mask with
+>   first long zeroed as end-of-array terminator. Changing this behaviour
+>   would make mask-arrays for multi-long masks to be terminated by more
+>   than one zero long. Failure to do so would result kernel to read
+>   beyond the array generating a potentially hazardous bug.
+> 
+> Add a sanity-check to IIO-device registration emitting a warning if
+> available_scan_mask array is misordered or if mask width is larger than
+> a long while available_scan_mask-array is populated. Currently there
+> should be no in-tree drivers with available_scan_mask populated and mask
+> wider than a long.
+> 
+> Revision history:
+> v1 => v2:
+> 	- Add patch 2/2 documenting why iio_scan_mask_match() checks only
+> 	  a long worth of bits while searching for the end of the
+> 	  available_scan_mask-array.
+> 	- Styling of patch 1/2 as per comments from Jonathan
+> 	v1 and related discussion here:
+> 	https://lore.kernel.org/lkml/ZRvjuZaQWdZw1U1I@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi/
+> 
+> Matti Vaittinen (2):
+>   iio: sanity check available_scan_masks array
+>   iio: buffer: document known issue
+> 
+>  drivers/iio/industrialio-buffer.c | 16 ++++++++
+>  drivers/iio/industrialio-core.c   | 63 +++++++++++++++++++++++++++++++
+>  2 files changed, 79 insertions(+)
+> 
 
-btw, don't reply to an earlier version.  New version is new email thread.
-Otherwise things get very tricky to follow once we have lots of versions
+Hi Matti,
+
+Just a quick note to say this looks fine to me, but I don't want to queue it up
+just yet given proximity to merge window etc.  I'll aim to pick it up early
+in next cycle. Give me a poke if I still haven't by rc3 or so.
+
+Thanks,
 
 Jonathan
-
-> 
-> Andreas
-> 
-
