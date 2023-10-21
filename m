@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB447D19F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 02:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B127D19FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 02:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbjJUAiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 20:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38030 "EHLO
+        id S233204AbjJUAjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 20:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjJUAis (ORCPT
+        with ESMTP id S233194AbjJUAjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 20:38:48 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBE4D6E
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 17:38:45 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6c7a4735a30so249216a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 17:38:45 -0700 (PDT)
+        Fri, 20 Oct 2023 20:39:03 -0400
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AEFD73
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 17:38:57 -0700 (PDT)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1ead2e6fab7so983517fac.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 17:38:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1697848725; x=1698453525; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=423X7bf3mKdV2TfpiLpGt3onIWyjL6GRNCUQJNzFbJY=;
-        b=GCPt+Mr41cq8TzswR0amE3zshzM9Nlas9+I4pUIA+1qBSHqfuoyG8qdeSePaM70SK+
-         ga/J4yau0grKFwXeCIfUfUpRnAcJ3AKKgxJIoFgbuWbyOGKOUm4/kwOO9h1s4fIsRsDz
-         ajY3TGF7x4n64DypEAndW86jd3361xl12mf9uXaUxbaNXaxsbztkOkbHA7XvoWh8L8V7
-         oF8wv35OlpUcoQemrvBfBEOxhMLX/csUHhXXKYQj2pFgHwAPEkQ8Vb1OVVE4hR+AfJrm
-         JSU8EgTs9ZLSTnDBkFtsG5DwOp+RyUrXZDAQ2fZ89xp3hfinEkuSJxTr+63XAEVS9cD4
-         CMzQ==
+        d=tweaklogic.com; s=google; t=1697848736; x=1698453536; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sSq0LiQ9DQKIgfiPKxfox3yrdlP/6a1Wky/bubnJNtk=;
+        b=SCeLXvxHn0BCXH+fUhPrq1qZ+Sc4igPf4/jnNbvV8IU1zEke/EPqd4ZwVgewUx5nSB
+         tLVNfRueIvrBeNGdYrvk1QxOVaXv5NAUqBo2G4bvHcwCLUdE3AikZ+iPH1OaQU5wnBZT
+         t5dVDcU52XbZYLhoAx7Ku8JsjjarXjhtso8sMRwIcYwhF33fgycSXPLT1OqnohvBg4YZ
+         zYVdJRMhRmrukmmBSt/FWTtnyknSEHio2wJggoXsfXXyOQpmvwMQEwXBHvhTtE+OhLzT
+         DYeOLHBOfUNOgkwFt0RiblcRnTodRXednti72xrFyJbaRW0YtEumlQi1qml+eaMqOsG3
+         MzWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697848725; x=1698453525;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=423X7bf3mKdV2TfpiLpGt3onIWyjL6GRNCUQJNzFbJY=;
-        b=PpqcgnbDkZoIhzKDV1+qUlLNcjOdsqpZjY6i6W+E5NGTEoP7TjWUXBnsRh8HPgX/3z
-         6VdiOTfZVtFVVyecfJAEuw09BbRuHD7VcEIa2KjXgbvdrN5vxok8UJBA0HKO3gaDd2Ur
-         7m9c59K8W8KSM4ngo4oUBIPdW2xGbi27G2spnLj81CO4zMmGVWtK9uQgB+Um//mCk4nD
-         EiUqKBbSBYXu+XAIr4TgprroyEC6nrMcFvhsnM8YASvPTuAFRn00JHgDNJjEVT68NHxX
-         VL5pvdsIegmP+i0qbcVqGbW2ELzwk06f7V3VGO+XoFy0E8wHTz9ZD1O0zLzXZH/i0S0x
-         Hwbw==
-X-Gm-Message-State: AOJu0YyusjHiRQdQOjkMVkqHiFnTvNYetDuAQSGC6AU7cldwKApIZlCZ
-        b5eahQ4SIjk7G56D4to3YN/cRA==
-X-Google-Smtp-Source: AGHT+IGdv9UkTnlXLx/5ijBTQR2xHsaXZ87/AXJ/nw5vxj4PW5/dpIBr4LcagbwlUR9FnNBJNYtfhg==
-X-Received: by 2002:a9d:51d2:0:b0:6bf:500f:b570 with SMTP id d18-20020a9d51d2000000b006bf500fb570mr3774295oth.3.1697848725192;
-        Fri, 20 Oct 2023 17:38:45 -0700 (PDT)
-Received: from [127.0.0.1] ([2600:380:984c:2fe2:e7f8:bd24:713c:c8fb])
-        by smtp.gmail.com with ESMTPSA id h6-20020a9d61c6000000b006cd33d6fd5csm520636otk.11.2023.10.20.17.38.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Oct 2023 17:38:44 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Khazhismel Kumykov <khazhy@chromium.org>
-Cc:     Yu Kuai <yukuai3@huawei.com>, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        oleg@redhat.com, linan122@huawei.com,
-        Khazhismel Kumykov <khazhy@google.com>
-In-Reply-To: <20231020223617.2739774-1-khazhy@google.com>
-References: <20231020223617.2739774-1-khazhy@google.com>
-Subject: Re: [PATCH] blk-throttle: check for overflow in
- calculate_bytes_allowed
-Message-Id: <169784872374.3020638.17698696801548218359.b4-ty@kernel.dk>
-Date:   Fri, 20 Oct 2023 18:38:43 -0600
+        d=1e100.net; s=20230601; t=1697848736; x=1698453536;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sSq0LiQ9DQKIgfiPKxfox3yrdlP/6a1Wky/bubnJNtk=;
+        b=Vw0LpuSkiUmUsIoK16ICh1eZqnT/lVLiGbwJrvs6DGwYwMQM9kCKcxla6dsTlg8rzC
+         eoxXa2EfBg7WH8YU89c82s5zVoOfonLwo6BiiEijx3OHQTSXxBqSNvYIrEYwXlZnhxuH
+         IA0yMrnS4JoiLKi6cJVoLIB1AByOV7injPRafflRQ0NpfY3bT4bhSYfPL4UzwHCCKMcA
+         jwliyxPuJDXCUfw5s6sD0GicaNkpL9h6iuzv6Ja6A6jdOjvxa7JUbcmWHOIv2xBlrYIz
+         DVqxqSAurLv8r0hWl4P7sRQcHEZdWaS5Xw+UZngd49VP5zOCLvVpDE9YzdC3v4iXobTR
+         JnGw==
+X-Gm-Message-State: AOJu0YzSYy95bQGSen2G3yEjFtJ2LMTQZLdyCES55o3hh8NRzMdoOeu8
+        955S1EemWxj4OWXa9Z/vKol/JpTxYGtZsNiqfJ4=
+X-Google-Smtp-Source: AGHT+IGDsFGs9Jk018Kwmxob0O23QAjKaUSRVq/R/vkP5Pxc/Mm7q+JwePrfACOZ5D53ZrLy4UpBjg==
+X-Received: by 2002:a05:6870:4949:b0:1ea:8b10:247e with SMTP id fl9-20020a056870494900b001ea8b10247emr4638798oab.27.1697848736400;
+        Fri, 20 Oct 2023 17:38:56 -0700 (PDT)
+Received: from ?IPV6:2403:580d:82f4:0:9012:790b:50f:4eda? (2403-580d-82f4-0-9012-790b-50f-4eda.ip6.aussiebb.net. [2403:580d:82f4:0:9012:790b:50f:4eda])
+        by smtp.gmail.com with ESMTPSA id k194-20020a6284cb000000b006926e3dc2besm2226644pfd.108.2023.10.20.17.38.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Oct 2023 17:38:56 -0700 (PDT)
+Message-ID: <35d74411-9b67-4c41-ae68-6042519a17b3@tweaklogic.com>
+Date:   Sat, 21 Oct 2023 11:08:50 +1030
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: iio: light: Squash APDS9300 and APDS9960
+ schemas
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, matt@ranostay.org
+References: <20231019080437.94849-1-subhajit.ghosh@tweaklogic.com>
+ <472aa31d-7d6c-41df-86e6-d17f05998256@linaro.org>
+ <6b721019-c98e-d926-04a9-e71f9ea20762@tweaklogic.com>
+ <eedc5ebf-f8e5-4cbf-b394-c260d2fc53c8@linaro.org>
+From:   Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+In-Reply-To: <eedc5ebf-f8e5-4cbf-b394-c260d2fc53c8@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-26615
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Fri, 20 Oct 2023 15:36:17 -0700, Khazhismel Kumykov wrote:
-> Inexact, we may reject some not-overflowing values incorrectly, but
-> they'll be on the order of exabytes allowed anyways.
+>> of apds9300 handles both situations whether interrupt bindings are provided or not, whereas,
+>> apds9960 requires an interrupt binding for probe() to be successful. I thought it would
+>> be appropriate to add that in the schema.
 > 
-> This fixes divide error crash on x86 if bps_limit is not configured or
-> is set too high in the rare case that jiffy_elapsed is greater than HZ.
+> Not explained in commit msg.
 > 
+> Best regards,
+> Krzysztof
 > 
-> [...]
+Yes, I will add all these point in my next commit message in apds9306 patch series rather than
+a separate patch as suggested by Conor.
 
-Applied, thanks!
-
-[1/1] blk-throttle: check for overflow in calculate_bytes_allowed
-      commit: 2dd710d476f2f1f6eaca884f625f69ef4389ed40
-
-Best regards,
--- 
-Jens Axboe
-
-
-
+Regards,
+Subhajit Ghosh
