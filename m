@@ -2,56 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B257D1D82
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFAD7D1D81
 	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 16:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbjJUOh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 10:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
+        id S231305AbjJUOjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 10:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJUOhz (ORCPT
+        with ESMTP id S229583AbjJUOjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 10:37:55 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338A0D5B
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:37:53 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9becde9ea7bso614352866b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:37:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697899071; x=1698503871; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=A4pUxzTEqmI0KLXHFsmhEKj3JzjklMT09D9RoLa7I6c=;
-        b=S2dF3fOApsGDVC4AAnbIVELBtIy3n3L+K2+CBXQOm3/4NglDjBGE57CdQeweJAfs1V
-         M70WMRxE0AkEuAio/VA0SNAos8avgIXw4iT3oiWbKouGc/Ft4Udp1DKaTcgGCMPgAAwP
-         iiF9XCP98U+soe3HO0g6xvWEziePwXvCzptrpglbm4pgCa3UxHhJvFFJ3xwOrylcoRQJ
-         gmv2mvRTqjttcwh/7jqpEWrS8OzT4E8ZTYG9b5v2O+NQLISaVGP7p5qTtWYbwmzr4puC
-         1/vdZx2g6R8V2m6Bhz1UPmb82SRmh0QkRX7O8dMZH6FgWByY71T+TSnyOoAp0HlwPCW3
-         E5xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697899071; x=1698503871;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A4pUxzTEqmI0KLXHFsmhEKj3JzjklMT09D9RoLa7I6c=;
-        b=ByGR16h81Vm4S7h1AqmE5OT8DqWIhfeufgePyfvtBpkDXzIjf2rCB0vRIWrIuJ6BT2
-         2RjD2Q89XraAG5dFMWWlnWeGQUGF99ldBThAS2ICYKJbVG9urzkEADt1VQb6NKRFOu1y
-         LA+KWhXIHknfMQRNBKr6dxQJWSIP7OSgZxXkhlOxJpPbvHnziAma/ncCwn050p1AnPlw
-         pKkFYtAQ1QUnTplBgBP1k1Ik5XLT5TqZhv35KZY062f5y1PZfOKzWjP2K8ry1nOgmpHu
-         YhrocAdl7DLQpHyOUxN3WIF/biM1B2k8h+keAzWGuRatpoowoUA+PIRSRkZmA6RT6lJI
-         XNMQ==
-X-Gm-Message-State: AOJu0YzUzSI/1nWm28myYIoiP46Oim8ovT9OP6aj72eAsFc6i/9c0ys+
-        Djg7fSP8b225DNVyNzEm6vs=
-X-Google-Smtp-Source: AGHT+IHvLQNt373iKnkUAMMv0uqeQhkSSPh0nhT/+40a0VuR41cjvm2XLzULUe48pAzrCzCy5zWmzw==
-X-Received: by 2002:a17:906:f291:b0:9c7:6523:407b with SMTP id gu17-20020a170906f29100b009c76523407bmr4677146ejb.17.1697899071232;
-        Sat, 21 Oct 2023 07:37:51 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id p26-20020a170906229a00b009b65a698c16sm3703310eja.220.2023.10.21.07.37.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 07:37:50 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>, Andy Lutomirski <luto@kernel.org>,
+        Sat, 21 Oct 2023 10:39:37 -0400
+Received: from MW2PR02CU002.outbound.protection.outlook.com (mail-westus2azon11013003.outbound.protection.outlook.com [52.101.49.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92ABC0
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:39:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Uz/+nFHSl5fbVPTfIhwpvzA9/2DQSu5H2ClwSH8HNjb6PnGGKD0I1+qxfPczVkVYPl6qJTTaNctDHVuSabefFv5OJHDuhZYyFcrFcYKygtoEMk2PenScQpk5vZpE4jVk2RPdHMZltABSV12Uc0VBcgLG1rvrFVjoG16AlnWSDhhacwNbP1luFDlE+DAwJLED54QOJ10J3JAcsCKeN84PdjU7RpQ/g9HP/Kb0aMVE6A++qtMPBk1LFyNPpOdXax6D+JbXqGUXzC5Jd1BGshLqKC/D53ALynC0SokgMlaYcHVftFVjMqQKux8O3skX6bthAg5mKbVgqGYHfhhdv8AlVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dpuCka/+6wFqNgay6dyeoEeUDzG+NyS7kNH/7wEQBvU=;
+ b=NKtUnqc20cUXPo/MvbrBJDyLc9/RUJAKCWJTbWt9lOSe3APxT7S3Rczi0ZLhuumYwmK5+vFEaYPieHLwLcaJ/1WNG5w/S5D2XLT1ZDsCdhuFXniZ22uaSv0zKpqFp9162aDJF/bDB3S4nFbErD8iDn1A+R5CgaPiEhb9B+ckWGX3NMhEQl4ntfeyR1wcjaIke2EU2k4LEV2ohFPCw9sWFwONPl3q+m217E3pJBoJaLg+QcdHrHdYLhckQQrZQuaDodO15bYNMc2LK6ZbW1mem1DBW6nusbliy8MLXKL7+98o9DA1Jmi1U0o9+CuXIxkRgev5RDyUrMzH83Oc0h1/Jg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dpuCka/+6wFqNgay6dyeoEeUDzG+NyS7kNH/7wEQBvU=;
+ b=qGjj3iWoTlGVJIEwEG+Zx7CgM1UJCRnfjkAnqxOJqhi1oEnoz5a/4ISsFXzhwISLSm0jUDbhnN+zRRDDKwPjBbtTG7Oiu2EvuFUItVOkACcVrJVgGYEY4Gmw7vZrfgKrE0EUNBsCTKL9FMUi69quMEg3LUx+vaR7TCI9Ple7fQo=
+Received: from SA1PR05MB8534.namprd05.prod.outlook.com (2603:10b6:806:1dd::19)
+ by CH3PR05MB9531.namprd05.prod.outlook.com (2603:10b6:610:152::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Sat, 21 Oct
+ 2023 14:39:30 +0000
+Received: from SA1PR05MB8534.namprd05.prod.outlook.com
+ ([fe80::3e01:4551:f655:e4c]) by SA1PR05MB8534.namprd05.prod.outlook.com
+ ([fe80::3e01:4551:f655:e4c%6]) with mapi id 15.20.6907.025; Sat, 21 Oct 2023
+ 14:39:30 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+CC:     the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
         Brian Gerst <brgerst@gmail.com>,
         Denys Vlasenko <dvlasenk@redhat.com>,
         Ingo Molnar <mingo@kernel.org>,
@@ -59,168 +51,91 @@ Cc:     Uros Bizjak <ubizjak@gmail.com>, Andy Lutomirski <luto@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nadav Amit <namit@vmware.com>
-Subject: [PATCH -tip v2] x86/percpu: Introduce const-qualified const_pcpu_hot
-Date:   Sat, 21 Oct 2023 16:36:59 +0200
-Message-ID: <20231021143739.843941-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH -tip v2] x86/percpu: Introduce const-qualified
+ const_pcpu_hot
+Thread-Topic: [PATCH -tip v2] x86/percpu: Introduce const-qualified
+ const_pcpu_hot
+Thread-Index: AQHaBCwu8Q5oj11UlEOJ4ROt7EukH7BUUGaA
+Date:   Sat, 21 Oct 2023 14:39:30 +0000
+Message-ID: <C5B8B806-34CD-4654-992C-4FE3FAF85B88@vmware.com>
+References: <20231021143739.843941-1-ubizjak@gmail.com>
+In-Reply-To: <20231021143739.843941-1-ubizjak@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3731.700.6)
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR05MB8534:EE_|CH3PR05MB9531:EE_
+x-ms-office365-filtering-correlation-id: b6eb4628-4d44-422f-576b-08dbd24388b0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TpeFLU2IZoA0bxMDJNrhGhIzF5kjg38/rB6iqgT/k5P9FJnMyESc/dvP5Lgf73Ehvb53J7yvA+CVIcJEwpKR1yE3GTqKKZgC0y+swRbKhWQWJ+zLYZ6vCuVDkhxM3onXZaj2CIXcJuilk2BkEVYPYOuRW5FpJVlX3O2IxFHYe6GSJ1G4psQfqE8mwHNKS/fGOOVAj+EFEarboyYBWtQAAFyV+uH9u6gg+AC+YfDFCOeo2YAvdrhloT9MjEtcvy5jLvNbQiTEiFku13YHRcmhDdhSqBlxuE4zw/EGm9Ie+yHa6Q8XMHWAiXOKqr5Ck8KBDqfO8bqO0zLNFSOZ62tzcQiDdZ7ILy2BEDpr5fq6TzrabMt1qYDB2wWugEkQ+kYGRTppGIeoWTC+xSKwVW860xQEu5RbW4R9LVlqfvvkzlI9NDmTQ6b1f3Fc8cNtjcfP7koH8P1pms1xAZLtKWxgyD97g8Lnui/Xl+RzJnUXnkPH5SwTK4oO5A978VdiBF2/n3JcY3Gwf+3vRseEll7Y9WhQUJeEOF2/YMjAvIylqCMEXYDabiR/OjptLREANxlS1ALV1i8QYgYw2H9sJnhOU76Sao9cpHky7CmuqW6+QZwzbMfyVONGXCIVPL4zYqzfIZ6vmxuOwWF8U4fygsMOeI76DQh9Or7DLu9t1gzBFjCoA49SrjMZfnTYtEpbCAtkaiVijtgi2uawFvYCRbd5xw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR05MB8534.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(33656002)(38070700009)(6486002)(66476007)(66446008)(66946007)(91956017)(6916009)(478600001)(66556008)(64756008)(76116006)(54906003)(53546011)(316002)(2906002)(2616005)(26005)(5660300002)(558084003)(6512007)(122000001)(8676002)(7416002)(41300700001)(8936002)(4326008)(36756003)(71200400001)(86362001)(38100700002)(6506007)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?CcdTxx9wTckDb9cqZEf6T5N7LfyEXDziKVovqd97xIyVk7PhX3hAIUY5pLS1?=
+ =?us-ascii?Q?RJu5yymgwtcjwi8cCryNL5haJxD4JoMnZU6AR0R1GJA4l2o8wRutnsoWPoHg?=
+ =?us-ascii?Q?9D13NS/6NohcuEzP03nLgEiXGU7u/1hirYS2c5GAt4cEG1CjnFzXmToI+8Eq?=
+ =?us-ascii?Q?Cv53P0yFoV+fQZHTSCA7GtOeQTcsGCb/s8VjSMmGrfAhQ1OvOcsmOWi0mI/S?=
+ =?us-ascii?Q?+Vq/r4Qo/24FSiYhXMN1Kb36kRuZZt4NIus4dEtLvb4tRLLLkLjOMW22n8W4?=
+ =?us-ascii?Q?kG4l5fUjDxAqg832NAHmJpRbQjQBrWdpgxJosE9hUbT8SR+LdvMOnxo14U3F?=
+ =?us-ascii?Q?jy25PAbUWvLKt9Nnz6XVzUlTndCthRMS+dFP6DSquRVqYBzrB2MiP1ZQDfVs?=
+ =?us-ascii?Q?AKFOivQrlvZOurc3AgAxoPMnPOFSt/xEFgYOB8GXLECaal5tHtHSVrXpvHJx?=
+ =?us-ascii?Q?wVUOxQajh9FsHjWjSMcm5Jd6a2BWQrGd4foyuYqkBUwQhbm8r6yJHH6EUF2R?=
+ =?us-ascii?Q?6cc9eQAl4fixyIByl9Es4juK0QSo99xO2itEQzZHqgVuCRrbkM2hyyfjjRzY?=
+ =?us-ascii?Q?B0QcXkr9SpneobnFy5JAV2QoBerKa5lBQy2gLLY7BfxE0LiKSPbvM4Vgcpkr?=
+ =?us-ascii?Q?6BNTGwBQ2wAUxLHahdxe89YsRvxWARGgsiZ/wok99MQTFbEzorjsAjAAzUki?=
+ =?us-ascii?Q?SGrT+VVgxEqSpg4F+bUorPcnRrbvi0+mZkxMN5qF/Gd5nMRuxpJp1wMzAwmH?=
+ =?us-ascii?Q?pRf36dRcoAMZ/o94JQfOynKSN+aWKDFd55S4nVLowI2pG6TQMJkpOhEOVxwl?=
+ =?us-ascii?Q?64BJBgAOhrmlfwyZojmKHHUXvJVawu0I6BhsZqm919gbUuNPXNZmwCCXuRU1?=
+ =?us-ascii?Q?3W9Bnro6mn0HJmYGtYebLDxYVDhVqdZZcUS99m0MWMZPk+sJYadHy/Oeou/1?=
+ =?us-ascii?Q?OOBDPV6/hgdY8YztYIUgrSYWkrsYqNIMBhzz6ZF5cn7Vbfg/0lCK/Zaa5Spo?=
+ =?us-ascii?Q?/KPrZ9uPSD/XfwR+4QtgQlFOFIn3uUri+MW4biBmZf2tdDxvRHbh5HHG5QLQ?=
+ =?us-ascii?Q?T9SzL05/hk4yR3HBWUqjk7RcHyjE2MJcZwViiKkEQ9AL7I8K6RMdy52KzTc5?=
+ =?us-ascii?Q?FJYb9ImGCmsdPSTwR9GkTy9bkmdLbYoxj2rRkGe0Mebv3iveRHZ1Hcybj7Gs?=
+ =?us-ascii?Q?QCZyf+8WbDw+561SvKt0fRJTWAIF2FWpdDCYWM9i7j0U4OYEAaYs7JplE3hb?=
+ =?us-ascii?Q?bQTxGtnAn1+RQWGuaARd9EOBYyTzTqSonV7o+uGJ3ClFnbcivBCiWvMgqH4p?=
+ =?us-ascii?Q?tGlN1TCqx2v/JRy0HR1DIGUzz6CInhAKqepx0VbLx8K10R2AM5hSja6IS+bl?=
+ =?us-ascii?Q?Ug7+OTRlqeMVRt6hKhYUsi8S5bpMMs1YKw23w6YweVT2qPH4FAhGTsRQEkha?=
+ =?us-ascii?Q?3Rap5Mrg9LL+TJVNXh4UZN0JTrkfCebq6ZyVuTcnQRDAP2Gl21yjosEK+AKz?=
+ =?us-ascii?Q?7WL01LJKE5Ts2owOM896VfEgl/jZLKk7pU98NXjztSrtkzvvIGJ2YWUuGMnQ?=
+ =?us-ascii?Q?hOrCLrpTt4FOU3sVypqymHJr70XwQoEb8eqv7lGg?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <AAE613933BC87749B142F79D3043EA20@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR05MB8534.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6eb4628-4d44-422f-576b-08dbd24388b0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2023 14:39:30.0799
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AyJtLqBpSr6y673lsrn6Y1m0a0xj5qCpbnzF72CqWVtozOUwCG3Dxl+4tNcV+w+XKZA1o+/mVxRGI4OE8PD45g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR05MB9531
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some variables in pcpu_hot, currently current_task and top_of_stack
-are actually per-thread variables implemented as per-cpu variables
-and thus stable for the duration of the respective task.  There is
-already an attempt to eliminate redundant reads from these variables
-using this_cpu_read_stable() asm macro, which hides the dependency
-on the read memory address. However, the compiler has limited ability
-to eliminate asm common subexpressions, so this approach results in a
-limited success.
 
-The solution is to allow more aggressive elimination by aliasing
-pcpu_hot into a const-qualified const_pcpu_hot, and to read stable
-per-cpu variables from this constant copy.
 
-The current per-cpu infrastructure does not support reads from
-const-qualified variables. However, when the compiler supports segment
-qualifiers, it is possible to declare the const-aliased variable in
-the relevant named address space. The compiler considers access to the
-variable, declared in this way, as a read from a constant location,
-and will optimize reads from the variable accordingly.
+> On Oct 21, 2023, at 5:36 PM, Uros Bizjak <ubizjak@gmail.com> wrote:
+>=20
+> Some variables in pcpu_hot, currently current_task and top_of_stack
+> are actually per-thread variables implemented as per-cpu variables
+> and thus stable for the duration of the respective task
 
-By implementing constant-qualified const_pcpu_hot, the compiler can
-eliminate redundant reads from the constant variables, reducing the
-number of loads from current_task from 3766 to 3217 on a test build,
-a 14.6% reduction.
-
-The reduction of loads translates to the following code savings:
-
-   text    data     bss     dec     hex filename
-25477353        4389456  808452 30675261        1d4113d vmlinux-old.o
-25476074        4389440  808452 30673966        1d40c2e vmlinux-new.o
-
-representing a code size reduction of 1279 bytes.
----
-v2: Export const_pcpu_hot symbol.
-
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Brian Gerst <brgerst@gmail.com>
-Cc: Denys Vlasenko <dvlasenk@redhat.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Co-developed-by: Nadav Amit <namit@vmware.com>
-Signed-off-by: Nadav Amit <namit@vmware.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/include/asm/current.h   | 7 +++++++
- arch/x86/include/asm/percpu.h    | 6 +++---
- arch/x86/include/asm/processor.h | 3 +++
- arch/x86/kernel/cpu/common.c     | 1 +
- arch/x86/kernel/vmlinux.lds.S    | 1 +
- include/linux/compiler.h         | 2 +-
- 6 files changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/include/asm/current.h b/arch/x86/include/asm/current.h
-index a1168e7b69e5..0538d2436673 100644
---- a/arch/x86/include/asm/current.h
-+++ b/arch/x86/include/asm/current.h
-@@ -36,8 +36,15 @@ static_assert(sizeof(struct pcpu_hot) == 64);
- 
- DECLARE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot);
- 
-+/* const-qualified alias to pcpu_hot, aliased by linker. */
-+DECLARE_PER_CPU_ALIGNED(const struct pcpu_hot __percpu_seg_override,
-+			const_pcpu_hot);
-+
- static __always_inline struct task_struct *get_current(void)
- {
-+	if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
-+		return const_pcpu_hot.current_task;
-+
- 	return this_cpu_read_stable(pcpu_hot.current_task);
- }
- 
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index bbcc1ca737f0..630bb912a46b 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -413,9 +413,9 @@ do {									\
-  * accessed while this_cpu_read_stable() allows the value to be cached.
-  * this_cpu_read_stable() is more efficient and can be used if its value
-  * is guaranteed to be valid across cpus.  The current users include
-- * get_current() and get_thread_info() both of which are actually
-- * per-thread variables implemented as per-cpu variables and thus
-- * stable for the duration of the respective task.
-+ * pcpu_hot.current_task and pcpu_hot.top_of_stack, both of which are
-+ * actually per-thread variables implemented as per-cpu variables and
-+ * thus stable for the duration of the respective task.
-  */
- #define this_cpu_read_stable_1(pcp)	percpu_stable_op(1, "mov", pcp)
- #define this_cpu_read_stable_2(pcp)	percpu_stable_op(2, "mov", pcp)
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index ae81a7191c1c..a807025a4dee 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -533,6 +533,9 @@ static __always_inline unsigned long current_top_of_stack(void)
- 	 *  and around vm86 mode and sp0 on x86_64 is special because of the
- 	 *  entry trampoline.
- 	 */
-+	if (IS_ENABLED(CONFIG_USE_X86_SEG_SUPPORT))
-+		return pcpu_hot.top_of_stack;
-+
- 	return this_cpu_read_stable(pcpu_hot.top_of_stack);
- }
- 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index b14fc8c1c953..9058da9ae011 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -2049,6 +2049,7 @@ DEFINE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot) = {
- 	.top_of_stack	= TOP_OF_INIT_STACK,
- };
- EXPORT_PER_CPU_SYMBOL(pcpu_hot);
-+EXPORT_PER_CPU_SYMBOL(const_pcpu_hot);
- 
- #ifdef CONFIG_X86_64
- DEFINE_PER_CPU_FIRST(struct fixed_percpu_data,
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index 54a5596adaa6..1239be7cc8d8 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -46,6 +46,7 @@ ENTRY(phys_startup_64)
- #endif
- 
- jiffies = jiffies_64;
-+const_pcpu_hot = pcpu_hot;
- 
- #if defined(CONFIG_X86_64)
- /*
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index d7779a18b24f..bf9815eaf4aa 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -212,7 +212,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
-  */
- #define ___ADDRESSABLE(sym, __attrs) \
- 	static void * __used __attrs \
--		__UNIQUE_ID(__PASTE(__addressable_,sym)) = (void *)&sym;
-+	__UNIQUE_ID(__PASTE(__addressable_,sym)) = (void *)(uintptr_t)&sym;
- #define __ADDRESSABLE(sym) \
- 	___ADDRESSABLE(sym, __section(".discard.addressable"))
- 
--- 
-2.41.0
+LGTM!
 
