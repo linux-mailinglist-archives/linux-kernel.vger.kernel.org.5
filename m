@@ -2,140 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFAD7D1D81
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 16:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685CD7D1D84
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 16:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbjJUOjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 10:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
+        id S231345AbjJUOlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 10:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJUOjh (ORCPT
+        with ESMTP id S231177AbjJUOlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 10:39:37 -0400
-Received: from MW2PR02CU002.outbound.protection.outlook.com (mail-westus2azon11013003.outbound.protection.outlook.com [52.101.49.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92ABC0
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:39:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Uz/+nFHSl5fbVPTfIhwpvzA9/2DQSu5H2ClwSH8HNjb6PnGGKD0I1+qxfPczVkVYPl6qJTTaNctDHVuSabefFv5OJHDuhZYyFcrFcYKygtoEMk2PenScQpk5vZpE4jVk2RPdHMZltABSV12Uc0VBcgLG1rvrFVjoG16AlnWSDhhacwNbP1luFDlE+DAwJLED54QOJ10J3JAcsCKeN84PdjU7RpQ/g9HP/Kb0aMVE6A++qtMPBk1LFyNPpOdXax6D+JbXqGUXzC5Jd1BGshLqKC/D53ALynC0SokgMlaYcHVftFVjMqQKux8O3skX6bthAg5mKbVgqGYHfhhdv8AlVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dpuCka/+6wFqNgay6dyeoEeUDzG+NyS7kNH/7wEQBvU=;
- b=NKtUnqc20cUXPo/MvbrBJDyLc9/RUJAKCWJTbWt9lOSe3APxT7S3Rczi0ZLhuumYwmK5+vFEaYPieHLwLcaJ/1WNG5w/S5D2XLT1ZDsCdhuFXniZ22uaSv0zKpqFp9162aDJF/bDB3S4nFbErD8iDn1A+R5CgaPiEhb9B+ckWGX3NMhEQl4ntfeyR1wcjaIke2EU2k4LEV2ohFPCw9sWFwONPl3q+m217E3pJBoJaLg+QcdHrHdYLhckQQrZQuaDodO15bYNMc2LK6ZbW1mem1DBW6nusbliy8MLXKL7+98o9DA1Jmi1U0o9+CuXIxkRgev5RDyUrMzH83Oc0h1/Jg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dpuCka/+6wFqNgay6dyeoEeUDzG+NyS7kNH/7wEQBvU=;
- b=qGjj3iWoTlGVJIEwEG+Zx7CgM1UJCRnfjkAnqxOJqhi1oEnoz5a/4ISsFXzhwISLSm0jUDbhnN+zRRDDKwPjBbtTG7Oiu2EvuFUItVOkACcVrJVgGYEY4Gmw7vZrfgKrE0EUNBsCTKL9FMUi69quMEg3LUx+vaR7TCI9Ple7fQo=
-Received: from SA1PR05MB8534.namprd05.prod.outlook.com (2603:10b6:806:1dd::19)
- by CH3PR05MB9531.namprd05.prod.outlook.com (2603:10b6:610:152::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Sat, 21 Oct
- 2023 14:39:30 +0000
-Received: from SA1PR05MB8534.namprd05.prod.outlook.com
- ([fe80::3e01:4551:f655:e4c]) by SA1PR05MB8534.namprd05.prod.outlook.com
- ([fe80::3e01:4551:f655:e4c%6]) with mapi id 15.20.6907.025; Sat, 21 Oct 2023
- 14:39:30 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
-CC:     the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH -tip v2] x86/percpu: Introduce const-qualified
- const_pcpu_hot
-Thread-Topic: [PATCH -tip v2] x86/percpu: Introduce const-qualified
- const_pcpu_hot
-Thread-Index: AQHaBCwu8Q5oj11UlEOJ4ROt7EukH7BUUGaA
-Date:   Sat, 21 Oct 2023 14:39:30 +0000
-Message-ID: <C5B8B806-34CD-4654-992C-4FE3FAF85B88@vmware.com>
-References: <20231021143739.843941-1-ubizjak@gmail.com>
-In-Reply-To: <20231021143739.843941-1-ubizjak@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.700.6)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR05MB8534:EE_|CH3PR05MB9531:EE_
-x-ms-office365-filtering-correlation-id: b6eb4628-4d44-422f-576b-08dbd24388b0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TpeFLU2IZoA0bxMDJNrhGhIzF5kjg38/rB6iqgT/k5P9FJnMyESc/dvP5Lgf73Ehvb53J7yvA+CVIcJEwpKR1yE3GTqKKZgC0y+swRbKhWQWJ+zLYZ6vCuVDkhxM3onXZaj2CIXcJuilk2BkEVYPYOuRW5FpJVlX3O2IxFHYe6GSJ1G4psQfqE8mwHNKS/fGOOVAj+EFEarboyYBWtQAAFyV+uH9u6gg+AC+YfDFCOeo2YAvdrhloT9MjEtcvy5jLvNbQiTEiFku13YHRcmhDdhSqBlxuE4zw/EGm9Ie+yHa6Q8XMHWAiXOKqr5Ck8KBDqfO8bqO0zLNFSOZ62tzcQiDdZ7ILy2BEDpr5fq6TzrabMt1qYDB2wWugEkQ+kYGRTppGIeoWTC+xSKwVW860xQEu5RbW4R9LVlqfvvkzlI9NDmTQ6b1f3Fc8cNtjcfP7koH8P1pms1xAZLtKWxgyD97g8Lnui/Xl+RzJnUXnkPH5SwTK4oO5A978VdiBF2/n3JcY3Gwf+3vRseEll7Y9WhQUJeEOF2/YMjAvIylqCMEXYDabiR/OjptLREANxlS1ALV1i8QYgYw2H9sJnhOU76Sao9cpHky7CmuqW6+QZwzbMfyVONGXCIVPL4zYqzfIZ6vmxuOwWF8U4fygsMOeI76DQh9Or7DLu9t1gzBFjCoA49SrjMZfnTYtEpbCAtkaiVijtgi2uawFvYCRbd5xw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR05MB8534.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(33656002)(38070700009)(6486002)(66476007)(66446008)(66946007)(91956017)(6916009)(478600001)(66556008)(64756008)(76116006)(54906003)(53546011)(316002)(2906002)(2616005)(26005)(5660300002)(558084003)(6512007)(122000001)(8676002)(7416002)(41300700001)(8936002)(4326008)(36756003)(71200400001)(86362001)(38100700002)(6506007)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?CcdTxx9wTckDb9cqZEf6T5N7LfyEXDziKVovqd97xIyVk7PhX3hAIUY5pLS1?=
- =?us-ascii?Q?RJu5yymgwtcjwi8cCryNL5haJxD4JoMnZU6AR0R1GJA4l2o8wRutnsoWPoHg?=
- =?us-ascii?Q?9D13NS/6NohcuEzP03nLgEiXGU7u/1hirYS2c5GAt4cEG1CjnFzXmToI+8Eq?=
- =?us-ascii?Q?Cv53P0yFoV+fQZHTSCA7GtOeQTcsGCb/s8VjSMmGrfAhQ1OvOcsmOWi0mI/S?=
- =?us-ascii?Q?+Vq/r4Qo/24FSiYhXMN1Kb36kRuZZt4NIus4dEtLvb4tRLLLkLjOMW22n8W4?=
- =?us-ascii?Q?kG4l5fUjDxAqg832NAHmJpRbQjQBrWdpgxJosE9hUbT8SR+LdvMOnxo14U3F?=
- =?us-ascii?Q?jy25PAbUWvLKt9Nnz6XVzUlTndCthRMS+dFP6DSquRVqYBzrB2MiP1ZQDfVs?=
- =?us-ascii?Q?AKFOivQrlvZOurc3AgAxoPMnPOFSt/xEFgYOB8GXLECaal5tHtHSVrXpvHJx?=
- =?us-ascii?Q?wVUOxQajh9FsHjWjSMcm5Jd6a2BWQrGd4foyuYqkBUwQhbm8r6yJHH6EUF2R?=
- =?us-ascii?Q?6cc9eQAl4fixyIByl9Es4juK0QSo99xO2itEQzZHqgVuCRrbkM2hyyfjjRzY?=
- =?us-ascii?Q?B0QcXkr9SpneobnFy5JAV2QoBerKa5lBQy2gLLY7BfxE0LiKSPbvM4Vgcpkr?=
- =?us-ascii?Q?6BNTGwBQ2wAUxLHahdxe89YsRvxWARGgsiZ/wok99MQTFbEzorjsAjAAzUki?=
- =?us-ascii?Q?SGrT+VVgxEqSpg4F+bUorPcnRrbvi0+mZkxMN5qF/Gd5nMRuxpJp1wMzAwmH?=
- =?us-ascii?Q?pRf36dRcoAMZ/o94JQfOynKSN+aWKDFd55S4nVLowI2pG6TQMJkpOhEOVxwl?=
- =?us-ascii?Q?64BJBgAOhrmlfwyZojmKHHUXvJVawu0I6BhsZqm919gbUuNPXNZmwCCXuRU1?=
- =?us-ascii?Q?3W9Bnro6mn0HJmYGtYebLDxYVDhVqdZZcUS99m0MWMZPk+sJYadHy/Oeou/1?=
- =?us-ascii?Q?OOBDPV6/hgdY8YztYIUgrSYWkrsYqNIMBhzz6ZF5cn7Vbfg/0lCK/Zaa5Spo?=
- =?us-ascii?Q?/KPrZ9uPSD/XfwR+4QtgQlFOFIn3uUri+MW4biBmZf2tdDxvRHbh5HHG5QLQ?=
- =?us-ascii?Q?T9SzL05/hk4yR3HBWUqjk7RcHyjE2MJcZwViiKkEQ9AL7I8K6RMdy52KzTc5?=
- =?us-ascii?Q?FJYb9ImGCmsdPSTwR9GkTy9bkmdLbYoxj2rRkGe0Mebv3iveRHZ1Hcybj7Gs?=
- =?us-ascii?Q?QCZyf+8WbDw+561SvKt0fRJTWAIF2FWpdDCYWM9i7j0U4OYEAaYs7JplE3hb?=
- =?us-ascii?Q?bQTxGtnAn1+RQWGuaARd9EOBYyTzTqSonV7o+uGJ3ClFnbcivBCiWvMgqH4p?=
- =?us-ascii?Q?tGlN1TCqx2v/JRy0HR1DIGUzz6CInhAKqepx0VbLx8K10R2AM5hSja6IS+bl?=
- =?us-ascii?Q?Ug7+OTRlqeMVRt6hKhYUsi8S5bpMMs1YKw23w6YweVT2qPH4FAhGTsRQEkha?=
- =?us-ascii?Q?3Rap5Mrg9LL+TJVNXh4UZN0JTrkfCebq6ZyVuTcnQRDAP2Gl21yjosEK+AKz?=
- =?us-ascii?Q?7WL01LJKE5Ts2owOM896VfEgl/jZLKk7pU98NXjztSrtkzvvIGJ2YWUuGMnQ?=
- =?us-ascii?Q?hOrCLrpTt4FOU3sVypqymHJr70XwQoEb8eqv7lGg?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <AAE613933BC87749B142F79D3043EA20@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Sat, 21 Oct 2023 10:41:00 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF00D65
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:40:54 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507f1c29f25so140014e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:40:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dberlin.org; s=google; t=1697899253; x=1698504053; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c4RGN71ke5T4dmY5Ao906sQxzaEaT/R/ELscOoI4tYI=;
+        b=EdnFsEOQl3gNbC/8mq9MNRTRN0NpZb5IYsyqijXwBTltjr3Ph8mgF+VpuWPNcJY8NJ
+         0LiekhZvsBiRCB5jj2tD4HrSKHWnkXC+98iuBaq9UjnXjGHSKygAa6eiPLVPXBZmnAOF
+         /0YkTGS1qqSqWlQEHl0f/Kv5VdSwXtTa5pxFHGcGh7JYRujxneWGzQ1W8ZnUJs5UA/GJ
+         M0/tyTybTqTqkKxCxQj4BUCRZb9M294Wu1We6d2ad/yqjU7MPoEbAoDBWZDq7kjRcuLF
+         B8eM5BS9S9vyoNRfR/1trHKqMEfBwP3wdfVIwWM0ZDmVT5uCONHO7mWMfmTGXP7LbzY1
+         im0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697899253; x=1698504053;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c4RGN71ke5T4dmY5Ao906sQxzaEaT/R/ELscOoI4tYI=;
+        b=VIdUvHbI7KvP5B8hgTx42F36t6Y8fQxGPWDGO9tyN9+obfy/9mgWsgoJT+xfmwtjw+
+         PV/4Mx8TK5bca9MHgXuYkRevd9o/GNZmfUs6Su4p+GoDtI6Tb16EmzUG1OVwIjyo9N0f
+         IMXrrPZl8iH+XtT5Qk+xCByLJWGm+QbuEeTKS6JaMJqqiLyXC44W9XxQ4r/vGVVtR0Iq
+         ppmbCQqfNhsawSIE911RkxQwPD96U1layMlbxZIuY+Cv2uik8SAUQyv604GfCY8Ffp6C
+         SwGLcEcJhyE/g7zLuCmpQWAhj6FdLI1ai2sJ/4iF8NcCmCGy7BHmsEgm8lMOEWdXvRu9
+         L8uA==
+X-Gm-Message-State: AOJu0YyHUop9+QTNQH9GYhA1P89OUxCf/XcZQ0tpD8aHUIlybjX9WuAK
+        ll8Ol5/nf1IL0LyzMm9ftrHlZfY0ZuUvFddhk7jkrw==
+X-Google-Smtp-Source: AGHT+IHT5WDs88HCdoYDl86/v8lWQrzUBw93RC+XK90RUpyZMkEMONLPJFy9OhS2Kg+5PJU6iB3OKyU/92r2TI1Kz54=
+X-Received: by 2002:ac2:43ab:0:b0:502:fe11:a68f with SMTP id
+ t11-20020ac243ab000000b00502fe11a68fmr3625830lfl.28.1697899252363; Sat, 21
+ Oct 2023 07:40:52 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR05MB8534.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b6eb4628-4d44-422f-576b-08dbd24388b0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2023 14:39:30.0799
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AyJtLqBpSr6y673lsrn6Y1m0a0xj5qCpbnzF72CqWVtozOUwCG3Dxl+4tNcV+w+XKZA1o+/mVxRGI4OE8PD45g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR05MB9531
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1697719099.git.dberlin@dberlin.org> <d2ef482bcf01fc515224cd508d730590a5294df2.1697719099.git.dberlin@dberlin.org>
+In-Reply-To: <d2ef482bcf01fc515224cd508d730590a5294df2.1697719099.git.dberlin@dberlin.org>
+From:   Daniel Berlin <dberlin@dberlin.org>
+Date:   Sat, 21 Oct 2023 10:40:41 -0400
+Message-ID: <CAF4BwTVQf25uCCVovtce+kjz0pFFMZX=Ln36R4Vd-1LEsxrcMw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] [brcmfmac] Fix regulatory domain handling to reset
+ bands properly
+To:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>
+Cc:     linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As an aside, the alternative would be to simply not ignore any
+attempts to set the regulatory domain, regardless of whether it's 00
+or the chip is already set to that country.
+It doesn't happen that often, so it's not clear it's worth avoiding it at a=
+ll.
+There are some things i'd have to fix to make it work resiliently well
+(for example, i know we set the 2g bw cap where we do because it has
+to be done with the interface down), but i can fix those if needed.
 
-
-> On Oct 21, 2023, at 5:36 PM, Uros Bizjak <ubizjak@gmail.com> wrote:
->=20
-> Some variables in pcpu_hot, currently current_task and top_of_stack
-> are actually per-thread variables implemented as per-cpu variables
-> and thus stable for the duration of the respective task
-
-LGTM!
-
+On Thu, Oct 19, 2023 at 10:18=E2=80=AFAM Daniel Berlin <dberlin@dberlin.org=
+> wrote:
+>
+> Currently, we ignore the default country in the reg notifier.
+> We also register a custom regulatory domain, which is set
+> as the default.
+> As a result, the chip is likely to be set to the correct country,
+> but the regulatory domain will not match it.
+>
+> When the regulatory notifier is then called, we see the countries
+> are the same and do not change anything, even though the domain
+> is wrong.
+>
+> This patch forces us to reset the bands on the first country change
+> even if the chip is already set to that country.
+>
+> We also restore the original band info before reconstructing channel
+> info, as the new regdom power limits may be higher than what is
+> currently set.
+>
+> Signed-off-by: Daniel Berlin <dberlin@dberlin.org>
+> ---
+>  .../broadcom/brcm80211/brcmfmac/cfg80211.c    | 38 +++++++++++++++----
+>  .../broadcom/brcm80211/brcmfmac/cfg80211.h    |  2 +
+>  2 files changed, 33 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c =
+b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> index 3656790ec4c9..7bc479ccc24b 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> @@ -7199,11 +7199,23 @@ static int brcmf_construct_chaninfo(struct brcmf_=
+cfg80211_info *cfg,
+>                 goto fail_pbuf;
+>         }
+>
+> +       /* Changing regulatory domain may change channels and limits
+> +        * To ensure that we correctly set the new band info, copy the or=
+iginal
+> +        * info first.
+> +        */
+>         band =3D wiphy->bands[NL80211_BAND_2GHZ];
+> -       if (band)
+> +       if (band) {
+> +               memcpy(band->channels, &__wl_2ghz_channels,
+> +                      sizeof(__wl_2ghz_channels));
+> +               band->n_channels =3D ARRAY_SIZE(__wl_2ghz_channels);
+>                 for (i =3D 0; i < band->n_channels; i++)
+>                         band->channels[i].flags =3D IEEE80211_CHAN_DISABL=
+ED;
+> +       }
+>         band =3D wiphy->bands[NL80211_BAND_5GHZ];
+> -       if (band)
+> +       if (band) {
+> +               memcpy(band->channels, &__wl_5ghz_channels,
+> +                      sizeof(__wl_5ghz_channels));
+> +               band->n_channels =3D ARRAY_SIZE(__wl_5ghz_channels);
+>                 for (i =3D 0; i < band->n_channels; i++)
+>                         band->channels[i].flags =3D IEEE80211_CHAN_DISABL=
+ED;
+> +       }
+> @@ -7210,8 +7222,11 @@
+>         band =3D wiphy->bands[NL80211_BAND_6GHZ];
+> -       if (band)
+> +       if (band) {
+> +               memcpy(band->channels, &__wl_6ghz_channels,
+> +                      sizeof(__wl_6ghz_channels));
+> +               band->n_channels =3D ARRAY_SIZE(__wl_6ghz_channels);
+>                 for (i =3D 0; i < band->n_channels; i++)
+>                         band->channels[i].flags =3D IEEE80211_CHAN_DISABL=
+ED;
+> -
+> +       }
+>         total =3D le32_to_cpu(list->count);
+>         if (total > BRCMF_MAX_CHANSPEC_LIST) {
+>                 bphy_err(drvr, "Invalid count of channel Spec. (%u)\n",
+> @@ -8601,9 +8616,17 @@ static void brcmf_cfg80211_reg_notifier(struct wip=
+hy *wiphy,
+>         }
+>
+>         err =3D brcmf_translate_country_code(ifp->drvr, req->alpha2, &ccr=
+eq);
+> -       if (err)
+> -               return;
+> -
+> +       if (err) {
+> +               /* Because we ignore the default country code above,
+> +                * we will start out in our custom reg domain, but the ch=
+ip
+> +                * may already be set to the right country.
+> +                * As such, we force the bands to be re-set the first
+> +                * time we try to set a country for real.
+> +                */
+> +               if (err !=3D -EAGAIN || !cfg->force_band_setup)
+> +                       return;
+> +       }
+> +       cfg->force_band_setup =3D false;
+>         err =3D brcmf_fil_iovar_data_set(ifp, "country", &ccreq, sizeof(c=
+creq));
+>         if (err) {
+>                 bphy_err(drvr, "Firmware rejected country setting\n");
+> @@ -8670,6 +8693,7 @@ struct brcmf_cfg80211_info *brcmf_cfg80211_attach(s=
+truct brcmf_pub *drvr,
+>         cfg->pub =3D drvr;
+>         init_vif_event(&cfg->vif_event);
+>         INIT_LIST_HEAD(&cfg->vif_list);
+> +       cfg->force_band_setup =3D true;
+>
+>         vif =3D brcmf_alloc_vif(cfg, NL80211_IFTYPE_STATION);
+>         if (IS_ERR(vif))
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h =
+b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h
+> index 0e1fa3f0dea2..7e60ceeeeb3a 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h
+> @@ -327,6 +327,7 @@ struct brcmf_cfg80211_wowl {
+>   * @dongle_up: indicate whether dongle up or not.
+>   * @roam_on: on/off switch for dongle self-roaming.
+>   * @scan_tried: indicates if first scan attempted.
+> + * @force_band_setup: indicates if we should force band setup
+>   * @dcmd_buf: dcmd buffer.
+>   * @extra_buf: mainly to grab assoc information.
+>   * @debugfsdir: debugfs folder for this device.
+> @@ -357,6 +358,7 @@ struct brcmf_cfg80211_info {
+>         bool pwr_save;
+>         bool dongle_up;
+>         bool scan_tried;
+> +       bool force_band_setup;
+>         u8 *dcmd_buf;
+>         u8 *extra_buf;
+>         struct dentry *debugfsdir;
+> --
+> 2.41.0
+>
