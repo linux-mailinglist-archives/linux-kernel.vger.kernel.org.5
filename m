@@ -2,237 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3127D1E3A
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 18:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A4A7D1E3D
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 18:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbjJUQWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 12:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60686 "EHLO
+        id S232039AbjJUQYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 12:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbjJUQWl (ORCPT
+        with ESMTP id S229633AbjJUQYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 12:22:41 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB70BD7A
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 09:22:26 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c5071165d5so3194831fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 09:22:26 -0700 (PDT)
+        Sat, 21 Oct 2023 12:24:54 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55AF1A4
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 09:24:51 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9c14313eb1cso60789166b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 09:24:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697905345; x=1698510145; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1697905490; x=1698510290; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bq4OEcwD40oryiY81T817LlNpOkk1oBYf6X08dXM5lM=;
-        b=HZc0/7LiCDpQAz3/J1MM0KFQ7YwQAmYjW00L7nzTWJ3UgqmXmXS8qbmOD+Cie6Xq+5
-         jLLdLgdntKRTKRFnN+qeYfYSUvSRyHOx9GptSJAf/UljTKJAMFGOosCosZ4XCbrAQcmA
-         CiGvAGhWJqCIdrtl43pOCZyPyoQHwZTTlX5qBS2/nG3on5uOEnfvYnpe0z3XYfnmfRmk
-         n09SD6aWmwvYy0wdItPnk5uyyIlnva+QCk1KtkfdPB3lyEHYdDWsfBOpQOP29WqZX+NE
-         NMyUxmn4X1PpOyj68Uc7Nr5JhnB7GPygEldsRhYXAzTvOwn7q12Skr1POjgp79jBnMT4
-         XrAQ==
+        bh=zM4j+UWtHyAIeUJSqcofDKhmj9PliyjRNP0hCeOXAZA=;
+        b=NBX99L/ENaRp1emwouVzTEwlMoGzhfKqhk1bqrYxwiVHrQYM6IApqGOJG4hCVuQuZx
+         RV+TKAOwdrsSdL7xhbF5XiKEqXKZCjJB7cvkrQ//wON3faYbxEqJZR7ttiR8vXlDJYpP
+         j4ngbO/DRDYIbyJHcv5sG75sWeru3o2H4c6PPe5uX7gM/NSb3iiDu2b0heVl+7+uo3gw
+         r7Ga7m/K2FDjolnc5vcslBocWtzrqCuum+F4auP34mdE+su/vjSw5qR+BADWOBqmjIa7
+         TVgb8k79dYZpZ88IEZ/T+17xl0B4MzQGFTBq6j+9mKYn6yZbzeP4E5I3ju+8e77A+FDn
+         KJlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697905345; x=1698510145;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1697905490; x=1698510290;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bq4OEcwD40oryiY81T817LlNpOkk1oBYf6X08dXM5lM=;
-        b=VZrLK89q0U9hE9If7kAqtpSJfB4fwePIJ4dJbhWHEnk6PqypVIKwOMNdtG3zabrwFq
-         tZ8tnkL9ZQCGY5qpCwA50QeZOO9c/mDdS/iQPRMn7n8x+FAVEIWVLdn+HJv8QkCWIsy/
-         URvjFf+rPouP1HHfEC6gQRke1ZhUfWMpghFisRlS2F4xch1wJCgYL1vcFx0XhZfIy+je
-         /A0/PLIk0gmstqTK1XBE3QntCA3biPDatwhsb+A4jjD6uSB9gy4yJT4TfxeMYW/0w/6S
-         UdJQz67B7Xn7+eNVJs16x29O5vs5GeyHfQNCsdIm1G3llSoQ/N9DmaTsG7O6TzJgRHt8
-         VYbQ==
-X-Gm-Message-State: AOJu0YwivsKAJBgO70v/AKm0nOdjSwhZlnLQVhKmVNQtaytAzT0zyZoz
-        ep1sBufYqHey0cFopfLpKWVxAw==
-X-Google-Smtp-Source: AGHT+IE4SQlDKL3C8DoT4QQEe8B1Xg/q1a1xGIoy+N5YYsQVIl2h3Ew9Mq7OT46yW7hK/1Y9L5ZQrw==
-X-Received: by 2002:a2e:a690:0:b0:2bf:f670:36dc with SMTP id q16-20020a2ea690000000b002bff67036dcmr2963289lje.49.1697905344949;
-        Sat, 21 Oct 2023 09:22:24 -0700 (PDT)
-Received: from [192.168.1.116] (abyl4.neoplus.adsl.tpnet.pl. [83.9.31.4])
-        by smtp.gmail.com with ESMTPSA id j10-20020a2e3c0a000000b002b657f10b78sm867290lja.58.2023.10.21.09.22.23
+        bh=zM4j+UWtHyAIeUJSqcofDKhmj9PliyjRNP0hCeOXAZA=;
+        b=c+mqaey6awc46PhtqtLOwMqUbDUdZPIYdEO58DQAkfIffWp1BwjdAnQars3FmWWfPp
+         4ZShBDCc+C7pULpQN8LB6fUqlbXxuof+UCyQrV9yH7t7zPCD4/2py7KamZX0AI3rEJcX
+         gEEODJWec5wDgMRhvIHJ9oKe3P1PxL419vBPHGihGhO3yRVcIyUqZ39uVx33aC4FtyKK
+         vF0L4v7PL4WbuGNMMD0aa4KkiuwpCaqMnHC473nbe936SxcNbKW3bZj5WT2/wnO7JnlN
+         lTBAQ51yNu7eepLLZyE94a1YZdiOwvIE3Z1b6PTms0SvVV89Kl20gtK85JdJ+ss3LFAy
+         H+DA==
+X-Gm-Message-State: AOJu0YznsVqwNoz4HlY+sbuZEa/AguHci0srYXcZPAYIpnvS/ydHJzx4
+        BbUP2LD8P6v+xDgg98CtQpk=
+X-Google-Smtp-Source: AGHT+IE4kCNgQuqBd5RS78AC6aI29gAYnwhpNNAiOE0xr+IbsDCnF7gnbml1SQ4tgtTKOCQ7u2R/AQ==
+X-Received: by 2002:a17:906:2250:b0:9bd:cab6:a34b with SMTP id 16-20020a170906225000b009bdcab6a34bmr4118802ejr.0.1697905489772;
+        Sat, 21 Oct 2023 09:24:49 -0700 (PDT)
+Received: from [192.168.0.103] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id pw7-20020a17090720a700b00992ea405a79sm3814585ejb.166.2023.10.21.09.24.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Oct 2023 09:22:24 -0700 (PDT)
-Message-ID: <9a37d4a4-dcdf-4c39-8059-b640969f242a@linaro.org>
-Date:   Sat, 21 Oct 2023 18:22:22 +0200
+        Sat, 21 Oct 2023 09:24:49 -0700 (PDT)
+Message-ID: <29f6c726-fcf2-43c7-a638-a551338a1dad@gmail.com>
+Date:   Sat, 21 Oct 2023 18:24:48 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: qcom: qcm6490-fairphone-fp5: Add PM7325
- thermals
+Subject: Re: [PATCH] staging: rtl8192e: clean up comparisons to NULL
+To:     Michael Straube <straube.linux@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20231021121947.14516-1-straube.linux@gmail.com>
 Content-Language: en-US
-To:     Luca Weiss <luca.weiss@fairphone.com>, Luca Weiss <luca@z3ntu.xyz>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231013-fp5-thermals-v1-0-f14df01922e6@fairphone.com>
- <20231013-fp5-thermals-v1-4-f14df01922e6@fairphone.com>
- <34da335e-cbcd-4dc2-8a86-f31369db1fcd@linaro.org>
- <4958673.31r3eYUQgx@z3ntu.xyz>
- <5ac0d16a-0303-46c7-a008-31280629cc11@linaro.org>
- <CWD8E95B0W8L.1UMMGJXJF47D@fairphone.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <CWD8E95B0W8L.1UMMGJXJF47D@fairphone.com>
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20231021121947.14516-1-straube.linux@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/21/23 14:19, Michael Straube wrote:
+> Clean up comparisons to NULL to improve readability.
+> Reported by checkpatch.
+> 
+> if (x == NULL) -> if (!x)
+> if (x != NULL) -> if (x)
+> 
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+> Compile tested only, due to missing hardware.
+> 
+>   .../staging/rtl8192e/rtl8192e/r8192E_phy.c    |  2 +-
+>   drivers/staging/rtl8192e/rtl8192e/rtl_cam.c   |  2 +-
+>   drivers/staging/rtl8192e/rtl8192e/rtl_wx.c    |  2 +-
+>   drivers/staging/rtl8192e/rtllib_crypt_ccmp.c  |  2 +-
+>   drivers/staging/rtl8192e/rtllib_crypt_wep.c   |  2 +-
+>   drivers/staging/rtl8192e/rtllib_rx.c          | 24 +++++++++----------
+>   drivers/staging/rtl8192e/rtllib_softmac.c     |  2 +-
+>   7 files changed, 17 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c b/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c
+> index bc06c2cab35d..a5e16bf99cd6 100644
+> --- a/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c
+> +++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c
+> @@ -513,7 +513,7 @@ static u8 _rtl92e_phy_set_sw_chnl_cmd_array(struct net_device *dev,
+>   {
+>   	struct sw_chnl_cmd *pCmd;
+>   
+> -	if (CmdTable == NULL) {
+> +	if (!CmdTable) {
+>   		netdev_err(dev, "%s(): CmdTable cannot be NULL.\n", __func__);
+>   		return false;
+>   	}
+> diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c b/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c
+> index 9b280cee0ac1..76ec4ed967c4 100644
+> --- a/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c
+> +++ b/drivers/staging/rtl8192e/rtl8192e/rtl_cam.c
+> @@ -112,7 +112,7 @@ void rtl92e_set_key(struct net_device *dev, u8 EntryNo, u8 KeyIndex,
+>   			rtl92e_writel(dev, WCAMI, TargetContent);
+>   			rtl92e_writel(dev, RWCAM, TargetCommand);
+>   		} else {
+> -			if (KeyContent != NULL) {
+> +			if (KeyContent) {
+>   				rtl92e_writel(dev, WCAMI,
+>   					      (u32)(*(KeyContent + i - 2)));
+>   				rtl92e_writel(dev, RWCAM, TargetCommand);
+> diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+> index ec8e7d5fe634..4371ab1239ee 100644
+> --- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+> +++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+> @@ -805,7 +805,7 @@ static int _rtl92e_wx_get_gen_ie(struct net_device *dev,
+>   	struct r8192_priv *priv = rtllib_priv(dev);
+>   	struct rtllib_device *ieee = priv->rtllib;
+>   
+> -	if (ieee->wpa_ie_len == 0 || ieee->wpa_ie == NULL) {
+> +	if (ieee->wpa_ie_len == 0 || !ieee->wpa_ie) {
+>   		data->data.length = 0;
+>   		return 0;
+>   	}
+> diff --git a/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c b/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c
+> index 5621261d66b9..cbb8c8dbe9b0 100644
+> --- a/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c
+> +++ b/drivers/staging/rtl8192e/rtllib_crypt_ccmp.c
+> @@ -52,7 +52,7 @@ static void *rtllib_ccmp_init(int key_idx)
+>   	struct rtllib_ccmp_data *priv;
+>   
+>   	priv = kzalloc(sizeof(*priv), GFP_ATOMIC);
+> -	if (priv == NULL)
+> +	if (!priv)
+>   		goto fail;
+>   	priv->key_idx = key_idx;
+>   
+> diff --git a/drivers/staging/rtl8192e/rtllib_crypt_wep.c b/drivers/staging/rtl8192e/rtllib_crypt_wep.c
+> index 062285e4d939..21c2b7666d6f 100644
+> --- a/drivers/staging/rtl8192e/rtllib_crypt_wep.c
+> +++ b/drivers/staging/rtl8192e/rtllib_crypt_wep.c
+> @@ -35,7 +35,7 @@ static void *prism2_wep_init(int keyidx)
+>   		return NULL;
+>   
+>   	priv = kzalloc(sizeof(*priv), GFP_ATOMIC);
+> -	if (priv == NULL)
+> +	if (!priv)
+>   		return NULL;
+>   	priv->key_idx = keyidx;
+>   
+> diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
+> index 124c1651856b..ecaa4dec3f94 100644
+> --- a/drivers/staging/rtl8192e/rtllib_rx.c
+> +++ b/drivers/staging/rtl8192e/rtllib_rx.c
+> @@ -63,7 +63,7 @@ rtllib_frag_cache_find(struct rtllib_device *ieee, unsigned int seq,
+>   
+>   	for (i = 0; i < RTLLIB_FRAG_CACHE_LEN; i++) {
+>   		entry = &ieee->frag_cache[tid][i];
+> -		if (entry->skb != NULL &&
+> +		if (entry->skb &&
+>   		    time_after(jiffies, entry->first_frag_time + 2 * HZ)) {
+>   			netdev_dbg(ieee->dev,
+>   				   "expiring fragment cache entry seq=%u last_frag=%u\n",
+> @@ -72,7 +72,7 @@ rtllib_frag_cache_find(struct rtllib_device *ieee, unsigned int seq,
+>   			entry->skb = NULL;
+>   		}
+>   
+> -		if (entry->skb != NULL && entry->seq == seq &&
+> +		if (entry->skb && entry->seq == seq &&
+>   		    (entry->last_frag + 1 == frag || frag == -1) &&
+>   		    memcmp(entry->src_addr, src, ETH_ALEN) == 0 &&
+>   		    memcmp(entry->dst_addr, dst, ETH_ALEN) == 0)
+> @@ -130,7 +130,7 @@ rtllib_frag_cache_get(struct rtllib_device *ieee,
+>   		if (ieee->frag_next_idx[tid] >= RTLLIB_FRAG_CACHE_LEN)
+>   			ieee->frag_next_idx[tid] = 0;
+>   
+> -		if (entry->skb != NULL)
+> +		if (entry->skb)
+>   			dev_kfree_skb_any(entry->skb);
+>   
+>   		entry->first_frag_time = jiffies;
+> @@ -145,7 +145,7 @@ rtllib_frag_cache_get(struct rtllib_device *ieee,
+>   		 */
+>   		entry = rtllib_frag_cache_find(ieee, seq, frag, tid, hdr->addr2,
+>   						  hdr->addr1);
+> -		if (entry != NULL) {
+> +		if (entry) {
+>   			entry->last_frag = frag;
+>   			skb = entry->skb;
+>   		}
+> @@ -184,7 +184,7 @@ static int rtllib_frag_cache_invalidate(struct rtllib_device *ieee,
+>   	entry = rtllib_frag_cache_find(ieee, seq, -1, tid, hdr->addr2,
+>   					  hdr->addr1);
+>   
+> -	if (entry == NULL) {
+> +	if (!entry) {
+>   		netdev_dbg(ieee->dev,
+>   			   "Couldn't invalidate fragment cache entry (seq=%u)\n",
+>   			   seq);
+> @@ -276,7 +276,7 @@ rtllib_rx_frame_decrypt(struct rtllib_device *ieee, struct sk_buff *skb,
+>   	struct ieee80211_hdr *hdr;
+>   	int res, hdrlen;
+>   
+> -	if (crypt == NULL || crypt->ops->decrypt_mpdu == NULL)
+> +	if (!crypt || !crypt->ops->decrypt_mpdu)
+>   		return 0;
+>   
+>   	if (ieee->hwsec_active) {
+> @@ -316,7 +316,7 @@ rtllib_rx_frame_decrypt_msdu(struct rtllib_device *ieee, struct sk_buff *skb,
+>   	struct ieee80211_hdr *hdr;
+>   	int res, hdrlen;
+>   
+> -	if (crypt == NULL || crypt->ops->decrypt_msdu == NULL)
+> +	if (!crypt || !crypt->ops->decrypt_msdu)
+>   		return 0;
+>   	if (ieee->hwsec_active) {
+>   		struct cb_desc *tcb_desc = (struct cb_desc *)
+> @@ -998,8 +998,7 @@ static int rtllib_rx_get_crypt(struct rtllib_device *ieee, struct sk_buff *skb,
+>   	/* allow NULL decrypt to indicate an station specific override
+>   	 * for default encryption
+>   	 */
+> -	if (*crypt && ((*crypt)->ops == NULL ||
+> -		      (*crypt)->ops->decrypt_mpdu == NULL))
+> +	if (*crypt && (!(*crypt)->ops || !(*crypt)->ops->decrypt_mpdu))
+>   		*crypt = NULL;
+>   
+>   	if (!*crypt && (fc & IEEE80211_FCTL_PROTECTED)) {
+> @@ -1171,7 +1170,7 @@ static void rtllib_rx_indicate_pkt_legacy(struct rtllib_device *ieee,
+>   	u16 ethertype;
+>   	int i = 0;
+>   
+> -	if (rxb == NULL) {
+> +	if (!rxb) {
+>   		netdev_info(dev, "%s: rxb is NULL!!\n", __func__);
+>   		return;
+>   	}
+> @@ -1369,7 +1368,7 @@ static int rtllib_rx_InfraAdhoc(struct rtllib_device *ieee, struct sk_buff *skb,
+>   	rtllib_rx_check_leave_lps(ieee, unicast, nr_subframes);
+>   
+>   	/* Indicate packets to upper layer or Rx Reorder */
+> -	if (!ieee->ht_info->cur_rx_reorder_enable || ts == NULL)
+> +	if (!ieee->ht_info->cur_rx_reorder_enable || !ts)
+>   		rtllib_rx_indicate_pkt_legacy(ieee, rx_stats, rxb, dst, src);
+>   	else
+>   		RxReorderIndicatePacket(ieee, rxb, ts, SeqNum);
+> @@ -2510,8 +2509,7 @@ static inline void rtllib_process_probe_response(
+>   		if (is_same_network(target, network,
+>   		   (target->ssid_len ? 1 : 0)))
+>   			break;
+> -		if ((oldest == NULL) ||
+> -		    (target->last_scanned < oldest->last_scanned))
+> +		if (!oldest || (target->last_scanned < oldest->last_scanned))
+>   			oldest = target;
+>   	}
+>   
+> diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+> index ff98b41c94e0..42d652fe8601 100644
+> --- a/drivers/staging/rtl8192e/rtllib_softmac.c
+> +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+> @@ -918,7 +918,7 @@ rtllib_association_req(struct rtllib_network *beacon,
+>   	int len = 0;
+>   
+>   	crypt = ieee->crypt_info.crypt[ieee->crypt_info.tx_keyidx];
+> -	if (crypt != NULL)
+> +	if (crypt)
+>   		encrypt = crypt && crypt->ops &&
+>   			  ((strcmp(crypt->ops->name, "R-WEP") == 0 ||
+>   			  wpa_ie_len));
 
 
-On 10/20/23 13:31, Luca Weiss wrote:
-> On Wed Oct 18, 2023 at 10:28 PM CEST, Konrad Dybcio wrote:
->>
->>
->> On 10/14/23 19:52, Luca Weiss wrote:
->>> On Samstag, 14. Oktober 2023 01:13:29 CEST Konrad Dybcio wrote:
->>>> On 13.10.2023 10:09, Luca Weiss wrote:
->>>>> Configure the thermals for the QUIET_THERM, CAM_FLASH_THERM, MSM_THERM
->>>>> and RFC_CAM_THERM thermistors connected to PM7325.
->>>>>
->>>>> With this PMIC the software communication to the ADC is going through
->>>>> PMK7325 (= PMK8350).
->>>>>
->>>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
->>>>> ---
->>>>>
->>>>>    arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 117
->>>>>    +++++++++++++++++++++ 1 file changed, 117 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
->>>>> b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts index
->>>>> 2c01f799a6b2..d0b1e4e507ff 100644
->>>>> --- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
->>>>> +++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
->>>>> @@ -9,6 +9,7 @@
->>>>>
->>>>>    #define PM7250B_SID 8
->>>>>    #define PM7250B_SID1 9
->>>>>
->>>>> +#include <dt-bindings/iio/qcom,spmi-adc7-pm7325.h>
->>>>>
->>>>>    #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
->>>>>    #include <dt-bindings/leds/common.h>
->>>>>    #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
->>>>>
->>>>> @@ -137,6 +138,20 @@ afvdd_2p8: regulator-afvdd-2p8 {
->>>>>
->>>>>    	};
->>>>>    	
->>>>>    	thermal-zones {
->>>>>
->>>>> +		camera-thermal {
->>>>> +			polling-delay-passive = <0>;
->>>>> +			polling-delay = <0>;
->>>>> +			thermal-sensors = <&pmk8350_adc_tm 2>;
->>>>> +
->>>>> +			trips {
->>>>> +				active-config0 {
->>>>> +					temperature = <125000>;
->>>>
->>>> are
->>>>
->>>>> +		rear-cam-thermal {
->>>>>
->>>>> +					temperature = <125000>;
->>>>
->>>> you
->>>>
->>>>> +		sdm-skin-thermal {
->>>>>
->>>>> +					temperature = <125000>;
->>>>
->>>> sure
->>>>
->>>> about these temps?
->>>
->>> (email from my other address, quicker right now)
->>>
->>> Well yes and no.
->>>
->>> Yes as in those are the temps specified in downstream dtb.
->>> No as in I'm 99% sure there's user space with definitely lower threshold that
->>> actually does something in response to the temps.
->>>
->>> I didn't look too much into this but does the kernel even do something when it
->>> hits one of these trip points? I assume when there's a cooling device thing
->>> specified then it can actually tell the driver to do something, but without
->>> (and most drivers don't support this?) I'm assuming the kernel can't do much
->>> anyways?
->>>
->>> So e.g. when the temperature for the flash led is reached I'm assuming
->>> downstream (+Android) either dims the led or turns it off? But I'd have to dig
->>> quite a bit into the thermal setup there to check what it's really doing.
->> I think reaching "critical" shuts down the platform, unless something
->> registering the thermal zone explicitly overrides the behavior.
-> 
-> Should probably be easy to test, especially the camera flash thermal
-> zone heats up *very* quickly when the flash is on, so should be trivial
-> to set the trip point down from 125degC to e.g. 45degC and see what
-> happens.
-> 
-> So I did this and... nothing happened.
-> I watched /sys/class/thermal/thermal_zone34/temp climb above 45degC and
-> nothing happened.
-> 
-> I guess trip type being "passive" and no cooling-device makes it not do
-> anything.
-> 
->    ==> /sys/class/thermal/thermal_zone34/trip_point_0_hyst <==
->    1000
->    ==> /sys/class/thermal/thermal_zone34/trip_point_0_temp <==
->    45000
->    ==> /sys/class/thermal/thermal_zone34/trip_point_0_type <==
->    passive
-> 
->  From Documentation/devicetree/bindings/thermal/thermal-zones.yaml:
-> 
->    - active   # enable active cooling e.g. fans
->    - passive  # enable passive cooling e.g. throttling cpu
->    - hot      # send notification to driver
->    - critical # send notification to driver, trigger shutdown
-> 
-> So unless we want to just shut down the system (with "critical"), I
-> don't think thermal can't really do anything else right now, since e.g.
-> leds-qcom-flash.c driver doesn't have any cooling support to lower the
-> brightness or turn off the LED.
-> 
-> So.. in essence not much we can do right now.
-Yeah.. crashing the phone because the LED is too hot is sorta
-suboptimal! Though I mainly had the skin temp in mind..
-
-> 
-> But seems we also cannot remove this (kinda useless) trip since we need
-> at least one trip point in the dts if I read the bindings yaml
-> correctly.
-Right
-
-> 
->>
->>>
->>> But for now I think it's okay to put this current thermal config into dts and
->>> we'll improve it later when 1. I understand more and 2. maybe some useful
->>> drivers support the cooling bits?
->> Yeah it's better than nothing, but ultimately we should probably move
->> the values that userspace daemon operates on here in the dt..
-> 
-> For sure.. I spent a bit of time looking into the proprietary Qualcomm
-> thermal-daemon sources but didn't really see much interesting things
-> there for this platform, maybe some of this thermal handling is
-> somewhere else - or half of these thermal zones aren't even used with
-> Android.
-> 
-> So.. good to get the current patch upstream or not? :)
-Yep, just having the ability to read out thing is always good ;)
-
-Konrad
+Tested-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
