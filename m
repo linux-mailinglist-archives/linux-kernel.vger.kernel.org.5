@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3927D1C2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 11:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34527D1C30
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 11:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbjJUJkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 05:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
+        id S230093AbjJUJoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 05:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjJUJkY (ORCPT
+        with ESMTP id S229574AbjJUJoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 05:40:24 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3341DD6B;
-        Sat, 21 Oct 2023 02:40:19 -0700 (PDT)
-Received: from localhost (89-26-75-29.dyn.cablelink.at [89.26.75.29])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sebastianfricke)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6AC846607314;
-        Sat, 21 Oct 2023 10:40:17 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697881217;
-        bh=SHLD0rEJI0NmsmsXyArE+2lz+5Be5FbgqrbTnMFX+uM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YsVF4fCLLntBXs7eKN+oc/Lg6wAyAXrzgEPCw/yrbajMdmNSwcrD3wxfsZeCachRU
-         E/R/7UNoDj9vXVwdV6ULiM6hAGnjxRsGwOlWBhCesyvyOw0z1jy0jMqHkbrg2OM1ck
-         9FmTVqNQfv24kyz9wIUgCfRjvaHogz+ToISpVAecMmiF93Cmu4sT6JjLGxblaC2cex
-         IXBfYqe6nE1HMUHPjWIlVYo959QewzlTEq5yN3qN4kQz0Ou3GOl0AJPh6JL3S360GC
-         mLKJ3VLfih9jqpSc0JI1nM2TuPf8vVTomRIhW3KCaP4kjPcUkX2m6xOf7bjqFsdPfv
-         87UN/UnHAjFoQ==
-Date:   Sat, 21 Oct 2023 11:40:14 +0200
-From:   Sebastian Fricke <sebastian.fricke@collabora.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>
-Cc:     =?utf-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4=?= Prado 
-        <nfraprado@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Nathan Hebert <nhebert@chromium.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH 5/7] media: mediatek: vcodec: Setting the supported h265
- profile for each platform
-Message-ID: <20231021094014.7pzdvgouhxjf2pvo@basti-XPS-13-9310>
-References: <20231016064346.31451-1-yunfei.dong@mediatek.com>
- <20231016064346.31451-5-yunfei.dong@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Sat, 21 Oct 2023 05:44:10 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCF213E;
+        Sat, 21 Oct 2023 02:44:09 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39L9gNAp028149;
+        Sat, 21 Oct 2023 09:44:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : content-type : mime-version; s=pp1;
+ bh=wiznSzPHeDvgCYmBpLCxQSz2kUh0Y5cwbWCJqEw6UC4=;
+ b=B++XRKSFFkRhrwMFPwI7jYlIAUaBh+ZtowErnbxY77jeVtPjU7UK1UoC/XHpObzaR7xP
+ TwTN5Xnq1+7G/dONwKE+gMpOdfrl8IYNoUTirTcoPptgZ9QsPiww51guYwi1uj9SXG3m
+ hEC+MtD531KNTi40qxOdAy9GrNanVf6rU0xMUjrHZD7cA0ZsXIh68IzMpD/6e5oed5+4
+ 5Mwjap40CtfCo64cvNNKffI7gsVbo14uz1vfEf6xOCS6QOMGha8aILYVHmfspW01n3lf
+ o2zfzK4k/Db2GoBRaUgfYg1E3ET2napegbcadpmXxsRGZQsWAHF7DADfEJ56nlE+COeN pw== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tvc88r1e3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 21 Oct 2023 09:44:06 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39L5rstq024179;
+        Sat, 21 Oct 2023 09:44:05 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tuc29akkr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 21 Oct 2023 09:44:05 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39L9i2eU000512
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 21 Oct 2023 09:44:02 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EE6CB2004E;
+        Sat, 21 Oct 2023 09:44:01 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9C82620043;
+        Sat, 21 Oct 2023 09:44:01 +0000 (GMT)
+Received: from localhost (unknown [9.179.5.188])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Sat, 21 Oct 2023 09:44:01 +0000 (GMT)
+Date:   Sat, 21 Oct 2023 11:44:00 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [GIT PULL] s390 fixes for 6.6-rc7
+Message-ID: <your-ad-here.call-01697881440-ext-2458@work.hours>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231016064346.31451-5-yunfei.dong@mediatek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: cJbZbqwRyhTlqxB2eXYiZ6KhBivFH6Ep
+X-Proofpoint-ORIG-GUID: cJbZbqwRyhTlqxB2eXYiZ6KhBivFH6Ep
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-20_10,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ adultscore=0 priorityscore=1501 suspectscore=0 bulkscore=0 mlxlogscore=602
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310210088
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,69 +82,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Yunfei,
+Hello Linus,
 
-Please replace Setting with Set in the title.
+please pull s390 fixes for 6.6-rc7.
 
-On 16.10.2023 14:43, Yunfei Dong wrote:
->The supported format type of different platforms are not the
->same. Need to set the supported profile according to the chip name.
+Thank you,
+Vasily
 
-I would suggest the following rewording:
+The following changes since commit 5c95bf274665cc9f5126e4a48a9da51114f7afd2:
 
-Set the maximum H265 codec profile for each platform.
-The various mediatek platforms support different profiles for decoding,
-the profile of the codec limits the capabilities for decoding.
+  s390/cert_store: fix string length handling (2023-09-19 13:25:44 +0200)
 
-With that you can add:
-Reviewed-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+are available in the Git repository at:
 
-Regards,
-Sebastian
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.6-4
 
->
->Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
->---
-> .../vcodec/decoder/mtk_vcodec_dec_stateless.c | 19 +++++++++++++++++++
-> 1 file changed, 19 insertions(+)
->
->diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
->index 84c0bed577ed..b15ed773374f 100644
->--- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
->+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
->@@ -587,6 +587,20 @@ static void mtk_vcodec_dec_fill_h265_level(struct v4l2_ctrl_config *cfg,
-> 	};
-> }
->
->+static void mtk_vcodec_dec_fill_h265_profile(struct v4l2_ctrl_config *cfg,
->+					     struct mtk_vcodec_dec_ctx *ctx)
->+{
->+	switch (ctx->dev->chip_name) {
->+	case MTK_VDEC_MT8188:
->+	case MTK_VDEC_MT8195:
->+		cfg->max = V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_10;
->+		break;
->+	default:
->+		cfg->max = V4L2_MPEG_VIDEO_HEVC_PROFILE_MAIN_STILL_PICTURE;
->+		break;
->+	};
->+}
->+
-> static void mtk_vcodec_dec_reset_controls(struct v4l2_ctrl_config *cfg,
-> 					  struct mtk_vcodec_dec_ctx *ctx)
-> {
->@@ -604,6 +618,11 @@ static void mtk_vcodec_dec_reset_controls(struct v4l2_ctrl_config *cfg,
-> 		mtk_v4l2_vdec_dbg(3, ctx, "h264 supported profile: %lld %lld", cfg->max,
-> 				  cfg->menu_skip_mask);
-> 		break;
->+	case V4L2_CID_MPEG_VIDEO_HEVC_PROFILE:
->+		mtk_vcodec_dec_fill_h265_profile(cfg, ctx);
->+		mtk_v4l2_vdec_dbg(3, ctx, "h265 supported profile: %lld %lld", cfg->max,
->+				  cfg->menu_skip_mask);
->+		break;
-> 	default:
-> 		break;
-> 	};
->-- 
->2.18.0
->
+for you to fetch changes up to c1ae1c59c8c6e0b66a718308c623e0cb394dab6b:
+
+  s390/pci: fix iommu bitmap allocation (2023-10-19 16:35:41 +0200)
+
+----------------------------------------------------------------
+s390 updates for 6.6-rc7
+
+- Fix IOMMU bitmap allocation in s390 PCI to avoid out of bounds access
+  when IOMMU pages aren't a multiple of 64.
+
+- Fix kasan crashes when accessing DCSS mapping in memory holes by adding
+  corresponding kasan zero shadow mappings.
+
+- Fix a memory leak in css_alloc_subchannel in case dma_set_coherent_mask
+  fails.
+
+----------------------------------------------------------------
+Dinghao Liu (1):
+      s390/cio: fix a memleak in css_alloc_subchannel
+
+Niklas Schnelle (1):
+      s390/pci: fix iommu bitmap allocation
+
+Vasily Gorbik (1):
+      s390/kasan: handle DCSS mapping in memory holes
+
+ arch/s390/boot/vmem.c   |  7 ++++++-
+ arch/s390/pci/pci_dma.c | 15 +++++++++++++--
+ drivers/s390/cio/css.c  |  6 ++++--
+ 3 files changed, 23 insertions(+), 5 deletions(-)
