@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 207827D1D89
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 16:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5317D1D8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 16:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbjJUOoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 10:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46166 "EHLO
+        id S231424AbjJUOoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 10:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjJUOoK (ORCPT
+        with ESMTP id S231429AbjJUOoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 10:44:10 -0400
-Received: from out-209.mta1.migadu.com (out-209.mta1.migadu.com [IPv6:2001:41d0:203:375::d1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13E7D52
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:44:04 -0700 (PDT)
+        Sat, 21 Oct 2023 10:44:17 -0400
+Received: from out-210.mta1.migadu.com (out-210.mta1.migadu.com [IPv6:2001:41d0:203:375::d2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBC0D7C
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:44:13 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1697899443;
+        t=1697899451;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5cQE9ZFnILnFxpwPZY6R/Y63Il/vf0eHaCXoNa8ST4o=;
-        b=xX8mHLDHA6jFLEhdUxuEf1tXL2PZcg10QlIE6EE+u+VIO1Ec/ICxJ/WjowvxWiwRTrQeqm
-        rLm5/Uzh0gR0aIfDdIxK6teeg/FWiuTnzKUIMz43WCQ8Awhnrqp5HujqEJ+KKY2sWYUBDV
-        RSgUvb/mgs0boYQF+AOgd4q17KMw5RI=
+        bh=Fc6duZ/q+apDqgoP4cLzy3p5t8cD8/eKarQEAhD6cwA=;
+        b=VwdHbGN6iqPqOPPmjkoCZCqeya5Wrnfy29DfCh17oso4mTQaIrjGQ/bBj7cuImP6Ak0ZDt
+        74Ji4pLY0KWggdSHOhw8II53OTlr2K3tbgg2NViY04lO63dYbYrl8s/FsQ+pKx4DbOjdEG
+        yYcnIac3YU/gH6s55G+958BKYZfu70Y=
 From:   chengming.zhou@linux.dev
 To:     cl@linux.com, penberg@kernel.org
 Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
@@ -36,9 +36,9 @@ Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
         lrh2000@pku.edu.cn, hughd@google.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, chengming.zhou@linux.dev,
         Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [RFC PATCH v2 2/6] slub: Prepare __slab_free() for unfrozen partial slab out of node partial list
-Date:   Sat, 21 Oct 2023 14:43:13 +0000
-Message-Id: <20231021144317.3400916-3-chengming.zhou@linux.dev>
+Subject: [RFC PATCH v2 3/6] slub: Don't freeze slabs for cpu partial
+Date:   Sat, 21 Oct 2023 14:43:14 +0000
+Message-Id: <20231021144317.3400916-4-chengming.zhou@linux.dev>
 In-Reply-To: <20231021144317.3400916-1-chengming.zhou@linux.dev>
 References: <20231021144317.3400916-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
@@ -55,55 +55,156 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chengming Zhou <zhouchengming@bytedance.com>
 
-Now the partial slub will be frozen when taken out of node partial list,
-so the __slab_free() will know from "was_frozen" that the partial slab
-is not on node partial list and is used by one kmem_cache_cpu.
+Now we will freeze slabs when moving them out of node partial list to
+cpu partial list, this method needs two cmpxchg_double operations:
 
-But we will change this, make partial slabs leave the node partial list
-with unfrozen state, so we need to change __slab_free() to use the new
-slab_test_node_partial() we just introduced.
+1. freeze slab (acquire_slab()) under the node list_lock
+2. get_freelist() when pick used in ___slab_alloc()
+
+Actually we don't need to freeze when moving slabs out of node partial
+list, we can delay freeze to use slab freelist in ___slab_alloc(), so
+we can save one cmpxchg_double().
+
+And there are other good points:
+
+1. The moving of slabs between node partial list and cpu partial list
+   becomes simpler, since we don't need to freeze or unfreeze at all.
+
+2. The node list_lock contention would be less, since we only need to
+   freeze one slab under the node list_lock. (In fact, we can first
+   move slabs out of node partial list, don't need to freeze any slab
+   at all, so the contention on slab won't transfer to the node list_lock
+   contention.)
+
+We can achieve this because there is no concurrent path would manipulate
+the partial slab list except the __slab_free() path, which is serialized
+now.
+
+Note this patch just change the parts of moving the partial slabs for
+easy code review, we will fix other parts in the following patches.
+Specifically this patch change three paths:
+1. get partial slab from node: get_partial_node()
+2. put partial slab to node: __unfreeze_partials()
+3. cache partail slab on cpu when __slab_free()
 
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- mm/slub.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ mm/slub.c | 63 +++++++++++++++++--------------------------------------
+ 1 file changed, 19 insertions(+), 44 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 3fad4edca34b..adeff8df85ec 100644
+index adeff8df85ec..61ee82ea21b6 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -3610,6 +3610,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 	unsigned long counters;
- 	struct kmem_cache_node *n = NULL;
+@@ -2277,7 +2277,9 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
+ 	struct slab *slab, *slab2;
+ 	void *object = NULL;
  	unsigned long flags;
-+	bool on_node_partial;
++#ifdef CONFIG_SLUB_CPU_PARTIAL
+ 	unsigned int partial_slabs = 0;
++#endif
  
- 	stat(s, FREE_SLOWPATH);
- 
-@@ -3657,6 +3658,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 				 */
- 				spin_lock_irqsave(&n->list_lock, flags);
- 
-+				on_node_partial = slab_test_node_partial(slab);
- 			}
+ 	/*
+ 	 * Racy check. If we mistakenly see no partial slabs then we
+@@ -2303,20 +2305,22 @@ static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
+ 			continue;
  		}
  
-@@ -3685,6 +3687,15 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
- 		return;
- 	}
- 
-+	/*
-+	 * This slab was not full and not on the per-node partial list either,
-+	 * in which case we shouldn't manipulate its list, just early return.
-+	 */
-+	if (prior && !on_node_partial) {
-+		spin_unlock_irqrestore(&n->list_lock, flags);
-+		return;
-+	}
+-		t = acquire_slab(s, n, slab, object == NULL);
+-		if (!t)
+-			break;
+-
+ 		if (!object) {
+-			*pc->slab = slab;
+-			stat(s, ALLOC_FROM_PARTIAL);
+-			object = t;
+-		} else {
+-			put_cpu_partial(s, slab, 0);
+-			stat(s, CPU_PARTIAL_NODE);
+-			partial_slabs++;
++			t = acquire_slab(s, n, slab, object == NULL);
++			if (t) {
++				*pc->slab = slab;
++				stat(s, ALLOC_FROM_PARTIAL);
++				object = t;
++				continue;
++			}
+ 		}
 +
- 	if (unlikely(!new.inuse && n->nr_partial >= s->min_partial))
- 		goto slab_empty;
+ #ifdef CONFIG_SLUB_CPU_PARTIAL
++		remove_partial(n, slab);
++		put_cpu_partial(s, slab, 0);
++		stat(s, CPU_PARTIAL_NODE);
++		partial_slabs++;
++
+ 		if (!kmem_cache_has_cpu_partial(s)
+ 			|| partial_slabs > s->cpu_partial_slabs / 2)
+ 			break;
+@@ -2606,9 +2610,6 @@ static void __unfreeze_partials(struct kmem_cache *s, struct slab *partial_slab)
+ 	unsigned long flags = 0;
  
+ 	while (partial_slab) {
+-		struct slab new;
+-		struct slab old;
+-
+ 		slab = partial_slab;
+ 		partial_slab = slab->next;
+ 
+@@ -2621,23 +2622,7 @@ static void __unfreeze_partials(struct kmem_cache *s, struct slab *partial_slab)
+ 			spin_lock_irqsave(&n->list_lock, flags);
+ 		}
+ 
+-		do {
+-
+-			old.freelist = slab->freelist;
+-			old.counters = slab->counters;
+-			VM_BUG_ON(!old.frozen);
+-
+-			new.counters = old.counters;
+-			new.freelist = old.freelist;
+-
+-			new.frozen = 0;
+-
+-		} while (!__slab_update_freelist(s, slab,
+-				old.freelist, old.counters,
+-				new.freelist, new.counters,
+-				"unfreezing slab"));
+-
+-		if (unlikely(!new.inuse && n->nr_partial >= s->min_partial)) {
++		if (unlikely(!slab->inuse && n->nr_partial >= s->min_partial)) {
+ 			slab->next = slab_to_discard;
+ 			slab_to_discard = slab;
+ 		} else {
+@@ -3634,18 +3619,8 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
+ 		was_frozen = new.frozen;
+ 		new.inuse -= cnt;
+ 		if ((!new.inuse || !prior) && !was_frozen) {
+-
+-			if (kmem_cache_has_cpu_partial(s) && !prior) {
+-
+-				/*
+-				 * Slab was on no list before and will be
+-				 * partially empty
+-				 * We can defer the list move and instead
+-				 * freeze it.
+-				 */
+-				new.frozen = 1;
+-
+-			} else { /* Needs to be taken off a list */
++			/* Needs to be taken off a list */
++			if (!kmem_cache_has_cpu_partial(s) || prior) {
+ 
+ 				n = get_node(s, slab_nid(slab));
+ 				/*
+@@ -3675,7 +3650,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
+ 			 * activity can be necessary.
+ 			 */
+ 			stat(s, FREE_FROZEN);
+-		} else if (new.frozen) {
++		} else if (kmem_cache_has_cpu_partial(s) && !prior) {
+ 			/*
+ 			 * If we just froze the slab then put it onto the
+ 			 * per cpu partial list.
 -- 
 2.20.1
 
