@@ -2,182 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A237D1CE3
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 13:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DFA57D1CE5
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 13:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbjJULrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 07:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58834 "EHLO
+        id S231140AbjJULxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 07:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJULrN (ORCPT
+        with ESMTP id S229478AbjJULxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 07:47:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1219DD;
-        Sat, 21 Oct 2023 04:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697888827; x=1729424827;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ypGCOkg3uS5RcFd6ASv/c0q1iKpdD5tLLBdOxMLsSms=;
-  b=faLONxMLP8nwVleGWx9c9eN+lg/WDAHcUg0J1WwR6E6IDgaCxtD4nxR7
-   M1mdqf+aJR4v3uTrCkOAQlckLbiGtwNweP98WEMsMenXoLToxRVcQchTB
-   bhED5Qkl/Jak0GdtwS6FpyguxLu7c3B2muTlIC3sJ62syZwh16nNPCTxt
-   oDWtItU2Myx48du3gifWgWn8EJaeZPcwP7denMf4kLCJLH0Zwk7HJKbyw
-   /orKWXSKXhJMp6kdAejR58Hqts9jMX3WJcXkcBEPeQQp5s8faa9J1LiIm
-   I7W2arfCLP0oK28nHgwWRLIcfyAeBPwA4Fjb1y3KudTS3p8OXt77NSNBD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="371695616"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="371695616"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2023 04:47:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="823515440"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="823515440"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Oct 2023 04:47:04 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1quARa-0004nG-20;
-        Sat, 21 Oct 2023 11:47:02 +0000
-Date:   Sat, 21 Oct 2023 19:46:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jyan Chou <jyanchou@realtek.com>, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, jh80.chung@samsung.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
-        jyanchou@realtek.com
-Subject: Re: [PATCH V2][4/4] mmc: Add dt-bindings for realtek mmc driver
-Message-ID: <202310211903.42KO5zwa-lkp@intel.com>
-References: <20231018055326.18256-5-jyanchou@realtek.com>
+        Sat, 21 Oct 2023 07:53:50 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C699A1A4;
+        Sat, 21 Oct 2023 04:53:44 -0700 (PDT)
+Received: from localhost (89-26-75-29.dyn.cablelink.at [89.26.75.29])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sebastianfricke)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 04A88660734B;
+        Sat, 21 Oct 2023 12:53:42 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697889223;
+        bh=6RRGq7dtsDUYF+lQ+Zt4IpjIt/PofZwGotEJ0ImmOQU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lt4imCyUAXHE/aVO8kWHutl7uB1wKalMAHhy4/9VY8jSanNaXzNkTQAlh1CPY+DrT
+         iU2gjiOKYrDyHLoEaqIzyWv8u7Q1nBXLGS9W4foa2I4zkY4jVggfehJjWDyVfhsYaG
+         wweOoUAfg2OaewES/D6nQ8lvO+AnMvZd0M4U00KVvqFgqeaQ71fyhIJfN0SyojpY8m
+         tbwuLD1VbqYXzudaCgVAaQnt2Z90JOMgPZk4+wMrGc4kdM4AoOFPCxdvPCDid2hSCe
+         O5BUM5ksgwrCVaKp3wbyHnmKoUtmUMOztIFl0LUy0GEE6A/h+OvhteVA3LdYSbl6qy
+         OmobyL3K8WgtQ==
+Date:   Sat, 21 Oct 2023 13:53:40 +0200
+From:   Sebastian Fricke <sebastian.fricke@collabora.com>
+To:     Devarsh Thakkar <devarsht@ti.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Darren Etheridge <detheridge@ti.com>,
+        "Bajjuri, Praneeth" <praneeth@ti.com>,
+        "Raghavendra, Vignesh" <vigneshr@ti.com>,
+        "Bhatia, Aradhya" <a-bhatia1@ti.com>,
+        "Luthra, Jai" <j-luthra@ti.com>,
+        "Brnich, Brandon" <b-brnich@ti.com>,
+        "Pothukuchi, Vijay" <vijayp@ti.com>
+Subject: Re: [PATCH v13 6/8] media: dt-bindings: wave5: add Chips&Media 521c
+ codec IP support
+Message-ID: <20231021115340.kgjmz6fr5av6ne6s@basti-XPS-13-9310>
+References: <20230929-wave5_v13_media_master-v13-0-5ac60ccbf2ce@collabora.com>
+ <20230929-wave5_v13_media_master-v13-6-5ac60ccbf2ce@collabora.com>
+ <4c557cbd-33e9-a0df-3431-04ade12b6f07@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20231018055326.18256-5-jyanchou@realtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <4c557cbd-33e9-a0df-3431-04ade12b6f07@ti.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jyan,
+Hello Krzysztof and Rob,
 
-kernel test robot noticed the following build warnings:
+this question is quite important for our next version and for the
+overall direction of the DT bindings, could you have a look at this?
 
-[auto build test WARNING on robh/for-next]
-[also build test WARNING on ulf-hansson-mmc-mirror/next linus/master v6.6-rc6 next-20231020]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thank you and Regards,
+Sebastian
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jyan-Chou/mmc-Add-dt-bindings-for-realtek-mmc-driver/20231018-135538
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20231018055326.18256-5-jyanchou%40realtek.com
-patch subject: [PATCH V2][4/4] mmc: Add dt-bindings for realtek mmc driver
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231021/202310211903.42KO5zwa-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310211903.42KO5zwa-lkp@intel.com/
-
-dtcheck warnings: (new ones prefixed by >>)
->> Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml:46:7: [error] string value is redundantly quoted with any quotes (quoted-strings)
->> Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml:46:13: [error] syntax error: expected <block end>, but found '<scalar>' (syntax)
---
->> Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml:46:13: did not find expected key
---
->> Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml: ignoring, error parsing file
-
-vim +46 Documentation/devicetree/bindings/mmc/realtek-dw-mshc.yaml
-
-     8	
-     9	description:
-    10	  Realtek uses the Synopsys designware mobile storage host controller
-    11	  to interface a SoC with storage medium. This file documents the Realtek
-    12	  specific extensions.
-    13	
-    14	allOf:
-    15	  - $ref: synopsys-dw-mshc-common.yaml#
-    16	
-    17	maintainers:
-    18	  - Jyan Chou <jyanchou@realtek.com>
-    19	
-    20	# Everything else is described in the common file
-    21	properties:
-    22	  compatible:
-    23	    enum:
-    24	      - realtek,rtd-dw-cqe-emmc
-    25	  reg:
-    26	    maxItems: 1
-    27	
-    28	  interrupts:
-    29	    maxItems: 1
-    30	
-    31	  clocks:
-    32	    minItems: 2
-    33	    maxItems: 4
-    34	    description:
-    35	      Handle to "biu" and "ciu" clocks for the bus interface unit clock and
-    36	      the card interface unit clock.
-    37	
-    38	  clock-names:
-    39	    minItems: 2
-    40	    items:
-    41	      - const: biu
-    42	      - const: ciu
-    43	      - const: vp0
-    44	      - const: vp1
-    45	    description:
-  > 46	      "vp0" and "vp1" are used to control the clock phases.
-    47	
-    48	  power-domains:
-    49	    maxItems: 1
-    50	
-    51	  resets:
-    52	    maxItems: 1
-    53	
-    54	  reset-names:
-    55	    const: reset
-    56	
-    57	  speed-step:
-    58	    maxItems: 1
-    59	    description:
-    60		"speed-step" represents the bus speed mode of emmc. "3" means HS400,
-    61		"2" means HS200, "0" means HS.
-    62	
-    63	  pinctrl-names:
-    64	    maxItems: 10
-    65	    items:
-    66	      - const: default
-    67	      - const: sdr50
-    68	      - const: ddr50
-    69	      - const: hs200
-    70	      - const: hs400
-    71	      - const: tune0
-    72	      - const: tune1
-    73	      - const: tune2
-    74	      - const: tune3
-    75	      - const: tune4
-    76	
-    77	required:
-    78	  - compatible
-    79	  - reg
-    80	  - interrupts
-    81	  - clocks
-    82	  - clock-names
-    83	  - pinctrl-names
-    84	  - pinctrl
-    85	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+On 17.10.2023 19:09, Devarsh Thakkar wrote:
+>Hi Sebastian, Krzysztof, Rob,
+>
+>On 12/10/23 16:31, Sebastian Fricke wrote:
+>> From: Robert Beckett <bob.beckett@collabora.com>
+>>
+>> Add bindings for the chips&media wave5 codec driver
+>>
+>> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+>> ---
+>>  .../devicetree/bindings/media/cnm,wave5.yaml       | 60 ++++++++++++++++++++++
+>>  1 file changed, 60 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/cnm,wave5.yaml b/Documentation/devicetree/bindings/media/cnm,wave5.yaml
+>> new file mode 100644
+>> index 000000000000..b31d34aec05b
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/media/cnm,wave5.yaml
+>> @@ -0,0 +1,60 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/media/cnm,wave5.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Chips&Media Wave 5 Series multi-standard codec IP
+>> +
+>> +maintainers:
+>> +  - Nas Chung <nas.chung@chipsnmedia.com>
+>> +  - Jackson Lee <jackson.lee@chipsnmedia.com>
+>> +
+>> +description:
+>> +  The Chips&Media WAVE codec IP is a multi format video encoder/decoder
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - cnm,cm521c-vpu
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    items:
+>> +      - description: VCODEC clock
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  power-domains:
+>> +    maxItems: 1
+>> +
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>> +  sram:
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +    description:
+>> +      The VPU uses the SRAM to store some of the reference data instead of
+>> +      storing it on DMA memory. It is mainly used for the purpose of reducing
+>> +      bandwidth.
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - clocks
+>> +  - interrupts
+>> +
+>
+>Is it possible to keep interrupts property as optional given HW can still work
+>without it if SW does polling of ISR using registers?
+>
+>The reason to ask is in TI AM62A SoC (which also uses this codec) there is an
+>SoC errata of missing interrupt line to A53 and we are using SW based polling
+>locally to run the driver.
+>
+>We were planning to upstream that SW based polling support patch in CnM driver
+>once this base initial driver patch series gets merged, but just wanted to
+>check if upfront it is possible to have interrupts property as optional so
+>that we don't have to change the binding doc again to make it optional later on.
+>
+>Also note that the polling patch won't be specific to AM62A, other SoC's too
+>which use this wave5 hardware if they want can enable polling by choice (by
+>removing interrupt property)
+>
+>Could you please share your opinion on this ?
+>
+>Regards
+>Devarsh
+>
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    vpu: video-codec@12345678 {
+>> +        compatible = "cnm,cm521c-vpu";
+>> +        reg = <0x12345678 0x1000>;
+>> +        clocks = <&clks 42>;
+>> +        interrupts = <42>;
+>> +        sram = <&sram>;
+>> +    };
+>>
+>_______________________________________________
+>Kernel mailing list -- kernel@mailman.collabora.com
+>To unsubscribe send an email to kernel-leave@mailman.collabora.com
