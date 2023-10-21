@@ -2,85 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B367D1A75
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 04:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17247D1A7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 04:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbjJUCAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 22:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
+        id S230518AbjJUCB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 22:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJUCAa (ORCPT
+        with ESMTP id S229500AbjJUCB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 22:00:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB61D71;
-        Fri, 20 Oct 2023 19:00:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 59597C433CC;
-        Sat, 21 Oct 2023 02:00:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697853625;
-        bh=Ei+kODBzIVl8L3VplpOSBYmZrAv5Qvh+i3MnO6ooXWU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JnCcOTTsPSPFf9BB3S8uHHQcVoKWSIcIJ4ndqklYxxEdqBLzZ7180rw67KASZ/7ER
-         uuphBaof7LPNFhTGx2O4EHiwJnm8zXwbGEHmAPeEsh0NjYdZopFP2UrBFclOGjmClM
-         zSFlo39qp6wjyeHM5nEIiPa/Z1tww4N6kPSVJqMqQXU4snNGQHDjUFIN6zCRUYyWAH
-         PD/Pqiym+msXr4/Wz7Iw1EZ5pwpNofwFk5Np/g/Dk6YV766GRgGlcm8l5R7+oio3K6
-         tcuAF0LrnkYRYRYuH5W40DKLCba2NOJ4TqsOzsb48cAkgKB7WPOlq4ZXx15yDHnkqF
-         VEgBWqfKA7l+A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4253AC595CB;
-        Sat, 21 Oct 2023 02:00:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 20 Oct 2023 22:01:27 -0400
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928F2D75
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 19:01:24 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0VuYFDwh_1697853672;
+Received: from e69b19392.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VuYFDwh_1697853672)
+          by smtp.aliyun-inc.com;
+          Sat, 21 Oct 2023 10:01:21 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH] erofs: simplify compression configuration parser
+Date:   Sat, 21 Oct 2023 10:01:09 +0800
+Message-Id: <20231021020109.1646299-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net: wwan: replace deprecated strncpy with strscpy
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169785362526.14770.3733349945703653209.git-patchwork-notify@kernel.org>
-Date:   Sat, 21 Oct 2023 02:00:25 +0000
-References: <20231019-strncpy-drivers-net-wwan-rpmsg_wwan_ctrl-c-v2-1-ecf9b5a39430@google.com>
-In-Reply-To: <20231019-strncpy-drivers-net-wwan-rpmsg_wwan_ctrl-c-v2-1-ecf9b5a39430@google.com>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     stephan@gerhold.net, loic.poulain@linaro.org,
-        ryazanov.s.a@gmail.com, johannes@sipsolutions.net,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, keescook@chromium.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Move erofs_load_compr_cfgs() into decompressor.c as well as introduce
+a callback instead of a hard-coded switch for each algorithm for
+simplicity.
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+ fs/erofs/compress.h             |  6 +++
+ fs/erofs/decompressor.c         | 60 ++++++++++++++++++++++++++-
+ fs/erofs/decompressor_deflate.c |  5 ++-
+ fs/erofs/decompressor_lzma.c    |  4 +-
+ fs/erofs/internal.h             | 38 +----------------
+ fs/erofs/super.c                | 72 ++++-----------------------------
+ 6 files changed, 78 insertions(+), 107 deletions(-)
 
-On Thu, 19 Oct 2023 18:21:22 +0000 you wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We expect chinfo.name to be NUL-terminated based on its use with format
-> strings and sprintf:
-> rpmsg/rpmsg_char.c
-> 165:            dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
-> 368:    return sprintf(buf, "%s\n", eptdev->chinfo.name);
-> 
-> [...]
-
-Here is the summary with links:
-  - [v2] net: wwan: replace deprecated strncpy with strscpy
-    https://git.kernel.org/netdev/net-next/c/75e7d0b2d223
-
-You are awesome, thank you!
+diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
+index 349c3316ae6b..279933e007d2 100644
+--- a/fs/erofs/compress.h
++++ b/fs/erofs/compress.h
+@@ -21,6 +21,8 @@ struct z_erofs_decompress_req {
+ };
+ 
+ struct z_erofs_decompressor {
++	int (*config)(struct super_block *sb, struct erofs_super_block *dsb,
++		      void *data, int size);
+ 	int (*decompress)(struct z_erofs_decompress_req *rq,
+ 			  struct page **pagepool);
+ 	char *name;
+@@ -92,6 +94,10 @@ int z_erofs_fixup_insize(struct z_erofs_decompress_req *rq, const char *padbuf,
+ extern const struct z_erofs_decompressor erofs_decompressors[];
+ 
+ /* prototypes for specific algorithms */
++int z_erofs_load_lzma_config(struct super_block *sb,
++			struct erofs_super_block *dsb, void *data, int size);
++int z_erofs_load_deflate_config(struct super_block *sb,
++			struct erofs_super_block *dsb, void *data, int size);
+ int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
+ 			    struct page **pagepool);
+ int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
+diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+index 332ec5f74002..6cb57e45c180 100644
+--- a/fs/erofs/decompressor.c
++++ b/fs/erofs/decompressor.c
+@@ -25,10 +25,10 @@ struct z_erofs_lz4_decompress_ctx {
+ };
+ 
+ int z_erofs_load_lz4_config(struct super_block *sb,
+-			    struct erofs_super_block *dsb,
+-			    struct z_erofs_lz4_cfgs *lz4, int size)
++			    struct erofs_super_block *dsb, void *data, int size)
+ {
+ 	struct erofs_sb_info *sbi = EROFS_SB(sb);
++	struct z_erofs_lz4_cfgs *lz4 = data;
+ 	u16 distance;
+ 
+ 	if (lz4) {
+@@ -370,19 +370,75 @@ const struct z_erofs_decompressor erofs_decompressors[] = {
+ 		.name = "interlaced"
+ 	},
+ 	[Z_EROFS_COMPRESSION_LZ4] = {
++		.config = z_erofs_load_lz4_config,
+ 		.decompress = z_erofs_lz4_decompress,
+ 		.name = "lz4"
+ 	},
+ #ifdef CONFIG_EROFS_FS_ZIP_LZMA
+ 	[Z_EROFS_COMPRESSION_LZMA] = {
++		.config = z_erofs_load_lzma_config,
+ 		.decompress = z_erofs_lzma_decompress,
+ 		.name = "lzma"
+ 	},
+ #endif
+ #ifdef CONFIG_EROFS_FS_ZIP_DEFLATE
+ 	[Z_EROFS_COMPRESSION_DEFLATE] = {
++		.config = z_erofs_load_deflate_config,
+ 		.decompress = z_erofs_deflate_decompress,
+ 		.name = "deflate"
+ 	},
+ #endif
+ };
++
++int z_erofs_parse_cfgs(struct super_block *sb, struct erofs_super_block *dsb)
++{
++	struct erofs_sb_info *sbi = EROFS_SB(sb);
++	struct erofs_buf buf = __EROFS_BUF_INITIALIZER;
++	unsigned int algs, alg;
++	erofs_off_t offset;
++	int size, ret = 0;
++
++	if (!erofs_sb_has_compr_cfgs(sbi)) {
++		sbi->available_compr_algs = Z_EROFS_COMPRESSION_LZ4;
++		return z_erofs_load_lz4_config(sb, dsb, NULL, 0);
++	}
++
++	sbi->available_compr_algs = le16_to_cpu(dsb->u1.available_compr_algs);
++	if (sbi->available_compr_algs & ~Z_EROFS_ALL_COMPR_ALGS) {
++		erofs_err(sb, "unidentified algorithms %x, please upgrade kernel",
++			  sbi->available_compr_algs & ~Z_EROFS_ALL_COMPR_ALGS);
++		return -EOPNOTSUPP;
++	}
++
++	erofs_init_metabuf(&buf, sb);
++	offset = EROFS_SUPER_OFFSET + sbi->sb_size;
++	alg = 0;
++	for (algs = sbi->available_compr_algs; algs; algs >>= 1, ++alg) {
++		void *data;
++
++		if (!(algs & 1))
++			continue;
++
++		data = erofs_read_metadata(sb, &buf, &offset, &size);
++		if (IS_ERR(data)) {
++			ret = PTR_ERR(data);
++			break;
++		}
++
++		if (alg >= ARRAY_SIZE(erofs_decompressors) ||
++		    !erofs_decompressors[alg].config) {
++			erofs_err(sb, "algorithm %d isn't enabled on this kernel",
++				  alg);
++			ret = -EOPNOTSUPP;
++		} else {
++			ret = erofs_decompressors[alg].config(sb,
++					dsb, data, size);
++		}
++
++		kfree(data);
++		if (ret)
++			break;
++	}
++	erofs_put_metabuf(&buf);
++	return ret;
++}
+diff --git a/fs/erofs/decompressor_deflate.c b/fs/erofs/decompressor_deflate.c
+index 19e5bdeb30b6..0e1946a6bda5 100644
+--- a/fs/erofs/decompressor_deflate.c
++++ b/fs/erofs/decompressor_deflate.c
+@@ -77,9 +77,10 @@ int __init z_erofs_deflate_init(void)
+ }
+ 
+ int z_erofs_load_deflate_config(struct super_block *sb,
+-				struct erofs_super_block *dsb,
+-				struct z_erofs_deflate_cfgs *dfl, int size)
++			struct erofs_super_block *dsb, void *data, int size)
+ {
++	struct z_erofs_deflate_cfgs *dfl = data;
++
+ 	if (!dfl || size < sizeof(struct z_erofs_deflate_cfgs)) {
+ 		erofs_err(sb, "invalid deflate cfgs, size=%u", size);
+ 		return -EINVAL;
+diff --git a/fs/erofs/decompressor_lzma.c b/fs/erofs/decompressor_lzma.c
+index dee10d22ada9..ba4ec73f4aae 100644
+--- a/fs/erofs/decompressor_lzma.c
++++ b/fs/erofs/decompressor_lzma.c
+@@ -72,10 +72,10 @@ int __init z_erofs_lzma_init(void)
+ }
+ 
+ int z_erofs_load_lzma_config(struct super_block *sb,
+-			     struct erofs_super_block *dsb,
+-			     struct z_erofs_lzma_cfgs *lzma, int size)
++			struct erofs_super_block *dsb, void *data, int size)
+ {
+ 	static DEFINE_MUTEX(lzma_resize_mutex);
++	struct z_erofs_lzma_cfgs *lzma = data;
+ 	unsigned int dict_size, i;
+ 	struct z_erofs_lzma *strm, *head = NULL;
+ 	int err;
+diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+index 4ff88d0dd980..d8de61350dc0 100644
+--- a/fs/erofs/internal.h
++++ b/fs/erofs/internal.h
+@@ -469,9 +469,6 @@ int __init z_erofs_init_zip_subsystem(void);
+ void z_erofs_exit_zip_subsystem(void);
+ int erofs_try_to_free_all_cached_pages(struct erofs_sb_info *sbi,
+ 				       struct erofs_workgroup *egrp);
+-int z_erofs_load_lz4_config(struct super_block *sb,
+-			    struct erofs_super_block *dsb,
+-			    struct z_erofs_lz4_cfgs *lz4, int len);
+ int z_erofs_map_blocks_iter(struct inode *inode, struct erofs_map_blocks *map,
+ 			    int flags);
+ void *erofs_get_pcpubuf(unsigned int requiredpages);
+@@ -480,6 +477,7 @@ int erofs_pcpubuf_growsize(unsigned int nrpages);
+ void __init erofs_pcpubuf_init(void);
+ void erofs_pcpubuf_exit(void);
+ int erofs_init_managed_cache(struct super_block *sb);
++int z_erofs_parse_cfgs(struct super_block *sb, struct erofs_super_block *dsb);
+ #else
+ static inline void erofs_shrinker_register(struct super_block *sb) {}
+ static inline void erofs_shrinker_unregister(struct super_block *sb) {}
+@@ -487,16 +485,6 @@ static inline int erofs_init_shrinker(void) { return 0; }
+ static inline void erofs_exit_shrinker(void) {}
+ static inline int z_erofs_init_zip_subsystem(void) { return 0; }
+ static inline void z_erofs_exit_zip_subsystem(void) {}
+-static inline int z_erofs_load_lz4_config(struct super_block *sb,
+-				  struct erofs_super_block *dsb,
+-				  struct z_erofs_lz4_cfgs *lz4, int len)
+-{
+-	if (lz4 || dsb->u1.lz4_max_distance) {
+-		erofs_err(sb, "lz4 algorithm isn't enabled");
+-		return -EINVAL;
+-	}
+-	return 0;
+-}
+ static inline void erofs_pcpubuf_init(void) {}
+ static inline void erofs_pcpubuf_exit(void) {}
+ static inline int erofs_init_managed_cache(struct super_block *sb) { return 0; }
+@@ -505,41 +493,17 @@ static inline int erofs_init_managed_cache(struct super_block *sb) { return 0; }
+ #ifdef CONFIG_EROFS_FS_ZIP_LZMA
+ int __init z_erofs_lzma_init(void);
+ void z_erofs_lzma_exit(void);
+-int z_erofs_load_lzma_config(struct super_block *sb,
+-			     struct erofs_super_block *dsb,
+-			     struct z_erofs_lzma_cfgs *lzma, int size);
+ #else
+ static inline int z_erofs_lzma_init(void) { return 0; }
+ static inline int z_erofs_lzma_exit(void) { return 0; }
+-static inline int z_erofs_load_lzma_config(struct super_block *sb,
+-			     struct erofs_super_block *dsb,
+-			     struct z_erofs_lzma_cfgs *lzma, int size) {
+-	if (lzma) {
+-		erofs_err(sb, "lzma algorithm isn't enabled");
+-		return -EINVAL;
+-	}
+-	return 0;
+-}
+ #endif	/* !CONFIG_EROFS_FS_ZIP_LZMA */
+ 
+ #ifdef CONFIG_EROFS_FS_ZIP_DEFLATE
+ int __init z_erofs_deflate_init(void);
+ void z_erofs_deflate_exit(void);
+-int z_erofs_load_deflate_config(struct super_block *sb,
+-				struct erofs_super_block *dsb,
+-				struct z_erofs_deflate_cfgs *dfl, int size);
+ #else
+ static inline int z_erofs_deflate_init(void) { return 0; }
+ static inline int z_erofs_deflate_exit(void) { return 0; }
+-static inline int z_erofs_load_deflate_config(struct super_block *sb,
+-			struct erofs_super_block *dsb,
+-			struct z_erofs_deflate_cfgs *dfl, int size) {
+-	if (dfl) {
+-		erofs_err(sb, "deflate algorithm isn't enabled");
+-		return -EINVAL;
+-	}
+-	return 0;
+-}
+ #endif	/* !CONFIG_EROFS_FS_ZIP_DEFLATE */
+ 
+ #ifdef CONFIG_EROFS_FS_ONDEMAND
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index 3700af9ee173..cc44fb2e001e 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -156,68 +156,15 @@ void *erofs_read_metadata(struct super_block *sb, struct erofs_buf *buf,
+ 	return buffer;
+ }
+ 
+-#ifdef CONFIG_EROFS_FS_ZIP
+-static int erofs_load_compr_cfgs(struct super_block *sb,
+-				 struct erofs_super_block *dsb)
++#ifndef CONFIG_EROFS_FS_ZIP
++static int z_erofs_parse_cfgs(struct super_block *sb,
++			      struct erofs_super_block *dsb)
+ {
+-	struct erofs_sb_info *sbi = EROFS_SB(sb);
+-	struct erofs_buf buf = __EROFS_BUF_INITIALIZER;
+-	unsigned int algs, alg;
+-	erofs_off_t offset;
+-	int size, ret = 0;
+-
+-	sbi->available_compr_algs = le16_to_cpu(dsb->u1.available_compr_algs);
+-	if (sbi->available_compr_algs & ~Z_EROFS_ALL_COMPR_ALGS) {
+-		erofs_err(sb, "try to load compressed fs with unsupported algorithms %x",
+-			  sbi->available_compr_algs & ~Z_EROFS_ALL_COMPR_ALGS);
+-		return -EINVAL;
+-	}
+-
+-	erofs_init_metabuf(&buf, sb);
+-	offset = EROFS_SUPER_OFFSET + sbi->sb_size;
+-	alg = 0;
+-	for (algs = sbi->available_compr_algs; algs; algs >>= 1, ++alg) {
+-		void *data;
+-
+-		if (!(algs & 1))
+-			continue;
+-
+-		data = erofs_read_metadata(sb, &buf, &offset, &size);
+-		if (IS_ERR(data)) {
+-			ret = PTR_ERR(data);
+-			break;
+-		}
++	if (!dsb->u1.available_compr_algs)
++		return 0;
+ 
+-		switch (alg) {
+-		case Z_EROFS_COMPRESSION_LZ4:
+-			ret = z_erofs_load_lz4_config(sb, dsb, data, size);
+-			break;
+-		case Z_EROFS_COMPRESSION_LZMA:
+-			ret = z_erofs_load_lzma_config(sb, dsb, data, size);
+-			break;
+-		case Z_EROFS_COMPRESSION_DEFLATE:
+-			ret = z_erofs_load_deflate_config(sb, dsb, data, size);
+-			break;
+-		default:
+-			DBG_BUGON(1);
+-			ret = -EFAULT;
+-		}
+-		kfree(data);
+-		if (ret)
+-			break;
+-	}
+-	erofs_put_metabuf(&buf);
+-	return ret;
+-}
+-#else
+-static int erofs_load_compr_cfgs(struct super_block *sb,
+-				 struct erofs_super_block *dsb)
+-{
+-	if (dsb->u1.available_compr_algs) {
+-		erofs_err(sb, "try to load compressed fs when compression is disabled");
+-		return -EINVAL;
+-	}
+-	return 0;
++	erofs_err(sb, "compression disabled, unable to mount compressed EROFS");
++	return -EOPNOTSUPP;
+ }
+ #endif
+ 
+@@ -406,10 +353,7 @@ static int erofs_read_superblock(struct super_block *sb)
+ 	}
+ 
+ 	/* parse on-disk compression configurations */
+-	if (erofs_sb_has_compr_cfgs(sbi))
+-		ret = erofs_load_compr_cfgs(sb, dsb);
+-	else
+-		ret = z_erofs_load_lz4_config(sb, dsb, NULL, 0);
++	ret = z_erofs_parse_cfgs(sb, dsb);
+ 	if (ret < 0)
+ 		goto out;
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.39.3
 
