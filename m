@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 747027D1B6C
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 08:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693407D1B6F
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 08:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbjJUGva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 02:51:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
+        id S229472AbjJUGxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 02:53:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJUGv3 (ORCPT
+        with ESMTP id S229583AbjJUGxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 02:51:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7877513E;
-        Fri, 20 Oct 2023 23:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697871084; x=1729407084;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=naPtkrzRmbCE7KFu9q04yne3z9WnO3pY8BdWgIrnkMw=;
-  b=Ro889KAKPydIICyjH0jG8hJkDwLF6KkH9enXfby+7MpBK20UpoXlX0r/
-   6j/YHJxcXG0R3vsNYRgGu7loCivmXsMX7ZLgQH3qPf28C8UAMsyb3IZ/r
-   wZG4jRVOCz3KKFj+EJsQGTNjVGWe5iqD/y/AUxLg2bZyLKFVOBKKjRdXA
-   0JZx4j8353Gv+GdAj88vVB74lkkkVr6J8zchzPqxgeB0Uq/rMsXnSVyfi
-   em2eWvtApi5WMvdQuSkmy1SrBYnEJlGhHQYO3thpDZjki0G2mitMCC1uJ
-   2egLcH6yWyF3/68BkiTnq0QRfNFIWH6jZQWjA1KEPtvcs7WEcmb/ELIGj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="386427172"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="386427172"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 23:51:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="751142310"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="751142310"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 23:51:19 -0700
-Date:   Sat, 21 Oct 2023 09:51:15 +0300
-From:   Raag Jadav <raag.jadav@intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        len.brown@intel.com, robert.moore@intel.com,
-        mika.westerberg@linux.intel.com, mark.rutland@arm.com,
-        will@kernel.org, linux@roeck-us.net, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Subject: Re: [PATCH v1 4/8] ACPI: utils: use acpi_dev_uid_match() for
- matching _UID
-Message-ID: <ZTN042OQ4kx1PaQt@black.fi.intel.com>
-References: <20231020084732.17130-1-raag.jadav@intel.com>
- <20231020084732.17130-5-raag.jadav@intel.com>
- <ZTJYK02w8HZg26eI@smile.fi.intel.com>
- <ZTJmnv6CsZUt0pIS@black.fi.intel.com>
- <CAJZ5v0jvAeibnXSq92CBd1uXUgRnvsP0kEqfL8Du552=LT1dog@mail.gmail.com>
- <ZTLC5Jo97gYsL5wX@black.fi.intel.com>
+        Sat, 21 Oct 2023 02:53:46 -0400
+Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24052D71
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 23:53:43 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id u5reqyZLtd4Wtu5rfqqNO4; Sat, 21 Oct 2023 08:53:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1697871220;
+        bh=q+6YiMf4FjJqpY2woNDtEvfJ1SZWEDzhFtZ1+ypv620=;
+        h=From:To:Cc:Subject:Date;
+        b=EysZyvuNjvivikTZz1HV6uPNxwar1FxYeIW3ZPl6RB94dHadJkAhx/cMu/4K4ad/V
+         N1VEKRFwKHTh8ZUL5HRXQptbuvrhFE3V+gUP/lZ+2mpFJoKjKpgpcB9uEdNttXL8dW
+         FEYGs7+OdgBqoZ86yNQ6UFX0tz2V0Lky44jfLSnysdNY4nth95725mV4TlqLVEiToW
+         fvX6Z+teSxGjh1Tb5asFg2GSfGrbpwongRfMXRnXjDc4vAWv8GbbK2jydBIPoNdnTe
+         0vl8DSe2v/n3hiR7lqTtgo/V7vctb5Qjlzc55Nkmgqm66B2/+EDwU8wGR/38okyH8y
+         hSOtX7pWH5BaA==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 21 Oct 2023 08:53:40 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Helge Deller <deller@gmx.de>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH] fbdev/offb: Simplify offb_init_fb()
+Date:   Sat, 21 Oct 2023 08:53:37 +0200
+Message-Id: <1c94c99117617c1a844f6551b7bca27f23c5f0c8.1697871190.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZTLC5Jo97gYsL5wX@black.fi.intel.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 09:11:56PM +0300, Raag Jadav wrote:
-> On Fri, Oct 20, 2023 at 07:11:53PM +0200, Rafael J. Wysocki wrote:
-> > On Fri, Oct 20, 2023 at 1:38 PM Raag Jadav <raag.jadav@intel.com> wrote:
-> > >
-> > > On Fri, Oct 20, 2023 at 01:36:27PM +0300, Andy Shevchenko wrote:
-> > > > On Fri, Oct 20, 2023 at 02:17:28PM +0530, Raag Jadav wrote:
-> > > > > Convert manual _UID references to use standard ACPI helpers.
-> > > >
-> > > > Yes, while not so obvious this is the correct replacement.
-> > > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > >
-> > > I think this is the only case which would suffer from the more obvious
-> > > behaviour, i.e.
-> > >
-> > > bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2)
-> > > {
-> > >         const char *uid1 = acpi_device_uid(adev);
-> > >
-> > >         return uid1 && uid2 && !strcmp(uid1, uid2);
-> > > }
-> > >
-> > > That said, we can't be particularly sure about it's potential future users,
-> > > especially when the usage will not be limited to just ACPI core since we're
-> > > exporting it.
-> > 
-> > I actually agree with this, so please switch over to the above.
-> 
-> Will send out a v2, thanks.
-> 
-> Andy, can I add your review for this?
+Turn a strcpy()+strncat()+'\0' into an equivalent snprintf().
 
-IIUC you agree with the usage format, but not the actual helper.
-So I'm gonna drop it from the first patch and keep it for the rest,
-except this one.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This patch is *not* even compile tested because cross-compiling leads to
+some errors like on my machine:
+   cc1: error: cannot load plugin ./scripts/gcc-plugins/randomize_layout_plugin.so: ./scripts/gcc-plugins/randomize_layout_plugin.so: undefined symbol: _ZNK6frange6acceptERK14vrange_visitor
 
-Let me know if I'm doing this wrong.
+So review with care!
+---
+ drivers/video/fbdev/offb.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Raag
+diff --git a/drivers/video/fbdev/offb.c b/drivers/video/fbdev/offb.c
+index dcb1b81d35db..b421b46d88ef 100644
+--- a/drivers/video/fbdev/offb.c
++++ b/drivers/video/fbdev/offb.c
+@@ -423,11 +423,9 @@ static void offb_init_fb(struct platform_device *parent, const char *name,
+ 	fix = &info->fix;
+ 	var = &info->var;
+ 
+-	if (name) {
+-		strcpy(fix->id, "OFfb ");
+-		strncat(fix->id, name, sizeof(fix->id) - sizeof("OFfb "));
+-		fix->id[sizeof(fix->id) - 1] = '\0';
+-	} else
++	if (name)
++		snprintf(fix->id, sizeof(fix->id), "OFfb %s", name);
++	else
+ 		snprintf(fix->id, sizeof(fix->id), "OFfb %pOFn", dp);
+ 
+ 
+-- 
+2.34.1
+
