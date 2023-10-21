@@ -2,73 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D75A7D1A40
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 03:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6D37D1A47
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 03:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbjJUBTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 21:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
+        id S230505AbjJUBZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 21:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJUBTN (ORCPT
+        with ESMTP id S229500AbjJUBZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 21:19:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3526BD67;
-        Fri, 20 Oct 2023 18:19:08 -0700 (PDT)
+        Fri, 20 Oct 2023 21:25:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3829CD6A
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 18:25:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697851148; x=1729387148;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=czgDYYnGMR+x6IWe3MoUs9kSDZkqARZu11lHJOx2X7w=;
-  b=bqTLis+SD8VPoBFNPZmTqWEaHYUC/5bhprHxghuFu9y0J/EToCBfZqNe
-   X8yxzE6QcgIa8uDzrrYI7AaDOKCvQwBfAfcqFA9SUTMwaZw32YbXtH2DI
-   DhNYc8hd7Q+Z/E+//Q8kZPM5QOPQTn15Gv/V11z3z3FUP+YIRP7JoHLiN
-   UITYBpYHdwx3tRtreV60os912VwjsBxbj/GBDRjS2pjdSx9YzIxj5yc4T
-   kX7YU8btB1USQ6Z2HELCAbzh+VfQXLmzY7KFXrF5yyfoHBu5GXp9L+asX
-   Ou/iLx6PC8nJ2odqQTbr+mU68Audt8nSwnI1h9GNec4TEqD5VSQS3wn++
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="417732654"
+  t=1697851524; x=1729387524;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=zLh2pwlSFXDc8f1T4HvmKnsr4cUsTKT+TV1gVp5dCqM=;
+  b=JNHk2YquRcw9WrfxnSgd9ro56ijSWEFG68qq8f7YULqSUtnSyErgC4+x
+   9wE8VcETLiCQJF+rrre80+nnQHX1UaXJixORfppkUTbSPWi04n2+hPjqV
+   /uCTz9nuf2O85snfszwgq/pO76WXUzzOgwQ12vnrvEIQPaQBVGUXvU4+H
+   NtN7fA1E4NGW/8CNnsmSVEFo2PbTm9jLrHDqTRC1rvEBWL5OtVbNxdgK3
+   cy63dTlSprvmkyulX9Vek1ZbWD7EjPxEkut+34NjuGpTepmuTHdXTJv61
+   mPWt40EgpS8voRx4sO51GxxSizdRDJdCs9SnoOX8g91eEzmJu53WvNrwP
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="376978665"
 X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="417732654"
+   d="scan'208";a="376978665"
 Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 18:19:07 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 18:25:23 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
-   d="scan'208";a="5268375"
-Received: from hkchanda-mobl.amr.corp.intel.com (HELO desk) ([10.209.90.113])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 18:17:55 -0700
-Date:   Fri, 20 Oct 2023 18:18:59 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Alyssa Milburn <alyssa.milburn@intel.com>
-Subject: Re: [RESEND][PATCH 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20231021011859.c2rtc4vl7l2cl4q6@desk>
-References: <20231020-delay-verw-v1-0-cff54096326d@linux.intel.com>
- <20231020-delay-verw-v1-1-cff54096326d@linux.intel.com>
- <f620c7d4-6345-4ad0-8a45-c8089e3c34df@citrix.com>
+   d="scan'208";a="5268878"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.255.30.224]) ([10.255.30.224])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 18:24:09 -0700
+Message-ID: <f840af3a-45fe-477e-bd45-2bee95b8c8d5@linux.intel.com>
+Date:   Sat, 21 Oct 2023 09:25:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f620c7d4-6345-4ad0-8a45-c8089e3c34df@citrix.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, joro@8bytes.org, will@kernel.org,
+        robin.murphy@arm.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, yi.l.liu@intel.com
+Subject: Re: [PATCH 1/2] iommufd/device: Drop enforce_cache_coherency in
+ iommufd_device_do_replace
+To:     Nicolin Chen <nicolinc@nvidia.com>, jgg@nvidia.com,
+        kevin.tian@intel.com
+References: <cover.1697848510.git.nicolinc@nvidia.com>
+ <5593200da9015fee7b2e8195c2998f36148d83de.1697848510.git.nicolinc@nvidia.com>
+Content-Language: en-US
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <5593200da9015fee7b2e8195c2998f36148d83de.1697848510.git.nicolinc@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,48 +66,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 21, 2023 at 12:55:45AM +0100, Andrew Cooper wrote:
-> On 20/10/2023 9:44 pm, Pawan Gupta wrote:
-> > +#define EXEC_VERW				\
-> > +	__EXEC_VERW(551f);			\
-> > +	/* nopl __KERNEL_DS(%rax) */		\
-> > +	.byte 0x0f, 0x1f, 0x80, 0x00, 0x00;	\
-> > +551:	.word __KERNEL_DS;			\
+On 2023/10/21 8:37, Nicolin Chen wrote:
+> According to the conversion in the following link:
+> https://lore.kernel.org/linux-iommu/20231020135501.GG3952@nvidia.com/
 > 
-> Is this actually wise from a perf point of view?
+> The enforce_cache_coherency should be set/enforced in the hwpt allocation
+> routine. The iommu driver in its attach_dev() op should decide whether to
+> reject or not a device that doesn't match with the configuration of cache
+> coherency. Drop the enforce_cache_coherency piece in replace(). Also move
+> the remaining "num_devices++" piece closer to the refcount that uses this
+> num_devices.
 > 
-> You're causing a data access to the instruction stream, and not only
-> that, the immediate next instruction.  Some parts don't take kindly to
-> snoops hitting L1I.
+> Cc: stable@vger.kernel.org
+> Fixes: e88d4ec154a8 ("iommufd: Add iommufd_device_replace()")
+> Suggested-by: Tian, Kevin <kevin.tian@intel.com>
+> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> ---
+>   drivers/iommu/iommufd/device.c | 12 ++----------
+>   1 file changed, 2 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
+> index e88fa73a45e6..c93f3478f808 100644
+> --- a/drivers/iommu/iommufd/device.c
+> +++ b/drivers/iommu/iommufd/device.c
+> @@ -429,16 +429,6 @@ iommufd_device_do_replace(struct iommufd_device *idev,
+>   		return NULL;
+>   	}
+>   
+> -	/* Try to upgrade the domain we have */
+> -	list_for_each_entry(cur, &igroup->device_list, group_item) {
+> -		num_devices++;
+> -		if (cur->enforce_cache_coherency) {
+> -			rc = iommufd_hw_pagetable_enforce_cc(hwpt);
+> -			if (rc)
+> -				goto err_unlock;
+> -		}
+> -	}
+> -
+>   	old_hwpt = igroup->hwpt;
+>   	if (hwpt->ioas != old_hwpt->ioas) {
+>   		list_for_each_entry(cur, &igroup->device_list, group_item) {
+> @@ -465,6 +455,8 @@ iommufd_device_do_replace(struct iommufd_device *idev,
+>   
+>   	igroup->hwpt = hwpt;
+>   
+> +	list_for_each_entry(cur, &igroup->device_list, group_item)
+> +		num_devices++;
 
-I suspected the same and asked CPU architects, they did not anticipate
-reads being interpreted as part of self modifying code. The perf numbers
-do not indicate a problem, but they dont speak for all the parts. It
-could be an issue with some parts.
+Minor: How about using list_count_nodes()?
 
-> A better option would be to simply have
-> 
-> .section .text.entry
-> .align CACHELINE
-> mds_verw_sel:
->     .word __KERNEL_DS
->     int3
-> .align CACHELINE
-> 
-> 
-> And then just have EXEC_VERW be
-> 
->     verw mds_verw_sel(%rip)
-> 
-> in the fastpaths.  That keeps the memory operand in .text.entry it works
-> on Meltdown-vulnerable CPUs, but creates effectively a data cacheline
-> that isn't mixed into anywhere in the frontend, which also gets far
-> better locality of reference rather than having it duplicated in 9
-> different places.
+>   	/*
+>   	 * Move the refcounts held by the device_list to the new hwpt. Retain a
+>   	 * refcount for this thread as the caller will free it.
 
-> Also it avoids playing games with hiding data inside an instruction.
-> It's a neat trick, but the neater trick is avoid it whenever possible.
+Either way,
 
-Thanks for the pointers. I think verw in 32-bit mode won't be able to
-address the operand outside of 4GB range. Maybe this is fine or could it
-be a problem addressing from e.g. KVM module?
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+
+Best regards,
+baolu
