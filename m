@@ -2,79 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 263567D1A13
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 02:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76CB7D1A29
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 03:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbjJUAxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 20:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51828 "EHLO
+        id S230318AbjJUBBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 21:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjJUAxX (ORCPT
+        with ESMTP id S229500AbjJUBBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 20:53:23 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BE0D7B;
-        Fri, 20 Oct 2023 17:53:15 -0700 (PDT)
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6FD6F660734B;
-        Sat, 21 Oct 2023 01:53:14 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1697849594;
-        bh=GXgeyflELdkwQaARUoLno8eG7vio7GHwgM7DNn3lj9g=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=MYPegSmhMFycgB3lMm27WtFNF9umqRyZHDmSmAp3df58pWUOer3mhVluJDT0LFTrb
-         fefya9/fcEQqXHzY7FfyC9W2xcl0JCVdaDivV74fsVDJjyYv3S+SA0jHyyqNfJEEAt
-         jWOoT6Z/e4llA1CmbG1skCUv4+jJK7uq5aAzbYACCFsA1+IqL6PeE8wiLxKpjPuCi8
-         H0+mpM3EaBnm2pTteD9exN4OYUAewMzjV+EqAWUIyCpC/cwhcsaqWn0FqxaYZFNfCS
-         OPgHK3kjzEOR/m3EHf/gnd7cmR8opdfi6sA8IY5j+A9gK4J6D6t2vjiYzx2Xai6odN
-         IP/6yGdDJb1+Q==
-Received: by mercury (Postfix, from userid 1000)
-        id 35B201066141; Sat, 21 Oct 2023 02:53:11 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-In-Reply-To: <20231020-strncpy-drivers-power-supply-bq25980_charger-c-v1-1-7b93be54537b@google.com>
-References: <20231020-strncpy-drivers-power-supply-bq25980_charger-c-v1-1-7b93be54537b@google.com>
-Subject: Re: [PATCH] power: supply: bq25980: replace deprecated strncpy
- with strscpy
-Message-Id: <169784959121.1512524.5902805888550029503.b4-ty@collabora.com>
-Date:   Sat, 21 Oct 2023 02:53:11 +0200
+        Fri, 20 Oct 2023 21:01:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33616D45;
+        Fri, 20 Oct 2023 18:01:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697850070; x=1729386070;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Iz3NGqbBHff7rhfQuW/ddJUpEWgOz5h6WUqcnEVHelc=;
+  b=bUyNR6kF4PG/IlV4hdP2X5BKuE0AbETVCaiVlQLgkbP/PTANXOAFnm5L
+   kQVa2+riudiqQmWP5e51+Rhy5j8Kq4UAK7e5H8BWa9EsETlfALlJqPAgm
+   bIYnXQwDtloUYasxnkS3p5bblb/1QVVBecYnx6VCO4JiL3lZFxML7pPaX
+   RT/IjEVy8kErPkmZEeULJ+nON8j4reTmgS7Jo0Ey4KpiQyehjCZUxJ3a5
+   vHq1svwpg3d5tvefnMxKCCmrufYhnh+ABpZHmq430lAsGvV/1ZQd72JrY
+   SePE8aI1syqR+8T7uawYjYbinkRBqCoCPPeotcg/XlPH3hOt50g88/xJz
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="390488826"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="390488826"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 18:01:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="848250110"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="848250110"
+Received: from hkchanda-mobl.amr.corp.intel.com (HELO desk) ([10.209.90.113])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 18:01:07 -0700
+Date:   Fri, 20 Oct 2023 18:00:59 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+Subject: Re: [PATCH  1/6] x86/bugs: Add asm helpers for executing VERW
+Message-ID: <20231021010059.ixziwh552wfjtkfd@desk>
+References: <20231020-delay-verw-v1-0-cff54096326d@linux.intel.com>
+ <20231020-delay-verw-v1-1-cff54096326d@linux.intel.com>
+ <ZTMJiVsEeyu6Vd8E@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTMJiVsEeyu6Vd8E@google.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Fri, 20 Oct 2023 19:11:07 +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On Fri, Oct 20, 2023 at 04:13:13PM -0700, Sean Christopherson wrote:
+> On Fri, Oct 20, 2023, Pawan Gupta wrote:
+> > diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+> > index c55cc243592e..e1b623a27e1b 100644
+> > --- a/arch/x86/include/asm/nospec-branch.h
+> > +++ b/arch/x86/include/asm/nospec-branch.h
+> > @@ -111,6 +111,24 @@
+> >  #define RESET_CALL_DEPTH_FROM_CALL
+> >  #endif
+> >  
+> > +/*
+> > + * Macro to execute VERW instruction to mitigate transient data sampling
+> > + * attacks such as MDS. On affected systems a microcode update overloaded VERW
+> > + * instruction to also clear the CPU buffers.
+> > + *
+> > + * Note: Only the memory operand variant of VERW clears the CPU buffers. To
+> > + * handle the case when VERW is executed after user registers are restored, use
+> > + * RIP to point the memory operand to a part NOPL instruction that contains
+> > + * __KERNEL_DS.
+> > + */
+> > +#define __EXEC_VERW(m)	verw _ASM_RIP(m)
+> > +
+> > +#define EXEC_VERW				\
+> > +	__EXEC_VERW(551f);			\
+> > +	/* nopl __KERNEL_DS(%rax) */		\
+> > +	.byte 0x0f, 0x1f, 0x80, 0x00, 0x00;	\
+> > +551:	.word __KERNEL_DS;			\
 > 
-> We expect bq->model_name to be NUL-terminated based on its usage with
-> sysfs_emit and format strings:
+> Why are there so many macro layers?  Nothing jumps out to justfying two layers,
+> let alone three.
+
+I can't remember the exact reason, but I think the reason I added
+__EXEC_VERW() was because using EXEC_VERW() in a C function was leading
+to build error in the internal draft version. This version is not
+calling it from C, so yes I can get rid of the extra layer.
+
+> >  /*
+> >   * Fill the CPU return stack buffer.
+> >   *
+> > @@ -329,6 +347,13 @@
+> >  #endif
+> >  .endm
+> >  
+> > +/* Clear CPU buffers before returning to user */
+> > +.macro USER_CLEAR_CPU_BUFFERS
+> > +	ALTERNATIVE "jmp .Lskip_verw_\@;", "", X86_FEATURE_USER_CLEAR_CPU_BUF
+> > +	EXEC_VERW
 > 
-> [...]
+> Rather than a NOP after VERW, why not something like this?
+> 
+> /* Clear CPU buffers before returning to user */
+> .macro USER_CLEAR_CPU_BUFFERS
+>                 ALTERNATIVE "jmp .Lskip_verw_\@;", "jmp .Ldo_verw_\@;", X86_FEATURE_USER_CLEAR_CPU_BUF
+> 551:            .word __KERNEL_DS
+> .Ldo_verw_\@:   verw _ASM_RIP(551b)
+> .Lskip_verw_\@:
+> .endm
 
-Applied, thanks!
-
-[1/1] power: supply: bq25980: replace deprecated strncpy with strscpy
-      commit: afb0379b0f6657b9f626d23c3bb00b4e8823bd2d
-
-Best regards,
--- 
-Sebastian Reichel <sebastian.reichel@collabora.com>
-
+I wasn't comfortable adding a variable directly in the instruction
+stream because the CPU may interpret it wrongly. With NOP it is bound to
+ignore the data part.
