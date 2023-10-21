@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA92F7D1E73
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 19:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0947D1E77
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 19:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbjJURCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 13:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48348 "EHLO
+        id S229831AbjJURDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 13:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231782AbjJURCv (ORCPT
+        with ESMTP id S231783AbjJURDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 13:02:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2F6124;
-        Sat, 21 Oct 2023 10:02:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BA79C433C8;
-        Sat, 21 Oct 2023 17:02:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697907762;
-        bh=ZR0ckwmKzr4OchS2lwegZntLrbRhjuWKJprTwNRlhKA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zzx55b4erPsj7YZNMNfFtL2EtmGTBx0Bp8qXeeztQVL8bzemR3zSoIF3OqMZBWbVy
-         TKGFpCdKi1sb9UX1yXAEWGoFIdo7ftlaHaZahg/CvnyYEf6+MgJ73glavxb/S2a5Ug
-         ZDAIJqhM9BGAtQ2ipnOOIME9F6CNOGlX9qsRlrfE=
-Date:   Sat, 21 Oct 2023 19:02:40 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
-        imx@lists.linux.dev, jirislaby@kernel.org, joe@perches.com,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, miquel.raynal@bootlin.com
-Subject: Re: [PATCH v2 1/1] tty: i3c: add TTY over I3C master support
-Message-ID: <2023102105-outfit-legroom-1633@gregkh>
-References: <20231020160027.3663772-1-Frank.Li@nxp.com>
+        Sat, 21 Oct 2023 13:03:18 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60FC10C3
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:03:03 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507c5249d55so2644559e87.3
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697907781; x=1698512581; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hSb7kDqnL0e0m5qYiaEQPSJy4QoRklt5XP7ajpYmJuk=;
+        b=j0nvX3sbdsHiezzlU0qrJtbfCalhKvoa4L6j3bJANoBBo378SEb1eRibwlVQVbR8Dk
+         BKr7jUOqoNnR2HhMEWfr/ZRl0J/IBZezXg+FqD6MH2h6qFW12IuXQWZgVdsdhb9tsVQR
+         j5SLYIjzgeIdLNasDZIGSxfkaDp+cjM6taP9RfZvGl+3x9RYNOtSxoH1p2rUt3y8PsRF
+         +wL4bCieR40k+jfMjgybI2vz4POyw9PJZcnCLowzd43BZTtFY+oS7KKq6iLKwU61jxwo
+         KC/ssSosO581+AecsOfDWu2NYfL55HUMSxWcdaR9Y4Ksnq0uu4+NZUgio50DRFVs4NJt
+         do7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697907781; x=1698512581;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hSb7kDqnL0e0m5qYiaEQPSJy4QoRklt5XP7ajpYmJuk=;
+        b=r3vtBiW+Vj5ZK3Qe1DEU0cf32juT3PsPKIZ0CvrFqX08O/NtSDIeKLQYNDynOWxhML
+         r4DcLkKhWcGHpllWjokCwGS7AxnduPrH0bulTBTt4id70zCDIqc2ppiqxsJpcHYySuQs
+         ZlbXM8sEMVMZOcoTRnjzPTAHNwS1YtdfT84HnpFTo8c+50c6INEFmFaI7a/kDa5usJrH
+         uPBSHsg3P6+NNNt311TdVc2c7kXW4mqcmC/Vzt0U7HTjaI5X+XFhffZlw+TxgObrhVkz
+         C0YHyyMX9LarpJdfPkmLm4fdaxuJUvKK4tSg6faHPYU+5H9RVAzqNt9fY7XIPiatYMBJ
+         MJrQ==
+X-Gm-Message-State: AOJu0YzoxGPjUCCyq7PdeB6PJbTW7BvGxdZ37+8iPRlT0MdeD2K4C9kB
+        XMn4RicqQts4Iyj/aswemWHoVQ==
+X-Google-Smtp-Source: AGHT+IFkFBT1w2NRKYUC95udCqUO8PW+c54EilqbVJSiejPFDB94seKhSS6qk1cJzYHca0E65b5Mag==
+X-Received: by 2002:ac2:464b:0:b0:507:b15b:8b92 with SMTP id s11-20020ac2464b000000b00507b15b8b92mr3045935lfo.59.1697907781059;
+        Sat, 21 Oct 2023 10:03:01 -0700 (PDT)
+Received: from [192.168.1.116] (abyl4.neoplus.adsl.tpnet.pl. [83.9.31.4])
+        by smtp.gmail.com with ESMTPSA id f10-20020ac2532a000000b004ff8cd27a61sm924443lfh.213.2023.10.21.10.02.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 21 Oct 2023 10:03:00 -0700 (PDT)
+Message-ID: <808d2409-09aa-4adb-9d91-46f97cefc6c1@linaro.org>
+Date:   Sat, 21 Oct 2023 19:02:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231020160027.3663772-1-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/9] clk: qcom: apss-ipq-pll: Use stromer plus ops for
+ stromer plus pll
+Content-Language: en-US
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, ilia.lin@kernel.org,
+        sivaprak@codeaurora.org, quic_kathirav@quicinc.com,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <cover.1697781921.git.quic_varada@quicinc.com>
+ <c86ecaa23dc4f39650bcf4a3bd54a617a932e4fd.1697781921.git.quic_varada@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <c86ecaa23dc4f39650bcf4a3bd54a617a932e4fd.1697781921.git.quic_varada@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Note, your subject line needs to change.
 
-On Fri, Oct 20, 2023 at 12:00:27PM -0400, Frank Li wrote:
-> In typical embedded Linux systems, UART consoles require at least two pins,
-> TX and RX. In scenarios where I2C/I3C devices like sensors or PMICs are
-> present, we can save these two pins by using this driver. Pins is crucial
 
-"Pins are crucial"
-
-> resources, especially in small chip packages.
+On 10/20/23 08:19, Varadarajan Narayanan wrote:
+> The set rate and determine rate operations are different between
+> Stromer and Stromer Plus PLLs. Since the programming sequence is
+> different, the PLLs dont get configured properly and random,
+> inexplicable crash/freeze is seen. Hence, use stromer plus ops
+> for ipq_pll_stromer_plus.
 > 
-> This introduces support for using the I3C bus to transfer console tty data,
-> effectively replacing the need for dedicated UART pins. This not only
-> conserves valuable pin resources but also facilitates testing of I3C's
-> advanced features, including early termination, in-band interrupt (IBI)
-> support, and the creation of more complex data patterns. Additionally,
-> it aids in identifying and addressing issues within the I3C controller
-> driver.
-
-But where is the serial data ending up at?  Not a normal uart, what is
-on the other end?  And do line settings mean anything here?
-
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Acked-by: Stephen Boyd <sboyd@kernel.org>
+> Fixes: c7ef7fbb1ccf ("clk: qcom: apss-ipq-pll: add support for IPQ5332")
+> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
 > ---
-> 
-> Notes:
->     This patch depend on
->     https://lore.kernel.org/imx/20231018205929.3435110-1-Frank.Li@nxp.com/T/#t
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Let's wait for those to be accepted first, right?
-
-> +static DEFINE_IDR(i3c_tty_minors);
-> +static DEFINE_MUTEX(i3c_tty_minors_lock);
-
-I thought idr didn't need a mutex anymore, are you sure this is still
-needed?
-
-> +static struct tty_driver *i3c_tty_driver;
-> +
-> +#define I3C_TTY_MINORS		256
-
-Do you really need 256 minors?
-
-> +#define I3C_TTY_TRANS_SIZE	16
-> +#define I3C_TTY_RX_STOP		0
-> +#define I3C_TTY_RETRY		20
-> +#define I3C_TTY_YIELD_US	100
-> +
-> +struct ttyi3c_port {
-> +	struct tty_port port;
-> +	int minor;
-> +	spinlock_t xlock; /* protect xmit */
-> +	char tx_buff[I3C_TTY_TRANS_SIZE];
-> +	char rx_buff[I3C_TTY_TRANS_SIZE];
-> +	struct i3c_device *i3cdev;
-> +	struct work_struct txwork;
-> +	struct work_struct rxwork;
-> +	struct completion txcomplete;
-> +	unsigned long status;
-> +	int buf_overrun;
-
-You set buf_overrun but never do anything with it.  Why care about it?
-
-Other than these minor things, looks sane, nice work.
-
-thanks,
-
-greg k-h
+Konrad
