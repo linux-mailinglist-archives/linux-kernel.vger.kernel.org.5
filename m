@@ -2,53 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8827D7D1CA3
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 13:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B69F7D1CA5
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 13:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbjJULA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 07:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43472 "EHLO
+        id S230451AbjJULA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 07:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJULAY (ORCPT
+        with ESMTP id S229623AbjJULAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 07:00:24 -0400
+        Sat, 21 Oct 2023 07:00:25 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF60E9
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 04:00:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 19345C433C9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72D999;
+        Sat, 21 Oct 2023 04:00:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4ACB9C433D9;
         Sat, 21 Oct 2023 11:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1697886023;
-        bh=EGGs2rA0P7U9N9aLbE/lY/EjgINVOXULfVH0cySWkuE=;
+        bh=pHxc3TjOidZhUMegDYrzOuNMGjtpbkDMbHgM9Ic2feI=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ap3CeC5+7iOeBoD0fcxnyUMsmfCWcXOinV7vMR404J+5p/GAfN0tt/iRahwah0Brj
-         2sCYOn5zbG04/p/0yzGO0Wd61BBNKvNsKu2a/SE3UBHfDe1chjBkOe3H3RPlfC7jFp
-         ugIZ3S8E0+oOkzx3d8rGctM1hsaBMnXUSpDXfk4gq2pJlzQba2JP/WI+C5l8HO7jJK
-         SLQOxfYZe0UVWi6bGfUSiWH9jHqS08VdiPmg0iaBCu6SnMLbDtGUMSFHm+e86Zh0WG
-         /PoaJG0MYH9c8Pt2CH+QOM+RG9shzIufHGLGkrESvrT//s5CDtn1lhkzoppt2rJHtW
-         dxpGPLfLG4+1g==
+        b=KAJYwrxuu2zx5lp3dQ7gaSYy+ddr4QlTDyNa+kAgBWcoVDOu+HVi9lWCe42gc8/LM
+         BOxb568HED6e8Nn5uGg155kqipT2ykkuRtCSbTF09p4X2KfeTusEvuEsUPVUi9/0AN
+         ofRjftP3IYLR7nd6DgJDxQC2iLh0Xwk7q36Ot9lshwjHgylo4g5jvpDHR4L2VQl97z
+         OVQJ5q6kG1LiRKl7KNGf+utCmurWLT5kwuE4sD3MVpVts6RkMGtPCPRzab41XbAFFW
+         +vPd4faFAh8n8hQVjvr0qBa8AKCtDyO1jMkIna6jl+a8BkpP3iegAnF7HZdCTjveND
+         P0mA0z+8xJHOA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F21FBC04DD9;
-        Sat, 21 Oct 2023 11:00:22 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 351D6C691E1;
+        Sat, 21 Oct 2023 11:00:23 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2 1/1] net: stmmac: update MAC capabilities when tx
- queues are updated
+Subject: Re: [PATCH] net: dsa: mv88e6xxx: add an error code check in
+ mv88e6352_tai_event_work
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169788602298.24143.12150015949890853801.git-patchwork-notify@kernel.org>
-Date:   Sat, 21 Oct 2023 11:00:22 +0000
-References: <20231020032535.1777746-1-yi.fang.gan@intel.com>
-In-Reply-To: <20231020032535.1777746-1-yi.fang.gan@intel.com>
-To:     Gan@ci.codeaurora.org, Yi Fang <yi.fang.gan@intel.com>
-Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+Message-Id: <169788602321.24143.8467295347887183711.git-patchwork-notify@kernel.org>
+Date:   Sat, 21 Oct 2023 11:00:23 +0000
+References: <20231020090003.200092-1-suhui@nfschina.com>
+In-Reply-To: <20231020090003.200092-1-suhui@nfschina.com>
+To:     Su Hui <suhui@nfschina.com>
+Cc:     andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
         davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, mcoquelin.stm32@gmail.com,
-        linux@armlinux.org.uk, boon.leong.ong@intel.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hong.aun.looi@intel.com, weifeng.voon@intel.com,
-        yoong.siang.song@intel.com
+        pabeni@redhat.com, richardcochran@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -60,23 +57,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (main)
+This patch was applied to netdev/net-next.git (main)
 by David S. Miller <davem@davemloft.net>:
 
-On Fri, 20 Oct 2023 11:25:35 +0800 you wrote:
-> From: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
+On Fri, 20 Oct 2023 17:00:04 +0800 you wrote:
+> mv88e6xxx_tai_write() can return error code (-EOPNOTSUPP ...) if failed.
+> So check the value of 'ret' after calling mv88e6xxx_tai_write().
 > 
-> Upon boot up, the driver will configure the MAC capabilities based on
-> the maximum number of tx and rx queues. When the user changes the
-> tx queues to single queue, the MAC should be capable of supporting Half
-> Duplex, but the driver does not update the MAC capabilities when it is
-> configured so.
-> 
-> [...]
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+> ---
+>  drivers/net/dsa/mv88e6xxx/ptp.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
 Here is the summary with links:
-  - [net,v2,1/1] net: stmmac: update MAC capabilities when tx queues are updated
-    https://git.kernel.org/netdev/net/c/95201f36f395
+  - net: dsa: mv88e6xxx: add an error code check in mv88e6352_tai_event_work
+    https://git.kernel.org/netdev/net-next/c/a792197f5070
 
 You are awesome, thank you!
 -- 
