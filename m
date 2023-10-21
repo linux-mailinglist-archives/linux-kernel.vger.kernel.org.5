@@ -2,54 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1207E7D1EBD
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 19:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FD37D1EC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 19:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbjJURz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 13:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
+        id S231752AbjJUR44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 13:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJURz5 (ORCPT
+        with ESMTP id S229478AbjJUR4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 13:55:57 -0400
-Received: from mail-oa1-f78.google.com (mail-oa1-f78.google.com [209.85.160.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7882D6
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:55:49 -0700 (PDT)
-Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-1e9c2c00182so2991655fac.1
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:55:49 -0700 (PDT)
+        Sat, 21 Oct 2023 13:56:55 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21C8D6
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:56:49 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9be1ee3dc86so277323466b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:56:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1697911008; x=1698515808; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ILprG4exMXJZBE2W/AdcWEmO8g6abjcQF7Y2TjAbtlE=;
+        b=T0oCKoRQtuH5grcYxKY+vMgU58ZaLoL5RWKB+2eXYCYBaOUkHxCtKh9SVUGQzwZUiM
+         dLu+ZsOLJXUHHtsmppJOW6UkloD3uFLZS7+SPn0lndQDTT6L38kcAklgZdbOhyvKYjxT
+         faohfxTW6QfiN2if5lJtv6l4lcvNTBVCVLf08=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697910949; x=1698515749;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JKDp8sz1oBIHSDCcxIxblGFaeakng5Ps3VlUhQZrV+k=;
-        b=QGouGb4aCspH0n6gxDVwmo7wIl2+RWdfsjqZl4Fr5IQZf+uuP3K937WqVhnZ0f5DGx
-         BD3GTun2bkSFMZmgblLeX2iUSR+OlBJIVmd1SLWNSRBeVmjYER3IK08DyVyexqFdIYnQ
-         xT3U7QnYYQQByq1gGSVZTryMzPddkuIwfFKbYygQdrMfs+lifG/7KeqHnksl5Ioc4Vhe
-         5SAx98eO+I6DDEhXQqcz+aJTt6j2On0izoQd6qJgKj3hFz9/FedsJ3T/wk58HqIkaltf
-         SpjD/IfKKJvBAQzGXBqso4gR2DUV/+e5IEPmfEXGrgt9de2knB7G2CBX+hP6C5hzJ/vZ
-         p4bQ==
-X-Gm-Message-State: AOJu0YypjbIEmevXhJi/XfrgHigmHkde7w81nVpZnRafvHky6ZpgzlB9
-        qCstbVfm7Hl/q1Eauv0b2qGQTKq6kHMImUE4r9DndR1z0nqf
-X-Google-Smtp-Source: AGHT+IF4Y6mLZ9AWNYpSHrPGew0VWP/q1xwn5bBg3/CoMMWrIqqGLMgcj56Q+FsaP0gRZxqH+SQ/S0MH5RSjLFChnPF8UcTjwula
+        d=1e100.net; s=20230601; t=1697911008; x=1698515808;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ILprG4exMXJZBE2W/AdcWEmO8g6abjcQF7Y2TjAbtlE=;
+        b=NnDLzA3cwtaWDMZeeRHFZA/PaUCUmPAJHxP/DeBPengdJPBfpEdooLb6MuNr5Z58Mb
+         n1CK1vbnD0b/eWOFKxI2qTSTT47vP90U+3YIvzjG7Nu886oAHX7dkl8MdVjnR0EqG1mH
+         OS1ioxBNAO+KnWakpMm/TLcreCEPf62e48Ksq8l465T/654/7pcYI9/M1GAY6VKYYwFR
+         cFtk+AvPKEqDhJ17bVtlXVoLobNat0YAK56QUMqpqnMVJKorxOjxBowLOoM/EXeA0zKc
+         7rfjKHbsmeufmPonAXFYV/J+b20yTI/0XbkOyeCK4s59iLvlfvshrfJY5lTZTsKhHOiX
+         uw7Q==
+X-Gm-Message-State: AOJu0YyRp+mi+XMOjR9jsv311b+ZLXVFdC08+dM6IaDQJcfUrZ5KFH+H
+        l4PLj9TR7M0RTTRlqk1+AhXXP2X81t2/ZEKUzpmU5kFX
+X-Google-Smtp-Source: AGHT+IFRIKZzzJ60A1T6QaT4olUaYet3TEEHoi84aDvliGvzQipmoojGocFl6VwT1Si3vklBba42EQ==
+X-Received: by 2002:a17:907:80e:b0:9b2:aa2f:ab69 with SMTP id wv14-20020a170907080e00b009b2aa2fab69mr3810573ejb.30.1697911007611;
+        Sat, 21 Oct 2023 10:56:47 -0700 (PDT)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
+        by smtp.gmail.com with ESMTPSA id n17-20020a170906089100b009c3f8f46c22sm3944196eje.77.2023.10.21.10.56.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 21 Oct 2023 10:56:47 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-53f6ccea1eeso2782744a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:56:47 -0700 (PDT)
+X-Received: by 2002:a05:6402:2553:b0:53d:b52a:5f4b with SMTP id
+ l19-20020a056402255300b0053db52a5f4bmr3519347edb.41.1697911006627; Sat, 21
+ Oct 2023 10:56:46 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:6489:b0:1e9:8e86:e661 with SMTP id
- cz9-20020a056870648900b001e98e86e661mr2400538oab.8.1697910949097; Sat, 21 Oct
- 2023 10:55:49 -0700 (PDT)
-Date:   Sat, 21 Oct 2023 10:55:49 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fb386106083db243@google.com>
-Subject: [syzbot] [reiserfs?] general protection fault in ext4_file_write_iter
-From:   syzbot <syzbot+a2f32f54c8006a00d777@syzkaller.appspotmail.com>
-To:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        jpoimboe@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, reiserfs-devel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+References: <your-ad-here.call-01697881440-ext-2458@work.hours>
+In-Reply-To: <your-ad-here.call-01697881440-ext-2458@work.hours>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 21 Oct 2023 10:56:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgTUz1bdY6zvsN4ED0arCLE8Sb==1GH8d0sjm5bu7zesQ@mail.gmail.com>
+Message-ID: <CAHk-=wgTUz1bdY6zvsN4ED0arCLE8Sb==1GH8d0sjm5bu7zesQ@mail.gmail.com>
+Subject: Re: [GIT PULL] s390 fixes for 6.6-rc7
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,199 +75,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, 21 Oct 2023 at 02:44, Vasily Gorbik <gor@linux.ibm.com> wrote:
+>
+> please pull s390 fixes for 6.6-rc7.
 
-syzbot found the following issue on:
+Pulled. HOWEVER.
 
-HEAD commit:    213f891525c2 Merge tag 'probes-fixes-v6.6-rc6' of git://gi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=126daea9680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20c01df4ad8f1c16
-dashboard link: https://syzkaller.appspot.com/bug?extid=a2f32f54c8006a00d777
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1231cae1680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12178005680000
+> - Fix IOMMU bitmap allocation in s390 PCI to avoid out of bounds access
+>   when IOMMU pages aren't a multiple of 64.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/451be82930dd/disk-213f8915.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ced0744b1f8f/vmlinux-213f8915.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c1326b71b235/bzImage-213f8915.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/271887eb86fe/mount_0.gz
+Please don't do this kind of thing.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a2f32f54c8006a00d777@syzkaller.appspotmail.com
+And I quote:
 
-general protection fault, probably for non-canonical address 0xdffffc00400000c5: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x0000000200000628-0x000000020000062f]
-CPU: 0 PID: 5032 Comm: syz-executor165 Not tainted 6.6.0-rc6-syzkaller-00029-g213f891525c2 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-==================================================================
-BUG: KASAN: out-of-bounds in console_flush_all+0xf23/0xfb0 kernel/printk/printk.c:2976
-Read of size 8 at addr ffffc9000349ef10 by task syz-executor165/5032
+    static unsigned long *bitmap_vzalloc(size_t bits, gfp_t flags)
+    {
+        size_t n = BITS_TO_LONGS(bits);
+        size_t bytes;
 
-CPU: 0 PID: 5032 Comm: syz-executor165 Not tainted 6.6.0-rc6-syzkaller-00029-g213f891525c2 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- console_flush_all+0xf23/0xfb0 kernel/printk/printk.c:2976
- console_unlock+0x10c/0x260 kernel/printk/printk.c:3035
- vprintk_emit+0x17f/0x5f0 kernel/printk/printk.c:2307
- vprintk+0x7b/0x90 kernel/printk/printk_safe.c:45
- _printk+0xc8/0x100 kernel/printk/printk.c:2332
- dump_stack_print_info+0x12e/0x150 lib/dump_stack.c:66
- show_regs+0x1a/0xa0 arch/x86/kernel/dumpstack.c:469
- __die_body arch/x86/kernel/dumpstack.c:420 [inline]
- die_addr+0x4f/0xd0 arch/x86/kernel/dumpstack.c:460
- __exc_general_protection arch/x86/kernel/traps.c:697 [inline]
- exc_general_protection+0x154/0x230 arch/x86/kernel/traps.c:642
- asm_exc_general_protection+0x26/0x30 arch/x86/include/asm/idtentry.h:564
-RIP: 0010:EXT4_SB fs/ext4/ext4.h:1746 [inline]
-RIP: 0010:ext4_forced_shutdown fs/ext4/ext4.h:2231 [inline]
-RIP: 0010:ext4_file_write_iter+0x103/0x1860 fs/ext4/file.c:707
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 5e 15 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5d 28 48 8d bb 28 06 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 2e 15 00 00 4c 8b a3 28 06 00 00 be 08 00 00 00
-RSP: 0000:ffffc9000349f270 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000200000001 RCX: 0000000000000000
-RDX: 00000000400000c5 RSI: ffffffff822ede7a RDI: 0000000200000629
-RBP: ffff88807365d830 R08: 0000000000000005 R09: 0000000000000007
-R10: 0000000000000004 R11: ffffffff8a601206 R12: ffffc9000349f5c8
-R13: ffffc9000349f3f0 R14: 0000000000000002 R15: ffff8880267ae2d0
- __kernel_write_iter+0x261/0x7e0 fs/read_write.c:517
- __kernel_write+0xf6/0x140 fs/read_write.c:537
- __dump_emit fs/coredump.c:813 [inline]
- dump_emit+0x21d/0x330 fs/coredump.c:850
- elf_core_dump+0x2082/0x3900 fs/binfmt_elf.c:2094
- do_coredump+0x2c96/0x3fc0 fs/coredump.c:764
- get_signal+0x2434/0x2790 kernel/signal.c:2878
- arch_do_signal_or_restart+0x90/0x7f0 arch/x86/kernel/signal.c:309
- exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
- exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
- irqentry_exit_to_user_mode+0x9/0x40 kernel/entry/common.c:309
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-RIP: 0033:0x7f1369fb0833
-Code: 00 00 00 02 00 00 00 48 00 04 00 00 00 00 00 01 00 00 00 02 00 00 00 48 00 04 00 00 00 00 00 01 00 00 00 02 00 00 00 48 00 04 <00> 00 00 00 00 01 00 00 00 02 00 00 00 48 00 04 00 00 00 00 00 01
-RSP: 002b:00007fffac036608 EFLAGS: 00010202
-RAX: 0000000000000000 RBX: 00007fffac036690 RCX: 00007f1369fb0833
-RDX: 00007fffac036620 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000002 R08: 0000000000000065 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000202 R12: 00000000000f4240
-R13: 0000000000018c01 R14: 00007fffac036664 R15: 00007fffac036680
- </TASK>
+        if (unlikely(check_mul_overflow(n, sizeof(unsigned long), &bytes)))
+                return NULL;
 
-The buggy address belongs to stack of task syz-executor165/5032
+        return vzalloc(bytes);
+    }
 
-The buggy address belongs to the virtual mapping at
- [ffffc90003498000, ffffc900034a1000) created by:
- kernel_clone+0xfd/0x920 kernel/fork.c:2909
+the above overflow handling is *not* "defensive and good programming".
 
-The buggy address belongs to the physical page:
-page:ffffea0001fbfac0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7efeb
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x2dc2(GFP_KERNEL|__GFP_HIGHMEM|__GFP_NOWARN|__GFP_ZERO), pid 4993, tgid 4993 (dhcpcd-run-hook), ts 88329486010, free_ts 72453205616
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0xee0/0x2f20 mm/page_alloc.c:3170
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4426
- alloc_pages+0x1a9/0x270 mm/mempolicy.c:2297
- vm_area_alloc_pages mm/vmalloc.c:3063 [inline]
- __vmalloc_area_node mm/vmalloc.c:3139 [inline]
- __vmalloc_node_range+0xa6e/0x1540 mm/vmalloc.c:3320
- alloc_thread_stack_node kernel/fork.c:309 [inline]
- dup_task_struct kernel/fork.c:1118 [inline]
- copy_process+0x13e3/0x73f0 kernel/fork.c:2327
- kernel_clone+0xfd/0x920 kernel/fork.c:2909
- __do_sys_clone+0xba/0x100 kernel/fork.c:3052
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1136 [inline]
- free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2312
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2405
- slab_destroy mm/slab.c:1608 [inline]
- slabs_destroy+0x85/0xc0 mm/slab.c:1628
- cache_flusharray mm/slab.c:3341 [inline]
- ___cache_free+0x2b7/0x420 mm/slab.c:3404
- qlink_free mm/kasan/quarantine.c:166 [inline]
- qlist_free_all+0x4c/0x1b0 mm/kasan/quarantine.c:185
- kasan_quarantine_reduce+0x18e/0x1d0 mm/kasan/quarantine.c:292
- __kasan_slab_alloc+0x65/0x90 mm/kasan/common.c:305
- kasan_slab_alloc include/linux/kasan.h:188 [inline]
- slab_post_alloc_hook mm/slab.h:762 [inline]
- slab_alloc_node mm/slab.c:3237 [inline]
- __kmem_cache_alloc_node+0x163/0x470 mm/slab.c:3521
- __do_kmalloc_node mm/slab_common.c:1022 [inline]
- __kmalloc+0x4f/0x100 mm/slab_common.c:1036
- kmalloc include/linux/slab.h:603 [inline]
- tomoyo_add_entry security/tomoyo/common.c:2023 [inline]
- tomoyo_supervisor+0xcdb/0xea0 security/tomoyo/common.c:2095
- tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
- tomoyo_path_permission security/tomoyo/file.c:587 [inline]
- tomoyo_path_permission+0x270/0x3b0 security/tomoyo/file.c:573
- tomoyo_path_perm+0x35a/0x450 security/tomoyo/file.c:838
- security_inode_getattr+0xf1/0x150 security/security.c:2153
- vfs_getattr fs/stat.c:169 [inline]
- vfs_fstat+0x4f/0xc0 fs/stat.c:194
- vfs_fstatat+0x130/0x140 fs/stat.c:291
- __do_sys_newfstatat+0x98/0x110 fs/stat.c:459
+The above is just "unreadable mindless boiler plate".
 
-Memory state around the buggy address:
- ffffc9000349ee00: 48 00 04 00 00 00 00 00 01 00 00 00 02 00 00 00
- ffffc9000349ee80: 48 00 04 00 00 00 00 00 01 00 00 00 02 00 00 00
->ffffc9000349ef00: 48 00 04 00 00 00 00 00 01 00 00 00 02 00 00 00
-                         ^
- ffffc9000349ef80: 48 00 04 00 00 00 00 00 01 00 00 00 02 00 00 00
- ffffc9000349f000: 48 00 04 00 00 00 00 00 01 00 00 00 02 00 00 00
-==================================================================
-----------------
-Code disassembly (best guess):
-   0:	48 c1 ea 03          	shr    $0x3,%rdx
-   4:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   8:	0f 85 5e 15 00 00    	jne    0x156c
-   e:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  15:	fc ff df
-  18:	48 8b 5d 28          	mov    0x28(%rbp),%rbx
-  1c:	48 8d bb 28 06 00 00 	lea    0x628(%rbx),%rdi
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e:	0f 85 2e 15 00 00    	jne    0x1562
-  34:	4c 8b a3 28 06 00 00 	mov    0x628(%rbx),%r12
-  3b:	be 08 00 00 00       	mov    $0x8,%esi
+Seriously, you're taking a 'size_t' of number of bits, turning it into
+number of longs, and you're then turning *that* into number of bytes,
+AND YOU ADD OVERFLOW CHECKING?!??!!!
 
+Now, to make matters worse, the above calculation can actually
+overflow in theory - but not in the place where you added the
+protection!
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Because the "longs to bytes" sure as hell can't overflow. We know
+that, because the number of longs is guaranteed to have a much smaller
+range, since it came from a calculation of bits.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+But what can actually overflow? BITS_TO_LONGS(bits) will overflow, and
+turn ~0ul to 0, because it does the __KERNEL_DIV_ROUND_UP thing, which
+is the simplistic
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+    #define __KERNEL_DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+so that code added overflow protection that doesn't make sense, in all
+the wrong places.
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+You need to verify the sanity of the number of bits first anyway.
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+Of course, in your use-case, the number of bits is also not unlimited,
+because the source is
 
-If you want to undo deduplication, reply with:
-#syz undup
+        zdev->iommu_pages = zdev->iommu_size >> PAGE_SHIFT;
+
+so it turns out that no, the BITS_TO_LONGS() won't overflow either,
+but at least in some other situations - and only looking at that
+bitmap_vzalloc() in a vacuum - it *could* have.
+
+Now, I will argue that you always need range checking on the number of
+bits *anyway* for other reasons - trying to just blindly allocate some
+random amount of memory isn't acceptable, so there should to be some
+range checking before anyway.
+
+But that code is wrong, because the overflow is simply not an issue.
+Adding overflow handling code is literally only actively misleading,
+making the code harder to read, for no reason, and making people
+*think* it's being careful when it is anything *but* careful.
+
+I suspect that the compiler actually sees "that is stupid" and turns
+the overflow into just a single left-shift again because it has seen
+the (bigger) right-shift and knows it cannot overflow, but the problem
+I'm ranting against is mindlessly adding boiler plate code that makes
+the code harder to read for *humans*.
+
+If you *do* want to add proper overflow handling, you'd need to either
+fix BITS_TO_LONGS() some way (which is actually non-trivial since it
+needs to be able to stay a constant and only use the argument once),
+or you do something like
+
+        if (!bits)
+                return ZERO_SIZE_PTR;
+        longs = BITS_TO_LONG(bits);
+        if (!longs)
+                return NULL;
+        return vzalloc(longs * sizeof(long));
+
+and I'd suggest maybe we should
+
+ (a) do the above checking in our bitmap_alloc() routines
+
+ (b) also change our bitmap_alloc() routines to take 'size_t' instead
+of 'unsigned int' bit counts
+
+ (c) and finally, add that vzalloc() case, but simply using
+
+        kvmalloc_array(n, size, flags | __GFP_ZERO);
+
+instead.
+
+(And yes, kvmalloc_array() will actually then also do that
+check_mul_overflow() thing, but now it's not pointless boiler plate
+any more, now it's actually meaningful for *other* cases than the
+bitmap allocation one that cannot overflow).
+
+Hmm?
+
+           Linus
