@@ -2,166 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D29A7D1AA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 05:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EDB7D1AA9
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 05:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbjJUDbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 23:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
+        id S230451AbjJUDmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 23:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJUDbM (ORCPT
+        with ESMTP id S229500AbjJUDmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 20 Oct 2023 23:31:12 -0400
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7174AD76
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 20:31:10 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VuYXo-8_1697859064;
-Received: from 192.168.43.40(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VuYXo-8_1697859064)
-          by smtp.aliyun-inc.com;
-          Sat, 21 Oct 2023 11:31:06 +0800
-Message-ID: <5f6fc244-4e48-2118-4e8c-fcd00a0943ec@linux.alibaba.com>
-Date:   Sat, 21 Oct 2023 11:31:20 +0800
+        Fri, 20 Oct 2023 23:42:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71392D76;
+        Fri, 20 Oct 2023 20:42:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697859768; x=1729395768;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8PNS9IwLu/TMYdHnEZRKjglbKlVyBvxRYtzA2v+FvTs=;
+  b=OYJNHGdjDY2uQiHI8RUMRE96033TPKS43bG7HrdlZVc9Uj9Khx8+0xOQ
+   BZBHufg2v1/Y1BFIZ2thkU3zva7Ayd4Q1YfRRyaMiBhrDCOPfy3Rj2jrp
+   IRaC9TcKyHfJrVQMnmUKEglAfBIYeDoTO5feQho+bLYhhLFyx7SbMoBae
+   L9ZZrb43oORBr1QsxXchuLO1Pk+CCyDAe9d2pImo1orAS1r2/XQu9rRbG
+   1agwxgzBq/BZzMHPuGfr7pUE0T493Shm9rQfQp8iETqrS8xPsRzHdMmuK
+   LEFGnjNg9nURigYqH4S5tp657aQpt1+yk97N3pQ1hJjxTE/Q9+ra7q6r1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="371676306"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="371676306"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2023 20:42:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="881243647"
+X-IronPort-AV: E=Sophos;i="6.03,239,1694761200"; 
+   d="scan'208";a="881243647"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 20 Oct 2023 20:42:45 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qu2st-0004LK-1q;
+        Sat, 21 Oct 2023 03:42:43 +0000
+Date:   Sat, 21 Oct 2023 11:42:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        mhi@lists.linux.dev
+Cc:     oe-kbuild-all@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: Re: [PATCH] bus: mhi: ep: Add support for interrupt moderation timer
+Message-ID: <202310211125.dCDfH087-lkp@intel.com>
+References: <20231019080911.57938-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] mm: migrate: record the mlocked page status to remove
- unnecessary lru drain
-To:     Hugh Dickins <hughd@google.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        vbabka@suse.cz, ying.huang@intel.com, ziy@nvidia.com,
-        fengwei.yin@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <c960df0db27ae55b9e9babdcfe842e75fb44ccbc.1697703785.git.baolin.wang@linux.alibaba.com>
- <163ce2c0-9c8a-3db3-26a7-4d115fb95802@google.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <163ce2c0-9c8a-3db3-26a7-4d115fb95802@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019080911.57938-1-manivannan.sadhasivam@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Manivannan,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on mani-mhi/mhi-next]
+[also build test ERROR on linus/master v6.6-rc6 next-20231020]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Manivannan-Sadhasivam/bus-mhi-ep-Add-support-for-interrupt-moderation-timer/20231019-161023
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git mhi-next
+patch link:    https://lore.kernel.org/r/20231019080911.57938-1-manivannan.sadhasivam%40linaro.org
+patch subject: [PATCH] bus: mhi: ep: Add support for interrupt moderation timer
+config: x86_64-buildonly-randconfig-003-20231021 (https://download.01.org/0day-ci/archive/20231021/202310211125.dCDfH087-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231021/202310211125.dCDfH087-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310211125.dCDfH087-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/bus/mhi/ep/main.c: In function 'mhi_ep_send_event':
+>> drivers/bus/mhi/ep/main.c:71:52: error: 'struct mhi_ep_ring' has no member named 'intmod_work'; did you mean 'intmodt_work'?
+      71 |                         cancel_delayed_work(&ring->intmod_work);
+         |                                                    ^~~~~~~~~~~
+         |                                                    intmodt_work
+   drivers/bus/mhi/ep/main.c:76:46: error: 'struct mhi_ep_ring' has no member named 'intmod_work'; did you mean 'intmodt_work'?
+      76 |                 schedule_delayed_work(&ring->intmod_work, msecs_to_jiffies(ring->intmodt));
+         |                                              ^~~~~~~~~~~
+         |                                              intmodt_work
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for VIDEO_OV7670
+   Depends on [n]: MEDIA_SUPPORT [=y] && VIDEO_DEV [=y] && VIDEO_CAMERA_SENSOR [=n]
+   Selected by [y]:
+   - VIDEO_CAFE_CCIC [=y] && MEDIA_SUPPORT [=y] && MEDIA_PLATFORM_SUPPORT [=y] && MEDIA_PLATFORM_DRIVERS [=y] && V4L_PLATFORM_DRIVERS [=y] && PCI [=y] && I2C [=y] && VIDEO_DEV [=y] && COMMON_CLK [=y]
 
 
-On 10/20/2023 12:48 PM, Hugh Dickins wrote:
-> On Fri, 20 Oct 2023, Baolin Wang wrote:
-> 
->> When doing compaction, I found the lru_add_drain() is an obvious hotspot
->> when migrating pages. The distribution of this hotspot is as follows:
->>     - 18.75% compact_zone
->>        - 17.39% migrate_pages
->>           - 13.79% migrate_pages_batch
->>              - 11.66% migrate_folio_move
->>                 - 7.02% lru_add_drain
->>                    + 7.02% lru_add_drain_cpu
->>                 + 3.00% move_to_new_folio
->>                   1.23% rmap_walk
->>              + 1.92% migrate_folio_unmap
->>           + 3.20% migrate_pages_sync
->>        + 0.90% isolate_migratepages
->>
->> The lru_add_drain() was added by commit c3096e6782b7 ("mm/migrate:
->> __unmap_and_move() push good newpage to LRU") to drain the newpage to LRU
->> immediately, to help to build up the correct newpage->mlock_count in
->> remove_migration_ptes() for mlocked pages. However, if there are no mlocked
->> pages are migrating, then we can avoid this lru drain operation, especailly
->> for the heavy concurrent scenarios.
->>
->> So we can record the source pages' mlocked status in migrate_folio_unmap(),
->> and only drain the lru list when the mlocked status is set in migrate_folio_move().
->> In addition, the page was already isolated from lru when migrating, so checking
->> the mlocked status is stable by folio_test_mlocked() in migrate_folio_unmap().
->>
->> After this patch, I can see the hotpot of the lru_add_drain() is gone:
->>     - 9.41% migrate_pages_batch
->>        - 6.15% migrate_folio_move
->>           - 3.64% move_to_new_folio
->>              + 1.80% migrate_folio_extra
->>              + 1.70% buffer_migrate_folio
->>           + 1.41% rmap_walk
->>           + 0.62% folio_add_lru
->>        + 3.07% migrate_folio_unmap
->>
->> Meanwhile, the compaction latency shows some improvements when running
->> thpscale:
->>                              base                   patched
->> Amean     fault-both-1      1131.22 (   0.00%)     1112.55 *   1.65%*
->> Amean     fault-both-3      2489.75 (   0.00%)     2324.15 *   6.65%*
->> Amean     fault-both-5      3257.37 (   0.00%)     3183.18 *   2.28%*
->> Amean     fault-both-7      4257.99 (   0.00%)     4079.04 *   4.20%*
->> Amean     fault-both-12     6614.02 (   0.00%)     6075.60 *   8.14%*
->> Amean     fault-both-18    10607.78 (   0.00%)     8978.86 *  15.36%*
->> Amean     fault-both-24    14911.65 (   0.00%)    11619.55 *  22.08%*
->> Amean     fault-both-30    14954.67 (   0.00%)    14925.66 *   0.19%*
->> Amean     fault-both-32    16654.87 (   0.00%)    15580.31 *   6.45%*
->>
-> 
-> Seems a sensible change with good results (I'll conceal how little of
-> the stats I understand, I expect everyone else understands them: in my
-> naivety, I'm mainly curious why rmap_walk's 1.23% didn't get a + on it).
+vim +71 drivers/bus/mhi/ep/main.c
 
-TBH, I also don't know why the rmap_walk didn't get a + on it, let me 
-check it again.
+    27	
+    28	static int mhi_ep_send_event(struct mhi_ep_cntrl *mhi_cntrl, u32 ring_idx,
+    29				     struct mhi_ring_element *el, bool bei)
+    30	{
+    31		struct device *dev = &mhi_cntrl->mhi_dev->dev;
+    32		union mhi_ep_ring_ctx *ctx;
+    33		struct mhi_ep_ring *ring;
+    34		int ret;
+    35	
+    36		mutex_lock(&mhi_cntrl->event_lock);
+    37		ring = &mhi_cntrl->mhi_event[ring_idx].ring;
+    38		ctx = (union mhi_ep_ring_ctx *)&mhi_cntrl->ev_ctx_cache[ring_idx];
+    39		if (!ring->started) {
+    40			ret = mhi_ep_ring_start(mhi_cntrl, ring, ctx);
+    41			if (ret) {
+    42				dev_err(dev, "Error starting event ring (%u)\n", ring_idx);
+    43				goto err_unlock;
+    44			}
+    45		}
+    46	
+    47		/* Add element to the event ring */
+    48		ret = mhi_ep_ring_add_element(ring, el);
+    49		if (ret) {
+    50			dev_err(dev, "Error adding element to event ring (%u)\n", ring_idx);
+    51			goto err_unlock;
+    52		}
+    53	
+    54		mutex_unlock(&mhi_cntrl->event_lock);
+    55	
+    56		/*
+    57		 * As per the MHI specification, section 4.3, Interrupt moderation:
+    58		 *
+    59		 * 1. If BEI flag is not set, cancel any pending intmodt work if started
+    60		 * for the event ring and raise IRQ immediately.
+    61		 *
+    62		 * 2. If both BEI and intmodt are set, and if no IRQ is pending for the
+    63		 * same event ring, start the IRQ delayed work as per the value of
+    64		 * intmodt. If previous IRQ is pending, then do nothing as the pending
+    65		 * IRQ is enough for the host to process the current event ring element.
+    66		 *
+    67		 * 3. If BEI is set and intmodt is not set, no need to raise IRQ.
+    68		 */
+    69		if (!bei) {
+    70			if (READ_ONCE(ring->irq_pending))
+  > 71				cancel_delayed_work(&ring->intmod_work);
+    72	
+    73			mhi_cntrl->raise_irq(mhi_cntrl, ring->irq_vector);
+    74		} else if (ring->intmodt && !READ_ONCE(ring->irq_pending)) {
+    75			WRITE_ONCE(ring->irq_pending, true);
+    76			schedule_delayed_work(&ring->intmod_work, msecs_to_jiffies(ring->intmodt));
+    77		}
+    78	
+    79		return 0;
+    80	
+    81	err_unlock:
+    82		mutex_unlock(&mhi_cntrl->event_lock);
+    83	
+    84		return ret;
+    85	}
+    86	
 
->> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->> ---
->> Chages from v1:
->>   - Use separate flags in __migrate_folio_record() to avoid to pack flags
->> in each call site per Ying.
->> ---
->>   mm/migrate.c | 47 +++++++++++++++++++++++++++++++++++------------
->>   1 file changed, 35 insertions(+), 12 deletions(-)
->>
->> diff --git a/mm/migrate.c b/mm/migrate.c
->> index 125194f5af0f..fac96139dbba 100644
->> --- a/mm/migrate.c
->> +++ b/mm/migrate.c
->> @@ -1027,22 +1027,39 @@ union migration_ptr {
->>   	struct anon_vma *anon_vma;
->>   	struct address_space *mapping;
->>   };
->> +
->> +enum {
->> +	PAGE_WAS_MAPPED = 1 << 0,
->> +	PAGE_WAS_MLOCKED = 1 << 1,
->> +};
->> +
-> 
-> I was whispering to myself "I bet someone will suggest BIT()";
-> and indeed that someone has turned out to be Huang, Ying.
-
-Sure.
-
-> 
->>   static void __migrate_folio_record(struct folio *dst,
->> -				   unsigned long page_was_mapped,
->> +				   unsigned int page_was_mapped,
->> +				   unsigned int page_was_mlocked,
->>   				   struct anon_vma *anon_vma)
->>   {
->>   	union migration_ptr ptr = { .anon_vma = anon_vma };
->> +	unsigned long page_flags = 0;
-> 
-> Huang, Ying preferred a different name, me too: old_page_state?
-
-OK, sounds better to me.
-
-> 
->> +
->> +	if (page_was_mapped)
->> +		page_flags |= PAGE_WAS_MAPPED;
->> +	if (page_was_mlocked)
->> +		page_flags |= PAGE_WAS_MLOCKED;
-> 
-> What's annoying me about the patch is all this mix of page_was_mapped and
-> page_was_mlocked variables, then the old_page_state bits.  Can't it be
-> done with PAGE_WAS_ bits in old_page_state throughout, without any
-> page_was_mapped and page_was_mlocked variables?
-
-Yes, good point. Let me try it. Thanks for your comments.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
