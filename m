@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7EF7D1DD1
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FD47D1DD2
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbjJUPKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 11:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51906 "EHLO
+        id S231499AbjJUPMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 11:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbjJUPKa (ORCPT
+        with ESMTP id S229583AbjJUPMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 11:10:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35662E9;
-        Sat, 21 Oct 2023 08:10:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA224C433C8;
-        Sat, 21 Oct 2023 15:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697901027;
-        bh=9s38JpV39JHITXceHtr6xPGLgLx3TwzUq3gvISUeaoU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=jM6G+anDwT0LMCvqUzP+p4YEzvZK1wnJ1JZEJQhsIYnkY/AQ+vJsmWzAUwwpJXquk
-         9ozjaaz+ic6K7d0B7cOmulWqg6IB9lPJZRJSdQ6J1KRmnvtip/dQtdOryZOCOUC0bU
-         EGYKg4/2fN/vYqP6M4sYLAklWKeWeVyyPpXXIDFt/Lzxu7h7rERMh8RbUBsecrAT7c
-         qbL8t71/S2LETihtQkZYn2uwiuHRNBQDM+wr3woBd/j+fJUnsHe+a3JNDL46uqQEaK
-         p5RDyY+opgf8Hy9OqXb8SKvTYycc8wLVxbgIKjCsf6KFvbzCDUOhNBQJANno6HuKGy
-         fK/uhOUUGAXEg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5201ECE0ED0; Sat, 21 Oct 2023 08:10:27 -0700 (PDT)
-Date:   Sat, 21 Oct 2023 08:10:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH memory-model] docs: memory-barriers: Add note on compiler
- transformation and address deps
-Message-ID: <8f2ed577-424a-4114-8c90-90ba657e08db@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ceaeba0a-fc30-4635-802a-668c859a58b2@paulmck-laptop>
- <4110a58a-8db5-57c4-2f5a-e09ee054baaa@huaweicloud.com>
- <1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com>
- <f363d6e0-5682-43e7-9a3f-6b896c3cd920@paulmck-laptop>
- <b96cfbc1-f6b0-2fa6-b72d-d57c34bbf14b@huaweicloud.com>
- <2694e6e1-3282-4a69-b955-06afd7d7f87f@paulmck-laptop>
- <0bf4cda3-cc43-0e77-e47b-43e1402ed276@huaweicloud.com>
- <79233008-4be2-4442-9600-f9ac1a654312@paulmck-laptop>
- <591279ff-3316-d64b-8b25-6baefcecaad1@huaweicloud.com>
+        Sat, 21 Oct 2023 11:12:13 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2ACBE3
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:12:11 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5401bab7525so396541a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697901130; x=1698505930; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fhPHBAAJZa6dFGyjheIVR9hGkiLpAwB9CbD4gzvkOzE=;
+        b=Zbja3W1gqA1/gTEA+CpnitTkhuJXVrQva2JpcnDApgYGacw4bigmeaBjk9kMLtzcBo
+         h3Del5soIYZVfENIeJIoysnL+4Dtbdt90TH98exOzfDeUyp/0U6JyaNjzrJBrdWlWfRx
+         eFc5HFXQLeERRoF8MxWwxDgCdXoF4QlmEZHd3NSxiUPlGWhIULs6zTNMyoneS+3AtO3Y
+         EQc3gHlfaWJGBz5lDlHwMzKRPX+4/WZSaXmn63AQTL0v82tbLw6UVrG5nzQAiT7FqhIE
+         bgQBCXqBZn8ImhJ/HEUWZwW8K4gGYwQCVVrPfcdhXTS+FQtHxt79UHG+rLFC2IbG5AqL
+         N0Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697901130; x=1698505930;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fhPHBAAJZa6dFGyjheIVR9hGkiLpAwB9CbD4gzvkOzE=;
+        b=Mjfsiq9C6hGuztRlQLRq7I6HUUrIER9D7G9RZGSKmWYXWCPwCVWKjDwmreXmkkTLm9
+         o9Q1VLjdwQL1UnhfmRXA0+h+zteTP4Dch8ksaI4wY2zWXzHN3fNJ+E1/EgWUrq0a10S9
+         dba9cAmuFTZuL9dmwIFCNmZmJr7Sru7eyEhH+1Qky/QIXtB12wtxnYr/2pNE0l/Q1cvr
+         bJAoGTVfLzFuedTi3fegrhuG+BrZjaAFV3kPeYOSddFsSGVFkIUvwoYpkf4eYoahKD4q
+         J0q4JOkyO5Ssv6z59lxV+2tQZa6HuGu84GLZyRvozEHsLly/iodA31/7Mw/p5ViLIxW4
+         4pYw==
+X-Gm-Message-State: AOJu0YwtPqezrzMyzIV8frlw5omQlHrlwr2LXDXNthk8JDAD+zXqwllZ
+        AZplOJ98ln/zm9XiylwrVUGXAHEH97/5Mu+JKaY=
+X-Google-Smtp-Source: AGHT+IFbTCDinLjXkvnZKcK6256x6SGENY70aS4ujXItG/7/OQy1MaR8Q5YhWQ+DymfRr+gV7rrpdS7uCivJNZ8Jiyo=
+X-Received: by 2002:a05:6402:254e:b0:53f:5467:cc5e with SMTP id
+ l14-20020a056402254e00b0053f5467cc5emr3801466edb.19.1697901130084; Sat, 21
+ Oct 2023 08:12:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <591279ff-3316-d64b-8b25-6baefcecaad1@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231021143739.843941-1-ubizjak@gmail.com> <ZTPniJs9/ep11F2I@gmail.com>
+In-Reply-To: <ZTPniJs9/ep11F2I@gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Sat, 21 Oct 2023 17:11:58 +0200
+Message-ID: <CAFULd4Zyv7KVo=pO5wEXbuh6bFmAkx=Hgx+LqDuLxAD+nTYS6Q@mail.gmail.com>
+Subject: Re: [PATCH -tip v2] x86/percpu: Introduce const-qualified const_pcpu_hot
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Nadav Amit <namit@vmware.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,64 +77,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 21, 2023 at 03:36:21PM +0200, Jonas Oberhauser wrote:
-> 
-> Am 10/20/2023 um 8:13 PM schrieb Paul E. McKenney:
-> > On Fri, Oct 20, 2023 at 06:00:19PM +0200, Jonas Oberhauser wrote:
-> > > Am 10/20/2023 um 3:57 PM schrieb Paul E. McKenney:
-> > > > On Fri, Oct 20, 2023 at 11:29:24AM +0200, Jonas Oberhauser wrote:
-> > > > > Am 10/19/2023 um 6:39 PM schrieb Paul E. McKenney:
-> > > > > > On Wed, Oct 18, 2023 at 12:11:58PM +0200, Jonas Oberhauser wrote:
-> > > > > > > Hi Paul,
-> > > > > > > [...]
-> > > > > > The compiler is forbidden from inventing pointer comparisons.
-> > > > > TIL :) Btw, do you remember a discussion where this is clarified? A quick
-> > > > > search didn't turn up anything.
-> > > > This was a verbal discussion with Richard Smith at the 2020 C++ Standards
-> > > > Committee meeting in Prague.  I honestly do not know what standardese
-> > > > supports this.
-> > > Richard Smith
-> > > Then this e-mail thread shall be my evidence for future discussion.
-> > I am sure that Richard will be delighted, especially given that he
-> > did not seem at all happy with this don't-invent-pointer-comparisons
-> > rule.  ;-)
-> 
-> Neither am I :D
+On Sat, Oct 21, 2023 at 5:00=E2=80=AFPM Ingo Molnar <mingo@kernel.org> wrot=
+e:
+>
+>
+> * Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> >  arch/x86/include/asm/current.h   | 7 +++++++
+> >  arch/x86/include/asm/percpu.h    | 6 +++---
+> >  arch/x86/include/asm/processor.h | 3 +++
+> >  arch/x86/kernel/cpu/common.c     | 1 +
+> >  arch/x86/kernel/vmlinux.lds.S    | 1 +
+> >  include/linux/compiler.h         | 2 +-
+> >  6 files changed, 16 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/current.h b/arch/x86/include/asm/curr=
+ent.h
+> > index a1168e7b69e5..0538d2436673 100644
+> > --- a/arch/x86/include/asm/current.h
+> > +++ b/arch/x86/include/asm/current.h
+> > @@ -36,8 +36,15 @@ static_assert(sizeof(struct pcpu_hot) =3D=3D 64);
+> >
+> >  DECLARE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot);
+> >
+> > +/* const-qualified alias to pcpu_hot, aliased by linker. */
+> > +DECLARE_PER_CPU_ALIGNED(const struct pcpu_hot __percpu_seg_override,
+> > +                     const_pcpu_hot);
+>
+> The aliasing makes me a bit nervous. Could we at least prefix it a bit mo=
+re
+> prominently, like const__pcpu_hot? That way it's immediately obvious at a=
+ll
+> usage sites that it's "special".
 
-Why do you want to invent pointer comparisons?
+Sure, it can be renamed. The symbol - although aliased - may be used
+in a general way. It is const-qualified and placed in __seg_gs address
+space, so all the rules for const and __seg_gs qualifications apply.
+However, the values are not that constant, and can be changed behind
+the scenes via the pcpu_hot R/W alias.
 
-From a practical standpoint, one big problem with them is that they
-make it quite hard to write certain types of software, including device
-drivers, memory allocators, things like memset(), and so on.
-
-> He can voice his delightenment or lack thereof to me if we ever happen to
-> meet in person.
-
-More likely to me, but I will happily pass it on.
-
-> > > I think this tiny rewrite makes it much more clear. Specifically it tells *why* the text is historical (and why we maybe don't need to read it anymore).
-> > Good point!  I reworked this a bit and added it to both HISTORICAL
-> > sections, with your Suggested-by.
-> 
-> The new version looks good to me!
-> 
-> > > > > > The longer-term direction, perhaps a few years from now, is for the
-> > > > > > first section to simply reference rcu_dereference.rst and for the second
-> > > > > > section to be removed completely.
-> > > > > Sounds good to me, but that doesn't mean we need to compromise the
-> > > > > readability in the interim :)
-> > > > Some compromise is needed for people that read the document some time
-> > > > back and are looking for something specific.
-> > > Yes. But the compromise should be "there's a blob of text other people don't
-> > > need to read", not "there's a blob of text that will leave other people
-> > > confused".
-> > Fair enough in general, but I cannot promise to never confuse people.
-> > This is after all memory ordering.  And different people will be confused
-> > by different things.
-> 
-> You can say that twice. In fact I suspect this is not the first time you say
-> that :))
-
-Easy for me to say, "that that that that that that that that that that"!
-
-							Thanx, Paul
+Uros.
