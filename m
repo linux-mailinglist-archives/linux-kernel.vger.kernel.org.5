@@ -2,159 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E747D1CF4
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 14:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF287D1CF8
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 14:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbjJUMA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 08:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
+        id S230479AbjJUMFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 08:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJUMAz (ORCPT
+        with ESMTP id S229583AbjJUMFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 08:00:55 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B0E1BF;
-        Sat, 21 Oct 2023 05:00:53 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5079f6efd64so2343864e87.2;
-        Sat, 21 Oct 2023 05:00:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697889651; x=1698494451; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vvfuAIs+N0VfStAnN/yHcweGC8s+zomr1tqlKshcvzI=;
-        b=ZjR7dRrqYwVq/7feKO3vT8/VcMpbzLioLhuxPGO4P+oF9OiJf4jmroCIG+6GT/yUR2
-         nh6UrOjGAzPGuX7ye+WDPNMa4v2NNdk6QGDR34gOLwYCgEb9D3ydrEYE0/XKk05DT7MP
-         A3Yo0wkfyCIGxdzM4AUHVCiwjjmoYPys91yQGDydCLPElH0Zgd8OjwYAj4rFl/eZ9mB4
-         45a+lJjkxcAQNT/JyGbyt1XhzWdiuKki0z649+dZE36WX1+ewcN0ihZcXu/+nlIFEgx3
-         SjDF2pf5gknHMmfXRGjmQvJDoLszH75KXry7NRLIx7Vch32otPxo7uyOlaVRusmEixNe
-         hSzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697889651; x=1698494451;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vvfuAIs+N0VfStAnN/yHcweGC8s+zomr1tqlKshcvzI=;
-        b=ZOGFSHh2TX+MtQMN4J4EwpDX9fclJIh3Wg/ZEjRaxhST1ZB6TGkUb1Qy0OxlaIFYRK
-         yxEeFnXW3Ez8a+GRle+oB9t4BMiJS+5gweSLQoMACuyLJCO1OVRNre0zzGUZsk2DgKgr
-         IvKMFycjcIvX1Bf3QrC2JPmICHrRh87X9jfCpzzpSkUFnbcrt+89UmwT/ZdqsGwmvLBx
-         jj46MexcJhcAOLUf4BragcgAHEmAGres9PZM3yGO2PNqYM+DelLho4TXNjYdYwTi9GYp
-         XjMXCy5NAqsyEA6Q7CljbEhdJMdZqpxwYIin5btIRZXQ+g63EFZTl+0CuiSqp526rngB
-         GElA==
-X-Gm-Message-State: AOJu0Yzgal6drF+OrzLubHqFoWygYOHB2+uFH44QPrBMJRat3JRMSVhF
-        UOoQds2FUlWZgf7Bc5qKdTidx/xDettLww==
-X-Google-Smtp-Source: AGHT+IFZRmpwYCRwzR+86RcT2kciPcJgRwRYPgUGZPvdcUhECLyPLqshsfTlUY7Gva+6yZPcysotTg==
-X-Received: by 2002:a19:670d:0:b0:507:a04c:76e8 with SMTP id b13-20020a19670d000000b00507a04c76e8mr3110544lfc.46.1697889651252;
-        Sat, 21 Oct 2023 05:00:51 -0700 (PDT)
-Received: from fedora.. (cpezg-94-253-130-100-cbl.xnet.hr. [94.253.130.100])
-        by smtp.googlemail.com with ESMTPSA id t16-20020a508d50000000b00522828d438csm3425738edt.7.2023.10.21.05.00.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 05:00:50 -0700 (PDT)
-From:   Robert Marko <robimarko@gmail.com>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robimarko@gmail.com>
-Subject: [PATCH v2] arm64: dts: qcom: ipq6018: use CPUFreq NVMEM
-Date:   Sat, 21 Oct 2023 14:00:07 +0200
-Message-ID: <20231021120048.231239-1-robimarko@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Sat, 21 Oct 2023 08:05:36 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA221A4;
+        Sat, 21 Oct 2023 05:05:31 -0700 (PDT)
+Received: from localhost (89-26-75-29.dyn.cablelink.at [89.26.75.29])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sebastianfricke)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B2A09660734B;
+        Sat, 21 Oct 2023 13:05:29 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697889929;
+        bh=gQiUDCIXsORWlCdDXjOiPPc1M08qgxbtKkFrrvPre/M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mw2uSNCqgJe1DNmZxFDBfWUlzMEPXrYIBuOK8dxmeCYe1Rz/2GwyDbIBWjbWx77Da
+         rfUfsKcUZ4qWfDaLs41M57Hw9zN9VJHPCdY/pJwJ6LO62cnVZ9EIacybJ/WhkmjKOL
+         yNVaX/NLX43ctI2SLnZoo1pc671uk5ELg5gYH8gjP4iuVvDASV28NGKzsMRE1Sbvw/
+         6rzLPWThxLui5Jrb7POx4pqF3i4a0P0pis4pcQ5oZamCr9mC9KCydAPBmNR5t3y/rH
+         g+1hCFpw0Fqx+dOiStVVxarHi8GU7KOrAwY3/sXRSuf8ooMLky/YpokODXFWI4mFL7
+         LdWTSg8WPUmUg==
+Date:   Sat, 21 Oct 2023 14:05:26 +0200
+From:   Sebastian Fricke <sebastian.fricke@collabora.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Darren Etheridge <detheridge@ti.com>
+Subject: Re: [PATCH v13 6/8] media: dt-bindings: wave5: add Chips&Media 521c
+ codec IP support
+Message-ID: <20231021120526.eqe3esyxyi5b3e5d@basti-XPS-13-9310>
+References: <20230929-wave5_v13_media_master-v13-0-5ac60ccbf2ce@collabora.com>
+ <20230929-wave5_v13_media_master-v13-6-5ac60ccbf2ce@collabora.com>
+ <b94e3561-f5ef-443f-98c7-9b79a8bbceec@linaro.org>
+ <20231016134720.GA2650973-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231016134720.GA2650973-robh@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ6018 comes in multiple SKU-s and some of them dont support all of the
-OPP-s that are current set, so lets utilize CPUFreq NVMEM to allow only
-supported OPP-s based on the SoC dynamically.
+Hey Rob and Krzysztof,
 
-As an example, IPQ6018 is generaly rated at 1.8GHz but some silicon only
-goes up to 1.5GHz and is marked as such via an eFuse.
+On 16.10.2023 08:47, Rob Herring wrote:
+>On Thu, Oct 12, 2023 at 03:24:12PM +0200, Krzysztof Kozlowski wrote:
+>> On 12/10/2023 13:01, Sebastian Fricke wrote:
+>> > From: Robert Beckett <bob.beckett@collabora.com>
+>> >
+>> > Add bindings for the chips&media wave5 codec driver
+>> >
+>> > Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+>> > Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+>> > Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+>> > ---
+>> >  .../devicetree/bindings/media/cnm,wave5.yaml       | 60 ++++++++++++++++++++++
+>> >  1 file changed, 60 insertions(+)
+>> >
+>> > diff --git a/Documentation/devicetree/bindings/media/cnm,wave5.yaml b/Documentation/devicetree/bindings/media/cnm,wave5.yaml
+>> > new file mode 100644
+>> > index 000000000000..b31d34aec05b
+>> > --- /dev/null
+>> > +++ b/Documentation/devicetree/bindings/media/cnm,wave5.yaml
+>> > @@ -0,0 +1,60 @@
+>> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> > +%YAML 1.2
+>> > +---
+>> > +$id: http://devicetree.org/schemas/media/cnm,wave5.yaml#
+>>
+>> Filename matching compatible, so: cnm,cm521c-vpu.yaml
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
-Changes in v2:
-* Use minus instead of underscore for fuse node name
-* Drop driver code as it was merged
+With which compatible should the filename match? (see below)
+And just to be sure, this means that I rename the file to:
+`.../devicetree/bindings/media/cnm,wave521c.yaml`
 
- arch/arm64/boot/dts/qcom/ipq6018.dtsi | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+>>
+>> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> > +
+>> > +title: Chips&Media Wave 5 Series multi-standard codec IP
+>> > +
+>> > +maintainers:
+>> > +  - Nas Chung <nas.chung@chipsnmedia.com>
+>> > +  - Jackson Lee <jackson.lee@chipsnmedia.com>
+>> > +
+>> > +description:
+>> > +  The Chips&Media WAVE codec IP is a multi format video encoder/decoder
+>> > +
+>> > +properties:
+>> > +  compatible:
+>> > +    enum:
+>> > +      - cnm,cm521c-vpu
+>>
+>> Can this device be anything else? Why VPU suffix?
+>
+>It needs an SoC specific compatible (TI something...) as well (or
+>instead). Unless there's a public spec with details on how many
+>clocks, resets, interrupts, etc. there are.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-index 9aec89d5e095b..eebd8afe0efce 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-@@ -96,42 +96,49 @@ scm {
- 	};
- 
- 	cpu_opp_table: opp-table-cpu {
--		compatible = "operating-points-v2";
-+		compatible = "operating-points-v2-kryo-cpu";
-+		nvmem-cells = <&cpu_speed_bin>;
- 		opp-shared;
- 
- 		opp-864000000 {
- 			opp-hz = /bits/ 64 <864000000>;
- 			opp-microvolt = <725000>;
-+			opp-supported-hw = <0xf>;
- 			clock-latency-ns = <200000>;
- 		};
- 
- 		opp-1056000000 {
- 			opp-hz = /bits/ 64 <1056000000>;
- 			opp-microvolt = <787500>;
-+			opp-supported-hw = <0xf>;
- 			clock-latency-ns = <200000>;
- 		};
- 
- 		opp-1320000000 {
- 			opp-hz = /bits/ 64 <1320000000>;
- 			opp-microvolt = <862500>;
-+			opp-supported-hw = <0x3>;
- 			clock-latency-ns = <200000>;
- 		};
- 
- 		opp-1440000000 {
- 			opp-hz = /bits/ 64 <1440000000>;
- 			opp-microvolt = <925000>;
-+			opp-supported-hw = <0x3>;
- 			clock-latency-ns = <200000>;
- 		};
- 
- 		opp-1608000000 {
- 			opp-hz = /bits/ 64 <1608000000>;
- 			opp-microvolt = <987500>;
-+			opp-supported-hw = <0x1>;
- 			clock-latency-ns = <200000>;
- 		};
- 
- 		opp-1800000000 {
- 			opp-hz = /bits/ 64 <1800000000>;
- 			opp-microvolt = <1062500>;
-+			opp-supported-hw = <0x1>;
- 			clock-latency-ns = <200000>;
- 		};
- 	};
-@@ -314,6 +321,11 @@ qfprom: efuse@a4000 {
- 			reg = <0x0 0x000a4000 0x0 0x2000>;
- 			#address-cells = <1>;
- 			#size-cells = <1>;
-+
-+			cpu_speed_bin: cpu-speed-bin@135 {
-+				reg = <0x135 0x1>;
-+				bits = <7 1>;
-+			};
- 		};
- 
- 		prng: qrng@e3000 {
--- 
-2.41.0
+Okay so how about this, a bit similar to the Coda driver supplying both
+a general option and a SoC specific version:
 
+properties:
+   compatible:
+     enum:
+       - ti,k3-j721sX-wave521c
+       - cnm,wave521c
+
+(ti,k3-j721sX-wave521c = manufacturer,SoC-codec)
+(tested on j721s2 but should work on other variations as well)
+
+Another alternative could be: ti,k3-wave521c (less specific on a single
+SoC series but connected to a bigger range of devices)
+
+>
+>Rob
+
+Regards,
+Sebastian
+
+>_______________________________________________
+>Kernel mailing list -- kernel@mailman.collabora.com
+>To unsubscribe send an email to kernel-leave@mailman.collabora.com
