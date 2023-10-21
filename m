@@ -2,70 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 413C57D1ECC
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 19:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD7E7D1ECF
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 19:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbjJUR5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 13:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
+        id S231936AbjJUR6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 13:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232056AbjJUR5T (ORCPT
+        with ESMTP id S231925AbjJUR6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 13:57:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E0DD53;
-        Sat, 21 Oct 2023 10:57:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C6CDDC433C7;
-        Sat, 21 Oct 2023 17:57:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697911031;
-        bh=OmgMcFjdxprGL7OxqmevuJxN+ECdOrcXjUP9GHKMq5M=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=DM5G1XPdzUsu7NFr8CdBg9IdqdisKKjlJpLtceNsVHrRKEt2MWAyydPrXxyrGiqbN
-         Yr3X+U2ajCvxj4A7LxBZPLDawesso22i6cwf5TzNpTj+sqnRMTqyggW9LLofiZdgX0
-         XO1JsZ2Nx29TZsI/QriTCqJakmv7UQQUAvEv+QxsW/sZsWBpiNRV2hqOSaN+FGvaH1
-         NY5K6Swr9aBvx5+Y0XuZtBNe/94dIxZtAZaCSl9lrsiJC/eDW2X4U9tDWSGebYB8Iv
-         VwsqMcluZO4gXC72OtKjBvuX/zTulPu+eNZXZdrSfoRNz2tSf0iPrO9AbA+g9FrOqv
-         Iw/eqFJf+EiMw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B3946C595D7;
-        Sat, 21 Oct 2023 17:57:11 +0000 (UTC)
-Subject: Re: [GIT PULL] s390 fixes for 6.6-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <your-ad-here.call-01697881440-ext-2458@work.hours>
-References: <your-ad-here.call-01697881440-ext-2458@work.hours>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <your-ad-here.call-01697881440-ext-2458@work.hours>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.6-4
-X-PR-Tracked-Commit-Id: c1ae1c59c8c6e0b66a718308c623e0cb394dab6b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4d7b04c0cda365f190c4a8f7fddc535b93aae9f9
-Message-Id: <169791103173.24251.6435220449877275146.pr-tracker-bot@kernel.org>
-Date:   Sat, 21 Oct 2023 17:57:11 +0000
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 21 Oct 2023 13:58:00 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7797ED68
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:57:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=hyrU
+        saBfs9U+VgT7gUElro9ixkZH4rjrsyfqitWvIdw=; b=csL4l/aoVzts/2DOHK1b
+        FCKLcTp9UeMnS4tjCfqQPCD0JDn6EUgFw9wnMt3wuwDbbn6PQpuSsD0ZyCTs3Dqp
+        vaXrtDvEFcXUq9hozJh+M3i4F4Ry4wsCigLkm42r+2eqaZebA0Mcjfq9hU2l6ZQO
+        SI3dtZY0A9Mba8QCDqrIX2YT5uO1wmZfHBsJQtyzqPRHB9vECpIliZ1m4uO7TZtf
+        ZfiRMZztRKhjrvuLQGNfxGjF42A6ww3cEQC1V3Q7l2Zon8fsRHRpJEzIrlJ/DEVx
+        9uxcg8f4uh6IWu3tT8LP/BLOGTPuhnkQZUMlCCXE0Aox/360gKAYod7Rvf/ubmGv
+        sQ==
+Received: (qmail 1472704 invoked from network); 21 Oct 2023 19:57:47 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 21 Oct 2023 19:57:47 +0200
+X-UD-Smtp-Session: l3s3148p1@s/EMuj0ILN4gAQnoAGobAPDYRw1R6KxZ
+Date:   Sat, 21 Oct 2023 19:57:47 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     Peter Rosin <peda@axentia.se>, Stephen Warren <swarren@nvidia.com>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jic23@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v3 1/3] i2c: muxes: i2c-mux-pinctrl: Use
+ of_get_i2c_adapter_by_node()
+Message-ID: <ZTQRG81wfrLYJo74@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        Peter Rosin <peda@axentia.se>, Stephen Warren <swarren@nvidia.com>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jic23@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <20231020153017.759926-1-herve.codina@bootlin.com>
+ <20231020153017.759926-2-herve.codina@bootlin.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="e+2AHZSc7n833TFr"
+Content-Disposition: inline
+In-Reply-To: <20231020153017.759926-2-herve.codina@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 21 Oct 2023 11:44:00 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.6-4
+--e+2AHZSc7n833TFr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4d7b04c0cda365f190c4a8f7fddc535b93aae9f9
+On Fri, Oct 20, 2023 at 05:30:11PM +0200, Herve Codina wrote:
+> i2c-mux-pinctrl uses the pair of_find_i2c_adapter_by_node() /
+> i2c_put_adapter(). These pair alone is not correct to properly lock the
+> I2C parent adapter.
+>=20
+> Indeed, i2c_put_adapter() decrements the module refcount while
+> of_find_i2c_adapter_by_node() does not increment it. This leads to an
+> underflow of the parent module refcount.
+>=20
+> Use the dedicated function, of_get_i2c_adapter_by_node(), to handle
+> correctly the module refcount.
+>=20
+> Fixes: c4aee3e1b0de ("i2c: mux: pinctrl: remove platform_data")
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> Cc: stable@vger.kernel.org
+> Acked-by: Peter Rosin <peda@axentia.se>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Thank you!
+Applied to for-current, thanks!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
+--e+2AHZSc7n833TFr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmU0ERcACgkQFA3kzBSg
+KbZceA//SLD4wYCVZ4MeysN0/8ZkjP3dT3AsTf6bqABvSTS23dQpmI/NDpPpy7D1
+x8hpP1RtzvXgUUjTMJAhhd7/mG5zUlrKwCqLtNHEtVNuUNhwBhgULl7uRcUh7Bve
+6cHP4GTLMOhttXvksLr0iUGsNB4ijlPnDi5NcPWbuXIjmhuPTU6SOFHij4xHlQ/Q
+AyNt3AQE2+qNY5xUjMW5s4qa+U9tViMEy5WkjfsYneIU7LcXyJrvWdp612x1CRW7
+IEuFmHzk3sQ6EEDnMfcByshPAD6FEtp3RI4QeaRPDnluraCrwtfcoyDfIHanZ8sw
+MaHWbINyZxpM4tSDbpHm6ZVai0N7T4syTFXLqf7Miv26PSYxekhDmu6SOHv3Fv/E
+axP7noVssPBXbwu14PYgI7OyZ9v5CRTjYsYwiPp3WVeli91y3bE7tV3Z7m1Braj9
+f9bKFOYpYPmXd5suD9gf+MqOSHSAZ2uQSP7osn0ZNIZG8QrFwJi4V0AjeOU+/Lbj
+lNRj4N6pfegsiHzW/06tUbAcs9Jba2UfHDTJFqzVlFb+tFxyT9jygVWFfDs6DEHV
+jnAwEC8GSbltCl1PdKpUkoOwMUMHDjjFLaODFc+kDM1rVvO4PSgf6+C1UsE2T+zs
+lEF5cQ1Di1zUbHiKM79sbAKT0Oaedhh7K1ITsY+gQOhkvaMN0eg=
+=cyp0
+-----END PGP SIGNATURE-----
+
+--e+2AHZSc7n833TFr--
