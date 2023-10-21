@@ -2,58 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8AD7D1F4B
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 22:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DFB7D1F54
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 22:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbjJUUER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 16:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
+        id S232012AbjJUUH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 16:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232113AbjJUUEM (ORCPT
+        with ESMTP id S229621AbjJUUH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 16:04:12 -0400
+        Sat, 21 Oct 2023 16:07:28 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E901A8
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 13:04:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AE959C433C8;
-        Sat, 21 Oct 2023 20:04:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD56B0;
+        Sat, 21 Oct 2023 13:07:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F003EC433C7;
+        Sat, 21 Oct 2023 20:07:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697918650;
-        bh=c2b+HPbEiqMXZSuJ6PQzwDd8rImXip+TYWYZhkgTQLk=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=W8m8NHtVZ5Rz+jNrAFZmF7DOLNzHNHGy9L9Cr/sCtiJrh3CcrJ+cKhLrCgVxEIcdb
-         HDfrVowBy+HqxVGziGVxaJzn7VcXSjfhebCBIbSbpkJU0sMCoDx1yR4NVDsOIzR3A2
-         0G4pBRU0O6beqs3PmUfBa/1/V3i7ICqR6kqXwyAgNKKx9CrFq17NRPsz1urqE0SS9y
-         G9E+W+mxsdrtMgIhY+NgJ15XzItirK3bjhRvcolgqTJdQK3O/d8xo8X53eRZBG3bQO
-         VFjyGUVLLsttUaiT+iDruyKy7u7wwlagfhT5GU3M/jy25OWNc882i76MQ6a1s69a8Q
-         n3tyknOZY4g5w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9B562E4E9B6;
-        Sat, 21 Oct 2023 20:04:10 +0000 (UTC)
-Subject: Re: [GIT PULL] Rust fixes for 6.6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231021181259.10931-1-ojeda@kernel.org>
-References: <20231021181259.10931-1-ojeda@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231021181259.10931-1-ojeda@kernel.org>
-X-PR-Tracked-Remote: https://github.com/Rust-for-Linux/linux.git tags/rust-fixes-6.6
-X-PR-Tracked-Commit-Id: cfd96726e61136e68a168813cedc4084f626208b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 03027aa3a5c698b8fe1a0254284198cb1423481e
-Message-Id: <169791865063.17709.6346007355733465158.pr-tracker-bot@kernel.org>
-Date:   Sat, 21 Oct 2023 20:04:10 +0000
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+        s=k20201202; t=1697918846;
+        bh=AqDrIYx3jTh6N+utjmLqaiBGL9aD5YIrtP9aGEGHFHs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=irpOU3OA/aMBdiwH/b0h4NYiMxZSS0OfiDe7tsfmKqCM8ZpFonh6Nt2hgLnfTORJK
+         6oIPQ7C9WJq+eQlruhQVbgC2rKXcR6z7aVuq7otEdQLhI0AbbnJ/eyR9CIq/xN/hVn
+         SvcNX6hvpLHdSNcUhB8Beyg4MYetiWFswV9HHhsunAvh8rG5pj64YOUBrHTxd65pgH
+         3y4PP4sBuMlP2AEIAk7OhxxyEkWUssevo+uY+RVhPuTlVia24guUiZX2VBXwdZx0d/
+         GQO7YOp3ATV95+yag75UpzfHiZBRDZmhUwkLYGfZ/b+0fSjMiUNrF+oGwrHEBgm6rF
+         3ORepqLvEkxoQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 89849CE1071; Sat, 21 Oct 2023 13:07:25 -0700 (PDT)
+Date:   Sat, 21 Oct 2023 13:07:25 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org, Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH memory-model] docs: memory-barriers: Add note on compiler
+ transformation and address deps
+Message-ID: <f8d82079-bd45-428f-ab3b-593fd3757baf@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <4110a58a-8db5-57c4-2f5a-e09ee054baaa@huaweicloud.com>
+ <1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com>
+ <f363d6e0-5682-43e7-9a3f-6b896c3cd920@paulmck-laptop>
+ <b96cfbc1-f6b0-2fa6-b72d-d57c34bbf14b@huaweicloud.com>
+ <2694e6e1-3282-4a69-b955-06afd7d7f87f@paulmck-laptop>
+ <0bf4cda3-cc43-0e77-e47b-43e1402ed276@huaweicloud.com>
+ <79233008-4be2-4442-9600-f9ac1a654312@paulmck-laptop>
+ <591279ff-3316-d64b-8b25-6baefcecaad1@huaweicloud.com>
+ <8f2ed577-424a-4114-8c90-90ba657e08db@paulmck-laptop>
+ <e9aa4f00-1db8-44a7-aa1f-122cdeeecc23@rowland.harvard.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e9aa4f00-1db8-44a7-aa1f-122cdeeecc23@rowland.harvard.edu>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,15 +73,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 21 Oct 2023 20:12:59 +0200:
+On Sat, Oct 21, 2023 at 12:03:30PM -0400, Alan Stern wrote:
+> On Sat, Oct 21, 2023 at 08:10:27AM -0700, Paul E. McKenney wrote:
+> > On Sat, Oct 21, 2023 at 03:36:21PM +0200, Jonas Oberhauser wrote:
+> > > 
+> > > Am 10/20/2023 um 8:13 PM schrieb Paul E. McKenney:
+> > > > Fair enough in general, but I cannot promise to never confuse people.
+> > > > This is after all memory ordering.  And different people will be confused
+> > > > by different things.
+> > > 
+> > > You can say that twice. In fact I suspect this is not the first time you say
+> > > that :))
+> > 
+> > Easy for me to say, "that that that that that that that that that that"!
+> 
+> This reminds me of a sentence I once heard as an example of 
+> inscrutability.  Written without punctuation, it goes:
+> 
+> 	Jack when Joe had had had had had had had had had had
+> 	the teachers approval.
+> 
+> Properly punctuated, it says:
+> 
+> 	Jack, when Joe had had "had", had had "had had"; "had had" had 
+> 	the teacher's approval.
+> 
+> The context is supposed to be a comparison of the words two students 
+> used in their essays and how their teacher reacted.  It actually 
+> makes sense when read carefully.
 
-> https://github.com/Rust-for-Linux/linux.git tags/rust-fixes-6.6
+Cute!
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/03027aa3a5c698b8fe1a0254284198cb1423481e
+In contrast, any sensible interpretationof my string of "that"s is
+pure coincidence.  ;-)
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+							Thanx, Paul
