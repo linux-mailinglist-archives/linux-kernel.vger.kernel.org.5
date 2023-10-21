@@ -2,110 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C62C7D1E7D
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 19:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83277D1E7F
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 19:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbjJURFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 13:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
+        id S230101AbjJURGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 13:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231550AbjJURFH (ORCPT
+        with ESMTP id S229478AbjJURGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 13:05:07 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F64F114
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:04:58 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c1807f3400so21697911fa.1
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:04:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697907896; x=1698512696; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Tg4luee61pXuzS4dMkxS68wnrt5RPD0pUcOefOjPqD4=;
-        b=lZIxQYL1LHJs/RMSwUhIABrphKMegscdSmFHaMCoAsYJzsdtIVUl/x2fPA+yzSWh8n
-         a9iM0koIpnAp+e6s+Z5AYL2joos/wUyl1xaTny/YLN5DAsPd44IlIpa78ANT7FoiAfQN
-         Fgvl686eyT+LjbYc/jwoKBk6Lbdjy8sKIuAzLDTLcyPkWTv3GAPiIWrRDsypw7EzIq4k
-         oLzE0RAGKJuR6lep+bd6apRu8CI++QOaw4AaF3o5dTmN3wxo1GGEMpJ4QG4tcVZqb5jT
-         QZybYZgM5663Ibgvzewc+aWZXRrzU+ahyVfzEY1zeb+paENmdm7Oph5y2pqT2jJiboI2
-         Ud0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697907896; x=1698512696;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tg4luee61pXuzS4dMkxS68wnrt5RPD0pUcOefOjPqD4=;
-        b=hz+6nNzUTWP93WlSxvThy86A5AicNuK07g+4ixhhFxfYQaQFac6c8Brce4LQSA+ite
-         IcqcXGqx+9bWbABLdB3+DtAuzUM+fmyAK3kyWuV2kkMqmsxotEWOq3AAnHdRpmBdbGdi
-         ArqO0JiCedHcfG3TTOpzQzbatdNXUrxBoG7Gi5psaY5fKbvpvcBKWUloQm9qKuP71Ybq
-         qE1/mTiWtqTijr45JnsxYVnP0YoE2j/RNLLs8fcMOiR6L2UELxXfkFkoTKx6O8aLmzLr
-         OpiVzeCxh8OQsgy9ysKUwGjBOb23Q4QuC4ejn3pzW34BjOW1QTXsfEFzGGiY1be4+fk3
-         VChA==
-X-Gm-Message-State: AOJu0YxjGygyAk9dloOY89dC/+cLEgXw5Et6fcQavVSisYmQ31e8KFZj
-        vJXDP0CRy2ZBofrBAvjSgmppWA==
-X-Google-Smtp-Source: AGHT+IHgb0LvlG1YXi/MM11Ad8QU0L/952pLT3/KLCvu3nTVbTbnlMPKmQdSgo0bqvEZkUHUVqMQaA==
-X-Received: by 2002:a05:651c:1509:b0:2bf:f90c:4029 with SMTP id e9-20020a05651c150900b002bff90c4029mr1971419ljf.10.1697907896597;
-        Sat, 21 Oct 2023 10:04:56 -0700 (PDT)
-Received: from [192.168.1.116] (abyl4.neoplus.adsl.tpnet.pl. [83.9.31.4])
-        by smtp.gmail.com with ESMTPSA id x22-20020a05651c105600b002b9e5fe86dasm875896ljm.81.2023.10.21.10.04.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Oct 2023 10:04:56 -0700 (PDT)
-Message-ID: <b5033b2b-a39a-41d4-b47d-f120743a79bd@linaro.org>
-Date:   Sat, 21 Oct 2023 19:04:54 +0200
+        Sat, 21 Oct 2023 13:06:49 -0400
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03C8F4
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 10:06:45 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id uFQvqTkB8Bo7OuFQvqjLbi; Sat, 21 Oct 2023 19:06:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1697908003;
+        bh=uy9rKGXC9pVvC/rWHxA/Lky5Qfo0J4plguAT77M6c0E=;
+        h=From:To:Cc:Subject:Date;
+        b=Iv8iVbAFNffdrdJXskC8W3teIYrEDdSHlLmFpXJJKVhCWU6rdIP4bNTywwu2Dc/FM
+         Y6S3Xu3/rFa/RQdEaJh+doF8unrzOlIMUS6VJLvxV9iOMkvCoK/r/B2LeKOW+ghYzr
+         XPjVY5OLtgidLo3P1vhiyRBHQFs4ujVAGoJvXjqe7dTqNEMwiM5XpjI5Cs80BDv3lm
+         U++OHUfO1ukV7GT1irym5H8lcl3DG/GWKVu830HMVphWbWqBzcYxr4EpHUBRyFX9u5
+         PtUmBp65B94G5nhB2hgRwfTU+VA+jC8MPT8MWQq6dzryUOyRiam7yYqT5jDLMxKqVX
+         TTv62Wd8swC3g==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 21 Oct 2023 19:06:43 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     keescook@chromium.org, Robert Richter <rric@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Temerkhanov <s.temerkhanov@gmail.com>
+Cc:     linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Borislav Petkov <bp@suse.de>, linux-edac@vger.kernel.org
+Subject: [PATCH] EDAC/thunderx: Fix some potential buffer overflow in thunderx_ocx_com_threaded_isr()
+Date:   Sat, 21 Oct 2023 19:06:34 +0200
+Message-Id: <a787355ac896903935dd85ac96cddf1a0afa87af.1697903882.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 5/9] clk: qcom: apss-ipq6018: ipq5332: add safe source
- switch for a53pll
-Content-Language: en-US
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, ilia.lin@kernel.org,
-        sivaprak@codeaurora.org, quic_kathirav@quicinc.com,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <cover.1697781921.git.quic_varada@quicinc.com>
- <49422d258d67d33a2547fbb7f4f6e72d489c2301.1697781921.git.quic_varada@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <49422d258d67d33a2547fbb7f4f6e72d489c2301.1697781921.git.quic_varada@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+strncat() usage in thunderx_ocx_com_threaded_isr() is wrong.
+The size given to strncat() is the maximum number of bytes that can be
+written, excluding the trailing NULL.
 
+Here, the size of the 'msg' buffer is used (i.e. OCX_MESSAGE_SIZE), not
+the space that is remaining.
+The space for the ending NULL is also not taken into account.
 
-On 10/20/23 08:19, Varadarajan Narayanan wrote:
-> Stromer Plus PLL found on IPQ53xx doesn't support dynamic
-> frequency scaling. To achieve the same, we need to park the APPS
-> PLL source to GPLL0, re configure the PLL and then switch the
-> source to APSS_PLL_EARLY.
-> 
-> To support this, register a clock notifier to get the PRE_RATE
-> and POST_RATE notification. Change the APSS PLL source to GPLL0
-> when PRE_RATE notification is received, then configure the PLL
-> and then change back the source to APSS_PLL_EARLY.
-> 
-> Additionally, not all SKUs of IPQ53xx support scaling. Hence,
-> do the above to the SKUs that support scaling.
-> 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> ---
-This looks good, however I'm not sure if registering the callback
-only on SoCs that are supposed to rate-change isn't
-overly-defensive. That said, I'm not particularly against it.
+in order to fix it:
+   - call decode_register() before the snprintf() calls
+   - use scnprintf() instead of snprintf() and compute, in the 'remaining'
+     variable, the space that is still available in the 'msg' buffer
+   - add a %s at the end of the format strings and append directly the
+     result of decode_register() stored in 'other'
+   - write directly at the right position in the 'msg' buffer when
+     appending some data in the for loop.
 
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Doing so, all usages of strncat() are removed.
 
-Konrad
+Fixes: 41003396f932 ("EDAC, thunderx: Add Cavium ThunderX EDAC driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This is cross-compile tested only.
+Review with care.
+---
+ drivers/edac/thunderx_edac.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/edac/thunderx_edac.c b/drivers/edac/thunderx_edac.c
+index b9c5772da959..9544836dbd19 100644
+--- a/drivers/edac/thunderx_edac.c
++++ b/drivers/edac/thunderx_edac.c
+@@ -1111,6 +1111,7 @@ static irqreturn_t thunderx_ocx_com_threaded_isr(int irq, void *irq_id)
+ 
+ 	unsigned long tail;
+ 	struct ocx_com_err_ctx *ctx;
++	size_t remaining;
+ 	int lane;
+ 	char *msg;
+ 	char *other;
+@@ -1127,27 +1128,26 @@ static irqreturn_t thunderx_ocx_com_threaded_isr(int irq, void *irq_id)
+ 				ARRAY_SIZE(ocx->com_err_ctx));
+ 		ctx = &ocx->com_err_ctx[tail];
+ 
+-		snprintf(msg, OCX_MESSAGE_SIZE, "%s: OCX_COM_INT: %016llx",
+-			ocx->edac_dev->ctl_name, ctx->reg_com_int);
+-
+ 		decode_register(other, OCX_OTHER_SIZE,
+ 				ocx_com_errors, ctx->reg_com_int);
+ 
+-		strncat(msg, other, OCX_MESSAGE_SIZE);
++		remaining = OCX_MESSAGE_SIZE;
++		remaining -= scnprintf(msg, remaining, "%s: OCX_COM_INT: %016llx%s",
++				       ocx->edac_dev->ctl_name, ctx->reg_com_int,
++				       other);
+ 
+ 		for (lane = 0; lane < OCX_RX_LANES; lane++)
+ 			if (ctx->reg_com_int & BIT(lane)) {
+-				snprintf(other, OCX_OTHER_SIZE,
+-					 "\n\tOCX_LNE_INT[%02d]: %016llx OCX_LNE_STAT11[%02d]: %016llx",
+-					 lane, ctx->reg_lane_int[lane],
+-					 lane, ctx->reg_lane_stat11[lane]);
+-
+-				strncat(msg, other, OCX_MESSAGE_SIZE);
+-
+ 				decode_register(other, OCX_OTHER_SIZE,
+ 						ocx_lane_errors,
+ 						ctx->reg_lane_int[lane]);
+-				strncat(msg, other, OCX_MESSAGE_SIZE);
++
++				remaining -= scnprintf(msg + (OCX_MESSAGE_SIZE - remaining),
++						       remaining,
++						       "\n\tOCX_LNE_INT[%02d]: %016llx OCX_LNE_STAT11[%02d]: %016llx%s",
++						       lane, ctx->reg_lane_int[lane],
++						       lane, ctx->reg_lane_stat11[lane],
++						       other);
+ 			}
+ 
+ 		if (ctx->reg_com_int & OCX_COM_INT_CE)
+-- 
+2.34.1
+
