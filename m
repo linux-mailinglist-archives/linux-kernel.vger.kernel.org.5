@@ -2,96 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFF17D1D87
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 16:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61F57D1D88
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 16:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbjJUOmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 10:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
+        id S231386AbjJUOnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 10:43:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231177AbjJUOmt (ORCPT
+        with ESMTP id S229588AbjJUOny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 10:42:49 -0400
-Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A7CD52
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:42:46 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id uDBbqgbfUVj79uDBbqzxvu; Sat, 21 Oct 2023 16:42:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1697899364;
-        bh=3H3iB1o0U56oUpj2NNlHh/Qb8eqSMHeR5kXDOCLd6wk=;
-        h=From:To:Cc:Subject:Date;
-        b=TSxMsNg7DMA+AP8vkTnZTGrRP4BHceZpcG3u/RSZgmZEFDfU957Vbw5xZpAOfj8VT
-         zI4ns9LJxrWO0UvRes9B2Z+KuA0uuKicVJvqMJxJxFWaLYfeC60d4kq8t2otC3yxM9
-         Nmz9ohk18Nf+Ikrv8QXZ9hVBkrOgEA72h4U9uMyV8YVj/LPP4AVqz3NwuzSWUqQap/
-         MMJ+Q1OOhVFMk9XmfwCsir9tindADxYRFflTmt//s4AuMR78MB5+J698bCY+zBBvz5
-         wtHnTJohx93zkdH9q/N9Nzbfgru9AOGjD55vepHuSgFBhROWUHNBn/YLaVYEPRYZJh
-         ea3uoSSPQjhzw==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 21 Oct 2023 16:42:44 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-trace-kernel@vger.kernel.org
-Subject: [PATCH] tracing/histograms: Simplify last_cmd_set()
-Date:   Sat, 21 Oct 2023 16:42:41 +0200
-Message-Id: <30b6fb04dadc10a03cc1ad08f5d8a93ef623a167.1697899346.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sat, 21 Oct 2023 10:43:54 -0400
+Received: from out-203.mta1.migadu.com (out-203.mta1.migadu.com [IPv6:2001:41d0:203:375::cb])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238B6A3
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 07:43:49 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1697899426;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/hOjdlwNEQqgIxIEMteXsYoxVv+s7eBpX1Ru6VaIia4=;
+        b=Fls0l9YRtgBOwwpecRoQqTQhprO/dtCHv0ZscJf/Bn+Z+gademQog258E1yBYSvxc9ocig
+        5xMQaZ6Co/WaOgoXlVH0k/oqr1tvEGzlxnsWBDziTBMuxS9VRgNYM+L3vp1JnBQZpxQubX
+        fjY9Pi1ViHfs7TNpXqKXN7YkCV+s/tI=
+From:   chengming.zhou@linux.dev
+To:     cl@linux.com, penberg@kernel.org
+Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz,
+        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, willy@infradead.org,
+        pcc@google.com, tytso@mit.edu, maz@kernel.org,
+        ruansy.fnst@fujitsu.com, vishal.moola@gmail.com,
+        lrh2000@pku.edu.cn, hughd@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, chengming.zhou@linux.dev,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: [RFC PATCH v2 0/6] slub: Delay freezing of CPU partial slabs
+Date:   Sat, 21 Oct 2023 14:43:11 +0000
+Message-Id: <20231021144317.3400916-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Turn a kzalloc()+strcpy()+strncat() into an equivalent and less verbose
-kasprintf().
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- kernel/trace/trace_events_hist.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+Changes in RFC v2:
+ - Reuse PG_workingset bit to keep track of whether slub is on the
+   per-node partial list, as suggested by Matthew Wilcox.
+ - Fix OOM problem on kernel without CONFIG_SLUB_CPU_PARTIAL, which
+   is caused by leak of partial slabs when get_partial_node().
+ - Add a patch to simplify acquire_slab().
+ - Reorder patches a little.
+ - v1: https://lore.kernel.org/all/20231017154439.3036608-1-chengming.zhou@linux.dev/
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index d06938ae0717..1abc07fba1b9 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -774,23 +774,16 @@ static void last_cmd_set(struct trace_event_file *file, char *str)
- {
- 	const char *system = NULL, *name = NULL;
- 	struct trace_event_call *call;
--	int len;
- 
- 	if (!str)
- 		return;
- 
--	/* sizeof() contains the nul byte */
--	len = sizeof(HIST_PREFIX) + strlen(str);
- 	kfree(last_cmd);
--	last_cmd = kzalloc(len, GFP_KERNEL);
-+
-+	last_cmd = kasprintf(GFP_KERNEL, HIST_PREFIX "%s", str);
- 	if (!last_cmd)
- 		return;
- 
--	strcpy(last_cmd, HIST_PREFIX);
--	/* Again, sizeof() contains the nul byte */
--	len -= sizeof(HIST_PREFIX);
--	strncat(last_cmd, str, len);
--
- 	if (file) {
- 		call = file->event_call;
- 		system = call->class->system;
+1. Problem
+==========
+Now we have to freeze the slab when get from the node partial list, and
+unfreeze the slab when put to the node partial list. Because we need to
+rely on the node list_lock to synchronize the "frozen" bit changes.
+
+This implementation has some drawbacks:
+
+ - Alloc path: twice cmpxchg_double.
+   It has to get some partial slabs from node when the allocator has used
+   up the CPU partial slabs. So it freeze the slab (one cmpxchg_double)
+   with node list_lock held, put those frozen slabs on its CPU partial
+   list. Later ___slab_alloc() will cmpxchg_double try-loop again if that
+   slab is picked to use.
+
+ - Alloc path: amplified contention on node list_lock.
+   Since we have to synchronize the "frozen" bit changes under the node
+   list_lock, the contention of slab (struct page) can be transferred
+   to the node list_lock. On machine with many CPUs in one node, the
+   contention of list_lock will be amplified by all CPUs' alloc path.
+
+   The current code has to workaround this problem by avoiding using
+   cmpxchg_double try-loop, which will just break and return when
+   contention of page encountered and the first cmpxchg_double failed.
+   But this workaround has its own problem.
+
+ - Free path: redundant unfreeze.
+   __slab_free() will freeze and cache some slabs on its partial list,
+   and flush them to the node partial list when exceed, which has to
+   unfreeze those slabs again under the node list_lock. Actually we
+   don't need to freeze slab on CPU partial list, in which case we
+   can save the unfreeze cmpxchg_double operations in flush path.
+
+2. Solution
+===========
+We solve these problems by leaving slabs unfrozen when moving out of
+the node partial list and on CPU partial list, so "frozen" bit is 0.
+
+These partial slabs won't be manipulate concurrently by alloc path,
+the only racer is free path, which may manipulate its list when !inuse.
+So we need to introduce another synchronization way to avoid it, we
+reuse PG_workingset to keep track of whether the slab is on node partial
+list or not, only in that case we can manipulate the slab list.
+
+The slab will be delay frozen when it's picked to actively use by the
+CPU, it becomes full at the same time, in which case we still need to
+rely on "frozen" bit to avoid manipulating its list. So the slab will
+be frozen only when activate use and be unfrozen only when deactivate.
+
+3. Testing
+==========
+We just did some simple testing on a server with 128 CPUs (2 nodes) to
+compare performance for now.
+
+ - perf bench sched messaging -g 5 -t -l 100000
+   baseline	RFC
+   7.042s	6.966s
+   7.022s	7.045s
+   7.054s	6.985s
+
+ - stress-ng --rawpkt 128 --rawpkt-ops 100000000
+   baseline	RFC
+   2.42s	2.15s
+   2.45s	2.16s
+   2.44s	2.17s
+
+It shows above there is about 10% improvement on stress-ng rawpkt
+testcase, although no much improvement on perf sched bench testcase.
+
+Thanks for any comment and code review!
+
+Chengming Zhou (6):
+  slub: Keep track of whether slub is on the per-node partial list
+  slub: Prepare __slab_free() for unfrozen partial slab out of node
+    partial list
+  slub: Don't freeze slabs for cpu partial
+  slub: Simplify acquire_slab()
+  slub: Introduce get_cpu_partial()
+  slub: Optimize deactivate_slab()
+
+ include/linux/page-flags.h |   2 +
+ mm/slab.h                  |  19 +++
+ mm/slub.c                  | 245 +++++++++++++++++++------------------
+ 3 files changed, 150 insertions(+), 116 deletions(-)
+
 -- 
-2.34.1
+2.20.1
 
