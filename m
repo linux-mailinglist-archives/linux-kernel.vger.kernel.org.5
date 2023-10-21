@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD797D1CEE
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 13:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E747D1CF4
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 14:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbjJUL5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 07:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
+        id S230200AbjJUMA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 08:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbjJUL5b (ORCPT
+        with ESMTP id S229583AbjJUMAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 07:57:31 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84692D51;
-        Sat, 21 Oct 2023 04:57:29 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b2ec9a79bdso1261356b6e.3;
-        Sat, 21 Oct 2023 04:57:29 -0700 (PDT)
+        Sat, 21 Oct 2023 08:00:55 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B0E1BF;
+        Sat, 21 Oct 2023 05:00:53 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5079f6efd64so2343864e87.2;
+        Sat, 21 Oct 2023 05:00:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697889449; x=1698494249; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FxNz9djPi2ZFZLmpxAIXb8X9Wg3dZxfYM3EqSIAWSDg=;
-        b=g2wq64GTFlf+UyXvUUFB9kuU+pZT6wzK6Pap1BkVrO4ySfk+Jb07lTia+G9yU4dO1z
-         /MMOSzEDUUSFfNTrc7XkoaJ5J0zcsF/U3wbp9s+2WMosCYKGvQiJvEYouQFQ8oFPUuMl
-         SV2otip1MSjEZTIweOOzlUk/y6LjDnty5XD9S1G+8ZqWq0jSpaVua66SRockqb6w0kLX
-         S4tgpcmW+5EWBN9+GziZ8iw36cXFMt0Pl+1azsewGSxsYCsGU4bpfZ7MHQynGrYuBiB9
-         ci/d8yi1U5ilUKcMwnjai/NJCqBwkSDAlCoafEXop2fqz0PYvRNvJH/cCpD5iYS6m7+j
-         S9Pw==
+        d=gmail.com; s=20230601; t=1697889651; x=1698494451; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vvfuAIs+N0VfStAnN/yHcweGC8s+zomr1tqlKshcvzI=;
+        b=ZjR7dRrqYwVq/7feKO3vT8/VcMpbzLioLhuxPGO4P+oF9OiJf4jmroCIG+6GT/yUR2
+         nh6UrOjGAzPGuX7ye+WDPNMa4v2NNdk6QGDR34gOLwYCgEb9D3ydrEYE0/XKk05DT7MP
+         A3Yo0wkfyCIGxdzM4AUHVCiwjjmoYPys91yQGDydCLPElH0Zgd8OjwYAj4rFl/eZ9mB4
+         45a+lJjkxcAQNT/JyGbyt1XhzWdiuKki0z649+dZE36WX1+ewcN0ihZcXu/+nlIFEgx3
+         SjDF2pf5gknHMmfXRGjmQvJDoLszH75KXry7NRLIx7Vch32otPxo7uyOlaVRusmEixNe
+         hSzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697889449; x=1698494249;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1697889651; x=1698494451;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FxNz9djPi2ZFZLmpxAIXb8X9Wg3dZxfYM3EqSIAWSDg=;
-        b=aSMCREsOWMiXVw7wl3wAYVWjMvyhI8q4+L8miPTlHYbU4UaGsE0LcIHT7ZNgtmMCDV
-         qUvXxP+PlGeiH2+ooo7Rpdl7ItwJxZfuC7JqTax4f5RdSvuBJ/XhF+QyHfIUUE6uMiNj
-         f8tUXK8TG34E91nT0CkFutfxXAPnRql3M7JTehqtl09o7a5HOs0+9PsqlnfhfD0cKjjR
-         sm1Z1wrUOTypOirmE8KAW2gCXUuOHzWVxNPeOG0z0FR5QCz2GiFkBxBZMWhq26V50/tz
-         fZiG9ssFu6bGAJscD9cMRD4FLeyKOGbalZpug/UI1/vpDBClesfjgH0U7w3E9E+R9cWZ
-         o1dg==
-X-Gm-Message-State: AOJu0Yxowp8z0ODbeAessnMHK8BFwYRD0f4S8HE28PAtKmb0CMnV81vY
-        +81c4+bxW9WRKjDFHASuSPYvyWYy2TfNw8BzXK4=
-X-Google-Smtp-Source: AGHT+IErCwbPPf2d1W2hR6YumknJe5gd9sptBaKAtjtmuKDZW7EB8QqNK+Wv7inqupTOwAHWQSjuO7Mf4Y/mKTyWbuk=
-X-Received: by 2002:a05:6808:12:b0:3ae:a81:55ba with SMTP id
- u18-20020a056808001200b003ae0a8155bamr4812229oic.22.1697889448746; Sat, 21
- Oct 2023 04:57:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231015162114.976202-1-robimarko@gmail.com> <f27ff251-58b1-4fc5-8ad5-cd365b7eb976@linaro.org>
- <8dce62b2-562c-4e00-840b-68e1cc865972@quicinc.com> <CAOX2RU4n8caVL33KkqgYK1_mTZv-oZtd0p=_dzPh-ntBBfH1zA@mail.gmail.com>
- <b4ce1fdf-0a05-479d-90f8-3a2a2e40b07f@quicinc.com>
-In-Reply-To: <b4ce1fdf-0a05-479d-90f8-3a2a2e40b07f@quicinc.com>
+        bh=vvfuAIs+N0VfStAnN/yHcweGC8s+zomr1tqlKshcvzI=;
+        b=ZOGFSHh2TX+MtQMN4J4EwpDX9fclJIh3Wg/ZEjRaxhST1ZB6TGkUb1Qy0OxlaIFYRK
+         yxEeFnXW3Ez8a+GRle+oB9t4BMiJS+5gweSLQoMACuyLJCO1OVRNre0zzGUZsk2DgKgr
+         IvKMFycjcIvX1Bf3QrC2JPmICHrRh87X9jfCpzzpSkUFnbcrt+89UmwT/ZdqsGwmvLBx
+         jj46MexcJhcAOLUf4BragcgAHEmAGres9PZM3yGO2PNqYM+DelLho4TXNjYdYwTi9GYp
+         XjMXCy5NAqsyEA6Q7CljbEhdJMdZqpxwYIin5btIRZXQ+g63EFZTl+0CuiSqp526rngB
+         GElA==
+X-Gm-Message-State: AOJu0Yzgal6drF+OrzLubHqFoWygYOHB2+uFH44QPrBMJRat3JRMSVhF
+        UOoQds2FUlWZgf7Bc5qKdTidx/xDettLww==
+X-Google-Smtp-Source: AGHT+IFZRmpwYCRwzR+86RcT2kciPcJgRwRYPgUGZPvdcUhECLyPLqshsfTlUY7Gva+6yZPcysotTg==
+X-Received: by 2002:a19:670d:0:b0:507:a04c:76e8 with SMTP id b13-20020a19670d000000b00507a04c76e8mr3110544lfc.46.1697889651252;
+        Sat, 21 Oct 2023 05:00:51 -0700 (PDT)
+Received: from fedora.. (cpezg-94-253-130-100-cbl.xnet.hr. [94.253.130.100])
+        by smtp.googlemail.com with ESMTPSA id t16-20020a508d50000000b00522828d438csm3425738edt.7.2023.10.21.05.00.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Oct 2023 05:00:50 -0700 (PDT)
 From:   Robert Marko <robimarko@gmail.com>
-Date:   Sat, 21 Oct 2023 13:57:17 +0200
-Message-ID: <CAOX2RU7Z1BS0u_k=cx58oq8RODPV=a3kV26OsbYpkDaN1atixg@mail.gmail.com>
-Subject: Re: [PATCH] clk: qcom: gcc-ipq6018: add QUP6 I2C clock
-To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>, agross@kernel.org,
-        andersson@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robimarko@gmail.com>
+Subject: [PATCH v2] arm64: dts: qcom: ipq6018: use CPUFreq NVMEM
+Date:   Sat, 21 Oct 2023 14:00:07 +0200
+Message-ID: <20231021120048.231239-1-robimarko@gmail.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,69 +71,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 at 08:40, Kathiravan Thirumoorthy
-<quic_kathirav@quicinc.com> wrote:
->
->
-> On 10/19/2023 7:53 PM, Robert Marko wrote:
-> > On Thu, 19 Oct 2023 at 08:46, Kathiravan Thirumoorthy
-> > <quic_kathirav@quicinc.com> wrote:
-> >>
-> >> On 10/19/2023 1:59 AM, Konrad Dybcio wrote:
-> >>>
-> >>> On 10/15/23 18:20, Robert Marko wrote:
-> >>>> QUP6 I2C clock is listed in the dt bindings but it was never included in
-> >>>> the GCC driver.
-> >>>> So lets add support for it, its intentionally marked to never be
-> >>>> disabled
-> >>>> as its somehow affecting DVFS and if disabled it sometimes crashes the
-> >>>> board.
-> >>>>
-> >>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> >>>> ---
-> >>> Bjorn, would you be able to get an idea of what could be sitting
-> >>> on that bus?
-> >>>
-> >>> Or maybe the IPQ folks could know?
-> >>>
-> >> Konrad / Robert,
-> >>
-> >> Similar to IPQ9574, RPM needs this clock to communicate with PMIC over
-> >> I2C interface. Discussion happened here[1] is pretty much applicable to
-> >> IPQ6018 as well. Based on previous experience, we may need to document
-> >> the reason for CLK_IGNORE_UNUSED in driver as well. Nevertheless,
-> >>
-> >> Reviewed-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-> > Thanks for the explanation, it makes sense as I used to control the
-> > MP5496 directly
-> > via I2C.
-> >
-> > Is it possible to disable RPM so it doesn't conflict and just use the
-> > full MP5496 driver instead?
-> > I find the RPM quite limiting as there is no way to actually retrieve
-> > the current-voltage.
->
->
-> Robert, checked with the team and currently we don't have any option to
-> disable the RPM as such.
+IPQ6018 comes in multiple SKU-s and some of them dont support all of the
+OPP-s that are current set, so lets utilize CPUFreq NVMEM to allow only
+supported OPP-s based on the SoC dynamically.
 
-Thanks for checking.
+As an example, IPQ6018 is generaly rated at 1.8GHz but some silicon only
+goes up to 1.5GHz and is marked as such via an eFuse.
 
-BTW, is there any information you could share on the USB GDSC-s?
-I tried converting them to GDSC-s like IPQ8074 has, but it seems that
-they have different features.
-It would be great to use proper GSDC support instead of manually
-setting bits during GCC probe.
+Signed-off-by: Robert Marko <robimarko@gmail.com>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Changes in v2:
+* Use minus instead of underscore for fuse node name
+* Drop driver code as it was merged
 
-Regards,
-Robert
->
->
-> >
-> > Regards,
-> > Robert
-> >> [1]
-> >> https://lore.kernel.org/linux-arm-msm/2852fc37-284f-6534-f163-45b37b153db1@quicinc.com/
-> >>
-> >>
-> >>> Konrad
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+index 9aec89d5e095b..eebd8afe0efce 100644
+--- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+@@ -96,42 +96,49 @@ scm {
+ 	};
+ 
+ 	cpu_opp_table: opp-table-cpu {
+-		compatible = "operating-points-v2";
++		compatible = "operating-points-v2-kryo-cpu";
++		nvmem-cells = <&cpu_speed_bin>;
+ 		opp-shared;
+ 
+ 		opp-864000000 {
+ 			opp-hz = /bits/ 64 <864000000>;
+ 			opp-microvolt = <725000>;
++			opp-supported-hw = <0xf>;
+ 			clock-latency-ns = <200000>;
+ 		};
+ 
+ 		opp-1056000000 {
+ 			opp-hz = /bits/ 64 <1056000000>;
+ 			opp-microvolt = <787500>;
++			opp-supported-hw = <0xf>;
+ 			clock-latency-ns = <200000>;
+ 		};
+ 
+ 		opp-1320000000 {
+ 			opp-hz = /bits/ 64 <1320000000>;
+ 			opp-microvolt = <862500>;
++			opp-supported-hw = <0x3>;
+ 			clock-latency-ns = <200000>;
+ 		};
+ 
+ 		opp-1440000000 {
+ 			opp-hz = /bits/ 64 <1440000000>;
+ 			opp-microvolt = <925000>;
++			opp-supported-hw = <0x3>;
+ 			clock-latency-ns = <200000>;
+ 		};
+ 
+ 		opp-1608000000 {
+ 			opp-hz = /bits/ 64 <1608000000>;
+ 			opp-microvolt = <987500>;
++			opp-supported-hw = <0x1>;
+ 			clock-latency-ns = <200000>;
+ 		};
+ 
+ 		opp-1800000000 {
+ 			opp-hz = /bits/ 64 <1800000000>;
+ 			opp-microvolt = <1062500>;
++			opp-supported-hw = <0x1>;
+ 			clock-latency-ns = <200000>;
+ 		};
+ 	};
+@@ -314,6 +321,11 @@ qfprom: efuse@a4000 {
+ 			reg = <0x0 0x000a4000 0x0 0x2000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
++
++			cpu_speed_bin: cpu-speed-bin@135 {
++				reg = <0x135 0x1>;
++				bits = <7 1>;
++			};
+ 		};
+ 
+ 		prng: qrng@e3000 {
+-- 
+2.41.0
+
