@@ -2,116 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A497D1DE3
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE747D1DE5
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbjJUP2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 11:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47806 "EHLO
+        id S231177AbjJUPbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 11:31:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJUP2U (ORCPT
+        with ESMTP id S229588AbjJUPbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 11:28:20 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F27FD6
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:28:16 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9c53e8b7cf4so265686766b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:28:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697902095; x=1698506895; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=eTV5TdN8XnmwCbXJlALC4Yi9SLWv2TXy/RSRk5k8erY=;
-        b=XeSkEEEEGSEq1IKRCY+TeRJSr8MzVpcc4APML2bjQ6D4hHqlf2XvAviTh/hg9Wwb0T
-         QUyqFl8T0BmOXoNcEpQ2w+Zl2j/K0RShtCPxcLoYHeTOoxSpN/NG2XtMVf/f0dZ0SrQf
-         9Iutu6xWFLoqfWS5pq2USiVRArdZhH/LFZlNMW/NkhT+jnN5bMhn/emS/bla5a8GNxKL
-         m/H4KFIlDRovp65BMD0Jv8otOoWLmLU7B10wK0TO4/UdWWqctRuxLezpg0FSyLmjAf6e
-         qdRuOf7776xTibLDNOZ/8fhwGY0ZDpRz6+02XFxyuldxGGLYv0iE4oO3TRC06Iq2ngN+
-         R33Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697902095; x=1698506895;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eTV5TdN8XnmwCbXJlALC4Yi9SLWv2TXy/RSRk5k8erY=;
-        b=KyUXjfmAq2awgQBQAx38TqQHDU+iYKSXXyoBg8uJGsOCIvaTWYk22TzQNXjjOIox9C
-         qZbPM6sPUllqU0s9DchN+KoTY186cTgBB88U0cPR2T9ibqmlsE+3vSNsTCc5O7yAtorN
-         elCR0RnSE53DzsDJEyQKVyy+SCnTloh89P0j+zVEYk0RLlXSzy9VqnUeOZS+XjJS274q
-         L9G622BGxLRihuh1iWeMmJP7u8Gsly1T3c3ka00vh24fSHe/Q/uCHD1XgEFRiBlYgpL3
-         YIqZ5PqNBXGzI8qKqn28aog9aGUee1QHFyP7a61rEwj1fIvbq3lr1esn9bxMWFouFJT9
-         VCSg==
-X-Gm-Message-State: AOJu0YyphuC65m5yc5s5XwhWhs6738Sw02R5ygX9/ly+ikmeMKRnfk+w
-        oRMaLd+LgwvqfnI48T4FfWE=
-X-Google-Smtp-Source: AGHT+IFNbWSr75DSeGOKsRABUfgM89+hmD5x7uzZermA358RhYv2Ay3UdO91LA3S0g1spMHtmfNKYQ==
-X-Received: by 2002:a17:907:961a:b0:9bf:39f3:f11d with SMTP id gb26-20020a170907961a00b009bf39f3f11dmr4401239ejc.30.1697902094739;
-        Sat, 21 Oct 2023 08:28:14 -0700 (PDT)
-Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
-        by smtp.gmail.com with ESMTPSA id h9-20020a1709062dc900b009930c80b87csm3813556eji.142.2023.10.21.08.28.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 08:28:12 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 21 Oct 2023 17:28:09 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
+        Sat, 21 Oct 2023 11:31:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1601126;
+        Sat, 21 Oct 2023 08:31:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BD85C433C7;
+        Sat, 21 Oct 2023 15:31:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697902262;
+        bh=BRwAnioFJ5Gt3L5fQu7mvOCVZv/G3cxg1M++mEiIZKI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=SYrqXT6scVy41lqQPUxZH976uFG25t0I7KbyNy8RmLAV/lemHGkyB+r9RCa0u/o51
+         JnK8kcAbvwPCHoKeUKZfUz44WmZcVCgNV0l4ijZjAJtT6VhpOY2Gvr8KplJIXOer5E
+         EsmSlrUzB7TTW25+5B68WJmJul04xs7QCaeXICAiCsqQbOzbqvMCpAfUb8jQ6sit3I
+         wFt+QO9V2YoRDs38ZVvqHhWmesiabKLNgxqKXSm6FiUfQVsW+FlxfjBy0LJUU2ynBr
+         9kuNy6t/OGfLdY2uzxEzXJahk+Sk8AiY4CWf07+AOyunQwnXgEMPAJbynBaZMuSlku
+         8HOIeeXTsohYA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C9D77CE0ED1; Sat, 21 Oct 2023 08:31:01 -0700 (PDT)
+Date:   Sat, 21 Oct 2023 08:31:01 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc:     Akira Yokosawa <akiyks@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] scheduler fixes
-Message-ID: <ZTPuCcQkcn4TVTMn@gmail.com>
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH memory-model] docs: memory-barriers: Add note on compiler
+ transformation and address deps
+Message-ID: <77666e6b-8aad-49f5-b936-ef306773f8dc@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <ceaeba0a-fc30-4635-802a-668c859a58b2@paulmck-laptop>
+ <4110a58a-8db5-57c4-2f5a-e09ee054baaa@huaweicloud.com>
+ <1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com>
+ <f363d6e0-5682-43e7-9a3f-6b896c3cd920@paulmck-laptop>
+ <b96cfbc1-f6b0-2fa6-b72d-d57c34bbf14b@huaweicloud.com>
+ <2694e6e1-3282-4a69-b955-06afd7d7f87f@paulmck-laptop>
+ <03ea8aea-2d0c-48ab-bb0d-e585571f1926@gmail.com>
+ <8322165e-c287-6e43-239e-3fcd0b375c1e@huaweicloud.com>
+ <f2a94468-b99a-412b-9336-60a76f04cda3@paulmck-laptop>
+ <596cb20e-a03c-cc69-d525-719d5a5b4c12@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <596cb20e-a03c-cc69-d525-719d5a5b4c12@huaweicloud.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Sat, Oct 21, 2023 at 03:45:16PM +0200, Jonas Oberhauser wrote:
+> 
+> Am 10/20/2023 um 7:56 PM schrieb Paul E. McKenney:
+> > On Fri, Oct 20, 2023 at 06:13:34PM +0200, Jonas Oberhauser wrote:
+> > > Am 10/20/2023 um 5:24 PM schrieb Akira Yokosawa:
+> > > > Hi Paul,
+> > > > 
+> > > > On 2023/10/20 22:57, Paul E. McKenney wrote:
+> > > > [...]
+> > > > > So if there are things that rcu_dereference.rst is missing, they do
+> > > > > need to be added.
+> > > > As far as I can see, there is no mention of "address dependency"
+> > > > in rcu_dereference.rst.
+> > > > Yes, I see the discussion in rcu_dereference.rst is all about how
+> > > > not to break address dependency by proper uses of rcu_dereference()
+> > > > and its friends.  But that might not be obvious for readers who
+> > > > followed the references placed in memory-barriers.txt.
+> > > > 
+> > > > Using the term "address dependency" somewhere in rcu_dereference.rst
+> > > > should help such readers, I guess.
+> > > I think that's a good point.
+> > How about the commit shown at the end of this email,
+> 
+> I think it's very clear.
 
-Please pull the latest sched/urgent git tree from:
+Thank you for looking it over!
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2023-10-21
+> > with a Reported-by for both of you?
+> 
+> I haven't reported anything.
 
-   # HEAD: d2929762cc3f85528b0ca12f6f63c2a714f24778 sched/eevdf: Fix heap corruption more
+I doubt that Akira would have said anything had you not initiated this
+discussion.  But if you would like, I can remove your Reported-by,
+though I would need you to explicitly ask.
 
-Fix a recently introduced use-after-free bug.
+> > > > [...]
+> > > > > > Thanks for the response, I started thinking my mails aren't getting through
+> > > > > > again.
+> > > > Jonas, FWIW, your email archived at
+> > > > 
+> > > >       https://lore.kernel.org/linux-doc/1c731fdc-9383-21f2-b2d0-2c879b382687@huaweicloud.com/
+> > > > 
+> > > > didn't reach my gmail inbox.  I looked for it in the spam folder,
+> > > > but couldn't find it there either.
+> > > > [...]
+> > > 
+> > > Thanks Akira!
+> > > 
+> > > I wrote the gmail support a while ago, but no response.
+> > > 
+> > > Currently no idea who to talk to... Oh well.
+> > Your emails used to end up in my spam folder quite frequently, but
+> > they have been coming through since you changed your email address.
+> 
+> In return, I receive all mail from the mailing list, if is also addressed to
+> me, twice.
+> So it evens out, somehow? (I suspect this is a configuration error in my
+> mail filters on my side though)
 
- Thanks,
+Too much fun!
 
-	Ingo
-
------------------->
-Peter Zijlstra (1):
-      sched/eevdf: Fix heap corruption more
-
-
- kernel/sched/fair.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 061a30a8925a..df348aa55d3c 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3657,7 +3657,8 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 		 */
- 		deadline = div_s64(deadline * old_weight, weight);
- 		se->deadline = se->vruntime + deadline;
--		min_deadline_cb_propagate(&se->run_node, NULL);
-+		if (se != cfs_rq->curr)
-+			min_deadline_cb_propagate(&se->run_node, NULL);
- 	}
- 
- #ifdef CONFIG_SMP
+							Thanx, Paul
