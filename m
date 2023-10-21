@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBE07D1EF7
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 20:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E1A7D1EF9
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 20:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbjJUSjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 14:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
+        id S231899AbjJUSok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 14:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbjJUSjh (ORCPT
+        with ESMTP id S229621AbjJUSoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 14:39:37 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AFD114
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 11:39:34 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4084de32db5so16290895e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 11:39:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1697913572; x=1698518372; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GfGwds8BsJ5PS79wIoZ/UmBsuPKrEgJUS23OzoLXe80=;
-        b=D9Up9mqAi5emQb9WfQ2bjyYKukvPNQf35kYkZQrlIF606oNTJsZlHYr9ucAoTLllY/
-         7+ukNJKMTMNyZZsDZztoKjpjMjyVQVSHKLxhgrHe+nfTlj9NwBDDwe46osDHFVaynZHr
-         3hcvaB10AcATLvOvVdfuTPppn6oOWw5V220dmYCmKVTLwpBAa1dbYiQLVmjAskegFUzs
-         vhL3u7tCLfQUHQ2+pwiIMduiAZNvwwdJ3VxN09QNCsrD8Jqh7CURvXgi6jHDC8u6lPgQ
-         h9YvO0Uf/gbkRsJ122TTYZLhWRPYfu58g1aDJHObLWV6XWUHwMKQ0SLYcb7YiA4GkjnG
-         fXoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697913572; x=1698518372;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GfGwds8BsJ5PS79wIoZ/UmBsuPKrEgJUS23OzoLXe80=;
-        b=O5d1XZr9Z/N+6r+rjwZ98j5aath3101J/C2zCbjWV6gFZWzWpZ5DCSwEBcewUjmFym
-         mlpfmgRlcwY+EARSXqzkQ4WRD3qaFYCBp3iHJUgWVgcr2XSl2aEJkMgKKNvZuJNEgRBi
-         RQhd36r+sBfUOBmmvSOyasXbNpLLVxrTUAn8PGPkhJPUKOYoHltU+ct3cJ8HmNNgoFer
-         AeVKj0DbA8s91To8MsZVmzDgQTLVZ/BxicZPAURqBRiYu+G5ZInNpPaD7cHZX5/DnbGd
-         fdniBQdRjD6cWeEcljatxLAR3ALodxf37xBpjfuj4bpzS8ZA9WOyIcKyuIpNPbIL/lf+
-         Y1Iw==
-X-Gm-Message-State: AOJu0YxNDDkppQ2RZ4DsIu8mBQmSWRdyKXqoSjwpwsE6gAIjauQmokZP
-        KnRK2gB48+c/SqLPdx/Fr42JGg==
-X-Google-Smtp-Source: AGHT+IEjtdIzNkB/XQ5MDi3/Kzobl1YTvyUkztdro7kWjlQ437ArdxwEWadc99lGzJSV/IMw9IZ9Hw==
-X-Received: by 2002:a05:600c:3582:b0:408:3804:2a20 with SMTP id p2-20020a05600c358200b0040838042a20mr3912263wmq.22.1697913571848;
-        Sat, 21 Oct 2023 11:39:31 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:9c03:2672:ef7a:46a5])
-        by smtp.gmail.com with ESMTPSA id m16-20020a7bca50000000b00405d9a950a2sm9764601wml.28.2023.10.21.11.39.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 11:39:31 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [GIT PULL] gpio: fixes for v6.6-rc7
-Date:   Sat, 21 Oct 2023 20:39:25 +0200
-Message-Id: <20231021183925.22831-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
+        Sat, 21 Oct 2023 14:44:39 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A34F7
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 11:44:31 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a02:8010:65b5:0:1ac0:4dff:feee:236a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: alarumbe)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id ED03C6607337;
+        Sat, 21 Oct 2023 19:44:29 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1697913870;
+        bh=PREi321JkX/C3dlUZw8RUfqKwYZTabiYJQ1u5AFX0vk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S7n0BBpbWhvQm7vWkO6S4Ipg8U1RKiN4r2YtIO8zYtlsankzlAGWfxg9pN31GrbVQ
+         lFVFF7cr6rsHtFKuddqCrfNd1RNxI2gNDX1uo1spTU4zR63kfrmifAAQCGYabTCXK9
+         QDkMsYWFuA30XXIUUrLoshweXRx3zgw6+uNZzgJBP/pQxa9Jg8eBCQQe8Zz7mxJvR/
+         JbpPh5vfbw9Wr9G0IrrAU0vLQpzAiUbT23hUja41KhOYp9bOqhHygT/nijdmf4m8Il
+         +8ExNI1drKf6GUJO4uIa2Y7HXAborrNS4fBMj3m5f7HLeZmfY/qZruKlWWNt8ylnCi
+         4ep+pq1ei2/Cw==
+Date:   Sat, 21 Oct 2023 19:44:28 +0100
+From:   =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
+        Rob Herring <robh@kernel.org>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [PATCH] drm/panfrost: Remove incorrect IS_ERR() check
+Message-ID: <y5k6fhinzwd6yhbskvkaeiywp7vcsri3macjlwz3s7ug57erth@5foiaaf3hkr7>
+References: <20231020104405.53992-1-steven.price@arm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20231020104405.53992-1-steven.price@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 20.10.2023 11:44, Steven Price wrote:
+> sg_page_iter_page() doesn't return an error code, so the IS_ERR() check
+> is wrong and the error path will never be executed. This also allows
+> simplifying the code to remove the local variable 'page'.
+> 
+> CC: Adrián Larumbe <adrian.larumbe@collabora.com>
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/r/376713ff-9a4f-4ea3-b097-fb5efb685d95@moroto.mountain
+> Signed-off-by: Steven Price <steven.price@arm.com>
 
-Linus,
+Reviewed-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+Tested-by: Adrián Larumbe <adrian.larumbe@collabora.com>
 
-Please pull another round of fixes from the GPIO subsystem for the next
-RC. There are two fixes for one of the drivers and a one-liner for ACPI
-handling. Details are in the signed tag.
-
-Bartosz
-
-The following changes since commit 58720809f52779dc0f08e53e54b014209d13eebb:
-
-  Linux 6.6-rc6 (2023-10-15 13:34:39 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v6.6-rc7
-
-for you to fetch changes up to 479ac419206b5fe4ce4e40de61ac3210a36711aa:
-
-  gpiolib: acpi: Add missing memset(0) to acpi_get_gpiod_from_data() (2023-10-20 11:24:16 +0200)
-
-----------------------------------------------------------------
-gpio fixes for v6.6-rc7
-
-- fix interrupt handling in suspend and wakeup in gpio-vf610
-- fix a bug on setting direction to output in gpio-vf610
-- add a missing memset() in gpio ACPI code
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      gpiolib: acpi: Add missing memset(0) to acpi_get_gpiod_from_data()
-
-Haibo Chen (2):
-      gpio: vf610: mask the gpio irq in system suspend and support wakeup
-      gpio: vf610: set value before the direction to avoid a glitch
-
- drivers/gpio/gpio-vf610.c   | 15 ++++++++-------
- drivers/gpio/gpiolib-acpi.c |  1 +
- 2 files changed, 9 insertions(+), 7 deletions(-)
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_dump.c | 12 ++----------
+>  1 file changed, 2 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_dump.c b/drivers/gpu/drm/panfrost/panfrost_dump.c
+> index e7942ac449c6..47751302f1bc 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_dump.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_dump.c
+> @@ -220,16 +220,8 @@ void panfrost_core_dump(struct panfrost_job *job)
+>  
+>  		iter.hdr->bomap.data[0] = bomap - bomap_start;
+>  
+> -		for_each_sgtable_page(bo->base.sgt, &page_iter, 0) {
+> -			struct page *page = sg_page_iter_page(&page_iter);
+> -
+> -			if (!IS_ERR(page)) {
+> -				*bomap++ = page_to_phys(page);
+> -			} else {
+> -				dev_err(pfdev->dev, "Panfrost Dump: wrong page\n");
+> -				*bomap++ = 0;
+> -			}
+> -		}
+> +		for_each_sgtable_page(bo->base.sgt, &page_iter, 0)
+> +			*bomap++ = page_to_phys(sg_page_iter_page(&page_iter));
+>  
+>  		iter.hdr->bomap.iova = mapping->mmnode.start << PAGE_SHIFT;
+>  
+> -- 
+> 2.34.1
