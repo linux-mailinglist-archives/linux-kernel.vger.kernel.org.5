@@ -2,230 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C17B17D1B7C
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 09:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E507D1B81
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 09:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbjJUHTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 03:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54726 "EHLO
+        id S230419AbjJUHVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 03:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJUHTD (ORCPT
+        with ESMTP id S229472AbjJUHVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 03:19:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33982D63;
-        Sat, 21 Oct 2023 00:18:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697872738; x=1729408738;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Ird0lBAgWOCgFp5VyruLNWyvOrnWYbzy17TTHvnJ2Q0=;
-  b=lVfKNeMMBzhDra810cajxXwuCzptGpOBZiNCpjvBqlocZ/Q0ipqo357p
-   Ge4i9unIridFRchi1xwbk1LOUeiYXrt9ht/6D31Xs3WUH5FrlRb08rkUx
-   aP7vEHX2SWBP6dhA03XRjMD4mTIbnQTD5CDYMmHLsOPPUposrDEYwQWe1
-   fDXcJs3pZTMW7v5qDMDw9585g3d4IFZy24JbwdJ6jsOHDhsTOWyE8cfXy
-   aNGIY8C7jdSywJCn8flMJZp0ZEdwsqVi2PVmFvc0EeqIaiD+ZoeizsHzL
-   YpelYbGijbqckQU95iXZ6UWlLCOijk1HkmEOkytyFdBFAxymDgJpIwVUe
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="365951545"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="365951545"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2023 00:18:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10869"; a="823474085"
-X-IronPort-AV: E=Sophos;i="6.03,240,1694761200"; 
-   d="scan'208";a="823474085"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Oct 2023 00:18:55 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qu6G5-0004Ye-0O;
-        Sat, 21 Oct 2023 07:18:53 +0000
-Date:   Sat, 21 Oct 2023 15:18:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        gregory.clement@bootlin.com, andi.shyti@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: Re: [PATCH 2/2] i2c: mv64xxx: add an optional reset-gpios property
-Message-ID: <202310211508.57kpcEto-lkp@intel.com>
-References: <20231012035838.2804064-3-chris.packham@alliedtelesis.co.nz>
+        Sat, 21 Oct 2023 03:21:36 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A6CD66;
+        Sat, 21 Oct 2023 00:21:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1697872859; x=1698477659; i=deller@gmx.de;
+        bh=t0qmlBuPY/Ez7cc6cey9RvpwpcwJrhijO9qCda7KbxA=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=BR5xTn6Q1t+sRGha0lXJwR760k81bRCESjW8XQCOsI2h3TABFQ5hlCFSYPLzL4n8
+         8fw/ZzXB+w/Ppu+t+HWEKfLV0eRYbA0Jqi7oRHtpD/BrVkFhVtGZhTlsc/2iaUD7i
+         e8qLgknBKcX2ASWK8uvKYV+cwD89xNPMhq3NSZ0VCMicOGcX0y3K+SMp1f7FIMsub
+         Ai3Y+C23BSDs9N/MCPjK2zaihixL5oilSaR7PmN2yFAm990aakTfxi6GJZYqUMV7M
+         JLRnTk/zX+zzO2qqpMpMPQivXxFTriS4JOgzMHw4g5Dvd6vGKuoEKtvs1jfBRToJj
+         KdJLbTD1CW4UmxbqwA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.159.149]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MkHQX-1rMW5y1awL-00kiyV; Sat, 21
+ Oct 2023 09:20:59 +0200
+Message-ID: <b25c8ea1-efcd-4861-a9b4-5db89ccc7070@gmx.de>
+Date:   Sat, 21 Oct 2023 09:20:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231012035838.2804064-3-chris.packham@alliedtelesis.co.nz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] parisc: simplify smp_prepare_boot_cpu()
+Content-Language: en-US
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc:     linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        linux-parisc@vger.kernel.org
+References: <E1qtqkk-00AJHA-1u@rmk-PC.armlinux.org.uk>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <E1qtqkk-00AJHA-1u@rmk-PC.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:gI/ncdJ0WG05ciTiNiPfvAmpR2yduFRb45bhhS/o8bbksVDM4vw
+ 7Cw1DWh+Dfeiooc20khtrM46pEx7Xp4Au+tZ/NQOLThqmATsxoyP6g6+Hgab1yzHTh1oTTw
+ +A81acUIDgG7/08mKQaIHGfT2X3ekie0dxGgbwvY7O63fd1N7UGXhgV9r/+VvmEgey/SqeQ
+ lpb+qkTuF1HEggHXcRCpQ==
+UI-OutboundReport: notjunk:1;M01:P0:Yww/wBIHv+E=;w6hOY7IcprQJ9ea9gbUQwe8Io2t
+ 2O5KbX18Wq2gIZEAuOFgtNY+IRDByo0ti2Q9qaYC9UeBiB+lm4z390CzYe5bDu+3+ao+CfXf6
+ SQ3w9r31TzDx6F4NwaKiwt4sTGT7ZgNDdX6y+EFmr71WBh9jpDQCPBogNA0zmMOZvTuT+9cqf
+ okAkCIv0OeOdwkZi9iKD7zVlUZLXPWoZPMxnfJN8nm7MZjyITTy4TCC0YS9za176+dwmqf87d
+ xheBFENGiquqgaVNxOPsLB4qmGUnVFdLc6GFUIYALmZyuI0Uq7H8T9OcR+vOPbx7PrWxQQcgg
+ AU8Y1QrMJkIUkNcNUOGau2zaYj35V+A1rGFio04R2ueWA0cGrIMc4v4aufPAKtLnr6MutY7HK
+ JPLc+RbUpbDyScw0DtQMzkgkZStS5GJTbNbL2C7lrs0GbP0S6VJp5Z6QHSjRuBCANWIjbKegk
+ PuWfn47MCUqJ6X/AOyxMeMPAYlmlLrDW9hFGXX9D2H7k3kwBixDzQc6tfwVWx/8kEhCwgeoZf
+ TIiYPK/osQvSfGzkF/Mles2MAOM1Egm1l+82f4goEfUBnZYAgR3cvmtDt4Ma8ZunXHHl72tOp
+ WwRExVjv7F4E9G9U9kXiF5a60JK34mNfIEwM+xDZBATcHs23f69vSzkxzKrRidgajrelTVhQL
+ QW6cED6GMW14DrdacbaznZD3eW0lP60B7tOcLCSMnzVSlMM8iN1bT/5+vdCxkGmqmX4BI01qe
+ XlCPD7U4pktliskKv7nontz+Pm6943g4EOeJ9xrQ7A9YQ+iWt3XuOqHUv+wTw/EuCPbObTjcK
+ SoeXqWBX9UquxcMwcfMXYl0hJV2mjXobp6gQOmMgrZ/2RzCcRtHFD2PZDCnrUeTJf8dM4PpwV
+ PCb83sFh9iaxopDcj1y8HQZYrvJ/Vrc6uOyhkfSTXFOAqDRq/fSDWUG8wjLVy0ECKtaoFkIk9
+ i1IWC9mkaNHQFhmq0559ZrVVXsM=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris,
+On 10/20/23 16:45, Russell King (Oracle) wrote:
+> smp_prepare_boot_cpu() reads the cpuid of the first CPU, printing a
+> message to state which processor booted, and setting it online and
+> present.
+>
+> This cpuid is retrieved from per_cpu(cpu_data, 0).cpuid, which is
+> initialised in arch/parisc/kernel/processor.c:processor_probe() thusly:
+>
+> 	p =3D &per_cpu(cpu_data, cpuid);
+> ...
+> 	p->cpuid =3D cpuid;	/* save CPU id */
+>
+> Consequently, the cpuid retrieved seems to be guaranteed to also be
+> zero, meaning that the message printed in this boils down to:
+>
+> 	pr_info("SMP: bootstrap CPU ID is 0\n");
+>
+> Moreover, since kernel/cpu.c::boot_cpu_init() already sets CPU 0 to
+> be present and online, there is no need to do this again in
+> smp_prepare_boot_cpu().
+>
+> Remove this code, and simplify the printk().
+>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-kernel test robot noticed the following build errors:
+applied.
+Removed the "Setup BSP mappings" comment too, as
+Jonathan Cameron suggested.
 
-[auto build test ERROR on wsa/i2c/for-next]
-[also build test ERROR on linus/master v6.6-rc6 next-20231020]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Chris-Packham/dt-bindings-i2c-mv64xxx-add-reset-gpios-property/20231017-102540
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-next
-patch link:    https://lore.kernel.org/r/20231012035838.2804064-3-chris.packham%40alliedtelesis.co.nz
-patch subject: [PATCH 2/2] i2c: mv64xxx: add an optional reset-gpios property
-config: i386-buildonly-randconfig-001-20231021 (https://download.01.org/0day-ci/archive/20231021/202310211508.57kpcEto-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231021/202310211508.57kpcEto-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310211508.57kpcEto-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/i2c/busses/i2c-mv64xxx.c: In function 'mv64xxx_i2c_probe':
->> drivers/i2c/busses/i2c-mv64xxx.c:1028:32: error: implicit declaration of function 'devm_gpiod_get_optional'; did you mean 'devm_clk_get_optional'? [-Werror=implicit-function-declaration]
-    1028 |         drv_data->reset_gpio = devm_gpiod_get_optional(&pd->dev, "reset", GPIOD_OUT_HIGH);
-         |                                ^~~~~~~~~~~~~~~~~~~~~~~
-         |                                devm_clk_get_optional
->> drivers/i2c/busses/i2c-mv64xxx.c:1028:75: error: 'GPIOD_OUT_HIGH' undeclared (first use in this function)
-    1028 |         drv_data->reset_gpio = devm_gpiod_get_optional(&pd->dev, "reset", GPIOD_OUT_HIGH);
-         |                                                                           ^~~~~~~~~~~~~~
-   drivers/i2c/busses/i2c-mv64xxx.c:1028:75: note: each undeclared identifier is reported only once for each function it appears in
->> drivers/i2c/busses/i2c-mv64xxx.c:1068:17: error: implicit declaration of function 'gpiod_set_value_cansleep' [-Werror=implicit-function-declaration]
-    1068 |                 gpiod_set_value_cansleep(drv_data->reset_gpio, 0);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+Thank you!
+Helge
 
 
-vim +1028 drivers/i2c/busses/i2c-mv64xxx.c
 
-   983	
-   984	static int
-   985	mv64xxx_i2c_probe(struct platform_device *pd)
-   986	{
-   987		struct mv64xxx_i2c_data		*drv_data;
-   988		struct mv64xxx_i2c_pdata	*pdata = dev_get_platdata(&pd->dev);
-   989		int	rc;
-   990	
-   991		if ((!pdata && !pd->dev.of_node))
-   992			return -ENODEV;
-   993	
-   994		drv_data = devm_kzalloc(&pd->dev, sizeof(struct mv64xxx_i2c_data),
-   995					GFP_KERNEL);
-   996		if (!drv_data)
-   997			return -ENOMEM;
-   998	
-   999		drv_data->reg_base = devm_platform_ioremap_resource(pd, 0);
-  1000		if (IS_ERR(drv_data->reg_base))
-  1001			return PTR_ERR(drv_data->reg_base);
-  1002	
-  1003		strscpy(drv_data->adapter.name, MV64XXX_I2C_CTLR_NAME " adapter",
-  1004			sizeof(drv_data->adapter.name));
-  1005	
-  1006		init_waitqueue_head(&drv_data->waitq);
-  1007		spin_lock_init(&drv_data->lock);
-  1008	
-  1009		/* Not all platforms have clocks */
-  1010		drv_data->clk = devm_clk_get(&pd->dev, NULL);
-  1011		if (IS_ERR(drv_data->clk)) {
-  1012			if (PTR_ERR(drv_data->clk) == -EPROBE_DEFER)
-  1013				return -EPROBE_DEFER;
-  1014			drv_data->clk = NULL;
-  1015		}
-  1016	
-  1017		drv_data->reg_clk = devm_clk_get(&pd->dev, "reg");
-  1018		if (IS_ERR(drv_data->reg_clk)) {
-  1019			if (PTR_ERR(drv_data->reg_clk) == -EPROBE_DEFER)
-  1020				return -EPROBE_DEFER;
-  1021			drv_data->reg_clk = NULL;
-  1022		}
-  1023	
-  1024		drv_data->irq = platform_get_irq(pd, 0);
-  1025		if (drv_data->irq < 0)
-  1026			return drv_data->irq;
-  1027	
-> 1028		drv_data->reset_gpio = devm_gpiod_get_optional(&pd->dev, "reset", GPIOD_OUT_HIGH);
-  1029		if (IS_ERR(drv_data->reset_gpio))
-  1030			return PTR_ERR(drv_data->reset_gpio);
-  1031	
-  1032		if (pdata) {
-  1033			drv_data->freq_m = pdata->freq_m;
-  1034			drv_data->freq_n = pdata->freq_n;
-  1035			drv_data->adapter.timeout = msecs_to_jiffies(pdata->timeout);
-  1036			drv_data->offload_enabled = false;
-  1037			memcpy(&drv_data->reg_offsets, &mv64xxx_i2c_regs_mv64xxx, sizeof(drv_data->reg_offsets));
-  1038		} else if (pd->dev.of_node) {
-  1039			rc = mv64xxx_of_config(drv_data, &pd->dev);
-  1040			if (rc)
-  1041				return rc;
-  1042		}
-  1043	
-  1044		rc = mv64xxx_i2c_init_recovery_info(drv_data, &pd->dev);
-  1045		if (rc == -EPROBE_DEFER)
-  1046			return rc;
-  1047	
-  1048		drv_data->adapter.dev.parent = &pd->dev;
-  1049		drv_data->adapter.algo = &mv64xxx_i2c_algo;
-  1050		drv_data->adapter.owner = THIS_MODULE;
-  1051		drv_data->adapter.class = I2C_CLASS_DEPRECATED;
-  1052		drv_data->adapter.nr = pd->id;
-  1053		drv_data->adapter.dev.of_node = pd->dev.of_node;
-  1054		platform_set_drvdata(pd, drv_data);
-  1055		i2c_set_adapdata(&drv_data->adapter, drv_data);
-  1056	
-  1057		pm_runtime_set_autosuspend_delay(&pd->dev, MSEC_PER_SEC);
-  1058		pm_runtime_use_autosuspend(&pd->dev);
-  1059		pm_runtime_enable(&pd->dev);
-  1060		if (!pm_runtime_enabled(&pd->dev)) {
-  1061			rc = mv64xxx_i2c_runtime_resume(&pd->dev);
-  1062			if (rc)
-  1063				goto exit_disable_pm;
-  1064		}
-  1065	
-  1066		if (drv_data->reset_gpio) {
-  1067			udelay(1);
-> 1068			gpiod_set_value_cansleep(drv_data->reset_gpio, 0);
-  1069			udelay(1);
-  1070		}
-  1071	
-  1072		rc = request_irq(drv_data->irq, mv64xxx_i2c_intr, 0,
-  1073				 MV64XXX_I2C_CTLR_NAME, drv_data);
-  1074		if (rc) {
-  1075			dev_err(&drv_data->adapter.dev,
-  1076				"mv64xxx: Can't register intr handler irq%d: %d\n",
-  1077				drv_data->irq, rc);
-  1078			goto exit_disable_pm;
-  1079		} else if ((rc = i2c_add_numbered_adapter(&drv_data->adapter)) != 0) {
-  1080			dev_err(&drv_data->adapter.dev,
-  1081				"mv64xxx: Can't add i2c adapter, rc: %d\n", -rc);
-  1082			goto exit_free_irq;
-  1083		}
-  1084	
-  1085		return 0;
-  1086	
-  1087	exit_free_irq:
-  1088		free_irq(drv_data->irq, drv_data);
-  1089	exit_disable_pm:
-  1090		pm_runtime_disable(&pd->dev);
-  1091		if (!pm_runtime_status_suspended(&pd->dev))
-  1092			mv64xxx_i2c_runtime_suspend(&pd->dev);
-  1093	
-  1094		return rc;
-  1095	}
-  1096	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>   arch/parisc/kernel/smp.c | 7 +------
+>   1 file changed, 1 insertion(+), 6 deletions(-)
+>
+> diff --git a/arch/parisc/kernel/smp.c b/arch/parisc/kernel/smp.c
+> index 2019c1f04bd0..989efc8c67a5 100644
+> --- a/arch/parisc/kernel/smp.c
+> +++ b/arch/parisc/kernel/smp.c
+> @@ -404,13 +404,8 @@ static int smp_boot_one_cpu(int cpuid, struct task_=
+struct *idle)
+>
+>   void __init smp_prepare_boot_cpu(void)
+>   {
+> -	int bootstrap_processor =3D per_cpu(cpu_data, 0).cpuid;
+> -
+>   	/* Setup BSP mappings */
+> -	printk(KERN_INFO "SMP: bootstrap CPU ID is %d\n", bootstrap_processor)=
+;
+> -
+> -	set_cpu_online(bootstrap_processor, true);
+> -	set_cpu_present(bootstrap_processor, true);
+> +	pr_info("SMP: bootstrap CPU ID is 0\n");
+>   }
+>
+>
+
