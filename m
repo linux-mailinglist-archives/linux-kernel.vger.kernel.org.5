@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1F17D1DC3
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDA07D1DC4
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbjJUPCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 11:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        id S231519AbjJUPDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 11:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbjJUPCU (ORCPT
+        with ESMTP id S229784AbjJUPDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 11:02:20 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EF2DA
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:02:19 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53f9af41444so2773118a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:02:19 -0700 (PDT)
+        Sat, 21 Oct 2023 11:03:38 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47420E7
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:03:33 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c9d4f08d7cso122685ad.0
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:03:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697900538; x=1698505338; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YCJvi57jtZdtcZj+EIuPUrFmFUxCTQA0afp++0JCcCE=;
-        b=ALb9b92aGj77JAoFotPcTxcohOk9PS3klCKsG/0bAGEWaB7SGf6drmFxvCB74X0d68
-         OjsEns/GWSu2WeyM2556yctfNNF3fKnWSv9V8MjsAIkNcELqJHhk2b54mH9+Gju6oIeM
-         gCSSRDqcJjKJTGIvCPsgZ+c7wNJjwCaVO+UOFcxAFokcWIZ9drB3rrPwKn4xR5/Rd42N
-         UWT7pkPnJKj5FaeNVVmcoqoIqGpIc/HYpCycRD1f3mmnLtZFPgo6lxhsHb0xtF437I83
-         StJacy5gam4g50LgPJyZ2TskIE7mUUH4uhNi2JayHGV8Uw4xuZUkQwsFHvZzPDeN+bhv
-         f9yA==
+        d=chromium.org; s=google; t=1697900613; x=1698505413; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GuPSmAl7Gc08Rh/pvJ8sfj5/IRqjGMuojTRoU/8OXYE=;
+        b=QNlNBCBoy05xt0KD1KD48HNlwcuASk5aj32NtGTPpc15s/53yLCT3H/+qOymWQdT8e
+         /aeIe0PiyL0Ik9lD/65yusPh6GjlnGe0llonlYvpXBQMS902bcHdcY+FZltZbqQAU+n7
+         veCP4VjbZ4C/ym9Ud5QlUcb6xgRfNSPYp9sn0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697900538; x=1698505338;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697900613; x=1698505413;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YCJvi57jtZdtcZj+EIuPUrFmFUxCTQA0afp++0JCcCE=;
-        b=X82TIK2XzxsAlYvlrBWWS3l1RrcOosrSrzsOa3DCOcxshTMedLgQZJOueqpUKVuAlQ
-         qPSx6vdr/bTatE/gvQt5XH83at9veuocPtEHFQXyJHMBOrJG27DQW3fXEA/XmlisJVut
-         TX6MYEsmjMVIM2LrBTCZnqRFb2ORZ3MIN8nQ7K84vw897ttnCgXODflzuQ/TG5iU4Xrb
-         FWQrOcKZrbG3AyFndPsC4AknXw/NoCxR5bj6N3qG2usZcwjr3pToAF0XiSR/iw6iB1jd
-         bHIDO+VLGJ1KMe+LZhoC2LpRcMCHp2mnNofV9nr7f5P7cPtVyFmOmFs5a5qleepE8arG
-         83ZA==
-X-Gm-Message-State: AOJu0YwQK0zSgKYoOp/OGd/Z6m3jLL5uQZ7CqJBMy92aXqzyOOKQaTvB
-        8hTPmVxFk/EoMB7mcSeXuOfHIbH0fGM=
-X-Google-Smtp-Source: AGHT+IGAfiPwgV3TmZYEuLImV5VQMc8Vxx5GhiwP2VvFBdgLMYPYkZDwGDF3k622TPtGZaZQviPVBw==
-X-Received: by 2002:a50:a45e:0:b0:53e:332e:3e04 with SMTP id v30-20020a50a45e000000b0053e332e3e04mr3116712edb.37.1697900537644;
-        Sat, 21 Oct 2023 08:02:17 -0700 (PDT)
-Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
-        by smtp.gmail.com with ESMTPSA id a62-20020a509ec4000000b0053e5f67d637sm3625588edf.9.2023.10.21.08.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 08:02:15 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 21 Oct 2023 17:02:13 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: BUG: KASAN: slab-use-after-free in reweight_entity+0x8d4
-Message-ID: <ZTPn9VztOvvux3oD@gmail.com>
-References: <CABXGCsNMFZHXvtN7uAmjUPewfAcgD038rMhkruQCD8kqS3cXaA@mail.gmail.com>
+        bh=GuPSmAl7Gc08Rh/pvJ8sfj5/IRqjGMuojTRoU/8OXYE=;
+        b=T5cANOQdewgLnWwuzBbEg1UiPnbEZNhnVYFxgotVZdy7w3ykQ2NbhRCe4ggRQXFa5h
+         CN100gfOu6Q+bEOey8Jjj7pkEDz2N6DNl9RrmEuHcc+Rw5UXHp0DP4PxaWxBueFNgOXR
+         o+4SziItibyM+HsRe07efKdmN/5eTb/zCF/9JAQdFEqA3wI+g4az1qFlqBeEmHz8CbYC
+         DsadpJYVePwhVZoIBIr/DFUIv0oqsGCYzaC1s8KpD4aVVxhjybREavLgYCcmr/ev0R6x
+         56QISgl7bIxUvgNAHR0/m9Olm9IIj4gPyJ273tAzEdnDBJRmFniB9QdrFJDWyaRPpNdv
+         Z2Qg==
+X-Gm-Message-State: AOJu0YyKOmBZKzwxOnvMFbCrB4FMzcpLC613by5L+RuFU6l9igztr5X2
+        F3MA36C1dZvdqpzuyrFQn4Eq2kThaO6/2CMyXz9gGA==
+X-Google-Smtp-Source: AGHT+IEUrjQpbqzmBCjf5tVoCSi89bnrApkE030h0X34HlZN2zt0Z3EiPkzND/i5smqKbYe58V947QrGj8SmVsPevu8=
+X-Received: by 2002:a17:902:d551:b0:1c7:47ca:f075 with SMTP id
+ z17-20020a170902d55100b001c747caf075mr408500plf.15.1697900612332; Sat, 21 Oct
+ 2023 08:03:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABXGCsNMFZHXvtN7uAmjUPewfAcgD038rMhkruQCD8kqS3cXaA@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231020210751.3415723-1-dianders@chromium.org> <20231020140655.v5.5.I300ed6c3269c77756bdd10dd0d6f97db85470186@changeid>
+In-Reply-To: <20231020140655.v5.5.I300ed6c3269c77756bdd10dd0d6f97db85470186@changeid>
+From:   Grant Grundler <grundler@chromium.org>
+Date:   Sat, 21 Oct 2023 08:03:21 -0700
+Message-ID: <CANEJEGsrJvss-MGfGwV+M5kgTokrF+HX_nZb+ASoEKuUKV7gGg@mail.gmail.com>
+Subject: Re: [PATCH v5 5/8] r8152: Check for unplug in rtl_phy_patch_request()
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Edward Hill <ecgh@chromium.org>,
+        Laura Nao <laura.nao@collabora.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Simon Horman <horms@kernel.org>, linux-usb@vger.kernel.org,
+        Grant Grundler <grundler@chromium.org>,
+        =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 20, 2023 at 2:08=E2=80=AFPM Douglas Anderson <dianders@chromium=
+.org> wrote:
+>
+> If the adapter is unplugged while we're looping in
+> rtl_phy_patch_request() we could end up looping for 10 seconds (2 ms *
+> 5000 loops). Add code similar to what's done in other places in the
+> driver to check for unplug and bail.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-* Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com> wrote:
+Reviewed-by: Grant Grundler <grundler@chromium.org>
 
-> Hi,
-> I caught one slab-use-after-free durung release cycle 6.6 rc6 and it
-> looks like it will not easily reproduce again.
-> I tried rebooting and repeating all my actions but slab-use-after-free
-> did not happen again.
-> 
-> What we know:
-> 
-> 1) backtrace:
-> 
-> [  336.215839] BUG: KASAN: slab-use-after-free in reweight_entity+0x8d4/0xa50
-> [  336.215846] Read of size 8 at addr ffff88812d1a80b0 by task
-> fossilize_repla/10552
-
-I think it might be the bug fixed via:
-
-  d2929762cc3f ("sched/eevdf: Fix heap corruption more")
-
-Thanks,
-
-	Ingo
+> ---
+>
+> (no changes since v2)
+>
+> Changes in v2:
+> - ("Check for unplug in rtl_phy_patch_request()") new for v2.
+>
+>  drivers/net/usb/r8152.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+> index 656fe90734fc..9888bc43e903 100644
+> --- a/drivers/net/usb/r8152.c
+> +++ b/drivers/net/usb/r8152.c
+> @@ -4046,6 +4046,9 @@ static int rtl_phy_patch_request(struct r8152 *tp, =
+bool request, bool wait)
+>         for (i =3D 0; wait && i < 5000; i++) {
+>                 u32 ocp_data;
+>
+> +               if (test_bit(RTL8152_UNPLUG, &tp->flags))
+> +                       break;
+> +
+>                 usleep_range(1000, 2000);
+>                 ocp_data =3D ocp_reg_read(tp, OCP_PHY_PATCH_STAT);
+>                 if ((ocp_data & PATCH_READY) ^ check)
+> --
+> 2.42.0.758.gaed0368e0e-goog
+>
