@@ -2,256 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F03467D1AC3
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 06:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299867D1B54
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 08:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjJUEdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 00:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51382 "EHLO
+        id S229647AbjJUGdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 02:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJUEdk (ORCPT
+        with ESMTP id S229472AbjJUGdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 00:33:40 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6DED5F
-        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 21:33:36 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VuYfkpw_1697862809;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VuYfkpw_1697862809)
-          by smtp.aliyun-inc.com;
-          Sat, 21 Oct 2023 12:33:30 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org
-Cc:     mgorman@techsingularity.net, hughd@google.com, vbabka@suse.cz,
-        ying.huang@intel.com, ziy@nvidia.com, fengwei.yin@intel.com,
-        baolin.wang@linux.alibaba.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] mm: migrate: record the mlocked page status to remove unnecessary lru drain
-Date:   Sat, 21 Oct 2023 12:33:22 +0800
-Message-Id: <06e9153a7a4850352ec36602df3a3a844de45698.1697859741.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
+        Sat, 21 Oct 2023 02:33:03 -0400
+Received: from mail-oa1-f78.google.com (mail-oa1-f78.google.com [209.85.160.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE409F
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 23:32:57 -0700 (PDT)
+Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-1ea1bc5d50dso2001478fac.0
+        for <linux-kernel@vger.kernel.org>; Fri, 20 Oct 2023 23:32:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697869977; x=1698474777;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IkW/la3MNkqAK76T4FXoe2l8YKRJu+wHh+BtgtvaPjA=;
+        b=EjZnuX1p9IUnhD1WHtaynicYLIZG63GKQis7Vuy9XPuHUKs0g1LasN6/08Pf3G3FJP
+         5GAUKEuKh5v3CCiKTCbuZLwrQ6Wa+4p8CsWe0NvrdOWTl0mWAA8U9QwVlVfhkF4G2q2F
+         pS7P81flRk43xtVu/ZIhM5ngdb37goEP+uUWccPMacnCfBdcUdt8GQ1HW5mwzbjT1+bH
+         TILM7Yj81cigULcGrsZfIrAQgkrrj5od8ZvbkDU6e2s/7YPZ7vl/ip+rzbJryqgiSjO0
+         t2dqYXmkZvRUtghaTxuBdtTLQPbzIj1QTaV/l4Kq/ZQPKbc1okygRzUM4J4voW949mNF
+         92qA==
+X-Gm-Message-State: AOJu0YzHk1wuJOR6wL3nocqUA9aC3Gn2JmzgVD4gew0HyItofweetOMr
+        NNBTVZCkjiY5rhy/9kTfU4x4t66rlIhci1xKi+MkW9xHNXwE
+X-Google-Smtp-Source: AGHT+IFOaSAtVO2JWJNVqPZAKSM/060ynFIF6jGHT4dlqqe4LN3Y99GwTaAlkSLzaxBj/LEEhV/hJ7V+uyuF03KDt2V4X1XGiOdD
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6870:3042:b0:1e9:6ade:af41 with SMTP id
+ u2-20020a056870304200b001e96adeaf41mr1820944oau.5.1697869977112; Fri, 20 Oct
+ 2023 23:32:57 -0700 (PDT)
+Date:   Fri, 20 Oct 2023 23:32:57 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dc5c0b06083428d3@google.com>
+Subject: [syzbot] [input?] WARNING in cm109_input_open/usb_submit_urb (2)
+From:   syzbot <syzbot+2e305789579d76b5c253@syzkaller.appspotmail.com>
+To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When doing compaction, I found the lru_add_drain() is an obvious hotspot
-when migrating pages. The distribution of this hotspot is as follows:
-   - 18.75% compact_zone
-      - 17.39% migrate_pages
-         - 13.79% migrate_pages_batch
-            - 11.66% migrate_folio_move
-               - 7.02% lru_add_drain
-                  + 7.02% lru_add_drain_cpu
-               + 3.00% move_to_new_folio
-                 1.23% rmap_walk
-            + 1.92% migrate_folio_unmap
-         + 3.20% migrate_pages_sync
-      + 0.90% isolate_migratepages
+Hello,
 
-The lru_add_drain() was added by commit c3096e6782b7 ("mm/migrate:
-__unmap_and_move() push good newpage to LRU") to drain the newpage to LRU
-immediately, to help to build up the correct newpage->mlock_count in
-remove_migration_ptes() for mlocked pages. However, if there are no mlocked
-pages are migrating, then we can avoid this lru drain operation, especailly
-for the heavy concurrent scenarios.
+syzbot found the following issue on:
 
-So we can record the source pages' mlocked status in migrate_folio_unmap(),
-and only drain the lru list when the mlocked status is set in migrate_folio_move().
-In addition, the page was already isolated from lru when migrating, so checking
-the mlocked status is stable by folio_test_mlocked() in migrate_folio_unmap().
+HEAD commit:    213f891525c2 Merge tag 'probes-fixes-v6.6-rc6' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1645d5c5680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3c2b0838e2a16cba
+dashboard link: https://syzkaller.appspot.com/bug?extid=2e305789579d76b5c253
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-After this patch, I can see the hotpot of the lru_add_drain() is gone:
-   - 9.41% migrate_pages_batch
-      - 6.15% migrate_folio_move
-         - 3.64% move_to_new_folio
-            + 1.80% migrate_folio_extra
-            + 1.70% buffer_migrate_folio
-         + 1.41% rmap_walk
-         + 0.62% folio_add_lru
-      + 3.07% migrate_folio_unmap
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Meanwhile, the compaction latency shows some improvements when running
-thpscale:
-                            base                   patched
-Amean     fault-both-1      1131.22 (   0.00%)     1112.55 *   1.65%*
-Amean     fault-both-3      2489.75 (   0.00%)     2324.15 *   6.65%*
-Amean     fault-both-5      3257.37 (   0.00%)     3183.18 *   2.28%*
-Amean     fault-both-7      4257.99 (   0.00%)     4079.04 *   4.20%*
-Amean     fault-both-12     6614.02 (   0.00%)     6075.60 *   8.14%*
-Amean     fault-both-18    10607.78 (   0.00%)     8978.86 *  15.36%*
-Amean     fault-both-24    14911.65 (   0.00%)    11619.55 *  22.08%*
-Amean     fault-both-30    14954.67 (   0.00%)    14925.66 *   0.19%*
-Amean     fault-both-32    16654.87 (   0.00%)    15580.31 *   6.45%*
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b408820be5ac/disk-213f8915.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4d1614ab03cf/vmlinux-213f8915.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0405348b5203/bzImage-213f8915.xz
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2e305789579d76b5c253@syzkaller.appspotmail.com
+
+usb 5-1: New USB device found, idVendor=0d8c, idProduct=000e, bcdDevice=8e.8f
+usb 5-1: New USB device strings: Mfr=0, Product=24, SerialNumber=3
+usb 5-1: Product: syz
+usb 5-1: SerialNumber: syz
+usb 5-1: config 0 descriptor??
+cm109 5-1:0.8: invalid payload size 0, expected 4
+input: CM109 USB driver as /devices/platform/dummy_hcd.4/usb5/5-1/5-1:0.8/input/input7
+------------[ cut here ]------------
+URB ffff88814239df00 submitted while active
+WARNING: CPU: 1 PID: 5140 at drivers/usb/core/urb.c:379 usb_submit_urb+0x14cb/0x1720 drivers/usb/core/urb.c:379
+Modules linked in:
+CPU: 1 PID: 5140 Comm: kworker/1:4 Not tainted 6.6.0-rc6-syzkaller-00029-g213f891525c2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:usb_submit_urb+0x14cb/0x1720 drivers/usb/core/urb.c:379
+Code: bf 0e fe eb cb bb fe ff ff ff e9 ca f3 ff ff e8 3b 43 42 fb 48 89 de 48 c7 c7 40 5e 40 8b c6 05 ae e5 72 08 01 e8 05 68 08 fb <0f> 0b e9 ba fe ff ff bb f8 ff ff ff e9 9e f3 ff ff 48 89 ef e8 3c
+RSP: 0018:ffffc900043eef30 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff88814239df00 RCX: ffffc90013d1f000
+RDX: 0000000000040000 RSI: ffffffff814df0c6 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0a65766974636120 R12: ffff88801d85b810
+R13: ffff88801d85b8a0 R14: ffff88801d85b850 R15: ffff88802f7af2e8
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f691b620d58 CR3: 000000002b3be000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ cm109_input_open+0x271/0x460 drivers/input/misc/cm109.c:572
+ input_open_device+0x1c9/0x310 drivers/input/input.c:654
+ kbd_connect+0xff/0x150 drivers/tty/vt/keyboard.c:1593
+ input_attach_handler.isra.0+0x17c/0x250 drivers/input/input.c:1064
+ input_register_device+0xb1e/0x1130 drivers/input/input.c:2396
+ cm109_usb_probe+0x1225/0x17b0 drivers/input/misc/cm109.c:806
+ usb_probe_interface+0x307/0x930 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+ __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
+ bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
+ __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
+ bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
+ device_add+0x117e/0x1aa0 drivers/base/core.c:3624
+ usb_set_configuration+0x10cb/0x1c40 drivers/usb/core/message.c:2207
+ usb_generic_driver_probe+0xca/0x130 drivers/usb/core/generic.c:238
+ usb_probe_device+0xda/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+ __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
+ bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
+ __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
+ bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
+ device_add+0x117e/0x1aa0 drivers/base/core.c:3624
+ usb_new_device+0xd80/0x1960 drivers/usb/core/hub.c:2597
+ hub_port_connect drivers/usb/core/hub.c:5459 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5599 [inline]
+ port_event drivers/usb/core/hub.c:5759 [inline]
+ hub_event+0x2dac/0x4e10 drivers/usb/core/hub.c:5841
+ process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
+ kthread+0x33c/0x440 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+
+
 ---
-Changes from v2:
- - Use BIT() to define macros.
- - Simplify handing page_was_mapped and page_was_mlocked variables with
-introducing old_page_state variable.
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Changes from v1:
- - Use separate flags in __migrate_folio_record() to avoid to pack flags
-in each call site per Ying.
----
- mm/migrate.c | 48 +++++++++++++++++++++++++++++-------------------
- 1 file changed, 29 insertions(+), 19 deletions(-)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 125194f5af0f..35a88334bb3c 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1027,22 +1027,28 @@ union migration_ptr {
- 	struct anon_vma *anon_vma;
- 	struct address_space *mapping;
- };
-+
-+enum {
-+	PAGE_WAS_MAPPED = BIT(0),
-+	PAGE_WAS_MLOCKED = BIT(1),
-+};
-+
- static void __migrate_folio_record(struct folio *dst,
--				   unsigned long page_was_mapped,
-+				   unsigned long old_page_state,
- 				   struct anon_vma *anon_vma)
- {
- 	union migration_ptr ptr = { .anon_vma = anon_vma };
- 	dst->mapping = ptr.mapping;
--	dst->private = (void *)page_was_mapped;
-+	dst->private = (void *)old_page_state;
- }
- 
- static void __migrate_folio_extract(struct folio *dst,
--				   int *page_was_mappedp,
-+				   int *old_page_state,
- 				   struct anon_vma **anon_vmap)
- {
- 	union migration_ptr ptr = { .mapping = dst->mapping };
- 	*anon_vmap = ptr.anon_vma;
--	*page_was_mappedp = (unsigned long)dst->private;
-+	*old_page_state = (unsigned long)dst->private;
- 	dst->mapping = NULL;
- 	dst->private = NULL;
- }
-@@ -1103,7 +1109,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- {
- 	struct folio *dst;
- 	int rc = -EAGAIN;
--	int page_was_mapped = 0;
-+	int old_page_state = 0;
- 	struct anon_vma *anon_vma = NULL;
- 	bool is_lru = !__folio_test_movable(src);
- 	bool locked = false;
-@@ -1157,6 +1163,8 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- 		folio_lock(src);
- 	}
- 	locked = true;
-+	if (folio_test_mlocked(src))
-+		old_page_state |= PAGE_WAS_MLOCKED;
- 
- 	if (folio_test_writeback(src)) {
- 		/*
-@@ -1206,7 +1214,7 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- 	dst_locked = true;
- 
- 	if (unlikely(!is_lru)) {
--		__migrate_folio_record(dst, page_was_mapped, anon_vma);
-+		__migrate_folio_record(dst, old_page_state, anon_vma);
- 		return MIGRATEPAGE_UNMAP;
- 	}
- 
-@@ -1232,11 +1240,11 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- 		VM_BUG_ON_FOLIO(folio_test_anon(src) &&
- 			       !folio_test_ksm(src) && !anon_vma, src);
- 		try_to_migrate(src, mode == MIGRATE_ASYNC ? TTU_BATCH_FLUSH : 0);
--		page_was_mapped = 1;
-+		old_page_state |= PAGE_WAS_MAPPED;
- 	}
- 
- 	if (!folio_mapped(src)) {
--		__migrate_folio_record(dst, page_was_mapped, anon_vma);
-+		__migrate_folio_record(dst, old_page_state, anon_vma);
- 		return MIGRATEPAGE_UNMAP;
- 	}
- 
-@@ -1248,7 +1256,8 @@ static int migrate_folio_unmap(new_folio_t get_new_folio,
- 	if (rc == -EAGAIN)
- 		ret = NULL;
- 
--	migrate_folio_undo_src(src, page_was_mapped, anon_vma, locked, ret);
-+	migrate_folio_undo_src(src, old_page_state & PAGE_WAS_MAPPED,
-+			       anon_vma, locked, ret);
- 	migrate_folio_undo_dst(dst, dst_locked, put_new_folio, private);
- 
- 	return rc;
-@@ -1261,12 +1270,12 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
- 			      struct list_head *ret)
- {
- 	int rc;
--	int page_was_mapped = 0;
-+	int old_page_state = 0;
- 	struct anon_vma *anon_vma = NULL;
- 	bool is_lru = !__folio_test_movable(src);
- 	struct list_head *prev;
- 
--	__migrate_folio_extract(dst, &page_was_mapped, &anon_vma);
-+	__migrate_folio_extract(dst, &old_page_state, &anon_vma);
- 	prev = dst->lru.prev;
- 	list_del(&dst->lru);
- 
-@@ -1287,10 +1296,10 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
- 	 * isolated from the unevictable LRU: but this case is the easiest.
- 	 */
- 	folio_add_lru(dst);
--	if (page_was_mapped)
-+	if (old_page_state & PAGE_WAS_MLOCKED)
- 		lru_add_drain();
- 
--	if (page_was_mapped)
-+	if (old_page_state & PAGE_WAS_MAPPED)
- 		remove_migration_ptes(src, dst, false);
- 
- out_unlock_both:
-@@ -1322,11 +1331,12 @@ static int migrate_folio_move(free_folio_t put_new_folio, unsigned long private,
- 	 */
- 	if (rc == -EAGAIN) {
- 		list_add(&dst->lru, prev);
--		__migrate_folio_record(dst, page_was_mapped, anon_vma);
-+		__migrate_folio_record(dst, old_page_state, anon_vma);
- 		return rc;
- 	}
- 
--	migrate_folio_undo_src(src, page_was_mapped, anon_vma, true, ret);
-+	migrate_folio_undo_src(src, old_page_state & PAGE_WAS_MAPPED,
-+			       anon_vma, true, ret);
- 	migrate_folio_undo_dst(dst, true, put_new_folio, private);
- 
- 	return rc;
-@@ -1799,12 +1809,12 @@ static int migrate_pages_batch(struct list_head *from,
- 	dst = list_first_entry(&dst_folios, struct folio, lru);
- 	dst2 = list_next_entry(dst, lru);
- 	list_for_each_entry_safe(folio, folio2, &unmap_folios, lru) {
--		int page_was_mapped = 0;
-+		int old_page_state = 0;
- 		struct anon_vma *anon_vma = NULL;
- 
--		__migrate_folio_extract(dst, &page_was_mapped, &anon_vma);
--		migrate_folio_undo_src(folio, page_was_mapped, anon_vma,
--				       true, ret_folios);
-+		__migrate_folio_extract(dst, &old_page_state, &anon_vma);
-+		migrate_folio_undo_src(folio, old_page_state & PAGE_WAS_MAPPED,
-+				       anon_vma, true, ret_folios);
- 		list_del(&dst->lru);
- 		migrate_folio_undo_dst(dst, true, put_new_folio, private);
- 		dst = dst2;
--- 
-2.39.3
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
