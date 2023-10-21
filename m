@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DE87D1DBF
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BAC7D1DC2
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbjJUPAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 11:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
+        id S231510AbjJUPCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 11:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231403AbjJUPAe (ORCPT
+        with ESMTP id S231321AbjJUPCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 11:00:34 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC14106
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:00:30 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53e04b17132so2693729a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:00:29 -0700 (PDT)
+        Sat, 21 Oct 2023 11:02:20 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341C9E7
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:02:12 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9c496c114so118145ad.0
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:02:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697900428; x=1698505228; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2H+QIOzBpqRz/Cq2J1hXoj5VRjQg+Qv+W9rMCWTVyZY=;
-        b=TI3zZ5xZiwUQfsM6LGeUmCqNrQ+g4Vo/EhqMa52k5F+gST4F7ymcPvJvLIYK/DXNPs
-         NrHHIP0RHKJ7JZwAnMXV+Ha31ZUK9LRm9boqQELhd8z+S3knin3k4x+8qIB5s/Hz6spO
-         t+uyD17ys8LyJqoi1yAVgq6Dz4M097T7Rv+TB78lg5PsazOtm4Ehbt3CHlAOl+NruJEx
-         c3ZOEMYXygv/JpqT1CpeRaxgPX00EHJGtQe+HanWw9enkCklGTbfDU5zMH+oaFp/AkRC
-         cB++nktpRvD4iTSR2VNwycU0Yf3CMLQja6hM1kpWVDSTdb1mdqCLOn2PuPyHUHEe9VWg
-         UqqQ==
+        d=chromium.org; s=google; t=1697900531; x=1698505331; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v632NyyyfUP7uNKA1gCSbOgDbWOBBu1PYAKFjKlYN5A=;
+        b=bX8TV3Rl+A5C2DLIwB/tLM+WmFc1DYz4fpr81UK3b4wKIXG4RIxbB8l8EfEB/OJAvU
+         3Zm9SVugEYZF60FQEGz4wO1/31igGhLB3aUdhzaw+5Wgqm1H4kKp0d7QOylao9LbwCI/
+         FFzzjRRNCSkj7XzHJ1/D3reXvlOWQvqR18Kcg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697900428; x=1698505228;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697900531; x=1698505331;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2H+QIOzBpqRz/Cq2J1hXoj5VRjQg+Qv+W9rMCWTVyZY=;
-        b=Dgg4e+H58jJEgjsAzwINuLEjbTt6Eh4VMqSx8HdXWVgBGsd7OM92EOq6vBoi+L/Lum
-         V2FrIzRg21PyqnTVF19NCyDsu903MvdZVCCUd76QEVbGEbX7XAxsyJmSDpnOQyJs+gFm
-         vifIW/PxaoBuZw51N13HQePsVPc4qMQvzeaDrcBNBlc6YgBUodlEjbSvo1T52O5lJa3d
-         wyzXZWTVCvfwBkkQ0oCNeTO51wC4eWcSgGTShRjp7ln4GUhk1O30iqLDBub+EMUT5sVD
-         HkThy8C+Ow6bFN0hSA64FoP++X7QBLQ99A66vVN57E6ZVlz0I5fI0BLfpao0ZPqC+7GT
-         ab6g==
-X-Gm-Message-State: AOJu0YwJTig/CXPAdfjpvS+ADHvt2AV8I7+0NifwmIy7gflZMTThoJfG
-        ZzCZWWMt7xckixfcgbSKh4k=
-X-Google-Smtp-Source: AGHT+IEUrJX8omdLWjRWoVhG4K8W6esLzaH5Euk+Z/6iWQzevJQbZdoiXbzgZ2QFPLGRuB9oqdQstw==
-X-Received: by 2002:a50:d795:0:b0:53e:817e:488 with SMTP id w21-20020a50d795000000b0053e817e0488mr3872857edi.11.1697900428258;
-        Sat, 21 Oct 2023 08:00:28 -0700 (PDT)
-Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
-        by smtp.gmail.com with ESMTPSA id eg3-20020a056402288300b0053fa2f11836sm3482683edb.93.2023.10.21.08.00.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 08:00:27 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 21 Oct 2023 17:00:24 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nadav Amit <namit@vmware.com>
-Subject: Re: [PATCH -tip v2] x86/percpu: Introduce const-qualified
- const_pcpu_hot
-Message-ID: <ZTPniJs9/ep11F2I@gmail.com>
-References: <20231021143739.843941-1-ubizjak@gmail.com>
+        bh=v632NyyyfUP7uNKA1gCSbOgDbWOBBu1PYAKFjKlYN5A=;
+        b=j+anhcngrU10dKsPD5TjUac32AYI6R14ymxNcaCDXZgAAh+7TDVA8RVe/2nKn9sk1u
+         IAybHtDHlzFk/uqBQ39DYmcqxXPSx8Cji9MkPyKKLKP6Fur1AEfEtNXDJW5ZO5m9geox
+         zvSYDlERC80tFU67yMLAPtMULQIntbPxw3Tsf8vQF6z6jcZVJa76BszAJBgbflJKolMh
+         g6zepgixYyOnn6+WFivrhoE73Y6FvqCnjcM/z0JFTmiWbs6s+HJlaIOxVtvi5Zh4geN7
+         FXDnehu57xA0aeEEbeDPcDhsPSQ+nY7Okpdia6239BRBcFI+m/RDUgts4qJYp4bvh1j3
+         osfw==
+X-Gm-Message-State: AOJu0YzLW3Y0l1XWc6tlWvO5DLHS+mvR68raXbH6TLw0ytnIN/CGuue0
+        zoQyvmgaWVpCIkX8DHp/VXBdWPP586goISl/24qUoA==
+X-Google-Smtp-Source: AGHT+IGQEYY5fHfxWtQQzUCGwA0rZbif4bEKqr/BunucKyMALe/6gqi3yossh11tQ+2fyZqnOiYONpjQkLnUt3FtrUs=
+X-Received: by 2002:a17:902:eb8f:b0:1b8:9551:de55 with SMTP id
+ q15-20020a170902eb8f00b001b89551de55mr385745plg.26.1697900530966; Sat, 21 Oct
+ 2023 08:02:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231021143739.843941-1-ubizjak@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231020210751.3415723-1-dianders@chromium.org> <20231020140655.v5.4.I5cd5dd190df0826e38444df217f63918a8b4ad39@changeid>
+In-Reply-To: <20231020140655.v5.4.I5cd5dd190df0826e38444df217f63918a8b4ad39@changeid>
+From:   Grant Grundler <grundler@chromium.org>
+Date:   Sat, 21 Oct 2023 08:01:59 -0700
+Message-ID: <CANEJEGsFOy9urtoBtDQ8LEJo3uVROg27KKwaKb5fCPYO_nTfaA@mail.gmail.com>
+Subject: Re: [PATCH v5 4/8] r8152: Release firmware if we have an error in probe
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Edward Hill <ecgh@chromium.org>,
+        Laura Nao <laura.nao@collabora.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Simon Horman <horms@kernel.org>, linux-usb@vger.kernel.org,
+        Grant Grundler <grundler@chromium.org>,
+        =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 20, 2023 at 2:08=E2=80=AFPM Douglas Anderson <dianders@chromium=
+.org> wrote:
+>
+> The error handling in rtl8152_probe() is missing a call to release
+> firmware. Add it in to match what's in the cleanup code in
+> rtl8152_disconnect().
+>
+> Fixes: 9370f2d05a2a ("r8152: support request_firmware for RTL8153")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-* Uros Bizjak <ubizjak@gmail.com> wrote:
+Reviewed-by: Grant Grundler <grundler@chromium.org>
 
->  arch/x86/include/asm/current.h   | 7 +++++++
->  arch/x86/include/asm/percpu.h    | 6 +++---
->  arch/x86/include/asm/processor.h | 3 +++
->  arch/x86/kernel/cpu/common.c     | 1 +
->  arch/x86/kernel/vmlinux.lds.S    | 1 +
->  include/linux/compiler.h         | 2 +-
->  6 files changed, 16 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/current.h b/arch/x86/include/asm/current.h
-> index a1168e7b69e5..0538d2436673 100644
-> --- a/arch/x86/include/asm/current.h
-> +++ b/arch/x86/include/asm/current.h
-> @@ -36,8 +36,15 @@ static_assert(sizeof(struct pcpu_hot) == 64);
->  
->  DECLARE_PER_CPU_ALIGNED(struct pcpu_hot, pcpu_hot);
->  
-> +/* const-qualified alias to pcpu_hot, aliased by linker. */
-> +DECLARE_PER_CPU_ALIGNED(const struct pcpu_hot __percpu_seg_override,
-> +			const_pcpu_hot);
-
-The aliasing makes me a bit nervous. Could we at least prefix it a bit more 
-prominently, like const__pcpu_hot? That way it's immediately obvious at all 
-usage sites that it's "special".
-
-Thanks,
-
-	Ingo
+> ---
+>
+> Changes in v5:
+> - ("Release firmware if we have an error in probe") new for v5.
+>
+>  drivers/net/usb/r8152.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+> index d10b0886b652..656fe90734fc 100644
+> --- a/drivers/net/usb/r8152.c
+> +++ b/drivers/net/usb/r8152.c
+> @@ -9786,6 +9786,7 @@ static int rtl8152_probe(struct usb_interface *intf=
+,
+>         cancel_delayed_work_sync(&tp->hw_phy_work);
+>         if (tp->rtl_ops.unload)
+>                 tp->rtl_ops.unload(tp);
+> +       rtl8152_release_firmware(tp);
+>         usb_set_intfdata(intf, NULL);
+>  out:
+>         free_netdev(netdev);
+> --
+> 2.42.0.758.gaed0368e0e-goog
+>
