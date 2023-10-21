@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAC07D1A1E
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 02:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0227D1A15
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 02:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233230AbjJUAxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 20 Oct 2023 20:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
+        id S233133AbjJUAxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 20 Oct 2023 20:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbjJUAx2 (ORCPT
+        with ESMTP id S232938AbjJUAx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 20 Oct 2023 20:53:28 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5760D6A;
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC06D6E;
         Fri, 20 Oct 2023 17:53:22 -0700 (PDT)
 Received: from mercury (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
         (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id DE7956607354;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id DF9CF6607359;
         Sat, 21 Oct 2023 01:53:16 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1697849597;
-        bh=WQtMmmdfFYxzlLqdJLNkwqz7BRAwlXLZctRc3du2U0k=;
+        bh=0IPbKOlYAuxZjBnpVfqr8VjQjy3v3COiDwyaZF3CO2Y=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=fvlq2Ap9K9hHaUlhVNXjwcrhWDHHgXpWATJi2ha/KmS1qDYfDPdmsk2jFWUfPFza8
-         CsXsMWu3ziYDqHUPetKg1OcEHsc7KpO2l7GYO9/V8/siNCJdaCG8clagnv3Ju+xzKz
-         aw1SFb11b6X3BsmP6aJKLamF+vkMiriXz9QQG9EpbDBOaULSoYOBngWhuyZiWIlPOV
-         ENtKG4/lMzhl59u/OY9qD4m8h39czyRepi7irKlcSlLENC420AsH6Z+C3L2dTR92lq
-         tj4jZWnxAvBZvticqho2WXgOT6Tg72S1J7kV0YnuxP1iR/rF7g0ZZ5Pu4udFwSoSvm
-         aMQF2o2nOFNrQ==
+        b=dNxPtYsb3ML0SuQ3PePvkq6TIovKoO2E2QRR+PrYODpuy4QysO6pIAwTKp4p0OL+R
+         +Ew1I5DNyoWYfJojaUKEiDVcVrfnBn39bDZroQ3N/l7hxD0BABKMZ3au9uLJ7OTAPD
+         V0QwUFT/dAKnUJJX23EfX+9yvSvv62qVi/+EPDj3HL6RnCoaPMwYaQa4NfDhrFMn2I
+         tURKAEHvO009nU5I6T/PRe1UWbAA9j6t4UhlZ+kDuIeL2n2SFyQ02x8L50qEIMOnjM
+         lz6Em0soTu6FDIFslIsN3IvZR4j2HGryFaPNTOkC/K7RCASKCu/+AuEQIgH7y27yel
+         t94PhKSSIRo6w==
 Received: by mercury (Postfix, from userid 1000)
-        id 3F6481066144; Sat, 21 Oct 2023 02:53:11 +0200 (CEST)
+        id 453DB106614C; Sat, 21 Oct 2023 02:53:11 +0200 (CEST)
 From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Maximilian Luz <luzmaximilian@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     linux-pm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-In-Reply-To: <20231020-strncpy-drivers-power-supply-surface_charger-c-v1-1-93ddbf668e10@google.com>
-References: <20231020-strncpy-drivers-power-supply-surface_charger-c-v1-1-93ddbf668e10@google.com>
-Subject: Re: [PATCH] power: supply: surface-charger: replace deprecated
- strncpy with strscpy
-Message-Id: <169784959125.1512524.2877665109633637893.b4-ty@collabora.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231009172923.2457844-19-robh@kernel.org>
+References: <20231009172923.2457844-19-robh@kernel.org>
+Subject: Re: [PATCH] power: reset: vexpress: Use device_get_match_data()
+Message-Id: <169784959127.1512524.5220065585276994688.b4-ty@collabora.com>
 Date:   Sat, 21 Oct 2023 02:53:11 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -60,20 +61,17 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Fri, 20 Oct 2023 19:46:11 +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On Mon, 09 Oct 2023 12:29:14 -0500, Rob Herring wrote:
+> Use preferred device_get_match_data() instead of of_match_device() to
+> get the driver match data. With this, adjust the includes to explicitly
+> include the correct headers.
 > 
-> We expect ac->name to be NUL-terminated based on its usage with format
-> strings:
 > 
-> [...]
 
 Applied, thanks!
 
-[1/1] power: supply: surface-charger: replace deprecated strncpy with strscpy
-      commit: afc88dfda013970bb1e214b331e99adca2f98312
+[1/1] power: reset: vexpress: Use device_get_match_data()
+      commit: 469d31745b9fb3a87424b311abb7cb530611404f
 
 Best regards,
 -- 
