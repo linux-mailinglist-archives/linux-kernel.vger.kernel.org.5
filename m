@@ -2,79 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9EC97D1F92
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 22:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80FD7D1FA3
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 22:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbjJUUfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 16:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
+        id S231891AbjJUUsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 16:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJUUe7 (ORCPT
+        with ESMTP id S229478AbjJUUsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 16:34:59 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3CC119;
-        Sat, 21 Oct 2023 13:34:57 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9be3b66f254so283851166b.3;
-        Sat, 21 Oct 2023 13:34:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697920496; x=1698525296; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3XHrNWuB2xCxWV1xS25yFPA+pQI6IX5HCckbBT68qYs=;
-        b=gQJMNiQgrfi3GojnJ1XH8axEZ2PFLdEDvPXDahPzYjIJ20VVxJpt+tT1lR48NnL7/S
-         6tmme9W1KaWXloSw6tywQSynr3KWy2YHd3tmTOvve6hm2o+Ou56mTUP9HCMOmXKMKM6A
-         tK38ujcA9iqO+90176KgVvWIqsRE+eSzS2hVcYjntG9seBVDmAgHLSnbKemhInat6H2l
-         j+pgUV3uh1j/VwUmkiCg6ngL/m7wEjVpz77Z9mMQrKqQDpGjUNe7EJoBequFFv8UCfVv
-         9hGXvs93i5Mm+9RwsSyPxNw7+DuSfGd/C8i8DEIPujLLqzJHWpb03KnZA0sddfnHlATS
-         GafA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697920496; x=1698525296;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3XHrNWuB2xCxWV1xS25yFPA+pQI6IX5HCckbBT68qYs=;
-        b=AeyCzP2qrrY4xuz2ZEDN6EUx0XLWBKKm3pbRIj873q7Z8ZyRAqgegivR30aV6OVwL3
-         Nt7mBTvyRK8x5XJXap0tgpMBqpL9rHChq03GPoQG70cqXAVY8yitjpGm+TovaOECaNnW
-         NdQSQ9mJvqwkwunQkWrlI1OkcSOJPaVgLvEadL0JcmZ/Pn3XoxRDn0skxLPgJl4O7Hb1
-         1IwAFU3SW8UKGXg8I9YORJ8NJJ7Uvc7Sneok09LU9FD7Ok9re3HtHnHlY12eYXfFnNNZ
-         oigA+Llph1/aPC5OlfWIGh/fnA6hlOgpZgf3LQGhgJ0AVcY35MevjTaGumtB6kW3s5RX
-         f83g==
-X-Gm-Message-State: AOJu0YzriaAfvYVKOH5/ftTM1oKzRTQ/dxZ/v9vbpPTcd0KPNuPi6qx4
-        YxWP99J0nNqGgS4InSReXG0UjATOgFHAR+tksH0=
-X-Google-Smtp-Source: AGHT+IEpizVCkq78mP6QE92RpUDpj2LQ+n2Ma07XT4Eqgq3k5JJqUBtHoVJPruxE2/WxcnZmr8i2/3RmcRfcWrszYlQ=
-X-Received: by 2002:a17:907:d29:b0:9bd:f902:9a61 with SMTP id
- gn41-20020a1709070d2900b009bdf9029a61mr4449889ejc.18.1697920495469; Sat, 21
- Oct 2023 13:34:55 -0700 (PDT)
+        Sat, 21 Oct 2023 16:48:13 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CFE197
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 13:48:07 -0700 (PDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailout.nyi.internal (Postfix) with ESMTP id 83A9E5C01F2;
+        Sat, 21 Oct 2023 16:48:04 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Sat, 21 Oct 2023 16:48:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1697921284; x=1698007684; bh=BDYJzfq9i/
+        puSDcqQUW+jA4P44FDJOi4JPAwuK9QcPc=; b=UDJXpTQf0EkvwkhZ9bzLDTZqvO
+        GkJMOW2/uAsza0CrjjDSwQxeFvFew6L3vt99IHc9aJoj5/9RJ5POwNTE1QSIFbUL
+        kl4zH2c6RXVBrC6fsxSIfc3S5pzfGrjnXvOaZpqhHMGHomHNrd16rZPuOYlBZQv3
+        kKMCGOxGRGkKJe9994xsmy24gEr+cOagXjsASt7Tz8A7mbyNhH7/v0dgfIgyoJin
+        LfErPgpB4xuhj3w6mFbDammZYUKJ3cyTRqqTA1AEE09qygvQkw38vytgSykHCP4q
+        BHMkOc3a+YnW6ggMVxlNCljCRRMTRJJVpBAX/4w7VE+/0ndGDnXdEAQWG3Ng==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1697921284; x=1698007684; bh=BDYJzfq9i/puS
+        DcqQUW+jA4P44FDJOi4JPAwuK9QcPc=; b=QSmWyIIBFrlvm8NAi8JuHDc73POMU
+        h8cxLXhnhafyXBAn9obSoLJshRWJAupYK3tlJ5dm42jMuUtfL3V1Khj/l9cma5fd
+        7ywhJ95525OSBZT+WpU1uS1oo603uSMp8HDOakl5KjNohB5A9Es8XntWpqjIU1po
+        YtcBxpDAM1EIGrL0M+dbrOmfvWCrN6XyUvlqqpYoUnL2sVumjBbMDlWRTi1NW2Dn
+        OiTRtiC0SyBa8sgvP1NUyID4SBD1VShH5IPyGD4TsF+DxWGM6WDy21psVpPOkO06
+        ZzJDymhnHsQ7RtE0HgE8xpERcEYIAZrSyMpM9YZccIKKN6g8L0LRKIO+w==
+X-ME-Sender: <xms:Azk0ZX6sGE1Lws33kahYVkUzfGODfpFK192atetg7pzfNu3Y2GLRpg>
+    <xme:Azk0Zc7BmI5qdwVWqyEXhFO-LiG2Q9PlE_2Na1XFmszyrJ0rB14TuN5_Wjd1VFlun
+    1IgCvOSmdaB8QsMC44>
+X-ME-Received: <xmr:Azk0ZefwcTr2P4mzzlp5xVN5oDm2X-F7su7RzSD0W8658fSQpCNBvOBgisnn1xl3YoYrOxTKo0cz0KLAMA-mVIOGkZYiSC1gsLTGsjKI_EY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkedtgddugeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgrrhgu
+    sehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepleegffffgfehhfejge
+    ejheeivdfgleefheeuueetkedtffeihfevlefhgeevvdevnecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfhgrsh
+    htmhgrihhlrdhorhhg
+X-ME-Proxy: <xmx:Azk0ZYKIyuyUNkiONq0PVAQh3_amsy4s9pUHa0Ty8lspNFcBQea-qQ>
+    <xmx:Azk0ZbKv_JjKF6HzEC-fFoP9tu69ENXOGnyuGw4rdvfy7h8fEd4bqw>
+    <xmx:Azk0ZRxXb_72IpA4gHXAsYxvAZ94mNyulCsYJuhzaVGw5mSvEkmt_w>
+    <xmx:BDk0ZT0EKdRZR9wHdn0rtPiwpudTEa3UthILhVeFNiWUyjfjPG5ChA>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 21 Oct 2023 16:48:03 -0400 (EDT)
+From:   Gary Rookard <garyrookard@fastmail.org>
+To:     gregkh@linuxfoundation.org
+Cc:     philipp.g.hortmann@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Gary Rookard <garyrookard@fastmail.org>
+Subject: [PATCH] staging: rtl8192e: renamed variable TxCountToDataRate, spacing, realignment
+Date:   Sat, 21 Oct 2023 16:46:55 -0400
+Message-ID: <20231021204655.6570-1-garyrookard@fastmail.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20231021203403.215023-1-lukapanio@gmail.com>
-In-Reply-To: <20231021203403.215023-1-lukapanio@gmail.com>
-From:   =?UTF-8?B?0JvRg9C60LAg0J/QsNC90YzQvg==?= <lukapanio@gmail.com>
-Date:   Sat, 21 Oct 2023 22:34:44 +0200
-Message-ID: <CACi=Ov6hgbMX0c2mEodJdodm7Fsvjb-QWgb7ypBJKRSfSgFSbw@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] From: Luka Panio <lukapanio@gmail.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-Sorry for all the spam.
-Thanks,
-Luka Panio
+
+1) Renamed from Pascal/CamelCase to Snake case the variable
+   TxCountToDataRate, TxCountToDataRate -> tx_count_to_data_rate.
+
+2) Made a realignment w/open parenthesis adjustment after renaming.
+
+3) Corrected spacing.
+
+Linux kernel coding style (cleanup),checkpatch Avoid CamelCase,
+checkpatch Alignment should match open parenthesis.
+Driver rtl8192e compiles.
+
+Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+---
+ drivers/staging/rtl8192e/rtl819x_HTProc.c    | 2 +-
+ drivers/staging/rtl8192e/rtllib.h            | 2 +-
+ drivers/staging/rtl8192e/rtllib_softmac_wx.c | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+index 00b21542ddc3..304f2ab0be3e 100644
+--- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
++++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+@@ -114,7 +114,7 @@ static u16 HTMcsToDataRate(struct rtllib_device *ieee, u8 nMcsRate)
+ 	return MCS_DATA_RATE[is40MHz][isShortGI][(nMcsRate & 0x7f)];
+ }
+ 
+-u16  TxCountToDataRate(struct rtllib_device *ieee, u8 nDataRate)
++u16 tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
+ {
+ 	u16	CCKOFDMRate[12] = {0x02, 0x04, 0x0b, 0x16, 0x0c, 0x12, 0x18,
+ 				   0x24, 0x30, 0x48, 0x60, 0x6c};
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index 9d141aad8cd5..5c8c7caf2c17 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -1784,7 +1784,7 @@ extern u16 MCS_DATA_RATE[2][2][77];
+ u8 HTCCheck(struct rtllib_device *ieee, u8 *pFrame);
+ void HTResetIOTSetting(struct rt_hi_throughput *ht_info);
+ bool IsHTHalfNmodeAPs(struct rtllib_device *ieee);
+-u16  TxCountToDataRate(struct rtllib_device *ieee, u8 nDataRate);
++u16 tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate);
+ int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb);
+ int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb);
+ int rtllib_rx_DELBA(struct rtllib_device *ieee, struct sk_buff *skb);
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac_wx.c b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+index f32584291704..52c9c2c873b1 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac_wx.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
+@@ -208,8 +208,8 @@ int rtllib_wx_get_rate(struct rtllib_device *ieee,
+ {
+ 	u32 tmp_rate;
+ 
+-	tmp_rate = TxCountToDataRate(ieee,
+-				     ieee->softmac_stats.CurrentShowTxate);
++	tmp_rate = tx_count_to_data_rate(ieee,
++					 ieee->softmac_stats.CurrentShowTxate);
+ 	wrqu->bitrate.value = tmp_rate * 500000;
+ 
+ 	return 0;
+-- 
+2.41.0
+
