@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D6B7D1DCE
-	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1F17D1DC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 21 Oct 2023 17:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbjJUPIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 11:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42402 "EHLO
+        id S231526AbjJUPCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 11:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbjJUPIj (ORCPT
+        with ESMTP id S231481AbjJUPCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 11:08:39 -0400
-X-Greylist: delayed 331 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 21 Oct 2023 08:08:34 PDT
-Received: from mail-m155101.qiye.163.com (mail-m155101.qiye.163.com [101.71.155.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B3DE3
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:08:34 -0700 (PDT)
-Received: from Vostro-3710.lan (unknown [58.61.140.248])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 3D042800015;
-        Sat, 21 Oct 2023 23:02:16 +0800 (CST)
-From:   Chukun Pan <amadeus@jmu.edu.cn>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Chukun Pan <amadeus@jmu.edu.cn>
-Subject: [PATCH 1/1] mtd: rawnand: add support for TH58NYG3S0HBAI4 NAND flash
-Date:   Sat, 21 Oct 2023 23:02:12 +0800
-Message-Id: <20231021150212.20509-1-amadeus@jmu.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Sat, 21 Oct 2023 11:02:20 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EF2DA
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:02:19 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53f9af41444so2773118a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 08:02:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697900538; x=1698505338; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YCJvi57jtZdtcZj+EIuPUrFmFUxCTQA0afp++0JCcCE=;
+        b=ALb9b92aGj77JAoFotPcTxcohOk9PS3klCKsG/0bAGEWaB7SGf6drmFxvCB74X0d68
+         OjsEns/GWSu2WeyM2556yctfNNF3fKnWSv9V8MjsAIkNcELqJHhk2b54mH9+Gju6oIeM
+         gCSSRDqcJjKJTGIvCPsgZ+c7wNJjwCaVO+UOFcxAFokcWIZ9drB3rrPwKn4xR5/Rd42N
+         UWT7pkPnJKj5FaeNVVmcoqoIqGpIc/HYpCycRD1f3mmnLtZFPgo6lxhsHb0xtF437I83
+         StJacy5gam4g50LgPJyZ2TskIE7mUUH4uhNi2JayHGV8Uw4xuZUkQwsFHvZzPDeN+bhv
+         f9yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697900538; x=1698505338;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YCJvi57jtZdtcZj+EIuPUrFmFUxCTQA0afp++0JCcCE=;
+        b=X82TIK2XzxsAlYvlrBWWS3l1RrcOosrSrzsOa3DCOcxshTMedLgQZJOueqpUKVuAlQ
+         qPSx6vdr/bTatE/gvQt5XH83at9veuocPtEHFQXyJHMBOrJG27DQW3fXEA/XmlisJVut
+         TX6MYEsmjMVIM2LrBTCZnqRFb2ORZ3MIN8nQ7K84vw897ttnCgXODflzuQ/TG5iU4Xrb
+         FWQrOcKZrbG3AyFndPsC4AknXw/NoCxR5bj6N3qG2usZcwjr3pToAF0XiSR/iw6iB1jd
+         bHIDO+VLGJ1KMe+LZhoC2LpRcMCHp2mnNofV9nr7f5P7cPtVyFmOmFs5a5qleepE8arG
+         83ZA==
+X-Gm-Message-State: AOJu0YwQK0zSgKYoOp/OGd/Z6m3jLL5uQZ7CqJBMy92aXqzyOOKQaTvB
+        8hTPmVxFk/EoMB7mcSeXuOfHIbH0fGM=
+X-Google-Smtp-Source: AGHT+IGAfiPwgV3TmZYEuLImV5VQMc8Vxx5GhiwP2VvFBdgLMYPYkZDwGDF3k622TPtGZaZQviPVBw==
+X-Received: by 2002:a50:a45e:0:b0:53e:332e:3e04 with SMTP id v30-20020a50a45e000000b0053e332e3e04mr3116712edb.37.1697900537644;
+        Sat, 21 Oct 2023 08:02:17 -0700 (PDT)
+Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
+        by smtp.gmail.com with ESMTPSA id a62-20020a509ec4000000b0053e5f67d637sm3625588edf.9.2023.10.21.08.02.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Oct 2023 08:02:15 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sat, 21 Oct 2023 17:02:13 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: BUG: KASAN: slab-use-after-free in reweight_entity+0x8d4
+Message-ID: <ZTPn9VztOvvux3oD@gmail.com>
+References: <CABXGCsNMFZHXvtN7uAmjUPewfAcgD038rMhkruQCD8kqS3cXaA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlCGE5LVk8ZGExJHRgZGEIfHlUTARMWGhIXJBQOD1
-        lXWRgSC1lBWU5DVU1KVUpPS1VJT0NZV1kWGg8SFR0UWUFZT0tIVUpKS0hKQ1VKS0tVS1kG
-X-HM-Tid: 0a8b52c2226db03akuuu3d042800015
-X-HM-MType: 10
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PSo6KSo*IjwxGEM1HzNICzgU
-        DiEwCQtVSlVKTUJMQktLTkhNQk9IVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWU5D
-        VU1KVUpPS1VJT0NZV1kIAVlBSkJCSDcG
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABXGCsNMFZHXvtN7uAmjUPewfAcgD038rMhkruQCD8kqS3cXaA@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Toshiba TH58NYG3S0HBAI4 is detected with 128 byte OOB while the flash
-has 256 bytes OOB. This adds a static NAND ID entry to correct this.
 
-Tested on Arcadyan AW1000 flashed with OpenWrt.
+* Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com> wrote:
 
-Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
----
- drivers/mtd/nand/raw/nand_ids.c | 3 +++
- 1 file changed, 3 insertions(+)
+> Hi,
+> I caught one slab-use-after-free durung release cycle 6.6 rc6 and it
+> looks like it will not easily reproduce again.
+> I tried rebooting and repeating all my actions but slab-use-after-free
+> did not happen again.
+> 
+> What we know:
+> 
+> 1) backtrace:
+> 
+> [  336.215839] BUG: KASAN: slab-use-after-free in reweight_entity+0x8d4/0xa50
+> [  336.215846] Read of size 8 at addr ffff88812d1a80b0 by task
+> fossilize_repla/10552
 
-diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
-index 650351c62af6..2b871dfd1d09 100644
---- a/drivers/mtd/nand/raw/nand_ids.c
-+++ b/drivers/mtd/nand/raw/nand_ids.c
-@@ -58,6 +58,9 @@ struct nand_flash_dev nand_flash_ids[] = {
- 		{ .id = {0xad, 0xde, 0x14, 0xa7, 0x42, 0x4a} },
- 		  SZ_16K, SZ_8K, SZ_4M, NAND_NEED_SCRAMBLING, 6, 1664,
- 		  NAND_ECC_INFO(40, SZ_1K) },
-+	{"TH58NYG3S0HBAI4 8G 1.8V 8-bit",
-+		{ .id = {0x98, 0xa3, 0x91, 0x26, 0x76} },
-+		  SZ_4K, SZ_1K, SZ_256K, 0, 4, 256, NAND_ECC_INFO(8, SZ_512) },
- 	{"TH58NVG2S3HBAI4 4G 3.3V 8-bit",
- 		{ .id = {0x98, 0xdc, 0x91, 0x15, 0x76} },
- 		  SZ_2K, SZ_512, SZ_128K, 0, 5, 128, NAND_ECC_INFO(8, SZ_512) },
--- 
-2.25.1
+I think it might be the bug fixed via:
 
+  d2929762cc3f ("sched/eevdf: Fix heap corruption more")
+
+Thanks,
+
+	Ingo
