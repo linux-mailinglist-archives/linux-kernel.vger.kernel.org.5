@@ -2,79 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C266C7D207B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 01:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989547D2088
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 02:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbjJUXyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 19:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49920 "EHLO
+        id S229600AbjJVAQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 20:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjJUXx7 (ORCPT
+        with ESMTP id S229472AbjJVAQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 19:53:59 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AD3BE
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 16:53:52 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7ADD05C01C1;
-        Sat, 21 Oct 2023 19:53:51 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sat, 21 Oct 2023 19:53:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1697932431; x=1698018831; bh=iTKOkh8rwX
-        5nAsZe+Xkiff/EUDvriYJ6UrMw6g9j4iU=; b=axN+i9s+4Ow4ASdoE729S4TUrQ
-        HFB3lfHHifB1zhW9lnfXVZM2BSTUuS6fTl9kV3v6TSNEi3XvMalC4kqjSSAWmpxC
-        74FwL8j8e/wEfZ46nWxu8cSmN1ML1GoifmsKwLcs6ItAA+ZvzgseiLrBCZ1ZGZ2X
-        s2KEi3EfZDBsXKc1UBK9HpS7bzGXfz3/cfu9gs6HTFCOtlz1H+P3NdOndsZFJSLB
-        362hWigcUDan/XEdN9Z3GN9R+SWxsRV09STxYjIlitg2g/eO9RpJVAuWukM1G7RE
-        pwresB9INQ19JHjq/CW2qdXxllBKINe63hxm4Ld0BWbLyLQK/6eB3PxoEOuA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1697932431; x=1698018831; bh=iTKOkh8rwX5nA
-        sZe+Xkiff/EUDvriYJ6UrMw6g9j4iU=; b=SJA4Vp+lJKF8z3Lbxo87POBZW2abU
-        Z1wyk3rmbp7k407DwxmWJiYewFxEXgqrc9XLXDLca/sfqfxqO0INFB/qD8sExXT9
-        ktKZoftHkFVlaCD6IgNyQmT4N46hbwfUGrZYiHbjijprdgO8dIATDwY4z8sRUCKI
-        XVlZ9JKYIa1lgWns+WvpBp2AHX7QpmGEcHynbkJq5VEjPagrEKRRi2ol9Li6TS9n
-        NTdajcF3QLaFhatD8FA8NLTXSfHyb64ZIt/QUsvVsmh2HQlYgEPzinTNSFmQF/7F
-        Rcv0+XzZX7srIyK8Au7FgOsXihtme0TrEjyJeHHzilYYWWiMH3iCUdieA==
-X-ME-Sender: <xms:jmQ0ZVhvUEwgHeix35fF98MtwwP33dRJSoVu2OQuSTGaFH4Rs55a7g>
-    <xme:jmQ0ZaCUXv_6zuCO-TyZaxLd2ldjIwOKJGhy9jf-EsbFZcTvQmt4Bps6ekkD8O_e8
-    JsLbGgDsdyAWiggdiM>
-X-ME-Received: <xmr:jmQ0ZVFgrW8F-pYIgv0sp6pswRne7Vvtg5fHEzRH5UMbX0JWpfsYbDQTuuGF19rLT5HmalEholWv9mgwOqG4ojZWgL4H1olt2keoQAr2m00>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkedugddvjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
-    dttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhkrghruges
-    fhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeelgefffffghefhjeegje
-    ehiedvgfelfeehueeuteektdffiefhveelhfegvedvveenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghsth
-    hmrghilhdrohhrgh
-X-ME-Proxy: <xmx:jmQ0ZaQ06p4yoj-wtVFLKBnFQ7xwFnSdIvtDnBK46xll2Aq4Bac8Iw>
-    <xmx:jmQ0ZSyGdxBE0rJJhvMJldXYwF6cC99Ut3WdCt4hvyLuLLksJQ5dEw>
-    <xmx:jmQ0ZQ5F5r7p7BXIiLgrcj-fLiVjp6zPbs7tmu-mvYkotP5yY8W0Dg>
-    <xmx:j2Q0ZW_-QDM5EDtIGXaeuxSprMl6S5fkcHcKawWEJHoxhf_mplJJtw>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 21 Oct 2023 19:53:50 -0400 (EDT)
-From:   Gary Rookard <garyrookard@fastmail.org>
-To:     gregkh@linuxfoundation.org
-Cc:     philipp.g.hortmann@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH] staging: rtl8192e: renamed varaible HTIOTActIsDisableMCS15
-Date:   Sat, 21 Oct 2023 19:53:05 -0400
-Message-ID: <20231021235305.10741-1-garyrookard@fastmail.org>
-X-Mailer: git-send-email 2.41.0
+        Sat, 21 Oct 2023 20:16:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3981BF4;
+        Sat, 21 Oct 2023 17:16:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697933798; x=1729469798;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1PiMnn0i3KT3YYOJNg9IYf4n+r48HTbs7kDucILde3I=;
+  b=boT5bfiFYK/vc+lYd3EFdQrp2D3lOA3l64gThX9cGSWJfbTSNNB7GwDV
+   5N6xFoGpUyH+iXRzYaUGhnAikvZ7JvTG+M1rW/VORREEbXA5LfrPszlQu
+   80HKU7FprD1M/vNr32drQDxVZO4lQ7figbeBfUuEdpl9LndlcznLpxswN
+   Kwv9IHIDRpLzW4DfnrabdfWG8EtsXh5a4yWWIS9PuS2A8WbP2vKKe9KLf
+   EQ0H75v1Wd3p4o+zswr8G21dN/x7+og4UujGLnc4rhj2dVQdukBh8+dOn
+   Gj36U0e8jsywzN72Ultg57ZaR9VOEO6kp1poYgYEPkTyhBBwPmmRd31Pa
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="385554727"
+X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
+   d="scan'208";a="385554727"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2023 17:16:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="761389573"
+X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
+   d="scan'208";a="761389573"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 21 Oct 2023 17:16:31 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1quM8s-0005Py-24;
+        Sun, 22 Oct 2023 00:16:30 +0000
+Date:   Sun, 22 Oct 2023 08:16:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Konstantin Aladyshev <aladyshev22@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, minyard@acm.org, joel@jms.id.au,
+        andrew@aj.id.au, avifishman70@gmail.com, tmaimon77@gmail.com,
+        tali.perry1@gmail.com, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com, aladyshev22@gmail.com,
+        jk@codeconstruct.com.au, matt@codeconstruct.com.au,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] ipmi: Move KCS headers to common include folder
+Message-ID: <202310220806.BmOW2atE-lkp@intel.com>
+References: <20231010122321.823-2-aladyshev22@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231010122321.823-2-aladyshev22@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,39 +73,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Renamed from Pascal/CamelCase to Snake case the variable
-HTIOCActIsDisableMCS15, HTIOTActIsDisableMCS15 -> ht_ioc_act_disable_mcs15.
+Hi Konstantin,
 
-Linux kernel coding style (cleanup), checkpatch Avoid CamelCase
-Driver rtl8192e compiles.
+kernel test robot noticed the following build errors:
 
-Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
----
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[auto build test ERROR on cminyard-ipmi/for-next]
+[also build test ERROR on linus/master v6.6-rc6 next-20231020]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 5dca97b07874..8868672131a1 100644
---- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -212,7 +212,7 @@ static u8 ht_iot_act_is_disable_mcs14(struct rtllib_device *ieee, u8 *PeerMacAdd
- 	return 0;
- }
- 
--static bool HTIOTActIsDisableMCS15(struct rtllib_device *ieee)
-+static bool ht_iot_act_is_disable_mcs15(struct rtllib_device *ieee)
- {
- 	return false;
- }
-@@ -700,7 +700,7 @@ void HTResetSelfAndSavePeerSetting(struct rtllib_device *ieee,
- 		if (bIOTAction)
- 			ht_info->iot_action |= HT_IOT_ACT_DISABLE_MCS14;
- 
--		bIOTAction = HTIOTActIsDisableMCS15(ieee);
-+		bIOTAction = ht_iot_act_is_disable_mcs15(ieee);
- 		if (bIOTAction)
- 			ht_info->iot_action |= HT_IOT_ACT_DISABLE_MCS15;
- 
+url:    https://github.com/intel-lab-lkp/linux/commits/Konstantin-Aladyshev/ipmi-Move-KCS-headers-to-common-include-folder/20231010-202425
+base:   https://github.com/cminyard/linux-ipmi for-next
+patch link:    https://lore.kernel.org/r/20231010122321.823-2-aladyshev22%40gmail.com
+patch subject: [PATCH v5 1/3] ipmi: Move KCS headers to common include folder
+config: mips-allmodconfig (https://download.01.org/0day-ci/archive/20231022/202310220806.BmOW2atE-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231022/202310220806.BmOW2atE-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310220806.BmOW2atE-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from include/linux/kcs_bmc_client.h:8,
+                    from drivers/char/ipmi/kcs_bmc_cdev_ipmi.c:11:
+>> include/linux/kcs_bmc.h:42:9: error: unknown type name 'spinlock_t'
+      42 |         spinlock_t lock;
+         |         ^~~~~~~~~~
+
+
+vim +/spinlock_t +42 include/linux/kcs_bmc.h
+
+faae6e391eda73 drivers/char/ipmi/kcs_bmc.h Andrew Jeffery 2021-06-08  31  
+d4e7ac68f771ad drivers/char/ipmi/kcs_bmc.h Andrew Jeffery 2021-06-08  32  struct kcs_bmc_device {
+d4e7ac68f771ad drivers/char/ipmi/kcs_bmc.h Andrew Jeffery 2021-06-08  33  	struct list_head entry;
+20d60f61c58e8c drivers/char/ipmi/kcs_bmc.h Haiyue Wang    2018-02-02  34  
+d4e7ac68f771ad drivers/char/ipmi/kcs_bmc.h Andrew Jeffery 2021-06-08  35  	struct device *dev;
+20d60f61c58e8c drivers/char/ipmi/kcs_bmc.h Haiyue Wang    2018-02-02  36  	u32 channel;
+20d60f61c58e8c drivers/char/ipmi/kcs_bmc.h Haiyue Wang    2018-02-02  37  
+20d60f61c58e8c drivers/char/ipmi/kcs_bmc.h Haiyue Wang    2018-02-02  38  	struct kcs_ioreg ioreg;
+20d60f61c58e8c drivers/char/ipmi/kcs_bmc.h Haiyue Wang    2018-02-02  39  
+d4e7ac68f771ad drivers/char/ipmi/kcs_bmc.h Andrew Jeffery 2021-06-08  40  	const struct kcs_bmc_device_ops *ops;
+20d60f61c58e8c drivers/char/ipmi/kcs_bmc.h Haiyue Wang    2018-02-02  41  
+d4e7ac68f771ad drivers/char/ipmi/kcs_bmc.h Andrew Jeffery 2021-06-08 @42  	spinlock_t lock;
+d4e7ac68f771ad drivers/char/ipmi/kcs_bmc.h Andrew Jeffery 2021-06-08  43  	struct kcs_bmc_client *client;
+20d60f61c58e8c drivers/char/ipmi/kcs_bmc.h Haiyue Wang    2018-02-02  44  };
+d4e7ac68f771ad drivers/char/ipmi/kcs_bmc.h Andrew Jeffery 2021-06-08  45  
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
