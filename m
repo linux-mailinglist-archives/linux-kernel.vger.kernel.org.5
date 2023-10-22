@@ -2,69 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 403937D20A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 03:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCC87D20C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 04:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbjJVBwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 21:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
+        id S229790AbjJVCk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 22:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjJVBwH (ORCPT
+        with ESMTP id S229472AbjJVCk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 21:52:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CA5119
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 18:52:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6219CC433CA;
-        Sun, 22 Oct 2023 01:52:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697939525;
-        bh=Ow5j75APyrHCFc4i5S6/sPasuIIK/e2/tkSldYoVSjA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=MmXAzx1shqHWx/JMc5S2ZdSFxxn+xrglysUOErxLu6Ywbg+TYkX3cje0wM3RoKbqb
-         E22gOrBdbrg7Lt9PedeKAIpD8yBxChYy0EfC5xfKo7gEVIuAsbUi2CtQDn9EEAUAfM
-         cLAi0GiJABT8xix0a0RJvPDGmo9mOKWA8wbE2JbmPOQ6iMxZtMft1lcvTDo+aPrUZe
-         /R8O3iyzNDQZqcHVlsBHQifb5pYqRg/jClTvgYIEZ1z4uUK4PzSRxXEMMQJr2CxOMK
-         UzFTCt/vZSesSDd0Fek5V5UoMr0JRmwCKSVcn6jLsD5z8xakpZsE+ZtJrLx8Da16DB
-         lqM05ZT+xRSyA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5090FC04DD9;
-        Sun, 22 Oct 2023 01:52:05 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-6.6-5 tag
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87y1fv4er5.fsf@mail.lhotse>
-References: <87y1fv4er5.fsf@mail.lhotse>
-X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
-X-PR-Tracked-Message-Id: <87y1fv4er5.fsf@mail.lhotse>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.6-5
-X-PR-Tracked-Commit-Id: f9bc9bbe8afdf83412728f0b464979a72a3b9ec2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1acfd2bd3f0d9dc34ea1871a445c554220945d9f
-Message-Id: <169793952532.9872.1513283742626010407.pr-tracker-bot@kernel.org>
-Date:   Sun, 22 Oct 2023 01:52:05 +0000
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        npiggin@gmail.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 21 Oct 2023 22:40:56 -0400
+Received: from mail-oa1-f79.google.com (mail-oa1-f79.google.com [209.85.160.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782CEDE
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 19:40:54 -0700 (PDT)
+Received: by mail-oa1-f79.google.com with SMTP id 586e51a60fabf-1e9a324c12fso3533984fac.2
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 19:40:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697942454; x=1698547254;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uU8lb1l1yKfhs7iHHIqOMOJAFdCISWoOXZEw6aTB7b4=;
+        b=O7Hb9S8N0UrIfCUNoS9aPLLhXS6Q5nK0uaKuT453td7HqQqCI2V/+XomuUQg9HerqD
+         Ed4MXHcK9cPGTungwcWtanEbnaJaKIy+Ev3JFO9g7BNZfygsJGihFKlhRWtyI+vwj9uZ
+         WHZF24rDtBhsHA72yDF9Cgmh0u5HVOJBk4+y48fsefJluD2R6KNnYlY4xbWNv2gRWeis
+         diGs+GrLN7APZbvgOJukLm7y+CXtMprae1StB4X+xqDHSr/3tWWECnlLZecVJXsX4x5X
+         I/H39RApU/swrJWcmQTPGQquiCZuNCM2Qs4E13e9Jk1H9FOLhBJbEZdOp2zB4DaGbhIE
+         HWYA==
+X-Gm-Message-State: AOJu0Yz8XbJh7CmZMMGx7iXZqKOUwotqhcH+/E1UrMQigS0FK58qZTp1
+        ze7OyuFhIjo0nfemwGa0ExIpgkM958X/Cii5ixLAbwhU1vTd
+X-Google-Smtp-Source: AGHT+IFHZ6P7o+3eMU28/NkHHkQTYEEHjSvBSzx432SAOF7tvLU7F4B1w1hLQmsTWuE5/cSvMxyb5JkINrs9wcT8EwARUgU91GPM
+MIME-Version: 1.0
+X-Received: by 2002:a05:6870:5692:b0:1ea:1bc4:d06b with SMTP id
+ p18-20020a056870569200b001ea1bc4d06bmr2659490oao.10.1697942453878; Sat, 21
+ Oct 2023 19:40:53 -0700 (PDT)
+Date:   Sat, 21 Oct 2023 19:40:53 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d005440608450810@google.com>
+Subject: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (4)
+From:   syzbot <syzbot+b2869947e0c9467a41b6@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=1.0 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,PLING_QUERY,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 22 Oct 2023 12:39:26 +1100:
+Hello,
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.6-5
+syzbot found the following issue on:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1acfd2bd3f0d9dc34ea1871a445c554220945d9f
+HEAD commit:    78124b0c1d10 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1557da89680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f27cd6e68911e026
+dashboard link: https://syzkaller.appspot.com/bug?extid=b2869947e0c9467a41b6
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137ac45d680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e4640b680000
 
-Thank you!
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/bd512de820ae/disk-78124b0c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a47a437b1d4f/vmlinux-78124b0c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3ae8b966bcd7/Image-78124b0c.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/d5d514495f15/mount_0.gz
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b2869947e0c9467a41b6@syzkaller.appspotmail.com
+
+BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
+turning off the locking correctness validator.
+CPU: 0 PID: 5571 Comm: kworker/u4:8 Not tainted 6.6.0-rc6-syzkaller-g78124b0c1d10 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Workqueue: btrfs-cache btrfs_work_helper
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
+ show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ dump_stack+0x1c/0x28 lib/dump_stack.c:113
+ lookup_chain_cache_add kernel/locking/lockdep.c:3815 [inline]
+ validate_chain kernel/locking/lockdep.c:3836 [inline]
+ __lock_acquire+0x1c60/0x75e8 kernel/locking/lockdep.c:5136
+ lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:351 [inline]
+ __clear_extent_bit+0x1b4/0xaf0 fs/btrfs/extent-io-tree.c:596
+ clear_extent_bit fs/btrfs/extent-io-tree.h:146 [inline]
+ clear_extent_bits fs/btrfs/extent-io-tree.h:158 [inline]
+ btrfs_free_excluded_extents fs/btrfs/block-group.c:840 [inline]
+ caching_thread+0x18bc/0x1b64 fs/btrfs/block-group.c:909
+ btrfs_work_helper+0x340/0x1504 fs/btrfs/async-thread.c:314
+ process_one_work+0x694/0x1204 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x938/0xef4 kernel/workqueue.c:2784
+ kthread+0x288/0x310 kernel/kthread.c:388
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
+BTRFS info (device loop0): qgroup scan completed (inconsistency flag cleared)
+BTRFS info (device loop0): qgroup scan completed (inconsistency flag cleared)
+BTRFS info (device loop0): qgroup scan completed (inconsistency flag cleared)
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
