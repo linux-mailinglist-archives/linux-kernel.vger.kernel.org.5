@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 082EC7D24C8
+	by mail.lfdr.de (Postfix) with ESMTP id BC4207D24CB
 	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 19:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbjJVRGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 13:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
+        id S232660AbjJVRGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 13:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232443AbjJVRG1 (ORCPT
+        with ESMTP id S232575AbjJVRGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 13:06:27 -0400
+        Sun, 22 Oct 2023 13:06:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E205119;
-        Sun, 22 Oct 2023 10:06:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AE55C433BB;
-        Sun, 22 Oct 2023 17:06:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24290124;
+        Sun, 22 Oct 2023 10:06:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D8BBC433CB;
+        Sun, 22 Oct 2023 17:06:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697994385;
-        bh=JGaUnTUZE4/t01Gqe9nbznjUqklvDlxx4Gf2S+Ki0Ko=;
+        s=k20201202; t=1697994386;
+        bh=0RQilyl14YGAa058AYczk30yG3OUTMcYtlZHlUX70hY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MTY/zbtuzdasxDR9cQ0LmqDv4FTLNY6HGgn4Qym261RFNer3DIcCMu2+SQzeJs717
-         KWBYy/Pc9bVNrOExQBVDa4r00WPBK2ZAotcvwSu2Z/QsbmNXADt4OZsQYxCaPntqNw
-         GaFXuRIvcf5mmZkUXNCayIVzNxKdfuHga8qzf+XccbVoK1ebJUCa0M2af0zYRlqR7Z
-         uVhCguL/iJL2T4n9f8v77c91IfGDob5oz46yRFDu5O+ych2/GjUpreMUQxZUGJehSs
-         tJ1Avsz3VEMgMHwjSaRVZRVwBuBPcgk2dnepot1fmndkw0BRqEpQeXffvzGI34Hygt
-         RNMYcKRUU2qiA==
+        b=DNFDAuiCn2GLpHPgqk2Ge5JuSaOfxg26Z+bkCMzZ63rmPLZHj6mC/hz0NC3fVYIlh
+         IukOuF4yIOjYjxvQSRuz77rMkUBIA6mnCRjgkrWT+C1Gd2pGzWYnOuGNTzBRXVEaOU
+         rQIPLtZIrj8zy1VLz3MHxTa0TUEldyksYYINhtBD9yUv5mQ3abWTxnxG8NQwHJC5wM
+         G9RsctmxaRx6UhB7jf/gfJsHM9LaGCnssZXUUox2OX7qNnvaOgh0BAv6aWcU9WXp4H
+         Zkrzfb5Iu6SHeJvOHiTik3R5+qeq1TFAuo4q2pvT8CmMHDWEgNERGJiGStBYYF8T2M
+         cj5WoppkBuiaw==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 06/10] modpost: remove EXIT_SECTIONS macro
-Date:   Mon, 23 Oct 2023 02:06:09 +0900
-Message-Id: <20231022170613.2072838-6-masahiroy@kernel.org>
+Subject: [PATCH 07/10] modpost: disallow the combination of EXPORT_SYMBOL and __meminit*
+Date:   Mon, 23 Oct 2023 02:06:10 +0900
+Message-Id: <20231022170613.2072838-7-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231022170613.2072838-1-masahiroy@kernel.org>
 References: <20231022170613.2072838-1-masahiroy@kernel.org>
@@ -52,54 +52,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ALL_EXIT_SECTIONS and EXIT_SECTIONS are the same. Remove the latter.
+Theoretically, we could export conditionally-discarded code sections,
+such as .meminit*, if all the users can become modular under a certain
+condition. However, that would be difficult to control and such a tricky
+case has never occurred.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- scripts/mod/modpost.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ scripts/mod/modpost.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 626ab599eea2..f73835b8f1f9 100644
+index f73835b8f1f9..8f4bddbbc52b 100644
 --- a/scripts/mod/modpost.c
 +++ b/scripts/mod/modpost.c
-@@ -808,7 +808,7 @@ static void check_section(const char *modname, struct elf_info *elf,
- #define ALL_XXXINIT_SECTIONS ".meminit.*"
+@@ -1164,7 +1164,7 @@ static void check_export_symbol(struct module *mod, struct elf_info *elf,
+ 	    ELF_ST_TYPE(sym->st_info) == STT_LOPROC)
+ 		s->is_func = true;
  
- #define ALL_INIT_SECTIONS INIT_SECTIONS, ALL_XXXINIT_SECTIONS
--#define ALL_EXIT_SECTIONS EXIT_SECTIONS
-+#define ALL_EXIT_SECTIONS ".exit.*"
- 
- #define DATA_SECTIONS ".data", ".data.rel"
- #define TEXT_SECTIONS ".text", ".text.*", ".sched.text", \
-@@ -819,8 +819,6 @@ static void check_section(const char *modname, struct elf_info *elf,
- 
- #define INIT_SECTIONS      ".init.*"
- 
--#define EXIT_SECTIONS      ".exit.*"
--
- #define ALL_TEXT_SECTIONS  ALL_INIT_TEXT_SECTIONS, ALL_EXIT_TEXT_SECTIONS, \
- 		TEXT_SECTIONS, OTHER_TEXT_SECTIONS
- 
-@@ -1006,7 +1004,7 @@ static int secref_whitelist(const char *fromsec, const char *fromsym,
- 	 */
- 	if (!extra_warn &&
- 	    match(fromsec, PATTERNS(DATA_SECTIONS)) &&
--	    match(tosec, PATTERNS(EXIT_SECTIONS)) &&
-+	    match(tosec, PATTERNS(ALL_EXIT_SECTIONS)) &&
- 	    match(fromsym, PATTERNS("*driver")))
- 		return 0;
- 
-@@ -1169,7 +1167,7 @@ static void check_export_symbol(struct module *mod, struct elf_info *elf,
- 	if (match(secname, PATTERNS(INIT_SECTIONS)))
+-	if (match(secname, PATTERNS(INIT_SECTIONS)))
++	if (match(secname, PATTERNS(ALL_INIT_SECTIONS)))
  		warn("%s: %s: EXPORT_SYMBOL used for init symbol. Remove __init or EXPORT_SYMBOL.\n",
  		     mod->name, name);
--	else if (match(secname, PATTERNS(EXIT_SECTIONS)))
-+	else if (match(secname, PATTERNS(ALL_EXIT_SECTIONS)))
- 		warn("%s: %s: EXPORT_SYMBOL used for exit symbol. Remove __exit or EXPORT_SYMBOL.\n",
- 		     mod->name, name);
- }
+ 	else if (match(secname, PATTERNS(ALL_EXIT_SECTIONS)))
 -- 
 2.40.1
 
