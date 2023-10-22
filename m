@@ -2,63 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EB77D231B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 14:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B597D2321
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 14:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbjJVMf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 08:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43628 "EHLO
+        id S231481AbjJVMwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 08:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbjJVMf4 (ORCPT
+        with ESMTP id S230440AbjJVMwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 08:35:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0D2F7;
-        Sun, 22 Oct 2023 05:35:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697978153; x=1729514153;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Yi9S8qFYA7qeOGAPjOjM2PKgIEyoT8Vi+9i0QilN0HM=;
-  b=nByA4xc2WiON1vldnvomTo3QScenkes/kbIuZ68U13O6RHzFiQJyCltw
-   UGP/PeBD3KA7/8cXSi/2vZyHO0PvJt9XYu0k4CTEx3qvgzcx89kx7UvOv
-   7X5cVU2AzsTFdWfuOvksI5dwFHLF3UJgXzBbOKacpyBUzfFWkh2YrEmK9
-   AaCyrRiW3R76xjySo2ufl4mtqMW3hV0GPCdGSJvtjNh/W0VPQ4sbZSjjk
-   Sr7DRYrwfBfTbOW/yE7hzLb0HVrpJeoYFWQ/OazyGTGXyDrLkNr1xJ+K6
-   XvDLhsCyTldErITI7OStdgYP9EjSjwy8aKDbA/dIJ87QEZDJwiSQN0isf
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="450925576"
-X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
-   d="scan'208";a="450925576"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 05:35:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="734396966"
-X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
-   d="scan'208";a="734396966"
-Received: from zfeng6-mobl1.ccr.corp.intel.com (HELO [10.93.25.116]) ([10.93.25.116])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 05:35:51 -0700
-Message-ID: <8c6e8f32-f831-29f1-b749-d0873dad20eb@linux.intel.com>
-Date:   Sun, 22 Oct 2023 20:35:48 +0800
+        Sun, 22 Oct 2023 08:52:33 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EDDF4
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 05:52:31 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9bdf5829000so351725566b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 05:52:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697979149; x=1698583949; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O1aClNsXLK187CY4ojVpZL9A9iEoN/DQ1EdAkMF/4MQ=;
+        b=O1QJL8NfLArnjwTqz9wHWPi44EvCVIISL0lJcKpszkVuFIQy7h7dMBSHBz8XQps/94
+         ni/94JI/1TK215GA3rdEG5BqAmtd4saJh5Y64LV76Rv+zvrYHoEJpFW5wmIoe/zf5Uct
+         GDkEmaKngk8JWCnJ1Hd8qtXU3XO1URPTNyiv6Jbp9L5eYCN7VGSJZ6fXvg1bBZP8Fcdf
+         M6yOEWDpVtK8siAb+0HLwK1MPgtfIhKQbezHZyhInQOJkWAZhOoIizOFi91w2G5g3oj7
+         JZcCfbjgbV1vYMaq+48p9tcY3aK8oBm7cgfXOdnC9DTtfIljUKVKaAx3pqIde+qcoARw
+         GXow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697979149; x=1698583949;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O1aClNsXLK187CY4ojVpZL9A9iEoN/DQ1EdAkMF/4MQ=;
+        b=kvkuWDVoAFV8nn/sL6gpcNjWhVMDSjd6AojPGCf3h9zM0z8fbAERcfJNnNm8YPPNzt
+         fYBgoz6QgC1pVxdEblZViGdQrc1G7SzYcqQfwwOOJ4YwfX65MS6Fzm11qHiPmrlDJOeO
+         0lDWI/4uYnOxCKqn1xqCWErb7x0Axeg/7/SNyMSSl8x1cDC17SsF2M7s3PvUoX9tnnky
+         DCXZAD+9Oy/ChMnh4/Z/W5aJzew0V6XneB0h6Hdj7G1gHXeFO98C8DU+sqQ/ip+xhBcL
+         FpUQTnPJP2UnAjvM9g7mb9RKS8INUzFlCUgFs+38McVKc6rCfsyFEP3dL7MdJmjqtUWB
+         m6eQ==
+X-Gm-Message-State: AOJu0Yy1YwFdJTJgZ8lJXImP78bFWmBKXgr/vmu+dOY8ttZyD9JYk0NQ
+        s0cBP5plxi7CdiSxZwY8kwkbHm9lPeY9FGFWAMHNU6sF
+X-Google-Smtp-Source: AGHT+IG7MtwIVuiMObFJYyj/BWZxLS+aIt9mCsiXjvMHs7aZraZp617ZMAtvkqeKKj+2dm4M6Uyccz9VcXLP/a5GvNw=
+X-Received: by 2002:a17:907:72c5:b0:9ae:6a51:87c3 with SMTP id
+ du5-20020a17090772c500b009ae6a5187c3mr4151059ejc.9.1697979149385; Sun, 22 Oct
+ 2023 05:52:29 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v11 00/16] LAM and LASS KVM Enabling
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
-        David.Laight@aculab.com, robert.hu@linux.intel.com,
-        guang.zeng@intel.com
-References: <20230913124227.12574-1-binbin.wu@linux.intel.com>
- <ZTMatKliYT5_I0bg@google.com> <ZTMcg__FPmRVqec9@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZTMcg__FPmRVqec9@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <CAOx-CDV52DRTmrZ7WEYxngCTpO-X7-H4PGXS86xC9vDJU9U94A@mail.gmail.com>
+ <ZTUGCWr0EgAf4I4C@debian.me>
+In-Reply-To: <ZTUGCWr0EgAf4I4C@debian.me>
+From:   gmssixty gmssixty <gmssixty@gmail.com>
+Date:   Sun, 22 Oct 2023 18:52:16 +0600
+Message-ID: <CAOx-CDWB+QQLyKoSsH=_HfwRBvOeaKKN2v5kAKpr+TgsE+zhDA@mail.gmail.com>
+Subject: Re: How can I get/check all the kernel boot messages?
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,40 +69,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I did not install any software. I just booted custom kernel from
+/dev/sda3. In that case, how can I see boot messages?
 
-
-On 10/21/2023 8:34 AM, Sean Christopherson wrote:
-> On Fri, Oct 20, 2023, Sean Christopherson wrote:
->> On Wed, Sep 13, 2023, Binbin Wu wrote:
->>> Binbin Wu (10):
->>>    KVM: x86: Consolidate flags for __linearize()
->>>    KVM: x86: Use a new flag for branch targets
->>>    KVM: x86: Add an emulation flag for implicit system access
->>>    KVM: x86: Add X86EMUL_F_INVLPG and pass it in em_invlpg()
->>>    KVM: x86/mmu: Drop non-PA bits when getting GFN for guest's PGD
->>>    KVM: x86: Add & use kvm_vcpu_is_legal_cr3() to check CR3's legality
->>>    KVM: x86: Remove kvm_vcpu_is_illegal_gpa()
->>>    KVM: x86: Introduce get_untagged_addr() in kvm_x86_ops and call it in
->>>      emulator
->>>    KVM: x86: Untag address for vmexit handlers when LAM applicable
->>>    KVM: x86: Use KVM-governed feature framework to track "LAM enabled"
->>>
->>> Robert Hoo (3):
->>>    KVM: x86: Virtualize LAM for supervisor pointer
->>>    KVM: x86: Virtualize LAM for user pointer
->>>    KVM: x86: Advertise and enable LAM (user and supervisor)
->>>
->>> Zeng Guang (3):
->>>    KVM: emulator: Add emulation of LASS violation checks on linear
->>>      address
->>>    KVM: VMX: Virtualize LASS
->>>    KVM: x86: Advertise LASS CPUID to user space
->> This all looks good!  I have a few minor nits, but nothing I can't tweak when
->> applying.  Assuming nothing explodes in testing, I'll get this applied for 6.8
->> next week.
-
-Thanks very much!
-
-> Gah, by "this" I meant the LAM parts.  LASS is going to have to wait until the
-> kernel support lands.
-
+On Sun, Oct 22, 2023 at 5:22=E2=80=AFPM Bagas Sanjaya <bagasdotme@gmail.com=
+> wrote:
+>
+> On Sun, Oct 22, 2023 at 02:48:37PM +0600, gmssixty gmssixty wrote:
+> > How can I get/check all the kernel boot messages? After booting, I can
+> > not do SHIFT+PAGEUP to scroll up to see messages. Also, how can I know
+> > there is no problem with kernel booting?
+>
+> Run dmesg as root.
+>
+> --
+> An old man doll... just what I always wanted! - Clara
