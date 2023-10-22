@@ -2,311 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FF77D20D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 05:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45B87D2109
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 07:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbjJVDMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 23:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
+        id S230164AbjJVFAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 01:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231240AbjJVDMU (ORCPT
+        with ESMTP id S229472AbjJVE77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 23:12:20 -0400
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4CA126;
-        Sat, 21 Oct 2023 20:12:18 -0700 (PDT)
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6b709048f32so1656978b3a.0;
-        Sat, 21 Oct 2023 20:12:18 -0700 (PDT)
+        Sun, 22 Oct 2023 00:59:59 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F27EDA;
+        Sat, 21 Oct 2023 21:59:57 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53e84912038so3119925a12.1;
+        Sat, 21 Oct 2023 21:59:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697950795; x=1698555595; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XBySzR+l1+gpl5uLMz6UdtdL0sUeapQTO47B6XYiJBQ=;
+        b=Su7E2SO73F9YgURqDnjV1kOTpHiJLfnjyMelXzf+2VkrnWyW33GMAZPxwwGgKeFUXU
+         KrwB4gtyrQ1ObfXY5QdrmcKFl8FCB+tFUvLPdImlmrdvOTXgJ0ZopKo/cmHkhVNfDxNb
+         XuZvU8gcY3N1mqPpMydvqFbnbHUfBweu+Zdkda7Fwss/BJyTJZDJOJF6J197balKL0eT
+         GeYPu9J49StjRkdhFzrBDZ18Zjt1wEO88LGHglvlIICyUi1Paq5FGEd+itlDAGFWppqQ
+         CgjRu4cgHnbtsFUK5SzxopW9vy/eYNCUKn55r5ZZCqa5U3nzPGQtI484DSFzLo7Elw7B
+         AdsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697944337; x=1698549137;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1697950795; x=1698555595;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vzbV6n5FMSqzKY14jdbBPxtAS0oUis2FQ9UO1ljggKk=;
-        b=mzISRJylVKLnmJoa15YboZTy8f/qHsHGVJVCUKupWBD5oySrEzsS6lHEqv7afO2tlO
-         jXWJDC2jEfMTAJs6CXe0o37BIpoE+L3nwlMGAJGQKgeOqdn9obLmafZhe5v7DXTp+i7f
-         ed7oPPaN4TmwJc0vz/4caJzk8VZcOb5W0swwaLdfGigtyX3e2S1Lxym6FJpc0WrM4Gyb
-         iLK50oR1TkwuPLVR7hUWWtB8hE0Pc0+T0Z7Nq7OWQRAxisOQWy+wRnbotdod9bUCOKPO
-         xq49O/i0whkzn0cGRa2FvyPYcZD4UAJngFkr60RzSe5U0nxkSurs8YnAYM/vGHBMg+vw
-         3L9g==
-X-Gm-Message-State: AOJu0Yzg9f4yGK9rikXf9ZbbY/S0tydtLdygd8Oc4GLyhqwCiIKPUL2T
-        TEwIHxF5Cf0UxCY0QiqSH0A=
-X-Google-Smtp-Source: AGHT+IGn1rdEcDNwpcTXBcAeDQHrRijrN5j3sC4fgHBSRQcw/DGa0ruWU3RPC712akl1Q8o3z+lAQg==
-X-Received: by 2002:a17:902:ce92:b0:1c9:e774:58e1 with SMTP id f18-20020a170902ce9200b001c9e77458e1mr5089702plg.8.1697944337344;
-        Sat, 21 Oct 2023 20:12:17 -0700 (PDT)
-Received: from dev-linux.lan (cpe-70-95-21-110.san.res.rr.com. [70.95.21.110])
-        by smtp.gmail.com with ESMTPSA id n8-20020a170902e54800b001c9c879ee4asm3789589plf.17.2023.10.21.20.12.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 20:12:16 -0700 (PDT)
-From:   Sukrut Bellary <sukrut.bellary@linux.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Angelo Compagnucci <angelo.compagnucci@gmail.com>,
-        Nishanth Menon <nm@ti.com>
-Cc:     Sukrut Bellary <sukrut.bellary@linux.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] iio: adc: ti-adc128s052: Add lower resolution devices support
-Date:   Sat, 21 Oct 2023 20:12:03 -0700
-Message-Id: <20231022031203.632153-3-sukrut.bellary@linux.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231022031203.632153-1-sukrut.bellary@linux.com>
-References: <20231022031203.632153-1-sukrut.bellary@linux.com>
+        bh=XBySzR+l1+gpl5uLMz6UdtdL0sUeapQTO47B6XYiJBQ=;
+        b=qMlYxiMc+DR/rWx7LhlUfxKuYoF24oVzwP9DPutWDiSrMVWUmnDdRTA4IUXY2fa3f6
+         U81Q8/QsoDHu4Nwk0ks+Re+MHu/jHm0EWWnxd0cnBKcC7dfCQe60yxZZ8frXH9LTkKQO
+         pA7jNgJWuJFcVcxgCzyqv2cWDdl9IO5rOMTS8kK8TmBg1KZvFgJaM1aweQMAamm6DAp9
+         N+90QtlS6z09CSba48k9WyeU7LAjnNSKj9tJObwHqKTmceBbq8Ld0xeRKFCdXI3ywqXI
+         +4EAw8cJm9ifXnJ6CQhc2SybIrd+2z/YhNfUwYjyZKL/mzcoELdBZt6bC5LuRLT8xHMQ
+         nB4A==
+X-Gm-Message-State: AOJu0YwWAEsaOGTev5XzDKv4vIQeU6kzVS782ykevW7GAnl/i/z+jR48
+        mxPxzId5jJjbJ2MC51FVDs++YTmdlQ23mM3ib/o=
+X-Google-Smtp-Source: AGHT+IGMKsonpyWMlgeANbElGK30CcxRJYitihsHXOD6l1tgr6e0cQqqaoebSrSchWN9K787aJOIdGmHNFIzjl0BrfI=
+X-Received: by 2002:a17:906:ee8a:b0:9b7:2a13:160c with SMTP id
+ wt10-20020a170906ee8a00b009b72a13160cmr4126038ejb.69.1697950795485; Sat, 21
+ Oct 2023 21:59:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231020155842.130257-1-tao.lyu@epfl.ch>
+In-Reply-To: <20231020155842.130257-1-tao.lyu@epfl.ch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 21 Oct 2023 21:59:44 -0700
+Message-ID: <CAEf4BzaqOt8DyB781geXYfrosmgQCkzDOCOH8WBVmCAPs+wQBw@mail.gmail.com>
+Subject: Re: [PATCH] Incorrect backtracking for load/store or atomic ops
+To:     Tao Lyu <tao.lyu@epfl.ch>
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        shuah@kernel.org, security@kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, sanidhya.kashyap@epfl.ch,
+        mathias.payer@nebelwelt.net, meng.xu.cs@uwaterloo.ca,
+        kartikeya.dwivedi@epfl.ch
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The adcxx4s communicates with a host processor via an SPI/Microwire Bus
-interface. The device family responds with 12-bit data, of which the LSB
-bits are transmitted by the lower resolution devices as 0.
-The unavailable bits are 0 in LSB.
-Shift is calculated per resolution and used in scaling and
-raw data read.
+On Fri, Oct 20, 2023 at 9:06=E2=80=AFAM Tao Lyu <tao.lyu@epfl.ch> wrote:
+>
+> Hi,
+>
+> I found the backtracking logic of the eBPF verifier is flawed
+> when meeting 1) normal load and store instruction or
+> 2) atomic memory instructions.
+>
+> # Normal load and store
+>
+> Here, I show one case about the normal load and store instructions,
+> which can be exploited to achieve arbitrary read and write with two requi=
+rements:
+> 1) The uploading program should have at least CAP_BPF, which is required =
+for most eBPF applications.
+> 2) Disable CPU mitigations by adding "mitigations=3Doff" in the kernel bo=
+oting command line. Otherwise,
+> the Spectre mitigation in the eBPF verifier will prevent exploitation.
+>
+>                                    1: r3 =3D r10 (stack pointer)
+>                                    3:           if cond
+>                                                  /           \
+>                                                /                \
+>         4: *(u64 *)(r3 -120) =3D 200      6: *(u64 *)(r3 -120) =3D arbitr=
+ary offset to r2
+>                  verification state 1                  verification state=
+ 2 (prune point)
+>                                               \                  /
+>                                                 \              /
+>                                       7:  r6 =3D *(u64 *)(r1 -120)
+>                                                          ...
+>                                     17:    r7 =3D a map pointer
+>                                     18:            r7 +=3D r6
+>                          // Out-of-bound access from the right side path
+>
+> Give an eBPF program (tools/testing/selftests/bpf/test_precise.c)
+> whose simplified control flow graph looks like the above.
+> When the verifier goes through the first (left-side) path and reaches ins=
+n 18,
+> it will backtrack on register 6 like below.
+>
+> 18: (0f) r7 +=3D r6
+> mark_precise: frame0: last_idx 18 first_idx 17 subseq_idx -1
+> mark_precise: frame0: regs=3Dr6 stack=3D before 17: (bf) r7 =3D r0
+> ...
+> mark_precise: frame0: regs=3Dr6 stack=3D before 7: (79) r6 =3D *(u64 *)(r=
+3 -120)
+>
+> However, the backtracking process is problematic when it reaches insn 7.
+> Insn 7 is to load a value from the stack, but the stack pointer is repres=
+ented by r3 instead of r10.
+> ** In this case, the verifier (as shown below) will reset the precision o=
+n r6 and not mark the precision on the stack. **
+> Afterward, the backtracking finishes without annotating any registers in =
+any verifier states.
+>
+>     else if (class =3D=3D BPF_LDX) {
+>         if (!bt_is_reg_set(bt, dreg))
+>             return 0;
+>         bt_clear_reg(bt, dreg);
+>         if (insn->src_reg !=3D BPF_REG_FP)
+>             return 0;
+>         ...
+>    }
+>
+> Finally, when the second (left-side) path reaches insn 7 again,
+> it will compare the verifier states with the previous one.
+> However, it realizes these two states are equal because no precision is o=
+n r6,
+> thus the eBPF program an easily pass the verifier
+> although the second path contains an invalid access offset.
+> We have successfully exploited this bug for getting the root privilege.
+> If needed, we can share the exploitation.
+> BTW, when using the similar instructions in sub_prog can also trigger an =
+assertion in the verifier:
+> "[ 1510.165537] verifier backtracking bug
+> [ 1510.165582] WARNING: CPU: 2 PID: 382 at kernel/bpf/verifier.c:3626 __m=
+ark_chain_precision+0x4568/0x4e50"
+>
+>
+>
+> IMO, to fully patch this bug, we need to know whether the insn->src_reg i=
+s an alias of BPF_REG_FP.
 
-Lets reuse the driver to support the family of devices with name
-ADC<bb><c>S<sss>, where
-* bb is the resolution in number of bits (8, 10, 12)
-* c is the number of channels (1, 2, 4, 8)
-* sss is the maximum conversion speed (021 for 200 kSPS, 051 for 500 kSPS
-and 101 for 1 MSPS)
+Yes!
 
-Complete datasheets are available at TI's website here:
-https://www.ti.com/lit/gpn/adc<bb><c>s<sss>.pdf
+> However, it might need too much code addition.
 
-Tested only with ti-adc102s051 on BegalePlay SBC.
-https://www.beagleboard.org/boards/beagleplay
+No :) I don't think it's a lot of code. I've been meaning to tackle
+this for a while, but perhaps the time is now.
 
-arm64: dts: ti: k3-am625-beagleplay: Add adc102s051
-Add adc102s051 support.
-Tested on beaglePlay SBC
-https://www.beagleboard.org/boards/beagleplay
+The plan is to use jmp_history to record an extra flags for some
+instructions (even if they are not jumps). Like in this case, we can
+remember for LDX and STX instructions that they were doing register
+load/spill, and take that into account during backtrack_insn() without
+having to guess based on r10.
 
-Co-developed-by: Nishanth Menon <nm@ti.com>
-Signed-off-by: Nishanth Menon <nm@ti.com>
-Signed-off-by: Sukrut Bellary <sukrut.bellary@linux.com>
----
-Changes in v2:
-        - Arranged of_device_id and spi_device_id in numeric order.
-        - Used enum to index into adc128_config.
-        - Reorder adc128_config in alphabetical.
-        - Include channel resolution information.
-        - Shift is calculated per resolution and used in scaling and 
-          raw data read.
-- Link to v1: https://lore.kernel.org/all/20220701042919.18180-3-nm@ti.com/
----
- drivers/iio/adc/ti-adc128s052.c | 131 +++++++++++++++++++++++---------
- 1 file changed, 96 insertions(+), 35 deletions(-)
+I have part of this ready locally, I'll try to finish this up in a
+next week or two. Stay tuned (unless you want to tackle that
+yourself).
 
-diff --git a/drivers/iio/adc/ti-adc128s052.c b/drivers/iio/adc/ti-adc128s052.c
-index a456ea78462f..61e3181b8daf 100644
---- a/drivers/iio/adc/ti-adc128s052.c
-+++ b/drivers/iio/adc/ti-adc128s052.c
-@@ -7,6 +7,22 @@
-  * https://www.ti.com/lit/ds/symlink/adc128s052.pdf
-  * https://www.ti.com/lit/ds/symlink/adc122s021.pdf
-  * https://www.ti.com/lit/ds/symlink/adc124s021.pdf
-+ *
-+ * The adcxx4s communicates with a host processor via an SPI/Microwire Bus
-+ * interface. This driver supports the whole family of devices with a name
-+ * ADC<bb><c>S<sss>, where
-+ * bb is the resolution in number of bits (8, 10, 12)
-+ * c is the number of channels (1, 2, 4, 8)
-+ * sss is the maximum conversion speed (021 for 200 kSPS, 051 for 500 kSPS
-+ * and 101 for 1 MSPS)
-+ *
-+ * Complete datasheets are available at TI's website here:
-+ *   https://www.ti.com/lit/gpn/adc<bb><c>s<sss>.pdf
-+ *
-+ * 8, 10, and 12 bits converters send 12-bit data with
-+ * unavailable bits set to 0 in LSB.
-+ * Shift is calculated per resolution and used in scaling and
-+ * raw data read.
-  */
- 
- #include <linux/err.h>
-@@ -53,7 +69,7 @@ static int adc128_adc_conversion(struct adc128 *adc, u8 channel)
- 	if (ret < 0)
- 		return ret;
- 
--	return ((adc->buffer[0] << 8 | adc->buffer[1]) & 0xFFF);
-+	return (adc->buffer[0] << 8 | adc->buffer[1]);
- }
- 
- static int adc128_read_raw(struct iio_dev *indio_dev,
-@@ -70,7 +86,8 @@ static int adc128_read_raw(struct iio_dev *indio_dev,
- 		if (ret < 0)
- 			return ret;
- 
--		*val = ret;
-+		*val = (ret >> channel->scan_type.shift) &
-+			GENMASK(channel->scan_type.realbits - 1, 0);
- 		return IIO_VAL_INT;
- 
- 	case IIO_CHAN_INFO_SCALE:
-@@ -80,7 +97,7 @@ static int adc128_read_raw(struct iio_dev *indio_dev,
- 			return ret;
- 
- 		*val = ret / 1000;
--		*val2 = 12;
-+		*val2 = channel->scan_type.realbits;
- 		return IIO_VAL_FRACTIONAL_LOG2;
- 
- 	default:
-@@ -89,24 +106,34 @@ static int adc128_read_raw(struct iio_dev *indio_dev,
- 
- }
- 
--#define ADC128_VOLTAGE_CHANNEL(num)	\
--	{ \
--		.type = IIO_VOLTAGE, \
--		.indexed = 1, \
--		.channel = (num), \
--		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW), \
--		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) \
-+#define _ADC128_VOLTAGE_CHANNEL(num, real_bits, store_bits)		\
-+	{								\
-+		.type = IIO_VOLTAGE,					\
-+		.indexed = 1,						\
-+		.channel = (num),					\
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),		\
-+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),	\
-+		.scan_index = (num),					\
-+		.scan_type = {						\
-+			.sign = 'u',					\
-+			.realbits = (real_bits),			\
-+			.storagebits = (store_bits),			\
-+			.shift = (12 - real_bits),			\
-+		},							\
- 	}
- 
--static const struct iio_chan_spec adc128s052_channels[] = {
--	ADC128_VOLTAGE_CHANNEL(0),
--	ADC128_VOLTAGE_CHANNEL(1),
--	ADC128_VOLTAGE_CHANNEL(2),
--	ADC128_VOLTAGE_CHANNEL(3),
--	ADC128_VOLTAGE_CHANNEL(4),
--	ADC128_VOLTAGE_CHANNEL(5),
--	ADC128_VOLTAGE_CHANNEL(6),
--	ADC128_VOLTAGE_CHANNEL(7),
-+#define ADC082_VOLTAGE_CHANNEL(num) _ADC128_VOLTAGE_CHANNEL(num, 8, 16)
-+#define ADC102_VOLTAGE_CHANNEL(num) _ADC128_VOLTAGE_CHANNEL(num, 10, 16)
-+#define ADC128_VOLTAGE_CHANNEL(num) _ADC128_VOLTAGE_CHANNEL(num, 12, 16)
-+
-+static const struct iio_chan_spec adc082s021_channels[] = {
-+	ADC082_VOLTAGE_CHANNEL(0),
-+	ADC082_VOLTAGE_CHANNEL(1),
-+};
-+
-+static const struct iio_chan_spec adc102s021_channels[] = {
-+	ADC102_VOLTAGE_CHANNEL(0),
-+	ADC102_VOLTAGE_CHANNEL(1),
- };
- 
- static const struct iio_chan_spec adc122s021_channels[] = {
-@@ -121,10 +148,32 @@ static const struct iio_chan_spec adc124s021_channels[] = {
- 	ADC128_VOLTAGE_CHANNEL(3),
- };
- 
-+static const struct iio_chan_spec adc128s052_channels[] = {
-+	ADC128_VOLTAGE_CHANNEL(0),
-+	ADC128_VOLTAGE_CHANNEL(1),
-+	ADC128_VOLTAGE_CHANNEL(2),
-+	ADC128_VOLTAGE_CHANNEL(3),
-+	ADC128_VOLTAGE_CHANNEL(4),
-+	ADC128_VOLTAGE_CHANNEL(5),
-+	ADC128_VOLTAGE_CHANNEL(6),
-+	ADC128_VOLTAGE_CHANNEL(7),
-+};
-+
- static const struct adc128_configuration adc128_config[] = {
--	{ adc128s052_channels, ARRAY_SIZE(adc128s052_channels) },
-+	{ adc082s021_channels, ARRAY_SIZE(adc082s021_channels) },
-+	{ adc102s021_channels, ARRAY_SIZE(adc102s021_channels) },
- 	{ adc122s021_channels, ARRAY_SIZE(adc122s021_channels) },
- 	{ adc124s021_channels, ARRAY_SIZE(adc124s021_channels) },
-+	{ adc128s052_channels, ARRAY_SIZE(adc128s052_channels) },
-+};
-+
-+/* Ensure match with adc128_config indices */
-+enum adc128_configuration_index {
-+	ADC128_CONFIG_INDEX_082S,
-+	ADC128_CONFIG_INDEX_102S,
-+	ADC128_CONFIG_INDEX_122S,
-+	ADC128_CONFIG_INDEX_124S,
-+	ADC128_CONFIG_INDEX_128S,
- };
- 
- static const struct iio_info adc128_info = {
-@@ -177,31 +226,43 @@ static int adc128_probe(struct spi_device *spi)
- }
- 
- static const struct of_device_id adc128_of_match[] = {
--	{ .compatible = "ti,adc128s052", .data = &adc128_config[0] },
--	{ .compatible = "ti,adc122s021", .data = &adc128_config[1] },
--	{ .compatible = "ti,adc122s051", .data = &adc128_config[1] },
--	{ .compatible = "ti,adc122s101", .data = &adc128_config[1] },
--	{ .compatible = "ti,adc124s021", .data = &adc128_config[2] },
--	{ .compatible = "ti,adc124s051", .data = &adc128_config[2] },
--	{ .compatible = "ti,adc124s101", .data = &adc128_config[2] },
-+	{ .compatible = "ti,adc082s021", .data = &adc128_config[ADC128_CONFIG_INDEX_082S] },
-+	{ .compatible = "ti,adc082s051", .data = &adc128_config[ADC128_CONFIG_INDEX_082S] },
-+	{ .compatible = "ti,adc082s101", .data = &adc128_config[ADC128_CONFIG_INDEX_082S] },
-+	{ .compatible = "ti,adc102s021", .data = &adc128_config[ADC128_CONFIG_INDEX_102S] },
-+	{ .compatible = "ti,adc102s051", .data = &adc128_config[ADC128_CONFIG_INDEX_102S] },
-+	{ .compatible = "ti,adc102s101", .data = &adc128_config[ADC128_CONFIG_INDEX_102S] },
-+	{ .compatible = "ti,adc122s021", .data = &adc128_config[ADC128_CONFIG_INDEX_122S] },
-+	{ .compatible = "ti,adc122s051", .data = &adc128_config[ADC128_CONFIG_INDEX_122S] },
-+	{ .compatible = "ti,adc122s101", .data = &adc128_config[ADC128_CONFIG_INDEX_122S] },
-+	{ .compatible = "ti,adc124s021", .data = &adc128_config[ADC128_CONFIG_INDEX_124S] },
-+	{ .compatible = "ti,adc124s051", .data = &adc128_config[ADC128_CONFIG_INDEX_124S] },
-+	{ .compatible = "ti,adc124s101", .data = &adc128_config[ADC128_CONFIG_INDEX_124S] },
-+	{ .compatible = "ti,adc128s052", .data = &adc128_config[ADC128_CONFIG_INDEX_128S] },
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, adc128_of_match);
- 
- static const struct spi_device_id adc128_id[] = {
--	{ "adc128s052", (kernel_ulong_t)&adc128_config[0] },
--	{ "adc122s021",	(kernel_ulong_t)&adc128_config[1] },
--	{ "adc122s051",	(kernel_ulong_t)&adc128_config[1] },
--	{ "adc122s101",	(kernel_ulong_t)&adc128_config[1] },
--	{ "adc124s021", (kernel_ulong_t)&adc128_config[2] },
--	{ "adc124s051", (kernel_ulong_t)&adc128_config[2] },
--	{ "adc124s101", (kernel_ulong_t)&adc128_config[2] },
-+	{ "adc082s021", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_082S] },
-+	{ "adc082s051", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_082S] },
-+	{ "adc082s101", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_082S] },
-+	{ "adc102s021", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_102S] },
-+	{ "adc102s051", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_102S] },
-+	{ "adc102s101", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_102S] },
-+	{ "adc122s021",	(kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_122S] },
-+	{ "adc122s051",	(kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_122S] },
-+	{ "adc122s101",	(kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_122S] },
-+	{ "adc124s021", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
-+	{ "adc124s051", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
-+	{ "adc124s101", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
-+	{ "adc128s052", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_128S] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(spi, adc128_id);
- 
- static const struct acpi_device_id adc128_acpi_match[] = {
--	{ "AANT1280", (kernel_ulong_t)&adc128_config[2] },
-+	{ "AANT1280", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, adc128_acpi_match);
--- 
-2.34.1
+> Or we just do not clear the precision on the src register.
+>
+> # Atomic memory instructions
+>
+> Then, I show that the backtracking on atomic load and store is also flawe=
+d.
+> As shown below, when the backtrack_insn() function in the verifier meets =
+store instructions,
+> it checks if the stack slot is set with precision or not. If not, just re=
+turn.
+>
+>             if (!bt_is_slot_set(bt, spi))
+>                 return 0;
+>             bt_clear_slot(bt, spi);
+>             if (class =3D=3D BPF_STX)
+>                 bt_set_reg(bt, sreg);
+>
+> Assume we have an atomic_fetch_or instruction (tools/testing/selftests/bp=
+f/verifier/atomic_precision.c) shown below.
+>
+> 7: (4c) w7 |=3D w3
+> mark_precise: frame1: last_idx 7 first_idx 0 subseq_idx -1
+> mark_precise: frame1: regs=3Dr7 stack=3D before 6: (c3) r7 =3D atomic_fet=
+ch_or((u32 *)(r10 -120), r7)
+> mark_precise: frame1: regs=3Dr7 stack=3D before 5: (bf) r7 =3D r10
+> mark_precise: frame1: regs=3Dr10 stack=3D before 4: (7b) *(u64 *)(r3 -120=
+) =3D r1
+> mark_precise: frame1: regs=3Dr10 stack=3D before 3: (bf) r3 =3D r10
+> mark_precise: frame1: regs=3Dr10 stack=3D before 2: (b7) r1 =3D 1000
+> mark_precise: frame1: regs=3Dr10 stack=3D before 0: (85) call pc+1
+> BUG regs 400
+>
+> Before backtracking to it, r7 has already been marked as precise.
+> Since the value of r7 after atomic_fecth_or comes from r10-120,
+> it should propagate the precision to r10-120.
+> However, because the stack slot r10-120 is not marked,
+> it doesn't satisfy bt_is_slot_set(bt, spi) condition shown above.
+> Finally, it just returns without marking r10-120 as precise.
 
+this seems like the same issue with not recognizing stack access
+through any other register but r10?
+
+Or is there something specific to atomic instructions here? I'm not
+very familiar with them, so I'll need to analyse the code first.
+
+>
+> This bug can lead to the verifier's assertion as well:
+> "[ 1510.165537] verifier backtracking bug
+> [ 1510.165582] WARNING: CPU: 2 PID: 382 at kernel/bpf/verifier.c:3626 __m=
+ark_chain_precision+0x4568/0x4e50"
+>
+> I've attached the patch for correctly propagating the precision on atomic=
+ instructions.
+> But it still can't solve the problem that the stack slot is expressed wit=
+h other registers instead of r10.
+
+I can try to solve stack access through non-r10, but it would be very
+useful if you could provide tests that trigger the above situations
+you described. Your test_precise.c test below is not the right way to
+add tests, it adds a new binary and generally doesn't fit into
+existing set of tests inside test_progs. Please see
+progs/verifier_xadd.c and prog_tests/verifier.c and try to convert
+your tests into that form (you also will be able to use inline
+assembly instead of painful BPF_xxx() instruction macros).
+
+Thanks.
+
+>
+> Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
+> ---
+>  kernel/bpf/verifier.c                         |  58 +++++-
+>  tools/testing/selftests/bpf/Makefile          |   6 +-
+>  tools/testing/selftests/bpf/test_precise.c    | 186 ++++++++++++++++++
+>  .../selftests/bpf/verifier/atomic_precision.c |  19 ++
+>  4 files changed, 263 insertions(+), 6 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/test_precise.c
+>  create mode 100644 tools/testing/selftests/bpf/verifier/atomic_precision=
+.c
+>
+
+[...]
