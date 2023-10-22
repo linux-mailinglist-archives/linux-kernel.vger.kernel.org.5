@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 971A57D2455
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1172E7D2456
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbjJVQUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 12:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33526 "EHLO
+        id S232457AbjJVQUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 12:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232482AbjJVQUV (ORCPT
+        with ESMTP id S232445AbjJVQU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 12:20:21 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA09119;
-        Sun, 22 Oct 2023 09:20:19 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-457c7177a42so787733137.2;
-        Sun, 22 Oct 2023 09:20:19 -0700 (PDT)
+        Sun, 22 Oct 2023 12:20:28 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71ABC19E;
+        Sun, 22 Oct 2023 09:20:25 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-66d17fd450aso30380816d6.1;
+        Sun, 22 Oct 2023 09:20:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697991618; x=1698596418; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697991624; x=1698596424; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MM3mqVThapC2gHr48TgRVIKUoeAj5E3tYfQaohXgAZg=;
-        b=f/7XzPTsoNyydOVsd15eZrR1Hwws2wN9ugWha0PZApPO99aK+6RxV/uV/zyO0QAO/c
-         YyM+2PbX/BPqeuXqboSXaO41pBtH7jSlGxkXTg6qm4nCH4uQjHPw0Afe3O9WMKvwrvsZ
-         BNew1OCjO1k2NVD+7i/4UvM3WyhyXdkzix8KUp3j221xi7TGp95CiX/62LPlOv4xW2hM
-         gc1D5mGmwtNNtHCBySfz9YkNSuHL2Tq7GjsgO3TfaqYY6kXJ2DhQVg7jmJdiD+Z4qh8n
-         d16q5IHi+0Yf63PT6yn8sssOxwar8TnivMgDQxxR5I9H9X9YjrVM1GP1liucz75ebCor
-         Vowg==
+        bh=1L1EoQYDbmiosHQzcLpjg625XGZkEv3QC1cmuWB3ELg=;
+        b=DW42v0b7lCrm66DVfhHYLtnx21cyqQQNRYweMHl+0AI5MICBS8lQQLfgzUVs5CrxJy
+         7l3Xvkff16E4fneyOWQkV9wKMX0YDYGSZMRNtzFSUD8VZuAtRaNj6eBdyo+At5Q0AUfJ
+         YOt1Z8De9oVhLn++BrS55RCG9/i3kzT/ybp5nrMgxkyvu6tq39HUjPLYtbhEFqhOIeo5
+         sM4QA2OfRLhmNlv+Sttr8+nO6d6vzMMi/9GtwdmjIVROpIb2XCJ0ogR/r29IbhpGH7Yj
+         s7m1gla+KNVhXYIdKu2GtYKNl2ZrNLmEnOdKlAiI1W4one36nSUxSKmwa+ZwYdRGg0tq
+         ZxcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697991618; x=1698596418;
+        d=1e100.net; s=20230601; t=1697991624; x=1698596424;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MM3mqVThapC2gHr48TgRVIKUoeAj5E3tYfQaohXgAZg=;
-        b=u5QmuJ9S19A6FcPBEyc1A0v4qAOJ8cGLguarI0237hGXJHOlWGg/yPIBTLZnScoFOY
-         CQmvl7HNqBwou8FQPI+iWWe6HejcEBt2wQHhFX+J+tqDbLVaHxoZuwUe0gE3L+NshLG2
-         Xsh9YR37kfMnDhFlv0egRt3lYEcY8hc1J76f5qZIIx/5ltbQhyed/Y1awsn1bbZPuvED
-         klKSeAdGD7XJRJiHdEFGjlo/fk/j+BsMqeb30yhGUNvav9uLbX3v9kSES3P8Wl4r79RY
-         SOmhaD1Ql83nddObdQxiMUQcUFnI02f2LsW43pE3Ue2VqT5+JyejdMsCMHVsn6dFfHuG
-         2m0A==
-X-Gm-Message-State: AOJu0YwLTJHvEKE9vvGjvQcEjiNC/Aku37QkvBG4Hd7B5RHqu/+aZtAY
-        kLC0666YNaSx7kJmacb0TzhO+whaYww+KZP4
-X-Google-Smtp-Source: AGHT+IFaOU06a1tpLIDo3MFwPjTNyXj3Q6RHjgLutG/eUiaGz2WOYsTJepzxpZW0+lhGUoeDWLkCLw==
-X-Received: by 2002:a67:e1d2:0:b0:452:60c5:20b with SMTP id p18-20020a67e1d2000000b0045260c5020bmr5668459vsl.15.1697991618166;
-        Sun, 22 Oct 2023 09:20:18 -0700 (PDT)
+        bh=1L1EoQYDbmiosHQzcLpjg625XGZkEv3QC1cmuWB3ELg=;
+        b=Y+Pv0xGt/kwLUZVEzpeXMNxvDGwUtUFZfoOt4e2evm+eJuhpROg66fWtFpK3dXFVyG
+         5uxON0Snr6a944EuRnry4ETxYGeFkFcP+n95vyXXlIPmQMcrRrTRXAED+UfLXsiJBYuR
+         D9bXs7dTUcqUmpvDTwzYKRqjaUB67Ul3T1sETd8Y8auo5J2KB8Kk4xLsQlS1tp9uHBid
+         ICVEfsFbSSfAxxtN2M9QEtncDJ2v5IfralEDvyhq7xl2EcBz2WZ2OGr/MRkaqgr9IfqT
+         8BZHU0+HSMHV8IoTV4LQ0/TfbAycc8liW4nMb2BpAbK5o5PZ+8U+tt64sfGFvsjzvbEn
+         kL4g==
+X-Gm-Message-State: AOJu0YyozcWZspFU8TgBtG3wJc2DsDvaqMSMhXxrwap0lcvCa51gAqj7
+        uVAQcBfEoS7VR05cnYHrGtPqYBTdoTn8Qwxl
+X-Google-Smtp-Source: AGHT+IFb0kPwpaLiBLgJJyX3vtX46tAOg6CAeZGbsVVJ+6MqCJhvlM4f4kCrAVfo7Y2dSrw3KGH7HQ==
+X-Received: by 2002:a05:6214:2b97:b0:66d:995e:24f6 with SMTP id kr23-20020a0562142b9700b0066d995e24f6mr9250563qvb.10.1697991624252;
+        Sun, 22 Oct 2023 09:20:24 -0700 (PDT)
 Received: from localhost ([2601:8c:502:14f0:d6de:9959:3c29:509b])
-        by smtp.gmail.com with ESMTPSA id l15-20020a05620a0c0f00b0077892023fc5sm2103369qki.120.2023.10.22.09.20.17
+        by smtp.gmail.com with ESMTPSA id j17-20020a05620a001100b0077703f31496sm2111420qki.92.2023.10.22.09.20.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 09:20:17 -0700 (PDT)
-Date:   Sun, 22 Oct 2023 12:20:17 -0400
+        Sun, 22 Oct 2023 09:20:24 -0700 (PDT)
+Date:   Sun, 22 Oct 2023 12:20:23 -0400
 From:   Oliver Crumrine <ozlinuxc@gmail.com>
 To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     davem@davemloft.n
-Subject: [PATCH net-next 03/17] Change cork in ipv6_pinfo to a pointer.
-Message-ID: <6b25cdc64a066e1a214020d0452fff10a33495ac.1697989543.git.ozlinuxc@gmail.com>
+Subject: [PATCH net-next 04/17] Allocate and free cork in inet6_sk.
+Message-ID: <5e5dcbb87d4b57a347c5146373c75737967e4cd0.1697989543.git.ozlinuxc@gmail.com>
 References: <cover.1697989543.git.ozlinuxc@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -70,27 +70,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The actual change to make inet6_cork a pointer in the ipv6_pinfo struct
-itself.
+Allocate both the inet6_cork and inet_cork_full here, and free the
+inet6_cork. (The inet_cork_full is freed in inet_release called at
+the last line of inet6_release)
 
 Signed-off-by: Oliver Crumrine <ozlinuxc@gmail.com>
 ---
- include/linux/ipv6.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv6/af_inet6.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/linux/ipv6.h b/include/linux/ipv6.h
-index af8a771a053c..0c707ce9e776 100644
---- a/include/linux/ipv6.h
-+++ b/include/linux/ipv6.h
-@@ -290,7 +290,7 @@ struct ipv6_pinfo {
- 	struct ipv6_txoptions __rcu	*opt;
- 	struct sk_buff		*pktoptions;
- 	struct sk_buff		*rxpmtu;
--	struct inet6_cork	cork;
-+	struct inet6_cork	*cork;
- };
+diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+index 368824fe9719..33e92826361f 100644
+--- a/net/ipv6/af_inet6.c
++++ b/net/ipv6/af_inet6.c
+@@ -221,6 +221,7 @@ static int inet6_create(struct net *net, struct socket *sock, int protocol,
+ 	np->mc_all	= 1;
+ 	np->pmtudisc	= IPV6_PMTUDISC_WANT;
+ 	np->repflow	= net->ipv6.sysctl.flowlabel_reflect & FLOWLABEL_REFLECT_ESTABLISHED;
++	np->cork	= kzalloc(sizeof(struct inet6_cork), GFP_KERNEL);
+ 	sk->sk_ipv6only	= net->ipv6.sysctl.bindv6only;
+ 	sk->sk_txrehash = READ_ONCE(net->core.sysctl_txrehash);
  
- /* WARNING: don't change the layout of the members in {raw,udp,tcp}6_sock! */
+@@ -234,6 +235,7 @@ static int inet6_create(struct net *net, struct socket *sock, int protocol,
+ 	inet->mc_index	= 0;
+ 	RCU_INIT_POINTER(inet->mc_list, NULL);
+ 	inet->rcv_tos	= 0;
++	inet->cork = kzalloc(sizeof(struct inet_cork_full), GFP_KERNEL);
+ 
+ 	if (READ_ONCE(net->ipv4.sysctl_ip_no_pmtu_disc))
+ 		inet->pmtudisc = IP_PMTUDISC_DONT;
+@@ -481,6 +483,9 @@ int inet6_release(struct socket *sock)
+ 	/* Free ac lists */
+ 	ipv6_sock_ac_close(sk);
+ 
++	/* Free cork */
++	kfree(inet6_sk(sk)->cork);
++
+ 	return inet_release(sock);
+ }
+ EXPORT_SYMBOL(inet6_release);
 -- 
 2.42.0
 
