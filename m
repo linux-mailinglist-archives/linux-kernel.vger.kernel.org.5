@@ -2,624 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7C07D259B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 21:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF0D7D259E
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 21:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232478AbjJVTfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 15:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
+        id S232462AbjJVTjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 15:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjJVTfl (ORCPT
+        with ESMTP id S229452AbjJVTjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 15:35:41 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED7EEE;
-        Sun, 22 Oct 2023 12:35:35 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 361CB20003;
-        Sun, 22 Oct 2023 19:35:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698003332;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dYpgWJJf8zv+z5DFb3D3Dt9r752umviV97trLK7LvvM=;
-        b=REyT4wHU4cY4stlNdikjl8pxKFdFutH11YKtYE8fUOz88B9aZHLvoVSQX8P++W/62gBANj
-        I46V66jjN74awznZaf1zrrhS9/i8THaqiEgveyuM6gxVXv3u3hqQebN5RNKZXq/FAPR8zL
-        EP/xd2X8n/8RibHhrkAkp9K4B4xxEPhvF8/6dIuhzf2AjAVoIwsUGWdwEPOgAKad5097mO
-        DQYRHA5gLLDVjBWlCJVK8Qk2yMZ7knUxUjJ1a28mo3nDXFlDbVa8O7AjZRq4NwIZNqoMAe
-        CxE8qDKPQyDkgs2666UDRLu1jd9HGVrmYvLt50L3omInewhas1qTOWYWx1i6WA==
-Date:   Sun, 22 Oct 2023 21:35:29 +0200
-From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, mark.satterthwaite@touchnetix.com,
-        bartp@baasheep.co.uk, hannah.rossiter@touchnetix.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        bsp-development.geo@leica-geosystems.com
-Subject: Re: [PATCH v3 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
-Message-ID: <20231022193529.GC3072@kb-xps>
-References: <20231012074034.1090436-1-kamel.bouhara@bootlin.com>
- <20231012074034.1090436-4-kamel.bouhara@bootlin.com>
- <20231020120310.vrn6ew3fcg5e545w@pengutronix.de>
+        Sun, 22 Oct 2023 15:39:12 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85308EE;
+        Sun, 22 Oct 2023 12:39:10 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507a55302e0so3389798e87.0;
+        Sun, 22 Oct 2023 12:39:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698003548; x=1698608348; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dqK68qL/LBpriR+Z38aMUAzm2thbKObKANRwoPFwvps=;
+        b=ftf1xu8PThiMXuxYVjKyQX5b7aNkbcpMJTFITHq7i9u7TdPlirzhG3ciKet3ksww45
+         XEUM/TPkROc0PEMSfuKYo2zinEkm8TK7wH5U+l7+r5yDkCSx3IEg9Li3DLjaw97ThKjD
+         kOwLTZ2pQUR8jes22gYEWOb74FlknyR3y7odNIlSYZ8vVpFpox1PwNUy2C0WKZDI4pMf
+         qhEnPRM3Uprpob002PHvVk2gIZGmZnXuaN79TFkwRzlhjwHLGR8RgQ2+DuTCLqReCnVd
+         D/qfp8EukiV8aURlE1eljwXFccKGzqdGNlVf0T0TE+1kFrvJElcNaYx0zZELZaicusuI
+         DuYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698003548; x=1698608348;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dqK68qL/LBpriR+Z38aMUAzm2thbKObKANRwoPFwvps=;
+        b=TxFRas2vgJnW4i7FemCZCYCz9sroS/G8N4QftHEknJTAYTnowKRQDDZNS7BM9C306t
+         1e/L5qpDg747mqnX+XUfEKu06+3nn1jy2UE7HMMNuEdsdutEyuS446cSOQmstTIRmrRp
+         FDUAqvzSlB4H3h7zLU5MBVPe6n/XUdscIaEKaO54uRC4Orph3CpX4qH0UugtX+DE1/bK
+         GjObDpegezjAIzXqBvq79rLyt/6iQnW6kyp7416vchJjwQgjKccVsFxPEtNPPxJYzMVV
+         4HReJqmAjbkG7Cx+YI4kzb0qQOMbLZmyJx4QHgvi4U8BY44f25pZbLMP+zPhE9QSEawq
+         iLZA==
+X-Gm-Message-State: AOJu0YwotP1NUO9WW0SGgrfXIggexbybPIiP4HqUpdMr70KMbuF+2WS1
+        lrCscA1cg3/Lh86D5pcg1LVn2z1PuEL3xLjyCS4=
+X-Google-Smtp-Source: AGHT+IFCVpNx/CwDrWgJlpgu+sGa9KHr+Cuvl10CkZ2YccNvsOmOZLZ9Rjt7wP5j2x0pImdPOsubw3hPx/365gw3aeY=
+X-Received: by 2002:ac2:5dd0:0:b0:507:9fd8:832a with SMTP id
+ x16-20020ac25dd0000000b005079fd8832amr4852646lfq.64.1698003547861; Sun, 22
+ Oct 2023 12:39:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231020120310.vrn6ew3fcg5e545w@pengutronix.de>
-X-GND-Sasl: kamel.bouhara@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231022183917.1013135-1-sanpeqf@gmail.com>
+In-Reply-To: <20231022183917.1013135-1-sanpeqf@gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Sun, 22 Oct 2023 14:38:56 -0500
+Message-ID: <CAH2r5mvAvXaXTWr8CWnVZcXa3tiU+ZfpBoo0tiY-RH194f2xow@mail.gmail.com>
+Subject: Re: [PATCH] fs/smb: using crypto lib instead cifs_arc4
+To:     John Sanpe <sanpeqf@gmail.com>
+Cc:     stfrench@microsoft.com, linkinjeon@kernel.org, pc@manguebit.com,
+        sprasad@microsoft.com, linux-cifs@vger.kernel.org,
+        llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 02:03:10PM +0200, Marco Felsch wrote:
-> Hi Kamel,
+I thought that the whole point of kernel crypto guys was the reverse -
+ie arc4 must be moved to cifs.ko since cifs/smb3 mounts had the only
+approved use case.  Ronnie may have additional context, but there was
+a push to remove arc4 and md4 (see e.g. the emails threads about:
+"crypto: remove MD4 generic shash").  I also want to be careful that
+we don't accidentally disable smb3.1.1 mounts (which are highly
+secure) because they have small dependencies on old algorithms (even
+if that doesn't cause problems with typical reasonable length password
+cases)
+
+commit 71c02863246167b3d1639b8278681ca8ebedcb4e
+Author: Ronnie Sahlberg <lsahlber@redhat.com>
+Date:   Thu Aug 19 20:34:59 2021 +1000
+
+    cifs: fork arc4 and create a separate module for it for cifs and other =
+users
+
+    We can not drop ARC4 and basically destroy CIFS connectivity for
+    almost all CIFS users so create a new forked ARC4 module that CIFS and =
+other
+    subsystems that have a hard dependency on ARC4 can use.
+
+On Sun, Oct 22, 2023 at 1:39=E2=80=AFPM John Sanpe <sanpeqf@gmail.com> wrot=
+e:
+>
+> Replace internal logic with an independent arc4 library.
+>
+> Signed-off-by: John Sanpe <sanpeqf@gmail.com>
+> ---
+>  fs/smb/Kconfig              |  1 +
+>  fs/smb/client/cifsencrypt.c |  7 ++--
+>  fs/smb/common/Makefile      |  1 -
+>  fs/smb/common/arc4.h        | 23 ------------
+>  fs/smb/common/cifs_arc4.c   | 74 -------------------------------------
+>  fs/smb/server/auth.c        |  6 +--
+>  6 files changed, 7 insertions(+), 105 deletions(-)
+>  delete mode 100644 fs/smb/common/arc4.h
+>  delete mode 100644 fs/smb/common/cifs_arc4.c
+>
+> diff --git a/fs/smb/Kconfig b/fs/smb/Kconfig
+> index ef425789fa6a..65e5a437898b 100644
+> --- a/fs/smb/Kconfig
+> +++ b/fs/smb/Kconfig
+> @@ -7,5 +7,6 @@ source "fs/smb/server/Kconfig"
+>
+>  config SMBFS
+>         tristate
+> +       select CRYPTO_LIB_ARC4
+>         default y if CIFS=3Dy || SMB_SERVER=3Dy
+>         default m if CIFS=3Dm || SMB_SERVER=3Dm
+> diff --git a/fs/smb/client/cifsencrypt.c b/fs/smb/client/cifsencrypt.c
+> index ef4c2e3c9fa6..d8754c406b5f 100644
+> --- a/fs/smb/client/cifsencrypt.c
+> +++ b/fs/smb/client/cifsencrypt.c
+> @@ -21,7 +21,7 @@
+>  #include <linux/random.h>
+>  #include <linux/highmem.h>
+>  #include <linux/fips.h>
+> -#include "../common/arc4.h"
+> +#include <crypto/arc4.h>
+>  #include <crypto/aead.h>
+>
+>  /*
+> @@ -826,9 +826,8 @@ calc_seckey(struct cifs_ses *ses)
+>                 return -ENOMEM;
+>         }
+>
+> -       cifs_arc4_setkey(ctx_arc4, ses->auth_key.response, CIFS_SESS_KEY_=
+SIZE);
+> -       cifs_arc4_crypt(ctx_arc4, ses->ntlmssp->ciphertext, sec_key,
+> -                       CIFS_CPHTXT_SIZE);
+> +       arc4_setkey(ctx_arc4, ses->auth_key.response, CIFS_SESS_KEY_SIZE)=
+;
+> +       arc4_crypt(ctx_arc4, ses->ntlmssp->ciphertext, sec_key, CIFS_CPHT=
+XT_SIZE);
+>
+>         /* make secondary_key/nonce as session key */
+>         memcpy(ses->auth_key.response, sec_key, CIFS_SESS_KEY_SIZE);
+> diff --git a/fs/smb/common/Makefile b/fs/smb/common/Makefile
+> index c66dbbc1469c..9e0730a385fb 100644
+> --- a/fs/smb/common/Makefile
+> +++ b/fs/smb/common/Makefile
+> @@ -3,5 +3,4 @@
+>  # Makefile for Linux filesystem routines that are shared by client and s=
+erver.
+>  #
+>
+> -obj-$(CONFIG_SMBFS) +=3D cifs_arc4.o
+>  obj-$(CONFIG_SMBFS) +=3D cifs_md4.o
+> diff --git a/fs/smb/common/arc4.h b/fs/smb/common/arc4.h
+> deleted file mode 100644
+> index 12e71ec033a1..000000000000
+> --- a/fs/smb/common/arc4.h
+> +++ /dev/null
+> @@ -1,23 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0+ */
+> -/*
+> - * Common values for ARC4 Cipher Algorithm
+> - */
+> -
+> -#ifndef _CRYPTO_ARC4_H
+> -#define _CRYPTO_ARC4_H
+> -
+> -#include <linux/types.h>
+> -
+> -#define ARC4_MIN_KEY_SIZE      1
+> -#define ARC4_MAX_KEY_SIZE      256
+> -#define ARC4_BLOCK_SIZE                1
+> -
+> -struct arc4_ctx {
+> -       u32 S[256];
+> -       u32 x, y;
+> -};
+> -
+> -int cifs_arc4_setkey(struct arc4_ctx *ctx, const u8 *in_key, unsigned in=
+t key_len);
+> -void cifs_arc4_crypt(struct arc4_ctx *ctx, u8 *out, const u8 *in, unsign=
+ed int len);
+> -
+> -#endif /* _CRYPTO_ARC4_H */
+> diff --git a/fs/smb/common/cifs_arc4.c b/fs/smb/common/cifs_arc4.c
+> deleted file mode 100644
+> index 043e4cb839fa..000000000000
+> --- a/fs/smb/common/cifs_arc4.c
+> +++ /dev/null
+> @@ -1,74 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-or-later
+> -/*
+> - * Cryptographic API
+> - *
+> - * ARC4 Cipher Algorithm
+> - *
+> - * Jon Oberheide <jon@oberheide.org>
+> - */
+> -
+> -#include <linux/module.h>
+> -#include "arc4.h"
+> -
+> -MODULE_LICENSE("GPL");
+> -
+> -int cifs_arc4_setkey(struct arc4_ctx *ctx, const u8 *in_key, unsigned in=
+t key_len)
+> -{
+> -       int i, j =3D 0, k =3D 0;
+> -
+> -       ctx->x =3D 1;
+> -       ctx->y =3D 0;
+> -
+> -       for (i =3D 0; i < 256; i++)
+> -               ctx->S[i] =3D i;
+> -
+> -       for (i =3D 0; i < 256; i++) {
+> -               u32 a =3D ctx->S[i];
+> -
+> -               j =3D (j + in_key[k] + a) & 0xff;
+> -               ctx->S[i] =3D ctx->S[j];
+> -               ctx->S[j] =3D a;
+> -               if (++k >=3D key_len)
+> -                       k =3D 0;
+> -       }
+> -
+> -       return 0;
+> -}
+> -EXPORT_SYMBOL_GPL(cifs_arc4_setkey);
+> -
+> -void cifs_arc4_crypt(struct arc4_ctx *ctx, u8 *out, const u8 *in, unsign=
+ed int len)
+> -{
+> -       u32 *const S =3D ctx->S;
+> -       u32 x, y, a, b;
+> -       u32 ty, ta, tb;
+> -
+> -       if (len =3D=3D 0)
+> -               return;
+> -
+> -       x =3D ctx->x;
+> -       y =3D ctx->y;
+> -
+> -       a =3D S[x];
+> -       y =3D (y + a) & 0xff;
+> -       b =3D S[y];
+> -
+> -       do {
+> -               S[y] =3D a;
+> -               a =3D (a + b) & 0xff;
+> -               S[x] =3D b;
+> -               x =3D (x + 1) & 0xff;
+> -               ta =3D S[x];
+> -               ty =3D (y + ta) & 0xff;
+> -               tb =3D S[ty];
+> -               *out++ =3D *in++ ^ S[a];
+> -               if (--len =3D=3D 0)
+> -                       break;
+> -               y =3D ty;
+> -               a =3D ta;
+> -               b =3D tb;
+> -       } while (true);
+> -
+> -       ctx->x =3D x;
+> -       ctx->y =3D y;
+> -}
+> -EXPORT_SYMBOL_GPL(cifs_arc4_crypt);
+> diff --git a/fs/smb/server/auth.c b/fs/smb/server/auth.c
+> index 229a6527870d..5640196b313f 100644
+> --- a/fs/smb/server/auth.c
+> +++ b/fs/smb/server/auth.c
+> @@ -29,7 +29,7 @@
+>  #include "mgmt/user_config.h"
+>  #include "crypto_ctx.h"
+>  #include "transport_ipc.h"
+> -#include "../common/arc4.h"
+> +#include <crypto/arc4.h>
+>
+>  /*
+>   * Fixed format data defining GSS header and fixed string
+> @@ -362,9 +362,9 @@ int ksmbd_decode_ntlmssp_auth_blob(struct authenticat=
+e_message *authblob,
+>                 if (!ctx_arc4)
+>                         return -ENOMEM;
+>
+> -               cifs_arc4_setkey(ctx_arc4, sess->sess_key,
+> +               arc4_setkey(ctx_arc4, sess->sess_key,
+>                                  SMB2_NTLMV2_SESSKEY_SIZE);
+> -               cifs_arc4_crypt(ctx_arc4, sess->sess_key,
+> +               arc4_crypt(ctx_arc4, sess->sess_key,
+>                                 (char *)authblob + sess_key_off, sess_key=
+_len);
+>                 kfree_sensitive(ctx_arc4);
+>         }
+> --
+> 2.41.0
 >
 
-Hi Marco,
 
-> just a rough review.
+--=20
+Thanks,
 
-Thanks !
-
-[...]
-
-> > +#include <linux/crc16.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/device.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/i2c.h>
-> > +#include <linux/input.h>
-> > +#include <linux/input/mt.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of.h>
-> > +#include <linux/pm.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/string.h>
->
-> Can you please check if all headers are required e.g. sting.h
-> seems a bit suspicious here.
-
-Sure, slab.h and string.h are no more required.
-
->
-> > +/*
-> > + * Runtime TCP mode: device is executing normal code and is
-> > + * accessible via the Touch Controller Mode
-> > + */
-> > +#define BOOT_TCP			0
-> > +/*
-> > + * Bootloader BLP mode: device is executing bootloader and is
-> > + * accessible via the Boot Loader Protocol.
-> > + */
-> > +#define BOOT_BLP			1
->
-> Both defines are not used.
->
-
-Ack.
-
-> > +#define AXIOM_PROX_LEVEL		-128
-> > +/*
-> > + * Register group u31 has 2 pages for usage table entries.
-> > + * (2 * AXIOM_COMMS_PAGE_SIZE) / AXIOM_U31_BYTES_PER_USAGE = 85
-i> > + */
-> > +#define AXIOM_U31_MAX_USAGES		85
->
-> The programmer's guid describe the usage as hexadecimal number prefixed
-> with an 'u'. The current range is from u00 till uFF, so the max. usages
-> should be 0xff.
-
-Based one the above comment, it seems we are computing the byte size of
-an usage array. I agree this might require to be more clear though.
-
->
-> > +#define AXIOM_U31_BYTES_PER_USAGE	6
-> > +#define AXIOM_U31_PAGE0_LENGTH		0x0C
-> > +#define AXIOM_U31_BOOTMODE_MASK		BIT(7)
-> > +#define AXIOM_U31_FW_INFO_VARIANT_MASK	GENMASK(6, 0)
-> > +#define AXIOM_U31_FW_INFO_STATUS_MASK	BIT(7)
-> > +
-> > +#define AXIOM_U41_MAX_TARGETS		10
-> > +
-> > +#define AXIOM_U46_AUX_CHANNELS		4
-> > +#define AXIOM_U46_AUX_MASK		GENMASK(11, 0)
->
-> I'm still not very happy with the decoding, since the so called
-> 'protocol' is clear and versioned we can add the all required protocols
-> as struct which has far less magic offsets.
-
-Im not sure it will really make a significant difference as we actually
-ihave a limited set of registers for the i2c driver, also could you
-please clarify what protocol your refering to here ?
-
->
-> > +
-> > +#define AXIOM_COMMS_MAX_USAGE_PAGES	3
-> > +#define AXIOM_COMMS_PAGE_SIZE		256
-> > +#define AXIOM_COMMS_OVERFLOW_MASK	BIT(7)
-> > +#define AXIOM_COMMS_REPORT_LEN_MASK	GENMASK(7, 0)
-> > +
-> > +#define AXIOM_REBASELINE_CMD		0x03
-> > +
-> > +#define AXIOM_REPORT_USAGE_ID		0x34
-> > +#define AXIOM_DEVINFO_USAGE_ID		0x31
-> > +#define AXIOM_USAGE_2HB_REPORT_ID	0x01
-> > +#define AXIOM_REBASELINE_USAGE_ID	0x02
-> > +#define AXIOM_USAGE_2AUX_REPORT_ID	0x46
-> > +#define AXIOM_USAGE_2DCTS_REPORT_ID	0x41
-> > +
-> > +#define AXIOM_PAGE_MASK			GENMASK(15, 8)
->
-> Unused
-
-Ack thx.
-
-[...]
-
-> > +/*
-> > + * Holds state of a touch or target when detected prior a touch (eg.
-> > + * hover or proximity events).
-> > + */
-> > +enum axiom_target_state {
-> > +	TARGET_STATE_NOT_PRESENT = 0,
-> > +	TARGET_STATE_PROX = 1,
-> > +	TARGET_STATE_HOVER = 2,
-> > +	TARGET_STATE_TOUCHING = 3,
-> > +	TARGET_STATE_MIN = TARGET_STATE_NOT_PRESENT,
-> > +	TARGET_STATE_MAX = TARGET_STATE_TOUCHING,
->
-> STATE_MIN/MAX not used.
-
-Ack.
-
->
-> > +};
-> > +
-> > +struct u41_target {
-> > +	enum axiom_target_state state;
-> > +	u16 x;
-> > +	u16 y;
-> > +	s8 z;
-> > +	bool insert;
-> > +	bool touch;
-> > +};
-> > +
-> > +struct axiom_target_report {
-> > +	u8 index;
-> > +	u8 present;
-> > +	u16 x;
-> > +	u16 y;
-> > +	s8 z;
-> > +};
-> > +
-> > +struct axiom_cmd_header {
-> > +	u16 target_address;
-> > +	u16 length:15;
-> > +	u16 read:1;
-> > +} __packed;
-> > +
-> > +struct axiom_data {
-> > +	struct axiom_devinfo devinfo;
-> > +	struct device *dev;
-> > +	struct gpio_desc *reset_gpio;
-> > +	struct gpio_desc *irq_gpio;
->
-> No need to store the irq_gpio here.
->
-
-Right, thanks.
-
-> > +	struct i2c_client *client;
-> > +	struct input_dev *input_dev;
-> > +	u32 max_report_len;
-> > +	u32 report_overflow_counter;
-> > +	u32 report_counter;
-> > +	char rx_buf[AXIOM_COMMS_MAX_USAGE_PAGES * AXIOM_COMMS_PAGE_SIZE];
-> > +	struct u41_target targets[AXIOM_U41_MAX_TARGETS];
-> > +	struct usage_entry usage_table[AXIOM_U31_MAX_USAGES];
-> > +	bool usage_table_populated;
-> > +};
-> > +
-> > +/*
-> > + * aXiom devices are typically configured to report
-> > + * touches at a rate of 100Hz (10ms). For systems
-> > + * that require polling for reports, 100ms seems like
-> > + * an acceptable polling rate.
-> > + * When reports are polled, it will be expected to
-> > + * occasionally observe the overflow bit being set
-> > + * in the reports. This indicates that reports are not
-> > + * being read fast enough.
-> > + */
-> > +#define POLL_INTERVAL_DEFAULT_MS 100
->
-> Above you describe that the touch-rate is ~10ms why do we configure it
-> 10-times lower here? Also 100ms is huge if you think about user respone
-> time.
-
-I am not completely sure aboud this yet, here 100ms is based on my own
-*limited* experience, I agree we should stick to the 10ms.
-
->
-> > +/* Translate usage/page/offset triplet into physical address. */
-> > +static u16
-> > +usage_to_target_address(struct axiom_data *ts, char usage, char page,
-> > +			char offset)
-> > +{
-> > +	struct axiom_devinfo *device_info;
-> > +	struct usage_entry *usage_table;
-> > +	u32 i;
-> > +
-> > +	device_info = &ts->devinfo;
-> > +	usage_table = ts->usage_table;
-> > +
-> > +	/* At the moment the convention is that u31 is always at physical address 0x0 */
-> > +	if (!ts->usage_table_populated) {
-> > +		if (usage == AXIOM_DEVINFO_USAGE_ID)
-> > +			return ((page << 8) + offset);
-> > +		else
-> > +			return 0xffff;
-> > +	}
-> > +
-> > +	for (i = 0; i < device_info->num_usages; i++) {
-> > +		if (usage_table[i].id != usage)
-> > +			continue;
-> > +
-> > +		if (page >= usage_table[i].num_pages) {
-> > +			dev_err(ts->dev, "Invalid usage table! usage: %u, page: %u, offset: %u\n",
-> > +				usage, page, offset);
-> > +			return 0xffff;
-> > +		}
-> > +	}
->
-> We can avoid this loop if we store the usage table exactly as it is,
-> e.g.:
->
-> 	usage_table[0x31] = u31;
-> 	usage_table[0x41] = u41;
->
-
-Could you please explain your idea ?
-
-> > +	return ((usage_table[i].start_page + page) << 8) + offset;
-> > +}
-> > +
-> > +static int
-> > +axiom_i2c_read(struct i2c_client *client, u8 usage, u8 page, u8 *buf, u16 len)
-> > +{
-> > +	struct axiom_data *ts = i2c_get_clientdata(client);
-> > +	struct axiom_cmd_header cmd_header;
-> > +	struct i2c_msg msg[2];
-> > +	int ret;
-> > +
-> > +	cmd_header.target_address = cpu_to_le16(usage_to_target_address(ts, usage, page, 0));
-> > +	cmd_header.length = cpu_to_le16(len);
-> > +	cmd_header.read = 1;
-> > +
-> > +	msg[0].addr = client->addr;
-> > +	msg[0].flags = 0;
-> > +	msg[0].len = sizeof(cmd_header);
-> > +	msg[0].buf = (u8 *)&cmd_header;
-> > +
-> > +	msg[1].addr = client->addr;
-> > +	msg[1].flags = I2C_M_RD;
-> > +	msg[1].len = len;
-> > +	msg[1].buf = (char *)buf;
-> > +
-> > +	ret = i2c_transfer(client->adapter, msg, 2);
-> > +	if (ret != ARRAY_SIZE(msg)) {
-> > +		dev_err(&client->dev,
-> > +			"Failed reading usage %#x page %#x, error=%d\n",
-> > +			usage, page, ret);
-> > +		return -EIO;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int
-> > +axiom_i2c_write(struct i2c_client *client, u8 usage, u8 page, u8 *buf, u16 len)
-> > +{
-> > +	struct axiom_data *ts = i2c_get_clientdata(client);
-> > +	struct axiom_cmd_header cmd_header;
-> > +	struct i2c_msg msg[2];
-> > +	int ret;
-> > +
-> > +	cmd_header.target_address = cpu_to_le16(usage_to_target_address(ts, usage, page, 0));
-> > +	cmd_header.length = cpu_to_le16(len);
-> > +	cmd_header.read = 0;
-> > +
-> > +	msg[0].addr = client->addr;
-> > +	msg[0].flags = 0;
-> > +	msg[0].len = sizeof(cmd_header);
-> > +	msg[0].buf = (u8 *)&cmd_header;
-> > +
-> > +	msg[1].addr = client->addr;
-> > +	msg[1].flags = 0;
-> > +	msg[1].len = len;
-> > +	msg[1].buf = (char *)buf;
->
-> Please check the "comms protocol app note", for write it is not allowed
-> to send a stop, so the whole data must be send in one i2c_msg.
->
-
-Well I only have the "Programmer's Guide", I'll have to check that as it
-really seems to works as it yet.
-
-> > +
-> > +	ret = i2c_transfer(client->adapter, msg, 2);
-> > +	if (ret < 0) {
-> > +		dev_err(&client->dev,
-> > +			"Failed to write usage %#x page %#x, error=%d\n", usage,
-> > +			page, ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/*
-> > + * Decodes and populates the local Usage Table.
-> > + * Given a buffer of data read from page 1 onwards of u31 from an aXiom
-> > + * device.
-> > + */
-> > +static u32 axiom_populate_usage_table(struct axiom_data *ts, char *rx_data)
-> > +{
-> > +	u32 usage_id = 0;
-> > +	u32 max_report_len = 0;
-> > +	struct axiom_devinfo *device_info;
-> > +	struct usage_entry *usage_table;
-> > +
-> > +	device_info = &ts->devinfo;
-> > +	usage_table = ts->usage_table;
-> > +
-> > +	for (usage_id = 0; usage_id < device_info->num_usages; usage_id++) {
-> > +		u16 offset = (usage_id * AXIOM_U31_BYTES_PER_USAGE);
-> > +		char id = rx_data[offset + 0];
-> > +		char start_page = rx_data[offset + 1];
-> > +		char num_pages = rx_data[offset + 2];
-> > +		u32 max_offset = ((rx_data[offset + 3] & AXIOM_PAGE_OFFSET_MASK) + 1) * 2;
-> > +
-> > +		if (!num_pages)
-> > +			usage_table[usage_id].is_report = true;
-> > +
-> > +		/* Store the entry into the usage table */
-> > +		usage_table[usage_id].id = id;
-> > +		usage_table[usage_id].start_page = start_page;
-> > +		usage_table[usage_id].num_pages = num_pages;
-> > +
-> > +		dev_dbg(ts->dev, "Usage %2u Info: %*ph\n", usage_id,
-> > +			AXIOM_U31_BYTES_PER_USAGE,
-> > +			&rx_data[offset]);
-> > +
-> > +		/* Identify the max report length the module will receive */
-> > +		if (usage_table[usage_id].is_report && max_offset > max_report_len)
-> > +			max_report_len = max_offset;
-> > +	}
->
-> As said, the sorting can be really easy:
->
-> 		usage_table[0x01] = u01;
-> 		usage_table[0x31] = u31;
->
-
-I still don't get your point here.
-
-> > +	ts->usage_table_populated = true;
-> > +
-> > +	return max_report_len;
-> > +}
-> > +
-
-[...]
-
-> > +
-> > +static int axiom_i2c_probe(struct i2c_client *client)
-> > +{
-> > +	struct device *dev = &client->dev;
-> > +	struct input_dev *input_dev;
-> > +	struct axiom_data *ts;
-> > +	int ret;
-> > +	int target;
-> > +
-> > +	ts = devm_kzalloc(dev, sizeof(*ts), GFP_KERNEL);
-> > +	if (!ts)
-> > +		return -ENOMEM;
-> > +
-> > +	ts->client = client;
-> > +	i2c_set_clientdata(client, ts);
-> > +	ts->dev = dev;
-> > +
-> > +	ts->irq_gpio = devm_gpiod_get_optional(dev, "irq", GPIOD_IN);
-> > +	if (IS_ERR(ts->irq_gpio))
-> > +		return dev_err_probe(dev, PTR_ERR(ts->irq_gpio), "failed to get irq GPIO");
->
-> Nope you removed this from the binding.
-
-Yes, will be fixed in v4.
-
->
-> > +	ts->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-> > +	if (IS_ERR(ts->reset_gpio))
-> > +		return dev_err_probe(dev, PTR_ERR(ts->reset_gpio), "failed to get reset GPIO\n");
->
-> Please also add a regulator for the VDDI/VDDA which is required for the
-> device to work properly.
->
-
-Right, Im using the AX54 EV board with fixed regulators.
-
-> > +	axiom_reset(ts->reset_gpio);
-> > +
-> > +	if (ts->irq_gpio) {
->
-> Nope, please drop the ts->irq_gpio check.
-
-Ack.
-
->
-> > +		ret = devm_request_threaded_irq(dev, client->irq, NULL,
-> > +						axiom_irq, 0, dev_name(dev), ts);
-> > +		if (ret < 0)
->
-> If the threaded_irq does fail you can fallback to the polling mode.
-
-Indeed.
-
->
-> > +			return dev_err_probe(dev, ret, "Failed to request threaded IRQ\n");
-> > +	}
-> > +
-> > +	ret = axiom_discover(ts);
-> > +	if (ret)
-> > +		return dev_err_probe(dev, ret, "Failed touchscreen discover\n");
-> > +
-> > +	ret = axiom_rebaseline(ts);
-> > +	if (ret)
-> > +		return dev_err_probe(dev, ret, "Failed touchscreen re-baselining\n");
-> > +
-> > +	input_dev = devm_input_allocate_device(ts->dev);
-> > +	if (!input_dev)
-> > +		return -ENOMEM;
-> > +
-> > +	input_dev->name = "TouchNetix aXiom Touchscreen";
-> > +	input_dev->phys = "input/axiom_ts";
-> > +
-> > +	/* Single Touch */
-> > +	input_set_abs_params(input_dev, ABS_X, 0, 65535, 0, 0);
-> > +	input_set_abs_params(input_dev, ABS_Y, 0, 65535, 0, 0);
-> > +
-> > +	/* Multi Touch */
-> > +	/* Min, Max, Fuzz (expected noise in px, try 4?) and Flat */
-> > +	input_set_abs_params(input_dev, ABS_MT_POSITION_X, 0, 65535, 0, 0);
-> > +	/* Min, Max, Fuzz (expected noise in px, try 4?) and Flat */
-> > +	input_set_abs_params(input_dev, ABS_MT_POSITION_Y, 0, 65535, 0, 0);
-> > +	input_set_abs_params(input_dev, ABS_MT_TOOL_TYPE, 0, MT_TOOL_MAX, 0, 0);
-> > +	input_set_abs_params(input_dev, ABS_MT_DISTANCE, 0, 127, 0, 0);
-> > +	input_set_abs_params(input_dev, ABS_MT_PRESSURE, 0, 127, 0, 0);
-> > +
-> > +	/* Registers the axiom device as a touchscreen instead of as a mouse pointer */
-> > +	input_mt_init_slots(input_dev, AXIOM_U41_MAX_TARGETS, INPUT_MT_DIRECT);
-> > +
-> > +	input_set_capability(input_dev, EV_KEY, BTN_LEFT);
-> > +
-> > +	/* Enables the raw data for up to 4 force channels to be sent to the input subsystem */
-> > +	set_bit(EV_REL, input_dev->evbit);
-> > +	set_bit(EV_MSC, input_dev->evbit);
-> > +	/* Declare that we support "RAW" Miscellaneous events */
-> > +	set_bit(MSC_RAW, input_dev->mscbit);
-> > +
-> > +	if (!ts->irq_gpio) {
-> > +		ret = input_setup_polling(input_dev, axiom_i2c_poll);
-> > +		if (ret)
-> > +			return	dev_err_probe(ts->dev, ret, "Unable to set up polling mode\n");
-> > +		input_set_poll_interval(input_dev, POLL_INTERVAL_DEFAULT_MS);
-> > +	}
-> > +
-> > +	ts->input_dev = input_dev;
-> > +	input_set_drvdata(ts->input_dev, ts);
-> > +
-> > +	/* Ensure that all reports are initialised to not be present. */
-> > +	for (target = 0; target < AXIOM_U41_MAX_TARGETS; target++)
-> > +		ts->targets[target].state = TARGET_STATE_NOT_PRESENT;
-> > +
-> > +	ret = input_register_device(input_dev);
-> > +
-> > +	if (ret)
-> > +		return dev_err_probe(ts->dev, ret,
-> > +					"Could not register with Input Sub-system.\n");
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void axiom_i2c_remove(struct i2c_client *client)
-> > +{
-> > +	struct axiom_data *ts = i2c_get_clientdata(client);
-> > +
-> > +	input_unregister_device(ts->input_dev);
->
-> This can be part of devm_add_action_or_reset() and we could remove the
-> .remove() callback for this driver.
->
-
-Sure, thanks for the tips :)!
-
-> > +}
-> > +
-> > +static const struct i2c_device_id axiom_i2c_id_table[] = {
-> > +	{ "axiom-ax54a" },
->
-> Albeit the datasheet says: "axiom ax54a" I think ax stands for axiom. So
-> the name should be "ax54a" only?
-
-Yes this is actually a good point, we can move to ax54a only.
-
->
-> > +	{},
->
-> Nit:  { },
-> > +};
-> > +
->
-> Please drop the unnecessary newline.
->
-> > +MODULE_DEVICE_TABLE(i2c, axiom_i2c_id_table);
-> > +
-> > +static const struct of_device_id axiom_i2c_of_match[] = {
-> > +	{ .compatible = "touchnetix,axiom-ax54a", },
-> > +	{}
->
-> same here.
->
-> > +};
-> > +
->
-> same here.
->
-> > +MODULE_DEVICE_TABLE(of, axiom_i2c_of_match);
-> > +
-> > +static struct i2c_driver axiom_i2c_driver = {
-> > +	.driver = {
-> > +		   .name = "axiom",
-> > +		   .of_match_table = axiom_i2c_of_match,
-> > +	},
-> > +	.id_table = axiom_i2c_id_table,
-> > +	.probe = axiom_i2c_probe,
-> > +	.remove = axiom_i2c_remove,
-> > +};
-> > +
->
-> same here.
->
-
-OK.
-
-> > +module_i2c_driver(axiom_i2c_driver);
-> > +
-> > +MODULE_AUTHOR("Bart Prescott <bartp@baasheep.co.uk>");
-> > +MODULE_AUTHOR("Pedro Torruella <pedro.torruella@touchnetix.com>");
-> > +MODULE_AUTHOR("Mark Satterthwaite <mark.satterthwaite@touchnetix.com>");
-> > +MODULE_AUTHOR("Hannah Rossiter <hannah.rossiter@touchnetix.com>");
-> > +MODULE_AUTHOR("Kamel Bouhara <kamel.bouhara@bootlin.com>");
-> > +MODULE_DESCRIPTION("TouchNetix aXiom touchscreen I2C bus driver");
-> > +MODULE_LICENSE("GPL");
-> > --
-> > 2.25.1
-> >
-> >
-
---
-Kamel Bouhara, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Steve
