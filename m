@@ -2,76 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6027D24A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0157D24A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbjJVQs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 12:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
+        id S232096AbjJVQti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 12:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjJVQsz (ORCPT
+        with ESMTP id S229500AbjJVQth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 12:48:55 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D708E7;
-        Sun, 22 Oct 2023 09:48:53 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-357cd72e07fso3824805ab.2;
-        Sun, 22 Oct 2023 09:48:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697993332; x=1698598132; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jF3SNiK0KMBKYvlHwQNCi3aly8Uzbv+Ykz8y7917xGo=;
-        b=ZQTfFOTKu+U8niPq0Bj7RX208WeXO0AvDlQ4wzW8Wbdyx4d/b74ih4Wtf4PnSoJ2yS
-         zY2vWQOt9oZOvzmda1vtrmTci9bdCx+tUcu/tUxPp3LOnSwzIFqUAlSAN/kbi+EaLFWI
-         TLkmZuS30dRwZOi9NjDmRuu6uGV6X7Di7VUOcMbVXiB9MqjJROxV2HHdaxOHKS6pCRmG
-         FOCXI1Yj0jd1MFms64TAVb57oGbetAF9JS/92u/DgpSYhsheldBIeChrcD75YLr0QCK7
-         i2yn9EAbEbCXZDvAy1HwPL2jfkMfj4n7UoF6hqOcK5UG8ju80dWdZox6q1Pje45WHH8p
-         S1Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697993332; x=1698598132;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jF3SNiK0KMBKYvlHwQNCi3aly8Uzbv+Ykz8y7917xGo=;
-        b=YBlHKlxjDALod0fYe1t6RGHSUdty76J/zcgaD0x3dRZTE1Bid/KRBlEGdqJqGzDdwp
-         +kli1SbYUki5l6fpFDHiQnsIBmmGcfEmDVNN2jykQo0iqBwPEGgzHPWphF41QTokUMZp
-         Udp0V4v0G5Bvbg29mJd68icNB+tORwh+HrX9eu7AKU9PzrPExlVElG/zbwk/gp99JYQY
-         EZLa1hO76QYpU57csynDw79Hif8Wby30HuadeZWF0wjVRQ4/9gOdCrNZSv0kr77cRv3p
-         Sw+N7M6qIKgSHDcq26SOiulFE2GWkeWN7uwhtq4u6+bFlxEPEm+HLFo+FG3IEIkIimo+
-         xoEQ==
-X-Gm-Message-State: AOJu0YyD791ghZGk5vdfwNsGu/XUWvIeZVapxg6ZEHVLI8aItBbLU8uf
-        B0kSKJmRQCeAsgCTgHxEDSu7+KeRTvU=
-X-Google-Smtp-Source: AGHT+IEJkSDVETG9W+NzprLNw9D45ruzt3pBbrHLsIX0kV4SYpAzKRrmSDN1RQfNdNwSOufMA3eTVQ==
-X-Received: by 2002:a05:6e02:20e5:b0:357:d0b8:c4dc with SMTP id q5-20020a056e0220e500b00357d0b8c4dcmr2044871ilv.19.1697993332334;
-        Sun, 22 Oct 2023 09:48:52 -0700 (PDT)
-Received: from ?IPV6:2601:282:1e82:2350:80d6:b9fd:f23f:cfa9? ([2601:282:1e82:2350:80d6:b9fd:f23f:cfa9])
-        by smtp.googlemail.com with ESMTPSA id m18-20020a92c532000000b0035298bd42a8sm2002923ili.20.2023.10.22.09.48.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Oct 2023 09:48:51 -0700 (PDT)
-Message-ID: <bc9f53d2-2d40-4c7e-85fa-cb9835df9159@gmail.com>
-Date:   Sun, 22 Oct 2023 10:48:50 -0600
+        Sun, 22 Oct 2023 12:49:37 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B63E7
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 09:49:34 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1qubds-0001Oj-9E; Sun, 22 Oct 2023 18:49:32 +0200
+From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Linux regressions report  for mainline [2023-10-22]
+Date:   Sun, 22 Oct 2023 16:49:31 +0000
+Message-Id: <169799330468.525178.1969942838211820764@leemhuis.info>
+X-Mailer: git-send-email 2.40.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iproute2-next 2/3] rdma: Add an option to set privileged
- QKEY parameter
-To:     Patrisious Haddad <phaddad@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>
-Cc:     jgg@ziepe.ca, leon@kernel.org, stephen@networkplumber.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
-        huangjunxian6@hisilicon.com, michaelgur@nvidia.com
-References: <20231019082138.18889-1-phaddad@nvidia.com>
- <20231019082138.18889-3-phaddad@nvidia.com> <87il72aiqm.fsf@nvidia.com>
- <c7c9562a-5c6d-eec5-3255-70238a13e96c@nvidia.com>
-Content-Language: en-US
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <c7c9562a-5c6d-eec5-3255-70238a13e96c@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1697993374;a456cabc;
+X-HE-SMSGID: 1qubds-0001Oj-9E
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,84 +41,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/23 1:41 AM, Patrisious Haddad wrote:
-> 
-> On 10/19/2023 1:38 PM, Petr Machata wrote:
->> Patrisious Haddad <phaddad@nvidia.com> writes:
->>
->>> @@ -40,6 +45,22 @@ static int sys_show_parse_cb(const struct nlmsghdr
->>> *nlh, void *data)
->>>                      mode_str);
->>>       }
->>>   +    if (tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]) {
->>> +        const char *pqkey_str;
->>> +        uint8_t pqkey_mode;
->>> +
->>> +        pqkey_mode =
->>> +           
->>> mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]);
->>> +
->>> +        if (pqkey_mode < ARRAY_SIZE(privileged_qkey_str))
->>> +            pqkey_str = privileged_qkey_str[pqkey_mode];
->>> +        else
->>> +            pqkey_str = "unknown";
->>> +
->>> +        print_color_string(PRINT_ANY, COLOR_NONE, "privileged-qkey",
->>> +                   "privileged-qkey %s ", pqkey_str);
->>> +    }
->>> +
->> Elsewhere in the file, you just use print_color_on_off(), why not here?
-> 
-> The print_color_on_off was used for copy-on-fork which as you see has no
-> set function,
-> 
-> I was simply trying to be consistent with this file convention & style,
-> whereas print_color_string was used for the other configurable value
-> ("netns"), I can obviously change that if you all see it as necessary.
-> 
->>
->>>       if (tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK])
->>>           cof = mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]);
->>>   @@ -111,10 +155,25 @@ static int sys_set_netns_args(struct rd *rd)
->>>       return sys_set_netns_cmd(rd, cmd);
->>>   }
->>>   +static int sys_set_privileged_qkey_args(struct rd *rd)
->>> +{
->>> +    bool cmd;
->>> +
->>> +    if (rd_no_arg(rd) || !sys_valid_privileged_qkey_cmd(rd_argv(rd))) {
->>> +        pr_err("valid options are: { on | off }\n");
->>> +        return -EINVAL;
->>> +    }
->> This could use parse_on_off().
-> You are absolutely correct, but just as well was trying to maintain same
-> code style as the previous configurable value we have here, but I think
-> using parse_on_off here can save us some code.
->>
->>> +
->>> +    cmd = (strcmp(rd_argv(rd), "on") == 0) ? true : false;
->>> +
->>> +    return sys_set_privileged_qkey_cmd(rd, cmd);
->>> +}
->>> +
->>>   static int sys_set_help(struct rd *rd)
->>>   {
->>>       pr_out("Usage: %s system set [PARAM] value\n", rd->filename);
->>>       pr_out("            system set netns { shared | exclusive }\n");
->>> +    pr_out("            system set privileged-qkey { on | off }\n");
->>>       return 0;
->>>   }
->>>   @@ -124,6 +183,7 @@ static int sys_set(struct rd *rd)
->>>           { NULL,            sys_set_help },
->>>           { "help",        sys_set_help },
->>>           { "netns",        sys_set_netns_args},
->>> +        { "privileged-qkey",    sys_set_privileged_qkey_args},
->>>           { 0 }
->>>       };
->> The rest of the code looks sane to me, but I'm not familiar with the
->> feature.
-> If no one else has any comments soon, and these two comments are
-> actually considered critical I can re-send my patches with those issues
-> fixed.
+Hi Linus. My list of unresolved regressions from this cycle became quite
+short: it's mainly Andy's boot problem on Merrifield exposed by a quota
+change (you already know about it, the tricky investigation is ongoing)
+and a PowerMac G5 boot problem (will likely be fixed in the next few
+days, as the root of the problem was recently found). There is also a
+ext4 problem, but it's not bisected and tricky to debug (investigation
+is slow, but in the works).
 
-tools packaged with iproute2 should use common code where possible.
+So let me use this opportunity to mention two other regressions I tracke
+that were introduced in earlier cycles. I suspect they are not handled
+like you want them to be handled, but I'm not totally sure; hence I
+decided to mention them here to give you a chance to chime in yourself
+or tell me what to do.
+
+- On a Lenovo ThinkPad L570 since 60aebc9559492c ("drivers/firmware:
+Move sysfb_init() from device_initcall to subsys_initcall_sync")
+[v6.5-rc1] the screen stays dark during boot until the display manager
+starts; the reporter was able to work around that by disabling
+DRM_SIMPLEDRM (which had been enabled before). But the problem itself
+remains and it seems the developer of said commit wants to leave things
+as they are due to lack of access to the affected device:
+https://lore.kernel.org/dri-devel/7c50e051-eba2-09fc-da9f-023d592de457@ristioja.ee/
+https://lore.kernel.org/dri-devel/CAAhV-H4qQW_fOdkTxmT1xbvo4LOapzw_tOw7Kma47xmh0PvpPA@mail.gmail.com/
+
+- Since 3066ff93476c35 ("fuse: Apply flags2 only when userspace set the
+FUSE_INIT_EXT") [v6.5-rc3] creating new files or reading existing files
+on Android apparently now returns -EFAULT; this was reported with a
+patch to revert the culprit a few weeks ago; there was some discussion
+(some a few days ago), but doesn't look like the revert or some other
+fix is heading your way, unless I missed something:
+https://lore.kernel.org/all/20230904133321.104584-1-git@andred.net/
+https://lore.kernel.org/all/5cd87a64-c506-46f2-9fed-ac8a74658631@ddn.com/
+
+Ciao, Thorsten
+
+---
+
+Hi, this is regzbot, the Linux kernel regression tracking bot.
+
+Currently I'm aware of 3 regressions in linux-mainline. Find the
+current status below and the latest on the web:
+
+https://linux-regtracking.leemhuis.info/regzbot/mainline/
+
+Bye bye, hope to see you soon for the next report.
+   Regzbot (on behalf of Thorsten Leemhuis)
+
+
+======================================================
+current cycle (v6.5.. aka v6.6-rc), culprit identified
+======================================================
+
+
+[ *NEW* ] quota: boot on Intel Merrifield after merge commit 1500e7e0726e
+-------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ZS5hhpG97QSvgYPf@smile.fi.intel.com/
+https://lore.kernel.org/linux-fsdevel/ZS5hhpG97QSvgYPf@smile.fi.intel.com/
+
+By Andy Shevchenko; 5 days ago; 41 activities, latest 0 days ago.
+Introduced in 024128477809 (v6.6-rc1)
+
+Recent activities from: Andy Shevchenko (23), Jan Kara (7), Linus
+  Torvalds (6), andy.shevchenko@gmail.com (2), Kees Cook (1), Baokun
+  Li (1), Josh Poimboeuf (1)
+
+2 patch postings are associated with this regression, the latest is this:
+* Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
+  https://lore.kernel.org/linux-fsdevel/ZTKUDzONVHXnWAJc@smile.fi.intel.com/
+  2 days ago, by Andy Shevchenko
+
+
+powerpc: new page table range API causes PowerMac G5 to fail booting
+--------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20230929132750.3cd98452@yea/
+https://lore.kernel.org/linuxppc-dev/20230929132750.3cd98452@yea/
+
+By Erhard Furtner; 23 days ago; 15 activities, latest 4 days ago.
+Introduced in 9fee28baa601 (v6.6-rc1)
+
+Recent activities from: Michael Ellerman (2), Erhard Furtner (1)
+
+3 patch postings are associated with this regression, the latest is this:
+* Re: [Bisected] PowerMac G5 fails booting kernel 6.6-rc3 (BUG: Unable to handle kernel data access at 0xfeffbb62ffec65fe)
+  https://lore.kernel.org/linuxppc-dev/8734y8zdpb.fsf@mail.lhotse/
+  4 days ago, by Michael Ellerman
+
+
+===================================================
+current cycle (v6.5.. aka v6.6-rc), unknown culprit
+===================================================
+
+
+[ *NEW* ] ext4: task hung in ext4_fallocate
+-------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de/
+https://lore.kernel.org/linux-ext4/20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de/
+
+By Andres Freund; 5 days ago; 4 activities, latest 4 days ago.
+Introduced in v6.5..v6.6-rc6
+
+Recent activities from: Andres Freund (3), Theodore Ts'o (1)
+
+
+=============
+End of report
+=============
+
+All regressions marked '[ *NEW* ]' were added since the previous report,
+which can be found here:
+https://lore.kernel.org/r/169737193299.624972.12831031401706621880@leemhuis.info
+
+Thanks for your attention, have a nice day!
+
+  Regzbot, your hard working Linux kernel regression tracking robot
+
+
+P.S.: Wanna know more about regzbot or how to use it to track regressions
+for your subsystem? Then check out the getting started guide or the
+reference documentation:
+
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+
+The short version: if you see a regression report you want to see
+tracked, just send a reply to the report where you Cc
+regressions@lists.linux.dev with a line like this:
+
+#regzbot introduced: v5.13..v5.14-rc1
+
+If you want to fix a tracked regression, just do what is expected
+anyway: add a 'Link:' tag with the url to the report, e.g.:
+
+Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
