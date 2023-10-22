@@ -2,102 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E285E7D22E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4038D7D22E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbjJVLXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 07:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
+        id S231616AbjJVLYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 07:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVLW6 (ORCPT
+        with ESMTP id S229472AbjJVLYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 07:22:58 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C10E5
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:22:53 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-578b4997decso1717303a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:22:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697973773; x=1698578573; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ulBXB4g0u/4o36czfwsbZfHHbnOlys/12sePaGgmkm0=;
-        b=RTOZ6CdAqRDfR+hv+br1L+veusPCt753NJq+h5j14XdIt9awNoXGahL1tGR4sHge/6
-         7s8EVokzdBeOxg6GZUxUxyV+w2xALaq/bcf9I6qZsZqLcjsZi9QnGPCSy6WUaz0ZW7O6
-         R7NlIQlGxfDo2Qdy8HorJEyIBN8TCBJQT0SLUAgABepbPwtYZ21QgxUfODIUHBJ2evj9
-         /oHhDU/ukohY23cXwa1lLAMnPaLLhGDVaBxW2b+HGF/zdS7ASWWO+c5IvuxGTKY9PMTI
-         AMLEQ5kvhtslCIkSFU9PMPt3t7C4wvvgKzKzM0ETzRp4IXdCC58AtpD3f7pWFGrYVROe
-         wN+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697973773; x=1698578573;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ulBXB4g0u/4o36czfwsbZfHHbnOlys/12sePaGgmkm0=;
-        b=Vqb9nLFrbE9qUjdqaF1NutmeNUB1P7oF5VXnX5GBEjUfjdQDhXebAd5/ic8014s/7q
-         kJO8eVLjxA2vDmogh34zvPfoEdF1+5NDB+lnSztDzi6A/rESoQDSs7oKgLr61uTaCawD
-         Q4+qnYZegEZmJ8A23YsZQODHZD0SW6G/i4hA6/+sK+g3gguX9VHQTqHYRzK+v7H8BGI3
-         6HXFJatqxjum+SurGvczUceUQaaatAQbMX+l/1SyLLihke59CsWFkarfonCBrNAGfTrr
-         IF93EPH1ZvQUoNb/xItENXNnLvTiV9WeAhGvfvRwhERvZjTRuC8rVN6Fj+L5F0PszL+A
-         W16w==
-X-Gm-Message-State: AOJu0Yx+q1uK/ETqpgh+O3o1UFe5h38CHVrn113Ut6kblYLmHaLIH1ch
-        QRGesPOpILK0ssPXwgjNKiG6b27eq1k=
-X-Google-Smtp-Source: AGHT+IFsi5p5RkQMp/QAh/9jJFCqQWzUONaGe15JF+YP2DKoobowM2vTvGiqa9ecIRLvjzWMON+MHw==
-X-Received: by 2002:a17:90b:3c0d:b0:27d:29f6:79e0 with SMTP id pb13-20020a17090b3c0d00b0027d29f679e0mr6770611pjb.17.1697973772700;
-        Sun, 22 Oct 2023 04:22:52 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id ik21-20020a170902ab1500b001c73f3a9b88sm4437069plb.110.2023.10.22.04.22.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 04:22:52 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id C680981B3D42; Sun, 22 Oct 2023 18:22:49 +0700 (WIB)
-Date:   Sun, 22 Oct 2023 18:22:49 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     gmssixty gmssixty <gmssixty@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: How can I get/check all the kernel boot messages?
-Message-ID: <ZTUGCWr0EgAf4I4C@debian.me>
-References: <CAOx-CDV52DRTmrZ7WEYxngCTpO-X7-H4PGXS86xC9vDJU9U94A@mail.gmail.com>
+        Sun, 22 Oct 2023 07:24:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE11E5;
+        Sun, 22 Oct 2023 04:24:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06992C433C7;
+        Sun, 22 Oct 2023 11:24:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697973884;
+        bh=wl7IrqiQxUg4zaYRUzrv146WVifzpKecnQb2nxtkafo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RNQYQqkWoSlwGNlRb3nIpsJtH+17ZTXd2PyYqGRJsGLGj5VA/ch29t7fYgxmNn6/W
+         aV7UpfbtAVKgoh5Pv8aBasu3lAsi0NBIBSrOrJ7BZKCLd/1TSUrkserZUcsA8UbT4p
+         +qW3WWVFRWL59ZjmZGHMtLSpr8VPw14TXAhehE0I=
+Date:   Sun, 22 Oct 2023 13:24:40 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Florian Eckert <fe@dev.tdt.de>
+Cc:     Eckert.Florian@googlemail.com, jirislaby@kernel.org, pavel@ucw.cz,
+        lee@kernel.org, kabel@kernel.org, u.kleine-koenig@pengutronix.de,
+        ansuelsmth@gmail.com, m.brock@vanmierlo.com,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] leds: ledtrig-tty: add new line mode evaluation
+Message-ID: <2023102235-wafer-plethora-ac3c@gregkh>
+References: <20231019112809.881730-1-fe@dev.tdt.de>
+ <20231019112809.881730-4-fe@dev.tdt.de>
+ <2023102136-reenact-cash-7295@gregkh>
+ <72be6923ff6dd03a5d02d04ee1c5796f@dev.tdt.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="PRKyf5t0/Z+jPHC+"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAOx-CDV52DRTmrZ7WEYxngCTpO-X7-H4PGXS86xC9vDJU9U94A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <72be6923ff6dd03a5d02d04ee1c5796f@dev.tdt.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Oct 22, 2023 at 12:24:27PM +0200, Florian Eckert wrote:
+> On 2023-10-21 18:07, Greg KH wrote:
+> > > diff --git a/drivers/leds/trigger/ledtrig-tty.c
+> > > b/drivers/leds/trigger/ledtrig-tty.c
+> > > index 8ae0d2d284af..6a96439a7e55 100644
+> > > --- a/drivers/leds/trigger/ledtrig-tty.c
+> > > +++ b/drivers/leds/trigger/ledtrig-tty.c
+> > > @@ -16,6 +16,24 @@ struct ledtrig_tty_data {
+> > >  	const char *ttyname;
+> > >  	struct tty_struct *tty;
+> > >  	int rx, tx;
+> > > +	unsigned long mode;
+> > 
+> > Why is mode "unsigned long" when the tty layer treats it as an int?  And
+> > really, this should be set to an explit size, u32 perhaps?  Or am I
+> > confused as to exactly what this is?
+> 
+> This is about the line state that the LED should show "altogether".
+> All states that the LED is to display are stored here.
+> 
+> For example:
+> Via the sysfs of the LED I can set the flags rx, tx and line_cts to
+> a "not" zero value. That means that the led is enable if the CTS of the
+> tty ist set, and the LED flashes if rx/tx data are transmitted via
+> this tty.
+> 
+> Therefore, the bits 0 (TRIGGER_TTY_RX), 1 (TRIGGER_TTY_TX) and
+> 2 (TRIGGER_TTY_CTS) are set in the variable. As defined in the
+> enum led_trigger_tty_modes
 
---PRKyf5t0/Z+jPHC+
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So the enum is a bitfield value?  That's not obvious either, a comment
+for the enum might be good to help describe that.
 
-On Sun, Oct 22, 2023 at 02:48:37PM +0600, gmssixty gmssixty wrote:
-> How can I get/check all the kernel boot messages? After booting, I can
-> not do SHIFT+PAGEUP to scroll up to see messages. Also, how can I know
-> there is no problem with kernel booting?
+> I think I have not chosen the correct name for the variable there.
+> Maybe line_state, would be a better choice?
 
-Run dmesg as root.
+Or "trigger_modes"?  "mode" feels odd, these are values, so maybe just
+"triggers"?
 
---=20
-An old man doll... just what I always wanted! - Clara
+Naming is hard :(
 
---PRKyf5t0/Z+jPHC+
-Content-Type: application/pgp-signature; name="signature.asc"
+> > > +};
+> > > +
+> > > +enum led_trigger_tty_state {
+> > > +	TTY_LED_BLINK,
+> > > +	TTY_LED_ENABLE,
+> > > +	TTY_LED_DISABLE,
+> > > +};
+> > > +
+> > > +enum led_trigger_tty_modes {
+> > > +	TRIGGER_TTY_RX = 0,
+> > > +	TRIGGER_TTY_TX,
+> > > +	TRIGGER_TTY_CTS,
+> > > +	TRIGGER_TTY_DSR,
+> > > +	TRIGGER_TTY_CAR,
+> > > +	TRIGGER_TTY_RNG,
+> > > +	/* Keep last */
+> > > +	__TRIGGER_TTY_MAX,
+> > >  };
+> > > 
+> > 
+> > Oh wait, is "mode" this?  If so, why not define it as an enum?  Or if
+> > not, I'm totally confused as to what is going on here, sorry.
+> 
+> See explanation above. I can not set this to an enum because I could
+> set more then one Flag via the sysfs.
 
------BEGIN PGP SIGNATURE-----
+Ah, then say they are bits, enums are usually not used for that, or if
+they are, they are documented better :)
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZTUGBQAKCRD2uYlJVVFO
-oypvAP9XFYle/Y2/0/s8CwAK65CAXUAz3YS+nQ+rTzCiIbU1wQEAw5XvZeZBhbzz
-zZcnEnKE+l2no5Xs9cRswyoq69Xm9AU=
-=Qe/m
------END PGP SIGNATURE-----
+> > >  static void ledtrig_tty_restart(struct ledtrig_tty_data
+> > > *trigger_data)
+> > > @@ -78,13 +96,106 @@ static ssize_t ttyname_store(struct device *dev,
+> > >  }
+> > >  static DEVICE_ATTR_RW(ttyname);
+> > > 
+> > > +static ssize_t ledtrig_tty_attr_show(struct device *dev, char *buf,
+> > > +	enum led_trigger_tty_modes attr)
+> > > +{
+> > > +	struct ledtrig_tty_data *trigger_data =
+> > > led_trigger_get_drvdata(dev);
+> > > +	int bit;
+> > > +
+> > > +	switch (attr) {
+> > > +	case TRIGGER_TTY_RX:
+> > > +	case TRIGGER_TTY_TX:
+> > > +	case TRIGGER_TTY_CTS:
+> > > +	case TRIGGER_TTY_DSR:
+> > > +	case TRIGGER_TTY_CAR:
+> > > +	case TRIGGER_TTY_RNG:
+> > > +		bit = attr;
+> > > +		break;
+> > > +	default:
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	return sprintf(buf, "%u\n", test_bit(bit, &trigger_data->mode));
+> > 
+> > sysfs_emit() for all new sysfs attributes please.
+> 
+> Correct. Thanks for the hint will use sysf_emit() function in the next
+> patchset round.
+> 
+> > 
+> > > +}
+> > > +
+> > > +static ssize_t ledtrig_tty_attr_store(struct device *dev, const
+> > > char *buf,
+> > > +	size_t size, enum led_trigger_tty_modes attr)
+> > > +{
+> > > +	struct ledtrig_tty_data *trigger_data =
+> > > led_trigger_get_drvdata(dev);
+> > > +	unsigned long state;
+> > > +	int ret;
+> > > +	int bit;
+> > > +
+> > > +	ret = kstrtoul(buf, 0, &state);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	switch (attr) {
+> > > +	case TRIGGER_TTY_RX:
+> > > +	case TRIGGER_TTY_TX:
+> > > +	case TRIGGER_TTY_CTS:
+> > > +	case TRIGGER_TTY_DSR:
+> > > +	case TRIGGER_TTY_CAR:
+> > > +	case TRIGGER_TTY_RNG:
+> > > +		bit = attr;
+> > > +		break;
+> > > +	default:
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	if (state)
+> > > +		set_bit(bit, &trigger_data->mode);
+> > > +	else
+> > > +		clear_bit(bit, &trigger_data->mode);
+> > 
+> > I think your test of "state" here is wrong, if you write in "40000" you
+> > are treating it as "1", which I don't think you want, right?
+> 
+> If I have understood your question correctly, then I would say that your
+> assumption is not correct. I just want to check here whether it is a number
+> greater than zero or not. If the number is greater than zero then the bit
+> should be set in the 'mode' variable of the struct and if it is zero then
+> it should be cleared.
 
---PRKyf5t0/Z+jPHC+--
+"greater than 0" can be any number, that's not a good api.  Use the
+sysfs api that can handle a boolean, it will deal with "y/N" and 0/1 and
+all sorts of other options that way for you automatically.
+
+> The LED could indicate more then one state there. As described above.
+> This was requested by Uwe Kleine-König in the old v7 patch series [1].
+
+That's fine, but you need to fix up the userspace api a bit here.
+
+thanks,
+
+greg k-h
