@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D787D2461
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D4B7D2464
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbjJVQVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 12:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
+        id S232702AbjJVQVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 12:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232711AbjJVQVB (ORCPT
+        with ESMTP id S232550AbjJVQVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 12:21:01 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5FB197;
-        Sun, 22 Oct 2023 09:20:55 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1dd71c0a41fso1937190fac.2;
-        Sun, 22 Oct 2023 09:20:55 -0700 (PDT)
+        Sun, 22 Oct 2023 12:21:09 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1E210F8;
+        Sun, 22 Oct 2023 09:21:04 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-778a20df8c3so182632985a.3;
+        Sun, 22 Oct 2023 09:21:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697991654; x=1698596454; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697991663; x=1698596463; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=q3eUP6wW7BMqU4z5aN2e2S0C74STyHyYsk0Wx3zx7Fc=;
-        b=NB5qujsPEKObiA4r2K/tZFDisjEdeLRvf6pjMQ/G0U4HMlKkTJ4k2hieOvkJXQA739
-         0958QWJhR973Ymopjl3t+ChwwU/3axT+/4/slAuzrunLu6HSmpvf8wy4/iJ147cubwIa
-         F529COGDB+cR46cp/aMVvr1nzklJJg2kUxBLDR5oWwIC/gF5GCISbjvpMAAzP7+zeR/s
-         jqMR2Zj2GuPP+60aRW28VQB/A6To34JmrQYO58A104KlF66Pf3me536lEt4cX4upZa7h
-         mnHd5qZhiYK1oHCNnNAkxUjaqoGNdOJvsSmNkpMW/4xN003ANcVESuaJJC6L5RsTnxxf
-         F8Dw==
+        bh=hgjSE66tE6JZzaSVNRveIcOcsT4Kj5DPZibrG3bgtDk=;
+        b=fMRgLTgDCcKkgPYu+FQMBqi63sEtiqcCOwvRbdL9vkHSvPUtvGgIGomfeVtCCw1ASC
+         A8ckRs8LaGbl1OGMGOaLn6HNipC9wwRaJp1kMDh5GwmKByOwZp0AlxB1QiKziEsljs9p
+         VcVxtxZf6uukrJAaesAG2ZhuUsn1Y7AV6qOhIFz2jIFefqdiX1CecHCgmKr+ZTqWjOqa
+         p64zge+W7VZfOGmykDh3XWh1HBzqkMvgCPuAyS2zxf3OUbUUOsN+DAWNKDVnMAN5uqIR
+         YYVpqcwDh8C36f4tB1Y7YvUoyCM2ICUE7J3f0uTZJBZFZFl1Tu+dPv8apZKmKhCiaVGG
+         8A0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697991654; x=1698596454;
+        d=1e100.net; s=20230601; t=1697991663; x=1698596463;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=q3eUP6wW7BMqU4z5aN2e2S0C74STyHyYsk0Wx3zx7Fc=;
-        b=PIYT5ZjYbpSQBbp4T3KlMgIry/NEkp/yIrK4HSPLnTKTKzXH/cRgw/4YHe0k9QPbwb
-         fgB7nwSNkPexkRa1gX5kxee7nLqTmGoMkSwGxx1Bzry4SM1kTjx7lYT8S0q9oX11IMP2
-         8mkaXp+Ov7B55dK/irt5aAbRNzitpJf0fNOct5spDgQH9lkcnLZoIFYc6N6PT5rL89Ej
-         lYSLkRG1xaz/Sv8HA+WCNUsBhi9aoJzKr9B8yDl1gPH5qIWnx/Lz9gGGly7SQ/tZzEU8
-         EeOUByVMqKYAX45qOphLepanJ+6m5PaN7iGP1721nDSaDs36704/53yzVE2oHGzYPkF1
-         szdw==
-X-Gm-Message-State: AOJu0YzAePUf72aHh94uRhRLuEB8FiafzGjhDi7QyfRNiOsKdFajyZW9
-        KVeAXy/pX9s5lInmm298ae/oL/6iVhZsynZg
-X-Google-Smtp-Source: AGHT+IF38aO4Nu3Iu2slQgQaDix/Vly6XxDOl11vP8iWfTd5hB5+9Z+qcj+ZIez1sajBJzxw+uEZ/A==
-X-Received: by 2002:a05:6870:57:b0:1e9:bb7b:6dd0 with SMTP id 23-20020a056870005700b001e9bb7b6dd0mr7603909oaz.55.1697991654564;
-        Sun, 22 Oct 2023 09:20:54 -0700 (PDT)
+        bh=hgjSE66tE6JZzaSVNRveIcOcsT4Kj5DPZibrG3bgtDk=;
+        b=LvBnUafB7QqTFlQC29P4X8v7phtRuDAmDCmIlUUKCW+0sCnhzlJVEgDcDb1+s1ZJCi
+         D0mke+Itwao7sO0TDXnRfaBOYr5E0/1L83VFmZ6++NASVa4R/Fe/Stf/CNMaDAYiLS2D
+         V0SiYTMPsRts6ut+u81c/9ZjXbT9KS7DacceUZRY2+3j5bNva4WeotE0+8XcA4uhkZXq
+         fzk96rsn2iEakFJB5ia6rkiELEQdSIgH4zBeVC368JubsVRpwp2ZYMDqdMWEsOerc+4l
+         Racwv00E8jEBE7/+uArXKE6r5mrkEQnox3CzAnCInhLntJ2Y/lB+02DJH97iGpOeQjxC
+         MfEg==
+X-Gm-Message-State: AOJu0YzdjJkrygQyn9RlG/vKFUIAKkGZ61w163b9xR9+JlFPQNilhw6m
+        P2OA/kNE9IzGrYCoZ/qxqhoNu2yEZhBDh8U6
+X-Google-Smtp-Source: AGHT+IF6sf0pgRs8aF7roOUY/S7wbWoMyZ/ISqtmhLlos7gvoDOZ83B942EJZE46bHs2QtNaevlPsA==
+X-Received: by 2002:a05:620a:3710:b0:76e:f638:bcd9 with SMTP id de16-20020a05620a371000b0076ef638bcd9mr8966868qkb.38.1697991663249;
+        Sun, 22 Oct 2023 09:21:03 -0700 (PDT)
 Received: from localhost ([2601:8c:502:14f0:d6de:9959:3c29:509b])
-        by smtp.gmail.com with ESMTPSA id h12-20020a05620a10ac00b00765ab6d3e81sm2108047qkk.122.2023.10.22.09.20.54
+        by smtp.gmail.com with ESMTPSA id e6-20020a05620a208600b007742218dc42sm2094338qka.119.2023.10.22.09.21.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 09:20:54 -0700 (PDT)
-Date:   Sun, 22 Oct 2023 12:20:53 -0400
+        Sun, 22 Oct 2023 09:21:03 -0700 (PDT)
+Date:   Sun, 22 Oct 2023 12:21:02 -0400
 From:   Oliver Crumrine <ozlinuxc@gmail.com>
 To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     davem@davemloft.n
-Subject: [PATCH net-next 09/17] Change instances of cork to a pointer
-Message-ID: <37fb362cff69dc98dcd1a8bcaab0560964120117.1697989543.git.ozlinuxc@gmail.com>
+Subject: [PATCH net-next 11/17] Update occurences of cork to pointer
+Message-ID: <b9db0ba9fe244bd0574adba6764c647b08714724.1697989543.git.ozlinuxc@gmail.com>
 References: <cover.1697989543.git.ozlinuxc@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -70,44 +70,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make these usages of the cork a pointer in accordance with the previous
-patches.
+Updates an occurence of cork to a pointer in accordance with the
+previous patches in the set
 
 Signed-off-by: Oliver Crumrine <ozlinuxc@gmail.com>
 ---
- net/ipv4/inet_connection_sock.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/ipv4/syncookies.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index 394a498c2823..99eb394ba0a3 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -830,7 +830,7 @@ struct dst_entry *inet_csk_route_child_sock(const struct sock *sk,
- 	struct rtable *rt;
- 
- 	opt = rcu_dereference(ireq->ireq_opt);
--	fl4 = &newinet->cork.fl.u.ip4;
-+	fl4 = &newinet->cork->fl.u.ip4;
- 
- 	flowi4_init_output(fl4, ireq->ir_iif, ireq->ir_mark,
- 			   ip_sock_rt_tos(sk), ip_sock_rt_scope(sk),
-@@ -1482,7 +1482,7 @@ struct dst_entry *inet_csk_update_pmtu(struct sock *sk, u32 mtu)
- 	struct inet_sock *inet = inet_sk(sk);
- 
- 	if (!dst) {
--		dst = inet_csk_rebuild_route(sk, &inet->cork.fl);
-+		dst = inet_csk_rebuild_route(sk, &inet->cork->fl);
- 		if (!dst)
- 			goto out;
- 	}
-@@ -1490,7 +1490,7 @@ struct dst_entry *inet_csk_update_pmtu(struct sock *sk, u32 mtu)
- 
- 	dst = __sk_dst_check(sk, 0);
- 	if (!dst)
--		dst = inet_csk_rebuild_route(sk, &inet->cork.fl);
-+		dst = inet_csk_rebuild_route(sk, &inet->cork->fl);
- out:
- 	return dst;
+diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+index dc478a0574cb..4354a4decb51 100644
+--- a/net/ipv4/syncookies.c
++++ b/net/ipv4/syncookies.c
+@@ -450,6 +450,6 @@ struct sock *cookie_v4_check(struct sock *sk, struct sk_buff *skb)
+ 	 * Normal sockets get it right from inet_csk_route_child_sock()
+ 	 */
+ 	if (ret)
+-		inet_sk(ret)->cork.fl.u.ip4 = fl4;
++		inet_sk(ret)->cork->fl.u.ip4 = fl4;
+ out:	return ret;
  }
 -- 
 2.42.0
