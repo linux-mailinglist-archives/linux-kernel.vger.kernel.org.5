@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E497D22C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33407D22CD
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbjJVKvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 06:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
+        id S231783AbjJVLDs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 22 Oct 2023 07:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVKvo (ORCPT
+        with ESMTP id S229472AbjJVLDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 06:51:44 -0400
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26CC114
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 03:51:42 -0700 (PDT)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7af52ee31so23347017b3.2
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 03:51:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1697971902; x=1698576702; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qtBLYHItiMRAtWv2eIIyDWdvOr+sJvW/WOE9B0k2XRw=;
-        b=NkuDTB4O/Nd48Yas/JhUC6lJqnb8ZTYBFcyAFQnf58+4ERJbJNFS6EIjiKsXode/1O
-         IfkXOwBc0PNWRITMYxnSiXUNm+D5b/jYFAkz51FcLgPe47Ux9KBzHB6JyuDqu2nvU6u2
-         EeDyjQOZUZYu+AvrVhEuTdZS7Dq7wNVY3dtqDyJBE1psT4VBFsnBMDaNY2JRYYBtk/nx
-         Wz8gbaPLbQwYtD8CprBZoF8h5rqD30Qn2a9AzRTEFoJSiFSifG3hRXIc1gUd3vBaXqSY
-         Y35sK0HAdzUMlBJLIJwiJviu58678KPSerquWshltnMO33OP8Twqj8U9FuqbEMstCAP7
-         TP6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697971902; x=1698576702;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qtBLYHItiMRAtWv2eIIyDWdvOr+sJvW/WOE9B0k2XRw=;
-        b=WPSZ5UyA4S+Vb/6qR2d56pL76r+RVPkfE9tysKO9D/ZBvHhcIYNDKo8+qnYcl6jhZ/
-         ivxldiDCLzVe3mPzJWS2ofLjoP+JLGMuYArWJOOOukVcrW38WVdhWCkcNIjoB9ytojcZ
-         W26sUrx8kctUPdV+2S9I9znh6Bh3QBFdcm73rlZG9bY9ml6AMbxBlbqxcU9KE1AIhzTH
-         qzO8etCKWHmf6W70t/EylQ+fTbeL1pcKpHxIS3Lz8IXmDXX3+klXNej/EuJBSNHPTw6w
-         Chf6ny1mr83KBQAwy363/R/zQedu4T+0KrBnYiWI2yWeutqxnHAxZCyQWby+Ew8bvweS
-         pZRQ==
-X-Gm-Message-State: AOJu0Yy5snlktVFp00NWZPbySLtAE2GiMsOnDqF3/1Go7dvGn2LxKj+f
-        ux8merDdTszexDMNfjzQ7dpdb11P8bHHQsedwcllsg==
-X-Google-Smtp-Source: AGHT+IHvSGTdwWJCN+NUWfNu/iFOGpqaoQeYpFbg6MJyqmijJSTWlLgR/hV+HQSRRk+O0gguRdSlYnVT5vCX2KlXnKA=
-X-Received: by 2002:a0d:df02:0:b0:5a7:be1a:6c32 with SMTP id
- i2-20020a0ddf02000000b005a7be1a6c32mr7073499ywe.24.1697971902097; Sun, 22 Oct
- 2023 03:51:42 -0700 (PDT)
+        Sun, 22 Oct 2023 07:03:46 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CE3DD
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:03:44 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-309-2jbcHpCpNfONH8lCgy8ooA-1; Sun, 22 Oct 2023 12:03:41 +0100
+X-MC-Unique: 2jbcHpCpNfONH8lCgy8ooA-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 22 Oct
+ 2023 12:03:39 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 22 Oct 2023 12:03:39 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Al Viro' <viro@zeniv.linux.org.uk>,
+        Eric Dumazet <edumazet@google.com>
+CC:     gus Gusenleitner Klaus <gus@keba.com>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: RE: AW: [PATCH] amd64: Fix csum_partial_copy_generic()
+Thread-Topic: AW: [PATCH] amd64: Fix csum_partial_copy_generic()
+Thread-Index: AQHaBG0ELw1zxmi7jUCMTwySbq0j57BVpWHg
+Date:   Sun, 22 Oct 2023 11:03:39 +0000
+Message-ID: <5487af5c8c184ac896af2d0b32b3ff42@AcuMS.aculab.com>
+References: <VI1PR0702MB3840EB26EF2A1A35BFEA53BFD9D5A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
+ <20231018154205.GT800259@ZenIV>
+ <VI1PR0702MB3840F2D594B9681BF2E0CD81D9D4A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
+ <20231019050250.GV800259@ZenIV> <20231019061427.GW800259@ZenIV>
+ <20231019063925.GX800259@ZenIV>
+ <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
+ <20231019080615.GY800259@ZenIV> <20231021071525.GA789610@ZenIV>
+ <20231021222203.GA800259@ZenIV>
+In-Reply-To: <20231021222203.GA800259@ZenIV>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20231021-sakuramist-mi11u-v2-0-fa82c91ecaf0@gmail.com> <20231021-sakuramist-mi11u-v2-1-fa82c91ecaf0@gmail.com>
-In-Reply-To: <20231021-sakuramist-mi11u-v2-1-fa82c91ecaf0@gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sun, 22 Oct 2023 13:51:31 +0300
-Message-ID: <CAA8EJprtd8htkDWAvhamgEo3DWMMDYe-P6cnr6nwLnms=N0k9A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] soc: qcom: pmic_glink: enable UCSI for SM8350
-To:     wuxilin123@gmail.com
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 21 Oct 2023 at 13:20, Xilin Wu via B4 Relay
-<devnull+wuxilin123.gmail.com@kernel.org> wrote:
->
-> From: Xilin Wu <wuxilin123@gmail.com>
->
-> UCSI is supported on SM8350. Allow it to enable USB role switch and
-> altmode notifications on SM8350.
+From: Al Viro
+> Sent: 21 October 2023 23:22
+> 
+> > I don't think -rc7 is a good time for that, though.  At the
+> > very least it needs a review on linux-arch - I think I hadn't
+> > fucked the ABI for returning u64 up, but...
+> >
+> > Anyway, completely untested patch follows:
+> 
+> ... and now something that at least builds (with some brainos fixed); it's still
+> slightly suboptimal representation on big-endian 32bit - there it would be better to
+> have have the csum in upper half of the 64bit getting returned and use the lower
+> half as fault indicator, but dealing with that cleanly takes some massage of
+> includes in several places, so I'd left that alone for now.  In any case, the
+> overhead of that is pretty much noise.
+> 
+> diff --git a/arch/alpha/include/asm/checksum.h b/arch/alpha/include/asm/checksum.h
+> index 99d631e146b2..80c57b370edb 100644
+> --- a/arch/alpha/include/asm/checksum.h
+> +++ b/arch/alpha/include/asm/checksum.h
+> @@ -43,7 +43,7 @@ extern __wsum csum_partial(const void *buff, int len, __wsum sum);
+>   */
+>  #define _HAVE_ARCH_COPY_AND_CSUM_FROM_USER
+>  #define _HAVE_ARCH_CSUM_AND_COPY
+> -__wsum csum_and_copy_from_user(const void __user *src, void *dst, int len);
+> +__u64 csum_and_copy_from_user(const void __user *src, void *dst, int len);
+...
+> +			return -1;
 
-We have had troubles with UCSI on sm8350. I have a workaround for this
-(and earlier) platforms. Once it is ready to be posted, I'll include
-your patch in the series, if you don't mind.
+If you are going to return -1 the return type should be signed.
 
->
-> Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
-> ---
->  drivers/soc/qcom/pmic_glink.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glink.c
-> index 914057331afd..1196e79e6fb3 100644
-> --- a/drivers/soc/qcom/pmic_glink.c
-> +++ b/drivers/soc/qcom/pmic_glink.c
-> @@ -341,6 +341,7 @@ static const unsigned long pmic_glink_sm8450_client_mask = BIT(PMIC_GLINK_CLIENT
->                                                            BIT(PMIC_GLINK_CLIENT_UCSI);
->
->  static const struct of_device_id pmic_glink_of_match[] = {
-> +       { .compatible = "qcom,sm8350-pmic-glink", .data = &pmic_glink_sm8450_client_mask },
->         { .compatible = "qcom,sm8450-pmic-glink", .data = &pmic_glink_sm8450_client_mask },
->         { .compatible = "qcom,sm8550-pmic-glink", .data = &pmic_glink_sm8450_client_mask },
->         { .compatible = "qcom,pmic-glink" },
->
-> --
-> 2.42.0
->
+	David
 
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
--- 
-With best wishes
-Dmitry
