@@ -2,237 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF447D208A
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 02:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AB77D20A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 03:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjJVA2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 20:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
+        id S229590AbjJVB0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 21:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjJVA2M (ORCPT
+        with ESMTP id S229472AbjJVB0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 20:28:12 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73237E8
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 17:28:07 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-3574f99d236so8006925ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 17:28:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1697934487; x=1698539287; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CIkKNYnE4pG9i7ZaI/S+MbnvsoBKqeoQfqmpY9/coNA=;
-        b=QFctFHN09QihYfXH4+rPp3O6AymTdxNx8pdr8MCc7/soKYS9YlV18v3QLjF03gOL54
-         ySurWfJ+t1kOsWKemEP5nDPz3mgMSX3EHksAVPNr9hN+KbomnDDF9J/4R78TT0Lcadc9
-         RrZDeoF9uNJ8QQHKFkL0rXGWX7XZChquYWjMg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697934487; x=1698539287;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CIkKNYnE4pG9i7ZaI/S+MbnvsoBKqeoQfqmpY9/coNA=;
-        b=AMZ4eyej1ItLejiv/1Hga0c2OBlUmUhkmI1N5MGXVSkeEfMHBybX4zMuiPRswNcwUq
-         QzItJt3jb9eUWhpB+4q2e763iXgIp0pRUKTRFZuHYGpv9ctN+6v+ghGHPdaZWbNR9m8R
-         hX1q+aVFMnk5PryM01jF4fr2Zij0/oJH9DIoXWSoQ47oyLIprBlqvi6PQvS0xaoqGyt5
-         hXM2MHUd6deXB/VL2HqGqnV6iF2lFmYyjnx1w5VV5ZZc2twShRULqFBx7jSk9SFQkn3R
-         Gn1qcxVkpWGR7l8nAWp9nkgVj5EfS0nLHufAweTG31+fF0aqfqxXLULbaUSVBZ4sLqCp
-         HIlA==
-X-Gm-Message-State: AOJu0YxzPzQdSLAP+rmPJzlhb3fFgnsoiZDoFJ5tKzr3lT+Fg0Z5N36/
-        b7YVorcjO7Vts4/SK71kXZJixQ==
-X-Google-Smtp-Source: AGHT+IFiH27szdDLri3n69KGuzBDjlQ2JFC0qHUAZYF7F+MmKrIGLQGZafdaYJ+sfNtKtHGqmgd3yA==
-X-Received: by 2002:a05:6e02:b22:b0:34f:68fe:630 with SMTP id e2-20020a056e020b2200b0034f68fe0630mr7424575ilu.25.1697934486704;
-        Sat, 21 Oct 2023 17:28:06 -0700 (PDT)
-Received: from localhost (20.10.132.34.bc.googleusercontent.com. [34.132.10.20])
-        by smtp.gmail.com with ESMTPSA id p3-20020a92d683000000b0034e2572bb50sm1592092iln.13.2023.10.21.17.28.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Oct 2023 17:28:06 -0700 (PDT)
-Date:   Sun, 22 Oct 2023 00:28:05 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH 3/3] sched: Update ->next_balance correctly during
- newidle balance
-Message-ID: <20231022002805.GA3219395@google.com>
-References: <20231020014031.919742-1-joel@joelfernandes.org>
- <20231020014031.919742-3-joel@joelfernandes.org>
- <CAKfTPtDk+awL2RxrRL_4-epj069-iXRbUeSwPH5NYz7ncpVzHA@mail.gmail.com>
+        Sat, 21 Oct 2023 21:26:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E05FE4
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 18:26:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697937998; x=1729473998;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LBX6ZtGVn8F0eER1BTMElbYs8butshP26d1YMoFYSh8=;
+  b=RkBITnhuEnGg4iTSPetrgSuwgNsAH95AMVjdV7kUbyTMAMCtUJozymAz
+   8VdNAp/eROH9KqFrSdtMXsBMSMHlZJ+eRVtrH7GHQSzyGXGzMqbCrNDv8
+   ZfJ/m17sdbmyzd+r9b1IzsvRvLBhX9Sc9c1IxV6dXOxOVCXZONDHZxc8j
+   AaEPam83D4azFBtZCqRzW94dkevsmlFCItlsP1OD00GONwzFLil6barQk
+   R9CUcXvgr3V8Pts6bBWSXbqIpKburbGnY40xkla4x5zP05EaMxZgX67bE
+   DVkd8NxBpWaC54X+EDaOychXAtgeu8mycV99VEl6fMqsXeEvQltoHiQ4R
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="386491837"
+X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
+   d="scan'208";a="386491837"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2023 18:26:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="787139778"
+X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
+   d="scan'208";a="787139778"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 21 Oct 2023 18:26:35 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1quNEf-0005SR-0U;
+        Sun, 22 Oct 2023 01:26:33 +0000
+Date:   Sun, 22 Oct 2023 09:25:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Gary Rookard <garyrookard@fastmail.org>, gregkh@linuxfoundation.org
+Cc:     oe-kbuild-all@lists.linux.dev, philipp.g.hortmann@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Gary Rookard <garyrookard@fastmail.org>
+Subject: Re: [PATCH] staging: rtl8192e: renamed variable
+ HTIOTActIsDisableMCSTwoSpatialStream
+Message-ID: <202310220944.r88EaZm2-lkp@intel.com>
+References: <20231022002646.11861-1-garyrookard@fastmail.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtDk+awL2RxrRL_4-epj069-iXRbUeSwPH5NYz7ncpVzHA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231022002646.11861-1-garyrookard@fastmail.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 03:40:14PM +0200, Vincent Guittot wrote:
-> On Fri, 20 Oct 2023 at 03:40, Joel Fernandes (Google)
-> <joel@joelfernandes.org> wrote:
-> >
-> > From: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>
-> >
-> > When newidle balancing triggers, we see that it constantly clobbers
-> > rq->next_balance even when there is no newidle balance happening due to
-> > the cost estimates.  Due to this, we see that periodic load balance
-> > (rebalance_domains) may trigger way more often when the CPU is going in
-> > and out of idle at a high rate but is no really idle. Repeatedly
-> > triggering load balance there is a bad idea as it is a heavy operation.
-> > It also causes increases in softirq.
-> 
-> we have 2 balance intervals:
-> - one when idle based on the sd->balance_interval = sd_weight
-> - one when busy which increases the period by multiplying it with
-> busy_factor = 16
+Hi Gary,
 
-On my production system I see load balance triggering every 4 jiffies! In a
-Qemu system (which I use for traces below), I see every 8 jiffies. I'll go
-look into that more as well, it could be something going on in
-get_sd_balance_interval().
+kernel test robot noticed the following build errors:
 
-> When becoming idle, the rq->next_balance can have been set using the
-> 16*sd_weight period so load_balance can wait for a long time before
-> running idle load balance for this cpu.
+[auto build test ERROR on staging/staging-testing]
 
-Got it.
+url:    https://github.com/intel-lab-lkp/linux/commits/Gary-Rookard/staging-rtl8192e-renamed-variable-HTIOTActIsDisableMCSTwoSpatialStream/20231022-082912
+base:   staging/staging-testing
+patch link:    https://lore.kernel.org/r/20231022002646.11861-1-garyrookard%40fastmail.org
+patch subject: [PATCH] staging: rtl8192e: renamed variable HTIOTActIsDisableMCSTwoSpatialStream
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231022/202310220944.r88EaZm2-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231022/202310220944.r88EaZm2-lkp@intel.com/reproduce)
 
-> As a typical example, instead of waiting at most 8ms, we will wait
-> 128ms before we try to pull a task on the idle CPU.
-> 
-> That's the reason for updating rq->next_balance in newidle_balance()
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310220944.r88EaZm2-lkp@intel.com/
 
-Got it, makes sense. But I still feel the mechanism is too aggressive, see
-below.
+All error/warnings (new ones prefixed by >>):
 
-> > Another issue is ->last_balance is not updated after newidle balance
-> > causing mistakes in the ->next_balance calculations.
-> 
-> newly idle load balance is not equal to idle load balance. It's a
-> light load balance trying to pull one  task and you can't really
-> consider it to the normal load balance
-
-True. However the point is that it is coupled with the other load balance
-mechanism and the two are not independent. As you can see below, modifying
-rq->next_balance in newidle also causes the periodic balance to happen more
-aggressively as well if there is a high transition from busy to idle and
-viceversa.
-
-> > Fix by updating last_balance when a newidle load balance actually
-> > happens and then updating next_balance. This is also how it is done in
-> > other load balance paths.
-> >
-> > Testing shows a significant drop in softirqs when running:
-> > cyclictest -i 100 -d 100 --latency=1000 -D 5 -t -m  -q
-> >
-> > Goes from ~6k to ~800.
-> 
-> Even if your figures look interesting, your patch adds regression in
-> the load balance and the fairness.
-
-Yes I see that now. However it does illustrate the problem IMO.
-
-> We can probably do improve the current behavior for decreasing number
-> of ILB but your proposal is not the right solution IMO
-
-One of the problems is if you have task goes idle a lot, then the
-newidle_balance mechanism triggers the periodic balance every jiffie (once
-per millisecond on HZ=1000).
-
-Following are some traces I collected.
-
-cyclictest-123   [003]   522.650574  newidle_balance: this_rq[cpu=3]->next_balance: 221,264 -> 221,145 (jiffies=221,157)
-   <idle>-0      [003]   522.651443  trigger_load_balance: time_after_eq(jiffies=221,158, rq->next_balance=221,145) = 1
-   <idle>-0      [003]   522.651461  rebalance_domains: rq[cpu=3]->next_balance: 221,145 -> 221,264 (jiffies=221,158)
-cyclictest-123   [003]   522.651494  newidle_balance: this_rq[cpu=3]->next_balance: 221,264 -> 221,145 (jiffies=221,158)
-   <idle>-0      [003]   522.652522  trigger_load_balance: time_after_eq(jiffies=221,159, rq->next_balance=221,145) = 1
-   <idle>-0      [003]   522.652560  rebalance_domains: rq[cpu=3]->next_balance: 221,145 -> 221,264 (jiffies=221,159)
-cyclictest-124   [003]   522.652586  newidle_balance: this_rq[cpu=3]->next_balance: 221,264 -> 221,145 (jiffies=221,159)
-   <idle>-0      [003]   522.654492  trigger_load_balance: time_after_eq(jiffies=221,161, rq->next_balance=221,145) = 1
-   <idle>-0      [003]   522.654534  rebalance_domains: rq[cpu=3]->next_balance: 221,145 -> 221,264 (jiffies=221,161)
-
-Triggering it so aggressively likely that is useless, it increases softirq
-count and hurts power when no real work is done IMHO. And it probably makes
-things worse for power on ARM where you have uclamp stuff happening in the
-load balance paths which is quite heavy when I last traced that..
-
-Further, we have observed in our tracing on real device that the update of
-rq->next_balance from the newidle path is itself buggy... we observed that
-because newidle balance may not update rq->last_balance, it is possible that
-rq->next_balance when updated by update_next_balance() will be updated to a
-value that is in the past and it will be stuck there for a long time! Perhaps
-we should investigate more and fix that bug separately. Vineeth could provide
-more details on the "getting stuck in the past" behavior as well.
-
-I hope these patches highlight some of the issues we find and can trigger any
-improvements by us or others. From our side we'll continue to work on it and
-thank you for explaining some of the load balance code!
-
-thanks,
-
- - Joel & Vineeth
+   drivers/staging/rtl8192e/rtl819x_HTProc.c: In function 'HTResetSelfAndSavePeerSetting':
+>> drivers/staging/rtl8192e/rtl819x_HTProc.c:707:30: error: implicit declaration of function 'ht_iot_act_is_diable_mcs_two_spatial_stream'; did you mean 'ht_iot_act_is_disable_mcs_two_spatial_stream'? [-Werror=implicit-function-declaration]
+     707 |                 bIOTAction = ht_iot_act_is_diable_mcs_two_spatial_stream(ieee);
+         |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                              ht_iot_act_is_disable_mcs_two_spatial_stream
+   drivers/staging/rtl8192e/rtl819x_HTProc.c: At top level:
+>> drivers/staging/rtl8192e/rtl819x_HTProc.c:220:13: warning: 'ht_iot_act_is_disable_mcs_two_spatial_stream' defined but not used [-Wunused-function]
+     220 | static bool ht_iot_act_is_disable_mcs_two_spatial_stream(struct rtllib_device *ieee)
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
 
 
-> 
-> >
-> > Cc: Suleiman Souhlal <suleiman@google.com>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
-> > Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  kernel/sched/fair.c | 8 ++------
-> >  1 file changed, 2 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 8e276d12c3cb..b147ad09126a 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -12076,11 +12076,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> >
-> >         if (!READ_ONCE(this_rq->rd->overload) ||
-> >             (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
-> > -
-> > -               if (sd)
-> > -                       update_next_balance(sd, &next_balance);
-> >                 rcu_read_unlock();
-> > -
-> >                 goto out;
-> >         }
-> >         rcu_read_unlock();
-> > @@ -12095,8 +12091,6 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> >                 int continue_balancing = 1;
-> >                 u64 domain_cost;
-> >
-> > -               update_next_balance(sd, &next_balance);
-> > -
-> >                 if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
-> >                         break;
-> >
-> > @@ -12109,6 +12103,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-> >                         t1 = sched_clock_cpu(this_cpu);
-> >                         domain_cost = t1 - t0;
-> >                         update_newidle_cost(sd, domain_cost);
-> > +                       sd->last_balance = jiffies;
-> > +                       update_next_balance(sd, &next_balance);
-> >
-> >                         curr_cost += domain_cost;
-> >                         t0 = t1;
-> > --
-> > 2.42.0.655.g421f12c284-goog
-> >
+vim +707 drivers/staging/rtl8192e/rtl819x_HTProc.c
+
+   657	
+   658	void HTResetSelfAndSavePeerSetting(struct rtllib_device *ieee,
+   659					   struct rtllib_network *pNetwork)
+   660	{
+   661		struct rt_hi_throughput *ht_info = ieee->ht_info;
+   662		u8	bIOTAction = 0;
+   663	
+   664		/* unmark enable_ht flag here is the same reason why unmarked in
+   665		 * function rtllib_softmac_new_net. WB 2008.09.10
+   666		 */
+   667		if (pNetwork->bssht.bd_support_ht) {
+   668			ht_info->current_ht_support = true;
+   669			ht_info->ePeerHTSpecVer = pNetwork->bssht.bd_ht_spec_ver;
+   670	
+   671			if (pNetwork->bssht.bd_ht_cap_len > 0 &&
+   672			    pNetwork->bssht.bd_ht_cap_len <= sizeof(ht_info->PeerHTCapBuf))
+   673				memcpy(ht_info->PeerHTCapBuf,
+   674				       pNetwork->bssht.bd_ht_cap_buf,
+   675				       pNetwork->bssht.bd_ht_cap_len);
+   676	
+   677			if (pNetwork->bssht.bd_ht_info_len > 0 &&
+   678			    pNetwork->bssht.bd_ht_info_len <=
+   679			    sizeof(ht_info->PeerHTInfoBuf))
+   680				memcpy(ht_info->PeerHTInfoBuf,
+   681				       pNetwork->bssht.bd_ht_info_buf,
+   682				       pNetwork->bssht.bd_ht_info_len);
+   683	
+   684			if (ht_info->reg_rt2rt_aggregation) {
+   685				ht_info->current_rt2rt_aggregation =
+   686					 pNetwork->bssht.bd_rt2rt_aggregation;
+   687				ht_info->current_rt2rt_long_slot_time =
+   688					 pNetwork->bssht.bd_rt2rt_long_slot_time;
+   689				ht_info->RT2RT_HT_Mode = pNetwork->bssht.rt2rt_ht_mode;
+   690			} else {
+   691				ht_info->current_rt2rt_aggregation = false;
+   692				ht_info->current_rt2rt_long_slot_time = false;
+   693				ht_info->RT2RT_HT_Mode = (enum rt_ht_capability)0;
+   694			}
+   695	
+   696			HTIOTPeerDetermine(ieee);
+   697	
+   698			ht_info->iot_action = 0;
+   699			bIOTAction = HTIOTActIsDisableMCS14(ieee, pNetwork->bssid);
+   700			if (bIOTAction)
+   701				ht_info->iot_action |= HT_IOT_ACT_DISABLE_MCS14;
+   702	
+   703			bIOTAction = HTIOTActIsDisableMCS15(ieee);
+   704			if (bIOTAction)
+   705				ht_info->iot_action |= HT_IOT_ACT_DISABLE_MCS15;
+   706	
+ > 707			bIOTAction = ht_iot_act_is_diable_mcs_two_spatial_stream(ieee);
+   708			if (bIOTAction)
+   709				ht_info->iot_action |= HT_IOT_ACT_DISABLE_ALL_2SS;
+   710	
+   711			bIOTAction = HTIOTActIsDisableEDCATurbo(ieee, pNetwork->bssid);
+   712			if (bIOTAction)
+   713				ht_info->iot_action |= HT_IOT_ACT_DISABLE_EDCA_TURBO;
+   714	
+   715			bIOTAction = HTIOTActIsMgntUseCCK6M(ieee, pNetwork);
+   716			if (bIOTAction)
+   717				ht_info->iot_action |= HT_IOT_ACT_MGNT_USE_CCK_6M;
+   718			bIOTAction = HTIOTActIsCCDFsync(ieee);
+   719			if (bIOTAction)
+   720				ht_info->iot_action |= HT_IOT_ACT_CDD_FSYNC;
+   721		} else {
+   722			ht_info->current_ht_support = false;
+   723			ht_info->current_rt2rt_aggregation = false;
+   724			ht_info->current_rt2rt_long_slot_time = false;
+   725			ht_info->RT2RT_HT_Mode = (enum rt_ht_capability)0;
+   726	
+   727			ht_info->iot_action = 0;
+   728			ht_info->iot_ra_func = 0;
+   729		}
+   730	}
+   731	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
