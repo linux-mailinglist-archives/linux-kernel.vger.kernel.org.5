@@ -2,136 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF5E7D237D
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 17:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 048F87D2391
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 17:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbjJVPT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 11:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        id S231732AbjJVP1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 11:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJVPTY (ORCPT
+        with ESMTP id S229500AbjJVP1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 11:19:24 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B90F4;
-        Sun, 22 Oct 2023 08:19:22 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-7789aed0e46so176735285a.0;
-        Sun, 22 Oct 2023 08:19:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697987961; x=1698592761; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FmSfe58FfVT1+C5BDfWt5zaNsraT3ia/sP6v6KkffFo=;
-        b=KBLZ88Aiv2ZHtpomUHwExfmgCScpEe5auOh5on9De+5JWbcUdJJNfuNvF95hnQTSbR
-         NClHioRXr6wPajPBRa+9Wq5nBmKZTtBKu0R5A5jqe5Dz9RZ37D8BHRDN7oVV3Xh7mgVF
-         jZE/K2Yk9YUUm4ZK/sLwDu4A9b6Ek8edipmGKmemXe6JVXaZQo/Yi7oH0Q3VreXxl6C3
-         kS47Ty+mqGwSXgYT5eUeDVObJbloQQ+mRxs3IaONj1H3XgJAUdsGO0TnPUiZRpYFJeJh
-         LBTYUppDV+28YaKIfeLyzRGjtBYWcydWuy5WZt0gphflSCFdvPhHQu8ojdiAZJd5n7LQ
-         jIlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697987961; x=1698592761;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FmSfe58FfVT1+C5BDfWt5zaNsraT3ia/sP6v6KkffFo=;
-        b=JRcHccqP3ynaiIvggexbQDcmNUMeWhKHDxyTC26SmjNRW63DnyXtjd+fAawMt4S+bW
-         G3XNdoBPi1gUZkfueUUdNxjr6Vazl8mp7ZIrCD2rdtrpq1LwstyftTxDd2FHXiyekjHc
-         UcbaKCMxZ0ubNw60/v48R0o64ayP6plmxwcoRhg/BvnI8Ic0sEo7YIAIiHzugZZZuY0G
-         9OGy4Uy4rkn+rzht2aQAXu5+1VSo4NNemtluaXZB6sPXE1jskJzCFJcLfm7dMDvB0AFH
-         c5+ZcJfnlB85+UycNEJAdkeEO/3ckNdoOtNGGeVftyHRcZA6wh8P6ghDQV+mcGjR8P1q
-         dYVQ==
-X-Gm-Message-State: AOJu0YzjAsN+JZRl5NzfjAcmjHRAjfxIV60G+6wDAV4nrlSUwCwGFZ47
-        tB2sBLayq7tm14oTHCKB+isk9dB+9jI=
-X-Google-Smtp-Source: AGHT+IE/gA5UWq6LlbsX9oa0mqiocbWbKDzKWG4G9OkV3eAIis0M+5aj+qluWlzuCINq7/rYWjEW/A==
-X-Received: by 2002:a05:620a:444c:b0:777:27f9:7e54 with SMTP id w12-20020a05620a444c00b0077727f97e54mr9324065qkp.50.1697987960936;
-        Sun, 22 Oct 2023 08:19:20 -0700 (PDT)
-Received: from aford-System-Version.lan ([2601:447:d002:5be:a07c:e734:336b:c675])
-        by smtp.gmail.com with ESMTPSA id m26-20020ae9e01a000000b007726002d69esm2084375qkk.10.2023.10.22.08.19.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 08:19:20 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2] net: ethernet: davinci_emac: Use MAC Address from Device Tree
-Date:   Sun, 22 Oct 2023 10:19:11 -0500
-Message-Id: <20231022151911.4279-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        Sun, 22 Oct 2023 11:27:07 -0400
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C618E
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 08:27:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+        t=1697988421; x=1698593221; i=jwollrath@web.de;
+        bh=ntqPbE4vDZPQlbrCHL9ur/ZKLtznoTm3xj0azKoAzGA=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=OhZVHEGS22w0Rh/AydGJfbnUNHU7UzPL/zE/+LqRN7TE+4XYNIZ/JdeDibJMXhRq
+         8SDqVf4VWOsgdPvdocpA0+iY1oLXDJICYHe1u8V1lZpu3GYAHu5DE1kj5r06zzx2O
+         K3Zopl9Uk2nF9OWV20qZAhwUL1Qf4iquoGPnm25L6SDxDrYYbDa5Zi4xDqzqpWZ0r
+         /tBXcDBU8IcobHPuGIV9mAIqdmt3Ujyk28XHQ4+QiuSf9MZLxvqoD5WAllrMz+zSP
+         elSCxG2Kxw/1sUrbLFtbS8Ftg9i/m1hVGEGqhLtz79nGzKQhU3ojV/x1dIdAE+8Jj
+         J90Cc7Do5GyMsvDIeg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from mayene ([178.196.174.8]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MKuKH-1rD40m331R-00KvLP for
+ <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 17:27:01 +0200
+Date:   Sun, 22 Oct 2023 17:27:00 +0200
+From:   Julian Wollrath <jwollrath@web.de>
+To:     linux-kernel@vger.kernel.org
+Subject: Oops with v6.6-rc6+
+Message-ID: <20231022172700.48c515cf@mayene>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:NYfe7hsqnN6CfEHSKc/plLkAIMVY5KF2pG891oDJquNLuqZuGAm
+ IndTaye0RXv4TksiSA7L2pBdtJUkLMIVubtzPxvHWd3hFY6JVhKPpWzF1ETNIJAgcamv5yk
+ A5ItT/wa1r+rKzI8HyuR7pv6vhl+wWSHrjdcMyrAehGZW1NwVeoI5oHqH57QPxceB3LpBV7
+ 3bNgWXM4ir72B6Q9d7Omg==
+UI-OutboundReport: notjunk:1;M01:P0:819xazhbaSA=;XvbJrU+6FTsdkFQPArsrEpZW6UR
+ KEcWNbBefjiiY+rX2YBeYRmPcgR0LFZcMEq7bwAeWWNrqkFU0gyMGBoZKpAwN7PFHaUc0g5Vv
+ KpvNxGzCPDoFvq09MUd0OGzVs7prL3fVph45uu+Fhm7k4zF7tWeE3O9reLYwadCMRCJyeqSoS
+ 4mI1PR7fxoW7qCRlkK0GJkUk1dZ4+Ztz3U89mwRknyU2+P2o9CNzGR+HZyh8p8+x24dPMWOWH
+ wdn0Df7OGNlr4+cAYRIvlb6Uk308Ksl5YilRVpJSG3elXoUGJ3O8CdZxfVEDgUlsbzg5bjNu1
+ ApRAiSnoJ0rtChNSY4egPocOlfvzG9M58BmcY61tDG6CxOc4Y8xaJUfJPHvsJaJLRdwDErsGE
+ voA0d+rxYXKLoQxxD7aqTjhBpZjE3BVTfO4FPHjtOYVkTTBWgLSWfMpgayMpoPzAOwJmd4U8k
+ eQBLfqYpQd+eN8hITvMuzLuHvSX4l33ULjUwUe63MvnY//FHEggumjFr6n5SKoY8Ha47p5wvo
+ CgO11y0ChZ27/XamkVXfZm5xVBVhnWkm1ojXpP/GQoz06u5FlXKOM4dOvI6yfciQ7W3rfeMBu
+ dc3dlBQ19pZR4ehf/FtKl96MXjknZ/b71ikgUaCst46hVw3RAf5bTYURF9KNPvXfuSD9c/UDm
+ g47MohCn0GvyRaPvLCCtaesFSnyYqHcFJPCXdGhABq6Kf9RhNkAAKrN3Nj3xEzdaCLA61NQgP
+ dX6P36Z0GsRlbS186xEoWHxZgYFBox7HDdMnh/sNSVzb83aJD2iyLEfLvFCiPATgtEuzhkMAe
+ gVW4Kg6wPv353v7X0qojl6tV6TJz5VTwIC08EDSbiIElOnWPMcSf/DmO3ZhYpGZTePab7uSsn
+ 6Ay0h6+44MiwAbprBnOEp3oeFYvSSyK6th9/DsAghHqWgbgbl0hzLnmBhvuF6ZKHPLH62h+eV
+ MvuJPA/vlgGEPuPQc55b5T8PYds=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently there is a device tree entry called "local-mac-address"
-which can be filled by the bootloader or manually set.This is
-useful when the user does not want to use the MAC address
-programmed into the SoC.
+Dear maintainers,
 
-Currently, the davinci_emac reads the MAC from the DT, copies
-it from pdata->mac_addr to priv->mac_addr, then blindly overwrites
-it by reading from registers in the SoC, and falls back to a
-random MAC if it's still not valid.  This completely ignores any
-MAC address in the device tree.
+on v6.6-rc6+ (git commit hash 1acfd2bd3f0d) I got the following oops:
 
-In order to use the local-mac-address, check to see if the contents
-of priv->mac_addr are valid before falling back to reading from the
-SoC when the MAC address is not valid.
+BUG: unable to handle page fault for address: fffffffffffffff8
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 343212067 P4D 343212067 PUD 343214067 PMD 0
+Oops: 0000 [#1] PREEMPT SMP NOPTI
+CPU: 2 PID: 13243 Comm: colord-sane Not tainted 6.6.0-rc6+ #9
+Hardware name: LENOVO 21K4S07400/21K4S07400, BIOS R2FET31W (1.11 ) 08/03/2=
+023
+RIP: 0010:klist_next+0x6e/0x150
+Code: 18 83 f8 01 0f 84 84 00 00 00 85 c0 0f 8e ce 00 00 00 48 8b 45 00 45=
+ 31 ed 48 c7 45 08 00 00 00 00 48 39 c3 0f 84 cc 00 00 00 <f6> 03 01 75 7d=
+ 48 8d 7b 18 b8 01 00 00 00 f0 0f c1 43 18 85 c0 0f
+RSP: 0018:ffffb8b907f6fcc8 EFLAGS: 00010002
+RAX: ffff9c0aaba218a0 RBX: fffffffffffffff8 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffb8b907f6fcf8 RDI: ffff9c0aaba218a0
+RBP: ffffb8b907f6fcf8 R08: ffffb8b907f6fce0 R09: 0000000000000000
+R10: 0000000000030680 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000246 R15: 0000000000000000
+FS:  00007f12a5c77940(0000) GS:ffff9c10fec80000(0000) knlGS:00000000000000=
+00
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffffffffffff8 CR3: 00000001cb102000 CR4: 0000000000750ee0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ ? __die+0x23/0x70
+ ? page_fault_oops+0x181/0x4b0
+ ? srso_alias_return_thunk+0x5/0x7f
+ ? exc_page_fault+0x11c/0x130
+ ? asm_exc_page_fault+0x26/0x30
+ ? klist_next+0x6e/0x150
+ ? klist_next+0x1f/0x150
+ ? device_match_devt+0x20/0x20
+ bus_find_device+0x75/0xe0
+ scsi_seq_start+0x42/0x60 [scsi_mod]
+ seq_read_iter+0xfc/0x480
+ seq_read+0xd4/0x100
+ proc_reg_read+0x59/0xa0
+ vfs_read+0xaa/0x370
+ ? srso_alias_return_thunk+0x5/0x7f
+ ? __do_sys_newfstatat+0x4e/0x80
+ ? srso_alias_return_thunk+0x5/0x7f
+ ? __fget_light+0x99/0x100
+ ksys_read+0x6f/0xf0
+ do_syscall_64+0x3c/0x90
+ entry_SYSCALL_64_after_hwframe+0x4b/0xb5
+RIP: 0033:0x7f12a680fa9c
+Code: ec 28 48 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 d9 cf f8 ff 48 8b=
+ 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 31 c0 0f 05 <48> 3d 00 f0 ff=
+ ff 77 34 44 89 c7 48 89 44 24 08 e8 2f d0 f8 ff 48
+RSP: 002b:00007ffd3ea95490 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 000055c0b2164cb0 RCX: 00007f12a680fa9c
+RDX: 0000000000000400 RSI: 000055c0b214f4a0 RDI: 000000000000000c
+RBP: 00007f12a68e8600 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000001000 R11: 0000000000000246 R12: 000000000000000a
+R13: 0000000000000a68 R14: 00007f12a68e7d00 R15: 0000000000000a68
+ </TASK>
+CR2: fffffffffffffff8
+=2D--[ end trace 0000000000000000 ]---
+RIP: 0010:klist_next+0x6e/0x150
+Code: 18 83 f8 01 0f 84 84 00 00 00 85 c0 0f 8e ce 00 00 00 48 8b 45 00 45=
+ 31 ed 48 c7 45 08 00 00 00 00 48 39 c3 0f 84 cc 00 00 00 <f6> 03 01 75 7d=
+ 48 8d 7b 18 b8 01 00 00 00 f0 0f c1 43 18 85 c0 0f
+RSP: 0018:ffffb8b907f6fcc8 EFLAGS: 00010002
+RAX: ffff9c0aaba218a0 RBX: fffffffffffffff8 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffb8b907f6fcf8 RDI: ffff9c0aaba218a0
+RBP: ffffb8b907f6fcf8 R08: ffffb8b907f6fce0 R09: 0000000000000000
+R10: 0000000000030680 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000246 R15: 0000000000000000
+FS:  00007f12a5c77940(0000) GS:ffff9c10fec80000(0000) knlGS:00000000000000=
+00
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffffffffffff8 CR3: 00000001cb102000 CR4: 0000000000750ee0
+PKRU: 55555554
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
-V2:  Rebase, add R-B tag, and post stand-alone for netdev branch, since
-     the device tree patch has already been accepted via the omap tree.
 
-     
-diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ethernet/ti/davinci_emac.c
-index 23f8bc1cd20d..b0950a318c42 100644
---- a/drivers/net/ethernet/ti/davinci_emac.c
-+++ b/drivers/net/ethernet/ti/davinci_emac.c
-@@ -1928,18 +1928,20 @@ static int davinci_emac_probe(struct platform_device *pdev)
- 		goto err_free_rxchan;
- 	ndev->irq = rc;
- 
--	rc = davinci_emac_try_get_mac(pdev, res_ctrl ? 0 : 1, priv->mac_addr);
--	if (!rc)
--		eth_hw_addr_set(ndev, priv->mac_addr);
--
-+	/* If the MAC address is not present, read the registers from the SoC */
- 	if (!is_valid_ether_addr(priv->mac_addr)) {
--		/* Use random MAC if still none obtained. */
--		eth_hw_addr_random(ndev);
--		memcpy(priv->mac_addr, ndev->dev_addr, ndev->addr_len);
--		dev_warn(&pdev->dev, "using random MAC addr: %pM\n",
--			 priv->mac_addr);
-+		rc = davinci_emac_try_get_mac(pdev, res_ctrl ? 0 : 1, priv->mac_addr);
-+		if (!rc)
-+			eth_hw_addr_set(ndev, priv->mac_addr);
-+
-+		if (!is_valid_ether_addr(priv->mac_addr)) {
-+			/* Use random MAC if still none obtained. */
-+			eth_hw_addr_random(ndev);
-+			memcpy(priv->mac_addr, ndev->dev_addr, ndev->addr_len);
-+			dev_warn(&pdev->dev, "using random MAC addr: %pM\n",
-+				 priv->mac_addr);
-+		}
- 	}
--
- 	ndev->netdev_ops = &emac_netdev_ops;
- 	ndev->ethtool_ops = &ethtool_ops;
- 	netif_napi_add(ndev, &priv->napi, emac_poll);
--- 
-2.40.1
 
+Best regards,
+Julian Wollrath
+
+=2D-
+ ()  ascii ribbon campaign - against html e-mail
+ /\                        - against proprietary attachments
