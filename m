@@ -2,139 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EB97D22F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0147D22FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbjJVLof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 07:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45760 "EHLO
+        id S231638AbjJVLwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 07:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVLoe (ORCPT
+        with ESMTP id S229472AbjJVLwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 07:44:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CCFEB
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:44:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF3C4C433C8;
-        Sun, 22 Oct 2023 11:44:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697975072;
-        bh=NbAy25KCqK3w3UoJB3Gx/Au8ycxK++qAvj0CyStqxUo=;
-        h=Date:From:To:Subject:From;
-        b=fnzYL6zDj/m7PliHVvaObJ6H9WhKoVnWKz7hCQZk0Gb7nG6t4NAam0jEQxetWKbH3
-         JYe9JkleT4I/DTL2baQZrXc9OCxMqVfY5sTYtqbf3DXWl0BicAHVQ+n8xgH5fMb3wC
-         4N2ddAn3wFmF6HvehOsskkUTvmiZTCx5NW37lsnU=
-Date:   Sun, 22 Oct 2023 13:44:28 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: usbutils 016 release
-Message-ID: <ZTULHE0PPr2Gvhg3@kroah.com>
+        Sun, 22 Oct 2023 07:52:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05234F3;
+        Sun, 22 Oct 2023 04:52:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697975522; x=1729511522;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BdVZ+C8tN+qekt7Hl3QUHfu9nPna5/5VggjFolJCjy8=;
+  b=kMFSKVfIqRCQVBQXgkiQHG6THnJLYEi9RDT8vqb8kmPvk1pPdB1nLzlP
+   orKtFe152yfL/A6morEMIJV1KJSIdV2L+ZIN8p6w09fI/OCdLkyU7vfHz
+   qX/860Y/Oa+VCnU1JhNQn0g8gWeCAm43Dyt9tGS3PO8uvhOr+O7zLwYp5
+   jX7XCRqfzK0sVFQ3xl7GeSDAoH2xYjU4f+6v4kfdT5j3IDizNWqodIth3
+   uqYSBUAUyVKDoKPp0W8zqlSsyU/7mxS8QmAzNdHGWHqhmLEuWwdJ86VsI
+   mOsSdALT1ImP1E9cNaFm9YnJ+1Urg3UMrLH8DK+6z5GC1FGBWCO9CuNka
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="385578979"
+X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
+   d="scan'208";a="385578979"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 04:52:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="792851290"
+X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
+   d="scan'208";a="792851290"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 22 Oct 2023 04:51:54 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1quWzo-0005vq-0d;
+        Sun, 22 Oct 2023 11:51:52 +0000
+Date:   Sun, 22 Oct 2023 19:51:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nitesh Shetty <nj.shetty@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@lists.linux.dev,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, nitheshshetty@gmail.com,
+        anuj1072538@gmail.com, gost.dev@samsung.com, mcgrof@kernel.org,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Anuj Gupta <anuj20.g@samsung.com>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v17 08/12] nvmet: add copy command support for bdev and
+ file ns
+Message-ID: <202310221915.PYH9XadG-lkp@intel.com>
+References: <20231019110147.31672-9-nj.shetty@samsung.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="SsA1msSVYXt8YyBd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231019110147.31672-9-nj.shetty@samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nitesh,
 
---SsA1msSVYXt8YyBd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+kernel test robot noticed the following build warnings:
 
-It's been another year, and there have been a number of small fixes and
-tweaks to the usbutils programs (including one pretty noticeable fix
-where devices just weren't showing up at all in one of the output
-modes), so it's time for a new release.
+[auto build test WARNING on 213f891525c222e8ed145ce1ce7ae1f47921cb9c]
 
-I'd like to announce the usbutils 016 release.
+url:    https://github.com/intel-lab-lkp/linux/commits/Nitesh-Shetty/block-Introduce-queue-limits-and-sysfs-for-copy-offload-support/20231019-200658
+base:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
+patch link:    https://lore.kernel.org/r/20231019110147.31672-9-nj.shetty%40samsung.com
+patch subject: [PATCH v17 08/12] nvmet: add copy command support for bdev and file ns
+config: i386-randconfig-062-20231022 (https://download.01.org/0day-ci/archive/20231022/202310221915.PYH9XadG-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231022/202310221915.PYH9XadG-lkp@intel.com/reproduce)
 
-Full details of the changes in this are found below in the shortlog.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310221915.PYH9XadG-lkp@intel.com/
 
-Tarballs can be found on kernel.org here:
-	https://www.kernel.org/pub/linux/utils/usb/usbutils/
+sparse warnings: (new ones prefixed by >>)
+>> drivers/nvme/target/io-cmd-bdev.c:498:30: sparse: sparse: restricted __le16 degrades to integer
 
-Or you can pull from the following git locations as well:
-	https://git.sr.ht/~gregkh/usbutils
-	https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usbutils.git
-	https://github.com/gregkh/usbutils
-	https://github.com/linux-usb/usbutils
+vim +498 drivers/nvme/target/io-cmd-bdev.c
 
+   478	
+   479	/*
+   480	 * At present we handle only one range entry, since copy offload is aligned with
+   481	 * copy_file_range, only one entry is passed from block layer.
+   482	 */
+   483	static void nvmet_bdev_execute_copy(struct nvmet_req *rq)
+   484	{
+   485		struct nvme_copy_range range;
+   486		struct nvme_command *cmd = rq->cmd;
+   487		ssize_t ret;
+   488		off_t dst, src;
+   489	
+   490		u16 status;
+   491	
+   492		status = nvmet_copy_from_sgl(rq, 0, &range, sizeof(range));
+   493		if (status)
+   494			goto err_rq_complete;
+   495	
+   496		dst = le64_to_cpu(cmd->copy.sdlba) << rq->ns->blksize_shift;
+   497		src = le64_to_cpu(range.slba) << rq->ns->blksize_shift;
+ > 498		rq->copy_len = (range.nlb + 1) << rq->ns->blksize_shift;
+   499	
+   500		if (bdev_max_copy_sectors(rq->ns->bdev)) {
+   501			ret = blkdev_copy_offload(rq->ns->bdev, dst, src, rq->copy_len,
+   502						  nvmet_bdev_copy_endio,
+   503						  (void *)rq, GFP_KERNEL);
+   504		} else {
+   505			ret = blkdev_copy_emulation(rq->ns->bdev, dst,
+   506						    rq->ns->bdev, src, rq->copy_len,
+   507						    nvmet_bdev_copy_endio,
+   508						    (void *)rq, GFP_KERNEL);
+   509		}
+   510		if (ret == -EIOCBQUEUED)
+   511			return;
+   512	
+   513		rq->cqe->result.u32 = cpu_to_le32(0);
+   514		status = errno_to_nvme_status(rq, ret);
+   515	err_rq_complete:
+   516		nvmet_req_complete(rq, status);
+   517	}
+   518	
 
-thanks,
-
-greg k-h
-
-------------
-
-usbutils 016
-============
-
-Alan Stern (1):
-      usbutils: lsusb-t: print entries for devices with no interfaces
-
-Aurelien Jarno (1):
-      Fix a typo in usb-spec.h
-
-Bob Hyman (1):
-      lsusb.py.in: Display (device) power/wakeup via -w option.
-
-Dingyan Li (3):
-      Fix an incorrect length value in hid descriptor.
-      Fix misalignments in hid device descripptor.
-      Use bigger buffer to place speed value string
-
-Greg Kroah-Hartman (19):
-      lsusb -h returns an error
-      lsusb -h fixups
-      lsusb -t: sort in bus order, not reverse order
-      lsusb -t: print ports and busses and devices with same width
-      lsusb -t: assign_interface_to_parent() fixups
-      lsusb.8.in: fix up missing '-' in text
-      README.md: add source location
-      lsusb.py: fix up wakeup logic for devices that do not support it
-      lsusb.py.in: add another default path for usb.ids
-      names.c: if a string can not be found in the usb.ids file, return [unknown]
-      lsusb-t: if a driver is not bound to an interface, report "[none]"
-
-Hannes Weisbach (1):
-      Generate usbutils.pc pkgconfig file
-
-Kristoffer Ellersgaard Koch (1):
-      usbreset: Allow idProduct and idVendor to be 0
-
-Lukas Nykryn (1):
-      usb-devices: make shellcheck happy
-
-Tan Li Boon (3):
-      lsusb: Add function that sorts the output by device ID.
-      lsusb: Additional sorting by bus number.
-      lsusb: This is a more compact implementation of the device list sort implemented within this pull request. The output remains the same as the one demonstrated in the previous commit.
-
-
---SsA1msSVYXt8YyBd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEZH8oZUiU471FcZm+ONu9yGCSaT4FAmU1CxwACgkQONu9yGCS
-aT5PohAAuIBhDopKZr7TLgMuuIk9/9N0lr00hbx8W2JhvsXWKULrBZw+jYlMu2IX
-QTRS3yV1Xb2YndD7AtALgI+mB1MQKwL+ca3gVDgingUrDA0A6Iy888NzwD0Kl4AK
-E7OemTRs87MSuoATPwnziUp6J8b7EsPtCvBILMtYWjeffoQ4P7tVTpnQ/GFoqEkP
-XHgeD6lG0XhxCZ10MArWpdnEe00QfofzbU9d23am1dpWx8YSB8lBlAk9vDhV8R+8
-rKzFit0XgOz6QnEdd++0kvgvxLmAGwvispBT96eEt5Lq+6aFXVLQQumRIsuQqIZU
-Mcs+UTPtweXSGldd3ylf2lOp5kB6ohAk/c6nZUaGsXIaK0LpZiSSKB3cEMPbxo2z
-7UgDkobF+F2RIM/vtZ9oD6TsutDN3LcRI+5ErilX/cVUEt5qZpHI737JKTR9F1fo
-hcOawsoqkpw/RylowNkDEVkcSgYRjjWohwxuzhNYm2gvTd/rw+XTsnupwQg66DoO
-f06rxYAaBWydlZyhJ8t/Mbjb22nkgnS4aOregSZH0LDg7NBl4obOrM9viVW2L6AP
-gD8Vs5UGjqLPAD/mlWmP5ThZIskYr+oEK3YwYeZsvKGZkMvEkHiCTWiuls/k1QRG
-dqtAL0HWJcgHR+2tMyD22UU6If/5DmGLeb4s7GMKwadE/b4LeLg=
-=tyQx
------END PGP SIGNATURE-----
-
---SsA1msSVYXt8YyBd--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
