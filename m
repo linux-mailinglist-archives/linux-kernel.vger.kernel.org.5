@@ -2,47 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 106147D2486
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FE87D2484
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbjJVQYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 12:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
+        id S232253AbjJVQYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 12:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232233AbjJVPqT (ORCPT
+        with ESMTP id S232243AbjJVPqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 11:46:19 -0400
+        Sun, 22 Oct 2023 11:46:20 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C593A7;
-        Sun, 22 Oct 2023 08:46:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F22AEC433CC;
-        Sun, 22 Oct 2023 15:46:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70382126;
+        Sun, 22 Oct 2023 08:46:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B0A1C43391;
+        Sun, 22 Oct 2023 15:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697989577;
-        bh=HvRuPV3FqtsA6ZyEHaakvnvDdaaCIZbT6hNYmWIxek8=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=mYZVm9UkAsQIYgV+niOicDOLFgCPxlBBq4ORwrqDCH0gv+DtamxSAb/HoGna9MK9+
-         ibZ+uxVyZi273lcC0tjLXQUtuJqxH0vI+vCLiefMAK1WIG9FAp8+gxei8fguSFZ+FH
-         JANSz0Zr0M6FddS0FVe6BeDbLdAL2S2nvkE4PdT8ELNjG8vHp3CGWjVyOlWUZL7l9e
-         Wuj0uRV+MxaqdVOjBDVk2frcsZerYHdhfgp2vepr67FnpyQ1FteUdjDkh1JHMZkMjT
-         hqEwtU377FgWtCU9eDF/eX/HsY0iwFbK/aGiwefz4v/eUQu9y3g2pdsK6TDQ3S9HBu
-         sSBuP+WF5mtZg==
+        s=k20201202; t=1697989578;
+        bh=HJ9McRNuINbftQ/frhPnfJqJLCcpGxFtBEJ97xDyd2U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aw8SpN4wn9ISAerKFsfRL0XQluZ3Hzjv4WfzuSdoiK4WMJY/Jw+cRKGYo346Pf8mo
+         2bWHTdJ/xlQyOMc5pu3PcMZzJBED5HIiJ6oGtT56UtWmj56e0bVPmhr/IO9Lz8Brwl
+         CN3TH+Ab8X7iPlseTJajmVNkYRl4VAV+8bSzJ5BPhPl3gONMaF0iskNDTJKqZtjVfy
+         PaCWCxKuWBF0a7GiLZksrM5yosrbJiGNviSKuoM1TbRNlS1YQ+ap1fzwRTgGXbg8TK
+         nTflSQ0GKOjM+vPTQbFsOe5LUMlalULahJpLIraBoS6pLEB8zM8fP5wgxgq0J9NzAU
+         WC74S0a66zljA==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, ilia.lin@kernel.org,
-        sivaprak@codeaurora.org, quic_kathirav@quicinc.com,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Varadarajan Narayanan <quic_varada@quicinc.com>
-Subject: Re: (subset) [PATCH v5 0/9] Enable cpufreq for IPQ5332 & IPQ9574
-Date:   Sun, 22 Oct 2023 08:50:23 -0700
-Message-ID: <169798982279.271027.9280015987469447845.b4-ty@kernel.org>
+To:     agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Robert Marko <robimarko@gmail.com>
+Cc:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+Subject: Re: [PATCH v2] clk: qcom: gcc-ipq6018: add QUP6 I2C clock
+Date:   Sun, 22 Oct 2023 08:50:24 -0700
+Message-ID: <169798982247.271027.17003524820041381973.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1697781921.git.quic_varada@quicinc.com>
-References: <cover.1697781921.git.quic_varada@quicinc.com>
+In-Reply-To: <20231021115545.229060-1-robimarko@gmail.com>
+References: <20231021115545.229060-1-robimarko@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -57,22 +53,20 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Fri, 20 Oct 2023 11:49:30 +0530, Varadarajan Narayanan wrote:
-> Depends On:
-> https://lore.kernel.org/lkml/20230913-gpll_cleanup-v2-6-c8ceb1a37680@quicinc.com/T/
+On Sat, 21 Oct 2023 13:55:18 +0200, Robert Marko wrote:
+> QUP6 I2C clock is listed in the dt bindings but it was never included in
+> the GCC driver.
+> So lets add support for it, it is marked as criticial as it is used by RPM
+> to communicate to the external PMIC over I2C so this clock must not be
+> disabled.
 > 
-> This patch series aims to enable cpufreq for IPQ5332 and IPQ9574.
-> For IPQ5332, a minor enhancement to Stromer Plus ops and a safe
-> source switch is needed before cpu freq can be enabled.
 > 
 > [...]
 
 Applied, thanks!
 
-[7/9] arm64: dts: qcom: ipq5332: populate the opp table based on the eFuse
-      commit: 62073bc9f1ecc0d91fc260e7ae380cbadd33e9fc
-[9/9] arm64: dts: qcom: ipq9574: populate the opp table based on the eFuse
-      commit: b36074357baf2794c825ea1c145de1d22b15380b
+[1/1] clk: qcom: gcc-ipq6018: add QUP6 I2C clock
+      commit: 3dcf7b59393812a5fbd83f8cd8d34b94afb4c4d1
 
 Best regards,
 -- 
