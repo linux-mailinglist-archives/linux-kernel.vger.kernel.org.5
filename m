@@ -2,137 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E0F7D2278
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734B47D227D
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231493AbjJVKIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 06:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        id S231537AbjJVKMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 06:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVKIX (ORCPT
+        with ESMTP id S229472AbjJVKMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 06:08:23 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C91E6;
-        Sun, 22 Oct 2023 03:08:21 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5ae99bb5ccdso1080999a12.1;
-        Sun, 22 Oct 2023 03:08:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697969301; x=1698574101; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KgnGtHufG+xvCzQs2ZVtnujeeQwsYYAk6Y3rSnTjot8=;
-        b=FsXJgTHwKcjGZUdjywDUMBNMCJfHqsXpChXIGkw7o+ubjLgskiMXy16VaEME5hIxU5
-         7vkn0wEQQZYTi4AxU1WWhIv+BF6G7VvLeE+UxetfCd0cIPV+GiUHcklJFPg9tvbW7nU6
-         J5UeM/cHI2XYtOxaCrZY5bgTPVXQLEJ10wC3qZQIUuNNibkG9gcvRHA6FKKxpt3sG8na
-         Kop2tW6G3aesi6HYXG+UFeukIDlU7+CLr7vTH6Y0ICOkBM7KYjVsE37TV6bIAsWaV9/y
-         PHn2vKBfEY3hzzMkXWHF5FbepzcLEBNGJ2R2QYTY7dYp8YNMQ4/tIQk+zO17ZB+avaog
-         quwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697969301; x=1698574101;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KgnGtHufG+xvCzQs2ZVtnujeeQwsYYAk6Y3rSnTjot8=;
-        b=k5Mua8UZ2/6e9pdHUEgeQgEUwOnUFB7axdGrS4vZBvpW9I3fQ9TIpYvasIwYyX86H9
-         zslyUX1mHEoEaGqF47PDqtLiDTtJ0WD6PzszXAwuS1V7grlD6lJu0L1XVt/BgaITL4NB
-         /OuLvvEWnNTEZqxxmiUcBZBeZvowVA3KE00mI3jXdZh6ldgjxstc89wFJ47fMMNfgo4t
-         BVii/q3poG97lditPNmj6L5G+g4t5xCxK+OVroMabNaE8uFCf9FtApqcM7hxbhiFRqxg
-         RVnOgFYT0LGtoTe1ySo/hT2sn6gXGm3QB0efhzpjU29Ue4djarA+vnSZIHPg/fg7ia9O
-         HtKw==
-X-Gm-Message-State: AOJu0YwT5AMwUKsKO6FQHpv0yIr1P8alvSKV3xJknovnjxoCWKEmX+/T
-        4MzdrsR9LPzpfkB5p1CDDcQ=
-X-Google-Smtp-Source: AGHT+IFwfDsLhajsOmzpsF08fQz5zAkvoLBDv4lRrEuQax1IruNZCwsM4pEysX9xzA3i0rA09m+WVg==
-X-Received: by 2002:a17:90b:4f4b:b0:27d:9f6:47b1 with SMTP id pj11-20020a17090b4f4b00b0027d09f647b1mr4206403pjb.33.1697969300963;
-        Sun, 22 Oct 2023 03:08:20 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id 5-20020a17090a000500b00267d9f4d340sm6453994pja.44.2023.10.22.03.08.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 03:08:20 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id EF51196ACF1E; Sun, 22 Oct 2023 17:08:17 +0700 (WIB)
-Date:   Sun, 22 Oct 2023 17:08:17 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     JPT <j-p-t@gmx.net>,
-        Linux Media Subsystem <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Antti Palosaari <crope@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Gon Solo <gonsolo@gmail.com>
-Subject: Re: si2157 not working at all?
-Message-ID: <ZTT0kZCijyLDN1LG@debian.me>
-References: <08125fef-3cb4-4f01-975c-d7c409153c4a@gmx.net>
+        Sun, 22 Oct 2023 06:12:37 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D12E6
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 03:12:35 -0700 (PDT)
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4SCvJc010vz9sc8;
+        Sun, 22 Oct 2023 12:12:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1697969552;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H9pCW3esi4cGD7GNRQGPwStAuhs4FyHDpTPRuNYfiwQ=;
+        b=tc1k850Y28GbB7Cl2wR0AvUpKD7mgre+G/S1JH6+HThHgWTgY20W2td3ZGVPYKwOc+IrQ6
+        lcw8W7BufgVozjqFwWWiZ3/GhtyYfTRVMpeCHjkxJZjv91Oq5O46of3h5BDn4dP8YyDi+R
+        jbpTF2IpQDJNrblKoqa84AF3l8JLAhTvP7IgYBcn3wohHQH7TXGDQJcw94IKV6BCZyK5yU
+        IjNh59RgtTX76msWZHMOWmQP6QGjU9HzpAH5AnQbmEk0gps/8VIaFVm13B44gRzICp3Usi
+        6Ysr+5BWGHX110W0NQlU6xPhPkapbfUGQDRkdXjSZtoAJJ7uVeE2zOdGN2mokg==
+Message-ID: <8c1641e4-a7e2-ecb2-ab7a-c6e2bb3e951b@mailbox.org>
+Date:   Sun, 22 Oct 2023 12:12:28 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TyRnEwhs9Qk8a6qs"
-Content-Disposition: inline
-In-Reply-To: <08125fef-3cb4-4f01-975c-d7c409153c4a@gmx.net>
+Subject: Re: [PATCH v7 4/6] drm: Refuse to async flip with atomic prop changes
+To:     Simon Ser <contact@emersion.fr>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        dri-devel@lists.freedesktop.org, kernel-dev@igalia.com,
+        alexander.deucher@amd.com, hwentlan@amd.com,
+        christian.koenig@amd.com, joshua@froggi.es
+References: <20231017092837.32428-1-andrealmeid@igalia.com>
+ <20231017092837.32428-5-andrealmeid@igalia.com>
+ <CzEtDALWvF3EU4DDLLEmH3ms0B25PbsEHRU9b_IqwfyhzdG4zC-XXAU6fm2PnMcngAYmntH7s4iuew0vocN6cO8zUit8kgi-Sb1hBQXNYiw=@emersion.fr>
+ <3r5-_03WC5dK3LaRt1Is78zD_bmT2aaGc5h9jpUGzo2o5GCtGP1zpQNzUxglsieewFklY7xwTrOS9jtI18YlNnnzHNx2Ccw9yM2NuJpDQZU=@emersion.fr>
+Content-Language: de-CH-frami, en-CA
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <3r5-_03WC5dK3LaRt1Is78zD_bmT2aaGc5h9jpUGzo2o5GCtGP1zpQNzUxglsieewFklY7xwTrOS9jtI18YlNnnzHNx2Ccw9yM2NuJpDQZU=@emersion.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MBO-RS-META: s8qcypr51f1tfyaumquugzjaho4tpc7c
+X-MBO-RS-ID: 1dd85632f82723d365f
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/17/23 14:16, Simon Ser wrote:
+> After discussing with André it seems like we missed a plane type check
+> here. We need to make sure FB_ID changes are only allowed on primary
+> planes.
 
---TyRnEwhs9Qk8a6qs
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Can you elaborate why that's needed?
 
-On Sun, Oct 22, 2023 at 09:57:07AM +0200, JPT wrote:
-> Hi,
->=20
-> I've got a
-> 	TerraTec Cinergy TC2 Stick / Terratec Cinergy H6 rev. 2
-> DVB-T2/DVB-C USB stick using chips:
-> 	IT9306, Si2157, Si2168-B40
->=20
-> Is there a way to make it work?
-> Or is the si2157 chip just not supported?
->=20
-> si2157 7-0063: device is buggy, skipping firmware download
-> si2157 7-0063: firmware version: =EF=BF=BD.=EF=BF=BD.255
->=20
 
-Do you already have latest linux-firmware package?
+-- 
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
 
-> This patch added the "skipping firmware download":
-> https://patchwork.kernel.org/project/linux-media/patch/20191010095103.380=
-3-3-gonsolo@gmail.com/
->=20
-> is there a way to tell the module to force load the firmware?
-> Or do I have to patch the kernel?
->=20
-> I tried on Kubuntu 23.4, kernel 6.2.0-35-generic
-> and on Libreelec 9.2@raspberry 3B,  kernel 4.19.127? , where it failed
-> differently.
-
-Can you check latest mainline (currently v6.6-rc6) instead?
-
->=20
-> libreelec log see http://ix.io/4JBp
->=20
-
-Can you also attach full kernel logs from both systems?
-
-Confused...
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---TyRnEwhs9Qk8a6qs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZTT0jQAKCRD2uYlJVVFO
-owQsAQCJn7ZFU9tZeqyyzIn0DhZ/C0IeYD2TpHCMo7ljmUgn+wD+NOa7IgorzGBt
-J3dBuJBch8bmtqrgRmUbXa2061/YCA8=
-=xNMW
------END PGP SIGNATURE-----
-
---TyRnEwhs9Qk8a6qs--
