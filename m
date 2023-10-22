@@ -2,227 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 719AE7D228B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491997D2292
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbjJVKWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 06:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51918 "EHLO
+        id S231585AbjJVKYq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 22 Oct 2023 06:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVKWu (ORCPT
+        with ESMTP id S229588AbjJVKYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 06:22:50 -0400
-Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5E2EE
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 03:22:48 -0700 (PDT)
-Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6ce27d056ceso3947872a34.0
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 03:22:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697970167; x=1698574967;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1jz58LyOQLBpUu38euw5ZNzHbshkNxHgL8g+dkjSvKo=;
-        b=eRVC4mhG8wxogSu61HRI6j7vTV/wTDhsjNUxiUfMhexdyl3vvUBBO2IY5UVez+YRkF
-         XoJ7sKclwOBBctSe3RJ0e+W6+Bq9eKhbrQqXCnj1C+l4Y4ZdsMblNtnVY2wnfwC27fIx
-         VGwSozvw+tzFeS7CSM48cLYdg5aWpjW0GgJTbpuubmzXh+YlpmeUcbTRt0kJp4VeJbAN
-         Pv2Ycw/xQxyjBgmwCT2N/OI9aVkA+fv9IZNJJ+DaDeQ7LmmIC2jWLkn9CkHXH4ZVeCjJ
-         PB2lQJ4aHtK3svS8fXyHb9JTQ8rzPhiHDMc8Y9aqcLkxY2fV5gMuoAJv5Qtko2yTKj5V
-         ducw==
-X-Gm-Message-State: AOJu0YyNpa8QC4IKDlM+NgAamitzPJ49trmdOWSv9KiYYATj3avL2U7u
-        diMTpSCziQgVEyiFWLxVPOe/D7Nvn3eUBvAt9PyIpT3AIl9q
-X-Google-Smtp-Source: AGHT+IFTGYQX/gCOP7RG6cZ98gOzYtyy2nyM7p40Il0R8mRFa352gDxQXX2vFQYlXCiySsIUZ8WDdlOdW99z4uMJRUntkcxT0iL+
+        Sun, 22 Oct 2023 06:24:44 -0400
+Received: from mxout70.expurgate.net (mxout70.expurgate.net [91.198.224.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9389597
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 03:24:42 -0700 (PDT)
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <prvs=9673dbd9fc=fe@dev.tdt.de>)
+        id 1quVdG-003Xem-ER; Sun, 22 Oct 2023 12:24:30 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <fe@dev.tdt.de>)
+        id 1quVdF-009emP-GD; Sun, 22 Oct 2023 12:24:29 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 1542524004B;
+        Sun, 22 Oct 2023 12:24:29 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 61CA6240040;
+        Sun, 22 Oct 2023 12:24:28 +0200 (CEST)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id C441D213BE;
+        Sun, 22 Oct 2023 12:24:27 +0200 (CEST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6871:3329:b0:1e9:a13c:ffba with SMTP id
- nf41-20020a056871332900b001e9a13cffbamr3139050oac.9.1697970167706; Sun, 22
- Oct 2023 03:22:47 -0700 (PDT)
-Date:   Sun, 22 Oct 2023 03:22:47 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000af7bd706084b7cb2@google.com>
-Subject: [syzbot] [exfat?] INFO: task hung in fat_write_inode
-From:   syzbot <syzbot+6f75830acb2e4cdc8e50@syzkaller.appspotmail.com>
-To:     hirofumi@mail.parknet.co.jp, linkinjeon@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Date:   Sun, 22 Oct 2023 12:24:27 +0200
+From:   Florian Eckert <fe@dev.tdt.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Eckert.Florian@googlemail.com, jirislaby@kernel.org, pavel@ucw.cz,
+        lee@kernel.org, kabel@kernel.org, u.kleine-koenig@pengutronix.de,
+        ansuelsmth@gmail.com, m.brock@vanmierlo.com,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] leds: ledtrig-tty: add new line mode evaluation
+In-Reply-To: <2023102136-reenact-cash-7295@gregkh>
+References: <20231019112809.881730-1-fe@dev.tdt.de>
+ <20231019112809.881730-4-fe@dev.tdt.de>
+ <2023102136-reenact-cash-7295@gregkh>
+Message-ID: <72be6923ff6dd03a5d02d04ee1c5796f@dev.tdt.de>
+X-Sender: fe@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.17
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8BIT
+X-purgate: clean
+X-purgate-ID: 151534::1697970270-DD48F3D8-8F2C12EC/0/0
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2023-10-21 18:07, Greg KH wrote:
+>> diff --git a/drivers/leds/trigger/ledtrig-tty.c 
+>> b/drivers/leds/trigger/ledtrig-tty.c
+>> index 8ae0d2d284af..6a96439a7e55 100644
+>> --- a/drivers/leds/trigger/ledtrig-tty.c
+>> +++ b/drivers/leds/trigger/ledtrig-tty.c
+>> @@ -16,6 +16,24 @@ struct ledtrig_tty_data {
+>>  	const char *ttyname;
+>>  	struct tty_struct *tty;
+>>  	int rx, tx;
+>> +	unsigned long mode;
+> 
+> Why is mode "unsigned long" when the tty layer treats it as an int?  
+> And
+> really, this should be set to an explit size, u32 perhaps?  Or am I
+> confused as to exactly what this is?
 
-syzbot found the following issue on:
+This is about the line state that the LED should show "altogether".
+All states that the LED is to display are stored here.
 
-HEAD commit:    2dac75696c6d Add linux-next specific files for 20231018
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=10ed8d75680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6f8545e1ef7a2b66
-dashboard link: https://syzkaller.appspot.com/bug?extid=6f75830acb2e4cdc8e50
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148fed9d680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1019f523680000
+For example:
+Via the sysfs of the LED I can set the flags rx, tx and line_cts to
+a "not" zero value. That means that the led is enable if the CTS of the
+tty ist set, and the LED flashes if rx/tx data are transmitted via
+this tty.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2375f16ed327/disk-2dac7569.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c80aee6e2e6c/vmlinux-2dac7569.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/664dc23b738d/bzImage-2dac7569.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/7a81659a2d58/mount_0.gz
+Therefore, the bits 0 (TRIGGER_TTY_RX), 1 (TRIGGER_TTY_TX) and
+2 (TRIGGER_TTY_CTS) are set in the variable. As defined in the
+enum led_trigger_tty_modes
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6f75830acb2e4cdc8e50@syzkaller.appspotmail.com
+I think I have not chosen the correct name for the variable there.
+Maybe line_state, would be a better choice?
 
-INFO: task kworker/u4:11:2872 blocked for more than 143 seconds.
-      Not tainted 6.6.0-rc6-next-20231018-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/u4:11   state:D stack:23520 pid:2872  tgid:2872  ppid:2      flags:0x00004000
-Workqueue: writeback wb_workfn (flush-7:0)
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5369 [inline]
- __schedule+0xee4/0x5a10 kernel/sched/core.c:6680
- __schedule_loop kernel/sched/core.c:6757 [inline]
- schedule+0xe7/0x270 kernel/sched/core.c:6772
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6829
- __mutex_lock_common kernel/locking/mutex.c:679 [inline]
- __mutex_lock+0x969/0x1340 kernel/locking/mutex.c:747
- fat_write_inode fs/fat/inode.c:918 [inline]
- fat_write_inode+0xfc/0x180 fs/fat/inode.c:911
- write_inode fs/fs-writeback.c:1456 [inline]
- __writeback_single_inode+0xa84/0xe60 fs/fs-writeback.c:1673
- writeback_sb_inodes+0x5a2/0x1090 fs/fs-writeback.c:1899
- __writeback_inodes_wb+0xff/0x2d0 fs/fs-writeback.c:1970
- wb_writeback+0x7fe/0xaa0 fs/fs-writeback.c:2077
- wb_check_background_flush fs/fs-writeback.c:2147 [inline]
- wb_do_writeback fs/fs-writeback.c:2235 [inline]
- wb_workfn+0x86a/0xfd0 fs/fs-writeback.c:2262
- process_one_work+0x8a2/0x15e0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
- kthread+0x33c/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
+>> +};
+>> +
+>> +enum led_trigger_tty_state {
+>> +	TTY_LED_BLINK,
+>> +	TTY_LED_ENABLE,
+>> +	TTY_LED_DISABLE,
+>> +};
+>> +
+>> +enum led_trigger_tty_modes {
+>> +	TRIGGER_TTY_RX = 0,
+>> +	TRIGGER_TTY_TX,
+>> +	TRIGGER_TTY_CTS,
+>> +	TRIGGER_TTY_DSR,
+>> +	TRIGGER_TTY_CAR,
+>> +	TRIGGER_TTY_RNG,
+>> +	/* Keep last */
+>> +	__TRIGGER_TTY_MAX,
+>>  };
+>> 
+> 
+> Oh wait, is "mode" this?  If so, why not define it as an enum?  Or if
+> not, I'm totally confused as to what is going on here, sorry.
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/29:
- #0: ffffffff8cbacbe0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
- #0: ffffffff8cbacbe0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
- #0: ffffffff8cbacbe0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x75/0x340 kernel/locking/lockdep.c:6613
-4 locks held by kworker/u4:11/2872:
- #0: ffff888142249d38 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x78a/0x15e0 kernel/workqueue.c:2605
- #1: ffffc9000aeffd80 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x7f4/0x15e0 kernel/workqueue.c:2606
- #2: ffff888018e6c0e0 (&type->s_umount_key#45){++++}-{3:3}, at: super_trylock_shared+0x1e/0xf0 fs/super.c:610
- #3: ffff88807b4281d0 (&sbi->s_lock){+.+.}-{3:3}, at: fat_write_inode fs/fat/inode.c:918 [inline]
- #3: ffff88807b4281d0 (&sbi->s_lock){+.+.}-{3:3}, at: fat_write_inode+0xfc/0x180 fs/fat/inode.c:911
-2 locks held by getty/4814:
- #0: ffff88814b6680a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
- #1: ffffc900031332f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfc6/0x1490 drivers/tty/n_tty.c:2201
-4 locks held by syz-executor175/5063:
+See explanation above. I can not set this to an enum because I could
+set more then one Flag via the sysfs.
 
-=============================================
+> 
+>>  static void ledtrig_tty_restart(struct ledtrig_tty_data 
+>> *trigger_data)
+>> @@ -78,13 +96,106 @@ static ssize_t ttyname_store(struct device *dev,
+>>  }
+>>  static DEVICE_ATTR_RW(ttyname);
+>> 
+>> +static ssize_t ledtrig_tty_attr_show(struct device *dev, char *buf,
+>> +	enum led_trigger_tty_modes attr)
+>> +{
+>> +	struct ledtrig_tty_data *trigger_data = 
+>> led_trigger_get_drvdata(dev);
+>> +	int bit;
+>> +
+>> +	switch (attr) {
+>> +	case TRIGGER_TTY_RX:
+>> +	case TRIGGER_TTY_TX:
+>> +	case TRIGGER_TTY_CTS:
+>> +	case TRIGGER_TTY_DSR:
+>> +	case TRIGGER_TTY_CAR:
+>> +	case TRIGGER_TTY_RNG:
+>> +		bit = attr;
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	return sprintf(buf, "%u\n", test_bit(bit, &trigger_data->mode));
+> 
+> sysfs_emit() for all new sysfs attributes please.
 
-NMI backtrace for cpu 1
-CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.6.0-rc6-next-20231018-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x277/0x380 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x299/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xf87/0x1210 kernel/hung_task.c:379
- kthread+0x33c/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 5063 Comm: syz-executor175 Not tainted 6.6.0-rc6-next-20231018-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:check_wait_context kernel/locking/lockdep.c:4788 [inline]
-RIP: 0010:__lock_acquire+0x5b2/0x5dc0 kernel/locking/lockdep.c:5086
-Code: b8 0a 00 00 41 89 ef 41 83 ef 01 0f 88 79 1f 00 00 49 b8 00 00 00 00 00 fc ff df 49 63 c7 48 8d 04 80 4c 8d a4 c7 e1 0a 00 00 <eb> 12 41 83 ef 01 49 83 ec 28 41 83 ff ff 0f 84 0c 0b 00 00 4d 8d
-RSP: 0018:ffffc90003a6f3e0 EFLAGS: 00000002
-RAX: 000000000000000a RBX: 0000000000000018 RCX: 0000000000000000
-RDX: 1ffff1100f6868c7 RSI: 0000000000000001 RDI: ffff88807b433b80
-RBP: 0000000000000003 R08: dffffc0000000000 R09: fffffbfff2344fc8
-R10: ffffffff91a27e47 R11: 1ffffffff1976fb9 R12: ffff88807b4346b1
-R13: ffff88807b4346b8 R14: ffffffff8cbacbe0 R15: 0000000000000002
-FS:  00005555556c7380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055f81ca48600 CR3: 0000000077b86000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- lock_acquire kernel/locking/lockdep.c:5753 [inline]
- lock_acquire+0x1b2/0x530 kernel/locking/lockdep.c:5718
- rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
- rcu_read_lock include/linux/rcupdate.h:747 [inline]
- filemap_get_entry+0xdb/0x460 mm/filemap.c:1803
- __filemap_get_folio+0x56/0xa90 mm/filemap.c:1851
- __find_get_block_slow fs/buffer.c:203 [inline]
- __find_get_block fs/buffer.c:1406 [inline]
- __find_get_block+0x170/0xc30 fs/buffer.c:1400
- __getblk_slow+0x10c/0x6b0 fs/buffer.c:1134
- bdev_getblk+0xad/0xc0 fs/buffer.c:1434
- __getblk include/linux/buffer_head.h:358 [inline]
- sb_getblk include/linux/buffer_head.h:364 [inline]
- fat_mirror_bhs+0x244/0x5d0 fs/fat/fatent.c:388
- fat_alloc_clusters+0xcb2/0xf70 fs/fat/fatent.c:543
- fat_alloc_new_dir+0x107/0xc90 fs/fat/dir.c:1144
- vfat_mkdir+0x151/0x350 fs/fat/namei_vfat.c:859
- vfs_mkdir+0x577/0x820 fs/namei.c:4105
- do_mkdirat+0x2fd/0x3a0 fs/namei.c:4128
- __do_sys_mkdirat fs/namei.c:4143 [inline]
- __se_sys_mkdirat fs/namei.c:4141 [inline]
- __x64_sys_mkdirat+0x115/0x170 fs/namei.c:4141
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f1b0ce56b59
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc6cb671e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
-RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00007f1b0ce56b59
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: 00000000ffffff9c
-RBP: 00007f1b0ceca5f0 R08: 000000000000024e R09: 00005555556c84c0
-R10: 00007ffc6cb670b0 R11: 0000000000000246 R12: 00007ffc6cb67210
-R13: 00007ffc6cb67438 R14: 431bde82d7b634db R15: 00007f1b0ce9f03b
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 2.510 msecs
+Correct. Thanks for the hint will use sysf_emit() function in the next
+patchset round.
 
+> 
+>> +}
+>> +
+>> +static ssize_t ledtrig_tty_attr_store(struct device *dev, const char 
+>> *buf,
+>> +	size_t size, enum led_trigger_tty_modes attr)
+>> +{
+>> +	struct ledtrig_tty_data *trigger_data = 
+>> led_trigger_get_drvdata(dev);
+>> +	unsigned long state;
+>> +	int ret;
+>> +	int bit;
+>> +
+>> +	ret = kstrtoul(buf, 0, &state);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	switch (attr) {
+>> +	case TRIGGER_TTY_RX:
+>> +	case TRIGGER_TTY_TX:
+>> +	case TRIGGER_TTY_CTS:
+>> +	case TRIGGER_TTY_DSR:
+>> +	case TRIGGER_TTY_CAR:
+>> +	case TRIGGER_TTY_RNG:
+>> +		bit = attr;
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	if (state)
+>> +		set_bit(bit, &trigger_data->mode);
+>> +	else
+>> +		clear_bit(bit, &trigger_data->mode);
+> 
+> I think your test of "state" here is wrong, if you write in "40000" you
+> are treating it as "1", which I don't think you want, right?
+
+If I have understood your question correctly, then I would say that your
+assumption is not correct. I just want to check here whether it is a 
+number
+greater than zero or not. If the number is greater than zero then the 
+bit
+should be set in the 'mode' variable of the struct and if it is zero 
+then
+it should be cleared.
+
+The LED could indicate more then one state there. As described above.
+This was requested by Uwe Kleine-König in the old v7 patch series [1].
+
+Thanks for your review!
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Florian
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Links:
+[1] 
+https://lore.kernel.org/linux-leds/20230306093524.amm7o4ppa7gon4ew@pengutronix.de/
