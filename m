@@ -2,74 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF65E7D22F6
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EB97D22F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbjJVLkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 07:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
+        id S231626AbjJVLof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 07:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbjJVLkq (ORCPT
+        with ESMTP id S229472AbjJVLoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 07:40:46 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87735EB
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:40:44 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32d834ec222so1611016f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=aceart.de; s=google; t=1697974843; x=1698579643; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SAtwbRjnY+U/XLUS1QtVkAFPEpVXUGS+vk/XhP3IX0E=;
-        b=MbFoa7D0K+IwxYnS6YM1aa4soBreWtqsQ7o+8gAMNDwRlpvKngNUU+OatrNiUWZJtE
-         ZoXxbOUDehfDUVrJztnyQMjB1OA89OSH+LVO1ORAqXWTZdPnGWjrG4bLUxaizmCKUitf
-         bH2NTVAiLZHePZUrJCySLL0VMci7zF+FFYG2/y5fAMRiJ8JRc5YXu9L7BC1bGUIefMpq
-         QPgUnnbTTpV/VGkosL/wxQdlV8P/WmQydTVp7uQDtgVnwsYjIh3BBzYa7mZ3PpGmS/eP
-         guhYU8yNLE+evBlztk16ijWKw4KpLj9J3vqJLTt3Z0u2JfXWl2aH/1YZVPANzGeC2UbB
-         eWRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697974843; x=1698579643;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SAtwbRjnY+U/XLUS1QtVkAFPEpVXUGS+vk/XhP3IX0E=;
-        b=wcStnk51JrDqbHQ7OeJEgKrKdReem1yB3kl6BRmJUz6ZjDqlLVhf+xFTwtz/7WOzkY
-         40fkwBjr++35omLrREIG53NyQZ+8RnGZ4ARvFxMiL/7Gvb6TW9zRWRXHUxwiDJvvtHMW
-         Z+BEW8zLHd1ApmoMbpj323y9Nd7wgLW2DMf0PKcg8iPXT1LvOV+kG75S+CnyBKleU1mn
-         N69Fw2d0B2DZPtyb2u0dt9ECM3Uv2JcHM9sQ60UqL57mNuMfcHygRVY7esaqh9++Ei9V
-         M8btY51v1kJ0olpANQmt7ezIEWKxvTjqEpbq9vcB1fwFN499mM1m6YMUchQHltMV5M6Q
-         klTg==
-X-Gm-Message-State: AOJu0YxMAWhDHsixqIu6R7DF05zPzEi7fimHIGfdO/g/mFye4NsTSw/1
-        v0tucnBOoNzOyaLNPpOlPvSIMw==
-X-Google-Smtp-Source: AGHT+IEyoCnb5m/VQGuoPz9dsEtgdL3tEaAAIur+/1/IMdFCSP9/cbYT4lGJX1CZ3WYqfOjrj0+f5w==
-X-Received: by 2002:a5d:63ce:0:b0:32d:bc6e:7f0e with SMTP id c14-20020a5d63ce000000b0032dbc6e7f0emr4913874wrw.3.1697974842829;
-        Sun, 22 Oct 2023 04:40:42 -0700 (PDT)
-Received: from ?IPv6:2a02:8070:d89:b820:87f5:4b33:b582:39f3? ([2a02:8070:d89:b820:87f5:4b33:b582:39f3])
-        by smtp.gmail.com with ESMTPSA id h2-20020a5d5042000000b0032d886039easm5496136wrt.14.2023.10.22.04.40.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 04:40:42 -0700 (PDT)
-Message-ID: <fc5234cd33b78369f792479795abd02710dfcdbf.camel@aceart.de>
-Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Add Huawei Honor 5X / GR5
- (2016)
-From:   lukas walter <lukas.walter@aceart.de>
-To:     conor@kernel.org
-Cc:     agross@kernel.org, andersson@kernel.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, konrad.dybcio@linaro.org,
-        krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lukas.walter@aceart.de, phone-devel@vger.kernel.org,
-        robh+dt@kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Date:   Sun, 22 Oct 2023 13:40:41 +0200
-In-Reply-To: <20231022-arousal-glowing-f72c8f2e44fa@spud>
-Organization: aceArt GmbH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        Sun, 22 Oct 2023 07:44:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CCFEB
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:44:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF3C4C433C8;
+        Sun, 22 Oct 2023 11:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1697975072;
+        bh=NbAy25KCqK3w3UoJB3Gx/Au8ycxK++qAvj0CyStqxUo=;
+        h=Date:From:To:Subject:From;
+        b=fnzYL6zDj/m7PliHVvaObJ6H9WhKoVnWKz7hCQZk0Gb7nG6t4NAam0jEQxetWKbH3
+         JYe9JkleT4I/DTL2baQZrXc9OCxMqVfY5sTYtqbf3DXWl0BicAHVQ+n8xgH5fMb3wC
+         4N2ddAn3wFmF6HvehOsskkUTvmiZTCx5NW37lsnU=
+Date:   Sun, 22 Oct 2023 13:44:28 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: usbutils 016 release
+Message-ID: <ZTULHE0PPr2Gvhg3@kroah.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="SsA1msSVYXt8YyBd"
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,11 +42,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
->How come this v1 has an ack?
 
-This is supposed to be a v2, but I had problems sending it correctly,
-sorry
-https://patchwork.kernel.org/project/linux-arm-msm/patch/20230916134147.163=
-764-1-lukas.walter@aceart.de/
+--SsA1msSVYXt8YyBd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+It's been another year, and there have been a number of small fixes and
+tweaks to the usbutils programs (including one pretty noticeable fix
+where devices just weren't showing up at all in one of the output
+modes), so it's time for a new release.
+
+I'd like to announce the usbutils 016 release.
+
+Full details of the changes in this are found below in the shortlog.
+
+Tarballs can be found on kernel.org here:
+	https://www.kernel.org/pub/linux/utils/usb/usbutils/
+
+Or you can pull from the following git locations as well:
+	https://git.sr.ht/~gregkh/usbutils
+	https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usbutils.git
+	https://github.com/gregkh/usbutils
+	https://github.com/linux-usb/usbutils
+
+
+thanks,
+
+greg k-h
+
+------------
+
+usbutils 016
+============
+
+Alan Stern (1):
+      usbutils: lsusb-t: print entries for devices with no interfaces
+
+Aurelien Jarno (1):
+      Fix a typo in usb-spec.h
+
+Bob Hyman (1):
+      lsusb.py.in: Display (device) power/wakeup via -w option.
+
+Dingyan Li (3):
+      Fix an incorrect length value in hid descriptor.
+      Fix misalignments in hid device descripptor.
+      Use bigger buffer to place speed value string
+
+Greg Kroah-Hartman (19):
+      lsusb -h returns an error
+      lsusb -h fixups
+      lsusb -t: sort in bus order, not reverse order
+      lsusb -t: print ports and busses and devices with same width
+      lsusb -t: assign_interface_to_parent() fixups
+      lsusb.8.in: fix up missing '-' in text
+      README.md: add source location
+      lsusb.py: fix up wakeup logic for devices that do not support it
+      lsusb.py.in: add another default path for usb.ids
+      names.c: if a string can not be found in the usb.ids file, return [unknown]
+      lsusb-t: if a driver is not bound to an interface, report "[none]"
+
+Hannes Weisbach (1):
+      Generate usbutils.pc pkgconfig file
+
+Kristoffer Ellersgaard Koch (1):
+      usbreset: Allow idProduct and idVendor to be 0
+
+Lukas Nykryn (1):
+      usb-devices: make shellcheck happy
+
+Tan Li Boon (3):
+      lsusb: Add function that sorts the output by device ID.
+      lsusb: Additional sorting by bus number.
+      lsusb: This is a more compact implementation of the device list sort implemented within this pull request. The output remains the same as the one demonstrated in the previous commit.
+
+
+--SsA1msSVYXt8YyBd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEZH8oZUiU471FcZm+ONu9yGCSaT4FAmU1CxwACgkQONu9yGCS
+aT5PohAAuIBhDopKZr7TLgMuuIk9/9N0lr00hbx8W2JhvsXWKULrBZw+jYlMu2IX
+QTRS3yV1Xb2YndD7AtALgI+mB1MQKwL+ca3gVDgingUrDA0A6Iy888NzwD0Kl4AK
+E7OemTRs87MSuoATPwnziUp6J8b7EsPtCvBILMtYWjeffoQ4P7tVTpnQ/GFoqEkP
+XHgeD6lG0XhxCZ10MArWpdnEe00QfofzbU9d23am1dpWx8YSB8lBlAk9vDhV8R+8
+rKzFit0XgOz6QnEdd++0kvgvxLmAGwvispBT96eEt5Lq+6aFXVLQQumRIsuQqIZU
+Mcs+UTPtweXSGldd3ylf2lOp5kB6ohAk/c6nZUaGsXIaK0LpZiSSKB3cEMPbxo2z
+7UgDkobF+F2RIM/vtZ9oD6TsutDN3LcRI+5ErilX/cVUEt5qZpHI737JKTR9F1fo
+hcOawsoqkpw/RylowNkDEVkcSgYRjjWohwxuzhNYm2gvTd/rw+XTsnupwQg66DoO
+f06rxYAaBWydlZyhJ8t/Mbjb22nkgnS4aOregSZH0LDg7NBl4obOrM9viVW2L6AP
+gD8Vs5UGjqLPAD/mlWmP5ThZIskYr+oEK3YwYeZsvKGZkMvEkHiCTWiuls/k1QRG
+dqtAL0HWJcgHR+2tMyD22UU6If/5DmGLeb4s7GMKwadE/b4LeLg=
+=tyQx
+-----END PGP SIGNATURE-----
+
+--SsA1msSVYXt8YyBd--
