@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F657D24C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 19:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A537D24C6
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 19:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232556AbjJVRGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 13:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
+        id S232532AbjJVRGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 13:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232459AbjJVRGY (ORCPT
+        with ESMTP id S232473AbjJVRGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 13:06:24 -0400
+        Sun, 22 Oct 2023 13:06:25 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C12FB;
-        Sun, 22 Oct 2023 10:06:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D821C433CA;
-        Sun, 22 Oct 2023 17:06:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185F9124;
+        Sun, 22 Oct 2023 10:06:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D55CC433C7;
+        Sun, 22 Oct 2023 17:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697994382;
-        bh=G00Dlt7/+9AAm/4d72vjWHQ0YOge50oj8FKlMUxA+RA=;
+        s=k20201202; t=1697994383;
+        bh=mnjPdsDS3enDm6WXK4/X4WMDdmcRPpl/JrVaMfXuHA4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GWMI3dwTmlLB7pQ/P42Bade2Cuizg1E1JsnKsllyP+YlusoaBdNMxTIf4+KT2hTSY
-         M8AeCjBuBgi0FPTSof1ueeF10hGXsrQNuThfa7J87WV5+rJVuedcGMmdxTdmrFcTs5
-         +ehh4WVj+Nj+ztahCwj7Xcug3DdBL+kMf28D3UMVx6EMV7CBF77i98ShHR9QWfLB0s
-         8ydkYvD+Gri8fdtulve0MmUJjWllsyXAF1bchNyDeeNS6j1gZRR9Wp7cQz9S7kYchX
-         wPyQifBOfmnWbCIHa1lrINvzzMKQ4KsCzo3SyiFERH6czkg9Wos6tWCv5WAXCdvrvp
-         e/+X4sX+xQ8Xg==
+        b=E+votQPOQvger1N5hYN7MOnDeOx47VZpkOSweEfnd691hHxUNuOevb15IZhg0jsIO
+         s4XfHcHt8+f+SIhUZ4nA08sTKbS/QaQ4S3SjMQsSYsZ3v8ACdJ5Yb/iZYf9w1ULBzj
+         Q2c2PorpNQ1c2GOMo0hyAwi6ySlPBdUbkzM8JVnwNVtsxewBt+AVbJ4lgTw9q0QBFR
+         gmMdOqVhZ40SSzwMQDziRAlDyP6qdtejWvWhWyIFMVhMrtmPIzUiN8r66zpRWtjfHE
+         j98xRRzdrNfqEQ9Afsc3/O6VQIgiuoR3EQDSnJLCEXgUP9K6zN0pZFaD6FwSu0OGpG
+         QM6ZLG3jZhqhA==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 04/10] modpost: remove more symbol patterns from the section check whitelist
-Date:   Mon, 23 Oct 2023 02:06:07 +0900
-Message-Id: <20231022170613.2072838-4-masahiroy@kernel.org>
+Subject: [PATCH 05/10] modpost: remove MEM_INIT_SECTIONS macro
+Date:   Mon, 23 Oct 2023 02:06:08 +0900
+Message-Id: <20231022170613.2072838-5-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231022170613.2072838-1-masahiroy@kernel.org>
 References: <20231022170613.2072838-1-masahiroy@kernel.org>
@@ -52,41 +52,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These symbol patterns were whitelisted to allow them to reference to
-functions with the old __devinit and __devexit annotations.
-
-We stopped doing this a long time ago, for example, commit 6f039790510f
-("Drivers: scsi: remove __dev* attributes.") remove those annotations
-from the scsi drivers.
-
-Keep *_ops and *_console, otherwise they will really cause section
-mismatch warnings.
+ALL_XXXINIT_SECTIONS and MEM_INIT_SECTIONS are the same.
+Remove the latter.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- scripts/mod/modpost.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ scripts/mod/modpost.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 792ba9da0f27..19b138664f75 100644
+index 19b138664f75..626ab599eea2 100644
 --- a/scripts/mod/modpost.c
 +++ b/scripts/mod/modpost.c
-@@ -997,13 +997,7 @@ static int secref_whitelist(const char *fromsec, const char *fromsym,
- 	/* symbols in data sections that may refer to any init/exit sections */
- 	if (match(fromsec, PATTERNS(DATA_SECTIONS)) &&
- 	    match(tosec, PATTERNS(ALL_INIT_SECTIONS, ALL_EXIT_SECTIONS)) &&
--	    match(fromsym, PATTERNS("*_template", // scsi uses *_template a lot
--				    "*_timer", // arm uses ops structures named _timer a lot
--				    "*_sht", // scsi also used *_sht to some extent
--				    "*_ops",
--				    "*_probe",
--				    "*_probe_one",
--				    "*_console")))
-+	    match(fromsym, PATTERNS("*_ops", "*_console")))
- 		return 0;
+@@ -805,7 +805,7 @@ static void check_section(const char *modname, struct elf_info *elf,
+ 	".pci_fixup_enable", ".pci_fixup_resume", \
+ 	".pci_fixup_resume_early", ".pci_fixup_suspend"
  
- 	/*
+-#define ALL_XXXINIT_SECTIONS MEM_INIT_SECTIONS
++#define ALL_XXXINIT_SECTIONS ".meminit.*"
+ 
+ #define ALL_INIT_SECTIONS INIT_SECTIONS, ALL_XXXINIT_SECTIONS
+ #define ALL_EXIT_SECTIONS EXIT_SECTIONS
+@@ -818,7 +818,6 @@ static void check_section(const char *modname, struct elf_info *elf,
+ 		".coldtext", ".softirqentry.text"
+ 
+ #define INIT_SECTIONS      ".init.*"
+-#define MEM_INIT_SECTIONS  ".meminit.*"
+ 
+ #define EXIT_SECTIONS      ".exit.*"
+ 
 -- 
 2.40.1
 
