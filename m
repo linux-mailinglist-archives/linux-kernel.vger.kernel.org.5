@@ -2,244 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A08E7D249D
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA1C7D24A3
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbjJVQpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 12:45:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
+        id S231936AbjJVQsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 12:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjJVQpn (ORCPT
+        with ESMTP id S229586AbjJVQsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 12:45:43 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B4E112;
-        Sun, 22 Oct 2023 09:45:40 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39MEdkv3004249;
-        Sun, 22 Oct 2023 16:45:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=Zh2RhPHkkwL5TykscjMWfVwEOp5tS5gDOkOqAVBOMcQ=;
- b=bIcB8nYe91eGm+LsuAazglgAFa7KtNy03WUWY10Q2Qca/EpfeCdNjIJBQ1TvYYV7gzVa
- eZ1KpLa33Nj/xIhFm4ZRO8890YEv4yKmf5eHlgHnL6FTMSGaEHt0EzHUTClbE/lyEZf9
- bTA8Qg5xAGNCJV65Bom6vgbgXzrshn9QyK/arjsUW20eGr1cJITd4vyIDtURihEG3TBz
- hiZbOE4Qlc4IsqTXkHNe4u6+UxYiFZ5TuULmEPYkMaENF6g3qTjoyfpa+g0E4gVqdW2M
- m8vFrZxY0zsBgWjiXfQUi5Vq0kjftbhMhnbbQealTfenEqHXjFCoodgdO0fCHiSFEuIG 3w== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv5e31s6e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 22 Oct 2023 16:45:28 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39MFPOB8034583;
-        Sun, 22 Oct 2023 16:45:27 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tv5335f9h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 22 Oct 2023 16:45:27 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39MGjQ7Y012619;
-        Sun, 22 Oct 2023 16:45:26 GMT
-Received: from localhost.localdomain (dhcp-10-175-40-192.vpn.oracle.com [10.175.40.192])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3tv5335f8t-1;
-        Sun, 22 Oct 2023 16:45:26 +0000
-From:   Vegard Nossum <vegard.nossum@oracle.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        linux-fsdevel@vger.kernel.org, Nick Piggin <npiggin@kernel.dk>,
-        Waiman Long <Waiman.Long@hp.com>, linux-doc@vger.kernel.org
-Subject: [PATCH] dcache: remove unnecessary NULL check in dget_dlock()
-Date:   Sun, 22 Oct 2023 18:45:20 +0200
-Message-Id: <20231022164520.915013-1-vegard.nossum@oracle.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 22 Oct 2023 12:48:11 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81610E7;
+        Sun, 22 Oct 2023 09:48:09 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-5842c251d7cso1181177eaf.1;
+        Sun, 22 Oct 2023 09:48:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697993289; x=1698598089; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=zaC0k6XVBVVgzv+xMwI1MNbASVkxCUyoOYu0hkRSSx8=;
+        b=ko0wuXCQLb659lUWo00baA+xGDMeyfhIb9NiQWn+Ubz6bDEUS4NowLJ1lBl84Dfjv+
+         LtdBtijul0bJRD7UKms9MlkT7BhngDhqrkbm2Edx0cKWVjVuhssbEUyRpAK9mhtyCcKD
+         ZwqXUMPjfxvbyl4aOIC0SVrhjZTtlrbYuOXGS3c6swT52z3wdx6caiF4WhIjIo8fTd9z
+         swiImy2ROSi/k0d03pwN10Sv1hB/NNuaH1eh1dDf88qwrrw03IndX1UcEWR0zCqP8Tnn
+         9fE3+6XxRZgp8mgamGZyYUXHJ3MlSV4XiflZACTG+v366/9N0VmOzjFREWFC2nQuY8EF
+         fOMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697993289; x=1698598089;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zaC0k6XVBVVgzv+xMwI1MNbASVkxCUyoOYu0hkRSSx8=;
+        b=G7hWE5zvKEayydFxnZylsIxqsvxWwlRQ4ADMhgHUatmA7QgjHMzNTR977bwbvSM6Ay
+         WVvC/bOuAja8RlnfEp3JhdfdoQvDvgGz9lxzo1KGi0A03oirzHQ2rqGV2tcOa1y1lKN3
+         KXZlkqEzj6DDuFORjOXGyFlICg9SXpJq9EVS6UZsUwXAdejEfbeaFolP8Bv6EPx29wNx
+         ZRgP2t7W0hr5QEKzPbNh9i6jd9l1ucBs6YJ73M7yDUg6mk9nw4gYXgBeX4rOBoNvmssz
+         qU4IRvIzjTzhOuae2yL+KoKhNOJN+UG6gU3bFtzRcurcDild6cGKAI4VeynNcjeowfeX
+         9ZwA==
+X-Gm-Message-State: AOJu0YxExdIVAfgD1A9Yv74vF4qGAmJbaHoT9wq1qmYYr5E0nDl5GCat
+        +P+rL8joj9KpXsVP99gbds4=
+X-Google-Smtp-Source: AGHT+IGpkNvGgZVMKkF8ZxGYFUTvP28BBBEKhlGAJdl1GmJbCGwO7rIiSfOHfkeIf2OwE4ATpvi6Ig==
+X-Received: by 2002:a05:6358:9146:b0:140:f6ab:b11e with SMTP id r6-20020a056358914600b00140f6abb11emr8468882rwr.28.1697993288607;
+        Sun, 22 Oct 2023 09:48:08 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f10-20020a631f0a000000b0056b27af8715sm4456037pgf.43.2023.10.22.09.48.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Oct 2023 09:48:08 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <c6149f04-4cf6-8dcc-3aca-d926f49a34d7@roeck-us.net>
+Date:   Sun, 22 Oct 2023 09:48:07 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-22_14,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310220153
-X-Proofpoint-GUID: 8rxQNoV07y9lM9luPH__Hao80Mvckud8
-X-Proofpoint-ORIG-GUID: 8rxQNoV07y9lM9luPH__Hao80Mvckud8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] watchdog: apple: Deactivate on suspend
+Content-Language: en-US
+To:     j@jannau.net, Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231016-apple-watchdog-suspend-v2-1-7ffff8042dbc@jannau.net>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20231016-apple-watchdog-suspend-v2-1-7ffff8042dbc@jannau.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dget_dlock() requires dentry->d_lock to be held when called, yet
-contains a NULL check for dentry.
+On 10/15/23 23:58, Janne Grunau via B4 Relay wrote:
+> From: Janne Grunau <j@jannau.net>
+> 
+> The watchdog remains active after putting the system into suspend. Add
+> PM callbacks to deactivate the watchdog on suspend an re-activate it on
+> resume.
+> 
+> Signed-off-by: Janne Grunau <j@jannau.net>
 
-An audit of all calls to dget_dlock() shows that it is never called
-with a NULL pointer (as spin_lock()/spin_unlock() would crash in these
-cases):
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-  $ git grep -W '\<dget_dlock\>'
-
-  arch/powerpc/platforms/cell/spufs/inode.c-              spin_lock(&dentry->d_lock);
-  arch/powerpc/platforms/cell/spufs/inode.c-              if (simple_positive(dentry)) {
-  arch/powerpc/platforms/cell/spufs/inode.c:                      dget_dlock(dentry);
-
-  fs/autofs/expire.c-             spin_lock_nested(&child->d_lock, DENTRY_D_LOCK_NESTED);
-  fs/autofs/expire.c-             if (simple_positive(child)) {
-  fs/autofs/expire.c:                     dget_dlock(child);
-
-  fs/autofs/root.c:                       dget_dlock(active);
-  fs/autofs/root.c-                       spin_unlock(&active->d_lock);
-
-  fs/autofs/root.c:                       dget_dlock(expiring);
-  fs/autofs/root.c-                       spin_unlock(&expiring->d_lock);
-
-  fs/ceph/dir.c-          if (!spin_trylock(&dentry->d_lock))
-  fs/ceph/dir.c-                  continue;
-  [...]
-  fs/ceph/dir.c:                          dget_dlock(dentry);
-
-  fs/ceph/mds_client.c-           spin_lock(&alias->d_lock);
-  [...]
-  fs/ceph/mds_client.c:                   dn = dget_dlock(alias);
-
-  fs/configfs/inode.c-            spin_lock(&dentry->d_lock);
-  fs/configfs/inode.c-            if (simple_positive(dentry)) {
-  fs/configfs/inode.c:                    dget_dlock(dentry);
-
-  fs/libfs.c:                             found = dget_dlock(d);
-  fs/libfs.c-                     spin_unlock(&d->d_lock);
-
-  fs/libfs.c:             found = dget_dlock(child);
-  fs/libfs.c-     spin_unlock(&child->d_lock);
-
-  fs/libfs.c:                             child = dget_dlock(d);
-  fs/libfs.c-                     spin_unlock(&d->d_lock);
-
-  fs/ocfs2/dcache.c:                      dget_dlock(dentry);
-  fs/ocfs2/dcache.c-                      spin_unlock(&dentry->d_lock);
-
-  include/linux/dcache.h:static inline struct dentry *dget_dlock(struct dentry *dentry)
-
-After taking out the NULL check, dget_dlock() becomes almost identical
-to __dget_dlock(); the only difference is that dget_dlock() returns the
-dentry that was passed in. These are static inline helpers, so we can
-rely on the compiler to discard unused return values. We can therefore
-also remove __dget_dlock() and replace calls to it by dget_dlock().
-
-Also fix up and improve the kerneldoc comments while we're at it.
-
-Testing: x86 defconfig build + boot; make htmldocs for the kerneldoc
-warning. objdump shows there are code generation changes.
-
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: Nick Piggin <npiggin@kernel.dk>
-Cc: Waiman Long <Waiman.Long@hp.com>
-Cc: linux-doc@vger.kernel.org
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
----
- fs/dcache.c            | 14 ++++----------
- include/linux/dcache.h | 20 ++++++++++++++------
- 2 files changed, 18 insertions(+), 16 deletions(-)
-
-diff --git a/fs/dcache.c b/fs/dcache.c
-index 25ac74d30bff..8c3c0d691605 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -942,12 +942,6 @@ void dput_to_list(struct dentry *dentry, struct list_head *list)
- 	spin_unlock(&dentry->d_lock);
- }
- 
--/* This must be called with d_lock held */
--static inline void __dget_dlock(struct dentry *dentry)
--{
--	dentry->d_lockref.count++;
--}
--
- static inline void __dget(struct dentry *dentry)
- {
- 	lockref_get(&dentry->d_lockref);
-@@ -1034,7 +1028,7 @@ static struct dentry *__d_find_alias(struct inode *inode)
- 	hlist_for_each_entry(alias, &inode->i_dentry, d_u.d_alias) {
- 		spin_lock(&alias->d_lock);
-  		if (!d_unhashed(alias)) {
--			__dget_dlock(alias);
-+			dget_dlock(alias);
- 			spin_unlock(&alias->d_lock);
- 			return alias;
- 		}
-@@ -1707,7 +1701,7 @@ static enum d_walk_ret find_submount(void *_data, struct dentry *dentry)
- {
- 	struct dentry **victim = _data;
- 	if (d_mountpoint(dentry)) {
--		__dget_dlock(dentry);
-+		dget_dlock(dentry);
- 		*victim = dentry;
- 		return D_WALK_QUIT;
- 	}
-@@ -1853,7 +1847,7 @@ struct dentry *d_alloc(struct dentry * parent, const struct qstr *name)
- 	 * don't need child lock because it is not subject
- 	 * to concurrency here
- 	 */
--	__dget_dlock(parent);
-+	dget_dlock(parent);
- 	dentry->d_parent = parent;
- 	list_add(&dentry->d_child, &parent->d_subdirs);
- 	spin_unlock(&parent->d_lock);
-@@ -2851,7 +2845,7 @@ struct dentry *d_exact_alias(struct dentry *entry, struct inode *inode)
- 			spin_unlock(&alias->d_lock);
- 			alias = NULL;
- 		} else {
--			__dget_dlock(alias);
-+			dget_dlock(alias);
- 			__d_rehash(alias);
- 			spin_unlock(&alias->d_lock);
- 		}
-diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-index 6b351e009f59..e22f1520ea3b 100644
---- a/include/linux/dcache.h
-+++ b/include/linux/dcache.h
-@@ -300,20 +300,28 @@ extern char *dentry_path(const struct dentry *, char *, int);
- /* Allocation counts.. */
- 
- /**
-- *	dget, dget_dlock -	get a reference to a dentry
-+ *	dget_dlock -	get a reference to a dentry
-  *	@dentry: dentry to get a reference to
-  *
-- *	Given a dentry or %NULL pointer increment the reference count
-- *	if appropriate and return the dentry. A dentry will not be 
-- *	destroyed when it has references.
-+ *	Given a dentry, increment the reference count and return the
-+ *	dentry.
-+ *
-+ *	Context: @dentry->d_lock must be held.
-  */
- static inline struct dentry *dget_dlock(struct dentry *dentry)
- {
--	if (dentry)
--		dentry->d_lockref.count++;
-+	dentry->d_lockref.count++;
- 	return dentry;
- }
- 
-+/**
-+ *	dget -	get a reference to a dentry
-+ *	@dentry: dentry to get a reference to
-+ *
-+ *	Given a dentry or %NULL pointer increment the reference count
-+ *	if appropriate and return the dentry. A dentry will not be
-+ *	destroyed when it has references.
-+ */
- static inline struct dentry *dget(struct dentry *dentry)
- {
- 	if (dentry)
--- 
-2.34.1
+> ---
+> Changes in v2:
+> - use DEFINE_SIMPLE_DEV_PM_OPS
+> - Link to v1: https://lore.kernel.org/r/20230930-apple-watchdog-suspend-v1-1-1998c0be9fd7@jannau.net
+> ---
+>   drivers/watchdog/apple_wdt.c | 25 +++++++++++++++++++++++++
+>   1 file changed, 25 insertions(+)
+> 
+> diff --git a/drivers/watchdog/apple_wdt.c b/drivers/watchdog/apple_wdt.c
+> index eddeb0fede89..d4f739932f0b 100644
+> --- a/drivers/watchdog/apple_wdt.c
+> +++ b/drivers/watchdog/apple_wdt.c
+> @@ -173,6 +173,8 @@ static int apple_wdt_probe(struct platform_device *pdev)
+>   	if (!wdt->clk_rate)
+>   		return -EINVAL;
+>   
+> +	platform_set_drvdata(pdev, wdt);
+> +
+>   	wdt->wdd.ops = &apple_wdt_ops;
+>   	wdt->wdd.info = &apple_wdt_info;
+>   	wdt->wdd.max_timeout = U32_MAX / wdt->clk_rate;
+> @@ -190,6 +192,28 @@ static int apple_wdt_probe(struct platform_device *pdev)
+>   	return devm_watchdog_register_device(dev, &wdt->wdd);
+>   }
+>   
+> +static int apple_wdt_resume(struct device *dev)
+> +{
+> +	struct apple_wdt *wdt = dev_get_drvdata(dev);
+> +
+> +	if (watchdog_active(&wdt->wdd) || watchdog_hw_running(&wdt->wdd))
+> +		apple_wdt_start(&wdt->wdd);
+> +
+> +	return 0;
+> +}
+> +
+> +static int apple_wdt_suspend(struct device *dev)
+> +{
+> +	struct apple_wdt *wdt = dev_get_drvdata(dev);
+> +
+> +	if (watchdog_active(&wdt->wdd) || watchdog_hw_running(&wdt->wdd))
+> +		apple_wdt_stop(&wdt->wdd);
+> +
+> +	return 0;
+> +}
+> +
+> +static DEFINE_SIMPLE_DEV_PM_OPS(apple_wdt_pm_ops, apple_wdt_suspend, apple_wdt_resume);
+> +
+>   static const struct of_device_id apple_wdt_of_match[] = {
+>   	{ .compatible = "apple,wdt" },
+>   	{},
+> @@ -200,6 +224,7 @@ static struct platform_driver apple_wdt_driver = {
+>   	.driver = {
+>   		.name = "apple-watchdog",
+>   		.of_match_table = apple_wdt_of_match,
+> +		.pm = pm_sleep_ptr(&apple_wdt_pm_ops),
+>   	},
+>   	.probe = apple_wdt_probe,
+>   };
+> 
+> ---
+> base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+> change-id: 20230930-apple-watchdog-suspend-7f73831130fb
+> 
+> Best regards,
 
