@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4207D24CB
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 19:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8A97D24CC
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 19:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232660AbjJVRGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 13:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53102 "EHLO
+        id S232447AbjJVRGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 13:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbjJVRGf (ORCPT
+        with ESMTP id S232578AbjJVRGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 22 Oct 2023 13:06:35 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24290124;
-        Sun, 22 Oct 2023 10:06:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D8BBC433CB;
-        Sun, 22 Oct 2023 17:06:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863BCD63;
+        Sun, 22 Oct 2023 10:06:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DBABC433C9;
+        Sun, 22 Oct 2023 17:06:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697994386;
-        bh=0RQilyl14YGAa058AYczk30yG3OUTMcYtlZHlUX70hY=;
+        s=k20201202; t=1697994388;
+        bh=hKI1zzwBL75rgCF5kVM4ODL5hDvv/GmFFgzS1g4lATI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DNFDAuiCn2GLpHPgqk2Ge5JuSaOfxg26Z+bkCMzZ63rmPLZHj6mC/hz0NC3fVYIlh
-         IukOuF4yIOjYjxvQSRuz77rMkUBIA6mnCRjgkrWT+C1Gd2pGzWYnOuGNTzBRXVEaOU
-         rQIPLtZIrj8zy1VLz3MHxTa0TUEldyksYYINhtBD9yUv5mQ3abWTxnxG8NQwHJC5wM
-         G9RsctmxaRx6UhB7jf/gfJsHM9LaGCnssZXUUox2OX7qNnvaOgh0BAv6aWcU9WXp4H
-         Zkrzfb5Iu6SHeJvOHiTik3R5+qeq1TFAuo4q2pvT8CmMHDWEgNERGJiGStBYYF8T2M
-         cj5WoppkBuiaw==
+        b=d/jr2zEZFapXEUeHrMZOfqTMdiWYVWdzESaIC4c6z+PBZgj/SIIBYofDuzXwSmfya
+         aAqcO+ftepC6hG5fXKgra8RiS7+ePPvVuzvHqbxqFzv87RZQ/h6LB9O0EuyyGnzqZe
+         NQpRqhASjAMJxQr5E4i2upCwumbwXfhWdoDvHZCRE+7FZMdnYhumprkpXWGXkrdfRO
+         Ln/tQ/w2As4/n5Dfxzn2UG1KcD58lqDHS0kVzcU0PuaEnutMVvucGZYNcimDk8oKzs
+         BPxJlAAYfp3BLS+iKrlG6CatIi3Mkr7M6Np0L9uVz43Xa/KBSopJuicVLAN6V77kL7
+         72Cr2xs/9Az1g==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     linux-kbuild@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 07/10] modpost: disallow the combination of EXPORT_SYMBOL and __meminit*
-Date:   Mon, 23 Oct 2023 02:06:10 +0900
-Message-Id: <20231022170613.2072838-7-masahiroy@kernel.org>
+Subject: [PATCH 08/10] modpost: use ALL_INIT_SECTIONS for the section check from DATA_SECTIONS
+Date:   Mon, 23 Oct 2023 02:06:11 +0900
+Message-Id: <20231022170613.2072838-8-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231022170613.2072838-1-masahiroy@kernel.org>
 References: <20231022170613.2072838-1-masahiroy@kernel.org>
@@ -52,10 +52,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Theoretically, we could export conditionally-discarded code sections,
-such as .meminit*, if all the users can become modular under a certain
-condition. However, that would be difficult to control and such a tricky
-case has never occurred.
+ALL_INIT_SECTIONS is defined as follows:
+
+  #define ALL_INIT_SECTIONS INIT_SECTIONS, ALL_XXXINIT_SECTIONS
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
@@ -64,18 +63,18 @@ Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index f73835b8f1f9..8f4bddbbc52b 100644
+index 8f4bddbbc52b..c726383c1909 100644
 --- a/scripts/mod/modpost.c
 +++ b/scripts/mod/modpost.c
-@@ -1164,7 +1164,7 @@ static void check_export_symbol(struct module *mod, struct elf_info *elf,
- 	    ELF_ST_TYPE(sym->st_info) == STT_LOPROC)
- 		s->is_func = true;
- 
--	if (match(secname, PATTERNS(INIT_SECTIONS)))
-+	if (match(secname, PATTERNS(ALL_INIT_SECTIONS)))
- 		warn("%s: %s: EXPORT_SYMBOL used for init symbol. Remove __init or EXPORT_SYMBOL.\n",
- 		     mod->name, name);
- 	else if (match(secname, PATTERNS(ALL_EXIT_SECTIONS)))
+@@ -863,7 +863,7 @@ static const struct sectioncheck sectioncheck[] = {
+ },
+ {
+ 	.fromsec = { DATA_SECTIONS, NULL },
+-	.bad_tosec = { ALL_XXXINIT_SECTIONS, INIT_SECTIONS, NULL },
++	.bad_tosec = { ALL_INIT_SECTIONS, NULL },
+ 	.mismatch = DATA_TO_ANY_INIT,
+ },
+ {
 -- 
 2.40.1
 
