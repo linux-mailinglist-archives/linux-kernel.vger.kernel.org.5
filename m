@@ -2,149 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9CA7D2758
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 01:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAC67D275A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 01:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232739AbjJVXn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 19:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46072 "EHLO
+        id S232905AbjJVXsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 19:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJVXn0 (ORCPT
+        with ESMTP id S229500AbjJVXr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 19:43:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CEFEB;
-        Sun, 22 Oct 2023 16:43:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698018205; x=1729554205;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DyT6PnTT/oc9Q+V3yg1tRUU7lgRIJofWae5O90LzgAc=;
-  b=ZOMa2NFpQZAG2bMUDOmUdtemkKeWxAskiP3COrRf2B4Gvf3XBC3zAw0Y
-   2MLMhv4jC+BdQkm+zeScTI3lamZ+/dslh7N8tY7SLIJJlfoSUUMzRcrjr
-   ACnDJbxpfeLOYcwdYj+Qz6YtBo8b73cCybmWMwOLcHwVrXEO3r4tmJeFn
-   4Dm4pyqiNXGIdL/kCSnAcYSUYYuUT2SlP5t5gb3eMR7VpbdNwBXrd9mZu
-   oilmebgQKum/F4H2TNENU8y4qa/TIB7wv1mfS4WTqWT0KVnrUoqprmOcE
-   A+2+cpzdDqiZwYQVK4mh8yXo8ebViWgrhF3GlPxjAGmzblOnKeSbT/sxP
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="5361564"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="5361564"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 16:43:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="5618519"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 22 Oct 2023 16:42:06 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qui6I-0006NC-0W;
-        Sun, 22 Oct 2023 23:43:18 +0000
-Date:   Mon, 23 Oct 2023 07:42:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Hengqi Chen <hengqi.chen@gmail.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, keescook@chromium.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        luto@amacapital.net, wad@chromium.org, alexyonghe@tencent.com,
-        hengqi.chen@gmail.com
-Subject: Re: [PATCH v2 2/5] seccomp, bpf: Introduce SECCOMP_LOAD_FILTER
- operation
-Message-ID: <202310230704.Uif0R7cz-lkp@intel.com>
-References: <20231015232953.84836-3-hengqi.chen@gmail.com>
-MIME-Version: 1.0
+        Sun, 22 Oct 2023 19:47:59 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2064.outbound.protection.outlook.com [40.107.212.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5088F;
+        Sun, 22 Oct 2023 16:47:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gU24wtk2y08500PmbqEVI8wjAOGEU22PCVTNtkb7Tk1S42wCR3Vqb9N4s+Zypu8b1W6XiklMaRNZTNFZDklVxFY9mHJwGnLzcQP8zDTxbWRJVnocpBpeu85j/hQqyE4CkhO8CCDJBhdXwU2MUTDCn3a77Wc7UaDda+bKsKgqF88QiLZdQnv9AtKwnvAUivcnnlt2ok9oC4VPlHexCryp6vc26RWpyQ5PRCMdZmvGcyUP5wJtBmzoHEAFuNUed0B2IJIiTYItfk3naPb8OOTdPZRqiBc80dSSCn0grIaHBM5FzSlVVtuVtdFXZNTbhPoKisSwOoRGgDuqApzb7lCVOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nbpHNLs5Z2//oI49RE5WN6TlAYXl4uoRUUOfdqjP5Qg=;
+ b=VZLmOYJIOicRmJY1XzmLRbJimd3F/Bprohyv96Lt8qxe/lAhPVxRT78H6zyDuByLJmRdV4ZIzpLofVS3zj1OV4pe07o3YJO5fIVf2+4tFIu76VffDjuYw4thHFG1pB01LYNO3fiSfaA2d2VxfbLqUbj0N2UcEotbKbzQ+7n+t1Dn3KpOHImCtuqJGWSQcr+K3OKxqry6oUeLx2IQz1bWZszYIIU4+y0h+LLedl92tQhYoTy616d/xjSYESv3zA4/KF31mZctpXVWUCT/iO0IDHGIRCN/csUCnE2ZqWNO3izrIHufOcUxilV+pnVLpruFVVc7Na0jYZwym9K0qgd9UA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=labundy.com; dmarc=pass action=none header.from=labundy.com;
+ dkim=pass header.d=labundy.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=NETORG5796793.onmicrosoft.com; s=selector1-NETORG5796793-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nbpHNLs5Z2//oI49RE5WN6TlAYXl4uoRUUOfdqjP5Qg=;
+ b=Q2yMGTOVdxBdDCWv2j5IsHR5kRvbL7D9QH2tZZ26DC4Y+oovPUF/ElBpE9OYAZ2p7Oks6Tqxx0I04OXAGEws8TKB9fe+52doSvgBn7AE3SSdiH5GUCgRFgSQCFzoO06GfTYkv1QSNCxvrbnevFCZDe4kbgXmcvZw15nVs7Nj3dE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=labundy.com;
+Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
+ (2603:10b6:803:43::21) by LV8PR08MB9286.namprd08.prod.outlook.com
+ (2603:10b6:408:20a::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Sun, 22 Oct
+ 2023 23:47:55 +0000
+Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
+ ([fe80::e73c:270b:75f7:5302]) by SN4PR0801MB3774.namprd08.prod.outlook.com
+ ([fe80::e73c:270b:75f7:5302%4]) with mapi id 15.20.6907.032; Sun, 22 Oct 2023
+ 23:47:54 +0000
+Date:   Sun, 22 Oct 2023 18:47:51 -0500
+From:   Jeff LaBundy <jeff@labundy.com>
+To:     Anshul Dalal <anshulusr@gmail.com>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v5 1/2] dt-bindings: input: bindings for Adafruit Seesaw
+ Gamepad
+Message-ID: <ZTW0p2WG3/m1Tx+Z@nixie71>
+References: <20231017034356.1436677-1-anshulusr@gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231015232953.84836-3-hengqi.chen@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231017034356.1436677-1-anshulusr@gmail.com>
+X-ClientProxiedBy: DM6PR07CA0090.namprd07.prod.outlook.com
+ (2603:10b6:5:337::23) To SN4PR0801MB3774.namprd08.prod.outlook.com
+ (2603:10b6:803:43::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN4PR0801MB3774:EE_|LV8PR08MB9286:EE_
+X-MS-Office365-Filtering-Correlation-Id: 34487936-e89c-4ef7-92be-08dbd3594fcb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 27QNG4G75H+eACgIymCqYwCxl+h/CnU21h0CcKobyM4+iQgezDYK/TBQYluEh7QFPOOuN3vMmwW6u682NiQSSGAHWhqGgTZoScowfbmZohdK5r16KDXUlebG83Bjv+wFkiNf7im7qpnGWo2RfbJhzdss6lhU7GM4Zc4Z9L2wN2/Fm1egdoU58HSSWZ7zesFu0L8T8ZhgqmqRe2pKHVpTpjNBIwgkhe6tt7J2DYUmP3MR1bD80LSAsTGV1OfYYUDCxAtx34SxLsEqoXCWYLYwryD6a/qY325dY2d4oMfKuchA9kSl7JB5KVJxoKzulmqtG9qcWKb3TSgEzg+MlkiKGaxVAgoAqyb6CRPLT7BR7UTiAD24V8y3a6z8adkTbNkublwewlHF5gkmrkVIO2mKt+o9RFku5F9sBLnQVAKNyjnlSxN3+qVn/ID6EoEJccbn2BPlNqWAN0CKUmatjk7LCaX0A0tUryW5Kdz3a7T4Eug6d83CuRT+joP+/1oO/IMOgYV4i5k73mYoW9XqtG/dL/dzmLqsoZlWAI3yD+CWAOc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0801MB3774.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(39830400003)(376002)(396003)(366004)(346002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(33716001)(38100700002)(2906002)(41300700001)(86362001)(7416002)(5660300002)(8676002)(8936002)(4326008)(6506007)(6666004)(478600001)(26005)(66476007)(316002)(6916009)(54906003)(66556008)(66946007)(83380400001)(966005)(6486002)(6512007)(9686003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ntw+NENxfilzNNI6SE3DIPf9ywrjESvBtArqKi7JSghUkvTcxr7dkN4oPlvC?=
+ =?us-ascii?Q?ygyvNhJNDh32KLWN9ljML3D7zoz44ZXCIUr0G4PtGxto3NhzbDwPZDxP4IhQ?=
+ =?us-ascii?Q?VXUPX3y3nZgBDgBYWhcNwC16GvXLJhQXP1e+gBDpfCComwtLoLGmSaoDQReY?=
+ =?us-ascii?Q?IQh3Pdj0OBF8p7p4Kl/LqKdtcUqqUrb+gN6H1wXzJNshvZrLIlOJvlPKXEEj?=
+ =?us-ascii?Q?JK112YTknTaZMd0awgcFz3Lt6DeLQsvuSS/3ZzM0G+l9dtm4oNUl9trmqfsY?=
+ =?us-ascii?Q?mbCkrq0zgY3VCmzgSVZmijd6xlUua1EjbXKPG0Pw4Q1XBOABLlJcJ6f61xaF?=
+ =?us-ascii?Q?9P3Tca0S/oEk6Q0C3Sc20+EznCvEyBM4Necn5phL/8jUgwcefdsQTb282f/6?=
+ =?us-ascii?Q?urKz1eCVFd14zSdvibANQLt6jniBge3bNtSDOORypzUecL9/bXz4aVG3hNbN?=
+ =?us-ascii?Q?TkFjlmFTtt2gDfWjO5J2ox33qYEzCiETHm0dDMIYIhYanCgG9rBbvhMtuVT+?=
+ =?us-ascii?Q?B3joVlHw171eiga9wqr6HyKiUTqi+pswiYxS6NN3KatnM907T+54fOqI8UM0?=
+ =?us-ascii?Q?3SFjbGklfIzkcKU/uNel7MsuS2jgwpgrlfvPNuEVMWjufs3DaUCB3csOD3MR?=
+ =?us-ascii?Q?ESnRF7R9xkg8z4ctcDCNmwu35IDpxhOc+597BZidQ6QeZ9SKZ3tlNYo/K8Qu?=
+ =?us-ascii?Q?n/CPwDdOSsKC3oG4ZyBtTJMP5NeUEniILCaeuBzDS5MqV4VjgPCyXdRz6ENL?=
+ =?us-ascii?Q?LTKVu+i3crAhAJdAEuwRc7pgF2BpH+62QCBl38t+RNtjeEJX2fFWB5D7/PSu?=
+ =?us-ascii?Q?7M601SCHDrmiJJuxUQkAYPzXPBR1v8ZAvrLT8ZYBE0vDx2aJouAAZgCKluJ4?=
+ =?us-ascii?Q?qw6mCcUsgXEXY+3HtCv9ShY2SnUPT99DTIYxA7D4Lhg19ArbYbgddGG3N0to?=
+ =?us-ascii?Q?tWemTxNtmsI7zJkm4q3Go8KC1TxoBBPFMEs8VcoUdsIBeOW+URZROL7kpyBC?=
+ =?us-ascii?Q?YAkSPgDN3bRIhl4+MZrg+ACzcYWtScyBCVJXPgTFUfu0uzOmorsgufyfCz6Y?=
+ =?us-ascii?Q?/JVEN6BJLXAYHgNJaokTehWFsj3h7MKKI6Xycqjj4xsRp7soDGtkRzs2i7FV?=
+ =?us-ascii?Q?mmYfs4hR/Q2vb+K+iyDxBtXXi3s9J+4GKuRt9jpQ3+PJ/0JidRzPjjhCNSBm?=
+ =?us-ascii?Q?zSTPiVqSo6mmYbot/3n4YHmDp543Xdis/h+68VBpHV+ZfZ0acaOD5W0QiKkj?=
+ =?us-ascii?Q?/PkQ/2ElQaq/BTAWAjM/rAt/S3dsSgNgCwbAJNCLxENd+RVAA0tDshPZBtF+?=
+ =?us-ascii?Q?V5+cIvI0Cm+lhE5z8TRlz6SeB9DX7uXUWHFVcbqRyL0RPfc0k3ESWbOPIvZF?=
+ =?us-ascii?Q?lTKXyYe7QCHW+7mKr0JuVMeQx2Mr7TBJ5akFmVqlgixESksrgaayuV5cVimI?=
+ =?us-ascii?Q?QCHmEl4JCX8gx0gs5oPtaVO+3VwblBGjucMb9pxNucvnc43irjNgjCY+I2zH?=
+ =?us-ascii?Q?tTy6+Hk3ShZnE2r7afwrRPk7HgD0q6FvzjmgZo98aSW7AaaZtKcoVG7I0D/l?=
+ =?us-ascii?Q?dxL1sbZfOEERT5M5gi75dcXFuRvkvdYvKo97a6nI?=
+X-OriginatorOrg: labundy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34487936-e89c-4ef7-92be-08dbd3594fcb
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0801MB3774.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2023 23:47:54.8339
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 00b69d09-acab-4585-aca7-8fb7c6323e6f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gs6hUmugV4lgZC1Ff0NBguRDcnfoJ1uoJu4yb0ryB8e6ftgC6zVUI/pQUuqM/C9pDs7PP5Ij/Ljf88hqoKwMsQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR08MB9286
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hengqi,
+Hi Anshul,
 
-kernel test robot noticed the following build errors:
+On Tue, Oct 17, 2023 at 09:13:44AM +0530, Anshul Dalal wrote:
+> Adds bindings for the Adafruit Seesaw Gamepad.
+> 
+> The gamepad functions as an i2c device with the default address of 0x50
+> and has an IRQ pin that can be enabled in the driver to allow for a rising
+> edge trigger on each button press or joystick movement.
+> 
+> Product page:
+>   https://www.adafruit.com/product/5743
+> Arduino driver:
+>   https://github.com/adafruit/Adafruit_Seesaw
+> 
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
 
-[auto build test ERROR on kees/for-next/seccomp]
-[also build test ERROR on bpf-next/master bpf/master linus/master v6.6-rc6 next-20231020]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Perhaps this ship has sailed, but is there any reason this simple device
+cannot be added to Documentation/devicetree/bindings/trivial-devices.yaml
+as opposed to having its own binding?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Hengqi-Chen/seccomp-Refactor-filter-copy-create-for-reuse/20231017-134654
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git for-next/seccomp
-patch link:    https://lore.kernel.org/r/20231015232953.84836-3-hengqi.chen%40gmail.com
-patch subject: [PATCH v2 2/5] seccomp, bpf: Introduce SECCOMP_LOAD_FILTER operation
-config: sh-shx3_defconfig (https://download.01.org/0day-ci/archive/20231023/202310230704.Uif0R7cz-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231023/202310230704.Uif0R7cz-lkp@intel.com/reproduce)
+It has no vendor-specific properties, and the only properties are the
+standard properties already understood by the I2C core. In case I have
+misunderstood, please let me know.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310230704.Uif0R7cz-lkp@intel.com/
+> ---
+> 
+> Changes for v5:
+> - Added link to the datasheet
+> 
+> Changes for v4:
+> - Fixed the URI for the id field
+> - Added `interrupts` property
+> 
+> Changes for v3:
+> - Updated id field to reflect updated file name from previous version
+> - Added `reg` property
+> 
+> Changes for v2:
+> - Renamed file to `adafruit,seesaw-gamepad.yaml`
+> - Removed quotes for `$id` and `$schema`
+> - Removed "Bindings for" from the description
+> - Changed node name to the generic name "joystick"
+> - Changed compatible to 'adafruit,seesaw-gamepad' instead of
+>   'adafruit,seesaw_gamepad'
+> 
+>  .../input/adafruit,seesaw-gamepad.yaml        | 60 +++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml b/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
+> new file mode 100644
+> index 000000000000..3f0d1c5a3b9b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
+> @@ -0,0 +1,60 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/adafruit,seesaw-gamepad.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Adafruit Mini I2C Gamepad with seesaw
+> +
+> +maintainers:
+> +  - Anshul Dalal <anshulusr@gmail.com>
+> +
+> +description: |
+> +  Adafruit Mini I2C Gamepad
+> +
+> +    +-----------------------------+
+> +    |   ___                       |
+> +    |  /   \               (X)    |
+> +    | |  S  |  __   __  (Y)   (A) |
+> +    |  \___/  |ST| |SE|    (B)    |
+> +    |                             |
+> +    +-----------------------------+
+> +
+> +  S -> 10-bit percision bidirectional analog joystick
+> +  ST -> Start
+> +  SE -> Select
+> +  X, A, B, Y -> Digital action buttons
+> +
+> +  Datasheet: https://cdn-learn.adafruit.com/downloads/pdf/gamepad-qt.pdf
+> +  Product page: https://www.adafruit.com/product/5743
+> +  Arduino Driver: https://github.com/adafruit/Adafruit_Seesaw
+> +
+> +properties:
+> +  compatible:
+> +    const: adafruit,seesaw-gamepad
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description:
+> +      The gamepad's IRQ pin triggers a rising edge if interrupts are enabled.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        joystick@50 {
+> +            compatible = "adafruit,seesaw-gamepad";
+> +            reg = <0x50>;
+> +        };
+> +    };
+> -- 
+> 2.42.0
+> 
 
-All errors (new ones prefixed by >>):
-
-   kernel/seccomp.c: In function 'seccomp_load_filter':
->> kernel/seccomp.c:2052:15: error: implicit declaration of function 'security_bpf_prog_alloc'; did you mean 'security_msg_msg_alloc'? [-Werror=implicit-function-declaration]
-    2052 |         ret = security_bpf_prog_alloc(prog->aux);
-         |               ^~~~~~~~~~~~~~~~~~~~~~~
-         |               security_msg_msg_alloc
->> kernel/seccomp.c:2062:15: error: implicit declaration of function 'bpf_prog_new_fd'; did you mean 'bpf_prog_get_ok'? [-Werror=implicit-function-declaration]
-    2062 |         ret = bpf_prog_new_fd(prog);
-         |               ^~~~~~~~~~~~~~~
-         |               bpf_prog_get_ok
-   cc1: some warnings being treated as errors
-
-
-vim +2052 kernel/seccomp.c
-
-  2037	
-  2038	static long seccomp_load_filter(const char __user *filter)
-  2039	{
-  2040		struct sock_fprog fprog;
-  2041		struct bpf_prog *prog;
-  2042		int ret;
-  2043	
-  2044		ret = seccomp_copy_user_filter(filter, &fprog);
-  2045		if (ret)
-  2046			return ret;
-  2047	
-  2048		ret = seccomp_prepare_prog(&prog, &fprog);
-  2049		if (ret)
-  2050			return ret;
-  2051	
-> 2052		ret = security_bpf_prog_alloc(prog->aux);
-  2053		if (ret) {
-  2054			bpf_prog_free(prog);
-  2055			return ret;
-  2056		}
-  2057	
-  2058		prog->aux->user = get_current_user();
-  2059		atomic64_set(&prog->aux->refcnt, 1);
-  2060		prog->type = BPF_PROG_TYPE_SECCOMP;
-  2061	
-> 2062		ret = bpf_prog_new_fd(prog);
-  2063		if (ret < 0)
-  2064			bpf_prog_put(prog);
-  2065	
-  2066		return ret;
-  2067	}
-  2068	#else
-  2069	static inline long seccomp_set_mode_filter(unsigned int flags,
-  2070						   const char __user *filter)
-  2071	{
-  2072		return -EINVAL;
-  2073	}
-  2074	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Kind regards,
+Jeff LaBundy
