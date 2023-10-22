@@ -2,110 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CD87D20A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 03:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008AE7D20A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 03:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbjJVBjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 21:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
+        id S229943AbjJVBqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 21:46:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVBjm (ORCPT
+        with ESMTP id S229472AbjJVBqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 21:39:42 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01208F4
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 18:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1697938771;
-        bh=Psot0sdGkipAd8UEd4Nh9M2s7l+Ap8Y7hXYBVAtW2kY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sE38i2iPvuvIBh1+MR4K8MS0Xyr+Ap7Hd/b6oUiLkfHfq3EeX458+lickxLhJsAFV
-         Z2rSZadvx05sNq8xPrIF2XUfajRvvAwQ2Dk7Bm0lw5wYsEMgLkM9HGZlWYeWK9o71L
-         IaeL/7wmSrYnLp45Bjui4F0g5v7N7cosUIv+pB0V7kzgugFBRprseoc3Vhuk/yXAhO
-         eXjZKyRlQZesEXzh/qcM18iH+MikhiV13LOenw4kVS5q3xz/b9N/3Gq2ub5S+XBA1O
-         528xc9w8ZFYOxk+2/8QMDK/Ys0uhZr8l5u5PyCFaRG31HP+geGFIHvdDT7IOCKXoSw
-         hqkLQca8j0WMA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SCgwg2b4Pz4wdF;
-        Sun, 22 Oct 2023 12:39:31 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        npiggin@gmail.com
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-6.6-5 tag
-Date:   Sun, 22 Oct 2023 12:39:26 +1100
-Message-ID: <87y1fv4er5.fsf@mail.lhotse>
+        Sat, 21 Oct 2023 21:46:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F8E11B
+        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 18:46:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697939199; x=1729475199;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5f1WRU3aRXap4I5n/ofpE3hvuF+uDnHT8apAm1dsN8Y=;
+  b=GgO+eC9jnzptKVshrVBfEjAyRIpPd6OMLKjXfeSQWstFy41gE9WhhuOD
+   wzqge+ZNrGOIXDU6dIFSzLNnM9M53d0cG6VlcfCD+z4/5rOgqZ7BN0wzi
+   LtPBi8YBaz41gLCXgAZ4zoYQJOZVF4+GigXV5KicAeirpEXxjFA9n72K8
+   zb6mG6LIZohfWVwzmnWbbhBz2SSZ1huyRw0lZNdNSdMsHmXGeQq5wQNzz
+   gVdRpdIvcj/VKg6KAtScIUabydkJKLP2RVWFFTy0wkT+1nBuzaxhGKip1
+   RngO11W4EWhJT80o97ZEwWkHYRSv8ifLdkC3TgcIh8u6s8PQkQKV3JwM9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="8233192"
+X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
+   d="scan'208";a="8233192"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2023 18:46:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="828085972"
+X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
+   d="scan'208";a="828085972"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Oct 2023 18:46:35 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1quNY1-0005Sw-1M;
+        Sun, 22 Oct 2023 01:46:33 +0000
+Date:   Sun, 22 Oct 2023 09:46:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH 3/5] misc: mlx5ctl: Add info ioctl
+Message-ID: <202310220923.Lga6m0Af-lkp@intel.com>
+References: <20231018081941.475277-4-saeed@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018081941.475277-4-saeed@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+Hi Saeed,
 
-Hi Linus,
+kernel test robot noticed the following build errors:
 
-Please pull some more powerpc fixes for 6.6:
+[auto build test ERROR on char-misc/char-misc-testing]
+[also build test ERROR on char-misc/char-misc-next char-misc/char-misc-linus soc/for-next rdma/for-next linus/master v6.6-rc6]
+[cannot apply to next-20231020]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-The following changes since commit f0eee815babed70a749d2496a7678be5b45b4c14:
+url:    https://github.com/intel-lab-lkp/linux/commits/Saeed-Mahameed/mlx5-Add-aux-dev-for-ctl-interface/20231018-162610
+base:   char-misc/char-misc-testing
+patch link:    https://lore.kernel.org/r/20231018081941.475277-4-saeed%40kernel.org
+patch subject: [PATCH 3/5] misc: mlx5ctl: Add info ioctl
+config: i386-randconfig-011-20231022 (https://download.01.org/0day-ci/archive/20231022/202310220923.Lga6m0Af-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231022/202310220923.Lga6m0Af-lkp@intel.com/reproduce)
 
-  powerpc/47x: Fix 47x syscall return crash (2023-10-11 09:31:26 +1100)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310220923.Lga6m0Af-lkp@intel.com/
 
-are available in the git repository at:
+All errors (new ones prefixed by >>):
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.6-5
+   In file included from <command-line>:
+>> ./usr/include/misc/mlx5ctl.h:8:9: error: unknown type name '__aligned_u64'
+       8 |         __aligned_u64 flags;
+         |         ^~~~~~~~~~~~~
+>> ./usr/include/misc/mlx5ctl.h:9:9: error: unknown type name '__u32'
+       9 |         __u32 size;
+         |         ^~~~~
+>> ./usr/include/misc/mlx5ctl.h:10:9: error: unknown type name '__u8'
+      10 |         __u8 devname[64]; /* underlaying ConnectX device */
+         |         ^~~~
+>> ./usr/include/misc/mlx5ctl.h:11:9: error: unknown type name '__u16'
+      11 |         __u16 uctx_uid; /* current process allocated UCTX UID */
+         |         ^~~~~
+   ./usr/include/misc/mlx5ctl.h:12:9: error: unknown type name '__u16'
+      12 |         __u16 reserved1;
+         |         ^~~~~
+   ./usr/include/misc/mlx5ctl.h:13:9: error: unknown type name '__u32'
+      13 |         __u32 uctx_cap; /* current process effective UCTX cap */
+         |         ^~~~~
+   ./usr/include/misc/mlx5ctl.h:14:9: error: unknown type name '__u32'
+      14 |         __u32 dev_uctx_cap; /* device's UCTX capabilities */
+         |         ^~~~~
+   ./usr/include/misc/mlx5ctl.h:15:9: error: unknown type name '__u32'
+      15 |         __u32 ucap; /* process user capability */
+         |         ^~~~~
+   ./usr/include/misc/mlx5ctl.h:16:9: error: unknown type name '__u32'
+      16 |         __u32 reserved2[4];
+         |         ^~~~~
 
-for you to fetch changes up to f9bc9bbe8afdf83412728f0b464979a72a3b9ec2:
-
-  powerpc/qspinlock: Fix stale propagated yield_cpu (2023-10-18 21:07:21 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 6.6 #5
-
- - Fix stale propagated yield_cpu in qspinlocks leading to lockups.
-
- - Fix broken hugepages on some configs due to ARCH_FORCE_MAX_ORDER.
-
- - Fix a spurious warning when copros are in use at exit time.
-
-Thanks to: Nicholas Piggin, Christophe Leroy, Nysal Jan K.A Sachin Sant,
-Shrikanth Hegde.
-
-- ------------------------------------------------------------------
-Michael Ellerman (2):
-      powerpc/mm: Allow ARCH_FORCE_MAX_ORDER up to 12
-      powerpc/64s/radix: Don't warn on copros in radix__tlb_flush()
-
-Nicholas Piggin (1):
-      powerpc/qspinlock: Fix stale propagated yield_cpu
-
-
- arch/powerpc/Kconfig                 | 2 +-
- arch/powerpc/lib/qspinlock.c         | 3 +++
- arch/powerpc/mm/book3s64/radix_tlb.c | 9 +--------
- 3 files changed, 5 insertions(+), 9 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmU0fBgACgkQUevqPMjh
-pYCoUQ/+Jg66lC4D2tIcGFX7gHmWkHgx5uqchuTNB4GtI4W55eJaN/ZMdhUiJ5Gg
-DsTjWlXnRY+sYBgXJw/ptZHoclYyN3SAEn/M+Zq1XYJNTjpg6TjNZpuuIzCgUYUd
-AnNz54v8fCoHH7Yfc4T774gUq3c9WKQlQLF9dwkD67lQDfwwaMERLKpuXz/NKfrQ
-+kvRplC0PkW0N0GY9w8PlYbd04MtjpOHucfQtaRAV2m/hRl0TPoHtteTwzcwieJC
-pUuycjCIjy/PRJtUHOuHCFUq7hPshOAEg0R/cJ4/uJfOAjAlR7aPFhj9S6EhmALN
-IURp3KgeUqri1e5ZSJ+ue5y3+/9fO/WD9FAeOgZJwY2HS4rEqIPgMc/H8oPKINUQ
-BUmjfYmpYgMsnOK3/70Yt8CVmDDn6bmAs3cdDa12udYP+TZevdxskIAOUgW/bRWe
-xHvf+JRAtCiqAKFsHhuO/sib1TtQGBNVJKydrJ+S8cUJf0IF5f0R+ns+piG1lc7+
-05qvANSNpKgnvVSrXnS5Op9CfR6a6l9h1CJzJlCSJMp9a7yZ/6rDQQ8jt1sxVSdG
-23xwUbQguveb6nf+UZQ2RPfdpTZTaxD2rHN6uAyCOqrNpu/ac4HaeGGCqHJdq8g2
-S0sk1fi5bUKbcBepJuT4HMJTPLpJLnYlvjlzCKS/oEUc9d+cDf8=
-=xp3d
------END PGP SIGNATURE-----
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
