@@ -2,53 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B44A47D226F
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 11:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 363AB7D2273
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbjJVJyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 05:54:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52124 "EHLO
+        id S231424AbjJVKAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 06:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJVJyK (ORCPT
+        with ESMTP id S229472AbjJVKAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 05:54:10 -0400
+        Sun, 22 Oct 2023 06:00:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7A6E3
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 02:54:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE2B6C433C7;
-        Sun, 22 Oct 2023 09:54:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65ECDE5;
+        Sun, 22 Oct 2023 03:00:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48913C433C7;
+        Sun, 22 Oct 2023 10:00:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697968448;
-        bh=624DD86ruJdAKpRg5DvcZ6DGc3A5gO4DA0XsTE9YA0A=;
+        s=k20201202; t=1697968813;
+        bh=7PsMWbaVMedcFn6pPH+/OzV5PSechVS/ScQduga9eQk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Eg4EW7zJrsPBLSVaMUUnDDNajHiROoE+x3HBZGuDv6Tr9dMd4wz4iI3QVbM/tPniz
-         1TfwJNEPsBnUxThdnNrY/rZoTl9pJdxhJkMxT497V0bTNpRgL6FR+FF2uhL51BNp20
-         mWUMBTt7MYZwM/aPak79Fro/jb/mqhv2smWYyz+hY1SK/5w8AViUICDGlZiCopPtBu
-         sjL9T6AfHrQJL0W/MQOtgEXzmamuchjR89WTBSCvTcboRboFzDRBkFpjb5IRQLooLV
-         q94UDvDjDc6jIM/0t/y2IzemQvfNgWHIMfVpU8ugMWB+5e8ZSD2QoZrGuqaeBcbtKM
-         /MGmbIpQ/+pfA==
-Date:   Sun, 22 Oct 2023 10:54:03 +0100
+        b=FLa/vHW7t8aqno59J8dt7ReYX8iDpAuNnwvWrlchV/dNSytiLmDRXjqasn6wdZfhk
+         hV+jNBGwOT+sXnjm7yMLdAhMCFi2vfSikzVUwjp+xu5F+lDFKAo/1xhHbJG19yBCCT
+         u5dBv5n7TsQlKrPbV3q/oNx4XbKb7cpayC7x9noJCcJGUV8bE4EUX+lZh+Z1kmiL+J
+         DyxNt3kT5d0Qh6rkMpm4BkWKjPFwdfsRUV2a6vtfbXTkfgrDjGAEXbMeirAqIStS9z
+         dUYV6L9LMJdnG0eujR0GuqeINj+D3/pHBDG+fz+zbbL3ozNoHFnYSqVzK8rYU+3eqv
+         T7FKjtPcjtZIA==
+Date:   Sun, 22 Oct 2023 11:00:07 +0100
 From:   Conor Dooley <conor@kernel.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
+To:     Nikita Travkin <nikita@trvn.ru>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] dt-bindings: display: ssd132x: Remove '-' before
- compatible enum
-Message-ID: <20231022-sandbox-reverend-7651a2e00a7d@spud>
-References: <20231020223029.1667190-1-javierm@redhat.com>
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, jenneron@postmarketos.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: qcom,sm8250: Add
+ sc7180-qdsp6-sndcard
+Message-ID: <20231022-snowy-flashily-0c814247e557@spud>
+References: <20231020-sc7180-qdsp-sndcard-v1-0-157706b7d06f@trvn.ru>
+ <20231020-sc7180-qdsp-sndcard-v1-1-157706b7d06f@trvn.ru>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="AzbL4NimfEVzMx25"
+        protocol="application/pgp-signature"; boundary="nNQF1DonWtR70u/D"
 Content-Disposition: inline
-In-Reply-To: <20231020223029.1667190-1-javierm@redhat.com>
+In-Reply-To: <20231020-sc7180-qdsp-sndcard-v1-1-157706b7d06f@trvn.ru>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -60,64 +66,53 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---AzbL4NimfEVzMx25
+--nNQF1DonWtR70u/D
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Oct 21, 2023 at 12:30:17AM +0200, Javier Martinez Canillas wrote:
-> This is a leftover from when the binding schema had the compatible string
-> property enum as a 'oneOf' child and the '-' was not removed when 'oneOf'
-> got dropped during the binding review process.
+On Fri, Oct 20, 2023 at 08:33:46PM +0500, Nikita Travkin wrote:
+> sc7180 can make use of the adsp-baked soundcard, add relevant compatible
+> to the documentation.
 >=20
-> Reported-by: Rob Herring <robh@kernel.org>
-> Closes: https://lore.kernel.org/dri-devel/CAL_Jsq+h8DcnpKqhokQOODCc8+Qi3M=
-0PrxRFKz_Y4v37yMJvvA@mail.gmail.com/
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
 Thanks,
-Conor.
+COnor.
 
 > ---
+>  Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 >=20
->  .../devicetree/bindings/display/solomon,ssd132x.yaml      | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/D=
+ocumentation/devicetree/bindings/sound/qcom,sm8250.yaml
+> index 262de7a60a73..e082a4fe095d 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+> @@ -25,6 +25,7 @@ properties:
+>            - qcom,apq8016-sbc-sndcard
+>            - qcom,msm8916-qdsp6-sndcard
+>            - qcom,qrb5165-rb5-sndcard
+> +          - qcom,sc7180-qdsp6-sndcard
+>            - qcom,sc8280xp-sndcard
+>            - qcom,sdm845-sndcard
+>            - qcom,sm8250-sndcard
 >=20
-> diff --git a/Documentation/devicetree/bindings/display/solomon,ssd132x.ya=
-ml b/Documentation/devicetree/bindings/display/solomon,ssd132x.yaml
-> index 0aa41bd9ddca..37975ee61c5a 100644
-> --- a/Documentation/devicetree/bindings/display/solomon,ssd132x.yaml
-> +++ b/Documentation/devicetree/bindings/display/solomon,ssd132x.yaml
-> @@ -11,10 +11,10 @@ maintainers:
-> =20
->  properties:
->    compatible:
-> -    - enum:
-> -        - solomon,ssd1322
-> -        - solomon,ssd1325
-> -        - solomon,ssd1327
-> +    enum:
-> +      - solomon,ssd1322
-> +      - solomon,ssd1325
-> +      - solomon,ssd1327
-> =20
->  required:
->    - compatible
 > --=20
 > 2.41.0
 >=20
 
---AzbL4NimfEVzMx25
+--nNQF1DonWtR70u/D
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTTxOwAKCRB4tDGHoIJi
-0oktAQDIz4f+vI7vkhhIDLAgUw9zdMfHk5TeYQwpzVwoeucoCAEAmzoJ7v2hDg0C
-eX6hl7pSU/Oi61+XBX2HNiVYH3ykpgI=
-=UhsP
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTTypwAKCRB4tDGHoIJi
+0gl5AP0X+bwFzAyHiu5r1O6UFDt6fXJWOpKG7KiyYT2H/ADLfQEAv0d2OZNJEAOh
+3R4ScbuFOliRrkzghDPBebpGO59z+A0=
+=XI4e
 -----END PGP SIGNATURE-----
 
---AzbL4NimfEVzMx25--
+--nNQF1DonWtR70u/D--
