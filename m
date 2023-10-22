@@ -2,137 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCC87D20C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 04:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A7E7D20C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 04:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbjJVCk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 21 Oct 2023 22:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
+        id S230200AbjJVCww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 21 Oct 2023 22:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVCk4 (ORCPT
+        with ESMTP id S229472AbjJVCwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 21 Oct 2023 22:40:56 -0400
-Received: from mail-oa1-f79.google.com (mail-oa1-f79.google.com [209.85.160.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782CEDE
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 19:40:54 -0700 (PDT)
-Received: by mail-oa1-f79.google.com with SMTP id 586e51a60fabf-1e9a324c12fso3533984fac.2
-        for <linux-kernel@vger.kernel.org>; Sat, 21 Oct 2023 19:40:54 -0700 (PDT)
+        Sat, 21 Oct 2023 22:52:51 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B3CD5D;
+        Sat, 21 Oct 2023 19:52:45 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-41cc7b67419so14937221cf.2;
+        Sat, 21 Oct 2023 19:52:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697943164; x=1698547964; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fLJPGz08SScZMNcOGuHvw7UWOGHz7MBlKaho3/nzID8=;
+        b=PrM1C45OtorNQYkqV6nVhbTVDNHmgLl2JeBAwytC8NoDFqhs5LRQqnT+z2R6EeDS+F
+         uVrMr8O+xSdgl5mBLFAhH+qsMkhsHwBQmEPidDilBXFtjGVD7jVscNslwWgKflMbOeHA
+         ftMphdNVbvEIJu9C8kiSST0kLwJGwT97PotezqPEoRi2hgZtX4Rs7vC7AuhbrGMBVYmW
+         QT4B7HPSeT2i+LGk8PbU6DyMgrJalvMVjfGcSy2zpPMlaGaRtz8B30AX7fw9XyxNfxF8
+         xyI5iL01sBiFe2KQlV3FdEg2jDCSVbPhMUtNrmBEdwjU2vxaQZBG2RivNHz6CDRTb1Zo
+         MYsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697942454; x=1698547254;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uU8lb1l1yKfhs7iHHIqOMOJAFdCISWoOXZEw6aTB7b4=;
-        b=O7Hb9S8N0UrIfCUNoS9aPLLhXS6Q5nK0uaKuT453td7HqQqCI2V/+XomuUQg9HerqD
-         Ed4MXHcK9cPGTungwcWtanEbnaJaKIy+Ev3JFO9g7BNZfygsJGihFKlhRWtyI+vwj9uZ
-         WHZF24rDtBhsHA72yDF9Cgmh0u5HVOJBk4+y48fsefJluD2R6KNnYlY4xbWNv2gRWeis
-         diGs+GrLN7APZbvgOJukLm7y+CXtMprae1StB4X+xqDHSr/3tWWECnlLZecVJXsX4x5X
-         I/H39RApU/swrJWcmQTPGQquiCZuNCM2Qs4E13e9Jk1H9FOLhBJbEZdOp2zB4DaGbhIE
-         HWYA==
-X-Gm-Message-State: AOJu0Yz8XbJh7CmZMMGx7iXZqKOUwotqhcH+/E1UrMQigS0FK58qZTp1
-        ze7OyuFhIjo0nfemwGa0ExIpgkM958X/Cii5ixLAbwhU1vTd
-X-Google-Smtp-Source: AGHT+IFHZ6P7o+3eMU28/NkHHkQTYEEHjSvBSzx432SAOF7tvLU7F4B1w1hLQmsTWuE5/cSvMxyb5JkINrs9wcT8EwARUgU91GPM
+        d=1e100.net; s=20230601; t=1697943164; x=1698547964;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fLJPGz08SScZMNcOGuHvw7UWOGHz7MBlKaho3/nzID8=;
+        b=k/jGVLHoJDXPER5mwLrfBE+GlrMIFBWX61O8BaWsq42Vik2SuGo+7/ay+nEOzemL+G
+         ueAx+CwjpRFxN9fF7SHPkHF8ub9G0/ttudYyOLbkjJamxciE407zZlZMv8x+46aWwo2r
+         gmVZ4KzBK01PO/0d3RE8/YxAhowvS5bH+OqMNx6tdn8SdrXVxFCuuXpjo2qqIPU1jLKU
+         ct6Jdr33IbxCjZYAETdWGVxAyPa7aebCHU4Z3E5kXsgR8rBGSMri4Wfz/ikJS+n4pwpC
+         +uMA+NsLlBWtS1h968WBc6geKtoNLwmlre26B/lrU6keCqDwFf1bvmt0uHp0Op/BZ3YA
+         rzgg==
+X-Gm-Message-State: AOJu0Ywu1G81BrF2gkb3ljlNzJHLcL+dLWzbFirRN0PUae6Pvc7wFInq
+        VlekXh6zKcIine7V2dHSlVA4ZjHTJ7WmM1ZIazU=
+X-Google-Smtp-Source: AGHT+IH2MHhpNeld9CqgKmIyUAEse6uqV2LrpU3aVrBAb1iJmpBgVHWItyqnxH7A/f6f8L8SOj4byTK4gKxP3ZofK/4=
+X-Received: by 2002:a05:622a:5d1:b0:418:1f20:5522 with SMTP id
+ d17-20020a05622a05d100b004181f205522mr6758862qtb.43.1697943164314; Sat, 21
+ Oct 2023 19:52:44 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:5692:b0:1ea:1bc4:d06b with SMTP id
- p18-20020a056870569200b001ea1bc4d06bmr2659490oao.10.1697942453878; Sat, 21
- Oct 2023 19:40:53 -0700 (PDT)
-Date:   Sat, 21 Oct 2023 19:40:53 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d005440608450810@google.com>
-Subject: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (4)
-From:   syzbot <syzbot+b2869947e0c9467a41b6@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20231018141151.1334501-1-sashal@kernel.org> <20231018141151.1334501-12-sashal@kernel.org>
+In-Reply-To: <20231018141151.1334501-12-sashal@kernel.org>
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Sun, 22 Oct 2023 10:52:33 +0800
+Message-ID: <CALm+0cVpvreUHCxjLiEAbXgmEO1J3egtn=MnB8NDs=c0gFx8Vw@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 6.5 12/31] workqueue: Fix UAF report by KASAN in pwq_release_workfn()
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        syzbot+60db9f652c92d5bacba4@syzkaller.appspotmail.com,
+        Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=1.0 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,PLING_QUERY,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+>
+> From: Zqiang <qiang.zhang1211@gmail.com>
+>
+> [ Upstream commit 643445531829d89dc5ddbe0c5ee4ff8f84ce8687 ]
+>
+> Currently, for UNBOUND wq, if the apply_wqattrs_prepare() return error,
+> the apply_wqattr_cleanup() will be called and use the pwq_release_worker
+> kthread to release resources asynchronously. however, the kfree(wq) is
+> invoked directly in failure path of alloc_workqueue(), if the kfree(wq)
+> has been executed and when the pwq_release_workfn() accesses wq, this
+> leads to the following scenario:
+>
+> BUG: KASAN: slab-use-after-free in pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
+> Read of size 4 at addr ffff888027b831c0 by task pool_workqueue_/3
+>
+> CPU: 0 PID: 3 Comm: pool_workqueue_ Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
+> Hardware name: Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+>  print_address_description mm/kasan/report.c:364 [inline]
+>  print_report+0xc4/0x620 mm/kasan/report.c:475
+>  kasan_report+0xda/0x110 mm/kasan/report.c:588
+>  pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
+>  kthread_worker_fn+0x2fc/0xa80 kernel/kthread.c:823
+>  kthread+0x33a/0x430 kernel/kthread.c:388
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+>  </TASK>
+>
+> Allocated by task 5054:
+>  kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+>  kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+>  ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+>  __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+>  kmalloc include/linux/slab.h:599 [inline]
+>  kzalloc include/linux/slab.h:720 [inline]
+>  alloc_workqueue+0x16f/0x1490 kernel/workqueue.c:4684
+>  kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
+>  kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
+>  kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
+>  kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
+>  kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
+>  kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:871 [inline]
+>  __se_sys_ioctl fs/ioctl.c:857 [inline]
+>  __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> Freed by task 5054:
+>  kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+>  kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+>  kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+>  ____kasan_slab_free mm/kasan/common.c:236 [inline]
+>  ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
+>  kasan_slab_free include/linux/kasan.h:164 [inline]
+>  slab_free_hook mm/slub.c:1800 [inline]
+>  slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+>  slab_free mm/slub.c:3809 [inline]
+>  __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
+>  alloc_workqueue+0xe76/0x1490 kernel/workqueue.c:4746
+>  kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
+>  kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
+>  kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
+>  kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
+>  kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
+>  kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:871 [inline]
+>  __se_sys_ioctl fs/ioctl.c:857 [inline]
+>  __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> This commit therefore flush pwq_release_worker in the alloc_and_link_pwqs()
+> before invoke kfree(wq).
+>
+> Reported-by: syzbot+60db9f652c92d5bacba4@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=60db9f652c92d5bacba4
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  kernel/workqueue.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index e51ab3d4765eb..a0045c159a0e1 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -4567,6 +4567,12 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
+>         }
+>         cpus_read_unlock();
+>
+> +       /* for unbound pwq, flush the pwq_release_worker ensures that the
+> +        * pwq_release_workfn() completes before calling kfree(wq).
+> +        */
+> +       if (ret)
+> +               kthread_flush_worker(pwq_release_worker);
+> +
+>         return ret;
+>  }
+>
 
-syzbot found the following issue on:
+Hello Sasha,  the pwq_release_worker only exists in the V6.6 kernel,
+the previous versions of kernels do not use this mechanism.
 
-HEAD commit:    78124b0c1d10 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1557da89680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f27cd6e68911e026
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2869947e0c9467a41b6
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137ac45d680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e4640b680000
+Thanks
+Zqiang
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/bd512de820ae/disk-78124b0c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a47a437b1d4f/vmlinux-78124b0c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3ae8b966bcd7/Image-78124b0c.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/d5d514495f15/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b2869947e0c9467a41b6@syzkaller.appspotmail.com
-
-BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-turning off the locking correctness validator.
-CPU: 0 PID: 5571 Comm: kworker/u4:8 Not tainted 6.6.0-rc6-syzkaller-g78124b0c1d10 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Workqueue: btrfs-cache btrfs_work_helper
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- dump_stack+0x1c/0x28 lib/dump_stack.c:113
- lookup_chain_cache_add kernel/locking/lockdep.c:3815 [inline]
- validate_chain kernel/locking/lockdep.c:3836 [inline]
- __lock_acquire+0x1c60/0x75e8 kernel/locking/lockdep.c:5136
- lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
- spin_lock include/linux/spinlock.h:351 [inline]
- __clear_extent_bit+0x1b4/0xaf0 fs/btrfs/extent-io-tree.c:596
- clear_extent_bit fs/btrfs/extent-io-tree.h:146 [inline]
- clear_extent_bits fs/btrfs/extent-io-tree.h:158 [inline]
- btrfs_free_excluded_extents fs/btrfs/block-group.c:840 [inline]
- caching_thread+0x18bc/0x1b64 fs/btrfs/block-group.c:909
- btrfs_work_helper+0x340/0x1504 fs/btrfs/async-thread.c:314
- process_one_work+0x694/0x1204 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2784
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-BTRFS info (device loop0): qgroup scan completed (inconsistency flag cleared)
-BTRFS info (device loop0): qgroup scan completed (inconsistency flag cleared)
-BTRFS info (device loop0): qgroup scan completed (inconsistency flag cleared)
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>
+> --
+> 2.40.1
+>
