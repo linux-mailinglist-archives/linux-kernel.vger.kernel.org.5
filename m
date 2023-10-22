@@ -2,173 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BBA7D230C
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 14:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D677D230E
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 14:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbjJVMDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 08:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49908 "EHLO
+        id S231688AbjJVMDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 08:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVMDq (ORCPT
+        with ESMTP id S229472AbjJVMDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 08:03:46 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BBBA3;
-        Sun, 22 Oct 2023 05:03:44 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9be02fcf268so343704166b.3;
-        Sun, 22 Oct 2023 05:03:44 -0700 (PDT)
+        Sun, 22 Oct 2023 08:03:49 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 887B9F3
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 05:03:47 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-27b22de9b5bso1379795a91.3
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 05:03:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697976223; x=1698581023; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LV4D2DnniG5y0BqTHFZQB1MGn4Ao69hJ2NYsUwg1XoA=;
-        b=Pz1x6n/2KrcylN5fR5PbATiRbk0lvQCMaulynwhdsc7IPJvjpPPn6Ec0aE+qEwaVl8
-         cT9Q9q1hLsBD/ZaT7flsRJvELU6Q1OA9hXLnm1ccVAYiMCLQX0Mc2htXGJvtGhwPr6gA
-         8FChjyZXoeKvR7tnmYJcYir2rrq6DVpMRJvOf0ggMMzurUPOboijdVxctor2jEnBJOkk
-         Vsb2GmAzII/fKTyX41prqbWcoY18ExrBxSbSFDiQHMh/c6HQhzZ7mSW2m44W9NqJCqua
-         oM/pEkj6ulyeybq9wq+8fZfBHtDL+LK/ME/8OhDa0mbk+nPXLcqxqgRhHgKr+DCMv9w2
-         8paQ==
+        d=gmail.com; s=20230601; t=1697976227; x=1698581027; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=p/eE2iwjhBbOe3VZZ3RYTaBbrjxq/R/X+GGySVAzau0=;
+        b=XngoalEeX23K8ppgALXHEO5UV9tdNUIyrClZGlYQlh5aSBl+5OiB0BSVkEmV0ip/yy
+         aAdqFUvGzcLrgQA5buiFLT4MRlFLwyF7CXn3Ka7myzj6r794SyxcwSW1Jr9NAWw7Z+Om
+         i1mBFoxhrjehYm/9cREz7z0rMKqregu6OWgx9XmfrjT0OglZzhNqEzdSEoHFiDaGRx03
+         vvDpniZarI/s+IgJeJ8aB/Mn2HOUzozDLXSCvcXtVvfkagzXBiZctMwUZDzpmUejQ08b
+         PHYFd3/MKhFQatRkEDRqexkH57f8fH6V1Igy2gHeWhU7eVsRKNogEHCxaXk3u/jxQCX5
+         o9YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697976223; x=1698581023;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LV4D2DnniG5y0BqTHFZQB1MGn4Ao69hJ2NYsUwg1XoA=;
-        b=d0hAOc5LJsxsU+t05Y8vRzTagoawuRWX8WpOuNBr0ZJjvVdGP5BVmDdhd/9VSGGWZZ
-         Mv5BLaa4KenMblnSMAEkn1ejydkOfYGJsIW3t6rNk02jwVbmpK6XfOv4/ySoZLzRW+xj
-         ZLs90lQ0pGXnhlzG13QFgBb51YF98CDOHybhLbm1tJXi0rQqBEf6AlBMCO/5CK7YdtVf
-         KEHkNa4IW/dCO8dRVPSZtOxjupyi4XdljErrJP5GRZl3z8FbCNecJ6YFR8amVeL/Jh/1
-         eQ84b6g+xOHloO20ouyQBOUUl0jSkB+VlQJ/K3J+52akT8fv9FyIZdcoa/d4yVVkGlUN
-         JJPg==
-X-Gm-Message-State: AOJu0YyBjHXnUf+mRaqs0i0IAoJNximVfjYXPwpaVR//0W79NymU9z+J
-        phSTMe6xYwhA7ntc1XExsnY=
-X-Google-Smtp-Source: AGHT+IH1iiAQaekK8D5v5zJkhVAmQ58w+d+CKS4qxxgJ8PwvgrnrO1pQzOeT/Qw0m+iwgCLYdQWeOw==
-X-Received: by 2002:a17:907:1b0a:b0:99d:e8da:c20b with SMTP id mp10-20020a1709071b0a00b0099de8dac20bmr5049091ejc.24.1697976222823;
-        Sun, 22 Oct 2023 05:03:42 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8109:8c00:3664:5c63:7da:9756:9320])
-        by smtp.gmail.com with ESMTPSA id q24-20020a170906361800b009b2ba067b37sm4870012ejb.202.2023.10.22.05.03.41
+        d=1e100.net; s=20230601; t=1697976227; x=1698581027;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p/eE2iwjhBbOe3VZZ3RYTaBbrjxq/R/X+GGySVAzau0=;
+        b=a9wl7v3zAjxKCNG/fyPUZEJ218RCxG7AKD4kwWrwhLca2kr/rwJLbbnJJzXiy889aF
+         5fy5iQxK9CKEUR4Uz8c0yFvMmSJBNGZjUb7rGtQw4+UVMAJagSWtd9OESqpbFY7+6NZp
+         Q9rKAZvw59i+ebZHhhFofvp8XWuhHPMTjidmmbQ4rmqtlmSYmZ7PR8IbtcRQrGelC+44
+         R5WFPow6FIpZvJkrrNobLjrgdRHCUr27DHHRZmMXrNIOWJ5caAkVskVH3CpazZk+auu6
+         KyW8+B3+dPJP1Kql/756YM6Yx7p7KqXgxmEkVKxACHM9/ySH+3SP7faazgugTXDU52Kh
+         NpNQ==
+X-Gm-Message-State: AOJu0YyMqxY9cQd7qv23HnfUcHkZlUBXXVuxvwimGxM4NrmDLLKcgs85
+        DaahBqwhlHtKQzkiFapvV1Y=
+X-Google-Smtp-Source: AGHT+IGRFz9ZInmubBn8DZsC49Gxsp+1AuFYvUY87+ZRzwqgsgTlaeyx7ImsdMRhqntoNGx1a4wq7g==
+X-Received: by 2002:a17:90a:55cf:b0:27d:ba33:699b with SMTP id o15-20020a17090a55cf00b0027dba33699bmr4572377pjm.2.1697976226880;
+        Sun, 22 Oct 2023 05:03:46 -0700 (PDT)
+Received: from ubuntu ([122.171.143.200])
+        by smtp.gmail.com with ESMTPSA id t3-20020a6564c3000000b005ac384b71cbsm3587393pgv.60.2023.10.22.05.03.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 05:03:42 -0700 (PDT)
-From:   Nik Bune <n2h9z4@gmail.com>
-To:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        skhan@linuxfoundation.org, baruch@tkos.co.il
-Cc:     Nik Bune <n2h9z4@gmail.com>, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: watchdog: cnxt,cx92755-wdt: convert txt to yaml
-Date:   Sun, 22 Oct 2023 14:03:28 +0200
-Message-Id: <20231022120328.137788-1-n2h9z4@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 22 Oct 2023 05:03:46 -0700 (PDT)
+Date:   Sun, 22 Oct 2023 05:03:31 -0700
+From:   Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Alex Elder <elder@kernel.org>, greybus-dev@lists.linaro.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kumaran.4353@gmail.com
+Subject: Re: [PATCH 3/3] staging: greybus: fixed prefer using ftrace warning
+Message-ID: <20231022120331.GA3552@ubuntu>
+References: <cover.1697969950.git.nandhakumar.singaram@gmail.com>
+ <cade10d4b94127900a015e0b2ab94da5dd8c2c63.1697969950.git.nandhakumar.singaram@gmail.com>
+ <2023102219-boat-shaky-f491@gregkh>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023102219-boat-shaky-f491@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert txt file to yaml.
-Add maintainers list. Took from Documentation/devicetree/bindings/arm/digicolor.yaml file. 
+On Sun, Oct 22, 2023 at 01:19:33PM +0200, Greg Kroah-Hartman wrote:
+> On Sun, Oct 22, 2023 at 03:42:26AM -0700, Nandha Kumar Singaram wrote:
+> > Adhere to linux coding style. Reported by checkpatch.pl:
+> > WARNING: Unnecessary ftrace-like logging - prefer using ftrace
+> > 
+> > Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+> > ---
+> >  drivers/staging/greybus/bootrom.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> 
+> Again, subject line should have "bootrom" in there somewhere, right?
+> 
+> thanks,
+> 
+> greg k-h
 
-Signed-off-by: Nik Bune <n2h9z4@gmail.com>
----
- .../bindings/watchdog/cnxt,cx92755-wdt.yaml   | 49 +++++++++++++++++++
- .../bindings/watchdog/digicolor-wdt.txt       | 25 ----------
- 2 files changed, 49 insertions(+), 25 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/watchdog/cnxt,cx92755-wdt.yaml
- delete mode 100644 Documentation/devicetree/bindings/watchdog/digicolor-wdt.txt
+Will update and share the patchset again.
 
-diff --git a/Documentation/devicetree/bindings/watchdog/cnxt,cx92755-wdt.yaml b/Documentation/devicetree/bindings/watchdog/cnxt,cx92755-wdt.yaml
-new file mode 100644
-index 000000000000..acd2d30b20f3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/watchdog/cnxt,cx92755-wdt.yaml
-@@ -0,0 +1,49 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/watchdog/cnxt,cx92755-wdt.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Conexant Digicolor SoCs Watchdog timer
-+
-+description: |
-+  The watchdog functionality in Conexant Digicolor SoCs relies on the so called
-+  "Agent Communication" block. This block includes the eight programmable system
-+  timer counters. The first timer (called "Timer A") is the only one that can be
-+  used as watchdog.
-+
-+allOf:
-+  - $ref: watchdog.yaml#
-+
-+maintainers:
-+  - Baruch Siach <baruch@tkos.co.il>
-+
-+properties:
-+  compatible:
-+    const: cnxt,cx92755-wdt
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      specifies the clock that drives the timer
-+
-+  timeout-sec: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    watchdog@f0000fc0 {
-+        compatible = "cnxt,cx92755-wdt";
-+        reg = <0xf0000fc0 0x8>;
-+        clocks = <&main_clk>;
-+        timeout-sec = <15>;
-+    };
-diff --git a/Documentation/devicetree/bindings/watchdog/digicolor-wdt.txt b/Documentation/devicetree/bindings/watchdog/digicolor-wdt.txt
-deleted file mode 100644
-index a882967e17d4..000000000000
---- a/Documentation/devicetree/bindings/watchdog/digicolor-wdt.txt
-+++ /dev/null
-@@ -1,25 +0,0 @@
--Conexant Digicolor SoCs Watchdog timer
--
--The watchdog functionality in Conexant Digicolor SoCs relies on the so called
--"Agent Communication" block. This block includes the eight programmable system
--timer counters. The first timer (called "Timer A") is the only one that can be
--used as watchdog.
--
--Required properties:
--
--- compatible : Should be "cnxt,cx92755-wdt"
--- reg : Specifies base physical address and size of the registers
--- clocks : phandle; specifies the clock that drives the timer
--
--Optional properties:
--
--- timeout-sec : Contains the watchdog timeout in seconds
--
--Example:
--
--	watchdog@f0000fc0 {
--		compatible = "cnxt,cx92755-wdt";
--		reg = <0xf0000fc0 0x8>;
--		clocks = <&main_clk>;
--		timeout-sec = <15>;
--	};
--- 
-2.34.1
-
+Thanks,
+Nandha Kumar
