@@ -2,62 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 363AB7D2273
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E0F7D2278
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbjJVKAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 06:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43178 "EHLO
+        id S231493AbjJVKIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 06:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVKAQ (ORCPT
+        with ESMTP id S229472AbjJVKIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 06:00:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65ECDE5;
-        Sun, 22 Oct 2023 03:00:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48913C433C7;
-        Sun, 22 Oct 2023 10:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697968813;
-        bh=7PsMWbaVMedcFn6pPH+/OzV5PSechVS/ScQduga9eQk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FLa/vHW7t8aqno59J8dt7ReYX8iDpAuNnwvWrlchV/dNSytiLmDRXjqasn6wdZfhk
-         hV+jNBGwOT+sXnjm7yMLdAhMCFi2vfSikzVUwjp+xu5F+lDFKAo/1xhHbJG19yBCCT
-         u5dBv5n7TsQlKrPbV3q/oNx4XbKb7cpayC7x9noJCcJGUV8bE4EUX+lZh+Z1kmiL+J
-         DyxNt3kT5d0Qh6rkMpm4BkWKjPFwdfsRUV2a6vtfbXTkfgrDjGAEXbMeirAqIStS9z
-         dUYV6L9LMJdnG0eujR0GuqeINj+D3/pHBDG+fz+zbbL3ozNoHFnYSqVzK8rYU+3eqv
-         T7FKjtPcjtZIA==
-Date:   Sun, 22 Oct 2023 11:00:07 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Nikita Travkin <nikita@trvn.ru>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, jenneron@postmarketos.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: qcom,sm8250: Add
- sc7180-qdsp6-sndcard
-Message-ID: <20231022-snowy-flashily-0c814247e557@spud>
-References: <20231020-sc7180-qdsp-sndcard-v1-0-157706b7d06f@trvn.ru>
- <20231020-sc7180-qdsp-sndcard-v1-1-157706b7d06f@trvn.ru>
+        Sun, 22 Oct 2023 06:08:23 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C91E6;
+        Sun, 22 Oct 2023 03:08:21 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5ae99bb5ccdso1080999a12.1;
+        Sun, 22 Oct 2023 03:08:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697969301; x=1698574101; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KgnGtHufG+xvCzQs2ZVtnujeeQwsYYAk6Y3rSnTjot8=;
+        b=FsXJgTHwKcjGZUdjywDUMBNMCJfHqsXpChXIGkw7o+ubjLgskiMXy16VaEME5hIxU5
+         7vkn0wEQQZYTi4AxU1WWhIv+BF6G7VvLeE+UxetfCd0cIPV+GiUHcklJFPg9tvbW7nU6
+         J5UeM/cHI2XYtOxaCrZY5bgTPVXQLEJ10wC3qZQIUuNNibkG9gcvRHA6FKKxpt3sG8na
+         Kop2tW6G3aesi6HYXG+UFeukIDlU7+CLr7vTH6Y0ICOkBM7KYjVsE37TV6bIAsWaV9/y
+         PHn2vKBfEY3hzzMkXWHF5FbepzcLEBNGJ2R2QYTY7dYp8YNMQ4/tIQk+zO17ZB+avaog
+         quwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697969301; x=1698574101;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KgnGtHufG+xvCzQs2ZVtnujeeQwsYYAk6Y3rSnTjot8=;
+        b=k5Mua8UZ2/6e9pdHUEgeQgEUwOnUFB7axdGrS4vZBvpW9I3fQ9TIpYvasIwYyX86H9
+         zslyUX1mHEoEaGqF47PDqtLiDTtJ0WD6PzszXAwuS1V7grlD6lJu0L1XVt/BgaITL4NB
+         /OuLvvEWnNTEZqxxmiUcBZBeZvowVA3KE00mI3jXdZh6ldgjxstc89wFJ47fMMNfgo4t
+         BVii/q3poG97lditPNmj6L5G+g4t5xCxK+OVroMabNaE8uFCf9FtApqcM7hxbhiFRqxg
+         RVnOgFYT0LGtoTe1ySo/hT2sn6gXGm3QB0efhzpjU29Ue4djarA+vnSZIHPg/fg7ia9O
+         HtKw==
+X-Gm-Message-State: AOJu0YwT5AMwUKsKO6FQHpv0yIr1P8alvSKV3xJknovnjxoCWKEmX+/T
+        4MzdrsR9LPzpfkB5p1CDDcQ=
+X-Google-Smtp-Source: AGHT+IFwfDsLhajsOmzpsF08fQz5zAkvoLBDv4lRrEuQax1IruNZCwsM4pEysX9xzA3i0rA09m+WVg==
+X-Received: by 2002:a17:90b:4f4b:b0:27d:9f6:47b1 with SMTP id pj11-20020a17090b4f4b00b0027d09f647b1mr4206403pjb.33.1697969300963;
+        Sun, 22 Oct 2023 03:08:20 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id 5-20020a17090a000500b00267d9f4d340sm6453994pja.44.2023.10.22.03.08.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Oct 2023 03:08:20 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id EF51196ACF1E; Sun, 22 Oct 2023 17:08:17 +0700 (WIB)
+Date:   Sun, 22 Oct 2023 17:08:17 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     JPT <j-p-t@gmx.net>,
+        Linux Media Subsystem <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Antti Palosaari <crope@iki.fi>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Gon Solo <gonsolo@gmail.com>
+Subject: Re: si2157 not working at all?
+Message-ID: <ZTT0kZCijyLDN1LG@debian.me>
+References: <08125fef-3cb4-4f01-975c-d7c409153c4a@gmx.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="nNQF1DonWtR70u/D"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="TyRnEwhs9Qk8a6qs"
 Content-Disposition: inline
-In-Reply-To: <20231020-sc7180-qdsp-sndcard-v1-1-157706b7d06f@trvn.ru>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <08125fef-3cb4-4f01-975c-d7c409153c4a@gmx.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,53 +78,61 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---nNQF1DonWtR70u/D
-Content-Type: text/plain; charset=us-ascii
+--TyRnEwhs9Qk8a6qs
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 20, 2023 at 08:33:46PM +0500, Nikita Travkin wrote:
-> sc7180 can make use of the adsp-baked soundcard, add relevant compatible
-> to the documentation.
+On Sun, Oct 22, 2023 at 09:57:07AM +0200, JPT wrote:
+> Hi,
 >=20
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-COnor.
-
-> ---
->  Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 1 +
->  1 file changed, 1 insertion(+)
+> I've got a
+> 	TerraTec Cinergy TC2 Stick / Terratec Cinergy H6 rev. 2
+> DVB-T2/DVB-C USB stick using chips:
+> 	IT9306, Si2157, Si2168-B40
 >=20
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/D=
-ocumentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> index 262de7a60a73..e082a4fe095d 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> +++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> @@ -25,6 +25,7 @@ properties:
->            - qcom,apq8016-sbc-sndcard
->            - qcom,msm8916-qdsp6-sndcard
->            - qcom,qrb5165-rb5-sndcard
-> +          - qcom,sc7180-qdsp6-sndcard
->            - qcom,sc8280xp-sndcard
->            - qcom,sdm845-sndcard
->            - qcom,sm8250-sndcard
+> Is there a way to make it work?
+> Or is the si2157 chip just not supported?
 >=20
-> --=20
-> 2.41.0
+> si2157 7-0063: device is buggy, skipping firmware download
+> si2157 7-0063: firmware version: =EF=BF=BD.=EF=BF=BD.255
 >=20
 
---nNQF1DonWtR70u/D
+Do you already have latest linux-firmware package?
+
+> This patch added the "skipping firmware download":
+> https://patchwork.kernel.org/project/linux-media/patch/20191010095103.380=
+3-3-gonsolo@gmail.com/
+>=20
+> is there a way to tell the module to force load the firmware?
+> Or do I have to patch the kernel?
+>=20
+> I tried on Kubuntu 23.4, kernel 6.2.0-35-generic
+> and on Libreelec 9.2@raspberry 3B,  kernel 4.19.127? , where it failed
+> differently.
+
+Can you check latest mainline (currently v6.6-rc6) instead?
+
+>=20
+> libreelec log see http://ix.io/4JBp
+>=20
+
+Can you also attach full kernel logs from both systems?
+
+Confused...
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--TyRnEwhs9Qk8a6qs
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTTypwAKCRB4tDGHoIJi
-0gl5AP0X+bwFzAyHiu5r1O6UFDt6fXJWOpKG7KiyYT2H/ADLfQEAv0d2OZNJEAOh
-3R4ScbuFOliRrkzghDPBebpGO59z+A0=
-=XI4e
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZTT0jQAKCRD2uYlJVVFO
+owQsAQCJn7ZFU9tZeqyyzIn0DhZ/C0IeYD2TpHCMo7ljmUgn+wD+NOa7IgorzGBt
+J3dBuJBch8bmtqrgRmUbXa2061/YCA8=
+=xNMW
 -----END PGP SIGNATURE-----
 
---nNQF1DonWtR70u/D--
+--TyRnEwhs9Qk8a6qs--
