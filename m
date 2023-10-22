@@ -2,44 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE8A7D23B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 17:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1322B7D23B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 17:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbjJVPqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 11:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
+        id S232411AbjJVPqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 11:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231972AbjJVPqV (ORCPT
+        with ESMTP id S232261AbjJVPqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 11:46:21 -0400
+        Sun, 22 Oct 2023 11:46:22 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD44188;
-        Sun, 22 Oct 2023 08:46:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5076CC433C7;
-        Sun, 22 Oct 2023 15:46:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBA319E;
+        Sun, 22 Oct 2023 08:46:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 183E0C433C8;
+        Sun, 22 Oct 2023 15:46:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697989578;
-        bh=DetEMdiRD6MGqVtSW2k7LUFnENO0dedBHH9GU+rM+SI=;
+        s=k20201202; t=1697989580;
+        bh=Mm+VlhFqSLI6KYeFntJha6+OeayGdA2ZEu/N8on3v04=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a/RTYhLYRkfZadEsok7DCOgCXivU8FProHQzWUGJ/DwKSY8opBoVeHiYET0RF6YJL
-         2UBmXwfqhC01/3fvDrqIsqZ121GpIA4o/1sHP9Vj8LE0HJ0rGAQVyZzKil+kpUtQok
-         iiAmT1cWH244idnuTYLuvEjN0gO1UqqPN/l/tjhsXo9EEo3+Ii4bdv9HK0vd88P2Vo
-         aYOSPfnbxMYbBcrxssoLuE74s8ikNrhunvaTRwe+oB8WDC4j01Oj5/VQg7Qb9e49pR
-         5Tg3Y161ioi6+xZDUtNt8dL7yWeOclW+dJL9SlVS3GqRgHvXiW1C5w1XQIoemXTD9D
-         4popM2snj/AyA==
+        b=AtClg8Njv9OReqyC1fLHgISvW9cIsaqi9fwdkE6oaXgjBIgrkzQ9LIvY8mC9xLBUp
+         rFbJYiNp6hus5tGmMPR+/oVA4mdxANsymu/5zeQVh04HcZ5UCRzhFkdJ8Ovd6Fwtja
+         zjJ0BPT2ThrcFn3vWLz27FC1Z+6Ln1GWMNWu7JQWvtErhLmpgjt4wynaN4/ztErK3R
+         /Usr2bOfG//xoRB2p+8S5ER3nECPDvzdXbm3dsSdpanCrH5aBfvXd0eaCnMR8M/BXw
+         W5r7aF9llaA9tp8KpGEAL/AlsWkX3VwE2qI+JwUiA6dc7qIrRe3+NYxkL4cITYKupP
+         IC2h383wdr5uQ==
 From:   Bjorn Andersson <andersson@kernel.org>
 To:     Stephan Gerhold <stephan@gerhold.net>
 Cc:     Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] arm64: dts: qcom: msm8916/39: Fix-ups for dynamic reserved mem patches
-Date:   Sun, 22 Oct 2023 08:50:25 -0700
-Message-ID: <169798982295.271027.6626600075646673370.b4-ty@kernel.org>
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Vincent Knecht <vincent.knecht@mailoo.org>,
+        "Lin, Meng-Bo" <linmengbo0689@protonmail.com>,
+        "J.R. Divya Antony" <d.antony.jr@gmail.com>,
+        Nikita Travkin <nikita@trvn.ru>,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Jasper Korten <jja2000@gmail.com>,
+        Siddharth Manthan <siddharth.manthan@gmail.com>,
+        Markuss Broks <markuss.broks@gmail.com>
+Subject: Re: [PATCH v2 00/14] arm64: dts: qcom: msm8916/39: Enable sound and modem with QDSP6
+Date:   Sun, 22 Oct 2023 08:50:26 -0700
+Message-ID: <169798982349.271027.9210121677851263066.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230921-msm8916-rmem-fixups-v1-0-34d2b6e721cf@gerhold.net>
-References: <20230921-msm8916-rmem-fixups-v1-0-34d2b6e721cf@gerhold.net>
+In-Reply-To: <20231003-msm8916-modem-v2-0-61b684be55c0@gerhold.net>
+References: <20231003-msm8916-modem-v2-0-61b684be55c0@gerhold.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -54,24 +63,48 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 21 Sep 2023 20:56:03 +0200, Stephan Gerhold wrote:
-> Enable GPU/WCNSS properly in some MSM8916/MSM8939 boards that were
-> changed after I sent the patches for the dynamic reserved memory
-> allocation.
+On Tue, 03 Oct 2023 15:18:18 +0200, Stephan Gerhold wrote:
+> Enable sound and modem on most of the MSM8916/MSM8939
+> smartphones/tablets supported upstream by:
 > 
-> I have magic scripts that make the necessary changes automatically so
-> I'm quite sure that I caught all new instances that need adjustment. :-)
+>  - Adding the BAM-DMUX DT nodes to msm8939.dtsi for WWAN Internet
+>  - Adding the QDSP6 DT nodes to both msm8916.dtsi and msm8939.dtsi.
+>    This is needed because audio must be routed through the QDSP6
+>    services provided by the modem firmware when the modem is active.
+>  - Setting up the sound/codec related nodes for all the devices.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/3] arm64: dts: qcom: msm8916-samsung-gt5: Enable GPU
-      commit: e87cef6a035edc03b4ac98f88121c706b2843156
-[2/3] arm64: dts: qcom: msm8939-longcheer-l9100: Enable wcnss_mem
-      commit: d63ae4a814a763a5d2d4d078073562698693a909
-[3/3] arm64: dts: qcom: msm8916-*: Fix alphabetic node order
-      commit: b364cc485da1b769f1ead705dcd853e87b42f96e
+[01/14] arm64: dts: qcom: msm8939: Add BAM-DMUX WWAN
+        commit: 32f963412a2d8cb65ff2737e6763f88ed15a2efb
+[02/14] arm64: dts: qcom: msm8916: Add QDSP6
+        commit: 861aa8e6829cf2f1a9c5a52dd9cebc722cf7ca44
+[03/14] arm64: dts: qcom: msm8939: Add QDSP6
+        commit: 0718ff7185cf42f8e817e39552feb9d6ed901aff
+[04/14] arm64: dts: qcom: msm8916: Add common msm8916-modem-qdsp6.dtsi
+        commit: 8abbd235b2ecbfba0a445ccd400a54af8fd83bc2
+[05/14] arm64: dts: qcom: msm8916-samsung-a2015: Add sound and modem
+        commit: f276411d0f8286c7ff3e1bd6917ea7ee61152d24
+[06/14] arm64: dts: qcom: msm8916-samsung-serranove: Add sound and modem
+        commit: 6b66abd5858e025b2715b1efb193124dd7cc17c5
+[07/14] arm64: dts: qcom: msm8916-wingtech-wt88047: Add sound and modem
+        commit: 5db767ae36255c0301ede64ee8993e0909efa73f
+[08/14] arm64: dts: qcom: msm8916-alcatel-idol347: Add sound and modem
+        commit: 5d1cec28fd4d09e82e028903423829f59a033965
+[09/14] arm64: dts: qcom: msm8916-asus-z00l: Add sound and modem
+        commit: 462cdffaa83df28d5fbd0c1771eaa85954114c77
+[10/14] arm64: dts: qcom: msm8916-longcheer-l8150: Add sound and modem
+        commit: 1ab407193d38c775261d7beccd080e88f68c7243
+[11/14] arm64: dts: qcom: msm8916-longcheer-l8910: Add sound and modem
+        commit: 2821c34a996b4a0991d33bead5caa84267e2dccd
+[12/14] arm64: dts: qcom: msm8916-samsung-gt5: Add sound and modem
+        commit: 4f6b5edbcfbaa1061c29e6259cc5653f44b673da
+[13/14] arm64: dts: qcom: msm8916-samsung-j5: Add sound and modem
+        commit: cf12268e1b632c6ac16185bd1230af6e1ca517fb
+[14/14] arm64: dts: qcom: msm8939-samsung-a7: Add sound and modem
+        commit: dd5ab5d2ca722110c82459a571e367df7ee6d821
 
 Best regards,
 -- 
