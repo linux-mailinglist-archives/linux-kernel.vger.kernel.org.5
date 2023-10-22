@@ -2,128 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D897D23C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 17:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8D07D23A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 17:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbjJVPsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 11:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43352 "EHLO
+        id S231638AbjJVPqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 11:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231955AbjJVPr7 (ORCPT
+        with ESMTP id S231616AbjJVPqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 11:47:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2F0D75
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 08:46:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1697989607;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UGgrk7U7ziyea5cunTO+IloGn3qNk/rZsIkV0TfaQNg=;
-        b=FrAUZpfxnnPVlUGgCHHDC+EUUqI7NNQ1Lun6unnb4LTnGVnMg4A0FxV8HZbj41ZMoSya/k
-        XzLjEGVhuTrjGx9EHQCrJSfLHf+weL5vrkOBYOhgw/5sew4t9ZMdD3CbO1F+BLSbVyxRCl
-        mEC/UJBnq8/3MbjsML/PO8Gk3iMOax0=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-513-lqTUou76OTKjvFILcLW_8Q-1; Sun, 22 Oct 2023 11:46:35 -0400
-X-MC-Unique: lqTUou76OTKjvFILcLW_8Q-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-66d3f71f49cso8867146d6.1
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 08:46:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697989595; x=1698594395;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UGgrk7U7ziyea5cunTO+IloGn3qNk/rZsIkV0TfaQNg=;
-        b=k5BIAgzmj+K3NcwaptmEWUMBjQ9lB2EkdXOcvONA5fTL0oeB1v62a0VSMTYbkg+uaj
-         rmgsB1nUZXpd8bNFqqZ5j9ERPdvh9hRA4MG30w3kt4RtpG8C0p7kOZGVid0Rr42qYY1O
-         i1SqatDWkmOSDnztrznO2FVB8VOqOlBF0FQlKLNPpbwlk0JTZx94L1O4b7eh4l3YFb9w
-         IzAWlQC1cUXNCoRJj3aDGxoSnUi0PFQQfZaIQzonxEji3Q/rvsWCtSjZEEwiUbI36YMd
-         qUHs7j1uLjVFeSR0Ng+nhsP1xqcd7GUocTSpDCU52WFzhm7GNvZmtMR78zKbrjzah4Aw
-         LQHA==
-X-Gm-Message-State: AOJu0YwGD10QuJTPZ3isUJ7ZRQFrnmVi3sIUDgg94Ovqm5buaOjQ6xJ1
-        kk+50fIJgS/jgEpLlpkIN+F1QtjKco2ee8eGzeCvEkeXY9KTukDvy8tzsyxS4MF3N6KRVD87rl9
-        7p2K9CT5iaZ5ulB8RWx9qOjgf
-X-Received: by 2002:a05:620a:2b4d:b0:773:b634:b05a with SMTP id dp13-20020a05620a2b4d00b00773b634b05amr6696805qkb.2.1697989595289;
-        Sun, 22 Oct 2023 08:46:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEWN6AC503edm3tNF4Vnyfigq1+yBTgZzdwoQzZvT6nDeUnhRhK8Btp6MrUdseV2H9geWSwow==
-X-Received: by 2002:a05:620a:2b4d:b0:773:b634:b05a with SMTP id dp13-20020a05620a2b4d00b00773b634b05amr6696793qkb.2.1697989594852;
-        Sun, 22 Oct 2023 08:46:34 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id o8-20020a05620a228800b0076cdc3b5beasm2100836qkh.86.2023.10.22.08.46.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 08:46:33 -0700 (PDT)
-Date:   Sun, 22 Oct 2023 11:46:31 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-Message-ID: <ZTVD18RgBfITsQC4@x1n>
-References: <ZSlragGjFEw9QS1Y@x1n>
- <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
- <ZS2IjEP479WtVdMi@x1n>
- <8d187891-f131-4912-82d8-13112125b210@redhat.com>
- <ZS7ZqztMbhrG52JQ@x1n>
- <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com>
- <ZTGJHesvkV84c+l6@x1n>
- <81cf0943-e258-494c-812a-0c00b11cf807@redhat.com>
- <CAJuCfpHZWfjW530CvQCFx-PYNSaeQwkh-+Z6KgdfFyZHRGSEDQ@mail.gmail.com>
- <d34dfe82-3e31-4f85-8405-c582a0650688@redhat.com>
+        Sun, 22 Oct 2023 11:46:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B8AB4;
+        Sun, 22 Oct 2023 08:46:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9F0DC433C9;
+        Sun, 22 Oct 2023 15:46:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1697989565;
+        bh=hBgLuN4gmptdMYFU6Aqmt023U1kwjozrOwEimQ6osa0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Yg0vO6Pq3tf9IbiBrgLcCfMD5w5/dCinx1R0rp21qXirSvlGovrhIsRtLL55CvimE
+         IlQFFbtT49UhDR5dB0n2syIzk61zOo+EYWs6s/XSFGQ+RDrZx1o+QP7z5EjC4XPuwe
+         Qky9chStXkYTjHDwOhWtb1q2AjFXUbehWxjsTtAYnqGw7GUUZL+xmjHanD4kyISEHe
+         e4yDhON6/I5gSmJHTh0J5KA4O/+zHlDdC6MpuUee/8KvM9ZcrEnaEq7cuAxfi7QXy0
+         pbIHcBV5eBz81Uqn70ACCvO1NcM4MQ4/FVyt4YAJefxIj3uPsRp3eQszhrWpMvcmTv
+         rr37+pHD6fWeQ==
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?q?Andr=C3=A9=20Apitzsch?= <git@apitzsch.eu>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: Re: [PATCH 0/2] arm64: dts: qcom: longcheer l8910 and l9100: Enable RGB LED
+Date:   Sun, 22 Oct 2023 08:50:13 -0700
+Message-ID: <169798982353.271027.3963282631663809057.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231013-bq_leds-v1-0-cc374369fc56@apitzsch.eu>
+References: <20231013-bq_leds-v1-0-cc374369fc56@apitzsch.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d34dfe82-3e31-4f85-8405-c582a0650688@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 07:16:19PM +0200, David Hildenbrand wrote:
-> These are rather the vibes I'm getting from Peter. "Why rename it, could
-> confuse people because the original patches are old", "Why exclude it if it
-> has been included in the original patches". Not the kind of reasoning I can
-> relate to when it comes to upstreaming some patches.
 
-You can't blame anyone if you misunderstood and biased the question.
+On Fri, 13 Oct 2023 22:51:35 +0200, André Apitzsch wrote:
+> With the driver for ktd2026 recently applied to linux-leds[1], the LED
+> can be enabled on longcheer l8910 and l9100.
+> 
+> [1] https://lore.kernel.org/all/20231002-ktd202x-v6-0-26be8eefeb88@apitzsch.eu/
+> 
+> 
 
-The first question is definitely valid, even until now.  You guys still
-prefer to rename it, which I'm totally fine with.
+Applied, thanks!
 
-The 2nd question is wrong from your interpretation.  That's not my point,
-at least not starting from a few replies already.  What I was asking for is
-why such page movement between mm is dangerous.  I don't think I get solid
-answers even until now.
+[1/2] arm64: dts: qcom: msm8916-longcheer-l8910: Enable RGB LED
+      commit: 5017b8cdb7ebeb32d7f12a05b34d58662e137dbe
+[2/2] arm64: dts: qcom: msm8939-longcheer-l9100: Enable RGB LED
+      commit: a21796c631734ea5cf62507e63a2479261880514
 
-Noticing "memcg is missing" is not an argument for "cross-mm is dangerous",
-it's a review comment.  Suren can address that.
-
-You'll propose a new feature that may tag an mm is not an argument either,
-if it's not merged yet.  We can also address that depending on what it is,
-also on which lands earlier.
-
-It'll be good to discuss these details even in a single-mm support.  Anyone
-would like to add that can already refer to discussion in this thread.
-
-I hope I'm clear.
-
+Best regards,
 -- 
-Peter Xu
-
+Bjorn Andersson <andersson@kernel.org>
