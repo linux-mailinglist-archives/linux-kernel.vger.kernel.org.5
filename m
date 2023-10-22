@@ -2,146 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5837D228D
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719AE7D228B
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbjJVKWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 06:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
+        id S231501AbjJVKWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 06:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbjJVKWv (ORCPT
+        with ESMTP id S229472AbjJVKWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 06:22:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64EB6112
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 03:22:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A86FBC433C7;
-        Sun, 22 Oct 2023 10:22:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697970169;
-        bh=u3mZD3M0BbAp4t/Q6xqF3Flpj6qCoSuxiadREdf57LU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y5LvDy/nVVt4KYd7rDwJ7JARcEVQxghB88LFjnOL0or7rn47Sd5mgA8ppRQAuK/h4
-         bWLzUfFqHYFq68YTp6N9iwOp3LcLHgOncViPOG16J/XF6iptfeLrRG1kvR6MZzw4Zw
-         v/Oe0eihr/rQkT62MSCWp5TKzhk+EoQ+WR1v5ZrU=
-Date:   Sun, 22 Oct 2023 12:22:46 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Gary Rookard <garyrookard@fastmail.org>
-Cc:     philipp.g.hortmann@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8192e: renamed variable IsHTHalfNmodeAPs
-Message-ID: <2023102258-trillion-pandemic-1b85@gregkh>
-References: <20231021224051.7443-1-garyrookard@fastmail.org>
- <2023102221-abreast-refold-d300@gregkh>
+        Sun, 22 Oct 2023 06:22:50 -0400
+Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5E2EE
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 03:22:48 -0700 (PDT)
+Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6ce27d056ceso3947872a34.0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 03:22:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697970167; x=1698574967;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1jz58LyOQLBpUu38euw5ZNzHbshkNxHgL8g+dkjSvKo=;
+        b=eRVC4mhG8wxogSu61HRI6j7vTV/wTDhsjNUxiUfMhexdyl3vvUBBO2IY5UVez+YRkF
+         XoJ7sKclwOBBctSe3RJ0e+W6+Bq9eKhbrQqXCnj1C+l4Y4ZdsMblNtnVY2wnfwC27fIx
+         VGwSozvw+tzFeS7CSM48cLYdg5aWpjW0GgJTbpuubmzXh+YlpmeUcbTRt0kJp4VeJbAN
+         Pv2Ycw/xQxyjBgmwCT2N/OI9aVkA+fv9IZNJJ+DaDeQ7LmmIC2jWLkn9CkHXH4ZVeCjJ
+         PB2lQJ4aHtK3svS8fXyHb9JTQ8rzPhiHDMc8Y9aqcLkxY2fV5gMuoAJv5Qtko2yTKj5V
+         ducw==
+X-Gm-Message-State: AOJu0YyNpa8QC4IKDlM+NgAamitzPJ49trmdOWSv9KiYYATj3avL2U7u
+        diMTpSCziQgVEyiFWLxVPOe/D7Nvn3eUBvAt9PyIpT3AIl9q
+X-Google-Smtp-Source: AGHT+IFTGYQX/gCOP7RG6cZ98gOzYtyy2nyM7p40Il0R8mRFa352gDxQXX2vFQYlXCiySsIUZ8WDdlOdW99z4uMJRUntkcxT0iL+
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023102221-abreast-refold-d300@gregkh>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6871:3329:b0:1e9:a13c:ffba with SMTP id
+ nf41-20020a056871332900b001e9a13cffbamr3139050oac.9.1697970167706; Sun, 22
+ Oct 2023 03:22:47 -0700 (PDT)
+Date:   Sun, 22 Oct 2023 03:22:47 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000af7bd706084b7cb2@google.com>
+Subject: [syzbot] [exfat?] INFO: task hung in fat_write_inode
+From:   syzbot <syzbot+6f75830acb2e4cdc8e50@syzkaller.appspotmail.com>
+To:     hirofumi@mail.parknet.co.jp, linkinjeon@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 22, 2023 at 12:21:40PM +0200, Greg KH wrote:
-> On Sat, Oct 21, 2023 at 06:40:51PM -0400, Gary Rookard wrote:
-> > Renamed from Pascal/CamelCase to Snake case the variable
-> > IsHTHalfNmodeAPs, IsHTHalfNmodeAPs -> is_ht_half_nmode_aps.
-> > 
-> > Linux kernel coding style (cleanup) checkpatch Avoid CamelCase.
-> > Driver rtl8192e compiles.
-> > 
-> > Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
-> > ---
-> >  drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 +-
-> >  drivers/staging/rtl8192e/rtllib.h         | 2 +-
-> >  drivers/staging/rtl8192e/rtllib_softmac.c | 2 +-
-> >  3 files changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-> > index 8070a152712e..f564474fab52 100644
-> > --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-> > +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-> > @@ -139,7 +139,7 @@ u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
-> >  	return MCS_DATA_RATE[is40MHz][isShortGI][nDataRate & 0xf];
-> >  }
-> >  
-> > -bool IsHTHalfNmodeAPs(struct rtllib_device *ieee)
-> > +bool is_ht_half_nmode_aps(struct rtllib_device *ieee)
-> >  {
-> >  	bool			retValue = false;
-> >  	struct rtllib_network *net = &ieee->current_network;
-> > diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-> > index 6a9550eaf148..5cae02883a59 100644
-> > --- a/drivers/staging/rtl8192e/rtllib.h
-> > +++ b/drivers/staging/rtl8192e/rtllib.h
-> > @@ -1783,7 +1783,7 @@ extern u8 MCS_FILTER_ALL[];
-> >  extern u16 MCS_DATA_RATE[2][2][77];
-> >  u8 HTCCheck(struct rtllib_device *ieee, u8 *pFrame);
-> >  void HTResetIOTSetting(struct rt_hi_throughput *ht_info);
-> > -bool IsHTHalfNmodeAPs(struct rtllib_device *ieee);
-> > +bool is_ht_half_nmode_aps(struct rtllib_device *ieee);
-> >  u16  tx_count_data_rate(struct rtllib_device *ieee, u8 nDataRate);
-> >  int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb);
-> >  int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb);
-> > diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-> > index ff98b41c94e0..501295f5b75e 100644
-> > --- a/drivers/staging/rtl8192e/rtllib_softmac.c
-> > +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-> > @@ -1872,7 +1872,7 @@ static void rtllib_rx_auth_resp(struct rtllib_device *ieee, struct sk_buff *skb)
-> >  		ieee->softmac_stats.rx_auth_rs_ok++;
-> >  		if (!(ieee->ht_info->iot_action & HT_IOT_ACT_PURE_N_MODE)) {
-> >  			if (!ieee->GetNmodeSupportBySecCfg(ieee->dev)) {
-> > -				if (IsHTHalfNmodeAPs(ieee)) {
-> > +				if (is_ht_half_nmode_aps(ieee)) {
-> >  					bSupportNmode = true;
-> >  					bHalfSupportNmode = true;
-> >  				} else {
-> > -- 
-> > 2.41.0
-> > 
-> > 
-> 
-> Hi,
-> 
-> This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-> a patch that has triggered this response.  He used to manually respond
-> to these common problems, but in order to save his sanity (he kept
-> writing the same thing over and over, yet to different people), I was
-> created.  Hopefully you will not take offence and will fix the problem
-> in your patch and resubmit it so that it can be accepted into the Linux
-> kernel tree.
-> 
-> You are receiving this message because of the following common error(s)
-> as indicated below:
-> 
-> - You sent multiple patches, yet no indication of which ones should be
->   applied in which order.  Greg could just guess, but if you are
->   receiving this email, he guessed wrong and the patches didn't apply.
->   Please read the section entitled "The canonical patch format" in the
->   kernel file, Documentation/process/submitting-patches.rst for a
->   description of how to do this so that Greg has a chance to apply these
->   correctly.
-> 
-> If you wish to discuss this problem further, or you have questions about
-> how to resolve this issue, please feel free to respond to this email and
-> Greg will reply once he has dug out from the pending patches received
-> from other developers.
-> 
-> thanks,
-> 
-> greg k-h's patch email bot
+Hello,
 
-Note that I have dropped all of your rtl8192e patches you sent, please
-fix them all up, properly test them, and send them as a patch series so
-we know what order to apply them in, otherwise it's impossible to guess.
+syzbot found the following issue on:
 
-Think about what you would want to see if you were on our side reviewing
-them.
+HEAD commit:    2dac75696c6d Add linux-next specific files for 20231018
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10ed8d75680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6f8545e1ef7a2b66
+dashboard link: https://syzkaller.appspot.com/bug?extid=6f75830acb2e4cdc8e50
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148fed9d680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1019f523680000
 
-thanks,
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2375f16ed327/disk-2dac7569.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c80aee6e2e6c/vmlinux-2dac7569.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/664dc23b738d/bzImage-2dac7569.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/7a81659a2d58/mount_0.gz
 
-greg k-h
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6f75830acb2e4cdc8e50@syzkaller.appspotmail.com
+
+INFO: task kworker/u4:11:2872 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc6-next-20231018-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/u4:11   state:D stack:23520 pid:2872  tgid:2872  ppid:2      flags:0x00004000
+Workqueue: writeback wb_workfn (flush-7:0)
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5369 [inline]
+ __schedule+0xee4/0x5a10 kernel/sched/core.c:6680
+ __schedule_loop kernel/sched/core.c:6757 [inline]
+ schedule+0xe7/0x270 kernel/sched/core.c:6772
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6829
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x969/0x1340 kernel/locking/mutex.c:747
+ fat_write_inode fs/fat/inode.c:918 [inline]
+ fat_write_inode+0xfc/0x180 fs/fat/inode.c:911
+ write_inode fs/fs-writeback.c:1456 [inline]
+ __writeback_single_inode+0xa84/0xe60 fs/fs-writeback.c:1673
+ writeback_sb_inodes+0x5a2/0x1090 fs/fs-writeback.c:1899
+ __writeback_inodes_wb+0xff/0x2d0 fs/fs-writeback.c:1970
+ wb_writeback+0x7fe/0xaa0 fs/fs-writeback.c:2077
+ wb_check_background_flush fs/fs-writeback.c:2147 [inline]
+ wb_do_writeback fs/fs-writeback.c:2235 [inline]
+ wb_workfn+0x86a/0xfd0 fs/fs-writeback.c:2262
+ process_one_work+0x8a2/0x15e0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
+ kthread+0x33c/0x440 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/29:
+ #0: ffffffff8cbacbe0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
+ #0: ffffffff8cbacbe0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
+ #0: ffffffff8cbacbe0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x75/0x340 kernel/locking/lockdep.c:6613
+4 locks held by kworker/u4:11/2872:
+ #0: ffff888142249d38 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x78a/0x15e0 kernel/workqueue.c:2605
+ #1: ffffc9000aeffd80 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x7f4/0x15e0 kernel/workqueue.c:2606
+ #2: ffff888018e6c0e0 (&type->s_umount_key#45){++++}-{3:3}, at: super_trylock_shared+0x1e/0xf0 fs/super.c:610
+ #3: ffff88807b4281d0 (&sbi->s_lock){+.+.}-{3:3}, at: fat_write_inode fs/fat/inode.c:918 [inline]
+ #3: ffff88807b4281d0 (&sbi->s_lock){+.+.}-{3:3}, at: fat_write_inode+0xfc/0x180 fs/fat/inode.c:911
+2 locks held by getty/4814:
+ #0: ffff88814b6680a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
+ #1: ffffc900031332f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfc6/0x1490 drivers/tty/n_tty.c:2201
+4 locks held by syz-executor175/5063:
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 29 Comm: khungtaskd Not tainted 6.6.0-rc6-next-20231018-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x277/0x380 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x299/0x300 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xf87/0x1210 kernel/hung_task.c:379
+ kthread+0x33c/0x440 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 5063 Comm: syz-executor175 Not tainted 6.6.0-rc6-next-20231018-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+RIP: 0010:check_wait_context kernel/locking/lockdep.c:4788 [inline]
+RIP: 0010:__lock_acquire+0x5b2/0x5dc0 kernel/locking/lockdep.c:5086
+Code: b8 0a 00 00 41 89 ef 41 83 ef 01 0f 88 79 1f 00 00 49 b8 00 00 00 00 00 fc ff df 49 63 c7 48 8d 04 80 4c 8d a4 c7 e1 0a 00 00 <eb> 12 41 83 ef 01 49 83 ec 28 41 83 ff ff 0f 84 0c 0b 00 00 4d 8d
+RSP: 0018:ffffc90003a6f3e0 EFLAGS: 00000002
+RAX: 000000000000000a RBX: 0000000000000018 RCX: 0000000000000000
+RDX: 1ffff1100f6868c7 RSI: 0000000000000001 RDI: ffff88807b433b80
+RBP: 0000000000000003 R08: dffffc0000000000 R09: fffffbfff2344fc8
+R10: ffffffff91a27e47 R11: 1ffffffff1976fb9 R12: ffff88807b4346b1
+R13: ffff88807b4346b8 R14: ffffffff8cbacbe0 R15: 0000000000000002
+FS:  00005555556c7380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055f81ca48600 CR3: 0000000077b86000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ lock_acquire kernel/locking/lockdep.c:5753 [inline]
+ lock_acquire+0x1b2/0x530 kernel/locking/lockdep.c:5718
+ rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
+ rcu_read_lock include/linux/rcupdate.h:747 [inline]
+ filemap_get_entry+0xdb/0x460 mm/filemap.c:1803
+ __filemap_get_folio+0x56/0xa90 mm/filemap.c:1851
+ __find_get_block_slow fs/buffer.c:203 [inline]
+ __find_get_block fs/buffer.c:1406 [inline]
+ __find_get_block+0x170/0xc30 fs/buffer.c:1400
+ __getblk_slow+0x10c/0x6b0 fs/buffer.c:1134
+ bdev_getblk+0xad/0xc0 fs/buffer.c:1434
+ __getblk include/linux/buffer_head.h:358 [inline]
+ sb_getblk include/linux/buffer_head.h:364 [inline]
+ fat_mirror_bhs+0x244/0x5d0 fs/fat/fatent.c:388
+ fat_alloc_clusters+0xcb2/0xf70 fs/fat/fatent.c:543
+ fat_alloc_new_dir+0x107/0xc90 fs/fat/dir.c:1144
+ vfat_mkdir+0x151/0x350 fs/fat/namei_vfat.c:859
+ vfs_mkdir+0x577/0x820 fs/namei.c:4105
+ do_mkdirat+0x2fd/0x3a0 fs/namei.c:4128
+ __do_sys_mkdirat fs/namei.c:4143 [inline]
+ __se_sys_mkdirat fs/namei.c:4141 [inline]
+ __x64_sys_mkdirat+0x115/0x170 fs/namei.c:4141
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f1b0ce56b59
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc6cb671e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
+RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00007f1b0ce56b59
+RDX: 0000000000000000 RSI: 0000000020000000 RDI: 00000000ffffff9c
+RBP: 00007f1b0ceca5f0 R08: 000000000000024e R09: 00005555556c84c0
+R10: 00007ffc6cb670b0 R11: 0000000000000246 R12: 00007ffc6cb67210
+R13: 00007ffc6cb67438 R14: 431bde82d7b634db R15: 00007f1b0ce9f03b
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 2.510 msecs
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
