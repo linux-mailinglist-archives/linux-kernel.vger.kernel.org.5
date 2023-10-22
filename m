@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C52E7D22D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BE07D22D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbjJVLJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 07:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40922 "EHLO
+        id S231773AbjJVLMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 07:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231485AbjJVLJH (ORCPT
+        with ESMTP id S229472AbjJVLMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 07:09:07 -0400
-Received: from mail-m155101.qiye.163.com (mail-m155101.qiye.163.com [101.71.155.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87AEE3
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:09:03 -0700 (PDT)
-Received: from Vostro-3710.lan (unknown [58.61.140.248])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id A9001800084;
-        Sun, 22 Oct 2023 19:08:15 +0800 (CST)
-From:   Chukun Pan <amadeus@jmu.edu.cn>
-To:     jernej.skrabec@gmail.com
-Cc:     andre.przywara@arm.com, conor+dt@kernel.org, robh+dt@kernel.org,
-        samuel@sholland.org, wens@csie.org, devicetree@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, Chukun Pan <amadeus@jmu.edu.cn>
-Subject: Re: [PATCH 2/2] arm64: dts: allwinner: h616: update emac properties for Orange Pi Zero 3
-Date:   Sun, 22 Oct 2023 19:08:11 +0800
-Message-Id: <20231022110811.1109389-1-amadeus@jmu.edu.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <3254946.aeNJFYEL58@jernej-laptop>
-References: <3254946.aeNJFYEL58@jernej-laptop>
+        Sun, 22 Oct 2023 07:12:05 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC38E3
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:12:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fypmIzyeNXIf0U3i1Yj27gKRGNQ1W+imAB6IJ7sDhWc=; b=i/6mmGhvTpO9SEmfHNoLWJdAqI
+        KSsSe3mLZvuS0tFrlPGqm/npxWotcDKdM5z/67WSyFlXSL/fqY63H2KxMdDVHTllGVV6zfrts/vD/
+        h7Y4T9rHuyYlockKweeMzAXN6yXeAZqiqTtEHlBbUB+bd5vxoQt5hnHlEuPUoIBYheQKsESBelU5M
+        CL2Dk1BOxqi4fbSSITOVZpNAcArmxC4t7FAS8D3DKBQfCFn7J3l+7fc8SHoecxRbOr3St8d98Wj3n
+        tBkyd9b5iM9W7WvNCYJX8dWAskvvAhvfvrO5eRlhxHZsbHkMT63DjZgbbAz9Qd+8w2H/tHidC9Jc0
+        JCiOlbmg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1quWN7-003wW1-0E;
+        Sun, 22 Oct 2023 11:11:53 +0000
+Date:   Sun, 22 Oct 2023 12:11:53 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        gus Gusenleitner Klaus <gus@keba.com>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: AW: [PATCH] amd64: Fix csum_partial_copy_generic()
+Message-ID: <20231022111153.GB800259@ZenIV>
+References: <20231018154205.GT800259@ZenIV>
+ <VI1PR0702MB3840F2D594B9681BF2E0CD81D9D4A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
+ <20231019050250.GV800259@ZenIV>
+ <20231019061427.GW800259@ZenIV>
+ <20231019063925.GX800259@ZenIV>
+ <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
+ <20231019080615.GY800259@ZenIV>
+ <20231021071525.GA789610@ZenIV>
+ <20231021222203.GA800259@ZenIV>
+ <5487af5c8c184ac896af2d0b32b3ff42@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaGBpOVk9KTEkaHUJDHkJPHlUTARMWGhIXJBQOD1
-        lXWRgSC1lBWU5DVU1KVUpPS1VJT0NZV1kWGg8SFR0UWUFZT0tIVUpKS0hKQ1VKS0tVS1kG
-X-HM-Tid: 0a8b57124132b03akuuua9001800084
-X-HM-MType: 10
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PyI6PCo4MTw6UUIxNjcvPC4f
-        KQgKChVVSlVKTUJMQkxJQ0JNTUhLVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWU5D
-        VU1KVUpPS1VJT0NZV1kIAVlBSUlJQzcG
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5487af5c8c184ac896af2d0b32b3ff42@AcuMS.aculab.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Can you also explain how did you figure out that additional PHY properties
-> are needed? At first glance, based on description of motorcomm,keep-pll-enabled,
-> it's not immediately clear why it should be needed. Same goes for second
-> property.
+On Sun, Oct 22, 2023 at 11:03:39AM +0000, David Laight wrote:
 
-This is based on a search for
-'motorcomm,clk-out-frequency-hz = <125000000>' in the kernel.
-Refer to device tree of other devices with the same properties.
-After a simple short test, it seems that it is unnecessary.
-I will delete these two properties in patch v2.
+> > +			return -1;
+> 
+> If you are going to return -1 the return type should be signed.
 
-> 1800 ps delay basically means that rgmii is not correct type and rgmii-rxid
-> should be used instead. Indeed, schematic confirms that's the case. With that,
-> allwinner,rx-delay-ps can be 0 and thus ommited from DT file.
-
-Thanks, rgmii-rxid works for me. Will be corrected in patch v2.
-
-Thanks,
-Chukun
-
--- 
-2.25.1
-
+It's a perfectly valid C to have return -1 in a function that
+returns unsigned long long (or any other unsigned type, really)...
