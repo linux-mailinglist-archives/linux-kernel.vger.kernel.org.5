@@ -2,217 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA807D2551
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 20:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE3F7D2556
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 20:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232316AbjJVS20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 14:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50764 "EHLO
+        id S232336AbjJVSh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 14:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjJVS2Y (ORCPT
+        with ESMTP id S229452AbjJVShy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 14:28:24 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2051.outbound.protection.outlook.com [40.107.220.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49F2E0;
-        Sun, 22 Oct 2023 11:28:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JRus//SPzae2jdyzzf0rmwB1CNu7We8cfCd8XSo5bxnz2inewqxs9Rroh8OlQ5ThmFVmhuGi+Y33jNOJu03cFtfTOnFyx11yeDLE6SkLRtqXVU02wzJjWB6sZKLVuAPcVjfpLvIcr9C/4SjI/xDZEPwX0dn0DIOxKB60v4xnm5bAYinXZQqfJRKEuksR19UeKlJfkrooozFmUGgKoiZsYqTLp6CnsrXnPK6Xub6ae7bXAej5SaOcYrtn9u5V0V4wbHnB2qjuGUle1KG1lDc7IULEEegRaL1rydfIHvN4YJmqrBFEEspvfPzPaTywSJDQ3su4apzUuFRIaI/OtuftdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bguMoSyeuFLmZ7hAyCAVY0JsaNTASlkxnBZas76M24o=;
- b=h9zJBMpTJbppwuOohZw2ibQNP4LKZEDIV3G1ueLmtg30YlM4XMr40a7O4/4qi+WrAon3j21sjmaQE12oW0v0fZS1cATPdqgYUT6bZTwNYN5SgpEPqvN5Vb4EDJXVQDzP3wjYrFI650beebeyXwjeBAF03KmTaofuRCYOVQD9lNSKfgeB/5ygcBEXi/mRdAdh0GmFIPSwSg+Dr3MwHFzzoKZhSjlaZlUk7s+Mcg11oqkaLUZp/5CoAbVuDvLUt4sK7y4piYzu6Zp7eUDLvB4tPBRkujWXWOQ7namhcfepDXispba6iVz4aM7zjFtT9qNfRQSK29ecKgJRDH9tob8z1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=labundy.com; dmarc=pass action=none header.from=labundy.com;
- dkim=pass header.d=labundy.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=NETORG5796793.onmicrosoft.com; s=selector1-NETORG5796793-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bguMoSyeuFLmZ7hAyCAVY0JsaNTASlkxnBZas76M24o=;
- b=GnZ4U9Tg+2lD0k/rFtCF2QJkzvs8wm++OPCqbciUap0lmtssGrUr0KFgj9wrfsSLp9qxJTaqLMyhbQlEhLaTJcgOTAwjB2AMQcflXO5j8qockNmh9gMdj29iU6MKeELrUOkG9EX/5zt1CtQJHamJkvuD5TCsfmJeCV3m9EVsptY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=labundy.com;
-Received: from DM5PR0801MB3767.namprd08.prod.outlook.com (2603:10b6:4:7c::37)
- by SJ0PR08MB7831.namprd08.prod.outlook.com (2603:10b6:a03:3d8::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.31; Sun, 22 Oct
- 2023 18:28:16 +0000
-Received: from DM5PR0801MB3767.namprd08.prod.outlook.com
- ([fe80::7eda:274f:8165:2155]) by DM5PR0801MB3767.namprd08.prod.outlook.com
- ([fe80::7eda:274f:8165:2155%4]) with mapi id 15.20.6907.032; Sun, 22 Oct 2023
- 18:28:16 +0000
-Date:   Sun, 22 Oct 2023 13:28:14 -0500
-From:   Jeff LaBundy <jeff@labundy.com>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Subject: Re: [PATCH 2/2] Input: add Himax HX852x(ES) touchscreen driver
-Message-ID: <ZTVpvlkORe4E41vy@nixie71>
-References: <20230913-hx852x-v1-0-9c1ebff536eb@gerhold.net>
- <20230913-hx852x-v1-2-9c1ebff536eb@gerhold.net>
- <ZQYUe46/rj8jqNvg@nixie71>
- <ZRg-uZskk07jxup0@gerhold.net>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRg-uZskk07jxup0@gerhold.net>
-X-ClientProxiedBy: DM6PR02CA0038.namprd02.prod.outlook.com
- (2603:10b6:5:177::15) To DM5PR0801MB3767.namprd08.prod.outlook.com
- (2603:10b6:4:7c::37)
+        Sun, 22 Oct 2023 14:37:54 -0400
+Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5774AE0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 11:37:52 -0700 (PDT)
+Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6c4ededcba7so3539395a34.2
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 11:37:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697999871; x=1698604671;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uFVGlUE0bTBeZzG3HMCR0baFJSkC3wP+ENnuh3WW1WU=;
+        b=jCutgw16QcXR68zEdz584NVHfgoZjBtVefqed1Zd/0ojHnvgvrm3uEhLObuDO2BBz0
+         mtb0FDkEOeq6QgIxKnSPYujNmkSkO9lhxcoEffoKyAQrPXkrFjSKt+Osaz7CBUHYDLzS
+         s9LNil0z6xXyVba2g3WLly0wvp3KC5TXib5Sm9y9uUf4EXrmE777k140u+zr8xQNyqPa
+         R6VIVLEzmLJWA1RZpyx7MpR7gizWog28VS6P4NN2f2pjsL9zSgXVbNHnR/ibdAKO4zFn
+         TfCb2GfnSUsKabKqRE66VQ1+JJ7g1EmWkg9EPFU+IQ/BUY0az1Dso8/JIJprrsFcIGqW
+         iYow==
+X-Gm-Message-State: AOJu0YxCX19BNxdh7DLafgmVb+BZJ32Y35kb5D6L+PcxKYv3MNUQtbt1
+        8xPq0H4CsR6u1GcmEGnUfLokwYQ9K2sV9smLYYXczMdykdOF
+X-Google-Smtp-Source: AGHT+IG2sZd1Rp9YkYeolkdjwiadv+6Wj1ZmdrjYA16GWpRYA0k12DSLInGa9M8C9G4Tike3uaphk8xdp4NKRvtzrnIqk35aQatl
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM5PR0801MB3767:EE_|SJ0PR08MB7831:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0ad96ee7-ebef-49d4-6eb3-08dbd32ca8c4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HRdZIJLKQJ6eUXAbfvuMl4qkx/Nnj9/MOKM54SZmWkJ/UXpiUtIVlgy9i6k+N5VU1ajl5AstIMV+v03gjp6OzhsKq8c+HfALa4vZOojsq/Z9dBKrkiB1ItW4/ZEF71hvGcco+rIELgyQr3Q6tDYK+8nhjAZ7J/CTWVzkilnYzmvOXmKcrW5fFVJd6xnJFt/iUCs9IzFqIH8Bxa/zHInmxiH5Dxbnqz1PUsd3k5P+n8SuOWZNnCAULYjT6D/yZhTtG76WLofOJ7e1jQNLPGvOw7+Xz2gRDy7L5x9Urivr+ZNrnTTmgs9xDk/EFp11GNwpV85hRs9kf2nBUBKhTHBxovjP4evDNHBQu7xC7kdO8X337HO1c+HVNTN4Xia3wiMcGY/tyMiiiVKZS//0BELjbTBFOUzOeJ4BTLBt5KwXbmGdN9YlSVrst57stweOMPY3cJVb+1Q2+aCBAiKUz1IqJAoViMOWPfJwNT3z0nsCYWJUPspKkunMfOyVUDaq14kcMNN/N8ubA+5DB4MfIrfbum/M48gKUa7s65L6lY07FjrsbSPnxymqpLV67W3iuAke
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0801MB3767.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(376002)(396003)(39830400003)(346002)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(26005)(33716001)(38100700002)(2906002)(41300700001)(86362001)(7416002)(5660300002)(8676002)(8936002)(4326008)(478600001)(6506007)(66476007)(54906003)(316002)(66556008)(66946007)(6916009)(83380400001)(6486002)(6512007)(9686003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gRee0F/tdLeF68xU0B6B5vcQEr40jTr9vhu+wdPmBntVPKHDQaITWpMK2rm7?=
- =?us-ascii?Q?N+PdUILWk17/ETjcjYoDtnTOWKNlzt/6E/8hkAn4bQgfE5c1p+AIWSliD+6Z?=
- =?us-ascii?Q?nARQY8Suy7tdKO2NtnkltpKltfKqCJSIkOJNfKeWjpSYxxQ4PPEdLuLTVE5G?=
- =?us-ascii?Q?4BqSMWLDfVwn/eRbFVfWAflFXrY8gNXe3YfN6XkjIaOLW4kWJTnhs9+juhtf?=
- =?us-ascii?Q?EEsuEZfuwucAHXuSbNcHN0Hyebr9VqCR+jL56XDRx5l9EVVwrMu8LGT1z5Ne?=
- =?us-ascii?Q?kVTiBjiqvzcC1M5H31FhZn1GETJt+t2mlC/Nx6T7qF2gLR7i9SLK6GVD33VE?=
- =?us-ascii?Q?pnHWEOunCfJJkbbWLmak+EcrUfS9kOp1E7SGrpGGv9b1mHw30iy/b6NYBxSA?=
- =?us-ascii?Q?ijXXY0lt3pFVNe6QblfqHX3jrVkXZAofH4tTKfl3dqbf9iy9cPJM05hSrWhz?=
- =?us-ascii?Q?aVjRCzaVnvjoMk/DryRrBDunOZFFJOiweZskDPkqdHCJvTbc3Ne9nl/q1jIw?=
- =?us-ascii?Q?XSKrJXCjSN7u5VkU49SAvVdB7MkG6qD8BIvC204Z+I5yrDk4mFleaFtTUe3D?=
- =?us-ascii?Q?MVc6yhvN152YrS3tNg97mhV2k5fudwEh1RtFRTkwGahbSltLfRh1rrXwD2Nw?=
- =?us-ascii?Q?C4sFh1mLqDQlo+NOFr8Uz7UV1Ju2YDxsXX3PuGoOjcVbv3ynkO/cJ4c/ncn8?=
- =?us-ascii?Q?WiWFd5AxlictbVq5Un4A7xB7TgtO39w4P30CcbV3Rasatusa9cyRXcy+PD6C?=
- =?us-ascii?Q?da1kPokIxiAVpxUzrkyzk/nc/dob38Vmcca9DBaEWsvmhP/zcL7PzEN1dBS0?=
- =?us-ascii?Q?Jjh6g8ynEmM1IXPwQFLE13dXwpgwPjW2K0OdNUiixJ9wVA0HH/AmYdquHUYM?=
- =?us-ascii?Q?OKELAschCHkLexikrShoA/BJ5Z/FJMzmAsk9PWPVb6FHXJEwYuFfm9nwl2dl?=
- =?us-ascii?Q?CAw3cVbewPprpWtncbJDhiJtkWqcYmUxR/a62BRNf9qjjfNElHGnV1on2lcp?=
- =?us-ascii?Q?N5Ao0XZXlSXnp//GSKy3vyDQavdKoyOzMUyrJ6MVPnaQkasI4VKR8YF9YY96?=
- =?us-ascii?Q?YFpiPe/nd+fwR7GIlok3yq1nMkHs4zL0nlK+OkXm9WkDKmw0I7bsMQCogEFF?=
- =?us-ascii?Q?9DEgHOj5rY4bMLj4WzHpVFguicbK7B2MtLV8241jNLPx37i2mDnbQ4gCfMjy?=
- =?us-ascii?Q?5dZ4NTZy58+bAQrgYUSR+/49vVnPQXPKq++UNqdIqvY0YlOvK24cTO9n9Vjr?=
- =?us-ascii?Q?N8NidyiYzoJjUa7Njh+ahCxsRR93LL8IJFXNytlxxuLnr/7Dwr91P5Z/mJ03?=
- =?us-ascii?Q?TCFiw7aVPT2A80+9SMIJgq55al+i7GB890htNmZph1LTzdLcS/XLZU5RABIQ?=
- =?us-ascii?Q?DxdUx0NRy9i0EFewsq1eWDUhy5jydMBW0KINa2Ul5yWe6xbRby46CEbMX5Jz?=
- =?us-ascii?Q?U3nfSXOJXrxWnrqaai+q3cpTHU1GASOBPi/fu3woBGbTYarlhy2lQI9fX9Fp?=
- =?us-ascii?Q?g2K4swDeRx9fXrG1oylK58L524bzxI8G6zXTzUEUiJpAQhUrjLVBXfhbi2pS?=
- =?us-ascii?Q?XijyVODJ8DJuBuO9heGvb8m9YnEObU3ijIAq8tBv?=
-X-OriginatorOrg: labundy.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ad96ee7-ebef-49d4-6eb3-08dbd32ca8c4
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0801MB3767.namprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2023 18:28:16.7659
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 00b69d09-acab-4585-aca7-8fb7c6323e6f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uULBDG4KONP44Lza3E23F1TCurD24iUUCmuI/6NFXukgKY1OeUiIGlmPwVb6Xu+faFnDrPAeS7qhwhT/b5mNMg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR08MB7831
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6830:140e:b0:6ce:262b:630a with SMTP id
+ v14-20020a056830140e00b006ce262b630amr2199682otp.6.1697999871706; Sun, 22 Oct
+ 2023 11:37:51 -0700 (PDT)
+Date:   Sun, 22 Oct 2023 11:37:51 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002e8d4a06085267f3@google.com>
+Subject: [syzbot] [net?] KASAN: slab-use-after-free Read in ptp_read
+From:   syzbot <syzbot+9704e6f099d952508943@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, reibax@gmail.com, richardcochran@gmail.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephan,
+Hello,
 
-On Sat, Sep 30, 2023 at 05:28:57PM +0200, Stephan Gerhold wrote:
+syzbot found the following issue on:
 
-[...]
+HEAD commit:    2dac75696c6d Add linux-next specific files for 20231018
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12543ee5680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6f8545e1ef7a2b66
+dashboard link: https://syzkaller.appspot.com/bug?extid=9704e6f099d952508943
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11136303680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1753f619680000
 
-> In v2 I have added linux/of.h and linux/mod_devicetable.h, since I'm
-> actually using definitions from these two only. Seems like including
-> of_device.h is discouraged nowadays, see commit dbce1a7d5dce ("Input:
-> Explicitly include correct DT includes").
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2375f16ed327/disk-2dac7569.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c80aee6e2e6c/vmlinux-2dac7569.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/664dc23b738d/bzImage-2dac7569.xz
 
-Apologies for the delayed response and some confusion from my side. What
-you have added in v2 is correct, and what I should have suggested in the
-first place.
+The issue was bisected to:
 
-[...]
+commit 8f5de6fb245326704f37d91780b9a10253a8a100
+Author: Xabier Marquiegui <reibax@gmail.com>
+Date:   Wed Oct 11 22:39:55 2023 +0000
 
-> > Nit: it would still be nice to preserve as many return values as possible, perhaps
-> > as follows:
-> > 
-> > +exit_test_mode:
-> > 	error = i2c_smbus_write_byte_data(...) ? : error;
-> > 
-> > > +power_off:
-> > > +	hx852x_power_off(hx);
-> > > +	return error;
-> > 
-> > Similarly, with hx852x_power_off() being promoted to int as suggested above,
-> > this could be:
-> > 
-> > 	return hx852x_power_off(...) ? : error;
-> > 
-> > There are other idiomatic ways to do the same thing based on your preference.
-> > Another (perhaps more clear) option would be to move some of these test mode
-> > functions into a helper, which would also avoid some goto statements.
-> > 
-> 
-> I played with this for a bit. A problem of the "? : error" approach is
-> that it hides the original error in case the new calls error again.
+    ptp: support multiple timestamp event readers
 
-That's correct; good catch.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=136f424d680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10ef424d680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=176f424d680000
 
-> 
-> Let's assume
-> 
-> 	error = hx852x_start(hx);
-> 	if (error)
-> 		goto power_off;
-> 
-> fails with error = -ENXIO. We jump to power_off:
-> 
-> power_off:
-> 	return hx852x_power_off(hx) ? : error;
-> 
-> Let's say for whatever reason hx852x_power_off() fails too but returns
-> -EINVAL. Then the final return value will be -EINVAL, while with the
-> current approach in this patch it would return the original cause
-> (-ENXIO). I think that's more clear.
-> 
-> I also played with moving code to a separate function to avoid the
-> gotos, but I feel like that makes the fairly focused logic of this
-> function (reading the configuration by temporarily entering the test
-> mode) just more confusing.
-> 
-> To still fix the error handling I ended up with duplicating the
-> "success" code path and the "error" code path (it's just two function
-> calls), i.e.:
-> 
-> 	error = i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0);
-> 	if (error)
-> 		goto err_power_off;
-> 
-> 	return hx852x_power_off(hx);
-> 
-> err_test_mode:
-> 	i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0);
-> err_power_off:
-> 	hx852x_power_off(hx);
-> 	return error;
-> 
-> I hope that's fine too. A bit ugly maybe but in this case I would prefer
-> having the main code path (reading the configuration) clearly readable.
-> 
-> Let me know if you have a better suggestion for these (I'll send v2 in a
-> bit so that you can see the full diff there).
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9704e6f099d952508943@syzkaller.appspotmail.com
+Fixes: 8f5de6fb2453 ("ptp: support multiple timestamp event readers")
 
-Maybe we can massage this just a bit more; I have followed up with another
-suggestion in v2.
+==================================================================
+BUG: KASAN: slab-use-after-free in queue_cnt drivers/ptp/ptp_private.h:89 [inline]
+BUG: KASAN: slab-use-after-free in ptp_read+0x7c4/0x830 drivers/ptp/ptp_chardev.c:547
+Read of size 4 at addr ffff88801af1d004 by task syz-executor341/5060
 
-> 
-> Thanks!
-> Stephan
+CPU: 0 PID: 5060 Comm: syz-executor341 Not tainted 6.6.0-rc6-next-20231018-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ queue_cnt drivers/ptp/ptp_private.h:89 [inline]
+ ptp_read+0x7c4/0x830 drivers/ptp/ptp_chardev.c:547
+ posix_clock_read+0x138/0x1b0 kernel/time/posix-clock.c:51
+ vfs_read+0x1ce/0x8f0 fs/read_write.c:468
+ ksys_read+0x12f/0x250 fs/read_write.c:613
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f79c5938c39
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f79c58fb238 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 00007f79c59c2308 RCX: 00007f79c5938c39
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 00007f79c59c2300 R08: 00007f79c58fb6c0 R09: 00007f79c58fb6c0
+R10: 00007f79c58fb6c0 R11: 0000000000000246 R12: 7074702f7665642f
+R13: 0000000000000000 R14: 00007ffca835e430 R15: 00007ffca835e518
+ </TASK>
 
-Kind regards,
-Jeff LaBundy
+Allocated by task 5060:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ ptp_open+0xe3/0x4f0 drivers/ptp/ptp_chardev.c:112
+ posix_clock_open+0x17e/0x240 kernel/time/posix-clock.c:134
+ chrdev_open+0x26d/0x6e0 fs/char_dev.c:414
+ do_dentry_open+0x8d4/0x18d0 fs/open.c:948
+ do_open fs/namei.c:3621 [inline]
+ path_openat+0x1d3b/0x2ce0 fs/namei.c:3778
+ do_filp_open+0x1de/0x430 fs/namei.c:3808
+ do_sys_openat2+0x176/0x1e0 fs/open.c:1440
+ do_sys_open fs/open.c:1455 [inline]
+ __do_sys_openat fs/open.c:1471 [inline]
+ __se_sys_openat fs/open.c:1466 [inline]
+ __x64_sys_openat+0x175/0x210 fs/open.c:1466
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Freed by task 5061:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0xc0/0x180 mm/slub.c:3822
+ ptp_release+0x204/0x2b0 drivers/ptp/ptp_chardev.c:150
+ ptp_read+0xf6/0x830 drivers/ptp/ptp_chardev.c:589
+ posix_clock_read+0x138/0x1b0 kernel/time/posix-clock.c:51
+ vfs_read+0x1ce/0x8f0 fs/read_write.c:468
+ ksys_read+0x12f/0x250 fs/read_write.c:613
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+The buggy address belongs to the object at ffff88801af1c000
+ which belongs to the cache kmalloc-8k of size 8192
+The buggy address is located 4100 bytes inside of
+ freed 8192-byte region [ffff88801af1c000, ffff88801af1e000)
+
+The buggy address belongs to the physical page:
+page:ffffea00006bc600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1af18
+head:ffffea00006bc600 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888012c42280 ffffea000067c800 0000000000000002
+raw: 0000000000000000 0000000080020002 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4710, tgid 4710 (rcS), ts 62110954256, free_ts 62079685567
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1537
+ prep_new_page mm/page_alloc.c:1544 [inline]
+ get_page_from_freelist+0xa16/0x3680 mm/page_alloc.c:3348
+ __alloc_pages+0x1d0/0x4c0 mm/page_alloc.c:4604
+ alloc_pages_mpol+0x258/0x5f0 mm/mempolicy.c:2133
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x251/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8c7/0x1580 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x131/0x310 mm/slub.c:3517
+ kmalloc_trace+0x27/0xf0 mm/slab_common.c:1098
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ tomoyo_print_bprm security/tomoyo/audit.c:26 [inline]
+ tomoyo_init_log+0xcdf/0x2110 security/tomoyo/audit.c:264
+ tomoyo_supervisor+0x30c/0xea0 security/tomoyo/common.c:2089
+ tomoyo_audit_env_log security/tomoyo/environ.c:36 [inline]
+ tomoyo_env_perm+0x18f/0x200 security/tomoyo/environ.c:63
+ tomoyo_environ security/tomoyo/domain.c:672 [inline]
+ tomoyo_find_next_domain+0xef6/0x2020 security/tomoyo/domain.c:878
+ tomoyo_bprm_check_security security/tomoyo/tomoyo.c:101 [inline]
+ tomoyo_bprm_check_security+0x12b/0x1d0 security/tomoyo/tomoyo.c:91
+ security_bprm_check+0x6a/0xe0 security/security.c:1103
+ search_binary_handler fs/exec.c:1725 [inline]
+ exec_binprm fs/exec.c:1779 [inline]
+ bprm_execve fs/exec.c:1854 [inline]
+ bprm_execve+0x738/0x1a90 fs/exec.c:1810
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1137 [inline]
+ free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2383
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2523
+ __unfreeze_partials+0x21d/0x240 mm/slub.c:2655
+ qlink_free mm/kasan/quarantine.c:168 [inline]
+ qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:187
+ kasan_quarantine_reduce+0x18e/0x1d0 mm/kasan/quarantine.c:294
+ __kasan_slab_alloc+0x65/0x90 mm/kasan/common.c:305
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook mm/slab.h:763 [inline]
+ slab_alloc_node mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_node+0x195/0x310 mm/slub.c:3517
+ kmalloc_trace+0x27/0xf0 mm/slab_common.c:1098
+ kmalloc include/linux/slab.h:600 [inline]
+ tomoyo_print_header security/tomoyo/audit.c:156 [inline]
+ tomoyo_init_log+0x1a0/0x2110 security/tomoyo/audit.c:255
+ tomoyo_supervisor+0x30c/0xea0 security/tomoyo/common.c:2089
+ tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
+ tomoyo_path_permission security/tomoyo/file.c:587 [inline]
+ tomoyo_path_permission+0x270/0x3b0 security/tomoyo/file.c:573
+ tomoyo_check_open_permission+0x371/0x3b0 security/tomoyo/file.c:777
+ tomoyo_file_open security/tomoyo/tomoyo.c:332 [inline]
+ tomoyo_file_open+0xa8/0xd0 security/tomoyo/tomoyo.c:327
+ security_file_open+0x6a/0xe0 security/security.c:2836
+ do_dentry_open+0x583/0x18d0 fs/open.c:935
+ do_open fs/namei.c:3621 [inline]
+ path_openat+0x1d3b/0x2ce0 fs/namei.c:3778
+
+Memory state around the buggy address:
+ ffff88801af1cf00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801af1cf80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88801af1d000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff88801af1d080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88801af1d100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
