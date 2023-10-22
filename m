@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B31AD7D22E6
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CA37D22E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbjJVL2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 07:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54134 "EHLO
+        id S231616AbjJVLbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 07:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVL16 (ORCPT
+        with ESMTP id S229472AbjJVLby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 07:27:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4871E5
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:27:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697974076; x=1729510076;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6LYTmI1wbNQ70SyfglzIU7ph91hc4WxWBq9ywCAt/1I=;
-  b=PCX7pPiPEe5MLXnxjwv5jCn7l87gYdavL2N8e0RzxLOY0ix0iAB1k+iO
-   BihTFijxjgz/doW5zFB5POq0h0sISIV79/0lHtU9n5bfJzgn+WsUC1Rez
-   crpseYLio9puWcrNnrO7ilyOy+oXGDz11M1dNg2MJdORbSgt0xlCgqmj+
-   ur57QBr05Yg7e0x8bD189mF0gaKBxNpCaNduRyn2Sd/VD5UoDvMOqDvsU
-   8WJRnDtQD9pvxeO+NxbKepNK4zdYLUFdcqaetfGHUTlifLIkzJxUwt7g8
-   JHTFd8Tm6b7ZhTeMHS/BZ6bytQrN0wKBwY1yy+k2R0ok7pPeS6oEA6yYm
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="417827858"
-X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
-   d="scan'208";a="417827858"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 04:27:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="707658950"
-X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
-   d="scan'208";a="707658950"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 22 Oct 2023 04:27:53 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1quWcZ-0005ui-1N;
-        Sun, 22 Oct 2023 11:27:51 +0000
-Date:   Sun, 22 Oct 2023 19:27:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH 3/5] misc: mlx5ctl: Add info ioctl
-Message-ID: <202310221931.r1vsjtys-lkp@intel.com>
-References: <20231018081941.475277-4-saeed@kernel.org>
+        Sun, 22 Oct 2023 07:31:54 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8E4E9;
+        Sun, 22 Oct 2023 04:31:52 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5ac865d1358so1228956a12.3;
+        Sun, 22 Oct 2023 04:31:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697974312; x=1698579112; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qHpL2z0CuG7al3rf922b7WTCtXZClfeTh1eh1r/Moj0=;
+        b=kKCvFHmtWu5tqLILXX0AedG84M7fH4kHZYt+gr3jw7HHXeOcp5WaBgwjRq6rdha3Qo
+         Dgi/KvkCwzvZrdniKRc9afNRgjYb2kDvVcmCrxrv/UNg5TypeSSLga/mdi3mBbBwJ3A8
+         1KGhFhf867IId5VJS4jhoiG/QgVwDKyF9VlKLvaoO225h/WSzkngCsnj04RhG1O18+u/
+         IV3jwa7xr+MW5Hf7aMxgo7SjOcjdkfnrDSACtEgtsdaCX8VkNLM5kkpIDIO0CBW2UKxt
+         9mvZ/YhOdFH+uXyAeXger52+gJEmAb0mOkRXDFBypY4wA0unbUT1FpxJ/aK9UrEJzR0T
+         8WLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697974312; x=1698579112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qHpL2z0CuG7al3rf922b7WTCtXZClfeTh1eh1r/Moj0=;
+        b=ch8W28QtCTDJMDPtLCW+GdXunki7MESh3Bun8000lmg/T5JnoKk+GvEr7wxyxu/QRw
+         UncwXDcjXBTVS8nxqUF2O4ddiXVD+w1AXZn3TV5pJ8isBEX7APMhzbNaiaQT4YLGg42i
+         Dm6a+OQ0NOGLOr7/P46hkXAQohU5B26zIuq8nOkzrTTW9nEJKpg14f6cHWT6B2zqiqrU
+         K9A+6iR+fq2o3et2UKcQEvcr/YETSimHEbuGaDp81fSkwfrtnjCSsKQ/knU5D7Grgw3m
+         6/PLo/ha7mCP48uDbN2wSkZauPomXnRuK14B+jOJuYju8yQP/RDk0xk8+6EMQUEz/vKC
+         gtcA==
+X-Gm-Message-State: AOJu0YyScEbhTEZOU0pla9YqfBqIE7AKxedYKbnzqOKpVVvKhvl7xLvn
+        vtrZ3gL3TKSd8tP3OPAZ4hB642J6TjE=
+X-Google-Smtp-Source: AGHT+IEM6DFjYHYDarRMyd0/IV6lbMNl6C3UkgpHkbUg7yuK36W08HUQM+y8SBM0+lAw8OjRMabC0A==
+X-Received: by 2002:a17:90b:a06:b0:27d:23f1:ddeb with SMTP id gg6-20020a17090b0a0600b0027d23f1ddebmr4779740pjb.38.1697974311987;
+        Sun, 22 Oct 2023 04:31:51 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id h6-20020a17090acf0600b00273744e6eccsm4152824pju.12.2023.10.22.04.31.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Oct 2023 04:31:51 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 0A49D8322DD7; Sun, 22 Oct 2023 18:31:48 +0700 (WIB)
+Date:   Sun, 22 Oct 2023 18:31:48 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Rostislav Lisovy <lisovy@gmail.com>,
+        Linux Wireless <linux-wireless@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Kalle Valo <kvalo@kernel.org>
+Subject: Re: Old WiFi modules -- for testing?
+Message-ID: <ZTUIJHf1vdSxkXeX@debian.me>
+References: <ca929e1d8197ace414a06b20151b84de3dd160f4.camel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LioeYb2fbIOpCQfJ"
 Content-Disposition: inline
-In-Reply-To: <20231018081941.475277-4-saeed@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ca929e1d8197ace414a06b20151b84de3dd160f4.camel@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saeed,
 
-kernel test robot noticed the following build errors:
+--LioeYb2fbIOpCQfJ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[auto build test ERROR on char-misc/char-misc-testing]
-[also build test ERROR on char-misc/char-misc-next char-misc/char-misc-linus soc/for-next rdma/for-next linus/master v6.6-rc6]
-[cannot apply to next-20231020]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Sun, Oct 22, 2023 at 12:16:04PM +0200, Rostislav Lisovy wrote:
+> Hi,
+> I am interested in donating the following WiFi modules to the "Linux
+> wireless project". I guess they can be used for some automated testing
+> or training or something like that?
+>=20
+> https://photos.app.goo.gl/sfootr3X8KVUBYf48
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Saeed-Mahameed/mlx5-Add-aux-dev-for-ctl-interface/20231018-162610
-base:   char-misc/char-misc-testing
-patch link:    https://lore.kernel.org/r/20231018081941.475277-4-saeed%40kernel.org
-patch subject: [PATCH 3/5] misc: mlx5ctl: Add info ioctl
-config: arc-allmodconfig (https://download.01.org/0day-ci/archive/20231022/202310221931.r1vsjtys-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231022/202310221931.r1vsjtys-lkp@intel.com/reproduce)
+=46rom album link above, I can't tell exact models. Can you list ones?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310221931.r1vsjtys-lkp@intel.com/
+--=20
+An old man doll... just what I always wanted! - Clara
 
-All errors (new ones prefixed by >>):
+--LioeYb2fbIOpCQfJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
->> drivers/misc/mlx5ctl/main.c:276:27: error: initialization of 'long int (*)(struct file *, unsigned int,  long unsigned int)' from incompatible pointer type 'ssize_t (*)(struct file *, unsigned int,  long unsigned int)' {aka 'int (*)(struct file *, unsigned int,  long unsigned int)'} [-Werror=incompatible-pointer-types]
-     276 |         .unlocked_ioctl = mlx5ctl_ioctl,
-         |                           ^~~~~~~~~~~~~
-   drivers/misc/mlx5ctl/main.c:276:27: note: (near initialization for 'mlx5ctl_fops.unlocked_ioctl')
-   cc1: some warnings being treated as errors
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZTUIJAAKCRD2uYlJVVFO
+o5tHAQCP7ybF2+BIoWuVdO1b9i4PErFhJjufHUYo92BvWv4DgQEA1Ol/FXygsgxF
+XfJynOzItd3MH8JqfxMim68K5Vl0vg4=
+=KMhm
+-----END PGP SIGNATURE-----
 
-vim +276 drivers/misc/mlx5ctl/main.c
-
-   271	
-   272	static const struct file_operations mlx5ctl_fops = {
-   273		.owner = THIS_MODULE,
-   274		.open = mlx5ctl_open,
-   275		.release = mlx5ctl_release,
- > 276		.unlocked_ioctl = mlx5ctl_ioctl,
-   277	};
-   278	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--LioeYb2fbIOpCQfJ--
