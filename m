@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E847D2313
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 14:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 101727D2315
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 14:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbjJVMQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 08:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59226 "EHLO
+        id S232012AbjJVMSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 08:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVMQN (ORCPT
+        with ESMTP id S229472AbjJVMSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 08:16:13 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C5DDC
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 05:16:12 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c77449a6daso19496705ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 05:16:12 -0700 (PDT)
+        Sun, 22 Oct 2023 08:18:12 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF84DD
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 05:18:10 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6b709048d8eso1736226b3a.2
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 05:18:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697976972; x=1698581772; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1697977090; x=1698581890; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0+S2mdckSSp2Nfs5ye+ND5i2vKp9m6YBgPQvt8jtLlY=;
-        b=BaUTLMmznHyHgVukBZFAUf1ja8ajqHytYv+pWdgSJx0GSVjgiAEQ8OcVUJyJHSevhJ
-         vWsdymZhmg8eTyJy8sNSds6t7EliPRz/jEPfcQSRtaaguVoGK95WvnvhxpTV6x/LBBuE
-         4Be+FtRaK4RKPaJRS3acJwlQxHWJjuJn/34PVfoGOlPEMGwH6gIH6Dk8gk9tVD2+g1w+
-         p7p57y6WPeDWRpzErsoUj69IkGnWWfln+YrGI98ZHTPK/ByfP2sfHPHC65QERAIccIqL
-         3RyIBMzxt3+1zWJfTdJgVoozxSLnUPNFnKBxiBHgCog2WUEDGG2+Ft+GtYfSkF8Udy4N
-         Q1LA==
+        bh=PE4+6mfVrbVPnjzZCicIAFyglp4nXFWxs8H1/H4u0+Y=;
+        b=kB7gmBDseVKiH680twAJtsMXFccOgb3xGjsphL4JCF9j9ZnDL+kZ1HcXX+FljdIO//
+         uBdzp+KS3zhqo8Kgrc3Q1Sm0wqmLbqNmsgDsijOt++xWzjBB3J4wGGZxnLC9BDmH5QWB
+         Fw/ht2CzMpDIHtnYbU7OjBZYP7PHjPBMZ13rfYhBIr2gC7MAhUXPx1GOZu3FlMTxW4Ld
+         4W5AM/SwiK5xDd9xBiMnm19cc5RmT4gzX4X/oPSwn/fKN9+ku6FrGlNfCNPL5Q9diCDJ
+         cO0BNGUeWTbnkMlGvN1YEUfxfiUTdPiX12JV6Uz2jjApVgIwNSQhOCbov+irJ73N7Th9
+         51Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697976972; x=1698581772;
+        d=1e100.net; s=20230601; t=1697977090; x=1698581890;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0+S2mdckSSp2Nfs5ye+ND5i2vKp9m6YBgPQvt8jtLlY=;
-        b=Y20PBJZl18NnVJk//mRsXVqMTogBHc3flhVYYaTj0UQpJmmzuo5rXYuXRnpcob50xf
-         Xnrn5KQk5ZZOl7a9R9YBMxMK/OHyFns5HHn50WzkCIqo8YrmYnSLZXQXM1FeH/lhqfuw
-         mTZDgGgnZR2MOGP66OC4BXnoO8TcxmgLkZwWRRKwClQII+vsyoYkE3HHyTmlxZ+6fKth
-         x+YE/eFJWQkSCKJMGlL57NuqciJIs6bLvBhBaFDBdBqV+iZ1esmMNs6gn9stN9CFgNlO
-         UjjP/VesTxqzTkYyyrbhVNaqgKLNaTZz9Nd7i7bWZb9qCVME98H8PATA/QBfpT/N9fMO
-         ZcyQ==
-X-Gm-Message-State: AOJu0YzDqqhgB3FC8DRFfviJ+Gdl6M9clsPgVaSjOERz9YZ9IKTHQXN0
-        L3JzzpzRlOCEZz1IRGcCvgO3cfMIzTU=
-X-Google-Smtp-Source: AGHT+IGjoR0YMcAj2F7zAWRDZOhI9k2JNW4ERSe30aG0pfFa024ofCeya2M+RkiNweOChf+FSqQW2w==
-X-Received: by 2002:a17:902:e88f:b0:1c7:23c9:a7db with SMTP id w15-20020a170902e88f00b001c723c9a7dbmr6767428plg.26.1697976971794;
-        Sun, 22 Oct 2023 05:16:11 -0700 (PDT)
+        bh=PE4+6mfVrbVPnjzZCicIAFyglp4nXFWxs8H1/H4u0+Y=;
+        b=Vb6sWCWiEki93Sp+TnWdQz37B+4anBqTiZd654S7wlWl9yvHdTeAYcct9xuyMTY+Ye
+         Dz6rK165KphCfEKFJD1ZvoP2rLyoK++ElsbGZMAw2lM1tQC8AvqmYnTwvBFlOFRNBsNl
+         SZpL/uiKlqdUON/Mu33oezTuQmLsYHtUL71vGjfynrueYReMu3pOJUA6+rhlGm6flWcF
+         tzBaq3bDhnzmzJ/1QIMyjmhTkfCEBIT0KbMZx9oo8filIOBYkAD0zjqD5EetpgcW8ahi
+         fOkHacDVYcGQfnsfuxs+gJrPLQvd80m2dXpszGO7Ua+B+3fxlhsSagmjkMRVUjTiik0k
+         qmnA==
+X-Gm-Message-State: AOJu0YwWChWQU4Rau0a+fCBseAYD/FjWeJnTl1WFNBQeK2tHLXdMk0UN
+        QCzn6K5S8uquseTHozQoF7Y=
+X-Google-Smtp-Source: AGHT+IE8H30sWK+Ba1pN9DY8WJX2lDbNtDqXWBEsdV+UbFfQ0u9AgPoZsSFH8lJmSevKs6+8uTVHPQ==
+X-Received: by 2002:a05:6a00:9398:b0:68b:a137:3739 with SMTP id ka24-20020a056a00939800b0068ba1373739mr5872707pfb.4.1697977090042;
+        Sun, 22 Oct 2023 05:18:10 -0700 (PDT)
 Received: from ubuntu ([122.171.143.200])
-        by smtp.gmail.com with ESMTPSA id n8-20020a170902e54800b001c9c879ee4asm4366495plf.17.2023.10.22.05.16.09
+        by smtp.gmail.com with ESMTPSA id t3-20020a6564c3000000b005ac384b71cbsm3599506pgv.60.2023.10.22.05.18.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 05:16:11 -0700 (PDT)
-Date:   Sun, 22 Oct 2023 05:15:57 -0700
+        Sun, 22 Oct 2023 05:18:09 -0700 (PDT)
+Date:   Sun, 22 Oct 2023 05:18:01 -0700
 From:   Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
 To:     Viresh Kumar <vireshk@kernel.org>, Johan Hovold <johan@kernel.org>,
         Alex Elder <elder@kernel.org>,
@@ -57,9 +57,8 @@ To:     Viresh Kumar <vireshk@kernel.org>, Johan Hovold <johan@kernel.org>,
         greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
 Cc:     kumaran.4353@gmail.com
-Subject: [PATCH v2 1/3] staging: greybus: camera: Alignment should match open
- parenthesis
-Message-ID: <d2630a16ff9eca40b03dcade63c197fdd5e5b78f.1697976302.git.nandhakumar.singaram@gmail.com>
+Subject: [PATCH v2 2/3] staging: greybus: camera: Modify lines end with a '('
+Message-ID: <5f63b332c83f5f0e95f59e673b0292c27fecb411.1697976302.git.nandhakumar.singaram@gmail.com>
 References: <cover.1697976302.git.nandhakumar.singaram@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -76,48 +75,27 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Adhere to linux coding style. Reported by checkpatch.pl:
-CHECK: Alignment should match open parenthesis
+CHECK: Lines should not end with a '('
 
 Signed-off-by: Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
 ---
- drivers/staging/greybus/camera.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/staging/greybus/camera.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
-index ae49e37a87e9..6516e7efaab9 100644
+index 6516e7efaab9..40d3b8aca8f0 100644
 --- a/drivers/staging/greybus/camera.c
 +++ b/drivers/staging/greybus/camera.c
-@@ -220,7 +220,7 @@ static int gb_camera_operation_sync_flags(struct gb_connection *connection,
- }
- 
- static int gb_camera_get_max_pkt_size(struct gb_camera *gcam,
--		struct gb_camera_configure_streams_response *resp)
-+				      struct gb_camera_configure_streams_response *resp)
+@@ -267,8 +267,7 @@ static int gb_camera_get_max_pkt_size(struct gb_camera *gcam,
+  * Validate the stream configuration response verifying padding is correctly
+  * set and the returned number of streams is supported
+  */
+-static const int gb_camera_configure_streams_validate_response(
+-		struct gb_camera *gcam,
++static const int gb_camera_configure_streams_validate_response(struct gb_camera *gcam,
+ 		struct gb_camera_configure_streams_response *resp,
+ 		unsigned int nstreams)
  {
- 	unsigned int max_pkt_size = 0;
- 	unsigned int i;
-@@ -378,8 +378,8 @@ struct ap_csi_config_request {
- #define GB_CAMERA_CSI_CLK_FREQ_MARGIN		150000000U
- 
- static int gb_camera_setup_data_connection(struct gb_camera *gcam,
--		struct gb_camera_configure_streams_response *resp,
--		struct gb_camera_csi_params *csi_params)
-+					   struct gb_camera_configure_streams_response *resp,
-+					   struct gb_camera_csi_params *csi_params)
- {
- 	struct ap_csi_config_request csi_cfg;
- 	struct gb_connection *conn;
-@@ -783,8 +783,8 @@ static ssize_t gb_camera_op_capabilities(void *priv, char *data, size_t len)
- }
- 
- static int gb_camera_op_configure_streams(void *priv, unsigned int *nstreams,
--		unsigned int *flags, struct gb_camera_stream *streams,
--		struct gb_camera_csi_params *csi_params)
-+					  unsigned int *flags, struct gb_camera_stream *streams,
-+					  struct gb_camera_csi_params *csi_params)
- {
- 	struct gb_camera *gcam = priv;
- 	struct gb_camera_stream_config *gb_streams;
 -- 
 2.25.1
 
