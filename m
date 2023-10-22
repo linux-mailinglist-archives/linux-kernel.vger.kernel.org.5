@@ -2,48 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8D07D23A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 17:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2892D7D23AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 17:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbjJVPqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 11:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
+        id S231981AbjJVPqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 11:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231616AbjJVPqH (ORCPT
+        with ESMTP id S231876AbjJVPqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 11:46:07 -0400
+        Sun, 22 Oct 2023 11:46:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B8AB4;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A4FA7;
         Sun, 22 Oct 2023 08:46:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9F0DC433C9;
-        Sun, 22 Oct 2023 15:46:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DED23C433C7;
+        Sun, 22 Oct 2023 15:46:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697989565;
-        bh=hBgLuN4gmptdMYFU6Aqmt023U1kwjozrOwEimQ6osa0=;
+        s=k20201202; t=1697989566;
+        bh=286IEr6Au2fjEg8EUTjPOBmNUpcywoLU8+MN1g61aBw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yg0vO6Pq3tf9IbiBrgLcCfMD5w5/dCinx1R0rp21qXirSvlGovrhIsRtLL55CvimE
-         IlQFFbtT49UhDR5dB0n2syIzk61zOo+EYWs6s/XSFGQ+RDrZx1o+QP7z5EjC4XPuwe
-         Qky9chStXkYTjHDwOhWtb1q2AjFXUbehWxjsTtAYnqGw7GUUZL+xmjHanD4kyISEHe
-         e4yDhON6/I5gSmJHTh0J5KA4O/+zHlDdC6MpuUee/8KvM9ZcrEnaEq7cuAxfi7QXy0
-         pbIHcBV5eBz81Uqn70ACCvO1NcM4MQ4/FVyt4YAJefxIj3uPsRp3eQszhrWpMvcmTv
-         rr37+pHD6fWeQ==
+        b=UEDDOjk8xf2FP5mSSbJHg1CbKwjRtRe+R+MVb4G5Zvs7mxtvJjDe98jIJZwDwyOYj
+         Pj0hXih9Fd6hnKmoJjQu+bTuOvZQkPqS32qxg1EETMkexyqM3YtAq0H7yrOH522Zg0
+         LJa/WNSB302anTADe5FpE2214g4iNCyUYQQur2mepRyAhrvTXccN5Z+Ukg56NfBrcz
+         PSWBGpN9qDwqf6e4JqLnL2b5pckOp7sxZ9RjP5bsaMsWGmQnGVLeEasdvEtX/slfoN
+         guMiZIJA8arhpeEJb0tGHHJa62CEdBEU2Vl063zmgEERwBtzg9VkE64DbvHWusQw2r
+         iYdqofxEKtLEA==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?q?Andr=C3=A9=20Apitzsch?= <git@apitzsch.eu>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Stephan Gerhold <stephan@gerhold.net>
-Subject: Re: [PATCH 0/2] arm64: dts: qcom: longcheer l8910 and l9100: Enable RGB LED
-Date:   Sun, 22 Oct 2023 08:50:13 -0700
-Message-ID: <169798982353.271027.3963282631663809057.b4-ty@kernel.org>
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp-x13s: add missing camera LED pin config
+Date:   Sun, 22 Oct 2023 08:50:14 -0700
+Message-ID: <169798982330.271027.9186412119973993390.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231013-bq_leds-v1-0-cc374369fc56@apitzsch.eu>
-References: <20231013-bq_leds-v1-0-cc374369fc56@apitzsch.eu>
+In-Reply-To: <20231003093647.3840-1-johan+linaro@kernel.org>
+References: <20231003093647.3840-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -58,20 +56,16 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Fri, 13 Oct 2023 22:51:35 +0200, André Apitzsch wrote:
-> With the driver for ktd2026 recently applied to linux-leds[1], the LED
-> can be enabled on longcheer l8910 and l9100.
-> 
-> [1] https://lore.kernel.org/all/20231002-ktd202x-v6-0-26be8eefeb88@apitzsch.eu/
+On Tue, 03 Oct 2023 11:36:47 +0200, Johan Hovold wrote:
+> Add the missing pin configuration for the recently added camera
+> indicator LED.
 > 
 > 
 
 Applied, thanks!
 
-[1/2] arm64: dts: qcom: msm8916-longcheer-l8910: Enable RGB LED
-      commit: 5017b8cdb7ebeb32d7f12a05b34d58662e137dbe
-[2/2] arm64: dts: qcom: msm8939-longcheer-l9100: Enable RGB LED
-      commit: a21796c631734ea5cf62507e63a2479261880514
+[1/1] arm64: dts: qcom: sc8280xp-x13s: add missing camera LED pin config
+      commit: a3457cc5bc30ad053c90ae9f14e9b7723d204a98
 
 Best regards,
 -- 
