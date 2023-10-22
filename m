@@ -2,57 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD297D212C
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 07:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEDE7D212D
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 07:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbjJVFx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 01:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45690 "EHLO
+        id S231487AbjJVFxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 01:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVFxZ (ORCPT
+        with ESMTP id S229472AbjJVFxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 01:53:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C44CC;
-        Sat, 21 Oct 2023 22:53:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697954004; x=1729490004;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/QZoRJe08f8RU60jeWxeNdjpSy9+XWvu0aStnMl+Gkc=;
-  b=OP+lcVhELgPjh13t6HyLgiwLGDpquc10LXEYMRlnOvEYcZYq9AWoVlfe
-   5b+4aepnl0+g97QlM9igKwtMxvNCJ/qGrGkpWQ+NI9wuoNOkyeNeLupvU
-   fZ+mfe0ozzYInmZRyki6BNKlDbnUlTA+WP0SMZ4DtMlLgX5wiJNfV6xEv
-   EYJdL9/bYwiBi8E3x4nfUD57zd23DxxIkGEUb62jgOv18RbEfOj7ZaWEg
-   NwVOmPHwp66za/AHEhmXR1P7TCCBuM1fHynjRM9aapDFV0MAIOOSaPVyz
-   wAwoqSCho2DxBuT//PeTzbFEihqzTSaUYvpFR3BmzAYvUkgL6YI2AuO37
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="8242360"
-X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
-   d="scan'208";a="8242360"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2023 22:53:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="874341289"
-X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
-   d="scan'208";a="874341289"
-Received: from chenyu-dev.sh.intel.com ([10.239.62.164])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Oct 2023 22:53:22 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Len Brown <lenb@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Todd Brandt <todd.e.brandt@intel.com>
-Subject: [RFC PATCH] tools/power turbostat: Do not print negative LPI residency
-Date:   Sun, 22 Oct 2023 13:52:21 +0800
-Message-Id: <20231022055221.569634-1-yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 22 Oct 2023 01:53:38 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB60E126;
+        Sat, 21 Oct 2023 22:53:35 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507ac66a969so2851216e87.3;
+        Sat, 21 Oct 2023 22:53:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697954014; x=1698558814; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KmTFA4Fe0lNk5XVCq7JFR5JNdHnS2vqAdz0xdH5/1WE=;
+        b=jnY+vqL1GDxEdxG0KiXeInpoB298qJkNKrinzzRQDl5nk7szxuVMDiP2PoCfbClXr3
+         tXXZEguDzGWMmih2q9+uoFdU6n29KSbQndMbKk9YurQNb2Ii8zx9BzdYkvoiyekv6Ibb
+         Dxx9KfGiv2+SOhtf13OYPcZfbPAeh7K42ULfkopes03CmDhh3OWYdb2Gtxm9ND86UJQx
+         bBU+5n8l6yUMyqaaO3EfyIy9BPWNzcHPpKRUCpqEt2qo9Jww2RAz0XVWSy4arUM37Z+T
+         pZcWmiUIWF7KFw95CGyArhO2ejNEqSPjMt5DRrzIdhQeltDg470AI3Ofk89vyMsHY+aU
+         Qn1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697954014; x=1698558814;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KmTFA4Fe0lNk5XVCq7JFR5JNdHnS2vqAdz0xdH5/1WE=;
+        b=KFa9sv2K23OugebO3RqLB4YSZ3vGXJlJRLoZXNi2b2oH++ULBzDThqP8bVcTP4p/fG
+         HGZf8i+fYcPxqZeqpm+e34p0UilzkfWT7i+AU/eU5oWA6jbAHGgrgTlcQEkxa9bKoQjh
+         6cs5BkxSqaCvXRMef3Sc594cbMscbaIEfraj7WU6PMapA48ClDIyHNgdBiv5732PZU29
+         2GawH73lnPRdlYK1D2zPQmgl/AY/K1+WotdHAJuKHa3oyk54B+aWQB/0KqKpjAaKzwsD
+         UfyZ5utnur2iQSo8A00DjZ5ef+ZyeFQ4OwVs8y0a5VA/ozEKhDwr4fH6yE3+prmHQasv
+         F0mQ==
+X-Gm-Message-State: AOJu0YxYGouBBfwM3TUzbQegwX3YfeWL70Pc/9hVeRFFmbbJbCTg+nkr
+        APopM6hlCRB4eZhjkGTCeXkfNqEjN6QC5m/jW8g=
+X-Google-Smtp-Source: AGHT+IEYP1qsIcdpEKXs4OnftIXhimf6rJ0k/K7YdWNDZK4kmP/EOPGQhJwAOX++uJrox3E/b8g5MjfImM/OVXlSdmY=
+X-Received: by 2002:ac2:5046:0:b0:507:cd53:5847 with SMTP id
+ a6-20020ac25046000000b00507cd535847mr3555991lfm.56.1697954013635; Sat, 21 Oct
+ 2023 22:53:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20231020061158.6716-1-hkelam@marvell.com> <CAM0EoMkawLKubMdrTOAcOhYq8Jicc5XuXuytBVi-yy-_QgiTuA@mail.gmail.com>
+ <PH0PR18MB4474C304575E55092A2C7377DEDBA@PH0PR18MB4474.namprd18.prod.outlook.com>
+ <0329924b-a868-49b9-ab98-0b3f8bd545cb@intel.com>
+In-Reply-To: <0329924b-a868-49b9-ab98-0b3f8bd545cb@intel.com>
+From:   Sunil Kovvuri <sunil.kovvuri@gmail.com>
+Date:   Sun, 22 Oct 2023 11:23:22 +0530
+Message-ID: <CA+sq2Cd51mYHbSsjUKL23MbLkHr=oKYWvuubspg37AEo2fE8vg@mail.gmail.com>
+Subject: Re: [net-next] net: sched: extend flow action with RSS
+To:     "Nambiar, Amritha" <amritha.nambiar@intel.com>
+Cc:     Hariprasad Kelam <hkelam@marvell.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        "sridhar.samudrala@intel.com" <sridhar.samudrala@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
+        "jiri@resnulli.us" <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,51 +81,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-turbostat prints the abnormal SYS%LPI across suspend-to-idle:
-SYS%LPI = 114479815993277.50
+On Sat, Oct 21, 2023 at 1:43=E2=80=AFAM Nambiar, Amritha
+<amritha.nambiar@intel.com> wrote:
+>
+> >> On Fri, Oct 20, 2023 at 2:12=E2=80=AFAM Hariprasad Kelam <hkelam@marve=
+ll.com>
+> >> wrote:
+> >>>
+> >>> This patch extends current flow action with RSS, such that the user
+> >>> can install flower offloads with action RSS followed by a group id.
+> >>> Since this is done in hardware skip_sw flag is enforced.
+> >>
+> >> Our typical rule for TC is we need s/w equivalence for offloads. How w=
+ould
+> >> this work in absence of offload?
+> >>
+> > [Hari]
+> > Our typical rule for TC is we need s/w equivalence for offloads. How wo=
+uld this work in absence of offload?
+> >
+> > This patch we added as an extension to receive queue selection in hardw=
+are.
+> > This patch "act_skbedit: skbedit queue mapping for receive queue" enabl=
+ed receive queue selection in hardware
+> > and skip_sw is enforced.
+> >
+> > Adding stakeholders of this patch, to get their opinion.
+> > sridhar.samudrala@intel.com  amritha.nambiar@intel.com
+> >
+> > incase of RSS, hardware makes decisions about incoming packets before t=
+hey are even received in the queue.
+> >
+>
+> The skip_sw for skbedit receive queue action was enforced as the only
+> other alternative was a new hw-only action, or changing the action
+> mirred. See discussion at
+> https://lore.kernel.org/netdev/20220921132929.3f4ca04d@kernel.org/
+>
+> Few questions WRT this patch:
+> How are the rss groups created? ethtool rss contexts? Any reason to use
+> TC to direct to rss contexts over using ethtool context ids?
+>
 
-This is reproduced by:
-Run a freeze cycle, e.g. "sleepgraph -m freeze -rtcwake 15".
-Then do a reboot. After boot up, launch the suspend-idle-idle
-and check the SYS%LPI field.
+Yes, RSS groups are created using ethtool.
+Ethtool ntuple is very limited in expressing flow rules and since the
+general direction
+is to use 'TC', we are attempting to add RSS action to 'TC'.
 
-The slp_so residence counter is in LPIT table, and BIOS does not
-clears this register across reset. The PMC expects the OS to calculate
-the LPI residency based on the delta. However, there is an firmware
-issue that the LPIT gets cleared to 0 during the second suspend
-to idle after the reboot, which brings negative delta value.
 
-Prints a simple 0 to indicate this error to not confuse the user.
+> IIUC, skbedit is meant to only edit skb metadata such as mark, packet
+> type, queue mapping, priority etc. Even if this is a HW only action and
+> has no use in the stack, would skbedit be the right fit here?
+>
 
-Reported-by: Todd Brandt <todd.e.brandt@intel.com>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- tools/power/x86/turbostat/turbostat.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+The thought was to keep related actions like RQ, RSS group etc under
+one action ie skbedit.
+If that's not the right place we can add a separate action.
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 9a10512e3407..3fa5f9a0218a 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -1472,8 +1472,16 @@ int delta_package(struct pkg_data *new, struct pkg_data *old)
- 	old->pc8 = new->pc8 - old->pc8;
- 	old->pc9 = new->pc9 - old->pc9;
- 	old->pc10 = new->pc10 - old->pc10;
--	old->cpu_lpi = new->cpu_lpi - old->cpu_lpi;
--	old->sys_lpi = new->sys_lpi - old->sys_lpi;
-+	if (new->cpu_lpi > old->cpu_lpi) {
-+		old->cpu_lpi = new->cpu_lpi - old->cpu_lpi;
-+	} else {
-+		old->cpu_lpi = 0;
-+	}
-+	if (new->sys_lpi > old->sys_lpi) {
-+		old->sys_lpi = new->sys_lpi - old->sys_lpi;
-+	} else {
-+		old->sys_lpi = 0;
-+	}
- 	old->pkg_temp_c = new->pkg_temp_c;
- 
- 	/* flag an error when rc6 counter resets/wraps */
--- 
-2.25.1
-
+Thanks,
+Sunil.
