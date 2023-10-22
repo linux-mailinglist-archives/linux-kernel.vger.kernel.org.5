@@ -2,268 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CC67D255B
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 20:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610D67D2562
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 20:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbjJVSjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 14:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41192 "EHLO
+        id S232401AbjJVSmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 14:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjJVSja (ORCPT
+        with ESMTP id S229452AbjJVSmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 14:39:30 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FEFE0;
-        Sun, 22 Oct 2023 11:39:28 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-1c5cd27b1acso21311045ad.2;
-        Sun, 22 Oct 2023 11:39:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697999967; x=1698604767; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I9XnGTqS6VWrLiI+nuP6yzxfhhc0PJY1/9rd1gvde04=;
-        b=M8RmgpghbgOiMvD/9ADwgkcMhlaPaJwabSPXNTP6WEY6GrGkU63tXSRY3ZTmUTnTZW
-         ozEr6qj4TUQuriomfLqbVaxy7LuwQTjgzHlvbTE/yCC8DPklVyf1d1+SJWWjWOUsUnhP
-         Df2evXTLXNQdqA3hcKVR3EOj86rb9yK3PgeAI0EYdkvJObxG7K1RwkHj7WZEf90du0Dw
-         5Q47YzsbN9SzRmaWoBQfHSk3t8tfCgPStw4P9ZTbbO1HoGWUXAEhoyUMdJ4rDQgRHVpW
-         grYHCkfK9dQPzjTLDn+QWp4zBfFdbbKF2t+u8EeWMveYNjKP0HwzXo1tCeaTMicMauRO
-         vGQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697999967; x=1698604767;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I9XnGTqS6VWrLiI+nuP6yzxfhhc0PJY1/9rd1gvde04=;
-        b=f6snRjiUoFsVfTAxrs/Uogx5OoYryDZRxfAZJjqFRTIEOnT2DwOQmK7sLBu/yZHgxs
-         OyYVJ2fX/9BhLdG0avxpKRr1kuSfEPFTPHDs+sfagJX0r9O8rSYTqCmARYNHMLI9aK1O
-         55X4XwQ8H+AKSA+30ceUm5ImbNC1Y+jI5k/Mez00n9tkkzzQzmggSv9CqkyHBe5cKSWP
-         jC/A7rfVTHCupwBJPHWsgf6C8kaPPqQ8yPrDbDl6DBjiykndtkv7bwDLIpAjY4yGfuy/
-         low8kkco1j2YGK95CCMzpq+sJGFQOxZRkTr43+DA3mckLVILu5G1cFFhQU+zZMuZUtbv
-         VblA==
-X-Gm-Message-State: AOJu0Yz/fwEtwi5iG9In+yMRvtBJOUwNAqge1kQZDTqZn7o0PNDbnypr
-        8thkskgh7Jobzd4lDg00iU0=
-X-Google-Smtp-Source: AGHT+IGtJn40MHIY1wL/r/2JYdCJPBQM+Et+9XlN6Ua5mnUsXU68QMG0DWmO7g0krYdP9MYWZgbJqg==
-X-Received: by 2002:a17:902:e844:b0:1c6:25c3:13d3 with SMTP id t4-20020a170902e84400b001c625c313d3mr8145238plg.6.1697999967482;
-        Sun, 22 Oct 2023 11:39:27 -0700 (PDT)
-Received: from localhost ([2409:8a3c:3640:7481:178a:30e9:674c:c2f3])
-        by smtp.gmail.com with ESMTPSA id d15-20020a170903230f00b001b8b07bc600sm4649961plh.186.2023.10.22.11.39.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 11:39:27 -0700 (PDT)
-From:   John Sanpe <sanpeqf@gmail.com>
-To:     stfrench@microsoft.com, linkinjeon@kernel.org, pc@manguebit.com,
-        sprasad@microsoft.com, linux-cifs@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, John Sanpe <sanpeqf@gmail.com>
-Subject: [PATCH] fs/smb: using crypto lib instead cifs_arc4
-Date:   Mon, 23 Oct 2023 02:39:17 +0800
-Message-ID: <20231022183917.1013135-1-sanpeqf@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Sun, 22 Oct 2023 14:42:18 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E16BAE0;
+        Sun, 22 Oct 2023 11:42:15 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39MINZlJ030162;
+        Sun, 22 Oct 2023 18:41:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Ritmfuc6Se9Vc4xPKPYBe0LSKU3x8kDYBvVduJlxJa4=;
+ b=majhYMf+rJCUvCili4uIdEsm2I4n4ViWotBrIe0Pe8VNUvXLd4Z5FwKM7VFN4z27UOXd
+ FKlk9Nkeb/aieN9zha4SKA2KvblKdxK+J9RXvr6BQBUSW2EkK+Ggh3tIKsd0Ca38Gw68
+ uyFy+9daHZWTXWA8XeNVL4oVcUSGBvZFof/Kfu+5XWzYpZ37IV9Z2iefCeWfgGgCR0Gv
+ Q32xf4JjSSjmqz2ik6CGvKk6PgS+IYRDXj75vKQ7+1CunAUnMWQBUwv21fcEADBv5vc/
+ LKPOQ4xSsebPFpfsAQPIQ1I4osjZfOENL2C+LUDebkcS6YBnLBCNsKTiB/bDuBc6Xn3e XA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv7u3tpgp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 22 Oct 2023 18:41:58 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39MIfvam017543
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 22 Oct 2023 18:41:57 GMT
+Received: from [10.216.52.212] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Sun, 22 Oct
+ 2023 11:41:50 -0700
+Message-ID: <14fc724c-bc99-4b5d-9893-3e5eff8895f7@quicinc.com>
+Date:   Mon, 23 Oct 2023 00:11:45 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
+ Glue driver
+To:     Johan Hovold <johan@kernel.org>
+CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Andy Gross" <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
+        <quic_shazhuss@quicinc.com>
+References: <20231007154806.605-1-quic_kriskura@quicinc.com>
+ <20231007154806.605-6-quic_kriskura@quicinc.com>
+ <ZTJ_T1UL8-s2cgNz@hovoldconsulting.com>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <ZTJ_T1UL8-s2cgNz@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: -STz74Ajs0z0XUfCN19hAX2Jv6XfQASf
+X-Proofpoint-ORIG-GUID: -STz74Ajs0z0XUfCN19hAX2Jv6XfQASf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-22_16,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ suspectscore=0 mlxscore=0 phishscore=0 bulkscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310220172
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace internal logic with an independent arc4 library.
 
-Signed-off-by: John Sanpe <sanpeqf@gmail.com>
----
- fs/smb/Kconfig              |  1 +
- fs/smb/client/cifsencrypt.c |  7 ++--
- fs/smb/common/Makefile      |  1 -
- fs/smb/common/arc4.h        | 23 ------------
- fs/smb/common/cifs_arc4.c   | 74 -------------------------------------
- fs/smb/server/auth.c        |  6 +--
- 6 files changed, 7 insertions(+), 105 deletions(-)
- delete mode 100644 fs/smb/common/arc4.h
- delete mode 100644 fs/smb/common/cifs_arc4.c
 
-diff --git a/fs/smb/Kconfig b/fs/smb/Kconfig
-index ef425789fa6a..65e5a437898b 100644
---- a/fs/smb/Kconfig
-+++ b/fs/smb/Kconfig
-@@ -7,5 +7,6 @@ source "fs/smb/server/Kconfig"
- 
- config SMBFS
- 	tristate
-+	select CRYPTO_LIB_ARC4
- 	default y if CIFS=y || SMB_SERVER=y
- 	default m if CIFS=m || SMB_SERVER=m
-diff --git a/fs/smb/client/cifsencrypt.c b/fs/smb/client/cifsencrypt.c
-index ef4c2e3c9fa6..d8754c406b5f 100644
---- a/fs/smb/client/cifsencrypt.c
-+++ b/fs/smb/client/cifsencrypt.c
-@@ -21,7 +21,7 @@
- #include <linux/random.h>
- #include <linux/highmem.h>
- #include <linux/fips.h>
--#include "../common/arc4.h"
-+#include <crypto/arc4.h>
- #include <crypto/aead.h>
- 
- /*
-@@ -826,9 +826,8 @@ calc_seckey(struct cifs_ses *ses)
- 		return -ENOMEM;
- 	}
- 
--	cifs_arc4_setkey(ctx_arc4, ses->auth_key.response, CIFS_SESS_KEY_SIZE);
--	cifs_arc4_crypt(ctx_arc4, ses->ntlmssp->ciphertext, sec_key,
--			CIFS_CPHTXT_SIZE);
-+	arc4_setkey(ctx_arc4, ses->auth_key.response, CIFS_SESS_KEY_SIZE);
-+	arc4_crypt(ctx_arc4, ses->ntlmssp->ciphertext, sec_key, CIFS_CPHTXT_SIZE);
- 
- 	/* make secondary_key/nonce as session key */
- 	memcpy(ses->auth_key.response, sec_key, CIFS_SESS_KEY_SIZE);
-diff --git a/fs/smb/common/Makefile b/fs/smb/common/Makefile
-index c66dbbc1469c..9e0730a385fb 100644
---- a/fs/smb/common/Makefile
-+++ b/fs/smb/common/Makefile
-@@ -3,5 +3,4 @@
- # Makefile for Linux filesystem routines that are shared by client and server.
- #
- 
--obj-$(CONFIG_SMBFS) += cifs_arc4.o
- obj-$(CONFIG_SMBFS) += cifs_md4.o
-diff --git a/fs/smb/common/arc4.h b/fs/smb/common/arc4.h
-deleted file mode 100644
-index 12e71ec033a1..000000000000
---- a/fs/smb/common/arc4.h
-+++ /dev/null
-@@ -1,23 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0+ */
--/*
-- * Common values for ARC4 Cipher Algorithm
-- */
--
--#ifndef _CRYPTO_ARC4_H
--#define _CRYPTO_ARC4_H
--
--#include <linux/types.h>
--
--#define ARC4_MIN_KEY_SIZE	1
--#define ARC4_MAX_KEY_SIZE	256
--#define ARC4_BLOCK_SIZE		1
--
--struct arc4_ctx {
--	u32 S[256];
--	u32 x, y;
--};
--
--int cifs_arc4_setkey(struct arc4_ctx *ctx, const u8 *in_key, unsigned int key_len);
--void cifs_arc4_crypt(struct arc4_ctx *ctx, u8 *out, const u8 *in, unsigned int len);
--
--#endif /* _CRYPTO_ARC4_H */
-diff --git a/fs/smb/common/cifs_arc4.c b/fs/smb/common/cifs_arc4.c
-deleted file mode 100644
-index 043e4cb839fa..000000000000
---- a/fs/smb/common/cifs_arc4.c
-+++ /dev/null
-@@ -1,74 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Cryptographic API
-- *
-- * ARC4 Cipher Algorithm
-- *
-- * Jon Oberheide <jon@oberheide.org>
-- */
--
--#include <linux/module.h>
--#include "arc4.h"
--
--MODULE_LICENSE("GPL");
--
--int cifs_arc4_setkey(struct arc4_ctx *ctx, const u8 *in_key, unsigned int key_len)
--{
--	int i, j = 0, k = 0;
--
--	ctx->x = 1;
--	ctx->y = 0;
--
--	for (i = 0; i < 256; i++)
--		ctx->S[i] = i;
--
--	for (i = 0; i < 256; i++) {
--		u32 a = ctx->S[i];
--
--		j = (j + in_key[k] + a) & 0xff;
--		ctx->S[i] = ctx->S[j];
--		ctx->S[j] = a;
--		if (++k >= key_len)
--			k = 0;
--	}
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(cifs_arc4_setkey);
--
--void cifs_arc4_crypt(struct arc4_ctx *ctx, u8 *out, const u8 *in, unsigned int len)
--{
--	u32 *const S = ctx->S;
--	u32 x, y, a, b;
--	u32 ty, ta, tb;
--
--	if (len == 0)
--		return;
--
--	x = ctx->x;
--	y = ctx->y;
--
--	a = S[x];
--	y = (y + a) & 0xff;
--	b = S[y];
--
--	do {
--		S[y] = a;
--		a = (a + b) & 0xff;
--		S[x] = b;
--		x = (x + 1) & 0xff;
--		ta = S[x];
--		ty = (y + ta) & 0xff;
--		tb = S[ty];
--		*out++ = *in++ ^ S[a];
--		if (--len == 0)
--			break;
--		y = ty;
--		a = ta;
--		b = tb;
--	} while (true);
--
--	ctx->x = x;
--	ctx->y = y;
--}
--EXPORT_SYMBOL_GPL(cifs_arc4_crypt);
-diff --git a/fs/smb/server/auth.c b/fs/smb/server/auth.c
-index 229a6527870d..5640196b313f 100644
---- a/fs/smb/server/auth.c
-+++ b/fs/smb/server/auth.c
-@@ -29,7 +29,7 @@
- #include "mgmt/user_config.h"
- #include "crypto_ctx.h"
- #include "transport_ipc.h"
--#include "../common/arc4.h"
-+#include <crypto/arc4.h>
- 
- /*
-  * Fixed format data defining GSS header and fixed string
-@@ -362,9 +362,9 @@ int ksmbd_decode_ntlmssp_auth_blob(struct authenticate_message *authblob,
- 		if (!ctx_arc4)
- 			return -ENOMEM;
- 
--		cifs_arc4_setkey(ctx_arc4, sess->sess_key,
-+		arc4_setkey(ctx_arc4, sess->sess_key,
- 				 SMB2_NTLMV2_SESSKEY_SIZE);
--		cifs_arc4_crypt(ctx_arc4, sess->sess_key,
-+		arc4_crypt(ctx_arc4, sess->sess_key,
- 				(char *)authblob + sess_key_off, sess_key_len);
- 		kfree_sensitive(ctx_arc4);
- 	}
--- 
-2.41.0
+On 10/20/2023 6:53 PM, Johan Hovold wrote:
+> First, drop "QCOM Glue driver" from Subject, you already have the "qcom"
+> prefix.
+> 
+> On Sat, Oct 07, 2023 at 09:18:01PM +0530, Krishna Kurapati wrote:
+>> Refactor setup_irq call to facilitate reading multiport IRQ's along
+> 
+> "IRQs" or just "interrupts"
+> 
+>> with non mulitport ones. Read through the interrupt-names property
+> 
+> "multiport"
+> 
+> Please spell check all your patches (commit messages and code) before
+> posting, it's not the reviewers job.
+> 
+>> to figure out, the type of interrupt (DP/DM/HS/SS) and to which port
+>> it belongs. Also keep track of port index to calculate port count
+>> based on interrupts provided as input in DT.
+>>
+>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>> ---
+>>   drivers/usb/dwc3/dwc3-qcom.c | 210 +++++++++++++++++++++++++----------
+>>   1 file changed, 154 insertions(+), 56 deletions(-)
+>>
+>> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+>> index ef2006db7601..863892284146 100644
+>> --- a/drivers/usb/dwc3/dwc3-qcom.c
+>> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+>> @@ -53,14 +53,25 @@
+>>   #define APPS_USB_AVG_BW 0
+>>   #define APPS_USB_PEAK_BW MBps_to_icc(40)
+>>   
+>> +#define NUM_PHY_IRQ		4
+>> +
+>> +enum dwc3_qcom_ph_index {
+> 
+> "phy_index"
+> 
+>> +	DP_HS_PHY_IRQ_INDEX = 0,
+>> +	DM_HS_PHY_IRQ_INDEX,
+>> +	SS_PHY_IRQ_INDEX,
+>> +	HS_PHY_IRQ_INDEX,
+>> +};
+>> +
+>>   struct dwc3_acpi_pdata {
+>>   	u32			qscratch_base_offset;
+>>   	u32			qscratch_base_size;
+>>   	u32			dwc3_core_base_size;
+>> +	/*
+>> +	 * The phy_irq_index corresponds to ACPI indexes of (in order) DP/DM/SS
+>> +	 * IRQ's respectively.
+>> +	 */
+>> +	int			phy_irq_index[NUM_PHY_IRQ - 1];
+>>   	int			hs_phy_irq_index;
+>> -	int			dp_hs_phy_irq_index;
+>> -	int			dm_hs_phy_irq_index;
+>> -	int			ss_phy_irq_index;
+>>   	bool			is_urs;
+>>   };
+>>   
+>> @@ -73,10 +84,12 @@ struct dwc3_qcom {
+>>   	int			num_clocks;
+>>   	struct reset_control	*resets;
+>>   
+>> +	/*
+>> +	 * The phy_irq corresponds to IRQ's registered for (in order) DP/DM/SS
+>> +	 * respectively.
+>> +	 */
+>> +	int			phy_irq[NUM_PHY_IRQ - 1][DWC3_MAX_PORTS];
+>>   	int			hs_phy_irq;
+>> -	int			dp_hs_phy_irq;
+>> -	int			dm_hs_phy_irq;
+>> -	int			ss_phy_irq;
+> 
+> I'm not sure using arrays like this is a good idea (and haven't you
+> switched the indexes above?).
+> 
+> Why not add a port structure instead?
+> 
+> 	struct dwc3_qcom_port {
+> 		int hs_phy_irq;
+> 		int dp_hs_phy_irq;
+> 		int dm_hs_phy_irq;
+> 		int ss_phy_irq;
+> 	};
+> 
+> and then have
+> 
+> 	struct dwc3_qcom_port ports[DWC3_MAX_PORTS];
+> 
+> in dwc3_qcom. The port structure can the later also be amended with
+> whatever other additional per-port data there is need for.
+> 
+> This should make the implementation cleaner.
+> 
+> I also don't like the special handling of hs_phy_irq; if this is really
+> just another name for the pwr_event_irq then this should be cleaned up
+> before making the code more complicated than it needs to be.
+> 
+> Make sure to clarify this before posting a new revision.
+> 
 
+hs_phy_irq is different from pwr_event_irq.
+AFAIK, there is only one of this per controller.
+
+>> -static int dwc3_qcom_prep_irq(struct dwc3_qcom *qcom, char *irq_name,
+>> -				char *disp_name, int irq)
+>> +static int dwc3_qcom_prep_irq(struct dwc3_qcom *qcom, const char *irq_name,
+>> +				const char *disp_name, int irq)
+> 
+> Ok, here you did drop the second name parameter, but without renaming
+> the first and hidden in a long diff without any mention anywhere.
+> 
+I didn't understand the comment. Can you please elaborate.
+I didn't drop the second parameter. In the usage of this call, I passed 
+same value to both irq_name and disp_name:
+
+"dwc3_qcom_prep_irq(qcom, irq_names[i], irq_names[i], irq);"
+
+I mentioned in cover-letter that I am using same name as obtained from 
+DT to register the interrupts as well. Should've mentioned that in 
+commit text of this patch. Will do it in next version.
+
+>> +static int dwc3_qcom_get_port_index(const char *irq_name, int irq_index)
+>> +{
+>> +	int port_index = -1;
+>> +
+>> +	switch (irq_index) {
+>> +	case DP_HS_PHY_IRQ_INDEX:
+>> +		if (strcmp(irq_name, "dp_hs_phy_irq") == 0)
+>> +			port_index = 1;
+>> +		else
+>> +			sscanf(irq_name, "dp_hs_phy_%d", &port_index);
+>> +		break;
+>> +
+> 
+> No need for newlines after break.
+> 
+>> +	case DM_HS_PHY_IRQ_INDEX:
+>> +		if (strcmp(irq_name, "dm_hs_phy_irq") == 0)
+>> +			port_index = 1;
+>> +		else
+>> +			sscanf(irq_name, "dm_hs_phy_%d", &port_index);
+>> +		break;
+>> +
+>> +	case SS_PHY_IRQ_INDEX:
+>> +		if (strcmp(irq_name, "ss_phy_irq") == 0)
+>> +			port_index = 1;
+>> +		else
+>> +			sscanf(irq_name, "ss_phy_%d", &port_index);
+>> +		break;
+>> +
+>> +	case HS_PHY_IRQ_INDEX:
+>> +		port_index = 1;
+>> +		break;
+>> +	}
+>> +
+>> +	if (port_index > DWC3_MAX_PORTS)
+>> +		port_index = -1;
+>> +
+>> +	return port_index;
+>> +}
+> 
+>>   static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+>>   {
+>>   	struct dwc3_qcom *qcom = platform_get_drvdata(pdev);
+>> -	const struct dwc3_acpi_pdata *pdata = qcom->acpi_pdata;
+>> +	struct device_node *np = pdev->dev.of_node;
+>> +	const char **irq_names;
+>> +	int port_index;
+>> +	int acpi_index;
+>> +	int irq_count;
+>> +	int irq_index;
+>>   	int irq;
+>>   	int ret;
+>> +	int i;
+>>   
+>> -	irq = dwc3_qcom_get_irq(pdev, "hs_phy_irq",
+>> -				pdata ? pdata->hs_phy_irq_index : -1);
+>> -	if (irq > 0) {
+>> -		ret = dwc3_qcom_prep_irq(qcom, "hs_phy_irq", "qcom_dwc3 HS", irq);
+>> -		if (ret)
+>> -			return ret;
+>> -		qcom->hs_phy_irq = irq;
+>> -	}
+>> +	irq_count = of_property_count_strings(np, "interrupt-names");
+> 
+> of_property_count_strings() can return negative errnos and you don't
+> have any sanity checks for the return value...
+> 
+> Please slow down, and also make sure to get your patches reviewed
+> internally before posting new revisions.
+> 
+It did go through internal review but probably went un-noticed. Will add 
+sanity checks here and below.
+
+>> +	irq_names = devm_kzalloc(&pdev->dev, sizeof(*irq_names) * irq_count, GFP_KERNEL);
+> 
+> devm_kcalloc()
+> 
+>> +	if (!irq_names)
+>> +		return -ENOMEM;
+>>   
+>> -	irq = dwc3_qcom_get_irq(pdev, "dp_hs_phy_irq",
+>> -				pdata ? pdata->dp_hs_phy_irq_index : -1);
+>> -	if (irq > 0) {
+>> -		ret = dwc3_qcom_prep_irq(qcom, "dp_hs_phy_irq", "qcom_dwc3 DP_HS", irq);
+>> -		if (ret)
+>> -			return ret;
+>> -		qcom->dp_hs_phy_irq = irq;
+>> -	}
+>> +	ret = of_property_read_string_array(np, "interrupt-names",
+>> +						irq_names, irq_count);
+> 
+> No sanity check here either?
+> 
+>> +	for (i = 0; i < irq_count; i++) {
+>> +		irq_index = dwc3_qcom_get_irq_index(irq_names[i]);
+>> +		if (irq_index == -1) {
+>> +			dev_dbg(&pdev->dev, "Invalid IRQ not handled");
+>> +			continue;
+>> +		}
+> 
+> I'll just stop reviewing here. This is a waste of my time.
+> 
+
+Regards,
+Krishna,
