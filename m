@@ -2,175 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0157D24A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A297D24A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbjJVQti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 12:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
+        id S231859AbjJVQvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 12:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJVQth (ORCPT
+        with ESMTP id S229500AbjJVQvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 12:49:37 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B63E7
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 09:49:34 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1qubds-0001Oj-9E; Sun, 22 Oct 2023 18:49:32 +0200
-From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Linux regressions report  for mainline [2023-10-22]
-Date:   Sun, 22 Oct 2023 16:49:31 +0000
-Message-Id: <169799330468.525178.1969942838211820764@leemhuis.info>
-X-Mailer: git-send-email 2.40.1
-Content-Type: text/plain; charset="utf-8"
+        Sun, 22 Oct 2023 12:51:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2155CFB
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 09:51:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1697993503; x=1729529503;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=2h1MLsEUAKWtQrKuqZMPzdZyua2XzLtNlrV8BMgQOg4=;
+  b=BlCXXu4uxFhn/1jmAnyliXqLI0Y3BJRfzaeQ4ZzEbdPZlu791Y9SHiX2
+   SrKoHEYOch2LGMxw0GwOeDYeCrQkh0kIDbO59Yhif3Ng9wHXQWnnT7kT3
+   y238I9UaTIovuNkUu1oB/nGL/MgnUnuUAvgC1cHDLBTtPpOGeiiZDVKyt
+   lHZF33PESUQSbrscZC6pyW04S1XeuxRD+UiTDtaTOSIL+X2KmOoNMzs/b
+   SCDq9k0mzogbYRPTSvuMkA3n3ER7EGVqHKxBxi2Nfx6eimzzHaKZfQnTK
+   U/T+hMo1Pd5QyPY8qyK1malcKDuL8e4c64JYLIDJe/7AD1sRfVtEx7+Y0
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="371786930"
+X-IronPort-AV: E=Sophos;i="6.03,243,1694761200"; 
+   d="scan'208";a="371786930"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 09:51:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="823750225"
+X-IronPort-AV: E=Sophos;i="6.03,243,1694761200"; 
+   d="scan'208";a="823750225"
+Received: from mozdogan-mobl1.amr.corp.intel.com (HELO [10.209.73.165]) ([10.209.73.165])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 09:51:41 -0700
+Message-ID: <cbc7d064-d6ef-4453-ba4c-4d4e9ca58aa6@linux.intel.com>
+Date:   Sun, 22 Oct 2023 09:51:42 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6] x86/tdx: Dump TDX Version During TD Bootup
+To:     Yi Sun <yi.sun@intel.com>, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, peterz@infradead.org,
+        x86@kernel.org
+Cc:     kirill.shutemov@linux.intel.com, kai.huang@intel.com,
+        nik.borisov@suse.com, linux-kernel@vger.kernel.org,
+        heng.su@intel.com, yi.sun@linux.intel.com,
+        Dongcheng Yan <dongcheng.yan@intel.com>
+References: <20231022063122.2812190-1-yi.sun@intel.com>
+Content-Language: en-US
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20231022063122.2812190-1-yi.sun@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1697993374;a456cabc;
-X-HE-SMSGID: 1qubds-0001Oj-9E
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus. My list of unresolved regressions from this cycle became quite
-short: it's mainly Andy's boot problem on Merrifield exposed by a quota
-change (you already know about it, the tricky investigation is ongoing)
-and a PowerMac G5 boot problem (will likely be fixed in the next few
-days, as the root of the problem was recently found). There is also a
-ext4 problem, but it's not bisected and tricky to debug (investigation
-is slow, but in the works).
-
-So let me use this opportunity to mention two other regressions I tracke
-that were introduced in earlier cycles. I suspect they are not handled
-like you want them to be handled, but I'm not totally sure; hence I
-decided to mention them here to give you a chance to chime in yourself
-or tell me what to do.
-
-- On a Lenovo ThinkPad L570 since 60aebc9559492c ("drivers/firmware:
-Move sysfb_init() from device_initcall to subsys_initcall_sync")
-[v6.5-rc1] the screen stays dark during boot until the display manager
-starts; the reporter was able to work around that by disabling
-DRM_SIMPLEDRM (which had been enabled before). But the problem itself
-remains and it seems the developer of said commit wants to leave things
-as they are due to lack of access to the affected device:
-https://lore.kernel.org/dri-devel/7c50e051-eba2-09fc-da9f-023d592de457@ristioja.ee/
-https://lore.kernel.org/dri-devel/CAAhV-H4qQW_fOdkTxmT1xbvo4LOapzw_tOw7Kma47xmh0PvpPA@mail.gmail.com/
-
-- Since 3066ff93476c35 ("fuse: Apply flags2 only when userspace set the
-FUSE_INIT_EXT") [v6.5-rc3] creating new files or reading existing files
-on Android apparently now returns -EFAULT; this was reported with a
-patch to revert the culprit a few weeks ago; there was some discussion
-(some a few days ago), but doesn't look like the revert or some other
-fix is heading your way, unless I missed something:
-https://lore.kernel.org/all/20230904133321.104584-1-git@andred.net/
-https://lore.kernel.org/all/5cd87a64-c506-46f2-9fed-ac8a74658631@ddn.com/
-
-Ciao, Thorsten
-
----
-
-Hi, this is regzbot, the Linux kernel regression tracking bot.
-
-Currently I'm aware of 3 regressions in linux-mainline. Find the
-current status below and the latest on the web:
-
-https://linux-regtracking.leemhuis.info/regzbot/mainline/
-
-Bye bye, hope to see you soon for the next report.
-   Regzbot (on behalf of Thorsten Leemhuis)
 
 
-======================================================
-current cycle (v6.5.. aka v6.6-rc), culprit identified
-======================================================
+On 10/21/2023 11:31 PM, Yi Sun wrote:
+> Different versions of TDX have significant differences, as stated in the
+> "Intel® TDX Module Incompatibilities between v1.0 and v1.5" reference.
+> 
+> It would be useful for TD users to be aware of the vendor and version of
+> the current TDX in use. Users could expect different results when checking
+> CPIUD or reading MSR in the user space, depending on the TDX version.
+> Additionally, refer to the TDX version when reporting issues.
+> 
+> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
+> Co-developed-by: Dongcheng Yan <dongcheng.yan@intel.com>
+> Signed-off-by: Dongcheng Yan <dongcheng.yan@intel.com>
+> Signed-off-by: Yi Sun <yi.sun@intel.com>
+> 
+> ---
+> V5 -> V6:
+> 	- Remove random warnings at each step. Print the error details and
+> 	presumed TDX version in common code. (Dave Hansen)
+> 
+> 	- Remove useless assignment and cast. Re-zeroed the input args
+> 	between tdcalls. Refine the comments. (Dave Hansen)
+> 
+> V4 -> V5:
+> 	- Print the version info inside the function detect_tdx_version, but
+> 	not tdx_early_init(). Remove the structure tdg_sys_info, but have 3
+> 	local variables instead. (Huang, Kai)
+> 
+> V3 -> V4: 
+> 	- Rebase the patch on top of the latest tip tree. (Huang, Kai)
+> 	- Change the return value of function tdg_get_sysinfo as void, and
+> 	zero out tdg_sys_info when error occurs. (Kuppuswamy Sathyanarayanan)
+> 
+> V2 -> V3: 
+> 	- Move the allocation of struct tdg_sys_info on stack inside
+> 	tdx_early_init() and pass down to tdg_get_sysinfo() to fill.
+> 	(Kirill Shutemov)
+> 
+> V1 -> V2: 
+> 	- Move the defination of field IDs and the struct tdg_sys_info to tdx.c.
+> 	(Kuppuswamy Sathyanarayanan)
+> 
+> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+> index 3e6dbd2199cf..20e911241e56 100644
+> --- a/arch/x86/coco/tdx/tdx.c
+> +++ b/arch/x86/coco/tdx/tdx.c
+> @@ -37,6 +37,15 @@
+>  
+>  #define TDREPORT_SUBTYPE_0	0
+>  
+> +/*
+> + * TDX metadata base field id, used by TDCALL TDG.SYS.RD
+> + * See TDX ABI Spec Global Metadata Fields
+> + */
+> +#define TDX_SYS_VENDOR_ID_FID		0x0800000200000000ULL
+> +#define TDX_SYS_MINOR_FID		0x0800000100000003ULL
+> +#define TDX_SYS_MAJOR_FID		0x0800000100000004ULL
+> +#define TDX_VENDOR_INTEL		0x8086
+> +
+>  /* Called from __tdx_hypercall() for unrecoverable failure */
+>  noinstr void __noreturn __tdx_hypercall_failed(void)
+>  {
+> @@ -800,6 +809,56 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
+>  	return true;
+>  }
+>  
+> +/*
+> + * Detect TDX Module version info from TDG.SYS.RD TDCALL
+> + */
+> +static void detect_tdx_version(void)
+> +{
+> +	struct tdx_module_args args = {};
+> +	u16 major_version = 0;
+> +	u16 minor_version = 0;
+> +	u32 vendor_id = 0;
+> +	u64 ret = 0;
 
+Since you overwrite all above values, I think you can skip initialization.
 
-[ *NEW* ] quota: boot on Intel Merrifield after merge commit 1500e7e0726e
--------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ZS5hhpG97QSvgYPf@smile.fi.intel.com/
-https://lore.kernel.org/linux-fsdevel/ZS5hhpG97QSvgYPf@smile.fi.intel.com/
+> +
+> +	args.rdx = TDX_SYS_VENDOR_ID_FID;
+> +	ret = __tdcall_ret(TDG_SYS_RD, &args);
+> +	if (ret)
+> +		goto err_out;
+> +
+> +	vendor_id = args.r8;
+> +
+> +	memset(&args, 0, sizeof(args));
+> +	args.rdx = TDX_SYS_MAJOR_FID;
+> +	ret = __tdcall_ret(TDG_SYS_RD, &args);
+> +	if (ret)
+> +		goto err_out;
+> +
+> +	major_version = args.r8;
+> +
+> +	memset(&args, 0, sizeof(args));
+> +	args.rdx = TDX_SYS_MINOR_FID;
+> +	ret = __tdcall_ret(TDG_SYS_RD, &args);
+> +	if (ret)
+> +		goto err_out;
+> +
+> +	minor_version = args.r8;
+> +
+> +	pr_info("TDX detected. TDX version:%u.%u VendorID:%x\n",
+> +		major_version, minor_version, vendor_id);
 
-By Andy Shevchenko; 5 days ago; 41 activities, latest 0 days ago.
-Introduced in 024128477809 (v6.6-rc1)
+Since TDX prefix is part of pr_info, you can just use "Guest detected. version:..."
 
-Recent activities from: Andy Shevchenko (23), Jan Kara (7), Linus
-  Torvalds (6), andy.shevchenko@gmail.com (2), Kees Cook (1), Baokun
-  Li (1), Josh Poimboeuf (1)
+> +
+> +	return;
+> +
+> +err_out:
+> +	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
+> +		pr_info("TDG.SYS.RD not available\n");
+> +	else
+> +		pr_info("TDG.SYS.RD unknown error (%llu), reading field %llu\n",
+> +			ret, args.rdx);
+> +
+> +	pr_info("Assuming TDX version:1.x (x<5) VendorID:%x\n",
+> +		TDX_VENDOR_INTEL);
+> +}
+> +
+>  void __init tdx_early_init(void)
+>  {
+>  	struct tdx_module_args args = {
+> @@ -867,5 +926,5 @@ void __init tdx_early_init(void)
+>  	 */
+>  	x86_cpuinit.parallel_bringup = false;
+>  
+> -	pr_info("Guest detected\n");
+> +	detect_tdx_version();
+>  }
+> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
+> index f74695dea217..10b6c61e835e 100644
+> --- a/arch/x86/include/asm/shared/tdx.h
+> +++ b/arch/x86/include/asm/shared/tdx.h
+> @@ -17,6 +17,8 @@
+>  #define TDG_MR_REPORT			4
+>  #define TDG_MEM_PAGE_ACCEPT		6
+>  #define TDG_VM_WR			8
+> +/* The TDCALL TDG.SYS.RD originates from TDX version 1.5 */
+> +#define TDG_SYS_RD			11
+>  
+>  /* TDCS fields. To be used by TDG.VM.WR and TDG.VM.RD module calls */
+>  #define TDCS_NOTIFY_ENABLES		0x9100000000000010
 
-2 patch postings are associated with this regression, the latest is this:
-* Re: [GIT PULL] ext2, quota, and udf fixes for 6.6-rc1
-  https://lore.kernel.org/linux-fsdevel/ZTKUDzONVHXnWAJc@smile.fi.intel.com/
-  2 days ago, by Andy Shevchenko
-
-
-powerpc: new page table range API causes PowerMac G5 to fail booting
---------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20230929132750.3cd98452@yea/
-https://lore.kernel.org/linuxppc-dev/20230929132750.3cd98452@yea/
-
-By Erhard Furtner; 23 days ago; 15 activities, latest 4 days ago.
-Introduced in 9fee28baa601 (v6.6-rc1)
-
-Recent activities from: Michael Ellerman (2), Erhard Furtner (1)
-
-3 patch postings are associated with this regression, the latest is this:
-* Re: [Bisected] PowerMac G5 fails booting kernel 6.6-rc3 (BUG: Unable to handle kernel data access at 0xfeffbb62ffec65fe)
-  https://lore.kernel.org/linuxppc-dev/8734y8zdpb.fsf@mail.lhotse/
-  4 days ago, by Michael Ellerman
-
-
-===================================================
-current cycle (v6.5.. aka v6.6-rc), unknown culprit
-===================================================
-
-
-[ *NEW* ] ext4: task hung in ext4_fallocate
--------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de/
-https://lore.kernel.org/linux-ext4/20231017033725.r6pfo5a4ayqisct7@awork3.anarazel.de/
-
-By Andres Freund; 5 days ago; 4 activities, latest 4 days ago.
-Introduced in v6.5..v6.6-rc6
-
-Recent activities from: Andres Freund (3), Theodore Ts'o (1)
-
-
-=============
-End of report
-=============
-
-All regressions marked '[ *NEW* ]' were added since the previous report,
-which can be found here:
-https://lore.kernel.org/r/169737193299.624972.12831031401706621880@leemhuis.info
-
-Thanks for your attention, have a nice day!
-
-  Regzbot, your hard working Linux kernel regression tracking robot
-
-
-P.S.: Wanna know more about regzbot or how to use it to track regressions
-for your subsystem? Then check out the getting started guide or the
-reference documentation:
-
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-
-The short version: if you see a regression report you want to see
-tracked, just send a reply to the report where you Cc
-regressions@lists.linux.dev with a line like this:
-
-#regzbot introduced: v5.13..v5.14-rc1
-
-If you want to fix a tracked regression, just do what is expected
-anyway: add a 'Link:' tag with the url to the report, e.g.:
-
-Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
