@@ -2,400 +2,613 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4287D22E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994947D22F1
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbjJVLcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 07:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
+        id S231616AbjJVLkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 07:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVLb5 (ORCPT
+        with ESMTP id S229472AbjJVLkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 07:31:57 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5C3E9;
-        Sun, 22 Oct 2023 04:31:54 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9936b3d0286so358378466b.0;
-        Sun, 22 Oct 2023 04:31:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697974313; x=1698579113; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S4Qod9SfFzfNb+2PWWBwTLsMwnklAaKGCWb4rKbRixc=;
-        b=ctw+5TpDLorzC1ydeBra6vc1IW998cUrtAgADfxQKXW3KATLWutGexyMg+GtoXFK78
-         uvXj2ZlJ74Ezvr/Ww6xyfWNHo6q3tURbygCG/9EUy8bCzEVSvTvIcCmnpHmcFgKQko8g
-         3dctf30Q3G/0gnoApk3WUOoPfpQMY/eFEa0qHFVh4XtMCUsyhTYRf0GXAaU3pRmcMI0x
-         ZgC5IhUj5bGgoHAZRno0iwtTaGVcwKRbmBjWcwXbWhyhG/IGc+eFbARuMAMzUXC9MWLV
-         QhidPWcBD3B5tNMKWlNPEdF2EtNQqhOqRnHYkzKWpoxeZlDxCvbyhmXmn9Sxj6dFekkM
-         RrxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697974313; x=1698579113;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S4Qod9SfFzfNb+2PWWBwTLsMwnklAaKGCWb4rKbRixc=;
-        b=hUf0jkbi1QiC+1Pvxv8IwA40qvrS35ykPNpBf78JXMYmUvK3Yk7+eLsKx1Eu996D1J
-         7cygnZx8Cz23DUI/yfpu1hDc4emimjRThFyID4tx1izSj9j/uNqIMC0IGbfS6P6XzEaa
-         82ibfrN/j7SouiB09dIcU8xHJuWRDHzIi5pcR6XfkhvFO13ko/NfTzkWGb2N4/cWj2uX
-         EOPPBTT/8H96vFLzwNE3GCMBnJHWZQ0Huht7nNsJ7i6c9H+1KLcIsIuwiYcQhi8Zhdqz
-         bI/hiVrQet0g+tVgzfqFhQjRVQEZ1U5j0YfmckKtskJPlcjfU2PUBmOVhb3nYKy54hYx
-         39kA==
-X-Gm-Message-State: AOJu0YyTEE91f67vl8tgUvjFVl0DDE5EkeR9iQkagWguVzEue1l7NPj9
-        JkO0ZJ6tGWlUX4kxtlBuoDY=
-X-Google-Smtp-Source: AGHT+IHL9Mv18nlC0bf4nv8iD44dIVeR3uTDT4xHFi62XfcAgUa+XtM5cdjUwY6RAADfDiNgPffFDQ==
-X-Received: by 2002:a17:907:9344:b0:9ae:7870:1539 with SMTP id bv4-20020a170907934400b009ae78701539mr5130729ejc.76.1697974312757;
-        Sun, 22 Oct 2023 04:31:52 -0700 (PDT)
-Received: from standask-GA-A55M-S2HP ([188.123.113.247])
-        by smtp.gmail.com with ESMTPSA id s16-20020a1709066c9000b0099bc08862b6sm5016897ejr.171.2023.10.22.04.31.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 04:31:52 -0700 (PDT)
-Date:   Sun, 22 Oct 2023 13:31:50 +0200
-From:   Stanislav Jakubek <stano.jakubek@gmail.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Artur Weber <aweber.kernel@gmail.com>
-Subject: [PATCH] dt-bindings: clock: brcm,kona-ccu: convert to YAML
-Message-ID: <ZTUIJrTc6KKyT4xj@standask-GA-A55M-S2HP>
+        Sun, 22 Oct 2023 07:40:10 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DD8EB;
+        Sun, 22 Oct 2023 04:40:07 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id E1B715C038D;
+        Sun, 22 Oct 2023 07:40:04 -0400 (EDT)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Sun, 22 Oct 2023 07:40:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1697974804; x=1698061204; bh=umf8InybRs/qen93H0Y7cREHJ0WBakx6IZR
+        VRIpWtOw=; b=ofFN94ZhfuBss/YHYF+WKRCkNlSZzHBOYPpY1QoAZtTCOsJEGF3
+        ME3rHkbDwpX3UlOvfJLRdLfqVTnTIY9fs//pVnx2Rg7TBw4Ft8ErR3PLw7lJimvk
+        bRFhzKo1Lm7LQ02nOngmczgrgh3objv3choBzEGQRvoXKWNUIazTKxBjbsHPhmjI
+        fo4DQkEF2rn41UHzUs5J2ObO3ZQALbAyDTrY0jvHIJI08LLX6X0E7ew/2KKG+vLb
+        +vSzao6nTM7Es4WbGNvlq3HLWw1KmuqMbZjPXpIYMFUizOpfFZAkuj8PlE0u+38q
+        M0ESLSiPvpRczRDjPnWTyOPnHI0tsfkD65g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1697974804; x=1698061204; bh=umf8InybRs/qen93H0Y7cREHJ0WBakx6IZR
+        VRIpWtOw=; b=mPWRVQ31bRjfDK1QrwS/iurDu5/3qh2tONVMP+98hxzwV9SRD07
+        uOcwgsjc85kxrtI2U+isnuR5Wphrks7OMZtthheaLPd49TS9qwrQMmC/Zc3NimvA
+        YlZXHe0RWXUhJbd1nJLJGBAewzK/FOOoJ6KPDIFgnxDCecjg8Eg1YVMdpja/nB7H
+        +GmZKBdev/FJ1334xrKNUnvDufSw288sGn9pGjHkEjt+cPwvoCco0km9XDjP5gMV
+        928N8v/8RQY7PQKZqpEOuGQGZ9GwnsoJgYuu7fSP5xEKcjEInyb/rfjwpnYaNjQI
+        dQDO4eU8VvuAF6Cae29GWqi7QFpUvtBE0EQ==
+X-ME-Sender: <xms:FAo1ZfGeVNEyf5whPD_rQaCIf5FX5U84ua1plUOOpak3jlZapFhxjw>
+    <xme:FAo1ZcVO9vOQShkCuiA49IF2Su4DqZuBTODB77LDc6Jlzy67Bk5Jit2Z1E-BRtAfS
+    TR3vnysHAFwzilgFaM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeefgdegfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedflfhi
+    rgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+    eqnecuggftrfgrthhtvghrnhepgfehhefhteegffdtledtkefhfeeuleegfeelkeehhfev
+    fedvkefgheejtdeigeevnecuffhomhgrihhnpegtphhsqdhvvggtrdhssgdpghgvnhgvgi
+    drshgsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
+    jhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:FAo1ZRLgoJVjL2LvCQIT2oVVcg2__GhekbHQplnA-Uc5NqD2HAfWiA>
+    <xmx:FAo1ZdH_SrDS8qTVzqzLCLjQtDZybr97kzFeooa5B_TWhyn8Nx5i_A>
+    <xmx:FAo1ZVV2tMAkuWrHCjXW6KF5qJkhAujYiIn63UK6Jmfbs5hKY3cCQg>
+    <xmx:FAo1ZeNHqWWq1kj82LzXs906kblf5Xwg7dKNxyhT75r1w8D2D3XDDQ>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 3EB3836A0077; Sun, 22 Oct 2023 07:40:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <cd1b2cba-0968-448c-a9c0-eb3f21a98461@app.fastmail.com>
+In-Reply-To: <20231004161038.2818327-3-gregory.clement@bootlin.com>
+References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
+ <20231004161038.2818327-3-gregory.clement@bootlin.com>
+Date:   Sun, 22 Oct 2023 12:39:45 +0100
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Gregory CLEMENT" <gregory.clement@bootlin.com>,
+        "paulburton@kernel.org" <paulburton@kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Vladimir Kondratiev" <vladimir.kondratiev@intel.com>,
+        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 02/11] MIPS: use virtual addresses from xkphys for MIPS64
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Broadcom Kona family clock controller unit (CCU) bindings
-to DT schema.
-
-Signed-off-by: Stanislav Jakubek <stano.jakubek@gmail.com>
----
- .../bindings/clock/brcm,kona-ccu.txt          | 138 ---------------
- .../bindings/clock/brcm,kona-ccu.yaml         | 158 ++++++++++++++++++
- 2 files changed, 158 insertions(+), 138 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/clock/brcm,kona-ccu.txt
- create mode 100644 Documentation/devicetree/bindings/clock/brcm,kona-ccu.yaml
-
-diff --git a/Documentation/devicetree/bindings/clock/brcm,kona-ccu.txt b/Documentation/devicetree/bindings/clock/brcm,kona-ccu.txt
-deleted file mode 100644
-index 8e5a7d868557..000000000000
---- a/Documentation/devicetree/bindings/clock/brcm,kona-ccu.txt
-+++ /dev/null
-@@ -1,138 +0,0 @@
--Broadcom Kona Family Clocks
--
--This binding is associated with Broadcom SoCs having "Kona" style
--clock control units (CCUs).  A CCU is a clock provider that manages
--a set of clock signals.  Each CCU is represented by a node in the
--device tree.
--
--This binding uses the common clock binding:
--    Documentation/devicetree/bindings/clock/clock-bindings.txt
--
--Required properties:
--- compatible
--	Shall have a value of the form "brcm,<model>-<which>-ccu",
--	where <model> is a Broadcom SoC model number and <which> is
--	the name of a defined CCU.  For example:
--	    "brcm,bcm11351-root-ccu"
--	The compatible strings used for each supported SoC family
--	are defined below.
--- reg
--	Shall define the base and range of the address space
--	containing clock control registers
--- #clock-cells
--	Shall have value <1>.  The permitted clock-specifier values
--	are defined below.
--- clock-output-names
--	Shall be an ordered list of strings defining the names of
--	the clocks provided by the CCU.
--
--Device tree example:
--
--	slave_ccu: slave_ccu {
--		compatible = "brcm,bcm11351-slave-ccu";
--		reg = <0x3e011000 0x0f00>;
--		#clock-cells = <1>;
--		clock-output-names = "uartb",
--				     "uartb2",
--				     "uartb3",
--				     "uartb4";
--	};
--
--	ref_crystal_clk: ref_crystal {
--		#clock-cells = <0>;
--		compatible = "fixed-clock";
--		clock-frequency = <26000000>;
--	};
--
--	uart@3e002000 {
--		compatible = "brcm,bcm11351-dw-apb-uart", "snps,dw-apb-uart";
--		reg = <0x3e002000 0x1000>;
--		clocks = <&slave_ccu BCM281XX_SLAVE_CCU_UARTB3>;
--		interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>;
--		reg-shift = <2>;
--		reg-io-width = <4>;
--	};
--
--BCM281XX family
-----------------
--CCU compatible string values for SoCs in the BCM281XX family are:
--    "brcm,bcm11351-root-ccu"
--    "brcm,bcm11351-aon-ccu"
--    "brcm,bcm11351-hub-ccu"
--    "brcm,bcm11351-master-ccu"
--    "brcm,bcm11351-slave-ccu"
--
--The following table defines the set of CCUs and clock specifiers for
--BCM281XX family clocks.  When a clock consumer references a clocks,
--its symbolic specifier (rather than its numeric index value) should
--be used.  These specifiers are defined in:
--    "include/dt-bindings/clock/bcm281xx.h"
--
--    CCU     Clock           Type    Index   Specifier
--    ---     -----           ----    -----   ---------
--    root    frac_1m         peri      0     BCM281XX_ROOT_CCU_FRAC_1M
--
--    aon     hub_timer       peri      0     BCM281XX_AON_CCU_HUB_TIMER
--    aon     pmu_bsc         peri      1     BCM281XX_AON_CCU_PMU_BSC
--    aon     pmu_bsc_var     peri      2     BCM281XX_AON_CCU_PMU_BSC_VAR
--
--    hub     tmon_1m         peri      0     BCM281XX_HUB_CCU_TMON_1M
--
--    master  sdio1           peri      0     BCM281XX_MASTER_CCU_SDIO1
--    master  sdio2           peri      1     BCM281XX_MASTER_CCU_SDIO2
--    master  sdio3           peri      2     BCM281XX_MASTER_CCU_SDIO3
--    master  sdio4           peri      3     BCM281XX_MASTER_CCU_SDIO4
--    master  dmac            peri      4     BCM281XX_MASTER_CCU_DMAC
--    master  usb_ic          peri      5     BCM281XX_MASTER_CCU_USB_IC
--    master  hsic2_48m       peri      6     BCM281XX_MASTER_CCU_HSIC_48M
--    master  hsic2_12m       peri      7     BCM281XX_MASTER_CCU_HSIC_12M
--
--    slave   uartb           peri      0     BCM281XX_SLAVE_CCU_UARTB
--    slave   uartb2          peri      1     BCM281XX_SLAVE_CCU_UARTB2
--    slave   uartb3          peri      2     BCM281XX_SLAVE_CCU_UARTB3
--    slave   uartb4          peri      3     BCM281XX_SLAVE_CCU_UARTB4
--    slave   ssp0            peri      4     BCM281XX_SLAVE_CCU_SSP0
--    slave   ssp2            peri      5     BCM281XX_SLAVE_CCU_SSP2
--    slave   bsc1            peri      6     BCM281XX_SLAVE_CCU_BSC1
--    slave   bsc2            peri      7     BCM281XX_SLAVE_CCU_BSC2
--    slave   bsc3            peri      8     BCM281XX_SLAVE_CCU_BSC3
--    slave   pwm             peri      9     BCM281XX_SLAVE_CCU_PWM
--
--
--BCM21664 family
-----------------
--CCU compatible string values for SoCs in the BCM21664 family are:
--    "brcm,bcm21664-root-ccu"
--    "brcm,bcm21664-aon-ccu"
--    "brcm,bcm21664-master-ccu"
--    "brcm,bcm21664-slave-ccu"
--
--The following table defines the set of CCUs and clock specifiers for
--BCM21664 family clocks.  When a clock consumer references a clocks,
--its symbolic specifier (rather than its numeric index value) should
--be used.  These specifiers are defined in:
--    "include/dt-bindings/clock/bcm21664.h"
--
--    CCU     Clock           Type    Index   Specifier
--    ---     -----           ----    -----   ---------
--    root    frac_1m         peri      0     BCM21664_ROOT_CCU_FRAC_1M
--
--    aon     hub_timer       peri      0     BCM21664_AON_CCU_HUB_TIMER
--
--    master  sdio1           peri      0     BCM21664_MASTER_CCU_SDIO1
--    master  sdio2           peri      1     BCM21664_MASTER_CCU_SDIO2
--    master  sdio3           peri      2     BCM21664_MASTER_CCU_SDIO3
--    master  sdio4           peri      3     BCM21664_MASTER_CCU_SDIO4
--    master  sdio1_sleep     peri      4     BCM21664_MASTER_CCU_SDIO1_SLEEP
--    master  sdio2_sleep     peri      5     BCM21664_MASTER_CCU_SDIO2_SLEEP
--    master  sdio3_sleep     peri      6     BCM21664_MASTER_CCU_SDIO3_SLEEP
--    master  sdio4_sleep     peri      7     BCM21664_MASTER_CCU_SDIO4_SLEEP
--
--    slave   uartb           peri      0     BCM21664_SLAVE_CCU_UARTB
--    slave   uartb2          peri      1     BCM21664_SLAVE_CCU_UARTB2
--    slave   uartb3          peri      2     BCM21664_SLAVE_CCU_UARTB3
--    slave   uartb4          peri      3     BCM21664_SLAVE_CCU_UARTB4
--    slave   bsc1            peri      4     BCM21664_SLAVE_CCU_BSC1
--    slave   bsc2            peri      5     BCM21664_SLAVE_CCU_BSC2
--    slave   bsc3            peri      6     BCM21664_SLAVE_CCU_BSC3
--    slave   bsc4            peri      7     BCM21664_SLAVE_CCU_BSC4
-diff --git a/Documentation/devicetree/bindings/clock/brcm,kona-ccu.yaml b/Documentation/devicetree/bindings/clock/brcm,kona-ccu.yaml
-new file mode 100644
-index 000000000000..80c834951d6d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/brcm,kona-ccu.yaml
-@@ -0,0 +1,158 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/brcm,kona-ccu.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Broadcom Kona family clock control units (CCU)
-+
-+maintainers:
-+  - Florian Fainelli <florian.fainelli@broadcom.com>
-+  - Ray Jui <rjui@broadcom.com>
-+  - Scott Branden <sbranden@broadcom.com>
-+
-+description:
-+  Broadcom "Kona" style clock control unit (CCU) is a clock provider that
-+  manages a set of clock signals.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - brcm,bcm11351-aon-ccu
-+      - brcm,bcm11351-hub-ccu
-+      - brcm,bcm11351-master-ccu
-+      - brcm,bcm11351-root-ccu
-+      - brcm,bcm11351-slave-ccu
-+      - brcm,bcm21664-aon-ccu
-+      - brcm,bcm21664-master-ccu
-+      - brcm,bcm21664-root-ccu
-+      - brcm,bcm21664-slave-ccu
-+
-+  reg:
-+    maxItems: 1
-+
-+  '#clock-cells':
-+    const: 1
-+
-+  clock-output-names:
-+    minItems: 1
-+    maxItems: 10
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - brcm,bcm11351-aon-ccu
-+              - brcm,bcm11351-hub-ccu
-+              - brcm,bcm11351-master-ccu
-+              - brcm,bcm11351-root-ccu
-+              - brcm,bcm11351-slave-ccu
-+    then:
-+      properties:
-+        clock-output-names:
-+          description: |
-+            The following table defines the set of CCUs and clock specifiers
-+            for BCM281XX family clocks.
-+            These clock specifiers are defined in:
-+                "include/dt-bindings/clock/bcm281xx.h"
-+
-+            CCU     Clock        Type  Index  Specifier
-+            ---     -----        ----  -----  ---------
-+            root    frac_1m      peri    0    BCM281XX_ROOT_CCU_FRAC_1M
-+
-+            aon     hub_timer    peri    0    BCM281XX_AON_CCU_HUB_TIMER
-+            aon     pmu_bsc      peri    1    BCM281XX_AON_CCU_PMU_BSC
-+            aon     pmu_bsc_var  peri    2    BCM281XX_AON_CCU_PMU_BSC_VAR
-+
-+            hub     tmon_1m      peri    0    BCM281XX_HUB_CCU_TMON_1M
-+
-+            master  sdio1        peri    0    BCM281XX_MASTER_CCU_SDIO1
-+            master  sdio2        peri    1    BCM281XX_MASTER_CCU_SDIO2
-+            master  sdio3        peri    2    BCM281XX_MASTER_CCU_SDIO3
-+            master  sdio4        peri    3    BCM281XX_MASTER_CCU_SDIO4
-+            master  dmac         peri    4    BCM281XX_MASTER_CCU_DMAC
-+            master  usb_ic       peri    5    BCM281XX_MASTER_CCU_USB_IC
-+            master  hsic2_48m    peri    6    BCM281XX_MASTER_CCU_HSIC_48M
-+            master  hsic2_12m    peri    7    BCM281XX_MASTER_CCU_HSIC_12M
-+
-+            slave   uartb        peri    0    BCM281XX_SLAVE_CCU_UARTB
-+            slave   uartb2       peri    1    BCM281XX_SLAVE_CCU_UARTB2
-+            slave   uartb3       peri    2    BCM281XX_SLAVE_CCU_UARTB3
-+            slave   uartb4       peri    3    BCM281XX_SLAVE_CCU_UARTB4
-+            slave   ssp0         peri    4    BCM281XX_SLAVE_CCU_SSP0
-+            slave   ssp2         peri    5    BCM281XX_SLAVE_CCU_SSP2
-+            slave   bsc1         peri    6    BCM281XX_SLAVE_CCU_BSC1
-+            slave   bsc2         peri    7    BCM281XX_SLAVE_CCU_BSC2
-+            slave   bsc3         peri    8    BCM281XX_SLAVE_CCU_BSC3
-+            slave   pwm          peri    9    BCM281XX_SLAVE_CCU_PWM
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - brcm,bcm21664-aon-ccu
-+              - brcm,bcm21664-master-ccu
-+              - brcm,bcm21664-root-ccu
-+              - brcm,bcm21664-slave-ccu
-+    then:
-+      properties:
-+        clock-output-names:
-+          maxItems: 8
-+          description: |
-+            The following table defines the set of CCUs and clock specifiers
-+            for BCM21664 family clocks.
-+            These clock specifiers are defined in:
-+                "include/dt-bindings/clock/bcm21664.h"
-+
-+            CCU     Clock         Type  Index  Specifier
-+            ---     -----         ----  -----  ---------
-+            root    frac_1m       peri    0    BCM21664_ROOT_CCU_FRAC_1M
-+
-+            aon     hub_timer     peri    0    BCM21664_AON_CCU_HUB_TIMER
-+
-+            master  sdio1         peri    0    BCM21664_MASTER_CCU_SDIO1
-+            master  sdio2         peri    1    BCM21664_MASTER_CCU_SDIO2
-+            master  sdio3         peri    2    BCM21664_MASTER_CCU_SDIO3
-+            master  sdio4         peri    3    BCM21664_MASTER_CCU_SDIO4
-+            master  sdio1_sleep   peri    4    BCM21664_MASTER_CCU_SDIO1_SLEEP
-+            master  sdio2_sleep   peri    5    BCM21664_MASTER_CCU_SDIO2_SLEEP
-+            master  sdio3_sleep   peri    6    BCM21664_MASTER_CCU_SDIO3_SLEEP
-+            master  sdio4_sleep   peri    7    BCM21664_MASTER_CCU_SDIO4_SLEEP
-+
-+            slave   uartb         peri    0    BCM21664_SLAVE_CCU_UARTB
-+            slave   uartb2        peri    1    BCM21664_SLAVE_CCU_UARTB2
-+            slave   uartb3        peri    2    BCM21664_SLAVE_CCU_UARTB3
-+            slave   uartb4        peri    3    BCM21664_SLAVE_CCU_UARTB4
-+            slave   bsc1          peri    4    BCM21664_SLAVE_CCU_BSC1
-+            slave   bsc2          peri    5    BCM21664_SLAVE_CCU_BSC2
-+            slave   bsc3          peri    6    BCM21664_SLAVE_CCU_BSC3
-+            slave   bsc4          peri    7    BCM21664_SLAVE_CCU_BSC4
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#clock-cells'
-+  - clock-output-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    clock-controller@3e011000 {
-+      compatible = "brcm,bcm11351-slave-ccu";
-+      reg = <0x3e011000 0x0f00>;
-+      #clock-cells = <1>;
-+      clock-output-names = "uartb",
-+                           "uartb2",
-+                           "uartb3",
-+                           "uartb4",
-+                           "ssp0",
-+                           "ssp2",
-+                           "bsc1",
-+                           "bsc2",
-+                           "bsc3",
-+                           "pwm";
-+    };
-+...
--- 
-2.34.1
 
 
+=E5=9C=A82023=E5=B9=B410=E6=9C=884=E6=97=A5=E5=8D=81=E6=9C=88 =E4=B8=8B=E5=
+=8D=885:10=EF=BC=8CGregory CLEMENT=E5=86=99=E9=81=93=EF=BC=9A
+> From: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+>
+> Now 64-bit MIPS uses 32-bit compatible segments KSEG0 and KSEG1
+> to trivially map first 1/2 GByte of physical memory. This memory
+> used to run kernel. This mean, one should have memory installed
+> in this area in order for Linux to work.
+>
+> Kconfig CONFIG_USE_XKPHYS introduced; it adds support for kernel
+> to use virtual addresses from the XKPHYS segment for both cached
+> and uncached access. XKPHYS allows to access 2^48 bytes of
+> memory, thus allowing kernel to work with any memory
+> configuration.
+>
+> MIPS CPU sets KX bit in the CP0 status register at reset
+> if RESET_BASE_MODE (BIT 1) set in the GCR_CL_RESET_BASE.
+>
+> Reset vector should fit into 32-bit. If reset vector put outside of
+> KSEG1, BIT(1) should be set in this value.
+>
+> IRQ handler for CPU updated to generate 64-bit address for jump
+
+Please use existing KBUILD_SYM32 symbol.
+
+Thanks
+- Jiaxun
+
+>
+> Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+> ---
+>  arch/mips/Kconfig                 | 15 +++++++++++++
+>  arch/mips/Makefile                |  4 ++++
+>  arch/mips/generic/Platform        |  5 +++++
+>  arch/mips/include/asm/addrspace.h | 12 ++++++++--
+>  arch/mips/include/asm/mips-cm.h   |  1 +
+>  arch/mips/include/asm/page.h      | 10 +++++++++
+>  arch/mips/include/asm/vga.h       |  4 ++++
+>  arch/mips/kernel/cps-vec.S        |  8 +++++++
+>  arch/mips/kernel/genex.S          | 14 ++++++++++++
+>  arch/mips/kernel/smp-cps.c        | 37 +++++++++++++++++++++++--------
+>  arch/mips/kernel/traps.c          | 32 +++++++++++++++++++++++---
+>  arch/mips/lib/uncached.c          | 10 +++++++++
+>  arch/mips/mm/init.c               |  4 ++--
+>  13 files changed, 140 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index bc8421859006..92832bbcca5d 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -2026,6 +2026,21 @@ config 64BIT
+>=20
+>  endchoice
+>=20
+> +config USE_XKPHYS
+> +	bool "use virtual address from XKPHYS"
+> +	depends on 64BIT
+> +	default n
+> +	help
+> +	 By default, MIPS uses 32-bit compatible segments KSEG0 and KSEG1
+> +	 to trivially map first 1/2 GByte of physical memory. This mean,
+> +	 one should have memory installed in this area in order for Linux to
+> +	 work. With this option selected, kernel uses virtual addresses from
+> +	 the XKPHYS segment for both cached and uncached access. XKPHYS allo=
+ws
+> +	 to access 2^48 bytes of memory, thus allowing to work with any memo=
+ry
+> +	 configuration.
+> +
+> +	 Say N if not sure
+> +
+>  config MIPS_VA_BITS_48
+>  	bool "48 bits virtual memory"
+>  	depends on 64BIT
+> diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+> index f49807e1f19b..544ee8427cab 100644
+> --- a/arch/mips/Makefile
+> +++ b/arch/mips/Makefile
+> @@ -303,6 +303,10 @@ ifdef CONFIG_64BIT
+>      endif
+>    endif
+>=20
+> +  ifdef CONFIG_USE_XKPHYS
+> +      KBUILD_SYM32 =3D n
+> +  endif
+> +
+>    ifeq ($(KBUILD_SYM32), y)
+>      cflags-$(KBUILD_SYM32) +=3D -msym32 -DKBUILD_64BIT_SYM32
+>    else
+> diff --git a/arch/mips/generic/Platform b/arch/mips/generic/Platform
+> index 0c03623f3897..2be9947814ad 100644
+> --- a/arch/mips/generic/Platform
+> +++ b/arch/mips/generic/Platform
+> @@ -12,7 +12,12 @@
+>  cflags-$(CONFIG_MACH_INGENIC_SOC)	+=3D=20
+> -I$(srctree)/arch/mips/include/asm/mach-ingenic
+>  cflags-$(CONFIG_MIPS_GENERIC)	+=3D=20
+> -I$(srctree)/arch/mips/include/asm/mach-generic
+>=20
+> +ifndef (CONFIG_USE_XKPHYS)
+>  load-$(CONFIG_MIPS_GENERIC)	+=3D 0xffffffff80100000
+> +else
+> +load-$(CONFIG_MIPS_GENERIC)	+=3D 0xa800000080100000
+> +endif
+> +
+>  all-$(CONFIG_MIPS_GENERIC)	+=3D vmlinux.gz.itb
+>=20
+>  its-y					:=3D vmlinux.its.S
+> diff --git a/arch/mips/include/asm/addrspace.h=20
+> b/arch/mips/include/asm/addrspace.h
+> index 59a48c60a065..8dc500d8e66d 100644
+> --- a/arch/mips/include/asm/addrspace.h
+> +++ b/arch/mips/include/asm/addrspace.h
+> @@ -65,10 +65,15 @@
+>  #define XKSSEG			_CONST64_(0x4000000000000000)
+>  #define XKPHYS			_CONST64_(0x8000000000000000)
+>  #define XKSEG			_CONST64_(0xc000000000000000)
+> +#if !defined(CONFIG_USE_XKPHYS)
+>  #define CKSEG0			_CONST64_(0xffffffff80000000)
+>  #define CKSEG1			_CONST64_(0xffffffffa0000000)
+>  #define CKSSEG			_CONST64_(0xffffffffc0000000)
+>  #define CKSEG3			_CONST64_(0xffffffffe0000000)
+> +#else
+> +#define CKSEG0			XKPHYS_CM_CACHED
+> +#define CKSEG1			XKPHYS_CM_UNCACHED
+> +#endif /* !defined(CONFIG_USE_XKPHYS) */
+>=20
+>  #define CKSEG0ADDR(a)		(CPHYSADDR(a) | CKSEG0)
+>  #define CKSEG1ADDR(a)		(CPHYSADDR(a) | CKSEG1)
+> @@ -126,8 +131,11 @@
+>  #define PHYS_TO_XKSEG_UNCACHED(p)	PHYS_TO_XKPHYS(K_CALG_UNCACHED, (p))
+>  #define PHYS_TO_XKSEG_CACHED(p)		PHYS_TO_XKPHYS(K_CALG_COH_SHAREABLE,=
+ (p))
+>  #define XKPHYS_TO_PHYS(p)		((p) & TO_PHYS_MASK)
+> -#define PHYS_TO_XKPHYS(cm, a)		(XKPHYS | (_ACAST64_(cm) << 59) | (a))
+> -
+> +#define XKPHYS_CM(cm)			(XKPHYS | (_ACAST64_(cm) << 59))
+> +#define PHYS_TO_XKPHYS(cm, a)		(XKPHYS_CM(cm) | (a))
+> +#define XKPHYS_CM_CACHED		(XKPHYS_CM(K_CALG_COH_SHAREABLE))
+> +#define XKPHYS_CM_UNCACHED		(XKPHYS_CM(K_CALG_UNCACHED))
+> +#define IS_XKPHYS(a)			(((a) >> 62) =3D=3D 2)
+>  /*
+>   * The ultimate limited of the 64-bit MIPS architecture:  2 bits for =
+selecting
+>   * the region, 3 bits for the CCA mode.  This leaves 59 bits of which=
+ the
+> diff --git a/arch/mips/include/asm/mips-cm.h b/arch/mips/include/asm/m=
+ips-cm.h
+> index 23c67c0871b1..15d8d69de455 100644
+> --- a/arch/mips/include/asm/mips-cm.h
+> +++ b/arch/mips/include/asm/mips-cm.h
+> @@ -311,6 +311,7 @@ GCR_CX_ACCESSOR_RW(32, 0x018, other)
+>  /* GCR_Cx_RESET_BASE - Configure where powered up cores will fetch fr=
+om */
+>  GCR_CX_ACCESSOR_RW(32, 0x020, reset_base)
+>  #define CM_GCR_Cx_RESET_BASE_BEVEXCBASE		GENMASK(31, 12)
+> +#define CM_GCR_Cx_RESET_BASE_MODE		BIT(1)
+>=20
+>  /* GCR_Cx_ID - Identify the current core */
+>  GCR_CX_ACCESSOR_RO(32, 0x028, id)
+> diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page=
+.h
+> index 5978a8dfb917..53b8306da571 100644
+> --- a/arch/mips/include/asm/page.h
+> +++ b/arch/mips/include/asm/page.h
+> @@ -176,7 +176,11 @@ static inline unsigned long ___pa(unsigned long x)
+>  		 * the compatibility segements ckseg0 or ckseg1, or it may
+>  		 * be in xkphys.
+>  		 */
+> +#if defined(CONFIG_USE_XKPHYS)
+> +		return XPHYSADDR(x);
+> +#else
+>  		return x < CKSEG0 ? XPHYSADDR(x) : CPHYSADDR(x);
+> +#endif
+>  	}
+>=20
+>  	if (!IS_ENABLED(CONFIG_EVA)) {
+> @@ -196,7 +200,11 @@ static inline unsigned long ___pa(unsigned long x)
+>  	return x - PAGE_OFFSET + PHYS_OFFSET;
+>  }
+>  #define __pa(x)		___pa((unsigned long)(x))
+> +#if IS_ENABLED(CONFIG_64BIT) && IS_ENABLED(CONFIG_USE_XKPHYS)
+> +#define __va(x)		((void *)PHYS_TO_XKSEG_CACHED(x))
+> +#else
+>  #define __va(x)		((void *)((unsigned long)(x) + PAGE_OFFSET - PHYS_OF=
+FSET))
+> +#endif
+>  #include <asm/io.h>
+>=20
+>  /*
+> @@ -239,6 +247,8 @@ static inline unsigned long kaslr_offset(void)
+>  	return __kaslr_offset;
+>  }
+>=20
+> +#define UNCAC_ADDR(addr)       (UNCAC_BASE + __pa(addr))
+> +
+>  #include <asm-generic/memory_model.h>
+>  #include <asm-generic/getorder.h>
+>=20
+> diff --git a/arch/mips/include/asm/vga.h b/arch/mips/include/asm/vga.h
+> index 0136e0366698..e338e57d0784 100644
+> --- a/arch/mips/include/asm/vga.h
+> +++ b/arch/mips/include/asm/vga.h
+> @@ -16,7 +16,11 @@
+>   *	access the videoram directly without any black magic.
+>   */
+>=20
+> +#if defined(CONFIG_USE_XKPHYS)
+> +#define VGA_MAP_MEM(x, s)	UNCAC_ADDR(0x10000000L + (unsigned long)(x))
+> +#else
+>  #define VGA_MAP_MEM(x, s)	CKSEG1ADDR(0x10000000L + (unsigned long)(x))
+> +#endif
+>=20
+>  #define vga_readb(x)	(*(x))
+>  #define vga_writeb(x, y)	(*(y) =3D (x))
+> diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
+> index 64ecfdac6580..541f31a43a7f 100644
+> --- a/arch/mips/kernel/cps-vec.S
+> +++ b/arch/mips/kernel/cps-vec.S
+> @@ -554,7 +554,11 @@ LEAF(mips_cps_cache_init)
+>  	mul	t1, t1, t0
+>  	mul	t1, t1, t2
+>=20
+> +#if defined(CONFIG_USE_XKPHYS)
+> +	PTR_LI	a0, XKPHYS_CM_CACHED
+> +#else
+>  	li	a0, CKSEG0
+> +#endif
+>  	PTR_ADD	a1, a0, t1
+>  1:	cache	Index_Store_Tag_I, 0(a0)
+>  	PTR_ADD	a0, a0, t0
+> @@ -581,7 +585,11 @@ icache_done:
+>  	mul	t1, t1, t0
+>  	mul	t1, t1, t2
+>=20
+> +#if defined(CONFIG_USE_XKPHYS)
+> +	PTR_LI	a0, XKPHYS_CM_CACHED
+> +#else
+>  	li	a0, CKSEG0
+> +#endif
+>  	PTR_ADDU a1, a0, t1
+>  	PTR_SUBU a1, a1, t0
+>  1:	cache	Index_Store_Tag_D, 0(a0)
+> diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+> index b6de8e88c1bd..a002058e1838 100644
+> --- a/arch/mips/kernel/genex.S
+> +++ b/arch/mips/kernel/genex.S
+> @@ -272,11 +272,25 @@ NESTED(except_vec_vi, 0, sp)
+>  	.set	push
+>  	.set	noreorder
+>  	PTR_LA	v1, except_vec_vi_handler
+> +#if defined(CONFIG_USE_XKPHYS)
+> +FEXPORT(except_vec_vi_63_48)
+> +	lui	v0, 0		/* Patched - bits 63:48 */
+> +FEXPORT(except_vec_vi_47_32)
+> +	ori	v0, 0		/* Patched - bits 47:32 */
+> +	dsll	v0, v0, 0x10
+> +FEXPORT(except_vec_vi_31_16)
+> +	ori	v0, 0		/* Patched - bits 31:16 */
+> +	dsll	v0, v0, 0x10
+> +	jr	v1
+> +FEXPORT(except_vec_vi_15_0)
+> +	ori	v0, 0		/* Patched - bits 15:0 */
+> +#else /* defined(CONFIG_USE_XKPHYS) */
+>  FEXPORT(except_vec_vi_lui)
+>  	lui	v0, 0		/* Patched */
+>  	jr	v1
+>  FEXPORT(except_vec_vi_ori)
+>  	 ori	v0, 0		/* Patched */
+> +#endif /* defined(CONFIG_USE_XKPHYS) */
+>  	.set	pop
+>  	END(except_vec_vi)
+>  EXPORT(except_vec_vi_end)
+> diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+> index dd55d59b88db..47e76722a306 100644
+> --- a/arch/mips/kernel/smp-cps.c
+> +++ b/arch/mips/kernel/smp-cps.c
+> @@ -34,10 +34,33 @@ static unsigned __init core_vpe_count(unsigned int=20
+> cluster, unsigned core)
+>  	return min(smp_max_threads, mips_cps_numvps(cluster, core));
+>  }
+>=20
+> +/**
+> + * plat_core_entry - query reset vector for NMI/reset
+> + *
+> + * Returns low 32 bits of the reset vector
+> + *
+> + * This is used to fill 2 registers:
+> + * - BEV Base (GCR_BEV_BASE) Offset: 0x0680
+> + * - VP Local Reset Exception Base (GCR_CL_RESET_BASE,GCR_CO_RESET_BA=
+SE)
+> + *   Offset: 0x0020 (0x2020 relative to GCR_BASE_ADDR)
+> + *
+> + * In both registers, BIT(1) should be set in case it uses address in=
+ XKPHYS
+> + * (as opposed to KSEG1). This bit defined as CM_GCR_Cx_RESET_BASE_MO=
+DE,
+> + * using it unconditionally because for GCR_BEV_BASE its value is the=
+ same
+> + */
+> +static u32 plat_core_entry(void)
+> +{
+> +#if defined(CONFIG_USE_XKPHYS)
+> +	return (UNCAC_ADDR(mips_cps_core_entry) & 0xffffffff)
+> +			| CM_GCR_Cx_RESET_BASE_MODE;
+> +#else
+> +	return CKSEG1ADDR((unsigned long)mips_cps_core_entry);
+> +#endif
+> +}
+> +
+>  static void __init cps_smp_setup(void)
+>  {
+>  	unsigned int nclusters, ncores, nvpes, core_vpes;
+> -	unsigned long core_entry;
+>  	int cl, c, v;
+>=20
+>  	/* Detect & record VPE topology */
+> @@ -94,10 +117,8 @@ static void __init cps_smp_setup(void)
+>  	/* Make core 0 coherent with everything */
+>  	write_gcr_cl_coherence(0xff);
+>=20
+> -	if (mips_cm_revision() >=3D CM_REV_CM3) {
+> -		core_entry =3D CKSEG1ADDR((unsigned long)mips_cps_core_entry);
+> -		write_gcr_bev_base(core_entry);
+> -	}
+> +	if (mips_cm_revision() >=3D CM_REV_CM3)
+> +		write_gcr_bev_base(plat_core_entry());
+>=20
+>  #ifdef CONFIG_MIPS_MT_FPAFF
+>  	/* If we have an FPU, enroll ourselves in the FPU-full mask */
+> @@ -213,7 +234,7 @@ static void boot_core(unsigned int core, unsigned=20
+> int vpe_id)
+>  	mips_cm_lock_other(0, core, 0, CM_GCR_Cx_OTHER_BLOCK_LOCAL);
+>=20
+>  	/* Set its reset vector */
+> -	write_gcr_co_reset_base(CKSEG1ADDR((unsigned long)mips_cps_core_entr=
+y));
+> +	write_gcr_co_reset_base(plat_core_entry());
+>=20
+>  	/* Ensure its coherency is disabled */
+>  	write_gcr_co_coherence(0);
+> @@ -290,7 +311,6 @@ static int cps_boot_secondary(int cpu, struct=20
+> task_struct *idle)
+>  	unsigned vpe_id =3D cpu_vpe_id(&cpu_data[cpu]);
+>  	struct core_boot_config *core_cfg =3D &mips_cps_core_bootcfg[core];
+>  	struct vpe_boot_config *vpe_cfg =3D &core_cfg->vpe_config[vpe_id];
+> -	unsigned long core_entry;
+>  	unsigned int remote;
+>  	int err;
+>=20
+> @@ -314,8 +334,7 @@ static int cps_boot_secondary(int cpu, struct=20
+> task_struct *idle)
+>=20
+>  	if (cpu_has_vp) {
+>  		mips_cm_lock_other(0, core, vpe_id, CM_GCR_Cx_OTHER_BLOCK_LOCAL);
+> -		core_entry =3D CKSEG1ADDR((unsigned long)mips_cps_core_entry);
+> -		write_gcr_co_reset_base(core_entry);
+> +		write_gcr_co_reset_base(plat_core_entry());
+>  		mips_cm_unlock_other();
+>  	}
+>=20
+> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+> index 246c6a6b0261..875594843626 100644
+> --- a/arch/mips/kernel/traps.c
+> +++ b/arch/mips/kernel/traps.c
+> @@ -2091,11 +2091,20 @@ static void *set_vi_srs_handler(int n,=20
+> vi_handler_t addr, int srs)
+>  		 * If no shadow set is selected then use the default handler
+>  		 * that does normal register saving and standard interrupt exit
+>  		 */
+> -		extern const u8 except_vec_vi[], except_vec_vi_lui[];
+> -		extern const u8 except_vec_vi_ori[], except_vec_vi_end[];
+> +		extern const u8 except_vec_vi[], except_vec_vi_end[];
+>  		extern const u8 rollback_except_vec_vi[];
+>  		const u8 *vec_start =3D using_rollback_handler() ?
+>  				      rollback_except_vec_vi : except_vec_vi;
+> +		const int handler_len =3D except_vec_vi_end - vec_start;
+> +#if defined(CONFIG_USE_XKPHYS)
+> +		extern const u8 except_vec_vi_63_48[], except_vec_vi_47_32[];
+> +		extern const u8 except_vec_vi_31_16[], except_vec_vi_15_0[];
+> +		const int offset_63_48 =3D except_vec_vi_63_48 - vec_start;
+> +		const int offset_47_32 =3D except_vec_vi_47_32 - vec_start;
+> +		const int offset_31_16 =3D except_vec_vi_31_16 - vec_start;
+> +		const int offset_15_0  =3D except_vec_vi_15_0  - vec_start;
+> +#else /* defined(CONFIG_USE_XKPHYS) */
+> +		extern const u8 except_vec_vi_lui[], except_vec_vi_ori[];
+>  #if defined(CONFIG_CPU_MICROMIPS) || defined(CONFIG_CPU_BIG_ENDIAN)
+>  		const int lui_offset =3D except_vec_vi_lui - vec_start + 2;
+>  		const int ori_offset =3D except_vec_vi_ori - vec_start + 2;
+> @@ -2103,7 +2112,7 @@ static void *set_vi_srs_handler(int n,=20
+> vi_handler_t addr, int srs)
+>  		const int lui_offset =3D except_vec_vi_lui - vec_start;
+>  		const int ori_offset =3D except_vec_vi_ori - vec_start;
+>  #endif
+> -		const int handler_len =3D except_vec_vi_end - vec_start;
+> +#endif /* defined(CONFIG_USE_XKPHYS) */
+>=20
+>  		if (handler_len > VECTORSPACING) {
+>  			/*
+> @@ -2119,10 +2128,21 @@ static void *set_vi_srs_handler(int n,=20
+> vi_handler_t addr, int srs)
+>  #else
+>  				handler_len);
+>  #endif
+> +#if defined(CONFIG_USE_XKPHYS)
+> +		h =3D (u16 *)(b + offset_63_48);
+> +		*h =3D (handler >> 48) & 0xffff;
+> +		h =3D (u16 *)(b + offset_47_32);
+> +		*h =3D (handler >> 32) & 0xffff;
+> +		h =3D (u16 *)(b + offset_31_16);
+> +		*h =3D (handler >> 16) & 0xffff;
+> +		h =3D (u16 *)(b + offset_15_0);
+> +		*h =3D (handler >> 0) & 0xffff;
+> +#else /* defined(CONFIG_USE_XKPHYS) */
+>  		h =3D (u16 *)(b + lui_offset);
+>  		*h =3D (handler >> 16) & 0xffff;
+>  		h =3D (u16 *)(b + ori_offset);
+>  		*h =3D (handler & 0xffff);
+> +#endif /* defined(CONFIG_USE_XKPHYS) */
+>  		local_flush_icache_range((unsigned long)b,
+>  					 (unsigned long)(b+handler_len));
+>  	}
+> @@ -2332,7 +2352,11 @@ static const char panic_null_cerr[] =3D
+>  void set_uncached_handler(unsigned long offset, void *addr,
+>  	unsigned long size)
+>  {
+> +#if IS_ENABLED(CONFIG_64BIT) && IS_ENABLED(CONFIG_USE_XKPHYS)
+> +	unsigned long uncached_ebase =3D UNCAC_ADDR(ebase);
+> +#else
+>  	unsigned long uncached_ebase =3D CKSEG1ADDR(ebase);
+> +#endif
+>=20
+>  	if (!addr)
+>  		panic(panic_null_cerr);
+> @@ -2384,9 +2408,11 @@ void __init trap_init(void)
+>  		 * EVA is special though as it allows segments to be rearranged
+>  		 * and to become uncached during cache error handling.
+>  		 */
+> +#if !defined(CONFIG_USE_XKPHYS)
+>  		if (!IS_ENABLED(CONFIG_EVA) && !WARN_ON(ebase_pa >=3D 0x20000000))
+>  			ebase =3D CKSEG0ADDR(ebase_pa);
+>  		else
+> +#endif
+>  			ebase =3D (unsigned long)phys_to_virt(ebase_pa);
+>  	}
+>=20
+> diff --git a/arch/mips/lib/uncached.c b/arch/mips/lib/uncached.c
+> index f80a67c092b6..8a78348a2dd7 100644
+> --- a/arch/mips/lib/uncached.c
+> +++ b/arch/mips/lib/uncached.c
+> @@ -44,6 +44,10 @@ unsigned long run_uncached(void *func)
+>=20
+>  	__asm__("move %0, $sp" : "=3Dr" (sp));
+>=20
+> +#if defined(CONFIG_USE_XKPHYS)
+> +	if (IS_XKPHYS(sp))
+> +		usp =3D UNCAC_ADDR(sp);
+> +#else /* defined(CONFIG_USE_XKPHYS) */
+>  	if (sp >=3D (long)CKSEG0 && sp < (long)CKSEG2)
+>  		usp =3D CKSEG1ADDR(sp);
+>  #ifdef CONFIG_64BIT
+> @@ -52,10 +56,15 @@ unsigned long run_uncached(void *func)
+>  		usp =3D PHYS_TO_XKPHYS(K_CALG_UNCACHED,
+>  				     XKPHYS_TO_PHYS((long long)sp));
+>  #endif
+> +#endif /* defined(CONFIG_USE_XKPHYS) */
+>  	else {
+>  		BUG();
+>  		usp =3D sp;
+>  	}
+> +#if defined(CONFIG_USE_XKPHYS)
+> +	if (IS_XKPHYS(lfunc))
+> +		ufunc =3D UNCAC_ADDR(lfunc);
+> +#else /* defined(CONFIG_USE_XKPHYS) */
+>  	if (lfunc >=3D (long)CKSEG0 && lfunc < (long)CKSEG2)
+>  		ufunc =3D CKSEG1ADDR(lfunc);
+>  #ifdef CONFIG_64BIT
+> @@ -64,6 +73,7 @@ unsigned long run_uncached(void *func)
+>  		ufunc =3D PHYS_TO_XKPHYS(K_CALG_UNCACHED,
+>  				       XKPHYS_TO_PHYS((long long)lfunc));
+>  #endif
+> +#endif /* defined(CONFIG_USE_XKPHYS) */
+>  	else {
+>  		BUG();
+>  		ufunc =3D lfunc;
+> diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
+> index 5dcb525a8995..eb57283ec4e0 100644
+> --- a/arch/mips/mm/init.c
+> +++ b/arch/mips/mm/init.c
+> @@ -427,7 +427,7 @@ void __init paging_init(void)
+>  	free_area_init(max_zone_pfns);
+>  }
+>=20
+> -#ifdef CONFIG_64BIT
+> +#if defined(CONFIG_64BIT) && !defined(CONFIG_USE_XKPHYS)
+>  static struct kcore_list kcore_kseg0;
+>  #endif
+>=20
+> @@ -470,7 +470,7 @@ void __init mem_init(void)
+>  	setup_zero_pages();	/* Setup zeroed pages.  */
+>  	mem_init_free_highmem();
+>=20
+> -#ifdef CONFIG_64BIT
+> +#if defined(CONFIG_64BIT) && !defined(CONFIG_USE_XKPHYS)
+>  	if ((unsigned long) &_text > (unsigned long) CKSEG0)
+>  		/* The -4 is a hack so that user tools don't have to handle
+>  		   the overflow.  */
+> --=20
+> 2.40.1
+
+--=20
+- Jiaxun
