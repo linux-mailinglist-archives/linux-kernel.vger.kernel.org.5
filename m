@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 799BB7D2569
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 20:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B8D7D256C
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 20:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbjJVSqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 14:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
+        id S232418AbjJVSra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 14:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjJVSqO (ORCPT
+        with ESMTP id S229452AbjJVSr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 14:46:14 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2DEF2
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 11:46:10 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9be1ee3dc86so367826866b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 11:46:10 -0700 (PDT)
+        Sun, 22 Oct 2023 14:47:29 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD7FEE
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 11:47:26 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9b9faf05f51so365957966b.2
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 11:47:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698000369; x=1698605169; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1698000445; x=1698605245; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9jG3P+jRF5kVGk6CFsI11BtDJxKDzNxKy4q/HNvCw7w=;
-        b=Q+P+Wc9VRVBwp0pLDJJJufBV4jI1/8XXBE/NJdB3r1Ic5bL3hAJjhO7e7l3TC6KkvV
-         e+alF4As6rctl+a52Sulh+447/IdDkf84I1U8LEGr8kpGLgL6Iy4mGZywmuGF+rGPMi5
-         a3+99snjcg0wUWkUeICz+6xsZnscY1XEA9ahQ+PWuULk7CYaOPpI/g7qsfqU1G0/LL1O
-         ER6DXmK8WSY8DkJ+8CABi1/4TgQ7RDk7BtQNbX5uT8b4h8udc5ay02mD59Sm2gt0rOV9
-         NTEU11clCsqi22lUh2xgRic1YbD0hT9xAYFRITNmdrHG8UJ6ljeUhZSoG+V043NpLQkZ
-         5vxA==
+        bh=8P8P+iM71eTJhKfuoAtGwJ4q8emSpHNO0sAy3qdb6PA=;
+        b=MW3kw9L03clbQnpaZXcnnnj62YrACREfOJZFnD94R0fBh8SavkrTiEiSmZ9c/xLBSC
+         j3IrwjokLIHomHyEOt8iEyvszYmv/aFuYEgACJphQQNUlX3dX7ZTv6ZsYkoCmEb47QZp
+         mdxbHMzV45oy6KKXeYtNswp8yeXsdsuCN3TeJtjPZP4G+OIDBuxUU1rMMQyPTgKgr7BA
+         FElne6DpjCH3GIq8VrV8EGRBaoZ6UYs162QWL2HO7FXHvGptgSt/ebu11iKIqSVKApzs
+         ln1+fLtVL0swv4Mqxsj/vFm0AlB/x+QJx8io7XFriiziWnQS9emkbdWRSZgVi9ZYFS4F
+         khpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698000369; x=1698605169;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1698000445; x=1698605245;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9jG3P+jRF5kVGk6CFsI11BtDJxKDzNxKy4q/HNvCw7w=;
-        b=isT1DHr6Tkj+Gf2cZXk3R5LBv6VtHt3QXAH+tuQcpl5kdeBGjbvoJ1hDleb39dHs4E
-         PvVWhNEhBLIoCLjkKC+vgU0WyiSJwvDWeHBCpDCi3e+n7NHWNJCICQVvl/kcLKjKxa1/
-         T3+4pFA3kSQRpaKklX6MdhB7oVQzRMQNsgyYUHG5omyJpD1ER/bkbxRfLoPmgD5Qlkhz
-         vyTj3f9SvGHSQxvweh0oNJEyFiC8jTH+iA3Q/yivtjjhC+uw5jDd2BPBN2CuwahBxAbP
-         dThsaGmbhRiSdP6ITcZA/IbfCvimtM9AV6Cp1OglbpWPVwqWJB21ph1DzKXXHOZt5a1d
-         I8JQ==
-X-Gm-Message-State: AOJu0YzvRCZL4Lg2cZIcH633lSnwfy82HjQfeoE7l1Eb/mm4INhGy2+i
-        WjEZ7anc28aFhlRpjFv1UMX1Sw==
-X-Google-Smtp-Source: AGHT+IGnvYQJ84z36CRbqHYncNuUq9WpKhqIP6bQ/DnagUTB8ZHJoYZggir8zL4NoxC5P5C9XhuI6Q==
-X-Received: by 2002:a17:907:3188:b0:9c7:4d3e:1e50 with SMTP id xe8-20020a170907318800b009c74d3e1e50mr5411501ejb.76.1698000368952;
-        Sun, 22 Oct 2023 11:46:08 -0700 (PDT)
+        bh=8P8P+iM71eTJhKfuoAtGwJ4q8emSpHNO0sAy3qdb6PA=;
+        b=Mu+aqyvXRplRB1zXAXGVgiU9cEzrn+6Co+/WaupICRIReBosCVuUY+xChLRcVyYsjk
+         6OhFCWqfXgDcyBmnQScYm37laPa0n8EkjQiSYyPao5r52dEcXqLW5xf14H3hHrMS6MP2
+         UGGGwv+IN5LK7p2wRShzS4qyWia4MIOqR1eW7K/rLrYNGVwDe8Fa4cbFpAo1eKmGgS7s
+         2j1Gollq9e3L1JoO/J86CREBAA+Qk34YnPBfh5G3n2Zhl3ZxZxGMCt6wCRG06ovi5mal
+         vRAWvh2uroRcbFvk+K1+5DFvmxLoI8Hua2uQo6IQEov/Y1/4mTrIOS0GDKkuobParSAX
+         +CgQ==
+X-Gm-Message-State: AOJu0YzNpHhDSsWLo490rLw266rqBDJ3gxebCO9oADIsKsyQvf6pIck0
+        qO+Elo1doIw2wGc0xnzv/DrUZw==
+X-Google-Smtp-Source: AGHT+IHfhMZaz/D2NdIaWacW6xN8+tCnhiX1C1NzEDLYYkU3dK5fQid9Rcrcz7o7anhgQFcmpfvj/w==
+X-Received: by 2002:a17:907:70a:b0:9b8:b683:5854 with SMTP id xb10-20020a170907070a00b009b8b6835854mr5780513ejb.61.1698000444969;
+        Sun, 22 Oct 2023 11:47:24 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id f7-20020a1709062c4700b009c3828fec06sm5331727ejh.81.2023.10.22.11.46.07
+        by smtp.gmail.com with ESMTPSA id f7-20020a1709062c4700b009c3828fec06sm5331727ejh.81.2023.10.22.11.47.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Oct 2023 11:46:08 -0700 (PDT)
-Message-ID: <3307fcb9-1697-4a9e-b4f6-c00c2b10ba89@linaro.org>
-Date:   Sun, 22 Oct 2023 20:46:06 +0200
+        Sun, 22 Oct 2023 11:47:24 -0700 (PDT)
+Message-ID: <f032b481-15d7-49c7-8a06-8966e2a2eaa3@linaro.org>
+Date:   Sun, 22 Oct 2023 20:47:23 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/2] arm64: dts: qcom: sm8250-xiaomi-pipa: Add initial
- device tree
+Subject: Re: [PATCH v5 1/2] From: Luka Panio <lukapanio@gmail.com>
 Content-Language: en-US
-To:     Luka Panio <lukapanio@gmail.com>, Andy Gross <agross@kernel.org>,
+To:     Luka Panio <lukapanio@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -68,8 +68,9 @@ To:     Luka Panio <lukapanio@gmail.com>, Andy Gross <agross@kernel.org>,
         "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20231022173811.8229-1-lukapanio@gmail.com>
- <20231022173811.8229-2-lukapanio@gmail.com>
+References: <20231021203403.215023-1-lukapanio@gmail.com>
+ <23fa10f5-1220-4e38-942d-4033deac2de0@linaro.org>
+ <CACi=Ov6wjptBidbBxHDpRGdnV8W6yHxO=e92B3pVP1eXRvU8DQ@mail.gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -115,148 +116,35 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231022173811.8229-2-lukapanio@gmail.com>
+In-Reply-To: <CACi=Ov6wjptBidbBxHDpRGdnV8W6yHxO=e92B3pVP1eXRvU8DQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/10/2023 19:38, Luka Panio wrote:
-> Initial support for Xiaomi Pad 6 tablet, that have sm8250 soc.
+On 22/10/2023 19:26, Luka Panio wrote:
+>>> dt-bindings: arm: qcom: Add Xiaomi Pad 6 (xiaomi-pipa)
 > 
-> Signed-off-by: Luka Panio <lukapanio@gmail.com>
-> ---
-> v2:
-> Update commit message. Drop reserved gpio's as this device in reality do not have gpio, and pins are not protected.
+>> Your subject is not correct.
 > 
+> Sorry, but what should be there?
 
-> v3:
-> Update commit message.
+Your subject is:
+"From: Luka Panio"
+Subject contains git commit subject. See git log --- PATH for ideas.
+
 > 
-> v4:
-> Update commit message.
+>> Please include full changelog. This is v5 so what happened between v1
+>> and v5?
 > 
-> v5:
-> Update commit message.
-> 
-> v6:
-> Update commit message.
-> ---
->  arch/arm64/boot/dts/qcom/Makefile             |   1 +
->  .../boot/dts/qcom/sm8250-xiaomi-pipa.dts      | 625 ++++++++++++++++++
->  2 files changed, 626 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/sm8250-xiaomi-pipa.dts
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index 2cca20563a1d..41ab333d1f81 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -208,6 +208,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-sony-xperia-edo-pdx203.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-sony-xperia-edo-pdx206.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-xiaomi-elish-boe.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-xiaomi-elish-csot.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-xiaomi-pipa.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-hdk.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-microsoft-surface-duo2.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-mtp.dtb
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250-xiaomi-pipa.dts b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-pipa.dts
-> new file mode 100644
-> index 000000000000..41eae1aaa2a8
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-pipa.dts
-> @@ -0,0 +1,625 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-
-If there are no other copyrights here, why did you use BSD-3 license?
-
-> +/*
-> + * Copyright (c) 2023 luka177 <lukapanio@gmail.com>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/arm/qcom,ids.h>
-> +#include <dt-bindings/phy/phy.h>
-> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-> +#include "sm8250.dtsi"
-> +#include "pm8150.dtsi"
-> +#include "pm8150b.dtsi"
-> +#include "pm8150l.dtsi"
-> +#include "pm8009.dtsi"
-> +
-> +/*
-> + * Delete following upstream (sm8250.dtsi) reserved
-> + * memory mappings which are different on this device.
-> + */
-> +/delete-node/ &adsp_mem;
-> +/delete-node/ &cdsp_secure_heap;
-> +/delete-node/ &slpi_mem;
-> +/delete-node/ &spss_mem;
-> +/delete-node/ &xbl_aop_mem;
-> +
-> +/ {
-> +
-> +	model = "Xiaomi Pad 6";
-> +	compatible = "xiaomi,pipa", "qcom,sm8250";
-> +
-> +	classis-type = "tablet";
-
-chassis-type
-
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
-
-> +
-> +	/* required for bootloader to select correct board */
-> +	qcom,msm-id = <QCOM_ID_SM8250 0x20001>; /* SM8250 v2.1 */
-> +	qcom,board-id = <0x34 0>;
-
-0x34 or 34?
-
-> +
-> +	chosen {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-
-....
-
-> +
-> +&i2c13 {
-> +	clock-frequency = <400000>;
-> +	status = "okay";
-> +
-> +	fuel-gauge@55 {
-> +		compatible = "ti,bq27z561";
-> +		reg = <0x55>;
-> +		monitored-battery = <&battery_l>;
-> +	};
-> +};
-> +
-> +
-> +
-
-Just one blank line
-
-> +&pcie0 {
-> +	status = "okay";
-> +};
-> +
-> +&pcie0_phy {
-> +	vdda-phy-supply = <&vreg_l5a_0p88>;
-> +	vdda-pll-supply = <&vreg_l9a_1p2>;
-> +	status = "okay";
-> +};
+> That is a full changelog, no other changes to dt-bindings were done.
 
 
 
