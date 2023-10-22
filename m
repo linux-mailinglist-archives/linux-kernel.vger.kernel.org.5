@@ -2,175 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AA87D22B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F717D22C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 12:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbjJVKqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 06:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
+        id S231585AbjJVKt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 06:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVKq1 (ORCPT
+        with ESMTP id S229588AbjJVKtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 06:46:27 -0400
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971B0A7;
-        Sun, 22 Oct 2023 03:46:25 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id D8A1B1000C2; Sun, 22 Oct 2023 11:46:22 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1697971582; bh=M7VN2YhQWSJtc+cSbcBrFFqz4ksGBErewDtODBR+VmQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PnkeoM8N5hx3qaBdVrilN+IynCjwmnKapSBqWSB45BWsAOSWpe9KHkQL7YRUItROr
-         uFFPdvWk5lPhVQZxkVPRIaXgmqXs5imsVOrfbNzr5SBcKWaRO5NjsdhW+dKKt0doQr
-         3DAVaG99NhZHD/hnZrszsAFvfJtR67PqtTFmJoYnWTftElP9OkThhD2tWRha7fvs8a
-         uxartmlQT+FrRCB22IFFzoAVGTPJxSFN0LoAu+pErhIX/fOe4iEuwaiS1+SInLIjX5
-         FNm6tT+kFdl8LjG7e2h3VQmVvNxQ5cWMhDZanSX1IXvB61OLWDZ1uWOfUk78WcLfaV
-         kudis//kekD/A==
-Date:   Sun, 22 Oct 2023 11:46:22 +0100
-From:   Sean Young <sean@mess.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-media@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] pwm: make it possible to apply pwm changes in
- atomic context
-Message-ID: <ZTT9fvEF+lqfzGJ/@gofer.mess.org>
-References: <cover.1697534024.git.sean@mess.org>
- <a7fcd19938d5422abc59c968ff7b3d5c275577ed.1697534024.git.sean@mess.org>
- <90728c06-4c6c-b3d2-4723-c24711be2fa5@redhat.com>
- <20231019105118.64gdzzixwqrztjir@pengutronix.de>
- <01a505ac-320f-3819-a58d-2b82c1bf2a86@redhat.com>
+        Sun, 22 Oct 2023 06:49:55 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04981B4
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 03:49:53 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b2f4a5ccebso1671273b6e.3
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 03:49:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1697971792; x=1698576592; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zsyTofoiJdTaMgzaZy88bV2Z5IwkB35oaVbzN5yV92E=;
+        b=e+5NQoDI87tL3cK8fQ9EEfMXDdzYf68v0TMMxSL9lPl2FkWAbqNwk2lWluI8GiivRF
+         dRPlTXhqtBBa8hnkVNVNaU0ad8hh08yfQs+HIiVC/vHho/N+YCRUhqqvBhJ0+KI9GimB
+         HkrGDzCPPpdJuqnSEgPOo4Zj4+ZeyNXKz/01vcFA0eVHKy3zlEnH/15GmZtzY2XrLfjc
+         TI7xD7ULwdTp4VaK68XS0oZpHEkOp0hLbVJuQnYpq1fRBUHeiM0pD+0txqBK1l8fcb4Z
+         MAf6c+JfN0aQowUzK2BEIF4UpsyYrXnyDJkFa375GO0mDda8S3ft2cbpp5zDhsub8vIn
+         lT8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697971792; x=1698576592;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zsyTofoiJdTaMgzaZy88bV2Z5IwkB35oaVbzN5yV92E=;
+        b=DdIROMlWYW0sg9EQlY93HC2APQpd5yIzGf15TuJZZeIqgUE9gB3RYIidkOnsRPBfcv
+         e7oySM6WZSGSOsrHdpP/JeFAxzUi6eHCwrG1UFxVwNpkS+b9GnUZT0yM9m1mYqaYuUKr
+         9oOeIEZDfq5MiqVS725xS2a3htf4CbNvnwYtxzFdHM7jov9nArcspDfV5M+b0LbC+nRR
+         eS+f/s2DAEyINsqdYw3Nz4EysumyPeZ6EU24wH5+ji/6fdHg398orvaYa1leWvjO/PxY
+         /vPwLKZVjOLfaHXPEhkl+VXxSLVRMy9iSoY8kEol+GUlv4azulwu0mr21/rDNb/oKS18
+         ZrPA==
+X-Gm-Message-State: AOJu0YxnBP+GFy/sN+WIgAnx4IH7os9KhwBOUGmkiWptdNe6b2qQjYsu
+        7/Gss0aGshdIJQ6JZ9MwhhWgeJzQRKho4hpWwmjDsw==
+X-Google-Smtp-Source: AGHT+IFYXaKkpzLl4qJI/DncbAgnwW8J71rYXJnTnU4eGIVRz0Vjuz/xbiFDBIAw8QrSlrmqpaDym7qOPLPbGVgCWY8=
+X-Received: by 2002:a05:6808:c3:b0:3ae:251f:923f with SMTP id
+ t3-20020a05680800c300b003ae251f923fmr6825013oic.28.1697971792253; Sun, 22 Oct
+ 2023 03:49:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <01a505ac-320f-3819-a58d-2b82c1bf2a86@redhat.com>
+References: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
+ <7e4ak4e77fp5dat2aopyq3g4wnqu3tt7di7ytdr3dvgjviyhrd@vqiqx6iso6vg>
+ <CAA8EJpp48AdJmx_U=bEJZUWZgOiT1Ctz6Lpe9QwjLXkMQvsw5w@mail.gmail.com> <1907377.IobQ9Gjlxr@steina-w>
+In-Reply-To: <1907377.IobQ9Gjlxr@steina-w>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sun, 22 Oct 2023 13:49:41 +0300
+Message-ID: <CAA8EJpoN36PHoZH=Osfn_wr7kO-dypius2ae_FuJ4Hk+gjeBtQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 03/10] drm/mipi-dsi: add API for manual control over
+ the DSI link power state
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Marek Vasut <marex@denx.de>, Robert Foss <rfoss@kernel.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Jonas Karlman <jonas@kwiboo.se>, linux-arm-msm@vger.kernel.org,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        freedreno@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+On Thu, 19 Oct 2023 at 14:42, Alexander Stein
+<alexander.stein@ew.tq-group.com> wrote:
+>
+> Hi,
+>
+> Am Donnerstag, 19. Oktober 2023, 13:19:51 CEST schrieb Dmitry Baryshkov:
+> > On Thu, 19 Oct 2023 at 12:26, Maxime Ripard <mripard@kernel.org> wrote:
+> > > On Mon, Oct 16, 2023 at 07:53:48PM +0300, Dmitry Baryshkov wrote:
+> > > > The MIPI DSI links do not fully fall into the DRM callbacks model.
+> > >
+> > > Explaining why would help
+> >
+> > A kind of explanation comes afterwards, but probably I should change
+> > the order of the phrases and expand it:
+> >
+> > The atomic_pre_enable / atomic_enable and correspondingly
+> > atomic_disable / atomic_post_disable expect that the bridge links
+> > follow a simple paradigm: either it is off, or it is on and streaming
+> > video. Thus, it is fine to just enable the link at the enable time,
+> > doing some preparations during the pre_enable.
+> >
+> > But then it causes several issues with DSI. First, some of the DSI
+> > bridges and most of the DSI panels would like to send commands over
+> > the DSI link to setup the device. Next, some of the DSI hosts have
+> > limitations on sending the commands. The proverbial sunxi DSI host can
+> > not send DSI commands after the video stream has started. Thus most of
+> > the panels have opted to send all DSI commands from pre_enable (or
+> > prepare) callback (before the video stream has started).
+> >
+> > However this leaves no good place for the DSI host to power up the DSI
+> > link. By default the host's pre_enable callback is called after the
+> > DSI bridge's pre_enable. For quite some time we were powering up the
+> > DSI link from mode_set. This doesn't look fully correct. And also we
+> > got into the issue with ps8640 bridge, which requires for the DSI link
+> > to be quiet / unpowered at the bridge's reset time.
+>
+> There are also bridges (e.g. tc358767) which require DSI-LP11 upon bridge
+> reset. And additionally this DSI-(e)DP bridge requires LP11 while accessi=
+ng
+> DP-AUX channel, e.g. reading EDID. So bridges need at least some control =
+over
+> DSI line state.
 
-On Sat, Oct 21, 2023 at 11:08:22AM +0200, Hans de Goede wrote:
-> On 10/19/23 12:51, Uwe Kleine-König wrote:
-> > On Wed, Oct 18, 2023 at 03:57:48PM +0200, Hans de Goede wrote:
-> >> On 10/17/23 11:17, Sean Young wrote:
-> >>> Some drivers require sleeping, for example if the pwm device is connected
-> >>> over i2c. The pwm-ir-tx requires precise timing, and sleeping causes havoc
-> >>> with the generated IR signal when sleeping occurs.
-> >>>
-> >>> This patch makes it possible to use pwm when the driver does not sleep,
-> >>> by introducing the pwm_can_sleep() function.
-> >>>
-> >>> Signed-off-by: Sean Young <sean@mess.org>
-> >>
-> >> I have no objection to this patch by itself, but it seems a bit
-> >> of unnecessary churn to change all current callers of pwm_apply_state()
-> >> to a new API.
-> > 
-> > The idea is to improve the semantic of the function name, see
-> > https://lore.kernel.org/linux-pwm/20231013180449.mcdmklbsz2rlymzz@pengutronix.de
-> > for more context.
-> 
-> Hmm, so the argument here is that the GPIO API has this, but GPIOs
-> generally speaking can be set atomically, so there not being able
-> to set it atomically is special.
-> 
-> OTOH we have many many many other kernel functions which may sleep
-> and we don't all postfix them with _can_sleep.
-> 
-> And for PWM controllers pwm_apply_state is IMHO sorta expected to
-> sleep. Many of these are attached over I2C so things will sleep,
-> others have a handshake to wait for the current dutycycle to
-> end before you can apply a second change on top of an earlier
-> change during the current dutycycle which often also involves
-> sleeping.
-> 
-> So the natural/expeected thing for pwm_apply_state() is to sleep
-> and thus it does not need a postfix for this IMHO.
+For sending commands in LP11 it is typical to toggle the
+MIPI_DSI_MODE_LPM flag, for example see panel-=3Djdi-lt070me05000.c or
+some other drives. It might be a good idea to make that more explicit.
+All suggestions here would be appreciated.
 
-Most pwm drivers look like they can be made to work in atomic context,
-I think. Like you say this is not the case for all of them. Whatever
-we choose to be the default for pwm_apply_state(), we should have a
-clear function name for the alternative. This is essentially why
-pam_apply_cansleep() was picked.
+>
+> > Dave has come with the idea of pre_enable_prev_first /
+> > prepare_prev_first flags, which attempt to solve the issue by
+> > reversing the order of pre_enable callbacks. This mostly solves the
+> > issue. However during this cycle it became obvious that this approach
+> > is not ideal too. There is no way for the DSI host to know whether the
+> > DSI panel / bridge has been updated to use this flag or not, see the
+> > discussion at [1].
+> >
+> > Thus comes this proposal. It allows for the panels to explicitly bring
+> > the link up and down at the correct time, it supports automatic use
+> > case, where no special handling is required. And last, but not least,
+> > it allows the DSI host to note that the bridge / panel were not
+> > updated to follow new protocol and thus the link should be powered on
+> > at the mode_set time. This leaves us with the possibility of dropping
+> > support for this workaround once all in-kernel drivers are updated.
+>
+> I want to use this series to support tc358767 properly, because
+> pre_enable_prev_first is not enough, see AUX channel above. I hope I'll f=
+ind
+> any time soon.
+>
+> Best regards,
+> Alexander
+>
+> >
+> > > > The drm_bridge_funcs abstraction.
+> > >
+> > > Is there a typo or missing words?
+> >
+> > missing comma in front of The
+> >
+> > > > Instead of having just two states (off and on) the DSI hosts have
+> > > > separate LP-11 state. In this state the host is on, but the video
+> > > > stream is not yet enabled.
+> > > >
+> > > > Introduce API that allows DSI bridges / panels to control the DSI h=
+ost
+> > > > power up state.
+> >
+> > [1]
+> > https://lore.kernel.org/dri-devel/6c0dd9fd-5d8e-537c-804f-7a03d5899a07@=
+lina
+> > ro.org/
+> > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > > ---
+> > > >
+> > > >  drivers/gpu/drm/drm_mipi_dsi.c | 31 ++++++++++++++++++++++++++++++=
++
+> > > >  include/drm/drm_mipi_dsi.h     | 29 +++++++++++++++++++++++++----
+> > > >  2 files changed, 56 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/drm_mipi_dsi.c
+> > > > b/drivers/gpu/drm/drm_mipi_dsi.c index 14201f73aab1..c467162cb7d8
+> > > > 100644
+> > > > --- a/drivers/gpu/drm/drm_mipi_dsi.c
+> > > > +++ b/drivers/gpu/drm/drm_mipi_dsi.c
+> > > > @@ -428,6 +428,37 @@ int devm_mipi_dsi_attach(struct device *dev,
+> > > >
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(devm_mipi_dsi_attach);
+> > > >
+> > > > +bool mipi_dsi_host_power_control_available(struct mipi_dsi_host *h=
+ost)
+> > > > +{
+> > > > +     const struct mipi_dsi_host_ops *ops =3D host->ops;
+> > > > +
+> > > > +     return ops && ops->power_up;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(mipi_dsi_host_power_control_available);
+> > > > +
+> > > > +int mipi_dsi_host_power_up(struct mipi_dsi_host *host)
+> > > > +{
+> > > > +     const struct mipi_dsi_host_ops *ops =3D host->ops;
+> > > > +
+> > > > +     if (!mipi_dsi_host_power_control_available(host))
+> > > > +             return -EOPNOTSUPP;
+> > > > +
+> > > > +     return ops->power_up ? ops->power_up(host) : 0;
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(mipi_dsi_host_power_up);
+> > > > +
+> > > > +void mipi_dsi_host_power_down(struct mipi_dsi_host *host)
+> > > > +{
+> > > > +     const struct mipi_dsi_host_ops *ops =3D host->ops;
+> > > > +
+> > > > +     if (!mipi_dsi_host_power_control_available(host))
+> > > > +             return;
+> > > > +
+> > > > +     if (ops->power_down)
+> > > > +             ops->power_down(host);
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(mipi_dsi_host_power_down);
+> > > > +
+> > >
+> > > If this API is supposed to be used by DSI devices, it should probably
+> > > take a mipi_dsi_device pointer as a parameter?
+> >
+> > Ack.
+> >
+> > > We should probably make sure it hasn't been powered on already too?
+> >
+> > Ack, I can add an atomic count there and a WARN_ON. However I don't
+> > think that it is a real problem.
+> >
+> > > Maxime
+> >
+> > --
+> > With best wishes
+> >
+> > Dmitry
+>
+>
+> --
+> TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Ge=
+rmany
+> Amtsgericht M=C3=BCnchen, HRB 105018
+> Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan S=
+chneider
+> http://www.tq-group.com/
+>
+>
 
-The alternative to pwm_apply_cansleep() is to have a function name
-which implies it can be used from atomic context. However, 
-pwm_apply_atomic() is not great because the "atomic" could be
-confused with the PWM atomic API, not the kernel process/atomic
-context.
 
-So what should the non-sleeping function be called then? 
- - pwm_apply_cannotsleep() 
- - pwm_apply_nosleep()
- - pwm_apply_nonsleeping()
- - pwm_apply_atomic_context()
-
-> > I think it's very subjective if you consider this
-> > churn or not.
-> 
-> I consider it churn because I don't think adding a postfix
-> for what is the default/expected behavior is a good idea
-> (with GPIOs not sleeping is the expected behavior).
-> 
-> I agree that this is very subjective and very much goes
-> into the territory of bikeshedding. So please consider
-> the above my 2 cents on this and lets leave it at that.
-
-You have a valid point. Let's focus on having descriptive function names.
-
-> > While it's nice to have every caller converted in a single
-> > step, I'd go for
-> > 
-> > 	#define pwm_apply_state(pwm, state) pwm_apply_cansleep(pwm, state)
-> > 
-> > , keep that macro for a while and convert all users step by step. This
-> > way we don't needlessly break oot code and the changes to convert to the
-> > new API can go via their usual trees without time pressure.
-> 
-> I don't think there are enough users of pwm_apply_state() to warrant
-> such an exercise.
-> 
-> So if people want to move ahead with the _can_sleep postfix addition
-> (still not a fan) here is my acked-by for the drivers/platform/x86
-> changes, for merging this through the PWM tree in a single commit:
-> 
-> Acked-by: Hans de Goede <hdegoede@redhat.com>
-
-Thanks,
-
-Sean
+--=20
+With best wishes
+Dmitry
