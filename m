@@ -2,219 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A297D24A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8C97D24B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbjJVQvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 12:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38488 "EHLO
+        id S232172AbjJVQ6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 12:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJVQvp (ORCPT
+        with ESMTP id S229500AbjJVQ6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 12:51:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2155CFB
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 09:51:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697993503; x=1729529503;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=2h1MLsEUAKWtQrKuqZMPzdZyua2XzLtNlrV8BMgQOg4=;
-  b=BlCXXu4uxFhn/1jmAnyliXqLI0Y3BJRfzaeQ4ZzEbdPZlu791Y9SHiX2
-   SrKoHEYOch2LGMxw0GwOeDYeCrQkh0kIDbO59Yhif3Ng9wHXQWnnT7kT3
-   y238I9UaTIovuNkUu1oB/nGL/MgnUnuUAvgC1cHDLBTtPpOGeiiZDVKyt
-   lHZF33PESUQSbrscZC6pyW04S1XeuxRD+UiTDtaTOSIL+X2KmOoNMzs/b
-   SCDq9k0mzogbYRPTSvuMkA3n3ER7EGVqHKxBxi2Nfx6eimzzHaKZfQnTK
-   U/T+hMo1Pd5QyPY8qyK1malcKDuL8e4c64JYLIDJe/7AD1sRfVtEx7+Y0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="371786930"
-X-IronPort-AV: E=Sophos;i="6.03,243,1694761200"; 
-   d="scan'208";a="371786930"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 09:51:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="823750225"
-X-IronPort-AV: E=Sophos;i="6.03,243,1694761200"; 
-   d="scan'208";a="823750225"
-Received: from mozdogan-mobl1.amr.corp.intel.com (HELO [10.209.73.165]) ([10.209.73.165])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 09:51:41 -0700
-Message-ID: <cbc7d064-d6ef-4453-ba4c-4d4e9ca58aa6@linux.intel.com>
-Date:   Sun, 22 Oct 2023 09:51:42 -0700
+        Sun, 22 Oct 2023 12:58:32 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3FEEE;
+        Sun, 22 Oct 2023 09:58:28 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b497c8575aso2530892b3a.1;
+        Sun, 22 Oct 2023 09:58:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697993908; x=1698598708; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=IwkHwhxesLPKqjBuQHsCOV/nzGIgUui9PvuqFp60Gu4=;
+        b=Psm4wsGpF2xEcjvz9RxQykfY0kESoRu5NcwVTuAqadyCrudKSOz5aaw8pOGjIzAmlz
+         wPy1O+4Uo2J9upLNDDqmsJJqekbXu59q+mWceos5AG/xb8zUgQJXUmvoJtu6LkVSz+u4
+         YUHRjntPZ4yo3wa00J+rbgED1xrM4HIWqe+KjELmM3jQGdA3Sbq2i6zVmYT9DiGtNALZ
+         q/8NK7irNlNt5x1kAwiWPCuBYv7oucNUvBSHNraQzXJAjN1ch1CieW3T7YRLcnNrI6KW
+         p2MvaVcZMjIxYz+w8/IPIpP6Ch5QXJPhhIDDq83lrlL821Wbv6pob+QsR4M2fFCF70m2
+         qnyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697993908; x=1698598708;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IwkHwhxesLPKqjBuQHsCOV/nzGIgUui9PvuqFp60Gu4=;
+        b=vH8cDK07SFdpcD7oXu7JGQHtciYJnxKlsr1nRCWd2AaG6b+6InHMlhSHowz33Ctex8
+         ckY0IGe2NQdoVrFf8PXzlWbPq3lNTzS/QlSfF9Fpw20UqJHNWVJna8UT1qlTm1OBlThj
+         jgYz9WXx8dRpnSdJjEwy57b2NakdJwqFosvPCd08xvtkMtUxJzYXP7kiifz/hkVdY08q
+         NGR184XIWHaVM1bKMzMk7QBY3zsDdS/fjZsXeBqxMEFNRnBPpB7BzS8Rsms5aLW3SNPC
+         F0WLwM2/D1wQA8RJXKF9MEAjdmHit8W/oZEJ7hanaqIWdcClV5Uuw4BUap6AN3Gu2Q1j
+         uV6A==
+X-Gm-Message-State: AOJu0YxpbH+P0XzAza4Rd/x4oYHXLskPHcgW83uhhCXz8NQzjRGMqRvf
+        aSjKh9AkSaQr32lGIC6cbBk=
+X-Google-Smtp-Source: AGHT+IEYfJ/AoRsJ9amHD/W2WLpvXa/3dxIzCpTXNeztkwnwYxALQX6X+GqFhvmVrl3w1YkurD0PPA==
+X-Received: by 2002:a05:6a20:1602:b0:153:7515:9919 with SMTP id l2-20020a056a20160200b0015375159919mr9062907pzj.21.1697993907684;
+        Sun, 22 Oct 2023 09:58:27 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z11-20020aa79e4b000000b006b725b2158bsm4790807pfq.41.2023.10.22.09.58.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Oct 2023 09:58:27 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <1fae4d2c-4bc7-f169-7b84-501674a82ee4@roeck-us.net>
+Date:   Sun, 22 Oct 2023 09:58:26 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6] x86/tdx: Dump TDX Version During TD Bootup
-To:     Yi Sun <yi.sun@intel.com>, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, peterz@infradead.org,
-        x86@kernel.org
-Cc:     kirill.shutemov@linux.intel.com, kai.huang@intel.com,
-        nik.borisov@suse.com, linux-kernel@vger.kernel.org,
-        heng.su@intel.com, yi.sun@linux.intel.com,
-        Dongcheng Yan <dongcheng.yan@intel.com>
-References: <20231022063122.2812190-1-yi.sun@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] sbsa_gwdt: Calculate timeout with 64-bit math
 Content-Language: en-US
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20231022063122.2812190-1-yi.sun@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+To:     Darren Hart <darren@os.amperecomputing.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org
+References: <7d1713c5ffab19b0f3de796d82df19e8b1f340de.1695286124.git.darren@os.amperecomputing.com>
+ <bcc41311-075c-44fe-b0f7-30564d7ac58c@roeck-us.net> <ZSpbfXzFeaoUJRZ3@Fedora>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <ZSpbfXzFeaoUJRZ3@Fedora>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/14/23 02:12, Darren Hart wrote:
+> On Tue, Sep 26, 2023 at 05:45:13AM -0700, Guenter Roeck wrote:
+>> On Thu, Sep 21, 2023 at 02:02:36AM -0700, Darren Hart wrote:
+>>> Commit abd3ac7902fb ("watchdog: sbsa: Support architecture version 1")
+>>> introduced new timer math for watchdog revision 1 with the 48 bit offset
+>>> register.
+>>>
+>>> The gwdt->clk and timeout are u32, but the argument being calculated is
+>>> u64. Without a cast, the compiler performs u32 operations, truncating
+>>> intermediate steps, resulting in incorrect values.
+>>>
+>>> A watchdog revision 1 implementation with a gwdt->clk of 1GHz and a
+>>> timeout of 600s writes 3647256576 to the one shot watchdog instead of
+>>> 300000000000, resulting in the watchdog firing in 3.6s instead of 600s.
+>>>
+>>> Force u64 math by casting the first argument (gwdt->clk) as a u64. Make
+>>> the order of operations explicit with parenthesis.
+>>>
+>>> Fixes: abd3ac7902fb ("watchdog: sbsa: Support architecture version 1")
+>>> Reported-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+>>> Signed-off-by: Darren Hart <darren@os.amperecomputing.com>
+>>> Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+>>> Cc: Guenter Roeck <linux@roeck-us.net>
+>>> Cc: linux-watchdog@vger.kernel.org
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: <stable@vger.kernel.org> # 5.14.x
+>>
+>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> Guenter or Wim, I haven't seen this land in the RCs or in next yet. Have
+> you already picked it up? Anything more needed from me?
+> 
+> Thanks,
+> 
 
+Sorry, I am suffering from what I can only describe as a severe case of
+maintainer/reviewer PTSD, and I have yet to find a way of dealing with that.
 
-On 10/21/2023 11:31 PM, Yi Sun wrote:
-> Different versions of TDX have significant differences, as stated in the
-> "Intel® TDX Module Incompatibilities between v1.0 and v1.5" reference.
-> 
-> It would be useful for TD users to be aware of the vendor and version of
-> the current TDX in use. Users could expect different results when checking
-> CPIUD or reading MSR in the user space, depending on the TDX version.
-> Additionally, refer to the TDX version when reporting issues.
-> 
-> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
-> Co-developed-by: Dongcheng Yan <dongcheng.yan@intel.com>
-> Signed-off-by: Dongcheng Yan <dongcheng.yan@intel.com>
-> Signed-off-by: Yi Sun <yi.sun@intel.com>
-> 
-> ---
-> V5 -> V6:
-> 	- Remove random warnings at each step. Print the error details and
-> 	presumed TDX version in common code. (Dave Hansen)
-> 
-> 	- Remove useless assignment and cast. Re-zeroed the input args
-> 	between tdcalls. Refine the comments. (Dave Hansen)
-> 
-> V4 -> V5:
-> 	- Print the version info inside the function detect_tdx_version, but
-> 	not tdx_early_init(). Remove the structure tdg_sys_info, but have 3
-> 	local variables instead. (Huang, Kai)
-> 
-> V3 -> V4: 
-> 	- Rebase the patch on top of the latest tip tree. (Huang, Kai)
-> 	- Change the return value of function tdg_get_sysinfo as void, and
-> 	zero out tdg_sys_info when error occurs. (Kuppuswamy Sathyanarayanan)
-> 
-> V2 -> V3: 
-> 	- Move the allocation of struct tdg_sys_info on stack inside
-> 	tdx_early_init() and pass down to tdg_get_sysinfo() to fill.
-> 	(Kirill Shutemov)
-> 
-> V1 -> V2: 
-> 	- Move the defination of field IDs and the struct tdg_sys_info to tdx.c.
-> 	(Kuppuswamy Sathyanarayanan)
-> 
-> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-> index 3e6dbd2199cf..20e911241e56 100644
-> --- a/arch/x86/coco/tdx/tdx.c
-> +++ b/arch/x86/coco/tdx/tdx.c
-> @@ -37,6 +37,15 @@
->  
->  #define TDREPORT_SUBTYPE_0	0
->  
-> +/*
-> + * TDX metadata base field id, used by TDCALL TDG.SYS.RD
-> + * See TDX ABI Spec Global Metadata Fields
-> + */
-> +#define TDX_SYS_VENDOR_ID_FID		0x0800000200000000ULL
-> +#define TDX_SYS_MINOR_FID		0x0800000100000003ULL
-> +#define TDX_SYS_MAJOR_FID		0x0800000100000004ULL
-> +#define TDX_VENDOR_INTEL		0x8086
-> +
->  /* Called from __tdx_hypercall() for unrecoverable failure */
->  noinstr void __noreturn __tdx_hypercall_failed(void)
->  {
-> @@ -800,6 +809,56 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
->  	return true;
->  }
->  
-> +/*
-> + * Detect TDX Module version info from TDG.SYS.RD TDCALL
-> + */
-> +static void detect_tdx_version(void)
-> +{
-> +	struct tdx_module_args args = {};
-> +	u16 major_version = 0;
-> +	u16 minor_version = 0;
-> +	u32 vendor_id = 0;
-> +	u64 ret = 0;
+Guenter
 
-Since you overwrite all above values, I think you can skip initialization.
-
-> +
-> +	args.rdx = TDX_SYS_VENDOR_ID_FID;
-> +	ret = __tdcall_ret(TDG_SYS_RD, &args);
-> +	if (ret)
-> +		goto err_out;
-> +
-> +	vendor_id = args.r8;
-> +
-> +	memset(&args, 0, sizeof(args));
-> +	args.rdx = TDX_SYS_MAJOR_FID;
-> +	ret = __tdcall_ret(TDG_SYS_RD, &args);
-> +	if (ret)
-> +		goto err_out;
-> +
-> +	major_version = args.r8;
-> +
-> +	memset(&args, 0, sizeof(args));
-> +	args.rdx = TDX_SYS_MINOR_FID;
-> +	ret = __tdcall_ret(TDG_SYS_RD, &args);
-> +	if (ret)
-> +		goto err_out;
-> +
-> +	minor_version = args.r8;
-> +
-> +	pr_info("TDX detected. TDX version:%u.%u VendorID:%x\n",
-> +		major_version, minor_version, vendor_id);
-
-Since TDX prefix is part of pr_info, you can just use "Guest detected. version:..."
-
-> +
-> +	return;
-> +
-> +err_out:
-> +	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
-> +		pr_info("TDG.SYS.RD not available\n");
-> +	else
-> +		pr_info("TDG.SYS.RD unknown error (%llu), reading field %llu\n",
-> +			ret, args.rdx);
-> +
-> +	pr_info("Assuming TDX version:1.x (x<5) VendorID:%x\n",
-> +		TDX_VENDOR_INTEL);
-> +}
-> +
->  void __init tdx_early_init(void)
->  {
->  	struct tdx_module_args args = {
-> @@ -867,5 +926,5 @@ void __init tdx_early_init(void)
->  	 */
->  	x86_cpuinit.parallel_bringup = false;
->  
-> -	pr_info("Guest detected\n");
-> +	detect_tdx_version();
->  }
-> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-> index f74695dea217..10b6c61e835e 100644
-> --- a/arch/x86/include/asm/shared/tdx.h
-> +++ b/arch/x86/include/asm/shared/tdx.h
-> @@ -17,6 +17,8 @@
->  #define TDG_MR_REPORT			4
->  #define TDG_MEM_PAGE_ACCEPT		6
->  #define TDG_VM_WR			8
-> +/* The TDCALL TDG.SYS.RD originates from TDX version 1.5 */
-> +#define TDG_SYS_RD			11
->  
->  /* TDCS fields. To be used by TDG.VM.WR and TDG.VM.RD module calls */
->  #define TDCS_NOTIFY_ENABLES		0x9100000000000010
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
