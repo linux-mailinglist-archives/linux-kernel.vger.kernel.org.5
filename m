@@ -2,69 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D1B7D2470
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7B97D248C
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbjJVQWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 12:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56718 "EHLO
+        id S232132AbjJVQ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 12:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232711AbjJVQVf (ORCPT
+        with ESMTP id S229586AbjJVQ2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 12:21:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA5B188;
-        Sun, 22 Oct 2023 09:21:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22584C433CA;
-        Sun, 22 Oct 2023 16:21:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697991690;
-        bh=nbDc5cjQUnF9X99btn9OHL2gzyTJ84ZS3/J4fySDlmE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NydAZHVspub/Jbmr5pimoNdQ2v84pj04Xs5m17M2ft5IX9WLJzd/0fhJHa4qF/14t
-         0DNGHE5RPLfTFXRg+MIAPVxH0OK9OlDJSfonlvwUd8JAYfUiXzRF4a6lgFRyQwx48P
-         mA3tCt6oGSg/gIQckpyv7KSIGZp21oumrUvJGoM6vLndL1XOe/zc6XVZxqvp1upkF9
-         QFBJqcNPzz6M5OXfdy08z5yqZVVC9uzigYwLjzIfiSEtjnF3uef6TfcLghH1PrmFjj
-         pM+JtLWkyYeLO5lwZeCOXYQotuJwK85rqonWnJTrJdkpAcCLbVSaEcPgbXM5RSrlCO
-         Nxn+nscE1IxwQ==
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Luca Weiss <luca.weiss@fairphone.com>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] soc: qcom: pmic_glink_altmode: Print return value on error
-Date:   Sun, 22 Oct 2023 09:25:51 -0700
-Message-ID: <169799194925.679418.4138128502032758267.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231017-glink-altmode-ret-v2-1-921aa7cfc381@fairphone.com>
-References: <20231017-glink-altmode-ret-v2-1-921aa7cfc381@fairphone.com>
+        Sun, 22 Oct 2023 12:28:04 -0400
+Received: from smtp.smtpout.orange.fr (smtp-14.smtpout.orange.fr [80.12.242.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA45BFB
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 09:28:01 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id ubIvqzpaN1gtMubIvqacuc; Sun, 22 Oct 2023 18:27:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1697992079;
+        bh=INIIQaK5X3fnI0W54Dh7daNnY2U6zqvjTPzA48XdS3U=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=k3rhCkHSS4P2p8LFRggKoz/tyuAJkojsl/19c2MH44v/hcbQtSK4umtesyAzbrIhy
+         PHTKJKv18seaEU11ZZecTK+RFeWXK3me6n1qDFyBUUy4qXHpEQXw1ryoFvxItmfYFj
+         orJDoKTHU0t/8s6c7N0Ek/3sAv8xiP8pXPmhN/XeMYSvTwMHGULAYNO4vvKGTX4800
+         2mD3K7Tv+golLqpnDaeAAiU5yg6NvmsFCKF+0KXdR2AkvOMaYN6lczwIPDEsEEtRGV
+         74bsZJoRGXr+zHeRPxDv7r80B54FGZSaSbXUipvIth5tiRfK0FCj6Cn0/CPl1Oxmpk
+         oxLw0/8Z7XRJg==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 22 Oct 2023 18:27:59 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <a836dc4d-99e3-494d-b374-594f53287bae@wanadoo.fr>
+Date:   Sun, 22 Oct 2023 18:27:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 4/8] media: chips-media: wave5: Add vpuapi layer
+Content-Language: fr
+To:     Sebastian Fricke <sebastian.fricke@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Darren Etheridge <detheridge@ti.com>
+References: <20230929-wave5_v13_media_master-v13-0-5ac60ccbf2ce@collabora.com>
+ <20230929-wave5_v13_media_master-v13-4-5ac60ccbf2ce@collabora.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230929-wave5_v13_media_master-v13-4-5ac60ccbf2ce@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, 17 Oct 2023 10:00:23 +0200, Luca Weiss wrote:
-> It can be useful to know with which return value for example the
-> typec_retimer_set call failed, so include this info in the dev_err
-> prints.
+Le 12/10/2023 à 13:01, Sebastian Fricke a écrit :
+> From: Nas Chung <nas.chung@chipsnmedia.com>
 > 
+> Add the vpuapi layer of the wave5 codec driver.
+> This layer is used to configure the hardware according
+> to the parameters.
 > 
+> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
+> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
+> Signed-off-by: Nas Chung <nas.chung@chipsnmedia.com>
+> ---
 
-Applied, thanks!
+...
 
-[1/1] soc: qcom: pmic_glink_altmode: Print return value on error
-      commit: 723d346173e748c4fdb145b84f572b871ab4011a
+> +int wave5_vpu_dec_clr_disp_flag(struct vpu_instance *inst, int index)
+> +{
+> +	struct dec_info *p_dec_info = &inst->codec_info->dec_info;
+> +	int ret = 0;
 
-Best regards,
--- 
-Bjorn Andersson <andersson@kernel.org>
+Nit: No need to init.
+
+> +	struct vpu_device *vpu_dev = inst->dev;
+> +
+> +	if (index >= p_dec_info->num_of_display_fbs)
+> +		return -EINVAL;
+> +
+> +	ret = mutex_lock_interruptible(&vpu_dev->hw_lock);
+> +	if (ret)
+> +		return ret;
+> +	ret = wave5_dec_clr_disp_flag(inst, index);
+> +	mutex_unlock(&vpu_dev->hw_lock);
+> +
+> +	return ret;
+> +}
+
+...
+
+> +int wave5_vpu_dec_give_command(struct vpu_instance *inst, enum codec_command cmd, void *parameter)
+> +{
+> +	struct dec_info *p_dec_info = &inst->codec_info->dec_info;
+> +	int ret = 0;
+> +
+> +	switch (cmd) {
+> +	case DEC_GET_QUEUE_STATUS: {
+> +		struct queue_status_info *queue_info = parameter;
+> +
+> +		queue_info->instance_queue_count = p_dec_info->instance_queue_count;
+> +		queue_info->report_queue_count = p_dec_info->report_queue_count;
+> +		break;
+> +	}
+> +	case DEC_RESET_FRAMEBUF_INFO: {
+> +		int i;
+> +
+> +		for (i = 0; i < MAX_REG_FRAME; i++) {
+> +			ret = wave5_vpu_dec_reset_framebuffer(inst, i);
+> +			if (ret)
+> +				break;
+> +		}
+> +
+> +		for (i = 0; i < MAX_REG_FRAME; i++) {
+> +			ret = reset_auxiliary_buffers(inst, i);
+> +			if (ret)
+> +				break;
+> +		}
+> +
+> +		wave5_vdi_free_dma_memory(inst->dev, &p_dec_info->vb_task);
+> +		break;
+> +	}
+> +	case DEC_GET_SEQ_INFO: {
+> +		struct dec_initial_info *seq_info = parameter;
+> +
+> +		*seq_info = p_dec_info->initial_info;
+> +		break;
+> +	}
+> +
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+
+return ret;
+?
+
+CJ
+
+> +}
+
+...
+
