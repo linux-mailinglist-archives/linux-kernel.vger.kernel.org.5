@@ -2,151 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0147D22FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFA87D2304
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbjJVLwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 07:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
+        id S231719AbjJVLyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 07:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVLwE (ORCPT
+        with ESMTP id S231321AbjJVLyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 07:52:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05234F3;
-        Sun, 22 Oct 2023 04:52:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1697975522; x=1729511522;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BdVZ+C8tN+qekt7Hl3QUHfu9nPna5/5VggjFolJCjy8=;
-  b=kMFSKVfIqRCQVBQXgkiQHG6THnJLYEi9RDT8vqb8kmPvk1pPdB1nLzlP
-   orKtFe152yfL/A6morEMIJV1KJSIdV2L+ZIN8p6w09fI/OCdLkyU7vfHz
-   qX/860Y/Oa+VCnU1JhNQn0g8gWeCAm43Dyt9tGS3PO8uvhOr+O7zLwYp5
-   jX7XCRqfzK0sVFQ3xl7GeSDAoH2xYjU4f+6v4kfdT5j3IDizNWqodIth3
-   uqYSBUAUyVKDoKPp0W8zqlSsyU/7mxS8QmAzNdHGWHqhmLEuWwdJ86VsI
-   mOsSdALT1ImP1E9cNaFm9YnJ+1Urg3UMrLH8DK+6z5GC1FGBWCO9CuNka
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="385578979"
-X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
-   d="scan'208";a="385578979"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 04:52:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10870"; a="792851290"
-X-IronPort-AV: E=Sophos;i="6.03,242,1694761200"; 
-   d="scan'208";a="792851290"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 22 Oct 2023 04:51:54 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1quWzo-0005vq-0d;
-        Sun, 22 Oct 2023 11:51:52 +0000
-Date:   Sun, 22 Oct 2023 19:51:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Nitesh Shetty <nj.shetty@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@lists.linux.dev,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, nitheshshetty@gmail.com,
-        anuj1072538@gmail.com, gost.dev@samsung.com, mcgrof@kernel.org,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Anuj Gupta <anuj20.g@samsung.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v17 08/12] nvmet: add copy command support for bdev and
- file ns
-Message-ID: <202310221915.PYH9XadG-lkp@intel.com>
-References: <20231019110147.31672-9-nj.shetty@samsung.com>
+        Sun, 22 Oct 2023 07:54:50 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF93A1;
+        Sun, 22 Oct 2023 04:54:48 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 356A65C038F;
+        Sun, 22 Oct 2023 07:54:48 -0400 (EDT)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Sun, 22 Oct 2023 07:54:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1697975688; x=1698062088; bh=DN5UBlB7bax9/7Y1DfOiKcvIPgfPYmdiFSR
+        bGNuHsR8=; b=GSyjkK5L4R2sYlW5Wq2aq2pjsH0hn/K7rTzY1p7vz69JNrGEJqV
+        4OYW4HBjPaFZKWLOJl4jq3G+WK+FDLdEl0qOYhQEh+9iVX99dWeDa8wqxNgv9j37
+        oOCYsiCXu/mNBW670UER8Mvg+d2vge73ZR5P0BjR3WvbuHeCN9IJFu23ZDZZTXTw
+        Yz1Kb8Vnz+yWQBjPIeT+dEdn1XQTpFdK7+o9hWfBSHgBRZdUWrYTEjdDUC5aCDGi
+        i0lbGSoGCFt/5kFr6l1c8/5qQskWOULCuixBEPveDqg5QYT5rPhJI6TKTyZbvUd5
+        c63UP7zyBaJiMsrys7FbooA7Btn3fCqDJIA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1697975688; x=1698062088; bh=DN5UBlB7bax9/7Y1DfOiKcvIPgfPYmdiFSR
+        bGNuHsR8=; b=HE9xieyE4JTFsq67cWcXNc420Ub8ok9ED0GiVsI1zFrV91JyFw2
+        /mH7FueCyJYbMIZVMLnyU4BPZ+BIPlUgoTW9X/25TobZGpRxbHMFUGAIJmXJkbp0
+        1TmFvqjQEvYj/iQEcie/zoYV6XjwWwmOn29rJy263ynAdDQp8WRqiVBvCUcoo/kT
+        7PNxGVVTcmTTJ1DObWdZTgn2SKj/e9Pb4yLXepSTrL5H2PP1xZNsgX6eplag47I2
+        PitdMMsSsjap1JApsg7Dh4Bpl/reM7zqEYue/PPvEmaN8szrF+xGa76gdYY/Ap0y
+        uyeDQt0+js90lpHw3suXGeSX9yWvudJ6REg==
+X-ME-Sender: <xms:hw01Zbu8StA6SQlp88zjRM-Z5bViwU_Vbkf4CV9A0Dw5p-zMWo776w>
+    <xme:hw01Zcd5vENx5si8IEqkqlN1AxsBDEBd7VdVH-EmglgMfDDkDXgsCt19UcJO3zsBb
+    kQ5cgl-_GNlK7TgexI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeefgdegiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedflfhi
+    rgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+    eqnecuggftrfgrthhtvghrnhepudefgeeftedugeehffdtheefgfevffelfefghefhjeeu
+    geevtefhudduvdeihefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:iA01Zez7fPnNByzqeqftjrF_6zOa9mlg_8bcedzZO7vAA-ralN6CRQ>
+    <xmx:iA01ZaO3AK_SJdkdMmPoSnK5CgCeF7lcNMDaY32UuWYXLOinTibd0g>
+    <xmx:iA01Zb9m0giJB4q2R__6TzSTIfXscRJ2G_yZJvxbuv56ZwpQorbwTw>
+    <xmx:iA01Zc0mLKEED9SESr2ItuBmtCkqJGpMZMxFO5GIlJPJLpPMv2M2JA>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D66A036A0077; Sun, 22 Oct 2023 07:54:47 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019110147.31672-9-nj.shetty@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <32c626ee-5896-417a-bf57-b7e4216f1d25@app.fastmail.com>
+In-Reply-To: <ZSgSIPxrnx2FmHsk@alpha.franken.de>
+References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
+ <20231004161038.2818327-3-gregory.clement@bootlin.com>
+ <ZSgSIPxrnx2FmHsk@alpha.franken.de>
+Date:   Sun, 22 Oct 2023 12:52:04 +0100
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Gregory CLEMENT" <gregory.clement@bootlin.com>
+Cc:     "paulburton@kernel.org" <paulburton@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Vladimir Kondratiev" <vladimir.kondratiev@intel.com>,
+        "Tawfik Bayouk" <tawfik.bayouk@mobileye.com>,
+        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 02/11] MIPS: use virtual addresses from xkphys for MIPS64
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nitesh,
 
-kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on 213f891525c222e8ed145ce1ce7ae1f47921cb9c]
+=E5=9C=A82023=E5=B9=B410=E6=9C=8812=E6=97=A5=E5=8D=81=E6=9C=88 =E4=B8=8B=
+=E5=8D=884:34=EF=BC=8CThomas Bogendoerfer=E5=86=99=E9=81=93=EF=BC=9A
+> On Wed, Oct 04, 2023 at 06:10:29PM +0200, Gregory CLEMENT wrote:
+>> From: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+>>=20
+>> Now 64-bit MIPS uses 32-bit compatible segments KSEG0 and KSEG1
+>> to trivially map first 1/2 GByte of physical memory. This memory
+>> used to run kernel. This mean, one should have memory installed
+>> in this area in order for Linux to work.
+>>=20
+>> Kconfig CONFIG_USE_XKPHYS introduced; it adds support for kernel
+>> to use virtual addresses from the XKPHYS segment for both cached
+>> and uncached access. XKPHYS allows to access 2^48 bytes of
+>> memory, thus allowing kernel to work with any memory
+>> configuration.
+>
+> IMHO it doesn't make sense to introduce an option for a generic
+> kernel, which then renders the generic kernel useless on all
+> platforms other then yours.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Nitesh-Shetty/block-Introduce-queue-limits-and-sysfs-for-copy-offload-support/20231019-200658
-base:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
-patch link:    https://lore.kernel.org/r/20231019110147.31672-9-nj.shetty%40samsung.com
-patch subject: [PATCH v17 08/12] nvmet: add copy command support for bdev and file ns
-config: i386-randconfig-062-20231022 (https://download.01.org/0day-ci/archive/20231022/202310221915.PYH9XadG-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231022/202310221915.PYH9XadG-lkp@intel.com/reproduce)
+Actually it won't. Many 64bit platforms do support load kernel to
+XKPHYS, including boston and Loongson64, so it's still a generic
+function.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310221915.PYH9XadG-lkp@intel.com/
+IMO this patch won't break support for any generic platform.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/nvme/target/io-cmd-bdev.c:498:30: sparse: sparse: restricted __le16 degrades to integer
+>
+> Please don't use generic, but setup a new platform for it. Hopefully
+> we can get rid all of the weirdness in this patch.
 
-vim +498 drivers/nvme/target/io-cmd-bdev.c
+Perhaps better to introduce a Kconfig option to allow manipulation of
+kernel load address.
 
-   478	
-   479	/*
-   480	 * At present we handle only one range entry, since copy offload is aligned with
-   481	 * copy_file_range, only one entry is passed from block layer.
-   482	 */
-   483	static void nvmet_bdev_execute_copy(struct nvmet_req *rq)
-   484	{
-   485		struct nvme_copy_range range;
-   486		struct nvme_command *cmd = rq->cmd;
-   487		ssize_t ret;
-   488		off_t dst, src;
-   489	
-   490		u16 status;
-   491	
-   492		status = nvmet_copy_from_sgl(rq, 0, &range, sizeof(range));
-   493		if (status)
-   494			goto err_rq_complete;
-   495	
-   496		dst = le64_to_cpu(cmd->copy.sdlba) << rq->ns->blksize_shift;
-   497		src = le64_to_cpu(range.slba) << rq->ns->blksize_shift;
- > 498		rq->copy_len = (range.nlb + 1) << rq->ns->blksize_shift;
-   499	
-   500		if (bdev_max_copy_sectors(rq->ns->bdev)) {
-   501			ret = blkdev_copy_offload(rq->ns->bdev, dst, src, rq->copy_len,
-   502						  nvmet_bdev_copy_endio,
-   503						  (void *)rq, GFP_KERNEL);
-   504		} else {
-   505			ret = blkdev_copy_emulation(rq->ns->bdev, dst,
-   506						    rq->ns->bdev, src, rq->copy_len,
-   507						    nvmet_bdev_copy_endio,
-   508						    (void *)rq, GFP_KERNEL);
-   509		}
-   510		if (ret == -EIOCBQUEUED)
-   511			return;
-   512	
-   513		rq->cqe->result.u32 = cpu_to_le32(0);
-   514		status = errno_to_nvme_status(rq, ret);
-   515	err_rq_complete:
-   516		nvmet_req_complete(rq, status);
-   517	}
-   518	
+Thanks
+- Jiaxun
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> Thomas.
+>
+> --=20
+> Crap can work. Given enough thrust pigs will fly, but it's not necessa=
+rily a
+> good idea.                                                [ RFC1925, 2=
+.3 ]
