@@ -2,178 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1019E7D230F
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 14:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F3B7D2314
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 14:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbjJVMFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 08:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        id S231671AbjJVMNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 08:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVMFw (ORCPT
+        with ESMTP id S229472AbjJVMNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 08:05:52 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A661114;
-        Sun, 22 Oct 2023 05:05:49 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0FF6656D;
-        Sun, 22 Oct 2023 14:05:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1697976337;
-        bh=XLggI/OzeRShGWMvxDswWLX4tMFqVlxpAgYqh++VSV8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=cqyj76xafwKS3a8bpPaw0jRVL2jJccu39i6EdnZIV8StmiiIDrfcdZCyS7XDo2XA0
-         jQgltxtgjxRdq8ZGIBg/Mh6q7vZ4JiTRXdigZcK2JYPcM7qxPQMqcOMqJf9Dk8gmF/
-         QZ0EEGbwE/HeEWVaJ3nQqd4l2telJkVYE/dG1Kvc=
-Content-Type: text/plain; charset="utf-8"
+        Sun, 22 Oct 2023 08:13:51 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD2EDC
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 05:13:49 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c8a1541232so19892075ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 05:13:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697976828; x=1698581628; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6BZxhGQ28bcDNiJWnqZ3AsEPoFN6rBfxD//AMxuy/10=;
+        b=UPeRVwN/9GTyv7oeghmm+riQ/iqdFd4RYdPwogKCeNrD/+sMf27GPv/VU2YLZD/UDe
+         vh5QymugsYwWbMg/Jt20rROCVUA94Ils4jQ1CLjI83NuX3f6epFG8fbqeKjbL4LkzWTY
+         LGD1Hil6eNtb677TeL2w1VAb0KQ1vd3cyxMYV9cKE6Bt6CbMoUV1GCXAjfrdDOTnuztt
+         1Pc1xlWYJTV9Po+DHPxzcfHL4AYRUvcRYBsDcVvW8G3e7rsYiM4KIjTlHrlME8uWwlH9
+         jYwdpQdRzbLoIAwMDU1n7jHf/kBxBdCqsDwLfKPLsB2k4Zz5Opp32WeKJLoLEB/xaQ46
+         reBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697976828; x=1698581628;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6BZxhGQ28bcDNiJWnqZ3AsEPoFN6rBfxD//AMxuy/10=;
+        b=QfF/N/lzU5H/MITd/aOMqtcc9AS9IRnU+0ChV0f0pkj+LN/9oNmq5TJY4y7oeH107z
+         TzPRfI/GPNnQxV+4SO8CdWmgfcOiI6XneSL+6Ux0oN9ARyCjDzlGlesllkpu2V7/Xu6s
+         UCD10ZfYfzGcrf4M8/qVKykn2EgGvfsWQmJTE3INTt9PH9dIf2GyruVW46E0iPqo8fnO
+         BQ39Jd84qamynXPxdZgHEdahSa2kpgWgTPFKnPNoo81v7jPupJIRfOQP1dHo3OhZxEWg
+         hhJ/WGbOx2a/1VoG2f1r1fSQpc1p5jCGuAI1MUo5XOxjQNlgfh8Zsr6nKyvFiZaIrI6x
+         3H3Q==
+X-Gm-Message-State: AOJu0YwAu892vjKRtV9P9oadaeasfkGTFjgtQaU/rIOCvE1ZZNOe8VTU
+        hRdFXi/0ZfxkO+iXVZZTr40=
+X-Google-Smtp-Source: AGHT+IGYz4FShfhO8IFsqj3LVS3VLm7MdITeOG1iGHqL7abwGfQ3F70w+8t5XMwp0sIOpsBbfJg1eA==
+X-Received: by 2002:a17:903:1252:b0:1c9:e774:58d9 with SMTP id u18-20020a170903125200b001c9e77458d9mr7960726plh.34.1697976828445;
+        Sun, 22 Oct 2023 05:13:48 -0700 (PDT)
+Received: from ubuntu ([122.171.143.200])
+        by smtp.gmail.com with ESMTPSA id iz22-20020a170902ef9600b001c771740da4sm4378625plb.195.2023.10.22.05.13.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Oct 2023 05:13:48 -0700 (PDT)
+Date:   Sun, 22 Oct 2023 05:13:32 -0700
+From:   Nandha Kumar Singaram <nandhakumar.singaram@gmail.com>
+To:     Viresh Kumar <vireshk@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     kumaran.4353@gmail.com
+Subject: [PATCH v2 0/3] staging: greybus: Coding style cleanup patches
+Message-ID: <cover.1697976302.git.nandhakumar.singaram@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231021141802.7k6irkkgycp4hek7@pengutronix.de>
-References: <20231021005250.3498664-1-kieran.bingham@ideasonboard.com> <20231021141802.7k6irkkgycp4hek7@pengutronix.de>
-Subject: Re: [PATCH] arm64: dts: freescale: debix-som-a-bmb-08: Add CSI Power Regulators
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>, moderated list:
-        ARM/FREESCALE IMX / MXC ARM ARCHITECTURE 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, ;
-Illegal-Object: Syntax error in Cc: address found on vger.kernel.org:
-        Cc:     ;
-                        ^-missing semicolon to end mail group, extraneous tokens in mailbox, missing end of mailbox
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Date:   Sun, 22 Oct 2023 13:05:44 +0100
-Message-ID: <169797634457.750763.12645281668685716649@ping.linuxembedded.co.uk>
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Marco Felsch (2023-10-21 15:18:02)
-> Hi Kieran,
->=20
-> thanks for your patch.
->=20
-> On 23-10-21, Kieran Bingham wrote:
-> > Provide the 1.8 and 3.3 volt regulators that are utilised on the Debix
-> > SOM BMB-08 base board.
-> >=20
-> > Facilitate this by also supplying the pin control used to enable the
-> > regulators on the second MIPI CSI port.
-> >=20
-> > Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> > ---
-> >  .../freescale/imx8mp-debix-som-a-bmb-08.dts   | 56 +++++++++++++++++++
-> >  1 file changed, 56 insertions(+)
-> >=20
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dt=
-s b/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dts
-> > index 0b0c95432bdc..e058402f1f2e 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dts
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dts
-> > @@ -63,6 +63,50 @@ regulator-som-vdd3v3 {
-> >               regulator-always-on;
-> >       };
-> > =20
-> > +     reg_csi1_1v8: regulator-csi1-vdd1v8 {
-> > +             compatible =3D "regulator-fixed";
-> > +             regulator-min-microvolt =3D <1800000>;
-> > +             regulator-max-microvolt =3D <1800000>;
-> > +             regulator-name =3D "CSI1_VDD1V8_SW";
->=20
-> Can we drop the _SW suffix here and below? I like to align the names
-> with the schematic power-rail names to make it easier to grep.
+This patchset performs code cleanup in greybus driver as per
+linux coding style and may be applied in any sequence.
 
+v2: Ammended wording in subject line for all the patches
+    Suggested by Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Sure that's fine with me. I think the _SW is probably a hangover from
-the BSP kernel, I'm not sure why I kept it ;-)
+Nandha Kumar Singaram (3):
+  staging: greybus: camera: Alignment should match open parenthesis
+  staging: greybus: camera: Modify lines end with a '('
+  staging: greybus: bootrom: fixed prefer using ftrace warning
 
-> With that fixed feel free to add my:
+ drivers/staging/greybus/bootrom.c |  2 --
+ drivers/staging/greybus/camera.c  | 13 ++++++-------
+ 2 files changed, 6 insertions(+), 9 deletions(-)
 
-Thanks
+-- 
+2.25.1
 
---
-Kieran
-
->=20
-> Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
->=20
-> > +             gpio =3D <&expander0 13 GPIO_ACTIVE_HIGH>;
-> > +             vin-supply =3D <&reg_baseboard_vdd3v3>;
-> > +             enable-active-high;
-> > +     };
-> > +
-> > +     reg_csi1_3v3: regulator-csi1-vdd3v3 {
-> > +             compatible =3D "regulator-fixed";
-> > +             regulator-min-microvolt =3D <3300000>;
-> > +             regulator-max-microvolt =3D <3300000>;
-> > +             regulator-name =3D "CSI1_VDD3V3_SW";
-> > +             gpio =3D <&expander0 14 GPIO_ACTIVE_HIGH>;
-> > +             enable-active-high;
-> > +             vin-supply =3D <&reg_vdd5v0>;
-> > +     };
-> > +
-> > +     reg_csi2_1v8: regulator-csi2-vdd1v8 {
-> > +             compatible =3D "regulator-fixed";
-> > +             pinctrl-names =3D "default";
-> > +             pinctrl-0 =3D <&pinctrl_reg_csi2_1v8>;
-> > +             regulator-min-microvolt =3D <1800000>;
-> > +             regulator-max-microvolt =3D <1800000>;
-> > +             regulator-name =3D "CSI2_VDD1V8_SW";
-> > +             gpio =3D <&gpio3 21 GPIO_ACTIVE_HIGH>;
-> > +             enable-active-high;
-> > +             vin-supply =3D <&reg_baseboard_vdd3v3>;
-> > +     };
-> > +
-> > +     reg_csi2_3v3: regulator-csi2-vdd3v3 {
-> > +             compatible =3D "regulator-fixed";
-> > +             pinctrl-names =3D "default";
-> > +             pinctrl-0 =3D <&pinctrl_reg_csi2_3v3>;
-> > +             regulator-min-microvolt =3D <3300000>;
-> > +             regulator-max-microvolt =3D <3300000>;
-> > +             regulator-name =3D "CSI2_VDD3V3_SW";
-> > +             gpio =3D <&gpio4 25 GPIO_ACTIVE_HIGH>;
-> > +             enable-active-high;
-> > +             vin-supply =3D <&reg_vdd5v0>;
-> > +     };
-> > +
-> >       regulator-vbus-usb20 {
-> >               compatible =3D "regulator-fixed";
-> >               regulator-min-microvolt =3D <5000000>;
-> > @@ -413,6 +457,18 @@ MX8MP_IOMUXC_GPIO1_IO03__GPIO1_IO03              0=
-x41
-> >               >;
-> >       };
-> > =20
-> > +     pinctrl_reg_csi2_1v8: regcsi21v8grp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_SAI5_RXD0__GPIO3_IO21              0=
-x19
-> > +             >;
-> > +     };
-> > +
-> > +     pinctrl_reg_csi2_3v3: regcsi23v3grp {
-> > +             fsl,pins =3D <
-> > +                     MX8MP_IOMUXC_SAI2_TXC__GPIO4_IO25               0=
-x19
-> > +             >;
-> > +     };
-> > +
-> >       pinctrl_uart2: uart2grp {
-> >               fsl,pins =3D <
-> >                       MX8MP_IOMUXC_UART2_RXD__UART2_DCE_RX            0=
-x14f
-> > --=20
-> > 2.34.1
-> >=20
-> >
