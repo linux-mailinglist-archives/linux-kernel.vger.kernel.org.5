@@ -2,141 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DFC7D26E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 00:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD737D26EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 01:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232855AbjJVWxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 18:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
+        id S232440AbjJVW7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 18:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJVWxY (ORCPT
+        with ESMTP id S229500AbjJVW7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 18:53:24 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FA3E4
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 15:53:21 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6b709048d8eso1952836b3a.2
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 15:53:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698015201; x=1698620001; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oRYglAKPkAepx6qheWxbJfkWRfk28WNVjjfLpReBOUk=;
-        b=hrcb1QlTURXDpNZ+jY1eA481caltABBqY9kb3Eod7uU7r1wdLpUQuwLGJbh5RbXF8L
-         vAc9n8Gg/Zcl2gRIuyEMLGIboEeLlVT+wSD069vZvMJYNhRVNn5bXinsrbalRiTHoJsy
-         pw48keadrlj4dBAw3lvrLcK68ZsJiSk8S8LVRJxCZTGrZgIYKDUiXQAfTIKZoTv7yAVo
-         icM5ln9aQlTSrivggJ9oQITRIDFlx4ReTc0Ke1+NH433RMrDttE4pv7mk+uEHW3Vf8F0
-         ReZj2ZH8GO9j959baiwM443gCPXhlSaNO0UoeXlqR8lbh0tJxpz2EeqelTZU+2JZwxxs
-         m4Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698015201; x=1698620001;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oRYglAKPkAepx6qheWxbJfkWRfk28WNVjjfLpReBOUk=;
-        b=XURfNopH260GBQ/HkfpaZIbB6xT8lhDJsSFbS873Q7h48OTyR5SM6wcvle33yvq2LM
-         w77njnGN5b3iP802j6yKCbibGY6kpAcMzfD3eLB+2YbWS9Df8GMezrPaN9N/11fmQ4Vj
-         HXXwEiQvPqYIiHj326gDvBInRyI0FY0vVjjI24L8T0pRYGUCJNwTymPAbhC33Mgurwo3
-         7+9+QV0rrl78sK47Cdr26Wy9tkbd3/IVM12fUOenrQkS3jQ32Aj+PuAfMzK6oYwvN8qs
-         Fqi0bvjxfWwW6jw69BuqwSbn9L6Ft9vbyU0/6CuyH3+pDwNf1erbzT1yXN9u47L/Eaau
-         d+7w==
-X-Gm-Message-State: AOJu0YzW+cUz6QPvOHbStWhnsYhJ8oH5zH3+nKEhOvT5ejz6AkM+X+1H
-        LNJfMNB/9CMERX4JSvlrMtQbCuR9r9nbaQrv1mA=
-X-Google-Smtp-Source: AGHT+IHwrBNhRCFQtpnzt/uIlF/fMD3afTTUcvPkMAGKpgkIKsDEfkiim78m3y1jcY1kFXpDO4/Jzw==
-X-Received: by 2002:a05:6a00:15c4:b0:6be:2991:d878 with SMTP id o4-20020a056a0015c400b006be2991d878mr6482900pfu.15.1698015200772;
-        Sun, 22 Oct 2023 15:53:20 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
-        by smtp.gmail.com with ESMTPSA id e12-20020aa7980c000000b006889348ba6esm4914612pfl.127.2023.10.22.15.53.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 15:53:20 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1quhJt-002ctP-2Z;
-        Mon, 23 Oct 2023 09:53:17 +1100
-Date:   Mon, 23 Oct 2023 09:53:17 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     David Wang <00107082@163.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PERFORMANCE]fs: sendfile suffer performance degradation when
- buffer size have performance impact on underling IO
-Message-ID: <ZTWn3QtTggmMHWxS@dread.disaster.area>
-References: <28de01eb.208.18b4f9a0051.Coremail.00107082@163.com>
+        Sun, 22 Oct 2023 18:59:51 -0400
+Received: from bird.elm.relay.mailchannels.net (bird.elm.relay.mailchannels.net [23.83.212.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF232DB
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 15:59:47 -0700 (PDT)
+X-Sender-Id: hostpapa|x-authuser|x.reply@epreston.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 888EA6C147F;
+        Sun, 22 Oct 2023 22:54:08 +0000 (UTC)
+Received: from s147.servername.online (unknown [127.0.0.6])
+        (Authenticated sender: hostpapa)
+        by relay.mailchannels.net (Postfix) with ESMTPA id C958A6C14FE;
+        Sun, 22 Oct 2023 22:54:07 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1698015248; a=rsa-sha256;
+        cv=none;
+        b=p1XSiuDfEGfFFe133Drjv75NmISP3m2xKtSYnEKxA9QAZ6eo+RU/A2Ir8KRxVQNc6G22Gx
+        574elESDREfq//cB5VLr1Gfqzv1oguiWdh2fucFdiERCACNp1gCk8ixSQiSKqpS9sD/E6V
+        UvOfS6oFWt4XMUpBFCOAxouhW8fsDdsQKw8yuV0bvXYrbrzUruM20v3a2IyrWibLR7zvWB
+        eCgSePRcc1UwpeBf20F5Z52QcMIcn2TAVMvKcZH9LQ6sBY2jtczfSlQZX5IJ/Dcg7+R0jD
+        EmucH1FfHchVoVvXSDRFq6WIetLvTyqWfT3mcgsTNdyKmBzdoi4GvkulXUPoSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1698015248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:dkim-signature;
+        bh=gDWtLghsWx6nnjrewvz+iHsajZfjSscfDKYT9XWGKC4=;
+        b=N77UMFFiUqGn7YwdJM1eTxCeWT+Nxq/6oHAn0YTsvlDHPQEy0cZ8ghvrTVZaKEaz58iEg5
+        hjfH+7kQS6exB5shNst6o0wtUsueBlTyIh9YKLO1+L+rwIi1PNtYfAwwIsrSYPQu2Vf1Uk
+        kjuKkLISt2/yQ2YDJuL4NraPudTqdk84OmgTrXNGnHcf3xZMtb1lW8BeMNHZoghXztFUnx
+        17BGigJIhP0iIBBUdsEfNBJ1oIjX3axFnaVw1oIleEMeet+p8RquVnfedEtYgdc2pLlzC4
+        xfWojJyAkMPldM/3UjMYAkFN1E4RFSsNDNc+p3kbH5yuqnqthWk7/jS4Drk0eQ==
+ARC-Authentication-Results: i=1;
+        rspamd-846f4b758b-nczqm;
+        auth=pass smtp.auth=hostpapa smtp.mailfrom=x.arch@epreston.net
+X-Sender-Id: hostpapa|x-authuser|x.reply@epreston.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: hostpapa|x-authuser|x.reply@epreston.net
+X-MailChannels-Auth-Id: hostpapa
+X-Share-Unite: 72aad6c35d547ad4_1698015248342_2281811999
+X-MC-Loop-Signature: 1698015248342:1735253197
+X-MC-Ingress-Time: 1698015248342
+Received: from s147.servername.online (s147.servername.online
+ [204.44.192.62])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.101.178.134 (trex/6.9.2);
+        Sun, 22 Oct 2023 22:54:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=epreston.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=gDWtLghsWx6nnjrewvz+iHsajZfjSscfDKYT9XWGKC4=; b=Ta90tR8fH+Hn0FFKu0Klb+TL/0
+        2md2e0S2BvJ/k5oyLoQ0rGdYeEY02Mx1sWL2FCOchqFntR/rhP0mirFaj/GAs/2wtlGe/SwyAjgeF
+        ut8oso2MupsKV49YQ5tzdge0cIGO93h6m2/HKPcAC1lwMfJsPbeeZCc6kgapZ9vuPCKXV61uiFxpI
+        5i5fB98KdSZHWj0YQjOIvzzwuu5N9IPVYGIphI549lQqhdDSz0Llmg9xHHHhE6SmnhzoddNr/sPhd
+        nLDlWnp2gN4+h4RJJb3mO6Mdt2lD4ninByZqRx7dF2x5RnkjB/yPJcPejk2ltXkWRc0dlNig9FSjs
+        jliRyrkw==;
+Received: from [50.35.115.28] (port=46014 helo=P70.localdomain)
+        by s147.servername.online with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96.2)
+        (envelope-from <x.arch@epreston.net>)
+        id 1quhKf-0009tT-2z;
+        Sun, 22 Oct 2023 15:54:07 -0700
+Date:   Sun, 22 Oct 2023 15:54:05 -0700
+From:   Evan Preston <x.arch@epreston.net>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jaak Ristioja <jaak@ristioja.ee>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad
+ L570
+Message-ID: <ZTWoDSPxGO-ApR4r@P70.localdomain>
+References: <7c50e051-eba2-09fc-da9f-023d592de457@ristioja.ee>
+ <31bdf7b1-0ed9-4217-b459-1d857e53120b@leemhuis.info>
+ <CAAhV-H7fRpykesVUEyaTpVnFiGwpP+fPbtdrp6JwfgD=bDp06Q@mail.gmail.com>
+ <CAAhV-H7XCmbgS=N4-SE8FnASAws8hnDRZsQJgXE+dwyARaqzNw@mail.gmail.com>
+ <ZSO9uArAtsPMPeTP@debian.me>
+ <CAAhV-H5GbidUx8YanUc7S9oGqBkDd53xeT=2O4aCuX7KpM-+8A@mail.gmail.com>
+ <c9b79a69-bdc1-4457-900d-709a15d99568@leemhuis.info>
+ <CAAhV-H4qQW_fOdkTxmT1xbvo4LOapzw_tOw7Kma47xmh0PvpPA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <28de01eb.208.18b4f9a0051.Coremail.00107082@163.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAhV-H4qQW_fOdkTxmT1xbvo4LOapzw_tOw7Kma47xmh0PvpPA@mail.gmail.com>
+X-AuthUser: x.reply@epreston.net
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 21, 2023 at 08:19:34AM +0800, David Wang wrote:
-> Hi, 
+On 2023-10-20 Fri 05:48pm, Huacai Chen wrote:
+> On Fri, Oct 20, 2023 at 5:35 PM Linux regression tracking (Thorsten
+> Leemhuis) <regressions@leemhuis.info> wrote:
+> >
+> > On 09.10.23 10:54, Huacai Chen wrote:
+> > > On Mon, Oct 9, 2023 at 4:45 PM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+> > >> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen wrote:
+> > >>> On Tue, Sep 26, 2023 at 10:31 PM Huacai Chen <chenhuacai@kernel.org> wrote:
+> > >>>> On Tue, Sep 26, 2023 at 7:15 PM Linux regression tracking (Thorsten
+> > >>>> Leemhuis) <regressions@leemhuis.info> wrote:
+> > >>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
+> > >>>>>>
+> > >>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (Integrated Intel HD
+> > >>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U) results in a blank
+> > >>>>>> screen after boot until the display manager starts... if it does start
+> > >>>>>> at all. Using the nomodeset kernel parameter seems to be a workaround.
+> > >>>>>>
+> > >>>>>> I've bisected this to commit 60aebc9559492cea6a9625f514a8041717e3a2e4
+> > >>>>>> ("drivers/firmware: Move sysfb_init() from device_initcall to
+> > >>>>>> subsys_initcall_sync").
+> > >>>>>
+> > >>>>> Hmmm, no reaction since it was posted a while ago, unless I'm missing
+> > >>>>> something.
+> > >>>>>
+> > >>>>> Huacai Chen, did you maybe miss this report? The problem is apparently
+> > >>>>> caused by a commit of yours (that Javier applied), you hence should look
+> > >>>>> into this.
+> > >>>> I'm sorry but it looks very strange, could you please share your config file?
+> > >>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes things work fine
+> > >>> again. So I guess the reason:
+> > >>
+> > >> Did Jaak reply privately? It should have been disclosed in public
+> > >> ML here instead.
+> > > Yes, he replied privately, and disabling DRM_SIMPLEDRM was suggested by me.
+> >
+> > Well, this to me still looks a lot (please correct me if I'm wrong) like
+> > regression that should be fixed, as DRM_SIMPLEDRM was enabled beforehand
+> > if I understood things correctly. Or is there a proper fix for this
+> > already in the works and I just missed this? Or is there some good
+> > reason why this won't/can't be fixed?
+> DRM_SIMPLEDRM was enabled but it didn't work at all because there was
+> no corresponding platform device. Now DRM_SIMPLEDRM works but it has a
+> blank screen. Of course it is valuable to investigate further about
+> DRM_SIMPLEDRM on Jaak's machine, but that needs Jaak's effort because
+> I don't have a same machine.
 > 
-> I was trying to confirm the performance improvement via replacing read/write sequences with sendfile, 
-> But I got quite a surprising result:
-> 
-> $ gcc -DUSE_SENDFILE cp.cpp
-> $ time ./a.out 
-> 
-> real	0m56.121s
-> user	0m0.000s
-> sys	0m4.844s
-> 
-> $ gcc  cp.cpp
-> $ time ./a.out 
-> 
-> real	0m27.363s
-> user	0m0.014s
-> sys	0m4.443s
-> 
-> The result show that, in my test scenario,  the read/write sequences only use half of the time by sendfile.
-> My guess is that sendfile using a default pipe with buffer size 1<<16 (16 pages), which is not tuned for the underling IO, 
-> hence a read/write sequences with buffer size 1<<17 is much faster than sendfile.
+> Huacai
 
-Nope, it's just that you are forcing sendfile to do synchronous IO
-on each internal loop. i.e:
+I am having the same issue on a Lenovo Thinkpad P70 (Intel Corporation HD Graphics 530 (rev 06), Intel(R) Core(TM) i7-6700HQ).  Upgrading from Linux 6.4.12 to 6.5 and later results in only a blank screen after boot and a rapidly flashing device-access-status indicator.
 
-> But the problem with sendfile is that there is no parameter to tune the buffer size from userspace...Any chance to fix this?
-> 
-> The test code is as following:
-> 
-> #include <stdio.h>
-> #include <unistd.h>
-> #include <sys/types.h>
-> #include <sys/stat.h>
-> #include <sys/sendfile.h>
-> #include <fcntl.h>
-> 
-> char buf[1<<17];   // much better than 1<<16
-> int main() {
-> 	int i, fin, fout, n, m;
-> 	for (i=0; i<128; i++) {
-> 		// dd if=/dev/urandom of=./bigfile bs=131072 count=256
-> 		fin  = open("./bigfile", O_RDONLY);
-> 		fout = open("./target", O_WRONLY | O_CREAT | O_DSYNC, S_IWUSR);
-
-O_DSYNC is the problem here.
-
-This forces an IO to disk for every write IO submission from
-sendfile to the filesystem. For synchronous IO (as in "waiting for
-completion before sending the next IO), a larger IO size will
-*always* move data faster to storage.
-
-FWIW, you'll get the same behaviour if you use O_DIRECT for either
-source or destination file with sendfile - synchronous 64kB IOs are
-a massive performance limitation even without O_DSYNC.
-
-IOWs, don't use sendfile like this. Use buffered IO and
-sendfile(fd); fdatasync(fd); if you need data integrity guarantees
-and you won't see any perf problems resulting from the size of the
-internal sendfile buffer....
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> >
+> > Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> > --
+> > Everything you wanna know about Linux kernel regression tracking:
+> > https://linux-regtracking.leemhuis.info/about/#tldr
+> > If I did something stupid, please tell me, as explained on that page.
+> >
+> > #regzbot poke
+> >
+> > >>> When SIMPLEDRM takes over the framebuffer, the screen is blank (don't
+> > >>> know why). And before 60aebc9559492cea6a9625f ("drivers/firmware: Move
+> > >>> sysfb_init() from device_initcall to subsys_initcall_sync") there is
+> > >>> no platform device created for SIMPLEDRM at early stage, so it seems
+> > >>> also "no problem".
+> > >>
+> > >> I don't understand above. You mean that after that commit the platform
+> > >> device is also none, right?
+> > > No. The SIMPLEDRM driver needs a platform device to work, and that
+> > > commit makes the platform device created earlier. So, before that
+> > > commit, SIMPLEDRM doesn't work, but the screen isn't blank; after that
+> > > commit, SIMPLEDRM works, but the screen is blank.
+> > >
+> > > Huacai
+> > >>
+> > >> Confused...
+> > >>
+> > >> --
+> > >> An old man doll... just what I always wanted! - Clara
+> > >
+> > >
