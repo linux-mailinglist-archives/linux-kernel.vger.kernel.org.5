@@ -2,121 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C546C7D24E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 19:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07577D24DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 19:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232947AbjJVRXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 13:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40690 "EHLO
+        id S231623AbjJVRW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 13:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232774AbjJVRXi (ORCPT
+        with ESMTP id S229452AbjJVRW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 13:23:38 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886A0188;
-        Sun, 22 Oct 2023 10:23:33 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4084e49a5e5so21860775e9.3;
-        Sun, 22 Oct 2023 10:23:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697995411; x=1698600211; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=79Dx0uLbBVkqJTCtZs4cLaK3T8okZZKMf9z3Pmca9Oo=;
-        b=JiPNAfhDcupoMTkEa4wuCujCo24drVu7+lVyw+XjavznDkQg1NRuoeHgy+IpsuU7RO
-         WClrY9r1GFhqvOXU32Kn9LoHPPu+9yqKet5dKoAGqHuh1Q3ZcQ385oj4ERuI79v52Q7l
-         JqTY4V/Hbw6EWCNu9fdPMeO0EYzszsg+jGfyz4reO89BLwd4+QLEodhg0tryklhBQWGO
-         VXfQcnVwzUToOsPZNgmjj9zkxa70/QdVoUSgBJvewh/bM3sc99TkWbleUxP1x+B1vfam
-         c8frhcEFpzSjT5rNMmZlvAvC9DK5GbsASKvMfSA/DV4XFkK7F4WmVbJqNKShrSYgakbe
-         jxXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697995411; x=1698600211;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=79Dx0uLbBVkqJTCtZs4cLaK3T8okZZKMf9z3Pmca9Oo=;
-        b=URUudC7aTZhNjKzTk4EVuvHJRl1fdyh2FuIEwl3/lI+zyhRqCVAvLyZwCC794uyw6J
-         Wmwm/yMIjA8fo1HjPONte8HtiD8G6GTqD+MvV9D2hy96UjaNxDAU0QB+kKh3xShvZVDf
-         ZJ+awoAc3WO4gxL1k+++TLGbCeiKDIasUyMSLe4Zb5iRjV0EW8atL3lQSyrLNWabfgCR
-         B6z8kcOEHkpE6ZJ0A1wWyh/X8nLbLT4LU++qPFPJgotIsAbGF+kbtph4b1lDSUrH7DWL
-         kuIVS3mH+fLwumw0OcK808zim9H6ASSR45OzWrC1DzN5zkMU3Es3OO4L5JU5cYDMPKEE
-         uUxQ==
-X-Gm-Message-State: AOJu0YxqGh/fZy8tDRfmXAmnszUWR+1dBTLeRnlYWOnxW7Mddu+HvdqZ
-        347V/kdoj7WWWUxjtsMa/gSvGRikrbw=
-X-Google-Smtp-Source: AGHT+IEHo0j83UHCKmOEJ57H0YfOUxlOeVgfQCKw4Qz64tkfoyF7VQOLu5v2+Pmss52iH5ezoZl9vg==
-X-Received: by 2002:a05:600c:188a:b0:406:7021:7d8 with SMTP id x10-20020a05600c188a00b00406702107d8mr5560229wmp.20.1697995411245;
-        Sun, 22 Oct 2023 10:23:31 -0700 (PDT)
-Received: from toolbox.taileb357.ts.net (13.red-83-35-58.dynamicip.rima-tde.net. [83.35.58.13])
-        by smtp.gmail.com with ESMTPSA id o12-20020adfe80c000000b0032da49e18fasm6043836wrm.23.2023.10.22.10.23.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 10:23:31 -0700 (PDT)
-From:   Angel Iglesias <ang.iglesiasg@gmail.com>
-To:     linux-iio@vger.kernel.org
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        linux-kernel@vger.kernel.org,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Phil Elwell <phil@raspberrypi.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH v2 5/5] iio: pressure: bmp280: Add support for BMP390
-Date:   Sun, 22 Oct 2023 19:22:21 +0200
-Message-ID: <d6a9e9ca4670c7401545d0d086cd3059e29044c8.1697994521.git.ang.iglesiasg@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1697994521.git.ang.iglesiasg@gmail.com>
-References: <cover.1697994521.git.ang.iglesiasg@gmail.com>
+        Sun, 22 Oct 2023 13:22:56 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD151EE;
+        Sun, 22 Oct 2023 10:22:53 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 334B240E0187;
+        Sun, 22 Oct 2023 17:22:52 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 0m_Nz9RcShwH; Sun, 22 Oct 2023 17:22:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1697995369; bh=Ypyxcgpgo+gvmGmnX0RaofSjlLoMxp6+F/3ibCWhm7A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aoi18bnKRHzOU9VSco8hMM1qnSzSR64qk+C+SSU3fVeBCgYRQbylBW2RjsVUZXgIH
+         AV0FKLnyfYhYca5MD783YGyYh8pSQ4efiAwDwED9X7cCc9Ue1RSJ+SxD7iyqnC/Krx
+         rzzgG8iHFaub6ySZUOixUw97P9BvDm3mkPIcNGOVHq2T1/KCooqZUo373lxvSGLWA8
+         o14FXAGthymD3rAqwK4ftUSqeUk3atOH6doNSqKuEOq+uc01ThfrY/Tg2C3X4d8StQ
+         CkH372TtoRU+u1z40K27mUWwea3Jf9pv6jvTSl/sz5LtaH3mLa8BmykfUCpiDoHaY/
+         nq5/cPMYPOZEM6IsCxlJvdK4IDuBI8W9CBPfJ6gVtoD4HPDixlWmx+/r5JgaLHWxmD
+         QDeITZUXwLqFEbzkzTAxKiR0J6GkgQ6AHrn6nH7qUbjQci+JGU6I5M/pRecTo/FvFJ
+         auUFdB1R90+yyuMAxeRyLCLUYl5GDeMy+yF0jwjTz1DWsJ5ArE8v8atW+M410AQ4h4
+         jt5FpzcuvDt4/hCMcigbIV2rxqDLCQptoD9/sCNBC/G96FsmRQQmjhNTq+RBWKFRBE
+         exQ0jY+BbMs9RLZxyzQHJ1mYEDL+PO0gCcu8gv4mujd1Ek3W/GDJHo4c2cWFFeYLRB
+         BQGGRjwsWDvr2wPFbHUWOB5I=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 519CC40E0177;
+        Sun, 22 Oct 2023 17:22:45 +0000 (UTC)
+Date:   Sun, 22 Oct 2023 19:22:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Julian Wollrath <jwollrath@web.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Oops with v6.6-rc6+
+Message-ID: <20231022172240.GBZTVaYH1Ext47Z5o4@fat_crate.local>
+References: <20231022172700.48c515cf@mayene>
+ <20231022161847.GAZTVLZ74T8B79v87p@fat_crate.local>
+ <b4ebea2eeb63aaa7ba0877cee0c9ca966af9eae0.camel@HansenPartnership.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b4ebea2eeb63aaa7ba0877cee0c9ca966af9eae0.camel@HansenPartnership.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add BMP390 device ID to the supported IDs on bmp380 sensor family
+On Sun, Oct 22, 2023 at 01:06:25PM -0400, James Bottomley wrote:
+> How to reproduce would be helpful.  Was this a cat of /proc/scsi/scsi?
 
-Signed-off-by: Angel Iglesias <ang.iglesiasg@gmail.com>
+Probably some tool did something weird:
 
-diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
-index deb336781b26..c6c761e84006 100644
---- a/drivers/iio/pressure/bmp280-core.c
-+++ b/drivers/iio/pressure/bmp280-core.c
-@@ -13,6 +13,7 @@
-  * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf
-  * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf
-  * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp388-ds001.pdf
-+ * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp390-ds002.pdf
-  * https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp581-ds004.pdf
-  *
-  * Notice:
-@@ -1225,7 +1226,7 @@ static int bmp380_chip_config(struct bmp280_data *data)
- 
- static const int bmp380_oversampling_avail[] = { 1, 2, 4, 8, 16, 32 };
- static const int bmp380_iir_filter_coeffs_avail[] = { 1, 2, 4, 8, 16, 32, 64, 128};
--static const u8 bmp380_chip_ids[] = { BMP380_CHIP_ID };
-+static const u8 bmp380_chip_ids[] = { BMP380_CHIP_ID, BMP390_CHIP_ID };
- 
- const struct bmp280_chip_info bmp380_chip_info = {
- 	.id_reg = BMP380_REG_ID,
-diff --git a/drivers/iio/pressure/bmp280.h b/drivers/iio/pressure/bmp280.h
-index a230fcfc4a85..2971bf58f802 100644
---- a/drivers/iio/pressure/bmp280.h
-+++ b/drivers/iio/pressure/bmp280.h
-@@ -292,6 +292,7 @@
- #define BMP580_CHIP_ID_ALT		0x51
- #define BMP180_CHIP_ID			0x55
- #define BMP280_CHIP_ID			0x58
-+#define BMP390_CHIP_ID			0x60
- #define BME280_CHIP_ID			0x60
- #define BMP280_SOFT_RESET_VAL		0xB6
- 
+CPU: 2 PID: 13243 Comm: colord-sane Not tainted 6.6.0-rc6+ #9
+			^^^^^^^^^^^
+
+judging by https://www.freedesktop.org/software/colord/intro.html
+
 -- 
-2.42.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
