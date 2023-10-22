@@ -2,83 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C07577D24DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 19:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AC37D24E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 19:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbjJVRW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 13:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
+        id S232541AbjJVRYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 13:24:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjJVRW4 (ORCPT
+        with ESMTP id S231945AbjJVRY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 13:22:56 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD151EE;
-        Sun, 22 Oct 2023 10:22:53 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 334B240E0187;
-        Sun, 22 Oct 2023 17:22:52 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 0m_Nz9RcShwH; Sun, 22 Oct 2023 17:22:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1697995369; bh=Ypyxcgpgo+gvmGmnX0RaofSjlLoMxp6+F/3ibCWhm7A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aoi18bnKRHzOU9VSco8hMM1qnSzSR64qk+C+SSU3fVeBCgYRQbylBW2RjsVUZXgIH
-         AV0FKLnyfYhYca5MD783YGyYh8pSQ4efiAwDwED9X7cCc9Ue1RSJ+SxD7iyqnC/Krx
-         rzzgG8iHFaub6ySZUOixUw97P9BvDm3mkPIcNGOVHq2T1/KCooqZUo373lxvSGLWA8
-         o14FXAGthymD3rAqwK4ftUSqeUk3atOH6doNSqKuEOq+uc01ThfrY/Tg2C3X4d8StQ
-         CkH372TtoRU+u1z40K27mUWwea3Jf9pv6jvTSl/sz5LtaH3mLa8BmykfUCpiDoHaY/
-         nq5/cPMYPOZEM6IsCxlJvdK4IDuBI8W9CBPfJ6gVtoD4HPDixlWmx+/r5JgaLHWxmD
-         QDeITZUXwLqFEbzkzTAxKiR0J6GkgQ6AHrn6nH7qUbjQci+JGU6I5M/pRecTo/FvFJ
-         auUFdB1R90+yyuMAxeRyLCLUYl5GDeMy+yF0jwjTz1DWsJ5ArE8v8atW+M410AQ4h4
-         jt5FpzcuvDt4/hCMcigbIV2rxqDLCQptoD9/sCNBC/G96FsmRQQmjhNTq+RBWKFRBE
-         exQ0jY+BbMs9RLZxyzQHJ1mYEDL+PO0gCcu8gv4mujd1Ek3W/GDJHo4c2cWFFeYLRB
-         BQGGRjwsWDvr2wPFbHUWOB5I=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 519CC40E0177;
-        Sun, 22 Oct 2023 17:22:45 +0000 (UTC)
-Date:   Sun, 22 Oct 2023 19:22:40 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Julian Wollrath <jwollrath@web.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Oops with v6.6-rc6+
-Message-ID: <20231022172240.GBZTVaYH1Ext47Z5o4@fat_crate.local>
-References: <20231022172700.48c515cf@mayene>
- <20231022161847.GAZTVLZ74T8B79v87p@fat_crate.local>
- <b4ebea2eeb63aaa7ba0877cee0c9ca966af9eae0.camel@HansenPartnership.com>
+        Sun, 22 Oct 2023 13:24:28 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744E8FB;
+        Sun, 22 Oct 2023 10:24:24 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 424C860182;
+        Sun, 22 Oct 2023 19:24:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1697995461; bh=rlI6+Ip/kTjXnQVsyhEDSGHOKfkg3gaSTcZoV1FnxKs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lMpjfOYRYJDIsaFWTC/F299x0GoEty6Uab/K4285Brm5+YDDjbmOy6d3r3Okbw342
+         msEyAjiTW23CbmWSuEL3pNr9Q7i+yxh3eOk2UAX/ZVGI3K+tJEjQUKLj7CPzPQmQzQ
+         7yYUKE8CtQ2tsxvg7b/gRNidB/UxA2cNeVsy8lkpt1YlaAMOzn+/NoHYsyGouvJ6fT
+         sAzSlVClVPZdTEcPcd4xIqNOvZISZbM/HFi6j4gGo5KbUsLuNlG/3TIXsCxl6emQpx
+         wZXbs7uaFU1fQobIX7qmBkVhHbqPUNeee0DqKuf/3Xnl1nrt8gRamUGnErDH2OWyD/
+         4PSYPYkGKqpCw==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id k_GOfq2bio4h; Sun, 22 Oct 2023 19:24:18 +0200 (CEST)
+Received: from [192.168.1.6] (78-3-40-92.adsl.net.t-com.hr [78.3.40.92])
+        by domac.alu.hr (Postfix) with ESMTPSA id 489C460174;
+        Sun, 22 Oct 2023 19:24:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1697995458; bh=rlI6+Ip/kTjXnQVsyhEDSGHOKfkg3gaSTcZoV1FnxKs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BqOi4aGME8gDMnwYI9NjAZZ/b28c/hrVtEzQjXMLrnmX+ZTST/HeV0PagDl4ttVPc
+         vR9ojZlhNC/u5KiL/Q98uUEuL/7oaM8U6b7sEeASY3NlPdEghqJB6V8DNgmyLjIQyt
+         vmHRvAjp/W9U1K6jKfs4ml9y6qLjB7y1b5NqyVlbc2o/1mc6PBO/LZXkSNgr9uXfBa
+         BWFfmYkkEJT2B6XmnQKugKRXQiaGGadXr46F6XKx6s/rh97WanbTBGeJzevL5r/InV
+         2hu/RSwNqa8/7wTHG9nT+4j/I1+iZafWe6TyHmstM5Kl8m7KeYkZDG04CAY4th0ync
+         Ng+RsYywW4kLg==
+Message-ID: <42e14bf6-73a0-400a-966a-09a86ecbeff0@alu.unizg.hr>
+Date:   Sun, 22 Oct 2023 19:24:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b4ebea2eeb63aaa7ba0877cee0c9ca966af9eae0.camel@HansenPartnership.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v1 1/3] r8169: fix the KCSAN reported data-race in
+ rtl_tx() while reading tp->cur_tx
+Content-Language: en-US
+To:     Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     nic_swsd@realtek.com, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Marco Elver <elver@google.com>
+References: <20230927184158.243575-1-mirsad.todorovac@alu.unizg.hr>
+ <0a201a6f-90dd-403c-97d0-94372be1e3e6@gmail.com>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <0a201a6f-90dd-403c-97d0-94372be1e3e6@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 22, 2023 at 01:06:25PM -0400, James Bottomley wrote:
-> How to reproduce would be helpful.  Was this a cat of /proc/scsi/scsi?
+On 9/27/23 21:52, Heiner Kallweit wrote:
+> On 27.09.2023 20:41, Mirsad Goran Todorovac wrote:
+>> KCSAN reported the following data-race:
+>>
+>> ==================================================================
+>> BUG: KCSAN: data-race in rtl8169_poll [r8169] / rtl8169_start_xmit [r8169]
+>>
+>> write (marked) to 0xffff888102474b74 of 4 bytes by task 5358 on cpu 29:
+>> rtl8169_start_xmit (drivers/net/ethernet/realtek/r8169_main.c:4254) r8169
+>> dev_hard_start_xmit (./include/linux/netdevice.h:4889 ./include/linux/netdevice.h:4903 net/core/dev.c:3544 net/core/dev.c:3560)
+>> sch_direct_xmit (net/sched/sch_generic.c:342)
+>> __dev_queue_xmit (net/core/dev.c:3817 net/core/dev.c:4306)
+>> ip_finish_output2 (./include/linux/netdevice.h:3082 ./include/net/neighbour.h:526 ./include/net/neighbour.h:540 net/ipv4/ip_output.c:233)
+>> __ip_finish_output (net/ipv4/ip_output.c:311 net/ipv4/ip_output.c:293)
+>> ip_finish_output (net/ipv4/ip_output.c:328)
+>> ip_output (net/ipv4/ip_output.c:435)
+>> ip_send_skb (./include/net/dst.h:458 net/ipv4/ip_output.c:127 net/ipv4/ip_output.c:1486)
+>> udp_send_skb (net/ipv4/udp.c:963)
+>> udp_sendmsg (net/ipv4/udp.c:1246)
+>> inet_sendmsg (net/ipv4/af_inet.c:840 (discriminator 4))
+>> sock_sendmsg (net/socket.c:730 net/socket.c:753)
+>> __sys_sendto (net/socket.c:2177)
+>> __x64_sys_sendto (net/socket.c:2185)
+>> do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+>> entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
+>>
+>> read to 0xffff888102474b74 of 4 bytes by interrupt on cpu 21:
+>> rtl8169_poll (drivers/net/ethernet/realtek/r8169_main.c:4397 drivers/net/ethernet/realtek/r8169_main.c:4581) r8169
+>> __napi_poll (net/core/dev.c:6527)
+>> net_rx_action (net/core/dev.c:6596 net/core/dev.c:6727)
+>> __do_softirq (kernel/softirq.c:553)
+>> __irq_exit_rcu (kernel/softirq.c:427 kernel/softirq.c:632)
+>> irq_exit_rcu (kernel/softirq.c:647)
+>> common_interrupt (arch/x86/kernel/irq.c:247 (discriminator 14))
+>> asm_common_interrupt (./arch/x86/include/asm/idtentry.h:636)
+>> cpuidle_enter_state (drivers/cpuidle/cpuidle.c:291)
+>> cpuidle_enter (drivers/cpuidle/cpuidle.c:390)
+>> call_cpuidle (kernel/sched/idle.c:135)
+>> do_idle (kernel/sched/idle.c:219 kernel/sched/idle.c:282)
+>> cpu_startup_entry (kernel/sched/idle.c:378 (discriminator 1))
+>> start_secondary (arch/x86/kernel/smpboot.c:210 arch/x86/kernel/smpboot.c:294)
+>> secondary_startup_64_no_verify (arch/x86/kernel/head_64.S:433)
+>>
+>> value changed: 0x002f4815 -> 0x002f4816
+>>
+>> Reported by Kernel Concurrency Sanitizer on:
+>> CPU: 21 PID: 0 Comm: swapper/21 Tainted: G             L     6.6.0-rc2-kcsan-00143-gb5cbe7c00aa0 #41
+>> Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+>> ==================================================================
+>>
+>> The write side of drivers/net/ethernet/realtek/r8169_main.c is:
+>> ==================
+>>     4251         /* rtl_tx needs to see descriptor changes before updated tp->cur_tx */
+>>     4252         smp_wmb();
+>>     4253
+>>   → 4254         WRITE_ONCE(tp->cur_tx, tp->cur_tx + frags + 1);
+>>     4255
+>>     4256         stop_queue = !netif_subqueue_maybe_stop(dev, 0, rtl_tx_slots_avail(tp),
+>>     4257                                                 R8169_TX_STOP_THRS,
+>>     4258                                                 R8169_TX_START_THRS);
+>>
+>> The read side is the function rtl_tx():
+>>
+>>     4355 static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
+>>     4356                    int budget)
+>>     4357 {
+>>     4358         unsigned int dirty_tx, bytes_compl = 0, pkts_compl = 0;
+>>     4359         struct sk_buff *skb;
+>>     4360
+>>     4361         dirty_tx = tp->dirty_tx;
+>>     4362
+>>     4363         while (READ_ONCE(tp->cur_tx) != dirty_tx) {
+>>     4364                 unsigned int entry = dirty_tx % NUM_TX_DESC;
+>>     4365                 u32 status;
+>>     4366
+>>     4367                 status = le32_to_cpu(tp->TxDescArray[entry].opts1);
+>>     4368                 if (status & DescOwn)
+>>     4369                         break;
+>>     4370
+>>     4371                 skb = tp->tx_skb[entry].skb;
+>>     4372                 rtl8169_unmap_tx_skb(tp, entry);
+>>     4373
+>>     4374                 if (skb) {
+>>     4375                         pkts_compl++;
+>>     4376                         bytes_compl += skb->len;
+>>     4377                         napi_consume_skb(skb, budget);
+>>     4378                 }
+>>     4379                 dirty_tx++;
+>>     4380         }
+>>     4381
+>>     4382         if (tp->dirty_tx != dirty_tx) {
+>>     4383                 dev_sw_netstats_tx_add(dev, pkts_compl, bytes_compl);
+>>     4384                 WRITE_ONCE(tp->dirty_tx, dirty_tx);
+>>     4385
+>>     4386                 netif_subqueue_completed_wake(dev, 0, pkts_compl, bytes_compl,
+>>     4387                                               rtl_tx_slots_avail(tp),
+>>     4388                                               R8169_TX_START_THRS);
+>>     4389                 /*
+>>     4390                  * 8168 hack: TxPoll requests are lost when the Tx packets are
+>>     4391                  * too close. Let's kick an extra TxPoll request when a burst
+>>     4392                  * of start_xmit activity is detected (if it is not detected,
+>>     4393                  * it is slow enough). -- FR
+>>     4394                  * If skb is NULL then we come here again once a tx irq is
+>>     4395                  * triggered after the last fragment is marked transmitted.
+>>     4396                  */
+>>   → 4397                 if (tp->cur_tx != dirty_tx && skb)
+>>     4398                         rtl8169_doorbell(tp);
+>>     4399         }
+>>     4400 }
+>>
+>> Obviously from the code, an earlier detected data-race for tp->cur_tx was fixed in the
+>> line 4363:
+>>
+>>     4363         while (READ_ONCE(tp->cur_tx) != dirty_tx) {
+>>
+>> but the same solution is required for protecting the other access to tp->cur_tx:
+>>
+>>   → 4397                 if (READ_ONCE(tp->cur_tx) != dirty_tx && skb)
+>>     4398                         rtl8169_doorbell(tp);
+>>
+>> The write in the line 4254 is protected with WRITE_ONCE(), but the read in the line 4397
+>> might have suffered read tearing under some compiler optimisations.
+>>
+>> The fix eliminated the KCSAN data-race report for this bug.
+>>
+>> It is yet to be evaluated what happens if tp->cur_tx changes between the test in line 4363
+>> and line 4397. This test should certainly not be cached by the compiler in some register
+>> for such a long time, while asynchronous writes to tp->cur_tx might have occurred in line
+>> 4254 in the meantime.
 
-Probably some tool did something weird:
+> netif_subqueue_completed_wake() has barriers ensuring that no cached value for tp->cur_tx
+> is used in line 4397. I'm not aware of any reported issues with an obvious link to the
+> potentential issue you describe.
+> I don't have a strong opinion on these patches. They shouldn't hurt, and if they make
+> KCSAN happy, why not.
 
-CPU: 2 PID: 13243 Comm: colord-sane Not tainted 6.6.0-rc6+ #9
-			^^^^^^^^^^^
+Hi, Mr. Kallweit,
 
-judging by https://www.freedesktop.org/software/colord/intro.html
+Your words have been taken with great weight and serious concern on my behalf, so I took
+some time to investigate (even after the patches were Ack-ed).
 
--- 
-Regards/Gruss,
-    Boris.
+The question is whether we deal with a data-race or a false positive reported by KCSAN.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+I can indeed independently confirm that netif_subqueue_completed_wake() eventually expands to
+call to:
+
+include/net/netdev_queues.h:
+==============================================
+/* Variant of netdev_tx_completed_queue() which guarantees smp_mb() if
+  * @bytes != 0, regardless of kernel config.
+  */
+static inline void
+netdev_txq_completed_mb(struct netdev_queue *dev_queue,
+			unsigned int pkts, unsigned int bytes)
+{
+	if (IS_ENABLED(CONFIG_BQL))
+		netdev_tx_completed_queue(dev_queue, pkts, bytes);
+	else if (bytes)
+		smp_mb();
+}
+
+Obviously, smp_mb() is here.
+
+On my __x86_64__ it expands to an ugly hack:
+
+         #define smp_mb()  asm volatile("lock; addl $0,-132(%%rsp)" ::: "memory", "cc")
+
+Thus far I concur with your findings.
+
+But I see also Mr. Elver's point:
+
+1. With the reference to: [1] https://www.kernel.org/doc/html/v6.2/core-api/wrappers/memory-barriers.html
+compiler can do some "smart" optimisations that only work on single core, single threaded use.
+
+What comes to mind is that "struct rtl8169_private" and its members might not be on the same cache line
+with the pointer struct rtl8169_private *tp.
+
+By the exposed matter in [1], READ_ONCE() provides a way to explain to the compiler that tp->cur_tx can
+be concurrently modified by the other thread/core.
+
+To be honest, I haven't caught a network card error or a driver bug either, but only the KCSAN complaint.
+
+It would seem prudent to protect all the variables with the concurrent accesses from several cores/threads
+or devices through DMA with (READ|WRITE)_ONCE.
+
+Especially since I don't see where the callback added in drivers/net/ethernet/realtek/r8169_main.c:5277
+is called from:
+
+          netif_napi_add(dev, &tp->napi, rtl8169_poll);
+
+I am not trying to be an arbiter nor an authority on the rtl8169 driver, which would obviously be you.
+
+However, I feel compelled by something to review all the accesses to tp->cur_tx, tp->cur_tx and other
+structure members against concurrent access, and systematically. With your permission, of course.
+
+I would appreciate your mentoring on the task if you are interested.
+
+Mainly, I figured out that in:
+
+4575 static int rtl8169_poll(struct napi_struct *napi, int budget)
+4576 {
+4577         struct rtl8169_private *tp = container_of(napi, struct rtl8169_private, napi);
+4578         struct net_device *dev = tp->dev;
+4579         int work_done;
+4580
+4581         rtl_tx(dev, tp, budget);
+4582
+4583         work_done = rtl_rx(dev, tp, budget);
+4584
+4585         if (work_done < budget && napi_complete_done(napi, work_done))
+4586                 rtl_irq_enable(tp);
+4587
+4588         return work_done;
+4589 }
+
+rtl_tx() and rtl_rx() are called in sequence. Is it possible to imagine doing it in parallel?
+
+Can the Realtek NIC hardware support that at all and which generations can?
+
+(Of course, Ethernet might be full-duplex, but PCI Express line might not be.)
+
+[2] https://www.rambus.com/blogs/pci-express-4/ Full-duplex PCI 4.0 specs.
+
+Thank you.
+
+Best regards,
+Mirsad Todorovac
+
+>> Fixes: 94d8a98e6235c ("r8169: reduce number of workaround doorbell rings")
+>> Cc: Heiner Kallweit <hkallweit1@gmail.com>
+>> Cc: nic_swsd@realtek.com
+>> Cc: "David S. Miller" <davem@davemloft.net>
+>> Cc: Eric Dumazet <edumazet@google.com>
+>> Cc: Jakub Kicinski <kuba@kernel.org>
+>> Cc: Paolo Abeni <pabeni@redhat.com>
+>> Cc: Marco Elver <elver@google.com>
+>> Cc: netdev@vger.kernel.org
+>> Link: https://lore.kernel.org/lkml/dc7fc8fa-4ea4-e9a9-30a6-7c83e6b53188@alu.unizg.hr/
+>> Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+>> ---
+>> v1:
+>>   the initial patch proposal. fixes the KCSAN warning.
+>>
+>>   drivers/net/ethernet/realtek/r8169_main.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+>> index 6351a2dc13bc..281aaa851847 100644
+>> --- a/drivers/net/ethernet/realtek/r8169_main.c
+>> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+>> @@ -4394,7 +4394,7 @@ static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
+>>   		 * If skb is NULL then we come here again once a tx irq is
+>>   		 * triggered after the last fragment is marked transmitted.
+>>   		 */
+>> -		if (tp->cur_tx != dirty_tx && skb)
+>> +		if (READ_ONCE(tp->cur_tx) != dirty_tx && skb)
+>>   			rtl8169_doorbell(tp);
+>>   	}
+>>   }
