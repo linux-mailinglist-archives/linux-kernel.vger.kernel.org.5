@@ -2,46 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 165D37D2480
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AFA7D2483
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 18:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbjJVQX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 12:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
+        id S232240AbjJVQX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 12:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232181AbjJVPqQ (ORCPT
+        with ESMTP id S232225AbjJVPqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 11:46:16 -0400
+        Sun, 22 Oct 2023 11:46:18 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8386EF7;
-        Sun, 22 Oct 2023 08:46:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78D28C43395;
-        Sun, 22 Oct 2023 15:46:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A4DB4;
+        Sun, 22 Oct 2023 08:46:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EF8AC433D9;
+        Sun, 22 Oct 2023 15:46:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1697989574;
-        bh=xG2Tj9Dab8omFXwv+XzIHeLf8u48rq8d44pq+3OjGZ0=;
+        s=k20201202; t=1697989575;
+        bh=5U0+w/BGtHtXW2F9LQIXpNNTOP74moySVAIGJYB4T7M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TL+XRI6q8gBzldTLIiHuxzNdFR9ZVsuUm1BLtjO40dY20pUWve4WRBcgYmZufKVvD
-         FzumuHXdwh35cGZy+fZFLIN0Db9B7dbMcdtrLTjyrIdOOh29NtJx0UIiAG4++Fh0rU
-         GG8O3bWsU8Nw9BBKdeeZc7fK/C4mOCHaw9Rm/GDJgF7iS0xlD4DhCJRvvD5A3DnT/k
-         eLnnz5Zcha2ZVzkZCjMnMAwsjwXMqBjyuqmW2qTnrC7IiFXPZn0KV9onRe39vuXVJJ
-         e/RPmABmRcqvffBWuQIMwgAf4vd87gHMu1SoZZuMISaltZ1W3G5TVNMOoVd+86orer
-         35jSF2diKsAuA==
+        b=fbin9TVgMQ2/T5sY81hCxh7OqUlLO1MsjYQZkVrn/5NZI8bGLAaSOAr8aJ551106M
+         2BNt3sgPcmY5vcjteqdx3WLNOH+7EXC2ma+QYbyLUHX583mdXsAFNZoKdi7X67kPR5
+         hDCTgACZN6cdJ1WqjBZ1jURujZT4L53GweK4QovnjJNITbSftS+8v5rMcLsfb13ddk
+         89uCAliWlYXCpkRyG34ufldW2VJtVuU3V0EkAHp4IR+mWUvO+ORlt+SXOlQ8RwuJpu
+         wU6yeBkOe15BzcB/zP7H3jHV9XBc5RIq0gt8iLrRlUSaD6F/IZuWxSdjIoS8b59X6X
+         +chZEoq3EDHNA==
 From:   Bjorn Andersson <andersson@kernel.org>
 To:     Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: Re: (subset) [PATCH v5 0/2] irqchip/qcom-pdc: support v3.2 HW
-Date:   Sun, 22 Oct 2023 08:50:21 -0700
-Message-ID: <169798982232.271027.4963613790320740027.b4-ty@kernel.org>
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>,
+        Varadarajan Narayanan <quic_varada@quicinc.com>,
+        Anusha Rao <quic_anusha@quicinc.com>,
+        Devi Priya <quic_devipriy@quicinc.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        stable@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Robert Marko <robimarko@gmail.com>
+Subject: Re: (subset) [PATCH v2 00/11] Add GPLL0 as clock provider for the Qualcomm's IPQ mailbox controller
+Date:   Sun, 22 Oct 2023 08:50:22 -0700
+Message-ID: <169798982292.271027.2242232774452445233.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230929-topic-sm8x50-upstream-pdc-ver-v5-0-800111572104@linaro.org>
-References: <20230929-topic-sm8x50-upstream-pdc-ver-v5-0-800111572104@linaro.org>
+In-Reply-To: <20230913-gpll_cleanup-v2-0-c8ceb1a37680@quicinc.com>
+References: <20230913-gpll_cleanup-v2-0-c8ceb1a37680@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -56,20 +67,42 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Fri, 29 Sep 2023 05:43:59 +0200, Neil Armstrong wrote:
-> Starting from HW version 3.2 the IRQ_ENABLE bit has moved to the
-> IRQ_i_CFG register and requires a change of the driver to avoid
-> writing into an undefined register address.
+On Thu, 14 Sep 2023 12:29:50 +0530, Kathiravan Thirumoorthy wrote:
+> Currently mailbox controller takes the XO and APSS PLL as the input. It
+> can take the GPLL0 also as an input. This patch series adds the same and
+> fixes the issue caused by this.
 > 
-> Get the HW version from registers and set the IRQ_ENABLE bit to the
-> correct register depending on the HW version.
+> Once the cpufreq driver is up, it tries to bump up the cpu frequency
+> above 800MHz, while doing so system is going to unusable state. Reason
+> being, with the GPLL0 included as clock source, clock framework tries to
+> achieve the required rate with the possible parent and since GPLL0
+> carries the CLK_SET_RATE_PARENT flag, clock rate of the GPLL0 is getting
+> changed, causing the issue.
 > 
 > [...]
 
 Applied, thanks!
 
-[2/2] arm64: dts: qcom: sm8150: extend the size of the PDC resource
-      commit: 00c86efb0f78319958b7bca3391c532016acf39c
+[01/11] clk: qcom: ipq8074: drop the CLK_SET_RATE_PARENT flag from PLL clocks
+        commit: e641a070137dd959932c7c222e000d9d941167a2
+[02/11] clk: qcom: ipq6018: drop the CLK_SET_RATE_PARENT flag from PLL clocks
+        commit: 99cd4935cb972d0aafb16838bb2aeadbcaf196ce
+[03/11] clk: qcom: ipq5018: drop the CLK_SET_RATE_PARENT flag from GPLL clocks
+        commit: 01a5e4c6731ab6b4b74822661d296f8893fc1230
+[04/11] clk: qcom: ipq9574: drop the CLK_SET_RATE_PARENT flag from GPLL clocks
+        commit: 99a8f8764b70158a712992640a6be46a8fd79d15
+[05/11] clk: qcom: ipq5332: drop the CLK_SET_RATE_PARENT flag from GPLL clocks
+        commit: 5635ef0bd1052420bc659a00be6fd0c60cec5cb9
+[07/11] clk: qcom: apss-ipq6018: add the GPLL0 clock also as clock provider
+        commit: e0e6373d653b7707bf042ecf1538884597c5d0da
+[08/11] arm64: dts: qcom: ipq8074: include the GPLL0 as clock provider for mailbox
+        commit: 80ebe63329909531afc87335f1d95c7bf8414438
+[09/11] arm64: dts: qcom: ipq6018: include the GPLL0 as clock provider for mailbox
+        commit: 0133c7af3aa0420778d106cb90db708cfa45f2c6
+[10/11] arm64: dts: qcom: ipq9574: include the GPLL0 as clock provider for mailbox
+        commit: 77c726a4f3b124903db5ced7d597976d5b80dcfb
+[11/11] arm64: dts: qcom: ipq5332: include the GPLL0 as clock provider for mailbox
+        commit: da528016952bf93ca810c43fafe518c699db7fa0
 
 Best regards,
 -- 
