@@ -2,66 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BE07D22D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2AD7D22D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbjJVLMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 07:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
+        id S231574AbjJVLQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 07:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjJVLMF (ORCPT
+        with ESMTP id S231537AbjJVLQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 07:12:05 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC38E3
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:12:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fypmIzyeNXIf0U3i1Yj27gKRGNQ1W+imAB6IJ7sDhWc=; b=i/6mmGhvTpO9SEmfHNoLWJdAqI
-        KSsSe3mLZvuS0tFrlPGqm/npxWotcDKdM5z/67WSyFlXSL/fqY63H2KxMdDVHTllGVV6zfrts/vD/
-        h7Y4T9rHuyYlockKweeMzAXN6yXeAZqiqTtEHlBbUB+bd5vxoQt5hnHlEuPUoIBYheQKsESBelU5M
-        CL2Dk1BOxqi4fbSSITOVZpNAcArmxC4t7FAS8D3DKBQfCFn7J3l+7fc8SHoecxRbOr3St8d98Wj3n
-        tBkyd9b5iM9W7WvNCYJX8dWAskvvAhvfvrO5eRlhxHZsbHkMT63DjZgbbAz9Qd+8w2H/tHidC9Jc0
-        JCiOlbmg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1quWN7-003wW1-0E;
-        Sun, 22 Oct 2023 11:11:53 +0000
-Date:   Sun, 22 Oct 2023 12:11:53 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        gus Gusenleitner Klaus <gus@keba.com>,
-        Al Viro <viro@ftp.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: Re: AW: [PATCH] amd64: Fix csum_partial_copy_generic()
-Message-ID: <20231022111153.GB800259@ZenIV>
-References: <20231018154205.GT800259@ZenIV>
- <VI1PR0702MB3840F2D594B9681BF2E0CD81D9D4A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
- <20231019050250.GV800259@ZenIV>
- <20231019061427.GW800259@ZenIV>
- <20231019063925.GX800259@ZenIV>
- <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
- <20231019080615.GY800259@ZenIV>
- <20231021071525.GA789610@ZenIV>
- <20231021222203.GA800259@ZenIV>
- <5487af5c8c184ac896af2d0b32b3ff42@AcuMS.aculab.com>
+        Sun, 22 Oct 2023 07:16:08 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75D5EB
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:16:05 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2DC955C034A;
+        Sun, 22 Oct 2023 07:16:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Sun, 22 Oct 2023 07:16:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alyssa.is; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1697973365; x=1698059765; bh=CWaua0x6Mk
+        9aPY5GqHx93n5yiwBj5JDvoi6q+zHqq34=; b=eExA4SgMkS98GusfiDlZCTMFGj
+        Xqn1Til/upFxg0rTNtyZQjTF5XdiEd7oHKvO6Sv9240pfjIdu5XEQdalrkseMXQp
+        Y5/vK+fKQ9+ZkvD7QvIL6rcJHokzf+gWSys/s3lg7X0XL7IiKdIZtK5nm9ZddWJm
+        ib/y314ez3wqs4y5LtWszm2xwIII6E0UWmLRHtnyg4W+OpbtlmQ0DZv2Wuis4O92
+        81bptbuW2JIS0bAMgGetrL5syMbkpOSnaeD36LTciO5N19A+vgLSDnrYyO+hcUIT
+        DZa1dU9cLODkcmJly6i7X3X0gdT7x3ppVc2IozMttXqq4ZsXx5mlNwm9ZuWw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1697973365; x=1698059765; bh=CWaua0x6Mk9aP
+        Y5GqHx93n5yiwBj5JDvoi6q+zHqq34=; b=JpU5NuL75vEF+n0JSc2W5u09bMpXm
+        fRSlUAigzJ5oevgSw/N3NN6XrHCDjsoy2G3kfBbqDkxEZbgkKq2TcWPWJvKJov55
+        KTjmdbb0+m+rIEqP+HBigKwvCoq26RMHI615BwLcFLcrE4jVqrwI2xyAoMLRLIJ9
+        mFNyRcUEvQkbJDeUXrNkwKiYJsHLBIpS4OKmq7SNwpdMRzduZ6tZhfvDaHnY8Bg9
+        nzYjQWFJVI2OStkXnHqjHe7lMqEHfa0RC9wNSlRq+CS5v6OoM+Gj6Kr8ZZHSpVNc
+        llqLYo05yXvakEojOS/HnY67TSfdaORVCED2qZ0DReKFZ82YudW9Yk84w==
+X-ME-Sender: <xms:dAQ1ZdfmA9xT8jgOTDE9uE58P3BAIsf3C0x0w4bkztggDHusE4W45g>
+    <xme:dAQ1ZbOPOLfUxjio0gPRidZmmV4IxvkCJAvQDy31d7eaIjKysFUjZeUsBuczjSGg3
+    EcnaL49FsnUgIBUSg>
+X-ME-Received: <xmr:dAQ1ZWhZlH7Qnx81OQPMxd5iDVwXGnfW_qIUZP70YMUgkxaPq2cq142UvsDumZnZZ4XRcb8vqpo8xeCXeA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeefgdefkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeetlhihshhsrgcu
+    tfhoshhsuceohhhisegrlhihshhsrgdrihhsqeenucggtffrrghtthgvrhhnpeehkefgtd
+    evtedtkeduudeguefgudejheeugfelgeettdfhffduhfehudfhudeuhfenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehhihesrghlhihsshgrrd
+    hish
+X-ME-Proxy: <xmx:dAQ1ZW_tQA5GjjM0p_vmlYQcjsVWENWu51zMESXDCYYAChSRzhvbkQ>
+    <xmx:dAQ1ZZuWjsflApw1W_5M9Dc0Bf6IiCq-IcSL-fDc15lxR5J7pq7Izw>
+    <xmx:dAQ1ZVH-z9QotfCHjjaMkPCHYfZihjAKRjuXTmCfNkaFmxTmaXtwQA>
+    <xmx:dQQ1ZXUTN61WF2WsxgsLBe30ZZvVku7EVgi0O8ApPlu9tlYlLrBXHw>
+Feedback-ID: i12284293:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 22 Oct 2023 07:16:04 -0400 (EDT)
+Received: by mbp.qyliss.net (Postfix, from userid 1000)
+        id 35CC61AB1; Sun, 22 Oct 2023 11:16:02 +0000 (UTC)
+From:   Alyssa Ross <hi@alyssa.is>
+To:     Li Yang <leoyang.li@nxp.com>
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Roy Pledge <roy.pledge@nxp.com>, Scott Wood <oss@buserror.net>
+Subject: [PATCH] soc: fsl: qbman: fix null pointer dereference
+Date:   Sun, 22 Oct 2023 11:15:37 +0000
+Message-ID: <20231022111537.878237-1-hi@alyssa.is>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5487af5c8c184ac896af2d0b32b3ff42@AcuMS.aculab.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,11 +85,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 22, 2023 at 11:03:39AM +0000, David Laight wrote:
+When called from bman_test_api(), bm_bpalloc may not have been
+initialized by fsl_bman_probe(), in which case gen_pool_alloc() would
+attempt to dereference a NULL pointer.
 
-> > +			return -1;
-> 
-> If you are going to return -1 the return type should be signed.
+Checking that bm_bpalloc is non-NULL allows boot to continue is this
+case.
 
-It's a perfectly valid C to have return -1 in a function that
-returns unsigned long long (or any other unsigned type, really)...
+Fixes: 97e0d385b139 ("soc/bman: Add self-test for BMan driver")
+Signed-off-by: Alyssa Ross <hi@alyssa.is>
+---
+ drivers/soc/fsl/qbman/bman.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/soc/fsl/qbman/bman.c b/drivers/soc/fsl/qbman/bman.c
+index 6cc1847e534a..713a0508678e 100644
+--- a/drivers/soc/fsl/qbman/bman.c
++++ b/drivers/soc/fsl/qbman/bman.c
+@@ -669,6 +669,9 @@ static int bm_alloc_bpid_range(u32 *result, u32 count)
+ {
+ 	unsigned long addr;
+ 
++	if (!bm_bpalloc)
++		return -ENXIO;
++
+ 	addr = gen_pool_alloc(bm_bpalloc, count);
+ 	if (!addr)
+ 		return -ENOMEM;
+
+base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
+-- 
+2.42.0
+
