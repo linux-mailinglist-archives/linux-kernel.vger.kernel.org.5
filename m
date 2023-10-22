@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF807D22DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E285E7D22E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 22 Oct 2023 13:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbjJVLUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 07:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
+        id S231552AbjJVLXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 07:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231537AbjJVLUC (ORCPT
+        with ESMTP id S229472AbjJVLW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 07:20:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30864E8;
-        Sun, 22 Oct 2023 04:20:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 725A7C433C8;
-        Sun, 22 Oct 2023 11:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1697973600;
-        bh=Mg6hajx48C9/LEuN7kgioSJmku4tU+Nwv0q9EXNVnhQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DJokRb4zg1kGdS4g4ZwE2OoW/4JO3yuM+DlXJJ7fDJro0DW8x4dmNr2SxtHHUbavX
-         vOVEEIwOp/lwnw1nt5jqyfQCRqvCXdcMSQXv+A6BJH5i1OyOl28Erxv4w8MF8SdXyi
-         jexDbOd8oBij9LHwxLm2EmyAaOTmustSb2dAPZpQ=
-Date:   Sun, 22 Oct 2023 13:19:58 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Florian Eckert <fe@dev.tdt.de>
-Cc:     Eckert.Florian@googlemail.com, jirislaby@kernel.org, pavel@ucw.cz,
-        lee@kernel.org, kabel@kernel.org, u.kleine-koenig@pengutronix.de,
-        ansuelsmth@gmail.com, m.brock@vanmierlo.com,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] tty: whitespaces in descriptions corrected by
- replacing tabs with spaces
-Message-ID: <2023102251-playoff-utensil-0457@gregkh>
-References: <20231019112809.881730-1-fe@dev.tdt.de>
- <20231019112809.881730-2-fe@dev.tdt.de>
- <2023102110-starlight-wispy-1f28@gregkh>
- <dce966de5bec159dae67d958653aaa42@dev.tdt.de>
+        Sun, 22 Oct 2023 07:22:58 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C10E5
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:22:53 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-578b4997decso1717303a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 04:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697973773; x=1698578573; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ulBXB4g0u/4o36czfwsbZfHHbnOlys/12sePaGgmkm0=;
+        b=RTOZ6CdAqRDfR+hv+br1L+veusPCt753NJq+h5j14XdIt9awNoXGahL1tGR4sHge/6
+         7s8EVokzdBeOxg6GZUxUxyV+w2xALaq/bcf9I6qZsZqLcjsZi9QnGPCSy6WUaz0ZW7O6
+         R7NlIQlGxfDo2Qdy8HorJEyIBN8TCBJQT0SLUAgABepbPwtYZ21QgxUfODIUHBJ2evj9
+         /oHhDU/ukohY23cXwa1lLAMnPaLLhGDVaBxW2b+HGF/zdS7ASWWO+c5IvuxGTKY9PMTI
+         AMLEQ5kvhtslCIkSFU9PMPt3t7C4wvvgKzKzM0ETzRp4IXdCC58AtpD3f7pWFGrYVROe
+         wN+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697973773; x=1698578573;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ulBXB4g0u/4o36czfwsbZfHHbnOlys/12sePaGgmkm0=;
+        b=Vqb9nLFrbE9qUjdqaF1NutmeNUB1P7oF5VXnX5GBEjUfjdQDhXebAd5/ic8014s/7q
+         kJO8eVLjxA2vDmogh34zvPfoEdF1+5NDB+lnSztDzi6A/rESoQDSs7oKgLr61uTaCawD
+         Q4+qnYZegEZmJ8A23YsZQODHZD0SW6G/i4hA6/+sK+g3gguX9VHQTqHYRzK+v7H8BGI3
+         6HXFJatqxjum+SurGvczUceUQaaatAQbMX+l/1SyLLihke59CsWFkarfonCBrNAGfTrr
+         IF93EPH1ZvQUoNb/xItENXNnLvTiV9WeAhGvfvRwhERvZjTRuC8rVN6Fj+L5F0PszL+A
+         W16w==
+X-Gm-Message-State: AOJu0Yx+q1uK/ETqpgh+O3o1UFe5h38CHVrn113Ut6kblYLmHaLIH1ch
+        QRGesPOpILK0ssPXwgjNKiG6b27eq1k=
+X-Google-Smtp-Source: AGHT+IFsi5p5RkQMp/QAh/9jJFCqQWzUONaGe15JF+YP2DKoobowM2vTvGiqa9ecIRLvjzWMON+MHw==
+X-Received: by 2002:a17:90b:3c0d:b0:27d:29f6:79e0 with SMTP id pb13-20020a17090b3c0d00b0027d29f679e0mr6770611pjb.17.1697973772700;
+        Sun, 22 Oct 2023 04:22:52 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id ik21-20020a170902ab1500b001c73f3a9b88sm4437069plb.110.2023.10.22.04.22.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Oct 2023 04:22:52 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id C680981B3D42; Sun, 22 Oct 2023 18:22:49 +0700 (WIB)
+Date:   Sun, 22 Oct 2023 18:22:49 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     gmssixty gmssixty <gmssixty@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: How can I get/check all the kernel boot messages?
+Message-ID: <ZTUGCWr0EgAf4I4C@debian.me>
+References: <CAOx-CDV52DRTmrZ7WEYxngCTpO-X7-H4PGXS86xC9vDJU9U94A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="PRKyf5t0/Z+jPHC+"
 Content-Disposition: inline
-In-Reply-To: <dce966de5bec159dae67d958653aaa42@dev.tdt.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAOx-CDV52DRTmrZ7WEYxngCTpO-X7-H4PGXS86xC9vDJU9U94A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 22, 2023 at 12:24:55PM +0200, Florian Eckert wrote:
-> On 2023-10-21 18:28, Greg KH wrote:
-> > On Thu, Oct 19, 2023 at 01:28:07PM +0200, Florian Eckert wrote:
-> > > Tabs were used in the function description, to make this look more
-> > > uniform, the tabs were replaced by spaces where necessary.
-> > > 
-> > > While we're at it, I also replaced the 'ndashes' with simple dashes,
-> > > since
-> > > only those are supported by sphinx.
-> > > 
-> > > Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
-> > > Signed-off-by: Florian Eckert <fe@dev.tdt.de>
-> > > ---
-> > >  drivers/tty/tty_io.c | 102
-> > > +++++++++++++++++++++----------------------
-> > >  1 file changed, 51 insertions(+), 51 deletions(-)
-> > 
-> > This didn't apply cleanly as portions of this patch were already in my
-> > tree, what did tree did you make it against?
-> 
-> I have already seen that I should add a base commit next time.
-> So I made it against the master from last week.
-> 
-> However, I was not sure which tree to use as I am changing
-> something in the tty and led subsystem-
-> 
-> > Anyway, I've fixed it up and taken it now.
-> 
-> Thank you for adopting my change and correcting my commit so that
-> it can be applied cleanly.
-> 
-> I will not add this patch in the next series, as it is already in the
-> tty-testing branch [1] from you?
 
-That is correct, thanks!
+--PRKyf5t0/Z+jPHC+
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-greg k-h
+On Sun, Oct 22, 2023 at 02:48:37PM +0600, gmssixty gmssixty wrote:
+> How can I get/check all the kernel boot messages? After booting, I can
+> not do SHIFT+PAGEUP to scroll up to see messages. Also, how can I know
+> there is no problem with kernel booting?
+
+Run dmesg as root.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--PRKyf5t0/Z+jPHC+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZTUGBQAKCRD2uYlJVVFO
+oypvAP9XFYle/Y2/0/s8CwAK65CAXUAz3YS+nQ+rTzCiIbU1wQEAw5XvZeZBhbzz
+zZcnEnKE+l2no5Xs9cRswyoq69Xm9AU=
+=Qe/m
+-----END PGP SIGNATURE-----
+
+--PRKyf5t0/Z+jPHC+--
