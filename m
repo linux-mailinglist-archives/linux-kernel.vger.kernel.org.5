@@ -2,165 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 494527D2B58
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353707D2B62
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233537AbjJWHaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38918 "EHLO
+        id S229852AbjJWHdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbjJWHaP (ORCPT
+        with ESMTP id S229450AbjJWHdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 03:30:15 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2098.outbound.protection.outlook.com [40.107.113.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E027E6;
-        Mon, 23 Oct 2023 00:30:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U243ho0uq7kO9nLXU5Ckk2o3mkmnhYsnJLXimKq9nyr7EbKkPwZAI9NmU/oWscpjxKjf6PxdZtNU8wmYmSM2X6S1EnX+B/INQa/d3avm+JJADH5/LWKNjrjguxgv/qYZg/BWDRT26yowIhwTYlyzAzf2KDsszQuSiwhZGSNItTkxEEixgYEUgrFD8cVbD6Qn8rvXB1MMvjHcQkXsFiC95fSwdV0hUIBrK0c02E3eIffxk5cfeXwqcjN/Q50MZypDX5Jc4C9w4Kxur4wPsm/eqollZUqRm8q7S0CLdQLA6yupwh+doKlMm9AFWERGRpEYG+m/mV2YHRBk7dzdtQjQ1w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YA0B5+9vla7RkJjLL08h2Rl7qh5vyCx/YvW8oHzF3YM=;
- b=mE9RkUhYfwPA6q9xeIkPVLuQTL/9CvmyTjrQK+Wqk83zGSOdoNc5LSV2T28QfZNYvyNLI7PWaG9wedpAp9+uTOT8srgH6Ir7Xp9wLWGt0VRrwXYo6kcMs1zC8QkJSYNKQO6Tf4cOHZ4yxzNe/FJ8dkXsvfHTPiGFba1r0P/mLVvOT48SLhiAmpwT7g3zYnK1nf6nIqzkGBWNafcb5KjqcryvWyVGXJXbLNd9+RtdQ7n3A2KYOJavjo7KlkLZ+/6p1zWZ257BitXcmHfTocwlN4exiZloV03RU9Q9cFH1sM0NqWiO0JPIVl8rCKXBAiHWcDmzPDzhO5I58nJ+6fXtYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YA0B5+9vla7RkJjLL08h2Rl7qh5vyCx/YvW8oHzF3YM=;
- b=cOyl4lzW+C4C2+qWfj/TI+obTMYAhl6HfCPhlzaCS4FqLii96noMSS2zmT+ecDybgcwCfxXS5H18lodLs3WS4fYdgl7qSUFAGr4JBBDlDGbMPneyyfUYK4IgROlFL5e6HpbhgpHUAJO7s6pd2pUaSrO9WCdJTVapAJttwBQGln8=
-Received: from TYBPR01MB5341.jpnprd01.prod.outlook.com
- (2603:1096:404:8028::13) by OS3PR01MB8858.jpnprd01.prod.outlook.com
- (2603:1096:604:154::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Mon, 23 Oct
- 2023 07:30:09 +0000
-Received: from TYBPR01MB5341.jpnprd01.prod.outlook.com
- ([fe80::a188:9424:be62:e5fb]) by TYBPR01MB5341.jpnprd01.prod.outlook.com
- ([fe80::a188:9424:be62:e5fb%6]) with mapi id 15.20.6907.022; Mon, 23 Oct 2023
- 07:30:09 +0000
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>
-CC:     =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kwilczynski@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: RE: linux-next: build failure after merge of the pci tree
-Thread-Topic: linux-next: build failure after merge of the pci tree
-Thread-Index: AQHaBUS2jhNEtIx03k2RKE91Wq09irBW+UZg
-Date:   Mon, 23 Oct 2023 07:30:08 +0000
-Message-ID: <TYBPR01MB5341114CB14098217765790BD8D8A@TYBPR01MB5341.jpnprd01.prod.outlook.com>
-References: <20231023110556.6f704b95@canb.auug.org.au>
-In-Reply-To: <20231023110556.6f704b95@canb.auug.org.au>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYBPR01MB5341:EE_|OS3PR01MB8858:EE_
-x-ms-office365-filtering-correlation-id: 69bdeab8-a81b-4c53-8a75-08dbd399e2c1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 86RV8CTwbmOoPhMIKODAKijwCvDqxmOT/HrLKI66NNpy90gx+zAclfpxDYbHktjc9NKPfhzET6zdRM7bswf80VWIAdMIuCZYzxCaS0hDDCSYLm/Lm+/BGd9fyP1AIc6dJVe5Jnhpx1bUkEw1nrfGFpL6asV9/JG+leZu5EI2rqZ/kMjBmp5pqV4RD47N0ZexUPcjWtH2KBA2Rd2a0WpX2a4L7y+60fynczLO7wZrYEdjOnCXNadgBWjNkt9rJKcnbVSDueMjEytZfPRrUJxYqk8kW/Wv91FYlG408Z16HjGkeqv4LZhOKEy71YbZaIAEXS/7zQ9kDhVrzIfD5wgczVAxzSYd+jqqNl9hSqO87llYyeWOCdY8QS7QyJ1VmKPXPw+Tm6VNgz081aDqIvbfU11xC2RRQ1lTXU9PPDIsWexuMsRVrwXZmH3bxebHFHzyLv3Up4dvCtToGYWKWWOGQmZIhYpf/NFtwX65s1hdq6ozmFpJseTBWAuSEigcLZpC7Vmt7e1u+DMH0G51lNv72ywHCVVgTf8iuUTVJqCn6843opWD4Dakm/cVR7OaXilJP2Y+1t000JtGNXV9UirjKssrZQTSCIdiTZS1DMNKJYA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYBPR01MB5341.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(366004)(346002)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(38070700009)(38100700002)(2906002)(4744005)(55016003)(41300700001)(5660300002)(86362001)(52536014)(4326008)(8676002)(8936002)(33656002)(7696005)(6506007)(71200400001)(478600001)(110136005)(122000001)(66476007)(76116006)(316002)(66946007)(64756008)(66446008)(66556008)(54906003)(83380400001)(966005)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-2?Q?ywkaWFTdmnGQLZnsNL1YEWykc5UZtFnmm7o+Y3vkL75yvz+Dnwg8xIhxzT?=
- =?iso-8859-2?Q?lktBy+LuyA93SZtPQzlsLCfJjiyW1BN3BrVbFb1oOPQyF8vZcBFU9ivhER?=
- =?iso-8859-2?Q?qoRNq3mYF+cRdpZBuoGDUloV9nNqlTfnK740hfWpmGQ2Wz1kgsoPf2AQhz?=
- =?iso-8859-2?Q?uzaUGR5QXmASMALTENq7D/0qn30dRRuieW0ACTsAy24s3fMgN7r+vkvdYt?=
- =?iso-8859-2?Q?Ply0zua6U6v42mcF3LTnXfd/E0B4wobkHbnqmVqZYBsipGhUybqjUTXuKX?=
- =?iso-8859-2?Q?GYK27MMaLbEQNijq3tONmA6QKd+vgrqqDOMmPVhjRzNbD+w9pyyaW+EZMc?=
- =?iso-8859-2?Q?Beo3KOgVsTdp9VL/mJ5sDm6jtiViL+GQNyrGqS4cH8saJacipc6cxYvPZn?=
- =?iso-8859-2?Q?j2OuiaCFIwlqud7rF+kEAaE/aZC+u5MNbzr7+UPO13O7KeK6KQ0Hpk7aUf?=
- =?iso-8859-2?Q?aWWnHihpfweDBchf2pdiw6GPbf4ybZJmhBUxCudt2Lp4HTcTiO16/Y+moL?=
- =?iso-8859-2?Q?OS6A2pHJmvMA1pdDbUixpyTOp66fSlrN+Ei/l55JHizbG+T8Gfw9yM2fFY?=
- =?iso-8859-2?Q?xNdi3bezClPeYFIgns/MowfiqU6hgd22mbo8xreTBvB8zxz7BXugFZjFcH?=
- =?iso-8859-2?Q?cjvVgThGGbun5hC/k8XiwT8dTYMC4WaVdGFSs3siZIi33xd7tv8Pbv1aaz?=
- =?iso-8859-2?Q?tFmpT0GKWj4a+ogLMcNNYYrw+vsGMbyjH1Odzpg4sbrpeLQloaw1BjwIUU?=
- =?iso-8859-2?Q?EX3+rXjXE1W1FPoGbb9XQUNGCgX5IUQQHWSqJ1rcVsa5hjQzYxawpbppbr?=
- =?iso-8859-2?Q?j6VU6dPvAXctQuLoPBDpI4yKTTSRtkLdpsNm3LPnya/XYrg6a6+gaLWTDn?=
- =?iso-8859-2?Q?tFZuOdtQ0rL3iJlnEpPGL22X5muTS47E4bR0iq9Me6fzmF3GFgVMna2CzI?=
- =?iso-8859-2?Q?RS0D04SI0x4xoVXu21M46Qnervqhp2IANR3flWJe+9pxuv9YXW0RPzrMj1?=
- =?iso-8859-2?Q?3iFBGejX96cz0Mjb99wxwhXE0PxcDsX47T7Ym9v+N2qOSLjGSrXSGHkOGI?=
- =?iso-8859-2?Q?31HLxy51Ls+e4wTZxgZNrAObXPbAcDfF9fQjUGpTigBRw5ozjBsjbNHl2f?=
- =?iso-8859-2?Q?1kCr1rUaKgtIgmx9PBEdwWqHnyg8xUIL95X9G3CVqxJNSHnWTPZtSeGE+k?=
- =?iso-8859-2?Q?A/SOAFrQgZ4jDYpnzZpW0tt7Hf8rLT116RFcsIZFNQnYI5ahIgCRMf8Ygp?=
- =?iso-8859-2?Q?TrOutdpZYCkgul9oUWPwtT+FWcrcbzJj9AK+uR772jZ8mqat4Q8INn7rjX?=
- =?iso-8859-2?Q?owQz/YLC/WNzER4KM42kqCxqHS6J8yVWFFLAIQgFf96TonzLBLVpl9xvOL?=
- =?iso-8859-2?Q?gLlHFmfoYO3co8FkCMTfJCmb0Veipi5Hc32T8BmUq9Zzf2QZQoLPS8gtQe?=
- =?iso-8859-2?Q?xJ56nrgQrLuYVxsf7ga75UEcDkBLRmiDkVaisWn+ZwbE5MVbEB8si5ib1o?=
- =?iso-8859-2?Q?287JyU6RHiLW8f3GI6JnYYVCrjp6TuxUEEfEHYxVPQX7Bfv/wV0mRI4Fp4?=
- =?iso-8859-2?Q?xe0aHafS56WSR6SaEHpySjfnTowMqHTrJlnAhQi7cxuvwZ1m6VnHHaBIc8?=
- =?iso-8859-2?Q?oOsEZ3hNOtppOXwl0+WE1Vrd6Xht3RZGAZUe/QZM0GIpO8zRZM849pyKvs?=
- =?iso-8859-2?Q?WhcZGCuyuia3UsIQARK6jyiocvP8PvMqiQ8//I2UAtyonOSMccBnlGrn62?=
- =?iso-8859-2?Q?wlHg=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-2"
+        Mon, 23 Oct 2023 03:33:16 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379DEC5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:33:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=y2Sefgom75pAT7bOhfXGdVuxbfN9tmcYHupcK2cb/Ic=;
+        t=1698046394; x=1699255994; b=tuYlQ5JLUzay+7her0ssNbIgbDh8pOu1H3Mhou8koO0LwxV
+        Ag12L/0/0o2uj5ZO6PMcrfcgsITFJXscJtqtb+H6GH7atX1BQWTBwj2v9gQE4164QtCtt6IPsNLNV
+        /gjE1tuGV85+RWKB2AND3eWA4tPDqgKq7zKWj6h+f9/2qcuu0O7vV49BPbPjsnROlvuhl+z73ByPj
+        MXm5osorcjD7Bh6IliUB37Ex7ltBVVvEu/Wf+xYbg2y7+W7uv3kPyeJrppGBOtH5W1Ll8OSmz5JMN
+        V21xqSB1x4LAq3EJlt4BvF/2/wYXMpQooPnV5iYM9i8sjM2dscVAAPN5xnZLsvOA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97-RC1)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1qupR0-000000009Al-0CE2;
+        Mon, 23 Oct 2023 09:33:10 +0200
+Message-ID: <4dbed8896c94a347dcb58b3a83792c52fdc1c04a.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: time-travel: fix time going backwards
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Vincent Whitchurch <Vincent.Whitchurch@axis.com>,
+        "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>,
+        "richard@nod.at" <richard@nod.at>
+Cc:     "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel <kernel@axis.com>
+Date:   Mon, 23 Oct 2023 09:33:09 +0200
+In-Reply-To: <4a75c40636be267163dc30b5a6a2442089628e57.camel@axis.com>
+References: <20231020-uml-time-backwards-v1-1-90b776fc6dfd@axis.com>
+         <4a75c40636be267163dc30b5a6a2442089628e57.camel@axis.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYBPR01MB5341.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69bdeab8-a81b-4c53-8a75-08dbd399e2c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2023 07:30:09.0344
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: s6LeiNE2M4H7viRsB/Im0oc8V8oa2PPKCS1gcd0EZyyGzosXoJuHz27CYDdgEZgWNP8AGP7M7oTO3Wrhui94hpxCeTDrRjtxty91C+g257b/8JT3C2jZQQntOGtybL/M
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB8858
+X-malware-bazaar: not-scanned
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Mon, 2023-10-23 at 07:08 +0000, Vincent Whitchurch wrote:
+> On Fri, 2023-10-20 at 16:47 +0200, Vincent Whitchurch wrote:
+> > In basic time travel mode, I sometimes see "time goes backwards" panics
+> > like the one below:
+> >=20
+> > =C2=A0Kernel panic: time-travel: time goes backwards 161689340000492 ->=
+ 161689339869814
 
-> From: Stephen Rothwell, Sent: Monday, October 23, 2023 9:06 AM
->=20
-> Hi all,
->=20
-> After merging the pci tree, today's linux-next build (x86_64 allmodconfig=
-)
-> failed like this:
->=20
-> ERROR: modpost: "dw_pcie_write_dbi2" [drivers/pci/controller/dwc/pcie-rca=
-r-gen4.ko] undefined!
->=20
-> Caused by commit
->=20
->   8227bf7a81e6 ("PCI: rcar-gen4: Add R-Car Gen4 PCIe controller support f=
-or host mode")
->=20
-> or
->=20
->   d3c54d8ba855 ("PCI: rcar-gen4: Add endpoint mode support")
->=20
-> I have used the pci tree from next-20231020 for today.
+Ouch.
 
-Thank you for the report!
+> > =C2=A0Call Trace:
+> > =C2=A0=C2=A0panic+0x1a1/0x3d7
+> > =C2=A0=C2=A0time_travel_update_time.cold+0xe9/0x133
+> > =C2=A0=C2=A0timer_read+0xc1/0x100
+> > =C2=A0=C2=A0ktime_get+0x10c/0x200
+> > =C2=A0=C2=A0copy_process+0x1899/0x2230
+> > =C2=A0=C2=A0kernel_clone+0x57/0x7a0
+> > =C2=A0=C2=A0kernel_thread+0x4a/0x50
+> > =C2=A0=C2=A0kthreadd+0x116/0x190
+> >=20
+> > The problem is a race between time_travel_handle_real_alarm() and
+> > timer_read().  time_travel_handle_real_alarm() changes the time after
+> > time_read() reads the current time but before time_travel_update_time()
+> > has had a chance to add the end event.
+> >=20
+> > Fix this by doing the time read and event add atomically with respect t=
+o
+> > time_travel_handle_real_alarm().
+>=20
+> Further testing resulted in hitting the BUG_ON(time_travel_time !=3D
+> e->time) so looks like this needs some more work. =20
+>=20
 
-Bjorn, Krzysztof, I should have added the following patch on patch-set v25.
-However, I completely forgot it...
-https://lore.kernel.org/linux-pci/20230926122431.3974714-8-yoshihiro.shimod=
-a.uh@renesas.com/
+Yeah this is a tricky area, I fought with it for quite a while too,
+seems we're not done yet ;-)
 
-I confirmed that the patch above can be applied on the latest pci.git / nex=
-t branch.
-However, should I resend whole patches with the patch above as v26?
+We mostly use time-travel=3Dext mode these days, so our system may not be
+as susceptible to it? But not sure, in some cases it runs with just a
+single instance, and that should be pretty much the same due to the
+free-until information.
 
-Best regards,
-Yoshihiro Shimoda
+Do you have a specific workload that tends to reproduce this?
 
-> --
-> Cheers,
-> Stephen Rothwell
+johannes
