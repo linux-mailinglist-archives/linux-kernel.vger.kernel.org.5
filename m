@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6DA7D2787
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 02:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B517D2799
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 02:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbjJWAeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 20:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        id S230056AbjJWAqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 20:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbjJWAeU (ORCPT
+        with ESMTP id S232844AbjJWAqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 20:34:20 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CACDC
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 17:34:17 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53d9f001b35so3920491a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 17:34:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698021256; x=1698626056; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lf4op5br1ztmtzsuW4A7c+sb/jIvoiKssiNsddkNzIo=;
-        b=nC3GlrtwpeqpsDoyXEYeAtgUPkAaM7UpwJTI9maG6kDEnH6pARxW7aWoUBeWb9zC9o
-         5cL81BgkpYiOOhYfwE/wnv3EIigmapLZ+8hdJXjvi5tAgUPqHMP+4n984dMtHYhWiNfZ
-         SnylhEQXLKmoChPcKWogF6cZ5/8/9T1JMHN/tE1DQjoQqUWGcBgl+b4SaXHunNgbdgrN
-         wCYE1cISN0TwBqXg+5IanJcHfpvN9Dtl5qM6PeTMga8wU2W3ny/Rqr8rXSHHn+T9kAE3
-         bO/CG4ILN8zVPFaa5fYS2wjXd4iMCL2E8vp7jPKYajLWWXrh8MKZWO/TPr5QGyecV/dR
-         SvRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698021256; x=1698626056;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lf4op5br1ztmtzsuW4A7c+sb/jIvoiKssiNsddkNzIo=;
-        b=IPEhmJw8tmacp+zSzep/t+ZxUEyWRws03bSOzHU1Z6f3jXPgNR5RHcR9893lOfcado
-         PH0TGZTL1XErDOYHYQ2c9cAisre3gLy7rAGrQhhOLbRWAYf7FXYNQ4myVySAGC+jFgzL
-         FJGAcGiO3ULY0Lvd9ro6cXtgx+BzE3SLGxs2CWxtNQ6uvxbT0BTcP9m7v3WD1xUmyzhT
-         fLFQG6Lk/5fvvsOZ6OGMF6jQAmNHON6SJw88poUTexeo5tt1fwIwnyBtJM7/kkjcz/ii
-         e7ikPHWEYKLv0piubfXvi/V+cjguIfywVHWJefSqssdWYNdmhAICIVmSExG0cwVeJSrp
-         sbjA==
-X-Gm-Message-State: AOJu0YyUOPsDqyUTFrCzIKAquiC1Zjkwx6s42ehv4YGXz937EUDGuUy7
-        A6zUdnghLGll1xJqpIpxd9xqr75IQ6ySfbX0N7LIG6BQ
-X-Google-Smtp-Source: AGHT+IEz9IPbSfxHt/XOQd0CQjMdfeNrgd2QmtWb/Av/GeZg34zjp153Pwm56E7jpmtqDlP7MfL9gVj/cbzTEEoGIrU=
-X-Received: by 2002:a50:8a95:0:b0:540:f3e:9666 with SMTP id
- j21-20020a508a95000000b005400f3e9666mr3142493edj.37.1698021256154; Sun, 22
- Oct 2023 17:34:16 -0700 (PDT)
+        Sun, 22 Oct 2023 20:46:03 -0400
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36BE13E;
+        Sun, 22 Oct 2023 17:45:58 -0700 (PDT)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+        by Atcsqr.andestech.com with ESMTP id 39N0iEnR078963;
+        Mon, 23 Oct 2023 08:44:14 +0800 (+08)
+        (envelope-from peterlin@andestech.com)
+Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS16.andestech.com
+ (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Mon, 23 Oct 2023
+ 08:44:13 +0800
+From:   Yu Chien Peter Lin <peterlin@andestech.com>
+To:     <acme@kernel.org>, <adrian.hunter@intel.com>,
+        <ajones@ventanamicro.com>, <alexander.shishkin@linux.intel.com>,
+        <andre.przywara@arm.com>, <anup@brainfault.org>,
+        <aou@eecs.berkeley.edu>, <atishp@atishpatra.org>,
+        <conor+dt@kernel.org>, <conor.dooley@microchip.com>,
+        <conor@kernel.org>, <devicetree@vger.kernel.org>,
+        <dminus@andestech.com>, <evan@rivosinc.com>,
+        <geert+renesas@glider.be>, <guoren@kernel.org>, <heiko@sntech.de>,
+        <irogers@google.com>, <jernej.skrabec@gmail.com>,
+        <jolsa@kernel.org>, <jszhang@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-sunxi@lists.linux.dev>,
+        <locus84@andestech.com>, <magnus.damm@gmail.com>,
+        <mark.rutland@arm.com>, <mingo@redhat.com>, <n.shubin@yadro.com>,
+        <namhyung@kernel.org>, <palmer@dabbelt.com>,
+        <paul.walmsley@sifive.com>, <peterlin@andestech.com>,
+        <peterz@infradead.org>, <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <rdunlap@infradead.org>, <robh+dt@kernel.org>,
+        <samuel@sholland.org>, <sunilvl@ventanamicro.com>,
+        <tglx@linutronix.de>, <tim609@andestech.com>, <uwu@icenowy.me>,
+        <wens@csie.org>, <will@kernel.org>, <ycliang@andestech.com>
+Subject: [PATCH v3 RESEND 00/13] Support Andes PMU extension
+Date:   Mon, 23 Oct 2023 08:40:47 +0800
+Message-ID: <20231023004100.2663486-1-peterlin@andestech.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <CAOx-CDUwV0d0+2UdZW+vdUcjwAg2+Hanf1-iNSYFRWOW2yQugg@mail.gmail.com>
- <6675c47a-d258-41ae-b506-88d7ae74b551@infradead.org>
-In-Reply-To: <6675c47a-d258-41ae-b506-88d7ae74b551@infradead.org>
-From:   gmssixty gmssixty <gmssixty@gmail.com>
-Date:   Mon, 23 Oct 2023 06:34:06 +0600
-Message-ID: <CAOx-CDVn7Ub31yiRpoZh4RhJBCvgZhb8Ca=cH9b0xWPjk5FNQA@mail.gmail.com>
-Subject: Re: How can I add "busybox sh" as init during boot of the custom kernel?
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.0.15.183]
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: Atcsqr.andestech.com 39N0iEnR078963
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I tried this: init=3D/bin/busybox sh, but it got Kernel panic and
-failed. On the other hand, what should I write in /sbin/init?
+Hi All,
 
-On Mon, Oct 23, 2023 at 6:15=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
->
->
->
-> On 10/22/23 16:56, gmssixty gmssixty wrote:
-> > How can I add "busybox sh" as init during boot of the custom kernel? I
-> > have compiled the kernel and put the bzImage in /dev/sda3 (/mnt/sda3).
-> > Booted that kernel. After booting, I got a message to set the init
-> > process. I have put the busybox in /bin. Now I want to add this
-> > "busybox sh" as an init process. How can I do this?
-> >
-> > Note that, I did not install any other software in that /dev/sda3
-> > (/mnt/sda3). I have only bzImage and busybox.
->
-> from Documentation/admin-guide/kernel-parameters.txt:
-> (or https://docs.kernel.org/admin-guide/kernel-parameters.html)
->
->         init=3D           [KNL]
->                         Format: <full_path>
->                         Run specified binary instead of /sbin/init as ini=
-t
->                         process.
->
-> --
-> ~Randy
+This patch series introduces the Andes PMU extension, which serves
+the same purpose as Sscofpmf. In this version we use FDT-based
+probing and the CONFIG_ANDES_CUSTOM_PMU to enable perf sampling
+and filtering support.
+
+Its non-standard local interrupt is assigned to bit 18 in the
+custom S-mode local interrupt enable/pending registers (slie/slip),
+while the interrupt cause is (256 + 18).
+
+The feature needs the PMU device registered in OpenSBI.
+The OpenSBI and Linux patches can be found on Andes Technology GitHub
+- https://github.com/andestech/opensbi/commits/andes-pmu-support-v2
+- https://github.com/andestech/linux/commits/andes-pmu-support-v3
+
+The PMU device tree node used on AX45MP:
+- https://github.com/andestech/opensbi/blob/andes-pmu-support-v2/docs/pmu_support.md#example-3
+
+Tested hardware:
+- ASUS  Tinker-V (RZ/Five, AX45MP single core)
+- Andes AE350    (AX45MP quad core)
+
+Locus Wei-Han Chen (1):
+  riscv: andes: Support symbolic FW and HW raw events
+
+Yu Chien Peter Lin (12):
+  riscv: errata: Rename defines for Andes
+  irqchip/riscv-intc: Allow large non-standard hwirq number
+  irqchip/riscv-intc: Introduce Andes IRQ chip
+  dt-bindings: riscv: Add Andes interrupt controller compatible string
+  riscv: dts: renesas: r9a07g043f: Update compatible string to use Andes
+    INTC
+  perf: RISC-V: Eliminate redundant IRQ enable/disable operations
+  RISC-V: Move T-Head PMU to CPU feature alternative framework
+  perf: RISC-V: Introduce Andes PMU for perf event sampling
+  dt-bindings: riscv: Add T-Head PMU extension description
+  dt-bindings: riscv: Add Andes PMU extension description
+  riscv: dts: allwinner: Add T-Head PMU extension
+  riscv: dts: renesas: Add Andes PMU extension
+
+ .../devicetree/bindings/riscv/cpus.yaml       |   7 +-
+ .../devicetree/bindings/riscv/extensions.yaml |  13 ++
+ arch/riscv/Kconfig.errata                     |  13 --
+ arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi |   2 +-
+ arch/riscv/boot/dts/renesas/r9a07g043f.dtsi   |   4 +-
+ arch/riscv/errata/andes/errata.c              |  10 +-
+ arch/riscv/errata/thead/errata.c              |  19 ---
+ arch/riscv/include/asm/errata_list.h          |  19 +--
+ arch/riscv/include/asm/hwcap.h                |   2 +
+ arch/riscv/include/asm/vendorid_list.h        |   2 +-
+ arch/riscv/kernel/alternative.c               |   2 +-
+ arch/riscv/kernel/cpufeature.c                |   2 +
+ drivers/irqchip/irq-riscv-intc.c              |  63 +++++++--
+ drivers/perf/Kconfig                          |  27 ++++
+ drivers/perf/riscv_pmu_sbi.c                  |  51 +++++--
+ include/linux/irqchip/irq-riscv-intc.h        |  12 ++
+ .../arch/riscv/andes/ax45/firmware.json       |  68 ++++++++++
+ .../arch/riscv/andes/ax45/instructions.json   | 127 ++++++++++++++++++
+ .../arch/riscv/andes/ax45/memory.json         |  57 ++++++++
+ .../arch/riscv/andes/ax45/microarch.json      |  77 +++++++++++
+ tools/perf/pmu-events/arch/riscv/mapfile.csv  |   1 +
+ 21 files changed, 499 insertions(+), 79 deletions(-)
+ create mode 100644 include/linux/irqchip/irq-riscv-intc.h
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/firmware.json
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/instructions.json
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/memory.json
+ create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/microarch.json
+
+-- 
+2.34.1
+
