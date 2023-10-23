@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8348D7D37E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED3E7D37E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233489AbjJWNYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
+        id S230471AbjJWNYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 09:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbjJWNWt (ORCPT
+        with ESMTP id S231503AbjJWNYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:22:49 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D9C172B
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:21:43 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c5056059e0so49778291fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:21:43 -0700 (PDT)
+        Mon, 23 Oct 2023 09:24:34 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973EE2101
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:22:34 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32da4ffd7e5so1872374f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:22:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698067301; x=1698672101; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698067351; x=1698672151; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=t5hSf4iSPJYF4QIDxZP0IdPJzki5G+jXoj6BEraG2qw=;
-        b=LpjRl0Lo9MgV6R+y4OyqyiURJPoffu5/D89B4c7FuMOgSeLvFzC77Gjy+R4ORjcp0o
-         bJBHZNZzb+pJLV1G2BTb/AujWnmEtP7d9fmlHXfiiV/kPAVFEwp+2HkM3S7sgYOEEVQx
-         148iFCGjFHWo0LY7i3mgXTHO9qk9QTC4UPWO0wJA8UxULB0+VmJJ+RteNp27fci0Y/BM
-         7RYlZ86XPceiJBPb2dfupeBTv2eP06ZwnldMgzysu6OQrKjNvIvU0OGPK5Kr/0gB0TdU
-         N43XOPs8DEtbQeDHS7yhbk4GOQvyuGCM9pJOLAVyNYnpRtSR+yl+zc0Bu+zRk6LR0b9d
-         QZ5A==
+        bh=gZ4OTD+mAZ/PEriBd52ngcEYX2LeQoqs4YvhBcfpPaQ=;
+        b=Gg/xjm9LWVOQj6wm/dvLecVc8OkwXjka8m2Qf1CKdTmVjfp6RYA32ylDcxw52zAh50
+         dVR+vj/OfdnUfhf0QeU5m7UbUEl7umk6zj9tYEY3v2bLFXURErFi8EsYA8PKypd0F1py
+         HCOOpf+cM+w5LZBt6bK+3qN3C3R19BLSj9C5sMMrqNm/jJrGU2CTXi1QODiVKseRn4KT
+         xDnC8ho7irB2YsKzjB3nqa6cUKwgAYzlBCVX79vDpzeeGQ5kDDxcejC+uwIAOF+PPRvd
+         crOuu3p/1XWdg6fDjt5SUSwn8ll4owcy/TVXeFqOIBpPXAE7LEmhOp/o74OOMxc4+45F
+         YHRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698067301; x=1698672101;
+        d=1e100.net; s=20230601; t=1698067351; x=1698672151;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t5hSf4iSPJYF4QIDxZP0IdPJzki5G+jXoj6BEraG2qw=;
-        b=PbXUZXV8nRa6VA0SM7G5DaUakLa7HjMl2I7m6yoeS3iFfZ7B0zeFlgmJrqCP8f8HW7
-         nw5pLCriS4D1FRhmLp9DZZUfdEarGQSZhIJPQnN+quvR+A+7/PSPlCmTRbhO4nAm94Zp
-         dAHGmok0aUgjDwaxKB6sS5Yr+hpRZ4U20kxFYg32/RPPkz8trOR4J54xedWvPQvSkhbb
-         dIGY6wYxjj5XWT4Al3WLQmAasa5bZH5zb0BeAa9jp/RUyNJMLtAauCAWia/TdSkgK08l
-         UtKCNAsQAG42Fp8SFdk+jd7p07btZw6LDMWID9EEsrJ9vmC4Ct5J97XRjRROHsvghI8v
-         6Gfg==
-X-Gm-Message-State: AOJu0YyHeYkKYKbkQQFyb06FEHxdVBpPe301bIxCfbrV1u9sf1pAlIEu
-        wGm7hcKjCz6+9tMCk1pgG134/A==
-X-Google-Smtp-Source: AGHT+IFsh2Vm5kjD/uKoQv/A+GZaJ9FewtOlyrfhcAxQ5Dfry6bby2EhkMnqHYJN7/CupvwTwv7ytw==
-X-Received: by 2002:a05:651c:1255:b0:2bc:d8cb:59fe with SMTP id h21-20020a05651c125500b002bcd8cb59femr6076625ljh.8.1698067301590;
-        Mon, 23 Oct 2023 06:21:41 -0700 (PDT)
+        bh=gZ4OTD+mAZ/PEriBd52ngcEYX2LeQoqs4YvhBcfpPaQ=;
+        b=A/xhNSdw65EXk/Ia2RKTmhmbUIyM5ZFZ6eAAPwlkgCM2CN67l24SWdoT3gDnB05oqt
+         5AYTOcQTXckb+/8THmGylkx/FB2mts9TsYG3rn6aeDnnyxlq+vR8T0hCv13EZUi2vEBN
+         8PNHPsgc+vpTzSholrJoz4v2bJN68dakPkQTK6GMCY02IA59YyISwh75kH+UQMZJEjBO
+         IEseI83/RIejWJxtSuHdEV3S3ZHsgOU6l6tZVzuqf2VViLxcGwdCpMWa8pJK72jmyMgN
+         2EyIYIr9HS4Vc7LfUttKaxT5gXXvzBi+1Haz6n7E/rT3PCs071yjM63mflvkjYyCxRhr
+         aF8Q==
+X-Gm-Message-State: AOJu0YwDNoer2ineFF5zbLMT7qNaSHpH3QmdU98Y9v26t01S1eVaHVrx
+        OxmtfOtGIklHfcsJ6jvMqzNMREjXHR1t+0AiIo0=
+X-Google-Smtp-Source: AGHT+IHaR0agTZOxHy4i0NkFCR+/+eBs7GaFEmyRJumeLHdjnvWaNRB6yL7tHE7LeYOhAWu3oFuaoA==
+X-Received: by 2002:adf:978c:0:b0:32d:c5da:d4c0 with SMTP id s12-20020adf978c000000b0032dc5dad4c0mr12928756wrb.3.1698067351421;
+        Mon, 23 Oct 2023 06:22:31 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id b14-20020a5d550e000000b0032d9caeab0fsm7756288wrv.77.2023.10.23.06.21.40
+        by smtp.gmail.com with ESMTPSA id b14-20020a5d550e000000b0032d9caeab0fsm7756288wrv.77.2023.10.23.06.22.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 06:21:41 -0700 (PDT)
-Message-ID: <f93ff2d3-dc9c-4ca5-a630-3a623c01e498@linaro.org>
-Date:   Mon, 23 Oct 2023 15:21:40 +0200
+        Mon, 23 Oct 2023 06:22:30 -0700 (PDT)
+Message-ID: <b7011f02-a412-4642-862d-c2df88ae316b@linaro.org>
+Date:   Mon, 23 Oct 2023 15:22:30 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: adis16475: Add
+Subject: Re: [PATCH 3/3] dt-bindings: adis16460: Add
  'spi-cs-inactive-delay-ns' property
 Content-Language: en-US
 To:     Ramona Gradinariu <ramona.gradinariu@analog.com>, jic23@kernel.org,
@@ -63,7 +63,7 @@ To:     Ramona Gradinariu <ramona.gradinariu@analog.com>, jic23@kernel.org,
         linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
 References: <20231023123542.582392-1-ramona.gradinariu@analog.com>
- <20231023123542.582392-3-ramona.gradinariu@analog.com>
+ <20231023123542.582392-4-ramona.gradinariu@analog.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -109,12 +109,13 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231023123542.582392-3-ramona.gradinariu@analog.com>
+In-Reply-To: <20231023123542.582392-4-ramona.gradinariu@analog.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -123,30 +124,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23/10/2023 14:35, Ramona Gradinariu wrote:
 > Add 'spi-cs-inactive-delay-ns' property.
+
+This we see from the diff. Commit should explain: Why?
+
 > 
 > Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
 > ---
->  Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml | 5 +++++
+>  Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml | 5 +++++
 >  1 file changed, 5 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml b/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml
-> index c73533c54588..f01bf0ada0e8 100644
-> --- a/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml
-> +++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml
-> @@ -47,6 +47,11 @@ properties:
->    spi-max-frequency:
->      maximum: 2000000
+> diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> index 4e43c80e5119..3691c0be4f9d 100644
+> --- a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> +++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> @@ -25,6 +25,11 @@ properties:
+>  
+>    spi-cpol: true
 >  
 > +  spi-cs-inactive-delay-ns:
 > +    minimum: 16000
 > +    description:
 > +      If not explicitly set in the device tree, the driver will set it to 16us.
 
-Drop description, it's redundant/useless. Instead:
-
-default: 16000
-
-
+Why do you even need it here?
 
 Best regards,
 Krzysztof
