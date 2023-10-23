@@ -2,107 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC817D3A86
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40627D3A88
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbjJWPRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40252 "EHLO
+        id S230231AbjJWPRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:17:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbjJWPRK (ORCPT
+        with ESMTP id S229512AbjJWPRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:17:10 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B21DD;
-        Mon, 23 Oct 2023 08:17:07 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32caaa1c493so2478832f8f.3;
-        Mon, 23 Oct 2023 08:17:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698074226; x=1698679026; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jAyRkZU+G6EHBgXjNlQRdapo8Bo6bVrz7BpJ95EsKKo=;
-        b=Q6dWGkTchYhEQO8eiI6BkdXC/b/J1vj+wusDdEoTU7V7vzZjByc8NWdV2sbqgdC+32
-         zqLEeQ8aTvTIhB+90Y9A04xw0KokWspnE0rGBlLwH8Ojw4qCK79HOoL9xqeVxDp7ErL9
-         nWiUbsxRaeMDkEAHWNcmQ5nUW30bhVhftAJIei66GCX1iJoFyrnDQb74VepsfRzhEt8i
-         q/g+tdb5YAL8rYS0Ln3gTnE7rBJxCRUa3e0B6Ot7OVPMicv/Uvj1frjk0dxZYBD8zIvx
-         cChf0icpsWJmXEFSVT0STLLTPIYzwRgCm368vKycSFGg1NavanNkzqu6cwZRCcg1MKz3
-         nkVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698074226; x=1698679026;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jAyRkZU+G6EHBgXjNlQRdapo8Bo6bVrz7BpJ95EsKKo=;
-        b=xS+aCro8iZKZNN1gnyfTyQ7hR32myicRWn8tHQc5Dd8hQF0cHfqImxtM6tFQ7Ko45L
-         tcoXW/+nfiAS18F5uXhO2RdaFPCCppijWdadTpqa2C8zDM96j6x5AZgBBWjxZkPY/TVQ
-         fSbsDcPSvJjYIlOY3Lft98nNxOhJDhtDzpy0sIjNKtiaqpsEsKAKO7SYMxn3LUcTnEpo
-         P0OBZCAJ/gfwR6bnwNgbhJAB0bM1bt8ThxA5EfwdJXl62TWO6evOWB8DEB7SWnjdocrv
-         CRsxxXzBp2vxtvzCN+9CgfgsMLlJWoBXhhc3gPVWJnoPdl5Ny03N+krhocznRTYfWsea
-         /ZDw==
-X-Gm-Message-State: AOJu0Yww4YD3qS1L5NIM/qoPO2GrT3a1Du1q4XJls7FxOftdPkImdVYl
-        qQIyx75qsWkdmc2u5BRoy2o=
-X-Google-Smtp-Source: AGHT+IG/PhtGCsg7wXm8Rc5Irl5IiMZvAOjGLp6Od9Km/HS5gzwHrgf4OZgoP6sqwU+2RfvtoTXxsQ==
-X-Received: by 2002:adf:9dcb:0:b0:32d:a29a:b6ef with SMTP id q11-20020adf9dcb000000b0032da29ab6efmr6726291wre.23.1698074225584;
-        Mon, 23 Oct 2023 08:17:05 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id b16-20020a5d5510000000b0032d2489a399sm7913701wrv.49.2023.10.23.08.17.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 08:17:05 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ASoC: mediatek: mt8186: remove redundant assignments to variable tdm_con
-Date:   Mon, 23 Oct 2023 16:17:04 +0100
-Message-Id: <20231023151704.670240-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 23 Oct 2023 11:17:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7FFDD;
+        Mon, 23 Oct 2023 08:17:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698074260; x=1729610260;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=pphEJiS3nqmtlobnO12yCKXXZ3R+xIadP5ryMjqKN94=;
+  b=njrTo0wybrw0Ipm/5mneo7+a5vxyfEGSNnvAhcb0USd/Np4p0id8LHtL
+   p1A/5afDgim2Ymn/fVZwXkmCFrtNmRqva4wSe/bhJwrE3e47QT0BvM+1t
+   cRFrzV4LX8aYAjfnrnYnUcZoo/DdNsZN/EdRAOW60olqvtHo7D8AxZ9Ew
+   8lcPemMkNQPuAYsI5vAGOqPBtki4TE+FUNbRm0TKuW/UZlDzHEhnlZgwO
+   Qw7MxT2yEU2vgztMjbN4AIA5e6aUtkdATmdQUQK6aHiPB0hmP2l2auO18
+   lgksLiC2gkaYLpAAxGixL6rNVPJVmla5Hi/sj8ymXCnTFgwDiHRRoG0f6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="377240399"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="377240399"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 08:17:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="881802367"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="881802367"
+Received: from foliveix-mobl5.amr.corp.intel.com ([10.251.211.194])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 08:17:38 -0700
+Date:   Mon, 23 Oct 2023 18:17:36 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
+Subject: Re: [PATCH V4 09/17] platform/x86/intel/pmc: Allow pmc_core_ssram_init
+ to fail
+In-Reply-To: <20231018231624.1044633-10-david.e.box@linux.intel.com>
+Message-ID: <86b2f0a2-535a-5c5e-9f8c-8036a022b3a7@linux.intel.com>
+References: <20231018231624.1044633-1-david.e.box@linux.intel.com> <20231018231624.1044633-10-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1039076446-1698074259=:1721"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two occurrences where variable tdm_con is being initialized
-to zero and the next statement re-assigns tdm_con to a new value. The
-initializations are redundant and can be removed.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- sound/soc/mediatek/mt8186/mt8186-dai-tdm.c | 2 --
- 1 file changed, 2 deletions(-)
+--8323329-1039076446-1698074259=:1721
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
 
-diff --git a/sound/soc/mediatek/mt8186/mt8186-dai-tdm.c b/sound/soc/mediatek/mt8186/mt8186-dai-tdm.c
-index 4148dceb3a4c..ef2801f84d27 100644
---- a/sound/soc/mediatek/mt8186/mt8186-dai-tdm.c
-+++ b/sound/soc/mediatek/mt8186/mt8186-dai-tdm.c
-@@ -416,12 +416,10 @@ static int mtk_dai_tdm_hw_params(struct snd_pcm_substream *substream,
- 	regmap_update_bits(afe->regmap, ETDM_IN1_CON1, ETDM_IN_CON1_CTRL_MASK, tdm_con);
- 
- 	/* ETDM_IN1_CON3 */
--	tdm_con = 0;
- 	tdm_con = ETDM_IN_CON3_FS(tran_rate);
- 	regmap_update_bits(afe->regmap, ETDM_IN1_CON3, ETDM_IN_CON3_CTRL_MASK, tdm_con);
- 
- 	/* ETDM_IN1_CON4 */
--	tdm_con = 0;
- 	tdm_con = ETDM_IN_CON4_FS(tran_relatch_rate);
- 	if (slave_mode) {
- 		if (lrck_inv)
+On Wed, 18 Oct 2023, David E. Box wrote:
+
+> Currently, if the PMC SSRAM initialization fails, no error is returned and
+> the only indication is that a PMC device has not been created.  Instead,
+> allow an error to be returned and handled directly by the caller. Don't use
+> the return value yet. This is in preparation for a future rework of
+> pmc_core_sram_init().
+> 
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
 -- 
-2.39.2
+ i.
 
+
+> ---
+> V4 - Remove return value check in mtl.c. Proper use of the value would
+>      require returning an error status from pmc_core_add_pmc(). But
+>      the function that calls it will be removed in the next patch so wait
+>      to use it then.
+> 
+> V3 - New patch split from V2 PATCH 9
+>    - Add dev_warn on pmc_core_ssram_init fail
+> 
+>  drivers/platform/x86/intel/pmc/core.h       |  2 +-
+>  drivers/platform/x86/intel/pmc/core_ssram.c | 21 +++++++++++++--------
+>  2 files changed, 14 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
+> index ccf24e0f5e50..edaa70067e41 100644
+> --- a/drivers/platform/x86/intel/pmc/core.h
+> +++ b/drivers/platform/x86/intel/pmc/core.h
+> @@ -492,7 +492,7 @@ int pmc_core_resume_common(struct pmc_dev *pmcdev);
+>  int get_primary_reg_base(struct pmc *pmc);
+>  extern void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev);
+>  
+> -extern void pmc_core_ssram_init(struct pmc_dev *pmcdev);
+> +extern int pmc_core_ssram_init(struct pmc_dev *pmcdev);
+>  
+>  int spt_core_init(struct pmc_dev *pmcdev);
+>  int cnp_core_init(struct pmc_dev *pmcdev);
+> diff --git a/drivers/platform/x86/intel/pmc/core_ssram.c b/drivers/platform/x86/intel/pmc/core_ssram.c
+> index 13fa16f0d52e..815950713e25 100644
+> --- a/drivers/platform/x86/intel/pmc/core_ssram.c
+> +++ b/drivers/platform/x86/intel/pmc/core_ssram.c
+> @@ -35,20 +35,20 @@ static inline u64 get_base(void __iomem *addr, u32 offset)
+>  	return lo_hi_readq(addr + offset) & GENMASK_ULL(63, 3);
+>  }
+>  
+> -static void
+> +static int
+>  pmc_core_pmc_add(struct pmc_dev *pmcdev, u64 pwrm_base,
+>  		 const struct pmc_reg_map *reg_map, int pmc_index)
+>  {
+>  	struct pmc *pmc = pmcdev->pmcs[pmc_index];
+>  
+>  	if (!pwrm_base)
+> -		return;
+> +		return -ENODEV;
+>  
+>  	/* Memory for primary PMC has been allocated in core.c */
+>  	if (!pmc) {
+>  		pmc = devm_kzalloc(&pmcdev->pdev->dev, sizeof(*pmc), GFP_KERNEL);
+>  		if (!pmc)
+> -			return;
+> +			return -ENOMEM;
+>  	}
+>  
+>  	pmc->map = reg_map;
+> @@ -57,10 +57,12 @@ pmc_core_pmc_add(struct pmc_dev *pmcdev, u64 pwrm_base,
+>  
+>  	if (!pmc->regbase) {
+>  		devm_kfree(&pmcdev->pdev->dev, pmc);
+> -		return;
+> +		return -ENOMEM;
+>  	}
+>  
+>  	pmcdev->pmcs[pmc_index] = pmc;
+> +
+> +	return 0;
+>  }
+>  
+>  static void
+> @@ -96,7 +98,7 @@ pmc_core_ssram_get_pmc(struct pmc_dev *pmcdev, void __iomem *ssram, u32 offset,
+>  		iounmap(ssram);
+>  }
+>  
+> -void pmc_core_ssram_init(struct pmc_dev *pmcdev)
+> +int pmc_core_ssram_init(struct pmc_dev *pmcdev)
+>  {
+>  	void __iomem *ssram;
+>  	struct pci_dev *pcidev;
+> @@ -105,7 +107,7 @@ void pmc_core_ssram_init(struct pmc_dev *pmcdev)
+>  
+>  	pcidev = pci_get_domain_bus_and_slot(0, 0, PCI_DEVFN(20, 2));
+>  	if (!pcidev)
+> -		goto out;
+> +		return -ENODEV;
+>  
+>  	ret = pcim_enable_device(pcidev);
+>  	if (ret)
+> @@ -123,11 +125,14 @@ void pmc_core_ssram_init(struct pmc_dev *pmcdev)
+>  	pmc_core_ssram_get_pmc(pmcdev, ssram, SSRAM_PCH_OFFSET, PMC_IDX_PCH);
+>  
+>  	iounmap(ssram);
+> -out:
+> -	return;
+> +
+> +	return 0;
+>  
+>  disable_dev:
+> +	pmcdev->ssram_pcidev = NULL;
+>  	pci_disable_device(pcidev);
+>  release_dev:
+>  	pci_dev_put(pcidev);
+> +
+> +	return ret;
+>  }
+> 
+--8323329-1039076446-1698074259=:1721--
