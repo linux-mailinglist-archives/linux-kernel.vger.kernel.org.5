@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDBD7D39ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376737D39EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbjJWOoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
+        id S230255AbjJWOoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233751AbjJWOnp (ORCPT
+        with ESMTP id S233748AbjJWOnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Oct 2023 10:43:45 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C601FCF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:42:26 -0700 (PDT)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C7C1FC6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:42:27 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2E1112188D;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CEC842188E;
         Mon, 23 Oct 2023 14:42:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
         t=1698072145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=RTYsroAWljaROpiVAPyNscGJ0JLNhWtas14NGofBG64=;
-        b=G7aViXm79Su4cvNDxWqYhqYC+UISHnBFJqW32gY5/ALtclMStDPw4XdGDbh56qLoHOaAi3
-        qCoARrOQDg5H9DMh5BEnGIJeOc8/fxbzF5DsUKGDzc/Xi1n+ZRMZQogEpFef06FKaAxRuw
-        3YNIN/1FEp7FV+mgzOZen1xSBcpZJKI=
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IgkfPdLL0JOTUwZlB8Z82NlYikR+ETv1lCssxJ5dRNw=;
+        b=T4ANELya+7eZzKSrlrTqXHdbhHz9Q7GsrHbdikW7vFTLnq1CfFy0SF0z+7K2F8+Mpp9kG7
+        Kl73rR2m2g0NHJ+8Oq4BsDeZEZaXxTmmNXSo0+LiD20kd7xG30J2N1jEHs8EEdje2G9C91
+        LjNnETkVoyhH+3EPXwA8YMGp32MN7Vk=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 10F63139C2;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B673F139C2;
         Mon, 23 Oct 2023 14:42:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id aADMAVGGNmW5dgAAMHmgww
+        id GMlnK1GGNmW9dgAAMHmgww
         (envelope-from <aporta@suse.de>); Mon, 23 Oct 2023 14:42:25 +0000
 From:   Andrea della Porta <andrea.porta@suse.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -44,24 +46,29 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     nik.borisov@suse.com, arnd@arndb.de, mark.rutland@arm.com,
         Andrea della Porta <andrea.porta@suse.com>
-Subject: [PATCH v2 0/4] arm64: Make Aarch32 compatibility enablement optional at boot
-Date:   Mon, 23 Oct 2023 16:42:19 +0200
-Message-ID: <cover.1698069331.git.andrea.porta@suse.com>
+Subject: [PATCH v2 1/4] arm64: Introduce aarch32_enabled()
+Date:   Mon, 23 Oct 2023 16:42:20 +0200
+Message-ID: <1dec05cc8f54d0b85acffce69d929f13e6d81313.1698069331.git.andrea.porta@suse.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1698069331.git.andrea.porta@suse.com>
+References: <cover.1698069331.git.andrea.porta@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Authentication-Results: smtp-out1.suse.de;
         none
-X-Spam-Score: 1.30
-X-Spamd-Result: default: False [1.30 / 50.00];
+X-Spam-Level: 
+X-Spam-Score: -3.72
+X-Spamd-Result: default: False [-3.72 / 50.00];
          ARC_NA(0.00)[];
          RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-1.02)[87.38%];
          FROM_HAS_DN(0.00)[];
          TO_DN_SOME(0.00)[];
          TO_MATCH_ENVRCPT_ALL(0.00)[];
          R_MISSING_CHARSET(2.50)[];
          MIME_GOOD(-0.10)[text/plain];
          BROKEN_CONTENT_TYPE(1.50)[];
+         REPLY(-4.00)[];
          NEURAL_HAM_LONG(-3.00)[-1.000];
          DKIM_SIGNED(0.00)[suse.com:s=susede1];
          NEURAL_HAM_SHORT(-1.00)[-1.000];
@@ -82,43 +89,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the second attempt of the patch, reviewed as follows:
+Aarch32 bit support on 64bit kernels depends on whether CONFIG_COMPAT
+is selected or not. As it is a compile time option it doesn't
+provide the flexibility to have distributions set their own policy for
+Aarch32 support and give the user the flexibility to override it.
 
-* Reworked subject and description to avoid the term 'emulation' and to
-  address generically 'exceptions' instead of 'syscalls' (mark.rutland)
+As a first step introduce aarch32_enabled() which abstracts whether 32
+bit compat is turned on or off. Upcoming patches will implement
+the ability to set Aarch32 compat state at boot time.
 
-* Moved aarch32_enabled() check inside system_supports_32bit_el0()
-  (mark.rutland)
+Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
+---
+ arch/arm64/include/asm/cpufeature.h | 15 +++++++++++++++
+ arch/arm64/kernel/entry-common.c    |  2 ++
+ 2 files changed, 17 insertions(+)
 
-* Renamed AARCH32_EMULATION_DEFAULT_DISABLED to AARCH32_SUPPORT_DEFAULT_DISABLED
-  (mark.rutland)
-
-* Fixed a compilation Warning about missing function prototype
-  Closes: https://lore.kernel.org/oe-kbuild-all/202310230423.r2U4Lqr8-lkp@intel.com/
-
-This is just for completeness since other possible solutions have been
-proposed that could be better suited, see for example:
-https://lkml.kernel.org/linux-fsdevel/20210916131816.8841-1-will@kernel.org/
-and followups. So, this patchset is just for reference, may be useful in the
-future if some kind of exploit is found to bypass the 32bit process
-enablement check (letting a process call 32bit syscalls) and nothing better
-has been proposed meanwhile.
-
-Andrea della Porta (4):
-  arm64: Introduce aarch32_enabled()
-  arm64/process: Make loading of 32bit processes depend on
-    aarch32_enabled()
-  arm64/entry-common: Make Aarch32 exceptions' availability depend on
-    aarch32_enabled()
-  arm64: Make Aarch32 support boot time configurable
-
- .../admin-guide/kernel-parameters.txt         |  7 ++++
- arch/arm64/Kconfig                            |  9 +++++
- arch/arm64/include/asm/cpufeature.h           | 20 +++++++++--
- arch/arm64/include/asm/exception.h            |  7 ++++
- arch/arm64/kernel/entry-common.c              | 33 +++++++++++++++++--
- 5 files changed, 71 insertions(+), 5 deletions(-)
-
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index 396af9b9c857..1180d68daaff 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -657,6 +657,21 @@ static inline bool supports_clearbhb(int scope)
+ 						    ID_AA64ISAR2_EL1_CLRBHB_SHIFT);
+ }
+ 
++#ifdef CONFIG_COMPAT
++extern bool __aarch32_enabled;
++
++static inline bool aarch32_enabled(void)
++{
++	return __aarch32_enabled;
++}
++#else /* !CONFIG_COMPAT */
++
++static inline bool aarch32_enabled(void)
++{
++	return false;
++}
++#endif
++
+ const struct cpumask *system_32bit_el0_cpumask(void);
+ DECLARE_STATIC_KEY_FALSE(arm64_mismatched_32bit_el0);
+ 
+diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+index 0fc94207e69a..69ff9b8c0bde 100644
+--- a/arch/arm64/kernel/entry-common.c
++++ b/arch/arm64/kernel/entry-common.c
+@@ -877,6 +877,8 @@ asmlinkage void noinstr el0t_32_error_handler(struct pt_regs *regs)
+ {
+ 	__el0_error_handler_common(regs);
+ }
++
++bool __aarch32_enabled __ro_after_init = true;
+ #else /* CONFIG_COMPAT */
+ UNHANDLED(el0t, 32, sync)
+ UNHANDLED(el0t, 32, irq)
 -- 
 2.35.3
 
