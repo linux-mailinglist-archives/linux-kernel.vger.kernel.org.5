@@ -2,130 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C19D47D35BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931C97D35B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234634AbjJWLvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53158 "EHLO
+        id S233758AbjJWLvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234618AbjJWLvI (ORCPT
+        with ESMTP id S234617AbjJWLvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Oct 2023 07:51:08 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA13E9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:51:06 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7b91faf40so31732277b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:51:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698061865; x=1698666665; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pj2+Gc/tcBXDbia3+UIXbheoVCOn899YQdDlUVcmlIo=;
-        b=vnke0QLxQBqb/ILqVk4aUwfBWa1x617MtUiWsRMfY48iZiAdWz7mAeT+QLpQuiDYl3
-         dHYIu07AcAQBJ8kLwnyKYHNjoM2EnwubG7TlSAu7ub5d3U4jeyH5U322sfoSe4zguQZP
-         /tWeFw+MDTdqtFTJ4Qf4Pe+UbfYxbFaxP9uYZEu+rYTljscECGtJJ0OUI+UAJ6WorMzP
-         KI+WAy3PrLpoWK1z3LckOxVtQpGBpYKx+bi9EbBMZ2Cg8McPHvfBRDN08dMkiaLP7hoI
-         oP+JsMPnhONNQSWT6SyWrDDqz63WxfUXcyG8vueWKVYr/wmLia4dxI2JrtlU1mjMscKd
-         mzXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698061865; x=1698666665;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Pj2+Gc/tcBXDbia3+UIXbheoVCOn899YQdDlUVcmlIo=;
-        b=BaaI1D2GxLhizwagEnKdacxUgExfFmy3kXWq/pW/DUxz3eBmYNsBkr2OQZlbWCJQEk
-         JVyMcXvRSaXcwnIn1lMrmBf16HoC4FMaNYjas2vOhVo6fpA9hXurjr5gzneIZlNMoxFb
-         uiydEj8NA6AqbKJTG6I4m/4zoTaKrHQce4EmMHXgV1AL7ifqRjX1iSVgm/0CJzvqw02D
-         KeuFKGD72phwKFG9aq7z9LRpWPxdKelx1msZ0U7DNRswP8ej7x55p4n3xnVmzktiJ/qB
-         z2gDpir/+riDu+wm1GgmTdJCdeP6Qb1maqQafWA3AXNw97OcYvPBhN3rrUW/gUKz2zRt
-         TWzg==
-X-Gm-Message-State: AOJu0YwUWhfZNJsVRtiFs5OERxlrrBomsnnzfa3p4Z5r9+Hzz+scWBqK
-        Ksikqb591D3Gown+nhSl7yyb1jL/OIBNRE2dhXs08w==
-X-Google-Smtp-Source: AGHT+IEwvU+/pk0AxYWqEzRPVjjkPdAkURGQidrpdHtxY/1Fddbs6AX51+cZAUDGouaOttT5eQe5wFBBC/i2td/pjBQ=
-X-Received: by 2002:a05:690c:f11:b0:5a7:d937:6f27 with SMTP id
- dc17-20020a05690c0f1100b005a7d9376f27mr11004991ywb.19.1698061864957; Mon, 23
- Oct 2023 04:51:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230911153246.137148-1-aubin.constans@microchip.com>
-In-Reply-To: <20230911153246.137148-1-aubin.constans@microchip.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 23 Oct 2023 13:50:29 +0200
-Message-ID: <CAPDyKFoFjZOOzTM_vMxoNTph2nx=0WR0pyBqco44v8YacjOixw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: mmc: take over as maintainer of MCI & SDHCI
- MICROCHIP DRIVERS
-To:     Aubin Constans <aubin.constans@microchip.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Hari Prasath Gujulan Elango <hari.prasathge@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADDC10C;
+        Mon, 23 Oct 2023 04:51:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4906CC433C8;
+        Mon, 23 Oct 2023 11:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698061863;
+        bh=Lvnm2WrJgn8H62gGFxkFpvYWq1VX/8h9h5UM6WmVuYk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Xzp9588D9keUB7FeGsWPoIZuGg+1/wa9m2PIzC6KJBTuJyv4T0Ft09SWqkfFmOP3K
+         6Y6dSrUHnCeEQRgQLafM0KhYlJO9WXb2WjEjfksB4vIAaMbQ1l22tuqcpnBqd9TuDB
+         8kzbThXqFv19rUYergpL2JEDRm2dMPbQJ1p78fwGuikHxLdWv6G9wqY5FMUmCdO6jd
+         3k0OXvY308DarBUpxE7FYjf9XukPPzqKrRLpA5GZYDYADWBiDTOk3zLngM5Sf07iZx
+         EOHmAFI3Z8CPuSHHF4qpEeczTbMnab+Rm9Tcet9wqGT1br5l/HxTd2oDLxnrHQOXr1
+         Bf6FBVNXtrZ4w==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qutSX-006pRc-27;
+        Mon, 23 Oct 2023 12:51:01 +0100
+Date:   Mon, 23 Oct 2023 12:50:59 +0100
+Message-ID: <861qdl5zh8.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v8 04/13] KVM: arm64: PMU: Set PMCR_EL0.N for vCPU based on the associated PMU
+In-Reply-To: <20231020214053.2144305-5-rananta@google.com>
+References: <20231020214053.2144305-1-rananta@google.com>
+        <20231020214053.2144305-5-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, alexandru.elisei@arm.com, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, yuzenghui@huawei.com, shahuang@redhat.com, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sept 2023 at 17:33, Aubin Constans
-<aubin.constans@microchip.com> wrote:
->
-> On the one hand Eugen has taken responsibilities outside Microchip,
-> on the other hand I have some experience with the Microchip SDMMC
-> SDHCI controller.
-> Change Eugen as reviewer and take over maintainership of the SDHCI
-> MICROCHIP DRIVER.
-> Also, take over maintainership of its predecessor, that is the MCI
-> MICROCHIP DRIVER.
->
-> Cc: Eugen Hristev <eugen.hristev@collabora.com>
-> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> Signed-off-by: Aubin Constans <aubin.constans@microchip.com>
-
-Thanks for volunteering to help out with the maintenance!
-
-Applied for next.
-
-Kind regards
-Uffe
-
-
-
+On Fri, 20 Oct 2023 22:40:44 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
+> 
+> The number of PMU event counters is indicated in PMCR_EL0.N.
+> For a vCPU with PMUv3 configured, the value is set to the same
+> value as the current PE on every vCPU reset.  Unless the vCPU is
+> pinned to PEs that has the PMU associated to the guest from the
+> initial vCPU reset, the value might be different from the PMU's
+> PMCR_EL0.N on heterogeneous PMU systems.
+> 
+> Fix this by setting the vCPU's PMCR_EL0.N to the PMU's PMCR_EL0.N
+> value. Track the PMCR_EL0.N per guest, as only one PMU can be set
+> for the guest (PMCR_EL0.N must be the same for all vCPUs of the
+> guest), and it is convenient for updating the value.
+> 
+> To achieve this, the patch introduces a helper,
+> kvm_arm_pmu_get_max_counters(), that reads the maximum number of
+> counters from the arm_pmu associated to the VM. Make the function
+> global as upcoming patches will be interested to know the value
+> while setting the PMCR.N of the guest from userspace.
+> 
+> KVM does not yet support userspace modifying PMCR_EL0.N.
+> The following patch will add support for that.
+> 
+> Signed-off-by: Reiji Watanabe <reijiw@google.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 > ---
->  MAINTAINERS | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 2833e2da63e0..52beaf4f7fbb 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14022,7 +14022,7 @@ F:      Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml
->  F:     drivers/iio/adc/mcp3911.c
->
->  MICROCHIP MMC/SD/SDIO MCI DRIVER
-> -M:     Ludovic Desroches <ludovic.desroches@microchip.com>
-> +M:     Aubin Constans <aubin.constans@microchip.com>
->  S:     Maintained
->  F:     drivers/mmc/host/atmel-mci.c
->
-> @@ -19235,7 +19235,8 @@ F:      Documentation/devicetree/bindings/mmc/sdhci-common.yaml
->  F:     drivers/mmc/host/sdhci*
->
->  SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) MICROCHIP DRIVER
-> -M:     Eugen Hristev <eugen.hristev@microchip.com>
-> +M:     Aubin Constans <aubin.constans@microchip.com>
-> +R:     Eugen Hristev <eugen.hristev@collabora.com>
->  L:     linux-mmc@vger.kernel.org
->  S:     Supported
->  F:     drivers/mmc/host/sdhci-of-at91.c
-> --
-> 2.39.2
->
+>  arch/arm64/include/asm/kvm_host.h |  3 +++
+>  arch/arm64/kvm/pmu-emul.c         | 26 +++++++++++++++++++++++++-
+>  arch/arm64/kvm/sys_regs.c         | 28 ++++++++++++++--------------
+>  include/kvm/arm_pmu.h             |  6 ++++++
+>  4 files changed, 48 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 846a7706e925c..5653d3553e3ee 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -290,6 +290,9 @@ struct kvm_arch {
+>  
+>  	cpumask_var_t supported_cpus;
+>  
+> +	/* PMCR_EL0.N value for the guest */
+> +	u8 pmcr_n;
+> +
+>  	/* Hypercall features firmware registers' descriptor */
+>  	struct kvm_smccc_features smccc_feat;
+>  	struct maple_tree smccc_filter;
+> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+> index 097bf7122130d..9e24581206c24 100644
+> --- a/arch/arm64/kvm/pmu-emul.c
+> +++ b/arch/arm64/kvm/pmu-emul.c
+> @@ -690,6 +690,9 @@ void kvm_host_pmu_init(struct arm_pmu *pmu)
+>  	if (!entry)
+>  		goto out_unlock;
+>  
+> +	WARN_ON((pmu->num_events <= 0) ||
+> +		(pmu->num_events > ARMV8_PMU_MAX_COUNTERS));
+> +
+
+So if we find a PMU that is completely bonkers (we *know* we cannot
+make use of it), we still pick it? What is the point?
+
+Honestly, I don't think this warning adds any value, and doesn't seem
+to be required for this patch anyway.
+
+>  	entry->arm_pmu = pmu;
+>  	list_add_tail(&entry->entry, &arm_pmus);
+>  
+> @@ -873,11 +876,29 @@ static bool pmu_irq_is_valid(struct kvm *kvm, int irq)
+>  	return true;
+>  }
+>  
+> +/**
+> + * kvm_arm_pmu_get_max_counters - Return the max number of PMU counters.
+> + * @kvm: The kvm pointer
+> + */
+> +int kvm_arm_pmu_get_max_counters(struct kvm *kvm)
+> +{
+> +	struct arm_pmu *arm_pmu = kvm->arch.arm_pmu;
+> +
+> +	lockdep_assert_held(&kvm->arch.config_lock);
+> +
+> +	/*
+> +	 * The arm_pmu->num_events considers the cycle counter as well.
+> +	 * Ignore that and return only the general-purpose counters.
+> +	 */
+> +	return arm_pmu->num_events - 1;
+
+How is that going to work when the PMU supports a fixed instruction
+counter, as it is the case with FEAT_PMUv3_ICNTR? The kernel doesn't
+support it yet, but this will eventually be the case, and this little
+game will break.
+
+> +}
+> +
+>  static void kvm_arm_set_pmu(struct kvm *kvm, struct arm_pmu *arm_pmu)
+>  {
+>  	lockdep_assert_held(&kvm->arch.config_lock);
+>  
+>  	kvm->arch.arm_pmu = arm_pmu;
+> +	kvm->arch.pmcr_n = kvm_arm_pmu_get_max_counters(kvm);
+
+Can you make the return type of kvm_arm_pmu_get_max_counters()
+homogeneous with that of pmcr_n?
+
+>  }
+>  
+>  /**
+> @@ -1091,5 +1112,8 @@ u8 kvm_arm_pmu_get_pmuver_limit(void)
+>   */
+>  u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu)
+>  {
+> -	return __vcpu_sys_reg(vcpu, PMCR_EL0);
+> +	u64 pmcr = __vcpu_sys_reg(vcpu, PMCR_EL0) &
+> +			~(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT);
+> +
+> +	return pmcr | ((u64)vcpu->kvm->arch.pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
+>  }
+> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> index a31cecb3d29fb..faf97878dfbbb 100644
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -721,12 +721,7 @@ static u64 reset_pmu_reg(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r)
+>  {
+>  	u64 n, mask = BIT(ARMV8_PMU_CYCLE_IDX);
+>  
+> -	/* No PMU available, any PMU reg may UNDEF... */
+> -	if (!kvm_arm_support_pmu_v3())
+> -		return 0;
+> -
+> -	n = read_sysreg(pmcr_el0) >> ARMV8_PMU_PMCR_N_SHIFT;
+> -	n &= ARMV8_PMU_PMCR_N_MASK;
+> +	n = vcpu->kvm->arch.pmcr_n;
+>  	if (n)
+>  		mask |= GENMASK(n - 1, 0);
+>  
+> @@ -762,17 +757,15 @@ static u64 reset_pmselr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r)
+>  
+>  static u64 reset_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r)
+>  {
+> -	u64 pmcr;
+> +	u64 pmcr = 0;
+>  
+> -	/* No PMU available, PMCR_EL0 may UNDEF... */
+> -	if (!kvm_arm_support_pmu_v3())
+> -		return 0;
+> -
+> -	/* Only preserve PMCR_EL0.N, and reset the rest to 0 */
+> -	pmcr = read_sysreg(pmcr_el0) & (ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT);
+>  	if (!kvm_supports_32bit_el0())
+>  		pmcr |= ARMV8_PMU_PMCR_LC;
+>  
+> +	/*
+> +	 * The value of PMCR.N field is included when the
+> +	 * vCPU register is read via kvm_vcpu_read_pmcr().
+> +	 */
+>  	__vcpu_sys_reg(vcpu, r->reg) = pmcr;
+>  
+>  	return __vcpu_sys_reg(vcpu, r->reg);
+> @@ -1103,6 +1096,13 @@ static bool access_pmuserenr(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
+>  	return true;
+>  }
+>  
+> +static int get_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
+> +		    u64 *val)
+> +{
+> +	*val = kvm_vcpu_read_pmcr(vcpu);
+> +	return 0;
+> +}
+> +
+>  /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in one go */
+>  #define DBG_BCR_BVR_WCR_WVR_EL1(n)					\
+>  	{ SYS_DESC(SYS_DBGBVRn_EL1(n)),					\
+> @@ -2235,7 +2235,7 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>  	{ SYS_DESC(SYS_SVCR), undef_access },
+>  
+>  	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr,
+> -	  .reset = reset_pmcr, .reg = PMCR_EL0 },
+> +	  .reset = reset_pmcr, .reg = PMCR_EL0, .get_user = get_pmcr },
+
+So since you don't provide a set_user() callback, userspace can still
+write anything it wants. Should we take this opportunity to sanitise
+things a bit?
+
+>  	{ PMU_SYS_REG(PMCNTENSET_EL0),
+>  	  .access = access_pmcnten, .reg = PMCNTENSET_EL0 },
+>  	{ PMU_SYS_REG(PMCNTENCLR_EL0),
+> diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
+> index cd980d78b86b5..2e90f38090e6d 100644
+> --- a/include/kvm/arm_pmu.h
+> +++ b/include/kvm/arm_pmu.h
+> @@ -102,6 +102,7 @@ void kvm_vcpu_pmu_resync_el0(void);
+>  
+>  u8 kvm_arm_pmu_get_pmuver_limit(void);
+>  int kvm_arm_set_default_pmu(struct kvm *kvm);
+> +int kvm_arm_pmu_get_max_counters(struct kvm *kvm);
+>  
+>  u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu);
+>  #else
+> @@ -181,6 +182,11 @@ static inline int kvm_arm_set_default_pmu(struct kvm *kvm)
+>  	return -ENODEV;
+>  }
+>  
+> +static inline int kvm_arm_pmu_get_max_counters(struct kvm *kvm)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+>  static inline u64 kvm_vcpu_read_pmcr(struct kvm_vcpu *vcpu)
+>  {
+>  	return 0;
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
