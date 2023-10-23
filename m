@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8A07D2F59
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB54C7D2F5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbjJWJ75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
+        id S229825AbjJWKBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 06:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233624AbjJWJ7f (ORCPT
+        with ESMTP id S229774AbjJWKBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:59:35 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437D21992
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:59:29 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53e3e7e478bso4646601a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:59:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1698055167; x=1698659967; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=F2RqADPHi/ODAXFTyOZSWwkmYe5FsXVHIx8g7uPzN3k=;
-        b=TxzHXgFnllwfWEQGStaMkXTLsJzqZy7uSwFyIB2YKCiVqAk8sIO63vab/4J3mPvPS0
-         vC18Om7qqbvbqBCVaOWvzeo6vl1dNRSNZqqB9DvCgeZYCNBSS+j4CNklulQ+SYfU+ECm
-         fP8YZt9/nGGR3w9A5hvdHnRQYb498lbiLaqaHiGtPc8yBkkP2IhQWdKJ0X2jY+EXh+65
-         ha8BClBS/cQIabJG43sz7UR0fsBTMKZy/uYdnQKHUmd889vnnMwdx26Qs2p266zJh6lC
-         ElkUg0eDtVUPzHQNLcaez6uzOijA+5D6uW3mbwQIe52Vj2qGcK3tbT1rd4nZrbbOtjK6
-         cLwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698055167; x=1698659967;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F2RqADPHi/ODAXFTyOZSWwkmYe5FsXVHIx8g7uPzN3k=;
-        b=q8vcEkDzfV2h8gcmfDMKWiwmgVdHxs92VdJx9c0feXq5PqYkwBrRmUFv+YfuNDKrzL
-         ZPedeorWRNl6XmB0kW2XPN0eYylM7sQ5k1TSHJ/K/P3RF4g1EMYNn7dF+BXg7e8aYSY9
-         HfSf/tfuueOHigOShXkrjDuVwBrpNqaHWgpHkjqETQJR0Lee+cUnh63w9LBz2ezt9pBS
-         PTvNRRNKL2+60aMxDXCs2vyNYJgD/BsFlzO3prpS09LeL/HMCXeX3QRlPilnoaunIGQL
-         5BiAai2xbx2uPxYFk/4QCECUGJ4cnjoWewfBiZNnnyNubdYFmaMEINSQe0dc1/h32h1V
-         JTdQ==
-X-Gm-Message-State: AOJu0YznRUaz0mxX77PTvFFYbC/ldYUv0kiAx05qfvfFcIhJ82dWSvtY
-        PmmSTIYDYeoXNZW1kvUHqtj9xA==
-X-Google-Smtp-Source: AGHT+IEaFDXbVnpKg4vFgDf/2pwx6Ih0ZQZiABFfnw7I7V0bf3GiPKkismdRN7VeOpN7PH5sK8Co7w==
-X-Received: by 2002:a05:6402:51cf:b0:53e:4cd9:2df6 with SMTP id r15-20020a05640251cf00b0053e4cd92df6mr7118888edd.25.1698055167819;
-        Mon, 23 Oct 2023 02:59:27 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id x7-20020aa7d6c7000000b0053ebafe7a60sm6153661edr.59.2023.10.23.02.59.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 02:59:27 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 11:59:26 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH 1/5] riscv: use ".L" local labels in assembly when
- applicable
-Message-ID: <20231023-8397e25545716f7f168e9007@orel>
-References: <20231004143054.482091-1-cleger@rivosinc.com>
- <20231004143054.482091-2-cleger@rivosinc.com>
+        Mon, 23 Oct 2023 06:01:45 -0400
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332F1DA;
+        Mon, 23 Oct 2023 03:01:41 -0700 (PDT)
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id E04242067E;
+        Mon, 23 Oct 2023 12:01:37 +0200 (CEST)
+Date:   Mon, 23 Oct 2023 12:01:33 +0200
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     David Lin <yu-hao.lin@nxp.com>
+Cc:     Francesco Dolcini <francesco@dolcini.it>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "briannorris@chromium.org" <briannorris@chromium.org>,
+        "kvalo@kernel.org" <kvalo@kernel.org>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Pete Hsieh <tsung-hsien.hsieh@nxp.com>
+Subject: Re: [EXT] Re: [PATCH v6 1/6] wifi: mwifiex: added code to support
+ host mlme.
+Message-ID: <ZTZEfefJ8pvtnR7M@francesco-nb.int.toradex.com>
+References: <PA4PR04MB9638DEFC074F41AAEE3AC471D1DBA@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <ZTP1OXGExKCMk14D@livingston.pivistrello.it>
+ <PA4PR04MB9638E6859D64EF4FC4762C03D1D8A@PA4PR04MB9638.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231004143054.482091-2-cleger@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <PA4PR04MB9638E6859D64EF4FC4762C03D1D8A@PA4PR04MB9638.eurprd04.prod.outlook.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 04:30:50PM +0200, Clément Léger wrote:
-> For the sake of coherency, use local labels in assembly when
-> applicable. This also avoid kprobes being confused when applying a
-> kprobe since the size of function is computed by checking where the
-> next visible symbol is located. This might end up in computing some
-> function size to be way shorter than expected and thus failing to apply
-> kprobes to the specified offset.
+On Mon, Oct 23, 2023 at 02:16:26AM +0000, David Lin wrote:
+> > On Fri, Oct 20, 2023 at 03:48:11AM +0000, David Lin wrote:
+> > I noticed that you ignored some (all?) of my feedback [1].
+> >
+> > Maybe my feedback got lost between the quotes, maybe you just forgot to
+> > apply it. Please go back to the previous discussion and either implement all
+> > requested changes or keep discussing them.
+> >
 > 
-> Signed-off-by: Clément Léger <cleger@rivosinc.com>
-> ---
->  arch/riscv/kernel/entry.S  | 10 +++----
->  arch/riscv/kernel/head.S   | 18 ++++++-------
->  arch/riscv/kernel/mcount.S | 10 +++----
->  arch/riscv/lib/memmove.S   | 54 +++++++++++++++++++-------------------
->  4 files changed, 46 insertions(+), 46 deletions(-)
->
+> I think I replied your request and follow it. Please check following link:
+> 
+> https://patchwork.kernel.org/project/linux-wireless/patch/PA4PR04MB9638DEFC074F41AAEE3AC471D1DBA@PA4PR04MB9638.eurprd04.prod.outlook.com/
+> 
+> Please press "Series:   | expand", you will find cover letter with
+> related patches there. You can review any commit and reply the e-mail
+> separately. Thanks.
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+I think we are not understanding each other, please have a look here
+https://lore.kernel.org/all/ZRLsuJfxuvFk1K16@francesco-nb.int.toradex.com/
+where you can find my comment on v4 of your series. I cannot find any
+answer to that comments nor the changes I asked for implemented.
+
+Francesco
+
