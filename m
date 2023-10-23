@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECB77D2BBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969307D2BBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbjJWHri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
+        id S233541AbjJWHrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233584AbjJWHrc (ORCPT
+        with ESMTP id S233585AbjJWHrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Oct 2023 03:47:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB16CD71
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:46:41 -0700 (PDT)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABD9D68
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:46:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698047200;
+        s=mimecast20190719; t=1698047207;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DHldh0Ww7o7mt12DR8ni+7Kp7g46Unl4HpYOjQRFoDk=;
-        b=BrGe88NezxezlWEZ3+b3EzzgWF2G3bww7RKPox8tkQ1RmiEruxtIefXUsCCi60rganmuxO
-        xzX38Y/s7u7F72NDojlpoAynCkS65xtsL0m5GXodNRDiwx2d+bDWQFIUQZ5qfTH5lv1yVZ
-        BOk5PU+bzz7kTZjWPX+08qMMVfVQabU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-671-5F_wAi4oMC2axSgTxKwe-g-1; Mon, 23 Oct 2023 03:46:27 -0400
-X-MC-Unique: 5F_wAi4oMC2axSgTxKwe-g-1
+        bh=v4hcsSZBhMT2HnuxQMp/RpIgkmty3L/dOPYFK1HXmTk=;
+        b=RFQwLWsjaVjdkomBM4qp0J/M7vLXrnhzOogbeEmQBuMfVbEpY3Iez9QGjALHDR0JNXgFmJ
+        bJYsOCq0UdyDp8fOrY8PnM298TF1lStpz2PYj7Qb8ELmOrOX09rb57GPXUGciQPYrJZTA6
+        DU6z02blYt1OzlaS3igJej/0IJg5vsg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-606-FCtF2yaLNLCosYBbffxBNA-1; Mon, 23 Oct 2023 03:46:32 -0400
+X-MC-Unique: FCtF2yaLNLCosYBbffxBNA-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A048D3C176E0;
-        Mon, 23 Oct 2023 07:46:25 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E993110201F2;
+        Mon, 23 Oct 2023 07:46:30 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.45.225.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 538718CEF;
-        Mon, 23 Oct 2023 07:46:20 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E9146503B;
+        Mon, 23 Oct 2023 07:46:25 +0000 (UTC)
 From:   Albert Esteve <aesteve@redhat.com>
 To:     qemu-devel@nongnu.org
 Cc:     zackr@vmware.com, contact@emersion.fr, linux-doc@vger.kernel.org,
@@ -59,12 +59,11 @@ Cc:     zackr@vmware.com, contact@emersion.fr, linux-doc@vger.kernel.org,
         Daniel Vetter <daniel@ffwll.ch>, ppaalanen@gmail.com,
         VMware Graphics Reviewers 
         <linux-graphics-maintainer@vmware.com>,
-        Gerd Hoffmann <kraxel@redhat.com>, stable@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>
-Subject: [PATCH v6 1/9] drm: Disable the cursor plane on atomic contexts with virtualized drivers
-Date:   Mon, 23 Oct 2023 09:46:05 +0200
-Message-ID: <20231023074613.41327-2-aesteve@redhat.com>
+        Gerd Hoffmann <kraxel@redhat.com>,
+        David Airlie <airlied@linux.ie>
+Subject: [PATCH v6 2/9] drm/atomic: Add support for mouse hotspots
+Date:   Mon, 23 Oct 2023 09:46:06 +0200
+Message-ID: <20231023074613.41327-3-aesteve@redhat.com>
 In-Reply-To: <20231023074613.41327-1-aesteve@redhat.com>
 References: <20231023074613.41327-1-aesteve@redhat.com>
 MIME-Version: 1.0
@@ -72,7 +71,7 @@ Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,170 +81,203 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zack Rusin <zackr@vmware.com>
 
-Cursor planes on virtualized drivers have special meaning and require
-that the clients handle them in specific ways, e.g. the cursor plane
-should react to the mouse movement the way a mouse cursor would be
-expected to and the client is required to set hotspot properties on it
-in order for the mouse events to be routed correctly.
+Atomic modesetting code lacked support for specifying mouse cursor
+hotspots. The legacy kms DRM_IOCTL_MODE_CURSOR2 had support for setting
+the hotspot but the functionality was not implemented in the new atomic
+paths.
 
-This breaks the contract as specified by the "universal planes". Fix it
-by disabling the cursor planes on virtualized drivers while adding
-a foundation on top of which it's possible to special case mouse cursor
-planes for clients that want it.
+Due to the lack of hotspots in the atomic paths userspace compositors
+completely disable atomic modesetting for drivers that require it (i.e.
+all paravirtualized drivers).
 
-Disabling the cursor planes makes some kms compositors which were broken,
-e.g. Weston, fallback to software cursor which works fine or at least
-better than currently while having no effect on others, e.g. gnome-shell
-or kwin, which put virtualized drivers on a deny-list when running in
-atomic context to make them fallback to legacy kms and avoid this issue.
+This change adds hotspot properties to the atomic codepaths throughtout
+the DRM core and will allow enabling atomic modesetting for virtualized
+drivers in the userspace.
 
 Signed-off-by: Zack Rusin <zackr@vmware.com>
-Fixes: 681e7ec73044 ("drm: Allow userspace to ask for universal plane list (v2)")
-Cc: <stable@vger.kernel.org> # v5.4+
 Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Cc: Maxime Ripard <mripard@kernel.org>
 Cc: Thomas Zimmermann <tzimmermann@suse.de>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Dave Airlie <airlied@redhat.com>
-Cc: Gerd Hoffmann <kraxel@redhat.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Gurchetan Singh <gurchetansingh@chromium.org>
-Cc: Chia-I Wu <olvaffe@gmail.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: virtualization@lists.linux-foundation.org
-Cc: spice-devel@lists.freedesktop.org
-Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
 Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 ---
- drivers/gpu/drm/drm_plane.c          | 13 +++++++++++++
- drivers/gpu/drm/qxl/qxl_drv.c        |  2 +-
- drivers/gpu/drm/vboxvideo/vbox_drv.c |  2 +-
- drivers/gpu/drm/virtio/virtgpu_drv.c |  2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c  |  2 +-
- include/drm/drm_drv.h                |  9 +++++++++
- include/drm/drm_file.h               | 12 ++++++++++++
- 7 files changed, 38 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/drm_atomic_state_helper.c | 14 +++++++
+ drivers/gpu/drm/drm_atomic_uapi.c         | 20 +++++++++
+ drivers/gpu/drm/drm_plane.c               | 50 +++++++++++++++++++++++
+ include/drm/drm_plane.h                   | 14 +++++++
+ 4 files changed, 98 insertions(+)
 
+diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/drm/drm_atomic_state_helper.c
+index 784e63d70a421..54975de44a0e3 100644
+--- a/drivers/gpu/drm/drm_atomic_state_helper.c
++++ b/drivers/gpu/drm/drm_atomic_state_helper.c
+@@ -275,6 +275,20 @@ void __drm_atomic_helper_plane_state_reset(struct drm_plane_state *plane_state,
+ 			plane_state->normalized_zpos = val;
+ 		}
+ 	}
++
++	if (plane->hotspot_x_property) {
++		if (!drm_object_property_get_default_value(&plane->base,
++							   plane->hotspot_x_property,
++							   &val))
++			plane_state->hotspot_x = val;
++	}
++
++	if (plane->hotspot_y_property) {
++		if (!drm_object_property_get_default_value(&plane->base,
++							   plane->hotspot_y_property,
++							   &val))
++			plane_state->hotspot_y = val;
++	}
+ }
+ EXPORT_SYMBOL(__drm_atomic_helper_plane_state_reset);
+ 
+diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+index 98d3b10c08ae1..07a7b3f18df26 100644
+--- a/drivers/gpu/drm/drm_atomic_uapi.c
++++ b/drivers/gpu/drm/drm_atomic_uapi.c
+@@ -593,6 +593,22 @@ static int drm_atomic_plane_set_property(struct drm_plane *plane,
+ 	} else if (plane->funcs->atomic_set_property) {
+ 		return plane->funcs->atomic_set_property(plane, state,
+ 				property, val);
++	} else if (property == plane->hotspot_x_property) {
++		if (plane->type != DRM_PLANE_TYPE_CURSOR) {
++			drm_dbg_atomic(plane->dev,
++				       "[PLANE:%d:%s] is not a cursor plane: 0x%llx\n",
++				       plane->base.id, plane->name, val);
++			return -EINVAL;
++		}
++		state->hotspot_x = val;
++	} else if (property == plane->hotspot_y_property) {
++		if (plane->type != DRM_PLANE_TYPE_CURSOR) {
++			drm_dbg_atomic(plane->dev,
++				       "[PLANE:%d:%s] is not a cursor plane: 0x%llx\n",
++				       plane->base.id, plane->name, val);
++			return -EINVAL;
++		}
++		state->hotspot_y = val;
+ 	} else {
+ 		drm_dbg_atomic(plane->dev,
+ 			       "[PLANE:%d:%s] unknown property [PROP:%d:%s]\n",
+@@ -653,6 +669,10 @@ drm_atomic_plane_get_property(struct drm_plane *plane,
+ 		*val = state->scaling_filter;
+ 	} else if (plane->funcs->atomic_get_property) {
+ 		return plane->funcs->atomic_get_property(plane, state, property, val);
++	} else if (property == plane->hotspot_x_property) {
++		*val = state->hotspot_x;
++	} else if (property == plane->hotspot_y_property) {
++		*val = state->hotspot_y;
+ 	} else {
+ 		drm_dbg_atomic(dev,
+ 			       "[PLANE:%d:%s] unknown property [PROP:%d:%s]\n",
 diff --git a/drivers/gpu/drm/drm_plane.c b/drivers/gpu/drm/drm_plane.c
-index 24e7998d17313..c6bbb0c209f47 100644
+index c6bbb0c209f47..eaca367bdc7e7 100644
 --- a/drivers/gpu/drm/drm_plane.c
 +++ b/drivers/gpu/drm/drm_plane.c
-@@ -678,6 +678,19 @@ int drm_mode_getplane_res(struct drm_device *dev, void *data,
- 		    !file_priv->universal_planes)
- 			continue;
+@@ -230,6 +230,47 @@ static int create_in_format_blob(struct drm_device *dev, struct drm_plane *plane
+ 	return 0;
+ }
  
-+		/*
-+		 * If we're running on a virtualized driver then,
-+		 * unless userspace advertizes support for the
-+		 * virtualized cursor plane, disable cursor planes
-+		 * because they'll be broken due to missing cursor
-+		 * hotspot info.
-+		 */
-+		if (plane->type == DRM_PLANE_TYPE_CURSOR &&
-+		    drm_core_check_feature(dev, DRIVER_CURSOR_HOTSPOT) &&
-+		    file_priv->atomic &&
-+		    !file_priv->supports_virtualized_cursor_plane)
-+			continue;
++/**
++ * drm_plane_create_hotspot_properties - creates the mouse hotspot
++ * properties and attaches them to the given cursor plane
++ *
++ * @plane: drm cursor plane
++ *
++ * This function enables the mouse hotspot property on a given
++ * cursor plane.
++ *
++ * RETURNS:
++ * Zero for success or -errno
++ */
++static int drm_plane_create_hotspot_properties(struct drm_plane *plane)
++{
++	struct drm_property *prop_x;
++	struct drm_property *prop_y;
 +
- 		if (drm_lease_held(file_priv, plane->base.id)) {
- 			if (count < plane_resp->count_planes &&
- 			    put_user(plane->base.id, plane_ptr + count))
-diff --git a/drivers/gpu/drm/qxl/qxl_drv.c b/drivers/gpu/drm/qxl/qxl_drv.c
-index b30ede1cf62d3..91930e84a9cd2 100644
---- a/drivers/gpu/drm/qxl/qxl_drv.c
-+++ b/drivers/gpu/drm/qxl/qxl_drv.c
-@@ -283,7 +283,7 @@ static const struct drm_ioctl_desc qxl_ioctls[] = {
- };
++	drm_WARN_ON(plane->dev,
++		    !drm_core_check_feature(plane->dev,
++					    DRIVER_CURSOR_HOTSPOT));
++
++	prop_x = drm_property_create_signed_range(plane->dev, 0, "HOTSPOT_X",
++						  INT_MIN, INT_MAX);
++	if (IS_ERR(prop_x))
++		return PTR_ERR(prop_x);
++
++	prop_y = drm_property_create_signed_range(plane->dev, 0, "HOTSPOT_Y",
++						  INT_MIN, INT_MAX);
++	if (IS_ERR(prop_y)) {
++		drm_property_destroy(plane->dev, prop_x);
++		return PTR_ERR(prop_y);
++	}
++
++	drm_object_attach_property(&plane->base, prop_x, 0);
++	drm_object_attach_property(&plane->base, prop_y, 0);
++	plane->hotspot_x_property = prop_x;
++	plane->hotspot_y_property = prop_y;
++
++	return 0;
++}
++
+ __printf(9, 0)
+ static int __drm_universal_plane_init(struct drm_device *dev,
+ 				      struct drm_plane *plane,
+@@ -348,6 +389,10 @@ static int __drm_universal_plane_init(struct drm_device *dev,
+ 		drm_object_attach_property(&plane->base, config->prop_src_w, 0);
+ 		drm_object_attach_property(&plane->base, config->prop_src_h, 0);
+ 	}
++	if (drm_core_check_feature(dev, DRIVER_CURSOR_HOTSPOT) &&
++	    type == DRM_PLANE_TYPE_CURSOR) {
++		drm_plane_create_hotspot_properties(plane);
++	}
  
- static struct drm_driver qxl_driver = {
--	.driver_features = DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
-+	.driver_features = DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC | DRIVER_CURSOR_HOTSPOT,
+ 	if (format_modifier_count)
+ 		create_in_format_blob(dev, plane);
+@@ -1067,6 +1112,11 @@ static int drm_mode_cursor_universal(struct drm_crtc *crtc,
  
- 	.dumb_create = qxl_mode_dumb_create,
- 	.dumb_map_offset = drm_gem_ttm_dumb_map_offset,
-diff --git a/drivers/gpu/drm/vboxvideo/vbox_drv.c b/drivers/gpu/drm/vboxvideo/vbox_drv.c
-index 4fee15c97c341..8ecd0863fad77 100644
---- a/drivers/gpu/drm/vboxvideo/vbox_drv.c
-+++ b/drivers/gpu/drm/vboxvideo/vbox_drv.c
-@@ -172,7 +172,7 @@ DEFINE_DRM_GEM_FOPS(vbox_fops);
+ 			fb->hot_x = req->hot_x;
+ 			fb->hot_y = req->hot_y;
++
++			if (plane->hotspot_x_property && plane->state)
++				plane->state->hotspot_x = req->hot_x;
++			if (plane->hotspot_y_property && plane->state)
++				plane->state->hotspot_y = req->hot_y;
+ 		} else {
+ 			fb = NULL;
+ 		}
+diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
+index 79d62856defbf..e2c671585775b 100644
+--- a/include/drm/drm_plane.h
++++ b/include/drm/drm_plane.h
+@@ -116,6 +116,10 @@ struct drm_plane_state {
+ 	/** @src_h: height of visible portion of plane (in 16.16) */
+ 	uint32_t src_h, src_w;
  
- static const struct drm_driver driver = {
- 	.driver_features =
--	    DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC,
-+	    DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC | DRIVER_CURSOR_HOTSPOT,
- 
- 	.fops = &vbox_fops,
- 	.name = DRIVER_NAME,
-diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.c b/drivers/gpu/drm/virtio/virtgpu_drv.c
-index 644b8ee51009b..148f09aaf99a7 100644
---- a/drivers/gpu/drm/virtio/virtgpu_drv.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_drv.c
-@@ -177,7 +177,7 @@ static const struct drm_driver driver = {
- 	 * out via drm_device::driver_features:
- 	 */
- 	.driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_RENDER | DRIVER_ATOMIC |
--			   DRIVER_SYNCOBJ | DRIVER_SYNCOBJ_TIMELINE,
-+			   DRIVER_SYNCOBJ | DRIVER_SYNCOBJ_TIMELINE | DRIVER_CURSOR_HOTSPOT,
- 	.open = virtio_gpu_driver_open,
- 	.postclose = virtio_gpu_driver_postclose,
- 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-index 8b24ecf60e3ec..d3e308fdfd5be 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
-@@ -1611,7 +1611,7 @@ static const struct file_operations vmwgfx_driver_fops = {
- 
- static const struct drm_driver driver = {
- 	.driver_features =
--	DRIVER_MODESET | DRIVER_RENDER | DRIVER_ATOMIC | DRIVER_GEM,
-+	DRIVER_MODESET | DRIVER_RENDER | DRIVER_ATOMIC | DRIVER_GEM | DRIVER_CURSOR_HOTSPOT,
- 	.ioctls = vmw_ioctls,
- 	.num_ioctls = ARRAY_SIZE(vmw_ioctls),
- 	.master_set = vmw_master_set,
-diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
-index 9813fa759b75d..0a72b13781f13 100644
---- a/include/drm/drm_drv.h
-+++ b/include/drm/drm_drv.h
-@@ -110,6 +110,15 @@ enum drm_driver_feature {
- 	 * Driver supports user defined GPU VA bindings for GEM objects.
- 	 */
- 	DRIVER_GEM_GPUVA		= BIT(8),
-+	/**
-+	 * @DRIVER_CURSOR_HOTSPOT:
-+	 *
-+	 * Driver supports and requires cursor hotspot information in the
-+	 * cursor plane (e.g. cursor plane has to actually track the mouse
-+	 * cursor and the clients are required to set hotspot in order for
-+	 * the cursor planes to work correctly).
-+	 */
-+	DRIVER_CURSOR_HOTSPOT           = BIT(9),
- 
- 	/* IMPORTANT: Below are all the legacy flags, add new ones above. */
- 
-diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
-index 010239392adfb..69720ac29c67c 100644
---- a/include/drm/drm_file.h
-+++ b/include/drm/drm_file.h
-@@ -228,6 +228,18 @@ struct drm_file {
- 	 */
- 	bool is_master;
- 
-+	/**
-+	 * @supports_virtualized_cursor_plane:
-+	 *
-+	 * This client is capable of handling the cursor plane with the
-+	 * restrictions imposed on it by the virtualized drivers.
-+	 *
-+	 * This implies that the cursor plane has to behave like a cursor
-+	 * i.e. track cursor movement. It also requires setting of the
-+	 * hotspot properties by the client on the cursor plane.
-+	 */
-+	bool supports_virtualized_cursor_plane;
++	/** @hotspot_x: x offset to mouse cursor hotspot */
++	/** @hotspot_y: y offset to mouse cursor hotspot */
++	int32_t hotspot_x, hotspot_y;
 +
  	/**
- 	 * @master:
- 	 *
+ 	 * @alpha:
+ 	 * Opacity of the plane with 0 as completely transparent and 0xffff as
+@@ -748,6 +752,16 @@ struct drm_plane {
+ 	 * scaling.
+ 	 */
+ 	struct drm_property *scaling_filter_property;
++
++	/**
++	 * @hotspot_x_property: property to set mouse hotspot x offset.
++	 */
++	struct drm_property *hotspot_x_property;
++
++	/**
++	 * @hotspot_y_property: property to set mouse hotspot y offset.
++	 */
++	struct drm_property *hotspot_y_property;
+ };
+ 
+ #define obj_to_plane(x) container_of(x, struct drm_plane, base)
 -- 
 2.41.0
 
