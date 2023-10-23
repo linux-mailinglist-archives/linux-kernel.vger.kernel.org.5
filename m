@@ -2,195 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8EA27D3B2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA747D3B52
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbjJWPrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
+        id S232052AbjJWPt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjJWPrK (ORCPT
+        with ESMTP id S232212AbjJWPtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:47:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E5239D;
-        Mon, 23 Oct 2023 08:47:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BF3EC433C7;
-        Mon, 23 Oct 2023 15:47:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698076028;
-        bh=L40xDQVgTfM0jKjY2CcPMsYuyMAVupFmFZq0N07DI+g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sbnK38bPQPrn092XhaR2cO/AxY4uEXjnMQcpC/NMA4g9AOotvxHqhhb8JjZVlNh5p
-         oB2FU40IkKtsr3pZCmQVe51Lr5/HnWBgZsWMQGvZ64zfZAY54H8mymRuRdAcimCse5
-         xL7UmT8q0D24Y0kqT/1VUpYyXsNAqiVjcXwlr0Hu/A4hfqXcuE3hpV0cF6PQV+Xi2y
-         Wx1tS2qxw+84a4lTKT6VkzZiIvuiWF3rQtSLm7nPb3rMCMjvNWcFBuI1y97XII3rRs
-         BRq4B6aNjAvrANDVhKkizGr3qX4UYGsxdi/14X66cP6GOTKAYmdHzHW6uQb2LKIVSZ
-         CyAZrzZt+q6Ng==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qux9F-0001yj-3D;
-        Mon, 23 Oct 2023 17:47:22 +0200
-Date:   Mon, 23 Oct 2023 17:47:21 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v13 06/10] usb: dwc3: qcom: Enable wakeup for applicable
- ports of multiport
-Message-ID: <ZTaViatsRY7LCbIX@hovoldconsulting.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-7-quic_kriskura@quicinc.com>
+        Mon, 23 Oct 2023 11:49:22 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108B0101;
+        Mon, 23 Oct 2023 08:49:20 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4083dbc43cfso25385795e9.3;
+        Mon, 23 Oct 2023 08:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698076158; x=1698680958; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=99vvqY3a62R+FSNgedTvGTn1Ho9xYE+BPOA4cYmL7ss=;
+        b=FovKsoKoQBOTOMoCbnso84aoD1fKPtCM7hvJhFBKTXmuV+7LoFB8SlQsWONlMgqTJW
+         Supzfz8jT4CNxjxpuG6SSOrW3otFA9VDGrRE5C7pof2D0iDli/pyUypITK8AZlKjpdEo
+         cNEOHaVKcPW0gLwN5dAi25lg3tCwXx7egACdMqwOToGsIesUjgzODYXipbgSUeFWWCR9
+         rM8f/8yX0Urz+4HJy1jlKxmEEfeF/xQzZm0j0nfIEiDE+eDh09BFRwkl71PDenqlKeXU
+         mXOcO8NStbNlIEOaL677BJYKUAowpAnQ9N2q4ZgpPm1q0J6xoyDbwJOyOQBsSWx3GHBA
+         LIPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698076158; x=1698680958;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=99vvqY3a62R+FSNgedTvGTn1Ho9xYE+BPOA4cYmL7ss=;
+        b=jRko4kBSRo6b6TuZ/7jQ50kxO9lrbT5+kZWYrD28zhNzsqYFW6m2BaKz5IW2r4wM9J
+         9rVXh39zuDYBt6HoWJU40UYOkBLdiKCHBTmxCfKJOjYaV4/TelZKhkBPdPJ0FXqsOl8C
+         d6Vm/PeWteM/x2ohVLKPfO8bHforO7g6H11ja3D5fvqE+gxR+xmD+P9fgeNNuDu9Ew6H
+         Imka4CVlc6vsji/DjmV2vAMmgtsW/sWMX6VBGFp/hZ0wATfjjoc6E9AOzDAeIH4pLs+/
+         Mitd430Egu8J/431Pi6xJkwwZahbp9M4oFVx5XZ/ZmgGvkwuk02M+vieyMuWqTeAzyUs
+         d6Uw==
+X-Gm-Message-State: AOJu0YwJAM0cQTkDzRmqVPuNCTLntUykXD1/PBdmToXnC6L8XE5kmDqJ
+        0twPLXlQwSWwjkDEtHrNGeo=
+X-Google-Smtp-Source: AGHT+IG99IjlfivFo6WK5QnjYKrDjIihUfYEP6AcPPqn8XoZsXSFBeG9i6v7AO+y6rhDotBMZnRCzA==
+X-Received: by 2002:a05:600c:4f12:b0:401:bdd7:49ae with SMTP id l18-20020a05600c4f1200b00401bdd749aemr8315715wmq.18.1698076158310;
+        Mon, 23 Oct 2023 08:49:18 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id b24-20020a05600c06d800b004064e3b94afsm14420510wmn.4.2023.10.23.08.49.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 08:49:17 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Oder Chiou <oder_chiou@realtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ASoC: codecs: rt298: remove redundant assignment to d_len_code
+Date:   Mon, 23 Oct 2023 16:49:17 +0100
+Message-Id: <20231023154917.671595-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231007154806.605-7-quic_kriskura@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 09:18:02PM +0530, Krishna Kurapati wrote:
-> Currently wakeup is supported by only single port controllers. Read speed
-> of each port and accordingly enable IRQ's for those ports.
-> 
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> ---
->  drivers/usb/dwc3/dwc3-qcom.c | 65 +++++++++++++++++++-----------------
->  1 file changed, 35 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index 863892284146..651b9775a0c2 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -90,7 +90,7 @@ struct dwc3_qcom {
->  	 */
->  	int			phy_irq[NUM_PHY_IRQ - 1][DWC3_MAX_PORTS];
->  	int			hs_phy_irq;
-> -	enum usb_device_speed	usb2_speed;
-> +	enum usb_device_speed	usb2_speed[DWC3_MAX_PORTS];
+Variable d_len_code is being initialized to zero and then re-assigned a
+different value in all the valid cases in the following switch statement.
+The only place it is not being assigned a value is on the return for
+a default case and in this case it does not need to be assigned. The
+initialization is redundant and can be removed.
 
-This also belongs in a new port structure.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ sound/soc/codecs/rt298.c | 1 -
+ 1 file changed, 1 deletion(-)
 
->  	struct extcon_dev	*edev;
->  	struct extcon_dev	*host_edev;
-> @@ -335,7 +335,8 @@ static bool dwc3_qcom_is_host(struct dwc3_qcom *qcom)
->  	return dwc->xhci;
->  }
->  
-> -static enum usb_device_speed dwc3_qcom_read_usb2_speed(struct dwc3_qcom *qcom)
-> +static enum usb_device_speed dwc3_qcom_read_usb2_speed(struct dwc3_qcom *qcom,
-> +							int port_index)
-
-No need for line break (since it's a function definition).
-
->  {
->  	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
->  	struct usb_device *udev;
-> @@ -348,12 +349,10 @@ static enum usb_device_speed dwc3_qcom_read_usb2_speed(struct dwc3_qcom *qcom)
->  
->  	/*
->  	 * It is possible to query the speed of all children of
-> -	 * USB2.0 root hub via usb_hub_for_each_child(). DWC3 code
-> -	 * currently supports only 1 port per controller. So
-> -	 * this is sufficient.
-> +	 * USB2.0 root hub via usb_hub_for_each_child().
-
-This comment no longer makes sense with your current implementation.
-
-But perhaps this should be done using usb_hub_for_each_child() instead
-as that may be more efficient. Then you use this function to read out
-the speed for all the ports in go (and store it in the port structures I
-mentioned). Please determine which alternative is best.
-
->  	 */
->  #ifdef CONFIG_USB
-> -	udev = usb_hub_find_child(hcd->self.root_hub, 1);
-> +	udev = usb_hub_find_child(hcd->self.root_hub, port_index + 1);
->  #else
->  	udev = NULL;
->  #endif
-> @@ -386,23 +385,29 @@ static void dwc3_qcom_disable_wakeup_irq(int irq)
->  
->  static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
->  {
-> +	int i;
-> +
->  	dwc3_qcom_disable_wakeup_irq(qcom->hs_phy_irq);
->  
-> -	if (qcom->usb2_speed == USB_SPEED_LOW) {
-> -		dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DM_HS_PHY_IRQ_INDEX][0]);
-> -	} else if ((qcom->usb2_speed == USB_SPEED_HIGH) ||
-> -			(qcom->usb2_speed == USB_SPEED_FULL)) {
-> -		dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DP_HS_PHY_IRQ_INDEX][0]);
-> -	} else {
-> -		dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DP_HS_PHY_IRQ_INDEX][0]);
-> -		dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DM_HS_PHY_IRQ_INDEX][0]);
-> -	}
-> +	for (i = 0; i < qcom->num_ports; i++) {
-> +		if (qcom->usb2_speed[i] == USB_SPEED_LOW) {
-> +			dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DM_HS_PHY_IRQ_INDEX][i]);
-> +		} else if ((qcom->usb2_speed[i] == USB_SPEED_HIGH) ||
-> +			(qcom->usb2_speed[i] == USB_SPEED_FULL)) {
-> +			dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DP_HS_PHY_IRQ_INDEX][i]);
-> +		} else {
-> +			dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DP_HS_PHY_IRQ_INDEX][i]);
-> +			dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DM_HS_PHY_IRQ_INDEX][i]);
-> +		}
->  
-> -	dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[SS_PHY_IRQ_INDEX][0]);
-> +		dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[SS_PHY_IRQ_INDEX][i]);
-> +	}
->  }
-
-The above is hardly readable, partly because of the 2d array that I
-think you should drop, and partly because you add the port loop here
-instead of in the caller.
-
-A lot of these functions should become port operation where you either
-pass in a port structure directly or possibly a port index as I've
-mentioned before.
-
-[ I realise that the confusion around hs_phy_irq may be partly to blame
-for this but since that one is also a per-port interrupt, that's no
-longer an issue. ]
+diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
+index 8fbd25ad9b47..ad3783ade1b5 100644
+--- a/sound/soc/codecs/rt298.c
++++ b/sound/soc/codecs/rt298.c
+@@ -789,7 +789,6 @@ static int rt298_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
  
->  static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
-> @@ -454,10 +461,8 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
->  	 * The role is stable during suspend as role switching is done from a
->  	 * freezable workqueue.
->  	 */
-> -	if (dwc3_qcom_is_host(qcom) && wakeup) {
-> -		qcom->usb2_speed = dwc3_qcom_read_usb2_speed(qcom);
+-	d_len_code = 0;
+ 	switch (params_width(params)) {
+ 	/* bit 6:4 Bits per Sample */
+ 	case 16:
+-- 
+2.39.2
 
-So just let this function update the usb2 speed for all ports unless
-there are reasons not to.
-
-> +	if (dwc3_qcom_is_host(qcom) && wakeup)
->  		dwc3_qcom_enable_interrupts(qcom);
-
-And then iterate over the ports and enable the interrupts here as you
-did above for the pwr_evnt_irqs.
-
-> -	}
->  
->  	qcom->is_suspended = true;
-
-Johan
