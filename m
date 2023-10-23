@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88DF17D38BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9E17D38B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbjJWOAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
+        id S231425AbjJWOA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbjJWOAV (ORCPT
+        with ESMTP id S231208AbjJWOAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Oct 2023 10:00:21 -0400
 Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5DFD78
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:00:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0D5D73
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:00:19 -0700 (PDT)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id CCC40240104
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:00:16 +0200 (CEST)
+        by mout02.posteo.de (Postfix) with ESMTPS id CB1E8240104
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:00:17 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1698069616; bh=0vrbnyHS0xkur/iRrIzIOiA16As3+vBu5X3xM21fRts=;
+        t=1698069617; bh=zwCuyhVmMr+6W+Jc6uApqtn4VjGeJRlPp4FvHh/J5fE=;
         h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
          Content-Transfer-Encoding:From;
-        b=Jp4DwJ0n/3HJyx1M1Cy4sqSqnwAeHCRGXdighjLLYWiMVt2CW01aYRTixUJYKY85s
-         beLaZwHZRUJmncMUIpKY527kFUCsBa3Zg1dmjMHrLYzUnLd+wh0peRc13tTrbmRomV
-         1iacZUce7jT2Bmjq7JDv+H+578cTqy9SWs2FIT7V9+KK3DGX9BAITFsmK2hxr9xrXL
-         5zP6GFxRgdUmvlKoS+y9aee8pDZ9Nz4ySMvWKKN4ELGwQhZ0jvnL+M/cpHADRboeTM
-         PJ5KbxdUHz4xJ0ugSYeds2sycm84Y11kcs3SDij0gIt/d10JgRH71Yz2bQfW4vxMhl
-         46Mr0pEXMJHAw==
+        b=U/K/JPNl04rAE19qY8DvRu5Br7MpMde5s1OJ5R3sxavfVW42n8At+nCx1j0iD0fVi
+         4U/tn30rzk8OhC4sFUHEZWy+ZeeSauqtA7ctggg+9PFW+eH1uBLVI4fig4z0cubJTg
+         niTI3XC2IfEO/WNXa5JmQyVLwe0Vtz/xe8NNNqDxSBctzymKUBeCZsbSjz05lano9w
+         JpyHLkwzH2gs5Kn/0U6DAkzdQy4T4Rs75CHO1YUGZk2FuhbXJ2uF43iZf+Kr/XjWn2
+         Rrr5q6Z712DILTvX2X8BmXz9Q9Uwcocj4B/M18P9FoDqPiA2bdO3P1xRzh/C5o8LX2
+         L003NwS1i8arQ==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4SDcJv279xz6txG;
-        Mon, 23 Oct 2023 16:00:15 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4SDcJw3V66z6tsB;
+        Mon, 23 Oct 2023 16:00:16 +0200 (CEST)
 From:   Mark O'Donovan <shiftee@posteo.net>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
         axboe@kernel.dk, kbusch@kernel.org, hare@suse.de,
         Mark O'Donovan <shiftee@posteo.net>
-Subject: [PATCH v2 2/3] nvme-auth: add flag for bi-directional auth
-Date:   Mon, 23 Oct 2023 14:00:02 +0000
-Message-Id: <20231023140003.58019-3-shiftee@posteo.net>
+Subject: [PATCH v2 3/3] nvme-auth: always set valid seq_num in dhchap reply
+Date:   Mon, 23 Oct 2023 14:00:03 +0000
+Message-Id: <20231023140003.58019-4-shiftee@posteo.net>
 In-Reply-To: <20231023140003.58019-1-shiftee@posteo.net>
 References: <20231023140003.58019-1-shiftee@posteo.net>
 MIME-Version: 1.0
@@ -53,53 +53,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduces an explicit variable for bi-directional auth.
-The currently used variable chap->s2 is incorrectly zeroed for
-uni-directional auth. That will be fixed in the next patch so this
-needs to change to avoid sending unexpected success2 messages
+Currently a seqnum of zero is sent during uni-directional
+authentication. The zero value is reserved for the secure channel
+feature which is not yet implemented.
+
+Relevant extract from the spec:
+The value 0h is used to indicate that bidirectional authentication
+is not performed, but a challenge value C2 is carried in order to
+generate a pre-shared key (PSK) for subsequent establishment of a
+secure channel
 
 Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
+
 ---
- drivers/nvme/host/auth.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+v1: used incorrect prefix nvme-tcp
+v2: added spec extract to commit message
+
+ drivers/nvme/host/auth.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/nvme/host/auth.c b/drivers/nvme/host/auth.c
-index e0fc33d41baa..8558a02865ac 100644
+index 8558a02865ac..7f6b2e99a78c 100644
 --- a/drivers/nvme/host/auth.c
 +++ b/drivers/nvme/host/auth.c
-@@ -28,6 +28,7 @@ struct nvme_dhchap_queue_context {
- 	int error;
- 	u32 s1;
- 	u32 s2;
-+	bool bi_directional;
- 	u16 transaction;
- 	u8 status;
- 	u8 dhgroup_id;
-@@ -312,6 +313,7 @@ static int nvme_auth_set_dhchap_reply_data(struct nvme_ctrl *ctrl,
- 	data->dhvlen = cpu_to_le16(chap->host_key_len);
- 	memcpy(data->rval, chap->response, chap->hash_len);
- 	if (ctrl->ctrl_key) {
-+		chap->bi_directional = true;
+@@ -316,15 +316,14 @@ static int nvme_auth_set_dhchap_reply_data(struct nvme_ctrl *ctrl,
+ 		chap->bi_directional = true;
  		get_random_bytes(chap->c2, chap->hash_len);
  		data->cvalid = 1;
- 		chap->s2 = nvme_auth_get_seqnum();
-@@ -660,6 +662,7 @@ static void nvme_auth_reset_dhchap(struct nvme_dhchap_queue_context *chap)
- 	chap->error = 0;
- 	chap->s1 = 0;
- 	chap->s2 = 0;
-+	chap->bi_directional = false;
- 	chap->transaction = 0;
- 	memset(chap->c1, 0, sizeof(chap->c1));
- 	memset(chap->c2, 0, sizeof(chap->c2));
-@@ -822,7 +825,7 @@ static void nvme_queue_auth_work(struct work_struct *work)
- 		goto fail2;
+-		chap->s2 = nvme_auth_get_seqnum();
+ 		memcpy(data->rval + chap->hash_len, chap->c2,
+ 		       chap->hash_len);
+ 		dev_dbg(ctrl->device, "%s: qid %d ctrl challenge %*ph\n",
+ 			__func__, chap->qid, (int)chap->hash_len, chap->c2);
+ 	} else {
+ 		memset(chap->c2, 0, chap->hash_len);
+-		chap->s2 = 0;
  	}
- 
--	if (chap->s2) {
-+	if (chap->bi_directional) {
- 		/* DH-HMAC-CHAP Step 5: send success2 */
- 		dev_dbg(ctrl->device, "%s: qid %d send success2\n",
- 			__func__, chap->qid);
++	chap->s2 = nvme_auth_get_seqnum();
+ 	data->seqnum = cpu_to_le32(chap->s2);
+ 	if (chap->host_key_len) {
+ 		dev_dbg(ctrl->device, "%s: qid %d host public key %*ph\n",
 -- 
 2.39.2
 
