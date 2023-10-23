@@ -2,219 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 388AC7D37FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740307D37C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbjJWN0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
+        id S233134AbjJWNWH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Oct 2023 09:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233412AbjJWNZW (ORCPT
+        with ESMTP id S231174AbjJWNVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:25:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A54C2D48;
-        Mon, 23 Oct 2023 06:23:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EC4CC4339A;
-        Mon, 23 Oct 2023 13:23:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698067424;
-        bh=Qe5xNWCPNFdyou1PNmnQ+Jo2U04gFbQ1SqDrhM8USLU=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=EvhhcS01zP+I/nJDBtv2/hU+IN3H+U80vvjB/kXRzcdP8y6qq/+8TZkr6oCUNbR+Y
-         VevtcN+ihfVO+fHtriDTbX9Cqvv1AyKJdabmrj+H1uTbjEJ+uRsVVrD8NRpb1voIly
-         UnirgPUUo8Or97dqZYUPFCUatQXllUANXlN1IPa1wHXNzPvZlhLm2w1UOQlc0CTMPI
-         bhaPucy742dGd+m1gUnO/Q9rNKZgc+W9uKhHVRORwdYncYLj2y3ABmWt5yuqeAnYVd
-         Jj0YUUnuKqrgI8MKAEP8Q33pxva1ioPeLWAMLdFq7/Mdz2hizr/uDKYDRVKAvOVROI
-         8S4yyhqy6aVSw==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Mon, 23 Oct 2023 14:20:42 +0100
-Subject: [PATCH RFC RFT 3/5] selftests/clone3: Factor more of main loop
- into test_clone3()
+        Mon, 23 Oct 2023 09:21:08 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955851737
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:20:48 -0700 (PDT)
+Received: from kwepemm000018.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SDbLx3RYYzVlNJ;
+        Mon, 23 Oct 2023 21:16:57 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
+ kwepemm000018.china.huawei.com (7.193.23.4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 23 Oct 2023 21:20:44 +0800
+Received: from lhrpeml500005.china.huawei.com ([7.191.163.240]) by
+ lhrpeml500005.china.huawei.com ([7.191.163.240]) with mapi id 15.01.2507.031;
+ Mon, 23 Oct 2023 14:20:42 +0100
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     "ankita@nvidia.com" <ankita@nvidia.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>
+CC:     "aniketa@nvidia.com" <aniketa@nvidia.com>,
+        "cjia@nvidia.com" <cjia@nvidia.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "targupta@nvidia.com" <targupta@nvidia.com>,
+        "vsethi@nvidia.com" <vsethi@nvidia.com>,
+        "acurrid@nvidia.com" <acurrid@nvidia.com>,
+        "apopple@nvidia.com" <apopple@nvidia.com>,
+        "jhubbard@nvidia.com" <jhubbard@nvidia.com>,
+        "danw@nvidia.com" <danw@nvidia.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        "linyufeng (A)" <linyufeng3@huawei.com>
+Subject: RE: [PATCH v1 1/2] KVM: arm64: determine memory type from VMA
+Thread-Topic: [PATCH v1 1/2] KVM: arm64: determine memory type from VMA
+Thread-Index: AQHZ4bdLehyCbll0tE+E3EeoI9km/7BXohtA
+Date:   Mon, 23 Oct 2023 13:20:42 +0000
+Message-ID: <af13ed63dc9a4f26a6c958ebfa77d78a@huawei.com>
+References: <20230907181459.18145-1-ankita@nvidia.com>
+ <20230907181459.18145-2-ankita@nvidia.com>
+In-Reply-To: <20230907181459.18145-2-ankita@nvidia.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.48.151.228]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231023-clone3-shadow-stack-v1-3-d867d0b5d4d0@kernel.org>
-References: <20231023-clone3-shadow-stack-v1-0-d867d0b5d4d0@kernel.org>
-In-Reply-To: <20231023-clone3-shadow-stack-v1-0-d867d0b5d4d0@kernel.org>
-To:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-api@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3743; i=broonie@kernel.org;
- h=from:subject:message-id; bh=Qe5xNWCPNFdyou1PNmnQ+Jo2U04gFbQ1SqDrhM8USLU=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlNnPFrNLdzYQAulVZaf402/CEZAeiUf2Mqwx6vlCg
- zbzu1/WJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZTZzxQAKCRAk1otyXVSH0CpkB/
- wI9vthQaH4b/7GbSX6xay6+qWrwwwjDWC0n05NMHY6+af8/WcriS64FlS/nL/cLW6KrqHuJ19n4j9n
- zRMGRtp2pldRNuywgaFS2ZODD7W22DOf9Kimlbpef69oZPKLOvSm1kf/GOvgcmeAR3D3Hvk5CjAHjX
- 24S3K8l2L2uMa1Ix66celhkPYAzqhnxaU3ojXJlXMem+4oAoeOtf231tW1r3oaboLztD5DDIPRkP99
- vAclBMxqZggvL8OWelaXHwYnY8k4gN1bIOsH5IN8enKKbW7XAre8N+RzbkSm/yGDt9ETJXqhFulJ8P
- c67jcjKEpK1BoG03dlMF9V8jg3zxDS
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to make it easier to add more configuration for the tests and
-more support for runtime detection of when tests can be run pass the
-structure describing the tests into test_clone3() rather than picking
-the arguments out of it and have that function do all the per-test work.
+Hi,
 
-No functional change.
+> -----Original Message-----
+> From: ankita@nvidia.com [mailto:ankita@nvidia.com]
+> Sent: 07 September 2023 19:15
+> To: ankita@nvidia.com; jgg@nvidia.com; maz@kernel.org;
+> oliver.upton@linux.dev; catalin.marinas@arm.com; will@kernel.org
+> Cc: aniketa@nvidia.com; cjia@nvidia.com; kwankhede@nvidia.com;
+> targupta@nvidia.com; vsethi@nvidia.com; acurrid@nvidia.com;
+> apopple@nvidia.com; jhubbard@nvidia.com; danw@nvidia.com;
+> linux-arm-kernel@lists.infradead.org; kvmarm@lists.linux.dev;
+> linux-kernel@vger.kernel.org
+> Subject: [PATCH v1 1/2] KVM: arm64: determine memory type from VMA
+> 
+> From: Ankit Agrawal <ankita@nvidia.com>
+> 
+> Currently KVM determines if a VMA is pointing at IO memory by checking
+> pfn_is_map_memory(). However, the MM already gives us a way to tell what
+> kind of memory it is by inspecting the VMA.
+> 
+> Replace pfn_is_map_memory() with a check on the VMA pgprot to
+> determine if
+> the memory is IO and thus needs stage-2 device mapping.
+> 
+> The VMA's pgprot is tested to determine the memory type with the
+> following mapping:
+> 
+>  pgprot_noncached    MT_DEVICE_nGnRnE   device
+>  pgprot_writecombine MT_NORMAL_NC       device
+>  pgprot_device       MT_DEVICE_nGnRE    device
+>  pgprot_tagged       MT_NORMAL_TAGGED   RAM
+> 
+> This patch solves a problems where it is possible for the kernel to
+> have VMAs pointing at cachable memory without causing
+> pfn_is_map_memory() to be true, eg DAX memremap cases and CXL/pre-CXL
+> devices. This memory is now properly marked as cachable in KVM.
+> 
+> Unfortunately when FWB is not enabled, the kernel expects to naively do
+> cache management by flushing the memory using an address in the
+> kernel's map. This does not work in several of the newly allowed
+> cases such as dcache_clean_inval_poc(). Check whether the targeted pfn
+> and its mapping KVA is valid in case the FWB is absent before continuing.
+> 
+> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
+> ---
+>  arch/arm64/include/asm/kvm_pgtable.h |  8 ++++++
+>  arch/arm64/kvm/hyp/pgtable.c         |  2 +-
+>  arch/arm64/kvm/mmu.c                 | 40
+> +++++++++++++++++++++++++---
+>  3 files changed, 45 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_pgtable.h
+> b/arch/arm64/include/asm/kvm_pgtable.h
+> index d3e354bb8351..0579dbe958b9 100644
+> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> @@ -430,6 +430,14 @@ u64 kvm_pgtable_hyp_unmap(struct kvm_pgtable
+> *pgt, u64 addr, u64 size);
+>   */
+>  u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32 phys_shift);
+> 
+> +/**
+> + * stage2_has_fwb() - Determine whether FWB is supported
+> + * @pgt:    Page-table structure initialised by kvm_pgtable_stage2_init*()
+> + *
+> + * Return: True if FWB is supported.
+> + */
+> +bool stage2_has_fwb(struct kvm_pgtable *pgt);
+> +
+>  /**
+>   * kvm_pgtable_stage2_pgd_size() - Helper to compute size of a stage-2
+> PGD
+>   * @vtcr:	Content of the VTCR register.
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c
+> b/arch/arm64/kvm/hyp/pgtable.c
+> index f155b8c9e98c..ccd291b6893d 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -662,7 +662,7 @@ u64 kvm_get_vtcr(u64 mmfr0, u64 mmfr1, u32
+> phys_shift)
+>  	return vtcr;
+>  }
+> 
+> -static bool stage2_has_fwb(struct kvm_pgtable *pgt)
+> +bool stage2_has_fwb(struct kvm_pgtable *pgt)
+>  {
+>  	if (!cpus_have_const_cap(ARM64_HAS_STAGE2_FWB))
+>  		return false;
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 482280fe22d7..79f1caaa08a0 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -1391,6 +1391,15 @@ static bool kvm_vma_mte_allowed(struct
+> vm_area_struct *vma)
+>  	return vma->vm_flags & VM_MTE_ALLOWED;
+>  }
+> 
+> +/*
+> + * Determine the memory region cacheability from VMA's pgprot. This
+> + * is used to set the stage 2 PTEs.
+> + */
+> +static unsigned long mapping_type(pgprot_t page_prot)
+> +{
+> +	return FIELD_GET(PTE_ATTRINDX_MASK, pgprot_val(page_prot));
+> +}
+> +
+>  static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  			  struct kvm_memory_slot *memslot, unsigned long hva,
+>  			  unsigned long fault_status)
+> @@ -1490,6 +1499,18 @@ static int user_mem_abort(struct kvm_vcpu
+> *vcpu, phys_addr_t fault_ipa,
+>  	gfn = fault_ipa >> PAGE_SHIFT;
+>  	mte_allowed = kvm_vma_mte_allowed(vma);
+> 
+> +	/*
+> +	 * Figure out the memory type based on the user va mapping properties
+> +	 * Only MT_DEVICE_nGnRE and MT_DEVICE_nGnRnE will be set using
+> +	 * pgprot_device() and pgprot_noncached() respectively.
+> +	 */
+> +	if ((mapping_type(vma->vm_page_prot) == MT_DEVICE_nGnRE) ||
+> +	    (mapping_type(vma->vm_page_prot) == MT_DEVICE_nGnRnE) ||
+> +	    (mapping_type(vma->vm_page_prot) == MT_NORMAL_NC))
+> +		prot |= KVM_PGTABLE_PROT_DEVICE;
+> +	else if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))
+> +		prot |= KVM_PGTABLE_PROT_X;
+> +
+>  	/* Don't use the VMA after the unlock -- it may have vanished */
+>  	vma = NULL;
+> 
+> @@ -1576,10 +1597,21 @@ static int user_mem_abort(struct kvm_vcpu
+> *vcpu, phys_addr_t fault_ipa,
+>  	if (exec_fault)
+>  		prot |= KVM_PGTABLE_PROT_X;
+> 
+> -	if (device)
+> -		prot |= KVM_PGTABLE_PROT_DEVICE;
+> -	else if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))
+> -		prot |= KVM_PGTABLE_PROT_X;
+> +	/*
+> +	 *  When FWB is unsupported KVM needs to do cache flushes
+> +	 *  (via dcache_clean_inval_poc()) of the underlying memory. This is
+> +	 *  only possible if the memory is already mapped into the kernel map
+> +	 *  at the usual spot.
+> +	 *
+> +	 *  Validate that there is a struct page for the PFN which maps
+> +	 *  to the KVA that the flushing code expects.
+> +	 */
+> +	if (!stage2_has_fwb(pgt) &&
+> +	    !(pfn_valid(pfn) &&
+> +	      page_to_virt(pfn_to_page(pfn)) ==
+> kvm_host_va(PFN_PHYS(pfn)))) {
+> +		ret = -EINVAL;
+> +		goto out_unlock;
+> +	}
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- tools/testing/selftests/clone3/clone3.c | 77 ++++++++++++++++-----------------
- 1 file changed, 37 insertions(+), 40 deletions(-)
+I don't quite follow the above check. Does no FWB matters for
+Non-cacheable/device memory as well?
 
-diff --git a/tools/testing/selftests/clone3/clone3.c b/tools/testing/selftests/clone3/clone3.c
-index 9429d361059e..afe383689a67 100644
---- a/tools/testing/selftests/clone3/clone3.c
-+++ b/tools/testing/selftests/clone3/clone3.c
-@@ -30,6 +30,19 @@ enum test_mode {
- 	CLONE3_ARGS_INVAL_EXIT_SIGNAL_NSIG,
- };
- 
-+typedef bool (*filter_function)(void);
-+typedef size_t (*size_function)(void);
-+
-+struct test {
-+	const char *name;
-+	uint64_t flags;
-+	size_t size;
-+	size_function size_function;
-+	int expected;
-+	enum test_mode test_mode;
-+	filter_function filter;
-+};
-+
- static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
- {
- 	struct __clone_args args = {
-@@ -104,30 +117,40 @@ static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
- 	return 0;
- }
- 
--static bool test_clone3(uint64_t flags, size_t size, int expected,
--			enum test_mode test_mode)
-+static void test_clone3(const struct test *test)
- {
-+	size_t size;
- 	int ret;
- 
-+	if (test->filter && test->filter()) {
-+		ksft_test_result_skip("%s\n", test->name);
-+		return;
-+	}
-+
-+	if (test->size_function)
-+		size = test->size_function();
-+	else
-+		size = test->size;
-+
-+	ksft_print_msg("Running test '%s'\n", test->name);
-+
- 	ksft_print_msg(
- 		"[%d] Trying clone3() with flags %#" PRIx64 " (size %zu)\n",
--		getpid(), flags, size);
--	ret = call_clone3(flags, size, test_mode);
-+		getpid(), test->flags, size);
-+	ret = call_clone3(test->flags, size, test->test_mode);
- 	ksft_print_msg("[%d] clone3() with flags says: %d expected %d\n",
--			getpid(), ret, expected);
--	if (ret != expected) {
-+			getpid(), ret, test->expected);
-+	if (ret != test->expected) {
- 		ksft_print_msg(
- 			"[%d] Result (%d) is different than expected (%d)\n",
--			getpid(), ret, expected);
--		return false;
-+			getpid(), ret, test->expected);
-+		ksft_test_result_fail("%s\n", test->name);
-+		return;
- 	}
- 
--	return true;
-+	ksft_test_result_pass("%s\n", test->name);
- }
- 
--typedef bool (*filter_function)(void);
--typedef size_t (*size_function)(void);
--
- static bool not_root(void)
- {
- 	if (getuid() != 0) {
-@@ -143,16 +166,6 @@ static size_t page_size_plus_8(void)
- 	return getpagesize() + 8;
- }
- 
--struct test {
--	const char *name;
--	uint64_t flags;
--	size_t size;
--	size_function size_function;
--	int expected;
--	enum test_mode test_mode;
--	filter_function filter;
--};
--
- static const struct test tests[] = {
- 	{
- 		.name = "simple clone3()",
-@@ -301,24 +314,8 @@ int main(int argc, char *argv[])
- 	ksft_set_plan(ARRAY_SIZE(tests));
- 	test_clone3_supported();
- 
--	for (i = 0; i < ARRAY_SIZE(tests); i++) {
--		if (tests[i].filter && tests[i].filter()) {
--			ksft_test_result_skip("%s\n", tests[i].name);
--			continue;
--		}
--
--		if (tests[i].size_function)
--			size = tests[i].size_function();
--		else
--			size = tests[i].size;
--
--		ksft_print_msg("Running test '%s'\n", tests[i].name);
--
--		ksft_test_result(test_clone3(tests[i].flags, size,
--					     tests[i].expected,
--					     tests[i].test_mode),
--				 "%s\n", tests[i].name);
--	}
-+	for (i = 0; i < ARRAY_SIZE(tests); i++)
-+		test_clone3(&tests[i]);
- 
- 	ksft_finished();
- }
+From a quick check, it breaks a n/w dev assignment on a platform that doesn't 
+have FWB.
 
--- 
-2.30.2
+Qemu reports,
+
+error: kvm run failed Invalid argument
+ PC=ffff800080a95ed0 X00=ffff0000c7ff8090 X01=ffff0000c7ff80a0
+X02=00000000fe180000 X03=ffff800085327000 X04=0000000000000001
+X05=0000000000000040 X06=000000000000003f X07=0000000000000000
+X08=ffff0000be190000 X09=0000000000000000 X10=0000000000000040
+
+Please let me know.
+
+Thanks,
+Shameer
+
+> 
+>  	/*
+>  	 * Under the premise of getting a FSC_PERM fault, we just need to relax
+> --
+> 2.17.1
+> 
 
