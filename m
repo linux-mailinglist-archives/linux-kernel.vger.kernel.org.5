@@ -2,225 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EE97D38EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D777D38F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbjJWOGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39020 "EHLO
+        id S230250AbjJWOHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233188AbjJWOGh (ORCPT
+        with ESMTP id S231449AbjJWOHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:06:37 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2068.outbound.protection.outlook.com [40.107.20.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE3B10D7;
-        Mon, 23 Oct 2023 07:06:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GBtyiYbmVFHb9oeHpGHn5mab/huzW3ExrPJAB4evLkNdHDck0F6nWZj4h4pC2E+vXpCvEYCr1/21y/meio0TX5f6TQOMj1rSJq+pczDiE0eNeBkhtTFIepsxXE01uoPiGLNaahDaiIfFcpMKXVOAXUgTDqCO7R72CiFcYxxfix6NFxxSuBzpLs7dyvbcpw77lpDHoxm/kMtQ/TP7zWGJw+RQbKGr+6ldeluwbANh2MwR1NvTM8g0uNXKBrrIy5CxL8JuoS6YW07iwd7rtjv4T3/bWj1uRfZJA8xmezsrsZ497i4hXtVE8XvhLi061zUDUWaNcWIZyvA3YRo01pD6qg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/0piiAJqNVsCJjiSCblbvSYyXjxYxrOalutMxrLLKKQ=;
- b=ZZWrPI39etteTXsZR1Z4OmKXYJJJ7kEXvArQA1KNVsmkcBCHDeVyyJL8HOvsO2dYz2P7tBchxX5vC697NOCaMhc43ufGhDIt4ai5MM/ZsHG9/OkTZCMiQXKD4ueXF6q+ucXOQvgR2W7bUBAa32XaoGDpBHoQoJZ3UqPJsKn3wXFj5XsSLz3AXNvRoZWBZ+6mKmIWRtgj7+2JGdoxSjH9Z5Fk3xWVXLKW1UgwXV270UV5bTJPpvnQ70chfIOLSRupB4qspMOldfi3UnEskIhksG2vvAKh445x+1VZDhj3D90hZWMzZ0m5F7SBoBy5yffSMzFdMyesEljDl6zASM3EuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 195.60.68.100) smtp.rcpttodomain=linaro.org smtp.mailfrom=axis.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/0piiAJqNVsCJjiSCblbvSYyXjxYxrOalutMxrLLKKQ=;
- b=dBChw/RNIfwOgRKiJ0fOkolk9si6l4YW+t28KKm8LiKQTyeE8b0lRFypxrxZRdgJ0y5D7gL8PMXF7fY47R+3zC4758tsWc69WyZ2Ujmn0D505SlD645OlGUSHnObILdQMbxXF0uNdsd37lpxsAwQ7vX5RqIwp/MH4d63G6No/l8=
-Received: from DUZPR01CA0173.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:4b3::27) by VI1PR02MB5855.eurprd02.prod.outlook.com
- (2603:10a6:803:137::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Mon, 23 Oct
- 2023 14:06:28 +0000
-Received: from DU6PEPF00009527.eurprd02.prod.outlook.com
- (2603:10a6:10:4b3:cafe::71) by DUZPR01CA0173.outlook.office365.com
- (2603:10a6:10:4b3::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.24 via Frontend
- Transport; Mon, 23 Oct 2023 14:06:28 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
- smtp.mailfrom=axis.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=axis.com;
-Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
- designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
- client-ip=195.60.68.100; helo=mail.axis.com;
-Received: from mail.axis.com (195.60.68.100) by
- DU6PEPF00009527.mail.protection.outlook.com (10.167.8.8) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6933.15 via Frontend Transport; Mon, 23 Oct 2023 14:06:28 +0000
-Received: from SE-MAILARCH01W.axis.com (10.20.40.15) by se-mail02w.axis.com
- (10.20.40.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 23 Oct
- 2023 16:06:27 +0200
-Received: from se-mail01w.axis.com (10.20.40.7) by SE-MAILARCH01W.axis.com
- (10.20.40.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 23 Oct
- 2023 16:06:27 +0200
-Received: from se-intmail01x.se.axis.com (10.0.5.60) by se-mail01w.axis.com
- (10.20.40.7) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Mon, 23 Oct 2023 16:06:27 +0200
-Received: from pc36611-1939.se.axis.com (pc36611-1939.se.axis.com [10.88.125.175])
-        by se-intmail01x.se.axis.com (Postfix) with ESMTP id 76DEE1F6E;
-        Mon, 23 Oct 2023 16:06:27 +0200 (CEST)
-Received: by pc36611-1939.se.axis.com (Postfix, from userid 363)
-        id 6E4646291A; Mon, 23 Oct 2023 16:06:27 +0200 (CEST)
-Date:   Mon, 23 Oct 2023 16:06:27 +0200
-From:   Jesper Nilsson <jesper.nilsson@axis.com>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-CC:     Camel Guo <camel.guo@axis.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@axis.com>,
-        <linux-i2c@vger.kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] i2c: exynos5: Calculate t_scl_l, t_scl_h according to
- i2c spec
-Message-ID: <20231023140627.GE11306@axis.com>
-References: <20220912085943.1098651-1-camel.guo@axis.com>
- <CGME20231023103421eucas1p2f1415d69dd979036ef8bcb1a2dc88978@eucas1p2.samsung.com>
- <55812f75-3053-4970-bbbe-8ca563f33721@samsung.com>
+        Mon, 23 Oct 2023 10:07:13 -0400
+Received: from mx.manguebit.com (mx.manguebit.com [167.235.159.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4EBCC;
+        Mon, 23 Oct 2023 07:07:10 -0700 (PDT)
+Message-ID: <b8e37bfc992532038f9d562f5596cbf3.pc@manguebit.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
+        s=dkim; t=1698070028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QSfE4hORG5Bzst26B7/qFOcc4kmlRNLkRDCUrI5g4lM=;
+        b=R/eh6H29weLnIvT1D1BzpiD4xSKUHOnLDjToKZODoxIIpghfBMZJDQGtgb6LHdfbNBUnRQ
+        0T2HUTlZ9pCB6VV3kpGA2wN3wShu4M1cW0JhXGcQ+SDYCIhtFZ6Yi5piuiQW9UfVUzHPgs
+        3bQsql4Uwc6MwcswUsCKgLojKk2rG3UeTHgC+elJVdjFx3MAUpK4YQJgGmIx09WtSOhRfl
+        TmUoWvndhMK3B3FSoRmjTanSaRHXpWOVVWI2MxKkTnkrNF6WU7h57erRnuDGdULD0QW97l
+        cri0YnFFsEfRa4wdi/8ixseE39NLQIxV0CfjI3MWEDImfUoC1IKfKXCE3GOImw==
+ARC-Seal: i=1; s=dkim; d=manguebit.com; t=1698070028; a=rsa-sha256;
+        cv=none;
+        b=G8AJmOZ03AuCgY4HtmnxgHECvGLV7G9XNqAzCuohuAt8tGRd1ucBdvOO/QUWo3EvFjHL9L
+        x43mZXL82Atu6HWjeHb7pWcfDyMHJUk5aCXiuBFFu0wBIF4X2u1UBFKpdo87wSNIeSydip
+        0jGa+Mj/VOJ4NbHsftppn8yTX4SLFE0cl5BwZJQpdxt60RI85z+PKB+R+YKEoO+DpCvaoG
+        QkrmiQixG3DzLGMUJ5SMh+5Pa+wImxZjdhtuAV+eFV6QGRB70k8/7i3SvkXQD9I6RUa45E
+        mWR7mhoQvFk99kyFMYjo+xNR0yYPCHO+JldfeSFbALsAojbgkCdfgZadrlqtaA==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=pc@manguebit.com smtp.mailfrom=pc@manguebit.com
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
+        s=dkim; t=1698070028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QSfE4hORG5Bzst26B7/qFOcc4kmlRNLkRDCUrI5g4lM=;
+        b=c4p4K4a7lNTqPnjWqZywQUxMMmNipxxDjCIRLbWcKZrMgVEy/zyX6yIcFN1b7wcA4fzxPC
+        vnJusKqOwmvAynEGqxiKRDhsTtGlMiRUqJ+NU7twuXzBDka0xI8HDW1qvg4vbEyTYvV6Ai
+        IwQlO0kUtFZ+WwRaq6+1mtweRgaTfMVxFnJ6z63f9vHj+zcxVGP5jG2l9CXvzW7qz2IJ/r
+        dj6gHPtuccpy8zHWAMhc2v24bRVrbbCnq3OrMqE/XfS+uKMSimetWaq3veu03ptrL0Jr+c
+        SFm0WyRHI+VZGIkZQTiY4aPheq77nMeIcHyRGWDRGb0WbpPUXhzwwi20qbo+2w==
+From:   Paulo Alcantara <pc@manguebit.com>
+To:     "Dr. Bernd Feige" <bernd.feige@uniklinik-freiburg.de>,
+        "smfrench@gmail.com" <smfrench@gmail.com>,
+        "matoro_mailinglist_kernel@matoro.tk" 
+        <matoro_mailinglist_kernel@matoro.tk>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
+        "paul@darkrain42.org" <paul@darkrain42.org>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "ronniesahlberg@gmail.com" <ronniesahlberg@gmail.com>,
+        "bharathsm@microsoft.com" <bharathsm@microsoft.com>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        "brian.pardy@gmail.com" <brian.pardy@gmail.com>,
+        "nspmangalore@gmail.com" <nspmangalore@gmail.com>
+Subject: Re: Possible bug report: kernel 6.5.0/6.5.1 high load when CIFS
+ share is mounted (cifsd-cfid-laundromat in"D" state)
+In-Reply-To: <779ef3ac542e7e39027dee19d669ad2f81b05bcc.camel@uniklinik-freiburg.de>
+References: <CAO+kfxTwOvaxYV0ZRESxZB-4LHsF9b_VBjAKahhwUm5a1_c4ug@mail.gmail.com>
+ <ZPfPfyIoVxw5L6El@debian.me>
+ <CAO+kfxQgXOsx6u+xLKGJe0KDiFsRAGstSpnrwxjQF6udgz5HFQ@mail.gmail.com>
+ <CAO+kfxTvA6N=i+jGf0XbSyqf85i=q+vR6R9d_42OWfM2sWWXaA@mail.gmail.com>
+ <CAH2r5mtUedfLSv81Z-Yb3_=AbD_QpT3tVbU1PRzMTituaw7bgA@mail.gmail.com>
+ <CAH2r5mt6YzapEKDo=hQ64yvBn7=jwMmY1c85NOABKcMPKPp3KA@mail.gmail.com>
+ <CAO+kfxQtOKoKdb+LtMeFxgu8VXa73nbmTPSfscbdwjUXM7ME_A@mail.gmail.com>
+ <CAH2r5msNf9WDHrBZSi5FhHDSewSNxMAuXTetMJDnoNh3CF_oMA@mail.gmail.com>
+ <a895f860-11fa-e6d9-d042-a32bd08f9e9d@talpey.com>
+ <CAH2r5mszCxPtdURenMVgeVDX5zc8knumH=ASXyUufPa7SxbJBw@mail.gmail.com>
+ <ZRN9MtBqYnT6oX60@vaarsuvius>
+ <85d538fec5a086acf62d5a803056586a6c00e4bd.camel@uniklinik-freiburg.de>
+ <83d00d50bc628a85db71adb440d8afb5@matoro.tk>
+ <E1F307C7-9B1E-40F6-860B-6050856E8395@manguebit.com>
+ <CA6E0F87-65FD-4672-AA0C-A761E5006B7D@manguebit.com>
+ <CAH2r5mse_2sfXF+tdTmie5LLtBuc+6DOumDH3rn=5V24yhrYVQ@mail.gmail.com>
+ <c88b2ecd27524153c2acd8aba6ae3c80@matoro.tk>
+ <457a5483c3c4ca5bb6c7ec6f4231074c.pc@manguebit.com>
+ <779ef3ac542e7e39027dee19d669ad2f81b05bcc.camel@uniklinik-freiburg.de>
+Date:   Mon, 23 Oct 2023 11:07:01 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <55812f75-3053-4970-bbbe-8ca563f33721@samsung.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU6PEPF00009527:EE_|VI1PR02MB5855:EE_
-X-MS-Office365-Filtering-Correlation-Id: 93aded00-3432-4456-153f-08dbd3d1403e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3XJS/AiYnyllcjQijPddmToR6CK/djSLFcoikgF1w5Wj/46fSBtCVwHpfkLxMgGVXJmPAqqbBr2LBeyxhgljK0GzEtzSM9pBU9TWSdTbRNEIu6HKBhvbRvs0SpH4w7yk7kPhq1nj03Ky5bM4FCqlsOtlV5bSYH9jw79PR+XAc6kZbBnCImB9M1eSgYG9DPdJXGWL4CH7cynkVqe8fuwySKOKf1bkekkaKULDoroWVFkmjh9mEHhz2DvJzf/Uas9kTgTUxRokzmgg9fU+InSai8JUdhFVE7jcIT/DIGYJDHqL2uoVy+gh2O0fV15PXxdsLYpygfgd4vNoaXH/MN5bszsGBGO3F0BB9OhsXT2d9Tzzn/KChza62RPHB/Z7re9+HbCLk9FjRIiV3ixVtyefzH9szuv/2UqjnITdJwo1PcK78rlpo8djYc/NW77GeFBC/K/cHzEFHQi8K4HW9f0emGIzkyA/3+C84TL/TbrcsBdnzKOgqtHKIbFah8u9MqVqk/rUbGKodRtmJKVYS1qjysBDK+tbO7UWKRqX84XbiAgtAMaxwZU1l7folAVz6T7QMwcxVdgM+0crY1h0rCphtN60PeFnYXvJXdQg3VZTk7cA9RPat2h5puWhNYSofOHr0mfBLtUORMesM2ZeeSPGgsOeDQx+DBLARPmEgJ8Ug9Dy01RPZ08fzTEcZyXWHeT6pgiS474xICsnogKmUWYJ/HBDLihoed0U4WDSA3NPRRkJLThfzuNQv6hWsy6N1H7H1qp2N+B0xmOxNDlzZxsXKg==
-X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39850400004)(136003)(376002)(346002)(230922051799003)(1800799009)(64100799003)(82310400011)(451199024)(186009)(46966006)(40470700004)(36840700001)(44832011)(5660300002)(4326008)(41300700001)(8936002)(8676002)(316002)(6916009)(86362001)(2906002)(42186006)(54906003)(70206006)(70586007)(478600001)(53546011)(36756003)(2616005)(36860700001)(1076003)(26005)(81166007)(40480700001)(356005)(426003)(336012)(6266002)(47076005)(40460700003)(82740400003)(33656002)(83380400001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 14:06:28.1711
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 93aded00-3432-4456-153f-08dbd3d1403e
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
-X-MS-Exchange-CrossTenant-AuthSource: DU6PEPF00009527.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR02MB5855
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Marek for testing. We have been running with this patch for more
-than a year now.
+"Dr. Bernd Feige" <bernd.feige@uniklinik-freiburg.de> writes:
 
-The patch has been orphaned for 6 months as Camel no longer works here,
-but since I was involved in the creation of it I can resend it.
+> I can confirm that the patches apply cleanly on 6.5.8 and help a lot
+> with the issue here (vers=3.1.1, gentoo client, MS AD server with DFS).
 
-/Jesper
+Thanks for testing it.
 
-On Mon, Oct 23, 2023 at 12:34:19PM +0200, Marek Szyprowski wrote:
-> On 12.09.2022 10:59, Camel Guo wrote:
-> > Previously the duty cycle was divided equally into h_scl_l, t_scl_h.
-> > This makes the low period of the SCL clock in Fast Mode is only 1.25us
-> > which is way lower than the minimal value (1.3) specified in i2c
-> > specification. In order to make sure t_scl_l, t_scl_h always fullfill
-> > i2c specification, this commit calculates t_scl_l using this formula:
-> >
-> > t_scl_l = clk_cycle *
-> >      ((t_low_min + (scl_clock - t_low_min - t_high_min) / 2) / scl_clock)
-> >
-> > where:
-> > t_low_min is the minimal value of low period of the SCL clock in us;
-> > t_high_min is the minimal value of high period of the SCL clock in us;
-> > scl_clock is converted from SCL clock frequency into us.
-> >
-> > Signed-off-by: Camel Guo <camel.guo@axis.com>
-> 
-> 
-> This sounds reasonable and works fine on all Exynos-based test board I 
-> have. Feel free to add:
-> 
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> 
-> Reviewed-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> 
-> 
-> > ---
-> >   drivers/i2c/busses/i2c-exynos5.c | 34 +++++++++++++++++++++++++++++---
-> >   1 file changed, 31 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
-> > index 4a6260d04db2..72bc8adea8d5 100644
-> > --- a/drivers/i2c/busses/i2c-exynos5.c
-> > +++ b/drivers/i2c/busses/i2c-exynos5.c
-> > @@ -267,7 +267,7 @@ static void exynos5_i2c_clr_pend_irq(struct exynos5_i2c *i2c)
-> >    * exynos5_i2c_set_timing: updates the registers with appropriate
-> >    * timing values calculated
-> >    *
-> > - * Timing values for operation are calculated against either 100kHz
-> > + * Timing values for operation are calculated against 100kHz, 400kHz
-> >    * or 1MHz controller operating frequency.
-> >    *
-> >    * Returns 0 on success, -EINVAL if the cycle length cannot
-> > @@ -330,6 +330,23 @@ static int exynos5_i2c_set_timing(struct exynos5_i2c *i2c, bool hs_timings)
-> >   	 *
-> >   	 * Constraints: 4 <= temp, 0 <= CLK_DIV < 256, 2 <= clk_cycle <= 510
-> >   	 *
-> > +	 * To split SCL clock into low, high periods appropriately, one
-> > +	 * proportion factor for each I2C mode is used, which is calculated
-> > +	 * using this formula.
-> > +	 * ```
-> > +	 * ((t_low_min + (scl_clock - t_low_min - t_high_min) / 2) / scl_clock)
-> > +	 * ```
-> > +	 * where:
-> > +	 * t_low_min is the minimal value of low period of the SCL clock in us;
-> > +	 * t_high_min is the minimal value of high period of the SCL clock in us;
-> > +	 * scl_clock is converted from SCL clock frequency into us.
-> > +	 *
-> > +	 * Below are the proportion factors for these I2C modes:
-> > +	 *                t_low_min, t_high_min, scl_clock, proportion
-> > +	 * Standard Mode:     4.7us,      4.0us,      10us,      0.535
-> > +	 * Fast Mode:         1.3us,      0.6us,     2.5us,       0.64
-> > +	 * Fast-Plus Mode:    0.5us,     0.26us,       1us,       0.62
-> > +	 *
-> >   	 */
-> >   	t_ftl_cycle = (readl(i2c->regs + HSI2C_CONF) >> 16) & 0x7;
-> >   	temp = clkin / op_clk - 8 - t_ftl_cycle;
-> > @@ -343,8 +360,19 @@ static int exynos5_i2c_set_timing(struct exynos5_i2c *i2c, bool hs_timings)
-> >   		return -EINVAL;
-> >   	}
-> >   
-> > -	t_scl_l = clk_cycle / 2;
-> > -	t_scl_h = clk_cycle / 2;
-> > +	/*
-> > +	 * Scale clk_cycle to get t_scl_l using the proption factors for individual I2C modes.
-> > +	 */
-> > +	if (op_clk <= I2C_MAX_STANDARD_MODE_FREQ)
-> > +		t_scl_l = clk_cycle * 535 / 1000;
-> > +	else if (op_clk <= I2C_MAX_FAST_MODE_FREQ)
-> > +		t_scl_l = clk_cycle * 64 / 100;
-> > +	else
-> > +		t_scl_l = clk_cycle * 62 / 100;
-> > +
-> > +	if (t_scl_l > 0xFF)
-> > +		t_scl_l = 0xFF;
-> > +	t_scl_h = clk_cycle - t_scl_l;
-> >   	t_start_su = t_scl_l;
-> >   	t_start_hd = t_scl_l;
-> >   	t_stop_su = t_scl_l;
-> >
-> > base-commit: ce888220d5c7a805e0e155302a318d5d23e62950
-> 
-> Best regards
-> -- 
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
+Steve, I would suggest below commits for v6.5.y
 
-/^JN - Jesper Nilsson
--- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
+	238b351d0935 ("smb3: allow controlling length of time directory entries are cached with dir leases")
+	6a50d71d0fff ("smb3: allow controlling maximum number of cached directories")
+	2da338ff752a ("smb3: do not start laundromat thread when dir leases  disabled")
+	e95f3f744650 ("smb: client: make laundromat a delayed worker")
+	81ba10959970 ("smb: client: prevent new fids from being removed by laundromat")
+
+If OK, please ask stable team to pick those up.
