@@ -2,193 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B107D3A2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 923417D3A31
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbjJWO6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
+        id S231202AbjJWO7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233625AbjJWO6f (ORCPT
+        with ESMTP id S230255AbjJWO7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:58:35 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A73173C
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:58:16 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.nyi.internal (Postfix) with ESMTP id 625325C036B;
-        Mon, 23 Oct 2023 10:58:15 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Mon, 23 Oct 2023 10:58:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1698073095; x=1698159495; bh=W/
-        0WC7RItMawrgL8SpGn0ORkdhr0XPCHb2iIFurmGk8=; b=r4GRNYVss2a6WBCuRW
-        MDQ3LUTC9wccr5VVmBkD0SwP7Ab6QtXQLcXeF72aNQ0Lzhk1mnghKXlCrMz11O1C
-        gzE+CGBBg1xt4aFSWhgG5Yax7rtaMGYEcpzRwyk7V/2j1udnuk5svn8qLSv+0v4p
-        /enz2jzJ7wmmDGjeMVQLoMUTpMuXtj1BGQWG5LD4AdvA5CjKpHPm1ziYd83bewtf
-        4/2oTaA4Ks4aF/qTqjf1c9+MpASo1STtqhStbQT0hiBgLy906ia1tJ6uj0Haz1Xt
-        kNdXO603RDgDzBGoOy8Vkoh07C45+YBQY2uZOLfXJfbOTmhsXk4M2xQZ0Z45Cf7d
-        k4BA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698073095; x=1698159495; bh=W/0WC7RItMawr
-        gL8SpGn0ORkdhr0XPCHb2iIFurmGk8=; b=V9zBYozFVd47ADENJks7U1WkD/VH4
-        BvOdmo5VJWyDWLowJRe5n2/Opr45y8zxzwvBdfU0VRruiP54rZyU0ACilL4fxvqT
-        Qk59KTtyc6EpZGgwY1xCR54vtztDe9KfU5bSIrfrpUV1bYDbldVJ6S7t2Y6JZCJP
-        MZwICe9Loigh6J7dOC61/ie1MZyZ8fLYD48HG6XCsyHlzgf2ws0ntkCPVF4XW5oU
-        MlSEcR2dSOFvlIRa1MaLsvCYxcDZzP4+wF6qA7N+vHJML3beH5qMl8jlPujQo6WD
-        jguv3vXv5sxKYvxigZVCRxpy0FetH0ymjp0zyK5D3iedez1lAqjZkTT/g==
-X-ME-Sender: <xms:Boo2Zc2O5MjwxvcKUTzUAGBYFtNZVuTXr1or8uFJ6SRdA_-U4BpX9w>
-    <xme:Boo2ZXEXj5TQBbKocTNT-7jYp3yEozz5H-TgInjj2UZUPLP-MVMD99v_ho2ZR6hg2
-    R7UYUQuRXbQaiwX4fc>
-X-ME-Received: <xmr:Boo2ZU7ZiGFHq9yCE5E1YiOiZtCSIhSMO9QzmM883EbsOvUH9g8c_nb-SGbS2N1salQ6QBeSVy_H-f5y-81dpQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeeigdekvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehgtdfsredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnheptdfgudekieeguefhleehfedthffggeefgfduueeihfeuueelkeevtedviedt
-    vdeinecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:Boo2ZV0GTLdO2YUbhLV4smAfFoWLPxBB94iMNb2AHC0mAxG3qNAhUQ>
-    <xmx:Boo2ZfEHFhnfTl5ifqcPS5squGswNMpTERoJj0GQh_a3AIkx3KIlMA>
-    <xmx:Boo2Ze-DlkqRGIFJC_JbpchdMddVy6vZp44_6gxX_2qM3m26n4mPXw>
-    <xmx:B4o2ZQM5qJD-nUDPprIYYWQYPEELnYMnBQThMCgzEsyrKdBzVbppNQ>
-Feedback-ID: i8771445c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 23 Oct 2023 10:58:14 -0400 (EDT)
-Date:   Mon, 23 Oct 2023 16:58:12 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>
-Subject: Re: [PATCH v3 3/9] drm/vc4: hdmi: Add Broadcast RGB property to
- allow override of RGB range
-Message-ID: <tnkfcgkoobxyyhnsmoyayohip73wl6axnd7liefsvof6qwgovd@ropob4set3nl>
-References: <20221207-rpi-hdmi-improvements-v3-0-bdd54f66884e@cerno.tech>
- <20221207-rpi-hdmi-improvements-v3-3-bdd54f66884e@cerno.tech>
- <CAKMK7uFQ8yJLKgTrQdmhwmq9uL-hbUsfUeU6cxWdB2AW3i4vOg@mail.gmail.com>
- <fwcn3vlgxq5uygi32pyjuktj62wa7zvdgu7xxlpqr7an3kjn7i@25axhlrrkk6z>
- <12669999-295f-40c5-8c58-ba3ed26efb16@xs4all.nl>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kg5ejgqcqfwxthnd"
-Content-Disposition: inline
-In-Reply-To: <12669999-295f-40c5-8c58-ba3ed26efb16@xs4all.nl>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 23 Oct 2023 10:59:05 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D1610D0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:59:00 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7ba10cb90so48591897b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:59:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698073139; x=1698677939; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Flyl5CTmQl8KaVZkUK6sdZJgLtZ9cPBOArwvlq8mdTY=;
+        b=t0gaFMfr57X0eZU/lKCOhS/MG0/yy4xukxJRgkMFu1dU3h1QAl3Hjok2/wiupLIXLx
+         EDKpOn7TWuBxUs4Wzhp+iGTEi9jgvf/z73zho1P6eH65gSgaX0a7CgfCl3FzrwJrsfOK
+         NrMMR6nnrN5K1r+hDVCGTaakmQ/7m/EGmzcZR8IQpc1xMPHORO8aXyuaVfVI53k5OvR5
+         ywIKdAEi5VE4fTvhiI71jXgtwU4DfaSypmUp5T6uRl2QgdiYMFyfv+Tdx4vtEowfi/Jc
+         1ov32QAlIcBPbEvLpyQSRwuh9POidgx4MiBMs4xAj5eE0LfRjemvY6P/oZK1JJ7aocDP
+         15hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698073139; x=1698677939;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Flyl5CTmQl8KaVZkUK6sdZJgLtZ9cPBOArwvlq8mdTY=;
+        b=J9zjlFRLWVQ/TPE2Ywfz0IupzPrBDTjM2AhN8mFZtMH7aZK6YftuZXVkly4Un96Uyp
+         HMcwfpXjj46VMz3xPxjD3x6MP9tXMkWnEdW748i9reRvNB6pNowzBgKpfmePx8TdAnL9
+         IfsqDWD/bMR2k2L7pCTwYlyP4cyiE+JILGsihDszP9umkQonTzHlc1kGI8cbTZhrQ04M
+         geiyV+oKhrkevpB8fw3M7nmLSAWAY5lSSep4bEts04FHiooKiDZSBuYScX5tJ49Wrr/X
+         1TTSmM1KThiC9rEpCxZc029daTRFUxKegePI0UHiXaLtLf2VTTxn+qi/pkwV+6tf89l5
+         KRWA==
+X-Gm-Message-State: AOJu0Yz7FvB/oeo2vZHtQf5MdZw5+YTyaWvPRdCnF+5zmQsJT9RVXYW8
+        p2NAW2+9Tr1pI/lSgm+0jgidvK4VJcc=
+X-Google-Smtp-Source: AGHT+IGJVEjwFciVLjGMcTbk9Ucqyn6zEG4pnXQMiBfSEdqlgcK+Ls1MZjlK6mcaopsYanQyUqMIMpoNPdE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:b97:0:b0:d7b:94f5:1301 with SMTP id
+ 145-20020a250b97000000b00d7b94f51301mr168980ybl.9.1698073139445; Mon, 23 Oct
+ 2023 07:58:59 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 07:58:57 -0700
+In-Reply-To: <20231021004633.ymughma7zijosku5@desk>
+Mime-Version: 1.0
+References: <20231020-delay-verw-v1-0-cff54096326d@linux.intel.com>
+ <20231020-delay-verw-v1-6-cff54096326d@linux.intel.com> <ZTMFS8I2s8EroSNe@google.com>
+ <20231021004633.ymughma7zijosku5@desk>
+Message-ID: <ZTaKMdZqq2R1xXFh@google.com>
+Subject: Re: [PATCH  6/6] KVM: VMX: Move VERW closer to VMentry for MDS mitigation
+From:   Sean Christopherson <seanjc@google.com>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 20, 2023, Pawan Gupta wrote:
+> On Fri, Oct 20, 2023 at 03:55:07PM -0700, Sean Christopherson wrote:
+> > On Fri, Oct 20, 2023, Pawan Gupta wrote:
+> > > During VMentry VERW is executed to mitigate MDS. After VERW, any memory
+> > > access like register push onto stack may put host data in MDS affected
+> > > CPU buffers. A guest can then use MDS to sample host data.
+> > > 
+> > > Although likelihood of secrets surviving in registers at current VERW
+> > > callsite is less, but it can't be ruled out. Harden the MDS mitigation
+> > > by moving the VERW mitigation late in VMentry path.
+> > > 
+> > > Note that VERW for MMIO Stale Data mitigation is unchanged because of
+> > > the complexity of per-guest conditional VERW which is not easy to handle
+> > > that late in asm with no GPRs available. If the CPU is also affected by
+> > > MDS, VERW is unconditionally executed late in asm regardless of guest
+> > > having MMIO access.
+> > > 
+> > > Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+> > > ---
+> > >  arch/x86/kvm/vmx/vmenter.S |  9 +++++++++
+> > >  arch/x86/kvm/vmx/vmx.c     | 10 +++++++---
+> > >  2 files changed, 16 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+> > > index be275a0410a8..efa716cf4727 100644
+> > > --- a/arch/x86/kvm/vmx/vmenter.S
+> > > +++ b/arch/x86/kvm/vmx/vmenter.S
+> > > @@ -1,6 +1,7 @@
+> > >  /* SPDX-License-Identifier: GPL-2.0 */
+> > >  #include <linux/linkage.h>
+> > >  #include <asm/asm.h>
+> > > +#include <asm/segment.h>
+> > >  #include <asm/bitsperlong.h>
+> > >  #include <asm/kvm_vcpu_regs.h>
+> > >  #include <asm/nospec-branch.h>
+> > > @@ -31,6 +32,8 @@
+> > >  #define VCPU_R15	__VCPU_REGS_R15 * WORD_SIZE
+> > >  #endif
+> > >  
+> > > +#define GUEST_CLEAR_CPU_BUFFERS		USER_CLEAR_CPU_BUFFERS
+> > > +
+> > >  .macro VMX_DO_EVENT_IRQOFF call_insn call_target
+> > >  	/*
+> > >  	 * Unconditionally create a stack frame, getting the correct RSP on the
+> > > @@ -177,10 +180,16 @@ SYM_FUNC_START(__vmx_vcpu_run)
+> > >   * the 'vmx_vmexit' label below.
+> > >   */
+> > >  .Lvmresume:
+> > > +	/* Mitigate CPU data sampling attacks .e.g. MDS */
+> > > +	GUEST_CLEAR_CPU_BUFFERS
+> > 
+> > I have a very hard time believing that it's worth duplicating the mitigation
+> > for VMRESUME vs. VMLAUNCH just to land it after a Jcc.
+> 
+> VERW modifies the flags, so it either needs to be after Jcc or we
+> push/pop flags that adds 2 extra memory operations. Please let me know
+> if there is a better option.
 
---kg5ejgqcqfwxthnd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ugh, I assumed that piggybacking VERW overrode the original behavior entirely, I
+didn't realize it sacrifices EFLAGS.ZF on the altar of mitigations.
 
-Hi Hans,
+Luckily, this is easy to solve now that VMRESUME vs. VMLAUNCH uses a flag instead
+of a dedicated bool.
 
-On Thu, Oct 19, 2023 at 10:26:40AM +0200, Hans Verkuil wrote:
-> Hi Maxime,
->=20
-> On 19/10/2023 10:02, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > On Wed, Oct 11, 2023 at 03:23:18PM +0200, Daniel Vetter wrote:
-> >> On Mon, 6 Mar 2023 at 11:49, Maxime Ripard <maxime@cerno.tech> wrote:
-> >>>
-> >>> From: Dave Stevenson <dave.stevenson@raspberrypi.com>
-> >>>
-> >>> Copy Intel's "Broadcast RGB" property semantics to add manual override
-> >>> of the HDMI pixel range for monitors that don't abide by the content
-> >>> of the AVI Infoframe.
-> >>>
-> >>> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-> >>> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> >>
-> >> Stumbled over this grepping around, but would have been nice to lift
-> >> this into drm code and document the property. It's one of the legacy
-> >> ones from the table of horrors after all ...
-> >>
-> >> Shouldn't be an uapi problem because it's copypasted to much, just not=
- great.
-> >=20
-> > We already discussed it on IRC, but just for the record I have a current
-> > series that should address exactly that:
-> >=20
-> > https://lore.kernel.org/dri-devel/20230920-kms-hdmi-connector-state-v2-=
-3-17932daddd7d@kernel.org/
-> >=20
-> > Maxime
->=20
-> I've pasted a snippet from that patch below for a quick review:
->=20
-> >  /**
-> >   * DOC: HDMI connector properties
-> >   *
-> > + * Broadcast RGB (HDMI Specific):
->=20
-> Full vs Limited is actually not HDMI specific, DisplayPort can signal thi=
-s as
-> well for whatever it is worth.
+From: Sean Christopherson <seanjc@google.com>
+Date: Mon, 23 Oct 2023 07:44:35 -0700
+Subject: [PATCH] KVM: VMX: Use BT+JNC, i.e. EFLAGS.CF to select VMRESUME vs.
+ VMLAUNCH
 
-Sure, what I (and the original patch I guess) meant is that it's only
-ever used on HDMI connectors these days. If that ever changes, then we
-can update the doc.
+Use EFLAGS.CF instead of EFLAGS.ZF to track whether to use VMRESUME versus
+VMLAUNCH.  Freeing up EFLAGS.ZF will allow doing VERW, which clobbers ZF,
+for MDS mitigations as late as possible without needing to duplicate VERW
+for both paths.
 
-> > + *      Indicates the RGB Range (Full vs Limited) used.
->=20
-> RGB Range -> RGB Quantization Range
->=20
-> > + *
-> > + *      The value of this property can be one of the following:
-> > + *
-> > + *      Automatic:
-> > + *              RGB Range is selected automatically based on the mode
-> > + *              according to the HDMI specifications.
-> > + *
-> > + *      Full:
-> > + *              Full RGB Range is forced.
-> > + *
-> > + *      Limited 16:235:
->=20
-> It is very unfortunate that this is called "Limited 16:235" instead of ju=
-st "Limited"
-> since for color component bit depths > 8 these values are different.
->=20
-> I have no idea if it is possible to add an alias "Limited" that you can u=
-se instead.
-> In any case, this should document that it works just as well for higher b=
-it depths,
-> but with different limits.
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/vmx/run_flags.h | 7 +++++--
+ arch/x86/kvm/vmx/vmenter.S   | 6 +++---
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-I had a look and it doesn't look like the property infrastructure can
-deal with aliases. I'll add something in the doc
+diff --git a/arch/x86/kvm/vmx/run_flags.h b/arch/x86/kvm/vmx/run_flags.h
+index edc3f16cc189..6a9bfdfbb6e5 100644
+--- a/arch/x86/kvm/vmx/run_flags.h
++++ b/arch/x86/kvm/vmx/run_flags.h
+@@ -2,7 +2,10 @@
+ #ifndef __KVM_X86_VMX_RUN_FLAGS_H
+ #define __KVM_X86_VMX_RUN_FLAGS_H
+ 
+-#define VMX_RUN_VMRESUME	(1 << 0)
+-#define VMX_RUN_SAVE_SPEC_CTRL	(1 << 1)
++#define VMX_RUN_VMRESUME_SHIFT		0
++#define VMX_RUN_SAVE_SPEC_CTRL_SHIFT	1
++
++#define VMX_RUN_VMRESUME		BIT(VMX_RUN_VMRESUME_SHIFT)
++#define VMX_RUN_SAVE_SPEC_CTRL		BIT(VMX_RUN_SAVE_SPEC_CTRL_SHIFT)
+ 
+ #endif /* __KVM_X86_VMX_RUN_FLAGS_H */
+diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+index be275a0410a8..b3b13ec04bac 100644
+--- a/arch/x86/kvm/vmx/vmenter.S
++++ b/arch/x86/kvm/vmx/vmenter.S
+@@ -139,7 +139,7 @@ SYM_FUNC_START(__vmx_vcpu_run)
+ 	mov (%_ASM_SP), %_ASM_AX
+ 
+ 	/* Check if vmlaunch or vmresume is needed */
+-	test $VMX_RUN_VMRESUME, %ebx
++	bt   $VMX_RUN_VMRESUME_SHIFT, %ebx
+ 
+ 	/* Load guest registers.  Don't clobber flags. */
+ 	mov VCPU_RCX(%_ASM_AX), %_ASM_CX
+@@ -161,8 +161,8 @@ SYM_FUNC_START(__vmx_vcpu_run)
+ 	/* Load guest RAX.  This kills the @regs pointer! */
+ 	mov VCPU_RAX(%_ASM_AX), %_ASM_AX
+ 
+-	/* Check EFLAGS.ZF from 'test VMX_RUN_VMRESUME' above */
+-	jz .Lvmlaunch
++	/* Check EFLAGS.CF from the VMX_RUN_VMRESUME bit test above. */
++	jnc .Lvmlaunch
+ 
+ 	/*
+ 	 * After a successful VMRESUME/VMLAUNCH, control flow "magically"
 
-Thanks!
-Maxime
+base-commit: ec2f1daad460c6201338dae606466220ccaa96d5
+-- 
 
---kg5ejgqcqfwxthnd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZTaKBAAKCRDj7w1vZxhR
-xWptAP42g9P7kv2iPbu4YrraFGmwXRYdv9Jwnqj1JWzCfk7IegEA6Id6EjqfGIDt
-0180BH6z4cwus4NL2P4Cz/1Ox5aj7Q8=
-=OIoh
------END PGP SIGNATURE-----
-
---kg5ejgqcqfwxthnd--
