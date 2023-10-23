@@ -2,370 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 769507D2E98
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F487D2EA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbjJWJhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
+        id S229749AbjJWJjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjJWJhx (ORCPT
+        with ESMTP id S229449AbjJWJjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:37:53 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39459A1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:37:28 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c5056059e0so46476191fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:37:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1698053846; x=1698658646; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WHmFglyUVEPX00nAamiQ/LBEnj3er0a+eO4EDfWMZRI=;
-        b=B/QKvSwZQx43iS8yxCscYYbBf/ij5pGOpyTO9kCdlcnsEdskH5dLgWjt7A1vE9kQs3
-         mtoGPsMtq9dN3O6feI6CYF9i3k80USLHD9rJ7GK+5HhiPsLZEUP1/UZx8GEsQo1YjI+t
-         HDyvepFKPxPXWmJhqQgVSdtabyEhoxpYWE+RYlha8vSOh5KjJEFqb3/Hr4B87YEVCiS+
-         TPVkATkWJVVXX8ggBggrab4bYMH9zG1hI32BseVf8bYXbPE4Da+q6PLyIAy0xybnqkR7
-         4AvrI14m92XhOPs5q/NQtGgwdTY6feM7WJ5tSb8ozLX2kcZA4tm1UzK6zyjTohMWQiJn
-         6FCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698053846; x=1698658646;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WHmFglyUVEPX00nAamiQ/LBEnj3er0a+eO4EDfWMZRI=;
-        b=Ib29uVrLbjeahtuubKQ8s9UMGyWdk/WeQ/2/L+9fh7F+pQIuJT16RCi8AGDTUExlrJ
-         Eeblv2Q5N5wJNkB9X5hYH/Lwp2XAi1hScCEyu7/fAWY4u/v+N7v7UlsyrmqcX3vQIT8x
-         3NEBVPdp6yUYiWFt0aYWJ8chZG2bQxJ5dO40GpBCYl3/05EM2HDoQrMPn02+FYo4Hd+u
-         Oe0wACEX2inBUMrSV8bkBNY1MK3iKPJmuFoJfjKb8U/FwMonH4YfF3yHckrg0edObX0I
-         wYDBUxNytVEduWjbv54bj3CBheNMygkMHsR1HV1pV9LICGBHEYdox+QNz+ejJ4iSUacU
-         OBIA==
-X-Gm-Message-State: AOJu0YxCiEqhjNujKftjwj5sL/gE5hBc8PfLI3qJl74UWEc+jKM4HHWY
-        ZakJu2+FeTbFSML9CUC8OEuh25it7bJuBDLkV4pUAQ==
-X-Google-Smtp-Source: AGHT+IHyNKPXGpldHRqPIL5oYoerq2ZPzq41R0gAnppxdlM5gZLgnBfeekHEUx7aAiSz3w0SqRzvEa7bHRBzp0OxB+E=
-X-Received: by 2002:a2e:be2b:0:b0:2bb:78ad:56cb with SMTP id
- z43-20020a2ebe2b000000b002bb78ad56cbmr6300815ljq.37.1698053846379; Mon, 23
- Oct 2023 02:37:26 -0700 (PDT)
+        Mon, 23 Oct 2023 05:39:42 -0400
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBBCA4;
+        Mon, 23 Oct 2023 02:39:36 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vujf2Wq_1698053971;
+Received: from 30.240.113.74(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vujf2Wq_1698053971)
+          by smtp.aliyun-inc.com;
+          Mon, 23 Oct 2023 17:39:33 +0800
+Message-ID: <f0241dfe-aa81-4e12-8465-683eaf8937ea@linux.alibaba.com>
+Date:   Mon, 23 Oct 2023 17:39:30 +0800
 MIME-Version: 1.0
-References: <20231016031649.35088-1-huangjie.albert@bytedance.com>
- <CAJ8uoz2DUe3xySTKuLbA5=QDAGuTzPdGu3P_=ZvJmna25VtHCQ@mail.gmail.com>
- <CABKxMyONtPR1pWLdBiK5M-NJoc5S6rpyYYUQWa0J2R+eyajOsg@mail.gmail.com> <CAJ8uoz3Vq1aHzB6Ew-yCQF8On9EP_9BSB4rOvqEgMXeA5=wZgw@mail.gmail.com>
-In-Reply-To: <CAJ8uoz3Vq1aHzB6Ew-yCQF8On9EP_9BSB4rOvqEgMXeA5=wZgw@mail.gmail.com>
-From:   =?UTF-8?B?6buE5p2w?= <huangjie.albert@bytedance.com>
-Date:   Mon, 23 Oct 2023 17:37:15 +0800
-Message-ID: <CABKxMyNy-jOqEuQYCLrOUu1r3M-dJp+RD-KDsXbytXtwJqO4hg@mail.gmail.com>
-Subject: Re: [PATCH v2 net-next] xsk: Avoid starving xsk at the end of the list
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 3/4] drivers/perf: add DesignWare PCIe PMU driver
+Content-Language: en-US
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
+        renyu.zj@linux.alibaba.com, chengyou@linux.alibaba.com,
+        kaishen@linux.alibaba.com, helgaas@kernel.org,
+        yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, robin.murphy@arm.com
+References: <20231020134230.53342-1-xueshuai@linux.alibaba.com>
+ <20231020134230.53342-4-xueshuai@linux.alibaba.com>
+ <8c6a480e-41d2-43f7-952e-4f4e691e700f@linux.alibaba.com>
+ <539dade7-c349-33c3-cb9e-8a795de28041@linux.alibaba.com>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <539dade7-c349-33c3-cb9e-8a795de28041@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Magnus Karlsson <magnus.karlsson@gmail.com> =E4=BA=8E2023=E5=B9=B410=E6=9C=
-=8819=E6=97=A5=E5=91=A8=E5=9B=9B 17:13=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu, 19 Oct 2023 at 10:41, =E9=BB=84=E6=9D=B0 <huangjie.albert@bytedan=
-ce.com> wrote:
-> >
-> > Magnus Karlsson <magnus.karlsson@gmail.com> =E4=BA=8E2023=E5=B9=B410=E6=
-=9C=8816=E6=97=A5=E5=91=A8=E4=B8=80 14:41=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > On Mon, 16 Oct 2023 at 05:17, Albert Huang
-> > > <huangjie.albert@bytedance.com> wrote:
-> > > >
-> > > > In the previous implementation, when multiple xsk sockets were
-> > > > associated with a single xsk_buff_pool, a situation could arise
-> > > > where the xsk_tx_list maintained data at the front for one xsk
-> > > > socket while starving the xsk sockets at the back of the list.
-> > > > This could result in issues such as the inability to transmit packe=
-ts,
-> > > > increased latency, and jitter. To address this problem, we introduc=
-ed
-> > > > a new variable called tx_budget_cache, which limits each xsk to tra=
-nsmit
-> > > > a maximum of MAX_XSK_TX_BUDGET tx descriptors. This allocation ensu=
-res
-> > > > equitable opportunities for subsequent xsk sockets to send tx descr=
-iptors.
-> > > > The value of MAX_XSK_TX_BUDGET is temporarily set to 16.
-> > >
-> > > Hi Albert. Yes you are correct that there is nothing hindering this t=
-o
-> > > happen in the code at the moment, so let us fix it.
-> > >
-> > > > Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
-> > > > ---
-> > > >  include/net/xdp_sock.h |  6 ++++++
-> > > >  net/xdp/xsk.c          | 18 ++++++++++++++++++
-> > > >  2 files changed, 24 insertions(+)
-> > > >
-> > > > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> > > > index 69b472604b86..f617ff54e38c 100644
-> > > > --- a/include/net/xdp_sock.h
-> > > > +++ b/include/net/xdp_sock.h
-> > > > @@ -44,6 +44,7 @@ struct xsk_map {
-> > > >         struct xdp_sock __rcu *xsk_map[];
-> > > >  };
-> > > >
-> > > > +#define MAX_XSK_TX_BUDGET 16
-> > >
-> > > I think something like MAX_PER_SOCKET_BUDGET would be clearer.
-> > >
-> > > >  struct xdp_sock {
-> > > >         /* struct sock must be the first member of struct xdp_sock =
-*/
-> > > >         struct sock sk;
-> > > > @@ -63,6 +64,11 @@ struct xdp_sock {
-> > > >
-> > > >         struct xsk_queue *tx ____cacheline_aligned_in_smp;
-> > > >         struct list_head tx_list;
-> > > > +       /* Record the actual number of times xsk has transmitted a =
-tx
-> > > > +        * descriptor, with a maximum limit not exceeding MAX_XSK_T=
-X_BUDGET
-> > > > +        */
-> > > > +       u32 tx_budget_cache;
-> > > > +
-> > > >         /* Protects generic receive. */
-> > > >         spinlock_t rx_lock;
-> > > >
-> > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > > > index f5e96e0d6e01..087f2675333c 100644
-> > > > --- a/net/xdp/xsk.c
-> > > > +++ b/net/xdp/xsk.c
-> > > > @@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
-> > > >
-> > > >  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc =
-*desc)
-> > > >  {
-> > > > +       u32 xsk_full_count =3D 0;
-> > >
-> > > Enough with a bool;
-> > >
-> > > >         struct xdp_sock *xs;
-> > > >
-> > > >         rcu_read_lock();
-> > > > +again:
-> > > >         list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-> > > > +               if (xs->tx_budget_cache >=3D MAX_XSK_TX_BUDGET) {
-> > > > +                       xsk_full_count++;
-> > > > +                       continue;
-> > > > +               }
-> > >
-> > > The problem here is that the fixed MAX_XSK_TX_BUDGET is only useful
-> > > for the <=3D 2 socket case. If I have 3 sockets sharing a
-> > > netdev/queue_id, the two first sockets can still starve the third one
-> > > since the total budget per send is 32. You need to go through the lis=
-t
-> > > of sockets in the beginning to compute the MAX_XSK_TX_BUDGET to
-> > > compute this dynamically before each call. Or cache this value
-> > > somehow, in the pool for example. Actually, the refcount in the
-> > > buf_pool will tell you how many sockets are sharing the same buf_pool=
-.
-> > > Try using that to form MAX_XSK_TX_BUDGET on the fly.
-> > >
-> > > Another simpler way of accomplishing this would be to just reorder th=
-e
-> > > list every time. Put the first socket last in the list every time. Th=
-e
-> > > drawback of this is that you need to hold the xsk_tx_list_lock while
-> > > doing this so might be slower. The per socket batch size would also b=
-e
-> > > 32 and you would not receive "fairness" over a single call to
-> > > sendto(). Would that be a problem for you?
-> > >
-> >
-> > Currently, there are two paths in the kernel that consume TX queue desc=
-riptors:
-> >
-> > 1=E3=80=81Native XSK
-> > xsk_tx_peek_desc
-> >      xskq_cons_peek_desc
-> >
-> > In the first scenario, we consume TX descriptors by sequentially
-> > traversing the pool->xsk_tx_list
-> > without any implicit code logic to ensure fairness. This can lead to a
-> > scenario of starvation,
-> > making it a top priority for us to address.
-> >
-> > 2=E3=80=81Generic XSK
-> > __xsk_sendmsg (or xsk_poll)
-> >      xsk_generic_xmit
-> >         __xsk_generic_xmit
-> >               xskq_cons_peek_desc
-> >
-> > In the second scenario, TX descriptors are consumed by using sendto.
-> > Currently, __xsk_generic_xmit
-> > sends a maximum of 32 TX descriptors each time, and the process
-> > scheduling strategy already
-> > ensures a certain level of fairness. In this scenario, should we
-> > consider not addressing it and
-> > instead prioritize the first scenario?
->
-> Agree. The first scenario is the problematic one. One problem we have
-> to solve there is that the batch size is up to the driver in the
-> zero-copy case so the xsk core has no idea. Maybe introduce a pointer
-> that tells us what socket to get packets from first and make sure this
-> pointer gets updated to the next socket in the list every time the
-> function is exited? Please make sure that the one socket case is not
-> hurt.
 
-The method of "introducing a pointer that tells us which socket to get
-packets from first" is useful, but it requires us to manage socket
-additions and removals. This would introduce
-locking operations.
 
-So it seems that the following code is simple enough and appears to
-solve the problem:
+On 2023/10/23 10:05, Baolin Wang wrote:
+> 
+> 
+> On 10/22/2023 3:47 PM, Shuai Xue wrote:
+>> Hi, Baolin,
+>>
+>> I droped your Revivewed-by tag due to that I made significant changes to this
+>> patch previously, please explicty give me Revivewed-by tag again if you are
+>> happy with the changes.
+> 
+> Yes, I am happy with this version (just some nits as below), and thanks for the review from other guys. Please feel free to add:
+> 
+> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-1.During each iteration, check if the current socket being traversed
-has exhausted its quota. If it has, skip it and continue iterating
-through the remaining sockets.
-2.If all sockets have been traversed, and no available transmission
-descriptors (tx desc) have been found, consider whether it's time to
-start a fresh iteration.
-3.The logic for a fresh iteration involves checking if any socket has
-used up its quota during the traversal. If any socket has reached its
-quota, set the tx_budget_cache of all sockets to 0 and begin a new
-iteration of the list.
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index f5e96e0d6e01..2cf2822e9d16 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
+Thank you.
 
- bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
- {
-+       bool xsk_cache_full =3D false;
-        struct xdp_sock *xs;
+Best Regards,
+Shuai
 
-        rcu_read_lock();
-+again:
-        list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-+               if (xs->tx_budget_cache >=3D MAX_PER_SOCKET_BUDGET) {
-+                       xsk_cache_full =3D true;
-+                       continue;
-+               }
-+
-                if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
-                        if (xskq_has_descs(xs->tx))
-                                xskq_cons_release(xs->tx);
-                        continue;
-                }
+> 
+>> On 2023/10/20 21:42, Shuai Xue wrote:
+>>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
+>>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
+>>> Core controller IP which provides statistics feature. The PMU is a PCIe
+>>> configuration space register block provided by each PCIe Root Port in a
+>>> Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
+>>> injection, and Statistics).
+>>>
+>>> To facilitate collection of statistics the controller provides the
+>>> following two features for each Root Port:
+>>>
+>>> - one 64-bit counter for Time Based Analysis (RX/TX data throughput and
+>>>    time spent in each low-power LTSSM state) and
+>>> - one 32-bit counter for Event Counting (error and non-error events for
+>>>    a specified lane)
+>>>
+>>> Note: There is no interrupt for counter overflow.
+>>>
+>>> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
+>>> named based the BDF of Root Port. For example,
+>>>
+>>>      30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
+>>>
+>>> the PMU device name for this Root Port is dwc_rootport_3018.
+>>>
+>>> Example usage of counting PCIe RX TLP data payload (Units of bytes)::
+>>>
+>>>      $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
+>>>
+>>> average RX bandwidth can be calculated like this:
+>>>
+>>>      PCIe TX Bandwidth = Rx_PCIe_TLP_Data_Payload / Measure_Time_Window
+>>>
+>>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+>>> ---
+> 
+> [snip]
+> 
+>>> +static u64 dwc_pcie_pmu_read_time_based_counter(struct perf_event *event)
+>>> +{
+>>> +    struct dwc_pcie_pmu *pcie_pmu = to_dwc_pcie_pmu(event->pmu);
+>>> +    struct pci_dev *pdev = pcie_pmu->pdev;
+>>> +    int event_id = DWC_PCIE_EVENT_ID(event);
+>>> +    u16 ras_des_offset = pcie_pmu->ras_des_offset;
+>>> +    u32 lo, hi, ss;
+>>> +
+>>> +    /*
+>>> +     * The 64-bit value of the data counter is spread across two
+>>> +     * registers that are not synchronized. In order to read them
+>>> +     * atomically, ensure that the high 32 bits match before and after
+>>> +     * reading the low 32 bits.
+>>> +     */
+>>> +    pci_read_config_dword(pdev, ras_des_offset +
+>>> +        DWC_PCIE_TIME_BASED_ANAL_DATA_REG_HIGH, &hi);
+>>> +    do {
+>>> +        /* snapshot the high 32 bits */
+>>> +        ss = hi;
+>>> +
+>>> +        pci_read_config_dword(
+>>> +            pdev, ras_des_offset + DWC_PCIE_TIME_BASED_ANAL_DATA_REG_LOW,
+>>> +            &lo);
+>>> +        pci_read_config_dword(
+>>> +            pdev, ras_des_offset + DWC_PCIE_TIME_BASED_ANAL_DATA_REG_HIGH,
+>>> +            &hi);
+>>> +    } while (hi != ss);
+>>> +
+>>> +    /*
+>>> +     * The Group#1 event measures the amount of data processed in 16-byte
+>>> +     * units. Simplify the end-user interface by multiplying the counter
+>>> +     * at the point of read.
+>>> +     */
+>>> +    if (event_id >= 0x20 && event_id <= 0x23)
+>>> +        return (((u64)hi << 32) | lo) << 4;
+>>> +    else
+> 
+> You can drop the 'else'.
 
-+               xs->tx_budget_cache++;
-+
-                /* This is the backpressure mechanism for the Tx path.
-                 * Reserve space in the completion queue and only proceed
-                 * if there is space in it. This avoids having to implement
-@@ -436,6 +445,15 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool,
-struct xdp_desc *desc)
-                return true;
-        }
+Agreed, will fix it in next version.
 
-+not_found:
-+       if (xsk_cache_full =3D=3D true) {
-+               list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-+                       xs->tx_budget_cache =3D 0;
-+               }
-+               xsk_cache_full =3D false;
-+               goto again;
-+       }
-+
- out:
-        rcu_read_unlock();
-        return false;
 
-Although this method cannot achieve perfect fairness, it prevents any
-sockets from starving
+>>> +
+>>> +    event->cpu = pcie_pmu->on_cpu;
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static void dwc_pcie_pmu_set_period(struct hw_perf_event *hwc)
+>>> +{
+>>> +    local64_set(&hwc->prev_count, 0);
+>>> +}
+> 
+> Only dwc_pcie_pmu_event_start() will call this small function, why just remove this function and move local64_set() into dwc_pcie_pmu_event_start()?
 
->
-> > Additionally, based on my understanding, there should not be
-> > applications concurrently using generic
-> > XSK and native XSK on the same pool.
->
-> That is correct.
->
-> > Magnus, how do you view this issue? I'm concerned that striving for
-> > absolute fairness might introduce
-> > additional complexity in the logic.
->
-> Is this a problem that you have observed or need to guard against in
-> an application? If so, let us fix it.
+Good suggestion, will fix it.
 
-Currently, we are facing issue 1.
-
->
-> > BR
-> > Albert
-> >
-> >
-> >
-> > > > +
-> > > >                 if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
-> > > >                         if (xskq_has_descs(xs->tx))
-> > > >                                 xskq_cons_release(xs->tx);
-> > > >                         continue;
-> > > >                 }
-> > > >
-> > > > +               xs->tx_budget_cache++;
-> > > > +
-> > > >                 /* This is the backpressure mechanism for the Tx pa=
-th.
-> > > >                  * Reserve space in the completion queue and only p=
-roceed
-> > > >                  * if there is space in it. This avoids having to i=
-mplement
-> > > > @@ -436,6 +445,14 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *po=
-ol, struct xdp_desc *desc)
-> > > >                 return true;
-> > > >         }
-> > > >
-> > > > +       if (unlikely(xsk_full_count > 0)) {
-> > > > +               list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_=
-list) {
-> > > > +                       xs->tx_budget_cache =3D 0;
-> > > > +               }
-> > > > +               xsk_full_count =3D 0;
-> > > > +               goto again;
-> > > > +       }
-> > > > +
-> > > >  out:
-> > > >         rcu_read_unlock();
-> > > >         return false;
-> > > > @@ -1230,6 +1247,7 @@ static int xsk_bind(struct socket *sock, stru=
-ct sockaddr *addr, int addr_len)
-> > > >         xs->zc =3D xs->umem->zc;
-> > > >         xs->sg =3D !!(xs->umem->flags & XDP_UMEM_SG_FLAG);
-> > > >         xs->queue_id =3D qid;
-> > > > +       xs->tx_budget_cache =3D 0;
-> > > >         xp_add_xsk(xs->pool, xs);
-> > > >
-> > > >  out_unlock:
-> > > > --
-> > > > 2.20.1
-> > > >
-> > > >
