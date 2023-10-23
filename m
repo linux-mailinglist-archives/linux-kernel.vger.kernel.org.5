@@ -2,128 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D6F7D2A36
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 08:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4357D2A37
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 08:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbjJWGSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 02:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
+        id S233365AbjJWGS6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Oct 2023 02:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233308AbjJWGSk (ORCPT
+        with ESMTP id S233373AbjJWGS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 02:18:40 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAD2D67;
-        Sun, 22 Oct 2023 23:18:38 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39N6Dt7e022181;
-        Mon, 23 Oct 2023 06:18:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=4lZ8FOwySZiukahxLF7u6w05PQ8Wq7QYRTWmmWwxFeo=;
- b=WgyszUs8xT9HOJRRA+fXryt/7OWcj7vNvjpNYEkkb1esQc16RAi/Agc4aYe10GCILqbB
- wmIeAJ5tz7UozwKrXTdRTxHb2Yl8OQSQ0S4gOkUPwWg7NkaKncN4QqJswv2XQ5rAqlO1
- F67xN2KH9MTJx2N631gK6hwVppVT8lpdlCWRwp31X9F8H8z4T3rt1K0wGLD/h5ldO4G6
- 9RADGEIZt4UpPPLeKqqipNYyUymFnp7qXEph2KN543S0Ut6v5NGmdnASeN6hi8zdBoRf
- 2roFU1ekCjm179rLHkdLv2i93enM6S2HDZ7d3xemNr0g4u5Wm2mzbsFv5mFu6N8ILqUz 0A== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv7xfujgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 06:18:29 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39N6ISbu023942
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 06:18:28 GMT
-Received: from [10.216.48.174] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Sun, 22 Oct
- 2023 23:18:18 -0700
-Message-ID: <706d3b7e-a9b5-081c-52b2-7cce4f0d5f10@quicinc.com>
-Date:   Mon, 23 Oct 2023 11:48:13 +0530
+        Mon, 23 Oct 2023 02:18:56 -0400
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D37AA10C0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 23:18:53 -0700 (PDT)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5aaebfac4b0so1438463a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 23:18:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698041933; x=1698646733;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oY3KVPJZDN5B1mC9ixo9DAttDXi3GZI2y9Bgw45cDd8=;
+        b=kra93MhIcI+mzB/pWjDEw/DiSRzmPh49bgNFYBnEybM1GwWl0kuwtzvp7DUqn9clvn
+         VrwyJQq6yezjrZDJBM37EgVxGrKJIiYX/3HOZ5z2Q4em/w3A9VjCpaEigzRTQRyz9Ucx
+         o1efhOa/C09tLZstcVGgHKgSObXy1vBhfdzDqrDliggJGrwwZnSk4FzA9exOQoq/p+Og
+         ArC/Wi/TLf6pgS6xCmE+9q4vIRrs2ZCMEdQaVjb3FYkcqovpwEemj/W4BsHfEfc6hVFo
+         SpBC0gWZocbci9HHqsa+H36GlaMEsyJhg8mCWRdLHsCieF7/kgxzLGVncH0wbxMQUYpN
+         8/XQ==
+X-Gm-Message-State: AOJu0YxCTjge+Nh97u2UAbGWSi6qWEkms/74evFeySrGFzRHe2uIWt0m
+        FL8R6fofJu7MExv0sZDutK/7KajC4cN7O/V8vcw=
+X-Google-Smtp-Source: AGHT+IEKpX9/QMS1JqYPyKFMkTHWUx9SEB6l+eBwhfrXStCogym7MPS05OEg0QkCcTIBsGR4eCYUdtEb8JCCc3CV5jY=
+X-Received: by 2002:a17:90b:3a8c:b0:27d:dc9:be7a with SMTP id
+ om12-20020a17090b3a8c00b0027d0dc9be7amr5774303pjb.7.1698041933041; Sun, 22
+ Oct 2023 23:18:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH 10/11] ARM: dts: qcom: Update devicetree for QCOM ADC
- bindings path change
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linus.walleij@linaro.org>,
-        <Jonathan.Cameron@huawei.com>, <sboyd@kernel.org>,
-        <dmitry.baryshkov@linaro.org>, <quic_subbaram@quicinc.com>,
-        <quic_collinsd@quicinc.com>, <quic_kamalw@quicinc.com>,
-        <marijn.suijten@somainline.org>,
-        <andriy.shevchenko@linux.intel.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>,
-        <linux-arm-msm@vger.kernel.org>
-CC:     <linux-iio@vger.kernel.org>, <linux-arm-msm-owner@vger.kernel.org>
-References: <20230708072835.3035398-1-quic_jprakash@quicinc.com>
- <20230708072835.3035398-11-quic_jprakash@quicinc.com>
- <59ea565c-93ad-e8e3-10db-ae3ba481ebe9@linaro.org>
-From:   Jishnu Prakash <quic_jprakash@quicinc.com>
-In-Reply-To: <59ea565c-93ad-e8e3-10db-ae3ba481ebe9@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: B3iS_G4VRHd5jXHCXcjZ6LSFdssyYXGX
-X-Proofpoint-GUID: B3iS_G4VRHd5jXHCXcjZ6LSFdssyYXGX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_03,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- suspectscore=0 phishscore=0 adultscore=0 clxscore=1015 bulkscore=0
- impostorscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=735
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310230054
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230601075333.14021-1-ihuguet@redhat.com> <CAMZ6RqLoRVHD_M8Jh2ELurhL8E=HWt2DZZFGQvmfFyxKjtNKhg@mail.gmail.com>
+ <874jiikr6e.fsf@meer.lwn.net>
+In-Reply-To: <874jiikr6e.fsf@meer.lwn.net>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Mon, 23 Oct 2023 15:18:41 +0900
+Message-ID: <CAMZ6RqLJmTjM0dYvixMEAo+uW+zfhdL1n4rnajsHCZcq971oRA@mail.gmail.com>
+Subject: Re: [PATCH v4] Add .editorconfig file for basic formatting
+To:     Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>
+Cc:     ojeda@kernel.org, danny@kdrag0n.dev, masahiroy@kernel.org,
+        jgg@nvidia.com, mic@digikod.net, linux-kernel@vger.kernel.org,
+        joe@perches.com, linux@rasmusvillemoes.dk, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=0.3 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLACK autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On 7/9/2023 10:56 PM, Krzysztof Kozlowski wrote:
-> On 08/07/2023 09:28, Jishnu Prakash wrote:
->> Update ADC dt-bindings file paths in QCOM devicetree files to
->> match the dt-bindings change moving the files from 'iio' to
->> 'iio/adc' folder.
->>
->> Signed-off-by: Jishnu Prakash <quic_jprakash@quicinc.com>
->> ---
-> Your order of patches is incorrect. DTS cannot be before bindings,
-> because this indicates you broke ABI. Please keep entire patchset
-> bisectable and split DTS to separate patchset (linking the driver and
-> bindings).
+On Mon. 23 Oct. 2023 at 11:28, Jonathan Corbet <corbet@lwn.net> wrote:
+> Vincent MAILHOL <mailhol.vincent@wanadoo.fr> writes:
 >
-> Best regards,
-> Krzysztof
+> > On Thu. 1 June 2023 at 16:53, Íñigo Huguet <ihuguet@redhat.com> wrote:
+> >> EditorConfig is a specification to define the most basic code formatting
+> >> stuff, and it's supported by many editors and IDEs, either directly or
+> >> via plugins, including VSCode/VSCodium, Vim, emacs and more.
+> >>
+> >> It allows to define formatting style related to indentation, charset,
+> >> end of lines and trailing whitespaces. It also allows to apply different
+> >> formats for different files based on wildcards, so for example it is
+> >> possible to apply different configs to *.{c,h}, *.py and *.rs.
+> >>
+> >> In linux project, defining a .editorconfig might help to those people
+> >> that work on different projects with different indentation styles, so
+> >> they cannot define a global style. Now they will directly see the
+> >> correct indentation on every fresh clone of the project.
+> >>
+> >> See https://editorconfig.org
+> >>
+> >> Co-developed-by: Danny Lin <danny@kdrag0n.dev>
+> >> Signed-off-by: Danny Lin <danny@kdrag0n.dev>
+> >> Signed-off-by: Íñigo Huguet <ihuguet@redhat.com>
+> >> ---
+> >
+> > Is there any news for this patch? I would really love this to become mainstream.
+>
+> I have concerns about this patch that I have expressed in the past.
+>
+> I'm not going to apply it... since it's a global change that affects all
+> kernel developers, I don't think I *should* apply it.  I would recommend
+> sending it directly to Linus; if you can get an ack from him, I'll apply
+> it then.
 
-OK....so you mean I can move the dtbinding files and update 
-documentation and driver files for this, all in one patch and then make 
-a second patch for updating devicetree files for the file paths?
+Hi Jonathan,
 
-I'll make this change in the next patchset if it looks fine, although 
-the two patches would need to be picked together to avoid kernel 
-breakage. I have asked Jonathan about this too in my reply for the 
-previous patchset 9.
+Thanks for the comment, message taken.
 
-Thanks,
+Hi Íñigo,
 
-Jishnu
+The last version of the patch being from you, would you like to bring
+the topic to Linus yourself or shall I do it instead?
 
 
+Yours sincerely,
+Vincent Mailhol
