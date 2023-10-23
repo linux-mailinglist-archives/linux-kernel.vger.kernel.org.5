@@ -2,69 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F5A7D3C22
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600017D3C24
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233760AbjJWQS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 12:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47592 "EHLO
+        id S233735AbjJWQSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 12:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233756AbjJWQSM (ORCPT
+        with ESMTP id S233758AbjJWQSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 12:18:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262A319A0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:17:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wJoeaIA6FR7cRFMOHhnvGNO3vbLc3uINcEPUKYT9ywY=; b=UD2TR978zD7OxJLI8Obx41DbyC
-        9Z2iRwTpFFTi4LJ3BjtvZDYzJoNqqZ7tlmPrt6tY0xbLwtr75eFzvZv+pJMWlSZgMO/lXbZ+cRznJ
-        7G+YTEwEO2M1tK/VH0DaObCSrYgGWPiR4+UnAVsUDxbss39LL1e5CnwaN4RmqgMYbxwVmqtmYQDmR
-        dy4yQsPdQxBYI0UfH5VAUawaPjLKE8gQInb3q+cVzRW4SzrXZ82/XkrX+meF52HSb3J2yFBUYS8tk
-        4ZqWGT+c9/4ddW+4bhjbwze4neoigXzjPPF1zOPOwpL0LoZCOgmUg9OzqlKAMfq5x36Sn2A4pYhxb
-        VebYdxig==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1quxcb-00ElHj-Jv; Mon, 23 Oct 2023 16:17:41 +0000
-Date:   Mon, 23 Oct 2023 17:17:41 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     wang wei <a929244872@163.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/page_alloc: fix the potential memory waste in
- page_frag_alloc_align
-Message-ID: <ZTacpcP4zt9BS9xO@casper.infradead.org>
-References: <20231023154216.376522-1-a929244872@163.com>
+        Mon, 23 Oct 2023 12:18:25 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9477610E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:18:03 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-27e0c1222d1so2190046a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:18:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698077883; x=1698682683; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BPMyERwOm/NcnB3A4LMRfhfW5xHZDfVqvzjxqSuC/ik=;
+        b=TugK/9Yxzol+hyQj1WRqfkuUOtiOWziDYe+MEsm66ysqkH5dOZYTSteZMUGl7pmZxG
+         pWlOLj4Bjwcwq317aPo2S214xt2rKKPWUIr7KDLu9eOq5pEhXcQ5PdRGSjAuqUaPSYMu
+         hO958nWYcvusg5TjzBh6094U6oZwX9Ls9h2E78F3c6A1KflI8b1a07COelw1ae2XjdVt
+         +EJhFSUCOVlRlD6UrBmiWjCthyN5SwJqyspS3D+iqXKK5hb78qvBIjmoxvYBKGKdWyCj
+         VNaU7D6BodU9C8JGVpdDFViAgcrDj1mfVM+/s34ltaa1GHLs4N2zAkQZevJi1TjNOlaS
+         MEDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698077883; x=1698682683;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BPMyERwOm/NcnB3A4LMRfhfW5xHZDfVqvzjxqSuC/ik=;
+        b=pmlQvupzmrong90EY8GVAZ/TBtpGxmS8n7cPqbsNCU2xTv0T+y+vxJhjshZWlaCHCk
+         X32GgBUaFVrI77uw8YMLZ6cWY7Z/wpUJcNewZ0UCSiIaHfIHA9Qds9NTyXaOmVbqSDCc
+         hF+5HKK1QnilDRrohuwkqf5D79i83L61XSmKjEz/+0zEwfRix40lHzk051Q+CeqxxOB6
+         n3XwNJBM1K/Qgw5wdRT9k/dWk29+iNZwL3A0Zzul9dFgBucho1l6ufePAuhXh+iHXCaz
+         6JfZ7gTQ2z7T8V4Ud8nYAl+PkY5Q4fkWtU/DU93n7AVm8dkxk2IMeQuE90UK3l7Idkz3
+         uaZg==
+X-Gm-Message-State: AOJu0Yyc5crSc3wLR/MW5k+nhvDBTujPiDMWlGBOargCob1LxRWOjSeT
+        TaWRzus04O81z5A3T+GnEubpM9W8Ti9UnhQALCo=
+X-Google-Smtp-Source: AGHT+IE5ETbhrd+Qz3X/nlheL6PwYn82j2ISE6ffyRQf9e0BfzUw0DqqFdMAtYaMQ17eb/+pgEAdEaITjOO5/dKN12k=
+X-Received: by 2002:a17:90b:51d0:b0:268:b0b:a084 with SMTP id
+ sf16-20020a17090b51d000b002680b0ba084mr7386877pjb.46.1698077882806; Mon, 23
+ Oct 2023 09:18:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023154216.376522-1-a929244872@163.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1694625260.git.andreyknvl@google.com> <6e2367e7693aa107f05c649abe06180fff847bb4.1694625260.git.andreyknvl@google.com>
+ <CAG_fn=UZu3QpwTQYgXaYe8NVBsuqs8_Ado-+x4pJLaNE+Ph8Mw@mail.gmail.com>
+In-Reply-To: <CAG_fn=UZu3QpwTQYgXaYe8NVBsuqs8_Ado-+x4pJLaNE+Ph8Mw@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Mon, 23 Oct 2023 18:17:51 +0200
+Message-ID: <CA+fCnZdGUGd7cAvWVj_Y77W5+CsjguBWB2mQX-Nx4MsYGbVpRw@mail.gmail.com>
+Subject: Re: [PATCH v2 19/19] kasan: use stack_depot_put for tag-based modes
+To:     Alexander Potapenko <glider@google.com>
+Cc:     andrey.konovalov@linux.dev, Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 11:42:16PM +0800, wang wei wrote:
-> First step, allocating a memory fragment with size 1KB bytes uses
-> page_frag_alloc_align.  It will allocate PAGE_FRAG_CACHE_MAX_SIZE
-> bytes by __page_frag_cache_refill, store the pointer at nc->va and
-> then return the last 1KB memory fragment which address is nc->va
-> + PAGE_FRAG_CACHE_MAX_SIZE - 1KB. The remaining PAGE_FRAG_CACHE_MAX_SIZE
-> - 1KB bytes of memory can Meet future memory requests.
-> 
-> Second step, if the caller requests a memory fragment with size
-> more then PAGE_FRAG_CACHE_MAX_SIZE bytes,  page_frag_alloc_align,
-> it will also allocate PAGE_FRAG_CACHE_MAX_SIZE bytes by
-> __page_frag_cache_refill,  store the pointer at nc->va, and
-> return NULL.  this behavior makes the rest of
-> PAGE_FRAG_CACHE_MAX_SIZE - 1KB bytes memory at First step are
-> wasted(allocate from buddy system but not used).
+On Mon, Oct 9, 2023 at 2:24=E2=80=AFPM Alexander Potapenko <glider@google.c=
+om> wrote:
+>
+> On Wed, Sep 13, 2023 at 7:18=E2=80=AFPM <andrey.konovalov@linux.dev> wrot=
+e:
+> >
+> > From: Andrey Konovalov <andreyknvl@google.com>
+> >
+> > Make tag-based KASAN modes to evict stack traces from the stack depot
+> "Make tag-based KASAN modes evict stack traces from the stack depot"
+> (without "to")
+>
+> > Internally, pass STACK_DEPOT_FLAG_GET to stack_depot_save_flags (via
+> > kasan_save_stack) to increment the refcount when saving a new entry
+> > to stack ring and call stack_depot_put when removing an entry from
+> > stack ring.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Reviewed-by: Alexander Potapenko <glider@google.com>
+>
+> (but see the two other comments)
+>
+> > --- a/mm/kasan/report_tags.c
+> > +++ b/mm/kasan/report_tags.c
+> > @@ -7,6 +7,7 @@
+> >  #include <linux/atomic.h>
+> >
+> >  #include "kasan.h"
+> > +#include "../slab.h"
+>
+> Why?
 
-We could do this, but have you ever seen this happen, or are you
-just reading code and looking for problems?  If the latter, I think
-you've misunderstood how this allocator is normally used.
-
+This belongs to the previous patch, will fix in v3, thanks!
