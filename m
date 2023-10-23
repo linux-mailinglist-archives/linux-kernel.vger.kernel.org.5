@@ -2,135 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AAA7D3870
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040EB7D3874
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbjJWNv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42542 "EHLO
+        id S230238AbjJWNwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 09:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbjJWNvZ (ORCPT
+        with ESMTP id S229686AbjJWNwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:51:25 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE9F91
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:51:23 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-66d264e67d8so19853226d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698069082; x=1698673882; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KyzTpU6yHxwPKjUHrtmf7X73Sbkeynns2+Ejar0tKFU=;
-        b=vH/9vZ1XoLGtU8WkgO7fgdycRnQVdONuvt5IZL3RKZBHbOI8mf4a1IDCHbEawCqf9A
-         vUeVt2o2jI/OHNPuUsf32aewHHJ6ZFHAaC+bCHu2OejtKTIT2wdqfDOk+UpqO5fB5ljj
-         EMoJMRgL0v+iVrHhSavPF0GWtM22xx13tPyigWCm8sK8bGqRFRUwmk9C3D1ebZlFYm8e
-         1pw6354ShnWKbWnGemFZ4OGOPwZeIobmo3t4rqhUXHh1WLbuA+L+VTsBF1CLmCtOvDzJ
-         GOBq84vRDJdFSOXCqDHoqwVXItkYwi7hoasLsiZb3WVqxutC9tAi8B+T5JrYDnYiTpp7
-         jW3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698069082; x=1698673882;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KyzTpU6yHxwPKjUHrtmf7X73Sbkeynns2+Ejar0tKFU=;
-        b=mHMhvAytwPYZaEZUmiQ3SBsi9ADBSH7UCGttqpYxw114WF4Eh2cni1G3m6GW9akShs
-         OR2LEs1YrBTU855GqYus+4BTkfkDaohCAJy0qPFHKqYgkIip3wnbHP5VdYtc+wdx5rrP
-         yJhKFTfywFVZ6k9Vl60V8nw2Cr0RQbAN6a2DtvMT45REHCLR36ZeJt3bpR6y9d8Smrim
-         zFvacr4mw2nzWuGgbHC9aAYvSIDXjjM0B8AiMUvC9ZDAplqt1DQaIO0C+uEH3Dm3vuo2
-         +1/SxVSz9AoGJmFD3AMQ0UxI47Yz3slUH1V/BUzswFmmJAXWqdT1KUpG3GwgxMJwTP9o
-         VH4w==
-X-Gm-Message-State: AOJu0YzMDk6SxSMJ/geDCYKkOx6zLB6KsBAISt3/9AYEkF7rTJvDgZ37
-        AYm8jNNWF1JiYKoTVXmpj/6d6YaKuF0f2A9uv2YQRg==
-X-Google-Smtp-Source: AGHT+IEak2TOTKrgumBn2ZcWuB0eRHL2jwv/eMSyTXiaFbiUXrrjRS61MgPfi8BZksmu9eUzIg68Fxzdg8aAcPHvDAc=
-X-Received: by 2002:a0c:e0c9:0:b0:66d:aabc:15d0 with SMTP id
- x9-20020a0ce0c9000000b0066daabc15d0mr5631237qvk.6.1698069082051; Mon, 23 Oct
- 2023 06:51:22 -0700 (PDT)
+        Mon, 23 Oct 2023 09:52:20 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 89B0DE4;
+        Mon, 23 Oct 2023 06:52:17 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55F232F4;
+        Mon, 23 Oct 2023 06:52:57 -0700 (PDT)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CCADE3F64C;
+        Mon, 23 Oct 2023 06:52:14 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 14:52:11 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Colin Ian King <colin.i.king@gmail.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH][next] clk: sunxi-ng: nkm: remove redundant
+ initialization of tmp_parent
+Message-ID: <20231023145211.4acaedda@donnerap.manchester.arm.com>
+In-Reply-To: <20231023133502.666559-1-colin.i.king@gmail.com>
+References: <20231023133502.666559-1-colin.i.king@gmail.com>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-References: <20231023102327.3074212-1-glider@google.com> <20231023102327.3074212-2-glider@google.com>
- <ZTZZyuWKIMSGv+dF@smile.fi.intel.com>
-In-Reply-To: <ZTZZyuWKIMSGv+dF@smile.fi.intel.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 23 Oct 2023 15:50:42 +0200
-Message-ID: <CAG_fn=VOJM5Ok+rvTMB08TKW=1xkU+LmMDWEPugxBaE0XgbL_w@mail.gmail.com>
-Subject: Re: [PATCH v8 2/2] lib/test_bitmap: add tests for bitmap_{read,write}()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, aleksander.lobakin@intel.com,
-        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
-        alexandru.elisei@arm.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 1:32=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Oct 23, 2023 at 12:23:27PM +0200, Alexander Potapenko wrote:
-> > Add basic tests ensuring that values can be added at arbitrary position=
-s
-> > of the bitmap, including those spanning into the adjacent unsigned
-> > longs.
->
-> ...
->
-> > +                             val =3D bitmap_read(bitmap, i, nbits);
-> > +                             (void)val;
->
-> Is it marked with __must_check? Otherwise why do we need this?
+On Mon, 23 Oct 2023 14:35:02 +0100
+Colin Ian King <colin.i.king@gmail.com> wrote:
 
-That was a weak attempt to prevent the compiler from completely
-optimizing away the bitmap_read() calls, but I haven't really looked
-at the result.
-The reality is that even with this check the calls are deleted, and
-the size of the function is only 68 bytes.
-Replacing the val assignment with a WRITE_ONCE() actually ensures the
-bitmap_read() calls are not deleted:
+Hi,
 
-diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
-index ba567f53feff1..ae57ae48ef3ad 100644
---- a/lib/test_bitmap.c
-+++ b/lib/test_bitmap.c
-@@ -1360,8 +1360,7 @@ static void __init test_bitmap_read_perf(void)
-                        for (i =3D 0; i < TEST_BIT_LEN; i++) {
-                                if (i + nbits > TEST_BIT_LEN)
-                                        break;
--                               val =3D bitmap_read(bitmap, i, nbits);
--                               (void)val;
-+                               WRITE_ONCE(val, bitmap_read(bitmap, i, nbit=
-s));
-                        }
-                }
-        }
+> Variable tmp_parent is being ininitialized with a value that is never
+> read, the initialization is redundant and can be removed. Move the
+> initialization and move the variable to the inner loop scope.
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
+Yes, that seems to be correct:
 
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 
+Cheers,
+Andre
 
---
-Alexander Potapenko
-Software Engineer
+> ---
+>  drivers/clk/sunxi-ng/ccu_nkm.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_nkm.c
+> index eed64547ad42..853f84398e2b 100644
+> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
+> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
+> @@ -21,17 +21,16 @@ static unsigned long ccu_nkm_find_best_with_parent_adj(struct ccu_common *common
+>  						       unsigned long *parent, unsigned long rate,
+>  						       struct _ccu_nkm *nkm)
+>  {
+> -	unsigned long best_rate = 0, best_parent_rate = *parent, tmp_parent = *parent;
+> +	unsigned long best_rate = 0, best_parent_rate = *parent;
+>  	unsigned long best_n = 0, best_k = 0, best_m = 0;
+>  	unsigned long _n, _k, _m;
+>  
+>  	for (_k = nkm->min_k; _k <= nkm->max_k; _k++) {
+>  		for (_n = nkm->min_n; _n <= nkm->max_n; _n++) {
+>  			for (_m = nkm->min_m; _m <= nkm->max_m; _m++) {
+> -				unsigned long tmp_rate;
+> +				unsigned long tmp_rate, tmp_parent;
+>  
+>  				tmp_parent = clk_hw_round_rate(parent_hw, rate * _m / (_n * _k));
+> -
+>  				tmp_rate = tmp_parent * _n * _k / _m;
+>  
+>  				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate) ||
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
