@@ -2,124 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5392E7D2EBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8087D2EC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbjJWJnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
+        id S229589AbjJWJoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjJWJnm (ORCPT
+        with ESMTP id S232994AbjJWJnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:43:42 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F272A4;
-        Mon, 23 Oct 2023 02:43:40 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39N7Sl96004979;
-        Mon, 23 Oct 2023 09:43:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : to : cc; s=qcppdkim1;
- bh=qX2IpiVetfNrVJqIeQTFFJqLBVuxvBnZSADd9eG8WYE=;
- b=W7GrQYWrK7kdGTOeprjlOLQGwZHbnIPvtpTYkXMJ5fr1y1n7oGSyki+YupEIqK4GyOj4
- 4O4ATlUyPjLdSHoevXecwF8eEcj+zlmvf3tPEVuqxWmnR8DL6U2bidKsTmlT2wEcmdni
- Gf26eFuHxF0jdPIqB91i7KwEUXhhltuLzOv/FahUBmnYzi+/SM/R1R3356RmFwyEmJ05
- U4h+GpAWJoC4ad1DBuR9fh3YhZuWnStzeG8XqLnC+5tmFb5tLR6hBn2232uujm5eAh7b
- CYpqIlcxwGTrgmilABchXogqbvdoA2svpDgzAEKjF7TIpZo6WDIBvV2SVavxf0lIGFB1 iA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv5ndupap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 09:43:28 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39N9hRh6013417
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 09:43:27 GMT
-Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 23 Oct 2023 02:43:24 -0700
-From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Date:   Mon, 23 Oct 2023 15:13:06 +0530
-Subject: [PATCH] bus: mhi: host: Add alignment check for event ring read
- pointer
+        Mon, 23 Oct 2023 05:43:53 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2073.outbound.protection.outlook.com [40.107.6.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAF9D71;
+        Mon, 23 Oct 2023 02:43:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EbMoXXWiB36o5B8HCXREj60Cp/2H2Oez+fj82LlLJvF7sFGp3tAjAyRq9uqKHQF95l0rg1XxS0xv99uUDQs83HtY1WqOld6zIZOTuM1+yicFCO0DlbLeBhaUu2zJPRxSJDQS4ELWVnTOWRbhuBQt28FlHcutEmY+ZnoCjGaJqhx/frGrPxUFdokYd5inBgMuEafV+QVlsqNeH54tqdzlo9SmqGlmNpQMBQZfTOk/kePxFR1zfs2+RAHMEUipQa7m+ZODnzC8rRiTJA/xNmsnXGtlYrVpkKBm5gEVs+zky8LlcFaj3pPCtMg4OXNt3bCN6wgSKVSvRwQYRyEtnAwuyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x5iOtSKH2MAw9ZhqeiV83lh2GmFIQD8PcWmZLhbUGJQ=;
+ b=ePw67QWDr1IlPwUt5J40INpZkEvB23gtvw97QX5NeHqnFpcTeYi8FB09GpuAoZHmf33HalmNo5QZaHaYhu7VguW1NUlOkcW81YgPSDCAWJ+Ba9YRkaw+UWLc3qAuptxTJSjMBqFURR06SLmv1v++FdukX4M0z58Q+RtNBsYwLqo6elya64kcLjC/Z85mdENlTW7NttMlBhu74bS+NK3FXz1Q3QNmzV/FdwF/GR8eMUfL++wtlbWv7j0GeUbENrcotyunLlhFzL1gQ6NF1dKqoN6pvYcqYLkg4jTlBUkgkMZKHjo1Yb3QiYwoJM2pBlizZno7sLCz6KCianTOC+ywAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x5iOtSKH2MAw9ZhqeiV83lh2GmFIQD8PcWmZLhbUGJQ=;
+ b=i88AGMTmLEUM9NrkwkaoA9l1L5++bwezp+gxPpS9xd0kTO8tfA9XWFVer+Gwal1C8JX0FWEOVfbg0TDtMadz8mbA7EK6o2CY1A3C0fFrF2daQRfpKoA6CNOuf/xnDqLSNEEfTUSZliDGt6Ogyq1vrUwsRtgkZmFr7kWi5AZ4/UM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
+ by AM8PR04MB8018.eurprd04.prod.outlook.com (2603:10a6:20b:236::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.11; Mon, 23 Oct
+ 2023 09:43:47 +0000
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::b1fa:fd23:8cc2:f5ee]) by AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::b1fa:fd23:8cc2:f5ee%6]) with mapi id 15.20.6933.011; Mon, 23 Oct 2023
+ 09:43:47 +0000
+From:   "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+To:     sd@queasysnail.net, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, andrew@lunn.ch,
+        hkallweit1@gmail.com, linux@armlinux.org.uk,
+        richardcochran@gmail.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        sebastian.tobuschat@oss.nxp.com,
+        "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+Subject: [PATCH net-next v8 0/7] Add MACsec support for TJA11XX C45 PHYs
+Date:   Mon, 23 Oct 2023 12:43:20 +0300
+Message-Id: <20231023094327.565297-1-radu-nicolae.pirea@oss.nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR10CA0079.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:15::32) To AM9PR04MB8954.eurprd04.prod.outlook.com
+ (2603:10a6:20b:409::7)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231023-alignment_check-v1-1-2ca5716d5c15@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIACtANmUC/x2MWwqAIBAAryL7neCjPuoqESHbWktloRGBdPekz
- xmYyZAoMiXoRIZINyc+QgFdCcDFhZkkT4XBKGO10la6jeewU7hGXAhXiUX6RrWTqR2U6ozk+fm
- P/fC+HwxYO+FhAAAA
-To:     Manivannan Sadhasivam <mani@kernel.org>
-CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_parass@quicinc.com>,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698054204; l=1344;
- i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
- bh=07vhrQIHUHsNMbpycpffRwOJ06Rlyx3FlRgHXf2kqMM=;
- b=VVkOs1tRmVi0Mknh7IuNBSLQsMLHWqRd0EnFDT3RqhNgi0YspG+Rd+FKnCeuhUjMmUkchFJG6
- MJHfvo5ZEdTBhweh8x9izTlJNCwwFRuzAUduJM5ORFhSS+eKEapJiPT
-X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
- pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: EawWRLqZJI-lZF3c_1622c3Ev9i5ErU7
-X-Proofpoint-ORIG-GUID: EawWRLqZJI-lZF3c_1622c3Ev9i5ErU7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_07,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=847 bulkscore=0
- adultscore=0 impostorscore=0 mlxscore=0 phishscore=0 priorityscore=1501
- clxscore=1015 suspectscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310230083
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|AM8PR04MB8018:EE_
+X-MS-Office365-Filtering-Correlation-Id: 74363da9-4054-4639-3f4f-08dbd3ac8db6
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qsw0daDgW+6cIwFGw2ziFXp+/N+9LqfhesWdD+FADSm7+YwbaeQ7kQSTjDx+8VMOYc6cBbBLsEdXWaVUW3F5OKUmdk9Uqk/0bjwE04Mo/fIB8OiFjIsHyvaNPhil2G/86H5+uT06lvwmqxQpKoaJU6qPE/qLU7r7iGr1/yaslMNwSf3uqjSSdDfPIgNehaJQ8G2z/TAAxytQipmS9OAblPkeoHbMe4bS+W/VWMqDBWykE5wUi8griFByz4Mnag7scN8KVpYCVOVdNzedreT1LtdjoxYu4p5kXVn5d/cd3UfAlqcjSo5mAp55JMyiqL+/1HB4QkHGPYqO5VM2BRHI0BHiPwBrxJusUiAI0PU6Air2bQS1t2MNgSoutMMZLE7o4lw0lMvVkTCifXVVWfCcDW5fud4yFL6N4EbrI0oNTMKjH+8hnshyv2W/xRCXL+j+eaJVnklzdU5v4j1oe5+UuK1E6PF5a6GIt4l7TtwnXwdHwOjDTYdV/WoAW+PKnigYLq9z4ba46UztjkUiajyLwca60gLZsSlmDremO5VFf6Kmb6zCLKbCwO65P1uw7+8gnG10+C4gGa/gL77OlpxJiATpJFV5eiKyRfbW3JrwolUrlD/5D7yCovriZyov8zWV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(136003)(396003)(366004)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(2616005)(7416002)(2906002)(26005)(1076003)(38350700005)(83380400001)(41300700001)(6486002)(478600001)(8676002)(38100700002)(52116002)(4326008)(5660300002)(8936002)(6506007)(6512007)(6666004)(316002)(86362001)(66476007)(66556008)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?IHivM/WmLtgNUBDGPx0wzzjxeV4kPlS0e4k9N1yCD+TbHuCwrXtoxjAaM0HR?=
+ =?us-ascii?Q?SJ/geWDh5UDEk+ykdkzGqssFJdqPg13Z8pDpqUYUE/B6pQQVl4P0fG+9ZIDm?=
+ =?us-ascii?Q?pO1Vy6Nyx65n/VFmhDLgWnmMf8IIWKysqBwz67skdVC1zrd3kdKO9J0Z8lXj?=
+ =?us-ascii?Q?1DIjBREgZObFxfmaSFflNpz3QmeS/p/5scPmhOO7rBYdvoRs5HZ1yJDYgUwi?=
+ =?us-ascii?Q?f1TtZjV0pY87ollf5A53jP6cVES6N+4syG2vAqci6k3WxNJCL6OJTEnzg75g?=
+ =?us-ascii?Q?wKERJ2O2oBiOCupOP1OGchrEsw1aCmabUyHlmlGHB2uVe6TT6QTT8ZMaHjxo?=
+ =?us-ascii?Q?s74qn4OpQid5FemYezoKFHkwaSqEAESiUQMSezaiemMWSTf8tRsSFu9lwby+?=
+ =?us-ascii?Q?eUy5qKOpuWUDpAArzE3fTu8Ey97KUw70DCS1mdJxOcneSPI5xxQemhjLFjHw?=
+ =?us-ascii?Q?Hak7fTDk8DngBdZABDNNkq2No4shuJJhWMoQQeb6+I9xLqVo6pq3ka4lLaee?=
+ =?us-ascii?Q?GkOUo/dWp0Y+UAqDdr9PODZr7pgsnpZ6/Md7dZVSSEy9TCkxqOfpeiXz2wrD?=
+ =?us-ascii?Q?iasjRz8Zh4l+cX3RPyjLjKQILMhLFWbIYFBdIpEvu5aHpXeaun0DiGMy/r9m?=
+ =?us-ascii?Q?ofs2zHs6HP2OTEE/EQZr4cL4MrFkZO3oEGpy3kqLLAQS5pP/V0pxWPtxCbtK?=
+ =?us-ascii?Q?iTb9PwElVvmO1kZZL1QHvxgJRpplnAxOSTFX4n+dGqtOAlN2foDCVIg32Eqg?=
+ =?us-ascii?Q?Z74Vope38uyvhCBfTXAzjF/o5w58oRKUmrlZ0A8pr2309yEI7FD3cnEQEufy?=
+ =?us-ascii?Q?DtgPNpfiejgHfZ368eGsIqftE2aNsnfXbLyw8++Bou2WfKuQwkuB7NH4U+k+?=
+ =?us-ascii?Q?3PXdw6HckaY3Fk/v55s2/qK/p45tv+IDHcA+sy3EqZFTstA9avA+5P6dktRi?=
+ =?us-ascii?Q?WVXUOwZ2CfiaVyRFcB0V2pgRZpoVkv/LeNTxP6pyz5I6lPnN3eUHReWOZVWz?=
+ =?us-ascii?Q?Dxs71uSWVbnY820G5xjJClf9BUKZD7qEEd4xW0swz9i7cWUtM5YDzl7cTN94?=
+ =?us-ascii?Q?2Jp3RDtucIfFuvCJGeEh6cSSDHZSnE02ZmLi3nY7bHBv6zFRHdEpvO/VeVS6?=
+ =?us-ascii?Q?fZPI6U6H5jh/vO2Yc7/pQvMeAAszunaU/L2Mf1CvGNnbAE6neBQO0pcaYLI+?=
+ =?us-ascii?Q?69D1CsPjSsFw4fqfzcI0a5J+kyrXAmypV9q3cGuA/ZGKS5NyZ86HzVpQQBH3?=
+ =?us-ascii?Q?pOHMUEooNH2xH7gzBmdZdrXjkFoXXy3Z3evZnDcwW0CsFbs9Fh5k6cHpQUoV?=
+ =?us-ascii?Q?OHCp/OfBu2hO1jgpOTJybtd4KcgdZegHNKhOjvDChnbtI8Plyf6oULgXK8rn?=
+ =?us-ascii?Q?qfyhm8HGrfU7ZST0dYUcSuXbtEUYD6G7rZ+IOq+DIPSA6nqsqniYwZQ/OnCX?=
+ =?us-ascii?Q?VjlmTBHtA6ZSAJm/fVDKHIEh0Veono3DH3tJQ+OrLdkuqerJxKHQI4yqKcL0?=
+ =?us-ascii?Q?80lF1+q1R/pdSZU4TqaQyb/JZ9OQcN03CjSvJflcdIKqH3RX9u4VaTUcGDuo?=
+ =?us-ascii?Q?Q1JZUucsOIaU6mNQmJjO9wA7h7b0tGmeD7hrMWBAlozSCmZzjSJPg50mrS2C?=
+ =?us-ascii?Q?Nw=3D=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74363da9-4054-4639-3f4f-08dbd3ac8db6
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 09:43:47.1811
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eukN0qw1m0Vjzddy9okFBxDV6rb98/QTqRtzuL8aQWNN5E0O9/Z3BAI3u6xbnIZuMWuzZW804wRzXI8XBa3sF4jLJm+LhEDKacGSzU1KtN0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB8018
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Though we do check the event ring read pointer by "is_valid_ring_ptr"
-to make sure it is in the buffer range, but there is another risk the
-pointer may be not aligned.  Since we are expecting event ring elements
-are 128 bits(struct mhi_tre) aligned, an unaligned read pointer could lead
-to multiple issues like DoS or ring buffer memory corruption.
+This is the MACsec support for TJA11XX PHYs. The MACsec block encrypts
+the ethernet frames on the fly and has no buffering. This operation will
+grow the frames by 32 bytes. If the frames are sent back to back, the
+MACsec block will not have enough room to insert the SecTAG and the ICV
+and the frames will be dropped.
 
-So add a alignment check for event ring read pointer.
+To mitigate this, the PHY can parse a specific ethertype with some
+padding bytes and replace them with the SecTAG and ICV. These padding
+bytes might be dummy or might contain information about TX SC that must
+be used to encrypt the frame.
 
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
----
- drivers/bus/mhi/host/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Radu P.
 
-diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-index 499590437e9b..c907bbb67fb2 100644
---- a/drivers/bus/mhi/host/main.c
-+++ b/drivers/bus/mhi/host/main.c
-@@ -268,7 +268,7 @@ static void mhi_del_ring_element(struct mhi_controller *mhi_cntrl,
- 
- static bool is_valid_ring_ptr(struct mhi_ring *ring, dma_addr_t addr)
- {
--	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len;
-+	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len && addr % 16 == 0;
- }
- 
- int mhi_destroy_device(struct device *dev, void *data)
+Radu Pirea (NXP OSS) (7):
+  net: macsec: move sci_to_cpu to macsec header
+  net: macsec: documentation for macsec_context and macsec_ops
+  net: macsec: revert the MAC address if mdo_upd_secy fails
+  net: macsec: introduce mdo_insert_tx_tag
+  net: phy: nxp-c45-tja11xx: add MACsec support
+  net: phy: nxp-c45-tja11xx: add MACsec statistics
+  net: phy: nxp-c45-tja11xx: implement mdo_insert_tx_tag
 
----
-base-commit: 71e68e182e382e951d6248bccc3c960dcec5a718
-change-id: 20231013-alignment_check-c013f509d24a
+ MAINTAINERS                              |    2 +-
+ drivers/net/macsec.c                     |  130 +-
+ drivers/net/netdevsim/macsec.c           |    5 -
+ drivers/net/phy/Kconfig                  |    2 +-
+ drivers/net/phy/Makefile                 |    6 +-
+ drivers/net/phy/nxp-c45-tja11xx-macsec.c | 1724 ++++++++++++++++++++++
+ drivers/net/phy/nxp-c45-tja11xx.c        |   77 +-
+ drivers/net/phy/nxp-c45-tja11xx.h        |   62 +
+ include/net/macsec.h                     |   54 +
+ 9 files changed, 2011 insertions(+), 51 deletions(-)
+ create mode 100644 drivers/net/phy/nxp-c45-tja11xx-macsec.c
+ create mode 100644 drivers/net/phy/nxp-c45-tja11xx.h
 
-Best regards,
 -- 
-Krishna chaitanya chundru <quic_krichai@quicinc.com>
+2.34.1
 
