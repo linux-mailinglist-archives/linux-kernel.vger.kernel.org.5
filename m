@@ -2,180 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABAB7D3D4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE0C7D3D45
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232212AbjJWRTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        id S231236AbjJWRTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:19:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbjJWRTf (ORCPT
+        with ESMTP id S229594AbjJWRT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:19:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1044127
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:19:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C651BC433C9;
-        Mon, 23 Oct 2023 17:19:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698081572;
-        bh=YarUf8JzH0m+8mKuF6IeA2TX1qmsI708HiQom93t2rU=;
-        h=From:Date:Subject:References:In-Reply-To:To:From;
-        b=GGSZq4RRNeBJvKTvHVRhPVxF3jXXDni+TTHmjaGG4HMh2JZdW0qgW7eANwwXk/1BE
-         dNE73OOqwbuxP5zb6HWd2x2nMJtkV3aOYtcEwPzfaK7jgD1oJhim8Iq15b63KM+Ioc
-         Y4k9MAoeB4oSrr2HszEVhuDO1lH8F4GrRsxjfQPhIOHQ048QQRHjfidsq+QREE614F
-         Onlq/D2Xot1tqs2BoC+ZjeeyjBfdrgRuaFOENyDsw+qdFNqLJZ4lkO2UiCocVrcq6T
-         SqytOQDAZ1Biy+XPcPvwIE2jhipO1PU7NNJn3oCAtPPNy6p0VA4KlyObj04bO2zKJv
-         wypHHvxtjbUWg==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Mon, 23 Oct 2023 18:19:12 +0100
-Subject: [PATCH 2/2] regmap: kunit: Add test for cache sync interaction
- with ranges
+        Mon, 23 Oct 2023 13:19:29 -0400
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD56EE;
+        Mon, 23 Oct 2023 10:19:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1698081562; x=1698340762;
+        bh=o/kXFPMyJifrFRkXdqNgBwO5a87jm2R3z9kVsG8BBZI=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=Lvy6KPbJhQll4AotxXYUAz1N/fFLkHQCcD994EtQU6QGK0N9SSOnHNSg1JGG7npF1
+         nX+yM74MxptOB06C0KbNcGtpJ4MSXx1mBPh+Oh2v96dULoSvRabzNEGSIMf8LgoQJe
+         zcDjhNTHqIkc+xPRkTZj5JsRADKCCtKSycz6vruUKz2dcBblYPMeuAeJnIPCbSTJTw
+         wmxyV2RCluL+G0zJbT6jy5BfIsmgUPC6wcUPvm8pcJ4xEVCFj0/muUZUoDo4AqG8kW
+         WjiYXk9k9IRtLQyu4H1qCitBXKWWdgVRgfrOojjn2u4SPkSStA/3SDNpYnt0dSvnpD
+         vX4JG9ZW2FhjA==
+Date:   Mon, 23 Oct 2023 17:19:12 +0000
+To:     "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rust: macros: improve `#[vtable]` documentation
+Message-ID: <816030ec-32a7-4be0-816d-6764fd5dbb8e@proton.me>
+In-Reply-To: <878r7thh3w.fsf@metaspace.dk>
+References: <20231019171540.259173-1-benno.lossin@proton.me> <87fs25irel.fsf@metaspace.dk> <ba252f66-b204-43c1-9705-8ccd0cb12492@proton.me> <878r7thh3w.fsf@metaspace.dk>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231023-regmap-test-window-cache-v1-2-d8a71f441968@kernel.org>
-References: <20231023-regmap-test-window-cache-v1-0-d8a71f441968@kernel.org>
-In-Reply-To: <20231023-regmap-test-window-cache-v1-0-d8a71f441968@kernel.org>
-To:     Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4364; i=broonie@kernel.org;
- h=from:subject:message-id; bh=YarUf8JzH0m+8mKuF6IeA2TX1qmsI708HiQom93t2rU=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlNqsgK2ogdGdNOn6zokqRT1/357Pz0JXLVyxY738w
- JcO4oUyJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZTarIAAKCRAk1otyXVSH0B0ZB/
- 94+ibWn53TrlVouSAixdyi2I5P/7OGPof95e0tKEPFQWb2winnV4119TAO99Gb7pEfMgqn6EOMxBuN
- 1+HS38296dpceaODMJ6azbJKtbEvUQmsQrKkFQ8Oue6qZPCn6FbwAGStITpH9LE+CCho1fyFssIGtB
- GS9mUxNFRLvpRBpCZlvopkkNAsVrqEvOWqrAnSiWk2QuVHyJcGifpbJySltp7nhGKk0mJS+1rVDOA7
- E/SW+VrhG7fOWhquP3TrG2irCekdc5+Y6XDSQklSUmVXbmFkc1FCnjohUd+Zl86x9RLxLLsjkZYOCr
- NVlu7RGJRShF1kiiItC1+xZCUkMYlU
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hector Martin reports that since when doing a cache sync we enable cache
-bypass if the selector register for a range is cached then we might leave
-the physical selector register pointing to a different value to that which
-we have in the cache. If we then try to write to the page that our cache
-tells us is selected we will not update the selector register and write to
-the wrong page. Add a test case covering this.
+On 23.10.23 10:30, Andreas Hindborg (Samsung) wrote:
+>=20
+> Benno Lossin <benno.lossin@proton.me> writes:
+>=20
+>> On 20.10.23 11:06, Andreas Hindborg (Samsung) wrote:
+>>> Benno Lossin <benno.lossin@proton.me> writes:
+>>>> +/// Error message for calling a default function of a [`#[vtable]`](m=
+acros::vtable) trait.
+>>>> +pub const VTABLE_DEFAULT_ERROR: &str =3D
+>>>> +    "This function must not be called, see the #[vtable] documentatio=
+n.";
+>>>> diff --git a/rust/macros/lib.rs b/rust/macros/lib.rs
+>>>> index c42105c2ff96..daf1ef8baa62 100644
+>>>> --- a/rust/macros/lib.rs
+>>>> +++ b/rust/macros/lib.rs
+>>>> @@ -87,27 +87,41 @@ pub fn module(ts: TokenStream) -> TokenStream {
+>>>>    /// implementation could just return `Error::EINVAL`); Linux typica=
+lly use C
+>>>>    /// `NULL` pointers to represent these functions.
+>>>>    ///
+>>>> -/// This attribute is intended to close the gap. Traits can be declar=
+ed and
+>>>> -/// implemented with the `#[vtable]` attribute, and a `HAS_*` associa=
+ted constant
+>>>> -/// will be generated for each method in the trait, indicating if the=
+ implementor
+>>>> -/// has overridden a method.
+>>>> +/// This attribute closes that gap. A trait can be annotated with the=
+ `#[vtable]` attribute.
+>>>> +/// Implementers of the trait will then also have to annotate the tra=
+it with `#[vtable]`. This
+>>>> +/// attribute generates a `HAS_*` associated constant bool for each m=
+ethod in the trait that is set
+>>>> +/// to true if the implementer has overridden the associated method.
+>>>> +///
+>>>> +/// For a function to be optional, it must have a default implementat=
+ion. But this default
+>>>> +/// implementation will never be executed, since these functions are =
+exclusively called from
+>>>> +/// callbacks from the C side. This is because the vtable will have a=
+ `NULL` entry and the C side
+>>>> +/// will execute the default behavior. Since it is not maintainable t=
+o replicate the default
+>>>> +/// behavior in Rust, the default implementation should be:
+>>>
+>>> How about this?:
+>>>
+>>> For a Rust trait method to be optional, it must have a default
+>>> implementation. For a trait marked with `#[vtable]`, the default
+>>> implementation will not be executed, as the only way the trait methods
+>>> should be called is through function pointers installed in C side
+>>> vtables. When a trait implementation marked with `#[vtable]` is missing
+>>> a method, a `NULL` pointer will be installed in the corresponding C sid=
+e
+>>> vtable, and thus the Rust default implementation can not be called. The
+>>> default implementation should be:
+>>>
+>>> Not sure if it is more clear =F0=9F=A4=B7
+>>
+>> I think it misses the following important point: why is it not
+>> possible to just replicate the default behavior?
+>>
+>> What do you think of this?:
+>>
+>> For a trait method to be optional, it must have a default implementation=
+.
+>> This is also the case for traits annotated with `#[vtable]`, but in this
+>> case the default implementation will never be executed. The reason for t=
+his
+>> is that the functions will be called through function pointers installed=
+ in
+>> C side vtables. When an optional method is not implemented on a `#[vtabl=
+e]`
+>> trait, a NULL entry is installed in the vtable. Thus the default
+>> implementation is never called. Since these traits are not designed to b=
+e
+>> used on the Rust side, it should not be possible to call the default
+>> implementation.
+>=20
+>> It is not possible to replicate the default behavior from C
+>> in Rust, since that is not maintainable.
+>=20
+> I don't feel that this bit should be included. It's not a matter of
+> maintainability. Why would we reimplement something that is already
+> present in a subsystem? The functionality is already present, so we use
+> it.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/base/regmap/regmap-kunit.c | 66 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 64 insertions(+), 2 deletions(-)
+But we don't use it on the Rust side. You cannot write this:
 
-diff --git a/drivers/base/regmap/regmap-kunit.c b/drivers/base/regmap/regmap-kunit.c
-index f79fd5ec187e..e14cc03a17f6 100644
---- a/drivers/base/regmap/regmap-kunit.c
-+++ b/drivers/base/regmap/regmap-kunit.c
-@@ -442,12 +442,20 @@ static struct regmap_range_cfg test_range = {
- 	.range_max = 40,
- };
- 
--static bool test_range_volatile(struct device *dev, unsigned int reg)
-+static bool test_range_window_volatile(struct device *dev, unsigned int reg)
- {
- 	if (reg >= test_range.window_start &&
- 	    reg <= test_range.window_start + test_range.window_len)
- 		return true;
- 
-+	return false;
-+}
-+
-+static bool test_range_all_volatile(struct device *dev, unsigned int reg)
-+{
-+	if (test_range_window_volatile(dev, reg))
-+		return true;
-+
- 	if (reg >= test_range.range_min && reg <= test_range.range_max)
- 		return true;
- 
-@@ -465,7 +473,7 @@ static void basic_ranges(struct kunit *test)
- 
- 	config = test_regmap_config;
- 	config.cache_type = t->type;
--	config.volatile_reg = test_range_volatile;
-+	config.volatile_reg = test_range_all_volatile;
- 	config.ranges = &test_range;
- 	config.num_ranges = 1;
- 	config.max_register = test_range.range_max;
-@@ -875,6 +883,59 @@ static void cache_present(struct kunit *test)
- 	regmap_exit(map);
- }
- 
-+/* Check that caching the window register works with sync */
-+static void cache_range_window_reg(struct kunit *test)
-+{
-+	struct regcache_types *t = (struct regcache_types *)test->param_value;
-+	struct regmap *map;
-+	struct regmap_config config;
-+	struct regmap_ram_data *data;
-+	unsigned int val;
-+	int i;
-+
-+	config = test_regmap_config;
-+	config.cache_type = t->type;
-+	config.volatile_reg = test_range_window_volatile;
-+	config.ranges = &test_range;
-+	config.num_ranges = 1;
-+	config.max_register = test_range.range_max;
-+
-+	map = gen_regmap(&config, &data);
-+	KUNIT_ASSERT_FALSE(test, IS_ERR(map));
-+	if (IS_ERR(map))
-+		return;
-+
-+	/* Write new values to the entire range */
-+	for (i = test_range.range_min; i <= test_range.range_max; i++)
-+		KUNIT_ASSERT_EQ(test, 0, regmap_write(map, i, 0));
-+
-+	val = data->vals[test_range.selector_reg] & test_range.selector_mask;
-+	KUNIT_ASSERT_EQ(test, val, 2);
-+
-+	/* Write to the first register in the range to reset the page */
-+	KUNIT_ASSERT_EQ(test, 0, regmap_write(map, test_range.range_min, 0));
-+	val = data->vals[test_range.selector_reg] & test_range.selector_mask;
-+	KUNIT_ASSERT_EQ(test, val, 0);
-+
-+	/* Trigger a cache sync */
-+	regcache_mark_dirty(map);
-+	KUNIT_ASSERT_EQ(test, 0, regcache_sync(map));
-+
-+	/* Write to the first register again, the page should be reset */
-+	KUNIT_ASSERT_EQ(test, 0, regmap_write(map, test_range.range_min, 0));
-+	val = data->vals[test_range.selector_reg] & test_range.selector_mask;
-+	KUNIT_ASSERT_EQ(test, val, 0);
-+
-+	/* Trigger another cache sync */
-+	regcache_mark_dirty(map);
-+	KUNIT_ASSERT_EQ(test, 0, regcache_sync(map));
-+
-+	/* Write to the last register again, the page should be reset */
-+	KUNIT_ASSERT_EQ(test, 0, regmap_write(map, test_range.range_max, 0));
-+	val = data->vals[test_range.selector_reg] & test_range.selector_mask;
-+	KUNIT_ASSERT_EQ(test, val, 2);
-+}
-+
- struct raw_test_types {
- 	const char *name;
- 
-@@ -1217,6 +1278,7 @@ static struct kunit_case regmap_test_cases[] = {
- 	KUNIT_CASE_PARAM(cache_sync_patch, real_cache_types_gen_params),
- 	KUNIT_CASE_PARAM(cache_drop, sparse_cache_types_gen_params),
- 	KUNIT_CASE_PARAM(cache_present, sparse_cache_types_gen_params),
-+	KUNIT_CASE_PARAM(cache_range_window_reg, real_cache_types_gen_params),
- 
- 	KUNIT_CASE_PARAM(raw_read_defaults_single, raw_test_types_gen_params),
- 	KUNIT_CASE_PARAM(raw_read_defaults, raw_test_types_gen_params),
+     fn foo<T: Operations>(t: &T) -> Result<usize> {
+         t.seek(0)?
+     }
 
--- 
-2.30.2
+if the `seek` function is optional.
+
+--=20
+Cheers,
+Benno
+
 
