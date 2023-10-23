@@ -2,377 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3B07D3F84
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437CB7D3F89
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbjJWStW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 14:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
+        id S232265AbjJWStt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 14:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjJWStU (ORCPT
+        with ESMTP id S231161AbjJWStr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 14:49:20 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BEB100
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:49:17 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507c9305727so521e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:49:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698086955; x=1698691755; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WBjinH4YO+2hSUCb0fHvQc14NdFtTudqRmx2oJc8QDw=;
-        b=TrElkOIDdyHkGZa2pRqKHPMC2NkI6Pq7qjDIfwRadW3PlIiE1h3Vv9JcMJibH27puR
-         MEikxWSGsP5qLk360CnuDxauE0ml/KeLfYGAlVwsp5ovPlJ4sbkMVsNGK22nioLeHwDs
-         e/rd8XHzvbsiLXcK5isXGTLFhqCIABnabKWlR3vtJoy1y3pE8t2BpFv7h9nQGgGx5B8V
-         HE2ZSUE78xw6OI/Eh23MHOfaWispUUBE2hZTXbEJcrg2cMcuL13XbAZ8irMsZgk3tnH/
-         jX2qbEnIK8pnxazzIw4XlFWW/dRBuj3m6kwFgCIA2Cpkp0JqPHrf5TaQWVgrCyvGmJbA
-         cpEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698086955; x=1698691755;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WBjinH4YO+2hSUCb0fHvQc14NdFtTudqRmx2oJc8QDw=;
-        b=tkDxObvGIf1AwOENroIn891VQautA2+iNneUC+oA3HGVgpv4kqALfEP26c1SopB03Y
-         AYMPCHP/pX52Q1uMVgPOPif3AXgC+VDHEBreQK4IKeDgoJHD2hY4PH8Ys63B2Fk85cCQ
-         mlfjNd/i/Ur5iEe8LeR38+MV8QqGyGqg9Xl4LWMEvyxrJ1Vg11MFtu0yoILbY1XUiO5G
-         tVoMlNrYiZybcTRBgREq5lFHaeZOFy7nF4WC8tRIk/AgKxhL0oH6zrIwtei508ZLocT8
-         4eg6hIvHNBwztrN1F1os/xQ4m5eyc7J1AgGUKKpsxT5sPxKIxmHUksu0QiuUJ4PiHoEW
-         Sjdw==
-X-Gm-Message-State: AOJu0Yzspu2FkLitkm1A5x5pvZtiZ+cfPn/MdJ8pE4u3GaebZqKrYnM7
-        NZPi4Uj/j2nurIpskrgu4UqSsZeMv/1Zh4B8vHxD+Q==
-X-Google-Smtp-Source: AGHT+IFsxngWQhbFKtMr0Js2ydVoCXWOs+SxuSLi0Ti01Tz+Tm1+dUsdRUXa9JduZgph4C0uK5fDC5ziqAwjQgo39Kw=
-X-Received: by 2002:a05:6512:3685:b0:505:7c88:9e45 with SMTP id
- d5-20020a056512368500b005057c889e45mr14376lfs.0.1698086954981; Mon, 23 Oct
- 2023 11:49:14 -0700 (PDT)
+        Mon, 23 Oct 2023 14:49:47 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2060.outbound.protection.outlook.com [40.107.95.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE63FD;
+        Mon, 23 Oct 2023 11:49:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P6xCCOKiAYLd0bdtrSnif/GKcqKdEVy7qnI4Lrj1tjygH6UOkf+i4Wndofq2RVyONKyRqQX3gKZv8MHJtZHiOoZJ2ZmBwCUv+qn+IqNeE+Lxn89C2vTq9URTSaK0CisK7e7rmRzeA5N2eGzAYMQecNMt1eTRhQIzWUQiOs1CjfTUvvygdvUfbAeqSyYZul8ubKVl85JVIjUxiNMxeFx+Xv4+S2+Q320haz/VNzvcuaxI2bmuD3tGYoOi3/qLe/iqRJ73tLm5ST3g+BnBabLr5+Kz54I0Xtmvq5PP3WK1r7J4hLu1FI6jo9BTLJoQ+l7j+0Ey/YjN7zFvvL6NrKK9pQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SAl5PSEGoZlEZcc34i218lRQ9ZVl6cwd8yOd0bcIzOc=;
+ b=IKK6w9m9D3zTWnFuhJ9fX52kscYs6S3JoWkROD8yATl1k/LQLGs5Es1vWuxR965z+nehBcNmriSOWivq6USfT7eyuDAxHycgYUhQeokM26d1ASD3bZHzEwA8mwTlHO94Vn8c9JjqUC0sBTLf269AFGH9nE31LAwDhYYvkwRqqFo7iU9uEp3/WmFWJN315nFQy8IxRl3JNkIFve9dM0OnIG1heFY9DBzynGw60v43rUBRaWzOw/Kp8Uv82GOTRu18r7qMLCVlL9Uei+O2AmMhAGBi8Qdx/BBGkiMUwVcMcy9mtn61+06GDuIO8a8SfbJ4kewCkDMOvE6OQwnZAVP7sg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SAl5PSEGoZlEZcc34i218lRQ9ZVl6cwd8yOd0bcIzOc=;
+ b=Yzft1Yvaxv4qEHKFF8oX6YhNcrRAS4RoJyf+qsx0WRFyftR9yVf2JHQrax8o2wNeCkwUG+mUPVp6Nm+h4LAfrhzpy1c0Oq8sre0I4Vv8zxfpRRFesRYzfAp7ENo8hLxIC6G0q9puEqHv0VOmF5LqZPUWDJ7+znsBzgZEMv4SLrG52jWPIaGEo0gnWbKr89IJQqI7cWndGfiE75ki+R/6CYb55bDhG4vZy/FLcM8XwAwk1VX9UeZ5EKGO1bCUMj6z4xmleL9R/WSmcNlIrLXOLDumANC2QbCiGC6ktl9z+wumn1VlcWKbU9ccDai6dLZsbYRVHSI1IJqBIWQXBcqi2g==
+Received: from CH2PR16CA0015.namprd16.prod.outlook.com (2603:10b6:610:50::25)
+ by DS7PR12MB6192.namprd12.prod.outlook.com (2603:10b6:8:97::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6907.33; Mon, 23 Oct 2023 18:49:42 +0000
+Received: from DS3PEPF000099E0.namprd04.prod.outlook.com
+ (2603:10b6:610:50:cafe::f0) by CH2PR16CA0015.outlook.office365.com
+ (2603:10b6:610:50::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33 via Frontend
+ Transport; Mon, 23 Oct 2023 18:49:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ DS3PEPF000099E0.mail.protection.outlook.com (10.167.17.203) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.18 via Frontend Transport; Mon, 23 Oct 2023 18:49:41 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 23 Oct
+ 2023 11:49:25 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Mon, 23 Oct 2023 11:49:20 -0700
+Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Mon, 23 Oct 2023 11:49:19 -0700
+Date:   Mon, 23 Oct 2023 11:49:18 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "Martins, Joao" <joao.m.martins@oracle.com>
+Subject: Re: [PATCH v4 08/17] iommufd: Always setup MSI and anforce cc on
+ kernel-managed domains
+Message-ID: <ZTbALk+6Qd4Q8TXn@Asurada-Nvidia>
+References: <ZS7nb+mKanGFXhZY@Asurada-Nvidia>
+ <20231018165113.GB3952@nvidia.com>
+ <BN9PR11MB5276B9994AD06E91E07B7EF08CD4A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <20231019235350.GY3952@nvidia.com>
+ <BN9PR11MB5276A64DA68586AEFB6561148CDBA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <20231020135501.GG3952@nvidia.com>
+ <ZTLOAQK/KcjAJb3y@Asurada-Nvidia>
+ <20231021163804.GL3952@nvidia.com>
+ <ZTWabb6AbOTFNgaw@Asurada-Nvidia>
+ <20231023135935.GW3952@nvidia.com>
 MIME-Version: 1.0
-References: <20231012062359.1616786-1-irogers@google.com> <20231012062359.1616786-14-irogers@google.com>
- <c04c196a-3f29-4b89-97a7-5e71def3d3ce@intel.com>
-In-Reply-To: <c04c196a-3f29-4b89-97a7-5e71def3d3ce@intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 23 Oct 2023 11:49:00 -0700
-Message-ID: <CAP-5=fX303b8-hQXWaRibtYFyBS2sQywDSKR6KhKMUMX_0gzrw@mail.gmail.com>
-Subject: Re: [PATCH v2 13/13] perf machine thread: Remove exited threads by default
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Leo Yan <leo.yan@linaro.org>,
-        German Gomez <german.gomez@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Artem Savkov <asavkov@redhat.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231023135935.GW3952@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099E0:EE_|DS7PR12MB6192:EE_
+X-MS-Office365-Filtering-Correlation-Id: 038f2012-21bb-4bcc-218c-08dbd3f8d158
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QWWN4DGzWwY4qHoBM4BEEpErYliPdPVZoRh+oUUlzz1qSVZUUMYGmL9DYMTrCO2qsFvfeCwjUlfG4NNIs/Pr+pQH8XkYJVsL31VBWRDA5PJrCocgEmAZGwihkqQ9d/coNwUoQ205OXcJTb5iaUX5jtBWpecD79RFKKFJa7w172cK44bF7yGGfSCvm0/2EhExiJEIpsq3X/q0RZ5qTDVYzL9w37rsEaNCBHArVzgyQNYy8LDESuRspyq8ndBF6rfjBmwWJ/yjYj1WbVz/kZFGClsICSRciMnl73P6xJwaPZNHrT7m01lh+DcJZqLvpe/PmkehBGAs5KlRJt+WzhS7wEttdtreotFrmqTdpP6BZC+jzdIOqXfN7YAODVrTDb6HY7cVBGoBvcGkreGMMhpWAyRERADye0YjOwmC6ZSmphyDfd+GjzSbc4tj4nLMDCEzfGDUqyjmKVYKWBRMG4j5l2iP6e9A9WRi51JIEO0s0dmfBqNmnr78RQWQnbQr2GtfRh/8RzboUSucHvtGY/NiNaHhAzjEjy5c5DogMTY5VkhS9pWzLqmsKv/9sIh2EldCz4oSZrTbFGrckP3ZNP2xEIEO2cunbsUuZMif/3fTRRhxe6X89ecpfa3wAqwqdCh11m4ihRaVI+g6kntafgjC1L3pOdZz2Qtf7GYygXHaO12ZknzM1izkT/x71fItk9Y4agrddSKptkcxPo+RbOsRc3LDhQ6bLBigHyebId/lVKWzlcFMQkUEerkrfH18vdKn4xAoKk+buB4WYivL8ut+KQ==
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(39860400002)(396003)(346002)(230922051799003)(82310400011)(1800799009)(451199024)(186009)(64100799003)(36840700001)(46966006)(40470700004)(26005)(33716001)(41300700001)(2906002)(55016003)(86362001)(40460700003)(6862004)(7416002)(5660300002)(36860700001)(8676002)(8936002)(4326008)(70206006)(478600001)(7636003)(356005)(54906003)(82740400003)(316002)(70586007)(6636002)(40480700001)(9686003)(336012)(426003)(47076005)(67856001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 18:49:41.9214
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 038f2012-21bb-4bcc-218c-08dbd3f8d158
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099E0.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6192
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 7:24=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> On 12/10/23 09:23, Ian Rogers wrote:
-> > struct thread values hold onto references to mmaps, dsos, etc. When a
-> > thread exits it is necessary to clean all of this memory up by
-> > removing the thread from the machine's threads. Some tools require
-> > this doesn't happen, such as perf report if offcpu events exist or if
-> > a task list is being generated, so add a symbol_conf value to make the
-> > behavior optional. When an exited thread is left in the machine's
-> > threads, mark it as exited.
-> >
-> > This change relates to commit 40826c45eb0b ("perf thread: Remove
-> > notion of dead threads"). Dead threads were removed as they had a
-> > reference count of 0 and were difficult to reason about with the
-> > reference count checker. Here a thread is removed from threads when it
-> > exits, unless via symbol_conf the exited thread isn't remove and is
-> > marked as exited. Reference counting behaves as it normally does.
->
-> Can we exclude AUX area tracing?
->
-> Essentially, the EXIT event happens when the task is still running
-> in kernel mode, so the thread has not in fact fully exited.
->
-> Example:
->
-> # perf record -a --kcore -e intel_pt// uname
->
-> Before:
->
-> # perf script --itrace=3Db --show-task-events -C6 | grep -C10 EXIT
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb63124ee __perf_event_header__init_id+0x5e ([kernel.kallsyms]) =3D> fff=
-fffffb63124f7 __perf_event_header__init_id+0x67 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6312501 __perf_event_header__init_id+0x71 ([kernel.kallsyms]) =3D> fff=
-fffffb6312512 __perf_event_header__init_id+0x82 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6312531 __perf_event_header__init_id+0xa1 ([kernel.kallsyms]) =3D> fff=
-fffffb6316b3a perf_event_task_output+0x26a ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6316b40 perf_event_task_output+0x270 ([kernel.kallsyms]) =3D> ffffffff=
-b6316959 perf_event_task_output+0x89 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6316966 perf_event_task_output+0x96 ([kernel.kallsyms]) =3D> ffffffffb=
-6322040 perf_output_begin+0x0 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6322080 perf_output_begin+0x40 ([kernel.kallsyms]) =3D> ffffffffb6194d=
-c0 __rcu_read_lock+0x0 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) =3D> ffffffffb6322085=
- perf_output_begin+0x45 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb63220ce perf_output_begin+0x8e ([kernel.kallsyms]) =3D> ffffffffb611d2=
-80 preempt_count_add+0x0 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb611d2bf preempt_count_add+0x3f ([kernel.kallsyms]) =3D> ffffffffb63220=
-d3 perf_output_begin+0x93 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb63220e8 perf_output_begin+0xa8 ([kernel.kallsyms]) =3D> ffffffffb63220=
-ff perf_output_begin+0xbf ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638: PERF_RECORD_EXIT(14740:14740=
-):(14739:14739)
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6322119 perf_output_begin+0xd9 ([kernel.kallsyms]) =3D> ffffffffb63221=
-28 perf_output_begin+0xe8 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6322146 perf_output_begin+0x106 ([kernel.kallsyms]) =3D> ffffffffb6322=
-0ea perf_output_begin+0xaa ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb63220f9 perf_output_begin+0xb9 ([kernel.kallsyms]) =3D> ffffffffb63221=
-ab perf_output_begin+0x16b ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb63221ae perf_output_begin+0x16e ([kernel.kallsyms]) =3D> ffffffffb6322=
-1b6 perf_output_begin+0x176 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6322202 perf_output_begin+0x1c2 ([kernel.kallsyms]) =3D> ffffffffb6322=
-167 perf_output_begin+0x127 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb632218c perf_output_begin+0x14c ([kernel.kallsyms]) =3D> ffffffffb6316=
-96b perf_event_task_output+0x9b ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6316990 perf_event_task_output+0xc0 ([kernel.kallsyms]) =3D> ffffffffb=
-61034a0 __task_pid_nr_ns+0x0 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb61034b7 __task_pid_nr_ns+0x17 ([kernel.kallsyms]) =3D> ffffffffb6194dc=
-0 __rcu_read_lock+0x0 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) =3D> ffffffffb61034bc=
- __task_pid_nr_ns+0x1c ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6103503 __task_pid_nr_ns+0x63 ([kernel.kallsyms]) =3D> ffffffffb610353=
-b __task_pid_nr_ns+0x9b ([kernel.kallsyms])
->
-> After:
->
-> $ perf script --itrace=3Db --show-task-events -C6 | grep -C10 EXIT
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb63124ee __perf_event_header__init_id+0x5e ([kernel.kallsyms]) =3D> fff=
-fffffb63124f7 __perf_event_header__init_id+0x67 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6312501 __perf_event_header__init_id+0x71 ([kernel.kallsyms]) =3D> fff=
-fffffb6312512 __perf_event_header__init_id+0x82 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6312531 __perf_event_header__init_id+0xa1 ([kernel.kallsyms]) =3D> fff=
-fffffb6316b3a perf_event_task_output+0x26a ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6316b40 perf_event_task_output+0x270 ([kernel.kallsyms]) =3D> ffffffff=
-b6316959 perf_event_task_output+0x89 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6316966 perf_event_task_output+0x96 ([kernel.kallsyms]) =3D> ffffffffb=
-6322040 perf_output_begin+0x0 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6322080 perf_output_begin+0x40 ([kernel.kallsyms]) =3D> ffffffffb6194d=
-c0 __rcu_read_lock+0x0 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) =3D> ffffffffb6322085=
- perf_output_begin+0x45 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb63220ce perf_output_begin+0x8e ([kernel.kallsyms]) =3D> ffffffffb611d2=
-80 preempt_count_add+0x0 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb611d2bf preempt_count_add+0x3f ([kernel.kallsyms]) =3D> ffffffffb63220=
-d3 perf_output_begin+0x93 ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb63220e8 perf_output_begin+0xa8 ([kernel.kallsyms]) =3D> ffffffffb63220=
-ff perf_output_begin+0xbf ([kernel.kallsyms])
->            uname   14740 [006] 26795.092638: PERF_RECORD_EXIT(14740:14740=
-):(14739:14739)
->           :14740   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6322119 perf_output_begin+0xd9 ([kernel.kallsyms]) =3D> ffffffffb63221=
-28 perf_output_begin+0xe8 ([kernel.kallsyms])
->           :14740   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6322146 perf_output_begin+0x106 ([kernel.kallsyms]) =3D> ffffffffb6322=
-0ea perf_output_begin+0xaa ([kernel.kallsyms])
->           :14740   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb63220f9 perf_output_begin+0xb9 ([kernel.kallsyms]) =3D> ffffffffb63221=
-ab perf_output_begin+0x16b ([kernel.kallsyms])
->           :14740   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb63221ae perf_output_begin+0x16e ([kernel.kallsyms]) =3D> ffffffffb6322=
-1b6 perf_output_begin+0x176 ([kernel.kallsyms])
->           :14740   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6322202 perf_output_begin+0x1c2 ([kernel.kallsyms]) =3D> ffffffffb6322=
-167 perf_output_begin+0x127 ([kernel.kallsyms])
->           :14740   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb632218c perf_output_begin+0x14c ([kernel.kallsyms]) =3D> ffffffffb6316=
-96b perf_event_task_output+0x9b ([kernel.kallsyms])
->           :14740   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6316990 perf_event_task_output+0xc0 ([kernel.kallsyms]) =3D> ffffffffb=
-61034a0 __task_pid_nr_ns+0x0 ([kernel.kallsyms])
->           :14740   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb61034b7 __task_pid_nr_ns+0x17 ([kernel.kallsyms]) =3D> ffffffffb6194dc=
-0 __rcu_read_lock+0x0 ([kernel.kallsyms])
->           :14740   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) =3D> ffffffffb61034bc=
- __task_pid_nr_ns+0x1c ([kernel.kallsyms])
->           :14740   14740 [006] 26795.092638:          1   branches:  ffff=
-ffffb6103503 __task_pid_nr_ns+0x63 ([kernel.kallsyms]) =3D> ffffffffb610353=
-b __task_pid_nr_ns+0x9b ([kernel.kallsyms])
->
-> This will also affect samples made after PERF_RECORD_EXIT but before
-> the task finishes exiting.
+On Mon, Oct 23, 2023 at 10:59:35AM -0300, Jason Gunthorpe wrote:
+> On Sun, Oct 22, 2023 at 05:18:03PM -0700, Nicolin Chen wrote:
+> 
+> > > > And where should we add this comment? Kdoc of
+> > > > the alloc uAPI?
+> > > 
+> > > Maybe right in front of the only enforce_cc op callback?
+> > 
+> > OK. How about this? Might be a bit verbose though:
+> > 	/*
+> > 	 * enforce_cache_coherenc must be determined during the HWPT allocation.
+> > 	 * Note that a HWPT (non-CC) created for a device (non-CC) can be later
+> > 	 * reused by another device (either non-CC or CC). However, A HWPT (CC)
+> > 	 * created for a device (CC) cannot be reused by another device (non-CC)
+> > 	 * but only devices (CC). Instead user space in this case would need to
+> > 	 * allocate a separate HWPT (non-CC).
+> > 	 */
+> 
+> Ok, fix the spello in enforce_cache_coherenc
 
-Makes sense. Would an appropriate fix be in perf_session__open to set:
-symbol_conf.keep_exited_threads =3D true;
+Oops.
 
-when:
-perf_header__has_feat(&session->header, HEADER_AUXTRACE)
+I also found the existing piece sorta says a similar thing:
+         * Set the coherency mode before we do iopt_table_add_domain() as some
+         * iommus have a per-PTE bit that controls it and need to decide before
+         * doing any maps. 
 
-It is kind of hacky to be changing global state this way, but
-symbol_conf is like that in general.
-
-Thanks,
-Ian
-
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/builtin-report.c   |  7 +++++++
-> >  tools/perf/util/machine.c     | 10 +++++++---
-> >  tools/perf/util/symbol_conf.h |  3 ++-
-> >  tools/perf/util/thread.h      | 14 ++++++++++++++
-> >  4 files changed, 30 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-> > index dcedfe00f04d..749246817aed 100644
-> > --- a/tools/perf/builtin-report.c
-> > +++ b/tools/perf/builtin-report.c
-> > @@ -1411,6 +1411,13 @@ int cmd_report(int argc, const char **argv)
-> >       if (ret < 0)
-> >               goto exit;
-> >
-> > +     /*
-> > +      * tasks_mode require access to exited threads to list those that=
- are in
-> > +      * the data file. Off-cpu events are synthesized after other even=
-ts and
-> > +      * reference exited threads.
-> > +      */
-> > +     symbol_conf.keep_exited_threads =3D true;
-> > +
-> >       annotation_options__init(&report.annotation_opts);
-> >
-> >       ret =3D perf_config(report__config, &report);
-> > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> > index 6ca7500e2cf4..5cda47eb337d 100644
-> > --- a/tools/perf/util/machine.c
-> > +++ b/tools/perf/util/machine.c
-> > @@ -2157,9 +2157,13 @@ int machine__process_exit_event(struct machine *=
-machine, union perf_event *event
-> >       if (dump_trace)
-> >               perf_event__fprintf_task(event, stdout);
-> >
-> > -     if (thread !=3D NULL)
-> > -             thread__put(thread);
-> > -
-> > +     if (thread !=3D NULL) {
-> > +             if (symbol_conf.keep_exited_threads)
-> > +                     thread__set_exited(thread, /*exited=3D*/true);
-> > +             else
-> > +                     machine__remove_thread(machine, thread);
-> > +     }
-> > +     thread__put(thread);
-> >       return 0;
-> >  }
-> >
-> > diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_con=
-f.h
-> > index 2b2fb9e224b0..6040286e07a6 100644
-> > --- a/tools/perf/util/symbol_conf.h
-> > +++ b/tools/perf/util/symbol_conf.h
-> > @@ -43,7 +43,8 @@ struct symbol_conf {
-> >                       disable_add2line_warn,
-> >                       buildid_mmap2,
-> >                       guest_code,
-> > -                     lazy_load_kernel_maps;
-> > +                     lazy_load_kernel_maps,
-> > +                     keep_exited_threads;
-> >       const char      *vmlinux_name,
-> >                       *kallsyms_name,
-> >                       *source_prefix,
-> > diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
-> > index e79225a0ea46..0df775b5c110 100644
-> > --- a/tools/perf/util/thread.h
-> > +++ b/tools/perf/util/thread.h
-> > @@ -36,13 +36,22 @@ struct thread_rb_node {
-> >  };
-> >
-> >  DECLARE_RC_STRUCT(thread) {
-> > +     /** @maps: mmaps associated with this thread. */
-> >       struct maps             *maps;
-> >       pid_t                   pid_; /* Not all tools update this */
-> > +     /** @tid: thread ID number unique to a machine. */
-> >       pid_t                   tid;
-> > +     /** @ppid: parent process of the process this thread belongs to. =
-*/
-> >       pid_t                   ppid;
-> >       int                     cpu;
-> >       int                     guest_cpu; /* For QEMU thread */
-> >       refcount_t              refcnt;
-> > +     /**
-> > +      * @exited: Has the thread had an exit event. Such threads are us=
-ually
-> > +      * removed from the machine's threads but some events/tools requi=
-re
-> > +      * access to dead threads.
-> > +      */
-> > +     bool                    exited;
-> >       bool                    comm_set;
-> >       int                     comm_len;
-> >       struct list_head        namespaces_list;
-> > @@ -189,6 +198,11 @@ static inline refcount_t *thread__refcnt(struct th=
-read *thread)
-> >       return &RC_CHK_ACCESS(thread)->refcnt;
-> >  }
-> >
-> > +static inline void thread__set_exited(struct thread *thread, bool exit=
-ed)
-> > +{
-> > +     RC_CHK_ACCESS(thread)->exited =3D exited;
-> > +}
-> > +
-> >  static inline bool thread__comm_set(const struct thread *thread)
-> >  {
-> >       return RC_CHK_ACCESS(thread)->comm_set;
->
+So, did this and sending v3:
+-        * enforce_cache_coherenc must be determined during the HWPT allocation.
++        * The cache coherency mode must be configured here and unchanged later.
