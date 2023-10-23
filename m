@@ -2,171 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6E57D3DE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF21D7D3DE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233875AbjJWRfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
+        id S233441AbjJWRg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbjJWRfq (ORCPT
+        with ESMTP id S230316AbjJWRg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:35:46 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B89A3;
-        Mon, 23 Oct 2023 10:35:43 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.nyi.internal (Postfix) with ESMTP id DC6155C0371;
-        Mon, 23 Oct 2023 13:35:39 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Mon, 23 Oct 2023 13:35:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1698082539; x=1698168939; bh=ge
-        yH5WqMlThfcHZLlfgq+oFzVP2Hwr+FGtkBpCnynnU=; b=i2EEOUodXYKQcARsKD
-        7JKLLYx5t4i7TiomDbTxcdq2SqBLW6eQtOpjuHRXAzGKRZgqytbtILamKxt/CctI
-        d8J4eQWvmyD8muBNDC9RI120m+jGD/8mGSrwPUXnOKAzjw2rgWMAQ53XV00iXzt3
-        D9MAhFh3wCmdi2NfQmi0QgiLf1mfQN0forvMG1JVHuaqlUusKkxqSh+2mDHgfFnb
-        YQOKz9lu3ZcL663e6zdUK0+2CXqUDc5KpSt3pVZ2skjrZ+yEhg6b1L10zPkLAxif
-        tYhGMtEYg/QB54le5SlKu2FyGF2Q+SIpIPt+lETtvHrsErCwQOtl8+GhoTXGujlh
-        9R0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698082539; x=1698168939; bh=geyH5WqMlThfc
-        HZLlfgq+oFzVP2Hwr+FGtkBpCnynnU=; b=CtQFK5neqSQQTTlmZ8BnPAPOmuwJ5
-        v1UHMG7jGV3tjDPduIJKUFFtDKeKev6AEAxu5D8PG6Dia6w1VGqdgm3VKSBRbC28
-        VEBRnv2o4zee1OWV/hBOyt8ciWGVmIdejRsctI8qbj7T3yK23dAAFsHFoPnn1UPS
-        McTlV6zc5JGxPHyzmNr3Ei+A6WrYafFDGIatmoNTi9Krl2RA80GDAHwTSA19uy0B
-        UKf+4VnThg12lJy9twtaw6eFy1N65gvtu2jcTixemaTOSUHMFVcmTn+ZXMkXL2B7
-        msO8MoMtGge/3S4gzyc86E7tvbmmBngdTab7VcdGqxAOkP/HByRpgEk+g==
-X-ME-Sender: <xms:6q42ZSyQCf4729eqqf9vwNE6j0zTH-SHXUs9Jn28UhLf2feGvGvEYA>
-    <xme:6q42ZeQGIBqSldSZ1F9ZnNGKt5OOn5YhOvs1L366lbkpNs9v7usL_Pw_5cR7jECG4
-    aych2Pfg8p224xiLTo>
-X-ME-Received: <xmr:6q42ZUUfZO_LwiloXppUq2S1pAd0OqDukNh0YwTekqZMApFT6FkwxXYq-ijKE080023JCFjF3kdY5v-E-wKs7bNGPw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeeigdduuddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdludehmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddt
-    tddvnecuhfhrohhmpeflrghnucfjvghnughrihhkucfhrghrrhcuoehkvghrnhgvlhesjh
-    hfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpedukeegffdtfeeihfehteevvdeiueet
-    teelgfefvdfhleeufeegieduieduhfekieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehkvghrnhgvlhesjhhfrghrrhdrtggt
-X-ME-Proxy: <xmx:6q42ZYi6ONALunCX-EndTyp9EColjBiotEymobq4P8drJUpIf9OUDA>
-    <xmx:6q42ZUBgYcHzJIkrQMZDxf13sM-t1ZPH1SrhSL7Tb9bDKgz3vkTSsA>
-    <xmx:6q42ZZIX1o7TrZr8NQbHoMV4_XsvEEE8yd9XXaqMDlqEhO8v9V_lYw>
-    <xmx:6642ZQ7TNZq-6QSGUxl0ISvZlp23wTvj_1q0TOaKOADqC6CPRQ-H_g>
-Feedback-ID: i01d149f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 23 Oct 2023 13:35:36 -0400 (EDT)
-Date:   Mon, 23 Oct 2023 19:35:34 +0200
-From:   Jan Hendrik Farr <kernel@jfarr.cc>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Ard Biesheuvel <ardb@google.com>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Evgeniy Baskov <baskov@ispras.ru>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Jones <pjones@redhat.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 00/15] x86/boot: Rework PE header generation
-Message-ID: <ZTau5kbdB-9iRfcm@desktop>
-References: <20230912090051.4014114-17-ardb@google.com>
- <ZRt2ToOHm2XT8MlU@desktop>
- <CAMj1kXH--86-pqHp6W0gsRDAMw-iuYKrgHEpmZzaJnpsVTkkxw@mail.gmail.com>
+        Mon, 23 Oct 2023 13:36:26 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2062.outbound.protection.outlook.com [40.107.243.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17ACB94;
+        Mon, 23 Oct 2023 10:36:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l+V1340Zn4gi9eH7KOMw9euxwwZBJWR+V4CkX+MF1vK46e7PidE61MTUOPzitMQRNojZYZA0Qyl80lqyN5hljQ/zX73mFdaz0haaZi00UVZjxWpxNEbecRh2EMEmlSv/+n8+8lRl+Obl4LzZ5lS49/GsqmVNaOQ1UqzT8RVQtE24W2fFNn7kORKTcTfleRW7VXcof8RX5F3fMnI3TA8rjXfA9pzkMyk0WbMwfkgZfllWlfY4OVvb+hE+ieqsUXu1MwPk4sNy2eZ7p+cZukcPv2IHEJaIfRtpL14Rp6MtENUBpxnyrxzO42YFu3U8XhSqH8U30MOEl5or4WHpbwGmCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dpeozGvoSEtstxeCLbSaaHHLTKButJugnsChcdKLN/s=;
+ b=cMWfbWbUOrC+NLcJw5SoxjpfEWoDCWSMor06HLGq82p9qHW5fr1vDK+OB89TyMPNFnWYEtUWiySrCa7HuRAvBw8xLYQobXBj/vXITAbGH1lCDVogHzOUa9BLJJ0WWoUO1zswP3JS9D4JstOKiuHSldXEQcyuf0AFkNBB1YEMPcebZNnSFcF22QP3adsTIFFCrX5nFnY9Z6mvDHsQu0z/PAy6YGefdUH8mPg5YbG6BYACKKAtUE0LjyarzFtv9rIMSRJR+PK8V6/W3zn4wz1oVsxst2lTs5YpSRr8t7tA/I/0enKyoNM/4jZXkjq4qzZsov4EWSv0rrbA9KwaodrCTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dpeozGvoSEtstxeCLbSaaHHLTKButJugnsChcdKLN/s=;
+ b=m9KwzjhQbFyiK3PtA4z17OqqM753wVBTZ6dr2io/7V29DhFFRXJgI1ORmU6zB0eR51a4uOP7j1HIrOWcwNHN1cVSGvfXbd066+s5hdp0ItDXRExmNcZsKaHmCFekfODBalmefBowU4nlf0T84zV8lMAbmkJvW6zln+O3ZYVVSN4=
+Received: from SN7PR12MB7201.namprd12.prod.outlook.com (2603:10b6:806:2a8::22)
+ by SJ1PR12MB6243.namprd12.prod.outlook.com (2603:10b6:a03:456::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.31; Mon, 23 Oct
+ 2023 17:36:21 +0000
+Received: from SN7PR12MB7201.namprd12.prod.outlook.com
+ ([fe80::b900:6805:abb1:bc0]) by SN7PR12MB7201.namprd12.prod.outlook.com
+ ([fe80::b900:6805:abb1:bc0%6]) with mapi id 15.20.6907.030; Mon, 23 Oct 2023
+ 17:36:21 +0000
+From:   "Havalige, Thippeswamy" <thippeswamy.havalige@amd.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
+        "kw@linux.com" <kw@linux.com>, "robh@kernel.org" <robh@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "Simek, Michal" <michal.simek@amd.com>,
+        "Gogada, Bharat Kumar" <bharat.kumar.gogada@amd.com>
+Subject: RE: [PATCH v5 RESEND 0/4] increase ecam size value to discover 256
+ buses during
+Thread-Topic: [PATCH v5 RESEND 0/4] increase ecam size value to discover 256
+ buses during
+Thread-Index: AQHZ/+89QXgcS12G7EKSCK4TL1ydHbBSgl0ggAUp7wCAAAIhcA==
+Date:   Mon, 23 Oct 2023 17:36:21 +0000
+Message-ID: <SN7PR12MB72016B115DE57CDCAEACB57B8BD8A@SN7PR12MB7201.namprd12.prod.outlook.com>
+References: <SN7PR12MB7201A57631FB1E0FB60A9BC08BDBA@SN7PR12MB7201.namprd12.prod.outlook.com>
+ <20231023172530.GA1602129@bhelgaas>
+In-Reply-To: <20231023172530.GA1602129@bhelgaas>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN7PR12MB7201:EE_|SJ1PR12MB6243:EE_
+x-ms-office365-filtering-correlation-id: 6889d097-7b32-4e0b-077a-08dbd3ee9257
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AmDtDALHiufC/+8LKUCmoDXxDNEyq1fhlfSCHNzc8XwLinEYwAeFCqOp4TAYokufKe0he/pVo2pni/xGkVAWo0kS40YVSAmVCjutPw6daxRMacTrGNA8AtAaayAHslUrSPlCtY5BHGExwQIM2c4UjiNqiWfxDWb+ykTYiDUU8DQVFufaVJTvnar2ExVOckJY+st4S37u1co9jsiC0vety+gXU5okWqZzadB8UByix3D3Qnnb7/F9wLtWjFslapsCg7XZZClbml4nJC+yXDGDuAFleHxh6Vk9tzhh+MwDw0l4BDjc25ceKKE8Q+wSJ/XQ/pFeww67yobwZgCo+FcC8rIg/vxd9Pd5zafCzUqtyiczLPId510R5nvSPoZ7QeYmaglFR4Sfkux9BAxGx0b09Lhbq1J3LHhgfCFu7aSD3x/N/yX2PFHb5aOEgfIc1gbLR/3lzAA68SlMsBpipshvGbYuqBEI6pVpX2fWIExGKuQQOADxfkywgUjopvd9a/X12IwsmxwrFzB9dHbiUxKdozDU8uusWmGFAsU/R/hSfnGrINEDsWvRjPlu9K8krEW3lpOvLPcZ3Wm66CpgC5LakCsBtLhKWFOewhbDaJoLiQA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR12MB7201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(376002)(346002)(366004)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(38070700009)(38100700002)(2906002)(55016003)(52536014)(86362001)(5660300002)(41300700001)(7416002)(33656002)(8936002)(4326008)(8676002)(478600001)(71200400001)(7696005)(6506007)(6916009)(316002)(122000001)(66946007)(66556008)(66476007)(54906003)(66446008)(64756008)(76116006)(966005)(83380400001)(53546011)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?euZFGZb4sTqvainuCziJKLSKreyXlDGu9vrsPQl9IZylZFpde5gFXxe7+Gls?=
+ =?us-ascii?Q?fsEp3FP4K4J87YzrDzJmdFMawLuxX2sI/fIIMtW54fWg4UlR9tNGp/9RRH3l?=
+ =?us-ascii?Q?OsAPqOmqRKo64DNTXFvisL4LKEiAjktoAr8S7A/xDkoLIBt+z0VVJOpXx3HP?=
+ =?us-ascii?Q?6NEiquaVjwSxd7U812m8yJgIBnFOkRAbIPT0syj/TbpLW2/8V3A1Ya8HGZJu?=
+ =?us-ascii?Q?QneGivw6ScR7xGr1UmHk3OUVesXE2wqeU05G/nouVbDq2okqRFkkTFdfnc7W?=
+ =?us-ascii?Q?HPi0GUTIkOxStj4VDIs90nDmgii+pz+neqMzvyYZQ35YT08l3i6IzOqIbwdj?=
+ =?us-ascii?Q?+DqyyJvh/Whqmga+9zgoJH4HJXBVSeI8r6piQG3HnV2lS+OZizaIN7+K0ACY?=
+ =?us-ascii?Q?XPkuuaqStL6nWdP73m7xSKI4tb4IsMSumaVlBd2t2JL2aAC6YbmPM0m2e0mg?=
+ =?us-ascii?Q?SFeNGZ68TM0kSrFtuo1C6xxDEJZ6oLhu4auiQqyjcK27MOUYdvN6br9FE74c?=
+ =?us-ascii?Q?6of+2LO+OruOKP/H2qMOyImBdLKXzOzXSAr17JPTh2/4MNvKCqY1G71wqMpD?=
+ =?us-ascii?Q?G3SbnQnVdMdnHJKEHZjLufg39z+t6GmM8XCpuN/CVEQdq8AU9aaCPzEyJeaQ?=
+ =?us-ascii?Q?2wQu/Q5AaYugje4y8DmfTPY4sEVu28hdQtUdViPurTaBEBSW5gNT/OyC2ZyX?=
+ =?us-ascii?Q?TFDXhMqU/HDQyRvr9CjXmXSVvP7brWWssEuCRKNzI77v/tqcmXnB/HKODcOK?=
+ =?us-ascii?Q?I+KL9B8rotHfrbHrQdqoVdvLXUzI3UYWzCthw5vN2kQXbt8IryT6KecE8Bsn?=
+ =?us-ascii?Q?AHtMM7vMVexX4tbmyQrz0PQG73tNhX9+Eijba/Dry0DJJYPTS9mKqvLCBC4r?=
+ =?us-ascii?Q?QRu3tVMdTw4ZUBg8y8PFusd+wVGgF6gd8Rlkhn0Yi+X/oy8jGn/CJX5o2gG1?=
+ =?us-ascii?Q?tVgwpDYhJw6m/S8HlJt5GrzuS8c1zL3PsdVKZrdJPwJgsFDFYF5CofsvfM1R?=
+ =?us-ascii?Q?k4rDELzMsDqHUJG7+O9TLSpjkpUqAK+cXD/FTGA1cD3Ha8PnMJ7Dot9vyuYU?=
+ =?us-ascii?Q?dU4+FZpp7mr11RfPNMCnhueuQAEJJNzcMcO7biMUsR25acwMw0GYpHwJiDYn?=
+ =?us-ascii?Q?0NBrtezJaGKaG6BYBfG8XIUsnqyhzSruryOpjXBasbPb3NVtVqJlVGIrIflu?=
+ =?us-ascii?Q?XSWXSEtD8qgffLilwDViWt0PDszsR8q1GdF94XyQyIpTzH0OEksgZJ1iQFpn?=
+ =?us-ascii?Q?h3etgUtKK7KISbpQKMLpZ4hIGcPZbqTRgbrUT+Z7aWc9ZY5iK1rg9AAj6HJR?=
+ =?us-ascii?Q?v4bIfmww7zXptIdhPoxMtLyodDYB23uwNch00t5oqB2bLMVdm33yPHG6tWX5?=
+ =?us-ascii?Q?kU56WRJfebWehaBlxTkuieyBPuKmf3UGnEMdU3625CH03JfVaxcX0aIMo3W2?=
+ =?us-ascii?Q?6SakuSJ/4py7zUMjnhb6cnn5AcdzSpTvl2TXGSiUaAiZHAwJQZBAQsB6W46w?=
+ =?us-ascii?Q?x1MqCHyDfLbCqrD6MkLwznpqB0dAUaaVccmkvXscVgwntP71K5Q56gXt/IX+?=
+ =?us-ascii?Q?Tnenu0uMCJzN52RPcU5jYVNXIMHsUuNb7B9az7mfS7F8XeHRMN9zRoPKnDJL?=
+ =?us-ascii?Q?G7N9OqYnq3bttfyjfj638aM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXH--86-pqHp6W0gsRDAMw-iuYKrgHEpmZzaJnpsVTkkxw@mail.gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR12MB7201.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6889d097-7b32-4e0b-077a-08dbd3ee9257
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2023 17:36:21.3386
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: uFtOS2kzyG4rEejedojZhHAoT1pbKaaT7iAehiPL6fYJm9n2NveqKT1lrxejMbtzx3OzELziwRO5wkUDCi7RXg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6243
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23 13:22:53, Ard Biesheuvel wrote:
-> On Tue, 3 Oct 2023 at 04:03, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
+Hi Bjorn,
+
+Thanks for update, provided list consist of all submitted patches for both =
+the series.
+
+Regards,
+Thippeswamy H
+> -----Original Message-----
+> From: Bjorn Helgaas <helgaas@kernel.org>
+> Sent: Monday, October 23, 2023 10:57 PM
+> To: Havalige, Thippeswamy <thippeswamy.havalige@amd.com>
+> Cc: linux-pci@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+> bhelgaas@google.com; lpieralisi@kernel.org; kw@linux.com;
+> robh@kernel.org; krzysztof.kozlowski+dt@linaro.org; Simek, Michal
+> <michal.simek@amd.com>; Gogada, Bharat Kumar
+> <bharat.kumar.gogada@amd.com>
+> Subject: Re: [PATCH v5 RESEND 0/4] increase ecam size value to discover 2=
+56
+> buses during
+>=20
+> On Fri, Oct 20, 2023 at 10:35:46AM +0000, Havalige, Thippeswamy wrote:
+> > Hi Bjorn,
 > >
-> > On 12 09:00:51, Ard Biesheuvel wrote:
-> > > From: Ard Biesheuvel <ardb@kernel.org>
+> > Can you please provide an update on this patch series.
+>=20
+> As with your Xilinx XDMA Soft IP series, I hope to get this merged for v6=
+.7.
+>=20
+> Would you take a quick look at patchwork here:
+> https://patchwork.kernel.org/project/linux-pci/list/?submitter=3D207519
+> to make sure that everything you're waiting on is listed there?
+>=20
+> I cleaned out things that appeared to be older versions of the "Increase =
+ECAM
+> size" and the "Add support for Xilinx XDMA Soft IP"
+> series, but the subject lines didn't always match exactly, so it's possib=
+le I
+> incorrectly marked something as "superseded".
+>=20
+> Bjorn
+>=20
+> > > -----Original Message-----
+> > > From: Thippeswamy Havalige <thippeswamy.havalige@amd.com>
+> > > Sent: Monday, October 16, 2023 10:41 AM
+> > > To: linux-pci@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> > > kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+> > > Cc: bhelgaas@google.com; lpieralisi@kernel.org; kw@linux.com;
+> > > robh@kernel.org; krzysztof.kozlowski+dt@linaro.org;
+> > > colnor+dt@kernel.org; Havalige, Thippeswamy
+> > > <thippeswamy.havalige@amd.com>; Simek, Michal
+> > > <michal.simek@amd.com>; Gogada, Bharat Kumar
+> > > <bharat.kumar.gogada@amd.com>
+> > > Subject: [PATCH v5 RESEND 0/4] increase ecam size value to discover
+> > > 256 buses during
 > > >
-> > > Now that the EFI stub boot flow no longer relies on memory that is
-> > > executable and writable at the same time, we can reorganize the PE/COFF
-> > > view of the kernel image and expose the decompressor binary's code and
-> > > r/o data as a .text section and data/bss as a .data section, using 4k
-> > > alignment and limited permissions.
+> > > Current driver is supports up to 16 buses. The following code fixes
+> > > to support up to 256 buses.
 > > >
-> > > Doing so is necessary for compatibility with hardening measures that are
-> > > being rolled out on x86 PCs built to run Windows (i.e., the majority of
-> > > them). The EFI boot environment that the Linux EFI stub executes in is
-> > > especially sensitive to safety issues, given that a vulnerability in the
-> > > loader of one OS can be abused to attack another.
+> > > update "NWL_ECAM_VALUE_DEFAULT " to 16  can access up to 256MB
+> ECAM
+> > > region to detect 256 buses.
+> > >
+> > > Update ecam size to 256MB in device tree binding example.
+> > >
+> > > Remove unwanted code.
+> > >
+> > > Thippeswamy Havalige (4):
+> > >   PCI: xilinx-nwl: Remove unnecessary code which updates primary,
+> > >     secondary and sub-ordinate bus numbers
+> > >   dt-bindings: PCI: xilinx-nwl: Modify ECAM size in example
+> > >   PCI: xilinx-nwl: Rename ECAM size default macro
+> > >   PCI: xilinx-nwl: Increase ECAM size to accommodate 256 buses
+> > >
+> > >  .../devicetree/bindings/pci/xlnx,nwl-pcie.yaml |  2 +-
+> > >  drivers/pci/controller/pcie-xilinx-nwl.c       | 18 +++-------------=
+--
+> > >  2 files changed, 4 insertions(+), 16 deletions(-)
+> > >
+> > > --
+> > > 2.25.1
 > >
-> > This split is also useful for the work of kexecing the next kernel as an
-> > EFI application. With the current EFI stub I have to set the memory both
-> > writable and executable which results in W^X warnings with a default
-> > config.
 > >
-> > What made this more confusing was that the flags of the .text section in
-> > current EFI stub bzImages are set to
-> > IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_READ. So if you load that section
-> > according to those flags the EFI stub will quickly run into issues.
-> >
-> > I assume current firmware on x86 machines does not set any restricted
-> > permissions on the memory. Can someone enlighten me on their behavior?
-> >
-> 
-> No current x86 firmware does not use restricted permissions at all.
-> All memory is mapped with both writable and executable permissions,
-> except maybe the stack.
-> 
-> The x86 Linux kernel has been depending on this behavior too, up until
-> recently (fixes are in -rc now for the v6.6 release). Before this, it
-> would copy its own executable image around in memory.
-> 
-> So EFI based kexec will need to support this behavior if it targets
-> older x86 kernels, although I am skeptical that this is a useful
-> design goal.
-
-I don't see this as an important goal either.
-
-> I have been experimenting with running the EFI stub code in user space
-> all the way until ExitBootServices(). The same might work for UKI if
-> it is layered cleanly on top of the EFI APIs (rather than poking into
-> system registers or page tables under the hood).
-> 
-> How this would work with signed images etc is TBD but I quite like the
-> idea of running everything in user space and having a minimal
-> purgatory (or none at all) if we can simply populate the entire
-> address space while running unprivileged, and just branch to it in the
-> kexec() syscall. I imagine this being something like a userspace
-> helper that is signed/trusted itself, and gets invoked by the kernel
-> to run EFI images that are trusted and tagged as being executable
-> unprivileged.
-
-I've been experimenting with running EFI apps inside kernel space instead.
-This is the more natural approach for signed images. Sure, a malicious EFI
-app could do arbitrary stuff in kernel mode, but they're signed. On the other
-hand running this entirely in user space would at least guarantee that the
-system can not crash due to a misbehaving EFI app (at least until
-ExitBootServices()).
-
-The question of whether or not to make this the job of a userspace helper that
-is signed must have come up when kexec_file_load syscall was added. It would
-have also been an option at the time to extend trust to a signed version of
-the userspace kexec tool.
-
-Why was kexec_file_load created instead of restricting kexec_load to a signed
-version of the kexec userspace tool?
-
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
