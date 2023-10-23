@@ -2,140 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C37B7D339B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09D77D33A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbjJWLcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+        id S234108AbjJWLci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbjJWLcI (ORCPT
+        with ESMTP id S234105AbjJWLcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:32:08 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64867DF;
-        Mon, 23 Oct 2023 04:32:05 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Vukm8c._1698060721;
-Received: from 30.97.48.63(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vukm8c._1698060721)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Oct 2023 19:32:02 +0800
-Message-ID: <27d2f363-e24a-736a-9c4e-cff79ff958e0@linux.alibaba.com>
-Date:   Mon, 23 Oct 2023 19:32:17 +0800
+        Mon, 23 Oct 2023 07:32:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4714D7C
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:32:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698060754; x=1729596754;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hXKl7wPSJSGDOuUODILncAIpxPR1MH9Gubv4M9DWQdo=;
+  b=V5xhfHyA8f3T9Vpyrs/Km6bxyVxX6C8lAZaD3ru4/QmrXANAOvR+E67Y
+   r2KyivHpV+OzRd0+UTLtPtKTFjwHlGwi5L6SWBZuVMiookRCqJn45gQ37
+   YY2iAzydCwbEAJhJYwPZfMhX9HeR2KgUiwWAgxaHm8jI7Fhvywj67ccZj
+   8VDB3l81o5UkhI4sVaSE8iIK7MG8abkcxsr6E7ob4SCgMtT009ihV59UJ
+   wZzaldfakr+yL0loXvg8W7Rl9ODlJPzv13Cax3d7gjexhI7uupo0vg3bC
+   2h/62UgVs2LgB2yisreJqfEE1Zd6WuMyW3bgOHGTAlm0LvzWuRbyNJYOT
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="390706618"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="390706618"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:32:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="707908843"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="707908843"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:32:30 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qutAZ-00000007vEN-0tcu;
+        Mon, 23 Oct 2023 14:32:27 +0300
+Date:   Mon, 23 Oct 2023 14:32:26 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, aleksander.lobakin@intel.com,
+        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
+        alexandru.elisei@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org
+Subject: Re: [PATCH v8 2/2] lib/test_bitmap: add tests for
+ bitmap_{read,write}()
+Message-ID: <ZTZZyuWKIMSGv+dF@smile.fi.intel.com>
+References: <20231023102327.3074212-1-glider@google.com>
+ <20231023102327.3074212-2-glider@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH V2 3/7] i2c: sprd: Use global variables to record I2C
- ack/nack status instead of local variables
-To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
-        Andi Shyti <andi.shyti@kernel.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-References: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
- <20231023081158.10654-4-Huangzheng.Lai@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20231023081158.10654-4-Huangzheng.Lai@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023102327.3074212-2-glider@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 23, 2023 at 12:23:27PM +0200, Alexander Potapenko wrote:
+> Add basic tests ensuring that values can be added at arbitrary positions
+> of the bitmap, including those spanning into the adjacent unsigned
+> longs.
+
+...
+
+> +				val = bitmap_read(bitmap, i, nbits);
+> +				(void)val;
+
+Is it marked with __must_check? Otherwise why do we need this?
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-On 10/23/2023 4:11 PM, Huangzheng Lai wrote:
-> We found that when the interrupt bit of the I2C controller is cleared,
-> the ack/nack bit is also cleared at the same time. After clearing the
-> interrupt bit in sprd_i2c_isr(), incorrect ack/nack information will be
-> obtained in sprd_i2c_isr_thread(), resulting in incorrect communication
-> when nack cannot be recognized. To solve this problem, we used a global
-
-This is a hardware bug?
-
-> variable to record ack/nack information before clearing the interrupt
-> bit instead of a local variable.
-> 
-> Fixes: 8b9ec0719834 ("i2c: Add Spreadtrum I2C controller driver")
-> Cc: <stable@vger.kernel.org> # v4.14+
-> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-> ---
->   drivers/i2c/busses/i2c-sprd.c | 11 ++++++-----
->   1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-> index aa602958d4fd..dec627ef408c 100644
-> --- a/drivers/i2c/busses/i2c-sprd.c
-> +++ b/drivers/i2c/busses/i2c-sprd.c
-> @@ -85,6 +85,7 @@ struct sprd_i2c {
->   	struct clk *clk;
->   	u32 src_clk;
->   	u32 bus_freq;
-> +	bool ack_flag;
->   	struct completion complete;
->   	struct reset_control *rst;
->   	u8 *buf;
-> @@ -119,6 +120,7 @@ static void sprd_i2c_clear_ack(struct sprd_i2c *i2c_dev)
->   {
->   	u32 tmp = readl(i2c_dev->base + I2C_STATUS);
->   
-> +	i2c_dev->ack_flag = 0;
->   	writel(tmp & ~I2C_RX_ACK, i2c_dev->base + I2C_STATUS);
->   }
->   
-> @@ -393,7 +395,6 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
->   {
->   	struct sprd_i2c *i2c_dev = dev_id;
->   	struct i2c_msg *msg = i2c_dev->msg;
-> -	bool ack = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
-
-Before this patch, we will re-read the ack bit form the register, but 
-now we just read it in sprd_i2c_isr(). Is it possible that we will miss 
-the ack bit?
-
->   	u32 i2c_tran;
->   
->   	if (msg->flags & I2C_M_RD)
-> @@ -409,7 +410,7 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
->   	 * For reading data, ack is always true, if i2c_tran is not 0 which
->   	 * means we still need to contine to read data from slave.
->   	 */
-> -	if (i2c_tran && ack) {
-> +	if (i2c_tran && i2c_dev->ack_flag) {
->   		sprd_i2c_data_transfer(i2c_dev);
->   		return IRQ_HANDLED;
->   	}
-> @@ -420,7 +421,7 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
->   	 * If we did not get one ACK from slave when writing data, we should
->   	 * return -EIO to notify users.
->   	 */
-> -	if (!ack)
-> +	if (!i2c_dev->ack_flag)
->   		i2c_dev->err = -EIO;
->   	else if (msg->flags & I2C_M_RD && i2c_dev->count)
->   		sprd_i2c_read_bytes(i2c_dev, i2c_dev->buf, i2c_dev->count);
-> @@ -437,7 +438,6 @@ static irqreturn_t sprd_i2c_isr(int irq, void *dev_id)
->   {
->   	struct sprd_i2c *i2c_dev = dev_id;
->   	struct i2c_msg *msg = i2c_dev->msg;
-> -	bool ack = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
->   	u32 i2c_tran;
->   
->   	if (msg->flags & I2C_M_RD)
-> @@ -456,7 +456,8 @@ static irqreturn_t sprd_i2c_isr(int irq, void *dev_id)
->   	 * means we can read all data in one time, then we can finish this
->   	 * transmission too.
->   	 */
-> -	if (!i2c_tran || !ack) {
-> +	i2c_dev->ack_flag = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
-> +	if (!i2c_tran || !i2c_dev->ack_flag) {
->   		sprd_i2c_clear_start(i2c_dev);
->   		sprd_i2c_clear_irq(i2c_dev);
->   	}
