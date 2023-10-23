@@ -2,108 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC917D3A6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5AC7D3A77
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbjJWPMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S229807AbjJWPOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJWPMq (ORCPT
+        with ESMTP id S229498AbjJWPOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:12:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B99290;
-        Mon, 23 Oct 2023 08:12:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7819C433C8;
-        Mon, 23 Oct 2023 15:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698073964;
-        bh=J9r7nlhJFffvRTO0VNXoLKm58fWmXlezqgcthHqa3e0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MdGy3kRYTvrPOsVt3U6yr74m85OydntGKdh7nkzwduKWQ0xLqzEd4m4bHv9QwYYxk
-         Q7e3qLQMLo9O75vuto8tlDZl1Rq0t0gvXPip7obGF5r9/Sg8VCNYJcnm73sYhskdQa
-         tc2ZJKxZcw5RI0KvuOx77VQJtDnJBU6Pig/e6xMsxzvnAYpMejAnhyNYksNpxpKeop
-         BoLvDwJo9nEx47/Ue+t6Y+pl3QtJs9rx8n7a9PBsqyOi3WRm8rwaKovbSw3zMsmrea
-         d6G04BL/zFlz6fd7QcG2bHgPsHMNx7WC+4ta58zZhQQLt8tGuzjtp8p0ymqSR0wW5P
-         oWwuP4uUpAS3g==
-Date:   Mon, 23 Oct 2023 17:12:40 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Camel Guo <camel.guo@axis.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Subject: Re: [PATCH] i2c: exynos5: Calculate t_scl_l, t_scl_h according to
- i2c spec
-Message-ID: <ZTaNaH8qo3Ho+yvL@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Camel Guo <camel.guo@axis.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-References: <20220912085943.1098651-1-camel.guo@axis.com>
+        Mon, 23 Oct 2023 11:14:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD68E8
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:13:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698074007;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=63ahJT05F/ZrGQ5TMqsUAmjRR9M+pviQlbczcdS3kqc=;
+        b=DcPK36cKL15HxDTeoSMpGoToa6qonflMQcJhSMwJZYQX6z72VY9NnTGqxPBLKf41BqBH3s
+        gYyZNA3m0CWupzCR2N9Z6aqpTK+7MgDV/yODH4Hq4jqxB3qP2TCghFwGmOJTvZlcTr9TV/
+        Ritajo0UVPxzmu3M34ljyBpx8vDKZJo=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-29-VALP-acvM36ODa-63Y9QzA-1; Mon, 23 Oct 2023 11:13:25 -0400
+X-MC-Unique: VALP-acvM36ODa-63Y9QzA-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-66d040c58eeso51342066d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:13:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698074004; x=1698678804;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=63ahJT05F/ZrGQ5TMqsUAmjRR9M+pviQlbczcdS3kqc=;
+        b=Gy0NyzARUCS3q4ZBe/WC1rgz4lkgu2rBGVTxIruXfqtPK0b0Y8I1GtANEPoaXl7iP9
+         qr4B691cN3xd/e3wZCDsmRfTsQaQqFN0v9JqocYXjCr8jOAmqnWul66rH9KNsj5PJqT6
+         WbOD3mFT78seqbK034sdg1a39woZXNuceLZVkT+HlPbTOcqUIrqfGhQ1fMw4sFL9Yem1
+         LxoHgraw3yEsljkTQqnsPQKS9HN4aDgHjCY8JxXuKLWeUJs81bV4Egw7ODoZfzdRVIpc
+         nyqW3GTe0150g38DvD2RaEAV5QcQ6ifOD7dt0mfymFaOPSZ3ZU16GqzTDyldG7SlqAyL
+         7RSw==
+X-Gm-Message-State: AOJu0YxKWzKS4dwtSxG2Qh87Yc5QO8oOhIHlkbNBf+STw+Hq4wkapS49
+        +U/CoZgl15/HkKSFtQHn1dXMDpNO69NPK9O40azTrmtvfX7SQV9MQKNH/PQ3sm+SFZgRHkxqol6
+        b8pOWQobR6cYpvvAqAK0mJa7z
+X-Received: by 2002:a0c:df92:0:b0:66d:38e3:4ffd with SMTP id w18-20020a0cdf92000000b0066d38e34ffdmr9704298qvl.5.1698074004155;
+        Mon, 23 Oct 2023 08:13:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEw5D/o5lkfr0V2xwj4iuqyXgrqpujFSbZWbAX/eMHBKn/lQ9LUbBZ9xVTrW6OSbaPfZVQ9iw==
+X-Received: by 2002:a0c:df92:0:b0:66d:38e3:4ffd with SMTP id w18-20020a0cdf92000000b0066d38e34ffdmr9704288qvl.5.1698074003872;
+        Mon, 23 Oct 2023 08:13:23 -0700 (PDT)
+Received: from sgarzare-redhat (host-87-12-185-56.business.telecomitalia.it. [87.12.185.56])
+        by smtp.gmail.com with ESMTPSA id ml14-20020a056214584e00b0066d04196c3dsm2939797qvb.49.2023.10.23.08.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 08:13:23 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 17:13:07 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Alexandru Matei <alexandru.matei@uipath.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mihai Petrisor <mihai.petrisor@uipath.com>,
+        Viorel Canja <viorel.canja@uipath.com>
+Subject: Re: [PATCH v2] vsock/virtio: initialize the_virtio_vsock before
+ using VQs
+Message-ID: <dynlbzmgtr35byn5etbar33ufhweii6gk2pct5wpqxpqubchce@cltop4aar7r6>
+References: <20231023140833.11206-1-alexandru.matei@uipath.com>
+ <2tc56vwgs5xwqzfqbv5vud346uzagwtygdhkngdt3wjqaslbmh@zauky5czyfkg>
+ <0624137c-85cf-4086-8256-af2b8405f434@uipath.com>
+ <632465d0-e04c-4e10-abb9-a740d6e3dc30@uipath.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NHBuWLbeQWJ0REJ9"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20220912085943.1098651-1-camel.guo@axis.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <632465d0-e04c-4e10-abb9-a740d6e3dc30@uipath.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 23, 2023 at 05:59:45PM +0300, Alexandru Matei wrote:
+>On 10/23/2023 5:52 PM, Alexandru Matei wrote:
+>> On 10/23/2023 5:29 PM, Stefano Garzarella wrote:
+>>> On Mon, Oct 23, 2023 at 05:08:33PM +0300, Alexandru Matei wrote:
+>>>> Once VQs are filled with empty buffers and we kick the host,
+>>>> it can send connection requests.  If 'the_virtio_vsock' is not
+>>>> initialized before, replies are silently dropped and do not reach the host.
+>>>>
+>>>> Fixes: 0deab087b16a ("vsock/virtio: use RCU to avoid use-after-free on the_virtio_vsock")
+>>>> Signed-off-by: Alexandru Matei <alexandru.matei@uipath.com>
+>>>> ---
+>>>> v2:
+>>>> - split virtio_vsock_vqs_init in vqs_init and vqs_fill and moved
+>>>>  the_virtio_vsock initialization after vqs_init
+>>>>
+>>>> net/vmw_vsock/virtio_transport.c | 9 +++++++--
+>>>> 1 file changed, 7 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>>>> index e95df847176b..92738d1697c1 100644
+>>>> --- a/net/vmw_vsock/virtio_transport.c
+>>>> +++ b/net/vmw_vsock/virtio_transport.c
+>>>> @@ -559,6 +559,11 @@ static int virtio_vsock_vqs_init(struct virtio_vsock *vsock)
+>>>>     vsock->tx_run = true;
+>>>>     mutex_unlock(&vsock->tx_lock);
+>>>>
+>>>> +    return 0;
+>>>> +}
+>>>> +
+>>>> +static void virtio_vsock_vqs_fill(struct virtio_vsock *vsock)
+>>>
+>>> What about renaming this function in virtio_vsock_vqs_start() and move also the setting of `tx_run` here?
+>>
+>> It works but in this case we also need to move rcu_assign_pointer in virtio_vsock_vqs_start(),
+>> the assignment needs to be right after setting tx_run to true and before filling the VQs.
 
---NHBuWLbeQWJ0REJ9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Why?
 
-On Mon, Sep 12, 2022 at 10:59:43AM +0200, Camel Guo wrote:
-> Previously the duty cycle was divided equally into h_scl_l, t_scl_h.
-> This makes the low period of the SCL clock in Fast Mode is only 1.25us
-> which is way lower than the minimal value (1.3) specified in i2c
-> specification. In order to make sure t_scl_l, t_scl_h always fullfill
-> i2c specification, this commit calculates t_scl_l using this formula:
->=20
-> t_scl_l =3D clk_cycle *
->     ((t_low_min + (scl_clock - t_low_min - t_high_min) / 2) / scl_clock)
->=20
-> where:
-> t_low_min is the minimal value of low period of the SCL clock in us;
-> t_high_min is the minimal value of high period of the SCL clock in us;
-> scl_clock is converted from SCL clock frequency into us.
->=20
-> Signed-off-by: Camel Guo <camel.guo@axis.com>
+If `rx_run` is false, we shouldn't need to send replies to the host 
+IIUC.
 
-Applied to for-next, thanks!
+If we need this instead, please add a comment in the code, but also in 
+the commit, because it's not clear why.
 
+>>
+>
+>And if we move rcu_assign_pointer then there is no need to split the function in two,
+>We can move rcu_assign_pointer() directly inside virtio_vsock_vqs_init() after setting tx_run.
 
---NHBuWLbeQWJ0REJ9
-Content-Type: application/pgp-signature; name="signature.asc"
+Yep, this could be another option, but we need to change the name of 
+that function in this case.
 
------BEGIN PGP SIGNATURE-----
+Stefano
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmU2jWgACgkQFA3kzBSg
-KbaidQ/+Kzl5eb4XcCOXgAi1kIsBaqIK0qMCqygYCEr0/uQi7gVIcTemI0AM86uu
-M1M6UwxYcVGms/5kUHiEsCBjHgDVkistUr49W1Dur4zVvHj/aPwDoDgyXwpCGL08
-0H7L/aJilgj86wGiDASH8/ZLaYrkV8HKWae+ocXVJDLTOrgWlVyjLnklZpK2e0WL
-OCuKjD758ebaTNITimU0BaMZRS08NBXsxlunQN0IaIYdrqa48mSyHb7/EVhcKnp/
-AxjWzxmJxtDakVKPCFNHjLFoeUp2NplMZ/pORRR6k6n/rfa9FWTFFxnuO7TTEDv6
-lhnKqszlYAjFxyToF5prTQMfzKPqJcCVvEnskZjMdIB2/kZyvsW2v3clfx4R0RHQ
-cBdYtEbVeATLDMdAQ3ynh8guAW37/jUF/CnKFOIeuzeMwX3y/bZrDjEwnOmVkyeQ
-mli3gsQoZHAaYXYJcKmYE3/mI2gCoIOiscZfPcDbPSOzLzYV19LgZOcYfS7m2+xl
-qsJQgAkRVgVFFzlFS78F2iGBTEJ2tH3gInxhP9e+uFgOv6jGkMuPWg71aHcI2Eqp
-bLo7xevHVbVu8horeHE9L1UQ1QoxndkuWnPiDPdwaupyU9kD+Ex9u9+SaNfZN/9B
-GiC1taDV6hQTabImUOU9x4rME4noqFUM7pPA/LRwGj7RFwC+NiM=
-=0Pt+
------END PGP SIGNATURE-----
+>
+>>>
+>>> Thanks,
+>>> Stefano
+>>>
+>>>> +{
+>>>>     mutex_lock(&vsock->rx_lock);
+>>>>     virtio_vsock_rx_fill(vsock);
+>>>>     vsock->rx_run = true;
+>>>> @@ -568,8 +573,6 @@ static int virtio_vsock_vqs_init(struct virtio_vsock *vsock)
+>>>>     virtio_vsock_event_fill(vsock);
+>>>>     vsock->event_run = true;
+>>>>     mutex_unlock(&vsock->event_lock);
+>>>> -
+>>>> -    return 0;
+>>>> }
+>>>>
+>>>> static void virtio_vsock_vqs_del(struct virtio_vsock *vsock)
+>>>> @@ -664,6 +667,7 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
+>>>>         goto out;
+>>>>
+>>>>     rcu_assign_pointer(the_virtio_vsock, vsock);
+>>>> +    virtio_vsock_vqs_fill(vsock);
+>>>>
+>>>>     mutex_unlock(&the_virtio_vsock_mutex);
+>>>>
+>>>> @@ -736,6 +740,7 @@ static int virtio_vsock_restore(struct virtio_device *vdev)
+>>>>         goto out;
+>>>>
+>>>>     rcu_assign_pointer(the_virtio_vsock, vsock);
+>>>> +    virtio_vsock_vqs_fill(vsock);
+>>>>
+>>>> out:
+>>>>     mutex_unlock(&the_virtio_vsock_mutex);
+>>>> -- 
+>>>> 2.34.1
+>>>>
+>>>
+>
 
---NHBuWLbeQWJ0REJ9--
