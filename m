@@ -2,1466 +2,1701 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 029B97D2CEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321A07D2CEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232440AbjJWIjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48314 "EHLO
+        id S232476AbjJWIj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232227AbjJWIiz (ORCPT
+        with ESMTP id S232637AbjJWIjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:38:55 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE88D6B;
-        Mon, 23 Oct 2023 01:38:50 -0700 (PDT)
-X-UUID: 9400266e717f11eea33bb35ae8d461a2-20231023
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=1MmJwFBcL7LgYM4rp9GgP+D6JjaPc0brmbQr7WLKei0=;
-        b=qvWUjMdJmGO78DcU4vdAKtt04IrEAKfRKxbzRLgLJHpJ7tc+YkQkopqolIGBt3PSIKwN3SHDq6jlyJuJRf9eK8xNlPZQslAZ1YYdMSB6hjoxRITm/60yk9XuqJHDFbdAD5P0fN3Ma7duYKibv78b2RX1+wV8PRlPq3Dhbj+65fs=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:dbab28bf-4fb5-406f-83c5-164825d36828,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:5f78ec9,CLOUDID:c130a8fb-4a48-46e2-b946-12f04f20af8c,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 9400266e717f11eea33bb35ae8d461a2-20231023
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <jason-ch.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 2071535573; Mon, 23 Oct 2023 16:38:45 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 23 Oct 2023 16:38:44 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 23 Oct 2023 16:38:44 +0800
-From:   Jason-ch Chen <jason-ch.chen@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
+        Mon, 23 Oct 2023 04:39:22 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F65610CA;
+        Mon, 23 Oct 2023 01:39:10 -0700 (PDT)
+Received: from ideasonboard.com (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A1D49749;
+        Mon, 23 Oct 2023 10:38:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698050337;
+        bh=sZiypPH70sb9D/EjWHYfjxi5BFvH2aPTqUoAbBPLyYs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N+MuqSAt0OprAmdgkM6kao+FWHQQfZasoGIWdA7af0ajydpRiKUmxtePuqSz39Mv5
+         GcPerbBUvzGKMp8rpow1ly8Y7MEUf5ueQaVSZDsItj/EtzB4WCOxax4PlLwFgHusJU
+         XIQGptuQdh2lznLrpKMHRznfUKYe/2TVFMCKtHHs=
+Date:   Mon, 23 Oct 2023 10:38:59 +0200
+From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Alexandre Mergnat <amergnat@baylibre.com>
-CC:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
-        <nfraprado@collabora.com>, Chen-Yu Tsai <wenst@chromium.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        jason-ch chen <Jason-ch.Chen@mediatek.com>
-Subject: [PATCH v6 4/4] arm64: dts: Add MediaTek MT8188 dts and evaluation board and Makefile
-Date:   Mon, 23 Oct 2023 16:38:39 +0800
-Message-ID: <20231023083839.24453-5-jason-ch.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20231023083839.24453-1-jason-ch.chen@mediatek.com>
-References: <20231023083839.24453-1-jason-ch.chen@mediatek.com>
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh@kernel.org>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] media: i2c: gc2145: Galaxy Core GC2145 sensor
+ support
+Message-ID: <kwlierdzflnm4ignc3huklbrkxq6wftr2ks3lmdmm3dfk7z654@fvpszg7jywz7>
+References: <20231011175735.1824782-1-alain.volmat@foss.st.com>
+ <20231011175735.1824782-4-alain.volmat@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231011175735.1824782-4-alain.volmat@foss.st.com>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jason-ch chen <Jason-ch.Chen@mediatek.com>
+Hi Alain
 
-MT8188 is a SoC based on 64bit ARMv8 architecture. It contains 6 CA55
-and 2 CA78 cores. MT8188 share many HW IP with MT65xx series.
+On Wed, Oct 11, 2023 at 07:57:30PM +0200, Alain Volmat wrote:
+> Addition of support for the Galaxy Core GC2145 XVGA sensor.
+> The sensor supports both DVP and CSI-2 interfaces however for
+> the time being only CSI-2 is implemented.
+>
+> Configurations is currently based on initialization scripts
+> coming from Galaxy Core and for that purpose only 3 static
+> resolutions are supported with static framerates.
+>  - 640x480 (30fps)
+>  - 1280x720 (30fps)
+>  - 1600x1200 (20fps)
 
-We add basic chip support for MediaTek MT8188 on evaluation board.
+Anything blocking having a writable VBLANK ? This is a YUV sensor but
+GC2145_REG_VBLANK seems to be writable. I don't want to push you to
+more work that what you actually need, but configurable blankings (and
+then frame durations) seems like an important feature ? (and if I
+recall right you want to use this sensor with libcamera, which will
+require blankings to be controllable (if the sensor supports any RAW
+format)
 
-Signed-off-by: jason-ch chen <Jason-ch.Chen@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/Makefile       |   1 +
- arch/arm64/boot/dts/mediatek/mt8188-evb.dts | 387 ++++++++
- arch/arm64/boot/dts/mediatek/mt8188.dtsi    | 956 ++++++++++++++++++++
- 3 files changed, 1344 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8188-evb.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8188.dtsi
+I don't see any RAW format being supported in this version. Is this
+something you plan to do on top ?
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index e6e7592a3645..8900b939ed52 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -44,6 +44,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-pumpkin.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-evb.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8188-evb.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-hayato-r1.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-hayato-r5-sku2.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-spherion-r0.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8188-evb.dts b/arch/arm64/boot/dts/mediatek/mt8188-evb.dts
-new file mode 100644
-index 000000000000..68a82b49f7a3
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8188-evb.dts
-@@ -0,0 +1,387 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2023 MediaTek Inc.
-+ */
-+/dts-v1/;
-+#include "mt8188.dtsi"
-+#include "mt6359.dtsi"
-+
-+/ {
-+	model = "MediaTek MT8188 evaluation board";
-+	compatible = "mediatek,mt8188-evb", "mediatek,mt8188";
-+
-+	aliases {
-+		serial0 = &uart0;
-+		i2c0 = &i2c0;
-+		i2c1 = &i2c1;
-+		i2c2 = &i2c2;
-+		i2c3 = &i2c3;
-+		i2c4 = &i2c4;
-+		i2c5 = &i2c5;
-+		i2c6 = &i2c6;
-+		mmc0 = &mmc0;
-+	};
-+
-+	chosen: chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@40000000 {
-+		device_type = "memory";
-+		reg = <0 0x40000000 0 0x80000000>;
-+	};
-+
-+	reserved_memory: reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		scp_mem_reserved: memory@50000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0 0x50000000 0 0x2900000>;
-+			no-map;
-+		};
-+	};
-+};
-+
-+&auxadc {
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c0_pins>;
-+	clock-frequency = <400000>;
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c1_pins>;
-+	clock-frequency = <400000>;
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c2_pins>;
-+	clock-frequency = <400000>;
-+	status = "okay";
-+};
-+
-+&i2c3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c3_pins>;
-+	clock-frequency = <400000>;
-+	status = "okay";
-+};
-+
-+&i2c4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c4_pins>;
-+	clock-frequency = <400000>;
-+	status = "okay";
-+};
-+
-+&i2c5 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c5_pins>;
-+	clock-frequency = <400000>;
-+	status = "okay";
-+};
-+
-+&i2c6 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c6_pins>;
-+	clock-frequency = <400000>;
-+	status = "okay";
-+};
-+
-+&mmc0 {
-+	bus-width = <8>;
-+	hs400-ds-delay = <0x1481b>;
-+	max-frequency = <200000000>;
-+
-+	cap-mmc-highspeed;
-+	mmc-hs200-1_8v;
-+	mmc-hs400-1_8v;
-+	supports-cqe;
-+	cap-mmc-hw-reset;
-+	no-sdio;
-+	no-sd;
-+	non-removable;
-+
-+	vmmc-supply = <&mt6359_vemc_1_ldo_reg>;
-+	vqmmc-supply = <&mt6359_vufs_ldo_reg>;
-+
-+	pinctrl-names = "default", "state_uhs";
-+	pinctrl-0 = <&mmc0_default_pins>;
-+	pinctrl-1 = <&mmc0_uhs_pins>;
-+
-+	status = "okay";
-+};
-+
-+&mt6359_vcore_buck_reg {
-+	regulator-always-on;
-+};
-+
-+&mt6359_vgpu11_buck_reg {
-+	regulator-always-on;
-+};
-+
-+&mt6359_vpu_buck_reg {
-+	regulator-always-on;
-+};
-+
-+&mt6359_vrf12_ldo_reg {
-+	regulator-always-on;
-+};
-+
-+&nor_flash {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&nor_pins_default>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <52000000>;
-+	};
-+};
-+
-+&pio {
-+	adsp_uart_pins: adsp-uart-pins {
-+		pins-tx-rx {
-+			pinmux = <PINMUX_GPIO35__FUNC_O_ADSP_UTXD0>,
-+				 <PINMUX_GPIO36__FUNC_I1_ADSP_URXD0>;
-+		};
-+	};
-+
-+	i2c0_pins: i2c0-pins {
-+		pins-bus {
-+			pinmux = <PINMUX_GPIO56__FUNC_B1_SDA0>,
-+				 <PINMUX_GPIO55__FUNC_B1_SCL0>;
-+			bias-pull-up = <MTK_PULL_SET_RSEL_011>;
-+		};
-+	};
-+
-+	i2c1_pins: i2c1-pins {
-+		pins-bus {
-+			pinmux = <PINMUX_GPIO58__FUNC_B1_SDA1>,
-+				 <PINMUX_GPIO57__FUNC_B1_SCL1>;
-+			bias-pull-up = <MTK_PULL_SET_RSEL_011>;
-+		};
-+	};
-+
-+	i2c2_pins: i2c2-pins {
-+		pins-bus {
-+			pinmux = <PINMUX_GPIO60__FUNC_B1_SDA2>,
-+				 <PINMUX_GPIO59__FUNC_B1_SCL2>;
-+			bias-pull-up = <MTK_PULL_SET_RSEL_011>;
-+		};
-+	};
-+
-+	i2c3_pins: i2c3-pins {
-+		pins-bus {
-+			pinmux = <PINMUX_GPIO62__FUNC_B1_SDA3>,
-+				 <PINMUX_GPIO61__FUNC_B1_SCL3>;
-+			bias-pull-up = <MTK_PULL_SET_RSEL_011>;
-+		};
-+	};
-+
-+	i2c4_pins: i2c4-pins {
-+		pins-bus {
-+			pinmux = <PINMUX_GPIO64__FUNC_B1_SDA4>,
-+				 <PINMUX_GPIO63__FUNC_B1_SCL4>;
-+			bias-pull-up = <MTK_PULL_SET_RSEL_011>;
-+		};
-+	};
-+
-+	i2c5_pins: i2c5-pins {
-+		pins-bus {
-+			pinmux = <PINMUX_GPIO66__FUNC_B1_SDA5>,
-+				 <PINMUX_GPIO65__FUNC_B1_SCL5>;
-+			bias-pull-up = <MTK_PULL_SET_RSEL_011>;
-+		};
-+	};
-+
-+	i2c6_pins: i2c6-pins {
-+		pins-bus {
-+			pinmux = <PINMUX_GPIO68__FUNC_B1_SDA6>,
-+				 <PINMUX_GPIO67__FUNC_B1_SCL6>;
-+			bias-pull-up = <MTK_PULL_SET_RSEL_011>;
-+		};
-+	};
-+
-+	mmc0_default_pins: mmc0-default-pins {
-+		pins-cmd-dat {
-+			pinmux = <PINMUX_GPIO161__FUNC_B1_MSDC0_DAT0>,
-+				 <PINMUX_GPIO160__FUNC_B1_MSDC0_DAT1>,
-+				 <PINMUX_GPIO159__FUNC_B1_MSDC0_DAT2>,
-+				 <PINMUX_GPIO158__FUNC_B1_MSDC0_DAT3>,
-+				 <PINMUX_GPIO154__FUNC_B1_MSDC0_DAT4>,
-+				 <PINMUX_GPIO153__FUNC_B1_MSDC0_DAT5>,
-+				 <PINMUX_GPIO152__FUNC_B1_MSDC0_DAT6>,
-+				 <PINMUX_GPIO151__FUNC_B1_MSDC0_DAT7>,
-+				 <PINMUX_GPIO156__FUNC_B1_MSDC0_CMD>;
-+			input-enable;
-+			drive-strength = <6>;
-+			bias-pull-up = <MTK_PUPD_SET_R1R0_01>;
-+		};
-+
-+		pins-clk {
-+			pinmux = <PINMUX_GPIO157__FUNC_B1_MSDC0_CLK>;
-+			drive-strength = <6>;
-+			bias-pull-down = <MTK_PUPD_SET_R1R0_10>;
-+		};
-+
-+		pins-rst {
-+			pinmux = <PINMUX_GPIO155__FUNC_O_MSDC0_RSTB>;
-+			drive-strength = <6>;
-+			bias-pull-up = <MTK_PUPD_SET_R1R0_01>;
-+		};
-+	};
-+
-+	mmc0_uhs_pins: mmc0-uhs-pins {
-+		pins-cmd-dat {
-+			pinmux = <PINMUX_GPIO161__FUNC_B1_MSDC0_DAT0>,
-+				 <PINMUX_GPIO160__FUNC_B1_MSDC0_DAT1>,
-+				 <PINMUX_GPIO159__FUNC_B1_MSDC0_DAT2>,
-+				 <PINMUX_GPIO158__FUNC_B1_MSDC0_DAT3>,
-+				 <PINMUX_GPIO154__FUNC_B1_MSDC0_DAT4>,
-+				 <PINMUX_GPIO153__FUNC_B1_MSDC0_DAT5>,
-+				 <PINMUX_GPIO152__FUNC_B1_MSDC0_DAT6>,
-+				 <PINMUX_GPIO151__FUNC_B1_MSDC0_DAT7>,
-+				 <PINMUX_GPIO156__FUNC_B1_MSDC0_CMD>;
-+			input-enable;
-+			drive-strength = <8>;
-+			bias-pull-up = <MTK_PUPD_SET_R1R0_01>;
-+		};
-+
-+		pins-clk-ds {
-+			pinmux = <PINMUX_GPIO157__FUNC_B1_MSDC0_CLK>,
-+				 <PINMUX_GPIO162__FUNC_B0_MSDC0_DSL>;
-+			drive-strength = <8>;
-+			bias-pull-down = <MTK_PUPD_SET_R1R0_10>;
-+		};
-+
-+		pins-rst {
-+			pinmux = <PINMUX_GPIO155__FUNC_O_MSDC0_RSTB>;
-+			drive-strength = <8>;
-+			bias-pull-up = <MTK_PUPD_SET_R1R0_01>;
-+		};
-+	};
-+
-+	nor_pins_default: nor-pins {
-+		pins-io-ck {
-+			pinmux = <PINMUX_GPIO127__FUNC_B0_SPINOR_IO0>,
-+				 <PINMUX_GPIO125__FUNC_O_SPINOR_CK>,
-+				 <PINMUX_GPIO128__FUNC_B0_SPINOR_IO1>;
-+			bias-pull-down;
-+		};
-+
-+		pins-io-cs {
-+			pinmux = <PINMUX_GPIO126__FUNC_O_SPINOR_CS>,
-+				 <PINMUX_GPIO129__FUNC_B0_SPINOR_IO2>,
-+				 <PINMUX_GPIO130__FUNC_B0_SPINOR_IO3>;
-+			bias-pull-up;
-+		};
-+	};
-+
-+	spi0_pins: spi0-pins {
-+		pins-spi {
-+			pinmux = <PINMUX_GPIO69__FUNC_O_SPIM0_CSB>,
-+				 <PINMUX_GPIO70__FUNC_O_SPIM0_CLK>,
-+				 <PINMUX_GPIO71__FUNC_B0_SPIM0_MOSI>,
-+				 <PINMUX_GPIO72__FUNC_B0_SPIM0_MISO>;
-+			bias-disable;
-+		};
-+	};
-+
-+	spi1_pins: spi1-pins {
-+		pins-spi {
-+			pinmux = <PINMUX_GPIO75__FUNC_O_SPIM1_CSB>,
-+				 <PINMUX_GPIO76__FUNC_O_SPIM1_CLK>,
-+				 <PINMUX_GPIO77__FUNC_B0_SPIM1_MOSI>,
-+				 <PINMUX_GPIO78__FUNC_B0_SPIM1_MISO>;
-+			bias-disable;
-+		};
-+	};
-+
-+	spi2_pins: spi2-pins {
-+		pins-spi {
-+			pinmux = <PINMUX_GPIO79__FUNC_O_SPIM2_CSB>,
-+				 <PINMUX_GPIO80__FUNC_O_SPIM2_CLK>,
-+				 <PINMUX_GPIO81__FUNC_B0_SPIM2_MOSI>,
-+				 <PINMUX_GPIO82__FUNC_B0_SPIM2_MISO>;
-+			bias-disable;
-+		};
-+	};
-+
-+	uart0_pins: uart0-pins {
-+		pins-rx-tx {
-+			pinmux = <PINMUX_GPIO31__FUNC_O_UTXD0>,
-+				 <PINMUX_GPIO32__FUNC_I1_URXD0>;
-+			bias-pull-up;
-+		};
-+	};
-+};
-+
-+&pmic {
-+	interrupts-extended = <&pio 222 IRQ_TYPE_LEVEL_HIGH>;
-+};
-+
-+&scp {
-+	memory-region = <&scp_mem_reserved>;
-+	status = "okay";
-+};
-+
-+&spi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&spi0_pins>;
-+	status = "okay";
-+};
-+
-+&spi1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&spi1_pins>;
-+	status = "okay";
-+};
-+
-+&spi2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&spi2_pins>;
-+	status = "okay";
-+};
-+
-+&u3phy0 {
-+	status = "okay";
-+};
-+
-+&u3phy1 {
-+	status = "okay";
-+};
-+
-+&u3phy2 {
-+	status = "okay";
-+};
-+
-+&uart0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart0_pins>;
-+	status = "okay";
-+};
-+
-+&xhci0 {
-+	status = "okay";
-+};
-+
-+&xhci1 {
-+	status = "okay";
-+};
-+
-+&xhci2 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8188.dtsi b/arch/arm64/boot/dts/mediatek/mt8188.dtsi
-new file mode 100644
-index 000000000000..b4315c9214dc
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8188.dtsi
-@@ -0,0 +1,956 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (c) 2023 MediaTek Inc.
-+ *
-+ */
-+
-+/dts-v1/;
-+#include <dt-bindings/clock/mediatek,mt8188-clk.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/phy/phy.h>
-+#include <dt-bindings/pinctrl/mediatek,mt8188-pinfunc.h>
-+#include <dt-bindings/power/mediatek,mt8188-power.h>
-+
-+/ {
-+	compatible = "mediatek,mt8188";
-+	interrupt-parent = <&gic>;
-+	#address-cells = <2>;
-+	#size-cells = <2>;
-+
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a55";
-+			reg = <0x000>;
-+			enable-method = "psci";
-+			clock-frequency = <2000000000>;
-+			capacity-dmips-mhz = <282>;
-+			cpu-idle-states = <&cpu_off_l &cluster_off_l>;
-+			i-cache-size = <32768>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <128>;
-+			d-cache-size = <32768>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&l2_0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu1: cpu@100 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a55";
-+			reg = <0x100>;
-+			enable-method = "psci";
-+			clock-frequency = <2000000000>;
-+			capacity-dmips-mhz = <282>;
-+			cpu-idle-states = <&cpu_off_l &cluster_off_l>;
-+			i-cache-size = <32768>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <128>;
-+			d-cache-size = <32768>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&l2_0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu2: cpu@200 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a55";
-+			reg = <0x200>;
-+			enable-method = "psci";
-+			clock-frequency = <2000000000>;
-+			capacity-dmips-mhz = <282>;
-+			cpu-idle-states = <&cpu_off_l &cluster_off_l>;
-+			i-cache-size = <32768>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <128>;
-+			d-cache-size = <32768>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&l2_0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu3: cpu@300 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a55";
-+			reg = <0x300>;
-+			enable-method = "psci";
-+			clock-frequency = <2000000000>;
-+			capacity-dmips-mhz = <282>;
-+			cpu-idle-states = <&cpu_off_l &cluster_off_l>;
-+			i-cache-size = <32768>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <128>;
-+			d-cache-size = <32768>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&l2_0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu4: cpu@400 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a55";
-+			reg = <0x400>;
-+			enable-method = "psci";
-+			clock-frequency = <2000000000>;
-+			capacity-dmips-mhz = <282>;
-+			cpu-idle-states = <&cpu_off_l &cluster_off_l>;
-+			i-cache-size = <32768>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <128>;
-+			d-cache-size = <32768>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&l2_0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu5: cpu@500 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a55";
-+			reg = <0x500>;
-+			enable-method = "psci";
-+			clock-frequency = <2000000000>;
-+			capacity-dmips-mhz = <282>;
-+			cpu-idle-states = <&cpu_off_l &cluster_off_l>;
-+			i-cache-size = <32768>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <128>;
-+			d-cache-size = <32768>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&l2_0>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu6: cpu@600 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a78";
-+			reg = <0x600>;
-+			enable-method = "psci";
-+			clock-frequency = <2600000000>;
-+			capacity-dmips-mhz = <1024>;
-+			cpu-idle-states = <&cpu_off_b &cluster_off_b>;
-+			i-cache-size = <65536>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <65536>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <256>;
-+			next-level-cache = <&l2_1>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu7: cpu@700 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a78";
-+			reg = <0x700>;
-+			enable-method = "psci";
-+			clock-frequency = <2600000000>;
-+			capacity-dmips-mhz = <1024>;
-+			cpu-idle-states = <&cpu_off_b &cluster_off_b>;
-+			i-cache-size = <65536>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <65536>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <256>;
-+			next-level-cache = <&l2_1>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		cpu-map {
-+			cluster0 {
-+				core0 {
-+					cpu = <&cpu0>;
-+				};
-+
-+				core1 {
-+					cpu = <&cpu1>;
-+				};
-+
-+				core2 {
-+					cpu = <&cpu2>;
-+				};
-+
-+				core3 {
-+					cpu = <&cpu3>;
-+				};
-+
-+				core4 {
-+					cpu = <&cpu4>;
-+				};
-+
-+				core5 {
-+					cpu = <&cpu5>;
-+				};
-+
-+				core6 {
-+					cpu = <&cpu6>;
-+				};
-+
-+				core7 {
-+					cpu = <&cpu7>;
-+				};
-+			};
-+		};
-+
-+		idle-states {
-+			entry-method = "psci";
-+
-+			cpu_off_l: cpu-off-l {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x00010000>;
-+				local-timer-stop;
-+				entry-latency-us = <50>;
-+				exit-latency-us = <95>;
-+				min-residency-us = <580>;
-+			};
-+
-+			cpu_off_b: cpu-off-b {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x00010000>;
-+				local-timer-stop;
-+				entry-latency-us = <45>;
-+				exit-latency-us = <140>;
-+				min-residency-us = <740>;
-+			};
-+
-+			cluster_off_l: cluster-off-l {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x01010010>;
-+				local-timer-stop;
-+				entry-latency-us = <55>;
-+				exit-latency-us = <155>;
-+				min-residency-us = <840>;
-+			};
-+
-+			cluster_off_b: cluster-off-b {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x01010010>;
-+				local-timer-stop;
-+				entry-latency-us = <50>;
-+				exit-latency-us = <200>;
-+				min-residency-us = <1000>;
-+			};
-+		};
-+
-+		l2_0: l2-cache0 {
-+			compatible = "cache";
-+			cache-level = <2>;
-+			cache-size = <131072>;
-+			cache-line-size = <64>;
-+			cache-sets = <512>;
-+			next-level-cache = <&l3_0>;
-+			cache-unified;
-+		};
-+
-+		l2_1: l2-cache1 {
-+			compatible = "cache";
-+			cache-level = <2>;
-+			cache-size = <262144>;
-+			cache-line-size = <64>;
-+			cache-sets = <512>;
-+			next-level-cache = <&l3_0>;
-+			cache-unified;
-+		};
-+
-+		l3_0: l3-cache {
-+			compatible = "cache";
-+			cache-level = <3>;
-+			cache-size = <2097152>;
-+			cache-line-size = <64>;
-+			cache-sets = <2048>;
-+			cache-unified;
-+		};
-+	};
-+
-+	clk13m: oscillator-13m {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <13000000>;
-+		clock-output-names = "clk13m";
-+	};
-+
-+	clk26m: oscillator-26m {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <26000000>;
-+		clock-output-names = "clk26m";
-+	};
-+
-+	clk32k: oscillator-32k {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <32768>;
-+		clock-output-names = "clk32k";
-+	};
-+
-+	pmu-a55 {
-+		compatible = "arm,cortex-a55-pmu";
-+		interrupt-parent = <&gic>;
-+		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH &ppi_cluster0>;
-+	};
-+
-+	pmu-a78 {
-+		compatible = "arm,cortex-a78-pmu";
-+		interrupt-parent = <&gic>;
-+		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH &ppi_cluster1>;
-+	};
-+
-+	psci {
-+		compatible = "arm,psci-1.0";
-+		method = "smc";
-+	};
-+
-+	timer: timer {
-+		compatible = "arm,armv8-timer";
-+		interrupt-parent = <&gic>;
-+		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_PPI 14 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_PPI 11 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_PPI 10 IRQ_TYPE_LEVEL_HIGH 0>;
-+		clock-frequency = <13000000>;
-+	};
-+
-+	soc {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		compatible = "simple-bus";
-+		ranges;
-+
-+		gic: interrupt-controller@c000000 {
-+			compatible = "arm,gic-v3";
-+			#interrupt-cells = <4>;
-+			#redistributor-regions = <1>;
-+			interrupt-parent = <&gic>;
-+			interrupt-controller;
-+			reg = <0 0x0c000000 0 0x40000>,
-+			      <0 0x0c040000 0 0x200000>;
-+			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH 0>;
-+
-+			ppi-partitions {
-+				ppi_cluster0: interrupt-partition-0 {
-+					affinity = <&cpu0 &cpu1 &cpu2 &cpu3 &cpu4 &cpu5>;
-+				};
-+
-+				ppi_cluster1: interrupt-partition-1 {
-+					affinity = <&cpu6 &cpu7>;
-+				};
-+			};
-+		};
-+
-+		topckgen: syscon@10000000 {
-+			compatible = "mediatek,mt8188-topckgen", "syscon";
-+			reg = <0 0x10000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		infracfg_ao: syscon@10001000 {
-+			compatible = "mediatek,mt8188-infracfg-ao", "syscon";
-+			reg = <0 0x10001000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		pericfg: syscon@10003000 {
-+			compatible = "mediatek,mt8188-pericfg", "syscon";
-+			reg = <0 0x10003000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		pio: pinctrl@10005000 {
-+			compatible = "mediatek,mt8188-pinctrl";
-+			reg = <0 0x10005000 0 0x1000>,
-+			      <0 0x11c00000 0 0x1000>,
-+			      <0 0x11e10000 0 0x1000>,
-+			      <0 0x11e20000 0 0x1000>,
-+			      <0 0x11ea0000 0 0x1000>,
-+			      <0 0x1000b000 0 0x1000>;
-+			reg-names = "iocfg0", "iocfg_rm", "iocfg_lt",
-+				    "iocfg_lm", "iocfg_rt", "eint";
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			gpio-ranges = <&pio 0 0 176>;
-+			interrupt-controller;
-+			interrupts = <GIC_SPI 235 IRQ_TYPE_LEVEL_HIGH 0>;
-+			#interrupt-cells = <2>;
-+		};
-+
-+		watchdog: watchdog@10007000 {
-+			compatible = "mediatek,mt8188-wdt";
-+			reg = <0 0x10007000 0 0x100>;
-+			mediatek,disable-extrst;
-+			#reset-cells = <1>;
-+		};
-+
-+		apmixedsys: syscon@1000c000 {
-+			compatible = "mediatek,mt8188-apmixedsys", "syscon";
-+			reg = <0 0x1000c000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		systimer: timer@10017000 {
-+			compatible = "mediatek,mt8188-timer", "mediatek,mt6765-timer";
-+			reg = <0 0x10017000 0 0x1000>;
-+			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk13m>;
-+		};
-+
-+		pwrap: pwrap@10024000 {
-+			compatible = "mediatek,mt8188-pwrap", "mediatek,mt8195-pwrap", "syscon";
-+			reg = <0 0x10024000 0 0x1000>;
-+			reg-names = "pwrap";
-+			interrupts = <GIC_SPI 243 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&infracfg_ao CLK_INFRA_AO_PMIC_AP>,
-+				 <&infracfg_ao CLK_INFRA_AO_PMIC_TMR>;
-+			clock-names = "spi", "wrap";
-+		};
-+
-+		scp: scp@10500000 {
-+			compatible = "mediatek,mt8188-scp";
-+			reg = <0 0x10500000 0 0x100000>,
-+			      <0 0x10720000 0 0xe0000>;
-+			reg-names = "sram", "cfg";
-+			interrupts = <GIC_SPI 462 IRQ_TYPE_LEVEL_HIGH 0>;
-+		};
-+
-+		adsp_audio26m: clock-controller@10b91100 {
-+			compatible = "mediatek,mt8188-adsp-audio26m";
-+			reg = <0 0x10b91100 0 0x100>;
-+			#clock-cells = <1>;
-+		};
-+
-+		uart0: serial@11001100 {
-+			compatible = "mediatek,mt8188-uart", "mediatek,mt6577-uart";
-+			reg = <0 0x11001100 0 0x100>;
-+			interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_AO_UART0>;
-+			clock-names = "baud", "bus";
-+			status = "disabled";
-+		};
-+
-+		uart1: serial@11001200 {
-+			compatible = "mediatek,mt8188-uart", "mediatek,mt6577-uart";
-+			reg = <0 0x11001200 0 0x100>;
-+			interrupts = <GIC_SPI 142 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_AO_UART1>;
-+			clock-names = "baud", "bus";
-+			status = "disabled";
-+		};
-+
-+		uart2: serial@11001300 {
-+			compatible = "mediatek,mt8188-uart", "mediatek,mt6577-uart";
-+			reg = <0 0x11001300 0 0x100>;
-+			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_AO_UART2>;
-+			clock-names = "baud", "bus";
-+			status = "disabled";
-+		};
-+
-+		uart3: serial@11001400 {
-+			compatible = "mediatek,mt8188-uart", "mediatek,mt6577-uart";
-+			reg = <0 0x11001400 0 0x100>;
-+			interrupts = <GIC_SPI 723 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_AO_UART3>;
-+			clock-names = "baud", "bus";
-+			status = "disabled";
-+		};
-+
-+		auxadc: adc@11002000 {
-+			compatible = "mediatek,mt8188-auxadc", "mediatek,mt8173-auxadc";
-+			reg = <0 0x11002000 0 0x1000>;
-+			clocks = <&infracfg_ao CLK_INFRA_AO_AUXADC>;
-+			clock-names = "main";
-+			#io-channel-cells = <1>;
-+			status = "disabled";
-+		};
-+
-+		pericfg_ao: syscon@11003000 {
-+			compatible = "mediatek,mt8188-pericfg-ao", "syscon";
-+			reg = <0 0x11003000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		spi0: spi@1100a000 {
-+			compatible = "mediatek,mt8188-spi-ipm", "mediatek,spi-ipm";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x1100a000 0 0x1000>;
-+			interrupts = <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI0>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi1: spi@11010000 {
-+			compatible = "mediatek,mt8188-spi-ipm", "mediatek,spi-ipm";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11010000 0 0x1000>;
-+			interrupts = <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI1>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi2: spi@11012000 {
-+			compatible = "mediatek,mt8188-spi-ipm", "mediatek,spi-ipm";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11012000 0 0x1000>;
-+			interrupts = <GIC_SPI 193 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI2>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi3: spi@11013000 {
-+			compatible = "mediatek,mt8188-spi-ipm", "mediatek,spi-ipm";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11013000 0 0x1000>;
-+			interrupts = <GIC_SPI 194 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI3>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi4: spi@11018000 {
-+			compatible = "mediatek,mt8188-spi-ipm", "mediatek,spi-ipm";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11018000 0 0x1000>;
-+			interrupts = <GIC_SPI 195 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI4>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		spi5: spi@11019000 {
-+			compatible = "mediatek,mt8188-spi-ipm", "mediatek,spi-ipm";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0 0x11019000 0 0x1000>;
-+			interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_UNIVPLL_D6_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_AO_SPI5>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+			status = "disabled";
-+		};
-+
-+		xhci1: usb@11200000 {
-+			compatible = "mediatek,mt8188-xhci", "mediatek,mtk-xhci";
-+			reg = <0 0x11200000 0 0x1000>,
-+			      <0 0x11203e00 0 0x0100>;
-+			reg-names = "mac", "ippc";
-+			interrupts = <GIC_SPI 129 IRQ_TYPE_LEVEL_HIGH 0>;
-+			phys = <&u2port1 PHY_TYPE_USB2>,
-+			       <&u3port1 PHY_TYPE_USB3>;
-+			assigned-clocks = <&topckgen CLK_TOP_USB_TOP>,
-+					  <&topckgen CLK_TOP_SSUSB_XHCI>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-+						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-+			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_BUS>,
-+				 <&topckgen CLK_TOP_SSUSB_TOP_REF>,
-+				 <&pericfg_ao CLK_PERI_AO_SSUSB_XHCI>;
-+			clock-names = "sys_ck", "ref_ck", "mcu_ck";
-+			mediatek,syscon-wakeup = <&pericfg 0x468 2>;
-+			wakeup-source;
-+			status = "disabled";
-+		};
-+
-+		mmc0: mmc@11230000 {
-+			compatible = "mediatek,mt8188-mmc", "mediatek,mt8183-mmc";
-+			reg = <0 0x11230000 0 0x10000>,
-+			      <0 0x11f50000 0 0x1000>;
-+			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_MSDC50_0>,
-+				 <&infracfg_ao CLK_INFRA_AO_MSDC0>,
-+				 <&infracfg_ao CLK_INFRA_AO_MSDC0_SRC>,
-+				 <&infracfg_ao CLK_INFRA_AO_RG_AES_MSDCFDE_CK_0P>;
-+			clock-names = "source", "hclk", "source_cg", "crypto_clk";
-+			status = "disabled";
-+		};
-+
-+		mmc1: mmc@11240000 {
-+			compatible = "mediatek,mt8188-mmc", "mediatek,mt8183-mmc";
-+			reg = <0 0x11240000 0 0x1000>,
-+			      <0 0x11eb0000 0 0x1000>;
-+			interrupts = <GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&topckgen CLK_TOP_MSDC30_1>,
-+				 <&infracfg_ao CLK_INFRA_AO_MSDC1>,
-+				 <&infracfg_ao CLK_INFRA_AO_MSDC1_SRC>;
-+			clock-names = "source", "hclk", "source_cg";
-+			assigned-clocks = <&topckgen CLK_TOP_MSDC30_1>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_MSDCPLL_D2>;
-+			status = "disabled";
-+		};
-+
-+		i2c0: i2c@11280000 {
-+			compatible = "mediatek,mt8188-i2c";
-+			reg = <0 0x11280000 0 0x1000>,
-+			      <0 0x10220080 0 0x80>;
-+			interrupts = <GIC_SPI 151 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_c CLK_IMP_IIC_WRAP_C_AP_CLOCK_I2C0>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_BCLK>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c2: i2c@11281000 {
-+			compatible = "mediatek,mt8188-i2c";
-+			reg = <0 0x11281000 0 0x1000>,
-+			      <0 0x10220180 0 0x80>;
-+			interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_c CLK_IMP_IIC_WRAP_C_AP_CLOCK_I2C2>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_BCLK>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c3: i2c@11282000 {
-+			compatible = "mediatek,mt8188-i2c";
-+			reg = <0 0x11282000 0 0x1000>,
-+			      <0 0x10220280 0 0x80>;
-+			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_c CLK_IMP_IIC_WRAP_C_AP_CLOCK_I2C3>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_BCLK>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		imp_iic_wrap_c: clock-controller@11283000 {
-+			compatible = "mediatek,mt8188-imp-iic-wrap-c";
-+			reg = <0 0x11283000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		xhci2: usb@112a0000 {
-+			compatible = "mediatek,mt8188-xhci", "mediatek,mtk-xhci";
-+			reg = <0 0x112a0000 0 0x1000>,
-+			      <0 0x112a3e00 0 0x0100>;
-+			reg-names = "mac", "ippc";
-+			interrupts = <GIC_SPI 536 IRQ_TYPE_LEVEL_HIGH 0>;
-+			phys = <&u2port2 PHY_TYPE_USB2>;
-+			assigned-clocks = <&topckgen CLK_TOP_SSUSB_XHCI_3P>,
-+					  <&topckgen CLK_TOP_USB_TOP_3P>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-+						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-+			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_3P_BUS>,
-+				 <&topckgen CLK_TOP_SSUSB_TOP_P3_REF>,
-+				 <&pericfg_ao CLK_PERI_AO_SSUSB_3P_XHCI>;
-+			clock-names = "sys_ck", "ref_ck", "mcu_ck";
-+			status = "disabled";
-+		};
-+
-+		xhci0: usb@112b0000 {
-+			compatible = "mediatek,mt8188-xhci", "mediatek,mtk-xhci";
-+			reg = <0 0x112b0000 0 0x1000>,
-+			      <0 0x112b3e00 0 0x0100>;
-+			reg-names = "mac", "ippc";
-+			interrupts = <GIC_SPI 533 IRQ_TYPE_LEVEL_HIGH 0>;
-+			phys = <&u2port0 PHY_TYPE_USB2>;
-+			assigned-clocks = <&topckgen CLK_TOP_SSUSB_XHCI_2P>,
-+					  <&topckgen CLK_TOP_USB_TOP_2P>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-+						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-+			clocks = <&pericfg_ao CLK_PERI_AO_SSUSB_2P_BUS>,
-+				 <&topckgen CLK_TOP_SSUSB_TOP_P2_REF>,
-+				 <&pericfg_ao CLK_PERI_AO_SSUSB_2P_XHCI>;
-+			clock-names = "sys_ck", "ref_ck", "mcu_ck";
-+			mediatek,syscon-wakeup = <&pericfg 0x460 2>;
-+			wakeup-source;
-+			status = "disabled";
-+		};
-+
-+		nor_flash: spi@1132c000 {
-+			compatible = "mediatek,mt8188-nor", "mediatek,mt8186-nor";
-+			reg = <0 0x1132c000 0 0x1000>;
-+			clocks = <&topckgen CLK_TOP_SPINOR>,
-+				 <&pericfg_ao CLK_PERI_AO_FLASHIFLASHCK>,
-+				 <&pericfg_ao CLK_PERI_AO_FLASHIF_BUS>;
-+			clock-names = "spi", "sf", "axi";
-+			assigned-clocks = <&topckgen CLK_TOP_SPINOR>;
-+			interrupts = <GIC_SPI 825 IRQ_TYPE_LEVEL_HIGH 0>;
-+			status = "disabled";
-+		};
-+
-+		i2c1: i2c@11e00000 {
-+			compatible = "mediatek,mt8188-i2c";
-+			reg = <0 0x11e00000 0 0x1000>,
-+			      <0 0x10220100 0 0x80>;
-+			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_w CLK_IMP_IIC_WRAP_W_AP_CLOCK_I2C1>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_BCLK>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c4: i2c@11e01000 {
-+			compatible = "mediatek,mt8188-i2c";
-+			reg = <0 0x11e01000 0 0x1000>,
-+			      <0 0x10220380 0 0x80>;
-+			interrupts = <GIC_SPI 148 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_w CLK_IMP_IIC_WRAP_W_AP_CLOCK_I2C4>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_BCLK>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		imp_iic_wrap_w: clock-controller@11e02000 {
-+			compatible = "mediatek,mt8188-imp-iic-wrap-w";
-+			reg = <0 0x11e02000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		u3phy0: t-phy@11e30000 {
-+			compatible = "mediatek,mt8188-tphy", "mediatek,generic-tphy-v3";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0x0 0x0 0x11e30000 0x1000>;
-+			status = "disabled";
-+
-+			u2port0: usb-phy@0 {
-+				reg = <0x0 0x700>;
-+				clocks = <&topckgen CLK_TOP_SSUSB_PHY_P2_REF>,
-+					 <&apmixedsys CLK_APMIXED_PLL_SSUSB26M_EN>;
-+				clock-names = "ref", "da_ref";
-+				#phy-cells = <1>;
-+			};
-+		};
-+
-+		u3phy1: t-phy@11e40000 {
-+			compatible = "mediatek,mt8188-tphy", "mediatek,generic-tphy-v3";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0x0 0x0 0x11e40000 0x1000>;
-+			status = "disabled";
-+
-+			u2port1: usb-phy@0 {
-+				reg = <0x0 0x700>;
-+				clocks = <&topckgen CLK_TOP_SSUSB_PHY_REF>,
-+					 <&apmixedsys CLK_APMIXED_PLL_SSUSB26M_EN>;
-+				clock-names = "ref", "da_ref";
-+				#phy-cells = <1>;
-+			};
-+
-+			u3port1: usb-phy@700 {
-+				reg = <0x700 0x700>;
-+				clocks = <&apmixedsys CLK_APMIXED_PLL_SSUSB26M_EN>,
-+					 <&clk26m>;
-+				clock-names = "ref", "da_ref";
-+				#phy-cells = <1>;
-+				status = "disabled";
-+			};
-+		};
-+
-+		u3phy2: t-phy@11e80000 {
-+			compatible = "mediatek,mt8188-tphy", "mediatek,generic-tphy-v3";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0x0 0x0 0x11e80000 0x1000>;
-+			status = "disabled";
-+
-+			u2port2: usb-phy@0 {
-+				reg = <0x0 0x700>;
-+				clocks = <&topckgen CLK_TOP_SSUSB_PHY_P3_REF>,
-+					 <&apmixedsys CLK_APMIXED_PLL_SSUSB26M_EN>;
-+				clock-names = "ref", "da_ref";
-+				#phy-cells = <1>;
-+			};
-+		};
-+
-+		i2c5: i2c@11ec0000 {
-+			compatible = "mediatek,mt8188-i2c";
-+			reg = <0 0x11ec0000 0 0x1000>,
-+			      <0 0x10220480 0 0x80>;
-+			interrupts = <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_en CLK_IMP_IIC_WRAP_EN_AP_CLOCK_I2C5>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_BCLK>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c6: i2c@11ec1000 {
-+			compatible = "mediatek,mt8188-i2c";
-+			reg = <0 0x11ec1000 0 0x1000>,
-+			      <0 0x10220600 0 0x80>;
-+			interrupts = <GIC_SPI 150 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clock-div = <1>;
-+			clocks = <&imp_iic_wrap_en CLK_IMP_IIC_WRAP_EN_AP_CLOCK_I2C6>,
-+				 <&infracfg_ao CLK_INFRA_AO_APDMA_BCLK>;
-+			clock-names = "main", "dma";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		imp_iic_wrap_en: clock-controller@11ec2000 {
-+			compatible = "mediatek,mt8188-imp-iic-wrap-en";
-+			reg = <0 0x11ec2000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		mfgcfg: clock-controller@13fbf000 {
-+			compatible = "mediatek,mt8188-mfgcfg";
-+			reg = <0 0x13fbf000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vppsys0: clock-controller@14000000 {
-+			compatible = "mediatek,mt8188-vppsys0";
-+			reg = <0 0x14000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		wpesys: clock-controller@14e00000 {
-+			compatible = "mediatek,mt8188-wpesys";
-+			reg = <0 0x14e00000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		wpesys_vpp0: clock-controller@14e02000 {
-+			compatible = "mediatek,mt8188-wpesys-vpp0";
-+			reg = <0 0x14e02000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vppsys1: clock-controller@14f00000 {
-+			compatible = "mediatek,mt8188-vppsys1";
-+			reg = <0 0x14f00000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys: clock-controller@15000000 {
-+			compatible = "mediatek,mt8188-imgsys";
-+			reg = <0 0x15000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys1_dip_top: clock-controller@15110000 {
-+			compatible = "mediatek,mt8188-imgsys1-dip-top";
-+			reg = <0 0x15110000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys1_dip_nr: clock-controller@15130000 {
-+			compatible = "mediatek,mt8188-imgsys1-dip-nr";
-+			reg = <0 0x15130000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys_wpe1: clock-controller@15220000 {
-+			compatible = "mediatek,mt8188-imgsys-wpe1";
-+			reg = <0 0x15220000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		ipesys: clock-controller@15330000 {
-+			compatible = "mediatek,mt8188-ipesys";
-+			reg = <0 0x15330000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys_wpe2: clock-controller@15520000 {
-+			compatible = "mediatek,mt8188-imgsys-wpe2";
-+			reg = <0 0x15520000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		imgsys_wpe3: clock-controller@15620000 {
-+			compatible = "mediatek,mt8188-imgsys-wpe3";
-+			reg = <0 0x15620000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys: clock-controller@16000000 {
-+			compatible = "mediatek,mt8188-camsys";
-+			reg = <0 0x16000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_rawa: clock-controller@1604f000 {
-+			compatible = "mediatek,mt8188-camsys-rawa";
-+			reg = <0 0x1604f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_yuva: clock-controller@1606f000 {
-+			compatible = "mediatek,mt8188-camsys-yuva";
-+			reg = <0 0x1606f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_rawb: clock-controller@1608f000 {
-+			compatible = "mediatek,mt8188-camsys-rawb";
-+			reg = <0 0x1608f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		camsys_yuvb: clock-controller@160af000 {
-+			compatible = "mediatek,mt8188-camsys-yuvb";
-+			reg = <0 0x160af000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		ccusys: clock-controller@17200000 {
-+			compatible = "mediatek,mt8188-ccusys";
-+			reg = <0 0x17200000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vdecsys_soc: clock-controller@1800f000 {
-+			compatible = "mediatek,mt8188-vdecsys-soc";
-+			reg = <0 0x1800f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vdecsys: clock-controller@1802f000 {
-+			compatible = "mediatek,mt8188-vdecsys";
-+			reg = <0 0x1802f000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+
-+		vencsys: clock-controller@1a000000 {
-+			compatible = "mediatek,mt8188-vencsys";
-+			reg = <0 0x1a000000 0 0x1000>;
-+			#clock-cells = <1>;
-+		};
-+	};
-+};
--- 
-2.18.0
+>
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> ---
+>  MAINTAINERS                |    8 +
+>  drivers/media/i2c/Kconfig  |   10 +
+>  drivers/media/i2c/Makefile |    1 +
+>  drivers/media/i2c/gc2145.c | 1440 ++++++++++++++++++++++++++++++++++++
+>  4 files changed, 1459 insertions(+)
+>  create mode 100644 drivers/media/i2c/gc2145.c
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ffff6f61461c..57c7d8703a76 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8600,6 +8600,14 @@ F:	kernel/futex/*
+>  F:	tools/perf/bench/futex*
+>  F:	tools/testing/selftests/futex/
+>
+> +GALAXYCORE GC2145 SENSOR DRIVER
+> +M:	Alain Volmat <alain.volmat@foss.st.com>
+> +L:	linux-media@vger.kernel.org
+> +S:	Maintained
+> +T:	git git://linuxtv.org/media_tree.git
+> +F:	Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
+> +F:	drivers/media/i2c/gc2145.c
+> +
+>  GATEWORKS SYSTEM CONTROLLER (GSC) DRIVER
+>  M:	Tim Harvey <tharvey@gateworks.com>
+>  S:	Maintained
+> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> index 74ff833ff48c..fbc934d00448 100644
+> --- a/drivers/media/i2c/Kconfig
+> +++ b/drivers/media/i2c/Kconfig
+> @@ -50,6 +50,16 @@ config VIDEO_AR0521
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called ar0521.
+>
+> +config VIDEO_GC2145
+> +	select V4L2_CCI_I2C
+> +	tristate "GalaxyCore GC2145 sensor support"
+> +	help
+> +	  This is a V4L2 sensor-level driver for GalaxyCore GC2145
+> +	  2 Mpixel camera.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called gc2145.
+> +
+>  config VIDEO_HI556
+>  	tristate "Hynix Hi-556 sensor support"
+>  	help
+> diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+> index 80b00d39b48f..e74eded89428 100644
+> --- a/drivers/media/i2c/Makefile
+> +++ b/drivers/media/i2c/Makefile
+> @@ -36,6 +36,7 @@ obj-$(CONFIG_VIDEO_DW9719) += dw9719.o
+>  obj-$(CONFIG_VIDEO_DW9768) += dw9768.o
+>  obj-$(CONFIG_VIDEO_DW9807_VCM) += dw9807-vcm.o
+>  obj-$(CONFIG_VIDEO_ET8EK8) += et8ek8/
+> +obj-$(CONFIG_VIDEO_GC2145) += gc2145.o
+>  obj-$(CONFIG_VIDEO_HI556) += hi556.o
+>  obj-$(CONFIG_VIDEO_HI846) += hi846.o
+>  obj-$(CONFIG_VIDEO_HI847) += hi847.o
+> diff --git a/drivers/media/i2c/gc2145.c b/drivers/media/i2c/gc2145.c
+> new file mode 100644
+> index 000000000000..8484e5a1ea01
+> --- /dev/null
+> +++ b/drivers/media/i2c/gc2145.c
+> @@ -0,0 +1,1440 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * A V4L2 driver for Galaxycore GC2145 camera.
+> + * Copyright (C) 2022, STMicroelectronics SA
 
+2023
+
+> + *
+> + * Inspired from the imx219.c driver
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/units.h>
+> +
+> +#include <media/mipi-csi2.h>
+> +#include <media/v4l2-cci.h>
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-device.h>
+> +#include <media/v4l2-event.h>
+> +#include <media/v4l2-fwnode.h>
+> +#include <media/v4l2-mediabus.h>
+> +
+> +/* Chip ID */
+> +#define GC2145_CHIP_ID		0x2145
+> +
+> +/* Page 0 */
+> +#define GC2145_REG_EXPOSURE	CCI_REG16(0x03)
+> +#define GC2145_REG_HBLANK	CCI_REG16(0x05)
+> +#define GC2145_REG_VBLANK	CCI_REG16(0x07)
+> +#define GC2145_REG_ROW_START	CCI_REG16(0x09)
+> +#define GC2145_REG_COL_START	CCI_REG16(0x0b)
+> +#define GC2145_REG_WIN_HEIGHT	CCI_REG16(0x0d)
+> +#define GC2145_REG_WIN_WIDTH	CCI_REG16(0x0f)
+> +#define GC2145_REG_ANALOG_MODE1	CCI_REG8(0x17)
+> +#define GC2145_REG_OUTPUT_FMT	CCI_REG8(0x84)
+> +#define GC2145_REG_SYNC_MODE	CCI_REG8(0x86)
+> +#define GC2145_SYNC_MODE_COL_SWITCH	BIT(4)
+> +#define GC2145_SYNC_MODE_ROW_SWITCH	BIT(5)
+> +#define GC2145_REG_DEBUG_MODE2	CCI_REG8(0x8c)
+> +#define GC2145_REG_DEBUG_MODE3	CCI_REG8(0x8d)
+> +#define GC2145_REG_CROP_ENABLE	CCI_REG8(0x90)
+> +#define GC2145_REG_CROP_Y	CCI_REG16(0x91)
+> +#define GC2145_REG_CROP_X	CCI_REG16(0x93)
+> +#define GC2145_REG_CROP_HEIGHT	CCI_REG16(0x95)
+> +#define GC2145_REG_CROP_WIDTH	CCI_REG16(0x97)
+> +#define GC2145_REG_GLOBAL_GAIN	CCI_REG8(0xb0)
+> +#define GC2145_REG_CHIP_ID	CCI_REG16(0xf0)
+> +#define GC2145_REG_PAD_IO	CCI_REG8(0xf2)
+> +#define GC2145_REG_PAGE_SELECT	CCI_REG8(0xfe)
+> +/* Page 3 */
+> +#define GC2145_REG_DPHY_ANALOG_MODE1	CCI_REG8(0x01)
+> +#define GC2145_DPHY_MODE_PHY_CLK_EN	BIT(0)
+> +#define GC2145_DPHY_MODE_PHY_LANE0_EN	BIT(1)
+> +#define GC2145_DPHY_MODE_PHY_LANE1_EN	BIT(2)
+> +#define GC2145_DPHY_MODE_PHY_CLK_LANE_P2S_SEL	BIT(7)
+> +#define GC2145_REG_DPHY_ANALOG_MODE2	CCI_REG8(0x02)
+> +#define GC2145_DPHY_CLK_DIFF(a)		((a) & 0x07)
+> +#define GC2145_DPHY_LANE0_DIFF(a)	(((a) & 0x07) << 4)
+> +#define GC2145_REG_DPHY_ANALOG_MODE3	CCI_REG8(0x03)
+> +#define GC2145_DPHY_LANE1_DIFF(a)	((a) & 0x07)
+> +#define GC2145_DPHY_CLK_DELAY		BIT(4)
+> +#define GC2145_DPHY_LANE0_DELAY		BIT(5)
+> +#define GC2145_DPHY_LANE1_DELAY		BIT(6)
+> +#define GC2145_REG_FIFO_FULL_LVL_LOW	CCI_REG8(0x04)
+> +#define GC2145_REG_FIFO_FULL_LVL_HIGH	CCI_REG8(0x05)
+> +#define GC2145_REG_FIFO_MODE		CCI_REG8(0x06)
+> +#define GC2145_FIFO_MODE_READ_GATE	BIT(3)
+> +#define GC2145_FIFO_MODE_MIPI_CLK_MODULE	BIT(7)
+> +#define GC2145_REG_BUF_CSI2_MODE	CCI_REG8(0x10)
+> +#define GC2145_CSI2_MODE_DOUBLE		BIT(0)
+> +#define GC2145_CSI2_MODE_RAW8		BIT(2)
+> +#define GC2145_CSI2_MODE_MIPI_EN	BIT(4)
+> +#define GC2145_CSI2_MODE_EN		BIT(7)
+> +#define GC2145_REG_MIPI_DT	CCI_REG8(0x11)
+> +#define GC2145_REG_LWC_LOW	CCI_REG8(0x12)
+> +#define GC2145_REG_LWC_HIGH	CCI_REG8(0x13)
+> +#define GC2145_REG_DPHY_MODE	CCI_REG8(0x15)
+> +#define GC2145_DPHY_MODE_TRIGGER_PROG	BIT(4)
+> +#define GC2145_REG_FIFO_GATE_MODE	CCI_REG8(0x17)
+> +#define GC2145_REG_T_LPX	CCI_REG8(0x21)
+> +#define GC2145_REG_T_CLK_HS_PREPARE	CCI_REG8(0x22)
+> +#define GC2145_REG_T_CLK_ZERO	CCI_REG8(0x23)
+> +#define GC2145_REG_T_CLK_PRE	CCI_REG8(0x24)
+> +#define GC2145_REG_T_CLK_POST	CCI_REG8(0x25)
+> +#define GC2145_REG_T_CLK_TRAIL	CCI_REG8(0x26)
+> +#define GC2145_REG_T_HS_EXIT	CCI_REG8(0x27)
+> +#define GC2145_REG_T_WAKEUP	CCI_REG8(0x28)
+> +#define GC2145_REG_T_HS_PREPARE	CCI_REG8(0x29)
+> +#define GC2145_REG_T_HS_ZERO	CCI_REG8(0x2a)
+> +#define GC2145_REG_T_HS_TRAIL	CCI_REG8(0x2b)
+> +
+> +/* External clock frequency is 24.0MHz */
+> +#define GC2145_XCLK_FREQ	(24 * HZ_PER_MHZ)
+> +
+> +#define GC2145_NATIVE_WIDTH	1616U
+> +#define GC2145_NATIVE_HEIGHT	1232U
+> +
+> +/**
+> + * struct gc2145_mode - GC2145 mode description
+> + * @width: frame width (in pixel)
+> + * @height: frame height (in pixel)
+> + * @frame_interval: interval (fractionnal) between 2 frames
+                                ^ fractional
+
+> + * @reg_seq: registers config sequence to enter into the mode
+> + * @reg_seq_size: size of the sequence
+> + * @pixel_rate: pixel_rate associated with the mode
+> + * @crop: window area captured
+> + */
+> +struct gc2145_mode {
+> +	unsigned int width;
+> +	unsigned int height;
+> +	struct v4l2_fract frame_interval;
+
+The enum/g/s_frame_interval operations do not play well with devices
+where the frame rate is controlled by tuning the blankings (and the
+link frequency, if possible) like RAW sensors.
+
+This is an high-level parameter that might work with purely YUV
+sensors.
+
+This is a werid beast and supports both modes so I guess it's fine to
+have it here ? (this is more a question than an actual comment).
+
+> +	const struct cci_reg_sequence *reg_seq;
+> +	size_t reg_seq_size;
+> +	unsigned long pixel_rate;
+> +	struct v4l2_rect crop;
+> +};
+> +
+> +#define GC2145_DEFAULT_EXPOSURE	0x04e2
+> +#define GC2145_DEFAULT_GLOBAL_GAIN	0x55
+> +static const struct cci_reg_sequence common_regs[] = {
+> +	{GC2145_REG_PAGE_SELECT, 0x00},
+> +	/* SH Delay */
+> +	{CCI_REG8(0x12), 0x2e},
+> +	/* Flip */
+> +	{GC2145_REG_ANALOG_MODE1, 0x14},
+> +	/* Analog Conf */
+> +	{CCI_REG8(0x18), 0x22}, {CCI_REG8(0x19), 0x0e}, {CCI_REG8(0x1a), 0x01},
+> +	{CCI_REG8(0x1b), 0x4b}, {CCI_REG8(0x1c), 0x07}, {CCI_REG8(0x1d), 0x10},
+> +	{CCI_REG8(0x1e), 0x88}, {CCI_REG8(0x1f), 0x78}, {CCI_REG8(0x20), 0x03},
+> +	{CCI_REG8(0x21), 0x40}, {CCI_REG8(0x22), 0xa0}, {CCI_REG8(0x24), 0x16},
+> +	{CCI_REG8(0x25), 0x01}, {CCI_REG8(0x26), 0x10}, {CCI_REG8(0x2d), 0x60},
+> +	{CCI_REG8(0x30), 0x01}, {CCI_REG8(0x31), 0x90}, {CCI_REG8(0x33), 0x06},
+> +	{CCI_REG8(0x34), 0x01},
+> +	/* ISP related */
+> +	{CCI_REG8(0x80), 0x7f}, {CCI_REG8(0x81), 0x26}, {CCI_REG8(0x82), 0xfa},
+> +	{CCI_REG8(0x83), 0x00}, {CCI_REG8(0x84), 0x02}, {CCI_REG8(0x86), 0x02},
+> +	{CCI_REG8(0x88), 0x03}, {CCI_REG8(0x89), 0x03}, {CCI_REG8(0x85), 0x08},
+> +	{CCI_REG8(0x8a), 0x00}, {CCI_REG8(0x8b), 0x00},
+> +	{GC2145_REG_GLOBAL_GAIN, GC2145_DEFAULT_GLOBAL_GAIN},
+> +	{CCI_REG8(0xc3), 0x00}, {CCI_REG8(0xc4), 0x80}, {CCI_REG8(0xc5), 0x90},
+> +	{CCI_REG8(0xc6), 0x3b}, {CCI_REG8(0xc7), 0x46},
+> +	/* BLK */
+> +	{GC2145_REG_PAGE_SELECT, 0x00},
+> +	{CCI_REG8(0x40), 0x42}, {CCI_REG8(0x41), 0x00}, {CCI_REG8(0x43), 0x5b},
+> +	{CCI_REG8(0x5e), 0x00}, {CCI_REG8(0x5f), 0x00}, {CCI_REG8(0x60), 0x00},
+> +	{CCI_REG8(0x61), 0x00}, {CCI_REG8(0x62), 0x00}, {CCI_REG8(0x63), 0x00},
+> +	{CCI_REG8(0x64), 0x00}, {CCI_REG8(0x65), 0x00}, {CCI_REG8(0x66), 0x20},
+> +	{CCI_REG8(0x67), 0x20}, {CCI_REG8(0x68), 0x20}, {CCI_REG8(0x69), 0x20},
+> +	{CCI_REG8(0x76), 0x00}, {CCI_REG8(0x6a), 0x08}, {CCI_REG8(0x6b), 0x08},
+> +	{CCI_REG8(0x6c), 0x08}, {CCI_REG8(0x6d), 0x08}, {CCI_REG8(0x6e), 0x08},
+> +	{CCI_REG8(0x6f), 0x08}, {CCI_REG8(0x70), 0x08}, {CCI_REG8(0x71), 0x08},
+> +	{CCI_REG8(0x76), 0x00}, {CCI_REG8(0x72), 0xf0}, {CCI_REG8(0x7e), 0x3c},
+> +	{CCI_REG8(0x7f), 0x00},
+> +	{GC2145_REG_PAGE_SELECT, 0x02},
+> +	{CCI_REG8(0x48), 0x15}, {CCI_REG8(0x49), 0x00}, {CCI_REG8(0x4b), 0x0b},
+> +	/* AEC */
+> +	{GC2145_REG_PAGE_SELECT, 0x00},
+> +	{GC2145_REG_EXPOSURE, GC2145_DEFAULT_EXPOSURE},
+> +	{GC2145_REG_PAGE_SELECT, 0x01},
+> +	{CCI_REG8(0x01), 0x04}, {CCI_REG8(0x02), 0xc0}, {CCI_REG8(0x03), 0x04},
+> +	{CCI_REG8(0x04), 0x90}, {CCI_REG8(0x05), 0x30}, {CCI_REG8(0x06), 0x90},
+> +	{CCI_REG8(0x07), 0x30}, {CCI_REG8(0x08), 0x80}, {CCI_REG8(0x09), 0x00},
+> +	{CCI_REG8(0x0a), 0x82}, {CCI_REG8(0x0b), 0x11}, {CCI_REG8(0x0c), 0x10},
+> +	{CCI_REG8(0x11), 0x10}, {CCI_REG8(0x13), 0x7b}, {CCI_REG8(0x17), 0x00},
+> +	{CCI_REG8(0x1c), 0x11}, {CCI_REG8(0x1e), 0x61}, {CCI_REG8(0x1f), 0x35},
+> +	{CCI_REG8(0x20), 0x40}, {CCI_REG8(0x22), 0x40}, {CCI_REG8(0x23), 0x20},
+> +	{GC2145_REG_PAGE_SELECT, 0x02},
+> +	{CCI_REG8(0x0f), 0x04},
+> +	{GC2145_REG_PAGE_SELECT, 0x01},
+> +	{CCI_REG8(0x12), 0x35}, {CCI_REG8(0x15), 0xb0}, {CCI_REG8(0x10), 0x31},
+> +	{CCI_REG8(0x3e), 0x28}, {CCI_REG8(0x3f), 0xb0}, {CCI_REG8(0x40), 0x90},
+> +	{CCI_REG8(0x41), 0x0f},
+> +	/* INTPEE */
+> +	{GC2145_REG_PAGE_SELECT, 0x02},
+> +	{CCI_REG8(0x90), 0x6c}, {CCI_REG8(0x91), 0x03}, {CCI_REG8(0x92), 0xcb},
+> +	{CCI_REG8(0x94), 0x33}, {CCI_REG8(0x95), 0x84}, {CCI_REG8(0x97), 0x65},
+> +	{CCI_REG8(0xa2), 0x11},
+> +	/* DNDD */
+> +	{GC2145_REG_PAGE_SELECT, 0x02},
+> +	{CCI_REG8(0x80), 0xc1}, {CCI_REG8(0x81), 0x08}, {CCI_REG8(0x82), 0x05},
+> +	{CCI_REG8(0x83), 0x08}, {CCI_REG8(0x84), 0x0a}, {CCI_REG8(0x86), 0xf0},
+> +	{CCI_REG8(0x87), 0x50}, {CCI_REG8(0x88), 0x15}, {CCI_REG8(0x89), 0xb0},
+> +	{CCI_REG8(0x8a), 0x30}, {CCI_REG8(0x8b), 0x10},
+> +	/* ASDE */
+> +	{GC2145_REG_PAGE_SELECT, 0x01},
+> +	{CCI_REG8(0x21), 0x04},
+> +	{GC2145_REG_PAGE_SELECT, 0x02},
+> +	{CCI_REG8(0xa3), 0x50}, {CCI_REG8(0xa4), 0x20}, {CCI_REG8(0xa5), 0x40},
+> +	{CCI_REG8(0xa6), 0x80}, {CCI_REG8(0xab), 0x40}, {CCI_REG8(0xae), 0x0c},
+> +	{CCI_REG8(0xb3), 0x46}, {CCI_REG8(0xb4), 0x64}, {CCI_REG8(0xb6), 0x38},
+> +	{CCI_REG8(0xb7), 0x01}, {CCI_REG8(0xb9), 0x2b}, {CCI_REG8(0x3c), 0x04},
+> +	{CCI_REG8(0x3d), 0x15}, {CCI_REG8(0x4b), 0x06}, {CCI_REG8(0x4c), 0x20},
+> +	/* Gamma */
+> +	{GC2145_REG_PAGE_SELECT, 0x02},
+> +	{CCI_REG8(0x10), 0x09}, {CCI_REG8(0x11), 0x0d}, {CCI_REG8(0x12), 0x13},
+> +	{CCI_REG8(0x13), 0x19}, {CCI_REG8(0x14), 0x27}, {CCI_REG8(0x15), 0x37},
+> +	{CCI_REG8(0x16), 0x45}, {CCI_REG8(0x17), 0x53}, {CCI_REG8(0x18), 0x69},
+> +	{CCI_REG8(0x19), 0x7d}, {CCI_REG8(0x1a), 0x8f}, {CCI_REG8(0x1b), 0x9d},
+> +	{CCI_REG8(0x1c), 0xa9}, {CCI_REG8(0x1d), 0xbd}, {CCI_REG8(0x1e), 0xcd},
+> +	{CCI_REG8(0x1f), 0xd9}, {CCI_REG8(0x20), 0xe3}, {CCI_REG8(0x21), 0xea},
+> +	{CCI_REG8(0x22), 0xef}, {CCI_REG8(0x23), 0xf5}, {CCI_REG8(0x24), 0xf9},
+> +	{CCI_REG8(0x25), 0xff},
+> +	{GC2145_REG_PAGE_SELECT, 0x00},
+> +	{CCI_REG8(0xc6), 0x20}, {CCI_REG8(0xc7), 0x2b},
+> +	/* Gamma 2 */
+> +	{GC2145_REG_PAGE_SELECT, 0x02},
+> +	{CCI_REG8(0x26), 0x0f}, {CCI_REG8(0x27), 0x14}, {CCI_REG8(0x28), 0x19},
+> +	{CCI_REG8(0x29), 0x1e}, {CCI_REG8(0x2a), 0x27}, {CCI_REG8(0x2b), 0x33},
+> +	{CCI_REG8(0x2c), 0x3b}, {CCI_REG8(0x2d), 0x45}, {CCI_REG8(0x2e), 0x59},
+> +	{CCI_REG8(0x2f), 0x69}, {CCI_REG8(0x30), 0x7c}, {CCI_REG8(0x31), 0x89},
+> +	{CCI_REG8(0x32), 0x98}, {CCI_REG8(0x33), 0xae}, {CCI_REG8(0x34), 0xc0},
+> +	{CCI_REG8(0x35), 0xcf}, {CCI_REG8(0x36), 0xda}, {CCI_REG8(0x37), 0xe2},
+> +	{CCI_REG8(0x38), 0xe9}, {CCI_REG8(0x39), 0xf3}, {CCI_REG8(0x3a), 0xf9},
+> +	{CCI_REG8(0x3b), 0xff},
+> +	/* YCP */
+> +	{GC2145_REG_PAGE_SELECT, 0x02},
+> +	{CCI_REG8(0xd1), 0x32}, {CCI_REG8(0xd2), 0x32}, {CCI_REG8(0xd3), 0x40},
+> +	{CCI_REG8(0xd6), 0xf0}, {CCI_REG8(0xd7), 0x10}, {CCI_REG8(0xd8), 0xda},
+> +	{CCI_REG8(0xdd), 0x14}, {CCI_REG8(0xde), 0x86}, {CCI_REG8(0xed), 0x80},
+> +	{CCI_REG8(0xee), 0x00}, {CCI_REG8(0xef), 0x3f}, {CCI_REG8(0xd8), 0xd8},
+> +	/* ABS */
+> +	{GC2145_REG_PAGE_SELECT, 0x01},
+> +	{CCI_REG8(0x9f), 0x40},
+> +	/* LSC */
+> +	{GC2145_REG_PAGE_SELECT, 0x01},
+> +	{CCI_REG8(0xc2), 0x14}, {CCI_REG8(0xc3), 0x0d}, {CCI_REG8(0xc4), 0x0c},
+> +	{CCI_REG8(0xc8), 0x15}, {CCI_REG8(0xc9), 0x0d}, {CCI_REG8(0xca), 0x0a},
+> +	{CCI_REG8(0xbc), 0x24}, {CCI_REG8(0xbd), 0x10}, {CCI_REG8(0xbe), 0x0b},
+> +	{CCI_REG8(0xb6), 0x25}, {CCI_REG8(0xb7), 0x16}, {CCI_REG8(0xb8), 0x15},
+> +	{CCI_REG8(0xc5), 0x00}, {CCI_REG8(0xc6), 0x00}, {CCI_REG8(0xc7), 0x00},
+> +	{CCI_REG8(0xcb), 0x00}, {CCI_REG8(0xcc), 0x00}, {CCI_REG8(0xcd), 0x00},
+> +	{CCI_REG8(0xbf), 0x07}, {CCI_REG8(0xc0), 0x00}, {CCI_REG8(0xc1), 0x00},
+> +	{CCI_REG8(0xb9), 0x00}, {CCI_REG8(0xba), 0x00}, {CCI_REG8(0xbb), 0x00},
+> +	{CCI_REG8(0xaa), 0x01}, {CCI_REG8(0xab), 0x01}, {CCI_REG8(0xac), 0x00},
+> +	{CCI_REG8(0xad), 0x05}, {CCI_REG8(0xae), 0x06}, {CCI_REG8(0xaf), 0x0e},
+> +	{CCI_REG8(0xb0), 0x0b}, {CCI_REG8(0xb1), 0x07}, {CCI_REG8(0xb2), 0x06},
+> +	{CCI_REG8(0xb3), 0x17}, {CCI_REG8(0xb4), 0x0e}, {CCI_REG8(0xb5), 0x0e},
+> +	{CCI_REG8(0xd0), 0x09}, {CCI_REG8(0xd1), 0x00}, {CCI_REG8(0xd2), 0x00},
+> +	{CCI_REG8(0xd6), 0x08}, {CCI_REG8(0xd7), 0x00}, {CCI_REG8(0xd8), 0x00},
+> +	{CCI_REG8(0xd9), 0x00}, {CCI_REG8(0xda), 0x00}, {CCI_REG8(0xdb), 0x00},
+> +	{CCI_REG8(0xd3), 0x0a}, {CCI_REG8(0xd4), 0x00}, {CCI_REG8(0xd5), 0x00},
+> +	{CCI_REG8(0xa4), 0x00}, {CCI_REG8(0xa5), 0x00}, {CCI_REG8(0xa6), 0x77},
+> +	{CCI_REG8(0xa7), 0x77}, {CCI_REG8(0xa8), 0x77}, {CCI_REG8(0xa9), 0x77},
+> +	{CCI_REG8(0xa1), 0x80}, {CCI_REG8(0xa2), 0x80},
+> +	{GC2145_REG_PAGE_SELECT, 0x01},
+> +	{CCI_REG8(0xdf), 0x0d}, {CCI_REG8(0xdc), 0x25}, {CCI_REG8(0xdd), 0x30},
+> +	{CCI_REG8(0xe0), 0x77}, {CCI_REG8(0xe1), 0x80}, {CCI_REG8(0xe2), 0x77},
+> +	{CCI_REG8(0xe3), 0x90}, {CCI_REG8(0xe6), 0x90}, {CCI_REG8(0xe7), 0xa0},
+> +	{CCI_REG8(0xe8), 0x90}, {CCI_REG8(0xe9), 0xa0},
+> +	/* AWB */
+> +	/* measure window */
+> +	{GC2145_REG_PAGE_SELECT, 0x00},
+> +	{CCI_REG8(0xec), 0x06}, {CCI_REG8(0xed), 0x04}, {CCI_REG8(0xee), 0x60},
+> +	{CCI_REG8(0xef), 0x90}, {CCI_REG8(0xb6), 0x01},
+> +	{GC2145_REG_PAGE_SELECT, 0x01},
+> +	{CCI_REG8(0x4f), 0x00}, {CCI_REG8(0x4f), 0x00}, {CCI_REG8(0x4b), 0x01},
+> +	{CCI_REG8(0x4f), 0x00},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x71}, {CCI_REG8(0x4e), 0x01},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x91}, {CCI_REG8(0x4e), 0x01},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x70}, {CCI_REG8(0x4e), 0x01},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x90}, {CCI_REG8(0x4e), 0x02},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xb0}, {CCI_REG8(0x4e), 0x02},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x8f}, {CCI_REG8(0x4e), 0x02},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x6f}, {CCI_REG8(0x4e), 0x02},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xaf}, {CCI_REG8(0x4e), 0x02},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xd0}, {CCI_REG8(0x4e), 0x02},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xf0}, {CCI_REG8(0x4e), 0x02},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xcf}, {CCI_REG8(0x4e), 0x02},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xef}, {CCI_REG8(0x4e), 0x02},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x6e}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x8e}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xae}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xce}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x4d}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x6d}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x8d}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xad}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xcd}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x4c}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x6c}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x8c}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xac}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xcc}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xcb}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x4b}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x6b}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x8b}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xab}, {CCI_REG8(0x4e), 0x03},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x8a}, {CCI_REG8(0x4e), 0x04},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xaa}, {CCI_REG8(0x4e), 0x04},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xca}, {CCI_REG8(0x4e), 0x04},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xca}, {CCI_REG8(0x4e), 0x04},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xc9}, {CCI_REG8(0x4e), 0x04},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x8a}, {CCI_REG8(0x4e), 0x04},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0x89}, {CCI_REG8(0x4e), 0x04},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xa9}, {CCI_REG8(0x4e), 0x04},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x0b}, {CCI_REG8(0x4e), 0x05},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x0a}, {CCI_REG8(0x4e), 0x05},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xeb}, {CCI_REG8(0x4e), 0x05},
+> +	{CCI_REG8(0x4c), 0x01}, {CCI_REG8(0x4d), 0xea}, {CCI_REG8(0x4e), 0x05},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x09}, {CCI_REG8(0x4e), 0x05},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x29}, {CCI_REG8(0x4e), 0x05},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x2a}, {CCI_REG8(0x4e), 0x05},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x4a}, {CCI_REG8(0x4e), 0x05},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x8a}, {CCI_REG8(0x4e), 0x06},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x49}, {CCI_REG8(0x4e), 0x06},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x69}, {CCI_REG8(0x4e), 0x06},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x89}, {CCI_REG8(0x4e), 0x06},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0xa9}, {CCI_REG8(0x4e), 0x06},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x48}, {CCI_REG8(0x4e), 0x06},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x68}, {CCI_REG8(0x4e), 0x06},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0x69}, {CCI_REG8(0x4e), 0x06},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0xca}, {CCI_REG8(0x4e), 0x07},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0xc9}, {CCI_REG8(0x4e), 0x07},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0xe9}, {CCI_REG8(0x4e), 0x07},
+> +	{CCI_REG8(0x4c), 0x03}, {CCI_REG8(0x4d), 0x09}, {CCI_REG8(0x4e), 0x07},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0xc8}, {CCI_REG8(0x4e), 0x07},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0xe8}, {CCI_REG8(0x4e), 0x07},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0xa7}, {CCI_REG8(0x4e), 0x07},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0xc7}, {CCI_REG8(0x4e), 0x07},
+> +	{CCI_REG8(0x4c), 0x02}, {CCI_REG8(0x4d), 0xe7}, {CCI_REG8(0x4e), 0x07},
+> +	{CCI_REG8(0x4c), 0x03}, {CCI_REG8(0x4d), 0x07}, {CCI_REG8(0x4e), 0x07},
+> +	{CCI_REG8(0x4f), 0x01},
+> +	{CCI_REG8(0x50), 0x80}, {CCI_REG8(0x51), 0xa8}, {CCI_REG8(0x52), 0x47},
+> +	{CCI_REG8(0x53), 0x38}, {CCI_REG8(0x54), 0xc7}, {CCI_REG8(0x56), 0x0e},
+> +	{CCI_REG8(0x58), 0x08}, {CCI_REG8(0x5b), 0x00}, {CCI_REG8(0x5c), 0x74},
+> +	{CCI_REG8(0x5d), 0x8b}, {CCI_REG8(0x61), 0xdb}, {CCI_REG8(0x62), 0xb8},
+> +	{CCI_REG8(0x63), 0x86}, {CCI_REG8(0x64), 0xc0}, {CCI_REG8(0x65), 0x04},
+> +	{CCI_REG8(0x67), 0xa8}, {CCI_REG8(0x68), 0xb0}, {CCI_REG8(0x69), 0x00},
+> +	{CCI_REG8(0x6a), 0xa8}, {CCI_REG8(0x6b), 0xb0}, {CCI_REG8(0x6c), 0xaf},
+> +	{CCI_REG8(0x6d), 0x8b}, {CCI_REG8(0x6e), 0x50}, {CCI_REG8(0x6f), 0x18},
+> +	{CCI_REG8(0x73), 0xf0}, {CCI_REG8(0x70), 0x0d}, {CCI_REG8(0x71), 0x60},
+> +	{CCI_REG8(0x72), 0x80}, {CCI_REG8(0x74), 0x01}, {CCI_REG8(0x75), 0x01},
+> +	{CCI_REG8(0x7f), 0x0c}, {CCI_REG8(0x76), 0x70}, {CCI_REG8(0x77), 0x58},
+> +	{CCI_REG8(0x78), 0xa0}, {CCI_REG8(0x79), 0x5e}, {CCI_REG8(0x7a), 0x54},
+> +	{CCI_REG8(0x7b), 0x58},
+> +	/* CC */
+> +	{GC2145_REG_PAGE_SELECT, 0x02},
+> +	{CCI_REG8(0xc0), 0x01}, {CCI_REG8(0xc1), 0x44}, {CCI_REG8(0xc2), 0xfd},
+> +	{CCI_REG8(0xc3), 0x04}, {CCI_REG8(0xc4), 0xf0}, {CCI_REG8(0xc5), 0x48},
+> +	{CCI_REG8(0xc6), 0xfd}, {CCI_REG8(0xc7), 0x46}, {CCI_REG8(0xc8), 0xfd},
+> +	{CCI_REG8(0xc9), 0x02}, {CCI_REG8(0xca), 0xe0}, {CCI_REG8(0xcb), 0x45},
+> +	{CCI_REG8(0xcc), 0xec}, {CCI_REG8(0xcd), 0x48}, {CCI_REG8(0xce), 0xf0},
+> +	{CCI_REG8(0xcf), 0xf0}, {CCI_REG8(0xe3), 0x0c}, {CCI_REG8(0xe4), 0x4b},
+> +	{CCI_REG8(0xe5), 0xe0},
+> +	/* ABS */
+> +	{GC2145_REG_PAGE_SELECT, 0x01},
+> +	{CCI_REG8(0x9f), 0x40},
+> +	/* Dark sun */
+> +	{GC2145_REG_PAGE_SELECT, 0x02},
+> +	{CCI_REG8(0x40), 0xbf}, {CCI_REG8(0x46), 0xcf},
+> +};
+> +
+> +#define GC2145_640_480_PIXELRATE	(60 * HZ_PER_MHZ)
+> +#define GC2145_640_480_HBLANK		0x0130
+> +#define GC2145_640_480_VBLANK		0x000c
+> +static const struct cci_reg_sequence mode_640_480_regs[] = {
+> +	{GC2145_REG_PAGE_SELECT, 0xf0}, {GC2145_REG_PAGE_SELECT, 0xf0},
+> +	{GC2145_REG_PAGE_SELECT, 0xf0}, {CCI_REG8(0xfc), 0x06},
+> +	{CCI_REG8(0xf6), 0x00}, {CCI_REG8(0xf7), 0x1d}, {CCI_REG8(0xf8), 0x86},
+> +	{CCI_REG8(0xfa), 0x00}, {CCI_REG8(0xf9), 0x8e},
+> +	/* Disable PAD IO */
+> +	{GC2145_REG_PAD_IO, 0x00},
+> +	{GC2145_REG_PAGE_SELECT, 0x00},
+> +	/* Row/Col start - 0/0 */
+> +	{GC2145_REG_ROW_START, 0x0000},
+> +	{GC2145_REG_COL_START, 0x0000},
+> +	/* Window size 1216/1618 */
+> +	{GC2145_REG_WIN_HEIGHT, 0x04c0},
+> +	{GC2145_REG_WIN_WIDTH, 0x0652},
+> +	/* Scalar more */
+> +	{CCI_REG8(0xfd), 0x01}, {CCI_REG8(0xfa), 0x00},
+> +	/* Crop 640-480@0-0 */
+> +	{GC2145_REG_CROP_ENABLE, 0x01},
+> +	{GC2145_REG_CROP_Y, 0x0000},
+> +	{GC2145_REG_CROP_X, 0x0000},
+> +	{GC2145_REG_CROP_HEIGHT, 0x01e0},
+> +	{GC2145_REG_CROP_WIDTH, 0x0280},
+> +	/* Subsampling configuration */
+> +	{CCI_REG8(0x99), 0x55}, {CCI_REG8(0x9a), 0x06}, {CCI_REG8(0x9b), 0x01},
+> +	{CCI_REG8(0x9c), 0x23}, {CCI_REG8(0x9d), 0x00}, {CCI_REG8(0x9e), 0x00},
+> +	{CCI_REG8(0x9f), 0x01}, {CCI_REG8(0xa0), 0x23}, {CCI_REG8(0xa1), 0x00},
+> +	{CCI_REG8(0xa2), 0x00},
+> +	/* Framerate */
+> +	{GC2145_REG_PAGE_SELECT, 0x00},
+> +	{GC2145_REG_HBLANK, GC2145_640_480_HBLANK},
+> +	{GC2145_REG_VBLANK, GC2145_640_480_VBLANK},
+> +	{GC2145_REG_PAGE_SELECT, 0x01},
+> +	/* AEC anti-flicker */
+> +	{CCI_REG16(0x25), 0x0175},
+> +	/* AEC exposure level 1-5 */
+> +	{CCI_REG16(0x27), 0x045f}, {CCI_REG16(0x29), 0x045f},
+> +	{CCI_REG16(0x2b), 0x045f}, {CCI_REG16(0x2d), 0x045f},
+> +};
+> +
+> +#define GC2145_1280_720_PIXELRATE	(96 * HZ_PER_MHZ)
+> +#define GC2145_1280_720_HBLANK		0x0156
+> +#define GC2145_1280_720_VBLANK		0x0011
+> +static const struct cci_reg_sequence mode_1280_720_regs[] = {
+> +	{GC2145_REG_PAGE_SELECT, 0xf0}, {GC2145_REG_PAGE_SELECT, 0xf0},
+> +	{GC2145_REG_PAGE_SELECT, 0xf0}, {CCI_REG8(0xfc), 0x06},
+> +	{CCI_REG8(0xf6), 0x00}, {CCI_REG8(0xf7), 0x1d}, {CCI_REG8(0xf8), 0x83},
+> +	{CCI_REG8(0xfa), 0x00}, {CCI_REG8(0xf9), 0x8e},
+> +	/* Disable PAD IO */
+> +	{GC2145_REG_PAD_IO, 0x00},
+> +	{GC2145_REG_PAGE_SELECT, 0x00},
+> +	/* Row/Col start - 240/160 */
+> +	{GC2145_REG_ROW_START, 0x00f0},
+> +	{GC2145_REG_COL_START, 0x00a0},
+> +	/* Window size 736/1296 */
+> +	{GC2145_REG_WIN_HEIGHT, 0x02e0},
+> +	{GC2145_REG_WIN_WIDTH, 0x0510},
+> +	/* Crop 1280-720@0-0 */
+> +	{GC2145_REG_CROP_ENABLE, 0x01},
+> +	{GC2145_REG_CROP_Y, 0x0000},
+> +	{GC2145_REG_CROP_X, 0x0000},
+> +	{GC2145_REG_CROP_HEIGHT, 0x02d0},
+> +	{GC2145_REG_CROP_WIDTH, 0x0500},
+> +	/* Framerate */
+> +	{GC2145_REG_PAGE_SELECT, 0x00},
+> +	{GC2145_REG_HBLANK, GC2145_1280_720_HBLANK},
+> +	{GC2145_REG_VBLANK, GC2145_1280_720_VBLANK},
+> +	{GC2145_REG_PAGE_SELECT, 0x01},
+> +	/* AEC anti-flicker */
+> +	{CCI_REG16(0x25), 0x00e6},
+> +	/* AEC exposure level 1-5 */
+> +	{CCI_REG16(0x27), 0x02b2}, {CCI_REG16(0x29), 0x02b2},
+> +	{CCI_REG16(0x2b), 0x02b2}, {CCI_REG16(0x2d), 0x02b2},
+> +};
+> +
+> +#define GC2145_1600_1200_PIXELRATE	(72 * HZ_PER_MHZ)
+> +#define GC2145_1600_1200_HBLANK		0x0156
+> +#define GC2145_1600_1200_VBLANK		0x0010
+> +static const struct cci_reg_sequence mode_1600_1200_regs[] = {
+> +	{GC2145_REG_PAGE_SELECT, 0xf0}, {GC2145_REG_PAGE_SELECT, 0xf0},
+> +	{GC2145_REG_PAGE_SELECT, 0xf0}, {CCI_REG8(0xfc), 0x06},
+> +	{CCI_REG8(0xf6), 0x00}, {CCI_REG8(0xf7), 0x1d}, {CCI_REG8(0xf8), 0x84},
+> +	{CCI_REG8(0xfa), 0x00}, {CCI_REG8(0xf9), 0x8e},
+> +	/* Disable PAD IO */
+> +	{GC2145_REG_PAD_IO, 0x00},
+> +	{GC2145_REG_PAGE_SELECT, 0x00},
+> +	/* Row/Col start - 0/0 */
+> +	{GC2145_REG_ROW_START, 0x0000},
+> +	{GC2145_REG_COL_START, 0x0000},
+> +	/* Window size: 1216/1618 */
+> +	{GC2145_REG_WIN_HEIGHT, 0x04c0},
+> +	{GC2145_REG_WIN_WIDTH, 0x0652},
+> +	/* Crop 1600-1200@0-0 */
+> +	{GC2145_REG_CROP_ENABLE, 0x01},
+> +	{GC2145_REG_CROP_Y, 0x0000},
+> +	{GC2145_REG_CROP_X, 0x0000},
+> +	{GC2145_REG_CROP_HEIGHT, 0x04b0},
+> +	{GC2145_REG_CROP_WIDTH, 0x0640},
+> +	/* Framerate */
+> +	{GC2145_REG_PAGE_SELECT, 0x00},
+> +	{GC2145_REG_HBLANK, GC2145_1600_1200_HBLANK},
+> +	{GC2145_REG_VBLANK, GC2145_1600_1200_VBLANK},
+> +	{GC2145_REG_PAGE_SELECT, 0x01},
+> +	/* AEC anti-flicker */
+> +	{CCI_REG16(0x25), 0x00fa},
+> +	/* AEC exposure level 1-5 */
+> +	{CCI_REG16(0x27), 0x04e2}, {CCI_REG16(0x29), 0x04e2},
+> +	{CCI_REG16(0x2b), 0x04e2}, {CCI_REG16(0x2d), 0x04e2},
+> +};
+> +
+> +/* Regulators supplies */
+> +static const char * const gc2145_supply_name[] = {
+> +	"iovdd", /* Digital I/O (1.7-3V) suppply */
+> +	"avdd",  /* Analog (2.7-3V) supply */
+> +	"dvdd",  /* Digital Core (1.7-1.9V) supply */
+> +};
+> +
+> +#define GC2145_NUM_SUPPLIES ARRAY_SIZE(gc2145_supply_name)
+> +
+> +/* Mode configs */
+> +#define GC2145_MODE_640X480	0
+> +#define GC2145_MODE_1280X720	1
+> +#define GC2145_MODE_1600X1200	2
+> +static const struct gc2145_mode supported_modes[] = {
+> +	{
+> +		/* 640x480 30fps mode */
+> +		.width = 640,
+> +		.height = 480,
+> +		.frame_interval = {
+> +			.numerator = 1,
+> +			.denominator = 30,
+> +		},
+> +		.reg_seq = mode_640_480_regs,
+> +		.reg_seq_size = ARRAY_SIZE(mode_640_480_regs),
+> +		.pixel_rate = GC2145_640_480_PIXELRATE,
+> +		.crop = {
+> +			.top = 0,
+> +			.left = 0,
+> +			.width = 640,
+> +			.height = 480,
+> +		},
+> +	},
+> +	{
+> +		/* 1280x720 30fps mode */
+> +		.width = 1280,
+> +		.height = 720,
+> +		.frame_interval = {
+> +			.numerator = 1,
+> +			.denominator = 30,
+> +		},
+> +		.reg_seq = mode_1280_720_regs,
+> +		.reg_seq_size = ARRAY_SIZE(mode_1280_720_regs),
+> +		.pixel_rate = GC2145_1280_720_PIXELRATE,
+> +		.crop = {
+> +			.top = 160,
+> +			.left = 240,
+> +			.width = 1280,
+> +			.height = 720,
+> +		},
+> +	},
+> +	{
+> +		/* 1600x1200 20fps mode */
+> +		.width = 1600,
+> +		.height = 1200,
+> +		.frame_interval = {
+> +			.numerator = 1,
+> +			.denominator = 20,
+> +		},
+> +		.reg_seq = mode_1600_1200_regs,
+> +		.reg_seq_size = ARRAY_SIZE(mode_1600_1200_regs),
+> +		.pixel_rate = GC2145_1600_1200_PIXELRATE,
+> +		.crop = {
+> +			.top = 0,
+> +			.left = 0,
+> +			.width = 1600,
+> +			.height = 1200,
+> +		},
+> +	},
+> +};
+> +
+> +/**
+> + * struct gc2145_format - GC2145 pixel format description
+> + * @code: media bus (MBUS) associated code
+> + * @colorspace: V4L2 colospace
+> + * @datatype: MIPI CSI2 data type
+> + * @output_fmt: GC2145 output format
+> + */
+> +struct gc2145_format {
+> +	unsigned int code;
+> +	unsigned int colorspace;
+> +	unsigned char datatype;
+> +	unsigned char output_fmt;
+> +};
+> +
+> +/* All supported formats */
+> +static const struct gc2145_format supported_formats[] = {
+> +	{
+> +		.code		= MEDIA_BUS_FMT_UYVY8_2X8,
+
+The driver supports CSI-2, the 1X16 format variants should be used for
+serial bus
+
+> +		.colorspace	= V4L2_COLORSPACE_SRGB,
+
+colorspace is currently unused
+
+> +		.datatype	= MIPI_CSI2_DT_YUV422_8B,
+> +		.output_fmt	= 0x00,
+> +	},
+> +	{
+> +		.code		= MEDIA_BUS_FMT_VYUY8_2X8,
+> +		.colorspace	= V4L2_COLORSPACE_SRGB,
+> +		.datatype	= MIPI_CSI2_DT_YUV422_8B,
+> +		.output_fmt	= 0x01,
+> +	},
+> +	{
+> +		.code		= MEDIA_BUS_FMT_YUYV8_2X8,
+> +		.colorspace	= V4L2_COLORSPACE_SRGB,
+> +		.datatype	= MIPI_CSI2_DT_YUV422_8B,
+> +		.output_fmt	= 0x02,
+> +	},
+> +	{
+> +		.code		= MEDIA_BUS_FMT_YVYU8_2X8,
+> +		.colorspace	= V4L2_COLORSPACE_SRGB,
+> +		.datatype	= MIPI_CSI2_DT_YUV422_8B,
+> +		.output_fmt	= 0x03,
+> +	},
+> +	{
+> +		.code		= MEDIA_BUS_FMT_RGB565_2X8_BE,
+> +		.colorspace	= V4L2_COLORSPACE_SRGB,
+> +		.datatype	= MIPI_CSI2_DT_RGB565,
+> +		.output_fmt	= 0x06,
+> +	},
+> +};
+> +
+> +struct gc2145_ctrls {
+> +	struct v4l2_ctrl_handler handler;
+> +	struct v4l2_ctrl *pixel_rate;
+> +	struct v4l2_ctrl *test_pattern;
+> +	struct v4l2_ctrl *hflip;
+> +	struct v4l2_ctrl *vflip;
+> +};
+> +
+> +struct gc2145 {
+> +	struct v4l2_subdev sd;
+> +	struct media_pad pad;
+> +
+> +	struct regmap *regmap;
+> +	struct clk *xclk;
+> +
+> +	struct gpio_desc *reset_gpio;
+> +	struct gpio_desc *powerdown_gpio;
+> +	struct regulator_bulk_data supplies[GC2145_NUM_SUPPLIES];
+> +
+> +	/* V4L2 controls */
+> +	struct gc2145_ctrls ctrls;
+> +
+> +	/* Current mode */
+> +	const struct gc2145_mode *mode;
+> +};
+> +
+> +static inline struct gc2145 *to_gc2145(struct v4l2_subdev *_sd)
+> +{
+> +	return container_of(_sd, struct gc2145, sd);
+> +}
+> +
+> +static inline struct v4l2_subdev *ctrl_to_sd(struct v4l2_ctrl *ctrl)
+
+Even if the symbol is static, I would prefix it anyway with gc2145_
+
+> +{
+> +	return &container_of(ctrl->handler, struct gc2145,
+> +			     ctrls.handler)->sd;
+> +}
+> +
+> +static const struct gc2145_format *
+> +gc2145_get_format_code(struct gc2145 *gc2145, u32 code)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(supported_formats); i++)
+> +		if (supported_formats[i].code == code)
+> +			break;
+> +
+> +	if (i >= ARRAY_SIZE(supported_formats))
+> +		i = 0;
+> +
+> +	return &supported_formats[i];
+> +}
+> +
+> +static void gc2145_update_pad_format(struct gc2145 *gc2145,
+> +				     const struct gc2145_mode *mode,
+> +				     struct v4l2_mbus_framefmt *fmt, u32 code)
+> +{
+> +	fmt->code = code;
+> +	fmt->width = mode->width;
+> +	fmt->height = mode->height;
+> +	fmt->field = V4L2_FIELD_NONE;
+> +	fmt->colorspace = V4L2_COLORSPACE_SRGB;
+> +	fmt->ycbcr_enc = V4L2_MAP_YCBCR_ENC_DEFAULT(fmt->colorspace);
+> +	fmt->quantization = V4L2_MAP_QUANTIZATION_DEFAULT(true, fmt->colorspace,
+> +							  fmt->ycbcr_enc);
+> +	fmt->xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(fmt->colorspace);
+
+As the colorspace is known and fixed, the other fields could be
+explicitly harcoded. No big deal in relying on helpers I guess
+
+> +}
+> +
+> +static int gc2145_init_cfg(struct v4l2_subdev *sd,
+> +			   struct v4l2_subdev_state *state)
+> +{
+> +	struct gc2145 *gc2145 = to_gc2145(sd);
+> +	struct v4l2_mbus_framefmt *format;
+> +	struct v4l2_rect *crop;
+> +
+> +	/* Initialize try_fmt */
+
+Not the try_fmt anymore :)
+
+> +	format = v4l2_subdev_get_pad_format(sd, state, 0);
+> +	gc2145_update_pad_format(gc2145,
+> +				 &supported_modes[0], format,
+> +				 MEDIA_BUS_FMT_RGB565_2X8_BE);
+> +
+> +	/* Initialize crop rectangle. */
+> +	crop = v4l2_subdev_get_pad_crop(sd, state, 0);
+> +	*crop = supported_modes[0].crop;
+> +
+> +	return 0;
+> +}
+> +
+> +static int gc2145_get_selection(struct v4l2_subdev *sd,
+> +				struct v4l2_subdev_state *sd_state,
+> +				struct v4l2_subdev_selection *sel)
+> +{
+> +	switch (sel->target) {
+> +	case V4L2_SEL_TGT_CROP:
+> +		sel->r = *v4l2_subdev_get_pad_crop(sd, sd_state, 0);
+> +		return 0;
+> +
+> +	case V4L2_SEL_TGT_NATIVE_SIZE:
+> +		sel->r.top = 0;
+> +		sel->r.left = 0;
+> +		sel->r.width = GC2145_NATIVE_WIDTH;
+> +		sel->r.height = GC2145_NATIVE_HEIGHT;
+> +
+> +		return 0;
+> +
+> +	case V4L2_SEL_TGT_CROP_DEFAULT:
+> +	case V4L2_SEL_TGT_CROP_BOUNDS:
+> +		sel->r.top = 0;
+> +		sel->r.left = 0;
+> +		sel->r.width = 1600;
+> +		sel->r.height = 1200;
+> +
+> +		return 0;
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static int gc2145_enum_mbus_code(struct v4l2_subdev *sd,
+> +				 struct v4l2_subdev_state *sd_state,
+> +				 struct v4l2_subdev_mbus_code_enum *code)
+> +{
+> +	if (code->index >= ARRAY_SIZE(supported_formats))
+> +		return -EINVAL;
+> +
+> +	code->code = supported_formats[code->index].code;
+> +	return 0;
+> +}
+> +
+> +static int gc2145_enum_frame_size(struct v4l2_subdev *sd,
+> +				  struct v4l2_subdev_state *sd_state,
+> +				  struct v4l2_subdev_frame_size_enum *fse)
+> +{
+> +	struct gc2145 *gc2145 = to_gc2145(sd);
+> +	const struct gc2145_format *gc2145_format;
+> +	u32 code;
+> +
+> +	if (fse->index >= ARRAY_SIZE(supported_modes))
+> +		return -EINVAL;
+> +
+> +	gc2145_format = gc2145_get_format_code(gc2145, fse->code);
+> +	code = gc2145_format->code;
+> +	if (fse->code != code)
+> +		return -EINVAL;
+> +
+> +	fse->min_width = supported_modes[fse->index].width;
+> +	fse->max_width = fse->min_width;
+> +	fse->min_height = supported_modes[fse->index].height;
+> +	fse->max_height = fse->min_height;
+> +
+> +	return 0;
+> +}
+> +
+> +static int
+> +gc2145_enum_frame_interval(struct v4l2_subdev *sd,
+> +			   struct v4l2_subdev_state *sd_state,
+> +			   struct v4l2_subdev_frame_interval_enum *fie)
+> +{
+> +	struct gc2145 *gc2145 = to_gc2145(sd);
+> +	const struct gc2145_format *gc2145_format;
+> +	u32 code, i;
+> +
+> +	/* Only supporting a unique framerate per resolution currently */
+> +	if (fie->index > 0)
+> +		return -EINVAL;
+> +
+> +	gc2145_format = gc2145_get_format_code(gc2145, fie->code);
+> +	code = gc2145_format->code;
+> +	if (fie->code != code)
+> +		return -EINVAL;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(supported_modes); i++)
+> +		if (supported_modes[i].width == fie->width &&
+> +		    supported_modes[i].height == fie->height)
+> +			break;
+
+Even if for single lines {} are not required, multiple lines like
+
+        for ()
+                if()
+
+Usually need to be {}.
+
+        for () {
+                if()
+        }
+
+It's a nit, but there are a few occasions in the driver
+
+From codying-style.rst
+
+Also, use braces when a loop contains more than a single simple statement:
+
+.. code-block:: c
+
+	while (condition) {
+		if (test)
+			do_something();
+	}
+
+
+
+> +
+> +	if (i >= ARRAY_SIZE(supported_modes))
+> +		return -EINVAL;
+> +
+> +	fie->interval.numerator = supported_modes[i].frame_interval.numerator;
+> +	fie->interval.denominator =
+> +		supported_modes[i].frame_interval.denominator;
+> +
+
+As soon as VBLANK is added and made writable, this will break
+
+> +	return 0;
+> +}
+> +
+> +static int gc2145_set_pad_format(struct v4l2_subdev *sd,
+> +				 struct v4l2_subdev_state *sd_state,
+> +				 struct v4l2_subdev_format *fmt)
+> +{
+> +	struct gc2145 *gc2145 = to_gc2145(sd);
+> +	const struct gc2145_mode *mode;
+> +	const struct gc2145_format *gc2145_fmt;
+> +	struct v4l2_mbus_framefmt *framefmt;
+> +	struct gc2145_ctrls *ctrls = &gc2145->ctrls;
+> +	struct v4l2_rect *crop;
+> +
+> +	gc2145_fmt = gc2145_get_format_code(gc2145, fmt->format.code);
+> +	mode = v4l2_find_nearest_size(supported_modes,
+> +				      ARRAY_SIZE(supported_modes),
+> +				      width, height,
+> +				      fmt->format.width, fmt->format.height);
+> +
+> +	gc2145_update_pad_format(gc2145, mode, &fmt->format, gc2145_fmt->code);
+> +	framefmt = v4l2_subdev_get_pad_format(sd, sd_state, fmt->pad);
+> +	if (fmt->which == V4L2_SUBDEV_FORMAT_ACTIVE) {
+> +		gc2145->mode = mode;
+> +		/* Update pixel_rate based on the mode */
+> +		__v4l2_ctrl_s_ctrl_int64(ctrls->pixel_rate, mode->pixel_rate);
+> +	}
+> +	*framefmt = fmt->format;
+> +	crop = v4l2_subdev_get_pad_crop(sd, sd_state, fmt->pad);
+> +	*crop = mode->crop;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct cci_reg_sequence common_mipi_regs[] = {
+
+I would howver still use the gc2145_ prefix
+
+> +	{GC2145_REG_PAGE_SELECT, 0x03},
+> +	{GC2145_REG_DPHY_ANALOG_MODE1, GC2145_DPHY_MODE_PHY_CLK_EN |
+> +				       GC2145_DPHY_MODE_PHY_LANE0_EN |
+> +				       GC2145_DPHY_MODE_PHY_LANE1_EN |
+> +				       GC2145_DPHY_MODE_PHY_CLK_LANE_P2S_SEL},
+> +	{GC2145_REG_DPHY_ANALOG_MODE2, GC2145_DPHY_CLK_DIFF(2) |
+> +				       GC2145_DPHY_LANE0_DIFF(2)},
+> +	{GC2145_REG_DPHY_ANALOG_MODE3, GC2145_DPHY_LANE1_DIFF(0) |
+> +				       GC2145_DPHY_CLK_DELAY},
+> +	{GC2145_REG_FIFO_MODE, GC2145_FIFO_MODE_READ_GATE |
+> +			       GC2145_FIFO_MODE_MIPI_CLK_MODULE},
+> +	{GC2145_REG_BUF_CSI2_MODE, GC2145_CSI2_MODE_EN |
+> +				   GC2145_CSI2_MODE_MIPI_EN |
+> +				   GC2145_CSI2_MODE_RAW8 |
+> +				   GC2145_CSI2_MODE_DOUBLE},
+> +	{GC2145_REG_DPHY_MODE, GC2145_DPHY_MODE_TRIGGER_PROG},
+> +	/* Clock & Data lanes timing */
+> +	{GC2145_REG_T_LPX, 0x10},
+> +	{GC2145_REG_T_CLK_HS_PREPARE, 0x04}, {GC2145_REG_T_CLK_ZERO, 0x10},
+> +	{GC2145_REG_T_CLK_PRE, 0x10}, {GC2145_REG_T_CLK_POST, 0x10},
+> +	{GC2145_REG_T_CLK_TRAIL, 0x05},
+> +	{GC2145_REG_T_HS_PREPARE, 0x03}, {GC2145_REG_T_HS_ZERO, 0x0a},
+> +	{GC2145_REG_T_HS_TRAIL, 0x06},
+> +};
+> +
+> +static int gc2145_config_mipi_mode(struct gc2145 *gc2145,
+> +				   const struct gc2145_format *gc2145_format)
+> +{
+> +	u16 lwc, fifo_full_lvl;
+> +	int ret = 0;
+> +
+> +	/* Common MIPI settings */
+> +	cci_multi_reg_write(gc2145->regmap, common_mipi_regs,
+> +			    ARRAY_SIZE(common_mipi_regs), &ret);
+> +
+> +	/*
+> +	 * Adjust the MIPI buffer settings.
+> +	 * For YUV/RGB, LWC = image width * 2
+> +	 * For RAW8, LWC = image width
+> +	 * For RAW10, LWC = image width * 1.25
+
+Even if RAW not supported yet, it's nice informations to have in the
+driver
+
+> +	 */
+> +	lwc = gc2145->mode->width * 2;
+> +	cci_write(gc2145->regmap, GC2145_REG_LWC_HIGH, lwc >> 8, &ret);
+> +	cci_write(gc2145->regmap, GC2145_REG_LWC_LOW, lwc & 0xff, &ret);
+> +
+> +	/*
+> +	 * Adjust the MIPI Fifo Full Level
+> +	 * 640x480 RGB: 0x0190
+> +	 * 1280x720 / 1600x1200 (aka no scaler) non RAW: 0x0001
+> +	 * 1600x1200 RAW: 0x0190
+> +	 */
+> +	if (gc2145->mode->width == 1280 || gc2145->mode->width == 1600)
+> +		fifo_full_lvl = 0x0001;
+> +	else
+> +		fifo_full_lvl = 0x0190;
+> +
+> +	cci_write(gc2145->regmap, GC2145_REG_FIFO_FULL_LVL_HIGH,
+> +		  fifo_full_lvl >> 8, &ret);
+> +	cci_write(gc2145->regmap, GC2145_REG_FIFO_FULL_LVL_LOW,
+> +		  fifo_full_lvl & 0xff, &ret);
+> +
+> +	/*
+> +	 * Set the fifo gate mode / MIPI wdiv set:
+> +	 * 0xf1 in case of RAW mode and 0xf0 otherwise
+> +	 */
+> +	cci_write(gc2145->regmap, GC2145_REG_FIFO_GATE_MODE, 0xf0, &ret);
+> +
+> +	/* Set the MIPI data type */
+> +	cci_write(gc2145->regmap, GC2145_REG_MIPI_DT,
+> +		  gc2145_format->datatype, &ret);
+> +
+> +	return ret;
+> +}
+> +
+> +static int gc2145_start_streaming(struct gc2145 *gc2145,
+> +				  struct v4l2_subdev_state *state)
+> +{
+> +	struct i2c_client *client = v4l2_get_subdevdata(&gc2145->sd);
+> +	const struct gc2145_format *gc2145_format;
+> +	struct v4l2_mbus_framefmt *fmt;
+> +	int ret;
+> +
+> +	ret = pm_runtime_resume_and_get(&client->dev);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* Apply default values of current mode */
+> +	cci_multi_reg_write(gc2145->regmap, gc2145->mode->reg_seq,
+> +			    gc2145->mode->reg_seq_size, &ret);
+> +	cci_multi_reg_write(gc2145->regmap, common_regs,
+> +			    ARRAY_SIZE(common_regs), &ret);
+> +	if (ret) {
+> +		dev_err(&client->dev, "%s failed to write regs\n", __func__);
+> +		goto err_rpm_put;
+> +	}
+> +
+> +	fmt = v4l2_subdev_get_pad_format(&gc2145->sd, state, 0);
+> +	gc2145_format = gc2145_get_format_code(gc2145, fmt->code);
+> +
+> +	/* Set the output format */
+> +	cci_write(gc2145->regmap, GC2145_REG_PAGE_SELECT, 0x00, &ret);
+> +
+> +	cci_write(gc2145->regmap, GC2145_REG_OUTPUT_FMT,
+> +		  gc2145_format->output_fmt, &ret);
+> +	if (ret) {
+> +		dev_err(&client->dev, "%s failed to write regs\n", __func__);
+> +		goto err_rpm_put;
+> +	}
+> +
+> +	/* Perform MIPI specific configuration */
+> +	ret = gc2145_config_mipi_mode(gc2145, gc2145_format);
+> +	if (ret) {
+> +		dev_err(&client->dev, "%s failed to write mipi conf\n",
+> +			__func__);
+> +		goto err_rpm_put;
+> +	}
+> +
+> +	/* Come back on page 0 by default */
+> +	cci_write(gc2145->regmap, GC2145_REG_PAGE_SELECT, 0x00, &ret);
+> +	if (ret) {
+> +		dev_err(&client->dev, "%s failed to write regs\n", __func__);
+> +		goto err_rpm_put;
+> +	}
+> +
+> +	/* Apply customized values from user */
+> +	ret =  __v4l2_ctrl_handler_setup(&gc2145->ctrls.handler);
+
+Do you need to check ret ? Or even return directly ?
+
+Also, what is the actual "start streaming" register write ? I'm a bit
+suspicious of seeing controls being set up last, after the streaming
+might have been started already ?
+
+It seems the GC2145_CSI2_MODE_EN and GC2145_CSI2_MODE_MIPI_EN bits of
+GC2145_REG_BUF_CSI2_MODE stop the streaming in
+gc2145_stop_streaming(). I wonder if yout shuoldn't break them out
+from common_mipi_regs[] and write them last in this function (It's a
+bit weird the common_mipi_regs[] values sets the GC2145_CSI2_MODE_RAW8
+bit in GC2145_CSI2_MODE_MIPI_EN even if the mode is not raw, maybe the
+name of the field is mis-leading)
+
+> +
+> +	return 0;
+> +
+> +err_rpm_put:
+> +	pm_runtime_put(&client->dev);
+> +	return ret;
+> +}
+> +
+> +static void gc2145_stop_streaming(struct gc2145 *gc2145)
+> +{
+> +	struct i2c_client *client = v4l2_get_subdevdata(&gc2145->sd);
+> +	int ret = 0;
+> +
+> +	/* Disable lanes & mipi streaming */
+> +	cci_write(gc2145->regmap, GC2145_REG_PAGE_SELECT, 0x03, &ret);
+> +	cci_update_bits(gc2145->regmap, GC2145_REG_BUF_CSI2_MODE,
+> +			GC2145_CSI2_MODE_EN | GC2145_CSI2_MODE_MIPI_EN, 0,
+> +			&ret);
+> +	cci_write(gc2145->regmap, GC2145_REG_PAGE_SELECT, 0x00, &ret);
+> +	if (ret)
+> +		dev_err(&client->dev, "%s failed to write regs\n", __func__);
+> +
+> +	pm_runtime_put(&client->dev);
+> +}
+> +
+> +static int gc2145_g_frame_interval(struct v4l2_subdev *sd,
+> +				   struct v4l2_subdev_frame_interval *fi)
+> +{
+> +	struct gc2145 *gc2145 = to_gc2145(sd);
+> +
+> +	fi->interval = gc2145->mode->frame_interval;
+> +
+> +	return 0;
+> +}
+> +
+> +static int gc2145_set_stream(struct v4l2_subdev *sd, int enable)
+> +{
+> +	struct gc2145 *gc2145 = to_gc2145(sd);
+> +	struct v4l2_subdev_state *state;
+> +	int ret = 0;
+> +
+> +	state = v4l2_subdev_lock_and_get_active_state(sd);
+> +
+> +	if (enable)
+> +		ret = gc2145_start_streaming(gc2145, state);
+> +	else
+> +		gc2145_stop_streaming(gc2145);
+> +
+> +	v4l2_subdev_unlock_state(state);
+> +
+> +	return ret;
+> +}
+> +
+> +/* Power/clock management functions */
+> +static int gc2145_power_on(struct device *dev)
+> +{
+> +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+> +	struct gc2145 *gc2145 = to_gc2145(sd);
+> +	int ret;
+> +
+> +	ret = regulator_bulk_enable(GC2145_NUM_SUPPLIES, gc2145->supplies);
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable regulators\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = clk_prepare_enable(gc2145->xclk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable clock\n");
+> +		goto reg_off;
+> +	}
+> +
+> +	gpiod_set_value_cansleep(gc2145->powerdown_gpio, 0);
+> +	gpiod_set_value_cansleep(gc2145->reset_gpio, 0);
+> +
+> +	/*
+> +	 * Datasheet doesn't mention timing between PWDN/RESETB control and
+> +	 * i2c access however experimentation shows that a rather big delay is
+> +	 * needed
+> +	 */
+> +	usleep_range(40000, 41000);
+
+This is looooong! I trust your experiments, the datasheet version I
+have reports delays to be "TBD"
+
+I can only suggest to consider to use msleep() as suggested by
+timers-howto.rst for delays > 10ms, or fsleep with the
+risk of getting close to 80ms delay in the worst case.
+
+> +
+> +	return 0;
+> +
+> +reg_off:
+> +	regulator_bulk_disable(GC2145_NUM_SUPPLIES, gc2145->supplies);
+> +
+> +	return ret;
+> +}
+> +
+> +static int gc2145_power_off(struct device *dev)
+> +{
+> +	struct v4l2_subdev *sd = dev_get_drvdata(dev);
+> +	struct gc2145 *gc2145 = to_gc2145(sd);
+> +
+> +	gpiod_set_value_cansleep(gc2145->powerdown_gpio, 1);
+> +	gpiod_set_value_cansleep(gc2145->reset_gpio, 1);
+> +	clk_disable_unprepare(gc2145->xclk);
+> +	regulator_bulk_disable(GC2145_NUM_SUPPLIES, gc2145->supplies);
+> +
+> +	return 0;
+> +}
+> +
+> +static int gc2145_get_regulators(struct gc2145 *gc2145)
+> +{
+> +	struct i2c_client *client = v4l2_get_subdevdata(&gc2145->sd);
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < GC2145_NUM_SUPPLIES; i++)
+> +		gc2145->supplies[i].supply = gc2145_supply_name[i];
+> +
+> +	return devm_regulator_bulk_get(&client->dev, GC2145_NUM_SUPPLIES,
+> +				       gc2145->supplies);
+> +}
+> +
+> +/* Verify chip ID */
+> +static int gc2145_identify_module(struct gc2145 *gc2145)
+> +{
+> +	struct i2c_client *client = v4l2_get_subdevdata(&gc2145->sd);
+> +	int ret;
+> +	u64 chip_id;
+> +
+> +	ret = cci_read(gc2145->regmap, GC2145_REG_CHIP_ID, &chip_id, NULL);
+> +	if (ret) {
+> +		dev_err(&client->dev, "failed to read chip id (%d)\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	if (chip_id != GC2145_CHIP_ID) {
+> +		dev_err(&client->dev, "chip id mismatch: %x!=%llx\n",
+> +			GC2145_CHIP_ID, chip_id);
+> +		return -EIO;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const char * const test_pattern_menu[] = {
+> +	"Disabled",
+> +	"Colored patterns",
+> +	"Uniform white",
+> +	"Uniform yellow",
+> +	"Uniform cyan",
+> +	"Uniform green",
+> +	"Uniform magenta",
+> +	"Uniform red",
+> +	"Uniform black",
+> +};
+> +
+> +#define GC2145_TEST_PATTERN_ENABLE	BIT(0)
+> +#define GC2145_TEST_PATTERN_UXGA	BIT(3)
+> +
+> +#define GC2145_TEST_UNIFORM		BIT(3)
+> +#define GC2145_TEST_WHITE		(4 << 4)
+> +#define GC2145_TEST_YELLOW		(8 << 4)
+> +#define GC2145_TEST_CYAN		(9 << 4)
+> +#define GC2145_TEST_GREEN		(6 << 4)
+> +#define GC2145_TEST_MAGENTA		(10 << 4)
+> +#define GC2145_TEST_RED			(5 << 4)
+> +#define GC2145_TEST_BLACK		(0)
+> +
+> +static const u8 test_pattern_val[] = {
+> +	0,
+> +	GC2145_TEST_PATTERN_ENABLE,
+> +	GC2145_TEST_UNIFORM | GC2145_TEST_WHITE,
+> +	GC2145_TEST_UNIFORM | GC2145_TEST_YELLOW,
+> +	GC2145_TEST_UNIFORM | GC2145_TEST_CYAN,
+> +	GC2145_TEST_UNIFORM | GC2145_TEST_GREEN,
+> +	GC2145_TEST_UNIFORM | GC2145_TEST_MAGENTA,
+> +	GC2145_TEST_UNIFORM | GC2145_TEST_RED,
+> +	GC2145_TEST_UNIFORM | GC2145_TEST_BLACK,
+> +};
+> +
+> +static const struct v4l2_subdev_core_ops gc2145_core_ops = {
+> +	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
+> +	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
+> +};
+> +
+> +static const struct v4l2_subdev_video_ops gc2145_video_ops = {
+> +	.g_frame_interval = gc2145_g_frame_interval,
+> +	/*
+> +	 * Currently frame_interval can't be changed hence s_frame_interval
+> +	 * does same as g_frame_interval
+> +	 */
+> +	.s_frame_interval = gc2145_g_frame_interval,
+> +	.s_stream = gc2145_set_stream,
+> +};
+> +
+> +static const struct v4l2_subdev_pad_ops gc2145_pad_ops = {
+> +	.init_cfg = gc2145_init_cfg,
+> +	.enum_mbus_code = gc2145_enum_mbus_code,
+> +	.get_fmt = v4l2_subdev_get_fmt,
+> +	.set_fmt = gc2145_set_pad_format,
+> +	.get_selection = gc2145_get_selection,
+> +	.enum_frame_size = gc2145_enum_frame_size,
+> +	.enum_frame_interval = gc2145_enum_frame_interval,
+> +};
+> +
+> +static const struct v4l2_subdev_ops gc2145_subdev_ops = {
+> +	.core = &gc2145_core_ops,
+> +	.video = &gc2145_video_ops,
+> +	.pad = &gc2145_pad_ops,
+> +};
+> +
+> +static int gc2145_set_ctrl_test_pattern(struct gc2145 *gc2145, int value)
+> +{
+> +	int ret = 0;
+> +
+> +	if (!value) {
+> +		/* Disable test pattern */
+> +		cci_write(gc2145->regmap, GC2145_REG_DEBUG_MODE2, 0, &ret);
+> +		return cci_write(gc2145->regmap, GC2145_REG_DEBUG_MODE3, 0,
+> +				 &ret);
+> +	}
+> +
+> +	/* Enable test pattern, colored or uniform */
+> +	cci_write(gc2145->regmap, GC2145_REG_DEBUG_MODE2,
+> +		  GC2145_TEST_PATTERN_ENABLE | GC2145_TEST_PATTERN_UXGA, &ret);
+> +
+> +	if (!(test_pattern_val[value] & GC2145_TEST_UNIFORM))
+> +		return cci_write(gc2145->regmap, GC2145_REG_DEBUG_MODE3, 0,
+> +				 &ret);
+> +
+> +	/* Uniform */
+> +	return cci_write(gc2145->regmap, GC2145_REG_DEBUG_MODE3,
+> +			 test_pattern_val[value], &ret);
+> +}
+> +
+> +static int gc2145_s_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
+> +	struct i2c_client *client = v4l2_get_subdevdata(sd);
+> +	struct gc2145 *gc2145 = to_gc2145(sd);
+> +	int ret;
+> +
+> +	if (pm_runtime_get_if_in_use(&client->dev) == 0)
+> +		return 0;
+> +
+> +	switch (ctrl->id) {
+> +	case V4L2_CID_TEST_PATTERN:
+> +		ret = gc2145_set_ctrl_test_pattern(gc2145, ctrl->val);
+> +		break;
+> +	case V4L2_CID_HFLIP:
+> +		ret = cci_update_bits(gc2145->regmap, GC2145_REG_ANALOG_MODE1,
+> +				      BIT(0), (ctrl->val ? BIT(0) : 0), NULL);
+> +		break;
+> +	case V4L2_CID_VFLIP:
+> +		ret = cci_update_bits(gc2145->regmap, GC2145_REG_ANALOG_MODE1,
+> +				      BIT(1), (ctrl->val ? BIT(1) : 0), NULL);
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +
+> +	pm_runtime_put(&client->dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct v4l2_ctrl_ops gc2145_ctrl_ops = {
+> +	.s_ctrl = gc2145_s_ctrl,
+> +};
+> +
+> +/* Initialize control handlers */
+> +static int gc2145_init_controls(struct gc2145 *gc2145)
+> +{
+> +	struct i2c_client *client = v4l2_get_subdevdata(&gc2145->sd);
+> +	const struct v4l2_ctrl_ops *ops = &gc2145_ctrl_ops;
+> +	struct gc2145_ctrls *ctrls = &gc2145->ctrls;
+> +	struct v4l2_ctrl_handler *hdl = &ctrls->handler;
+> +	struct v4l2_fwnode_device_properties props;
+> +	int ret;
+> +
+> +	ret = v4l2_ctrl_handler_init(hdl, 12);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ctrls->pixel_rate = v4l2_ctrl_new_std(hdl, ops, V4L2_CID_PIXEL_RATE,
+> +					      GC2145_640_480_PIXELRATE,
+> +					      GC2145_1280_720_PIXELRATE, 1,
+> +					      supported_modes[0].pixel_rate);
+> +
+> +	ctrls->test_pattern =
+> +		v4l2_ctrl_new_std_menu_items(hdl, ops, V4L2_CID_TEST_PATTERN,
+> +					     ARRAY_SIZE(test_pattern_menu) - 1,
+> +					     0, 0, test_pattern_menu);
+> +	ctrls->hflip = v4l2_ctrl_new_std(hdl, ops, V4L2_CID_HFLIP,
+> +					 0, 1, 1, 0);
+> +	ctrls->vflip = v4l2_ctrl_new_std(hdl, ops, V4L2_CID_VFLIP,
+> +					 0, 1, 1, 0);
+> +
+> +	if (hdl->error) {
+> +		ret = hdl->error;
+> +		dev_err(&client->dev, "control init failed (%d)\n", ret);
+> +		goto error;
+> +	}
+> +
+> +	ret = v4l2_fwnode_device_parse(&client->dev, &props);
+> +	if (ret)
+> +		goto error;
+> +
+> +	ret = v4l2_ctrl_new_fwnode_properties(hdl, &gc2145_ctrl_ops,
+> +					      &props);
+> +	if (ret)
+> +		goto error;
+> +
+> +	gc2145->sd.ctrl_handler = hdl;
+> +
+> +	return 0;
+> +
+> +error:
+> +	v4l2_ctrl_handler_free(hdl);
+> +
+> +	return ret;
+> +}
+> +
+> +static int gc2145_check_hwcfg(struct device *dev)
+> +{
+> +	struct fwnode_handle *endpoint;
+> +	struct v4l2_fwnode_endpoint ep_cfg = {
+> +		.bus_type = V4L2_MBUS_CSI2_DPHY
+> +	};
+> +	int ret = -EINVAL;
+> +
+> +	endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(dev), NULL);
+> +	if (!endpoint) {
+> +		dev_err(dev, "endpoint node not found\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = v4l2_fwnode_endpoint_alloc_parse(endpoint, &ep_cfg);
+> +	fwnode_handle_put(endpoint);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Check the number of MIPI CSI2 data lanes */
+> +	if (ep_cfg.bus.mipi_csi2.num_data_lanes != 2) {
+> +		dev_err(dev, "only 2 data lanes are currently supported\n");
+> +		ret = -EINVAL;
+> +	}
+> +
+> +	v4l2_fwnode_endpoint_free(&ep_cfg);
+> +
+> +	return ret;
+> +}
+> +
+> +static int gc2145_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	unsigned int xclk_freq;
+> +	struct gc2145 *gc2145;
+> +	int ret;
+> +
+> +	gc2145 = devm_kzalloc(&client->dev, sizeof(*gc2145), GFP_KERNEL);
+> +	if (!gc2145)
+> +		return -ENOMEM;
+> +
+> +	v4l2_i2c_subdev_init(&gc2145->sd, client, &gc2145_subdev_ops);
+> +
+> +	/* Check the hardware configuration in device tree */
+> +	if (gc2145_check_hwcfg(dev))
+> +		return -EINVAL;
+> +
+> +	/* Get system clock (xclk) */
+> +	gc2145->xclk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(gc2145->xclk))
+> +		return dev_err_probe(dev, PTR_ERR(gc2145->xclk),
+> +				     "failed to get xclk\n");
+> +
+> +	xclk_freq = clk_get_rate(gc2145->xclk);
+> +	if (xclk_freq != GC2145_XCLK_FREQ) {
+> +		dev_err(dev, "xclk frequency not supported: %d Hz\n",
+> +			xclk_freq);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = gc2145_get_regulators(gc2145);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret,
+> +				     "failed to get regulators\n");
+> +
+> +	/* Request optional enable pin */
+> +	gc2145->reset_gpio = devm_gpiod_get_optional(dev, "reset",
+> +						     GPIOD_OUT_HIGH);
+> +	if (IS_ERR(gc2145->reset_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(gc2145->reset_gpio),
+> +				     "failed to get reset_gpio\n");
+> +
+> +	/* Request optional enable pin */
+
+"enable" repeated
+
+> +	gc2145->powerdown_gpio = devm_gpiod_get_optional(dev, "powerdown",
+> +							 GPIOD_OUT_HIGH);
+> +	if (IS_ERR(gc2145->powerdown_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(gc2145->powerdown_gpio),
+> +				     "failed to get powerdown_gpio\n");
+> +
+> +	/* Initialise the regmap for further cci access */
+> +	gc2145->regmap = devm_cci_regmap_init_i2c(client, 8);
+> +	if (IS_ERR(gc2145->regmap))
+> +		return dev_err_probe(dev, PTR_ERR(gc2145->regmap),
+> +				     "failed to get cci regmap\n");
+> +
+> +	/*
+> +	 * The sensor must be powered for gc2145_identify_module()
+> +	 * to be able to read the CHIP_ID register
+> +	 */
+> +	ret = gc2145_power_on(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = gc2145_identify_module(gc2145);
+> +	if (ret)
+> +		goto error_power_off;
+> +
+> +	/* Set default mode */
+> +	gc2145->mode = &supported_modes[0];
+> +
+> +	ret = gc2145_init_controls(gc2145);
+> +	if (ret)
+> +		goto error_power_off;
+> +
+> +	/* Initialize subdev */
+> +	gc2145->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
+> +			    V4L2_SUBDEV_FL_HAS_EVENTS;
+> +	gc2145->sd.entity.function = MEDIA_ENT_F_CAM_SENSOR;
+> +
+> +	/* Initialize source pad */
+> +	gc2145->pad.flags = MEDIA_PAD_FL_SOURCE;
+> +
+> +	ret = media_entity_pads_init(&gc2145->sd.entity, 1, &gc2145->pad);
+> +	if (ret) {
+> +		dev_err(dev, "failed to init entity pads: %d\n", ret);
+> +		goto error_handler_free;
+> +	}
+> +
+> +	gc2145->sd.state_lock = gc2145->ctrls.handler.lock;
+> +	ret = v4l2_subdev_init_finalize(&gc2145->sd);
+> +	if (ret < 0) {
+> +		dev_err(dev, "subdev init error: %d\n", ret);
+> +		goto error_media_entity;
+> +	}
+> +
+> +	ret = v4l2_async_register_subdev_sensor(&gc2145->sd);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to register sensor sub-device: %d\n", ret);
+> +		goto error_subdev_cleanup;
+> +	}
+> +
+> +	/* Enable runtime PM and turn off the device */
+> +	pm_runtime_set_active(dev);
+> +	pm_runtime_enable(dev);
+> +	pm_runtime_idle(dev);
+
+I would suggest to use autosuspend() and mark_last_busy(). It's an
+horrible and verbose API, but you can find examples in the codebase.
+(drivers/media/i2c/ccs/ccs-core.c in example).
+
+> +
+> +	return 0;
+> +
+> +error_subdev_cleanup:
+> +	v4l2_subdev_cleanup(&gc2145->sd);
+> +
+> +error_media_entity:
+> +	media_entity_cleanup(&gc2145->sd.entity);
+> +
+> +error_handler_free:
+> +	v4l2_ctrl_handler_free(&gc2145->ctrls.handler);
+> +
+> +error_power_off:
+> +	gc2145_power_off(dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static void gc2145_remove(struct i2c_client *client)
+> +{
+> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> +	struct gc2145 *gc2145 = to_gc2145(sd);
+> +
+> +	v4l2_subdev_cleanup(sd);
+> +	v4l2_async_unregister_subdev(sd);
+> +	media_entity_cleanup(&sd->entity);
+> +	v4l2_ctrl_handler_free(&gc2145->ctrls.handler);
+> +
+> +	pm_runtime_disable(&client->dev);
+> +	if (!pm_runtime_status_suspended(&client->dev))
+> +		gc2145_power_off(&client->dev);
+> +	pm_runtime_set_suspended(&client->dev);
+> +}
+> +
+> +static const struct of_device_id gc2145_dt_ids[] = {
+> +	{ .compatible = "galaxycore,gc2145" },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, gc2145_dt_ids);
+> +
+> +static const struct dev_pm_ops gc2145_pm_ops = {
+> +	RUNTIME_PM_OPS(gc2145_power_off, gc2145_power_on, NULL)
+> +};
+> +
+> +static struct i2c_driver gc2145_i2c_driver = {
+> +	.driver = {
+> +		.name = "gc2145",
+> +		.of_match_table	= gc2145_dt_ids,
+> +		.pm = pm_ptr(&gc2145_pm_ops),
+> +	},
+> +	.probe = gc2145_probe,
+> +	.remove = gc2145_remove,
+> +};
+> +
+> +module_i2c_driver(gc2145_i2c_driver);
+> +
+> +MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com");
+> +MODULE_DESCRIPTION("GalaxyCore GC2145 sensor driver");
+> +MODULE_LICENSE("GPL");
+
+All minors, with a few things fixed and a few more clarified, you can
+add
+Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+to the next version
+
+Thanks
+  j
+
+> --
+> 2.25.1
+>
