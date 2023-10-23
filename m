@@ -2,210 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9F87D2932
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6877D2934
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbjJWDze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 23:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
+        id S229506AbjJWD6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 23:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJWDzb (ORCPT
+        with ESMTP id S229450AbjJWD56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 23:55:31 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BF8E9
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 20:55:28 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SDLqm5Hv4z15Nhw;
-        Mon, 23 Oct 2023 11:52:36 +0800 (CST)
-Received: from [10.67.121.177] (10.67.121.177) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 23 Oct 2023 11:55:25 +0800
-CC:     <yangyicong@hisilicon.com>, <mingo@redhat.com>,
-        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-        <dietmar.eggemann@arm.com>, <tim.c.chen@linux.intel.com>,
-        <yu.c.chen@intel.com>, <gautham.shenoy@amd.com>, <mgorman@suse.de>,
-        <vschneid@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <bristot@redhat.com>,
-        <prime.zeng@huawei.com>, <jonathan.cameron@huawei.com>,
-        <ego@linux.vnet.ibm.com>, <srikar@linux.vnet.ibm.com>,
-        <linuxarm@huawei.com>, <21cnbao@gmail.com>,
-        <kprateek.nayak@amd.com>, <wuyun.abel@bytedance.com>
-Subject: Re: [PATCH] sched/fair: Remove SIS_PROP
-To:     Peter Zijlstra <peterz@infradead.org>
-References: <20231019033323.54147-1-yangyicong@huawei.com>
- <20231020134337.GD33965@noisy.programming.kicks-ass.net>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <7484785d-f268-60ed-b577-21ad6a016ee0@huawei.com>
-Date:   Mon, 23 Oct 2023 11:55:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Sun, 22 Oct 2023 23:57:58 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2041.outbound.protection.outlook.com [40.107.92.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED0BED
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 20:57:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VydcVhmZVUL73QzyEwMLxzwFPInxphBNhB+PumwOxqRd64GshYfqHuCnidfQn/A4K4xCptAFl3fZ8B55fDfij2A5fmtS55/CBd1duXGVfxW8N9W6YGaewmRZjgzBITU27wWowXLxQiDmAOcfgqk1L29EDXDuG508a+8bm20f6kEWyJ1F/C0kbavKYw64GlYR0X87uf6j/SjuVFp/FOBdYfglCZUx1bes0PTE1EZv6YfoGtHoA7080Gs+FCX3uoJgDBI4wqeJ8HfQUKxHX69sV8WhfBQcKmnSHPBSJQgg7pOsSLmUPzbu2hjYPw9NeFjcaXSi+7nPaQnVXLTazgbODA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Mu2DtJq3dyCZ5RZHiv2RA5KQrWRQrWM8xV0ugwFzXbw=;
+ b=h9C/awmUVr7pJzSSR0bgEkE33Te/PNeCvq9kBCcVis3MrZrCS0uE/OrSug8nU77WvVsxLCKxwi3G2FE9NyLd5qQ3PWn5BZM8psn85sb8uipIavbTmrUo59Y//mLWhRtRnBwoOAbxdDxVCysuV6MfGhXjAwTGJ2WZZzVEHCz3WruVPTqYSpnexnPAKdIeu22LbhbSj4TZyYCgHMBw378UvHeXJnOaQkiSzmoHEeUGkd4f+SyvaDbfw8ATj/OcRt2JZ+oj0i9HvzeY833MFpljPqnII4ukVFJwTJXZ520bwVVgPauXqvTOeBxDF1MLnc/24rEf1Xm++TVpDjlWOYpmiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mu2DtJq3dyCZ5RZHiv2RA5KQrWRQrWM8xV0ugwFzXbw=;
+ b=M9hsP4CIurmTyyI0fO+uY8AXVSWs4OX/8bx/pUmk3ipxZ3vsZdSULSqpwu2K5RxyRqqi0kHDb7WLHWEmiAIDuHW4AIbBq5hoBQttG7/MdXQmasKVuetQU+MAwXtHO0BL0H9A5dkebjfPMO3FRnntexD73e95/Oi7ODeFmkfHRncx0//2PZ16KcBLfHVhvwrKh3HbBA1j25BGfdC7N4KBGGs4WlaEZdfGlcudB8qArwwilS9NmYMwP2dqYNvOM/nNE80eL9Op5dOe4HaG8jebF/4yt29xtp+zGWmEQV96iXHKZqv+++iQ2Mz7ohZwpla+RORBLJozbDMOSi+N5zJ4CQ==
+Received: from CH2PR07CA0052.namprd07.prod.outlook.com (2603:10b6:610:5b::26)
+ by BN9PR12MB5178.namprd12.prod.outlook.com (2603:10b6:408:11b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Mon, 23 Oct
+ 2023 03:57:54 +0000
+Received: from SN1PEPF0002636D.namprd02.prod.outlook.com
+ (2603:10b6:610:5b:cafe::c6) by CH2PR07CA0052.outlook.office365.com
+ (2603:10b6:610:5b::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33 via Frontend
+ Transport; Mon, 23 Oct 2023 03:57:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SN1PEPF0002636D.mail.protection.outlook.com (10.167.241.138) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.15 via Frontend Transport; Mon, 23 Oct 2023 03:57:53 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sun, 22 Oct
+ 2023 20:57:41 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sun, 22 Oct
+ 2023 20:57:40 -0700
+Received: from Asurada-Nvidia.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Sun, 22 Oct 2023 20:57:40 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     <jgg@nvidia.com>, <kevin.tian@intel.com>
+CC:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
+        <baolu.lu@linux.intel.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <yi.l.liu@intel.com>
+Subject: [PATCH v2] iommufd: Only enforce cache coherency in iommufd_hw_pagetable_alloc
+Date:   Sun, 22 Oct 2023 20:57:33 -0700
+Message-ID: <20231023035733.27378-1-nicolinc@nvidia.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-In-Reply-To: <20231020134337.GD33965@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.121.177]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002636D:EE_|BN9PR12MB5178:EE_
+X-MS-Office365-Filtering-Correlation-Id: d6c9bfcd-1a48-45a7-bc60-08dbd37c3bc7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LnSm2HyUuqsYoMWIHcPVe17wmTtevuD3Qg54vVNMYcR4kHKRrfeWrsvn3KnI2CPsdhpxTutk0Fp851quMjjpmbhhcO50+4haoqdElMsDjZHwqMo5EkbSku+63HxZnFBblpPXZROrXzLh/AZJdYrGtRewKj4oZBW0OhzezIzD1nvJHnyW3jh8LEVeh3ekWAcj/GltmbGnMj9+P7jqucYEMT5Q1gSZFs4niANZXtq4ykMrxzlHUo73mBTQHLSwn9thClkA2PKdMSRtKJjRY4r20Tn4D3q3A62ajpqT05VJCvG3v0LDGM2oCYuGTyDSHJlGFGn0e1yI1lLQEGyE4iVYuJh5rue31yhvxQcnYj5GNouGbn61yoECR+V0gQp+rG1Sol5pQLM7pCZA0sZDFokU0k2zX2X5Jex+ZaX0p2dfMIpGl49zFplD1nJ1x/EAgvK3iqioeltteYrPUhLyHYtFeueBYbjHR+WtO3xU7wGpItP2/lzKrAx+4nH/5WNtD/gn8BD20akQ+jvZjXaUlmEmwwX/9vXr5HEbbC6FRqrdxetkaTSNxHyOaHGugaFVmISO4/TTZHU6f6OPdreXueXwCsFHUpjFRGPGwJhTA8MBJkh7fIjERfPuHGOvM6VM9Xa4uWbCdBM1nGg5hvyBBgQ+y5Yjfkt4nrSrz4PIHvY9kzgM4Cch2C+rFsvvwFbQpKRphUG6dobyhfKwhRogkDxHYlWNpK7tMtuNyBJudqiv4j4Ce95MCz6R/TrsGY7JLMU7tP0gSvFrjTHvGEsDl6o+ZKS1xf3POV/bij0pHgBrEDpNbNQnTVlWHpHFTetH30cO
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(346002)(376002)(136003)(230922051799003)(1800799009)(82310400011)(186009)(64100799003)(451199024)(36840700001)(46966006)(40470700004)(2906002)(36860700001)(110136005)(316002)(70586007)(70206006)(54906003)(82740400003)(356005)(7636003)(2616005)(26005)(1076003)(478600001)(7696005)(6666004)(966005)(40480700001)(47076005)(336012)(426003)(83380400001)(40460700003)(41300700001)(5660300002)(36756003)(86362001)(4326008)(8936002)(8676002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 03:57:53.3845
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6c9bfcd-1a48-45a7-bc60-08dbd37c3bc7
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002636D.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5178
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/20 21:43, Peter Zijlstra wrote:
-> 
-> 
-> Since this had me looking at all that code, I did the below.
-> 
-> Holler if there's objections etc..
-> 
-> ---
-> Subject: sched/fair: Remove SIS_PROP
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Fri Oct 20 12:35:33 CEST 2023
-> 
-> SIS_UTIL seems to work well, lets remove the old thing.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+According to the conversion in the following link:
+https://lore.kernel.org/linux-iommu/20231020135501.GG3952@nvidia.com/
 
-SIS_UTIL works fine on my machine, so
+The enforce_cache_coherency should be set/enforced in the hwpt allocation
+routine. The iommu driver in its attach_dev() op should decide whether to
+reject or not a device that doesn't match with the configuration of cache
+coherency. Drop the enforce_cache_coherency piece in the attach/replace()
+and move the remaining "num_devices" piece closer to the refcount that is
+using it.
 
-Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+Accordingly drop its function prototype in the header and mark it static.
+Also add some extra comments to clarify the expected behaviors.
 
-> ---
->  include/linux/sched/topology.h |    2 -
->  kernel/sched/core.c            |    5 ----
->  kernel/sched/fair.c            |   48 -----------------------------------------
->  kernel/sched/features.h        |    1 
->  kernel/sched/sched.h           |    3 --
->  5 files changed, 59 deletions(-)
-> 
-> --- a/include/linux/sched/topology.h
-> +++ b/include/linux/sched/topology.h
-> @@ -109,8 +109,6 @@ struct sched_domain {
->  	u64 max_newidle_lb_cost;
->  	unsigned long last_decay_max_lb_cost;
->  
-> -	u64 avg_scan_cost;		/* select_idle_sibling */
-> -
->  #ifdef CONFIG_SCHEDSTATS
->  	/* load_balance() stats */
->  	unsigned int lb_count[CPU_MAX_IDLE_TYPES];
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -3792,9 +3792,6 @@ ttwu_do_activate(struct rq *rq, struct t
->  		if (rq->avg_idle > max)
->  			rq->avg_idle = max;
->  
-> -		rq->wake_stamp = jiffies;
-> -		rq->wake_avg_idle = rq->avg_idle / 2;
-> -
->  		rq->idle_stamp = 0;
->  	}
->  #endif
-> @@ -9991,8 +9988,6 @@ void __init sched_init(void)
->  		rq->online = 0;
->  		rq->idle_stamp = 0;
->  		rq->avg_idle = 2*sysctl_sched_migration_cost;
-> -		rq->wake_stamp = jiffies;
-> -		rq->wake_avg_idle = rq->avg_idle;
->  		rq->max_idle_balance_cost = sysctl_sched_migration_cost;
->  
->  		INIT_LIST_HEAD(&rq->cfs_tasks);
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7209,45 +7209,9 @@ static int select_idle_cpu(struct task_s
->  	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_rq_mask);
->  	int i, cpu, idle_cpu = -1, nr = INT_MAX;
->  	struct sched_domain_shared *sd_share;
-> -	struct rq *this_rq = this_rq();
-> -	int this = smp_processor_id();
-> -	struct sched_domain *this_sd = NULL;
-> -	u64 time = 0;
->  
->  	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
->  
-> -	if (sched_feat(SIS_PROP) && !has_idle_core) {
-> -		u64 avg_cost, avg_idle, span_avg;
-> -		unsigned long now = jiffies;
-> -
-> -		this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
-> -		if (!this_sd)
-> -			return -1;
-> -
-> -		/*
-> -		 * If we're busy, the assumption that the last idle period
-> -		 * predicts the future is flawed; age away the remaining
-> -		 * predicted idle time.
-> -		 */
-> -		if (unlikely(this_rq->wake_stamp < now)) {
-> -			while (this_rq->wake_stamp < now && this_rq->wake_avg_idle) {
-> -				this_rq->wake_stamp++;
-> -				this_rq->wake_avg_idle >>= 1;
-> -			}
-> -		}
-> -
-> -		avg_idle = this_rq->wake_avg_idle;
-> -		avg_cost = this_sd->avg_scan_cost + 1;
-> -
-> -		span_avg = sd->span_weight * avg_idle;
-> -		if (span_avg > 4*avg_cost)
-> -			nr = div_u64(span_avg, avg_cost);
-> -		else
-> -			nr = 4;
-> -
-> -		time = cpu_clock(this);
-> -	}
-> -
->  	if (sched_feat(SIS_UTIL)) {
->  		sd_share = rcu_dereference(per_cpu(sd_llc_shared, target));
->  		if (sd_share) {
-> @@ -7301,18 +7265,6 @@ static int select_idle_cpu(struct task_s
->  	if (has_idle_core)
->  		set_idle_cores(target, false);
->  
-> -	if (sched_feat(SIS_PROP) && this_sd && !has_idle_core) {
-> -		time = cpu_clock(this) - time;
-> -
-> -		/*
-> -		 * Account for the scan cost of wakeups against the average
-> -		 * idle time.
-> -		 */
-> -		this_rq->wake_avg_idle -= min(this_rq->wake_avg_idle, time);
-> -
-> -		update_avg(&this_sd->avg_scan_cost, time);
-> -	}
-> -
->  	return idle_cpu;
->  }
->  
-> --- a/kernel/sched/features.h
-> +++ b/kernel/sched/features.h
-> @@ -49,7 +49,6 @@ SCHED_FEAT(TTWU_QUEUE, true)
->  /*
->   * When doing wakeups, attempt to limit superfluous scans of the LLC domain.
->   */
-> -SCHED_FEAT(SIS_PROP, false)
->  SCHED_FEAT(SIS_UTIL, true)
->  
->  /*
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1059,9 +1059,6 @@ struct rq {
->  	u64			idle_stamp;
->  	u64			avg_idle;
->  
-> -	unsigned long		wake_stamp;
-> -	u64			wake_avg_idle;
-> -
->  	/* This is used to determine avg_idle's max value */
->  	u64			max_idle_balance_cost;
->  
-> 
+Suggested-by: Kevin Tian <kevin.tian@intel.com>
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+---
+Changelog
+v2:
+ * Dropped "fixes" tags and merged two patches into one (Jason)
+ * Added comments to the remaining enforce_cache_coherency call (Jason)
+   [Please feel free to rephrase, or let me know what to change.]
+ * Replace "num_devices++" with list_for_each_entry (Baolu)
+v1: https://lore.kernel.org/all/cover.1697848510.git.nicolinc@nvidia.com/
+
+ drivers/iommu/iommufd/device.c          | 20 ++------------------
+ drivers/iommu/iommufd/hw_pagetable.c    |  9 ++++++++-
+ drivers/iommu/iommufd/iommufd_private.h |  1 -
+ 3 files changed, 10 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
+index 2a41fd2b6ef8..0a8867487508 100644
+--- a/drivers/iommu/iommufd/device.c
++++ b/drivers/iommu/iommufd/device.c
+@@ -337,13 +337,6 @@ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
+ 		goto err_unlock;
+ 	}
+ 
+-	/* Try to upgrade the domain we have */
+-	if (idev->enforce_cache_coherency) {
+-		rc = iommufd_hw_pagetable_enforce_cc(hwpt);
+-		if (rc)
+-			goto err_unlock;
+-	}
+-
+ 	rc = iopt_table_enforce_dev_resv_regions(&hwpt->ioas->iopt, idev->dev,
+ 						 &idev->igroup->sw_msi_start);
+ 	if (rc)
+@@ -413,8 +406,8 @@ iommufd_device_do_replace(struct iommufd_device *idev,
+ {
+ 	struct iommufd_group *igroup = idev->igroup;
+ 	struct iommufd_hw_pagetable *old_hwpt;
+-	unsigned int num_devices = 0;
+ 	struct iommufd_device *cur;
++	unsigned int num_devices;
+ 	int rc;
+ 
+ 	mutex_lock(&idev->igroup->lock);
+@@ -429,16 +422,6 @@ iommufd_device_do_replace(struct iommufd_device *idev,
+ 		return NULL;
+ 	}
+ 
+-	/* Try to upgrade the domain we have */
+-	list_for_each_entry(cur, &igroup->device_list, group_item) {
+-		num_devices++;
+-		if (cur->enforce_cache_coherency) {
+-			rc = iommufd_hw_pagetable_enforce_cc(hwpt);
+-			if (rc)
+-				goto err_unlock;
+-		}
+-	}
+-
+ 	old_hwpt = igroup->hwpt;
+ 	if (hwpt->ioas != old_hwpt->ioas) {
+ 		list_for_each_entry(cur, &igroup->device_list, group_item) {
+@@ -465,6 +448,7 @@ iommufd_device_do_replace(struct iommufd_device *idev,
+ 
+ 	igroup->hwpt = hwpt;
+ 
++	num_devices = list_count_nodes(&igroup->device_list);
+ 	/*
+ 	 * Move the refcounts held by the device_list to the new hwpt. Retain a
+ 	 * refcount for this thread as the caller will free it.
+diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
+index fbfab638efea..cc24f86b07af 100644
+--- a/drivers/iommu/iommufd/hw_pagetable.c
++++ b/drivers/iommu/iommufd/hw_pagetable.c
+@@ -42,7 +42,7 @@ void iommufd_hw_pagetable_abort(struct iommufd_object *obj)
+ 	iommufd_hw_pagetable_destroy(obj);
+ }
+ 
+-int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt)
++static int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt)
+ {
+ 	if (hwpt->enforce_cache_coherency)
+ 		return 0;
+@@ -116,6 +116,13 @@ iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
+ 	 * doing any maps. It is an iommu driver bug to report
+ 	 * IOMMU_CAP_ENFORCE_CACHE_COHERENCY but fail enforce_cache_coherency on
+ 	 * a new domain.
++	 *
++	 * enforce_cache_coherenc must be determined during the HWPT allocation.
++	 * Note that a HWPT (non-CC) created for a device (non-CC) can be later
++	 * reused by another device (either non-CC or CC). However, A HWPT (CC)
++	 * created for a device (CC) cannot be reused by another device (non-CC)
++	 * but only devices (CC). Instead user space in this case would need to
++	 * allocate a separate HWPT (non-CC).
+ 	 */
+ 	if (idev->enforce_cache_coherency) {
+ 		rc = iommufd_hw_pagetable_enforce_cc(hwpt);
+diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
+index 1cc429a5227b..44828bba9e2c 100644
+--- a/drivers/iommu/iommufd/iommufd_private.h
++++ b/drivers/iommu/iommufd/iommufd_private.h
+@@ -266,7 +266,6 @@ struct iommufd_hw_pagetable *
+ iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
+ 			   struct iommufd_device *idev, u32 flags,
+ 			   bool immediate_attach);
+-int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt);
+ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
+ 				struct iommufd_device *idev);
+ struct iommufd_hw_pagetable *
+
+base-commit: dc7ce51ff88569b95d8764b0cf76405511f693d5
+-- 
+2.42.0
+
