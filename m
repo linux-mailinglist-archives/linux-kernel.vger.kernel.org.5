@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 691B17D3FBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E467D3FC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbjJWTAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
+        id S230265AbjJWTBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjJWTAd (ORCPT
+        with ESMTP id S230121AbjJWTBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:00:33 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CEE10E3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:00:21 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d9a3d737d66so2811345276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:00:21 -0700 (PDT)
+        Mon, 23 Oct 2023 15:01:47 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C827100
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:01:45 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7af45084eso35111717b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698087621; x=1698692421; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698087704; x=1698692504; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dtdA9ub/ANr7ejS62Fd8050vwxz1kSazOAjElqLmkxM=;
-        b=PMoDV5oPWWZLd9mFQbXBvL+JlLndRu926JSGLEhJMxss3Lp8WoBDWKdmp+xRF0Lf7E
-         GkLPVBkUCV3ME9LzUyD+VC283keAsJ+wwhGBV3N/tgEZXRGXnJtTj12tteov5HxVufgm
-         b67/0BZddh+lo0ekqlQnsY42r4/wrmeMXmSA60x1Tq4L5SaBijYBr8w3Hn6Hntsv6w8V
-         PoTJY8RclYmTmh2JWK/rYqkD58NVAK/WffOkhzICBJE4/FjvdRRd1fPHCH09StKc5/6b
-         pGc6SRBHBCOq6QCdQdDcB/x1zCG1BmlluAhrbtZq9KyZ8AL+F8AhBPdLXebKQiOunsOS
-         KtJQ==
+        bh=Zqg2MrbwUBHop12bezxykXk1XkJASgD3Vjm9dX2RSP8=;
+        b=nhRwBvf5B5dVVjrNs1IllqUTDPbpqQ2HLwbaDjehM4okzVtkSNbXs6CB3yjfNNnKyU
+         T+VSaeTDQT1IigKk+2mPUvmzayOLYNoJsY5H4AwfanRQf85egQ3zUxgHcRVt+mrRRIuA
+         2NceyG2QR+0kXSE0PgTuISBHzETzhFxFzgxc3nbA+6+XZ1R63ryySr8lnuHiXFqrxRLz
+         KLp008cIeW+e53wHbLk2MY5rLtMjGrFIBuI4+4Pk3QO/BEuhK6M+aHnDkPKUVGCcvvY7
+         F7bNHVg4FIo7B/f3xfHnF0Y3ipbrsumona9sJGhIgedO/pP98VLCd0pHIkkTnIZn1oIJ
+         UnfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698087621; x=1698692421;
+        d=1e100.net; s=20230601; t=1698087704; x=1698692504;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dtdA9ub/ANr7ejS62Fd8050vwxz1kSazOAjElqLmkxM=;
-        b=sFSP+AlPl1w69IZlvIIsdBbYVknXHAsHb6A4GmYONeyXZjxYqe7hPsYwGe/3MhmNxH
-         rctMsmLoBhDYmO4nPYQg9uq+GkqIXf5lI4vBZdjwVofmADdvcYriryQbkNs4yCfVnt3o
-         fGCaDnkAi+gJz0JUJG1WR3XzsKl41XOlaGManTzyLjV711tZ8azeWYD+s5MUr6pyPJjG
-         ctgC3YjVvzxWYhBwhPfhGIMa52f+kyRZ/SPj8jdAedkNLpMr+7mbX62Vsffu1na6+88I
-         k6R1u/GRo60gYX9nmA1Pt4/dF0uvvqRsBULwLgjHPR+Lr0XRxCv0yTZ6CPpF7NxVIKq3
-         J/vw==
-X-Gm-Message-State: AOJu0YyNt61CJSjPQZNFsbaaMvwyLifr9CVfVSmJ1wL+/DRpdArgTq+X
-        ctP2ArZCJk+caow0eDjh1BRqr48nS4LYYGOm4wYSsw==
-X-Google-Smtp-Source: AGHT+IHoBU3f92OsehjvOqFbu0XBgHXFL1aR9fooZex3IOmb5ltIYm/8vL48yXoinuA4SJCQtcFh+3IhHsrl1XTH5gA=
-X-Received: by 2002:a25:86c1:0:b0:d9a:b522:6870 with SMTP id
- y1-20020a2586c1000000b00d9ab5226870mr8756763ybm.0.1698087620747; Mon, 23 Oct
- 2023 12:00:20 -0700 (PDT)
+        bh=Zqg2MrbwUBHop12bezxykXk1XkJASgD3Vjm9dX2RSP8=;
+        b=J8YUQg6vrrDQ9RREcVSY7wsBLJZrcGMyVqQRfgSLX8yyhkDJ2nOiIP92H/NSvgv4mX
+         A4BcliQXMKGrgN7wsueAYknc7jqZjD2TfhknT7cNVSq/yl2avwFk8vLMflUFdLDPtp71
+         WNMjTo5RAW1ang2CqhFNgvsN/uQIyJmtSBfXVLOQiaIurRkoHlXxhUGvGZX5icc+gdho
+         ZsiOqT39CpG6VhPoSH5gJegrfjkFAJI1vUM83AjiFd3s1+ZvAZlD38WBzWc3Kiw4FCtx
+         /px0pRzAhaa4X2YdODDCb5iKSlRf4lGD/le9ejvmvF+4fIe65X3nHBIlz/U6ciJK+4pl
+         RBdw==
+X-Gm-Message-State: AOJu0YwrkEnbubeMzloqgfLOnQFvwVbvCfRolwzQRsKoT0mrjlWkmmE7
+        5gIaJcowjvCjbuu2j4jR9UyPAz2gBiSQ4aCP5vCOeQ==
+X-Google-Smtp-Source: AGHT+IHoAt2gVqrgRoqwdRIpKxcUmNNTfbU5Vcl//A9wd9dXnzR/3ka7Iq0f7Tyi5EsdxWj3DjAV8pYMZpaDZxugx+M=
+X-Received: by 2002:a81:65c2:0:b0:583:3c54:6d89 with SMTP id
+ z185-20020a8165c2000000b005833c546d89mr8889708ywb.44.1698087703993; Mon, 23
+ Oct 2023 12:01:43 -0700 (PDT)
 MIME-Version: 1.0
 References: <20231009064230.2952396-1-surenb@google.com> <20231009064230.2952396-3-surenb@google.com>
- <721366d0-7909-45c9-ae49-f652c8369b9d@redhat.com> <045c35ba-7872-40a7-bd86-e37771076b88@redhat.com>
-In-Reply-To: <045c35ba-7872-40a7-bd86-e37771076b88@redhat.com>
+ <ZShsQzKvQDZW+rRM@x1n> <CAJuCfpEtaLs=nQK=oPHe9Nyq1UoqLk1pt2k-5ddDks3Ni2d+cw@mail.gmail.com>
+ <ZTVVhkq8uNoQUlQx@x1n> <CAJuCfpEDEXHVNYRaPsD3GVbcbZ-NuH0n3Cz-V0MDMhiJG_Esrg@mail.gmail.com>
+ <ZTa9Y++/PCV7HRoM@x1n>
+In-Reply-To: <ZTa9Y++/PCV7HRoM@x1n>
 From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 23 Oct 2023 12:00:09 -0700
-Message-ID: <CAJuCfpH8oare_erzHuhiV0knbwVEmOzq6DnoywNQpOCAqJMucA@mail.gmail.com>
+Date:   Mon, 23 Oct 2023 12:01:32 -0700
+Message-ID: <CAJuCfpF6rfrbT3Sk7+azUH9=CfERYnb84ztoCuA72AxtZ_1FLA@mail.gmail.com>
 Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-To:     David Hildenbrand <david@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
 Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
         brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, hughd@google.com,
+        lokeshgidra@google.com, david@redhat.com, hughd@google.com,
         mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
         willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
         zhangpeng362@huawei.com, bgeffon@google.com,
@@ -70,7 +72,7 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,43 +81,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 8:53=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
+On Mon, Oct 23, 2023 at 11:37=E2=80=AFAM Peter Xu <peterx@redhat.com> wrote=
+:
 >
-> On 23.10.23 14:29, David Hildenbrand wrote:
-> >> +
-> >> +    /* Only allow remapping if both are mlocked or both aren't */
-> >> +    if ((src_vma->vm_flags & VM_LOCKED) !=3D (dst_vma->vm_flags & VM_=
-LOCKED))
-> >> +            return -EINVAL;
-> >> +
-> >> +    if (!(src_vma->vm_flags & VM_WRITE) || !(dst_vma->vm_flags & VM_W=
-RITE))
-> >> +            return -EINVAL;
+> On Mon, Oct 23, 2023 at 10:43:49AM -0700, Suren Baghdasaryan wrote:
+> > > Maybe we should follow what it does with mremap()?  Then your current=
+ code
+> > > is fine.  Maybe that's the better start.
 > >
-> > Why does one of both need VM_WRITE? If one really needs it, then the
-> > destination (where we're moving stuff to).
+> > I think that was the original intention, basically treating remapping
+> > as a write operation. Maybe I should add a comment here to make it
+> > more clear?
 >
-> Just realized that we want both to be writable.
+> Please avoid mention "emulate as a write" - this is not a write, e.g., we
+> move a swap entry over without faulting in the page.  We also keep the pa=
+ge
+> states, e.g. on hotness.  A write will change all of that.
+
+Understood.
+
 >
-> If you have this in place, there is no need to use maybe*_mkwrite(), you
-> can use the non-maybe variants.
-
-Ack.
-
+> Now rethinking with the recently merged WP_ASYNC: we ignore uffd-wp, whic=
+h
+> means dirty from uffd-wp async tracking POV, that matches with soft-dirty
+> always set.  Looks all good.
 >
-> I recall that for UFFDIO_COPY we even support PROT_NONE VMAs, is there
-> any reason why we want to have different semantics here?
+> Perhaps something like "Follow mremap() behavior; ignore uffd-wp for now"
+> should work?
 
-I don't think so. At least not for the single-mm case.
+Sounds good. Will add in the next version.
+Thanks!
 
 >
 > --
-> Cheers,
->
-> David / dhildenb
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
+> Peter Xu
 >
