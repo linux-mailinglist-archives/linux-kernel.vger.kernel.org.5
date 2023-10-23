@@ -2,213 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 806C27D3002
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203167D300C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbjJWKea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 06:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
+        id S230386AbjJWKfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 06:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjJWKe2 (ORCPT
+        with ESMTP id S229572AbjJWKfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 06:34:28 -0400
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C95D66
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:34:25 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231023103422euoutp023e4078d4d549632a6c0499271c3be2ac~QthVGpYcw2390723907euoutp02B
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:34:21 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231023103422euoutp023e4078d4d549632a6c0499271c3be2ac~QthVGpYcw2390723907euoutp02B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1698057262;
-        bh=+4MmQRCPRm1zC57C8sermfjVMdXQDabRKp9YfYkNBNk=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=jiD5YOOGtsq7tL80jKyfJTzXuPikSrWT2ycxLNk/tmKpPixlNp72EO2ZUED6zlXK0
-         yWNTne7r39csOHJSU3Ftyy6ZbLCm0BrbRbs6fP2UulvmTsoqmCmPl/9SAYIKO8F1Tn
-         slF8slEEXutWLxYqJrtmaxKg4uduQGGrBng3eoiY=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20231023103421eucas1p20cfc4bc17f36b18063aff1aa2970bcb8~QthU1bdxM0499004990eucas1p2E;
-        Mon, 23 Oct 2023 10:34:21 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id CA.3C.11320.D2C46356; Mon, 23
-        Oct 2023 11:34:21 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231023103421eucas1p2f1415d69dd979036ef8bcb1a2dc88978~QthUXfml21979119791eucas1p2b;
-        Mon, 23 Oct 2023 10:34:21 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231023103421eusmtrp28be71d7e5f38d4dcc15cd54aacba43b8~QthUWwFFr0425004250eusmtrp2L;
-        Mon, 23 Oct 2023 10:34:21 +0000 (GMT)
-X-AuditID: cbfec7f4-993ff70000022c38-ca-65364c2dc562
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 7A.C7.25043.D2C46356; Mon, 23
-        Oct 2023 11:34:21 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231023103420eusmtip21cb536a4edfc919ec8b7ab907f5830bc~QthTtwqQ42361923619eusmtip2B;
-        Mon, 23 Oct 2023 10:34:20 +0000 (GMT)
-Message-ID: <55812f75-3053-4970-bbbe-8ca563f33721@samsung.com>
-Date:   Mon, 23 Oct 2023 12:34:19 +0200
+        Mon, 23 Oct 2023 06:35:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2693FD6E;
+        Mon, 23 Oct 2023 03:35:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698057349; x=1729593349;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hcyNvUgQiaQ72XY6XCfmfDq1LmiwOA/3EPhPZPeidk8=;
+  b=n3yviCV/S6HkEzA1a5rmMju0LQTx3gIXviXzqDa1I+fP8SI8yU+eKIUw
+   4Bpwdqy5p+baM+0TJSsRr8/3bCTW74E/aDM/3lssDU/dBCApa0uj84CgK
+   povR6+319XZJtUCX9TK6TgfeggvA9aTxSTPAbfMJdCVQGcS87XFjjxsN0
+   Jzs6FwQswzrXFEc9RoDPLn3wYS3T4UbB/VAZzIhEPKitXyqJKjjrnQ33y
+   e+wjEfGQoqxnnV0iUpdiaVb5wY70yc//h9HWg+gkcBj7AaW80LDWMd1dc
+   SoSDrmuSfw6d7qba/FOgzM5NNDE/kawML231HDMUn9kHGrHalAps+/mOs
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="453280620"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="453280620"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 03:35:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="793083978"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="793083978"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 23 Oct 2023 03:35:47 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qusHg-0006or-2Y;
+        Mon, 23 Oct 2023 10:35:44 +0000
+Date:   Mon, 23 Oct 2023 18:35:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     James Hilliard <james.hilliard1@gmail.com>,
+        linux-input@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        James Hilliard <james.hilliard1@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: cyttsp5 - improve error handling and remove regmap
+Message-ID: <202310231838.JHHtGKmB-lkp@intel.com>
+References: <20231023085234.105572-1-james.hilliard1@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] i2c: exynos5: Calculate t_scl_l, t_scl_h according to
- i2c spec
-Content-Language: en-US
-To:     Camel Guo <camel.guo@axis.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20220912085943.1098651-1-camel.guo@axis.com>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHKsWRmVeSWpSXmKPExsWy7djP87q6PmapBlPnqFo8mLeNzeL76wdM
-        Fp9aVC32vt7KbrHp8TVWi46/XxgtLu+aw2Yx4/w+JgcOj+vrAjzuXNvD5rF5Sb1H35ZVjB6f
-        N8kFsEZx2aSk5mSWpRbp2yVwZSxZvJG14LVsxYJNnA2Mn8W6GDk5JARMJC5/f8jSxcjFISSw
-        glFi28RnUM4XRolTTxayQzifGSWuNvSzw7Rc/X6MEcQWEljOKNE5UxTC/ghkL80HsXkF7CQ6
-        7k5kA7FZBFQlDp7awAgRF5Q4OfMJC4gtKiAvcf/WDLCZwgKhErNPnGMCsZkFxCVuPZkPZosI
-        REkcmj0J7AhmgQOMEu+fNIM1sAkYSnS97QJawMHBKWAlcXi3D0SvvMT2t3OYQeolBB5wSPz8
-        sI8R4mgXiaMLV7BA2MISr45vgXpGRuL/TpBlIA3tjBILft+HciYwSjQ8vwXVbS1x59wvsG3M
-        ApoS63fpQ4QdJW7duAkWlhDgk7jxVhDiCD6JSdumM0OEeSU62oQgqtUkZh1fB7f24IVLzBMY
-        lWYhBcssJO/PQvLOLIS9CxhZVjGKp5YW56anFhvlpZbrFSfmFpfmpesl5+duYgQmodP/jn/Z
-        wbj81Ue9Q4xMHIyHGCU4mJVEeGeHm6QK8aYkVlalFuXHF5XmpBYfYpTmYFES51VNkU8VEkhP
-        LEnNTk0tSC2CyTJxcEo1MG29ePjrQavJLbr3ntV8OiVmsnSFfjeH/tR5c3QXCTWUbNpxILLu
-        TR1DiUD0ygq3kG3hoYfPFDlYtM2oXrdQTTbrfNPqnwreTyadrY23XG5dJP32/Nm6e7wdj6Nj
-        /pUeVVmYomjdfjwwyP31gWy5E8rqnZMeL1KrO9m5PGTC/LTeDxOzSst0J7t5amuXSS+LF374
-        fBO76qT+y7unTGlVWtIZbFdc9Xyz2/PzHHNOKZ0/xCQn6u9tsyeDY839v4dUpDYHLuV5WzmN
-        8aet+Z9HCdc3PLoR5fPK86Dc9TUOgT3zqqQ+/+Da61iiePR6WR+HtMSeY09uPttn8efjtFRJ
-        hicy+j9iHd34E+rsD2SFpyuxFGckGmoxFxUnAgBTABbBsQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIIsWRmVeSWpSXmKPExsVy+t/xe7q6PmapBje+clg8mLeNzeL76wdM
-        Fp9aVC32vt7KbrHp8TVWi46/XxgtLu+aw2Yx4/w+JgcOj+vrAjzuXNvD5rF5Sb1H35ZVjB6f
-        N8kFsEbp2RTll5akKmTkF5fYKkUbWhjpGVpa6BmZWOoZGpvHWhmZKunb2aSk5mSWpRbp2yXo
-        ZSxZvJG14LVsxYJNnA2Mn8W6GDk5JARMJK5+P8bYxcjFISSwlFHi0etTbBAJGYmT0xpYIWxh
-        iT/Xutggit4zSnxqusgMkuAVsJPouDsRrIFFQFXi4KkNjBBxQYmTM5+wgNiiAvIS92/NYAex
-        hQVCJe4unwHWyywgLnHryXwmEFtEIEri/uZXLCALmAUOMEqcXnEOrEFIwFLi7beDYIPYBAwl
-        ut6CXMHBwSlgJXF4tw/EHDOJrq1djBC2vMT2t3OYJzAKzUJyxiwk62YhaZmFpGUBI8sqRpHU
-        0uLc9NxiI73ixNzi0rx0veT83E2MwLjbduznlh2MK1991DvEyMTBeIhRgoNZSYR3drhJqhBv
-        SmJlVWpRfnxRaU5q8SFGU2BYTGSWEk3OB0Z+Xkm8oZmBqaGJmaWBqaWZsZI4r2dBR6KQQHpi
-        SWp2ampBahFMHxMHp1QDk2Ql/8Mvqzp23JExn/qXwVBRqag810gkjTugwT5Z4Py8j9cCD0w6
-        FJztMcGwSGLN+U0OvcE6Pw7c4libu1WFn+EfS5/mBPfG7tpz16cYTJT6p7Tm4I9Dmxf7Xj+6
-        Xbl5vkH8eSXdBMuHltpz1nzOd77JvvFnTU5pHZvl3OK29T32y3jCrmrYyXRsm8huMf2CwZEz
-        4onJxQtmdbeq3kiKs+yU9O8NDA6TuRxt37h6nt+Pc0n9gtqvrc6JzHh+J1JL6nrWyvIFU7Ue
-        SX8MlprzdN3FL093bTF/fuRi93mJCnORF+vWCZ3rLWNn+nnqCn8hy9cJS4p7J7v8+xBdMeNS
-        wdYtT1ju/r46N/WQ06UEcyWW4oxEQy3mouJEAMYOsqFEAwAA
-X-CMS-MailID: 20231023103421eucas1p2f1415d69dd979036ef8bcb1a2dc88978
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20231023103421eucas1p2f1415d69dd979036ef8bcb1a2dc88978
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231023103421eucas1p2f1415d69dd979036ef8bcb1a2dc88978
-References: <20220912085943.1098651-1-camel.guo@axis.com>
-        <CGME20231023103421eucas1p2f1415d69dd979036ef8bcb1a2dc88978@eucas1p2.samsung.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023085234.105572-1-james.hilliard1@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.09.2022 10:59, Camel Guo wrote:
-> Previously the duty cycle was divided equally into h_scl_l, t_scl_h.
-> This makes the low period of the SCL clock in Fast Mode is only 1.25us
-> which is way lower than the minimal value (1.3) specified in i2c
-> specification. In order to make sure t_scl_l, t_scl_h always fullfill
-> i2c specification, this commit calculates t_scl_l using this formula:
->
-> t_scl_l = clk_cycle *
->      ((t_low_min + (scl_clock - t_low_min - t_high_min) / 2) / scl_clock)
->
-> where:
-> t_low_min is the minimal value of low period of the SCL clock in us;
-> t_high_min is the minimal value of high period of the SCL clock in us;
-> scl_clock is converted from SCL clock frequency into us.
->
-> Signed-off-by: Camel Guo <camel.guo@axis.com>
+Hi James,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on dtor-input/next]
+[also build test WARNING on dtor-input/for-linus hid/for-next linus/master v6.6-rc7 next-20231023]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/James-Hilliard/Input-cyttsp5-improve-error-handling-and-remove-regmap/20231023-165327
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git next
+patch link:    https://lore.kernel.org/r/20231023085234.105572-1-james.hilliard1%40gmail.com
+patch subject: [PATCH] Input: cyttsp5 - improve error handling and remove regmap
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231023/202310231838.JHHtGKmB-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231023/202310231838.JHHtGKmB-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310231838.JHHtGKmB-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/input/touchscreen/cyttsp5.c: In function 'cyttsp5_get_hid_descriptor':
+>> drivers/input/touchscreen/cyttsp5.c:684:22: warning: unused variable 'reg' [-Wunused-variable]
+     684 |         unsigned int reg = HID_DESC_REG;
+         |                      ^~~
 
 
-This sounds reasonable and works fine on all Exynos-based test board I 
-have. Feel free to add:
+vim +/reg +684 drivers/input/touchscreen/cyttsp5.c
 
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+   677	
+   678	static int cyttsp5_get_hid_descriptor(struct cyttsp5 *ts,
+   679					      struct cyttsp5_hid_desc *desc)
+   680	{
+   681		struct device *dev = ts->dev;
+   682		u8 cmd[2] = { 0 };
+   683		int rc;
+ > 684		unsigned int reg = HID_DESC_REG;
+   685	
+   686		put_unaligned_le16(HID_DESC_REG, cmd);
+   687	
+   688		rc = cyttsp5_write(ts, HID_DESC_REG, cmd, 2);
+   689		if (rc) {
+   690			dev_err(dev, "Failed to get HID descriptor, rc=%d\n", rc);
+   691			return rc;
+   692		}
+   693	
+   694		rc = wait_for_completion_interruptible_timeout(&ts->cmd_done,
+   695				msecs_to_jiffies(CY_HID_GET_HID_DESCRIPTOR_TIMEOUT_MS));
+   696		if (rc <= 0) {
+   697			dev_err(ts->dev, "HID get descriptor timed out\n");
+   698			rc = -ETIMEDOUT;
+   699			return rc;
+   700		}
+   701	
+   702		memcpy(desc, ts->response_buf, sizeof(*desc));
+   703	
+   704		/* Check HID descriptor length and version */
+   705		if (le16_to_cpu(desc->hid_desc_len) != sizeof(*desc) ||
+   706		    le16_to_cpu(desc->bcd_version) != HID_VERSION) {
+   707			dev_err(dev, "Unsupported HID version\n");
+   708			return -ENODEV;
+   709		}
+   710	
+   711		return 0;
+   712	}
+   713	
 
-Reviewed-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-
-> ---
->   drivers/i2c/busses/i2c-exynos5.c | 34 +++++++++++++++++++++++++++++---
->   1 file changed, 31 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
-> index 4a6260d04db2..72bc8adea8d5 100644
-> --- a/drivers/i2c/busses/i2c-exynos5.c
-> +++ b/drivers/i2c/busses/i2c-exynos5.c
-> @@ -267,7 +267,7 @@ static void exynos5_i2c_clr_pend_irq(struct exynos5_i2c *i2c)
->    * exynos5_i2c_set_timing: updates the registers with appropriate
->    * timing values calculated
->    *
-> - * Timing values for operation are calculated against either 100kHz
-> + * Timing values for operation are calculated against 100kHz, 400kHz
->    * or 1MHz controller operating frequency.
->    *
->    * Returns 0 on success, -EINVAL if the cycle length cannot
-> @@ -330,6 +330,23 @@ static int exynos5_i2c_set_timing(struct exynos5_i2c *i2c, bool hs_timings)
->   	 *
->   	 * Constraints: 4 <= temp, 0 <= CLK_DIV < 256, 2 <= clk_cycle <= 510
->   	 *
-> +	 * To split SCL clock into low, high periods appropriately, one
-> +	 * proportion factor for each I2C mode is used, which is calculated
-> +	 * using this formula.
-> +	 * ```
-> +	 * ((t_low_min + (scl_clock - t_low_min - t_high_min) / 2) / scl_clock)
-> +	 * ```
-> +	 * where:
-> +	 * t_low_min is the minimal value of low period of the SCL clock in us;
-> +	 * t_high_min is the minimal value of high period of the SCL clock in us;
-> +	 * scl_clock is converted from SCL clock frequency into us.
-> +	 *
-> +	 * Below are the proportion factors for these I2C modes:
-> +	 *                t_low_min, t_high_min, scl_clock, proportion
-> +	 * Standard Mode:     4.7us,      4.0us,      10us,      0.535
-> +	 * Fast Mode:         1.3us,      0.6us,     2.5us,       0.64
-> +	 * Fast-Plus Mode:    0.5us,     0.26us,       1us,       0.62
-> +	 *
->   	 */
->   	t_ftl_cycle = (readl(i2c->regs + HSI2C_CONF) >> 16) & 0x7;
->   	temp = clkin / op_clk - 8 - t_ftl_cycle;
-> @@ -343,8 +360,19 @@ static int exynos5_i2c_set_timing(struct exynos5_i2c *i2c, bool hs_timings)
->   		return -EINVAL;
->   	}
->   
-> -	t_scl_l = clk_cycle / 2;
-> -	t_scl_h = clk_cycle / 2;
-> +	/*
-> +	 * Scale clk_cycle to get t_scl_l using the proption factors for individual I2C modes.
-> +	 */
-> +	if (op_clk <= I2C_MAX_STANDARD_MODE_FREQ)
-> +		t_scl_l = clk_cycle * 535 / 1000;
-> +	else if (op_clk <= I2C_MAX_FAST_MODE_FREQ)
-> +		t_scl_l = clk_cycle * 64 / 100;
-> +	else
-> +		t_scl_l = clk_cycle * 62 / 100;
-> +
-> +	if (t_scl_l > 0xFF)
-> +		t_scl_l = 0xFF;
-> +	t_scl_h = clk_cycle - t_scl_l;
->   	t_start_su = t_scl_l;
->   	t_start_hd = t_scl_l;
->   	t_stop_su = t_scl_l;
->
-> base-commit: ce888220d5c7a805e0e155302a318d5d23e62950
-
-Best regards
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
