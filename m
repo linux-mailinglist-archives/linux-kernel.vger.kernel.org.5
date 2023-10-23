@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73ED97D288A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 04:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2697D288B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 04:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233057AbjJWCak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 22:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57898 "EHLO
+        id S229498AbjJWCb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 22:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjJWCaj (ORCPT
+        with ESMTP id S229460AbjJWCb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 22:30:39 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12741E6;
-        Sun, 22 Oct 2023 19:30:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698028235;
-        bh=qZJjRgkqAihMjDj50w/GfceBMY5Z5Kln43KCHKCvuKA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Os14L4HN6ukL18xTuXR/Hc0RCMCvTXtP0vOJ8rj4h5lSbxMnOo9pexPLoYrvY2ed8
-         Bq1HPL57buvdLdWZonYHsxM+Y8oP3jO+geU98DbpzzJ8L6GqP+GwKyHbs+aRehTRh7
-         IomLOfjeyabSnZruN1WqGm6QCrpuEBF4mDQUgW37VqPhxPrLb5MGUiQOaWa62gWV+i
-         +DTpy3BD/cdXQW5s1irGGvqApoAt+wYiwkgyD7WaqblAIEh9hjjKi9uxRIEOo6161K
-         Fr9L2PVZFY4GXwSiRod0jo0sLKdwisSjoBWqmzDyZuUeXwWBqPh8tyMIs8eb2O6RqJ
-         xpbPH5LXt3w+Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SDK171mk9z4x5K;
-        Mon, 23 Oct 2023 13:30:34 +1100 (AEDT)
-Date:   Mon, 23 Oct 2023 13:30:33 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the ftrace tree
-Message-ID: <20231023133033.5d54f393@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9jVAICtGFUlw30MeC.db.J_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 22 Oct 2023 22:31:27 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D41D41
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 19:31:25 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a3942461aso3643724276.2
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 19:31:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698028285; x=1698633085; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=i051oq9Sq7RRdnOZ5mTNUWUdMgsVYPFmVIteiDrh8b4=;
+        b=u3qzpSbEXap2gGwunk6cD7S1RCS5jd4dtHS927yHWmoZZdZQm+i808y6n+rovcukoJ
+         4s1XSvXwqfa22YHLllAPaB7fW6B084ecKrav0vCx6KNVl/LytxApxc04G+AKQMnzT7f4
+         ZEALfrzGksOPSaehu+V9m8URwhbSidSPXcX34jVnfjuTJ0ATqn3k9J4y1aJ78Et6oJhc
+         xveKrJiwyBxk8ynmGaPPdCUP214QaksNboVhdnbafkz2e/FRyoOUXJPPK5dORaE9wBZJ
+         qcWtiDbbeKJHUfevqkKvq1voxPi47x9BUConHFLl2pxYpE1WBE6GZOdUR8ka9zbBlrKJ
+         7pRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698028285; x=1698633085;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=i051oq9Sq7RRdnOZ5mTNUWUdMgsVYPFmVIteiDrh8b4=;
+        b=LyP+1LeBYKh9q4SkqK9/WxNjPkO94B9ovswjkiStFVbtpucCyx+YTYIvrc5cAn0oDJ
+         yD61yBd6OrMO7Z5qqFCJeOllGFw6s3EklroWgIwTbi64Z/eKM36oVKE5bKd6s2F69Ka2
+         C7kP5e3D03BytCdGddxNqaycrZbPxinCky642AV/LVk8NAG0kWYZQTUhGI2R5Zctpmp1
+         t6BmBIc+DBh3HSdainYa6DZjPw5cNyWH14TaxGm/AedR9U9Cg+2qBemta4WtygP0AQED
+         K9WCvhwd8JQl1wvopJdt0PzJKJ7TEWUbucwyaVnYV/dTveiSIfTlMK3FmkUFQMaZxuHz
+         PsUw==
+X-Gm-Message-State: AOJu0YwKJ4mFVVVYjWkg/Xxl/1SHZVQsjYKR9RfxK8UrVriXIfmoclkw
+        CxQO1owZKM/7+50STNNiR2oeioM3u9yHSDs=
+X-Google-Smtp-Source: AGHT+IEDHKZ2WJeGWk0321vcZMf4DAg9fPUhtFHtJdXcej40bv7/okhqiWF2bcMvcq2G55IOELysT0o7SeVgSEg=
+X-Received: from jsperbeck7.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:26dc])
+ (user=jsperbeck job=sendgmr) by 2002:a25:3491:0:b0:d9a:3dac:6c1a with SMTP id
+ b139-20020a253491000000b00d9a3dac6c1amr155361yba.11.1698028285033; Sun, 22
+ Oct 2023 19:31:25 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 02:31:21 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Message-ID: <20231023023121.1464544-1-jsperbeck@google.com>
+Subject: [PATCH] x86/kexec: set MIN_KERNEL_LOAD_ADDR to 0x01000000
+From:   John Sperbeck <jsperbeck@google.com>
+To:     Eric Biederman <ebiederm@xmission.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin " <hpa@zytor.com>, Baoquan He <bhe@redhat.com>,
+        kexec@lists.infradead.org
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Zac Tang <zactang@google.com>, Cloud Hsu <cloudhsu@google.com>,
+        linux-kernel@vger.kernel.org, John Sperbeck <jsperbeck@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9jVAICtGFUlw30MeC.db.J_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The physical memory range that kexec selects for the compressed
+bzimage target kernel, might not be where it runs from.  The
+startup_64() code in head_64.S copies itself out of the way
+before the decompression so it doesn't clobber itself.
 
-Hi all,
+If the start of the memory range selected by kexec is above
+LOAD_PHYSICAL_ADDR (0x01000000 by default), then the copy remains
+within the memory area.  But if the start is below this range,
+then the copy will likely end up outside the range.
 
-After merging the ftrace tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+Usually, this will be harmless because not much memory is in use
+at the time of the pre-decompression copy, so there is little
+to accidentally clobber.  However, an unlucky choice for the
+adress of the kernel and the initrd could put the initrd in harm's
+way.  For example:
 
-arch/powerpc/kernel/setup-common.c:604:10: error: 'struct seq_buf' has no m=
-ember named 'readpos'
-  604 |         .readpos =3D 0,
-      |          ^~~~~~~
-arch/powerpc/kernel/setup-common.c:604:20: error: excess elements in struct=
- initializer [-Werror]
-  604 |         .readpos =3D 0,
-      |                    ^
-arch/powerpc/kernel/setup-common.c:604:20: note: (near initialization for '=
-ppc_hw_desc')
-cc1: all warnings being treated as errors
+    0x00400000 - physical address for target kernel
+    0x03ff8000 - physical address of seven-page initrd
+    0x0302c000 - size of uncompressed kernel (about 50 Mbytes)
 
-Caused by commit
+The decompressed kernel will span 0x01000000 through 0x0402c000,
+which will overwrite the initrd.
 
-  d0ed46b60396 ("tracing: Move readpos from seq_buf to trace_seq")
+If the kexec code restricts itself to physical addresses above
+0x01000000, then the pre-decompression copy and the decompression
+itself will stay within the bounds of the memory kexec selected
+(unless a non-default value is used in the target kernel for
+CONFIG_PHYSICAL_START, which will change LOAD_PHYSICAL_ADDR,
+but that's probably unsolvable unless the target kernel were to
+somehow communicate this to kexec).
 
-I have used the ftrace tree from next-20231020 for today.
+Signed-off-by: John Sperbeck <jsperbeck@google.com>
+---
+ arch/x86/kernel/kexec-bzimage64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
+index a61c12c01270..d6bf6c13dab1 100644
+--- a/arch/x86/kernel/kexec-bzimage64.c
++++ b/arch/x86/kernel/kexec-bzimage64.c
+@@ -36,7 +36,7 @@
+  */
+ #define MIN_PURGATORY_ADDR	0x3000
+ #define MIN_BOOTPARAM_ADDR	0x3000
+-#define MIN_KERNEL_LOAD_ADDR	0x100000
++#define MIN_KERNEL_LOAD_ADDR	0x1000000
+ #define MIN_INITRD_LOAD_ADDR	0x1000000
+ 
+ /*
+-- 
+2.42.0.655.g421f12c284-goog
 
---Sig_/9jVAICtGFUlw30MeC.db.J_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU12skACgkQAVBC80lX
-0GwYjQf+IMS1mUIck6bBw+EqX9dMQDTwJd8M2Qe2DhQuawIpvuTf7cJ8FvGQuszK
-dIa9is5KFYu8iZMybf4/JecN5urzf8jAFvf51mJt1Cc+jIsxh9vCMQAG6R7nFSMb
-wnIGZYZ/dwJJghAnTw3AiEy4/wUXxYiVi9vChoXZcmsfsqrtVBUrXs5d3XMQv3dY
-gWlaIYuS9GiFsGTD1QMfcMJWouEHmGE7skiGRn26EkRKoXKPhlTqMqEikQ9ayXLH
-0i/g6Pfb+vBgaEwwMBDBA9roXhhiT/KPNpVxoqHDKK9n359FE5t6dwlNaLwV1c2G
-oWHNG1/OHQ3biSz+ufWvsK6Ge3bGVw==
-=z2K5
------END PGP SIGNATURE-----
-
---Sig_/9jVAICtGFUlw30MeC.db.J_--
