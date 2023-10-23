@@ -2,440 +2,1662 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1696A7D2B81
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80437D2B84
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233519AbjJWHit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
+        id S229450AbjJWHkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJWHis (ORCPT
+        with ESMTP id S233408AbjJWHkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 03:38:48 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DFED65
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:38:44 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b2f507c03cso1792646b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698046724; x=1698651524; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u1hLQu42puktllu7ZS9vWOuEpxXvcRAi2TjqWqa/FDQ=;
-        b=WAKDoxjwg0MR85ShVGrXVsr2lnvozjI4dCX1iSmsaDwuvU6tFRQSIfJK5Dl/nXhU2Y
-         LIlNVNupBqqk9L3+OLDLMx1K8R0vIEW8HrCFMg2D6Bg78n79NZH+nnEqd1eGnAQNlrzq
-         bYBLTEIDEusXJKqyMCCKZWp3qxJArswuRWbaGC51O3oXMAwPHKTk9QHOjTvM2J9jsFx+
-         tG3hHaAdul5xdGqMlJ3avLMtCHS4p7cU+PW4thLlN/0c104jC33VH7bAJ5Xoz4X5khvm
-         RzsrgXH0br/8uFL3O4GOJDFhzvLeREbE69X274IhBufIZyJcpKABI+d2Zq6N2uwRISEY
-         RP3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698046724; x=1698651524;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u1hLQu42puktllu7ZS9vWOuEpxXvcRAi2TjqWqa/FDQ=;
-        b=kbk71ZTb2S36eh905Z+NPvHbDAN/mY/5gNVk0dXdbNEbOq7GXLiCvXy73rKpyEY+4C
-         zyBVf91OVqzSAaJpnNHDfen6nO0TF1b2XGRO/d4s08AEfmDXab7T6wdjVbJ3baySWpQK
-         /bOY8Fhq/JAkHZnP/n4njIjxFF7jgdkvohHkfSXGXsswQOHLjhRgag7H/LtPEHLJnEjz
-         EcHi/raAR3OQI2knBoP8HPI5x9HCrxsXii7zHF57biZF9AGoLUIbry9C4zLdlOApgqmu
-         FXSMjjEqVGjRlzdciJbJb8dUIvUYTHo3q0HSZ5RTmEax5gqBwD3ZCzzvjf0ISSzSKtjD
-         HPug==
-X-Gm-Message-State: AOJu0Ywe8y3Gp5m+gKwzxW0nNgWw4Xa2D4F647SEA7GOkHUoBrJdOSm1
-        a+bmK7SGY5RmmSsQYlQ9+Xk=
-X-Google-Smtp-Source: AGHT+IFsfQ8ApL5luimnq2NOV58y0aBMUpStshpTpWeaUMFMNnjzj3BpNmI3vh5KOwMqdTsJtPGr8A==
-X-Received: by 2002:a05:6808:1a18:b0:3ae:4cb1:74e8 with SMTP id bk24-20020a0568081a1800b003ae4cb174e8mr10639285oib.11.1698046724022;
-        Mon, 23 Oct 2023 00:38:44 -0700 (PDT)
-Received: from nobara-desktop-pc.localnet (cpe-76-88-3-111.san.res.rr.com. [76.88.3.111])
-        by smtp.gmail.com with ESMTPSA id w9-20020aa79a09000000b006b1c14a493fsm5547889pfj.71.2023.10.23.00.38.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 00:38:43 -0700 (PDT)
-From:   Jonathan LoBue <jlobue10@gmail.com>
-To:     Stefan Binding <sbinding@opensource.cirrus.com>,
-        Huayu Zhang <leviz.kernel.dev@gmail.com>
-Cc:     Luke Jones <luke@ljones.dev>, Takashi Iwai <tiwai@suse.de>,
-        tiwai@suse.com, james.schulman@cirrus.com, david.rhodes@cirrus.com,
-        rf@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com
-Subject: Re: [PATCH] ALSA: hda: cs35l41: Support ASUS 2023 laptops with missing DSD
-Date:   Mon, 23 Oct 2023 00:38:42 -0700
-Message-ID: <2165924.irdbgypaU6@nobara-desktop-pc>
-In-Reply-To: <CAE4DdFNy7QRtZrbbCFt+ptKGCFxY7p_qeODW7+jHmnqzzxifVA@mail.gmail.com>
-References: <20230823011008.13146-1-luke@ljones.dev>
- <3f3e554a-6551-e384-313d-77edf8ae316c@opensource.cirrus.com>
- <CAE4DdFNy7QRtZrbbCFt+ptKGCFxY7p_qeODW7+jHmnqzzxifVA@mail.gmail.com>
+        Mon, 23 Oct 2023 03:40:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF79A6;
+        Mon, 23 Oct 2023 00:40:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698046812; x=1729582812;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yFRboDoqBxezgg8+bHH8sDnTvb9Y5AyfAu1e0R+rccc=;
+  b=SlSVPybdOlYL5eHgHKKpJvlLaAN/WOF63aBZwEN5Pubs/zks2cZgxo2Y
+   rGxYHmEmk7zql7YYjieWM9qGGdwLPIgOdfPLjxIh3PjPVxkejJhpbnkaj
+   HccP2VahW82p2XdaqXjbxP5VuGKtMffhvSKMrwSYdSFQSwIkVMdc1yb9U
+   6iE0c4FbDvXRdo3YIptW/iGM7ITzp7/jlc257qWy6IixfJjhKlB8tYoJb
+   yZruzlI15No6UAuisI4/tgXCe2WneBD0B+WSa8ufABYN4OhGf9nIwoDft
+   4jcjfgK3baZ65F1ZHW+KN/e/2qNYVbFb1v5jqGzt484o2TM4TJmFkP+iC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="390674527"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="390674527"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 00:40:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="881669251"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="881669251"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 00:40:08 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id 2006411FC2C;
+        Mon, 23 Oct 2023 10:40:05 +0300 (EEST)
+Date:   Mon, 23 Oct 2023 07:40:05 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/3] media: i2c: gc0308: new driver
+Message-ID: <ZTYjVSL20P951ViN@kekkonen.localdomain>
+References: <20231023002547.1754190-1-sre@kernel.org>
+ <20231023002547.1754190-3-sre@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023002547.1754190-3-sre@kernel.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday, October 8, 2023 10:19:18 AM PDT Huayu Zhang wrote:
-> Hi Stefan and all,
+Hi Sebastian,
+
+Thanks for the patchset.
+
+On Mon, Oct 23, 2023 at 02:22:09AM +0200, Sebastian Reichel wrote:
+> Introduce new driver for GalaxyCore GC0308, which is a cheap
+> 640x480 with an on-chip ISP sensor sold since 2010. Data is
+> provided via parallel bus.
 > 
-> Thanks for examine my email. I'm just interesting in Linux kernel
-> development and met sound issue with my `21J8 Lenovo ThinkBook 16p Gen
-> 4`.
-> Sorry for not familiar with the email process if any.
-> 
-> I wrote following changes based on some discovery and the downside
-> speakers (bass) seems begin to work. But the volumn keys actually
-> adjusting the frequence (I suppose). (Louder for high freq, and lower
-> volumn for low freq)
-> 
-> Wondering if any suggestions on the patch or any plan for officially
-> supporting of Lenovo ThinkBook 16p Gen 4. ^_^
-> I'll also provide the alsa-info and dmesg output below. Thanks a lot~
-> 
-> Patch:
-> 
-> From 124161547483109cbb491a8e39d1b5ef0973cd80 Mon Sep 17 00:00:00 2001
-> From: Huayu Zhang <zhanghuayu.dev@gmail.com>
-> Date: Mon, 9 Oct 2023 00:59:56 +0800
-> Subject: [PATCH] thinkbook 16p gen4 sound fix
-> 
+> Signed-off-by: Sebastian Reichel <sre@kernel.org>
 > ---
-> sound/pci/hda/cs35l41_hda_property.c | 41 ++++++++++++++++++++++++++++
-> sound/pci/hda/patch_realtek.c | 1 +
-> 2 files changed, 42 insertions(+)
+>  drivers/media/i2c/Kconfig  |   14 +
+>  drivers/media/i2c/Makefile |    1 +
+>  drivers/media/i2c/gc0308.c | 1451 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 1466 insertions(+)
+>  create mode 100644 drivers/media/i2c/gc0308.c
 > 
-> diff --git a/sound/pci/hda/cs35l41_hda_property.c
-> b/sound/pci/hda/cs35l41_hda_property.c
-> index b62a4e6968e2..af359fbeb671 100644
-> --- a/sound/pci/hda/cs35l41_hda_property.c
-> +++ b/sound/pci/hda/cs35l41_hda_property.c
-> @@ -74,6 +74,46 @@ static int hp_vision_acpi_fix(struct cs35l41_hda
-> *cs35l41, struct device *physde
-> return 0;
-> }
-> +static int lenovo_thinkbook16pgen4_no_acpi(struct cs35l41_hda
-> *cs35l41, struct device *physdev, int id,
-> + const char *hid)
+> diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> index 74ff833ff48c..7db4abc0ef88 100644
+> --- a/drivers/media/i2c/Kconfig
+> +++ b/drivers/media/i2c/Kconfig
+> @@ -50,6 +50,20 @@ config VIDEO_AR0521
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called ar0521.
+>  
+> +config VIDEO_GC0308
+> +	tristate "GalaxyCore GC0308 sensor support"
+> +	depends on I2C && VIDEO_DEV
+> +	select MEDIA_CONTROLLER
+> +	select VIDEO_V4L2_SUBDEV_API
+> +	select V4L2_FWNODE
+> +	select REGMAP_I2C
+> +	help
+> +	  This is a Video4Linux2 sensor driver for the GalaxyCore
+> +	  GC0308 camera.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called gc0308.
+> +
+>  config VIDEO_HI556
+>  	tristate "Hynix Hi-556 sensor support"
+>  	help
+> diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+> index 80b00d39b48f..f03a21f2962a 100644
+> --- a/drivers/media/i2c/Makefile
+> +++ b/drivers/media/i2c/Makefile
+> @@ -36,6 +36,7 @@ obj-$(CONFIG_VIDEO_DW9719) += dw9719.o
+>  obj-$(CONFIG_VIDEO_DW9768) += dw9768.o
+>  obj-$(CONFIG_VIDEO_DW9807_VCM) += dw9807-vcm.o
+>  obj-$(CONFIG_VIDEO_ET8EK8) += et8ek8/
+> +obj-$(CONFIG_VIDEO_GC0308) += gc0308.o
+>  obj-$(CONFIG_VIDEO_HI556) += hi556.o
+>  obj-$(CONFIG_VIDEO_HI846) += hi846.o
+>  obj-$(CONFIG_VIDEO_HI847) += hi847.o
+> diff --git a/drivers/media/i2c/gc0308.c b/drivers/media/i2c/gc0308.c
+> new file mode 100644
+> index 000000000000..c92370aed43b
+> --- /dev/null
+> +++ b/drivers/media/i2c/gc0308.c
+> @@ -0,0 +1,1451 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Driver for the GalaxyCore GC0308/GC0309 camera sensor.
+> + *
+> + * Copyright (c) 2023 Sebastian Reichel <sre@kernel.org>
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/device.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/regmap.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-device.h>
+> +#include <media/v4l2-event.h>
+> +#include <media/v4l2-fwnode.h>
+> +#include <media/v4l2-subdev.h>
+> +
+> +/* Analog & CISCTL*/
+> +#define GC0308_CHIP_ID			0x000
+> +#define GC0308_HBLANK			0x001
+> +#define GC0308_VBLANK			0x002
+> +#define GC0308_EXPH			0x003
+> +#define GC0308_EXPL			0x004
+> +#define GC0308_ROW_STARTH		0x005
+> +#define GC0308_ROW_STARTL		0x006
+> +#define GC0308_COL_STARTH		0x007
+> +#define GC0308_COL_STARTL		0x008
+> +#define GC0308_WIN_HEIGHTH		0x009
+> +#define GC0308_WIN_HEIGHTL		0x00a
+> +#define GC0308_WIN_WIDTHH		0x00b
+> +#define GC0308_WIN_WIDTHL		0x00c
+> +#define GC0308_VS_ST			0x00d
+> +#define GC0308_VS_ET			0x00e
+> +#define GC0308_VB_HB			0x00f
+> +#define GC0308_RSH_WIDTH		0x010
+> +#define GC0308_TSP_WIDTH		0x011
+> +#define GC0308_SH_DELAY			0x012
+> +#define GC0308_ROW_TAIL_WIDTH		0x013
+> +#define GC0308_CISCTL_MODE1		0x014
+> +#define GC0308_CISCTL_MODE2		0x015
+> +#define GC0308_CISCTL_MODE3		0x016
+> +#define GC0308_CISCTL_MODE4		0x017
+> +#define GC0308_ANALOG_MODE1		0x01a
+> +#define GC0308_ANALOG_MODE2		0x01b
+> +#define GC0308_HRST_RSG_V18		0x01c
+> +#define GC0308_VREF_V25			0x01d
+> +#define GC0308_ADC_R			0x01e
+> +#define GC0308_PAD_DRV			0x01f
+> +#define GC0308_SOFT_RESET		0x0fe
+> +
+> +/* ISP */
+> +#define GC0308_BLOCK_EN1		0x020
+> +#define GC0308_BLOCK_EN2		0x021
+> +#define GC0308_AAAA_EN			0x022
+> +#define GC0308_SPECIAL_EFFECT		0x023
+> +#define GC0308_OUT_FORMAT		0x024
+> +#define GC0308_OUT_EN			0x025
+> +#define GC0308_SYNC_MODE		0x026
+> +#define GC0308_CLK_DIV_MODE		0x028
+> +#define GC0308_BYPASS_MODE		0x029
+> +#define GC0308_CLK_GATING		0x02a
+> +#define GC0308_DITHER_MODE		0x02b
+> +#define GC0308_DITHER_BIT		0x02c
+> +#define GC0308_DEBUG_MODE1		0x02d
+> +#define GC0308_DEBUG_MODE2		0x02e
+> +#define GC0308_DEBUG_MODE3		0x02f
+> +#define GC0308_CROP_WIN_MODE		0x046
+> +#define GC0308_CROP_WIN_Y1		0x047
+> +#define GC0308_CROP_WIN_X1		0x048
+> +#define GC0308_CROP_WIN_HEIGHTH		0x049
+> +#define GC0308_CROP_WIN_HEIGHTL		0x04a
+> +#define GC0308_CROP_WIN_WIDTHH		0x04b
+> +#define GC0308_CROP_WIN_WIDTHL		0x04c
+> +
+> +/* BLK */
+> +#define GC0308_BLK_MODE			0x030
+> +#define GC0308_BLK_LIMIT_VAL		0x031
+> +#define GC0308_GLOBAL_OFF		0x032
+> +#define GC0308_CURRENT_R_OFF		0x033
+> +#define GC0308_CURRENT_G_OFF		0x034
+> +#define GC0308_CURRENT_B_OFF		0x035
+> +#define GC0308_CURRENT_R_DARK_CURRENT	0x036
+> +#define GC0308_CURRENT_G_DARK_CURRENT	0x037
+> +#define GC0308_CURRENT_B_DARK_CURRENT	0x038
+> +#define GC0308_EXP_RATE_DARKC		0x039
+> +#define GC0308_OFF_SUBMODE		0x03a
+> +#define GC0308_DARKC_SUBMODE		0x03b
+> +#define GC0308_MANUAL_G1_OFF		0x03c
+> +#define GC0308_MANUAL_R1_OFF		0x03d
+> +#define GC0308_MANUAL_B2_OFF		0x03e
+> +#define GC0308_MANUAL_G2_OFF		0x03f
+> +
+> +/* PREGAIN */
+> +#define GC0308_GLOBAL_GAIN		0x050
+> +#define GC0308_AUTO_PREGAIN		0x051
+> +#define GC0308_AUTO_POSTGAIN		0x052
+> +#define GC0308_CHANNEL_GAIN_G1		0x053
+> +#define GC0308_CHANNEL_GAIN_R		0x054
+> +#define GC0308_CHANNEL_GAIN_B		0x055
+> +#define GC0308_CHANNEL_GAIN_G2		0x056
+> +#define GC0308_R_RATIO			0x057
+> +#define GC0308_G_RATIO			0x058
+> +#define GC0308_B_RATIO			0x059
+> +#define GC0308_AWB_R_GAIN		0x05a
+> +#define GC0308_AWB_G_GAIN		0x05b
+> +#define GC0308_AWB_B_GAIN		0x05c
+> +#define GC0308_LSC_DEC_LVL1		0x05d
+> +#define GC0308_LSC_DEC_LVL2		0x05e
+> +#define GC0308_LSC_DEC_LVL3		0x05f
+> +
+> +/* DNDD */
+> +#define GC0308_DN_MODE_EN		0x060
+> +#define GC0308_DN_MODE_RATIO		0x061
+> +#define GC0308_DN_BILAT_B_BASE		0x062
+> +#define GC0308_DN_B_INCR		0x063
+> +#define GC0308_DN_BILAT_N_BASE		0x064
+> +#define GC0308_DN_N_INCR		0x065
+> +#define GC0308_DD_DARK_BRIGHT_TH	0x066
+> +#define GC0308_DD_FLAT_TH		0x067
+> +#define GC0308_DD_LIMIT			0x068
+> +
+> +/* ASDE - Auto Saturation De-noise and Edge-Enhancement */
+> +#define GC0308_ASDE_GAIN_TRESH		0x069
+> +#define GC0308_ASDE_GAIN_MODE		0x06a
+> +#define GC0308_ASDE_DN_SLOPE		0x06b
+> +#define GC0308_ASDE_DD_BRIGHT		0x06c
+> +#define GC0308_ASDE_DD_LIMIT		0x06d
+> +#define GC0308_ASDE_AUTO_EE1		0x06e
+> +#define GC0308_ASDE_AUTO_EE2		0x06f
+> +#define GC0308_ASDE_AUTO_SAT_DEC_SLOPE	0x070
+> +#define GC0308_ASDE_AUTO_SAT_LOW_LIMIT	0x071
+> +
+> +/* INTPEE - Interpolation and Edge-Enhancement */
+> +#define GC0308_EEINTP_MODE_1		0x072
+> +#define GC0308_EEINTP_MODE_2		0x073
+> +#define GC0308_DIRECTION_TH1		0x074
+> +#define GC0308_DIRECTION_TH2		0x075
+> +#define GC0308_DIFF_HV_TI_TH		0x076
+> +#define GC0308_EDGE12_EFFECT		0x077
+> +#define GC0308_EDGE_POS_RATIO		0x078
+> +#define GC0308_EDGE1_MINMAX		0x079
+> +#define GC0308_EDGE2_MINMAX		0x07a
+> +#define GC0308_EDGE12_TH		0x07b
+> +#define GC0308_EDGE_MAX			0x07c
+> +
+> +/* ABB - Auto Black Balance */
+> +#define GC0308_ABB_MODE			0x080
+> +#define GC0308_ABB_TARGET_AVGH		0x081
+> +#define GC0308_ABB_TARGET_AVGL		0x082
+> +#define GC0308_ABB_LIMIT_VAL		0x083
+> +#define GC0308_ABB_SPEED		0x084
+> +#define GC0308_CURR_R_BLACK_LVL		0x085
+> +#define GC0308_CURR_G_BLACK_LVL		0x086
+> +#define GC0308_CURR_B_BLACK_LVL		0x087
+> +#define GC0308_CURR_R_BLACK_FACTOR	0x088
+> +#define GC0308_CURR_G_BLACK_FACTOR	0x089
+> +#define GC0308_CURR_B_BLACK_FACTOR	0x08a
+> +
+> +/* LSC - Lens Shading Correction */
+> +#define GC0308_LSC_RED_B2		0x08b
+> +#define GC0308_LSC_GREEN_B2		0x08c
+> +#define GC0308_LSC_BLUE_B2		0x08d
+> +#define GC0308_LSC_RED_B4		0x08e
+> +#define GC0308_LSC_GREEN_B4		0x08f
+> +#define GC0308_LSC_BLUE_B4		0x090
+> +#define GC0308_LSC_ROW_CENTER		0x091
+> +#define GC0308_LSC_COL_CENTER		0x092
+> +
+> +/* CC - Channel Coefficient */
+> +#define GC0308_CC_MATRIX_C11		0x093
+> +#define GC0308_CC_MATRIX_C12		0x094
+> +#define GC0308_CC_MATRIX_C13		0x095
+> +#define GC0308_CC_MATRIX_C21		0x096
+> +#define GC0308_CC_MATRIX_C22		0x097
+> +#define GC0308_CC_MATRIX_C23		0x098
+> +#define GC0308_CC_MATRIX_C41		0x09c
+> +#define GC0308_CC_MATRIX_C42		0x09d
+> +#define GC0308_CC_MATRIX_C43		0x09e
+> +
+> +/* GAMMA */
+> +#define GC0308_GAMMA_OUT0		0x09f
+> +#define GC0308_GAMMA_OUT1		0x0a0
+> +#define GC0308_GAMMA_OUT2		0x0a1
+> +#define GC0308_GAMMA_OUT3		0x0a2
+> +#define GC0308_GAMMA_OUT4		0x0a3
+> +#define GC0308_GAMMA_OUT5		0x0a4
+> +#define GC0308_GAMMA_OUT6		0x0a5
+> +#define GC0308_GAMMA_OUT7		0x0a6
+> +#define GC0308_GAMMA_OUT8		0x0a7
+> +#define GC0308_GAMMA_OUT9		0x0a8
+> +#define GC0308_GAMMA_OUT10		0x0a9
+> +#define GC0308_GAMMA_OUT11		0x0aa
+> +#define GC0308_GAMMA_OUT12		0x0ab
+> +#define GC0308_GAMMA_OUT13		0x0ac
+> +#define GC0308_GAMMA_OUT14		0x0ad
+> +#define GC0308_GAMMA_OUT15		0x0ae
+> +#define GC0308_GAMMA_OUT16		0x0af
+> +
+> +/* YCP */
+> +#define GC0308_GLOBAL_SATURATION	0x0b0
+> +#define GC0308_SATURATION_CB		0x0b1
+> +#define GC0308_SATURATION_CR		0x0b2
+> +#define GC0308_LUMA_CONTRAST		0x0b3
+> +#define GC0308_CONTRAST_CENTER		0x0b4
+> +#define GC0308_LUMA_OFFSET		0x0b5
+> +#define GC0308_SKIN_CB_CENTER		0x0b6
+> +#define GC0308_SKIN_CR_CENTER		0x0b7
+> +#define GC0308_SKIN_RADIUS_SQUARE	0x0b8
+> +#define GC0308_SKIN_BRIGHTNESS		0x0b9
+> +#define GC0308_FIXED_CB			0x0ba
+> +#define GC0308_FIXED_CR			0x0bb
+> +#define GC0308_EDGE_DEC_SA		0x0bd
+> +#define GC0308_AUTO_GRAY_MODE		0x0be
+> +#define GC0308_SATURATION_SUB_STRENGTH	0x0bf
+> +#define GC0308_Y_GAMMA_OUT0		0x0c0
+> +#define GC0308_Y_GAMMA_OUT1		0x0c1
+> +#define GC0308_Y_GAMMA_OUT2		0x0c2
+> +#define GC0308_Y_GAMMA_OUT3		0x0c3
+> +#define GC0308_Y_GAMMA_OUT4		0x0c4
+> +#define GC0308_Y_GAMMA_OUT5		0x0c5
+> +#define GC0308_Y_GAMMA_OUT6		0x0c6
+> +#define GC0308_Y_GAMMA_OUT7		0x0c7
+> +#define GC0308_Y_GAMMA_OUT8		0x0c8
+> +#define GC0308_Y_GAMMA_OUT9		0x0c9
+> +#define GC0308_Y_GAMMA_OUT10		0x0ca
+> +#define GC0308_Y_GAMMA_OUT11		0x0cb
+> +#define GC0308_Y_GAMMA_OUT12		0x0cc
+> +
+> +/* AEC - Automatic Exposure Control */
+> +#define GC0308_AEC_MODE1		0x0d0
+> +#define GC0308_AEC_MODE2		0x0d1
+> +#define GC0308_AEC_MODE3		0x0d2
+> +#define GC0308_AEC_TARGET_Y		0x0d3
+> +#define GC0308_Y_AVG			0x0d4
+> +#define GC0308_AEC_HIGH_LOW_RANGE	0x0d5
+> +#define GC0308_AEC_IGNORE		0x0d6
+> +#define GC0308_AEC_LIMIT_HIGH_RANGE	0x0d7
+> +#define GC0308_AEC_R_OFFSET		0x0d9
+> +#define GC0308_AEC_GB_OFFSET		0x0da
+> +#define GC0308_AEC_SLOW_MARGIN		0x0db
+> +#define GC0308_AEC_FAST_MARGIN		0x0dc
+> +#define GC0308_AEC_EXP_CHANGE_GAIN	0x0dd
+> +#define GC0308_AEC_STEP2_SUNLIGHT	0x0de
+> +#define GC0308_AEC_I_FRAMES		0x0df
+> +#define GC0308_AEC_I_STOP_L_MARGIN	0x0e0
+> +#define GC0308_AEC_I_STOP_MARGIN	0x0e1
+> +#define GC0308_ANTI_FLICKER_STEP_H	0x0e2
+> +#define GC0308_ANTI_FLICKER_STEP_L	0x0e3
+> +#define GC0308_EXP_LVL_1H		0x0e4
+> +#define GC0308_EXP_LVL_1L		0x0e5
+> +#define GC0308_EXP_LVL_2H		0x0e6
+> +#define GC0308_EXP_LVL_2L		0x0e7
+> +#define GC0308_EXP_LVL_3H		0x0e8
+> +#define GC0308_EXP_LVL_3L		0x0e9
+> +#define GC0308_EXP_LVL_4H		0x0ea
+> +#define GC0308_EXP_LVL_4L		0x0eb
+> +#define GC0308_MAX_EXP_LVL		0x0ec
+> +#define GC0308_EXP_MIN_L		0x0ed
+> +#define GC0308_MAX_POST_DF_GAIN		0x0ee
+> +#define GC0308_MAX_PRE_DG_GAIN		0x0ef
+> +
+> +/* ABS */
+> +#define GC0308_ABS_RANGE_COMP		0x0f0
+> +#define GC0308_ABS_STOP_MARGIN		0x0f1
+> +#define GC0308_Y_S_COMP			0x0f2
+> +#define GC0308_Y_STRETCH_LIMIT		0x0f3
+> +#define GC0308_Y_TILT			0x0f4
+> +#define GC0308_Y_STRETCH		0x0f5
+> +
+> +/* Measure Window */
+> +#define GC0308_BIG_WIN_X0		0x0f7
+> +#define GC0308_BIG_WIN_Y0		0x0f8
+> +#define GC0308_BIG_WIN_X1		0x0f9
+> +#define GC0308_BIG_WIN_Y1		0x0fa
+> +#define GC0308_DIFF_Y_BIG_THD		0x0fb
+> +
+> +/* OUT Module (P1) */
+> +#define GC0308_CLOSE_FRAME_EN		0x150
+> +#define GC0308_CLOSE_FRAME_NUM1		0x151
+> +#define GC0308_CLOSE_FRAME_NUM2		0x152
+> +#define GC0308_BAYER_MODE		0x153
+> +#define GC0308_SUBSAMPLE		0x154
+> +#define GC0308_SUBMODE			0x155
+> +#define GC0308_SUB_ROW_N1		0x156
+> +#define GC0308_SUB_ROW_N2		0x157
+> +#define GC0308_SUB_COL_N1		0x158
+> +#define GC0308_SUB_COL_N2		0x159
+> +
+> +/* AWB (P1) - Auto White Balance */
+> +#define GC0308_AWB_RGB_HIGH_LOW		0x100
+> +#define GC0308_AWB_Y_TO_C_DIFF2		0x102
+> +#define GC0308_AWB_C_MAX		0x104
+> +#define GC0308_AWB_C_INTER		0x105
+> +#define GC0308_AWB_C_INTER2		0x106
+> +#define GC0308_AWB_C_MAX_BIG		0x108
+> +#define GC0308_AWB_Y_HIGH		0x109
+> +#define GC0308_AWB_NUMBER_LIMIT		0x10a
+> +#define GC0308_KWIN_RATIO		0x10b
+> +#define GC0308_KWIN_THD			0x10c
+> +#define GC0308_LIGHT_GAIN_RANGE		0x10d
+> +#define GC0308_SMALL_WIN_WIDTH_STEP	0x10e
+> +#define GC0308_SMALL_WIN_HEIGHT_STEP	0x10f
+> +#define GC0308_AWB_YELLOW_TH		0x110
+> +#define GC0308_AWB_MODE			0x111
+> +#define GC0308_AWB_ADJUST_SPEED		0x112
+> +#define GC0308_AWB_EVERY_N		0x113
+> +#define GC0308_R_AVG_USE		0x1d0
+> +#define GC0308_G_AVG_USE		0x1d1
+> +#define GC0308_B_AVG_USE		0x1d2
+> +
+> +#define GC0308_FRAME_RATE		29
+> +
+> +enum gc0308_exp_val {
+> +	GC0308_EXP_M4 = 0,
+> +	GC0308_EXP_M3,
+> +	GC0308_EXP_M2,
+> +	GC0308_EXP_M1,
+> +	GC0308_EXP_0,
+> +	GC0308_EXP_P1,
+> +	GC0308_EXP_P2,
+> +	GC0308_EXP_P3,
+> +	GC0308_EXP_P4,
+> +};
+> +
+> +struct gc0308_exposure {
+> +	u8 luma_offset;
+> +	u8 aec_target_y;
+> +};
+> +
+> +#define GC0308_EXPOSURE(luma_offset_reg, aec_target_y_reg) \
+> +	{ .luma_offset = luma_offset_reg, .aec_target_y = aec_target_y_reg }
+> +
+> +static const struct gc0308_exposure gc0308_exposure_values[] = {
+> +	[GC0308_EXP_M4] = GC0308_EXPOSURE(0xc0, 0x30),
+> +	[GC0308_EXP_M3] = GC0308_EXPOSURE(0xd0, 0x38),
+> +	[GC0308_EXP_M2] = GC0308_EXPOSURE(0xe0, 0x40),
+> +	[GC0308_EXP_M1] = GC0308_EXPOSURE(0xf0, 0x48),
+> +	[GC0308_EXP_0]  = GC0308_EXPOSURE(0x08, 0x50),
+> +	[GC0308_EXP_P1] = GC0308_EXPOSURE(0x10, 0x5c),
+> +	[GC0308_EXP_P2] = GC0308_EXPOSURE(0x20, 0x60),
+> +	[GC0308_EXP_P3] = GC0308_EXPOSURE(0x30, 0x68),
+> +	[GC0308_EXP_P4] = GC0308_EXPOSURE(0x40, 0x70),
+> +};
+> +
+> +struct gc0308_awb_gains {
+> +	u8 r;
+> +	u8 g;
+> +	u8 b;
+> +};
+> +
+> +#define GC0308_AWB_GAINS(red, green, blue) \
+> +	{ .r = red, .g = green, .b = blue }
+> +
+> +static const struct gc0308_awb_gains gc0308_awb_gains[] = {
+> +	[V4L2_WHITE_BALANCE_AUTO]         = GC0308_AWB_GAINS(0x56, 0x40, 0x4a),
+> +	[V4L2_WHITE_BALANCE_CLOUDY]       = GC0308_AWB_GAINS(0x8c, 0x50, 0x40),
+> +	[V4L2_WHITE_BALANCE_DAYLIGHT]     = GC0308_AWB_GAINS(0x74, 0x52, 0x40),
+> +	[V4L2_WHITE_BALANCE_INCANDESCENT] = GC0308_AWB_GAINS(0x48, 0x40, 0x5c),
+> +	[V4L2_WHITE_BALANCE_FLUORESCENT]  = GC0308_AWB_GAINS(0x40, 0x42, 0x50),
+> +};
+> +
+> +struct gc0308_format {
+> +	u32 code;
+> +	u8 regval;
+> +};
+> +
+> +#define GC0308_FORMAT(v4l2_code, gc0308_regval) \
+> +	{ .code = v4l2_code, .regval = gc0308_regval }
+> +
+> +static const struct gc0308_format gc0308_formats[] = {
+> +	GC0308_FORMAT(MEDIA_BUS_FMT_UYVY8_2X8, 0x00),
+> +	GC0308_FORMAT(MEDIA_BUS_FMT_VYUY8_2X8, 0x01),
+> +	GC0308_FORMAT(MEDIA_BUS_FMT_YUYV8_2X8, 0x02),
+> +	GC0308_FORMAT(MEDIA_BUS_FMT_YVYU8_2X8, 0x03),
+> +	GC0308_FORMAT(MEDIA_BUS_FMT_RGB565_2X8_BE, 0x06),
+> +	GC0308_FORMAT(MEDIA_BUS_FMT_RGB555_2X8_PADHI_BE, 0x07),
+> +	GC0308_FORMAT(MEDIA_BUS_FMT_RGB444_2X8_PADHI_BE, 0x09),
+> +};
+> +
+> +struct gc0308_frame_size {
+> +	u8 subsample;
+> +	u16 width;
+> +	u16 height;
+> +};
+> +
+> +#define GC0308_FRAME_SIZE(s, w, h) \
+> +	{ .subsample = s, .width = w, .height = h }
+> +
+> +static const struct gc0308_frame_size gc0308_frame_sizes[] = {
+> +	GC0308_FRAME_SIZE(0x11, 640, 480),
+> +	GC0308_FRAME_SIZE(0x22, 320, 240),
+> +	GC0308_FRAME_SIZE(0x44, 160, 120),
+> +};
+> +
+> +struct gc0308 {
+> +	struct v4l2_subdev sd;
+> +	struct v4l2_ctrl_handler hdl;
+> +	struct media_pad pad;
+> +	struct v4l2_mbus_framefmt format;
+> +	struct device *dev;
+> +	struct clk *clk;
+> +	struct regmap *regmap;
+> +	struct regulator *vdd;
+> +	struct gpio_desc *pwdn_gpio;
+> +	struct gpio_desc *reset_gpio;
+> +	struct mutex lock; /* mutex lock for operations */
+> +	bool streaming;
+> +	unsigned int mbus_config;
+> +	struct v4l2_fract frame_interval;
+> +};
+> +
+> +static inline struct gc0308 *to_gc0308(struct v4l2_subdev *sd)
 > +{
-> + struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
-> +
-> + dev_info(cs35l41->dev, "Adding DSD properties for %s\n",
-> cs35l41->acpi_subsystem_id);
-> +
-> + printk("CSC3551: id == 0x%x\n", id);
-> +
-> + // cirrus,dev-index
-> + cs35l41->index = id == 0x40 ? 0 : 1;
-> + cs35l41->channel_index = 0;
-> +
-> + // cs35l41->reset_gpio = gpiod_get_index(physdev, NULL,
-> cs35l41->index, GPIOD_OUT_LOW);
-> + cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
-> + printk("CS3551: reset_gpio == 0x%x\n", cs35l41->reset_gpio);
-> +
-> + // cs35l41->speaker_id = cs35l41_get_speaker_id(physdev,
-> cs35l41->index, nval, -1);
-> + cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 2);
-> +
-> + // cirrus,speaker-position
-> + hw_cfg->spk_pos = cs35l41->index;
-> +
-> + // cirrus,gpio1-func
-> + hw_cfg->gpio1.func = CS35l41_VSPK_SWITCH;
-> + hw_cfg->gpio1.valid = true;
-> +
-> + // cirrus,gpio2-func
-> + hw_cfg->gpio2.func = CS35L41_INTERRUPT;
-> + hw_cfg->gpio2.valid = true;
-> +
-> + hw_cfg->bst_type = CS35L41_EXT_BOOST;
-> + hw_cfg->valid = true;
-> +
-> + put_device(physdev);
-> + printk("CSC3551: Done.\n");
-> +
-> + return 0;
+> +	return container_of(sd, struct gc0308, sd);
 > +}
 > +
-> struct cs35l41_prop_model {
-> const char *hid;
-> const char *ssid;
-> @@ -85,6 +125,7 @@ static const struct cs35l41_prop_model
-> cs35l41_prop_model_table[] = {
-> { "CLSA0100", NULL, lenovo_legion_no_acpi },
-> { "CLSA0101", NULL, lenovo_legion_no_acpi },
-> { "CSC3551", "103C89C6", hp_vision_acpi_fix },
-> + { "CSC3551", "17AA38A9", lenovo_thinkbook16pgen4_no_acpi },
-> {}
-> };
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 751783f3a15c..fc884fdcec5f 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -10031,6 +10031,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]
-> = { SND_PCI_QUIRK(0x17aa, 0x3886, "Y780 VECO DUAL",
-> ALC287_FIXUP_TAS2781_I2C), SND_PCI_QUIRK(0x17aa, 0x38a7, "Y780P AMD YG
-> dual", ALC287_FIXUP_TAS2781_I2C), SND_PCI_QUIRK(0x17aa, 0x38a8, "Y780P AMD
-> VECO dual", ALC287_FIXUP_TAS2781_I2C), + SND_PCI_QUIRK(0x17aa, 0x38a9,
-> "Lenovo ThinkBook 16p Gen 4",
-> ALC287_FIXUP_CS35L41_I2C_2),
-> SND_PCI_QUIRK(0x17aa, 0x38ba, "Yoga S780-14.5 Air AMD quad YC",
-> ALC287_FIXUP_TAS2781_I2C),
-> SND_PCI_QUIRK(0x17aa, 0x38bb, "Yoga S780-14.5 Air AMD quad AAC",
-> ALC287_FIXUP_TAS2781_I2C),
-> SND_PCI_QUIRK(0x17aa, 0x38be, "Yoga S980-14.5 proX YC Dual",
-> ALC287_FIXUP_TAS2781_I2C),
-> 
-> > On 03/10/2023 15:45, Luke Jones wrote:
-> > > On Thu, Aug 24 2023 at 08:31:06 AM +12:00:00, Luke Jones
-> > > 
-> > > <luke@ljones.dev> wrote:
-> > >>> The second member variable in cs35l41_prop_model_table is the SSID to
-> > >>> match against.
-> > >>> The Lenovo laptops in the initial patch didn't have different SSIDs so
-> > >>> the entry was set to NULL for those.
-> > >>> Future entries using CSC3551 MUST always have an accompanying SSID
-> > >>> with this entry.
-> > >>> Takashi was correct, the implementation is intended to also be used to
-> > >>> patch incorrect DSD.
-> > >>> 
-> > >>> We have a potential solution to workaround the SPI cs-gpios issue
-> > >>> inside here,
-> > >>> though the drawback for that is that it only works for laptops with 2
-> > >>> SPI amps.
-> > >> 
-> > >> Can you provide me this so I can test? I have laptops with SPI 2 and
-> > >> 4 speaker setups.
-> > > 
-> > > Hi Stefan,
-> > > 
-> > > Do you have any further information about the status of this in
-> > > regards to the 2023 laptops?
-> > 
-> > Hi,
-> > 
-> > We are currently working on adding support for 2023 ASUS laptops without
-> > _DSD.
-> > 
-> > >>> I also took a look at the function for applying DSD properties for the
-> > >>> 2023 ROG laptops.
-> > >>> Unfortunately the one-size-fits-all approach will not work, some of
-> > >>> these laptops are i2c
-> > >>> and some are SPI, meaning the GPIO indexes are different for different
-> > >>> laptops.
-> > >> 
-> > >> Do you mean "spk-id-gpios"? For all the laptops I know of this seems
-> > >> to be
-> > >> Package () { "spk-id-gpios", Package () {
-> > >> 
-> > >>    SPK1, 0x02, Zero, Zero,
-> > >>    SPK1, 0x02, Zero, Zero
-> > >> 
-> > >> } },
-> > >> 
-> > >> There is one laptop where it is One not 0x02 (the GA402N)
-> > >> 
-> > >>> Some of the laptops do no have Speaker IDs.
-> > >>> Also, no laptop other than the 2 I added already should ever use
-> > >>> CS35L41_EXT_BOOST_NO_VSPK_SWITCH (in fact I believe all these laptops
-> > >>> are internal
-> > >>> boost anyway).
-> > >> 
-> > >> Grazie.
-> > >> 
-> > >>> We are currently working internally on adding support for the 2023 ROG
-> > >>> laptops, so we
-> > >>> ask for you guys to hold off on trying to upstream support for these
-> > >>> laptops.
-> > >> 
-> > >> Ah great. Thank you. I apologise for trying to rush things, but I do
-> > >> have a discord server of over 4000 people, many of whom have laptops
-> > >> with cirrus amps.
-> > >> 
-> > >> For now I'm including a patch in my kernel builds with this mapping:
-> > >> 
-> > >> const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
-> > >> 
-> > >>     { "CLSA0100", NULL, lenovo_legion_no_acpi },
-> > >>     { "CLSA0101", NULL, lenovo_legion_no_acpi },
-> > >>     { "CSC3551", "10431433", asus_rog_2023_no_acpi }, // ASUS GS650P
-> > >> 
-> > >> - i2c
-> > >> 
-> > >>     { "CSC3551", "10431463", asus_rog_2023_no_acpi }, // ASUS GA402X
-> > >> 
-> > >> - i2c
-> > >> 
-> > >>     { "CSC3551", "10431473", asus_rog_2023_no_acpi }, // ASUS GU604V
-> > >> 
-> > >> - spi
-> > >> 
-> > >>     { "CSC3551", "10431483", asus_rog_2023_no_acpi }, // ASUS GU603V
-> > >> 
-> > >> - spi
-> > >> 
-> > >>     { "CSC3551", "10431493", asus_rog_2023_no_acpi }, // ASUS GV601V
-> > >> 
-> > >> - spi
-> > >> 
-> > >>     { "CSC3551", "10431573", asus_rog_2023_no_acpi }, // ASUS GZ301V
-> > >> 
-> > >> - spi
-> > >> 
-> > >>     { "CSC3551", "104317F3", asus_rog_2023_no_acpi }, // ASUS ROG
-> > >> 
-> > >> ALLY - i2c
-> > >> 
-> > >>     { "CSC3551", "10431B93", asus_rog_2023_no_acpi }, // ASUS G614J -
-> > >> 
-> > >> spi
-> > >> 
-> > >>     { "CSC3551", "10431CAF", asus_rog_2023_no_acpi }, // ASUS G634J -
-> > >> 
-> > >> spi
-> > >> 
-> > >>     { "CSC3551", "10431C9F", asus_rog_2023_no_acpi }, // ASUS G614JI
-> > >> 
-> > >> -spi
-> > >> 
-> > >>     { "CSC3551", "10431D1F", asus_rog_2023_no_acpi }, // ASUS G713P -
-> > >> 
-> > >> i2c
-> > >> 
-> > >>     { "CSC3551", "10431F1F", asus_rog_2023_no_acpi }, // ASUS H7604JV
-> > >> 
-> > >> - spi
-> > >> 
-> > >>     {}
-> > >> 
-> > >> };
-> > >> 
-> > >> These are the machines I have verified the gpios and such for.
-> > > 
-> > > I have a new version of this patch with all listed models confirmed as
-> > > working, and with slightly different settings for some. The only thing
-> > > missing in a solution to the gpio-cs issue.
-> > > 
-> > > Can you please provide an update on where you are with ASUS support in
-> > > particular so that I may consider if it is worth my time submitting
-> > > the updated patch.
-> > 
-> > We would prefer for you to wait, as we are looking to push up this
-> > support in the coming weeks.
-> > 
-> > >> Cheers,
-> > >> Luke.
+> +static const struct regmap_range_cfg gc0308_ranges[] = {
+> +	{
+> +		.range_min	= 0x0000,
+> +		.range_max	= 0x01ff,
+> +		.selector_reg	= 0xfe,
+> +		.selector_mask	= 0x01,
+> +		.selector_shift	= 0x00,
+> +		.window_start	= 0x00,
+> +		.window_len	= 0x100,
+> +	},
+> +};
+> +
+> +static const struct regmap_config gc0308_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +	.max_register = 0x1ff,
+> +	.ranges = gc0308_ranges,
+> +	.num_ranges = ARRAY_SIZE(gc0308_ranges),
+> +	.cache_type = REGCACHE_RBTREE,
+> +};
+> +
+> +static const struct reg_sequence sensor_default_regs[] = {
+> +	REG_SEQ0(GC0308_VB_HB, 0x00),
+> +	REG_SEQ0(GC0308_HBLANK, 0x40),
+> +	REG_SEQ0(GC0308_VBLANK, 0x20),
+> +	REG_SEQ0(GC0308_EXPH, 0x02),
+> +	REG_SEQ0(GC0308_EXPL, 0x58),
+> +	REG_SEQ0(GC0308_AWB_R_GAIN, 0x56),
+> +	REG_SEQ0(GC0308_AWB_G_GAIN, 0x40),
+> +	REG_SEQ0(GC0308_AWB_B_GAIN, 0x4a),
+> +	REG_SEQ0(GC0308_ANTI_FLICKER_STEP_H, 0x00),
+> +	REG_SEQ0(GC0308_ANTI_FLICKER_STEP_L, 0x78),
+> +	REG_SEQ0(GC0308_EXP_LVL_1H, 0x02),
+> +	REG_SEQ0(GC0308_EXP_LVL_1L, 0x58),
+> +	REG_SEQ0(GC0308_EXP_LVL_2H, 0x02),
+> +	REG_SEQ0(GC0308_EXP_LVL_2L, 0x58),
+> +	REG_SEQ0(GC0308_EXP_LVL_3H, 0x02),
+> +	REG_SEQ0(GC0308_EXP_LVL_3L, 0x58),
+> +	REG_SEQ0(GC0308_EXP_LVL_4H, 0x0e),
+> +	REG_SEQ0(GC0308_EXP_LVL_4L, 0xa6),
+> +	REG_SEQ0(GC0308_MAX_EXP_LVL, 0x20),
+> +	REG_SEQ0(GC0308_ROW_STARTH, 0x00),
+> +	REG_SEQ0(GC0308_ROW_STARTL, 0x00),
+> +	REG_SEQ0(GC0308_COL_STARTH, 0x00),
+> +	REG_SEQ0(GC0308_COL_STARTL, 0x00),
+> +	REG_SEQ0(GC0308_WIN_HEIGHTH, 0x01), /* 0x1e8 = 488 => VT=480 */
+> +	REG_SEQ0(GC0308_WIN_HEIGHTL, 0xe8),
+> +	REG_SEQ0(GC0308_WIN_WIDTHH, 0x02), /* 0x288 = 648 => VH=640 */
+> +	REG_SEQ0(GC0308_WIN_WIDTHL, 0x88),
+> +	REG_SEQ0(GC0308_VS_ST, 0x02), /* Start Time (in rows) */
+> +	REG_SEQ0(GC0308_VS_ET, 0x02), /* End Time (in rows) */
+> +	REG_SEQ0(GC0308_RSH_WIDTH, 0x22),
+> +	REG_SEQ0(GC0308_TSP_WIDTH, 0x0d),
+> +	REG_SEQ0(GC0308_SH_DELAY, 0x50), /* sample hold delay post row finish */
+> +	REG_SEQ0(GC0308_ROW_TAIL_WIDTH, 0x0f),
+> +	REG_SEQ0(GC0308_CISCTL_MODE1, 0x10),
+> +	REG_SEQ0(GC0308_CISCTL_MODE2, 0x0a),
+> +	REG_SEQ0(GC0308_CISCTL_MODE3, 0x05),
+> +	REG_SEQ0(GC0308_CISCTL_MODE4, 0x01),
+> +	REG_SEQ0(0x018, 0x44), /* undocumented */
+> +	REG_SEQ0(0x019, 0x44), /* undocumented */
+> +	REG_SEQ0(GC0308_ANALOG_MODE1, 0x2a),
+> +	REG_SEQ0(GC0308_ANALOG_MODE2, 0x00),
+> +	REG_SEQ0(GC0308_HRST_RSG_V18, 0x49),
+> +	REG_SEQ0(GC0308_VREF_V25, 0x9a),
+> +	REG_SEQ0(GC0308_ADC_R, 0x61),
+> +	REG_SEQ0(GC0308_PAD_DRV, 0x01), /* drv strength: pclk=4mA */
+> +	REG_SEQ0(GC0308_BLOCK_EN1, 0x7f),
+> +	REG_SEQ0(GC0308_BLOCK_EN2, 0xfa),
+> +	REG_SEQ0(GC0308_AAAA_EN, 0x57),
+> +	REG_SEQ0(GC0308_OUT_FORMAT, 0xa2), /* YCbYCr */
+> +	REG_SEQ0(GC0308_OUT_EN, 0x0f),
+> +	REG_SEQ0(GC0308_SYNC_MODE, 0x03),
+> +	REG_SEQ0(GC0308_CLK_DIV_MODE, 0x00),
+> +	REG_SEQ0(GC0308_DEBUG_MODE1, 0x0a),
+> +	REG_SEQ0(GC0308_DEBUG_MODE2, 0x00),
+> +	REG_SEQ0(GC0308_DEBUG_MODE3, 0x01),
+> +	REG_SEQ0(GC0308_BLK_MODE, 0xf7),
+> +	REG_SEQ0(GC0308_BLK_LIMIT_VAL, 0x50),
+> +	REG_SEQ0(GC0308_GLOBAL_OFF, 0x00),
+> +	REG_SEQ0(GC0308_CURRENT_R_OFF, 0x28),
+> +	REG_SEQ0(GC0308_CURRENT_G_OFF, 0x2a),
+> +	REG_SEQ0(GC0308_CURRENT_B_OFF, 0x28),
+> +	REG_SEQ0(GC0308_EXP_RATE_DARKC, 0x04),
+> +	REG_SEQ0(GC0308_OFF_SUBMODE, 0x20),
+> +	REG_SEQ0(GC0308_DARKC_SUBMODE, 0x20),
+> +	REG_SEQ0(GC0308_MANUAL_G1_OFF, 0x00),
+> +	REG_SEQ0(GC0308_MANUAL_R1_OFF, 0x00),
+> +	REG_SEQ0(GC0308_MANUAL_B2_OFF, 0x00),
+> +	REG_SEQ0(GC0308_MANUAL_G2_OFF, 0x00),
+> +	REG_SEQ0(GC0308_GLOBAL_GAIN, 0x14),
+> +	REG_SEQ0(GC0308_AUTO_POSTGAIN, 0x41),
+> +	REG_SEQ0(GC0308_CHANNEL_GAIN_G1, 0x80),
+> +	REG_SEQ0(GC0308_CHANNEL_GAIN_R, 0x80),
+> +	REG_SEQ0(GC0308_CHANNEL_GAIN_B, 0x80),
+> +	REG_SEQ0(GC0308_CHANNEL_GAIN_G2, 0x80),
+> +	REG_SEQ0(GC0308_LSC_RED_B2, 0x20),
+> +	REG_SEQ0(GC0308_LSC_GREEN_B2, 0x20),
+> +	REG_SEQ0(GC0308_LSC_BLUE_B2, 0x20),
+> +	REG_SEQ0(GC0308_LSC_RED_B4, 0x14),
+> +	REG_SEQ0(GC0308_LSC_GREEN_B4, 0x10),
+> +	REG_SEQ0(GC0308_LSC_BLUE_B4, 0x14),
+> +	REG_SEQ0(GC0308_LSC_ROW_CENTER, 0x3c),
+> +	REG_SEQ0(GC0308_LSC_COL_CENTER, 0x50),
+> +	REG_SEQ0(GC0308_LSC_DEC_LVL1, 0x12),
+> +	REG_SEQ0(GC0308_LSC_DEC_LVL2, 0x1a),
+> +	REG_SEQ0(GC0308_LSC_DEC_LVL3, 0x24),
+> +	REG_SEQ0(GC0308_DN_MODE_EN, 0x07),
+> +	REG_SEQ0(GC0308_DN_MODE_RATIO, 0x15),
+> +	REG_SEQ0(GC0308_DN_BILAT_B_BASE, 0x08),
+> +	REG_SEQ0(GC0308_DN_BILAT_N_BASE, 0x03),
+> +	REG_SEQ0(GC0308_DD_DARK_BRIGHT_TH, 0xe8),
+> +	REG_SEQ0(GC0308_DD_FLAT_TH, 0x86),
+> +	REG_SEQ0(GC0308_DD_LIMIT, 0x82),
+> +	REG_SEQ0(GC0308_ASDE_GAIN_TRESH, 0x18),
+> +	REG_SEQ0(GC0308_ASDE_GAIN_MODE, 0x0f),
+> +	REG_SEQ0(GC0308_ASDE_DN_SLOPE, 0x00),
+> +	REG_SEQ0(GC0308_ASDE_DD_BRIGHT, 0x5f),
+> +	REG_SEQ0(GC0308_ASDE_DD_LIMIT, 0x8f),
+> +	REG_SEQ0(GC0308_ASDE_AUTO_EE1, 0x55),
+> +	REG_SEQ0(GC0308_ASDE_AUTO_EE2, 0x38),
+> +	REG_SEQ0(GC0308_ASDE_AUTO_SAT_DEC_SLOPE, 0x15),
+> +	REG_SEQ0(GC0308_ASDE_AUTO_SAT_LOW_LIMIT, 0x33),
+> +	REG_SEQ0(GC0308_EEINTP_MODE_1, 0xdc),
+> +	REG_SEQ0(GC0308_EEINTP_MODE_2, 0x00),
+> +	REG_SEQ0(GC0308_DIRECTION_TH1, 0x02),
+> +	REG_SEQ0(GC0308_DIRECTION_TH2, 0x3f),
+> +	REG_SEQ0(GC0308_DIFF_HV_TI_TH, 0x02),
+> +	REG_SEQ0(GC0308_EDGE12_EFFECT, 0x38),
+> +	REG_SEQ0(GC0308_EDGE_POS_RATIO, 0x88),
+> +	REG_SEQ0(GC0308_EDGE1_MINMAX, 0x81),
+> +	REG_SEQ0(GC0308_EDGE2_MINMAX, 0x81),
+> +	REG_SEQ0(GC0308_EDGE12_TH, 0x22),
+> +	REG_SEQ0(GC0308_EDGE_MAX, 0xff),
+> +	REG_SEQ0(GC0308_CC_MATRIX_C11, 0x48),
+> +	REG_SEQ0(GC0308_CC_MATRIX_C12, 0x02),
+> +	REG_SEQ0(GC0308_CC_MATRIX_C13, 0x07),
+> +	REG_SEQ0(GC0308_CC_MATRIX_C21, 0xe0),
+> +	REG_SEQ0(GC0308_CC_MATRIX_C22, 0x40),
+> +	REG_SEQ0(GC0308_CC_MATRIX_C23, 0xf0),
+> +	REG_SEQ0(GC0308_SATURATION_CB, 0x40),
+> +	REG_SEQ0(GC0308_SATURATION_CR, 0x40),
+> +	REG_SEQ0(GC0308_LUMA_CONTRAST, 0x40),
+> +	REG_SEQ0(GC0308_SKIN_CB_CENTER, 0xe0),
+> +	REG_SEQ0(GC0308_EDGE_DEC_SA, 0x38),
+> +	REG_SEQ0(GC0308_AUTO_GRAY_MODE, 0x36),
+> +	REG_SEQ0(GC0308_AEC_MODE1, 0xcb),
+> +	REG_SEQ0(GC0308_AEC_MODE2, 0x10),
+> +	REG_SEQ0(GC0308_AEC_MODE3, 0x90),
+> +	REG_SEQ0(GC0308_AEC_TARGET_Y, 0x48),
+> +	REG_SEQ0(GC0308_AEC_HIGH_LOW_RANGE, 0xf2),
+> +	REG_SEQ0(GC0308_AEC_IGNORE, 0x16),
+> +	REG_SEQ0(GC0308_AEC_SLOW_MARGIN, 0x92),
+> +	REG_SEQ0(GC0308_AEC_FAST_MARGIN, 0xa5),
+> +	REG_SEQ0(GC0308_AEC_I_FRAMES, 0x23),
+> +	REG_SEQ0(GC0308_AEC_R_OFFSET, 0x00),
+> +	REG_SEQ0(GC0308_AEC_GB_OFFSET, 0x00),
+> +	REG_SEQ0(GC0308_AEC_I_STOP_L_MARGIN, 0x09),
+> +	REG_SEQ0(GC0308_EXP_MIN_L, 0x04),
+> +	REG_SEQ0(GC0308_MAX_POST_DF_GAIN, 0xa0),
+> +	REG_SEQ0(GC0308_MAX_PRE_DG_GAIN, 0x40),
+> +	REG_SEQ0(GC0308_ABB_MODE, 0x03),
+> +	REG_SEQ0(GC0308_GAMMA_OUT0, 0x10),
+> +	REG_SEQ0(GC0308_GAMMA_OUT1, 0x20),
+> +	REG_SEQ0(GC0308_GAMMA_OUT2, 0x38),
+> +	REG_SEQ0(GC0308_GAMMA_OUT3, 0x4e),
+> +	REG_SEQ0(GC0308_GAMMA_OUT4, 0x63),
+> +	REG_SEQ0(GC0308_GAMMA_OUT5, 0x76),
+> +	REG_SEQ0(GC0308_GAMMA_OUT6, 0x87),
+> +	REG_SEQ0(GC0308_GAMMA_OUT7, 0xa2),
+> +	REG_SEQ0(GC0308_GAMMA_OUT8, 0xb8),
+> +	REG_SEQ0(GC0308_GAMMA_OUT9, 0xca),
+> +	REG_SEQ0(GC0308_GAMMA_OUT10, 0xd8),
+> +	REG_SEQ0(GC0308_GAMMA_OUT11, 0xe3),
+> +	REG_SEQ0(GC0308_GAMMA_OUT12, 0xeb),
+> +	REG_SEQ0(GC0308_GAMMA_OUT13, 0xf0),
+> +	REG_SEQ0(GC0308_GAMMA_OUT14, 0xf8),
+> +	REG_SEQ0(GC0308_GAMMA_OUT15, 0xfd),
+> +	REG_SEQ0(GC0308_GAMMA_OUT16, 0xff),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT0, 0x00),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT1, 0x10),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT2, 0x1c),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT3, 0x30),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT4, 0x43),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT5, 0x54),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT6, 0x65),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT7, 0x75),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT8, 0x93),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT9, 0xb0),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT10, 0xcb),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT11, 0xe6),
+> +	REG_SEQ0(GC0308_Y_GAMMA_OUT12, 0xff),
+> +	REG_SEQ0(GC0308_ABS_RANGE_COMP, 0x02),
+> +	REG_SEQ0(GC0308_ABS_STOP_MARGIN, 0x01),
+> +	REG_SEQ0(GC0308_Y_S_COMP, 0x02),
+> +	REG_SEQ0(GC0308_Y_STRETCH_LIMIT, 0x30),
+> +	REG_SEQ0(GC0308_BIG_WIN_X0, 0x12),
+> +	REG_SEQ0(GC0308_BIG_WIN_Y0, 0x0a),
+> +	REG_SEQ0(GC0308_BIG_WIN_X1, 0x9f),
+> +	REG_SEQ0(GC0308_BIG_WIN_Y1, 0x78),
+> +	REG_SEQ0(GC0308_AWB_RGB_HIGH_LOW, 0xf5),
+> +	REG_SEQ0(GC0308_AWB_Y_TO_C_DIFF2, 0x20),
+> +	REG_SEQ0(GC0308_AWB_C_MAX, 0x10),
+> +	REG_SEQ0(GC0308_AWB_C_INTER, 0x08),
+> +	REG_SEQ0(GC0308_AWB_C_INTER2, 0x20),
+> +	REG_SEQ0(GC0308_AWB_C_MAX_BIG, 0x0a),
+> +	REG_SEQ0(GC0308_AWB_NUMBER_LIMIT, 0xa0),
+> +	REG_SEQ0(GC0308_KWIN_RATIO, 0x60),
+> +	REG_SEQ0(GC0308_KWIN_THD, 0x08),
+> +	REG_SEQ0(GC0308_SMALL_WIN_WIDTH_STEP, 0x44),
+> +	REG_SEQ0(GC0308_SMALL_WIN_HEIGHT_STEP, 0x32),
+> +	REG_SEQ0(GC0308_AWB_YELLOW_TH, 0x41),
+> +	REG_SEQ0(GC0308_AWB_MODE, 0x37),
+> +	REG_SEQ0(GC0308_AWB_ADJUST_SPEED, 0x22),
+> +	REG_SEQ0(GC0308_AWB_EVERY_N, 0x19),
+> +	REG_SEQ0(0x114, 0x44), /* AWB set1 */
+> +	REG_SEQ0(0x115, 0x44), /* AWB set1 */
+> +	REG_SEQ0(0x116, 0xc2), /* AWB set1 */
+> +	REG_SEQ0(0x117, 0xa8), /* AWB set1 */
+> +	REG_SEQ0(0x118, 0x18), /* AWB set1 */
+> +	REG_SEQ0(0x119, 0x50), /* AWB set1 */
+> +	REG_SEQ0(0x11a, 0xd8), /* AWB set1 */
+> +	REG_SEQ0(0x11b, 0xf5), /* AWB set1 */
+> +	REG_SEQ0(0x170, 0x40), /* AWB set2 */
+> +	REG_SEQ0(0x171, 0x58), /* AWB set2 */
+> +	REG_SEQ0(0x172, 0x30), /* AWB set2 */
+> +	REG_SEQ0(0x173, 0x48), /* AWB set2 */
+> +	REG_SEQ0(0x174, 0x20), /* AWB set2 */
+> +	REG_SEQ0(0x175, 0x60), /* AWB set2 */
+> +	REG_SEQ0(0x177, 0x20), /* AWB set2 */
+> +	REG_SEQ0(0x178, 0x32), /* AWB set2 */
+> +	REG_SEQ0(0x130, 0x03), /* undocumented */
+> +	REG_SEQ0(0x131, 0x40), /* undocumented */
+> +	REG_SEQ0(0x132, 0x10), /* undocumented */
+> +	REG_SEQ0(0x133, 0xe0), /* undocumented */
+> +	REG_SEQ0(0x134, 0xe0), /* undocumented */
+> +	REG_SEQ0(0x135, 0x00), /* undocumented */
+> +	REG_SEQ0(0x136, 0x80), /* undocumented */
+> +	REG_SEQ0(0x137, 0x00), /* undocumented */
+> +	REG_SEQ0(0x138, 0x04), /* undocumented */
+> +	REG_SEQ0(0x139, 0x09), /* undocumented */
+> +	REG_SEQ0(0x13a, 0x12), /* undocumented */
+> +	REG_SEQ0(0x13b, 0x1c), /* undocumented */
+> +	REG_SEQ0(0x13c, 0x28), /* undocumented */
+> +	REG_SEQ0(0x13d, 0x31), /* undocumented */
+> +	REG_SEQ0(0x13e, 0x44), /* undocumented */
+> +	REG_SEQ0(0x13f, 0x57), /* undocumented */
+> +	REG_SEQ0(0x140, 0x6c), /* undocumented */
+> +	REG_SEQ0(0x141, 0x81), /* undocumented */
+> +	REG_SEQ0(0x142, 0x94), /* undocumented */
+> +	REG_SEQ0(0x143, 0xa7), /* undocumented */
+> +	REG_SEQ0(0x144, 0xb8), /* undocumented */
+> +	REG_SEQ0(0x145, 0xd6), /* undocumented */
+> +	REG_SEQ0(0x146, 0xee), /* undocumented */
+> +	REG_SEQ0(0x147, 0x0d), /* undocumented */
+> +	REG_SEQ0(0x162, 0xf7), /* undocumented */
+> +	REG_SEQ0(0x163, 0x68), /* undocumented */
+> +	REG_SEQ0(0x164, 0xd3), /* undocumented */
+> +	REG_SEQ0(0x165, 0xd3), /* undocumented */
+> +	REG_SEQ0(0x166, 0x60), /* undocumented */
+> +};
+> +
+> +struct gc0308_colormode {
+> +	u8 special_effect;
+> +	u8 dbg_mode1;
+> +	u8 block_en1;
+> +	u8 aec_mode3;
+> +	u8 eeintp_mode_2;
+> +	u8 edge12_effect;
+> +	u8 luma_contrast;
+> +	u8 contrast_center;
+> +	u8 fixed_cb;
+> +	u8 fixed_cr;
+> +};
+> +
+> +#define GC0308_COLOR_FX(reg_special_effect, reg_dbg_mode1, reg_block_en1, \
+> +			reg_aec_mode3, reg_eeintp_mode_2, reg_edge12_effect, \
+> +			reg_luma_contrast, reg_contrast_center, \
+> +			reg_fixed_cb, reg_fixed_cr) \
+> +	{ \
+> +		.special_effect = reg_special_effect, \
+> +		.dbg_mode1 = reg_dbg_mode1, \
+> +		.block_en1 = reg_block_en1, \
+> +		.aec_mode3 = reg_aec_mode3, \
+> +		.eeintp_mode_2 = reg_eeintp_mode_2, \
+> +		.edge12_effect = reg_edge12_effect, \
+> +		.luma_contrast = reg_luma_contrast, \
+> +		.contrast_center = reg_contrast_center, \
+> +		.fixed_cb = reg_fixed_cb, \
+> +		.fixed_cr = reg_fixed_cr, \
+> +	}
+> +
+> +static const struct gc0308_colormode gc0308_colormodes[] = {
+> +	[V4L2_COLORFX_NONE] =
+> +		GC0308_COLOR_FX(0x00, 0x0a, 0xff, 0x90, 0x00,
+> +				0x54, 0x3c, 0x80, 0x00, 0x00),
+> +	[V4L2_COLORFX_BW] =
+> +		GC0308_COLOR_FX(0x02, 0x0a, 0xff, 0x90, 0x00,
+> +				0x54, 0x40, 0x80, 0x00, 0x00),
+> +	[V4L2_COLORFX_SEPIA] =
+> +		GC0308_COLOR_FX(0x02, 0x0a, 0xff, 0x90, 0x00,
+> +				0x38, 0x40, 0x80, 0xd0, 0x28),
+> +	[V4L2_COLORFX_NEGATIVE] =
+> +		GC0308_COLOR_FX(0x01, 0x0a, 0xff, 0x90, 0x00,
+> +				0x38, 0x40, 0x80, 0x00, 0x00),
+> +	[V4L2_COLORFX_EMBOSS] =
+> +		GC0308_COLOR_FX(0x02, 0x0a, 0xbf, 0x10, 0x01,
+> +				0x38, 0x40, 0x80, 0x00, 0x00),
+> +	[V4L2_COLORFX_SKETCH] =
+> +		GC0308_COLOR_FX(0x02, 0x0a, 0xff, 0x10, 0x80,
+> +				0x38, 0x80, 0x90, 0x00, 0x00),
+> +	[V4L2_COLORFX_SKY_BLUE] =
+> +		GC0308_COLOR_FX(0x02, 0x0a, 0xff, 0x90, 0x00,
+> +				0x38, 0x40, 0x80, 0x50, 0xe0),
+> +	[V4L2_COLORFX_GRASS_GREEN] =
+> +		GC0308_COLOR_FX(0x02, 0x0a, 0xff, 0x90, 0x01,
+> +				0x38, 0x40, 0x80, 0xc0, 0xc0),
+> +	[V4L2_COLORFX_SKIN_WHITEN] =
+> +		GC0308_COLOR_FX(0x02, 0x0a, 0xbf, 0x10, 0x01,
+> +				0x38, 0x60, 0x40, 0x00, 0x00),
+> +};
+> +
+> +static const struct reg_sequence sensor_banding_50hz[] = {
+> +	REG_SEQ0(GC0308_ANTI_FLICKER_STEP_L, 0x78),
+> +	REG_SEQ0(GC0308_EXP_LVL_1H, 0x02),
+> +	REG_SEQ0(GC0308_EXP_LVL_1L, 0x58),
+> +	REG_SEQ0(GC0308_EXP_LVL_2H, 0x03),
+> +	REG_SEQ0(GC0308_EXP_LVL_2L, 0x48),
+> +	REG_SEQ0(GC0308_EXP_LVL_3H, 0x04),
+> +	REG_SEQ0(GC0308_EXP_LVL_3L, 0xb0),
+> +	REG_SEQ0(GC0308_EXP_LVL_4H, 0x05),
+> +	REG_SEQ0(GC0308_EXP_LVL_4L, 0xa0),
+> +};
+> +
+> +static const struct reg_sequence sensor_banding_60hz[] = {
+> +	REG_SEQ0(GC0308_ANTI_FLICKER_STEP_L, 0x64),
+> +	REG_SEQ0(GC0308_EXP_LVL_1H, 0x02),
+> +	REG_SEQ0(GC0308_EXP_LVL_1L, 0x58),
+> +	REG_SEQ0(GC0308_EXP_LVL_2H, 0x03),
+> +	REG_SEQ0(GC0308_EXP_LVL_2L, 0x84),
+> +	REG_SEQ0(GC0308_EXP_LVL_3H, 0x04),
+> +	REG_SEQ0(GC0308_EXP_LVL_3L, 0xb0),
+> +	REG_SEQ0(GC0308_EXP_LVL_4H, 0x05),
+> +	REG_SEQ0(GC0308_EXP_LVL_4L, 0xdc),
+> +};
+> +
+> +static int gc0308_power_on(struct device *dev)
+> +{
+> +	struct gc0308 *gc0308 = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(gc0308->clk);
+> +	if (ret)
+> +		return ret;
+> +
+> +	gpiod_set_value_cansleep(gc0308->pwdn_gpio, 0);
+> +	usleep_range(10000, 20000);
+> +
+> +	gpiod_set_value_cansleep(gc0308->reset_gpio, 1);
+> +	msleep(100);
+> +	gpiod_set_value_cansleep(gc0308->reset_gpio, 0);
+> +	msleep(100);
 
-Stefan and all,
+No regulator control?
 
-Thanks for the hard work getting the DSD properties sorted and installed on 
-various BIOSes. The one that I'm most concerned with and what got me 
-interested in this patching mechanism in the first place is the ASUS ROG ALLY. 
-From a DSD dump, it's clear that the latest ROG ALLY BIOS (330) has the proper 
-audio DSD properties. Unfortunately, certain things on many people's setups 
-across numerous ROG ALLYs (using various Linux distros) have broken with the 
-330 BIOS. This led many of us to revert back to the previous BIOS, 323. 
-Knowing the proper internal boost corresponding values now (cap, inductor, and 
-peak current), it's ideal to push these properties out for those people who 
-prefer to stay on an older BIOS for the ROG ALLY. I've developed a small patch 
-that I've used on a custom 6.5.8 Nobara kernel. Line numbers and whatnot may 
-be different according to latest on official Linux git, but I'd still like to 
-share what I have. I think it is a good addition. There's basically a small 
-logic check versus BIOS number. If the BIOS is 330 or greater, then the 
-function to override DSD properties is exited. If the BIOS has a smaller 
-number than 330, then the DSD overrides are applied. Here is my patch.
+> +
+> +	return 0;
+> +}
+> +
+> +static int gc0308_power_off(struct device *dev)
+> +{
+> +	struct gc0308 *gc0308 = dev_get_drvdata(dev);
+> +
+> +	gpiod_set_value_cansleep(gc0308->pwdn_gpio, 1);
+> +	clk_disable_unprepare(gc0308->clk);
+> +
+> +	return 0;
+> +}
+> +
+> +#ifdef CONFIG_VIDEO_ADV_DEBUG
+> +static int gc0308_g_register(struct v4l2_subdev *sd,
+> +			     struct v4l2_dbg_register *reg)
+> +{
+> +	struct gc0308 *gc0308 = to_gc0308(sd);
+> +	int ret, val;
+> +
+> +	ret = regmap_read(gc0308->regmap, reg->reg, &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	reg->val = val;
+> +	return 0;
+> +}
+> +
+> +static int gc0308_s_register(struct v4l2_subdev *sd,
+> +			     const struct v4l2_dbg_register *reg)
+> +{
+> +	struct gc0308 *gc0308 = to_gc0308(sd);
+> +
+> +	return regmap_write(gc0308->regmap, reg->reg, reg->val);
+> +}
+> +#endif
+> +
+> +static int gc0308_s_format(struct gc0308 *gc0308)
+> +{
+> +	u32 i;
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/
-cs35l41_hda_property.c
-index b39f944..b67c636 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -6,7 +6,9 @@
- //
- // Author: Stefan Binding <sbinding@opensource.cirrus.com>
- 
-+#include <linux/dmi.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/kernel.h>
- #include <linux/string.h>
- #include "cs35l41_hda_property.h"
- 
-@@ -78,6 +80,40 @@ static int asus_rog_2023_spkr_id2(struct cs35l41_hda 
-*cs35l41, struct device *ph
- 	return 0;
- }
- 
-+static int asus_rog_2023_ally_fix(struct cs35l41_hda *cs35l41, struct device 
-*physdev, int id,
-+				const char *hid)
-+{
-+	const char *rog_ally_bios_ver = 
-dmi_get_system_info(DMI_BIOS_VERSION);
-+	const char *rog_ally_bios_num = rog_ally_bios_ver + 6; // Dropping 
-the RC71L. part before the number
-+	int rog_ally_bios_int;
-+	kstrtoint(rog_ally_bios_num, 10, &rog_ally_bios_int);
-+	if(rog_ally_bios_int >= 330){
-+		printk(KERN_INFO "DSD properties exist in the %d 
-BIOS\n", rog_ally_bios_int);
-+		return -ENOENT;
-+	}
-+
-+	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
-+
-+	dev_info(cs35l41->dev, "Adding DSD properties for %s\n", cs35l41-
->acpi_subsystem_id);
-+
-+	cs35l41->index = id == 0x40 ? 0 : 1;
-+	cs35l41->channel_index = 0;
-+	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, 
-GPIOD_OUT_HIGH);
-+	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 2);
-+	hw_cfg->spk_pos = cs35l41->index;
-+	hw_cfg->gpio1.func = CS35L41_NOT_USED;
-+	hw_cfg->gpio1.valid = true;
-+	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
-+	hw_cfg->gpio2.valid = true;
-+	hw_cfg->bst_type = CS35L41_INT_BOOST;
-+	hw_cfg->bst_ind = 1000; /* 1,000nH Inductance value */
-+	hw_cfg->bst_ipk = 4500; /* 4,500mA peak current */
-+	hw_cfg->bst_cap = 24; /* 24 microFarad cap value */
-+	hw_cfg->valid = true;
-+
-+	return 0;
-+}
-+
- struct cs35l41_prop_model {
- 	const char *hid;
- 	const char *ssid;
-@@ -94,7 +130,7 @@ const struct cs35l41_prop_model cs35l41_prop_model_table[] 
-= {
- 	{ "CSC3551", "10431483", asus_rog_2023_spkr_id2 }, // ASUS GU603V - 
-spi, reset gpio 1
- 	{ "CSC3551", "10431493", asus_rog_2023_spkr_id2 }, // ASUS GV601V - 
-spi, reset gpio 1
- 	{ "CSC3551", "10431573", asus_rog_2023_spkr_id2 }, // ASUS GZ301V - 
-spi, reset gpio 0
--	{ "CSC3551", "104317F3", asus_rog_2023_spkr_id2 }, // ASUS ROG ALLY 
-- i2c
-+	{ "CSC3551", "104317F3", asus_rog_2023_ally_fix }, // ASUS ROG ALLY 
-- i2c
- 	{ "CSC3551", "10431B93", asus_rog_2023_spkr_id2 }, // ASUS G614J - 
-spi, reset gpio 0
- 	{ "CSC3551", "10431CAF", asus_rog_2023_spkr_id2 }, // ASUS G634J - 
-spi, reset gpio 0
- 	{ "CSC3551", "10431C9F", asus_rog_2023_spkr_id2 }, // ASUS G614JI -
-spi, reset gpio 0
+unsigned int?
 
-This patch is what my changes are after unpacking the kernel source RPM for a 
-Nobara kernel and applying a version of Luke's patches.
+> +
+> +	for (i = 0; i < ARRAY_SIZE(gc0308_formats); i++) {
+> +		if (gc0308->format.code != gc0308_formats[i].code)
+> +			continue;
+> +		return regmap_update_bits(gc0308->regmap,
+> +					  GC0308_OUT_FORMAT, GENMASK(4, 0),
+> +					  gc0308_formats[i].regval);
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static int gc0308_set_exposure(struct gc0308 *gc0308, enum gc0308_exp_val exp)
+> +{
+> +	const struct gc0308_exposure *regs = &gc0308_exposure_values[exp];
+> +	struct reg_sequence exposure_reg_seq[] = {
+> +		REG_SEQ0(GC0308_LUMA_OFFSET, regs->luma_offset),
+> +		REG_SEQ0(GC0308_AEC_TARGET_Y, regs->aec_target_y),
+> +	};
+> +
+> +	return regmap_multi_reg_write(gc0308->regmap,
+> +		exposure_reg_seq, ARRAY_SIZE(exposure_reg_seq));
 
-I think a similar BIOS version checking logic may come in handy again in the 
-future. Thanks.
+Alignment.
 
-Best Regards,
-Jon LoBue
+> +}
+> +
+> +static int gc0308_set_awb_mode(struct gc0308 *gc0308,
+> +			       enum v4l2_auto_n_preset_white_balance val)
+> +{
+> +	const struct gc0308_awb_gains *regs = &gc0308_awb_gains[val];
+> +	struct reg_sequence awb_reg_seq[] = {
+> +		REG_SEQ0(GC0308_AWB_R_GAIN, regs->r),
+> +		REG_SEQ0(GC0308_AWB_G_GAIN, regs->g),
+> +		REG_SEQ0(GC0308_AWB_B_GAIN, regs->b),
+> +	};
+> +	int ret;
+> +
+> +	ret = regmap_update_bits(gc0308->regmap, GC0308_AAAA_EN,
+> +				 BIT(1), val == V4L2_WHITE_BALANCE_AUTO);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return regmap_multi_reg_write(gc0308->regmap,
+> +		awb_reg_seq, ARRAY_SIZE(awb_reg_seq));
 
+Ditto. There are other cases, too, in the patch.
 
+> +
+> +	return 0;
+
+Redundant.
+
+> +}
+> +
+> +static int gc0308_set_colormode(struct gc0308 *gc0308, enum v4l2_colorfx mode)
+> +{
+> +	const struct gc0308_colormode *regs = &gc0308_colormodes[mode];
+> +	struct reg_sequence colormode_reg_seq[] = {
+> +		REG_SEQ0(GC0308_SPECIAL_EFFECT, regs->special_effect),
+> +		REG_SEQ0(GC0308_DEBUG_MODE1, regs->dbg_mode1),
+> +		REG_SEQ0(GC0308_BLOCK_EN1, regs->block_en1),
+> +		REG_SEQ0(GC0308_AEC_MODE3, regs->aec_mode3),
+> +		REG_SEQ0(GC0308_EEINTP_MODE_2, regs->eeintp_mode_2),
+> +		REG_SEQ0(GC0308_EDGE12_EFFECT, regs->edge12_effect),
+> +		REG_SEQ0(GC0308_LUMA_CONTRAST, regs->luma_contrast),
+> +		REG_SEQ0(GC0308_CONTRAST_CENTER, regs->contrast_center),
+> +		REG_SEQ0(GC0308_FIXED_CB, regs->fixed_cb),
+> +		REG_SEQ0(GC0308_FIXED_CR, regs->fixed_cr),
+> +	};
+> +
+> +	return regmap_multi_reg_write(gc0308->regmap,
+> +		colormode_reg_seq, ARRAY_SIZE(colormode_reg_seq));
+> +}
+> +
+> +static int _gc0308_s_ctrl(struct v4l2_ctrl *ctrl)
+> +{
+> +	struct gc0308 *gc0308 = container_of(ctrl->handler, struct gc0308, hdl);
+> +	uint8_t flipval = ctrl->val ? 0xff : 0x00;
+> +
+> +	switch (ctrl->id) {
+> +	case V4L2_CID_VFLIP:
+> +		return regmap_update_bits(gc0308->regmap,
+> +			GC0308_CISCTL_MODE1, BIT(1), flipval);
+> +	case V4L2_CID_HFLIP:
+> +		return regmap_update_bits(gc0308->regmap,
+> +			GC0308_CISCTL_MODE1, BIT(0), flipval);
+> +	case V4L2_CID_AUTO_WHITE_BALANCE:
+> +		return regmap_update_bits(gc0308->regmap,
+> +			GC0308_AAAA_EN, BIT(1), flipval);
+> +	case V4L2_CID_AUTO_N_PRESET_WHITE_BALANCE:
+> +		if (ctrl->val < 0 || ctrl->val > V4L2_WHITE_BALANCE_CLOUDY)
+> +			return -EINVAL;
+> +		return gc0308_set_awb_mode(gc0308, ctrl->val);
+> +	case V4L2_CID_POWER_LINE_FREQUENCY:
+> +		switch (ctrl->val) {
+> +		case V4L2_CID_POWER_LINE_FREQUENCY_60HZ:
+> +			return regmap_multi_reg_write(gc0308->regmap,
+> +				sensor_banding_60hz,
+> +				ARRAY_SIZE(sensor_banding_60hz));
+> +		case V4L2_CID_POWER_LINE_FREQUENCY_50HZ:
+> +		default:
+> +			return regmap_multi_reg_write(gc0308->regmap,
+> +				sensor_banding_50hz,
+> +				ARRAY_SIZE(sensor_banding_50hz));
+> +		}
+> +	case V4L2_CID_COLORFX:
+> +		if (ctrl->val < 0 || ctrl->val >= ARRAY_SIZE(gc0308_colormodes))
+> +			return -EINVAL;
+> +		return gc0308_set_colormode(gc0308, ctrl->val);
+> +	case V4L2_CID_TEST_PATTERN:
+> +		if (ctrl->val < 0 || ctrl->val > 2)
+> +			return -EINVAL;
+
+No need to check for ctrl->val here (the control should have the correct
+limits specified when the control is created, I haven't checked for this
+one but at least the one below does).
+
+There seem to be more redundant checks above, too.
+
+> +		return regmap_update_bits(gc0308->regmap,
+> +			GC0308_DEBUG_MODE2, GENMASK(1, 0), ctrl->val);
+> +	case V4L2_CID_EXPOSURE:
+> +		if (ctrl->val < -4 || ctrl->val > 4)
+> +			return -EINVAL;
+
+		^
+
+> +		return gc0308_set_exposure(gc0308, ctrl->val + 4);
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static int gc0308_s_ctrl(struct v4l2_ctrl *ctrl)
+
+I wonder if this could be merged with _gc0308_s_ctrl. This is the only
+caller for it.
+
+> +{
+> +	struct gc0308 *gc0308 = container_of(ctrl->handler, struct gc0308, hdl);
+> +	int ret;
+> +
+> +	ret = pm_runtime_resume_and_get(gc0308->dev);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = _gc0308_s_ctrl(ctrl);
+> +
+> +	pm_runtime_put(gc0308->dev);
+> +
+> +	if (ret)
+> +		dev_err(gc0308->dev, "s_ctrl failed: %d\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+> +
+> +static const struct v4l2_ctrl_ops gc0308_ctrl_ops = {
+> +	.s_ctrl = gc0308_s_ctrl,
+> +};
+> +
+> +static const struct v4l2_subdev_core_ops gc0308_core_ops = {
+> +	.log_status = v4l2_ctrl_subdev_log_status,
+> +	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
+> +	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
+> +#ifdef CONFIG_VIDEO_ADV_DEBUG
+> +	.g_register	= gc0308_g_register,
+> +	.s_register	= gc0308_s_register,
+> +#endif
+> +};
+> +
+> +static int gc0308_enum_mbus_code(struct v4l2_subdev *sd,
+> +				 struct v4l2_subdev_state *sd_state,
+> +				 struct v4l2_subdev_mbus_code_enum *code)
+> +{
+> +	if (code->index >= ARRAY_SIZE(gc0308_formats))
+> +		return -EINVAL;
+> +
+> +	code->code = gc0308_formats[code->index].code;
+> +
+> +	return 0;
+> +}
+> +
+> +static int gc0308_enum_frame_size(struct v4l2_subdev *subdev,
+> +				  struct v4l2_subdev_state *sd_state,
+> +				  struct v4l2_subdev_frame_size_enum *fse)
+> +{
+> +	if (fse->pad || fse->index >= ARRAY_SIZE(gc0308_frame_sizes))
+
+Checking for pad here is redundant.
+
+> +		return -EINVAL;
+> +
+> +	fse->min_width = gc0308_frame_sizes[fse->index].width;
+> +	fse->max_width = gc0308_frame_sizes[fse->index].width;
+> +	fse->min_height = gc0308_frame_sizes[fse->index].height;
+> +	fse->max_height = gc0308_frame_sizes[fse->index].height;
+> +
+> +	return 0;
+> +}
+> +
+> +static int gc0308_get_format(struct v4l2_subdev *sd,
+> +			     struct v4l2_subdev_state *sd_state,
+> +			     struct v4l2_subdev_format *fmt)
+> +{
+> +	struct gc0308 *gc0308 = to_gc0308(sd);
+> +
+> +	mutex_lock(&gc0308->lock);
+
+Could you switch to sub-device state? See e.g. commit
+289c25923ecdde90050a0cb3904f9295ca68b425 for an example.
+
+> +	fmt->format = gc0308->format;
+> +	mutex_unlock(&gc0308->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int gc0308_set_format(struct v4l2_subdev *sd,
+> +			     struct v4l2_subdev_state *sd_state,
+> +			     struct v4l2_subdev_format *format)
+> +{
+> +	struct gc0308 *gc0308 = to_gc0308(sd);
+> +	int format_idx = -1;
+> +	unsigned int best_fit = ~0L;
+> +	unsigned int idx = 0;
+> +	unsigned int i;
+> +
+> +	mutex_lock(&gc0308->lock);
+> +	if (gc0308->streaming) {
+> +		mutex_unlock(&gc0308->lock);
+> +		return -EBUSY;
+> +	}
+> +
+> +	if (format->pad) {
+> +		mutex_unlock(&gc0308->lock);
+> +		dev_err(gc0308->dev, "invalid pad: %d\n", format->pad);
+> +		return -EINVAL;
+> +	}
+
+No need to check for pad: the caller will have validated it already (and as
+there's a single pad in the sub-device, it'll be zero).
+
+> +
+> +	for (i = 0; i < ARRAY_SIZE(gc0308_formats); i++) {
+> +		if (format->format.code == gc0308_formats[i].code) {
+> +			format_idx = i;
+> +			break;
+> +		}
+> +	}
+> +	if (format_idx < 0) {
+> +		mutex_unlock(&gc0308->lock);
+> +		dev_err(gc0308->dev, "unsupported format code: %08x\n",
+> +			format->format.code);
+> +		return -EINVAL;
+
+Instead of returning an error, please choose a supported format (or just
+don't change it).
+
+> +	}
+> +
+> +	for (i = 0; i < ARRAY_SIZE(gc0308_frame_sizes); i++) {
+> +		unsigned int width = gc0308_frame_sizes[i].width;
+> +		unsigned int height = gc0308_frame_sizes[i].height;
+> +		unsigned int fit = abs(width - format->format.width) +
+> +				   abs(height - format->format.height);
+> +		if (fit < best_fit) {
+> +			best_fit = fit;
+> +			idx = i;
+> +
+> +			if (fit == 0)
+> +				break;
+> +		}
+> +	}
+
+Could you use v4l2_find_nearest_size()?
+
+You could also store the pointer to the array index so you would be spared
+of a few checks in s_stream().
+
+> +
+> +	gc0308->format.width = gc0308_frame_sizes[idx].width;
+> +	gc0308->format.height = gc0308_frame_sizes[idx].height;
+> +	gc0308->format.code = gc0308_formats[format_idx].code;
+> +	gc0308->format.field = V4L2_FIELD_NONE;
+> +	gc0308->format.colorspace = V4L2_COLORSPACE_SRGB;
+> +
+> +	mutex_unlock(&gc0308->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int gc0308_get_mbus_config(struct v4l2_subdev *sd,
+> +				  unsigned int pad,
+> +				  struct v4l2_mbus_config *cfg)
+> +{
+> +	struct gc0308 *gc0308 = to_gc0308(sd);
+> +
+> +	mutex_lock(&gc0308->lock);
+> +	cfg->type = V4L2_MBUS_PARALLEL,
+> +	cfg->bus.parallel.flags = V4L2_MBUS_PCLK_SAMPLE_RISING |
+> +				  V4L2_MBUS_DATA_ACTIVE_HIGH |
+> +				  V4L2_MBUS_MASTER;
+> +
+> +	if (gc0308->mbus_config & V4L2_MBUS_VSYNC_ACTIVE_LOW)
+> +		cfg->bus.parallel.flags |= V4L2_MBUS_VSYNC_ACTIVE_LOW;
+> +	else
+> +		cfg->bus.parallel.flags |= V4L2_MBUS_VSYNC_ACTIVE_HIGH;
+> +
+> +	if (gc0308->mbus_config & V4L2_MBUS_HSYNC_ACTIVE_LOW)
+> +		cfg->bus.parallel.flags |= V4L2_MBUS_HSYNC_ACTIVE_LOW;
+> +	else
+> +		cfg->bus.parallel.flags |= V4L2_MBUS_HSYNC_ACTIVE_HIGH;
+
+The receiver should be able to obtain this from the endpoint so I wouldn't
+implement get_mbus_config at all.
+
+> +
+> +
+> +	mutex_unlock(&gc0308->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct v4l2_subdev_pad_ops gc0308_pad_ops = {
+> +	.enum_mbus_code = gc0308_enum_mbus_code,
+> +	.enum_frame_size = gc0308_enum_frame_size,
+> +	.get_fmt = gc0308_get_format,
+> +	.set_fmt = gc0308_set_format,
+> +	.get_mbus_config = gc0308_get_mbus_config,
+> +};
+> +
+> +static int gc0308_set_resolution(struct gc0308 *gc0308,
+> +				 u8 subsample, u16 w, u16 h)
+> +{
+> +	struct reg_sequence resolution_regs[] = {
+> +		REG_SEQ0(GC0308_SUBSAMPLE, subsample),
+> +		REG_SEQ0(GC0308_SUBMODE, 0x03),
+> +		REG_SEQ0(GC0308_SUB_ROW_N1, 0x00),
+> +		REG_SEQ0(GC0308_SUB_ROW_N2, 0x00),
+> +		REG_SEQ0(GC0308_SUB_COL_N1, 0x00),
+> +		REG_SEQ0(GC0308_SUB_COL_N2, 0x00),
+> +		REG_SEQ0(GC0308_CROP_WIN_MODE, 0x80),
+> +		REG_SEQ0(GC0308_CROP_WIN_Y1, 0x00),
+> +		REG_SEQ0(GC0308_CROP_WIN_X1, 0x00),
+> +		REG_SEQ0(GC0308_CROP_WIN_HEIGHTH, (h >> 8) & 0xFF),
+> +		REG_SEQ0(GC0308_CROP_WIN_HEIGHTL, (h >> 0) & 0xFF),
+> +		REG_SEQ0(GC0308_CROP_WIN_WIDTHH, (w >> 8) & 0xFF),
+> +		REG_SEQ0(GC0308_CROP_WIN_WIDTHL, (w >> 0) & 0xFF),
+> +	};
+> +
+> +	return regmap_multi_reg_write(gc0308->regmap, resolution_regs,
+> +				      ARRAY_SIZE(resolution_regs));
+> +}
+> +
+> +static int gc0308_start_stream(struct gc0308 *gc0308)
+> +{
+> +	int ret, sync_mode;
+> +	u16 width = 0, height = 0;
+> +	u8 subsample = 0;
+> +	int i;
+
+unsigned int?
+
+> +
+> +	ret = pm_runtime_resume_and_get(gc0308->dev);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = regmap_multi_reg_write(gc0308->regmap, sensor_default_regs,
+> +				     ARRAY_SIZE(sensor_default_regs));
+> +	if (ret) {
+> +		dev_err(gc0308->dev, "failed to write default regs\n");
+> +		goto disable_pm;
+> +	}
+> +
+> +	ret = gc0308_s_format(gc0308);
+> +	if (ret) {
+> +		dev_err(gc0308->dev, "failed to set format\n");
+> +		goto disable_pm;
+> +	}
+> +
+> +	for (i = 0; i < ARRAY_SIZE(gc0308_frame_sizes); i++) {
+> +		if (gc0308_frame_sizes[i].width == gc0308->format.width &&
+> +		    gc0308_frame_sizes[i].height == gc0308->format.height) {
+> +			width = gc0308_frame_sizes[i].width;
+> +			height = gc0308_frame_sizes[i].height;
+> +			subsample = gc0308_frame_sizes[i].subsample;
+> +		}
+> +	}
+> +
+> +	if (!width || !height) {
+> +		dev_err(gc0308->dev, "invalid resolution\n");
+> +		goto disable_pm;
+> +	}
+> +
+> +	ret = gc0308_set_resolution(gc0308, subsample, width, height);
+> +	if (ret) {
+> +		dev_err(gc0308->dev, "failed to write resolution regs\n");
+> +		goto disable_pm;
+> +	}
+> +
+> +	ret = __v4l2_ctrl_handler_setup(&gc0308->hdl);
+> +	if (ret) {
+> +		dev_err(gc0308->dev, "failed to setup controls\n");
+> +		goto disable_pm;
+> +	}
+> +
+> +	/* HSYNC/VSYNC polarity */
+> +	sync_mode = 0x3;
+> +	if (gc0308->mbus_config & V4L2_MBUS_VSYNC_ACTIVE_LOW)
+> +		sync_mode &= ~BIT(0);
+> +	if (gc0308->mbus_config & V4L2_MBUS_HSYNC_ACTIVE_LOW)
+> +		sync_mode &= ~BIT(1);
+> +	ret = regmap_write(gc0308->regmap, GC0308_SYNC_MODE, sync_mode);
+> +	if (ret)
+> +		goto disable_pm;
+> +
+> +	return 0;
+> +
+> +disable_pm:
+> +	pm_runtime_put(gc0308->dev);
+> +	return ret;
+> +}
+> +
+> +static int gc0308_stop_stream(struct gc0308 *gc0308)
+> +{
+> +	pm_runtime_put(gc0308->dev);
+> +	return 0;
+> +}
+> +
+> +static int gc0308_s_stream(struct v4l2_subdev *sd, int enable)
+> +{
+> +	struct gc0308 *gc0308 = to_gc0308(sd);
+> +	int ret = 0;
+> +
+> +	mutex_lock(&gc0308->lock);
+> +
+> +	if (gc0308->streaming == enable)
+> +		goto exit;
+
+No need to check: you can rely the caller won't enable streaming if it's
+enabled (or disable it if it's disabled).
+
+You can drop initialising ret, then.
+
+> +
+> +	if (enable)
+> +		ret = gc0308_start_stream(gc0308);
+> +	else
+> +		ret = gc0308_stop_stream(gc0308);
+> +
+> +	if (!ret)
+> +		gc0308->streaming = enable;
+> +
+> +exit:
+> +	mutex_unlock(&gc0308->lock);
+> +	return ret;
+> +}
+> +
+> +static int gc0308_g_frame_interval(struct v4l2_subdev *sd,
+> +				   struct v4l2_subdev_frame_interval *fi)
+> +{
+> +	struct gc0308 *gc0308 = to_gc0308(sd);
+> +
+> +	mutex_lock(&gc0308->lock);
+> +	fi->interval = gc0308->frame_interval;
+> +	mutex_unlock(&gc0308->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct v4l2_subdev_video_ops gc0308_video_ops = {
+> +	.g_frame_interval	= gc0308_g_frame_interval,
+> +	.s_stream		= gc0308_s_stream,
+> +};
+> +
+> +static const struct v4l2_subdev_ops gc0308_subdev_ops = {
+> +	.core	= &gc0308_core_ops,
+> +	.pad	= &gc0308_pad_ops,
+> +	.video	= &gc0308_video_ops,
+> +};
+> +
+> +static int gc0308_bus_config(struct gc0308 *gc0308)
+> +{
+> +	struct device *dev = gc0308->dev;
+> +	struct v4l2_fwnode_endpoint bus_cfg = {
+> +		.bus_type = V4L2_MBUS_PARALLEL
+> +	};
+> +	struct fwnode_handle *ep;
+> +	int ret;
+> +
+> +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(dev), NULL);
+
+	ep = fwnode_graph_get_endpoint_by_id(dev_fwnode(dev), 0, 0, 0);
+
+> +	if (!ep)
+> +		return -EINVAL;
+> +
+> +	ret = v4l2_fwnode_endpoint_parse(ep, &bus_cfg);
+> +	fwnode_handle_put(ep);
+> +	if (ret)
+> +		return ret;
+> +
+> +	gc0308->mbus_config = bus_cfg.bus.parallel.flags;
+> +
+> +	return 0;
+> +}
+> +
+> +static const char * const gc0308_test_pattern_menu[] = {
+> +	"Disabled",
+> +	"Test Image 1",
+> +	"Test Image 2",
+> +};
+> +
+> +static void gc0308_mutex_destroy(void *data)
+> +{
+> +	struct gc0308 *gc0308 = data;
+> +
+> +	mutex_destroy(&gc0308->lock);
+> +}
+> +
+> +static int gc0308_probe(struct i2c_client *client)
+> +{
+> +	struct device *dev = &client->dev;
+> +	struct gc0308 *gc0308;
+> +	int ret, regval;
+> +
+> +	gc0308 = devm_kzalloc(dev, sizeof(*gc0308), GFP_KERNEL);
+> +	if (!gc0308)
+> +		return -ENOMEM;
+> +
+> +	gc0308->dev = dev;
+> +	dev_set_drvdata(dev, gc0308);
+> +
+> +	ret = gc0308_bus_config(gc0308);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "failed to get bus config\n");
+> +
+> +	gc0308->format.width = gc0308_frame_sizes[0].width;
+> +	gc0308->format.height = gc0308_frame_sizes[0].height;
+> +	gc0308->format.field = V4L2_FIELD_NONE;
+> +	gc0308->format.code = gc0308_formats[2].code;
+> +	gc0308->format.colorspace = V4L2_COLORSPACE_SRGB;
+> +	gc0308->frame_interval.numerator = 1;
+> +	gc0308->frame_interval.denominator = GC0308_FRAME_RATE;
+> +
+> +	gc0308->clk = devm_clk_get_optional(dev, NULL);
+> +	if (IS_ERR(gc0308->clk))
+> +		return dev_err_probe(dev, PTR_ERR(gc0308->clk),
+> +				     "could not get clk\n");
+> +
+> +	ret = clk_set_rate(gc0308->clk, 24000000);
+
+Please instead get the rate, then check it's what you expect (I'd just
+print a warning if there's a discrepancy).
+
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "failed to set clock rate\n");
+> +
+> +	gc0308->vdd = devm_regulator_get(dev, "vdd28");
+> +	if (IS_ERR(gc0308->vdd))
+> +		return dev_err_probe(dev, PTR_ERR(gc0308->vdd),
+> +				     "failed to get vdd28 regulator\n");
+> +
+> +	gc0308->pwdn_gpio = devm_gpiod_get(dev, "powerdown", GPIOD_OUT_LOW);
+> +	if (IS_ERR(gc0308->pwdn_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(gc0308->pwdn_gpio),
+> +				     "failed to get powerdown gpio\n");
+> +
+> +	gc0308->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
+> +	if (IS_ERR(gc0308->reset_gpio))
+> +		return dev_err_probe(dev, PTR_ERR(gc0308->reset_gpio),
+> +				     "failed to get reset gpio\n");
+> +
+> +	gc0308->regmap = devm_regmap_init_i2c(client, &gc0308_regmap_config);
+> +	if (IS_ERR(gc0308->regmap))
+> +		return dev_err_probe(dev, PTR_ERR(gc0308->regmap),
+> +				     "failed to init regmap\n");
+> +
+> +	mutex_init(&gc0308->lock);
+> +	ret = devm_add_action_or_reset(dev, gc0308_mutex_destroy, gc0308);
+> +	if (ret)
+> +		return ret;
+> +
+> +	v4l2_i2c_subdev_init(&gc0308->sd, client, &gc0308_subdev_ops);
+> +	gc0308->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+> +	gc0308->sd.flags |= V4L2_SUBDEV_FL_HAS_EVENTS;
+> +
+> +	v4l2_ctrl_handler_init(&gc0308->hdl, 8);
+> +	v4l2_ctrl_new_std(&gc0308->hdl, &gc0308_ctrl_ops,
+> +			  V4L2_CID_VFLIP, 0, 1, 1, 0);
+> +	v4l2_ctrl_new_std(&gc0308->hdl, &gc0308_ctrl_ops,
+> +			  V4L2_CID_HFLIP, 0, 1, 1, 0);
+> +	v4l2_ctrl_new_std(&gc0308->hdl, &gc0308_ctrl_ops,
+> +			  V4L2_CID_AUTO_WHITE_BALANCE, 0, 1, 1, 1);
+> +	v4l2_ctrl_new_std_menu_items(&gc0308->hdl, &gc0308_ctrl_ops,
+> +				     V4L2_CID_TEST_PATTERN,
+> +				     ARRAY_SIZE(gc0308_test_pattern_menu) - 1,
+> +				     0, 0, gc0308_test_pattern_menu);
+> +	v4l2_ctrl_new_std_menu(&gc0308->hdl, &gc0308_ctrl_ops,
+> +			       V4L2_CID_AUTO_N_PRESET_WHITE_BALANCE,
+> +			       8, ~0x14e, V4L2_WHITE_BALANCE_AUTO);
+> +	v4l2_ctrl_new_std_menu(&gc0308->hdl, &gc0308_ctrl_ops,
+> +			       V4L2_CID_COLORFX, 8, 0, V4L2_COLORFX_NONE);
+> +	v4l2_ctrl_new_std_menu(&gc0308->hdl, &gc0308_ctrl_ops,
+> +			       V4L2_CID_POWER_LINE_FREQUENCY,
+> +			       V4L2_CID_POWER_LINE_FREQUENCY_60HZ,
+> +			       ~0x6, V4L2_CID_POWER_LINE_FREQUENCY_50HZ);
+> +	v4l2_ctrl_new_std(&gc0308->hdl, &gc0308_ctrl_ops,
+> +			  V4L2_CID_EXPOSURE, -4, 4, 1, 0);
+
+The correct control would seem to be V4L2_CID_AUTO_EXPOSURE_BIAS.
+
+> +
+> +	gc0308->hdl.lock = &gc0308->lock;
+> +	gc0308->sd.ctrl_handler = &gc0308->hdl;
+> +	if (gc0308->hdl.error) {
+> +		ret = gc0308->hdl.error;
+> +		return ret;
+> +	}
+> +
+> +	gc0308->pad.flags = MEDIA_PAD_FL_SOURCE;
+> +	gc0308->sd.entity.function = MEDIA_ENT_F_CAM_SENSOR;
+> +	ret = media_entity_pads_init(&gc0308->sd.entity, 1, &gc0308->pad);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = gc0308_power_on(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = regmap_read(gc0308->regmap, GC0308_CHIP_ID, &regval);
+> +	if (ret < 0)
+
+You'll need gc0308_power_off() here and onwards. (I'd add a new label.)
+
+> +		return dev_err_probe(dev, ret, "failed to read chip ID\n");
+> +
+> +	if (regval != 0x9b)
+> +		return dev_err_probe(dev, -EINVAL, "invalid chip ID (%02x)\n",
+> +				     regval);
+> +
+> +	ret = v4l2_async_register_subdev(&gc0308->sd);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "failed to register v4l subdev\n");
+> +
+> +	pm_runtime_set_active(dev);
+> +	pm_runtime_enable(dev);
+> +	pm_runtime_idle(dev);
+> +
+> +	return 0;
+> +}
+> +
+> +static void gc0308_remove(struct i2c_client *client)
+> +{
+> +	struct gc0308 *gc0308 = i2c_get_clientdata(client);
+> +	struct device *dev = &client->dev;
+> +
+> +	pm_runtime_get_sync(dev);
+> +
+> +	v4l2_async_unregister_subdev(&gc0308->sd);
+> +	v4l2_ctrl_handler_free(&gc0308->hdl);
+> +
+> +	pm_runtime_disable(dev);
+> +	pm_runtime_set_suspended(dev);
+> +	pm_runtime_put_noidle(dev);
+> +	gc0308_power_off(dev);
+> +}
+> +
+> +static const struct dev_pm_ops gc0308_pm_ops = {
+> +	SET_RUNTIME_PM_OPS(gc0308_power_off, gc0308_power_on, NULL)
+> +};
+> +
+> +static const struct of_device_id gc0308_of_match[] = {
+> +	{ .compatible = "galaxycore,gc0308" },
+> +	{ .compatible = "galaxycore,gc0309" },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, gc0308_of_match);
+> +
+> +static struct i2c_driver gc0308_i2c_driver = {
+> +	.driver = {
+> +		.name  = "gc0308",
+> +		.pm = &gc0308_pm_ops,
+> +		.of_match_table = gc0308_of_match,
+> +	},
+> +	.probe  = gc0308_probe,
+> +	.remove = gc0308_remove,
+> +};
+> +module_i2c_driver(gc0308_i2c_driver);
+> +
+> +MODULE_DESCRIPTION("GalaxyCore GC0308 Camera Driver");
+> +MODULE_AUTHOR("Sebastian Reichel <sre@kernel.org>");
+> +MODULE_LICENSE("GPL");
+
+-- 
+Kind regards,
+
+Sakari Ailus
