@@ -2,164 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 973157D2B6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E6F7D2B66
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbjJWHfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
+        id S233436AbjJWHev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233462AbjJWHe5 (ORCPT
+        with ESMTP id S229450AbjJWHeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 03:34:57 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB2ED66
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:34:54 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d84c24a810dso2631182276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:34:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698046494; x=1698651294; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UvVD2Vf14O9B8kXPrbE8pvJNizR2rdft4kqgfT1VWFE=;
-        b=LtJOo4AuzXjlNlFDDQVqwpav2mjQc59OgKpZnwGYNkgn+vCbCA8atpRerqteQneY5U
-         0qd43o3G5/cLoYdbH60DEWsvUQKazl3Od7xmaLc6DedvzuMW65fTmy+kWRPv7z3UrUVQ
-         QKBOhO1Lf47d9IqP4cc8sCP01V++oDZ//AiOcp0+XyLEBabMMA1ZWjAgNlQRsB0hHRty
-         +xbDv19Wygi+ZIqfF2pGm7/5GIMNNv/mrsJgs++XeaxIfCEuLiQTYse2pjWn2LrrqOnv
-         iBxgiWsGOJZx669H3brO7oaFh09+D7wQ93pdZ2N6lx6kw+m2KVit//nY0Mzi6jZasMNR
-         IVTQ==
+        Mon, 23 Oct 2023 03:34:50 -0400
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15304C5;
+        Mon, 23 Oct 2023 00:34:49 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-692c02adeefso2179646b3a.3;
+        Mon, 23 Oct 2023 00:34:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698046494; x=1698651294;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UvVD2Vf14O9B8kXPrbE8pvJNizR2rdft4kqgfT1VWFE=;
-        b=HSefYpTw2g18tTCeEmLM/5oavaAFxpOHKwCoJ7iVdyX5J9F7UxV4BYp3eZlAY+QVsf
-         oFi9EOtzWVgkB/iZ4oYrUnnUrOgxTKW9CPpIkxqRsfskCVFw/co093t2K2HeAFOVR8WP
-         QGEgmicgc8H7bpy8tfZwnlIJcvSJG0K+NSi+DD3fNuc2SLdI7zuMDRYvZP7b4otEKF/R
-         9pEBMzfFRUk8kC8ijWIt+Cwn9uSVYtnJFHYM02Xp2IqOVog9aMZLix6iW3FAxbglyuo8
-         ga83wUdWv/bUIRszPuRVPT2PBr04uFEH5+BQ7ZLQD2vN/vILRjIN+0IFSDP/NXpU6fkG
-         kvCw==
-X-Gm-Message-State: AOJu0Yyc34gEHkTmFDozrvRbM/eKCj5dwzskGWKsyZriEXUlxsC7OWi7
-        q+AdPQRo1sn+d9Y4TH7eXQrQgJu7cOj/RsYMfWNE8w==
-X-Google-Smtp-Source: AGHT+IGt4nAtdDC++hWsqIdRPEhfnV6IkoVyNUDdWcAokDPoR0GkAGPsVz/zRYARQaZVEGGI2zP0FgmKWac6//hONDM=
-X-Received: by 2002:a5b:9d2:0:b0:d9a:47a7:f7c1 with SMTP id
- y18-20020a5b09d2000000b00d9a47a7f7c1mr7713291ybq.42.1698046493712; Mon, 23
- Oct 2023 00:34:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698046488; x=1698651288;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MNHvNCMF2wxiaTJVyfL70dE/gTs8mPi0LcdMxHhUWS8=;
+        b=N/cOS+QBIildcl/Pyf8IkeXCwnH07m65Zl1dsU8aVZNk364oBd899m/B+K5K76GLgh
+         ojSfFcb7dxvxwSoOzFKHjMouXwrVgKGQiB2/mQU9lI6LRs2VL7oF6/KGhSa3edf/gcAA
+         N6Qidt+j/m1qDGh5QhrDOkvYwY0mgAKGy257a3iWCNbDbossnOBiH4dMW07GC/plIpJo
+         QWWy8Lw/S0PDRJq6Nsx2nU6HekIUJGBvZ6BXdlNuT+1EV4UXlVSZ44Mkqj65lN7AFqQn
+         zDxwtDa8G2r17OQgQaNS6Mu4WAhmN7QzF6ysvvFzXsHPBjH3LiGiV4yJOgmf6yR6urzw
+         mDwg==
+X-Gm-Message-State: AOJu0YyDnoWETAZagZc2X0KChAABrudeK2Eodpl4MTFxcon7oXUK4YhB
+        8CLQ0WCZnqMe3qYQDMxPFbI=
+X-Google-Smtp-Source: AGHT+IHEHmHNly0aQSTqQ2TahHnMt3hTzjw7PMX1w+bLZIabNay0cla7WqZQmrEK2e86XfWJHj70UQ==
+X-Received: by 2002:a05:6a20:3c8c:b0:151:35ad:f327 with SMTP id b12-20020a056a203c8c00b0015135adf327mr7117406pzj.17.1698046488298;
+        Mon, 23 Oct 2023 00:34:48 -0700 (PDT)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id x184-20020a6363c1000000b005897bfc2ed3sm5205285pgb.93.2023.10.23.00.34.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 00:34:47 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 16:34:46 +0900
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the pci tree
+Message-ID: <20231023073446.GA593739@rocinante>
+References: <20231023110556.6f704b95@canb.auug.org.au>
+ <TYBPR01MB5341114CB14098217765790BD8D8A@TYBPR01MB5341.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-References: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
- <1907377.IobQ9Gjlxr@steina-w> <CAA8EJpoN36PHoZH=Osfn_wr7kO-dypius2ae_FuJ4Hk+gjeBtQ@mail.gmail.com>
- <1871104.tdWV9SEqCh@steina-w>
-In-Reply-To: <1871104.tdWV9SEqCh@steina-w>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 23 Oct 2023 10:34:42 +0300
-Message-ID: <CAA8EJpofiawC5z3jw1-TsxS+ZWz4QobCby3kScDDdk9Z-74mgQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 03/10] drm/mipi-dsi: add API for manual control over
- the DSI link power state
-To:     Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Marek Vasut <marex@denx.de>, Robert Foss <rfoss@kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-arm-msm@vger.kernel.org,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        freedreno@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TYBPR01MB5341114CB14098217765790BD8D8A@TYBPR01MB5341.jpnprd01.prod.outlook.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 at 09:52, Alexander Stein
-<alexander.stein@ew.tq-group.com> wrote:
->
-> Hi Dmitry,
->
-> Am Sonntag, 22. Oktober 2023, 12:49:41 CEST schrieb Dmitry Baryshkov:
-> > On Thu, 19 Oct 2023 at 14:42, Alexander Stein
-> >
-> > <alexander.stein@ew.tq-group.com> wrote:
-> > > Hi,
-> > >
-> > > Am Donnerstag, 19. Oktober 2023, 13:19:51 CEST schrieb Dmitry Baryshkov:
-> > > > On Thu, 19 Oct 2023 at 12:26, Maxime Ripard <mripard@kernel.org> wrote:
-> > > > > On Mon, Oct 16, 2023 at 07:53:48PM +0300, Dmitry Baryshkov wrote:
-> > > > > > The MIPI DSI links do not fully fall into the DRM callbacks model.
-> > > > >
-> > > > > Explaining why would help
-> > > >
-> > > > A kind of explanation comes afterwards, but probably I should change
-> > > > the order of the phrases and expand it:
-> > > >
-> > > > The atomic_pre_enable / atomic_enable and correspondingly
-> > > > atomic_disable / atomic_post_disable expect that the bridge links
-> > > > follow a simple paradigm: either it is off, or it is on and streaming
-> > > > video. Thus, it is fine to just enable the link at the enable time,
-> > > > doing some preparations during the pre_enable.
-> > > >
-> > > > But then it causes several issues with DSI. First, some of the DSI
-> > > > bridges and most of the DSI panels would like to send commands over
-> > > > the DSI link to setup the device. Next, some of the DSI hosts have
-> > > > limitations on sending the commands. The proverbial sunxi DSI host can
-> > > > not send DSI commands after the video stream has started. Thus most of
-> > > > the panels have opted to send all DSI commands from pre_enable (or
-> > > > prepare) callback (before the video stream has started).
-> > > >
-> > > > However this leaves no good place for the DSI host to power up the DSI
-> > > > link. By default the host's pre_enable callback is called after the
-> > > > DSI bridge's pre_enable. For quite some time we were powering up the
-> > > > DSI link from mode_set. This doesn't look fully correct. And also we
-> > > > got into the issue with ps8640 bridge, which requires for the DSI link
-> > > > to be quiet / unpowered at the bridge's reset time.
-> > >
-> > > There are also bridges (e.g. tc358767) which require DSI-LP11 upon bridge
-> > > reset. And additionally this DSI-(e)DP bridge requires LP11 while
-> > > accessing
-> > > DP-AUX channel, e.g. reading EDID. So bridges need at least some control
-> > > over DSI line state.
-> >
-> > For sending commands in LP11 it is typical to toggle the
-> > MIPI_DSI_MODE_LPM flag, for example see panel-=jdi-lt070me05000.c or
-> > some other drives. It might be a good idea to make that more explicit.
-> > All suggestions here would be appreciated.
->
-> The biggest difference between that display and the tc358767 bridge is that
-> the display uses DSI commands, while the bridge is using i2c transfer to issue
-> DP-AUX commands. There is no host_transfer [1] which would enable LP-11.
-> It seems this DSI-DP bridge requires LP-11/HS on DSI lanes all times. This
-> contradicts current Linux behaviour.
+Hello,
 
-I see. I took a quick glance at the driver. Does the device mark AUX
-as busy when there is a HS transfer?
-Because otherwise it might be pretty hard to synchronise DP-AUX
-transfers with the DSI link state. We might need to add an API for
-this, if the DSI hosts actually can signal the blanking / DSI LP.
+> > Hi all,
+> > 
+> > After merging the pci tree, today's linux-next build (x86_64 allmodconfig)
+> > failed like this:
+> > 
+> > ERROR: modpost: "dw_pcie_write_dbi2" [drivers/pci/controller/dwc/pcie-rcar-gen4.ko] undefined!
+[...]
 
-Side note: the driver needs some care. It doesn't support the aux-bus
-bindings for eDP panels, it doesn't support other bridges on top of DP
-connectors (but there can be e..g. dp-connector device).
+> However, I completely forgot it...
 
->
-> Best regards,
-> Alexander
->
-> [1] https://www.kernel.org/doc/html/latest/gpu/drm-kms-helpers.html#mipi-dsi-bridge-operation
+That's OK.  Don't worry. :)
 
+> https://lore.kernel.org/linux-pci/20230926122431.3974714-8-yoshihiro.shimoda.uh@renesas.com/
+> 
+> I confirmed that the patch above can be applied on the latest pci.git / next branch.
 
--- 
-With best wishes
-Dmitry
+I will take care of it.
+
+> However, should I resend whole patches with the patch above as v26?
+
+No.  There is no need to send another series.
+
+Different question: aren't RCar systems based on Arm?  I wonder why this
+even built on a x86_64 - unless I am wrong about this.
+
+	Krzysztof
