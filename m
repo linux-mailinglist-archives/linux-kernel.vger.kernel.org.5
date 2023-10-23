@@ -2,183 +2,2755 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD22B7D3B80
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57C87D3BA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbjJWPwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
+        id S232723AbjJWQCI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Oct 2023 12:02:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbjJWPwf (ORCPT
+        with ESMTP id S232185AbjJWQCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:52:35 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951FCBC;
-        Mon, 23 Oct 2023 08:52:33 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NFP20s030705;
-        Mon, 23 Oct 2023 15:52:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-03-30;
- bh=zryqm7gjuMceDSchaUEZjei9kvrlwZ/ZTpzDyB8K4bY=;
- b=Qzm418o1XGHT45GMf/TCE9lcyGSP8b7bLdXYCn0O9QVmdgZlwcrpeRHzz0vR11On+LuI
- T/6citxse/9+DIbe4gpY3H1rEbOYF+Pv5ZcNht3xWwdoNk0pxcla0FqXkRShMse/ffpY
- S+e62+ZH2uolU3lHEgGTk4HpC+QB4qnyiNq8Gz+jTM1/w11uCgP+8XPlI7R82UU17O16
- wa63uJUul2LYIetAMMaJ5cZB/w2HtpOkS9S54r9/OJthWh2F1dsFqLAu3V2aos0z522u
- EGmAO3E74gv0Yk6eHiZy0cQvuHtqcd7HNTU7wGLfXso0G69MRsH1lO8ezAvjN0nvw9xw SQ== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv6hakcp5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Oct 2023 15:52:04 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39NFTmaN034523;
-        Mon, 23 Oct 2023 15:52:03 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tv5344vwn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Oct 2023 15:52:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WTgJTEWvgo+4egrrX1USQAjmdLcvStTKlJa1MJ5FENfeAmKAp0gZhGfeB2nW+lpq8aO5XsHxaa3zPdoS3yp3liiEQ8eIcFi1Gr8+BODNafPPPR3eyXBfaUGITFGCmvcVGfXxsda3C3WsbAZt15+KmDtpX36wJiBTFecn+K+OQbX+SyX5/bSg0x4E6jpmvMSQeBcnAjcrXyheXuei26e2S2G6wq0SyJ/5oBpOFxkrpDeKmepOZZjr8wlFbvYcyZTLIbmbqNLQuxTzsm9ql5lBRqXj+p38ljy/4AfZ8BFJdjyx83MRw+Dh4CsKViWqpzYsIG9KICTKAbH2hcP4uC6IWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zryqm7gjuMceDSchaUEZjei9kvrlwZ/ZTpzDyB8K4bY=;
- b=dvYWDlvxwjMDqeEnKB0/CtGEka+RUR04MO5PUiGkxZWFXJPbDAc7b+CkBbr2bb88ftluo2j1dwBt5OaKxQwxFucqhY3gxzlzd5xvMGMH3aiQh3C5FQDszf943HAzt8kJmM1byBYb8iu3WQaJ0ty6leYcsKBP/5JQDUDt/GWkTd2Zqmbpk3PJD5na+VvmedVVZWzVEtpnNVD4bD/COClU1EQyMvmuyN83CHoU7URHBMcVODDcwVcSzZFgbHNQcFvEV4cJCr2AKj3BrucL3aUaxAGrEOsTaHv/wtWd6/UlgzLWJ3Wj1Ktyirso13j/Rduttvs9PeV1GPSqGpIWAlqGEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zryqm7gjuMceDSchaUEZjei9kvrlwZ/ZTpzDyB8K4bY=;
- b=BhHr4GO4MJ99c5aHn8rEW3YbVj9PTiaekIYXYKuZc2LeNC9lqnYURdz/5075D7r1Np3qjyXlhfSkYuJTCkkEk0Li7n/i14aQeCL0Cc8i06Zu7s6Jzw6v3i0687XWegC80qtVLGYsBtGPFxzOxN9ggMlbMAz0sRR+BCbnK9j8AXY=
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
- by CH0PR10MB5161.namprd10.prod.outlook.com (2603:10b6:610:c3::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Mon, 23 Oct
- 2023 15:52:01 +0000
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::8979:3e3f:c3e0:8dfa]) by SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::8979:3e3f:c3e0:8dfa%4]) with mapi id 15.20.6907.025; Mon, 23 Oct 2023
- 15:52:00 +0000
-Date:   Mon, 23 Oct 2023 11:51:58 -0400
-From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-To:     Tom Yang <yangqixiao@inspur.com>
-Cc:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Documentation: maple_tree: fix word spelling error
-Message-ID: <20231023155158.lyuu3vthvdrzmlaq@revolver>
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        Tom Yang <yangqixiao@inspur.com>, maple-tree@lists.infradead.org,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231023095737.21823-1-yangqixiao@inspur.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023095737.21823-1-yangqixiao@inspur.com>
-User-Agent: NeoMutt/20220429
-X-ClientProxiedBy: BN8PR04CA0025.namprd04.prod.outlook.com
- (2603:10b6:408:70::38) To SN6PR10MB3022.namprd10.prod.outlook.com
- (2603:10b6:805:d8::25)
+        Mon, 23 Oct 2023 12:02:05 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Oct 2023 09:01:28 PDT
+Received: from comms.drone (in.bow.st [71.19.146.166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF32D7C
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:01:28 -0700 (PDT)
+Received: from homebase (unknown [IPv6:fe80::2259:21a4:f292:8bfb])
+        by comms.drone (Postfix) with ESMTPSA id 15433FDF5;
+        Mon, 23 Oct 2023 15:54:16 +0000 (UTC)
+From:   "Mathew\, Cherry G.*" <lkml@bow.st>
+To:     linux-kernel@vger.kernel.org
+Subject: [RFC+Patch] Formal models as source of truth for Software Architects.
+Date:   Mon, 23 Oct 2023 15:53:03 +0000
+Message-ID: <85v8axxrmo.fsf@bow.st>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (berkeley-unix)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|CH0PR10MB5161:EE_
-X-MS-Office365-Filtering-Correlation-Id: bf47c246-043b-4e95-27b4-08dbd3dffe73
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: E8Hox80ExKYkJ19KeEwjc2P2gt8kK6XS6kMYVazOEv9xBJJ6//iccQuGP0Sap+AMwkr5i0g1xev4H2T/ikIlpff+bEsJKTBhKR2McBq8xYBZQxGhWwEnqBJzfD/rQrSY1VxjxZWAcZrpXpmWoGXFo5ZwwACFLROZVDn60p6HEJKPquYLAPnIUBG+rKlYxA76jnq4Hn225W8/0El5tApc15zY3ns4re3KckDF15xu8o6ce83+F4ZJMwjhzrjNIUqoRL9i9t6dc2DXgTS9RUnmn+V68XvvKXp4eDbcdelNXbR6EcTbn11bj2aVqzTcM5nVakjHFJQNo1b8zR/PDYQgSEL2vSgbt/rZC0Hd2jBN57ztvhPKK2D1sXMMqc6EsQaUYYWSMjjMcCocdK6pW3L+vCrOF73FN9ozlqDsFvOX/7zrvFb83alqiVZnf90XvNB4T0qPDS/0JlhOLaZ/b2ExPrnxng3PEzPBKetnI3HQbIJt2oIPQALTt6RoJQBcFrOJ6SU3NS3WbvnR0tHWmDxbS22e2rpVe+WZo6Ov3uR0jPMNIIVCDu4CXehlJ9X+Opcw
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(376002)(366004)(346002)(136003)(39860400002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(33716001)(4326008)(38100700002)(2906002)(86362001)(6506007)(41300700001)(6512007)(1076003)(83380400001)(9686003)(26005)(5660300002)(478600001)(6486002)(8936002)(66556008)(66946007)(66476007)(316002)(6916009)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eIQ5Q4S8m5VHG7s5dBB+gA23gShj7YrA1DbmGLXEXkZEjgtRgz8rgDUiWQDo?=
- =?us-ascii?Q?uLoR6YH/q0rC/kD/4fgv7ZEhB72stGJdaLDHN8BiGMykolpIw0LF/yfnAfrQ?=
- =?us-ascii?Q?WnM8uLdaCYcFz4t4PsWjREpZDWlfnzOguTa3Ioq6R0mb4mohcW1oQ5foSZ/8?=
- =?us-ascii?Q?xXv+0DAC63v8PO1PHBOOtkQOuI4hN3aNMGeuq69h3l18qa/iVisuRvHqvbgm?=
- =?us-ascii?Q?RsU1CFT2kkZPEU/CywA5oGIGLparev5W4PNw3ZzDxRzzquYGeuTGznTLDMd/?=
- =?us-ascii?Q?scthste8mjq1h1qznANlyRXYFbOKWmFCdfH14CJtduB0tN6bEhx+X2PZ/N81?=
- =?us-ascii?Q?fk9tn1L8Sn3im5tXbRjYGAWIrVrULZscc+faqc+KXB2BJaa/wjAoLZ4QDkSQ?=
- =?us-ascii?Q?8fAS5VUecV6jz6zfAb0Okn1BInUEJt29zvpo6GGVwnDjvMvJXDUveB4cVdOy?=
- =?us-ascii?Q?Rw8G+mroPC/pK0dPInuoNqXRjVJnqE3aTgZkuYjMpYycbldzwb8ZHRHRgyXZ?=
- =?us-ascii?Q?idC2qIIZ19hvyTf1doZeDgVg7yC3BgtuBeuSS+7dgeoSNfXb5ItXqSSefk1k?=
- =?us-ascii?Q?cSghdDm3JhKaf091rUldARyxzqoPpslNh3nY+E95jRUnEVpRO99Vd9R7qZnw?=
- =?us-ascii?Q?m8u37SBPUfgrm7PBoq7h26dVQyNFjmVxWR3Mhywa9V4Xtem7cefYU71e2Jya?=
- =?us-ascii?Q?wX4CgAHu+Sb4NT3Xu4m7epLmUJ8qvs+jF+ZVUfiEWT4CG2k0mAROmVKYYgJW?=
- =?us-ascii?Q?5avOJ+HLn4fnEYYS+GlZtPhXoM6Z0twfWG1mEsEPodYYyZzBmOFR3Nr6Zq8U?=
- =?us-ascii?Q?Q+slMJOUWzO8FPRv8oEWmHGrHLS405KoEmkEW+yqPp0v594HSc+PvTE3J04h?=
- =?us-ascii?Q?sxYtkYRL0PgNOfJG0+KTdEPAt1n62mZanBVTJJLmaMRT0CMxWp1Ze2jAJB2A?=
- =?us-ascii?Q?2oHCh7sgJewYgfYqZhh+PHrOjZEwXODqkz+Jfv3szSzQLm4ReMihrTCKXHcg?=
- =?us-ascii?Q?fOh2+49/urVjPCXKnooJA/W/9s9MngYIKhZT7lKYlM46LHPHStX2tkWVBmzE?=
- =?us-ascii?Q?6yOhtudficCR8hB38tmfOks44vDaU4NtuXWiaZjkRPM6zUW2jHSEykq9ccrx?=
- =?us-ascii?Q?XXRBgzV3D/sfomCYvN0dX6FfW58rDk0hQj7sYjsL8e6B+9Z0fyHuA+bu1Wrm?=
- =?us-ascii?Q?IAnBd+CbkLuZ9UW3y/aB3Jxc4QaA+ZZgQ1NwM/gotAvR6e5aOiTa11dCZxVy?=
- =?us-ascii?Q?ZJFLAjgYHqqEMLLO1M7C7kCL/4bf7BVdj9bGW1IzjKAKDBRFUIeiTSQ4FYfV?=
- =?us-ascii?Q?ALkX5nsCkMdM31Xfpi1vtGhZnhYf3QNI42bgC2pswdCQL1iQUy8YmgeWdOyB?=
- =?us-ascii?Q?SUVVzwZP6gh50/IzTQytAIVHqpm+ttpbRc+n9e4xDFtJbU44dGZ2leSLmgRU?=
- =?us-ascii?Q?gxBiztXluiX82sf9Nct8PPxOWytkoLfG97aupBGVW4fMXT8TKprncPWgICym?=
- =?us-ascii?Q?gkJEV/e45gs/VnCDl2woASUPWJJod/mIEWea7KLArS9uDQnK662FVGet95K2?=
- =?us-ascii?Q?JrIXmfvAz78gQcGByvGKAONwJybNAX9FnZ/VlD7T?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: F9B4armLEGcNnqi6Qdvn3jEN/hDS7+QBFY7NEGE/Q6JTAzxaVOD7JuCQv1tVfX3mdPIiZbcAyCCUsjG6zdxFXPUokGrRRLcVdJK5AWChPuLkoJqlGRpJM3KJMOiJ8b27b9xMvjynNWeLiy3GqOJzk6w3MLfr1v/yYK11/BhSE1vndvONxOfO0gPAlAN8E+3lwftcwCQagicS2k1pG4FQexUHyIc3/mmHJj8trBeeDidGaEK8KP2W4ycYy/H6VtGtCEmi9FlqMRhCAq1lUXMotNNY1Wvc9yDjdWU/ZvZczFyJXDimK3xOFKFUZry26Yj0C7qMTUZFwwppuQtafAlQSew5cB66AGiQujqlp5o0cZ9oA/Q48EO5fL6R7lW4dCbakGU64e/P2aAGgZHXfa1VXEoKKNMxc3QQbpkVvS2guqqLixrvSMtkPJYxbNRVxTQIOJmwogAFIKCd3zZOh1dDnSlXD3vDW3mO4lVUVptDnHHBYnNh33D16oXSPkbr7rjyBxOnaDpdIa6Ck+jsEd1WrCNsbDpnLN/IVvRpodSHVoGsFcajo9ljq0pjh59pxiLw0a80lKv/Bpe93vllOUuJbvi5e4qKprLkhVtT4kY7bAcqnmgAkute48GovUHs1vgkxr84r2ixiBcjIgEpHqfVCBWZj1fxs7pn2njhAyav1gwY4dZTcDzAmLJlZWupqNIddByn/+c1O8OgtJ5p73y05JkWNG/mf9ke5mL5D5UdfHbd3R4l0uBNeGs8ycPkVKEvrozb7yU9PtTCgDP1QcFqC1oCHb+Pp2vGYHEkZYbrc8qgTcj3ObLm2Gavvo8HSBmrYhSrgg11i5Huqfy8pL0Nk5zVpKTGDV2EBqV58BGB6Ey1z9FDBxK09vyXFODwYzl9
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf47c246-043b-4e95-27b4-08dbd3dffe73
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 15:52:00.5655
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YYlTiS3/iqLz7jDYEB+1G6pWDW7w6voW4Jh3L81jNp7nc96V28nJjbz5UTNjpDegKGMY6T/68InOY4EM0zSBNA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5161
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_15,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310230138
-X-Proofpoint-GUID: CTvmR4pQrb7tIYEXTTJEPEgKVRyEA5dU
-X-Proofpoint-ORIG-GUID: CTvmR4pQrb7tIYEXTTJEPEgKVRyEA5dU
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hackers,
 
-* Tom Yang <yangqixiao@inspur.com> [231023 05:58]:
-> The "first" is spelled "fist".
+I wanted to share with you some work I've been doing for a couple of
+months with the spin verifier and OS C code. [1]
 
-Thanks.
+Although not directly and immediately relevant to current kernel
+development, this may be relevant to folks thinking about architecture
+and future directions in managing design complexity.
 
-> 
-> Signed-off-by: Tom Yang <yangqixiao@inspur.com>
+As I was working on plumbing the ARC code [1] to an actual block driver,
+it dawned on me that there may be additional advantages to writing code
+based on formal models, other than just consistency verification of
+existing production code. So while I'm getting ahead of myself, let me
+re-start in a reasonable middle of this narrative, and describe how I
+got here.
 
-Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Intro:
+Software must be the only "Engineering" discipline, where the equivalent
+of drawing up an architectural masterplan before you build a skyscraper
+in software, is to start by getting some shovels and start digging the
+basement. While there are a few efforts driven by industry ("inspired"
+by regulation, possibly) [2] [3], I really couldn't find any open source
+attempts at ongoing, continuously integrated work that is in lockstep
+with production sourcecode, with the exception of academic work in
+kernel code verification, eg: [4],  or much smaller codebases such as
+seL4 [5]. (Please feel free to point me at everything I've surely
+missed).
 
-> ---
->  Documentation/core-api/maple_tree.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/core-api/maple_tree.rst b/Documentation/core-api/maple_tree.rst
-> index 45defcf15da7..96f3d5f076b5 100644
-> --- a/Documentation/core-api/maple_tree.rst
-> +++ b/Documentation/core-api/maple_tree.rst
-> @@ -175,7 +175,7 @@ will return the previous entry which occurs before the entry at index.
->  mas_find() will find the first entry which exists at or above index on
->  the first call, and the next entry from every subsequent calls.
->  
-> -mas_find_rev() will find the fist entry which exists at or below the last on
-> +mas_find_rev() will find the first entry which exists at or below the last on
->  the first call, and the previous entry from every subsequent calls.
->  
->  If the user needs to yield the lock during an operation, then the maple state
-> -- 
-> 2.31.1
-> 
-> 
+I think we're thinking about the problem from the wrong end. Inspired by
+"Use the Source, Luke", I realised that perhaps we should approach the
+problem of systems software development using the old unix/engineering
+principles of modularity and clean interfaces.
+
+"D3" - Design Driven Development:
+Let's say we want to develop a new block driver interface that "front"s
+an existing block device, say for eg: as a first step to implementing a
+cache of some sort. In addition, let's assume that we've been given the
+requirement that this driver needs to be available on several OSs. As a
+software architect, how do you put something concrete down on paper,
+which serves as the "Source of Truth", before hammering on the actual
+drivers ?
+
+I propose, that a formal model, specified using a modelling language can
+serve this purpose. However, a formal model alone, seems to be
+insufficient. Most formal models seem to exist in a sort of echo chamber
+of their own, where the model sits aside from actual production code,
+or the other extreme, where implementation code itself serves as the
+source of truth, instead of a more abstract formal spec.
+
+While looking for a verifier tool that addresses this problem of the
+"gap" between a model and the implementation code written to express
+that model, I came across the model extractor from the spin
+verifier. [6]. Modex really blew my mind. For the first time, I could
+write a complete loop starting from:
+
+a) A Formal model to represent concurrent processes and the joint
+   evolution of their state.
+b) Invariants expressed in linear temporal logic, to reason about bounds
+   within which this model should operate.
+c) An implementation in a programming language based on eyeballed model
+   code from "a)" above.
+d) A model extractor that could parse the above implementation code, and
+   pull it back into a formal model representation such as in "a)"
+   above.
+e) And finally the ability to apply invariants in "b)" , originally
+   meant for the abstract model in "a)" over the extracted model from
+   "d)".
+
+If there were inconsistencies in step "e)", while none in "b)", this
+could mean that either the extractor hadn't pulled out the right model,
+or the implementation had strayed from that specified in "a)"
+above. This would then require further eyeballing, patching, and
+repeating steps "c)" -> "e)" until the extracted model "d)" and the hand
+crafted model "a)" satisfied the invariants in "b)".
+
+The key assumption here (which I have no way of proving is true) is that
+the satisfaction of invariants in "b)" above, could stand in place for
+equivalence of model and code. Thus we have a development process that
+I'm calling "Design Driven Development" (or "D3" in short form) which
+allows for iterative tightening up of implemented code to a formal
+specification.
+
+Discussion:
+If one were a software architect in a larger project, one could just
+focus on the correctness of one's model, while software engineers could
+focus on implementing the model faithfully, using the D3 loop above to
+ensure fidelity.
+
+I believe this is really powerful - as I'm new to this area, I would
+love to hear from folks that have used this or analogous techniques in
+industry or open-source (ideally both), to get a sense of where my
+current thinking is, with respect to the industry.
+
+Please find attached, a long-ish patch that is heavily WIP. It attempts
+to model a "generic" block driver in spin's promela language. The model
+is in cbd.pm[hl] , the invariants are in cbd.inv. The implementation of
+the model for linux is in linux/cbd.c ( you can use the Makefile to
+compile it as an actual linux module). The implementation of the model
+for NetBSD is in NetBSD/cbd.c (ditto - instructions in respective
+Makefile). Note that I haven't actually tested the driver - it will most
+likely crash, as I haven't really looked at the engineering side of
+things yet - but thought I should publish this right now, to get early
+feedback, and also give a sense of why actual CI testing is still needed
+to ensure that the final implementation plumbing is right.
+
+The "extraction" is specified in a "harness" defined in files with
+extensions "*.prx", suplimented by LUTs to help translate C code back to
+the extracted model. This is where the age of spin/modex becomes evident
+- clearly the extraction language needs to be a lot more expressive (I
+see it analagous to the expressivity in a regex machine, vs. a
+parser). This is an area I'd love to see more work on, to the point
+where we have a tool (if not already available) that can enable
+something like D3 as the gold standard for software quality and
+reliability.
+
+For architects, it takes off the burden of having to rely
+on their memory and random tests and bespoke models to keep state. For
+engineers, it provides a clear "source of truth" and a process based
+mechanism to verify their implementation based on this source. And for
+project managers, there's much better visibility over the entire QA,
+analogous to but much more powerful than a simple TDD style development
+process.
+
+Thank you for your attention - I hope to hear back from you  - do please
+Cc: me if you're replying to list. Especially if you actively work on
+formally verified infrastructure code where QA is a regulatory need
+(avionics ? MISRA-C related constraints ? healthcare ?)
+
+Patch inlined below. To try it out, you need to have 'spin' installed
+using your favourite package manager, and modex [6] compiled , with both
+binaries in $PATH.
+
+Then you can try things out:
+
+1) Deploy sources to local directory: $ patch -tp1 < cbd.diff
+
+2) Check out the model. $ make spin-gen; less spinmodel.pml
+
+3) Try to verify the model (see various commented out #defines in
+   spinmodel.pml if you want to spread your wings.):
+   $ make spin-run
+
+4) Try to extract the model from linux/cbd.c:
+   $ make clean modex-linux; less spinmodel.pml
+   You can try to verify this extracted spinmodel.pml via 3) above.
+
+5) Try to extract the model from NetBSD/cbd.c:
+   $ make clean modex-NetBSD; less spinmodel.pml
+   You can try to verify this extracted spinmodel.pml via 3) above.
+
+Looking forward!
+
+Many Thanks,
+
+MattC (/~cherry)
+
+[1] https://mail-index.netbsd.org/tech-kern/2023/09/28/msg029203.html
+[2] https://en.wikipedia.org/wiki/Model-based_systems_engineering
+[3] https://en.wikipedia.org/wiki/Model-driven_engineering
+[4] https://unsat.cs.washington.edu/papers/nelson-hyperkernel.pdf
+[5] https://sel4.systems/
+[6] https://github.com/nimble-code/Modex
+
+
+diff -urN cbd.null/cbd.drv cbd/cbd.drv
+--- cbd.null/cbd.drv	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbd.drv	2023-10-19 17:56:08.023048865 +0000
+@@ -0,0 +1,299 @@
++/* Spin model driver for NetBSD cbd(4) cbd.c */
++
++/*
++ * Copyright 2023, Mathew, Cherry G. <c@bow.st>
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:  
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ * notice, this list of conditions and the following disclaimer. 
++ * 
++ * 2. Redistributions in binary form must reproduce the above copyright
++ * notice, this list of conditions and the following disclaimer in the
++ * documentation and/or other materials provided with the distribution. 
++ * 
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ * “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
++ */
++   
++#include "cbd.pmh"
++
++/* We drive the routines concurrently */
++#define NPROCS 2
++#define index_pid (_pid - 1)
++
++/* Per-device instance state. Currently we only have one instance */
++bit sc_lock;  /* Driver instance lock */
++unsigned cbdevsz : DEVSZBITS; /* Same as size of the backing block dev */
++
++unsigned cbdev : DEVIDBITS;   	 /* Our Device "handle" */
++unsigned backingdev : DEVIDBITS;  /* Backing device "handle" */
++unsigned cachingdev : DEVIDBITS;  /* Caching device "handle" */
++
++/* Aggregated traffic stats (per-device) */
++unsigned cbdbytesread : DEVSZBITS;
++unsigned cbdbyteswritten : DEVSZBITS;;
++
++/*
++ * Helper functions - better as inline because:
++ * - spin parser doesn't care about location vs. preprocessor does.
++ * - trace output looks better
++ */
++hidden int error[NPROCS];   /* Error indicator for last op */
++
++inline SETERROR(_errno)
++{
++	error[index_pid] = _errno;
++}
++
++
++inline
++mutex_enter(_mutex)
++{
++	atomic {
++		(_mutex == 0) -> _mutex = 1;
++	}
++}
++
++inline
++mutex_exit(_mutex)
++{
++	atomic {
++		(_mutex == 1) -> _mutex = 0;
++	}
++}
++
++/* Set state to "Configured", so that ioctl() can work */
++inline
++cbd_init()
++{
++	if
++	:: cbd_unconfigured() ->
++	   cbdev = CBD_DEVID_CBD1;
++	:: else -> SETERROR(EBUSY);
++	   skip;
++	fi
++}
++
++/* Undo init() */
++inline
++cbd_fini()
++{
++	do
++	:: cbd_backed(cbdev) ->
++	        mutex_enter(sc_lock);
++		cbd_detach_backend(CBD_DEVID_BACKING);
++		mutex_exit(sc_lock);
++	:: cbd_configured(cbdev) ->
++		mutex_enter(sc_lock);
++		if
++		:: cbd_backed(cbdev) -> /* Lost race. Retry */
++		   mutex_exit(sc_lock);
++		:: else ->
++		   cbdev = CBD_DEVID_NONE;
++		   mutex_exit(sc_lock);
++		   break;
++	      	fi
++	:: else -> skip; /* Retry until things quiesce */
++	od
++}
++
++inline
++io_backing(backingdev, bp)
++{
++	/* Aggregate i/o data */
++	if
++	:: is_set(bp.direction, B_READ) ->
++	   /* Increment bytes read */
++	   cbdbytesread = cbdbytesread + bp.spooled;
++	:: else -> /* Assume B_WRITE */
++	   /* Increment bytes written */
++	   cbdbyteswritten = cbdbyteswritten + bp.spooled;
++	fi
++
++}
++
++inline
++ioctl_backing(_dev, _cmd, _data, _flag)
++{
++	/* Wouldn't have got here without specific intention.
++	 * Therefore we just make sure we're in the right state.
++	 */
++	SETERROR((cbd_backed(_dev) -> 0 : ENXIO));
++}
++
++inline
++reset_cbdstate()
++{
++	sc_lock = 0;
++   	cbdbytesread = 0;
++   	cbdbyteswritten = 0;
++	cbdev = CBD_DEVID_NONE;
++	cbdevsz = 0;	
++	backingdev = CBD_DEVID_NONE;
++	cachingdev = CBD_DEVID_NONE;	
++}
++
++bit strategy = 0;
++bit ioctl = 0;
++bit configured = 0;
++bit rdwr = 0;
++
++inline
++drive_cbd(_dev, _flags, _buffer,
++	  _cmd, _data)
++{
++	/* Start with state that covers max code */
++	_dev = CBD_DEVID_CBD1;
++	set_flag(_flags, FREAD | FWRITE);	
++
++	_buffer.error = 0;
++	_buffer.address = 0;
++	_buffer.offset = 0;
++	_buffer.length = CBD_BACKING_DISKSIZE; /* Try moving the whole buffer */
++	_buffer.spooled = 0;
++	_buffer.dev = CBD_DEVID_NONE;
++	set_flag(_buffer.direction, B_READ);
++
++	_cmd = CBDIO_ATTACH_BACKEND;
++	_data = CBD_DEVID_BACKING;
++
++	do
++	::
++	if
++	:: (!configured) ->
++	   cbd_init();
++	   configured = 1;
++	:: (ioctl) ->
++	   cbdioctl(_dev, _cmd, _data, _flags);
++	   if
++//#define EXPLORE_IOCTL
++#ifdef EXPLORE_IOCTL
++	   :: (_dev > CBD_DEVID_NONE) -> _dev--;
++	   :: (_dev < CBD_DEVID_CACHING) -> _dev++;
++#endif	   	   	   
++	   :: (_cmd > CBDIO_INVAL) -> _cmd--;
++	   :: (_cmd < CBDIO_GET_STATUS) -> _cmd++;
++	   :: (_data > CBD_DEVID_NONE) -> _data--;
++	   :: (_data < CBD_DEVID_CACHING) -> _data++;
++	   :: is_set(_flags, FREAD) -> clear_flag(_flags, FREAD); set_flag(_flags, FWRITE);
++	   :: is_set(_flags, FWRITE) -> clear_flag(_flags, FWRITE); set_flag(_flags, FREAD);
++	   :: else -> set_flag(_flags, FREAD);
++	   fi
++	   ioctl = 0;
++
++	:: (!ioctl) -> ioctl = 1;
++	:: (strategy) ->
++	   mutex_enter(sc_lock);	
++	   cbdstrategy(_buffer);
++	   mutex_exit(sc_lock);
++//#define EXPLORE_STRATEGY
++#ifdef EXPLORE_STRATEGY	
++	   if
++	   :: is_set(_buffer.direction, B_WRITE) ->
++	      	  clear_flag(_buffer.direction, B_WRITE);
++	      	  set_flag(_buffer.direction, B_READ);
++	   :: is_set(_buffer.direction, B_READ) ->
++	      	  clear_flag(_buffer.direction, B_READ);
++	      	  set_flag(_buffer.direction, B_WRITE);
++	   :: else ->
++	   	  set_flag(_buffer.direction, B_READ);
++	   fi
++	   strategy = 0;
++# endif	   
++	:: (!strategy) -> strategy = 1;
++//#define EXPLORE_BUFFERSTATE
++#ifdef  EXPLORE_BUFFERSTATE
++	:: (_buffer.offset < (CBD_BACKING_DISKSIZE + 1)) ->
++	   	 _buffer.offset++;
++	:: (_buffer.length < (CBD_BACKING_DISKSIZE + 2)) ->
++	   	 _buffer.length++;
++	:: (_buffer.address < VAMAX) -> _buffer.address++;
++	:: (_buffer.spooled < (CBD_BACKING_DISKSIZE + 2)) ->
++	   	 _buffer.spooled++;
++	:: (_buffer.offset > 0) -> _buffer.length--;
++	:: (_buffer.length > 0) -> _buffer.length--;
++	:: (_buffer.spooled > 0) -> _buffer.spooled--;
++	:: (_buffer.address > 0) -> _buffer.address--;
++#endif
++//#define EXPLORE_READWRITESTATE
++#ifdef  EXPLORE_READWRITESTATE
++	:: (rdwr) ->
++	   cbdread(_dev, _buffer);
++	   cbdwrite(_dev, _buffer);
++	   rdwr = 0;
++	:: (!rdwr) -> rdwr = 1;
++	
++	:: (configured) ->
++	   cbd_fini();
++	   configured = 0;
++#endif	   
++	:: else ->
++		  break;
++	fi
++
++	od
++}
++
++/* Per proc data to drive the state machine */
++typedef user_vars_t {
++	unsigned dev : DEVIDBITS;
++	unsigned flags : FLAGBITS;
++	buf_t buffer;
++	unsigned cmd : IOCMDBITS;
++
++	/* IRL, this would be eg: the backing device node path.
++	 * For now we just pass a fake DEVIDXXX "handle" that
++	 * represents the backing device.
++	 */
++
++	unsigned data : DEVIDBITS;	
++};
++
++/* Drive functions through various state variations */
++proctype
++p_drive_cbd()
++{
++	/* Setup initial per-proc caller values. These will get
++	 * iterated in the inline callees below below
++	 */
++	user_vars_t user_vars[NPROCS];
++	
++	drive_cbd(user_vars[index_pid].dev, user_vars[index_pid].flags,
++		  user_vars[index_pid].buffer, user_vars[index_pid].cmd,
++		  user_vars[index_pid].data);
++
++}
++
++/* Drive the procs */
++init {
++
++	/* Initialise Device params */
++	reset_cbdstate();
++
++	pid proc;
++
++	/* Spin up NPROCS concurrent processes */
++	atomic {
++                proc = 0;
++		do
++                :: proc < NPROCS ->
++			   run p_drive_cbd();
++			   proc++
++		:: else ->
++			break
++		od
++	}
++
++}
+diff -urN cbd.null/cbd.inv cbd/cbd.inv
+--- cbd.null/cbd.inv	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbd.inv	2023-10-18 17:08:10.842776509 +0000
+@@ -0,0 +1,49 @@
++/* Spin process invariants for NetBSD cbd(4) cbd.c */
++
++/*
++ * Copyright 2023, MattC <c@bow.st>
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:  
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ * notice, this list of conditions and the following disclaimer. 
++ * 
++ * 2. Redistributions in binary form must reproduce the above copyright
++ * notice, this list of conditions and the following disclaimer in the
++ * documentation and/or other materials provided with the distribution. 
++ * 
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ * “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
++ */
++
++ltl
++{
++/* Checks while outside critical section - ie; kernel state is stable. */
++	always ((sc_lock == 0) implies (
++	        /* Device state basic consistency */
++	        (cbd_configured(cbdev) implies
++		  !cbd_unconfigured()) &&
++	        /* Active ioctl passthrough implies configured device */	
++	        (cbd_backed(cbdev) implies
++		  cbd_configured(cbdev)) &&
++		/* There will be I/O eventually */
++		(eventually always (cbdbytesread + cbdbyteswritten) > 0)
++		) /* (sc_lock == 0) */
++	) /* always */ //&&
++//	always ((sc_lock == 1) implies (
++	       /* Lock must always be released */
++//	       (eventually (sc_lock == 0))
++//	       ) /* (sc_lock == 1) */
++//	) /* always */ // &&
++}
+diff -urN cbd.null/cbdioctl.linux.lut cbd/cbdioctl.linux.lut
+--- cbd.null/cbdioctl.linux.lut	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbdioctl.linux.lut	2023-10-23 08:14:11.902411553 +0000
+@@ -0,0 +1,15 @@
++// cbd_ioctl(...) -> cbdioctl(...)
++
++cbd_backed(cbp)		cbd_backed(_dev)
++
++Substitute	c_expr { 222 == cmd }	(_cmd == CBDIO_ATTACH_BACKEND)
++Substitute	c_expr { 333 == cmd }	(_cmd == CBDIO_DETACH_BACKEND)
++
++Substitute	c_expr { (cbp==0) }	false
++Substitute	c_expr { (!cbd_configured(cbp)) }	!cbd_configured(_dev)
++Substitute	c_expr { (!cbd_backed(cbp)) }	!cbd_backed(_dev)
++Substitute	c_code { err=(-ENXIO); }	SETERROR(ENXIO)
++Substitute	c_code { err=(-EBUSY); }	SETERROR(EBUSY)
++Substitute	c_code { err=(-ENODEV); }	SETERROR(ENODEV)
++Substitute	c_code { err=(-EPERM); }	SETERROR(EPERM)
++Substitute	c_code { err=(-ENOTTY); }	skip
+diff -urN cbd.null/cbdioctl.NetBSD.lut cbd/cbdioctl.NetBSD.lut
+--- cbd.null/cbdioctl.NetBSD.lut	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbdioctl.NetBSD.lut	2023-10-23 08:23:23.430620615 +0000
+@@ -0,0 +1,16 @@
++// cbd_ioctl(...) -> cbdioctl(...)
++
++cbd_backed(sc)		cbd_backed(_dev)
++
++Substitute	c_expr { (sc==0) }	false
++Substitute	c_expr { 222 == cmd }	(_cmd == CBDIO_ATTACH_BACKEND)
++Substitute	c_expr { 333 == cmd }	(_cmd == CBDIO_DETACH_BACKEND)
++Substitute	c_code { error=EBUSY; }	SETERROR(EBUSY)
++Substitute	c_code { error=ENODEV; }	SETERROR(ENODEV)
++Substitute	c_code { error=EPERM; }	SETERROR(EPERM)
++
++Substitute	c_code { error=cbd_attach_backend(sc,(&(cbdioctlargs))); }	cbd_attach_backend(_dev, _data)
++Substitute	c_code { error=cbd_detach_backend(sc); }	cbd_detach_backend(_data)
++Substitute	c_expr { (!cbd_backed(sc)) }	!cbd_backed(_dev)
++
++
+diff -urN cbd.null/cbdattachbackend.linux.lut cbd/cbdattachbackend.linux.lut
+--- cbd.null/cbdattachbackend.linux.lut	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbdattachbackend.linux.lut	2023-10-23 08:12:51.340517105 +0000
+@@ -0,0 +1 @@
++Substitute	c_expr { IS_ERR(backingdev) }	false
+diff -urN cbd.null/cbdattachbackend.NetBSD.lut cbd/cbdattachbackend.NetBSD.lut
+--- cbd.null/cbdattachbackend.NetBSD.lut	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbdattachbackend.NetBSD.lut	2023-10-23 06:56:21.559519110 +0000
+@@ -0,0 +1,2 @@
++// Hard hammer - XXX: Find a better way to handle error ?
++Substitute	c_expr { (error!=0) }	false
+diff -urN cbd.null/cbd.linux.prx cbd/cbd.linux.prx
+--- cbd.null/cbd.linux.prx	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbd.linux.prx	2023-10-23 08:16:16.155489259 +0000
+@@ -0,0 +1,217 @@
++// Spin model extractor harness for linux/cbd.c written by cherry
++//
++%F linux/cbd.c
++%X -n modexbug // Somehow this is needed to activate per-func LUT
++%X -L cbdstrategy.linux -n cbd_submit_bio
++%X -L cbdioctl.linux -n cbd_ioctl
++%X -L cbdattachbackend.linux -n cbd_attach_backend
++%X -n cbd_detach_backend
++%H
++// Disable effects of all included files and try to implement a subset of the APIs they provide.
++#define _LINUX_BLKDEV_H
++
++// linux/blk_types.h
++#define SECTOR_SHIFT 9
++typedef void struct block_device;
++typedef void blk_mode_t;
++
++#define __LINUX_MUTEX_H
++struct mutex {
++       void *dummy;
++};
++
++// sys/null.h
++#define	NULL	0
++
++#define true 1
++#define false 0
++
++typedef int bool;
++
++/* Linuxisms */
++#define __user
++#define __init
++#define __exit
++
++#define module_init(x)
++#define module_exit(x)
++#define MODULE_LICENSE(L)
++
++%%
++//%C // c_code {}
++//%%
++//%D // c_cdecl {}
++//%%
++%L // XXX: Looks like per function tables are broken for now.
++// Common transformations
++
++NonState		hidden	cbd_major	global
++NonState		hidden	exclusive	global
++NonState		hidden	cbd_fops	global
++NonState		hidden	exclusive	global
++
++mutex_lock(...		mutex_enter(sc_lock)
++mutex_unlock(...	mutex_exit(sc_lock)
++
++// cbd_submit_bio(...) -> cbdstrategy(...)
++// See cbdstrategy.linux.lut broad substs which need scope limiting.
++NonState		hidden	bio	cbd_submit_bio
++NonState		hidden	cbp	cbd_submit_bio
++NonState		hidden	bdev	cbd_submit_bio
++NonState		hidden	bio_offset	cbd_submit_bio
++NonState		hidden	bdevsz	cbd_submit_bio
++
++// Gen-ed Code substitution. This is due to a lack of a sensible parser harness language with the right semantics.
++Substitute	c_expr { ((bio_offset+bio->bi_iter.bi_size)>bdevsz) }	((bp.offset + bp.length) > cbdevsz)
++Substitute	c_expr { (bio_op(bio)&REQ_OP_READ) }	is_set(bp.direction, B_READ)
++Substitute	c_code { bio_offset=((bio_offset>bdevsz) ? bdevsz : bio_offset); }	bp.offset = ((bp.offset > cbdevsz) -> cbdevsz : bp.offset)
++Substitute	c_code [bio] { bio->bi_iter.bi_size=(bdevsz-bio_offset); }	bp.length = (cbdevsz - bp.offset)
++Substitute	c_code [bio] { bio->bi_iter.bi_sector=(bio_offset>>9); }	skip
++Substitute	c_code [bio] { bio->bi_status=BLK_STS_NOTSUPP; }	bp.error = EINVAL;
++Substitute	c_code [bio] { bio->bi_status=BLK_STS_OFFLINE; }	bp.error = ENXIO
++
++// cbd_ioctl(...) -> cbdioctl(...)
++// See cbdioctl.linux.lut broad substs which need scope limiting.
++NonState		hidden	userdata	cbd_ioctl
++NonState		hidden	arg	cbd_ioctl
++NonState		hidden	cmd	cbd_ioctl
++NonState		hidden	mode	cbd_ioctl
++NonState		hidden	bdev	cbd_ioctl
++NonState		hidden	cbp	cbd_ioctl
++NonState		hidden	err	cbd_ioctl
++
++
++Substitute	c_expr { (!(mode&BLK_OPEN_WRITE)) }	!is_set(_flag, FWRITE)
++Substitute	c_code [bdev->bd_disk && bdev] { cbp=bdev->bd_disk->private_data; }	skip
++Substitute	c_code { err=cbd_attach_backend(cbp,userdata); }	cbd_attach_backend(_dev,_data)
++Substitute	c_code { err=cbd_detach_backend(cbp); }	cbd_detach_backend(_data)
++Substitute	c_code [cbp && cbp->backingdev->bd_disk->fops && cbp->backingdev->bd_disk && cbp->backingdev && cbp] { err=cbp->backingdev->bd_disk->fops->ioctl(cbp->backingdev,mode,cmd,arg); }	ioctl_backing(backingdev, _cmd, _data, _flag)
++
++// cbd_attach_backend(...) -> cbd_attach_backend()
++// See cbdattachbackend.linux.lut broad substs which need scope limiting.
++NonState		hidden	lockedcbp	cbd_attach_backend
++NonState		hidden	pathname	cbd_attach_backend
++NonState		hidden	userdata	cbd_attach_backend
++NonState		hidden	backingdev	cbd_attach_backend
++
++Substitute	c_expr { (lockedcbp->cbdev==0) }	(_dev != CBD_DEVID_CBD1)-> SETERROR(ENODEV)
++Substitute	c_code { pathname=kzalloc(PATH_MAX,GFP_KERNEL); }	skip;
++Substitute	c_expr { (pathname==0) }	false
++Substitute	c_expr { (strncpy_from_user(pathname,(void *)userdata,PATH_MAX)==(-EFAULT)) }	(_data != CBD_DEVID_BACKING); SETERROR(EINVAL)
++Substitute	c_code { kfree(pathname); }	skip
++Substitute	c_code { backingdev=blkdev_get_by_path(strim(pathname),((BLK_OPEN_READ|BLK_OPEN_WRITE)|BLK_OPEN_EXCL),exclusive,0); }	skip
++Substitute	c_code [lockedcbp] { lockedcbp->backingdev=backingdev; }	backingdev = CBD_DEVID_BACKING
++Substitute	c_code [lockedcbp->cbdev && lockedcbp] { set_capacity(lockedcbp->cbdev->bd_disk,bdev_nr_sectors(backingdev)); }	cbdevsz = CBD_BACKING_DISKSIZE
++
++// cbd_detach_backend(...) -> cbd_detach_backend()
++NonState		hidden	lockedcbp	cbd_detach_backend
++
++Substitute	c_expr { ((lockedcbp->cbdev==0)||(lockedcbp->backingdev==0)) }	(_dev != CBD_DEVID_CBD1 || backingdev != CBD_DEVID_BACKING) -> SETERROR(ENODEV)
++Substitute	c_code [lockedcbp] { blkdev_put(lockedcbp->backingdev,exclusive); }	skip
++Substitute	c_code [lockedcbp] { lockedcbp->backingdev=0; }	backingdev = CBD_DEVID_NONE
++Substitute	c_code [lockedcbp->cbdev && lockedcbp] { set_capacity(lockedcbp->cbdev->bd_disk,0); }	cbdevsz = 0
++%%
++
++%P
++hidden int tmpdev; /* Saved during passthrough */
++
++inline
++cbdstrategy(bp)
++{
++	#include "_modex_cbd_submit_bio.pml"
++}
++
++inline
++cbdioctl(_dev, _cmd, _data, _flag)
++{
++	SETERROR(0); /* default */
++	#include "_modex_cbd_ioctl.pml"
++}
++
++inline
++cbd_attach_backend(_dev, _data)
++{
++	SETERROR(0);
++#include "_modex_cbd_attach_backend.pml"
++}
++
++inline
++cbd_detach_backend(_dev)
++{
++	SETERROR(0);
++#include "_modex_cbd_detach_backend.pml"
++}
++
++// linux/cbd.c doesn't have read/write fops, so we
++// fake it to allow cbd.drv to be parsed
++// However See: cbd.drv: -D EXPLORE_READWRITESTATE
++/* For now, we just check re-entrancy consistency.
++ * XXX: uio validation
++ */
++inline
++cbdread(_dev, _uio)
++{
++	SETERROR(0);
++
++	/* Check for backing disk */
++	mutex_enter(sc_lock);
++	if
++	:: !cbd_configured(_dev) ->
++	   SETERROR(EINVAL);
++	   mutex_exit(sc_lock);	   
++	   goto cbdread_out; 
++	:: !cbd_backed(_dev) ->
++	   SETERROR(ENOENT);
++	   mutex_exit(sc_lock);	   
++	   goto cbdread_out; 
++	:: else ->
++	   skip;
++	fi
++	mutex_exit(sc_lock);
++
++	/* simulate uio -> buf translation */
++	buf_t rd_buf;
++	rd_buf.direction = B_READ;
++	rd_buf.error = 0;
++	rd_buf.length = _uio.length;
++	rd_buf.address = _uio.address;
++	rd_buf.spooled = 0;
++	cbdstrategy(rd_buf);
++
++cbdread_out:
++}
++
++inline
++cbdwrite(_dev, _uio)
++{
++	SETERROR(0);
++
++	/* Check for backing disk */
++	mutex_enter(sc_lock);
++	if
++	:: !cbd_configured(_dev) ->
++	   SETERROR(EINVAL);
++	   mutex_exit(sc_lock);	   
++	   goto cbdwrite_out; 
++	:: !cbd_backed(_dev) ->
++	   SETERROR(ENOENT);
++	   mutex_exit(sc_lock);	   
++	   goto cbdwrite_out; 
++	:: else ->
++	   skip;
++	fi
++	mutex_exit(sc_lock);	   	
++
++	/* simulate uio -> buf translation */
++	buf_t rw_buf;
++	rw_buf.direction = B_WRITE;
++	rw_buf.error = 0;
++	rw_buf.length = _uio.length;
++	rw_buf.address = _uio.address;
++	rw_buf.spooled = 0;
++
++	cbdstrategy(rw_buf);
++cbdwrite_out:
++}
++
++%%
+\ No newline at end of file
+diff -urN cbd.null/cbd.NetBSD.prx cbd/cbd.NetBSD.prx
+--- cbd.null/cbd.NetBSD.prx	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbd.NetBSD.prx	2023-10-23 08:20:37.150517408 +0000
+@@ -0,0 +1,232 @@
++// Spin model extractor  harness for NetBSD/cbd.c written by cherry
++//
++%F NetBSD/cbd.c
++%X -n modexbug // Somehow this is needed to activate per-func LUT
++%X -L cbdstrategy.NetBSD -n cbd_strategy
++%X -L cbdioctl.NetBSD -n cbd_ioctl
++%X -L cbdattachbackend.NetBSD -n cbd_attach_backend
++%X -n cbd_detach_backend
++%H
++// Disable effects of all included files and try to implement a subset of the APIs they provide.
++
++#define _SYS_TYPES_H_
++#define _SYS_STAT_H_
++#define _SYS_BUF_H
++#define _SYS_BUFQ_H
++#define _SYS_CONF_H
++#define _SYS_DISK_H
++#define _SYS_DISKLABEL_H
++#define _SYS_ERRNO_H
++#define _UVM_PROT_
++#define _SYS_ACL_H
++#define _SYS_VNODE_IF_H_
++#define _SYS_VNODE_H_
++
++typedef void device_t;
++//typedef void *kmutex_t; //Kludgy hack, see below
++#define kmutex_t (void *)
++typedef void dev_t;
++typedef void u_long;
++typedef void buf_t;
++typedef void uint64_t;
++
++/* Override switch arrays */
++void cbd_bdevsw;
++void cbd_cdevsw;
++void cbddkdriver;
++
++#define CFATTACH_DECL3_NEW(_ign1, _ign2, _ign3, _ign4, _ign5, _ign6, _ign7, _ign8, _ign9)
++
++// sys/null.h
++#define	NULL	0
++
++#define true 1
++#define false 0
++
++typedef int bool;
++
++#define disk_busy(_dk)
++#define disk_unbusy(_dk, _count, _flags)
++
++#define biodone(_bp)
++
++%%
++//%C // c_code {}
++//%%
++//%D // c_cdecl {}
++//%%
++%L // XXX: Looks like per function tables are broken for now.
++// Common transformations
++
++NonState		hidden	cbd_major	global
++NonState		hidden	cbd_cdevsw	global
++NonState		hidden	sc_lock		global
++
++mutex_enter(...		mutex_enter(sc_lock)
++mutex_exit(...		mutex_exit(sc_lock)
++
++Substitute	c_code { unit=DISKUNIT(dev); }	skip
++Substitute	c_code { sc=device_lookup_private((&(cbd_cd)),unit); }	skip
++
++// cbd_strategy(...) -> cbdstrategy(...)
++NonState		hidden	sc		cbd_strategy
++NonState		hidden	buf		cbd_strategy
++NonState		hidden	dev		cbd_strategy
++NonState		hidden	unit		cbd_strategy
++
++// Gen-ed Code substitution. This is due to a lack of a sensible parser harness language with the right semantics.
++Substitute	c_expr { ((dbtob(buf->b_blkno)+buf->b_bcount)>sc->sc_tvn_bsize) }	((bp.offset + bp.length) > cbdevsz)
++Substitute	c_expr { BUF_ISREAD(buf) }	is_set(bp.direction, B_READ)
++Substitute	c_code [sc && sc && buf && buf] { buf->b_blkno=((dbtob(buf->b_blkno)>sc->sc_tvn_bsize) ? F: btodb(sc->sc_tvn_bsize) : bufb_blkno); }	bp.offset = ((bp.offset > cbdevsz) -> cbdevsz : bp.offset)
++Substitute	c_code [buf && sc && buf] { buf->b_bcount=(sc->sc_tvn_bsize-dbtob(buf->b_blkno)); }	bp.length = (cbdevsz - bp.offset)
++Substitute	c_code [buf] { buf->b_error=EINVAL; }	bp.error = EINVAL
++Substitute	c_code [buf] { buf->b_error=ENXIO; }	bp.error = ENXIO
++
++// cbd_ioctl(...) -> cbdioctl(...)
++NonState		hidden	sc		cbd_ioctl
++NonState		hidden	dev		cbd_ioctl
++NonState		hidden	cmd		cbd_ioctl
++NonState		hidden	data		cbd_ioctl
++NonState		hidden	flag		cbd_ioctl
++NonState		hidden	l		cbd_ioctl
++NonState		hidden	unit		cbd_ioctl
++NonState		hidden	error		cbd_ioctl
++NonState		hidden	cbdioctlargs		cbd_ioctl
++
++Substitute	c_code { cbdioctlargs.diskpath=data; }	skip
++Substitute	c_code { cbdioctlargs.l=l; }	skip
++Substitute	c_expr { (!cbd_configured(sc)) }	!cbd_configured(_dev) -> SETERROR(ENXIO)
++Substitute	c_expr { (!(flag&FWRITE)) }	!is_set(_flag, FWRITE)
++Substitute	c_code [l && sc] { error=VOP_IOCTL(sc->sc_tvn,cmd,data,flag,l->l_cred); }	ioctl_backing(backingdev, _cmd, _data, _flag)
++
++// cbd_attach_backend(...) -> cbd_attach_backend()
++NonState		hidden	lockedsc	cbd_attach_backend
++NonState		hidden	cbdioctl	cbd_attach_backend
++NonState		hidden	data	cbd_attach_backend
++NonState		hidden	pbuf	cbd_attach_backend
++NonState		hidden	error	cbd_attach_backend
++NonState		hidden	vp	cbd_attach_backend
++NonState		hidden	numsec	cbd_attach_backend
++NonState		hidden	secsz	cbd_attach_backend
++
++Substitute	c_expr { (lockedsc->sc_dev==0) }	(_dev != CBD_DEVID_CBD1)-> SETERROR(ENODEV)
++Substitute	c_code [cbdioctl] { error=pathbuf_copyin(cbdioctl->diskpath,(&(pbuf))); }	skip
++Substitute	c_code [cbdioctl] { error=vn_bdev_openpath(pbuf,(&(vp)),cbdioctl->l); }	if :: (_data != CBD_DEVID_BACKING) -> SETERROR(ENODEV) :: else; fi
++Substitute	c_code { pathbuf_destroy(pbuf); }	skip
++Substitute	c_code { error=getdisksize(vp,(&(numsec)),(&(secsz))); }	skip
++Substitute	c_code [lockedsc] { lockedsc->sc_tvn=vp; }	backingdev = CBD_DEVID_BACKING
++Substitute	c_code [lockedsc] { lockedsc->sc_tvn_bsize=(numsec*secsz); }	cbdevsz = CBD_BACKING_DISKSIZE
++Substitute	c_code [cbdioctl->l && cbdioctl && lockedsc] { lockedsc->sc_tvn_l_cred=cbdioctl->l->l_cred; }	skip
++
++
++// cbd_detach_backend(...) -> cbd_detach_backend()
++NonState		hidden	lockedsc	cbd_detach_backend
++
++Substitute	c_expr { ((((lockedsc->sc_dev==0)||(lockedsc->sc_tvn==0))||(lockedsc->sc_tvn_bsize==0))||(lockedsc->sc_tvn_l_cred==0)) }	(_dev != CBD_DEVID_CBD1 || backingdev != CBD_DEVID_BACKING) -> SETERROR(ENODEV);
++Substitute	c_code [lockedsc && lockedsc] { vn_close(lockedsc->sc_tvn,(FREAD|FWRITE),lockedsc->sc_tvn_l_cred); }	skip
++Substitute	c_code [lockedsc] { lockedsc->sc_tvn_bsize=0; }	cbdevsz = 0
++Substitute	c_code [lockedsc] { lockedsc->sc_tvn_l_cred=0; }	skip
++Substitute	c_code [lockedsc] { lockedsc->sc_tvn=0; }	backingdev = CBD_DEVID_NONE
++%%
++
++%P
++hidden int tmpdev; /* Saved during passthrough */
++
++inline
++cbdstrategy(bp)
++{
++	#include "_modex_cbd_strategy.pml"
++}
++
++inline
++cbdioctl(_dev, _cmd, _data, _flag)
++{
++	SETERROR(0); /* default */
++	#include "_modex_cbd_ioctl.pml"
++}
++
++inline
++cbd_attach_backend(_dev, _data)
++{
++	SETERROR(0);
++#include "_modex_cbd_attach_backend.pml"
++}
++
++inline
++cbd_detach_backend(_dev)
++{
++	SETERROR(0);
++#include "_modex_cbd_detach_backend.pml"
++}
++
++// XXX: please extract below functions.
++/* For now, we just check re-entrancy consistency.
++ * XXX: uio validation
++ */
++inline
++cbdread(_dev, _uio)
++{
++	SETERROR(0);
++
++	/* Check for backing disk */
++	mutex_enter(sc_lock);
++	if
++	:: !cbd_configured(_dev) ->
++	   SETERROR(EINVAL);
++	   mutex_exit(sc_lock);	   
++	   goto cbdread_out; 
++	:: !cbd_backed(_dev) ->
++	   SETERROR(ENOENT);
++	   mutex_exit(sc_lock);	   
++	   goto cbdread_out; 
++	:: else ->
++	   skip;
++	fi
++	mutex_exit(sc_lock);
++
++	/* simulate uio -> buf translation */
++	buf_t rd_buf;
++	rd_buf.direction = B_READ;
++	rd_buf.error = 0;
++	rd_buf.length = _uio.length;
++	rd_buf.address = _uio.address;
++	rd_buf.spooled = 0;
++	cbdstrategy(rd_buf);
++
++cbdread_out:
++}
++
++inline
++cbdwrite(_dev, _uio)
++{
++	SETERROR(0);
++
++	/* Check for backing disk */
++	mutex_enter(sc_lock);
++	if
++	:: !cbd_configured(_dev) ->
++	   SETERROR(EINVAL);
++	   mutex_exit(sc_lock);	   
++	   goto cbdwrite_out; 
++	:: !cbd_backed(_dev) ->
++	   SETERROR(ENOENT);
++	   mutex_exit(sc_lock);	   
++	   goto cbdwrite_out; 
++	:: else ->
++	   skip;
++	fi
++	mutex_exit(sc_lock);	   	
++
++	/* simulate uio -> buf translation */
++	buf_t rw_buf;
++	rw_buf.direction = B_WRITE;
++	rw_buf.error = 0;
++	rw_buf.length = _uio.length;
++	rw_buf.address = _uio.address;
++	rw_buf.spooled = 0;
++
++	cbdstrategy(rw_buf);
++cbdwrite_out:
++}
++
++%%
+\ No newline at end of file
+diff -urN cbd.null/cbd.pmh cbd/cbd.pmh
+--- cbd.null/cbd.pmh	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbd.pmh	2023-10-22 19:48:38.564639937 +0000
+@@ -0,0 +1,120 @@
++/*
++ * Copyright 2023, MattC <c@bow.st>
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:  
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ * notice, this list of conditions and the following disclaimer. 
++ * 
++ * 2. Redistributions in binary form must reproduce the above copyright
++ * notice, this list of conditions and the following disclaimer in the
++ * documentation and/or other materials provided with the distribution. 
++ * 
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ * “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
++ */
++
++#ifndef _CBD_PMH_
++#define _CBD_PMH_
++
++#define ERRBITS 6 /* Add as list below grows */
++
++/* Modelled on NetBSD sys/errno.h */
++#define	EPERM		1		/* Operation not permitted */
++#define	ENOENT		2		/* No such file or directory */
++#define	EIO		5		/* Input/output error */
++#define	ENXIO		6		/* Device not configured */
++#define	EBADF		9		/* Bad file descriptor */
++#define	EBUSY		16		/* Device busy */
++#define	ENODEV		19		/* Operation not supported by device */
++#define	EINVAL		22		/* Invalid argument */
++
++#define DEVSZBITS 10 /* Max block device log2(sz) */
++#define DEVIDBITS 4 /* Add more as list below grows */
++
++/* handle IDs for "device"s */
++#define CBD_DEVID_NONE 0
++#define CBD_DEVID_CBD1 1
++#define CBD_DEVID_BACKING 2
++#define CBD_DEVID_CACHING 3
++
++/* "State" values, to report current states, on query */
++#define CBD_UNCONFIGURED 0
++#define CBD_CONFIGURED 1
++#define CBD_BACKED 2
++#define CBD_CACHED 3
++
++#define FLAGBITS 4
++/* Buffer direction flag (mutually exclusive) */
++#define	B_READ		1	/* Read flag. */
++#define	B_WRITE		2	/* Write flag. */
++
++/* dev read()/write(). Write flag imples Read flag */
++#define FREAD 1
++#define FWRITE 3
++
++inline set_flag(_flags, _FLAG) { _flags = (_flags | _FLAG) }
++inline clear_flag(_flags, _FLAG) { _flags = _flags & ~_FLAG }
++#define is_set(_flags, _FLAG) ((_flags & _FLAG) && 1)
++
++#define IOCMDBITS 4
++
++/* ioctl related command codes */
++#define CBDIO_INVAL 0
++#define CBDIO_ATTACH_BACKEND 1
++#define CBDIO_DETACH_BACKEND 2
++#define CBDIO_GET_STATUS 3
++
++#define VABITS DEVSZBITS
++#define VAMAX (1 << (VABITS - 1)) /* A boundary for a "valid" address */
++#define is_valid_address(_addr) (_addr <= VAMAX)
++
++#define CBD_BACKING_DISKSIZE (VAMAX)
++
++/* Device state queries */
++#define cbd_unconfigured() (cbdev == CBD_DEVID_NONE)
++
++/* In a multi-device scenario (out of scope of this
++ * model), this would be a search for the device matching
++ * the arg _dev.
++ */
++
++#define cbd_configured(_dev) ((cbdev == CBD_DEVID_CBD1) && (_dev == cbdev))
++
++#define cbd_backed(_dev) (cbd_configured(_dev) && (backingdev == CBD_DEVID_BACKING))
++
++#define cbd_cached(_dev) (cbd_backed() && cachingdev == CBD_DEVID_CACHING)
++
++#define cbd_status(_dev) \
++	((_dev == CBD_DEVID_NONE) -> CBD_UNCONFIGURED : \
++	     ((cbdev == CBD_DEVID_CBD1) -> \
++	      ((backingdev == CBD_DEVID_BACKING) -> \
++	       ((cachingdev == CBD_DEVID_CACHING) -> \
++	      		  CBD_CACHED : CBD_BACKED) : \
++			  CBD_CONFIGURED) : \
++			  CBD_UNCONFIGURED))
++
++
++typedef buf_t {
++	unsigned error : ERRBITS;		/* error flagged during processing */
++	unsigned address : VABITS;		/* address representation */
++	unsigned offset	 : DEVSZBITS;		/* Offset into device */
++	unsigned length : DEVSZBITS;		/* total length of buffer */
++	unsigned spooled : DEVSZBITS;		/* length processed so far */	
++	unsigned direction : FLAGBITS;		/* whether callee is to read from or write to */
++	unsigned dev : DEVIDBITS;		/* Device involved */
++};
++
++
++#endif  /* _CBD_PMH_ */
+\ No newline at end of file
+diff -urN cbd.null/cbd.pml cbd/cbd.pml
+--- cbd.null/cbd.pml	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbd.pml	2023-10-22 21:00:12.814145286 +0000
+@@ -0,0 +1,261 @@
++/* Spin process models for NetBSD cbd(4) cbd.c */
++
++/*
++ * Copyright 2023, MattC <c@bow.st>
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:  
++ *
++ * 1. Redistributions of source code must retain the above copyright
++ * notice, this list of conditions and the following disclaimer. 
++ * 
++ * 2. Redistributions in binary form must reproduce the above copyright
++ * notice, this list of conditions and the following disclaimer in the
++ * documentation and/or other materials provided with the distribution. 
++ * 
++ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++ * “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
++ */
++
++#include "cbd.pmh"
++
++hidden	int tmpdev; /* Saved during passthrough */
++inline
++cbdstrategy(/* buf_t */ bp)
++{
++
++
++	/* sanity check buffer */
++
++	if
++	:: ((bp.offset + bp.length) > cbdevsz) ->
++	   if
++	   :: is_set(bp.direction, B_READ) ->
++	      /* Clip the requested length.
++	       * Total length effectively read will be in
++	       * bp.spooled
++	       */
++	      bp.offset = ((bp.offset > cbdevsz) -> cbdevsz :
++	      		  	      bp.offset);
++	      bp.length = (cbdevsz - bp.offset);
++				      
++	      skip;
++
++	   :: is_set(bp.direction, B_WRITE) ->
++	      bp.error = EINVAL;
++	   fi
++	   goto strategy_out;
++	:: else ->
++	   skip;
++	fi
++	
++	if /* Always check if device is still active before acting */
++	:: cbd_backed(bp.dev) ->
++	   tmpdev = bp.dev;
++	   mutex_enter(sc_lock);		   
++	   bp.dev = backingdev; /* Set for callee */
++	   io_backing(backingdev, bp);
++	   bp.dev = tmpdev; /* Reset for caller */
++	   mutex_exit(sc_lock);	   
++	:: else -> /* Fallback - don't block */
++		   bp.error = ENXIO;
++		   goto strategy_out;
++	fi
++strategy_out:
++
++}
++
++/* Attach backing disk device specified in data */
++
++inline
++cbd_attach_backend(_dev, _data)
++{
++	SETERROR(0);
++
++	/* Simulate data validation */	
++	if
++	:: (_dev != CBD_DEVID_CBD1 || /* Device validity */
++	    _data != CBD_DEVID_BACKING) ->
++	      SETERROR(ENODEV);
++	      goto attach_out;
++	:: else ->
++	      /* IRL, this would come from the backing dev */
++	      cbdevsz = CBD_BACKING_DISKSIZE;
++	      backingdev = _data;
++	fi
++
++attach_out:
++}
++
++/* Detach backing disk device specified in data */
++inline
++cbd_detach_backend(_dev)
++{
++	SETERROR(0);
++
++	/* Simulate dev state validation */	
++
++	if
++	:: (_dev != CBD_DEVID_CBD1 ||
++	    backingdev != CBD_DEVID_BACKING) ->
++	      SETERROR(ENODEV);
++	      goto detach_out;
++	:: else ->
++	      backingdev = CBD_DEVID_NONE;
++	      cbdevsz = 0;
++	fi
++
++detach_out:
++}
++
++inline
++cbdioctl(_dev, _cmd, _data, _flag)
++{
++	SETERROR(0); /* default */
++
++	mutex_enter(sc_lock);	
++	if
++	:: !cbd_configured(_dev) ->
++	   SETERROR(ENXIO);
++	   goto ioctl_out; /* Invalid device ID */
++	:: else ->
++	   skip;
++	fi
++
++	if
++	:: (_cmd == CBDIO_ATTACH_BACKEND) ->
++	   /* Simulate attaching a backing device */
++	   if
++	   :: cbd_backed(_dev) -> /* Already backed. */
++	      SETERROR(EBUSY); /* return EBUSY */
++	      goto ioctl_out; 
++	   :: else ->
++	      skip;
++	   fi
++	   if
++	   :: !is_set(_flag, FWRITE) -> /* Semantic inconsistency */
++	      SETERROR(EPERM);
++	      goto ioctl_out; 
++	   :: else ->
++	      skip;
++	   fi
++	   cbd_attach_backend(_dev, _data);
++	   goto ioctl_out;
++
++	 :: (_cmd == CBDIO_DETACH_BACKEND) ->
++	   /* Simulate detaching a backing device */
++	   if
++	   :: !cbd_backed(_dev) -> /* Nothing to detach. */
++	      SETERROR(ENODEV); 
++	      goto ioctl_out; 
++	   :: else ->
++	      skip;
++	   fi
++	   if
++	   :: !is_set(_flag, FWRITE) -> /* Semantic inconsistency */
++	      SETERROR(EPERM);
++	      goto ioctl_out; 
++	   :: else ->
++	      skip;
++	   fi
++	   cbd_detach_backend(_dev);
++	   goto ioctl_out;
++
++	:: (_cmd == CBDIO_GET_STATUS) ->
++	   /* Simulate Query */
++	   /* dev "handle" as proxy for "status" */
++	   _data = cbd_status(_dev);
++	   goto ioctl_out; /* NOP */
++	:: (_cmd == CBDIO_INVAL) -> /* Adversarial/careless user */ 
++	   SETERROR(EINVAL);
++	   goto ioctl_out;
++	:: else -> 
++	   skip; /* Pass through to backing device ioctl() */
++	fi
++
++	/* Anything else is passed to the backing disk */
++	ioctl_backing(backingdev, _cmd, _data, _flag);
++
++ioctl_out:
++	mutex_exit(sc_lock);
++}
++
++/* For now, we just check re-entrancy consistency.
++ * XXX: uio validation
++ */
++inline
++cbdread(_dev, _uio)
++{
++	SETERROR(0);
++
++	/* Check for backing disk */
++	mutex_enter(sc_lock);
++	if
++	:: !cbd_configured(_dev) ->
++	   SETERROR(ENXIO);
++	   mutex_exit(sc_lock);	   
++	   goto cbdread_out; 
++	:: !cbd_backed(_dev) ->
++	   SETERROR(ENOENT);
++	   mutex_exit(sc_lock);	   
++	   goto cbdread_out; 
++	:: else ->
++	   skip;
++	fi
++	mutex_exit(sc_lock);
++
++	/* simulate uio -> buf translation */
++	buf_t rd_buf;
++	rd_buf.direction = B_READ;
++	rd_buf.error = 0;
++	rd_buf.length = _uio.length;
++	rd_buf.address = _uio.address;
++	rd_buf.spooled = 0;
++	cbdstrategy(rd_buf);
++
++cbdread_out:
++}
++
++inline
++cbdwrite(_dev, _uio)
++{
++	SETERROR(0);
++
++	/* Check for backing disk */
++	mutex_enter(sc_lock);
++	if
++	:: !cbd_configured(_dev) ->
++	   SETERROR(ENXIO);
++	   mutex_exit(sc_lock);	   
++	   goto cbdwrite_out; 
++	:: !cbd_backed(_dev) ->
++	   SETERROR(ENOENT);
++	   mutex_exit(sc_lock);	   
++	   goto cbdwrite_out; 
++	:: else ->
++	   skip;
++	fi
++	mutex_exit(sc_lock);	   	
++
++	/* simulate uio -> buf translation */
++	buf_t rw_buf;
++	rw_buf.direction = B_WRITE;
++	rw_buf.error = 0;
++	rw_buf.length = _uio.length;
++	rw_buf.address = _uio.address;
++	rw_buf.spooled = 0;
++
++	cbdstrategy(rw_buf);
++cbdwrite_out:
++}
++
+diff -urN cbd.null/cbd.prx cbd/cbd.prx
+--- cbd.null/cbd.prx	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbd.prx	2023-10-19 20:12:35.838587981 +0000
+@@ -0,0 +1,218 @@
++// Spin model extractor harness written by cherry
++//
++%F linux/cbd.c
++%X -n modexbug // Somehow this is needed to activate per-func LUT
++
++// See cbdstrategy for translation table only for *function()*s
++%X -L cbdstrategy -n cbd_submit_bio
++// See cbdioctl.lut for translation table only for *function()*s
++%X -L cbdioctl -n cbd_ioctl
++
++%X -n cbd_attach_backend
++%X -n cbd_detach_backend
++%H
++// Disable effects of all included files and try to implement a subset of the APIs they provide.
++#define _LINUX_BLKDEV_H
++
++// linux/blk_types.h
++#define SECTOR_SHIFT 9
++typedef void struct block_device;
++typedef void blk_mode_t;
++
++#define __LINUX_MUTEX_H
++struct mutex {
++       void *dummy;
++};
++
++// sys/null.h
++#define	NULL	0
++
++#define true 1
++#define false 0
++
++typedef int bool;
++
++/* Linuxisms */
++#define __user
++#define __init
++#define __exit
++
++#define module_init(x)
++#define module_exit(x)
++#define MODULE_LICENSE(L)
++
++%%
++//%C // c_code {}
++//%%
++//%D // c_cdecl {}
++//%%
++%L // XXX: Looks like per function tables are broken for now.
++// Common transformations
++
++NonState		hidden	cbd_major	global
++NonState		hidden	exclusive	global
++NonState		hidden	cbd_fops	global
++NonState		hidden	exclusive	global
++
++mutex_lock(...		mutex_enter(sc_lock)
++mutex_unlock(...	mutex_exit(sc_lock)
++
++// cbd_submit_bio(...) -> cbdstrategy(...)
++NonState		hidden	bio	cbd_submit_bio
++NonState		hidden	cbp	cbd_submit_bio
++NonState		hidden	bdev	cbd_submit_bio
++NonState		hidden	bio_offset	cbd_submit_bio
++NonState		hidden	bdevsz	cbd_submit_bio
++
++// Gen-ed Code substitution. This is due to a lack of a sensible parser harness language with the right semantics.
++Substitute	c_expr { ((bio_offset+bio->bi_iter.bi_size)>bdevsz) }	((bp.offset + bp.length) > cbdevsz)
++Substitute	c_expr { (bio_op(bio)&REQ_OP_READ) }	is_set(bp.direction, B_READ)
++Substitute	c_code { bio_offset=((bio_offset>bdevsz) ? bdevsz : bio_offset); }	bp.offset = ((bp.offset > cbdevsz) -> cbdevsz : bp.offset)
++Substitute	c_code [bio] { bio->bi_iter.bi_size=(bdevsz-bio_offset); }	bp.length = (cbdevsz - bp.offset)
++Substitute	c_code [bio] { bio->bi_iter.bi_sector=(bio_offset>>9); }	skip
++Substitute	c_code [bio] { bio->bi_status=BLK_STS_IOERR; }	bp.error = EIO;
++Substitute	c_code [bio] { bio->bi_status=BLK_STS_OFFLINE; }	bp.error = ENXIO
++
++// cbd_ioctl(...) -> cbdioctl(...)
++NonState		hidden	userdata	cbd_ioctl
++NonState		hidden	arg	cbd_ioctl
++NonState		hidden	cmd	cbd_ioctl
++NonState		hidden	mode	cbd_ioctl
++NonState		hidden	bdev	cbd_ioctl
++NonState		hidden	cbp	cbd_ioctl
++NonState		hidden	err	cbd_ioctl
++
++
++Substitute	c_expr { (!cbd_configured(cbp)) }	cbd_configured(_dev)
++Substitute	c_code { err=(-ENXIO); }	SETERROR(ENXIO)
++Substitute	c_expr { 222 == cmd }	(_cmd == CBDIO_ATTACH_BACKEND)
++Substitute	c_expr { 333 == cmd }	(_cmd == CBDIO_DETACH_BACKEND)
++Substitute	c_code [bdev->bd_disk && bdev] { cbp=bdev->bd_disk->private_data; }	skip
++Substitute	c_code { err=cbd_attach_backend(cbp,userdata); }	cbd_attach_backend(_data)
++Substitute	c_code { err=cbd_detach_backend(cbp); }	cbd_detach_backend(_data)
++Substitute	c_code [cbp && cbp->backingdev->bd_disk->fops && cbp->backingdev->bd_disk && cbp->backingdev && cbp] { err=cbp->backingdev->bd_disk->fops->ioctl(cbp->backingdev,mode,cmd,arg); }	ioctl_backing(backingdev, _cmd, _data, _flag)
++Substitute	c_code { err=(-ENOTTY); }	skip
++
++// cbd_attach_backend(...) -> cbd_attach_backend()
++NonState		hidden	lockedcbp	cbd_attach_backend
++NonState		hidden	pathname	cbd_attach_backend
++NonState		hidden	userdata	cbd_attach_backend
++NonState		hidden	backingdev	cbd_attach_backend
++
++Substitute	c_code { pathname=kzalloc(PATH_MAX,GFP_KERNEL); }	skip;
++Substitute	c_expr { (pathname==0) }	false
++Substitute	c_expr { (strncpy_from_user(pathname,(void *)userdata,PATH_MAX)==(-EFAULT)) }	(_data != CBD_DEVID_BACKING); SETERROR(EINVAL)
++Substitute	c_code { kfree(pathname); }	skip
++Substitute	c_code { backingdev=blkdev_get_by_path(strim(pathname),((BLK_OPEN_READ|BLK_OPEN_WRITE)|BLK_OPEN_EXCL),exclusive,0); }	skip
++Substitute	c_expr { IS_ERR(backingdev) }	false
++Substitute	c_code [lockedcbp] { lockedcbp->backingdev=backingdev; }	backingdev = CBD_DEVID_BACKING
++Substitute	c_code [lockedcbp->cbdev && lockedcbp] { set_capacity(lockedcbp->cbdev->bd_disk,bdev_nr_sectors(backingdev)); }	cbdevsz = CBD_BACKING_DISKSIZE
++
++NonState		hidden	lockedcbp	cbd_detach_backend
++Substitute	c_code [lockedcbp] { blkdev_put(lockedcbp->backingdev,exclusive); }	skip
++Substitute	c_code [lockedcbp] { lockedcbp->backingdev=0; }	backingdev = CBD_DEVID_NONE
++Substitute	c_code [lockedcbp->cbdev && lockedcbp] { set_capacity(lockedcbp->cbdev->bd_disk,0); }	cbdevsz = 0
++%%
++
++%P
++hidden int tmpdev; /* Saved during passthrough */
++
++inline
++cbdstrategy(bp)
++{
++#include "_modex_cbd_submit_bio.pml"
++}
++
++inline
++cbdioctl(_dev, _cmd, _data, _flag)
++{
++#include "_modex_cbd_ioctl.pml"
++}
++
++inline
++cbd_attach_backend(_data)
++{
++	SETERROR(0);
++#include "_modex_cbd_attach_backend.pml"
++}
++
++inline
++cbd_detach_backend(_data)
++{
++	SETERROR(0);
++#include "_modex_cbd_detach_backend.pml"
++}
++
++// linux/cbd.c doesn't have read/write fops, so we
++// fake it to allow cbd.drv to be parsed
++// However See: cbd.drv: -D EXPLORE_READWRITESTATE
++/* For now, we just check re-entrancy consistency.
++ * XXX: uio validation
++ */
++inline
++cbdread(_dev, _uio)
++{
++	SETERROR(0);
++
++	/* Check for backing disk */
++	mutex_enter(sc_lock);
++	if
++	:: !cbd_configured(_dev) ->
++	   SETERROR(EINVAL);
++	   mutex_exit(sc_lock);	   
++	   goto cbdread_out; 
++	:: !cbd_backed(_dev) ->
++	   SETERROR(ENOENT);
++	   mutex_exit(sc_lock);	   
++	   goto cbdread_out; 
++	:: else ->
++	   skip;
++	fi
++	mutex_exit(sc_lock);
++
++	/* simulate uio -> buf translation */
++	buf_t rd_buf;
++	rd_buf.direction = B_READ;
++	rd_buf.error = 0;
++	rd_buf.length = _uio.length;
++	rd_buf.address = _uio.address;
++	rd_buf.spooled = 0;
++	cbdstrategy(rd_buf);
++
++cbdread_out:
++}
++
++inline
++cbdwrite(_dev, _uio)
++{
++	SETERROR(0);
++
++	/* Check for backing disk */
++	mutex_enter(sc_lock);
++	if
++	:: !cbd_configured(_dev) ->
++	   SETERROR(EINVAL);
++	   mutex_exit(sc_lock);	   
++	   goto cbdwrite_out; 
++	:: !cbd_backed(_dev) ->
++	   SETERROR(ENOENT);
++	   mutex_exit(sc_lock);	   
++	   goto cbdwrite_out; 
++	:: else ->
++	   skip;
++	fi
++	mutex_exit(sc_lock);	   	
++
++	/* simulate uio -> buf translation */
++	buf_t rw_buf;
++	rw_buf.direction = B_WRITE;
++	rw_buf.error = 0;
++	rw_buf.length = _uio.length;
++	rw_buf.address = _uio.address;
++	rw_buf.spooled = 0;
++
++	cbdstrategy(rw_buf);
++cbdwrite_out:
++}
++
++%%
+\ No newline at end of file
+diff -urN cbd.null/cbdstrategy.linux.lut cbd/cbdstrategy.linux.lut
+--- cbd.null/cbdstrategy.linux.lut	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbdstrategy.linux.lut	2023-10-19 13:12:04.576568138 +0000
+@@ -0,0 +1,7 @@
++// cbd_submit_bio(...) -> cbdstrategy(...)
++
++cbd_backed(cbp)		cbd_backed(bp.dev)
++bio_set_dev(...		tmpdev = bp.dev; bp.dev = backingdev
++submit_bio_noacct(bio)	io_backing(backingdev, bp); bp.dev = tmpdev
++
++
+diff -urN cbd.null/cbdstrategy.NetBSD.lut cbd/cbdstrategy.NetBSD.lut
+--- cbd.null/cbdstrategy.NetBSD.lut	1970-01-01 00:00:00.000000000 +0000
++++ cbd/cbdstrategy.NetBSD.lut	2023-10-23 08:23:18.598269036 +0000
+@@ -0,0 +1,10 @@
++// cbd_strategy(...) -> cbdstrategy(...)
++
++cbd_backed(sc)		cbd_backed(bp.dev)
++VOP_STRATEGY(sc->sc_tvn,buf)	tmpdev = bp.dev; bp.dev = backingdev; io_backing(backingdev, bp); bp.dev = tmpdev
++
++Substitute	c_expr { (sc==0) }	false
++
++
++
++
+diff -urN cbd.null/linux/cbd.c cbd/linux/cbd.c
+--- cbd.null/linux/cbd.c	1970-01-01 00:00:00.000000000 +0000
++++ cbd/linux/cbd.c	2023-10-22 21:10:18.387421555 +0000
+@@ -0,0 +1,315 @@
++#include <linux/mutex.h>
++#include <linux/blkdev.h>
++
++#define CBD_ATTACH_BACKEND 222 /* XXX: fit into ioctl namespace */
++#define CBD_DETACH_BACKEND 333 /* XXX: ditto */
++
++
++/* Driver-wide values that don't change over the life of the module */
++
++/* At the moment, we assume that there's 1:1 correspondence between  a
++ * driver instance (ie; module_init/exit pair) and a device
++ * instance. Thus we use cbd_major below as the primary "key" to
++ * lookup device state, via blk_get_no_open(). Note - this is not
++ * related to "minor" devices, which can still use cbd_major as
++ * above.
++ * XXX: Fix this.
++ */
++static int cbd_major = 0;
++static char *exclusive = "cbd_ioctl";
++
++struct cbd_private {
++	struct block_device *cbdev;	/* Back ref for state tracking
++					 * - see cbd_configured()
++					 * below
++					 */ 
++	struct block_device *backingdev;
++	struct mutex cbdlock;
++};
++
++/* Driver state enquiry */
++static bool
++cbd_configured(struct cbd_private *cbp)
++{
++	return (cbp->cbdev != NULL);
++}
++
++/* Implies attached */
++static bool
++cbd_backed(struct cbd_private *cbp)
++{
++	// XXX: check sc->sc_size == backing disk size 
++	return (cbd_configured(cbp) && cbp->backingdev != NULL);
++}
++
++static int
++cbd_attach_backend(struct cbd_private *lockedcbp, void *userdata)
++{
++	char *pathname;
++	struct block_device *backingdev;
++
++	/* XXX: proper dev validation */
++	if (lockedcbp->cbdev == NULL) {
++		return -ENODEV;
++	}
++
++	pathname = kzalloc(PATH_MAX, GFP_KERNEL);
++
++	if (pathname == NULL) {
++		return -ENOMEM;
++	}
++	
++	if (strncpy_from_user(pathname, (void __user *)userdata,
++			      PATH_MAX) == -EFAULT) {
++		kfree(pathname);
++		return -EFAULT;
++	}
++
++	backingdev = blkdev_get_by_path(strim(pathname),
++					BLK_OPEN_READ|BLK_OPEN_WRITE|BLK_OPEN_EXCL,
++					exclusive, NULL);
++
++	kfree(pathname);
++	
++	if (IS_ERR(backingdev)) {
++		return PTR_ERR(backingdev);
++	}
++
++	set_capacity(lockedcbp->cbdev->bd_disk, bdev_nr_sectors(backingdev));
++	lockedcbp->backingdev = backingdev;
++
++
++	return 0;
++}
++
++static int
++cbd_detach_backend(struct cbd_private *lockedcbp)
++{
++	/* XXX: proper dev state validity */
++	if (lockedcbp->cbdev == NULL ||
++	    lockedcbp->backingdev == NULL) {
++		return -ENODEV;
++	}
++
++	blkdev_put(lockedcbp->backingdev, exclusive);
++
++	lockedcbp->backingdev = NULL;
++	set_capacity(lockedcbp->cbdev->bd_disk, 0);
++
++	return 0;
++}
++
++static int cbd_ioctl(struct block_device *bdev, blk_mode_t mode,
++			unsigned cmd, unsigned long arg)
++{
++	int err = 0;
++	void __user *userdata = (void __user *)arg;
++	struct cbd_private *cbp;
++	cbp = bdev->bd_disk->private_data;
++
++	if (cbp == NULL) {
++		err = -ENXIO;
++		goto ioctl_out;
++	}
++
++	mutex_lock(&cbp->cbdlock);
++
++	if (!cbd_configured(cbp)) {
++		err = -ENXIO;
++		goto ioctl_out;
++	}
++		 
++	switch(cmd) {
++	case CBD_ATTACH_BACKEND:
++		if (cbd_backed(cbp)) {
++			err = -EBUSY;
++			break;
++		}
++		if (!(mode & BLK_OPEN_WRITE)) {
++			err = -EPERM;
++			break;
++		}
++		err = cbd_attach_backend(cbp, userdata);
++		break;
++	case CBD_DETACH_BACKEND: /* XXX: */
++		if (!cbd_backed(cbp)) {
++			err = -ENODEV;
++			break;
++		}
++		if (!(mode & BLK_OPEN_WRITE)) {
++			err = -EPERM;
++			break;
++		}
++		err = cbd_detach_backend(cbp);
++		break;
++	default: /*Pass through */
++		if (cbd_backed(cbp)) {
++			err = cbp->backingdev->bd_disk->fops->
++				ioctl(cbp->backingdev,	mode, cmd, arg);
++		} else {
++				err = -ENOTTY;
++		}
++		break;
++	}
++ioctl_out:
++	mutex_unlock(&cbp->cbdlock);
++	return err;
++}
++
++static void cbd_submit_bio(struct bio *bio)
++{
++	struct block_device *bdev = bio->bi_bdev;
++	struct cbd_private *cbp = bdev->bd_disk->private_data;
++
++	size_t bio_offset = bio->bi_iter.bi_sector << SECTOR_SHIFT;
++	/* Model assumes this is cached in driver instance after
++	 * backing device is attached.
++	 */
++	size_t bdevsz = bdev_nr_bytes(bdev);
++
++	/* sanity check bio limits */
++	if ((bio_offset + bio->bi_iter.bi_size) > bdevsz) {
++		if (bio_op(bio) & REQ_OP_READ) {
++			/* Clip bio */
++			bio_offset = ((bio_offset > bdevsz) ? bdevsz : bio_offset);
++			/* Update the bio */			
++			bio->bi_iter.bi_size = bdevsz - bio_offset;
++
++			bio->bi_iter.bi_sector = (bio_offset >> SECTOR_SHIFT);
++		}
++	} else 	{
++		bio->bi_status = BLK_STS_NOTSUPP;
++		return;
++	} 
++
++	if (cbd_backed(cbp)) {
++		mutex_lock(&cbp->cbdlock);
++		/* Pass through to backing dev */
++		bio_set_dev(bio, cbp->backingdev);
++		mutex_unlock(&cbp->cbdlock);
++		submit_bio_noacct(bio);
++	} else {
++		bio->bi_status = BLK_STS_OFFLINE;
++	}
++
++	return;
++
++}
++
++static const struct block_device_operations cbd_fops = {
++	.owner =		THIS_MODULE,
++	.ioctl =		cbd_ioctl,
++	.submit_bio =		cbd_submit_bio,
++};
++
++
++static int __init cbd_init(void)
++{
++	int err = 0;
++	struct block_device *bdev;
++	struct gendisk *gendisk;
++	struct cbd_private *cbp;
++
++	cbp = kzalloc(sizeof(struct cbd_private),
++		      GFP_KERNEL);
++
++	if (cbp == NULL) {
++		return -ENOMEM;
++	}
++
++	gendisk = blk_alloc_disk(NUMA_NO_NODE);
++
++	if (gendisk == NULL) {
++		kfree(cbp);		
++		goto out;
++	}
++
++	sprintf(gendisk->disk_name, "cbd");
++	gendisk->fops = &cbd_fops;
++
++	/* Since we pass through for now. XXX: review */
++	blk_queue_flag_set(QUEUE_FLAG_SYNCHRONOUS, gendisk->queue);
++	blk_queue_flag_set(QUEUE_FLAG_NOWAIT, gendisk->queue);
++
++	gendisk->private_data = cbp;
++
++	/* Note: set_capacity() is called later when the backend is attached.
++	 *	 XXX: Will this work ?
++	 */
++	err = add_disk(gendisk);
++	if (err) {
++		put_disk(gendisk);
++		kfree(cbp);
++		goto out;
++	}
++
++	cbd_major = register_blkdev(0, "cachedrive");
++	if (cbd_major < 0) {
++		err = cbd_major;
++		put_disk(gendisk);
++		kfree(cbp);
++		goto out;
++	} else {
++		bdev = blkdev_get_by_dev(MKDEV(cbd_major, 0),
++					 BLK_OPEN_READ|BLK_OPEN_WRITE, exclusive, NULL);
++		if (IS_ERR(bdev)) {
++			err = PTR_ERR(bdev);
++			put_disk(gendisk);
++			kfree(cbp);
++			goto out;
++		}
++		
++		if (bdev == NULL) {
++			put_disk(gendisk);
++			kfree(cbp);
++			goto out;
++		}
++			
++		bdev->bd_disk = gendisk;
++		mutex_init(&cbp->cbdlock);
++		mutex_lock(&cbp->cbdlock);
++		cbp->cbdev = bdev;
++		mutex_unlock(&cbp->cbdlock);
++		err = 0; /* Mark success */
++	}
++
++out:
++	return err;
++}
++
++static void __exit cbd_exit(void)
++{
++	struct block_device *bdev;
++	struct gendisk *gendisk;
++	struct cbd_private *cbp;
++	
++	bdev = blkdev_get_by_dev(MKDEV(cbd_major, 0),
++					 BLK_OPEN_READ|BLK_OPEN_WRITE, exclusive, NULL);
++
++	if (bdev == NULL) {
++		// XXX: panic() or something else ? 
++		panic("can't find allocated block device major number %d\n", cbd_major);
++	}
++
++	gendisk = bdev->bd_disk;
++	cbp = gendisk->private_data;
++
++	mutex_lock(&cbp->cbdlock);
++	if (cbp->backingdev != NULL) {
++		mutex_unlock(&cbp->cbdlock);
++		cbd_detach_backend(cbp);
++	}
++	mutex_unlock(&cbp->cbdlock);
++
++	put_disk(gendisk);
++	kfree(cbp);
++	blkdev_put(bdev, exclusive);
++
++	unregister_blkdev(cbd_major, "cbd");
++}
++
++module_init(cbd_init);
++module_exit(cbd_exit);
++
++MODULE_LICENSE("GPL");
++
+diff -urN cbd.null/linux/Makefile cbd/linux/Makefile
+--- cbd.null/linux/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ cbd/linux/Makefile	2023-10-16 09:20:14.033674649 +0000
+@@ -0,0 +1,10 @@
++obj-m += cbd.o
++LINUXSRC ?= $(HOME)/linux #For dev, for now.
++# The "standard seems to be"
++#LINUXSRC?=/lib/modules/$(shell uname -r)/build
++
++all:
++	make -C $(LINUXSRC)  M=$(PWD) modules
++
++clean:
++	make -C $(LINUXSRC) M=$(PWD) clean
+diff -urN cbd.null/Makefile cbd/Makefile
+--- cbd.null/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ cbd/Makefile	2023-10-21 17:25:46.201831270 +0000
+@@ -0,0 +1,96 @@
++# This set of spinroot related files were written by MattC
++# <c@bow.st> in the Gregorian Calendar year AD.2023, in the month
++# of February that year.
++#
++# We have two specification files and a properties file (".inv")
++#
++# The properties file contains a "constraint" sections
++# such as ltl or never claims (either or, not both).
++#
++# The specification is divided into two files:
++# the file with suffix '.drv' is a "driver" which
++# instantiates processes that will ultimately "drive" the
++# models under test.
++# The file with the suffix '.pml' contains the process
++# model code, which, is intended to be the formal specification
++# for the code we are interested in writing in C.
++#
++# A file with a '.pmh' extension is a "header" file which
++# both the driver and the model can use.
++#
++# We process these files in slightly different ways during
++# the dev cycle, but broadly speaking, the idea is to generate
++# a file called 'spinmodel.pml' which contains the final
++# model file that is fed to spin.
++#
++# During a model extraction verification run, "modex" is run to
++# extract the 'specification' from C code written to implement
++# the model defined above. We use a 'harness' file (see file with
++# suffix '.prx' below.
++#
++# Once the harness has been run, spinmodel.pml should be
++# synthesised and processed as usual.
++# 
++# The broad idea is that software development starts by writing the
++# spec first, validating the model, and then implementing the model in
++# C, after which we come back to extract the model from the C file
++# and cross check our implementation using spin.
++#
++# If things go well, the constraints specified in the '.inv' file
++# should hold exactly for both the handwritten model, and the
++# extracted one.
++
++spin-gen: cbd.pml cbd.drv cbd.inv
++	cp cbd.pml model #mimic modex - see below.
++	cat model >> spinmodel.pml;cat cbd.drv >> spinmodel.pml;cat cbd.inv >> spinmodel.pml;
++	spin -am spinmodel.pml
++	cc -DVECTORSZ=65536 -o cbd.pan pan.c
++
++all: spin-gen prog
++
++# Verification related targets.
++spin-run: spinmodel.pml
++	./cbd.pan -a #Generate cbd.pml.trail	on error
++	@test -f spinmodel.pml.trail && spin -t spinmodel.pml -p -g -l && ./cbd.pan -r spinmodel.pml.trail -g || true
++
++# Modex Extracts from C code to 'model' - see cbd.linux.prx
++modex-linux: cbd.linux.prx cbd.drv cbd.inv linux/cbd.c
++	modex -v -w cbd.linux.prx
++	echo "//Included via command line - see Makefile:modex-*:\n\n\n#include \"cbd.pmh\"\n\n"  >> spinmodel.pml #include "cbd.pmh" - avoid modex cpp expansion
++	cat model >> spinmodel.pml;cat cbd.drv >> spinmodel.pml;cat cbd.inv >> spinmodel.pml;
++	spin -am spinmodel.pml #Sanity check
++	cc -DVECTORSZ=65536 -o cbd.pan pan.c
++
++# Modex Extracts from C code to 'model' - see cbd.NetBSD.prx
++modex-NetBSD: cbd.NetBSD.prx cbd.drv cbd.inv NetBSD/cbd.c
++	modex -v -w cbd.NetBSD.prx
++	echo "//Included via command line - see Makefile:modex-*:\n\n\n#include \"cbd.pmh\"\n\n"  >> spinmodel.pml #include "cbd.pmh" - avoid modex cpp expansion
++	cat model >> spinmodel.pml;cat cbd.drv >> spinmodel.pml;cat cbd.inv >> spinmodel.pml;
++	spin -am spinmodel.pml #Sanity check
++	cc -DVECTORSZ=65536 -o cbd.pan pan.c
++
++# Housekeeping
++modex-gen-clean:
++	rm -f spinmodel.pml # Our consolidated model file
++	rm -f _spin_nvr.tmp # Never claim file
++	rm -f model # modex generated intermediate "model" file
++	rm -f pan.* # Spin generated source files
++	rm -f _modex* # modex generated script files
++	rm -f linux/cbd.[IM]
++	rm -f NetBSD/cbd.[IM]
++
++prog-clean:
++	rm -f cbd
++
++spin-run-clean:
++	rm -f spinmodel.pml.trail
++
++spin-gen-clean:
++	rm -f cbd.pan # model executables.
++	rm -f spinmodel.pml # Consolidated model source files
++	rm -f _spin_nvr.tmp # Never claim file
++	rm -f model # Intermediate "model" file
++	rm -f pan.* # Spin generated source files
++
++clean: modex-gen-clean spin-gen-clean spin-run-clean prog-clean
++	rm -f *~
+diff -urN cbd.null/NetBSD/cbd.c cbd/NetBSD/cbd.c
+--- cbd.null/NetBSD/cbd.c	1970-01-01 00:00:00.000000000 +0000
++++ cbd/NetBSD/cbd.c	2023-10-23 06:37:45.843939111 +0000
+@@ -0,0 +1,588 @@
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/buf.h>
++#include <sys/bufq.h>
++#include <sys/conf.h>
++#include <sys/disk.h>
++#include <sys/disklabel.h>
++#include <sys/errno.h>
++
++#include <uvm/uvm_prot.h>
++#include <sys/acl.h>
++#include <sys/vnode_if.h>
++#include <sys/vnode.h>
++
++#include <sys/module.h>
++
++#include <sys/fcntl.h>
++
++#define CBD_ATTACH_BACKEND 222 /* XXX: fit into ioctl namespace */
++#define CBD_DETACH_BACKEND 333 /* XXX: ditto */
++
++static void cbd_attach(device_t, device_t, void *);
++static int cbd_detach(device_t, int);
++
++static dev_type_open(cbd_open);
++static dev_type_close(cbd_close);
++static dev_type_read(cbd_read);
++static dev_type_write(cbd_write);
++static dev_type_ioctl(cbd_ioctl);
++static dev_type_strategy(cbd_strategy);
++static dev_type_size(cbd_size);
++
++struct cbd_ioctl {
++	const char	*diskpath; /* Path to backing block disk dev node */
++	struct lwp	*l;	   /* Userland caller lwp */
++};
++
++const struct dkdriver cbddkdriver = {
++        .d_open = cbd_open,
++        .d_close = cbd_close,
++        .d_strategy = cbd_strategy,
++        .d_minphys = minphys,
++};
++
++struct cbd_softc {
++	device_t sc_dev;		/* Back ref to autoconf dev ptr. */
++	struct  disk    sc_dk;          /* generic disk information */
++	kmutex_t sc_lock;		/* Protects access to instance of this struct. */
++	struct bufq_state *sc_buflist;	/* transaction request/reply queue */
++	struct vnode		*sc_tvn;	/* backing device
++						 * vnode */
++	int	sc_tvn_bsize;		/* Backing device size, which
++					 * is also the size of our
++					 * device
++					 */
++	struct kauth_cred *sc_tvn_l_cred;	/* Creds used with sc_tvn */
++};
++
++const struct bdevsw cbd_bdevsw = {
++	.d_open = cbd_open,
++	.d_close = cbd_close,
++	.d_strategy = cbd_strategy,
++	.d_ioctl = cbd_ioctl,
++	.d_dump = nodump,
++	.d_psize = cbd_size,
++	.d_discard = nodiscard,
++	.d_flag = D_DISK | D_MPSAFE
++};
++
++const struct cdevsw cbd_cdevsw = {
++	.d_open = cbd_open,
++	.d_close = cbd_close,
++	.d_read = cbd_read,
++	.d_write = cbd_write,
++	.d_ioctl = cbd_ioctl,
++	.d_stop = nostop,
++	.d_tty = notty,
++	.d_poll = nopoll,
++	.d_mmap = nommap,
++	.d_kqfilter = nokqfilter,
++	.d_discard = nodiscard,
++	.d_flag = D_DISK | D_MPSAFE
++};
++
++CFATTACH_DECL3_NEW(cbd, sizeof(struct cbd_softc),
++	0, cbd_attach, cbd_detach, NULL, NULL, NULL, DVF_DETACH_SHUTDOWN);
++
++#ifdef _MODULE
++MODULE(MODULE_CLASS_DRIVER, cbd, NULL);
++CFDRIVER_DECL(cbd, DV_DISK, NULL);
++
++
++
++static int
++cbd_modcmd(modcmd_t cmd, void *arg)
++{
++	devmajor_t bmajor = -1, cmajor = -1;
++
++	int error = 0;
++	switch (cmd) {
++	case MODULE_CMD_INIT:
++
++		error = devsw_attach("cbd", &cbd_bdevsw, &bmajor,
++		    &cbd_cdevsw, &cmajor);
++
++		if (error) {
++			break;
++		}
++
++		error = config_cfdriver_attach(&cbd_cd);
++
++		if (error) {
++			devsw_detach(&cbd_bdevsw, &cbd_cdevsw);
++			break;
++		}
++		
++		error = config_cfattach_attach(cbd_cd.cd_name, &cbd_ca);
++	        if (error) {
++			config_cfdriver_detach(&cbd_cd);
++			devsw_detach(&cbd_bdevsw, &cbd_cdevsw);
++			break;
++		}
++
++		break;
++
++	case MODULE_CMD_FINI:
++		error = config_cfattach_detach(cbd_cd.cd_name, &cbd_ca);
++		if (error) {
++			break;
++		}
++		error = config_cfdriver_detach(&cbd_cd);
++		if (error) {
++			break;
++		}
++
++		devsw_detach(&cbd_bdevsw, &cbd_cdevsw);
++		break;
++	case MODULE_CMD_STAT:
++		error = ENOTTY;
++		break;
++
++	default:
++		error = ENOTTY;
++		break;
++	}
++
++	return error;
++		
++}
++
++
++#endif
++
++static void cbd_attach(device_t, device_t, void *);
++static int cbd_detach(device_t, int);
++static bool
++is_read(struct buf *buf)
++{
++	return ((buf->b_flags & B_READ) == B_READ);
++}
++
++#if notyet
++static bool
++is_write(struct buf *buf)
++{
++	return ((buf->b_flags & B_WRITE) == B_WRITE);
++}
++#endif
++
++/*
++ * The idea here is that the state sequentially progresses
++ * forwards as configuration completes.
++ *
++ * So for eg: a device that has a caching device setup,  implies it is
++ * already cbd_backed(), but not vice-versa, because an unfronted
++ * backed device is merely an uncached "passthrough" situation.
++ */
++
++static bool
++cbd_configured(struct cbd_softc *sc)
++{
++	/*
++	 * Note: device_t is a pointer, no specific "NULL" typedef
++	 * available
++	 */ 
++	return (sc->sc_dev != NULL);
++}
++
++/* Implies attached */
++static bool
++cbd_backed(struct cbd_softc *sc)
++{
++	// XXX: check sc->sc_size == backing disk size 
++	return (cbd_configured(sc) && sc->sc_tvn != NULL);
++}
++
++static void
++cbd_attach(device_t parent, device_t self, void *aux)
++{
++	struct cbd_softc *sc = device_private(self);
++
++	mutex_init(&sc->sc_lock, MUTEX_DEFAULT, IPL_NONE);
++
++	mutex_enter(&sc->sc_lock);
++
++	if (cbd_configured(sc)) { /* Sorry, busy */
++		mutex_exit(&sc->sc_lock);
++	}
++
++	sc->sc_dev = self;
++
++        /* Initialize and attach the disk structure. */
++        disk_init(&sc->sc_dk, device_xname(self), &cbddkdriver);
++        disk_attach(&sc->sc_dk);
++
++	bufq_alloc(&sc->sc_buflist, "fcfs", 0);
++
++	mutex_exit(&sc->sc_lock);
++
++	if (!pmf_device_register(self, NULL, NULL))
++		aprint_error_dev(self, "couldn't establish power handler\n");
++}
++
++static int
++cbd_detach(device_t self, int flags)
++{
++	struct cbd_softc *sc = device_private(self);
++
++	mutex_enter(&sc->sc_lock);
++
++	if (!cbd_configured(sc)) {
++		mutex_exit(&sc->sc_lock);
++		return ENXIO;
++	}
++
++	/* We assume the !(flags & DETACH_FORCE) case here. */
++	if (((flags & DETACH_FORCE) == 0) &&
++	    (bufq_peek(sc->sc_buflist) != NULL)) {
++		mutex_exit(&sc->sc_lock);
++		return EBUSY; /* There are pending transactions */
++	} else { /* DETACH_FORCE */
++		bufq_drain(sc->sc_buflist);
++		//XXX: Tell backing device to drain/flush etc ?
++	}
++
++	// XXX: detach backed/fronted devices ?
++	// quiesce everything first, then sc->sc_tvn = NULL; ?
++	// All threads need to cease related  activity.
++
++	mutex_exit(&sc->sc_lock);
++
++	pmf_device_deregister(self);
++	bufq_free(sc->sc_buflist);
++        disk_detach(&sc->sc_dk);
++
++	mutex_destroy(&sc->sc_lock);
++
++	return 0;
++}
++
++static int
++cbd_open(dev_t dev, int flag, int ifmt, struct lwp *l)
++{
++	/* Sanity check params */
++	switch(ifmt) {
++		case S_IFCHR:
++		case S_IFBLK:
++			break;
++	default:
++		return EINVAL;
++	}
++
++	int unit;
++	struct cbd_softc *sc;
++	
++	unit = DISKUNIT(dev);
++	sc = device_lookup_private(&cbd_cd, unit);
++
++	/*
++	 * Trying to open unconfigured dev.
++	 * cbdconfig(8) should be run first.
++	 */
++	if (sc == NULL) { 
++		return ENXIO;
++	}
++
++	mutex_enter(&sc->sc_lock);
++
++	if (!cbd_backed(sc)) {
++		mutex_exit(&sc->sc_lock);
++		return ENXIO;
++	}
++
++	mutex_exit(&sc->sc_lock);
++
++	return 0;
++}
++
++
++static int
++cbd_close(dev_t dev, int flag, int ifmt, struct lwp *l)
++{
++	/* Sanity check params */
++	switch(ifmt) {
++		case S_IFCHR:
++		case S_IFBLK:
++			break;
++	default:
++		return EINVAL;
++	}
++
++	int unit;
++	struct cbd_softc *sc;
++	
++	unit = DISKUNIT(dev);
++	sc = device_lookup_private(&cbd_cd, unit);
++
++	/*
++	 * Trying to close unconfigured dev.
++	 * cbdconfig(8) should be run first.
++	 */
++	if (sc == NULL) { 
++		return ENXIO;
++	}
++
++	mutex_enter(&sc->sc_lock);
++
++	if (!cbd_backed(sc)) {
++		mutex_exit(&sc->sc_lock);
++		return ENXIO;
++	}
++
++	mutex_exit(&sc->sc_lock);
++	return 0;
++}
++
++
++static void
++cbd_strategy(struct buf *buf)
++{
++
++	dev_t dev = buf->b_dev;
++
++	int unit;
++	struct cbd_softc *sc;
++
++	unit = DISKUNIT(dev);
++	sc = device_lookup_private(&cbd_cd, unit);
++
++	if (sc == NULL) { 
++		return;
++	}
++
++	/* Sanity check buffer */
++	if ((dbtob(buf->b_blkno) + buf->b_bcount) > sc->sc_tvn_bsize) {
++		if (BUF_ISREAD(buf)) {
++			/* Clip offset */
++			buf->b_blkno = (dbtob(buf->b_blkno) > sc->sc_tvn_bsize) ? btodb(sc->sc_tvn_bsize) : buf->b_blkno;
++			/* Update the request length */
++			buf->b_bcount = (sc->sc_tvn_bsize - dbtob(buf->b_blkno));
++		} else {
++			buf->b_error = EINVAL;
++			biodone(buf);
++			return;
++		}
++	}
++
++
++	if (cbd_backed(sc)) {
++		mutex_enter(&sc->sc_lock);
++		disk_busy(&sc->sc_dk);
++		VOP_STRATEGY(sc->sc_tvn, buf);
++		disk_unbusy(&sc->sc_dk, buf->b_bcount, is_read(buf));
++		mutex_exit(&sc->sc_lock);
++	} else {
++		buf->b_error = ENXIO;
++		biodone(buf);
++		return;
++	}
++	
++	/* We assume that the backing driver has frobbed buf
++	 * appropriately, for return;
++	 */
++}
++
++static int
++cbd_attach_backend(struct cbd_softc *lockedsc, void *data)
++{
++	struct cbd_ioctl *cbdioctl = data;
++
++	int error = 0;
++	struct pathbuf *pbuf;
++	struct	 vnode *vp;
++
++	uint64_t numsec;
++	unsigned int secsz;
++
++	/* XXX: proper dev validation */
++	if (lockedsc->sc_dev == NULL) {
++		return -ENODEV;
++	}
++
++	error = pathbuf_copyin(cbdioctl->diskpath, &pbuf);
++	if (error != 0) {
++		return error;
++	}
++
++	error = vn_bdev_openpath(pbuf, &vp, cbdioctl->l);
++	pathbuf_destroy(pbuf);
++	if (error != 0) {
++		return error;
++	}
++
++	error = getdisksize(vp, &numsec, &secsz);
++	if (error != 0) {
++		vn_close(vp, /* See vn_bdev_openpath() */ FREAD | FWRITE, cbdioctl->l->l_cred);
++		return error;
++	}
++
++	lockedsc->sc_tvn = vp;
++	lockedsc->sc_tvn_l_cred = cbdioctl->l->l_cred;
++	lockedsc->sc_tvn_bsize = numsec * secsz;
++	
++	return error;
++}
++
++static int
++cbd_detach_backend(struct cbd_softc *lockedsc)
++{
++	/* XXX: proper dev state validity */
++	if (lockedsc->sc_dev == NULL ||
++	    lockedsc->sc_tvn == NULL ||
++	    lockedsc->sc_tvn_bsize == 0 ||
++	    lockedsc->sc_tvn_l_cred == NULL) {
++		return -ENODEV;
++	}
++
++	vn_close(lockedsc->sc_tvn, /* See vn_bdev_openpath() */ FREAD | FWRITE,
++		 lockedsc->sc_tvn_l_cred);
++
++	lockedsc->sc_tvn_bsize = 0;
++	lockedsc->sc_tvn_l_cred = NULL;	
++	lockedsc->sc_tvn = NULL; /* reset */
++
++	return 0;
++}
++
++static int
++cbd_ioctl(dev_t dev, u_long cmd, void *data, int flag, struct lwp *l)
++{
++	int unit, error = 0;
++	struct cbd_softc *sc;
++	struct cbd_ioctl cbdioctlargs;
++
++	unit = DISKUNIT(dev);
++	sc = device_lookup_private(&cbd_cd, unit);
++
++	if (sc == NULL) { 
++		return ENXIO;
++	}
++
++	mutex_enter(&sc->sc_lock);
++
++	if (!cbd_configured(sc)) {
++		mutex_exit(&sc->sc_lock);
++		return ENXIO;
++	}
++	
++	switch(cmd) {
++	case CBD_ATTACH_BACKEND:
++		if (cbd_backed(sc)) {
++			error = EBUSY;
++			break;
++		}
++		if (!(flag & FWRITE)) {
++			error = EPERM;
++		}
++		cbdioctlargs.diskpath = data;
++		cbdioctlargs.l = l;
++		error = cbd_attach_backend(sc, &cbdioctlargs);
++		break;
++	case CBD_DETACH_BACKEND:
++		if (!cbd_backed(sc)) {
++			error = ENODEV;
++			break;
++		}
++		if (!(flag & FWRITE)) {
++			error = EPERM;
++			break;
++		}
++		error = cbd_detach_backend(sc);
++		break;
++
++		/* default: Pass through */
++	}
++		
++	error = VOP_IOCTL(sc->sc_tvn, cmd, data, flag, l->l_cred);
++
++	mutex_exit(&sc->sc_lock);
++
++	return error;
++}
++
++static int
++cbd_read(dev_t dev, struct uio *uio, int flags)
++{
++	int unit;
++	struct cbd_softc *sc;
++	
++	unit = DISKUNIT(dev);
++	sc = device_lookup_private(&cbd_cd, unit);
++
++	if (sc == NULL) { 
++		return ENXIO;
++	}
++
++	mutex_enter(&sc->sc_lock);
++
++	if (!cbd_backed(sc)) {
++		mutex_exit(&sc->sc_lock);
++		return ENXIO;
++	}
++
++	mutex_exit(&sc->sc_lock);
++
++	return physio(cbd_strategy, NULL, dev, B_READ, minphys, uio);
++}
++
++static int
++cbd_write(dev_t dev, struct uio *uio, int flags)
++{
++	int unit;
++	struct cbd_softc *sc;
++	
++	unit = DISKUNIT(dev);
++	sc = device_lookup_private(&cbd_cd, unit);
++
++	/*
++	 * Trying to close unconfigured dev.
++	 * cbdconfig(8) should be run first.
++	 */
++	if (sc == NULL) { 
++		return ENXIO;
++	}
++
++	mutex_enter(&sc->sc_lock);
++
++	if (!cbd_backed(sc)) {
++		mutex_exit(&sc->sc_lock);
++		return ENXIO;
++	}
++	
++	mutex_exit(&sc->sc_lock);
++	
++	return physio(cbd_strategy, NULL, dev, B_WRITE, minphys, uio);
++}
++
++
++static int
++cbd_size(dev_t dev)
++{
++	int unit;
++	struct cbd_softc *sc;
++	
++	unit = DISKUNIT(dev);
++	sc = device_lookup_private(&cbd_cd, unit);
++
++	/*
++	 * Trying to close unconfigured dev.
++	 * cbdconfig(8) should be run first.
++	 */
++	if (sc == NULL) { 
++		return ENXIO;
++	}
++
++	mutex_enter(&sc->sc_lock);
++
++	if (!cbd_backed(sc)) {
++		mutex_exit(&sc->sc_lock);
++		return ENXIO;
++	}
++
++	// XXPass through.
++
++	mutex_exit(&sc->sc_lock);
++
++	return -1; // XXX: 
++}
+diff -urN cbd.null/NetBSD/cbd.ioconf cbd/NetBSD/cbd.ioconf
+--- cbd.null/NetBSD/cbd.ioconf	1970-01-01 00:00:00.000000000 +0000
++++ cbd/NetBSD/cbd.ioconf	2023-10-20 15:40:16.888208026 +0000
+@@ -0,0 +1,8 @@
++# $NetBSD$
++
++ioconf cbd 
++
++include "conf/files"
++
++pseudo-device cbd
++
+diff -urN cbd.null/NetBSD/Makefile cbd/NetBSD/Makefile
+--- cbd.null/NetBSD/Makefile	1970-01-01 00:00:00.000000000 +0000
++++ cbd/NetBSD/Makefile	2023-10-20 15:41:52.334710787 +0000
+@@ -0,0 +1,10 @@
++#	$NetBSD$
++# Please build using crossbuild nbmake-$ARCH
++
++.include "${NETBSDSRCDIR}/sys/modules/Makefile.inc"
++
++KMOD=	cbd
++IOCONF=	cbd.ioconf
++SRCS=	cbd.c
++
++.include <bsd.kmodule.mk>
