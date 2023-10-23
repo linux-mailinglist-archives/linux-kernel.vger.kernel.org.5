@@ -2,156 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB9A7D3A26
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2147D3967
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbjJWO6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
+        id S233435AbjJWOeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233807AbjJWOow (ORCPT
+        with ESMTP id S230398AbjJWOeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:44:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49717269D;
-        Mon, 23 Oct 2023 07:43:33 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 731642188D;
-        Mon, 23 Oct 2023 14:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698072211;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3mWnimA+rB45DdXIO//K0LJL74BS6+rPPoMNkuJC8w4=;
-        b=C6qrs4g0jsDTg/6TjxWrP2fI0tkZUezsEVX5EraDP83B9ZInndNT3opR3YA/aF4lTpEF6N
-        aGY2OpJHJMZmRIZqm1tdh1N+DEk53L7NbXtq5gbPrRMEfDKLYg2euxd8RXJ/Dyn8OFmrMF
-        q5cV+n9DAXfJ455zH4C3YdIs/XEXqkY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698072211;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3mWnimA+rB45DdXIO//K0LJL74BS6+rPPoMNkuJC8w4=;
-        b=IVdZCgiSzyXjHkb8KY2QiZabkPJ/NYpnPHJVjtkdaw5LEgBoTmgi3WGlOittza//ekkulb
-        CrAHXdpfja+VplDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3E00A139C2;
-        Mon, 23 Oct 2023 14:43:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id OyF7DpOGNmVLdwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 23 Oct 2023 14:43:31 +0000
-Date:   Mon, 23 Oct 2023 16:36:37 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Aleksandr Nogikh <nogikh@google.com>
-Cc:     syzbot <syzbot+b2869947e0c9467a41b6@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [syzbot] [btrfs?] BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (4)
-Message-ID: <20231023143637.GI26353@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <000000000000d005440608450810@google.com>
- <20231023130830.GG26353@twin.jikos.cz>
- <CANp29Y4VNqAX0oPiGy557ubwQKjhWVbwjT7xdCBGLricJPJ5Yg@mail.gmail.com>
+        Mon, 23 Oct 2023 10:34:11 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430D9DD;
+        Mon, 23 Oct 2023 07:34:09 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507a0907896so4983543e87.2;
+        Mon, 23 Oct 2023 07:34:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698071647; x=1698676447; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SAEPvwxGBHu171CY7R5Lgx+2jNo1g9so2I50+cUeJJY=;
+        b=DkMD4csZsCaOgAbI962j63v5ELKB55YS1ZCX5DP+WhA8JjJRKT757z0/iUYZ+QiUnz
+         K7cJIk9r49cfX6c6t1snVkl2l7RV6iueynrNlMpCOg12Y/wVhp4oz3Q/Bv9w1M1fD6YT
+         GlfKVmrFU5tuSZk0QYQq+ZdH+dFp30ElPeItDTt9pwEFnH6SFulvFYdDpSaycCVz15jB
+         PJ0cbm0P4aZFfDfKBYJPBe44Pf5f/BHaEds2bvZRT1PmYUL8LBxsD1ZVES0KqCG7HJ6O
+         ZQHmyuLOAwrAy6aLkTkb+X8CI4k5NZZtb3z+SYXKD3lTHXw9TvrgWmAxgOWymdu4iWdj
+         m1Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698071647; x=1698676447;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SAEPvwxGBHu171CY7R5Lgx+2jNo1g9so2I50+cUeJJY=;
+        b=m8nssr9KJ8VSAGcOPphByoUQObm/4g5k9MPd1AkzGLGD8wej2IaVko/TyJDU3KA/WG
+         jzOtt63J5CsG4PxHjNp9P7+0uh1muaDqIPwEHSeM7quBpSPZ+NBupCwU9edvQQ70gbp6
+         REUhycZpUj36fMvN06XY24WgoCevPNqscB+a4FF5af5whPBSRA/syzBVhYgClgu7SpfD
+         fNBfS/er5AKQWxdYwASxAq/1Mp+EPb/fyY+8nWjvJwgFyS4j8RWMI5sJpO3iF66RcGTf
+         +f90TBxs8X16jTnsd0hEaXWLheTa5IvLRw/RIyWZiF77txIU0N9IYNIGbAzKNqfcXlaz
+         CBMw==
+X-Gm-Message-State: AOJu0YzGbaEXIpDFKrF6EZOmSjlBO1jy/sl0tbIp+EcKrW7WWQxxEaK6
+        I8+QV5uMKZGYeO8N7qgQ2WM=
+X-Google-Smtp-Source: AGHT+IH/yoYRCoTrukDj3opINmf//MKljNUeMqhtNo0TsFui/hJge/i58U3IqUqhX0zMysOwtxvUHg==
+X-Received: by 2002:ac2:5ec6:0:b0:502:9fce:b6d4 with SMTP id d6-20020ac25ec6000000b005029fceb6d4mr6203704lfq.25.1698071647113;
+        Mon, 23 Oct 2023 07:34:07 -0700 (PDT)
+Received: from ?IPv6:2003:f6:ef1b:2000:4423:d503:bf11:e8c6? (p200300f6ef1b20004423d503bf11e8c6.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:4423:d503:bf11:e8c6])
+        by smtp.gmail.com with ESMTPSA id u22-20020a50c056000000b0054037c6676esm2628483edd.69.2023.10.23.07.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 07:34:06 -0700 (PDT)
+Message-ID: <a1ddec9a04c8a978d50d04c69d675510b05eedb1.camel@gmail.com>
+Subject: Re: [PATCH v3 2/2] drivers: misc: adi-axi-tdd: Add TDD engine
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Eliza Balas <Eliza.Balas@analog.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "derek.kiernan@amd.com" <derek.kiernan@amd.com>,
+        "dragan.cvetic@amd.com" <dragan.cvetic@amd.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org
+Date:   Mon, 23 Oct 2023 16:36:57 +0200
+In-Reply-To: <15f25d73-32d5-4809-8096-32c856559d66@app.fastmail.com>
+References: <20231019125646.14236-1-eliza.balas@analog.com>
+         <20231019125646.14236-3-eliza.balas@analog.com>
+         <2023101917-cork-numeric-dab8@gregkh>
+         <BN7PR03MB4545E7EAB2D72B9098C30C6797DBA@BN7PR03MB4545.namprd03.prod.outlook.com>
+         <2023102030-resort-glance-57ef@gregkh>
+         <BN7PR03MB4545FF54B96514EC9F41887E97D8A@BN7PR03MB4545.namprd03.prod.outlook.com>
+         <2023102339-outcast-scone-5a63@gregkh>
+         <BN7PR03MB4545DA4A9404F349170CBA1097D8A@BN7PR03MB4545.namprd03.prod.outlook.com>
+         <15f25d73-32d5-4809-8096-32c856559d66@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANp29Y4VNqAX0oPiGy557ubwQKjhWVbwjT7xdCBGLricJPJ5Yg@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -8.30
-X-Spamd-Result: default: False [-8.30 / 50.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.30)[dsterba@suse.cz];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=f27cd6e68911e026];
-         TAGGED_RCPT(0.00)[b2869947e0c9467a41b6];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         REPLY(-4.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BAYES_HAM(-3.00)[100.00%];
-         SUBJECT_HAS_QUESTION(0.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         SUBJECT_HAS_EXCLAIM(0.00)[];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PLING_QUERY,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 03:30:16PM +0200, Aleksandr Nogikh wrote:
-> On Mon, Oct 23, 2023 at 3:15 PM David Sterba <dsterba@suse.cz> wrote:
-> >
-> > On Sat, Oct 21, 2023 at 07:40:53PM -0700, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    78124b0c1d10 Merge branch 'for-next/core' into for-kernelci
-> > > git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1557da89680000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=f27cd6e68911e026
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=b2869947e0c9467a41b6
-> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > > userspace arch: arm64
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137ac45d680000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e4640b680000
-> > >
-> > > Downloadable assets:
-> > > disk image: https://storage.googleapis.com/syzbot-assets/bd512de820ae/disk-78124b0c.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/a47a437b1d4f/vmlinux-78124b0c.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/3ae8b966bcd7/Image-78124b0c.gz.xz
-> > > mounted in repro: https://storage.googleapis.com/syzbot-assets/d5d514495f15/mount_0.gz
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+b2869947e0c9467a41b6@syzkaller.appspotmail.com
-> > >
-> > > BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-> >
-> > #syz invalid
-> >
-> > This is a frequent warning, can be worked around by increasing
-> > CONFIG_LOCKDEP_CHAINS_BITS in config (18 could be a good value but may
-> > still not be enough).
-> 
-> By invalidating a frequently occurring issue we only cause syzbot to
-> report it once again, so it's better to keep the report open until the
-> root cause is resolved. There'll likely be a report (5) soon.
+On Mon, 2023-10-23 at 16:19 +0200, Arnd Bergmann wrote:
+> On Mon, Oct 23, 2023, at 15:30, Balas, Eliza wrote:
+> > > -----Original Message-----
+> > > Cvetic <dragan.cvetic@amd.com>; Arnd Bergmann <arnd@arndb.de>
+> > > Subject: Re: [PATCH v3 2/2] drivers: misc: adi-axi-tdd: Add TDD engin=
+e
+>=20
+> > > > > > Since the device is not an iio device, using an iio function wo=
+uld
+> > > > > > be confusing.
+> > > > >=20
+> > > > > Why isn't this an iio device?
+> > > >=20
+> > > > The device is not registered into the IIO device tree,
+> > > > and does not rely on IIO kernel APIs.
+> > > > Even though there are a few attributes that resemble the
+> > > > ones from iio, and the sysfs structure is similar,
+> > > > this is not an IIO device.
+> > > > In the previous patch versions 1 and 2 we concluded
+> > > > that this device fits better in the misc subsystem.
+> > >=20
+> > > Ok, can you point to that in the changelog where the IIO maintainer
+> > > agreed that this doesn't fit into that subsystem?
+> > >=20
+> > This was one of the discussions from previous v2 :=20
+> > https://lore.kernel.org/all/5b6318f16799e6e2575fe541e83e42e0afebe6cf.ca=
+mel@gmail.com/
+> >=20
+> > I will add it to the changelog the next time I submit the patches.
+>=20
+> It sounds like Jonathan wasn't quite sure either here, and I would
+> still argue (as I did in that thread), that drivers/iio is probably
+> a better option than drivers/misc.
+>=20
 
-The root cause is somewhere in lockdep and not easy to fix so we'll have
-to see the duplicate reports or
+Well, if Jonathan agrees to have this in IIO, it would actually be better f=
+or
+us... The below hack would not be needed at all and IIO is very familiar.
 
-> We keep CONFIG_LOCKDEP_CHAINS_BITS at 16 for arm64 because (at least
-> in 2022) the kernel used not to boot on GCE arm64 VMs with
-> CONFIG_LOCKDEP_CHAINS_BITS=18. Maybe it's time to try it once more.
+> In particular, you mention that you actually make this device
+> appear as an IIO device to user space using the "iio-fake" hack.
+>=20
 
-yeah, you can increase the config value.
+I want to emphasize that is just our hack to make use of libiio RPC so that=
+ we
+can remotely access this device.
+=20
+- Nuno S=C3=A1
+
