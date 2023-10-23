@@ -2,128 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD107D2EA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9477D2EAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbjJWJlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60464 "EHLO
+        id S229687AbjJWJmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjJWJlA (ORCPT
+        with ESMTP id S229448AbjJWJmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:41:00 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF97DA4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:40:57 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-407da05f05aso22451325e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:40:57 -0700 (PDT)
+        Mon, 23 Oct 2023 05:42:13 -0400
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EB9A4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:42:11 -0700 (PDT)
+Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-49d8fbd307fso1194686e0c.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:42:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1698054056; x=1698658856; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2e6e3Lcqli+2alSmk+94dBX3KJpg6geqhFS7BprVkcU=;
-        b=GL7h0iFse/gxCet0otgmb1uFRctB9gzKAtzvSyWHCnxPjEe8xM+DRZAyb/w4636jfY
-         iXVZpu+M3AkHhMRlSIDGUt6KFJ7mBAviT5QfB+P4nFSJ5W8lj5KERW5jO0A4HdsCA8o0
-         +uLOH0qJeBktDMxxSYxa6IqT9jbLT0HTYxXow=
+        d=chromium.org; s=google; t=1698054130; x=1698658930; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VH/fPEZ9qkWTKaawDCHK7vBhKEbCdSgmYhzD32um79w=;
+        b=IGHNxUuKjy5+P/9FjPTgnVZXmF42slr5o9vrpWd7ep1m5Ws+/ZgUWDGn+04TcRZe/E
+         6AM4jeF/tB7Kxv3dh/aArFRxOvx4iHFjqHBzYcfM+wjeP7vquWmJ49iyObiljzmuOQFW
+         ga5eAuLZ4JiQE6Znrp6zuj0da8qbZq+PDTUbM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698054056; x=1698658856;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2e6e3Lcqli+2alSmk+94dBX3KJpg6geqhFS7BprVkcU=;
-        b=ZWe0FnmTqnh+5fE53NmQD5hQEul0ZqZ3Lj1tDGxA11T4JSfmmnbsPhE40TkVGauGJR
-         eQn6WhxSOZ+LuefjFL2dI3yD2M8EM4xDWM1+Wba4x0Y5LMJbr2EqSlwPht1eqSSHpK6w
-         j28dIYgJVhOXqdyIN6iIFvHMPSErWOBNbANWkeDN2S8aAAUcXD0JP4Vf3Rf+gmHvCqnk
-         2A0gZ87s7RfxGX7sjtHUVMa3wSPjW4Eqdh0Y0Orc46G/HHK1GOkgcBGsqu8Cz3oQlaKM
-         cFT3CorcYjyl6KXvl8WL6dPEg+aOC3fQSByNknF1jnnpE06cWdhjtv5mMTos1MDsVD/R
-         Qwgw==
-X-Gm-Message-State: AOJu0YyTa7UW0Moq/J8EuZiMDBNohEcqYU9vtgEUleaaOr/DRDJs0Uew
-        ymd23aRKL7Q4WNSW/ErJn53M4g==
-X-Google-Smtp-Source: AGHT+IFiv0PaRNaUlIPDIvrAD0L8WPCgy4IVeKPszHKpE2+d3heHK/NlRODAuG2AKmxQC3FMfHXD6Q==
-X-Received: by 2002:a05:600c:3583:b0:401:eb0:a974 with SMTP id p3-20020a05600c358300b004010eb0a974mr6582584wmq.3.1698054055794;
-        Mon, 23 Oct 2023 02:40:55 -0700 (PDT)
-Received: from ?IPv6:2001:8b0:aba:5f3c:3e73:a41c:6787:e5d4? ([2001:8b0:aba:5f3c:3e73:a41c:6787:e5d4])
-        by smtp.gmail.com with ESMTPSA id h15-20020a05600c350f00b003fe1fe56202sm9011512wmq.33.2023.10.23.02.40.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 02:40:55 -0700 (PDT)
-Message-ID: <5c49bc0f468e9fb5ae7ff7f53443fdb1fc3c77f2.camel@linuxfoundation.org>
-Subject: Re: [PATCH] serial: core: Fix runtime PM handling for pending tx
-From:   Richard Purdie <richard.purdie@linuxfoundation.org>
-To:     Tony Lindgren <tony@atomide.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Bruce Ashfield <bruce.ashfield@gmail.com>,
-        Mikko Rapeli <mikko.rapeli@linaro.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Randy MacLeod <randy.macleod@windriver.com>
-Date:   Mon, 23 Oct 2023 10:40:54 +0100
-In-Reply-To: <20231023074856.61896-1-tony@atomide.com>
-References: <20231023074856.61896-1-tony@atomide.com>
+        d=1e100.net; s=20230601; t=1698054130; x=1698658930;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VH/fPEZ9qkWTKaawDCHK7vBhKEbCdSgmYhzD32um79w=;
+        b=weAjPfpHclMojwWWe31yVIA4Zn8ukq8HAxGj+IV8GBXrCk827ftwYBkKR6/+k0Xrs9
+         1mPzOnilJiruntvUFiIRin2Lhiddbsh9+VCHeCMaLHnlK23ItJRXxXiKTA8N5CEDNcSk
+         V5FmWqnuXFeKS6Mfsec1gfvE4NLiMTiEceEeZAEr3NAdb5YqJdP1J+Yjthl0eTsI0kHP
+         S4oLn1w+ywB9dPIaXiv0Df7Hkus78mXW3XatFsoRm7z5Msvnq9ubJGqUSQZQGUIdDHHB
+         4o3HVwM41Xs7NvYE5BoRAYLWm1GfUfgzUHtX7t/lzfEDUwxZtOzDEVnW/EevpbpqPFdQ
+         6h8Q==
+X-Gm-Message-State: AOJu0YxT8xZdwT/PC0zRx6D/fe+HumFc1NhAwsjCZR+7E9SYmbAr+2Dq
+        itpMegbCsJuR23qhPIVex7FWmhktvif9HhOTS3Y=
+X-Google-Smtp-Source: AGHT+IF4Fmi5idt2dZAC9nnYo1TfZ9qhTiwutAQb0TBvLAW05EOu3PtjEzXlHHkctPkgEgJXmS5PuA==
+X-Received: by 2002:a1f:1d07:0:b0:4a1:8aa1:8dcd with SMTP id d7-20020a1f1d07000000b004a18aa18dcdmr6146623vkd.15.1698054130591;
+        Mon, 23 Oct 2023 02:42:10 -0700 (PDT)
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
+        by smtp.gmail.com with ESMTPSA id r8-20020a056122008800b0049d20faf953sm826949vka.55.2023.10.23.02.42.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 02:42:10 -0700 (PDT)
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-49d8fbd307fso1194675e0c.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:42:10 -0700 (PDT)
+X-Received: by 2002:a05:6122:2020:b0:4a1:a334:57f6 with SMTP id
+ l32-20020a056122202000b004a1a33457f6mr7545591vkd.1.1698054129715; Mon, 23 Oct
+ 2023 02:42:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231023043751.17114-1-jason-jh.lin@mediatek.com> <20231023043751.17114-7-jason-jh.lin@mediatek.com>
+In-Reply-To: <20231023043751.17114-7-jason-jh.lin@mediatek.com>
+From:   Fei Shao <fshao@chromium.org>
+Date:   Mon, 23 Oct 2023 17:41:33 +0800
+X-Gmail-Original-Message-ID: <CAC=S1njt-esHwUEr4O5BVUmmgpB=Gm084h+tY-KsKp9LkPXNBQ@mail.gmail.com>
+Message-ID: <CAC=S1njt-esHwUEr4O5BVUmmgpB=Gm084h+tY-KsKp9LkPXNBQ@mail.gmail.com>
+Subject: Re: [PATCH v2 6/9] mailbox: mediatek: Add CMDQ driver support for mt8188
+To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Jeffrey Kardatzke <jkardatzke@google.com>,
+        Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        Johnson Wang <johnson.wang@mediatek.com>,
+        Singo Chang <singo.chang@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>,
+        Shawn Sung <shawn.sung@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.1-0ubuntu1 
-MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-23 at 10:48 +0300, Tony Lindgren wrote:
-> Richard reported that a serial port may end up sometimes with tx data
-> pending in the buffer for long periods of time.
->=20
-> Turns out we bail out early on any errors from pm_runtime_get(),
-> including -EINPROGRESS. To fix the issue, we need to ignore -EINPROGRESS
-> as we only care about the runtime PM usage count at this point. We check
-> for an active runtime PM state later on for tx.
->=20
-> Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to =
-enable runtime PM")
-> Reported-by: Richard Purdie <richard.purdie@linuxfoundation.org>
+Hi Jason,
 
-Tested-by: Richard Purdie <richard.purdie@linuxfoundation.org>
-
-Thanks, I can confirm that since we added this into our builds/tests
-we've not seen the serial data go missing.
-
-Cheers,
-
-Richard
-
-> Cc: Bruce Ashfield <bruce.ashfield@gmail.com>
-> Cc: Mikko Rapeli <mikko.rapeli@linaro.org>
-> Cc: Paul Gortmaker <paul.gortmaker@windriver.com>
-> Cc: Randy MacLeod <randy.macleod@windriver.com>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
+On Mon, Oct 23, 2023 at 12:58=E2=80=AFPM Jason-JH.Lin <jason-jh.lin@mediate=
+k.com> wrote:
+>
+> Add CMDQ driver support for mt8188 by adding its compatible and
+> driver data in CMDQ driver.
+>
+> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
 > ---
->  drivers/tty/serial/serial_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial=
-_core.c
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -146,7 +146,7 @@ static void __uart_start(struct uart_state *state)
-> =20
->  	/* Increment the runtime PM usage count for the active check below */
->  	err =3D pm_runtime_get(&port_dev->dev);
-> -	if (err < 0) {
-> +	if (err < 0 && err !=3D -EINPROGRESS) {
->  		pm_runtime_put_noidle(&port_dev->dev);
->  		return;
->  	}
+>  drivers/mailbox/mtk-cmdq-mailbox.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
+q-mailbox.c
+> index 56fe01cd9731..3bdfb9a60614 100644
+> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
+> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+> @@ -704,12 +704,20 @@ static const struct gce_plat gce_plat_v7 =3D {
+>         .gce_num =3D 1
+>  };
+>
+> +static const struct gce_plat gce_plat_v8 =3D {
+> +       .thread_nr =3D 32,
+> +       .shift =3D 3,
+> +       .control_by_sw =3D true,
+> +       .gce_num =3D 2
+> +};
+> +
+>  static const struct of_device_id cmdq_of_ids[] =3D {
+>         {.compatible =3D "mediatek,mt8173-gce", .data =3D (void *)&gce_pl=
+at_v2},
+>         {.compatible =3D "mediatek,mt8183-gce", .data =3D (void *)&gce_pl=
+at_v3},
+>         {.compatible =3D "mediatek,mt8186-gce", .data =3D (void *)&gce_pl=
+at_v7},
+>         {.compatible =3D "mediatek,mt6779-gce", .data =3D (void *)&gce_pl=
+at_v4},
+>         {.compatible =3D "mediatek,mt8192-gce", .data =3D (void *)&gce_pl=
+at_v5},
+> +       {.compatible =3D "mediatek,mt8188-gce", .data =3D (void *)&gce_pl=
+at_v8},
+I guess I understand your intention here... but the ordering doesn't
+make sense to most people. Put this line after mt8186.
 
+It's up to you to ignore the outlier mt6779 for now or send a separate
+patch to fully sort the list by the compatible strings.
+
+Regards,
+Fei
+
+
+>         {.compatible =3D "mediatek,mt8195-gce", .data =3D (void *)&gce_pl=
+at_v6},
+>         {}
+>  };
+> --
+> 2.18.0
+>
+>
