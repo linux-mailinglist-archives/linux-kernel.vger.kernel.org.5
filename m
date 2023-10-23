@@ -2,53 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FE27D3773
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035457D3777
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbjJWNIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        id S230420AbjJWNJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 09:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjJWNIt (ORCPT
+        with ESMTP id S230314AbjJWNJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:08:49 -0400
+        Mon, 23 Oct 2023 09:09:18 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6356FC4;
-        Mon, 23 Oct 2023 06:08:47 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79780C433C7;
-        Mon, 23 Oct 2023 13:08:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698066527;
-        bh=p6Inx0owgVSroWRP0ixv4LRXq0nbVd4Kt4ZJ+pT2iC4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=INbhZBoP9UOd48h2vZX331ejbRqiHJMSUMSLL3GaQjaqnkhpaRTfU6F5VrPlIecqs
-         S8MF+eNDRBz4n4papemiRGY43yvHIFHbA6NZiv9RE5wYUdgL0nFst5xu2EYGQ1TU2k
-         Ek59AZpcp8sd7bGHBivP3LGzPb0OAHX8+5kPS0j0=
-Date:   Mon, 23 Oct 2023 15:08:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        stable-commits@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: Patch "rcu: Make call_rcu() lazy to save power" has been added
- to the 6.1-stable tree
-Message-ID: <2023102303-pending-purity-c504@gregkh>
-References: <20231021001842.1606862-1-sashal@kernel.org>
- <CAEXW_YR99h31ZXN+vsdcx2vx7LgZJYzWoyVHPZRYTA9qByvNSQ@mail.gmail.com>
- <ZTZt0FrBteUJpxf_@sashalap>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZTZt0FrBteUJpxf_@sashalap>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996A1C4;
+        Mon, 23 Oct 2023 06:09:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C740C433C8;
+        Mon, 23 Oct 2023 13:09:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698066556;
+        bh=KqmsNij6B7/UeR8V5bqRN/2YnaXHLM0xwEH6flkSV18=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kNeVJnqRvx47FjHIY468IWlqGlvHLcQ+oAjN3PRib5r8LWQ41AFf2ozWQHPhB0bGy
+         E38szNZL3hpzt1ygV3ucFurrW6eVDDguzDeDd5BMPWdYzNV/suqzfw7Y5XuQB2fpNh
+         j3VnXBvrBvpNLbmgkSKE3NxUDtZhoe0IavH7xcgTNiIf7NnETxVB56IqjJa/IV/u8H
+         xIqza/70sJ0aeos+w3M7G+9HC/yKxQjGeOerM3yH+oYrHRNNBZqqyKB0uhOrQiScTd
+         1kjfaN+DH1GLgIRtv0s6Y8kImMoj9FAr9ypX8BECzFYBjyCL2xnNPzkudteE6M/uJm
+         a7w8C8f1K39mQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1quugD-006qbg-UQ;
+        Mon, 23 Oct 2023 14:09:14 +0100
+Date:   Mon, 23 Oct 2023 14:09:13 +0100
+Message-ID: <86v8ax4hae.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v8 00/13] KVM: arm64: PMU: Allow userspace to limit the number of PMCs on vCPU
+In-Reply-To: <20231020214053.2144305-1-rananta@google.com>
+References: <20231020214053.2144305-1-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, alexandru.elisei@arm.com, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, yuzenghui@huawei.com, shahuang@redhat.com, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,27 +70,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 08:57:52AM -0400, Sasha Levin wrote:
-> On Sat, Oct 21, 2023 at 12:23:33PM -0400, Joel Fernandes wrote:
-> > On Fri, Oct 20, 2023 at 8:18 PM Sasha Levin <sashal@kernel.org> wrote:
-> > > 
-> > > This is a note to let you know that I've just added the patch titled
-> > > 
-> > >     rcu: Make call_rcu() lazy to save power
-> > > 
-> > > to the 6.1-stable tree which can be found at:
-> > >     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-> > 
-> > Sasha, could you drop this patch from 6.1 stable? It is a new feature
-> > and as such I expect folks who need it to backport. For instance, in
-> > our stable derivatives, it has been backported.
+On Fri, 20 Oct 2023 22:40:40 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
 > 
-> You're right that it's a new feature, but it was taken as a dependency
-> for a later fix.
+> Hello,
+> 
+> The goal of this series is to allow userspace to limit the number
+> of PMU event counters on the vCPU.  We need this to support migration
+> across systems that implement different numbers of counters.
 
-I resolved this, and removed it, it wasn't really needed for that fix,
-your bot's dependency chain got a bit too long for a 2 line bugfix :)
+[...]
 
-thanks,
+I've gone through the initial patches, and stopped before the tests
+(which I usually can't be bothered to review anyway).
 
-greg k-h
+The comments I have a relatively minor and could be applied as fixes
+on top if Oliver can be convinced to do so. Note that patch #4 has an
+attribution issue.
+
+> base-commit: 0a3a1665cbc59ee8d6326aa6c0b4a8d1cd67dda3
+
+maz@valley-girl:~/hot-poop/arm-platforms$ git describe 0a3a1665cbc59ee8d6326aa6c0b4a8d1cd67dda3
+fatal: 0a3a1665cbc59ee8d6326aa6c0b4a8d1cd67dda3 is neither a commit nor blob
+
+Can you please make an effort to base your postings on a known, stable
+commit? A tagged -rc would be best. but certainly not a random commit.
+
+This sort of information is just as useful as "No functional change
+intended"...
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
