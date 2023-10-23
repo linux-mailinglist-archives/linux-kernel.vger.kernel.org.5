@@ -2,78 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C11487D2E1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB31C7D2E20
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbjJWJXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        id S232716AbjJWJX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232894AbjJWJW7 (ORCPT
+        with ESMTP id S232536AbjJWJXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:22:59 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580B7DF;
-        Mon, 23 Oct 2023 02:22:57 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39N7ROKB001098;
-        Mon, 23 Oct 2023 09:22:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=fwbyazHm8hZVd9PZZHKaafaMldOcy5KTgRiIiji7g5w=;
- b=m3plG33T2A46Yjv0tmLJP7Vdt+4SKqXnHZgaxXR65sLy6/hbfPoeXV1aRkyp2cq5v+Af
- c04HWcsNNyiZzFE2nPGIRHXiTXNgy0gkltDElvOs/HJSO832KUgur+an3EpOiVfytGiV
- ccq5Fp6sh1KE8TboznCx/BdpY1eeBsuY7bWE1GtQc5Htjd2d51MNeyqx0Vv36ttob45O
- G2V4iM3Bo3HP63kYhIgqf15Pi2/wAzwTBnv4TmjaTK5Rg7In9SeabfSuQL4W3oHEOT5B
- Ak85FXoYRdoQxrcIG6x53a+yAKiIp/LzR19XY9yqI0AH2GaIVBWj/zdJ+33eC6EhruWp dw== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv40ukvqx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 09:22:50 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39N9MnPF021668
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 09:22:49 GMT
-Received: from [10.216.32.116] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 23 Oct
- 2023 02:22:46 -0700
-Message-ID: <ed5f20a5-52e5-9869-1a3f-576beb955f97@quicinc.com>
-Date:   Mon, 23 Oct 2023 14:52:42 +0530
+        Mon, 23 Oct 2023 05:23:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452BBAF;
+        Mon, 23 Oct 2023 02:23:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A67AC433C7;
+        Mon, 23 Oct 2023 09:23:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698053001;
+        bh=aZBFa7fN1EH0urSii1LHTdENO3pg0U4aosD5CcywGOY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VsdUSetCYsPxlm2mEo2erqrcSSEMIbJPN+mwquIMS5v0zBB/zF6vOthd+ohrOuVAZ
+         UVU8ksImL8gz4CcLRlhjrMCeI/Vf2dsFqgU83vgk4pNmOc7UqFNyYyTW7pKzoOdp9i
+         Y4vY6QJg0LyHMsDiraZt8HDlO2JNBvvene6Uegl9FK0uUL/hhd1/WzE5DRS6joh6Iv
+         47DDn0lyl6SBWknnaeb4p/6fbIygzeyZrThucG0QudR/UeulSJsOBp2llQllpS5aTl
+         Pp6NYW3mNjD0amOF2TrdevqGyAWAf6SDvINhvZGhQ6VW5Mtr1w5Djz0iJqMDQmohMQ
+         uv3sSew7XVDkQ==
+Date:   Mon, 23 Oct 2023 10:23:10 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Yu Chien Peter Lin <peterlin@andestech.com>
+Cc:     acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com,
+        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
+        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
+        conor+dt@kernel.org, conor.dooley@microchip.com,
+        devicetree@vger.kernel.org, dminus@andestech.com,
+        evan@rivosinc.com, geert+renesas@glider.be, guoren@kernel.org,
+        heiko@sntech.de, irogers@google.com, jernej.skrabec@gmail.com,
+        jolsa@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, locus84@andestech.com,
+        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
+        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, peterz@infradead.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
+        robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
+        tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
+        wens@csie.org, will@kernel.org, ycliang@andestech.com
+Subject: Re: [PATCH v3 RESEND 01/13] riscv: errata: Rename defines for Andes
+Message-ID: <20231023-splashing-dandy-1effebb9ec30@spud>
+References: <20231023004100.2663486-1-peterlin@andestech.com>
+ <20231023004100.2663486-2-peterlin@andestech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] tracefs/eventfs: Modify mismatched function name
-Content-Language: en-US
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        <rostedt@goodmis.org>
-CC:     <mhiramat@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        Abaci Robot <abaci@linux.alibaba.com>
-References: <20231019031353.73846-1-jiapeng.chong@linux.alibaba.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20231019031353.73846-1-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: tpkuJTp245L927l8gSIK4AvNj8ZIyO3H
-X-Proofpoint-ORIG-GUID: tpkuJTp245L927l8gSIK4AvNj8ZIyO3H
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_06,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 adultscore=0 clxscore=1011 spamscore=0 suspectscore=0
- impostorscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=737
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310230080
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Dr6k7xdk2Nj78Rm8"
+Content-Disposition: inline
+In-Reply-To: <20231023004100.2663486-2-peterlin@andestech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -81,33 +69,34 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--Dr6k7xdk2Nj78Rm8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 10/19/2023 8:43 AM, Jiapeng Chong wrote:
-> No functional modification involved.
-> 
-> fs/tracefs/event_inode.c:864: warning: expecting prototype for eventfs_remove(). Prototype was for eventfs_remove_dir() instead.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6939
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Mon, Oct 23, 2023 at 08:40:48AM +0800, Yu Chien Peter Lin wrote:
+> Using "ANDES" rather than "ANDESTECH" to unify the naming
+> convention with directory, file names, Kconfig options
+> and other definitions.
+>=20
+> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
+> Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
 
-Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
--Mukesh
-> ---
->   fs/tracefs/event_inode.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-> index 1ccd100bc565..ba9d1cb0d24c 100644
-> --- a/fs/tracefs/event_inode.c
-> +++ b/fs/tracefs/event_inode.c
-> @@ -855,7 +855,7 @@ static void unhook_dentry(struct dentry **dentry, struct dentry **list)
->   	}
->   }
->   /**
-> - * eventfs_remove - remove eventfs dir or file from list
-> + * eventfs_remove_dir - remove eventfs dir or file from list
->    * @ei: eventfs_inode to be removed.
->    *
->    * This function acquire the eventfs_mutex lock and call eventfs_remove_rec()
+Cheers,
+Conor.
+
+--Dr6k7xdk2Nj78Rm8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTY7fgAKCRB4tDGHoIJi
+0szrAQDpbVZqytSdG3WsXMLtVH5Uqmw9YxPlcM5oJY5NdKbzngEAsaz52IDy3Sk5
+0HxrIcXgEJ5z+J2YeJShi5+5WFBDYQc=
+=HAN/
+-----END PGP SIGNATURE-----
+
+--Dr6k7xdk2Nj78Rm8--
