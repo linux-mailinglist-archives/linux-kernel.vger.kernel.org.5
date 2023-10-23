@@ -2,105 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5037D35D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07A37D35DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbjJWLxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
+        id S234183AbjJWLzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233957AbjJWLxv (ORCPT
+        with ESMTP id S231512AbjJWLzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:53:51 -0400
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D7DF9;
-        Mon, 23 Oct 2023 04:53:46 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0VukpfTY_1698062022;
-Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0VukpfTY_1698062022)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Oct 2023 19:53:43 +0800
-From:   Jingbo Xu <jefflexu@linux.alibaba.com>
-To:     miklos@szeredi.hu, linux-fsdevel@vger.kernel.org
-Cc:     zyfjeff@linux.alibaba.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] fuse: make delete_stale configurable
-Date:   Mon, 23 Oct 2023 19:53:41 +0800
-Message-Id: <20231023115341.60127-1-jefflexu@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+        Mon, 23 Oct 2023 07:55:07 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CC6AF;
+        Mon, 23 Oct 2023 04:55:04 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NBsPc9031622;
+        Mon, 23 Oct 2023 11:55:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=GdM270Ymk4GmaoE8s1C0BZCXZ4sHC1MXNy0TNyH38c4=;
+ b=HmZlQbwHKZ3saMsMm13Mh1hc9Z1qVfTwDCuQy4k8GJXlwrAR57KxcZw5PXsCmNdeAzR7
+ bXL0eqH7MsAzshtO0JtU61UmIUBPCYsHA2xv7NL203UNEQyj5kIYuLSlf0obmXjimsiq
+ pbhAhj+By6IF6umBZXHFk3hn0a/FknsoOgSQ2CFvIPTD/lPRLJ8aVPCv3SfThNtGSzSh
+ m3nwyX5qBsOvbCGrdYPpUGC80lbh1talrGlZR4qyOPuCR99yW0ppEcrgQBwG8bUlpWHQ
+ ww7p2ezuw5IspjSPMRAcwnxyJYTFpd6AWAGGbnJfOTqRJPfdhfKHmgp7zPn4iZK1KERT pQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv7u3v8kq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 11:55:01 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39NBt0GU025086
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 11:55:00 GMT
+Received: from [10.239.132.245] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 23 Oct
+ 2023 04:54:55 -0700
+Message-ID: <d3b62002-c29c-a45e-279f-7d07c697aa77@quicinc.com>
+Date:   Mon, 23 Oct 2023 19:54:52 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 1/5] dt-bindings: soc: qcom: Add memory_dump driver
+ bindings
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <quic_tingweiz@quicinc.com>
+References: <1698052857-6918-1-git-send-email-quic_zhenhuah@quicinc.com>
+ <1698052857-6918-2-git-send-email-quic_zhenhuah@quicinc.com>
+ <27fcdcc1-b29b-43b2-8b1a-c648dd9e696c@linaro.org>
+From:   Zhenhua Huang <quic_zhenhuah@quicinc.com>
+In-Reply-To: <27fcdcc1-b29b-43b2-8b1a-c648dd9e696c@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: PmZJVdcFGMnJ25jI4nqqVqd7lWtZ3dWf
+X-Proofpoint-ORIG-GUID: PmZJVdcFGMnJ25jI4nqqVqd7lWtZ3dWf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-23_10,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=934
+ suspectscore=0 mlxscore=0 phishscore=0 bulkscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310230104
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yifei Zhang <zyfjeff@linux.alibaba.com>
 
-Fuse tends to cache dentries in LRU list for performance, which makes
-the fuse server always keep a reference to the opened fd.  If the file
-is deleted by a third party process (neither fuse server nor fuse
-client), the fuse server will always keep a reference to the deleted
-file, in which case the deleted file cannot be released.
 
-Fix this by making the delete_stale feature configurable.  Fuse servers
-can enable this if a file may be unlinked not through fuse server nor
-client.  Actually virtiofs enables this by default.  Make this
-configurable for other fuse filesystems.
+On 2023/10/23 17:27, Krzysztof Kozlowski wrote:
+> On 23/10/2023 11:20, Zhenhua Huang wrote:
+>> Add bindings for the QCOM Memory Dump driver providing debug
+> 
+> Bindings are for hardware, not driver. This suggests it is not suitable
+> for bindings at all.
+> 
+>> facilities. Firmware dumps system cache, internal memory,
+>> peripheral registers to reserved DDR as per the table which
+>> populated by the driver, after crash and warm reset.
+> 
+> Again driver :/
 
-Signed-off-by: Yifei Zhang <zyfjeff@linux.alibaba.com>
-Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
----
- fs/fuse/inode.c           | 5 ++++-
- include/uapi/linux/fuse.h | 2 ++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+Thanks for pointing out. Qualcomm memory dump device is a reserved 
+memory region which is used to communicate with firmware. I will update 
+description in next version.
 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 2e4eb7cf26fb..635bf0b11147 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1234,6 +1234,8 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
- 				fc->create_supp_group = 1;
- 			if (flags & FUSE_DIRECT_IO_RELAX)
- 				fc->direct_io_relax = 1;
-+			if (flags & FUSE_DELETE_STALE)
-+				fc->delete_stale = 1;
- 		} else {
- 			ra_pages = fc->max_read / PAGE_SIZE;
- 			fc->no_lock = 1;
-@@ -1280,7 +1282,8 @@ void fuse_send_init(struct fuse_mount *fm)
- 		FUSE_NO_OPENDIR_SUPPORT | FUSE_EXPLICIT_INVAL_DATA |
- 		FUSE_HANDLE_KILLPRIV_V2 | FUSE_SETXATTR_EXT | FUSE_INIT_EXT |
- 		FUSE_SECURITY_CTX | FUSE_CREATE_SUPP_GROUP |
--		FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_RELAX;
-+		FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_RELAX |
-+		FUSE_DELETE_STALE;
- #ifdef CONFIG_FUSE_DAX
- 	if (fm->fc->dax)
- 		flags |= FUSE_MAP_ALIGNMENT;
-diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-index db92a7202b34..8d0926d21d2e 100644
---- a/include/uapi/linux/fuse.h
-+++ b/include/uapi/linux/fuse.h
-@@ -411,6 +411,7 @@ struct fuse_file_lock {
-  * FUSE_HAS_EXPIRE_ONLY: kernel supports expiry-only entry invalidation
-  * FUSE_DIRECT_IO_RELAX: relax restrictions in FOPEN_DIRECT_IO mode, for now
-  *                       allow shared mmap
-+ * FUSE_DELETE_STALE:	delete dentry if timeout is zero
-  */
- #define FUSE_ASYNC_READ		(1 << 0)
- #define FUSE_POSIX_LOCKS	(1 << 1)
-@@ -450,6 +451,7 @@ struct fuse_file_lock {
- #define FUSE_CREATE_SUPP_GROUP	(1ULL << 34)
- #define FUSE_HAS_EXPIRE_ONLY	(1ULL << 35)
- #define FUSE_DIRECT_IO_RELAX	(1ULL << 36)
-+#define FUSE_DELETE_STALE	(1ULL << 37)
- 
- /**
-  * CUSE INIT request/reply flags
--- 
-2.19.1.6.gb485710b
+Thanks,
+Zhenhua
 
+> 
+>>
+>> Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+>> ---
+>>   .../bindings/soc/qcom/qcom,mem-dump.yaml           | 42 +++++++++++++++++++++
+>>   .../devicetree/bindings/sram/qcom,imem.yaml        | 44 ++++++++++++++++++++++
+>>   2 files changed, 86 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,mem-dump.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,mem-dump.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,mem-dump.yaml
+>> new file mode 100644
+>> index 0000000..87f8f51
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,mem-dump.yaml
+>> @@ -0,0 +1,42 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>> +%YAML 1.2
+>> +---
+>> +$id: "http://devicetree.org/schemas/soc/qcom/qcom,mem-dump.yaml#"
+>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> 
+> Drop quotes.
+> 
+> It does not look like you tested the bindings, at least after quick
+> look. Please run `make dt_binding_check` (see
+> Documentation/devicetree/bindings/writing-schema.rst for instructions).
+> Maybe you need to update your dtschema and yamllint.
+> 
+>> +
+>> +title: Qualcomm memory dump
+> 
+> Describe hardware, not driver.
+> 
+>> +
+>> +description: |
+>> +  Qualcomm memory dump driver dynamically reserves memory and provides hints(id and size)
+> 
+> Again, driver, so not suitable for DTS and bindings.
+> 
+> Best regards,
+> Krzysztof
+> 
