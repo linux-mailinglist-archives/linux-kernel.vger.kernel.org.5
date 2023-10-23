@@ -2,82 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8477F7D3AA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163677D3AB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbjJWPZI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Oct 2023 11:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50480 "EHLO
+        id S232997AbjJWP0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJWPZG (ORCPT
+        with ESMTP id S232324AbjJWP0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:25:06 -0400
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09291DB
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:25:04 -0700 (PDT)
-Received: from omf06.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay08.hostedemail.com (Postfix) with ESMTP id 4292C14017E;
-        Mon, 23 Oct 2023 15:25:03 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id 76D6220016;
-        Mon, 23 Oct 2023 15:25:00 +0000 (UTC)
-Message-ID: <15f45bbde3f4289b012db7adb8166cf0d45e4fec.camel@perches.com>
-Subject: Re: [PATCH 2/5] staging: media: av7110: Fix various whitespace
- checkpatch errors
-From:   Joe Perches <joe@perches.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>,
-        Jonathan Bergh <bergh.jonathan@gmail.com>
-Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org, error27@gmail.com,
-        linux-staging@lists.linux.dev, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 23 Oct 2023 08:24:58 -0700
-In-Reply-To: <b301c9a1-7536-46c5-878e-7cd79e3a4742@kadam.mountain>
-References: <20231020232332.55024-1-bergh.jonathan@gmail.com>
-         <20231020232332.55024-3-bergh.jonathan@gmail.com>
-         <b301c9a1-7536-46c5-878e-7cd79e3a4742@kadam.mountain>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 23 Oct 2023 11:26:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44D2FD
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698074748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5pB8P5MZI5SVEZkvNE+Ru1LBtul6eHQwWOFc8lfM1dc=;
+        b=YhvB1OOzmUAgBjHrISgcI2rvQgJ3tDw0I4NPp6XiOKcUjce+uQ8wVTCWFJXpA1zYLlVtwD
+        x5tkakB7RLyso1Ecwq2yO5n20Stuy6V7m1kVgd0n4AyXVIBHRZqsTFr6c43IapmTq/SFRd
+        fPR96zorCB8vhb7B4XBKc4VKjlPetTk=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-557-FnP6EB3cOt62i8AK4zcbRQ-1; Mon, 23 Oct 2023 11:25:46 -0400
+X-MC-Unique: FnP6EB3cOt62i8AK4zcbRQ-1
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6ce37195375so5255045a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:25:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698074745; x=1698679545;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5pB8P5MZI5SVEZkvNE+Ru1LBtul6eHQwWOFc8lfM1dc=;
+        b=GKxQew5kBWV2fUcsgomUD/bHNHJebkTeU0+OoedgoX/QmNs6d3ejIZknzAajk2mgf5
+         jfiYR32Y+cG5q221MpWMsLIbFfMqzdUaouhQ87umXo50Ik3q4+lY+Sx5Py0fPbWaJKlA
+         J5PRY8N3ZUc6kDt0sSr/w/YjiKsXj0arXzTtknkgdPVWpzE2+XoAc2K220Nx0yCNJ3si
+         1vhyePjPUH+eTtaPJ4T+ycFX2kDXwoGr5ChGGIaBgtcu0YlwgL+vXwtHgP5X3HFFGSSy
+         /qbI9cBdv5uxl/HY1IQzQlG2kIukOJBpXp6Kz112g3gK4Zo6Dwx+Ml39WaY8frChg96d
+         c7eA==
+X-Gm-Message-State: AOJu0Yx0HODFNbqfvTwAmVoZjidGH7BrxTJ/hkTIUz4VAwVHEzSlpt6M
+        8ogy4w61pGoROtYAgtJLXyFqBBYFuNQre0Tcq9ZDuqK8sI+e9VSVSetnYUHAzLbjHw1J1jgHbM2
+        lTwf/W5cFRSwN5e52DNnSjcbF
+X-Received: by 2002:a05:6830:13cc:b0:6bd:b29:85d3 with SMTP id e12-20020a05683013cc00b006bd0b2985d3mr9887448otq.24.1698074745363;
+        Mon, 23 Oct 2023 08:25:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEoK2+qovEnJ0kBN6PCXBIHQFLPHRIJV2jQ3joRidNulJY5AG6LRxvvWXSsxUzhRkBeB3zQyQ==
+X-Received: by 2002:a05:6830:13cc:b0:6bd:b29:85d3 with SMTP id e12-20020a05683013cc00b006bd0b2985d3mr9887424otq.24.1698074745090;
+        Mon, 23 Oct 2023 08:25:45 -0700 (PDT)
+Received: from rh (p200300c93f0047001ec25c15da4a4a7b.dip0.t-ipconnect.de. [2003:c9:3f00:4700:1ec2:5c15:da4a:4a7b])
+        by smtp.gmail.com with ESMTPSA id fb8-20020ad44f08000000b0066d32666a20sm2951492qvb.71.2023.10.23.08.25.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 08:25:44 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 17:25:38 +0200 (CEST)
+From:   Sebastian Ott <sebott@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v8 02/13] KVM: arm64: PMU: Set the default PMU for the
+ guest before vCPU reset
+In-Reply-To: <20231020214053.2144305-3-rananta@google.com>
+Message-ID: <6dcbfe5b-2502-0f04-81dc-a4b19e231f06@redhat.com>
+References: <20231020214053.2144305-1-rananta@google.com> <20231020214053.2144305-3-rananta@google.com>
 MIME-Version: 1.0
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 76D6220016
-X-Stat-Signature: uso4t8asunecfddpd7xeyg65ftr14cyg
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+VkWPLyvgXZZWw+/cT5gjzEt416nU2p+8=
-X-HE-Tag: 1698074700-308232
-X-HE-Meta: U2FsdGVkX19fOFgBMW+1i6LvtS8bVOiijCHMn6WgWz8Hz2LBWy2SGm/KH4KlWZY5Tjj9fn5jVr9T7rjtmAXNl0J+d4kYioCx7/gyh/4mJ3+vUGI6Z/3y4W/7bFnTs3LRuhJvaYLvefim2tJalYxzyUSf1mg+Qgn1lGyGQOOlOiMuXDXC17h9ZHbB5/C1Kz0vysWKzUPnbpbbzlyYQdYbaXYZ/SJsyqjQi6ZCbx0b6+NMxUTeBuKL+RBdYdGRhYNAW9a6+v6i+6Ju2Mi4Od0m7Jsc6VIW/PKE8v/yEXmtTqY3p0eVBunu7/Ty6sGwxNLQ2MoCpl1eP+JZT7UkWD9gv4rAKocc6Y6M
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-23 at 17:26 +0300, Dan Carpenter wrote:
-> On Sat, Oct 21, 2023 at 01:23:29AM +0200, Jonathan Bergh wrote:
-[]
-> > diff --git a/drivers/staging/media/av7110/av7110_av.c b/drivers/staging/media/av7110/av7110_av.c
-[]
-> > @@ -241,8 +241,8 @@ int av7110_pes_play(void *dest, struct dvb_ringbuffer *buf, int dlen)
-> >  		sync |= DVB_RINGBUFFER_PEEK(buf, 2) << 8;
-> >  		sync |= DVB_RINGBUFFER_PEEK(buf, 3);
-> >  
-> > -		if (((sync &~ 0x0f) == 0x000001e0) ||
-> > -		    ((sync &~ 0x1f) == 0x000001c0) ||
-> > +		if (((sync &~0x0f) == 0x000001e0) ||
-> > +		    ((sync &~0x1f) == 0x000001c0) ||
-> 
-> These should be:
-> 
-> 	if (((sync & ~0x0f) == 0x000001e0) ||
-> 	    ((sync & ~0x1f) == 0x000001c0) ||
+On Fri, 20 Oct 2023, Raghavendra Rao Ananta wrote:
+> From: Reiji Watanabe <reijiw@google.com>
+>
+> The following patches will use the number of counters information
+> from the arm_pmu and use this to set the PMCR.N for the guest
+> during vCPU reset. However, since the guest is not associated
+> with any arm_pmu until userspace configures the vPMU device
+> attributes, and a reset can happen before this event, assign a
+> default PMU to the guest just before doing the reset.
+>
+> Signed-off-by: Reiji Watanabe <reijiw@google.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 
-Generally, I believe it would be better to avoid '& ~constant'
-and use the positive form instead
-
-	if ((sync & 0xfffffff0) == 0x000001e0) ||
-	    (sync & 0xffffffe0) == 0x000001c0)
-
+Reviewed-by: Sebastian Ott <sebott@redhat.com>
 
