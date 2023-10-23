@@ -2,179 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE087D3A5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308DE7D3A5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232939AbjJWPFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
+        id S229829AbjJWPH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231818AbjJWPE6 (ORCPT
+        with ESMTP id S229498AbjJWPH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:04:58 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2072.outbound.protection.outlook.com [40.107.223.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1105E10E;
-        Mon, 23 Oct 2023 08:04:55 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vkt5NvWrbZUAjuq9LcAd6i8u9wM11jjQhphXO1l4HXj6pAZawiQigz7vN/l8MPzqTTkmKzf0uumFFvPUGTsnOmASmQbsgwA+HZg2j/lsYe8BdDHxzXy10GaEgHkFoxvAhom40g2QSUrDtyFwBR6NpDP9Bo/w7HERsEDEBJpp+rrj5RqqjVQ8I51GVXVQEZOwdEX9zgAVyYVmVklzRUwcSZheXi69x7KgKALo1D9NoXpr8CHZow2eBOsW5fipZ8bcKK1MWTMK0yFnczUmELYMLl3P+pPDrCb/PRDljN0dUtvYaysoCs4Eyou13qGgd0CS/WKj15ohXfuswojcQycomg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SqLfORJ4+vnu/+joUUCdLgNBjUALrZI+u6m32GZLDn4=;
- b=JwCqcFIz7qIW20L8fM+ZxUoIK3CaBrNR18qt4ktAEgeqDS1FaNYiLMhe/ppnOvQP0imPUFcjqfhIe5kgzZs+OM7EyjqKvMSCWzkH/KDc6EfjWwpya+dlp7MhuEr10JDr1m7iFc9qUjoc4lWRIcd0D/oj5ieUvOEjMvjfI79eMPca3eeFjHJlj19vvTCwOSmwgAaGEx2z57NjLHgdpl7fpYQaLjekPYr4NsEnvl00NG+bkqvjTr7KdE0Zw2QCIvRDzXH0oC6ktWeoxB2V3+lh6TD+NmQn15ES+adwjQ6WhZbo2R57GKgioQ+2rHzIASNcd41N0wk+fsWIKsAX/3E8nQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SqLfORJ4+vnu/+joUUCdLgNBjUALrZI+u6m32GZLDn4=;
- b=HGAKbh8tuN68CmU4WntwjeJLnPlaxTGyYQBtXGc0JZ7uI0oyJPbykV0Ga/vBXvvVYWlMm717YvL0gkqIl43ZSr84E4VlyWrnXqdTzMQS4hLiSesk6aMrEPT9jETrcc8i2cg+cTfG0F/BgLpy3fWM7avQJbalmmKX/KPH+bJGhiU=
-Received: from DM4PR12MB6326.namprd12.prod.outlook.com (2603:10b6:8:a3::15) by
- SA1PR12MB6970.namprd12.prod.outlook.com (2603:10b6:806:24d::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6907.24; Mon, 23 Oct 2023 15:04:51 +0000
-Received: from DM4PR12MB6326.namprd12.prod.outlook.com
- ([fe80::7a0e:4279:ec71:b5dc]) by DM4PR12MB6326.namprd12.prod.outlook.com
- ([fe80::7a0e:4279:ec71:b5dc%4]) with mapi id 15.20.6907.028; Mon, 23 Oct 2023
- 15:04:51 +0000
-From:   "Mehta, Sanju" <Sanju.Mehta@amd.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "mchehab+samsung@kernel.org" <mchehab+samsung@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>
-Subject: RE: [PATCH 1/3] dmaengine: ae4dma: Initial ae4dma controller driver
- with multi channel
-Thread-Topic: [PATCH 1/3] dmaengine: ae4dma: Initial ae4dma controller driver
- with multi channel
-Thread-Index: AQHZ5OXFUN7BzI35s02+So3lunxHgLA5h6CAgAw6yrCABmxlAIALimPQ
-Date:   Mon, 23 Oct 2023 15:04:50 +0000
-Message-ID: <DM4PR12MB6326104B02B1D2D75022D1BAE5D8A@DM4PR12MB6326.namprd12.prod.outlook.com>
-References: <1694460324-60346-1-git-send-email-Sanju.Mehta@amd.com>
- <1694460324-60346-2-git-send-email-Sanju.Mehta@amd.com>
- <ZR02PT/k0op8T71U@matsya>
- <DM4PR12MB6326A31446E45335D2FB457BE5D1A@DM4PR12MB6326.namprd12.prod.outlook.com>
- <ZSzb9OEo6cIbln3A@matsya>
-In-Reply-To: <ZSzb9OEo6cIbln3A@matsya>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=72450ebe-4c54-4820-8d1e-a67b7f124d76;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-10-23T14:59:18Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR12MB6326:EE_|SA1PR12MB6970:EE_
-x-ms-office365-filtering-correlation-id: e6ecbcb4-5837-45d1-dd1c-08dbd3d96801
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 125C2tvZH39a04jYhmwtWbpUDA0shQw2HpLbLaAeNZIWFcTAMAOhs8kVbWvuUov9SXRKF0DfcsCLjyVXSx/ja2U9WsezidtUT3aUQdrXPLlC38sHRMNiWAePOT71EJcucT7sNZbrS9zb3pUTTPnRprC7JlXh70TFmWg6b8lAgpraUKAkUdcn1c5amvg96E74UMi6kYdfK69ikyWGtyXo/6OZVsMD5fsWA8Azdr8cM4ea6aiwmH/291MCvaWcnaRsDfRLqBzRri88Ik/t0af8bsu76nFEQvtk1X30lw5K75pMR/E6JueRnYRMhdqYdOZvrwZ0QoBIo0QiCRn93QdXh2wVSITyNdFocVNpmaROEoepB0FLXAWZx1G8hOBQ34Lys4z8dAs7WMf6yekpCaPLfIjL+0bq0F0vFukK906+e1uRAggr5YELoD0lpQXfgUmGrei7SHmmt4tEtE3CaCAsYs1FtJMxSZlG55rtQfY6cEBm1DwmYjFKrr8CiBOeKCegc8o1kETUFV6YB55hOQinTbmCLLn5ordEQ8a5X/yK1Zde0T1/fmIz0U9FFZXOit/40IHEZq3O4tqsdhdrn5oFCcxrQlPSXtp0FmKPKznFXrd3DlP/pcqViTjvR1BRb5zrsg54IXYeKraM03TdNJIetohwtuH4aVnKT8+++fKTczA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6326.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(396003)(346002)(366004)(376002)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(122000001)(7696005)(478600001)(55016003)(38100700002)(71200400001)(6506007)(9686003)(38070700009)(53546011)(54906003)(66446008)(66946007)(76116006)(66556008)(66476007)(64756008)(8676002)(4326008)(8936002)(5660300002)(41300700001)(86362001)(2906002)(6916009)(316002)(52536014)(26005)(33656002)(83380400001)(42413004)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?oyQbnofnF4oSZ2/VbUUIHdXU+93aESWTAzNR0DGAOhselSQquCuUUmElVY93?=
- =?us-ascii?Q?NfjLq/qKsU1mQamMa8Z7isItPxo9zLh61cO6qIxYZNxY4ABdHebu2pN1NGJC?=
- =?us-ascii?Q?svJrO7OIzKEiwg98XVjtrn+OEC+MZssGjrBLWJA0/1XrhW2gssb9sU/jIwdf?=
- =?us-ascii?Q?P56zNj1Yj6Iyvr7+g3FTfA+ChCKkS+k4xTHGzuppdsgLPgkgJ6DrI1uyO1g6?=
- =?us-ascii?Q?3J54zxlkNV2e+yPUllOTiLp27EypanSPozSqjfzrJDYTrEKwMm8n2G/jYy0H?=
- =?us-ascii?Q?kaHw7IjY8cTi+xPWAJC8QDVJZ1vhXldB+7YqD+gTcgtt0beS9m1hgQ8IV86Q?=
- =?us-ascii?Q?XBh0N8l74aEhbmC9ftftqQpG86KcQqNvlzKviIejstG5zPaTWmcZuVrtTcBO?=
- =?us-ascii?Q?T/UeBJoIymyx21fBFIQHHNY4B+TeRoAXTBnvvM8CIZZeUMZ8RcsQUYpCJd8y?=
- =?us-ascii?Q?kk+j8vOpo5nPWsnsm89yziYY8GTPtokJab5QTe4r44z5Gh9rFg14ZXhkWmsV?=
- =?us-ascii?Q?mLc5cEl7Hz1LiKQ8PQ65+pxOqN47J8yg7JOrPcQuundkOJL+HugQZV+wsjuH?=
- =?us-ascii?Q?QT87Au54pyUzaep9TDIE6TEMoZgeNOKufHHI1bgM9T8JuiETCUQqUUXxiXuB?=
- =?us-ascii?Q?oRZMSgyGj/Q1728Hyz1n2oWgdINhJ2YZ6GXdlCbc41Jw7dIAEaz1poQotKOT?=
- =?us-ascii?Q?rSoC/pvorVzrUIu633B+9YNe05GdeyXMdsbfZypcjYSIkLysvHnJ1HAm3b2v?=
- =?us-ascii?Q?awMp4VWSWii/OPLv9EtvZP2DcFjTEywZd6ztfMlmdRXwn09WxjNN2gq+y52f?=
- =?us-ascii?Q?XF68lDcnUWZ2H6vNaKRs6sb7VQ0aM5Lfut1ptbNE6nJ0J+pAVW4FqoTZlyMR?=
- =?us-ascii?Q?sC7FRyXQ0a6V3BQNy+LpBfDfQDW3Oa6lLrtOZynV7HjM60MEv3fjSG23vqR3?=
- =?us-ascii?Q?YumTibNr5NCGBn8+Xv9+BaKlw5aRGJSAmy9M4Z9h9feLZ7CZm8OICWyTp34B?=
- =?us-ascii?Q?CGldxfW1AX6ZmFYlpmZ+9kxJDoFoPO6McK0cOdz+3ap5BD1B3rE4dwcoHGrd?=
- =?us-ascii?Q?hOq9ZH2la/D5vMDh8EsZlBQf5MxzdS6yPpxEwIOpizRC7sOBYnTwbdKGEErU?=
- =?us-ascii?Q?kE02jvZDYoLR2ebkEpC+yS6ZIIbzAQxp7O0TjI0P2JoK1DOiOSnMl+yE++2R?=
- =?us-ascii?Q?j8GetfiC9Rk6Y2L9ouDZvXCQbiXmr6zEU2xjA38hbc62hRxuiFD8pUQmOKtQ?=
- =?us-ascii?Q?mMem0z4/XXIY8Z7iKTxfh/vmXFusmeAY3nizYVIJiPQMAEVEkX0thBL0nHAC?=
- =?us-ascii?Q?TaIR14QGtrkEZlMCNXT2WZIWoZz7Au8oBsZ+joSa2VfUXS5s6mZpQcyt7cbd?=
- =?us-ascii?Q?LDHh9n83qYTpZv19zRpsm5HVTTVFICht2ZAMjLq9pN4puNh0p6D1kTytLwYR?=
- =?us-ascii?Q?ItxqLQJBs2+MHb/X0+yWefa3K8emhyE56iUSU+WUbCDBbxSTaj8zMpDqp3Io?=
- =?us-ascii?Q?vxIVMNJ2XsizdwoI/pGulqoE4d8c/GAxG832UXuwbtuMw6bpaLYBk2nQV5IE?=
- =?us-ascii?Q?q0Ol/SZbyBdeHVjbg/4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 23 Oct 2023 11:07:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3670E5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:07:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698073626;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=cK9l2C0A+pqfOsEmA8BmMsk1GVm50G4Oa7jxSgBxcvs=;
+        b=SKP01q9NCoJYivtuTOIBSkF1DGUpWMhNl+7zvtRLm75X/3ZHVdzgeefs9zQYX49dkXzh33
+        vxCNd5x/uBIYP+tRCoXe49/GMLiypfcAcxrqsxmKTt2lsndpOOZiUbCumxbd09Sp6g2kjh
+        FXMYb9qvP2MuEqog3eFXZv+aqfF7w88=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-662-AuQvOwQpP7GrjaPcmVDoXw-1; Mon, 23 Oct 2023 11:07:02 -0400
+X-MC-Unique: AuQvOwQpP7GrjaPcmVDoXw-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-66cf1e35fe8so44185256d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:07:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698073622; x=1698678422;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cK9l2C0A+pqfOsEmA8BmMsk1GVm50G4Oa7jxSgBxcvs=;
+        b=qWpLY6zBq8hTA+CEovm6C0PXUXnStbfWuUiKn7H/Rs2/rii3wktZmJ92dErfQu+2mN
+         sBXsNituUvXtNXAp7zShI9+F4StPiKfyQaOD1iF31agyBP8ZumPHRsvORuWDJ1Lw4pGi
+         UYmO+4P2Tc760pBS3yRqijxL5EMDWtK4AMnAlauUHtXuwVO6ZPO9n9h03BVbvKV9jsn1
+         h2xfajZj4CQjCE/MgJ1Tx0ylyp6GgVBJ+XBXY+L0MFPpn96VoRQHoCeUFm0/o/I00JZ0
+         T1tsHWyyUSK/l6kiSWJbOjMwKzFyREuIQMNFYHGYlhejh7XMNNM7y30IahMcwuc/rzkw
+         LP5A==
+X-Gm-Message-State: AOJu0Yy8OJ3oBsZHnTA8SCoZ4AAnDw/ZBaZvU3oneWl1IN0RuY/yCoDe
+        bEl7pNlTr1n6EO9eeJjKJ9mYa/+4UyGj9vxKkHwhnIcNVFBgQCPjovALVxf3HxCrZKSCqfebImh
+        kDRpc88tK5ExmOEi2Rmxk0UeZ
+X-Received: by 2002:a05:6214:c45:b0:66d:3a89:813c with SMTP id r5-20020a0562140c4500b0066d3a89813cmr13347544qvj.53.1698073622002;
+        Mon, 23 Oct 2023 08:07:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEUikCH+Dp3bAYPy/wefX94Xe9wxmONu1VfG8SxnmNbO1aSlUkA4XJgvxB5KhmZ12CHc/+ghg==
+X-Received: by 2002:a05:6214:c45:b0:66d:3a89:813c with SMTP id r5-20020a0562140c4500b0066d3a89813cmr13347518qvj.53.1698073621591;
+        Mon, 23 Oct 2023 08:07:01 -0700 (PDT)
+Received: from fedora ([2a01:e0a:257:8c60:80f1:cdf8:48d0:b0a1])
+        by smtp.gmail.com with ESMTPSA id l19-20020a056214029300b0065afe8f149asm2873910qvv.69.2023.10.23.08.06.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 08:07:01 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 17:06:57 +0200
+From:   Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+To:     anton.yakovlev@opensynergy.com, mst@redhat.com
+Cc:     mvaralar@redhat.com, perex@perex.cz, tiwai@suse.com,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        manos.pitsidianakis@linaro.org, mripard@redhat.com
+Subject: [PATCH v3] ALSA: virtio: use ack callback
+Message-ID: <ZTaMEUZUTrRRUD6y@fedora>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6326.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6ecbcb4-5837-45d1-dd1c-08dbd3d96801
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2023 15:04:50.9285
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SqsHHjLZhwVHmP2I3B8sILiXEDETrGoXI9LFV7ucjqTqxQ+Q3E8PueLZTQYSvV0Ac9OHjVnrccTQndUtyvYb+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6970
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only - General]
+This commit uses the ack() callback to determine when a buffer has been
+updated, then exposes it to guest.
 
-> -----Original Message-----
-> From: Vinod Koul <vkoul@kernel.org>
-> Sent: Monday, October 16, 2023 12:15 PM
-> To: Mehta, Sanju <Sanju.Mehta@amd.com>
-> Cc: gregkh@linuxfoundation.org; dan.j.williams@intel.com; robh@kernel.org=
-;
-> mchehab+samsung@kernel.org; davem@davemloft.net; linux-
-> kernel@vger.kernel.org; dmaengine@vger.kernel.org
-> Subject: Re: [PATCH 1/3] dmaengine: ae4dma: Initial ae4dma controller dri=
-ver
-> with multi channel
->
-> On 14-10-23, 08:26, Mehta, Sanju wrote:
-> > [AMD Official Use Only - General]
->
-> ??
->
-> > > > diff --git a/drivers/dma/ae4dma/ae4dma-pci.c
-> > > > b/drivers/dma/ae4dma/ae4dma-pci.c new file mode 100644 index
-> > > > 0000000..a77fbb5
-> > > > --- /dev/null
-> > > > +++ b/drivers/dma/ae4dma/ae4dma-pci.c
-> > > > @@ -0,0 +1,247 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > +/*
-> > > > + * AMD AE4DMA device driver
-> > > > + * -- Based on the PTDMA driver
-> > >
-> > > cant we use ptdma driver to support both cores?
-> > >
-> > AE4DMA has multiple channels per engine, whereas PTDMA is limited to a
-> single channel per engine. Furthermore, there are significant disparities=
- in both
-> the DMA engines and their respective handling methods. Hence wanted to ke=
-ep
-> separate codes for PTDMA and AE4DMA.
->
-> Pls wrap your replies to 80chars!
->
-> The channel count should be configurable and for the handling methods,
-> you can have low level handler functions for each controller which can
-> be selected based on device probe
->
-> I feel reuse of code is better idea than having two different drivers
+The current mechanism splits a dma buffer into descriptors that are
+exposed to the device. This dma buffer is shared with the user
+application. When the device consumes a buffer, the driver moves the
+request from the used ring to available ring.
 
-Yes, I agree. I will combine both so that code can be reused.
+The driver exposes the buffer to the device without knowing if the
+content has been updated from the user. The section 2.8.21.1 of the
+virtio spec states that: "The device MAY access the descriptor chains
+the driver created and the memory they refer to immediately". If the
+device picks up buffers from the available ring just after it is
+notified, it happens that the content may be old.
 
-- Sanjay
-> --
-> ~Vinod
+When the ack() callback is invoked, the driver exposes only the buffers
+that have already been updated, i.e., enqueued in the available ring.
+Thus, the device always picks up a buffer that is updated.
+
+For capturing, the driver starts by exposing all the available buffers
+to device. After device updates the content of a buffer, it enqueues it
+in the used ring. It is only after the ack() for capturing is issued
+that the driver re-enqueues the buffer in the available ring.
+
+Co-developed-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Signed-off-by: Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+---
+Changelog:
+v2 -> v3:
+ * Use ack() callback instead of copy()/fill_silence()
+ * Change commit name
+ * Rewrite commit message
+ * Remove virtsnd_pcm_msg_send_locked()
+ * Use single callback for both capture and playback
+ * Fix kernel test robot warnings regarding documentation
+ * v2 patch at:
+   https://lore.kernel.org/lkml/87y1fzkq8c.wl-tiwai@suse.de/T/
+v1 -> v2:
+ * Use snd_pcm_set_managed_buffer_all()for buffer allocation/freeing.
+ * Make virtsnd_pcm_msg_send() generic by specifying the offset and size
+   for the modified part of the buffer; this way no assumptions need to
+   be made.
+ * Disable SNDRV_PCM_INFO_NO_REWINDS since now only sequential
+   reading/writing of frames is supported.
+ * Correct comment at virtsnd_pcm_msg_send().
+ * v1 patch at:
+   https://lore.kernel.org/lkml/20231016151000.GE119987@fedora/t/
+
+ sound/virtio/virtio_pcm.c     |  1 +
+ sound/virtio/virtio_pcm.h     |  6 ++-
+ sound/virtio/virtio_pcm_msg.c | 80 ++++++++++++++++++++---------------
+ sound/virtio/virtio_pcm_ops.c | 30 +++++++++++--
+ 4 files changed, 79 insertions(+), 38 deletions(-)
+
+diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
+index c10d91fff2fb..9cc5a95b4913 100644
+--- a/sound/virtio/virtio_pcm.c
++++ b/sound/virtio/virtio_pcm.c
+@@ -124,6 +124,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
+ 	values = le64_to_cpu(info->formats);
+ 
+ 	vss->hw.formats = 0;
++	vss->appl_ptr = 0;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(g_v2a_format_map); ++i)
+ 		if (values & (1ULL << i)) {
+diff --git a/sound/virtio/virtio_pcm.h b/sound/virtio/virtio_pcm.h
+index 062eb8e8f2cf..ea3c2845ae9b 100644
+--- a/sound/virtio/virtio_pcm.h
++++ b/sound/virtio/virtio_pcm.h
+@@ -27,6 +27,7 @@ struct virtio_pcm_msg;
+  *        substream operators.
+  * @buffer_bytes: Current buffer size in bytes.
+  * @hw_ptr: Substream hardware pointer value in bytes [0 ... buffer_bytes).
++ * @appl_ptr: Substream application pointer value in bytes [0 ... buffer_bytes).
+  * @xfer_enabled: Data transfer state (0 - off, 1 - on).
+  * @xfer_xrun: Data underflow/overflow state (0 - no xrun, 1 - xrun).
+  * @stopped: True if the substream is stopped and must be released on the device
+@@ -51,13 +52,13 @@ struct virtio_pcm_substream {
+ 	spinlock_t lock;
+ 	size_t buffer_bytes;
+ 	size_t hw_ptr;
++	size_t appl_ptr;
+ 	bool xfer_enabled;
+ 	bool xfer_xrun;
+ 	bool stopped;
+ 	bool suspended;
+ 	struct virtio_pcm_msg **msgs;
+ 	unsigned int nmsgs;
+-	int msg_last_enqueued;
+ 	unsigned int msg_count;
+ 	wait_queue_head_t msg_empty;
+ };
+@@ -117,7 +118,8 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
+ 
+ void virtsnd_pcm_msg_free(struct virtio_pcm_substream *vss);
+ 
+-int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss);
++int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss, unsigned long offset,
++			 unsigned long bytes);
+ 
+ unsigned int virtsnd_pcm_msg_pending_num(struct virtio_pcm_substream *vss);
+ 
+diff --git a/sound/virtio/virtio_pcm_msg.c b/sound/virtio/virtio_pcm_msg.c
+index aca2dc1989ba..106e8e847746 100644
+--- a/sound/virtio/virtio_pcm_msg.c
++++ b/sound/virtio/virtio_pcm_msg.c
+@@ -155,7 +155,6 @@ int virtsnd_pcm_msg_alloc(struct virtio_pcm_substream *vss,
+ 			    sizeof(msg->xfer));
+ 		sg_init_one(&msg->sgs[PCM_MSG_SG_STATUS], &msg->status,
+ 			    sizeof(msg->status));
+-		msg->length = period_bytes;
+ 		virtsnd_pcm_sg_from(&msg->sgs[PCM_MSG_SG_DATA], sg_num, data,
+ 				    period_bytes);
+ 
+@@ -181,66 +180,81 @@ void virtsnd_pcm_msg_free(struct virtio_pcm_substream *vss)
+ 
+ 	vss->msgs = NULL;
+ 	vss->nmsgs = 0;
++	vss->appl_ptr = 0;
+ }
+ 
+ /**
+  * virtsnd_pcm_msg_send() - Send asynchronous I/O messages.
+  * @vss: VirtIO PCM substream.
++ * @offset: starting position that has been updated
++ * @bytes: number of bytes that has been updated
+  *
+  * All messages are organized in an ordered circular list. Each time the
+  * function is called, all currently non-enqueued messages are added to the
+- * virtqueue. For this, the function keeps track of two values:
+- *
+- *   msg_last_enqueued = index of the last enqueued message,
+- *   msg_count = # of pending messages in the virtqueue.
++ * virtqueue. For this, the function uses offset and bytes to calculate the
++ * messages that need to be added.
+  *
+  * Context: Any context. Expects the tx/rx queue and the VirtIO substream
+  *          spinlocks to be held by caller.
+  * Return: 0 on success, -errno on failure.
+  */
+-int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss)
++int virtsnd_pcm_msg_send(struct virtio_pcm_substream *vss, unsigned long offset,
++			 unsigned long bytes)
+ {
+-	struct snd_pcm_runtime *runtime = vss->substream->runtime;
+ 	struct virtio_snd *snd = vss->snd;
+ 	struct virtio_device *vdev = snd->vdev;
+ 	struct virtqueue *vqueue = virtsnd_pcm_queue(vss)->vqueue;
+-	int i;
+-	int n;
++	unsigned long period_bytes = snd_pcm_lib_period_bytes(vss->substream);
++	unsigned long start, end, i;
++	unsigned int msg_count = vss->msg_count;
+ 	bool notify = false;
++	int rc;
+ 
+-	i = (vss->msg_last_enqueued + 1) % runtime->periods;
+-	n = runtime->periods - vss->msg_count;
++	start = offset / period_bytes;
++	end = (offset + bytes - 1) / period_bytes;
+ 
+-	for (; n; --n, i = (i + 1) % runtime->periods) {
++	for (i = start; i <= end; i++) {
+ 		struct virtio_pcm_msg *msg = vss->msgs[i];
+ 		struct scatterlist *psgs[] = {
+ 			&msg->sgs[PCM_MSG_SG_XFER],
+ 			&msg->sgs[PCM_MSG_SG_DATA],
+ 			&msg->sgs[PCM_MSG_SG_STATUS]
+ 		};
+-		int rc;
+-
+-		msg->xfer.stream_id = cpu_to_le32(vss->sid);
+-		memset(&msg->status, 0, sizeof(msg->status));
+-
+-		if (vss->direction == SNDRV_PCM_STREAM_PLAYBACK)
+-			rc = virtqueue_add_sgs(vqueue, psgs, 2, 1, msg,
+-					       GFP_ATOMIC);
+-		else
+-			rc = virtqueue_add_sgs(vqueue, psgs, 1, 2, msg,
+-					       GFP_ATOMIC);
+-
+-		if (rc) {
+-			dev_err(&vdev->dev,
+-				"SID %u: failed to send I/O message\n",
+-				vss->sid);
+-			return rc;
++		unsigned long n;
++
++		n = period_bytes - (offset % period_bytes);
++		if (n > bytes)
++			n = bytes;
++
++		msg->length += n;
++		if (msg->length == period_bytes) {
++			msg->xfer.stream_id = cpu_to_le32(vss->sid);
++			memset(&msg->status, 0, sizeof(msg->status));
++
++			if (vss->direction == SNDRV_PCM_STREAM_PLAYBACK)
++				rc = virtqueue_add_sgs(vqueue, psgs, 2, 1, msg,
++						       GFP_ATOMIC);
++			else
++				rc = virtqueue_add_sgs(vqueue, psgs, 1, 2, msg,
++						       GFP_ATOMIC);
++
++			if (rc) {
++				dev_err(&vdev->dev,
++					"SID %u: failed to send I/O message\n",
++					vss->sid);
++				return rc;
++			}
++
++			vss->msg_count++;
+ 		}
+ 
+-		vss->msg_last_enqueued = i;
+-		vss->msg_count++;
++		offset = 0;
++		bytes -= n;
+ 	}
+ 
++	if (msg_count == vss->msg_count)
++		return 0;
++
+ 	if (!(vss->features & (1U << VIRTIO_SND_PCM_F_MSG_POLLING)))
+ 		notify = virtqueue_kick_prepare(vqueue);
+ 
+@@ -309,6 +323,8 @@ static void virtsnd_pcm_msg_complete(struct virtio_pcm_msg *msg,
+ 	if (vss->hw_ptr >= vss->buffer_bytes)
+ 		vss->hw_ptr -= vss->buffer_bytes;
+ 
++	msg->length = 0;
++
+ 	vss->xfer_xrun = false;
+ 	vss->msg_count--;
+ 
+@@ -320,8 +336,6 @@ static void virtsnd_pcm_msg_complete(struct virtio_pcm_msg *msg,
+ 					le32_to_cpu(msg->status.latency_bytes));
+ 
+ 		schedule_work(&vss->elapsed_period);
+-
+-		virtsnd_pcm_msg_send(vss);
+ 	} else if (!vss->msg_count) {
+ 		wake_up_all(&vss->msg_empty);
+ 	}
+diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
+index f8bfb87624be..21cde37ecfa3 100644
+--- a/sound/virtio/virtio_pcm_ops.c
++++ b/sound/virtio/virtio_pcm_ops.c
+@@ -282,7 +282,6 @@ static int virtsnd_pcm_prepare(struct snd_pcm_substream *substream)
+ 
+ 		vss->buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
+ 		vss->hw_ptr = 0;
+-		vss->msg_last_enqueued = -1;
+ 	} else {
+ 		struct snd_pcm_runtime *runtime = substream->runtime;
+ 		unsigned int buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
+@@ -324,7 +323,7 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
+ 	struct virtio_snd_queue *queue;
+ 	struct virtio_snd_msg *msg;
+ 	unsigned long flags;
+-	int rc;
++	int rc = 0;
+ 
+ 	switch (command) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -333,7 +332,8 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
+ 
+ 		spin_lock_irqsave(&queue->lock, flags);
+ 		spin_lock(&vss->lock);
+-		rc = virtsnd_pcm_msg_send(vss);
++		if (vss->direction == SNDRV_PCM_STREAM_CAPTURE)
++			rc = virtsnd_pcm_msg_send(vss, 0, vss->buffer_bytes);
+ 		if (!rc)
+ 			vss->xfer_enabled = true;
+ 		spin_unlock(&vss->lock);
+@@ -450,6 +450,29 @@ virtsnd_pcm_pointer(struct snd_pcm_substream *substream)
+ 	return hw_ptr;
+ }
+ 
++static int virtsnd_pcm_ack(struct snd_pcm_substream *substream)
++{
++	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
++	struct virtio_snd_queue *queue = virtsnd_pcm_queue(vss);
++	unsigned long flags;
++	struct snd_pcm_runtime *runtime = vss->substream->runtime;
++	ssize_t appl_pos = frames_to_bytes(runtime, runtime->control->appl_ptr);
++	ssize_t buf_size = frames_to_bytes(runtime, runtime->buffer_size);
++	int rc;
++
++	spin_lock_irqsave(&queue->lock, flags);
++	spin_lock(&vss->lock);
++
++	ssize_t bytes = (appl_pos - vss->appl_ptr) % buf_size;
++
++	rc = virtsnd_pcm_msg_send(vss, vss->appl_ptr % buf_size, bytes);
++	vss->appl_ptr += bytes;
++
++	spin_unlock(&vss->lock);
++	spin_unlock_irqrestore(&queue->lock, flags);
++	return rc;
++}
++
+ /* PCM substream operators map. */
+ const struct snd_pcm_ops virtsnd_pcm_ops = {
+ 	.open = virtsnd_pcm_open,
+@@ -461,4 +484,5 @@ const struct snd_pcm_ops virtsnd_pcm_ops = {
+ 	.trigger = virtsnd_pcm_trigger,
+ 	.sync_stop = virtsnd_pcm_sync_stop,
+ 	.pointer = virtsnd_pcm_pointer,
++	.ack = virtsnd_pcm_ack,
+ };
+
+base-commit: 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
+-- 
+2.41.0
+
