@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE62F7D3F77
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261347D3F83
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbjJWSqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 14:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
+        id S230237AbjJWSst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 14:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbjJWSqK (ORCPT
+        with ESMTP id S229451AbjJWSss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 14:46:10 -0400
+        Mon, 23 Oct 2023 14:48:48 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685D5100
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:46:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA1BAC433C8;
-        Mon, 23 Oct 2023 18:46:04 +0000 (UTC)
-Date:   Mon, 23 Oct 2023 14:46:03 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     David Vernet <void@manifault.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com,
-        vschneid@redhat.com, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, joshdon@google.com, brho@google.com,
-        pjt@google.com, derkling@google.com, haoluo@google.com,
-        youssefesmat@google.com, greg.marsden@oracle.com,
-        willy@infradead.org, andrea.righi@canonical.com,
-        andrealmeid@igalia.com, changwoo@igalia.com, gpiccoli@igalia.com,
-        tj@kernel.org, colin.i.king@gmail.com, ast@kernel.org,
-        julia.lawall@inria.fr, himadrispandya@gmail.com,
-        redha.gouicem@rwth-aachen.de, admin@ptr1337.dev,
-        lucjan.lucjanov@gmail.com
-Subject: Re: Sched Ext slack channel / office hours
-Message-ID: <20231023144603.1e18b8bf@gandalf.local.home>
-In-Reply-To: <20231023175326.GA4055@maniforge>
-References: <20231018205431.GA4176@maniforge>
-        <20231019093109.4c4406b2@gandalf.local.home>
-        <20231023175326.GA4055@maniforge>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A3A0FD;
+        Mon, 23 Oct 2023 11:48:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9937C433C8;
+        Mon, 23 Oct 2023 18:48:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698086926;
+        bh=cvYxySdgl+SSffKthUQYcmnzcQEhBW8ys75F8wjA2xU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VKZotqrzZy1mTRr7FWkB0d2qDIiiQGAJ9bDjq+VTRDfn+3mivoqDZayOVR4oTcnrN
+         EAYAlAlDg/m724zZLBIEUI4oV4lX77WZFtmmX2bgkv8j3NiArP49fyYjmGLhdxOGrW
+         YCSm13ZhYrH92UNA8Ws1R6a56mCdSOE9GcnaeSW1BCERRL8e+ONx5oGw3IBLQfwS9e
+         vIfG/yJSzcVitPHnM+h7avJB/PLEzShMotgN/aCtSj9cTxE0Hqr//UA4X4AuC9yUYd
+         j5NMZmYoJ52CPpQXFzEuCATDZnW72dFUjYgjNYixYXWYZ8qBBppAsbiLIRhNPrpkvh
+         aqVl+oe4EcOzw==
+Date:   Mon, 23 Oct 2023 11:48:44 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com
+Subject: Re: [PATCH  4/6] x86/bugs: Use ALTERNATIVE() instead of
+ mds_user_clear static key
+Message-ID: <20231023184844.e2loaxlldm4zbko2@treble>
+References: <20231020-delay-verw-v1-0-cff54096326d@linux.intel.com>
+ <20231020-delay-verw-v1-4-cff54096326d@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231020-delay-verw-v1-4-cff54096326d@linux.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 12:53:26 -0500
-David Vernet <void@manifault.com> wrote:
+On Fri, Oct 20, 2023 at 01:45:15PM -0700, Pawan Gupta wrote:
+> @@ -484,11 +484,11 @@ static void __init md_clear_update_mitigation(void)
+>  	if (cpu_mitigations_off())
+>  		return;
+>  
+> -	if (!static_key_enabled(&mds_user_clear))
+> +	if (!boot_cpu_has(X86_FEATURE_USER_CLEAR_CPU_BUF))
+>  		goto out;
+>  
+>  	/*
+> -	 * mds_user_clear is now enabled. Update MDS, TAA and MMIO Stale Data
+> +	 * X86_FEATURE_USER_CLEAR_CPU_BUF is now enabled. Update MDS, TAA and MMIO Stale Data
+>  	 * mitigation, if necessary.
+>  	 */
 
-> Yes, it could be beneficial to attend your meeting as well. Please feel
-> free to send us an invitation to any instance of your meeting that is
-> related to sched_ext.
+This comment line got long, the paragraph can be reformatted.
 
-It's a very informal meeting and the agenda is usually created at the
-meeting. So there will never be a "we are going to talk about sched_ext".
-If that topic comes up, it will be because the people there want to talk
-about it. The people that usually attend are:
-
- Myself
- Juri Lelli
- Daniel Bristot
- Joel Fernandes
- Vineeth Pillai
- Youssef Esmat
-
-But it's open to anyone that wants to attend. I should send out more
-invites to others that participate in the scheduler work. I sent an invite
-to Peter, but he's never accepted.
-
-And sometimes we get a few others. It's mostly just to discuss latest
-trends of the scheduler.
-
--- Steve
+-- 
+Josh
