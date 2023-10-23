@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAC17D2CB9
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4157D2CB8
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbjJWI34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
+        id S233042AbjJWIaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232982AbjJWI3v (ORCPT
+        with ESMTP id S233058AbjJWI35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:29:51 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F23CD68
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:29:50 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bdf4752c3cso15992645ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:29:50 -0700 (PDT)
+        Mon, 23 Oct 2023 04:29:57 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B762CD7B
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:29:55 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6b36e1fcee9so2386712b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:29:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1698049789; x=1698654589; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1698049795; x=1698654595; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4WLOSQOA5Tm0Adw6Ut8ujQkn4XXYrNjbdXHKCGaB3LM=;
-        b=iLxR9CpPHj5MF5lOEEwlXsnK9mVa74W1k3vTSLD7gZlk6/+nytiotJkBdq1fclkXTO
-         ndO4S8Ys9lefTYja8AhjD2oUy4fizVh2ATwxMEtEi64rwKKA/1wwnmLgX6ub2uwgVjXJ
-         V6x8BKU2UU77QDAl3SRrTP+yPewkIixiXSFjq+Sgl0twKDPXVdXrkKjQekfLcPIcBQSJ
-         QUL4Dfp7E6cqOPO6XMk/CuIhsB5Llo7CcyM5+LNA+L84tbW1a7erxFzPvljqAjqsTFMY
-         kWHcJWdgJ2RZDK/ONbKSSY0OZIJAmSm3EYOgESFNezsJ4r4GeDZkY32KRLaZJ5h+QNud
-         QAlQ==
+        bh=AUO1/BVdvM4H5C6LBNItdP0IIJipRGNxmDV7eD7nopg=;
+        b=eIYgUBkXxqcUP0Fa4z7vj8CIE5bLNxOer2Zrmzreg36NkvNydrY5vMC1ckvF/Ei60M
+         0cmk2xdY6RkcYFLQ4QG4z9dO9cNwvm/UKD1Wojx7RSkgNDTJ2phfJ8JoBwfIGd7xL4W7
+         K1L8g/zVyGF3JT7EbxnhYabXmBv40ESR4rqqcf8ffNLbUTKHrsjW9fo72FGc31s50fTR
+         x07UFMAMOMe9N1VrgS3RcdypsifHCmUvus/kaEGh7q3EFhTY8vj+14yMUTas77+PaqZJ
+         Iij0X4vIlEjVECHAFjLDqVGbdgqWgE26Uvg8ZItAlDWiA6SlYslVhw5qhdDq0Ci/XtYZ
+         PL6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698049789; x=1698654589;
+        d=1e100.net; s=20230601; t=1698049795; x=1698654595;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4WLOSQOA5Tm0Adw6Ut8ujQkn4XXYrNjbdXHKCGaB3LM=;
-        b=G2Tqt395QWhPS+PDBtx8bPqZk+1D+sanX7fWf8/egX1MVSEpk4/enLmMaQYP24xIgP
-         akZn40PAgVP0/745/FyljFVep3A2bCPDnI8qskAsOfpvIOmbOPTmGe4rW1qnWbuy9yCu
-         SEXmQRhlChb3l4XvV4q+hemEZ2ofC95G5ILkjiAQpqRymCnCMIOv9XNHG41mVJUnLk47
-         SN50V5OutgVKeIBYdVchFfui7c+JBMEDmFtkSAGK4nnEnNXBkckeF8wckmqX0P4RZ+nx
-         h5gfQeBbF0p30nQ957n/H4OluxicArSUvfqMC0FBBIkWoIwzCrUuVC1wTMhhD+ktSJO5
-         +WJg==
-X-Gm-Message-State: AOJu0YwYXHXW5dNhOZoNfcQAQOXvDLbrUUUUrV/2hyOZjUzB8zbF1h2Q
-        7av7ceczofkvRan61HhtBpWKnw==
-X-Google-Smtp-Source: AGHT+IHnm6GiYKkee1BBGlEg9/2GVy9OXofYG3BGHLaj+6z7TyuT5to3Ev1GjwdsT/XgsL2yDJJgGg==
-X-Received: by 2002:a17:902:e548:b0:1c9:b187:4d84 with SMTP id n8-20020a170902e54800b001c9b1874d84mr8674687plf.14.1698049789506;
-        Mon, 23 Oct 2023 01:29:49 -0700 (PDT)
+        bh=AUO1/BVdvM4H5C6LBNItdP0IIJipRGNxmDV7eD7nopg=;
+        b=eOG3RQnWcde32Y9SWVSREX51lxF3U92XdFmLyPu3NqvqbVcjEy1W4VQ2Xoz7FjK62d
+         XZD+Nk4AvvjxI+L9U+WlT5Z2Zt+Q4/IYfNPp4zPfqtREYHsm3odnf+Nl+U1yOegzlNpI
+         Bjy1K8R+xKVA/CgYWC6lAA/dsRqBQvm1xg3xL3uARy4NmVIar0u7TtSihK9INmAIT1jD
+         Xl/iPEf+IDHi7p+3DgjcpeNSoEBXa9Mr2ScgN0TQGunSKKnQP83+j8NZNJsPx+dQ/PZF
+         b2bEFcNR4E5UT+UMv9VnmhoNcuG0P61Dk0X1nRoIJSOfzF9qcBMM1V6g3SnoGyF7fZaG
+         yYkA==
+X-Gm-Message-State: AOJu0YzlYWwmrGSTxK7F8YkcMVKm+weIiHIV8tTKx7/jShuoZm4ZjqW1
+        bQ47tdsQ1nF6d3IBRhemtPdO5g==
+X-Google-Smtp-Source: AGHT+IEuewyI9+tw5QJUm2oN6guHecDPjWsmm8bO+1FZNslxYqHTr+PcfG3+59e4kYZAI8n0lGmkLw==
+X-Received: by 2002:a05:6a20:2615:b0:151:7d4c:899c with SMTP id i21-20020a056a20261500b001517d4c899cmr4935811pze.25.1698049795184;
+        Mon, 23 Oct 2023 01:29:55 -0700 (PDT)
 Received: from J9GPGXL7NT.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d15-20020a170903230f00b001b8b07bc600sm5415805plh.186.2023.10.23.01.29.44
+        by smtp.gmail.com with ESMTPSA id d15-20020a170903230f00b001b8b07bc600sm5415805plh.186.2023.10.23.01.29.49
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 23 Oct 2023 01:29:49 -0700 (PDT)
+        Mon, 23 Oct 2023 01:29:54 -0700 (PDT)
 From:   Xu Lu <luxu.kernel@bytedance.com>
 To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
         aou@eecs.berkeley.edu, tglx@linutronix.de, maz@kernel.org,
@@ -59,16 +59,16 @@ Cc:     dengliang.1214@bytedance.com, liyu.yukiteru@bytedance.com,
         lihangjing@bytedance.com, chaiwen.cc@bytedance.com,
         linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
         Xu Lu <luxu.kernel@bytedance.com>
-Subject: [RFC 05/12] riscv: kvm: Switch back to CSR_STATUS masking when entering guest
-Date:   Mon, 23 Oct 2023 16:29:04 +0800
-Message-Id: <20231023082911.23242-6-luxu.kernel@bytedance.com>
+Subject: [RFC 06/12] riscv: Allow requesting irq as pseudo NMI
+Date:   Mon, 23 Oct 2023 16:29:05 +0800
+Message-Id: <20231023082911.23242-7-luxu.kernel@bytedance.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 In-Reply-To: <20231023082911.23242-1-luxu.kernel@bytedance.com>
 References: <20231023082911.23242-1-luxu.kernel@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,89 +76,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kvm enters vcpu, it first disables local irqs before preparing vcpu
-context and uses SRET instruction to enter guest mode after vcpu context
-is ready, which automatically restores guest's irq status. However, after
-we switch to CSR_IE masking for interrupt disabling, the SRET instruction
-itself can not restore guest's irq status correctly as interrupts are
-still masked by CSR_IE.
-
-This commit handles this special case by switching to traditional
-CSR_STATUS way to disable irqs before entering guest mode.
+This commit implements pseudo NMI callbacks for riscv_intc_irq chip. We
+use an immediate macro to denote NMIs of each cpu. Each bit of it
+represents an irq. Bit 1 means corresponding irq is registered as NMI
+while bit 0 means not.
 
 Signed-off-by: Xu Lu <luxu.kernel@bytedance.com>
+Signed-off-by: Hangjing Li <lihangjing@bytedance.com>
+Reviewed-by: Liang Deng <dengliang.1214@bytedance.com>
+Reviewed-by: Yu Li <liyu.yukiteru@bytedance.com>
 ---
- arch/riscv/include/asm/irqflags.h |  3 +++
- arch/riscv/kvm/vcpu.c             | 18 +++++++++++++-----
- 2 files changed, 16 insertions(+), 5 deletions(-)
+ arch/riscv/include/asm/irqflags.h | 17 ++++++++++++++
+ drivers/irqchip/irq-riscv-intc.c  | 38 +++++++++++++++++++++++++++++++
+ 2 files changed, 55 insertions(+)
 
 diff --git a/arch/riscv/include/asm/irqflags.h b/arch/riscv/include/asm/irqflags.h
-index e0ff37315178..60c19f8b57f0 100644
+index 60c19f8b57f0..9700a17a003a 100644
 --- a/arch/riscv/include/asm/irqflags.h
 +++ b/arch/riscv/include/asm/irqflags.h
-@@ -64,6 +64,9 @@ static inline void arch_local_irq_restore(unsigned long flags)
- 	csr_write(CSR_IE, flags);
- }
+@@ -12,6 +12,23 @@
  
-+#define local_irq_enable_vcpu_run		local_irq_switch_on
-+#define local_irq_disable_vcpu_run		local_irq_switch_off
-+
- #else /* CONFIG_RISCV_PSEUDO_NMI */
+ #ifdef CONFIG_RISCV_PSEUDO_NMI
  
- /* read interrupt enabled status */
-diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
-index 82229db1ce73..233408247da7 100644
---- a/arch/riscv/kvm/vcpu.c
-+++ b/arch/riscv/kvm/vcpu.c
-@@ -621,6 +621,14 @@ static void noinstr kvm_riscv_vcpu_enter_exit(struct kvm_vcpu *vcpu)
- 	guest_state_exit_irqoff();
- }
- 
-+#ifndef local_irq_enable_vcpu_run
-+#define local_irq_enable_vcpu_run		local_irq_enable
-+#endif
++#define __ALLOWED_NMI_MASK			0
++#define ALLOWED_NMI_MASK			(__ALLOWED_NMI_MASK & irqs_enabled_ie)
 +
-+#ifndef local_irq_disable_vcpu_run
-+#define local_irq_disable_vcpu_run		local_irq_disable
-+#endif
++static inline bool nmi_allowed(int irq)
++{
++	return (BIT(irq) & ALLOWED_NMI_MASK);
++}
 +
- int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
++static inline bool is_nmi(int irq)
++{
++	return (BIT(irq) & ALLOWED_NMI_MASK);
++}
++
++static inline void set_nmi(int irq) {}
++
++static inline void unset_nmi(int irq) {}
++
+ static inline void local_irq_switch_on(void)
  {
- 	int ret;
-@@ -685,7 +693,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 			continue;
- 		}
+ 	csr_set(CSR_STATUS, SR_IE);
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index 7fad1ba37e5c..83a0a744fce6 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -67,11 +67,49 @@ static void riscv_intc_irq_eoi(struct irq_data *d)
+ 	 */
+ }
  
--		local_irq_disable();
-+		local_irq_disable_vcpu_run();
++#ifdef CONFIG_RISCV_PSEUDO_NMI
++
++static int riscv_intc_irq_nmi_setup(struct irq_data *d)
++{
++	unsigned int hwirq = d->hwirq;
++	struct irq_desc *desc = irq_to_desc(d->irq);
++
++	if (WARN_ON((hwirq >= BITS_PER_LONG) || !nmi_allowed(hwirq)))
++		return -EINVAL;
++
++	desc->handle_irq = handle_percpu_devid_fasteoi_nmi;
++	set_nmi(hwirq);
++
++	return 0;
++}
++
++static void riscv_intc_irq_nmi_teardown(struct irq_data *d)
++{
++	unsigned int hwirq = d->hwirq;
++	struct irq_desc *desc = irq_to_desc(d->irq);
++
++	if (WARN_ON(hwirq >= BITS_PER_LONG))
++		return;
++
++	if (WARN_ON(!is_nmi(hwirq)))
++		return;
++
++	desc->handle_irq = handle_percpu_devid_irq;
++	unset_nmi(hwirq);
++}
++
++#endif /* CONFIG_RISCV_PSEUDO_NMI */
++
+ static struct irq_chip riscv_intc_chip = {
+ 	.name = "RISC-V INTC",
+ 	.irq_mask = riscv_intc_irq_mask,
+ 	.irq_unmask = riscv_intc_irq_unmask,
+ 	.irq_eoi = riscv_intc_irq_eoi,
++#ifdef CONFIG_RISCV_PSEUDO_NMI
++	.irq_nmi_setup = riscv_intc_irq_nmi_setup,
++	.irq_nmi_teardown = riscv_intc_irq_nmi_teardown,
++	.flags = IRQCHIP_SUPPORTS_NMI,
++#endif
+ };
  
- 		/*
- 		 * Ensure we set mode to IN_GUEST_MODE after we disable
-@@ -712,7 +720,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		    kvm_request_pending(vcpu) ||
- 		    xfer_to_guest_mode_work_pending()) {
- 			vcpu->mode = OUTSIDE_GUEST_MODE;
--			local_irq_enable();
-+			local_irq_enable_vcpu_run();
- 			preempt_enable();
- 			kvm_vcpu_srcu_read_lock(vcpu);
- 			continue;
-@@ -757,12 +765,12 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		 * recognised, so we just hope that the CPU takes any pending
- 		 * interrupts between the enable and disable.
- 		 */
--		local_irq_enable();
--		local_irq_disable();
-+		local_irq_enable_vcpu_run();
-+		local_irq_disable_vcpu_run();
- 
- 		guest_timing_exit_irqoff();
- 
--		local_irq_enable();
-+		local_irq_enable_vcpu_run();
- 
- 		preempt_enable();
- 
+ static int riscv_intc_domain_map(struct irq_domain *d, unsigned int irq,
 -- 
 2.20.1
 
