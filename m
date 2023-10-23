@@ -2,144 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C763C7D3D99
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8B87D3DA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbjJWR2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
+        id S233337AbjJWR3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:29:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbjJWR2P (ORCPT
+        with ESMTP id S233406AbjJWR2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:28:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C984EA2;
-        Mon, 23 Oct 2023 10:28:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E3A2C433C7;
-        Mon, 23 Oct 2023 17:28:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698082093;
-        bh=HcLcWLJGRHlp2Xy+fV5Mci2qklXKQc19WPVrm8dOxFU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fAtKha4EZ7gSTTqFMSgy8ortj9/5xX2oOp4l3Uq7N3ipaH1a3ASihi+CbwKXuedQ5
-         IolqSynqa2QJKbX6wbUeGw2sypeOg37j3vCrenjNagMLZWyJFO2BvxrGfSbuLdrFi6
-         pyMPsoM2hGImZvRQW/Zrmt2H3cL494HSb8z3bSFs3OxULE5KvJYZqcnYZD2F2VlmE2
-         jttNR+TxMijUbhekwZ/26PT7bXLs0rHgZga5hhLpG1vXEt22pnxIAveab5FgUAja7W
-         EX4xzgzaYScfs16S04Kh1XHC8zhQXTAAztDrZKMWUhEtiGB70D0Rxs8FCJ1eswKQBu
-         RiTNpgzEdA/hQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 098924035D; Mon, 23 Oct 2023 14:28:09 -0300 (-03)
-Date:   Mon, 23 Oct 2023 14:28:09 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 22/48] perf annotate: Add --type-stat option for debugging
-Message-ID: <ZTatKUD6nS7OlvuC@kernel.org>
-References: <20231012035111.676789-1-namhyung@kernel.org>
- <20231012035111.676789-23-namhyung@kernel.org>
+        Mon, 23 Oct 2023 13:28:42 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBE310D5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:28:34 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-3529f5f5dadso5085ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:28:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698082114; x=1698686914; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hh5gbGTjwswNSJut0j41J9mky6NNqMMsm33VLdUTGQU=;
+        b=ARHEb9Uw32OUtRDh2U8KGmEmLIl89Gy+AiTgHDj3OL8gOv24T7ht8nGPr6WLw5PnnP
+         edUWMjzneYNV2Bqv8P9EP6f3dw5EXLPe87B/qWDwumYEVVFFGWf+LuZuK1uBGf5jXGmI
+         Z/Ibc2Ft9Wfd/nBto4G3HFa72tzTR+xSZNgWbYcpSH6v65/G55EqDGgeQ/CJNJJHxV/n
+         l1javPbmR9OnkrYu6WHRfDhqjS+I4QsXnyfoahEWHqoNu46qur0vFJbklD+4XdQVFsPf
+         USo2u+jxbGkLyWZeQWDEZ4Fw2S0W4zeaTdc0U1aYIr5J3+4NbbO5hUf+IPTc2G2hwUFD
+         6s3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698082114; x=1698686914;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Hh5gbGTjwswNSJut0j41J9mky6NNqMMsm33VLdUTGQU=;
+        b=B6VkpoHlP+cFbwYvZfBJHN01a+TjI62wPwZewLmGgTewsCCKWB+L6MUN0cVL52Erdl
+         6dV/YWRNh7vSQIChsBgalR0t3Z+LwVHn/7XOprvQE2z1p5NGIXCGbkfnqgKHMg5McQat
+         ZE304DALjikh3QJ34N+MFO+gzsmsP7kzShX4018qkBKyN1CjDtZotGUhiX3ZkvcJnHdp
+         rucPL0dkY13gfY/O4NIr/eM5mNZsxfEH0XqM61PR7nWeyzZGLqZ6aDpnr5EbWSee2W8B
+         ZXgKjkIfM8a9XHWWuFESgNKZLZukQdUG0EIFLu2R20Qjg41tjHZoIlaYJGmbtvMJl+ci
+         ZIHQ==
+X-Gm-Message-State: AOJu0YxOFYnvWVWsGLYCEBp6SN5K6plRrktjXBS6usnykrQ7226ixoDh
+        9SpjQz/ZpglYVJWk04pUklKm+XlhhB++1G9MqBlDLA==
+X-Google-Smtp-Source: AGHT+IGVUVY7CGh97Fb45OyO1PzaUAleRd5IyCXNtJ+bUNq5F5zhjHvvOXBRC7PVZbE40qgq9FQjlIBjiiboUleG7b8=
+X-Received: by 2002:a92:ac07:0:b0:351:ad4:85b with SMTP id r7-20020a92ac07000000b003510ad4085bmr27471ilh.4.1698082113782;
+ Mon, 23 Oct 2023 10:28:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231012035111.676789-23-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231020214053.2144305-1-rananta@google.com> <20231020214053.2144305-6-rananta@google.com>
+ <86zg094j1o.wl-maz@kernel.org>
+In-Reply-To: <86zg094j1o.wl-maz@kernel.org>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Mon, 23 Oct 2023 10:28:21 -0700
+Message-ID: <CAJHc60z97PZ5adQEzW-m2GyTPf2=f5RECMQ5P-2e-rObr1LbaQ@mail.gmail.com>
+Subject: Re: [PATCH v8 05/13] KVM: arm64: Add {get,set}_user for
+ PM{C,I}NTEN{SET,CLR}, PMOVS{SET,CLR}
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Oct 11, 2023 at 08:50:45PM -0700, Namhyung Kim escreveu:
-> The --type-stat option is to be used with --data-type and to print
-> detailed failure reasons for the data type annotation.
-> 
->   $ perf annotate --data-type --type-stat
->   Annotate data type stats:
->   total 294, ok 116 (39.5%), bad 178 (60.5%)
->   -----------------------------------------------------------
->           30 : no_sym
->           40 : no_insn_ops
->           33 : no_mem_ops
->           63 : no_var
->            4 : no_typeinfo
->            8 : bad_offset
+On Mon, Oct 23, 2023 at 5:31=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
+:
+>
+> On Fri, 20 Oct 2023 22:40:45 +0100,
+> Raghavendra Rao Ananta <rananta@google.com> wrote:
+> >
+> > For unimplemented counters, the bits in PM{C,I}NTEN{SET,CLR} and
+> > PMOVS{SET,CLR} registers are expected to RAZ. To honor this,
+> > explicitly implement the {get,set}_user functions for these
+> > registers to mask out unimplemented counters for userspace reads
+> > and writes.
+> >
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > ---
+> >  arch/arm64/kvm/sys_regs.c | 91 ++++++++++++++++++++++++++++++++++++---
+> >  1 file changed, 85 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> > index faf97878dfbbb..2e5d497596ef8 100644
+> > --- a/arch/arm64/kvm/sys_regs.c
+> > +++ b/arch/arm64/kvm/sys_regs.c
+> > @@ -987,6 +987,45 @@ static bool access_pmu_evtyper(struct kvm_vcpu *vc=
+pu, struct sys_reg_params *p,
+> >       return true;
+> >  }
+> >
+> > +static void set_pmreg_for_valid_counters(struct kvm_vcpu *vcpu,
+> > +                                       u64 reg, u64 val, bool set)
+> > +{
+> > +     struct kvm *kvm =3D vcpu->kvm;
+> > +
+> > +     mutex_lock(&kvm->arch.config_lock);
+> > +
+> > +     /* Make the register immutable once the VM has started running */
+> > +     if (kvm_vm_has_ran_once(kvm)) {
+> > +             mutex_unlock(&kvm->arch.config_lock);
+> > +             return;
+> > +     }
+> > +
+> > +     val &=3D kvm_pmu_valid_counter_mask(vcpu);
+> > +     mutex_unlock(&kvm->arch.config_lock);
+> > +
+> > +     if (set)
+> > +             __vcpu_sys_reg(vcpu, reg) |=3D val;
+> > +     else
+> > +             __vcpu_sys_reg(vcpu, reg) &=3D ~val;
+> > +}
+> > +
+> > +static int get_pmcnten(struct kvm_vcpu *vcpu, const struct sys_reg_des=
+c *r,
+> > +                     u64 *val)
+> > +{
+> > +     u64 mask =3D kvm_pmu_valid_counter_mask(vcpu);
+> > +
+> > +     *val =3D __vcpu_sys_reg(vcpu, PMCNTENSET_EL0) & mask;
+> > +     return 0;
+> > +}
+> > +
+> > +static int set_pmcnten(struct kvm_vcpu *vcpu, const struct sys_reg_des=
+c *r,
+> > +                     u64 val)
+> > +{
+> > +     /* r->Op2 & 0x1: true for PMCNTENSET_EL0, else PMCNTENCLR_EL0 */
+> > +     set_pmreg_for_valid_counters(vcpu, PMCNTENSET_EL0, val, r->Op2 & =
+0x1);
+> > +     return 0;
+> > +}
+>
+> Huh, this is really ugly. Why the explosion of pointless helpers when
+> the whole design of the sysreg infrastructure to have *common* helpers
+> for registers that behave the same way?
+>
+> I'd expect something like the hack below instead.
+>
+>         M.
+>
+> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> index a2c5f210b3d6..8f560a2496f2 100644
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -987,42 +987,46 @@ static bool access_pmu_evtyper(struct kvm_vcpu *vcp=
+u, struct sys_reg_params *p,
+>         return true;
+>  }
+>
+> -static void set_pmreg_for_valid_counters(struct kvm_vcpu *vcpu,
+> -                                         u64 reg, u64 val, bool set)
+> +static int set_pmreg(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r=
+, u64 val)
+>  {
+>         struct kvm *kvm =3D vcpu->kvm;
+> +       bool set;
+>
+>         mutex_lock(&kvm->arch.config_lock);
+>
+>         /* Make the register immutable once the VM has started running */
+>         if (kvm_vm_has_ran_once(kvm)) {
+>                 mutex_unlock(&kvm->arch.config_lock);
+> -               return;
+> +               return 0;
+>         }
+>
+>         val &=3D kvm_pmu_valid_counter_mask(vcpu);
+>         mutex_unlock(&kvm->arch.config_lock);
+>
+> +       switch(r->reg) {
+> +       case PMOVSSET_EL0:
+> +               /* CRm[1] being set indicates a SET register, and CLR oth=
+erwise */
+> +               set =3D r->CRm & 2;
+> +               break;
+> +       default:
+> +               /* Op2[0] being set indicates a SET register, and CLR oth=
+erwise */
+> +               set =3D r->Op2 & 1;
+> +               break;
+> +       }
+> +
+>         if (set)
+> -               __vcpu_sys_reg(vcpu, reg) |=3D val;
+> +               __vcpu_sys_reg(vcpu, r->reg) |=3D val;
+>         else
+> -               __vcpu_sys_reg(vcpu, reg) &=3D ~val;
+> -}
+> -
+> -static int get_pmcnten(struct kvm_vcpu *vcpu, const struct sys_reg_desc =
+*r,
+> -                       u64 *val)
+> -{
+> -       u64 mask =3D kvm_pmu_valid_counter_mask(vcpu);
+> +               __vcpu_sys_reg(vcpu, r->reg) &=3D ~val;
+>
+> -       *val =3D __vcpu_sys_reg(vcpu, PMCNTENSET_EL0) & mask;
+>         return 0;
+>  }
+>
+> -static int set_pmcnten(struct kvm_vcpu *vcpu, const struct sys_reg_desc =
+*r,
+> -                       u64 val)
+> +static int get_pmreg(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r=
+, u64 *val)
+>  {
+> -       /* r->Op2 & 0x1: true for PMCNTENSET_EL0, else PMCNTENCLR_EL0 */
+> -       set_pmreg_for_valid_counters(vcpu, PMCNTENSET_EL0, val, r->Op2 & =
+0x1);
+> +       u64 mask =3D kvm_pmu_valid_counter_mask(vcpu);
+> +
+> +       *val =3D __vcpu_sys_reg(vcpu, r->reg) & mask;
+>         return 0;
+>  }
+>
+> @@ -1054,23 +1058,6 @@ static bool access_pmcnten(struct kvm_vcpu *vcpu, =
+struct sys_reg_params *p,
+>         return true;
+>  }
+>
+> -static int get_pminten(struct kvm_vcpu *vcpu, const struct sys_reg_desc =
+*r,
+> -                       u64 *val)
+> -{
+> -       u64 mask =3D kvm_pmu_valid_counter_mask(vcpu);
+> -
+> -       *val =3D __vcpu_sys_reg(vcpu, PMINTENSET_EL1) & mask;
+> -       return 0;
+> -}
+> -
+> -static int set_pminten(struct kvm_vcpu *vcpu, const struct sys_reg_desc =
+*r,
+> -                       u64 val)
+> -{
+> -       /* r->Op2 & 0x1: true for PMINTENSET_EL1, else PMINTENCLR_EL1 */
+> -       set_pmreg_for_valid_counters(vcpu, PMINTENSET_EL1, val, r->Op2 & =
+0x1);
+> -       return 0;
+> -}
+> -
+>  static bool access_pminten(struct kvm_vcpu *vcpu, struct sys_reg_params =
+*p,
+>                            const struct sys_reg_desc *r)
+>  {
+> @@ -1095,23 +1082,6 @@ static bool access_pminten(struct kvm_vcpu *vcpu, =
+struct sys_reg_params *p,
+>         return true;
+>  }
+>
+> -static int set_pmovs(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r=
+,
+> -                     u64 val)
+> -{
+> -       /* r->CRm & 0x2: true for PMOVSSET_EL0, else PMOVSCLR_EL0 */
+> -       set_pmreg_for_valid_counters(vcpu, PMOVSSET_EL0, val, r->CRm & 0x=
+2);
+> -       return 0;
+> -}
+> -
+> -static int get_pmovs(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r=
+,
+> -                     u64 *val)
+> -{
+> -       u64 mask =3D kvm_pmu_valid_counter_mask(vcpu);
+> -
+> -       *val =3D __vcpu_sys_reg(vcpu, PMOVSSET_EL0) & mask;
+> -       return 0;
+> -}
+> -
+>  static bool access_pmovs(struct kvm_vcpu *vcpu, struct sys_reg_params *p=
+,
+>                          const struct sys_reg_desc *r)
+>  {
+> @@ -2311,10 +2281,10 @@ static const struct sys_reg_desc sys_reg_descs[] =
+=3D {
+>
+>         { PMU_SYS_REG(PMINTENSET_EL1),
+>           .access =3D access_pminten, .reg =3D PMINTENSET_EL1,
+> -         .get_user =3D get_pminten, .set_user =3D set_pminten },
+> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
+>         { PMU_SYS_REG(PMINTENCLR_EL1),
+>           .access =3D access_pminten, .reg =3D PMINTENSET_EL1,
+> -         .get_user =3D get_pminten, .set_user =3D set_pminten },
+> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
+>         { SYS_DESC(SYS_PMMIR_EL1), trap_raz_wi },
+>
+>         { SYS_DESC(SYS_MAIR_EL1), access_vm_reg, reset_unknown, MAIR_EL1 =
+},
+> @@ -2366,13 +2336,13 @@ static const struct sys_reg_desc sys_reg_descs[] =
+=3D {
+>           .reg =3D PMCR_EL0, .get_user =3D get_pmcr, .set_user =3D set_pm=
+cr },
+>         { PMU_SYS_REG(PMCNTENSET_EL0),
+>           .access =3D access_pmcnten, .reg =3D PMCNTENSET_EL0,
+> -         .get_user =3D get_pmcnten, .set_user =3D set_pmcnten },
+> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
+>         { PMU_SYS_REG(PMCNTENCLR_EL0),
+>           .access =3D access_pmcnten, .reg =3D PMCNTENSET_EL0,
+> -         .get_user =3D get_pmcnten, .set_user =3D set_pmcnten },
+> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
+>         { PMU_SYS_REG(PMOVSCLR_EL0),
+>           .access =3D access_pmovs, .reg =3D PMOVSSET_EL0,
+> -         .get_user =3D get_pmovs, .set_user =3D set_pmovs },
+> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
+>         /*
+>          * PM_SWINC_EL0 is exposed to userspace as RAZ/WI, as it was
+>          * previously (and pointlessly) advertised in the past...
+> @@ -2401,7 +2371,7 @@ static const struct sys_reg_desc sys_reg_descs[] =
+=3D {
+>           .reset =3D reset_val, .reg =3D PMUSERENR_EL0, .val =3D 0 },
+>         { PMU_SYS_REG(PMOVSSET_EL0),
+>           .access =3D access_pmovs, .reg =3D PMOVSSET_EL0,
+> -         .get_user =3D get_pmovs, .set_user =3D set_pmovs },
+> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
+>
+>         { SYS_DESC(SYS_TPIDR_EL0), NULL, reset_unknown, TPIDR_EL0 },
+>         { SYS_DESC(SYS_TPIDRRO_EL0), NULL, reset_unknown, TPIDRRO_EL0 },
+>
 
-Had to enclose it as well, as:
+Thanks for the suggestion. I'll consider this in the next iteration.
 
-⬢[acme@toolbox perf-tools-next]$ grep annotate-data tools/perf/util/Build
-perf-$(CONFIG_DWARF) += annotate-data.o
-⬢[acme@toolbox perf-tools-next]$
-
-/usr/bin/ld: /tmp/build/perf-tools-next/perf-in.o: in function `cmd_annotate':
-(.text+0x27b7): undefined reference to `ann_data_stat'
-/usr/bin/ld: (.text+0x27bd): undefined reference to `ann_data_stat'
-/usr/bin/ld: (.text+0x27c4): undefined reference to `ann_data_stat'
-/usr/bin/ld: (.text+0x27cb): undefined reference to `ann_data_stat'
-/usr/bin/ld: (.text+0x27d2): undefined reference to `ann_data_stat'
-/usr/bin/ld: /tmp/build/perf-tools-next/perf-in.o:(.text+0x27d9): more undefined references to `ann_data_stat' follow
-collect2: error: ld returned 1 exit status
-make[2]: *** [Makefile.perf:675: /tmp/build/perf-tools-next/perf] Error 1
-
-When building with NO_DWARF=1 or in systems lacking the used DWARF
-libraries. I noticed with some of the build containers, will updated
-those to have the required libraries so that this feature gets compile
-tested there.
-
-
-diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-index 645acaba63f1957a..5b534245ddb23294 100644
---- a/tools/perf/builtin-annotate.c
-+++ b/tools/perf/builtin-annotate.c
-@@ -353,6 +353,7 @@ static void print_annotated_data_type(struct annotated_data_type *mem_type,
- 	printf(";\n");
- }
- 
-+#ifdef HAVE_DWARF_SUPPORT
- static void print_annotate_data_stat(struct annotated_data_stat *s)
- {
- #define PRINT_STAT(fld) if (s->fld) printf("%10d : %s\n", s->fld, #fld)
-@@ -389,6 +390,7 @@ static void print_annotate_data_stat(struct annotated_data_stat *s)
- 
- #undef PRINT_STAT
- }
-+#endif // HAVE_DWARF_SUPPORT
- 
- static void hists__find_annotations(struct hists *hists,
- 				    struct evsel *evsel,
-@@ -396,10 +398,10 @@ static void hists__find_annotations(struct hists *hists,
- {
- 	struct rb_node *nd = rb_first_cached(&hists->entries), *next;
- 	int key = K_RIGHT;
--
-+#ifdef HAVE_DWARF_SUPPORT
- 	if (ann->type_stat)
- 		print_annotate_data_stat(&ann_data_stat);
--
-+#endif
- 	while (nd) {
- 		struct hist_entry *he = rb_entry(nd, struct hist_entry, rb_node);
- 		struct annotation *notes;
-@@ -698,8 +700,10 @@ int cmd_annotate(int argc, const char **argv)
- 			    itrace_parse_synth_opts),
- 	OPT_BOOLEAN(0, "data-type", &annotate.data_type,
- 		    "Show data type annotate for the memory accesses"),
-+#ifdef HAVE_DWARF_SUPPORT
- 	OPT_BOOLEAN(0, "type-stat", &annotate.type_stat,
- 		    "Show stats for the data type annotation"),
-+#endif
- 	OPT_END()
- 	};
- 	int ret;
+- Raghavendra
