@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1D17D3B40
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3DE7D3B42
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbjJWPsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
+        id S233119AbjJWPsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233111AbjJWPsG (ORCPT
+        with ESMTP id S231535AbjJWPsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:48:06 -0400
+        Mon, 23 Oct 2023 11:48:07 -0400
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD4CD78;
-        Mon, 23 Oct 2023 08:48:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E6AE9;
+        Mon, 23 Oct 2023 08:48:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1698076084; x=1729612084;
+  t=1698076086; x=1729612086;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=zMQDhCf+BgR+OEM7pXSPI1V2CELpCiJL5Et7roC/YbA=;
-  b=XZL6pm63Wx6w2FoVwYVTvE6W4WlycBVFKKrCG1VnrL3tZOgUW0Tb7ddI
-   fBS7iHxHTcNHR6cHznwiEFJ2DBrEzgSK18F/hJgaMqNlGG9bKCkZ0a6SF
-   oPnzp5yg2zNvVznmtZSVBRU9pYsK9roTprRGVS0jAJIQzDXbDUSY+XlX7
-   m+z2wsEJeILVS/YUl3109pNboDTgIJMKjHp5dtGKW3EFgHYB0OqcyM6Kt
-   MxCfekxYuH2yyJx784cpj79i5wzcOqAINx78bUyK7DfhNFDJeImfDDz7d
-   YjwPMllfjxQhKNSLdGvw4G7Mw4Q0vUUSXcEEg+gdop7EVZC1p9MuOlt9B
-   A==;
+  bh=b9l7jWwFPMAuzQs/YBtDqS7+V1WAQBtPurYwM8FLNtI=;
+  b=YwBQaOdEIDc4sz3OiL0snkWXbHAUkLmzLWdRhvVZkZwaQi8T8tDvJQEv
+   XutM6nbjywMZR5hzNJWV4c+DB3da7qQNCZ+z2DU+v+Y10H/eCGzf/jg2x
+   ifdZZzwriynmHE03Y9fjbYBkngttn4kIx/x+ZEIwUmUp9/nwQioA8cByr
+   pE9QWrDO1OajBFFbOH3QK0j1w3X9yNS/551W5Md7v+wR3mkpB2zVEekh/
+   eWrZG6RKq5xZeTUw5r9OlnSWEVJ30JfHW5E73QoMFqPmrjKjl8dELODp4
+   kNuOzN+9PI1zY0QZ+4jfcFW8HFHTeO01Gbo6wTdIdoqSBltov5dJP3tK5
+   g==;
 X-CSE-ConnectionGUID: klqWPg5QRmSazEzEhLffbg==
-X-CSE-MsgGUID: uFGpmiGxSa+ChhZCPsoW3g==
+X-CSE-MsgGUID: OkqgdSelQ7et0cyfBRDkVw==
 X-ThreatScanner-Verdict: Negative
 X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="241208147"
+   d="scan'208";a="241208148"
 X-Amp-Result: SKIPPED(no attachment in message)
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Oct 2023 08:48:03 -0700
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Oct 2023 08:48:04 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 23 Oct 2023 08:47:49 -0700
+ 15.1.2507.21; Mon, 23 Oct 2023 08:48:02 -0700
 Received: from CHE-LT-I17164LX.microchip.com (10.10.85.11) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Mon, 23 Oct 2023 08:47:35 -0700
+ 15.1.2507.21 via Frontend Transport; Mon, 23 Oct 2023 08:47:50 -0700
 From:   Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
 To:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
         <pabeni@redhat.com>, <robh+dt@kernel.org>,
@@ -56,9 +56,9 @@ CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <Nicolas.Ferre@microchip.com>, <UNGLinuxDriver@microchip.com>,
         <Thorsten.Kummermehr@microchip.com>,
         Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Subject: [PATCH net-next v2 3/9] net: ethernet: oa_tc6: implement OA TC6 configuration function
-Date:   Mon, 23 Oct 2023 21:16:43 +0530
-Message-ID: <20231023154649.45931-4-Parthiban.Veerasooran@microchip.com>
+Subject: [PATCH net-next v2 4/9] dt-bindings: net: add OPEN Alliance 10BASE-T1x MAC-PHY Serial Interface
+Date:   Mon, 23 Oct 2023 21:16:44 +0530
+Message-ID: <20231023154649.45931-5-Parthiban.Veerasooran@microchip.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231023154649.45931-1-Parthiban.Veerasooran@microchip.com>
 References: <20231023154649.45931-1-Parthiban.Veerasooran@microchip.com>
@@ -75,198 +75,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Read STDCAP register for the MAC-PHY capability and check against the
-configuration parameters such as chunk payload, tx cut through and rx cut
-through to configure the MAC-PHY. It also configures the control command
-protected/unprotected mode.
-
-In cut through mode configuration the MAC-PHY doesn't buffer the incoming
-data. In tx case, it passes the data to the network if the configured cps
-of data available. In rx case, it passes the data to the SPI host if the
-configured cps of data available from the network. Also disables all the
-errors mask in the IMASK0 register to check for the errors.
+Add DT bindings OPEN Alliance 10BASE-T1x MACPHY Serial Interface
+parameters. These are generic properties that can apply to any 10BASE-T1x
+MAC-PHY which uses OPEN Alliance TC6 specification.
 
 Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
 ---
- drivers/net/ethernet/oa_tc6.c | 86 ++++++++++++++++++++++++++++++++++-
- include/linux/oa_tc6.h        | 24 +++++++++-
- 2 files changed, 107 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/net/oa-tc6.yaml       | 72 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 73 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/oa-tc6.yaml
 
-diff --git a/drivers/net/ethernet/oa_tc6.c b/drivers/net/ethernet/oa_tc6.c
-index e4457569135f..9a98d59f286d 100644
---- a/drivers/net/ethernet/oa_tc6.c
-+++ b/drivers/net/ethernet/oa_tc6.c
-@@ -8,6 +8,7 @@
- #include <linux/bitfield.h>
- #include <linux/interrupt.h>
- #include <linux/delay.h>
-+#include <linux/of.h>
- #include <linux/oa_tc6.h>
- 
- /* Opaque structure for MACPHY drivers */
-@@ -16,6 +17,7 @@ struct oa_tc6 {
- 	u8 *ctrl_tx_buf;
- 	u8 *ctrl_rx_buf;
- 	bool prote;
-+	u32 cps;
- };
- 
- static int oa_tc6_spi_transfer(struct spi_device *spi, u8 *ptx, u8 *prx, u16 len)
-@@ -198,6 +200,81 @@ static int oa_tc6_perform_ctrl(struct oa_tc6 *tc6, u32 addr, u32 val[], u8 len,
- 	return ret;
- }
- 
-+static int oa_tc6_configure(struct oa_tc6 *tc6)
-+{
-+	struct spi_device *spi = tc6->spi;
-+	struct device_node *oa_node;
-+	u32 regval;
-+	u8 mincps;
-+	bool ctc;
-+	int ret;
+diff --git a/Documentation/devicetree/bindings/net/oa-tc6.yaml b/Documentation/devicetree/bindings/net/oa-tc6.yaml
+new file mode 100644
+index 000000000000..9f442fa6cace
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/oa-tc6.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/oa-tc6.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	/* Read and configure the IMASK0 register for unmasking the interrupts */
-+	ret = oa_tc6_perform_ctrl(tc6, IMASK0, &regval, 1, false, false);
-+	if (ret)
-+		return ret;
++title: OPEN Alliance 10BASE-T1x MAC-PHY Specification Common Properties
 +
-+	regval &= ~(TXPEM & TXBOEM & TXBUEM & RXBOEM & LOFEM & HDREM);
++maintainers:
++  - Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
 +
-+	ret = oa_tc6_perform_ctrl(tc6, IMASK0, &regval, 1, true, false);
-+	if (ret)
-+		return ret;
++description:
++  These are generic properties that can apply to any 10BASE-T1x MAC-PHY
++  which uses OPEN Alliance TC6 specification.
 +
-+	/* Read STDCAP register to get the MAC-PHY standard capabilities */
-+	ret = oa_tc6_perform_ctrl(tc6, STDCAP, &regval, 1, false, false);
-+	if (ret)
-+		return ret;
++  10BASE-T1x MAC-PHY Serial Interface Specification can be found at:
++    https://opensig.org/about/specifications/
 +
-+	mincps = FIELD_GET(MINCPS, regval);
-+	ctc = (regval & CTC) ? true : false;
++properties:
++  $nodename:
++    pattern: "^oa-tc6(@.*)?"
 +
-+	regval = 0;
-+	oa_node = of_get_child_by_name(spi->dev.of_node, "oa-tc6");
-+	if (oa_node) {
-+		/* Read OA parameters from DT */
-+		if (of_property_present(oa_node, "oa-cps")) {
-+			ret = of_property_read_u32(oa_node, "oa-cps", &tc6->cps);
-+			if (ret < 0)
-+				return ret;
-+			/* Return error if the configured cps is less than the
-+			 * minimum cps supported by the MAC-PHY.
-+			 */
-+			if (tc6->cps < mincps)
-+				return -ENODEV;
-+		} else {
-+			tc6->cps = 64;
-+		}
-+		if (of_property_present(oa_node, "oa-txcte")) {
-+			/* Return error if the tx cut through mode is configured
-+			 * but it is not supported by MAC-PHY.
-+			 */
-+			if (ctc)
-+				regval |= TXCTE;
-+			else
-+				return -ENODEV;
-+		}
-+		if (of_property_present(oa_node, "oa-rxcte")) {
-+			/* Return error if the rx cut through mode is configured
-+			 * but it is not supported by MAC-PHY.
-+			 */
-+			if (ctc)
-+				regval |= RXCTE;
-+			else
-+				return -ENODEV;
-+		}
-+		if (of_property_present(oa_node, "oa-prote")) {
-+			regval |= PROTE;
-+			tc6->prote = true;
-+		}
-+	} else {
-+		tc6->cps = 64;
-+	}
++  "#address-cells":
++    const: 1
 +
-+	regval |= FIELD_PREP(CPS, ilog2(tc6->cps) / ilog2(2)) | SYNC;
++  "#size-cells":
++    const: 0
 +
-+	return oa_tc6_perform_ctrl(tc6, CONFIG0, &regval, 1, true, false);
-+}
++  oa-cps:
++    maxItems: 1
++    description:
++      Chunk Payload Size. Configures the data chunk payload size to 2^N,
++      where N is the value of this bitfield. The minimum possible data
++      chunk payload size is 8 bytes or N = 3. The default data chunk
++      payload size is 64 bytes, or N = 6. The minimum supported data chunk
++      payload size for this MAC-PHY device is indicated in the CPSMIN
++      field of the CAPABILITY register. Valid values for this parameter
++      are 8, 16, 32 and 64. All other values are reserved.
 +
- static int oa_tc6_sw_reset(struct oa_tc6 *tc6)
- {
- 	u32 regval;
-@@ -310,7 +387,7 @@ EXPORT_SYMBOL_GPL(oa_tc6_read_registers);
-  * Returns pointer reference to the oa_tc6 structure if all the memory
-  * allocation success otherwise NULL.
-  */
--struct oa_tc6 *oa_tc6_init(struct spi_device *spi, bool prote)
-+struct oa_tc6 *oa_tc6_init(struct spi_device *spi)
- {
- 	struct oa_tc6 *tc6;
- 
-@@ -327,7 +404,6 @@ struct oa_tc6 *oa_tc6_init(struct spi_device *spi, bool prote)
- 		return NULL;
- 
- 	tc6->spi = spi;
--	tc6->prote = prote;
- 
- 	/* Perform MAC-PHY software reset */
- 	if (oa_tc6_sw_reset(tc6)) {
-@@ -335,6 +411,12 @@ struct oa_tc6 *oa_tc6_init(struct spi_device *spi, bool prote)
- 		return NULL;
- 	}
- 
-+	/* Perform OA parameters and MAC-PHY configuration */
-+	if (oa_tc6_configure(tc6)) {
-+		dev_err(&spi->dev, "OA and MAC-PHY configuration failed\n");
-+		return NULL;
-+	}
++  oa-txcte:
++    maxItems: 1
++    description:
++      Transmit Cut-Through Enable. When supported by this MAC-PHY device,
++      this bit enables the cut-through mode of frame transfer through the
++      MAC-PHY device from the SPI host to the network.
 +
- 	return tc6;
- }
- EXPORT_SYMBOL_GPL(oa_tc6_init);
-diff --git a/include/linux/oa_tc6.h b/include/linux/oa_tc6.h
-index 8a838499da97..378636fd9ca8 100644
---- a/include/linux/oa_tc6.h
-+++ b/include/linux/oa_tc6.h
-@@ -22,15 +22,37 @@
- #define TC6_CTRL_BUF_SIZE	1032	/* Max ctrl buffer size for 128 regs */
- 
- /* Open Alliance TC6 Standard Control and Status Registers */
-+/* Standard Capabilities Register */
-+#define STDCAP			0x0002
-+#define CTC			BIT(7)	/* Cut-Through Capability */
-+#define MINCPS			GENMASK(2, 0)	/* Minimum supported cps */
++  oa-rxcte:
++    maxItems: 1
++    description:
++      Receive Cut-Through Enable. When supported by this MAC-PHY device,
++      this bit enables the cut-through mode of frame transfer through the
++      MAC-PHY device from the network to the SPI host.
 +
- /* Reset Control and Status Register */
- #define RESET			0x0003
- #define SWRESET			BIT(0)	/* Software Reset */
- 
-+/* Configuration Register #0 */
-+#define CONFIG0			0x0004
-+#define SYNC			BIT(15)	/* Configuration Synchronization */
-+#define TXCTE			BIT(9)	/* Tx cut-through enable */
-+#define RXCTE			BIT(8)	/* Rx cut-through enable */
-+#define PROTE			BIT(5)	/* Ctrl read/write Protection Enable */
-+#define CPS			GENMASK(2, 0)	/* Chunk Payload Size */
++  oa-prote:
++    maxItems: 1
++    description:
++      Control data read/write Protection Enable. When set, all control
++      data written to and read from the MAC-PHY will be transferred with
++      its complement for detection of bit errors.
 +
- /* Status Register #0 */
- #define STATUS0			0x0008
- #define RESETC			BIT(6)	/* Reset Complete */
- 
--struct oa_tc6 *oa_tc6_init(struct spi_device *spi, bool prote);
-+/* Interrupt Mask Register #0 */
-+#define IMASK0			0x000C
-+#define HDREM			BIT(5)	/* Header Error Mask */
-+#define LOFEM			BIT(4)	/* Loss of Framing Error Mask */
-+#define RXBOEM			BIT(3)	/* Rx Buffer Overflow Error Mask */
-+#define TXBUEM			BIT(2)	/* Tx Buffer Underflow Error Mask */
-+#define TXBOEM			BIT(1)	/* Tx Buffer Overflow Error Mask */
-+#define TXPEM			BIT(0)	/* Tx Protocol Error Mask */
++additionalProperties: true
 +
-+struct oa_tc6 *oa_tc6_init(struct spi_device *spi);
- int oa_tc6_write_register(struct oa_tc6 *tc6, u32 addr, u32 val);
- int oa_tc6_read_register(struct oa_tc6 *tc6, u32 addr, u32 *val);
- int oa_tc6_write_registers(struct oa_tc6 *tc6, u32 addr, u32 val[], u8 len);
++examples:
++  - |
++    oa-tc6 {
++        #address-cells = <1>;
++	#size-cells = <0>;
++	oa-cps = <64>;
++	oa-txcte;
++	oa-rxcte;
++	oa-prote;
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1c165026bbd4..9580be91f5e9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15975,6 +15975,7 @@ OPEN ALLIANCE 10BASE-T1S MACPHY SERIAL INTERFACE FRAMEWORK
+ M:	Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
+ L:	netdev@vger.kernel.org
+ S:	Maintained
++F:	Documentation/devicetree/bindings/net/oa-tc6.yaml
+ F:	Documentation/networking/oa-tc6-framework.rst
+ F:	drivers/include/linux/oa_tc6.h
+ F:	drivers/net/ethernet/oa_tc6.c
 -- 
 2.34.1
 
