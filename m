@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B817D3EFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31B27D3F03
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbjJWSTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 14:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
+        id S233279AbjJWSTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 14:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjJWSTW (ORCPT
+        with ESMTP id S231497AbjJWSTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 14:19:22 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B96093
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:19:20 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-581e92f615fso2156331eaf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1698085160; x=1698689960; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5yhnxnJ0EZnskjvE/QTX7vSmqovRzfbb8ia1T/C3p/w=;
-        b=NyvvKiLGkDipoUL+ktH5jSIOJQ7BjzCz/p4tcrLcYT25HeQx2iZzxeo+EQbcRNJWZv
-         1F5fqWQ507lJTujJPuPYnj2vEX/UsbaSYldUCBKL2+hQypZG6TMGxLtaMmBSTjTRGUQB
-         zRMDjZkMtVck9txkdna0lhf/Ve/EK1PFB6qZQEsZHdEMGujYXNju0BgEBw0CIW/xyZcr
-         KneBTqOvNWPsUW6NuxHMS10GZopv2hyKQMvRN1pc2rblJWY4NMf0K4zyCkLV4wtxSuxb
-         3eL4Iok9kMl917iJ+aMFbjerKOwrf112D5zLT2/Q5q/dxweZYq4WnKZnoTGMNREXDnFA
-         8cOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698085160; x=1698689960;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5yhnxnJ0EZnskjvE/QTX7vSmqovRzfbb8ia1T/C3p/w=;
-        b=s7XKRfHRDMsSOXZh+S0LPX8pT6RH7q3EuKXoWMXyIYbNkPN3TkDWGWvzNjmj9KEdSU
-         pv7Wcj/CHMwdwtRSb3YExwFuSfZJYzM5EmtQft6Nr4BgPjFn+FQHVZs9Qq67CRaUYJBQ
-         9V3ZQV2xDXB1hAD5yiLh/FoPjdqcSe+7b8Il5igUrHjYiun94vbl5UnowK6zayfl9RsX
-         dYrENjXo1g0t5u+/rSRwiyWqkUs9zEZjkDIxb4wnmld8VgXE31H+g0xSC9nSK7DJg3v7
-         dez+x+/gSw8CdVGTKwZObQg4kVdxt3l0cnh3d076qMOwtQRiJDzlbVwj9zGNhkhLsojM
-         XwGQ==
-X-Gm-Message-State: AOJu0YxcrRnnYj9J9+brCNNWbwjhBBqjSBAe+h1l1Ap9IRzeyiSv4UFq
-        FWF8h5YcAm7PmNJRirR8V//cFA==
-X-Google-Smtp-Source: AGHT+IGdDXmlG8NU9SWCpEcJVTGZGo8oiVXha6x2olGHUS9he9wLHOzuwKgBBQJwmlQ8KyiRplOMwA==
-X-Received: by 2002:a4a:e782:0:b0:56e:466c:7393 with SMTP id x2-20020a4ae782000000b0056e466c7393mr9638941oov.5.1698085159795;
-        Mon, 23 Oct 2023 11:19:19 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id y22-20020a4ade16000000b0057b38a94f38sm1591165oot.12.2023.10.23.11.19.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 11:19:19 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1quzWI-003jPw-9O;
-        Mon, 23 Oct 2023 15:19:18 -0300
-Date:   Mon, 23 Oct 2023 15:19:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     sharmaajay@linuxonhyperv.com
-Cc:     Long Li <longli@microsoft.com>, Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: Re: [Patch v7 2/5] RDMA/mana_ib: Register Mana IB  device with
- Management SW
-Message-ID: <20231023181918.GJ691768@ziepe.ca>
-References: <1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com>
- <1697494322-26814-3-git-send-email-sharmaajay@linuxonhyperv.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1697494322-26814-3-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        Mon, 23 Oct 2023 14:19:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87DB499;
+        Mon, 23 Oct 2023 11:19:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31B9CC433C9;
+        Mon, 23 Oct 2023 18:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698085184;
+        bh=oS4z+Mn7/hwPC7bpjt/NEir6aeKFv3WVk0pLVerqzFw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SQlOiKX/tPZPymq+Xg2Z6Xpi9AS+MXP05zyw3Ng7z7apeSdOL+E/U8V+gToVXJxti
+         j/QPFhH6ZQBPPqZIl25EZa2U2kAC/tXgHgbanJ5lFc5JDmjBQR5ZtyVMkgInHreYdh
+         6YgKJbSzOWIsTJcJ7muXYx42fAYolMzOjwJsQ6gR7aTOdidcMRlbMcflr/16pJkfov
+         IOQFMgTnKZF/BJtBziMQzskTpBowwToKN7gIbU+0uIeI27BthgK9ex3VPiWHa7WLuy
+         qyoaidWIivH061C6n04JcJR87Z8HbLyNlJ2XD2pPa3I9YDrCRymN/rUHmrroP4g15A
+         KbQKEFUgxoZwA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1quzWf-006wp4-Cd;
+        Mon, 23 Oct 2023 19:19:41 +0100
+Date:   Mon, 23 Oct 2023 19:19:39 +0100
+Message-ID: <86sf6142x0.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v8 00/13] KVM: arm64: PMU: Allow userspace to limit the number of PMCs on vCPU
+In-Reply-To: <CAJHc60yGk2Gfh-GRtOE94NS0K968iGTfn_3SSMYXxbgKaA_+Pg@mail.gmail.com>
+References: <20231020214053.2144305-1-rananta@google.com>
+        <86v8ax4hae.wl-maz@kernel.org>
+        <CAJHc60yGk2Gfh-GRtOE94NS0K968iGTfn_3SSMYXxbgKaA_+Pg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, alexandru.elisei@arm.com, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, yuzenghui@huawei.com, shahuang@redhat.com, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,69 +73,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 03:11:59PM -0700, sharmaajay@linuxonhyperv.com wrote:
+On Mon, 23 Oct 2023 18:58:19 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
+>=20
+> On Mon, Oct 23, 2023 at 6:09=E2=80=AFAM Marc Zyngier <maz@kernel.org> wro=
+te:
+> >
+> > On Fri, 20 Oct 2023 22:40:40 +0100,
+> > Raghavendra Rao Ananta <rananta@google.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > The goal of this series is to allow userspace to limit the number
+> > > of PMU event counters on the vCPU.  We need this to support migration
+> > > across systems that implement different numbers of counters.
+> >
+> > [...]
+> >
+> > I've gone through the initial patches, and stopped before the tests
+> > (which I usually can't be bothered to review anyway).
+> >
+> > The comments I have a relatively minor and could be applied as fixes
+> > on top if Oliver can be convinced to do so. Note that patch #4 has an
+> > attribution issue.
+> >
+> > > base-commit: 0a3a1665cbc59ee8d6326aa6c0b4a8d1cd67dda3
+> >
+> > maz@valley-girl:~/hot-poop/arm-platforms$ git describe 0a3a1665cbc59ee8=
+d6326aa6c0b4a8d1cd67dda3
+> > fatal: 0a3a1665cbc59ee8d6326aa6c0b4a8d1cd67dda3 is neither a commit nor=
+ blob
+> >
+> > Can you please make an effort to base your postings on a known, stable
+> > commit? A tagged -rc would be best. but certainly not a random commit.
+> >
+> I usually do base on a known -rc. But this series needed a couple of
+> series from kvmarm/next (mentioned in the original patch), and hence I
+> rebased on top of them.
 
-> diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-> index 083f27246ba8..ea4c8c8fc10d 100644
-> --- a/drivers/infiniband/hw/mana/device.c
-> +++ b/drivers/infiniband/hw/mana/device.c
-> @@ -78,22 +78,34 @@ static int mana_ib_probe(struct auxiliary_device *adev,
->  	mib_dev->ib_dev.num_comp_vectors = 1;
->  	mib_dev->ib_dev.dev.parent = mdev->gdma_context->dev;
->  
-> -	ret = ib_register_device(&mib_dev->ib_dev, "mana_%d",
-> -				 mdev->gdma_context->dev);
-> +	ret = mana_gd_register_device(&mib_dev->gc->mana_ib);
->  	if (ret) {
-> -		ib_dealloc_device(&mib_dev->ib_dev);
-> -		return ret;
-> +		ibdev_err(&mib_dev->ib_dev, "Failed to register device, ret %d",
-> +			  ret);
-> +		goto free_ib_device;
->  	}
->  
-> +	ret = ib_register_device(&mib_dev->ib_dev, "mana_%d",
-> +				 mdev->gdma_context->dev);
-> +	if (ret)
-> +		goto deregister_device;
-> +
->  	dev_set_drvdata(&adev->dev, mib_dev);
->  
->  	return 0;
-> +
-> +deregister_device:
-> +	mana_gd_deregister_device(&mib_dev->gc->mana_ib);
-> +free_ib_device:
-> +	ib_dealloc_device(&mib_dev->ib_dev);
-> +	return ret;
->  }
->  
->  static void mana_ib_remove(struct auxiliary_device *adev)
->  {
->  	struct mana_ib_dev *mib_dev = dev_get_drvdata(&adev->dev);
->  
-> +	mana_gd_deregister_device(&mib_dev->gc->mana_ib);
->  	ib_unregister_device(&mib_dev->ib_dev);
->  	ib_dealloc_device(&mib_dev->ib_dev);
->  }
+Well, that commit has since disappeared, as git cannot find it (as
+demonstrated above). Which is why I insist on a public tag as a base,
+as everything else is completely volatile.
 
-That's definitely in the wrong order
+> How do you suggest I handle this in the future? Rebase to a known
+> -rc on mainline, apply the required series, and then my series on
+> top?
 
-Are you shure these things should just be part of
-ops->enable_driver/dealloc_driver?
+No. You base your own series on an -rc (ideally, -rc3). If there is a
+conflict with another series, it is our job (Oliver and I) to fix it
+(bonus points if you indicate a resolution for the conflict in the
+cover letter).
 
-> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-> index 189e774cdab6..2c4e3c496644 100644
-> --- a/drivers/infiniband/hw/mana/main.c
-> +++ b/drivers/infiniband/hw/mana/main.c
-> @@ -8,7 +8,7 @@
->  void mana_ib_uncfg_vport(struct mana_ib_dev *mib_dev, struct mana_ib_pd *pd,
->  			 u32 port)
->  {
-> -	struct gdma_dev *gd = mib_dev->gdma_dev;
-> +	struct gdma_dev *gd = &mib_dev->gc->mana;
+If there is a hard dependency (something that would actively prevent
+your series from working at all), you cherry-pick the minimal set of
+patches that makes your own series functional as a *prefix*, and post
+the whole thing, including the patches you depend on. Oliver and I
+will make sure the common prefix is dealt with without duplication.
 
-What is this stuff doing in this patch? Make another patch if you want
-to remove gdma_dev
+And for what it is worth, this series directly applies on v6.6-rc3
+without a conflict.
 
-Jason
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
