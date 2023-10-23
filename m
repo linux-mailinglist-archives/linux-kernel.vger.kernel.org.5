@@ -2,130 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5997D2885
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 04:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770B37D2880
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 04:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233060AbjJWC2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 22:28:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35430 "EHLO
+        id S229486AbjJWC1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 22:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjJWC2N (ORCPT
+        with ESMTP id S229468AbjJWC1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 22:28:13 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA28E6;
-        Sun, 22 Oct 2023 19:28:08 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Vud6gWk_1698028084;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vud6gWk_1698028084)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Oct 2023 10:28:05 +0800
-Message-ID: <1698028017.8052797-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH] virtio_ring: add an error code check in virtqueue_resize
-Date:   Mon, 23 Oct 2023 10:26:57 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Su Hui <suhui@nfschina.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20231020092320.209234-1-suhui@nfschina.com>
- <20231020053047-mutt-send-email-mst@kernel.org>
- <1697794601.5857713-2-xuanzhuo@linux.alibaba.com>
- <20231020054140-mutt-send-email-mst@kernel.org>
- <1697795422.0986886-1-xuanzhuo@linux.alibaba.com>
- <20231020055943-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20231020055943-mutt-send-email-mst@kernel.org>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Sun, 22 Oct 2023 22:27:17 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DF719E;
+        Sun, 22 Oct 2023 19:27:15 -0700 (PDT)
+Received: from localhost (mdns.lwn.net [45.79.72.68])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 2086A60A;
+        Mon, 23 Oct 2023 02:27:15 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 2086A60A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1698028035; bh=OUdMgOE8lLM8fr3KPSltNii1Sk8sBVdYUxhbf8Cjlv0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=IiygKQoC/9AFrvAboKSaRrVCUJWs9GlXseNm1SStuxLU8YOaC/Kl88DrsuXUUV+p7
+         DiGdMAF7Mqk4ZX9xKdH8UpimjbY14Azy93CAFBabJHJKRGw0A7QF6DIWUUk+tSa8P4
+         KwWWlzewzlwvMOi/MKq9sTYvDzS1kmV0kY7Gogalz8Zy4pCvnLvbnxNw1HvuII+FIw
+         78bZlLeerANO16MOKOXbFr81tpufb+rhwg4XJ8YLoQxHcmDDlukg5S+LZ6qg0zoGbU
+         3RiWUbkkP97vfN9GWdW8I23TI/DCVFGSJDWfQhes66soak+w88g4v7EHsKscd4wuAo
+         tI1TsfZBDwDmw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Min-Hua Chen <minhuadotchen@gmail.com>,
+        Hu Haowen <src.res.211@gmail.com>
+Cc:     Min-Hua Chen <minhuadotchen@gmail.com>,
+        kernel test robot <lkp@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: sparse: add SPDX-License-Identifier
+In-Reply-To: <20231011233757.181652-1-minhuadotchen@gmail.com>
+References: <20231011233757.181652-1-minhuadotchen@gmail.com>
+Date:   Sun, 22 Oct 2023 20:27:14 -0600
+Message-ID: <878r7ukr99.fsf@meer.lwn.net>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 06:08:06 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Fri, Oct 20, 2023 at 05:50:22PM +0800, Xuan Zhuo wrote:
-> > On Fri, 20 Oct 2023 05:42:14 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > > On Fri, Oct 20, 2023 at 05:36:41PM +0800, Xuan Zhuo wrote:
-> > > > On Fri, 20 Oct 2023 05:34:32 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > > > > On Fri, Oct 20, 2023 at 05:23:21PM +0800, Su Hui wrote:
-> > > > > > virtqueue_resize_packed() or virtqueue_resize_split() can return
-> > > > > > error code if failed, so add a check for this.
-> > > > > >
-> > > > > > Signed-off-by: Su Hui <suhui@nfschina.com>
-> > > > > > ---
-> > > > > >
-> > > > > > I'm not sure that return directly is right or not,
-> > > > > > maybe there are some process should do before return.
-> > > > >
-> > > > > yes - presizely what virtqueue_enable_after_reset does.
-> > > > >
-> > > > > Error handling in virtqueue_enable_after_reset is really weird BTW.
-> > > > > For some reason it overrides the error code returned.
-> > > > >
-> > > > >
-> > > > >
-> > > > >
-> > > > >
-> > > > > >  drivers/virtio/virtio_ring.c | 3 +++
-> > > > > >  1 file changed, 3 insertions(+)
-> > > > > >
-> > > > > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > > > > > index 51d8f3299c10..cf662c3a755b 100644
-> > > > > > --- a/drivers/virtio/virtio_ring.c
-> > > > > > +++ b/drivers/virtio/virtio_ring.c
-> > > > > > @@ -2759,6 +2759,9 @@ int virtqueue_resize(struct virtqueue *_vq, u32 num,
-> > > > > >  	else
-> > > > > >  		err = virtqueue_resize_split(_vq, num);
-> > > > > >
-> > > > > > +	if (err)
-> > > > > > +		return err;
-> > > > > > +
-> > > > > >  	return virtqueue_enable_after_reset(_vq);
-> > > > >
-> > > > > So I think it should be something like:
-> > > > >
-> > > > > 	int err_reset = virtqueue_enable_after_reset(_vq);
-> > > > > 	BUG_ON(err_reset);
-> > > > >
-> > > > > 	return err;
-> > > > >
-> > > >
-> > > > How about WARN and vq->broken?
-> > > >
-> > > > Thanks.
-> > >
-> > > Well, what are the cases where it can happen practically?
-> >
-> > Device error. Such as vp_active_vq()
-> >
-> > Thanks.
+Min-Hua Chen <minhuadotchen@gmail.com> writes:
+
+> Add SPDX-License-Identifier to fix the checkpatch warning:
 >
-> Hmm interesting. OK. But do callers know to recover?
-
-
-No.
-
-So I think WARN + broken is suitable.
-
-Thanks.
-
-
+> WARNING:SPDX_LICENSE_TAG: Missing or malformed SPDX-License-Identifier tag in line 1
+> \#26: FILE: Documentation/translations/zh_TW/dev-tools/index.rst:1:
+> +.. include:: ../disclaimer-zh_TW.rst
 >
-> >
-> > >
-> > > >
-> > > > >
-> > > > >
-> > > > > >  }
-> > > > > >  EXPORT_SYMBOL_GPL(virtqueue_resize);
-> > > > > > --
-> > > > > > 2.30.2
-> > > > >
-> > >
+> Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202310110859.tumJoXFl-lkp@intel.com/
+> ---
+>  Documentation/translations/zh_TW/dev-tools/index.rst | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> _______________________________________________
-> Virtualization mailing list
-> Virtualization@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+> diff --git a/Documentation/translations/zh_TW/dev-tools/index.rst b/Documentation/translations/zh_TW/dev-tools/index.rst
+> index 8f101db5a07f..e2e18a72ef94 100644
+> --- a/Documentation/translations/zh_TW/dev-tools/index.rst
+> +++ b/Documentation/translations/zh_TW/dev-tools/index.rst
+> @@ -1,3 +1,5 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+>  .. include:: ../disclaimer-zh_TW.rst
+
+Applied, thanks.
+
+jon
