@@ -2,184 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DB17D2907
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB067D2920
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjJWD1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 23:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
+        id S233293AbjJWDdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 23:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjJWD1a (ORCPT
+        with ESMTP id S229511AbjJWDdt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 23:27:30 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2048.outbound.protection.outlook.com [40.107.21.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0F2188;
-        Sun, 22 Oct 2023 20:27:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bwBGPPWHFrd1PYWWezWmg7IA9BvGllTCt5ja9PyFiE9MhMoa6I5dB1Fiw6uDri4mK1s3M6zMoNg2OOQ1T6evvTZqY99JaiCKiOLSr1UtSpjgW3n1ZBuhzx1GMiZgBidzXsAWZCmv5sWqOd1AzGScZcyVip1WuDG823NR44EG/X7ed6upGCvgPfI4xQjpwnibIfrqqCSZI6Htizci1V4TNRkeOJ4DsSQuPf/sLLiH3cu4atjnyIuDMrFEtwMzPSv1HrE0UdBnx9zj2ur8IJY8tcRmTwuYjc5KrOE3D9KZJGtxSxlMFeGe7jYpPDXKt7dD8csPuEi1FNejJzlf93t9Rw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0ixjEEwDUzfzkTquyh05Qk7boLCEWRzfDUAMysP81u8=;
- b=YGBdmVth7t1Heq3JQzTZBmXipJ1bQQh1aXCj7pv1UjY8p14suTBkw2OL6Xqzrry4UzH00810l6SIQF1dWdtNm48hX0NDOc7BEonWTabX3lLWMJjM2WE8Yx85jau5pTvXZpXIcQrPDkksNyDTQ3NODO4Pt7uCaU1tPUFb7j9TTEKrvWADz5ygfvLJwfK4zmVjmZSv2fF3GNFi9mnAVSXxybbqgl0aEcvt1x5Qpymh25ZsilIaF/5N6ZNqrDubRqGP3bSFYFwnT6gG2NYzRdT2TJ8YG76985QAgadOEX31hsYjmpmF/WUKzZZigrMOVJiUGkTxr46meZ2Ev3NPzddHiw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0ixjEEwDUzfzkTquyh05Qk7boLCEWRzfDUAMysP81u8=;
- b=hYla1npDid7ZbsJBqUkGwxoyPHG9LjayWjyrGjx3itX+vrEDZO+moUhjVs91oBBYY00SNNwE32h38F2ktpf1xUC2P+sUrPi3xUBzMB5rmQ8ls9x7eOnIIVPw1mUD8GII9PazbraFekJKHGlMimb5wiUw788kZ3v6ta9PW90AF54=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by PR3PR04MB7242.eurprd04.prod.outlook.com (2603:10a6:102:91::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.14; Mon, 23 Oct
- 2023 03:27:23 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::50bf:dcd6:885e:32c4]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::50bf:dcd6:885e:32c4%4]) with mapi id 15.20.6933.011; Mon, 23 Oct 2023
- 03:27:23 +0000
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        sboyd@kernel.org, abelvesa@kernel.org
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V2 1/2] dt-bindings: clock: support i.MX93 Analog clock module
-Date:   Mon, 23 Oct 2023 11:31:43 +0800
-Message-Id: <20231023033144.3694131-1-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.37.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2P153CA0003.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::20) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+        Sun, 22 Oct 2023 23:33:49 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01119E9;
+        Sun, 22 Oct 2023 20:33:43 -0700 (PDT)
+Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SDLKH69mLzNp1s;
+        Mon, 23 Oct 2023 11:29:39 +0800 (CST)
+Received: from ubuntu2204.huawei.com (10.67.174.22) by
+ kwepemm000003.china.huawei.com (7.193.23.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 23 Oct 2023 11:33:41 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>, <irogers@google.com>,
+        <adrian.hunter@intel.com>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH] perf evsel: Rename evsel__increase_rlimit to rlimit__increase_nofile
+Date:   Mon, 23 Oct 2023 03:31:44 +0000
+Message-ID: <20231023033144.1011896-1-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|PR3PR04MB7242:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9dd9d9f9-76fb-4e1a-4763-08dbd377f8fc
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AmO6oZaTCenuXpSIR4sqmoQ+V3Cpy1e4e7iH11QZq44N0ME3LQR/yYqkQqa6hxkzIcAO6qh2mPTLWS9R3sE4Q9P7ESYm8m0wdpkke3FsBzyv3HnO2VIrWR8G3F8EfP6D/34DmnY0PSDLMX6xOPcgEfaB6INZJZatMmi+rFsdrjoMBTpi6R68vz/2RR542dK+DnxS6U6ih1qhNAIM7UouwpGabsMrnC/QAiwJ4jWq7cxhsR3oYdTrl9oWKLN26swu5OvoNHb7Y05ExB6UydYTdi5rsyZMMiGzkI4yF2Rnawn7BMJCEsULFTZRDuD/zEqiJfW1zzltNDu6kBInvbaigR8du/xvcbnXeRF4dbZE71oc0bXfvIu8cIon9kRe4Av8TPhD+haOEcq+9w77wdSJsZbx2WQ6p1U+Zntp4zuKwBbE68Iv3RPwkeu3P7mGJTz4r+z6XvBy2M4eqzQayPieVwGbwSOFAP6glBW6VkUxkvPfrEpDFQao3JOZQDaFp1qXGxuS0TIha+bV90W4YlyZvYzC2euG4ADcTg4Yb7oUvzGWNtzinte4jIDferrPVP/SpdCGKw7vPhkqZDhepRSfVwq+a8NRhRb6IUXDQs5sBEo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(39860400002)(366004)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(2906002)(38100700002)(316002)(66946007)(66556008)(66476007)(2616005)(26005)(1076003)(478600001)(6506007)(6666004)(6512007)(52116002)(966005)(6486002)(83380400001)(41300700001)(5660300002)(7416002)(86362001)(8936002)(8676002)(4326008)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WEDiWluUQ+SCQfXuKqxSNHp3HAQzsnc0Ng5oWf5fWkauYhLBjAgTzWMD3UgG?=
- =?us-ascii?Q?AvBHCbMeIJFmDPNV9xhwNGJEyO8w/k/l5juaFX0tIibQFgGuotsLl0cDt4Lf?=
- =?us-ascii?Q?IBUmlojJrGN41p9l6D/srLj6BIPxIjraaj5bAR5hDQZuyfqH66Y1XsTaRHII?=
- =?us-ascii?Q?jwjqL+3kcP5VAAUV5kS5ib312H3HjYdSMnEWTHUhWoOzuIDw4D/ZW2ZDRTI9?=
- =?us-ascii?Q?S+4x1+F71LcvCWm/540yyQq1ShLioKcEiFxTxwsCV/OJKYq37RN2mspfvg0I?=
- =?us-ascii?Q?hPzu13/Pjz0MftbhoC7zgTtPQRlex3JLC5yYHhq16B2tWzn0DTv7PfLDNjjZ?=
- =?us-ascii?Q?7QEukgzct/Jg0tZgtJwZ+3J+hbqiw9INKDRWdpXEL7IDfC6QyMpQqfBOaakJ?=
- =?us-ascii?Q?xUHVOYIBuLv/R0Ds02FCvbxJwFfVdS2+4XZYwS1SxXuz+mxyMkzJTb2uHZmm?=
- =?us-ascii?Q?gwOKVZk8qf72k3Oyb+j6uhMMUCBZVNhjPhoziUgp89jl7/c+cy9O9zm+V/Zn?=
- =?us-ascii?Q?wfpg14ECoU1MLVwRcWVyl6QcmK5pOvPoeWNEw2qzeTefVEFZ35LckeqNNZwW?=
- =?us-ascii?Q?mYbjwpKmNu1EWSB95RpFw2qYo4zbBj6PpBgMislsEkS2YMquMAn7eS8l83Qs?=
- =?us-ascii?Q?uk3bGFr78ir4oEw7PtkHCFqSZm02jILpekigm/khQVnFfyJYsJ2TZwm2tX/l?=
- =?us-ascii?Q?8dZ835bHq38anOWTIr7ME0SjDXPz2wEy7FqN6yBD4er0nS0JOuPY2kQyl6DY?=
- =?us-ascii?Q?i/+pd6tGUHDF/IRFQ7B7d1BI86XIKt5gfpanC5nzQf9u1B/clxUWyE+IjWE2?=
- =?us-ascii?Q?x//Lt20dcl/soaFpd56a8g1aA91TA2PLJvwhzxO5oqIpPnc2zRbAhcAUbOWw?=
- =?us-ascii?Q?fbBGP0FuksAqCAx5jvKcDnxqTVjeozoTrVC7luiT2f4bdORd0a82I6+WrP4/?=
- =?us-ascii?Q?vrAl5EMk0wQm/Ed4UvszCoOeTKKrAyg6xPkKjmWknhEIav3lpe+fJyaA3t3f?=
- =?us-ascii?Q?YQcYX63C549JgYqvaKSS/Boxa8uI0FYqL/wG8LOWt8B+n8nF63bNJ7wS9Eq8?=
- =?us-ascii?Q?5Ie4CSJf0C7AkFBi+PgVTvtI2rmGaDBiVns5ntDipJEWKqF9HyN4uXb4vBez?=
- =?us-ascii?Q?Py6qXIY4Xr/59QfOlrD2VKIrR5BrOSUzSx7mHmUaYzLK/xZC7xtLSo+fkcun?=
- =?us-ascii?Q?/SgndnfgjufpByekfw1C24ZEUzS/wbNfnOGQ9b4VN1KCYENThWoM9GQkbQgT?=
- =?us-ascii?Q?HwIMq0T8gMaw7W+NaeTT2epeRdbvRsqqPHxvhTmIjzAt9ndQSgCIInlgxU94?=
- =?us-ascii?Q?+Llx6kItF1GiCysPwLQPJCx84Z04pdNWqV8AxJCodgM2SIXo5LTQzoBEf+12?=
- =?us-ascii?Q?HlFtoMHldhNSrUMEIDJcasTbmAtg1OjMqgSNJttE4Cfyu+cv3PoowG3lsfT5?=
- =?us-ascii?Q?NM9aTqRhnl+fHuVH1bvB/bdu3axdDqqXV/vRcSRY97DUvenpLvsZtWyuVxZZ?=
- =?us-ascii?Q?2Vsjq815lcOtDNSo3Nj87JM3BC14uJgyRWwFyWa2Ar4rYt796B+U5cB6qkOc?=
- =?us-ascii?Q?6ltjWWCSv4CM9ArgVN7z4v4OV0LcH9zKPQ1/FTyL?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9dd9d9f9-76fb-4e1a-4763-08dbd377f8fc
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 03:27:23.7689
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A6peImR9L7z4orl+vYDE/TYDg5VJAHB/+O/e4r0d6maAu2CdEI2YSTBh+/+TPBOiyNtvLZ+ng4N8PDCL2hAj3Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7242
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.22]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000003.china.huawei.com (7.193.23.66)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+evsel__increase_rlimit() helper does nothing with evsel, and description
+of the functionality is inaccurate, rename it and move to util/rlimit.c.
 
-Support i.MX93 Analog module which produces PLL and OSC for Clock
-Controller Module
+By the way, fix a checkppatch warning about misplaced license tag:
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
+  WARNING: Misplaced SPDX-License-Identifier tag - use line 1 instead
+  #160: FILE: tools/perf/util/rlimit.h:3:
+  /* SPDX-License-Identifier: LGPL-2.1 */
+
+No functional change.
+
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
+ tools/perf/util/data.c   |  4 ++--
+ tools/perf/util/evsel.c  | 30 ++----------------------------
+ tools/perf/util/evsel.h  |  3 ---
+ tools/perf/util/rlimit.c | 28 ++++++++++++++++++++++++++++
+ tools/perf/util/rlimit.h | 11 ++++++++++-
+ 5 files changed, 42 insertions(+), 34 deletions(-)
 
-V2:
- Update subject and commit, rename file to fsl,imx93-analog.yaml
-
- .../bindings/clock/fsl,imx93-analog.yaml      | 42 +++++++++++++++++++
- 1 file changed, 42 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/fsl,imx93-analog.yaml
-
-diff --git a/Documentation/devicetree/bindings/clock/fsl,imx93-analog.yaml b/Documentation/devicetree/bindings/clock/fsl,imx93-analog.yaml
-new file mode 100644
-index 000000000000..c026639fefa3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/fsl,imx93-analog.yaml
-@@ -0,0 +1,42 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/fsl,imx93-analog.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+index 098f9e3bb2e7..c29d8a382b19 100644
+--- a/tools/perf/util/data.c
++++ b/tools/perf/util/data.c
+@@ -17,7 +17,7 @@
+ #include "util.h" // rm_rf_perf_data()
+ #include "debug.h"
+ #include "header.h"
+-#include "evsel.h"
++#include "rlimit.h"
+ #include <internal/lib.h>
+ 
+ static void close_dir(struct perf_data_file *files, int nr)
+@@ -64,7 +64,7 @@ int perf_data__create_dir(struct perf_data *data, int nr)
+ 			 * perf record needs at least 6 fds per CPU.
+ 			 * When we run out of them try to increase the limits.
+ 			 */
+-			if (errno == EMFILE && evsel__increase_rlimit(&set_rlimit))
++			if (errno == EMFILE && rlimit__increase_nofile(&set_rlimit))
+ 				goto retry_open;
+ 
+ 			ret = -errno;
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index d5363d23f5d3..72a5dfc38d38 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -49,6 +49,7 @@
+ #include "off_cpu.h"
+ #include "pmu.h"
+ #include "pmus.h"
++#include "rlimit.h"
+ #include "../perf-sys.h"
+ #include "util/parse-branch-options.h"
+ #include "util/bpf-filter.h"
+@@ -1989,33 +1990,6 @@ bool evsel__detect_missing_features(struct evsel *evsel)
+ 	}
+ }
+ 
+-bool evsel__increase_rlimit(enum rlimit_action *set_rlimit)
+-{
+-	int old_errno;
+-	struct rlimit l;
+-
+-	if (*set_rlimit < INCREASED_MAX) {
+-		old_errno = errno;
+-
+-		if (getrlimit(RLIMIT_NOFILE, &l) == 0) {
+-			if (*set_rlimit == NO_CHANGE) {
+-				l.rlim_cur = l.rlim_max;
+-			} else {
+-				l.rlim_cur = l.rlim_max + 1000;
+-				l.rlim_max = l.rlim_cur;
+-			}
+-			if (setrlimit(RLIMIT_NOFILE, &l) == 0) {
+-				(*set_rlimit) += 1;
+-				errno = old_errno;
+-				return true;
+-			}
+-		}
+-		errno = old_errno;
+-	}
+-
+-	return false;
+-}
+-
+ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+ 		struct perf_thread_map *threads,
+ 		int start_cpu_map_idx, int end_cpu_map_idx)
+@@ -2143,7 +2117,7 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+ 	 * perf stat needs between 5 and 22 fds per CPU. When we run out
+ 	 * of them try to increase the limits.
+ 	 */
+-	if (err == -EMFILE && evsel__increase_rlimit(&set_rlimit))
++	if (err == -EMFILE && rlimit__increase_nofile(&set_rlimit))
+ 		goto retry_open;
+ 
+ 	if (err != -EINVAL || idx > 0 || thread > 0)
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index 815be2491938..d791316a1792 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -330,9 +330,6 @@ int evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
+ 		struct perf_thread_map *threads);
+ bool evsel__detect_missing_features(struct evsel *evsel);
+ 
+-enum rlimit_action { NO_CHANGE, SET_TO_MAX, INCREASED_MAX };
+-bool evsel__increase_rlimit(enum rlimit_action *set_rlimit);
+-
+ bool evsel__precise_ip_fallback(struct evsel *evsel);
+ 
+ struct perf_sample;
+diff --git a/tools/perf/util/rlimit.c b/tools/perf/util/rlimit.c
+index 13521d392a22..f857405fe1aa 100644
+--- a/tools/perf/util/rlimit.c
++++ b/tools/perf/util/rlimit.c
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: LGPL-2.1 */
+ 
++#include <errno.h>
+ #include "util/debug.h"
+ #include "util/rlimit.h"
+ #include <sys/time.h>
+@@ -27,3 +28,30 @@ void rlimit__bump_memlock(void)
+ 		}
+ 	}
+ }
 +
-+title: NXP i.MX93 Analog Clock Module
++bool rlimit__increase_nofile(enum rlimit_action *set_rlimit)
++{
++	int old_errno;
++	struct rlimit l;
 +
-+maintainers:
-+  - Peng Fan <peng.fan@nxp.com>
++	if (*set_rlimit < INCREASED_MAX) {
++		old_errno = errno;
 +
-+description: |
-+  NXP i.MX93 Analog module which produces PLL and OSC to Clock Controller
-+  Module.
++		if (getrlimit(RLIMIT_NOFILE, &l) == 0) {
++			if (*set_rlimit == NO_CHANGE) {
++				l.rlim_cur = l.rlim_max;
++			} else {
++				l.rlim_cur = l.rlim_max + 1000;
++				l.rlim_max = l.rlim_cur;
++			}
++			if (setrlimit(RLIMIT_NOFILE, &l) == 0) {
++				(*set_rlimit) += 1;
++				errno = old_errno;
++				return true;
++			}
++		}
++		errno = old_errno;
++	}
 +
-+properties:
-+  compatible:
-+    items:
-+      - const: fsl,imx93-anatop
++	return false;
++}
+diff --git a/tools/perf/util/rlimit.h b/tools/perf/util/rlimit.h
+index 9f59d8e710a3..19050d7fb9d7 100644
+--- a/tools/perf/util/rlimit.h
++++ b/tools/perf/util/rlimit.h
+@@ -1,6 +1,15 @@
++/* SPDX-License-Identifier: LGPL-2.1 */
+ #ifndef __PERF_RLIMIT_H_
+ #define __PERF_RLIMIT_H_
+-/* SPDX-License-Identifier: LGPL-2.1 */
 +
-+  reg:
-+    maxItems: 1
++enum rlimit_action {
++	NO_CHANGE,
++	SET_TO_MAX,
++	INCREASED_MAX
++};
+ 
+ void rlimit__bump_memlock(void);
 +
-+  '#clock-cells':
-+    const: 1
++bool rlimit__increase_nofile(enum rlimit_action *set_rlimit);
 +
-+required:
-+  - compatible
-+  - reg
-+  - '#clock-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    clock-controller@44480000 {
-+        compatible = "fsl,imx93-anatop";
-+        reg = <0x44480000 0x2000>;
-+        #clock-cells = <1>;
-+    };
-+
-+...
+ #endif // __PERF_RLIMIT_H_
 -- 
-2.37.1
+2.34.1
 
