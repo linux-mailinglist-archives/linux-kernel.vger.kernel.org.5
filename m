@@ -2,117 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0611E7D2ECA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCF17D2ED2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233188AbjJWJok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48180 "EHLO
+        id S229927AbjJWJtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbjJWJoI (ORCPT
+        with ESMTP id S229613AbjJWJte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:44:08 -0400
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2040.outbound.protection.outlook.com [40.107.15.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0D9C2;
-        Mon, 23 Oct 2023 02:44:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aMF3bpmt/hjwUQw2xiewemalXwL/UXWSYQrK94ZYPwdMYqKTt7pW+V6CB0UR3cDEyhV7O+rQHVmpJgH1GvBzP0q2y0SjT1FXc+pf5NUY3qpliXn/RZIKc5skQzU83/R03fhfbxpzf31IYQ0F8cvYVzNwt3kmOPoyIHi9IG7xwapd9ZxWc4P1wxL4tEuVRIXk+Mu0xLK+hSRXg93hr+C9N+qCKUuUrZ5i8OKsH2w5RSRIQvGt8Xcu8kg1YRDQNHXksXwXz1+qized5iSHIRmTeHmLljwY70N/5eKGBfaaGonPMB8dMG6wVuhHC9ehNMWvJ8jX1CZEG+YEg2GDkd6S6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=syLR/2p73jSA0O6ZYfKDQwgCZJxVgqgjijNib+mZFqU=;
- b=N5U4iP6hUwYydGcD016Z7iolaEJzsu/mYWcTxq9M8S+zbib4vfHEXflZs4h+I6Ek1eL4VHCO3MZLHP8h8yMsyi+jeSvFnZJX4BQwhJgQnAt0v4afWfHoSJ4uvdkCXEdViuKQ9zeNCrBwnx6+hP5qLP+LuC2p8h207J5XpUbwpdCc1S8AmuYGJ3yxWZ2Pss7YWiDEl7lvzG76xfRgTUnFy1QBERwEFKH57COFeWtT1eci7Mh4lbWN4P25P+pvMV2k390kQO4XhaKPTTLK8ok5AFcrSN3an1yIYXMIy5ZcSMj77pg7pINxtEpv+FAzI8jVrbrFzbRwuaJuo/632HhP2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=syLR/2p73jSA0O6ZYfKDQwgCZJxVgqgjijNib+mZFqU=;
- b=mRlbMiffjHXQs8ga2wIqEC6Uy3FI0AM8olGb+Y/CPuFpjpsHUYL0OGBGZhvx0S15ApQVzrFYk2WLZ1/mioJ3YxcC4ONWIIld1ECz3XDFkkWTsBzWTLuiOtJTgykftvyLd1Mwsz+uNg4a47HotRoH3fOGFz1+NsXDPlR1pdf+Dco=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
- by DB9PR04MB10011.eurprd04.prod.outlook.com (2603:10a6:10:4c4::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.22; Mon, 23 Oct
- 2023 09:43:54 +0000
-Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
- ([fe80::b1fa:fd23:8cc2:f5ee]) by AM9PR04MB8954.eurprd04.prod.outlook.com
- ([fe80::b1fa:fd23:8cc2:f5ee%6]) with mapi id 15.20.6933.011; Mon, 23 Oct 2023
- 09:43:54 +0000
-From:   "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-To:     sd@queasysnail.net, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, andrew@lunn.ch,
-        hkallweit1@gmail.com, linux@armlinux.org.uk,
-        richardcochran@gmail.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        sebastian.tobuschat@oss.nxp.com,
-        "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Subject: [PATCH net-next v8 7/7] net: phy: nxp-c45-tja11xx: implement mdo_insert_tx_tag
-Date:   Mon, 23 Oct 2023 12:43:27 +0300
-Message-Id: <20231023094327.565297-8-radu-nicolae.pirea@oss.nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231023094327.565297-1-radu-nicolae.pirea@oss.nxp.com>
-References: <20231023094327.565297-1-radu-nicolae.pirea@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR10CA0079.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:15::32) To AM9PR04MB8954.eurprd04.prod.outlook.com
- (2603:10a6:20b:409::7)
+        Mon, 23 Oct 2023 05:49:34 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D99DF;
+        Mon, 23 Oct 2023 02:49:32 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39N7RcDM013265;
+        Mon, 23 Oct 2023 09:49:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=uAis2Z2YJ8m6fp9s7ZYGV9g504DoRV6kbL9/qC8m2YI=;
+ b=lM23yY2D71+XL49fhDw4F/3Pwr4lXYOJvtHuquXN5hGDqbKn9Hon1otDxLU5i75/FnW2
+ NhzbO/cyGqPOGvHK8GaknI06j1OmQCmM1yRBGyj9e5NHEpSjI1yrtToc+QWB/J1gcyfH
+ 51cWuZ052mN5QGWbmuj/y5dPRcB6BgsJ6aiFipqFKOtbtx0Rof9TJ7dtw9kOtTPix4Wk
+ fgLkkOzKb2VqJ37mydwV1aIFvZSLHDow/OgZBgf/39ruiEbThsE57vUg2+uGTk8Ry6P5
+ 6UIfekXM/aGtuIHttI0UGG5EdWDtF8eNqLgW7Ld63ebINjYf24zvk3nd19FgrdwothWW +w== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv6r2bnm4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 09:49:20 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39N9nJCt012461
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 09:49:19 GMT
+Received: from [10.239.133.73] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 23 Oct
+ 2023 02:49:14 -0700
+Message-ID: <966a8ad0-d79b-7aca-e492-ff27394b3c3c@quicinc.com>
+Date:   Mon, 23 Oct 2023 17:49:11 +0800
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|DB9PR04MB10011:EE_
-X-MS-Office365-Filtering-Correlation-Id: b4438ac4-2847-4f88-3973-08dbd3ac91fa
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8zaUGqm1QbkeFhmCFeJKEDohVgE+h28SBdTKtI8zze0TrC0Im5r0X8JYxl/3AWUaDOgPeBY/5Q2HZWBIBnYoBF7kkdJZI/goBEqZ7/Oqgz6ZMvfUmPANTAZeecO0LU9A92+jwOwPfwY6kzdSTHY0wULHAzvJ3Co0jQp0cKl3GEElrw5bfm+FyGnyI3S53tXwinaHF6yluic9ZYRVYAQNZDjrFsjm5AZQkmfXPxE70CKQUosJSC+/63Ubzlsz3+oreRTRVQXoIk0ytmh1qMWV9ldvDcOqxLXmNgOtmyyOzQuR7G/+l0/Hg4dUCSS37DEDWx0iA8aNokNPv78XWeO1+cBXwrZbXUod0JQMRVFkQljHrrkTYc4SQNOKu1Il5OfrCKxgvkaFsFQmFzd9amOW9KwXZS+rNHJI6XQK9SjeJ+rBdsoPFTvb4knEGm7y41X+Pkeb3IAlkTMO09d1wyotQTZnhmgyXJBobAKHoPheX2KODP3znjQQgBA6KgtA6CAQ9U0O0/9mCW1KNDZ/ZAMoFD3+Ht0ZCFU2wKOwvcASzD+LyEW7p8rkxr7/Vzaq0ndm0mcQswrktwR5FHzvlrfAfviKZOvjm7B+fBsgevBrhIxUPPiIKrDy8ZefeJNf+DlN
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(136003)(396003)(376002)(366004)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(38350700005)(6512007)(1076003)(2616005)(52116002)(26005)(6506007)(8936002)(6666004)(6486002)(478600001)(41300700001)(38100700002)(5660300002)(86362001)(8676002)(4326008)(2906002)(66556008)(316002)(66476007)(7416002)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BwEImSvRVIccV2EgjygO2MpAivi0ZJBDXSaqpfzJWmZVmi9jMLvoxmq+eWji?=
- =?us-ascii?Q?VAPZDw8Phk7Wk/5OA4qfFGlZsrfha/E4PzoIOHc/7cOjK/h1EliQmoOA3YdR?=
- =?us-ascii?Q?b6qiOFPrXA9fFKKSBn3DEQ27ftGOqgR1B7WFgxlDSqZazIUcCRa59pXWTS58?=
- =?us-ascii?Q?RyvyA7kOxFU91z6NWd5DCXbBy41pw+OnieVogq1NIaCZTAyXpuZCh+bPuEqB?=
- =?us-ascii?Q?eKNMLI4kDvpzzdzpLjNEewiByVMHsL0BV1cKAx2h1OZcG6KG2XL3hciYPOHo?=
- =?us-ascii?Q?b+11TkD7VqRXlNE7+ob5Wh3thuv0BZtNG2ZsuqEitDYXoAbyAEo/ro6swSux?=
- =?us-ascii?Q?yKK4KtCF8kqGfM0U23G76nBfY/cn4VQZvmlWHmtpJ4d/6u/1UAZ5eYINsYT5?=
- =?us-ascii?Q?X0hDrZithU/xvehP7JJtp3QCjROZ7yOhIJ/IkB8Tzey2DvHzW3Hlont7Xad/?=
- =?us-ascii?Q?wLP9MzRcMo7caa4ArbKYf/rhYqCZlR5ukRo0BzOY940yxg+oyM2RODwLHavo?=
- =?us-ascii?Q?OLjFTopqq7piY+XMsxgfs82kIPteqcP95B5zX5SQ6cS6fTrPxff8lRX/v6Mm?=
- =?us-ascii?Q?ZRpJJ+HmmWklpMKhjSlqQsEB3NRy2OBBnXW0q48IVf8yjRXsoKMENTrh2BL/?=
- =?us-ascii?Q?2WuA8K7TV9nFepB6dkUkkHAn9XcnGGC6XqYKrsuoIGqJk/p+qJPczRofBmRp?=
- =?us-ascii?Q?uyB0av49qKkF0fL6JWRvNkyZ7zm2Od3Oxfm2ATAOe13b23YI7ucwcBbL6Gtb?=
- =?us-ascii?Q?0N0QTcCiX3rv5spk43Vo79OB6aMRI6LQ8x2T+ePOLr6DrynJB7JslhTLuhmU?=
- =?us-ascii?Q?NHhJXiulbrz4ouuT4qb6KTPNXQ/FtT8Q23VrAuzn1zmcPvgjxMzBDkCyY7VJ?=
- =?us-ascii?Q?TgaDYVffjCTJgtQqQ7DSqA9sUcADjfEDWhMZXmdUbAJLv5tKgD56n82lyWMO?=
- =?us-ascii?Q?MdEwLdCLzz6mQLvkOfVl1ZMKgzkHCTNnyzIvjo+COh35pFzknIiHApREY7a0?=
- =?us-ascii?Q?tYYgnLycMBcOPkR/K/t69UaUVHDf/5EZWY2u4xdJ2hO106mgPzwDOaBse38b?=
- =?us-ascii?Q?dRcqMKepsLGVyXbQ3+89geso94mUbfvUshap9M0qWKsdIrZIP65yUG46/3Yu?=
- =?us-ascii?Q?N5+regquR5ZZDDYEBS6Ax5jcRzwyTqeN8QPZtvV6iqLTITyQdrciSzwm5OkN?=
- =?us-ascii?Q?Flwa0E1obVVhHvVCo1yj7dbzv90OmUoON52IgRn4VDgv+YSDsEJv1anXYWCM?=
- =?us-ascii?Q?gYpHmgkcSDReDYUWQbKrY3FBwt2aAL2u/Le80cs1G/UhemF9ZyxnQ01vNGV6?=
- =?us-ascii?Q?2Ww+A95e1+ANweZC6o+sbCdJ6QvfMAFCq1Jl7WfKSV1+EBjb0qUuL0VZZZm0?=
- =?us-ascii?Q?33tfOzaT8phOeEkGl7qFfYH0pn8ay75GOlvY+fL7Af/0Pt8emBdhDtSLd1Cs?=
- =?us-ascii?Q?eA9I9c6j0sXwoiT64x3hDVPMnQlGog3KJ76ZOOaWAGEg2hMAeqzOOWnVzcfI?=
- =?us-ascii?Q?OZqXOfYY5gBxoc/WxF3ZmwzEymNv0YALpjhpCUr6tCbZ1gN3+hFLSdUulaNr?=
- =?us-ascii?Q?AjPZedchDNnvCSfq5z4FE3aHMM20dpfcXc82Wx4nEg0wh0DiBWgqrnno+eTA?=
- =?us-ascii?Q?+Q=3D=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4438ac4-2847-4f88-3973-08dbd3ac91fa
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 09:43:54.1755
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F2WcJsi4gfoi9cCV8ViRPypnbmr4fxaoCmoeSlf5gKUzTnTBtE0vxhSmjxiPc0W+CaV6+zyx5AdQFEEYcnbaVFWfX163/9BDuCb45N+X1U8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB10011
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] arm64: module: PLT allowed even !RANDOM_BASE
+To:     Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, Ard Biesheuvel <ardb@kernel.org>
+References: <20231023075714.21672-1-quic_aiquny@quicinc.com>
+ <56c2d30b-2f25-4613-aab1-00fccbd2fa05@app.fastmail.com>
+ <ZTY2rdkY5FfTBUVL@FVFF77S0Q05N>
+From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
+In-Reply-To: <ZTY2rdkY5FfTBUVL@FVFF77S0Q05N>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: KAxWGEJDp-f38L9NxugngdQiJ_pW2bHG
+X-Proofpoint-GUID: KAxWGEJDp-f38L9NxugngdQiJ_pW2bHG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-23_07,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ adultscore=0 clxscore=1011 priorityscore=1501 phishscore=0 spamscore=0
+ mlxlogscore=348 impostorscore=0 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310230084
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -120,117 +82,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement mdo_insert_tx_tag to insert the TLV header in the ethernet
-frame.
+On 10/23/2023 5:02 PM, Mark Rutland wrote:
+> On Mon, Oct 23, 2023 at 10:08:33AM +0200, Arnd Bergmann wrote:
+>> On Mon, Oct 23, 2023, at 09:57, Maria Yu wrote:
+>>> Module PLT feature can be enabled even when RANDOM_BASE is disabled.
+>>> Break BLT entry counts of relocation types will make module plt entry
+>>> allocation fail and finally exec format error for even correct and plt
+>>> allocation available modules.
+> 
+> Has an actual problem been seen in practice, or was this found by looking at
+> the code?
+I've encounter an actual problem when disalbe CONFIG_RADOM_BASE and the 
+kernel module have the exec format error issue.
+> 
+>>>
+>>> Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
+>>
+>> Adding Ard Biesheuvel to Cc, as he added the check in commit
+>> a257e02579e42 ("arm64/kernel: don't ban ADRP to work around
+>> Cortex-A53 erratum #843419")
+Thx for adding Ard. Will keep him in next patchset as well.
+> 
+> I think that the actual mistake is in commit:
+> 
+>    3e35d303ab7d22c4 ("arm64: module: rework module VA range selection")
+> 
+> Prior to that commit, when CONFIG_RANDOMIZE_BASE=n all modules and code had to
+> be within 128M of each other, and so there were no PLTs necessary for B/BL.
+> After that commit we can have a 2G module range regardless of
+> CONFIG_RANDOMIZE_BASE, and PLTs may be necessary for B/BL.
+> 
+> We should have removed the check for !CONFIG_RANDOMIZE_BASE as part of that.
 
-Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
----
-Changes in v6-v8:
-- none
+Agree with you.
+> 
+>>>   arch/arm64/kernel/module-plts.c | 3 ---
+>>>   1 file changed, 3 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/kernel/module-plts.c
+>>> b/arch/arm64/kernel/module-plts.c
+>>> index bd69a4e7cd60..21a67d52d7a0 100644
+>>> --- a/arch/arm64/kernel/module-plts.c
+>>> +++ b/arch/arm64/kernel/module-plts.c
+>>> @@ -167,9 +167,6 @@ static unsigned int count_plts(Elf64_Sym *syms,
+>>> Elf64_Rela *rela, int num,
+>>>   		switch (ELF64_R_TYPE(rela[i].r_info)) {
+>>>   		case R_AARCH64_JUMP26:
+>>>   		case R_AARCH64_CALL26:
+>>> -			if (!IS_ENABLED(CONFIG_RANDOMIZE_BASE))
+>>> -				break;
+>>> -
+>>>   			/*
+>>>   			 * We only have to consider branch targets that resolve
+>>>   			 * to symbols that are defined in a different section.
+>>
+>> I see there are two such checks (in partition_branch_plt_relas()
+>> and in count_plts()), can you explain in more detail how you
+>> concluded that one of them is correct but the other one is not?
+> 
+> I believe that the one in partition_branch_plt_relas() needs to go too; that's
+> just a minor optimization for the case where there shouldn't be any PLTs for
+> B/BL, and it no longer holds after the module VA range rework.
+> 
+> That was introduced in commit:
+> 
+>    d4e0340919fb9190 ("arm64/module: Optimize module load time by optimizing PLT counting")
+The functionality is the same from my try with plt allocated kernel 
+modules. While the PLT entry can be dramatically reduced from ~50000 to 
+~500 after fix in partition_branch_plt_relas.
 
-Changes in V5:
-- removed unused defines MACSEC_TLV_CP and MACSEC_TLV_SC_ID_OFF
+I will send out the second patchset with fix in 
+partition_branch_plt_relas (remove check of CONFIG_RANDOMIZE_BASE) 
+tomorrow if no more other comments today.
+> 
+> Thanks,
+> Mark.
 
-Changes in V4:
-- removed macsec_extscs parameter
-
-Changes in V3:
-- extscs parameter renamed to macsec_extscs and improved description
-
-Changes in V2:
-- added extscs parameter to choose the TX SC selection mechanism between
-and MAC SA based selection and TLV header based selection
-
- drivers/net/phy/nxp-c45-tja11xx-macsec.c | 41 ++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
-
-diff --git a/drivers/net/phy/nxp-c45-tja11xx-macsec.c b/drivers/net/phy/nxp-c45-tja11xx-macsec.c
-index 4dd10ea6e06c..6ff0ceeeecd1 100644
---- a/drivers/net/phy/nxp-c45-tja11xx-macsec.c
-+++ b/drivers/net/phy/nxp-c45-tja11xx-macsec.c
-@@ -11,6 +11,7 @@
- #include <linux/module.h>
- #include <linux/phy.h>
- #include <linux/processor.h>
-+#include <net/dst_metadata.h>
- #include <net/macsec.h>
- 
- #include "nxp-c45-tja11xx.h"
-@@ -118,6 +119,8 @@
- #define ADPTR_CNTRL			0x0F00
- #define ADPTR_CNTRL_CONFIG_EN		BIT(14)
- #define ADPTR_CNTRL_ADPTR_EN		BIT(12)
-+#define ADPTR_TX_TAG_CNTRL		0x0F0C
-+#define ADPTR_TX_TAG_CNTRL_ENA		BIT(31)
- 
- #define TX_SC_FLT_BASE			0x800
- #define TX_SC_FLT_SIZE			0x10
-@@ -166,6 +169,11 @@
- #define MACSEC_INPBTS			0x0638
- #define MACSEC_IPSNFS			0x063C
- 
-+#define TJA11XX_TLV_TX_NEEDED_HEADROOM	(32)
-+#define TJA11XX_TLV_NEEDED_TAILROOM	(0)
-+
-+#define ETH_P_TJA11XX_TLV		(0x4e58)
-+
- enum nxp_c45_sa_type {
- 	TX_SA,
- 	RX_SA,
-@@ -1541,6 +1549,31 @@ static int nxp_c45_mdo_get_rx_sa_stats(struct macsec_context *ctx)
- 	return 0;
- }
- 
-+struct tja11xx_tlv_header {
-+	struct ethhdr eth;
-+	u8 subtype;
-+	u8 len;
-+	u8 payload[28];
-+};
-+
-+static int nxp_c45_mdo_insert_tx_tag(struct phy_device *phydev,
-+				     struct sk_buff *skb)
-+{
-+	struct tja11xx_tlv_header *tlv;
-+	struct ethhdr *eth;
-+
-+	eth = eth_hdr(skb);
-+	tlv = skb_push(skb, TJA11XX_TLV_TX_NEEDED_HEADROOM);
-+	memmove(tlv, eth, sizeof(*eth));
-+	skb_reset_mac_header(skb);
-+	tlv->eth.h_proto = htons(ETH_P_TJA11XX_TLV);
-+	tlv->subtype = 1;
-+	tlv->len = sizeof(tlv->payload);
-+	memset(tlv->payload, 0, sizeof(tlv->payload));
-+
-+	return 0;
-+}
-+
- static const struct macsec_ops nxp_c45_macsec_ops = {
- 	.mdo_dev_open = nxp_c45_mdo_dev_open,
- 	.mdo_dev_stop = nxp_c45_mdo_dev_stop,
-@@ -1561,6 +1594,9 @@ static const struct macsec_ops nxp_c45_macsec_ops = {
- 	.mdo_get_tx_sa_stats = nxp_c45_mdo_get_tx_sa_stats,
- 	.mdo_get_rx_sc_stats = nxp_c45_mdo_get_rx_sc_stats,
- 	.mdo_get_rx_sa_stats = nxp_c45_mdo_get_rx_sa_stats,
-+	.mdo_insert_tx_tag = nxp_c45_mdo_insert_tx_tag,
-+	.needed_headroom = TJA11XX_TLV_TX_NEEDED_HEADROOM,
-+	.needed_tailroom = TJA11XX_TLV_NEEDED_TAILROOM,
- };
- 
- int nxp_c45_macsec_config_init(struct phy_device *phydev)
-@@ -1581,6 +1617,11 @@ int nxp_c45_macsec_config_init(struct phy_device *phydev)
- 	if (ret)
- 		return ret;
- 
-+	ret = nxp_c45_macsec_write(phydev, ADPTR_TX_TAG_CNTRL,
-+				   ADPTR_TX_TAG_CNTRL_ENA);
-+	if (ret)
-+		return ret;
-+
- 	ret = nxp_c45_macsec_write(phydev, ADPTR_CNTRL, ADPTR_CNTRL_ADPTR_EN);
- 	if (ret)
- 		return ret;
 -- 
-2.34.1
+Thx and BRs,
+Aiqun(Maria) Yu
 
