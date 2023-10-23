@@ -2,102 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA417D429C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 00:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3087D42A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 00:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbjJWWQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 18:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54942 "EHLO
+        id S229903AbjJWWYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 18:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjJWWQH (ORCPT
+        with ESMTP id S229562AbjJWWYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 18:16:07 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891FAA6;
-        Mon, 23 Oct 2023 15:16:05 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d9ac9573274so3538001276.0;
-        Mon, 23 Oct 2023 15:16:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698099364; x=1698704164; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3068ADSkqthpsqS93q+/p6HJQnWPBgqqNzVxtTtH1Vs=;
-        b=ilmP4HZB4yr6jo/Lk08udrMSiqj6Sznsn0QQ1YGW96IZRPZ4jWO2f1A2J8ktKr0Ka7
-         Zq8PoCACTAzzufqhwB8wqTqDta086GP04GPWKHSE0ID2KEA5oMHDzDSH+BdFXBtZL8Sy
-         b7m9Dt23au/n9hWo4CV8BvMfuxy1MN9eIf8bLERBTixnU5AtShH24OM0Xvv5MLBc+KEJ
-         9LytpK8CuxpwjgWKe4r+Hoixp4wT6WpEDi+recqxcKDj6Fu2FBH5F86AQIlTRKs0BNVE
-         NIh9fXyxGhG/P8l6UfSSFmUOTjkql40Fyka2W/2ASQTyJL4YNdUZmw44Q+31VwvN2uJy
-         fyvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698099364; x=1698704164;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3068ADSkqthpsqS93q+/p6HJQnWPBgqqNzVxtTtH1Vs=;
-        b=K/fw1qUei8VU6s7DHaK2n5M7E8FGwGsyTwDUp8Uq0hhFFBI/TnUlRJgotuMyS4cTBg
-         ZXrm1zEw/e9R0awX+IL4ZYQmQ1RqABX7XD9J+lY+cKs1zipVGx9EiaqKLN7ozuQcFfnX
-         tDBoq2v8E2Whs6IqXXUjEnXCvG17ho3RXbu5GPKXXVmJyBor6aq8AR9MEIiKrTwh8iAM
-         EjmUsWCy3rjFHaLrzf6crP4WNaU0cZV3BmboCCQfF0bIgEDougZcGvocEeotMqqRw5J/
-         EVfM/Ug5rijXFE9qDJPpHHmcBU8EQ0/qkUIlMVxV8YYfeiCkTNEZ0AhR6MIuoj2pgeg2
-         POVQ==
-X-Gm-Message-State: AOJu0YykHQD2VEGHTLZCewQkc68AYDCRSTdl6AA9b7BkVyb0p+7dWy6U
-        dAn70CENf639AfMAPvsg+yG6ROPHIoAci/J9SfpR7HI7UB4=
-X-Google-Smtp-Source: AGHT+IF8p1LuTV4Z7cYDNFOYhYTinKbuj7AVx4nc7X9tNQZkyEJtkxXHEbQAp3XO7hfv3Pmf67iQbUWSKzOhvTiWuIw=
-X-Received: by 2002:a25:aaa9:0:b0:d9a:c61e:4466 with SMTP id
- t38-20020a25aaa9000000b00d9ac61e4466mr10600798ybi.61.1698099364644; Mon, 23
- Oct 2023 15:16:04 -0700 (PDT)
+        Mon, 23 Oct 2023 18:24:32 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63627BC;
+        Mon, 23 Oct 2023 15:24:30 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 0E2035C038B;
+        Mon, 23 Oct 2023 18:24:28 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 23 Oct 2023 18:24:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1698099868; x=1698186268; bh=DQ1oEKixkzeNQdS8WT8YM8d2fPyTvXJ7mH7
+        o5ICCQX8=; b=WQYsw/i93/NXdnTcDjqLcXE/CwRWdo6Erxs82JyFuS3qBV27yb5
+        evLbD6PRVhjROmAXc5wPwVttUQOVMlDpr8S4oyvC/jlclLt/5UYz1rDNG3EpfrJw
+        sBC1Eu1kIJvIpmxwtCGd+K1CwyzKz5098UPtxpCgtdhD4TvjozoregDwnhDo5KbV
+        FBsD7V6Q4IAvu4jZc0B/nIBni0DjIIw6siCW3yPDRDlhs3fGS4u6lpTH5kLi5QHC
+        Oa36iyfDrYlCLUKiV5nOtC238vM5CHD8Wqo9vsXRM7AwhGru2CcOqdsZvkIX0XSa
+        /Ow32rdaOmylMU5dwUsj+ZDLM9qHx5ghwbA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1698099868; x=1698186268; bh=DQ1oEKixkzeNQdS8WT8YM8d2fPyTvXJ7mH7
+        o5ICCQX8=; b=ngQdFqQ601DzjSAFMnRWltajrABxEepDBmnnnhz5x30qUxKa6mv
+        NS4hbZ5ZvdicPtj8Jp1n/UuEbAno2QnlZgEyN/UoJdPUlNloZ9Ce3DUOzrQv/4ge
+        bt700eHhsWIfYVBfLdBIG9OwapIX8rEWJ826peIdwQv6V8cYEA6YzLgxmbE88jcE
+        aDmq9xbaz/96mf5YxhzQSO5CtZc78v+n+DDIaNMI77JkYF+QCs4JSI/IJEdl0qz8
+        42wSbBDUrGsPolA2mBe+f11xtWJ7dsOffM4liUR+Q11Vwrp1nop3z9JBVHhzIcwg
+        c9sMlY/wgpxzdDJnyPpQr+1kTfIMm5GUMSg==
+X-ME-Sender: <xms:m_I2ZTVvV1qZ9JT94oXBGxmthgfsObXB6ip831Mh-nrqsVFlNFOMOQ>
+    <xme:m_I2ZbkT9sc4YvFAnaIwVsbnOtT2aRLBivsWqLLVoES8XtMOVnt_Uowae-rDc3cQC
+    y4dm8IcSIqi>
+X-ME-Received: <xmr:m_I2Zfbzas2074WCiVerKVo2MNRomkOnNjrtf7DRJGV8MYCiBIim06wbSlCyurWarwwwRhizebuU7q2BTmejhfKIyEwQcVQzv93_JR6lhdbU1zL2JOay0Hw5>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeejgddtkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    euhfeuieeijeeuveekgfeitdethefguddtleffhfelfeelhfduuedvfefhgefhheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:m_I2ZeVPZA1DKX8-xEcPNt_fXtazuUUS43meXL6yTy_RGDyt7K5OWA>
+    <xmx:m_I2ZdmG3UxKWXfHSf_g-ptlht22TaW7z4Duao_0X98TN4b97HEj6A>
+    <xmx:m_I2Zbf8a8DTfivJBgDS4hA3bSYPfOFOeqF88ZPEY6qDWH6ZKEFfJQ>
+    <xmx:nPI2ZTX-3_OteRk3xjybXInDoUMx6j4szWTQSNRP9OsfbRJo4NiaUQ>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 23 Oct 2023 18:24:22 -0400 (EDT)
+Message-ID: <c1f0f6c1-4795-9861-5f53-0fb3e4d3aa18@themaw.net>
+Date:   Tue, 24 Oct 2023 06:24:19 +0800
 MIME-Version: 1.0
-References: <20231023174449.251550-1-ojeda@kernel.org> <20231023174449.251550-3-ojeda@kernel.org>
- <f53536ca-ec5b-4cdc-a340-e9c739ee30c4@gmail.com>
-In-Reply-To: <f53536ca-ec5b-4cdc-a340-e9c739ee30c4@gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 24 Oct 2023 00:15:53 +0200
-Message-ID: <CANiq72nTE_qua9w+EeqiPCukst4876Gi7gHeusFLofYZRoJCDw@mail.gmail.com>
-Subject: Re: [PATCH 3/4] x86/rust: depend on !RETHUNK
-To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>, x86@kernel.org,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: autofs: add autofs_parse_fd()
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, linux-fsdevel@vger.kernel.org,
+        autofs@vger.kernel.org, Bill O'Donnell <bodonnel@redhat.com>,
+        Christian Brauner <brauner@kernel.org>
+References: <CA+G9fYt75r4i39DuB4E3y6jRLaLoSEHGbBcJy=AQZBQ2SmBbiQ@mail.gmail.com>
+ <71adfca4-4e80-4a93-b480-3031e26db409@app.fastmail.com>
+ <CADYN=9+HDwqAz-eLV7uVuMa+_+foj+_keSG-TmD2imkwVJ_mpQ@mail.gmail.com>
+ <432f1c1c-2f77-4b1b-b3f8-28330fd6bac3@kadam.mountain>
+ <f1cddf6e-2103-4786-84ff-12c305341d7c@app.fastmail.com>
+ <11ba98f2-2e59-d64b-1a1a-fd32fd8ba358@themaw.net>
+ <9217caeb-0d7e-b101-33f0-859da175a6ef@themaw.net>
+ <a5dfbe4f-b6fc-e282-2a3c-3e487493336c@themaw.net>
+ <CADYN=9JS5QO5pmcFPJXY2TJB7TKg30k867SJ9BwPcgY-Wvm61A@mail.gmail.com>
+Content-Language: en-US
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <CADYN=9JS5QO5pmcFPJXY2TJB7TKg30k867SJ9BwPcgY-Wvm61A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 8:43=E2=80=AFPM Martin Rodriguez Reboredo
-<yakoyoku@gmail.com> wrote:
+On 23/10/23 21:57, Anders Roxell wrote:
+> On Mon, 23 Oct 2023 at 09:35, Ian Kent <raven@themaw.net> wrote:
+>> On 23/10/23 08:48, Ian Kent wrote:
+>>> On 20/10/23 21:09, Ian Kent wrote:
+>>>> On 20/10/23 19:23, Arnd Bergmann wrote:
+>>>>> On Fri, Oct 20, 2023, at 12:45, Dan Carpenter wrote:
+>>>>>> On Fri, Oct 20, 2023 at 11:55:57AM +0200, Anders Roxell wrote:
+>>>>>>> On Fri, 20 Oct 2023 at 08:37, Arnd Bergmann <arnd@arndb.de> wrote:
+>>>>>>>> On Thu, Oct 19, 2023, at 17:27, Naresh Kamboju wrote:
+>>>>>>>>> The qemu-x86_64 and x86_64 booting with 64bit kernel and 32bit
+>>>>>>>>> rootfs we call
+>>>>>>>>> it as compat mode boot testing. Recently it started to failed to
+>>>>>>>>> get login
+>>>>>>>>> prompt.
+>>>>>>>>>
+>>>>>>>>> We have not seen any kernel crash logs.
+>>>>>>>>>
+>>>>>>>>> Anders, bisection is pointing to first bad commit,
+>>>>>>>>> 546694b8f658 autofs: add autofs_parse_fd()
+>>>>>>>>>
+>>>>>>>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>>>>>>>> Reported-by: Anders Roxell <anders.roxell@linaro.org>
+>>>>>>>> I tried to find something in that commit that would be different
+>>>>>>>> in compat mode, but don't see anything at all -- this appears
+>>>>>>>> to be just a simple refactoring of the code, unlike the commits
+>>>>>>>> that immediately follow it and that do change the mount
+>>>>>>>> interface.
+>>>>>>>>
+>>>>>>>> Unfortunately this makes it impossible to just revert the commit
+>>>>>>>> on top of linux-next. Can you double-check your bisection by
+>>>>>>>> testing 546694b8f658 and the commit before it again?
+>>>>>>> I tried these two patches again:
+>>>>>>> 546694b8f658 ("autofs: add autofs_parse_fd()") - doesn't boot
+>>>>>>> bc69fdde0ae1 ("autofs: refactor autofs_prepare_pipe()") - boots
+>>>>>>>
+>>>>>> One difference that I notice between those two patches is that we no
+>>>>>> long call autofs_prepare_pipe().  We just call autofs_check_pipe().
+>>>>> Indeed, so some of the f_flags end up being different. I assumed
+>>>>> this was done intentionally, but it might be worth checking if
+>>>>> the patch below makes any difference when the flags get put
+>>>>> back the way they were. This is probably not the correct fix, but
+>>>>> may help figure out what is going on. It should apply to anything
+>>>>> from 546694b8f658 ("autofs: add autofs_parse_fd()") to the current
+>>>>> linux-next:
+>>>>>
+>>>>> --- a/fs/autofs/inode.c
+>>>>> +++ b/fs/autofs/inode.c
+>>>>> @@ -358,6 +358,11 @@ static int autofs_fill_super(struct super_block
+>>>>> *s, struct fs_context *fc)
+>>>>>           pr_debug("pipe fd = %d, pgrp = %u\n",
+>>>>>                    sbi->pipefd, pid_nr(sbi->oz_pgrp));
+>>>>>    +        /* We want a packet pipe */
+>>>>> +        sbi->pipe->f_flags |= O_DIRECT;
+>>>>> +        /* We don't expect -EAGAIN */
+>>>>> +        sbi->pipe->f_flags &= ~O_NONBLOCK;
+>>>>> +
+>>>>
+>>>> That makes sense, we do want a packet pipe and that does also mean
+>>>>
+>>>> we don't want a non-blocking pipe, it will be interesting to see
+>>>>
+>>>> if that makes a difference. It's been a long time since Linus
+>>>>
+>>>> implemented that packet pipe and I can't remember now what the
+>>>>
+>>>> case was that lead to it.
+>>> After thinking about this over the weekend I'm pretty sure my mistake
+>>>
+>>> is dropping the call to autofs_prepare_pipe() without adding the tail
+>>>
+>>> end of it into autofs_parse_fd().
+>>>
+>>>
+>>> To explain a bit of history which I'll include in the fix description.
+>>>
+>>> During autofs v5 development I decided to stay with the existing usage
+>>>
+>>> instead of changing to a packed structure for autofs <=> user space
+>>>
+>>> communications which turned out to be a mistake on my part.
+>>>
+>>>
+>>> Problems arose and they were fixed by allowing for the 64 bit to 32 bit
+>>>
+>>> size difference in the automount(8) code.
+>>>
+>>>
+>>> Along the way systemd started to use autofs and eventually encountered
+>>>
+>>> this problem too. systemd refused to compensate for the length difference
+>>>
+>>> insisting it be fixed in the kernel. Fortunately Linus implemented the
+>>>
+>>> packetized pipe which resolved the problem in a straight forward and
+>>>
+>>> simple way.
+>>>
+>>>
+>>> So I pretty sure that the cause of the problem is the inadvertent
+>>> dropping
+>>>
+>>> of the flags setting in autofs_fill_super() that Arnd spotted although I
+>>>
+>>> don't think putting it in autofs_fill_super() is the right thing to do.
+>>>
+>>>
+>>> I'll produce a patch today which includes most of this explanation for
+>>>
+>>> future travelers ...
+>> So I have a patch.
+>>
+>>
+>> I'm of two minds whether to try and use the instructions to reproduce this
+>>
+>> or not because of experiences I have had with other similar testing
+>> automation
+>>
+>> systems that claim to provide a reproducer and end up a huge waste of
+>> time and
+>>
+>> are significantly frustrating.
+>>
+>>
+>> Can someone please perform a test for me once I provide the patch?
+> Just tested it, and it passed our tests. Added a tested by flag in your patch.
 >
-> I'll mention that I've tested boots, both in bare metal and QEMU, with
-> `RUST=3Dy` and `RETHUNK=3Dy` and they were alright regardless of `objtool=
-`
-> warnings. Although, if you had an issue in the past then I'd like to know
-> about it.
+> Thanks for the prompt fix.
 
-These are mitigations -- things do functionally work if they are not
-applied, but you would be vulnerable.
+That's great to hear Anders, thanks for doing the testing, ;)
 
-In other words, it is not like e.g. IBT where you could have noticed
-it breaking by running it normally if you happened to have a supported
-platform.
 
-Cheers,
-Miguel
+Ian
+
