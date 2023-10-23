@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF1B7D2EC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A175A7D2EC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbjJWJoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49578 "EHLO
+        id S233227AbjJWJof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233297AbjJWJoA (ORCPT
+        with ESMTP id S232424AbjJWJoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:44:00 -0400
+        Mon, 23 Oct 2023 05:44:07 -0400
 Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2040.outbound.protection.outlook.com [40.107.15.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99FF0C0;
-        Mon, 23 Oct 2023 02:43:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8A1BE;
+        Mon, 23 Oct 2023 02:44:01 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GhBQVRYReNXNsVkABN+dsuE1K7aPbKpkmeiALKGHh1prhjWTetulrv0Isri20QGJb39EXMatQJj2O6jpWt4PkJD5tbGo91spkRr/K4xsQ5PLsY0t0Ua5WD/WLidT+TUgitMAqwfWZfvNOUHiITK2zbcMKn1xXNHocC7182SrsE+O0oisVEXWP5iKtq3/dp1utlqPnoodKHGkFqU6Ozo5O5RfY1CyEw3d4bc3yY9gf5x4BgflRMfUux4QmhlWsARb0s/mDsN+7rm0A33RzFng6SkVPZFEODyTQUfBmaqGtJ3T/aCU5Zs5VMg4yZkxmqN1qSTeLUu5eWycnTGfKLfIqA==
+ b=MIlXKDW5ZVqHCCe7mi9StWyyOWlbmo14BKwQ/VeSRDYcquMLZcJ8NpRWA8kBFnoVJIjKCIml2flePcBqD/g19dgR0Hw8Uav2fjGF+omxgGNCu78R8Wl3xT9KOPLWMAZdYYhAQ1XrvH0YBfaTIJ744WxWLnAJ4E9Q/+9mXRK/BLJVs7n3CEdPfRw7y8wPZ3TnjdtoD9PFtMdgZ6FYZ/PQkDxmmCKwg4/2Ib1XggfbN9nd3+FzhrxgW4cpqwJ0gGjyA4CgtX9uoV9x6m2eXpl8DdoecGIEqLoqPLUGbrGIP4T547QIn7b5NH0l0TensXyrs2BiM0h7C26WCyugvPG1bA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qVgVqn36IdL8lVsG6BicWACXNy5Ub373JniC2JVGMws=;
- b=laohlbxYv4na3ZhBHiDv6+U33PefPZoq5lvuvcchzZGd8Y3PLZctHJTfTNpogn0U6RqUH6iTLZQ7oEmdoqeXxgwioI6GNOpyQQOwzld565DQ5oMybzvKk4ToGZHk534wwMhi9rKbJEhvQDY1pa/PTHj68zgZgOSEL0579TaHS0n4wLp4HeZJQqkB43NZaLjH9bpLRUD/cd5ZgfvGJugJE+BuzWgwn1KSIDNFgPV2HsE4aLAbFu2iWntwRMTP+7tjgFTx/Qecz9N1MzmvvSwx7uRndIQi+UJiyiwvS1DXZ2kmD3bejmJK8q2gWGwIkhcH+gRrBAtNZlFNFZgXTun8jw==
+ bh=Rk/eAky8jL2UYYljmFqvAsmjqVNF2UNqyT4ye7GIdUE=;
+ b=KEeYfJV/49NHRvUibYovmQmV/O0Kk5kBcZyQq3SvvpMHJLDdn9IhWVNuqyQ+ooAcXTGxRytDMqY3qmauKTN0SpfEEbTgERrt9xsVLHXjjeIeCEm0rAxjtw0SNOcDhoSaHT99pcm/TVKVfSr1J0v8L44yVahFvFfVfR5Duu5BLdQ6QYzdVZ6G1e8/+Bapp8h2xFV4LKZI9I4Qj8rYBGBHozPGpy8Y/qGeuvieVcCTHgxwmTtGVrnw4K1tNQU8rE/Ubb4YGjw0LAsAAtuTZdsHzQVag5uiVQUD9uuXSIdO+1rp6IZdOzpTiJlLh7mmnWKpptqgBzK1AnS1nEfGLYni7g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qVgVqn36IdL8lVsG6BicWACXNy5Ub373JniC2JVGMws=;
- b=biwbfZlOr8h942voazVvTyqIYFq4VdfsY+hBZ+DgziGizGohSJlm0j0cNXy48FvpOk2HvTc8XORNMMy0Y4BFgUQ4Dxxwek/3tooFdSIgQ9L8tqSlXQKqKbvR8k993+1d8HKy9kLcqFNvqE1OelTxblYcy3YFIvb8qOsFaNI6CoI=
+ bh=Rk/eAky8jL2UYYljmFqvAsmjqVNF2UNqyT4ye7GIdUE=;
+ b=QAI8yJDbZ1BRusyun1c9XXd8Z5tyVSfdP2IJ6iR0mzjo3bp5LB76bkd0fKO/od0eJz4vorKVFZ05TshdTCi7Zfa6Fdt+DO9v9vSwnS5SI83CiH+4j4+gUOw2EfNUvKrc7WkNLJ2b86gZkSsti+3eJdRuH8LeSzdNso/BXcG+j4s=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
  by DB9PR04MB10011.eurprd04.prod.outlook.com (2603:10a6:10:4c4::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.22; Mon, 23 Oct
- 2023 09:43:51 +0000
+ 2023 09:43:52 +0000
 Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
  ([fe80::b1fa:fd23:8cc2:f5ee]) by AM9PR04MB8954.eurprd04.prod.outlook.com
  ([fe80::b1fa:fd23:8cc2:f5ee%6]) with mapi id 15.20.6933.011; Mon, 23 Oct 2023
- 09:43:51 +0000
+ 09:43:52 +0000
 From:   "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
 To:     sd@queasysnail.net, davem@davemloft.net, edumazet@google.com,
         kuba@kernel.org, pabeni@redhat.com, andrew@lunn.ch,
@@ -49,9 +49,9 @@ To:     sd@queasysnail.net, davem@davemloft.net, edumazet@google.com,
 Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         sebastian.tobuschat@oss.nxp.com,
         "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Subject: [PATCH net-next v8 4/7] net: macsec: introduce mdo_insert_tx_tag
-Date:   Mon, 23 Oct 2023 12:43:24 +0300
-Message-Id: <20231023094327.565297-5-radu-nicolae.pirea@oss.nxp.com>
+Subject: [PATCH net-next v8 5/7] net: phy: nxp-c45-tja11xx: add MACsec support
+Date:   Mon, 23 Oct 2023 12:43:25 +0300
+Message-Id: <20231023094327.565297-6-radu-nicolae.pirea@oss.nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231023094327.565297-1-radu-nicolae.pirea@oss.nxp.com>
 References: <20231023094327.565297-1-radu-nicolae.pirea@oss.nxp.com>
@@ -64,52 +64,52 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|DB9PR04MB10011:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8b6bc82f-85f1-4d7d-fd41-08dbd3ac9039
+X-MS-Office365-Filtering-Correlation-Id: 30c1d559-b582-439e-320d-08dbd3ac90d0
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kH8I03oMfw8BiqdwmLQMndg8/IsvxG8ZAWf6nlbPCku1z10beFELqhgqIp8bTasBZ4j/bsaAA/b6XNLI783l0FeSy3IGQvPNN8usLKhSqZnYu8cw9DJszbHbu1650syR+U1PqcQFPNo3JaTmroFDM0194Jebh61jv+HCm1Jx6Xb1/sqz7eyFzjfewir+sGxUjsdNzR3vR8SdLz+8cZGdtw4tGEfRyQuEeiktAuNRmR+Mqm87YZiW8PRgmMWDTkf2tVkxHSQakWHiIus2PSmTDDNRrePNMlGI2cN1crreb7KT1BaP9CIEw30YQbm3vYo3O0a6s1x6XtisN0dEP+fQR2NAd6su3av8TIb0QWHM5YRSWw53e3nDzHMHBM8vrBWSucq96kwpeioMGMFdB/+DSB9mJi60T5wGjUVQceRma1i5tzGiGqqKn1Mg9/UwTao5qP8SSyGF3+LnyYaX6kPZGVPRi9Lvwpsgtyf1QQqOA2s4mAgUYr40UdankNHi7PLpfjoG43Oq1WF17MP+foGiuOQSRtWYuevQf3MxtsOYHy2eMzuISgANjeDeQpjwMmEAdlMoOogVIhrybDj7f1Uw1d4QGCilC9Ol/tJYlJbaaME/3y9ShvJGU3H7eIvAnP/1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(136003)(396003)(376002)(366004)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(38350700005)(6512007)(1076003)(2616005)(52116002)(26005)(83380400001)(6506007)(8936002)(6666004)(66899024)(6486002)(478600001)(41300700001)(38100700002)(5660300002)(86362001)(8676002)(4326008)(2906002)(66556008)(316002)(66476007)(7416002)(66946007);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: zIfS9OseItHCkAD2QSHSJ39XSr3ifn7MmB+kyR9jeFUFRAVtg1ffegDPsmEZkw4TRunj85Tiu+s3RCa1iWh8turHWNyWDrj2brKhiKTrdxS1P9W1vkvgATJiJxSs6t6x6hTMaxpWp2gbEefONQv0paBNa0kKRoUfkFJbA9ATfRAjdwRzyudpNmELb3qNIEhIUTX22HlQHW/DLpnmtBi/Euk7gGG7Anj4VeAnbiQ/uO5Huo7tzvSGQSKCWr/I2f6xWPj9LLXqphyt2t68UOiawYtuGgKKoLuwFJxqqx8LI4dZGL9cCGAYY2rDgit54nP/XtA8Ep3wW/p65Rw+C8h98Ec+J3g495R11eCRNytM3fvQl7EnCkmE8x3Jg9vqIcDOomr2GqxL2bWQCiz8yKXKRxqrSAe66/JYc4liUTUW7Sq3sdJbRar2sW8/c8FD5BcthiJA22Q2yeLUUNK4MbaBorjlnbd8MM6DUhlr+ZWwFl8/Eg6sU7mYqAYW0Gn1Eqc/6J0+iUsPJdpQkZRLsGilvcpF5GwYKOHZfVqpry65uggbkX0oY1CbPPcxCPgVV8Kqx957g2eYI5a0Fp5WErP7sopPUuzJoacogHMKFHJlCZFGB4JnUNHXC/bOFmD9Qsqg
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(136003)(396003)(376002)(366004)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(38350700005)(6512007)(1076003)(2616005)(52116002)(26005)(83380400001)(6506007)(8936002)(6666004)(6486002)(478600001)(41300700001)(38100700002)(5660300002)(86362001)(8676002)(30864003)(4326008)(2906002)(66556008)(316002)(66476007)(7416002)(66946007)(579004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?R3sQrux+Cnnw1OoW3QfJrnzE9aA7nodkwoFNMhy/sPfFgyiP+Nukm+PAMgbY?=
- =?us-ascii?Q?yI9KT++fWBPOFNeAaSFspNqxCY+ZyuOcerC/Y2hg0ZOITnGxPzC+WoKXhz3J?=
- =?us-ascii?Q?ZLMjYq9OhcQVkvPOu22Euz/PnoMaACCgoOymtnkovM+V/oO7FdObTm7kRzTK?=
- =?us-ascii?Q?OutqXS/6ob2LcWne38WDPXjiVm9FCzoHgrm9jfMJOHgj+Iih13pjDsOvD829?=
- =?us-ascii?Q?4KeB4js95DIPj0rXHY+6Hpk0HfLJvMEnMyMzPfILAam0e1XZTcZPRBuI0TRq?=
- =?us-ascii?Q?t4N1B+agyJarrefbSEpfJb2/KT4rDw0aLR3W+QXtYG946hY6EzbINx0qcALF?=
- =?us-ascii?Q?+FjUemW5EtorXi0ECmdBuyKAU/WvXNET2wmXW1Hdqd3Yuf4EYG9Gj8454TIL?=
- =?us-ascii?Q?dW7OiGOQZ6+qrZm2ohVznNA8vaRMq30SJxpsYFW9LM2Cn8wVauwZkkP/2nHD?=
- =?us-ascii?Q?pJf9d2j15vHd3CTjTPYtvqY9SbgxEYKVD80jUcaapJYQrwVZoo43jNU9Z0OL?=
- =?us-ascii?Q?EA7KeWm7SYCMk8VNj5zo/edJTS7q1o7GIheSsFaW8039ob5Odz2o1+RKiBuV?=
- =?us-ascii?Q?QWVoywazAERzGh7rXvWto7N5EkiuJYCqH7acJimKPmzy1a5L2QlE1F/A7K5K?=
- =?us-ascii?Q?xAtng03x5AuasxF+kEvUfVUbtxz1NQn4UO5xBNs85sAKZX0BdeKq8gWIy3wX?=
- =?us-ascii?Q?WTg5dBtHnHGiuwU4vplYEsS9t0LXJZsUHQ6lSELBS6pyEo7Xk0p4O/uV8yh0?=
- =?us-ascii?Q?W8ddIpdWrFBOcuwYJBjxh2qnMcockicM1IbtmalAgTm0YXZyBvMpWxVcfFdw?=
- =?us-ascii?Q?PQyyq5N6Krd5XCesH7q+q2Kj0vgE6IeFxNZxzjcojZvzo5WqEvIlc3oBDWRf?=
- =?us-ascii?Q?2zitUfUbO15DwbH/itHKzt+JNXmTR/zKn0xeJX4IviBUXQyRW9CFD+dAJu5Z?=
- =?us-ascii?Q?4oiY6vmTp3bEuhZ/r9MUkPBZKpjM3MZbDf2Vaqv61sftzQO1VbjcGBGilxAB?=
- =?us-ascii?Q?iRognG2PFu770A5vy1/i2f4CLLk0sI7asrtHiSA6JPTYRtOTuaQr4knmxAjw?=
- =?us-ascii?Q?nSoU7dhU4DuWgsWUmp/o9FQr8FuHsr8LZ8Y2oAk1qgrZS2gmLuFCNI38BqF/?=
- =?us-ascii?Q?xIb/sesc7gJ4Iz0B0IBdJVFBD0wdIFmYZj1oqnmT8o9OweQEIrccWt2BKGVN?=
- =?us-ascii?Q?Bwru2KNJYqgEzyDXjhg6EmvtGns8s1fblnff3BSyZ6+OQhw7oc6VFud9qebD?=
- =?us-ascii?Q?tiOOKM7QlneiqI4sAd7mnDUvVyREAtId5eVW11oy37Y1mgtFhpr86YLVkezY?=
- =?us-ascii?Q?8ehqBoNNGEc9ZD7icEtyEEciKOCFk3iPryo39cyf8pfWTSgKvEwIkDnZYe8H?=
- =?us-ascii?Q?/533D/+W/vgbgRRzTIkNenzt5gi+Aqhu6Gw0/gwfqKSEB2MLwV42eDfUK7e3?=
- =?us-ascii?Q?5wSFWQsEvG1BGvpeuDWKcQ7eEEvgmKJ5XxSzo88cVzJieUpO5/UzO+MiV7bS?=
- =?us-ascii?Q?j152jdmTwlVv6lh+Svl6B5KfWdBeofzDysmc7Qe7VgpEMeXwJTaqz54xpPeR?=
- =?us-ascii?Q?tYNtxaWTIUdY2VNCWfFmW9qO7qS5X0bVxEwYAr5ArTYlrJL2r3FOlx3u15FT?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?86cXyDgSyW11gi1IWymUn2O4sMDcYrLFVUYEfyRPE+HQNmVSVb/BnpajUgzG?=
+ =?us-ascii?Q?z0QIq0TSsggZ76gKA/zPSRT50x/z6tZ7M+6D3EbqASXDEi8+bHm1DVFWG529?=
+ =?us-ascii?Q?dUN7Ttu37WO7f1rIbCmQxo4JS9nvrwS/Z1FLWaaf9hBnL0oBjp5B8IGawpao?=
+ =?us-ascii?Q?CqUxDfRNE8lUHq5t9W8hmWZH04J1146ZKJsauOdvTVEd2DYITUpN+xpLVK+H?=
+ =?us-ascii?Q?EhXIRoc9bVnZbP+wsjyp+O30tC2CxJx5gseT12b9CZ09ZtBeTiVdzOgSZ+vG?=
+ =?us-ascii?Q?0zVWC/RansiU/7GlDfZ1IMHGcdzwShxEM0MTp9J6AySRqCFn9YST2kbmJIpo?=
+ =?us-ascii?Q?rocXOyOMW8m6XAFcSj8Y1mAI1tPDoX+QF6q25bHSYdUKhB0tbKNjp4CKgdUo?=
+ =?us-ascii?Q?csGE8DZQYg57tXiPi6DD8amjuKQsLggoEoCt/ZZh7HCvoBGbgiHdeafiCh3G?=
+ =?us-ascii?Q?pJt4co3oH3bdCS2y1QoOZAx4OAyk/OdCFD0Ev9yxQIUL1AAAg0R/PQfU5u05?=
+ =?us-ascii?Q?MYdriMdyznh2sEe1BDhGimN1/xLJw5v5N0S2o+yMZY24I5zwiQeCp34DHNdE?=
+ =?us-ascii?Q?TDe82GtD9LAIRzRjVVunJ5IduEp6Hy+ydrwmjNJnrUEQbbwOeooRtSOM9C/6?=
+ =?us-ascii?Q?adIhGDUJrvl0Jhfurl9LzN4LFJQOrixyZ4b9yQTM+9a+V/DQtVrAz0wIXBgH?=
+ =?us-ascii?Q?S3LPNaxNuclDFlHPB2ZQ0zPVfCUK/IT+3PeAETDuJyFSmafv4nSffhWJ1YW5?=
+ =?us-ascii?Q?kzr58QpUO0fm2kwjEmnVh12HmdBfh87Mje9P4tTr2QzXH+rW/HmVwxWMvNMK?=
+ =?us-ascii?Q?78tJ3HmdoL160L929sxxSD7U1i9ntRnReBSAtCTOHnW3JvcYQ8zKeoWHaNtP?=
+ =?us-ascii?Q?eOnBVE/Av78c08CVsYuA6BfUoI5FIdsJWXrtFmBYTwXzddsZOtDay45Pt8g7?=
+ =?us-ascii?Q?af2HWFHqWqc+MEhopfETHJYiYxlGRGCwzXLnd/KHqe0pzk2yvjIIOZr7Go7x?=
+ =?us-ascii?Q?zAbfjEWtix547IfqjzV3+nXeAWmk4KchxVhKWqlPsyLGj8kv8Dt+sdWM9tOy?=
+ =?us-ascii?Q?DsyrItvm1s2l83XuPdYPIaRSjHhdWJvvNAOZ5jXsnu2RqzUOEF7OQdMAkhjS?=
+ =?us-ascii?Q?2mpkpT7NSEt5vSOKajJcRSek5sFNXPZQT3HGPdO8zvhsz2+vXKRf5eYLY/5I?=
+ =?us-ascii?Q?SCsnrg3MrL9QO1WVbPauyXSl/f6aoNR1NY7xcvBanKhyiSonBVMOYP0yKXTl?=
+ =?us-ascii?Q?vI9Je9c8yyDbA+M9dKAMFvUrLoW/HU2UNftCHOhlLJUzN/9xAIN5d4TYoZLi?=
+ =?us-ascii?Q?75S14+x4oPD2HqIrUFYPJXhOqvkguhb6fqhXi0P0gQ3d3kgVnIQ+dQ+MzXve?=
+ =?us-ascii?Q?cv+UFSqvt5ExOYp6jmtw2Yqp352sOkfXiLCs/GWU8VQYXnilmTnBLP9VoSeH?=
+ =?us-ascii?Q?hUaiQV8Gt7Qz6d4uvfX6xad92ZAu9PNtc2mCD4VnGY7D7J2ew/9VgfR6A03U?=
+ =?us-ascii?Q?vWDS66hj0XxkZEgTvmls/skGDuaEeUHCCA9F4eelF9Yzrh9IzWJjre5uvI+l?=
+ =?us-ascii?Q?v1qWrx2Tdw3z7RYbjpaktX1UhtdvDLTpy/fmY66BwCSNkAT5CqmFp/4BzRk+?=
  =?us-ascii?Q?Ag=3D=3D?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8b6bc82f-85f1-4d7d-fd41-08dbd3ac9039
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30c1d559-b582-439e-320d-08dbd3ac90d0
 X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 09:43:51.2195
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 09:43:52.2799
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BPwfvtcto8oeaekIK4aMzvnfq3aFW9yhG/8UoIc/YCJk87l8Ql43XuBK/CsItla2eLaBvs1HWk06ufE5JSuw4h2oVfWyLcoL1DDhGVPM6gU=
+X-MS-Exchange-CrossTenant-UserPrincipalName: MJuZdvSNGf5Wl5bV1HwTXiEybtQpHeTHQ9iu+U72C9Xaabuf7C+4wT71s5hDJmg80T2dff/G+h7tVNKNUXgKM9tu/P55xyNYGDZJGVSKqGg=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB10011
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
@@ -120,222 +120,1714 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Offloading MACsec in PHYs requires inserting the SecTAG and the ICV in
-the ethernet frame. This operation will increase the frame size with up
-to 32 bytes. If the frames are sent at line rate, the PHY will not have
-enough room to insert the SecTAG and the ICV.
-
-Some PHYs use a hardware buffer to store a number of ethernet frames and,
-if it fills up, a pause frame is sent to the MAC to control the flow.
-This HW implementation does not need any modification in the stack.
-
-Other PHYs might offer to use a specific ethertype with some padding
-bytes present in the ethernet frame. This ethertype and its associated
-bytes will be replaced by the SecTAG and ICV.
-
-mdo_insert_tx_tag allows the PHY drivers to add any specific tag in the
-skb.
+Add MACsec support.
+The MACsec block has four TX SCs and four RX SCs. The driver supports up
+to four SecY. Each SecY with one TX SC and one RX SC.
+The RX SCs can have two keys, key A and key B, written in hardware and
+enabled at the same time.
+The TX SCs can have two keys written in hardware, but only one can be
+active at a given time.
+On TX, the SC is selected using the MAC source address. Due of this
+selection mechanism, each offloaded netdev must have a unique MAC
+address.
+On RX, the SC is selected by SCI(found in SecTAG or calculated using MAC
+SA), or using RX SC 0 as implicit.
 
 Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
 ---
-Changes in v4-v8:
+Changes in v6-v8:
 - none
 
+Changes in V5:
+- added nxp_c45_secy_irq_en helper to enable and disable the irqs and
+replaced the irq enable/disable sequence from
+nxp_c45_mdo_add_secy/nxp_c45_mdo_del_secy with it
+- changed nxp_c45_tx_sc_set_flt parameters. macsec_context and secy_id
+replaced with phy_device and nxp_c45_secy pointers.
+- nxp_c45_mdo_dev_open/nxp_c45_mdo_dev_stop - priv is get from phydev->priv
+instead of ctx->phydev->priv
+- nxp_c45_sa_set_key - nxp_c45_macsec_write call uses 
+phydev(local variable) instead of ctx->phydev
+
+Changes in V4:
+- Added nxp_c45_secy_free.
+- Added nxp_c45_macsec_en.
+- Added nxp_c45_macsec_remove.
+- nxp_c45_sa_set_pn does if the pn is 0. validate_upd_sa checks this.
+- check ctx->sa.update_pn flag before updating next_pn.
+- nxp_c45_macsec_config_init and nxp_c45_handle_macsec_interrupt are
+checking priv->macsec instead of phydev->macsec_ops to check if macsec is
+offloaded.
+- nxp_c45_handle_macsec_interrupt - replaced WARN_ON(!sa) with 
+WARN_ON(1). sa is either -err_value or a valid pointer and WARN_ON was
+doing nothing.
+- nxp_c45_tx_sa_update does not check if (sa->an != encoding_sa).
+encoding_sa removed from parameters list.
+- nxp_c45_mdo_upd/del_txsa updates the sa status only if sa->an ==
+encoding_sa
+- nxp_c45_mdo_add_rxsc - apply RX SCI restrictions only if end_station is
+true
+
 Changes in v3:
-- improved insert_tx_tag flag description
-- macsec_adjust_room uses the difference between MACsec room and 
-device room to adjust the macsec netdev room.
-- macsec_update_offload return error instead of goto
-- macsec_can_insert_tx_tag renamed to macsec_needs_tx_tag
-- insert_tx_tag flag is checked in macsec_start_xmit
-- "TX offload tag" replaced with "TX tag"
+- removed struct nxp_c45_rx_sc
+- replaced struct nxp_c45_tx_sa with struct nxp_c45_sa
+- reworked the implementation around struct nxp_c45_sa
+- various renamings
+- tried to better group the functions by SA type/SC type
+- no key is stored in the driver
+- TX SAs limited to 2 insted of 4(no key in the driver consequence)
+- used sci_to_cpu where in various functions
+- improved debug information
+- nxp_c45_secy_valid function reworked
+- merged TX/RX SA set key functions
+- merged TX/RX SA set pn functions
+- tried to stick to tx_sa/rx_sa/rx_sc/tx_sc function naming. 
+- nxp_c45_macsec_config_init will return an error if a write fails.
+- MACSEC_TXSC_CFG_SCI renamed to MACSEC_TXSC_CFG_SCB
+- return -ENOSPC if no SC/SA available in the hardware
+- phydev->macsec allocated using devm_kzalloc
+- changed name of the driver object file
 
 Changes in v2:
-- added new fields documentation
-- removed unnecesary checks in insert_tx_tag
-- adjusted mdo_insert_tx_tag parameters. macsec_context replaced with 
-phy_device and sk_buff
-- statistiscs incremented with DEV_STATS_INC
+- WARN_ON_ONCE if reg address is not properly aligned
 - improved patch description
 
- drivers/net/macsec.c | 92 +++++++++++++++++++++++++++++++++++++++++++-
- include/net/macsec.h | 10 +++++
- 2 files changed, 101 insertions(+), 1 deletion(-)
+ MAINTAINERS                              |    2 +-
+ drivers/net/phy/Kconfig                  |    2 +-
+ drivers/net/phy/Makefile                 |    6 +-
+ drivers/net/phy/nxp-c45-tja11xx-macsec.c | 1338 ++++++++++++++++++++++
+ drivers/net/phy/nxp-c45-tja11xx.c        |   77 +-
+ drivers/net/phy/nxp-c45-tja11xx.h        |   62 +
+ 6 files changed, 1454 insertions(+), 33 deletions(-)
+ create mode 100644 drivers/net/phy/nxp-c45-tja11xx-macsec.c
+ create mode 100644 drivers/net/phy/nxp-c45-tja11xx.h
 
-diff --git a/drivers/net/macsec.c b/drivers/net/macsec.c
-index 87ae7e1ff99f..83df54518df9 100644
---- a/drivers/net/macsec.c
-+++ b/drivers/net/macsec.c
-@@ -93,6 +93,8 @@ struct pcpu_secy_stats {
-  * @secys: linked list of SecY's on the underlying device
-  * @gro_cells: pointer to the Generic Receive Offload cell
-  * @offload: status of offloading on the MACsec device
-+ * @insert_tx_tag: when offloading, device requires to insert an
-+ *	additional tag
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 36815d2feb33..80b71494464e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15302,7 +15302,7 @@ NXP C45 TJA11XX PHY DRIVER
+ M:	Radu Pirea <radu-nicolae.pirea@oss.nxp.com>
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+-F:	drivers/net/phy/nxp-c45-tja11xx.c
++F:	drivers/net/phy/nxp-c45-tja11xx*
+ 
+ NXP FSPI DRIVER
+ M:	Han Xu <han.xu@nxp.com>
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 421d2b62918f..a0044681d28c 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -306,7 +306,7 @@ config NXP_C45_TJA11XX_PHY
+ 	depends on PTP_1588_CLOCK_OPTIONAL
+ 	help
+ 	  Enable support for NXP C45 TJA11XX PHYs.
+-	  Currently supports the TJA1103 and TJA1120 PHYs.
++	  Currently supports the TJA1103, TJA1104 and TJA1120 PHYs.
+ 
+ config NXP_TJA11XX_PHY
+ 	tristate "NXP TJA11xx PHYs support"
+diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+index c945ed9bd14b..62b42f0d6a85 100644
+--- a/drivers/net/phy/Makefile
++++ b/drivers/net/phy/Makefile
+@@ -83,7 +83,11 @@ obj-$(CONFIG_MICROSEMI_PHY)	+= mscc/
+ obj-$(CONFIG_MOTORCOMM_PHY)	+= motorcomm.o
+ obj-$(CONFIG_NATIONAL_PHY)	+= national.o
+ obj-$(CONFIG_NCN26000_PHY)	+= ncn26000.o
+-obj-$(CONFIG_NXP_C45_TJA11XX_PHY)	+= nxp-c45-tja11xx.o
++nxp-c45-tja-objs		+= nxp-c45-tja11xx.o
++ifdef CONFIG_MACSEC
++nxp-c45-tja-objs		+= nxp-c45-tja11xx-macsec.o
++endif
++obj-$(CONFIG_NXP_C45_TJA11XX_PHY)	+= nxp-c45-tja.o
+ obj-$(CONFIG_NXP_CBTX_PHY)	+= nxp-cbtx.o
+ obj-$(CONFIG_NXP_TJA11XX_PHY)	+= nxp-tja11xx.o
+ obj-$(CONFIG_QSEMI_PHY)		+= qsemi.o
+diff --git a/drivers/net/phy/nxp-c45-tja11xx-macsec.c b/drivers/net/phy/nxp-c45-tja11xx-macsec.c
+new file mode 100644
+index 000000000000..821f8926f7f2
+--- /dev/null
++++ b/drivers/net/phy/nxp-c45-tja11xx-macsec.c
+@@ -0,0 +1,1338 @@
++// SPDX-License-Identifier: GPL-2.0
++/* NXP C45 PTP PHY driver interface
++ * Copyright 2023 NXP
++ * Author: Radu Pirea <radu-nicolae.pirea@oss.nxp.com>
++ */
++
++#include <linux/delay.h>
++#include <linux/ethtool_netlink.h>
++#include <linux/kernel.h>
++#include <linux/mii.h>
++#include <linux/module.h>
++#include <linux/phy.h>
++#include <linux/processor.h>
++#include <net/macsec.h>
++
++#include "nxp-c45-tja11xx.h"
++
++#define MACSEC_REG_SIZE			32
++#define TX_SC_MAX			4
++
++#define TX_SC_BIT(secy_id)		BIT(MACSEC_REG_SIZE - (secy_id) - 1)
++
++#define VEND1_MACSEC_BASE		0x9000
++
++#define MACSEC_CFG			0x0000
++#define MACSEC_CFG_BYPASS		BIT(1)
++#define MACSEC_CFG_S0I			BIT(0)
++
++#define MACSEC_TPNET			0x0044
++#define PN_WRAP_THRESHOLD		0xffffffff
++
++#define MACSEC_RXSCA			0x0080
++#define MACSEC_RXSCKA			0x0084
++
++#define MACSEC_TXSCA			0x00C0
++#define MACSEC_TXSCKA			0x00C4
++
++#define MACSEC_RXSC_SCI_1H		0x0100
++
++#define MACSEC_RXSC_CFG			0x0128
++#define MACSEC_RXSC_CFG_XPN		BIT(25)
++#define MACSEC_RXSC_CFG_AES_256		BIT(24)
++#define MACSEC_RXSC_CFG_SCI_EN		BIT(11)
++#define MACSEC_RXSC_CFG_RP		BIT(10)
++#define MACSEC_RXSC_CFG_VF_MASK		GENMASK(9, 8)
++#define MACSEC_RXSC_CFG_VF_OFF		8
++
++#define MACSEC_RPW			0x012C
++
++#define MACSEC_RXSA_A_CS		0x0180
++#define MACSEC_RXSA_A_NPN		0x0184
++#define MACSEC_RXSA_A_XNPN		0x0188
++#define MACSEC_RXSA_A_LNPN		0x018C
++#define MACSEC_RXSA_A_LXNPN		0x0190
++
++#define MACSEC_RXSA_B_CS		0x01C0
++#define MACSEC_RXSA_B_NPN		0x01C4
++#define MACSEC_RXSA_B_XNPN		0x01C8
++#define MACSEC_RXSA_B_LNPN		0x01CC
++#define MACSEC_RXSA_B_LXNPN		0x01D0
++
++#define MACSEC_RXSA_CS_AN_OFF		1
++#define MACSEC_RXSA_CS_EN		BIT(0)
++
++#define MACSEC_TXSC_SCI_1H		0x0200
++#define MACSEC_TXSC_CFG			0x0228
++#define MACSEC_TXSC_CFG_XPN		BIT(25)
++#define MACSEC_TXSC_CFG_AES_256		BIT(24)
++#define MACSEC_TXSC_CFG_AN_MASK		GENMASK(19, 18)
++#define MACSEC_TXSC_CFG_AN_OFF		18
++#define MACSEC_TXSC_CFG_ASA		BIT(17)
++#define MACSEC_TXSC_CFG_SCE		BIT(16)
++#define MACSEC_TXSC_CFG_ENCRYPT		BIT(4)
++#define MACSEC_TXSC_CFG_PROTECT		BIT(3)
++#define MACSEC_TXSC_CFG_SEND_SCI	BIT(2)
++#define MACSEC_TXSC_CFG_END_STATION	BIT(1)
++#define MACSEC_TXSC_CFG_SCB		BIT(0)
++
++#define MACSEC_TXSA_A_CS		0x0280
++#define MACSEC_TXSA_A_NPN		0x0284
++#define MACSEC_TXSA_A_XNPN		0x0288
++
++#define MACSEC_TXSA_B_CS		0x02C0
++#define MACSEC_TXSA_B_NPN		0x02C4
++#define MACSEC_TXSA_B_XNPN		0x02C8
++
++#define MACSEC_SA_CS_A			BIT(31)
++
++#define MACSEC_EVR			0x0400
++#define MACSEC_EVER			0x0404
++
++#define MACSEC_RXSA_A_KA		0x0700
++#define MACSEC_RXSA_A_SSCI		0x0720
++#define MACSEC_RXSA_A_SALT		0x0724
++
++#define MACSEC_RXSA_B_KA		0x0740
++#define MACSEC_RXSA_B_SSCI		0x0760
++#define MACSEC_RXSA_B_SALT		0x0764
++
++#define MACSEC_TXSA_A_KA		0x0780
++#define MACSEC_TXSA_A_SSCI		0x07A0
++#define MACSEC_TXSA_A_SALT		0x07A4
++
++#define MACSEC_TXSA_B_KA		0x07C0
++#define MACSEC_TXSA_B_SSCI		0x07E0
++#define MACSEC_TXSA_B_SALT		0x07E4
++
++#define MACSEC_UPFR0D2			0x0A08
++#define MACSEC_UPFR0M1			0x0A10
++#define MACSEC_OVP			BIT(12)
++
++#define	MACSEC_UPFR0M2			0x0A14
++#define ETYPE_MASK			0xffff
++
++#define MACSEC_UPFR0R			0x0A18
++#define MACSEC_UPFR_EN			BIT(0)
++
++#define ADPTR_CNTRL			0x0F00
++#define ADPTR_CNTRL_CONFIG_EN		BIT(14)
++#define ADPTR_CNTRL_ADPTR_EN		BIT(12)
++
++#define TX_SC_FLT_BASE			0x800
++#define TX_SC_FLT_SIZE			0x10
++#define TX_FLT_BASE(flt_id)		(TX_SC_FLT_BASE + \
++	TX_SC_FLT_SIZE * (flt_id))
++
++#define TX_SC_FLT_OFF_MAC_DA_SA		0x04
++#define TX_SC_FLT_OFF_MAC_SA		0x08
++#define TX_SC_FLT_OFF_MAC_CFG		0x0C
++#define TX_SC_FLT_BY_SA			BIT(14)
++#define TX_SC_FLT_EN			BIT(8)
++
++#define TX_SC_FLT_MAC_DA_SA(base)	((base) + TX_SC_FLT_OFF_MAC_DA_SA)
++#define TX_SC_FLT_MAC_SA(base)		((base) + TX_SC_FLT_OFF_MAC_SA)
++#define TX_SC_FLT_MAC_CFG(base)		((base) + TX_SC_FLT_OFF_MAC_CFG)
++
++#define ADAPTER_EN	BIT(6)
++#define MACSEC_EN	BIT(5)
++
++enum nxp_c45_sa_type {
++	TX_SA,
++	RX_SA,
++};
++
++struct nxp_c45_sa {
++	void *sa;
++	const struct nxp_c45_sa_regs *regs;
++	enum nxp_c45_sa_type type;
++	bool is_key_a;
++	u8 an;
++	struct list_head list;
++};
++
++struct nxp_c45_secy {
++	struct macsec_secy *secy;
++	struct macsec_rx_sc *rx_sc;
++	struct list_head sa_list;
++	int secy_id;
++	bool rx_sc0_impl;
++	struct list_head list;
++};
++
++struct nxp_c45_macsec {
++	struct list_head secy_list;
++	DECLARE_BITMAP(secy_bitmap, TX_SC_MAX);
++	DECLARE_BITMAP(tx_sc_bitmap, TX_SC_MAX);
++};
++
++struct nxp_c45_sa_regs {
++	u16 cs;
++	u16 npn;
++	u16 xnpn;
++	u16 lnpn;
++	u16 lxnpn;
++	u16 ka;
++	u16 ssci;
++	u16 salt;
++};
++
++static const struct nxp_c45_sa_regs rx_sa_a_regs = {
++	.cs	= MACSEC_RXSA_A_CS,
++	.npn	= MACSEC_RXSA_A_NPN,
++	.xnpn	= MACSEC_RXSA_A_XNPN,
++	.lnpn	= MACSEC_RXSA_A_LNPN,
++	.lxnpn	= MACSEC_RXSA_A_LXNPN,
++	.ka	= MACSEC_RXSA_A_KA,
++	.ssci	= MACSEC_RXSA_A_SSCI,
++	.salt	= MACSEC_RXSA_A_SALT,
++};
++
++static const struct nxp_c45_sa_regs rx_sa_b_regs = {
++	.cs	= MACSEC_RXSA_B_CS,
++	.npn	= MACSEC_RXSA_B_NPN,
++	.xnpn	= MACSEC_RXSA_B_XNPN,
++	.lnpn	= MACSEC_RXSA_B_LNPN,
++	.lxnpn	= MACSEC_RXSA_B_LXNPN,
++	.ka	= MACSEC_RXSA_B_KA,
++	.ssci	= MACSEC_RXSA_B_SSCI,
++	.salt	= MACSEC_RXSA_B_SALT,
++};
++
++static const struct nxp_c45_sa_regs tx_sa_a_regs = {
++	.cs	= MACSEC_TXSA_A_CS,
++	.npn	= MACSEC_TXSA_A_NPN,
++	.xnpn	= MACSEC_TXSA_A_XNPN,
++	.ka	= MACSEC_TXSA_A_KA,
++	.ssci	= MACSEC_TXSA_A_SSCI,
++	.salt	= MACSEC_TXSA_A_SALT,
++};
++
++static const struct nxp_c45_sa_regs tx_sa_b_regs = {
++	.cs	= MACSEC_TXSA_B_CS,
++	.npn	= MACSEC_TXSA_B_NPN,
++	.xnpn	= MACSEC_TXSA_B_XNPN,
++	.ka	= MACSEC_TXSA_B_KA,
++	.ssci	= MACSEC_TXSA_B_SSCI,
++	.salt	= MACSEC_TXSA_B_SALT,
++};
++
++static const
++struct nxp_c45_sa_regs *nxp_c45_sa_regs_get(enum nxp_c45_sa_type sa_type,
++					    bool key_a)
++{
++	if (sa_type == RX_SA)
++		if (key_a)
++			return &rx_sa_a_regs;
++		else
++			return &rx_sa_b_regs;
++	else if (sa_type == TX_SA)
++		if (key_a)
++			return &tx_sa_a_regs;
++		else
++			return &tx_sa_b_regs;
++	else
++		return NULL;
++}
++
++static int nxp_c45_macsec_write(struct phy_device *phydev, u16 addr, u32 value)
++{
++	u32 lvalue = value;
++	u16 laddr;
++	int ret;
++
++	WARN_ON_ONCE(addr % 4);
++
++	phydev_dbg(phydev, "write addr 0x%x value 0x%x\n", addr, value);
++
++	laddr = VEND1_MACSEC_BASE + addr / 2;
++	ret = phy_write_mmd(phydev, MDIO_MMD_VEND2, laddr, lvalue);
++	if (ret)
++		return ret;
++
++	laddr += 1;
++	lvalue >>= 16;
++	ret = phy_write_mmd(phydev, MDIO_MMD_VEND2, laddr, lvalue);
++
++	return ret;
++}
++
++static int nxp_c45_macsec_read(struct phy_device *phydev, u16 addr, u32 *value)
++{
++	u32 lvalue;
++	u16 laddr;
++	int ret;
++
++	WARN_ON_ONCE(addr % 4);
++
++	laddr = VEND1_MACSEC_BASE + addr / 2;
++	ret = phy_read_mmd(phydev, MDIO_MMD_VEND2, laddr);
++	if (ret < 0)
++		return ret;
++
++	laddr += 1;
++	lvalue = (u32)ret & 0xffff;
++	ret = phy_read_mmd(phydev, MDIO_MMD_VEND2, laddr);
++	if (ret < 0)
++		return ret;
++
++	lvalue |= (u32)ret << 16;
++	*value = lvalue;
++
++	phydev_dbg(phydev, "read addr 0x%x value 0x%x\n", addr, *value);
++
++	return 0;
++}
++
++static void nxp_c45_secy_irq_en(struct phy_device *phydev,
++				struct nxp_c45_secy *phy_secy, bool en)
++{
++	u32 reg;
++
++	nxp_c45_macsec_read(phydev, MACSEC_EVER, &reg);
++	if (en)
++		reg |= TX_SC_BIT(phy_secy->secy_id);
++	else
++		reg &= ~TX_SC_BIT(phy_secy->secy_id);
++	nxp_c45_macsec_write(phydev, MACSEC_EVER, reg);
++}
++
++static struct nxp_c45_secy *nxp_c45_find_secy(struct list_head *secy_list,
++					      sci_t sci)
++{
++	struct nxp_c45_secy *pos, *tmp;
++
++	list_for_each_entry_safe(pos, tmp, secy_list, list)
++		if (pos->secy->sci == sci)
++			return pos;
++
++	return ERR_PTR(-EINVAL);
++}
++
++static void nxp_c45_secy_free(struct nxp_c45_secy *phy_secy)
++{
++	list_del(&phy_secy->list);
++	kfree(phy_secy);
++}
++
++static struct nxp_c45_sa *nxp_c45_find_sa(struct list_head *sa_list,
++					  enum nxp_c45_sa_type sa_type, u8 an)
++{
++	struct nxp_c45_sa *pos, *tmp;
++
++	list_for_each_entry_safe(pos, tmp, sa_list, list)
++		if (pos->an == an && pos->type == sa_type)
++			return pos;
++
++	return ERR_PTR(-EINVAL);
++}
++
++static struct nxp_c45_sa *nxp_c45_sa_alloc(struct list_head *sa_list, void *sa,
++					   enum nxp_c45_sa_type sa_type, u8 an)
++{
++	struct nxp_c45_sa *first = NULL, *pos, *tmp;
++	int ocurences = 0;
++
++	list_for_each_entry_safe(pos, tmp, sa_list, list) {
++		if (pos->type != sa_type)
++			continue;
++
++		if (pos->an == an)
++			return ERR_PTR(-EINVAL);
++
++		first = pos;
++		ocurences++;
++		if (ocurences >= 2)
++			return ERR_PTR(-ENOSPC);
++	}
++
++	tmp = kzalloc(sizeof(*tmp), GFP_KERNEL);
++	if (!tmp)
++		return ERR_PTR(-ENOMEM);
++
++	if (first)
++		tmp->is_key_a = !first->is_key_a;
++	else
++		tmp->is_key_a = true;
++
++	tmp->sa = sa;
++	tmp->type = sa_type;
++	tmp->an = an;
++	tmp->regs = nxp_c45_sa_regs_get(tmp->type, tmp->is_key_a);
++	list_add_tail(&tmp->list, sa_list);
++
++	return tmp;
++}
++
++static void nxp_c45_sa_free(struct nxp_c45_sa *sa)
++{
++	list_del(&sa->list);
++	kfree_sensitive(sa);
++}
++
++static void nxp_c45_sa_list_free(struct list_head *sa_list)
++{
++	struct nxp_c45_sa *pos, *tmp;
++
++	list_for_each_entry_safe(pos, tmp, sa_list, list)
++		nxp_c45_sa_free(pos);
++}
++
++static void nxp_c45_sa_set_pn(struct phy_device *phydev,
++			      struct nxp_c45_sa *sa, u64 pn,
++			      u32 replay_window)
++{
++	const struct nxp_c45_sa_regs *sa_regs = sa->regs;
++	pn_t npn = {.full64 = pn};
++	pn_t lnpn;
++
++	nxp_c45_macsec_write(phydev, sa_regs->npn, npn.lower);
++	nxp_c45_macsec_write(phydev, sa_regs->xnpn, npn.upper);
++	if (sa->type != RX_SA)
++		return;
++
++	if (pn > replay_window)
++		lnpn.full64 = pn - replay_window;
++	else
++		lnpn.full64 = 1;
++
++	nxp_c45_macsec_write(phydev, sa_regs->lnpn, lnpn.lower);
++	nxp_c45_macsec_write(phydev, sa_regs->lxnpn, lnpn.upper);
++}
++
++static void nxp_c45_sa_set_key(struct macsec_context *ctx,
++			       const struct nxp_c45_sa_regs *sa_regs,
++			       u8 *salt, ssci_t ssci)
++{
++	struct phy_device *phydev = ctx->phydev;
++	u32 key_size = ctx->secy->key_len / 4;
++	u32 salt_size = MACSEC_SALT_LEN / 4;
++	u32 *key_u32 = (u32 *)ctx->sa.key;
++	u32 *salt_u32 = (u32 *)salt;
++	u32 reg, value;
++	int i;
++
++	for (i = 0; i < key_size; i++) {
++		reg = sa_regs->ka + i * 4;
++		value = (__force u32)cpu_to_be32(key_u32[i]);
++		nxp_c45_macsec_write(phydev, reg, value);
++	}
++
++	if (ctx->secy->xpn) {
++		for (i = 0; i < salt_size; i++) {
++			reg = sa_regs->salt + (2 - i) * 4;
++			value = (__force u32)cpu_to_be32(salt_u32[i]);
++			nxp_c45_macsec_write(phydev, reg, value);
++		}
++
++		value = (__force u32)cpu_to_be32((__force u32)ssci);
++		nxp_c45_macsec_write(phydev, sa_regs->ssci, value);
++	}
++
++	nxp_c45_macsec_write(phydev, sa_regs->cs, MACSEC_SA_CS_A);
++}
++
++static void nxp_c45_rx_sa_update(struct phy_device *phydev,
++				 struct nxp_c45_sa *sa, bool en)
++{
++	const struct nxp_c45_sa_regs *sa_regs = sa->regs;
++	u32 cfg;
++
++	cfg = sa->an << MACSEC_RXSA_CS_AN_OFF;
++	cfg |= en ? MACSEC_RXSA_CS_EN : 0;
++	nxp_c45_macsec_write(phydev, sa_regs->cs, cfg);
++}
++
++static void nxp_c45_tx_sa_update(struct phy_device *phydev,
++				 struct nxp_c45_sa *sa, bool en)
++{
++	u32 cfg = 0;
++
++	nxp_c45_macsec_read(phydev, MACSEC_TXSC_CFG, &cfg);
++
++	cfg &= ~MACSEC_TXSC_CFG_AN_MASK;
++	cfg |= sa->an << MACSEC_TXSC_CFG_AN_OFF;
++
++	if (sa->is_key_a)
++		cfg &= ~MACSEC_TXSC_CFG_ASA;
++	else
++		cfg |= MACSEC_TXSC_CFG_ASA;
++
++	if (en)
++		cfg |= MACSEC_TXSC_CFG_SCE;
++	else
++		cfg &= ~MACSEC_TXSC_CFG_SCE;
++
++	nxp_c45_macsec_write(phydev, MACSEC_TXSC_CFG, cfg);
++}
++
++static void nxp_c45_set_sci(struct phy_device *phydev, u16 sci_base_addr,
++			    sci_t sci)
++{
++	u64 lsci = sci_to_cpu(sci);
++
++	nxp_c45_macsec_write(phydev, sci_base_addr, lsci >> 32);
++	nxp_c45_macsec_write(phydev, sci_base_addr + 4, lsci);
++}
++
++static bool nxp_c45_sci_valid(sci_t sci, bool scb)
++{
++	u16 port = sci_to_cpu(sci);
++
++	if (scb && port != 0)
++		return false;
++	if (!scb && port != 1)
++		return false;
++
++	return true;
++}
++
++static void nxp_c45_select_secy(struct phy_device *phydev, u8 id)
++{
++	nxp_c45_macsec_write(phydev, MACSEC_RXSCA, id);
++	nxp_c45_macsec_write(phydev, MACSEC_RXSCKA, id);
++	nxp_c45_macsec_write(phydev, MACSEC_TXSCA, id);
++	nxp_c45_macsec_write(phydev, MACSEC_TXSCKA, id);
++}
++
++static bool nxp_c45_secy_valid(struct nxp_c45_secy *phy_secy,
++			       bool can_rx_sc0_impl)
++{
++	bool end_station = phy_secy->secy->tx_sc.end_station;
++	bool send_sci = phy_secy->secy->tx_sc.send_sci;
++	bool scb = phy_secy->secy->tx_sc.scb;
++	bool rx_sci_valid, tx_sci_valid;
++	sci_t sci = phy_secy->secy->sci;
++
++	phy_secy->rx_sc0_impl = false;
++
++	if (send_sci) {
++		if (end_station || scb)
++			return false;
++		else
++			return true;
++	}
++
++	if (end_station) {
++		tx_sci_valid = nxp_c45_sci_valid(sci, scb);
++		if (phy_secy->rx_sc) {
++			sci = phy_secy->rx_sc->sci;
++			rx_sci_valid = nxp_c45_sci_valid(sci, scb);
++		} else {
++			rx_sci_valid = true;
++		}
++
++		return tx_sci_valid && rx_sci_valid;
++	}
++
++	if (scb)
++		return false;
++
++	if (!can_rx_sc0_impl)
++		return false;
++
++	if (phy_secy->secy_id != 0)
++		return false;
++
++	phy_secy->rx_sc0_impl = true;
++
++	return true;
++}
++
++static bool nxp_c45_mac_addr_free(struct macsec_context *ctx)
++{
++	struct nxp_c45_phy *priv = ctx->phydev->priv;
++	struct nxp_c45_secy *pos, *tmp;
++
++	list_for_each_entry_safe(pos, tmp, &priv->macsec->secy_list, list) {
++		if (pos->secy == ctx->secy)
++			continue;
++
++		if (memcmp(pos->secy->netdev->dev_addr,
++			   ctx->secy->netdev->dev_addr, ETH_ALEN) == 0)
++			return false;
++	}
++
++	return true;
++}
++
++static void nxp_c45_tx_sc_en_flt(struct phy_device *phydev, int secy_id,
++				 bool en)
++{
++	u32 tx_flt_base = TX_FLT_BASE(secy_id);
++	u32 reg = 0;
++
++	nxp_c45_macsec_read(phydev, TX_SC_FLT_MAC_CFG(tx_flt_base), &reg);
++	if (en)
++		reg |= TX_SC_FLT_EN;
++	else
++		reg &= ~TX_SC_FLT_EN;
++	nxp_c45_macsec_write(phydev, TX_SC_FLT_MAC_CFG(tx_flt_base), reg);
++}
++
++static void nxp_c45_tx_sc_set_flt(struct phy_device *phydev,
++				  struct nxp_c45_secy *phy_secy)
++{
++	const u8 *dev_addr = phy_secy->secy->netdev->dev_addr;
++	u32 tx_flt_base = TX_FLT_BASE(phy_secy->secy_id);
++	u32 reg;
++
++	reg = dev_addr[0] << 8 | dev_addr[1];
++	nxp_c45_macsec_write(phydev, TX_SC_FLT_MAC_DA_SA(tx_flt_base), reg);
++	reg = dev_addr[5] | dev_addr[4] << 8 | dev_addr[3] << 16 |
++		dev_addr[2] << 24;
++
++	nxp_c45_macsec_write(phydev, TX_SC_FLT_MAC_SA(tx_flt_base), reg);
++	nxp_c45_macsec_read(phydev, TX_SC_FLT_MAC_CFG(tx_flt_base), &reg);
++	reg &= TX_SC_FLT_EN;
++	reg |= TX_SC_FLT_BY_SA | phy_secy->secy_id;
++	nxp_c45_macsec_write(phydev, TX_SC_FLT_MAC_CFG(tx_flt_base), reg);
++}
++
++static void nxp_c45_tx_sc_update(struct phy_device *phydev,
++				 struct nxp_c45_secy *phy_secy)
++{
++	u32 cfg = 0;
++
++	nxp_c45_macsec_read(phydev, MACSEC_TXSC_CFG, &cfg);
++
++	phydev_dbg(phydev, "XPN %s\n", phy_secy->secy->xpn ? "on" : "off");
++	if (phy_secy->secy->xpn)
++		cfg |= MACSEC_TXSC_CFG_XPN;
++	else
++		cfg &= ~MACSEC_TXSC_CFG_XPN;
++
++	phydev_dbg(phydev, "key len %u\n", phy_secy->secy->key_len);
++	if (phy_secy->secy->key_len == 32)
++		cfg |= MACSEC_TXSC_CFG_AES_256;
++	else
++		cfg &= ~MACSEC_TXSC_CFG_AES_256;
++
++	phydev_dbg(phydev, "encryption %s\n",
++		   phy_secy->secy->tx_sc.encrypt ? "on" : "off");
++	if (phy_secy->secy->tx_sc.encrypt)
++		cfg |= MACSEC_TXSC_CFG_ENCRYPT;
++	else
++		cfg &= ~MACSEC_TXSC_CFG_ENCRYPT;
++
++	phydev_dbg(phydev, "protect frames %s\n",
++		   phy_secy->secy->protect_frames ? "on" : "off");
++	if (phy_secy->secy->protect_frames)
++		cfg |= MACSEC_TXSC_CFG_PROTECT;
++	else
++		cfg &= ~MACSEC_TXSC_CFG_PROTECT;
++
++	phydev_dbg(phydev, "send sci %s\n",
++		   phy_secy->secy->tx_sc.send_sci ? "on" : "off");
++	if (phy_secy->secy->tx_sc.send_sci)
++		cfg |= MACSEC_TXSC_CFG_SEND_SCI;
++	else
++		cfg &= ~MACSEC_TXSC_CFG_SEND_SCI;
++
++	phydev_dbg(phydev, "end station %s\n",
++		   phy_secy->secy->tx_sc.end_station ? "on" : "off");
++	if (phy_secy->secy->tx_sc.end_station)
++		cfg |= MACSEC_TXSC_CFG_END_STATION;
++	else
++		cfg &= ~MACSEC_TXSC_CFG_END_STATION;
++
++	phydev_dbg(phydev, "scb %s\n",
++		   phy_secy->secy->tx_sc.scb ? "on" : "off");
++	if (phy_secy->secy->tx_sc.scb)
++		cfg |= MACSEC_TXSC_CFG_SCB;
++	else
++		cfg &= ~MACSEC_TXSC_CFG_SCB;
++
++	nxp_c45_macsec_write(phydev, MACSEC_TXSC_CFG, cfg);
++}
++
++static void nxp_c45_set_rx_sc0_impl(struct phy_device *phydev,
++				    bool enable)
++{
++	u32 reg = 0;
++
++	nxp_c45_macsec_read(phydev, MACSEC_CFG, &reg);
++	if (enable)
++		reg |= MACSEC_CFG_S0I;
++	else
++		reg &= ~MACSEC_CFG_S0I;
++	nxp_c45_macsec_write(phydev, MACSEC_CFG, reg);
++}
++
++static bool nxp_c45_is_rx_sc0_impl(struct list_head *secy_list)
++{
++	struct nxp_c45_secy *pos, *tmp;
++
++	list_for_each_entry_safe(pos, tmp, secy_list, list)
++		if (pos->rx_sc0_impl)
++			return pos->rx_sc0_impl;
++
++	return false;
++}
++
++static void nxp_c45_rx_sc_en(struct phy_device *phydev,
++			     struct macsec_rx_sc *rx_sc, bool en)
++{
++	u32 reg = 0;
++
++	nxp_c45_macsec_read(phydev, MACSEC_RXSC_CFG, &reg);
++	if (rx_sc->active && en)
++		reg |= MACSEC_RXSC_CFG_SCI_EN;
++	else
++		reg &= ~MACSEC_RXSC_CFG_SCI_EN;
++	nxp_c45_macsec_write(phydev, MACSEC_RXSC_CFG, reg);
++}
++
++static void nxp_c45_rx_sc_update(struct phy_device *phydev,
++				 struct nxp_c45_secy *phy_secy)
++{
++	struct macsec_rx_sc *rx_sc = phy_secy->rx_sc;
++	struct nxp_c45_phy *priv = phydev->priv;
++	u32 cfg = 0;
++
++	nxp_c45_macsec_read(phydev, MACSEC_RXSC_CFG, &cfg);
++	cfg &= ~MACSEC_RXSC_CFG_VF_MASK;
++	cfg = phy_secy->secy->validate_frames << MACSEC_RXSC_CFG_VF_OFF;
++
++	phydev_dbg(phydev, "validate frames %u\n",
++		   phy_secy->secy->validate_frames);
++	phydev_dbg(phydev, "replay_protect %s window %u\n",
++		   phy_secy->secy->replay_protect ? "on" : "off",
++		   phy_secy->secy->replay_window);
++	if (phy_secy->secy->replay_protect) {
++		cfg |= MACSEC_RXSC_CFG_RP;
++		if (cfg & MACSEC_RXSC_CFG_SCI_EN) {
++			phydev_dbg(phydev, "RX SC enabled, window will not be updated\n");
++		} else {
++			phydev_dbg(phydev, "RX SC disabled, window will be updated\n");
++			nxp_c45_macsec_write(phydev, MACSEC_RPW,
++					     phy_secy->secy->replay_window);
++		}
++	} else {
++		cfg &= ~MACSEC_RXSC_CFG_RP;
++	}
++
++	phydev_dbg(phydev, "rx_sc->active %s\n",
++		   rx_sc->active ? "on" : "off");
++	if (rx_sc->active &&
++	    test_bit(phy_secy->secy_id, priv->macsec->secy_bitmap))
++		cfg |= MACSEC_RXSC_CFG_SCI_EN;
++	else
++		cfg &= ~MACSEC_RXSC_CFG_SCI_EN;
++
++	phydev_dbg(phydev, "key len %u\n", phy_secy->secy->key_len);
++	if (phy_secy->secy->key_len == 32)
++		cfg |= MACSEC_RXSC_CFG_AES_256;
++	else
++		cfg &= ~MACSEC_RXSC_CFG_AES_256;
++
++	phydev_dbg(phydev, "XPN %s\n", phy_secy->secy->xpn ? "on" : "off");
++	if (phy_secy->secy->xpn)
++		cfg |= MACSEC_RXSC_CFG_XPN;
++	else
++		cfg &= ~MACSEC_RXSC_CFG_XPN;
++
++	nxp_c45_macsec_write(phydev, MACSEC_RXSC_CFG, cfg);
++}
++
++static void nxp_c45_rx_sc_del(struct phy_device *phydev,
++			      struct nxp_c45_secy *phy_secy)
++{
++	struct nxp_c45_sa *pos, *tmp;
++
++	nxp_c45_macsec_write(phydev, MACSEC_RXSC_CFG, 0);
++	nxp_c45_macsec_write(phydev, MACSEC_RPW, 0);
++	nxp_c45_set_sci(phydev, MACSEC_RXSC_SCI_1H, 0);
++
++	list_for_each_entry_safe(pos, tmp, &phy_secy->sa_list, list)
++		if (pos->type == RX_SA)
++			nxp_c45_rx_sa_update(phydev, pos, false);
++}
++
++static void nxp_c45_macsec_en(struct phy_device *phydev, bool en)
++{
++	u32 reg;
++
++	nxp_c45_macsec_read(phydev, MACSEC_CFG, &reg);
++	if (en)
++		reg |= MACSEC_CFG_BYPASS;
++	else
++		reg &= ~MACSEC_CFG_BYPASS;
++	nxp_c45_macsec_write(phydev, MACSEC_CFG, reg);
++}
++
++static int nxp_c45_mdo_dev_open(struct macsec_context *ctx)
++{
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++	int any_bit_set;
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++
++	nxp_c45_tx_sc_en_flt(phydev, phy_secy->secy_id, true);
++	nxp_c45_set_rx_sc0_impl(phydev, phy_secy->rx_sc0_impl);
++	if (phy_secy->rx_sc)
++		nxp_c45_rx_sc_en(phydev, phy_secy->rx_sc, true);
++
++	any_bit_set = find_first_bit(priv->macsec->secy_bitmap, TX_SC_MAX);
++	if (any_bit_set == TX_SC_MAX)
++		nxp_c45_macsec_en(phydev, true);
++
++	set_bit(phy_secy->secy_id, priv->macsec->secy_bitmap);
++
++	return 0;
++}
++
++static int nxp_c45_mdo_dev_stop(struct macsec_context *ctx)
++{
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++	int any_bit_set;
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++
++	nxp_c45_tx_sc_en_flt(phydev, phy_secy->secy_id, false);
++	if (phy_secy->rx_sc)
++		nxp_c45_rx_sc_en(phydev, phy_secy->rx_sc, false);
++	nxp_c45_set_rx_sc0_impl(phydev, false);
++
++	clear_bit(phy_secy->secy_id, priv->macsec->secy_bitmap);
++	any_bit_set = find_first_bit(priv->macsec->secy_bitmap, TX_SC_MAX);
++	if (any_bit_set == TX_SC_MAX)
++		nxp_c45_macsec_en(phydev, false);
++
++	return 0;
++}
++
++static int nxp_c45_mdo_add_secy(struct macsec_context *ctx)
++{
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++	bool can_rx_sc0_impl;
++	int idx;
++
++	phydev_dbg(phydev, "add SecY SCI %016llx\n",
++		   sci_to_cpu(ctx->secy->sci));
++
++	if (!nxp_c45_mac_addr_free(ctx))
++		return -EBUSY;
++
++	if (nxp_c45_is_rx_sc0_impl(&priv->macsec->secy_list))
++		return -EBUSY;
++
++	idx = find_first_zero_bit(priv->macsec->tx_sc_bitmap, TX_SC_MAX);
++	if (idx == TX_SC_MAX)
++		return -ENOSPC;
++
++	phy_secy = kzalloc(sizeof(*phy_secy), GFP_KERNEL);
++	if (!phy_secy)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&phy_secy->sa_list);
++	phy_secy->secy = ctx->secy;
++	phy_secy->secy_id = idx;
++
++	/* If the point to point mode should be enabled, we should have only
++	 * one SecY enabled, respectively the new one.
++	 */
++	can_rx_sc0_impl = list_count_nodes(&priv->macsec->secy_list) == 0;
++	if (!nxp_c45_secy_valid(phy_secy, can_rx_sc0_impl)) {
++		kfree_sensitive(phy_secy);
++		return -EINVAL;
++	}
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++	nxp_c45_set_sci(phydev, MACSEC_TXSC_SCI_1H, ctx->secy->sci);
++	nxp_c45_tx_sc_set_flt(phydev, phy_secy);
++	nxp_c45_tx_sc_update(phydev, phy_secy);
++	if (phy_interrupt_is_valid(phydev))
++		nxp_c45_secy_irq_en(phydev, phy_secy, true);
++
++	set_bit(idx, priv->macsec->tx_sc_bitmap);
++	list_add_tail(&phy_secy->list, &priv->macsec->secy_list);
++
++	return 0;
++}
++
++static void nxp_c45_tx_sa_next(struct nxp_c45_secy *phy_secy,
++			       struct nxp_c45_sa *next_sa, u8 encoding_sa)
++{
++	struct nxp_c45_sa *sa;
++
++	sa = nxp_c45_find_sa(&phy_secy->sa_list, TX_SA, encoding_sa);
++	if (!IS_ERR(sa)) {
++		memcpy(next_sa, sa, sizeof(*sa));
++	} else {
++		next_sa->is_key_a = true;
++		next_sa->an = encoding_sa;
++	}
++}
++
++static int nxp_c45_mdo_upd_secy(struct macsec_context *ctx)
++{
++	u8 encoding_sa = ctx->secy->tx_sc.encoding_sa;
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++	struct nxp_c45_sa next_sa;
++	bool can_rx_sc0_impl;
++
++	phydev_dbg(phydev, "update SecY SCI %016llx\n",
++		   sci_to_cpu(ctx->secy->sci));
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	if (!nxp_c45_mac_addr_free(ctx))
++		return -EBUSY;
++
++	/* If the point to point mode should be enabled, we should have only
++	 * one SecY enabled, respectively the new one.
++	 */
++	can_rx_sc0_impl = list_count_nodes(&priv->macsec->secy_list) == 1;
++	if (!nxp_c45_secy_valid(phy_secy, can_rx_sc0_impl))
++		return -EINVAL;
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++
++	nxp_c45_tx_sc_set_flt(phydev, phy_secy);
++	nxp_c45_tx_sc_update(phydev, phy_secy);
++
++	nxp_c45_tx_sa_next(phy_secy, &next_sa, encoding_sa);
++	nxp_c45_tx_sa_update(phydev, &next_sa, ctx->secy->operational);
++
++	nxp_c45_set_rx_sc0_impl(phydev, phy_secy->rx_sc0_impl);
++	if (phy_secy->rx_sc)
++		nxp_c45_rx_sc_update(phydev, phy_secy);
++
++	return 0;
++}
++
++static int nxp_c45_mdo_del_secy(struct macsec_context *ctx)
++{
++	u8 encoding_sa = ctx->secy->tx_sc.encoding_sa;
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++	struct nxp_c45_sa next_sa;
++
++	phydev_dbg(phydev, "delete SecY SCI %016llx\n",
++		   sci_to_cpu(ctx->secy->sci));
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++
++	nxp_c45_mdo_dev_stop(ctx);
++	nxp_c45_tx_sa_next(phy_secy, &next_sa, encoding_sa);
++	nxp_c45_tx_sa_update(phydev, &next_sa, false);
++	if (phy_secy->rx_sc)
++		nxp_c45_rx_sc_del(phydev, phy_secy);
++
++	nxp_c45_sa_list_free(&phy_secy->sa_list);
++	if (phy_interrupt_is_valid(phydev))
++		nxp_c45_secy_irq_en(phydev, phy_secy, false);
++
++	clear_bit(phy_secy->secy_id, priv->macsec->tx_sc_bitmap);
++	nxp_c45_secy_free(phy_secy);
++
++	return 0;
++}
++
++static int nxp_c45_mdo_add_rxsc(struct macsec_context *ctx)
++{
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++
++	phydev_dbg(phydev, "add RX SC SCI %016llx %s\n",
++		   sci_to_cpu(ctx->rx_sc->sci),
++		   ctx->rx_sc->active ? "enabled" : "disabled");
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	if (phy_secy->rx_sc)
++		return -ENOSPC;
++
++	if (phy_secy->secy->tx_sc.end_station &&
++	    !nxp_c45_sci_valid(ctx->rx_sc->sci, ctx->secy->tx_sc.scb))
++		return -EINVAL;
++
++	phy_secy->rx_sc = ctx->rx_sc;
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++	nxp_c45_set_sci(phydev, MACSEC_RXSC_SCI_1H, ctx->rx_sc->sci);
++	nxp_c45_rx_sc_update(phydev, phy_secy);
++
++	return 0;
++}
++
++static int nxp_c45_mdo_upd_rxsc(struct macsec_context *ctx)
++{
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++
++	phydev_dbg(phydev, "update RX SC SCI %016llx %s\n",
++		   sci_to_cpu(ctx->rx_sc->sci),
++		   ctx->rx_sc->active ? "enabled" : "disabled");
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++	nxp_c45_rx_sc_update(phydev, phy_secy);
++
++	return 0;
++}
++
++static int nxp_c45_mdo_del_rxsc(struct macsec_context *ctx)
++{
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++
++	phydev_dbg(phydev, "delete RX SC SCI %016llx %s\n",
++		   sci_to_cpu(ctx->rx_sc->sci),
++		   ctx->rx_sc->active ? "enabled" : "disabled");
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++	nxp_c45_rx_sc_del(phydev, phy_secy);
++	phy_secy->rx_sc = NULL;
++
++	return 0;
++}
++
++static int nxp_c45_mdo_add_rxsa(struct macsec_context *ctx)
++{
++	struct macsec_rx_sa *rx_sa = ctx->sa.rx_sa;
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++	u8 an = ctx->sa.assoc_num;
++	struct nxp_c45_sa *sa;
++
++	phydev_dbg(phydev, "add RX SA %u %s to RX SC SCI %016llx\n",
++		   an, rx_sa->active ? "enabled" : "disabled",
++		   sci_to_cpu(rx_sa->sc->sci));
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	sa = nxp_c45_sa_alloc(&phy_secy->sa_list, rx_sa, RX_SA, an);
++	if (IS_ERR(sa))
++		return PTR_ERR(sa);
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++	nxp_c45_sa_set_pn(phydev, sa, rx_sa->next_pn,
++			  ctx->secy->replay_window);
++	nxp_c45_sa_set_key(ctx, sa->regs, rx_sa->key.salt.bytes, rx_sa->ssci);
++	nxp_c45_rx_sa_update(phydev, sa, rx_sa->active);
++
++	return 0;
++}
++
++static int nxp_c45_mdo_upd_rxsa(struct macsec_context *ctx)
++{
++	struct macsec_rx_sa *rx_sa = ctx->sa.rx_sa;
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++	u8 an = ctx->sa.assoc_num;
++	struct nxp_c45_sa *sa;
++
++	phydev_dbg(phydev, "update RX SA %u %s to RX SC SCI %016llx\n",
++		   an, rx_sa->active ? "enabled" : "disabled",
++		   sci_to_cpu(rx_sa->sc->sci));
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	sa = nxp_c45_find_sa(&phy_secy->sa_list, RX_SA, an);
++	if (IS_ERR(sa))
++		return PTR_ERR(sa);
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++	if (ctx->sa.update_pn)
++		nxp_c45_sa_set_pn(phydev, sa, rx_sa->next_pn,
++				  ctx->secy->replay_window);
++	nxp_c45_rx_sa_update(phydev, sa, rx_sa->active);
++
++	return 0;
++}
++
++static int nxp_c45_mdo_del_rxsa(struct macsec_context *ctx)
++{
++	struct macsec_rx_sa *rx_sa = ctx->sa.rx_sa;
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++	u8 an = ctx->sa.assoc_num;
++	struct nxp_c45_sa *sa;
++
++	phydev_dbg(phydev, "delete RX SA %u %s to RX SC SCI %016llx\n",
++		   an, rx_sa->active ? "enabled" : "disabled",
++		   sci_to_cpu(rx_sa->sc->sci));
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	sa = nxp_c45_find_sa(&phy_secy->sa_list, RX_SA, an);
++	if (IS_ERR(sa))
++		return PTR_ERR(sa);
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++	nxp_c45_rx_sa_update(phydev, sa, false);
++
++	nxp_c45_sa_free(sa);
++
++	return 0;
++}
++
++static int nxp_c45_mdo_add_txsa(struct macsec_context *ctx)
++{
++	struct macsec_tx_sa *tx_sa = ctx->sa.tx_sa;
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++	u8 an = ctx->sa.assoc_num;
++	struct nxp_c45_sa *sa;
++
++	phydev_dbg(phydev, "add TX SA %u %s to TX SC %016llx\n",
++		   an, ctx->sa.tx_sa->active ? "enabled" : "disabled",
++		   sci_to_cpu(ctx->secy->sci));
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	sa = nxp_c45_sa_alloc(&phy_secy->sa_list, tx_sa, TX_SA, an);
++	if (IS_ERR(sa))
++		return PTR_ERR(sa);
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++	nxp_c45_sa_set_pn(phydev, sa, tx_sa->next_pn, 0);
++	nxp_c45_sa_set_key(ctx, sa->regs, tx_sa->key.salt.bytes, tx_sa->ssci);
++	if (ctx->secy->tx_sc.encoding_sa  == sa->an)
++		nxp_c45_tx_sa_update(phydev, sa, tx_sa->active);
++
++	return 0;
++}
++
++static int nxp_c45_mdo_upd_txsa(struct macsec_context *ctx)
++{
++	struct macsec_tx_sa *tx_sa = ctx->sa.tx_sa;
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++	u8 an = ctx->sa.assoc_num;
++	struct nxp_c45_sa *sa;
++
++	phydev_dbg(phydev, "update TX SA %u %s to TX SC %016llx\n",
++		   an, ctx->sa.tx_sa->active ? "enabled" : "disabled",
++		   sci_to_cpu(ctx->secy->sci));
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	sa = nxp_c45_find_sa(&phy_secy->sa_list, TX_SA, an);
++	if (IS_ERR(sa))
++		return PTR_ERR(sa);
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++	if (ctx->sa.update_pn)
++		nxp_c45_sa_set_pn(phydev, sa, tx_sa->next_pn, 0);
++	if (ctx->secy->tx_sc.encoding_sa == sa->an)
++		nxp_c45_tx_sa_update(phydev, sa, tx_sa->active);
++
++	return 0;
++}
++
++static int nxp_c45_mdo_del_txsa(struct macsec_context *ctx)
++{
++	struct phy_device *phydev = ctx->phydev;
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *phy_secy;
++	u8 an = ctx->sa.assoc_num;
++	struct nxp_c45_sa *sa;
++
++	phydev_dbg(phydev, "delete TX SA %u %s to TX SC %016llx\n",
++		   an, ctx->sa.tx_sa->active ? "enabled" : "disabled",
++		   sci_to_cpu(ctx->secy->sci));
++
++	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
++	if (IS_ERR(phy_secy))
++		return PTR_ERR(phy_secy);
++
++	sa = nxp_c45_find_sa(&phy_secy->sa_list, TX_SA, an);
++	if (IS_ERR(sa))
++		return PTR_ERR(sa);
++
++	nxp_c45_select_secy(phydev, phy_secy->secy_id);
++	if (ctx->secy->tx_sc.encoding_sa  == sa->an)
++		nxp_c45_tx_sa_update(phydev, sa, false);
++
++	nxp_c45_sa_free(sa);
++
++	return 0;
++}
++
++static const struct macsec_ops nxp_c45_macsec_ops = {
++	.mdo_dev_open = nxp_c45_mdo_dev_open,
++	.mdo_dev_stop = nxp_c45_mdo_dev_stop,
++	.mdo_add_secy = nxp_c45_mdo_add_secy,
++	.mdo_upd_secy = nxp_c45_mdo_upd_secy,
++	.mdo_del_secy = nxp_c45_mdo_del_secy,
++	.mdo_add_rxsc = nxp_c45_mdo_add_rxsc,
++	.mdo_upd_rxsc = nxp_c45_mdo_upd_rxsc,
++	.mdo_del_rxsc = nxp_c45_mdo_del_rxsc,
++	.mdo_add_rxsa = nxp_c45_mdo_add_rxsa,
++	.mdo_upd_rxsa = nxp_c45_mdo_upd_rxsa,
++	.mdo_del_rxsa = nxp_c45_mdo_del_rxsa,
++	.mdo_add_txsa = nxp_c45_mdo_add_txsa,
++	.mdo_upd_txsa = nxp_c45_mdo_upd_txsa,
++	.mdo_del_txsa = nxp_c45_mdo_del_txsa,
++};
++
++int nxp_c45_macsec_config_init(struct phy_device *phydev)
++{
++	struct nxp_c45_phy *priv = phydev->priv;
++	int ret;
++
++	if (!priv->macsec)
++		return 0;
++
++	ret = phy_set_bits_mmd(phydev, MDIO_MMD_VEND1, VEND1_PORT_FUNC_ENABLES,
++			       MACSEC_EN | ADAPTER_EN);
++	if (ret)
++		return ret;
++
++	ret = nxp_c45_macsec_write(phydev, ADPTR_CNTRL, ADPTR_CNTRL_CONFIG_EN |
++				   ADPTR_CNTRL_ADPTR_EN);
++	if (ret)
++		return ret;
++
++	ret = nxp_c45_macsec_write(phydev, ADPTR_CNTRL, ADPTR_CNTRL_ADPTR_EN);
++	if (ret)
++		return ret;
++
++	ret = nxp_c45_macsec_write(phydev, MACSEC_TPNET, PN_WRAP_THRESHOLD);
++	if (ret)
++		return ret;
++
++	/* Set MKA filter. */
++	ret = nxp_c45_macsec_write(phydev, MACSEC_UPFR0D2, ETH_P_PAE);
++	if (ret)
++		return ret;
++
++	ret = nxp_c45_macsec_write(phydev, MACSEC_UPFR0M1, MACSEC_OVP);
++	if (ret)
++		return ret;
++
++	ret = nxp_c45_macsec_write(phydev, MACSEC_UPFR0M2, ETYPE_MASK);
++	if (ret)
++		return ret;
++
++	ret = nxp_c45_macsec_write(phydev, MACSEC_UPFR0R, MACSEC_UPFR_EN);
++
++	return ret;
++}
++
++int nxp_c45_macsec_probe(struct phy_device *phydev)
++{
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct device *dev = &phydev->mdio.dev;
++
++	priv->macsec = devm_kzalloc(dev, sizeof(*priv->macsec), GFP_KERNEL);
++	if (!priv->macsec)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&priv->macsec->secy_list);
++	phydev->macsec_ops = &nxp_c45_macsec_ops;
++
++	return 0;
++}
++
++void nxp_c45_macsec_remove(struct phy_device *phydev)
++{
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *secy_p, *secy_t;
++	struct nxp_c45_sa *sa_p, *sa_t;
++	struct list_head *secy_list;
++
++	if (!priv->macsec)
++		return;
++
++	secy_list = &priv->macsec->secy_list;
++	nxp_c45_macsec_en(phydev, false);
++
++	list_for_each_entry_safe(secy_p, secy_t, secy_list, list) {
++		list_for_each_entry_safe(sa_p, sa_t, &secy_p->sa_list, list)
++			nxp_c45_sa_free(sa_p);
++		nxp_c45_secy_free(secy_p);
++	}
++}
++
++void nxp_c45_handle_macsec_interrupt(struct phy_device *phydev,
++				     irqreturn_t *ret)
++{
++	struct nxp_c45_phy *priv = phydev->priv;
++	struct nxp_c45_secy *pos, *tmp;
++	struct nxp_c45_sa *sa;
++	u8 encoding_sa;
++	int secy_id;
++	u32 reg = 0;
++
++	if (!priv->macsec)
++		return;
++
++	do {
++		nxp_c45_macsec_read(phydev, MACSEC_EVR, &reg);
++		if (!reg)
++			return;
++
++		secy_id = MACSEC_REG_SIZE - ffs(reg);
++		list_for_each_entry_safe(pos, tmp, &priv->macsec->secy_list,
++					 list)
++			if (pos->secy_id == secy_id)
++				break;
++
++		encoding_sa = pos->secy->tx_sc.encoding_sa;
++		phydev_dbg(phydev, "pn_wrapped: TX SC %d, encoding_sa %u\n",
++			   pos->secy_id, encoding_sa);
++
++		sa = nxp_c45_find_sa(&pos->sa_list, TX_SA, encoding_sa);
++		if (!IS_ERR(sa))
++			macsec_pn_wrapped(pos->secy, sa->sa);
++		else
++			WARN_ON(1);
++
++		nxp_c45_macsec_write(phydev, MACSEC_EVR,
++				     TX_SC_BIT(pos->secy_id));
++		*ret = IRQ_HANDLED;
++	} while (reg);
++}
+diff --git a/drivers/net/phy/nxp-c45-tja11xx.c b/drivers/net/phy/nxp-c45-tja11xx.c
+index 7ab080ff02df..72d1499e52e4 100644
+--- a/drivers/net/phy/nxp-c45-tja11xx.c
++++ b/drivers/net/phy/nxp-c45-tja11xx.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* NXP C45 PHY driver
+- * Copyright (C) 2021 NXP
++ * Copyright 2021-2023 NXP
+  * Author: Radu Pirea <radu-nicolae.pirea@oss.nxp.com>
   */
- struct macsec_dev {
- 	struct macsec_secy secy;
-@@ -102,6 +104,7 @@ struct macsec_dev {
- 	struct list_head secys;
- 	struct gro_cells gro_cells;
- 	enum macsec_offload offload;
-+	bool insert_tx_tag;
+ 
+@@ -14,9 +14,10 @@
+ #include <linux/processor.h>
+ #include <linux/property.h>
+ #include <linux/ptp_classify.h>
+-#include <linux/ptp_clock_kernel.h>
+ #include <linux/net_tstamp.h>
+ 
++#include "nxp-c45-tja11xx.h"
++
+ #define PHY_ID_TJA_1103			0x001BB010
+ #define PHY_ID_TJA_1120			0x001BB031
+ 
+@@ -75,9 +76,11 @@
+ #define PORT_CONTROL_EN			BIT(14)
+ 
+ #define VEND1_PORT_ABILITIES		0x8046
++#define MACSEC_ABILITY			BIT(5)
+ #define PTP_ABILITY			BIT(3)
+ 
+ #define VEND1_PORT_FUNC_IRQ_EN		0x807A
++#define MACSEC_IRQS			BIT(5)
+ #define PTP_IRQS			BIT(3)
+ 
+ #define VEND1_PTP_IRQ_ACK		0x9008
+@@ -148,7 +151,6 @@
+ 
+ #define TS_SEC_MASK			GENMASK(1, 0)
+ 
+-#define VEND1_PORT_FUNC_ENABLES		0x8048
+ #define PTP_ENABLE			BIT(3)
+ #define PHY_TEST_ENABLE			BIT(0)
+ 
+@@ -281,25 +283,6 @@ struct nxp_c45_phy_data {
+ 			    irqreturn_t *irq_status);
  };
  
- /**
-@@ -2583,6 +2586,29 @@ static bool macsec_is_configured(struct macsec_dev *macsec)
- 	return false;
+-struct nxp_c45_phy {
+-	const struct nxp_c45_phy_data *phy_data;
+-	struct phy_device *phydev;
+-	struct mii_timestamper mii_ts;
+-	struct ptp_clock *ptp_clock;
+-	struct ptp_clock_info caps;
+-	struct sk_buff_head tx_queue;
+-	struct sk_buff_head rx_queue;
+-	/* used to access the PTP registers atomic */
+-	struct mutex ptp_lock;
+-	int hwts_tx;
+-	int hwts_rx;
+-	u32 tx_delay;
+-	u32 rx_delay;
+-	struct timespec64 extts_ts;
+-	int extts_index;
+-	bool extts;
+-};
+-
+ static const
+ struct nxp_c45_phy_data *nxp_c45_get_data(struct phy_device *phydev)
+ {
+@@ -1218,12 +1201,25 @@ static int nxp_c45_start_op(struct phy_device *phydev)
+ 
+ static int nxp_c45_config_intr(struct phy_device *phydev)
+ {
+-	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
++	int ret;
++
++	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
++		ret = phy_set_bits_mmd(phydev, MDIO_MMD_VEND1,
++				       VEND1_PORT_FUNC_IRQ_EN, MACSEC_IRQS);
++		if (ret)
++			return ret;
++
+ 		return phy_set_bits_mmd(phydev, MDIO_MMD_VEND1,
+ 					VEND1_PHY_IRQ_EN, PHY_IRQ_LINK_EVENT);
+-	else
+-		return phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1,
+-					  VEND1_PHY_IRQ_EN, PHY_IRQ_LINK_EVENT);
++	}
++
++	ret = phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1,
++				 VEND1_PORT_FUNC_IRQ_EN, MACSEC_IRQS);
++	if (ret)
++		return ret;
++
++	return phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1,
++				  VEND1_PHY_IRQ_EN, PHY_IRQ_LINK_EVENT);
  }
  
-+static bool macsec_needs_tx_tag(struct macsec_dev *macsec,
-+				const struct macsec_ops *ops)
-+{
-+	return macsec->offload == MACSEC_OFFLOAD_PHY &&
-+		ops->mdo_insert_tx_tag;
-+}
-+
-+static void macsec_adjust_room(struct net_device *dev,
-+			       const struct macsec_ops *ops)
-+{
-+	int diff_headroom = MACSEC_NEEDED_HEADROOM - ops->needed_headroom;
-+	int diff_tailroom = MACSEC_NEEDED_TAILROOM - ops->needed_tailroom;
-+	struct macsec_dev *macsec = macsec_priv(dev);
-+
-+	if (macsec_is_offloaded(macsec)) {
-+		dev->needed_headroom -= diff_headroom;
-+		dev->needed_tailroom -= diff_tailroom;
-+	} else {
-+		dev->needed_headroom += diff_headroom;
-+		dev->needed_tailroom += diff_tailroom;
-+	}
-+}
-+
- static int macsec_update_offload(struct net_device *dev, enum macsec_offload offload)
- {
- 	enum macsec_offload prev_offload;
-@@ -2620,8 +2646,13 @@ static int macsec_update_offload(struct net_device *dev, enum macsec_offload off
- 	ctx.secy = &macsec->secy;
- 	ret = offload == MACSEC_OFFLOAD_OFF ? macsec_offload(ops->mdo_del_secy, &ctx)
- 					    : macsec_offload(ops->mdo_add_secy, &ctx);
--	if (ret)
-+	if (ret) {
- 		macsec->offload = prev_offload;
-+		return ret;
-+	}
-+
-+	macsec_adjust_room(dev, ops);
-+	macsec->insert_tx_tag = macsec_needs_tx_tag(macsec, ops);
+ static int tja1103_config_intr(struct phy_device *phydev)
+@@ -1289,6 +1285,7 @@ static irqreturn_t nxp_c45_handle_interrupt(struct phy_device *phydev)
+ 	}
+ 
+ 	data->nmi_handler(phydev, &ret);
++	nxp_c45_handle_macsec_interrupt(phydev, &ret);
  
  	return ret;
  }
-@@ -3379,6 +3410,52 @@ static struct genl_family macsec_fam __ro_after_init = {
- 	.resv_start_op	= MACSEC_CMD_UPD_OFFLOAD + 1,
- };
+@@ -1614,6 +1611,9 @@ static int nxp_c45_config_init(struct phy_device *phydev)
  
-+static struct sk_buff *macsec_insert_tx_tag(struct sk_buff *skb,
-+					    struct net_device *dev)
-+{
-+	struct macsec_dev *macsec = macsec_priv(dev);
-+	const struct macsec_ops *ops;
-+	struct phy_device *phydev;
-+	struct macsec_context ctx;
-+	int err;
+ 	nxp_c45_counters_enable(phydev);
+ 	nxp_c45_ptp_init(phydev);
++	ret = nxp_c45_macsec_config_init(phydev);
++	if (ret)
++		return ret;
+ 
+ 	return nxp_c45_start_op(phydev);
+ }
+@@ -1629,7 +1629,9 @@ static int nxp_c45_get_features(struct phy_device *phydev)
+ static int nxp_c45_probe(struct phy_device *phydev)
+ {
+ 	struct nxp_c45_phy *priv;
+-	int ptp_ability;
++	bool macsec_ability;
++	int phy_abilities;
++	bool ptp_ability;
+ 	int ret = 0;
+ 
+ 	priv = devm_kzalloc(&phydev->mdio.dev, sizeof(*priv), GFP_KERNEL);
+@@ -1645,9 +1647,9 @@ static int nxp_c45_probe(struct phy_device *phydev)
+ 
+ 	mutex_init(&priv->ptp_lock);
+ 
+-	ptp_ability = phy_read_mmd(phydev, MDIO_MMD_VEND1,
+-				   VEND1_PORT_ABILITIES);
+-	ptp_ability = !!(ptp_ability & PTP_ABILITY);
++	phy_abilities = phy_read_mmd(phydev, MDIO_MMD_VEND1,
++				     VEND1_PORT_ABILITIES);
++	ptp_ability = !!(phy_abilities & PTP_ABILITY);
+ 	if (!ptp_ability) {
+ 		phydev_dbg(phydev, "the phy does not support PTP");
+ 		goto no_ptp_support;
+@@ -1666,6 +1668,20 @@ static int nxp_c45_probe(struct phy_device *phydev)
+ 	}
+ 
+ no_ptp_support:
++	macsec_ability = !!(phy_abilities & MACSEC_ABILITY);
++	if (!macsec_ability) {
++		phydev_info(phydev, "the phy does not support MACsec\n");
++		goto no_macsec_support;
++	}
 +
-+	ops = macsec_get_ops(macsec, &ctx);
-+	phydev = macsec->real_dev->phydev;
-+
-+	if (unlikely(skb_headroom(skb) < ops->needed_headroom ||
-+		     skb_tailroom(skb) < ops->needed_tailroom)) {
-+		struct sk_buff *nskb = skb_copy_expand(skb,
-+						       ops->needed_headroom,
-+						       ops->needed_tailroom,
-+						       GFP_ATOMIC);
-+		if (likely(nskb)) {
-+			consume_skb(skb);
-+			skb = nskb;
-+		} else {
-+			err = -ENOMEM;
-+			goto cleanup;
-+		}
++	if (IS_ENABLED(CONFIG_MACSEC)) {
++		ret = nxp_c45_macsec_probe(phydev);
++		phydev_dbg(phydev, "MACsec support enabled.");
 +	} else {
-+		skb = skb_unshare(skb, GFP_ATOMIC);
-+		if (!skb)
-+			return ERR_PTR(-ENOMEM);
++		phydev_dbg(phydev, "MACsec support not enabled even if the phy supports it");
 +	}
 +
-+	err = ops->mdo_insert_tx_tag(phydev, skb);
-+	if (unlikely(err))
-+		goto cleanup;
++no_macsec_support:
+ 
+ 	return ret;
+ }
+@@ -1679,6 +1695,7 @@ static void nxp_c45_remove(struct phy_device *phydev)
+ 
+ 	skb_queue_purge(&priv->tx_queue);
+ 	skb_queue_purge(&priv->rx_queue);
++	nxp_c45_macsec_remove(phydev);
+ }
+ 
+ static void tja1103_counters_enable(struct phy_device *phydev)
+diff --git a/drivers/net/phy/nxp-c45-tja11xx.h b/drivers/net/phy/nxp-c45-tja11xx.h
+new file mode 100644
+index 000000000000..f364fca68f0b
+--- /dev/null
++++ b/drivers/net/phy/nxp-c45-tja11xx.h
+@@ -0,0 +1,62 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* NXP C45 PHY driver header file
++ * Copyright 2023 NXP
++ * Author: Radu Pirea <radu-nicolae.pirea@oss.nxp.com>
++ */
 +
-+	if (unlikely(skb->len - ETH_HLEN > macsec_priv(dev)->real_dev->mtu)) {
-+		err = -EINVAL;
-+		goto cleanup;
-+	}
++#include <linux/ptp_clock_kernel.h>
 +
-+	return skb;
-+cleanup:
-+	kfree_skb(skb);
-+	return ERR_PTR(err);
++#define VEND1_PORT_FUNC_ENABLES		0x8048
++
++struct nxp_c45_macsec;
++
++struct nxp_c45_phy {
++	const struct nxp_c45_phy_data *phy_data;
++	struct phy_device *phydev;
++	struct mii_timestamper mii_ts;
++	struct ptp_clock *ptp_clock;
++	struct ptp_clock_info caps;
++	struct sk_buff_head tx_queue;
++	struct sk_buff_head rx_queue;
++	/* used to access the PTP registers atomic */
++	struct mutex ptp_lock;
++	int hwts_tx;
++	int hwts_rx;
++	u32 tx_delay;
++	u32 rx_delay;
++	struct timespec64 extts_ts;
++	int extts_index;
++	bool extts;
++	struct nxp_c45_macsec *macsec;
++};
++
++#if IS_ENABLED(CONFIG_MACSEC)
++int nxp_c45_macsec_config_init(struct phy_device *phydev);
++int nxp_c45_macsec_probe(struct phy_device *phydev);
++void nxp_c45_macsec_remove(struct phy_device *phydev);
++void nxp_c45_handle_macsec_interrupt(struct phy_device *phydev,
++				     irqreturn_t *ret);
++#else
++static inline
++int nxp_c45_macsec_config_init(struct phy_device *phydev)
++{
++	return 0;
 +}
 +
- static netdev_tx_t macsec_start_xmit(struct sk_buff *skb,
- 				     struct net_device *dev)
- {
-@@ -3393,6 +3470,15 @@ static netdev_tx_t macsec_start_xmit(struct sk_buff *skb,
- 		skb_dst_drop(skb);
- 		dst_hold(&md_dst->dst);
- 		skb_dst_set(skb, &md_dst->dst);
++static inline
++int nxp_c45_macsec_probe(struct phy_device *phydev)
++{
++	return 0;
++}
 +
-+		if (macsec->insert_tx_tag) {
-+			skb = macsec_insert_tx_tag(skb, dev);
-+			if (IS_ERR(skb)) {
-+				DEV_STATS_INC(dev, tx_dropped);
-+				return NETDEV_TX_OK;
-+			}
-+		}
++static inline
++void nxp_c45_macsec_remove(struct phy_device *phydev)
++{
++}
 +
- 		skb->dev = macsec->real_dev;
- 		return dev_queue_xmit(skb);
- 	}
-@@ -4140,6 +4226,10 @@ static int macsec_newlink(struct net *net, struct net_device *dev,
- 			err = macsec_offload(ops->mdo_add_secy, &ctx);
- 			if (err)
- 				goto del_dev;
-+
-+			macsec_adjust_room(dev, ops);
-+			macsec->insert_tx_tag =
-+				macsec_needs_tx_tag(macsec, ops);
- 		}
- 	}
- 
-diff --git a/include/net/macsec.h b/include/net/macsec.h
-index 0821fa5088c0..dbd22180cc5c 100644
---- a/include/net/macsec.h
-+++ b/include/net/macsec.h
-@@ -316,6 +316,11 @@ struct macsec_context {
-  * @mdo_get_tx_sa_stats: called when TX SA stats are read
-  * @mdo_get_rx_sc_stats: called when RX SC stats are read
-  * @mdo_get_rx_sa_stats: called when RX SA stats are read
-+ * @mdo_insert_tx_tag: called to insert the TX tag
-+ * @needed_headroom: number of bytes reserved at the beginning of the sk_buff
-+ *	for the TX tag
-+ * @needed_tailroom: number of bytes reserved at the end of the sk_buff for the
-+ *	TX tag
-  */
- struct macsec_ops {
- 	/* Device wide */
-@@ -342,6 +347,11 @@ struct macsec_ops {
- 	int (*mdo_get_tx_sa_stats)(struct macsec_context *ctx);
- 	int (*mdo_get_rx_sc_stats)(struct macsec_context *ctx);
- 	int (*mdo_get_rx_sa_stats)(struct macsec_context *ctx);
-+	/* Offload tag */
-+	int (*mdo_insert_tx_tag)(struct phy_device *phydev,
-+				 struct sk_buff *skb);
-+	unsigned int needed_headroom;
-+	unsigned int needed_tailroom;
- };
- 
- void macsec_pn_wrapped(struct macsec_secy *secy, struct macsec_tx_sa *tx_sa);
++static inline
++void nxp_c45_handle_macsec_interrupt(struct phy_device *phydev,
++				     irqreturn_t *ret)
++{
++}
++#endif
 -- 
 2.34.1
 
