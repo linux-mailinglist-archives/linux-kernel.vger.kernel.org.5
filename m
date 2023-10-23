@@ -2,170 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 308377D2CD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817837D2CCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbjJWIex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33258 "EHLO
+        id S229686AbjJWIc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjJWIeu (ORCPT
+        with ESMTP id S229609AbjJWIcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:34:50 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741E5FC
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:34:46 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9936b3d0286so455118666b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:34:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1698050085; x=1698654885; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mr09I8/vo3nr2nBuJIYetcGr8lJCNmgIPhtRToZk5ok=;
-        b=pX5OTB3bmjdnesVzjWO9rRcu130m/5OJViVbioO8Kw0jonCCXUcr1Z0dAZVnqHSX2I
-         okWK1qYdv2gCUvvtJzz0w8TvKx0/tvfgBxPEYITLmHBvFQCX0v48mXvGX2qcEDRhY/nD
-         h/wTjX6iH3XM2OaOOYYm6OImTouGgf82vGSgsKOTKhrHXAzzoqTxQn0OwPuD2c43l1Ta
-         ivtIpbXg7hf4oHDhTYiarbo/kxVWuazP2U2PwjBskFsjKY5+Jd60r257FkSTWzj7f6Xl
-         GVn3HpJ9CTpl8IJ/s2oASlb3aD3FW62Qd2ZiHdzdq43axNPv1Hn4ETSQEnOvTA42vHRm
-         CFTw==
+        Mon, 23 Oct 2023 04:32:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17678D6B
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:31:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698049863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HOnHu/HXv+/MexAzD91ndTElaP4qcEAtusLsQWzhRN8=;
+        b=DNQUBabz36CAvYMTBzJAUI9AoGWrV13MsJUfsgo5Pv9MznbA9wvVwSuYaEeDUeqasdLHkB
+        su4c4yIMQ0moO0vYFKIydGEshtBXoFxLIEWvNmRoJOzUyYRCja8DtRuU5zhXSDGFrcTJmR
+        oPGPC/TMQU1Xn+/eSofJhSEKQm8N+qk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-399-6Zn4pOKYNLaIw1ZH9hr5oQ-1; Mon, 23 Oct 2023 04:31:01 -0400
+X-MC-Unique: 6Zn4pOKYNLaIw1ZH9hr5oQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32d879cac50so1388872f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:31:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698050085; x=1698654885;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Mr09I8/vo3nr2nBuJIYetcGr8lJCNmgIPhtRToZk5ok=;
-        b=UxET1FNZNwlfW3V6TXsfr0jMOsj5uLTttDDFszOxguyYkDc/Or9UPZ5rXD5jr2fNj3
-         TmnSL5B3hOtjK5vlKpG0LNilaomy44okae7WpSzu20L0bF4humONNGpTp1TU6XeqZ5kE
-         8FrFHa9Bgb6iXXveSEYgp8ATJzGFakDjVpNHxg/EIf/L3s8CTTSzuoD/zl6ngSloXHLC
-         Ed3tmcklSY767UBar3toYXF61IyPPjFAsvcoVmXq8YekqO3WwX00ZvbslkF9rhbS1AWG
-         xsxtpqvJJ1Vp22L6M7Z0Zj/jxqOX9T4DNrk2FRRi5zRNwnS1JrdFF/jZcLlDg2VxCnEJ
-         5xUA==
-X-Gm-Message-State: AOJu0YyWaiSi0cF2LS/BDRAvYaW3ZjxDpMod3Z3uTDfDrmR+CefL7qeL
-        H84XEAH7uEne0B/q2K8MyBH82g==
-X-Google-Smtp-Source: AGHT+IF27JDoFPxmlVkE0M2eVANH6GmCStzw+JH8dPoflKLeLx/GjHnhEjRP4T2+mEbKDibHwC2jYg==
-X-Received: by 2002:a17:907:1b07:b0:9c7:5207:280a with SMTP id mp7-20020a1709071b0700b009c75207280amr7141146ejc.55.1698050084722;
-        Mon, 23 Oct 2023 01:34:44 -0700 (PDT)
-Received: from localhost ([194.62.217.3])
-        by smtp.gmail.com with ESMTPSA id xa17-20020a170907b9d100b00982a92a849asm6257017ejc.91.2023.10.23.01.34.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 01:34:44 -0700 (PDT)
-References: <20231019171540.259173-1-benno.lossin@proton.me>
- <87fs25irel.fsf@metaspace.dk>
- <ba252f66-b204-43c1-9705-8ccd0cb12492@proton.me>
-User-agent: mu4e 1.10.7; emacs 28.2.50
-From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
-To:     Benno Lossin <benno.lossin@proton.me>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rust: macros: improve `#[vtable]` documentation
-Date:   Mon, 23 Oct 2023 10:30:06 +0200
-In-reply-to: <ba252f66-b204-43c1-9705-8ccd0cb12492@proton.me>
-Message-ID: <878r7thh3w.fsf@metaspace.dk>
+        d=1e100.net; s=20230601; t=1698049860; x=1698654660;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HOnHu/HXv+/MexAzD91ndTElaP4qcEAtusLsQWzhRN8=;
+        b=paJLiGtkdqatx+2JXGn5sxw6v+8VM1WRd9zdP7iYzbd8Dfhn1cdb9GPltLPQ7fF82j
+         zC03LGl5Vx73yl+M2LWcx0bdtHXrCgbe0arnD1zCSL8Ua3XARAdqFV5/PAv1XoRlNxZu
+         N8PoNsoBMfrMKsJdq85WjdUUMtKi4UGSsOucPRJMG3emGcCRoEzepdNErKckMvz/yH6Z
+         Yu3gkvBCjvAF802HmVoH9CusPC/rFUchD9dd2RyLE7clvtwAOlkdThBP+G2ihb9Hm+mD
+         Ho5NSWpCMaSk7jXwIK+C3npesY9lC+oA0yVpIXfrFb1Tn12Lb4htAbMW0IzSwZBNVDpb
+         xwYw==
+X-Gm-Message-State: AOJu0Yy5oBT0iDI5q2vXGSvPgrJ6vycdDdeDbZd+88dKai+HGJvJ+fSu
+        tpHPAgsDl7XnwzQtCeEmw9g3+Pk/katGFPPh5WSBCUd+2TJ7w1mIXG/NWftSyrcqULGLL5iOypz
+        e7bB32m3P5PQVsqGimwXtO1Qn
+X-Received: by 2002:adf:ecc8:0:b0:31f:fa61:961d with SMTP id s8-20020adfecc8000000b0031ffa61961dmr5420239wro.63.1698049860239;
+        Mon, 23 Oct 2023 01:31:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEsM0QtK3+WXTL5mHWBFb49plfkG+D7naag8X+Y3CsdzRTvOrT+44se+2kfRdM5vRG4iQ0u0g==
+X-Received: by 2002:adf:ecc8:0:b0:31f:fa61:961d with SMTP id s8-20020adfecc8000000b0031ffa61961dmr5420223wro.63.1698049859823;
+        Mon, 23 Oct 2023 01:30:59 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:d5:a000:680e:9bf4:b6a9:959b? ([2a01:e0a:d5:a000:680e:9bf4:b6a9:959b])
+        by smtp.gmail.com with ESMTPSA id f7-20020adff587000000b0031fb91f23e9sm7233075wro.43.2023.10.23.01.30.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 01:30:59 -0700 (PDT)
+Message-ID: <74b367bd-ac80-478b-8f82-e98cb6e40475@redhat.com>
+Date:   Mon, 23 Oct 2023 10:30:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/mgag200: Flush the cache to improve latency
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, airlied@redhat.com,
+        daniel@ffwll.ch
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20231019135655.313759-1-jfalempe@redhat.com>
+ <660c0260-0e22-4e9c-ab13-157adaa0b14d@suse.de>
+Content-Language: en-US
+From:   Jocelyn Falempe <jfalempe@redhat.com>
+In-Reply-To: <660c0260-0e22-4e9c-ab13-157adaa0b14d@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 20/10/2023 14:06, Thomas Zimmermann wrote:
+> (cc'ing lkml for feedback)
+> 
+> Hi Jocelyn
+> 
+> Am 19.10.23 um 15:55 schrieb Jocelyn Falempe:
+>> We found a regression in v5.10 on real-time server, using the
+>> rt-kernel and the mgag200 driver. It's some really specialized
+>> workload, with <10us latency expectation on isolated core.
+>> After the v5.10, the real time tasks missed their <10us latency
+>> when something prints on the screen (fbcon or printk)
+> 
+> I'd like to hear the opinion of the RT-devs on this patch. Because AFAIK 
+> we never did such a workaround in other drivers. And AFAIK printk is a 
+> PITA anyway.
 
-Benno Lossin <benno.lossin@proton.me> writes:
+Most other drivers uses DMA, which means this workaround can't apply to 
+them.
 
-> On 20.10.23 11:06, Andreas Hindborg (Samsung) wrote:
->> Benno Lossin <benno.lossin@proton.me> writes:
->>> +/// Error message for calling a default function of a [`#[vtable]`](ma=
-cros::vtable) trait.
->>> +pub const VTABLE_DEFAULT_ERROR: &str =3D
->>> +    "This function must not be called, see the #[vtable] documentation=
-.";
->>> diff --git a/rust/macros/lib.rs b/rust/macros/lib.rs
->>> index c42105c2ff96..daf1ef8baa62 100644
->>> --- a/rust/macros/lib.rs
->>> +++ b/rust/macros/lib.rs
->>> @@ -87,27 +87,41 @@ pub fn module(ts: TokenStream) -> TokenStream {
->>>   /// implementation could just return `Error::EINVAL`); Linux typicall=
-y use C
->>>   /// `NULL` pointers to represent these functions.
->>>   ///
->>> -/// This attribute is intended to close the gap. Traits can be declare=
-d and
->>> -/// implemented with the `#[vtable]` attribute, and a `HAS_*` associat=
-ed constant
->>> -/// will be generated for each method in the trait, indicating if the =
-implementor
->>> -/// has overridden a method.
->>> +/// This attribute closes that gap. A trait can be annotated with the =
-`#[vtable]` attribute.
->>> +/// Implementers of the trait will then also have to annotate the trai=
-t with `#[vtable]`. This
->>> +/// attribute generates a `HAS_*` associated constant bool for each me=
-thod in the trait that is set
->>> +/// to true if the implementer has overridden the associated method.
->>> +///
->>> +/// For a function to be optional, it must have a default implementati=
-on. But this default
->>> +/// implementation will never be executed, since these functions are e=
-xclusively called from
->>> +/// callbacks from the C side. This is because the vtable will have a =
-`NULL` entry and the C side
->>> +/// will execute the default behavior. Since it is not maintainable to=
- replicate the default
->>> +/// behavior in Rust, the default implementation should be:
->>=20
->> How about this?:
->>=20
->> For a Rust trait method to be optional, it must have a default
->> implementation. For a trait marked with `#[vtable]`, the default
->> implementation will not be executed, as the only way the trait methods
->> should be called is through function pointers installed in C side
->> vtables. When a trait implementation marked with `#[vtable]` is missing
->> a method, a `NULL` pointer will be installed in the corresponding C side
->> vtable, and thus the Rust default implementation can not be called. The
->> default implementation should be:
->>=20
->> Not sure if it is more clear =F0=9F=A4=B7
->
-> I think it misses the following important point: why is it not
-> possible to just replicate the default behavior?
->
-> What do you think of this?:
->
-> For a trait method to be optional, it must have a default implementation.
-> This is also the case for traits annotated with `#[vtable]`, but in this
-> case the default implementation will never be executed. The reason for th=
-is
-> is that the functions will be called through function pointers installed =
-in
-> C side vtables. When an optional method is not implemented on a `#[vtable=
-]`
-> trait, a NULL entry is installed in the vtable. Thus the default
-> implementation is never called. Since these traits are not designed to be
-> used on the Rust side, it should not be possible to call the default
-> implementation.
+> 
+> IMHO if that RT system cannot handle differences in framebuffer caching, 
+> it's under-powered. It's just a matter of time until something else 
+> changes and the problem returns. And (honest question) as it's an 
+> x86-64, how do they handle System Management Mode?
 
-> It is not possible to replicate the default behavior from C
-> in Rust, since that is not maintainable.
+I think it's not a big news, that the Matrox G200 from 1999 is 
+under-powered.
+I was also a bit surprised that flushing the cache would have such 
+effect on latency. The tests we are doing can run 24h with the 
+workaround, without any interrupt taking more than 10us. Without the 
+workaround, every ~30s the interrupt failed its 10us target.
 
-I don't feel that this bit should be included. It's not a matter of
-maintainability. Why would we reimplement something that is already
-present in a subsystem? The functionality is already present, so we use
-it.
+> 
+>>
+>> The regression has been bisected to 2 commits:
+>> 0b34d58b6c32 ("drm/mgag200: Enable caching for SHMEM pages")
+>> 4862ffaec523 ("drm/mgag200: Move vmap out of commit tail")
+>>
+>> The first one changed the system memory framebuffer from Write-Combine
+>> to the default caching.
+>> Before the second commit, the mgag200 driver used to unmap the
+>> framebuffer after each frame, which implicitly does a cache flush.
+>> Both regressions are fixed by the following patch, which forces a
+>> cache flush after each frame, reverting to almost v5.9 behavior.
+> 
+> With that second commit, we essentially never unmap an active 
+> framebuffer console. But with commit
+> 
+> 359c6649cd9a ("drm/gem: Implement shadow-plane {begin, end}_fb_access 
+> with vmap")
+> 
+> we now again unmap the console framebuffer after the pageflip happened.
+> 
+> So how does the latest kernel behave wrt to the problem?
 
-> The default implementaiton should
-> therefore call `kernel::build_error`, thus preventing calls to this
-> function at compile time:
+The regression was found when upgrading the server from v5.4 to v5.14, 
+so we didn't test with later kernels.
+We will test with v6.3 (which should have 359c6649cd9a ) and see what it 
+gives.
+> 
+>> This is necessary only if you have strong realtime constraints, so I
+>> put the cache flush under the CONFIG_PREEMPT_RT config flag.
+>> Also clflush is only availabe on x86, (and this issue has only been
+>> reproduced on x86_64) so it's also under the CONFIG_X86 config flag.
+>>
+>> Fixes: 0b34d58b6c32 ("drm/mgag200: Enable caching for SHMEM pages")
+>> Fixes: 4862ffaec523 ("drm/mgag200: Move vmap out of commit tail")
+>> Signed-off-by: Jocelyn Falempe <jfalempe@redhat.com>
+>> ---
+>>   drivers/gpu/drm/mgag200/mgag200_mode.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/mgag200/mgag200_mode.c 
+>> b/drivers/gpu/drm/mgag200/mgag200_mode.c
+>> index af3ce5a6a636..11660cd29cea 100644
+>> --- a/drivers/gpu/drm/mgag200/mgag200_mode.c
+>> +++ b/drivers/gpu/drm/mgag200/mgag200_mode.c
+>> @@ -13,6 +13,7 @@
+>>   #include <drm/drm_atomic.h>
+>>   #include <drm/drm_atomic_helper.h>
+>> +#include <drm/drm_cache.h>
+>>   #include <drm/drm_damage_helper.h>
+>>   #include <drm/drm_format_helper.h>
+>>   #include <drm/drm_fourcc.h>
+>> @@ -436,6 +437,10 @@ static void mgag200_handle_damage(struct 
+>> mga_device *mdev, const struct iosys_ma
+>>       iosys_map_incr(&dst, drm_fb_clip_offset(fb->pitches[0], 
+>> fb->format, clip));
+>>       drm_fb_memcpy(&dst, fb->pitches, vmap, fb, clip);
+>> +    /* On RT systems, flushing the cache reduces the latency for 
+>> other RT tasks */
+>> +#if defined(CONFIG_X86) && defined(CONFIG_PREEMPT_RT)
+>> +    drm_clflush_virt_range(vmap, fb->height * fb->pitches[0]);
+>> +#endif
+> 
+> Your second commit is part of a larger patchset that updates several 
+> drivers. They might all be affected. So if anything, the patch should go 
+> here before the unmap call:
+> 
+> https://elixir.bootlin.com/linux/v6.5/source/drivers/gpu/drm/drm_gem_atomic_helper.c#L377
+> 
+The regression was found only with G200 currently, so I don't want to 
+apply it blindly on other drivers.
 
-Otherwise I think it is good =F0=9F=91=8D
+Thanks for your help,
 
-BR Andreas
+Best regards,
+
+-- 
+
+Jocelyn
+
+> with a much expanded comment.
+> 
+> But I'd really like to hear other peoples' opinions on the matter.
+> 
+> Best regards
+> Thomas
+> 
+>>   }
+>>   /*
+>>
+>> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+> 
+
