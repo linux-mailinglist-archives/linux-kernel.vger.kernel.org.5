@@ -2,88 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D17C67D33F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265707D3404
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbjJWLf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
+        id S233353AbjJWLgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234038AbjJWLf0 (ORCPT
+        with ESMTP id S234164AbjJWLgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:35:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C20E8;
-        Mon, 23 Oct 2023 04:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698060922; x=1729596922;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oxQ99Lbr0YPXctAU2ZPK0KvWToc8S5g7FWzgOBc/tco=;
-  b=QWrKUow+jFqrLzXHv4IDTJhzD73Gi6KQ6MlihK4encHmex+ZyJfKy3M9
-   Wd6/Ip10maDr1TpRaxA7c79xkpIxAzgZxE5seYNdo1Wr5LHD08OiHichq
-   HNeP7iPWLXqzwGTYKkmc+JGsTEcBBFsUHN/jxts78skVdgyWrjHgR/89z
-   wGrmRbyYMVJTJRL64PCXskUwEqGJqeD//sD9I72Es1DpoTAO9x01rPwqo
-   kQ2fPeQRk13IbwtGQ3hCXvzjzdVHjfyzPTlcPC/FBiHdFDzJTA6J9ycB3
-   +lZmuNdzs5OCubbSnSLmmNDUcAQngY/2lMJyQWnBQjGjLgdblfStt5rIU
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="377193012"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="377193012"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:35:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="901779783"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="901779783"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:32:59 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qutDF-00000007vGe-48Ha;
-        Mon, 23 Oct 2023 14:35:13 +0300
-Date:   Mon, 23 Oct 2023 14:35:13 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Raag Jadav <raag.jadav@intel.com>
-Cc:     rafael@kernel.org, len.brown@intel.com, robert.moore@intel.com,
-        mika.westerberg@linux.intel.com, mark.rutland@arm.com,
-        will@kernel.org, linux@roeck-us.net, Jonathan.Cameron@huawei.com,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Subject: Re: [PATCH v2 2/6] pinctrl: intel: use acpi_dev_uid_match() for
- matching _UID
-Message-ID: <ZTZacR86hSmV04M9@smile.fi.intel.com>
-References: <20231023053530.5525-1-raag.jadav@intel.com>
- <20231023053530.5525-3-raag.jadav@intel.com>
+        Mon, 23 Oct 2023 07:36:07 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C514310D1;
+        Mon, 23 Oct 2023 04:35:59 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39NBZZfc005820;
+        Mon, 23 Oct 2023 06:35:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1698060935;
+        bh=418p3wK0SpkcYv49S+TAS6nQDO9VkD5aPf1J/n950C4=;
+        h=Date:CC:Subject:To:References:From:In-Reply-To;
+        b=l6J5EpfmDgYrDEMpriG4zSyuYa3BbbDv26OXNsKOC4d5zdSYJSMA1iLPmeNgb+mYa
+         MO41Yb3zFmB7O9lJaTRBj2cqzt8yg/L0dEc04/EF0EI6tTeVmuqqOrZjkkQqywnCrO
+         By0Z0NlQe7n7HDUqVLwj2YgzYqCC2gHjMKUs4C60=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39NBZZdw040541
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 23 Oct 2023 06:35:35 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 23
+ Oct 2023 06:35:35 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 23 Oct 2023 06:35:35 -0500
+Received: from [172.24.227.9] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39NBZU6Y032367;
+        Mon, 23 Oct 2023 06:35:31 -0500
+Message-ID: <499a2f6c-3104-492c-be34-3ad286cdf069@ti.com>
+Date:   Mon, 23 Oct 2023 17:05:30 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023053530.5525-3-raag.jadav@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+CC:     Bjorn Helgaas <helgaas@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        <bhelgaas@google.com>, <lpieralisi@kernel.org>, <robh@kernel.org>,
+        <kw@linux.com>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
+        <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: Re: [PATCH v3] PCI: keystone: Fix pci_ops for AM654x SoC
+Content-Language: en-US
+To:     Serge Semin <fancer.lancer@gmail.com>
+References: <nw5myorissautj3uzhe2h32imu5v7bycjo3studma7v7dt37g6@tffgtog7x3j5>
+ <20231019220847.GA1413474@bhelgaas>
+ <7itgyqntgmjcqh4yk2j76af5h6i6lwpcita7syxxtyi4dhb6up@2qix56u3g4kg>
+From:   Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <7itgyqntgmjcqh4yk2j76af5h6i6lwpcita7syxxtyi4dhb6up@2qix56u3g4kg>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 11:05:26AM +0530, Raag Jadav wrote:
-> Convert manual _UID references to use the standard ACPI helper.
+Serge,
 
-> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On 23/10/23 16:12, Serge Semin wrote:
 
-As I asked you, please drop this one. It has a hidden logic that is not aligned
-with acpi_dev_hid_uid_match(). Or revert to your v1 I assume.
+...
+
+> Siddharth, if it won't be that much bother and you have an access to
+> the v3.65-based Keystone PCIe device, could you please have a look
+> whether it's possible to implement what Bjorn suggested? *
+
+Unfortunately I don't have any SoC/Device with me that has the v3.65 PCIe
+controller, so I will not be able to test Bjorn's suggestion.
+
+> 
+> * it's irrespective to this patch. This fix looks good. If Bjorn
+> and/or Mani are ok with it, I guess it can be already merged in.
+> 
+> -Serge(y)
+> 
+>>
+>> Bjorn
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Regards,
+Siddharth.
