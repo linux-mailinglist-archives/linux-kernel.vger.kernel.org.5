@@ -2,120 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF017D3D68
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAC57D3D70
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbjJWRXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
+        id S229601AbjJWRYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJWRXF (ORCPT
+        with ESMTP id S229453AbjJWRYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:23:05 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F2EF3A2;
-        Mon, 23 Oct 2023 10:23:02 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6DEDE2F4;
-        Mon, 23 Oct 2023 10:23:43 -0700 (PDT)
-Received: from [10.57.5.125] (unknown [10.57.5.125])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 19BFE3F762;
-        Mon, 23 Oct 2023 10:22:58 -0700 (PDT)
-Message-ID: <289f5f83-adc7-4077-b4c0-c951484dd092@arm.com>
-Date:   Mon, 23 Oct 2023 18:22:57 +0100
+        Mon, 23 Oct 2023 13:24:34 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB73A2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:24:32 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5aa7fdd1420so1916175a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698081872; x=1698686672; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BbbHD0YVJk9RufSxoYcq0y3n5cPhLMIwtkNHWUlAfWQ=;
+        b=dSOslNcwyAix9UllTlLTRabeAZh85m57t8Mj7ws5bhMzQd+pUnOYxujudcsnJuhJzl
+         KnsX1oxZ6VYQXsaBa2QcAW7/WhRFOGxo8nuY8LbAK4J0VFjI0AMHF6ZqwpzpXeDf4K5h
+         SqT9kItDb82gSUU7CouIpZMMWrRsf5dwARIzd+7aZJyF6RIFgB0GPusNyPGcXTOpE1i+
+         6Oownm+XphIZpUoZg96uZrgqh91bh17MVALhQvYDGrG95bXicAvhVqoe2v2TAqciL8xU
+         69WIv2GOzKxPojIllusOYKRbt4DP8etEqczpOMGF5Ajxb/jR5UOk6mov+fsOPUM0mAdJ
+         1FsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698081872; x=1698686672;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BbbHD0YVJk9RufSxoYcq0y3n5cPhLMIwtkNHWUlAfWQ=;
+        b=lWJoR2RfD6X71sV5f++3pRGTo19YQLlRMsU0B1hG2mEjl/wNW8dmR4lp3MVzfUEpYo
+         iIufjruAmFhGdiRzEsXbv1XVDplZ484KmKjBw/Oqz9tPameDIi/3hQGub0xw6Gqi7Qed
+         PIv2iK8NQtw3kKjgXIgyMGCnjdVSPmL8D4qlWKjMlIY9xw57pzc0z1fT9tXh4Pbh9jQX
+         QbsdW6iLJDR8aTAFom834UkfSNmum32fdSW+th+z+kkv7gDcUmEs6n0gHpYEylqQQ4bW
+         ZV1mXkKAWd3h9gHdgiYgzfyupk/VUZolU2GQvhyQsxloSKzOqGiaqqji5csY3jyZvvIt
+         1a8A==
+X-Gm-Message-State: AOJu0YziVNzgrktnahx/Z3WUpymOrZqYVdheUtbB+AWJOGxRac22x2bx
+        1lxZPY/EaVnjtZ4JMuDzrImsHg==
+X-Google-Smtp-Source: AGHT+IH5zn+p2FocGpHxAFS8gSDBMs+R8rkPa0KF41+FQfuasRuzkg4dmkOhZbI85fDx40K/Hlwn2w==
+X-Received: by 2002:a05:6a21:498b:b0:17b:d39c:1d6 with SMTP id ax11-20020a056a21498b00b0017bd39c01d6mr239194pzc.30.1698081871694;
+        Mon, 23 Oct 2023 10:24:31 -0700 (PDT)
+Received: from p14s ([2604:3d09:148c:c800:85b7:8283:12b2:30f8])
+        by smtp.gmail.com with ESMTPSA id cx3-20020a17090afd8300b0027d1366d113sm7419661pjb.43.2023.10.23.10.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 10:24:31 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 11:24:28 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        alexander.stein@ew.tq-group.com,
+        "S.J. Wang" <shengjiu.wang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Mpuaudiosw <Mpuaudiosw@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        linux-imx <linux-imx@nxp.com>, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        LnxRevLi <LnxRevLi@nxp.com>
+Subject: Re: [PATCH v4 2/2] arm64: dts: imx8mp: add reserve-memory nodes for
+ DSP
+Message-ID: <ZTasTEvw4//SEMlW@p14s>
+References: <20231013152731.23471-1-iuliana.prodan@oss.nxp.com>
+ <20231013152731.23471-3-iuliana.prodan@oss.nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 06/10] dma: Use free_decrypted_pages()
-Content-Language: en-GB
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "mikelley@microsoft.com" <mikelley@microsoft.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Cc:     "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>
-References: <20231017202505.340906-1-rick.p.edgecombe@intel.com>
- <20231017202505.340906-7-rick.p.edgecombe@intel.com>
- <b4dc423b-a658-449f-9c6d-1502685a2f1b@arm.com>
- <ea8ad4e75303178ee907682797dea7de36441c95.camel@intel.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <ea8ad4e75303178ee907682797dea7de36441c95.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231013152731.23471-3-iuliana.prodan@oss.nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-23 17:46, Edgecombe, Rick P wrote:
-> On Wed, 2023-10-18 at 18:42 +0100, Robin Murphy wrote:
->> On 2023-10-17 21:25, Rick Edgecombe wrote:
->>> On TDX it is possible for the untrusted host to cause
->>> set_memory_encrypted() or set_memory_decrypted() to fail such that
->>> an
->>> error is returned and the resulting memory is shared. Callers need
->>> to take
->>> care to handle these errors to avoid returning decrypted (shared)
->>> memory to
->>> the page allocator, which could lead to functional or security
->>> issues.
->>>
->>> DMA could free decrypted/shared pages if set_memory_decrypted()
->>> fails.
->>> Use the recently added free_decrypted_pages() to avoid this.
->>>
->>> Several paths also result in proper encrypted pages being freed
->>> through
->>> the same freeing function. Rely on free_decrypted_pages() to not
->>> leak the
->>> memory in these cases.
->>
->> If something's needed in the fallback path here, what about the
->> cma_release() paths?
-> 
-> You mean inside cma_release(). If so, unfortunately I think it won't
-> fit great because there are callers that are never dealing with shared
-> memory (huge tlb). The reset-to-private operation does extra work that
-> would be nice to avoid when possible.
-> 
-> The cases I thought exhibited the issue were the two calls sites of
-> dma_set_decrypted(). Playing around with it, I was thinking it might be
-> easier to just fix those to open code leaking the pages on
-> dma_set_decrypted() error. In which case it won't have the re-encrypt
-> problem.
-> 
-> It make's it less fool proof, but more efficient. And
-> free_decrypted_pages() doesn't fit great anyway, as pointed out by
-> Christoph.
+Hey guys,
 
-My point is that in dma_direct_alloc(), we get some memory either 
-straight from the page allocator *or* from a CMA area, then call 
-set_memory_decrypted() on it. If the problem is that 
-set_memory_decrypted() can fail and require cleanup, then logically if 
-that cleanup is necessary for the dma_free_contiguous()->__free_pages() 
-call, then surely it must also be necessary for the 
-dma_free_contiguous()->cma_release()->free_contig_range()->__free_page() 
-calls.
+On Fri, Oct 13, 2023 at 06:27:31PM +0300, Iuliana Prodan (OSS) wrote:
+> From: Iuliana Prodan <iuliana.prodan@nxp.com>
+> 
+> Add the reserve-memory nodes used by DSP when the rpmsg
+> feature is enabled.
+> 
+> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 22 ++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+> index fa37ce89f8d3..b677ad8ef042 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+> @@ -125,6 +125,28 @@
+>  		};
+>  
+>  	};
+> +
+> +	reserved-memory {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		dsp_vdev0vring0: vdev0vring0@942f0000 {
+> +			reg = <0 0x942f0000 0 0x8000>;
+> +			no-map;
+> +		};
+> +
+> +		dsp_vdev0vring1: vdev0vring1@942f8000 {
+> +			reg = <0 0x942f8000 0 0x8000>;
+> +			no-map;
+> +		};
+> +
+> +		dsp_vdev0buffer: vdev0buffer@94300000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0 0x94300000 0 0x100000>;
+> +			no-map;
+> +		};
+> +	};
+
+Alexander: Are you good with the refactoring?
+
+Rob and Krzysztof: I'm not sure if you want to ack this patch but giving you the
+benefit of the doubt.
+
+Shawn and Sascha: Did you plan on picking up this patch or shoud I?
 
 Thanks,
-Robin.
+Mathieu
+
+>  };
+>  
+>  &flexspi {
+> -- 
+> 2.17.1
+> 
