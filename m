@@ -2,146 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B84BA7D358B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19D47D35BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234571AbjJWLt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
+        id S234634AbjJWLvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:51:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234560AbjJWLt0 (ORCPT
+        with ESMTP id S234618AbjJWLvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:49:26 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4683DE8
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:49:24 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qutQt-0007fH-7U; Mon, 23 Oct 2023 13:49:19 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qutQq-003hJw-Mt; Mon, 23 Oct 2023 13:49:16 +0200
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qutQq-00FvNG-Jo; Mon, 23 Oct 2023 13:49:16 +0200
-Date:   Mon, 23 Oct 2023 13:49:16 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Ante Knezic <ante.knezic@helmholz.de>
-Cc:     UNGLinuxDriver@microchip.com, andrew@lunn.ch, conor+dt@kernel.org,
-        davem@davemloft.net, devicetree@vger.kernel.org,
-        edumazet@google.com, f.fainelli@gmail.com,
-        krzysztof.kozlowski+dt@linaro.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, marex@denx.de,
-        netdev@vger.kernel.org, olteanv@gmail.com, pabeni@redhat.com,
-        robh+dt@kernel.org, woojung.huh@microchip.com
-Subject: Re: [PATCH net-next v4 2/2] net:dsa:microchip: add property to select
-Message-ID: <20231023114916.GC3787187@pengutronix.de>
-References: <20231023084150.GB3787187@pengutronix.de>
- <20231023085750.8537-1-ante.knezic@helmholz.de>
+        Mon, 23 Oct 2023 07:51:08 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA13E9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:51:06 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a7b91faf40so31732277b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:51:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698061865; x=1698666665; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pj2+Gc/tcBXDbia3+UIXbheoVCOn899YQdDlUVcmlIo=;
+        b=vnke0QLxQBqb/ILqVk4aUwfBWa1x617MtUiWsRMfY48iZiAdWz7mAeT+QLpQuiDYl3
+         dHYIu07AcAQBJ8kLwnyKYHNjoM2EnwubG7TlSAu7ub5d3U4jeyH5U322sfoSe4zguQZP
+         /tWeFw+MDTdqtFTJ4Qf4Pe+UbfYxbFaxP9uYZEu+rYTljscECGtJJ0OUI+UAJ6WorMzP
+         KI+WAy3PrLpoWK1z3LckOxVtQpGBpYKx+bi9EbBMZ2Cg8McPHvfBRDN08dMkiaLP7hoI
+         oP+JsMPnhONNQSWT6SyWrDDqz63WxfUXcyG8vueWKVYr/wmLia4dxI2JrtlU1mjMscKd
+         mzXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698061865; x=1698666665;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Pj2+Gc/tcBXDbia3+UIXbheoVCOn899YQdDlUVcmlIo=;
+        b=BaaI1D2GxLhizwagEnKdacxUgExfFmy3kXWq/pW/DUxz3eBmYNsBkr2OQZlbWCJQEk
+         JVyMcXvRSaXcwnIn1lMrmBf16HoC4FMaNYjas2vOhVo6fpA9hXurjr5gzneIZlNMoxFb
+         uiydEj8NA6AqbKJTG6I4m/4zoTaKrHQce4EmMHXgV1AL7ifqRjX1iSVgm/0CJzvqw02D
+         KeuFKGD72phwKFG9aq7z9LRpWPxdKelx1msZ0U7DNRswP8ej7x55p4n3xnVmzktiJ/qB
+         z2gDpir/+riDu+wm1GgmTdJCdeP6Qb1maqQafWA3AXNw97OcYvPBhN3rrUW/gUKz2zRt
+         TWzg==
+X-Gm-Message-State: AOJu0YwUWhfZNJsVRtiFs5OERxlrrBomsnnzfa3p4Z5r9+Hzz+scWBqK
+        Ksikqb591D3Gown+nhSl7yyb1jL/OIBNRE2dhXs08w==
+X-Google-Smtp-Source: AGHT+IEwvU+/pk0AxYWqEzRPVjjkPdAkURGQidrpdHtxY/1Fddbs6AX51+cZAUDGouaOttT5eQe5wFBBC/i2td/pjBQ=
+X-Received: by 2002:a05:690c:f11:b0:5a7:d937:6f27 with SMTP id
+ dc17-20020a05690c0f1100b005a7d9376f27mr11004991ywb.19.1698061864957; Mon, 23
+ Oct 2023 04:51:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231023085750.8537-1-ante.knezic@helmholz.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230911153246.137148-1-aubin.constans@microchip.com>
+In-Reply-To: <20230911153246.137148-1-aubin.constans@microchip.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 23 Oct 2023 13:50:29 +0200
+Message-ID: <CAPDyKFoFjZOOzTM_vMxoNTph2nx=0WR0pyBqco44v8YacjOixw@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: mmc: take over as maintainer of MCI & SDHCI
+ MICROCHIP DRIVERS
+To:     Aubin Constans <aubin.constans@microchip.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Hari Prasath Gujulan Elango <hari.prasathge@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 10:57:50AM +0200, Ante Knezic wrote:
-> On Mon, 23 Oct 2023 10:41:50 +0200, Oleksij Rempel wrote:
-> 
-> > Here is KSZ8873 as initial reference:
-> > https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ProductDocuments/DataSheets/00002348A.pdf
-> > 3.3.9 RMII INTERFACE OPERATION:
-> > "When EN_REFCLKO_3 is high, KSZ8873RLL will output a 50 MHz in REFCLKO_3.
-> > Register 198 bit[3] is used to select internal or external reference
-> > clock. Internal reference clock means that the clock for the RMII of
-> > KSZ8873RLL will be provided by the KSZ8873RLL internally and the
-> > REFCLKI_3 pin is unconnected. For the external reference clock, the
-> > clock will provide to KSZ8873RLL via REFCLKI_3."
-> > 
-> > KSZ9897:
-> > http://ww1.microchip.com/downloads/en/DeviceDoc/00002330B.pdf
-> > 4.11.2 REDUCED MEDIA INDEPENDENT INTERFACE (RMII)
-> 
-> The upper paragraph refers to the case when switch is acting as a clock
-> provider (regardless whether its set as internal or external reference
-> clock). You can see this if you look at the next paragraph:
-> "If KSZ8863RLL does not provide the reference clock, this 50 MHz reference 
-> clock with divide-by-2 (25 MHz) has to be used in X1 pin instead of the 
-> 25 MHz crystal, since the ..."
-> So rmii-clk-internal property does not select whether switch is acting
-> as a clock provider or clock consumer which is what you are refering to
-> I believe? The clock provider/consumer is set via strapping pins.
-> 
-> Real case scenario: I have a board where switch is acting as a clock
-> provider, generating output to REFCLKO pin and feeding it to uC. 
-> This board does not have externally routed copper track from REFCLKO 
-> to REFCLKI, thus making the RMII interface not operable, unless the 
-> rmii-clk-internal bit is set.
-> If this bit is not set, only way to make it running is to solder a
-> jumper wire from REFCLKO to REFCLKI.
+On Mon, 11 Sept 2023 at 17:33, Aubin Constans
+<aubin.constans@microchip.com> wrote:
+>
+> On the one hand Eugen has taken responsibilities outside Microchip,
+> on the other hand I have some experience with the Microchip SDMMC
+> SDHCI controller.
+> Change Eugen as reviewer and take over maintainership of the SDHCI
+> MICROCHIP DRIVER.
+> Also, take over maintainership of its predecessor, that is the MCI
+> MICROCHIP DRIVER.
+>
+> Cc: Eugen Hristev <eugen.hristev@collabora.com>
+> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> Signed-off-by: Aubin Constans <aubin.constans@microchip.com>
 
-In case of KSZ8873 we seems to have something like:
+Thanks for volunteering to help out with the maintenance!
 
-Switch MAC<-.
-            |
-  PLL -> clk sel -> REFCLKO
-            \-----< REFCLKI
+Applied for next.
 
-Clock select in this case is controlled by Register 198 (0xC6).
+Kind regards
+Uffe
 
-In case of KSZ9897 we probably have something like:
 
-Switch MAC<-.
-            |
-  PLL -> clk sel -> REFCLKO
-            \--x--< REFCLKI
-	       |
-            Gate REFCLKI if REFCLKO is used.
 
-In both cases:
-- KSZ8873, Setting bit3 in Register 198 (0xC6) will control use of clk
-  select
-- KSZ9897, setting bit2 in Register 0xN301, will controll use of clk
-  select and probably gate REFCLKI.
-
-So far, it looks very similar to me and it is usually handled by
-phy-mode rmii vs revrmii. Correct?
-
-So, the main question is still, do we need this kind of configuration
-per port or it is enough to have it per switch?
-
-For some reasons KSZ8863MLL datasheet provides RMII clock select
-configuration for two ports (port 1 and 3)
-https://ww1.microchip.com/downloads/aemDocuments/documents/UNG/ProductDocuments/DataSheets/KSZ8863MLL-FLL-RLL-Data-Sheet-00002335C.pdf
-May be there are variants with two RMIIs?
-
-Something similar but with multiple RMII interfaces seems to be
-supported by KSZ8864CNX:
-https://eu.mouser.com/datasheet/2/268/00002229A-1082534.pdf
-
-And all KSZ9xxx series seems to handle it per port as well. 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> ---
+>  MAINTAINERS | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 2833e2da63e0..52beaf4f7fbb 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14022,7 +14022,7 @@ F:      Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml
+>  F:     drivers/iio/adc/mcp3911.c
+>
+>  MICROCHIP MMC/SD/SDIO MCI DRIVER
+> -M:     Ludovic Desroches <ludovic.desroches@microchip.com>
+> +M:     Aubin Constans <aubin.constans@microchip.com>
+>  S:     Maintained
+>  F:     drivers/mmc/host/atmel-mci.c
+>
+> @@ -19235,7 +19235,8 @@ F:      Documentation/devicetree/bindings/mmc/sdhci-common.yaml
+>  F:     drivers/mmc/host/sdhci*
+>
+>  SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) MICROCHIP DRIVER
+> -M:     Eugen Hristev <eugen.hristev@microchip.com>
+> +M:     Aubin Constans <aubin.constans@microchip.com>
+> +R:     Eugen Hristev <eugen.hristev@collabora.com>
+>  L:     linux-mmc@vger.kernel.org
+>  S:     Supported
+>  F:     drivers/mmc/host/sdhci-of-at91.c
+> --
+> 2.39.2
+>
