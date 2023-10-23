@@ -2,126 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B4D7D348A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81B17D3499
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234265AbjJWLke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
+        id S234277AbjJWLlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234259AbjJWLka (ORCPT
+        with ESMTP id S234268AbjJWLlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:40:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D48DB;
-        Mon, 23 Oct 2023 04:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698061226; x=1729597226;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=iXJBC1Wjmu0IdEY4IOWBnhoMmiEBZwTrT4Q3ArWCwe8=;
-  b=G9YOu8BPaOvSFI/pf+3Eunm2QnaSt7rFDU/IM+Fb4gmTsdvSoxYNopgo
-   TXbJpYgD9crUSLiJ7OfQ1kDR6ehnbKZ9fSU9gBYd5/HjKzVJvj8PlQF+y
-   nD9u6Eez9OPl+3AoJ94sdhrY3qEszC6YdazV0o39jHdDsSUcM9oe3GLR9
-   vfloDQW946of6KIARLPCJDKGZYu57uLpx1d3besi4fZ224S1PPh4f4Dp1
-   uwHTCYEVYdsxciUe8vyZg7StT4TOE2WgHbL3dkr2HTc9aZLEylIqqCSEY
-   xSZW94U1qdnkCzMyMGq04APTD7qyGVGThsCKYjFuNO9Gzc/9ymBpZ8CUA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="473034126"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="473034126"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:40:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="734639430"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="734639430"
-Received: from evlad-mobl.ger.corp.intel.com (HELO localhost) ([10.252.47.180])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:40:22 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>
-Cc:     Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        linux-input@vger.kernel.org, ojeda@kernel.org,
-        linux-leds@vger.kernel.org
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-In-Reply-To: <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
- <ZSe1GYLplZo5fsAe@duo.ucw.cz>
- <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
- <ZSf9QneKO/8IzWhd@duo.ucw.cz>
- <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
- <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
- <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
- <ZSmg4tqXiYiX18K/@duo.ucw.cz>
- <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
-Date:   Mon, 23 Oct 2023 14:40:18 +0300
-Message-ID: <87sf61bm8t.fsf@intel.com>
+        Mon, 23 Oct 2023 07:41:12 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B08810C
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:41:10 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3af604c3f8fso2395827b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:41:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698061269; x=1698666069; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qviGzaXqF4YA7dDIHn+n8LWE1pgGuPrmv3bgL2LB7nM=;
+        b=RcPNSFVccnTIq+xHEn0B77VhOxCo/sYQ5/vbFD73pbYYx/ayswK9fF/p7ZDeqJwcGp
+         gt3J+hYriYjIn6lRqdbOvElm/V5ZBLiBqj7dSGQ0QGu+6FWxfVD2Kxez8tKRdYpGlWSf
+         NBlPoKTsUj3SD+7awf5BNyPVNq6m3jDBKZ7/dzj7xQCfzX1lkiv8TnRazfI6neGPN859
+         qttLp6TlgVlFguBl04em0nVcsnL4ILJrgkovBYI0w/zYaLbOWQutxBTjsyUn7cfvDevs
+         5l0uEGWuAlnOuFroKf5J0IMg1xRtonX1FAdLGBguqLujveEzpUWN4/EVml/WlNN26rBr
+         GdAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698061269; x=1698666069;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qviGzaXqF4YA7dDIHn+n8LWE1pgGuPrmv3bgL2LB7nM=;
+        b=JeCELmSMjQoRfiAkfIEtkzmRf0R8wq2ifCL4qXSU+DIyDk/Ayq6LvuY3B8sK+y6wpp
+         CMSbSupLDIOQ2u3AoI03+U++8cfDWJF2MBe4mi+9jMXTPpsTKnLNjN59WybZJ8ZXcB7R
+         j/hAaZzImriOWNRMBQHGesiwwm4MAhSH/dfr4dS+js2o5PtNKwLJIPYXIbYsbtr64F0I
+         t/mObmg9l+0oUbPzabNRSTVFiahWf6XjmQmfvyddmgeSXhNhjdF/pCLQhiHJBODlU7Qe
+         Jof7Hs720mr3IRBy5JuL+tULyvAzlY+MB0LLDSGPKCgkETwLf3rNGfe6Qva9QJw+Hn0n
+         hk/g==
+X-Gm-Message-State: AOJu0YxNyQTtLB0zfIkTCjVZLF87eM8MUceQj1dMEKFboRy5SEiFU60U
+        M2MIyfUJoqDNGBs2W2e32AM=
+X-Google-Smtp-Source: AGHT+IEANqJcAXFHiNRNbHta3k4ItUnytNMmvQraCBNSdGog8EKJqfUWoMcNT+NOHKClIacufoaQeA==
+X-Received: by 2002:a05:6358:858c:b0:168:dbac:b94e with SMTP id l12-20020a056358858c00b00168dbacb94emr3644931rwk.32.1698061269367;
+        Mon, 23 Oct 2023 04:41:09 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id q25-20020a656859000000b005898df17ea4sm4749520pgt.27.2023.10.23.04.41.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 04:41:08 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 9025B818DF16; Mon, 23 Oct 2023 18:41:04 +0700 (WIB)
+Date:   Mon, 23 Oct 2023 18:41:04 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     gmssixty gmssixty <gmssixty@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: How can I add "busybox sh" as init during boot of the custom
+ kernel?
+Message-ID: <ZTZb0AndJBwnAOYT@debian.me>
+References: <CAOx-CDUwV0d0+2UdZW+vdUcjwAg2+Hanf1-iNSYFRWOW2yQugg@mail.gmail.com>
+ <6675c47a-d258-41ae-b506-88d7ae74b551@infradead.org>
+ <CAOx-CDVn7Ub31yiRpoZh4RhJBCvgZhb8Ca=cH9b0xWPjk5FNQA@mail.gmail.com>
+ <89f666dc-e7b3-44ad-846c-b1f1ee278940@infradead.org>
+ <CAOx-CDWzJWqYGhoJ4HPhio5-5zE025jYrmVpocryyxMfwfwsxw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2kOlPG+NQPwYahhM"
+Content-Disposition: inline
+In-Reply-To: <CAOx-CDWzJWqYGhoJ4HPhio5-5zE025jYrmVpocryyxMfwfwsxw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 16 Oct 2023, Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> wrote:
-> On Fri, Oct 13, 2023 at 9:56=E2=80=AFPM Pavel Machek <pavel@ucw.cz> wrote:
->>
->> So... a bit of rationale. The keyboard does not really fit into the
->> LED subsystem; LEDs are expected to be independent ("hdd led") and not
->> a matrix of them.
->
-> Makes sense.
->
->> We do see various strange displays these days -- they commonly have
->> rounded corners and holes in them. I'm not sure how that's currently
->> supported, but I believe it is reasonable to view keyboard as a
->> display with slightly weird placing of pixels.
->>
->> Plus, I'd really like to play tetris on one of those :-).
->>
->> So, would presenting them as auxdisplay be acceptable? Or are there
->> better options?
->
-> It sounds like a fair use case -- auxdisplay are typically simple
-> character-based or small graphical displays, e.g. 128x64, that may not
-> be a "main" / usual screen as typically understood, but the concept is
-> a bit fuzzy and we are a bit of a catch-all.
->
-> And "keyboard backlight display with a pixel/color per-key" does not
-> sound like a "main" screen, and having some cute effects displayed
-> there are the kind of thing that one could do in the usual small
-> graphical ones too. :)
->
-> But if somebody prefers to create new categories (or subcategories
-> within auxdisplay) to hold these, that could be nice too (in the
-> latter case, I would perhaps suggest reorganizing all of the existing
-> ones while at it).
 
-One could also reasonably make the argument that controlling the
-individual keyboard key backlights should be part of the input
-subsystem. It's not a display per se. (Unless you actually have small
-displays on the keycaps, and I think that's a thing too.)
+--2kOlPG+NQPwYahhM
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-There's force feedback, there could be light feedback? There's also
-drivers/input/input-leds.c for the keycaps that have leds, like caps
-lock, num lock, etc.
+On Mon, Oct 23, 2023 at 05:06:38PM +0600, gmssixty gmssixty wrote:
+>=20
+> What would I write in /sbin/init? I mean, what will be the content of
+> /sbin/init? Should I write: "exec /bin/busybox sh" in /sbin/init? Or
+> should I write "/bin/busybox sh" in /sbin/init?
 
-Anyway, just throwing ideas around, no strong opinions, really.
+Since you have Busybox system, /sbin/init should be a symlink to
+/bin/busybox.
 
+>=20
+> BTW, what is top-post?
 
-BR,
-Jani.
+A: http://en.wikipedia.org/wiki/Top_post
+Q: Were do I find info about this thing called top-posting?
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing in e-mail?
 
+A: No.
+Q: Should I include quotations after my reply?
+
+http://daringfireball.net/2007/07/on_top
+
+Thanks.
 
 --=20
-Jani Nikula, Intel
+An old man doll... just what I always wanted! - Clara
+
+--2kOlPG+NQPwYahhM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZTZbzAAKCRD2uYlJVVFO
+o3HLAQDv43/Z/D8tvVkDxO3HwcD74XH+OKLNrK6wvxwy97DPtAEAkczK1m7AJOVk
+5z+yFWnNNbreq6qannQ6kh16uA9sfgg=
+=xtF6
+-----END PGP SIGNATURE-----
+
+--2kOlPG+NQPwYahhM--
