@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAE07D38CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32507D38C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbjJWODD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
+        id S231259AbjJWOC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:02:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbjJWODA (ORCPT
+        with ESMTP id S231502AbjJWOCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:03:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA56BD7E;
-        Mon, 23 Oct 2023 07:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698069779; x=1729605779;
-  h=from:to:cc:in-reply-to:references:subject:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=mco6F5pM3N+y18qY9xYdMZMN9NeQCPYRSl/IX3kb2Ao=;
-  b=Bk+3Po7Di5GinIZIPQwzeomEVwpa/EFY00TJCZ6izpQuObOfmitdndhe
-   Bq/KZR6yzt2wfCJe2OZUq3CMfqHe5Nu0WsFOTBPRbEVqXklY9Z+JyAtUU
-   HS6WydezU8sqBA9k48wCInGPzhYy1YtSWAk9zRJzrAPas5TBW9Oe1bLgY
-   IoENuRja0qjWf/ur4sgySMpWtv5W+6fZtQ2VqeRyUfgE9h5p2atm0SjHz
-   1eq6TUwquyWRDmAF17P6knB1/Tru3oFRGiIqIudOCdizgFmOaywOGGShI
-   1msTKm5ZRQUAkd4ncTyWlRHPJJI0KUJY68JgZ2GOgentQj2IUrR5ufraw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="384042936"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="384042936"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 07:02:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="793143088"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="793143088"
-Received: from spididi-mobl3.gar.corp.intel.com (HELO localhost) ([10.249.40.91])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 07:02:33 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231020-strncpy-drivers-platform-x86-thinkpad_acpi-c-v1-1-312f2e33034f@google.com>
-References: <20231020-strncpy-drivers-platform-x86-thinkpad_acpi-c-v1-1-312f2e33034f@google.com>
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: replace deprecated
- strncpy with memcpy
-Message-Id: <169806974784.2853.7847788147335527279.b4-ty@linux.intel.com>
-Date:   Mon, 23 Oct 2023 17:02:27 +0300
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 23 Oct 2023 10:02:54 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC23610C6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:02:48 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1caaaa873efso22547385ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:02:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698069768; x=1698674568; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rhW2ovogLAtdgY5SQJlkyUio4XiA8u6f7LVxFg6+xTw=;
+        b=28jjL3dGmwdSUNGHPq9r6/PNDV2Zq8+g86rWh5kEdvzsDIjYDps+VbW8/Tp5T49rMy
+         1vnL8QahM4PD4Og8ZeOHLxN73p3StEGHBQ0Ecwr+U7Bx9LtQNJTwdQmwD/i7VdXKTaP2
+         5CSu1nOUYprg6GS1eyhXmdNlREK28ToDzDiOlqQ8yBWKPsVFzp+2mruCTVMrtXMYD6rv
+         KEu0oGRC74EblJPRSHobwUgqdUjrJiwQc/dro6kUOygetsA4n5R7cqh1B+YsD1q8LAnE
+         sl25Ggz0P1oNujddlAQZlCXW4QxZC4tU9Jd1w2p8z+QfLuRbtyeid9is/hICq/mdY54O
+         VZ4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698069768; x=1698674568;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rhW2ovogLAtdgY5SQJlkyUio4XiA8u6f7LVxFg6+xTw=;
+        b=cgXiMPWBK3ob11ryVgMIarocba6CZKges4RdG5UQIrfpMrX7HyDV2pRU5AxnGk7Yoe
+         XvTlD+v9ke0+3HvdWz9zmrde4JDHHQZM+FzKtjqt9EtZ6clicTc4AyF4mqn+UpCVRBRo
+         V44k5WXGhMOSq9HzHanOKE8TJQHubLgpCSL9BMxbkN7IoacrtPyZSbAREnGfQT/BBZXb
+         DLn5KzApqTw/nW8oTBhCY/ynfkiV8ztGzpH56ewQD75tfJDWJuUQgXcXwY0DeesWka/s
+         iNNHLmuqI+IxBV2Rfetg9Fr/ItPxKJx0k8I7zNAYSCOZ6n2blt3PD+ejaOL810rlmZVz
+         r3iA==
+X-Gm-Message-State: AOJu0YycOEhls1PO/zQZpVSqPxblLwHnbsj5v/sHHR8TCIKNiGgkMnFH
+        NvyE0i4z8sc2ajUuH/Ut+tiDvcp2VG4=
+X-Google-Smtp-Source: AGHT+IGUuvbhHZfz3wZFORlHNhRdI0cdjVmY0n57bSPikZhKGOb7nYXCvw6ZXfanc1szj32IaalJvX01dDI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:ab5a:b0:1c7:3462:ce8d with SMTP id
+ ij26-20020a170902ab5a00b001c73462ce8dmr169614plb.10.1698069768169; Mon, 23
+ Oct 2023 07:02:48 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 07:02:46 -0700
+In-Reply-To: <20231023102846.14830-1-przemyslaw.kitszel@intel.com>
+Mime-Version: 1.0
+References: <20231023102846.14830-1-przemyslaw.kitszel@intel.com>
+Message-ID: <ZTZ9Bk3-NrK_cVDu@google.com>
+Subject: Re: [PATCH] checkpatch: allow tags between co-developed-by and their sign-off
+From:   Sean Christopherson <seanjc@google.com>
+To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Cc:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        workflows@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Mateusz Polchlopek <mateusz.polchlopek@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 17:52:43 +0000, Justin Stitt wrote:
++Mateusz
 
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous
-> interfaces.
-> 
-> We expect ec_fw_string to be NUL-terminated based on its use with format
-> strings in thinkpad_acpi.c:
-> 11241 | pr_notice("ThinkPad firmware release %s doesn't match the known patterns\n",
-> 11242 |     ec_fw_string);
-> 
-> [...]
+On Mon, Oct 23, 2023, Przemek Kitszel wrote:
+> Additional tags between Co-developed-by and corresponding Signed-off-by
+> could include Reviewed-by tags collected by Submitter, which is also
+> a Co-developer, but should sign-off at the very end of tags provided by
+> the Submitter.
 
+...
 
-Thank you for your contribution, it has been applied to my local
-review-ilpo branch. Note it will show up in the public
-platform-drivers-x86/review-ilpo branch only once I've pushed my
-local branch there, which might take a while.
+> Mateusz Polchlopek <mateusz.polchlopek@intel.com> has reported this to me.
 
-Once I've run some tests on the review-ilpo branch the patches
-there will be added to the platform-drivers-x86/for-next branch
-and eventually will be included in the pdx86 pull-request to
-Linus for the next merge-window.
+Heh, there's a tag for that...
 
-The list of commits applied:
-[1/1] platform/x86: thinkpad_acpi: replace deprecated strncpy with memcpy
-      commit: 942a4a61b64e182d756a1a5776aa500d3b3d862f
+  Reported-by: Mateusz Polchlopek <mateusz.polchlopek@intel.com>
 
---
- i.
+And it's usually a good idea to Cc the reporter in case there are questions they
+can help answer.
 
+> @@ -509,16 +509,18 @@ Example of a patch submitted by the From: author::
+>  	Signed-off-by: Second Co-Author <second@coauthor.example.org>
+>  	Signed-off-by: From Author <from@author.example.org>
+>  
+> -Example of a patch submitted by a Co-developed-by: author::
+> +Example of a patch submitted by a Co-developed-by: author, who also collected
+> +a Reviewed-by: tag posted for earlier version::
+>  
+>  	From: From Author <from@author.example.org>
+>  
+>  	<changelog>
+>  
+>  	Co-developed-by: Random Co-Author <random@coauthor.example.org>
+>  	Signed-off-by: Random Co-Author <random@coauthor.example.org>
+>  	Signed-off-by: From Author <from@author.example.org>
+>  	Co-developed-by: Submitting Co-Author <sub@coauthor.example.org>
+> +	Reviewed-by: Some Reviewer <srev@another.example.org>
+>  	Signed-off-by: Submitting Co-Author <sub@coauthor.example.org>
+
+This is silly.  Allowing tags in-between Co-developed-by with Signed-off-by
+unnecessarily complicates things, e.g. people already miss/forget the rule about
+tightly coupling Co-developed-by with Signed-off-by.
+
+And if we're being super pedantic about chronological history, arguably the
+Reviewed-by should come before the Co-developed-by as adding the Reviewed-by is
+a (trivial) modification to the patch that was done by the submitter.
