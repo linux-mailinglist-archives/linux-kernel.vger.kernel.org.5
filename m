@@ -2,132 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E557D3FFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCCF7D3FFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbjJWTO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
+        id S230059AbjJWTPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231702AbjJWTOS (ORCPT
+        with ESMTP id S229499AbjJWTPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:14:18 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E31510C;
-        Mon, 23 Oct 2023 12:14:13 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.nyi.internal (Postfix) with ESMTP id 05D615C0399;
-        Mon, 23 Oct 2023 15:14:13 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Mon, 23 Oct 2023 15:14:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698088453; x=
-        1698174853; bh=U85JK5asZNHXyazqwXB2WH7hdrGFnY8ew4l7GY3z8ws=; b=J
-        HGnVzxbsQN1dNFQ/3+udQO0s2OJOp/w6OjzjV6V3zHQcTwXS/WW4qPAku1MQRznF
-        gKAeX2mUqez6v7r24PEg58TFbZc3z79MD3tfgywgjgY0EsJk3w6j27myWvD6VCUj
-        7hiVFjarxqiPDMgQaDVpkENTjjZqQcY/zGJqltibOUXpRWTKIdttsYiGuGI/EG2u
-        CLWbZ5LdsVCCn35YtZZjH6cHyOILg1D+lATI4lFjmOHrO1M5oLKPmq0oiGgKNSgC
-        YWkxz0eXy07OlvsdbzaDPyQNlARZNo95N99tjTzgGtpEwZN8F55TPPzHfC/G1+Xx
-        pWk44/apOPZnlz5FcyMcw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698088453; x=
-        1698174853; bh=U85JK5asZNHXyazqwXB2WH7hdrGFnY8ew4l7GY3z8ws=; b=j
-        PQDcZFCJqJfqjhXf16QctX5HJVp4BAkG//lGz9g8oI4rfl3X0G0ChlJF0V3XVtiD
-        nevi5ZEaxxQ52tm0wFMWzxoQpbRGe4A7fuRPTsuFudRkGfmAVClW8izrJZwYIT3S
-        HaiK2HqdPnPrNvaMEDjt8Ttvqf3WIgocM74K70SpbsK0IS+H4UQggZJfh6x/RAIU
-        Xcjodsl4vt8Jruztlcf9vqvOHH7V567YfY7M8eWPe4MNs5jT1+7+qYysusWOi0Rd
-        8Om1bcTKHRoRlkSf7UmrZDBucN3qwGjQEhpXCoRa8fnpmMyZRR71X3wAnHC99FgW
-        RLvCwYyVbqzjJlXdE6agA==
-X-ME-Sender: <xms:BMY2ZcEyhurCuOxPQWaVeOGQKNhXHb8MeIGiKoxWBFwqJD5hIJ2a8g>
-    <xme:BMY2ZVUen9zGYaaOU0K-J2finLDoclVHI6wj7xDJKwTYqRa3W5AsZgUvihqYwoiCm
-    pEFX7wnZGAtnr6oNck>
-X-ME-Received: <xmr:BMY2ZWKgvIi13i7XSQwnjDgHEzv9iHb2JVUks2gg0czTOd0hgd905hls6ZbiMrCaQwhu3prpoKo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeeigddufeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghn
-    ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepfeeludefheegvdeuvd
-    dvgeekgfdvtdettdelieeihfegtedugeekhfdvhfejfedtnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhi
-    hgohgrthdrtghomh
-X-ME-Proxy: <xmx:BMY2ZeHBo8vg3qmK204uvJ-K3tpZemIrY4dzeTGGTSSocer1j32JGg>
-    <xmx:BMY2ZSV3meq5IkGf0VDtDatHvxwR8i8x9SASZcmuD4-MwFsx5TzPrQ>
-    <xmx:BMY2ZROVZTEkitxvoUXAqKNI-VtJf-hASiWIshku-Bn2lbkc4Wi2Og>
-    <xmx:BcY2ZQzC3MtasRKCQcDb2gdeYgHiMksmCp5JdP4ztfkU96m2EkbbZw>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 23 Oct 2023 15:14:11 -0400 (EDT)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
-        gregory.clement@bootlin.com, vladimir.kondratiev@intel.com,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 5/5] MIPS: Allow kernel base to be set from Kconfig for all platforms
-Date:   Mon, 23 Oct 2023 20:14:00 +0100
-Message-Id: <20231023191400.170052-6-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231023191400.170052-1-jiaxun.yang@flygoat.com>
-References: <20231023191400.170052-1-jiaxun.yang@flygoat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 23 Oct 2023 15:15:00 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF08D10FA
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:14:51 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a839b31a0dso71592187b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698088491; x=1698693291; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vxgSbbJcJ8k4AfzUm+i0fvFrr1WhMJ4/9BqOAlfxPD4=;
+        b=EGJLS4hsyrKQrmApbhKMoMNFbjk3sO5dXvNP5c7TpkfiFksMlw7r+uChP8fI4UHJ18
+         11VAlY81efoGiYa0RMS1Wnx7ox7ErfM6QJg3QUV9D872FLzkHdu5li4jjynaM4TOchqP
+         7PdtufYAmBYGQV/SyE69P/aLSZnjfqj6rTcTPQV1CTLpY+ZrPS1bdzU6d4N6NsJj41Lz
+         GTbzKpLWmdEradq+f5UNA1h8hPvLuMQRCBnzmXhlAqh1DaWhQHx8uvxdEZuF08CTVRp3
+         zP1m6w4hOAG0xKj/T6riWeNtmWgpWST3vkLj/vDu5n6DR8JNWzml3CA+mX3z20UC6gER
+         s9uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698088491; x=1698693291;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vxgSbbJcJ8k4AfzUm+i0fvFrr1WhMJ4/9BqOAlfxPD4=;
+        b=U4XMmZN98ai0sfbBIIrIgF3Eg5rgKyeCgXx3p0lNljio3vdGeD1YXebYQF0oG/ONI8
+         Zyl05C7yA5xXUCVkGP2UCyPzOB5XSD1A2Y1mPipCO2qMeE1mAlAm6OBi+t4FlYpIgFxc
+         jGaO+HB0uIK52gZh6bxDIOr1r12JHmKWU0ZEQoqJbhKxDidf1e19vbSOyFSR+UR+N21b
+         xgGLs3wfmxKGvATj7+sHwFKn7zJXiLRzI74WR/NffkwfbQUrPD2yrnqxth+kZLPcBNsk
+         ox6eo51GQP9jeaeLqR1adY3GZeSEzz/LYiNY6m7+oHtbFjQMTgjuC9Nktc9wUM7TJbRz
+         6M5Q==
+X-Gm-Message-State: AOJu0Ywg08vCvJ4ve6PhbUAyQESs8YcnoxoMgT524cJpVPND5B0VVDjZ
+        9aIpLzDZYrkKCcAT/gI/84LmKZbXFyZvSs2fiw==
+X-Google-Smtp-Source: AGHT+IFk2+a4Nwy+lDfofeMbQ00SIqXpTu6BSVqVMj6WMyiEKt+3HATCvTqDUHblwYDVOJKzh9KBN8QLmBbu9+PP0w==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:4aa:b0:d9a:4421:6ec5 with
+ SMTP id r10-20020a05690204aa00b00d9a44216ec5mr192426ybs.3.1698088491059; Mon,
+ 23 Oct 2023 12:14:51 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 19:14:49 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIACjGNmUC/x2NQQqFMAwFryJZG9AKFb2KuKg1akBqSUT+R7y7w
+ cUsBob3blASJoW+uEHoYuUjmdRlAXELaSXk2Rxc5ZraQD0lxfzHWfgiUdSmq9BSQY17xojT5L1 zPrQUAthMFlr4910M4/O877gOK3IAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698088489; l=1329;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=EGwnKAJDKIDhDdM+Wm5gicTjSyZs8Iw8n/yqjAF6sKU=; b=hXZYoncvcCMCdrJCj2u1tX/RyKLEry7HTYxF3H64/3saG8BxaQs9lpvqUl3fHHLAOWr/VzuTB
+ OctOIGa57zRAk5zf4e/Dvn7iORD79F6Mcn9oLX2C40QC6rUOBCknrzz
+X-Mailer: b4 0.12.3
+Message-ID: <20231023-strncpy-drivers-s390-char-sclp-c-v1-1-eaeef80522bb@google.com>
+Subject: [PATCH] s390/sclp: replace deprecated strncpy with strtomem
+From:   Justin Stitt <justinstitt@google.com>
+To:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some platforms in wild that generic loading address won't
-work with them due to memory layout.
+Let's move away from using strncpy() as it is deprecated [1].
 
-Allow PHYSICAL_START to be override from Kconfig, introduce
-PHYSICAL_START_BOOL symbol as powerpc did.
+Instead use strtomem() as `e.id` is already marked as nonstring:
+|       char id[4] __nonstring;
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+We don't need strtomem_pad() because `e` is already memset to 0 --
+rendering any additional NUL-padding useless.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
- arch/mips/Kconfig | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+Note: build-tested only.
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index bc8421859006..bfedc8b48a81 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2884,12 +2884,22 @@ config ARCH_SUPPORTS_KEXEC
- config ARCH_SUPPORTS_CRASH_DUMP
- 	def_bool y
+Found with: $ rg "strncpy\("
+---
+ drivers/s390/char/sclp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/s390/char/sclp.c b/drivers/s390/char/sclp.c
+index 8f74db689a0c..486cf57a1605 100644
+--- a/drivers/s390/char/sclp.c
++++ b/drivers/s390/char/sclp.c
+@@ -81,7 +81,7 @@ static inline void sclp_trace(int prio, char *id, u32 a, u64 b, bool err)
+ 	struct sclp_trace_entry e;
  
-+config PHYSICAL_START_BOOL
-+	bool "Set physical address where the kernel is loaded"
-+	default y if CRASH_DUMP
-+	help
-+	  This gives the CKSEG0, KSEG0 or XKPHYS address where the kernel
-+	  is loaded.
-+
-+	  Say N here unless you know what you are doing.
-+
- config PHYSICAL_START
--	hex "Physical address where the kernel is loaded"
--	default "0xffffffff84000000"
--	depends on CRASH_DUMP
-+	hex "Physical address where the kernel is loaded" if PHYSICAL_START_BOOL
-+	default "0xffffffff84000000" if CRASH_DUMP
-+	default "0xffffffff80100000"
- 	help
--	  This gives the CKSEG0 or KSEG0 address where the kernel is loaded.
-+	  This gives the CKSEG0, KSEG0 or XKPHYS address where the kernel
-+	  is loaded.
- 	  If you plan to use kernel for capturing the crash dump change
- 	  this value to start of the reserved region (the "X" value as
- 	  specified in the "crashkernel=YM@XM" command line boot parameter
--- 
-2.34.1
+ 	memset(&e, 0, sizeof(e));
+-	strncpy(e.id, id, sizeof(e.id));
++	strtomem(e.id, id);
+ 	e.a = a;
+ 	e.b = b;
+ 	debug_event(&sclp_debug, prio, &e, sizeof(e));
+
+---
+base-commit: 9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
+change-id: 20231023-strncpy-drivers-s390-char-sclp-c-bb66226a7eaa
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
