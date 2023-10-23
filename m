@@ -2,154 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 491657D4329
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 01:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F9A7D432E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 01:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229557AbjJWXYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 19:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
+        id S231336AbjJWX0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 19:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJWXYS (ORCPT
+        with ESMTP id S229743AbjJWX0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 19:24:18 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2072.outbound.protection.outlook.com [40.107.220.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0709C
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:24:16 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RTwKAJH/pcqOFClLhZCfYV/K/C/yzD4kJXa3i4mWN8mFUmXDqo+XK9Z0zmEKc4SftwI6WhaK2MOIeFUbb5lfuon+zlcs30LxAMik3k/k5QFvCgk4FGk3ZlE23+SY2B4ULUiCBkvwx7JxDT3gT8l67w0ljv51atgzsoLjXk1NUhf9GZXlxaXTsJ0UMBGyjnKxNkgxum4mUiJOF+iZzG/63UOljNlDG3Lw9PsreFm5AQiGAcpYudath58qrT4wk5qTAjhLT7HnpH3yLjQYQl8JSjGqkxrAw6f0UG3p99vmWcmO5pKiHn/5waSKiuH4oAZyVjd9BjLA155xQiLQFksA4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pXFuPS29Y5AwVRc+dtnIEJC9QBnS9Xv4NdUNs5dsXWg=;
- b=X8uCWpv0Xbctu0qUc1qXs1AwtvrAx+K1dIuLbCkpCyljnusD7+kjmbv0yxIdgCg7lQb2mO3kslNRdeXBv6PisJFlDvh6VUpiaUsO25T0cbmkAFKy0v3bQxjEYYTN2ZoMIj921VEhOw+tas+49YFSbpKPInlSdgcYwm9ISBz3KGDNNYZR8pWhuFW82UAiiitqAUrgoTafwrAYeGF48KcVMDVnjSzej+y7PedW9DPgp2kr35xJO7FVocP6kEDQUr9tTord8wM8mDVhakVHholGEheZPPlr11pAFUsrK2CPx1xaR111dThCM6PVCVv1YM3YGJ/o2FTHK9gc21+gPaMXBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pXFuPS29Y5AwVRc+dtnIEJC9QBnS9Xv4NdUNs5dsXWg=;
- b=IKY13PKwj5zka3GEAJQ3abfGpfe4AVmcnGvzbv/fY5Bi0NQAmI42i1WUVhXBjTjhnKMU4V9OC51f8snhS3usDLBRmXpnXuurzmbd3rfd4HTuheIh+b2Em+vXI1ggK1FAqv6Y9yeP4qRGNyCG6RynqYe7jHvyFlFc5BngAw5IGpBzn2QpjDt9sqMA7Z2uaJk/9kKdzYSeL2zvLL7/qmjNK4W5tLU8xVahM/5zdaB7FjOLXIeRe1fTaHPew2osysOiqQXYqg0edGPHPR1S2kMWvIH0TkNCNRc1UnnU4JWLFfX2f5ElB6m3s0VD5mXqmnyiXaamL58v/ZA5vZ9j+SMlyQ==
-Received: from DM6PR03CA0083.namprd03.prod.outlook.com (2603:10b6:5:333::16)
- by BN9PR12MB5193.namprd12.prod.outlook.com (2603:10b6:408:11a::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Mon, 23 Oct
- 2023 23:24:14 +0000
-Received: from DS2PEPF0000343B.namprd02.prod.outlook.com
- (2603:10b6:5:333:cafe::95) by DM6PR03CA0083.outlook.office365.com
- (2603:10b6:5:333::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.34 via Frontend
- Transport; Mon, 23 Oct 2023 23:24:14 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- DS2PEPF0000343B.mail.protection.outlook.com (10.167.18.38) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.15 via Frontend Transport; Mon, 23 Oct 2023 23:24:13 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 23 Oct
- 2023 16:23:53 -0700
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 23 Oct 2023 16:23:53 -0700
-Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Mon, 23 Oct 2023 16:23:53 -0700
-Date:   Mon, 23 Oct 2023 16:23:51 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <kevin.tian@intel.com>, <joro@8bytes.org>, <will@kernel.org>,
-        <robin.murphy@arm.com>, <baolu.lu@linux.intel.com>,
-        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <yi.l.liu@intel.com>
-Subject: Re: [PATCH v3] iommufd: Only enforce cache coherency in
- iommufd_hw_pagetable_alloc
-Message-ID: <ZTcAhwYjjzqM0A5M@Asurada-Nvidia>
-References: <20231023185700.11407-1-nicolinc@nvidia.com>
- <20231023230509.GI3952@nvidia.com>
+        Mon, 23 Oct 2023 19:26:35 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709B0D73
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:26:31 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b36e1fcee9so3192192b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:26:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698103591; x=1698708391; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G+Gux9V9VrIJG9Key4Kir8qGYfaDp/xU9ex2KP3eXys=;
+        b=xkP1DwakmW2tHqe6HTIXjHePDfPnnKpC1IDOmDHfYMUyG/Eq2lT9idN9Ef8z7tpdNi
+         TxgflPTKOf04PI0ONXMpfCKpZtNzGLNjlbctIakID0bLpGqjJp/SgentVqPuIBejZpVn
+         EE+RaJC59adi7tTabh95D/t26ZhNFY4YOYOj/xkVe/wxgW2HlkRK6ipnqGUzTC/W05cY
+         9Ra4J0t8lQwULEflPkMnk0IcOXv5eKo1oCWgq1s/kTBPNNfo6RbWF4PuD+U4nbCaFL+G
+         4fZgYWNjcB4lKHB0+sd6Eg39LTkm7QDzbAlg/CVKo1l9WZnK+RGvfZxUt2mq1eBCqzC1
+         zxGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698103591; x=1698708391;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G+Gux9V9VrIJG9Key4Kir8qGYfaDp/xU9ex2KP3eXys=;
+        b=jsJx0Y69Ct9svTN8sKGe1dy/ZVQabarB8L3DZBIqjLFAeAXuLj2q326lw/tOE1feTa
+         PlT33qUY3KGCO2COXJMMWDI0iSWkff9b45L/o2OpSc7vxxn7hHU2em4Cv/nijVf4fxZr
+         8u1Ux6qbsoqLR/WK/JqQ+Fjj3iTep/oUWgJJSZjlB6oB3U/fxEfERVBNGU+UtnN7iO6j
+         Grxshz/udYqeoXnfzYVMDvOTPDMO1HR2E5gO98vY4XuTlbsssKPj0c4YiGbquvEJwZtd
+         wxEvNO7UhODdNp27gqxOgnbeY3bhWfK52DhnLdgG7l27bqW+5mVclku/DRn3FASvDsln
+         Ccxw==
+X-Gm-Message-State: AOJu0YwwAHT+HWIdNpakI7eUb6N8njnhu1gTIa4egL9H2x0XmXD13VxJ
+        bQ7zT73etjGcaR08ye6lBFmZ3g==
+X-Google-Smtp-Source: AGHT+IFbvK8ZgyXM/nA60wNancq6H/LuRCiF/m3G0/gTTq4ADSx4A3l6pnfh9u5eBcKsHipLBdZx2g==
+X-Received: by 2002:a05:6a00:18a9:b0:692:780a:de90 with SMTP id x41-20020a056a0018a900b00692780ade90mr9935913pfh.30.1698103590604;
+        Mon, 23 Oct 2023 16:26:30 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id w18-20020aa78592000000b006bee5ad4efasm6715066pfn.67.2023.10.23.16.26.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 16:26:29 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qv4JX-0034Zl-06;
+        Tue, 24 Oct 2023 10:26:27 +1100
+Date:   Tue, 24 Oct 2023 10:26:27 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+Message-ID: <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+References: <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
+ <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
+ <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+ <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+ <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+ <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+ <ZTGncMVw19QVJzI6@dread.disaster.area>
+ <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+ <ZTWfX3CqPy9yCddQ@dread.disaster.area>
+ <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231023230509.GI3952@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF0000343B:EE_|BN9PR12MB5193:EE_
-X-MS-Office365-Filtering-Correlation-Id: 98bfbfe5-f8d9-406e-5d5d-08dbd41f2b69
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qZv9WZNMzU325QkRCRYAbSo6sf3/F4BvM8gcLTQRWYzeClFcW4MUTYN4M6LoBkstece2OIss91pegvSvYrCMV0DSop5liGHWNM5XULfRt03+AtitqHbZUo9Ds/oBq0OerWzmMN69IzXFoLGJFJpfNXIPZLgL1Go/ZlZsruwRI+sZmouZMY5mE7BVBPA9vSlquyV/uIHG4wvJ4sidyhv6HZ6TL052gcpw7/X3S8sUYbj3SJjPt9WRi7FgnARckbSMT9KAR9WQjTTGmx2lImcq24HrYSUnxxr7XCxopYFpR0sjU0JKgIUO3rt7Lp/cnDaeq9PyBBRjTEPr5f2QFV0UDB8Ik60FUhdFNgxr+faOGtYUXPtxbpJ8LrgCVBoJsAan4gP7M27wcj060h1udxwjh3t51wurq1SVCtLrABaVOqaxWuXLmqaZnrQCWybnaJlxN7PsoWLi0w4Ti3yI3WNNMJefU7C+V35HnGY4VOzOxTnBTHHnPqJa5PcEfuqUgczZuLiH7PuJWbR9znCbbjJ2KtJDtdS83OjLTtOHoR149LjFmpxviIV3/xGNW1Fgn+wsHuUGRe1OgLFVy1x3TEP1NDlV+Ab/yMqwOFdRfnO+xMH4VD4EkzUTbvg9S3gvTUuP8jGhSEHnuoACyAcLXPoSfKyCR6cnpwfLUp5xHh2MFYslwPWQqIcUm54ayzb2Y6QKjb3JgwEWy0B7qdi74Tbqabalku152TV9Gj3qInqacBD381YLjVcLv3p8EyKtz7+3WEFXj4Ok5Z2Ca2QT32lBuC/gv6nUCwClKuPAjUfS3ET90cpQTUfuG57No/BabaWJ
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(39860400002)(346002)(136003)(230922051799003)(64100799003)(451199024)(82310400011)(186009)(1800799009)(40470700004)(36840700001)(46966006)(33716001)(40480700001)(82740400003)(83380400001)(26005)(426003)(336012)(9686003)(86362001)(7636003)(356005)(47076005)(36860700001)(2906002)(966005)(41300700001)(478600001)(8676002)(6862004)(4326008)(70206006)(8936002)(70586007)(6636002)(5660300002)(316002)(54906003)(40460700003)(55016003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 23:24:13.9207
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98bfbfe5-f8d9-406e-5d5d-08dbd41f2b69
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF0000343B.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5193
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 08:05:09PM -0300, Jason Gunthorpe wrote:
-> On Mon, Oct 23, 2023 at 11:57:00AM -0700, Nicolin Chen wrote:
-> > According to the conversion in the following link:
-
-Ah, a typo here: conversation.
-
-> > https://lore.kernel.org/linux-iommu/20231020135501.GG3952@nvidia.com/
+On Mon, Oct 23, 2023 at 10:45:21AM -0400, Jeff Layton wrote:
+> On Mon, 2023-10-23 at 09:17 +1100, Dave Chinner wrote:
+> > All I'm suggesting is that rather than using mount options for
+> > noatime-like behaviour for NFSD accesses, we actually have the nfsd
+> > accesses say "we'd like pure atime updates without iversion, please".
 > > 
-> > The enforce_cache_coherency should be set/enforced in the hwpt allocation
-> > routine. The iommu driver in its attach_dev() op should decide whether to
-> > reject or not a device that doesn't match with the configuration of cache
-> > coherency. Drop the enforce_cache_coherency piece in the attach/replace()
-> > and move the remaining "num_devices" piece closer to the refcount that is
-> > using it.
+> > Keep in mind that XFS does actually try to avoid bumping i_version
+> > on pure timestamp updates - we carved that out a long time ago (see
+> > the difference in XFS_ILOG_CORE vs XFS_ILOG_TIMESTAMP in
+> > xfs_vn_update_time() and xfs_trans_log_inode()) so that we could
+> > optimise fdatasync() to ignore timestamp updates that occur as a
+> > result of pure data overwrites.
 > > 
-> > Accordingly drop its function prototype in the header and mark it static.
-> > Also add some extra comments to clarify the expected behaviors.
+> > Hence XFS only bumps i_version for pure timestamp updates if the
+> > iversion queried flag is set. IOWs, XFS it is actually doing exactly
+> > what the VFS iversion implementation is telling it to do with
+> > timestamp updates for non-core inode metadata updates.
 > > 
-> > Suggested-by: Kevin Tian <kevin.tian@intel.com>
-> > Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-> > Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
-> > ---
-> > Changelog
-> > v3:
-> >  * Reworked the first line of the added commets.
-> > v2: https://lore.kernel.org/all/20231023035733.27378-1-nicolinc@nvidia.com/
-> >  * Dropped "fixes" tags and merged two patches into one (Jason)
-> >  * Added comments to the remaining enforce_cache_coherency call (Jason)
-> >    [Please feel free to rephrase, or let me know what to change.]
-> >  * Replace "num_devices++" with list_for_each_entry (Baolu)
-> > v1: https://lore.kernel.org/all/cover.1697848510.git.nicolinc@nvidia.com/
-> > 
-> >  drivers/iommu/iommufd/device.c          | 20 ++------------------
-> >  drivers/iommu/iommufd/hw_pagetable.c    |  9 ++++++++-
-> >  drivers/iommu/iommufd/iommufd_private.h |  1 -
-> >  3 files changed, 10 insertions(+), 20 deletions(-)
+> > That's the fundamental issue here: nfsd has set VFS state that tells
+> > the filesystem to "bump iversion on next persistent inode change",
+> > but the nfsd then runs operations that can change non-critical
+> > persistent inode state in "query-only" operations. It then expects
+> > filesystems to know that it should ignore the iversion queried state
+> > within this context.  However, without external behavioural control
+> > flags, filesystems cannot know that an isolated metadata update has
+> > context specific iversion behavioural constraints.
 > 
-> This looks OK to me, Kevin is it what you think it should be now?
+> > Hence fixing this is purely a VFS/nfsd i_version implementation
+> > problem - if the nfsd is running a querying operation, it should
+> > tell the filesystem that it should ignore iversion query state. If
+> > nothing the application level cache cares about is being changed
+> > during the query operation, it should tell the filesystem to ignore
+> > iversion query state because it is likely the nfsd query itself will
+> > set it (or have already set it itself in the case of compound
+> > operations).
+> > 
+> > This does not need XFS on-disk format changes to fix. This does not
+> > need changes to timestamp infrastructure to fix. We just need the
+> > nfsd application to tell us that we should ignore the vfs i_version
+> > query state when we update non-core inode metadata within query
+> > operation contexts.
+> > 
+> 
+> I think you're missing the point of the problem I'm trying to solve.
+> I'm not necessarily trying to guard nfsd against its own accesses. The
+> reads that trigger an eventual atime update could come from anywhere --
+> nfsd, userland accesses, etc.
+>
+> If you are serving an XFS filesystem, with the (default) relatime mount
+> option, then you are guaranteed that the clients will invalidate their
+> cache of a file once per day, assuming that at least one read was issued
+> against the file during that day.
+>
+> That read will cause an eventual atime bump to be logged, at which point
+> the change attribute will change. The client will then assume that it
+> needs to invalidate its cache when it sees that change.
+>
+> Changing how nfsd does its own accesses won't fix anything, because the
+> problematic atime bump can come from any sort of read access.
 
-I will respin a v4 after Kevin's reply. And I can attach his
-"Reviewed-by" if everything looks good to him too.
+I'm not missing the point at all - as I've said in the past I don't
+think local vs remote access is in any way relevant to the original
+problem that needs to be solved. If the local access is within the
+relatime window, it won't cause any persistent metadata change at
+all. If it's outside the window, then it's no different to the NFS
+client reading data from the server outside the window. If it's the
+first access after a NFS client side modification, then it's just
+really bad timing but it isn't likely to be a common issue.
 
-Thanks
-Nic
+Hence I just don't think it matters on bit, and we can address the
+24 hour problem separately to the original problem that still needs
+to be fixed.
+
+The problem is the first read request after a modification has been
+made. That is causing relatime to see mtime > atime and triggering
+an atime update. XFS sees this, does an atime update, and in
+committing that persistent inode metadata update, it calls
+inode_maybe_inc_iversion(force = false) to check if an iversion
+update is necessary. The VFS sees I_VERSION_QUERIED, and so it bumps
+i_version and tells XFS to persist it.
+
+IOWs, XFS is doing exactly what the VFS is telling it to do with
+i_version during the persistent inode metadata update that the VFS
+told it to make.
+
+This, however, is not the semantics that the *nfsd application*
+wants. It does not want i_version to be updated when it is running a
+data read operation despite the fact the VFS is telling the
+filesystem it needs to be updated.
+
+What we need to know is when the inode is being accessed by the nfsd
+so we can change the in-memory timestamp update behaviour
+appropriately.  We really don't need on-disk format changes - we
+just need to know that we're supposed to do something special with
+pure timestamp updates because i_version needs to be behave in a
+manner compatible with the new NFS requirements....
+
+We also don't need generic timestamp infrastructure changes to do
+this - the multi-grained timestamp was a neat idea for generic
+filesystem support of the nfsd i_version requirements, but it's
+collapsed under the weight of complexity.
+
+There are simpler ways individual filesystems can do the right
+thing, but to do that we need to know that nfsd has actively
+referenced the inode. How we get that information is what I want to
+resolve, the filesystem should be able to handle everything else in
+memory....
+
+Perhaps we can extract I_VERSION_QUERIED as a proxy for nfsd
+activity on the inode rather than need a per-operation context? Is
+that going to be reliable enough? Will that cause problems for other
+applications that want to use i_version for their own purposes?
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
