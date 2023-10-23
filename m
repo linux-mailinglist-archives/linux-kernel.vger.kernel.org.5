@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B517D2799
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 02:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05FE7D278D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 02:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbjJWAqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 20:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
+        id S232934AbjJWAqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 20:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbjJWAqD (ORCPT
+        with ESMTP id S229574AbjJWAqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 22 Oct 2023 20:46:03 -0400
 Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36BE13E;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CE7E9;
         Sun, 22 Oct 2023 17:45:58 -0700 (PDT)
 Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
-        by Atcsqr.andestech.com with ESMTP id 39N0iEnR078963;
-        Mon, 23 Oct 2023 08:44:14 +0800 (+08)
+        by Atcsqr.andestech.com with ESMTP id 39N0iJja078965;
+        Mon, 23 Oct 2023 08:44:19 +0800 (+08)
         (envelope-from peterlin@andestech.com)
 Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS16.andestech.com
  (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Mon, 23 Oct 2023
- 08:44:13 +0800
+ 08:44:15 +0800
 From:   Yu Chien Peter Lin <peterlin@andestech.com>
 To:     <acme@kernel.org>, <adrian.hunter@intel.com>,
         <ajones@ventanamicro.com>, <alexander.shishkin@linux.intel.com>,
@@ -47,17 +47,19 @@ To:     <acme@kernel.org>, <adrian.hunter@intel.com>,
         <samuel@sholland.org>, <sunilvl@ventanamicro.com>,
         <tglx@linutronix.de>, <tim609@andestech.com>, <uwu@icenowy.me>,
         <wens@csie.org>, <will@kernel.org>, <ycliang@andestech.com>
-Subject: [PATCH v3 RESEND 00/13] Support Andes PMU extension
-Date:   Mon, 23 Oct 2023 08:40:47 +0800
-Message-ID: <20231023004100.2663486-1-peterlin@andestech.com>
+Subject: [PATCH v3 RESEND 01/13] riscv: errata: Rename defines for Andes
+Date:   Mon, 23 Oct 2023 08:40:48 +0800
+Message-ID: <20231023004100.2663486-2-peterlin@andestech.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231023004100.2663486-1-peterlin@andestech.com>
+References: <20231023004100.2663486-1-peterlin@andestech.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.0.15.183]
 X-DNSRBL: 
 X-SPAM-SOURCE-CHECK: pass
-X-MAIL: Atcsqr.andestech.com 39N0iEnR078963
+X-MAIL: Atcsqr.andestech.com 39N0iJja078965
 X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
         SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,75 +68,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Using "ANDES" rather than "ANDESTECH" to unify the naming
+convention with directory, file names, Kconfig options
+and other definitions.
 
-This patch series introduces the Andes PMU extension, which serves
-the same purpose as Sscofpmf. In this version we use FDT-based
-probing and the CONFIG_ANDES_CUSTOM_PMU to enable perf sampling
-and filtering support.
+Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
+Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+---
+Changes v1 -> v2:
+  - No change
+Changes v2 -> v3:
+  - Rewrote commit message (suggested by Conor)
+---
+ arch/riscv/errata/andes/errata.c       | 10 +++++-----
+ arch/riscv/include/asm/errata_list.h   |  4 ++--
+ arch/riscv/include/asm/vendorid_list.h |  2 +-
+ arch/riscv/kernel/alternative.c        |  2 +-
+ 4 files changed, 9 insertions(+), 9 deletions(-)
 
-Its non-standard local interrupt is assigned to bit 18 in the
-custom S-mode local interrupt enable/pending registers (slie/slip),
-while the interrupt cause is (256 + 18).
-
-The feature needs the PMU device registered in OpenSBI.
-The OpenSBI and Linux patches can be found on Andes Technology GitHub
-- https://github.com/andestech/opensbi/commits/andes-pmu-support-v2
-- https://github.com/andestech/linux/commits/andes-pmu-support-v3
-
-The PMU device tree node used on AX45MP:
-- https://github.com/andestech/opensbi/blob/andes-pmu-support-v2/docs/pmu_support.md#example-3
-
-Tested hardware:
-- ASUS  Tinker-V (RZ/Five, AX45MP single core)
-- Andes AE350    (AX45MP quad core)
-
-Locus Wei-Han Chen (1):
-  riscv: andes: Support symbolic FW and HW raw events
-
-Yu Chien Peter Lin (12):
-  riscv: errata: Rename defines for Andes
-  irqchip/riscv-intc: Allow large non-standard hwirq number
-  irqchip/riscv-intc: Introduce Andes IRQ chip
-  dt-bindings: riscv: Add Andes interrupt controller compatible string
-  riscv: dts: renesas: r9a07g043f: Update compatible string to use Andes
-    INTC
-  perf: RISC-V: Eliminate redundant IRQ enable/disable operations
-  RISC-V: Move T-Head PMU to CPU feature alternative framework
-  perf: RISC-V: Introduce Andes PMU for perf event sampling
-  dt-bindings: riscv: Add T-Head PMU extension description
-  dt-bindings: riscv: Add Andes PMU extension description
-  riscv: dts: allwinner: Add T-Head PMU extension
-  riscv: dts: renesas: Add Andes PMU extension
-
- .../devicetree/bindings/riscv/cpus.yaml       |   7 +-
- .../devicetree/bindings/riscv/extensions.yaml |  13 ++
- arch/riscv/Kconfig.errata                     |  13 --
- arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi |   2 +-
- arch/riscv/boot/dts/renesas/r9a07g043f.dtsi   |   4 +-
- arch/riscv/errata/andes/errata.c              |  10 +-
- arch/riscv/errata/thead/errata.c              |  19 ---
- arch/riscv/include/asm/errata_list.h          |  19 +--
- arch/riscv/include/asm/hwcap.h                |   2 +
- arch/riscv/include/asm/vendorid_list.h        |   2 +-
- arch/riscv/kernel/alternative.c               |   2 +-
- arch/riscv/kernel/cpufeature.c                |   2 +
- drivers/irqchip/irq-riscv-intc.c              |  63 +++++++--
- drivers/perf/Kconfig                          |  27 ++++
- drivers/perf/riscv_pmu_sbi.c                  |  51 +++++--
- include/linux/irqchip/irq-riscv-intc.h        |  12 ++
- .../arch/riscv/andes/ax45/firmware.json       |  68 ++++++++++
- .../arch/riscv/andes/ax45/instructions.json   | 127 ++++++++++++++++++
- .../arch/riscv/andes/ax45/memory.json         |  57 ++++++++
- .../arch/riscv/andes/ax45/microarch.json      |  77 +++++++++++
- tools/perf/pmu-events/arch/riscv/mapfile.csv  |   1 +
- 21 files changed, 499 insertions(+), 79 deletions(-)
- create mode 100644 include/linux/irqchip/irq-riscv-intc.h
- create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/firmware.json
- create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/instructions.json
- create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/memory.json
- create mode 100644 tools/perf/pmu-events/arch/riscv/andes/ax45/microarch.json
-
+diff --git a/arch/riscv/errata/andes/errata.c b/arch/riscv/errata/andes/errata.c
+index 197db68cc8da..d2e1abcac967 100644
+--- a/arch/riscv/errata/andes/errata.c
++++ b/arch/riscv/errata/andes/errata.c
+@@ -18,9 +18,9 @@
+ #include <asm/sbi.h>
+ #include <asm/vendorid_list.h>
+ 
+-#define ANDESTECH_AX45MP_MARCHID	0x8000000000008a45UL
+-#define ANDESTECH_AX45MP_MIMPID		0x500UL
+-#define ANDESTECH_SBI_EXT_ANDES		0x0900031E
++#define ANDES_AX45MP_MARCHID		0x8000000000008a45UL
++#define ANDES_AX45MP_MIMPID		0x500UL
++#define ANDES_SBI_EXT_ANDES		0x0900031E
+ 
+ #define ANDES_SBI_EXT_IOCP_SW_WORKAROUND	1
+ 
+@@ -32,7 +32,7 @@ static long ax45mp_iocp_sw_workaround(void)
+ 	 * ANDES_SBI_EXT_IOCP_SW_WORKAROUND SBI EXT checks if the IOCP is missing and
+ 	 * cache is controllable only then CMO will be applied to the platform.
+ 	 */
+-	ret = sbi_ecall(ANDESTECH_SBI_EXT_ANDES, ANDES_SBI_EXT_IOCP_SW_WORKAROUND,
++	ret = sbi_ecall(ANDES_SBI_EXT_ANDES, ANDES_SBI_EXT_IOCP_SW_WORKAROUND,
+ 			0, 0, 0, 0, 0, 0);
+ 
+ 	return ret.error ? 0 : ret.value;
+@@ -43,7 +43,7 @@ static bool errata_probe_iocp(unsigned int stage, unsigned long arch_id, unsigne
+ 	if (!IS_ENABLED(CONFIG_ERRATA_ANDES_CMO))
+ 		return false;
+ 
+-	if (arch_id != ANDESTECH_AX45MP_MARCHID || impid != ANDESTECH_AX45MP_MIMPID)
++	if (arch_id != ANDES_AX45MP_MARCHID || impid != ANDES_AX45MP_MIMPID)
+ 		return false;
+ 
+ 	if (!ax45mp_iocp_sw_workaround())
+diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
+index b55b434f0059..c190393aa9db 100644
+--- a/arch/riscv/include/asm/errata_list.h
++++ b/arch/riscv/include/asm/errata_list.h
+@@ -12,8 +12,8 @@
+ #include <asm/vendorid_list.h>
+ 
+ #ifdef CONFIG_ERRATA_ANDES
+-#define ERRATA_ANDESTECH_NO_IOCP	0
+-#define ERRATA_ANDESTECH_NUMBER		1
++#define ERRATA_ANDES_NO_IOCP 0
++#define ERRATA_ANDES_NUMBER 1
+ #endif
+ 
+ #ifdef CONFIG_ERRATA_SIFIVE
+diff --git a/arch/riscv/include/asm/vendorid_list.h b/arch/riscv/include/asm/vendorid_list.h
+index e55407ace0c3..2f2bb0c84f9a 100644
+--- a/arch/riscv/include/asm/vendorid_list.h
++++ b/arch/riscv/include/asm/vendorid_list.h
+@@ -5,7 +5,7 @@
+ #ifndef ASM_VENDOR_LIST_H
+ #define ASM_VENDOR_LIST_H
+ 
+-#define ANDESTECH_VENDOR_ID	0x31e
++#define ANDES_VENDOR_ID		0x31e
+ #define SIFIVE_VENDOR_ID	0x489
+ #define THEAD_VENDOR_ID		0x5b7
+ 
+diff --git a/arch/riscv/kernel/alternative.c b/arch/riscv/kernel/alternative.c
+index 319a1da0358b..0128b161bfda 100644
+--- a/arch/riscv/kernel/alternative.c
++++ b/arch/riscv/kernel/alternative.c
+@@ -43,7 +43,7 @@ static void riscv_fill_cpu_mfr_info(struct cpu_manufacturer_info_t *cpu_mfr_info
+ 
+ 	switch (cpu_mfr_info->vendor_id) {
+ #ifdef CONFIG_ERRATA_ANDES
+-	case ANDESTECH_VENDOR_ID:
++	case ANDES_VENDOR_ID:
+ 		cpu_mfr_info->patch_func = andes_errata_patch_func;
+ 		break;
+ #endif
 -- 
 2.34.1
 
