@@ -2,69 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D34B87D35FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772157D3606
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234494AbjJWMA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 08:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57588 "EHLO
+        id S234477AbjJWMCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 08:02:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233398AbjJWMA4 (ORCPT
+        with ESMTP id S233428AbjJWMCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 08:00:56 -0400
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295D5FF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 05:00:54 -0700 (PDT)
-Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-49d39f07066so1420248e0c.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 05:00:54 -0700 (PDT)
+        Mon, 23 Oct 2023 08:02:45 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B622F5;
+        Mon, 23 Oct 2023 05:02:41 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1eb7a8e9dd0so288139fac.3;
+        Mon, 23 Oct 2023 05:02:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1698062453; x=1698667253; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698062560; x=1698667360; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DXG6D39H/bG+JdWvKirNbcyn6AT+8IVB18CJ9gYiVCs=;
-        b=egqY1pedlC9mH+z3URUaxgggJM1qw406AQh1dW8If1gx4Yw+kHP5TuaY8BVH4gEfwy
-         561BReRAmDTmgk9Q4vlA30tdmiUcQNUcCwAOCSF0cO7QIP8YlIC0QsprYIxGmIrz24vK
-         Z/R8VoitMd0LJo/QgZQ3YZjjD9jc3U4hxJUvkWGL13GYq5NDv1jsvb6Ab9/GJ8d0l3wl
-         xFIoU9iT55Ng8DsJMNFaeSPrObyOlKCfYSC0hW920ImDLCNVWZd/GYe3FsVUCArScPGj
-         z7TVPkO8b+vdPk8JINO9qpfkPdlLzyyKutPqkTGtR5nikL+YB2QvTnuyyj4ae0Fs7KYz
-         wB4Q==
+        bh=BiFbfs7BErHq09w7bwsMK4yHlj0qVMvyV1tXDfbJ0tE=;
+        b=CZJUr1ZZ3PgE6x1krwIwnebRqLJ3StwLuXrWx7lER+iyN16dG97aTxHJUktkmwA6ZV
+         SVygE4aQ/0rLIU/6Ce5Y/JaDSoVQHV1WGACT/ODcxASToQxnU5ViOmzRuVZvy+nkvq9L
+         EXvdHmHtwjzWiMBN9MWDBICSG3qJsZxy08CKcCQQCtyfnymNKveWYkX5mn99vFJOQBND
+         SNrgMcbgM6J0VAh6dQnwLLOH1vRXE27Je28q/yyvW1rfjJ4XoHDaq1kx2n6hofdP7XWi
+         nl3WH2M42Z0OtUl4bMPveoyNZMdx2nFCMj7LiIEjbKgsin4JOXwzjF+uyEL1cK2cy7JM
+         6qEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698062453; x=1698667253;
+        d=1e100.net; s=20230601; t=1698062560; x=1698667360;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DXG6D39H/bG+JdWvKirNbcyn6AT+8IVB18CJ9gYiVCs=;
-        b=oEnKmhZzjlPgMMPcAkR3gPZNZ9Eg8OKPWlZZzf6bHpnt5/ALGwOwcKu85pXd0PUClm
-         tFoobeCf2uAyCRe5Lt2kroEtA08aPn8ntSVB0VYanlJAKeyGdG/FD+3hSPc3bJAgwKMP
-         VxuaJ3TvjXkCsp+Vq/IpPyGTzpvvnDIACtujwbxDLT0V1WiTATCBQLvAUbIP24xmyqfA
-         xd/6j8OM4Hmz8lWO3ld8PasEbsVPKKLr/yUY7wINvu+4vUEOrIMN+DcoOmCNwBNxfF6n
-         Rhvd1OsGcfaPktOa9V3jRbkjJiVBSFeNJm7QCancOjaIBiXO+uZ/kn6wZZmIrrWyAek4
-         B46g==
-X-Gm-Message-State: AOJu0YydUEPepJMRNOWaayJpDJ7Hgrk0n/m3zhTGOmO3ssAmZOLIf5Za
-        eWEQBINVeiEevCny63VSrilUMJ7oaB/YMCfz971EYw==
-X-Google-Smtp-Source: AGHT+IEGXz1mVss0Wa0MXPTI7LAnBw2Bts58E0ff225vnT/BeF9e4M6TFlY7QUUnrcU56mmYn06MkCpd1A56MG+2bAA=
-X-Received: by 2002:a05:6122:12f4:b0:49d:10ce:9a8b with SMTP id
- k20-20020a05612212f400b0049d10ce9a8bmr7783435vkp.15.1698062453198; Mon, 23
- Oct 2023 05:00:53 -0700 (PDT)
+        bh=BiFbfs7BErHq09w7bwsMK4yHlj0qVMvyV1tXDfbJ0tE=;
+        b=jWiMd1/5QZLLY8MdfnEIssyqV7nkva5Iaby7EojHu+wJjdXEISPjlSO2G0jgB0OpSu
+         XOG1tCfLyWWxVygRHTeumppYo7qMXRcPae1gCuRDNUO1nA6ssQu4L3rGTus1ADHL7zRp
+         kldIRG18H/cHhUYy2cCWntHVYr0eITeX3MZEulI0K+gPHfhXoiPYIA3sfjTKF51FttTs
+         XzNj+0p9KY5+2+VpvV7D3R8PIbEgXiQ3ZL/Gtx5cbZnGYvEQ8FX+HSt50pJP7GVwJfYS
+         u0RbtQBJM5XOExCsME1FNm7mYtuQHggy2Y2ez7qMWOoEs3HzXXhyUytIDCOCt0Yik7C5
+         M4+w==
+X-Gm-Message-State: AOJu0YyMNm/i7y6V7m0rNsazP0K7lTLD//mujHxXk1TCzV3sxqCVCwWf
+        w/0+o0D4s+Zsvn7rzLa1Bztb0n2Qdj4tWt6Fh04=
+X-Google-Smtp-Source: AGHT+IFDOjlPFNxZH+TNCPyOYk/jnYswfxhuW97975JVJB/tFTnE1b6fAO88ZlsiSm8o9UQpuYj3Gyb4/cbuXv7G1A8=
+X-Received: by 2002:a05:6870:3e09:b0:1e9:beae:947d with SMTP id
+ lk9-20020a0568703e0900b001e9beae947dmr12410358oab.19.1698062558907; Mon, 23
+ Oct 2023 05:02:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231023115646.3573494-1-arnd@kernel.org>
-In-Reply-To: <20231023115646.3573494-1-arnd@kernel.org>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 23 Oct 2023 14:00:42 +0200
-Message-ID: <CAMRc=MdoRWn_grWoKWagAi11S=mZ9RbP673L77a+qfN_8oTBcg@mail.gmail.com>
-Subject: Re: [PATCH] hte: tegra194: add GPIOLIB dependency
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Dipen Patel <dipenp@nvidia.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, timestamp@lists.linux.dev,
-        linux-kernel@vger.kernel.org
+References: <cover.1698051454.git.houwenlong.hwl@antgroup.com> <90df6cf5674241a85ac7dfe0a1558f1fd025cc17.1698051454.git.houwenlong.hwl@antgroup.com>
+In-Reply-To: <90df6cf5674241a85ac7dfe0a1558f1fd025cc17.1698051454.git.houwenlong.hwl@antgroup.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 23 Oct 2023 15:02:02 +0300
+Message-ID: <CAHp75VeXiOprRDNakewo2iSe==EeLUxfxuPYS3R+ZsY2KDmQBQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] x86/xen/pvh: Set up percpu for stack canary in 32-bit
+ kernel entry
+To:     Hou Wenlong <houwenlong.hwl@antgroup.com>
+Cc:     linux-kernel@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "moderated list:XEN HYPERVISOR X86" <xen-devel@lists.xenproject.org>,
+        "open list:X86 PLATFORM DRIVERS - ARCH" 
+        <platform-driver-x86@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,53 +80,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 1:57=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
-te:
+On Mon, Oct 23, 2023 at 12:10=E2=80=AFPM Hou Wenlong
+<houwenlong.hwl@antgroup.com> wrote:
 >
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The driver started calling into a few interfaces that are part of GPIOLIB=
- and
-> don't have stub implementations otherwise:
->
-> drivers/hte/hte-tegra194.c: In function 'tegra_hte_line_xlate':
-> drivers/hte/hte-tegra194.c:424:48: error: implicit declaration of functio=
-n 'gpio_device_get_base'; did you mean 'gpio_device_get_desc'? [-Werror=3Di=
-mplicit-function-declaration]
->   424 |                 line_id =3D desc->attr.line_id - gpio_device_get_=
-base(gs->gdev);
->       |                                                ^~~~~~~~~~~~~~~~~~=
-~~
->       |                                                gpio_device_get_de=
-sc
->
-> Add a Kconfig dependency to only allow building when this is defined.
->
-> Fixes: dc850faa28ee0 ("hte: tegra194: don't access struct gpio_chip")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/hte/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/hte/Kconfig b/drivers/hte/Kconfig
-> index 083e67492bf2e..641af722b555d 100644
-> --- a/drivers/hte/Kconfig
-> +++ b/drivers/hte/Kconfig
-> @@ -17,6 +17,7 @@ if HTE
->  config HTE_TEGRA194
->         tristate "NVIDIA Tegra194 HTE Support"
->         depends on (ARCH_TEGRA_194_SOC || COMPILE_TEST)
-> +       depends on GPIOLIB
->         help
->           Enable this option for integrated hardware timestamping engine =
-also
->           known as generic timestamping engine (GTE) support on NVIDIA Te=
-gra194
-> --
-> 2.39.2
->
+> In a 32-bit SMP kernel, the stack canary is a percpu variable accessed
+> as %fs:__stack_chk_guard. However, the ABI for PVH entry does not
+> specify the %fs register state. It currently works because the initial
+> %fs register is 0x10 for QEMU, which is the same as $PVH_DS_SEL.
 
-Thanks. None of the new interfaces are "consumer" APIs and are not
-meant to have stubs so depending on GPIOLIB is correct here.
+> %However, for added safety, the percpu should be set up explicitly
+> %before calling xen_prepare_pvh(), which accesses the stack canary.
 
-Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Stray leading % in two lines above.
+
+--=20
+With Best Regards,
+Andy Shevchenko
