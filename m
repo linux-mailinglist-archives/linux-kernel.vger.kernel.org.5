@@ -2,163 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCF17D2ED2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB167D2ED8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbjJWJtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:49:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
+        id S232778AbjJWJuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjJWJte (ORCPT
+        with ESMTP id S229825AbjJWJuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:49:34 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D99DF;
-        Mon, 23 Oct 2023 02:49:32 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39N7RcDM013265;
-        Mon, 23 Oct 2023 09:49:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=uAis2Z2YJ8m6fp9s7ZYGV9g504DoRV6kbL9/qC8m2YI=;
- b=lM23yY2D71+XL49fhDw4F/3Pwr4lXYOJvtHuquXN5hGDqbKn9Hon1otDxLU5i75/FnW2
- NhzbO/cyGqPOGvHK8GaknI06j1OmQCmM1yRBGyj9e5NHEpSjI1yrtToc+QWB/J1gcyfH
- 51cWuZ052mN5QGWbmuj/y5dPRcB6BgsJ6aiFipqFKOtbtx0Rof9TJ7dtw9kOtTPix4Wk
- fgLkkOzKb2VqJ37mydwV1aIFvZSLHDow/OgZBgf/39ruiEbThsE57vUg2+uGTk8Ry6P5
- 6UIfekXM/aGtuIHttI0UGG5EdWDtF8eNqLgW7Ld63ebINjYf24zvk3nd19FgrdwothWW +w== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv6r2bnm4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 09:49:20 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39N9nJCt012461
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 09:49:19 GMT
-Received: from [10.239.133.73] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 23 Oct
- 2023 02:49:14 -0700
-Message-ID: <966a8ad0-d79b-7aca-e492-ff27394b3c3c@quicinc.com>
-Date:   Mon, 23 Oct 2023 17:49:11 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] arm64: module: PLT allowed even !RANDOM_BASE
-To:     Mark Rutland <mark.rutland@arm.com>, Arnd Bergmann <arnd@arndb.de>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, Ard Biesheuvel <ardb@kernel.org>
-References: <20231023075714.21672-1-quic_aiquny@quicinc.com>
- <56c2d30b-2f25-4613-aab1-00fccbd2fa05@app.fastmail.com>
- <ZTY2rdkY5FfTBUVL@FVFF77S0Q05N>
-From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
-In-Reply-To: <ZTY2rdkY5FfTBUVL@FVFF77S0Q05N>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        Mon, 23 Oct 2023 05:50:19 -0400
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2071.outbound.protection.outlook.com [40.107.105.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16FBFDF;
+        Mon, 23 Oct 2023 02:50:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cClyaICvAudeFC/Ov3cPcyKsPRcy5/O+Kf1hHr16Q59QjZg3KxGcfXcdqloh+YdJs7InJc/euBibegIHjwIzBS8CgNc60NzeyiLEbKN+eZXGCb1Fj9OJFLQ29xPHqaSta3VlQ5XnmLd5aXg/qo7Z7oFSMX+UIzE8b3SM4ftJuqcs7/tDdkNjHVGYU6caIhpFZlCsH0kUTen+bX5q5QlqbGUWkVVuutn3Mf7auOQLjBcn8T2KQy97JQjb3vESt2Ck9SobiunYTcQzAM8IBvU7sing7ZXvParr3HWydh9mm13W/vtWEfnmDOILMlcJNAJjssksIImu8cq6Vj/qGFmjUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HsZWgVGxEw1SijQBMicQOvHLlV1xVTWpvaiizw4Ea20=;
+ b=a0f+a5WgGmTCpBVGknzZSHpc/+0L4/l97p08RtphdwXD79p6FnAqJexZGcPZcqrMSdmMKDTAa/EjFPVOPPcOOGNmnH+EeWqBEbeSyYSpdoD7qVQwK8UkCPnk0IYyoSnpD5EocgcJCQ7qZnkTns7B8KYpVuhgb9p7t0BAVaedDyL9BBaty/3h+7B3JUWYYC0Uc2vYUfdGl6G8f3cGcRF1Nl1HS4hGQaVnyaY+mP+4T99lelnGJRl4bCCp2M1URAZaUlUUo6N9lbzz5+qIAtR9JprX7YixiT/I13AfBZhKabMQx9PoAMVc0Go9D+YFn/G48TcsHd5rLH+UiAqYbl+8aw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HsZWgVGxEw1SijQBMicQOvHLlV1xVTWpvaiizw4Ea20=;
+ b=kQH6LIQAnUoZfM8lL5GTlv6GgnEvnBvadsYdbh5oMeD5M050wa2U1VljxaWVnM9OzBwLGriEz2X1v6R0wK9qZ1PmUuyJkPfbZyrEWItqlF1ZQV8pLzBCz5Gnpzu+aEX/ptFnNL5GqvI8onuRcMjp3HhgKhG8sSrqZcoOi/c5Syg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by DBAPR08MB5590.eurprd08.prod.outlook.com (2603:10a6:10:1aa::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Mon, 23 Oct
+ 2023 09:50:13 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::26e:c3c9:b87f:6372]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::26e:c3c9:b87f:6372%4]) with mapi id 15.20.6907.025; Mon, 23 Oct 2023
+ 09:50:13 +0000
+From:   Javier Carrasco <javier.carrasco@wolfvision.net>
+Date:   Mon, 23 Oct 2023 11:50:02 +0200
+Subject: [PATCH] iio: tmag5273: fix temperature offset
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: KAxWGEJDp-f38L9NxugngdQiJ_pW2bHG
-X-Proofpoint-GUID: KAxWGEJDp-f38L9NxugngdQiJ_pW2bHG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_07,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- adultscore=0 clxscore=1011 priorityscore=1501 phishscore=0 spamscore=0
- mlxlogscore=348 impostorscore=0 bulkscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310230084
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <20231023-topic-tmag5273x1_temp_offset-v1-1-983dca43292c@wolfvision.net>
+X-B4-Tracking: v=1; b=H4sIAMlBNmUC/x2NywrCMBBFf6XM2oBJ1aC/IqVM4qSdRR5kghRK/
+ 93UxV0cLpyzg1BlEngNO1T6snBOHfRlAL9iWkjxpzOYqxl1n2q5sFct4nI3dtz03CiWOYcg1JS
+ 21t688/R8aOgKh0LKVUx+PSUxojSq51MqBd7+4fd0HD9KtmNriAAAAA==
+To:     Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Javier Carrasco <javier.carrasco@wolfvision.net>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698054613; l=1645;
+ i=javier.carrasco@wolfvision.net; s=20230509; h=from:subject:message-id;
+ bh=NnHBG4GI1UfRI61xmOhQRV8cRNuKEWfcPQKhuf0xA3M=;
+ b=53zaDEDu6QDz2VHmjHb2kabd3uO5MkIXxxNkJIAsRraP503o8TGHSggxH+hbM31/0YzPwAXPE
+ PNUibpSl1jFDe0SDukNMHSo6lQ+kLTL/jMTcUpqCuJZFVLwj5M5KiyP
+X-Developer-Key: i=javier.carrasco@wolfvision.net; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+X-ClientProxiedBy: VI1PR09CA0121.eurprd09.prod.outlook.com
+ (2603:10a6:803:78::44) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|DBAPR08MB5590:EE_
+X-MS-Office365-Filtering-Correlation-Id: f261093b-4d8f-4615-a93d-08dbd3ad7418
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: asWG+IT0ptxHlVDm3iTBEVdBrzvCbFR4rDNaT47aie9R5Jt9HxZvYu68SeT1zND/FXKRzqCLKob0EbYzGQHkWdG8EgGcuwwGvruGVYXkIyhmMelF3aDuF83F2A27qLVkO2iWR+R8YALNGeWM+Kv6Jr7xJKh0hW4CWAUD88pFY3Fo86FuGGjWaC4xsIubykW7v3wbDmH5y1gg+HQ0/xl5tlspzeyb1HIyk+bpVSxfYOzVzpKp18eVaS5l70jiOE9M6XE9H7Eofg72rrQZ2rnWtCC/Vl5luaUorgRyG7LtgfWgb0CdHPVqWAAJVJVC/Yqv2yORzN1nP4DYaEJo3sKVCG5rxTNefhzR3amEGHrEuhNNM8pSeVOl8jTNqKWy4a5ucpb9nlkOqYctLwyP9WuAMU5SyurIEOF7GDHsIUd9UcyXEvzGFe9DVDzid9JbCN3+RoA4/H3iNLoYpsCZZS8fTAXO56cOr7rsLOsCqn3akJmk5N/CYDeO9+IHjuzuHySo5lH9bfNlzTBCsjMtBqcj2+7sIB9KPfwvDNX171i2BQV5BijaD45F6UnfU2/jSJd5KddyXON4JxmFBujPB17A8ECjP9iDllDh+rWRSk3jXVDkd5/0SMVHG/7lV9T+nY7E
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(136003)(39830400003)(396003)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(6666004)(110136005)(86362001)(66476007)(66946007)(66556008)(41300700001)(5660300002)(6506007)(316002)(6512007)(478600001)(6486002)(44832011)(8936002)(4326008)(36756003)(8676002)(2906002)(38100700002)(26005)(2616005)(107886003)(52116002)(83380400001)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OGJ0OGtsYkZOWGs0bC93aDd0WmRvNVJ2cm0rVlY4cDlmYWRLeFpzcEs0eU16?=
+ =?utf-8?B?dUd3YVdlMElxTmsxeDcrQVJtTSsxOHZ5MzdIVDBpNWRLOGhOaUJlc1NhRVJP?=
+ =?utf-8?B?Q1A4Z1lPd0pUQTJ0M3I0QWRHekZ3VG9jMDdyRDBTWU02N0w4NUllUThqMDcz?=
+ =?utf-8?B?WlQvYjNYdXl1cHZGb25vSDFhZWhyaGhKcU0yV01IYk5tUUorQmlGeEFVWXpz?=
+ =?utf-8?B?b0tPRm9pMjdIQmh1SlQyc2l0dDM0SytmSFJFMGVPalVOdEx1QThDOGFtV3Bp?=
+ =?utf-8?B?M1FsdjBUY3BueC9CQnA5L2xuazFBaFg2R0tsbzRTWUw1OEZEZFhHTHNpd1JX?=
+ =?utf-8?B?aDJGOWlONDdDS0xWeFF0MDE0MDBKRlRIRVVIdjNUS2R4N3NOUHZkVkRnaXYw?=
+ =?utf-8?B?Qkd5NmtMT0VyQTU5bVFlMTRsYmU5ZjVvYlJvU284VjcwWHA3STliVC9RZVlL?=
+ =?utf-8?B?OVRFVHY4Z205WHYydk9TOU8wRWZ0ZGJKYVpkT3krVHo5dTl3bEFzeVF1U3Uy?=
+ =?utf-8?B?cDlmQkFrN29SQ0hqeG5uVEdEVjMrT1dlcWhRSUF0ZTI0aWJieE5vdGxRWVMz?=
+ =?utf-8?B?NmZ3NURabWFOU1hWVVQ5TFh4QU4rdEIvL3J0aUNMU1FsOUNsRXRpZms3c3Ft?=
+ =?utf-8?B?UnNvT2NmdDlJcGI2MVl1ZC8zUlU1VlowdmV2NTVLVjc2Q3ZaRitoVzdHeG42?=
+ =?utf-8?B?TjN5elJGMVlyYXV0WlJDWHVBdm1HdTM2b2pYa1JvRnhKb0o5elR2QkVuTVdr?=
+ =?utf-8?B?RDlEZ2VlN3Q3UGJqMWY0clpOODNUaXhXSWpEMXdHdlUvaE1YSFoxOTlUUmZv?=
+ =?utf-8?B?bEJEWS95Q1FJM0tMZENybldBUlZWSStJTndON21zbTRYbmdZOXMxTCs5V1E1?=
+ =?utf-8?B?WnZNcGpjOXpNUlJlV29pWkh3L250Y0liTk5mZ1BzaWx2RFJidEp3eHZvaDNU?=
+ =?utf-8?B?SzlqVGxIWmZaVkJUdkxkWmZibTZjUFlMdW96VFI3dkd6bDdRL29VVTdiY0p6?=
+ =?utf-8?B?OVZoN0V0ak1LSUhVeU1rQVcwS3greGliR25EVjBQcEVidG0zQ0R1clRQSC9C?=
+ =?utf-8?B?SXBmcGgzVEJ6SjZ0OVVxalFVbXduRVdteTJHSE9PUHB1RGNEeGJJbmZ1WTlM?=
+ =?utf-8?B?RFJwMUtIQ2V2ZGhvVUJxeWg5UHJiN0FnaDRzcFRxYWNsNDllZllPczU4NXF2?=
+ =?utf-8?B?bkF4SndHV0VMSWJJL2FDTy8yZTNsWUVqY01jdEpjMmJvL2VJSmhIdnlyMHM3?=
+ =?utf-8?B?UUtreXlXVUJIOU45MkFmWlNnb0xtZk9FSEY1aWk1VUtNd0xpWjJKWWdqTmlk?=
+ =?utf-8?B?REdMNnBjM0NvdU9GTkEvdm1sb01YSVBWdTM1WWtPWSsxTUdjSlhvWEpFQmhO?=
+ =?utf-8?B?NVFJMk1WY2Y3Y0diRFNRWGJudVVNSERNY0cySTFjZTVmUmFyb1F6elM5bXI5?=
+ =?utf-8?B?QkgrU09DRFdQUVJsang2TXNFR3RVc2EySHNxeE5XWEJWWklycVVBYmdiMmFN?=
+ =?utf-8?B?eHQyb3A2LzNtRWdkeXJqOVNrMUk1cjdBNmVjVjVJUzdDdzFyMkVEU1NYemd3?=
+ =?utf-8?B?U0lGend3dy9DTmc0UHZ1R1p4aTdPZVNhays1bjZGYm1WRUtWNHFNeUFvcnVW?=
+ =?utf-8?B?MnVTWDhVbHdhSkdmbjVlK1ZNbERJa0VmRWNqNnl1eXlZSXE4WGlqWU9BOFlT?=
+ =?utf-8?B?Ykg5NlpUVUdaNmYxbWdCMm9HaXR3Ly9NTzQ5UllWUWpDR2t5VjlJaXl4NW9E?=
+ =?utf-8?B?VTN3TW14bmFvQ0o1SGZrKy90VHE3UDZ5bGFXUlNFb1FjK0YzNUw1Z0hHVnVM?=
+ =?utf-8?B?UzRwK1dMZ1pyVFlVZ2x3NkhKajl2ODNuV0xnTzFYaWFLSDVDNGlHSGlsMXU1?=
+ =?utf-8?B?SlREZEd2OVZMclVCdHFDZkxoN3lURnppNXpLUWRSbHNnOWVhdUJua0pGZjNG?=
+ =?utf-8?B?Nzkvc3gwZzZTRFpJNzNuS1orWVduRjJvSHJITTNadDJBNUpsMkN5RmdpMTJC?=
+ =?utf-8?B?dSs2Q2J0V1JzQ2szekVpL2hCUmpNWFNWSDIwRlhZTm16eHNrbEJ3cjZHa25v?=
+ =?utf-8?B?VFQ1amIxbWlqY2dvTlcxYlZDMzl3NGZpNzZBL3YzTE90NFlKb0RYVTFKbGhQ?=
+ =?utf-8?B?T3JHVlhCNURtZ0RyendHUkZnR1FHdzlyblRaTEp0VjZBSlNDY2VyQ2NtRjM0?=
+ =?utf-8?Q?yWinNjZsHYAStvxI7UK28ZQ=3D?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: f261093b-4d8f-4615-a93d-08dbd3ad7418
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 09:50:13.4925
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CyH8+krpdFX5W7PXWYLJeOE4RFOn3yHX7qweA63GmnpKBCaBj8vx6wfgL6As5Gh+li2ToxgL1rQruMiYHtm7/vrS5zc4XSdjXbnhByWJYKI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR08MB5590
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/2023 5:02 PM, Mark Rutland wrote:
-> On Mon, Oct 23, 2023 at 10:08:33AM +0200, Arnd Bergmann wrote:
->> On Mon, Oct 23, 2023, at 09:57, Maria Yu wrote:
->>> Module PLT feature can be enabled even when RANDOM_BASE is disabled.
->>> Break BLT entry counts of relocation types will make module plt entry
->>> allocation fail and finally exec format error for even correct and plt
->>> allocation available modules.
-> 
-> Has an actual problem been seen in practice, or was this found by looking at
-> the code?
-I've encounter an actual problem when disalbe CONFIG_RADOM_BASE and the 
-kernel module have the exec format error issue.
-> 
->>>
->>> Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
->>
->> Adding Ard Biesheuvel to Cc, as he added the check in commit
->> a257e02579e42 ("arm64/kernel: don't ban ADRP to work around
->> Cortex-A53 erratum #843419")
-Thx for adding Ard. Will keep him in next patchset as well.
-> 
-> I think that the actual mistake is in commit:
-> 
->    3e35d303ab7d22c4 ("arm64: module: rework module VA range selection")
-> 
-> Prior to that commit, when CONFIG_RANDOMIZE_BASE=n all modules and code had to
-> be within 128M of each other, and so there were no PLTs necessary for B/BL.
-> After that commit we can have a 2G module range regardless of
-> CONFIG_RANDOMIZE_BASE, and PLTs may be necessary for B/BL.
-> 
-> We should have removed the check for !CONFIG_RANDOMIZE_BASE as part of that.
+The current offset has the scale already applied to it. The ABI
+documentation defines the offset parameter as "offset to be added
+to <type>[Y]_raw prior to scaling by <type>[Y]_scale in order to
+obtain value in the <type> units as specified in <type>[Y]_raw
+documentation"
 
-Agree with you.
-> 
->>>   arch/arm64/kernel/module-plts.c | 3 ---
->>>   1 file changed, 3 deletions(-)
->>>
->>> diff --git a/arch/arm64/kernel/module-plts.c
->>> b/arch/arm64/kernel/module-plts.c
->>> index bd69a4e7cd60..21a67d52d7a0 100644
->>> --- a/arch/arm64/kernel/module-plts.c
->>> +++ b/arch/arm64/kernel/module-plts.c
->>> @@ -167,9 +167,6 @@ static unsigned int count_plts(Elf64_Sym *syms,
->>> Elf64_Rela *rela, int num,
->>>   		switch (ELF64_R_TYPE(rela[i].r_info)) {
->>>   		case R_AARCH64_JUMP26:
->>>   		case R_AARCH64_CALL26:
->>> -			if (!IS_ENABLED(CONFIG_RANDOMIZE_BASE))
->>> -				break;
->>> -
->>>   			/*
->>>   			 * We only have to consider branch targets that resolve
->>>   			 * to symbols that are defined in a different section.
->>
->> I see there are two such checks (in partition_branch_plt_relas()
->> and in count_plts()), can you explain in more detail how you
->> concluded that one of them is correct but the other one is not?
-> 
-> I believe that the one in partition_branch_plt_relas() needs to go too; that's
-> just a minor optimization for the case where there shouldn't be any PLTs for
-> B/BL, and it no longer holds after the module VA range rework.
-> 
-> That was introduced in commit:
-> 
->    d4e0340919fb9190 ("arm64/module: Optimize module load time by optimizing PLT counting")
-The functionality is the same from my try with plt allocated kernel 
-modules. While the PLT entry can be dramatically reduced from ~50000 to 
-~500 after fix in partition_branch_plt_relas.
+The right value is obtained at 0 degrees Celsius by the formula provided
+in the datasheet:
 
-I will send out the second patchset with fix in 
-partition_branch_plt_relas (remove check of CONFIG_RANDOMIZE_BASE) 
-tomorrow if no more other comments today.
-> 
-> Thanks,
-> Mark.
+T = Tsens_t0 + (Tadc_t - Tadc_t0) / Tadc_res
 
+where:
+T = 0 degrees Celsius
+Tsens_t0 (reference temperature) = 25 degrees Celsius
+Tadc_t0 (16-bit format for Tsens_t0) = 17508
+Tadc_res = 60.1 LSB/degree Celsius
+
+The resulting offset is 16605.5, which has been truncated to 16005 to
+provide an integer value with a precision loss smaller than the 1-LSB
+measurement precision.
+
+Fix the offset to apply its value prior to scaling.
+
+Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+---
+ drivers/iio/magnetometer/tmag5273.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iio/magnetometer/tmag5273.c b/drivers/iio/magnetometer/tmag5273.c
+index c5e5c4ad681e..d22ca39007b6 100644
+--- a/drivers/iio/magnetometer/tmag5273.c
++++ b/drivers/iio/magnetometer/tmag5273.c
+@@ -356,7 +356,7 @@ static int tmag5273_read_raw(struct iio_dev *indio_dev,
+ 	case IIO_CHAN_INFO_OFFSET:
+ 		switch (chan->type) {
+ 		case IIO_TEMP:
+-			*val = -266314;
++			*val = -16605;
+ 			return IIO_VAL_INT;
+ 		default:
+ 			return -EINVAL;
+
+---
+base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
+change-id: 20231023-topic-tmag5273x1_temp_offset-17774cbce961
+
+Best regards,
 -- 
-Thx and BRs,
-Aiqun(Maria) Yu
+Javier Carrasco <javier.carrasco@wolfvision.net>
 
