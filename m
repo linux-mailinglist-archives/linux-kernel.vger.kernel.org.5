@@ -2,152 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EC57D42B9
+	by mail.lfdr.de (Postfix) with ESMTP id DD71B7D42BA
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 00:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbjJWWgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 18:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
+        id S231854AbjJWWgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 18:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbjJWWgk (ORCPT
+        with ESMTP id S231880AbjJWWgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 18:36:40 -0400
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B6E10C
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 15:36:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
- h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
- Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
- s=fe-e1b5cab7be; t=1698100592;
- bh=wM+xQTdMWTyO4bxesxODcq1HkQ/m5t1W25dETDzkkEA=;
- b=vGL0t4lg7LO1B56eQ/jhH2gU0QtuWbHUge5pRcy88wRYxF+Rgkc90x8GB3rVN82SI1Mar8CSy
- Q4ZlDqT2q7QL1Y+EGwdssNu15AuD7Ss5awxZLgaWZXOamC0tvyMcElN3O5vQQnK+MVMDc4rtRdL
- MKOhIpInbCgzl47YDFSyNjzDoP4pbPeCpkr3Ma1YnMEAjiKNI+Wl3g1gEabZIrwHAvOuPnV6hht
- yf7zlzGOTeejHE2YsxDLyYzu/kZWDdW7gfkGEZsKwOJfeenPjzgoQLBpk7ytl8Bseh8YAVes8g7
- jh6KjD4hPJhUakn+q/WsrgCV05MHe+dik4J36rC4zxZw==
-Message-ID: <2e3f27a4-48b7-41ae-a686-930ac3deffee@kwiboo.se>
-Date:   Tue, 24 Oct 2023 00:36:26 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/2] drm/rockchip: vop: Add NV15, NV20 and NV30 support
-Content-Language: en-US
-To:     Christopher Obbard <chris.obbard@collabora.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel <kernel@collabora.com>
-References: <20231023173718.188102-1-jonas@kwiboo.se>
- <f28f34b1c58a41856eed020b5d02dc3abf1a8e94.camel@collabora.com>
-From:   Jonas Karlman <jonas@kwiboo.se>
-In-Reply-To: <f28f34b1c58a41856eed020b5d02dc3abf1a8e94.camel@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
- 149.28.215.223
-X-ForwardEmail-ID: 6536f570a54e5ddc6f4f4641
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 23 Oct 2023 18:36:46 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB20510CF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 15:36:42 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d815354ea7fso3602452276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 15:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698100602; x=1698705402; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ttWGlrffBrwY7IhgV2y0g5weERvwNo5srcxQizfmW8s=;
+        b=htgYpHLbBqReVr6QGS1hlLZgrLnXOTw+AUtddS3d2zSfr1XcY/OJ2a2KhwPwMhOj4S
+         H4ipgYOfA8iGhHQGXzFTzVhYoKdl6MsaZpxwAxhGNQrHCEEVQs1wOLKgdy1xiDwf/5r+
+         LWLl85SoGETcAGHuee1RrFFJ+V/xdQ0CnYfRvOLUJbiYESX1R5UtRYotWtmU5t/CD3o5
+         y6gG6qp5wf1pikHmkkVTpT7HHCtKRD43g5D7caqdo1ILDYj1nWlN9gtF9nAAlM1se1CY
+         OUvjZuTYQ4qn+5QdIHyXIcD8lBifr0HkVDZyO0SpCSClfkpM3wSXqFbrYs1kwxwwZpNt
+         WtJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698100602; x=1698705402;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ttWGlrffBrwY7IhgV2y0g5weERvwNo5srcxQizfmW8s=;
+        b=Aq2B1HMnmlRTrNnUiQuOxnpn3YGFncwaUj98tTRD35+iZ8b7MRFkkvNbXPk+4oU9oC
+         TIFAr1qqYS3Nj1xfKd8yw6WHphFkbTuNsefz4IM2FOJZohQBiDbetT19kIdgP2OgnRKM
+         5s8l4aXbM1P8XuKk3KEXy8TaWFE1kJnDsoa/KoOpDae1Pz/luN4GO8w0dtsESMWz4xdi
+         mvEZmL1ZIZTRT9/fVc6DiZBpti4HaWwlZKF1wmeirSni2EkJuHgY+Zlj88jX9uW9o0tJ
+         NC9zBaAmXKk5NSRKBqRkjIRH9JxQJlEckJG+oHekV2L/asC8vqLYtj0Hbw+J8mS/xibH
+         wggg==
+X-Gm-Message-State: AOJu0Yyf4KalybsAnjDLLSeaPRGPCQY/+wBjxzIc3azC8CM2BFT+McU3
+        1HM4AoEd2ja3AML4NFvrl3KE/fAMSbM=
+X-Google-Smtp-Source: AGHT+IELTIPmnhOx8eNyhluHVilWx0Ce4P1fhW2zfRPHK7DW2U+h+4Gzg6eZCkp/zq4wYdvE6e7D5Ee8M5M=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:b322:0:b0:d86:5644:5d12 with SMTP id
+ l34-20020a25b322000000b00d8656445d12mr208242ybj.4.1698100601818; Mon, 23 Oct
+ 2023 15:36:41 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Mon, 23 Oct 2023 15:36:39 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
+Message-ID: <20231023223639.2487832-1-seanjc@google.com>
+Subject: [PATCH gmem] KVM: guest_memfd: Point .owner at the module that
+ exposes /dev/kvm
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris,
+Set .owner for guest_memfd file operations so that the KVM module(s) is
+is pinned until any files with callbacks back into KVM are completely
+freed.
 
-On 2023-10-23 19:52, Christopher Obbard wrote:
-> Hi Jonas,
-> 
-> On Mon, 2023-10-23 at 17:37 +0000, Jonas Karlman wrote:
->> This series add support for displaying 10-bit 4:2:0 and 4:2:2 formats
->> produced
->> by the Rockchip Video Decoder on RK322X, RK3288, RK3328, RK3368 and RK3399.
->> Also include 10-bit 4:4:4 support since VOP can support that also.
->>
->> First patch adds new fourcc 10-bit YUV formats with 4:2:2/4:4:4 sub-
->> sampling.
->> Second patch adds support for displaying the new fourcc formats.
->>
->> These patches have been in use by LibreELEC and other distros for the
->> past 3+ years, hoping they can be merged this time around.
->>
->> A rough libdrm/modetest patch [2] have been used to validate use of
->> NV15, NV20 and NV30 formats on RK3288, RK3328 and RK3399 boards.
->>
->>   modetest -s <connector_id>@<crtc_id>:<mode>-<vrefresh>@<format>
->>
->> Tinker Board R2.0 (rk3288w):
->>   modetest -s 50:1920x1080-60@NV15
->>
->> Rock Pi 4 (rk3399):
->>   modetest -s 52@44:1920x1080-60@NV15
->>
->> Rock64 (rk3328):
->>   modetest -s 42:1920x1080-60@NV15
->>
->> Changes in v5:
->> - Use drm_format_info_min_pitch() for correct bpp
->> - Add missing NV21, NV61 and NV42 formats
->>
->> Changes in v4:
->> - Rework RK3328/RK3399 win0/1 data to not affect RK3368
->>
->> Changes in v3:
->> - No changes, rebased on next-20230616
->> - R-B tags was collected
->>
->> Changes in v2:
->> - Add NV30 format
->> - R-B tags was not collected due to NV30 changes
->>
->> This series is also available at [1] and libdrm/modetest patch at [2].
->>
->> [1] https://github.com/Kwiboo/linux-rockchip/commits/v6.6-rc7-vop-nv15
->> [2] https://github.com/Kwiboo/libdrm/commits/nv15
-> 
-> Could you open a draft merge request for libdrm upstream at
-> https://gitlab.freedesktop.org/mesa/drm pointing to this series? If there are
-> subsequent revisions of this series, it'd be great to link that merge request
-> in the cover letter.
+Note, file types that can call into sub-module code, e.g. kvm-intel.ko or
+kvm-amd.ko on x86, must use the module pointer passed to kvm_init(), not
+THIS_MODULE (which points at kvm.ko).  KVM assumes that if /dev/kvm is
+reachable, e.g. VMs are active, then the vendor module is loaded.
 
-Have created a draft merge reguest for libdrm/modetest changes now.
-https://gitlab.freedesktop.org/mesa/drm/-/merge_requests/329
+Opportunistically clean up the kvm_gmem_{init,exit}() mess that got left
+behind by commit 0f7e60a5f42a ("kvm: guestmem: do not use a file system").
 
-The pattern code could really need some improvements/refactoring, in
-current form it should at least be enough to create a test pattern to
-help test/validate this series :-)
+Link: https://lore.kernel.org/all/20231018204624.1905300-2-seanjc@google.com
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
 
-Regards,
-Jonas
+See the link for details.  I'm going to eventually squash this so I put the
+bare minimum copy+paste effort into the changelog.
 
-> 
-> 
-> Cheers!
-> 
-> Chris
-> 
->>
->> Jonas Karlman (2):
->>   drm/fourcc: Add NV20 and NV30 YUV formats
->>   drm/rockchip: vop: Add NV15, NV20 and NV30 support
->>
->>  drivers/gpu/drm/drm_fourcc.c                |  8 +++
->>  drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 36 ++++++++---
->>  drivers/gpu/drm/rockchip/rockchip_drm_vop.h |  1 +
->>  drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 66 +++++++++++++++++----
->>  include/uapi/drm/drm_fourcc.h               |  2 +
->>  5 files changed, 96 insertions(+), 17 deletions(-)
->>
+ virt/kvm/guest_memfd.c |  7 ++++++-
+ virt/kvm/kvm_main.c    |  2 ++
+ virt/kvm/kvm_mm.h      | 10 ++--------
+ 3 files changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+index 9ffce54555ae..94bc478c26f3 100644
+--- a/virt/kvm/guest_memfd.c
++++ b/virt/kvm/guest_memfd.c
+@@ -285,12 +285,17 @@ static struct file *kvm_gmem_get_file(struct kvm_memory_slot *slot)
+ 	return file;
+ }
+ 
+-static const struct file_operations kvm_gmem_fops = {
++static struct file_operations kvm_gmem_fops = {
+ 	.open		= generic_file_open,
+ 	.release	= kvm_gmem_release,
+ 	.fallocate	= kvm_gmem_fallocate,
+ };
+ 
++void kvm_gmem_init(struct module *module)
++{
++	kvm_gmem_fops.owner = module;
++}
++
+ static int kvm_gmem_migrate_folio(struct address_space *mapping,
+ 				  struct folio *dst, struct folio *src,
+ 				  enum migrate_mode mode)
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 959e866c84f0..357b9d9d0225 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -6459,6 +6459,8 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
+ 	if (WARN_ON_ONCE(r))
+ 		goto err_vfio;
+ 
++	kvm_gmem_init(module);
++
+ 	/*
+ 	 * Registration _must_ be the very last thing done, as this exposes
+ 	 * /dev/kvm to userspace, i.e. all infrastructure must be setup!
+diff --git a/virt/kvm/kvm_mm.h b/virt/kvm/kvm_mm.h
+index 798f20d612bb..cca5372b9d5d 100644
+--- a/virt/kvm/kvm_mm.h
++++ b/virt/kvm/kvm_mm.h
+@@ -38,19 +38,13 @@ static inline void gfn_to_pfn_cache_invalidate_start(struct kvm *kvm,
+ #endif /* HAVE_KVM_PFNCACHE */
+ 
+ #ifdef CONFIG_KVM_PRIVATE_MEM
+-int kvm_gmem_init(void);
+-void kvm_gmem_exit(void);
++void kvm_gmem_init(struct module *module);
+ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args);
+ int kvm_gmem_bind(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 		  unsigned int fd, loff_t offset);
+ void kvm_gmem_unbind(struct kvm_memory_slot *slot);
+ #else
+-static inline int kvm_gmem_init(void)
+-{
+-	return 0;
+-}
+-
+-static inline void kvm_gmem_exit(void)
++static inline void kvm_gmem_init(struct module *module)
+ {
+ 
+ }
+
+base-commit: 911b515af3ec5f53992b9cc162cf7d3893c2fbe2
+-- 
+2.42.0.758.gaed0368e0e-goog
 
