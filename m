@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7993E7D4045
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5757D4047
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjJWT06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
+        id S229853AbjJWT2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJWT0z (ORCPT
+        with ESMTP id S229798AbjJWT2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:26:55 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F162681
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:24:41 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9cfec5e73dso3596237276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:24:41 -0700 (PDT)
+        Mon, 23 Oct 2023 15:28:01 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560B1B4;
+        Mon, 23 Oct 2023 12:27:59 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-4197fa36b6aso21282781cf.3;
+        Mon, 23 Oct 2023 12:27:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698089081; x=1698693881; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=h1u0nT80/oWTGKj5iiFWIMDgyK4i/U55br4Gc2RUIvo=;
-        b=WDW/yDkcw9atejGZZ6wUfuQtZv7E3+XEHEUKwat8sz8lD6Ygqo/AvtTYri9MU/XIbb
-         cnRELqN9j1DY9Ua5tU6ovxSlCzO4EyrM/Sd/lFkg834DgTU9HsvoTrQ03AdXGgdeBbhU
-         YUfh8Ed0VsjjPRmW6XTI1CCY+0X6waWkP7tViHl5CYv6hyC/8vLhf7cU8plGUlLw/FG6
-         NG8+iTIenL7jXhgh8eKNuMlto6pz/hdDXdgLGM5I16hGfAEkTi0UZuGkb4Yhk59Jy045
-         4Cw0Pej2OUftX13u+3IztaV1KxIWfH7ARMdei8SoCu5EvvYZhn2gYVy04hCmnLm3FLFh
-         15qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698089081; x=1698693881;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=gmail.com; s=20230601; t=1698089278; x=1698694078; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=h1u0nT80/oWTGKj5iiFWIMDgyK4i/U55br4Gc2RUIvo=;
-        b=lf9Qf9lp59uFhjhzONxK37zipGwEQRBjO0xQ7cl1yIgt52VsPWgy1RZOGJ1H/hB5Iy
-         2alzhpyGBeCageeoK8438MoMuSDpY3uLpx5kO2Ay4+h1tU2kWfCCShCXAUHuh/TVF8YD
-         XaPsAR58myYSxDX2R46iqoxZAbQL0BLMp4o4OnfcAxvNWdernZksBxsvPB07SBYbranr
-         U/0OdZW9YUPsjyskaMKDkZiigngzMBtSl85h9A8u+SNShog9BGGYQcv93c8dq8qx99aD
-         zMwEpENBqQSQfiWb4XWWrn0PAoooFqkJw0/TdYZwZuHavgn6moH1rRo7JUE0T44NXTkO
-         PPlQ==
-X-Gm-Message-State: AOJu0YxkhAZFr0XSDGFr4aCQlWS2wrsteKJDxlGUdfHvY1M9I9/a8FcN
-        IsaSoyUTwtf05cpIcW3lv4GiIyQSUIAPHeWc7g==
-X-Google-Smtp-Source: AGHT+IFUKYK2xSaVpZRjE3yKqd5oCeoZ5INX6+H5nQEkU7FkNWODenlUp4Z0Cw1VHadoUivSdTo9IcOT3px25CBk7w==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:874e:0:b0:d9a:be7b:283c with SMTP
- id e14-20020a25874e000000b00d9abe7b283cmr227737ybn.0.1698089080962; Mon, 23
- Oct 2023 12:24:40 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 19:24:38 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAHXINmUC/x2NMQqAMAwAvyKZDahFin5FHDSNNkuVREQR/25xu
- OGWuweMVdigLx5QPsVkS1nqsgCKU1oZJWSHpmpcnUE7NNF+Y1A5WQ3NdRWSbEjRCAndPC2BfOv a2UOu7MqLXP9hGN/3AyEFH6FxAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698089079; l=2352;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=shgo/ijuilR7APiDoVAzbgVjyPHSx3Fk4jWNLwNojr4=; b=iqSHq59hDlv00a+mF9qf2ovdAGlGL5EEa7A/NR+u7F7rOs3+i4mmCJiOjuH5qO5BjIgPIVBYz
- 4kn+m+pQ0U2DyEmeQcvAN9EZqdiwn+3XS4gufoUEdlcJ1UfVm7KtkTw
-X-Mailer: b4 0.12.3
-Message-ID: <20231023-strncpy-drivers-s390-cio-chsc-c-v1-1-8b76a7b83260@google.com>
-Subject: [PATCH] s390/cio: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        bh=7uPS1FFufaRhK/k1kDczCmhK4LKtdz1IcFeYK/ffRJw=;
+        b=eU+UWZGEliebkGuM6AEcGyVN9Hlek3FWKA26BYzScACdpwPiSvvilOhehE6mz5TvIN
+         fP2X4LfE/KtAhWgdeWvshJZ/y+4UwF1+phsRMiQ/iC74iGht8GcGlJpx6/fBADC3cKwZ
+         CJhAYjHBQ429qfwzZ7VoVVxfibAm1+GiIxcviLJjeNJu+Tx5raiQH7KCNc/YfU/F5kCG
+         5ectFa6XPSUlVQ8+kDjlZgM+OIeXsLaQEGu5QPxMTp3Z6UfELqioTSXWfDEP8YEVB1Mh
+         k0jPFy5MrB6F+U3Rp870TrdxCdZzEfSaULmcDFhlFce7psvgmbddpjTIPwxm7EK0v+eW
+         ujYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698089278; x=1698694078;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7uPS1FFufaRhK/k1kDczCmhK4LKtdz1IcFeYK/ffRJw=;
+        b=uw0PX9/XHEjB26FLxCpRAJkMZSk5UACOow8xSlX67akI4JqhAZlU5Rhv2gzEHii3op
+         stX0RNUe7EGp8DoXSWsrlT8w3VRcL6G3bkmf4LB8YxD0ZA0uLCTE/ttDR13ZZcEtm2o4
+         4invUpewi5bUAbnmvby5Z1DnugycSONzc2cWXL92uA2JIp0GElcwOqqlSjukhCOhefSR
+         uEfVtrO5PGHqWwVzioU6xjM7+dro0eirwv/47UQicC8+YHV4FWUg5ouqB0knbwkQyzeT
+         Osz/ye5guHIOd+ccIK8ofkIbR/E6fFft+L2ybSd8oHyj1HGRcdB7TuEBOt1Aaq1P3VgJ
+         VCTw==
+X-Gm-Message-State: AOJu0Yxf/5VIawtEeB2pugUSlJutksKfOZ2xveCwNA0XPN8HUFTKLkSs
+        /UMmycgAVstOZRhU66eFZxsJUQFrQrI=
+X-Google-Smtp-Source: AGHT+IFYL1IyfQ3j3isIrCCK4NxOmZ7CB2WlQtdpk5hzEQZ184KwvTeBb43qjX5EG1f1sHTaDxDHTg==
+X-Received: by 2002:ac8:5bd0:0:b0:40d:b839:b5ac with SMTP id b16-20020ac85bd0000000b0040db839b5acmr9103243qtb.15.1698089278247;
+        Mon, 23 Oct 2023 12:27:58 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id b23-20020ac86bd7000000b0041969bc2e4csm2953158qtt.32.2023.10.23.12.27.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 12:27:57 -0700 (PDT)
+Message-ID: <43474e9f-ff6c-4a1e-9101-9bead276dda8@gmail.com>
+Date:   Mon, 23 Oct 2023 12:27:54 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 000/196] 6.1.60-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231023104828.488041585@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231023104828.488041585@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,71 +79,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On 10/23/23 03:54, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.60 release.
+> There are 196 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.60-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-We expect both `params` and `id` to be NUL-terminated based on their
-usage with format strings:
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-	format_node_data(iuparams, iunodeid, &lir->incident_node);
-	format_node_data(auparams, aunodeid, &lir->attached_node);
-
-	switch (lir->iq.class) {
-	case LIR_IQ_CLASS_DEGRADED:
-		pr_warn("Link degraded: RS=%02x RSID=%04x IC=%02x "
-			"IUPARAMS=%s IUNODEID=%s AUPARAMS=%s AUNODEID=%s\n",
-			sei_area->rs, sei_area->rsid, lir->ic, iuparams,
-			iunodeid, auparams, aunodeid);
-
-NUL-padding is not required as both `params` and `id` have been memset
-to 0:
-
-	memset(params, 0, PARAMS_LEN);
-	memset(id, 0, NODEID_LEN);
-
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-Note that there's no overread bugs in the current implementation as the
-string literal "n/a" has a size much smaller than PARAMS_LEN or
-NODEID_LEN. Nonetheless, let's favor strscpy().
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/s390/cio/chsc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/s390/cio/chsc.c b/drivers/s390/cio/chsc.c
-index 0abd77f4b664..9319f448a6e2 100644
---- a/drivers/s390/cio/chsc.c
-+++ b/drivers/s390/cio/chsc.c
-@@ -393,8 +393,8 @@ static void format_node_data(char *params, char *id, struct node_descriptor *nd)
- 	memset(id, 0, NODEID_LEN);
- 
- 	if (nd->validity != ND_VALIDITY_VALID) {
--		strncpy(params, "n/a", PARAMS_LEN - 1);
--		strncpy(id, "n/a", NODEID_LEN - 1);
-+		strscpy(params, "n/a", PARAMS_LEN);
-+		strscpy(id, "n/a", NODEID_LEN);
- 		return;
- 	}
- 
-
----
-base-commit: 9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
-change-id: 20231023-strncpy-drivers-s390-cio-chsc-c-3bafdc7535b7
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
