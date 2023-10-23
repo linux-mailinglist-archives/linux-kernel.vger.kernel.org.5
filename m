@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0CE7D2F23
+	by mail.lfdr.de (Postfix) with ESMTP id 0E82A7D2F21
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbjJWJ4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44568 "EHLO
+        id S233470AbjJWJ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbjJWJzp (ORCPT
+        with ESMTP id S233543AbjJWJzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:55:45 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA5E10E0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:55:11 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32d80ae19f8so2244616f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:55:11 -0700 (PDT)
+        Mon, 23 Oct 2023 05:55:46 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF4910D9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:55:13 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32003aae100so2389616f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:55:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698054909; x=1698659709; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698054911; x=1698659711; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZC07USduWdC7NjdC5xCXcdF31ciW6Iy95zkt28zTytw=;
-        b=IN9BBhY7AWsLmw5OWUzNi5QkJLX2pyzZDlr74xE9tChaAGxlE7hjwrsarVit6d2C5v
-         +shlywCH/K/yFZmM0xN7KP+JhjcZN1PNP2Udv9fls3v2SwqdvbKDm58/Zfx727w6aWTi
-         QRAFJ6Am287XLXbVwP8nfU/uFN8lV+4evO+x9p+3QNOh262mA/V/ZnA/VEUYRhUviQSL
-         w4DtwGvsMKWgbwIot69DhRstafI0U43TqVAbhvqCUpqiXSHu+kzi2VI4AhZkDGKYPVGY
-         uA7QeSGDMiBOQSLfG3W60im/6ev0Uv8cW9evATrEOi+SUbZZfyNV7KNnUDXER3B9LgiS
-         RCSg==
+        bh=G81EZhNEBfjywIhuDWJjtpTXYP61176MP839Y8OZoG8=;
+        b=lHOLSFUc0yK7Ro+MNrul4bf5L+2cj3y+D/gX6YW5Pj+FKibWdu8iplLyLvCTxmygYD
+         YH7cXdyN/KUjsLkK4/m+u/sRyop/blbjSfhT4Jl6bhkQAI62YFlTY/TW7BRk2GP8OmDM
+         lmFU6jCnbRr0lw/r0kqAkYnR2FcJkRVoPGLIOMwkc1UIyw5W7cQLT/+uJdFncBFAKkXF
+         FjE3ApzCTEpTKv3pmE5WFjvH4mBNHitMwYgPTGUdZqtgsRTGcqtGcStvDwqUZt3/Bcod
+         TXqYkOybMDJENO801txAvYhXZeCaOJDyh5ckTdVT8J/nIQU1ZJAtUww31tZSMosi/E1Q
+         AgIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698054909; x=1698659709;
+        d=1e100.net; s=20230601; t=1698054911; x=1698659711;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZC07USduWdC7NjdC5xCXcdF31ciW6Iy95zkt28zTytw=;
-        b=NSogIkM+6LJrqq9EELD/dDnCAOL4wE6YIRj8+xlcvJaTUjmTm6IGvhRMdzgkSDZCzA
-         h6bVmNiflDSqi/X9kKbpI+HQJSABpsa+jXxwg2ffCnmuq5O7o3BvcGHtZt8+M6I1ayXv
-         wGqkBq/mbxa+VIKDy0V/owcGU9oEV9TSAxsKcgDNVaWOv82yLmKY2LZbXewHr105Xpa2
-         N5wdh0AL0qVJ5Eb6zSQ2U4okspb43D31Hb4+uqFIUT4zqRkMpPuBH2x/Nd74SwdBOmEX
-         a9uCrUnb8Dv+otT37i9ZRk+hr1IoRFC7WVuDvKl2ErKByakaD3lOtDT4l6SwcLR5lf9C
-         SoJw==
-X-Gm-Message-State: AOJu0YzeVgh2wjLJ+WwwngXQ9A27w2IDkjdzGiXV1toHokbWbOjLculI
-        2V1bwxoQ0bYRA2Olaws8nc3xMMszf3R3JRTDUpI=
-X-Google-Smtp-Source: AGHT+IEj7uxeA3nMNUo9sdq2wgfqK3o3A7RdYb9gMk09HGqmRvuI7EP8mG67nJpViU+BpTyEwFeWzQ==
-X-Received: by 2002:adf:e80a:0:b0:32d:8c6d:cda4 with SMTP id o10-20020adfe80a000000b0032d8c6dcda4mr6419354wrm.43.1698054909354;
-        Mon, 23 Oct 2023 02:55:09 -0700 (PDT)
+        bh=G81EZhNEBfjywIhuDWJjtpTXYP61176MP839Y8OZoG8=;
+        b=BeR/o986pIWUlotqw7AnG4Nm0wallArnL2ueKQtCOwQH1VhS47a3r5tAU5s0W4G8MO
+         jDuS8/SXtyTyPXWSZ0JSEUn88jTJSFJbGSeba+X27h+58Bs/G0d3rvAhMaKwpN85RXQc
+         fFE+w2ivwjDocXbNBH3nITltQFpxRrdwkIUhuMu6JJFukBxBn52AFl3Fvt00KLN/vTGc
+         3yKVewZ+qEjWzH2SwgwZzs1eKgiZLZCbsXtI1lPOGqb2C0MZ8RLNx7cP3623c1D2Aw6Q
+         pWiqGtYwUjDWl6+7cXnM2pvthBWSqYf3vioP1glxMM+kX/hjoIDledz83r1jPbuZpXVj
+         qHyw==
+X-Gm-Message-State: AOJu0Yz79rd3b0gj5Y8m4tn2i5b/UfjoIhdHRvj8ZWVp8ZPtwLhNcoWP
+        0ejOqCJZ4Zg7PRnZGkObKp7y/A==
+X-Google-Smtp-Source: AGHT+IF2iXpBOUlnIxhQVTQ1O4HJJuZY9k94V739kocrPuR1iW5RroQxWCPWTyJ4Y36tYCQLJLsx0Q==
+X-Received: by 2002:adf:a499:0:b0:32d:a3f7:f0dd with SMTP id g25-20020adfa499000000b0032da3f7f0ddmr10781049wrb.25.1698054911534;
+        Mon, 23 Oct 2023 02:55:11 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id u14-20020a5d468e000000b00323330edbc7sm7428801wrq.20.2023.10.23.02.55.07
+        by smtp.gmail.com with ESMTPSA id u14-20020a5d468e000000b00323330edbc7sm7428801wrq.20.2023.10.23.02.55.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 02:55:08 -0700 (PDT)
+        Mon, 23 Oct 2023 02:55:11 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -71,18 +71,17 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, linux-tegra@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [RFT PATCH 16/17] ASoC: samsung: speyside: Handle component name prefix
-Date:   Mon, 23 Oct 2023 11:54:27 +0200
-Message-Id: <20231023095428.166563-17-krzysztof.kozlowski@linaro.org>
+Subject: [RFT PATCH 17/17] ASoC: tegra: machine: Handle component name prefix
+Date:   Mon, 23 Oct 2023 11:54:28 +0200
+Message-Id: <20231023095428.166563-18-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231023095428.166563-1-krzysztof.kozlowski@linaro.org>
 References: <20231023095428.166563-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -94,25 +93,41 @@ to include also the component's name prefix.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/samsung/speyside.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/tegra/tegra_asoc_machine.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/samsung/speyside.c b/sound/soc/samsung/speyside.c
-index 43519572dc69..79476e8eb680 100644
---- a/sound/soc/samsung/speyside.c
-+++ b/sound/soc/samsung/speyside.c
-@@ -111,9 +111,9 @@ static int speyside_jack_polarity;
- static int speyside_get_micbias(struct snd_soc_dapm_widget *source,
- 				struct snd_soc_dapm_widget *sink)
- {
--	if (speyside_jack_polarity && (strcmp(source->name, "MICB1") == 0))
-+	if (speyside_jack_polarity && (snd_soc_dapm_widget_name_cmp(source, "MICB1") == 0))
- 		return 1;
--	if (!speyside_jack_polarity && (strcmp(source->name, "MICB2") == 0))
-+	if (!speyside_jack_polarity && (snd_soc_dapm_widget_name_cmp(source, "MICB2") == 0))
- 		return 1;
+diff --git a/sound/soc/tegra/tegra_asoc_machine.c b/sound/soc/tegra/tegra_asoc_machine.c
+index 3caadee9584f..192e9692bdf2 100644
+--- a/sound/soc/tegra/tegra_asoc_machine.c
++++ b/sound/soc/tegra/tegra_asoc_machine.c
+@@ -81,19 +81,23 @@ static int tegra_machine_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_soc_dapm_context *dapm = w->dapm;
+ 	struct tegra_machine *machine = snd_soc_card_get_drvdata(dapm->card);
  
- 	return 0;
+-	if (!strcmp(w->name, "Int Spk") || !strcmp(w->name, "Speakers"))
++	if (!snd_soc_dapm_widget_name_cmp(w, "Int Spk") ||
++	    !snd_soc_dapm_widget_name_cmp(w, "Speakers"))
+ 		gpiod_set_value_cansleep(machine->gpiod_spkr_en,
+ 					 SND_SOC_DAPM_EVENT_ON(event));
+ 
+-	if (!strcmp(w->name, "Mic Jack") || !strcmp(w->name, "Headset Mic"))
++	if (!snd_soc_dapm_widget_name_cmp(w, "Mic Jack") ||
++	    !snd_soc_dapm_widget_name_cmp(w, "Headset Mic"))
+ 		gpiod_set_value_cansleep(machine->gpiod_ext_mic_en,
+ 					 SND_SOC_DAPM_EVENT_ON(event));
+ 
+-	if (!strcmp(w->name, "Int Mic") || !strcmp(w->name, "Internal Mic 2"))
++	if (!snd_soc_dapm_widget_name_cmp(w, "Int Mic") ||
++	    !snd_soc_dapm_widget_name_cmp(w, "Internal Mic 2"))
+ 		gpiod_set_value_cansleep(machine->gpiod_int_mic_en,
+ 					 SND_SOC_DAPM_EVENT_ON(event));
+ 
+-	if (!strcmp(w->name, "Headphone") || !strcmp(w->name, "Headphone Jack"))
++	if (!snd_soc_dapm_widget_name_cmp(w, "Headphone") ||
++	    !snd_soc_dapm_widget_name_cmp(w, "Headphone Jack"))
+ 		gpiod_set_value_cansleep(machine->gpiod_hp_mute,
+ 					 !SND_SOC_DAPM_EVENT_ON(event));
+ 
 -- 
 2.34.1
 
