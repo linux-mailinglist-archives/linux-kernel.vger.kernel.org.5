@@ -2,245 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 961EA7D3A05
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203C37D3A0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234015AbjJWOqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
+        id S231983AbjJWOvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233736AbjJWOqN (ORCPT
+        with ESMTP id S229578AbjJWOvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:46:13 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208591FDD
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:45:45 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40837124e1cso110775e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:45:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698072343; x=1698677143; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fuPb49Nb7aOChMQEH9g60s/ZbKYpeY4nlEVZ7HXBAiA=;
-        b=CYLNIaQNhE2DkcrwXUkdgVf3ZtN7Rv/bUKj/guuKB15zmVpWTqKYuYMKnQe1rL9uX3
-         RXInqhcjHcgfZsiRh5yVFDNSJAu4lWExB6vRaUx/vOxFxkZ+syTs6Sw9uUixztBcc7fA
-         xUcusAlVS7roKkIvFjbgeT29XgWgfKKRyj4tDLhry8DjgA49Q9OKTKfA0ZTmgym+Qj2/
-         8yaUMgDxTCCFCYLx3skrVPPnQMNfGeai/1sNoTwps+jhS8p/RwV/sQzkNQFfumCipkFw
-         v6DvVW5K0PeLU5CnTch/IlgycbMeUMCU5xMIbV8/JkVsKcSAruSK+UordbslkioKXhCA
-         J4MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698072343; x=1698677143;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fuPb49Nb7aOChMQEH9g60s/ZbKYpeY4nlEVZ7HXBAiA=;
-        b=RaiILuglQURuLpMtenbh/R6qRzFeHjZklAtHXgsE+kJ0FS9+/l98WtEAJcTsqxSuiz
-         YG8T7QjhQhdMCZVhz41kzUZeJLyeMFg7uQgoBvqSDYROTL8N4va4j3HSFdqnxoyflUfJ
-         D+vFmWTjga14T0Kcsc/c12VN8paiYhdY77Kp8BQIdyAzcstP1RV1fLgEiKKduKNmzlIT
-         ZP/r2OEq4SGMfA7cuHTnGtYgzwiVjZV2oDoHEwKQEEBcHu5OnKd+x8NpfwS+yfZL8EZv
-         lcMUrYcoEbJ3tkJbrF5MP4vHTMYHhDPtiBmHN/u49mRxiswZnGvNMqC75LqYVov6XrOV
-         HgZQ==
-X-Gm-Message-State: AOJu0Yw+Hn8Tlo0NI4wEjLdB8K4Cg5BLuKpthhmTFbuGnoJ/g9nzUVgg
-        8mXJsV3tj98+u6tOkqh6vsIPXA==
-X-Google-Smtp-Source: AGHT+IHqwhVuneopgxfquyjAU4kAvXwPMoACOMfUTgtwjupQH4aGGKknxjAFoNKlkarZI9e6tEFHlg==
-X-Received: by 2002:a05:600c:3b97:b0:408:3725:b96a with SMTP id n23-20020a05600c3b9700b004083725b96amr275253wms.0.1698072343243;
-        Mon, 23 Oct 2023 07:45:43 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id r9-20020a056000014900b003232f167df5sm7888468wrx.108.2023.10.23.07.45.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 07:45:42 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 14:45:41 +0000
-From:   Sebastian Ene <sebastianene@google.com>
-To:     Vincent Donnefort <vdonnefort@google.com>
-Cc:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        akpm@linux-foundation.org, maz@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, qperret@google.com, smostafa@google.com
-Subject: Re: [PATCH v2 11/11] arm64: ptdump: Add support for guest stage-2
- pagetables dumping
-Message-ID: <ZTaHFQotXvRWad3Y@google.com>
-References: <20231019144032.2943044-1-sebastianene@google.com>
- <20231019144032.2943044-13-sebastianene@google.com>
- <ZTI85i0PmI_6doz1@google.com>
+        Mon, 23 Oct 2023 10:51:43 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2069.outbound.protection.outlook.com [40.92.74.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46A9A2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:51:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UJY/ZXDVDjvL69aFDQu398xptRevL6Fo3SKLmwVYnLvmRXnvfyNFsO6NVuQp33aA5SGSqukju2/0PbRGZy3xMJLlCHjEvCu2gTWvFXfR9+liOBAzF4Ft3Pic5o3wNU3Rwg9z5UQcSXekb1q/hBOEHxVjughGCeTs0QQ9BxsiZzXspOpp5QTlE14/oi/2cL+NyDRx4Nh0IBbKg0KhHeaH7tNlRaM/mIlHG6co7hjrR8VoMGm74od3aRxFzT4VxEKHOSIciEIMFpBrAKiT/iI61phHXfONKqWaxUYNBe787WGPCVPJve6B76iuBqfrS3hpEZ0tyrspyspZSykkEV8k2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=A2Opo2h+vKi2Wvz37ryT6uuEdVmLmJMtUn2eEgH4vX8=;
+ b=S5gdDRJFPXvPiNTGHBMdOoh7TpFUeWTcfRlSCYdmzvCtcyKmL823Sd0xQwum6+jw5Q6OatUzj4pRd/GYbWqxGL55Ki6sbcHh8CuQakEbboPQ6PROtbPJvKWXnNb/Z4mcG12g4c++kxFREm+ro2h5Upbgbs+1isUv6c/UBQMZb7doBfo3W8tiksD0smo9kYgZi7QM5BQA2ksmB4jdnyD3kCUXsap0PvdlGkT4CQ0ScF4688Zk9hlj8t6jRiJ4pKK0aIoRU8g4iqREwgymquWEMR1WLMopyeTc9BU7t/7fIFB3XUfznlq9vqBnWCZ+I3IEbN5ST58pyLew36yP0hko1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=A2Opo2h+vKi2Wvz37ryT6uuEdVmLmJMtUn2eEgH4vX8=;
+ b=GAvxAgSQ1NEs/FGHlgICV6Y9DmK4ACVnQnl4i9QqxwqMmDdjIQhCoR2Pep7ygm4WqnEVdzfdZ1Zjc89YyumM+fJphGWnsWj+WsgHptcgKFf5cfbzMM/iEw2XezI7j96c0jb7YCjRN7RiYY+HRxdz9M3qX8T76cFXilBwsgKerrs+/urCJauywaKP9Oe5jqLnB5maJeE/Gl+pVZCdthfQa9ldIQXznXlpm7dViBl46i+xaXlh2F8fgr7/vrWXQZcbMZN04l2DqGZiCQBhbuiLTmtCzXtOg9FVwp9eZn0OuPK8D8/HF+sYIoc0lAb1PxQ/LpcDP78aqTKDY7gwHNSMww==
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+ by DB8PR10MB3257.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:113::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Mon, 23 Oct
+ 2023 14:51:37 +0000
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97%6]) with mapi id 15.20.6907.032; Mon, 23 Oct 2023
+ 14:51:37 +0000
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     neil.armstrong@linaro.org
+Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, sam@ravnborg.org,
+        airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org
+Subject: [RFC] Clean up check for already prepared panel
+Date:   Mon, 23 Oct 2023 20:21:16 +0530
+Message-ID: <DB3PR10MB68352B33759F5DB6CC041C84E8D8A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [MhoxeqolqqPKQt99HjHdK4qA1ODMLGFg]
+X-ClientProxiedBy: JNXP275CA0030.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::18)
+ To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+X-Microsoft-Original-Message-ID: <20231023145116.977508-1-yuran.pereira@hotmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTI85i0PmI_6doz1@google.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|DB8PR10MB3257:EE_
+X-MS-Office365-Filtering-Correlation-Id: f8dc866d-ad50-4e90-2f28-08dbd3d78eba
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: F2T6j0/XhHSXlvvHLZoniRMEb25HmzAxpYG766zd5y35g1ENgs5HVxtZ2epsdXFqZfAVUEktCbPo2g2b/bru0Uyk6b5yJIimbbpy08Uus//cfXD0UAf4aZoB2ZAOh3g+eBwpsFx/DIyBwODz+yD3fU0GyWz1a680C+EhGpSU9y98CB0Er//93ntWC/OFv9ABwHN0uxcIWpRbJsxFIGsTXSINes6vLpOD9bhLOsXGL2Xc9ZR60E8/vdEUS64qOKQGClesLOeg3v0fKvWnxOtHqQsWONsNnt9cbaz2NlNUtociwcADamy3aa+O7hojqLpeY4AhhX3n8f4VkcyHlfpnh0M9dnJD3yZ6XE7VBWNgEbbuayG/1+BkhPv/JU4u02LP20fr2kLE1joT86u0usWtHDDyYXYbv9fd1n8WMsvoeJfoqd77q8OjC8gaTZ5p39MHRxfFY4SS3xYf98K1GWum+kyIp5UWhT6sAeVKd8IQ34WqKArrpdGQBZm51JMvYQOAadUSkJ0vpX5uJe+DKpWFiIwx1YPjwWpSPlqILUY76zpbDz+MPUkiED23HYRglAEqcj8sfSOl99+wwEXsOkesnwN3AKlCf4F6kAKstI5vl/27CBKTUuLjgnbsJhcdkixa
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Nv45ZunlEQDzT7m+lGOoMGeF6lP1GVmgt64RkbzH4s91f76FcG1Ky7tMkZAx?=
+ =?us-ascii?Q?Mk7wjSnMmVRAGihnj8gLPyO95Q18Vo0k+zgORSk8HJ9HfiQrm2wd05KJt1gs?=
+ =?us-ascii?Q?83QIf8dMTNt7qav655uGGHOAhuKyG3s2/9rz86spYgNgiKtn+oDPfxOF4hG3?=
+ =?us-ascii?Q?3lIpUYXvfjQoZoozaHqPz3fU3K2t96++KRdWoajLFOKCrqlokJ6rX36Q6Xq2?=
+ =?us-ascii?Q?U0gcmr+mCinHWEIzKLzJ4yysX9Mzq0vxcgpZaCkvmv5U4URsjkD65PARrGMI?=
+ =?us-ascii?Q?1FwIY97WyBa2Cn6FVPR+9Gu5t9bM1VGwikHnXIQKorIgSb8PhgIZU37uVvSa?=
+ =?us-ascii?Q?dh2Q9wPigqe2F4NJElcoYsvfQxYkv2iTr+11N93BreZeMdWnd3pnA+uk482X?=
+ =?us-ascii?Q?LQbcNbv5wBFl0zDSwKsPrevmfSomP2C8XOHCBVePcwjXI7kG4n0BNiQQLFEq?=
+ =?us-ascii?Q?bEdi3yo7ATqdPxY1oYbGOVYNMiHpFBLoWpZC1LTrOdXkj4HlJiGcnkgEtqyt?=
+ =?us-ascii?Q?qsUM/1eUrI85qir93eFXj6l6X8ymBJ0BkHy7iYzIPNk0TsHn51Ykhm5zgUc5?=
+ =?us-ascii?Q?nWzXVDEOt87vKJrX0zKUUeD6gzannmpebirO0hm/deSntEB96yzGg243M4Yf?=
+ =?us-ascii?Q?EV9xL/7SiUXlZc/h0d+sJupR1WhJiUkpVvAOKMZlvExOUaMTpXrkDRrL2pWH?=
+ =?us-ascii?Q?8O/WpPUjAzm8IeSafrLl7RGtgaw3vw3SyXmO/IA1N6m1V6c1iNiFbJssMDj0?=
+ =?us-ascii?Q?nBx6WeYt82DKGoz0QDEe5mKIFfTaXsVsk7FQH7VE/0C2qRmSQPKx76yE2DTk?=
+ =?us-ascii?Q?quTzZnsFCIBB9bY52PHh0xjKJrB+QIppbi/tTiK3q45sjuUryZRuLEvbUju2?=
+ =?us-ascii?Q?I6biMmbn68/2/mAyEANvFp9hbfB2IO//7qdTvrH3bJ+UORTSW55Pj9a8APx/?=
+ =?us-ascii?Q?YBOrydh2pPoo5DSQvScEJxoA/U7wwHDxLJkc1kH0xWKqTFDr6rY0IOARxONS?=
+ =?us-ascii?Q?KpaYe4K/ydtcY1vCC5r4DPsA1XYvslQpdU2u8SzL43pKQhsTaFAeFGHQFD/e?=
+ =?us-ascii?Q?O387pfI7ef8C2ho7VkChuGVVkZxc+Ic1kgPvWa+2+iJIFuGpWf4MhUSFVZI3?=
+ =?us-ascii?Q?KJfQuM5OhxAsZK6M3XQnmWvZmOPBpgIgXeO4ivQve4zYrWBNpzNOyovDDzbr?=
+ =?us-ascii?Q?qTWdSbPb4i+1ze6/Jri5iiey2hHIYNn9s+dGosbAGiBC/vJ/Zp5TQedu9Zw?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8dc866d-ad50-4e90-2f28-08dbd3d78eba
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 14:51:37.5072
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3257
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 09:40:06AM +0100, Vincent Donnefort wrote:
-> On Thu, Oct 19, 2023 at 02:40:33PM +0000, Sebastian Ene wrote:
-> > Register a debugfs file on guest creation to be able to view their
-> > second translation tables with ptdump. This assumes that the host is in
-> > control of the guest stage-2 and has direct access to the pagetables.
-> 
-> What about pKVM? The walker you wrote for the host stage-2 should be
-> reusable in that case?
-> 
+Since the core function drm_panel_prepare already checks if the
+panel is prepared, we can remove this duplicate check from tm5p5_nt35596_prepare
+which acts as a no-op. As suggested in the GPU TODO [1]
 
-Yes, when pKVM will be ready upstream the walker which duplicates the
-pagetables for the host will be re-used for the guests. We will have to
-add a separate HVC for this which receives as an argument the guest
-vmid.
+[1] https://docs.kernel.org/gpu/todo.html#clean-up-checks-for-already-prepared-enabled-in-panels
 
-> > 
-> > Signed-off-by: Sebastian Ene <sebastianene@google.com>
-> > ---
-> >  arch/arm64/include/asm/ptdump.h | 21 +++++++--
-> >  arch/arm64/kvm/mmu.c            |  3 ++
-> >  arch/arm64/mm/ptdump.c          | 84 +++++++++++++++++++++++++++++++++
-> >  arch/arm64/mm/ptdump_debugfs.c  |  5 +-
-> >  4 files changed, 108 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/arch/arm64/include/asm/ptdump.h b/arch/arm64/include/asm/ptdump.h
-> > index 35b883524462..be86244d532b 100644
-> > --- a/arch/arm64/include/asm/ptdump.h
-> > +++ b/arch/arm64/include/asm/ptdump.h
-> > @@ -5,6 +5,8 @@
-> >  #ifndef __ASM_PTDUMP_H
-> >  #define __ASM_PTDUMP_H
-> >  
-> > +#include <asm/kvm_pgtable.h>
-> > +
-> >  #ifdef CONFIG_PTDUMP_CORE
-> >  
-> >  #include <linux/mm_types.h>
-> > @@ -30,14 +32,27 @@ struct ptdump_info {
-> >  void ptdump_walk(struct seq_file *s, struct ptdump_info *info);
-> >  #ifdef CONFIG_PTDUMP_DEBUGFS
-> >  #define EFI_RUNTIME_MAP_END	DEFAULT_MAP_WINDOW_64
-> > -void __init ptdump_debugfs_register(struct ptdump_info *info, const char *name);
-> > +struct dentry *ptdump_debugfs_register(struct ptdump_info *info,
-> > +				       const char *name);
-> >  #else
-> > -static inline void ptdump_debugfs_register(struct ptdump_info *info,
-> > -					   const char *name) { }
-> > +static inline struct dentry *ptdump_debugfs_register(struct ptdump_info *info,
-> > +						     const char *name)
-> > +{
-> > +	return NULL;
-> > +}
-> >  #endif
-> >  void ptdump_check_wx(void);
-> >  #endif /* CONFIG_PTDUMP_CORE */
-> >  
-> > +#ifdef CONFIG_NVHE_EL2_PTDUMP_DEBUGFS
-> > +void ptdump_register_guest_stage2(struct kvm_pgtable *pgt, void *lock);
-> > +void ptdump_unregister_guest_stage2(struct kvm_pgtable *pgt);
-> > +#else
-> > +static inline void ptdump_register_guest_stage2(struct kvm_pgtable *pgt,
-> > +						void *lock) { }
-> > +static inline void ptdump_unregister_guest_stage2(struct kvm_pgtable *pgt) { }
-> > +#endif /* CONFIG_NVHE_EL2_PTDUMP_DEBUGFS */
-> 
-> I believe this should be compatible with VHE as well, that option should be
-> renamed.
-> 
+Suggested-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+---
+ drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Good point, I will rename this.
+diff --git a/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c b/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
+index 075a7af81eff..af83451b3374 100644
+--- a/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
++++ b/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
+@@ -112,9 +112,6 @@ static int tm5p5_nt35596_prepare(struct drm_panel *panel)
+ 	struct device *dev = &ctx->dsi->dev;
+ 	int ret;
+ 
+-	if (ctx->prepared)
+-		return 0;
+-
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
+ 	if (ret < 0) {
+ 		dev_err(dev, "Failed to enable regulators: %d\n", ret);
+@@ -132,7 +129,6 @@ static int tm5p5_nt35596_prepare(struct drm_panel *panel)
+ 		return ret;
+ 	}
+ 
+-	ctx->prepared = true;
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
 
-> > +
-> >  #ifdef CONFIG_DEBUG_WX
-> >  #define debug_checkwx()	ptdump_check_wx()
-> >  #else
-> > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> > index 482280fe22d7..e47988dba34d 100644
-> > --- a/arch/arm64/kvm/mmu.c
-> > +++ b/arch/arm64/kvm/mmu.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/sched/signal.h>
-> >  #include <trace/events/kvm.h>
-> >  #include <asm/pgalloc.h>
-> > +#include <asm/ptdump.h>
-> >  #include <asm/cacheflush.h>
-> >  #include <asm/kvm_arm.h>
-> >  #include <asm/kvm_mmu.h>
-> > @@ -908,6 +909,7 @@ int kvm_init_stage2_mmu(struct kvm *kvm, struct kvm_s2_mmu *mmu, unsigned long t
-> >  	if (err)
-> >  		goto out_free_pgtable;
-> >  
-> > +	ptdump_register_guest_stage2(pgt, &kvm->mmu_lock);
-> >  	mmu->last_vcpu_ran = alloc_percpu(typeof(*mmu->last_vcpu_ran));
-> >  	if (!mmu->last_vcpu_ran) {
-> >  		err = -ENOMEM;
-> > @@ -1021,6 +1023,7 @@ void kvm_free_stage2_pgd(struct kvm_s2_mmu *mmu)
-> >  	write_unlock(&kvm->mmu_lock);
-> >  
-> >  	if (pgt) {
-> > +		ptdump_unregister_guest_stage2(pgt);
-> >  		kvm_pgtable_stage2_destroy(pgt);
-> >  		kfree(pgt);
-> >  	}
-> > diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
-> > index 4687840dcb69..facfb15468f5 100644
-> > --- a/arch/arm64/mm/ptdump.c
-> > +++ b/arch/arm64/mm/ptdump.c
-> > @@ -26,6 +26,7 @@
-> >  #include <asm/ptdump.h>
-> >  #include <asm/kvm_pkvm.h>
-> >  #include <asm/kvm_pgtable.h>
-> > +#include <asm/kvm_host.h>
-> >  
-> >  
-> >  enum address_markers_idx {
-> > @@ -543,6 +544,22 @@ void ptdump_check_wx(void)
-> >  #ifdef CONFIG_NVHE_EL2_PTDUMP_DEBUGFS
-> >  static struct ptdump_info stage2_kernel_ptdump_info;
-> >  
-> > +#define GUEST_NAME_LEN	(32U)
-> > +
-> > +struct ptdump_registered_guest {
-> > +	struct list_head		reg_list;
-> > +	struct ptdump_info		info;
-> > +	struct mm_struct		mem;
-> > +	struct kvm_pgtable_snapshot	snapshot;
-> > +	struct dentry			*dentry;
-> > +	rwlock_t			*lock;
-> > +	char				reg_name[GUEST_NAME_LEN];
-> > +};
-> > +
-> > +static LIST_HEAD(ptdump_guest_list);
-> > +static DEFINE_MUTEX(ptdump_list_lock);
-> > +static u16 guest_no;
-> 
-> This is not robust enough: If 1 VM starts then 65535 others which are killed.
-> guest_no overflows. The next number is 0 which is already taken.
->
-
-Yes, I guess this should be improved. In the case you described we won't
-register any debugfs file because of the name clash.
-
-> Linux has and ID allocation to solve this problem, but I don't think this is
-> necessary anyway. This should simply reuse the struct kvm->debugfs_dentry.
-> 
-> Also probably most of the informations contained in ptdump_registered_guest can
-> be found in struct kvm. The debugfs should then probably simply take struct kvm
-> for the private argument.
->
-
-I would prefer to keep it as a separate struct here as it gives some
-flexibility if we need to extend it for guests pKVM support. I think we
-can drop the struct mm_struct from here.
-
-Thanks,
-Sebastian
-
-> > +
-> >  static phys_addr_t ptdump_host_pa(void *addr)
-> >  {
-> >  	return __pa(addr);
-> > @@ -740,6 +757,73 @@ static void stage2_ptdump_walk(struct seq_file *s, struct ptdump_info *info)
-> >  
-> >  	kvm_pgtable_walk(pgtable, start_ipa, end_ipa, &walker);
-> >  }
-> 
-> [...]
