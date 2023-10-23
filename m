@@ -2,259 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A77CB7D431A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 01:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF457D431D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 01:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbjJWXKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 19:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51364 "EHLO
+        id S229829AbjJWXL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 19:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjJWXK2 (ORCPT
+        with ESMTP id S229498AbjJWXL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 19:10:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450C4D68
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698102626; x=1729638626;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2DTHrKNA7mweT0JgMxWkZFN/aHE3omR2fa0y4eM3/gs=;
-  b=lw1QlTkCUwKDa21+U4ujx24+xiFiUjn8/vEXJzoXaeY2JYRHTnpRpyCP
-   sypkODoPZtdbW2sRABeGqejOgUcm53j6GNewHWTYbXkDVTHkPL/mLcS2V
-   APBKpMCUImPVDR3fNaeCrPrWyTntcfqFJMH9hLC/Fw7zD9Ye7JQ/yrmXG
-   AIveI2OmYaLw1H51pH7l3UBWHmY9u3sxAqJfVeS3PHdN/2jpHPfnwUowr
-   N1YxsdAMxpdlbecqZ4sEqlC4LVaiSn4NNC6vsqYfm0ATfHVgAWLyC5dFr
-   HNQN9lK1h+aQ0dui3OJvV8IZlRcOa9VNvjqeWYHFUEiEzYgrrB3gYc1Sz
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="385841765"
-X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
-   d="scan'208";a="385841765"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 16:10:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="881924053"
-X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
-   d="scan'208";a="881924053"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 23 Oct 2023 16:10:23 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qv43x-0007MH-0m;
-        Mon, 23 Oct 2023 23:10:21 +0000
-Date:   Tue, 24 Oct 2023 07:09:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     kenechukwu maduechesi <maduechesik@gmail.com>,
-        outreachy@lists.linux.dev, shreeya.patel23498@gmail.com
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rts5208: Replace delay function.
-Message-ID: <202310240604.OZnfTcMT-lkp@intel.com>
-References: <20231018004300.GA3189@ubuntu>
+        Mon, 23 Oct 2023 19:11:27 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AC7FD;
+        Mon, 23 Oct 2023 16:11:25 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NNAxWq028760;
+        Mon, 23 Oct 2023 23:11:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=+ggcstRBUlOxqI1C8WEvKLN88XC31ynI06bBPZH6x8o=;
+ b=JrtGwX3UqANkRGvDEI937zvUheFhV3tVuX5JrLWlGNz8AbT5q+aR/IqMjT/DKrZFYU2j
+ t/u9QIXi6A5rkQQLdprjSVJSDUxaQewI4WMvZ+ln7AGOtesHDhpClDHYvVcI76Ed0xjr
+ teNQoZIoy+ms0Q2V66qq9VjkhkOY6Yd4xaoiBWFtg4BsHibG5VXi/cSs9uXoWm0OosUq
+ oDWdiQrPdVFtFesaZpBIrOpXIHo9Tuxwg7zniqeNz3CaGJVjfSh71cvs3DQoA/Zq4Vxy
+ MynQs6NQ4JUDzkFfmxPkXdr7zfH18kFMKCPNaKjb5Zkdbcpym/8kB8bOVND5BIDACpCy Dw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3twxw5gbev-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 23:11:16 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39NNBFTN018082
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 23:11:15 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Mon, 23 Oct 2023 16:11:15 -0700
+Date:   Mon, 23 Oct 2023 16:11:14 -0700
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: Re: [PATCH RFC 1/2] regulator: core: Disable unused regulators with
+ unknown status
+Message-ID: <20231023231114.GO3553829@hu-bjorande-lv.qualcomm.com>
+References: <20231004-reg-smd-unused-v1-0-5d682493d555@kernkonzept.com>
+ <20231004-reg-smd-unused-v1-1-5d682493d555@kernkonzept.com>
+ <80307316-f55e-4540-9c5f-655844c3b3f4@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231018004300.GA3189@ubuntu>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <80307316-f55e-4540-9c5f-655844c3b3f4@sirena.org.uk>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: drb0EoN6pcsxpKnK2EJ5p4HbtYMr4k9W
+X-Proofpoint-GUID: drb0EoN6pcsxpKnK2EJ5p4HbtYMr4k9W
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-23_21,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 mlxscore=0 bulkscore=0 impostorscore=0 phishscore=0
+ mlxlogscore=501 priorityscore=1501 suspectscore=0 clxscore=1011
+ adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310170001 definitions=main-2310230203
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi kenechukwu,
+On Mon, Oct 23, 2023 at 01:09:11PM +0100, Mark Brown wrote:
+> On Wed, Oct 04, 2023 at 04:17:17PM +0200, Stephan Gerhold wrote:
+> 
+> > Instead of -EINVAL we could also use a different return code to indicate
+> > the initial status is unknown. Or maybe there is some other option that
+> > would be easier? This is working for me but I'm sending it as RFC to get
+> > more feedback. :)
+> 
+> The more normal thing here would be -EBUSY I think - -EINVAL kind of
+> indicates that the operation will never work while in reality it could
+> possibly work in future.  Though for the RPMH it's not really the case
+> that it ever supports readback, what it does is have it's own reference
+> counting in the driver.  Rather than doing this we should probably have
+> logic in the core which sees that the driver has a write operation but
+> no read operation and implements appropriate behaviour.
 
-kernel test robot noticed the following build errors:
+I like the suggestion to not implement is_enabled, and handle that in
+the core instead, for all three generations of our rpm-based regulators.
 
-[auto build test ERROR on staging/staging-testing]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/kenechukwu-maduechesi/staging-rts5208-Replace-delay-function/20231018-090457
-base:   staging/staging-testing
-patch link:    https://lore.kernel.org/r/20231018004300.GA3189%40ubuntu
-patch subject: [PATCH] staging: rts5208: Replace delay function.
-config: microblaze-allyesconfig (https://download.01.org/0day-ci/archive/20231024/202310240604.OZnfTcMT-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231024/202310240604.OZnfTcMT-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310240604.OZnfTcMT-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/staging/rts5208/sd.c: In function 'sd_change_phase':
->> drivers/staging/rts5208/sd.c:868:25: error: too few arguments to function 'usleep_range'
-     868 |                         usleep_range(50);
-         |                         ^~~~~~~~~~~~
-   In file included from drivers/staging/rts5208/rtsx.h:17,
-                    from drivers/staging/rts5208/sd.c:16:
-   include/linux/delay.h:66:20: note: declared here
-      66 | static inline void usleep_range(unsigned long min, unsigned long max)
-         |                    ^~~~~~~~~~~~
-   drivers/staging/rts5208/sd.c:880:25: error: too few arguments to function 'usleep_range'
-     880 |                         usleep_range(50);
-         |                         ^~~~~~~~~~~~
-   include/linux/delay.h:66:20: note: declared here
-      66 | static inline void usleep_range(unsigned long min, unsigned long max)
-         |                    ^~~~~~~~~~~~
-   drivers/staging/rts5208/sd.c:887:17: error: too few arguments to function 'usleep_range'
-     887 |                 usleep_range(100);
-         |                 ^~~~~~~~~~~~
-   include/linux/delay.h:66:20: note: declared here
-      66 | static inline void usleep_range(unsigned long min, unsigned long max)
-         |                    ^~~~~~~~~~~~
-   drivers/staging/rts5208/sd.c:921:17: error: too few arguments to function 'usleep_range'
-     921 |                 usleep_range(50);
-         |                 ^~~~~~~~~~~~
-   include/linux/delay.h:66:20: note: declared here
-      66 | static inline void usleep_range(unsigned long min, unsigned long max)
-         |                    ^~~~~~~~~~~~
-   drivers/staging/rts5208/sd.c: In function 'sd_wait_data_idle':
-   drivers/staging/rts5208/sd.c:1419:17: error: too few arguments to function 'usleep_range'
-    1419 |                 usleep_range(100);
-         |                 ^~~~~~~~~~~~
-   include/linux/delay.h:66:20: note: declared here
-      66 | static inline void usleep_range(unsigned long min, unsigned long max)
-         |                    ^~~~~~~~~~~~
-
-
-vim +/usleep_range +868 drivers/staging/rts5208/sd.c
-
-   814	
-   815	static int sd_change_phase(struct rtsx_chip *chip, u8 sample_point, u8 tune_dir)
-   816	{
-   817		struct sd_info *sd_card = &chip->sd_card;
-   818		u16 SD_VP_CTL, SD_DCMPS_CTL;
-   819		u8 val;
-   820		int retval;
-   821		bool ddr_rx = false;
-   822	
-   823		dev_dbg(rtsx_dev(chip), "%s (sample_point = %d, tune_dir = %d)\n",
-   824			__func__, sample_point, tune_dir);
-   825	
-   826		if (tune_dir == TUNE_RX) {
-   827			SD_VP_CTL = SD_VPRX_CTL;
-   828			SD_DCMPS_CTL = SD_DCMPS_RX_CTL;
-   829			if (CHK_SD_DDR50(sd_card))
-   830				ddr_rx = true;
-   831		} else {
-   832			SD_VP_CTL = SD_VPTX_CTL;
-   833			SD_DCMPS_CTL = SD_DCMPS_TX_CTL;
-   834		}
-   835	
-   836		if (chip->asic_code) {
-   837			retval = rtsx_write_register(chip, CLK_CTL, CHANGE_CLK,
-   838						     CHANGE_CLK);
-   839			if (retval)
-   840				return retval;
-   841			retval = rtsx_write_register(chip, SD_VP_CTL, 0x1F,
-   842						     sample_point);
-   843			if (retval)
-   844				return retval;
-   845			retval = rtsx_write_register(chip, SD_VPCLK0_CTL,
-   846						     PHASE_NOT_RESET, 0);
-   847			if (retval)
-   848				return retval;
-   849			retval = rtsx_write_register(chip, SD_VPCLK0_CTL,
-   850						     PHASE_NOT_RESET, PHASE_NOT_RESET);
-   851			if (retval)
-   852				return retval;
-   853			retval = rtsx_write_register(chip, CLK_CTL, CHANGE_CLK, 0);
-   854			if (retval)
-   855				return retval;
-   856		} else {
-   857			rtsx_read_register(chip, SD_VP_CTL, &val);
-   858			dev_dbg(rtsx_dev(chip), "SD_VP_CTL: 0x%x\n", val);
-   859			rtsx_read_register(chip, SD_DCMPS_CTL, &val);
-   860			dev_dbg(rtsx_dev(chip), "SD_DCMPS_CTL: 0x%x\n", val);
-   861	
-   862			if (ddr_rx) {
-   863				retval = rtsx_write_register(chip, SD_VP_CTL,
-   864							     PHASE_CHANGE,
-   865							     PHASE_CHANGE);
-   866				if (retval)
-   867					return retval;
- > 868				usleep_range(50);
-   869				retval = rtsx_write_register(chip, SD_VP_CTL, 0xFF,
-   870							     PHASE_CHANGE |
-   871							     PHASE_NOT_RESET |
-   872							     sample_point);
-   873				if (retval)
-   874					return retval;
-   875			} else {
-   876				retval = rtsx_write_register(chip, CLK_CTL,
-   877							     CHANGE_CLK, CHANGE_CLK);
-   878				if (retval)
-   879					return retval;
-   880				usleep_range(50);
-   881				retval = rtsx_write_register(chip, SD_VP_CTL, 0xFF,
-   882							     PHASE_NOT_RESET |
-   883							     sample_point);
-   884				if (retval)
-   885					return retval;
-   886			}
-   887			usleep_range(100);
-   888	
-   889			rtsx_init_cmd(chip);
-   890			rtsx_add_cmd(chip, WRITE_REG_CMD, SD_DCMPS_CTL, DCMPS_CHANGE,
-   891				     DCMPS_CHANGE);
-   892			rtsx_add_cmd(chip, CHECK_REG_CMD, SD_DCMPS_CTL,
-   893				     DCMPS_CHANGE_DONE, DCMPS_CHANGE_DONE);
-   894			retval = rtsx_send_cmd(chip, SD_CARD, 100);
-   895			if (retval != STATUS_SUCCESS)
-   896				goto fail;
-   897	
-   898			val = *rtsx_get_cmd_data(chip);
-   899			if (val & DCMPS_ERROR)
-   900				goto fail;
-   901	
-   902			if ((val & DCMPS_CURRENT_PHASE) != sample_point)
-   903				goto fail;
-   904	
-   905			retval = rtsx_write_register(chip, SD_DCMPS_CTL,
-   906						     DCMPS_CHANGE, 0);
-   907			if (retval)
-   908				return retval;
-   909			if (ddr_rx) {
-   910				retval = rtsx_write_register(chip, SD_VP_CTL,
-   911							     PHASE_CHANGE, 0);
-   912				if (retval)
-   913					return retval;
-   914			} else {
-   915				retval = rtsx_write_register(chip, CLK_CTL,
-   916							     CHANGE_CLK, 0);
-   917				if (retval)
-   918					return retval;
-   919			}
-   920	
-   921			usleep_range(50);
-   922		}
-   923	
-   924		retval = rtsx_write_register(chip, SD_CFG1, SD_ASYNC_FIFO_NOT_RST, 0);
-   925		if (retval)
-   926			return retval;
-   927	
-   928		return STATUS_SUCCESS;
-   929	
-   930	fail:
-   931		rtsx_read_register(chip, SD_VP_CTL, &val);
-   932		dev_dbg(rtsx_dev(chip), "SD_VP_CTL: 0x%x\n", val);
-   933		rtsx_read_register(chip, SD_DCMPS_CTL, &val);
-   934		dev_dbg(rtsx_dev(chip), "SD_DCMPS_CTL: 0x%x\n", val);
-   935	
-   936		rtsx_write_register(chip, SD_DCMPS_CTL, DCMPS_CHANGE, 0);
-   937		rtsx_write_register(chip, SD_VP_CTL, PHASE_CHANGE, 0);
-   938		mdelay(10);
-   939		sd_reset_dcm(chip, tune_dir);
-   940		return STATUS_FAIL;
-   941	}
-   942	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Bjorn
