@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A297D375B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E186B7D375C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbjJWNCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46884 "EHLO
+        id S230314AbjJWNCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 09:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjJWNCC (ORCPT
+        with ESMTP id S229939AbjJWNCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:02:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC878C4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=B2lHdII7y0t9EFQrBPYsBPbjRefoYBOVWqu3w2mnv70=; b=O1nHYnwtr7ojshj97P1daE4UEF
-        nb6CYnenT2Dp4PzgY1CYu/WsX40Oh/1fRNWVRJP/GQF47FhDSoHDzowlFVIpoY28GxYHoyooq62ox
-        zwlEbStLYVMTCk55e+ip/2VdpvtV/K4e4Vhx9QI/UCvPmseIfjKTWiHgNERgfSUe4z8Y1w4+aRX1x
-        BgfBESIhpyHHHfhQxxNObjKZc35se6y1c7tIlBFDb+nPoLElPHagD4voM8wN2I2OJTMzCtgjND/6O
-        sNaRdjXzcQ+BcPiQFgQ5uqsNvZlMZlekvzUuDdO305V5TUY6XEkyWxB1a0gf1gXCpRfWszttwCkgX
-        8W24FODA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1quuZ0-00DvI4-AA; Mon, 23 Oct 2023 13:01:46 +0000
-Date:   Mon, 23 Oct 2023 14:01:46 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     zhiguojiang <justinjiang@vivo.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-Subject: Re: [PATCH v2 1/2] mm:vmscan: the dirty folio in folio_list skip
- unmap
-Message-ID: <ZTZuui+0Ppe6cjgC@casper.infradead.org>
-References: <20231019131446.317-1-justinjiang@vivo.com>
- <20231019131446.317-2-justinjiang@vivo.com>
- <2d847d76-2e33-4296-992f-1a6d00c66ff5@redhat.com>
- <02e73251-33ff-4632-9d2c-bc268f397202@vivo.com>
- <ZTH+7ZJyPnyZOe7V@casper.infradead.org>
- <380bc753-5ee7-4bc7-a76e-a804d5179d87@vivo.com>
- <ZTZlR2qJivLIdgsB@casper.infradead.org>
- <4eacc9e4-65ba-4fd9-bd30-575b0f23b63e@vivo.com>
+        Mon, 23 Oct 2023 09:02:19 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4DA102;
+        Mon, 23 Oct 2023 06:02:16 -0700 (PDT)
+Received: from localhost (mdns.lwn.net [45.79.72.68])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 6A463490;
+        Mon, 23 Oct 2023 13:02:16 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6A463490
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1698066136; bh=gaeQEn/BNoqbIo1EelOZC9oVdf03Fmx8/aWuQgb7BVk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=U9KNfo2t+Ycc8KQVDkSt9Qtvk5/cwwf4pcuL9okWRiz4vb+RR3BfATj0XAkI7c522
+         V+AU3sTA4cw3A7rqEU5SFmDQz3X/G8PVLRuDjf9sFCVi9MGEvJYX/3shNHlz7P++u1
+         wRJhLl5jUylGN+JMxc7gpK9vf3aWq6ebniWpDmyxWxwQ3rVbZwIxS4Sh80HP5npx9Y
+         fhJdPuJZ6bkfqIPmePOPoZCpaOxlwT2BvOhvKtJrNeRFkyHost9CMYOU4XDSx9KFyG
+         vmbLe0X8DVZ0IB35OIUSNJoa1upUNp4tSfL2VV1GrNHdn4Y2HeilSqQg/mXKc32lk5
+         dGP/fdqKO4BXg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Hu Haowen <2023002089@link.tyut.edu.cn>
+Cc:     Hu Haowen <2023002089@link.tyut.edu.cn>, src.res.211@gmail.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs/zh_TW: replace my email address
+In-Reply-To: <871qdld3ge.fsf@intel.com>
+References: <20231012130008.102174-1-2023002089@link.tyut.edu.cn>
+ <87lebukrs2.fsf@meer.lwn.net> <87cyx6krb2.fsf@meer.lwn.net>
+ <871qdld3ge.fsf@intel.com>
+Date:   Mon, 23 Oct 2023 07:02:15 -0600
+Message-ID: <87a5s9jxuw.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4eacc9e4-65ba-4fd9-bd30-575b0f23b63e@vivo.com>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 08:44:55PM +0800, zhiguojiang wrote:
-> 在 2023/10/23 20:21, Matthew Wilcox 写道:
-> > On Mon, Oct 23, 2023 at 04:07:28PM +0800, zhiguojiang wrote:
-> > > > Are you seeing measurable changes for any workloads?  It certainly seems
-> > > > like you should, but it would help if you chose a test from mmtests and
-> > > > showed how performance changed on your system.
-> > > In one mmtest, the max times for a invalid recyling of a folio_list dirty
-> > > folio that does not support pageout and has been activated in
-> > > shrink_folio_list() are: cost=51us, exe=2365us.
-> > > 
-> > > Calculate according to this formula: dirty_cost / total_cost * 100%, the
-> > > recyling efficiency of dirty folios can be improved 53.13%、82.95%.
-> > > 
-> > > So this patch can optimize shrink efficiency and reduce the workload of
-> > > kswapd to a certain extent.
-> > > 
-> > > kswapd0-96      (     96) [005] .....   387.218548:
-> > > mm_vmscan_lru_shrink_inactive: [Justin] nid 0 nr_scanned 32 nr_taken 32
-> > > nr_reclaimed 31 nr_dirty  1 nr_unqueued_dirty  1 nr_writeback 0
-> > > nr_activate[1]  1 nr_ref_keep  0 f RECLAIM_WB_FILE|RECLAIM_WB_ASYNC
-> > > total_cost 96 total_exe 2365 dirty_cost 51 total_exe 2365
-> > > 
-> > > kswapd0-96      (     96) [006] .....   412.822532:
-> > > mm_vmscan_lru_shrink_inactive: [Justin] nid 0 nr_scanned 32 nr_taken 32
-> > > nr_reclaimed  0 nr_dirty 32 nr_unqueued_dirty 32 nr_writeback 0
-> > > nr_activate[1] 19 nr_ref_keep 13 f RECLAIM_WB_FILE|RECLAIM_WB_ASYNC
-> > > total_cost 88 total_exe 605  dirty_cost 73 total_exe 605
-> > I appreciate that you can put probes in and determine the cost, but do
-> > you see improvements for a real workload?  Like doing a kernel compile
-> > -- does it speed up at all?
-> Can you help share a method for testing thread workload, like kswapd?
+Jani Nikula <jani.nikula@linux.intel.com> writes:
 
-Something dirt simple like 'time make -j8'.
+> On Sun, 22 Oct 2023, Jonathan Corbet <corbet@lwn.net> wrote:
+>> Jonathan Corbet <corbet@lwn.net> writes:
+>>
+>>> Hu Haowen <2023002089@link.tyut.edu.cn> writes:
+>>>
+>>>> The Gmail address will not be used often from now on, and replace it
+>>>> with the email which is more frequently accessed by myself.
+>>>>
+>>>> Signed-off-by: Hu Haowen <2023002089@link.tyut.edu.cn>
+>>>
+>>> Applied.
+>>
+>> Actually, no:
+>>
+>> Documentation/translations/zh_TW/dev-tools/sparse.rst:10: WARNING: Title underline too short.
+>>
+>> Traditional Chinese maintainer: Hu Haowen <2023002089@link.tyut.edu.cn>
+>> ---------------------------------------------------------------------
+>
+> My question is, why do the documents have inline
+> author/maintainer/translator information in them?
+>
+> We have git log and MAINTAINERS for all of that?
+
+Yeah, I've wondered about that too...especially since this person last
+changed all of those email addresses ... in July.  I chose not to start
+that particular discussion, but simply removing those lines would be a
+better change, IMO.
+
+Thanks,
+
+jon
