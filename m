@@ -2,149 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC9A7D2937
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 06:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126E67D294E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 06:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjJWEDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 00:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
+        id S229488AbjJWEhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 00:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJWEDp (ORCPT
+        with ESMTP id S229450AbjJWEhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 00:03:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5670B1A4;
-        Sun, 22 Oct 2023 21:03:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698033823; x=1729569823;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/lm+N1ZG0HevUhMCF+FCwdTjUSlpsEdKmmGgQvx6BS8=;
-  b=dDjOIOAYvDl31ejkZRuXAdsPEk+crkRfAGZ3BTZ8r7oK8MoeQHsW3r/d
-   mCZSXtAg+hMp9U5kceDoLxAHH4EyK7/DU9XKbh2tHV1YLsyewC7nPrAE5
-   BjN/5RLjwovhbqM5bNPzluz6i+u5pxifzgPxtWAo5ec8LWnN/7bJMeCbd
-   31QSgjSN3zOyp8SEE5uPD9tEtWFjVNP+nrEUOAryolwCd8ZY7+iJNLTVB
-   LQzY8KgK2YRvOUSE9aCKnaj+mqzsqJojQgeOYWxdqvPdYmxShiMUjZCvW
-   Kmy9TVmO8KZvWttQKpi2mYNxpX1ZAvdWaKPiqaesIX6tiw+msnPsL+0UY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="377135236"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="377135236"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 21:03:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="761617295"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="761617295"
-Received: from zhiquan-linux-dev.bj.intel.com ([10.238.156.102])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Oct 2023 21:03:39 -0700
-From:   Zhiquan Li <zhiquan1.li@intel.com>
-To:     x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        bp@alien8.de, mingo@kernel.org, tony.luck@intel.com,
-        naoya.horiguchi@nec.com
-Cc:     zhiquan1.li@intel.com, Youquan Song <youquan.song@intel.com>
-Subject: [PATCH v4] x86/mce: Set PG_hwpoison page flag to avoid the capture kernel panic
-Date:   Mon, 23 Oct 2023 12:22:37 +0800
-Message-Id: <20231023042237.173290-1-zhiquan1.li@intel.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 23 Oct 2023 00:37:15 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C465CFC;
+        Sun, 22 Oct 2023 21:37:12 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c9e072472bso17039185ad.2;
+        Sun, 22 Oct 2023 21:37:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698035832; x=1698640632; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HbBRX2jJlyHvVSg6fxWudjXJuNB/hXK9P8KU1NFtc+8=;
+        b=EqgrGjZD94+rtwv9HELrsMIKAfiy9CUsZAVaJlXEC6dwq8lamZYuClFVRbhV+gQn/o
+         32SeXJA+XtEWePFjMumiNYS5cSs2OVwpGKXnZ7RUS0Ec1xxZRIp3YocVWtt2y/FMtc9B
+         7i2/a/mfMKxET8qUlt/Ge/5frcLbbz8qEzPwSgzCf8U+/B7OiJ8FrDNU+jyAlEDtPe2d
+         7/MveoTY5CW9fPf2/3P0l3bK3XcrJ9GBRlcvKPUDnMHoqv2onoh2N38ClVM0riMqEozS
+         b5AMlVtD92Vxa0c5s728yStYeRov35gxv4kbCbWCD63p4MFepOzPRKqQtbPiUTAFqxhS
+         6BcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698035832; x=1698640632;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HbBRX2jJlyHvVSg6fxWudjXJuNB/hXK9P8KU1NFtc+8=;
+        b=PxDrlCSbAgFLmp21cYMPAD8AaLjESQXBiuCrXEBYwTwjOLJ20HFU++2uSyl7e3xFZT
+         6BSsYDJeCw73R8TJRITGyd834UbVMkCdIua4k9qD5SV1TxMB7kmThXyAFqvF7TkeAHzc
+         azdCJr7qtBWQyI0dKnWPmp3wCNVksUN36/OyOrbtuyUDfOXmhjrmCS/3ed92CUcdweHZ
+         fmog4Khkpb45P5ZIvZDlkZ5IAmIn8W4I1DYZe6i7JVa2Tqp3K6E8dY9ZZjR221kmy/eW
+         pO51ZW0V2EAJOj6mr8rJHpcHc62LLC+WVLU/1ZFZygK7e3a3ZEH2MVqh36SFQgod8RoZ
+         6OsA==
+X-Gm-Message-State: AOJu0Ywc+WsiNuH7hRuRgTfzykeGTRO+bcMo6YHYlylRpORCA00dpbhZ
+        Q0Xwxd19tmxFZ0mAePU5lN3MduFn16k=
+X-Google-Smtp-Source: AGHT+IG3Cv1PrEpfwdKo9dnDJh83E0rbwK+l6VxU2v/xHO0SRF8V3dClgsiiJ0IsXHwuiM7cS71bQg==
+X-Received: by 2002:a17:902:7407:b0:1ca:86db:1d31 with SMTP id g7-20020a170902740700b001ca86db1d31mr6216447pll.7.1698035831964;
+        Sun, 22 Oct 2023 21:37:11 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:40e3:3912:b22a:135e])
+        by smtp.gmail.com with ESMTPSA id a8-20020a170902ecc800b001b8a2edab6asm5097264plh.244.2023.10.22.21.37.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Oct 2023 21:37:11 -0700 (PDT)
+Date:   Sun, 22 Oct 2023 21:37:08 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     linux-input@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Jeff LaBundy <jeff@labundy.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 2/4] Input: add core support for Goodix Berlin
+ Touchscreen IC
+Message-ID: <ZTX4dPa3CxZacDph@google.com>
+References: <20231021-topic-goodix-berlin-upstream-initial-v9-0-13fb4e887156@linaro.org>
+ <20231021-topic-goodix-berlin-upstream-initial-v9-2-13fb4e887156@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231021-topic-goodix-berlin-upstream-initial-v9-2-13fb4e887156@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory errors don't happen very often, especially the severity is fatal.
-However, in large-scale scenarios, such as data centers, it might still
-happen.  When there is a fatal machine check Linux calls mce_panic()
-without checking to see if bad data at some memory address was reported
-in the machine check banks.
+Hi Neil,
 
-If kexec is enabled, check for memory errors and mark the page as
-poisoned so that the kexec'ed kernel can avoid accessing the page.
+On Sat, Oct 21, 2023 at 01:09:24PM +0200, Neil Armstrong wrote:
+> +static int goodix_berlin_get_ic_info(struct goodix_berlin_core *cd)
+> +{
+> +	u8 afe_data[GOODIX_BERLIN_IC_INFO_MAX_LEN];
 
-Co-developed-by: Youquan Song <youquan.song@intel.com>
-Signed-off-by: Youquan Song <youquan.song@intel.com>
-Signed-off-by: Zhiquan Li <zhiquan1.li@intel.com>
-Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Cc: Borislav Petkov <bp@alien8.de>
+You probably already saw the kernel test robot message, I think we
+should allocate this buffer in the heap (and free it once its no longer
+needed).
 
----
+> +	__le16 length_raw;
+> +	u16 length;
+> +	int error;
+> +
+> +	error = regmap_raw_read(cd->regmap, GOODIX_BERLIN_IC_INFO_ADDR,
+> +				&length_raw, sizeof(length_raw));
+> +	if (error) {
+> +		dev_info(cd->dev, "failed get ic info length, %d\n", error);
+> +		return error;
+> +	}
+> +
+> +	length = le16_to_cpu(length_raw);
+> +	if (length >= GOODIX_BERLIN_IC_INFO_MAX_LEN) {
+> +		dev_info(cd->dev, "invalid ic info length %d\n", length);
+> +		return -EINVAL;
+> +	}
+> +
+> +	error = regmap_raw_read(cd->regmap, GOODIX_BERLIN_IC_INFO_ADDR,
+> +				afe_data, length);
+> +	if (error) {
+> +		dev_info(cd->dev, "failed get ic info data, %d\n", error);
+> +		return error;
+> +	}
+> +
+> +	/* check whether the data is valid (ex. bus default values) */
+> +	if (goodix_berlin_is_dummy_data(cd, (const uint8_t *)afe_data, length)) {
 
-V3: https://lore.kernel.org/all/20231014051754.3759099-1-zhiquan1.li@intel.com/
+This cast is not needed.
 
-Changes since V3:
-- Rebased to v6.6-rc7.
-- Added the check if kexec is enabled highlighted by Boris.
-- Re-wrote the commit message suggested by Tony.
+> +		dev_err(cd->dev, "fw info data invalid\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!goodix_berlin_checksum_valid((const uint8_t *)afe_data, length)) {
 
-V2: https://lore.kernel.org/all/20230914030539.1622477-1-zhiquan1.li@intel.com/
+This cast is not needed either.
 
-Changes since V2:
-- Rebased to v6.6-rc5.
-- Explained full scenario in commit message per Boris's suggestion.
-- Included Ingo's fixes.
-  Link: https://lore.kernel.org/all/ZRsUpM%2FXtPAE50Rm@gmail.com/
+> +		dev_info(cd->dev, "fw info checksum error\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	error = goodix_berlin_convert_ic_info(cd, afe_data, length);
+> +	if (error)
+> +		return error;
+> +
+> +	/* check some key info */
+> +	if (!cd->touch_data_addr) {
+> +		dev_err(cd->dev, "touch_data_addr is null\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void goodix_berlin_parse_finger(struct goodix_berlin_core *cd,
+> +				       const void *buf, int touch_num)
+> +{
+> +	const struct goodix_berlin_touch_data *touch_data = buf;
+> +	int i;
+> +
+> +	/* Check for data validity */
+> +	for (i = 0; i < touch_num; i++) {
+> +		unsigned int id;
+> +
+> +		id = FIELD_GET(GOODIX_BERLIN_TOUCH_ID_MASK, touch_data[i].id);
+> +
+> +		if (id >= GOODIX_BERLIN_MAX_TOUCH) {
+> +			dev_warn(cd->dev, "invalid finger id %d\n", id);
+> +			return;
 
-V1: https://lore.kernel.org/all/20230127015030.30074-1-tony.luck@intel.com/
+Is it important to abort entire packet if one if the slots has incorrect
+data? Can we simply skip over these contacts?
 
-Changes since V1:
-- Revised the commit message as per Naoya's suggestion.
-- Replaced "TODO" comment in code with comments based on mailing list
-  discussion on the lack of value in covering other page types.
-- Added the tag from Naoya.
-  Link: https://lore.kernel.org/all/20230327083739.GA956278@hori.linux.bs1.fc.nec.co.jp/
----
- arch/x86/kernel/cpu/mce/core.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+> +		}
+> +	}
+> +
+> +	/* Report finger touches */
+> +	for (i = 0; i < touch_num; i++) {
+> +		input_mt_slot(cd->input_dev,
+> +			      FIELD_GET(GOODIX_BERLIN_TOUCH_ID_MASK,
+> +					touch_data[i].id));
+> +		input_mt_report_slot_state(cd->input_dev, MT_TOOL_FINGER, true);
+> +
+> +		touchscreen_report_pos(cd->input_dev, &cd->props,
+> +				       __le16_to_cpu(touch_data[i].x),
+> +				       __le16_to_cpu(touch_data[i].y),
+> +				       true);
+> +		input_report_abs(cd->input_dev, ABS_MT_TOUCH_MAJOR,
+> +				 __le16_to_cpu(touch_data[i].w));
+> +	}
+> +
+> +	input_mt_sync_frame(cd->input_dev);
+> +	input_sync(cd->input_dev);
+> +}
+> +
+> +static void goodix_berlin_touch_handler(struct goodix_berlin_core *cd,
+> +					const void *pre_buf, u32 pre_buf_len)
+> +{
+> +	static u8 buffer[GOODIX_BERLIN_IRQ_READ_LEN(GOODIX_BERLIN_MAX_TOUCH)];
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 6f35f724cc14..930b1120009b 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -44,6 +44,7 @@
- #include <linux/sync_core.h>
- #include <linux/task_work.h>
- #include <linux/hardirq.h>
-+#include <linux/kexec.h>
- 
- #include <asm/intel-family.h>
- #include <asm/processor.h>
-@@ -233,6 +234,7 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
- 	struct llist_node *pending;
- 	struct mce_evt_llist *l;
- 	int apei_err = 0;
-+	struct page *p;
- 
- 	/*
- 	 * Allow instrumentation around external facilities usage. Not that it
-@@ -286,6 +288,19 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
- 	if (!fake_panic) {
- 		if (panic_timeout == 0)
- 			panic_timeout = mca_cfg.panic_timeout;
-+		if (kexec_crash_loaded()) {
-+			/*
-+			 * Kdump can exclude the poisoned page to avoid touching the error
-+			 * page again, the prerequisite is that the PG_hwpoison page flag
-+			 * is set.  However, for some MCE fatal error cases, there is no
-+			 * opportunity to queue a task for calling memory_failure(), and as
-+			 * a result, the capture kernel panics.  So mark the page as
-+			 * poisoned before kernel panic() for MCE.
-+			 */
-+			p = pfn_to_online_page(final->addr >> PAGE_SHIFT);
-+			if (final && (final->status & MCI_STATUS_ADDRV) && p)
-+				SetPageHWPoison(p);
-+		}
- 		panic(msg);
- 	} else
- 		pr_emerg(HW_ERR "Fake kernel panic: %s\n", msg);
+No, please no static data. The drivers should be ready to handle more
+than one device on a system. If the buffer is large-ish put it into
+goodix_berlin_core.
+
+
+> +	u8 point_type, touch_num;
+> +	int error;
+> +
+> +	/* copy pre-data to buffer */
+> +	memcpy(buffer, pre_buf, pre_buf_len);
+> +
+> +	touch_num = FIELD_GET(GOODIX_BERLIN_TOUCH_COUNT_MASK,
+> +			      buffer[GOODIX_BERLIN_REQUEST_TYPE_OFFSET]);
+> +
+> +	if (touch_num > GOODIX_BERLIN_MAX_TOUCH) {
+> +		dev_warn(cd->dev, "invalid touch num %d\n", touch_num);
+> +		return;
+> +	}
+> +
+> +	if (touch_num) {
+> +		/* read more data if more than 2 touch events */
+> +		if (unlikely(touch_num > 2)) {
+> +			error = regmap_raw_read(cd->regmap,
+> +						cd->touch_data_addr + pre_buf_len,
+> +						&buffer[pre_buf_len],
+> +						(touch_num - 2) * GOODIX_BERLIN_BYTES_PER_POINT);
+> +			if (error) {
+> +				dev_err_ratelimited(cd->dev, "failed to get touch data, %d\n",
+> +						    error);
+> +				return;
+> +			}
+> +		}
+> +
+> +		point_type = FIELD_GET(GOODIX_BERLIN_POINT_TYPE_MASK,
+> +				       buffer[GOODIX_BERLIN_IRQ_EVENT_HEAD_LEN]);
+> +
+> +		if (point_type == GOODIX_BERLIN_POINT_TYPE_STYLUS ||
+> +		    point_type == GOODIX_BERLIN_POINT_TYPE_STYLUS_HOVER) {
+> +			dev_warn_once(cd->dev, "Stylus event type not handled\n");
+> +			return;
+> +		}
+> +
+> +		if (!goodix_berlin_checksum_valid(&buffer[GOODIX_BERLIN_IRQ_EVENT_HEAD_LEN],
+> +						  touch_num * GOODIX_BERLIN_BYTES_PER_POINT + 2)) {
+> +			dev_err(cd->dev, "touch data checksum error, data: %*ph\n",
+> +				touch_num * GOODIX_BERLIN_BYTES_PER_POINT + 2,
+> +				&buffer[GOODIX_BERLIN_IRQ_EVENT_HEAD_LEN]);
+> +			return;
+> +		}
+> +	}
+> +
+> +	goodix_berlin_parse_finger(cd, &buffer[GOODIX_BERLIN_IRQ_EVENT_HEAD_LEN],
+> +				   touch_num);
+> +}
+> +
+> +static int goodix_berlin_request_handle_reset(struct goodix_berlin_core *cd)
+> +{
+> +	gpiod_set_value(cd->reset_gpio, 1);
+> +	usleep_range(2000, 2100);
+> +	gpiod_set_value(cd->reset_gpio, 0);
+> +
+> +	msleep(GOODIX_BERLIN_NORMAL_RESET_DELAY_MS);
+
+The reset line handling is optional, we should skip waits if there is
+no GPIO defined for the board. 
+
+> +
+> +	return 0;
+> +}
+> +
+> +static irqreturn_t goodix_berlin_threadirq_func(int irq, void *data)
+> +{
+> +	struct goodix_berlin_core *cd = data;
+> +	u8 buf[GOODIX_BERLIN_IRQ_READ_LEN(2)];
+> +	u8 event_status;
+> +	int error;
+> +
+> +	/* First, read buffer with space for 2 touch events */
+> +	error = regmap_raw_read(cd->regmap, cd->touch_data_addr, buf,
+> +				GOODIX_BERLIN_IRQ_READ_LEN(2));
+> +	if (error) {
+> +		dev_err_ratelimited(cd->dev, "failed get event head data, %d\n", error);
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	if (buf[GOODIX_BERLIN_STATUS_OFFSET] == 0)
+> +		return IRQ_HANDLED;
+> +
+> +	if (!goodix_berlin_checksum_valid(buf, GOODIX_BERLIN_IRQ_EVENT_HEAD_LEN)) {
+> +		dev_warn_ratelimited(cd->dev, "touch head checksum err : %*ph\n",
+> +				     GOODIX_BERLIN_IRQ_EVENT_HEAD_LEN, buf);
+> +		return IRQ_HANDLED;
+> +	}
+> +
+> +	event_status = buf[GOODIX_BERLIN_STATUS_OFFSET];
+> +
+> +	if (event_status & GOODIX_BERLIN_TOUCH_EVENT)
+> +		goodix_berlin_touch_handler(cd, buf, GOODIX_BERLIN_IRQ_READ_LEN(2));
+> +
+> +	if (event_status & GOODIX_BERLIN_REQUEST_EVENT) {
+> +		switch (buf[GOODIX_BERLIN_REQUEST_TYPE_OFFSET]) {
+> +		case GOODIX_BERLIN_REQUEST_CODE_RESET:
+> +			goodix_berlin_request_handle_reset(cd);
+> +			break;
+> +
+> +		default:
+> +			dev_warn(cd->dev, "unsupported request code 0x%x\n",
+> +				 buf[GOODIX_BERLIN_REQUEST_TYPE_OFFSET]);
+> +		}
+> +	}
+> +
+> +	/* Clear up status field */
+> +	regmap_write(cd->regmap, cd->touch_data_addr, 0);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int goodix_berlin_input_dev_config(struct goodix_berlin_core *cd,
+> +					  const struct input_id *id)
+> +{
+> +	struct input_dev *input_dev;
+> +	int error;
+> +
+> +	input_dev = devm_input_allocate_device(cd->dev);
+> +	if (!input_dev)
+> +		return -ENOMEM;
+> +
+> +	cd->input_dev = input_dev;
+> +	input_set_drvdata(input_dev, cd);
+> +
+> +	input_dev->name = "Goodix Berlin Capacitive TouchScreen";
+> +	input_dev->phys = "input/ts";
+> +
+> +	input_dev->id = *id;
+> +
+> +	input_set_abs_params(cd->input_dev, ABS_MT_POSITION_X, 0, SZ_64K - 1, 0, 0);
+> +	input_set_abs_params(cd->input_dev, ABS_MT_POSITION_Y, 0, SZ_64K - 1, 0, 0);
+> +	input_set_abs_params(cd->input_dev, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
+> +
+> +	touchscreen_parse_properties(cd->input_dev, true, &cd->props);
+> +
+> +	error = input_mt_init_slots(cd->input_dev, GOODIX_BERLIN_MAX_TOUCH,
+> +				    INPUT_MT_DIRECT | INPUT_MT_DROP_UNUSED);
+> +	if (error)
+> +		return error;
+> +
+> +	return input_register_device(cd->input_dev);
+
+Please in functions with multiple possible failure paths use format
+
+	error = op(...);
+	if (error)
+		return error;
+
+	return 0;
+
+Thanks.
+
 -- 
-2.25.1
-
+Dmitry
