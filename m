@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3247D29C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 07:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5735F7D29BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 07:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbjJWFtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 01:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50212 "EHLO
+        id S229578AbjJWFr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 01:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjJWFtR (ORCPT
+        with ESMTP id S229450AbjJWFr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 01:49:17 -0400
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14ACED65;
-        Sun, 22 Oct 2023 22:49:10 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Vudok89_1698040147;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vudok89_1698040147)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Oct 2023 13:49:08 +0800
-Message-ID: <1698040004.5365264-4-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH] virtio_ring: add an error code check in virtqueue_resize
-Date:   Mon, 23 Oct 2023 13:46:44 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Su Hui <suhui@nfschina.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <20231020092320.209234-1-suhui@nfschina.com>
- <20231020053047-mutt-send-email-mst@kernel.org>
- <1697794601.5857713-2-xuanzhuo@linux.alibaba.com>
- <20231020054140-mutt-send-email-mst@kernel.org>
- <1697795422.0986886-1-xuanzhuo@linux.alibaba.com>
- <20231020055943-mutt-send-email-mst@kernel.org>
- <1698028017.8052797-1-xuanzhuo@linux.alibaba.com>
- <d4aa3f76-3e08-a852-a948-b88226a37fdd@nfschina.com>
- <1698029596.5404413-3-xuanzhuo@linux.alibaba.com>
- <46aee820-6c01-ed8a-613b-5c57258d749e@nfschina.com>
-In-Reply-To: <46aee820-6c01-ed8a-613b-5c57258d749e@nfschina.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Mon, 23 Oct 2023 01:47:26 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA20D5D;
+        Sun, 22 Oct 2023 22:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698040042;
+        bh=iJafEpyiFghwHa5AZqZW4zZtxv8CEENlEv9PKlWssUg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tfnrr3jsn1axBZ2dZgdsmepmqvXtaUpU/vvCOGnkAzKgzq65hvv7DxoeuvnKxuUsY
+         FCpEtEXkZncMYpIMzHoVySvgxx0D3rX3QXPE9uYZHXMa+RBU+AqZ4D56qF++Ha1Tz4
+         Em0mzSxrs3Va9u0N/YueSv6NjRjded+EN6bHKVdBVVBVR/bvZgUiueWVhbdSF192PV
+         VJxkgQee5LzlCoUz6xjtwpwLnpuHitsLUh+Ien5PfY4JGzxMe6EZQW4iVu+/SBElkc
+         DmQwjux/JcDE5WPjRGIsa2TcaflH5HpxTsLf7KVEo1RNiacOyht9vJ6+bJgNqZqpvx
+         oOzNqhZ4mwoKA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SDPNB2K8hz4wp0;
+        Mon, 23 Oct 2023 16:47:22 +1100 (AEDT)
+Date:   Mon, 23 Oct 2023 16:47:21 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the iommufd tree
+Message-ID: <20231023164721.1cb43dd6@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Ilgvcv_2ajYK1GtbNBvqEFm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 11:06:48 +0800, Su Hui <suhui@nfschina.com> wrote:
->
-> On 2023/10/23 10:53, Xuan Zhuo wrote:
-> > On Mon, 23 Oct 2023 10:51:59 +0800, Su Hui <suhui@nfschina.com> wrote:
-> >> On 2023/10/23 10:26, Xuan Zhuo wrote:
-> >>>>>> Well, what are the cases where it can happen practically?
-> >>>>> Device error. Such as vp_active_vq()
-> >>>>>
-> >>>>> Thanks.
-> >>>> Hmm interesting. OK. But do callers know to recover?
-> >>> No.
-> >>>
-> >>> So I think WARN + broken is suitable.
-> >>>
-> >>> Thanks.
-> >> Sorry for the late, is the following code okay?
-> >>
-> >> @@ -2739,7 +2739,7 @@ int virtqueue_resize(struct virtqueue *_vq, u32 num,
-> >>                        void (*recycle)(struct virtqueue *vq, void *buf))
-> >>    {
-> >>           struct vring_virtqueue *vq = to_vvq(_vq);
-> >> -       int err;
-> >> +       int err, err_reset;
-> >>
-> >>           if (num > vq->vq.num_max)
-> >>                   return -E2BIG;
-> >> @@ -2759,7 +2759,15 @@ int virtqueue_resize(struct virtqueue *_vq, u32 num,
-> >>           else
-> >>                   err = virtqueue_resize_split(_vq, num);
-> >>
-> >> -       return virtqueue_enable_after_reset(_vq);
-> >> +       err_reset = virtqueue_enable_after_reset(_vq);
-> >> +
-> >> +       if (err) {
-> > No err.
-> >
-> > err is not important.
-> > You can remove that.
->
-> Emm, I'm a little confused that which code should I remove ?
+--Sig_/Ilgvcv_2ajYK1GtbNBvqEFm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-like this:
-	if (vq->packed_ring)
-		virtqueue_resize_packed(_vq, num);
-	else
-		virtqueue_resize_split(_vq, num);
+After merging the iommufd tree, today's linux-next build (htmldocs)
+produced these warnings:
 
-And we should set broken and warn inside virtqueue_enable_after_reset()?
+include/uapi/linux/iommufd.h:433: warning: expecting prototype for enum iom=
+mufd_hw_info_capabilities. Prototype was for enum iommufd_hw_capabilities i=
+nstead
+include/uapi/linux/iommufd.h:497: warning: Function parameter or member '__=
+reserved' not described in 'iommu_hwpt_set_dirty_tracking'
+include/uapi/linux/iommufd.h:512: warning: expecting prototype for enum iom=
+mufd_get_dirty_bitmap_flags. Prototype was for enum iommufd_hwpt_get_dirty_=
+bitmap_flags instead
+include/uapi/linux/iommufd.h:542: warning: Function parameter or member '__=
+reserved' not described in 'iommu_hwpt_get_dirty_bitmap'
 
-Thanks.
+Introduced by commits
 
+  f87900f25050 ("iommufd: Add a flag to skip clearing of IOPTE dirty")
+  d2b3a545cdcc ("iommufd: Add capabilities to IOMMU_GET_HW_INFO")
+  1337d793ea25 ("iommufd: Add IOMMU_HWPT_GET_DIRTY_BITMAP")
+  ccccda6d18bd ("iommufd: Add IOMMU_HWPT_SET_DIRTY_TRACKING")
 
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/Ilgvcv_2ajYK1GtbNBvqEFm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
->
-> > Thanks.
-> >
-> >
-> >> +               vq->broken = true;
-> >> +               WARN_ON(err_reset);
-> >> +               return err;
-> >> +       }
-> >> +
-> >> +       return err_reset;
-> >>    }
-> >>
-> >> Thanks.
-> >> Su Hui
-> >>
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU2COkACgkQAVBC80lX
+0GzFoggAjTVp+MMD+HeiI6MsD4B1T69/ZkjrIo2bItyqqLi4e++AjYfz/fEPrvJi
+JxvuD9owJDkz0FatvUXsqQDgam8phW4jbTDwOyDf1trAK04wlW0Pb3zbEPppbJxi
+P4Cw/Mriye6VnbPNZRdO3eGF4BGoBxo4fpfsIiZpYNj0xt5NF014cdN9W6aGYLw+
+3tgHT+V4J4QYFSKdo+BYevyQo1P8UlDhURY+QSliKWbihEU5C2V3IN7NhuQVfU92
+tM9oEz7e8LY2azpW5JdH4BMQeSydRHtauoQUQJlC7kKOJ9SRW2n6Xjg+HB9hOU27
+YhHkz/KrnAPWzgSwtVlPomuNLiTJ6A==
+=69PI
+-----END PGP SIGNATURE-----
+
+--Sig_/Ilgvcv_2ajYK1GtbNBvqEFm--
