@@ -2,506 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1017D3B22
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24857D3B25
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbjJWPpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51636 "EHLO
+        id S229989AbjJWPpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbjJWPpI (ORCPT
+        with ESMTP id S232176AbjJWPpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:45:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE5D101
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:45:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97D76C433C9;
-        Mon, 23 Oct 2023 15:45:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698075905;
-        bh=sXrsDJWjDr+5qRRavSTLTE0/x+9rTRBhGpf1Xk2Ww+8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=HuQtYY6Vycet+u+PiKpYW+UaiDzfDgLNQZLmLWXphiNISrsqXF8sJx7JvsMptN9/v
-         2IlltV6NeOfklFSeuGhDv/QsHFpXOu1BtaY8QGFHa8H8fmT/1ZYpp/5T78ATQmno1w
-         wTUv4cb3vlR2AgMzgesDM6DS8HmQUJ6w1cduDf4QH8lfeS72ff7dbrF/p35QBjfqeW
-         Hmo4+62OtOFD4+RV6EOOElFMhD8mf9lwepXmhI3spxlBVVzqF5aRfcPdBQFypUf6ZC
-         BgCxTvGAB8aJSBlx9BMxqaLGzealZDOcqJhHKmhS7BE70hdwFCb4pEiS/2ZNRX72NZ
-         GpaHo7KfY38Dg==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v10 00/15] Linux RISC-V AIA Support
-In-Reply-To: <CAK9=C2UN4+HcNfM+JKDH=ERT7WqLgf7DXck=pSZjuCw0YN87Og@mail.gmail.com>
-References: <20231003044403.1974628-1-apatel@ventanamicro.com>
- <87o7gu7mo9.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2XMzzYri8TNBASKqc-VmJWjGdoOHy-fczksfkU0ahhgOQ@mail.gmail.com>
- <87h6mlbryy.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2VE9-L49tMKHjSTGDSpOFZGZw14LtD1V4GMXGiVQ-A=ng@mail.gmail.com>
- <87o7gtpdb4.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2WVkbDtz9uZTNjEcJzKQ44cHLR=+nSVZZmSptzL_U4NNA@mail.gmail.com>
- <87v8b1i72s.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2X__tYk21F+o2GmKDMzdnZf8TXJn=baO248ao8as47vnA@mail.gmail.com>
- <875y31cc2y.fsf@all.your.base.are.belong.to.us>
- <87jzrdx1mm.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2U2FEoAPgoxibsbPsjF+d+APWFuJtEL43=xxwnwM4L1ZA@mail.gmail.com>
- <87pm15l9fd.fsf@all.your.base.are.belong.to.us>
- <CAK9=C2UN4+HcNfM+JKDH=ERT7WqLgf7DXck=pSZjuCw0YN87Og@mail.gmail.com>
-Date:   Mon, 23 Oct 2023 17:45:01 +0200
-Message-ID: <87v8axqr5u.fsf@all.your.base.are.belong.to.us>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Mon, 23 Oct 2023 11:45:20 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2043.outbound.protection.outlook.com [40.107.93.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BDB127;
+        Mon, 23 Oct 2023 08:45:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iJaX5bXRnfonv2sS/DxMHXPxOIxa9Gxteo+q0N7/Q8AhJZzZw7sNB1BLPHrHU6BV44JF5XL4geKp5+KuCgnv0WXaRZKosnqmgo1SKIV1WimacXiUrTPXtrJOSaWDMm23VuGhChuseU4eY67Lxjolzb4ytA/9Nn4yKQmnU60rQ2bbqdbOlSaOT/2TG2So9bAoENeHUpb/gIVBqFpbnvs6w2UF+GLt8zkiYnwgsA6C7vWT7pKJMLnUwdhvLvDVicGWTj1Ry50m2DRqU3/Fi/cCLRi0WihTyjyB3VbMVztB8iah2Xs9cIkF5HDRRdnrqBZkFJ8PNwX64SHwWen9axjbRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=E4JrTrRgsXPIIHVYQMAWcQL3s8fV1xtMYq3B240/gk4=;
+ b=eZ/pgQmKqcv5ZzWvF7gicV+WQZTYbd4ftS7vuvWfWs8+GN+J39Ds3Vy4dfJE/T7FCwffTu1YhB/27JnSs/sI0T5mcgVTDHszI7Vpiy7/EbCZ/8zq4runTDnXLKvK1hySurpBmw5SGJhzLb6JkATs10PqaRVii3sL4UTAANQc8Yh9KnXPLqWQyPQ8/CYNUbJVDccneYNaqoOTl1n6ctN1pcqt5yu7m24/HCDybuP9SNTrnNOv1UfkjELNEzjXaCggGqscOsvwkzCLZgE4H9HuMNBnIOcy1Ulb+x6VJH6fVJKoiDdRYtt9K5ZtpwWo9PJ+F6yAsJd+4y8EoWYuh5rTow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E4JrTrRgsXPIIHVYQMAWcQL3s8fV1xtMYq3B240/gk4=;
+ b=T3hiY/DyiSXcuYt0Xsg4HrjRUIA4K1Pshdgq61ncG7sDqPPR/QqIicPKEH4dS+nhrY0kznnUaxLOVVIYaGs4M0kzoL+/S46KvBO0R4P3o2jyl+AI2pF/TID8+SrB5tzn2l9GQbBp6jG5NFIAVt5uc55xBhDmCM8U0w1gkx0hEDQiJdPL+Kz9bgZzpT4PDgsEqSnXasPaQ8d8pVQAtYIgr18DzevBNBzi6PzePse6Fp5hzQj/fyP2z6/DtvTy5jUcxsaKmjfK/mAZ2bUyr341BngUE1x856yezfGTlcfiZGhPZBbZX/BatADek70tHpAUpdVp70e5/OwtX6Di9L/cmw==
+Received: from DM6PR12MB3371.namprd12.prod.outlook.com (2603:10b6:5:116::27)
+ by PH8PR12MB7109.namprd12.prod.outlook.com (2603:10b6:510:22f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.24; Mon, 23 Oct
+ 2023 15:45:13 +0000
+Received: from DM6PR12MB3371.namprd12.prod.outlook.com
+ ([fe80::87f1:f2ba:c75d:ef3e]) by DM6PR12MB3371.namprd12.prod.outlook.com
+ ([fe80::87f1:f2ba:c75d:ef3e%4]) with mapi id 15.20.6907.025; Mon, 23 Oct 2023
+ 15:45:13 +0000
+From:   Jeshua Smith <jeshuas@nvidia.com>
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "gpiccoli@igalia.com" <gpiccoli@igalia.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "bp@alien8.de" <bp@alien8.de>
+CC:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
+Thread-Topic: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
+Thread-Index: AQHZtREytrmSwIEvT06Ibqr95x6guq/abXNggAAKnoCAAI5FkIAVd3TwgCWuaxCAIP94MIAg+dpQ
+Date:   Mon, 23 Oct 2023 15:45:13 +0000
+Message-ID: <DM6PR12MB33710C8FE59EB3CB1404ABC0DBD8A@DM6PR12MB3371.namprd12.prod.outlook.com>
+References: <20230712223448.145079-1-jeshuas@nvidia.com>
+ <DM6PR12MB3371BA50E3B76D2266273901DB09A@DM6PR12MB3371.namprd12.prod.outlook.com>
+ <SJ1PR11MB6083426D3C663F47E707CF1AFC09A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <DM6PR12MB3371D86F80417641B8479B28DB0EA@DM6PR12MB3371.namprd12.prod.outlook.com>
+ <DM6PR12MB3371FA3AEEA4D17D94C889D5DB1BA@DM6PR12MB3371.namprd12.prod.outlook.com>
+ <DM6PR12MB337153EE2DDDB427096446F0DBF2A@DM6PR12MB3371.namprd12.prod.outlook.com>
+ <DM6PR12MB3371083F4E6BCE4A8D2389E7DBC5A@DM6PR12MB3371.namprd12.prod.outlook.com>
+In-Reply-To: <DM6PR12MB3371083F4E6BCE4A8D2389E7DBC5A@DM6PR12MB3371.namprd12.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR12MB3371:EE_|PH8PR12MB7109:EE_
+x-ms-office365-filtering-correlation-id: d71d3911-4803-45b4-16a1-08dbd3df0be4
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FjDXrc1NxFn9YEd569QzDnZEXt5UM4OeW+mj7ptW90hMCSXzO+i/u7V+kQ9Fd/RxIotP06AhSLkuaOcpOgZTV7z3YXxF9aqNQOcLTABdsU2bhwdM54HOfhNbm0bgwq8+Ms2deKVUmMlQT58e85mgIXW/JxLIDtYQr+plFiNquFyBgLE23A3A+PtHlCniSdUUpTI/UfKG0CTHPjdiCRnXQGyfNhpccuhqXdNO6I69q3C/jzul27DeHLonuwTi+aencSmrzSwWEphh7snc8dPpXLiVT9cjBLis2/wJkzOV2zSoahduSTzFPDbJ6j3fcTUNe016i0bsxajz5/sQ1ufU7iHHFXc+1yF4TXPuM8XaRSEAE54ASj4E0rQEHgSXWxRXWpUWbAbPc4zJuQHgwFKms3ftV6QYaOm9CV0TdAVEgQ9KnxjhN16YngoAdTktFP2N/1esmf3aswscFwcQ/+X1ru5ICy5c7xyvx0Z9VHgu+nsj4UjOPHyiWAdPavpxzvGiQN8mXbhFcdqQrXO6elyESlEbCBbXRHuLCYJvBU/0KXLgSqzAQTcKMxyws+sZke2ejNxtZMn+oV6ypeBymqcVNGuzswUIIKRbymfDuFSzzOpFNhAiqLzUaLffI/oDbqtTDucOgzAO/jEtxOKn49k3lAfpBDmADCkcjhrH17VkR68=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3371.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(376002)(136003)(366004)(39860400002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(66476007)(66556008)(54906003)(76116006)(26005)(64756008)(110136005)(7696005)(2906002)(55016003)(6506007)(71200400001)(316002)(33656002)(66446008)(86362001)(122000001)(66946007)(107886003)(83380400001)(53546011)(38100700002)(9686003)(38070700009)(4326008)(5660300002)(52536014)(478600001)(966005)(8936002)(7416002)(8676002)(41300700001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?AcgGE80JGTW0q+z3fZwYTO6cRyfuWvd9Bt5uGeOz2u41+jjQbcjyIJPMHt+y?=
+ =?us-ascii?Q?bQcsWh0aqWylnzfmIBGOjgJ3P3uKgIyDH9fly9ImSZOSPcHloR/VnYwMEvzt?=
+ =?us-ascii?Q?e0znHSPqyDQNy3eFn8SnzYBnDshDxhmIdfvSufNKjOImp7MuBa6J4dGpOGje?=
+ =?us-ascii?Q?0qwoyot6LlXwC1ZDUTDHK/THiLUqtU6rbjN5wrILv7yQm9PEupxBDpigZ4NR?=
+ =?us-ascii?Q?7wTPN9V4S8a2GQ3soToUvsir5J/3w2YT89VIVhyrlA+e1JlG7GZba9FUkPKc?=
+ =?us-ascii?Q?4GzV4cq/9J1N81141FPI6Zj7N3jXod0N6Cr0pxehNsohozroebYZfWlOS3ff?=
+ =?us-ascii?Q?tDXFTF2n+Zse1hGCoPqqta09hKNwXVNhwN2XOFufXkS09DdkCEP/LLVucFbt?=
+ =?us-ascii?Q?pFheyDPCyxvCXJP2yfttWm68ONAo3xSBgEp277Kzjz0jCeysdXTzQL6mchLb?=
+ =?us-ascii?Q?5ecziBYBnQJtYaUmpZ715TzXyrHwIcJunOeopaHFGgIcLpqgN8oAguvAwa4q?=
+ =?us-ascii?Q?rXPFYMAhQX5VppuqTdIl5KKEX3kvxyr56RJ0Uc0n1ytZqFyaqRXtq4ID3cw/?=
+ =?us-ascii?Q?o/BlkOsX/tauczWi4BrQ0mIrg6oXeLHCnYt7MxTvlt/C0vuCQNWJi9jqHEan?=
+ =?us-ascii?Q?FimVf12nVnCYISNcyFHdYmHKGUpz8OxsyO8+q6x1rJuq2a6ftEUFpP9Q0iqC?=
+ =?us-ascii?Q?+wcYteWaJFSNYPq6OF4DCWQgA62KDGKQ1OMRCmWHiSVV9Ge3E5hiLeFpXAfB?=
+ =?us-ascii?Q?PqdQZlUeSFMOb3rUzxp3BLJSDyeAaujlC52wiEsezMyQohBqT1zAl7rI2kQF?=
+ =?us-ascii?Q?2bzeBbr8ou6C6EvLyR5Ec5osbMi59nNSSVILJ2w5PTMpUowOUQhFi8HMPZnM?=
+ =?us-ascii?Q?3gQgajI30a7qk5YtvPDcYoA53F5BYnlToxfoCoyECR2JthM4NHcPOmCoZlLR?=
+ =?us-ascii?Q?EwhC4BQ6ZYAOPbHJ6U2CAFLTq9r9VTSM+BkzMYg62CpEA8F0gsKesmdihvIJ?=
+ =?us-ascii?Q?o9tkHVFVk2fApP6MNMPiTl6ozFIrwEnOsBfmt7qckM0CCYL3XjeCH8W/qDJb?=
+ =?us-ascii?Q?nAnKonirJnfuLTCwF+PZByxKsQIw+kxMVHlZSiRGiYM0fEBfg89BsY4x0+rL?=
+ =?us-ascii?Q?Ryozyk628xjZvmWYFHt35seQsK3QF91kpkMxjUaYsWmY67X5cNd5lXK8Kg7t?=
+ =?us-ascii?Q?P0ETYTuy2Knjq7x/Lr01dbsC5Cgtktq+41CkteWZn/OsVEOcyd3Dtv+4Yv58?=
+ =?us-ascii?Q?sCodq6VTH/YeHw95E/xIyCRaPlNhJ6qqOccyPdZPsoova3/i05rHSMvIinqj?=
+ =?us-ascii?Q?w9i9v3uRQ0r7qnaE9TgOmms4inHIWy5n+yr7axemah72NL3TvkLGwwr4uztX?=
+ =?us-ascii?Q?rzXAqXsYA3e9+j0PNdEtmLIB6WhB67XnMEVS9yE3aYTPp+n9QOaB+wzF34FX?=
+ =?us-ascii?Q?wa4/jG75d+6N3BrCCXdlCJv4vx8epSVDr4pCz6+icxXlVcVZe98Imd6ECBnL?=
+ =?us-ascii?Q?PewEfr0kYAERSZw87EyyCwUjuprMJ/bTd/mfkFmll5biKCSrpLxjquim/zGI?=
+ =?us-ascii?Q?DrPPgYN9LKzNjIfPBoqYrORPfgDz7ugFAynt26ZZ?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3371.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d71d3911-4803-45b4-16a1-08dbd3df0be4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2023 15:45:13.3190
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OKOUneETTorE+ajH+FBIW92XgG7Qg7b5vT7Z0jdiiuYpg0KL9eD1+obKVZRk21wciAY1wizSJONmTUuEJO50ug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7109
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Anup Patel <apatel@ventanamicro.com> writes:
+Can we get this merged please, or at least instructions for what needs to h=
+appen to get it merged?
 
-> On Mon, Oct 23, 2023 at 7:37=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kern=
-el.org> wrote:
->>
->> Anup Patel <apatel@ventanamicro.com> writes:
->>
->> > On Mon, Oct 23, 2023 at 12:32=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@=
-kernel.org> wrote:
->> >>
->> >> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
->> >>
->> >> > Anup Patel <apatel@ventanamicro.com> writes:
->> >> >
->> >> >> On Fri, Oct 20, 2023 at 10:07=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bj=
-orn@kernel.org> wrote:
->> >> >>>
->> >> >>> Anup Patel <apatel@ventanamicro.com> writes:
->> >> >>>
->> >> >>> > On Fri, Oct 20, 2023 at 8:10=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <=
-bjorn@kernel.org> wrote:
->> >> >>> >>
->> >> >>> >> Anup Patel <apatel@ventanamicro.com> writes:
->> >> >>> >>
->> >> >>> >> > On Fri, Oct 20, 2023 at 2:17=E2=80=AFPM Bj=C3=B6rn T=C3=B6pe=
-l <bjorn@kernel.org> wrote:
->> >> >>> >> >>
->> >> >>> >> >> Thanks for the quick reply!
->> >> >>> >> >>
->> >> >>> >> >> Anup Patel <apatel@ventanamicro.com> writes:
->> >> >>> >> >>
->> >> >>> >> >> > On Thu, Oct 19, 2023 at 7:13=E2=80=AFPM Bj=C3=B6rn T=C3=
-=B6pel <bjorn@kernel.org> wrote:
->> >> >>> >> >> >>
->> >> >>> >> >> >> Hi Anup,
->> >> >>> >> >> >>
->> >> >>> >> >> >> Anup Patel <apatel@ventanamicro.com> writes:
->> >> >>> >> >> >>
->> >> >>> >> >> >> > The RISC-V AIA specification is ratified as-per the RI=
-SC-V international
->> >> >>> >> >> >> > process. The latest ratified AIA specifcation can be f=
-ound at:
->> >> >>> >> >> >> > https://github.com/riscv/riscv-aia/releases/download/1=
-.0/riscv-interrupts-1.0.pdf
->> >> >>> >> >> >> >
->> >> >>> >> >> >> > At a high-level, the AIA specification adds three thin=
-gs:
->> >> >>> >> >> >> > 1) AIA CSRs
->> >> >>> >> >> >> >    - Improved local interrupt support
->> >> >>> >> >> >> > 2) Incoming Message Signaled Interrupt Controller (IMS=
-IC)
->> >> >>> >> >> >> >    - Per-HART MSI controller
->> >> >>> >> >> >> >    - Support MSI virtualization
->> >> >>> >> >> >> >    - Support IPI along with virtualization
->> >> >>> >> >> >> > 3) Advanced Platform-Level Interrupt Controller (APLIC)
->> >> >>> >> >> >> >    - Wired interrupt controller
->> >> >>> >> >> >> >    - In MSI-mode, converts wired interrupt into MSIs (=
-i.e. MSI generator)
->> >> >>> >> >> >> >    - In Direct-mode, injects external interrupts direc=
-tly into HARTs
->> >> >>> >> >> >>
->> >> >>> >> >> >> Thanks for working on the AIA support! I had a look at t=
-he series, and
->> >> >>> >> >> >> have some concerns about interrupt ID abstraction.
->> >> >>> >> >> >>
->> >> >>> >> >> >> A bit of background, for readers not familiar with the A=
-IA details.
->> >> >>> >> >> >>
->> >> >>> >> >> >> IMSIC allows for 2047 unique MSI ("msi-irq") sources per=
- hart, and
->> >> >>> >> >> >> each MSI is dedicated to a certain hart. The series take=
-s the approach
->> >> >>> >> >> >> to say that there are, e.g., 2047 interrupts ("lnx-irq")=
- globally.
->> >> >>> >> >> >> Each lnx-irq consists of #harts * msi-irq -- a slice -- =
-and in the
->> >> >>> >> >> >> slice only *one* msi-irq is acutally used.
->> >> >>> >> >> >>
->> >> >>> >> >> >> This scheme makes affinity changes more robust, because =
-the interrupt
->> >> >>> >> >> >> sources on "other" harts are pre-allocated. On the other=
- hand it
->> >> >>> >> >> >> requires to propagate irq masking to other harts via IPI=
-s (this is
->> >> >>> >> >> >> mostly done up setup/tear down). It's also wasteful, bec=
-ause msi-irqs
->> >> >>> >> >> >> are hogged, and cannot be used.
->> >> >>> >> >> >>
->> >> >>> >> >> >> Contemporary storage/networking drivers usually uses que=
-ues per core
->> >> >>> >> >> >> (or a sub-set of cores). The current scheme wastes a lot=
- of msi-irqs.
->> >> >>> >> >> >> If we instead used a scheme where "msi-irq =3D=3D lnx-ir=
-q", instead of
->> >> >>> >> >> >> "lnq-irq =3D {hart 0;msi-irq x , ... hart N;msi-irq x}",=
- there would be
->> >> >>> >> >> >> a lot MSIs for other users. 1-1 vs 1-N. E.g., if a stora=
-ge device
->> >> >>> >> >> >> would like to use 5 queues (5 cores) on a 128 core syste=
-m, the current
->> >> >>> >> >> >> scheme would consume 5 * 128 MSIs, instead of just 5.
->> >> >>> >> >> >>
->> >> >>> >> >> >> On the plus side:
->> >> >>> >> >> >> * Changing interrupts affinity will never fail, because =
-the interrupts
->> >> >>> >> >> >>   on each hart is pre-allocated.
->> >> >>> >> >> >>
->> >> >>> >> >> >> On the negative side:
->> >> >>> >> >> >> * Wasteful interrupt usage, and a system can potientiall=
-y "run out" of
->> >> >>> >> >> >>   interrupts. Especially for many core systems.
->> >> >>> >> >> >> * Interrupt masking need to proagate to harts via IPIs (=
-there's no
->> >> >>> >> >> >>   broadcast csr in IMSIC), and a more complex locking sc=
-heme IMSIC
->> >> >>> >> >> >>
->> >> >>> >> >> >> Summary:
->> >> >>> >> >> >> The current series caps the number of global interrupts =
-to maximum
->> >> >>> >> >> >> 2047 MSIs for all cores (whole system). A better scheme,=
- IMO, would be
->> >> >>> >> >> >> to expose 2047 * #harts unique MSIs.
->> >> >>> >> >> >>
->> >> >>> >> >> >> I think this could simplify/remove(?) the locking as wel=
-l.
->> >> >>> >> >> >
->> >> >>> >> >> > Exposing 2047 * #harts unique MSIs has multiple issues:
->> >> >>> >> >> > 1) The irq_set_affinity() does not work for MSIs because =
-each
->> >> >>> >> >> >      IRQ is not tied to a particular HART. This means we =
-can't
->> >> >>> >> >> >      balance the IRQ processing load among HARTs.
->> >> >>> >> >>
->> >> >>> >> >> Yes, you can balance. In your code, each *active* MSI is st=
-ill
->> >> >>> >> >> bound/active to a specific hard together with the affinity =
-mask. In an
->> >> >>> >> >> 1-1 model you would still need to track the affinity mask, =
-but the
->> >> >>> >> >> irq_set_affinity() would be different. It would try to allo=
-cate a new
->> >> >>> >> >> MSI from the target CPU, and then switch to having that MSI=
- active.
->> >> >>> >> >>
->> >> >>> >> >> That's what x86 does AFAIU, which is also constrained by th=
-e # of
->> >> >>> >> >> available MSIs.
->> >> >>> >> >>
->> >> >>> >> >> The downside, as I pointed out, is that the set affinity ac=
-tion can
->> >> >>> >> >> fail for a certain target CPU.
->> >> >>> >> >
->> >> >>> >> > Yes, irq_set_affinity() can fail for the suggested approach =
-plus for
->> >> >>> >> > RISC-V AIA, one HART does not have access to other HARTs
->> >> >>> >> > MSI enable/disable bits so the approach will also involve IP=
-I.
->> >> >>> >>
->> >> >>> >> Correct, but the current series does a broadcast to all cores,=
- where the
->> >> >>> >> 1-1 approach is at most an IPI to a single core.
->> >> >>> >>
->> >> >>> >> 128+c machines are getting more common, and you have devices t=
-hat you
->> >> >>> >> bring up/down on a per-core basis. Broadcasting IPIs to all co=
-res, when
->> >> >>> >> dealing with a per-core activity is a pretty noisy neighbor.
->> >> >>> >
->> >> >>> > Broadcast IPI in the current approach is only done upon MSI mas=
-k/unmask
->> >> >>> > operation. It is not done upon set_affinity() of interrupt hand=
-ling.
->> >> >>>
->> >> >>> I'm aware. We're on the same page here.
->> >> >>>
->> >> >>> >>
->> >> >>> >> This could be fixed in the existing 1-n approach, by not requi=
-re to sync
->> >> >>> >> the cores that are not handling the MSI in question. "Lazy dis=
-able"
->> >> >>> >
->> >> >>> > Incorrect. The approach you are suggesting involves an IPI upon=
- every
->> >> >>> > irq_set_affinity(). This is because a HART can only enable it's=
- own
->> >> >>> > MSI ID so when an IRQ is moved to from HART A to HART B with
->> >> >>> > a different ID X on HART B then we will need an IPI in irq_set_=
-affinit()
->> >> >>> > to enable ID X on HART B.
->> >> >>>
->> >> >>> Yes, the 1-1 approach will require an IPI to one target cpu on af=
-finity
->> >> >>> changes, and similar on mask/unmask.
->> >> >>>
->> >> >>> The 1-n approach, require no-IPI on affinity changes (nice!), but=
- IPI
->> >> >>> broadcast to all cores on mask/unmask (not so nice).
->> >> >>>
->> >> >>> >> >> My concern is interrupts become a scarce resource with this
->> >> >>> >> >> implementation, but maybe my view is incorrect. I've seen b=
-are-metal
->> >> >>> >> >> x86 systems (no VMs) with ~200 cores, and ~2000 interrupts,=
- but maybe
->> >> >>> >> >> that is considered "a lot of interrupts".
->> >> >>> >> >>
->> >> >>> >> >> As long as we don't get into scenarios where we're running =
-out of
->> >> >>> >> >> interrupts, due to the software design.
->> >> >>> >> >>
->> >> >>> >> >
->> >> >>> >> > The current approach is simpler and ensures irq_set_affinity
->> >> >>> >> > always works. The limit of max 2047 IDs is sufficient for ma=
-ny
->> >> >>> >> > systems (if not all).
->> >> >>> >>
->> >> >>> >> Let me give you another view. On a 128c system each core has ~=
-16 unique
->> >> >>> >> interrupts for disposal. E.g. the Intel E800 NIC has more than=
- 2048
->> >> >>> >> network queue pairs for each PF.
->> >> >>> >
->> >> >>> > Clearly, this example is a hypothetical and represents a poorly
->> >> >>> > designed platform.
->> >> >>> >
->> >> >>> > Having just 16 IDs per-Core is a very poor design choice. In fa=
-ct, the
->> >> >>> > Server SoC spec mandates a minimum 255 IDs.
->> >> >>>
->> >> >>> You are misreading. A 128c system with 2047 MSIs per-core, will o=
-nly
->> >> >>> have 16 *per-core unique* (2047/128) interrupts with the current =
-series.
->> >> >>>
->> >> >>> I'm not saying that each IMSIC has 16 IDs, I'm saying that in a 1=
-28c
->> >> >>> system with the maximum amount of MSIs possible in the spec, you'=
-ll end
->> >> >>> up with 16 *unique* interrupts per core.
->> >> >>
->> >> >> -ENOPARSE
->> >> >>
->> >> >> I don't see how this applies to the current approach because we tr=
-eat
->> >> >> MSI ID space as global across cores so if a system has 2047 MSIs
->> >> >> per-core then we have 2047 MSIs across all cores.
->> >> >
->> >> > Ok, I'll try again! :-)
->> >> >
->> >> > Let's assume that each core in the 128c system has some per-core
->> >> > resources, say a two NIC queue pairs, and a storage queue pair. This
->> >> > will consume, e.g., 2*2 + 2 (6) MSI sources from the global namespa=
-ce.
->> >> >
->> >> > If each core does this it'll be 6*128 MSI sources of the global
->> >> > namespace.
->> >> >
->> >> > The maximum number of "privates" MSI sources a core can utilize is =
-16.
->> >> >
->> >> > I'm trying (it's does seem to go that well ;-)) to point out that i=
-t's
->> >> > only 16 unique sources per core. For, say, a 256 core system it wou=
-ld be
->> >> > 8. 2047 MSI sources in a system is not much.
->> >> >
->> >> > Say that I want to spin up 24 NIC queues with one MSI each on each =
-core
->> >> > on my 128c system. That's not possible with this series, while with=
- an
->> >> > 1-1 system it wouldn't be an issue.
->> >> >
->> >> > Clearer, or still weird?
->> >> >
->> >> >>
->> >> >>>
->> >> >>> > Regarding NICs which support a large number of queues, the driv=
-er
->> >> >>> > will typically enable only one queue per-core and set the affin=
-ity to
->> >> >>> > separate cores. We have user-space data plane applications based
->> >> >>> > on DPDK which are capable of using a large number of NIC queues
->> >> >>> > but these applications are polling based and don't use MSIs.
->> >> >>>
->> >> >>> That's one sample point, and clearly not the only one. There are =
-*many*
->> >> >>> different usage models. Just because you *assign* MSI, doesn't me=
-an they
->> >> >>> are firing all the time.
->> >> >>>
->> >> >>> I can show you a couple of networking setups where this is clearl=
-y not
->> >> >>> enough. Each core has a large number of QoS queues, and each queu=
-e would
->> >> >>> very much like to have a dedicated MSI.
->> >> >>>
->> >> >>> >> > When we encounter a system requiring a large number of MSIs,
->> >> >>> >> > we can either:
->> >> >>> >> > 1) Extend the AIA spec to support greater than 2047 IDs
->> >> >>> >> > 2) Re-think the approach in the IMSIC driver
->> >> >>> >> >
->> >> >>> >> > The choice between #1 and #2 above depends on the
->> >> >>> >> > guarantees we want for irq_set_affinity().
->> >> >>> >>
->> >> >>> >> The irq_set_affinity() behavior is better with this series, bu=
-t I think
->> >> >>> >> the other downsides: number of available interrupt sources, an=
-d IPI
->> >> >>> >> broadcast are worse.
->> >> >>> >
->> >> >>> > The IPI overhead in the approach you are suggesting will be
->> >> >>> > even bad compared to the IPI overhead of the current approach
->> >> >>> > because we will end-up doing IPI upon every irq_set_affinity()
->> >> >>> > in the suggested approach compared to doing IPI upon every
->> >> >>> > mask/unmask in the current approach.
->> >> >>>
->> >> >>> Again, very workload dependent.
->> >> >>>
->> >> >>> This series does IPI broadcast on masking/unmasking, which means =
-that
->> >> >>> cores that don't care get interrupted because, say, a network que=
-ue-pair
->> >> >>> is setup on another core.
->> >> >>>
->> >> >>> Some workloads never change the irq affinity.
->> >> >>
->> >> >> There are various events which irq affinity such as irq balance,
->> >> >> CPU hotplug, system suspend, etc.
->> >> >>
->> >> >> Also, the 1-1 approach does IPI upon set_affinity, mask and
->> >> >> unmask whereas the 1-n approach does IPI only upon mask
->> >> >> and unmask.
->> >> >
->> >> > An important distinction; When you say IPI on mask/unmask it is a
->> >> > broadcast IPI to *all* cores, which is pretty instrusive.
->> >> >
->> >> > The 1-1 variant does an IPI to a *one* target core.
->> >> >
->> >> >>> I'm just pointing out that there are pro/cons with both variants.
->> >> >>>
->> >> >>> > The biggest advantage of the current approach is a reliable
->> >> >>> > irq_set_affinity() which is a very valuable thing to have.
->> >> >>>
->> >> >>> ...and I'm arguing that we're paying a big price for that.
->> >> >>>
->> >> >>> > ARM systems easily support a large number of LPIs per-core.
->> >> >>> > For example, GIC-700 supports 56000 LPIs per-core.
->> >> >>> > (Refer, https://developer.arm.com/documentation/101516/0300/Abo=
-ut-the-GIC-700/Features)
->> >> >>>
->> >> >>> Yeah, but this is not the GIC. This is something that looks more =
-like
->> >> >>> the x86 world. We'll be stuck with a lot of implementations with =
-AIA 1.0
->> >> >>> spec, and many cores.
->> >> >>
->> >> >> Well, RISC-V AIA is neigher ARM GIG not x86 APIC. All I am saying
->> >> >> is that there are systems with large number per-core interrupt IDs
->> >> >> for handling MSIs.
->> >> >
->> >> > Yes, and while that is nice, it's not what IMSIC is.
->> >>
->> >> Some follow-ups, after thinking more about it more over the weekend.
->> >>
->> >> * Do one really need an IPI for irq_set_affinity() for the 1-1 model?
->> >>   Why touch the enable/disable bits when moving interrupts?
->> >
->> > In the 1-1 model, the ID on the current HART and target HART upon
->> > irq_set_affinity will be different so we can't leave the unused ID on
->> > current HART enabled because it can lead to spurious interrupts
->> > when the ID on current HART is re-used for some other device.
->>
->> Hmm, is this really an actual problem, or a theoretical one? The
->> implementation need to track what's in-use, so can we ever get into this
->> situation?
->
-> As of now, it is theoretical but it is certainly possible to hit this iss=
-ue.
+Thanks.
 
-Sorry for being slow here, Anup, but could you give an example how this
-could happen? For me it sounds like this could only be caused by a
-broken (buggy) implementation?
+-----Original Message-----
+From: Jeshua Smith=20
+Sent: Monday, October 2, 2023 10:10 AM
+To: Luck, Tony <tony.luck@intel.com>; keescook@chromium.org; gpiccoli@igali=
+a.com; rafael@kernel.org; lenb@kernel.org; james.morse@arm.com; bp@alien8.d=
+e
+Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-hardeni=
+ng@vger.kernel.org; linux-tegra@vger.kernel.org; Thierry Reding <treding@nv=
+idia.com>; Jonathan Hunter <jonathanh@nvidia.com>
+Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
 
->> Somewhat related; I had a similar question for imsic_pci_{un,}mask_irq()
->> -- why not only do the the default mask operation (only
->> pci_msi_{un,}mask_irq()), but instead propagate to the IMSIC
->> mask/unmask?
->
-> We have hierarchical IMSIC PCI irq domain whoes parent irq domain
-> is IMSIC base domain. Unfortunately pci_msi_[un]mask_irq() don't
-> work for hierarchical irq domain.
+Resending due to lack of responses.
 
-Ok! Thanks for the explanation!
+-----Original Message-----
+From: Jeshua Smith=20
+Sent: Monday, September 11, 2023 10:16 AM
+To: Luck, Tony <tony.luck@intel.com>; keescook@chromium.org; gpiccoli@igali=
+a.com; rafael@kernel.org; lenb@kernel.org; james.morse@arm.com; bp@alien8.d=
+e
+Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-hardeni=
+ng@vger.kernel.org; linux-tegra@vger.kernel.org; Thierry Reding <treding@nv=
+idia.com>; Jonathan Hunter <jonathanh@nvidia.com>
+Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
 
->> > There is also a possibility of receiving an interrupt while the ID was
->> > moved to a new target HART in-which case we have to detect and
->> > re-trigger interrupt on the new target HART. In fact, x86 APLIC does
->> > an IPI to take care of this case.
->>
->> This case I get, and the implementation can track that both are in use.
->> It's the spurious one that I'm dubious of (don't get).
->>
->> >>
->> >> * In my book the IMSIC looks very much like the x86 LAPIC, which also
->> >>   has few interrupts (IMSIC <2048, LAPIC 256). The IRQ matrix allocat=
-or
->> >>   [1], and a scheme similar to LAPIC [2] would be a good fit. This is
->> >>   the 1-1 model, but more sophisticated than what I've been describing
->> >>   (e.g. properly handling mangaged/regular irqs). As a bonus we would
->> >>   get the IRQ matrix debugfs/tracepoint support.
->> >>
->> >
->> > Yes, I have been evaluating the 1-1 model for the past few days. I also
->> > have a working implementation with a simple per-CPU bitmap based
->> > allocator which handles both legacy MSI (block of 1,2,4,8,16, or 32 ID=
-s)
->> > and MSI-X.
->> >
->> > The irq matrix allocator needs to be improved for handling legacy MSI
->> > so initially I will post a v11 series which works for me and converging
->> > with irq matrix allocator can be future work.
->>
->> What's missing/needs to be improved for legacy MSI (legacy MSI =3D=3D
->> !MSI-X, right?) in the matrix allocator?
->
-> For legacy MSI, a block IDs needs to be contiguous and the number
-> of IDs can be a power of 2.
+Any further questions? Anything else holding up this patch?
 
-Oh, so this is not supported by the matrix allocator?
+-----Original Message-----
+From: Jeshua Smith <jeshuas@nvidia.com>=20
+Sent: Friday, August 4, 2023 7:05 PM
+To: Luck, Tony <tony.luck@intel.com>; keescook@chromium.org; gpiccoli@igali=
+a.com; rafael@kernel.org; lenb@kernel.org; james.morse@arm.com; bp@alien8.d=
+e
+Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-hardeni=
+ng@vger.kernel.org; linux-tegra@vger.kernel.org; Thierry Reding <treding@nv=
+idia.com>; Jonathan Hunter <jonathanh@nvidia.com>
+Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
+
+Thanks for the reply.
+
+It's not very easy to see. It's just a bit down from the link you sent. It'=
+s the last possible action in the Serialization Actions table:
+https://uefi.org/specs/ACPI/6.5/18_Platform_Error_Interfaces.html#serializa=
+tion-actions
+
+18.5.1.1. Serialization Actions
+
+GET_EXECUTE-_OPERATION_TIMINGS
+
+Returns an encoded QWORD:
+[63:32] value in microseconds that the platform expects would be the maximu=
+m amount of time it will take to process and complete an EXECUTE_OPERATION.
+[31:0] value in microseconds that the platform expects would be the nominal=
+ amount of time it will take to process and complete an EXECUTE_OPERATION.
+
+-----Original Message-----
+From: Luck, Tony <tony.luck@intel.com>=20
+Sent: Friday, August 4, 2023 10:31 AM
+To: Jeshua Smith <jeshuas@nvidia.com>; keescook@chromium.org; gpiccoli@igal=
+ia.com; rafael@kernel.org; lenb@kernel.org; james.morse@arm.com; bp@alien8.=
+de
+Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-hardeni=
+ng@vger.kernel.org; linux-tegra@vger.kernel.org; Thierry Reding <treding@nv=
+idia.com>; Jonathan Hunter <jonathanh@nvidia.com>
+Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
+
+External email: Use caution opening links or attachments
 
 
-Bj=C3=B6rn
+> Can the maintainers please respond to my patch?
+
+Can you give a reference to the ACPI spec where this timing information is =
+documented? I'm looking at ACPI 6.5 and don't see anything about this.
+
+https://uefi.org/specs/ACPI/6.5/18_Platform_Error_Interfaces.html#error-ser=
+ialization
+
+-Tony
