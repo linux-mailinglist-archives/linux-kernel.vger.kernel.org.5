@@ -2,118 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C11F7D316D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806F67D3180
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233558AbjJWLJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
+        id S233583AbjJWLJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:09:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233501AbjJWLJD (ORCPT
+        with ESMTP id S233576AbjJWLJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:09:03 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05C4C5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:09:00 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-66cfd874520so20335216d6.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698059340; x=1698664140; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JOK8b3gr6rCBDxroHMvto9djvnyPet40btVJFkOvoUY=;
-        b=DyTiNnY4EMwPqnNuhrOheFtCtUrmy02DBWnfWnBqDQ3W7BaT74LXC6ZHQyY3ebj8Pj
-         Vajd0goGP8VUpEyL8zvOijjnbXAIeFZyUmRfhtMmZ+AubDqEGA9d5zNDjxIkbqPwvVYP
-         GrgjJU5CUQLDG6Dnz3Mz34jwve82jDCyGTC8Lxl+KI4kkVfNXD20j956afnAHLOSXk37
-         2XqUw+PUgRrQMbjsw5PcD6sBWfYTKye3eRAGSnC1OL4tklQEkuEo6TC++I2BFZ8kd6E5
-         OirZKVT9/dozMlxXrt+Il2uAmjp7uHugDQGvPESrQR7Q12LolBFMf7yUzN+Z2+YwD1IH
-         HT6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698059340; x=1698664140;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JOK8b3gr6rCBDxroHMvto9djvnyPet40btVJFkOvoUY=;
-        b=DWO5pwMst4Gjn4A7je7pmeYqYV8od4haYcpfMPjTQZgoncD3yTZUFZXEAWutJO5Cu1
-         1oNRYvGVbXgtLFTmZU2e0OuOXlxtNfpfdJiZYDDfvs/7m/QermH4m6VGvwhEZFKlUSUI
-         bOhJVRvgYDQd6+fTkakmBIGyw+Y4OAiL4HWA8I7wlBc6O33EhaO+WdpCdvRAyPLKewFA
-         3vZ2Qi+sL0mZ3DaHzJuIHNUDcYGueUORo+Enlfbwidkoyt9TDLt+XNjhuhrmckIsyDYT
-         oSib636Sb2nWOIMaBgMEWW5FS3IOBZ7sqte76r5Fv8DDBpHXAqDJkxnXuBEdtYV1FegS
-         mXEQ==
-X-Gm-Message-State: AOJu0Yx2UJ2537n4frkO1fohEFO7ZLev3akMteYSL6F7WIsYX+GVwI5K
-        +x0KAt0bknVpeETp7KOYsAugCL8tCq4pum9pqKk=
-X-Google-Smtp-Source: AGHT+IFDc0XXw2VKn1t4ZQW8Yjb7PRCs7ZqlXu3GnEZICEcVd5ckFIldu8Es8x8PswIYmAzV/p6gmxO0HMXNK2sUqRc=
-X-Received: by 2002:a05:6214:27cf:b0:66d:6405:15f7 with SMTP id
- ge15-20020a05621427cf00b0066d640515f7mr12452005qvb.2.1698059339973; Mon, 23
- Oct 2023 04:08:59 -0700 (PDT)
+        Mon, 23 Oct 2023 07:09:50 -0400
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34F1C5;
+        Mon, 23 Oct 2023 04:09:44 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VukpTBs_1698059380;
+Received: from 30.221.100.158(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0VukpTBs_1698059380)
+          by smtp.aliyun-inc.com;
+          Mon, 23 Oct 2023 19:09:41 +0800
+Message-ID: <e028c610-80d0-4e2e-8e9f-0aaa87df8ebf@linux.alibaba.com>
+Date:   Mon, 23 Oct 2023 19:09:38 +0800
 MIME-Version: 1.0
-References: <20231014123349.11294-1-m.muzzammilashraf@gmail.com>
- <b72324e4-75d2-4d90-9e6d-342d10bb947b@infradead.org> <ZSq3iuuGy7zSl4sz@casper.infradead.org>
- <721f24eb6532290c6c4ab4e6d5a50bf8637fcd94.camel@HansenPartnership.com>
- <CAJHePoZVMMCcUNKbg5f9VrYo-x5E_rU1piQGHi67ZuY4Pyj4bg@mail.gmail.com> <5cd5b88ec8f4500a716aa8b96d27d44e96ed65bf.camel@HansenPartnership.com>
-In-Reply-To: <5cd5b88ec8f4500a716aa8b96d27d44e96ed65bf.camel@HansenPartnership.com>
-From:   Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-Date:   Mon, 23 Oct 2023 16:08:49 +0500
-Message-ID: <CAJHePoayC+RUk4gCCYACRXguuXfeWFvg5cyiCwNi-YxC3-UOLw@mail.gmail.com>
-Subject: Re: [PATCH] mm: Fixed multiple typos in multiple files
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2 2/2] net/smc: correct the reason code in
+ smc_listen_find_device when fallback
+Content-Language: en-US
+To:     Wenjia Zhang <wenjia@linux.ibm.com>, dust.li@linux.alibaba.com,
+        kgraul@linux.ibm.com, jaka@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     tonylu@linux.alibaba.com, alibuda@linux.alibaba.com,
+        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231017124234.99574-1-guangguan.wang@linux.alibaba.com>
+ <20231017124234.99574-3-guangguan.wang@linux.alibaba.com>
+ <20231018070142.GY92403@linux.alibaba.com>
+ <c7277fd2-cc44-40a1-9f56-9341d3340e2e@linux.alibaba.com>
+ <a33cb54f-3414-4034-bb0a-9aeebd65f044@linux.ibm.com>
+From:   Guangguan Wang <guangguan.wang@linux.alibaba.com>
+In-Reply-To: <a33cb54f-3414-4034-bb0a-9aeebd65f044@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Can anyone approve this patch?
 
-On Mon, Oct 16, 2023 at 7:27=E2=80=AFAM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> On Sun, 2023-10-15 at 10:45 +0500, Muhammad Muzammil wrote:
-> > should I create the v2 or this patch is fine?
->
-> Personally, I don't think anyone cares about misspellings unless it
-> obscures the meaning of the sentence, so, given the interactions in
-> this thread, I'd argue the only one really worth fixing is relay ->
-> relies.
->
-> James
->
->
-> >
-> > On Sat, Oct 14, 2023 at 9:27=E2=80=AFPM James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
-> > >
-> > > On Sat, 2023-10-14 at 16:45 +0100, Matthew Wilcox wrote:
-> > > > On Sat, Oct 14, 2023 at 08:31:35AM -0700, Randy Dunlap wrote:
-> > > > > >         /*
-> > > > > > -        * The caller from rmap relay on disabled preemption
-> > > > > > becase they never
-> > > > > > +        * The caller from rmap relay on disabled preemption
-> > > > > > because they never
-> > > > > >          * update their counter from in-interrupt context.
-> > > > > > For
-> > > > > > these two
-> > > > >
-> > > > > I don't know what that (partial) sentence is trying to say...
-> > > > > Maybe someone else does.
-> > > >
-> > > > s/relay/rely/
-> > >
-> > > relies, surely, being the correct third person singular form of the
-> > > verb to match the nominative noun "the caller".
-> > >
-> > > James
-> > >
-> >
->
+
+On 2023/10/19 03:43, Wenjia Zhang wrote:
+> 
+> 
+> On 18.10.23 10:35, Guangguan Wang wrote:
+>>
+>>
+>> On 2023/10/18 15:01, Dust Li wrote:
+>>> On Tue, Oct 17, 2023 at 08:42:34PM +0800, Guangguan Wang wrote:
+>>>> The ini->rc is used to store the last error happened when finding usable
+>>>> ism or rdma device in smc_listen_find_device, and is set by calling smc_
+>>>> find_device_store_rc. Once the ini->rc is assigned to an none-zero value,
+>>>> the value can not be overwritten anymore. So the ini-rc should be set to
+>>>> the error reason only when an error actually occurs.
+>>>>
+>>>> When finding ISM/RDMA devices, device not found is not a real error, as
+>>>> not all machine have ISM/RDMA devices. Failures after device found, when
+> What do you mean about this sentence? Do you mean that no any (ISM/RDMA) device  found is not real error? If not, what is the real reason?
+> 
+
+Sorry for not describing it clearly.
+
+I mean either ISM or RDMA devices not found is not real error, as not all machine have ISM and RDMA devices.
+
+Both of ISM and RDMA devices not found is real error, and in this patch it will return SMC_CLC_DECL_NOSMCDEV.
+
+>>>> initializing device or when initializing connection, is real errors, and
+>>>> should be store in ini->rc.
+>>>>
+>>>> SMC_CLC_DECL_DIFFPREFIX also is not a real error, as for SMC-RV2, it is
+>>>> not require same prefix.
+>>>>
+>>>> Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+>>>> ---
+>>>> net/smc/af_smc.c | 12 +++---------
+>>>> 1 file changed, 3 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>>>> index b3a67a168495..21e9c6ec4d01 100644
+>>>> --- a/net/smc/af_smc.c
+>>>> +++ b/net/smc/af_smc.c
+>>>> @@ -2163,10 +2163,8 @@ static void smc_find_ism_v2_device_serv(struct smc_sock *new_smc,
+>>>>     }
+>>>>     mutex_unlock(&smcd_dev_list.mutex);
+>>>>
+>>>> -    if (!ini->ism_dev[0]) {
+>>>> -        smc_find_device_store_rc(SMC_CLC_DECL_NOSMCD2DEV, ini);
+>>>> +    if (!ini->ism_dev[0])
+>>>
+>>> Hi Guangguan,
+>>>
+>>> Generally, I think this is right. Fallback in one kind of device should
+>>> not be the final fallback reason.
+>>>
+>>> But what if we have more than one device and failed more than once, for
+>>> example:
+>>> Let's say we have an ISM device, a RDMA device. First we looked the ISM device
+>>> and failed during the initialization, we got a fallback reason A. Then we
+>>> looked for the RDMA device, and failed again, with another reason B.
+>>> Finally, we fallback to TCP. What should fallback reason be ?
+>>
+>> IMO, the order of finding devices is defined by preference. ISM v2, ISM v1, RDMA v2, RDMA v1, the former the prefer.
+>> I think it should return the most preferred device's failure reason if found and failed during the initialization.
+>> So, here should return the first reason(reason A).
+>>
+> In this case Dust mentioned, I'd prefer a reaon including A and B, like current reason SMC_CLC_DECL_NOSMCDEV.
+> 
+
+For debugging purpose, I'd rather give a reason that actually occurred during the initialization, 
+since SMC_CLC_DECL_NOSMCDEV doesn't give any detailed information about the failure.
+
+
+Thanks,
+Guangguan Wang
+
+>>>
+>>> OTOH, SMC_CLC_DECL_NOSMCD2DEV is only used here. Removing it would mean
+>>> that we would never see SMC_CLC_DECL_NOSMCD2DEV in the fallback reason,
+>>> which makes it meaningless.
+>>>
+>>   Is SMC_CLC_DECL_NOSMCD2DEV really necessary? There is no reason names SMC_CLC_DECL_NOSMCR2DEV.
+>>
+> I do see the necessity for the debugging.
+>> Thanks,
+>> Guangguan Wang
+>>
+>>> Best regards,
+>>> Dust
+>>>
+>>>>         goto not_found;
+>>>> -    }
+>>>>
+>>>>     smc_ism_get_system_eid(&eid);
+>>>>     if (!smc_clc_match_eid(ini->negotiated_eid, smc_v2_ext,
+>>>> @@ -2216,9 +2214,9 @@ static void smc_find_ism_v1_device_serv(struct smc_sock *new_smc,
+>>>>     rc = smc_listen_ism_init(new_smc, ini);
+>>>>     if (!rc)
+>>>>         return;        /* V1 ISM device found */
+>>>> +    smc_find_device_store_rc(rc, ini);
+>>>>
+>>>> not_found:
+>>>> -    smc_find_device_store_rc(rc, ini);
+>>>>     ini->smcd_version &= ~SMC_V1;
+>>>>     ini->ism_dev[0] = NULL;
+>>>>     ini->is_smcd = false;
+>>>> @@ -2267,10 +2265,8 @@ static void smc_find_rdma_v2_device_serv(struct smc_sock *new_smc,
+>>>>     ini->smcrv2.saddr = new_smc->clcsock->sk->sk_rcv_saddr;
+>>>>     ini->smcrv2.daddr = smc_ib_gid_to_ipv4(smc_v2_ext->roce);
+>>>>     rc = smc_find_rdma_device(new_smc, ini);
+>>>> -    if (rc) {
+>>>> -        smc_find_device_store_rc(rc, ini);
+>>>> +    if (rc)
+>>>>         goto not_found;
+>>>> -    }
+>>>>     if (!ini->smcrv2.uses_gateway)
+>>>>         memcpy(ini->smcrv2.nexthop_mac, pclc->lcl.mac, ETH_ALEN);
+>>>>
+>>>> @@ -2331,8 +2327,6 @@ static int smc_listen_find_device(struct smc_sock *new_smc,
+>>>>
+>>>>     /* check for matching IP prefix and subnet length (V1) */
+>>>>     prfx_rc = smc_listen_prfx_check(new_smc, pclc);
+>>>> -    if (prfx_rc)
+>>>> -        smc_find_device_store_rc(prfx_rc, ini);
+>>>>
+>>>>     /* get vlan id from IP device */
+>>>>     if (smc_vlan_by_tcpsk(new_smc->clcsock, ini))
+>>>> -- 
+>>>> 2.24.3 (Apple Git-128)
