@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B83007D3E2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7677D3E2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbjJWRp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
+        id S234031AbjJWRpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233952AbjJWRpW (ORCPT
+        with ESMTP id S230053AbjJWRp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:45:22 -0400
+        Mon, 23 Oct 2023 13:45:28 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36288D68
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:45:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91FD6C433CC;
-        Mon, 23 Oct 2023 17:45:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A1AB0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:45:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 754EBC433C8;
+        Mon, 23 Oct 2023 17:45:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698083120;
-        bh=Re17bBZBn8W2qRuHQlXyTmtDIB19+AtXrQhAAfpI4DQ=;
+        s=k20201202; t=1698083125;
+        bh=X2EiXljEqLgjkMvgVksP7BUN5cbAO2JI6oZUqCn5eWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eyGAgSueaNzo2buyhjpYs8BFDkw71EAY3dDuDfWlQX1WW1T/eDwWfl647Hy8XX9ak
-         25Ax5Z6fooNE0HiqEPYmVUZMt6pSxj7rZPUBN276iPeE0e9A6HMExAW0TMSdlW/392
-         P1uQFi50B1uK/j6g25zYKpc3uS2/1NmtL3OtxxFaBnd3oZPm16yaa0Hoc7o5/BVMoW
-         Gy9tMgL9+93O9oT7blV7sXNeAHq/nTGoOWqnN3hOSoNSSYxfsuTA8hMwxHg5rhcxt0
-         vqChJcINqPTg5Faw23BFxEU5MHMnViVOF4haSMVEqGLQVNT31ObDkKL/VIBA6hveuQ
-         2RAGIvKTuvz0Q==
+        b=q5sZlBXBs5Iog9qQoDZ2/bLkWFr3eeiiWVLVSZ+sI7fj7xIIRbHUoWbq2iHyPy76w
+         wc88r56+X9avGXu+OMTWHjzXYfpfBL610QgzkF899uZdDPH7s7n1846Siq42LNgHNH
+         vJ+SgFDeIwPuHFNF4crhAnR5vLxKHOehoGgUTLp6Ja1E7VJiFSt9/iLj5WBEFWolsw
+         OUnXCYwblWnSwgnFRinkG5ce/hAaLYppdnsCtd+OQDe06609TMIIaLOC7MhP13nMhH
+         dQFc2UqAd5c8HVXPZNRrL2nzk4IS30mWZuAOICUKr9QnFaCkWw4YU+IQ30qXUph4r9
+         t5Sa6AK8jlnMQ==
 From:   Miguel Ojeda <ojeda@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -43,9 +43,9 @@ Cc:     Miguel Ojeda <ojeda@kernel.org>,
         Alice Ryhl <aliceryhl@google.com>, x86@kernel.org,
         rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
         patches@lists.linux.dev
-Subject: [PATCH 2/4] x86/rust: support SLS
-Date:   Mon, 23 Oct 2023 19:44:46 +0200
-Message-ID: <20231023174449.251550-2-ojeda@kernel.org>
+Subject: [PATCH 3/4] x86/rust: depend on !RETHUNK
+Date:   Mon, 23 Oct 2023 19:44:47 +0200
+Message-ID: <20231023174449.251550-3-ojeda@kernel.org>
 In-Reply-To: <20231023174449.251550-1-ojeda@kernel.org>
 References: <20231023174449.251550-1-ojeda@kernel.org>
 MIME-Version: 1.0
@@ -59,39 +59,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support the `SLS` speculation mitigation by enabling the target features
-that Clang does.
+The Rust compiler does not support the equivalent of
+`-mfunction-return=thunk-extern` yet [1]. Thus, currently, `objtool`
+warns about it, e.g.:
 
-Without this, `objtool` would complain if enabled for individual object
-files (like it is planned in the future), e.g.
+    samples/rust/rust_print.o: warning: objtool: _R...init+0xa5c:
+    'naked' return found in RETHUNK build
 
-    rust/core.o: warning: objtool:
-    _R...next_up+0x44: missing int3 after ret
+The support in `rustc` for `-Zfunction-return` has been submitted and
+is being reviewed [2]. It adds the needed LLVM function attributes and,
+with it, I got a RETHUNK kernel build with Rust enabled that does not
+print the `objtool` related warnings, boots in QEMU and can load a kernel
+loadable module.
 
+In any case, until proper/complete support is added to `rustc`, make it
+a hard restriction until the mitigation is in place.
+
+This may have an impact for developers that may not need/care about the
+mitigation in the Rust side (e.g. Ubuntu offers Rust as a "technology
+preview" [3]), but given we are getting closer to having the first actual
+in-tree Rust kernel users, it seems like the right time to disallow
+it. This should also avoid confusion [4].
+
+Link: https://github.com/rust-lang/rust/issues/116853 [1]
+Link: https://github.com/rust-lang/rust/pull/116892 [2]
+Link: https://lore.kernel.org/rust-for-linux/ZSQXqX2%2Flhf5ICZP@gpd/ [3]
+Link: https://lore.kernel.org/rust-for-linux/CANiq72n6DMeXQrgOzS_+3VdgNYAmpcnneAHJnZERUQhMExg+0A@mail.gmail.com/ [4]
 Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 ---
- scripts/generate_rust_target.rs | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ init/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/scripts/generate_rust_target.rs b/scripts/generate_rust_target.rs
-index 163089ae13ba..7e374369afca 100644
---- a/scripts/generate_rust_target.rs
-+++ b/scripts/generate_rust_target.rs
-@@ -165,6 +165,14 @@ fn main() {
-             features += ",+retpoline-indirect-branches";
-             features += ",+retpoline-indirect-calls";
-         }
-+        if cfg.has("SLS") {
-+            // The kernel uses `-mharden-sls=all`, which Clang maps to both these target features in
-+            // `clang/lib/Driver/ToolChains/Arch/X86.cpp`. These should be eventually enabled via
-+            // `-Ctarget-feature` when `rustc` starts recognizing them (or via a new dedicated
-+            // flag); see https://github.com/rust-lang/rust/issues/116851.
-+            features += ",+harden-sls-ijmp";
-+            features += ",+harden-sls-ret";
-+        }
-         ts.push("features", features);
-         ts.push("llvm-target", "x86_64-linux-gnu");
-         ts.push("target-pointer-width", "64");
+diff --git a/init/Kconfig b/init/Kconfig
+index 6d35728b94b2..9452b4102b99 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1889,6 +1889,7 @@ config RUST
+ 	depends on !GCC_PLUGINS
+ 	depends on !RANDSTRUCT
+ 	depends on !DEBUG_INFO_BTF || PAHOLE_HAS_LANG_EXCLUDE
++	depends on !RETHUNK
+ 	select CONSTRUCTORS
+ 	help
+ 	  Enables Rust support in the kernel.
 -- 
 2.42.0
 
