@@ -2,175 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DD57D2BB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7E37D2BD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233421AbjJWHrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:47:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
+        id S233395AbjJWHtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbjJWHrR (ORCPT
+        with ESMTP id S233600AbjJWHtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 03:47:17 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A43AFD7E
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:47:14 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53e84912038so4347899a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:47:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698047233; x=1698652033; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uInDQi5hkTSDKcRYo0hzYhBHCzPIaLZJWqXIlWN4pBw=;
-        b=yr7LXaVQcgWld6fKxJsjBFqgAFHtqR0Z8zxaChfYoucihqapdKZIq/9uiGneStNONG
-         fVYN7EvYLQ8P7Iggko/bWNWcRB+2wrkT04N3kJ06VT61Urp695RalEl53l3m5Y1K4U+q
-         YabF+m1UIGjeQrSIuP56GydgTdpQF7vyhK2h80Qv0PgkpOzjrVKkV1EbBMne/qtLY+cX
-         xe0qQUrtk70+U8pX78NGO3di7+1uGrAuFZPYeEKzrxzQvnTC4o05mznc8NqtqBKw+501
-         qBu5EzIpoPaKwfccG9GoFrxvePuwE5ST9su/xGNxcUM1K6NEafcGDT930Ec4lTU9Q7iL
-         r3tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698047233; x=1698652033;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uInDQi5hkTSDKcRYo0hzYhBHCzPIaLZJWqXIlWN4pBw=;
-        b=pR03T5AMcnHi3y1nal9JCJAy72i3XnU7I9GPZZ527G9OJbW5uXrh9ogVMmNQge+iUT
-         puyvlMAi3gRaOijU8K13YY4d22APxJ5ZTJpxnRKhUj3B0UxzFrrSg10MqHBoKY5Emq0J
-         ppdl5FKBome9uI7+WrQI7DqIriRXkyJJdBOpZ5x900sXJXhcU5pYTmGigZNMVmv/cTz+
-         8uweO8yp0CKbwCAmmtjbLmPlw2OBuDBj/AwZlj0X9o8R9qK6BhtNFSCrUOEjlXc4UTYE
-         8bgamm7W5zSaiaCH2Esm4Y0U9MKKPYSGXnA5tNqtiuG4yCaHTdqsC8W2YDQMm17B4WgE
-         IvVA==
-X-Gm-Message-State: AOJu0YxTUyG8MdVF+6A9DPUz7Fg1lexdH0rzEfSTYFjkGnA/v6KteILH
-        icFh+v9L+rQgIO2Q6RxCfXB4Sw==
-X-Google-Smtp-Source: AGHT+IG52Ja6SfCTWSuU1Cd43Xf2Exs6nvBaYEOimfthvt2nDnMTNLji9R4VMwh9MfbU8RmsOM/a2A==
-X-Received: by 2002:a17:907:97c2:b0:9bf:4e0b:fb08 with SMTP id js2-20020a17090797c200b009bf4e0bfb08mr6715509ejc.16.1698047233033;
-        Mon, 23 Oct 2023 00:47:13 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id g27-20020a170906395b00b00988dbbd1f7esm6108680eje.213.2023.10.23.00.47.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 00:47:12 -0700 (PDT)
-Message-ID: <d93ff8f4-984a-4a20-9b81-5c088baf12e8@linaro.org>
-Date:   Mon, 23 Oct 2023 09:47:10 +0200
+        Mon, 23 Oct 2023 03:49:02 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48D2D65
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:48:59 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 90EE51C000A;
+        Mon, 23 Oct 2023 07:48:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1698047338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dsbOxXvaUACNqn3KCLe6HiongEO3afF5MvHJnuxBJM8=;
+        b=F2Q+Rw1+gg6fZaPNgceUhfb+c+gt9le1AcvsihKsFbbO/k0YC41wRzxb//miKRe8z3KfJs
+        SB7XBpyI+Ka3gpY3xXASYDgZb58ieEm/1kKqd/T8mEbCGg39QtUMM/1H9kNwvcM+Y9Q5Az
+        xumiB2QLhNa1AyS7yBEOSy8rhA706RpJf0iz/y9Wo4yRZ2dsEmiqN8zMKT51hwvvcYXdHP
+        VohJhNX0SVTBoKGEkaD5p1J2CkK7T5gMtneE4C0Pcmmk6v16NfkURwrx/YCQPvVFjb941D
+        M3cNeqcASks9w11fUqXaEVFLJMVxacud7EwpR3ppZcrZvqxrzd3Azpdz2NOR7A==
+Date:   Mon, 23 Oct 2023 09:48:53 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
+        imx@lists.linux.dev, joe@perches.com,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 Resent 6/6] i3c: master: svc: fix random hot join
+ failure since timeout errory
+Message-ID: <20231023094853.2510967f@xps-13>
+In-Reply-To: <ZTLb4f4WieyLnb6m@lizhi-Precision-Tower-5810>
+References: <20231018155926.3305476-7-Frank.Li@nxp.com>
+        <20231019084452.11fd0645@xps-13>
+        <ZTFNvrsSoHOS3P2g@lizhi-Precision-Tower-5810>
+        <20231020160645.67e678ee@xps-13>
+        <ZTKMTwU6cVAfGCKG@lizhi-Precision-Tower-5810>
+        <20231020163525.66485920@xps-13>
+        <ZTKTGG7J55Sj19Nd@lizhi-Precision-Tower-5810>
+        <20231020172006.5de0998b@xps-13>
+        <ZTKhJOAAz4CaupEf@lizhi-Precision-Tower-5810>
+        <20231020190337.13ef5638@xps-13>
+        <ZTLb4f4WieyLnb6m@lizhi-Precision-Tower-5810>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/9] dt-bindings: gce: mt8195: Add
- CMDQ_SYNC_TOKEN_SECURE_THR_EOF event id
-Content-Language: en-US
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Jeffrey Kardatzke <jkardatzke@google.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>
-References: <20231023043751.17114-1-jason-jh.lin@mediatek.com>
- <20231023043751.17114-2-jason-jh.lin@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231023043751.17114-2-jason-jh.lin@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SORTED_RECIPS,
+        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/2023 06:37, Jason-JH.Lin wrote:
-> CMDQ_SYNC_TOKEN_SECURE_THR_EOF is used as secure irq to notify CMDQ
-> driver in the normal world that GCE secure thread has completed a task
-> in thee secure world.
+Hi Frank,
 
-s/thee/the/
+Frank.li@nxp.com wrote on Fri, 20 Oct 2023 15:58:25 -0400:
 
-> 
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
+> On Fri, Oct 20, 2023 at 07:03:37PM +0200, Miquel Raynal wrote:
+> > Hi Frank,
+> >=20
+> > Frank.li@nxp.com wrote on Fri, 20 Oct 2023 11:47:48 -0400:
+> >  =20
+> > > On Fri, Oct 20, 2023 at 05:20:06PM +0200, Miquel Raynal wrote: =20
+> > > > Hi Frank,
+> > > >=20
+> > > > Frank.li@nxp.com wrote on Fri, 20 Oct 2023 10:47:52 -0400:
+> > > >    =20
+> > > > > On Fri, Oct 20, 2023 at 04:35:25PM +0200, Miquel Raynal wrote:   =
+=20
+> > > > > > Hi Frank,
+> > > > > >=20
+> > > > > > Frank.li@nxp.com wrote on Fri, 20 Oct 2023 10:18:55 -0400:
+> > > > > >      =20
+> > > > > > > On Fri, Oct 20, 2023 at 04:06:45PM +0200, Miquel Raynal wrote=
+:     =20
+> > > > > > > > Hi Frank,
+> > > > > > > >=20
+> > > > > > > > Frank.li@nxp.com wrote on Thu, 19 Oct 2023 11:39:42 -0400:
+> > > > > > > >        =20
+> > > > > > > > > On Thu, Oct 19, 2023 at 08:44:52AM +0200, Miquel Raynal w=
+rote:       =20
+> > > > > > > > > > Hi Frank,
+> > > > > > > > > >=20
+> > > > > > > > > > Frank.Li@nxp.com wrote on Wed, 18 Oct 2023 11:59:26 -04=
+00:
+> > > > > > > > > >          =20
+> > > > > > > > > > > master side report:
+> > > > > > > > > > >   silvaco-i3c-master 44330000.i3c-master: Error condi=
+tion: MSTATUS 0x020090c7, MERRWARN 0x00100000
+> > > > > > > > > > >=20
+> > > > > > > > > > > BIT 20: TIMEOUT error
+> > > > > > > > > > >   The module has stalled too long in a frame. This ha=
+ppens when:
+> > > > > > > > > > >   - The TX FIFO or RX FIFO is not handled and the bus=
+ is stuck in the
+> > > > > > > > > > > middle of a message,
+> > > > > > > > > > >   - No STOP was issued and between messages,
+> > > > > > > > > > >   - IBI manual is used and no decision was made.     =
+    =20
+> > > > > > > > > >=20
+> > > > > > > > > > I am still not convinced this should be ignored in all =
+cases.
+> > > > > > > > > >=20
+> > > > > > > > > > Case 1 is a problem because the hardware failed somehow=
+.         =20
+> > > > > > > > >=20
+> > > > > > > > > But so far, no action to handle this case in current code=
+.       =20
+> > > > > > > >=20
+> > > > > > > > Yes, but if you detect an issue and ignore it, it's not bet=
+ter than
+> > > > > > > > reporting it without handling it. Instead of totally ignori=
+ng this I
+> > > > > > > > would at least write a debug message (identical to what's b=
+elow) before
+> > > > > > > > returning false, even though I am not convinced uncondition=
+ally
+> > > > > > > > returning false here is wise. If you fail a hardware sequen=
+ce because
+> > > > > > > > you added a printk, it's a problem. Maybe you consider this=
+ line as
+> > > > > > > > noise, but I believe it's still an error condition. Maybe, =
+however,
+> > > > > > > > this bit gets set after the whole sequence, and this is jus=
+t a "bus
+> > > > > > > > is idle" condition. If that's the case, then you need some
+> > > > > > > > additional heuristics to properly ignore the bit?
+> > > > > > > >        =20
+> > > > > > >=20
+> > > > > > >                 dev_err(master->dev,                         =
+             =20
+> > > > > > >                         "Error condition: MSTATUS 0x%08x, MER=
+RWARN 0x%08x\n",
+> > > > > > >                         mstatus, merrwarn);
+> > > > > > > +
+> > > > > > > +		/* ignore timeout error */
+> > > > > > > +		if (merrwarn & SVC_I3C_MERRWARN_TIMEOUT)
+> > > > > > > +			return false;
+> > > > > > > +
+> > > > > > >=20
+> > > > > > > Is it okay move SVC_I3C_MERRWARN_TIMEOUT after dev_err?     =
+=20
+> > > > > >=20
+> > > > > > I think you mentioned earlier that the problem was not the prin=
+tk but
+> > > > > > the return value. So perhaps there is a way to know if the time=
+out
+> > > > > > happened after a transaction and was legitimate or not?     =20
+> > > > >=20
+> > > > > Error message just annoise user, don't impact function. But retur=
+n false
+> > > > > let IBI thread running to avoid dead lock.=20
+> > > > >    =20
+> > > > > >=20
+> > > > > > In any case we should probably lower the log level for this err=
+or.     =20
+> > > > >=20
+> > > > > Only SVC_I3C_MERRWARN_TIMEOUT is warning
+> > > > >=20
+> > > > > Maybe below logic is better
+> > > > >=20
+> > > > > 	if (merrwarn & SVC_I3C_MERRWARN_TIMEOUT) {
+> > > > > 		dev_dbg(master->dev,=20
+> > > > >                         "Error condition: MSTATUS 0x%08x, MERRWAR=
+N 0x%08x\n",
+> > > > > 			mstatus, merrwarn);
+> > > > > 		return false;
+> > > > > 	}=20
+> > > > > =09
+> > > > > 	dev_err(master->dev,                                    =20
+> > > > >                 "Error condition: MSTATUS 0x%08x, MERRWARN 0x%08x=
+\n",
+> > > > >                  mstatus, merrwarn);=20
+> > > > > 	....
+> > > > >    =20
+> > > >=20
+> > > > Yes, this looks better but I wonder if we should add an additional
+> > > > condition to just return false in this case;    =20
+> > >=20
+> > > What's additional condition we can check? =20
+> >=20
+> > Well, you're the one bothered with an error case which is not a real
+> > error. You're saying "this error is never a problem" and I am saying
+> > that I believe it is not a problem is your particular case, but in
+> > general there might be situations where it *is* a problem. So you need
+> > to find proper conditions to check against in order to determine
+> > whether this is just an info with no consequence or an error. =20
+>=20
+> I checked R** code of this TIMEOUT, which is quite simple, set to 1 if SDA
+> is low over 100us if I understand correctly. I also checked, if I add del=
+ay
+> before emit stop, TIMEOUT will be set. (Read can auto emit stop accoring =
+to
+> RDTERM, so just saw TIMEOUT at write transaction).
+>=20
+> TIMEOUT just means condition "I3C bus's SDA low over 100us" happened since
+> written 1 to TIMEOUT.
+>=20
+> I think "I3C bus's SDA over 100us" means nothing for linux drivers.
+>=20
+> I think there are NO sitation where it *is* a problem. If it was problem,
+> there are NO solution to resolve it at linux driver side. And I think it
+> already happen many times silencely.=20
 
-This is a new patch, so you must mention it in the changelog. There is
-nothing in the changelog saying about this new patch.
+Ok then, I'll opt for your last proposal of printing the error message
+at the debug loglevel and return false.
 
-
->  include/dt-bindings/gce/mt8195-gce.h | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/include/dt-bindings/gce/mt8195-gce.h b/include/dt-bindings/gce/mt8195-gce.h
-> index dcfb302b8a5b..9f99da3363b9 100644
-> --- a/include/dt-bindings/gce/mt8195-gce.h
-> +++ b/include/dt-bindings/gce/mt8195-gce.h
-> @@ -809,4 +809,10 @@
->  /* end of hw event */
->  #define CMDQ_MAX_HW_EVENT				1019
->  
-> +/*
-> + * Notify normal CMDQ there are some secure task done,
-> + * this token sync with secure world.
-> + */
-> +#define CMDQ_SYNC_TOKEN_SECURE_THR_EOF			980
-
-Why is this below 1019? Your driver calls it also even, so is this an
-event or not?
-
-Your driver does not use this value, so does it mean FW uses it?
-
-Best regards,
-Krzysztof
-
+Thanks,
+Miqu=C3=A8l
