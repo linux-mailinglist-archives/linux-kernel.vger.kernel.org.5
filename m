@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F357D3A79
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81737D3A7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbjJWPO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:14:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
+        id S231742AbjJWPQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232511AbjJWPOY (ORCPT
+        with ESMTP id S230431AbjJWPQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:14:24 -0400
+        Mon, 23 Oct 2023 11:16:04 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0777103;
-        Mon, 23 Oct 2023 08:14:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A9DFD;
+        Mon, 23 Oct 2023 08:16:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698074061; x=1729610061;
+  t=1698074162; x=1729610162;
   h=date:from:to:cc:subject:in-reply-to:message-id:
    references:mime-version;
-  bh=F/80+LA8DAgnb+BIYCO0swzOrWOKhwnOaiRx/CzCCd0=;
-  b=YzE4paJGmidFKGpNYoZEXsqf7/7EsaUMj+JLWF01NYDd9Nj6kx1BJ30t
-   geScA6XOZz2lpzmy6J9a+D/Um9HZp4yj+b5/Jjmqz/lH5iWXP5lKFJ2m/
-   8DQCHV59gXVDuEP8skszEdk2oK+MO6NjSzOR/HcPpowX3ZIv51PBdkD4g
-   2OJjfrUsmLkFmlK4By1vFIVuvq0MhiqG02OI8fWTBnuUK7p6bgrTgh7WC
-   Y5QXozRxbz0vx5IF75HEO/7kQN81qCltQ+dlq+9AzSe0YwC7gCb4bOG7p
-   SX8vTolIHhy0PeyVw6gJx1e1tgCRWr1XHVCIOT0q0NQy6NyhMuQogkh77
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="384061542"
+  bh=0YaGt4PogPOyXc9eKQtxsUb6I+hoSZBtR9QsLM3nwbc=;
+  b=OEvaJ6y+f8UI5rH/Y1H/3cuyPHeXTuGQX2G2wKxdupklR/JPfxkH90jg
+   c6Pdfe1ovPHw3cYE2HtTPfJkWpwI8oufamZnP+PaQP3v47DXX6AEkvcbC
+   XN0FPrejA1GrHJ/vgvNsjE6xGRnxJdv4iXoTUSVMAgyezEU7oaGR3fKP0
+   4/JUJof8EcsIMYVpRpaUh+RrTtHwVTdEciYZryLRXHpedO38Ox3ZG8kX8
+   JkepbuR54NrTlCen/YDSYJhxJdujvy0SFvJDuSNqf8NGf1bQUnOhaQZ7b
+   6YoXXYDXocKVdFAB4HK3LBhl2ucTYQSusUGgaGynoduQI9CrooFJafkQA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="384061950"
 X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="384061542"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 08:14:21 -0700
+   d="scan'208";a="384061950"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 08:16:01 -0700
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="758160305"
 X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="6113537"
+   d="scan'208";a="758160305"
 Received: from foliveix-mobl5.amr.corp.intel.com ([10.251.211.194])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 08:14:13 -0700
-Date:   Mon, 23 Oct 2023 18:14:13 +0300 (EEST)
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 08:15:59 -0700
+Date:   Mon, 23 Oct 2023 18:15:51 +0300 (EEST)
 From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
 To:     "David E. Box" <david.e.box@linux.intel.com>
 cc:     LKML <linux-kernel@vger.kernel.org>,
         platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Subject: Re: [PATCH V4 06/17] platform/x86/intel/pmt: Add header to struct
- intel_pmt_entry
-In-Reply-To: <20231018231624.1044633-7-david.e.box@linux.intel.com>
-Message-ID: <51e480e7-f3e7-f4bd-294e-532639fe6da6@linux.intel.com>
-References: <20231018231624.1044633-1-david.e.box@linux.intel.com> <20231018231624.1044633-7-david.e.box@linux.intel.com>
+Subject: Re: [PATCH V4 03/17] platform/x86/intel/vsec: Use cleanup.h
+In-Reply-To: <20231018231624.1044633-4-david.e.box@linux.intel.com>
+Message-ID: <a06ab9b-4530-2196-14a2-7d78972c5b3@linux.intel.com>
+References: <20231018231624.1044633-1-david.e.box@linux.intel.com> <20231018231624.1044633-4-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1047910326-1698074059=:1721"
+Content-Type: multipart/mixed; boundary="8323329-691496953-1698074160=:1721"
 X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -62,155 +62,86 @@ X-Mailing-List: linux-kernel@vger.kernel.org
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-1047910326-1698074059=:1721
-Content-Type: text/plain; charset=UTF-8
+--8323329-691496953-1698074160=:1721
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 8BIT
 
 On Wed, 18 Oct 2023, David E. Box wrote:
 
-> The PMT header is passed to several functions. Instead, store the header in
-> struct intel_pmt_entry which is also passed to these functions and shorten
-> the argument list. This simplifies the calls in preparation for later
-> changes.
+> Use cleanup.h helpers to handle cleanup of resources in
+> intel_vsec_add_dev() after failures.
 > 
 > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Reviewed-by: Ilpo JÃ¤rvinen <ilpo.jarvinen@linux.intel.com>
 > ---
-> V4 - No change
+> V4 - Do no_free_ptr() before and in call to intel_vsec_add_aux().
+>    - Add resource cleanup in this patch.
 > 
-> V3 - No change
+> V3 - New patch.
 > 
-> V2 - No change
+>  drivers/platform/x86/intel/vsec.c | 23 +++++++++++++++--------
+>  1 file changed, 15 insertions(+), 8 deletions(-)
 > 
->  drivers/platform/x86/intel/pmt/class.c     |  8 +++-----
->  drivers/platform/x86/intel/pmt/class.h     | 16 ++++++++--------
->  drivers/platform/x86/intel/pmt/crashlog.c  |  2 +-
->  drivers/platform/x86/intel/pmt/telemetry.c |  2 +-
->  4 files changed, 13 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/intel/pmt/class.c b/drivers/platform/x86/intel/pmt/class.c
-> index 32608baaa56c..142a24e3727d 100644
-> --- a/drivers/platform/x86/intel/pmt/class.c
-> +++ b/drivers/platform/x86/intel/pmt/class.c
-> @@ -159,12 +159,12 @@ static struct class intel_pmt_class = {
->  };
+> diff --git a/drivers/platform/x86/intel/vsec.c b/drivers/platform/x86/intel/vsec.c
+> index b14eba545770..28191313d515 100644
+> --- a/drivers/platform/x86/intel/vsec.c
+> +++ b/drivers/platform/x86/intel/vsec.c
+> @@ -15,6 +15,7 @@
 >  
->  static int intel_pmt_populate_entry(struct intel_pmt_entry *entry,
-> -				    struct intel_pmt_header *header,
->  				    struct intel_vsec_device *ivdev,
->  				    struct resource *disc_res)
+>  #include <linux/auxiliary_bus.h>
+>  #include <linux/bits.h>
+> +#include <linux/cleanup.h>
+>  #include <linux/delay.h>
+>  #include <linux/kernel.h>
+>  #include <linux/idr.h>
+> @@ -147,10 +148,11 @@ EXPORT_SYMBOL_NS_GPL(intel_vsec_add_aux, INTEL_VSEC);
+>  static int intel_vsec_add_dev(struct pci_dev *pdev, struct intel_vsec_header *header,
+>  			      struct intel_vsec_platform_info *info)
 >  {
->  	struct pci_dev *pci_dev = ivdev->pcidev;
->  	struct device *dev = &ivdev->auxdev.dev;
-> +	struct intel_pmt_header *header = &entry->header;
->  	u8 bir;
+> -	struct intel_vsec_device *intel_vsec_dev;
+> -	struct resource *res, *tmp;
+> +	struct intel_vsec_device __free(kfree) *intel_vsec_dev = NULL;
+> +	struct resource __free(kfree) *res = NULL;
+> +	struct resource *tmp;
+>  	unsigned long quirks = info->quirks;
+> -	int i;
+> +	int ret, i;
 >  
->  	/*
-> @@ -313,7 +313,6 @@ int intel_pmt_dev_create(struct intel_pmt_entry *entry, struct intel_pmt_namespa
->  			 struct intel_vsec_device *intel_vsec_dev, int idx)
->  {
->  	struct device *dev = &intel_vsec_dev->auxdev.dev;
-> -	struct intel_pmt_header header;
->  	struct resource	*disc_res;
->  	int ret;
+>  	if (!intel_vsec_supported(header->id, info->caps))
+>  		return -EINVAL;
+> @@ -170,10 +172,8 @@ static int intel_vsec_add_dev(struct pci_dev *pdev, struct intel_vsec_header *he
+>  		return -ENOMEM;
 >  
-> @@ -323,16 +322,15 @@ int intel_pmt_dev_create(struct intel_pmt_entry *entry, struct intel_pmt_namespa
->  	if (IS_ERR(entry->disc_table))
->  		return PTR_ERR(entry->disc_table);
+>  	res = kcalloc(header->num_entries, sizeof(*res), GFP_KERNEL);
+> -	if (!res) {
+> -		kfree(intel_vsec_dev);
+> +	if (!res)
+>  		return -ENOMEM;
+> -	}
 >  
-> -	ret = ns->pmt_header_decode(entry, &header, dev);
-> +	ret = ns->pmt_header_decode(entry, dev);
->  	if (ret)
->  		return ret;
+>  	if (quirks & VSEC_QUIRK_TABLE_SHIFT)
+>  		header->offset >>= TABLE_OFFSET_SHIFT;
+> @@ -200,8 +200,15 @@ static int intel_vsec_add_dev(struct pci_dev *pdev, struct intel_vsec_header *he
+>  	else
+>  		intel_vsec_dev->ida = &intel_vsec_ida;
 >  
-> -	ret = intel_pmt_populate_entry(entry, &header, intel_vsec_dev, disc_res);
-> +	ret = intel_pmt_populate_entry(entry, intel_vsec_dev, disc_res);
->  	if (ret)
->  		return ret;
->  
->  	return intel_pmt_dev_register(entry, ns, dev);
-> -
+> -	return intel_vsec_add_aux(pdev, NULL, intel_vsec_dev,
+> -				  intel_vsec_name(header->id));
+> +	/*
+> +	 * Pass the ownership of intel_vsec_dev and resource within it to
+> +	 * intel_vsec_add_aux()
+> +	 */
+> +	no_free_ptr(res);
+> +	ret = intel_vsec_add_aux(pdev, NULL, no_free_ptr(intel_vsec_dev),
+> +				 intel_vsec_name(header->id));
+> +
+> +	return ret;
 
-Newline change that doesn't belong to this patch.
+This looks good other than you don't need to add the ret variable at all. 
+After changing that, please add:
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
 -- 
  i.
 
-
->  }
->  EXPORT_SYMBOL_NS_GPL(intel_pmt_dev_create, INTEL_PMT);
->  
-> diff --git a/drivers/platform/x86/intel/pmt/class.h b/drivers/platform/x86/intel/pmt/class.h
-> index db11d58867ce..e477a19f6700 100644
-> --- a/drivers/platform/x86/intel/pmt/class.h
-> +++ b/drivers/platform/x86/intel/pmt/class.h
-> @@ -18,7 +18,15 @@
->  #define GET_BIR(v)		((v) & GENMASK(2, 0))
->  #define GET_ADDRESS(v)		((v) & GENMASK(31, 3))
->  
-> +struct intel_pmt_header {
-> +	u32	base_offset;
-> +	u32	size;
-> +	u32	guid;
-> +	u8	access_type;
-> +};
-> +
->  struct intel_pmt_entry {
-> +	struct intel_pmt_header	header;
->  	struct bin_attribute	pmt_bin_attr;
->  	struct kobject		*kobj;
->  	void __iomem		*disc_table;
-> @@ -29,19 +37,11 @@ struct intel_pmt_entry {
->  	int			devid;
->  };
->  
-> -struct intel_pmt_header {
-> -	u32	base_offset;
-> -	u32	size;
-> -	u32	guid;
-> -	u8	access_type;
-> -};
-> -
->  struct intel_pmt_namespace {
->  	const char *name;
->  	struct xarray *xa;
->  	const struct attribute_group *attr_grp;
->  	int (*pmt_header_decode)(struct intel_pmt_entry *entry,
-> -				 struct intel_pmt_header *header,
->  				 struct device *dev);
->  };
->  
-> diff --git a/drivers/platform/x86/intel/pmt/crashlog.c b/drivers/platform/x86/intel/pmt/crashlog.c
-> index bbb3d61d09f4..4014c02cafdb 100644
-> --- a/drivers/platform/x86/intel/pmt/crashlog.c
-> +++ b/drivers/platform/x86/intel/pmt/crashlog.c
-> @@ -223,10 +223,10 @@ static const struct attribute_group pmt_crashlog_group = {
->  };
->  
->  static int pmt_crashlog_header_decode(struct intel_pmt_entry *entry,
-> -				      struct intel_pmt_header *header,
->  				      struct device *dev)
->  {
->  	void __iomem *disc_table = entry->disc_table;
-> +	struct intel_pmt_header *header = &entry->header;
->  	struct crashlog_entry *crashlog;
->  
->  	if (!pmt_crashlog_supported(entry))
-> diff --git a/drivers/platform/x86/intel/pmt/telemetry.c b/drivers/platform/x86/intel/pmt/telemetry.c
-> index 39cbc87cc28a..f86080e8bebd 100644
-> --- a/drivers/platform/x86/intel/pmt/telemetry.c
-> +++ b/drivers/platform/x86/intel/pmt/telemetry.c
-> @@ -58,10 +58,10 @@ static bool pmt_telem_region_overlaps(struct intel_pmt_entry *entry,
->  }
->  
->  static int pmt_telem_header_decode(struct intel_pmt_entry *entry,
-> -				   struct intel_pmt_header *header,
->  				   struct device *dev)
->  {
->  	void __iomem *disc_table = entry->disc_table;
-> +	struct intel_pmt_header *header = &entry->header;
->  
->  	if (pmt_telem_region_overlaps(entry, dev))
->  		return 1;
-> 
---8323329-1047910326-1698074059=:1721--
+--8323329-691496953-1698074160=:1721--
