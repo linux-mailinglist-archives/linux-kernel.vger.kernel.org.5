@@ -2,87 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D337D4367
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 01:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5EF77D4370
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 01:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbjJWXoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 19:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
+        id S231458AbjJWXqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 19:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjJWXoM (ORCPT
+        with ESMTP id S231681AbjJWXqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 19:44:12 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEB2A4;
-        Mon, 23 Oct 2023 16:44:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1698104589; x=1698709389; i=s.l-h@gmx.de;
-        bh=c12zjGhXuILXy6c+VS+yOhq4DSmbOBdAvoj+0IeHUlQ=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:
-         References;
-        b=Uodw9CqcsXTaliZfm/92Z2xFBXYAK6IwOiSpfxl5KnqgPO9zffsF/iOpW5aelJ1k
-         yhWRM264lMa/fA71okHLoSy8GgzcKYOIcRu6m8D+AzXproq/LKPRA+4r/6U6VotwI
-         mI2GQzLg9nycZehhqu+w2y8AjaSW/svvI2hiXGr9YGLsY0s7LgqAoUj0UvPmMAwAu
-         ZsLVePvXFK7qzEpZ+Iz2g3XwukOadO6Fs8td7rhgoarLW7KJmZjQsZLjy/69hddvj
-         aNKUhKVP5TpxCB2Lzy0G/PML85S89U8BN0HQ2T7OTCc7NdrPCUb7Di3N8wySmf7SF
-         Q1vyI5syus+wyQ4vhw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mir ([94.31.85.155]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MYNNo-1qz2sh2Fog-00VT6g; Tue, 24
- Oct 2023 01:43:09 +0200
-Date:   Tue, 24 Oct 2023 01:43:02 +0200
-From:   Stefan Lippers-Hollmann <s.l-h@gmx.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Kalle Valo <kvalo@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Geoff Levand <geoff@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Pavel Machek <pavel@ucw.cz>, Stanislaw Gruszka <stf_xl@wp.pl>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-wireless@vger.kernel.org,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Linux Wireless <ilw@linux.intel.com>
-Subject: Re: [PATCH 10/10] [RFC] wifi: remove ipw2100/ipw2200 drivers
-Message-ID: <20231024014302.0a0b79b0@mir>
-In-Reply-To: <20231023131953.2876682-11-arnd@kernel.org>
-References: <20231023131953.2876682-1-arnd@kernel.org>
-        <20231023131953.2876682-11-arnd@kernel.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NpIw+SX94egfOhweBUAICPZH64XIjR12TC41Cr5kyAe3nCj2nJU
- W/jSlk3O9a/mEjYbsalglT8krptSsQttKV/p+nmGou04gTFwqgwY68JcCtrWE7Ewn+Q3yEk
- ixE9ud6+7BJVpxWJj+mqc751GtNMzj+UL9EbknOtywXW2D2SwmvVPgKQ7UPPg+khuD1jnvB
- joodVtXZ0hBJst/+AwO2Q==
-UI-OutboundReport: notjunk:1;M01:P0:xeUZYqMe2kU=;VSobLSjvxv4e9KvKoWW3WapMQOz
- SvjhgYdRICj+oTFhwSCh31kra8F6DiJwdjPVsnQ/xjdYtA9TcXr9P/J1lLYc1dWloNCjLaQkZ
- N9mFuZUfdL6kUDoUPNrOFpcu0u+aVhYsEr75Z7QndpJRZMUDe19snVpb+j91cA4X7B9Dts2CR
- BQurgXV4F0o+EQbdCLJlSZBVgSLHws2xxRjAp+trAx6Xv3vw6adc3W0rz+geymeHMFR+bHXOf
- KChzfNUcWauwnRHTGdCXJgj3Q0n6Pod1y8SgfMuvvUTzVIjIvc+0/OFcuC0OzSALXlSbAIQwE
- t2pjiqQlQ96vrVpgb7b5mbMM6jAtLdLVDBGo6Bu7iCC0aEnnAzrLtwVDkA6c7EAKbBdulxEEs
- U1FkxKsNyMqszruBbV/n7mKjDzBKmVx7XAMq5Xd1DN3WX15ccUR7V5pEYpsfhL1V7Jsn5NfCQ
- HE3djfPPO67UnTeCn+eFTNSF//qvDpiWPc8WMEr0+yvMD5S4dcraEXLSi8gzQ/4Kpjb02XcaC
- MriGmTYE1HuFuKQ/47RkL73LyzBV1SezL5CSoweyAniRJH0nsDNAL5LsoE4ivdhkKhdIvj9mf
- okqS04G4KzNA19BBXIsHQix5cI4T90/x7Lqg+ArpszXIqdVKYfh9IG5LhXXBH+GwqctbeHJWR
- 2AB1SsQ3L2KafT7Rdfx6oPgRNN1yMlY1Ci2ShPRAbzxT6fhee277CLYEPc9FvA5aeMJnjzTha
- /IcPh/Ob/o3mpHe//Rigfkfz1i8c0mhXZPOVKzVuU9vaI9aplolQso8qEFfbiCAzpWGJbnIFf
- s89jxCnwjLoEd8gkK8L/FfKRR44p4tNN6f83Vq+Xo4J4CvBH8oXbW1BrRX8EsWuD7QqNsRrZX
- I7At23qs2nCZnQW8vJh1KH6kJvZk50R3n515g07ALKD13OMfeKafnwfVrdi7kRzX9jr9jpWVB
- Uiqmfw==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        Mon, 23 Oct 2023 19:46:32 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8335A10A
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:46:28 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c9e1b431d0so25969705ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:46:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698104788; x=1698709588; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2DRTta2TjFX3FWgIj07+aRef6sC8s7S30TJagNFrajY=;
+        b=Q9+/xTv1H0O6IkMgD5WoMmx9kl6zYCOqnuHu5eiX3c28xv89a9VCxBPY1vEuF4tZvb
+         MW5ZCeOSEFNo3DO5mxDSfEGB4OB5f7tunNwOqJb/UsJQJ6sfR/bdUFAqZWxAGLoBiFc2
+         nXxQ7vsKJRMipcac6AWDyFW72Hlud7JWo4PmWUXJqtm6KG/1vvoqlEWbo54lsBJA3R7W
+         PmgD/2ksLrtK3QC920s7YVlc9TzF0bF4hRp04Z1w7wpEHuui7MiiWUWP6AP3J3SVhLAL
+         dIb2PAp39d0cYG6Sz/yfu+cSrvaAbTxrC9dNZCBJelfBd9DkzytkfOqM1xoRcHEaeZZh
+         HLog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698104788; x=1698709588;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2DRTta2TjFX3FWgIj07+aRef6sC8s7S30TJagNFrajY=;
+        b=u8wRyZgOO0J8KNi96nTxjb3tgGKc24ZerqXeNL/aQubEvjD6lwHS/q/Zaal7a5yP4e
+         UC7vYOuLpgiKS12tgp61jPPG+damWFJ2uTrk9DqDy6t8UPO9/glkp8SAArWAToHgldVr
+         4nZK6IZCW9+dkTf0La83AOpA6BSEn2+v8ecWumO4vTO3eV/F7SIokL5eUamgtc2oiJz7
+         Jp4wTWq9Zu7Dn9Eqlp6PpHZ8YrPriFiMK6njCyxP0jNmB+0/wCqnR183xHxfSzbcHfZN
+         4gE8RVf0P0ThqMflkRUrNzNOk7cd4cUaySJX3AvGtLUL5Wl8igto/LWmUUw73uRevUno
+         /WnQ==
+X-Gm-Message-State: AOJu0YxXIfFnF6rTgPHDZHydVOQebqq9dQnpod1yfxL0jjtMPe2nVpDR
+        cn8CjsJ0f2gRhN2P4vVZVffF+vLYACM=
+X-Google-Smtp-Source: AGHT+IH0FqeYHDo7LQTtCwPn4EPd8cZOz3rQPZu7Oxo0Y0ebrlgG7M9bpedWQhyT/9zOEX8RSOtOhgN3CHY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:64c2:b0:1ca:874c:e031 with SMTP id
+ y2-20020a17090264c200b001ca874ce031mr170131pli.6.1698104787957; Mon, 23 Oct
+ 2023 16:46:27 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 16:43:30 -0700
+In-Reply-To: <20230913124227.12574-1-binbin.wu@linux.intel.com>
+Mime-Version: 1.0
+References: <20230913124227.12574-1-binbin.wu@linux.intel.com>
+X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
+Message-ID: <169810442917.2499338.3440694989716170017.b4-ty@google.com>
+Subject: Re: [PATCH v11 00/16] LAM and LASS KVM Enabling
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        David.Laight@ACULAB.COM, robert.hu@linux.intel.com,
+        guang.zeng@intel.com
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,193 +70,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Wed, 13 Sep 2023 20:42:11 +0800, Binbin Wu wrote:
+> This patch series includes KVM enabling patches for Linear-address masking
+> (LAM) v11 and Linear Address Space Separation (LASS) v3 since the two features
+> have overlapping prep work and concepts. Sent as a single series to reduce the
+> probability of conflicts.
+> 
+> The patch series is organized as follows:
+> - Patch 1-4: Common prep work for both LAM and LASS.
+> - Patch 5-13: LAM part.
+> - Patch 14-16: LASS part.
+> 
+> [...]
 
-On 2023-10-23, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> These two drivers were used for the earliest "Centrino" branded Intel
-> laptops during the late 32-bit Pentium-M era, roughly 2003 to 2005, whic=
-h
-> probably makes it the most modern platform that still uses the wireless
-> extension interface instead of cfg80211. Unlike the other drivers that
-> are suggested for removal, this one is still officially maintained.
->
-> According to Johannes Berg, there was an effort to finish the move away
-> from wext in the past, but the last evidence of this that I could find
-> is from commit a3caa99e6c68f ("libipw: initiate cfg80211 API conversion
-> (v2)") in 2009.
->
-> Link: https://lore.kernel.org/all/87fs2fgals.fsf@kernel.org/
-> Cc: Stanislav Yakovlev <stas.yakovlev@gmail.com>
-> Cc: Linux Wireless <ilw@linux.intel.com>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> I'm not convinced this should be in the same set of drivers as the
-> rest, since this is clearly less obsolete than the other hardware
-> that I would remove support for.
+Applied to kvm-x86 lam (for 6.8)!  I skipped the LASS patches, including patch 2
+(the branch targets patch).  I kept the IMPLICIT emulator flag even thought it's
+not strictly needed as it's a nice way to document non-existent code.
 
-These have indeed been very common back in the day, I'm still using
-a 2003-vintage 1.5 GHz Pentium-M 'Banias' Acer Travelmate 292LMi
-notebook using ipw2200 (and have two spare ipw2200 mini-PCI cards).
-Works still fine using v6.5.8-rc1 and WPA2PSK/ CCMP (sadly it does
-not do WPA3) and I do use it semi-regularly (running the latest
-stable- or stable-rc kernel of the day).
+I massaged a few changelogs and fixed the KVM_X86_OP_OPTIONAL() issue, but
+otherwise I don't think I made any code changes (it's been a long day :-) ).
+Please take a look to make sure it all looks good.
 
-While it would be nice to replace it with an ath5k based card (to
-get WPA3 support), the card isn't that easy to reach in the notebook,
-so it would be sad to see this go.
+Thanks!
 
-Host/Kernel/OS  "acer-292lmi" running Linux 6.5.8-rc1 i686 [ Debian GNU/Li=
-nux trixie/sid ]
-System          Acer TravelMate 290
-CPU Info        Intel Pentium M 1024 KB cache flags( sse2 ) clocked at [ 1=
-400.000 MHz ]
-Videocard       Advanced Micro Devices, [AMD/ATI] RV350/M10 / RV360/M11 [M=
-obility Radeon 9600 (PRO) / 9700]  X.Org 1.23.2.1  [ 1024x768@60.00hz ]
-Network cards   Realtek RTL-8100/8101L/8139 PCI Fast Ethernet Adapter, at =
-port: a000
-                Intel PRO/Wireless 2200BG [Calexico2] Network Connection
-Processes 131 | Uptime 3:16 | Memory 125.2/493.1MB | HDD IC25N060ATMR04-0 =
-Size 60GB (67%used) | GLX Renderer llvmpipe (LLVM 16.0.6, 128 bits) | GLX =
-Version Yes
+[01/16] KVM: x86: Consolidate flags for __linearize()
+        https://github.com/kvm-x86/linux/commit/81c940395b14
+[02/16] KVM: x86: Use a new flag for branch targets
+        (no commit info)
+[03/16] KVM: x86: Add an emulation flag for implicit system access
+        https://github.com/kvm-x86/linux/commit/90532843aebf
+[04/16] KVM: x86: Add X86EMUL_F_INVLPG and pass it in em_invlpg()
+        https://github.com/kvm-x86/linux/commit/34b4ed7c1eaf
+[05/16] KVM: x86/mmu: Drop non-PA bits when getting GFN for guest's PGD
+        https://github.com/kvm-x86/linux/commit/8b83853c5c98
+[06/16] KVM: x86: Add & use kvm_vcpu_is_legal_cr3() to check CR3's legality
+        https://github.com/kvm-x86/linux/commit/82ba7169837e
+[07/16] KVM: x86: Remove kvm_vcpu_is_illegal_gpa()
+        https://github.com/kvm-x86/linux/commit/95df55ee42fe
+[08/16] KVM: x86: Introduce get_untagged_addr() in kvm_x86_ops and call it in emulator
+        https://github.com/kvm-x86/linux/commit/7a747b6c84a1
+[09/16] KVM: x86: Untag address for vmexit handlers when LAM applicable
+        https://github.com/kvm-x86/linux/commit/ef99001b30a8
+[10/16] KVM: x86: Virtualize LAM for supervisor pointer
+        https://github.com/kvm-x86/linux/commit/4daea9a5183f
+[11/16] KVM: x86: Virtualize LAM for user pointer
+        https://github.com/kvm-x86/linux/commit/0cadc474eff0
+[12/16] KVM: x86: Advertise and enable LAM (user and supervisor)
+        https://github.com/kvm-x86/linux/commit/6ef90ee226f1
+[13/16] KVM: x86: Use KVM-governed feature framework to track "LAM enabled"
+        https://github.com/kvm-x86/linux/commit/b291db540763
+[14/16] KVM: emulator: Add emulation of LASS violation checks on linear address
+        (no commit info)
+[15/16] KVM: VMX: Virtualize LASS
+        (no commit info)
+[16/16] KVM: x86: Advertise LASS CPUID to user space
+        (no commit info)
 
-Yes, this is an old and slow system, but it's there, functional and
-I rarely need a mobile notebook (my desktops are more current and
-64 bit capable).
-
-02:02.0 Network controller [0280]: Intel Corporation PRO/Wireless 2200BG [=
-Calexico2] Network Connection [8086:4220] (rev 05)
-        Subsystem: Intel Corporation WM3B2200BG Mini-PCI Card [8086:2701]
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr=
-- Stepping- SERR- FastB2B- DisINTx-
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=3Dmedium >TAbort-=
- <TAbort- <MAbort- >SERR- <PERR- INTx-
-        Latency: 128 (750ns min, 6000ns max)
-        Interrupt: pin A routed to IRQ 10
-        Region 0: Memory at d0000000 (32-bit, non-prefetchable) [size=3D4K=
-]
-        Capabilities: [dc] Power Management version 2
-                Flags: PMEClk- DSI+ D1- D2- AuxCurrent=3D0mA PME(D0+,D1-,D=
-2-,D3hot+,D3cold+)
-                Status: D0 NoSoftRst- PME-Enable- DSel=3D0 DScale=3D1 PME-
-        Kernel driver in use: ipw2200
-        Kernel modules: ipw2200
-
-[    0.000000] Linux version 6.5.8-rc1 (s.l-h@gmx.de) (gcc-13 (Debian 13.2=
-.0-5) 13.2.0, GNU ld (GNU Binutils for Debian) 2.41) #1 SMP PREEMPT_DYNAMI=
-C 6.5-13 (2023-10-17)
-...
-[   23.886128] lib80211: common routines for IEEE802.11 drivers
-[   23.886133] lib80211_crypt: registered algorithm 'NULL'
-[   24.051575] libipw: 802.11 data/management/control stack, git-1.1.13
-[   24.051586] libipw: Copyright (C) 2004-2005 Intel Corporation <jketreno=
-@linux.intel.com>
-...
-[   24.735203] ipw2200: Intel(R) PRO/Wireless 2200/2915 Network Driver, 1.=
-2.2kmprq
-[   24.735221] ipw2200: Copyright(c) 2003-2006 Intel Corporation
-[   24.735825] ipw2200: Detected Intel PRO/Wireless 2200BG Network Connect=
-ion
-...
-[   25.007359] ipw2200: Detected geography ZZE (13 802.11bg channels, 19 8=
-02.11a channels)
-...
-[   27.027578] ipw2200 0000:02:02.0 wlp2s2: renamed from eth0
-...
-[   29.571384] NET: Registered PF_PACKET protocol family
-...
-[   42.603676] warning: `wpa_supplicant' uses wireless extensions which wi=
-ll stop working for Wi-Fi 7 hardware; use nl80211
-[   44.196736] lib80211_crypt: registered algorithm 'CCMP'
-
-# iwconfig wlp2s2
-wlp2s2    IEEE 802.11  ESSID:"xxx"
-          Mode:Managed  Frequency:2.412 GHz  Access Point: xx:xx:xx:xx:xx:=
-xx
-          Bit Rate:54 Mb/s   Tx-Power=3D20 dBm   Sensitivity=3D8/0
-          Retry limit:7   RTS thr:off   Fragment thr:off
-          Encryption key:xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx   Securit=
-y mode:open
-          Power Management:off
-          Link Quality=3D0/100  Signal level=3D-28 dBm  Noise level=3D-89 =
-dBm
-          Rx invalid nwid:0  Rx invalid crypt:6  Rx invalid frag:0
-          Tx excessive retries:0  Invalid misc:0   Missed beacon:100
-
-# wpa_cli status
-Selected interface 'wlp2s2'
-bssid=3Dxx:xx:xx:xx:xx:xx
-freq=3D0
-ssid=3Dxxx
-id=3D1
-id_str=3Dxxx
-mode=3Dstation
-pairwise_cipher=3DCCMP
-group_cipher=3DCCMP
-key_mgmt=3DWPA2-PSK
-wpa_state=3DCOMPLETED
-ip_address=3D172.22.2.1
-address=3Dxx:xx:xx:xx:xx:xx
-uuid=3Dxxx
-
-(performance against a wifi6 (ipq8071a AP isn't that great, but it works)
-
-$ iperf3 -c 172.21.4.1
-Connecting to host 172.21.4.1, port 5201
-[  5] local 172.22.2.1 port 45288 connected to 172.21.4.1 port 5201
-[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
-[  5]   0.00-1.00   sec  1.97 MBytes  16.6 Mbits/sec    0    110 KBytes
-[  5]   1.00-2.00   sec  1.74 MBytes  14.6 Mbits/sec    0    163 KBytes
-[  5]   2.00-3.00   sec  1.68 MBytes  14.1 Mbits/sec    0    163 KBytes
-[  5]   3.00-4.00   sec  1.68 MBytes  14.1 Mbits/sec    0    163 KBytes
-[  5]   4.00-5.00   sec  1.86 MBytes  15.6 Mbits/sec    0    163 KBytes
-[  5]   5.00-6.00   sec  1.49 MBytes  12.5 Mbits/sec    0    163 KBytes
-[  5]   6.00-7.00   sec  1.86 MBytes  15.6 Mbits/sec    0    163 KBytes
-[  5]   7.00-8.00   sec  1.93 MBytes  16.2 Mbits/sec    0    228 KBytes
-[  5]   8.00-9.00   sec  1.49 MBytes  12.5 Mbits/sec    0    228 KBytes
-[  5]   9.00-10.00  sec  1.99 MBytes  16.7 Mbits/sec    0    228 KBytes
-- - - - - - - - - - - - - - - - - - - - - - - - -
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-10.00  sec  17.7 MBytes  14.8 Mbits/sec    0             send=
-er
-[  5]   0.00-10.13  sec  17.2 MBytes  14.3 Mbits/sec                  rece=
-iver
-
-iperf Done.
-
-$ iperf3 -c 172.21.4.1 --reverse
-Connecting to host 172.21.4.1, port 5201
-Reverse mode, remote host 172.21.4.1 is sending
-[  5] local 172.22.2.1 port 52246 connected to 172.21.4.1 port 5201
-[ ID] Interval           Transfer     Bitrate
-[  5]   0.00-1.04   sec  1.88 MBytes  15.1 Mbits/sec
-[  5]   1.04-2.04   sec  1.75 MBytes  14.8 Mbits/sec
-[  5]   2.04-3.03   sec  1.62 MBytes  13.7 Mbits/sec
-[  5]   3.03-4.05   sec  1.75 MBytes  14.5 Mbits/sec
-[  5]   4.05-5.03   sec  1.75 MBytes  14.9 Mbits/sec
-[  5]   5.03-6.06   sec  1.88 MBytes  15.3 Mbits/sec
-[  5]   6.06-7.05   sec  1.75 MBytes  14.8 Mbits/sec
-[  5]   7.05-8.01   sec  1.75 MBytes  15.3 Mbits/sec
-[  5]   8.01-9.03   sec  1.88 MBytes  15.4 Mbits/sec
-[  5]   9.03-10.02  sec  1.75 MBytes  14.8 Mbits/sec
-- - - - - - - - - - - - - - - - - - - - - - - - -
-[ ID] Interval           Transfer     Bitrate         Retr
-[  5]   0.00-10.46  sec  21.4 MBytes  17.1 Mbits/sec    0             send=
-er
-[  5]   0.00-10.02  sec  17.8 MBytes  14.9 Mbits/sec                  rece=
-iver
-
-iperf Done.
-
-While I'll cope if ipw2200 goes away (giving me the impetus to replace
-the ipw2200 card with ath5k - or at least to use an ar5212/ar2414 ath5k
-or bcm4306/2 b43 32 bit PCMCIA/ cardbus card (inconvenient, with the
-antenna sticking out) until then), these have been so ubiquitous in
-their days that there will be quite a few surviving specimens around
-(and this one is actually still in semi-regular use with current
-kernels/ userland, not daily, but 2-3+ times a month, mostly for
-isolated firstboot configuration of various networking gear).
-
-Regards
-	Stefan Lippers-Hollmann
+--
+https://github.com/kvm-x86/linux/tree/next
