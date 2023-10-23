@@ -2,126 +2,440 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A53C7D2B78
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1696A7D2B81
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbjJWHga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:36:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48386 "EHLO
+        id S233519AbjJWHit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJWHg3 (ORCPT
+        with ESMTP id S229450AbjJWHis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 03:36:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03B8D68
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698046546;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=lxWUPtTWgFMNVman7iCUnbOshHnj9rT5MN0BdheUlsI=;
-        b=gk0cc+m4pa+V4IM+SbCt7D4KpY2h/TGwTaRgb91fztviruSY6GOj+Oy3und//re5BaF7Y6
-        WGnuTumvEZZuA5mfr1R7Ti3P30cZlRoI9jnpQZhM9tCMnGgJptyX8W1AIIhHJKnFVkXA7g
-        1ZcMdc4pqZMwdYEa5bXOG7J2GZxAcGM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-341-CvHIrsnCNW-X1TCjAD6nIg-1; Mon, 23 Oct 2023 03:35:43 -0400
-X-MC-Unique: CvHIrsnCNW-X1TCjAD6nIg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DC5768564E5;
-        Mon, 23 Oct 2023 07:35:42 +0000 (UTC)
-Received: from kaapi.redhat.com (unknown [10.67.24.31])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 582D125C0;
-        Mon, 23 Oct 2023 07:35:41 +0000 (UTC)
-From:   Prasad Pandit <ppandit@redhat.com>
-To:     Bernhard Walle <bernhard@bwalle.de>
-Cc:     linux-kernel@vger.kernel.org, Prasad Pandit <pjp@fedoraproject.org>
-Subject: [PATCH] firmware: fix indentation of config attributes
-Date:   Mon, 23 Oct 2023 13:08:30 +0530
-Message-ID: <20231023073830.209881-1-ppandit@redhat.com>
+        Mon, 23 Oct 2023 03:38:48 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DFED65
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:38:44 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b2f507c03cso1792646b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:38:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698046724; x=1698651524; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u1hLQu42puktllu7ZS9vWOuEpxXvcRAi2TjqWqa/FDQ=;
+        b=WAKDoxjwg0MR85ShVGrXVsr2lnvozjI4dCX1iSmsaDwuvU6tFRQSIfJK5Dl/nXhU2Y
+         LIlNVNupBqqk9L3+OLDLMx1K8R0vIEW8HrCFMg2D6Bg78n79NZH+nnEqd1eGnAQNlrzq
+         bYBLTEIDEusXJKqyMCCKZWp3qxJArswuRWbaGC51O3oXMAwPHKTk9QHOjTvM2J9jsFx+
+         tG3hHaAdul5xdGqMlJ3avLMtCHS4p7cU+PW4thLlN/0c104jC33VH7bAJ5Xoz4X5khvm
+         RzsrgXH0br/8uFL3O4GOJDFhzvLeREbE69X274IhBufIZyJcpKABI+d2Zq6N2uwRISEY
+         RP3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698046724; x=1698651524;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u1hLQu42puktllu7ZS9vWOuEpxXvcRAi2TjqWqa/FDQ=;
+        b=kbk71ZTb2S36eh905Z+NPvHbDAN/mY/5gNVk0dXdbNEbOq7GXLiCvXy73rKpyEY+4C
+         zyBVf91OVqzSAaJpnNHDfen6nO0TF1b2XGRO/d4s08AEfmDXab7T6wdjVbJ3baySWpQK
+         /bOY8Fhq/JAkHZnP/n4njIjxFF7jgdkvohHkfSXGXsswQOHLjhRgag7H/LtPEHLJnEjz
+         EcHi/raAR3OQI2knBoP8HPI5x9HCrxsXii7zHF57biZF9AGoLUIbry9C4zLdlOApgqmu
+         FXSMjjEqVGjRlzdciJbJb8dUIvUYTHo3q0HSZ5RTmEax5gqBwD3ZCzzvjf0ISSzSKtjD
+         HPug==
+X-Gm-Message-State: AOJu0Ywe8y3Gp5m+gKwzxW0nNgWw4Xa2D4F647SEA7GOkHUoBrJdOSm1
+        a+bmK7SGY5RmmSsQYlQ9+Xk=
+X-Google-Smtp-Source: AGHT+IFsfQ8ApL5luimnq2NOV58y0aBMUpStshpTpWeaUMFMNnjzj3BpNmI3vh5KOwMqdTsJtPGr8A==
+X-Received: by 2002:a05:6808:1a18:b0:3ae:4cb1:74e8 with SMTP id bk24-20020a0568081a1800b003ae4cb174e8mr10639285oib.11.1698046724022;
+        Mon, 23 Oct 2023 00:38:44 -0700 (PDT)
+Received: from nobara-desktop-pc.localnet (cpe-76-88-3-111.san.res.rr.com. [76.88.3.111])
+        by smtp.gmail.com with ESMTPSA id w9-20020aa79a09000000b006b1c14a493fsm5547889pfj.71.2023.10.23.00.38.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 00:38:43 -0700 (PDT)
+From:   Jonathan LoBue <jlobue10@gmail.com>
+To:     Stefan Binding <sbinding@opensource.cirrus.com>,
+        Huayu Zhang <leviz.kernel.dev@gmail.com>
+Cc:     Luke Jones <luke@ljones.dev>, Takashi Iwai <tiwai@suse.de>,
+        tiwai@suse.com, james.schulman@cirrus.com, david.rhodes@cirrus.com,
+        rf@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH] ALSA: hda: cs35l41: Support ASUS 2023 laptops with missing DSD
+Date:   Mon, 23 Oct 2023 00:38:42 -0700
+Message-ID: <2165924.irdbgypaU6@nobara-desktop-pc>
+In-Reply-To: <CAE4DdFNy7QRtZrbbCFt+ptKGCFxY7p_qeODW7+jHmnqzzxifVA@mail.gmail.com>
+References: <20230823011008.13146-1-luke@ljones.dev>
+ <3f3e554a-6551-e384-313d-77edf8ae316c@opensource.cirrus.com>
+ <CAE4DdFNy7QRtZrbbCFt+ptKGCFxY7p_qeODW7+jHmnqzzxifVA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prasad Pandit <pjp@fedoraproject.org>
+On Sunday, October 8, 2023 10:19:18 AM PDT Huayu Zhang wrote:
+> Hi Stefan and all,
+> 
+> Thanks for examine my email. I'm just interesting in Linux kernel
+> development and met sound issue with my `21J8 Lenovo ThinkBook 16p Gen
+> 4`.
+> Sorry for not familiar with the email process if any.
+> 
+> I wrote following changes based on some discovery and the downside
+> speakers (bass) seems begin to work. But the volumn keys actually
+> adjusting the frequence (I suppose). (Louder for high freq, and lower
+> volumn for low freq)
+> 
+> Wondering if any suggestions on the patch or any plan for officially
+> supporting of Lenovo ThinkBook 16p Gen 4. ^_^
+> I'll also provide the alsa-info and dmesg output below. Thanks a lot~
+> 
+> Patch:
+> 
+> From 124161547483109cbb491a8e39d1b5ef0973cd80 Mon Sep 17 00:00:00 2001
+> From: Huayu Zhang <zhanghuayu.dev@gmail.com>
+> Date: Mon, 9 Oct 2023 00:59:56 +0800
+> Subject: [PATCH] thinkbook 16p gen4 sound fix
+> 
+> ---
+> sound/pci/hda/cs35l41_hda_property.c | 41 ++++++++++++++++++++++++++++
+> sound/pci/hda/patch_realtek.c | 1 +
+> 2 files changed, 42 insertions(+)
+> 
+> diff --git a/sound/pci/hda/cs35l41_hda_property.c
+> b/sound/pci/hda/cs35l41_hda_property.c
+> index b62a4e6968e2..af359fbeb671 100644
+> --- a/sound/pci/hda/cs35l41_hda_property.c
+> +++ b/sound/pci/hda/cs35l41_hda_property.c
+> @@ -74,6 +74,46 @@ static int hp_vision_acpi_fix(struct cs35l41_hda
+> *cs35l41, struct device *physde
+> return 0;
+> }
+> +static int lenovo_thinkbook16pgen4_no_acpi(struct cs35l41_hda
+> *cs35l41, struct device *physdev, int id,
+> + const char *hid)
+> +{
+> + struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
+> +
+> + dev_info(cs35l41->dev, "Adding DSD properties for %s\n",
+> cs35l41->acpi_subsystem_id);
+> +
+> + printk("CSC3551: id == 0x%x\n", id);
+> +
+> + // cirrus,dev-index
+> + cs35l41->index = id == 0x40 ? 0 : 1;
+> + cs35l41->channel_index = 0;
+> +
+> + // cs35l41->reset_gpio = gpiod_get_index(physdev, NULL,
+> cs35l41->index, GPIOD_OUT_LOW);
+> + cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
+> + printk("CS3551: reset_gpio == 0x%x\n", cs35l41->reset_gpio);
+> +
+> + // cs35l41->speaker_id = cs35l41_get_speaker_id(physdev,
+> cs35l41->index, nval, -1);
+> + cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 2);
+> +
+> + // cirrus,speaker-position
+> + hw_cfg->spk_pos = cs35l41->index;
+> +
+> + // cirrus,gpio1-func
+> + hw_cfg->gpio1.func = CS35l41_VSPK_SWITCH;
+> + hw_cfg->gpio1.valid = true;
+> +
+> + // cirrus,gpio2-func
+> + hw_cfg->gpio2.func = CS35L41_INTERRUPT;
+> + hw_cfg->gpio2.valid = true;
+> +
+> + hw_cfg->bst_type = CS35L41_EXT_BOOST;
+> + hw_cfg->valid = true;
+> +
+> + put_device(physdev);
+> + printk("CSC3551: Done.\n");
+> +
+> + return 0;
+> +}
+> +
+> struct cs35l41_prop_model {
+> const char *hid;
+> const char *ssid;
+> @@ -85,6 +125,7 @@ static const struct cs35l41_prop_model
+> cs35l41_prop_model_table[] = {
+> { "CLSA0100", NULL, lenovo_legion_no_acpi },
+> { "CLSA0101", NULL, lenovo_legion_no_acpi },
+> { "CSC3551", "103C89C6", hp_vision_acpi_fix },
+> + { "CSC3551", "17AA38A9", lenovo_thinkbook16pgen4_no_acpi },
+> {}
+> };
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 751783f3a15c..fc884fdcec5f 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -10031,6 +10031,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]
+> = { SND_PCI_QUIRK(0x17aa, 0x3886, "Y780 VECO DUAL",
+> ALC287_FIXUP_TAS2781_I2C), SND_PCI_QUIRK(0x17aa, 0x38a7, "Y780P AMD YG
+> dual", ALC287_FIXUP_TAS2781_I2C), SND_PCI_QUIRK(0x17aa, 0x38a8, "Y780P AMD
+> VECO dual", ALC287_FIXUP_TAS2781_I2C), + SND_PCI_QUIRK(0x17aa, 0x38a9,
+> "Lenovo ThinkBook 16p Gen 4",
+> ALC287_FIXUP_CS35L41_I2C_2),
+> SND_PCI_QUIRK(0x17aa, 0x38ba, "Yoga S780-14.5 Air AMD quad YC",
+> ALC287_FIXUP_TAS2781_I2C),
+> SND_PCI_QUIRK(0x17aa, 0x38bb, "Yoga S780-14.5 Air AMD quad AAC",
+> ALC287_FIXUP_TAS2781_I2C),
+> SND_PCI_QUIRK(0x17aa, 0x38be, "Yoga S980-14.5 proX YC Dual",
+> ALC287_FIXUP_TAS2781_I2C),
+> 
+> > On 03/10/2023 15:45, Luke Jones wrote:
+> > > On Thu, Aug 24 2023 at 08:31:06 AM +12:00:00, Luke Jones
+> > > 
+> > > <luke@ljones.dev> wrote:
+> > >>> The second member variable in cs35l41_prop_model_table is the SSID to
+> > >>> match against.
+> > >>> The Lenovo laptops in the initial patch didn't have different SSIDs so
+> > >>> the entry was set to NULL for those.
+> > >>> Future entries using CSC3551 MUST always have an accompanying SSID
+> > >>> with this entry.
+> > >>> Takashi was correct, the implementation is intended to also be used to
+> > >>> patch incorrect DSD.
+> > >>> 
+> > >>> We have a potential solution to workaround the SPI cs-gpios issue
+> > >>> inside here,
+> > >>> though the drawback for that is that it only works for laptops with 2
+> > >>> SPI amps.
+> > >> 
+> > >> Can you provide me this so I can test? I have laptops with SPI 2 and
+> > >> 4 speaker setups.
+> > > 
+> > > Hi Stefan,
+> > > 
+> > > Do you have any further information about the status of this in
+> > > regards to the 2023 laptops?
+> > 
+> > Hi,
+> > 
+> > We are currently working on adding support for 2023 ASUS laptops without
+> > _DSD.
+> > 
+> > >>> I also took a look at the function for applying DSD properties for the
+> > >>> 2023 ROG laptops.
+> > >>> Unfortunately the one-size-fits-all approach will not work, some of
+> > >>> these laptops are i2c
+> > >>> and some are SPI, meaning the GPIO indexes are different for different
+> > >>> laptops.
+> > >> 
+> > >> Do you mean "spk-id-gpios"? For all the laptops I know of this seems
+> > >> to be
+> > >> Package () { "spk-id-gpios", Package () {
+> > >> 
+> > >>    SPK1, 0x02, Zero, Zero,
+> > >>    SPK1, 0x02, Zero, Zero
+> > >> 
+> > >> } },
+> > >> 
+> > >> There is one laptop where it is One not 0x02 (the GA402N)
+> > >> 
+> > >>> Some of the laptops do no have Speaker IDs.
+> > >>> Also, no laptop other than the 2 I added already should ever use
+> > >>> CS35L41_EXT_BOOST_NO_VSPK_SWITCH (in fact I believe all these laptops
+> > >>> are internal
+> > >>> boost anyway).
+> > >> 
+> > >> Grazie.
+> > >> 
+> > >>> We are currently working internally on adding support for the 2023 ROG
+> > >>> laptops, so we
+> > >>> ask for you guys to hold off on trying to upstream support for these
+> > >>> laptops.
+> > >> 
+> > >> Ah great. Thank you. I apologise for trying to rush things, but I do
+> > >> have a discord server of over 4000 people, many of whom have laptops
+> > >> with cirrus amps.
+> > >> 
+> > >> For now I'm including a patch in my kernel builds with this mapping:
+> > >> 
+> > >> const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+> > >> 
+> > >>     { "CLSA0100", NULL, lenovo_legion_no_acpi },
+> > >>     { "CLSA0101", NULL, lenovo_legion_no_acpi },
+> > >>     { "CSC3551", "10431433", asus_rog_2023_no_acpi }, // ASUS GS650P
+> > >> 
+> > >> - i2c
+> > >> 
+> > >>     { "CSC3551", "10431463", asus_rog_2023_no_acpi }, // ASUS GA402X
+> > >> 
+> > >> - i2c
+> > >> 
+> > >>     { "CSC3551", "10431473", asus_rog_2023_no_acpi }, // ASUS GU604V
+> > >> 
+> > >> - spi
+> > >> 
+> > >>     { "CSC3551", "10431483", asus_rog_2023_no_acpi }, // ASUS GU603V
+> > >> 
+> > >> - spi
+> > >> 
+> > >>     { "CSC3551", "10431493", asus_rog_2023_no_acpi }, // ASUS GV601V
+> > >> 
+> > >> - spi
+> > >> 
+> > >>     { "CSC3551", "10431573", asus_rog_2023_no_acpi }, // ASUS GZ301V
+> > >> 
+> > >> - spi
+> > >> 
+> > >>     { "CSC3551", "104317F3", asus_rog_2023_no_acpi }, // ASUS ROG
+> > >> 
+> > >> ALLY - i2c
+> > >> 
+> > >>     { "CSC3551", "10431B93", asus_rog_2023_no_acpi }, // ASUS G614J -
+> > >> 
+> > >> spi
+> > >> 
+> > >>     { "CSC3551", "10431CAF", asus_rog_2023_no_acpi }, // ASUS G634J -
+> > >> 
+> > >> spi
+> > >> 
+> > >>     { "CSC3551", "10431C9F", asus_rog_2023_no_acpi }, // ASUS G614JI
+> > >> 
+> > >> -spi
+> > >> 
+> > >>     { "CSC3551", "10431D1F", asus_rog_2023_no_acpi }, // ASUS G713P -
+> > >> 
+> > >> i2c
+> > >> 
+> > >>     { "CSC3551", "10431F1F", asus_rog_2023_no_acpi }, // ASUS H7604JV
+> > >> 
+> > >> - spi
+> > >> 
+> > >>     {}
+> > >> 
+> > >> };
+> > >> 
+> > >> These are the machines I have verified the gpios and such for.
+> > > 
+> > > I have a new version of this patch with all listed models confirmed as
+> > > working, and with slightly different settings for some. The only thing
+> > > missing in a solution to the gpio-cs issue.
+> > > 
+> > > Can you please provide an update on where you are with ASUS support in
+> > > particular so that I may consider if it is worth my time submitting
+> > > the updated patch.
+> > 
+> > We would prefer for you to wait, as we are looking to push up this
+> > support in the coming weeks.
+> > 
+> > >> Cheers,
+> > >> Luke.
 
-Fix indentation of config attributes. They are generally
-indented with a leading tab(\t) character, so use the same instead
-of spaces.
+Stefan and all,
 
-Signed-off-by: Prasad Pandit <pjp@fedoraproject.org>
----
- drivers/firmware/Kconfig | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+Thanks for the hard work getting the DSD properties sorted and installed on 
+various BIOSes. The one that I'm most concerned with and what got me 
+interested in this patching mechanism in the first place is the ASUS ROG ALLY. 
+From a DSD dump, it's clear that the latest ROG ALLY BIOS (330) has the proper 
+audio DSD properties. Unfortunately, certain things on many people's setups 
+across numerous ROG ALLYs (using various Linux distros) have broken with the 
+330 BIOS. This led many of us to revert back to the previous BIOS, 323. 
+Knowing the proper internal boost corresponding values now (cap, inductor, and 
+peak current), it's ideal to push these properties out for those people who 
+prefer to stay on an older BIOS for the ROG ALLY. I've developed a small patch 
+that I've used on a custom 6.5.8 Nobara kernel. Line numbers and whatnot may 
+be different according to latest on official Linux git, but I'd still like to 
+share what I have. I think it is a good addition. There's basically a small 
+logic check versus BIOS number. If the BIOS is 330 or greater, then the 
+function to override DSD properties is exited. If the BIOS has a smaller 
+number than 330, then the DSD overrides are applied. Here is my patch.
 
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index b59e3041fd62..82ae68b13381 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -55,8 +55,8 @@ config EDD
- 	  BIOS tries boot from.  This information is then exported via sysfs.
+diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/
+cs35l41_hda_property.c
+index b39f944..b67c636 100644
+--- a/sound/pci/hda/cs35l41_hda_property.c
++++ b/sound/pci/hda/cs35l41_hda_property.c
+@@ -6,7 +6,9 @@
+ //
+ // Author: Stefan Binding <sbinding@opensource.cirrus.com>
  
- 	  This option is experimental and is known to fail to boot on some
--          obscure configurations. Most disk controller BIOS vendors do
--          not yet implement this feature.
-+	  obscure configurations. Most disk controller BIOS vendors do
-+	  not yet implement this feature.
++#include <linux/dmi.h>
+ #include <linux/gpio/consumer.h>
++#include <linux/kernel.h>
+ #include <linux/string.h>
+ #include "cs35l41_hda_property.h"
  
- config EDD_OFF
- 	bool "Sets default behavior for EDD detection to off"
-@@ -68,14 +68,14 @@ config EDD_OFF
- 	  using the kernel parameter 'edd={on|skipmbr|off}'.
+@@ -78,6 +80,40 @@ static int asus_rog_2023_spkr_id2(struct cs35l41_hda 
+*cs35l41, struct device *ph
+ 	return 0;
+ }
  
- config FIRMWARE_MEMMAP
--    bool "Add firmware-provided memory map to sysfs" if EXPERT
--    default X86
--    help
--      Add the firmware-provided (unmodified) memory map to /sys/firmware/memmap.
--      That memory map is used for example by kexec to set up parameter area
--      for the next kernel, but can also be used for debugging purposes.
-+	bool "Add firmware-provided memory map to sysfs" if EXPERT
-+	default X86
-+	help
-+	  Add the firmware-provided (unmodified) memory map to /sys/firmware/memmap.
-+	  That memory map is used for example by kexec to set up parameter area
-+	  for the next kernel, but can also be used for debugging purposes.
- 
--      See also Documentation/ABI/testing/sysfs-firmware-memmap.
-+	  See also Documentation/ABI/testing/sysfs-firmware-memmap.
- 
- config EFI_PCDP
- 	bool "Console device selection via EFI PCDP or HCDP table"
-@@ -99,12 +99,12 @@ config EFI_PCDP
- 	  You must also enable the appropriate drivers (serial, VGA, etc.)
- 
- 	  See DIG64_HCDPv20_042804.pdf available from
--	  <http://www.dig64.org/specifications/> 
-+	  <http://www.dig64.org/specifications/>
- 
- config DMIID
--    bool "Export DMI identification via sysfs to userspace"
--    depends on DMI
--    default y
-+	bool "Export DMI identification via sysfs to userspace"
-+	depends on DMI
-+	default y
- 	help
- 	  Say Y here if you want to query SMBIOS/DMI system identification
- 	  information from userspace through /sys/class/dmi/id/ or if you want
--- 
-2.41.0
++static int asus_rog_2023_ally_fix(struct cs35l41_hda *cs35l41, struct device 
+*physdev, int id,
++				const char *hid)
++{
++	const char *rog_ally_bios_ver = 
+dmi_get_system_info(DMI_BIOS_VERSION);
++	const char *rog_ally_bios_num = rog_ally_bios_ver + 6; // Dropping 
+the RC71L. part before the number
++	int rog_ally_bios_int;
++	kstrtoint(rog_ally_bios_num, 10, &rog_ally_bios_int);
++	if(rog_ally_bios_int >= 330){
++		printk(KERN_INFO "DSD properties exist in the %d 
+BIOS\n", rog_ally_bios_int);
++		return -ENOENT;
++	}
++
++	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
++
++	dev_info(cs35l41->dev, "Adding DSD properties for %s\n", cs35l41-
+>acpi_subsystem_id);
++
++	cs35l41->index = id == 0x40 ? 0 : 1;
++	cs35l41->channel_index = 0;
++	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, 
+GPIOD_OUT_HIGH);
++	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 2);
++	hw_cfg->spk_pos = cs35l41->index;
++	hw_cfg->gpio1.func = CS35L41_NOT_USED;
++	hw_cfg->gpio1.valid = true;
++	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
++	hw_cfg->gpio2.valid = true;
++	hw_cfg->bst_type = CS35L41_INT_BOOST;
++	hw_cfg->bst_ind = 1000; /* 1,000nH Inductance value */
++	hw_cfg->bst_ipk = 4500; /* 4,500mA peak current */
++	hw_cfg->bst_cap = 24; /* 24 microFarad cap value */
++	hw_cfg->valid = true;
++
++	return 0;
++}
++
+ struct cs35l41_prop_model {
+ 	const char *hid;
+ 	const char *ssid;
+@@ -94,7 +130,7 @@ const struct cs35l41_prop_model cs35l41_prop_model_table[] 
+= {
+ 	{ "CSC3551", "10431483", asus_rog_2023_spkr_id2 }, // ASUS GU603V - 
+spi, reset gpio 1
+ 	{ "CSC3551", "10431493", asus_rog_2023_spkr_id2 }, // ASUS GV601V - 
+spi, reset gpio 1
+ 	{ "CSC3551", "10431573", asus_rog_2023_spkr_id2 }, // ASUS GZ301V - 
+spi, reset gpio 0
+-	{ "CSC3551", "104317F3", asus_rog_2023_spkr_id2 }, // ASUS ROG ALLY 
+- i2c
++	{ "CSC3551", "104317F3", asus_rog_2023_ally_fix }, // ASUS ROG ALLY 
+- i2c
+ 	{ "CSC3551", "10431B93", asus_rog_2023_spkr_id2 }, // ASUS G614J - 
+spi, reset gpio 0
+ 	{ "CSC3551", "10431CAF", asus_rog_2023_spkr_id2 }, // ASUS G634J - 
+spi, reset gpio 0
+ 	{ "CSC3551", "10431C9F", asus_rog_2023_spkr_id2 }, // ASUS G614JI -
+spi, reset gpio 0
+
+This patch is what my changes are after unpacking the kernel source RPM for a 
+Nobara kernel and applying a version of Luke's patches.
+
+I think a similar BIOS version checking logic may come in handy again in the 
+future. Thanks.
+
+Best Regards,
+Jon LoBue
+
 
