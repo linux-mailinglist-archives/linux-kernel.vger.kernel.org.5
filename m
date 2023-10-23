@@ -2,196 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DE17D4062
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB887D406B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbjJWTk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55918 "EHLO
+        id S230381AbjJWTmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbjJWTkz (ORCPT
+        with ESMTP id S230081AbjJWTmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:40:55 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E141D68
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:40:51 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-27e4e41a4fcso938197a91.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:40:51 -0700 (PDT)
+        Mon, 23 Oct 2023 15:42:17 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E048B4;
+        Mon, 23 Oct 2023 12:42:15 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso5841836e87.1;
+        Mon, 23 Oct 2023 12:42:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698090051; x=1698694851; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WVj+JLfwak+wPIlRvDRspF5/51cnTVEmP+dvEBCxyf4=;
-        b=nMdwC97Z6fOV9ac8g9iZQdfL62lYKXpejpVg9/IZDftqY1LQ6WCf+toAkNjtpVa63F
-         Of6J153pD0JrgIaCtl5fv0K14V/zmtQ7THJGqvsqnurE0AdkSbIf+TbDGA8VwbrnofzG
-         8dEwx8viMHEfzTmMvzBLNSKTqDz3P3dzHOxpSUwUkk4WFwlVXoStTUvAlax4yhddhr9j
-         aioU6iHnzDNoZeIOCRe8hIqGhFz1MEXRqPjLuNdHt5zd/PmcUQdD87X7NAW6s54nN5OS
-         CTpewvFnie0CyUrCg8Vaj/HKVAFU8NomYNex0ZwXobmMVlXBwKeMs7VXFAmsjIb3A1k1
-         5c/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698090051; x=1698694851;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698090133; x=1698694933; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WVj+JLfwak+wPIlRvDRspF5/51cnTVEmP+dvEBCxyf4=;
-        b=c9rOXsHob81wwrzpmGGcbCBbur1i/1Flh8p2f/N4TKeQl5tT5oP49eWQNxRY6Lu8JF
-         V57NRwZP5/SOfQk+cmJJnkYFTNBXpNxxJelfJF835YFqHoLvrQAC9U6l1yMxaZrzxFgi
-         3g/HdO3x4yLy5AkjZPdHVZZTjWvZDg8CY+W8F/XxYNsvO5OqqAxNLt4ZGiHN+SRuCBFM
-         yQfK07Vg0VLuFFFWCyNdTspTc1KUQGS2UXbhREVr8UN4Y7uxDkR+qUASqlk/23sOHArk
-         jmrkemCtRVLOCdHXOS9zbltn4fZbnpWYffif2JnQJ6Hkh7QnrxtcXMXq0EmOOKRjwJnP
-         +D3g==
-X-Gm-Message-State: AOJu0YyMzqDyP7AhHXhXqv6FQvnTY7EOtrE5kBYGqt69QOMpo5Ikrd03
-        APlq+SITAtC1lIsucP1wZ+a6lA==
-X-Google-Smtp-Source: AGHT+IEbL4Zez3ADFZnsI4I9Z1IZ1Vk9IdtY77ZM1DYNYAULr+jv5vBD3dJjcQNYbb83VYV0+fHH4Q==
-X-Received: by 2002:a17:90b:3d8c:b0:27d:c92:e897 with SMTP id pq12-20020a17090b3d8c00b0027d0c92e897mr8672798pjb.37.1698090050928;
-        Mon, 23 Oct 2023 12:40:50 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:85b7:8283:12b2:30f8])
-        by smtp.gmail.com with ESMTPSA id az7-20020a17090b028700b0027d157e686asm5836594pjb.49.2023.10.23.12.40.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 12:40:50 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 13:40:48 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] rpmsg: virtio: replace deprecated strncpy with
- strscpy/_pad
-Message-ID: <ZTbMQC9IhcJR3a/a@p14s>
-References: <20231023-strncpy-drivers-rpmsg-virtio_rpmsg_bus-c-v2-1-dc591c36f5ed@google.com>
+        bh=H2ftM92OKCvSHhh6kb+Glq3Mcgd9kOqth29i32E6zLk=;
+        b=nSFIIjZlgDhwPVaKTaBCbptV3T9XiW4JVcjIokitb5AsuggcKlc3vegyu+Lddcngcx
+         mR+92B42ET6SVpnAKtSq0geUZy5dBmDcJkGtsKBpmhr0DGbYtojdqTz/URbVj5gTs3gS
+         hIcenGMJI0zQvCXWfd+CAlvJ5Zb0NugogPiILU5wD7FnZh9cT5wq4F1MZVdKSzoTS4Fl
+         rCF/g6XoJZWbE6ptJEC8gJB2BwJrScXjHIsErcOVVRWte4Sg3sNjCqxXoeql1oRuQdgk
+         TdIbuhZq5WsCPin5uK9wkEybyiKw88w8HqpWwT3H5X0E8h+ATJ5ZyHk9Oo/ybCo6wDOD
+         CRDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698090133; x=1698694933;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H2ftM92OKCvSHhh6kb+Glq3Mcgd9kOqth29i32E6zLk=;
+        b=seIwQA2ocMF0I0rcWzLGN/fAvHjCQFoyCeaO4yy++I85gAHWjitUU5pJ3MS3osmuQq
+         KBcNRad7ts084OpoTsfjBQPGawitgwqS5XFAC2yp/6cUd51RMxTU+RkEoCgUMgtoj/EE
+         qIQpIUngPMfNykzmauGGvAPttqtTHUQx7ieNI8sL8nRmFPpaEbv88I81EW4ClJ6DfXfT
+         VZwxW21dGb7z8EAI8tn319VaiSGmLY6s1lGUCoc2rj4FkWZW5iOt/An+cR1zBv0NaZJy
+         CAycQkPysaxs/OntXv+U/OQFItPSHWglf6IzUJnJEBmEyA78cn/DgDw0US4cgB7jcqgm
+         w+WQ==
+X-Gm-Message-State: AOJu0YyN9k/7I54pI3kbaxp4vYQSgjN5EB+SZpNmfqKYK/rKG5ukrCPg
+        Sr5c9Wvrbn1AX7MZoChm65NzOixlOg8dza40+es=
+X-Google-Smtp-Source: AGHT+IF4lDMnNBYukqzCpYss3e4EVRZ5jF5bIM8cAJMJ+yDp9VG5fMNFAGPBIuG0X89cUrHMw6pPpByRVz55Skj4vcA=
+X-Received: by 2002:ac2:5edb:0:b0:500:aed0:cb1b with SMTP id
+ d27-20020ac25edb000000b00500aed0cb1bmr7346416lfq.24.1698090133099; Mon, 23
+ Oct 2023 12:42:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023-strncpy-drivers-rpmsg-virtio_rpmsg_bus-c-v2-1-dc591c36f5ed@google.com>
+References: <20231023-topic-adreno_warn-v1-1-bb1ee9391aa2@linaro.org>
+In-Reply-To: <20231023-topic-adreno_warn-v1-1-bb1ee9391aa2@linaro.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 23 Oct 2023 12:42:01 -0700
+Message-ID: <CAF6AEGuS3PhNbh9Gmu1g9YpUcr3LOh1gZK-XBE+urdb5jRjorg@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/adreno: Drop WARN_ON from patchid lookup for new GPUs
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Abel Vesa <abel.vesa@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 06:12:28PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> This patch replaces 3 callsites of strncpy().
-> 
-> The first two populate the destination buffer `nsm.name` -- which we
-> expect to be NUL-terminated based on their use with format strings.
-> 
-> Firstly, as I understand it, virtio_rpmsg_announce_create() creates an
-> rpmsg_ns_msg and sends via:
-> 
-> virtio_rpmsg_bus.c:
-> 336: err = rpmsg_sendto(rpdev->ept, &nsm, sizeof(nsm), RPMSG_NS_ADDR);
-> 
-> ... which uses:
-> virtio_rpmsg_sendto() -> rpmsg_send_offchannel_raw()
-> 
-> ... which copies its data into an rpmsg_hdr `msg` in virtio_rpmsg_bus.c
-> 618: memcpy(msg->data, data, len);
-> 
-> This callback is invoked when a message is received from the remote
-> processor:
-> 
-> rpmsg_ns.c:
-> 30: /* invoked when a name service announcement arrives */
-> 31: static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
-> 32: 		       void *priv, u32 src)
-> 33: {
-> 34:         struct rpmsg_ns_msg *msg = data;
-> ...
-> 50:         /* don't trust the remote processor for null terminating the name */
-> 51:         msg->name[RPMSG_NAME_SIZE - 1] = '\0';
-> 
-> ... which leads into the use of `name` within a format string:
-> rpmsg_ns.c:
-> 57: dev_info(dev, "%sing channel %s addr 0x%x\n",
-> 58:          rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY ?
-> 59:          "destroy" : "creat", msg->name, chinfo.dst);
-> 
-> We can also observe that `nsm` is not zero-initialized and as such we
-> should maintain the NUL-padding behavior that strncpy() provides:
-> 
-> virtio_rpmsg_bus.c:
-> 330: struct rpmsg_ns_msg nsm;
-> 
-> Considering the above, a suitable replacement is `strscpy_pad` due to
-> the fact that it guarantees both NUL-termination and NUL-padding on the
-> destination buffer.
-> 
-> Now, for the third and final destination buffer rpdev->id.name we can
-> just go for strscpy() (not _pad()) as rpdev points to &vch->rpdev:
-> |       rpdev = &vch->rpdev;
-> 
-> ... and vch is zero-allocated:
-> |       vch = kzalloc(sizeof(*vch), GFP_KERNEL);
-> 
-> ... this renders any additional NUL-byte assignments (like the ones
-> strncpy() or strscpy_pad() does) redundant.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Changes in v2:
-> - update commit msg (thanks Mathieu)
-> - Link to v1: https://lore.kernel.org/r/20231021-strncpy-drivers-rpmsg-virtio_rpmsg_bus-c-v1-1-8abb919cbe24@google.com
-> ---
-> Note: build-tested only.
-> 
-> Found with: $ rg "strncpy\("
-> ---
->  drivers/rpmsg/virtio_rpmsg_bus.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+On Mon, Oct 23, 2023 at 7:29=E2=80=AFAM Konrad Dybcio <konrad.dybcio@linaro=
+.org> wrote:
 >
-
-I have applied all 3 of your patches.
-
-Thanks,
-Mathieu
-
-> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> index 905ac7910c98..dc87965f8164 100644
-> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> @@ -329,7 +329,7 @@ static int virtio_rpmsg_announce_create(struct rpmsg_device *rpdev)
->  	    virtio_has_feature(vrp->vdev, VIRTIO_RPMSG_F_NS)) {
->  		struct rpmsg_ns_msg nsm;
->  
-> -		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
-> +		strscpy_pad(nsm.name, rpdev->id.name, sizeof(nsm.name));
->  		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
->  		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_CREATE);
->  
-> @@ -353,7 +353,7 @@ static int virtio_rpmsg_announce_destroy(struct rpmsg_device *rpdev)
->  	    virtio_has_feature(vrp->vdev, VIRTIO_RPMSG_F_NS)) {
->  		struct rpmsg_ns_msg nsm;
->  
-> -		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
-> +		strscpy_pad(nsm.name, rpdev->id.name, sizeof(nsm.name));
->  		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
->  		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_DESTROY);
->  
-> @@ -424,7 +424,7 @@ static struct rpmsg_device *__rpmsg_create_channel(struct virtproc_info *vrp,
->  	 */
->  	rpdev->announce = rpdev->src != RPMSG_ADDR_ANY;
->  
-> -	strncpy(rpdev->id.name, chinfo->name, RPMSG_NAME_SIZE);
-> +	strscpy(rpdev->id.name, chinfo->name, sizeof(rpdev->id.name));
->  
->  	rpdev->dev.parent = &vrp->vdev->dev;
->  	rpdev->dev.release = virtio_rpmsg_release_device;
-> 
+> New GPUs still use the lower 2 bytes of the chip id (in whatever form
+> it comes) to signify silicon revision. Drop the warning that makes it
+> sound as if that was unintended.
+>
+> Fixes: 90b593ce1c9e ("drm/msm/adreno: Switch to chip-id for identifying G=
+PU")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
-> base-commit: 9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
-> change-id: 20231020-strncpy-drivers-rpmsg-virtio_rpmsg_bus-c-dba15db4e890
-> 
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.h | 5 -----
+>  1 file changed, 5 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/ms=
+m/adreno/adreno_gpu.h
+> index 80b3f6312116..9a1ec42155fd 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> @@ -203,11 +203,6 @@ struct adreno_platform_config {
+>
+>  static inline uint8_t adreno_patchid(const struct adreno_gpu *gpu)
+>  {
+> -       /* It is probably ok to assume legacy "adreno_rev" format
+> -        * for all a6xx devices, but probably best to limit this
+> -        * to older things.
+> -        */
+> -       WARN_ON_ONCE(gpu->info->family >=3D ADRENO_6XX_GEN1);
+
+Maybe just change it to ADRENO_6XX_GEN4?
+
+BR,
+-R
+
+>         return gpu->chip_id & 0xff;
+>  }
+>
+>
+> ---
+> base-commit: e8361b005d7c92997d12f2b85a9e4a525738bd9d
+> change-id: 20231023-topic-adreno_warn-42a09bb4bf64
+>
 > Best regards,
 > --
-> Justin Stitt <justinstitt@google.com>
-> 
+> Konrad Dybcio <konrad.dybcio@linaro.org>
+>
