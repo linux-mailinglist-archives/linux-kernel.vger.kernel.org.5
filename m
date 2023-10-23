@@ -2,237 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 722577D3D6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF017D3D68
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbjJWRXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJWRXG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230201AbjJWRXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 23 Oct 2023 13:23:06 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E1F94;
-        Mon, 23 Oct 2023 10:23:04 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NFIHY8029974;
-        Mon, 23 Oct 2023 17:22:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=YBiruN5lcd/bt3zmAyAE5AHrGYVSZocWIiviVEybvDo=;
- b=PgtnLtcveOQ70EnnMvzGrdvTQ6+iFwQovTuVz6U+yl9uOVd2hvtnuwFrG8aIhTXAX6cA
- l7vBOhKjqEZh3DMwwx9t3GXQwrPawjFAbOk38jB1fq5JOnNB7OZowq2M7Y92IbSwUbRQ
- i0YBLEnrzvLDoT94jUJguowuKz/I2YFNo6Kkxcz3bXyAF1esrBzwZuIk8An+a5LkwIx7
- DmIjz4G14VgcS6m3TdRhUZIeqlRXM4we20bDatA8qUhfZ5apNUUOkbNle+dTluVc+/2O
- J18NZ3q/ZTTr5CvuMpocY+Jm97JvLnPBzidcqaEjyhUO+gxnyPP+mlg5/BPSS2BvYT3P Og== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv5yr4q50-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 17:22:50 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39NHMnl5021813
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 17:22:49 GMT
-Received: from [10.216.7.46] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 23 Oct
- 2023 10:22:42 -0700
-Message-ID: <73168f4b-0dc2-4060-99f2-c5e9973dbf52@quicinc.com>
-Date:   Mon, 23 Oct 2023 22:52:38 +0530
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbjJWRXF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Oct 2023 13:23:05 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F2EF3A2;
+        Mon, 23 Oct 2023 10:23:02 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6DEDE2F4;
+        Mon, 23 Oct 2023 10:23:43 -0700 (PDT)
+Received: from [10.57.5.125] (unknown [10.57.5.125])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 19BFE3F762;
+        Mon, 23 Oct 2023 10:22:58 -0700 (PDT)
+Message-ID: <289f5f83-adc7-4077-b4c0-c951484dd092@arm.com>
+Date:   Mon, 23 Oct 2023 18:22:57 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 07/10] usb: dwc3: qcom: Add multiport suspend/resume
- support for wrapper
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-8-quic_kriskura@quicinc.com>
- <ZTaYNjRyT1Fn4QWX@hovoldconsulting.com>
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZTaYNjRyT1Fn4QWX@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH 06/10] dma: Use free_decrypted_pages()
+Content-Language: en-GB
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "Cui, Dexuan" <decui@microsoft.com>,
+        "mikelley@microsoft.com" <mikelley@microsoft.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Cc:     "hch@lst.de" <hch@lst.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>
+References: <20231017202505.340906-1-rick.p.edgecombe@intel.com>
+ <20231017202505.340906-7-rick.p.edgecombe@intel.com>
+ <b4dc423b-a658-449f-9c6d-1502685a2f1b@arm.com>
+ <ea8ad4e75303178ee907682797dea7de36441c95.camel@intel.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <ea8ad4e75303178ee907682797dea7de36441c95.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: dHTELLJ75Vh9V9kQ-GtM2PP3iOuaqSiK
-X-Proofpoint-GUID: dHTELLJ75Vh9V9kQ-GtM2PP3iOuaqSiK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_16,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- clxscore=1015 suspectscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- impostorscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310230151
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/23/2023 9:28 PM, Johan Hovold wrote:
-> On Sat, Oct 07, 2023 at 09:18:03PM +0530, Krishna Kurapati wrote:
->> QCOM SoC SA8295P's tertiary quad port controller supports 2 HS+SS
->> ports and 2 HS only ports. Add support for configuring PWR_EVENT_IRQ's
->> for all the ports during suspend/resume.
-> 
-> No need to mention SA8295P as this is needed for all multiport
-> controllers.
->  > Say something about adding support for multiport controllers generally
-> instead and mention what the power event irqs are used for.
->
-
-ACK.
-
->> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->> ---
->>   drivers/usb/dwc3/dwc3-qcom.c | 35 ++++++++++++++++++++++++++++-------
->>   1 file changed, 28 insertions(+), 7 deletions(-)
+On 2023-10-23 17:46, Edgecombe, Rick P wrote:
+> On Wed, 2023-10-18 at 18:42 +0100, Robin Murphy wrote:
+>> On 2023-10-17 21:25, Rick Edgecombe wrote:
+>>> On TDX it is possible for the untrusted host to cause
+>>> set_memory_encrypted() or set_memory_decrypted() to fail such that
+>>> an
+>>> error is returned and the resulting memory is shared. Callers need
+>>> to take
+>>> care to handle these errors to avoid returning decrypted (shared)
+>>> memory to
+>>> the page allocator, which could lead to functional or security
+>>> issues.
+>>>
+>>> DMA could free decrypted/shared pages if set_memory_decrypted()
+>>> fails.
+>>> Use the recently added free_decrypted_pages() to avoid this.
+>>>
+>>> Several paths also result in proper encrypted pages being freed
+>>> through
+>>> the same freeing function. Rely on free_decrypted_pages() to not
+>>> leak the
+>>> memory in these cases.
 >>
->> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
->> index 651b9775a0c2..dbd4239e61c9 100644
->> --- a/drivers/usb/dwc3/dwc3-qcom.c
->> +++ b/drivers/usb/dwc3/dwc3-qcom.c
->> @@ -37,7 +37,11 @@
->>   #define PIPE3_PHYSTATUS_SW			BIT(3)
->>   #define PIPE_UTMI_CLK_DIS			BIT(8)
->>   
->> -#define PWR_EVNT_IRQ_STAT_REG			0x58
->> +#define PWR_EVNT_IRQ1_STAT_REG			0x58
->> +#define PWR_EVNT_IRQ2_STAT_REG			0x1dc
->> +#define PWR_EVNT_IRQ3_STAT_REG			0x228
->> +#define PWR_EVNT_IRQ4_STAT_REG			0x238
+>> If something's needed in the fallback path here, what about the
+>> cma_release() paths?
 > 
-> Not sure these defines makes sense on their own. You now only use them
-> via the array below.
+> You mean inside cma_release(). If so, unfortunately I think it won't
+> fit great because there are callers that are never dealing with shared
+> memory (huge tlb). The reset-to-private operation does extra work that
+> would be nice to avoid when possible.
 > 
-> I think I already asked you whether these offsets depend on SoC and you
-> said no, right?
+> The cases I thought exhibited the issue were the two calls sites of
+> dma_set_decrypted(). Playing around with it, I was thinking it might be
+> easier to just fix those to open code leaking the pages on
+> dma_set_decrypted() error. In which case it won't have the re-encrypt
+> problem.
 > 
-There are only 3 QC SoC's today that support multiport.
-The offsets mentioned here are for SC8280 based platforms.
+> It make's it less fool proof, but more efficient. And
+> free_decrypted_pages() doesn't fit great anyway, as pointed out by
+> Christoph.
 
-For Sc8180 based platforms, these are the offsets:
-USB3_MP_PWR_EVNT_IRQ_STAT	0xA4F8858
-USB3_MP_PWR_EVNT_IRQ_1_STAT	0xA4F89DC
+My point is that in dma_direct_alloc(), we get some memory either 
+straight from the page allocator *or* from a CMA area, then call 
+set_memory_decrypted() on it. If the problem is that 
+set_memory_decrypted() can fail and require cleanup, then logically if 
+that cleanup is necessary for the dma_free_contiguous()->__free_pages() 
+call, then surely it must also be necessary for the 
+dma_free_contiguous()->cma_release()->free_contig_range()->__free_page() 
+calls.
 
-These would translate to 0x58 and 0x1DC
-
-And for SX8380 the values are as follows:
-
-USB3_MP_PWR_EVNT_IRQ_STAT	0xA4F8858
-USB3_MP_PWR_EVNT_IRQ_1_STAT	0xA4F89DC
-
-So here also, the offsets are same. 0x58 and 0x1DC.
-So these are not SoC specific (atleast looking at the controllers 
-present). But there is no mathematical pattern to denote this as in the 
-following form (x + (port_num) * y). So made an array like this.
-
->> +
->>   #define PWR_EVNT_LPM_IN_L2_MASK			BIT(4)
->>   #define PWR_EVNT_LPM_OUT_L2_MASK		BIT(5)
->>   
->> @@ -107,6 +111,19 @@ struct dwc3_qcom {
->>   	int			num_ports;
->>   };
->>   
->> +/*
->> + * Currently non-multiport controller have only one PWR_EVENT_IRQ register,
->> + * but multiport controllers like SA8295 contain upto 4 of them.
->> + */
-> 
-> Please try not talk about "currently" and as things are likely to
-> change or, in fact, even *are* changing with your very patch series.
-> 
-> Again, this is not SA8295 specific.
-> 
->> +#define NUM_PWR_EVENT_STAT_REGS	4
-> 
-> You already have MAX_PORTS, why are you defining a new define that will
-> always have to be equal to MAX_PORTS?
-> 
-
-Do you recommend using the same max_ports ? If so, I can remove this 
-macro altogether.
-
->> +
->> +static u32 pwr_evnt_irq_stat_reg_offset[NUM_PWR_EVENT_STAT_REGS] = {
-> 
-> missing const
-> 
->> +	PWR_EVNT_IRQ1_STAT_REG,
->> +	PWR_EVNT_IRQ2_STAT_REG,
->> +	PWR_EVNT_IRQ3_STAT_REG,
->> +	PWR_EVNT_IRQ4_STAT_REG,
->> +};
->> +
->>   static inline void dwc3_qcom_setbits(void __iomem *base, u32 offset, u32 val)
->>   {
->>   	u32 reg;
->> @@ -446,9 +463,11 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
->>   	if (qcom->is_suspended)
->>   		return 0;
->>   
->> -	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
->> -	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
->> -		dev_err(qcom->dev, "HS-PHY not in L2\n");
->> +	for (i = 0; i < qcom->num_ports; i++) {
->> +		val = readl(qcom->qscratch_base + pwr_evnt_irq_stat_reg_offset[i]);
->> +		if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
->> +			dev_err(qcom->dev, "HS-PHY not in L2\n");
-> 
-> Error message should contain the port number.
-> 
-
-ACK
-
->> +	}
->>   
->>   	for (i = qcom->num_clocks - 1; i >= 0; i--)
->>   		clk_disable_unprepare(qcom->clks[i]);
->> @@ -494,9 +513,11 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom, bool wakeup)
->>   		dev_warn(qcom->dev, "failed to enable interconnect: %d\n", ret);
->>   
->>   	/* Clear existing events from PHY related to L2 in/out */
->> -	dwc3_qcom_setbits(qcom->qscratch_base, PWR_EVNT_IRQ_STAT_REG,
->> -			  PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
->> -
->> +	for (i = 0; i < qcom->num_ports; i++) {
->> +		dwc3_qcom_setbits(qcom->qscratch_base,
->> +			pwr_evnt_irq_stat_reg_offset[i],
->> +			PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
-> 
-> Again, continuation lines should be indented at least two tabs further.
-> 
-
-ACK.
-
-Thanks for the review.
-
-Regards,
-Krishna,
+Thanks,
+Robin.
