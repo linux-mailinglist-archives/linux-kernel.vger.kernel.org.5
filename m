@@ -2,161 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DF47D2814
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D307D2818
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbjJWBkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 21:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
+        id S233090AbjJWBmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 21:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjJWBkY (ORCPT
+        with ESMTP id S233032AbjJWBl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 21:40:24 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21035F7;
-        Sun, 22 Oct 2023 18:40:22 -0700 (PDT)
-Received: from dggpemm500014.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SDHqv27F1z15Nhw;
-        Mon, 23 Oct 2023 09:37:31 +0800 (CST)
-Received: from huawei.com (10.67.108.248) by dggpemm500014.china.huawei.com
- (7.185.36.153) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 23 Oct
- 2023 09:40:19 +0800
-From:   felix <fuzhen5@huawei.com>
-To:     <trond.myklebust@hammerspace.com>, <anna@kernel.org>,
-        <chuck.lever@oracle.com>
-CC:     <jlayton@kernel.org>, <neilb@suse.de>, <kolga@netapp.com>,
-        <Dai.Ngo@oracle.com>, <davem@davemloft.net>, <tom@talpey.com>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <skinsbursky@parallels.com>, <linux-nfs@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: [PATCH -next] SUNRPC: Fix RPC client cleaned up the freed pipefs dentries
-Date:   Mon, 23 Oct 2023 09:40:19 +0800
-Message-ID: <20231023014019.886496-1-fuzhen5@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 22 Oct 2023 21:41:59 -0400
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299C1F7
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 18:41:56 -0700 (PDT)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+        by Atcsqr.andestech.com with ESMTP id 39N1fqHo020257;
+        Mon, 23 Oct 2023 09:41:52 +0800 (+08)
+        (envelope-from peterlin@andestech.com)
+Received: from APC323 (10.0.12.98) by ATCPCS16.andestech.com (10.0.1.222) with
+ Microsoft SMTP Server id 14.3.498.0; Mon, 23 Oct 2023 09:41:52 +0800
+Date:   Mon, 23 Oct 2023 09:41:49 +0800
+From:   Yu-Chien Peter Lin <peterlin@andestech.com>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+CC:     Atish Patra <atishp@atishpatra.org>,
+        Anup Patel <anup@brainfault.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        <linux-riscv@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+Subject: Re: [PATCH -fixes] drivers: perf: Do not broadcast to other cpus
+ when starting a counter
+Message-ID: <ZTXPXXjULgqikXjF@APC323>
+References: <20231022144220.109469-1-alexghiti@rivosinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.108.248]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500014.china.huawei.com (7.185.36.153)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231022144220.109469-1-alexghiti@rivosinc.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Originating-IP: [10.0.12.98]
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: Atcsqr.andestech.com 39N1fqHo020257
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RPC client pipefs dentries cleanup is in separated rpc_remove_pipedir()
-workqueue,which takes care about pipefs superblock locking.
-In some special scenarios, when kernel frees the pipefs sb of the
-current client and immediately alloctes a new pipefs sb,
-rpc_remove_pipedir function would misjudge the existence of pipefs
-sb which is not the one it used to hold. As a result,
-the rpc_remove_pipedir would clean the released freed pipefs dentries.
+Hi Alexandre,
 
-To fix this issue, rpc_remove_pipedir should check whether the
-current pipefs sb is consistent with the original pipefs sb.
+On Sun, Oct 22, 2023 at 04:42:20PM +0200, Alexandre Ghiti wrote:
+> This command:
+> 
+> $ perf record -e cycles:k -e instructions:k -c 10000 -m 64M dd if=/dev/zero of=/dev/null count=1000
+> 
+> gives rise to this kernel warning:
+> 
+> [  444.364395] WARNING: CPU: 0 PID: 104 at kernel/smp.c:775 smp_call_function_many_cond+0x42c/0x436
+> [  444.364515] Modules linked in:
+> [  444.364657] CPU: 0 PID: 104 Comm: perf-exec Not tainted 6.6.0-rc6-00051-g391df82e8ec3-dirty #73
+> [  444.364771] Hardware name: riscv-virtio,qemu (DT)
+> [  444.364868] epc : smp_call_function_many_cond+0x42c/0x436
+> [  444.364917]  ra : on_each_cpu_cond_mask+0x20/0x32
+> [  444.364948] epc : ffffffff8009f9e0 ra : ffffffff8009fa5a sp : ff20000000003800
+> [  444.364966]  gp : ffffffff81500aa0 tp : ff60000002b83000 t0 : ff200000000038c0
+> [  444.364982]  t1 : ffffffff815021f0 t2 : 000000000000001f s0 : ff200000000038b0
+> [  444.364998]  s1 : ff60000002c54d98 a0 : ff60000002a73940 a1 : 0000000000000000
+> [  444.365013]  a2 : 0000000000000000 a3 : 0000000000000003 a4 : 0000000000000100
+> [  444.365029]  a5 : 0000000000010100 a6 : 0000000000f00000 a7 : 0000000000000000
+> [  444.365044]  s2 : 0000000000000000 s3 : ffffffffffffffff s4 : ff60000002c54d98
+> [  444.365060]  s5 : ffffffff81539610 s6 : ffffffff80c20c48 s7 : 0000000000000000
+> [  444.365075]  s8 : 0000000000000000 s9 : 0000000000000001 s10: 0000000000000001
+> [  444.365090]  s11: ffffffff80099394 t3 : 0000000000000003 t4 : 00000000eac0c6e6
+> [  444.365104]  t5 : 0000000400000000 t6 : ff60000002e010d0
+> [  444.365120] status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
+> [  444.365226] [<ffffffff8009f9e0>] smp_call_function_many_cond+0x42c/0x436
+> [  444.365295] [<ffffffff8009fa5a>] on_each_cpu_cond_mask+0x20/0x32
+> [  444.365311] [<ffffffff806e90dc>] pmu_sbi_ctr_start+0x7a/0xaa
+> [  444.365327] [<ffffffff806e880c>] riscv_pmu_start+0x48/0x66
+> [  444.365339] [<ffffffff8012111a>] perf_adjust_freq_unthr_context+0x196/0x1ac
+> [  444.365356] [<ffffffff801237aa>] perf_event_task_tick+0x78/0x8c
+> [  444.365368] [<ffffffff8003faf4>] scheduler_tick+0xe6/0x25e
+> [  444.365383] [<ffffffff8008a042>] update_process_times+0x80/0x96
+> [  444.365398] [<ffffffff800991ec>] tick_sched_handle+0x26/0x52
+> [  444.365410] [<ffffffff800993e4>] tick_sched_timer+0x50/0x98
+> [  444.365422] [<ffffffff8008a6aa>] __hrtimer_run_queues+0x126/0x18a
+> [  444.365433] [<ffffffff8008b350>] hrtimer_interrupt+0xce/0x1da
+> [  444.365444] [<ffffffff806cdc60>] riscv_timer_interrupt+0x30/0x3a
+> [  444.365457] [<ffffffff8006afa6>] handle_percpu_devid_irq+0x80/0x114
+> [  444.365470] [<ffffffff80065b82>] generic_handle_domain_irq+0x1c/0x2a
+> [  444.365483] [<ffffffff8045faec>] riscv_intc_irq+0x2e/0x46
+> [  444.365497] [<ffffffff808a9c62>] handle_riscv_irq+0x4a/0x74
+> [  444.365521] [<ffffffff808aa760>] do_irq+0x7c/0x7e
+> [  444.365796] ---[ end trace 0000000000000000 ]---
+> 
+> That's because the fix in commit 3fec323339a4 ("drivers: perf: Fix panic
+> in riscv SBI mmap support") was wrong since there is no need to broadcast
+> to other cpus when starting a counter, that's only needed in mmap when
+> the counters could have already been started on other cpus, so simply
+> remove this broadcast.
+> 
+> Fixes: 3fec323339a4 ("drivers: perf: Fix panic in riscv SBI mmap support")
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> Tested-by: Clément Léger <cleger@rivosinc.com>
+> ---
+>  drivers/perf/riscv_pmu_sbi.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
+> index 96c7f670c8f0..439da49dd0a9 100644
+> --- a/drivers/perf/riscv_pmu_sbi.c
+> +++ b/drivers/perf/riscv_pmu_sbi.c
+> @@ -543,8 +543,7 @@ static void pmu_sbi_ctr_start(struct perf_event *event, u64 ival)
+>  
+>  	if ((hwc->flags & PERF_EVENT_FLAG_USER_ACCESS) &&
+>  	    (hwc->flags & PERF_EVENT_FLAG_USER_READ_CNT))
+> -		on_each_cpu_mask(mm_cpumask(event->owner->mm),
+> -				 pmu_sbi_set_scounteren, (void *)event, 1);
+> +		pmu_sbi_set_scounteren((void *)event);
+>  }
+>  
+>  static void pmu_sbi_ctr_stop(struct perf_event *event, unsigned long flag)
+> @@ -554,8 +553,7 @@ static void pmu_sbi_ctr_stop(struct perf_event *event, unsigned long flag)
+>  
+>  	if ((hwc->flags & PERF_EVENT_FLAG_USER_ACCESS) &&
+>  	    (hwc->flags & PERF_EVENT_FLAG_USER_READ_CNT))
+> -		on_each_cpu_mask(mm_cpumask(event->owner->mm),
+> -				 pmu_sbi_reset_scounteren, (void *)event, 1);
+> +		pmu_sbi_set_scounteren((void *)event);
 
-This error can be catched by KASAN:
-=========================================================
-[  250.497700] BUG: KASAN: slab-use-after-free in dget_parent+0x195/0x200
-[  250.498315] Read of size 4 at addr ffff88800a2ab804 by task kworker/0:18/106503
-[  250.500549] Workqueue: events rpc_free_client_work
-[  250.501001] Call Trace:
-[  250.502880]  kasan_report+0xb6/0xf0
-[  250.503209]  ? dget_parent+0x195/0x200
-[  250.503561]  dget_parent+0x195/0x200
-[  250.503897]  ? __pfx_rpc_clntdir_depopulate+0x10/0x10
-[  250.504384]  rpc_rmdir_depopulate+0x1b/0x90
-[  250.504781]  rpc_remove_client_dir+0xf5/0x150
-[  250.505195]  rpc_free_client_work+0xe4/0x230
-[  250.505598]  process_one_work+0x8ee/0x13b0
-...
-[   22.039056] Allocated by task 244:
-[   22.039390]  kasan_save_stack+0x22/0x50
-[   22.039758]  kasan_set_track+0x25/0x30
-[   22.040109]  __kasan_slab_alloc+0x59/0x70
-[   22.040487]  kmem_cache_alloc_lru+0xf0/0x240
-[   22.040889]  __d_alloc+0x31/0x8e0
-[   22.041207]  d_alloc+0x44/0x1f0
-[   22.041514]  __rpc_lookup_create_exclusive+0x11c/0x140
-[   22.041987]  rpc_mkdir_populate.constprop.0+0x5f/0x110
-[   22.042459]  rpc_create_client_dir+0x34/0x150
-[   22.042874]  rpc_setup_pipedir_sb+0x102/0x1c0
-[   22.043284]  rpc_client_register+0x136/0x4e0
-[   22.043689]  rpc_new_client+0x911/0x1020
-[   22.044057]  rpc_create_xprt+0xcb/0x370
-[   22.044417]  rpc_create+0x36b/0x6c0
-...
-[   22.049524] Freed by task 0:
-[   22.049803]  kasan_save_stack+0x22/0x50
-[   22.050165]  kasan_set_track+0x25/0x30
-[   22.050520]  kasan_save_free_info+0x2b/0x50
-[   22.050921]  __kasan_slab_free+0x10e/0x1a0
-[   22.051306]  kmem_cache_free+0xa5/0x390
-[   22.051667]  rcu_core+0x62c/0x1930
-[   22.051995]  __do_softirq+0x165/0x52a
-[   22.052347]
-[   22.052503] Last potentially related work creation:
-[   22.052952]  kasan_save_stack+0x22/0x50
-[   22.053313]  __kasan_record_aux_stack+0x8e/0xa0
-[   22.053739]  __call_rcu_common.constprop.0+0x6b/0x8b0
-[   22.054209]  dentry_free+0xb2/0x140
-[   22.054540]  __dentry_kill+0x3be/0x540
-[   22.054900]  shrink_dentry_list+0x199/0x510
-[   22.055293]  shrink_dcache_parent+0x190/0x240
-[   22.055703]  do_one_tree+0x11/0x40
-[   22.056028]  shrink_dcache_for_umount+0x61/0x140
-[   22.056461]  generic_shutdown_super+0x70/0x590
-[   22.056879]  kill_anon_super+0x3a/0x60
-[   22.057234]  rpc_kill_sb+0x121/0x200
+reset here? so the CY/IR bits can be cleared.
 
-Fixes: 0157d021d23a ("SUNRPC: handle RPC client pipefs dentries by network namespace aware routines")
-Signed-off-by: felix <fuzhen5@huawei.com>
----
- include/linux/sunrpc/clnt.h | 1 +
- net/sunrpc/clnt.c           | 5 ++++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+Thanks for the patch, fixed the warning seen on my boards.
 
-diff --git a/include/linux/sunrpc/clnt.h b/include/linux/sunrpc/clnt.h
-index af7358277f1c..e9d4377d03c6 100644
---- a/include/linux/sunrpc/clnt.h
-+++ b/include/linux/sunrpc/clnt.h
-@@ -92,6 +92,7 @@ struct rpc_clnt {
- 	};
- 	const struct cred	*cl_cred;
- 	unsigned int		cl_max_connect; /* max number of transports not to the same IP */
-+	struct super_block *pipefs_sb;
- };
- 
- /*
-diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
-index 9c210273d06b..f035cf0d138d 100644
---- a/net/sunrpc/clnt.c
-+++ b/net/sunrpc/clnt.c
-@@ -111,7 +111,8 @@ static void rpc_clnt_remove_pipedir(struct rpc_clnt *clnt)
- 
- 	pipefs_sb = rpc_get_sb_net(net);
- 	if (pipefs_sb) {
--		__rpc_clnt_remove_pipedir(clnt);
-+		if (pipefs_sb == clnt->pipefs_sb)
-+			__rpc_clnt_remove_pipedir(clnt);
- 		rpc_put_sb_net(net);
- 	}
- }
-@@ -151,6 +152,8 @@ rpc_setup_pipedir(struct super_block *pipefs_sb, struct rpc_clnt *clnt)
- {
- 	struct dentry *dentry;
- 
-+	clnt->pipefs_sb = pipefs_sb;
-+
- 	if (clnt->cl_program->pipe_dir_name != NULL) {
- 		dentry = rpc_setup_pipedir_sb(pipefs_sb, clnt);
- 		if (IS_ERR(dentry))
--- 
-2.34.1
+Tested-by: Yu Chien Peter Lin <peterlin@andestech.com>
 
+Best regards,
+Peter Lin
+
+>  
+>  	ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP, hwc->idx, 1, flag, 0, 0, 0);
+>  	if (ret.error && (ret.error != SBI_ERR_ALREADY_STOPPED) &&
