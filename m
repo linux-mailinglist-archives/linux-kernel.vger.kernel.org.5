@@ -2,191 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E36737D2B43
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79AB7D2B05
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233480AbjJWH1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32834 "EHLO
+        id S233404AbjJWHTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233463AbjJWH1e (ORCPT
+        with ESMTP id S229650AbjJWHTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 03:27:34 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774C0D6B;
-        Mon, 23 Oct 2023 00:27:31 -0700 (PDT)
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231023072728epoutp016f16d270b9d58d77a3df83a636430be8~Qq_JRhUIp1250612506epoutp01L;
-        Mon, 23 Oct 2023 07:27:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231023072728epoutp016f16d270b9d58d77a3df83a636430be8~Qq_JRhUIp1250612506epoutp01L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1698046048;
-        bh=yQ0o45G+VG1R4BSnMeP2FwuyP8TuVxRSYxt30sCvGNU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vWYv5YdIqTb8esz/7oR57rVdrqQiQW9bXDca8BNdaR4ZY3WdofGJiE8CuQjHf2HLk
-         CksB44uQ7Cwl6cRBx5dgShygTWEKAZiKeokXTu4VPGDUWLw+tj7S9/6kDD0WvlC+iM
-         //7xf1s/6FWok/KbWp9xlHw5Xn6dt7rRjL6/WqUI=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20231023072727epcas2p4eb120f3e7d6e0b6a0a76ae809bcf413e~Qq_I3l0GM2774427744epcas2p4m;
-        Mon, 23 Oct 2023 07:27:27 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.101]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4SDRbg0FN6z4x9Q1; Mon, 23 Oct
-        2023 07:27:27 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7D.5A.10006.E5026356; Mon, 23 Oct 2023 16:27:26 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231023072726epcas2p22a956be89b7f25f9edf2faff418e507a~Qq_HuFV_g1856218562epcas2p2J;
-        Mon, 23 Oct 2023 07:27:26 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231023072726epsmtrp243c3957bce73fbbad6710deba8333a18~Qq_Hsw4u43069830698epsmtrp2B;
-        Mon, 23 Oct 2023 07:27:26 +0000 (GMT)
-X-AuditID: b6c32a45-3ebfd70000002716-b6-6536205e5a1e
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3C.BF.08755.E5026356; Mon, 23 Oct 2023 16:27:26 +0900 (KST)
-Received: from tiffany (unknown [10.229.95.142]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231023072725epsmtip1ca6761ce4659bf69cb32b5496d0bcbf8~Qq_HPonl_2906329063epsmtip1Q;
-        Mon, 23 Oct 2023 07:27:25 +0000 (GMT)
-Date:   Mon, 23 Oct 2023 16:16:56 +0900
-From:   Hyesoo Yu <hyesoo.yu@samsung.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>, will@kernel.org,
-        oliver.upton@linux.dev, maz@kernel.org, james.morse@arm.com,
-        suzuki.poulose@arm.com, yuzenghui@huawei.com, arnd@arndb.de,
-        akpm@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        mhiramat@kernel.org, rppt@kernel.org, hughd@google.com,
-        pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
-        kcc@google.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH RFC 06/37] mm: page_alloc: Allocate from movable pcp
- lists only if ALLOC_FROM_METADATA
-Message-ID: <20231023071656.GA344850@tiffany>
+        Mon, 23 Oct 2023 03:19:11 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6935DD5D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:19:09 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507c8316abcso3885501e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:19:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698045547; x=1698650347; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V6S45ihz7Bjy9mA8Op/n3MFfIjFItEt+vr7En/kunok=;
+        b=LVFxO4ArKUrH27O0WCl4sxqLKeQ2EPP/VjqbHdfj4+8ld9a/KTK775RuvI4JNi9nWv
+         LKcNY6+y3qu74tbj3tyyGG4sp/Bay4sLJ3owvfqNjuajz69HKMyGaUARrJTqOEmJB6vX
+         ZkSPBWZ4Y0VrDRFcuWp+e6sengF/8Vc2N1chUTK4MKp/UqSC5ukeAESOMyhMqCLi77Pa
+         h0esh9CwQIFN60atsfn8qs09abxZRqWl2JTFVJBRP/Yrvpar1rQroQkmn3ihb4d/N3/E
+         7AbM0Bxh7KVZZ6RB97YnTOoMlUxHkYKwxeVsENEsMgPbKwjC4D1Sg5h0jbI4Se8mIWaB
+         U8Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698045547; x=1698650347;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V6S45ihz7Bjy9mA8Op/n3MFfIjFItEt+vr7En/kunok=;
+        b=NdI8cVEcLLmYlyGKGq3lbsJigEO6ZS/swP02GueyMXwRWAhC7c30V9N6DQ85GsIJFS
+         jWAG0cOWmdiVPdjvTSeZnMBW3kAMBGb7hevFA1UC8c97jT+9y66ow5AwnnX10IODb7yD
+         uX7Eg/4mM4ToiKUE52sVGsHacOM9UrDzk/NJgyn3tdDCyt3ObFR3PuEYAzMH3XNl99Gm
+         stbSObFRrcEf9Lc+hmjDjzViSvpzeYoNPNkY5O3MDi7p+ELhytCepmNQco3Aime/MJ0L
+         /IGGgvToqqCoPnrkDVE7tmbMkna5f3RRVxNEIQ+cWNJ272hjh676AK+DydaUtNcNVBMU
+         mtcw==
+X-Gm-Message-State: AOJu0YyUiPJISg6/FwXVNQFHa4UEc8+pDSJgnaPUJO1ZOSo6iEFW2HLy
+        j6gpXljzDjpmineEDjwrUkzWZg==
+X-Google-Smtp-Source: AGHT+IFKM2nSpNd3WVDpF/VRmFq9h8fCIDE8pLl2KqvSnJNj4ahDrxhFwmN/vM+qfF/affWMr5q96w==
+X-Received: by 2002:ac2:4827:0:b0:503:200f:47a9 with SMTP id 7-20020ac24827000000b00503200f47a9mr5859572lft.15.1698045546679;
+        Mon, 23 Oct 2023 00:19:06 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id w15-20020a05651204cf00b00507a682c049sm1578727lfq.215.2023.10.23.00.19.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 00:19:06 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH net-next v5 0/7] Create a binding for the Marvell MV88E6xxx
+ DSA switches
+Date:   Mon, 23 Oct 2023 09:18:51 +0200
+Message-Id: <20231023-marvell-88e6152-wan-led-v5-0-0e82952015a7@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <ZS5hXFHs08zQOboi@arm.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Te0xbVRj39N7eFgQtjOEZSybr5hTk0SItZwbYsiG5OmcwEolOxAo3tFBK
-        1xajMgQW5LFsg4FM3mLmYCCPpYBAVwpSXgXC5pZN3jgeBYlQYY5m4JgXLjP77/f9Ht93Hvm4
-        mKOJ48KVKTSUSiGR8wlb/BejG/L81FVMCRbSECqpryHQ91V3CGToi0SPc3s46PbMXZr6MxVH
-        lorzAD2sX8fQXE4Thn4tX8bR3OpFHE0ZKlloIjsfR83mJRZabDTiKFP3EEfamXtspG8z4eiO
-        roRAkzVP2Ki1xMRGectmgK5UHkK3O8pZKP/RXwTKHv+dQL0XOljIkPkHC3XVN7NQapeFQIVj
-        YwBldq1hqG3zEY6auq0clDYuQiNXr3OOHiRrymoAubGeC8g0wyiHLNcmkGldS2yy4Zo7qa3O
-        Ikjtai6HHL+nJ8i+gg2c/DElHyMbfkomFxoKAWkx3CXIhoFE8oF2Xwjv41h/KSWJolSulCIy
-        PkqmiA7gn/gg4niESCwQegoPIz++q0ISRwXwg94N8QyWyel35Lt+IZEn0FSIRK3mewf6q+IT
-        NJSrNF6tCeBTyii50k/ppZbEqRMU0V4KSvOmUCDwEdHGz2Kl88UnlEsvfmkxnUoBs3bngA0X
-        8nyh+fwUfg7Ych15LQBOVk5jTLEK4CVL4Y6yBmBGRzbnaaR7zEIwQhuA/1Tp2EwxB2DKoJm1
-        5cJ5r8CVDv12guC9CvsaK8AWduJ5wlvp3223xXg6AlpNWnxL2MWTw5xp3bbJnjY1behZDHaA
-        psLZbY8N3eiutRFshSEv3RbWZ5lpgUMXQbDlJHO6XXCxt3HnpC7wwXIbweBYOLGSs4M1sG4w
-        ZcfzBiwyZ2yPxXhSqDfcou/PpfkDsGsUZ+gXYKbxMYeh7WFmuiOTPADbK8pwBu+B07UZbMZC
-        wqyVZOZFrrJge5qRnQP2FT1zl6JnhjHYA5bfWCWK6DjG2wsrN7kMdIP1Ou9ywK4GzpRSHRdN
-        qX2Uwv9/NzI+Tgu2d8r9rRaQt/S3VydgcUEngFyM72RfHOZLOdpHSb76mlLFR6gS5JS6E4jo
-        n7mEueyOjKeXUqGJEPoeFviKxUI/H5HAj/+S/eS3pVGOvGiJhoqlKCWleppjcW1cUlivBwXL
-        k6rOfPLytbHTxUNhRr8ZTox1JEkluJlwUXev7pCHl5ODtS7JOnQ6PFL/nne7SOZc1qrH+z8f
-        jCnYxNknW21q3xeP5ThmhEe2KTx/W+k+q4+SxSqcZOv2x68fXRi2C7hidnq+f0/S8OiK24VQ
-        N1ne7g0C24xxdgh3ST47bmf1EQxUr7Y5/4x9FDjiccYU6jAbWu0XflnxTXR9wN7guqFhpf+N
-        y9a1qYNqq5FddKz/uQmxtLly1rb3w3f4nsLE0nmtc0/wkzhLg9f9Hq6oJDjVrlR85AfNfMXN
-        QONrYVL/niMDBWH3RcX+ik5ZSXNio6H21NtzIfvj8kr6/l1sOsbH1VKJ0B1TqSX/AZTw3Tfc
-        BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sb0wbdRjH/d1dr0dN41lmuP0JNnUbQkYHzcQnbBqjb04TErO5LWFmesIF
-        iG2pLWwTY+gyZAw3V7F1Fhh2wVFGOoG2CNZSEcqg/DFbJ5sbVJw4LI2jUAQGRLSlMe7dN8/n
-        +3meNw+FS4yCLVSRuoTXqjmljBQR3/TJktOPSrP4jHuXBFDfaiPhwpWbJHgG8+DvmmtC8E+N
-        RUczJwkIN51FsNi6isN9QwcOP1hmCbgf+YSASY8Vg8B5EwGd0w8wCDn7CKhyLRJgn7olAHe3
-        j4CbrnoSfrH9I4Bv630C+Gx2GkGjdSf4eywYmFb+JOH8xG0SBs71YOCp+hUDb2snBie9YRLM
-        4+MIqrxLOHSvrxDQ0b8shIqJ5+DO5TbhS9tZW4MNsWurNYit8NwVshZ7KVvhfSBgHc1prL3l
-        DMnaIzVCduKWm2QHv1gj2Et6E846vipngw4zYsOeMZJ1DH/ALtiTX6dzRfvyeWXRMV67+8W3
-        RYWh7kpcc1V8wuufQ3rULapGCRRD72H6x8NkNRJREvo7xDSaKlEcbGZqF3xYPCcykxVeQbw0
-        hZjFhggRAwS9g5nvcQtjmaRTmEFn04a8iU5nrlcaiZiA026SqV65S8ZAIq1kDL+5NkriaKlj
-        zY3Ft1oxxlhnFcTBk4zP/PvGBZxOY35en4mWqGjeyljXqdg4IXpsbNmJDIiufcSofcSo/d+w
-        ILwFbeY1OlWBSpepyVTzx+U6TqUrVRfI84pVdrTxOGmpXaizZU7eizAK9SKGwmWbxHWH9/AS
-        cT73fhmvLX5LW6rkdb1oK0XIksRJwXP5ErqAK+Hf5XkNr/2PYlTCFj32qTP34ILzna/9bTMX
-        PFd72hWGU2ek5aMmedbTWV1m5VnV86FrhZn20NDxMBbufCJP1VypHO43u9tzZw1yJvuiRR/Y
-        ZSdfeKwvRdLWmPFKgPtpqSHljYD4KcuhVFej+rKkbGmIHVb3Gl/7a/+4edfI6qHbOdukkm3t
-        ftNufmAtwq0nCovDzx7UU59/dPrDBt/RvUklzVyT1KS5kZPjatk5Gmg/XahWlH2pvvNe6rSt
-        nyia304oRg/M/nEi+9jQyIHsGwM/ll9cLrn+TCQo3aeYL3YYj4yYPuYWku89vvdI8PuOpZfr
-        cucmHza9+VDRtcM7U5Oe3vqqOyP5VFBTHwkldckIXSGXmYZrddy/l57xSKcDAAA=
-X-CMS-MailID: 20231023072726epcas2p22a956be89b7f25f9edf2faff418e507a
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_5344b_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231012013524epcas2p4b50f306e3e4d0b937b31f978022844e5
-References: <20230823131350.114942-1-alexandru.elisei@arm.com>
-        <20230823131350.114942-7-alexandru.elisei@arm.com>
-        <CGME20231012013524epcas2p4b50f306e3e4d0b937b31f978022844e5@epcas2p4.samsung.com>
-        <20231010074823.GA2536665@tiffany> <ZS0va9nICZo8bF03@monolith>
-        <ZS5hXFHs08zQOboi@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFseNmUC/3XQy2rDMBAF0F8JWldFL1vjrvIfIQs9Ro7AlYtsl
+ ITgf4/qblyMl5fLnAvzIhPmiBP5Or1IxhKnOKYamo8TcTeTeqTR10wEE5IzBvTb5ILDQAGw5Y2
+ gd5PogL5mp6TVwYvgSb3+yRjiY5UvJOFMEz5mcq3NLU7zmJ/rZOFr/6dzeagXThllmgtrug4a7
+ c5DTCaPn2PuV7SILaSOIVEhHZxhYFsA1e0guYXaY0hWSILzSnU+WN7sILWFjh9X1C+EyFyrJUi
+ L/6BlWd40z65UpAEAAA==
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Christian Marangi <ansuelsmth@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_5344b_
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+The Marvell switches are lacking DT bindings.
 
-On Tue, Oct 17, 2023 at 11:26:36AM +0100, Catalin Marinas wrote:
-> On Mon, Oct 16, 2023 at 01:41:15PM +0100, Alexandru Elisei wrote:
-> > On Thu, Oct 12, 2023 at 10:25:11AM +0900, Hyesoo Yu wrote:
-> > > I don't think it would be effcient when the majority of movable pages
-> > > do not use GFP_TAGGED.
-> > > 
-> > > Metadata pages have a low probability of being in the pcp list
-> > > because metadata pages is bypassed when freeing pages.
-> > > 
-> > > The allocation performance of most movable pages is likely to decrease
-> > > if only the request with ALLOC_FROM_METADATA could be allocated.
-> > 
-> > You're right, I hadn't considered that.
-> > 
-> > > 
-> > > How about not including metadata pages in the pcp list at all ?
-> > 
-> > Sounds reasonable, I will keep it in mind for the next iteration of the
-> > series.
-> 
-> BTW, I suggest for the next iteration we drop MIGRATE_METADATA, only use
-> CMA and assume that the tag storage itself supports tagging. Hopefully
-> it makes the patches a bit simpler.
-> 
+I need proper schema checking to add LED support to the
+Marvell switch. Just how it is, it can't go on like this.
 
-I am curious about the plan for the next iteration.
+Some Device Tree fixes are included in the series, these
+remove the major and most annoying warnings fallout noise:
+some warnings remain, and these are of more serious nature,
+such as missing phy-mode. They can be applied individually,
+or to the networking tree with the rest of the patches.
 
-Does tag storage itself supports tagging? Will the following version be unusable
-if the hardware does not support it? The document of google said that 
-"If this memory is itself mapped as Tagged Normal (which should not happen!)
-then tag updates on it either raise a fault or do nothing, but never change the
-contents of any other page."
-(https://github.com/google/sanitizers/blob/master/mte-dynamic-carveout/spec.md)
+Thanks to Andrew Lunn, Vladimir Oltean and Russell King
+for excellent review and feedback!
 
-The support of H/W is very welcome because it is good to make the patches simpler.
-But if H/W doesn't support it, Can't the new solution be used?
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Changes in v5:
+- Consistently rename switch@n to ethernet-switch@n in all cleanup patches
+- Consistently rename ports to ethernet-ports in all cleanup patches
+- Consistently rename all port@n to ethernet-port@n in all cleanup patches
+- Consistently rename all phy@n to ethernet-phy@n in all cleanup patches
+- Restore the nodename on the Turris MOX which has a U-Boot binary using the
+  nodename as ABI, put in a blurb warning about this so no-one else tries
+  to change it in the future.
+- Drop dsa.yaml direct references where we reference dsa.yaml#/$defs/ethernet-ports
+- Replace the conjured MV88E6xxx example by a better one based on imx6qdl
+  plus strictly named nodes and added reset-gpios for a more complete example,
+  and another example using the interrupt controller based on
+  armada-381-netgear-gs110emx.dts
+- Bump lineage to 2008 as Vladimir says the code was developed starting 2008.
+- Link to v4: https://lore.kernel.org/r/20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org
 
-Thanks,
-Regards.
+Changes in v4:
+- Rebase the series on top of Rob's series
+  "dt-bindings: net: Child node schema cleanups" (or the hex numbered
+  ports will not work)
+- Fix up a whitespacing error corrupting v3...
+- Add a new patch making the generic DSA binding require ports or
+  ethernet-ports in the switch node.
+- Drop any corrections of port@a in the patches.
+- Drop oneOf in the compatible enum for mv88e6xxx
+- Use ethernet-switch, ethernet-ports and ethernet-phy in the examples
+- Transclude the dsa.yaml#/$defs/ethernet-ports define for ports
+- Move the DTS and binding fixes first, before the actual bindings,
+  so they apply without (too many) warnings as fallout.
+- Drop stray colon in text.
+- Drop example port in the mveusb binding.
+- Link to v3: https://lore.kernel.org/r/20231016-marvell-88e6152-wan-led-v3-0-38cd449dfb15@linaro.org
 
-> -- 
-> Catalin
-> 
+Changes in v3:
+- Fix up a related mvusb example in a different binding that
+  the scripts were complaining about.
+- Fix up the wording on internal vs external MDIO buses in the
+  mv88e6xxx binding document.
+- Remove pointless label and put the right rev-mii into the
+  MV88E6060 schema.
+- Link to v2: https://lore.kernel.org/r/20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org
 
-------kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_5344b_
-Content-Type: text/plain; charset="utf-8"
+Changes in v2:
+- Break out a separate Marvell MV88E6060 binding file. I stand corrected.
+- Drop the idea to rely on nodename mdio-external for the external
+  MDIO bus, keep the compatible, drop patch for the driver.
+- Fix more Marvell DT mistakes.
+- Fix NXP DT mistakes in a separate patch.
+- Fix Marvell ARM64 mistakes in a separate patch.
+- Link to v1: https://lore.kernel.org/r/20231013-marvell-88e6152-wan-led-v1-0-0712ba99857c@linaro.org
 
+---
+Linus Walleij (7):
+      dt-bindings: net: dsa: Require ports or ethernet-ports
+      dt-bindings: net: mvusb: Fix up DSA example
+      ARM: dts: marvell: Fix some common switch mistakes
+      ARM: dts: nxp: Fix some common switch mistakes
+      ARM64: dts: marvell: Fix some common switch mistakes
+      dt-bindings: marvell: Rewrite MV88E6xxx in schema
+      dt-bindings: marvell: Add Marvell MV88E6060 DSA schema
 
-------kpWfbNyO0dZ94JZMx8UaZzOLaVw4Eds-FlcQ7ND7-zj3ifPP=_5344b_--
+ Documentation/devicetree/bindings/net/dsa/dsa.yaml |   6 +
+ .../bindings/net/dsa/marvell,mv88e6060.yaml        |  88 ++++++
+ .../bindings/net/dsa/marvell,mv88e6xxx.yaml        | 330 +++++++++++++++++++++
+ .../devicetree/bindings/net/dsa/marvell.txt        | 109 -------
+ .../devicetree/bindings/net/marvell,mvusb.yaml     |   7 +-
+ MAINTAINERS                                        |   3 +-
+ arch/arm/boot/dts/marvell/armada-370-rd.dts        |  24 +-
+ .../dts/marvell/armada-381-netgear-gs110emx.dts    |  44 ++-
+ .../dts/marvell/armada-385-clearfog-gtr-l8.dts     |  38 +--
+ .../dts/marvell/armada-385-clearfog-gtr-s4.dts     |  22 +-
+ arch/arm/boot/dts/marvell/armada-385-linksys.dtsi  |  18 +-
+ .../boot/dts/marvell/armada-385-turris-omnia.dts   |  20 +-
+ arch/arm/boot/dts/marvell/armada-388-clearfog.dts  |  20 +-
+ .../boot/dts/marvell/armada-xp-linksys-mamba.dts   |  18 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts        |  14 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts    |  70 ++---
+ arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts        |  18 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts    |  20 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts   |  18 +-
+ .../dts/marvell/armada-3720-espressobin-ultra.dts  |  14 +-
+ .../boot/dts/marvell/armada-3720-espressobin.dtsi  |  20 +-
+ .../boot/dts/marvell/armada-3720-gl-mv1000.dts     |  20 +-
+ .../boot/dts/marvell/armada-3720-turris-mox.dts    | 189 ++++++------
+ .../boot/dts/marvell/armada-7040-mochabin.dts      |  24 +-
+ .../dts/marvell/armada-8040-clearfog-gt-8k.dts     |  22 +-
+ arch/arm64/boot/dts/marvell/cn9130-crb.dtsi        |  42 ++-
+ 26 files changed, 761 insertions(+), 457 deletions(-)
+---
+base-commit: 1c9be5fea84e409542a186893d219bf7cff22f5a
+change-id: 20231008-marvell-88e6152-wan-led-88c43b7fd2fd
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
+
