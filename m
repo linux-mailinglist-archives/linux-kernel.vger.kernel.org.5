@@ -2,273 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E807D3D29
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888FA7D3D2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbjJWROe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
+        id S231128AbjJWROs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:14:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjJWROc (ORCPT
+        with ESMTP id S229452AbjJWROq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:14:32 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08BBF94;
-        Mon, 23 Oct 2023 10:14:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43161C433C9;
-        Mon, 23 Oct 2023 17:14:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698081270;
-        bh=Ja8s9hHWNsMl9rR/A2vkVRwGBByDHecu9TUfTmLK5O0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MeuEwtvuDFO5yp5iwwuVEJNzg9RfG0g2iSphmorTs1YHktZPSgAIBmOgSnoaQJdHm
-         nUlWIMj2sV40TRQksuLqdyoEUZOrZ4YgskSrGgA2/nhb9IFL78IFLLm5ChkY8qJxOI
-         XvSk9ecB7rzX1Id68w7pVTn+QD7K44RzxoL0JXDRTA8j3sh2U4yTDlfwo97LvPAH00
-         RUnsGssWWAdudZuWTwU1hLYa0ovrTsWm97cFrfjCEL0C5VQBb75ldMMm5wnopS8rdo
-         ma5otrvqzXBMC9YyKDYNnhopzPnGbtq133bDGxB7c+u2v5Gw+ZIgVNda5UvccMxt+p
-         Sq/U+bn87cRzw==
-Date:   Mon, 23 Oct 2023 18:14:20 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Song Liu <song@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-        netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v3 04/13] mm/execmem, arch: convert remaining overrides
- of module_alloc to execmem
-Message-ID: <20231023171420.GA4041@willie-the-truck>
-References: <20230918072955.2507221-1-rppt@kernel.org>
- <20230918072955.2507221-5-rppt@kernel.org>
+        Mon, 23 Oct 2023 13:14:46 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D6310C;
+        Mon, 23 Oct 2023 10:14:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1698081284; x=1729617284;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=hXwvadPnoYCnPLalzsmh+sBG1m+WcgwJ9jaQtXZEWZg=;
+  b=ZNhh8I3iXfIlTbvDeeVGNhSQgwt2+W49KcTJa0yktQvErMcP9N9cijlp
+   wAjp4wwfV4MfmgmCTCJnC2q7gRL8Xzmy/rb60bhgRueRkQjyPR0DGm3Bt
+   AlOYQve6EILoB/uYpRunZoc0WmD8eOli7ovEdOvVpBj+rVxJxRIqeErwI
+   TdlCtSAJL8fXL4jE8Aiy+595dCDPkfS6Se5Ai7WNNmfoyYnI1+8acqqvn
+   l32QUtelv2xYbbv9aoJuWPfckrSTglz5S92JBfJUGxrSh/DELFmfGckVo
+   UmrxHa9RF0p4n94Jx+ujz2Yr3mHOOXZy+Rnl1nPozm5hrJMfZocSFL9Ke
+   g==;
+X-CSE-ConnectionGUID: BFFPArKvQgC0CpNpEmrzsw==
+X-CSE-MsgGUID: +ZEYZ1HxRTK8uC7yy3agYg==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="241215411"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Oct 2023 10:14:43 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 23 Oct 2023 10:14:22 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Mon, 23 Oct 2023 10:14:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lPdACFAUsPnP6FdhPaRtO0yLnlKfAWB972XDeKoaXuGTY7j46zKEPhxr0Ng5hF51lhQGZeIKLBhFwGpH0/KZ59p4Yy9HzSSeLTzM06URNoqUcAgEq8BuHDt4m7xJHCnSikQNG9hs++B1oqHHe9/KBC0+kah3h/ouFWnTJOnH+jY7aPjmWQbGYjhpaJ0zeAGbTCDQU03ywd3pCvG3e2vaHB1NhdzvRINPaHgkx0WvucehMRgdljl3sYxjoNOXeUeUOYl5OEp9/r6I6XOEBfhOyB4L8LYkSLKLUEYrG4wDmf79LRWG0O+QYzp0LX3Zr72iV8BdV1tt6jlABx1R1js5Fw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hXwvadPnoYCnPLalzsmh+sBG1m+WcgwJ9jaQtXZEWZg=;
+ b=RV8n8pad5NA7TOc1ebCme0IDKYJckNiHDuPtCkPPM3JH4/IcMZtXnV4Rmpklc5dx+LFNGElFefkpzQE5khJAFyKn0gjSKqV6zXF1X+gjcPtAQ4H4wtYvOwcacNcyGldQcrZuplnU/N/nyGKP+5D4vaqteTkgek3Ln8f5DRi8aDR0+V0iEs1lKSc+jlF1lAImKS4T7mGhc0FnxhWc0dnHH0sUzZyeOIPmwabgYTu/Eu1jNSKvCOv32ypYYN02+/W1eUnVrvMfSM7DpyEU+ifF7GR029RrTtAlmlmGfgyUkYL80Wkl+VIPJLidtd0nbafASQ0aOlYcc66RkdhKA/s3hA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hXwvadPnoYCnPLalzsmh+sBG1m+WcgwJ9jaQtXZEWZg=;
+ b=RxWgfG8zUJW5KeVGjGk6es+0kfbKQeraABvi50aehstGYTDExGRNpDp0FcgrLzBoJk63nrPiaWF2CHwfjQG3z+ffy4Ff5xJdq0DBIGUwXNMiu5yBlpgelqRrgdrSHj/i62byVmeXAz4KegRrCyMKUsxCgRcANxxpmBZZoc3PGNA=
+Received: from CO6PR11MB5618.namprd11.prod.outlook.com (2603:10b6:303:13f::24)
+ by SA1PR11MB8279.namprd11.prod.outlook.com (2603:10b6:806:25c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Mon, 23 Oct
+ 2023 17:14:20 +0000
+Received: from CO6PR11MB5618.namprd11.prod.outlook.com
+ ([fe80::8481:9086:7c95:9376]) by CO6PR11MB5618.namprd11.prod.outlook.com
+ ([fe80::8481:9086:7c95:9376%5]) with mapi id 15.20.6907.032; Mon, 23 Oct 2023
+ 17:14:20 +0000
+From:   <Kelvin.Cao@microchip.com>
+To:     <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <George.Ge@microchip.com>,
+        <christophe.jaillet@wanadoo.fr>, <hch@infradead.org>,
+        <linux-kernel@vger.kernel.org>, <logang@deltatee.com>
+Subject: Re: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
+ engine PCI driver
+Thread-Topic: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
+ engine PCI driver
+Thread-Index: AQHZwZllP9AErauFFUmKz13YRSBKD6/VzMKAgAIhf4CAZAP1gIABCsYAgADKTQCAA5sdgIACmkmAgADx6oCAAFB+gIAS5mwA
+Date:   Mon, 23 Oct 2023 17:14:20 +0000
+Message-ID: <b5158f652d71790209626811eb0df2108384020b.camel@microchip.com>
+References: <20230728200327.96496-1-kelvin.cao@microchip.com>
+         <20230728200327.96496-2-kelvin.cao@microchip.com> <ZMlSLXaYaMry7ioA@matsya>
+         <fd597a2a71f1c5146c804bb9fce3495864212d69.camel@microchip.com>
+         <b0dc3da623dee479386e7cb75841b8b7913c9890.camel@microchip.com>
+         <ZR/htuZSKGJP1wgU@matsya>
+         <f72b924b8c51a7768b0748848555e395ecbb32eb.camel@microchip.com>
+         <ZSORx0SwTerzlasY@matsya>
+         <1c677fbf37ac2783f864b523482d4e06d9188861.camel@microchip.com>
+         <ZSaLoaenhsEG4/IP@matsya>
+         <f6beb06cc707329923cc460545afd6cfe9fa065d.camel@microchip.com>
+In-Reply-To: <f6beb06cc707329923cc460545afd6cfe9fa065d.camel@microchip.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CO6PR11MB5618:EE_|SA1PR11MB8279:EE_
+x-ms-office365-filtering-correlation-id: cc7a55a9-f87b-4b20-714b-08dbd3eb7eec
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vMtSqKItlcClwAQhnnjvTK/k3dGHWBcrS72Odi8jE7+qCYzDgkLPaziIa5yjdgmNDCJ+b2j+suL0RbQ9dveS8yDf1veVPgnTFehZO6kxim6uFTPWjP4BNftvOXDoLo0596OuCrxTy2oVJTbOMD+wF6NwqbNN4lPFbQE7syjGmlIIpWCujSGgj75w8ue52VkKZi45dnEnFRMDnmyUNij/WqmH6s5c9VzsLhcuuCgRM2/xRz9lgFJw8hFAWOYfs8wPJYPMV54tZxJA/7Zj2SZRHiOuzlewshtNHDwnG9UD129RPkOQ4XHpW4i5PpRKgJoM8bi+lfCT+BkbpA2yXMukLO1y7FixX1fnRNBqMbf8XA0tBeeZeai0ZdYPUnJZU8JwdP9oGbCJzy9cxBNQsGjhu6Q8KspF03EQ3WzyyVSTkKHsLK464mX3Q2ghS+0yTqUXR7tLs4JDt9LD5AzQlCnGnqm0yrzqk+XDzECK/unLAztTX5aN6OaORhze9ymVge49fboamMW/A4MT4//UWLATTzAku74bi2QjPe8dYtw0eIptHB0/m6tbF6fEhevcAD6lLFSP4REr/ARivlO2XQCHuGmqLXRe5rtksVZ/btDOQJzaLo639G0FgTPRkapBSvbG
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR11MB5618.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(396003)(376002)(136003)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(2906002)(38100700002)(76116006)(66476007)(66556008)(6916009)(66946007)(2616005)(66446008)(64756008)(316002)(122000001)(54906003)(6506007)(71200400001)(478600001)(6512007)(53546011)(83380400001)(6486002)(36756003)(5660300002)(41300700001)(86362001)(8936002)(4326008)(8676002)(26005)(38070700009)(4001150100001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dHRBU1h0QXdMRG1ma0ZGdHpGcXdkTy9Sa0x6TG5DNkd4R0taYVZiNXRKV3V2?=
+ =?utf-8?B?NkdJRXV3UmtocGdvbnEzWDM5MEN2V0xUS3IraFB6K2l3ZGk5eUtvTmNXTUIz?=
+ =?utf-8?B?M01GZHZ3UzNrcFoycVdxVHZzL0lhNkszUW50dnhaeEp0eVVTdnJ0Mkt0ZDFp?=
+ =?utf-8?B?VGdTTlhzS0N2Z3lUZ2wyOU5PTXhraG5Tbm5JSmovL1RFbXlmcllCSVVTajlM?=
+ =?utf-8?B?Y1NZUkdWQm1GaHR2SzYyTStJYS9yVHRiZUwxNllrWkovWmhzMFdPNDAwZXpJ?=
+ =?utf-8?B?djVxT25MbFArZjlQU3cyTTRDbmhyS21SUGpPd1FITGd2SFdoMUhURWJneXZr?=
+ =?utf-8?B?eW9SOWNhK3JSclN2VGJhcGZ4Um9rUzBOQXRiSnZYeUFDODh5VjhEZDh4ZWRo?=
+ =?utf-8?B?VUIzZGc2SlRuV0pmNEVJcVhlTTl5RGVyQTROTGR0Uk5xeEIyYmJuYjZDb3lC?=
+ =?utf-8?B?NGhsajNNbmtKQWxVVVN3TXpMbzFodnFXUzMxUW1USUx5QTlpNnVXR0pITE00?=
+ =?utf-8?B?K29mb1luRTlXZDZoaHVTb1hSVmVnekRjcENwL3dtQ0cxK2lSYWVVdUMrdGQy?=
+ =?utf-8?B?dlhneUMvelptRlpzcjI2WlY5aEtzOEp1Zkw1TjhGQ2JDVUoxS1JFZmtCTUdJ?=
+ =?utf-8?B?UHFmSVJMTEdRYnE2VnMybWFncGZZNVV3RDU4TGNKNXhWb3UvbDZLYng1WkNm?=
+ =?utf-8?B?RGJtZDQzVlZtdjZKMEdQOGp1VkMwT25DOEE1TWYreDZ6ZDRic0wvOTBzdVJQ?=
+ =?utf-8?B?Y0FjdmFuQ3hVUWRkY0UyTUl3ejI3UW9XMUJ6c3VMVlJYTUFXTzQzQ1g2S05R?=
+ =?utf-8?B?cHJBYnVjOWlVeHhiVUZZR21iUFJEZzk1ZUJ4YTZCZ1FzaGlHTEhLRDAxSVdV?=
+ =?utf-8?B?cGVocWVHQUxWTGNrNEtsRW0xM29tb2FJdkxrVy80a2RmU0hhaWpZb1NEQ0k3?=
+ =?utf-8?B?M0xJQ2laUkxqYXBuYVh0TGdmSVVESXNtMGwwa1BIMXBmZ25vQnJtcW4xL21h?=
+ =?utf-8?B?N2hISUs5TWplWUc1N0k0bGt0VUxsdEZjKzNnckVzSVZKaURKSzZReUZkMjNr?=
+ =?utf-8?B?eWVBY05Za0tIQWorTGlsZlI4VVBEdHRHbHlKWWh5OHJDMGRpNFZYaGc1a0ZE?=
+ =?utf-8?B?VzV0cmttdUh2UCs0bmZpOWZYN2llS1o1WllzMENKR2c1MU1nQ0g5d21rSDY3?=
+ =?utf-8?B?YTRrZHJBTVk0RlNkVnA1cm1kSGwwNzQrMEd0NTIyQkIrckJPTXg0VHJZZDlZ?=
+ =?utf-8?B?bXJlWlE1V2ZLYzRKeUxJQzFjL3BxeHpSQXZwbWUvVlBPczZmTmhFRnFvRU9W?=
+ =?utf-8?B?S0J0cTNrYWNyWjU0bzZZbWtoRkZhNHJVbHp4N2VNb2pPQ0wxUmkzdDc2NkhM?=
+ =?utf-8?B?RENPcUNWck5RTFBReEVRcW1UNU1MRzYvNlA5eFYwSlFWRlNtWWJzSHE5cW01?=
+ =?utf-8?B?K3hxSDBPRnlYTlc1RW11Z2VOU2RVQ0Z0U1JqRFBBUUl5WCtjYzJURGNyRHhh?=
+ =?utf-8?B?cmx1Z3VKT0tudERHZW4weHk1NWhwUGVPNFBFUW1HWU8wMDlJUDB0TlVRcjNo?=
+ =?utf-8?B?SUQvRk5MR3gzelZrTStuVmdidW5SYmJFSDB2NG40SGh5d2c4U0wrZy96L3N0?=
+ =?utf-8?B?L2RGcFlyQnVXRHdXZzBVZ1FvSkZyK1I1UTRUNEVvRDU3bFdyMzdYamNTVG5Q?=
+ =?utf-8?B?T3I3S1NXc3FqeEVXdnpNcUwwdnlxejZ4d2cycURhUzdtazBOVVkzQmp6aG9t?=
+ =?utf-8?B?RUpieHRaSnZvRXlGcmN6YTlDakNvMkYySjc1L3d6ZXp4U2tVUThZTzZHazN2?=
+ =?utf-8?B?V3IxMUlPMkt6TzZlQTIvZGwwWkFNL0JNb1ZvZk92TUFCRzREbGpmQWRWS0NX?=
+ =?utf-8?B?WlJjU0xhOFlwQ3p6RTZvN1VJbkNwQ1YwMHE5RDR2UmdDdmh0T01VRzIxR2NI?=
+ =?utf-8?B?V1FkNUNpVkV3aENKTGY4Qm02eWhrWGIwWnFuMXNMUlVFYjN6dkFCMWhxZHVy?=
+ =?utf-8?B?aFlEaEg3WEVBTTg0UG82MnpIa3lNTXFhcTZZNk1rR21zQUVpd1o5V1ZqcDR5?=
+ =?utf-8?B?TlNiV1FURjVyRENrbDdpS2xFY3N5VFZ4cWM0dWdhMjE4Um0vdmh2U3IrVzcx?=
+ =?utf-8?B?VUtsd0E0M2RGWFNPT3N6cG9WcHJadHhoZGhadDA1WDVaajloWlZJVmpVTUpx?=
+ =?utf-8?B?TFE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1086B17C7FEF8044BD64A470EDAF31EE@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230918072955.2507221-5-rppt@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR11MB5618.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc7a55a9-f87b-4b20-714b-08dbd3eb7eec
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2023 17:14:20.3056
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: r8gmtukruuGje+k8n3IEdsURzvs3ILE4eg5V95JTRwrn/EQ2ZoALJAoPBzI0Wsgiv1zofGftSap4/F/2VAae2p9om4M0N7VdbqtmCYZqrw0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8279
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
-
-On Mon, Sep 18, 2023 at 10:29:46AM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> Extend execmem parameters to accommodate more complex overrides of
-> module_alloc() by architectures.
-> 
-> This includes specification of a fallback range required by arm, arm64
-> and powerpc and support for allocation of KASAN shadow required by
-> arm64, s390 and x86.
-> 
-> The core implementation of execmem_alloc() takes care of suppressing
-> warnings when the initial allocation fails but there is a fallback range
-> defined.
-> 
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> ---
->  arch/arm/kernel/module.c     | 38 ++++++++++++---------
->  arch/arm64/kernel/module.c   | 57 ++++++++++++++------------------
->  arch/powerpc/kernel/module.c | 52 ++++++++++++++---------------
->  arch/s390/kernel/module.c    | 52 +++++++++++------------------
->  arch/x86/kernel/module.c     | 64 +++++++++++-------------------------
->  include/linux/execmem.h      | 14 ++++++++
->  mm/execmem.c                 | 43 ++++++++++++++++++++++--
->  7 files changed, 167 insertions(+), 153 deletions(-)
-
-[...]
-
-> diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
-> index dd851297596e..cd6320de1c54 100644
-> --- a/arch/arm64/kernel/module.c
-> +++ b/arch/arm64/kernel/module.c
-> @@ -20,6 +20,7 @@
->  #include <linux/random.h>
->  #include <linux/scs.h>
->  #include <linux/vmalloc.h>
-> +#include <linux/execmem.h>
->  
->  #include <asm/alternative.h>
->  #include <asm/insn.h>
-> @@ -108,46 +109,38 @@ static int __init module_init_limits(void)
->  
->  	return 0;
->  }
-> -subsys_initcall(module_init_limits);
->  
-> -void *module_alloc(unsigned long size)
-> +static struct execmem_params execmem_params __ro_after_init = {
-> +	.ranges = {
-> +		[EXECMEM_DEFAULT] = {
-> +			.flags = EXECMEM_KASAN_SHADOW,
-> +			.alignment = MODULE_ALIGN,
-> +		},
-> +	},
-> +};
-> +
-> +struct execmem_params __init *execmem_arch_params(void)
->  {
-> -	void *p = NULL;
-> +	struct execmem_range *r = &execmem_params.ranges[EXECMEM_DEFAULT];
->  
-> -	/*
-> -	 * Where possible, prefer to allocate within direct branch range of the
-> -	 * kernel such that no PLTs are necessary.
-> -	 */
-
-Why are you removing this comment? I think you could just move it next
-to the part where we set a 128MiB range.
-
-> -	if (module_direct_base) {
-> -		p = __vmalloc_node_range(size, MODULE_ALIGN,
-> -					 module_direct_base,
-> -					 module_direct_base + SZ_128M,
-> -					 GFP_KERNEL | __GFP_NOWARN,
-> -					 PAGE_KERNEL, 0, NUMA_NO_NODE,
-> -					 __builtin_return_address(0));
-> -	}
-> +	module_init_limits();
-
-Hmm, this used to be run from subsys_initcall(), but now you're running
-it _really_ early, before random_init(), so randomization of the module
-space is no longer going to be very random if we don't have early entropy
-from the firmware or the CPU, which is likely to be the case on most SoCs.
-
->  
-> -	if (!p && module_plt_base) {
-> -		p = __vmalloc_node_range(size, MODULE_ALIGN,
-> -					 module_plt_base,
-> -					 module_plt_base + SZ_2G,
-> -					 GFP_KERNEL | __GFP_NOWARN,
-> -					 PAGE_KERNEL, 0, NUMA_NO_NODE,
-> -					 __builtin_return_address(0));
-> -	}
-> +	r->pgprot = PAGE_KERNEL;
->  
-> -	if (!p) {
-> -		pr_warn_ratelimited("%s: unable to allocate memory\n",
-> -				    __func__);
-> -	}
-> +	if (module_direct_base) {
-> +		r->start = module_direct_base;
-> +		r->end = module_direct_base + SZ_128M;
->  
-> -	if (p && (kasan_alloc_module_shadow(p, size, GFP_KERNEL) < 0)) {
-> -		vfree(p);
-> -		return NULL;
-> +		if (module_plt_base) {
-> +			r->fallback_start = module_plt_base;
-> +			r->fallback_end = module_plt_base + SZ_2G;
-> +		}
-> +	} else if (module_plt_base) {
-> +		r->start = module_plt_base;
-> +		r->end = module_plt_base + SZ_2G;
->  	}
->  
-> -	/* Memory is intended to be executable, reset the pointer tag. */
-> -	return kasan_reset_tag(p);
-> +	return &execmem_params;
->  }
->  
->  enum aarch64_reloc_op {
-
-[...]
-
-> diff --git a/include/linux/execmem.h b/include/linux/execmem.h
-> index 44e213625053..806ad1a0088d 100644
-> --- a/include/linux/execmem.h
-> +++ b/include/linux/execmem.h
-> @@ -32,19 +32,33 @@ enum execmem_type {
->  	EXECMEM_TYPE_MAX,
->  };
->  
-> +/**
-> + * enum execmem_module_flags - options for executable memory allocations
-> + * @EXECMEM_KASAN_SHADOW:	allocate kasan shadow
-> + */
-> +enum execmem_range_flags {
-> +	EXECMEM_KASAN_SHADOW	= (1 << 0),
-> +};
-> +
->  /**
->   * struct execmem_range - definition of a memory range suitable for code and
->   *			  related data allocations
->   * @start:	address space start
->   * @end:	address space end (inclusive)
-> + * @fallback_start:	start of the range for fallback allocations
-> + * @fallback_end:	end of the range for fallback allocations (inclusive)
->   * @pgprot:	permissions for memory in this address space
->   * @alignment:	alignment required for text allocations
-> + * @flags:	options for memory allocations for this range
->   */
->  struct execmem_range {
->  	unsigned long   start;
->  	unsigned long   end;
-> +	unsigned long   fallback_start;
-> +	unsigned long   fallback_end;
->  	pgprot_t        pgprot;
->  	unsigned int	alignment;
-> +	enum execmem_range_flags flags;
->  };
->  
->  /**
-> diff --git a/mm/execmem.c b/mm/execmem.c
-> index f25a5e064886..a8c2f44d0133 100644
-> --- a/mm/execmem.c
-> +++ b/mm/execmem.c
-> @@ -11,12 +11,46 @@ static void *execmem_alloc(size_t size, struct execmem_range *range)
->  {
->  	unsigned long start = range->start;
->  	unsigned long end = range->end;
-> +	unsigned long fallback_start = range->fallback_start;
-> +	unsigned long fallback_end = range->fallback_end;
->  	unsigned int align = range->alignment;
->  	pgprot_t pgprot = range->pgprot;
-> +	bool kasan = range->flags & EXECMEM_KASAN_SHADOW;
-> +	unsigned long vm_flags  = VM_FLUSH_RESET_PERMS;
-> +	bool fallback  = !!fallback_start;
-> +	gfp_t gfp_flags = GFP_KERNEL;
-> +	void *p;
->  
-> -	return __vmalloc_node_range(size, align, start, end,
-> -				   GFP_KERNEL, pgprot, VM_FLUSH_RESET_PERMS,
-> -				   NUMA_NO_NODE, __builtin_return_address(0));
-> +	if (PAGE_ALIGN(size) > (end - start))
-> +		return NULL;
-> +
-> +	if (kasan)
-> +		vm_flags |= VM_DEFER_KMEMLEAK;
-
-Hmm, I don't think we passed this before on arm64, should we have done?
-
-Will
+T24gV2VkLCAyMDIzLTEwLTExIGF0IDE2OjM2ICswMDAwLCBLZWx2aW4uQ2FvQG1pY3JvY2hpcC5j
+b20gd3JvdGU6DQo+IEVYVEVSTkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBh
+dHRhY2htZW50cyB1bmxlc3MgeW91DQo+IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4g
+T24gV2VkLCAyMDIzLTEwLTExIGF0IDE3OjE4ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOg0KPiA+
+IEVYVEVSTkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1
+bmxlc3MgeW91DQo+ID4ga25vdyB0aGUgY29udGVudCBpcyBzYWZlDQo+ID4gDQo+ID4gT24gMTAt
+MTAtMjMsIDIxOjIzLCBLZWx2aW4uQ2FvQG1pY3JvY2hpcC5jb23CoHdyb3RlOg0KPiA+ID4gT24g
+TW9uLCAyMDIzLTEwLTA5IGF0IDExOjA4ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOg0KPiA+IA0K
+PiA+ID4gPiA+IHU2NCBzaXplX3RvX3RyYW5zZmVyOw0KPiA+ID4gPiANCj4gPiA+ID4gV2h5IGNh
+bnQgdGhlIGNsaWVudCBkcml2ZXIgd3JpdGUgdG8gZG9vcmJlbGwsIGlzIHRoZXJlIGFueXRoaW5n
+DQo+ID4gPiA+IHdoaWNoDQo+ID4gPiA+IHByZXZlbnRzIHVzIGZyb20gZG9pbmcgc28/DQo+ID4g
+PiANCj4gPiA+IEkgdGhpbmsgdGhlIHBvdGVudGlhbCBjaGFsbGVuZ2UgaGVyZSBmb3IgdGhlIGNs
+aWVudCBkcml2ZXIgdG8NCj4gPiA+IHJpbmcNCj4gPiA+IGRiDQo+ID4gPiBpcyB0aGF0IHRoZSBj
+bGllbnQgZHJpdmVyIChob3N0IFJDKSBpcyBhIGRpZmZlcmVudCByZXF1ZXN0ZXIgaW4NCj4gPiA+
+IHRoZQ0KPiA+ID4gUENJZSBoaWVyYXJjaHkgY29tcGFyZWQgdG8gRE1BIEVQLCBpbiB3aGljaCBj
+YXNlIFBDSWUgb3JkZXJpbmcNCj4gPiA+IG5lZWQNCj4gPiA+IHRvDQo+ID4gPiBiZSBjb25zaWRl
+cmVkLg0KPiA+ID4gDQo+ID4gPiBBcyBQQ0llIGVuc3VyZXMgdGhhdCByZWFkcyBkb24ndCBwYXNz
+IHdyaXRlcywgd2UgY2FuIGluc2VydCBhDQo+ID4gPiByZWFkDQo+ID4gPiBETUENCj4gPiA+IG9w
+ZXJhdGlvbiB3aXRoIERNQV9QUkVQX0ZFTlNFIGZsYWcgaW4gYmV0d2VlbiB0aGUgdHdvIERNQSB3
+cml0ZXMNCj4gPiA+IChvbmUNCj4gPiA+IGZvciBkYXRhIHRyYW5zZmVyIGFuZCBvbmUgZm9yIG5v
+dGlmaWNhdGlvbikgdG8gZW5zdXJlIHRoZQ0KPiA+ID4gb3JkZXJpbmcNCj4gPiA+IGZvcg0KPiA+
+ID4gdGhlIHNhbWUgcmVxdWVzdGVyIERNQSBFUC4gSSdtIG5vdCBzdXJlIGlmIHRoZSBSQyBjb3Vs
+ZCBlbnN1cmUNCj4gPiA+IHRoZQ0KPiA+ID4gc2FtZQ0KPiA+ID4gb3JkZXJpbmcgaWYgdGhlIGNs
+aWVudCBkcml2ZXIgaXNzdWUgTU1JTyB3cml0ZSB0byBkYiBhZnRlciB0aGUNCj4gPiA+IGRhdGEN
+Cj4gPiA+IERNQQ0KPiA+ID4gYW5kIHJlYWQgRE1BIGNvbXBsZXRpb24sIHNvIHRoYXQgdGhlIGNv
+bnN1bWVyIGlzIGd1YXJhbnRlZWQgdGhlDQo+ID4gPiB0cmFuc2ZlcnJlZCBkYXRhIGlzIHJlYWR5
+IGluIG1lbW9yeSB3aGVuIHRoZSBkYiBpcyB0cmlnZ2VyZWQgYnkNCj4gPiA+IHRoZQ0KPiA+ID4g
+Y2xpZW50IE1NSU8gd3JpdGUuIEkgZ3Vlc3MgaXQncyBzdGlsbCBkb2FibGUgd2l0aCBNTUlPIHdy
+aXRlIGJ1dA0KPiA+ID4ganVzdA0KPiA+ID4gc29tZSBzcGVjaWFsIGNvbnNpZGVyYXRpb24gbmVl
+ZGVkLg0KPiA+IA0KPiA+IEdpdmVuIHRoYXQgaXQgaXMgYSBzaW5nbGUgdmFsdWUsIG92ZXJoZWFk
+IG9mIGRvaW5nIGEgbmV3IHR4biB3b3VsZA0KPiA+IGJlDQo+ID4gaGlnaGVyIHRoYW4gYSBtbWlv
+IHdyaXRlISBJIHRoaW5rIHRoYXQgc2hvdWxkIGJlIHByZWZlcnJlZA0KPiA+IA0KPiA+IC0tDQo+
+IA0KPiBPay4gSSdsbCByZW1vdmUgdGhlIGNhbGxiYWNrIGFuZCBjb21lIHVwIHdpdGggdjcuIFRo
+YW5rIHlvdSBWaW5vZCBmb3INCj4geW91ciBjb21tZW50cy4NCj4gDQoNCkhpIFZpbm9kLA0KDQpJ
+J3ZlIHN1Ym1pdHRlZCB2NyAodGl0bGU6IFtQQVRDSCB2NyAwLzFdIFN3aXRjaHRlYyBTd2l0Y2gg
+RE1BIEVuZ2luZQ0KRHJpdmVyKSB3aGljaCByZW1vdmVkIHRoZSBjYWxsYmFjayBzdXBwb3J0IGZv
+ciB3aW1tIGFzIHlvdSBzdWdnZXN0ZWQuDQpQbGVhc2UgbGV0IG1lIGtub3cgaWYgdGhhdCBsb29r
+cyBnb29kIHRvIHlvdS4gDQoNClRoYW5rcywNCktlbHZpbg0K
