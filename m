@@ -2,73 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB887D406B
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922CA7D406E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbjJWTmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
+        id S230081AbjJWTs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbjJWTmR (ORCPT
+        with ESMTP id S231147AbjJWTsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:42:17 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E048B4;
-        Mon, 23 Oct 2023 12:42:15 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso5841836e87.1;
-        Mon, 23 Oct 2023 12:42:15 -0700 (PDT)
+        Mon, 23 Oct 2023 15:48:54 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32E6B4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:48:51 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a7ad24b3aaso38622097b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:48:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698090133; x=1698694933; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H2ftM92OKCvSHhh6kb+Glq3Mcgd9kOqth29i32E6zLk=;
-        b=nSFIIjZlgDhwPVaKTaBCbptV3T9XiW4JVcjIokitb5AsuggcKlc3vegyu+Lddcngcx
-         mR+92B42ET6SVpnAKtSq0geUZy5dBmDcJkGtsKBpmhr0DGbYtojdqTz/URbVj5gTs3gS
-         hIcenGMJI0zQvCXWfd+CAlvJ5Zb0NugogPiILU5wD7FnZh9cT5wq4F1MZVdKSzoTS4Fl
-         rCF/g6XoJZWbE6ptJEC8gJB2BwJrScXjHIsErcOVVRWte4Sg3sNjCqxXoeql1oRuQdgk
-         TdIbuhZq5WsCPin5uK9wkEybyiKw88w8HqpWwT3H5X0E8h+ATJ5ZyHk9Oo/ybCo6wDOD
-         CRDQ==
+        d=google.com; s=20230601; t=1698090531; x=1698695331; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wjX0MTPG3PvWqJGdMc/rfblXRp2Xo1J9VRn/MIM6Ez4=;
+        b=2+8Bl4x2M7K50L3BMgxIEBOg9oImIq1RCIJaX+qbNMBJ0yxA3fafiaMC9IMReVUn3/
+         LTXZ2ycKvb6MRzenDTsp6hlUfo5KAvgC81vFc68f01zJ9unPr5c+oNlGpnWjBF1d9p1H
+         hNc1NoJp2qDQfy9VaJKRH+qZo/OlToAa6RRkhqbk6+Tcu+HRtHR4dpIcJzxrsnzdKQ3h
+         cSVvlTf+rlO5XvxgUm+xZk7esKbymOWpCug2niar3F753/d4rQpaELpTwG3k8vNa2khV
+         KUqnYO3ctOCN3n/WiV4wlW6cYegFY4nMwJSfmX7iPaYb43ftNGeg/EnKRsEyuKlLx5FB
+         w9bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698090133; x=1698694933;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H2ftM92OKCvSHhh6kb+Glq3Mcgd9kOqth29i32E6zLk=;
-        b=seIwQA2ocMF0I0rcWzLGN/fAvHjCQFoyCeaO4yy++I85gAHWjitUU5pJ3MS3osmuQq
-         KBcNRad7ts084OpoTsfjBQPGawitgwqS5XFAC2yp/6cUd51RMxTU+RkEoCgUMgtoj/EE
-         qIQpIUngPMfNykzmauGGvAPttqtTHUQx7ieNI8sL8nRmFPpaEbv88I81EW4ClJ6DfXfT
-         VZwxW21dGb7z8EAI8tn319VaiSGmLY6s1lGUCoc2rj4FkWZW5iOt/An+cR1zBv0NaZJy
-         CAycQkPysaxs/OntXv+U/OQFItPSHWglf6IzUJnJEBmEyA78cn/DgDw0US4cgB7jcqgm
-         w+WQ==
-X-Gm-Message-State: AOJu0YyN9k/7I54pI3kbaxp4vYQSgjN5EB+SZpNmfqKYK/rKG5ukrCPg
-        Sr5c9Wvrbn1AX7MZoChm65NzOixlOg8dza40+es=
-X-Google-Smtp-Source: AGHT+IF4lDMnNBYukqzCpYss3e4EVRZ5jF5bIM8cAJMJ+yDp9VG5fMNFAGPBIuG0X89cUrHMw6pPpByRVz55Skj4vcA=
-X-Received: by 2002:ac2:5edb:0:b0:500:aed0:cb1b with SMTP id
- d27-20020ac25edb000000b00500aed0cb1bmr7346416lfq.24.1698090133099; Mon, 23
- Oct 2023 12:42:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698090531; x=1698695331;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wjX0MTPG3PvWqJGdMc/rfblXRp2Xo1J9VRn/MIM6Ez4=;
+        b=heDEFXwLfM3Jb2Hc7xmMdNwp8YzVYWy54YZPetJzkxIRI7ndI+jYSl4i89dx3ZcDPl
+         7y2tsNcs47wXTZCD0/pBvknTB/GAnfBG3gXO6+PIgBJYqkxpViLWJ0bDP1p07zMyLSzf
+         FqsE9ADtHTXmOGWe5bjW6z2xgEisrecp3FFYD5whcfX4mzTgbWvmlV1tDqfdRuSii10B
+         UbM0DxLSvnzZILokBm8N2ar9l5xlCFOVTblh9oJbX36WWeSnggNSfa943k1M1UX/dORh
+         YJATWMCK9hyNOSllsfrb6bssGW3cFTzfEEGMLLw8XowVK1REBNOAxxOCN2b9ITt7/pxO
+         Ds2g==
+X-Gm-Message-State: AOJu0YwawPTArw3H/aof+QRDVV+JGmPJQN+ztQF4mQjqn0fPyYiC+xe0
+        V9EBY9nOKepysC/2fKg0TLHp7w==
+X-Google-Smtp-Source: AGHT+IFYKLdrk053cTnoXaOGENG9pRtf7WBSlPFQ6vHTErcVoRWV6bqSTpECx/yl0nSpWdBhZllXow==
+X-Received: by 2002:a05:690c:f8d:b0:5a8:dbb1:f73b with SMTP id df13-20020a05690c0f8d00b005a8dbb1f73bmr11384273ywb.14.1698090530827;
+        Mon, 23 Oct 2023 12:48:50 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id d136-20020a814f8e000000b005a7d9fca87dsm3354999ywb.107.2023.10.23.12.48.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 12:48:49 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 12:48:38 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Johannes Weiner <hannes@cmpxchg.org>
+cc:     domenico cerasuolo <mimmocerasuolo@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Christoph Lameter <cl@linux.co>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmamil.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Nhat Pham <nphamcs@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 10/12] mempolicy: alloc_pages_mpol() for NUMA policy
+ without vma
+In-Reply-To: <20231023190555.GA1964810@cmpxchg.org>
+Message-ID: <6b9b1256-f9ab-c418-ec7f-8fc74449cd68@google.com>
+References: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com> <74e34633-6060-f5e3-aee-7040d43f2e93@google.com> <1738368e-bac0-fd11-ed7f-b87142a939fe@google.com> <CAFYChMvWFdHq-OJHBE3DycmGtGmczDOHVGfoSqdvY-BxM2hWyg@mail.gmail.com>
+ <20231023105331.311373ed33a0dfe78ddaa9e5@linux-foundation.org> <CAFYChMu9DO7OeXqQmKbfMY-iGKykHB21V8nqjy=tQa+StfDAUQ@mail.gmail.com> <20231023190555.GA1964810@cmpxchg.org>
 MIME-Version: 1.0
-References: <20231023-topic-adreno_warn-v1-1-bb1ee9391aa2@linaro.org>
-In-Reply-To: <20231023-topic-adreno_warn-v1-1-bb1ee9391aa2@linaro.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 23 Oct 2023 12:42:01 -0700
-Message-ID: <CAF6AEGuS3PhNbh9Gmu1g9YpUcr3LOh1gZK-XBE+urdb5jRjorg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/adreno: Drop WARN_ON from patchid lookup for new GPUs
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Abel Vesa <abel.vesa@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,49 +92,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 7:29=E2=80=AFAM Konrad Dybcio <konrad.dybcio@linaro=
-.org> wrote:
->
-> New GPUs still use the lower 2 bytes of the chip id (in whatever form
-> it comes) to signify silicon revision. Drop the warning that makes it
-> sound as if that was unintended.
->
-> Fixes: 90b593ce1c9e ("drm/msm/adreno: Switch to chip-id for identifying G=
-PU")
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/gpu/drm/msm/adreno/adreno_gpu.h | 5 -----
->  1 file changed, 5 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/ms=
-m/adreno/adreno_gpu.h
-> index 80b3f6312116..9a1ec42155fd 100644
-> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> @@ -203,11 +203,6 @@ struct adreno_platform_config {
->
->  static inline uint8_t adreno_patchid(const struct adreno_gpu *gpu)
->  {
-> -       /* It is probably ok to assume legacy "adreno_rev" format
-> -        * for all a6xx devices, but probably best to limit this
-> -        * to older things.
-> -        */
-> -       WARN_ON_ONCE(gpu->info->family >=3D ADRENO_6XX_GEN1);
+On Mon, 23 Oct 2023, Johannes Weiner wrote:
+> On Mon, Oct 23, 2023 at 08:10:32PM +0200, domenico cerasuolo wrote:
+> > Il giorno lun 23 ott 2023 alle ore 19:53 Andrew Morton
+> > <akpm@linux-foundation.org> ha scritto:
+> > >
+> > > On Mon, 23 Oct 2023 18:53:26 +0200 domenico cerasuolo <mimmocerasuolo@gmail.com> wrote:
+> > >
+> > > > > Rebased to mm.git's current mm-stable, to resolve with removal of
+> > > > > vma_policy() from include/linux/mempolicy.h, and temporary omission
+> > > > > of Nhat's ZSWAP mods from mm/swap_state.c: no other changes.
+> > > >
+> > > > Hi Hugh,
+> > > >
+> > > > not sure if it's the rebase, but I don't see an update to
+> > > > __read_swap_cache_async invocation in zswap.c at line 1078. Shouldn't we pass a
+> > > > mempolicy there too?
+> > >
+> > > No change needed.  zswap_writeback_entry() was passing a NULL for arg
+> > > `vma' and it's now passing a NULL for arg `mpol'.
 
-Maybe just change it to ADRENO_6XX_GEN4?
+Andrew's answer was indeed my thinking, and why none of us got a build error.
 
-BR,
--R
+> > 
+> > Problem is that alloc_pages_mpol is dereferencing mpol, when I test the zswap
+> > writeback at 397148729f21edcf700ecb2a01749dbce955d09e it crashes, not sure if
+> > I'm missing something.
+> 
+> I don't think you are. The NULL vma used to go to get_vma_policy(),
+> which fell back to
+> 
+> 	pol = get_task_policy(current);
+> 
+> Now the NULL pol gets passed to alloc_pages_mpol() directly, which
+> dereferences it. Oops.
 
->         return gpu->chip_id & 0xff;
->  }
->
->
-> ---
-> base-commit: e8361b005d7c92997d12f2b85a9e4a525738bd9d
-> change-id: 20231023-topic-adreno_warn-42a09bb4bf64
->
-> Best regards,
-> --
-> Konrad Dybcio <konrad.dybcio@linaro.org>
->
+Yes, I failed to think it through that far.
+
+> 
+> I think Hugh's patch needs zswap to pass get_task_policy(current)
+> instead of NULL.
+
+That sounds the likely fix, thank you Domenico, Andrew, Johannes.
+
+I'll check it out and send a fix patch later today.
+
+I don't know who runs that zswap_writeback_entry() code, but I presume
+that task's mempolicy is unlikely to be relevant to the swap cache page
+in question: but a whole lot better than oopsing, and will reproduce
+the previous behaviour (and the assumption at this writeback point would
+be that the page is unlikely to be reused after writeback anyway, so its
+node unimportant).
+
+Hugh
