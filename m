@@ -2,402 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE647D2FC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6017D2FCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjJWKZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 06:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42814 "EHLO
+        id S229667AbjJWK1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 06:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjJWKZN (ORCPT
+        with ESMTP id S229450AbjJWK1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 06:25:13 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7F2DB;
-        Mon, 23 Oct 2023 03:25:10 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-41cd4450c79so3865651cf.0;
-        Mon, 23 Oct 2023 03:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698056709; x=1698661509; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wVH4K1NnGARKSXYIw4n1F4TDwvMMZ5jkOdUPeFeVWpg=;
-        b=AN/PrI38wFS9BqXRCHrBMKJ31G/BFuxOBT12wBeo9yPek2pY4qJdDBjRs04j7Q5uLp
-         7g+Td6SsA/9XT0OG5+UtkKlbCcT+/1Z0Ay8liuTIAGxcgaVYFdv7lcLZvjNMpASDIeMy
-         OqGawwrluaHts7SAEgZqUtJGLxKANqsySDWvIijAyROsmPpk8+3in22B1Q/XQBmThhDR
-         Pj8SDwjJTXgAVu568Nz94/aqT0/2YzauaUUiJ1yCXrvDRYAqFWUwC8fzETi894BcQ1d1
-         lRCGRQKbVJomGdd9+vo9Wlbl1QXdQq6RJThXZNuee1kbnfCHQ9sz7i/hzxzflmBIA4bw
-         Jm6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698056709; x=1698661509;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wVH4K1NnGARKSXYIw4n1F4TDwvMMZ5jkOdUPeFeVWpg=;
-        b=f6hDWkYLRm2tmDe1ZQrUHvhXHJVeyPTRv+NPSZI1rHuKdRff+TUxdpyNy4toQV7yy2
-         l+LYy2oKQfKHTxLtCaur2sHVIbBe4yQJehJAPHtgDsgtuq3yTBn6Btm+4ard2qFQlutd
-         sIKDylj5vicVQhI3fb7El+Uy5VZgFHC70i7L5kMYEj3TM4Rpm8iZFcC9CHv0V3sO+IWc
-         A5WLizXWBPEMgpYhsrc3qKFiCyLDnE5W0ybS2egf1ReLC/7mAHKN3nCb3a4vnNGJ6gRm
-         tHfUz4dKr6sKCqJkevrqgs4FrxUP+gSpUJpC/lDuZTRN7gH0u6gaEt9mrXUowmNk9s48
-         5E4Q==
-X-Gm-Message-State: AOJu0YxMOq9RRvrqQ7yaofxl/6H50/qdlxahgzZ+cxGvX9TOwpA0HTjg
-        WL8fdSJ6Rr+xZxGkkkuoWewRnyTE20dCJYOLWYM=
-X-Google-Smtp-Source: AGHT+IFvcwEZ020RUmWYKhdHB7LQjDBBag+UV3TQuEWrDX07Iosm3sZlfkSkS1/IX2i9wcYAq9aJ0TKHHMV0S8U6ZmA=
-X-Received: by 2002:a05:6214:21ec:b0:66a:d2c1:992d with SMTP id
- p12-20020a05621421ec00b0066ad2c1992dmr8938026qvj.0.1698056709348; Mon, 23 Oct
- 2023 03:25:09 -0700 (PDT)
+        Mon, 23 Oct 2023 06:27:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E857DB
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:26:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2EBDC433C7;
+        Mon, 23 Oct 2023 10:26:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698056819;
+        bh=afivWCmIm1aktOqOx8GKzP/u0SdUkx/ZPjFi3uQ5QoY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t5sQ6uUhKHt4AYjqto1zWQILEcwCkGiLbptQaRMMzu/7tzIoKD+Z3M/ca4zqpJzSL
+         Zph2LGqA7OQF8LJeTKOMGWG3G0Xc98fupJMalJj4OC2kRjtlklJOj53Qrz7R6RRLWK
+         wEGi9xp2kF0KjMcvlcEtaln+sXTxck1lFZv+Pivu33FTDYKeuvp2wrZwlYXyWDZOuv
+         nzdAcYskrTAiDhgWyJ32HC+UKSrWv4ucncVva67vpwIxFsgXRsjCcKIwipTgF9PnQJ
+         RNnmFeI98M/Vi7b5lc7AGDSaIB0NyoNxZzI28Zt8qvVOsGdkoo1wdlCjb6F0jSHXzv
+         AYsx0GinABaWQ==
+Date:   Mon, 23 Oct 2023 11:26:54 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, jeremy.linton@arm.com,
+        ilkka@os.amperecomputing.com, renyu.zj@linux.alibaba.com
+Subject: Re: [PATCH 2/3] perf/arm-cmn: Rework DTC counters (again)
+Message-ID: <20231023102653.GA3282@willie-the-truck>
+References: <cover.1697824215.git.robin.murphy@arm.com>
+ <5f6ade76b47f033836d7a36c03555da896dfb4a3.1697824215.git.robin.murphy@arm.com>
 MIME-Version: 1.0
-References: <20231016031649.35088-1-huangjie.albert@bytedance.com>
- <CAJ8uoz2DUe3xySTKuLbA5=QDAGuTzPdGu3P_=ZvJmna25VtHCQ@mail.gmail.com>
- <CABKxMyONtPR1pWLdBiK5M-NJoc5S6rpyYYUQWa0J2R+eyajOsg@mail.gmail.com>
- <CAJ8uoz3Vq1aHzB6Ew-yCQF8On9EP_9BSB4rOvqEgMXeA5=wZgw@mail.gmail.com> <CABKxMyNy-jOqEuQYCLrOUu1r3M-dJp+RD-KDsXbytXtwJqO4hg@mail.gmail.com>
-In-Reply-To: <CABKxMyNy-jOqEuQYCLrOUu1r3M-dJp+RD-KDsXbytXtwJqO4hg@mail.gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 23 Oct 2023 12:24:58 +0200
-Message-ID: <CAJ8uoz0MfVw2gZFuJJec51_8qaN0SS4gHStorivVpCprG2LY-w@mail.gmail.com>
-Subject: Re: [PATCH v2 net-next] xsk: Avoid starving xsk at the end of the list
-To:     =?UTF-8?B?6buE5p2w?= <huangjie.albert@bytedance.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f6ade76b47f033836d7a36c03555da896dfb4a3.1697824215.git.robin.murphy@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 at 11:37, =E9=BB=84=E6=9D=B0 <huangjie.albert@bytedance=
-.com> wrote:
->
-> Magnus Karlsson <magnus.karlsson@gmail.com> =E4=BA=8E2023=E5=B9=B410=E6=
-=9C=8819=E6=97=A5=E5=91=A8=E5=9B=9B 17:13=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > On Thu, 19 Oct 2023 at 10:41, =E9=BB=84=E6=9D=B0 <huangjie.albert@byted=
-ance.com> wrote:
-> > >
-> > > Magnus Karlsson <magnus.karlsson@gmail.com> =E4=BA=8E2023=E5=B9=B410=
-=E6=9C=8816=E6=97=A5=E5=91=A8=E4=B8=80 14:41=E5=86=99=E9=81=93=EF=BC=9A
-> > > >
-> > > > On Mon, 16 Oct 2023 at 05:17, Albert Huang
-> > > > <huangjie.albert@bytedance.com> wrote:
-> > > > >
-> > > > > In the previous implementation, when multiple xsk sockets were
-> > > > > associated with a single xsk_buff_pool, a situation could arise
-> > > > > where the xsk_tx_list maintained data at the front for one xsk
-> > > > > socket while starving the xsk sockets at the back of the list.
-> > > > > This could result in issues such as the inability to transmit pac=
-kets,
-> > > > > increased latency, and jitter. To address this problem, we introd=
-uced
-> > > > > a new variable called tx_budget_cache, which limits each xsk to t=
-ransmit
-> > > > > a maximum of MAX_XSK_TX_BUDGET tx descriptors. This allocation en=
-sures
-> > > > > equitable opportunities for subsequent xsk sockets to send tx des=
-criptors.
-> > > > > The value of MAX_XSK_TX_BUDGET is temporarily set to 16.
-> > > >
-> > > > Hi Albert. Yes you are correct that there is nothing hindering this=
- to
-> > > > happen in the code at the moment, so let us fix it.
-> > > >
-> > > > > Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
-> > > > > ---
-> > > > >  include/net/xdp_sock.h |  6 ++++++
-> > > > >  net/xdp/xsk.c          | 18 ++++++++++++++++++
-> > > > >  2 files changed, 24 insertions(+)
-> > > > >
-> > > > > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> > > > > index 69b472604b86..f617ff54e38c 100644
-> > > > > --- a/include/net/xdp_sock.h
-> > > > > +++ b/include/net/xdp_sock.h
-> > > > > @@ -44,6 +44,7 @@ struct xsk_map {
-> > > > >         struct xdp_sock __rcu *xsk_map[];
-> > > > >  };
-> > > > >
-> > > > > +#define MAX_XSK_TX_BUDGET 16
-> > > >
-> > > > I think something like MAX_PER_SOCKET_BUDGET would be clearer.
-> > > >
-> > > > >  struct xdp_sock {
-> > > > >         /* struct sock must be the first member of struct xdp_soc=
-k */
-> > > > >         struct sock sk;
-> > > > > @@ -63,6 +64,11 @@ struct xdp_sock {
-> > > > >
-> > > > >         struct xsk_queue *tx ____cacheline_aligned_in_smp;
-> > > > >         struct list_head tx_list;
-> > > > > +       /* Record the actual number of times xsk has transmitted =
-a tx
-> > > > > +        * descriptor, with a maximum limit not exceeding MAX_XSK=
-_TX_BUDGET
-> > > > > +        */
-> > > > > +       u32 tx_budget_cache;
-> > > > > +
-> > > > >         /* Protects generic receive. */
-> > > > >         spinlock_t rx_lock;
-> > > > >
-> > > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > > > > index f5e96e0d6e01..087f2675333c 100644
-> > > > > --- a/net/xdp/xsk.c
-> > > > > +++ b/net/xdp/xsk.c
-> > > > > @@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
-> > > > >
-> > > > >  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_des=
-c *desc)
-> > > > >  {
-> > > > > +       u32 xsk_full_count =3D 0;
-> > > >
-> > > > Enough with a bool;
-> > > >
-> > > > >         struct xdp_sock *xs;
-> > > > >
-> > > > >         rcu_read_lock();
-> > > > > +again:
-> > > > >         list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) =
-{
-> > > > > +               if (xs->tx_budget_cache >=3D MAX_XSK_TX_BUDGET) {
-> > > > > +                       xsk_full_count++;
-> > > > > +                       continue;
-> > > > > +               }
-> > > >
-> > > > The problem here is that the fixed MAX_XSK_TX_BUDGET is only useful
-> > > > for the <=3D 2 socket case. If I have 3 sockets sharing a
-> > > > netdev/queue_id, the two first sockets can still starve the third o=
-ne
-> > > > since the total budget per send is 32. You need to go through the l=
-ist
-> > > > of sockets in the beginning to compute the MAX_XSK_TX_BUDGET to
-> > > > compute this dynamically before each call. Or cache this value
-> > > > somehow, in the pool for example. Actually, the refcount in the
-> > > > buf_pool will tell you how many sockets are sharing the same buf_po=
-ol.
-> > > > Try using that to form MAX_XSK_TX_BUDGET on the fly.
-> > > >
-> > > > Another simpler way of accomplishing this would be to just reorder =
-the
-> > > > list every time. Put the first socket last in the list every time. =
-The
-> > > > drawback of this is that you need to hold the xsk_tx_list_lock whil=
-e
-> > > > doing this so might be slower. The per socket batch size would also=
- be
-> > > > 32 and you would not receive "fairness" over a single call to
-> > > > sendto(). Would that be a problem for you?
-> > > >
-> > >
-> > > Currently, there are two paths in the kernel that consume TX queue de=
-scriptors:
-> > >
-> > > 1=E3=80=81Native XSK
-> > > xsk_tx_peek_desc
-> > >      xskq_cons_peek_desc
-> > >
-> > > In the first scenario, we consume TX descriptors by sequentially
-> > > traversing the pool->xsk_tx_list
-> > > without any implicit code logic to ensure fairness. This can lead to =
-a
-> > > scenario of starvation,
-> > > making it a top priority for us to address.
-> > >
-> > > 2=E3=80=81Generic XSK
-> > > __xsk_sendmsg (or xsk_poll)
-> > >      xsk_generic_xmit
-> > >         __xsk_generic_xmit
-> > >               xskq_cons_peek_desc
-> > >
-> > > In the second scenario, TX descriptors are consumed by using sendto.
-> > > Currently, __xsk_generic_xmit
-> > > sends a maximum of 32 TX descriptors each time, and the process
-> > > scheduling strategy already
-> > > ensures a certain level of fairness. In this scenario, should we
-> > > consider not addressing it and
-> > > instead prioritize the first scenario?
-> >
-> > Agree. The first scenario is the problematic one. One problem we have
-> > to solve there is that the batch size is up to the driver in the
-> > zero-copy case so the xsk core has no idea. Maybe introduce a pointer
-> > that tells us what socket to get packets from first and make sure this
-> > pointer gets updated to the next socket in the list every time the
-> > function is exited? Please make sure that the one socket case is not
-> > hurt.
->
-> The method of "introducing a pointer that tells us which socket to get
-> packets from first" is useful, but it requires us to manage socket
-> additions and removals. This would introduce
-> locking operations.
->
-> So it seems that the following code is simple enough and appears to
-> solve the problem:
->
-> 1.During each iteration, check if the current socket being traversed
-> has exhausted its quota. If it has, skip it and continue iterating
-> through the remaining sockets.
-> 2.If all sockets have been traversed, and no available transmission
-> descriptors (tx desc) have been found, consider whether it's time to
-> start a fresh iteration.
-> 3.The logic for a fresh iteration involves checking if any socket has
-> used up its quota during the traversal. If any socket has reached its
-> quota, set the tx_budget_cache of all sockets to 0 and begin a new
-> iteration of the list.
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index f5e96e0d6e01..2cf2822e9d16 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
->
->  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
->  {
-> +       bool xsk_cache_full =3D false;
->         struct xdp_sock *xs;
->
->         rcu_read_lock();
-> +again:
->         list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
-> +               if (xs->tx_budget_cache >=3D MAX_PER_SOCKET_BUDGET) {
+On Fri, Oct 20, 2023 at 06:51:26PM +0100, Robin Murphy wrote:
+> The bitmap-based scheme for tracking DTC counter usage turns out to be a
+> complete dead-end for its imagined purpose, since by the time we have to
+> keep track of a per-DTC counter index anyway, we already have enough
+> information to make the bitmap itself redundant. Revert the remains of
+> it back to almost the original scheme, but now expanded to track per-DTC
+> indices, in preparation for making use of them in anger.
+> 
+> Note that since cycle count events always use a dedicated counter on a
+> single DTC, we reuse the field to encode their DTC index directly.
+> 
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> ---
+>  drivers/perf/arm-cmn.c | 126 +++++++++++++++++++++--------------------
+>  1 file changed, 64 insertions(+), 62 deletions(-)
+> 
+> diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+> index f1ac8d0cdb3b..675f1638013e 100644
+> --- a/drivers/perf/arm-cmn.c
+> +++ b/drivers/perf/arm-cmn.c
+> @@ -281,16 +281,13 @@ struct arm_cmn_node {
+>  	u16 id, logid;
+>  	enum cmn_node_type type;
+>  
+> -	int dtm;
+> -	union {
+> -		/* DN/HN-F/CXHA */
+> -		struct {
+> -			u8 val : 4;
+> -			u8 count : 4;
+> -		} occupid[SEL_MAX];
+> -		/* XP */
+> -		u8 dtc;
+> -	};
+> +	u8 dtm;
+> +	s8 dtc;
+> +	/* DN/HN-F/CXHA */
+> +	struct {
+> +		u8 val : 4;
+> +		u8 count : 4;
+> +	} occupid[SEL_MAX];
+>  	union {
+>  		u8 event[4];
+>  		__le32 event_sel;
+> @@ -540,12 +537,12 @@ static int arm_cmn_map_show(struct seq_file *s, void *data)
+>  
+>  		seq_puts(s, "\n     |");
+>  		for (x = 0; x < cmn->mesh_x; x++) {
+> -			u8 dtc = cmn->xps[xp_base + x].dtc;
+> +			s8 dtc = cmn->xps[xp_base + x].dtc;
+>  
+> -			if (dtc & (dtc - 1))
+> +			if (dtc < 0)
+>  				seq_puts(s, " DTC ?? |");
+>  			else
+> -				seq_printf(s, " DTC %ld  |", __ffs(dtc));
+> +				seq_printf(s, " DTC %d  |", dtc);
+>  		}
+>  		seq_puts(s, "\n     |");
+>  		for (x = 0; x < cmn->mesh_x; x++)
+> @@ -589,8 +586,7 @@ static void arm_cmn_debugfs_init(struct arm_cmn *cmn, int id) {}
+>  struct arm_cmn_hw_event {
+>  	struct arm_cmn_node *dn;
+>  	u64 dtm_idx[4];
+> -	unsigned int dtc_idx;
+> -	u8 dtcs_used;
+> +	s8 dtc_idx[CMN_MAX_DTCS];
+>  	u8 num_dns;
+>  	u8 dtm_offset;
+>  	bool wide_sel;
+> @@ -600,6 +596,10 @@ struct arm_cmn_hw_event {
+>  #define for_each_hw_dn(hw, dn, i) \
+>  	for (i = 0, dn = hw->dn; i < hw->num_dns; i++, dn++)
+>  
+> +/* @i is the DTC number, @idx is the counter index on that DTC */
+> +#define for_each_hw_dtc_idx(hw, i, idx) \
+> +	for (int i = 0, idx; i < CMN_MAX_DTCS; i++) if ((idx = hw->dtc_idx[i]) >= 0)
 
-The problem here is what to set this MAX_PER_SOCKET_BUDGET to? We do
-not want to penalize the one socket per page pool case, so this would
-then have to be very large. But this might not be a problem as all new
-drivers are using the batched interface (since Maciej is forcing
-everyone to use it :-) ), and it will only go this path that you are
-modifying in the multiple sockets per page pool case. So I think it's
-fine. But still, what is a good value? 32 or 64?
+This macro is pretty hideous ;) The kbuild robot complained as well, but
+given that it's internal to the driver and it does make the callsites
+quite a bit simpler, I'm inclined to stick with it for now. At least, I
+couldn't come up with something else which was just as succinct.
 
-> +                       xsk_cache_full =3D true;
-> +                       continue;
-> +               }
-> +
->                 if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
->                         if (xskq_has_descs(xs->tx))
->                                 xskq_cons_release(xs->tx);
->                         continue;
->                 }
->
-> +               xs->tx_budget_cache++;
-> +
->                 /* This is the backpressure mechanism for the Tx path.
->                  * Reserve space in the completion queue and only proceed
->                  * if there is space in it. This avoids having to impleme=
-nt
-> @@ -436,6 +445,15 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool,
-> struct xdp_desc *desc)
->                 return true;
->         }
->
-> +not_found:
-
-You are not using this label, but I am probably not seeing all the code her=
-e.
-
-> +       if (xsk_cache_full =3D=3D true) {
-> +               list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) =
-{
-> +                       xs->tx_budget_cache =3D 0;
-> +               }
-> +               xsk_cache_full =3D false;
-> +               goto again;
-> +       }
-> +
->  out:
->         rcu_read_unlock();
->         return false;
->
-> Although this method cannot achieve perfect fairness, it prevents any
-> sockets from starving
-
-That is perfectly fine. We should not aim for perfect fairness since
-that would be prohibitively expensive. If someone wants that, they can
-implement that code on top of this.
-
-Your approach looks good to me. Please produce a patch.
-
-Thanks!
-
-> >
-> > > Additionally, based on my understanding, there should not be
-> > > applications concurrently using generic
-> > > XSK and native XSK on the same pool.
-> >
-> > That is correct.
-> >
-> > > Magnus, how do you view this issue? I'm concerned that striving for
-> > > absolute fairness might introduce
-> > > additional complexity in the logic.
-> >
-> > Is this a problem that you have observed or need to guard against in
-> > an application? If so, let us fix it.
->
-> Currently, we are facing issue 1.
->
-> >
-> > > BR
-> > > Albert
-> > >
-> > >
-> > >
-> > > > > +
-> > > > >                 if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
-> > > > >                         if (xskq_has_descs(xs->tx))
-> > > > >                                 xskq_cons_release(xs->tx);
-> > > > >                         continue;
-> > > > >                 }
-> > > > >
-> > > > > +               xs->tx_budget_cache++;
-> > > > > +
-> > > > >                 /* This is the backpressure mechanism for the Tx =
-path.
-> > > > >                  * Reserve space in the completion queue and only=
- proceed
-> > > > >                  * if there is space in it. This avoids having to=
- implement
-> > > > > @@ -436,6 +445,14 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *=
-pool, struct xdp_desc *desc)
-> > > > >                 return true;
-> > > > >         }
-> > > > >
-> > > > > +       if (unlikely(xsk_full_count > 0)) {
-> > > > > +               list_for_each_entry_rcu(xs, &pool->xsk_tx_list, t=
-x_list) {
-> > > > > +                       xs->tx_budget_cache =3D 0;
-> > > > > +               }
-> > > > > +               xsk_full_count =3D 0;
-> > > > > +               goto again;
-> > > > > +       }
-> > > > > +
-> > > > >  out:
-> > > > >         rcu_read_unlock();
-> > > > >         return false;
-> > > > > @@ -1230,6 +1247,7 @@ static int xsk_bind(struct socket *sock, st=
-ruct sockaddr *addr, int addr_len)
-> > > > >         xs->zc =3D xs->umem->zc;
-> > > > >         xs->sg =3D !!(xs->umem->flags & XDP_UMEM_SG_FLAG);
-> > > > >         xs->queue_id =3D qid;
-> > > > > +       xs->tx_budget_cache =3D 0;
-> > > > >         xp_add_xsk(xs->pool, xs);
-> > > > >
-> > > > >  out_unlock:
-> > > > > --
-> > > > > 2.20.1
-> > > > >
-> > > > >
+Will
