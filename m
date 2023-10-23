@@ -2,75 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA757D3DCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4B37D3D72
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233662AbjJWRcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
+        id S231210AbjJWRYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbjJWRc0 (ORCPT
+        with ESMTP id S229537AbjJWRYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:32:26 -0400
-X-Greylist: delayed 450 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Oct 2023 10:32:16 PDT
-Received: from out.smtpout.orange.fr (out-18.smtpout.orange.fr [193.252.22.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B8098110
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:32:16 -0700 (PDT)
-Received: from localhost.localdomain ([89.207.171.96])
-        by smtp.orange.fr with ESMTPA
-        id uyfSqiNV2aLS1uyfTqByU0; Mon, 23 Oct 2023 19:24:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1698081884;
-        bh=t7dPTH86r3T7OE/Hsg6Sc2j1I/GQSk2tQP+zV+h/AG8=;
-        h=From:To:Cc:Subject:Date;
-        b=MFBZI8p7FmZLlPFCzeqUapweAH47vcCK4oyUBogCqv7EhD1XnR6I6QzcFo4tbNaM/
-         9WoAIH9zWCABgwlyw+DoowNcv/UinyDoP2xX86rAW77+CpXkm6NCGxaBmrHi+t02W0
-         qeh4Ax+YLsbjbn2Pc3gqcgu60E+eySej/jW/0rKCUhEcrCCywNj8RS2QgOjXdptSkz
-         syd+ioJdbyJRyBluDc3kBs7PIoC1ScZYf137hks9+/XjQcboh4MP1dLRwA06HkKc7S
-         6Vx+Rg552JZnrz1IrgcHC3ocgZXZGNCq2GiHYAZRkQDdrVYfzm2tK5d1qjMPL0cmyV
-         YNOkBT5NZZB2A==
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 23 Oct 2023 19:24:44 +0200
-X-ME-IP: 89.207.171.96
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     rafael@kernel.org, lenb@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 0/4] ACPI: sysfs: Fix some issues in create_of_modalias() and create_pnp_modalias()
-Date:   Mon, 23 Oct 2023 19:24:37 +0200
-Message-Id: <cover.1698081019.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.32.0
+        Mon, 23 Oct 2023 13:24:51 -0400
+Received: from mail-ot1-f80.google.com (mail-ot1-f80.google.com [209.85.210.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A9CA2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:24:49 -0700 (PDT)
+Received: by mail-ot1-f80.google.com with SMTP id 46e09a7af769-6cf61d80fafso1191629a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:24:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698081888; x=1698686688;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dsLqKH9JCxLrEaZWl5kI+Sf/LVnZmpsmAw2gKYYRk2c=;
+        b=C2l/EhIQCMDmag4Z7KSvSzsP5ZSONdbDzoHOrwEITerofIXJT3fx8TLNVWrPJnGuDk
+         pdhOppOB5GvqzIwaHCnPmD5C5tV9Ycfbc3xHq/T9cNmxHw1sdUnPCXEFupnHMQC/ntiU
+         D6YCHwWyHGtL4oSaG63OetUzPhesErslpcp3m77JLXZ1K/OpduqHxreC2frte3VZcH0h
+         1dw7y2YO/h5WKSFNM7JTFX74rHi+d4Q4Pi4RSHMpXzL/vg76Q+VjZN+2jymIRuLDM9ru
+         ruI5ZAlejWedvP3cIcLiYZBls7ingLcs7fJoHkiK8KUvEq2BasPjB+G5AouwU69i5qc/
+         r0uA==
+X-Gm-Message-State: AOJu0YwxuKe4Ou8yMiI+z4HVbMpiwFkDvxw5xYX4fOcO9zEXmI8cCGpu
+        w+m1USHeCeQyQp7p8LIaZMacY0TyUE1osLpyZckg5jspSVAm
+X-Google-Smtp-Source: AGHT+IEJNU/PwRLWHGOPmUPObo8hgCgSIzUJJfWcgmXQ0v0QmOJAFoi588CPia1DKIoo5wKNJ8kIvcJXhMT99r+RGN8A+DWfSm2h
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:a446:b0:1e9:9b32:3e56 with SMTP id
+ n6-20020a056870a44600b001e99b323e56mr4798162oal.7.1698081888294; Mon, 23 Oct
+ 2023 10:24:48 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 10:24:48 -0700
+In-Reply-To: <000000000000985ef90607610b0a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c05f1b0608657fde@google.com>
+Subject: Re: [syzbot] [mm?] WARNING: suspicious RCU usage in mas_walk (3)
+From:   syzbot <syzbot+79fcba037b6df73756d3@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, postmaster@duagon.onmicrosoft.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All issues have been introduced by the same commit, 8765c5ba1949 ("ACPI
-/ scan: Rework modalias creation when "compatible" is present")
+syzbot has found a reproducer for the following issue on:
 
-The first 2 patches fixe some issues related to string truncation checks
-and to computation of the available space in the output buffer.
+HEAD commit:    e8361b005d7c Add linux-next specific files for 20231023
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1207cb05680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=75e8fc3570ec9a74
+dashboard link: https://syzkaller.appspot.com/bug?extid=79fcba037b6df73756d3
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=107fab89680000
 
-The 2 others are just some clean-ups.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e28a7944599e/disk-e8361b00.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7dd355dbe055/vmlinux-e8361b00.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7b2a9050635d/bzImage-e8361b00.xz
 
-Christophe JAILLET (4):
-  ACPI: sysfs: Fix the check for a potential string truncation
-  ACPI: sysfs: Fix a potential out-of-bound write in
-    create_of_modalias()
-  ACPI: sysfs: Remove some useless trailing NULL writes
-  ACPI: sysfs: Remove some dead code
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+79fcba037b6df73756d3@syzkaller.appspotmail.com
 
- drivers/acpi/device_sysfs.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+=============================
+WARNING: suspicious RCU usage
+6.6.0-rc6-next-20231023-syzkaller #0 Not tainted
+-----------------------------
+lib/maple_tree.c:856 suspicious rcu_dereference_check() usage!
 
--- 
-2.32.0
+other info that might help us debug this:
 
+
+rcu_scheduler_active = 2, debug_locks = 1
+no locks held by syz-executor.4/5222.
+
+stack backtrace:
+CPU: 0 PID: 5222 Comm: syz-executor.4 Not tainted 6.6.0-rc6-next-20231023-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+ lockdep_rcu_suspicious+0x20b/0x3a0 kernel/locking/lockdep.c:6711
+ mas_root lib/maple_tree.c:856 [inline]
+ mas_root lib/maple_tree.c:854 [inline]
+ mas_start lib/maple_tree.c:1385 [inline]
+ mas_state_walk lib/maple_tree.c:3705 [inline]
+ mas_walk+0x4d1/0x7d0 lib/maple_tree.c:4888
+ mas_find_setup lib/maple_tree.c:5948 [inline]
+ mas_find+0x1e6/0x400 lib/maple_tree.c:5989
+ vma_find include/linux/mm.h:952 [inline]
+ do_mbind+0xc8f/0x1010 mm/mempolicy.c:1328
+ kernel_mbind+0x1d4/0x1f0 mm/mempolicy.c:1486
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x62/0x6a
+RIP: 0033:0x7f9979c7cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9978ffe0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ed
+RAX: ffffffffffffffda RBX: 00007f9979d9c050 RCX: 00007f9979c7cae9
+RDX: 0000000000000003 RSI: 0000000000005000 RDI: 0000000020182000
+RBP: 00007f9979cc847a R08: 000000000000007f R09: 0000000000000003
+R10: 0000000020000040 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007f9979d9c050 R15: 00007ffdbdd465f8
+ </TASK>
+
+=============================
+WARNING: suspicious RCU usage
+6.6.0-rc6-next-20231023-syzkaller #0 Not tainted
+-----------------------------
+lib/maple_tree.c:812 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 1
+no locks held by syz-executor.4/5222.
+
+stack backtrace:
+CPU: 0 PID: 5222 Comm: syz-executor.4 Not tainted 6.6.0-rc6-next-20231023-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+ lockdep_rcu_suspicious+0x20b/0x3a0 kernel/locking/lockdep.c:6711
+ mt_slot lib/maple_tree.c:812 [inline]
+ mt_slot lib/maple_tree.c:809 [inline]
+ mtree_range_walk+0x6c5/0x9b0 lib/maple_tree.c:2827
+ mas_state_walk lib/maple_tree.c:3712 [inline]
+ mas_walk+0x374/0x7d0 lib/maple_tree.c:4888
+ mas_find_setup lib/maple_tree.c:5948 [inline]
+ mas_find+0x1e6/0x400 lib/maple_tree.c:5989
+ vma_find include/linux/mm.h:952 [inline]
+ do_mbind+0xc8f/0x1010 mm/mempolicy.c:1328
+ kernel_mbind+0x1d4/0x1f0 mm/mempolicy.c:1486
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x62/0x6a
+RIP: 0033:0x7f9979c7cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9978ffe0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ed
+RAX: ffffffffffffffda RBX: 00007f9979d9c050 RCX: 00007f9979c7cae9
+RDX: 0000000000000003 RSI: 0000000000005000 RDI: 0000000020182000
+RBP: 00007f9979cc847a R08: 000000000000007f R09: 0000000000000003
+R10: 0000000020000040 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007f9979d9c050 R15: 00007ffdbdd465f8
+ </TASK>
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
