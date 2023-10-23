@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB127D3FFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552217D4001
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjJWTPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
+        id S231702AbjJWTPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJWTPh (ORCPT
+        with ESMTP id S231558AbjJWTPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:15:37 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDCE10B
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:15:35 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a9012ab0adso46143667b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:15:35 -0700 (PDT)
+        Mon, 23 Oct 2023 15:15:40 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413F5103
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:15:38 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7b10c488cso45801677b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:15:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698088534; x=1698693334; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PBa3LO20B78eYRbamEnUaes0InscBX8rE+JS4NaZ5k8=;
-        b=11bwIvZmoqV8nSju/rjkAosKs12JH0uzx9dQH867EfgwgERUXI+apOOeb4+MKvI0W3
-         yuiHKhUZazSMra3MH9CGYd61M4XQP//TYiEzZ0cYLakbcjCvey4hJOZOJ6pkWMgUo6Sr
-         Z4Kc3k9AUOLA9hdMPKjPsahjrz7WnCiDaS0K2aMrx3UdZ9aBHc3FFtSbama2z/4tj218
-         MLEfKPGwMTJ3ZC4I23OsWTrWf9Fud4sDetfp6S7xAZKr1O1P0o6jnDbZyBXxQt22y9GF
-         +YoEFqR6OGnr1+ayLMJzFkVSi/h3ewlokTqiJoIY1Q3X/WUKGZft211WtFA3yzmKs/sg
-         kAIA==
+        d=google.com; s=20230601; t=1698088537; x=1698693337; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=FrhDwJ6cDjwpQACgZMKp9PJVi2cWnjnpG+wp7ryYIv8=;
+        b=J65eiusCzrq37X4c4slf2jxxOzcFONjs8B1agN+AOntfVQcnwCN++SF8XF9FlcscUK
+         KGNkY5m0tjBMsdZxczypp/qkGGzzQex4ysRC0Fm92Wc1xsiV8xsL9Z5tbaHCJYLNXmUI
+         tgyeGo3Ibi7ySK7yuMM/62eVupeH/9th1ns3LmvlM/mzo1RkKzF97zWoUTtscBApTIo9
+         DoL3/MrJTbaaPNVIXudvHy0KqM4oVqDEp1aadtXjr3KCuOudypz8orpBdRPu5I/aaIIC
+         aBR18v0J97E7CmNBsJiyGpGf6S0u9gVnZkKdLZ5GMhhSmDhJzixst5XScRBFgiCzB8Fn
+         XGGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698088534; x=1698693334;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PBa3LO20B78eYRbamEnUaes0InscBX8rE+JS4NaZ5k8=;
-        b=CntogzxPhKHJhkMLvx0s7pZPmEa72iBCei2Myj1rIYb9qv4E6mydglShr71LQhw+Mo
-         6rpLTvFZdAOOVksbOEzulreXCEDklVg7qpX2qg3QMXS5HYK5VgaoNHyZpOWjnpmZUiQM
-         tSXmIl3V8Dl6KUrrfjC7JAmbH/4kTDfraq0kWHG4PBjRavl05yF9Thy8hFpRG9FV4cce
-         mDBSK68H+6LAQH+Z7g4Pb/+HyNPeR2I17s3WqD2RTUFJepIS6CVfvtizJwPtzpAGdyAe
-         T+qpB6waTqVrnQTXzErBQENIcYbLndRSCDzv1+IFVa+Pd9R2c2RfSVbx2K7cORD10cek
-         e5cg==
-X-Gm-Message-State: AOJu0Yzsnp7w8+BFUDJLT0IBysvffL2JjqqTkbWmdf0RdstoC0I6sBgg
-        JnlbUsosP9MEjQ3G1UrHNtS/4KAOFaY=
-X-Google-Smtp-Source: AGHT+IHaefRJBXlJssDrvGK2iPVIDeDMHyE6U4j2WgVuUxAPCCt18T/sEXXjlWcU09eowm7qZtH4dwlrLM8=
+        d=1e100.net; s=20230601; t=1698088537; x=1698693337;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FrhDwJ6cDjwpQACgZMKp9PJVi2cWnjnpG+wp7ryYIv8=;
+        b=fIqiOAuAVwxTeN4WdQFlkKQ/yDVgysbaXRGYuVWG3uA3YQnVR48q8YL74ISG08wgXf
+         S48eDgiOdb/0klvUy3eOXpnM9Yu7fU0LeyKSkNY4uod6z+ucjRMtZKtxys3xHGhMpvnR
+         3ck2s0T9rUUg8TPMCv9Mh/loDzdiRbk+1cwtwJsmfBRQ/o0fS6PTaVVSR7cQ6zSj8pXV
+         hnL9InDUtml6tgnHAQdpbLs9W3DOiXSc/GhQroufWIPnyIw0GRNPH8/seEIaQK9kkYZu
+         7nhV978uj3m9w4/wwWfVtnX0IZIxwhPsTTnhCHR5XND9MBjySMR70b1zIkdHGkukrKUX
+         EyRg==
+X-Gm-Message-State: AOJu0YxRNgWQQdu+jo4slgkpTZ4QMTlngEabx47CGc3L9BsIp42+E6hH
+        ketPvZbzOJfLWp24OQdhZ5XiWfKTzXU=
+X-Google-Smtp-Source: AGHT+IEoy3rn7gonvhV5YaBLq4T+2/gX69osXUMwtoO2H3Nx0X8V4gYtlzob9E7wU6gwtO5DT0/R9NoZwQs=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:ca0c:0:b0:592:83d2:1f86 with SMTP id
- m12-20020a0dca0c000000b0059283d21f86mr207260ywd.4.1698088534353; Mon, 23 Oct
- 2023 12:15:34 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:42c9:0:b0:d9a:bce6:acf3 with SMTP id
+ p192-20020a2542c9000000b00d9abce6acf3mr190144yba.0.1698088537502; Mon, 23 Oct
+ 2023 12:15:37 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 23 Oct 2023 12:15:27 -0700
+Date:   Mon, 23 Oct 2023 12:15:28 -0700
+In-Reply-To: <20231023191532.2405326-1-seanjc@google.com>
 Mime-Version: 1.0
+References: <20231023191532.2405326-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Message-ID: <20231023191532.2405326-1-seanjc@google.com>
-Subject: [PATCH gmem 0/5] KVM: selftests: Fix multiple memslots in conv test
+Message-ID: <20231023191532.2405326-2-seanjc@google.com>
+Subject: [PATCH gmem 1/5] KVM: selftests: Rework fallocate() helper to work
+ across multiple memslots
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -59,42 +63,79 @@ Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Michael Roth <michael.roth@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rework the private memory conversions selftest to allow the user to specify
-a (somewhat) arbitrary number of memslots instead of testing only '1' or
-"nr_vcpus" memslots.  Creating more memslots than vCPUs is particuarly
-interesting as it results in a single vCPU's data chunk being spread across
-multiple memslots, which in turn results in the test changing attributes
-across multiple memslots in a single KVM_SET_MEMORY_ATTRIBUTES.
+Rework vm_guest_mem_fallocate() to play nice with ranges that cover more
+than one memslot.  Converting a range that covers multiple memslots is
+most definitely an interesting testcase, and there's no reason to force
+the caller to manually shatter the range, especially since the size of
+the region might not be known by the caller.
 
-This also fixes the issues reported by Mike where the test would crash when
-run with multiple vCPUs and a single memslot.
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ tools/testing/selftests/kvm/lib/kvm_util.c | 34 ++++++++++++----------
+ 1 file changed, 18 insertions(+), 16 deletions(-)
 
-Sean Christopherson (5):
-  KVM: selftests: Rework fallocate() helper to work across multiple
-    memslots
-  KVM: selftests: Handle memslot splits in private mem conversions test
-  KVM: selftests: Let user specify nr of memslots in private mem
-    conversion
-  KVM: selftests: Use dedicated pattern for testing that mem is shared
-    by default
-  KVM: selftests: Verify default pattern was written in private mem
-    conversion
-
- tools/testing/selftests/kvm/lib/kvm_util.c    | 34 ++++----
- .../kvm/x86_64/private_mem_conversions_test.c | 87 +++++++++++--------
- 2 files changed, 69 insertions(+), 52 deletions(-)
-
-
-base-commit: 911b515af3ec5f53992b9cc162cf7d3893c2fbe2
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index 8fc70c021c1c..33bc2c6be970 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -1206,30 +1206,32 @@ void vm_mem_region_delete(struct kvm_vm *vm, uint32_t slot)
+ 	__vm_mem_region_delete(vm, memslot2region(vm, slot), true);
+ }
+ 
+-void vm_guest_mem_fallocate(struct kvm_vm *vm, uint64_t gpa, uint64_t size,
++void vm_guest_mem_fallocate(struct kvm_vm *vm, uint64_t base, uint64_t size,
+ 			    bool punch_hole)
+ {
++	const int mode = FALLOC_FL_KEEP_SIZE | (punch_hole ? FALLOC_FL_PUNCH_HOLE : 0);
+ 	struct userspace_mem_region *region;
+-	uint64_t end = gpa + size - 1;
++	uint64_t end = base + size;
++	uint64_t gpa, len;
+ 	off_t fd_offset;
+-	int mode, ret;
++	int ret;
+ 
+-	region = userspace_mem_region_find(vm, gpa, gpa);
+-	TEST_ASSERT(region && region->region.flags & KVM_MEM_PRIVATE,
+-		    "Private memory region not found for GPA 0x%lx", gpa);
++	for (gpa = base; gpa < end; gpa += len) {
++		uint64_t offset;
+ 
+-	TEST_ASSERT(region == userspace_mem_region_find(vm, end, end),
+-		    "fallocate() for guest_memfd must act on a single memslot");
++		region = userspace_mem_region_find(vm, gpa, gpa);
++		TEST_ASSERT(region && region->region.flags & KVM_MEM_PRIVATE,
++			    "Private memory region not found for GPA 0x%lx", gpa);
+ 
+-	fd_offset = region->region.gmem_offset +
+-		    (gpa - region->region.guest_phys_addr);
++		offset = (gpa - region->region.guest_phys_addr);
++		fd_offset = region->region.gmem_offset + offset;
++		len = min_t(uint64_t, end - gpa, region->region.memory_size - offset);
+ 
+-	mode = FALLOC_FL_KEEP_SIZE | (punch_hole ? FALLOC_FL_PUNCH_HOLE : 0);
+-
+-	ret = fallocate(region->region.gmem_fd, mode, fd_offset, size);
+-	TEST_ASSERT(!ret, "fallocate() failed to %s at %lx[%lu], fd = %d, mode = %x, offset = %lx\n",
+-		     punch_hole ? "punch hole" : "allocate", gpa, size,
+-		     region->region.gmem_fd, mode, fd_offset);
++		ret = fallocate(region->region.gmem_fd, mode, fd_offset, len);
++		TEST_ASSERT(!ret, "fallocate() failed to %s at %lx (len = %lu), fd = %d, mode = %x, offset = %lx\n",
++			    punch_hole ? "punch hole" : "allocate", gpa, len,
++			    region->region.gmem_fd, mode, fd_offset);
++	}
+ }
+ 
+ /* Returns the size of a vCPU's kvm_run structure. */
 -- 
 2.42.0.758.gaed0368e0e-goog
 
