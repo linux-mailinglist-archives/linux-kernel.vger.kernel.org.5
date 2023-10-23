@@ -2,334 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFFD7D2C2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF947D2C32
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbjJWIEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53344 "EHLO
+        id S229492AbjJWIGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjJWIEV (ORCPT
+        with ESMTP id S229463AbjJWIGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:04:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37102C4;
-        Mon, 23 Oct 2023 01:04:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B721C433C9;
-        Mon, 23 Oct 2023 08:04:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698048258;
-        bh=e6WSVmogUY5zf8QKqZKYodzoMfi32E6WUjWErOJssmM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=tpONxKJ0R7eq92BoM0DlL9yCH7sJfHqrHCurIplekJlgAbOwotJjtRcJMKS/eXeOF
-         KjGZE2YA1eO3hBuIAIHHiyLba14upJI2YrHum+WPPbsv9LMdTU8Khfu39HLlkhpRWd
-         N5QJWPs2gomZPNbxRky8m+/sVTV2OUTACmK1xTgbnXHAduMds8GeEaU44U5yeFD8GU
-         qMhYv/QkDD1to+9+hJGBKsMA8NaxbhlpiZdHhsZygINgjtFmd9Slb+tQGP5aD7/x8w
-         bygb9picdSGCuIhu8pQYXAmFJbLN8QAh3oqF14WswOgmXz+etrOFzJgoriKr7++PAd
-         4yWYDGjsTzsSw==
-Message-ID: <5bc8fd15-9ae7-449d-9625-6e8c87876b06@kernel.org>
-Date:   Mon, 23 Oct 2023 10:04:09 +0200
+        Mon, 23 Oct 2023 04:06:38 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 573D6A6;
+        Mon, 23 Oct 2023 01:06:36 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id 98e67ed59e1d1-27d8a1aed37so1006501a91.1;
+        Mon, 23 Oct 2023 01:06:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698048396; x=1698653196; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qRIXdf5CP5zvIEAZi7GHLHlgb7w/UotV/3iHHaEc8qo=;
+        b=TVXDWHT0PvaM8OfkV0TrTCQrxE91NP01J2YxpQjWuPF9Tcz+wpJnVv3dozCz/zGP74
+         kv1qXO7WD5rrJjjtHMeahvZtgPTTySKYE18AOHR/aV3Jem/QcnFfdqMg57uiNicfuN7K
+         vRxTkDbLiyda5tAs1FADNe1o9mzGLCINTb1q1KoTUQ4Q1/7NzomVys2JA/+v6sIlJ9Z0
+         nefdhpGJ7OgoUIfx3d+HHzyV0LK42UHzzxUVWBMX7eBPfUMZHDIUFwITA0eJ2rSRxYXp
+         8VCB7f5oTt9C1V1lBmOCTiohex8cjEUjsIxXLHaupr5YFV2Rc5hu2qGRh404QfRoNl86
+         UrDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698048396; x=1698653196;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qRIXdf5CP5zvIEAZi7GHLHlgb7w/UotV/3iHHaEc8qo=;
+        b=dxm+Z++BZ8rhqnOI+8OJG/x4GFCGxNkfYUs8PeOIk8sIuWssqzgVUUQQJRUiL2RKeN
+         52u/Wb0sHs3yzdM2tMMS0IMoWo/AHUNd/KffdXJcxJteNmhWJKtOzmWlRywQxM3nGGB4
+         wLX7ENhp026bKExGdt9PsMJkmh5j9m+M42xF+AB6Owm0Zn8JXlvnNMHwNpiDhsD/rXyr
+         6VRzGLNehkNkMXqWKfuQsPnMrLEH1siYE0Reg0AGF/TqPCKDPJkPEsq0izyB0MeXJisZ
+         wEP8A28+5gtisOD4iHwFmCWJUK05ORNtoAZyLPRxxBH4di12I4xHe2lRSR+EM8vftySP
+         Q7dg==
+X-Gm-Message-State: AOJu0YzNLZ63vwC4smQEYRnwv/dAGmtGb5hl3WCYeXuJdggeoY6LqqZO
+        ba45cp5NLggb8Fz+Zjtnt/JBEp4g0xWkHVM8
+X-Google-Smtp-Source: AGHT+IGBTbnGthBAJRHZkDEaadnOunpMjviyIJfUVy0JU+Q/OPGx90xydi3/YKHR3zLDSVkRc01qOg==
+X-Received: by 2002:a17:903:3313:b0:1c0:bf60:ba82 with SMTP id jk19-20020a170903331300b001c0bf60ba82mr7867245plb.5.1698048395706;
+        Mon, 23 Oct 2023 01:06:35 -0700 (PDT)
+Received: from hbh25y.mshome.net ([103.114.158.1])
+        by smtp.gmail.com with ESMTPSA id b16-20020a170902d51000b001c9b8f76a89sm5422634plg.82.2023.10.23.01.06.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 01:06:35 -0700 (PDT)
+From:   Hangyu Hua <hbh25y@gmail.com>
+To:     borisp@nvidia.com, john.fastabend@gmail.com, kuba@kernel.org,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hangyu Hua <hbh25y@gmail.com>
+Subject: [PATCH] net: tls: Fix possible NULL-pointer dereference in tls_decrypt_device() and tls_decrypt_sw()
+Date:   Mon, 23 Oct 2023 16:06:11 +0800
+Message-Id: <20231023080611.19244-1-hbh25y@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3][3/4] mmc: Add dw mobile mmc cmdq rtk driver
-Content-Language: en-US
-To:     Jyan Chou <jyanchou@realtek.com>, adrian.hunter@intel.com,
-        jh80.chung@samsung.com, ulf.hansson@linaro.org
-Cc:     riteshh@codeaurora.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        asutoshd@codeaurora.org, p.zabel@pengutronix.de,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, arnd@arndb.de,
-        briannorris@chromium.org, doug@schmorgal.com,
-        tonyhuang.sunplus@gmail.com, abel.vesa@linaro.org,
-        william.qiu@starfivetech.com
-References: <20231020034921.1179-1-jyanchou@realtek.com>
- <20231020034921.1179-4-jyanchou@realtek.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
- FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
- QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
- gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
- /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
- iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
- VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
- 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
- xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
- eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
- AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
- MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
- Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
- MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
- OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
- GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
- 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
- YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
- 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
- BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
- JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
- 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
- YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
- Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
- ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
- vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
- oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
- lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
- t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
- uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
- 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
- 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231020034921.1179-4-jyanchou@realtek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/2023 05:49, Jyan Chou wrote:
-> Add Realtek mmc driver to make good use Synopsys
-> DesignWare mmc cmdq host driver.
-> 
-> Signed-off-by: Jyan Chou <jyanchou@realtek.com>
-> 
-> ---
+tls_rx_one_record can be called in tls_sw_splice_read and tls_sw_read_sock
+with msg being NULL. This may lead to null pointer dereferences in
+tls_decrypt_device and tls_decrypt_sw.
 
-> +static int dw_mci_rtk_init(struct dw_mci *host)
-> +{
-> +	struct dw_mci_rtkemmc_host *priv = host->priv;
-> +
-> +	host->pdata->caps2 = MMC_CAP2_NO_SDIO | MMC_CAP2_NO_SD;
-> +
-> +	if (priv->emmc_mode >= 2)
-> +		host->pdata->caps2 |= MMC_CAP2_HS200_1_8V_SDR;
-> +	if (priv->emmc_mode >= 3) {
-> +		host->pdata->caps |= MMC_CAP_1_8V_DDR;
-> +		host->pdata->caps2 |= MMC_CAP2_HS400_1_8V;
-> +	}
-> +
-> +	if (priv->is_cqe > 0)
-> +		host->pdata->caps2 |= (MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD);
-> +
-> +	/*In Realtek Platform, only using 32bit DMA*/
+Fix this by adding a check.
 
-Use Linux coding style. This driver looks like one for staging, not
-ready for submission. :/
+Fixes: dd47ed3620e6 ("tls: rx: factor SW handling out of tls_rx_one_record()")
+Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+---
+ net/tls/tls_sw.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-> +	host->dma_64bit_address = 0;
-> +
-> +	/*In Realtek Platform, do not use PIO mode by default*/
-> +	host->use_dma = TRANS_MODE_DMA;
-> +
-> +	host->irq_flags = IRQF_SHARED;
-> +
-> +	mcq_writel(host, CP, 0x0);
-> +
-> +	/*Enable L4 gated*/
-> +	mcq_writel(host, OTHER1, mcq_readl(host, OTHER1) &
-> +		~(SDMMC_L4_GATED_DIS | SDMMC_L4_GATED_DIS1));
-> +
-> +	mcq_writel(host, OTHER1, mcq_readl(host, OTHER1) &
-> +		   (~(SDMMC_DQS_CTRL_GATE_DIS | SDMMC_DBUS_MAS_GATING_DIS)));
-> +
-> +	/*Set the eMMC wrapper little Endian*/
-> +	mcq_writel(host, AHB, mcq_readl(host, AHB) | SDMMC_AHB_BIG);
-> +
-> +	mcq_writel(host, OTHER1,
-> +		   mcq_readl(host, OTHER1) | SDMMC_STARK_CARD_STOP_ENABLE);
-> +
-> +	/*set eMMC instead of nand*/
-> +	regmap_update_bits_base(priv->m2tmx, SDMMC_NAND_DMA_SEL,
-> +				SDMMC_SRAM_DMA_SEL, SDMMC_SRAM_DMA_SEL, NULL, false, true);
-> +
-> +	/*Set the clk initial phase*/
-> +	dw_mci_rtk_phase_tuning(host, 0, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +#ifdef CONFIG_PM
-> +static int dw_mci_rtk_suspend(struct device *dev)
-> +{
-> +	struct dw_mci *host = dev_get_drvdata(dev);
-> +	int ret = 0;
-> +
-> +	ret = dw_mci_cqe_runtime_suspend(dev);
-> +
-> +	mcq_writel(host, AHB, 0);
-> +	dev_info(dev, "AHB=0x%x, dw_mci_cqe_suspend ret=%d\n",
-> +		 mcq_readl(host, AHB), ret);
-
-Drop useless success/function entry/exit messages..
-
-> +
-> +	return ret;
-> +}
-> +
-> +static int dw_mci_rtk_resume(struct device *dev)
-> +{
-> +	struct dw_mci *host = dev_get_drvdata(dev);
-> +	int ret = 0;
-> +
-> +	mcq_writel(host, AHB, mcq_readl(host, AHB) | SDMMC_AHB_BIG);
-> +
-> +	ret = dw_mci_cqe_runtime_resume(dev);
-> +
-> +	dev_info(dev, "AHB=0x%x, dw_mci_cqe_resume ret=%d\n",
-> +		 mcq_readl(host, AHB), ret);
-
-Drop useless success/function entry/exit messages..
-
-> +
-> +	return ret;
-> +}
-> +#else
-> +static int dw_mci_rtk_suspend(struct device *dev)
-> +{
-> +	dev_err(dev, "User should enable CONFIG_PM kernel config\n");
-
-Why? This is not an error. If it were, then it should be build stage error.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int dw_mci_rtk_resume(struct device *dev)
-> +{
-> +	dev_err(dev, "User should enable CONFIG_PM kernel config\n");
-> +
-> +	return 0;
-> +}
-> +#endif /*CONFIG_PM*/
-> +static const struct dev_pm_ops rtk_dev_pm_ops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(dw_mci_rtk_suspend,
-> +				dw_mci_rtk_resume)
-> +	SET_RUNTIME_PM_OPS(dw_mci_cqe_runtime_suspend,
-> +			   dw_mci_cqe_runtime_resume,
-> +			   NULL)
-> +};
-> +
-> +static void dw_mci_rtk_shutdown(struct platform_device *pdev)
-> +{
-> +	dev_info(&pdev->dev, "[eMMC] Shutdown\n");
-> +	dw_mci_cqe_runtime_resume(&pdev->dev);
-> +}
-> +
-> +static unsigned long dw_mci_rtk_dwmmc_caps[1] = {
-> +	MMC_CAP_4_BIT_DATA | MMC_CAP_8_BIT_DATA |
-> +	MMC_CAP_SD_HIGHSPEED | MMC_CAP_MMC_HIGHSPEED |
-> +	MMC_CAP_NONREMOVABLE | MMC_CAP_CMD23,
-> +};
-> +
-> +static const struct dw_mci_drv_data rtk_drv_data = {
-> +	.caps                   = dw_mci_rtk_dwmmc_caps,
-> +	.num_caps               = ARRAY_SIZE(dw_mci_rtk_dwmmc_caps),
-> +	.set_ios                = dw_mci_rtk_set_ios,
-> +	.execute_tuning         = dw_mci_rtk_execute_tuning,
-> +	.parse_dt               = dw_mci_rtk_parse_dt,
-> +	.init                   = dw_mci_rtk_init,
-> +	.prepare_hs400_tuning	= dw_mci_rtk_prepare_hs400_tuning,
-> +	.hs400_complete         = dw_mci_rtk_hs400_complete,
-> +	.init_card		= dw_mci_rtk_init_card,
-> +};
-> +
-> +static const struct of_device_id dw_mci_rtk_match[] = {
-> +	{ .compatible = "realtek,rtd-dw-cqe-emmc",
-> +		.data = &rtk_drv_data },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, dw_mci_rtk_match);
-> +
-> +int dw_mci_cqe_pltfm_register(struct platform_device *pdev,
-> +			      const struct dw_mci_drv_data *drv_data)
-> +{
-> +	struct dw_mci *host;
-> +	struct resource	*regs;
-> +
-> +	host = devm_kzalloc(&pdev->dev, sizeof(struct dw_mci), GFP_KERNEL);
-> +	if (!host)
-> +		return -ENOMEM;
-> +
-> +	host->irq = platform_get_irq(pdev, 0);
-> +	if (host->irq < 0)
-> +		return host->irq;
-> +
-> +	host->drv_data = drv_data;
-> +	host->pdev = pdev;
-> +	host->dev = &pdev->dev;
-> +	host->irq_flags = 0;
-> +	host->pdata = pdev->dev.platform_data;
-> +
-> +	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	host->regs = devm_ioremap_resource(&pdev->dev, regs);
-> +	if (IS_ERR(host->regs))
-> +		return PTR_ERR(host->regs);
-> +
-> +	/* Get registers' physical base address */
-> +	host->phy_regs = regs->start;
-> +
-> +	platform_set_drvdata(pdev, host);
-> +
-> +	return dw_mci_cqe_probe(host);
-> +}
-> +
-> +static int dw_mci_rtk_probe(struct platform_device *pdev)
-> +{
-> +	const struct dw_mci_drv_data *drv_data;
-> +	const struct of_device_id *match;
-> +
-> +	if (!pdev->dev.of_node)
-> +		return -ENODEV;
-> +
-> +	match = of_match_node(dw_mci_rtk_match, pdev->dev.of_node);
-> +	drv_data = match->data;
-> +
-> +	return dw_mci_cqe_pltfm_register(pdev, drv_data);
-> +}
-> +
-> +int dw_mci_rtk_remove(struct platform_device *pdev)
-> +{
-> +	struct dw_mci *host = platform_get_drvdata(pdev);
-> +
-> +	dw_mci_cqe_remove(host);
-> +	return 0;
-> +}
-> +
-> +static struct platform_driver dw_mci_rtk_pltfm_driver = {
-> +	.probe          = dw_mci_rtk_probe,
-> +	.remove         = dw_mci_rtk_remove,
-> +	.driver         = {
-> +		.name           = "dwmmc_cqe_rtk",
-> +		.of_match_table = dw_mci_rtk_match,
-> +		.pm             = &rtk_dev_pm_ops,
-> +	},
-> +	.shutdown   = dw_mci_rtk_shutdown,
-> +};
-> +
-> +module_platform_driver(dw_mci_rtk_pltfm_driver);
-> +
-> +MODULE_AUTHOR("<jyanchou@realtek.com>");
-> +MODULE_DESCRIPTION(" Specific Driver Extension");
-> +MODULE_ALIAS("platform:dwmmc_cqe_rtk");
-
-You should not need MODULE_ALIAS() in normal cases. If you need it,
-usually it means your device ID table is wrong.
-
-
-Best regards,
-Krzysztof
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index e9d1e83a859d..411bf148f707 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -1612,7 +1612,11 @@ tls_decrypt_sw(struct sock *sk, struct tls_context *tls_ctx,
+ 	struct strp_msg *rxm;
+ 	int pad, err;
+ 
+-	err = tls_decrypt_sg(sk, &msg->msg_iter, NULL, darg);
++	if (msg == NULL)
++		err = tls_decrypt_sg(sk, NULL, NULL, darg);
++	else
++		err = tls_decrypt_sg(sk, &msg->msg_iter, NULL, darg);
++
+ 	if (err < 0) {
+ 		if (err == -EBADMSG)
+ 			TLS_INC_STATS(sock_net(sk), LINUX_MIB_TLSDECRYPTERROR);
+@@ -1686,7 +1690,8 @@ tls_decrypt_device(struct sock *sk, struct msghdr *msg,
+ 		off = rxm->offset + prot->prepend_size;
+ 		len = rxm->full_len - prot->overhead_size;
+ 
+-		err = skb_copy_datagram_msg(darg->skb, off, msg, len);
++		if (msg != NULL)
++			err = skb_copy_datagram_msg(darg->skb, off, msg, len);
+ 		if (err)
+ 			return err;
+ 	}
+-- 
+2.34.1
 
