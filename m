@@ -2,67 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E7D7D3668
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98AEC7D366C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbjJWMZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 08:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47726 "EHLO
+        id S230057AbjJWM0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 08:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbjJWMZd (ORCPT
+        with ESMTP id S230014AbjJWM0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 08:25:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103A4100;
-        Mon, 23 Oct 2023 05:25:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECCAEC433C8;
-        Mon, 23 Oct 2023 12:25:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698063930;
-        bh=pPk74+A5jkmqRdGnbaBEtM5+7L3q3Pdzznl2EygyWmg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jADyhn3KDxsVw0aQWNmTregKnwEQBXXcSO49wnCXUkat73pY1hI6KtDnDFQm34yNX
-         7MvHRIx6WL0/cr0s+SK8wS+umGybz2ywN6GuGJC+h5cwD6EifeF5Yk9iUAbDHVrZiZ
-         M9PM0A47pVnRQOKjDrbDLohtInrVJPP7UBLYPglWs/N3lKwNjGeI9gTbM1/uFN1TVs
-         1hIkOP53y97pl2AyOOlYg6AqlBMutyS5PsKih/qqjwfPluxI3+/TVLtL85yMRfmOQD
-         5YTDUdsWTh2M5gRS7LH1ewaNVErSW7f16kdbtGU1DJ2meXbo2aUH1AJFHtx5XHAOAw
-         Mp0AjZVVBiRIw==
-Date:   Mon, 23 Oct 2023 13:25:19 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Yu Chien Peter Lin <peterlin@andestech.com>
-Cc:     acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com,
-        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
-        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
-        conor+dt@kernel.org, conor.dooley@microchip.com,
-        devicetree@vger.kernel.org, dminus@andestech.com,
-        evan@rivosinc.com, geert+renesas@glider.be, guoren@kernel.org,
-        heiko@sntech.de, irogers@google.com, jernej.skrabec@gmail.com,
-        jolsa@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, locus84@andestech.com,
-        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
-        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, peterz@infradead.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
-        robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
-        tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
-        wens@csie.org, will@kernel.org, ycliang@andestech.com
-Subject: Re: [RFC PATCH v3 RESEND 09/13] dt-bindings: riscv: Add T-Head PMU
- extension description
-Message-ID: <20231023-facility-phonebook-1be493346bf1@spud>
-References: <20231023004100.2663486-1-peterlin@andestech.com>
- <20231023004100.2663486-10-peterlin@andestech.com>
+        Mon, 23 Oct 2023 08:26:11 -0400
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE96100;
+        Mon, 23 Oct 2023 05:26:08 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VuktyZl_1698063962;
+Received: from 30.240.113.74(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VuktyZl_1698063962)
+          by smtp.aliyun-inc.com;
+          Mon, 23 Oct 2023 20:26:05 +0800
+Message-ID: <d8aff089-8b7f-497c-9dbb-c02aa7abc0b6@linux.alibaba.com>
+Date:   Mon, 23 Oct 2023 20:26:00 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qxXWr68G1YeFpESf"
-Content-Disposition: inline
-In-Reply-To: <20231023004100.2663486-10-peterlin@andestech.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+Subject: Re: [PATCH v9 3/4] drivers/perf: add DesignWare PCIe PMU driver
+To:     Yicong Yang <yangyicong@huawei.com>, chengyou@linux.alibaba.com,
+        kaishen@linux.alibaba.com, helgaas@kernel.org, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com
+Cc:     yangyicong@hisilicon.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        rdunlap@infradead.org, mark.rutland@arm.com,
+        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
+References: <20231020134230.53342-1-xueshuai@linux.alibaba.com>
+ <20231020134230.53342-4-xueshuai@linux.alibaba.com>
+ <5d8a8073-bdd2-9416-d93c-516416fcfd5e@huawei.com>
+Content-Language: en-US
+In-Reply-To: <5d8a8073-bdd2-9416-d93c-516416fcfd5e@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -70,63 +51,176 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---qxXWr68G1YeFpESf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 23, 2023 at 08:40:56AM +0800, Yu Chien Peter Lin wrote:
-> Document the ISA string for T-Head performance monitor extension
-> which provides counter overflow interrupt mechanism.
->=20
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> ---
-> Changes v2 -> v3:
->   - New patch
-> ---
->  Documentation/devicetree/bindings/riscv/extensions.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Do=
-cumentation/devicetree/bindings/riscv/extensions.yaml
-> index cc1f546fdbdc..5e9291d258d5 100644
-> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> @@ -246,5 +246,11 @@ properties:
->              in commit 2e5236 ("Ztso is now ratified.") of the
->              riscv-isa-manual.
-> =20
-> +        - const: xtheadpmu
-> +          description:
-> +            The T-Head performance monitor extension for counter overflo=
-w. For more
-> +            details, see the chapter 12 in the Xuantie C906 user manual.
-> +            https://github.com/T-head-Semi/openc906/tree/main/doc
+On 2023/10/23 17:13, Yicong Yang wrote:
+> Hi Shuai,
+> 
+> On 2023/10/20 21:42, Shuai Xue wrote:
+>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
+>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
+>> Core controller IP which provides statistics feature. The PMU is a PCIe
+>> configuration space register block provided by each PCIe Root Port in a
+>> Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
+>> injection, and Statistics).
+>>
+>> To facilitate collection of statistics the controller provides the
+>> following two features for each Root Port:
+>>
+>> - one 64-bit counter for Time Based Analysis (RX/TX data throughput and
+>>   time spent in each low-power LTSSM state) and
+>> - one 32-bit counter for Event Counting (error and non-error events for
+>>   a specified lane)
+>>
+>> Note: There is no interrupt for counter overflow.
+>>
+>> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
+>> named based the BDF of Root Port. For example,
+>>
+>>     30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
+>>
+>> the PMU device name for this Root Port is dwc_rootport_3018.
+>>
+>> Example usage of counting PCIe RX TLP data payload (Units of bytes)::
+>>
+>>     $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
+>>
+>> average RX bandwidth can be calculated like this:
+>>
+>>     PCIe TX Bandwidth = Rx_PCIe_TLP_Data_Payload / Measure_Time_Window
+>>
+>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> 
+> Just one nit below. Otherwise looks good to me,
+> 
+> Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
 
-This really needs to be linked off to a specific version of the document,
-lest there be revisions that remove the document from the repository and
-to one that is in English.
 
-Cheers,
-Conor.
+Hi, Yicong,
 
+Time flies indeed. I am pleasantly surprised to realize that it has been
+over a year since you sayed "Glad to see another PCIe PMU device!" in the
+initial version. I want to express my deepest gratitude for the significant
+time and effort you have invested in providing invaluable comments. Your
+dedication has played a pivotal role in greatly enhancing the quality of
+the code.
 
-> +
->  additionalProperties: true
->  ...
-> --=20
-> 2.34.1
->=20
+Thank you so much.
 
---qxXWr68G1YeFpESf
-Content-Type: application/pgp-signature; name="signature.asc"
+Best Regards,
+Shuai
 
------BEGIN PGP SIGNATURE-----
+>> +
+>> +static int dwc_pcie_pmu_probe(struct platform_device *plat_dev)
+>> +{
+>> +	struct pci_dev *pdev = NULL;
+>> +	struct dwc_pcie_pmu *pcie_pmu;
+>> +	bool notify = false;
+>> +	char *name;
+>> +	u32 bdf;
+>> +	int ret;
+>> +
+>> +	/* Match the rootport with VSEC_RAS_DES_ID, and register a PMU for it */
+>> +	for_each_pci_dev(pdev) {
+>> +		u16 vsec;
+>> +		u32 val;
+>> +
+>> +		if (!(pci_is_pcie(pdev) &&
+>> +		      pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT))
+>> +			continue;
+>> +
+>> +		vsec = pci_find_vsec_capability(pdev, PCI_VENDOR_ID_ALIBABA,
+>> +						DWC_PCIE_VSEC_RAS_DES_ID);
+>> +		if (!vsec)
+>> +			continue;
+>> +
+>> +		pci_read_config_dword(pdev, vsec + PCI_VNDR_HEADER, &val);
+>> +		if (PCI_VNDR_HEADER_REV(val) != 0x04)
+>> +			continue;
+>> +		pci_dbg(pdev,
+>> +			"Detected PCIe Vendor-Specific Extended Capability RAS DES\n");
+>> +
+>> +		bdf = PCI_DEVID(pdev->bus->number, pdev->devfn);
+>> +		name = devm_kasprintf(&plat_dev->dev, GFP_KERNEL, "dwc_rootport_%x",
+>> +				      bdf);
+>> +		if (!name) {
+>> +			ret = -ENOMEM;
+>> +			goto out;
+>> +		}
+>> +
+>> +		/* All checks passed, go go go */
+>> +		pcie_pmu = devm_kzalloc(&plat_dev->dev, sizeof(*pcie_pmu), GFP_KERNEL);
+>> +		if (!pcie_pmu) {
+>> +			ret = -ENOMEM;
+>> +			goto out;
+>> +		}
+>> +
+>> +		pcie_pmu->pdev = pdev;
+>> +		pcie_pmu->ras_des_offset = vsec;
+>> +		pcie_pmu->nr_lanes = pcie_get_width_cap(pdev);
+>> +		pcie_pmu->on_cpu = -1;
+>> +		pcie_pmu->pmu = (struct pmu){
+>> +			.module		= THIS_MODULE,
+>> +			.attr_groups	= dwc_pcie_attr_groups,
+>> +			.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
+>> +			.task_ctx_nr	= perf_invalid_context,
+>> +			.event_init	= dwc_pcie_pmu_event_init,
+>> +			.add		= dwc_pcie_pmu_event_add,
+>> +			.del		= dwc_pcie_pmu_event_del,
+>> +			.start		= dwc_pcie_pmu_event_start,
+>> +			.stop		= dwc_pcie_pmu_event_stop,
+>> +			.read		= dwc_pcie_pmu_event_update,
+>> +		};
+>> +
+>> +		/* Add this instance to the list used by the offline callback */
+>> +		ret = cpuhp_state_add_instance(dwc_pcie_pmu_hp_state,
+>> +					       &pcie_pmu->cpuhp_node);
+>> +		if (ret) {
+>> +			pci_err(pdev,
+>> +				"Error %d registering hotplug @%x\n", ret, bdf);
+>> +			goto out;
+>> +		}
+>> +
+>> +		/* Unwind when platform driver removes */
+>> +		ret = devm_add_action_or_reset(
+>> +			&plat_dev->dev, dwc_pcie_pmu_remove_cpuhp_instance,
+>> +			&pcie_pmu->cpuhp_node);
+>> +		if (ret)
+>> +			goto out;
+>> +
+>> +		ret = perf_pmu_register(&pcie_pmu->pmu, name, -1);
+>> +		if (ret) {
+>> +			pci_err(pdev,
+>> +				"Error %d registering PMU @%x\n", ret, bdf);
+>> +			goto out;
+>> +		}
+>> +
+>> +		/* Cache PMU to handle pci device hotplug */
+>> +		list_add(&pcie_pmu->pmu_node, &dwc_pcie_pmu_head);
+>> +		pcie_pmu->registered = true;
+>> +		notify = true;
+>> +
+>> +		ret = devm_add_action_or_reset(
+>> +			&plat_dev->dev, dwc_pcie_pmu_unregister_pmu, pcie_pmu);
+>> +		if (ret)
+>> +			goto out;
+>> +	}
+>> +
+>> +	if (notify && !bus_register_notifier(&pci_bus_type, &dwc_pcie_pmu_nb))
+>> +		return devm_add_action_or_reset(
+>> +			&plat_dev->dev, dwc_pcie_pmu_unregister_nb, NULL);
+> 
+> Maybe you can register the notifier firstly in the probe(). It'll be unregistered
+> once failed to add the PMU. If no PMU registered it also should be ok since the
+> PMU list will be empty and notifier callback will do nothing.
+> 
+> This may address one potential race on driver removal. Since the notifier will be
+> unregistered firstly 
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTZmLwAKCRB4tDGHoIJi
-0mvTAP9Q91MnqFwF0cSPMA8pl6M5OOys/V88dfOQPFy4pUXhywEA/H8ZjdArLD56
-bf3grpubAS0ckkD2IOWbV6DHx3P86AQ=
-=TH1A
------END PGP SIGNATURE-----
+You are right, the added action will be released in reverse order.
 
---qxXWr68G1YeFpESf--
+> but the PMU's still registered and may have chance to
+> access pointer to the root port. However it's so extreme so may never happen.
+> 
+
+Good point, I will move to bus_register_notifier() to first order in probe().
+
