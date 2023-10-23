@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D761F7D4002
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E314F7D4005
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbjJWTPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
+        id S232212AbjJWTPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjJWTPl (ORCPT
+        with ESMTP id S231827AbjJWTPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:15:41 -0400
+        Mon, 23 Oct 2023 15:15:44 -0400
 Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C8694
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:15:39 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a8ee6a1801so49026597b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:15:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B3594
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:15:41 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7aa816c5bso50607777b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:15:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698088539; x=1698693339; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698088541; x=1698693341; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fgbudwquptx3kxGF2Rx/jDbv8sQ1FkhX6MwfxQpq3LQ=;
-        b=Jyt0/uLO9cpaOM5TuA8al91OF2xAYoGUDUZDSSBAyxeu7pjDhEfZnxhMpOE9L6GRHH
-         CT0V4Ikd/IkpVXszW5k0EzyNFWcerRFEoYsPISXXs3YqSExFIpI7P9PvEZSl8tPc9DS6
-         hafeTTJncrdo8HYY3zmxQh4FRJnmEmD4GPgb40Yaib4dTp92X3T8swvhQt3HAUCP+X+J
-         iqM0zRn+oTmkG/U1yYtpGL/TJ9aLZGKlPFjRw+fPBU6JzImK/F3UpfBws7UAAuqzBSwq
-         5I4rb5UGOGIuUiATt8fkyZNtQsi223GV9uXhZiV28dlMEY2P3oHklcRoyrDGWbec3rw0
-         WfHQ==
+        bh=l32i13KcogKJQmerzZJpCfXVsXKJyNALXo7FvnlM4Uc=;
+        b=ERgrCEMBpKe68DyX3DohbCPwr3jF6VlzXxTabQIhuY/dfvAmPYbO2SMMpjxwARcJYI
+         FQ7D93D5mv4TcQMFlNpvw8sAFE2ZtjjlH2BXbWkgJfz/vd2u2HxgrHeegJDLhuetE7dW
+         derthwJITwauhvGq7eN2RepX/G60Yrf4FX+PeTcUeVBatVGl4By9x8aWCfOAoPzOxWXY
+         L/9ueKGj42k/lFb7u2+SiR7qDzqnl41X9jkR7Sdyaia0G7hc4wiB2615lWJ8i5gmzJAY
+         OF5CLeCXPx5QQMDPWJi2+BI//ZEYITsK/uqHF38JEf/QaR0f+FYcZuNvRoyoB5OHNQWI
+         35Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698088539; x=1698693339;
+        d=1e100.net; s=20230601; t=1698088541; x=1698693341;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Fgbudwquptx3kxGF2Rx/jDbv8sQ1FkhX6MwfxQpq3LQ=;
-        b=U7hR1A0LIPFpxl7cFWPdgjB/JodBy/TUEnYuwzNqfbSuH2SsXIa80z4xSq0jF2mb45
-         LiNi1Lnpyt0Ct8uBpaY5Fw9qN+bmyceQ0udXnDbm8qD2OfSHd5tKoJQLNqlRWlSxHkrP
-         tJTF/akNv5jjWDOTLBDv0HXJ1qZYczOm2ckT+TAoQKrzxjPBFkTpX8HZoqZ3Kbz/2Tgg
-         /UGfWvQ+imbGmK8b+fI4XsapLhJCN6GBmMWrSOfpWAdHurdAfYBydgdkEqMPZmgLhvZh
-         NzS+VZFBkTfdzA9OBz4lxNInTNRvT1Lr6FgkoJ2t6vtzazNSRAMPWsGv7LJB9nKDwBXf
-         p6Ew==
-X-Gm-Message-State: AOJu0YxV4UzgvlmuZZWZJAr2tfb5JkQOpnkbXLCkdSUXCs/o49abHr1M
-        kHlUVgpCM53eyZs7QbrdSt3uUzqxqY4=
-X-Google-Smtp-Source: AGHT+IEudh7lv+vB3jmTBdAfnrXmjFNTxJ/CNAhB5midYZMIoFDKf8WDrbcSjw2PyODeBffCvgZo3fQJbXA=
+        bh=l32i13KcogKJQmerzZJpCfXVsXKJyNALXo7FvnlM4Uc=;
+        b=E4tHM1Y7DhjV/AwO3tL/ib6BCJg5qis9XgrFLjSUgxbEZAWhhIii4xwznbVFlLSTiu
+         Ylv1Od1hjLFN92mXwSFBTzIfdPqOsSc47lOtzV8t2W6XB643WvAS4hcVSOhB/Bptx848
+         kCRdfp0Trxvf2fmlvVgxVx//Idxw8gKEIBc0Bjplot/1rGyzX3roXu25064g5xtUGDUc
+         AqkY1sAeDJfojx6EDb2QAXcUe/DGZvBLbg0UNAoI81T9GuzUO0cYcfRsOMxSn7JzsXs0
+         gGUn5QfOeTmW4fD/jYf66oAhgh3VGWd6jOM94XknTgrNnB7rmu3C54MLVvasCZ9zdisy
+         ReuA==
+X-Gm-Message-State: AOJu0YyrwrwxFKhNkDqnwH0tddnmYaQqnl3IeW8SIjG4kLFHFERO4fkf
+        JJJ/zH7HsQpVkkvyeaTH+kNv6pPPTU4=
+X-Google-Smtp-Source: AGHT+IEQcCsMq3tPPe7PSzyt3r8+n1h3f3utWlxgcaG+hWrHTq9qJU45bmze9KHC5eWQQHiBs0MeF2KWKD4=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:db43:0:b0:5a7:ccf3:3f28 with SMTP id
- d64-20020a0ddb43000000b005a7ccf33f28mr200781ywe.0.1698088539262; Mon, 23 Oct
- 2023 12:15:39 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:ad8e:0:b0:d90:e580:88e5 with SMTP id
+ z14-20020a25ad8e000000b00d90e58088e5mr175588ybi.10.1698088541059; Mon, 23 Oct
+ 2023 12:15:41 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 23 Oct 2023 12:15:29 -0700
+Date:   Mon, 23 Oct 2023 12:15:30 -0700
 In-Reply-To: <20231023191532.2405326-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231023191532.2405326-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Message-ID: <20231023191532.2405326-3-seanjc@google.com>
-Subject: [PATCH gmem 2/5] KVM: selftests: Handle memslot splits in private mem
- conversions test
+Message-ID: <20231023191532.2405326-4-seanjc@google.com>
+Subject: [PATCH gmem 3/5] KVM: selftests: Let user specify nr of memslots in
+ private mem conversion
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -65,102 +65,138 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rework the SYNC_{SHARED,PRIVATE} handling in the private memory conversion
-test to play nice with ranges that are covered by multiple memslots.  This
-will allow letting the user specify the number of memslots, and more
-importantly allow testing KVM_SET_MEMORY_ATTRIBUTES calls that also split
-across memslots.
+Let the user specify the number of memslots in the private mem conversion
+test, i.e. don't require the number of memslots to be '1' or "nr_vcpus".
+Creating more memslots than vCPUs is particularly interesting, e.g. it can
+result in a single KVM_SET_MEMORY_ATTRIBUTES spanning multiple memslots.
 
-Opportunistically update the error messages to clarify whether the assert
-fired in the guest vs. host.
+This also fixes an issue where the test will crash when running with
+multiple vCPUs but only a single memslot.
 
+To keep the math reasonable, align each vCPU's chunk to at least 2MiB (the
+size is 2MiB+4KiB), and require the total size to be cleanly divisible by
+the number of memslots.  The goal is to be able to validate that KVM plays
+nice with multiple memslots, being able to create a truly arbitrary number
+of memslots doesn't add meaningful value, i.e. isn't worth the cost.
+
+Reported-by: Michael Roth <michael.roth@amd.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../kvm/x86_64/private_mem_conversions_test.c | 44 +++++++++++--------
- 1 file changed, 25 insertions(+), 19 deletions(-)
+ .../kvm/x86_64/private_mem_conversions_test.c | 36 +++++++++++--------
+ 1 file changed, 21 insertions(+), 15 deletions(-)
 
 diff --git a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
-index c04e7d61a585..c3992a295b5a 100644
+index c3992a295b5a..3f6d8d4dbc53 100644
 --- a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
 +++ b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
-@@ -28,25 +28,25 @@
- #define PER_CPU_DATA_SIZE	((uint64_t)(SZ_2M + PAGE_SIZE))
+@@ -371,8 +371,10 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
+ 	 * Allocate enough memory so that each vCPU's chunk of memory can be
+ 	 * naturally aligned with respect to the size of the backing store.
+ 	 */
+-	const size_t size = align_up(PER_CPU_DATA_SIZE, get_backing_src_pagesz(src_type));
+-	const size_t memfd_size = size * nr_vcpus;
++	const size_t alignment = max_t(size_t, SZ_2M, get_backing_src_pagesz(src_type));
++	const size_t per_cpu_size = align_up(PER_CPU_DATA_SIZE, alignment);
++	const size_t memfd_size = per_cpu_size * nr_vcpus;
++	const size_t slot_size = memfd_size / nr_memslots;
+ 	struct kvm_vcpu *vcpus[KVM_MAX_VCPUS];
+ 	pthread_t threads[KVM_MAX_VCPUS];
+ 	uint64_t gmem_flags;
+@@ -384,6 +386,9 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
+ 		.type = KVM_X86_SW_PROTECTED_VM,
+ 	};
  
- /* Horrific macro so that the line info is captured accurately :-( */
--#define memcmp_g(gpa, pattern,  size)							\
--do {											\
--	uint8_t *mem = (uint8_t *)gpa;							\
--	size_t i;									\
--											\
--	for (i = 0; i < size; i++)							\
--		__GUEST_ASSERT(mem[i] == pattern,					\
--			       "Expected 0x%x at offset %lu (gpa 0x%llx), got 0x%x",	\
--			       pattern, i, gpa + i, mem[i]);				\
-+#define memcmp_g(gpa, pattern,  size)								\
-+do {												\
-+	uint8_t *mem = (uint8_t *)gpa;								\
-+	size_t i;										\
-+												\
-+	for (i = 0; i < size; i++)								\
-+		__GUEST_ASSERT(mem[i] == pattern,						\
-+			       "Guest expected 0x%x at offset %lu (gpa 0x%llx), got 0x%x",	\
-+			       pattern, i, gpa + i, mem[i]);					\
- } while (0)
++	TEST_ASSERT(slot_size * nr_memslots == memfd_size,
++		    "The memfd size (0x%lx) needs to be cleanly divisible by the number of memslots (%u)",
++		    memfd_size, nr_memslots);
+ 	vm = __vm_create_with_vcpus(shape, nr_vcpus, 0, guest_code, vcpus);
  
--static void memcmp_h(uint8_t *mem, uint8_t pattern, size_t size)
-+static void memcmp_h(uint8_t *mem, uint64_t gpa, uint8_t pattern, size_t size)
+ 	vm_enable_cap(vm, KVM_CAP_EXIT_HYPERCALL, (1 << KVM_HC_MAP_GPA_RANGE));
+@@ -395,16 +400,20 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
+ 	memfd = vm_create_guest_memfd(vm, memfd_size, gmem_flags);
+ 
+ 	for (i = 0; i < nr_memslots; i++)
+-		vm_mem_add(vm, src_type, BASE_DATA_GPA + size * i,
+-			   BASE_DATA_SLOT + i, size / vm->page_size,
+-			   KVM_MEM_PRIVATE, memfd, size * i);
++		vm_mem_add(vm, src_type, BASE_DATA_GPA + slot_size * i,
++			   BASE_DATA_SLOT + i, slot_size / vm->page_size,
++			   KVM_MEM_PRIVATE, memfd, slot_size * i);
+ 
+ 	for (i = 0; i < nr_vcpus; i++) {
+-		uint64_t gpa =  BASE_DATA_GPA + i * size;
++		uint64_t gpa =  BASE_DATA_GPA + i * per_cpu_size;
+ 
+ 		vcpu_args_set(vcpus[i], 1, gpa);
+ 
+-		virt_map(vm, gpa, gpa, size / vm->page_size);
++		/*
++		 * Map only what is needed so that an out-of-bounds access
++		 * results #PF => SHUTDOWN instead of data corruption.
++		 */
++		virt_map(vm, gpa, gpa, PER_CPU_DATA_SIZE / vm->page_size);
+ 
+ 		pthread_create(&threads[i], NULL, __test_mem_conversions, vcpus[i]);
+ 	}
+@@ -432,29 +441,28 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
+ static void usage(const char *cmd)
  {
- 	size_t i;
- 
- 	for (i = 0; i < size; i++)
- 		TEST_ASSERT(mem[i] == pattern,
--			    "Expected 0x%x at offset %lu, got 0x%x",
--			    pattern, i, mem[i]);
-+			    "Host expected 0x%x at gpa 0x%lx, got 0x%x",
-+			    pattern, gpa + i, mem[i]);
+ 	puts("");
+-	printf("usage: %s [-h] [-m] [-s mem_type] [-n nr_vcpus]\n", cmd);
++	printf("usage: %s [-h] [-m nr_memslots] [-s mem_type] [-n nr_vcpus]\n", cmd);
+ 	puts("");
+ 	backing_src_help("-s");
+ 	puts("");
+ 	puts(" -n: specify the number of vcpus (default: 1)");
+ 	puts("");
+-	puts(" -m: use multiple memslots (default: 1)");
++	puts(" -m: specify the number of memslots (default: 1)");
+ 	puts("");
  }
  
- /*
-@@ -335,19 +335,25 @@ static void *__test_mem_conversions(void *__vcpu)
- 		case UCALL_ABORT:
- 			REPORT_GUEST_ASSERT(uc);
- 		case UCALL_SYNC: {
--			uint8_t *hva = addr_gpa2hva(vm, uc.args[1]);
--			uint64_t size = uc.args[2];
-+			uint64_t gpa  = uc.args[1];
-+			size_t size = uc.args[2];
-+			size_t i;
+ int main(int argc, char *argv[])
+ {
+ 	enum vm_mem_backing_src_type src_type = DEFAULT_VM_MEM_SRC;
+-	bool use_multiple_memslots = false;
++	uint32_t nr_memslots = 1;
+ 	uint32_t nr_vcpus = 1;
+-	uint32_t nr_memslots;
+ 	int opt;
  
- 			TEST_ASSERT(uc.args[0] == SYNC_SHARED ||
- 				    uc.args[0] == SYNC_PRIVATE,
- 				    "Unknown sync command '%ld'", uc.args[0]);
+ 	TEST_REQUIRE(kvm_has_cap(KVM_CAP_GUEST_MEMFD));
+ 	TEST_REQUIRE(kvm_has_cap(KVM_CAP_EXIT_HYPERCALL));
+ 	TEST_REQUIRE(kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM));
  
--			/* In all cases, the host should observe the shared data. */
--			memcmp_h(hva, uc.args[3], size);
-+			for (i = 0; i < size; i += vm->page_size) {
-+				size_t nr_bytes = min_t(size_t, vm->page_size, size - i);
-+				uint8_t *hva = addr_gpa2hva(vm, gpa + i);
- 
--			/* For shared, write the new pattern to guest memory. */
--			if (uc.args[0] == SYNC_SHARED)
--				memset(hva, uc.args[4], size);
-+				/* In all cases, the host should observe the shared data. */
-+				memcmp_h(hva, gpa + i, uc.args[3], nr_bytes);
-+
-+				/* For shared, write the new pattern to guest memory. */
-+				if (uc.args[0] == SYNC_SHARED)
-+					memset(hva, uc.args[4], nr_bytes);
-+			}
+-	while ((opt = getopt(argc, argv, "hms:n:")) != -1) {
++	while ((opt = getopt(argc, argv, "hm:s:n:")) != -1) {
+ 		switch (opt) {
+ 		case 's':
+ 			src_type = parse_backing_src_type(optarg);
+@@ -463,7 +471,7 @@ int main(int argc, char *argv[])
+ 			nr_vcpus = atoi_positive("nr_vcpus", optarg);
  			break;
+ 		case 'm':
+-			use_multiple_memslots = true;
++			nr_memslots = atoi_positive("nr_memslots", optarg);
+ 			break;
+ 		case 'h':
+ 		default:
+@@ -472,8 +480,6 @@ int main(int argc, char *argv[])
  		}
- 		case UCALL_DONE:
+ 	}
+ 
+-	nr_memslots = use_multiple_memslots ? nr_vcpus : 1;
+-
+ 	test_mem_conversions(src_type, nr_vcpus, nr_memslots);
+ 
+ 	return 0;
 -- 
 2.42.0.758.gaed0368e0e-goog
 
