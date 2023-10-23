@@ -2,168 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4EA7D2C28
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DEC7D2C2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229543AbjJWIED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
+        id S229469AbjJWIEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjJWIEA (ORCPT
+        with ESMTP id S229578AbjJWIE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:04:00 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5D4A1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:03:58 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d9a3d737d66so2233751276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:03:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698048237; x=1698653037; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gmB9mDTwiF3uEH0iaSmju1hjjf2PC63Y5fnQXGlfFvY=;
-        b=fu7Fm2CWDTbU4vgkZvk0KUscLqzKdSu6257lMymgRY9sILLbrOqdqyinFyrNaDGfE4
-         m1nBqXpywvnoLTZ1tRewNBSZuvo0XQ+12uYKvMrvPBxGG6bx/sxoYOdOPh1942HSpuTq
-         che/cfCX5eANbAMk8+pZl6fzmuYHd9y9Z3iqTxGENKMe9e8/YxwvwPX0JLweZiyUogDy
-         vIXBTWsMpWbolKvbLfxoo8f3IWF0MrQ6oXZmiz6vO8qDTYgJuJzAh4X/JdgyJhSthmN9
-         mFGCuOs8ufYglvDsYWHA9busqoiS/wJeSXpd2VMSWGMLQafa3RJ8VlV6OPBIbGgo2tEJ
-         qkVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698048237; x=1698653037;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gmB9mDTwiF3uEH0iaSmju1hjjf2PC63Y5fnQXGlfFvY=;
-        b=ur9l0/cMPRFjLJFEhIieoLo4Vh/ZAf1HX8x4gB/hYsMqSK6NVSP6GyXxKyU9Q/J3Oo
-         pNbDCRKTku/SqgrbWSkoXyAcQsKYRmLtDIK9mFk42IgQ18LGPxveAdx+17vK1HnUdALB
-         NzAH8UzLzyu6VY9mVYbkLj1wB2QDugdxPHAEusyp1M43GrUThbZgE6MbAJury/+0dHId
-         cgCvQZ7iuYhHcNPQ6kYciKQWXdIf6tiEnDpsGLm7vtMc/mp3v3RqpJXMqIfHK72H+cMK
-         eyYnC7bJ6LNscaZEkaThHiujl+UJ+BgVTRNLmgRAOss0EJiQzf8qaiNrAY+tswUaG8fc
-         0JdA==
-X-Gm-Message-State: AOJu0YwSkbwFWVtznFRJOcwvqlcvzh4r8Bgp4DiXUNF7CtoEc9xN0WlB
-        dzKgwEa/+L8hI+wIYiMWxytqbBPb2wmzbCzh7jEfdw==
-X-Google-Smtp-Source: AGHT+IElEdOoTwEWHGztCKoP/uOTBAVSI/z9UeRXX/JNfSNw3yEy28Sub6mcDg2QCSreuoawpXgqJLjt53W3G81bRMU=
-X-Received: by 2002:a25:ef4e:0:b0:d9d:116a:89c8 with SMTP id
- w14-20020a25ef4e000000b00d9d116a89c8mr4808003ybm.54.1698048237350; Mon, 23
- Oct 2023 01:03:57 -0700 (PDT)
+        Mon, 23 Oct 2023 04:04:29 -0400
+Received: from out-197.mta0.migadu.com (out-197.mta0.migadu.com [91.218.175.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E320D65
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:04:23 -0700 (PDT)
+Message-ID: <744750b3-27f6-a832-af9b-eea4825fcac6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1698048261;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T9ZkR+TAxsb47GS5kogIBmOxsCjBIAW+1akzDqQqg6A=;
+        b=qszkJRLL/7Vhfhn89hXtTi5IjlnCnjhFDCebAKlBdxDg/41cGDf+PW2ybNaNIRpw6m2wVJ
+        7pGDgODajSc5WeCk6pHJsTmk+YTKkb7D363lz6Gbb279JGuoHG6cb6G7Fn8w58J+o6edvw
+        87kmFaUprTrT/XNjlA8OoEKDUXal2iI=
+Date:   Mon, 23 Oct 2023 16:04:00 +0800
 MIME-Version: 1.0
-References: <20230708072835.3035398-1-quic_jprakash@quicinc.com>
- <20230708072835.3035398-8-quic_jprakash@quicinc.com> <20230708165955.08c1159c@jic23-huawei>
- <13d5dee2-1da4-2ad0-91f8-a53b43adba2b@quicinc.com>
-In-Reply-To: <13d5dee2-1da4-2ad0-91f8-a53b43adba2b@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 23 Oct 2023 11:03:46 +0300
-Message-ID: <CAA8EJprb=804S=GfxPw_7AxoHRO1XzC+wGPCsvNGrRpJgj+y6A@mail.gmail.com>
-Subject: Re: [PATCH 07/11] iio: adc: Add support for QCOM PMIC5 Gen3 ADC
-To:     Jishnu Prakash <quic_jprakash@quicinc.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>, agross@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linus.walleij@linaro.org, Jonathan.Cameron@huawei.com,
-        sboyd@kernel.org, quic_subbaram@quicinc.com,
-        quic_collinsd@quicinc.com, quic_kamalw@quicinc.com,
-        marijn.suijten@somainline.org, andriy.shevchenko@linux.intel.com,
-        krzysztof.kozlowski@linaro.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        Lee Jones <lee@kernel.org>,
-        =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-        Haibo Chen <haibo.chen@nxp.com>, linux-iio@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] sched/rt: Account execution time for cgroup and thread
+ group if rt entity is task
+Content-Language: en-US
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+References: <20231023065418.1548239-1-yajun.deng@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yajun Deng <yajun.deng@linux.dev>
+In-Reply-To: <20231023065418.1548239-1-yajun.deng@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 at 09:15, Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
+
+Please ignore it, it's missing '#endif'.
+
+
+On 2023/10/23 14:54, Yajun Deng wrote:
+> The rt entity can be a task group. Like the fair scheduler class, we don't
+> need to account execution time for cgroup and thread group if the rt
+> entity isn't a task.
 >
-> Hi Jonathan,
+> Check the scheduler class of the task and make sure that the rt entity is a
+> task.
 >
-> On 7/8/2023 9:29 PM, Jonathan Cameron wrote:
-> > On Sat, 8 Jul 2023 12:58:31 +0530
-> > Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
-
-> >> +
-> >> +    ret = adc5_get_fw_data(adc);
-> >> +    if (ret < 0) {
-> >> +            dev_err(adc->dev, "adc get dt data failed, ret=%d\n", ret);
-> >> +            return ret;
-> >> +    }
-> >> +
-> >> +    for (i = 0; i < adc->num_sdams; i++) {
-> >> +            ret = devm_request_irq(dev, adc->base[i].irq, adc5_gen3_isr,
-> >> +                                    0, adc->base[i].irq_name, adc);
-> >> +            if (ret < 0) {
-> >> +                    dev_err(adc->dev, "Getting IRQ %d failed, ret=%d\n", adc->base[i].irq, ret);
-> >> +                    return ret;
-> >> +            }
-> >> +    }
-> >> +
-> >> +    ret = adc_tm_register_tzd(adc);
-> >> +    if (ret < 0)
-> >> +            return ret;
-> >> +
-> >> +    if (adc->n_tm_channels)
-> >> +            INIT_WORK(&adc->tm_handler_work, tm_handler_work);
-> >> +
-> >> +    indio_dev->name = pdev->name;
-> >> +    indio_dev->modes = INDIO_DIRECT_MODE;
-> >> +    indio_dev->info = &adc5_gen3_info;
-> >> +    indio_dev->channels = adc->iio_chans;
-> >> +    indio_dev->num_channels = adc->nchannels;
-> >> +
-> >> +    return devm_iio_device_register(dev, indio_dev);
-> >> +}
-> >> +
-> >> +static int adc5_gen3_exit(struct platform_device *pdev)
-> >> +{
-> > As you are mixing devm manged cleanup and the explicit sort the
-> > result is that you remove the userspace interfaces 'after' you run
-> > everything in here. I'm thinking disabling the channels at least
-> > isn't a good idea in that case.
-> >
-> > If you want to use devm (which is good) then you need to work out how
-> > to register additional callbacks during probe to tear down everything in
-> > the right order (typically the reverse of what happens in probe)
-> > devm_add_action_or_reset() is the way to add those extra callbacks.
-> >
-> > If not, just don't use devm for at least those bits that will end up
-> > running out of order (such as iio_device_register()) and manually call their
-> > cleanup routines instead.
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> ---
+>   kernel/sched/rt.c    |  4 ----
+>   kernel/sched/sched.h | 12 ++++++++++--
+>   2 files changed, 10 insertions(+), 6 deletions(-)
 >
->
-> I checked some other examples in the iio/adc/ folder, I think I see what
-> you mean here. It looks like drivers with a remove callback always use
-> iio_device_register and iio_device_unregister instead of the devm_*
-> variant, due to the issue with sysfs removal as you said.
->
-> I'll update the probe and remove functions similarly, to do explicit
-> cleanups as required, avoiding devm_ usage for places where it should be
-> avoided.
-
-I think you got the message all wrong. There is nothing bad with using
-devm_. As a matter of fact it is a preferred form in most of the
-cases. However you have to be careful to tear down your device in the
-correct order. And as Jonathan pointed
-out, you might add necessary hooks manually by calling
-devm_add_action_or_reset().
-
-[skipped the rest]
-
-
-
--- 
-With best wishes
-Dmitry
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+> index 6aaf0a3d6081..ccded5670b61 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -165,8 +165,6 @@ static void destroy_rt_bandwidth(struct rt_bandwidth *rt_b)
+>   	hrtimer_cancel(&rt_b->rt_period_timer);
+>   }
+>   
+> -#define rt_entity_is_task(rt_se) (!(rt_se)->my_q)
+> -
+>   static inline struct task_struct *rt_task_of(struct sched_rt_entity *rt_se)
+>   {
+>   #ifdef CONFIG_SCHED_DEBUG
+> @@ -283,8 +281,6 @@ int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent)
+>   
+>   #else /* CONFIG_RT_GROUP_SCHED */
+>   
+> -#define rt_entity_is_task(rt_se) (1)
+> -
+>   static inline struct task_struct *rt_task_of(struct sched_rt_entity *rt_se)
+>   {
+>   	return container_of(rt_se, struct task_struct, rt);
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 65cad0e5729e..c338c24e495d 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -779,6 +779,11 @@ static inline long se_runnable(struct sched_entity *se)
+>   }
+>   #endif
+>   
+> +#ifdef CONFIG_RT_GROUP_SCHED
+> +#define rt_entity_is_task(rt_se) (!(rt_se)->my_q)
+> +#else
+> +#define rt_entity_is_task(rt_se) (1)
+> +
+>   #ifdef CONFIG_SMP
+>   /*
+>    * XXX we want to get rid of these helpers and use the full load resolution.
+> @@ -3266,9 +3271,12 @@ static inline void update_current_exec_runtime(struct task_struct *curr,
+>   						u64 now, u64 delta_exec)
+>   {
+>   	curr->se.sum_exec_runtime += delta_exec;
+> -	account_group_exec_runtime(curr, delta_exec);
+> -
+>   	curr->se.exec_start = now;
+> +
+> +	if (curr->sched_class == &rt_sched_class && !rt_entity_is_task(&curr->rt))
+> +		return;
+> +
+> +	account_group_exec_runtime(curr, delta_exec);
+>   	cgroup_account_cputime(curr, delta_exec);
+>   }
+>   
