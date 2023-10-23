@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 531CF7D28EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235CF7D28EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbjJWDKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 23:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
+        id S233242AbjJWDNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 23:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233239AbjJWDKG (ORCPT
+        with ESMTP id S229468AbjJWDNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 23:10:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F30F7
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 20:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698030559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uR3upPr1un9Y15hnQrF7MdsdEdC4wHgJk4tSO1HctOg=;
-        b=bo4GjMMfsM0isUr3fmvyDFhE2Qsc/Sf78SjxL2R+LPlAzoew0V9vPhDOGfF11g+W2f8q4r
-        rDcsK2Fy+o4zhFoE6r+KnkoyMiGBvpj4mZoPY0yl9FI4Pi/8QRNVAaq4f2MYqB+bSHzSys
-        mxCCp5/Y2KsScJZI6paMARWlgsnk0tc=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-692-UMj4ea14O_-h-2z_gzkcOg-1; Sun, 22 Oct 2023 23:09:18 -0400
-X-MC-Unique: UMj4ea14O_-h-2z_gzkcOg-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-507c996104fso2964588e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 20:09:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698030557; x=1698635357;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uR3upPr1un9Y15hnQrF7MdsdEdC4wHgJk4tSO1HctOg=;
-        b=TOxwj+eryGvmT/sId2YFhS9+gHIBTkRdfaWc/vIFLBmLbOvn7dS0B8jIbSFxwyPQy9
-         0ZSlfS1sMiOElxx33WveZprTM5+IqPX05vuda76TawsddZpCvEweHhL0uN9Q+05xoMDU
-         Jn4MZtFE05Opg7fV1+CydqqukEZJN2gA4YvaHI3Q4il7Alf2EibUhQvbGtQvhdICsM2N
-         L4ADYbvkmXsiwbybfbJRGvYe0Vhp1B3a3Ai/VNVy3a3mldFONC3eNBfIAlsIbxQQS2az
-         W5gkZThvzpOcf/XuEkc08YewsmWhU2EZOtglZdtzOzzXaedi+GRFiD4bgJj6Ey8Hc7LS
-         pgnA==
-X-Gm-Message-State: AOJu0Yxfq6HP0R4p4yd9ZQV+Gsrp16aX1bCqxrOflQC+3r7FO1CJm66p
-        6Yh4+st9W8TidqWaWNYszAjD/KhqpzTHA9uDApz77urK6foDs0e0vOwKzXByProUqtKee9JZ6C9
-        IAQrnJeREWZOL6HWL49t/5FHJY6UqHCO0n0EuvPty
-X-Received: by 2002:ac2:518b:0:b0:503:55c:7999 with SMTP id u11-20020ac2518b000000b00503055c7999mr4906976lfi.34.1698030556999;
-        Sun, 22 Oct 2023 20:09:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFgWCb7RrjHP+YKyif/eQ3pCH0351kwLRVv4y6D+4xjgstUC95BiBq1L5oqqzYLzjBLiA8Wpf2Vn16vXSmNb5E=
-X-Received: by 2002:ac2:518b:0:b0:503:55c:7999 with SMTP id
- u11-20020ac2518b000000b00503055c7999mr4906972lfi.34.1698030556727; Sun, 22
- Oct 2023 20:09:16 -0700 (PDT)
+        Sun, 22 Oct 2023 23:13:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443B9AD
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 20:13:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698030797; x=1729566797;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=AeWTtkCsGMX/D1evCPohfI5Y/jQTw5z4QJVr/hc1lsY=;
+  b=N8AnDAa+ugimiEowmqdXhv3if6CgwfDocfTj8R8RhRSACqAP71gPpf9o
+   VRfIs8+rgoyo5jmYTl2z1xgYHlUWT7R6H8BcIjDlUy9OH3aSYob2FwJl9
+   JLDG1KYSGa1UUN8WEFT7B/B6JXcdRKpmXhN+8jdFdWzRYFCBQb39COURB
+   aAPydZLNfxAvCux2UgGP406OftghXtpp+CRmCv4T/pN6HdC44zmSXjAWd
+   FGqmaCbS9Nb3Dwg4LptFjUPY6cSftdpvU/1Bl1q7gZeRI6wtA97jWc3Xl
+   6Y2enel7AeAFk25eslwZ+YMa0KQAnV+xF43m+wv7NLpz3nmRgU+SFlrc0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="389604102"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="389604102"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 20:13:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="5932824"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmviesa001.fm.intel.com with ESMTP; 22 Oct 2023 20:13:09 -0700
+Message-ID: <400f2708-1186-4ca4-b4db-dc46b9e636b2@linux.intel.com>
+Date:   Mon, 23 Oct 2023 11:09:27 +0800
 MIME-Version: 1.0
-References: <20231020155819.24000-1-maxime.coquelin@redhat.com> <20231020155819.24000-5-maxime.coquelin@redhat.com>
-In-Reply-To: <20231020155819.24000-5-maxime.coquelin@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 23 Oct 2023 11:09:05 +0800
-Message-ID: <CACGkMEvht+u9nO96u-Tosw9un8_rt+-RuJJo-kAA+0mrkNspbw@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] vduse: Add LSM hooks to check Virtio device type
-To:     Maxime Coquelin <maxime.coquelin@redhat.com>
-Cc:     mst@redhat.com, xuanzhuo@linux.alibaba.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        xieyongji@bytedance.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        david.marchand@redhat.com, lulu@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Liu, Yi L" <yi.l.liu@intel.com>
+Subject: Re: [PATCH 0/2] iommufd: Only enforce_cache_coherency when allocating
+ hwpt
+Content-Language: en-US
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>
+References: <cover.1697848510.git.nicolinc@nvidia.com>
+ <2201ae4d-b825-49a5-ba73-c6b310e2969c@linux.intel.com>
+ <BL1PR11MB5271F7BEA6187ACBD6BA88568CD8A@BL1PR11MB5271.namprd11.prod.outlook.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BL1PR11MB5271F7BEA6187ACBD6BA88568CD8A@BL1PR11MB5271.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 11:58=E2=80=AFPM Maxime Coquelin
-<maxime.coquelin@redhat.com> wrote:
->
-> This patch introduces LSM hooks for devices creation,
-> destruction and opening operations, checking the
-> application is allowed to perform these operations for
-> the Virtio device type.
->
-> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
-> ---
+On 10/23/23 10:55 AM, Tian, Kevin wrote:
+>> From: Baolu Lu <baolu.lu@linux.intel.com>
+>> Sent: Saturday, October 21, 2023 9:33 AM
+>>
+>> On 2023/10/21 8:37, Nicolin Chen wrote:
+>>> https://lore.kernel.org/linux-
+>> iommu/20231020135501.GG3952@nvidia.com/
+>>> The conversation above concluded that a hwpt should only enforce cache
+>>> coherency per device at the stage of its allocation, and it should not
+>>> be changed or updated in the attach/replace routines.
+>>>
+>>> Add two patches dropping the enforce_cache_coherency calls from attach
+>>> and replce routines respectively, since they were introduced with two
+>>> different commits.
+>>>
+>>> Nicolin Chen (2):
+>>>     iommufd/device: Drop enforce_cache_coherency in
+>>>       iommufd_device_do_replace
+>>>     iommufd/device: Drop enforce_cache_coherency in
+>>>       iommufd_hw_pagetable_attach
+>>>
+>>>    drivers/iommu/iommufd/device.c          | 19 ++-----------------
+>>>    drivers/iommu/iommufd/hw_pagetable.c    |  2 +-
+>>>    drivers/iommu/iommufd/iommufd_private.h |  1 -
+>>>    3 files changed, 3 insertions(+), 19 deletions(-)
+>>
+>> Hi Kevin and Jason,
+>>
+>> With these two fixes, there's no issue in the intel driver any more. Do
+>> I understand it right?
+>>
+> 
+> But code-wise it's still good to explicitly disallow enforce-cc on a
+> non-empty domain if there is no plan to support it. Just no Fix to
+> stable.
 
-Hi Maxime:
+Yes. Make sense. The device driver implementation should be self-
+contained.
 
-I think we need to document the reason why we need those hooks now.
-
-Thanks
-
+Best regards,
+baolu
