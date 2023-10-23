@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 475F67D3D10
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65C47D3CF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbjJWRIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48190 "EHLO
+        id S229870AbjJWRAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjJWRIS (ORCPT
+        with ESMTP id S229476AbjJWRAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:08:18 -0400
-X-Greylist: delayed 481 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Oct 2023 10:08:14 PDT
-Received: from gentwo.org (gentwo.org [62.72.0.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFA694
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:08:14 -0700 (PDT)
-Received: by gentwo.org (Postfix, from userid 1003)
-        id 5066248F4B; Mon, 23 Oct 2023 10:00:11 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id 4D21248F48;
-        Mon, 23 Oct 2023 10:00:11 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 10:00:11 -0700 (PDT)
-From:   "Christoph Lameter (Ampere)" <cl@gentwo.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-cc:     chengming.zhou@linux.dev, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, willy@infradead.org,
-        pcc@google.com, tytso@mit.edu, maz@kernel.org,
-        ruansy.fnst@fujitsu.com, vishal.moola@gmail.com,
-        lrh2000@pku.edu.cn, hughd@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Chengming Zhou <zhouchengming@bytedance.com>
-Subject: Re: [RFC PATCH v2 0/6] slub: Delay freezing of CPU partial slabs
-In-Reply-To: <4134b039-fa99-70cd-3486-3d0c7632e4a3@suse.cz>
-Message-ID: <fcb9b7f0-fb21-cce8-d452-766a5cc73d4a@gentwo.org>
-References: <20231021144317.3400916-1-chengming.zhou@linux.dev> <4134b039-fa99-70cd-3486-3d0c7632e4a3@suse.cz>
+        Mon, 23 Oct 2023 13:00:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1FE1BD
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:00:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F741C433C7;
+        Mon, 23 Oct 2023 17:00:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698080442;
+        bh=cwuYrWmz8NQ7T9Okph4zwfyJC4sUXhx1gtiMd0FnC+c=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=gbDmAC603yG/JGudIGGWmwaQ3qRr+5NYajhHUGpMe87TYxmprDJcj69tdGhS4092D
+         3QR5oHzaGVlK+rad9pB9bDbf2tWKFnmyt8QqVDq1HQpgf+IyL7fRxAeIsxTwIlPPIq
+         ohQDLPqzTjOLIlWnLE3QV5QvV31EBxRzioZaSmAxYggWjR9iRxOvk9UrTNE+eXno8L
+         hRr7/bjIXhyZDS2I0lYbmF+32y2/9rMCbGjbOsj2wRb8tntbDEOpBljO2zhd6Jh6AE
+         3u7z4gCbSoLoeoD6il/aSCRPvib89By7o3TnKooO7c5/UvWWTUYWlwpZF/VDPL93kA
+         y04Vmabgt+Qlg==
+From:   Mark Brown <broonie@kernel.org>
+To:     outreachy@lists.linux.dev, Gokhan Celik <gokhan.celik@analog.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Gokhan Celik <Gokhan.Celik@analog.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <cover.1698000185.git.gokhan.celik@analog.com>
+References: <cover.1698000185.git.gokhan.celik@analog.com>
+Subject: Re: [PATCH v4 0/2] Add ADI MAX77503 regulator driver and bindings
+Message-Id: <169808044030.106747.3557631443354429092.b4-ty@kernel.org>
+Date:   Mon, 23 Oct 2023 18:00:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023, Vlastimil Babka wrote:
+On Sun, 22 Oct 2023 21:52:49 +0300, Gokhan Celik wrote:
+> Add MAX77503 buck converter driver and devicetree bindings.
+> Apply patches in sequence.
+> 
+> Gokhan Celik (2):
+>   regulator: max77503: Add ADI MAX77503 support
+>   regulator: dt-bindings: Add ADI MAX77503 support
+> 
+> [...]
 
->>
->> The slab will be delay frozen when it's picked to actively use by the
->> CPU, it becomes full at the same time, in which case we still need to
->> rely on "frozen" bit to avoid manipulating its list. So the slab will
->> be frozen only when activate use and be unfrozen only when deactivate.
->
-> Interesting solution! I wonder if we could go a bit further and remove
-> acquire_slab() completely. Because AFAICS even after your changes,
-> acquire_slab() is still attempted including freezing the slab, which means
-> still doing an cmpxchg_double under the list_lock, and now also handling the
-> special case when it failed, but we at least filled percpu partial lists.
-> What if we only filled the partial list without freezing, and then froze the
-> first slab outside of the list_lock?
->
-> Or more precisely, instead of returning the acquired "object" we would
-> return the first slab removed from partial list. I think it would simplify
-> the code a bit, and further reduce list_lock holding times.
->
-> I'll also point out a few more details, but it's not a full detailed review
-> as the suggestion above, and another for 4/5, could mean a rather
-> significant change for v3.
+Applied to
 
-This is not that easy. The frozen bit indicates that list management does 
-not have to be done for a slab if its processed in free. If you take a 
-slab off the list without setting that bit then something else needs to 
-provide the information that "frozen" provided.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-If the frozen bit changes can be handled in a different way than 
-with cmpxchg then that is a good optimization.
+Thanks!
 
-For much of the frozen handling we must be holding the node list lock 
-anyways in order to add/remove from the list. So we already have a lock 
-that could be used to protect flag operations.
+[1/2] regulator: max77503: Add ADI MAX77503 support
+      commit: a0c543bdf4ba4f10d21fb2d44a9abc5715184966
+[2/2] regulator: dt-bindings: Add ADI MAX77503 support
+      commit: ff5f76b820a95957df0420bba4c67b02978e6c52
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
