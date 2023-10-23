@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C436A7D2CBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769477D2CC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbjJWIa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
+        id S232994AbjJWIbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbjJWIah (ORCPT
+        with ESMTP id S233057AbjJWIaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:30:37 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1091510EF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:30:12 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so2910294b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:30:12 -0700 (PDT)
+        Mon, 23 Oct 2023 04:30:46 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF77D6B
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:30:18 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-27d1373f631so2375943a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:30:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1698049812; x=1698654612; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1698049818; x=1698654618; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CJ95gw/OAzQTy7Pqa/IxTLGW5cdMj2QHsOf1G6j+k+o=;
-        b=S30YYUPeF3K4Wg7u5gv9HP8YR1365PNv7lH+yH8yqCc8lgXpWtld+GOUV6U7GTyVS+
-         z2i6EMgOwPqz2g8s079d1IGwRG5mdFGLL3yrri0vfqCM82IaDJBhdWfQbCiDszl8lqST
-         nunaU991Zqd9Qv2rNXHHeyN9d1luOOD1BBb59nG9LQfmipfpOxjHyBeFD9h53TnHfvPO
-         VLFwmsehR+/ER7sRRODTWF7nO1Q+1KoTh54UE/ZaIU6yJf62qYWBlDeVMe18atuoKP4W
-         I2tppbSMuDVaigItRRWfAPpa2GVrMq8AQs1ViWm0O7V32Z7kbGWfO2iqWqcU7WSXqpCL
-         OwWg==
+        bh=+zaYgIQbfD9rezIYpqI9laPzzTdWx+ZAuyZYYGD6lvk=;
+        b=Kjd3jevJivPEcsw5F67N8jy0YvnVBqHR5+uIDJ+9La/cvROPJqBXHLpWV36WidC2Dt
+         RqgxAytav/Ur5ma2mfgDfcqN6jrfiMzQxwbb8dN3lsRIktkn6tuMHhGHKADFrFeJfrOu
+         vd6vVbV8RzC9b3Nb5A7o5+iw7fF/QxQ4sd6vym6sd+EsWiiO81QOgRu3Mfol527titTO
+         U/mt7XTu5CiNZYWEkpb4fElOcSDDuM+n5n8UAyRv/DbiqwpaSUaSULuhBTkIqBC/Ciro
+         gsgWWvvEGSv0OIUlxFW8VCegUd4FS9f158yDWngOMSyfvFVSgpOEiUqcizwGCh6+Tgvr
+         U16Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698049812; x=1698654612;
+        d=1e100.net; s=20230601; t=1698049818; x=1698654618;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CJ95gw/OAzQTy7Pqa/IxTLGW5cdMj2QHsOf1G6j+k+o=;
-        b=Ak2HaZ06WNAFnN0NNl6spF8BOxZHeBrgNwEhlfph8vyjcO1osWBFe0hIUSBuIWpsjg
-         Ysd3sC6hkhm6SLeWtZ3cp/sfb7gcKmjT4xkHEyWYqdXvl/4f7V8laj7B24yNewX5hitQ
-         sg9S5//TrfeBT9z1rfEtRsl3JBdlRpM4INwJxPRwyKfZde6tYOizMFE7bwBAaimxwV2n
-         IU0HvtG0H+RwIYRuGesOWLukMH5j2ch7Cp5LumNA2Cmqpv8oTaa/ZAYJliflInauYp9M
-         wGw4+SzQqsO8iFAJIw0/43iB1ZBroEXvMj80vJphwzn6o8HZd/pA05xnlqciu/D1neRf
-         MTUw==
-X-Gm-Message-State: AOJu0YxuMO1DjDMAL8wE7Mo+I8cGITcLCCHMsCovbRFyN6gcoGE/uXr2
-        MsKGOAC4iI08QoCmcaRumvt90Q==
-X-Google-Smtp-Source: AGHT+IGiT6MKYuJi2ZVpq5CAD0Z+TUVQ/Ug4skMI+tZ5HzA4krihsDz81Ez71goYp3lfV7OVtvYOHA==
-X-Received: by 2002:a05:6a20:1611:b0:17b:8016:6f79 with SMTP id l17-20020a056a20161100b0017b80166f79mr10196547pzj.3.1698049812218;
-        Mon, 23 Oct 2023 01:30:12 -0700 (PDT)
+        bh=+zaYgIQbfD9rezIYpqI9laPzzTdWx+ZAuyZYYGD6lvk=;
+        b=Bc8xPho61ChO1r5kDpCTLZSReGnYFms6YVjqwM8jucDTmXdnDTDc2LkKM5uZ2rn9GU
+         3s+sAVDO0PfyyUypJrTdRxvAWPg3VmjVhQZYTIBeYwb1BmPUgl6/Oyk4WfLkbIECf6bg
+         j6LCfYZckZWErH+K9VmJvPa+oSBv/ggTvAFi1cPU2X655B5D6ZQwZhdwetDmTaQIRF0I
+         GtoJfVG30Ght9RcC8bG15Zn2d5uL43s/kieDDSQ0UyAhaiM/tNzqQ0W8b/xX8nwas135
+         vtxFjms9EDdpr8gWZc2EEkthRk1pvldndgIs+R5OKyT98uR9dphQx7V6O/oP93F+0xcd
+         +HLg==
+X-Gm-Message-State: AOJu0YzYWyEA9iJeBwps4Y+MdrtzGXLaxDcEZvhlfwjTiXNalNYakGx4
+        HaPAiA1GJaufDj+AIFZW2YDZmA==
+X-Google-Smtp-Source: AGHT+IFpt0TBJ9j577UmWU9zDZbpQtF3JzZZq4hl33QCJ42B75FqE8SvRamj8B8r3i2TgYxF2UyAzw==
+X-Received: by 2002:a17:90b:3e85:b0:27d:1567:f51d with SMTP id rj5-20020a17090b3e8500b0027d1567f51dmr9084887pjb.47.1698049817843;
+        Mon, 23 Oct 2023 01:30:17 -0700 (PDT)
 Received: from J9GPGXL7NT.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d15-20020a170903230f00b001b8b07bc600sm5415805plh.186.2023.10.23.01.30.06
+        by smtp.gmail.com with ESMTPSA id d15-20020a170903230f00b001b8b07bc600sm5415805plh.186.2023.10.23.01.30.12
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 23 Oct 2023 01:30:11 -0700 (PDT)
+        Mon, 23 Oct 2023 01:30:17 -0700 (PDT)
 From:   Xu Lu <luxu.kernel@bytedance.com>
 To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
         aou@eecs.berkeley.edu, tglx@linutronix.de, maz@kernel.org,
@@ -59,9 +59,9 @@ Cc:     dengliang.1214@bytedance.com, liyu.yukiteru@bytedance.com,
         lihangjing@bytedance.com, chaiwen.cc@bytedance.com,
         linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
         Xu Lu <luxu.kernel@bytedance.com>
-Subject: [RFC 09/12] riscv: Enable NMIs during exceptions
-Date:   Mon, 23 Oct 2023 16:29:08 +0800
-Message-Id: <20231023082911.23242-10-luxu.kernel@bytedance.com>
+Subject: [RFC 10/12] riscv: Enable NMIs during interrupt handling
+Date:   Mon, 23 Oct 2023 16:29:09 +0800
+Message-Id: <20231023082911.23242-11-luxu.kernel@bytedance.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 In-Reply-To: <20231023082911.23242-1-luxu.kernel@bytedance.com>
 References: <20231023082911.23242-1-luxu.kernel@bytedance.com>
@@ -76,109 +76,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have switched the way of disabling irqs to CSR_IE masking. But
-hardware still automatically clearing SIE field of CSR_STATUS whenever
-thread traps into kernel, which disabling all irqs including NMIs.
+Hardware automatically clearing SIE field of CSR_STATUS whenever
+thread traps into kernel by interrupt, disabling all irqs including NMIs
+during interrupt handling.
 
-This commit re-enables NMIs and normal irqs during exceptions by setting
-the SIE field in CSR_STATUS and restoring NMI and irq bits in CSR_IE.
+This commit re-enable NMIs during interrupt handling by setting the SIE
+field in CSR_STATUS and restoring NMIs bits in CSR_IE. Normal interrupts
+are still disabled during interrupt handling and NMIs are also disabled
+during NMIs handling to avoid nesting.
 
 Signed-off-by: Xu Lu <luxu.kernel@bytedance.com>
+Signed-off-by: Hangjing Li <lihangjing@bytedance.com>
+Reviewed-by: Liang Deng <dengliang.1214@bytedance.com>
+Reviewed-by: Yu Li <liyu.yukiteru@bytedance.com>
 ---
- arch/riscv/include/asm/irqflags.h  | 13 +++++++++++++
- arch/riscv/include/asm/switch_to.h |  7 +++++++
- arch/riscv/kernel/traps.c          | 10 ++++++++++
- 3 files changed, 30 insertions(+)
+ arch/riscv/kernel/traps.c        | 44 +++++++++++++++++++++++---------
+ drivers/irqchip/irq-riscv-intc.c |  2 ++
+ 2 files changed, 34 insertions(+), 12 deletions(-)
 
-diff --git a/arch/riscv/include/asm/irqflags.h b/arch/riscv/include/asm/irqflags.h
-index 42f7803582df..6a709e9c69ca 100644
---- a/arch/riscv/include/asm/irqflags.h
-+++ b/arch/riscv/include/asm/irqflags.h
-@@ -29,6 +29,16 @@ static inline void set_nmi(int irq) {}
- 
- static inline void unset_nmi(int irq) {}
- 
-+static inline void enable_nmis(void)
-+{
-+	csr_set(CSR_IE, ALLOWED_NMI_MASK);
-+}
-+
-+static inline void disable_nmis(void)
-+{
-+	csr_clear(CSR_IE, ALLOWED_NMI_MASK);
-+}
-+
- static inline void local_irq_switch_on(void)
- {
- 	csr_set(CSR_STATUS, SR_IE);
-@@ -128,6 +138,9 @@ static inline void arch_local_irq_restore(unsigned long flags)
- 	csr_set(CSR_STATUS, flags & SR_IE);
- }
- 
-+static inline void enable_nmis(void) {}
-+static inline void disable_nmis(void) {}
-+
- #endif /* !CONFIG_RISCV_PSEUDO_NMI */
- 
- #endif /* _ASM_RISCV_IRQFLAGS_H */
-diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/asm/switch_to.h
-index a727be723c56..116cffeaa6bf 100644
---- a/arch/riscv/include/asm/switch_to.h
-+++ b/arch/riscv/include/asm/switch_to.h
-@@ -84,4 +84,11 @@ do {							\
- 	((last) = __switch_to(__prev, __next));		\
- } while (0)
- 
-+#ifdef CONFIG_RISCV_PSEUDO_NMI
-+
-+#define prepare_arch_switch(next)			disable_nmis()
-+#define finish_arch_post_lock_switch()			enable_nmis()
-+
-+#endif /* CONFIG_RISCV_PSEUDO_NMI */
-+
- #endif /* _ASM_RISCV_SWITCH_TO_H */
 diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index fae8f610d867..63d3c1417563 100644
+index 63d3c1417563..185743edfa09 100644
 --- a/arch/riscv/kernel/traps.c
 +++ b/arch/riscv/kernel/traps.c
-@@ -135,7 +135,9 @@ asmlinkage __visible __trap_section void name(struct pt_regs *regs)		\
- {										\
- 	if (user_mode(regs)) {							\
- 		irqentry_enter_from_user_mode(regs);				\
-+		enable_nmis();							\
- 		do_trap_error(regs, signo, code, regs->epc, "Oops - " str);	\
-+		disable_nmis();							\
- 		irqentry_exit_to_user_mode(regs);				\
- 	} else {								\
- 		irqentry_state_t state = irqentry_nmi_enter(regs);		\
-@@ -292,8 +294,12 @@ asmlinkage __visible __trap_section void do_trap_break(struct pt_regs *regs)
- 	if (user_mode(regs)) {
- 		irqentry_enter_from_user_mode(regs);
- 
-+		enable_nmis();
-+
- 		handle_break(regs);
- 
-+		disable_nmis();
-+
- 		irqentry_exit_to_user_mode(regs);
- 	} else {
- 		irqentry_state_t state = irqentry_nmi_enter(regs);
-@@ -338,10 +344,14 @@ asmlinkage __visible noinstr void do_page_fault(struct pt_regs *regs)
- {
- 	irqentry_state_t state = irqentry_enter(regs);
- 
-+	enable_nmis();
-+
- 	handle_page_fault(regs);
- 
- 	local_irq_disable();
- 
-+	disable_nmis();
-+
- 	irqentry_exit(regs, state);
+@@ -356,20 +356,11 @@ asmlinkage __visible noinstr void do_page_fault(struct pt_regs *regs)
  }
  #endif
+ 
+-static void noinstr handle_riscv_irq(struct pt_regs *regs)
++static void noinstr do_interrupt(struct pt_regs *regs)
+ {
+ 	struct pt_regs *old_regs;
+ 
+-	irq_enter_rcu();
+ 	old_regs = set_irq_regs(regs);
+-	handle_arch_irq(regs);
+-	set_irq_regs(old_regs);
+-	irq_exit_rcu();
+-}
+-
+-asmlinkage void noinstr do_irq(struct pt_regs *regs)
+-{
+-	irqentry_state_t state = irqentry_enter(regs);
+ #ifdef CONFIG_IRQ_STACKS
+ 	if (on_thread_stack()) {
+ 		ulong *sp = per_cpu(irq_stack_ptr, smp_processor_id())
+@@ -382,7 +373,9 @@ asmlinkage void noinstr do_irq(struct pt_regs *regs)
+ 		"addi	s0, sp, 2*"RISCV_SZPTR "\n"
+ 		"move	sp, %[sp]		\n"
+ 		"move	a0, %[regs]		\n"
+-		"call	handle_riscv_irq	\n"
++		"la	t0, handle_arch_irq	\n"
++		REG_L"	t1, (t0)		\n"
++		"jalr	t1			\n"
+ 		"addi	sp, s0, -2*"RISCV_SZPTR"\n"
+ 		REG_L"  s0, (sp)		\n"
+ 		"addi	sp, sp, "RISCV_SZPTR   "\n"
+@@ -398,11 +391,38 @@ asmlinkage void noinstr do_irq(struct pt_regs *regs)
+ 		  "memory");
+ 	} else
+ #endif
+-		handle_riscv_irq(regs);
++		handle_arch_irq(regs);
++	set_irq_regs(old_regs);
++}
++
++static __always_inline void __do_nmi(struct pt_regs *regs)
++{
++	irqentry_state_t state = irqentry_nmi_enter(regs);
++
++	do_interrupt(regs);
++
++	irqentry_nmi_exit(regs, state);
++}
++
++static __always_inline void __do_irq(struct pt_regs *regs)
++{
++	irqentry_state_t state = irqentry_enter(regs);
++
++	irq_enter_rcu();
++	do_interrupt(regs);
++	irq_exit_rcu();
+ 
+ 	irqentry_exit(regs, state);
+ }
+ 
++asmlinkage void noinstr do_irq(struct pt_regs *regs)
++{
++	if (IS_ENABLED(CONFIG_RISCV_PSEUDO_NMI) && regs_irqs_disabled(regs))
++		__do_nmi(regs);
++	else
++		__do_irq(regs);
++}
++
+ #ifdef CONFIG_GENERIC_BUG
+ int is_valid_bugaddr(unsigned long pc)
+ {
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index c672c0c64d5d..80ed8606e04d 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -34,7 +34,9 @@ static asmlinkage void riscv_intc_irq(struct pt_regs *regs)
+ 		generic_handle_domain_nmi(intc_domain, cause);
+ 		nmi_exit();
+ 	} else {
++		enable_nmis();
+ 		generic_handle_domain_irq(intc_domain, cause);
++		disable_nmis();
+ 	}
+ }
+ 
 -- 
 2.20.1
 
