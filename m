@@ -2,156 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D4B7D3A99
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B4A7D3AAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbjJWPXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
+        id S232798AbjJWPZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJWPXP (ORCPT
+        with ESMTP id S231742AbjJWPZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:23:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB0193
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:23:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=9lZs69Vxt1Y/639BD76HQcQPNwVZLE/2hQa7QNs6Ms0=; b=BGwnqZnYPJ3zkjDBcj5Jm32Fnm
-        6KRlCEYo8QFwVxV+Gso1KfR8XpWk7jqSBg2f8aoUL726FehLAcWj1NT763wj1Pv2kFxu1WGT7vC3T
-        75YMSX1+HXqHmubJ3SEaq6ep0iuT5U5rLzsRGPhlaKYCKOoayowlcO1kgeJiQay3KUEJRWhyAlyj+
-        lqZnn74xZUNyDGsavrGfZu/G7LxVBHWHAlIl7PXGlhAnNeqOwX51SLxWRD8G/zaNCX5pYzOra5l0t
-        Wm9k1iDEGpgXjkbEebxdLORNgCrkA2ZMwz/Lqiwfml5lfBSFGp+UR4sRrYOBMuqOqCT7Hx1ijHLEU
-        ZAv3nFUg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1quwlo-007g3x-0I;
-        Mon, 23 Oct 2023 15:23:08 +0000
-Message-ID: <f6f013d5-721a-4a62-b987-051a042f3347@infradead.org>
-Date:   Mon, 23 Oct 2023 08:23:07 -0700
+        Mon, 23 Oct 2023 11:25:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E1DDD
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698074700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YrnXzVdFyG8cEywC86c0X/I901FAAiWZF1AhPDWq6c4=;
+        b=e1VLjgJrjQyHcMqPO5co2YgWZ/985U0TQ4jAZSj9JIoNYXEojQQaZrcUJLq3MXb8LIxJ04
+        Op3X1FkNg0uK+NJ9ORI9fi3NP0rXGYDUJfvwJT7Mj4t2pPlnZr+pjZJvQRVF5+06hJzEld
+        muossw6JshtFhOr5R4INWDXhwKjzMJI=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-632-5bP95jUVPEKazwYB_Cb72Q-1; Mon, 23 Oct 2023 11:24:42 -0400
+X-MC-Unique: 5bP95jUVPEKazwYB_Cb72Q-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-778ac2308e6so451044385a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:24:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698074682; x=1698679482;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YrnXzVdFyG8cEywC86c0X/I901FAAiWZF1AhPDWq6c4=;
+        b=eGyeL8aSZwCV2albYL3l2LJgumhiW+CJOZac+g/OPCt+qkcrOFugEJ0Rx7BXbsVMPo
+         Xw4H+IPGGikRZG/BYYkCb+2PIo5iOG7c7CgDtdCW0m//SEG4C177mRuVnmsQs+tmqUpI
+         g192kZfQyJGwC2cKJcADXSExcdB1k7OKVj+ySQF90HtsSGa7Jyx9AEGy7wzMnfZHOyza
+         PCJgnuL1mEsLkLU+scEN++boyqUYaUUynZ3F6cx18aM9m7t80HTbaeUPQRq47ClGYdtt
+         ExjGcthK1WOoptTWcDWKLp21Sd20qR9EjV8BTHHoLM50uPutNcyA8iGoOnEersMJ0qZy
+         vEiQ==
+X-Gm-Message-State: AOJu0YymHVW3nz9gTML0cORWsV/pWZ1MFkYC0pz+qv0VFxFr+FwbRglY
+        4vQ58KfH9RYo5aBhLijKiuFZ7CXJHDmcxJYSGN12I+jtx/lJK7AKy3a4EF+ZjvYIx5mxJ+MspvK
+        GFs6pVjoxyUsMgyRS1HuhbitD
+X-Received: by 2002:a05:620a:2909:b0:779:db14:53bd with SMTP id m9-20020a05620a290900b00779db1453bdmr3606665qkp.32.1698074682199;
+        Mon, 23 Oct 2023 08:24:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE0oXNOI2bZ0Q7EOH0xkSQPuJV1uT5Nv9oLcwOjU3v7FEChoNMD+vNwx5JP/j0OgNyb9geOCQ==
+X-Received: by 2002:a05:620a:2909:b0:779:db14:53bd with SMTP id m9-20020a05620a290900b00779db1453bdmr3606648qkp.32.1698074682007;
+        Mon, 23 Oct 2023 08:24:42 -0700 (PDT)
+Received: from rh (p200300c93f0047001ec25c15da4a4a7b.dip0.t-ipconnect.de. [2003:c9:3f00:4700:1ec2:5c15:da4a:4a7b])
+        by smtp.gmail.com with ESMTPSA id w20-20020a05620a149400b0076cbcf8ad3bsm2757613qkj.55.2023.10.23.08.24.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 08:24:41 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 17:24:35 +0200 (CEST)
+From:   Sebastian Ott <sebott@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Eric Auger <eric.auger@redhat.com>
+Subject: Re: [PATCH v8 01/13] KVM: arm64: PMU: Introduce helpers to set the
+ guest's PMU
+In-Reply-To: <20231020214053.2144305-2-rananta@google.com>
+Message-ID: <ed5c4213-d4ee-2c51-fff4-a3906876ee5a@redhat.com>
+References: <20231020214053.2144305-1-rananta@google.com> <20231020214053.2144305-2-rananta@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: Fixed multiple typos in multiple files
-Content-Language: en-US
-To:     Muhammad Muzammil <m.muzzammilashraf@gmail.com>,
-        willy@infradead.org, James.Bottomley@hansenpartnership.com
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20231023124300.36829-1-m.muzzammilashraf@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231023124300.36829-1-m.muzzammilashraf@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 20 Oct 2023, Raghavendra Rao Ananta wrote:
+> From: Reiji Watanabe <reijiw@google.com>
+>
+> Introduce new helper functions to set the guest's PMU
+> (kvm->arch.arm_pmu) either to a default probed instance or to a
+> caller requested one, and use it when the guest's PMU needs to
+> be set. These helpers will make it easier for the following
+> patches to modify the relevant code.
+>
+> No functional change intended.
+>
+> Signed-off-by: Reiji Watanabe <reijiw@google.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Eric Auger <eric.auger@redhat.com>
 
-On 10/23/23 05:43, Muhammad Muzammil wrote:
->     memcontrol.c: Fixed type 'relies'
+Reviewed-by: Sebastian Ott <sebott@redhat.com>
 
-                          typo
-
-> 
-> Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-> 
-> changes since v1:
-> 
-> mm: Fixed multiple typos in multiple files
-> 
->     debug_vm_pgtable.c: Fixed typo
->     internal.h: Fixed typo
->     memcontrol.c: Fixed typo
->     mmap.c: Fixed typo
-
-The "changes since ..." should be after the "---" line (below here),
-but the changes since v1 are just the update of rely -> relies.
-The full list of changes should be in the (upper) patch description.
-
-I guess it's up to Andrew whether he wants you to send a v3 of this patch.
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  mm/debug_vm_pgtable.c | 4 ++--
->  mm/internal.h         | 2 +-
->  mm/memcontrol.c       | 4 ++--
->  mm/mmap.c             | 2 +-
->  4 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index 48e329ea5ba3..e651500e597a 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -1322,8 +1322,8 @@ static int __init debug_vm_pgtable(void)
->  	 * true irrespective of the starting protection value for a
->  	 * given page table entry.
->  	 *
-> -	 * Protection based vm_flags combinatins are always linear
-> -	 * and increasing i.e starting from VM_NONE and going upto
-> +	 * Protection based vm_flags combinations are always linear
-> +	 * and increasing i.e starting from VM_NONE and going up to
->  	 * (VM_SHARED | READ | WRITE | EXEC).
->  	 */
->  #define VM_FLAGS_START	(VM_NONE)
-> diff --git a/mm/internal.h b/mm/internal.h
-> index b52a526d239d..b61034bd50f5 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -601,7 +601,7 @@ extern bool mlock_future_ok(struct mm_struct *mm, unsigned long flags,
->   * range.
->   * "fully mapped" means all the pages of folio is associated with the page
->   * table of range while this function just check whether the folio range is
-> - * within the range [start, end). Funcation caller nees to do page table
-> + * within the range [start, end). Function caller needs to do page table
->   * check if it cares about the page table association.
->   *
->   * Typical usage (like mlock or madvise) is:
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index be2ad117515e..929b4e0f4669 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -842,7 +842,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
->  	memcg = pn->memcg;
->  
->  	/*
-> -	 * The caller from rmap relay on disabled preemption becase they never
-> +	 * The caller from rmap relies on disabled preemption because they never
->  	 * update their counter from in-interrupt context. For these two
->  	 * counters we check that the update is never performed from an
->  	 * interrupt context while other caller need to have disabled interrupt.
-> @@ -8104,7 +8104,7 @@ static struct cftype memsw_files[] = {
->   *
->   * This doesn't check for specific headroom, and it is not atomic
->   * either. But with zswap, the size of the allocation is only known
-> - * once compression has occured, and this optimistic pre-check avoids
-> + * once compression has occurred, and this optimistic pre-check avoids
->   * spending cycles on compression when there is already no room left
->   * or zswap is disabled altogether somewhere in the hierarchy.
->   */
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index b59f5e26b6fb..27539ffe2048 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -1223,7 +1223,7 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
->  	 * Does the application expect PROT_READ to imply PROT_EXEC?
->  	 *
->  	 * (the exception is when the underlying filesystem is noexec
-> -	 *  mounted, in which case we dont add PROT_EXEC.)
-> +	 *  mounted, in which case we don't add PROT_EXEC.)
->  	 */
->  	if ((prot & PROT_READ) && (current->personality & READ_IMPLIES_EXEC))
->  		if (!(file && path_noexec(&file->f_path)))
-
--- 
-~Randy
