@@ -2,211 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3C37D352A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5BF7D350B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234556AbjJWLpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
+        id S234433AbjJWLpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234498AbjJWLp1 (ORCPT
+        with ESMTP id S234416AbjJWLow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:45:27 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F23170D;
-        Mon, 23 Oct 2023 04:45:22 -0700 (PDT)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39MN00Pe002349;
-        Mon, 23 Oct 2023 04:45:11 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=loQIiydTkdc8jp4yYaQACpRwZcT5vkJLwSIJdUcrjkQ=;
- b=jhEo4MmvTiywViOf0Grv3kKPp24L4TuaQHe+VxkMr+PVnevN4ryxr+3Gr5aCGFs3cy/9
- 51uvrheWepNG7Ko2jQDmgjfdEkMgXpQoTf6Kyrybq/Nuc49GiZIcju9A44p5HvEZAxMt
- Ffyosqw8pErICuhDB6qNb8E7AtGEs/yblRDr83x/rN3S216l6/hd9yUJQzSUBUcFLVzP
- 6KL9Sl7mXyQShaGiRvTJEmDR0jXdW7jlJe+nKqePQzR7Eq0Uo1kmfG0yQiDAEhwKzTeV
- mouY/QLVwA3RlE8P0ppAqHPZYvY56nR6K46HvHglUO3kGW3Klxp0no0iLW3NAKGWlMMa 4Q== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3tvc0qp11b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 04:45:11 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 23 Oct
- 2023 04:45:09 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 23 Oct 2023 04:45:09 -0700
-Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
-        by maili.marvell.com (Postfix) with ESMTP id 662523F70BE;
-        Mon, 23 Oct 2023 04:45:09 -0700 (PDT)
-From:   Shinas Rasheed <srasheed@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
-        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
-        <kuba@kernel.org>, <davem@davemloft.net>,
-        Shinas Rasheed <srasheed@marvell.com>,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        "Sathesh Edara" <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: [PATCH net-next 3/3] octeon_ep: remove atomic variable usage in Tx data path
-Date:   Mon, 23 Oct 2023 04:44:48 -0700
-Message-ID: <20231023114449.2362147-4-srasheed@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231023114449.2362147-1-srasheed@marvell.com>
-References: <20231023114449.2362147-1-srasheed@marvell.com>
+        Mon, 23 Oct 2023 07:44:52 -0400
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DC410C;
+        Mon, 23 Oct 2023 04:44:47 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VuktnG._1698061482;
+Received: from 30.97.48.63(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VuktnG._1698061482)
+          by smtp.aliyun-inc.com;
+          Mon, 23 Oct 2023 19:44:43 +0800
+Message-ID: <111bf8cf-48d5-6433-6343-92415b919f52@linux.alibaba.com>
+Date:   Mon, 23 Oct 2023 19:44:59 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: M0Cs4mk1VzQkZHSPOTPWdRxhXnaJ5QJ7
-X-Proofpoint-GUID: M0Cs4mk1VzQkZHSPOTPWdRxhXnaJ5QJ7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_10,2023-10-19_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH V2 0/7] i2c: sprd: Modification of UNISOC Platform I2C
+ Driver
+To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
+        Andi Shyti <andi.shyti@kernel.org>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huangzheng lai <laihuangzheng@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+References: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace atomic variable "instr_pending" which represents number of
-posted tx instructions pending completion, with host_write_idx and
-flush_index variables in the xmit and completion processing respectively.
 
-Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
----
- drivers/net/ethernet/marvell/octeon_ep/octep_config.h |  1 +
- drivers/net/ethernet/marvell/octeon_ep/octep_main.c   | 11 ++++-------
- drivers/net/ethernet/marvell/octeon_ep/octep_main.h   |  9 +++++++++
- drivers/net/ethernet/marvell/octeon_ep/octep_tx.c     |  5 +----
- drivers/net/ethernet/marvell/octeon_ep/octep_tx.h     |  3 ---
- 5 files changed, 15 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_config.h b/drivers/net/ethernet/marvell/octeon_ep/octep_config.h
-index ed8b1ace56b9..91cfa19c65b9 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_config.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_config.h
-@@ -13,6 +13,7 @@
- #define OCTEP_64BYTE_INSTR  64
- 
- /* Tx Queue: maximum descriptors per ring */
-+/* This needs to be a power of 2 */
- #define OCTEP_IQ_MAX_DESCRIPTORS    1024
- /* Minimum input (Tx) requests to be enqueued to ring doorbell */
- #define OCTEP_DB_MIN                8
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-index 730443ba2f5b..d7498a864385 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-@@ -777,7 +777,7 @@ static int octep_stop(struct net_device *netdev)
-  */
- static inline int octep_iq_full_check(struct octep_iq *iq)
- {
--	if (likely((iq->max_count - atomic_read(&iq->instr_pending)) >=
-+	if (likely((IQ_INSTR_SPACE(iq)) >
- 		   OCTEP_WAKE_QUEUE_THRESHOLD))
- 		return 0;
- 
-@@ -787,7 +787,7 @@ static inline int octep_iq_full_check(struct octep_iq *iq)
- 	/* check again and restart the queue, in case NAPI has just freed
- 	 * enough Tx ring entries.
- 	 */
--	if (unlikely((iq->max_count - atomic_read(&iq->instr_pending)) >=
-+	if (unlikely(IQ_INSTR_SPACE(iq) >
- 		     OCTEP_WAKE_QUEUE_THRESHOLD)) {
- 		netif_start_subqueue(iq->netdev, iq->q_no);
- 		iq->stats.restart_cnt++;
-@@ -897,14 +897,11 @@ static netdev_tx_t octep_start_xmit(struct sk_buff *skb,
- 	xmit_more = netdev_xmit_more();
- 
- 	skb_tx_timestamp(skb);
--	atomic_inc(&iq->instr_pending);
- 	iq->fill_cnt++;
- 	wi++;
--	if (wi == iq->max_count)
--		wi = 0;
--	iq->host_write_index = wi;
-+	iq->host_write_index = wi & iq->ring_size_mask;
- 	if (xmit_more &&
--	    (atomic_read(&iq->instr_pending) <
-+	    (IQ_INSTR_PENDING(iq) <
- 	     (iq->max_count - OCTEP_WAKE_QUEUE_THRESHOLD)) &&
- 	    iq->fill_cnt < iq->fill_threshold)
- 		return NETDEV_TX_OK;
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.h b/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
-index 6df902ebb7f3..c33e046b69a4 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
-@@ -40,6 +40,15 @@
- #define  OCTEP_OQ_INTR_RESEND_BIT  59
- 
- #define  OCTEP_MMIO_REGIONS     3
-+
-+#define  IQ_INSTR_PENDING(iq)  ({ typeof(iq) iq__ = (iq); \
-+				  ((iq__)->host_write_index - (iq__)->flush_index) & \
-+				  (iq__)->ring_size_mask; \
-+				})
-+#define  IQ_INSTR_SPACE(iq)    ({ typeof(iq) iq_ = (iq); \
-+				  (iq_)->max_count - IQ_INSTR_PENDING(iq_); \
-+				})
-+
- /* PCI address space mapping information.
-  * Each of the 3 address spaces given by BAR0, BAR2 and BAR4 of
-  * Octeon gets mapped to different physical address spaces in
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.c b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.c
-index d0adb82d65c3..06851b78aa28 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.c
-@@ -21,7 +21,6 @@ static void octep_iq_reset_indices(struct octep_iq *iq)
- 	iq->flush_index = 0;
- 	iq->pkts_processed = 0;
- 	iq->pkt_in_done = 0;
--	atomic_set(&iq->instr_pending, 0);
- }
- 
- /**
-@@ -82,7 +81,6 @@ int octep_iq_process_completions(struct octep_iq *iq, u16 budget)
- 	}
- 
- 	iq->pkts_processed += compl_pkts;
--	atomic_sub(compl_pkts, &iq->instr_pending);
- 	iq->stats.instr_completed += compl_pkts;
- 	iq->stats.bytes_sent += compl_bytes;
- 	iq->stats.sgentry_sent += compl_sg;
-@@ -91,7 +89,7 @@ int octep_iq_process_completions(struct octep_iq *iq, u16 budget)
- 	netdev_tx_completed_queue(iq->netdev_q, compl_pkts, compl_bytes);
- 
- 	if (unlikely(__netif_subqueue_stopped(iq->netdev, iq->q_no)) &&
--	    ((iq->max_count - atomic_read(&iq->instr_pending)) >
-+	    (IQ_INSTR_SPACE(iq) >
- 	     OCTEP_WAKE_QUEUE_THRESHOLD))
- 		netif_wake_subqueue(iq->netdev, iq->q_no);
- 	return !budget;
-@@ -144,7 +142,6 @@ static void octep_iq_free_pending(struct octep_iq *iq)
- 		dev_kfree_skb_any(skb);
- 	}
- 
--	atomic_set(&iq->instr_pending, 0);
- 	iq->flush_index = fi;
- 	netdev_tx_reset_queue(netdev_get_tx_queue(iq->netdev, iq->q_no));
- }
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
-index 86c98b13fc44..1ba4ff65e54d 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
-@@ -172,9 +172,6 @@ struct octep_iq {
- 	/* Statistics for this input queue. */
- 	struct octep_iq_stats stats;
- 
--	/* This field keeps track of the instructions pending in this queue. */
--	atomic_t instr_pending;
--
- 	/* Pointer to the Virtual Base addr of the input ring. */
- 	struct octep_tx_desc_hw *desc_ring;
- 
--- 
-2.25.1
+On 10/23/2023 4:11 PM, Huangzheng Lai wrote:
+> Recently, some bugs have been discovered during use, patch3 and
+> patch5-6 are bug fixes. Also, this patchset add new features:
+> patch1 allows I2C to use more frequencies for communication,
+> patch2 allows I2C to use 'reset framework' for reset, and patch4 allows
+> I2C controller to dynamically switch frequencies during use.
 
+I suggest separating bugfix patches from feature patches to ensure that 
+bugfix patches are reviewed and merged as soon as possible.
+
+> 
+> change in V2
+> -Using 'I2C' instead of 'IIC' in the patch set.
+> -Using imperative form in patch subject.
+> -Use 'switch case' instead of 'else if' in PATCH 1/7.
+> -Modify if (i2c_dev->rst != NULL) to if (i2c_dev->rst) in PATCH 2/7.
+> -Modify some dev_err() to dev_warn() or dev_dbg().
+> -Clear i2c_dev->ack_flag in sprd_i2c_clear_ack() in PATCH 3/7.
+> -Modify the indentation format of the code in PATCH 4/7.
+> -Move sprd_i2c_enable() above its caller in PATCH 5/7.
+> -Remove 'Set I2C_RX_ACK when clear irq' commit.
+> -Add Fixes tags.
+> 
+> Huangzheng Lai (7):
+>    i2c: sprd: Add configurations that support 1Mhz and 3.4Mhz frequencies
+>    i2c: sprd: Add I2C driver to use 'reset framework' function
+>    i2c: sprd: Use global variables to record I2C ack/nack status instead
+>      of local variables
+>    i2c: sprd: Add I2C controller driver to support dynamic switching of
+>      400K/1M/3.4M frequency
+>    i2c: sprd: Configure the enable bit of the I2C controller before each
+>      transmission initiation
+>    i2c: sprd: Increase the waiting time for I2C transmission to avoid
+>      system crash issues
+>    i2c: sprd: Add I2C_NACK_EN and I2C_TRANS_EN control bits
+> 
+>   drivers/i2c/busses/i2c-sprd.c | 166 ++++++++++++++++++++++------------
+>   1 file changed, 106 insertions(+), 60 deletions(-)
+> 
