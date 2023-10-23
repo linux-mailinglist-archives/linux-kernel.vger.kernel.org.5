@@ -2,46 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FC27D3FB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB607D3FB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbjJWS75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 14:59:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55900 "EHLO
+        id S231506AbjJWTAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbjJWS7z (ORCPT
+        with ESMTP id S231222AbjJWS7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Oct 2023 14:59:55 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683DDB6;
-        Mon, 23 Oct 2023 11:59:53 -0700 (PDT)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E59B110;
+        Mon, 23 Oct 2023 11:59:54 -0700 (PDT)
 Received: from arisu.mtl.collabora.ca (mtl.collabora.ca [66.171.169.34])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: detlev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 206F26606F65;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id F289366071EF;
         Mon, 23 Oct 2023 19:59:51 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698087591;
-        bh=eQgHu1xMr2KP/d+OA0vKdrgBiUwDt18CfeYteHCKys8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XBenG6Kpi3ewP4pgZVWuXYWjUp7/aunoEmWT2JBwknt+2fFs+FczyUsS+BBf9KfpI
-         EwTXMNGTkYssJVVdmu2O2Pr4/9KzzUSf1FGLXTR/toVtTAsMb7EA/24eC1XTqx8gBm
-         42eZydmsfwPsbI3HJhm1qTrRToHO559gbVSsqcGxXxw8vMyZPNWLfTh07qEv9s8iXE
-         /8+8ZxeI3i2dq65OLs9CSFVpzUjvaOD64NR2Kb+5/UUpiEaE58ugM8LgfmRXh2eGVj
-         IcbVf/1r3fOudoTKR5ktmZWh9JK5uZDXinv8B4TkhRCdyseDFHA3x4P2TCm26KDBWQ
-         fgoFsOmjQWjAg==
+        s=mail; t=1698087592;
+        bh=1kYYBVVZKlPmwQg0v2fZqPSvNTFy7yF+ri1uhcr4paQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=cWgRGnDwnr9wDW8Ok2OdHR5TTS6eRV580VatM6gq1t88ShZCxLOHfs5fWSUaAYJCh
+         8cdW6wfW8JuXxtNKQFJlmx0X0zPrRZhv2yAukJDZLdyEx2eJBwRj3rZjX2DeLwwPuv
+         fipVzVCvER+XX3g0W1V7WdT5NegPO1Tv2m6D6+Qhe2rAQt7ZIipOc2xe877WkqK9oW
+         ZGQyoVopLsR2zfpEw9XI8BuEjtVwLC7TMiUGTRKb0D0z/pIThSo5a1ydKhZs0XwQ90
+         qCFFNf19BKPuK33r+VvE41tq703k77vo9gIzNPQhU3MW+EvxfLhX0K+NiY6aVDne25
+         lKgm0TfBI3VaA==
 From:   Detlev Casanova <detlev.casanova@collabora.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-media@vger.kernel.org,
         Daniel Almeida <daniel.almeida@collabora.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         Detlev Casanova <detlev.casanova@collabora.com>
-Subject: [PATCH 0/5] visl: Adapt output frames for reference comparison
-Date:   Mon, 23 Oct 2023 14:58:20 -0400
-Message-ID: <20231023185850.67082-1-detlev.casanova@collabora.com>
+Subject: [PATCH 1/5] media: visl: Fix params permissions/defaults mismatch
+Date:   Mon, 23 Oct 2023 14:58:21 -0400
+Message-ID: <20231023185850.67082-2-detlev.casanova@collabora.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231023185850.67082-1-detlev.casanova@collabora.com>
+References: <20231023185850.67082-1-detlev.casanova@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -53,31 +55,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using visl in automated tests, we need to have output frames that
-can be compared to reference frames or hash of those to validate that
-the whole pipeline is working properly.
+`false` was used as the keep_bitstream_buffers parameter permissions.
+This looks more like a default value for the parameter, so change it to
+0 to avoid confusion.
 
-Add a "stable_output" module parameter to make sure that a given input
-stream always outputs the same frames.
-This is done by skipping information like queues status and pointer
-values.
+Signed-off-by: Detlev Casanova <detlev.casanova@collabora.com>
+---
+ drivers/media/test-drivers/visl/visl-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This also adds some stable variation in the frames so that different
-input give more different output.
-
-Detlev Casanova (5):
-  media: visl: Fix params permissions/defaults mismatch
-  media: visl: Add a stable_output parameter
-  doc: visl: Document stable_output parameter
-  visl: Add a codec specific variability parameter
-  doc: visl: Document codec_variability parameter
-
- Documentation/admin-guide/media/visl.rst    |   9 ++
- drivers/media/test-drivers/visl/visl-core.c |  12 +-
- drivers/media/test-drivers/visl/visl-dec.c  | 152 +++++++++++++-------
- drivers/media/test-drivers/visl/visl.h      |   2 +
- 4 files changed, 120 insertions(+), 55 deletions(-)
-
+diff --git a/drivers/media/test-drivers/visl/visl-core.c b/drivers/media/test-drivers/visl/visl-core.c
+index 9970dc739ca5..df6515530fbf 100644
+--- a/drivers/media/test-drivers/visl/visl-core.c
++++ b/drivers/media/test-drivers/visl/visl-core.c
+@@ -74,7 +74,7 @@ MODULE_PARM_DESC(visl_dprintk_nframes,
+ 		 " the number of frames to trace with dprintk");
+ 
+ bool keep_bitstream_buffers;
+-module_param(keep_bitstream_buffers, bool, false);
++module_param(keep_bitstream_buffers, bool, 0);
+ MODULE_PARM_DESC(keep_bitstream_buffers,
+ 		 " keep bitstream buffers in debugfs after streaming is stopped");
+ 
 -- 
 2.41.0
 
