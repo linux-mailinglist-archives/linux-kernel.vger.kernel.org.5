@@ -2,170 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F487D2EA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD107D2EA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbjJWJjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
+        id S229662AbjJWJlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjJWJjm (ORCPT
+        with ESMTP id S229613AbjJWJlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:39:42 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBBCA4;
-        Mon, 23 Oct 2023 02:39:36 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vujf2Wq_1698053971;
-Received: from 30.240.113.74(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vujf2Wq_1698053971)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Oct 2023 17:39:33 +0800
-Message-ID: <f0241dfe-aa81-4e12-8465-683eaf8937ea@linux.alibaba.com>
-Date:   Mon, 23 Oct 2023 17:39:30 +0800
+        Mon, 23 Oct 2023 05:41:00 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF97DA4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:40:57 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-407da05f05aso22451325e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1698054056; x=1698658856; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2e6e3Lcqli+2alSmk+94dBX3KJpg6geqhFS7BprVkcU=;
+        b=GL7h0iFse/gxCet0otgmb1uFRctB9gzKAtzvSyWHCnxPjEe8xM+DRZAyb/w4636jfY
+         iXVZpu+M3AkHhMRlSIDGUt6KFJ7mBAviT5QfB+P4nFSJ5W8lj5KERW5jO0A4HdsCA8o0
+         +uLOH0qJeBktDMxxSYxa6IqT9jbLT0HTYxXow=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698054056; x=1698658856;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2e6e3Lcqli+2alSmk+94dBX3KJpg6geqhFS7BprVkcU=;
+        b=ZWe0FnmTqnh+5fE53NmQD5hQEul0ZqZ3Lj1tDGxA11T4JSfmmnbsPhE40TkVGauGJR
+         eQn6WhxSOZ+LuefjFL2dI3yD2M8EM4xDWM1+Wba4x0Y5LMJbr2EqSlwPht1eqSSHpK6w
+         j28dIYgJVhOXqdyIN6iIFvHMPSErWOBNbANWkeDN2S8aAAUcXD0JP4Vf3Rf+gmHvCqnk
+         2A0gZ87s7RfxGX7sjtHUVMa3wSPjW4Eqdh0Y0Orc46G/HHK1GOkgcBGsqu8Cz3oQlaKM
+         cFT3CorcYjyl6KXvl8WL6dPEg+aOC3fQSByNknF1jnnpE06cWdhjtv5mMTos1MDsVD/R
+         Qwgw==
+X-Gm-Message-State: AOJu0YyTa7UW0Moq/J8EuZiMDBNohEcqYU9vtgEUleaaOr/DRDJs0Uew
+        ymd23aRKL7Q4WNSW/ErJn53M4g==
+X-Google-Smtp-Source: AGHT+IFiv0PaRNaUlIPDIvrAD0L8WPCgy4IVeKPszHKpE2+d3heHK/NlRODAuG2AKmxQC3FMfHXD6Q==
+X-Received: by 2002:a05:600c:3583:b0:401:eb0:a974 with SMTP id p3-20020a05600c358300b004010eb0a974mr6582584wmq.3.1698054055794;
+        Mon, 23 Oct 2023 02:40:55 -0700 (PDT)
+Received: from ?IPv6:2001:8b0:aba:5f3c:3e73:a41c:6787:e5d4? ([2001:8b0:aba:5f3c:3e73:a41c:6787:e5d4])
+        by smtp.gmail.com with ESMTPSA id h15-20020a05600c350f00b003fe1fe56202sm9011512wmq.33.2023.10.23.02.40.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 02:40:55 -0700 (PDT)
+Message-ID: <5c49bc0f468e9fb5ae7ff7f53443fdb1fc3c77f2.camel@linuxfoundation.org>
+Subject: Re: [PATCH] serial: core: Fix runtime PM handling for pending tx
+From:   Richard Purdie <richard.purdie@linuxfoundation.org>
+To:     Tony Lindgren <tony@atomide.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Mikko Rapeli <mikko.rapeli@linaro.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Randy MacLeod <randy.macleod@windriver.com>
+Date:   Mon, 23 Oct 2023 10:40:54 +0100
+In-Reply-To: <20231023074856.61896-1-tony@atomide.com>
+References: <20231023074856.61896-1-tony@atomide.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.1-0ubuntu1 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 3/4] drivers/perf: add DesignWare PCIe PMU driver
-Content-Language: en-US
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, rdunlap@infradead.org,
-        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
-        renyu.zj@linux.alibaba.com, chengyou@linux.alibaba.com,
-        kaishen@linux.alibaba.com, helgaas@kernel.org,
-        yangyicong@huawei.com, will@kernel.org,
-        Jonathan.Cameron@huawei.com, robin.murphy@arm.com
-References: <20231020134230.53342-1-xueshuai@linux.alibaba.com>
- <20231020134230.53342-4-xueshuai@linux.alibaba.com>
- <8c6a480e-41d2-43f7-952e-4f4e691e700f@linux.alibaba.com>
- <539dade7-c349-33c3-cb9e-8a795de28041@linux.alibaba.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <539dade7-c349-33c3-cb9e-8a795de28041@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2023-10-23 at 10:48 +0300, Tony Lindgren wrote:
+> Richard reported that a serial port may end up sometimes with tx data
+> pending in the buffer for long periods of time.
+>=20
+> Turns out we bail out early on any errors from pm_runtime_get(),
+> including -EINPROGRESS. To fix the issue, we need to ignore -EINPROGRESS
+> as we only care about the runtime PM usage count at this point. We check
+> for an active runtime PM state later on for tx.
+>=20
+> Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to =
+enable runtime PM")
+> Reported-by: Richard Purdie <richard.purdie@linuxfoundation.org>
 
+Tested-by: Richard Purdie <richard.purdie@linuxfoundation.org>
 
-On 2023/10/23 10:05, Baolin Wang wrote:
-> 
-> 
-> On 10/22/2023 3:47 PM, Shuai Xue wrote:
->> Hi, Baolin,
->>
->> I droped your Revivewed-by tag due to that I made significant changes to this
->> patch previously, please explicty give me Revivewed-by tag again if you are
->> happy with the changes.
-> 
-> Yes, I am happy with this version (just some nits as below), and thanks for the review from other guys. Please feel free to add:
-> 
-> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Thanks, I can confirm that since we added this into our builds/tests
+we've not seen the serial data go missing.
 
+Cheers,
 
-Thank you.
+Richard
 
-Best Regards,
-Shuai
-
-> 
->> On 2023/10/20 21:42, Shuai Xue wrote:
->>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
->>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
->>> Core controller IP which provides statistics feature. The PMU is a PCIe
->>> configuration space register block provided by each PCIe Root Port in a
->>> Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
->>> injection, and Statistics).
->>>
->>> To facilitate collection of statistics the controller provides the
->>> following two features for each Root Port:
->>>
->>> - one 64-bit counter for Time Based Analysis (RX/TX data throughput and
->>>    time spent in each low-power LTSSM state) and
->>> - one 32-bit counter for Event Counting (error and non-error events for
->>>    a specified lane)
->>>
->>> Note: There is no interrupt for counter overflow.
->>>
->>> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
->>> named based the BDF of Root Port. For example,
->>>
->>>      30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
->>>
->>> the PMU device name for this Root Port is dwc_rootport_3018.
->>>
->>> Example usage of counting PCIe RX TLP data payload (Units of bytes)::
->>>
->>>      $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
->>>
->>> average RX bandwidth can be calculated like this:
->>>
->>>      PCIe TX Bandwidth = Rx_PCIe_TLP_Data_Payload / Measure_Time_Window
->>>
->>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->>> ---
-> 
-> [snip]
-> 
->>> +static u64 dwc_pcie_pmu_read_time_based_counter(struct perf_event *event)
->>> +{
->>> +    struct dwc_pcie_pmu *pcie_pmu = to_dwc_pcie_pmu(event->pmu);
->>> +    struct pci_dev *pdev = pcie_pmu->pdev;
->>> +    int event_id = DWC_PCIE_EVENT_ID(event);
->>> +    u16 ras_des_offset = pcie_pmu->ras_des_offset;
->>> +    u32 lo, hi, ss;
->>> +
->>> +    /*
->>> +     * The 64-bit value of the data counter is spread across two
->>> +     * registers that are not synchronized. In order to read them
->>> +     * atomically, ensure that the high 32 bits match before and after
->>> +     * reading the low 32 bits.
->>> +     */
->>> +    pci_read_config_dword(pdev, ras_des_offset +
->>> +        DWC_PCIE_TIME_BASED_ANAL_DATA_REG_HIGH, &hi);
->>> +    do {
->>> +        /* snapshot the high 32 bits */
->>> +        ss = hi;
->>> +
->>> +        pci_read_config_dword(
->>> +            pdev, ras_des_offset + DWC_PCIE_TIME_BASED_ANAL_DATA_REG_LOW,
->>> +            &lo);
->>> +        pci_read_config_dword(
->>> +            pdev, ras_des_offset + DWC_PCIE_TIME_BASED_ANAL_DATA_REG_HIGH,
->>> +            &hi);
->>> +    } while (hi != ss);
->>> +
->>> +    /*
->>> +     * The Group#1 event measures the amount of data processed in 16-byte
->>> +     * units. Simplify the end-user interface by multiplying the counter
->>> +     * at the point of read.
->>> +     */
->>> +    if (event_id >= 0x20 && event_id <= 0x23)
->>> +        return (((u64)hi << 32) | lo) << 4;
->>> +    else
-> 
-> You can drop the 'else'.
-
-Agreed, will fix it in next version.
-
-
->>> +
->>> +    event->cpu = pcie_pmu->on_cpu;
->>> +
->>> +    return 0;
->>> +}
->>> +
->>> +static void dwc_pcie_pmu_set_period(struct hw_perf_event *hwc)
->>> +{
->>> +    local64_set(&hwc->prev_count, 0);
->>> +}
-> 
-> Only dwc_pcie_pmu_event_start() will call this small function, why just remove this function and move local64_set() into dwc_pcie_pmu_event_start()?
-
-Good suggestion, will fix it.
+> Cc: Bruce Ashfield <bruce.ashfield@gmail.com>
+> Cc: Mikko Rapeli <mikko.rapeli@linaro.org>
+> Cc: Paul Gortmaker <paul.gortmaker@windriver.com>
+> Cc: Randy MacLeod <randy.macleod@windriver.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
+>  drivers/tty/serial/serial_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial=
+_core.c
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@ -146,7 +146,7 @@ static void __uart_start(struct uart_state *state)
+> =20
+>  	/* Increment the runtime PM usage count for the active check below */
+>  	err =3D pm_runtime_get(&port_dev->dev);
+> -	if (err < 0) {
+> +	if (err < 0 && err !=3D -EINPROGRESS) {
+>  		pm_runtime_put_noidle(&port_dev->dev);
+>  		return;
+>  	}
 
