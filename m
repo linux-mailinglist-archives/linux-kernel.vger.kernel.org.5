@@ -2,86 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CE77D3465
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B4D7D348A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234235AbjJWLjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
+        id S234265AbjJWLke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234218AbjJWLjQ (ORCPT
+        with ESMTP id S234259AbjJWLka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:39:16 -0400
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BACDB;
-        Mon, 23 Oct 2023 04:39:13 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Vukt.sC_1698061147;
-Received: from 30.97.48.63(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vukt.sC_1698061147)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Oct 2023 19:39:08 +0800
-Message-ID: <c67fcc8b-4270-4b61-069c-b3afd4899fba@linux.alibaba.com>
-Date:   Mon, 23 Oct 2023 19:39:24 +0800
+        Mon, 23 Oct 2023 07:40:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D48DB;
+        Mon, 23 Oct 2023 04:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698061226; x=1729597226;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=iXJBC1Wjmu0IdEY4IOWBnhoMmiEBZwTrT4Q3ArWCwe8=;
+  b=G9YOu8BPaOvSFI/pf+3Eunm2QnaSt7rFDU/IM+Fb4gmTsdvSoxYNopgo
+   TXbJpYgD9crUSLiJ7OfQ1kDR6ehnbKZ9fSU9gBYd5/HjKzVJvj8PlQF+y
+   nD9u6Eez9OPl+3AoJ94sdhrY3qEszC6YdazV0o39jHdDsSUcM9oe3GLR9
+   vfloDQW946of6KIARLPCJDKGZYu57uLpx1d3besi4fZ224S1PPh4f4Dp1
+   uwHTCYEVYdsxciUe8vyZg7StT4TOE2WgHbL3dkr2HTc9aZLEylIqqCSEY
+   xSZW94U1qdnkCzMyMGq04APTD7qyGVGThsCKYjFuNO9Gzc/9ymBpZ8CUA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="473034126"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="473034126"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:40:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="734639430"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="734639430"
+Received: from evlad-mobl.ger.corp.intel.com (HELO localhost) ([10.252.47.180])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:40:22 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>
+Cc:     Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        linux-input@vger.kernel.org, ojeda@kernel.org,
+        linux-leds@vger.kernel.org
+Subject: Re: Implement per-key keyboard backlight as auxdisplay?
+In-Reply-To: <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
+ <ZSe1GYLplZo5fsAe@duo.ucw.cz>
+ <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
+ <ZSf9QneKO/8IzWhd@duo.ucw.cz>
+ <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
+ <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
+ <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
+ <ZSmg4tqXiYiX18K/@duo.ucw.cz>
+ <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
+Date:   Mon, 23 Oct 2023 14:40:18 +0300
+Message-ID: <87sf61bm8t.fsf@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH V2 6/7] i2c: sprd: Increase the waiting time for I2C
- transmission to avoid system crash issues
-To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
-        Andi Shyti <andi.shyti@kernel.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-References: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
- <20231023081158.10654-7-Huangzheng.Lai@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20231023081158.10654-7-Huangzheng.Lai@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 16 Oct 2023, Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> wrote:
+> On Fri, Oct 13, 2023 at 9:56=E2=80=AFPM Pavel Machek <pavel@ucw.cz> wrote:
+>>
+>> So... a bit of rationale. The keyboard does not really fit into the
+>> LED subsystem; LEDs are expected to be independent ("hdd led") and not
+>> a matrix of them.
+>
+> Makes sense.
+>
+>> We do see various strange displays these days -- they commonly have
+>> rounded corners and holes in them. I'm not sure how that's currently
+>> supported, but I believe it is reasonable to view keyboard as a
+>> display with slightly weird placing of pixels.
+>>
+>> Plus, I'd really like to play tetris on one of those :-).
+>>
+>> So, would presenting them as auxdisplay be acceptable? Or are there
+>> better options?
+>
+> It sounds like a fair use case -- auxdisplay are typically simple
+> character-based or small graphical displays, e.g. 128x64, that may not
+> be a "main" / usual screen as typically understood, but the concept is
+> a bit fuzzy and we are a bit of a catch-all.
+>
+> And "keyboard backlight display with a pixel/color per-key" does not
+> sound like a "main" screen, and having some cute effects displayed
+> there are the kind of thing that one could do in the usual small
+> graphical ones too. :)
+>
+> But if somebody prefers to create new categories (or subcategories
+> within auxdisplay) to hold these, that could be nice too (in the
+> latter case, I would perhaps suggest reorganizing all of the existing
+> ones while at it).
+
+One could also reasonably make the argument that controlling the
+individual keyboard key backlights should be part of the input
+subsystem. It's not a display per se. (Unless you actually have small
+displays on the keycaps, and I think that's a thing too.)
+
+There's force feedback, there could be light feedback? There's also
+drivers/input/input-leds.c for the keycaps that have leds, like caps
+lock, num lock, etc.
+
+Anyway, just throwing ideas around, no strong opinions, really.
 
 
-On 10/23/2023 4:11 PM, Huangzheng Lai wrote:
-> Due to the relatively low priority of the isr_thread, when the CPU
-> load is high, the execution of sprd_i2c_isr_thread will be delayed.
-> After the waiting time is exceeded, the I2C driver will perform
-> operations such as disabling the I2C controller. Later, when
-> sprd_i2c_isr_thread is called by the CPU, there will be kernel panic
-> caused by illegal access to the IIC register. After pressure testing,
-> we found that increasing the IIC waiting time to 10 seconds can
-> avoid this problem.
-> 
-> Fixes: 0b884fe71f9e ("i2c: sprd: use a specific timeout to avoid system hang up issue")
-> Cc: <stable@vger.kernel.org> # v5.11+
-> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+BR,
+Jani.
 
-Looks reasonable to me.
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-> ---
->   drivers/i2c/busses/i2c-sprd.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-> index b65729ba7d5a..dbdac89ad482 100644
-> --- a/drivers/i2c/busses/i2c-sprd.c
-> +++ b/drivers/i2c/busses/i2c-sprd.c
-> @@ -74,7 +74,7 @@
->   /* timeout (ms) for pm runtime autosuspend */
->   #define SPRD_I2C_PM_TIMEOUT	1000
->   /* timeout (ms) for transfer message */
-> -#define I2C_XFER_TIMEOUT	1000
-> +#define I2C_XFER_TIMEOUT	10000
->   /* dynamic modify clk_freq flag  */
->   #define I2C_3M4_FLAG		0x0100
->   #define I2C_1M_FLAG		0x0080
+--=20
+Jani Nikula, Intel
