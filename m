@@ -2,178 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA837D2E8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769507D2E98
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbjJWJgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49944 "EHLO
+        id S230185AbjJWJhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233265AbjJWJga (ORCPT
+        with ESMTP id S229864AbjJWJhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:36:30 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2090.outbound.protection.outlook.com [40.107.113.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD6D10CB;
-        Mon, 23 Oct 2023 02:36:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZXIK4E5kHzMDDevLOtfhiwdlCrIadLCienZFr5ary1n+rktYxIG3gYEVJphjGOD3RzK1SrExZzb69RPgST4wZhPxVSbR5tx1MY0yw/oV0tH04XeaCfYg89RUmYCZx+PFVJond8n0dFuiuw/gxwJjiNVB7KJmBVkiVY1K5PfYaOaN1pg5glGNHq302ohfNoa+s81hVjyyVw/lWvPbhuqyj/iewhBe72zl5nQVyGpfFwPQ9xDd1634BFqVED4KiWNNtqZvhvrAFD10rut54F4YL2BLEh3/YpPEUjNOw7lGhgmMFQIw+LYdEEf0Yku8DlHmRfeYbfGiJ2Sijm6N20VUVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2+gOad+7rw2K6PgjHhMVVVDJYXhDYb+A5iSktIUMROU=;
- b=DaGvyhUQT2pqfmPSRazgrmStom0cyTXjCG5Ins6TU4DMimqDY+YBXOpLbzkTBMY9jcuUBFjGQiXzcVIHOmLgRdca76+t44vvt8U2xA2B1Hvg7+5jLqmCDDic5Psswup3znimTQs+0KxBo6jVd4v0Ylwcf9DoduZvd++ufe/3XrDt2s1wyGjlfdi3ZEJa8nnm4E4lqBGS86ESFjpJxVoLNjM0vjFTPynMBCByEnvjijjsazNqwobbi8Du7uQr4qS6LftAcL6aXHVOVgwYNczJzoEgavVUeRIAnl0iKiDQ38M8XjrVdpQ1pCmp+1mOCeB+LQTdi6BwVohiZRYr27pbwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2+gOad+7rw2K6PgjHhMVVVDJYXhDYb+A5iSktIUMROU=;
- b=Q8nva+JXoBjH/Iwj5NXXaIEF4pKjbM/vQZT1S9v48yfG9Bn8vtz5+zxoSIcLzi8gCYy8hQ7JaFD0fDq2QOYmqGWeTNIurXM/z5LmSrKdYnZa6cEcjq2ouDzkG0q1dwO0+QoTDGM2jl2EQ6xS4zA3w4EGgmhYZAHnnnonLm9E5zQ=
-Received: from TYBPR01MB5341.jpnprd01.prod.outlook.com
- (2603:1096:404:8028::13) by OS3PR01MB10090.jpnprd01.prod.outlook.com
- (2603:1096:604:1e6::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.31; Mon, 23 Oct
- 2023 09:36:21 +0000
-Received: from TYBPR01MB5341.jpnprd01.prod.outlook.com
- ([fe80::a188:9424:be62:e5fb]) by TYBPR01MB5341.jpnprd01.prod.outlook.com
- ([fe80::a188:9424:be62:e5fb%6]) with mapi id 15.20.6907.022; Mon, 23 Oct 2023
- 09:36:21 +0000
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: RE: linux-next: build failure after merge of the pci tree
-Thread-Topic: linux-next: build failure after merge of the pci tree
-Thread-Index: AQHaBUS2jhNEtIx03k2RKE91Wq09irBW+UZggAAC+wCAACAKcA==
-Date:   Mon, 23 Oct 2023 09:36:21 +0000
-Message-ID: <TYBPR01MB53418269A5C6F1419D007338D8D8A@TYBPR01MB5341.jpnprd01.prod.outlook.com>
-References: <20231023110556.6f704b95@canb.auug.org.au>
- <TYBPR01MB5341114CB14098217765790BD8D8A@TYBPR01MB5341.jpnprd01.prod.outlook.com>
- <20231023073446.GA593739@rocinante>
-In-Reply-To: <20231023073446.GA593739@rocinante>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYBPR01MB5341:EE_|OS3PR01MB10090:EE_
-x-ms-office365-filtering-correlation-id: 9312ae46-f6fa-43f7-6e8b-08dbd3ab842a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZR6gPH1YXvLnkg8JdE1gjzyXIWSiYq9Mt9VPSPT2LIzlp4GXBGwiBc+o9nXf1Dw5ASSIUH0IA+/ZXf27jx6WIrDE99rvRqZl2Sqb0W4MbK8hl1+Ga/WMM77Al5CcDwzt4qDKR0mJUVArKtPaV4WRbeqeaHzxNHTJ8MLmMVgzn/NcOy8aaFblZiHM8rwqVRyo5lxOJzQePaJsX8iRcNM1xAm3GddTNMJjfMdisHMmgH4hB++QfYZIQBiP2ZtXsIi7DfjNaRdyxfwNHTovtnK9EOwfD0EpnDqPLp69OnDYeZyw0nfK6nVO/k0jC0mrowsyRaYc/dG5m9kSxI7NuLOjQQxe18XEaiCAaItp4H5Bf9n2naB/PHqWDtgVqz3ev9XsEiNkHpn+LfAScF03wxCZ/mIPcC4/lSCQWvyAGk3qY5pi2htNgIVmi0yvFv5NOwQgjQ1U56yzYuBt3BtHasiUXHMW2TQ5HuyUvBkm6of7jNA+pcZKIpAC+p0saY8mdUZ76waMIES+2YmL3I32WukkaeWUrtbJf18CkM0VVhHvrZ3q1D0ph/z8sGBYoUSvFZ1kDdJvQRgn7ITwZAvMF2BZD8NvcGXviGOi8qltPWH922U=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYBPR01MB5341.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39860400002)(396003)(366004)(346002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(38070700009)(38100700002)(2906002)(55016003)(41300700001)(86362001)(52536014)(5660300002)(8676002)(8936002)(33656002)(4326008)(7696005)(6506007)(478600001)(71200400001)(66476007)(122000001)(6916009)(66946007)(76116006)(316002)(64756008)(66446008)(66556008)(54906003)(83380400001)(66574015)(966005)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-2?Q?m9ZtLFNz2AFGDsmdhk/NEUPIB3fVGpu2/gUBLooHHezsZR+KNEPaQA/K8K?=
- =?iso-8859-2?Q?LUqh0ztZdy/anq83G1qpYFvdlGqW8jiQeS+aIJiMcGUIRKqbxtNzpU0JiC?=
- =?iso-8859-2?Q?ZRwtl+mOt4eAPqWRiB/HqsxQSW0EcnA6bvtuOP+b5yjI8Ls10aQUoYLEhE?=
- =?iso-8859-2?Q?jw3Q+Q4qAEyhmtR1E36KnsKhnS8gj7faSNNLenwbVXR4cIJLyfsEhju4ao?=
- =?iso-8859-2?Q?8sm74AetnxvGxpT8kMPNSF3KaNj0xD4H9PkRrkKhhrHGcog6eeJijvtpuR?=
- =?iso-8859-2?Q?qyCj7v1snYNwIVQpCiB0ng+B7/aLZsR20jNrzv9wpDsx8fC9EHXdh7b+fJ?=
- =?iso-8859-2?Q?Y9nvm1+kbzfJzqx5qMsGA2VCXDj1UFum3sIalwZY9deRtM0CG5Llf22HtY?=
- =?iso-8859-2?Q?rypVT8Rh6Wp6Bq2y2r0yQqGAGVDQeeRAMaD+VYGsCZJw34HzeAPkfQcQjf?=
- =?iso-8859-2?Q?TKpFe1ay+Kxo4L9g9gK582I6vnTG0SMglqqS0Euab/XBjbtPpWGNOgGA2+?=
- =?iso-8859-2?Q?1ZwcbvfGdIX3ZnCotTnRrC9byL6LIQJiUFtnfCaGHmKDrC2zeko8i5wWSM?=
- =?iso-8859-2?Q?VRJJUKnz0tkVQ4an9mmK7WU/D+ovVjScnVp8DE6/RW/1rnGj9DWKYuRIkx?=
- =?iso-8859-2?Q?52VyRUiiJTDMNQRE6Xr1QuEmF9QGZ7pAoFsYMQAJZktjhj3eQULUxzTD3U?=
- =?iso-8859-2?Q?7yHxHTjqs2dW5qwjij/Wge3RT5eofbl6vqYmz+1aFL2uMbYn/svsyueu/r?=
- =?iso-8859-2?Q?VKtdJLfnAO00LI/CYUByhgRPDEu7s33NVJ3bMoE/F9L1Rwmjq0drC6wvE5?=
- =?iso-8859-2?Q?OrJ2/Z5bWmCqa2R6eRbwtYieZiheMnCoNzUpqDmi3LBKiAOollfrcqflfZ?=
- =?iso-8859-2?Q?x0tAQhBRrGvG5O1/qNVidJ2A6XDrKgbp3Y2MuivZONrruqjSg2HACZk1ig?=
- =?iso-8859-2?Q?vFRswN3R0pUHUoF8FxBihwVDMc3mmwniMm6fDjD5vYfM0y6Lvi/N/62Ja3?=
- =?iso-8859-2?Q?dkOLAXbKD5NJwMFUqpoiNXeQHDuzUA+0LYDeuCgVfsj5bkGZOaloSlTGaw?=
- =?iso-8859-2?Q?MBl7vBzf3UeDEVUq2SY+fOjeZePnsnbPGlRM4SFcxeDjupBajCuIzYQNnV?=
- =?iso-8859-2?Q?vLPfsz1M8SWgEDI0i8oibZYg0XzMLHsUySy4ASh/xvGCtaCUsOim8/bJpP?=
- =?iso-8859-2?Q?+XJ+sZsFW3QxJVLRzly/BL3d95h1D1R2urrqr9mg52Ani/wbjrf2NM7mie?=
- =?iso-8859-2?Q?k5VMZNCTmER9v99hWChgcS4bfMT76z708DLPYcE6f6/iNdODHkHtzvEWl0?=
- =?iso-8859-2?Q?opm3HEevVRuxGdgK252QA2VYMmsf0eVtcQMe/GCKVdW7t2u2HKVkZuwcVX?=
- =?iso-8859-2?Q?Pb2F80t9RXz6h3m5TF5fKAdT1u06p0ftG7NKKx6mhTBi5HBXa2Yqb6TWfm?=
- =?iso-8859-2?Q?etxO3gqe66t94XvTUpHzJaN9i10bOIlSI+Vq0CrLdpAtNTWvQ09jI0l/+o?=
- =?iso-8859-2?Q?5ti1bgX7BdVMZ3Ua35/FziEbRfDD4b9duUk6oz6WAA6fbIZyJr2UddweOQ?=
- =?iso-8859-2?Q?ClcIriLz0PQbfj4cyeWPh3Sw+d3mFffA7cLkVeVT4oCo5FGlKuUKQpE1/A?=
- =?iso-8859-2?Q?f1+1Pt67pZpwH/xjw8uw0SFAEWHO9wjIZb54Y+Pbr90n7MATEjxXRvQDsd?=
- =?iso-8859-2?Q?XhCH3u5axCRLbZcinbbbZI2e1ujT/mjwCvgb0KCsCW0h5gw3Xwu/Bq2LtQ?=
- =?iso-8859-2?Q?41Rw=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 23 Oct 2023 05:37:53 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39459A1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:37:28 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c5056059e0so46476191fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:37:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1698053846; x=1698658646; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WHmFglyUVEPX00nAamiQ/LBEnj3er0a+eO4EDfWMZRI=;
+        b=B/QKvSwZQx43iS8yxCscYYbBf/ij5pGOpyTO9kCdlcnsEdskH5dLgWjt7A1vE9kQs3
+         mtoGPsMtq9dN3O6feI6CYF9i3k80USLHD9rJ7GK+5HhiPsLZEUP1/UZx8GEsQo1YjI+t
+         HDyvepFKPxPXWmJhqQgVSdtabyEhoxpYWE+RYlha8vSOh5KjJEFqb3/Hr4B87YEVCiS+
+         TPVkATkWJVVXX8ggBggrab4bYMH9zG1hI32BseVf8bYXbPE4Da+q6PLyIAy0xybnqkR7
+         4AvrI14m92XhOPs5q/NQtGgwdTY6feM7WJ5tSb8ozLX2kcZA4tm1UzK6zyjTohMWQiJn
+         6FCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698053846; x=1698658646;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WHmFglyUVEPX00nAamiQ/LBEnj3er0a+eO4EDfWMZRI=;
+        b=Ib29uVrLbjeahtuubKQ8s9UMGyWdk/WeQ/2/L+9fh7F+pQIuJT16RCi8AGDTUExlrJ
+         Eeblv2Q5N5wJNkB9X5hYH/Lwp2XAi1hScCEyu7/fAWY4u/v+N7v7UlsyrmqcX3vQIT8x
+         3NEBVPdp6yUYiWFt0aYWJ8chZG2bQxJ5dO40GpBCYl3/05EM2HDoQrMPn02+FYo4Hd+u
+         Oe0wACEX2inBUMrSV8bkBNY1MK3iKPJmuFoJfjKb8U/FwMonH4YfF3yHckrg0edObX0I
+         wYDBUxNytVEduWjbv54bj3CBheNMygkMHsR1HV1pV9LICGBHEYdox+QNz+ejJ4iSUacU
+         OBIA==
+X-Gm-Message-State: AOJu0YxCiEqhjNujKftjwj5sL/gE5hBc8PfLI3qJl74UWEc+jKM4HHWY
+        ZakJu2+FeTbFSML9CUC8OEuh25it7bJuBDLkV4pUAQ==
+X-Google-Smtp-Source: AGHT+IHyNKPXGpldHRqPIL5oYoerq2ZPzq41R0gAnppxdlM5gZLgnBfeekHEUx7aAiSz3w0SqRzvEa7bHRBzp0OxB+E=
+X-Received: by 2002:a2e:be2b:0:b0:2bb:78ad:56cb with SMTP id
+ z43-20020a2ebe2b000000b002bb78ad56cbmr6300815ljq.37.1698053846379; Mon, 23
+ Oct 2023 02:37:26 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYBPR01MB5341.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9312ae46-f6fa-43f7-6e8b-08dbd3ab842a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2023 09:36:21.3107
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8W8rd4r9rOC1wzrVKdWe0QGgzhmhkNWxLH3yEqVBT+9L0XXkGy4oNbajOgjU4UZPXMuL/UGl23vPPUkqW676PD3m/QokgUjeo6Qh5cerOxmi5MUT4XxTByY3kt3pJUJk
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB10090
+References: <20231016031649.35088-1-huangjie.albert@bytedance.com>
+ <CAJ8uoz2DUe3xySTKuLbA5=QDAGuTzPdGu3P_=ZvJmna25VtHCQ@mail.gmail.com>
+ <CABKxMyONtPR1pWLdBiK5M-NJoc5S6rpyYYUQWa0J2R+eyajOsg@mail.gmail.com> <CAJ8uoz3Vq1aHzB6Ew-yCQF8On9EP_9BSB4rOvqEgMXeA5=wZgw@mail.gmail.com>
+In-Reply-To: <CAJ8uoz3Vq1aHzB6Ew-yCQF8On9EP_9BSB4rOvqEgMXeA5=wZgw@mail.gmail.com>
+From:   =?UTF-8?B?6buE5p2w?= <huangjie.albert@bytedance.com>
+Date:   Mon, 23 Oct 2023 17:37:15 +0800
+Message-ID: <CABKxMyNy-jOqEuQYCLrOUu1r3M-dJp+RD-KDsXbytXtwJqO4hg@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next] xsk: Avoid starving xsk at the end of the list
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof,
-
-> From: Krzysztof Wilczy=F1ski, Sent: Monday, October 23, 2023 4:35 PM
->=20
-> > > Hi all,
-> > >
-> > > After merging the pci tree, today's linux-next build (x86_64 allmodco=
-nfig)
-> > > failed like this:
-> > >
-> > > ERROR: modpost: "dw_pcie_write_dbi2" [drivers/pci/controller/dwc/pcie=
--rcar-gen4.ko] undefined!
-> [...]
->=20
-> > However, I completely forgot it...
->=20
-> That's OK.  Don't worry. :)
->=20
-> > https://lore.kernel.org/linux-pci/20230926122431.3974714-8-yoshihiro.sh=
-imoda.uh@renesas.com/
+Magnus Karlsson <magnus.karlsson@gmail.com> =E4=BA=8E2023=E5=B9=B410=E6=9C=
+=8819=E6=97=A5=E5=91=A8=E5=9B=9B 17:13=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Thu, 19 Oct 2023 at 10:41, =E9=BB=84=E6=9D=B0 <huangjie.albert@bytedan=
+ce.com> wrote:
 > >
-> > I confirmed that the patch above can be applied on the latest pci.git /=
- next branch.
->=20
-> I will take care of it.
+> > Magnus Karlsson <magnus.karlsson@gmail.com> =E4=BA=8E2023=E5=B9=B410=E6=
+=9C=8816=E6=97=A5=E5=91=A8=E4=B8=80 14:41=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > On Mon, 16 Oct 2023 at 05:17, Albert Huang
+> > > <huangjie.albert@bytedance.com> wrote:
+> > > >
+> > > > In the previous implementation, when multiple xsk sockets were
+> > > > associated with a single xsk_buff_pool, a situation could arise
+> > > > where the xsk_tx_list maintained data at the front for one xsk
+> > > > socket while starving the xsk sockets at the back of the list.
+> > > > This could result in issues such as the inability to transmit packe=
+ts,
+> > > > increased latency, and jitter. To address this problem, we introduc=
+ed
+> > > > a new variable called tx_budget_cache, which limits each xsk to tra=
+nsmit
+> > > > a maximum of MAX_XSK_TX_BUDGET tx descriptors. This allocation ensu=
+res
+> > > > equitable opportunities for subsequent xsk sockets to send tx descr=
+iptors.
+> > > > The value of MAX_XSK_TX_BUDGET is temporarily set to 16.
+> > >
+> > > Hi Albert. Yes you are correct that there is nothing hindering this t=
+o
+> > > happen in the code at the moment, so let us fix it.
+> > >
+> > > > Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
+> > > > ---
+> > > >  include/net/xdp_sock.h |  6 ++++++
+> > > >  net/xdp/xsk.c          | 18 ++++++++++++++++++
+> > > >  2 files changed, 24 insertions(+)
+> > > >
+> > > > diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> > > > index 69b472604b86..f617ff54e38c 100644
+> > > > --- a/include/net/xdp_sock.h
+> > > > +++ b/include/net/xdp_sock.h
+> > > > @@ -44,6 +44,7 @@ struct xsk_map {
+> > > >         struct xdp_sock __rcu *xsk_map[];
+> > > >  };
+> > > >
+> > > > +#define MAX_XSK_TX_BUDGET 16
+> > >
+> > > I think something like MAX_PER_SOCKET_BUDGET would be clearer.
+> > >
+> > > >  struct xdp_sock {
+> > > >         /* struct sock must be the first member of struct xdp_sock =
+*/
+> > > >         struct sock sk;
+> > > > @@ -63,6 +64,11 @@ struct xdp_sock {
+> > > >
+> > > >         struct xsk_queue *tx ____cacheline_aligned_in_smp;
+> > > >         struct list_head tx_list;
+> > > > +       /* Record the actual number of times xsk has transmitted a =
+tx
+> > > > +        * descriptor, with a maximum limit not exceeding MAX_XSK_T=
+X_BUDGET
+> > > > +        */
+> > > > +       u32 tx_budget_cache;
+> > > > +
+> > > >         /* Protects generic receive. */
+> > > >         spinlock_t rx_lock;
+> > > >
+> > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > index f5e96e0d6e01..087f2675333c 100644
+> > > > --- a/net/xdp/xsk.c
+> > > > +++ b/net/xdp/xsk.c
+> > > > @@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
+> > > >
+> > > >  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc =
+*desc)
+> > > >  {
+> > > > +       u32 xsk_full_count =3D 0;
+> > >
+> > > Enough with a bool;
+> > >
+> > > >         struct xdp_sock *xs;
+> > > >
+> > > >         rcu_read_lock();
+> > > > +again:
+> > > >         list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
+> > > > +               if (xs->tx_budget_cache >=3D MAX_XSK_TX_BUDGET) {
+> > > > +                       xsk_full_count++;
+> > > > +                       continue;
+> > > > +               }
+> > >
+> > > The problem here is that the fixed MAX_XSK_TX_BUDGET is only useful
+> > > for the <=3D 2 socket case. If I have 3 sockets sharing a
+> > > netdev/queue_id, the two first sockets can still starve the third one
+> > > since the total budget per send is 32. You need to go through the lis=
+t
+> > > of sockets in the beginning to compute the MAX_XSK_TX_BUDGET to
+> > > compute this dynamically before each call. Or cache this value
+> > > somehow, in the pool for example. Actually, the refcount in the
+> > > buf_pool will tell you how many sockets are sharing the same buf_pool=
+.
+> > > Try using that to form MAX_XSK_TX_BUDGET on the fly.
+> > >
+> > > Another simpler way of accomplishing this would be to just reorder th=
+e
+> > > list every time. Put the first socket last in the list every time. Th=
+e
+> > > drawback of this is that you need to hold the xsk_tx_list_lock while
+> > > doing this so might be slower. The per socket batch size would also b=
+e
+> > > 32 and you would not receive "fairness" over a single call to
+> > > sendto(). Would that be a problem for you?
+> > >
+> >
+> > Currently, there are two paths in the kernel that consume TX queue desc=
+riptors:
+> >
+> > 1=E3=80=81Native XSK
+> > xsk_tx_peek_desc
+> >      xskq_cons_peek_desc
+> >
+> > In the first scenario, we consume TX descriptors by sequentially
+> > traversing the pool->xsk_tx_list
+> > without any implicit code logic to ensure fairness. This can lead to a
+> > scenario of starvation,
+> > making it a top priority for us to address.
+> >
+> > 2=E3=80=81Generic XSK
+> > __xsk_sendmsg (or xsk_poll)
+> >      xsk_generic_xmit
+> >         __xsk_generic_xmit
+> >               xskq_cons_peek_desc
+> >
+> > In the second scenario, TX descriptors are consumed by using sendto.
+> > Currently, __xsk_generic_xmit
+> > sends a maximum of 32 TX descriptors each time, and the process
+> > scheduling strategy already
+> > ensures a certain level of fairness. In this scenario, should we
+> > consider not addressing it and
+> > instead prioritize the first scenario?
+>
+> Agree. The first scenario is the problematic one. One problem we have
+> to solve there is that the batch size is up to the driver in the
+> zero-copy case so the xsk core has no idea. Maybe introduce a pointer
+> that tells us what socket to get packets from first and make sure this
+> pointer gets updated to the next socket in the list every time the
+> function is exited? Please make sure that the one socket case is not
+> hurt.
 
-Thank you very much for your support!
+The method of "introducing a pointer that tells us which socket to get
+packets from first" is useful, but it requires us to manage socket
+additions and removals. This would introduce
+locking operations.
 
-> > However, should I resend whole patches with the patch above as v26?
->=20
-> No.  There is no need to send another series.
+So it seems that the following code is simple enough and appears to
+solve the problem:
 
-I got it.
+1.During each iteration, check if the current socket being traversed
+has exhausted its quota. If it has, skip it and continue iterating
+through the remaining sockets.
+2.If all sockets have been traversed, and no available transmission
+descriptors (tx desc) have been found, consider whether it's time to
+start a fresh iteration.
+3.The logic for a fresh iteration involves checking if any socket has
+used up its quota during the traversal. If any socket has reached its
+quota, set the tx_budget_cache of all sockets to 0 and begin a new
+iteration of the list.
 
-> Different question: aren't RCar systems based on Arm?
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index f5e96e0d6e01..2cf2822e9d16 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -413,16 +413,25 @@ EXPORT_SYMBOL(xsk_tx_release);
 
-You're correct. R-Car systems based on Arm.
+ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc)
+ {
++       bool xsk_cache_full =3D false;
+        struct xdp_sock *xs;
 
->  I wonder why this
-> even built on a x86_64 - unless I am wrong about this.
+        rcu_read_lock();
++again:
+        list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
++               if (xs->tx_budget_cache >=3D MAX_PER_SOCKET_BUDGET) {
++                       xsk_cache_full =3D true;
++                       continue;
++               }
++
+                if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
+                        if (xskq_has_descs(xs->tx))
+                                xskq_cons_release(xs->tx);
+                        continue;
+                }
 
-This is because I added COMPILE_TEST to the Kconfig like below:
++               xs->tx_budget_cache++;
++
+                /* This is the backpressure mechanism for the Tx path.
+                 * Reserve space in the completion queue and only proceed
+                 * if there is space in it. This avoids having to implement
+@@ -436,6 +445,15 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *pool,
+struct xdp_desc *desc)
+                return true;
+        }
 
----
-config PCIE_RCAR_GEN4_HOST
-        tristate "Renesas R-Car Gen4 PCIe controller (host mode)"
-        depends on ARCH_RENESAS || COMPILE_TEST
----
++not_found:
++       if (xsk_cache_full =3D=3D true) {
++               list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
++                       xs->tx_budget_cache =3D 0;
++               }
++               xsk_cache_full =3D false;
++               goto again;
++       }
++
+ out:
+        rcu_read_unlock();
+        return false;
 
-Best regards,
-Yoshihiro Shimoda
+Although this method cannot achieve perfect fairness, it prevents any
+sockets from starving
 
-> 	Krzysztof
+>
+> > Additionally, based on my understanding, there should not be
+> > applications concurrently using generic
+> > XSK and native XSK on the same pool.
+>
+> That is correct.
+>
+> > Magnus, how do you view this issue? I'm concerned that striving for
+> > absolute fairness might introduce
+> > additional complexity in the logic.
+>
+> Is this a problem that you have observed or need to guard against in
+> an application? If so, let us fix it.
+
+Currently, we are facing issue 1.
+
+>
+> > BR
+> > Albert
+> >
+> >
+> >
+> > > > +
+> > > >                 if (!xskq_cons_peek_desc(xs->tx, desc, pool)) {
+> > > >                         if (xskq_has_descs(xs->tx))
+> > > >                                 xskq_cons_release(xs->tx);
+> > > >                         continue;
+> > > >                 }
+> > > >
+> > > > +               xs->tx_budget_cache++;
+> > > > +
+> > > >                 /* This is the backpressure mechanism for the Tx pa=
+th.
+> > > >                  * Reserve space in the completion queue and only p=
+roceed
+> > > >                  * if there is space in it. This avoids having to i=
+mplement
+> > > > @@ -436,6 +445,14 @@ bool xsk_tx_peek_desc(struct xsk_buff_pool *po=
+ol, struct xdp_desc *desc)
+> > > >                 return true;
+> > > >         }
+> > > >
+> > > > +       if (unlikely(xsk_full_count > 0)) {
+> > > > +               list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_=
+list) {
+> > > > +                       xs->tx_budget_cache =3D 0;
+> > > > +               }
+> > > > +               xsk_full_count =3D 0;
+> > > > +               goto again;
+> > > > +       }
+> > > > +
+> > > >  out:
+> > > >         rcu_read_unlock();
+> > > >         return false;
+> > > > @@ -1230,6 +1247,7 @@ static int xsk_bind(struct socket *sock, stru=
+ct sockaddr *addr, int addr_len)
+> > > >         xs->zc =3D xs->umem->zc;
+> > > >         xs->sg =3D !!(xs->umem->flags & XDP_UMEM_SG_FLAG);
+> > > >         xs->queue_id =3D qid;
+> > > > +       xs->tx_budget_cache =3D 0;
+> > > >         xp_add_xsk(xs->pool, xs);
+> > > >
+> > > >  out_unlock:
+> > > > --
+> > > > 2.20.1
+> > > >
+> > > >
