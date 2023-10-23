@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 944267D3948
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718FF7D393F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbjJWO1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34940 "EHLO
+        id S230335AbjJWOZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbjJWO1K (ORCPT
+        with ESMTP id S229578AbjJWOZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:27:10 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FD9D73
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:27:08 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4083f613272so28911185e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:27:08 -0700 (PDT)
+        Mon, 23 Oct 2023 10:25:01 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403CA100;
+        Mon, 23 Oct 2023 07:24:59 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9be3b66f254so478789766b.3;
+        Mon, 23 Oct 2023 07:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698071227; x=1698676027; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EwAfBCzyEL9M9CAS9M5go7qNbD/H8dJ1LrQUAE2nRV4=;
-        b=euHkdPwbVhDYCgRDAUjXfPZWd5ZDSrTU6IGdEzOACrOzNUQSvQg541RRBoOJog24sW
-         NG5YuX9+CuDBD0jJkKM+wdBYg8uk5x6VJt/ctSBGcSv9mISTugovMpFV3LQtBNPuEG5P
-         xnRAMrrzpQoIHS8uYC74DjjLjApLOYhIoVdAmRZ0RCiqUWnttSV3Iw33eGaMXS4JKq8b
-         LYQ6wR44Y9q8c+rdMAE4AXUoWEyePeiidzEbLOjIgT0+Xuzc+1kv25c5M8M1pFxcAa7t
-         j8hH86EaQF6aUkWf8MVFs3uuB/sLEKf9CmaNGX4XcH6m23CbID6DzVuKnDC6Tcth7HSt
-         o2fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698071227; x=1698676027;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698071097; x=1698675897; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EwAfBCzyEL9M9CAS9M5go7qNbD/H8dJ1LrQUAE2nRV4=;
-        b=Yt/OIbZ6PUCn3PjZ8mvVAvJ/t9dXqixHnH2fI2+3MCZ2oa1Uf6a6Dc3uzZ3cev86O/
-         uxrbLOEqe6ez2bTLxtWtXjq/oyAlk38oeE8r8ZRPtvkTI9NzHNktsPl2Bfuy7imUyGN/
-         xT0QEg5sfzN6+9cVRrn4y63XpXbbckWpX7yiB8K3aXgM5kI192XWuOAiTM2ARAJR1ycH
-         1nwzoWqVpQ8vAKoz30R4aShvqVdwr+aEgZsQmPpUSiA3exMnKyx7E3XdUmp6Iw2+Ssx7
-         5PUJP3L/zE+09un8UBb0a1KjPcihGILDibnLpVZuKyRsKojEqCh5EAf4eEwaIgCDoLkK
-         nyCg==
-X-Gm-Message-State: AOJu0YynLpCqaHJyDZp5/9YJ8Ar0lw9V5Xzi02hVRpYmSKujBKUN8hNd
-        rCsMgvGf4K6Bu0GV3kKeylLZnyrzrJLDh7hIPQk=
-X-Google-Smtp-Source: AGHT+IGsPviJvYb+Qa0YPg1rlRYHeafkFn9M5YrEypyA+svUk2pOnU8f56Un06MUp/IZG22EqE/hTw==
-X-Received: by 2002:a05:600c:5115:b0:403:cc64:2dbf with SMTP id o21-20020a05600c511500b00403cc642dbfmr8051547wms.27.1698071227028;
-        Mon, 23 Oct 2023 07:27:07 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id h17-20020a05600c499100b0040772138bb7sm14226886wmp.2.2023.10.23.07.27.06
+        bh=HOo26F7ddMgMPqh3lV7DV+yYzFbyW/ocxujpUxCvn1o=;
+        b=lAT3OapmgowhVHbWZU3fz3YaNtGXYTpkzlflvv1PSaoM4EbL1hgY/Pf4m36hWykw0W
+         KlVLBr4p0Neci30Ulm5ezYobobpgpoePKDMapsIFi7DH7w3IVmCdCtq2aeCUMND+6NEB
+         jMxmZWhH+VGhKVM78fNrKX2naCdbFJ88L5Qi1bbjMmSgt1UOo7bvRyEE+kkYT3bdY8bd
+         jqC1Q8ZTLbSsrbcZ5BGYf4VU6qKj/jAfrM48Q4UmHDnLPXhZ0nyJZv21FW5caAg+Os8n
+         6CJG49zwMm2qiAfeOZpAkqVCOFqzEPy8ePf5IJ1m5ODrSHFx0ozHStGiPo4df1hWySJu
+         Voog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698071097; x=1698675897;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=HOo26F7ddMgMPqh3lV7DV+yYzFbyW/ocxujpUxCvn1o=;
+        b=hlrlj96llRzwxOCvPcaHMz+ArXPkqLSkT1IdZf2o1QSd37F4Lkw7PK1KMwnKSM2Pv3
+         rZKUM0so/nQqIf7nrjbwQgr+XLydPB+fXW/WH7OVCAZd0dDR1/Uc0Yf7CZNTT5zVQt0b
+         qrzHut0QwPJzWwB+mEp0wivVPkg7gu8J7qUuB07lLtj75+eath56FWwpBspE0dSxIUlq
+         jg5Xi0mDEDMHHnD0df6JWIeJMQFsaI936r+IjaSZ59/OIJ3jG6ef990AEO+FhwM2pfuL
+         HwgLq9QBVZ+dAvqBOedrLbJ3uClB39sB2fuVNM5WHiN1WugWk3c6ric6s4FUTbXfYHwc
+         7vsw==
+X-Gm-Message-State: AOJu0YxxaO6Z1Ub9XRJ3tv+611vDVsWNiirYsStY2VcmrQ7f8pyyuVw9
+        epEDq0OIiK6kN2ec9cRCLVI=
+X-Google-Smtp-Source: AGHT+IGDPYcqybnKKGxteO1DjEkEWIGmlvC8h+HZU+3bP7Wgjm4MehUQpms5PfgDSWvJuk/B75OlaA==
+X-Received: by 2002:a17:906:db0a:b0:9bf:4915:22c4 with SMTP id xj10-20020a170906db0a00b009bf491522c4mr8074201ejb.67.1698071097349;
+        Mon, 23 Oct 2023 07:24:57 -0700 (PDT)
+Received: from ?IPv6:2003:f6:ef1b:2000:4423:d503:bf11:e8c6? (p200300f6ef1b20004423d503bf11e8c6.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:4423:d503:bf11:e8c6])
+        by smtp.gmail.com with ESMTPSA id lh22-20020a170906f8d600b0099290e2c163sm6618118ejb.204.2023.10.23.07.24.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 07:27:06 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 17:27:01 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Jonathan Bergh <bergh.jonathan@gmail.com>
-Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org, error27@gmail.com,
-        linux-staging@lists.linux.dev, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] staging: media: av7110: Remove unnecessary
- whitespace before quoted newlines
-Message-ID: <68f20f25-d612-473d-8dcf-a5dfc1ae6279@kadam.mountain>
-References: <20231020232332.55024-1-bergh.jonathan@gmail.com>
- <20231020232332.55024-4-bergh.jonathan@gmail.com>
+        Mon, 23 Oct 2023 07:24:56 -0700 (PDT)
+Message-ID: <e97ac024cb2654507ed8f7af715f3604efefbdbb.camel@gmail.com>
+Subject: Re: [PATCH v2 3/3] dt-bindings: adis16460: Add
+ 'spi-cs-inactive-delay-ns' property
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Ramona Gradinariu <ramona.gradinariu@analog.com>, jic23@kernel.org,
+        nuno.sa@analog.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Date:   Mon, 23 Oct 2023 16:27:48 +0200
+In-Reply-To: <20231023140534.704312-4-ramona.gradinariu@analog.com>
+References: <20231023140534.704312-1-ramona.gradinariu@analog.com>
+         <20231023140534.704312-4-ramona.gradinariu@analog.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231020232332.55024-4-bergh.jonathan@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 21, 2023 at 01:23:30AM +0200, Jonathan Bergh wrote:
-> Fixed multiple instances where whitespaces were placed before quoted
-> newlines
-> 
-> Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+On Mon, 2023-10-23 at 17:05 +0300, Ramona Gradinariu wrote:
+> The adis16460 device requires a stall time between SPI
+> transactions (during which the chip select is inactive),
+> with a minimum value equal to 16 microseconds.
+> This commit adds 'spi-cs-inactive-delay-ns' property, which should
+> indicate the stall time between consecutive SPI transactions.
+>=20
+> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
 > ---
->  drivers/staging/media/av7110/av7110_av.c | 40 ++++++++++++------------
->  1 file changed, 20 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/staging/media/av7110/av7110_av.c b/drivers/staging/media/av7110/av7110_av.c
-> index 482dfc548b16..880fa8a314ba 100644
-> --- a/drivers/staging/media/av7110/av7110_av.c
-> +++ b/drivers/staging/media/av7110/av7110_av.c
-> @@ -150,7 +150,7 @@ int av7110_av_start_play(struct av7110 *av7110, int av)
->  {
->  	int ret = 0;
->  
-> -	dprintk(2, "av7110:%p, \n", av7110);
-> +	dprintk(2, "av7110:%p,\n", av7110);
+> changes in v2:
+> =C2=A0- added default value
+> =C2=A0- updated description
+> =C2=A0- updated commit message
+> =C2=A0.../devicetree/bindings/iio/imu/adi,adis16460.yaml=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 6 ++++++
+> =C2=A01 file changed, 6 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> index 4e43c80e5119..f10469b86ee0 100644
+> --- a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> +++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> @@ -25,6 +25,12 @@ properties:
+>=20
+> =C2=A0=C2=A0 spi-cpol: true
+>=20
+> +=C2=A0 spi-cs-inactive-delay-ns:
+> +=C2=A0=C2=A0=C2=A0 minimum: 16000
+> +=C2=A0=C2=A0=C2=A0 default: 16000
+> +=C2=A0=C2=A0=C2=A0 description:
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Indicates the stall time between consecut=
+ive SPI transactions.
+> +
 
-Just delete all these printks.  They are useless.
+You should drop the description...=20
 
-regards,
-dan carpenter
+Also, give more time before posting a v2 so others get a chance to review y=
+our
+patches. It's also better for you since you can gather more change requests=
+.
+
+- Nuno S=C3=A1
 
