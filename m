@@ -2,213 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C9F7D3A35
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16467D3A55
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbjJWO76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58414 "EHLO
+        id S232590AbjJWPEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbjJWO74 (ORCPT
+        with ESMTP id S232476AbjJWPEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:59:56 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2135.outbound.protection.outlook.com [40.107.8.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB10D10D;
-        Mon, 23 Oct 2023 07:59:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hLdpVtoLRIk9VdqhhKvPp/AQw+SZmhwJ/n55RsygWuK72pukHduX7Us4+nTLgcXv4Ogk51PPQB0CKz8cfjHVxYItyucNRF/RD+/qfSkbVzTsNNAoM3px3ZqyjmX4B8ONugNNUwRSuF7Cj7ILmKYxE1z5/u7ERXQXuo/VdTG+fqnhPSMjmNUAtyYsBxEZby5InaAAdnb3MLbyUHABbvOE0WpJvtd/Q821PI2jotL92I55NSnqi5ZNaU1aXvsTX9FAcuuFwiwBNvAezY3ow9CyboQcuweIn3WQ1COMZrlPfQO2Me3CWVjKtPxsG60sC5UJomfKWBFF5hAxbbeGxQppow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CuQecTHEBBvtVqvgDBHCV+o41i0fKM0Ml5ZLeeE/PM4=;
- b=P4bBgDZAFazoudz/VDLF3+L9LacaMMJM1iWHP4/pSVLMDoNq3SshOFduBTqMUqbQ41JtK5/XLzWnHIRoQ+LnpghwcO5J7oyxTLdQ5r/1lUz8IZ316H1enDTBEudH8SdnEHtNaR2AL2MeUwuK+xKKAmgquBLaUSDaw9UwAWaLPNplXT5Byup6zFM0Le2WCvXcW3ykBJXdkFrYRw2kcomBTUYl/U+1oivkhrZYg79bWjXdK3YDhuSqUKGe1QIXb7fQx7eCVWJZrAyIsBM3nl6TBlvcLz1KdrGDJdJHHUL+GjBS525CaEdgIv/P8Z47uvwXLRMe7JKrA1daFKc1D7M99A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=uipath.com; dmarc=pass action=none header.from=uipath.com;
- dkim=pass header.d=uipath.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uipath.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CuQecTHEBBvtVqvgDBHCV+o41i0fKM0Ml5ZLeeE/PM4=;
- b=l69AGcsvq4Rb7rUzCZvMGU7tfLxHXBclE0waIcc0y5FeY5+ZiBxTkrWUK+sGBLuem75g9lEkOOMJvm4JZdstTvJKsMI7jOYsTZrAzjGr9hiLQ2mx1+ud/Ey7YBlob2TBVg1aygQMxVv26WnWZtccA9Lg8FwYU5q6PFNlIPPX3GsfvqfIK1IqxZRux2MGB34TdJKJ7CDlioxqhso42M0+SA/sx4Tn1gUHRTu++fBV1W4Xfa6daJrzU8nwejljSHiTZsBZOj9jUxm5oPddDJMDefcmF0LiME0b8BUFZpZ/y/lJsvbrk4wI8ebXsKDMJMC3pH2OjbL1G1Ka7D9jq+VqmA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=uipath.com;
-Received: from VI1PR02MB4527.eurprd02.prod.outlook.com (2603:10a6:803:b1::28)
- by AS2PR02MB9606.eurprd02.prod.outlook.com (2603:10a6:20b:596::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.29; Mon, 23 Oct
- 2023 14:59:48 +0000
-Received: from VI1PR02MB4527.eurprd02.prod.outlook.com
- ([fe80::717d:6e0d:ec4b:7668]) by VI1PR02MB4527.eurprd02.prod.outlook.com
- ([fe80::717d:6e0d:ec4b:7668%6]) with mapi id 15.20.6907.030; Mon, 23 Oct 2023
- 14:59:48 +0000
-Message-ID: <632465d0-e04c-4e10-abb9-a740d6e3dc30@uipath.com>
-Date:   Mon, 23 Oct 2023 17:59:45 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] vsock/virtio: initialize the_virtio_vsock before using
- VQs
-Content-Language: en-US
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mihai Petrisor <mihai.petrisor@uipath.com>,
-        Viorel Canja <viorel.canja@uipath.com>,
-        Alexandru Matei <alexandru.matei@uipath.com>
-References: <20231023140833.11206-1-alexandru.matei@uipath.com>
- <2tc56vwgs5xwqzfqbv5vud346uzagwtygdhkngdt3wjqaslbmh@zauky5czyfkg>
- <0624137c-85cf-4086-8256-af2b8405f434@uipath.com>
-From:   Alexandru Matei <alexandru.matei@uipath.com>
-In-Reply-To: <0624137c-85cf-4086-8256-af2b8405f434@uipath.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1PR07CA0235.eurprd07.prod.outlook.com
- (2603:10a6:802:58::38) To VI1PR02MB4527.eurprd02.prod.outlook.com
- (2603:10a6:803:b1::28)
+        Mon, 23 Oct 2023 11:04:00 -0400
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBE2FF;
+        Mon, 23 Oct 2023 08:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1698073433; x=1698332633;
+        bh=0c3JKyxrwN1y83bJD05SyppIYuEj3A/9KtZPuGixCOY=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=A741tiTFR96yaUuRQswNLRrAbkhuz6AJBv/qu35aOQQ/iSyG8dkwC/u9TE5Y7yF4R
+         Jh+EgqSK4za5Fa7enAfHaC34ON6SHY3QKtemenFj1bis1OWwA2gn7QEjHHHyK/v9NU
+         7iBNJa7puEOzsz2XO6+/TcNAEBlXWDboqboyAvVVlD0BrIdSAcnVtQC9leoYavexAw
+         4hDba1q328HP53dLgWSUQeW/rVdDyh2jLn3sq5e3bSSez2OJEL8AlYre9ynVrps6oJ
+         VccEG+S8oWWuqA8Wfs/DajXzYhuzpde0AoS7SaQFjypVdHC+MJd5XMqaao14Sjt1Wa
+         JHdSsxW0XW5xw==
+Date:   Mon, 23 Oct 2023 15:03:35 +0000
+To:     Charles Yi <be286@163.com>
+From:   Rahul Rameshbabu <sergeantsagara@protonmail.com>
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: fix a crash in hid_debug_events_release
+Message-ID: <87a5s9mldo.fsf@protonmail.com>
+In-Reply-To: <20231023093500.1391443-1-be286@163.com>
+References: <20231023093500.1391443-1-be286@163.com>
+Feedback-ID: 26003777:user:proton
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR02MB4527:EE_|AS2PR02MB9606:EE_
-X-MS-Office365-Filtering-Correlation-Id: a81bcb6f-d26b-4c17-4314-08dbd3d8b387
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NoSla6JdMBN+y9vhF6BSVwVaFbkqOSH3UM2dQ6BO+SxK425gG2tRYzfi6MnH4jzmdxw2wiTCwoJ+U4BuzjEoxd30tz4sSA6TH2zOUG4rhxTKcsTwxHV5vYLCrn2POiSC2uwHlDeTL0RZfyv5YoQYk9MNTHKv889V6q6kr3yHgYxD+iuAHb0aq/QYUR04vP/oDpRebLtJpjVMlP2xVEEw38eiLHzes5VLwH+pJbnb6P0aksY1evWG5jexDFoIHZBaHTMoqJv+VIEhU/HImNTa/Sd5Gi7/08//3AARf4a2aWMNrVZ42whsj4Gxk9p/pJ42tMo9R63qJE7iLc+JKiDxr+UXFpE4Y2mMgffaeGZ9+iCpHl4pvzpLnWkfN7xueo7MKTtb+ejHIWyzv/F0P09b8vQPhv1ClzBmr69BHUFYfJurpoGhadoTanSO66Z6vYlYuSb9Dn0Ly7qg9VsMbm4SNXrDD7qkh2GDbaP31lCgU88m+Sp/RtP9XEjFbQ4+M2+4ZKuAdT+zv6pOFX9C6qC8rxkQtJkiv+fDCAE9GjWCNbzOgEB8xtMJxtmDnL2KgsemWI1JpXhLh6qWE8BZk0/4gd1x8htG8O2DKG6t4xPnCzg6A2tH/IzENbI3IMSTPiXZmQ5QqRaGQgtIL33p1x8+mQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR02MB4527.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(346002)(376002)(39860400002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(83380400001)(31686004)(7416002)(2906002)(8936002)(4326008)(36756003)(44832011)(8676002)(53546011)(107886003)(26005)(2616005)(38100700002)(6506007)(6666004)(6916009)(316002)(31696002)(478600001)(6486002)(6512007)(5660300002)(86362001)(41300700001)(66476007)(54906003)(66946007)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cTVxQlVYRkJSRXBuV09yVExJa0h2MVpBcGI5MnAwNEZtdkV4OEt6dzZBT00v?=
- =?utf-8?B?NG1weStBYVcwUkNjK0dPVEZUcStYUXJDZjUraTlobFZwR1FoaTFlTzVsYnk5?=
- =?utf-8?B?NUhPVzhFcTk0WGhMcE1Ra0FRMkZyQzdjcXB5VUl4UkZXZkpMcm5ob0o4UnlU?=
- =?utf-8?B?dHZYU1Z5R1VTbEJrSlNoM1Q5eXJCcGgzSDQ0Ri9Kc0FhcCt2allna3R4MDd1?=
- =?utf-8?B?VGd4ajRsTkNaK2VHbUZFV0FVa2lhVlVoY3NyZk5aVnNyMkE0VjZ6dkxrV2l5?=
- =?utf-8?B?UnNlekNxT1hSQkw4dEZnaGowa1NhV2RwM25UK282UmozUk5TZk5VOFFra3FV?=
- =?utf-8?B?SVJHOU5CcTlyTURZZ1RRd2svQk1vM3FJdnVyRGVCMWlVVTFhUFVqdlR3eURX?=
- =?utf-8?B?R0NTdkxmd0JYM1RBZStUclRnOVJpWW5HWWlzcXJtampoN0hKdE91SGoyZkx3?=
- =?utf-8?B?cGZNVS9tdmFIRVJscHBFSy81N0pUNjg1V0Z1N0RJNGtwYXV1YUQzOFFnSHlH?=
- =?utf-8?B?czhqT1RWVGhLYjduaWNFWlhoWGtCaEh6ZmUxM2JyZGtFSG1nQTZ2UFhMVjRF?=
- =?utf-8?B?bmY1dk81VDhXckFadHp0OGRhaHBTSmtHK212and2K2hYUHpiakJaWUlpT3Ax?=
- =?utf-8?B?dHpvQWVtbUhHVzZnSU9rZlNYdjRLejljdmNSdldhUnlzUmVkRnluV3FKQzVY?=
- =?utf-8?B?Y2Q3MkdKc2dqMG1RUkx6U2ZKYmdNcVJTYmU5cUtndi9EcUNPcTEwYnpneFBt?=
- =?utf-8?B?aHJtQjRxeXlRM1dxQkZlc2k0V2NId1lSTmZjM29aRVVWb0c1aTkycExKdTZs?=
- =?utf-8?B?cG1kbXdmRFhqTVpOSzFPS2lON1VwUTRvVWVUTjIyVHNqaHJabmMvSnpDTmk5?=
- =?utf-8?B?TXdhZWNhVXhYVFljcUZ0UXAxb1puMGpCcHIyMW1SdkQyMmw3Q1U2LzE4cWFM?=
- =?utf-8?B?ZStpOGFia25nR2I3NUdJMDdmS3VLb2tGS2lteU5GVFpZNGRLemZiYzdZNUo4?=
- =?utf-8?B?ZnUvR25qWmgvdzlrZzlYeUxhS1NRUTNJR0lFazZFcWZ3ZEREYWhDRklmOWlY?=
- =?utf-8?B?QTVtbTBFaU45MkFndHhSKzI2ajErYWZIRFVKZStwdld4MEdrQjA5V3VaN25B?=
- =?utf-8?B?M3k3WCtJNmNkaE1qcldnU1Rra2RvcjF6anB0TmpPRHFCUWlBYmlkK3J0YUhu?=
- =?utf-8?B?U29rRHYwdEQ2enhFL2trZ1JKbGxWV1BRc0hUZzVkaEhmckFFUW43RDllVjZ0?=
- =?utf-8?B?ZFBuSktyekxyK3I5enlBSEtZVC9oMy92aFA2SExzZjRXVlN6aTVQMnV6OTJH?=
- =?utf-8?B?Q1BIeHFCRHhpYkZNZ3JqUW9JT3RVVlF2TVBMek9Sb1hkd0IxYVJTc25NMjNv?=
- =?utf-8?B?aW5iSDZyd1AyRmo5azZKejJ2bHZobWpzRUZMWFp6V2tOQkNQZjJZVzM5Q2U3?=
- =?utf-8?B?K1ZsZHUrQkRqMjloY2FncU8xL3UwM0Rrcm9rMS9MQ0w5Z0QzaGwwbXcxU0th?=
- =?utf-8?B?ZlZWdTNJSko1ZzF5bjVTMCtScURTa0puQ0hYR3JUZDJ1ZCtCVUo0R1VhS0ZB?=
- =?utf-8?B?dEhiMDBsRXE5TWVnQ3lXUkZKRjdlenhjRWlvZ3hTc0RYUWwvZ2VDeHJKTU1M?=
- =?utf-8?B?QXF5dyswSmpyWDZzeHR3cU82SWlvd1VkS1VoeEhXT2pjQ290KzRyZVJaUWM0?=
- =?utf-8?B?R3d6bHZiUWI4Wmo5YVltTXczZzROYVdVSWdPbVN4dGYyZUNHblV2R2E4SnNI?=
- =?utf-8?B?Y3RHVHBuQTNrdCtjcUhvUU95NWZBTkJudUl5eUUySmpwNHFzdkZBd2cvaWJI?=
- =?utf-8?B?WHhRTE5UQXplRDQ2OGdJajUzaFNEVks2UzRScVNuR25wa1JWVkRtQkJtbHVI?=
- =?utf-8?B?QVMwcytCOWR3bzk2amFXd0dVMnZnTlR5MXhlYitra1J5ZThhU1NFUCt0MFlL?=
- =?utf-8?B?RnE1OFBFejgwQlQxYUZkSjl4ZElKY0ZzcHFDRDVQV2hyckFQTnBRdkg5Wk5W?=
- =?utf-8?B?QVVpQjY1T3ZpS3VyRUhHbzVocmp5ak5lNXdkSTBZRDJqTm9DM2JKamgzYWpn?=
- =?utf-8?B?Q3FpUFh5V091ZWdHY1p1cmdVTWcra2dQZlZHQmVhdFFLSFRwQUwrN250NFlS?=
- =?utf-8?B?YldhTHlzUGE1MTc5YkVUREFNMHo5Z0NTYzhYYnA3SkJhbVJEdExHS2pYNEhv?=
- =?utf-8?B?dlE9PQ==?=
-X-OriginatorOrg: uipath.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a81bcb6f-d26b-4c17-4314-08dbd3d8b387
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR02MB4527.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 14:59:48.4235
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d8353d2a-b153-4d17-8827-902c51f72357
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JbFMuoGpGbhbtXZwEBxctlOcVYcWarTk5r/kzwQMtMwHaZzgdhE5R73nLRCrIVOXUNwrwDDIEYdgx2sTYA2ozvaviMiCTIJ1oooZzUW3+WE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR02MB9606
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/2023 5:52 PM, Alexandru Matei wrote:
-> On 10/23/2023 5:29 PM, Stefano Garzarella wrote:
->> On Mon, Oct 23, 2023 at 05:08:33PM +0300, Alexandru Matei wrote:
->>> Once VQs are filled with empty buffers and we kick the host,
->>> it can send connection requests.  If 'the_virtio_vsock' is not
->>> initialized before, replies are silently dropped and do not reach the host.
->>>
->>> Fixes: 0deab087b16a ("vsock/virtio: use RCU to avoid use-after-free on the_virtio_vsock")
->>> Signed-off-by: Alexandru Matei <alexandru.matei@uipath.com>
->>> ---
->>> v2:
->>> - split virtio_vsock_vqs_init in vqs_init and vqs_fill and moved
->>>  the_virtio_vsock initialization after vqs_init
->>>
->>> net/vmw_vsock/virtio_transport.c | 9 +++++++--
->>> 1 file changed, 7 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->>> index e95df847176b..92738d1697c1 100644
->>> --- a/net/vmw_vsock/virtio_transport.c
->>> +++ b/net/vmw_vsock/virtio_transport.c
->>> @@ -559,6 +559,11 @@ static int virtio_vsock_vqs_init(struct virtio_vsock *vsock)
->>>     vsock->tx_run = true;
->>>     mutex_unlock(&vsock->tx_lock);
->>>
->>> +    return 0;
->>> +}
->>> +
->>> +static void virtio_vsock_vqs_fill(struct virtio_vsock *vsock)
->>
->> What about renaming this function in virtio_vsock_vqs_start() and move also the setting of `tx_run` here?
-> 
-> It works but in this case we also need to move rcu_assign_pointer in virtio_vsock_vqs_start(), 
-> the assignment needs to be right after setting tx_run to true and before filling the VQs.
-> 
+Hi Charles,
 
-And if we move rcu_assign_pointer then there is no need to split the function in two,
-We can move rcu_assign_pointer() directly inside virtio_vsock_vqs_init() after setting tx_run.
+On Mon, 23 Oct, 2023 17:35:00 +0800 "Charles Yi" <be286@163.com> wrote:
+> hid_debug_events_release() access released memory by
+> hid_device_release(). This is fixed by the patch.
+>
 
->>
->> Thanks,
->> Stefano
->>
->>> +{
->>>     mutex_lock(&vsock->rx_lock);
->>>     virtio_vsock_rx_fill(vsock);
->>>     vsock->rx_run = true;
->>> @@ -568,8 +573,6 @@ static int virtio_vsock_vqs_init(struct virtio_vsock *vsock)
->>>     virtio_vsock_event_fill(vsock);
->>>     vsock->event_run = true;
->>>     mutex_unlock(&vsock->event_lock);
->>> -
->>> -    return 0;
->>> }
->>>
->>> static void virtio_vsock_vqs_del(struct virtio_vsock *vsock)
->>> @@ -664,6 +667,7 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
->>>         goto out;
->>>
->>>     rcu_assign_pointer(the_virtio_vsock, vsock);
->>> +    virtio_vsock_vqs_fill(vsock);
->>>
->>>     mutex_unlock(&the_virtio_vsock_mutex);
->>>
->>> @@ -736,6 +740,7 @@ static int virtio_vsock_restore(struct virtio_device *vdev)
->>>         goto out;
->>>
->>>     rcu_assign_pointer(the_virtio_vsock, vsock);
->>> +    virtio_vsock_vqs_fill(vsock);
->>>
->>> out:
->>>     mutex_unlock(&the_virtio_vsock_mutex);
->>> -- 
->>> 2.34.1
->>>
->>
+A couple of things here. Can you add a Fixes: tag?
+
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#desc=
+ribe-your-changes
+
+Before any v2 however, it would be nice to understand where this issue
+is coming from. I am wondering if it's really a core issue or rather an
+issue with a higher level device specific driver making use of the hid
+subsystem. I am having a hard time seeing how this issue occurs
+currently. A stack trace in a follow-up email to this one pertaining to
+the crash would be helpful. If you are resolving a syzbot report, a link
+to that report would suffice.
+
+This patch doesn't make a lot of sense to me as-is because
+hid_debug_events_release is about release resources related to hid debug
+events (at least from my current understanding). It should not be
+free-ing the underlying hid device/instance itself.
+
+> Signed-off-by: Charles Yi <be286@163.com>
+> ---
+>  drivers/hid/hid-core.c  | 12 ++++++++++--
+>  drivers/hid/hid-debug.c |  3 +++
+>  include/linux/hid.h     |  3 +++
+>  3 files changed, 16 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+> index 8992e3c1e769..e0181218ad85 100644
+> --- a/drivers/hid/hid-core.c
+> +++ b/drivers/hid/hid-core.c
+> @@ -702,15 +702,22 @@ static void hid_close_report(struct hid_device *dev=
+ice)
+>   * Free a device structure, all reports, and all fields.
+>   */
+>
+> -static void hid_device_release(struct device *dev)
+> +void hiddev_free(struct kref *ref)
+>  {
+> -=09struct hid_device *hid =3D to_hid_device(dev);
+> +=09struct hid_device *hid =3D container_of(ref, struct hid_device, ref);
+>
+>  =09hid_close_report(hid);
+>  =09kfree(hid->dev_rdesc);
+>  =09kfree(hid);
+>  }
+>
+> +static void hid_device_release(struct device *dev)
+> +{
+> +=09struct hid_device *hid =3D to_hid_device(dev);
+> +
+> +=09kref_put(&hid->ref, hiddev_free);
+> +}
+> +
+>  /*
+>   * Fetch a report description item from the data stream. We support long
+>   * items, though they are not used yet.
+> @@ -2846,6 +2853,7 @@ struct hid_device *hid_allocate_device(void)
+>  =09spin_lock_init(&hdev->debug_list_lock);
+>  =09sema_init(&hdev->driver_input_lock, 1);
+>  =09mutex_init(&hdev->ll_open_lock);
+> +=09kref_init(&hdev->ref);
+>
+>  =09hid_bpf_device_init(hdev);
+>
+> diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
+> index e7ef1ea107c9..7dd83ec74f8a 100644
+> --- a/drivers/hid/hid-debug.c
+> +++ b/drivers/hid/hid-debug.c
+> @@ -1135,6 +1135,7 @@ static int hid_debug_events_open(struct inode *inod=
+e, struct file *file)
+>  =09=09goto out;
+>  =09}
+>  =09list->hdev =3D (struct hid_device *) inode->i_private;
+> +=09kref_get(&list->hdev->ref);
+>  =09file->private_data =3D list;
+>  =09mutex_init(&list->read_mutex);
+>
+> @@ -1227,6 +1228,8 @@ static int hid_debug_events_release(struct inode *i=
+node, struct file *file)
+>  =09list_del(&list->node);
+>  =09spin_unlock_irqrestore(&list->hdev->debug_list_lock, flags);
+>  =09kfifo_free(&list->hid_debug_fifo);
+> +
+> +=09kref_put(&list->hdev->ref, hiddev_free);
+>  =09kfree(list);
+>
+>  =09return 0;
+> diff --git a/include/linux/hid.h b/include/linux/hid.h
+> index 964ca1f15e3f..3b08a2957229 100644
+> --- a/include/linux/hid.h
+> +++ b/include/linux/hid.h
+> @@ -679,6 +679,7 @@ struct hid_device {=09=09=09=09=09=09=09/* device rep=
+ort descriptor */
+>  =09struct list_head debug_list;
+>  =09spinlock_t  debug_list_lock;
+>  =09wait_queue_head_t debug_wait;
+> +=09struct kref=09=09=09ref;
+>
+>  =09unsigned int id;=09=09=09=09=09=09/* system unique id */
+>
+> @@ -687,6 +688,8 @@ struct hid_device {=09=09=09=09=09=09=09/* device rep=
+ort descriptor */
+>  #endif /* CONFIG_BPF */
+>  };
+>
+> +void hiddev_free(struct kref *ref);
+> +
+>  #define to_hid_device(pdev) \
+>  =09container_of(pdev, struct hid_device, dev)
+
+--
+Thank you for the patch,
+
+Rahul Rameshbabu
+
