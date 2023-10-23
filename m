@@ -2,172 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7337D37EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3F57D3800
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbjJWNZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
+        id S231157AbjJWN0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 09:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233064AbjJWNZK (ORCPT
+        with ESMTP id S233252AbjJWN02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:25:10 -0400
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8245926B7;
-        Mon, 23 Oct 2023 06:23:21 -0700 (PDT)
+        Mon, 23 Oct 2023 09:26:28 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5E210F5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:25:04 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4079ed65471so27265955e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:25:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1698067401; x=1729603401;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=KraaAR9AJRx4szBcb69Mh9Dil932gzrCb3ff3bUUqeE=;
-  b=T7cEzjpp2WWwpDgofDuSkW+PokhhIu1cwmSfiZsddeJpOR6AHQIw4joj
-   mZ5CcrkvMSeuoRIxGaiT06Okkk5cssJym5x8TxjJZ7Ty6VpgBAmRMw0Lf
-   +KdxgizhV4m9zr3dxqeJazlgrENYgXSxW+kZgSqRTX5sTcTKR+EqE65r2
-   +MC+1wMyMztBI5ukvXE0RHwhnXeJtwZjye0hTHbV+7dAxSpWZTpJbGimV
-   g2sYLAPvi8YfVsUdzvvh49onK3vAIiPtjg/IqvK61E5zINxlz59TM6mBp
-   kqhrDECjLb+gC/4N7uejDOiv+4+byHFiVbUB9aNgX5GOLD6R1pPHvvR5b
-   g==;
-X-IronPort-AV: E=Sophos;i="6.03,244,1694728800"; 
-   d="scan'208";a="33603121"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 23 Oct 2023 15:23:19 +0200
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id C6A0128007F;
-        Mon, 23 Oct 2023 15:23:18 +0200 (CEST)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        Adam Ford <aford173@gmail.com>
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] arm64: dts: imx8mp: Add NPU Node
-Date:   Mon, 23 Oct 2023 15:23:21 +0200
-Message-ID: <9185912.CDJkKcVGEf@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20231022161911.10792-1-aford173@gmail.com>
-References: <20231022161911.10792-1-aford173@gmail.com>
+        d=linaro.org; s=google; t=1698067502; x=1698672302; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MfTe2mItOOKjEsaFlS0tcGkoINaBgb/MwgZiyuRpNWc=;
+        b=T8g4X9IyouMZIo6Qe/6IvdeurXuDJcmI5VqTF7Rwl8G5ny0Jj5P3Y3aHgitpA02PL1
+         yugiwSc4eP5fQC5owyCKiRJyKrYD09tXco5WEhauhSupuTB9hDUMr5TTMcB49pca0ivn
+         5v8TbtdU0p5rxyb8Sy7v6gFfu9LhbOQtqJdIRmkrMznFjwB9gBBdEIN7SGK3k+dXHiYp
+         aND5TH0sSRIfcLx+p6fClqBdgIrU56LApSAnl1Y/mzIGCEViMd6Od/A8EPKI6u3CuKbI
+         2qYB9jme25RYOFUQ8POdqJwwP5rN1IevwFbFcXoYBYh8LBa7htIN0PYk0i2eQ5NQy0qq
+         8C6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698067502; x=1698672302;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MfTe2mItOOKjEsaFlS0tcGkoINaBgb/MwgZiyuRpNWc=;
+        b=LlCR5wrUEuT3CAx5SFCdAmIfhxY28peCTLXrM0O69KursFYblCJVK2YWEm7ef80EZw
+         QFDNuKEYRS9ZLj5rGfQBbTdi7FIKbzx3lrqs+yeGAXUFkp9/OEY3qdl4AMvwQd7ewirD
+         fhhIYNkLwLPul5MFiSz2jqkz7AC9eQ4sziCYLe1pYgI+3P8e5IYmVPhVQgWlKNvsXeLX
+         bvbVRnmVgJSgZTNKVRmvAjOrhTAhXvAoQCr+dRhHZyJxRFdZ7pdB0ykVzlN1UYnQPRCU
+         8/Cwe4TWfocnx4nKLF6ViM/1FMK7wfZyDjIISC4UfwqSkZPv399t6b0BPKluCOzmRugf
+         V1CA==
+X-Gm-Message-State: AOJu0Yz4TxHOWYXfk/EdJSWJ//vAeyduuIiOOjeU/POkL46E+9tmyYgX
+        Bx7iMV6b6SBwcqOVZf60Xgz4Pw==
+X-Google-Smtp-Source: AGHT+IEduB7wx3eedVGayKFCj1JBqguF5m2D0FBesP2GCt4VG7PKD6l90JrFEf446JDrgRBgMq5d3A==
+X-Received: by 2002:a05:600c:4506:b0:405:dbe2:df10 with SMTP id t6-20020a05600c450600b00405dbe2df10mr7584940wmo.35.1698067502387;
+        Mon, 23 Oct 2023 06:25:02 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:a36e:a5d9:26ae:74b1? ([2a01:e0a:982:cbb0:a36e:a5d9:26ae:74b1])
+        by smtp.gmail.com with ESMTPSA id o6-20020a5d62c6000000b0032196c508e3sm7738393wrv.53.2023.10.23.06.25.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 06:25:01 -0700 (PDT)
+Message-ID: <00e81457-9148-4ca1-8433-4b7cad0652b5@linaro.org>
+Date:   Mon, 23 Oct 2023 15:25:00 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] drm/panel/raydium-rm692e5: select
+ CONFIG_DRM_DISPLAY_DP_HELPER
+Content-Language: en-US, fr
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Luca Weiss <luca.weiss@fairphone.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231023115619.3551348-1-arnd@kernel.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231023115619.3551348-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+Hi,
 
-thanks for the update.
-
-Am Sonntag, 22. Oktober 2023, 18:19:10 CEST schrieb Adam Ford:
-> The NPU is based on the Vivante GC8000 and its power-domain
-> is controlled my pgc_mlmix.  Since the power-domain uses
-> some of these clocks, setup the clock parent and rates
-> inside the power-domain, and add the NPU node.
->=20
-> The data sheet states the CLK_ML_AHB should be 300MHz for
-> nominal, but 800MHz clock will divide down to 266 instead.
-> Boards which operate in over-drive mode should update the
-> clocks on their boards accordingly.  When the driver loads,
-> the NPU numerates as:
->=20
->  etnaviv-gpu 38500000.npu: model: GC8000, revision: 8002
-
-There seems to be some race condition upon GPU/NPU detection. Sometimes I g=
-et=20
-these messages:
-[    1.338100] etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6204
-[    1.344469] etnaviv-gpu 38008000.gpu: model: GC520, revision: 5341
-[    1.350748] etnaviv-gpu 38500000.npu: model: GC0, revision: 0
-[    1.356514] etnaviv-gpu 38500000.npu: Unknown GPU model
-
-Sometimes I see GC8000 being detected as you have written. Despite that the=
-=20
-patch itself looks good.
-Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-
->=20
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+On 23/10/2023 13:55, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> As with several other panel drivers, this fails to link without the DP
+> helper library:
+> 
+> ld: drivers/gpu/drm/panel/panel-raydium-rm692e5.o: in function `rm692e5_prepare':
+> panel-raydium-rm692e5.c:(.text+0x11f4): undefined reference to `drm_dsc_pps_payload_pack'
+> 
+> Select the same symbols that the others already use.
+> 
+> Fixes: 988d0ff29ecf7 ("drm/panel: Add driver for BOE RM692E5 AMOLED panel")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->=20
-> V2:  Move the clock parent and rate assignments to the ppc_mlmix node
->      since clock parents should be configured before they are used,
->      and pgc_mlmix uses them first.
->      Slow the clock rates down to confirm to nominal mode instead of
->      overdrive mode.
->=20
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> b/arch/arm64/boot/dts/freescale/imx8mp.dtsi index
-> c9a610ba4836..a18b9ba98ea2 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> @@ -887,6 +887,15 @@ pgc_mlmix: power-domain@24 {
->  						clocks =3D <&clk=20
-IMX8MP_CLK_ML_AXI>,
->  							 <&clk=20
-IMX8MP_CLK_ML_AHB>,
->  							 <&clk=20
-IMX8MP_CLK_NPU_ROOT>;
-> +						assigned-clocks =3D=20
-<&clk IMX8MP_CLK_ML_CORE>,
-> +							=09
-  <&clk IMX8MP_CLK_ML_AXI>,
-> +							=09
-  <&clk IMX8MP_CLK_ML_AHB>;
-> +						assigned-clock-
-parents =3D <&clk IMX8MP_SYS_PLL1_800M>,
-> +							=09
-	 <&clk IMX8MP_SYS_PLL1_800M>,
-> +							=09
-	 <&clk IMX8MP_SYS_PLL1_800M>;
-> +						assigned-clock-
-rates =3D <800000000>,
-> +							=09
-       <800000000>,
-> +							=09
-       <300000000>;
->  					};
->  				};
->  			};
-> @@ -2012,6 +2021,18 @@ vpumix_blk_ctrl: blk-ctrl@38330000 {
->  			interconnect-names =3D "g1", "g2", "vc8000e";
->  		};
->=20
-> +		npu: npu@38500000 {
-> +			compatible =3D "vivante,gc";
-> +			reg =3D <0x38500000 0x200000>;
-> +			interrupts =3D <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks =3D <&clk IMX8MP_CLK_NPU_ROOT>,
-> +				 <&clk IMX8MP_CLK_NPU_ROOT>,
-> +				 <&clk IMX8MP_CLK_ML_AXI>,
-> +				 <&clk IMX8MP_CLK_ML_AHB>;
-> +			clock-names =3D "core", "shader", "bus", "reg";
-> +			power-domains =3D <&pgc_mlmix>;
-> +		};
-> +
->  		gic: interrupt-controller@38800000 {
->  			compatible =3D "arm,gic-v3";
->  			reg =3D <0x38800000 0x10000>,
+>   drivers/gpu/drm/panel/Kconfig | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index 99e14dc212ecb..a4ac4b47777fe 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -530,6 +530,8 @@ config DRM_PANEL_RAYDIUM_RM692E5
+>   	depends on OF
+>   	depends on DRM_MIPI_DSI
+>   	depends on BACKLIGHT_CLASS_DEVICE
+> +	select DRM_DISPLAY_DP_HELPER
+> +	select DRM_DISPLAY_HELPER
+>   	help
+>   	  Say Y here if you want to enable support for Raydium RM692E5-based
+>   	  display panels, such as the one found in the Fairphone 5 smartphone.
 
+Will apply once drm-misc-next-fixes is synced with the last drm-misc-next PR for v6.7.
 
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
-
+Neil
