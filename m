@@ -2,153 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 976417D2E34
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6E57D2E39
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbjJWJ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
+        id S231972AbjJWJ2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjJWJ2E (ORCPT
+        with ESMTP id S229865AbjJWJ2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:28:04 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8631BC
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:28:02 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c5210a1515so46315051fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:28:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698053281; x=1698658081; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=scRXt0dR4CqMVIcOX1nOBi21OWZarp+zt7whuTxTtKA=;
-        b=YUT9tY/fYXdmqYOxebNOpyjKUJOz4Rd0Y9yjJm8il9qIornj7NOrDH4ZUADniyMCvs
-         bTQeaQiectW8dWewiJWGeJMv+P+ZtE2koSo0mR0EKQrN91ElP8OAgPSGHNdytGCBVWtb
-         3OAw3rcDYztgnntbRtgSbEZve35qCdKPkIJuAf39MLGj9utNKLjxxQMLb1sbSVMwkDq2
-         As91DkVPNS9cSA8x+3hB5tvW9H2BBDebnf4c/g0PKHeJYvQlMnHXbs5oz0wQyvpNRbD2
-         SCM1rUu4/73UKSxnwx74rtAxTOMI2qi05vjdFErhNKCI5ML4WzmGm/DhmfSZT7UCIXgz
-         Si0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698053281; x=1698658081;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=scRXt0dR4CqMVIcOX1nOBi21OWZarp+zt7whuTxTtKA=;
-        b=dUocziS6P8XQWC5lCMT/S6bUVDVWU7hyCGWEGlh8FGy8WUt0/jJk3qUUnU/dMdF0OO
-         P7i+u/rAxAMl52arIxLkfqBKektpyGSHz6fFlaXPb1JCBZ0ri0Afr53R0YPjB0kmApfH
-         7odUynGdDA1C9dwZudBGpadRhLIMWKYpHy57i2LDPXVH7zjLCF4319l3kGMQi0T1+/U/
-         h3lEANjSwpuTG/dZ7itz1zxp2+fhg51b+ymC65smK6WwtbrLltj/vC4sxW+ahpFoNhdI
-         f9xnumN19kmExuvddm4FjvVN+vQuz7UaV2EBaldyYjDcOlDhg5kqmhnOiHocr+MKotAl
-         Eqiw==
-X-Gm-Message-State: AOJu0YxYzC+sh0eGUkJ6ApkYFoGVrQesQWGzwjJz800rNOg2krvwg0FI
-        Ri3F8nuvF2zBz3483Vi9mIxf6w==
-X-Google-Smtp-Source: AGHT+IECaGiniILui9bl1pv2xFFLV6cw+DLoJLhHyz3h7YdS1a4kxiXrJ7ohCt65Z1NMwnfN9f7swg==
-X-Received: by 2002:a05:651c:14c:b0:2c5:9a5:a1c2 with SMTP id c12-20020a05651c014c00b002c509a5a1c2mr6124119ljd.30.1698053280948;
-        Mon, 23 Oct 2023 02:28:00 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id p12-20020a05600c418c00b0040773c69fc0sm13481557wmh.11.2023.10.23.02.27.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 02:28:00 -0700 (PDT)
-Message-ID: <bd85254e-b08b-4fec-ad42-b34e4183b5ff@linaro.org>
-Date:   Mon, 23 Oct 2023 11:27:59 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/5] dt-bindings: sram: qcom,imem: document sm8250
+        Mon, 23 Oct 2023 05:28:10 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2043.outbound.protection.outlook.com [40.107.20.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C588897;
+        Mon, 23 Oct 2023 02:28:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c3dmJt1zBrhQZb4f6b/PELRQIbU0TioEevlCp88sdYfQ4X1ZQBah938rSH1NeewLdgwEgZqWYaZ2Jj9zCw7dNxWLMVmcMB+cQ54K5LX+OakzBcNYZONqJg7QIr3lh3DA5ODohLzQuT8sgoAb3zL9NVtOWilcWOkksT1EzJxT0uiPdDiyhAtQlGVR7hsC6okkSvrAUcyP2RZYXQ8HFSl8HV9zqAs7bi0Y3uugACPePSqtWbZAJFc0DFrVn/idUpwDB6mWJzQHvixHD4gXMAAE5qQ8qjRsWHwSh8pnHwds3BMi5ygN765jTL87r6hu+u1zpmhsX8vXtNY7QefYpM9LUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MIIeTQCFPpQtVJcL0dcK8tvcoMmRPwh+pvHrOHOwcQw=;
+ b=mbT2+JqaGBy3WqBq/jkCypfd815uFZex8qZJbYcfje3jONul5VFhT7sm9r8dNbUpbyruZz+XRYnJLJ4u4k4AnHxlSLgvjMhrpZfPm2FRioTOamQUDGvunX5Y9lvCEgzaAlz0N7MHNw5//B+pDzjVNYVPiwbMAQrCwOyOxreyMuBU1opwEmN4IzzpEXGM5UaD7YQV7K+kMIT1rB+Krt6Qk3zteD7qGlzzNI2ehDGq1uKFbQRHPr0L6K3JFCnRVCwxNiFuoWKoJ5UB4lPHehGmApD+E/4jPDY3HVafD/wiMxtI0HgaTbj5skbHSpC3IyZU3d46xU4RN5gvsFAKarcsag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
+ header.d=asem.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MIIeTQCFPpQtVJcL0dcK8tvcoMmRPwh+pvHrOHOwcQw=;
+ b=hYPjWcfBEMCvXfLPSI++rMpnSuPFYtPDFqCDKxbetgKlYp2pNJDudVGtG8AVG7Or4OF7OKHonpcrS7Fg3axTW+Is6jiTPhENr4vZymvnkrlG2d3JrhXrCkGqt1GFiHby99edpelNh1ziifZJK7Sgw+N43ayV6bf/dgIggikBTwQ=
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:273::14) by PA4PR01MB8993.eurprd01.prod.exchangelabs.com
+ (2603:10a6:102:2a5::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Mon, 23 Oct
+ 2023 09:28:03 +0000
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::ad2b:a1e7:8828:ba2f]) by DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::ad2b:a1e7:8828:ba2f%7]) with mapi id 15.20.6907.032; Mon, 23 Oct 2023
+ 09:28:03 +0000
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Conor Dooley <conor@kernel.org>
+CC:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/1] dt-bindings: backlight: mp3309c: remove two required
+ properties
+Thread-Topic: [PATCH 1/1] dt-bindings: backlight: mp3309c: remove two required
+ properties
+Thread-Index: AQHaA10IhwE5ZkDArkS4RoPMFlMBm7BS1g+AgARFCAA=
+Date:   Mon, 23 Oct 2023 09:28:03 +0000
+Message-ID: <DU2PR01MB803498DFD93E82DD3947D72DF9D8A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+References: <20231020135434.2598578-1-f.suligoi@asem.it>
+ <20231020135434.2598578-2-f.suligoi@asem.it>
+ <20231020-moonrise-senate-86d0edb2d404@spud>
+In-Reply-To: <20231020-moonrise-senate-86d0edb2d404@spud>
+Accept-Language: it-IT, en-US
 Content-Language: en-US
-To:     Zhenhua Huang <quic_zhenhuah@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@quicinc.com,
-        quic_tingweiz@quicinc.com
-References: <1698052857-6918-1-git-send-email-quic_zhenhuah@quicinc.com>
- <1698052857-6918-3-git-send-email-quic_zhenhuah@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1698052857-6918-3-git-send-email-quic_zhenhuah@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=asem.it;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU2PR01MB8034:EE_|PA4PR01MB8993:EE_
+x-ms-office365-filtering-correlation-id: eb3e2b97-e52a-4bfa-5409-08dbd3aa5b73
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: DZ8r1WpLSXZIAIAl4E/XHyDixUhJD8TIsbJX118j1P9WBT/9Aod6K/Jvbexe51AQhjyJ2TsF0ahczSDlCROag7v8VnTmdRT0/zj1Hx1m+RkYUGklgHN7KX6zF89WfzydCLzig2bk66DYqSbMAOyoXfGJNlJOPF6yDInSn/nzOvNKNJRrnkUfel4UpSEb1a8XD7OYKTkYbzNCf3Rqn4ag/WA1VWTYfjmxUvSjMqp1sNU6X36GDbyWr7oT0oH6y3MPDjnkdb+gf4k81oTsS2C1cKu638jPAFK6fHvXYP1Tjt6KTv9+gkEkyVCSjIckSl/eEZRnUsiBhaEmJ2EgSABg2iw77b19L220v9lAGwcKSd0XO/D2VGPfmuvepGrk2tVdXghtUIoicschaDUeeJlSdoRtMlmuNKgYstKZ48/N3yXeUVVF0wqENOqReooblMEcObX5D3SeLzJyLbqCI2E2hHrI+2s6JPd7EcObelX6WSHM02iUZJaVoNRcMEnJ+XrP9n4Pq2T4eRlFEixyqZnfeNuZL01TWteY/DdprK7MD9hrm/rfbFg3C1U1h2ObwJXBc0JQRCyx0C8yv26tzuhDwMB96HFVBWStOJGfeU7qsAE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR01MB8034.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(39840400004)(396003)(366004)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(26005)(38070700009)(38100700002)(2906002)(55016003)(41300700001)(86362001)(52536014)(5660300002)(7416002)(8676002)(8936002)(33656002)(4326008)(7696005)(6506007)(71200400001)(478600001)(122000001)(66476007)(6916009)(66946007)(316002)(76116006)(54906003)(64756008)(66446008)(66556008)(83380400001)(966005)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?H+vv07Mkm505hq2oxnZ7TOJWr6dZDquYHE5F4lV62nLkIdu8OxnprXExdjEX?=
+ =?us-ascii?Q?H3SjQjWtJV52NirpycnNKqv/xhdpp26bsijNSuPRvRicsi0bfr80UQMvfHx5?=
+ =?us-ascii?Q?l/h2WMgyiaG9z9vks3eXzHvaF9ygbAEGf0SwOrQdmDtU0xCCgWAs1WYzWAaN?=
+ =?us-ascii?Q?q47omqkufj59PoYUNRlEAWDIebPjWxw15GlpLW4nckUS3CrueLyYXwR7A4Em?=
+ =?us-ascii?Q?ybo4bTN5pSA9NpQcwWMuLBteMune1wK8kP+9NMVl/jZ4jyz9Omi7B0U+hmnn?=
+ =?us-ascii?Q?uvUEpHMDO1cKaqyEULuAuWUFVAiAe1lI8qQpzE39ydh4g4P9Sra1h9+VLlkp?=
+ =?us-ascii?Q?7rQX/iNx+10wy4rXJsqileRJrJJpeA6HmXB/NAVUzv8CBVAzidj4Bf2xuig6?=
+ =?us-ascii?Q?z5F05YnnSeWZjHg78JHCXjyuWTQf8mU/GxKLSl64DkFBBplOIofVfx0V3gkZ?=
+ =?us-ascii?Q?8FqE2WF4JSC2/wCwc5MZi1vk5i+t/r4t/gzHP3APDVHCtObWikQhCk+WSenB?=
+ =?us-ascii?Q?y0HWsbCNSd2El+WqYgC+NigDkZg12tyifSedJ6/k9OfARhbmQyDYeBeumAXP?=
+ =?us-ascii?Q?eVOSiaRJruTgJix6MeBrYtg6vJsb1FGImVJ9CijZ7dPZbSCdaXYUqpDRDOr8?=
+ =?us-ascii?Q?KUEqnlykqLAhpS7uHTSiVviLO7N4W4HUVn9r96AGBTgaFuvZXlMw7uKasGjq?=
+ =?us-ascii?Q?9sM/p6U1GCmLLRUc8Jwkch5hlWAQrTS8cDzaagGfFN3JuuoTkPOaw2hQX0yP?=
+ =?us-ascii?Q?8bknV3KH8eci2bpals/CCIXhjgedvwMOhraauVgfuRkt8WwSzLMX/68flw/q?=
+ =?us-ascii?Q?ulTrdYc/ZTajt9HCB3O3hbOFt0f3thamyVHJ4c4E6Ak8lui3Sy33ip62evQb?=
+ =?us-ascii?Q?dw74HYN0wmnbl+W1kDhpyUebj1eJfK8eLOo1mqhcrNLo3nnSSmQjUa5lA8gn?=
+ =?us-ascii?Q?JCYl/YZqFcrVPGo1foRogcZSklZS5HtiMTB6p6Pm8tj70jF//tWiiPZbYVgN?=
+ =?us-ascii?Q?NyaG6GufbsDzjVLOqxyf+D0v3gR4vl1h/XghE0vsQ0wV0GrG5snd3ICUjaZ0?=
+ =?us-ascii?Q?6Unua821q8HF1qCQ9KBOkXEifK5Nd8E+SOp/TX4tIlEEfm46rASLI1U5lmMr?=
+ =?us-ascii?Q?B3JmLyT6k9v+qVrhtYas8/XgZyMizS46Wj6ZUMd//V2L3UkBdv0U0gYUhRe3?=
+ =?us-ascii?Q?mGCIM6oRu2ES6sckUEve4qMQlGQ9ekSCkaDT/EV40MxHp6aywpBaZnfCoCqN?=
+ =?us-ascii?Q?4zNRRRSejrOeJkaUOEc7SyFuDgz6XydL/bK4MJvgI/obA+qA8xsBX2cpNl6X?=
+ =?us-ascii?Q?n2zhCXhvFuGTWUzlK+G+p94lVOnxgovRJHjCXXphos653qGu2cNwkXtun2Xa?=
+ =?us-ascii?Q?jqbBnPAdn7b8NunPQAwEsyEPK3yOgGw1Ujded3p+r9q7oADM5L4htDjrPppM?=
+ =?us-ascii?Q?OY85OfAouMOhbo59hyXtztkwP0jjVAe/nnJolg8GU6Q/Y7gqGgXQiPHSPEVb?=
+ =?us-ascii?Q?s938FLYN62liAvttghoOf2766BfKqMVm5YDWUcxY1oQmMf3bT7/k+VvMaRp0?=
+ =?us-ascii?Q?TFu2OvLGpbfh6hI2Wmk=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb3e2b97-e52a-4bfa-5409-08dbd3aa5b73
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2023 09:28:03.4908
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +5l3ihTdy+/skH0RcsuEZgNS1LVUDCboabDMJs2aGVy4BgWsD0HQ+7C/otgkGK/diVE4bXm+KCpH6b6Ug1yEbw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR01MB8993
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/2023 11:20, Zhenhua Huang wrote:
-> Add compatible for sm8250 IMEM.
-> 
-> Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/sram/qcom,imem.yaml | 1 +
->  1 file changed, 1 insertion(+)
+Hi Conor,
 
+...
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> On Fri, Oct 20, 2023 at 03:54:33PM +0200, Flavio Suligoi wrote:
+> > The two properties:
+> >
+> > - max-brightness
+> > - default brightness
+> >
+> > are not really required, so they can be removed from the "required"
+> > section.
+>=20
+> Why are they not required? You need to provide an explanation.
 
----
+The "max-brightness" is not more used now in the driver (I used it in the f=
+irst version
+of the driver).
+The "default-brightness", if omitted in the DT, is managed by the device dr=
+iver,
+using a default value. This depends on the dimming mode used:
 
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
+- for the "analog mode", via I2C commands, this value is fixed by hardware =
+(=3D31)
+- while in case of pwm mode the default used is the last value of the=20
+  brightness-levels array.
 
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
+Also the brightness-levels array is not required; if it is omitted, the dri=
+ver uses=20
+a default array of 0..255 and the "default-brightness" is the last one, whi=
+ch is "255".
 
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+> > Other changes:
+> >
+> > - improve the backlight working mode description, in the "description"
+> >   section
+>=20
+> > - update the example, removing the "max-brightness" and introducing the
+> >   "brightess-levels" property
+>=20
+> Why is this more useful?
 
-Best regards,
-Krzysztof
+I introduced the "brightness-levels" instead of "max-brightness" for homoge=
+neity,
+since the "analog mode" dimming has a brightness-levels array fixed by hard=
+ware (0..31).
+In this way also the "pwm" mode can use the same concepts of array of level=
+s.
 
+>=20
+> Cheers,
+> Conor.
+
+Thanks for your help.
+Flavio.
+
+>=20
+> >
+> > Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> > ---
+> >  .../bindings/leds/backlight/mps,mp3309c.yaml           | 10 ++++------
+> >  1 file changed, 4 insertions(+), 6 deletions(-)
+> >
+> > diff --git
+> a/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> > index 4191e33626f5..527a37368ed7 100644
+> > ---
+> a/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> > +++
+> b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> > @@ -14,8 +14,8 @@ description: |
+> >    programmable switching frequency to optimize efficiency.
+> >    It supports two different dimming modes:
+> >
+> > -  - analog mode, via I2C commands (default)
+> > -  - PWM controlled mode.
+> > +  - analog mode, via I2C commands, as default mode (32 dimming levels)
+> > +  - PWM controlled mode (optional)
+> >
+> >    The datasheet is available at:
+> >    https://www.monolithicpower.com/en/mp3309c.html
+> > @@ -50,8 +50,6 @@ properties:
+> >  required:
+> >    - compatible
+> >    - reg
+> > -  - max-brightness
+> > -  - default-brightness
+> >
+> >  unevaluatedProperties: false
+> >
+> > @@ -66,8 +64,8 @@ examples:
+> >              compatible =3D "mps,mp3309c";
+> >              reg =3D <0x17>;
+> >              pwms =3D <&pwm1 0 3333333 0>; /* 300 Hz --> (1/f) * 1*10^9=
+ */
+> > -            max-brightness =3D <100>;
+> > -            default-brightness =3D <80>;
+> > +            brightness-levels =3D <0 4 8 16 32 64 128 255>;
+> > +            default-brightness =3D <6>;
+> >              mps,overvoltage-protection-microvolt =3D <24000000>;
+> >          };
+> >      };
+> > --
+> > 2.34.1
+> >
