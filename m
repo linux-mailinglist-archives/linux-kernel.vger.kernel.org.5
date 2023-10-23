@@ -2,346 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FACB7D3A54
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C267D3A58
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231979AbjJWPES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44958 "EHLO
+        id S230265AbjJWPEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbjJWPD7 (ORCPT
+        with ESMTP id S230289AbjJWPEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:03:59 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57DF10D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:03:56 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40806e40fccso25088085e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698073435; x=1698678235; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OxnVNSfczT25XAfpC4X+ICgFqABO9v8W+zLZSFvXeiM=;
-        b=aZ3wjmSB4wK1AMEgK9JVePF4wIh5FFIk3759cyb8PPoAC5CgvITQkoQ/i5Faoso23C
-         9yG9RICpLwUG9O8Lc7Dm5989rwusJCzmp5D5SSV6alXYTb3QB+l267OFzSTs9M8FEoop
-         X70dLJp/CHl5x7ZZXPlkvcilo1ae4hy2w8s/ZUJz3eCNzmoS5csgbvHFtkcw5Wo9ykat
-         7HmuceViMtwCY0Yzi8b+6gxTFF2BDReYEV/S1n3swFgiqMcN61MSYmbNHYm8IMjUCX7u
-         f+/ta1rJtJr4yy0DvSJ42oGHB0DoKLDaWEjayBygfXG9jXkIg5UxZe0mg+b6NgFTNWLC
-         TBng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698073435; x=1698678235;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OxnVNSfczT25XAfpC4X+ICgFqABO9v8W+zLZSFvXeiM=;
-        b=raCXl2jBMe/2z2XkO5XZAVuH8NkQc0r4sE4v90gnffwJEt7ge6bBl4z9+nHDLHidmI
-         cKx32MjKaNRal1/xC7rlcxMICvE7njrDmVX/Gt12guV2bhTREyjsJSlyv0FNTt6NwFBw
-         TV5tHz4/D8JrOrl/tbkwr+9mJ+2keytpZR37VfSaM5ydCBhmja/PGuAXdjvW/ZX/wdD6
-         BjGPuMJHGvmC58rMNcp6g5Jfa2ZjUCcz666sSeJJZEWCt1gJvuNmmhCsWyJE1cN0vaxo
-         lYRVvR7gA+maiX9WHXn3YVx7CpKVzvFRw4yGG7g9sr0/bZ79REXF1UguvB9Kn7sKrzHi
-         N0IQ==
-X-Gm-Message-State: AOJu0Yzep3OR59l7y1/dxL8A0ZpimZNA1Gnc6KuMKmR8cwSTYR7zjaA3
-        5ES+0Lri7hSW/BKjGOleyegk5g==
-X-Google-Smtp-Source: AGHT+IFEV9P4SYv3Mq2AD1k8zY8TM0n5nU74CWDiLKk9lEDFviX5NOMgo1MZdEEPYyj4PUPrC/QgvA==
-X-Received: by 2002:a05:600c:4c16:b0:401:d947:c8a9 with SMTP id d22-20020a05600c4c1600b00401d947c8a9mr7689387wmp.19.1698073434837;
-        Mon, 23 Oct 2023 08:03:54 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id b12-20020a05600c150c00b0040586360a36sm14235016wmg.17.2023.10.23.08.03.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 08:03:54 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Mon, 23 Oct 2023 17:03:48 +0200
-Subject: [PATCH v10 4/4] Input: goodix-berlin - add SPI support for Goodix
- Berlin Touchscreen IC
+        Mon, 23 Oct 2023 11:04:43 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CA210E2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:04:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1698073475;
+        bh=sDRdFc5BSFXVvCn+U20zgOqgig9pshAjBSzon0L8ejg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=JKe8XE5uQdUmcZRiPXBh6E0nCm7tDivCEs8ciX3zmC8j6iE6MK9m9HP23/u9r9L8s
+         i1iki/byqqXZuyaOGyIS/PT0kq7N9jcgPG+Ed8JZbDOXZmTZ0umiEINq83PdXSv4Cc
+         Sr8We8rVUQaLkKhnNO53dwnCMUwGnndeW+u2JseAIHMJR4IyvAaoqswZPuc/vGu3FN
+         Bd9LEn2Tc61G5sKBqjEKQIKqWX918rFC3ebrbeYzvjIjT2Tmqb2+zlv4fWOM0VQgJb
+         +Y7fyfSAoU5JQ2blarpxP1ZcVEZYBqEL2F1ACfFziPJAfXv+8HV+0nzyw2PDTk9Jge
+         fCV8Le3PNdKnQ==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SDdl70Tb2z1YjT;
+        Mon, 23 Oct 2023 11:04:35 -0400 (EDT)
+Message-ID: <c79ac631-61c7-4953-a657-74047a264029@efficios.com>
+Date:   Mon, 23 Oct 2023 11:04:49 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 1/2] sched/fair: Introduce UTIL_FITS_CAPACITY
+ feature (v2)
+Content-Language: en-US
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.c.chen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
+References: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
+ <20231019160523.1582101-2-mathieu.desnoyers@efficios.com>
+ <f40522de-b71d-4848-8aa3-5b87d38bb847@arm.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <f40522de-b71d-4848-8aa3-5b87d38bb847@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231023-topic-goodix-berlin-upstream-initial-v10-4-88eec2e51c0b@linaro.org>
-References: <20231023-topic-goodix-berlin-upstream-initial-v10-0-88eec2e51c0b@linaro.org>
-In-Reply-To: <20231023-topic-goodix-berlin-upstream-initial-v10-0-88eec2e51c0b@linaro.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Jeff LaBundy <jeff@labundy.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8067;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=IRI86qOlgcP+lY+pewvMbMLCeQCDU17m1zaFOv0kod4=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlNotVd0Jo22nQAJQxnxnbxLGkh2TGdgUR8IWQEevU
- 7hFsaIKJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZTaLVQAKCRB33NvayMhJ0RcVD/
- 40OtDOIPhmG+Aymkymx100I9ub1lwY3EsuY2+1Rc6gkYbVS2ZnL0fz8Tq/t/W94pnkMTqX4db2bmPT
- GV5/o3HRl44/4dIQjFeT0hlP45l8lb7qOxUhan3TDen7KZxBaYs2D5hAclL6Zs+zjhOsbn/hVhH4Up
- xf2dXnAQ9mhIlFQh9UTk755QKZ5/tyCOPuDTXmgLHc7GY+ETWva1PtvVFYnEEYCHrqa1XOmwV3r46M
- YXArcQnoWKo0LTy6xVd19BioyQ2H8LzplXDdd8gOTye709c4Q90qv/4/pTPMSVzDJR1gbG7o/FJlOA
- a/kbkvL0bepVxJoa4zPkTf5pzgeYUhUN5rbMi9ShCCIc5Vxz7oG/A60mYSowBAT6WeMICSt3chRoWj
- aHJhiPJp2lyb6sI2GuciqTc+y2b2j+4stQ0PY4YvJ1hUZFAtxkbwg4wpdIxaNxmKcyt7pG4UYr2XYQ
- U+INDLvLbWmOtDwFJ4Z0vlSP6wnmcC2/ufG4b5+SYubed74ziVrnlbZBFyYbnUgePZa7G2v3qnMAW4
- Cxe55r+ywqAZHY9XQlUe4B/oHo2Rr9Pap/8QuHMMglgh7qkR5odayTa0AA7Fc9iiuScB1e4LGnPzdS
- 8mcyti/gNnZzGv9mQ4PSQL1LFIq8W2LM8ux95rnnFGxeRys6nLDR77ynlLAg==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support for the new Goodix "Berlin" touchscreen ICs
-over the SPI interface.
+On 2023-10-23 10:11, Dietmar Eggemann wrote:
+> On 19/10/2023 18:05, Mathieu Desnoyers wrote:
 
-The driver doesn't use the regmap_spi code since the SPI messages
-needs to be prefixed, thus this custom regmap code.
+[...]
+>>   
+>> +static unsigned long scale_rt_capacity(int cpu);
+>> +
+>> +/*
+>> + * Returns true if adding the task utilization to the estimated
+>> + * utilization of the runnable tasks on @cpu does not exceed the
+>> + * capacity of @cpu.
+>> + *
+>> + * This considers only the utilization of _runnable_ tasks on the @cpu
+>> + * runqueue, excluding blocked and sleeping tasks. This is achieved by
+>> + * using the runqueue util_est.enqueued.
+>> + */
+>> +static inline bool task_fits_remaining_cpu_capacity(unsigned long task_util,
+>> +						    int cpu)
+> 
+> This is almost like the existing task_fits_cpu(p, cpu) (used in Capacity
+> Aware Scheduling (CAS) for Asymmetric CPU capacity systems) except the
+> latter only uses `util = task_util_est(p)` and deals with uclamp as well
+> and only tests whether p could fit on the CPU.
 
-This initial driver is derived from the Goodix goodix_ts_berlin
-available at [1] and [2] and only supports the GT9916 IC
-present on the Qualcomm SM8550 MTP & QRD touch panel.
+This is indeed a major difference between how asym capacity check works 
+and what is introduced here:
 
-The current implementation only supports BerlinD, aka GT9916.
+asym capacity check only checks whether the given task theoretically 
+fits in the cpu if that cpu was completely idle, without considering the 
+current cpu utilization.
 
-[1] https://github.com/goodix/goodix_ts_berlin
-[2] https://git.codelinaro.org/clo/la/platform/vendor/opensource/touch-drivers
+My approach is to consider the current util_est of the cpu to check 
+whether the task fits in the remaining capacity.
 
-Reviewed-by: Jeff LaBundy <jeff@labundy.com>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- drivers/input/touchscreen/Kconfig             |  14 ++
- drivers/input/touchscreen/Makefile            |   1 +
- drivers/input/touchscreen/goodix_berlin_spi.c | 177 ++++++++++++++++++++++++++
- 3 files changed, 192 insertions(+)
+I did not want to use the existing task_fits_cpu() helper because the 
+notions of uclamp bounds appear to be heavily tied to the fact that it 
+checks whether the task fits in an _idle_ runqueue, whereas the check I 
+am introducing here is much more restrictive: it checks that the task 
+fits on the runqueue within the remaining capacity.
 
-diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index cc7b88118158..c821fe3ee794 100644
---- a/drivers/input/touchscreen/Kconfig
-+++ b/drivers/input/touchscreen/Kconfig
-@@ -433,6 +433,20 @@ config TOUCHSCREEN_GOODIX_BERLIN_I2C
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called goodix_berlin_i2c.
- 
-+config TOUCHSCREEN_GOODIX_BERLIN_SPI
-+	tristate "Goodix Berlin SPI touchscreen"
-+	depends on SPI_MASTER
-+	select REGMAP
-+	select TOUCHSCREEN_GOODIX_BERLIN_CORE
-+	help
-+	  Say Y here if you have a Goodix Berlin IC connected to
-+	  your system via SPI.
-+
-+	  If unsure, say N.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called goodix_berlin_spi.
-+
- config TOUCHSCREEN_HIDEEP
- 	tristate "HiDeep Touch IC"
- 	depends on I2C
-diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-index 7ef677cf7a10..a81cb5aa21a5 100644
---- a/drivers/input/touchscreen/Makefile
-+++ b/drivers/input/touchscreen/Makefile
-@@ -49,6 +49,7 @@ obj-$(CONFIG_TOUCHSCREEN_FUJITSU)	+= fujitsu_ts.o
- obj-$(CONFIG_TOUCHSCREEN_GOODIX)	+= goodix_ts.o
- obj-$(CONFIG_TOUCHSCREEN_GOODIX_BERLIN_CORE)	+= goodix_berlin_core.o
- obj-$(CONFIG_TOUCHSCREEN_GOODIX_BERLIN_I2C)	+= goodix_berlin_i2c.o
-+obj-$(CONFIG_TOUCHSCREEN_GOODIX_BERLIN_SPI)	+= goodix_berlin_spi.o
- obj-$(CONFIG_TOUCHSCREEN_HIDEEP)	+= hideep.o
- obj-$(CONFIG_TOUCHSCREEN_HYNITRON_CSTXXX)	+= hynitron_cstxxx.o
- obj-$(CONFIG_TOUCHSCREEN_ILI210X)	+= ili210x.o
-diff --git a/drivers/input/touchscreen/goodix_berlin_spi.c b/drivers/input/touchscreen/goodix_berlin_spi.c
-new file mode 100644
-index 000000000000..502b143e9e05
---- /dev/null
-+++ b/drivers/input/touchscreen/goodix_berlin_spi.c
-@@ -0,0 +1,177 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Goodix Berlin Touchscreen Driver
-+ *
-+ * Copyright (C) 2020 - 2021 Goodix, Inc.
-+ * Copyright (C) 2023 Linaro Ltd.
-+ *
-+ * Based on goodix_ts_berlin driver.
-+ */
-+#include <asm/unaligned.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/spi/spi.h>
-+
-+#include "goodix_berlin.h"
-+
-+#define GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN	1
-+#define GOODIX_BERLIN_REGISTER_WIDTH		4
-+#define GOODIX_BERLIN_SPI_READ_DUMMY_LEN	3
-+#define GOODIX_BERLIN_SPI_READ_PREFIX_LEN	(GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN + \
-+						 GOODIX_BERLIN_REGISTER_WIDTH + \
-+						 GOODIX_BERLIN_SPI_READ_DUMMY_LEN)
-+#define GOODIX_BERLIN_SPI_WRITE_PREFIX_LEN	(GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN + \
-+						 GOODIX_BERLIN_REGISTER_WIDTH)
-+
-+#define GOODIX_BERLIN_SPI_WRITE_FLAG		0xF0
-+#define GOODIX_BERLIN_SPI_READ_FLAG		0xF1
-+
-+static int goodix_berlin_spi_read(void *context, const void *reg_buf,
-+				  size_t reg_size, void *val_buf,
-+				  size_t val_size)
-+{
-+	struct spi_device *spi = context;
-+	struct spi_transfer xfers;
-+	struct spi_message spi_msg;
-+	const u32 *reg = reg_buf; /* reg is stored as native u32 at start of buffer */
-+	u8 *buf;
-+	int error;
-+
-+	if (reg_size != GOODIX_BERLIN_REGISTER_WIDTH)
-+		return -EINVAL;
-+
-+	buf = kzalloc(GOODIX_BERLIN_SPI_READ_PREFIX_LEN + val_size, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	spi_message_init(&spi_msg);
-+	memset(&xfers, 0, sizeof(xfers));
-+
-+	/* buffer format: 0xF1 + addr(4bytes) + dummy(3bytes) + data */
-+	buf[0] = GOODIX_BERLIN_SPI_READ_FLAG;
-+	put_unaligned_be32(*reg, buf + GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN);
-+	memset(buf + GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN + GOODIX_BERLIN_REGISTER_WIDTH,
-+	       0xff, GOODIX_BERLIN_SPI_READ_DUMMY_LEN);
-+
-+	xfers.tx_buf = buf;
-+	xfers.rx_buf = buf;
-+	xfers.len = GOODIX_BERLIN_SPI_READ_PREFIX_LEN + val_size;
-+	xfers.cs_change = 0;
-+	spi_message_add_tail(&xfers, &spi_msg);
-+
-+	error = spi_sync(spi, &spi_msg);
-+	if (error < 0)
-+		dev_err(&spi->dev, "spi transfer error, %d", error);
-+	else
-+		memcpy(val_buf, buf + GOODIX_BERLIN_SPI_READ_PREFIX_LEN, val_size);
-+
-+	kfree(buf);
-+	return error;
-+}
-+
-+static int goodix_berlin_spi_write(void *context, const void *data,
-+				   size_t count)
-+{
-+	unsigned int len = count - GOODIX_BERLIN_REGISTER_WIDTH;
-+	struct spi_device *spi = context;
-+	struct spi_transfer xfers;
-+	struct spi_message spi_msg;
-+	const u32 *reg = data; /* reg is stored as native u32 at start of buffer */
-+	u8 *buf;
-+	int error;
-+
-+	buf = kzalloc(GOODIX_BERLIN_SPI_WRITE_PREFIX_LEN + len, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	spi_message_init(&spi_msg);
-+	memset(&xfers, 0, sizeof(xfers));
-+
-+	buf[0] = GOODIX_BERLIN_SPI_WRITE_FLAG;
-+	put_unaligned_be32(*reg, buf + GOODIX_BERLIN_SPI_TRANS_PREFIX_LEN);
-+	memcpy(buf + GOODIX_BERLIN_SPI_WRITE_PREFIX_LEN,
-+	       data + GOODIX_BERLIN_REGISTER_WIDTH, len);
-+
-+	xfers.tx_buf = buf;
-+	xfers.len = GOODIX_BERLIN_SPI_WRITE_PREFIX_LEN + len;
-+	xfers.cs_change = 0;
-+	spi_message_add_tail(&xfers, &spi_msg);
-+
-+	error = spi_sync(spi, &spi_msg);
-+	if (error < 0)
-+		dev_err(&spi->dev, "spi transfer error, %d", error);
-+
-+	kfree(buf);
-+	return error;
-+}
-+
-+static const struct regmap_config goodix_berlin_spi_regmap_conf = {
-+	.reg_bits = 32,
-+	.val_bits = 8,
-+	.read = goodix_berlin_spi_read,
-+	.write = goodix_berlin_spi_write,
-+};
-+
-+/* vendor & product left unassigned here, should probably be updated from fw info */
-+static const struct input_id goodix_berlin_spi_input_id = {
-+	.bustype = BUS_SPI,
-+};
-+
-+static int goodix_berlin_spi_probe(struct spi_device *spi)
-+{
-+	struct regmap_config regmap_config;
-+	struct regmap *regmap;
-+	size_t max_size;
-+	int error = 0;
-+
-+	spi->mode = SPI_MODE_0;
-+	spi->bits_per_word = 8;
-+	error = spi_setup(spi);
-+	if (error)
-+		return error;
-+
-+	max_size = spi_max_transfer_size(spi);
-+
-+	regmap_config = goodix_berlin_spi_regmap_conf;
-+	regmap_config.max_raw_read = max_size - GOODIX_BERLIN_SPI_READ_PREFIX_LEN;
-+	regmap_config.max_raw_write = max_size - GOODIX_BERLIN_SPI_WRITE_PREFIX_LEN;
-+
-+	regmap = devm_regmap_init(&spi->dev, NULL, spi, &regmap_config);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	error = goodix_berlin_probe(&spi->dev, spi->irq,
-+				    &goodix_berlin_spi_input_id, regmap);
-+	if (error)
-+		return error;
-+
-+	return 0;
-+}
-+
-+static const struct spi_device_id goodix_berlin_spi_ids[] = {
-+	{ "gt9916" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(spi, goodix_berlin_spi_ids);
-+
-+static const struct of_device_id goodix_berlin_spi_of_match[] = {
-+	{ .compatible = "goodix,gt9916", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, goodix_berlin_spi_of_match);
-+
-+static struct spi_driver goodix_berlin_spi_driver = {
-+	.driver = {
-+		.name = "goodix-berlin-spi",
-+		.of_match_table = goodix_berlin_spi_of_match,
-+		.pm = pm_sleep_ptr(&goodix_berlin_pm_ops),
-+	},
-+	.probe = goodix_berlin_spi_probe,
-+	.id_table = goodix_berlin_spi_ids,
-+};
-+module_spi_driver(goodix_berlin_spi_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Goodix Berlin SPI Touchscreen driver");
-+MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
+> 
+> Or like find_energy_efficient_cpu() (feec(), used in
+> Energy-Aware-Scheduling (EAS)) which uses cpu_util(cpu, p, cpu, 0) to get:
+> 
+>    max(util_avg(CPU + p), util_est(CPU + p))
+
+I've tried using cpu_util(), but unfortunately anything that considers 
+blocked/sleeping tasks in its utilization total does not work for my 
+use-case.
+
+ From cpu_util():
+
+  * CPU utilization is the sum of running time of runnable tasks plus the
+  * recent utilization of currently non-runnable tasks on that CPU.
+
+> 
+> feec()
+>      ...
+>      for (; pd; pd = pd->next)
+>          ...
+>          util = cpu_util(cpu, p, cpu, 0);
+>          ...
+>          fits = util_fits_cpu(util, util_min, util_max, cpu)
+>                                     ^^^^^^^^^^^^^^^^^^
+>                                    not used when uclamp is not active (1)
+>              ...
+>              capacity = capacity_of(cpu)
+>              fits = fits_capacity(util, capacity)
+>              if (!uclamp_is_used()) (1)
+>                  return fits
+> 
+> So not introducing new functions like task_fits_remaining_cpu_capacity()
+> in this area and using existing one would be good.
+
+If the notion of uclamp is not tied to the way asym capacity check is 
+done against a theoretically idle runqueue, I'd be OK with using this, 
+but so far both appear to be very much tied.
+
+When I stumbled on this fundamental difference between asym cpu capacity 
+check and the check introduced here, I've started wondering whether the 
+asym cpu capacity check would benefit from considering the target cpu 
+current utilization as well.
+
+> 
+>> +{
+>> +	unsigned long total_util;
+>> +
+>> +	if (!sched_util_fits_capacity_active())
+>> +		return false;
+>> +	total_util = READ_ONCE(cpu_rq(cpu)->cfs.avg.util_est.enqueued) + task_util;
+>> +	return fits_capacity(total_util, scale_rt_capacity(cpu));
+> 
+> Why not use:
+> 
+> static unsigned long capacity_of(int cpu)
+>      return cpu_rq(cpu)->cpu_capacity;
+> 
+> which is maintained in update_cpu_capacity() as scale_rt_capacity(cpu)?
+
+The reason for preferring scale_rt_capacity(cpu) over capacity_of(cpu) 
+is that update_cpu_capacity() only runs periodically every 
+balance-interval, therefore providing a coarse-grained remaining 
+capacity approximation with respect to irq, rt, dl, and thermal utilization.
+
+If it turns out that being coarse-grained is good enough, we may be able 
+to save some cycles by using capacity_of(), but not without carefully 
+considering the impacts of being imprecise.
+
+> 
+> [...]
+> 
+>> @@ -7173,7 +7200,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>   	if (recent_used_cpu != prev &&
+>>   	    recent_used_cpu != target &&
+>>   	    cpus_share_cache(recent_used_cpu, target) &&
+>> -	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
+>> +	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu) ||
+>> +	    task_fits_remaining_cpu_capacity(task_util, recent_used_cpu)) &&
+>>   	    cpumask_test_cpu(recent_used_cpu, p->cpus_ptr) &&
+>>   	    asym_fits_cpu(task_util, util_min, util_max, recent_used_cpu)) {
+>>   		return recent_used_cpu;
+>> diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+>> index ee7f23c76bd3..9a84a1401123 100644
+>> --- a/kernel/sched/features.h
+>> +++ b/kernel/sched/features.h
+>> @@ -97,6 +97,12 @@ SCHED_FEAT(WA_BIAS, true)
+>>   SCHED_FEAT(UTIL_EST, true)
+>>   SCHED_FEAT(UTIL_EST_FASTUP, true)
+> 
+> IMHO, asymmetric CPU capacity systems would have to disable the sched
+> feature UTIL_FITS_CAPACITY. Otherwise CAS could deliver different
+> results. task_fits_remaining_cpu_capacity() and asym_fits_cpu() work
+> slightly different.
+
+I don't think they should be mutually exclusive. We should look into the 
+differences between those two more closely to make them work nicely 
+together instead. For instance, why does asym capacity only consider 
+whether tasks fit in a theoretically idle runqueue, when it could use 
+the current utilization of the runqueue to check that the task fits in 
+the remaining capacity ?
+
+Unfortunately I don't have a machine with asym cpu to test locally.
+
+Thanks for your feedback !
+
+Mathieu
+
+
+> 
+> [...]
+> 
 
 -- 
-2.34.1
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
