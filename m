@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9827D3C7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DE87D3C81
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbjJWQ3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 12:29:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
+        id S233722AbjJWQ3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 12:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbjJWQ3f (ORCPT
+        with ESMTP id S229544AbjJWQ3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Oct 2023 12:29:35 -0400
-Received: from out-201.mta1.migadu.com (out-201.mta1.migadu.com [95.215.58.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5572E4
+Received: from out-205.mta1.migadu.com (out-205.mta1.migadu.com [IPv6:2001:41d0:203:375::cd])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02413E6
         for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:29:31 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
@@ -22,10 +22,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6w0l/5/OLmmiPtUBy12XvNW481vH2W+yw4PJnFK30wA=;
-        b=tTmhSqriTq1xAUwIMKx9hsGiOaqTSZIq/wKJLXRg6daSa2A/wpp5RWjZ1i+KFXZWKiTvL7
-        FT80+nqHJsuFFL2EcMj7absCsQ1tHdiG6bPU8EWrNzLrOT2cqyLQvL1bQUd/tEodCi1gSB
-        pSo03HvvDVMKsmPPsyN4xZhauDuuzOs=
+        bh=NZ9DxgJteIUWBZVu3uTAKUKrmlqiVCjIJZsHKffVHuY=;
+        b=t+UnmZVxxGN5KzWEQTBmXitTlS6kZTAGzoq0dlMyEevn1HxA0s/x7HvVUtWknOMuAkjIeo
+        BUBxiie7hZs3gjhcBL/qrihnoFcL2dZNbSEVqgM/Rho1AztZFu7TnVgjNbIz/DOVY1yTw3
+        E63W+Bv8C9VotbqWpTxfMOF8IeJvWIk=
 From:   andrey.konovalov@linux.dev
 To:     Marco Elver <elver@google.com>,
         Alexander Potapenko <glider@google.com>
@@ -37,9 +37,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v3 06/19] lib/stackdepot: fix and clean-up atomic annotations
-Date:   Mon, 23 Oct 2023 18:22:37 +0200
-Message-Id: <8f649d7e5919c56bcc5d2d356c9584fdcb87800e.1698077459.git.andreyknvl@google.com>
+Subject: [PATCH v3 07/19] lib/stackdepot: rework helpers for depot_alloc_stack
+Date:   Mon, 23 Oct 2023 18:22:38 +0200
+Message-Id: <a09397efb805aeafafe33bdcf07813b0ffa0e3ea.1698077459.git.andreyknvl@google.com>
 In-Reply-To: <cover.1698077459.git.andreyknvl@google.com>
 References: <cover.1698077459.git.andreyknvl@google.com>
 MIME-Version: 1.0
@@ -56,125 +56,187 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Drop smp_load_acquire from next_pool_required in depot_init_pool, as both
-depot_init_pool and the all smp_store_release's to this variable are
-executed under the stack depot lock.
+Split code in depot_alloc_stack and depot_init_pool into 3 functions:
 
-Also simplify and clean up comments accompanying the use of atomic
-accesses in the stack depot code.
+1. depot_keep_next_pool that keeps preallocated memory for the next pool
+   if required.
+
+2. depot_update_pools that moves on to the next pool if there's no space
+   left in the current pool, uses preallocated memory for the new current
+   pool if required, and calls depot_keep_next_pool otherwise.
+
+3. depot_alloc_stack that calls depot_update_pools and then allocates
+   a stack record as before.
+
+This makes it somewhat easier to follow the logic of depot_alloc_stack
+and also serves as a preparation for implementing the eviction of stack
+records from the stack depot.
 
 Reviewed-by: Alexander Potapenko <glider@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
 ---
 
-This patch is not strictly required, as the atomic accesses are fully
-removed in one of the latter patches. However, I decided to keep the
-patch just in case we end up needing these atomics in the following
-iterations of this series.
-
 Changes v2->v3:
-- Keep parentheses when referring to functions in comments.
-- Add comment that explains why depot_init_pool reads next_pool_required
-  non-atomically.
-
-Changes v1->v2:
-- Minor comment fix as suggested by Marco.
-- Drop READ_ONCE marking for next_pool_required.
+- Add parentheses when referring to function calls in comments.
 ---
- lib/stackdepot.c | 29 ++++++++++++++---------------
- 1 file changed, 14 insertions(+), 15 deletions(-)
+ lib/stackdepot.c | 86 +++++++++++++++++++++++++++---------------------
+ 1 file changed, 49 insertions(+), 37 deletions(-)
 
 diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 128ece21afe9..60aea549429a 100644
+index 60aea549429a..3f921aaae44a 100644
 --- a/lib/stackdepot.c
 +++ b/lib/stackdepot.c
-@@ -225,10 +225,10 @@ static void depot_init_pool(void **prealloc)
+@@ -219,11 +219,11 @@ int stack_depot_init(void)
+ }
+ EXPORT_SYMBOL_GPL(stack_depot_init);
+ 
+-/* Uses preallocated memory to initialize a new stack depot pool. */
+-static void depot_init_pool(void **prealloc)
++/* Keeps the preallocated memory to be used for the next stack depot pool. */
++static void depot_keep_next_pool(void **prealloc)
+ {
  	/*
- 	 * If the next pool is already initialized or the maximum number of
+-	 * If the next pool is already initialized or the maximum number of
++	 * If the next pool is already saved or the maximum number of
  	 * pools is reached, do not use the preallocated memory.
--	 * smp_load_acquire() here pairs with smp_store_release() below and
--	 * in depot_alloc_stack().
-+	 * Access next_pool_required non-atomically, as there are no concurrent
-+	 * write accesses to this variable.
- 	 */
--	if (!smp_load_acquire(&next_pool_required))
-+	if (!next_pool_required)
+ 	 * Access next_pool_required non-atomically, as there are no concurrent
+ 	 * write accesses to this variable.
+@@ -231,44 +231,34 @@ static void depot_init_pool(void **prealloc)
+ 	if (!next_pool_required)
  		return;
  
- 	/* Check if the current pool is not yet allocated. */
-@@ -249,8 +249,8 @@ static void depot_init_pool(void **prealloc)
- 		 * At this point, either the next pool is initialized or the
- 		 * maximum number of pools is reached. In either case, take
- 		 * note that initializing another pool is not required.
--		 * This smp_store_release pairs with smp_load_acquire() above
--		 * and in stack_depot_save().
-+		 * smp_store_release() pairs with smp_load_acquire() in
-+		 * stack_depot_save().
- 		 */
- 		smp_store_release(&next_pool_required, 0);
+-	/* Check if the current pool is not yet allocated. */
+-	if (stack_pools[pool_index] == NULL) {
+-		/* Use the preallocated memory for the current pool. */
+-		stack_pools[pool_index] = *prealloc;
++	/*
++	 * Use the preallocated memory for the next pool
++	 * as long as we do not exceed the maximum number of pools.
++	 */
++	if (pool_index + 1 < DEPOT_MAX_POOLS) {
++		stack_pools[pool_index + 1] = *prealloc;
+ 		*prealloc = NULL;
+-	} else {
+-		/*
+-		 * Otherwise, use the preallocated memory for the next pool
+-		 * as long as we do not exceed the maximum number of pools.
+-		 */
+-		if (pool_index + 1 < DEPOT_MAX_POOLS) {
+-			stack_pools[pool_index + 1] = *prealloc;
+-			*prealloc = NULL;
+-		}
+-		/*
+-		 * At this point, either the next pool is initialized or the
+-		 * maximum number of pools is reached. In either case, take
+-		 * note that initializing another pool is not required.
+-		 * smp_store_release() pairs with smp_load_acquire() in
+-		 * stack_depot_save().
+-		 */
+-		smp_store_release(&next_pool_required, 0);
  	}
-@@ -273,7 +273,7 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
++
++	/*
++	 * At this point, either the next pool is kept or the maximum
++	 * number of pools is reached. In either case, take note that
++	 * keeping another pool is not required.
++	 * smp_store_release() pairs with smp_load_acquire() in
++	 * stack_depot_save().
++	 */
++	smp_store_release(&next_pool_required, 0);
+ }
+ 
+-/* Allocates a new stack in a stack depot pool. */
+-static struct stack_record *
+-depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
++/* Updates refences to the current and the next stack depot pools. */
++static bool depot_update_pools(size_t required_size, void **prealloc)
+ {
+-	struct stack_record *stack;
+-	size_t required_size = DEPOT_STACK_RECORD_SIZE;
+-
+ 	/* Check if there is not enough space in the current pool. */
+ 	if (unlikely(pool_offset + required_size > DEPOT_POOL_SIZE)) {
+ 		/* Bail out if we reached the pool limit. */
+ 		if (unlikely(pool_index + 1 >= DEPOT_MAX_POOLS)) {
+ 			WARN_ONCE(1, "Stack depot reached limit capacity");
+-			return NULL;
++			return false;
+ 		}
  
  		/*
- 		 * Move on to the next pool.
--		 * WRITE_ONCE pairs with potential concurrent read in
-+		 * WRITE_ONCE() pairs with potential concurrent read in
- 		 * stack_depot_fetch().
+@@ -278,9 +268,10 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
  		 */
  		WRITE_ONCE(pool_index, pool_index + 1);
-@@ -281,8 +281,8 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+ 		pool_offset = 0;
++
  		/*
  		 * If the maximum number of pools is not reached, take note
- 		 * that the next pool needs to initialized.
--		 * smp_store_release() here pairs with smp_load_acquire() in
--		 * stack_depot_save() and depot_init_pool().
-+		 * smp_store_release() pairs with smp_load_acquire() in
-+		 * stack_depot_save().
+-		 * that the next pool needs to initialized.
++		 * that the next pool needs to be initialized.
+ 		 * smp_store_release() pairs with smp_load_acquire() in
+ 		 * stack_depot_save().
  		 */
- 		if (pool_index + 1 < DEPOT_MAX_POOLS)
+@@ -288,9 +279,30 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
  			smp_store_release(&next_pool_required, 1);
-@@ -323,7 +323,7 @@ static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
- {
+ 	}
+ 
+-	/* Assign the preallocated memory to a pool if required. */
++	/* Check if the current pool is not yet allocated. */
++	if (*prealloc && stack_pools[pool_index] == NULL) {
++		/* Use the preallocated memory for the current pool. */
++		stack_pools[pool_index] = *prealloc;
++		*prealloc = NULL;
++		return true;
++	}
++
++	/* Otherwise, try using the preallocated memory for the next pool. */
+ 	if (*prealloc)
+-		depot_init_pool(prealloc);
++		depot_keep_next_pool(prealloc);
++	return true;
++}
++
++/* Allocates a new stack in a stack depot pool. */
++static struct stack_record *
++depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
++{
++	struct stack_record *stack;
++	size_t required_size = DEPOT_STACK_RECORD_SIZE;
++
++	/* Update current and next pools if required and possible. */
++	if (!depot_update_pools(required_size, prealloc))
++		return NULL;
+ 
+ 	/* Check if we have a pool to save the stack trace. */
+ 	if (stack_pools[pool_index] == NULL)
+@@ -324,7 +336,7 @@ static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
  	union handle_parts parts = { .handle = handle };
  	/*
--	 * READ_ONCE pairs with potential concurrent write in
-+	 * READ_ONCE() pairs with potential concurrent write in
- 	 * depot_alloc_stack().
+ 	 * READ_ONCE() pairs with potential concurrent write in
+-	 * depot_alloc_stack().
++	 * depot_update_pools().
  	 */
  	int pool_index_cached = READ_ONCE(pool_index);
-@@ -413,8 +413,7 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
- 
- 	/*
- 	 * Fast path: look the stack trace up without locking.
--	 * The smp_load_acquire() here pairs with smp_store_release() to
--	 * |bucket| below.
-+	 * smp_load_acquire() pairs with smp_store_release() to |bucket| below.
- 	 */
- 	found = find_stack(smp_load_acquire(bucket), entries, nr_entries, hash);
- 	if (found)
-@@ -424,8 +423,8 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
- 	 * Check if another stack pool needs to be initialized. If so, allocate
+ 	void *pool;
+@@ -424,7 +436,7 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
  	 * the memory now - we won't be able to do that under the lock.
  	 *
--	 * The smp_load_acquire() here pairs with smp_store_release() to
--	 * |next_pool_inited| in depot_alloc_stack() and depot_init_pool().
-+	 * smp_load_acquire() pairs with smp_store_release() in
-+	 * depot_alloc_stack() and depot_init_pool().
+ 	 * smp_load_acquire() pairs with smp_store_release() in
+-	 * depot_alloc_stack() and depot_init_pool().
++	 * depot_update_pools() and depot_keep_next_pool().
  	 */
  	if (unlikely(can_alloc && smp_load_acquire(&next_pool_required))) {
  		/*
-@@ -451,8 +450,8 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
- 		if (new) {
- 			new->next = *bucket;
- 			/*
--			 * This smp_store_release() pairs with
--			 * smp_load_acquire() from |bucket| above.
-+			 * smp_store_release() pairs with smp_load_acquire()
-+			 * from |bucket| above.
- 			 */
- 			smp_store_release(bucket, new);
- 			found = new;
+@@ -461,7 +473,7 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+ 		 * Stack depot already contains this stack trace, but let's
+ 		 * keep the preallocated memory for the future.
+ 		 */
+-		depot_init_pool(&prealloc);
++		depot_keep_next_pool(&prealloc);
+ 	}
+ 
+ 	raw_spin_unlock_irqrestore(&pool_lock, flags);
 -- 
 2.25.1
 
