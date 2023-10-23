@@ -2,121 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 718FF7D393F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 717CE7D3949
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbjJWOZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
+        id S230335AbjJWO2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbjJWOZB (ORCPT
+        with ESMTP id S229686AbjJWO2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:25:01 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403CA100;
-        Mon, 23 Oct 2023 07:24:59 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9be3b66f254so478789766b.3;
-        Mon, 23 Oct 2023 07:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698071097; x=1698675897; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HOo26F7ddMgMPqh3lV7DV+yYzFbyW/ocxujpUxCvn1o=;
-        b=lAT3OapmgowhVHbWZU3fz3YaNtGXYTpkzlflvv1PSaoM4EbL1hgY/Pf4m36hWykw0W
-         KlVLBr4p0Neci30Ulm5ezYobobpgpoePKDMapsIFi7DH7w3IVmCdCtq2aeCUMND+6NEB
-         jMxmZWhH+VGhKVM78fNrKX2naCdbFJ88L5Qi1bbjMmSgt1UOo7bvRyEE+kkYT3bdY8bd
-         jqC1Q8ZTLbSsrbcZ5BGYf4VU6qKj/jAfrM48Q4UmHDnLPXhZ0nyJZv21FW5caAg+Os8n
-         6CJG49zwMm2qiAfeOZpAkqVCOFqzEPy8ePf5IJ1m5ODrSHFx0ozHStGiPo4df1hWySJu
-         Voog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698071097; x=1698675897;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=HOo26F7ddMgMPqh3lV7DV+yYzFbyW/ocxujpUxCvn1o=;
-        b=hlrlj96llRzwxOCvPcaHMz+ArXPkqLSkT1IdZf2o1QSd37F4Lkw7PK1KMwnKSM2Pv3
-         rZKUM0so/nQqIf7nrjbwQgr+XLydPB+fXW/WH7OVCAZd0dDR1/Uc0Yf7CZNTT5zVQt0b
-         qrzHut0QwPJzWwB+mEp0wivVPkg7gu8J7qUuB07lLtj75+eath56FWwpBspE0dSxIUlq
-         jg5Xi0mDEDMHHnD0df6JWIeJMQFsaI936r+IjaSZ59/OIJ3jG6ef990AEO+FhwM2pfuL
-         HwgLq9QBVZ+dAvqBOedrLbJ3uClB39sB2fuVNM5WHiN1WugWk3c6ric6s4FUTbXfYHwc
-         7vsw==
-X-Gm-Message-State: AOJu0YxxaO6Z1Ub9XRJ3tv+611vDVsWNiirYsStY2VcmrQ7f8pyyuVw9
-        epEDq0OIiK6kN2ec9cRCLVI=
-X-Google-Smtp-Source: AGHT+IGDPYcqybnKKGxteO1DjEkEWIGmlvC8h+HZU+3bP7Wgjm4MehUQpms5PfgDSWvJuk/B75OlaA==
-X-Received: by 2002:a17:906:db0a:b0:9bf:4915:22c4 with SMTP id xj10-20020a170906db0a00b009bf491522c4mr8074201ejb.67.1698071097349;
-        Mon, 23 Oct 2023 07:24:57 -0700 (PDT)
-Received: from ?IPv6:2003:f6:ef1b:2000:4423:d503:bf11:e8c6? (p200300f6ef1b20004423d503bf11e8c6.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:4423:d503:bf11:e8c6])
-        by smtp.gmail.com with ESMTPSA id lh22-20020a170906f8d600b0099290e2c163sm6618118ejb.204.2023.10.23.07.24.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 07:24:56 -0700 (PDT)
-Message-ID: <e97ac024cb2654507ed8f7af715f3604efefbdbb.camel@gmail.com>
-Subject: Re: [PATCH v2 3/3] dt-bindings: adis16460: Add
- 'spi-cs-inactive-delay-ns' property
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Ramona Gradinariu <ramona.gradinariu@analog.com>, jic23@kernel.org,
-        nuno.sa@analog.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Date:   Mon, 23 Oct 2023 16:27:48 +0200
-In-Reply-To: <20231023140534.704312-4-ramona.gradinariu@analog.com>
-References: <20231023140534.704312-1-ramona.gradinariu@analog.com>
-         <20231023140534.704312-4-ramona.gradinariu@analog.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+        Mon, 23 Oct 2023 10:28:14 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CD3DD;
+        Mon, 23 Oct 2023 07:28:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=sPMDCYa/eOvobhpB1VjCXUms41/R3FiMxkI8iUKywDY=; b=jfp2GZfWZO5vRu5SlGBeGwS9G1
+        VBSd4G9YruH6A4xRuvPE7fXFrufnfnVlxioWMn8lSb6KR+CFKsyXji4GgyFcmTanIzQDXEcolTPp4
+        MC9mDatDpeInPyav9nX9minyyJf66k2GRGtKYuuh8n1piL3P71dwv+ayBB7r/8tZKP4c=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1quvuW-00323v-AQ; Mon, 23 Oct 2023 16:28:04 +0200
+Date:   Mon, 23 Oct 2023 16:28:04 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Jia, Fang" <fang.jia@windriver.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: phy: fixed link 1000 or 100 set with autoneg off
+Message-ID: <dfc37ead-2abe-4053-b0a6-911c9c387451@lunn.ch>
+References: <d7aa45f8-adf8-ff9a-b2c4-04b0f2cc3c06@windriver.com>
+ <c23dcdb0-f493-453d-82b9-b498f4d3c88b@gmail.com>
+ <9dd0e0b8-751b-170a-7c8f-bc084efae69b@windriver.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9dd0e0b8-751b-170a-7c8f-bc084efae69b@windriver.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-23 at 17:05 +0300, Ramona Gradinariu wrote:
-> The adis16460 device requires a stall time between SPI
-> transactions (during which the chip select is inactive),
-> with a minimum value equal to 16 microseconds.
-> This commit adds 'spi-cs-inactive-delay-ns' property, which should
-> indicate the stall time between consecutive SPI transactions.
->=20
-> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
-> ---
-> changes in v2:
-> =C2=A0- added default value
-> =C2=A0- updated description
-> =C2=A0- updated commit message
-> =C2=A0.../devicetree/bindings/iio/imu/adi,adis16460.yaml=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 6 ++++++
-> =C2=A01 file changed, 6 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> index 4e43c80e5119..f10469b86ee0 100644
-> --- a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> +++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> @@ -25,6 +25,12 @@ properties:
->=20
-> =C2=A0=C2=A0 spi-cpol: true
->=20
-> +=C2=A0 spi-cs-inactive-delay-ns:
-> +=C2=A0=C2=A0=C2=A0 minimum: 16000
-> +=C2=A0=C2=A0=C2=A0 default: 16000
-> +=C2=A0=C2=A0=C2=A0 description:
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Indicates the stall time between consecut=
-ive SPI transactions.
-> +
+> Thanks very much for your reply.
+> 
+> Actually, due to some reason, the phydev's default aneg state is off.
+> And we just found if use ethtool to set, it had the same result.
 
-You should drop the description...=20
+I find it surprising it defaults to aneg off. Are you sure something
+has not turned it off before you look at it?
 
-Also, give more time before posting a v2 so others get a chance to review y=
-our
-patches. It's also better for you since you can gather more change requests=
-.
+The emulator does not support writing to any registers. However,
+fixed_mdio_write() does not return an error, it just does nothing.  It
+needs testing, but maybe try making it return -EOPNOTSUPP. That should
+prevent auto-neg being turned off, but it might also break everything
+if it tries to do some other write during probe or link up. It could
+be it needs a more select response, allowing writes to some bits, like
+the reset bit, and start auto-neg, but not others like disable
+auto-neg.
 
-- Nuno S=C3=A1
-
+	Andrew
