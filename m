@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0987D2829
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476107D2837
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232929AbjJWBy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 21:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53180 "EHLO
+        id S229686AbjJWB7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 21:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjJWBy4 (ORCPT
+        with ESMTP id S229470AbjJWB7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 21:54:56 -0400
-X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 22 Oct 2023 18:54:54 PDT
-Received: from mx.socionext.com (mx.socionext.com [202.248.49.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 23102F7;
-        Sun, 22 Oct 2023 18:54:53 -0700 (PDT)
-Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 23 Oct 2023 10:53:50 +0900
-Received: from mail.mfilter.local (mail-arc01.css.socionext.com [10.213.46.36])
-        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 124862059053;
-        Mon, 23 Oct 2023 10:53:50 +0900 (JST)
-Received: from kinkan2.css.socionext.com ([172.31.9.51]) by m-FILTER with ESMTP; Mon, 23 Oct 2023 10:53:50 +0900
-Received: from [10.212.246.227] (unknown [10.212.246.227])
-        by kinkan2.css.socionext.com (Postfix) with ESMTP id 56743B1D40;
-        Mon, 23 Oct 2023 10:53:49 +0900 (JST)
-Message-ID: <dc5ba655-e739-bb24-263c-5f362b0d0f35@socionext.com>
-Date:   Mon, 23 Oct 2023 10:53:52 +0900
+        Sun, 22 Oct 2023 21:59:45 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2010CFB
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 18:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Ba2f+0UDqFPeuImgDHgf0xYmLL/b2p92ulH7+tnDnco=; b=gSV5otR4Rf50WVGv6GWWLynHU1
+        0ExQmqrApl5JKObVE4o980DVCeKlaWyrmuovRgv67EVov1OlLjeoEXHMcCoMdjyGlYM5vqOJ3OQ8g
+        T/lkr5qSp9WMRBXGDePbxLZ4pnF8BTyLn/tUsZxqDUpK//r80E4rhe0J0CgBsGUgvj/rvRAa4sRhL
+        u79Zlr8WkpG2kguWLuP7T8AwnfHDORQLvuHSqNZ/6qJgWHxxJxILaCOvZ2GWnMfHzdbrybo/iHHL8
+        Iq5CyDaltlmUx1QQS4CsMBqz5kEAQeMu/j97BM+JsrFDyBRfG9Aoazs3kdty+03VdcXhUxeYkSbn3
+        pNMgl2sg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qukEI-006DrY-2J;
+        Mon, 23 Oct 2023 01:59:42 +0000
+Message-ID: <89f666dc-e7b3-44ad-846c-b1f1ee278940@infradead.org>
+Date:   Sun, 22 Oct 2023 18:59:42 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [RESEND PATCH v2] arm64: dts: Update cache properties for
- socionext
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh@kernel.org>, soc@kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Pierre Gondois <pierre.gondois@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231020195022.4183862-2-robh@kernel.org>
- <ccb48488-7fa2-4784-8c5c-7d6084d16016@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: How can I add "busybox sh" as init during boot of the custom
+ kernel?
 Content-Language: en-US
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-In-Reply-To: <ccb48488-7fa2-4784-8c5c-7d6084d16016@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     gmssixty gmssixty <gmssixty@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <CAOx-CDUwV0d0+2UdZW+vdUcjwAg2+Hanf1-iNSYFRWOW2yQugg@mail.gmail.com>
+ <6675c47a-d258-41ae-b506-88d7ae74b551@infradead.org>
+ <CAOx-CDVn7Ub31yiRpoZh4RhJBCvgZhb8Ca=cH9b0xWPjk5FNQA@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <CAOx-CDVn7Ub31yiRpoZh4RhJBCvgZhb8Ca=cH9b0xWPjk5FNQA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof, Rob,
 
-On 2023/10/21 6:26, Krzysztof Kozlowski wrote:
-> On 20/10/2023 21:50, Rob Herring wrote:
->> From: Pierre Gondois <pierre.gondois@arm.com>
+
+
+> On Mon, Oct 23, 2023 at 6:15 AM Randy Dunlap <rdunlap@infradead.org> wrote:
 >>
->> The DeviceTree Specification v0.3 specifies that the cache node
->> 'compatible' and 'cache-level' properties are 'required'. Cf.
->> s3.8 Multi-level and Shared Cache Nodes
->> The 'cache-unified' property should be present if one of the
->> properties for unified cache is present ('cache-size', ...).
 >>
->> Update the Device Trees accordingly.
 >>
->> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
->> Reviewed-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
->> Link:
->> https://lore.kernel.org/r/20221107155825.1644604-21-pierre.gondois@arm.com
->> Signed-off-by: Rob Herring <robh@kernel.org>
->> ---
->> I noticed this one fell thru the cracks from the rest of the series.
+>> On 10/22/23 16:56, gmssixty gmssixty wrote:
+>>> How can I add "busybox sh" as init during boot of the custom kernel? I
+>>> have compiled the kernel and put the bzImage in /dev/sda3 (/mnt/sda3).
+>>> Booted that kernel. After booting, I got a message to set the init
+>>> process. I have put the busybox in /bin. Now I want to add this
+>>> "busybox sh" as an init process. How can I do this?
+>>>
+>>> Note that, I did not install any other software in that /dev/sda3
+>>> (/mnt/sda3). I have only bzImage and busybox.
 >>
->> Arnd, Can you take this directly.
+>> from Documentation/admin-guide/kernel-parameters.txt:
+>> (or https://docs.kernel.org/admin-guide/kernel-parameters.html)
+>>
+>>         init=           [KNL]
+>>                         Format: <full_path>
+>>                         Run specified binary instead of /sbin/init as init
+>>                         process.
+>>
+
+On 10/22/23 17:34, gmssixty gmssixty wrote:
+> I tried this: init=/bin/busybox sh, but it got Kernel panic and
+> failed. On the other hand, what should I write in /sbin/init?
 > 
-> A bit after Pierre - in April 2023 - I sent similar which was said to be
-> "applied":
-> https://lore.kernel.org/all/f9a2c0d7-a78d-9368-f9bb-e8aba11e7d81@socionext.com/
-> 
-> Maybe the Socionext status in MAINTAINERS should be odd fixes?
 
-Sorry my mistake.
-I thought Pierre's patch had been already applied, however,
-I set Krzysztof's patch to "applied" but it was missing from the post to soc.
+Please don't top-post.
 
-Since Krzysztof's patch includes the same "cache-level" lines as Pierre's,
-the lines needs to be removed.
+You need a file name after init=.
+"/bin/busybox sh" is not a file name AFAIK.
 
-I'll post the update series including both to soc.
+To use /sbin/init, enter
+	init=/sbin/init
 
-Thank you,
+To use bash (e.g.), enter
+	init=/usr/bin/bash
 
----
-Best Regards
-Kunihiko Hayashi
+The kernel init code already tries to use /sbin/init if that file is
+present, along with /etc/init, /bin/init, and /bin/sh .
+
+
+-- 
+~Randy
