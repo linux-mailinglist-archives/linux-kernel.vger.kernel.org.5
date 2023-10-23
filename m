@@ -2,77 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A9E7D290F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947647D291E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233250AbjJWD3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 23:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        id S233294AbjJWDcr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 22 Oct 2023 23:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjJWD3g (ORCPT
+        with ESMTP id S229511AbjJWDcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 23:29:36 -0400
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 367A5188;
-        Sun, 22 Oct 2023 20:29:34 -0700 (PDT)
-Received: from [172.30.11.106] (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id 89E2C6048B9FD;
-        Mon, 23 Oct 2023 11:29:31 +0800 (CST)
-Message-ID: <bccca54f-5eb8-83ba-17ad-6cb312aa6ea5@nfschina.com>
-Date:   Mon, 23 Oct 2023 11:29:30 +0800
+        Sun, 22 Oct 2023 23:32:45 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6F6D51;
+        Sun, 22 Oct 2023 20:32:40 -0700 (PDT)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 39N3VOPf82742393, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.93/5.92) with ESMTPS id 39N3VOPf82742393
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Oct 2023 11:31:25 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Mon, 23 Oct 2023 11:31:25 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Mon, 23 Oct 2023 11:31:24 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b]) by
+ RTEXMBS01.realtek.com.tw ([fe80::9cb8:8d5:b6b3:213b%5]) with mapi id
+ 15.01.2375.007; Mon, 23 Oct 2023 11:31:24 +0800
+From:   Ricky WU <ricky_wu@realtek.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "frank.li@vivo.com" <frank.li@vivo.com>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Subject: RE: [PATCH v3 1/2] misc: rtsx: add to support new card reader rts5264
+Thread-Topic: [PATCH v3 1/2] misc: rtsx: add to support new card reader
+ rts5264
+Thread-Index: AQHaAynsmhTs26pH702PHG8h5layhrBUNdwAgAJ4IRA=
+Date:   Mon, 23 Oct 2023 03:31:24 +0000
+Message-ID: <b31f74462ce240a18652643224e285dd@realtek.com>
+References: <121ced554a9e4f4791018e8f6a72d586@realtek.com>
+ <2023102153-paramedic-washboard-29e3@gregkh>
+In-Reply-To: <2023102153-paramedic-washboard-29e3@gregkh>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.22.81.100]
+x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 2/2] phy: mapphone-mdm6600: fix an error code problem in
- inv_mpu6050_read_raw
-Content-Language: en-US
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     jic23@kernel.org, lars@metafoo.de, jean-baptiste.maneyrol@tdk.com,
-        chenhuiz@axis.com, andy.shevchenko@gmail.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-In-Reply-To: <7f81d365-0440-de01-8be4-9c8d3ab9d69c@nfschina.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/23 09:33, Su Hui wrote:
-> On 2023/10/20 23:55, Jonathan Cameron wrote:
->> I'm not sure why inv_mpu6050_sensor_show() doesn't return
->> the actual error code from the regmap_bulk_read() and instead 
->> replaces it
->> with -EINVAL.  Given you are tidying up this related issues perhaps 
->> change
->> that as well?
->>
->> static int inv_mpu6050_sensor_show(struct inv_mpu6050_state *st, int 
->> reg,
->>                    int axis, int *val)
->> {
->>     int ind, result;
->>     __be16 d;
->>
->>     ind = (axis - IIO_MOD_X) * 2;
->>     result = regmap_bulk_read(st->map, reg + ind, &d, sizeof(d));
->>     if (result)
->>         return -EINVAL;
->> //Make this return result;
->
-> Sure, I will tidy up this, Thanks for your suggestion!
+> > In order to support new chip rts5264, the definitions of some internal
+> > registers and workflow have to be modified.
+> 
+> That is fine, but that should be a single patch, right?
+> 
 
-I'm not sure  whether the caller could handler this  when return 
-'result' rather than '-EINVAL'.
+Sorry maybe about misunderstand, The modifications mentioned here, it talk about
+some judgment expressions add "PID 5264" to make judgement in rtsx_pcr.c, 
+so only about 30 line modified in rtsx_pcr.c
 
-This is not a big problem, maybe we shouldn't modify this code.
+> > Added rts5264.c rts5264.h for independent functions of the new chip rts5264
+> 
+> And then add new support in a new patch, this is still too big as one
+> patch to attempt to review it properly.  Would you like to review this
+> as-is?
+> 
 
-Su Hui
+Yes, thank you
+Because rts5264.c rts5264.h only for rts5264 (new chip).
+The past architecture of this driver was like this, and it will good for us to maintain the driver
+different chip maybe has different functions and register definitions we used to separate different .c .h
 
+
+> thanks,
+> 
+> greg k-h
