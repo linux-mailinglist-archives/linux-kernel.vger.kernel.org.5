@@ -2,122 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 386117D3DBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C763C7D3D99
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjJWRaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
+        id S232909AbjJWR2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233815AbjJWR3w (ORCPT
+        with ESMTP id S232837AbjJWR2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:29:52 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EB61739
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:29:21 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5ae99bb5ccdso1816132a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:29:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1698082161; x=1698686961; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Z+lM1psdaIr4vqzMn22M1QYDstohuJWu+yz55IiCnA=;
-        b=FWz9cTzTFoLUyU1GHdasai+atLj/rWbT3oQ+M3vgLxZi/eM8bABmnW1QhAPo7yczEl
-         qa7RleVFtWl4SSuPF800ubDAKJS11TDLKHEz5L94FZf6KTnM3YWBp1EDgC8RM/s4zgMo
-         B1gXNzva7fSzXgxwpzg4zSGIp104FPe2PIum4+KcNHxIfhIWbzAcf1J/XTkub2kwPByE
-         g2xFq70etWLIZWC9ncgPO3T/I98A0h0aPLRqd3T5YWuVikcbniDAWJwvAZV6QpJC7t7G
-         7oXpDk2JvjCDnYALPyNJ0CUx52N4hOFSzJIglMS0oUJBiuXnTWGKH6zEPOZsA8qKmYYP
-         F4uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698082161; x=1698686961;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6Z+lM1psdaIr4vqzMn22M1QYDstohuJWu+yz55IiCnA=;
-        b=b56gvPAsIfliU3KxbgHDtoMS4dBEmSdfH4q+Qcc3D8xL7Fabdc9pEZFgTtUTn70OUF
-         EDhsT5esZsnyugCb2xt3Ohf+DaeuvUgSoaloud/Ng9QRnncvxIa4pCPHeF8XBFV/1rT9
-         ZAR0G8Cx8U32vpo7dbW3vYplYZB6MkZMP2VqURrFr/KjSMidj/kDxeCRYdzKkjsfekW8
-         K92yq0QljCwvuXCpHIG0jXAcNRDfq7ow+MrMV2NLWo/jVbzN8wpUG6C7+JvPsZ663kED
-         lwb1f9VUmfz7kOM5Xov0dntDiSJzWbsEukhzJ6uC0ZJYtD1H87o8dsoFIxKlZHFZvY3y
-         LgHw==
-X-Gm-Message-State: AOJu0YyscRLDxwtfAK5Dw83zsItFgsX7vyOvEmLwEGPYzxsAppPe3wXu
-        NuxlK5CK0FcDwTStto4SM0I3pQ==
-X-Google-Smtp-Source: AGHT+IHo6USP3pcRlXKuqJ79woJTXEsC0Rq2g43o4Sr9KzMGrxRYLsluIqp45MjwhV/47Ir+x9eEvA==
-X-Received: by 2002:a05:6a20:daa3:b0:157:609f:6057 with SMTP id iy35-20020a056a20daa300b00157609f6057mr319511pzb.27.1698082161065;
-        Mon, 23 Oct 2023 10:29:21 -0700 (PDT)
-Received: from anup-ubuntu-vm.localdomain ([171.76.86.9])
-        by smtp.gmail.com with ESMTPSA id g5-20020aa79f05000000b006be055ab117sm6473194pfr.92.2023.10.23.10.29.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 10:29:20 -0700 (PDT)
-From:   Anup Patel <apatel@ventanamicro.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>
-Subject: [PATCH v11 14/14] MAINTAINERS: Add entry for RISC-V AIA drivers
-Date:   Mon, 23 Oct 2023 22:58:00 +0530
-Message-Id: <20231023172800.315343-15-apatel@ventanamicro.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231023172800.315343-1-apatel@ventanamicro.com>
-References: <20231023172800.315343-1-apatel@ventanamicro.com>
+        Mon, 23 Oct 2023 13:28:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C984EA2;
+        Mon, 23 Oct 2023 10:28:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E3A2C433C7;
+        Mon, 23 Oct 2023 17:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698082093;
+        bh=HcLcWLJGRHlp2Xy+fV5Mci2qklXKQc19WPVrm8dOxFU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fAtKha4EZ7gSTTqFMSgy8ortj9/5xX2oOp4l3Uq7N3ipaH1a3ASihi+CbwKXuedQ5
+         IolqSynqa2QJKbX6wbUeGw2sypeOg37j3vCrenjNagMLZWyJFO2BvxrGfSbuLdrFi6
+         pyMPsoM2hGImZvRQW/Zrmt2H3cL494HSb8z3bSFs3OxULE5KvJYZqcnYZD2F2VlmE2
+         jttNR+TxMijUbhekwZ/26PT7bXLs0rHgZga5hhLpG1vXEt22pnxIAveab5FgUAja7W
+         EX4xzgzaYScfs16S04Kh1XHC8zhQXTAAztDrZKMWUhEtiGB70D0Rxs8FCJ1eswKQBu
+         RiTNpgzEdA/hQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 098924035D; Mon, 23 Oct 2023 14:28:09 -0300 (-03)
+Date:   Mon, 23 Oct 2023 14:28:09 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephane Eranian <eranian@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 22/48] perf annotate: Add --type-stat option for debugging
+Message-ID: <ZTatKUD6nS7OlvuC@kernel.org>
+References: <20231012035111.676789-1-namhyung@kernel.org>
+ <20231012035111.676789-23-namhyung@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231012035111.676789-23-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as maintainer for RISC-V AIA drivers including the
-RISC-V INTC driver which supports both AIA and non-AIA platforms.
+Em Wed, Oct 11, 2023 at 08:50:45PM -0700, Namhyung Kim escreveu:
+> The --type-stat option is to be used with --data-type and to print
+> detailed failure reasons for the data type annotation.
+> 
+>   $ perf annotate --data-type --type-stat
+>   Annotate data type stats:
+>   total 294, ok 116 (39.5%), bad 178 (60.5%)
+>   -----------------------------------------------------------
+>           30 : no_sym
+>           40 : no_insn_ops
+>           33 : no_mem_ops
+>           63 : no_var
+>            4 : no_typeinfo
+>            8 : bad_offset
 
-Signed-off-by: Anup Patel <apatel@ventanamicro.com>
----
- MAINTAINERS | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Had to enclose it as well, as:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 801a2f44182c..4557675c6086 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18410,6 +18410,20 @@ S:	Maintained
- F:	drivers/mtd/nand/raw/r852.c
- F:	drivers/mtd/nand/raw/r852.h
+⬢[acme@toolbox perf-tools-next]$ grep annotate-data tools/perf/util/Build
+perf-$(CONFIG_DWARF) += annotate-data.o
+⬢[acme@toolbox perf-tools-next]$
+
+/usr/bin/ld: /tmp/build/perf-tools-next/perf-in.o: in function `cmd_annotate':
+(.text+0x27b7): undefined reference to `ann_data_stat'
+/usr/bin/ld: (.text+0x27bd): undefined reference to `ann_data_stat'
+/usr/bin/ld: (.text+0x27c4): undefined reference to `ann_data_stat'
+/usr/bin/ld: (.text+0x27cb): undefined reference to `ann_data_stat'
+/usr/bin/ld: (.text+0x27d2): undefined reference to `ann_data_stat'
+/usr/bin/ld: /tmp/build/perf-tools-next/perf-in.o:(.text+0x27d9): more undefined references to `ann_data_stat' follow
+collect2: error: ld returned 1 exit status
+make[2]: *** [Makefile.perf:675: /tmp/build/perf-tools-next/perf] Error 1
+
+When building with NO_DWARF=1 or in systems lacking the used DWARF
+libraries. I noticed with some of the build containers, will updated
+those to have the required libraries so that this feature gets compile
+tested there.
+
+
+diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+index 645acaba63f1957a..5b534245ddb23294 100644
+--- a/tools/perf/builtin-annotate.c
++++ b/tools/perf/builtin-annotate.c
+@@ -353,6 +353,7 @@ static void print_annotated_data_type(struct annotated_data_type *mem_type,
+ 	printf(";\n");
+ }
  
-+RISC-V AIA DRIVERS
-+M:	Anup Patel <anup@brainfault.org>
-+L:	linux-riscv@lists.infradead.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/interrupt-controller/riscv,aplic.yaml
-+F:	Documentation/devicetree/bindings/interrupt-controller/riscv,imsics.yaml
-+F:	drivers/irqchip/irq-riscv-aplic-*.c
-+F:	drivers/irqchip/irq-riscv-aplic-*.h
-+F:	drivers/irqchip/irq-riscv-imsic-*.c
-+F:	drivers/irqchip/irq-riscv-imsic-*.h
-+F:	drivers/irqchip/irq-riscv-intc.c
-+F:	include/linux/irqchip/riscv-aplic.h
-+F:	include/linux/irqchip/riscv-imsic.h
-+
- RISC-V ARCHITECTURE
- M:	Paul Walmsley <paul.walmsley@sifive.com>
- M:	Palmer Dabbelt <palmer@dabbelt.com>
--- 
-2.34.1
-
++#ifdef HAVE_DWARF_SUPPORT
+ static void print_annotate_data_stat(struct annotated_data_stat *s)
+ {
+ #define PRINT_STAT(fld) if (s->fld) printf("%10d : %s\n", s->fld, #fld)
+@@ -389,6 +390,7 @@ static void print_annotate_data_stat(struct annotated_data_stat *s)
+ 
+ #undef PRINT_STAT
+ }
++#endif // HAVE_DWARF_SUPPORT
+ 
+ static void hists__find_annotations(struct hists *hists,
+ 				    struct evsel *evsel,
+@@ -396,10 +398,10 @@ static void hists__find_annotations(struct hists *hists,
+ {
+ 	struct rb_node *nd = rb_first_cached(&hists->entries), *next;
+ 	int key = K_RIGHT;
+-
++#ifdef HAVE_DWARF_SUPPORT
+ 	if (ann->type_stat)
+ 		print_annotate_data_stat(&ann_data_stat);
+-
++#endif
+ 	while (nd) {
+ 		struct hist_entry *he = rb_entry(nd, struct hist_entry, rb_node);
+ 		struct annotation *notes;
+@@ -698,8 +700,10 @@ int cmd_annotate(int argc, const char **argv)
+ 			    itrace_parse_synth_opts),
+ 	OPT_BOOLEAN(0, "data-type", &annotate.data_type,
+ 		    "Show data type annotate for the memory accesses"),
++#ifdef HAVE_DWARF_SUPPORT
+ 	OPT_BOOLEAN(0, "type-stat", &annotate.type_stat,
+ 		    "Show stats for the data type annotation"),
++#endif
+ 	OPT_END()
+ 	};
+ 	int ret;
