@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AD17D3305
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF617D3324
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233923AbjJWLZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37366 "EHLO
+        id S233972AbjJWL1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233912AbjJWLZw (ORCPT
+        with ESMTP id S233956AbjJWL1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:25:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8278FD6;
-        Mon, 23 Oct 2023 04:25:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698060349; x=1729596349;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BT1f7Iex0XAyJsTj/kj5X5QAFWs1h789Jw5nBVP3ffU=;
-  b=mhnoRdN/aBf8lctQRtVtg5wJUHUgsValcy16ZSipHFg+Ywsarij/NiPy
-   XlqoVZ3OXR0i5PX5khBRwcEzYruL3f2oydNzh4BN3IeetEUWSfaB8WLk/
-   n3RcS8i7DmZWFXUpMw1c6LrtDaiT93DRw5UGjz7n861MnwgJVeBb+txyz
-   0v1jRyX4crbSElCTQIGmbXFFPKcbjCmTyLDpL2ki9Ardrb0AElOys794h
-   DEnO32tn0QZLwcRe8PLA0G3HnFSaJLR368TE3MDnYSFCgGTbR1LybNewx
-   /FCxR6MlUUzCeDIsTwu/rnfWRmuaiZ3z5Igxsm4sObNibavjbUS8DSJTz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="386633174"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="386633174"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:25:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="761714038"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="761714038"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:25:46 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qut42-00000007v9d-3saM;
-        Mon, 23 Oct 2023 14:25:42 +0300
-Date:   Mon, 23 Oct 2023 14:25:42 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Angel Iglesias <ang.iglesiasg@gmail.com>
-Cc:     linux-iio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
-        linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v2 4/5] iio: pressure: bmp280: Allow multiple chips id
- per family of devices
-Message-ID: <ZTZYNjq/1X95ijXh@smile.fi.intel.com>
-References: <cover.1697994521.git.ang.iglesiasg@gmail.com>
- <eade22d11e9de4405ea19fdaa5a8249143ae94df.1697994521.git.ang.iglesiasg@gmail.com>
+        Mon, 23 Oct 2023 07:27:02 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DBFC1;
+        Mon, 23 Oct 2023 04:26:58 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VuktKLu_1698060413;
+Received: from 30.97.48.63(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VuktKLu_1698060413)
+          by smtp.aliyun-inc.com;
+          Mon, 23 Oct 2023 19:26:54 +0800
+Message-ID: <001b726f-bd33-7dff-a633-ca2ca83d9e8d@linux.alibaba.com>
+Date:   Mon, 23 Oct 2023 19:27:09 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eade22d11e9de4405ea19fdaa5a8249143ae94df.1697994521.git.ang.iglesiasg@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH V2 2/7] i2c: sprd: Add I2C driver to use 'reset framework'
+ function
+To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
+        Andi Shyti <andi.shyti@kernel.org>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huangzheng lai <laihuangzheng@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+References: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
+ <20231023081158.10654-3-Huangzheng.Lai@unisoc.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20231023081158.10654-3-Huangzheng.Lai@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 22, 2023 at 07:22:20PM +0200, Angel Iglesias wrote:
-> Improve device detection in certain chip families known to have various
-> chip ids.
-> When no known ids match, gives a warning but follows along what device
-> said on the firmware and tries to configure it.
 
-I would rephrase it a bit:
 
-"Improve device detection in certain chip families known to have
-various chip IDs. When no ID matches, give a warning but follow
-along what device said on the firmware side and try to configure
-it."
+On 10/23/2023 4:11 PM, Huangzheng Lai wrote:
+> Add the 'reset framework' function for I2C drivers, which
+> resets the I2C controller when a timeout exception occurs.
 
-...
+Can you explain the situations that can lead to a timeout explicitly?
 
-> +	for (i = 0; i < data->chip_info->num_chip_id; i++) {
-> +		if (chip_id == data->chip_info->chip_id[i]) {
-> +			dev_info(dev, "0x%x is a known chip id for %s\n", chip_id, name);
-> +			break;
+> 
+> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+> ---
+>   drivers/i2c/busses/i2c-sprd.c | 19 +++++++++++++++++--
+>   1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
+> index b44916c6741d..aa602958d4fd 100644
+> --- a/drivers/i2c/busses/i2c-sprd.c
+> +++ b/drivers/i2c/busses/i2c-sprd.c
+> @@ -17,6 +17,7 @@
+>   #include <linux/of_device.h>
+>   #include <linux/platform_device.h>
+>   #include <linux/pm_runtime.h>
+> +#include <linux/reset.h>
+>   
+>   #define I2C_CTL			0x00
+>   #define I2C_ADDR_CFG		0x04
+> @@ -85,6 +86,7 @@ struct sprd_i2c {
+>   	u32 src_clk;
+>   	u32 bus_freq;
+>   	struct completion complete;
+> +	struct reset_control *rst;
+>   	u8 *buf;
+>   	u32 count;
+>   	int irq;
+> @@ -278,9 +280,17 @@ static int sprd_i2c_handle_msg(struct i2c_adapter *i2c_adap,
+>   
+>   	time_left = wait_for_completion_timeout(&i2c_dev->complete,
+>   				msecs_to_jiffies(I2C_XFER_TIMEOUT));
+> -	if (!time_left)
+> +	if (!time_left) {
+> +		dev_err(i2c_dev->dev, "transfer timeout, I2C_STATUS = 0x%x\n",
+> +			readl(i2c_dev->base + I2C_STATUS));
+> +		if (i2c_dev->rst) {
+> +			int ret = reset_control_reset(i2c_dev->rst);
+> +
+> +			if (ret < 0)
+> +				dev_warn(i2c_dev->dev, "i2c soft reset failed, ret = %d\n", ret);
 > +		}
+>   		return -ETIMEDOUT;
+> -
+> +	}
+>   	return i2c_dev->err;
+>   }
+>   
+> @@ -544,6 +554,11 @@ static int sprd_i2c_probe(struct platform_device *pdev)
+>   		return ret;
+>   
+>   	platform_set_drvdata(pdev, i2c_dev);
+> +	i2c_dev->rst = devm_reset_control_get(i2c_dev->dev, "i2c_rst");
 
-> +		dev_warn(dev, "chip id 0x%x does not match known id 0x%x\n",
-> +			 chip_id, data->chip_info->chip_id[i]);
+IMO, you need update the device binding file firstly.
 
-If the matching ID is not the first one, user will have an unneeded warning here.
-
->  	}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> +	if (IS_ERR(i2c_dev->rst)) {
+> +		dev_dbg(i2c_dev->dev, "reset control not configured!\n");
+> +		i2c_dev->rst = NULL;
+> +	}
+>   
+>   	ret = clk_prepare_enable(i2c_dev->clk);
+>   	if (ret)
