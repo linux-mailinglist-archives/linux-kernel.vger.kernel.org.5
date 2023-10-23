@@ -2,141 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 037967D2989
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 07:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D8B7D298D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 07:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbjJWFDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 01:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44388 "EHLO
+        id S229540AbjJWFGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 01:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJWFDI (ORCPT
+        with ESMTP id S229450AbjJWFGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 01:03:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA80B9
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 22:02:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698037339;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=VYWewINA58ufsweAbU1fUSU48ieD3onMLop08pEtwvU=;
-        b=YLYvH7mwQZa3vlqNv8F44T1TBrq3pq+hONJicoCQlmM9nHnFj2RYKFhADPAwMG6slpa+pc
-        KKiWNGrASS4dwENbxigdKKiLkckx6ciu8NLpXM28S89DGZYj/na/s6sLVkjLJkorC33iuh
-        2ZrntvHkhI84OIG+7aoTrtuVlusvjbQ=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-221-ycL_P1VpMv6XS9xdea0RWA-1; Mon, 23 Oct 2023 01:02:16 -0400
-X-MC-Unique: ycL_P1VpMv6XS9xdea0RWA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-408508aa81cso20117595e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 22:02:16 -0700 (PDT)
+        Mon, 23 Oct 2023 01:06:51 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8F9AF;
+        Sun, 22 Oct 2023 22:06:49 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso4466216e87.1;
+        Sun, 22 Oct 2023 22:06:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698037608; x=1698642408; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K2snDo55DI2agPH+/29PJskhQ+34fC9SgaEoBFYImQk=;
+        b=OCiI4eEii5ugYc5Aerq2IXhBHZqLLXKiBbdeMgo7PO4lCbP86DfVO4jO5FHGmiZAad
+         CTqYlPB1d8BURfaAPFIUYaKB0AfG7g1IbkcfPqVJ5Zs5Ll3+2xmUZxhZoMDDN1xEGtBc
+         MLL5uc+zlinH69a7i+l1FnWRvibjTHUz7tH4CvE6JARiytfEhzDMFztWOf5BcdK73mrL
+         E4KxlHqkeVnkicNX805s4GfyRgY2w01X9RqG9nBst8xXvkXlJESkjbDwkthhYJIGrPc6
+         dQH0Eq1P39fcjgRP36HrbtdZgv4OpEMnKotJQoqpFr524Fg8mSzTefssWNlLKak7/f9x
+         CAtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698037335; x=1698642135;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VYWewINA58ufsweAbU1fUSU48ieD3onMLop08pEtwvU=;
-        b=vXSpH9kLAj6Z6iS3WFXiBfTI9rWBLxu0Nw+hb7hiG4ohFDMye4MsZpXgpfec1/teZM
-         nwLpvBTIOeoR7oRlJyPvyNQhrAkfk9CNB2U7kqRD/3DWHvubogeHxPn5w+yzteI2QJKs
-         332iP5yenoHhk8LH1omyUBDNI6KM5shlBM3ZpCzLR8zxGidEFBu1m9lcOZlzXF0UMZqP
-         D1u96Urp1ghXG9NW0dtJB/+zTbpBktWwXzz2sFdqNlO7J5B9omwYhYgqIB3B7FRE3bzn
-         p4B1IHmSgFuNdDVQzCrsEx+l1ikB5tu4COpsfS0VR502hVHLDso060SJCn2FpYvS4HCm
-         mtcw==
-X-Gm-Message-State: AOJu0YzUN/SfDLndZg1RZL6QH9kkAhdC+HjJTA+1vTzWvgD8R3IJ0EXs
-        kPZPSHl6sO0Spe01//IC1mHIhk0tejMoUxrIbEJmpg9sTbQC1Sb80nT6W6oU+0DtIMFnk6lOiXS
-        j9sHvahb3e2TpzhqNHRRy6U6M
-X-Received: by 2002:a05:600c:188a:b0:406:7021:7d8 with SMTP id x10-20020a05600c188a00b00406702107d8mr6243006wmp.20.1698037335649;
-        Sun, 22 Oct 2023 22:02:15 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEEE93zO060dPvm0mbGcpCvz5k2sh+CIGfA4Q3Qp53GzxNdWjPayH2r0nxenrW1QoZUESLwnA==
-X-Received: by 2002:a05:600c:188a:b0:406:7021:7d8 with SMTP id x10-20020a05600c188a00b00406702107d8mr6242988wmp.20.1698037335303;
-        Sun, 22 Oct 2023 22:02:15 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:1f2:e88f:2c2c:db43:583d:d30e])
-        by smtp.gmail.com with ESMTPSA id 1-20020a05600c028100b004077219aed5sm13079549wmk.6.2023.10.22.22.02.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 22:02:14 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 01:02:07 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        arei.gonglei@huawei.com, catalin.marinas@arm.com,
-        dtatulea@nvidia.com, eric.auger@redhat.com, gshan@redhat.com,
-        jasowang@redhat.com, liming.wu@jaguarmicro.com, mheyne@amazon.de,
-        mst@redhat.com, pasic@linux.ibm.com, pizhenwei@bytedance.com,
-        shawn.shao@jaguarmicro.com, xuanzhuo@linux.alibaba.com,
-        zhenyzha@redhat.com
-Subject: [GIT PULL] virtio: last minute fixes
-Message-ID: <20231023010207-mutt-send-email-mst@kernel.org>
+        d=1e100.net; s=20230601; t=1698037608; x=1698642408;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K2snDo55DI2agPH+/29PJskhQ+34fC9SgaEoBFYImQk=;
+        b=hXSBMmciVX8ya31d7N/FjPaR3/X52JAaAqi1f0QNM/gnLKg3nWNUHRJGvQYAiHsXqu
+         VKLFZGO+jv0PikuhXgW2vdGbM3jIh4m/PW9LCy20vJGoQs49HVjiCCSgLsCKK23Jh7JR
+         Ed+r6pgewksVxQCXLvfRWGS2TvRuLqkUFFXtAGLk80OdyYaZ6nT1cCfrr/dvfSAFdA8D
+         tfQvUcwhYKYdFSw0h4W+G23UUQQbUO1291s1s4J/co/2RqVp2F2yzRYBMUxIVPZ2XTyl
+         /rp9wCN01DLTQYBXCCo6L5pD1X/LUcDtUdqMOkXy0R2//66RfaiiPO3XPL/IOvD0Waab
+         tjIQ==
+X-Gm-Message-State: AOJu0Yz8UUn8nbqKyymTLKOe069FQzPF08q9BEKdR98YoAKJam2rO1Z2
+        WKLJNKn6T4bHOxnI98yv86Q9Fva4lToHOMAcydYIAStEMaVPsgHQ
+X-Google-Smtp-Source: AGHT+IFmwZfj6vmqFsTkTZUYhAugysNnUEUShA40/lJ2qZEuj76pkMz2KJOBu+q/06eUkm17zdHFRi26u6GvM4sQ8uU=
+X-Received: by 2002:a05:6512:475:b0:4f3:9136:9cd0 with SMTP id
+ x21-20020a056512047500b004f391369cd0mr5626924lfd.44.1698037607549; Sun, 22
+ Oct 2023 22:06:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231021-sakuramist-mi11u-v2-0-fa82c91ecaf0@gmail.com>
+ <20231021-sakuramist-mi11u-v2-1-fa82c91ecaf0@gmail.com> <CAA8EJprtd8htkDWAvhamgEo3DWMMDYe-P6cnr6nwLnms=N0k9A@mail.gmail.com>
+In-Reply-To: <CAA8EJprtd8htkDWAvhamgEo3DWMMDYe-P6cnr6nwLnms=N0k9A@mail.gmail.com>
+From:   Sophon Wu <wuxilin123@gmail.com>
+Date:   Mon, 23 Oct 2023 13:06:37 +0800
+Message-ID: <CAEPPPKt6fEyniHgietRcp0MYUErYfnLU-SjtsOofe8VaPiSwLg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] soc: qcom: pmic_glink: enable UCSI for SM8350
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 58720809f52779dc0f08e53e54b014209d13eebb:
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> =E4=BA=8E2023=E5=B9=B410=E6=
+=9C=8822=E6=97=A5=E5=91=A8=E6=97=A5 18:51=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Sat, 21 Oct 2023 at 13:20, Xilin Wu via B4 Relay
+> <devnull+wuxilin123.gmail.com@kernel.org> wrote:
+> >
+> > From: Xilin Wu <wuxilin123@gmail.com>
+> >
+> > UCSI is supported on SM8350. Allow it to enable USB role switch and
+> > altmode notifications on SM8350.
+>
+> We have had troubles with UCSI on sm8350. I have a workaround for this
+> (and earlier) platforms. Once it is ready to be posted, I'll include
+> your patch in the series, if you don't mind.
 
-  Linux 6.6-rc6 (2023-10-15 13:34:39 -0700)
+I don't mind of course. Do I possibly need to resend the series without the
+pmic_glink patch?
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-
-for you to fetch changes up to 061b39fdfe7fd98946e67637213bcbb10a318cca:
-
-  virtio_pci: fix the common cfg map size (2023-10-18 11:30:12 -0400)
-
-----------------------------------------------------------------
-virtio: last minute fixes
-
-a collection of small fixes that look like worth having in
-this release.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-Dragos Tatulea (2):
-      vdpa/mlx5: Fix double release of debugfs entry
-      vdpa/mlx5: Fix firmware error on creation of 1k VQs
-
-Eric Auger (1):
-      vhost: Allow null msg.size on VHOST_IOTLB_INVALIDATE
-
-Gavin Shan (1):
-      virtio_balloon: Fix endless deflation and inflation on arm64
-
-Liming Wu (1):
-      tools/virtio: Add dma sync api for virtio test
-
-Maximilian Heyne (1):
-      virtio-mmio: fix memory leak of vm_dev
-
-Shawn.Shao (1):
-      vdpa_sim_blk: Fix the potential leak of mgmt_dev
-
-Xuan Zhuo (1):
-      virtio_pci: fix the common cfg map size
-
-zhenwei pi (1):
-      virtio-crypto: handle config changed by work queue
-
- drivers/crypto/virtio/virtio_crypto_common.h |  3 ++
- drivers/crypto/virtio/virtio_crypto_core.c   | 14 +++++-
- drivers/vdpa/mlx5/net/debug.c                |  5 +-
- drivers/vdpa/mlx5/net/mlx5_vnet.c            | 70 ++++++++++++++++++++++------
- drivers/vdpa/mlx5/net/mlx5_vnet.h            | 11 ++++-
- drivers/vdpa/vdpa_sim/vdpa_sim_blk.c         |  5 +-
- drivers/vhost/vhost.c                        |  4 +-
- drivers/virtio/virtio_balloon.c              |  6 ++-
- drivers/virtio/virtio_mmio.c                 | 19 ++++++--
- drivers/virtio/virtio_pci_modern_dev.c       |  2 +-
- tools/virtio/linux/dma-mapping.h             | 12 +++++
- 11 files changed, 121 insertions(+), 30 deletions(-)
-
+>
+> >
+> > Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
+> > ---
+> >  drivers/soc/qcom/pmic_glink.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glin=
+k.c
+> > index 914057331afd..1196e79e6fb3 100644
+> > --- a/drivers/soc/qcom/pmic_glink.c
+> > +++ b/drivers/soc/qcom/pmic_glink.c
+> > @@ -341,6 +341,7 @@ static const unsigned long pmic_glink_sm8450_client=
+_mask =3D BIT(PMIC_GLINK_CLIENT
+> >                                                            BIT(PMIC_GLI=
+NK_CLIENT_UCSI);
+> >
+> >  static const struct of_device_id pmic_glink_of_match[] =3D {
+> > +       { .compatible =3D "qcom,sm8350-pmic-glink", .data =3D &pmic_gli=
+nk_sm8450_client_mask },
+> >         { .compatible =3D "qcom,sm8450-pmic-glink", .data =3D &pmic_gli=
+nk_sm8450_client_mask },
+> >         { .compatible =3D "qcom,sm8550-pmic-glink", .data =3D &pmic_gli=
+nk_sm8450_client_mask },
+> >         { .compatible =3D "qcom,pmic-glink" },
+> >
+> > --
+> > 2.42.0
+> >
+>
+>
+> --
+> With best wishes
+> Dmitry
