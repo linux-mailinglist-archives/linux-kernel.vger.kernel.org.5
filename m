@@ -2,139 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2537D3930
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057137D3934
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjJWOT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
+        id S230335AbjJWOUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbjJWOT4 (ORCPT
+        with ESMTP id S230274AbjJWOUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:19:56 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC950100;
-        Mon, 23 Oct 2023 07:19:54 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 319375C033F;
-        Mon, 23 Oct 2023 10:19:54 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 23 Oct 2023 10:19:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1698070794; x=1698157194; bh=bs
-        mBsb2C4biRFAK90R3YGndrC+6bsEOQQxqfzZ99ePQ=; b=lYc+ZBHk7xNLUtCtBW
-        SW8wU5/knar6IJPqYjl2CJlJp3v6LY9kHkC/0Zfhp+3PTywtBVWdAqtC05b7Pbzr
-        U0hz2+5uHYYsZS0NY32+N1gtTXo4aD7GNYc1rbazGdO0kyURlMQBaEirGbvxkG9d
-        SIAW0ZhuyzLDXAtskzdjRZxeHE7ttbI9ALKzJf0d6CeVwc9wvatHsle+gWRH4fVb
-        55FuhknZOFv5PHK4IK8rzARimnoff+PJPTeyjyIM0mWIRxMmzFwWahsJ2ZRGVauV
-        bOxKJuyw7zaSXKFAOCRJlzcHn9kWaL7DG1uRb2N9IQr83vl3yqUJiLntZnkFkXjF
-        tfTg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698070794; x=1698157194; bh=bsmBsb2C4biRF
-        AK90R3YGndrC+6bsEOQQxqfzZ99ePQ=; b=niRJqeL+BF+kNPZQvaQPd/1+q2SwC
-        69sqEW1ElhXcqkiS2L7UGVNTaxU+nsD5f0wrk/AX8LHVxxVBnJnQSNwuKytXPxt2
-        z7m3Hg++LJW/fAsDZj01KzRe4fZNimddMbymzw69rCMe5pVjfRD1VGtoqXlhUwYX
-        M82mbZRNauf5OBlCi9+V9Bbao1ZWLMekUgh7l1pUm6uKWjtg6u2JhkNnfvOiBkE1
-        8YioQ8s2B9pAvNmz5GZwg5JALdw67TAToo8hKHBX58mE4e6httVe8fqF3V9uNVde
-        xEQskAu0dFh408H21biJ8MxBRlaRvv0kmYld0GqBk3mKPnBHvJORtg9Rw==
-X-ME-Sender: <xms:CYE2ZU6h5o3AkFhd4qe-eFIxvZEUjYvLbfwcW4WGXBK3K-PsQTRkcQ>
-    <xme:CYE2ZV7e_D95Qufz1UVDxew2mQ-3zZrG04n_OxWOQt_VxIJeVMtUPQ7jfOdnnLapy
-    _tz_-BoCs3Ep7ShLgA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeeigdejfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:CoE2ZTd6e-iqyuzsZkMtdUeVlyibjgocKeAvVmwIt8yQZycGQhSUvg>
-    <xmx:CoE2ZZLf943EmtbrTJ9opSX9KHiXy-IqgACy1quGrRuG3IlaRUtLkw>
-    <xmx:CoE2ZYIhQxg_-d026fnfbeqRlwAXDB712lhngTpCP5fPmgyfVVHe6A>
-    <xmx:CoE2ZdUI7CZ4zJBij_i-AoyZBN_gMqojPy_Q-e-0n3S3UOkxBO9BTQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id DCB18B60089; Mon, 23 Oct 2023 10:19:53 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
+        Mon, 23 Oct 2023 10:20:03 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2089.outbound.protection.outlook.com [40.107.237.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 518FAD68;
+        Mon, 23 Oct 2023 07:20:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YRzVQLoP3JTFDaF/c1K4X3o+7jNY6Ub3iz8XMh8GQXbSq/etFaqZSMeGmH6UTzaZa7CqR6Kvz4fNuMM8TRLT5UlZ6XbkslaWGJP1P0cbLd7rmEcJg/m4FAkEPjKids7bUxvivu4Ax6FknsYB23IRE9web/lyvu6yQRd/fPn549aGcSdtqR8O+10H4+13sJFENNChF6KFXf6McYAZ9jSshqouv4Yj/Oce9+Nk83g96gwLWdCUl9gVtV+XeFUjHgSk9uY6Ju/3DwlYqGkrlDNqXUHBPRl+z+d2GMtfNHmg4stgMytJzKz/6EWUQpRyt99mYWXSjQbeJH7vhfW1gXqHeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kUQhp7ekTwlQf7IvSEV5BoubNMx5BW3mlpHV6hSg2P4=;
+ b=k2I8heACHpN2xGO4YMj+DMFumnrjYe1n4tPAX50iSEC5uafSg7CAG+TyND791qlPaAZcn9K0+FZA2trEuWQEbNArr+u/UEbR5G2yOCKBZ4plx4lKlI/j5kQlhoPT5rxC0pEk4BD+Gvw4eLFjtdfk56M6T3l6J43eyFmZ55dDyJmvgjZAn70JfsFH/M97wz8V2JR0BMjL6nQQAx7y0shdB7955ofX0/lQ+Y8v2fL8ez8YWjuMXw8PlJ4dbfYvliOCkibdoofQrEnEINwx3Fc8uu1/RwyUofskOTzHS9sCi3JJsJHmdGG00LO15USn4myDTyvZt5DiUPne/D7IOkTdOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kUQhp7ekTwlQf7IvSEV5BoubNMx5BW3mlpHV6hSg2P4=;
+ b=RM31XIIIdyeQHhe2yUxgi71EZGME0oXa78FLlXClDWjnpoHLx9z/YMrEua8zQOkua9x4ki4xph94aFGm0N9X/+aUT9NlIk4MA7BKlhpUdWVr1bfEvmnwZ6iE6S9L5P/vdCUBP0vgUegDy/27YfuTigzB6c7XamCRJ1hqGqET7x7qG44/yCtrunW1WJhjva6X4ho92cXsw3cmz0DocM017twmYpkbk86+xaJZz+jpGnRQGze6B5b929Exg1+7XEc8Ltk4zFCzgAUuzlNuN6NG0oXpiKC/CG3ld5OXiomWV7ZgxMYLj1LvNlcPLxJZoxjXv2bfm1oenh1hu5Swo+AIjA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ0PR12MB5664.namprd12.prod.outlook.com (2603:10b6:a03:42b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Mon, 23 Oct
+ 2023 14:19:57 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6886.034; Mon, 23 Oct 2023
+ 14:19:56 +0000
+Date:   Mon, 23 Oct 2023 11:19:55 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Joao Martins <joao.m.martins@oracle.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Brett Creeley <brett.creeley@amd.com>,
+        oushixiong <oushixiong@kylinos.cn>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio: mlx5, pds: add IOMMU_SUPPORT dependency
+Message-ID: <20231023141955.GX3952@nvidia.com>
+References: <20231023115520.3530120-1-arnd@kernel.org>
+ <20231023120418.GH691768@ziepe.ca>
+ <a16758d6-964d-4e46-9074-4d155f9b3703@oracle.com>
+ <b3f7ecb1-9484-426b-8692-98706f7ff6d4@app.fastmail.com>
+ <20231023132305.GT3952@nvidia.com>
+ <5d7cb04d-9e79-43b9-9dd2-7d7803c93f4f@app.fastmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5d7cb04d-9e79-43b9-9dd2-7d7803c93f4f@app.fastmail.com>
+X-ClientProxiedBy: DS7PR06CA0032.namprd06.prod.outlook.com
+ (2603:10b6:8:54::17) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Message-Id: <15f25d73-32d5-4809-8096-32c856559d66@app.fastmail.com>
-In-Reply-To: <BN7PR03MB4545DA4A9404F349170CBA1097D8A@BN7PR03MB4545.namprd03.prod.outlook.com>
-References: <20231019125646.14236-1-eliza.balas@analog.com>
- <20231019125646.14236-3-eliza.balas@analog.com>
- <2023101917-cork-numeric-dab8@gregkh>
- <BN7PR03MB4545E7EAB2D72B9098C30C6797DBA@BN7PR03MB4545.namprd03.prod.outlook.com>
- <2023102030-resort-glance-57ef@gregkh>
- <BN7PR03MB4545FF54B96514EC9F41887E97D8A@BN7PR03MB4545.namprd03.prod.outlook.com>
- <2023102339-outcast-scone-5a63@gregkh>
- <BN7PR03MB4545DA4A9404F349170CBA1097D8A@BN7PR03MB4545.namprd03.prod.outlook.com>
-Date:   Mon, 23 Oct 2023 16:19:32 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Eliza Balas" <Eliza.Balas@analog.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "derek.kiernan@amd.com" <derek.kiernan@amd.com>,
-        "dragan.cvetic@amd.com" <dragan.cvetic@amd.com>,
-        "Jonathan Cameron" <jic23@kernel.org>,
-        "Lars-Peter Clausen" <lars@metafoo.de>, linux-iio@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] drivers: misc: adi-axi-tdd: Add TDD engine
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ0PR12MB5664:EE_
+X-MS-Office365-Filtering-Correlation-Id: e5f5e89b-ac08-4455-8742-08dbd3d3222c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: T0lHPBnacf0sUoevSyY9GiATp+jMW94PpiOAIBWanVqSjG/VzRNyVlorn2Kyd9CcCd7XD3XmXVs14F2KtBo/SZJ+QMI+MX3GUv11WJ3rd1c7LM9md8CCIQPAc8BozfUiNnHdJAwMr+HUZu3ee6Zxz4WUumux5F1mvJ9Yw9cKxKau32ce5w7XWaycS4lfGSPNghgoD5JkvpCvMjuKIo5bhkJ8j4QQc0mify9tZCCyGjNAUoB2l6nQiSbL6uK7cfbYmRQMCqxQdFxSCbv5J9KTjH1s4NXX7oYdTaxQeWXCl+PGamDTudgGr5s3LknHHrLARuIz2AedXBz35IevgOAee7lp/ylGbZI9h8ppqsDf9yIgRhNSzTMI9CedDyq+fQ464f0TT8mnEe5VyCCfBaUF5Be8ojc0t/K52uACDewHPv/B8UnAascaLNI/CnHKTOZYF5WCo9GBy4pBNC60MHLq1nxPjDFXdCvByqAXNmVK4MM5kqAc7qSqG0AUwjrpqtMTvNUoE+ka9c/MEhGectUJhYCYFiX9BC4o9bPid3j9zt7bZ/R2Md73w3x+i5h1VLEN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(39860400002)(346002)(396003)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(8676002)(38100700002)(478600001)(6486002)(6506007)(26005)(6512007)(6916009)(66946007)(1076003)(66476007)(83380400001)(2616005)(66556008)(54906003)(316002)(41300700001)(5660300002)(4326008)(8936002)(7416002)(2906002)(33656002)(36756003)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?O24cT2d9UadfnenE0UNIdg8Dl4G3vaGbkhSZYi5dnah/RYSB5Z4hidXdJfxm?=
+ =?us-ascii?Q?lgbXlsVoLOd1mPtNRnXwcBNLRhUln1RUe+TbV3YMm4+Jy2kYeH0Xg7Tm6854?=
+ =?us-ascii?Q?KvjmP8Mj5GxzmX7ELDaz1S+3v5p2BKLpO9VTj//afQUZ8e1Z+kBIMkTtwrxC?=
+ =?us-ascii?Q?3meP2tk8EBoss0lNisyKX9dUnSP6P1ABQoFiIBYC2A1n2jxdbzZmK6cxuQp0?=
+ =?us-ascii?Q?09VzPTtDXCeOf7V80ku0w/z4RLCcCKPtqZAnh8RQH7PuklikRBUrt6RtkOTX?=
+ =?us-ascii?Q?iLMB/IoJHHtp/+WwWkPQM8swEU/2vMvSJT+rD9cWjqiLA3WiUIPOQOwvnqa8?=
+ =?us-ascii?Q?6pQYdqejQmWVg36SszZSFBSB3O7YCT5EWXINPm5qE7H5HO3IstSo2bYscme8?=
+ =?us-ascii?Q?lZo3ycLtv52nbzMQ/cdTYBa22/5ILOg2pQcfRlbNjOIUp5aPRD09PcH0eDsB?=
+ =?us-ascii?Q?SEpLRIwbq3cPUEEon2ojFkB3Eu8yeXemmTnTCBUMmfveRKP8TxY/i8lUtece?=
+ =?us-ascii?Q?S/GZ0B6pUtmGLjZ151RKJjPnwz+H0mYoDRqiZqJHWG+onwro89yc1y10ppEt?=
+ =?us-ascii?Q?z72cmDfizFZokKjkv4SUUmGPD5B+GDitByMCYbNdPWempCOVzD2pA4Pn5D7Y?=
+ =?us-ascii?Q?Br4L8hUfCfVT9O14sqvSAI4sJCOJpbfkY3uptGn6NqpXywu9qqRn277QI+lY?=
+ =?us-ascii?Q?swzzoBnjJkfG8CkPtMaN/OprRiKJzrhVxODVNo1O8xTp7LX5S6vB9Sx/K90J?=
+ =?us-ascii?Q?7fpj1wslKzW31c2zCG2nqS+6vuzpNLIpm2gTS5lEVeaMn5h8BKw8C6lijhQ0?=
+ =?us-ascii?Q?tJvnjlJltQKSSYJq0yxyEStfxy08u9S3f6Eh9glu4BcycidMpuOBMZAWNrvr?=
+ =?us-ascii?Q?vRercok2841qdwb+zQ7cMzxUZK9Cs2GamsI9BMi+sHIJVr2Zp2QtNISzy1yR?=
+ =?us-ascii?Q?pX5Z9I+8COZQ2JbCDQGZho5O0I1ruBeA0O4LauA1WSCp28jk+14k24UNawrb?=
+ =?us-ascii?Q?iwPA4izTa0/DWZEw+2niBAbO09eUbozAh6lCKfnezy/d8iIt7CE15rHH1/eR?=
+ =?us-ascii?Q?VtF4I0MihAiinYTyZLUWQgzK4hI21QrMUdVQlRNW/0NsaINO6I3PBNM7LiOz?=
+ =?us-ascii?Q?YlOg2orL/LNRm3ytA2E+eKKjDhg6uMbuv05mEiwvG6THmeNns9amW/Mh5R+x?=
+ =?us-ascii?Q?tYuwuxOZhvMZimJMdhRcZ/IJNsN7ii1/O6l4Z+W+wrBjsRedA1S6q3w/HyvF?=
+ =?us-ascii?Q?1KPHUjpaNqehXbyvNA5TH3Urug66tjoSmPhMz8tEECBq2FxlFLKUrETVdIhX?=
+ =?us-ascii?Q?2yDid71VYGgdcCi155wJmjocVr5MNqQnsurKMP1CYU/vqU5B45O/vlEvlcru?=
+ =?us-ascii?Q?pwkBxsk2VTHQuW0qpZOYY7xvEbqsWzQYI/MHLle1iL7ifuU8M1hYgPXuhZ+F?=
+ =?us-ascii?Q?bfsobhVfAJoVobWE/dtz2g7sLpJvAMeJbVBhJdwiCdWvxoo3U8Zt7QaZhh3P?=
+ =?us-ascii?Q?gYSYyC3vxxmWMtNR/8feh42P+xxXqyENT15eDFnBDqrgXepI1kgqwen2svHd?=
+ =?us-ascii?Q?Eklk5Du62izUfo9fJOJ4K/PuA+egiCmtdSsdVk/b?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5f5e89b-ac08-4455-8742-08dbd3d3222c
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 14:19:56.9353
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TtcNr79pcmS+Okz3xnQ6LUEXkOU4GT7/afaXtfdHQMM/+VmrcA1Lv5rKUzPZsbhU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5664
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023, at 15:30, Balas, Eliza wrote:
->> -----Original Message-----
->> Cvetic <dragan.cvetic@amd.com>; Arnd Bergmann <arnd@arndb.de>
->> Subject: Re: [PATCH v3 2/2] drivers: misc: adi-axi-tdd: Add TDD engine
+On Mon, Oct 23, 2023 at 04:02:11PM +0200, Arnd Bergmann wrote:
+> On Mon, Oct 23, 2023, at 15:23, Jason Gunthorpe wrote:
+> > On Mon, Oct 23, 2023 at 02:55:13PM +0200, Arnd Bergmann wrote:
+> >> On Mon, Oct 23, 2023, at 14:37, Joao Martins wrote:
+> >> 
+> >> Are there any useful configurations with IOMMU_API but
+> >> not IOMMU_SUPPORT though? My first approach was actually
+> >
+> > IOMMU_SUPPORT is just the menu option in kconfig, it doesn't actually
+> > do anything functional as far as I can tell
+> >
+> > But you can have IOMMU_API turned on without IOMMU_SUPPORT still on
+> > power
+> >
+> > I think the right thing is to combine IOMMU_SUPPORT and IOMMU_API into
+> > the same thing.
+> 
+> I've had a closer look now and I think the way it is currently
+> designed to be used makes some sense: IOMMU implementations almost
+> universally depend on both a CPU architecture and CONFIG_IOMMU_SUPPORT,
+> but select IOMMU_API. So if you enable IOMMU_SUPPORT on an
+> architecture that has no IOMMU implementations, none of the drivers
+> are visible and nothing happens. Similarly, almost all drivers
+> using the IOMMU interface depend on IOMMU_API, so they can only
+> be built if at least one IOMMU driver is configured.
 
->> > > > Since the device is not an iio device, using an iio function would be confusing.
->> > >
->> > > Why isn't this an iio device?
->> >
->> > The device is not registered into the IIO device tree,
->> > and does not rely on IIO kernel APIs.
->> > Even though there are a few attributes that resemble the
->> > ones from iio, and the sysfs structure is similar,
->> > this is not an IIO device.
->> > In the previous patch versions 1 and 2 we concluded
->> > that this device fits better in the misc subsystem.
->> 
->> Ok, can you point to that in the changelog where the IIO maintainer
->> agreed that this doesn't fit into that subsystem?
->> 
-> This was one of the discussions from previous v2 : 
-> https://lore.kernel.org/all/5b6318f16799e6e2575fe541e83e42e0afebe6cf.camel@gmail.com/
->
-> I will add it to the changelog the next time I submit the patches.
+Maybe, but I don't think we need such micro-optimization.
 
-It sounds like Jonathan wasn't quite sure either here, and I would
-still argue (as I did in that thread), that drivers/iio is probably
-a better option than drivers/misc.
+If someone selects 'enable IOMMU support' and doesn't turn on any
+drivers then they should still get the core API. That is how a lot of
+the kconfig stuff typically works in the kernel.
 
-In particular, you mention that you actually make this device
-appear as an IIO device to user space using the "iio-fake" hack.
+Similarly, if they don't select 'enable IOMMU support' then they
+definitely shouldn't quitely get the core API turned on!
 
-I can see that IIO is not a perfect fit if this is the only
-device of its kind, but going that way anyway avoids a number
-of problems by reusing infrastructure for the IIO ABI and
-serialization with in-kernel users, as well as giving you
-the option of adding other compatible drivers later.
+> diff --git a/drivers/gpu/drm/nouveau/Kconfig b/drivers/gpu/drm/nouveau/Kconfig
+> index 4a79704b164f7..2902b89a48f17 100644
+> --- a/drivers/gpu/drm/nouveau/Kconfig
+> +++ b/drivers/gpu/drm/nouveau/Kconfig
+> @@ -4,7 +4,7 @@ config DRM_NOUVEAU
+>  	depends on DRM && PCI && MMU
+>  	depends on (ACPI_VIDEO && ACPI_WMI && MXM_WMI) || !(ACPI && X86)
+>  	depends on BACKLIGHT_CLASS_DEVICE
+> -	select IOMMU_API
+> +	depends on IOMMU_API
+>  	select FW_LOADER
+>  	select DRM_DISPLAY_DP_HELPER
+>  	select DRM_DISPLAY_HDMI_HELPER
 
-     Arnd
+Like here, nouveau should still be compilable even if no iommu driver
+was selected, and it should compile on arches without iommu drivers at
+all.
+
+Jason
