@@ -2,192 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A71A77D402A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86DC07D4036
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbjJWTXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:23:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38332 "EHLO
+        id S233692AbjJWTXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231382AbjJWTW4 (ORCPT
+        with ESMTP id S231382AbjJWTX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:22:56 -0400
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2119.outbound.protection.outlook.com [40.107.15.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A8310EA;
-        Mon, 23 Oct 2023 12:22:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VzTRT53CI167ci6FejcULyR0Jw13pbJWwY60AChmdOqVS/pfnYvAgxy3MlnQw4eu1b1W1/4cSdVlX2/jTqqp1lDVeuGtNxCeRZWDkqlTjMGnZ1ycT65gFyNneyCSVKl279vdvOKK+sSrymKiA48EGeeHwtUOzuwi9EAAWIBKHy2oDwQxOLKqeZhSrXU7gx+HhRLKBJQ+QuknxqZxgIPbrkZXlfuI62UQc2KzAfonIvhBz9P/iQl7TiwKnAzCUtyvgRqsi/PZ+cNuVBXZBLsaQlrCbMfeOPEQGhlXto6Q8GwqIWw80MoIlEJVkvIskInEpqFWoyiCTiwGC4Y13SR4OQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/wTuNbWBmI3EIdDCMVRJRt391lS4YweGBs2kDaSN5O8=;
- b=K4+teR5zqbf2Ysw6mpY+zMy12t1Y57OSGG5Vx0MKfCxJJfOxAh+GBzovenyQocl11ZBKmRRXS83fP7jLf9Mdl0pzLVTOuDy0vNzLsN6ujVCowzayINufvseCbeTgSUilxjC1kfgmMNedjgdJm6AIkR1PLHckIl6Ec1UnoY3GrCcPU0a1YKhDr41MSJUR23mXIPHW9a6edT5nWdpwxy/RgC5iNmuO2xUNzE3ad6Voi4zPWxRLzNj43rSXLS6Xs/2AOUsgoyWZ0QkzcNcCcvvpcTGnJ91htkRuAZybEBZnykzZpL62chf/IugFczDZDsETolzqygrkozvnXKq7cVL38g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=uipath.com; dmarc=pass action=none header.from=uipath.com;
- dkim=pass header.d=uipath.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uipath.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/wTuNbWBmI3EIdDCMVRJRt391lS4YweGBs2kDaSN5O8=;
- b=klmYe/ekH4QreuwV6eK+gG72qVlKEMV9s6TVmC8gdo3du29OJ55WZBqJ3bPpY1KieUlp6j424AZsQlDMPv6zG0zJ7a2Qxh0JJ+TMSPyAtzi1VxmuXMKM/lF4C9+yV8w+xFPyEJ0VNVUNEVQxqNRwq0sCqqwdOge430V5QZ/WikSp46iTuTqbJnpJOecvdCVVG4xAU6VqTvWE308lzw8+5ALWlEwpvjbwV8h/eaO0r1vfbYAxMhWHE9x0i3dgnXQfzGLHPVItm9hJlyzMsVgUjqXWw2WfVpQrYNXgNsA97eGStfZ3q3VcxXJvE0cBopOruV3ofw50DFIeYMgHsUoxNQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=uipath.com;
-Received: from VI1PR02MB4527.eurprd02.prod.outlook.com (2603:10a6:803:b1::28)
- by DB8PR02MB5947.eurprd02.prod.outlook.com (2603:10a6:10:115::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.31; Mon, 23 Oct
- 2023 19:22:46 +0000
-Received: from VI1PR02MB4527.eurprd02.prod.outlook.com
- ([fe80::717d:6e0d:ec4b:7668]) by VI1PR02MB4527.eurprd02.prod.outlook.com
- ([fe80::717d:6e0d:ec4b:7668%6]) with mapi id 15.20.6907.030; Mon, 23 Oct 2023
- 19:22:46 +0000
-From:   Alexandru Matei <alexandru.matei@uipath.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
+        Mon, 23 Oct 2023 15:23:28 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B061725
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:22:59 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40859c46447so16637575e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:22:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1698088975; x=1698693775; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YaLyEMYJtggtWrtStOtLZq/UC24SdFNNRozlG1IgPAc=;
+        b=M7ptxhDuFAQtR21kVMWx2BCV28n880Vx1PMU4eTB2y4dnAAB4SxyzwWLagRRcV9w27
+         IwQZb3gUdDvC3uhrqCQaF2Z1lpbcnh6F6r0khg42lsaqVjFA8K3p3fDYQ7EHZfrbSRav
+         xo0cPBfae+Yh6HcZe9pdnCZvuiQv7vKreGlBFGptyvGdZMktYPMfOj7C5UCpmVuw+tuP
+         8xP3+VRJwHdKJ66g1BjzfRkSUHktmzgTCW+2GIjJZJIQrFc2UakIZH0I5c9CBTZfaMqe
+         yugUeoH0nipfuQCreK2pemtlux6RPiM6S9TO19pQJLpEWpvAxksrOoNH1OTVYjYbUOHe
+         PH9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698088975; x=1698693775;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YaLyEMYJtggtWrtStOtLZq/UC24SdFNNRozlG1IgPAc=;
+        b=hl8U3A4SomEqQ7SprR/eZFGEEa1duDqy1QzLjbaMRzyJP6/zkPCAmbwqIjciq9G+R1
+         I8NHXvi78ZGvXUJYGeYndRQXFGrQHdOhJluS7a34oMfsmnmIwqyAdI8VWnk1g/+A/rtK
+         lvrLpQMap0MQZPHQmDeHXLs4qDRunj4KgSXvSz9yss9fDOJm4/E+a/i2RLvkr/PuuA4g
+         ejwpYA+96JYtn1CZ7CEBBYv5DWvEjNk8YVKdxEVnscTZ0cEiYJAWNb1gEN1+iVi15vgJ
+         Th6JtQ5KIg5pTbmbn+65KMaksRLBR6S3StJx5LgfDTrIu1vgyNYDvB0EeRkkGsW2g/sI
+         fWdw==
+X-Gm-Message-State: AOJu0YyFbZmKQ39mic9TusAhRoSryAz+dl8XIESmD700ZDMCORhWTH/Y
+        TNow1VzmiV/x/pBt1Zs8/z9SW6zxBnp54NWZUMI=
+X-Google-Smtp-Source: AGHT+IELlnjCYF6NMUj8EjfYOp+hRkexMiQbWVYqV7zP2YWb65C2GXgelQ3uny8ana0BNqb25ujH8Q==
+X-Received: by 2002:a05:600c:468e:b0:408:500b:a476 with SMTP id p14-20020a05600c468e00b00408500ba476mr8051615wmo.20.1698088975181;
+        Mon, 23 Oct 2023 12:22:55 -0700 (PDT)
+Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id ay20-20020a05600c1e1400b00407460234f9sm10142088wmb.21.2023.10.23.12.22.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 12:22:54 -0700 (PDT)
+From:   Dmitry Safonov <dima@arista.com>
+To:     David Ahern <dsahern@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexandru Matei <alexandru.matei@uipath.com>,
-        Mihai Petrisor <mihai.petrisor@uipath.com>,
-        Viorel Canja <viorel.canja@uipath.com>
-Subject: [PATCH v3] vsock/virtio: initialize the_virtio_vsock before using VQs
-Date:   Mon, 23 Oct 2023 22:22:07 +0300
-Message-Id: <20231023192207.1804-1-alexandru.matei@uipath.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: VI1P190CA0019.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:802:2b::32) To VI1PR02MB4527.eurprd02.prod.outlook.com
- (2603:10a6:803:b1::28)
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Bob Gilligan <gilligan@arista.com>,
+        Dan Carpenter <error27@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Donald Cassidy <dcassidy@redhat.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        "Gaillardetz, Dominik" <dgaillar@ciena.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Ivan Delalande <colona@arista.com>,
+        Leonard Crestez <cdleonard@gmail.com>,
+        "Nassiri, Mohammad" <mnassiri@ciena.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <horms@kernel.org>,
+        "Tetreault, Francois" <ftetreau@ciena.com>, netdev@vger.kernel.org
+Subject: [PATCH v16 net-next 15/23] net/tcp: Add tcp_hash_fail() ratelimited logs
+Date:   Mon, 23 Oct 2023 20:22:07 +0100
+Message-ID: <20231023192217.426455-16-dima@arista.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231023192217.426455-1-dima@arista.com>
+References: <20231023192217.426455-1-dima@arista.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR02MB4527:EE_|DB8PR02MB5947:EE_
-X-MS-Office365-Filtering-Correlation-Id: f7dffa99-34dc-45f0-436f-08dbd3fd701a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AjhyTucnAScwiBcFQ+kB8HFxHkCCWChXCO/J5OwqzQKYvz7+xnilUcNGx5isHjAXtk4c4P1Q44nZGW5tWa1GHvtZUsGeGWsCxf1/RamQ5SqKRnh+wDhzUKr3r6TIO+9pQxVtTfZ/ulam1UNn9DzpWC+8hkAgL4lLuW9qY0jw/JcyRbheyzgphIVZcbAUF1ueTlIv5c5BoE2UDuj/RpcymknDuNLjJHFjw9OczxeRMI1LSA7l+cza1ayNUGIUTyqpz4nNquZ7sQ5SJrt6QQoaVmKLtFZcEn/9Sk4iAaqD8PSMD02pUfSpn6Ji233XWUSAGFBT1pAKaPWCNihQplBwGnYKZam1bcL9X4FZEyxovszSl5V3rxjEcv1BYJedUbQYarkMmjMhDR+hX0OYZ1GORjPyZ9pyi5jdaaiKEV7w1ZO4clgBPXWpqrfeml9+yXo5YTp2waKfjllLOkDw92XmoiyxegI4EJVG1vUAtQdn743q64iNYqJx4PG+IvtwwJ9k4g4K7BhyA3S8ifRCcjTqvMlLzXtH3Oe29WuDz1xC7yQ2dEW97YH7qZmXcSgocoxd
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR02MB4527.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(26005)(38100700002)(2906002)(41300700001)(36756003)(44832011)(86362001)(5660300002)(7416002)(8676002)(8936002)(4326008)(2616005)(6506007)(478600001)(6666004)(107886003)(110136005)(1076003)(66946007)(66556008)(54906003)(66476007)(316002)(83380400001)(6486002)(6512007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cG4QM/yF8eNJkXZMOojXq1sRz8WpORw/x42Qe4fuqtYuXLU/KU5KdKokKS1G?=
- =?us-ascii?Q?vSBSYMtw1RuO0vUg50ruolQ42g8qV5AmgiAMhELATomjWpwpodLbUsVElYzn?=
- =?us-ascii?Q?y9yYVQYrva+GkobLU9obCoNFsfnqPzMwXbXQAqVPKw1EQz5l4Anho3HJjhnZ?=
- =?us-ascii?Q?+22/LxAsxccSSY36I6y5ycltLL9ilv0EdV9K1nHjhk7xN5YBauqDy463NaUc?=
- =?us-ascii?Q?OQ2flaR4rMOp7tgxx/8kRy736RjWpb/kcC2tTB7Hi7EwbE5T+SBwymcVHV6G?=
- =?us-ascii?Q?GivMXfqed9Rd2SSfV2uEci6cAsg5N9puOcPrkBIY8h0EAxSlN2o5/3FJiAmu?=
- =?us-ascii?Q?bQysXs9hU9WUg6JxAjjaSb8NKLvsVF7Dh6wAdnxhgk1wRaEcQcn3jfVVxqSx?=
- =?us-ascii?Q?86ntZ6SD1Bd7CjRrp2+f8CbSct/qqa7I16NGaPkp218gIA351WCJMp4PV1ca?=
- =?us-ascii?Q?+bQvAyTHrrs+0uu7eLredRnvpw34Pdh2AnyKKo3EZwj+FJqi0C0r94s4SrIh?=
- =?us-ascii?Q?U+NLpIrXygc2mc8ocb7jL7dscHObTj8smwG+Z7bEQlblahSBl4/osDkjlPix?=
- =?us-ascii?Q?RYG62ixYJRQPf+CKeAdwjjUW4m9OiAmqN+Hje9vzrOATVH6gsz/ztxKUkOLn?=
- =?us-ascii?Q?+hYqU4ROJLo5xhpGxBazbCqjWeBNSBKbgRFbgJ/EPjQOgfkWurzIk77o7VpA?=
- =?us-ascii?Q?dJQDWKiTM0RCK9qBM5qbshzE9nLlbSbQhH7+58dK0C9Pj1idNdoXUqQmwZKx?=
- =?us-ascii?Q?H0k8mY/oFx6lY33BU8qU6AKjU6698xajppD7uQxNdndqRWUUZrzS+L4arl17?=
- =?us-ascii?Q?/HQmV6ybVRF9wxciINH0RSGJyO1JRlLCQSOMzQ+J1X3UEqF22lDZEcXXCSLK?=
- =?us-ascii?Q?Qua7fzASBxSpOyajiqeHTlg3DxBK8aOOaz7l1M7cJux2ETi6aobQW/mix/Zk?=
- =?us-ascii?Q?/oE2sbq25+xfPVzftTU9trczeI4kJWmoi5PxrSOPjMz/kvBBXeKbvQiUEyyn?=
- =?us-ascii?Q?vebbgdr0Sil7mnoD6D54d99Mafg8epSt7LfLnS6Z5DPpHpenxlkEwTHSyNvm?=
- =?us-ascii?Q?qrUdsHRAIkYgJOn6jV4J7rWQTKclv0f3JfXnMjJ19CyYE9RB8wGHwKBQxV4+?=
- =?us-ascii?Q?iGKKzuGXXWd+pFmJBEpcGfprGJ5P9C1S9PAjUdezilFfW/aXNYP1og/RDw0G?=
- =?us-ascii?Q?lt+eycW56Si0fW2otBUpC4Y72FWbs1/GTm9tUb3zam1GERG0BIvbLPnk/kw+?=
- =?us-ascii?Q?akXHoLTxeiTaJ90E6MgTxlMUAigi/5ZXj1nf7jSu/oW6vbxp3VJwB3G+0H+e?=
- =?us-ascii?Q?DYyy/DrN+5oA5q46r2xlUL0lMGmdUtm5dPM67LPIVx9OyCuAqiFvQxFP1+hj?=
- =?us-ascii?Q?QOa0ZONDNI+tcjePGb0k/8mNnuC8hs+/6esWiBhb7sxmPilzBJBa7yP/uvO1?=
- =?us-ascii?Q?EuTPzq9WXebdwwfD+lyjLSrG/6N+q1yVbTyFDJA3kLl7IugsupyrwxlMq7jy?=
- =?us-ascii?Q?l2RbAPMNqc1CCvtPqyybW01R/8ip5zrqw1JORHKZzoNS1KciAUTrieZm6APl?=
- =?us-ascii?Q?aOOKjzRyYgKDJV8SuN9pJ69TyS20MDYjYdXYh3n2qlRqXFONKgL+EsuVOHcQ?=
- =?us-ascii?Q?3Q=3D=3D?=
-X-OriginatorOrg: uipath.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7dffa99-34dc-45f0-436f-08dbd3fd701a
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR02MB4527.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 19:22:46.5870
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d8353d2a-b153-4d17-8827-902c51f72357
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lqwxDNakmtCHWeOv9C7rC+vGfhOwfScjSfuj+K1JSX3fD+5PZHFuuXamQ77VkUFSRFVwvFqMZpABHIZGttqk+IYaJAOu67u1zubZUFJDL7A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR02MB5947
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once VQs are filled with empty buffers and we kick the host, it can send
-connection requests. If the_virtio_vsock is not initialized before,
-replies are silently dropped and do not reach the host.
+Add a helper for logging connection-detailed messages for failed TCP
+hash verification (both MD5 and AO).
 
-virtio_transport_send_pkt() can queue packets once the_virtio_vsock is
-set, but they won't be processed until vsock->tx_run is set to true. We
-queue vsock->send_pkt_work when initialization finishes to send those
-packets queued earlier.
-
-Fixes: 0deab087b16a ("vsock/virtio: use RCU to avoid use-after-free on the_virtio_vsock")
-Signed-off-by: Alexandru Matei <alexandru.matei@uipath.com>
+Co-developed-by: Francesco Ruggeri <fruggeri@arista.com>
+Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
+Co-developed-by: Salam Noureddine <noureddine@arista.com>
+Signed-off-by: Salam Noureddine <noureddine@arista.com>
+Signed-off-by: Dmitry Safonov <dima@arista.com>
+Acked-by: David Ahern <dsahern@kernel.org>
 ---
-v3:
-- renamed vqs_fill to vqs_start and moved tx_run initialization to it
-- queued send_pkt_work at the end of initialization to send packets queued earlier
-v2: 
-- split virtio_vsock_vqs_init in vqs_init and vqs_fill and moved 
-  the_virtio_vsock initialization after vqs_init
+ include/net/tcp.h    | 14 ++++++++++++--
+ include/net/tcp_ao.h | 29 +++++++++++++++++++++++++++++
+ net/ipv4/tcp.c       | 23 +++++++++++++----------
+ net/ipv4/tcp_ao.c    |  7 +++++++
+ 4 files changed, 61 insertions(+), 12 deletions(-)
 
- net/vmw_vsock/virtio_transport.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-index e95df847176b..c0333f9a8002 100644
---- a/net/vmw_vsock/virtio_transport.c
-+++ b/net/vmw_vsock/virtio_transport.c
-@@ -555,6 +555,11 @@ static int virtio_vsock_vqs_init(struct virtio_vsock *vsock)
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index d29c8a867f0e..c93ac6cc12c4 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -2746,12 +2746,18 @@ tcp_inbound_hash(struct sock *sk, const struct request_sock *req,
+ 	int l3index;
  
- 	virtio_device_ready(vdev);
+ 	/* Invalid option or two times meet any of auth options */
+-	if (tcp_parse_auth_options(th, &md5_location, &aoh))
++	if (tcp_parse_auth_options(th, &md5_location, &aoh)) {
++		tcp_hash_fail("TCP segment has incorrect auth options set",
++			      family, skb, "");
+ 		return SKB_DROP_REASON_TCP_AUTH_HDR;
++	}
  
-+	return 0;
-+}
+ 	if (req) {
+ 		if (tcp_rsk_used_ao(req) != !!aoh) {
+ 			NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOBAD);
++			tcp_hash_fail("TCP connection can't start/end using TCP-AO",
++				      family, skb, "%s",
++				      !aoh ? "missing AO" : "AO signed");
+ 			return SKB_DROP_REASON_TCP_AOFAILURE;
+ 		}
+ 	}
+@@ -2768,10 +2774,14 @@ tcp_inbound_hash(struct sock *sk, const struct request_sock *req,
+ 		 * the last key is impossible to remove, so there's
+ 		 * always at least one current_key.
+ 		 */
+-		if (tcp_ao_required(sk, saddr, family, true))
++		if (tcp_ao_required(sk, saddr, family, true)) {
++			tcp_hash_fail("AO hash is required, but not found",
++					family, skb, "L3 index %d", l3index);
+ 			return SKB_DROP_REASON_TCP_AONOTFOUND;
++		}
+ 		if (unlikely(tcp_md5_do_lookup(sk, l3index, saddr, family))) {
+ 			NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMD5NOTFOUND);
++			tcp_hash_fail("MD5 Hash not found", family, skb, "");
+ 			return SKB_DROP_REASON_TCP_MD5NOTFOUND;
+ 		}
+ 		return SKB_NOT_DROPPED_YET;
+diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
+index 0c3516d1b968..4da6e3657913 100644
+--- a/include/net/tcp_ao.h
++++ b/include/net/tcp_ao.h
+@@ -118,6 +118,35 @@ struct tcp_ao_info {
+ 	struct rcu_head		rcu;
+ };
+ 
++#define tcp_hash_fail(msg, family, skb, fmt, ...)			\
++do {									\
++	const struct tcphdr *th = tcp_hdr(skb);				\
++	char hdr_flags[5] = {};						\
++	char *f = hdr_flags;						\
++									\
++	if (th->fin)							\
++		*f++ = 'F';						\
++	if (th->syn)							\
++		*f++ = 'S';						\
++	if (th->rst)							\
++		*f++ = 'R';						\
++	if (th->ack)							\
++		*f++ = 'A';						\
++	if (f != hdr_flags)						\
++		*f = ' ';						\
++	if ((family) == AF_INET) {					\
++		net_info_ratelimited("%s for (%pI4, %d)->(%pI4, %d) %s" fmt "\n", \
++				msg, &ip_hdr(skb)->saddr, ntohs(th->source), \
++				&ip_hdr(skb)->daddr, ntohs(th->dest),	\
++				hdr_flags, ##__VA_ARGS__);		\
++	} else {							\
++		net_info_ratelimited("%s for [%pI6c]:%u->[%pI6c]:%u %s" fmt "\n", \
++				msg, &ipv6_hdr(skb)->saddr, ntohs(th->source), \
++				&ipv6_hdr(skb)->daddr, ntohs(th->dest),	\
++				hdr_flags, ##__VA_ARGS__);		\
++	}								\
++} while (0)
 +
-+static void virtio_vsock_vqs_start(struct virtio_vsock *vsock)
-+{
- 	mutex_lock(&vsock->tx_lock);
- 	vsock->tx_run = true;
- 	mutex_unlock(&vsock->tx_lock);
-@@ -568,8 +573,6 @@ static int virtio_vsock_vqs_init(struct virtio_vsock *vsock)
- 	virtio_vsock_event_fill(vsock);
- 	vsock->event_run = true;
- 	mutex_unlock(&vsock->event_lock);
--
--	return 0;
+ #ifdef CONFIG_TCP_AO
+ /* TCP-AO structures and functions */
+ 
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 846ddc023ac1..8594a4bf764e 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -4381,7 +4381,6 @@ tcp_inbound_md5_hash(const struct sock *sk, const struct sk_buff *skb,
+ 	 * o MD5 hash and we're not expecting one.
+ 	 * o MD5 hash and its wrong.
+ 	 */
+-	const struct tcphdr *th = tcp_hdr(skb);
+ 	const struct tcp_sock *tp = tcp_sk(sk);
+ 	struct tcp_md5sig_key *key;
+ 	u8 newhash[16];
+@@ -4391,6 +4390,7 @@ tcp_inbound_md5_hash(const struct sock *sk, const struct sk_buff *skb,
+ 
+ 	if (!key && hash_location) {
+ 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMD5UNEXPECTED);
++		tcp_hash_fail("Unexpected MD5 Hash found", family, skb, "");
+ 		return SKB_DROP_REASON_TCP_MD5UNEXPECTED;
+ 	}
+ 
+@@ -4406,16 +4406,19 @@ tcp_inbound_md5_hash(const struct sock *sk, const struct sk_buff *skb,
+ 	if (genhash || memcmp(hash_location, newhash, 16) != 0) {
+ 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMD5FAILURE);
+ 		if (family == AF_INET) {
+-			net_info_ratelimited("MD5 Hash failed for (%pI4, %d)->(%pI4, %d)%s L3 index %d\n",
+-					saddr, ntohs(th->source),
+-					daddr, ntohs(th->dest),
+-					genhash ? " tcp_v4_calc_md5_hash failed"
+-					: "", l3index);
++			tcp_hash_fail("MD5 Hash failed", AF_INET, skb, "%s L3 index %d",
++				      genhash ? "tcp_v4_calc_md5_hash failed"
++				      : "", l3index);
+ 		} else {
+-			net_info_ratelimited("MD5 Hash %s for [%pI6c]:%u->[%pI6c]:%u L3 index %d\n",
+-					genhash ? "failed" : "mismatch",
+-					saddr, ntohs(th->source),
+-					daddr, ntohs(th->dest), l3index);
++			if (genhash) {
++				tcp_hash_fail("MD5 Hash failed",
++					      AF_INET6, skb, "L3 index %d",
++					      l3index);
++			} else {
++				tcp_hash_fail("MD5 Hash mismatch",
++					      AF_INET6, skb, "L3 index %d",
++					      l3index);
++			}
+ 		}
+ 		return SKB_DROP_REASON_TCP_MD5FAILURE;
+ 	}
+diff --git a/net/ipv4/tcp_ao.c b/net/ipv4/tcp_ao.c
+index 7e14bcd4dfd4..f76fcb93499d 100644
+--- a/net/ipv4/tcp_ao.c
++++ b/net/ipv4/tcp_ao.c
+@@ -800,6 +800,8 @@ tcp_ao_verify_hash(const struct sock *sk, const struct sk_buff *skb,
+ 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOBAD);
+ 		atomic64_inc(&info->counters.pkt_bad);
+ 		atomic64_inc(&key->pkt_bad);
++		tcp_hash_fail("AO hash wrong length", family, skb,
++			      "%u != %d", maclen, tcp_ao_maclen(key));
+ 		return SKB_DROP_REASON_TCP_AOFAILURE;
+ 	}
+ 
+@@ -814,6 +816,7 @@ tcp_ao_verify_hash(const struct sock *sk, const struct sk_buff *skb,
+ 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOBAD);
+ 		atomic64_inc(&info->counters.pkt_bad);
+ 		atomic64_inc(&key->pkt_bad);
++		tcp_hash_fail("AO hash mismatch", family, skb, "");
+ 		kfree(hash_buf);
+ 		return SKB_DROP_REASON_TCP_AOFAILURE;
+ 	}
+@@ -841,6 +844,8 @@ tcp_inbound_ao_hash(struct sock *sk, const struct sk_buff *skb,
+ 	info = rcu_dereference(tcp_sk(sk)->ao_info);
+ 	if (!info) {
+ 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOKEYNOTFOUND);
++		tcp_hash_fail("AO key not found", family, skb,
++			      "keyid: %u", aoh->keyid);
+ 		return SKB_DROP_REASON_TCP_AOUNEXPECTED;
+ 	}
+ 
+@@ -942,6 +947,8 @@ tcp_inbound_ao_hash(struct sock *sk, const struct sk_buff *skb,
+ key_not_found:
+ 	NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOKEYNOTFOUND);
+ 	atomic64_inc(&info->counters.key_not_found);
++	tcp_hash_fail("Requested by the peer AO key id not found",
++		      family, skb, "");
+ 	return SKB_DROP_REASON_TCP_AOKEYNOTFOUND;
  }
  
- static void virtio_vsock_vqs_del(struct virtio_vsock *vsock)
-@@ -664,6 +667,9 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
- 		goto out;
- 
- 	rcu_assign_pointer(the_virtio_vsock, vsock);
-+	virtio_vsock_vqs_start(vsock);
-+
-+	queue_work(virtio_vsock_workqueue, &vsock->send_pkt_work);
- 
- 	mutex_unlock(&the_virtio_vsock_mutex);
- 
-@@ -736,6 +742,9 @@ static int virtio_vsock_restore(struct virtio_device *vdev)
- 		goto out;
- 
- 	rcu_assign_pointer(the_virtio_vsock, vsock);
-+	virtio_vsock_vqs_start(vsock);
-+
-+	queue_work(virtio_vsock_workqueue, &vsock->send_pkt_work);
- 
- out:
- 	mutex_unlock(&the_virtio_vsock_mutex);
 -- 
-2.25.1
+2.42.0
 
