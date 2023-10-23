@@ -2,106 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3F57D3800
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9227D3801
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbjJWN0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
+        id S230380AbjJWN1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 09:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233252AbjJWN02 (ORCPT
+        with ESMTP id S231509AbjJWN0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:26:28 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5E210F5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:25:04 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4079ed65471so27265955e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:25:04 -0700 (PDT)
+        Mon, 23 Oct 2023 09:26:42 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC8A1BD1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:25:31 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9c53e8b7cf4so466063466b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:25:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698067502; x=1698672302; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MfTe2mItOOKjEsaFlS0tcGkoINaBgb/MwgZiyuRpNWc=;
-        b=T8g4X9IyouMZIo6Qe/6IvdeurXuDJcmI5VqTF7Rwl8G5ny0Jj5P3Y3aHgitpA02PL1
-         yugiwSc4eP5fQC5owyCKiRJyKrYD09tXco5WEhauhSupuTB9hDUMr5TTMcB49pca0ivn
-         5v8TbtdU0p5rxyb8Sy7v6gFfu9LhbOQtqJdIRmkrMznFjwB9gBBdEIN7SGK3k+dXHiYp
-         aND5TH0sSRIfcLx+p6fClqBdgIrU56LApSAnl1Y/mzIGCEViMd6Od/A8EPKI6u3CuKbI
-         2qYB9jme25RYOFUQ8POdqJwwP5rN1IevwFbFcXoYBYh8LBa7htIN0PYk0i2eQ5NQy0qq
-         8C6A==
+        d=linaro.org; s=google; t=1698067530; x=1698672330; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=htwUDNkfffyLpEQivtan+qst8+dp2EMPcgkpvKdneig=;
+        b=Ng3/WBhDjFjUoo5unkc5u9cBlp+zmuNySvGOeZ17yt1b9AdwB7M/WuMzKrvp2GAlOh
+         kQm56827S5q4Zdrepazx/FXPKFpbZ3MFEEKuPs03lzxmMJrRORCbC5+TgVoOc+19NS4j
+         UbVpZj2Dyl6Cf1FWF6/KITJAHkbj8oIDmHhcoOxQnX7lUGHvEpGQj6f35VzdgpETpZQI
+         cz9ravWszgbgwxtemAZ5+X93otbOT3sQHeclCfWraF3WrI55bgz4SyfeAHeSllyaxQ5m
+         ukyy3RKmCh9R7JR1E5dFKXcSEtk+D6HY39BJrG4jlRDUcYqtiVWJjvhuBXZI90XqlJji
+         jGwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698067502; x=1698672302;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MfTe2mItOOKjEsaFlS0tcGkoINaBgb/MwgZiyuRpNWc=;
-        b=LlCR5wrUEuT3CAx5SFCdAmIfhxY28peCTLXrM0O69KursFYblCJVK2YWEm7ef80EZw
-         QFDNuKEYRS9ZLj5rGfQBbTdi7FIKbzx3lrqs+yeGAXUFkp9/OEY3qdl4AMvwQd7ewirD
-         fhhIYNkLwLPul5MFiSz2jqkz7AC9eQ4sziCYLe1pYgI+3P8e5IYmVPhVQgWlKNvsXeLX
-         bvbVRnmVgJSgZTNKVRmvAjOrhTAhXvAoQCr+dRhHZyJxRFdZ7pdB0ykVzlN1UYnQPRCU
-         8/Cwe4TWfocnx4nKLF6ViM/1FMK7wfZyDjIISC4UfwqSkZPv399t6b0BPKluCOzmRugf
-         V1CA==
-X-Gm-Message-State: AOJu0Yz4TxHOWYXfk/EdJSWJ//vAeyduuIiOOjeU/POkL46E+9tmyYgX
-        Bx7iMV6b6SBwcqOVZf60Xgz4Pw==
-X-Google-Smtp-Source: AGHT+IEduB7wx3eedVGayKFCj1JBqguF5m2D0FBesP2GCt4VG7PKD6l90JrFEf446JDrgRBgMq5d3A==
-X-Received: by 2002:a05:600c:4506:b0:405:dbe2:df10 with SMTP id t6-20020a05600c450600b00405dbe2df10mr7584940wmo.35.1698067502387;
-        Mon, 23 Oct 2023 06:25:02 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:a36e:a5d9:26ae:74b1? ([2a01:e0a:982:cbb0:a36e:a5d9:26ae:74b1])
-        by smtp.gmail.com with ESMTPSA id o6-20020a5d62c6000000b0032196c508e3sm7738393wrv.53.2023.10.23.06.25.01
+        d=1e100.net; s=20230601; t=1698067530; x=1698672330;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=htwUDNkfffyLpEQivtan+qst8+dp2EMPcgkpvKdneig=;
+        b=oPv8MUy+xhBFB6SkJ7kFKQrgb6mnKtmfdlmlQDROpQY5xHBEGYLMwzirsAUAfCZFQi
+         kwdohbw6xVndTjNMZy0gsAx5OdBnZZqSN6jYhEkBdVtjOkFvBqHwWH1T/qF8l9es7Yua
+         A0cE/M/weMba21Qzcpv/VhyDZjeuA0DupY0Wi0C8jqYL4V483YP0NJFd2YARQ6NOWVh5
+         ErL6WTj6FlOnBRS4yu7zAQJ+R8jsiym4Yv6slSrl+COJCCYvgzzipn0uhFBBeKhdtreu
+         F/gayWMghM4IjAuLzv6exAxKxlIoxqStlTvWYaJBO64AL2PPWaoF5Kc1ryzXvtylFxql
+         SeVg==
+X-Gm-Message-State: AOJu0Yw0OV+V/qNytKsj/4ireeDs1xjD0o1OgExYOUXrt+/QEMqcRksz
+        5wpyd4fp3kjM3ncxYKIDYZlxgg==
+X-Google-Smtp-Source: AGHT+IEBA2oEHcwWSgRm4CR/UkdyDX//GQpETy53r+qiub3UwSSdhVJ5TnBdaOW6bdTgxgmZ+xIlGQ==
+X-Received: by 2002:a17:907:841:b0:9c7:3611:9e7c with SMTP id ww1-20020a170907084100b009c736119e7cmr6856201ejb.61.1698067529862;
+        Mon, 23 Oct 2023 06:25:29 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id n13-20020a17090673cd00b00991faf3810esm6814151ejl.146.2023.10.23.06.25.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 06:25:01 -0700 (PDT)
-Message-ID: <00e81457-9148-4ca1-8433-4b7cad0652b5@linaro.org>
-Date:   Mon, 23 Oct 2023 15:25:00 +0200
+        Mon, 23 Oct 2023 06:25:29 -0700 (PDT)
+Message-ID: <9c1a1119-3257-44dc-8223-7992ea6c86ac@linaro.org>
+Date:   Mon, 23 Oct 2023 15:25:27 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] drm/panel/raydium-rm692e5: select
- CONFIG_DRM_DISPLAY_DP_HELPER
-Content-Language: en-US, fr
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Luca Weiss <luca.weiss@fairphone.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231023115619.3551348-1-arnd@kernel.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231023115619.3551348-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: Aw: [RFC v1] arm64: dts: mediatek: add dtbs with applied overlays
+ for bpi-r3
+Content-Language: en-US
+To:     Frank Wunderlich <frank-w@public-files.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Frank Wunderlich <linux@fw-web.de>
+References: <20230916083214.7059-1-linux@fw-web.de>
+ <trinity-3fe161a2-70f1-4619-be28-199ea6201668-1696078629921@3c-app-gmx-bs36>
+ <trinity-13c822b5-7d6f-4bd0-863f-8f98b1a8689b-1698062394687@3c-app-gmx-bs46>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <trinity-13c822b5-7d6f-4bd0-863f-8f98b1a8689b-1698062394687@3c-app-gmx-bs46>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -112,39 +127,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 23/10/2023 13:59, Frank Wunderlich wrote:
+> Hi Rob/Krzysztof
+> 
+> can you please give an Ack or tell me if something is wrong?
 
-On 23/10/2023 13:55, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> As with several other panel drivers, this fails to link without the DP
-> helper library:
-> 
-> ld: drivers/gpu/drm/panel/panel-raydium-rm692e5.o: in function `rm692e5_prepare':
-> panel-raydium-rm692e5.c:(.text+0x11f4): undefined reference to `drm_dsc_pps_payload_pack'
-> 
-> Select the same symbols that the others already use.
-> 
-> Fixes: 988d0ff29ecf7 ("drm/panel: Add driver for BOE RM692E5 AMOLED panel")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/gpu/drm/panel/Kconfig | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-> index 99e14dc212ecb..a4ac4b47777fe 100644
-> --- a/drivers/gpu/drm/panel/Kconfig
-> +++ b/drivers/gpu/drm/panel/Kconfig
-> @@ -530,6 +530,8 @@ config DRM_PANEL_RAYDIUM_RM692E5
->   	depends on OF
->   	depends on DRM_MIPI_DSI
->   	depends on BACKLIGHT_CLASS_DEVICE
-> +	select DRM_DISPLAY_DP_HELPER
-> +	select DRM_DISPLAY_HELPER
->   	help
->   	  Say Y here if you want to enable support for Raydium RM692E5-based
->   	  display panels, such as the one found in the Fairphone 5 smartphone.
+Hm? I do not recall being the maintainer of Mediatek. Why do you need an
+Ack from me?
 
-Will apply once drm-misc-next-fixes is synced with the last drm-misc-next PR for v6.7.
+Best regards,
+Krzysztof
 
-Neil
