@@ -2,237 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1A07D2B73
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 956867D2B76
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbjJWHfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46168 "EHLO
+        id S233463AbjJWHgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233443AbjJWHfg (ORCPT
+        with ESMTP id S229450AbjJWHgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 03:35:36 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33AD3C5;
-        Mon, 23 Oct 2023 00:35:34 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.west.internal (Postfix) with ESMTP id D14D83200973;
-        Mon, 23 Oct 2023 03:35:32 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Mon, 23 Oct 2023 03:35:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1698046532; x=1698132932; bh=d9amFDYz1sl2Iw6yhNUKRAnYTQtpJelLSp1
-        Dm00CDPs=; b=TVTYvBMlNM4+fgbnJ7BWdOJA4mRcfzAVuAe7ZNzCMUtj18rXjno
-        EaawTlGh8yP95b0hOO6u7J/XkcuFnG7xdlu/EbXRbzsoj1myTl5qdoXCztmuiNuz
-        eSW1dr+3kS9PaMsTrGqHh4C9QDSBssXLx+4josIghBoXMlQH2rXaaO5P6Y18QGyN
-        SbZO5Ya0rvzuA/zq/PF1QC2m1HHGgIYU+3z9BWC4jwfI4m2ou+a0y09BTRlG7EDt
-        +FhvKXT9w+wpGaDNCwcpcb1Jhz661AKDsXnOvjOlzjsv1MovuWQGktw23Ghfgytu
-        X4QWvmBaPa/pkOSdm4m9hdvdqfkE8VlWotw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1698046532; x=1698132932; bh=d9amFDYz1sl2Iw6yhNUKRAnYTQtpJelLSp1
-        Dm00CDPs=; b=cvj+733ts4j523wzds2wIrWGXz43l1yy21zW3D6XXrDFFhWaI5h
-        ckZ6SZkPetQuDQvs9ip/0zeM6McvjKL2entMt4RK4A/g611DxKeFINWrLJ8JVwLM
-        k91ZrYCEQtNErofVqnDUG4Psydm8ekc+HmUNIfn5xvy08EuBW13NaK9V4ZSonsI5
-        sBi1MrDD/ulxRY9uN+y9t9mKDxWNTClfPRyiKDspAdDFEw/7V4DLnTwBtLqa0Axz
-        arzG9mtvAh45RKDHdLe/P86oKXkwE2KCpR9t5xboJVujCmHbA12GciRWkyKIdrEb
-        Wb1I0ZewIibf8MI24mU54KpbwYzoq+vgG3Q==
-X-ME-Sender: <xms:RCI2ZUpAE93LBFe_kECP3UN6XdJiGuaEjv1C0R3VobABSsERAO2rxg>
-    <xme:RCI2Zar3IiXngOU4WwZXE7cqWLL3kUJQmoagj38oKNRI_EguK6-BE8ygINRpkEcnK
-    KZ6TN3RTjrs>
-X-ME-Received: <xmr:RCI2ZZOHfu5gkdES3orAOzrVkOPyZnQNBjUyrpSS40F0zCAE0BTpDr4S5OTqk_SAAQccU9b2dECkpvN9TT4YHNY03Uc0mjAJjAmxlUe2YYdElKi-QbyOS7cB>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeehgdduuddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfhffvvehfufgjtgfgsehtkeertddtfeejnecuhfhrohhmpefkrghn
-    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
-    epkeeuffekhfffteejieekvedthfeghfegteefvdegveevjeegffelleffkeevjedtnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
-    esthhhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:RCI2Zb43FfRIvySds3CjuihpwQSxdxpV89XAmlOkug8f8yiRPR1QKw>
-    <xmx:RCI2ZT40iWBCHS7m0ZkC8m1oqfmL1DGZgYWh6j2Pd6f9ufKJVW3ocQ>
-    <xmx:RCI2ZbiOac3mh8F9dmVoSTs3uv7GKUoiX0_1WZ6euH65rQ7yr7izbg>
-    <xmx:RCI2ZWbAQZ_XQxgKJdUuOC65NVja4Cqp8RWm1Z-AydO_fbpT8JzJtg>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 23 Oct 2023 03:35:28 -0400 (EDT)
-Message-ID: <a5dfbe4f-b6fc-e282-2a3c-3e487493336c@themaw.net>
-Date:   Mon, 23 Oct 2023 15:35:24 +0800
+        Mon, 23 Oct 2023 03:36:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED33D6B
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698046536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=gCvqpOQdF+5gxTxit3nhJ+3DoMqApvSza5DK6qieuOY=;
+        b=Za10lST6FRwz7EHHx0VjPmPVfVMRIRlxpAc1Nt8pk6p+mQ/PXwOwtlgKXEkJ4BMetzp4ZG
+        MpCaNqfcnFw8WToWm8zGv9cwXBENdW5bUoy5krQ5tAgztKzBKfPw3CDrD0NmEf8PpHSSGP
+        qLgGLZW4B1lNu6OVaWGThD4ewRXnB4E=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-627-VcvqjrNzMDmHKL0BqsVrOw-1; Mon, 23 Oct 2023 03:35:30 -0400
+X-MC-Unique: VcvqjrNzMDmHKL0BqsVrOw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4D38E3C176E1;
+        Mon, 23 Oct 2023 07:35:30 +0000 (UTC)
+Received: from [10.39.208.17] (unknown [10.39.208.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 25DD8C15BB8;
+        Mon, 23 Oct 2023 07:35:25 +0000 (UTC)
+Message-ID: <b7efba7a-0948-4b54-93cf-d676f9d5ea30@redhat.com>
+Date:   Mon, 23 Oct 2023 09:35:24 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Ian Kent <raven@themaw.net>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, linux-fsdevel@vger.kernel.org,
-        autofs@vger.kernel.org, Bill O'Donnell <bodonnel@redhat.com>,
-        Christian Brauner <brauner@kernel.org>
-References: <CA+G9fYt75r4i39DuB4E3y6jRLaLoSEHGbBcJy=AQZBQ2SmBbiQ@mail.gmail.com>
- <71adfca4-4e80-4a93-b480-3031e26db409@app.fastmail.com>
- <CADYN=9+HDwqAz-eLV7uVuMa+_+foj+_keSG-TmD2imkwVJ_mpQ@mail.gmail.com>
- <432f1c1c-2f77-4b1b-b3f8-28330fd6bac3@kadam.mountain>
- <f1cddf6e-2103-4786-84ff-12c305341d7c@app.fastmail.com>
- <11ba98f2-2e59-d64b-1a1a-fd32fd8ba358@themaw.net>
- <9217caeb-0d7e-b101-33f0-859da175a6ef@themaw.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/4] vduse: validate block features only with block
+ devices
 Content-Language: en-US
-Subject: Re: autofs: add autofs_parse_fd()
-In-Reply-To: <9217caeb-0d7e-b101-33f0-859da175a6ef@themaw.net>
+To:     Casey Schaufler <casey@schaufler-ca.com>, mst@redhat.com,
+        jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        xieyongji@bytedance.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        david.marchand@redhat.com, lulu@redhat.com
+References: <20231020155819.24000-1-maxime.coquelin@redhat.com>
+ <20231020155819.24000-2-maxime.coquelin@redhat.com>
+ <499aa925-f1fc-43de-ad5c-2fab28fb38e7@schaufler-ca.com>
+From:   Maxime Coquelin <maxime.coquelin@redhat.com>
+Autocrypt: addr=maxime.coquelin@redhat.com; keydata=
+ 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
+ Mwqu3GQ=
+In-Reply-To: <499aa925-f1fc-43de-ad5c-2fab28fb38e7@schaufler-ca.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/23 08:48, Ian Kent wrote:
-> On 20/10/23 21:09, Ian Kent wrote:
->> On 20/10/23 19:23, Arnd Bergmann wrote:
->>> On Fri, Oct 20, 2023, at 12:45, Dan Carpenter wrote:
->>>> On Fri, Oct 20, 2023 at 11:55:57AM +0200, Anders Roxell wrote:
->>>>> On Fri, 20 Oct 2023 at 08:37, Arnd Bergmann <arnd@arndb.de> wrote:
->>>>>> On Thu, Oct 19, 2023, at 17:27, Naresh Kamboju wrote:
->>>>>>> The qemu-x86_64 and x86_64 booting with 64bit kernel and 32bit 
->>>>>>> rootfs we call
->>>>>>> it as compat mode boot testing. Recently it started to failed to 
->>>>>>> get login
->>>>>>> prompt.
->>>>>>>
->>>>>>> We have not seen any kernel crash logs.
->>>>>>>
->>>>>>> Anders, bisection is pointing to first bad commit,
->>>>>>> 546694b8f658 autofs: add autofs_parse_fd()
->>>>>>>
->>>>>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>>>>>> Reported-by: Anders Roxell <anders.roxell@linaro.org>
->>>>>> I tried to find something in that commit that would be different
->>>>>> in compat mode, but don't see anything at all -- this appears
->>>>>> to be just a simple refactoring of the code, unlike the commits
->>>>>> that immediately follow it and that do change the mount
->>>>>> interface.
->>>>>>
->>>>>> Unfortunately this makes it impossible to just revert the commit
->>>>>> on top of linux-next. Can you double-check your bisection by
->>>>>> testing 546694b8f658 and the commit before it again?
->>>>> I tried these two patches again:
->>>>> 546694b8f658 ("autofs: add autofs_parse_fd()") - doesn't boot
->>>>> bc69fdde0ae1 ("autofs: refactor autofs_prepare_pipe()") - boots
->>>>>
->>>> One difference that I notice between those two patches is that we no
->>>> long call autofs_prepare_pipe().  We just call autofs_check_pipe().
->>> Indeed, so some of the f_flags end up being different. I assumed
->>> this was done intentionally, but it might be worth checking if
->>> the patch below makes any difference when the flags get put
->>> back the way they were. This is probably not the correct fix, but
->>> may help figure out what is going on. It should apply to anything
->>> from 546694b8f658 ("autofs: add autofs_parse_fd()") to the current
->>> linux-next:
->>>
->>> --- a/fs/autofs/inode.c
->>> +++ b/fs/autofs/inode.c
->>> @@ -358,6 +358,11 @@ static int autofs_fill_super(struct super_block 
->>> *s, struct fs_context *fc)
->>>          pr_debug("pipe fd = %d, pgrp = %u\n",
->>>                   sbi->pipefd, pid_nr(sbi->oz_pgrp));
->>>   +        /* We want a packet pipe */
->>> +        sbi->pipe->f_flags |= O_DIRECT;
->>> +        /* We don't expect -EAGAIN */
->>> +        sbi->pipe->f_flags &= ~O_NONBLOCK;
->>> +
+
+
+On 10/21/23 00:07, Casey Schaufler wrote:
+> On 10/20/2023 8:58 AM, Maxime Coquelin wrote:
+>> This patch is preliminary work to enable network device
+>> type support to VDUSE.
 >>
+>> As VIRTIO_BLK_F_CONFIG_WCE shares the same value as
+>> VIRTIO_NET_F_HOST_TSO4, we need to restrict its check
+>> to Virtio-blk device type.
 >>
->> That makes sense, we do want a packet pipe and that does also mean
+>> Acked-by: Jason Wang <jasowang@redhat.com>
+>> Reviewed-by: Xie Yongji <xieyongji@bytedance.com>
+>> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
+>> ---
+>>   drivers/vdpa/vdpa_user/vduse_dev.c | 9 +++++----
+>>   1 file changed, 5 insertions(+), 4 deletions(-)
 >>
->> we don't want a non-blocking pipe, it will be interesting to see
->>
->> if that makes a difference. It's been a long time since Linus
->>
->> implemented that packet pipe and I can't remember now what the
->>
->> case was that lead to it.
->
-> After thinking about this over the weekend I'm pretty sure my mistake
->
-> is dropping the call to autofs_prepare_pipe() without adding the tail
->
-> end of it into autofs_parse_fd().
->
->
-> To explain a bit of history which I'll include in the fix description.
->
-> During autofs v5 development I decided to stay with the existing usage
->
-> instead of changing to a packed structure for autofs <=> user space
->
-> communications which turned out to be a mistake on my part.
->
->
-> Problems arose and they were fixed by allowing for the 64 bit to 32 bit
->
-> size difference in the automount(8) code.
->
->
-> Along the way systemd started to use autofs and eventually encountered
->
-> this problem too. systemd refused to compensate for the length difference
->
-> insisting it be fixed in the kernel. Fortunately Linus implemented the
->
-> packetized pipe which resolved the problem in a straight forward and
->
-> simple way.
->
->
-> So I pretty sure that the cause of the problem is the inadvertent 
-> dropping
->
-> of the flags setting in autofs_fill_super() that Arnd spotted although I
->
-> don't think putting it in autofs_fill_super() is the right thing to do.
->
->
-> I'll produce a patch today which includes most of this explanation for
->
-> future travelers ...
+>> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
+>> index df7869537ef1..5b3879976b3d 100644
+>> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+>> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+>> @@ -1662,13 +1662,14 @@ static bool device_is_allowed(u32 device_id)
+>>   	return false;
+>>   }
+>>   
+>> -static bool features_is_valid(u64 features)
+>> +static bool features_is_valid(struct vduse_dev_config *config)
+> 
+> This should either be features_are_valid() or feature_is_valid().
+> Correct pluralization is important in the English language.
 
-So I have a patch.
+Indeed, I will change to features_are_valid() in next revision.
 
+Thanks,
+Maxime
 
-I'm of two minds whether to try and use the instructions to reproduce this
+>>   {
+>> -	if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
+>> +	if (!(config->features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
+>>   		return false;
+>>   
+>>   	/* Now we only support read-only configuration space */
+>> -	if (features & (1ULL << VIRTIO_BLK_F_CONFIG_WCE))
+>> +	if ((config->device_id == VIRTIO_ID_BLOCK) &&
+>> +			(config->features & (1ULL << VIRTIO_BLK_F_CONFIG_WCE)))
+>>   		return false;
+>>   
+>>   	return true;
+>> @@ -1695,7 +1696,7 @@ static bool vduse_validate_config(struct vduse_dev_config *config)
+>>   	if (!device_is_allowed(config->device_id))
+>>   		return false;
+>>   
+>> -	if (!features_is_valid(config->features))
+>> +	if (!features_is_valid(config))
+>>   		return false;
+>>   
+>>   	return true;
+> 
 
-or not because of experiences I have had with other similar testing 
-automation
-
-systems that claim to provide a reproducer and end up a huge waste of 
-time and
-
-are significantly frustrating.
-
-
-Can someone please perform a test for me once I provide the patch?
-
-
-Ian
-
->
->
->>
->>
->> Ian
->>
->>>          sbi->flags &= ~AUTOFS_SBI_CATATONIC;
->>>            /*
