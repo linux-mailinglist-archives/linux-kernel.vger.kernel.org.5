@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BAAC7D291D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823477D2927
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233259AbjJWDco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 23:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
+        id S229512AbjJWDni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 23:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjJWDcn (ORCPT
+        with ESMTP id S229468AbjJWDnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 23:32:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41189188;
-        Sun, 22 Oct 2023 20:32:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Y5xX1ErYcsMd6Y6gVo+lbykAvr/Jdr2/F+4FDP026CQ=; b=lxK+3fvOqD3CtQ1DgE3+eF0hkh
-        UqX1WgsdQZN/Ixg0ThkuMf0sFkSKMFT4lfksGNP1H6i9YsdaMp/4Xm/YGimwU8pPHQwO0l4u/fsYu
-        G4RQct1hFu31rbHKO2vhlMoYe/pTELjk/4kPAChdEoDZuzHwabKpC0dXTChJmo2f22gO3QI9IREmV
-        OdcVsCxzYOaNTxGfzc/5N38hR6fqcy+RtC9fu4IpWfFztBvVpa0TG+66s2OctNQhaoOKB4k8GcWrM
-        H/7Q+2kpUbD45oGEVhXJqvKsElVpCcVzLlqhkjfs6A+6Ir94n+Ty0RazW6XRueHlvxvO1xXmD2LSk
-        etMHA3QQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qulg0-00BRDp-9t; Mon, 23 Oct 2023 03:32:24 +0000
-Date:   Mon, 23 Oct 2023 04:32:24 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        Sun, 22 Oct 2023 23:43:37 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01803E9;
+        Sun, 22 Oct 2023 20:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698032609;
+        bh=L4G7r3JKX/EKtlPlRiCIHwdaJDX0XxVWfwQ/mnLSrN8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PA8VN58FCQc6wgh1CgA3hJVu4N5qo622L+anqrGYroAAReRdfXatWrE+Q7TaX23iy
+         15YUUZvuORUkuj8CLWO+4WoEGhw8mNzZSDucmF7TJn9mtHo32GatgcxC8KhUXPZcyZ
+         XsBhmAg2Xv/Kx5IH20P5lnjZ0TKkRTtZlRxk9SiUDrhu3vDgbgNb6xXVyynoAhlqeM
+         R9/FQdBI+PSitZb9oeA1FIHY5bnKWTsmZcecj0nOYagxeBmdj0LPiaobYj6xx7RBjc
+         2bAMi5CnqPT6l8wZ7MnOAX6lrktuUCisWQbezpgsfX9wohbX94lo1RnpATYj+eopB7
+         8FfwRvS+9ZVsQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SDLdD4Rt1z4wcZ;
+        Mon, 23 Oct 2023 14:43:28 +1100 (AEDT)
+Date:   Mon, 23 Oct 2023 14:43:27 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the ftrace tree
-Message-ID: <ZTXpSMF8Y1ePP9ba@casper.infradead.org>
-References: <20231023133033.5d54f393@canb.auug.org.au>
+Subject: linux-next: manual merge of the tty tree with the asm-generic tree
+Message-ID: <20231023144327.7d18a847@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023133033.5d54f393@canb.auug.org.au>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/lY6zbmuHc_NYgREe9GwRz7g";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 01:30:33PM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the ftrace tree, today's linux-next build (powerpc
-> ppc64_defconfig) failed like this:
-> 
-> arch/powerpc/kernel/setup-common.c:604:10: error: 'struct seq_buf' has no member named 'readpos'
->   604 |         .readpos = 0,
+--Sig_/lY6zbmuHc_NYgREe9GwRz7g
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This would fix it.
+Hi all,
 
-diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-index 2f1026fba00d..34975532e44c 100644
---- a/arch/powerpc/kernel/setup-common.c
-+++ b/arch/powerpc/kernel/setup-common.c
-@@ -601,7 +601,6 @@ struct seq_buf ppc_hw_desc __initdata = {
- 	.buffer = ppc_hw_desc_buf,
- 	.size = sizeof(ppc_hw_desc_buf),
- 	.len = 0,
--	.readpos = 0,
- };
- 
- static __init void probe_machine(void)
+Today's linux-next merge of the tty tree got conflicts in:
 
+  arch/ia64/kernel/setup.c
+  drivers/firmware/pcdp.c
 
-Steven, do you prefer fixup patches like this, or do you want a v3 that
-includes this?
+between commit:
+
+  cf8e8658100d ("arch: Remove Itanium (IA-64) architecture")
+
+from the asm-generic tree and commits:
+
+  8a736ddfc861 ("vgacon: rework screen_info #ifdef checks")
+  acfc78823326 ("vgacon: remove screen_info dependency")
+  555624c0d10b ("vgacon: clean up global screen_info instances")
+
+from the tty tree.
+
+I fixed it up (I deleted the files) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/lY6zbmuHc_NYgREe9GwRz7g
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU1698ACgkQAVBC80lX
+0Gzw6Af8CwiYTjOWYSB1KYDeZ3mWFgbZuLbzIwoB3Xcacx63y7xOTE3kE8IwIJXY
+M356nrLmbipWG+aly01ofbSO+2qO7/P2/mLnzCrNpYWLxS/46m9EWBKtvIYMqgfO
+n1P+St/S5Zo85qVACqMyuQlYNvRCoOlTXiiTCyXFgZNfmOqyQQWi+FSN6qnNhS1k
+FpNiVwm+e6ZPkOFU+YCdfWeOjxdwl0DHd7NmSGwX6D+CHw8m0IoxBVfh+CUWBcNA
+JEkgU95/LjbG9pvCXOUPGjN5i/FJbgnu9OS35AfI7bZDOPEmtK+JmqJu3IQmvxvS
+EKv++w9a3XwcGj3LBxms9fOUNueEog==
+=GwjP
+-----END PGP SIGNATURE-----
+
+--Sig_/lY6zbmuHc_NYgREe9GwRz7g--
