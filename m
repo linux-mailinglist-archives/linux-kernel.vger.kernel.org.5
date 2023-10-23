@@ -2,160 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAD37D3C98
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689287D3C9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbjJWQbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 12:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
+        id S230448AbjJWQby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 12:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbjJWQbe (ORCPT
+        with ESMTP id S230155AbjJWQbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 12:31:34 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03olkn2050.outbound.protection.outlook.com [40.92.59.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054731703;
-        Mon, 23 Oct 2023 09:31:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LIBRL51diRWfPLPYnY/OgI2HUg1EKW3Ljw9917Jts6ngXUIfgOh/H2TeHDSju/2Aik2Ww0WXzAB6Z7UtTAtvF6tS6XMpfzFTKhz6IPw0rQRbMzucMJrqI8fK/KqcORXoq3H18zM+w8O5Oq6nu1Zg8v4YvCSNW2/OtMggavfJnmoOLlTk0LovWlaL0oys37U98zui7SIg1GCCNc799FOWJr04oarv+oLFy/Eie5NfRz2Vbbf6z5MhXLNCAFAzHse5qCeyq+60EQTluY10gbSBwbxHYzhUgjUxBJ6G7NpidqLP9VBoNnPBhpw9pcGjj37C4M9vBWWsSuZ/m5axCTzaQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=s95eaJEGpJhC8TWxE2w607MSyguwKVfTqdxhWFvhOZ0=;
- b=g/VEB/5M+AjSSYldzq2anvrFh9w4ZGHyE6wiwnuwN8OujjRyqcreaSENFVU2jOam02Wqi3EXiQAdsdGBYEYg7LMoZb9JxBOj33hYoh8IWxYmTg24eHqppKwt7zgNNR3JNw9+uPRaCOlcLfFz7yGu32aSqjRbJkmFaEpwvZPe2fNZq2KKirEKKMLlkBsIACY75tyxmBiHO/4hzOOF6AaLNgns0rQarEO4TOh5mEyRGGVAMxz5HwpMs+XpePfUH1V225cpx2yI+HcAhY732sku7nXtipaZLq1KNkGkXijMOZ8HKtjYrXo2Nb//k5nSmGO9gO0zd0xfIh2Q0d8Xk4PQ2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s95eaJEGpJhC8TWxE2w607MSyguwKVfTqdxhWFvhOZ0=;
- b=FAkDOcdgOCUxZYjOfRbD+0joFDNvEnkDIIGt0pY6ZES2HEble2G8uhzF4NXxAl0qbq8DZof9tyLgk/rn33e2tg2QWujV+opL67d0uZfQ8XCuPI2HqnyT9hxTjkv0W69RbZXgV4IBhr78nGgiyTAbCG2XIPgyjqqiVObOlGwQR1r77oqMqoTYZKoJnR4pTvtJUqgf/wYvF6th/Y9+CCkOKCxR1LIdBZLa8FE7+Tvkie7Xbf7BShS/JKcFjfURgCi9yec+uWj+IcRIF+4hOXSwEBeDDSabwri0+H0RvHJVu9/ZwGA6NQQTUbCToiBxV0kTFTT2wH/e71jWXmrKRsWW1A==
-Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
- by DU0PR10MB7213.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:44b::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Mon, 23 Oct
- 2023 16:31:22 +0000
-Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e2b0:8d7e:e293:bd97%6]) with mapi id 15.20.6907.032; Mon, 23 Oct 2023
- 16:31:22 +0000
-From:   Yuran Pereira <yuran.pereira@hotmail.com>
-To:     airlied@gmail.com
-Cc:     Yuran Pereira <yuran.pereira@hotmail.com>,
-        neil.armstrong@linaro.org, sam@ravnborg.org, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, corbet@lwn.net, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        dianders@chromium.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] drm: docs: Remove item from TODO list
-Date:   Mon, 23 Oct 2023 22:00:56 +0530
-Message-ID: <DB3PR10MB683528B8252ED2A802A0E154E8D8A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [HAAyx/D21wTyCOngo4h/ipmusX5hvObQ]
-X-ClientProxiedBy: JNXP275CA0045.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::33)
- To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
-X-Microsoft-Original-Message-ID: <20231023163056.982019-1-yuran.pereira@hotmail.com>
+        Mon, 23 Oct 2023 12:31:39 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2A210E;
+        Mon, 23 Oct 2023 09:31:37 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NGRV07015709;
+        Mon, 23 Oct 2023 16:31:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=5zC/P5EPty0Y0r8h3zLsFuH5hC2+OJE4zNLyy2vAfiY=;
+ b=pa4NZa4FBmpq+74FigJDuO4sct0Nk44m9gaaYycg1UCsIAJaR2tVSBeq64pI8txz2upN
+ fBrzFAfD8bMHXwf0y034F8kk8OwgRzt6nx9M/x99DL2jMA6RYoVPl3rk0B0cSiQhvhH1
+ ayIJXxqWB2E9s1APpGcbwdniTHYpublxzijhbGX5lmMKNNuM15ORJepTq4ubs4Fe0FDi
+ OKepPmC8ZBLI5Jx6vH0BYRwPlcgdl5QH/C8TaEfZVPbwTH3s2vltkFcuzb/Ucb97rLzh
+ H79hPpRWlxh7Ic7Bsp8unp+mdyH7C6z/Xy/bG6yOnoH/Wc+Ffn1cNn6vRmO+O52jcX8q Qw== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3twvc4r42p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 16:31:35 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39NGU9q5026870;
+        Mon, 23 Oct 2023 16:31:34 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tvsynhqjd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 16:31:34 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39NGVVZB16253628
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Oct 2023 16:31:31 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E32D2007A;
+        Mon, 23 Oct 2023 16:31:31 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B3FA820071;
+        Mon, 23 Oct 2023 16:31:30 +0000 (GMT)
+Received: from [9.179.15.215] (unknown [9.179.15.215])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 23 Oct 2023 16:31:30 +0000 (GMT)
+Message-ID: <711135296d62cfa0d5dee744a0de86141d57cd6d.camel@linux.ibm.com>
+Subject: Re: [PATCH] s390/pci: remove custom and misleading bitmap_vzalloc
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Date:   Mon, 23 Oct 2023 18:31:30 +0200
+In-Reply-To: <your-ad-here.call-01698077514-ext-9164@work.hours>
+References: <your-ad-here.call-01697881440-ext-2458@work.hours>
+         <CAHk-=wgTUz1bdY6zvsN4ED0arCLE8Sb==1GH8d0sjm5bu7zesQ@mail.gmail.com>
+         <your-ad-here.call-01698077344-ext-9104@work.hours>
+         <your-ad-here.call-01698077514-ext-9164@work.hours>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tFwXFMBfP2rXid9Rq4h2kAeYjfTKkggv
+X-Proofpoint-ORIG-GUID: tFwXFMBfP2rXid9Rq4h2kAeYjfTKkggv
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|DU0PR10MB7213:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2d54ce5a-d974-43f7-2f40-08dbd3e57de0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Kttb5VoGZbJld5FqFw1PkoQiuNyBP5lSGfS53Knxo4azekiJrdMnYPWWdwqzBSXY2zz0LwEgs5ELLQm/s/qkZxLRVoZnDaKfO41DqWjUoqKu9zI1hSPXZnx1NGucQldokc58NOAimGQ3SfWqhnHMgErXDo8PVWAJO1dK58teyWaMqtvwRLpr4RpIziOEpPNY7/w5xAglxgi4raeTRCRgCw905Erg9KagEh87cbb5ALkjHeGHfjJCDNfDcTRtabrTy8Z2O+7hIHhhvn8JB7U9yKT5k5RFPzYvv1HX4rbRaQUNeOGK109BYCjpV+Wbf9/XWS80vNU/cjjwKMzRWOVvBs9UPGUFCY9i0WG80gnDTZKoE4S9smyzya/VQb4oSq2XOVzuVCgsUtqPjS7HpXECNWrEikHLf0FyvD6hCijUy+wImU6j2T8rojNaLyFXPQFfbA4u9InEbzhxBDuyI+pgCZMm7LnZaLZ/+7RC9wW3/Gyofu/vnWCPGZAAwp0iNzaL+bbOc8wCCOGTrPX2OVArPisbSgRbF2ALmQC8ewc2yRHOCbNxNihcPXr42yI+kbISp/cWUhR1wO4sBG6MP0o0o3WignsLj8XE6LQVYo0TV+g=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hy6ykNdk035v4TxyydInsHzqx5BGU3qu3KuHrrTBWG87dmsZrQyPBnvkBlH/?=
- =?us-ascii?Q?/5lbAF2oJ6Q7V1mjCW2u5/mpe0ik9XwkGYZLtQzVDY69RYc4C6F2+YwXVniD?=
- =?us-ascii?Q?QoGmMNNO4ayIIhApmNjFSChDiIS8GtwFaPYuTHHSQIq9CjWE+ZRligONFuhr?=
- =?us-ascii?Q?n0oXyot8ljr/DlWMNcX00dLyNvczcctzACQp+q4xYG0POZS3AKoq0Fa7RTyG?=
- =?us-ascii?Q?Gqy2CHKfDReGD+woHrFFXZXHc2ApM633nkO+om3h9uiB4RkVV0c5/OGLRPvy?=
- =?us-ascii?Q?Bjm8WJ/uJ8xGIe4FFIobwrGlp2cpGdVmdfJ6Gj7gUbuuigbInMJumZVGKqg9?=
- =?us-ascii?Q?dnz1jNDjPWPkV0R6QecK0DarXmNmabeyFtQQ0JLvblWu9zNW2h2cqwohHWyZ?=
- =?us-ascii?Q?d9gdSCyuLGiFfQswQ5WaGC/+plIah0QgdByRZC6FB9Tz7Enk9vgZ4bfvo5QI?=
- =?us-ascii?Q?PLOoLSicpt4S6h0RVnlWmKZl9ZCzDlZXvIr3opBw6TWN1m/p4agl0QOqET0A?=
- =?us-ascii?Q?0O7euRoQGzvhyxFXM/1CB5nw5/9/rqGnAPQKRkKAdHDjC+jh9aG9uZS8oLkj?=
- =?us-ascii?Q?4hV/zUCni/BwONMGpasqZBADVdERpGvIEb3N7luwwWbaVlv7g5DNXpRDhvFw?=
- =?us-ascii?Q?qfY6Xs8AQ9lUxjcjUVkvgl63wb9chbqBUr3Ggs2N4pPFIXd2k5mF2oO3oCap?=
- =?us-ascii?Q?s27cCNGUKLb5GL6BQ14sk6ht6zz+2ARKypjwUuwaQN4QKWEhAMI4is5w2bqE?=
- =?us-ascii?Q?tZlvgWVJp0vxblnw5KC0sBLQO8GOn3nKgvGsTIXR0jCTzVhK2i3Si0QUy/YE?=
- =?us-ascii?Q?ahrzMMW7Ygn0ytOQVegBimaBQ0AmJGCdTKOYpAPW50bZOWOgODMewTXbJ74E?=
- =?us-ascii?Q?heJ6PevDXcCvprkXfog0UidvvfWTWHZVY//Mh4o69DGfqfO0MQVLW4vyHeOn?=
- =?us-ascii?Q?exvcT6vg1wix5MnZAFO98Y4VoDWF4LUlnGYeOpnnuzRhyIDBGNtHXHTuXbkr?=
- =?us-ascii?Q?bshRz07QXWlTt0JKmLmr2THm4FmgzSdnMqO16pol/FPWJ/faPpdxKFDnOJqc?=
- =?us-ascii?Q?1Uu+SDHDvNtbMBNBTg3RqJG267SKE1ffo4lmH9FbNIBkbtC0QOmz5ncEJ61R?=
- =?us-ascii?Q?Gor3vCqwxtc2BmGf3M5NivDxJPE7BcKrY3X/XtoYr/ZnHT+mVWWh0C/w58Ks?=
- =?us-ascii?Q?Z5Dj78vCAhrRMgO2n+Y0sZkbuSD1wE2wMtKZXppCW6UYSSzetyc9V1zL60s?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d54ce5a-d974-43f7-2f40-08dbd3e57de0
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 16:31:21.9175
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR10MB7213
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-23_15,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ phishscore=0 priorityscore=1501 bulkscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310230144
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since "Clean up checks for already prepared/enabled in panels" has
-already been done and merged [1], I think there is no longer a need
-for this item to be in the gpu TODO.
+On Mon, 2023-10-23 at 18:11 +0200, Vasily Gorbik wrote:
+> This commit effectively reverts commit c1ae1c59c8c6 ("s390/pci: fix
+> iommu bitmap allocation") and applies a simpler fix instead. Commit
+> c1ae1c59c8c6 introduced a custom bitmap_vzalloc() function that included
+> unnecessary and misleading overflow handling.
+>=20
+> This fix is only relevant for the current v6.6 and stable backports. It
+> will be superseded by the upcoming conversion to use the common
+> code DMA API on s390 (pending in linux-next [2]), which eliminates
+> arch/s390/pci/pci_dma.c entirely and, therefore, addresses the original
+> problem in another way.
+>=20
+> Instead of relying on a custom bitmap_vzalloc() function, this change goes
+> back to straightforward allocation using vzalloc() with the appropriate
+> size calculated using the BITS_TO_LONGS() macro.
+>=20
+> Link: https://lore.kernel.org/all/CAHk-=3DwgTUz1bdY6zvsN4ED0arCLE8Sb=3D=
+=3D1GH8d0sjm5bu7zesQ@mail.gmail.com/
+> Link: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git=
+/commit/?h=3Dnext-20231020&id=3Dc76c067e488c
+> Cc: stable@vger.kernel.org
+> Fixes: c1ae1c59c8c6 ("s390/pci: fix iommu bitmap allocation")
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+> ---
+>  arch/s390/pci/pci_dma.c | 17 ++++-------------
+>  1 file changed, 4 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/arch/s390/pci/pci_dma.c b/arch/s390/pci/pci_dma.c
+> index 99209085c75b..1b4b123d79aa 100644
+> --- a/arch/s390/pci/pci_dma.c
+> +++ b/arch/s390/pci/pci_dma.c
+> @@ -565,17 +565,6 @@ static void s390_dma_unmap_sg(struct device *dev, st=
+ruct scatterlist *sg,
+>  	}
+>  }
+>=20=20
+> -static unsigned long *bitmap_vzalloc(size_t bits, gfp_t flags)
+> -{
+> -	size_t n =3D BITS_TO_LONGS(bits);
+> -	size_t bytes;
+> -
+> -	if (unlikely(check_mul_overflow(n, sizeof(unsigned long), &bytes)))
+> -		return NULL;
+> -
+> -	return vzalloc(bytes);
+> -}
+> -=09
+>  int zpci_dma_init_device(struct zpci_dev *zdev)
+>  {
+>  	u8 status;
+> @@ -615,13 +604,15 @@ int zpci_dma_init_device(struct zpci_dev *zdev)
+>  				zdev->end_dma - zdev->start_dma + 1);
+>  	zdev->end_dma =3D zdev->start_dma + zdev->iommu_size - 1;
+>  	zdev->iommu_pages =3D zdev->iommu_size >> PAGE_SHIFT;
+> -	zdev->iommu_bitmap =3D bitmap_vzalloc(zdev->iommu_pages, GFP_KERNEL);
+> +	zdev->iommu_bitmap =3D vzalloc(BITS_TO_LONGS(zdev->iommu_pages) *
+> +				     sizeof(unsigned long));
+>  	if (!zdev->iommu_bitmap) {
+>  		rc =3D -ENOMEM;
+>  		goto free_dma_table;
+>  	}
+>  	if (!s390_iommu_strict) {
+> -		zdev->lazy_bitmap =3D bitmap_vzalloc(zdev->iommu_pages, GFP_KERNEL);
+> +		zdev->lazy_bitmap =3D vzalloc(BITS_TO_LONGS(zdev->iommu_pages) *
+> +					    sizeof(unsigned long));
+>  		if (!zdev->lazy_bitmap) {
+>  			rc =3D -ENOMEM;
+>  			goto free_bitmap;
 
-[1] https://patchwork.freedesktop.org/patch/551421/
+Mea culpa for the useless and misleading overflow check. I'm sorry, I
+should not have copied this over from kvmalloc_array() without actually
+thinking through whether it makes sense in the new place and you're
+right Linus it doesn't.
 
-Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
----
- Documentation/gpu/todo.rst | 25 -------------------------
- 1 file changed, 25 deletions(-)
+Thank you Vasily for cleaning this up! Also as an additional point,
+note that the size of the bitmap is limited by the above min3() which
+in the largest possible case ensures a maximum of 128 MiB bitmaps which
+only happens for very large memory systems or if a user sets an
+unreasonably large s390_iommu_aperture kernel parameter.
 
-diff --git a/Documentation/gpu/todo.rst b/Documentation/gpu/todo.rst
-index 03fe5d1247be..280020b0ad4d 100644
---- a/Documentation/gpu/todo.rst
-+++ b/Documentation/gpu/todo.rst
-@@ -460,31 +460,6 @@ Contact: Thomas Zimmermann <tzimmermann@suse.de>
- 
- Level: Starter
- 
--Clean up checks for already prepared/enabled in panels
--------------------------------------------------------
--
--In a whole pile of panel drivers, we have code to make the
--prepare/unprepare/enable/disable callbacks behave as no-ops if they've already
--been called. To get some idea of the duplicated code, try::
--
--  git grep 'if.*>prepared' -- drivers/gpu/drm/panel
--  git grep 'if.*>enabled' -- drivers/gpu/drm/panel
--
--In the patch ("drm/panel: Check for already prepared/enabled in drm_panel")
--we've moved this check to the core. Now we can most definitely remove the
--check from the individual panels and save a pile of code.
--
--In adition to removing the check from the individual panels, it is believed
--that even the core shouldn't need this check and that should be considered
--an error if other code ever relies on this check. The check in the core
--currently prints a warning whenever something is relying on this check with
--dev_warn(). After a little while, we likely want to promote this to a
--WARN(1) to help encourage folks not to rely on this behavior.
--
--Contact: Douglas Anderson <dianders@chromium.org>
--
--Level: Starter/Intermediate
--
- 
- Core refactorings
- =================
--- 
-2.25.1
+Also:
+Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
 
+Best regards,
+Niklas
