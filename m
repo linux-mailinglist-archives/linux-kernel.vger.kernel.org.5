@@ -2,49 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 867357D41A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BFF7D41A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbjJWV0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 17:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        id S231452AbjJWV2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 17:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbjJWV0d (ORCPT
+        with ESMTP id S229845AbjJWV2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 17:26:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34768110;
-        Mon, 23 Oct 2023 14:26:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84F27C433C8;
-        Mon, 23 Oct 2023 21:26:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698096390;
-        bh=ExpyHr72oVSoyPF5INR0ia4PkeXikfJXxCfcnjjlr98=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=UrjjYBaIRfKW39VLUzHGFB3VLQDZ6lZYoUVDsV3MWZpz2pbLJvx26RkNzCyx/AfTq
-         3UZdDmYme2s6tAvuqV1K0m91AkfqbeCV3tRz1qruwOkTiGLuv27/i+g8csGUROaDFk
-         V2SL8hxYNSWzYzAderc8NJhCiOENUvJDD8cDDSSeXboqF2q4euHcWbUo99BtD6uMO5
-         0a/9t8uBzwBLEIElfK1Ke+OnY1zpkvFVTB8pMk8DeJ66kNpRj3doNtyL2G7+OyGlGZ
-         VABC0GImvrN/vyzQ46/eS4Mjg9+Mho4PfhIg0SFlCODVK5s2xxz2HeqmqPsL+EK9PM
-         e2AteBWB15O4Q==
-Date:   Mon, 23 Oct 2023 16:26:28 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Siddharth Vadapalli <s-vadapalli@ti.com>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        bhelgaas@google.com, lpieralisi@kernel.org, robh@kernel.org,
-        kw@linux.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        r-gunasekaran@ti.com, srk@ti.com
-Subject: Re: [PATCH v3] PCI: keystone: Fix pci_ops for AM654x SoC
-Message-ID: <20231023212628.GA1627567@bhelgaas>
+        Mon, 23 Oct 2023 17:28:36 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBAA97;
+        Mon, 23 Oct 2023 14:28:33 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c51388ccebso56140641fa.3;
+        Mon, 23 Oct 2023 14:28:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698096512; x=1698701312; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/i5l9FjisPDPcqgMEOco4v6QQottzWN3f7xhyjrsuPE=;
+        b=G9y1j0zA2TV8KTDCkf4OnLKCLlmYe6mXensXeu8TLs4jZmaNjrBj/1WOUodnIj0OdY
+         nfkO8en8ClymXsOqQoPBT6zbUMORpYNerxdE5KEAxWwmd3yaFzh+DxIjvpnSF2Bhxj07
+         VaUGO2dFzOzRLAy0VeyVxur7K2I0sJXkEy4RhdOxLJ4dfHtLkWiB12PiBlaheL7cOOC8
+         KbZDtO4AoZM/RVnDO0sVQ1vTa4W+8iQuQWdHCG+E+GkOOcm3A9JKCtZZFp/+33mJiW0k
+         eGPF2TW+C2VdqoOz4mCgIBQspFBiDmZ89mYRTHTZqG1eTfNgyJ5cU++IBwKagjObOmZN
+         J1Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698096512; x=1698701312;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/i5l9FjisPDPcqgMEOco4v6QQottzWN3f7xhyjrsuPE=;
+        b=vQRyCAX3qBmG4Afco+I+ezojxE+pTHmb+fbdlnvfR0+W6IBg076MHzzuM76XWwQbU/
+         tVWs57JDtvC24rhq3AUatglk2K+5okxSib9pJ3sLS4fpJVuqbWt9gWl9a2GVCJSE0C2E
+         Xwt+FWZjh62im9Lz5zIqKANtiBezCHkyHUa5m0bGS4xufFTPOXQarx/mdaWqrFS3Z6D4
+         wqGfGXsyMW1dW20BaK4xXuNywIujnBYotUJU/XaCBZ/pFxuFREthysUrww++k+bNzJxl
+         TtZ9MK4Kl7piyGHWZ+edzdcK/P/0RfsKcjDjwxd182y1WEvt6E4OOCHec6nhs2ZjIlja
+         8JEg==
+X-Gm-Message-State: AOJu0YySf6wK7MV+2kBfaGuuJQCpQdmOEe/9gGFhtlBkKtgNxRdjO6Lf
+        qscl75dlguHSj4slnGWKe+M=
+X-Google-Smtp-Source: AGHT+IEf+hJBpR5SXhMS3VVLSjHNP/1//4tt9MjRaPhH6/m5DlgNbmQlN9gKwgp6ApxZyeAQlMzb+A==
+X-Received: by 2002:a05:651c:2112:b0:2c5:1490:1687 with SMTP id a18-20020a05651c211200b002c514901687mr8100017ljq.33.1698096511675;
+        Mon, 23 Oct 2023 14:28:31 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id bh9-20020a05600c3d0900b003feae747ff2sm15256302wmb.35.2023.10.23.14.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 14:28:31 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Colin Ian King <colin.i.king@gmail.com>
+Cc:     kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH][next] clk: sunxi-ng: nkm: remove redundant initialization of
+ tmp_parent
+Date:   Mon, 23 Oct 2023 23:28:29 +0200
+Message-ID: <2924841.e9J7NaK4W3@jernej-laptop>
+In-Reply-To: <20231023133502.666559-1-colin.i.king@gmail.com>
+References: <20231023133502.666559-1-colin.i.king@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <499a2f6c-3104-492c-be34-3ad286cdf069@ti.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,24 +77,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 05:05:30PM +0530, Siddharth Vadapalli wrote:
-> On 23/10/23 16:12, Serge Semin wrote:
+Dne ponedeljek, 23. oktober 2023 ob 15:35:02 CEST je Colin Ian King napisal(a):
+> Variable tmp_parent is being ininitialized with a value that is never
+> read, the initialization is redundant and can be removed. Move the
+> initialization and move the variable to the inner loop scope.
 > 
-> ...
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+
+Best regards,
+Jernej
+
+> ---
+>  drivers/clk/sunxi-ng/ccu_nkm.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> > Siddharth, if it won't be that much bother and you have an access to
-> > the v3.65-based Keystone PCIe device, could you please have a look
-> > whether it's possible to implement what Bjorn suggested?
+> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_nkm.c
+> index eed64547ad42..853f84398e2b 100644
+> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
+> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
+> @@ -21,17 +21,16 @@ static unsigned long ccu_nkm_find_best_with_parent_adj(struct ccu_common *common
+>  						       unsigned long *parent, unsigned long rate,
+>  						       struct _ccu_nkm *nkm)
+>  {
+> -	unsigned long best_rate = 0, best_parent_rate = *parent, tmp_parent = *parent;
+> +	unsigned long best_rate = 0, best_parent_rate = *parent;
+>  	unsigned long best_n = 0, best_k = 0, best_m = 0;
+>  	unsigned long _n, _k, _m;
+>  
+>  	for (_k = nkm->min_k; _k <= nkm->max_k; _k++) {
+>  		for (_n = nkm->min_n; _n <= nkm->max_n; _n++) {
+>  			for (_m = nkm->min_m; _m <= nkm->max_m; _m++) {
+> -				unsigned long tmp_rate;
+> +				unsigned long tmp_rate, tmp_parent;
+>  
+>  				tmp_parent = clk_hw_round_rate(parent_hw, rate * _m / (_n * _k));
+> -
+>  				tmp_rate = tmp_parent * _n * _k / _m;
+>  
+>  				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate) ||
 > 
-> Unfortunately I don't have any SoC/Device with me that has the v3.65 PCIe
-> controller, so I will not be able to test Bjorn's suggestion.
 
-Huh.  57e1d8206e48 ("MAINTAINERS: move Murali Karicheri to credits")
-removed the maintainer for pci-keystone.c, so the driver hasn't had a
-maintainer for over two years.
 
-Given the fact that there's no maintainer, I'm more than happy to take
-a patch to move this code to somewhere in the host_init() callback,
-even if you don't have the hardware to test it.
 
-Bjorn
+
