@@ -2,147 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCD37D3752
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405EA7D3758
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbjJWM6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 08:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
+        id S230327AbjJWNAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 09:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjJWM6V (ORCPT
+        with ESMTP id S229613AbjJWNAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 08:58:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5DAE9C4;
-        Mon, 23 Oct 2023 05:58:19 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02FED2F4;
-        Mon, 23 Oct 2023 05:59:00 -0700 (PDT)
-Received: from [10.57.82.113] (unknown [10.57.82.113])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A5A03F762;
-        Mon, 23 Oct 2023 05:58:16 -0700 (PDT)
-Message-ID: <91b3ff5a-cfdf-4bba-806e-093a90746d86@arm.com>
-Date:   Mon, 23 Oct 2023 13:59:07 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 7/8] thermal: exynos: split initialization of TMU and
- the thermal zone
-Content-Language: en-US
-To:     Mateusz Majewski <m.majewski2@samsung.com>
-Cc:     Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231003111638.241542-1-m.majewski2@samsung.com>
- <CGME20231003111713eucas1p27fcc64df0091b6097461f28b05bf772a@eucas1p2.samsung.com>
- <20231003111638.241542-8-m.majewski2@samsung.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20231003111638.241542-8-m.majewski2@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 23 Oct 2023 09:00:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC373C4;
+        Mon, 23 Oct 2023 06:00:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60339C433C7;
+        Mon, 23 Oct 2023 13:00:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698066021;
+        bh=5vNKzUFnTZxBTFmvOk553jYtacD8+NX8XSvNevHZ89U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qqAmERNPdoLo/4olYNqGDMpPDhYJC+kpGVRhkf+Ati5L7LfwbFFvCxIN2qvtupObb
+         E+Ym0WVWDMzaJUeRaTEpWuDaCDplDJB06U7LUqCmE2Q/ap9l5N7Xj3RLajpFgleaz3
+         M3xa5xu/BSnwmjqqXEsmw4ehzqDBdmgTmS8BX0IUogSG496/DBVITuCNGhqQ3m5F+3
+         6BadGVuy5sOOyPbdjkYT6SmEMK5eQM6bvIXiyUQw+YaN0YE946VRJT4/EgwfF0KQGN
+         q9uxfXlDIY39Nw7hfeAyayOnAC/QPMuwZVwCNDqjzKi8ufPBbm3cVNJeZQ10IRXSgV
+         7vI9GfMo9KTEw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1quuXb-006qTD-3y;
+        Mon, 23 Oct 2023 14:00:19 +0100
+Date:   Mon, 23 Oct 2023 14:00:18 +0100
+Message-ID: <86wmvd4hp9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v8 07/13] KVM: arm64: PMU: Allow userspace to limit PMCR_EL0.N for the guest
+In-Reply-To: <20231020214053.2144305-8-rananta@google.com>
+References: <20231020214053.2144305-1-rananta@google.com>
+        <20231020214053.2144305-8-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, alexandru.elisei@arm.com, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, yuzenghui@huawei.com, shahuang@redhat.com, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mateusz,
-
-On 10/3/23 12:16, Mateusz Majewski wrote:
-> This will be needed in the future, as the thermal zone subsystem might
-> call our callbacks right after devm_thermal_of_zone_register. Currently
-> we just make get_temp return EAGAIN in such case, but this will not be
-> possible with state-modifying callbacks, for instance set_trips.
+On Fri, 20 Oct 2023 22:40:47 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
 > 
-> Signed-off-by: Mateusz Majewski <m.majewski2@samsung.com>
+> From: Reiji Watanabe <reijiw@google.com>
+> 
+> KVM does not yet support userspace modifying PMCR_EL0.N (With
+> the previous patch, KVM ignores what is written by userspace).
+> Add support userspace limiting PMCR_EL0.N.
+> 
+> Disallow userspace to set PMCR_EL0.N to a value that is greater
+> than the host value as KVM doesn't support more event counters
+> than what the host HW implements. Also, make this register
+> immutable after the VM has started running. To maintain the
+> existing expectations, instead of returning an error, KVM
+> returns a success for these two cases.
+> 
+> Finally, ignore writes to read-only bits that are cleared on
+> vCPU reset, and RES{0,1} bits (including writable bits that
+> KVM doesn't support yet), as those bits shouldn't be modified
+> (at least with the current KVM).
+> 
+> Signed-off-by: Reiji Watanabe <reijiw@google.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 > ---
-> v1 -> v2: We take clocks into account; exynos_tmu_initialize needs both
->    clocks, as tmu_initialize might use the base_second registers. However,
->    exynos_thermal_zone_configure only needs clk.
+>  arch/arm64/kvm/sys_regs.c | 57 +++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 55 insertions(+), 2 deletions(-)
 > 
->   drivers/thermal/samsung/exynos_tmu.c | 104 +++++++++++++++------------
->   1 file changed, 60 insertions(+), 44 deletions(-)
-> 
-> diff --git a/drivers/thermal/samsung/exynos_tmu.c b/drivers/thermal/samsung/exynos_tmu.c
-> index 7138e001fa5a..343e27c61528 100644
-> --- a/drivers/thermal/samsung/exynos_tmu.c
-> +++ b/drivers/thermal/samsung/exynos_tmu.c
-> @@ -251,25 +251,8 @@ static void sanitize_temp_error(struct exynos_tmu_data *data, u32 trim_info)
->   static int exynos_tmu_initialize(struct platform_device *pdev)
->   {
->   	struct exynos_tmu_data *data = platform_get_drvdata(pdev);
-> -	struct thermal_zone_device *tzd = data->tzd;
-> -	int num_trips = thermal_zone_get_num_trips(tzd);
->   	unsigned int status;
-> -	int ret = 0, temp;
-> -
-> -	ret = thermal_zone_get_crit_temp(tzd, &temp);
-> -	if (ret && data->soc != SOC_ARCH_EXYNOS5433) { /* FIXME */
-> -		dev_err(&pdev->dev,
-> -			"No CRITICAL trip point defined in device tree!\n");
-> -		goto out;
-> -	}
-> -
-> -	if (num_trips > data->ntrip) {
-> -		dev_info(&pdev->dev,
-> -			 "More trip points than supported by this TMU.\n");
-> -		dev_info(&pdev->dev,
-> -			 "%d trip points should be configured in polling mode.\n",
-> -			 num_trips - data->ntrip);
-> -	}
-> +	int ret = 0;
->   
->   	mutex_lock(&data->lock);
->   	clk_enable(data->clk);
-> @@ -280,32 +263,63 @@ static int exynos_tmu_initialize(struct platform_device *pdev)
->   	if (!status) {
->   		ret = -EBUSY;
->   	} else {
-> -		int i, ntrips =
-> -			min_t(int, num_trips, data->ntrip);
-> -
->   		data->tmu_initialize(pdev);
-> -
-> -		/* Write temperature code for rising and falling threshold */
-> -		for (i = 0; i < ntrips; i++) {
-> -
-> -			struct thermal_trip trip;
-> -
-> -			ret = thermal_zone_get_trip(tzd, i, &trip);
-> -			if (ret)
-> -				goto err;
-> -
-> -			data->tmu_set_trip_temp(data, i, trip.temperature / MCELSIUS);
-> -			data->tmu_set_trip_hyst(data, i, trip.temperature / MCELSIUS,
-> -						trip.hysteresis / MCELSIUS);
-> -		}
-> -
->   		data->tmu_clear_irqs(data);
->   	}
+> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> index 2e5d497596ef8..a2c5f210b3d6b 100644
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -1176,6 +1176,59 @@ static int get_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
+>  	return 0;
+>  }
+>  
+> +static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
+> +		    u64 val)
+> +{
+> +	struct kvm *kvm = vcpu->kvm;
+> +	u64 new_n, mutable_mask;
+
+Really, this lacks consistency. Either you make N a u8 everywhere, or
+a u64 everywhere. I don't mind either, but the type confusion is not
+great.
+
 > +
-> +	mutex_unlock(&data->lock);
-> +	clk_disable(data->clk);
-> +	if (!IS_ERR(data->clk_sec))
-> +		clk_disable(data->clk_sec);
+> +	mutex_lock(&kvm->arch.config_lock);
+> +
+> +	/*
+> +	 * Make PMCR immutable once the VM has started running, but
+> +	 * do not return an error to meet the existing expectations.
+> +	 */
+> +	if (kvm_vm_has_ran_once(vcpu->kvm)) {
+> +		mutex_unlock(&kvm->arch.config_lock);
+> +		return 0;
+> +	}
+> +
+> +	new_n = (val >> ARMV8_PMU_PMCR_N_SHIFT) & ARMV8_PMU_PMCR_N_MASK;
+> +	if (new_n != kvm->arch.pmcr_n) {
 
-In all other places the clock is strictly protected inside the critical
-section, but not here. In this code in theory on SMP (especially with
-big.LITTLE system with different speeds of CPUs) this could lead to
-disabling the clocks just after other CPU acquired the mutex and enabled
-them (in order to use the HW regs).
+Why do we need to check this?
 
-Please put those two clocks before the mutex_unlock() and in the
-reverse order.
+> +		u8 pmcr_n_limit = kvm_arm_pmu_get_max_counters(kvm);
 
-Regards,
-Lukasz
+Can you see why I'm annoyed?
+
+> +
+> +		/*
+> +		 * The vCPU can't have more counters than the PMU hardware
+> +		 * implements. Ignore this error to maintain compatibility
+> +		 * with the existing KVM behavior.
+> +		 */
+> +		if (new_n <= pmcr_n_limit)
+
+Isn't this the only thing that actually matters?
+
+> +			kvm->arch.pmcr_n = new_n;
+> +	}
+> +	mutex_unlock(&kvm->arch.config_lock);
+> +
+> +	/*
+> +	 * Ignore writes to RES0 bits, read only bits that are cleared on
+> +	 * vCPU reset, and writable bits that KVM doesn't support yet.
+> +	 * (i.e. only PMCR.N and bits [7:0] are mutable from userspace)
+> +	 * The LP bit is RES0 when FEAT_PMUv3p5 is not supported on the vCPU.
+> +	 * But, we leave the bit as it is here, as the vCPU's PMUver might
+> +	 * be changed later (NOTE: the bit will be cleared on first vCPU run
+> +	 * if necessary).
+> +	 */
+> +	mutable_mask = (ARMV8_PMU_PMCR_MASK |
+> +			(ARMV8_PMU_PMCR_N_MASK << ARMV8_PMU_PMCR_N_SHIFT));
+
+Why is N part of the 'mutable' mask? The only bits that should make it
+into the register are ARMV8_PMU_PMCR_MASK.
+
+> +	val &= mutable_mask;
+> +	val |= (__vcpu_sys_reg(vcpu, r->reg) & ~mutable_mask);
+> +
+> +	/* The LC bit is RES1 when AArch32 is not supported */
+> +	if (!kvm_supports_32bit_el0())
+> +		val |= ARMV8_PMU_PMCR_LC;
+> +
+> +	__vcpu_sys_reg(vcpu, r->reg) = val;
+> +	return 0;
+
+I think this should be rewritten as:
+
+	val &= ARMV8_PMU_PMCR_MASK;
+	/* The LC bit is RES1 when AArch32 is not supported */
+	if (!kvm_supports_32bit_el0())
+		val |= ARMV8_PMU_PMCR_LC;
+
+	__vcpu_sys_reg(vcpu, r->reg) = val;
+	return 0;
+
+And that's it. Drop this 'mutable_mask' nonsense, as we should be
+getting the correct value (merge of the per-vcpu register and VM-wide
+N) since patch 4.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
