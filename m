@@ -2,61 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A60C37D2869
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 04:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544567D286C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 04:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233157AbjJWCQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 22:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        id S233094AbjJWCQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 22:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjJWCQB (ORCPT
+        with ESMTP id S229489AbjJWCQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 22:16:01 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDB8D41;
-        Sun, 22 Oct 2023 19:15:59 -0700 (PDT)
-Received: from localhost (mdns.lwn.net [45.79.72.68])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 35FD760A;
-        Mon, 23 Oct 2023 02:15:58 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 35FD760A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1698027358; bh=EsvZ/Rla1pxEbVIbWjMoKGCfc+E8i3JEDgnFTdW5bDs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=f1QQBLuQ1ppsicfqtMnF3BmhNKOHxrmsStmVy21RMjiQcNX32L+fESxWDBHw7cCkt
-         NDVq1Qw53ZONIx3AolkpI9IysMmO7M9Bqwe6uto5aqvjv2Q+0aH5Ypx7J3HfPIm+tb
-         ZkCr5kSVyKoJS17mi4pPwYJeFquwpbAXygvTBYRNHJt1vFLwZnMLMwrYXoW49/eRGG
-         HEFJZxSBcDj3Ju4hLxfDsmwZpFtTVWOSrvy2QSlcQl7pmjEAr6Fdlwnc0EAYkB4PLh
-         sunBFbdAIFoXK25tAz18ShmI/sCYKQuMnI0puo4Ie2mocHOYe+42qNpBu6Y7knEHVG
-         nMizskTjWlf+Q==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Hu Haowen <2023002089@link.tyut.edu.cn>
-Cc:     Hu Haowen <2023002089@link.tyut.edu.cn>, src.res.211@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs/zh_TW: replace my email address
-In-Reply-To: <20231012130008.102174-1-2023002089@link.tyut.edu.cn>
-References: <20231012130008.102174-1-2023002089@link.tyut.edu.cn>
-Date:   Sun, 22 Oct 2023 20:15:57 -0600
-Message-ID: <87lebukrs2.fsf@meer.lwn.net>
+        Sun, 22 Oct 2023 22:16:31 -0400
+Received: from m1345.mail.163.com (m1345.mail.163.com [220.181.13.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 76A1693;
+        Sun, 22 Oct 2023 19:16:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+        Message-ID; bh=1HW0ANDOOB5ziqCL5xX6+HVEBIq+Al/PA87Yd2ajnVI=; b=A
+        GP4QGqkmQRFWOiUBBdSHwzAZQrYkAW3ZcPm+B+TMEM/oGpE5BcdxgM3Ekp3qf0hu
+        CZjMk2fKBUlocUmSGtLMQ6J49Ep2HdoSp7gBJezDMn6GjebaXS21OLllOi/ESP7P
+        7nZlAxmlYYshn8/FCdglDcFJzQ+cuW15V3j+Zf8wmQ=
+Received: from 00107082$163.com ( [111.35.186.243] ) by ajax-webmail-wmsvr45
+ (Coremail) ; Mon, 23 Oct 2023 10:16:14 +0800 (CST)
+X-Originating-IP: [111.35.186.243]
+Date:   Mon, 23 Oct 2023 10:16:14 +0800 (CST)
+From:   "David Wang" <00107082@163.com>
+To:     "Dave Chinner" <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PERFORMANCE]fs: sendfile suffer performance degradation when
+ buffer size have performance impact on underling IO
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2023 www.mailtech.cn 163com
+In-Reply-To: <ZTWn3QtTggmMHWxS@dread.disaster.area>
+References: <28de01eb.208.18b4f9a0051.Coremail.00107082@163.com>
+ <ZTWn3QtTggmMHWxS@dread.disaster.area>
+X-NTES-SC: AL_QuySCvyZuEss4iKaZOkXn0oTju85XMCzuv8j3YJeN500hynS8DIxUkJzEFTo/d2tCQKqjSWybhFu6OVLUY53XZ09oMdV4q4C066prKtq5lz4
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <61f74c43.16f9.18b5a51868f.Coremail.00107082@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LcGowAD3vzRv1zVl0uYWAA--.56189W
+X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiOwYRqmC5oBhZ1wAEst
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hu Haowen <2023002089@link.tyut.edu.cn> writes:
-
-> The Gmail address will not be used often from now on, and replace it
-> with the email which is more frequently accessed by myself.
->
-> Signed-off-by: Hu Haowen <2023002089@link.tyut.edu.cn>
-
-Applied.
-
-jon
+CgoKQXQgMjAyMy0xMC0yMyAwNjo1MzoxNywgIkRhdmUgQ2hpbm5lciIgPGRhdmlkQGZyb21vcmJp
+dC5jb20+IHdyb3RlOgoKPgo+T19EU1lOQyBpcyB0aGUgcHJvYmxlbSBoZXJlLgo+Cj5UaGlzIGZv
+cmNlcyBhbiBJTyB0byBkaXNrIGZvciBldmVyeSB3cml0ZSBJTyBzdWJtaXNzaW9uIGZyb20KPnNl
+bmRmaWxlIHRvIHRoZSBmaWxlc3lzdGVtLiBGb3Igc3luY2hyb25vdXMgSU8gKGFzIGluICJ3YWl0
+aW5nIGZvcgo+Y29tcGxldGlvbiBiZWZvcmUgc2VuZGluZyB0aGUgbmV4dCBJTyksIGEgbGFyZ2Vy
+IElPIHNpemUgd2lsbAo+KmFsd2F5cyogbW92ZSBkYXRhIGZhc3RlciB0byBzdG9yYWdlLgo+Cj5G
+V0lXLCB5b3UnbGwgZ2V0IHRoZSBzYW1lIGJlaGF2aW91ciBpZiB5b3UgdXNlIE9fRElSRUNUIGZv
+ciBlaXRoZXIKPnNvdXJjZSBvciBkZXN0aW5hdGlvbiBmaWxlIHdpdGggc2VuZGZpbGUgLSBzeW5j
+aHJvbm91cyA2NGtCIElPcyBhcmUKPmEgbWFzc2l2ZSBwZXJmb3JtYW5jZSBsaW1pdGF0aW9uIGV2
+ZW4gd2l0aG91dCBPX0RTWU5DLgo+Cj5JT1dzLCBkb24ndCB1c2Ugc2VuZGZpbGUgbGlrZSB0aGlz
+LiBVc2UgYnVmZmVyZWQgSU8gYW5kCj5zZW5kZmlsZShmZCk7IGZkYXRhc3luYyhmZCk7IGlmIHlv
+dSBuZWVkIGRhdGEgaW50ZWdyaXR5IGd1YXJhbnRlZXMKPmFuZCB5b3Ugd29uJ3Qgc2VlIGFueSBw
+ZXJmIHByb2JsZW1zIHJlc3VsdGluZyBmcm9tIHRoZSBzaXplIG9mIHRoZQo+aW50ZXJuYWwgc2Vu
+ZGZpbGUgYnVmZmVyLi4uLgo+Cj4tRGF2ZS4KPi0tIAo+RGF2ZSBDaGlubmVyCj5kYXZpZEBmcm9t
+b3JiaXQuY29tCgpUaGFua3MgZm9yIHRoZSBpbmZvcm1hdGlvbiwgYW5kIFllcywgYnVmZmVyZWQg
+SU8gc2hvd3Mgbm8gc2lnbmlmaWNhbnQgCnBlcmZvcm1hbmNlIGRpZmZlcmVuY2UuCkZlZWwgdGhh
+dCB0aGlzIHVzYWdlIGNhdmVhdCBzaG91bGQgYmUgcmVjb3JkZWQgaW4gdGhlICJOT1RFIiBzZWN0
+aW9uIG9mIG1hbiBwYWdlIGZvciBzZW5kZmlsZS4KClRoYW5rcwpEYXZpZAoKIAo=
