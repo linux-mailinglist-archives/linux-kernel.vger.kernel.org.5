@@ -2,128 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D10DD7D3DF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9C07D3E08
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbjJWRj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
+        id S234011AbjJWRlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjJWRjz (ORCPT
+        with ESMTP id S233932AbjJWRlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:39:55 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631ED83
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:39:53 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so54524421fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:39:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698082791; x=1698687591; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kNQwyaGuIu7F+p1B5DfVkuQ0+sVIXi1xDTFxBww6HMA=;
-        b=xtjytsbA95msPyo7nVmtcboi3OOTLSfzrYxFRMTxtVpcEL0GBIw9mX4CfxOpuGTRbW
-         Jsn3+jBGAt4NYgMezVRzt2O7N+PuwfgdqKqe/GQkIc7DV+Or24kl08aO3OEYJmAMW16/
-         ITDI/WrA1hc3cCbuH4doBxDj5ID8NcHQZvcJcUmXaRHMx0JsDf43PtJ+VOIaMW5ovZFP
-         H2G/hFAhgxzlc6kMWOzY90OSQNxflXGvkm+ycUV8MJVCTc7jIG2lHGG4BIq50u2h7mHG
-         T0ENJRHq3mQymexePM34nrbXaxaWn6OgWmIml/edi1lYD67etNMxT/CfFm5TH8Mas8eX
-         3U+Q==
+        Mon, 23 Oct 2023 13:41:08 -0400
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D6710CF;
+        Mon, 23 Oct 2023 10:41:03 -0700 (PDT)
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3b2b1af09c5so2087457b6e.0;
+        Mon, 23 Oct 2023 10:41:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698082791; x=1698687591;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kNQwyaGuIu7F+p1B5DfVkuQ0+sVIXi1xDTFxBww6HMA=;
-        b=Cl83XEtjCeJN8sYEAx19GxKwxnKy/C1+GmRKwuQ0FjG0nFT1a8odX51GrMvnGZX8uf
-         mJEaT1zr9rJf9IDaojcuQ//oSk0D3iktsH/szroXTD1Z+B/5zjTBiQ8/glKLhfEE9auV
-         XJ/gxZhTFp/8aqakDNtDrIMpTlkP/ZkxsBdwZwyirUj8FA2fSGJ5O1ZjvWyTg338+CIz
-         JE66YrIwxC6brT+SjbJNiX5Mkl+MnIvwXj93qSeb0T99nVpz0uIScjtsPEqguMQJ4kAg
-         tp14zN8dwEB9ZtSAArfNUGjyKinpwy/7usZl4vBuM/A/kvET/o35Sf38WoxOqi6xJ8Qt
-         IvDA==
-X-Gm-Message-State: AOJu0YzPXMvrjBbRYge4XIJUUTbzN84dnyn9OAq8I/pGAKDEZ7+mOv1Q
-        Oi/spFanETgFACqJoKNTmhpXoJ0kqW1BMl6A9waEJQ==
-X-Google-Smtp-Source: AGHT+IE2Gp3uEgKdpVzP2c8Nh09UF311aX6kJy+WK6Ue579tldWifxjRJ+DxmRdC5cBR70cy9iTb6w==
-X-Received: by 2002:a2e:7a0d:0:b0:2c5:40a:5d92 with SMTP id v13-20020a2e7a0d000000b002c5040a5d92mr6557526ljc.28.1698082791553;
-        Mon, 23 Oct 2023 10:39:51 -0700 (PDT)
-Received: from [192.168.198.23] ([37.166.25.68])
-        by smtp.googlemail.com with ESMTPSA id n35-20020a05600c3ba300b003fef5e76f2csm4485092wms.0.2023.10.23.10.39.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 10:39:51 -0700 (PDT)
-Message-ID: <6786c91e-12ce-a9dd-12fe-bc02c6d782b8@linaro.org>
-Date:   Mon, 23 Oct 2023 19:39:49 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4 04/18] PM: EM: Refactor em_pd_get_efficient_state() to
- be more flexible
-Content-Language: en-US
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, rafael@kernel.org
-Cc:     dietmar.eggemann@arm.com, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
-        viresh.kumar@linaro.org, len.brown@intel.com, pavel@ucw.cz,
-        mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com
-References: <20230925081139.1305766-1-lukasz.luba@arm.com>
- <20230925081139.1305766-5-lukasz.luba@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20230925081139.1305766-5-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        d=1e100.net; s=20230601; t=1698082862; x=1698687662;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pmqnrhI90Z1XEYPu0vBhhTnhUoWJuxsH4Kz9QXi9qtg=;
+        b=UTjxkGvtLud72/hOwlcXscEp+CUeIS/k6aT859xrmwj4WMAcMyuLyNwnry6sLzQI6K
+         RI4vtcakXeg6PziXIPpYcL7hi1XCPiXK3OF93+wJp4MMEwG4+n6JsC9IrarLVExwR5CF
+         ilLpb03MhD6i1XhxZcMmJ7qjJFVEb7zFZ+dRlHDJDNOQq112t6p46gONAuzYLXP1XTix
+         vg4zoqnVksc3oXarq/tX5aJYGUbCoOKUwNkAgxVZV2SYRuuWRXt+2VqzmYI5L+MaVSEy
+         nduMJdy2Prq2KIG88jLG5DXJwwXV+oKoNi/S7gxonxBcEjzNvwe0tt8rc64/KiVV7tmt
+         eJNg==
+X-Gm-Message-State: AOJu0YzqrcSn731oQnJsiuj5zeoDxN0/QxZIb/ovLhZibDuzFJg9Dr3k
+        OOcjUs34543nXZfj8PDq5Q==
+X-Google-Smtp-Source: AGHT+IHV9ojFzaeIhztF8lWZjX/vfptW0p5inXTEfvWm3/N7Fj8s4KWJ5FOFJN8T6j84XIOkU8V+vw==
+X-Received: by 2002:a05:6808:bc1:b0:3a9:cfb5:462a with SMTP id o1-20020a0568080bc100b003a9cfb5462amr10051960oik.36.1698082862515;
+        Mon, 23 Oct 2023 10:41:02 -0700 (PDT)
+Received: from herring.priv ([2607:fb91:e6e0:8169:8cd7:6070:de02:c079])
+        by smtp.gmail.com with ESMTPSA id r5-20020a0568080aa500b003ae540759a0sm1560522oij.40.2023.10.23.10.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 10:41:01 -0700 (PDT)
+Received: (nullmailer pid 864626 invoked by uid 1000);
+        Mon, 23 Oct 2023 17:40:49 -0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+In-Reply-To: <20231023-marvell-88e6152-wan-led-v5-1-0e82952015a7@linaro.org>
+References: <20231023-marvell-88e6152-wan-led-v5-0-0e82952015a7@linaro.org>
+ <20231023-marvell-88e6152-wan-led-v5-1-0e82952015a7@linaro.org>
+Message-Id: <169808265708.861114.9088023510447543664.robh@kernel.org>
+Subject: Re: [PATCH net-next v5 1/7] dt-bindings: net: dsa: Require ports
+ or ethernet-ports
+Date:   Mon, 23 Oct 2023 12:40:49 -0500
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/2023 10:11, Lukasz Luba wrote:
-> The Energy Model (EM) is going to support runtime modification. There
-> are going to be 2 EM tables which store information. This patch aims
-> to prepare the code to be generic and use one of the tables. The function
-> will no longer get a pointer to 'struct em_perf_domain' (the EM) but
-> instead a pointer to 'struct em_perf_state' (which is one of the EM's
-> tables).
+
+On Mon, 23 Oct 2023 09:18:52 +0200, Linus Walleij wrote:
+> Bindings using dsa.yaml#/$defs/ethernet-ports specify that
+> a DSA switch node need to have a ports or ethernet-ports
+> subnode, and that is actually required, so add requirements
+> using oneOf.
 > 
-> Prepare em_pd_get_efficient_state() for the upcoming changes and
-> make it possible to re-use. Return an index for the best performance
-> state for a given EM table. The function arguments that are introduced
-> should allow to work on different performance state arrays. The caller of
-> em_pd_get_efficient_state() should be able to use the index either
-> on the default or the modifiable EM table.
-> 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
+>  Documentation/devicetree/bindings/net/dsa/dsa.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
 
-[ ... ]
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> @@ -251,7 +253,9 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
->   	 * Find the lowest performance state of the Energy Model above the
->   	 * requested frequency.
->   	 */
-> -	ps = em_pd_get_efficient_state(pd, freq);
-> +	i = em_pd_get_efficient_state(pd->table, pd->nr_perf_states, freq,
-> +				      pd->flags);
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/net/dsa/dsa.yaml:60:7: [warning] wrong indentation: expected 8 but found 6 (indentation)
+./Documentation/devicetree/bindings/net/dsa/dsa.yaml:62:7: [warning] wrong indentation: expected 8 but found 6 (indentation)
 
-nitpicking but s/i/state/
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/dsa/dsa.yaml: $defs: 'oneOf' should not be valid under {'$ref': '#/definitions/json-schema-prop-names'}
+	hint: A json-schema keyword was found in $defs key.
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/dsa/dsa.yaml: $defs:oneOf: [{'required': ['ports']}, {'required': ['ethernet-ports']}] is not of type 'object'
+	hint: $defs entries must contain schemas
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
 
-Other than that:
+doc reference errors (make refcheckdocs):
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231023-marvell-88e6152-wan-led-v5-1-0e82952015a7@linaro.org
 
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-> +	ps = &pd->table[i];
->   
->   	/*
->   	 * The capacity of a CPU in the domain at the performance state (ps)
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+pip3 install dtschema --upgrade
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
