@@ -2,120 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8179A7D281A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976E27D281D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbjJWBmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 21:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50426 "EHLO
+        id S233108AbjJWBmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 21:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233032AbjJWBmK (ORCPT
+        with ESMTP id S229457AbjJWBmn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 21:42:10 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE019F7;
-        Sun, 22 Oct 2023 18:42:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698025322;
-        bh=RaCCh9Z/e12DEo8pm9dRiMR3hb8GPa3Gm/pRDZSRVHw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=to97amS2dqEJY+ViWtVaCnJwogGRHliuG4GPsnXBw+GT/zPOUuAE8nso6QQoQKwTA
-         9BmJz+KkcafJruoMcMMH6R9y3x1ygtAtw9qhiqPHT2FICRmwlaOEWtn1iwqDdM8TWc
-         HQk3X1SYgWaAdeDV8tvJqQDst7eJWLNO4VmV1XWyMqEqziWTdale+JLIQMhVYlfNSw
-         RZlk/MApmwS3s0kf/Ir4cHbLMz6escHItFqDi6sr28UeNy3YSjJ0QYHRKOnwKSTuRX
-         dcVF19X0GUOGJJJY/KNA2DzC1zmLffiCOMi1erPhs0r77pV8sQFl/+dO683r5pDjON
-         XEUEwF2FVv6zg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SDHx62Vtqz4wd7;
-        Mon, 23 Oct 2023 12:42:01 +1100 (AEDT)
-Date:   Mon, 23 Oct 2023 12:42:00 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Hannes Reinecke <hare@suse.de>, Keith Busch <kbusch@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: linux-next: manual merge of the block tree with Linus' tree
-Message-ID: <20231023124200.38dd410b@canb.auug.org.au>
+        Sun, 22 Oct 2023 21:42:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3530F7;
+        Sun, 22 Oct 2023 18:42:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81BE7C433C8;
+        Mon, 23 Oct 2023 01:42:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698025361;
+        bh=jNTnqKIA9zSEXZ2g2t8trq95ee1lqOdZ++9oTgWdJkQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=E4ifp8izwADeCTvVUcbR92whapYaa7T10OSUuU4jZgOeRSn7Vj9NfEmQtSw5LC0MC
+         3pKql3qzG6fN218JAjqc3wQKx/DsO33A0nk6c0xpINN2alcnYaFe+VpZUbLHpL/maK
+         xccEFBCo+t1HivNIlGCAiOaDgb6JVfICGBY7F4jC9wFw20FS/N1qfKV4z7z8+WkxRW
+         Sxpi27MZ59secb3vJ22w9vD09b9qXoZQS13vGUHmQ1Zl4gqDLi0uHZ9RZOy8DyJV4U
+         1Khs1YOXcn4kUALdtxIlYo1PebV717aTPbTImepz1ZyQuTFe9bCkuxPAYeYt2BDykK
+         4yJRBwLBMFwVA==
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     linux-arm-msm@vger.kernel.org, Rayyan Ansari <rayyan@ansari.sh>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Andy Gross <agross@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: (subset) [PATCH v3 0/6] Initial support for MSM8x26 Lumias
+Date:   Sun, 22 Oct 2023 18:47:02 -0700
+Message-ID: <169802554634.845827.17802503631403350590.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230930221323.101289-1-rayyan@ansari.sh>
+References: <20230930221323.101289-1-rayyan@ansari.sh>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/d3N4OZEb57toJpLPWdvRs6z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/d3N4OZEb57toJpLPWdvRs6z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Sat, 30 Sep 2023 23:07:55 +0100, Rayyan Ansari wrote:
+> The following patches:
+> - Add device tree files for Nokia/Microsoft Lumia phones based around
+>   the MSM8x26 family of Qualcomm chipsets, utilising a common tree
+> - Document this support
+> 
+> v1: https://lore.kernel.org/linux-arm-msm/20230811213728.23726-1-rayyan@ansari.sh/
+> v2: https://lore.kernel.org/linux-arm-msm/20230813152623.64989-1-rayyan@ansari.sh/
+> 
+> [...]
 
-Today's linux-next merge of the block tree got a conflict in:
+Applied, thanks!
 
-  drivers/nvme/target/tcp.c
+[2/6] ARM: dts: qcom: add common dt for MSM8x26 Lumias along with Nokia Lumia 630
+      commit: 244281556a11549501eb5093e9ab0ad8a87b7d4f
+[3/6] ARM: dts: qcom: add device tree for Microsoft Lumia 640
+      commit: 45dbc34693e8ad30c33edfdc94acaf4672de0e24
+[4/6] ARM: dts: qcom: add device tree for Microsoft Lumia 640 XL
+      commit: a16f3bcf867efdab422b711b18c023089fbeb96e
+[5/6] ARM: dts: qcom: add device tree for Nokia Lumia 735
+      commit: 00400a98b2c3fd5d497635747fec4b882299bc05
+[6/6] ARM: dts: qcom: add device tree for Nokia Lumia 830
+      commit: 8677233e59137f78d4d578f3d5a21557c1bab342
 
-between commit:
-
-  d920abd1e7c4 ("nvmet-tcp: Fix a possible UAF in queue intialization setup=
-")
-
-from Linus' tree and commit:
-
-  675b453e0241 ("nvmet-tcp: enable TLS handshake upcall")
-
-from the block tree.
-
-I fixed it up (I am not sure this is necessary - see below) and can
-carry the fix as necessary. This is now fixed as far as linux-next is
-concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/nvme/target/tcp.c
-index 197fc2ecb164,4336fe048e43..000000000000
---- a/drivers/nvme/target/tcp.c
-+++ b/drivers/nvme/target/tcp.c
-@@@ -910,8 -932,8 +933,10 @@@ static int nvmet_tcp_handle_icreq(struc
-  	iov.iov_base =3D icresp;
-  	iov.iov_len =3D sizeof(*icresp);
-  	ret =3D kernel_sendmsg(queue->sock, &msg, &iov, 1, iov.iov_len);
---	if (ret < 0)
- -		goto free_crypto;
-++	if (ret < 0) {
-++		queue->state =3D NVMET_TCP_Q_FAILED;
- +		return ret; /* queue removal will cleanup */
-++	}
- =20
-  	queue->state =3D NVMET_TCP_Q_LIVE;
-  	nvmet_prepare_receive_pdu(queue);
-
---Sig_/d3N4OZEb57toJpLPWdvRs6z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU1z2gACgkQAVBC80lX
-0GxRTgf/WmF5ULtaDAldhJ8rqRyQ0p2AYEPlNW2AEytzKESkmPZXKxQqYlD81xpU
-1U+KHAefCzwO585RFsUg72nPgMEjDU4/xA876pMN3ndEIkGlnQTZFjuF6MrtIm38
-MAJ1bi2EEYrlaZ0Zmh+0U1dz3QU5OLjL5g6KbmeYvPg8iqNp/CIM7+fmt/tfNcmp
-aSjFstLKL6OQNJn09nBfVYxCD8cmCKvjN6EyD7fA2EOF+zYrgDQ0wfJuCP5IvLz+
-8x8uKvhp1SkAsEmiXf4U9VLOJkaEuzmfdJjU/QiNUjqNeJJbaRWr1BWQo/Q9Eyo4
-1puT1eg+TjeZGRAJDSV5uj+cvx9LuA==
-=XXoe
------END PGP SIGNATURE-----
-
---Sig_/d3N4OZEb57toJpLPWdvRs6z--
+Best regards,
+-- 
+Bjorn Andersson <andersson@kernel.org>
