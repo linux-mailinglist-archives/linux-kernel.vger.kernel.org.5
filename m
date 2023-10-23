@@ -2,169 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 293807D2A53
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 08:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E91A7D2A49
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 08:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbjJWGVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 02:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49186 "EHLO
+        id S233308AbjJWGVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 02:21:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233501AbjJWGVf (ORCPT
+        with ESMTP id S229548AbjJWGVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 02:21:35 -0400
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869C710D9;
-        Sun, 22 Oct 2023 23:21:31 -0700 (PDT)
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id B22CA4C0CF;
-        Mon, 23 Oct 2023 11:21:11 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1698042072; bh=LE4M+4BoGWR3AG2eTo3yWZAS7TbtqWSMeFL22HkUE/g=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=yVgDjFsKUTLlUFp86vRaEKR32Z/eqUeft91isQBTxF14E3oIun0SPgqoP3AoRoSkF
-         2H8/PoCMdmBaTQPr4V9kXOfKCEkt6JFr3t9phNJ2NZ3uLNJRSGkbsMcNIApMd3CMI7
-         xeJD0TujgfglPVuBFOnl6aGhxVfYIewtJ3b1HS1fED+2oi5qMJaiV/QEHQON9bzbud
-         FBPdt+P521Ot4VNzWpjJFCax1ueUy2GaELvgaCBeEPN69GrOsRyIX7RLJnJsSr9bvE
-         XEPpypY3D5aJb52YVd99oSRxwJzrvEh9j5ldaryCz+p8JWjqAh7uN1TgqXWWUZ4OlW
-         kP72kaXnngYxA==
-From:   Nikita Travkin <nikita@trvn.ru>
-Date:   Mon, 23 Oct 2023 11:20:34 +0500
-Subject: [PATCH v2 3/3] arm64: dts: qcom: msm8916-longcheer-l8150: Add
- battery and charger
+        Mon, 23 Oct 2023 02:21:12 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C60D6E
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 23:21:09 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9becde9ea7bso844341466b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 23:21:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698042068; x=1698646868; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pLIHWDB2gVZWgjxhwIBus4JGizbu2JzZS1f5tR8mnKE=;
+        b=nOSKIXRBkGtNfdX/D9R9eqwSLB5EAkTMu6C25KbQHzy4RDOjS5rwk44NI27kLFvMOS
+         l2tOAPbkW8awM2EVNMH0Em8RpDzhAPSqYj75p9Ypg/9mj08vgAe1oKuI+RXVXWMf2mup
+         1ZO8fOsoXYfMZkRBIw2JiafmCIM2pmVPXj7iyiWePr6oLDGTAR9Tc+EmPUGqc4V4qAW/
+         iaW3rpjpofmbHHWUCww6Phl2n6EzLo4ahWllZYml5dmKe7dYM0hW7eKQ2fDK7mIe3it7
+         IKle8XVLBo15DjdmB6IiSKebNoJ76JzfaiCNdCNprZTsODoCKKcrQzzDQowpUdgm2NcI
+         Lrig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698042068; x=1698646868;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pLIHWDB2gVZWgjxhwIBus4JGizbu2JzZS1f5tR8mnKE=;
+        b=kcEy/4aYiM54kWvb+C+o48S2ltANnv4dvX/9AyYUCCJ/2xQ/1NCkYYO8gq0oPgNNWA
+         P6LNxNnoFhZeHom7c1EQKHsoPc73czd5CTC4RrfsIh6puCU9uc3uwCj7FePbMo1iiiCN
+         inUi3qmxaCKWQXI8AHctEjhJTcp2+ZshLiGfx/m0jl0GcZGyhofu9O41Qgge6kSNSRm6
+         Zui48M2XrDiYZEdWMFuYuwS5OB0yfZ5u0Yg4SfxvEoHm5XQM7/yhsIAn9ZnIeF9+wGty
+         lrj5IELdrcesnrw69mbD9MvEHA9i+WZVXsgfgKGbliwji625zDcxbU+TyhfV5pj34Xzb
+         VUfw==
+X-Gm-Message-State: AOJu0YyfXQMOEFizFGPLBgOixjyqKESGcu+L3PtBkRS8cOjZhaD2RT1V
+        KfLls0mDKSEH4ix0dQWUvkHFPA==
+X-Google-Smtp-Source: AGHT+IGAscOz8k1u6CJbk+O0PPAA0Pt8fscOefx1Ex+j2/ZiEe1KPyEGcluk0KzYJKck+InUf2iprA==
+X-Received: by 2002:a17:907:7f15:b0:9c5:7f5d:42dc with SMTP id qf21-20020a1709077f1500b009c57f5d42dcmr10855186ejc.33.1698042068048;
+        Sun, 22 Oct 2023 23:21:08 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id j14-20020a1709064b4e00b0099bd1a78ef5sm6100975ejv.74.2023.10.22.23.21.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Oct 2023 23:21:07 -0700 (PDT)
+Message-ID: <dd3def51-6f72-4266-9886-347c19652eee@linaro.org>
+Date:   Mon, 23 Oct 2023 08:21:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 1/2] dt-bindings: clock: support i.MX93 Analog clock
+ module
+Content-Language: en-US
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, sboyd@kernel.org,
+        abelvesa@kernel.org
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+References: <20231023033144.3694131-1-peng.fan@oss.nxp.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231023033144.3694131-1-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231023-pm8916-dtsi-bms-lbc-v2-3-343e3dbf423e@trvn.ru>
-References: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
-In-Reply-To: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2452; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=LE4M+4BoGWR3AG2eTo3yWZAS7TbtqWSMeFL22HkUE/g=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBlNhDRAVqwuDanZgTc9o1vFaHcsS/w8USKj22lF
- lB3GiI6pnGJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZTYQ0QAKCRBDHOzuKBm/
- daPTEACFYCoq42J8LVnT9OP7NvNIFkkl1eb8y2BzwydJgrLaUkMH98E5S0bRiZCSD8roC4tExdT
- 5dGj5FcYAYQWy5t7O+3UJqPNGHR4ixDK2X/6S/klYj07JKprA+yogU/5odKyqlMVT85dH3397W1
- fFtiSvnLteNmxHMOv12+RfSKxCuXwXN0/moXv9HYpiecM8b9HrweS4CSF8yXwKDafumvIwvKB6D
- G4Mv0xOc0QeSBlYuSozjs5sDmrLwqPzhH3cf+Hn68JgWQKgD0NQoz6PXs2nnFL6fBBNr0zeGERH
- rzMhg2Mxzu8oj+A8QtNxAeDlxVBZMLws0lxk5A5WvMpGjH4g69ljDvV9pmAgn9MWv7e6ruwrpBu
- CbVOYW5p84Zk0XxRFM4kIa5zU6GgqSx1NPN0YpMYGah4CKkqrByL3Lpw2WIIICwjl3K4d/BMsTJ
- EfQzc81BNgD86OZPR0PYKA/X/sRnPCjZp+/BQ5FyMXJpIUKWjy1Sc/jngKHMEebGjtCDo5Yqyri
- knLVlMn2voVAVL6BgqYkOctQkd22RRl91xwVUPXY7JWWkVYyZk/IPRDi9qHIIG+Xr8Tz1dcFgVU
- 3IDCuvkVO0V+1J3p3ml0RS2msY3h9FhVOejUmyCalKtY64vnGIXN9uEkQYznhpISOAw0Q2N/YfJ
- 0XSyXgj8hnlqeWQ==
-X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
- fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Longcheer L8150 doesn't have any dedicated fuel-gauge or charger,
-instead making use of the pmic hardware blocks for those purposes.
+On 23/10/2023 05:31, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Support i.MX93 Analog module which produces PLL and OSC for Clock
+> Controller Module
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+> 
+> V2:
+>  Update subject and commit, rename file to fsl,imx93-analog.yaml
+> 
+>  .../bindings/clock/fsl,imx93-analog.yaml      | 42 +++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/fsl,imx93-analog.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/fsl,imx93-analog.yaml b/Documentation/devicetree/bindings/clock/fsl,imx93-analog.yaml
+> new file mode 100644
+> index 000000000000..c026639fefa3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/fsl,imx93-analog.yaml
 
-Add pm8916 bms and charger, as well as the battery cell description
-that those blocks rely on.
+fsl,imx93-anatop.yaml
 
-Signed-off-by: Nikita Travkin <nikita@trvn.ru>
----
- .../boot/dts/qcom/msm8916-longcheer-l8150.dts      | 43 +++++++++++++++++++---
- 1 file changed, 37 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-index 47d1c5cb13f4..d35d34ef60d2 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-@@ -38,6 +38,25 @@ wcnss_mem: wcnss@8b600000 {
- 		};
- 	};
- 
-+	battery: battery {
-+		compatible = "simple-battery";
-+		voltage-min-design-microvolt = <3400000>;
-+		voltage-max-design-microvolt = <4350000>;
-+		energy-full-design-microwatt-hours = <9500000>;
-+		charge-full-design-microamp-hours = <2500000>;
-+
-+		ocv-capacity-celsius = <25>;
-+		ocv-capacity-table-0 = <4330000 100>, <4265000 95>,
-+			<4208000 90>, <4153000 85>, <4100000 80>, <4049000 75>,
-+			<4001000 70>, <3962000 65>, <3919000 60>, <3872000 55>,
-+			<3839000 50>, <3817000 45>, <3798000 40>, <3783000 35>,
-+			<3767000 30>, <3747000 25>, <3729000 20>, <3709000 16>,
-+			<3688000 13>, <3681000 11>, <3680000 10>, <3679000 9>,
-+			<3677000 8>, <3674000 7>, <3666000 6>, <3641000 5>,
-+			<3597000 4>, <3537000 3>, <3457000 2>, <3336000 1>,
-+			<3000000 0>;
-+	};
-+
- 	gpio-keys {
- 		compatible = "gpio-keys";
- 
-@@ -225,6 +244,22 @@ &blsp_uart2 {
- 	status = "okay";
- };
- 
-+&pm8916_bms {
-+	status = "okay";
-+
-+	monitored-battery = <&battery>;
-+	power-supplies = <&pm8916_charger>;
-+};
-+
-+&pm8916_charger {
-+	status = "okay";
-+
-+	monitored-battery = <&battery>;
-+
-+	qcom,fast-charge-safe-current = <900000>;
-+	qcom,fast-charge-safe-voltage = <4300000>;
-+};
-+
- &pm8916_resin {
- 	status = "okay";
- 	linux,code = <KEY_VOLUMEDOWN>;
-@@ -237,10 +272,6 @@ pm8916_l17: l17 {
- 	};
- };
- 
--&pm8916_usbin {
--	status = "okay";
--};
--
- &pm8916_vib {
- 	status = "okay";
- };
-@@ -257,11 +288,11 @@ &sdhc_2 {
- &usb {
- 	status = "okay";
- 	dr_mode = "peripheral";
--	extcon = <&pm8916_usbin>;
-+	extcon = <&pm8916_charger>;
- };
- 
- &usb_hs_phy {
--	extcon = <&pm8916_usbin>;
-+	extcon = <&pm8916_charger>;
- };
- 
- &venus {
-
--- 
-2.41.0
+Best regards,
+Krzysztof
 
