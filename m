@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CF17D414D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2CA27D4154
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbjJWVBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 17:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
+        id S229968AbjJWVFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 17:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJWVBU (ORCPT
+        with ESMTP id S229441AbjJWVFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 17:01:20 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D59FBE;
-        Mon, 23 Oct 2023 14:01:18 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-66d0252578aso22375946d6.0;
-        Mon, 23 Oct 2023 14:01:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698094877; x=1698699677; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YbeI5inRzR7k95NjvuTc2Wfz9EEbnQ9XK4gjlca4j1U=;
-        b=gC2Xu28NIoSSWgEVkek2Ez2LneJSCZmDDfZ28MeVXmDGFea9lwpr7uxoaEafqCC4fC
-         a47DmxqgWR5035gB1EglssmcW+injRm5m6UsYr6HSXBVxUYZ908BCt423nolSjSuFeoh
-         sCvtjHgzA3r/PdJg4FBAfc0rKUh+BU6J5wCatmVfs6Y7raJpdyzom7GNJF8YwFCNHZdO
-         dDZrcTpFDHmiO5PsgjX1myRZY5RPHz2sAGsy/Pww90CsVFkgQZQOlw5Tu7HQGUn8DCwu
-         D0DJAIvyW1nvw1JiXyQBXNa466urpoLuTujXDEIC4fuwkn/V80V1xe2ewjyzdXHhNe86
-         mh0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698094877; x=1698699677;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YbeI5inRzR7k95NjvuTc2Wfz9EEbnQ9XK4gjlca4j1U=;
-        b=v4FvW6UH+nwFO7Dv8QxdEuD8VGSzD2ZN5jMqvdMRhoaUsl+5opcssGl+z3b90WFWN7
-         x5P93wUDxyM9CfFpBRCssymAWkqzBLVoHLt9Oo1u9xnWA8FvIau/bhG0hmj6eV2FJFRi
-         Sg4uxQbexaFOhRDOzIuxc9SXSglDs9Y10TFX7yYTVGqzhq0K9AvEcuaFKwb4KWRCtC73
-         XLOdsGlkonEcssbqlkhdrsQUfQ/GI5MeBu/wbvFcc446x6YRm1Q4XrFecX8ljwSUHRdm
-         mXd0sL32I02hzwYVbQhzyFOzpvMZnXnwHXAaZcFQUBZ52+MBIHhsxsMWP6AuTtIHAT9P
-         B5GA==
-X-Gm-Message-State: AOJu0YwHEAOh3KZl9HY3BMdo1J3FBKwGi5cPbfr52UL3SQj//e5VhGvP
-        HQtWhw/yX05Xtgjzk2EzZEA=
-X-Google-Smtp-Source: AGHT+IFpbMGlO6hn9OtY92vdiN8s8picsYdngOOf/s+eB+0K2iCLDsU98Dk3YpMsLCbHR9aWWL5o2g==
-X-Received: by 2002:a05:6214:29c2:b0:66d:18ec:8e7b with SMTP id gh2-20020a05621429c200b0066d18ec8e7bmr13255980qvb.62.1698094877337;
-        Mon, 23 Oct 2023 14:01:17 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id l4-20020ad44084000000b0066cfb9cc087sm3148888qvp.134.2023.10.23.14.01.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 14:01:16 -0700 (PDT)
-Message-ID: <0dd204e6-5f16-4c85-b8f3-949b673464c2@gmail.com>
-Date:   Mon, 23 Oct 2023 14:01:06 -0700
+        Mon, 23 Oct 2023 17:05:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C577DBE;
+        Mon, 23 Oct 2023 14:05:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698095146; x=1729631146;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4M5y2i+2W2PLq06Wz4aCTn1NnMGfVddGl4aYzB45fmg=;
+  b=VSDs0Vg5O8LqKxy9pptsjViY1IZ6S3ga/VCAlXva9lracVwOx+6wgqU9
+   qsSgvHtkLwggH9hyu1RV4UeF2vUnAmKM6weG8er+LrcjL4WcaWjob94hd
+   5GbStZAGuBj/No6SNbfrxf5gFLubMfQJvHOKDopIcFrp1pXo66BnuPdOf
+   jYVQMm3GkBKSfEpEp0JY/C/myqZBSbUkQ2vjwetRL5Lq5GRT11SLYtzl5
+   O/LKPLnxeWS+cEm9div8cbAgOiuHgAaYUMQk1Me8jX9nAyjb/P5NEJgtv
+   HksYTXh9RglrQvFi1FFygEF5lYAiX7GYHjjy7FWX4Vgpm8uFexI8nHNAm
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="473155797"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="473155797"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 14:05:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="761879358"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="761879358"
+Received: from qwilliam-mobl.amr.corp.intel.com (HELO desk) ([10.212.150.186])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 14:05:45 -0700
+Date:   Mon, 23 Oct 2023 14:04:10 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: Re: [PATCH  2/6] x86/entry_64: Add VERW just before userspace
+ transition
+Message-ID: <20231023210410.6oj7ekelf5puoud6@desk>
+References: <20231020-delay-verw-v1-0-cff54096326d@linux.intel.com>
+ <20231020-delay-verw-v1-2-cff54096326d@linux.intel.com>
+ <20231023183521.zdlrfxvsdxftpxly@treble>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.5 000/241] 6.5.9-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20231023104833.832874523@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231023104833.832874523@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023183521.zdlrfxvsdxftpxly@treble>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/23 03:53, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.9 release.
-> There are 241 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Oct 23, 2023 at 11:35:21AM -0700, Josh Poimboeuf wrote:
+> On Fri, Oct 20, 2023 at 01:45:03PM -0700, Pawan Gupta wrote:
+> > @@ -663,6 +665,10 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
+> >  	/* Restore RDI. */
+> >  	popq	%rdi
+> >  	swapgs
+> > +
+> > +	/* Mitigate CPU data sampling attacks .e.g. MDS */
+> > +	USER_CLEAR_CPU_BUFFERS
+> > +
+> >  	jmp	.Lnative_iret
+> >  
+> >  
+> > @@ -774,6 +780,9 @@ native_irq_return_ldt:
+> >  	 */
+> >  	popq	%rax				/* Restore user RAX */
+> >  
+> > +	/* Mitigate CPU data sampling attacks .e.g. MDS */
+> > +	USER_CLEAR_CPU_BUFFERS
+> > +
 > 
-> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.9-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Can the above two USER_CLEAR_CPU_BUFFERS be replaced with a single one
+> just above native_irq_return_iret?  Otherwise the native_irq_return_ldt
+> case ends up getting two VERWs.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Wouldn't that make interrupts returning to kernel also execute VERWs?
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+idtentry_body
+  error_return
+    restore_regs_and_return_to_kernel
+      verw
 
+native_irq_return_ldt doesn't look to be a common case. Anyways, I will
+see how to remove the extra VERW.
+
+> >  	/*
+> >  	 * RSP now points to an ordinary IRET frame, except that the page
+> >  	 * is read-only and RSP[31:16] are preloaded with the userspace
+> > @@ -1502,6 +1511,9 @@ nmi_restore:
+> >  	std
+> >  	movq	$0, 5*8(%rsp)		/* clear "NMI executing" */
+> >  
+> > +	/* Mitigate CPU data sampling attacks .e.g. MDS */
+> > +	USER_CLEAR_CPU_BUFFERS
+> > +
+> >  	/*
+> >  	 * iretq reads the "iret" frame and exits the NMI stack in a
+> >  	 * single instruction.  We are returning to kernel mode, so this
+> 
+> This isn't needed here.  This is the NMI return-to-kernel path.
+
+Yes, the VERW here can be omitted. But probably need to check if an NMI
+occuring between VERW and ring transition will still execute VERW after
+the NMI.
