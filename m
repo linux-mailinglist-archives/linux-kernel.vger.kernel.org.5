@@ -2,111 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D7B7D3EC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254717D3ED4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbjJWSPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 14:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54204 "EHLO
+        id S230274AbjJWSQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 14:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230492AbjJWSPC (ORCPT
+        with ESMTP id S229613AbjJWSQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 14:15:02 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2383BB4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:15:00 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6ce2ea3a944so2537253a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:15:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1698084899; x=1698689699; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EEHshj4ZGLSNUd1/3J7uLikUiQYUKL38M7lUB087fzk=;
-        b=pLl4V02x1g+KaWGkeoEaRAtGZ4uvxAvbsXh3RWA4MZd7Z3mKpeTNMUpsoRIW6SQgjD
-         vjHHrsnCuycG0Jtxh8hmDTAQsZAGUOzvvVwOnlw164sgcOLjJ1m987eZfDtTpxbf+nH2
-         KA5p7fjDTEBiLjpqY3jiu3aD8HMxm9sizINmLH2UxnoYXOYmPJ55iLgr8AIDVt9+507a
-         KCQRYRlpk0g7+T6RWrtU16Bt8h1Xy+1kIV8RUoBFBJeG6CbQN/1EKQHO9up4HEBBUa8I
-         FHQybkh7ecT33SFnaaMYpF4PBcqb3NK00CSwIof4FV2yUskciQNw2f3sTrXrxaSiub63
-         RQRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698084899; x=1698689699;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EEHshj4ZGLSNUd1/3J7uLikUiQYUKL38M7lUB087fzk=;
-        b=r41eoncxJjwTHDVwLmS/kO5KimoEYoW0ysfiqI7oQMpqMpXB7lFHGrbXUJgLedLLbE
-         wf9NFi4ldybs/D2sCvsLUrjho+FgwQir5DbXGMWdSq3ImtskjGFTvH/hVhhlDkcj+0eK
-         7Jnx1Q7PqVKMh8AXHV7nBiA+rmBxEBzw7z8cw1u6eDXVr0hI1oXnE9C/TjA5gc0Gkn2X
-         Rpjlc+eIws0KZb90Oy5fG8BRVGkqGbPKGX1Cb6Fq0EGZiTMtY8xOllheQtWT5jHivaBK
-         hmGtlJz70XE6k38A0KkzTMBESKDpVVFXWjwdj9vz3mwwHe0kSFTjuDah3VHKeFlRWTJv
-         vBPg==
-X-Gm-Message-State: AOJu0YwIUjE+kcl+cLvzjyAH5OlDOEwB0Au9edzXHOk/He7TTqeRYAsZ
-        M6pYdtPRVqXzO8RRlCFfhQIUrw==
-X-Google-Smtp-Source: AGHT+IETjW4KVURL38sAuytMhqq9oI5+G8qJObbDoigH6JMmCgE8pXkkrgDDG3XrQXmZN4EUlkVEng==
-X-Received: by 2002:a05:6830:2702:b0:6be:e447:da3 with SMTP id j2-20020a056830270200b006bee4470da3mr9821558otu.28.1698084899393;
-        Mon, 23 Oct 2023 11:14:59 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id k14-20020a056830168e00b006ce2e464a45sm1530719otr.29.2023.10.23.11.14.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 11:14:58 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1quzS5-003jNB-IG;
-        Mon, 23 Oct 2023 15:14:57 -0300
-Date:   Mon, 23 Oct 2023 15:14:57 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     sharmaajay@linuxonhyperv.com
-Cc:     Long Li <longli@microsoft.com>, Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: Re: [Patch v7 1/5] RDMA/mana_ib: Rename all mana_ib_dev type
- variables to mib_dev
-Message-ID: <20231023181457.GI691768@ziepe.ca>
-References: <1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com>
- <1697494322-26814-2-git-send-email-sharmaajay@linuxonhyperv.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1697494322-26814-2-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Mon, 23 Oct 2023 14:16:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 127A48E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:16:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65792C433C8;
+        Mon, 23 Oct 2023 18:16:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1698084985;
+        bh=8/Y6yUM2qc8zQIYxaEm1P3142V5gTTQ7O/yNb0plVTw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j7LD7Xmspw0EbsKJ6nsrDwZvgIFMLB5dH7Uf9tdbSiWIMo4k5P1yGYlrxtgqwLeen
+         WxZOWgrHzN3fImNCUfgAPt9bzm2jeQFx6fysV3VlbDzpSXkEQeZeFcguCdZ3VKqNpg
+         geiuI+xwJwuJRwuvSTocybN4daXcLsArRlk3TeTk=
+Date:   Mon, 23 Oct 2023 11:16:24 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Patrick Wang <patrick.wang.shcn@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] mm/kmemleak: move the initialisation of object to
+ __link_object
+Message-Id: <20231023111624.15ea508ed8aba2dee69035c2@linux-foundation.org>
+In-Reply-To: <20231023025125.90972-1-liushixin2@huawei.com>
+References: <20231023025125.90972-1-liushixin2@huawei.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 03:11:58PM -0700, sharmaajay@linuxonhyperv.com wrote:
-> From: Ajay Sharma <sharmaajay@microsoft.com>
-> 
-> This patch does not introduce any functional changes. It
-> creates naming convention to distinguish especially when
-> used in the same function.Renaming all mana_ib_dev type
-> variables to mib_dev to have clean separation between
-> eth dev and ibdev variables.
+On Mon, 23 Oct 2023 10:51:25 +0800 Liu Shixin <liushixin2@huawei.com> wrote:
 
-> Signed-off-by: Ajay Sharma <sharmaajay@microsoft.com>
-> ---
->  drivers/infiniband/hw/mana/cq.c      | 12 ++--
->  drivers/infiniband/hw/mana/device.c  | 34 +++++------
->  drivers/infiniband/hw/mana/main.c    | 87 ++++++++++++++--------------
->  drivers/infiniband/hw/mana/mana_ib.h |  9 +--
->  drivers/infiniband/hw/mana/mr.c      | 29 +++++-----
->  drivers/infiniband/hw/mana/qp.c      | 84 +++++++++++++--------------
->  drivers/infiniband/hw/mana/wq.c      | 21 +++----
->  7 files changed, 141 insertions(+), 135 deletions(-)
+> Leave __alloc_object() just do the actual allocation and __link_object()
+> do the full initialisation.
 
-Please no, don't create pointless giant churn like this. It only hurts
-backporters
-
-Maybe just target the functions with more than one type
-
-Jason
+Changelog doesn't describe why we're making this change?
