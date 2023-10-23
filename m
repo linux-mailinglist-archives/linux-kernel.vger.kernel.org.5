@@ -2,231 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 787A07D283E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 04:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB677D2840
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 04:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbjJWCFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 22:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
+        id S232971AbjJWCHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 22:07:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjJWCFo (ORCPT
+        with ESMTP id S229484AbjJWCHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 22:05:44 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C8E107;
-        Sun, 22 Oct 2023 19:05:39 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vud2pUO_1698026734;
-Received: from 30.97.48.63(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vud2pUO_1698026734)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Oct 2023 10:05:36 +0800
-Message-ID: <539dade7-c349-33c3-cb9e-8a795de28041@linux.alibaba.com>
-Date:   Mon, 23 Oct 2023 10:05:51 +0800
+        Sun, 22 Oct 2023 22:07:51 -0400
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2052.outbound.protection.outlook.com [40.107.104.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F3B107;
+        Sun, 22 Oct 2023 19:07:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AzN7aKzCk+BDfNogfjJ5OuluEnhc79327g1uqRlLu2NIINPB4O47eOEqI9pgpy2AyTaJF2d2CFNoZR0TcZPwBkJfFVa+PzRH5ATD2i9ZInV5Vi/wO9v6iWc1uBYtfZE7SWdV+Z8NnYrF1hTmM/VXYR+qhNEQ+zWgsYWc+mfjGmt9EJEuKFxQScpTm9bCHskg7NTWLUJ2xehDZj6yKecD2efGRUmWAiufQASlTamKKciA16wwwPFwEgMCWXx5H4+peMuXV40WGtUUFJNV72PJ5t05R81zrVJMbHzFh+oHukkn4Ynl3ukruLjHkRtvgBfvR/aF3x/u3qfQ2R9Q/7UFMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f++g2rGtSQ4fZrJwJVrEOL5nHfAM9mVl1V7lXB+m2eg=;
+ b=fAMTzJbckaOM80kRiY1GCv5cjnGOuFRU1Xly3naV93y8STf8mRsjSd6+iwyveak/fXeAo4aCAR0NVm0Amv47JVcHPuQWD9ABiEsUKxGgnattFoGkUHDzXEryVgwz4FJpRJZrxXpyAW6TvFoh0yyOlXlf3uqWc3vU8BezThMd1ioQ6xbOA4ARXErpZw6FXIzHk0R9W+tyvPWsm1caTAbaCdy4Rc2VmZYYVGy+LV7Ye0v1ProrceeRJBXDTgbRsMIJoDCNiNE7NEmOuEpbJ3ykm29At6eksFRHEa+4gZ97jTy1XtSWLiYrZBictDZJc+ReJyYTkxDorhf0DODukr8Lsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f++g2rGtSQ4fZrJwJVrEOL5nHfAM9mVl1V7lXB+m2eg=;
+ b=Aeus8U0cwnlk/d79eLKlgbjmwCLbyT670m+g6RUEggYibyNreZVpi/+++77fPAAXv85zEodSGcXGj/OXjYu12jh8mgZ9FDU/20n4z+gxDpAfZFP9EkKmja4/YdHnLFJdn+X7RI04hVcxpQUcefLUdT0BiK7xywl8Oog8YKEn++8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AS1PR04MB9504.eurprd04.prod.outlook.com (2603:10a6:20b:4c6::19)
+ by PAWPR04MB9837.eurprd04.prod.outlook.com (2603:10a6:102:385::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.22; Mon, 23 Oct
+ 2023 02:07:46 +0000
+Received: from AS1PR04MB9504.eurprd04.prod.outlook.com
+ ([fe80::ddf9:e4b4:367d:bc06]) by AS1PR04MB9504.eurprd04.prod.outlook.com
+ ([fe80::ddf9:e4b4:367d:bc06%6]) with mapi id 15.20.6933.011; Mon, 23 Oct 2023
+ 02:07:46 +0000
+From:   Chancel Liu <chancel.liu@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Chancel Liu <chancel.liu@nxp.com>
+Subject: [PATCH v4 1/2] ASoC: dt-bindings: sound-card-common: List sound widgets ignoring system suspend
+Date:   Mon, 23 Oct 2023 10:07:17 +0800
+Message-Id: <20231023020718.1276000-1-chancel.liu@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0084.apcprd02.prod.outlook.com
+ (2603:1096:4:90::24) To AS1PR04MB9504.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4c6::19)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v9 3/4] drivers/perf: add DesignWare PCIe PMU driver
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, rdunlap@infradead.org,
-        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
-        renyu.zj@linux.alibaba.com, chengyou@linux.alibaba.com,
-        kaishen@linux.alibaba.com, helgaas@kernel.org,
-        yangyicong@huawei.com, will@kernel.org,
-        Jonathan.Cameron@huawei.com, robin.murphy@arm.com
-References: <20231020134230.53342-1-xueshuai@linux.alibaba.com>
- <20231020134230.53342-4-xueshuai@linux.alibaba.com>
- <8c6a480e-41d2-43f7-952e-4f4e691e700f@linux.alibaba.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <8c6a480e-41d2-43f7-952e-4f4e691e700f@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS1PR04MB9504:EE_|PAWPR04MB9837:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2f1c6f3b-d8e6-4656-fd1e-08dbd36cd98a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UvSp8dQQrrb/bpmiRt3iflsef2hNGNaxnH1f1Vm2k0VHneXkLLtipP7aGdcFvGsOkYN/kXPa50p3RSKDCxi8Vk4OFT1401ll6lZ0cqcveFPlekMA110Q9vdCSxa51DEdE1yeEK9AfAXhBYUN4i4mTw/InUSxEmX+VFrVKqFVdfzBHu/G1IXg/kEvdmV/++TxUkcsY/bXTYrKGT4PJtlFEgfvgoezAdigXMWpkEgzKdU2nfNJLcAKWHVbPRUrKn19zLUJrfSl71B8HdjZCVEuJtfHa/Q292xJB4Z0bwYPXvaA04tryeMZ6ECaouOEKC2AYOhDZAGIY67ZNdxV+jPRYuApOdFACzoqPcIEZjPyRezmsV3LRtgaR1sW1xQGqpQHjQ46uY6XXJUuZO1M2zCHSxSdnSfiz274ljJCgpmwFtQUMl4en08K8F4qSICs+s0nTBvda3uKYnZ4H4JA7g4sRvd0nyyzDsdjBKkLIZC127EpZ3iRAYbw+xdBGOB7XSeEa4g9MFQT670tZvTt+vJCqdfL9JtTZ9/K18qkVZgVttyO/n5JAjnDANoJ4Ibo8DxZA3M3IggbLUIjK0tDT8f7u1cB3NxvwV5xtpgMJ7JfbUl6yI47ee36dEpDd0lvySPNq46iauTm3GLu87nlxcqGCg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS1PR04MB9504.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(39860400002)(396003)(366004)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(15650500001)(2616005)(7416002)(41300700001)(2906002)(36756003)(921008)(86362001)(26005)(38100700002)(38350700005)(83380400001)(66946007)(66556008)(8936002)(316002)(4326008)(8676002)(5660300002)(44832011)(478600001)(1076003)(66476007)(6666004)(6512007)(52116002)(6506007)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nslUgNC66YvASx1H8VH+RAjT84x2+GYG4MQVPflLnZWQsysQndQiyv7H+XLH?=
+ =?us-ascii?Q?mcY8IGrLHTCu0d7TRXBDNGmf9p/DgTB2J0hc8P7lfK/rC9NQQYxIMgEyUgpi?=
+ =?us-ascii?Q?WYV6rRoEgRPDEtZpeiycvO47nMFA1x0geA9L6PIF3UBRhFR8+8GvHrsirt+7?=
+ =?us-ascii?Q?5gxlbF3xDFcNOxiIRQMugm8EFcKqA3rYrXFZB6DQehfum2RAdHOs9EsNRzFw?=
+ =?us-ascii?Q?8VxrqjOk/Eb9o/d2uqyz19eR3TaMqpchOMWmpx/mS/LpBlYfO39xvhqbMbh5?=
+ =?us-ascii?Q?GXmgP+6PENgY1xgHqeeL/aLo8OmoYgMYpPIkmWeFiw0CB0lnbYzNg8teJWD2?=
+ =?us-ascii?Q?5vxVKZrCXmcp45cFUwUQzNpmKeH3dsCzEpmvnCy31D3DNbR1OClnMDTtI9fh?=
+ =?us-ascii?Q?TW2KSNfAAkGLFQ2dIHfGkGRjXpgrs9mBhWvTv5dfbbyYOlb5UUcPSKvtod7p?=
+ =?us-ascii?Q?lDlV15UfvAV20bR22Thz9z91rR8SArfzRhvKFx9QzjZfwExVPBjSyvJBSqYF?=
+ =?us-ascii?Q?+JIUcbUQwackirDbendxCqB3OFJu/EudvUdWF5/EknE67j31xyXaXPDppcBC?=
+ =?us-ascii?Q?tOV2//Z65sCDbJTCXuV8FmWbhQ49+gPYaz2n0l5HOE/BJ+SYSNuxtBCJq+fe?=
+ =?us-ascii?Q?unVm9jigK/y25AGLjaMV0KfH39+RY2drXadyaGlzcZEBuoLToihggmbKbbTO?=
+ =?us-ascii?Q?/OfTax2mOaa5ARHMH0qofGn8fWS2wad0H2grPL3aX10bC1GqGsK562cZiaWg?=
+ =?us-ascii?Q?Kqk2oxnixOxeuVAZid5uYTVq6jUvVPYJ68YrcWZZvcamC2JjNf4rDVE4asIS?=
+ =?us-ascii?Q?VQeRwSQS+VQZiuuNMEQnwXMEhs+tKHddVYlSODxBvai0U9t4qRgfptDq0/Yc?=
+ =?us-ascii?Q?ic15NM8EouH2W3DIP7QFetADmxN+nPDZV6Rcqz1e92SC2mnIM+zi/oCfywdu?=
+ =?us-ascii?Q?166sqW57/rCXaZ8tBxRkovwVVQkEC4k+X351oheid6hc7+ZHxYJfKrBJ4kgw?=
+ =?us-ascii?Q?2M1pldC1zul+iPplYQXrYJaTeT28ZpjljkOnTv1J99sUTUBnyAeTizU5K2I3?=
+ =?us-ascii?Q?7wXViymXK4YwRBTs1TdHKrexscB1hH/SlCJVktjKox0j/90jLVjTqJIsZQRZ?=
+ =?us-ascii?Q?vH43wQ/HX1QtjW66BtCvxSd4eJViyhcWCPloXBKRd1zBaY+4U+DZsLcPyEyK?=
+ =?us-ascii?Q?Tsk0TO5OG52fdrTZL7NZ52gBA72Vu2voa2B3T1gzVVDN7ijy1Gij5xVa0egL?=
+ =?us-ascii?Q?hik48VeukcSvSFlR6XgCB/XhSY2kr9jNJmF7YE6N5E7KQjxEP8uon/yZ2CA8?=
+ =?us-ascii?Q?6WBk1X5aLnpbaJ1EK4AqChCfop6WJUSmpdWrHdOa/EhVL98amb5DGrIryLsC?=
+ =?us-ascii?Q?BU1UDo0MZcKRZr0d7TYp81D74j3LOMks3boYf+4Ps/RtByCqg9mfIhvFsMnA?=
+ =?us-ascii?Q?eiPEVshLdynjrrdwugbGqHLGdQZvHrW//f/qsyOM+MdPKEBhK94YZgsABuA7?=
+ =?us-ascii?Q?CLm4JvEYs3dRmQ3XNAfqOzZa0ifDYtLFhsnzquX+Sr94P+QTfPhGPHENespg?=
+ =?us-ascii?Q?ZZj+J2VrphdGIs3Y14ha8f03YcBSvzKsI1As+ZX4?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2f1c6f3b-d8e6-4656-fd1e-08dbd36cd98a
+X-MS-Exchange-CrossTenant-AuthSource: AS1PR04MB9504.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 02:07:46.5656
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GXWoSA0vSbV4lnp388CkcJz8DFvZXnXM7bsPl36Ry6SGSZ+mGr1zjdsI0FQXOqJL2CNj5F1ZXixDSTGkVbtHzA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB9837
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add a property to list audio sound widgets which are marked ignoring
+system suspend. Paths between these endpoints are still active over
+suspend of the main application processor that the current operating
+system is running.
 
+Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+---
+ .../devicetree/bindings/sound/sound-card-common.yaml       | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-On 10/22/2023 3:47 PM, Shuai Xue wrote:
-> Hi, Baolin,
-> 
-> I droped your Revivewed-by tag due to that I made significant changes to this
-> patch previously, please explicty give me Revivewed-by tag again if you are
-> happy with the changes.
+diff --git a/Documentation/devicetree/bindings/sound/sound-card-common.yaml b/Documentation/devicetree/bindings/sound/sound-card-common.yaml
+index 3a941177f684..721950f65748 100644
+--- a/Documentation/devicetree/bindings/sound/sound-card-common.yaml
++++ b/Documentation/devicetree/bindings/sound/sound-card-common.yaml
+@@ -17,6 +17,13 @@ properties:
+       pair of strings, the first being the connection's sink, the second
+       being the connection's source.
+ 
++  ignore-suspend-widgets:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description: |
++      A list of audio sound widgets which are marked ignoring system suspend.
++      Paths between these endpoints are still active over suspend of the main
++      application processor that the current operating system is running.
++
+   model:
+     $ref: /schemas/types.yaml#/definitions/string
+     description: User specified audio sound card name
+-- 
+2.25.1
 
-Yes, I am happy with this version (just some nits as below), and thanks 
-for the review from other guys. Please feel free to add:
-
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-
-> On 2023/10/20 21:42, Shuai Xue wrote:
->> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
->> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
->> Core controller IP which provides statistics feature. The PMU is a PCIe
->> configuration space register block provided by each PCIe Root Port in a
->> Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
->> injection, and Statistics).
->>
->> To facilitate collection of statistics the controller provides the
->> following two features for each Root Port:
->>
->> - one 64-bit counter for Time Based Analysis (RX/TX data throughput and
->>    time spent in each low-power LTSSM state) and
->> - one 32-bit counter for Event Counting (error and non-error events for
->>    a specified lane)
->>
->> Note: There is no interrupt for counter overflow.
->>
->> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
->> named based the BDF of Root Port. For example,
->>
->>      30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
->>
->> the PMU device name for this Root Port is dwc_rootport_3018.
->>
->> Example usage of counting PCIe RX TLP data payload (Units of bytes)::
->>
->>      $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
->>
->> average RX bandwidth can be calculated like this:
->>
->>      PCIe TX Bandwidth = Rx_PCIe_TLP_Data_Payload / Measure_Time_Window
->>
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->> ---
-
-[snip]
-
->> +static u64 dwc_pcie_pmu_read_time_based_counter(struct perf_event *event)
->> +{
->> +	struct dwc_pcie_pmu *pcie_pmu = to_dwc_pcie_pmu(event->pmu);
->> +	struct pci_dev *pdev = pcie_pmu->pdev;
->> +	int event_id = DWC_PCIE_EVENT_ID(event);
->> +	u16 ras_des_offset = pcie_pmu->ras_des_offset;
->> +	u32 lo, hi, ss;
->> +
->> +	/*
->> +	 * The 64-bit value of the data counter is spread across two
->> +	 * registers that are not synchronized. In order to read them
->> +	 * atomically, ensure that the high 32 bits match before and after
->> +	 * reading the low 32 bits.
->> +	 */
->> +	pci_read_config_dword(pdev, ras_des_offset +
->> +		DWC_PCIE_TIME_BASED_ANAL_DATA_REG_HIGH, &hi);
->> +	do {
->> +		/* snapshot the high 32 bits */
->> +		ss = hi;
->> +
->> +		pci_read_config_dword(
->> +			pdev, ras_des_offset + DWC_PCIE_TIME_BASED_ANAL_DATA_REG_LOW,
->> +			&lo);
->> +		pci_read_config_dword(
->> +			pdev, ras_des_offset + DWC_PCIE_TIME_BASED_ANAL_DATA_REG_HIGH,
->> +			&hi);
->> +	} while (hi != ss);
->> +
->> +	/*
->> +	 * The Group#1 event measures the amount of data processed in 16-byte
->> +	 * units. Simplify the end-user interface by multiplying the counter
->> +	 * at the point of read.
->> +	 */
->> +	if (event_id >= 0x20 && event_id <= 0x23)
->> +		return (((u64)hi << 32) | lo) << 4;
->> +	else
-
-You can drop the 'else'.
-
->> +		return (((u64)hi << 32) | lo);
->> +}
->> +
->> +static void dwc_pcie_pmu_event_update(struct perf_event *event)
->> +{
->> +	struct hw_perf_event *hwc = &event->hw;
->> +	enum dwc_pcie_event_type type = DWC_PCIE_EVENT_TYPE(event);
->> +	u64 delta, prev, now;
->> +
->> +	do {
->> +		prev = local64_read(&hwc->prev_count);
->> +
->> +		if (type == DWC_PCIE_LANE_EVENT)
->> +			now = dwc_pcie_pmu_read_lane_event_counter(event);
->> +		else if (type == DWC_PCIE_TIME_BASE_EVENT)
->> +			now = dwc_pcie_pmu_read_time_based_counter(event);
->> +
->> +	} while (local64_cmpxchg(&hwc->prev_count, prev, now) != prev);
->> +
->> +	if (type == DWC_PCIE_LANE_EVENT)
->> +		delta = (now - prev) & DWC_PCIE_LANE_EVENT_MAX_PERIOD;
->> +	else if (type == DWC_PCIE_TIME_BASE_EVENT)
->> +		delta = (now - prev) & DWC_PCIE_TIME_BASED_EVENT_MAX_PERIOD;
->> +
->> +	local64_add(delta, &event->count);
->> +}
->> +
->> +static int dwc_pcie_pmu_event_init(struct perf_event *event)
->> +{
->> +	struct dwc_pcie_pmu *pcie_pmu = to_dwc_pcie_pmu(event->pmu);
->> +	enum dwc_pcie_event_type type = DWC_PCIE_EVENT_TYPE(event);
->> +	struct perf_event *sibling;
->> +	u32 lane;
->> +
->> +	if (event->attr.type != event->pmu->type)
->> +		return -ENOENT;
->> +
->> +	/* We don't support sampling */
->> +	if (is_sampling_event(event))
->> +		return -EINVAL;
->> +
->> +	/* We cannot support task bound events */
->> +	if (event->cpu < 0 || event->attach_state & PERF_ATTACH_TASK)
->> +		return -EINVAL;
->> +
->> +	if (event->group_leader != event &&
->> +	    !is_software_event(event->group_leader))
->> +		return -EINVAL;
->> +
->> +	for_each_sibling_event(sibling, event->group_leader) {
->> +		if (sibling->pmu != event->pmu && !is_software_event(sibling))
->> +			return -EINVAL;
->> +	}
->> +
->> +	if (type == DWC_PCIE_LANE_EVENT) {
->> +		lane = DWC_PCIE_EVENT_LANE(event);
->> +		if (lane < 0 || lane >= pcie_pmu->nr_lanes)
->> +			return -EINVAL;
->> +	}
->> +
->> +	event->cpu = pcie_pmu->on_cpu;
->> +
->> +	return 0;
->> +}
->> +
->> +static void dwc_pcie_pmu_set_period(struct hw_perf_event *hwc)
->> +{
->> +	local64_set(&hwc->prev_count, 0);
->> +}
-
-Only dwc_pcie_pmu_event_start() will call this small function, why just 
-remove this function and move local64_set() into dwc_pcie_pmu_event_start()?
-
->> +
->> +static void dwc_pcie_pmu_event_start(struct perf_event *event, int flags)
->> +{
->> +	struct hw_perf_event *hwc = &event->hw;
->> +	struct dwc_pcie_pmu *pcie_pmu = to_dwc_pcie_pmu(event->pmu);
->> +	enum dwc_pcie_event_type type = DWC_PCIE_EVENT_TYPE(event);
->> +
->> +	hwc->state = 0;
->> +	dwc_pcie_pmu_set_period(hwc);
->> +
->> +	if (type == DWC_PCIE_LANE_EVENT)
->> +		dwc_pcie_pmu_lane_event_enable(pcie_pmu, true);
->> +	else if (type == DWC_PCIE_TIME_BASE_EVENT)
->> +		dwc_pcie_pmu_time_based_event_enable(pcie_pmu, true);
->> +}
->> +
