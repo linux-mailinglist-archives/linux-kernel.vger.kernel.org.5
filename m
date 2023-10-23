@@ -2,330 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3327D4197
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB43B7D419C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbjJWVSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 17:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
+        id S231352AbjJWVYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 17:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231817AbjJWVRz (ORCPT
+        with ESMTP id S229845AbjJWVYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 17:17:55 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A09A10EA
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:17:48 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6ce37d0f1a9so2383979a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:17:48 -0700 (PDT)
+        Mon, 23 Oct 2023 17:24:52 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2064.outbound.protection.outlook.com [40.107.92.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E95E8;
+        Mon, 23 Oct 2023 14:24:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DROzQqXfXKtJvmi9ScTdgSoqAZUvmfiKhgeAKZli2WkIQKLSHGq6neBfpkW/CMJmipYo7/dQy6z2fTegrWoZ7lIQci480PJPECFsGhN66PaQyAOhCZbFap/fQBFF8IzPBZNSMgN6KxrsIVr+EuDB8fKz4Xd4uif0BF9NXhaaIqQMnKYKT/FmWkg9NcDA6Vi2m7/DRvRzlHnwv8poR7JCbdyaONG8/61j2pXCPhzVnBFf+8IZhx0LyhPTiFeww5lATeFcFN4exSk9JzMdCRCXRZ26cJi6nYSZh8tjiSwdkpsOJ0BAP/5wDqVg6v4vej65M3LPke4yG6lO6/uvYVe/gg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xjo69AYbvgkMUv/7Z7u3J7b2W9jtJHSbzu1Tsi9/774=;
+ b=UbpqCmXtpvVtxqNFf53MsEJdoeUFcWdv8HmYe1mI4Mz00ZboUGndgCBYpb6oNvYxDg5xc4izqsKzPtVUmhvdaFl02VJMeM6AmKuHD3hxxWDdB3D+CthFpBOtJURBK3qpqcjO8VVcL9vSqRQlPImF+nB8A5fOVviGPa3cUUZ5N50RTvsdGHD5XhkgcFPlomBpACX2DC2rDt4gJrJ9yp7A8OkyjXumHIxR6OkD7Outs8ioWLynvdPM8D+0xXvS21F3e7w2+nsqHk+K2ihO7zSatmZRDwklCnf2CeKnW4FulRi11GxgDpvzjugTYTf9XD8CTumw19MN8Y9GGGtj78cyxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=labundy.com; dmarc=pass action=none header.from=labundy.com;
+ dkim=pass header.d=labundy.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698095866; x=1698700666; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uEKMOhNXhzYoW+58HZlorWdy0xM6bOeFhfp+J2ei5Pk=;
-        b=f5v1bg2wTB/Kn6LwJpHzy/NrUL+Zta4De4mKhdOcbbckcb+8lm8bU2dzR8P6+D0mnO
-         xfv9hqzglgRqyMOb0aOyUvdJtAJNXDLeib8zwC7uz3090sYsikxgFjXBWHeeigKVlglU
-         q7Cp1oSC7Y7zx/1/mt5yr9r2IK7f+CbNR2g2a/dRdj8FkfxFeeVY021KbGrVO8usZEJP
-         EqYklfSQs+Rt0VuXSUVUmMKUQiZwnFf21N+X7d57KazYF9w5WRx+AT7VEG4uq5VpJoJK
-         3aNXpt+L2VBzzFK9VkHqVLQupIV9MBgpLjj26o19vHFZqjFOdg6aqX63P5CRs8NM4Ukz
-         y0Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698095866; x=1698700666;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uEKMOhNXhzYoW+58HZlorWdy0xM6bOeFhfp+J2ei5Pk=;
-        b=kZx+YPOgQMqkk9qYKCcnqz/cSbfxAE9qacDr/jPXKCv4zI9Cgd8zK/1Ye9wKHOoANF
-         yaJWYNGWPH3G16pa8GrXCiSx6stecJhdcjGmmJYULDswSZsq5qC/zb4LwyOmlPOVqwyf
-         r54z5ZMJf771qaKUnw0mfJxsQ9cCqS/z9H2DaiYQql0jqGHihcENNJjO/kWqIaKZNLcc
-         sBgXcpI+76RTtseSK5NnlAlPEEel2qwMr9KEA29afsdZJj+DjT42mRIn1KLRAfuAxtx4
-         hYZY0Yfg2G4DTAMc/BOqPqmVTBd7PaEDqXBtjVWeOSYrDU9vS7Bx9Usrtpxrz4lpsaFI
-         i5kA==
-X-Gm-Message-State: AOJu0YxnbCZBco6XN6vhtQQGM6uW0NUaasa5+NF/tOdAiha1hdYTIAqP
-        GVheL22JTf29JSycvF9kAT8box9vQQ==
-X-Google-Smtp-Source: AGHT+IGbZgFn3oiMlJ+4djD0f2J76lDoep5A66IXsy9vVb7Txw+ed20YED5ds2J0AtCucndhMVvhKg==
-X-Received: by 2002:a05:6830:2055:b0:6b9:8357:61e6 with SMTP id f21-20020a056830205500b006b9835761e6mr10532584otp.35.1698095866666;
-        Mon, 23 Oct 2023 14:17:46 -0700 (PDT)
-Received: from citadel.lan ([2600:6c4a:4d3f:6d5c::1019])
-        by smtp.gmail.com with ESMTPSA id o139-20020a0dcc91000000b00583e52232f1sm3485430ywd.112.2023.10.23.14.17.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 14:17:46 -0700 (PDT)
-From:   Brian Gerst <brgerst@gmail.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH 9/9] kallsyms: Remove KALLSYMS_ABSOLUTE_PERCPU
-Date:   Mon, 23 Oct 2023 17:17:30 -0400
-Message-ID: <20231023211730.40566-10-brgerst@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231023211730.40566-1-brgerst@gmail.com>
-References: <20231023211730.40566-1-brgerst@gmail.com>
-MIME-Version: 1.0
+ d=NETORG5796793.onmicrosoft.com; s=selector1-NETORG5796793-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xjo69AYbvgkMUv/7Z7u3J7b2W9jtJHSbzu1Tsi9/774=;
+ b=GONCJMSNYkuZ9UW+F6H1WrUJaVF1gvWfgTQjCHqbpl3rpXpL1JNIT9HVyN0gxGfBYjHWNdAIN0tpfhxZ3QMVIesq8RxU17ma0DE9uyHj/AnyMfxDKMFwPxkJxVg4/a5cbzBJqtXX69zssyapXzPWWyYorb2pBnTBj9Odyzsv3k8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=labundy.com;
+Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
+ (2603:10b6:803:43::21) by SA2PR08MB6825.namprd08.prod.outlook.com
+ (2603:10b6:806:fb::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34; Mon, 23 Oct
+ 2023 21:24:46 +0000
+Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
+ ([fe80::e73c:270b:75f7:5302]) by SN4PR0801MB3774.namprd08.prod.outlook.com
+ ([fe80::e73c:270b:75f7:5302%4]) with mapi id 15.20.6907.032; Mon, 23 Oct 2023
+ 21:24:46 +0000
+Date:   Mon, 23 Oct 2023 16:24:38 -0500
+From:   Jeff LaBundy <jeff@labundy.com>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
+Cc:     Anshul Dalal <anshulusr@gmail.com>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] input: joystick: driver for Adafruit Seesaw
+ Gamepad
+Message-ID: <ZTbklpRhpMIPey2j@nixie71>
+References: <20231017034356.1436677-1-anshulusr@gmail.com>
+ <20231017034356.1436677-2-anshulusr@gmail.com>
+ <ZTWza+S+t+UZKlwu@nixie71>
+ <00d2fcbc-3fd8-477d-8df1-afec20b458b6@t-8ch.de>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <00d2fcbc-3fd8-477d-8df1-afec20b458b6@t-8ch.de>
+X-ClientProxiedBy: DS7PR03CA0252.namprd03.prod.outlook.com
+ (2603:10b6:5:3b3::17) To SN4PR0801MB3774.namprd08.prod.outlook.com
+ (2603:10b6:803:43::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN4PR0801MB3774:EE_|SA2PR08MB6825:EE_
+X-MS-Office365-Filtering-Correlation-Id: bb0d83dd-d803-4d23-598f-08dbd40e7af6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dV0d5w/QmzhrnvJsbv8x6/uoQOyg0BNul+2OBdCXCu0jpVENqzhEs+Lh3mu0HyRSXqf6nGmTr404/Kveb0GcXsl7Mddk/cDbUP2+QMiwfHLM7qDIMFcp83047/wwjTSmpf+LPbYMPsL5ZaX67QrNwHg6N9byxWTTh/z38Wdf4ACF7XaWG+Iw2LllH0k8ozK8FRlifd6U5BHv3b7CvpdThO9OldkqYHZ9DBd0zc8RrzchKvivvWsz25Y8+yxcKW1rzxiwAVlwUp9obl4p6X2hGtxeiOBqwYLyq694CXSep1uDzxNMuF19VrNOhch1lzfJrXgQeAxlJuI1M9ok/GNZagff0BPTXZKKpPDLo7Gj+TKuFYVKuIoPGgNAK2VdBELqZgRZSS5trd6c/sE5KoaZ+YhVSyQTe3xGeiQTTX/NFx6gsutTtjwScMTsOwa1oAkDv38s4SjSfiITtvQNYa5sOWJtVMrjm214bbX3Xyxwn5j1sHxyuLtfGbMcjBKenkqzsyn1SVs5VF2HWVNfKQQ1VaK9nZPP3waTgk3EZK59ZFkBgBl6I6/jPsixzN5hVAZP
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0801MB3774.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39830400003)(346002)(396003)(366004)(376002)(136003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(9686003)(83380400001)(26005)(4744005)(316002)(6486002)(7416002)(6916009)(8936002)(478600001)(8676002)(41300700001)(66946007)(2906002)(4326008)(38100700002)(66476007)(5660300002)(6512007)(66574015)(54906003)(6666004)(6506007)(66556008)(33716001)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?B1w05ouDFUd5ChwCGM+lU/3nfSguebna4esxvJp7A4VIROsrzPxI4Z+9j2?=
+ =?iso-8859-1?Q?ciyFTVtzz2/kb3uU+smvdiIOEp3NGL5VMEpWXPhrwyZdkGsnu6Ieh2wspt?=
+ =?iso-8859-1?Q?q3v32R3TvT7Z3SIuHA/E6aHu94HPEzdStJYLlKOfg1pna35ybZY+hOoUMm?=
+ =?iso-8859-1?Q?9d0drEhsiwGP66SjQ5VF1b02k4kBGhYawWdVE78W1uDISOFh3azPKs9241?=
+ =?iso-8859-1?Q?9qJVXBBLV4gsmzrN2TzzkPtVUIs6Wgd5i49qpYOER4RYBdC+JKJHFCRG33?=
+ =?iso-8859-1?Q?hBF8zd5SOant6djaN3JjhPk50GdPxvQ07O8jVFYE9d5Upfl/dBcXs4HnD5?=
+ =?iso-8859-1?Q?nQl3wKbKcxI/lJIR2jLywXDLBbQmIcEiV+eg+WeL98V4p6Ftzm/YGI+nHC?=
+ =?iso-8859-1?Q?TRfqImsG8NrHiEtTHgMX40sVAg4UwNrsD9yXu44ZdhcdDlmlResSSp9Pk2?=
+ =?iso-8859-1?Q?L7iQ0+V+2Uy5zQc0hi7IwfnxdU19nw1kPdeTmFB3oCNdEEf/MJoVr1jWZa?=
+ =?iso-8859-1?Q?2CilQagPxp9S2D5tko7g494Qzl3E7iS95Saelc9Hhb7HV7kIzWCTydzhq6?=
+ =?iso-8859-1?Q?lFU08wJMs/swDz02KPzsIoj0k00Bf01f3HlnLCTnvhZUr0muSMLLCD7EL9?=
+ =?iso-8859-1?Q?JCrvgsi8eVzpyHSXqIEAWskL4Mg8inyVNgXb+TpMq7jHqfqdI57CwTwMzo?=
+ =?iso-8859-1?Q?Xcb1b0w1GL2x67ZgkkNJ6KB/fyxWAOz8tdAYjWH/onfg27RcuArZMXKQPk?=
+ =?iso-8859-1?Q?IwkWDRdLfMX4Wb2Gd5t/FJcTPpMBcJxo3JUyGp8KuQMOR/QJ5OkpcSdqan?=
+ =?iso-8859-1?Q?P7z693EoxAzVMMEVKJmrQn7xpbcZ9ro+tymm8hCx/7N9JMP0EkZruL/ncr?=
+ =?iso-8859-1?Q?5cdGONwFWqZXi1892xNSkYh67NpXZHTYgFM1piKid+x5AWsEahkWgSKovE?=
+ =?iso-8859-1?Q?sWSKNiRhdKYbC/VB1uYQ4JvuaFlwigQq7+p6/mGmScRr1+U9K5baDWRNVa?=
+ =?iso-8859-1?Q?8ogYe1y33WbUNDkOrH48lC8OL6Z1K3ianSFQWRlJ7/Nl/vGxjrdS1Ycx/k?=
+ =?iso-8859-1?Q?OujMqnNE3jmXWhbdc5WK4tLhMAYVNgOkmsRNXzDge95BEsC2xm9UAKiugW?=
+ =?iso-8859-1?Q?5D/f6s2kyFD/4nTYt3i98waeNck8MTKsIzISdP3Yih4QT1WY4QZhagmD4G?=
+ =?iso-8859-1?Q?Fbh7Y15lVRoZyGfe1lRP5TcnvwiVz3+QvASPihRxuQB4Du541eSgVNwJeS?=
+ =?iso-8859-1?Q?tewXg9hzUYfd979QvUYLs2ZDXsh3YIgM2TIdwDjfVlc1FPCEGen7SS1K/K?=
+ =?iso-8859-1?Q?zqo8zqvRbpp8i4bGYUFttxedGi6bTODfSqvLLuG/xx5fKlQF2/glW7MXMu?=
+ =?iso-8859-1?Q?zm2bUM7AFq451C6I4CqFYlYkxatzLxXSt/8eNuWqMbl7fmpr994oNucgLO?=
+ =?iso-8859-1?Q?LQN5/FLBFE3kLKbstFu84Pyo/nQqtKbGrp0vN5IknxHU+jdZUvtXRM7bW1?=
+ =?iso-8859-1?Q?cTFTt+4uAuL1RSNIGHU2eBPxsGH+7lQz1sAU/dAk8yTKJB0gOwIzoVmUoa?=
+ =?iso-8859-1?Q?iNq27v5PH9vyE/1d90pV/FWISB0my4yDbepng1N5ZRF0dwGBG68EK+PovO?=
+ =?iso-8859-1?Q?0BUAL09NZ6NXY+KsAhXEv2C03T0Iy3QDE2?=
+X-OriginatorOrg: labundy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb0d83dd-d803-4d23-598f-08dbd40e7af6
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0801MB3774.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 21:24:46.2777
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 00b69d09-acab-4585-aca7-8fb7c6323e6f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ln+7meh0rOgDU9it9j0RiqYcmgH6Zzc7TKw9jvBvCd7ZEDyrsU3QSw+9ATvUFkbZgglIrWhQFcrIjBoVn1IDvg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR08MB6825
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-x86-64 was the only user.
+Hi Thomas,
 
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
----
- init/Kconfig            | 11 +-----
- kernel/kallsyms.c       | 12 ++-----
- scripts/kallsyms.c      | 80 ++++++++---------------------------------
- scripts/link-vmlinux.sh |  4 ---
- 4 files changed, 18 insertions(+), 89 deletions(-)
+On Mon, Oct 23, 2023 at 07:55:52AM +0200, Thomas Weißschuh  wrote:
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 1af31b23e376..4d91c5632aaf 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1715,11 +1715,6 @@ config KALLSYMS_ALL
- 
- 	  Say N unless you really need all symbols, or kernel live patching.
- 
--config KALLSYMS_ABSOLUTE_PERCPU
--	bool
--	depends on KALLSYMS
--	default n
--
- config KALLSYMS_BASE_RELATIVE
- 	bool
- 	depends on KALLSYMS
-@@ -1727,11 +1722,7 @@ config KALLSYMS_BASE_RELATIVE
- 	help
- 	  Instead of emitting them as absolute values in the native word size,
- 	  emit the symbol references in the kallsyms table as 32-bit entries,
--	  each containing a relative value in the range [base, base + U32_MAX]
--	  or, when KALLSYMS_ABSOLUTE_PERCPU is in effect, each containing either
--	  an absolute value in the range [0, S32_MAX] or a relative value in the
--	  range [base, base + S32_MAX], where base is the lowest relative symbol
--	  address encountered in the image.
-+	  each containing a relative value in the range [base, base + U32_MAX].
- 
- 	  On 64-bit builds, this reduces the size of the address table by 50%,
- 	  but more importantly, it results in entries whose values are build
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index 18edd57b5fe8..f4e8e531052a 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -151,16 +151,8 @@ unsigned long kallsyms_sym_address(int idx)
- 	if (!IS_ENABLED(CONFIG_KALLSYMS_BASE_RELATIVE))
- 		return kallsyms_addresses[idx];
- 
--	/* values are unsigned offsets if --absolute-percpu is not in effect */
--	if (!IS_ENABLED(CONFIG_KALLSYMS_ABSOLUTE_PERCPU))
--		return kallsyms_relative_base + (u32)kallsyms_offsets[idx];
--
--	/* ...otherwise, positive offsets are absolute values */
--	if (kallsyms_offsets[idx] >= 0)
--		return kallsyms_offsets[idx];
--
--	/* ...and negative offsets are relative to kallsyms_relative_base - 1 */
--	return kallsyms_relative_base - 1 - kallsyms_offsets[idx];
-+	/* values are unsigned offsets */
-+	return kallsyms_relative_base + (u32)kallsyms_offsets[idx];
- }
- 
- static void cleanup_symbol_name(char *s)
-diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-index 653b92f6d4c8..501f978abf4b 100644
---- a/scripts/kallsyms.c
-+++ b/scripts/kallsyms.c
-@@ -5,8 +5,8 @@
-  * This software may be used and distributed according to the terms
-  * of the GNU General Public License, incorporated herein by reference.
-  *
-- * Usage: kallsyms [--all-symbols] [--absolute-percpu]
-- *                         [--base-relative] [--lto-clang] in.map > out.S
-+ * Usage: kallsyms [--all-symbols] [--base-relative] [--lto-clang]
-+ *		   in.map > out.S
-  *
-  *      Table compression uses all the unused char codes on the symbols and
-  *  maps these to the most used substrings (tokens). For instance, it might
-@@ -37,7 +37,6 @@ struct sym_entry {
- 	unsigned int len;
- 	unsigned int seq;
- 	unsigned int start_pos;
--	unsigned int percpu_absolute;
- 	unsigned char sym[];
- };
- 
-@@ -55,14 +54,9 @@ static struct addr_range text_ranges[] = {
- #define text_range_text     (&text_ranges[0])
- #define text_range_inittext (&text_ranges[1])
- 
--static struct addr_range percpu_range = {
--	"__per_cpu_start", "__per_cpu_end", -1ULL, 0
--};
--
- static struct sym_entry **table;
- static unsigned int table_size, table_cnt;
- static int all_symbols;
--static int absolute_percpu;
- static int base_relative;
- static int lto_clang;
- 
-@@ -75,7 +69,7 @@ static unsigned char best_table_len[256];
- 
- static void usage(void)
- {
--	fprintf(stderr, "Usage: kallsyms [--all-symbols] [--absolute-percpu] "
-+	fprintf(stderr, "Usage: kallsyms [--all-symbols] "
- 			"[--base-relative] [--lto-clang] in.map > out.S\n");
- 	exit(1);
- }
-@@ -167,7 +161,6 @@ static struct sym_entry *read_symbol(FILE *in, char **buf, size_t *buf_len)
- 		return NULL;
- 
- 	check_symbol_range(name, addr, text_ranges, ARRAY_SIZE(text_ranges));
--	check_symbol_range(name, addr, &percpu_range, 1);
- 
- 	/* include the type field in the symbol name, so that it gets
- 	 * compressed together */
-@@ -183,7 +176,6 @@ static struct sym_entry *read_symbol(FILE *in, char **buf, size_t *buf_len)
- 	sym->len = len;
- 	sym->sym[0] = type;
- 	strcpy(sym_name(sym), name);
--	sym->percpu_absolute = 0;
- 
- 	return sym;
- }
-@@ -334,11 +326,6 @@ static int expand_symbol(const unsigned char *data, int len, char *result)
- 	return total;
- }
- 
--static int symbol_absolute(const struct sym_entry *s)
--{
--	return s->percpu_absolute;
--}
--
- static void cleanup_symbol_name(char *s)
- {
- 	char *p;
-@@ -499,30 +486,17 @@ static void write_src(void)
- 			 */
- 
- 			long long offset;
--			int overflow;
--
--			if (!absolute_percpu) {
--				offset = table[i]->addr - relative_base;
--				overflow = (offset < 0 || offset > UINT_MAX);
--			} else if (symbol_absolute(table[i])) {
--				offset = table[i]->addr;
--				overflow = (offset < 0 || offset > INT_MAX);
--			} else {
--				offset = relative_base - table[i]->addr - 1;
--				overflow = (offset < INT_MIN || offset >= 0);
--			}
--			if (overflow) {
-+
-+			offset = table[i]->addr - relative_base;
-+			if (offset < 0 || offset > UINT_MAX) {
- 				fprintf(stderr, "kallsyms failure: "
--					"%s symbol value %#llx out of range in relative mode\n",
--					symbol_absolute(table[i]) ? "absolute" : "relative",
-+					"symbol value %#llx out of range in relative mode\n",
- 					table[i]->addr);
- 				exit(EXIT_FAILURE);
- 			}
- 			printf("\t.long\t%#x	/* %s */\n", (int)offset, table[i]->sym);
--		} else if (!symbol_absolute(table[i])) {
--			output_address(table[i]->addr);
- 		} else {
--			printf("\tPTR\t%#llx\n", table[i]->addr);
-+			output_address(table[i]->addr);
- 		}
- 	}
- 	printf("\n");
-@@ -775,36 +749,15 @@ static void sort_symbols(void)
- 	qsort(table, table_cnt, sizeof(table[0]), compare_symbols);
- }
- 
--static void make_percpus_absolute(void)
--{
--	unsigned int i;
--
--	for (i = 0; i < table_cnt; i++)
--		if (symbol_in_range(table[i], &percpu_range, 1)) {
--			/*
--			 * Keep the 'A' override for percpu symbols to
--			 * ensure consistent behavior compared to older
--			 * versions of this tool.
--			 */
--			table[i]->sym[0] = 'A';
--			table[i]->percpu_absolute = 1;
--		}
--}
--
--/* find the minimum non-absolute symbol address */
-+/* find the minimum symbol address */
- static void record_relative_base(void)
- {
--	unsigned int i;
--
--	for (i = 0; i < table_cnt; i++)
--		if (!symbol_absolute(table[i])) {
--			/*
--			 * The table is sorted by address.
--			 * Take the first non-absolute symbol value.
--			 */
--			relative_base = table[i]->addr;
--			return;
--		}
-+	/*
-+	 * The table is sorted by address.
-+	 * Take the first symbol value.
-+	 */
-+	if (table_cnt)
-+		relative_base = table[0]->addr;
- }
- 
- int main(int argc, char **argv)
-@@ -812,7 +765,6 @@ int main(int argc, char **argv)
- 	while (1) {
- 		static const struct option long_options[] = {
- 			{"all-symbols",     no_argument, &all_symbols,     1},
--			{"absolute-percpu", no_argument, &absolute_percpu, 1},
- 			{"base-relative",   no_argument, &base_relative,   1},
- 			{"lto-clang",       no_argument, &lto_clang,       1},
- 			{},
-@@ -831,8 +783,6 @@ int main(int argc, char **argv)
- 
- 	read_map(argv[optind]);
- 	shrink_table();
--	if (absolute_percpu)
--		make_percpus_absolute();
- 	sort_symbols();
- 	if (base_relative)
- 		record_relative_base();
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index a432b171be82..d25b6d5de45e 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -148,10 +148,6 @@ kallsyms()
- 		kallsymopt="${kallsymopt} --all-symbols"
- 	fi
- 
--	if is_enabled CONFIG_KALLSYMS_ABSOLUTE_PERCPU; then
--		kallsymopt="${kallsymopt} --absolute-percpu"
--	fi
--
- 	if is_enabled CONFIG_KALLSYMS_BASE_RELATIVE; then
- 		kallsymopt="${kallsymopt} --base-relative"
- 	fi
--- 
-2.41.0
+[...]
 
+> >> +   err = i2c_master_send(client, write_buf, sizeof(write_buf));
+> >> +   if (err < 0)
+> >> +       return err;
+> >
+> > You correctly return err (or rather, ret) for negative values, but you should also
+> > check that ret matches the size of the data sent. For 0 <= ret < sizeof(writebuf),
+> > return -EIO.
+> 
+> The driver did this originally.
+> I then requested it to be removed as this case
+> can never happen.
+> i2c_master_send will either return size of(writebuf) or an error.
+
+Great catch; indeed you are correct. Apologies for having missed this
+in the change log; this is good to know in the future.
+
+That being said, it's a moot point IMO; this driver seems like a good
+candidate for regmap. If regmap cannot be made to work here for some
+reason, then I'd like to at least see some wrapper functions to avoid
+duplicate code and manual assignments to a buffer.
+
+Kind regards,
+Jeff LaBundy
