@@ -2,143 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 203167D300C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1771E7D3015
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbjJWKfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 06:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58076 "EHLO
+        id S229740AbjJWKiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 06:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjJWKfv (ORCPT
+        with ESMTP id S229572AbjJWKiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 06:35:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2693FD6E;
-        Mon, 23 Oct 2023 03:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698057349; x=1729593349;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hcyNvUgQiaQ72XY6XCfmfDq1LmiwOA/3EPhPZPeidk8=;
-  b=n3yviCV/S6HkEzA1a5rmMju0LQTx3gIXviXzqDa1I+fP8SI8yU+eKIUw
-   4Bpwdqy5p+baM+0TJSsRr8/3bCTW74E/aDM/3lssDU/dBCApa0uj84CgK
-   povR6+319XZJtUCX9TK6TgfeggvA9aTxSTPAbfMJdCVQGcS87XFjjxsN0
-   Jzs6FwQswzrXFEc9RoDPLn3wYS3T4UbB/VAZzIhEPKitXyqJKjjrnQ33y
-   e+wjEfGQoqxnnV0iUpdiaVb5wY70yc//h9HWg+gkcBj7AaW80LDWMd1dc
-   SoSDrmuSfw6d7qba/FOgzM5NNDE/kawML231HDMUn9kHGrHalAps+/mOs
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="453280620"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="453280620"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 03:35:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="793083978"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="793083978"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 23 Oct 2023 03:35:47 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qusHg-0006or-2Y;
-        Mon, 23 Oct 2023 10:35:44 +0000
-Date:   Mon, 23 Oct 2023 18:35:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     James Hilliard <james.hilliard1@gmail.com>,
-        linux-input@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        James Hilliard <james.hilliard1@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: cyttsp5 - improve error handling and remove regmap
-Message-ID: <202310231838.JHHtGKmB-lkp@intel.com>
-References: <20231023085234.105572-1-james.hilliard1@gmail.com>
+        Mon, 23 Oct 2023 06:38:06 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348FDD66;
+        Mon, 23 Oct 2023 03:38:01 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698057479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NV8omgEBFH7BzKZpP/nKdtpWk9EtkHBp6M/sRgzmhUc=;
+        b=r8T1qQkeLPywonI87335b73C9oCYFkBrIUapkX1rrDhevbvHdmX+D/CB/c1uIMbQF0SVnS
+        VZ7foChKzrKZF6i0k4kMDJVI4VSTU//JgV1dJWcLKCOlThhMDJPaQGpBZ/oTUBOOSGoMJx
+        TAfb0F9AZmvxqkfPKdUDZkgUPbQpzM4PV73H3Yvi0hsIqkMBI8mScrCH1sgvwc7/Y3KxFv
+        zEZR3iwExHrzbDQXAeOfFyWNnGsPuVljsjXUDQAtOVZhXKl1liQlNkfx3hwMUIWvxnwNP4
+        tJDKdrI3Xue2f+4I05ZloOMjiPSuTztNhSrUh/SquMrRfW+WZcyeoFjuHFzT2A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698057479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NV8omgEBFH7BzKZpP/nKdtpWk9EtkHBp6M/sRgzmhUc=;
+        b=jYeTzjVAfzI4mp2pPUmFBMg4mnDNWbK0yKxWmKXibfhZbGO0K/k0RUClYhuGzg4kaWUqyJ
+        ijgXMtHDrdXzuuAQ==
+To:     Al Viro <viro@zeniv.linux.org.uk>, linux-arch@vger.kernel.org
+Cc:     gus Gusenleitner Klaus <gus@keba.com>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [RFC][PATCH] fix csum_and_copy_..._user() idiocy.  Re: AW:
+ [PATCH] amd64: Fix csum_partial_copy_generic()
+In-Reply-To: <20231022194618.GC800259@ZenIV>
+References: <20231018154205.GT800259@ZenIV>
+ <VI1PR0702MB3840F2D594B9681BF2E0CD81D9D4A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
+ <20231019050250.GV800259@ZenIV> <20231019061427.GW800259@ZenIV>
+ <20231019063925.GX800259@ZenIV>
+ <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
+ <20231019080615.GY800259@ZenIV> <20231021071525.GA789610@ZenIV>
+ <20231021222203.GA800259@ZenIV> <20231022194020.GA972254@ZenIV>
+ <20231022194618.GC800259@ZenIV>
+Date:   Mon, 23 Oct 2023 12:37:58 +0200
+Message-ID: <87wmvdd3p5.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023085234.105572-1-james.hilliard1@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+On Sun, Oct 22 2023 at 20:46, Al Viro wrote:
+> @@ -113,14 +113,14 @@ csum_partial_cfu_aligned(const unsigned long __user *src, unsigned long *dst,
+>  		*dst = word | tmp;
+>  		checksum += carry;
+>  	}
+> -	return checksum;
+> +	return from64to16 (checksum);
 
-kernel test robot noticed the following build warnings:
+  from64to16(checksum); all over the place
 
-[auto build test WARNING on dtor-input/next]
-[also build test WARNING on dtor-input/for-linus hid/for-next linus/master v6.6-rc7 next-20231023]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>  
+>  #define _HAVE_ARCH_COPY_AND_CSUM_FROM_USER
+>  #define _HAVE_ARCH_CSUM_AND_COPY
+>  static inline
+> -__wsum csum_and_copy_from_user(const void __user *src, void *dst, int len)
+> +__wsum_fault csum_and_copy_from_user(const void __user *src, void *dst, int len)
+>  {
+>  	if (!access_ok(src, len))
+> -		return 0;
+> +		return -1;
 
-url:    https://github.com/intel-lab-lkp/linux/commits/James-Hilliard/Input-cyttsp5-improve-error-handling-and-remove-regmap/20231023-165327
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git next
-patch link:    https://lore.kernel.org/r/20231023085234.105572-1-james.hilliard1%40gmail.com
-patch subject: [PATCH] Input: cyttsp5 - improve error handling and remove regmap
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231023/202310231838.JHHtGKmB-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231023/202310231838.JHHtGKmB-lkp@intel.com/reproduce)
+  return CSUM_FAULT; 
+  
+>  /*
+> diff --git a/arch/arm/lib/csumpartialcopygeneric.S b/arch/arm/lib/csumpartialcopygeneric.S
+> index 0fd5c10e90a7..5db935eaf165 100644
+> --- a/arch/arm/lib/csumpartialcopygeneric.S
+> +++ b/arch/arm/lib/csumpartialcopygeneric.S
+> @@ -86,7 +86,7 @@ sum	.req	r3
+>  
+>  FN_ENTRY
+>  		save_regs
+> -		mov	sum, #-1
+> +		mov	sum, #0
+>  
+>  		cmp	len, #8			@ Ensure that we have at least
+>  		blo	.Lless8			@ 8 bytes to copy.
+> @@ -160,6 +160,7 @@ FN_ENTRY
+>  		ldr	sum, [sp, #0]		@ dst
+>  		tst	sum, #1
+>  		movne	r0, r0, ror #8
+> +		mov	r1, #0
+>  		load_regs
+>  
+>  .Lsrc_not_aligned:
+> diff --git a/arch/arm/lib/csumpartialcopyuser.S b/arch/arm/lib/csumpartialcopyuser.S
+> index 6928781e6bee..f273c9667914 100644
+> --- a/arch/arm/lib/csumpartialcopyuser.S
+> +++ b/arch/arm/lib/csumpartialcopyuser.S
+> @@ -73,11 +73,11 @@
+>  #include "csumpartialcopygeneric.S"
+>  
+>  /*
+> - * We report fault by returning 0 csum - impossible in normal case, since
+> - * we start with 0xffffffff for initial sum.
+> + * We report fault by returning ~0ULL csum
+>   */
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310231838.JHHtGKmB-lkp@intel.com/
+There is also a stale comment a few lines further up.
 
-All warnings (new ones prefixed by >>):
+>  		.pushsection .text.fixup,"ax"
+>  		.align	4
+> -9001:		mov	r0, #0
+> +9001:		mov	r0, #-1
+> +		mov	r1, #-1
+>  		load_regs
+>  		.popsection
+>  #include <linux/errno.h>
+> -#include <asm/types.h>
+> +#include <linux/bitops.h>
+>  #include <asm/byteorder.h>
+> +
+> +typedef u64 __bitwise __wsum_fault;
 
-   drivers/input/touchscreen/cyttsp5.c: In function 'cyttsp5_get_hid_descriptor':
->> drivers/input/touchscreen/cyttsp5.c:684:22: warning: unused variable 'reg' [-Wunused-variable]
-     684 |         unsigned int reg = HID_DESC_REG;
-         |                      ^~~
+newline please.
+
+> +static inline __wsum_fault to_wsum_fault(__wsum v)
+> +{
+> +#if defined(CONFIG_64BIT) || defined(__LITTLE_ENDIAN__)
+> +	return (__force __wsum_fault)v;
+> +#else
+> +	return (__force __wsum_fault)((__force u64)v << 32);
+> +#endif
+> +}
+> +
+> +static inline __wsum_fault from_wsum_fault(__wsum v)
+> +{
+> +#if defined(CONFIG_64BIT) || defined(__LITTLE_ENDIAN__)
+> +	return (__force __wsum)v;
+> +#else
+> +	return (__force __wsum)((__force u64)v >> 32);
+> +#endif
+> +}
+> +
+> +static inline bool wsum_fault_check(__wsum_fault v)
+> +{
+> +#if defined(CONFIG_64BIT) || defined(__LITTLE_ENDIAN__)
+> +	return (__force s64)v < 0;
+> +#else
+> +	return (int)(__force u32)v < 0;
+
+Why not __force s32 right away?
+
+>  #include <asm/checksum.h>
+>  #if !defined(_HAVE_ARCH_COPY_AND_CSUM_FROM_USER) || !defined(HAVE_CSUM_COPY_USER)
+>  #include <linux/uaccess.h>
+> @@ -25,24 +57,24 @@
+>  
+>  #ifndef _HAVE_ARCH_COPY_AND_CSUM_FROM_USER
+>  static __always_inline
+> -__wsum csum_and_copy_from_user (const void __user *src, void *dst,
+> +__wsum_fault csum_and_copy_from_user (const void __user *src, void *dst,
+>  				      int len)
+>  {
+>  	if (copy_from_user(dst, src, len))
+> -		return 0;
+> -	return csum_partial(dst, len, ~0U);
+> +		return CSUM_FAULT;
+> +	return to_wsum_fault(csum_partial(dst, len, 0));
+>  }
+>  #endif
+>  #ifndef HAVE_CSUM_COPY_USER
+> -static __always_inline __wsum csum_and_copy_to_user
+> +static __always_inline __wsum_fault csum_and_copy_to_user
+>  (const void *src, void __user *dst, int len)
+>  {
+> -	__wsum sum = csum_partial(src, len, ~0U);
+> +	__wsum sum = csum_partial(src, len, 0);
+>  
+>  	if (copy_to_user(dst, src, len) == 0)
+> -		return sum;
+> -	return 0;
+> +		return to_wsum_fault(sum);
+> +	return CSUM_FAULT;
+
+  	if (copy_to_user(dst, src, len))
+		return CSUM_FAULT;
+	return to_wsum_fault(sum);
+
+So it follows the pattern of csum_and_copy_from_user() above?
+
+>  size_t csum_and_copy_from_iter(void *addr, size_t bytes, __wsum *csum,
+>  			       struct iov_iter *i)
+>  {
+> -	__wsum sum, next;
+> +	__wsum sum;
+> +	__wsum_fault next;
+>  	sum = *csum;
+>  	if (WARN_ON_ONCE(!i->data_source))
+>  		return 0;
+>  
+>  	iterate_and_advance(i, bytes, base, len, off, ({
+>  		next = csum_and_copy_from_user(base, addr + off, len);
+> -		sum = csum_block_add(sum, next, off);
+> -		next ? 0 : len;
+> +		sum = csum_block_add(sum, from_wsum_fault(next), off);
+> +		likely(!wsum_fault_check(next)) ? 0 : len;
+
+This macro maze is confusing as hell.
+
+Looking at iterate_buf() which is the least convoluted. That resolves to
+the following:
+
+     len = bytes;
+     ...
+     next = csum_and_copy_from_user(...);
+     ...
+     len -= !wsum_fault_check(next) ? 0 : len;
+     ...
+     bytes = len;
+     ...
+     return bytes;
+
+So it correctly returns 'bytes' for the success case and 0 for the fault
+case.
+
+Now decrypting iterate_iovec():
+
+    off = 0;
+    
+    do {
+       ....
+       len -= !wsum_fault_check(next) ? 0 : len;
+       off += len;
+       skip += len;
+       bytes- -= len;
+       if (skip < __p->iov_len)        <- breaks on fault
+          break;
+       ...
+    } while(bytes);
+
+    bytes = off;
+    ...
+    return bytes;
+
+Which means that if the first vector is successfully copied, then 'off'
+is greater 0. A fault on the second one will correctly break out of the
+loop, but the function will incorrectly return a value > 0, i.e. the
+length of the first iteration.
+
+As the callers just check for != 0 such a partial copy is considered
+success, no?
+
+So instead of 
+
+	likely(!wsum_fault_check(next)) ? 0 : len;
+
+shouldn't this just do:
+
+	if (unlikely(wsum_fault_check(next))
+		return 0;
+        len;
+
+for simplicity and mental sanity sake?
+
+Thanks,
+
+        tglx
 
 
-vim +/reg +684 drivers/input/touchscreen/cyttsp5.c
 
-   677	
-   678	static int cyttsp5_get_hid_descriptor(struct cyttsp5 *ts,
-   679					      struct cyttsp5_hid_desc *desc)
-   680	{
-   681		struct device *dev = ts->dev;
-   682		u8 cmd[2] = { 0 };
-   683		int rc;
- > 684		unsigned int reg = HID_DESC_REG;
-   685	
-   686		put_unaligned_le16(HID_DESC_REG, cmd);
-   687	
-   688		rc = cyttsp5_write(ts, HID_DESC_REG, cmd, 2);
-   689		if (rc) {
-   690			dev_err(dev, "Failed to get HID descriptor, rc=%d\n", rc);
-   691			return rc;
-   692		}
-   693	
-   694		rc = wait_for_completion_interruptible_timeout(&ts->cmd_done,
-   695				msecs_to_jiffies(CY_HID_GET_HID_DESCRIPTOR_TIMEOUT_MS));
-   696		if (rc <= 0) {
-   697			dev_err(ts->dev, "HID get descriptor timed out\n");
-   698			rc = -ETIMEDOUT;
-   699			return rc;
-   700		}
-   701	
-   702		memcpy(desc, ts->response_buf, sizeof(*desc));
-   703	
-   704		/* Check HID descriptor length and version */
-   705		if (le16_to_cpu(desc->hid_desc_len) != sizeof(*desc) ||
-   706		    le16_to_cpu(desc->bcd_version) != HID_VERSION) {
-   707			dev_err(dev, "Unsupported HID version\n");
-   708			return -ENODEV;
-   709		}
-   710	
-   711		return 0;
-   712	}
-   713	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
