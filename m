@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC217D2C73
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3B67D2C79
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjJWIRL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Oct 2023 04:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
+        id S229789AbjJWITW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjJWIRI (ORCPT
+        with ESMTP id S229451AbjJWITU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:17:08 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDA78E
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:17:05 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-309-nQlSvGyiNSGMh4aakGXTrA-1; Mon, 23 Oct 2023 09:17:01 +0100
-X-MC-Unique: nQlSvGyiNSGMh4aakGXTrA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 23 Oct
- 2023 09:16:59 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 23 Oct 2023 09:16:59 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Al Viro' <viro@zeniv.linux.org.uk>
-CC:     Eric Dumazet <edumazet@google.com>,
-        gus Gusenleitner Klaus <gus@keba.com>,
-        Al Viro <viro@ftp.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: RE: AW: [PATCH] amd64: Fix csum_partial_copy_generic()
-Thread-Topic: AW: [PATCH] amd64: Fix csum_partial_copy_generic()
-Thread-Index: AQHaBG0ELw1zxmi7jUCMTwySbq0j57BVpWHg///yIICAAXFNkA==
-Date:   Mon, 23 Oct 2023 08:16:59 +0000
-Message-ID: <2a4555bf640e4bc4b76e1ae14e5cb5e1@AcuMS.aculab.com>
-References: <20231018154205.GT800259@ZenIV>
- <VI1PR0702MB3840F2D594B9681BF2E0CD81D9D4A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
- <20231019050250.GV800259@ZenIV> <20231019061427.GW800259@ZenIV>
- <20231019063925.GX800259@ZenIV>
- <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
- <20231019080615.GY800259@ZenIV> <20231021071525.GA789610@ZenIV>
- <20231021222203.GA800259@ZenIV>
- <5487af5c8c184ac896af2d0b32b3ff42@AcuMS.aculab.com>
- <20231022111153.GB800259@ZenIV>
-In-Reply-To: <20231022111153.GB800259@ZenIV>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 23 Oct 2023 04:19:20 -0400
+Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B455C4;
+        Mon, 23 Oct 2023 01:19:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail2; t=1698049156; x=1698308356;
+        bh=WxADqybr844I3oyxhgF11CfEL7UzS7ZR4cFdELQGNvc=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=U2RcwxLU7ur57UbIqCUc41rPeN8/K52RWTLgORhgJU5QCGJ7yuP/p1Xi0EqVjMKAW
+         htgDguF11LRmmTvNhgmHoWbDlWHHq+nQnEHLaJAHT4svQzQszctKAuxU9jcXg88xeW
+         /r2ObbAxjn+pX9LpZfk8L9RoxG1aw0Sj7i6a3cEfZXXbMmPTGUNkHqYZbxBv0yVjvM
+         gbTu505EB44iV5R0BwC6vJmBbDIR8ChlOn9NLzI1ZWR4hajxOIzWT2zrQkcSw4/Usw
+         EsgsAcaN63gmyTSJc7XKGcWmJi9D+KDCEIwpQtvoHTOf0n7dSJHFC02fFuln/MkBmO
+         eYnQkIKLYP0Ig==
+Date:   Mon, 23 Oct 2023 08:19:05 +0000
+To:     Albert Esteve <aesteve@redhat.com>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     qemu-devel@nongnu.org, zackr@vmware.com, linux-doc@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>, iforbes@vmware.com,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        David Airlie <airlied@gmail.com>, banackm@vmware.com,
+        Rob Clark <robdclark@gmail.com>, javierm@redhat.com,
+        krastevm@vmware.com, spice-devel@lists.freedesktop.org,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Airlie <airlied@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mombasawalam@vmware.com,
+        Daniel Vetter <daniel@ffwll.ch>, ppaalanen@gmail.com,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        Gerd Hoffmann <kraxel@redhat.com>
+Subject: Re: [PATCH v6 0/9] Fix cursor planes with virtualized drivers
+Message-ID: <219B7sJmmuzo8lj-2i5F6y0pc8XM03X6NdxHUq_R76N71AcTptEPcpjKLO9Rutriw88YtJDRNqibuR-YICIkhPnrBnQSM-Uu9YCc2uZoOiM=@emersion.fr>
+In-Reply-To: <CADSE00KW4+hpbAbZAusBngq5FYSa067wYJCGeetqngWRJaD9Kg@mail.gmail.com>
+References: <20231023074613.41327-1-aesteve@redhat.com> <-ngmaSLF2S5emYjTBWcLRNzvJRoe_eZ-Nv9HQhE6ZLuK8nIE2ZbfVh2G2O2Z41GoIFIRpts0ukEtFXUx8pNAptmrZBhlXxaQGykx_qCZ_9k=@emersion.fr> <CADSE00KW4+hpbAbZAusBngq5FYSa067wYJCGeetqngWRJaD9Kg@mail.gmail.com>
+Feedback-ID: 1358184:user:proton
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro
-> Sent: 22 October 2023 12:12
-> 
-> On Sun, Oct 22, 2023 at 11:03:39AM +0000, David Laight wrote:
-> 
-> > > +			return -1;
-> >
-> > If you are going to return -1 the return type should be signed.
-> 
-> It's a perfectly valid C to have return -1 in a function that
-> returns unsigned long long (or any other unsigned type, really)...
+On Monday, October 23rd, 2023 at 10:14, Albert Esteve <aesteve@redhat.com> =
+wrote:
 
-It is also valid C to return a pointer :-)
+> On Mon, Oct 23, 2023 at 9:55=E2=80=AFAM Simon Ser <contact@emersion.fr> w=
+rote:
+>=20
+> > On Monday, October 23rd, 2023 at 09:46, Albert Esteve <aesteve@redhat.c=
+om> wrote:
+> >=20
+> > > Link to the IGT test covering this patch (already merged):
+> > > https://lists.freedesktop.org/archives/igt-dev/2023-July/058427.html
+> >=20
+> > Hmm. IGT should not be merged before the kernel, because as long as the
+> > kernel is not merged there might be some uAPI changes.
+>=20
+> Right, but uAPI header was not updated on the IGT side. As per suggestion=
+ of the
+> maintainers, I added a static variable that matches the definition on thi=
+s patch:
+> https://lists.freedesktop.org/archives/igt-dev/2023-August/058803.html
+>=20
+> +/**
+> + * Clients which do set cursor hotspot and treat the cursor plane
+> + * like a mouse cursor should set this property.
+> + */
+> +#define LOCAL_DRM_CLIENT_CAP_CURSOR_PLANE_HOTSPOT=096
+>=20
+> Once this patch gets upstreamed, the localized definition will be removed=
+,
+> replaced by the real one.
 
-I also suspect that sparse will complain massively and
-require a lot of the horrid (__force) casts.
-(They should really be a function so that they are completely
-ignored by the compiler - unless the compiler needs a cast as well.)
+What if this patch gets delayed and another patch using the same number
+is merged into the kernel first? What if someone finds a design flaw in
+the uAPI and it needs to be completely changed? The IGT test would then
+be completely broken.
 
-	David
+As a rule of thumb: never merge user-space patches before kernel. As
+soon as the kernel part is merged, it's fine to locally copy definitions
+if desirable.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> > > Mutter patch:
+> > > https://lists.freedesktop.org/archives/igt-dev/2023-July/058427.html
+> >=20
+> > Seems like this link is same as IGT? Copy-pasta fail maybe?
+>=20
+> Ah yes, my bad, this is the correct link:
+> https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3337
 
+Thanks!
