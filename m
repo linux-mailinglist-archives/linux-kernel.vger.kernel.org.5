@@ -2,19 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E807D4180
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3796B7D4182
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbjJWVMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 17:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50316 "EHLO
+        id S231289AbjJWVM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 17:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjJWVMR (ORCPT
+        with ESMTP id S230356AbjJWVM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 17:12:17 -0400
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E115FA4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:12:14 -0700 (PDT)
+        Mon, 23 Oct 2023 17:12:28 -0400
+X-Greylist: delayed 12874 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Oct 2023 14:12:25 PDT
+Received: from smtp.forwardemail.net (smtp.forwardemail.net [167.172.40.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD1ABE
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
  h=Content-Transfer-Encoding: MIME-Version: Message-ID: Date: Subject: Cc:
  To: From; q=dns/txt; s=fe-e1b5cab7be; t=1698095525;
@@ -44,11 +45,12 @@ X-Report-Abuse: abuse@forwardemail.net
 X-Complaints-To: abuse@forwardemail.net
 X-ForwardEmail-Version: 0.4.40
 X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
- 149.28.215.223
+ 167.172.40.54
 X-ForwardEmail-ID: 6536e1a4b7c1916c16a25195
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
