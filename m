@@ -2,82 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 976E27D281D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0987D2829
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbjJWBmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 21:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39212 "EHLO
+        id S232929AbjJWBy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 21:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjJWBmn (ORCPT
+        with ESMTP id S229470AbjJWBy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 21:42:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3530F7;
-        Sun, 22 Oct 2023 18:42:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81BE7C433C8;
-        Mon, 23 Oct 2023 01:42:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698025361;
-        bh=jNTnqKIA9zSEXZ2g2t8trq95ee1lqOdZ++9oTgWdJkQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E4ifp8izwADeCTvVUcbR92whapYaa7T10OSUuU4jZgOeRSn7Vj9NfEmQtSw5LC0MC
-         3pKql3qzG6fN218JAjqc3wQKx/DsO33A0nk6c0xpINN2alcnYaFe+VpZUbLHpL/maK
-         xccEFBCo+t1HivNIlGCAiOaDgb6JVfICGBY7F4jC9wFw20FS/N1qfKV4z7z8+WkxRW
-         Sxpi27MZ59secb3vJ22w9vD09b9qXoZQS13vGUHmQ1Zl4gqDLi0uHZ9RZOy8DyJV4U
-         1Khs1YOXcn4kUALdtxIlYo1PebV717aTPbTImepz1ZyQuTFe9bCkuxPAYeYt2BDykK
-         4yJRBwLBMFwVA==
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     linux-arm-msm@vger.kernel.org, Rayyan Ansari <rayyan@ansari.sh>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Andy Gross <agross@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: (subset) [PATCH v3 0/6] Initial support for MSM8x26 Lumias
-Date:   Sun, 22 Oct 2023 18:47:02 -0700
-Message-ID: <169802554634.845827.17802503631403350590.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230930221323.101289-1-rayyan@ansari.sh>
-References: <20230930221323.101289-1-rayyan@ansari.sh>
+        Sun, 22 Oct 2023 21:54:56 -0400
+X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 22 Oct 2023 18:54:54 PDT
+Received: from mx.socionext.com (mx.socionext.com [202.248.49.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 23102F7;
+        Sun, 22 Oct 2023 18:54:53 -0700 (PDT)
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 23 Oct 2023 10:53:50 +0900
+Received: from mail.mfilter.local (mail-arc01.css.socionext.com [10.213.46.36])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 124862059053;
+        Mon, 23 Oct 2023 10:53:50 +0900 (JST)
+Received: from kinkan2.css.socionext.com ([172.31.9.51]) by m-FILTER with ESMTP; Mon, 23 Oct 2023 10:53:50 +0900
+Received: from [10.212.246.227] (unknown [10.212.246.227])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id 56743B1D40;
+        Mon, 23 Oct 2023 10:53:49 +0900 (JST)
+Message-ID: <dc5ba655-e739-bb24-263c-5f362b0d0f35@socionext.com>
+Date:   Mon, 23 Oct 2023 10:53:52 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [RESEND PATCH v2] arm64: dts: Update cache properties for
+ socionext
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>, soc@kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Pierre Gondois <pierre.gondois@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20231020195022.4183862-2-robh@kernel.org>
+ <ccb48488-7fa2-4784-8c5c-7d6084d16016@linaro.org>
+Content-Language: en-US
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+In-Reply-To: <ccb48488-7fa2-4784-8c5c-7d6084d16016@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Krzysztof, Rob,
 
-On Sat, 30 Sep 2023 23:07:55 +0100, Rayyan Ansari wrote:
-> The following patches:
-> - Add device tree files for Nokia/Microsoft Lumia phones based around
->   the MSM8x26 family of Qualcomm chipsets, utilising a common tree
-> - Document this support
+On 2023/10/21 6:26, Krzysztof Kozlowski wrote:
+> On 20/10/2023 21:50, Rob Herring wrote:
+>> From: Pierre Gondois <pierre.gondois@arm.com>
+>>
+>> The DeviceTree Specification v0.3 specifies that the cache node
+>> 'compatible' and 'cache-level' properties are 'required'. Cf.
+>> s3.8 Multi-level and Shared Cache Nodes
+>> The 'cache-unified' property should be present if one of the
+>> properties for unified cache is present ('cache-size', ...).
+>>
+>> Update the Device Trees accordingly.
+>>
+>> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+>> Reviewed-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>> Link:
+>> https://lore.kernel.org/r/20221107155825.1644604-21-pierre.gondois@arm.com
+>> Signed-off-by: Rob Herring <robh@kernel.org>
+>> ---
+>> I noticed this one fell thru the cracks from the rest of the series.
+>>
+>> Arnd, Can you take this directly.
 > 
-> v1: https://lore.kernel.org/linux-arm-msm/20230811213728.23726-1-rayyan@ansari.sh/
-> v2: https://lore.kernel.org/linux-arm-msm/20230813152623.64989-1-rayyan@ansari.sh/
+> A bit after Pierre - in April 2023 - I sent similar which was said to be
+> "applied":
+> https://lore.kernel.org/all/f9a2c0d7-a78d-9368-f9bb-e8aba11e7d81@socionext.com/
 > 
-> [...]
+> Maybe the Socionext status in MAINTAINERS should be odd fixes?
 
-Applied, thanks!
+Sorry my mistake.
+I thought Pierre's patch had been already applied, however,
+I set Krzysztof's patch to "applied" but it was missing from the post to soc.
 
-[2/6] ARM: dts: qcom: add common dt for MSM8x26 Lumias along with Nokia Lumia 630
-      commit: 244281556a11549501eb5093e9ab0ad8a87b7d4f
-[3/6] ARM: dts: qcom: add device tree for Microsoft Lumia 640
-      commit: 45dbc34693e8ad30c33edfdc94acaf4672de0e24
-[4/6] ARM: dts: qcom: add device tree for Microsoft Lumia 640 XL
-      commit: a16f3bcf867efdab422b711b18c023089fbeb96e
-[5/6] ARM: dts: qcom: add device tree for Nokia Lumia 735
-      commit: 00400a98b2c3fd5d497635747fec4b882299bc05
-[6/6] ARM: dts: qcom: add device tree for Nokia Lumia 830
-      commit: 8677233e59137f78d4d578f3d5a21557c1bab342
+Since Krzysztof's patch includes the same "cache-level" lines as Pierre's,
+the lines needs to be removed.
 
-Best regards,
--- 
-Bjorn Andersson <andersson@kernel.org>
+I'll post the update series including both to soc.
+
+Thank you,
+
+---
+Best Regards
+Kunihiko Hayashi
