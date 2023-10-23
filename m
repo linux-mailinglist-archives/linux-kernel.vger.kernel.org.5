@@ -2,234 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7F87D3FA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B15B7D3FA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbjJWS5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 14:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48214 "EHLO
+        id S230246AbjJWS6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 14:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230345AbjJWS5S (ORCPT
+        with ESMTP id S229491AbjJWS6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 14:57:18 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2057.outbound.protection.outlook.com [40.107.101.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7FE3103
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:57:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ie0eGRWpR74PcodsrL0DYhjjDpvdVjF58iGv/yMFqdmph8j1k+KZU1Dnx/jYkrJiyYdvfUClARPbDW3pAGt4dKrrMC5OCDVlZM1Et7gzt3xQtvnJ7jEogkVKvcvf1kH4MSd3/gZupYrUvTrbpQzfAhJEYymubZZAcAewKBez7hkl9yC3nkr13Y3OrSA4CreUTj1vL8bGQH8wBimnBbKjQckrgEmPfPa2LEugHL+s1VZuexQMm7kFGhn8O7FospcD/FwaYkK1DgrPYsaoC7yeGW8SVVqEXyGu8nh1ysdWq38pR9GDTiGASRGySRCethwx6tqh5HeVdKfFrCBbtnr+Jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a33w2pcQDclfmHVZwwSyZOYM+VuJ0kuRGDg04Ycyq2E=;
- b=CSs2miR7/Uz+uprvZxGmwUeolWtzCf4QjoBUQ9AV0m6PvUC3c4vV3je42uN7bMiBqI8InDj7m/aYpTvmEbyGbosAImd0gY0YrXt+ghgbxG/KhaPu4DX9yTykcG1U6AOn6mW2RVMtdh2RkGNypD/71+G/Kz+gYtfYqzhvbogGAwVyjcSof/n94y9lsFqu8aAJSpUcYXljfhO8G0gH6WJ8mHyPGUnQZzK86mtZRjoJ9KV9oHBd4hkqFOQQkMdmPz6HGjmE1RvkIhbk2Jo5W394K20LZUzO3ws4gel6pN1KNzIVJIJ20hTu6oH6nzdbpDVNg+hv3BNUbxMRBzqcYcw9UQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a33w2pcQDclfmHVZwwSyZOYM+VuJ0kuRGDg04Ycyq2E=;
- b=HgAQJ4U5toPGvschtF6ywwh+/iIzhbA09vY6pvtAv+hAY3clFVnpnmo/li+P/y4ezWE/Q8W7iquHNO64DT1qoQiz9YLHAQe5yHKwC/DCyb94Eacu1feE9qSV0+vH8pZ0ZazjXyYqR7QqlzDtuuRZOaNf2Yhh0e6+wegN+CqjocWGUa3za7W6b4rMuIyufccN/MClKi1G0O9Rvh1rLgXyJqkViRk6AEe2U33OeTfwxeAioKG8uFC23GUpGFf2tPGgI5NoShHnVrkycFWdAZYMWNaFxaHLe+vRikT1FjofNyOHhD20rM3pkeFPl3Xi8g4Sh9YQv8sdBVHVNEuy4j22Kg==
-Received: from CY5PR13CA0055.namprd13.prod.outlook.com (2603:10b6:930:11::7)
- by CO6PR12MB5395.namprd12.prod.outlook.com (2603:10b6:303:13a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Mon, 23 Oct
- 2023 18:57:12 +0000
-Received: from CY4PEPF0000E9D3.namprd03.prod.outlook.com
- (2603:10b6:930:11:cafe::38) by CY5PR13CA0055.outlook.office365.com
- (2603:10b6:930:11::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.16 via Frontend
- Transport; Mon, 23 Oct 2023 18:57:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CY4PEPF0000E9D3.mail.protection.outlook.com (10.167.241.146) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.15 via Frontend Transport; Mon, 23 Oct 2023 18:57:12 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 23 Oct
- 2023 11:57:03 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 23 Oct 2023 11:57:02 -0700
-Received: from Asurada-Nvidia.nvidia.com (10.127.8.12) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Mon, 23 Oct 2023 11:57:02 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     <jgg@nvidia.com>, <kevin.tian@intel.com>
-CC:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
-        <baolu.lu@linux.intel.com>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <yi.l.liu@intel.com>
-Subject: [PATCH v3] iommufd: Only enforce cache coherency in iommufd_hw_pagetable_alloc
-Date:   Mon, 23 Oct 2023 11:57:00 -0700
-Message-ID: <20231023185700.11407-1-nicolinc@nvidia.com>
-X-Mailer: git-send-email 2.42.0
+        Mon, 23 Oct 2023 14:58:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B566A100;
+        Mon, 23 Oct 2023 11:58:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698087491; x=1729623491;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jfRzDBKygKvxCl+MnO+GjTDOLBtOdkySu7nZa6XOIwI=;
+  b=kpJfEVdrj4Lrrwwe6FaCiAtul2vI5hxMxxDJmWHS3x5QVp9lijD2kVre
+   7L9fkbwFOESV6gt4eMO/jqcbrWnZerjSNOHMXuCB4VCw0pb3OrFdtH/5i
+   ORhjckzQkyWxeLWKzvk3vggyJhcmj+dhYeSMClrfTNg72gmufpGF4NmAy
+   XPGstctKOD3Tb+HXegkHXtxDb88xlqELilpc0T43tyoHEO8zjqmqFTGHq
+   4lVJ9uKbu6uYcthsAbVHfZVrTgyuS78PFbK+zPU9zR83fypckgEACi7Jt
+   DXZ6ETMm2n6178DcXVuYZ3ZXGGiM8E3VKUS7RticGq0QL0pkiNQrtY+J7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="390791172"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="390791172"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 11:58:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="931781013"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="931781013"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 23 Oct 2023 11:58:07 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qv07p-0007AX-0n;
+        Mon, 23 Oct 2023 18:58:05 +0000
+Date:   Tue, 24 Oct 2023 02:57:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ivan Vecera <ivecera@redhat.com>, netdev@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        Jacob Keller <jacob.e.keller@intel.com>, mschmidt@redhat.com,
+        dacampbe@redhat.com, poros@redhat.com
+Subject: Re: [PATCH iwl-next 2/3] i40e: Add other helpers to check version of
+ running firmware and AQ API
+Message-ID: <202310240231.6eF5YKB4-lkp@intel.com>
+References: <20231023162928.245583-3-ivecera@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D3:EE_|CO6PR12MB5395:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8ab46b80-53df-4919-ac57-08dbd3f9dddb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rTsBqNN61u+gx0IikompVnOSi2uf7Q+c0nDi+uq8vO8sGc72/Wc0zMzSGwnZzN0DW1g8B8dhovbnVLIkDy3fFwrYhBZ+FVHwnwe2nultyY6qtWvH1ko+AxQSt5Xyq38tZ8VtjB6J/NoJ1pLpelFnblpTyy+cLnTumEsuEHWW6XzW6iKYPIOUsRSAHTlzy6CDmgess6y8hCb1wpV95d0ppJmbe6F5faGEMVFBpqChgyo5onWWvltHNCfqR/Lo+ABBaoYsp8UVAklvca8Z0cbUkyEglGzI/LkaSs4YLxnmTvysHtm1fWdbabX4Q6bSiGSQzrGtuOBPG+bLC4mFzKkhPvOEQ17rvwXNkvFz42GqCwRksmtvW/bYn0GzrMJgW8hPHih/9nYJvCKpDCHvBxsKiGpBHbQ+ghkUhdaatBJs0De0+7W3bE7av5o6+3gDROaPe9mEUPAUWLkN3A4L0HWz5AzDB32nFILyB9BvxqGl3d5W+/uYtHWVq9ZFPutYoodHXX2EkrkUIZH53j3+tz2x5srfMM28qRAvbvJSOFMldjrzageaXMjBtv0do7mNccWOxPa15VlXCbWGgsXZzf9Qzy9Dy0cMtCNt1uvck+YHaAXvBk/ziuMpxh2LEuTpDa4MYQQ37ViW8jdylCBJGkYvP9QuVJJGe3lYRb5xL+g21LqgF8PguMCW9RuM+jAxUy5IrPPce3BhGDJZUMzjoQJpr2+jhIbX8qrEPb+ZHwRDLgC3p05BD+528cIBpR+p2cuh0LESIkcWW9jyTXPkNICWsaAwWfWafMCdXsk2S5b3QeB3nlodwKzSHAHmJjDZ1A6z
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(396003)(346002)(376002)(230922051799003)(1800799009)(82310400011)(186009)(451199024)(64100799003)(40470700004)(36840700001)(46966006)(70206006)(70586007)(40460700003)(110136005)(316002)(54906003)(2906002)(966005)(478600001)(36756003)(86362001)(40480700001)(82740400003)(7696005)(7636003)(47076005)(26005)(356005)(5660300002)(83380400001)(1076003)(4326008)(8676002)(8936002)(336012)(426003)(2616005)(41300700001)(36860700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 18:57:12.4598
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ab46b80-53df-4919-ac57-08dbd3f9dddb
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D3.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5395
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023162928.245583-3-ivecera@redhat.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the conversion in the following link:
-https://lore.kernel.org/linux-iommu/20231020135501.GG3952@nvidia.com/
+Hi Ivan,
 
-The enforce_cache_coherency should be set/enforced in the hwpt allocation
-routine. The iommu driver in its attach_dev() op should decide whether to
-reject or not a device that doesn't match with the configuration of cache
-coherency. Drop the enforce_cache_coherency piece in the attach/replace()
-and move the remaining "num_devices" piece closer to the refcount that is
-using it.
+kernel test robot noticed the following build warnings:
 
-Accordingly drop its function prototype in the header and mark it static.
-Also add some extra comments to clarify the expected behaviors.
+[auto build test WARNING on tnguy-next-queue/dev-queue]
 
-Suggested-by: Kevin Tian <kevin.tian@intel.com>
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
----
-Changelog
-v3:
- * Reworked the first line of the added commets.
-v2: https://lore.kernel.org/all/20231023035733.27378-1-nicolinc@nvidia.com/
- * Dropped "fixes" tags and merged two patches into one (Jason)
- * Added comments to the remaining enforce_cache_coherency call (Jason)
-   [Please feel free to rephrase, or let me know what to change.]
- * Replace "num_devices++" with list_for_each_entry (Baolu)
-v1: https://lore.kernel.org/all/cover.1697848510.git.nicolinc@nvidia.com/
+url:    https://github.com/intel-lab-lkp/linux/commits/Ivan-Vecera/i40e-Move-i40e_is_aq_api_ver_ge-helper/20231024-003221
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue.git dev-queue
+patch link:    https://lore.kernel.org/r/20231023162928.245583-3-ivecera%40redhat.com
+patch subject: [PATCH iwl-next 2/3] i40e: Add other helpers to check version of running firmware and AQ API
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231024/202310240231.6eF5YKB4-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231024/202310240231.6eF5YKB4-lkp@intel.com/reproduce)
 
- drivers/iommu/iommufd/device.c          | 20 ++------------------
- drivers/iommu/iommufd/hw_pagetable.c    |  9 ++++++++-
- drivers/iommu/iommufd/iommufd_private.h |  1 -
- 3 files changed, 10 insertions(+), 20 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310240231.6eF5YKB4-lkp@intel.com/
 
-diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
-index 2a41fd2b6ef8..0a8867487508 100644
---- a/drivers/iommu/iommufd/device.c
-+++ b/drivers/iommu/iommufd/device.c
-@@ -337,13 +337,6 @@ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
- 		goto err_unlock;
- 	}
- 
--	/* Try to upgrade the domain we have */
--	if (idev->enforce_cache_coherency) {
--		rc = iommufd_hw_pagetable_enforce_cc(hwpt);
--		if (rc)
--			goto err_unlock;
--	}
--
- 	rc = iopt_table_enforce_dev_resv_regions(&hwpt->ioas->iopt, idev->dev,
- 						 &idev->igroup->sw_msi_start);
- 	if (rc)
-@@ -413,8 +406,8 @@ iommufd_device_do_replace(struct iommufd_device *idev,
- {
- 	struct iommufd_group *igroup = idev->igroup;
- 	struct iommufd_hw_pagetable *old_hwpt;
--	unsigned int num_devices = 0;
- 	struct iommufd_device *cur;
-+	unsigned int num_devices;
- 	int rc;
- 
- 	mutex_lock(&idev->igroup->lock);
-@@ -429,16 +422,6 @@ iommufd_device_do_replace(struct iommufd_device *idev,
- 		return NULL;
- 	}
- 
--	/* Try to upgrade the domain we have */
--	list_for_each_entry(cur, &igroup->device_list, group_item) {
--		num_devices++;
--		if (cur->enforce_cache_coherency) {
--			rc = iommufd_hw_pagetable_enforce_cc(hwpt);
--			if (rc)
--				goto err_unlock;
--		}
--	}
--
- 	old_hwpt = igroup->hwpt;
- 	if (hwpt->ioas != old_hwpt->ioas) {
- 		list_for_each_entry(cur, &igroup->device_list, group_item) {
-@@ -465,6 +448,7 @@ iommufd_device_do_replace(struct iommufd_device *idev,
- 
- 	igroup->hwpt = hwpt;
- 
-+	num_devices = list_count_nodes(&igroup->device_list);
- 	/*
- 	 * Move the refcounts held by the device_list to the new hwpt. Retain a
- 	 * refcount for this thread as the caller will free it.
-diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
-index fbfab638efea..2c55b808eed5 100644
---- a/drivers/iommu/iommufd/hw_pagetable.c
-+++ b/drivers/iommu/iommufd/hw_pagetable.c
-@@ -42,7 +42,7 @@ void iommufd_hw_pagetable_abort(struct iommufd_object *obj)
- 	iommufd_hw_pagetable_destroy(obj);
- }
- 
--int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt)
-+static int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt)
- {
- 	if (hwpt->enforce_cache_coherency)
- 		return 0;
-@@ -116,6 +116,13 @@ iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
- 	 * doing any maps. It is an iommu driver bug to report
- 	 * IOMMU_CAP_ENFORCE_CACHE_COHERENCY but fail enforce_cache_coherency on
- 	 * a new domain.
-+	 *
-+	 * The cache coherency mode must be configured here and unchanged later.
-+	 * Note that a HWPT (non-CC) created for a device (non-CC) can be later
-+	 * reused by another device (either non-CC or CC). However, A HWPT (CC)
-+	 * created for a device (CC) cannot be reused by another device (non-CC)
-+	 * but only devices (CC). Instead user space in this case would need to
-+	 * allocate a separate HWPT (non-CC).
- 	 */
- 	if (idev->enforce_cache_coherency) {
- 		rc = iommufd_hw_pagetable_enforce_cc(hwpt);
-diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
-index 1cc429a5227b..44828bba9e2c 100644
---- a/drivers/iommu/iommufd/iommufd_private.h
-+++ b/drivers/iommu/iommufd/iommufd_private.h
-@@ -266,7 +266,6 @@ struct iommufd_hw_pagetable *
- iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
- 			   struct iommufd_device *idev, u32 flags,
- 			   bool immediate_attach);
--int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt);
- int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
- 				struct iommufd_device *idev);
- struct iommufd_hw_pagetable *
+All warnings (new ones prefixed by >>):
 
-base-commit: dc7ce51ff88569b95d8764b0cf76405511f693d5
+   In file included from drivers/net/ethernet/intel/i40e/i40e_dcb.h:7,
+                    from drivers/net/ethernet/intel/i40e/i40e.h:15,
+                    from drivers/net/ethernet/intel/i40e/i40e_main.c:13:
+>> drivers/net/ethernet/intel/i40e/i40e_type.h:632:1: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
+     632 | static bool inline i40e_is_fw_ver_ge(struct i40e_hw *hw, u16 maj, u16 min)
+         | ^~~~~~
+   drivers/net/ethernet/intel/i40e/i40e_type.h:646:1: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
+     646 | static bool inline i40e_is_fw_ver_lt(struct i40e_hw *hw, u16 maj, u16 min)
+         | ^~~~~~
+   drivers/net/ethernet/intel/i40e/i40e_type.h:659:1: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
+     659 | static bool inline i40e_is_fw_ver_eq(struct i40e_hw *hw, u16 maj, u16 min)
+         | ^~~~~~
+--
+   In file included from drivers/net/ethernet/intel/i40e/i40e_dcb.h:7,
+                    from drivers/net/ethernet/intel/i40e/i40e.h:15,
+                    from drivers/net/ethernet/intel/i40e/i40e_ptp.c:6:
+>> drivers/net/ethernet/intel/i40e/i40e_type.h:632:1: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
+     632 | static bool inline i40e_is_fw_ver_ge(struct i40e_hw *hw, u16 maj, u16 min)
+         | ^~~~~~
+   drivers/net/ethernet/intel/i40e/i40e_type.h:646:1: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
+     646 | static bool inline i40e_is_fw_ver_lt(struct i40e_hw *hw, u16 maj, u16 min)
+         | ^~~~~~
+   drivers/net/ethernet/intel/i40e/i40e_type.h:659:1: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
+     659 | static bool inline i40e_is_fw_ver_eq(struct i40e_hw *hw, u16 maj, u16 min)
+         | ^~~~~~
+   drivers/net/ethernet/intel/i40e/i40e_ptp.c: In function 'i40e_ptp_init':
+   drivers/net/ethernet/intel/i40e/i40e_ptp.c:1353:27: warning: '%s' directive output may be truncated writing up to 287 bytes into a region of size 64 [-Wformat-truncation=]
+    1353 |                          "%s", sdp_desc[i].name);
+         |                           ^~
+   In function 'i40e_init_pin_config',
+       inlined from 'i40e_ptp_create_clock' at drivers/net/ethernet/intel/i40e/i40e_ptp.c:1392:13,
+       inlined from 'i40e_ptp_init' at drivers/net/ethernet/intel/i40e/i40e_ptp.c:1497:8:
+   drivers/net/ethernet/intel/i40e/i40e_ptp.c:1351:17: note: 'snprintf' output between 1 and 288 bytes into a destination of size 64
+    1351 |                 snprintf(pf->ptp_caps.pin_config[i].name,
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    1352 |                          sizeof(pf->ptp_caps.pin_config[i].name),
+         |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    1353 |                          "%s", sdp_desc[i].name);
+         |                          ~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/inline +632 drivers/net/ethernet/intel/i40e/i40e_type.h
+
+   623	
+   624	/**
+   625	 * i40e_is_fw_ver_ge
+   626	 * @hw: pointer to i40e_hw structure
+   627	 * @maj: API major value to compare
+   628	 * @min: API minor value to compare
+   629	 *
+   630	 * Assert whether current firmware version is greater/equal than provided.
+   631	 **/
+ > 632	static bool inline i40e_is_fw_ver_ge(struct i40e_hw *hw, u16 maj, u16 min)
+   633	{
+   634	        return (hw->aq.fw_maj_ver > maj ||
+   635	                (hw->aq.fw_maj_ver == maj && hw->aq.fw_min_ver >= min));
+   636	}
+   637	
+
 -- 
-2.42.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
