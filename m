@@ -2,175 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 682E67D3F70
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7B07D3F6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbjJWSnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 14:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37114 "EHLO
+        id S229957AbjJWSmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 14:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjJWSnB (ORCPT
+        with ESMTP id S229451AbjJWSmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 14:43:01 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2089.outbound.protection.outlook.com [40.107.220.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A22A102;
-        Mon, 23 Oct 2023 11:42:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GGTQuSvvyUcXmWQbIABwi2+rOQCli9Wl7mch20KsN2qXuCUHaVNG16J/88Tmhbgd5r3PfhZFg3o+WauNw2+A5AA7pKVUKt550HA9hUOFJEdrwhMOrrA1YF17iRMakX9JRWuj2JjNjQ8HY0nj6/XMk1yD41A9yFPTuw2hiPKGy/LKkMUCHQrn7egUGQOjDjs9jbldRoDEWt8fKHWqNt4DSdLxtPvHhVc5UWyqfTbDRgJXoia3fzng52Eeuahly5l8z52iwcsfjnzmvwdQ6CF8Dl7nIex17XyYB7irEp/y1bXCXTnw/aYOQMzi4r67HYGRbFi/ldDNKur3j0LH0lHRCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fLnuRFQFCJySvXf7B0okLa7Fsc2gRkjkvEcoMl9eBzs=;
- b=ThuhBAyzHEeXpJtrVdeQPR1jikLlyKFxLHltCPqXDeBPVtc/xBzsJYWZaFlIxs60Zdp6DVYe+4XuFQoU/XX6yVeHRNO+wNs0A33iPo4ZiuR+CmUgjSV4Wj0ZOH1wIonrd7fIbL7cytZ8u7hVcuzW5CqkhPdXq7X/G6YNYdAyes/pHwQc96+68ZyjnBH6mOJLQAfOeDNa64VuJEU4LWyAAp8KMTcNIht1ihub3k3iuOq9Xf0EZWGc/uFgy2B2v9933AKDmes7QfCjp6Hm3ZbTCddSrcfNkcZ16PoezLs7rJLkCpWTksAvWk4Dl+82OXwCRu0ZcJazXUys+k98j38ZOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fLnuRFQFCJySvXf7B0okLa7Fsc2gRkjkvEcoMl9eBzs=;
- b=lbhULYrWYW1tkKLE2yQ3KYmuM4R3EREPd0Ay85LEiGFYnSwXaR9hVC1t7pRLksrj8qA5/zifS+Myzl1aLTK9DHPAWNrNE7/rphXDvm/O8LQK5dwIJVDdLp/uNT8WROG8cqfEqfJ1ah+/gYgVjkIhuFvIrLZ+rdvpPD8AL473KgG71p6cib2IN58YCtAU8ZKlU/af/18w8a2sW+jIUhvzUjg/t6bTHKaGYWsIm5Jk3iUZ+AZnAHIrmLwIWli+6hKfbwqNDGku/LCBnbTeAYOxrxVUQA4vmL806TYJMmxInYy11gZV2ter44wToIOT5zr3AfDyzCVPX1g3TTzFYZ2m1g==
-Received: from BL1PR13CA0367.namprd13.prod.outlook.com (2603:10b6:208:2c0::12)
- by SA1PR12MB8644.namprd12.prod.outlook.com (2603:10b6:806:384::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Mon, 23 Oct
- 2023 18:42:57 +0000
-Received: from BL02EPF0001A101.namprd05.prod.outlook.com
- (2603:10b6:208:2c0:cafe::ab) by BL1PR13CA0367.outlook.office365.com
- (2603:10b6:208:2c0::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.14 via Frontend
- Transport; Mon, 23 Oct 2023 18:42:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- BL02EPF0001A101.mail.protection.outlook.com (10.167.241.132) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.15 via Frontend Transport; Mon, 23 Oct 2023 18:42:56 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 23 Oct
- 2023 11:42:38 -0700
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 23 Oct 2023 11:42:38 -0700
-Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com
- (10.126.190.182) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Mon, 23 Oct 2023 11:42:37 -0700
-Date:   Mon, 23 Oct 2023 11:42:36 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "Martins, Joao" <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v4 08/17] iommufd: Always setup MSI and anforce cc on
- kernel-managed domains
-Message-ID: <ZTa+nDbHnXCmClm5@Asurada-Nvidia>
-References: <ZS7nb+mKanGFXhZY@Asurada-Nvidia>
- <20231018165113.GB3952@nvidia.com>
- <BN9PR11MB5276B9994AD06E91E07B7EF08CD4A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20231019235350.GY3952@nvidia.com>
- <BN9PR11MB5276A64DA68586AEFB6561148CDBA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20231020135501.GG3952@nvidia.com>
- <ZTLOAQK/KcjAJb3y@Asurada-Nvidia>
- <20231021163804.GL3952@nvidia.com>
- <ZTWabb6AbOTFNgaw@Asurada-Nvidia>
- <BL1PR11MB527173DCAFA9DD1D9270A8D78CD8A@BL1PR11MB5271.namprd11.prod.outlook.com>
+        Mon, 23 Oct 2023 14:42:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD96FD
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:42:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C0A6C433C8;
+        Mon, 23 Oct 2023 18:42:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698086569;
+        bh=hrmsA8N5KMYG1BNaGTU3gWjxtFW+5h+S/xOgcGAddMc=;
+        h=From:Date:Subject:To:Cc:From;
+        b=oA2afsj7jrVccWVEXOEttY1lFuGzquYWrvW6NgzGal+6Cw/a1+rz2Lx4Yiel9S4lg
+         egCsIcNoLBB2SVQWXleFMDXbuy7aoNtHYWInzYPnnFeqMYELDb/kZK8VEsjDMYPzoZ
+         ufmYBljwGkguIhusb8V/P5m7FgS8qld9+x7eG//H+CECti89D34N2irPJmsBRvVw6n
+         Eyr+rqcgqADK5CY1O56ADGth0bn3wDBTE28cW3t+qTaGte2JPKWC40lVuDKzZa3Tgw
+         FLupM9NpUbqub3go0VBpTNIDKThiKT7o1IJjE4A1acFo4QV3p/zkR+ndgtP9A0Fa5k
+         uBgWmpQvEqaEw==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Mon, 23 Oct 2023 19:42:45 +0100
+Subject: [PATCH v2] tools/nolibc: Use linux/wait.h rather than duplicating
+ it
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BL1PR11MB527173DCAFA9DD1D9270A8D78CD8A@BL1PR11MB5271.namprd11.prod.outlook.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A101:EE_|SA1PR12MB8644:EE_
-X-MS-Office365-Filtering-Correlation-Id: 66c0ffd0-f117-4214-8ed5-08dbd3f7dfb7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1rfcAI/d/4ijN2x1wOnWArl2Ng17K3CexfrhoF7+HtSe1CzFdZTq86B47nnaTf8xOfSo3Jj9rZorE5FI+96+9FDCgkc5AUYlJXSsaYy5UBch1iyMV9OOSV8JuE3NFQjvzI5yeaLkZGRv/KnDEdHVuK5wqndPfQggIB2grVUn266QiCv19qsH8ZsVKNms82qeFh/KZwrJRxagK4tiy8e37qMQsKN2McSmn2rVVp43+nqyIgG/qzcqHwDJ2hYT6kLJyN632yDWqomp2yL1yd60il9gABld+Q6/AArHZ4SORqgmw+7QNam5d4ZSSOw54GwyYnl8IBSHSVM0woaDSjLjXIPaONT3VPxlecndImMf4L9PmUPN+pzNKNzbvUKZ0dLjgGXVouCVKG2sboVZzg0DQnmsMeIY1NluNCBEkbCR5Rnb95aNaNCJdflbreP8oUheVaHdYffDlJExd57ZaEF29Ea1XxaiPhoIJsVIxvp3xJuut3Q3AKFa/VwTwp/LfKtI7G3g9LFsbWR1fvAceLXtEX/cOhjzoJPb+QIzi7F9y8Iu0E/0KFFhN3MREsMxZM9iNV/7kVbIPpBmoGTbU9oZJR2d5xJLD6Aw0pTbm9N5N7iRhQHbG+Vd5rnPSwaQrQN/kqOV2YlKrYNsJU4PVOkJLPesGpFJF1K5I99Yx6+QL6EVkSf/sj9+v4mCC6ahrMSZ924qs0qmadm2I4Hc1vVenlnfCVRLheGxnso2FUhZtUn6akNU62ppSDdZ9J5CGQeS8DSbuhhp5F6LWlc5JNM/OCj4/56AQWHYqccJ5WLiO8w=
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(39860400002)(346002)(136003)(230922051799003)(186009)(451199024)(82310400011)(64100799003)(1800799009)(40470700004)(46966006)(36840700001)(26005)(33716001)(55016003)(36860700001)(2906002)(41300700001)(40460700003)(7416002)(5660300002)(86362001)(8936002)(8676002)(4326008)(6916009)(7636003)(478600001)(82740400003)(70206006)(70586007)(316002)(356005)(54906003)(83380400001)(40480700001)(966005)(47076005)(9686003)(426003)(336012)(67856001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 18:42:56.4757
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66c0ffd0-f117-4214-8ed5-08dbd3f7dfb7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A101.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8644
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231023-nolibc-waitpid-flags-v2-1-b09d096f091f@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAKW+NmUC/4WNQQ6CMBBFr0Jm7Zi2aIquuIdhUehQJpKWtKRqC
+ He3cgGX7yX//Q0SRaYE92qDSJkTB19AnSoYJuMdIdvCoISqpVACfZi5H/BleF3Y4jgbl7ARZhD
+ 6avqbbqBMl0gjv4/soys8cVpD/BwvWf7sn2CWKLGRtRZaWUPy0j4peprPITro9n3/AmwsCBq5A
+ AAA
+To:     Willy Tarreau <w@1wt.eu>,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1413; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=hrmsA8N5KMYG1BNaGTU3gWjxtFW+5h+S/xOgcGAddMc=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlNr6nyKLc40k46owa7+65dXV4UeF+5KVF7rh0qW3E
+ +8JBQ0iJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZTa+pwAKCRAk1otyXVSH0BioB/
+ 9W1W7Ji6jQaGClhyqyR2HzbajM+VdQ48VO/YSCx4FrGZIfmvKCL1cZypwBrKr27hMSuiMsXLp3WtFC
+ zEWBoH1p3r7qLZ6fJGWk6urqaZexXElp99Wq4KwsHuW125Sk7uywOmpoamnQLZsmuAvXfkFjAsrYmB
+ h1Jup9MZuP6S21wTAwFFjYBDO9H9WYaBBguFEK8tmBCKhMIBQHJG+sEUDFB71PQiQmBPnbFitCOix0
+ 2Aq6zbwCjk+IbJ8JcnbX9IgbNMlqM90nUhZ0yHEpRtYbdkmDhP2+JPavl7IJS9m8PHH+yboxZzBkXd
+ xzStTL42eluduDev4NfQ4OpvYXbVvm
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 02:53:20AM +0000, Tian, Kevin wrote:
-> > From: Nicolin Chen <nicolinc@nvidia.com>
-> > Sent: Monday, October 23, 2023 8:18 AM
-> >
-> > On Sat, Oct 21, 2023 at 01:38:04PM -0300, Jason Gunthorpe wrote:
-> > > On Fri, Oct 20, 2023 at 11:59:13AM -0700, Nicolin Chen wrote:
-> > > > On Fri, Oct 20, 2023 at 10:55:01AM -0300, Jason Gunthorpe wrote:
-> > > > > On Fri, Oct 20, 2023 at 02:43:58AM +0000, Tian, Kevin wrote:
-> > > > >
-> > > > > > But the user shouldn't assume such explicit consistency since it's not
-> > > > > > defined in our uAPI. All we defined is that the attaching may
-> > > > > > fail due to incompatibility for whatever reason then the user can
-> > > > > > always try creating a new hwpt for the to-be-attached device. From
-> > > > > > this regard I don't see providing consistency of result is
-> > > > > > necessary. 😊
-> > > > >
-> > > > > Anyhow, OK, lets add a comment summarizing your points and remove
-> > the
-> > > > > cc upgrade at attach time (sorry Nicolin/Yi!)
-> > > >
-> > > > Ack. I will send a small removal series. I assume it should CC
-> > > > stable tree also?
-> > >
-> > > No, it seems more like tidying that fixing a functional issue, do I
-> > > misunderstand?
-> >
-> > Hmm. Maybe the misunderstanding is mine -- Kevin was asking if
-> > it was already a bug and you answered yes:
-> > https://lore.kernel.org/linux-iommu/20231016115736.GP3952@nvidia.com/
-> >
-> 
-> currently intel-iommu driver already rejects 1) enforcing CC on
-> a domain which is already attached to non-CC device and
-> 2) attaching a non-CC device to a domain which has enforce_cc.
-> 
-> so there is no explorable bug to fix in stable tree.
+Linux defines a few custom flags for waitpid() which aren't currently
+provided by nolibc, make them available to nolibc based programs by just
+including linux/wait.h where they are defined instead of defining our
+own copy of the flags.
 
-I see. Thanks!
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Changes in v2:
+- Use linux/wait.h rather than defining things locally.
+- Link to v1: https://lore.kernel.org/r/20231020-nolibc-waitpid-flags-v1-1-8137072dae14@kernel.org
+---
+ tools/include/nolibc/types.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/tools/include/nolibc/types.h b/tools/include/nolibc/types.h
+index 8cfc4c860fa4..ad0ddaa89e50 100644
+--- a/tools/include/nolibc/types.h
++++ b/tools/include/nolibc/types.h
+@@ -12,6 +12,7 @@
+ #include <linux/reboot.h> /* for LINUX_REBOOT_* */
+ #include <linux/stat.h>
+ #include <linux/time.h>
++#include <linux/wait.h>
+ 
+ 
+ /* Only the generic macros and types may be defined here. The arch-specific
+@@ -108,9 +109,6 @@
+ #define WTERMSIG(status)    ((status) & 0x7f)
+ #define WIFSIGNALED(status) ((status) - 1 < 0xff)
+ 
+-/* waitpid() flags */
+-#define WNOHANG      1
+-
+ /* standard exit() codes */
+ #define EXIT_SUCCESS 0
+ #define EXIT_FAILURE 1
+
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20231020-nolibc-waitpid-flags-80ac075ab978
+
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
+
