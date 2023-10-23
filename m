@@ -2,200 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A18F97D2E6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFEFA7D2E7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbjJWJeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
+        id S233067AbjJWJfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjJWJeI (ORCPT
+        with ESMTP id S233242AbjJWJfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:34:08 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BA9E5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:34:06 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qurJi-0000DH-0j; Mon, 23 Oct 2023 11:33:46 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qurJh-003fwz-4Y; Mon, 23 Oct 2023 11:33:45 +0200
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qurJh-009wdz-03;
-        Mon, 23 Oct 2023 11:33:45 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: [PATCH net-next v7 9/9] net: dsa: microchip: Ensure Stable PME Pin State for Wake-on-LAN
-Date:   Mon, 23 Oct 2023 11:33:43 +0200
-Message-Id: <20231023093343.2370248-10-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231023093343.2370248-1-o.rempel@pengutronix.de>
-References: <20231023093343.2370248-1-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 23 Oct 2023 05:35:03 -0400
+Received: from smtp02.aussiebb.com.au (smtp02.aussiebb.com.au [IPv6:2403:5800:3:25::1002])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18E41722;
+        Mon, 23 Oct 2023 02:34:24 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by smtp02.aussiebb.com.au (Postfix) with ESMTP id 387E710181C;
+        Mon, 23 Oct 2023 20:34:17 +1100 (AEDT)
+X-Virus-Scanned: Debian amavisd-new at smtp02.aussiebb.com.au
+Received: from smtp02.aussiebb.com.au ([127.0.0.1])
+        by localhost (smtp02.aussiebb.com.au [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RmsSVixHbriO; Mon, 23 Oct 2023 20:34:17 +1100 (AEDT)
+Received: by smtp02.aussiebb.com.au (Postfix, from userid 116)
+        id 2E13F1026C5; Mon, 23 Oct 2023 20:34:17 +1100 (AEDT)
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
+Received: from donald.themaw.com (159-196-82-144.9fc452.per.static.aussiebb.net [159.196.82.144])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: ian146@aussiebb.com.au)
+        by smtp02.aussiebb.com.au (Postfix) with ESMTPSA id F363910181C;
+        Mon, 23 Oct 2023 20:34:14 +1100 (AEDT)
+From:   Ian Kent <raven@themaw.net>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Bill O'Donnell <bodonnel@redhat.com>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        autofs mailing list <autofs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>, lkft-triage@lists.linaro.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Functional Testing <lkft@linaro.org>
+Subject: [PATCH] autofs: fix add autofs_parse_fd()
+Date:   Mon, 23 Oct 2023 17:33:59 +0800
+Message-ID: <20231023093359.64265-1-raven@themaw.net>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ensures a stable PME (Power Management Event) pin state by disabling PME
-on system start and enabling it on shutdown only if WoL (Wake-on-LAN) is
-configured. This is needed to avoid issues with some PMICs (Power
-Management ICs).
+We are seeing systemd hang on its autofs direct mount at
+/proc/sys/fs/binfmt_misc.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Historically this was due to a mismatch in the communication structure
+size between a 64 bit kernel and a 32 bit user space and was fixed by
+making the pipe communication record oriented.
+
+During autofs v5 development I decided to stay with the existing usage
+instead of changing to a packed structure for autofs <=> user space
+communications which turned out to be a mistake on my part.
+
+Problems arose and they were fixed by allowing for the 64 bit to 32
+bit size difference in the automount(8) code.
+
+Along the way systemd started to use autofs and eventually encountered
+this problem too. systemd refused to compensate for the length
+difference insisting it be fixed in the kernel. Fortunately Linus
+implemented the packetized pipe which resolved the problem in a
+straight forward and simple way.
+
+In the autofs mount api conversion series I inadvertatly dropped the
+packet pipe flag settings when adding the autofs_parse_fd() function.
+This patch fixes that omission.
+
+Fixes: 546694b8f658 ("autofs: add autofs_parse_fd()")
+Signed-off-by: Ian Kent <raven@themaw.net>
+Cc: Bill O'Donnell <bodonnel@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Anders Roxell <anders.roxell@linaro.org>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Reported-by: Anders Roxell <anders.roxell@linaro.org>
 ---
- drivers/net/dsa/microchip/ksz9477.c    | 46 ++++++++++++++++++++++++++
- drivers/net/dsa/microchip/ksz9477.h    |  1 +
- drivers/net/dsa/microchip/ksz_common.c |  8 ++++-
- drivers/net/dsa/microchip/ksz_common.h |  1 +
- 4 files changed, 55 insertions(+), 1 deletion(-)
+ fs/autofs/autofs_i.h | 13 +++++++++----
+ fs/autofs/inode.c    |  2 ++
+ 2 files changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index 81a428f3c824..b59fd43722c4 100644
---- a/drivers/net/dsa/microchip/ksz9477.c
-+++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -197,6 +197,46 @@ int ksz9477_set_wol(struct ksz_device *dev, int port,
+diff --git a/fs/autofs/autofs_i.h b/fs/autofs/autofs_i.h
+index 244f18cdf23c..8c1d587b3eef 100644
+--- a/fs/autofs/autofs_i.h
++++ b/fs/autofs/autofs_i.h
+@@ -221,15 +221,20 @@ static inline int autofs_check_pipe(struct file *pipe)
  	return 0;
  }
  
-+/**
-+ * ksz9477_wol_pre_shutdown - Prepares the switch device for shutdown while
-+ *                            considering Wake-on-LAN (WoL) settings.
-+ * @dev: The switch device structure.
-+ * @wol_enabled: Pointer to a boolean which will be set to true if WoL is
-+ *               enabled on any port.
-+ *
-+ * This function prepares the switch device for a safe shutdown while taking
-+ * into account the Wake-on-LAN (WoL) settings on the user ports. It updates
-+ * the wol_enabled flag accordingly to reflect whether WoL is active on any
-+ * port.
-+ */
-+void ksz9477_wol_pre_shutdown(struct ksz_device *dev, bool *wol_enabled)
-+{
-+	struct dsa_port *dp;
-+	int ret;
-+
-+	*wol_enabled = false;
-+
-+	if (!dev->wakeup_source)
-+		return;
-+
-+	dsa_switch_for_each_user_port(dp, dev->ds) {
-+		u8 pme_ctrl = 0;
-+
-+		ret = ksz_pread8(dev, dp->index, REG_PORT_PME_CTRL, &pme_ctrl);
-+		if (!ret && pme_ctrl)
-+			*wol_enabled = true;
-+
-+		/* make sure there are no pending wake events which would
-+		 * prevent the device from going to sleep/shutdown.
-+		 */
-+		ksz9477_handle_wake_reason(dev, dp->index);
-+	}
-+
-+	/* Now we are save to enable PME pin. */
-+	if (*wol_enabled)
-+		ksz_write8(dev, REG_SW_PME_CTRL, PME_ENABLE);
+-static inline int autofs_prepare_pipe(struct file *pipe)
++static inline void autofs_set_packet_pipe_flags(struct file *pipe)
+ {
+-	int ret = autofs_check_pipe(pipe);
+-	if (ret < 0)
+-		return ret;
+ 	/* We want a packet pipe */
+ 	pipe->f_flags |= O_DIRECT;
+ 	/* We don't expect -EAGAIN */
+ 	pipe->f_flags &= ~O_NONBLOCK;
 +}
 +
- static int ksz9477_wait_vlan_ctrl_ready(struct ksz_device *dev)
- {
- 	unsigned int val;
-@@ -1277,6 +1317,12 @@ int ksz9477_setup(struct dsa_switch *ds)
- 	/* enable global MIB counter freeze function */
- 	ksz_cfg(dev, REG_SW_MAC_CTRL_6, SW_MIB_COUNTER_FREEZE, true);
- 
-+	/* Make sure PME (WoL) is not enabled. If requested, it will be
-+	 * enabled by ksz9477_wol_pre_shutdown(). Otherwise, some PMICs do not
-+	 * like PME events changes before shutdown.
-+	 */
-+	ksz_write8(dev, REG_SW_PME_CTRL, 0);
-+
++static inline int autofs_prepare_pipe(struct file *pipe)
++{
++	int ret = autofs_check_pipe(pipe);
++	if (ret < 0)
++		return ret;
++	autofs_set_packet_pipe_flags(pipe);
  	return 0;
  }
  
-diff --git a/drivers/net/dsa/microchip/ksz9477.h b/drivers/net/dsa/microchip/ksz9477.h
-index fa8d0318b437..ce1e656b800b 100644
---- a/drivers/net/dsa/microchip/ksz9477.h
-+++ b/drivers/net/dsa/microchip/ksz9477.h
-@@ -62,6 +62,7 @@ void ksz9477_get_wol(struct ksz_device *dev, int port,
- 		     struct ethtool_wolinfo *wol);
- int ksz9477_set_wol(struct ksz_device *dev, int port,
- 		    struct ethtool_wolinfo *wol);
-+void ksz9477_wol_pre_shutdown(struct ksz_device *dev, bool *wol_enabled);
+diff --git a/fs/autofs/inode.c b/fs/autofs/inode.c
+index 6d2e01c9057d..a3d62acc293a 100644
+--- a/fs/autofs/inode.c
++++ b/fs/autofs/inode.c
+@@ -177,6 +177,8 @@ static int autofs_parse_fd(struct fs_context *fc, struct autofs_sb_info *sbi,
+ 		return -EBADF;
+ 	}
  
- int ksz9477_port_acl_init(struct ksz_device *dev, int port);
- void ksz9477_port_acl_free(struct ksz_device *dev, int port);
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 7d0c7a32b8d7..ef4235ec1ae2 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -321,6 +321,7 @@ static const struct ksz_dev_ops ksz9477_dev_ops = {
- 	.phylink_mac_link_up = ksz9477_phylink_mac_link_up,
- 	.get_wol = ksz9477_get_wol,
- 	.set_wol = ksz9477_set_wol,
-+	.wol_pre_shutdown = ksz9477_wol_pre_shutdown,
- 	.config_cpu_port = ksz9477_config_cpu_port,
- 	.tc_cbs_set_cinc = ksz9477_tc_cbs_set_cinc,
- 	.enable_stp_addr = ksz9477_enable_stp_addr,
-@@ -3857,7 +3858,12 @@ EXPORT_SYMBOL(ksz_switch_alloc);
-  */
- void ksz_switch_shutdown(struct ksz_device *dev)
- {
--	if (dev->dev_ops->reset)
-+	bool wol_enabled = false;
++	autofs_set_packet_pipe_flags(pipe);
 +
-+	if (dev->dev_ops->wol_pre_shutdown)
-+		dev->dev_ops->wol_pre_shutdown(dev, &wol_enabled);
-+
-+	if (dev->dev_ops->reset && !wol_enabled)
- 		dev->dev_ops->reset(dev);
+ 	if (sbi->pipe)
+ 		fput(sbi->pipe);
  
- 	dsa_switch_shutdown(dev->ds);
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index 14b4828f80a1..b7e8a403a132 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -378,6 +378,7 @@ struct ksz_dev_ops {
- 			struct ethtool_wolinfo *wol);
- 	int (*set_wol)(struct ksz_device *dev, int port,
- 		       struct ethtool_wolinfo *wol);
-+	void (*wol_pre_shutdown)(struct ksz_device *dev, bool *wol_enabled);
- 	void (*config_cpu_port)(struct dsa_switch *ds);
- 	int (*enable_stp_addr)(struct ksz_device *dev);
- 	int (*reset)(struct ksz_device *dev);
 -- 
-2.39.2
+2.41.0
 
