@@ -2,134 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE407D277C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 02:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB057D2783
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 02:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232938AbjJWA0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 20:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57650 "EHLO
+        id S232887AbjJWAad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 20:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232910AbjJWA0C (ORCPT
+        with ESMTP id S229574AbjJWAab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 20:26:02 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2087.outbound.protection.outlook.com [40.107.212.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F16DE
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 17:25:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I8tEpAL8gc5RgPml0LjhtISRbDvxFVbnhhilHH8+nDC+bzavZTJneRnprPr6aZd0iuQBgW+3E/ioakKQvITZK3WxK9TDXxO87i3agS0m6N8RZwR97WFEATWtoC5NO+5YfF0ua9LTwJ/uXtYOKouF1U0vSuGJdj14uI2FkPeEM8MoZ+sOwcs1Qi8P6M3nvaPR4sFNC2IlS4kOSE5NFSpki+kmclmCi2l7rhiNsWrDSySw/xiWcQZZayKHcDGkpba5gIoRS1KH6cIUnM9bzFHnMxcRIN05d5OqFdKGOb+eDuUPuUgI9ldsyRbWzqr3FnAGCQxgwCT/LJwNNSRnjrcp5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3qwO1Th6Z+9yoDbPdksweGB5h00UNH3NhiyxfAdWdCQ=;
- b=KUnhnVL5SpQ3uOhS8dPMpp0b/r/KDQBot0Wcz5SrZ6ODb6nmdW2JfU7spGhj1r8D2nhu1QM+sImMxIWplP7bgHaVlDt+h2oMHrJbd2ERx4MuSFhXpTS9vOfA4exmz2g8DSBINLl8Zc/5syn8EtPeytHDAsIjvpe7sADeeNjx4OZv3QxVbkwZMdGwbpdW+qH/urT4BiEydtVWVOF58lE/gzYg7Kbj3jJZBG62UfSlJFKNSdlIKDII/g2AQGNnzi1Fzt4iFmixToflq+pDzN8Osn7O+4+/arUFE3iqZAEInHGZgveAYNG2lLCZWkFFeLOllrKq/o4ZP9vko0oPiXbw5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3qwO1Th6Z+9yoDbPdksweGB5h00UNH3NhiyxfAdWdCQ=;
- b=dP36L40oOWtzw8noyn3Qi8lVHD/OEz7xOIW5Zfbg+WCaGvWsxVHFYsOINO2p0em7WtAKpkWC+cJXQUX8wZ6J3LYZBaXHZsR5s0FxruVO68ReKgm0igQbNY7/0YGtnrfEY/8AMMFU87PlwvK7CyIfjx/1iArZUzupHmSQjiz9uGTPksUR3Rplok/qlwXqTWzR3iWbGF4OvHIVqXkYRW6jCnGhfVqy7OKP40sKqctkUkHURNRqEI9iXxgcBhANXrbkpadY7vLJxWBBzuQ7kud3LBE0bn/SS74wSkQMGT9gAcTKYtOniuZ7dWAu/IsKaNEgK1UWmkEgGpv5cp8OPLzA2Q==
-Received: from MW4P220CA0023.NAMP220.PROD.OUTLOOK.COM (2603:10b6:303:115::28)
- by SA0PR12MB4558.namprd12.prod.outlook.com (2603:10b6:806:72::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Mon, 23 Oct
- 2023 00:25:57 +0000
-Received: from MWH0EPF000989EB.namprd02.prod.outlook.com
- (2603:10b6:303:115:cafe::a0) by MW4P220CA0023.outlook.office365.com
- (2603:10b6:303:115::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33 via Frontend
- Transport; Mon, 23 Oct 2023 00:25:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- MWH0EPF000989EB.mail.protection.outlook.com (10.167.241.138) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.15 via Frontend Transport; Mon, 23 Oct 2023 00:25:57 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sun, 22 Oct
- 2023 17:25:53 -0700
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Sun, 22 Oct 2023 17:25:52 -0700
-Received: from Asurada-Nvidia (10.127.8.14) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Sun, 22 Oct 2023 17:25:51 -0700
-Date:   Sun, 22 Oct 2023 17:25:50 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Baolu Lu <baolu.lu@linux.intel.com>
-CC:     <jgg@nvidia.com>, <kevin.tian@intel.com>, <joro@8bytes.org>,
-        <will@kernel.org>, <robin.murphy@arm.com>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <yi.l.liu@intel.com>
-Subject: Re: [PATCH 1/2] iommufd/device: Drop enforce_cache_coherency in
- iommufd_device_do_replace
-Message-ID: <ZTW9jnyhBNZm8p0+@Asurada-Nvidia>
-References: <cover.1697848510.git.nicolinc@nvidia.com>
- <5593200da9015fee7b2e8195c2998f36148d83de.1697848510.git.nicolinc@nvidia.com>
- <f840af3a-45fe-477e-bd45-2bee95b8c8d5@linux.intel.com>
+        Sun, 22 Oct 2023 20:30:31 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0CAE4;
+        Sun, 22 Oct 2023 17:30:29 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-57bc2c2f13dso1795289eaf.2;
+        Sun, 22 Oct 2023 17:30:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698021029; x=1698625829; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=m6eLSnzZZg7H+GrqfiJCsD1swb5+c3g7YWXl8du2HyA=;
+        b=MFSH30Ne+8ARp5lbO5HEXWCe10WXEMU9SXC2oWtFfZ0nHB6TMqiHqYWrgxP5WcCabS
+         LvoueEueEERps4SS+GIClEAIoI1BfwS1t+LnAxY8LzEou1iQOKAmjk31N3zDWv/OjtZC
+         IYDBAsMoYo5VHv2S0RHwJB27OJZzHDR3L3nCNGTOjbnWBIDIZm9ENK7LKaw9k/VHalQu
+         yiIhdM5M5QaNCsQvGdYJHEWJ0aJvWXs0C1tgR4BHC/06a2WfRP7+3XMUmhGFH0UAgr6Y
+         zj9dSe1SEOCiC3XYuxWBF0Qfqx7jcmx1Ic0sNkxXduf1ie5QB4mP/vRuP/WaSRpEo25g
+         Eudw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698021029; x=1698625829;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m6eLSnzZZg7H+GrqfiJCsD1swb5+c3g7YWXl8du2HyA=;
+        b=iS2gvWwoAa1zfv4Lxe7oZJBaYEOrWDUrEq3vZWWJyG/Mug10SOBLOPKK6XkHdFzvIe
+         r3T10t6ZiJ7HwIjtPNkl0Bpq0vkLCrIDgUL6R41c9awATibtagHh0MkTmntHaizJr4SV
+         l11NsIhQG7JYPJH7J7M2dBIaHVH5xsn5J5lvIyfU9QBQFJYZ2bG0iFCxF6WY9bu3JGRv
+         5mozDIG59d03u7uhN3bqMQlv1wKvpCTSV9CzRe6lTC2bRxG/9RtrBHSaZKhctOz+A+v2
+         9+8WK6FEw/0orrHOuk2zjEmXmmnJ6gd+wysYEzX5EAaiwzpfN2rYz2krILwEFrQg6sU7
+         Xzpw==
+X-Gm-Message-State: AOJu0Yzx2IaStU5l0u/uaC5wEODaCATJj0Nf8fzGSWqAm1PpTH3sDwqL
+        Bgv+8Pn6pDcNvCxSkUDBivU=
+X-Google-Smtp-Source: AGHT+IHJmePMTS+VW+Lh+vsvi3jAsr62Wg/9ZlsEWGmuo5olAGKcTROr+WxyW46bc51uAB5aGDxkFQ==
+X-Received: by 2002:a05:6358:7a6:b0:168:e364:70af with SMTP id n38-20020a05635807a600b00168e36470afmr605342rwj.25.1698021028781;
+        Sun, 22 Oct 2023 17:30:28 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id j33-20020a632321000000b0058563287aedsm4779378pgj.72.2023.10.22.17.30.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 Oct 2023 17:30:28 -0700 (PDT)
+Message-ID: <f486476c-8109-4dfb-8ef0-bfd7a36c003e@gmail.com>
+Date:   Sun, 22 Oct 2023 21:30:20 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <f840af3a-45fe-477e-bd45-2bee95b8c8d5@linux.intel.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989EB:EE_|SA0PR12MB4558:EE_
-X-MS-Office365-Filtering-Correlation-Id: fbf5f747-86fa-4796-ea19-08dbd35ea054
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: L58ghE8Vi8rAV/VfFtVCnEuBVCDGcfGXSwCSnTtL7uTSmNVdMvnEKMyHq8e1QdJCHiAcq38OJQSYPVhfo5k0ljHGBZSKbaYDItL1/uk7tNtat7xPEFzw/O9ZWiU+htGrZAm7UE7g1PHmcCT99l3reD9KC10PAZaPwm2erRlAHK1DX8+ugCbaPftvxMkD2VCXRNCveWbgPos34sO/0nAOei9XmQ7linapiW558Y7Re45jkGCyTMAk+yOnYcjwE5G7ugnWtE3HSHdZGCc5nURE5uTmitYT1hT5NfApyqRMT2zkDWD6eDI+xpKWml8BZJdyGIkBQ3YD3yReoFt3gzzIw5Omxf38oXgBtoE1eqCwJ3OaYUMpn3r6hV2c25FVoP/VC3bBd36TmeWrmFwrNQtOmf3PYzE+7lDDSOpGzonPQ31Rv2E1QhG6VXMqqhPFYe2hk79/9teRNlrHsiu2ooF1IpFb28LIduFACJPlubuKnU8EhT5YHxo6KLCAnegkOCFAU2x6iu+vRXmgTH1hfvySixJyDytZj9W/KSPSO3LoRxNTZUdBz0XXn8ILiyWQZmRK/cB+mcKbyYW06RQwgOhdwsB2X7JL3StOBErNtVM5QHNpKZwpXrMk4kO7b1oLYVafv7lA0aekQzEtAlQ/5TX4qEZ6oYSpO4FtGVZENB30FE6l69vA4Ed6iZ/AVXMiz3qfyj+I3e30ltXV3DO3rPdyzk989UHhcvwIYtK33i9q1E7cSHQe+XMSf1BDo+T8gjiZ
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(136003)(346002)(39860400002)(230922051799003)(186009)(82310400011)(64100799003)(1800799009)(451199024)(36840700001)(46966006)(40470700004)(33716001)(40460700003)(55016003)(8676002)(336012)(36860700001)(4326008)(41300700001)(5660300002)(4744005)(426003)(8936002)(47076005)(26005)(9686003)(2906002)(40480700001)(86362001)(54906003)(6916009)(70206006)(70586007)(82740400003)(356005)(478600001)(316002)(7636003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 00:25:57.2581
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fbf5f747-86fa-4796-ea19-08dbd35ea054
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989EB.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4558
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] kbuild: avoid too many execution of
+ scripts/pahole-flags.sh
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Alex Gaynor <alex.gaynor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benno Lossin <benno.lossin@proton.me>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Gary Guo <gary@garyguo.net>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, Song Liu <song@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
+        rust-for-linux@vger.kernel.org
+References: <20231017103742.130927-1-masahiroy@kernel.org>
+ <20231017103742.130927-2-masahiroy@kernel.org>
+Content-Language: en-US
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20231017103742.130927-2-masahiroy@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 21, 2023 at 09:25:18AM +0800, Baolu Lu wrote:
-> > @@ -465,6 +455,8 @@ iommufd_device_do_replace(struct iommufd_device *idev,
-> > 
-> >       igroup->hwpt = hwpt;
-> > 
-> > +     list_for_each_entry(cur, &igroup->device_list, group_item)
-> > +             num_devices++;
+On 10/17/23 07:37, Masahiro Yamada wrote:
+> scripts/pahole-flags.sh is executed so many times.
 > 
-> Minor: How about using list_count_nodes()?
-
-That's better I think. Replaced with:
-
-+       num_devices = list_count_nodes(&igroup->device_list);
-
-> >       /*
-> >        * Move the refcounts held by the device_list to the new hwpt. Retain a
-> >        * refcount for this thread as the caller will free it.
+> You can check how many times it is invoked during the build, as follows:
 > 
-> Either way,
+>    $ cat <<EOF >> scripts/pahole-flags.sh
+>    > echo "scripts/pahole-flags.sh was executed" >&2
+>    > EOF
 > 
-> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+>    $ make -s
+>    scripts/pahole-flags.sh was executed
+>    scripts/pahole-flags.sh was executed
+>    scripts/pahole-flags.sh was executed
+>    scripts/pahole-flags.sh was executed
+>    scripts/pahole-flags.sh was executed
+>      [ lots of repeated lines suppressed... ]
+> 
+> This scripts is exectuted more than 20 times during the kernel build
+> because PAHOLE_FLAGS is a recursively expanded variable and exported
+> to sub-processes.
+> 
+> With the GNU Make >= 4.4, it is executed more than 60 times because
+> exported variables are also passed to other $(shell ) invocations.
+> Without careful coding, it is known to cause an exponential fork
+> explosion. [1]
+> 
+> The use of $(shell ) in an exported recursive variable is likely wrong
+> because $(shell ) is always evaluated due to the 'export' keyword, and
+> the evaluation can occur multiple times by the nature of recursive
+> variables.
+> 
+> Convert the shell script to a Makefile, which is included only when
+> CONFIG_DEBUG_INFO_BTF=y.
+> 
+> [1]: https://savannah.gnu.org/bugs/index.php?64746
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> [...]
+> +include-$(CONFIG_DEBUG_INFO_BTF)+= scripts/Makefile.btf
 
-Thanks!
-Nic
+Would have used a tab.
+
+> [...]
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
