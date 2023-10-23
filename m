@@ -2,150 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB987D2BE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE717D2BE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbjJWHvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
+        id S233606AbjJWHvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233577AbjJWHvP (ORCPT
+        with ESMTP id S233491AbjJWHvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Oct 2023 03:51:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE27AD66
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F41DD65
         for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698047472; x=1729583472;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=W64Rt+rnod+gmqnyOQdn0ij+theDjkJ3D8rzwNAejhg=;
-  b=AQcPU5HqesqXBrTGjLmKt0u1QqEricXhg4OvM8BJqf9bFsNH6H9mgd/g
-   JznoN0IcdVc3gxxahsxQuu53ur23sGd1g+J3Idx2LJsRqg18qxVps0swp
-   Fd1VQnD5rt3P8fwzYEdWsk0Bcx96Ga7lrSzi9Bs1D77erqL1CZGtdRHdV
-   79CdVB2YVH/Gw/DuoNy7XQpNn8JY98wmlpBhQ/T7TZdWOlqcEDt/ND3qj
-   Yab5KD65mtbBfADZkymTbbE3vs4WDRz86xECNanIr5pYBp++MtzFBrwqf
-   9G9u4Gq2Xq9g3e8R0tL/0AfW5ezHOc5qoij/+0TTChFBK2XSglHvziO75
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="385670375"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="385670375"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 00:50:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="734588327"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="734588327"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.94.0.91]) ([10.94.0.91])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 00:50:44 -0700
-Message-ID: <d5fba90c-24ab-4aff-8d6f-6d1443f4c10a@linux.intel.com>
-Date:   Mon, 23 Oct 2023 09:50:41 +0200
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d9c2420e417so2838276276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:51:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698047472; x=1698652272; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hwpfXuSMxW2SQUceKEQObxa1Va7HSYmmlN8vyK0Wa9g=;
+        b=x0SPzP8TWH+DPfQr77Ql2yskLtJZKTK8bIJotYstSKFjPUB1x17bq6XAliStZmCSg2
+         T0nHM6LbOFkUkwMc1cMQqgc8JOVQ1Nihi0Sia48WHr6x0uC/zA5uuA9hYCcpdEToOMk+
+         wKYjwFA6orwPnjeNhaNA80itrbQcBmUPyWusyHH8PL1XOmHk6Pob6k9U7NvwHvAFfgTA
+         vh83w/x7MCu8lJ/BW/6bo7yv76YG8xh7L0i+wUGG10XhbXcrEgnKsQJvEPSAtDOKtqt9
+         wsoJp3OFO9suLPOvSywFp24515u6f/aMX1GBe9bS9L4CqCHpSyUcZPc6YBOlM2sFqgbK
+         R/fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698047472; x=1698652272;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hwpfXuSMxW2SQUceKEQObxa1Va7HSYmmlN8vyK0Wa9g=;
+        b=JW/ufRbrlPl7jTY9NyrJ3x0rS0XjyVuoeziXDb/JA1wqGKCApiUCGXPdSl0aXsNYqp
+         79ZXra5FRlsoIsSX6O2EFvNetlXBg/Eh7G6vLFOtp2CcDD83lzsEjF/MIK8qDf3uJ4vT
+         V0y2nK2I1bqsx2mSIqZktelWI975DiK78MvkwUadcvI57ofra4XiHJKjX4K5ZauWNyAE
+         w0jtuEE8HA+fxw6lrc6XYI0WJlN3HpmIcBdW66MQ7L/TZJtMxoAU2y9buW4cra3AB/XQ
+         RDdP8fUrCv2IYbQxXvkA9kpi+IQ4YNflvvj+iGcSjCH+ox1GfuzIdKdqE7uFQEpcHNM9
+         68EA==
+X-Gm-Message-State: AOJu0Ywo7tLo15BMYcaMP0QApqp5RnL85v50urRe07jLVzwZtFFBi4ZI
+        x7m/TrX9Bou2BR/bVHTiCnoYIIMh4MhTsLFQZSd6PQ==
+X-Google-Smtp-Source: AGHT+IHjwVacJ7rVA2lCtIQF3l4kMyb0ZMctra14lquxIIj/j34f3PN6Hrfc6Nsb/yiuys+Hr1x5NE7foptIZcLlM+c=
+X-Received: by 2002:a25:d8ca:0:b0:d81:6151:2031 with SMTP id
+ p193-20020a25d8ca000000b00d8161512031mr9021111ybg.61.1698047471820; Mon, 23
+ Oct 2023 00:51:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/13] ASoC: amd: acp: Add pci legacy driver support for
- acp7.0 platform
-Content-Language: en-US
-To:     Syed Saba Kareem <Syed.SabaKareem@amd.com>, broonie@kernel.org,
-        alsa-devel@alsa-project.org
-Cc:     Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
-        Sunil-kumar.Dommati@amd.com, mario.limonciello@amd.com,
-        venkataprasad.potturu@amd.com, arungopal.kondaveeti@amd.com,
-        mastan.katragadda@amd.com, juan.martinez@amd.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        V Sujith Kumar Reddy <vsujithkumar.reddy@amd.com>,
-        Marian Postevca <posteuca@mutex.one>,
-        Jarkko Nikula <jarkko.nikula@bitmer.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231021145110.478744-1-Syed.SabaKareem@amd.com>
- <20231021145110.478744-12-Syed.SabaKareem@amd.com>
-From:   =?UTF-8?Q?Amadeusz_S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20231021145110.478744-12-Syed.SabaKareem@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231023-marvell-88e6152-wan-led-v5-0-0e82952015a7@linaro.org> <20231023-marvell-88e6152-wan-led-v5-1-0e82952015a7@linaro.org>
+In-Reply-To: <20231023-marvell-88e6152-wan-led-v5-1-0e82952015a7@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 23 Oct 2023 09:51:00 +0200
+Message-ID: <CACRpkdZ_o0pMXZEVWfGiu2tPjv=dLMagT6KF-d=kaZ6fJZqr0A@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 1/7] dt-bindings: net: dsa: Require ports or ethernet-ports
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Christian Marangi <ansuelsmth@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/2023 4:50 PM, Syed Saba Kareem wrote:
-> Add pci legacy driver support and create platform driver for
-> acp7.0 platform.
-> 
-> Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
-> ---
+On Mon, Oct 23, 2023 at 9:19=E2=80=AFAM Linus Walleij <linus.walleij@linaro=
+.org> wrote:
 
-...
+> Bindings using dsa.yaml#/$defs/ethernet-ports specify that
+> a DSA switch node need to have a ports or ethernet-ports
+> subnode, and that is actually required, so add requirements
+> using oneOf.
+>
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+(...)
+> +  oneOf:
+> +    - required:
+> +      - ports
+> +    - required:
+> +      - ethernet-ports
 
-> +
-> +static struct snd_soc_dai_driver acp70_dai[] = {
-> +{
-> +	.name = "acp-i2s-sp",
-> +	.id = I2S_SP_INSTANCE,
-> +	.playback = {
-> +		.stream_name = "I2S SP Playback",
-> +		.rates = SNDRV_PCM_RATE_8000_96000,
-> +		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8 |
-> +			   SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S32_LE,
+Ooops I meant to drop the patch altogether because I just
+couldn't figure out how to test this.
 
-Any reason to not go from lowest bit width to higher? Similarly in 
-further definitions.
+Ignore bot complaints on this one then.
 
-> +		.channels_min = 2,
-> +		.channels_max = 8,
-> +		.rate_min = 8000,
-> +		.rate_max = 96000,
-> +	},
-
-...
-
-> +
-> +static int __maybe_unused acp70_pcm_resume(struct device *dev)
-> +{
-> +	struct acp_dev_data *adata = dev_get_drvdata(dev);
-> +	struct acp_stream *stream;
-> +	struct snd_pcm_substream *substream;
-> +	snd_pcm_uframes_t buf_in_frames;
-> +	u64 buf_size;
-> +
-> +	spin_lock(&adata->acp_lock);
-> +	list_for_each_entry(stream, &adata->stream_list, list) {
-> +		if (stream) {
-> +			substream = stream->substream;
-> +			if (substream && substream->runtime) {
-> +				buf_in_frames = (substream->runtime->buffer_size);
-> +				buf_size = frames_to_bytes(substream->runtime, buf_in_frames);
-> +				config_pte_for_stream(adata, stream);
-> +				config_acp_dma(adata, stream, buf_size);
-> +				if (stream->dai_id)
-> +					restore_acp_i2s_params(substream, adata, stream);
-> +				else
-> +					restore_acp_pdm_params(substream, adata);
-> +			}
-> +		}
-> +	}
-> +		spin_unlock(&adata->acp_lock);
-> +		return 0;
-
-Indentation is wrong in above two lines.
-
-> +}
-> +
-> +static const struct dev_pm_ops acp70_dma_pm_ops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(NULL, acp70_pcm_resume)
-> +};
-> +
-
-
+Yours,
+Linus Walleij
