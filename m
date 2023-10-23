@@ -2,209 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 494897D4285
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 00:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C9C7D4289
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 00:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbjJWWEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 18:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42412 "EHLO
+        id S232315AbjJWWEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 18:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjJWWEH (ORCPT
+        with ESMTP id S231316AbjJWWEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 18:04:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7589C;
-        Mon, 23 Oct 2023 15:04:01 -0700 (PDT)
+        Mon, 23 Oct 2023 18:04:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8343383
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 15:04:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698098643; x=1729634643;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=kt2q5nrVyNKxl015QBw5cEXgkZHSV6SVAGXf+Z1DiI8=;
-  b=hW8XqElbMgnI1ZHYVlf3+/iWitWr11d9vwXCCwVkq7lZ56zuPH2I0Dwv
-   LJc3nfX9m1+GUkTXolMeBYUJjgwd1TXYgIEB0jd86uexLdy0JT+q47a5x
-   sCu6qo5nj5f2NVkTv5jxQRF3XyAuU4UKQThxsWwDA0Pcg41M8Cb/asLvE
-   Hhj6VUikcq+yD7fIfYnc30QiRHd5GKkRgqaUwyGbtEFa0g6WRzP4qlPeI
-   //CAP9SDMhL6rs+oazuahGH2eV8N9xc2KBZYb51ux50k1Fwmo3m12ztQL
-   GL9ejyqzuhqCcT074wYeXb07eRZ0fI4JMYrf8OFwxkmvaNJcL/u5qU051
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="473162927"
+  t=1698098682; x=1729634682;
+  h=message-id:date:mime-version:from:subject:to:cc:
+   content-transfer-encoding;
+  bh=MqyemEmCCo8/gZeC6kbwvDHCFwfdIhjprp0ACYcLCWM=;
+  b=CZ5koS6tN5ECz3nAcRIWM92vHEyzV2YBVtVexlow2SEmXhZwIM5VI/Al
+   ORmFs0LQrx676ord8yhFGb3AB68JSdD/Pv0gAVxGfsSoF+tjeb0eDQOX3
+   FbcNTDs32SPOudOlga+KyjFUC3ZQzffOB74WrAzxiWmQqD+/AumFXMvYW
+   9PBkLrGh43x/znccpsbYtIEFSHMapI2EgHnFCDpET2QmYZZy2v5WlIUXy
+   NCv2iqRUoo1wXyqf5Ib1S6NiueyKBo2wUyU4mIAwXbv3byfVhFsmRzYfM
+   sSFQ143o10uH+RkB1MWn96LBHCwDBFZeQqHDFdWlqKI/0a4pUZOKs/mC0
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="5564861"
 X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
-   d="scan'208";a="473162927"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 15:02:41 -0700
+   d="scan'208";a="5564861"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 15:04:42 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="848902031"
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="828590920"
 X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
-   d="scan'208";a="848902031"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Oct 2023 15:02:41 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 23 Oct 2023 15:02:40 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 23 Oct 2023 15:02:40 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 23 Oct 2023 15:02:40 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B7Yid2teVkmznM9v+aPKo5+FIpBlqcLDMupiQBYXLSu6+NI/nwfWsj68Ev5OfAhSfetNk3oKrgyLsrgFinXIJbfXaqGR2cYqURTpmMAsb0WUZ8EWoY15Jy2W/Ny2WMM6Zebo3hxgt1cjU2oPox+i6tf8XupehIMuHrcbWqJKn2OBqfwCpSK06WeLCsItnMGV9h55cluaU4b3WdslQpGYqLVyO2KRzjW2rqyoqWkCn/rdgFXv2BWPxKHqgPXGwlYMbQp+aYbbbRSH7iJs5HJCpOoWyEN3Fl81lnWocshtnVUa+Be7fSVTi/DPw4LE6SHaM6DsuAdljT6681IidU1PFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JMsF7UiKNEWG0jfihp8UnTIek2Js+l77Tgpgf8+S0MU=;
- b=WR01hM/jU5v9g+hmOg655nT/behggTS5uqyak8ybUDcRDJDgcBQV6VqZ0l4o82V1kmF0tmnz9+4LzRZ+mKVYKzioPac4BDsPFAbI07ZJfzqsRF9SUs6matXBU4KvyFcqC2qWl7+PueWQsJQMQCEGzXEI9AVX1hi8eC5b0H2OgK0L0uMQy4SjYblPHpHMf9YlRpAl6Ejy9f9ukIHyWXbJjAuoiQRbKfAGhAbe1kj03Ccdwvz6HosU9LVK9V6M9oU+S+kgnk3tCKEy3/RL8pHzDbk4qjP5nFdgEZzIRZtHfBP5zyLJtMGHFVXvknaTDZy+7zJKFyh+TwnRmOrW/d6ddg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by BL3PR11MB5700.namprd11.prod.outlook.com (2603:10b6:208:33f::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.29; Mon, 23 Oct
- 2023 22:02:37 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::f216:6b2b:3af0:35c1]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::f216:6b2b:3af0:35c1%4]) with mapi id 15.20.6907.032; Mon, 23 Oct 2023
- 22:02:37 +0000
-Message-ID: <d3651e7c-9c68-426a-a3a0-5a0bb269d173@intel.com>
-Date:   Mon, 23 Oct 2023 15:02:36 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iwl-next 3/3] i40e: Use helpers to check running FW and AQ
- API versions
-Content-Language: en-US
-To:     Ivan Vecera <ivecera@redhat.com>, <netdev@vger.kernel.org>
-CC:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        <intel-wired-lan@lists.osuosl.org>, <linux-kernel@vger.kernel.org>,
-        <mschmidt@redhat.com>, <dacampbe@redhat.com>, <poros@redhat.com>
-References: <20231023162928.245583-1-ivecera@redhat.com>
- <20231023162928.245583-4-ivecera@redhat.com>
-From:   Jacob Keller <jacob.e.keller@intel.com>
-In-Reply-To: <20231023162928.245583-4-ivecera@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0347.namprd04.prod.outlook.com
- (2603:10b6:303:8a::22) To CO1PR11MB5089.namprd11.prod.outlook.com
- (2603:10b6:303:9b::16)
+   d="scan'208";a="828590920"
+Received: from dahansge-mobl.amr.corp.intel.com (HELO [10.212.208.196]) ([10.212.208.196])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 15:04:40 -0700
+Message-ID: <a13b3481-ec35-446d-ac7d-9581ce87646f@intel.com>
+Date:   Mon, 23 Oct 2023 15:04:40 -0700
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|BL3PR11MB5700:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3e17f41b-7ad0-4472-ac1d-08dbd413c4f1
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: M9rjD9yVw2ETIaommKU7ErVu+/eObwCrbCdkUQtKf4X6teHXRgd7D1tRSQEMiE6RgWYAln9unpX0OH4DuOTts2eo0+93JzEoNo8DTamxheW+ZBaAT4uLvTVKnFiOmJJCvySZUOKAZgk4sRAJZ7DFe2xS/oaBmPbeZYWbtmGfUEySiuGrfakGDcD4tGIWC3T3AUQKEXpOx8q57uzRAWgnDoC/cUvEe0EdIrmHiC0Ld9SoveyW2uR9Pr/uYracWytgOd42Y+KZh0xPPDTwngUmYfDxSdrlt0o0GG6o9VVVyQGMbKxSVXae/nKgBfV1NAasQMN5JMQVWIAiWcQirHMjDXOru0d8GefUbKrQuUWtifJP/JAmr4mjiIk8iY9MidECTUvfpb+NDFYA8Z6R6eK6LzA38qe5knIpUyn4ZTmELQih375z1M75f56JMYafuoAfP62TEThsB1F1YQuJeVnsugP2Hzkpv+XV5F7DikBXb3ULHNoAFUXEBTrlwwaaCzF4z5hDQdRzVfo7UijAuWL8cjsnDMDN/xqqlWuqkpY0M2hZ98z/tdDqhWUjkJghqSq24EQ+D5uonG3ZQd6Ldkk7TBycJP66YiI0pqmZJuGM1DLVQVzCq5G5fS3UO0MflHupg9MZyfyczUUtBaGhp2b+rw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(396003)(366004)(39860400002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(26005)(31686004)(38100700002)(2906002)(86362001)(31696002)(7416002)(5660300002)(36756003)(4326008)(8676002)(8936002)(6506007)(478600001)(54906003)(2616005)(316002)(66476007)(66556008)(82960400001)(66946007)(83380400001)(41300700001)(6486002)(6512007)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eFZrc1lVTk52ODJsSkVFcnVDSXYwMEhNRERCN09kb05nTVhwVjFvb0J6RW5s?=
- =?utf-8?B?TTYxbUJlWXczbDdTbFAzaS9Lbmc4M3VLcHQ1SFRzc3RlNzJoQU1veXpVT1Fl?=
- =?utf-8?B?N096WTJ2Mk4wbjZqeHFxT2U2L1EwUFRsemY5NkpmQUxBNlFlUlRkNm9kaFJI?=
- =?utf-8?B?ekRGSzlWN0I5NVFvRHMxa1MyOEQ2VGRNWFFZMUV6bEIrNjdyTVE5V1FzWGx2?=
- =?utf-8?B?TDYwQlNwQitJZEZYNEJKQ2tVRUpIS0RjN3g4NjNBaWUySlNTUnFpbkI5cVJi?=
- =?utf-8?B?NEZnNkZENC9qNzNuejZjLzN2c3ZYb3kzYVZTckFjVUwydmJOMlVzemJZbERM?=
- =?utf-8?B?SUFmeEo1c081amRyL1ROcFFxUWlHN0Y4SEJFSFU4akJtK0ZtTmt2azRrdk1h?=
- =?utf-8?B?S29CM2JvVWxQa05MSThRc3JnWDkwRlRERHYwbUFNMU9uV3ozalQrYVQwc1Ft?=
- =?utf-8?B?bWRKb21HcDdqbDl6NTJtZFNEUXVpQmRBdExwMDVWa0ROOC9JOVFqNWs5c1ov?=
- =?utf-8?B?N0NjSytta0Z0WTZTanNFQm50aTlJc2RTS0hLWG1XbklDWW5zcWczRUF5emNv?=
- =?utf-8?B?R1FJVHRnaTdQTGZtQlB6QnU4WTBjd2ZyNW9YMWRBaFBkcHB1S0hlVDV2V25B?=
- =?utf-8?B?Z0xFQU1qRFF6QUt2N2M0QUtwRmpXTnZabFBjZEJUN2l2VHlmWFVDVi9vS3k5?=
- =?utf-8?B?Vm44WmNmcGFEYVZaVE1aeHM4MnVCZ3Bobkdpd0NUbk9EOFVCS1dHc0w3T0Rv?=
- =?utf-8?B?MHpoTzYwUmN3ak9LcWI3TXRZNGJLUDdxQkRkbjB4eWJxeDYxeW1rOXZMc2pR?=
- =?utf-8?B?Z2dTb1FjTU1PR2swendDdngvc3ZKUGpkUHBOd2hZUWhlRXZocjhDM3Z3VSti?=
- =?utf-8?B?aFgxditjbzRMY2tIb0tVWEk3ekFXaEQreS9HUExUM3FsNERnMFRJUi8yNlZB?=
- =?utf-8?B?Ny9MNFduVGdOc0Q5alVpV2RteGJOc09kbjdvbThMeFJQQm01SVVXKzI3YmNt?=
- =?utf-8?B?aDdXUjVrVVFyM3hFZ2JNaEhYV3NVZlBaQkw1U3ZieTdvbTlUREN6QUY1ZGhy?=
- =?utf-8?B?RGN4cThadWhpZ0U2eEw0SmpSZ1BpcDJhMGliK3FJNVR1V3hWTkh0OUJnNWI2?=
- =?utf-8?B?K2t0ejNRbVJLV2ErblRoUjlTYlhSN1lvMXJqbVZKVjFGeGY0akExYXdabXZz?=
- =?utf-8?B?Tkl5NVdVcUEveEQwMnBwSmk0d3gyMTBRSW9GWCs3RW5PQ3ZIV0FRMWF6YTdh?=
- =?utf-8?B?ZE9EVUozUUp2V1l5MWdIRGFQQjYySC8vMDdGcGRZa0RTUFNBT2Y3TlNIU3E0?=
- =?utf-8?B?ZDZ0K3U0SzB1Qlc2ZWZyeHpYSGFhMEJNTmZhOXF5MVJ2cjYyaVhOajFkK0Rt?=
- =?utf-8?B?dEdQQXhqRk0yMVd5eTIzamRtcjZwYXhYQm9rSXFmMWVsV081MG5hVmcrUXRh?=
- =?utf-8?B?c1hqa3Z0ZElBYmNLcU9XR1pJellCUW8zenlDYTZpeGNueVRnaStzaUZabElW?=
- =?utf-8?B?dDcwTk1Ld3JQb01IMWY5T1lFQVVCLzY4T3ZDK1FBZGJyNEc5MnJZU2pNTXox?=
- =?utf-8?B?K0tUbXcybTBGcnQ5YkNGU0Z0Sk1pejJxZk5aSmpLa0NPQ1hUQzNyVnpQeldI?=
- =?utf-8?B?OGJaelVxMjRuNDBldUx5dkxIYWw3LzZmVDVTU2hzaGYzNzUvb2RTci95N3Qv?=
- =?utf-8?B?UldzaDYxWWNLVDU0MHpNQUFEWDhNN1FGVDR3TVBiYTZaSnZkaE1PVklUQTRE?=
- =?utf-8?B?TERwRUNja0tXUzFpTnlYYXk5RnkrMWhkL2V3Y2JxcGZHd2Z3cW4raFhxNFFJ?=
- =?utf-8?B?dmloTkc0K3RUbFplOTdJcEp4NmhuL1NTNTlTc1BnMEZqc0NHLzJ4bjhXaG83?=
- =?utf-8?B?WENFc3dHY0FHK1BMVlJLdG9Idmd6SVlFZE1Sd2FqNFBEMlYxMWZKRVdwWkJ4?=
- =?utf-8?B?K21CZzN3MzBSc1o4U0h4aHBlcmlnUjkyNS9SbFRqcndPNDgzQUxLV1FMNmNO?=
- =?utf-8?B?L0xKSVV0SithQ2Raa3h0anFXZGp2S2ZURitwcnJndks0Q1lrcG9rTThLZ0pt?=
- =?utf-8?B?YzJaNjZwUkV3Yi9sOVd1Y01qSWZHWjdCMGRmSmRPd1F5U3VOcnVITytHUFNu?=
- =?utf-8?B?ZXVpaWFPbitTY3pTV3BSQ3VyTksvZG9UR0s3Yk4wb1BBSGh3dWQ5VVhYVXB0?=
- =?utf-8?B?ZFE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e17f41b-7ad0-4472-ac1d-08dbd413c4f1
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 22:02:37.7975
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sD2lq3epDeQ8zBe0Q3LXLwuvOYdx3pJXFHuRPEMa8s3WMqtjfXuXrWvrevYsR9F4v+DA7RHwAxojCkIqYSQz/JH2OQQxKXhP3Gyaly4OpeU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB5700
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+Subject: 2023 Technical Advisory Board election info and call for nominees
+To:     linux-kernel@vger.kernel.org, ksummit@lists.linux.dev
+Cc:     "tab-elections@lists.linuxfoundation.org" 
+        <tab-elections@lists.linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The 2023 election for membership on the Linux Foundation Technical
+Advisory Board (TAB) will be held electronically during the 2023 Linux
+Plumbers Conference, from November 13 to 15.  This announcement covers
+both the call for candidates and the details of voting in this election.
 
+The TAB exists to provide advice from the kernel community to the Linux
+Foundation; it also serves to facilitate interactions both within the
+community and with outside entities.  Over the last year, the TAB has
+overseen the organization of the Linux Plumbers Conference, released a
+kernel  contribution maturity model for organizations, advised on
+code-of-conduct issues, and more.
 
-On 10/23/2023 9:29 AM, Ivan Vecera wrote:
-> Use new helpers to check versions of running FW and provided
-> AQ API to make the code more readable.
-> 
-> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
-> ---
+CALL FOR NOMINATIONS
 
-This has a couple checkpatch.pl warnings:
+The TAB has ten members serving two-year terms; half of the board is
+elected each year.  The members whose terms are expiring this year are:
 
-> CHECK: Alignment should match open parenthesis
-> #81: FILE: drivers/net/ethernet/intel/i40e/i40e_adminq.c:566:
-> +               if (i40e_is_aq_api_ver_ge(hw, 1,
-> +                               I40E_MINOR_VER_FW_LLDP_STOPPABLE_X722)) {
-> 
-> WARNING: braces {} are not necessary for single statement blocks
-> #110: FILE: drivers/net/ethernet/intel/i40e/i40e_adminq.c:583:
-> +       if (i40e_is_aq_api_ver_ge(hw, 1, 5)) {
->                 set_bit(I40E_HW_CAP_NVM_READ_REQUIRES_LOCK, hw->caps);
-> +       }
-> 
-> WARNING: braces {} are not necessary for single statement blocks
-> #118: FILE: drivers/net/ethernet/intel/i40e/i40e_adminq.c:587:
-> +       if (i40e_is_aq_api_ver_ge(hw, 1, 7)) {
->                 set_bit(I40E_HW_CAP_802_1AD, hw->caps);
-> +       }
-> 
-> WARNING: braces {} are not necessary for single statement blocks
-> #125: FILE: drivers/net/ethernet/intel/i40e/i40e_adminq.c:590:
-> +       if (i40e_is_aq_api_ver_ge(hw, 1, 8)) {
->                 set_bit(I40E_HW_CAP_FW_LLDP_PERSISTENT, hw->caps);
-> +       }
-> 
-> WARNING: braces {} are not necessary for single statement blocks
-> #132: FILE: drivers/net/ethernet/intel/i40e/i40e_adminq.c:593:
-> +       if (i40e_is_aq_api_ver_ge(hw, 1, 9)) {
->                 set_bit(I40E_HW_CAP_AQ_PHY_ACCESS_EXTENDED, hw->caps);
-> +       }
-> 
-> total: 0 errors, 4 warnings, 1 checks, 212 lines checked
+ - Jonathan Corbet
+ - Greg Kroah-Hartman
+ - Sasha Levin
+ - Steve Rostedt
+ - Ted Ts'o
 
-Thanks,
-Jake
+The members whose terms expire next year are:
+
+ - Christian Brauner
+ - Kees Cook
+ - Dave Hansen
+ - Jakub Kicinski
+ - Dan Williams
+
+Anybody who meets the voting criteria (described below) may
+self-nominate to run in this election.  To nominate yourself, please
+send an email to:
+
+	tech-board-discuss@lists.linux-foundation.org
+
+Please include a short (<= 200 words) statement describing why you are
+running and what you would like to accomplish on the TAB; these
+statements will be collected and made publicly available.
+
+The nomination deadline is 9:00AM EST (GMT-5) on November 13.
+
+VOTING IN THE TAB ELECTION
+
+The criteria for voting in this year's TAB election are unchanged from
+2022.  To be eligible to vote, you must have at least three commits in a
+released mainline or stable kernel that:
+
+ - Have a commit date in 2022 or later
+ - List your email in a Signed-off-by, Tested-by, Reported-by, Reviewed-
+   by, or Acked-by tag.
+
+Everybody with at least 50 commits meeting this description will receive
+a ballot automatically; they will receive an email confirming this
+status shortly.  Eligible voters with less than 50 commits can receive a
+ballot by sending a request to tab-elections@lists.linuxfoundation.org.
+
+We will, once again, be using the Condorcet Internet Voting Service
+(CIVS) https://civs1.civs.us/ . This is a voting service focused on
+security and privacy. There are sample polls on the website if you would
+like to see what a ballot will look like.
+
+Please contact tab-elections@lists.linuxfoundation.org if you have any
+questions.
+
