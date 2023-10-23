@@ -2,177 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4274B7D2FB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1DA7D2FBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbjJWKXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 06:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
+        id S229967AbjJWKYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 06:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjJWKXV (ORCPT
+        with ESMTP id S232874AbjJWKYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 06:23:21 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B0D10DB
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:23:04 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40850b244beso24451585e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:23:03 -0700 (PDT)
+        Mon, 23 Oct 2023 06:24:15 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EAF1704
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:23:46 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a581346c4so2911698276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:23:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1698056581; x=1698661381; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8k0EshLjUbr1rifjRs+LM2thRC9AnbfURENQfGj3YpQ=;
-        b=AOfZKPQSAysvBShUn6OhBwZz0U2uqB8/WTZquhn1yeVwbkDOhCZcwky8zXukYKGHd1
-         KwO/Ax1aM4E/WWjGePaaMXoHJbCm9k5t5MOGLzRaRuXcenxLOEvLbzlfF9m6J7VHndIZ
-         unIF19g0XCtbWFO6u86qoiNGD4ibo2hUigGaqfivKjHBo5/V2kBDe2z5Q9WP+xlj411p
-         xXxHzf245VB9nOTcd5xfrTgN9FuDcsdvKEvHMGgNs3RnK/EbLzg5gslsBZYcHPVWrxSe
-         IdJj+iMvy1URciafBG1M/jXM14RCaPj5nYtkjjJZyzyCn/Ex5RUV8+waEEvHp1mCJBg9
-         m01w==
+        d=google.com; s=20230601; t=1698056625; x=1698661425; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3J/4PY2fr0LmELlkRa65xN9TiPDrp5/iGVWwAtVefeM=;
+        b=bna5BRZhmPPHeiOgpB8Kk07Jk6m7cAckrKpOko2xvxXyEBfpsfTuVtDoAy5LQkZFqB
+         n5JVamNj6yPA6KDOFAyZAm6H94shpyBkXFVXmfW2alXPClDIpFR5vp9+djbaqh7ugnfL
+         B44dSN/igjjP4XH54ZuNKOAM5qWKGYS8YYWafVMNSZtwiERnZbE94xQQQYg+fDQ+47gL
+         s0JEF3JLJxOHepWecKMxIo2F7ZiD8ntUXMbIiUiY/FVtWUOMSC55KkwWX1eA/jt/TERg
+         ndJs9Z2esamFAAHQOVh9BV4dCp5DJn04Wrha0Jj+LSd6mhe10IN2j1B3yLNOIhXioflv
+         tGzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698056581; x=1698661381;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8k0EshLjUbr1rifjRs+LM2thRC9AnbfURENQfGj3YpQ=;
-        b=gBpwvgvGj4e4KZHasF4aIMs1q1IlYoci8IYndnfK/1IcFVa/fFxxuFDiXKuFsX0HSn
-         gbXNdl90MMt3k3hkCKUmyxB5URiehxblLtiuRbB9ucF8LwpDZfpDioEXDYIMpSAj4OXx
-         zVZ/gb/fIK2b/MN1KNRur6Xiybcz06NzAs9TzQPDveImiul7dxP31Kzj4czfHyqgiwga
-         1K7d8G5h4tiWL+SujjNp7HMAnfknV7XtwrvEiM9Jc8di6xv8Qspuoq3jRqGUA39d39VI
-         dJ+NZnW3V5XF9tsDRjyn2Ju6kev2Xm4JFL9kIRrVklER5wSlDn8XKYSyZwsWR0GV6A2O
-         zvlA==
-X-Gm-Message-State: AOJu0YySYCewa/YI/M1zml22KffrKHJDFsNCyMDr76NrMB2adBKIQeFR
-        QeNgrVS7izyIOF9THmtOjMY2hEFRzNFVJgjdMwo=
-X-Google-Smtp-Source: AGHT+IG3jAIdQfmC2Z+L5C+d69j5tDElEciqTF1dG/PBhVBTrAoiiDhk1pI0XMhW2i7pOJkPSg/a1Q==
-X-Received: by 2002:a05:600c:354b:b0:3fe:1b4e:c484 with SMTP id i11-20020a05600c354b00b003fe1b4ec484mr6753113wmq.5.1698056581462;
-        Mon, 23 Oct 2023 03:23:01 -0700 (PDT)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.185])
-        by smtp.gmail.com with ESMTPSA id 1-20020a05600c228100b0040596352951sm13593275wmf.5.2023.10.23.03.22.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 03:23:01 -0700 (PDT)
-From:   Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To:     tglx@linutronix.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        geert+renesas@glider.be, magnus.damm@gmail.com,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH 7/7] arm64: dts: renesas: r9108g045: add irqc
-Date:   Mon, 23 Oct 2023 13:22:23 +0300
-Message-Id: <20231023102223.1309614-8-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231023102223.1309614-1-claudiu.beznea.uj@bp.renesas.com>
-References: <20231023102223.1309614-1-claudiu.beznea.uj@bp.renesas.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1698056625; x=1698661425;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3J/4PY2fr0LmELlkRa65xN9TiPDrp5/iGVWwAtVefeM=;
+        b=kjb9+KzZLa3EJ2SeIm/9rux+4wudRg+CmrDbp/VbU+DqyKCVNdrEd7SlmKlj2CGOr/
+         iQtgznz83lmjAsvPxLFYkd0EgksKf21fU5+tc+fevhs0fuiYQulCxQVG+4IdEoIZqeo2
+         YP22PqGyaR4kXXdaCBwS7CvTNd6XAEVGJvA+yWUsGctkWQvnI85lqakIGlx08WpH3RvV
+         O663WRvARsjpQiHHVhptq/bFBx6GfiPq0vlJfle8SV/4C3OufKcmbbyP/2x9UDnDQttG
+         eo2KMnzVJWIzfpTXN7SGnpMV65eonqqyCCzwDJKzuQ3Ttxh8yGsyzzjJq9fTCfC707Cx
+         ScHg==
+X-Gm-Message-State: AOJu0YzmN4u7hcJXmsnU2Y7wD69ZVU1f4002elwn2QA8pmYzAeVqgC8J
+        7PpF419v80b67zSLaPRSyxkTfaTluoA=
+X-Google-Smtp-Source: AGHT+IGhuIdDaRVxBc2GTXpCXkwAnHLz7yk6yCRXwKaJQpglgL+mvs3F+PE3/gm2rks43ggtic8SU4ZHmxg=
+X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:348e:9a:326e:345e])
+ (user=glider job=sendgmr) by 2002:a25:d3d1:0:b0:d9a:6b0b:1bc8 with SMTP id
+ e200-20020a25d3d1000000b00d9a6b0b1bc8mr168906ybf.11.1698056625436; Mon, 23
+ Oct 2023 03:23:45 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 12:23:26 +0200
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.655.g421f12c284-goog
+Message-ID: <20231023102327.3074212-1-glider@google.com>
+Subject: [PATCH v8 1/2] lib/bitmap: add bitmap_{read,write}()
+From:   Alexander Potapenko <glider@google.com>
+To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
+        pcc@google.com, andreyknvl@gmail.com,
+        andriy.shevchenko@linux.intel.com, aleksander.lobakin@intel.com,
+        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
+        alexandru.elisei@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+From: Syed Nayyar Waris <syednwaris@gmail.com>
 
-Add irqc node and set it as interrupt parent for pin controller.
+The two new functions allow reading/writing values of length up to
+BITS_PER_LONG bits at arbitrary position in the bitmap.
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+The code was taken from "bitops: Introduce the for_each_set_clump macro"
+by Syed Nayyar Waris with a number of changes and simplifications:
+ - instead of using roundup(), which adds an unnecessary dependency
+   on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
+ - indentation is reduced by not using else-clauses (suggested by
+   checkpatch for bitmap_get_value());
+ - bitmap_get_value()/bitmap_set_value() are renamed to bitmap_read()
+   and bitmap_write();
+ - some redundant computations are omitted.
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+Link: https://lore.kernel.org/lkml/fe12eedf3666f4af5138de0e70b67a07c7f40338.1592224129.git.syednwaris@gmail.com/
+Suggested-by: Yury Norov <yury.norov@gmail.com>
+Co-developed-by: Alexander Potapenko <glider@google.com>
+Signed-off-by: Alexander Potapenko <glider@google.com>
+
 ---
- arch/arm64/boot/dts/renesas/r9a08g045.dtsi | 68 ++++++++++++++++++++++
- 1 file changed, 68 insertions(+)
+This patch was previously part of the "Implement MTE tag compression for
+swapped pages" series
+(https://lore.kernel.org/linux-arm-kernel/20231011172836.2579017-4-glider@google.com/T/)
 
-diff --git a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-index 6c7b29b69d0e..010bca626855 100644
---- a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-@@ -96,6 +96,7 @@ pinctrl: pinctrl@11030000 {
- 			#gpio-cells = <2>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
-+			interrupt-parent = <&irqc>;
- 			gpio-ranges = <&pinctrl 0 0 152>;
- 			clocks = <&cpg CPG_MOD R9A08G045_GPIO_HCLK>;
- 			power-domains = <&cpg>;
-@@ -104,6 +105,73 @@ pinctrl: pinctrl@11030000 {
- 				 <&cpg R9A08G045_GPIO_SPARE_RESETN>;
- 		};
+This patch was previously called "lib/bitmap: add
+bitmap_{set,get}_value()"
+(https://lore.kernel.org/lkml/20230720173956.3674987-2-glider@google.com/)
+
+v8:
+ - as suggested by Andy Shevchenko, handle reads/writes of more than
+   BITS_PER_LONG bits, add a note for 32-bit systems
+
+v7:
+ - Address comments by Yury Norov, Andy Shevchenko, Rasmus Villemoes:
+   - update code comments;
+   - get rid of GENMASK();
+   - s/assign_bit/__assign_bit;
+   - more vertical whitespace for better readability;
+ - more compact code for bitmap_write() (now for real)
+
+v6:
+ - As suggested by Yury Norov, do not require bitmap_read(..., 0) to
+   return 0.
+
+v5:
+ - Address comments by Yury Norov:
+   - updated code comments and patch title/description
+   - replace GENMASK(nbits - 1, 0) with BITMAP_LAST_WORD_MASK(nbits)
+   - more compact bitmap_write() implementation
+
+v4:
+ - Address comments by Andy Shevchenko and Yury Norov:
+   - prevent passing values >= 64 to GENMASK()
+   - fix commit authorship
+   - change comments
+   - check for unlikely(nbits==0)
+   - drop unnecessary const declarations
+   - fix kernel-doc comments
+   - rename bitmap_{get,set}_value() to bitmap_{read,write}()
+---
+ include/linux/bitmap.h | 81 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 81 insertions(+)
+
+diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+index 03644237e1efb..d63d5e4b4ab54 100644
+--- a/include/linux/bitmap.h
++++ b/include/linux/bitmap.h
+@@ -77,6 +77,10 @@ struct device;
+  *  bitmap_to_arr64(buf, src, nbits)            Copy nbits from buf to u64[] dst
+  *  bitmap_get_value8(map, start)               Get 8bit value from map at start
+  *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
++ *  bitmap_read(map, start, nbits)              Read an nbits-sized value from
++ *                                              map at start
++ *  bitmap_write(map, value, start, nbits)      Write an nbits-sized value to
++ *                                              map at start
+  *
+  * Note, bitmap_zero() and bitmap_fill() operate over the region of
+  * unsigned longs, that is, bits behind bitmap till the unsigned long
+@@ -599,6 +603,83 @@ static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
+ 	map[index] |= value << offset;
+ }
  
-+		irqc: interrupt-controller@11050000 {
-+			compatible = "renesas,r9a08g045-irqc", "renesas,rzg2l-irqc";
-+			#interrupt-cells = <2>;
-+			#address-cells = <0>;
-+			interrupt-controller;
-+			reg = <0 0x11050000 0 0x10000>;
-+			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 429 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 430 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 431 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 432 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 433 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 434 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 435 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 436 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 437 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 438 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 439 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 440 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 441 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 442 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 443 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 444 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 445 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 446 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 447 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 448 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 449 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 450 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 451 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 452 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 453 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 454 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 455 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 456 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 457 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 458 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 459 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 460 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "nmi",
-+					  "irq0", "irq1", "irq2", "irq3",
-+					  "irq4", "irq5", "irq6", "irq7",
-+					  "tint0", "tint1", "tint2", "tint3",
-+					  "tint4", "tint5", "tint6", "tint7",
-+					  "tint8", "tint9", "tint10", "tint11",
-+					  "tint12", "tint13", "tint14", "tint15",
-+					  "tint16", "tint17", "tint18", "tint19",
-+					  "tint20", "tint21", "tint22", "tint23",
-+					  "tint24", "tint25", "tint26", "tint27",
-+					  "tint28", "tint29", "tint30", "tint31",
-+					  "bus-err";
-+			clocks = <&cpg CPG_MOD R9A08G045_IA55_CLK>,
-+				 <&cpg CPG_MOD R9A08G045_IA55_PCLK>;
-+			clock-names = "clk", "pclk";
-+			power-domains = <&cpg>;
-+			resets = <&cpg R9A08G045_IA55_RESETN>;
-+		};
++/**
++ * bitmap_read - read a value of n-bits from the memory region
++ * @map: address to the bitmap memory region
++ * @start: bit offset of the n-bit value
++ * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG
++ *
++ * Returns: value of nbits located at the @start bit offset within the @map
++ * memory region.
++ *
++ * Note: callers on 32-bit systems must be careful to not attempt reading more
++ * than sizeof(unsigned long).
++ */
++static inline unsigned long bitmap_read(const unsigned long *map,
++					unsigned long start,
++					unsigned long nbits)
++{
++	size_t index = BIT_WORD(start);
++	unsigned long offset = start % BITS_PER_LONG;
++	unsigned long space = BITS_PER_LONG - offset;
++	unsigned long value_low, value_high;
 +
- 		sdhi0: mmc@11c00000  {
- 			compatible = "renesas,sdhi-r9a08g045", "renesas,rcar-gen3-sdhi";
- 			reg = <0x0 0x11c00000 0 0x10000>;
++	if (unlikely(!nbits || nbits > BITS_PER_LONG))
++		return 0;
++
++	if (space >= nbits)
++		return (map[index] >> offset) & BITMAP_LAST_WORD_MASK(nbits);
++
++	value_low = map[index] & BITMAP_FIRST_WORD_MASK(start);
++	value_high = map[index + 1] & BITMAP_LAST_WORD_MASK(start + nbits);
++	return (value_low >> offset) | (value_high << space);
++}
++
++/**
++ * bitmap_write - write n-bit value within a memory region
++ * @map: address to the bitmap memory region
++ * @value: value to write, clamped to nbits
++ * @start: bit offset of the n-bit value
++ * @nbits: size of value in bits, nonzero, up to BITS_PER_LONG.
++ *
++ * bitmap_write() behaves as-if implemented as @nbits calls of __assign_bit(),
++ * i.e. bits beyond @nbits are ignored:
++ *
++ *   for (bit = 0; bit < nbits; bit++)
++ *           __assign_bit(start + bit, bitmap, val & BIT(bit));
++ *
++ * Note: callers on 32-bit systems must be careful to not attempt writing more
++ * than sizeof(unsigned long).
++ */
++static inline void bitmap_write(unsigned long *map,
++				unsigned long value,
++				unsigned long start, unsigned long nbits)
++{
++	size_t index;
++	unsigned long offset;
++	unsigned long space;
++	unsigned long mask;
++	bool fit;
++
++	if (unlikely(!nbits || nbits > BITS_PER_LONG))
++		return;
++
++	mask = BITMAP_LAST_WORD_MASK(nbits);
++	value &= mask;
++	offset = start % BITS_PER_LONG;
++	space = BITS_PER_LONG - offset;
++	fit = space >= nbits;
++	index = BIT_WORD(start);
++
++	map[index] &= (fit ? (~(mask << offset)) : ~BITMAP_FIRST_WORD_MASK(start));
++	map[index] |= value << offset;
++	if (fit)
++		return;
++
++	map[index + 1] &= BITMAP_FIRST_WORD_MASK(start + nbits);
++	map[index + 1] |= (value >> space);
++}
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* __LINUX_BITMAP_H */
 -- 
-2.39.2
+2.42.0.655.g421f12c284-goog
 
