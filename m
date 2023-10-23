@@ -2,49 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8360F7D288D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 04:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEB67D288F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 04:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbjJWCbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 22:31:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41616 "EHLO
+        id S233142AbjJWCdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 22:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjJWCbs (ORCPT
+        with ESMTP id S229460AbjJWCdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 22:31:48 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5777DD53;
-        Sun, 22 Oct 2023 19:31:46 -0700 (PDT)
+        Sun, 22 Oct 2023 22:33:50 -0400
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A7419E;
+        Sun, 22 Oct 2023 19:33:48 -0700 (PDT)
 Received: from localhost (mdns.lwn.net [45.79.72.68])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E472E490;
-        Mon, 23 Oct 2023 02:31:45 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E472E490
+        by ms.lwn.net (Postfix) with ESMTPSA id 964E9490;
+        Mon, 23 Oct 2023 02:33:48 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 964E9490
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1698028306; bh=Uw61RBSrWO+kzG/8ysYLw2pSMNLgRXpIrb6BVel9Oww=;
+        t=1698028428; bh=vzgeFGkFSqPIgHNAJHxlcyz1JCTtG7otv1v1ROzSLAw=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ZvhDBVoOVqheBDZNUD8Z69j3AEYTCRPUL5xgE9tGqzJTMsCF8GSavgFPMxpXb2i46
-         9VUz4ieS223/z2pSabl54fY/eiW9k+koODKyiDuqUcVGadNVBdXF7Ksz7WQ0X3eZJQ
-         RUthLMM6Nr4EvGeLHke9UgmCsBUpskhVfvn/A654B+TPhiRF+jE5YrIj7E9BatD5sM
-         Yo+vY0Ass9BwO3M8siYQtWkEIG2tEM9vfhp62qvPy8Za854K4aMvGTf4TccNVy94K/
-         4t7/4iXBlpjdTAD7TGxxt0+6L9sWv/xeKJn4xNiV1yp9XRUS9phdOtbLBnPf4ykhgC
-         sqOvUpyefts/A==
+        b=dNUp1DWb19ut6NkvtpwLCAZbZAzFR66O2hheAg6PSWXgNxyU15EcOxwTBGy/CuWYl
+         stryOpcN+K3Sbck4nSxTCq9pgm/zeQzApdlYsRBLTfuRlOUZcaOVxHuzEHcY8MsFs/
+         nd60vIFxROxJZeM6RmLj1tpLIvxM0vnUoN4m6VKehunyaNatYMg+CovFxtgx8yVO/a
+         BLxVVA5WfHemmai6uZUlh+vw9jddKIZ4AEeQAhoHjZBNMQx1QXScMBWH4t0MC1FSMi
+         YmjA8D3Mb9NQZz7qRqh1e8QguMghXOenukBKC/eIHsmHnxKTEKu6KslbxnRaoogLmH
+         8es1B1M5oisgA==
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     Willy Tarreau <w@1wt.eu>, linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jkosina@suse.cz>,
-        security@kernel.org, workflows@vger.kernel.org,
-        Willy Tarreau <w@1wt.eu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Solar Designer <solar@openwall.com>,
-        Vegard Nossum <vegard.nossum@oracle.com>
-Subject: Re: [PATCH] Documentation: security-bugs.rst: linux-distros relaxed
- their rules
-In-Reply-To: <20231015130959.26242-1-w@1wt.eu>
-References: <20231015130959.26242-1-w@1wt.eu>
-Date:   Sun, 22 Oct 2023 20:31:45 -0600
-Message-ID: <87zg0ajcha.fsf@meer.lwn.net>
+To:     Charles Han <hanchunchao@inspur.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Charles Han <hanchunchao@inspur.com>
+Subject: Re: [PATCH] Documentation/sphinx: Remove the repeated word "the" in
+ comments.
+In-Reply-To: <20231018023046.30022-1-hanchunchao@inspur.com>
+References: <20231018023046.30022-1-hanchunchao@inspur.com>
+Date:   Sun, 22 Oct 2023 20:33:47 -0600
+Message-ID: <87v8ayjcdw.fsf@meer.lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -56,30 +51,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Willy Tarreau <w@1wt.eu> writes:
+Charles Han <hanchunchao@inspur.com> writes:
 
-> The linux-distros list relaxed their rules to try to adapt better to
-> how the Linux kernel works. Let's update the Coordination part to
-> explain why and when to contact them or not to and how to avoid trouble
-> in the future.
+> Remove the repeated word "the" in comments.
 >
-> Link: https://www.openwall.com/lists/oss-security/2023/09/08/4
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Solar Designer <solar@openwall.com>
-> Cc: Vegard Nossum <vegard.nossum@oracle.com>
-> Acked-by: Jiri Kosina <jkosina@suse.cz>
-> Signed-off-by: Willy Tarreau <w@1wt.eu>
+> Signed-off-by: Charles Han <hanchunchao@inspur.com>
 > ---
+>  Documentation/sphinx/cdomain.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> This is the final version for merging. Changes since RFC:
->   - s/BEFORE/UNTIL from Vegard
->   - improved wording from Alexander
->   - acked-by from Jiri
+> diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
+> index de5d132d94c5..4eb150bf509c 100644
+> --- a/Documentation/sphinx/cdomain.py
+> +++ b/Documentation/sphinx/cdomain.py
+> @@ -151,7 +151,7 @@ class CObject(Base_CObject):
+>      def handle_func_like_macro(self, sig, signode):
+>          u"""Handles signatures of function-like macros.
+>  
+> -        If the objtype is 'function' and the the signature ``sig`` is a
+> +        If the objtype is 'function' and the signature ``sig`` is a
+>          function-like macro, the name of the macro is returned. Otherwise
 
-Greg, you've taken changes to this file in the past; do you want to grab
-this one or should I pick it up?
-
-Thanks,
+Applied, thanks.
 
 jon
