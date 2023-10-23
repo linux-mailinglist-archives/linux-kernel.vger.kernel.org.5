@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDEE7D2F85
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9791F7D2F89
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbjJWKNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 06:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
+        id S229740AbjJWKOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 06:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbjJWKNV (ORCPT
+        with ESMTP id S229594AbjJWKOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 06:13:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E4ED7A;
-        Mon, 23 Oct 2023 03:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698055999; x=1729591999;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lUqcNyeEWqG+/5OmMSoWR9OibhxOM4OinwmqXR7AGrI=;
-  b=bWlA1dIz+SsM1q1sw2dFUxSszmA76iP/qxJLm5DZtS2WF4AOstg+P5w5
-   Xrs5SQm8OIH8Gbv8PbRM/Rxx7kS1JDA6vcr78fwmWHcLBxnAkvgIhJfKG
-   Op4Zqi1ridnRkid0+hXFPZZCeei4e/O33S4yrkaWdY1/OWKfMF7uP1/RI
-   Xd19aJGJYgkUI54dBTl7qIGgdICfe6WxvT78PlaH6P3TZk/nDEuU5KD5e
-   e6WxRvxK5S56X+irVJZoR63UdVJ0Ysz5VnPEu8K1hzNnoXTGKXcRWvXL/
-   Zb4WgJwQwkE+DetB4YhRt66XgZc5vF+wR4IF/57FphWk5609+y6m8qHNA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="8364947"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="8364947"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 03:13:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="881716793"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="881716793"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 03:13:16 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qurvt-00000007uDG-1P00;
-        Mon, 23 Oct 2023 13:13:13 +0300
-Date:   Mon, 23 Oct 2023 13:13:13 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     syzbot <syzbot+b8bf7edf9f83071ea0a9@syzkaller.appspotmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, rafael@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [kernel?] general protection fault in wpan_phy_register
-Message-ID: <ZTZHObssfh+46Lm6@smile.fi.intel.com>
-References: <0000000000008f824606052a2d9b@google.com>
- <000000000000af2dbf06083f7baf@google.com>
+        Mon, 23 Oct 2023 06:14:45 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E462DA
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:14:43 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 29C11660708F;
+        Mon, 23 Oct 2023 11:14:41 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698056082;
+        bh=MxExbhPEmRnX1oZHQ8dpqIbO6ZBxZpcKiSBVYh9I8qE=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=ZDoSbWz8VwrfWDv1AdKAK5HqmMgZ3jaEXesZiPRJlHKW32qnlL+PLwmStj1xN/1gf
+         mTF1RL9EPMGogD3qzPHnT+xAprCUxujTFVIo0mK4h9XJ0wGFVXQIRx7dmCSRVIcWnK
+         moCcVhaxelvceh7KcjOc8Q0g0Q1T9WiA1VkHWCDog0LDKEysJUQVx9H7hyASQ3gDcZ
+         fjs1+pNCfFk4ziuFwOYkBIwvmyIhNoMi4dNWYtjODtCwDvftdim8l4LVVLjkKhrFQZ
+         ieDyDnF8kXfPVNCk0rb/r7K0w2S0jKy+io19rSgIGXNXwrvHq7B7Ili0fz6WnKR31V
+         L0Ze6sDnGIZ3A==
+Message-ID: <64a04871-7671-40c8-9b70-f2d9c7d5be32@collabora.com>
+Date:   Mon, 23 Oct 2023 12:14:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000af2dbf06083f7baf@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 6/9] mailbox: mediatek: Add CMDQ driver support for
+ mt8188
+Content-Language: en-US
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Jeffrey Kardatzke <jkardatzke@google.com>,
+        Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        Johnson Wang <johnson.wang@mediatek.com>,
+        Singo Chang <singo.chang@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>,
+        Shawn Sung <shawn.sung@mediatek.com>
+References: <20231023043751.17114-1-jason-jh.lin@mediatek.com>
+ <20231023043751.17114-7-jason-jh.lin@mediatek.com>
+ <72277a7e-83a6-4947-8f2a-4881aa8ac766@collabora.com>
+In-Reply-To: <72277a7e-83a6-4947-8f2a-4881aa8ac766@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 21, 2023 at 01:03:31PM -0700, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
+Il 23/10/23 11:50, AngeloGioacchino Del Regno ha scritto:
+> Il 23/10/23 06:37, Jason-JH.Lin ha scritto:
+>> Add CMDQ driver support for mt8188 by adding its compatible and
+>> driver data in CMDQ driver.
+>>
+>> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
 > 
-> commit fd6f7ad2fd4d53fa14f4fd190f9b05d043973892
-> Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Date:   Mon Aug 28 14:58:24 2023 +0000
+> Please fix the commit title...
 > 
->     driver core: return an error when dev_set_name() hasn't happened
+> mailbox: mtk-cmdq: Add support for MT8188 mailbox
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13ea2e89680000
-> start commit:   ac28b1ec6135 net: ipv4: fix one memleak in __inet_del_ifa()
-> git tree:       net
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e82a7781f9208c0d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b8bf7edf9f83071ea0a9
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14871d58680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ace678680000
+> Regards,
+> Angelo
 > 
-> If the result looks correct, please mark the issue as fixed by replying with:
 
-#syz fix: driver core: return an error when dev_set_name() hasn't happened
-
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
--- 
-With Best Regards,
-Andy Shevchenko
+I just noticed that the secure mailbox driver will need quite a few versions
+before reaching a somewhat acceptable state, so I'd also consider sending this
+commit separately from the secure cmdq series, as this is simply adding the
+support for mt8188.
 
 
