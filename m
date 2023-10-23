@@ -2,121 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEED7D3C1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09867D3BE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233710AbjJWQRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 12:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52636 "EHLO
+        id S232176AbjJWQLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 12:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233601AbjJWQR0 (ORCPT
+        with ESMTP id S232406AbjJWQLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 12:17:26 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9417310D;
-        Mon, 23 Oct 2023 09:17:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7C5611FE28;
-        Mon, 23 Oct 2023 16:17:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1698077841; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=DjohuKj/JGQK/JzPuzdWq8JAOGu9hR/RcVdBLoZV2Xs=;
-        b=D/ToyYk/YtdRkQwUH+7vrDLV/MMenf3MPC0A0+RGYUGlHMWT1e649KlyKvQgdW+9uuRWxv
-        xP0TICmNLKY8GUFmazr+lyH5Cw9VKg4L+vlpG5cRlkm64malEYuYcHV/HBi0UmDks3k9r9
-        2ll4KzozOuXe/VvfEY35yuH/R0VBoRk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1698077841;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=DjohuKj/JGQK/JzPuzdWq8JAOGu9hR/RcVdBLoZV2Xs=;
-        b=buB8aXQcYJ0HkzvkR7cmX1seo2j1fIl9XFxw6bNJDQFpW4nBf169/cf3XVkVYVb8Khh255
-        dTpOwsxnn5WFtqBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 51A00139C2;
-        Mon, 23 Oct 2023 16:17:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WY2yEpGcNmXbKwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Mon, 23 Oct 2023 16:17:21 +0000
-Date:   Mon, 23 Oct 2023 18:10:27 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     torvalds@linux-foundation.org
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fix for 6.6-rc8
-Message-ID: <cover.1698076832.git.dsterba@suse.com>
+        Mon, 23 Oct 2023 12:11:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F7A10E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:11:37 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698077496;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bO2BXye1lMp4h+BXWFd2ZCWFmLCstWT9fiAOX+cFNvc=;
+        b=Jkk1MIduHCB1MF5WJx4RWCSZ8fW9+U+ytu9yAvC3tDHutUzhDqvVluOFridpUxx1XGgHDe
+        WtnQfGfWAttalqAmdInYz36TOlO0Ll2TFLn5ToLMU5k2bVzRfVUxtYhQPi1bPBgCDwe80e
+        cwoclFaSLruuDzHSDHSTyZvRQjv6b6wJFO9qbTedGGJFNhKrWBvw/Vn3ejgcLcvyLcYNUl
+        jP4+vtixe/mZITuy3GoFdjigXrjl93Nv+4nxTznlItgkpjkemItdzn6AlZW88H8EfQtZLH
+        dhP2XgE0NM2o47ND1nPLwqfZkkO50DCqWpQl3PjxZoMHCOX3ABDFL8tUJah7kw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698077496;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bO2BXye1lMp4h+BXWFd2ZCWFmLCstWT9fiAOX+cFNvc=;
+        b=lWLEqAuyKfuaLlXO6AMm4ZKc2+rIWXy1PzymO7xE1YLVZgaQdbJop3PJvcnEPSWd8Yzaxb
+        oiKD8Ywq/zWbA3DQ==
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-mm@kvack.org
+Cc:     Nirmoy Das <nirmoy.das@intel.com>
+Subject: Re: [Intel-gfx] [PATCH v2] debugobjects: stop accessing objects
+ after releasing spinlock
+In-Reply-To: <62e16250-63f4-4fbb-b00e-db808b600664@intel.com>
+References: <20230925131359.2948827-1-andrzej.hajda@intel.com>
+ <87v8bak6iy.ffs@tglx> <62e16250-63f4-4fbb-b00e-db808b600664@intel.com>
+Date:   Mon, 23 Oct 2023 18:11:35 +0200
+Message-ID: <87r0llco94.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.84
-X-Spamd-Result: default: False [-5.84 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[3];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         TO_DN_NONE(0.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-1.74)[93.41%]
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Oct 19 2023 at 12:31, Andrzej Hajda wrote:
+> On 13.10.2023 15:15, Thomas Gleixner wrote:
+>> It cannot be freed. If that happens then the calling code will have an
+>> UAF problem on the tracked item too.
+>
+> Yes, and I have assumed that debugobjects are created also for detecting 
+> UAFs.
 
-one more fix for a problem with snapshot of a newly created subvolume
-that can lead to inconsistent data under some circumstances. Kernel 6.5
-added a performance optimization to skip transaction commit for
-subvolume creation but this could end up with newer data on disk but not
-linked to other structures.
+Kinda.
 
-The fix itself is an added condition, the rest of the patch is a
-parameter added to several functions.
+> They should be able to handle/detect 'issues due to incorrectly 
+> serialized concurrent accesses' scenarios as well, at least some of 
+> them. And even if it cannot recover it should at least provide reliable 
+> reporting.
 
-Please pull, thanks.
+Fair enough.
 
-----------------------------------------------------------------
-The following changes since commit 8a540e990d7da36813cb71a4a422712bfba448a4:
+> Now we can have scenario:
+> 1. Thread tries to deactivate destroyed object, debugobjects detects it, 
+> spin lock is released, thread is preempted.
+> 2. Other thread frees debugobject, then allocates new one on the same 
+> memory location, ie 'obj' variable from 1st thread point to it - it is 
+> possible because there is no locking.
+> 3. Then preemption occurs, and 1st thread reports error for wrong object.
+>
+> This seems the most drastic for me, but also with lowest chances to 
+> happen due to delayed freeing, but there are also other more probable 
+> scenarios when we print the same object but in state different from the 
+> one when debugobject detected issue, due to modification by concurrent 
+> thread.
 
-  btrfs: fix stripe length calculation for non-zoned data chunk allocation (2023-10-15 19:00:59 +0200)
+Now I understand what you mean. This information should be in the
+changelog, no?
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.6-rc7-tag
-
-for you to fetch changes up to eb96e221937af3c7bb8a63208dbab813ca5d3d7e:
-
-  btrfs: fix unwritten extent buffer after snapshotting a new subvolume (2023-10-23 17:17:30 +0200)
-
-----------------------------------------------------------------
-Filipe Manana (1):
-      btrfs: fix unwritten extent buffer after snapshotting a new subvolume
-
- fs/btrfs/backref.c    | 14 +++++++++-----
- fs/btrfs/backref.h    |  3 ++-
- fs/btrfs/ctree.c      | 21 ++++++++++++++++-----
- fs/btrfs/ctree.h      |  3 ++-
- fs/btrfs/relocation.c |  7 ++++---
- 5 files changed, 33 insertions(+), 15 deletions(-)
+Let me stare at the patch once more.
