@@ -2,104 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DE57D3F22
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C877D3F26
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbjJWSXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 14:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55894 "EHLO
+        id S233353AbjJWSYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 14:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbjJWSXg (ORCPT
+        with ESMTP id S233708AbjJWSX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 14:23:36 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5089B
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:23:34 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3b2e308a751so1869263b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:23:34 -0700 (PDT)
+        Mon, 23 Oct 2023 14:23:57 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685389D
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:23:54 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bb9a063f26so53131331fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:23:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1698085414; x=1698690214; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=asV/mzEgZ0QPpPGTkL/tZKxIZbV4pZf1YGZ30QE3Rpg=;
-        b=AUeGajGcM9qqd0H0+u84YQUazg5mZQSwadjvuIsUeKb8yUmWQn/xmc7Whjnxg7YNDv
-         OLaZ6TPBJNlFrf/0GYxZwWVgO5T0PpAe511cRJx3fatgj7qQmk3EUia+c095gQ45z2em
-         vMDGCKr1HdcDOhO1/MNr7TgnyAgQmcx5lk++9UpUsv9WTU7lFHuAmMSELdOYH1mKuUmK
-         8+2hMZya9TPOSjx9FQ7j40yEA05AQH3+EpDf7o/diKFgBqLGXvtWKfiZmZbrZQm1VfEd
-         9Ll36m7GRWwyEoxMMZ6JX++nr0sr5ajAzK/UHI+YFe0obsrym+SMlDg3gXTNDN8pHi2h
-         NQ3A==
+        d=linaro.org; s=google; t=1698085432; x=1698690232; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jH+xgTdGBybTpfmszxd0jH64ej1Z8AlGRUmXL3RZD+E=;
+        b=TfLYPjNTO5DE3b2oOAeEdyXA6CjpxzFgEVtoXNy3TaUkCjIUIbI8KMANDCl+iK3hqv
+         tI3PbDj5gYEXZN9dJ5cuJnBmE+xCXOllS/ddUX4zUNTuDOVtCwSwHhEJ+qee61F5fvEK
+         ytSTfwad+RnSCxbmxIw8n+ZvgFomeML0+EzukGUZ9F5D3NcYEQMAQEjKKitPJlBcb37V
+         FmtN9/CnpakyiOMdo1EGQWkygA67yK1SQTaGj24tbXGK8BBR5g24dGo8Qtu8gYpADxvL
+         iYIAfTyGeFklyPyg2Z58tsmp6xgjpn/p6rey/dO23jtAOozZmbcNnw5G/j2QhUSC9ND8
+         odnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698085414; x=1698690214;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=asV/mzEgZ0QPpPGTkL/tZKxIZbV4pZf1YGZ30QE3Rpg=;
-        b=Gj8n0Qi5O0EC4D32M56UpmoCm/ll3D1fs9i7HkXT1Rfm8/mHPhyoLHVtXle52ITQX5
-         DecmsIrHTbDxmAIwnZIok66KWCoFb0WoUXNpAFW/383aS2+u0CUZ6zPOsrE0tTkCDwhs
-         iAFAFf6jWtiYAWI+rorvsMWvclZhrVywO7o+w1dq82ZW97GOV5v88ilGZ69A1xtyxR8r
-         loI3aWLdnUdGMkmIPuPQ3uLlQDfpCUfSY9xLhP2PvyZCJWc9r33cYCH+ZuwcztwCd+yC
-         YUDb4klXws724bke4OiVOHkJY9Djg1mM0HHBcV2olynbKm6Pwc1FM6+beXOhfGD953Bs
-         yRJw==
-X-Gm-Message-State: AOJu0YwB6TnAnzgcteJ13KKV0fmslNvBvZ5QGStez9rXH/MAuG9imMyf
-        RAVcajI+UEinnJR0veusHbGIwQ==
-X-Google-Smtp-Source: AGHT+IEqObC+cIKLIFikGXPFoFK2xQU9I3Zh+K8TuPgknSCWC7VYdDuKHSMhiAnrYCeSVxsNF5l/Cw==
-X-Received: by 2002:a05:6808:1a24:b0:3b0:f8bd:9503 with SMTP id bk36-20020a0568081a2400b003b0f8bd9503mr8622436oib.10.1698085414027;
-        Mon, 23 Oct 2023 11:23:34 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id j9-20020a544809000000b003b2e4b72a75sm1582234oij.52.2023.10.23.11.23.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 11:23:33 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1quzaO-003jRh-QZ;
-        Mon, 23 Oct 2023 15:23:32 -0300
-Date:   Mon, 23 Oct 2023 15:23:32 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     sharmaajay@linuxonhyperv.com
-Cc:     Long Li <longli@microsoft.com>, Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: Re: [Patch v7 5/5] RDMA/mana_ib: Send event to qp
-Message-ID: <20231023182332.GL691768@ziepe.ca>
-References: <1697494322-26814-1-git-send-email-sharmaajay@linuxonhyperv.com>
- <1697494322-26814-6-git-send-email-sharmaajay@linuxonhyperv.com>
+        d=1e100.net; s=20230601; t=1698085432; x=1698690232;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jH+xgTdGBybTpfmszxd0jH64ej1Z8AlGRUmXL3RZD+E=;
+        b=X3g3Ng8X9FOiRS5wqL7f8Ntj1wt6yJzxK2LCDwsRcMOnlwNpeKys4J9bTHRJBixMrJ
+         T+CaBOwkEeknCjIFzMYv1tJgZglQY/GN/8kpV4aBA2pMwDepOGEv0aiYO2jskcSDT68p
+         5mjz2rX8JyPwhw2/qsSExmIe1RTyy3Jd8gGP1SRFUDL1SLQXys8WKG/XJtFjj7ZrXf8u
+         /HeEoqWboZTRKzq4k1pPXY2BtjHk4JPYWu9q4qF9YJBtpupPMwU4VJ3dj16qKSJjxVnz
+         u8CfiN2ii7DkMp338ZVi6xaxJrytu+O2+2Zi/ZmgvpkvUzHZi8kUJf/9U1wAw7yPiEtL
+         fSFw==
+X-Gm-Message-State: AOJu0YwfxPCLAVuQn0GvPjt9aFWymfBSB4eoP6i2/9Km+7TOUpp1aifU
+        ECypV0m4aVQORu7wB/4mX9M27IkycDmdJTqd4cN+zA==
+X-Google-Smtp-Source: AGHT+IEB5Xq1aY5x1xCr3qk4yDLLwsgqiYTB5BdIH+raasp//KeLJvmiD97BLkXk5ja6clWVenuP/A==
+X-Received: by 2002:a2e:b00d:0:b0:2c5:260:1026 with SMTP id y13-20020a2eb00d000000b002c502601026mr6726112ljk.12.1698085432161;
+        Mon, 23 Oct 2023 11:23:52 -0700 (PDT)
+Received: from [192.168.198.23] ([37.166.19.143])
+        by smtp.googlemail.com with ESMTPSA id m15-20020a7bcb8f000000b0040523bef620sm5242731wmi.0.2023.10.23.11.23.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 11:23:51 -0700 (PDT)
+Message-ID: <3a70280b-8cc4-9f22-92b7-088fa9cb45df@linaro.org>
+Date:   Mon, 23 Oct 2023 20:23:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1697494322-26814-6-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 06/18] PM: EM: Check if the get_cost() callback is
+ present in em_compute_costs()
+Content-Language: en-US
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, rafael@kernel.org
+Cc:     dietmar.eggemann@arm.com, rui.zhang@intel.com,
+        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+        viresh.kumar@linaro.org, len.brown@intel.com, pavel@ucw.cz,
+        mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com
+References: <20230925081139.1305766-1-lukasz.luba@arm.com>
+ <20230925081139.1305766-7-lukasz.luba@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20230925081139.1305766-7-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 03:12:02PM -0700, sharmaajay@linuxonhyperv.com wrote:
+On 25/09/2023 10:11, Lukasz Luba wrote:
+> The em_compute_cost() is going to be re-used in runtime modified EM
+> code path. Thus, make sure that this common code is safe and won't
+> try to use the NULL pointer. The former em_compute_cost() didn't have to
+> care about runtime modification code path. The upcoming changes introduce
+> such option, but with different callback. Those two paths which use
+> get_cost() (during first EM registration) or update_power() (during
+> runtime modification) need to be safely handled in em_compute_costs().
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>   kernel/power/energy_model.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+> index 7ea882401833..35e07933b34a 100644
+> --- a/kernel/power/energy_model.c
+> +++ b/kernel/power/energy_model.c
+> @@ -116,7 +116,7 @@ static int em_compute_costs(struct device *dev, struct em_perf_state *table,
+>   	for (i = nr_states - 1; i >= 0; i--) {
+>   		unsigned long power_res, cost;
+>   
+> -		if (flags & EM_PERF_DOMAIN_ARTIFICIAL) {
+> +		if (flags & EM_PERF_DOMAIN_ARTIFICIAL && cb->get_cost) {
+>   			ret = cb->get_cost(dev, table[i].frequency, &cost);
+>   			if (ret || !cost || cost > EM_MAX_POWER) {
+>   				dev_err(dev, "EM: invalid cost %lu %d\n",
 
-> diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-> index ef3275ac92a0..19fae28985c3 100644
-> --- a/drivers/infiniband/hw/mana/qp.c
-> +++ b/drivers/infiniband/hw/mana/qp.c
-> @@ -210,6 +210,8 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
->  		wq->id = wq_spec.queue_index;
->  		cq->id = cq_spec.queue_index;
->  
-> +		xa_store(&mib_dev->rq_to_qp_lookup_table, wq->id, qp, GFP_KERNEL);
-> +
+I do believe & operator has lower precedence than && operator, thus the 
+test is actually:
 
-A store with no erase?
+	(flags & (EM_PERF_DOMAIN_ARTIFICIAL && cb->get_cost))
 
-A load with no locking?
+but it should be
 
-This can't be right
+	((flags & EM_PERF_DOMAIN_ARTIFICIAL) && cb->get_cost)
 
-Jason
+Right ?
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
