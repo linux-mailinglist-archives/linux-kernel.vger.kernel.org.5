@@ -2,147 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AE17D2C8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DA57D2C90
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbjJWIW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:22:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
+        id S230056AbjJWIXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjJWIW5 (ORCPT
+        with ESMTP id S230097AbjJWIXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:22:57 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BCAEDD
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:22:54 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-407c3adef8eso26039225e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:22:54 -0700 (PDT)
+        Mon, 23 Oct 2023 04:23:08 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EB5DA;
+        Mon, 23 Oct 2023 01:23:06 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 2adb3069b0e04-507962561adso4229318e87.0;
+        Mon, 23 Oct 2023 01:23:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698049373; x=1698654173; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4ur7OAzL3rXJ2BZv3wgrbrrRGTJoSl6hOxecTkEiYO8=;
-        b=wjj3VsMF7FR725Yg29QNznIi9zrdwpU+Vc5w4vV+zOlKMqMm02KgAlNvq9Lj6bWp4/
-         MseZvLBVuQmRZOZkJXTHbeamuftRGjDwBM0w+9X/7erX87i1RYjbiqzrk8wtI+t8xnqE
-         q+dmjS3xLKSmFQA/87kfZUlpW1AFn2Gh9nxACFz6l5BCUxobpcTrY8UNz3rMMy8gYkla
-         Gcyy6RgZh+NlCi0SktyUQI5f1aosGpQIcH+xVXSVhSJ3sGeVREgjJCnpzzTvgNKFGsAP
-         aH7uYJ/mshPkkUAO18FqwlcEBjtMLO6eaXmKu1xXeZwqo72Ey993CtIUHiLy3RUzfRHM
-         9MKw==
+        d=gmail.com; s=20230601; t=1698049384; x=1698654184; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yILl0/y7g1lM4NMlXc0rK5OqjDqsDZrg7ur6TMfehp0=;
+        b=YC4ClkL3cV+mamVoYk1UzUAjG4c6pTBfAHh3uWMLRgbvvjACwY24sNUFxA7c2E5Qyy
+         vAKLuvAmjvMBFHjs2HYZzvx9fOoBCD2laXJxaE8x6k+7wU4980g0rxaoINO4CDouQkPu
+         QIvMe/W8qjxaFjsKzpfosoUcm542IMUaY4z3bhhnN8AR3W4KmzBqymDsqvZaBZwrO+Hg
+         fIEiMIT07kvzwCB9Qm3o23QxHPD7sNBW+GhPIfisGxnm7zgckBLPW30oG+mBj9Sr8OBY
+         5xTGIdrXOOAoII7NvySrPhBquqP2C6X+5jMlyUoOGk7THhvsK50wxhInrP3DDjs/nomp
+         M/FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698049373; x=1698654173;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4ur7OAzL3rXJ2BZv3wgrbrrRGTJoSl6hOxecTkEiYO8=;
-        b=LMwT4OUQJSVMmjeW/wEjk1vtaZeK/lbpDON3044PUne5KYNrrTg9iKIxTWlGR/zrG4
-         NKH2dAg7Q7WSzek2FKlDZkfbPpb6qJAqXBidcY1mq8nA5KI/WWFQ6xR4LX+bwypI0v+l
-         Xdx8TsZC9q7RYZN0Gz5ZL7EDrMvvVEvwapSMgSDlS8/sqcTfPY2nlrLJbR3+Ty5jmzyb
-         9WcFuY/7vL/DXG4Yw/CiPh43tOPhiXO6KbsYz2Mtrma44h0zP2z0ZZVfXjR0vgF26l+u
-         LCtXLzdeN5251cHNcKzJh5D/wrgJZp5/4Xr/21YjvmNuVvUEIdnetIlddrvHF7kSw0i1
-         upVw==
-X-Gm-Message-State: AOJu0YxlZ8j3P3FRqiGwwqtikssehjrEfqJh0mukvGXuBz1EOJscJ8b7
-        NaovI0Pce3ctqmXdUlsUGyzERA==
-X-Google-Smtp-Source: AGHT+IHFbAIVD8w3xzxctRxZrrkPfu3LShhvAE7lBmYGSX8Ak5uHIcnEyPKcqhSYGAAqs2gaaCkL7A==
-X-Received: by 2002:a05:600c:3147:b0:405:3b92:2fed with SMTP id h7-20020a05600c314700b004053b922fedmr6130242wmo.26.1698049372894;
-        Mon, 23 Oct 2023 01:22:52 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id b13-20020a05600c11cd00b0040770ec2c19sm13511586wmi.10.2023.10.23.01.22.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 01:22:52 -0700 (PDT)
-Message-ID: <8f608e3c-a282-4df2-abcd-8e38efc35843@linaro.org>
-Date:   Mon, 23 Oct 2023 10:22:51 +0200
+        d=1e100.net; s=20230601; t=1698049384; x=1698654184;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yILl0/y7g1lM4NMlXc0rK5OqjDqsDZrg7ur6TMfehp0=;
+        b=X+i7YnFaf7GdimwNsBJgQP7Aqa3j5uelU/+ImAK0SBrvYC4yRoiMEjC7ZiQBhfm4IM
+         mmyXWUDz71KE4KKgy/nEdOfesqhpIm65h0XG3HmNKjBzPhRAdQvqR1eWci6MBIedh4Ce
+         5iBbLkg7vuxGBporKFjTAuhF/9s0+kMYCVMM4az5GnvVHi3JtbeqaPk+ujUJ+aErT/PF
+         CC5xaVNZ/9z6IhpZbwPulyU6NRhQZauFz7BgKu/fUTXI2eeFFSENr/QFR+uPIJJyRxZw
+         u/txQKwVbOOb3+RYYtwG1f282VluopudMxnUD7SjGmR/sXBTe9RCO5e+uqohwM4C/5I5
+         5wng==
+X-Gm-Message-State: AOJu0Yw/fbo4h7B3SX0imKMDc9xdUbXHhjPKLwzou4qIHBUhSs++EOMo
+        MnWljBLp1y4zoPu1gDu8QqM=
+X-Google-Smtp-Source: AGHT+IHfLv2FTvbtP+XDfCQMq0/4gQd56gQXMbgJziOzy1KkvTPqQfj0aDzIIvyqse8I9pxQmKfFcw==
+X-Received: by 2002:a05:6512:5c3:b0:500:cb2b:8678 with SMTP id o3-20020a05651205c300b00500cb2b8678mr5314280lfo.40.1698049383921;
+        Mon, 23 Oct 2023 01:23:03 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id u25-20020ac258d9000000b004f85d80ca64sm1608145lfo.221.2023.10.23.01.23.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 01:23:03 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 11:23:00 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Albert Esteve <aesteve@redhat.com>
+Cc:     qemu-devel@nongnu.org, zackr@vmware.com, contact@emersion.fr,
+        linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>, iforbes@vmware.com,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        David Airlie <airlied@gmail.com>, banackm@vmware.com,
+        Rob Clark <robdclark@gmail.com>, javierm@redhat.com,
+        krastevm@vmware.com, spice-devel@lists.freedesktop.org,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Airlie <airlied@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mombasawalam@vmware.com,
+        Daniel Vetter <daniel@ffwll.ch>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        Gerd Hoffmann <kraxel@redhat.com>
+Subject: Re: [PATCH v6 9/9] drm: Introduce documentation for hotspot
+ properties
+Message-ID: <20231023112300.732e18fa@eldfell>
+In-Reply-To: <20231023074613.41327-10-aesteve@redhat.com>
+References: <20231023074613.41327-1-aesteve@redhat.com>
+        <20231023074613.41327-10-aesteve@redhat.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] pinctrl: qcom: lpass-lpi: allow slew rate bit in
- main pin config register
-Content-Language: en-US
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231013145935.220945-1-krzysztof.kozlowski@linaro.org>
- <CACRpkdZUSkr2MLB870Y5O2Qxvbnz++XUKMm+BXG1yx9vrOEvwA@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CACRpkdZUSkr2MLB870Y5O2Qxvbnz++XUKMm+BXG1yx9vrOEvwA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/BqH+LEjYZrs8=tT7kXjXoDd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/2023 10:19, Linus Walleij wrote:
-> On Fri, Oct 13, 2023 at 4:59 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
-> 
-> 
->> Changes in v2
-> 
-> I tried to apply this to the pinctrl devel branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/log/?h=devel
-> 
-> It doesn't apply, could you rebase it?
+--Sig_/BqH+LEjYZrs8=tT7kXjXoDd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The context depends on my previous fix which you applied and sent for
-v6.6 already:
-https://lore.kernel.org/linux-arm-msm/CACRpkdaybnYEmkgv7VG4fh5sXQ7uwHm2wH2Khja-P1b6idYr8w@mail.gmail.com/
+On Mon, 23 Oct 2023 09:46:13 +0200
+Albert Esteve <aesteve@redhat.com> wrote:
 
-I can rebase, but I am afraid it will cause conflicts. Is it reasonable
-for you to merge v6.6-rc7 into your devel branch?
-
+> From: Michael Banack <banackm@vmware.com>
+>=20
+> To clarify the intent and reasoning behind the hotspot properties
+> introduce userspace documentation that goes over cursor handling
+> in para-virtualized environments.
+>=20
+> The documentation is generic enough to not special case for any
+> specific hypervisor and should apply equally to all.
+>=20
+> Signed-off-by: Zack Rusin <zackr@vmware.com>
 
 
-Best regards,
-Krzysztof
+Hi,
 
+the below doc text:
+
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+
+
+Thanks,
+pq
+
+
+> ---
+>  Documentation/gpu/drm-kms.rst |  6 ++++
+>  drivers/gpu/drm/drm_plane.c   | 58 ++++++++++++++++++++++++++++++++++-
+>  2 files changed, 63 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/gpu/drm-kms.rst b/Documentation/gpu/drm-kms.rst
+> index a0c83fc481264..158cdcc9351f9 100644
+> --- a/Documentation/gpu/drm-kms.rst
+> +++ b/Documentation/gpu/drm-kms.rst
+> @@ -577,6 +577,12 @@ Variable Refresh Properties
+>  .. kernel-doc:: drivers/gpu/drm/drm_connector.c
+>     :doc: Variable refresh properties
+> =20
+> +Cursor Hotspot Properties
+> +---------------------------
+> +
+> +.. kernel-doc:: drivers/gpu/drm/drm_plane.c
+> +   :doc: hotspot properties
+> +
+>  Existing KMS Properties
+>  -----------------------
+> =20
+> diff --git a/drivers/gpu/drm/drm_plane.c b/drivers/gpu/drm/drm_plane.c
+> index 1dc00ad4c33c3..f3f2eae83cca8 100644
+> --- a/drivers/gpu/drm/drm_plane.c
+> +++ b/drivers/gpu/drm/drm_plane.c
+> @@ -230,6 +230,61 @@ static int create_in_format_blob(struct drm_device *=
+dev, struct drm_plane *plane
+>  	return 0;
+>  }
+> =20
+> +/**
+> + * DOC: hotspot properties
+> + *
+> + * HOTSPOT_X: property to set mouse hotspot x offset.
+> + * HOTSPOT_Y: property to set mouse hotspot y offset.
+> + *
+> + * When the plane is being used as a cursor image to display a mouse poi=
+nter,
+> + * the "hotspot" is the offset within the cursor image where mouse events
+> + * are expected to go.
+> + *
+> + * Positive values move the hotspot from the top-left corner of the curs=
+or
+> + * plane towards the right and bottom.
+> + *
+> + * Most display drivers do not need this information because the
+> + * hotspot is not actually connected to anything visible on screen.
+> + * However, this is necessary for display drivers like the para-virtuali=
+zed
+> + * drivers (eg qxl, vbox, virtio, vmwgfx), that are attached to a user c=
+onsole
+> + * with a mouse pointer.  Since these consoles are often being remoted o=
+ver a
+> + * network, they would otherwise have to wait to display the pointer mov=
+ement to
+> + * the user until a full network round-trip has occurred.  New mouse eve=
+nts have
+> + * to be sent from the user's console, over the network to the virtual i=
+nput
+> + * devices, forwarded to the desktop for processing, and then the cursor=
+ plane's
+> + * position can be updated and sent back to the user's console over the =
+network.
+> + * Instead, with the hotspot information, the console can anticipate the=
+ new
+> + * location, and draw the mouse cursor there before the confirmation com=
+es in.
+> + * To do that correctly, the user's console must be able predict how the
+> + * desktop will process mouse events, which normally requires the deskto=
+p's
+> + * mouse topology information, ie where each CRTC sits in the mouse coor=
+dinate
+> + * space.  This is typically sent to the para-virtualized drivers using =
+some
+> + * driver-specific method, and the driver then forwards it to the consol=
+e by
+> + * way of the virtual display device or hypervisor.
+> + *
+> + * The assumption is generally made that there is only one cursor plane =
+being
+> + * used this way at a time, and that the desktop is feeding all mouse de=
+vices
+> + * into the same global pointer.  Para-virtualized drivers that require =
+this
+> + * should only be exposing a single cursor plane, or find some other way
+> + * to coordinate with a userspace desktop that supports multiple pointer=
+s.
+> + * If the hotspot properties are set, the cursor plane is therefore assu=
+med to be
+> + * used only for displaying a mouse cursor image, and the position of th=
+e combined
+> + * cursor plane + offset can therefore be used for coordinating with inp=
+ut from a
+> + * mouse device.
+> + *
+> + * The cursor will then be drawn either at the location of the plane in =
+the CRTC
+> + * console, or as a free-floating cursor plane on the user's console
+> + * corresponding to their desktop mouse position.
+> + *
+> + * DRM clients which would like to work correctly on drivers which expose
+> + * hotspot properties should advertise DRM_CLIENT_CAP_CURSOR_PLANE_HOTSP=
+OT.
+> + * Setting this property on drivers which do not special case
+> + * cursor planes will return EOPNOTSUPP, which can be used by userspace =
+to
+> + * gauge requirements of the hardware/drivers they're running on. Advert=
+ising
+> + * DRM_CLIENT_CAP_CURSOR_PLANE_HOTSPOT implies that the userspace client=
+ will be
+> + * correctly setting the hotspot properties.
+> + */
+> +
+>  /**
+>   * drm_plane_create_hotspot_properties - creates the mouse hotspot
+>   * properties and attaches them to the given cursor plane
+> @@ -237,7 +292,8 @@ static int create_in_format_blob(struct drm_device *d=
+ev, struct drm_plane *plane
+>   * @plane: drm cursor plane
+>   *
+>   * This function enables the mouse hotspot property on a given
+> - * cursor plane.
+> + * cursor plane. Look at the documentation for hotspot properties
+> + * to get a better understanding for what they're used for.
+>   *
+>   * RETURNS:
+>   * Zero for success or -errno
+
+
+--Sig_/BqH+LEjYZrs8=tT7kXjXoDd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmU2LWQACgkQI1/ltBGq
+qqc9jg/+O49j7A2awfs+aCc+PJsIXZzo6/vpt0Axrl++SGV6BNXjwSGNNGddCUQE
+rZNaWJK3+JBbIqpk9fGz+kNUM1G3UJ5HCveIbl1lCetewGdeJGumMV7gB6/VnK32
+zPDon8yBLibA0vHIZHeVp/7ELBNWzPy4XSt3FyOE0dLCen7xukneyZy8bCPpXfR3
+bXr7kJV/N2XgZl7MgLRNOMnj/okbJ4dWzD4qUR7Pe8EC0zZ/pBlk7gMfQWeNk1Yl
+UmFUix99PDTf3x8BaI22sD9hUg7qkSp1Tf4GtndKyrG5atgYJ61t+1HUAEg8oCJ4
+eMH5umZhmm956T7/q7YTv+s3KkyOADQ1tK1ePOSB6I3uM1FF/LqnpzxFQgu11z3O
+cl5q1crqZORm+3Sa6X9J7EAFNZzW8+9WD+qgQeuc1o2/mFplmL/fzs/OzkzhTCik
+cZVkAFnIykWSoZSka9eG/Xt205wTTBgc0wgryr5OpRr50DCdLr+FfklNM4YLmcqU
+ReoL1MWdDPcDtj7t6eaYXTa67kSQaSO/JSbz60cQ9Tt+Rhod6K6MtLFRyTIvFTYj
+rISYdRD8Q4Pr8I96vlFXMUsy5hs8amyx5yrWHPWMp+7arZxUbSwupaaRFmTtAiSr
+pJCgOmQFFHP+nAbRemAx1+TfNde21rdHuu4ud5Nq3p4ZnzY/taQ=
+=75Es
+-----END PGP SIGNATURE-----
+
+--Sig_/BqH+LEjYZrs8=tT7kXjXoDd--
