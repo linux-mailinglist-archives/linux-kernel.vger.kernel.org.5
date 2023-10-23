@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A9D7D3FF4
+	by mail.lfdr.de (Postfix) with ESMTP id B1D527D3FF5
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbjJWTOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33162 "EHLO
+        id S231665AbjJWTOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjJWTOJ (ORCPT
+        with ESMTP id S229499AbjJWTOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:14:09 -0400
+        Mon, 23 Oct 2023 15:14:11 -0400
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1D3101;
-        Mon, 23 Oct 2023 12:14:07 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 31DA45C0003;
-        Mon, 23 Oct 2023 15:14:07 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DE894;
+        Mon, 23 Oct 2023 12:14:09 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id A82605C018F;
+        Mon, 23 Oct 2023 15:14:08 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Mon, 23 Oct 2023 15:14:07 -0400
+  by compute3.internal (MEProxy); Mon, 23 Oct 2023 15:14:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698088447; x=
-        1698174847; bh=QkagzItTcmygJhd+IgCnn6qdrUYk56vVzdHfbFmNb0k=; b=T
-        /E/5+zQuNigcfKSF7CMZ0lO9sjt4sK4g600xMPKbt2UIj9cqjGjyKzAvWavJszQ4
-        cNlF4IOTus0xeZg38meeoj4lN9GH9tsGQ02xwDO+kYXN8R8aFZugbL3iZz31ybDD
-        CLrvfKOKTdcfE5wUgcVyoaQArKmzWAw7xylbskL5pyDMfkdX7hkOrF8CP/lwHOM4
-        yIBeFFb40qHnaqXXN89QiewLVq+ViQ/0N+6W2HKLWxmL20mWChVY2qtpNFox5pLc
-        i4QwvaWiu1WanHvFVjA8c3I0v1k6CDGLIASuzq0KjJ0+Z9Z8kB49mujAvjwRR4Rl
-        PZeLcixMv78DlUnS5W1Fw==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698088448; x=
+        1698174848; bh=JcLDvuqq+aysWCP3Ln7wvhxjBzjiN4xGl+qlurq8eWo=; b=I
+        x0p+2hKhV36+4kxFBgV2uF8sSW6C4x69W+mtWJXEdvPAWto1YepIDQ0VLeNztiOy
+        TsdHIAJ2MCIgslaZ/jyovjW3xfK7Tj/xTV1OjQLfk4bYeKMBADXHkGnZBAi4p95H
+        tSRVEt1TW2MB+cM2GqkPpieceXZQGWO8xZcm3GY/uKmiCiy1ks0S1nY+k/jri1P9
+        +kaguMc+AIj3JkTdyhcaqn/vMJAilalWuu23yAznevMf5YTcrw/RReu6aBEtYvJd
+        W+paPhXs5wjGLcJMbPfA94VnJ62FDyc0kGyzrF4Q8amKqu8YTgEwSDxuWvhmHqo4
+        7AKC+dOLMdb2zIHhSQ7yA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698088447; x=
-        1698174847; bh=QkagzItTcmygJhd+IgCnn6qdrUYk56vVzdHfbFmNb0k=; b=a
-        3K19ixhUgYwupkRenvXWOt4P0RKvWT97F34PLsdEaXmBCrJmUsC1cbjF1YaDBjQb
-        STsQMZLCKhwx4dhIJDy4vHCzKcrUl7WlrkVW/7mruUMj6IIm14Byw5hxH+Ni/Rjq
-        SFZ3e+gWUVLlPxuEKNgKrZE4cbf/ZHuU3Ad1xDzjeyBAm33wTMPC1KpLSyVEqvcS
-        Yp4oR/Orq+zKnTPwoA6nzmN9jj8Wbx2iM5PWLiULuIOGnrGs22Cq4kKJYs+XG2T2
-        luvvFIEh06VDLIo+H5gHKeckPSWIUkPwE/uhgZlNnP0qH12kINqG6/BvUvWs5/vn
-        s6Fra68jeHfTkW+i196TQ==
-X-ME-Sender: <xms:_sU2ZbtPIus0vyOeJpXk4IW8WJo6kNl-cO4U7ATE00giJCO9FPrNzw>
-    <xme:_sU2ZccQmONSuPxF5Xv3hojWM3CzlfPOMJRA9zCFuBGH6bXvjNpt8y4Epr3uVc4D6
-    WZ_uG21aPhXRLi0yic>
-X-ME-Received: <xmr:_sU2ZexGpocjYVKGARwI-IbOkikLcpWJOQoBrAKWKYLkqGQZpiBUNB9-oJ0H3X2X1-WejEioV0A>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698088448; x=
+        1698174848; bh=JcLDvuqq+aysWCP3Ln7wvhxjBzjiN4xGl+qlurq8eWo=; b=B
+        zlIWe1pfXF0bQItm3SOz+AYb1PVnv0OmdRHmQQCn3Cb1YUkHrxz43StuPqog4Q6O
+        W+WpxrKC5H5/mtMrgiUicF5ueXbX+x6HE2EW5VJO1dwcRw+eSz6MGciNRqaRhxe8
+        b9lrxfZFROiCViLN0CnyC3VWqsPdO9kUJQxH/j1YHx7aVypsayH/lm3P3+7QkS66
+        GTyPwS8VjalNqRZbyUrvfYatIASl5x6rv6x1KlqjYk9blSI8fAaweBI6s34wVNYu
+        jsOp7OZwaPhcYZtGN0EE25UxacTGOSl8A/bJOMbxCHXkx3L9iyB5yTUdjRYjhp2N
+        YW6KykmCDB+OatRkizI5A==
+X-ME-Sender: <xms:AMY2Zdrp2L19g0i8x31HvZhSnVkC9s7nYRNNNcDXgAISMrjHrvLFlA>
+    <xme:AMY2ZfqJY6DNLyqJPFQbNDaUZzIAzagJ4p87CukB3PsSxXt1hG3QCzKRZQPEgZy9e
+    HuhF7JKo4aXcnJSx4I>
+X-ME-Received: <xmr:AMY2ZaOzMK5FN71Ipod_HbZhUWbgyjSLBprO7P2p-WcBQNnr4dkGWsGBID5fcCjOF3HdCt_49oc>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeeigddufedvucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
     ertdertddtnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghn
-    ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepfeeludefheegvdeuvd
-    dvgeekgfdvtdettdelieeihfegtedugeekhfdvhfejfedtnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhi
-    hgohgrthdrtghomh
-X-ME-Proxy: <xmx:_8U2ZaOm93NRqU6yVfefXeBkKgxTjiGhn4Q8MP_XN7qFfJl8kU-y-w>
-    <xmx:_8U2Zb8psBSCYcvSj-leVnIGhPvzhK6xf_VpxjeVAvz77aClI0jWrA>
-    <xmx:_8U2ZaX8fbMT_w3OIMccJU7x8Y5V9g_O-b54Wi2Z5i5AiidG-hP9Sg>
-    <xmx:_8U2ZXbCFQyO0xOTm8zkB-5BeVv_Wgwx1lZugws2eu_YxTy11CyI6w>
+    ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepieevkeevgeelfffhue
+    efgeetkeehffffuddtvdelieeghedvheegkedvudeltdfhnecuffhomhgrihhnpehgvghn
+    vgigrdhssgenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:AMY2ZY5aSCUv2d5wCyvGHD6s1liFiOxixZirI98SDRXb9FlBpecu-w>
+    <xmx:AMY2Zc7mVbx8z8XrJxJZcg3GmZP2ge0R9o5e4rgm78tosPlaZxFDlw>
+    <xmx:AMY2ZQj2vkhUsJjcB0hZ28SJroFxIHQj6VeL0P_jNvUJg-dJ6voYvQ>
+    <xmx:AMY2ZX1B8bSRIKcxMHMur--zALRT5dkO-ggCWqeF2780xnJ24nR9lA>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 23 Oct 2023 15:14:05 -0400 (EDT)
+ 23 Oct 2023 15:14:07 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
         gregory.clement@bootlin.com, vladimir.kondratiev@intel.com,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 1/5] MIPS: Export higher/highest relocation functions in uasm
-Date:   Mon, 23 Oct 2023 20:13:56 +0100
-Message-Id: <20231023191400.170052-2-jiaxun.yang@flygoat.com>
+Subject: [PATCH 2/5] MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
+Date:   Mon, 23 Oct 2023 20:13:57 +0100
+Message-Id: <20231023191400.170052-3-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231023191400.170052-1-jiaxun.yang@flygoat.com>
 References: <20231023191400.170052-1-jiaxun.yang@flygoat.com>
@@ -86,60 +86,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export uasm_rel_{higher,highest} functions.
-Those functions can be helpful in dealing with 64bit immediates.
+Use {highest, higher, hi, lo} immediate loading sequence
+to load 64 bit jump address for handler when kernel is
+loaded to XKPHYS.
 
+Co-developed-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Co-developed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/include/asm/uasm.h | 2 ++
- arch/mips/mm/uasm.c          | 6 ++++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ arch/mips/kernel/genex.S | 19 +++++++++++++++----
+ arch/mips/kernel/traps.c | 34 ++++++++++++++++++++++++----------
+ 2 files changed, 39 insertions(+), 14 deletions(-)
 
-diff --git a/arch/mips/include/asm/uasm.h b/arch/mips/include/asm/uasm.h
-index 296bcf31abb5..12db6d2fca07 100644
---- a/arch/mips/include/asm/uasm.h
-+++ b/arch/mips/include/asm/uasm.h
-@@ -196,6 +196,8 @@ void uasm_build_label(struct uasm_label **lab, u32 *addr,
- #ifdef CONFIG_64BIT
- int uasm_in_compat_space_p(long addr);
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index b6de8e88c1bd..fd765ad9ecac 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -272,11 +272,22 @@ NESTED(except_vec_vi, 0, sp)
+ 	.set	push
+ 	.set	noreorder
+ 	PTR_LA	v1, except_vec_vi_handler
+-FEXPORT(except_vec_vi_lui)
+-	lui	v0, 0		/* Patched */
++#if defined(CONFIG_32BIT) || defined(KBUILD_64BIT_SYM32)
++FEXPORT(except_vec_vi_hi)
++	lui	v0, 0			/* Patched */
++#else
++FEXPORT(except_vec_vi_highest)
++	lui	v0, 0			/* Patched */
++FEXPORT(except_vec_vi_higher)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++FEXPORT(except_vec_vi_hi)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++#endif
+ 	jr	v1
+-FEXPORT(except_vec_vi_ori)
+-	 ori	v0, 0		/* Patched */
++FEXPORT(except_vec_vi_lo)
++	PTR_ADDIU	v0, 0		/* Patched */
+ 	.set	pop
+ 	END(except_vec_vi)
+ EXPORT(except_vec_vi_end)
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 246c6a6b0261..60c513c51684 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -2091,18 +2091,26 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ 		 * If no shadow set is selected then use the default handler
+ 		 * that does normal register saving and standard interrupt exit
+ 		 */
+-		extern const u8 except_vec_vi[], except_vec_vi_lui[];
+-		extern const u8 except_vec_vi_ori[], except_vec_vi_end[];
++		extern const u8 except_vec_vi[], except_vec_vi_hi[];
++		extern const u8 except_vec_vi_lo[], except_vec_vi_end[];
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		extern const u8 except_vec_vi_highest[], except_vec_vi_higher[];
++#endif
+ 		extern const u8 rollback_except_vec_vi[];
+ 		const u8 *vec_start = using_rollback_handler() ?
+ 				      rollback_except_vec_vi : except_vec_vi;
+ #if defined(CONFIG_CPU_MICROMIPS) || defined(CONFIG_CPU_BIG_ENDIAN)
+-		const int lui_offset = except_vec_vi_lui - vec_start + 2;
+-		const int ori_offset = except_vec_vi_ori - vec_start + 2;
++		const int imm_offset = 2;
+ #else
+-		const int lui_offset = except_vec_vi_lui - vec_start;
+-		const int ori_offset = except_vec_vi_ori - vec_start;
++		const int imm_offset = 0;
++#endif
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		const int highest_offset = except_vec_vi_highest - vec_start + imm_offset;
++		const int higher_offset = except_vec_vi_higher - vec_start + imm_offset;
  #endif
-+int uasm_rel_highest(long val);
-+int uasm_rel_higher(long val);
- int uasm_rel_hi(long val);
- int uasm_rel_lo(long val);
- void UASM_i_LA_mostly(u32 **buf, unsigned int rs, long addr);
-diff --git a/arch/mips/mm/uasm.c b/arch/mips/mm/uasm.c
-index 125140979d62..6846bf2084c5 100644
---- a/arch/mips/mm/uasm.c
-+++ b/arch/mips/mm/uasm.c
-@@ -425,7 +425,7 @@ int uasm_in_compat_space_p(long addr)
- }
- UASM_EXPORT_SYMBOL(uasm_in_compat_space_p);
++		const int hi_offset = except_vec_vi_hi - vec_start + imm_offset;
++		const int lo_offset = except_vec_vi_lo - vec_start + imm_offset;
++
+ 		const int handler_len = except_vec_vi_end - vec_start;
  
--static int uasm_rel_highest(long val)
-+int uasm_rel_highest(long val)
- {
- #ifdef CONFIG_64BIT
- 	return ((((val + 0x800080008000L) >> 48) & 0xffff) ^ 0x8000) - 0x8000;
-@@ -433,8 +433,9 @@ static int uasm_rel_highest(long val)
- 	return 0;
+ 		if (handler_len > VECTORSPACING) {
+@@ -2119,10 +2127,16 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ #else
+ 				handler_len);
  #endif
- }
-+UASM_EXPORT_SYMBOL(uasm_rel_highest);
- 
--static int uasm_rel_higher(long val)
-+int uasm_rel_higher(long val)
- {
- #ifdef CONFIG_64BIT
- 	return ((((val + 0x80008000L) >> 32) & 0xffff) ^ 0x8000) - 0x8000;
-@@ -442,6 +443,7 @@ static int uasm_rel_higher(long val)
- 	return 0;
- #endif
- }
-+UASM_EXPORT_SYMBOL(uasm_rel_higher);
- 
- int uasm_rel_hi(long val)
- {
+-		h = (u16 *)(b + lui_offset);
+-		*h = (handler >> 16) & 0xffff;
+-		h = (u16 *)(b + ori_offset);
+-		*h = (handler & 0xffff);
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		h = (u16 *)(b + highest_offset);
++		*h = uasm_rel_highest(handler);
++		h = (u16 *)(b + higher_offset);
++		*h = uasm_rel_higher(handler);
++#endif
++		h = (u16 *)(b + hi_offset);
++		*h = uasm_rel_hi(handler);
++		h = (u16 *)(b + lo_offset);
++		*h = uasm_rel_lo(handler);
+ 		local_flush_icache_range((unsigned long)b,
+ 					 (unsigned long)(b+handler_len));
+ 	}
 -- 
 2.34.1
 
