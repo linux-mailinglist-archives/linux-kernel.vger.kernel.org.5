@@ -2,90 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D977D3858
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1037D3864
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjJWNpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38784 "EHLO
+        id S230110AbjJWNsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 09:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjJWNpW (ORCPT
+        with ESMTP id S229807AbjJWNs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:45:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C615100;
-        Mon, 23 Oct 2023 06:45:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEAA1C433C8;
-        Mon, 23 Oct 2023 13:45:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698068720;
-        bh=n95Zh41JGelr3O3p08QGkpOeR0lKk99ScJmZPITwFqg=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=gOiJyFf58KDoI1EC+uvC5TLms/dSNPrL8X/ENM0gtmJt8gSaRROYUg8eoYeYA8MmI
-         cgHFl/ELTh3IVs2GHzBmW9CAy0eIjLZr3qgVOFqA9Cripw3UMpcZTeZODLYhC75OrI
-         YJewTnFvm5/SF3SkC9pl3Mcz3sCSy6eO4Q2gJP2eb7sdHNP3F6x0zEAgp/ooPf3eyr
-         b3AoITkafQvIhj4iN7rQutmE1lo1YjZJG1t8l9rZGvnXv1PWwGHgNYCzM1nwspVaiV
-         6RHuPi/t7XVs9Sem5+IEBnIg28qFeR2VGsqdU+1bKNQ/Pn5mGgLd1Rnr1DlDg4zxJe
-         VR6udzdAzs38w==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Geoff Levand <geoff@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Pavel Machek <pavel@ucw.cz>, Stanislaw Gruszka <stf_xl@wp.pl>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH 00/10] Remove obsolete and orphaned wifi drivers
-References: <20231023131953.2876682-1-arnd@kernel.org>
-Date:   Mon, 23 Oct 2023 16:45:13 +0300
-In-Reply-To: <20231023131953.2876682-1-arnd@kernel.org> (Arnd Bergmann's
-        message of "Mon, 23 Oct 2023 15:19:42 +0200")
-Message-ID: <87v8axzc46.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Mon, 23 Oct 2023 09:48:29 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFBCE5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:48:26 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-778a108ae49so327428585a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:48:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698068905; x=1698673705; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KNoz4gqx6N/ZXGBPCPNo+bBkQqfT+ZPW+a7bpLJE35w=;
+        b=UJSw6Mcw62jh/s1zkxr7/9iuQsLrWiAULzc5ytt0fIRDBRrmEAyXz3OBk88wulgreg
+         jnki3OrSIR6y/ryG76Nw3W6TBkNHzVGQnmbU5ezXKOQRXO512n6HJcFf5f16q7J28ZkR
+         dAidy6BR9jo+6tx18Jf/0i1PqIHj6UUcFyzO0x3b2m4HszqGk6BrK6mv7o8gMwohJHCa
+         YQlQsBrYNFHGvdln4LCIzpI/H28qmma6TNXLZIk/pr1jU2vOhByV8GrSbejS51/UT5sa
+         1h40RyIRaYo6cL48cROkPWvVyIlKDQaZviMOlC0KTLbWLNgB7yn4CtG5JFTfW6Nnpiic
+         ZxOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698068905; x=1698673705;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KNoz4gqx6N/ZXGBPCPNo+bBkQqfT+ZPW+a7bpLJE35w=;
+        b=CmSAvvm0sRpZ64koCffhLcimtYbToe88XGMunRPjhMj1oDJL4ph1pQ23YEdHWMdmpO
+         zp+pCwu6LZchXRBo9PzxGzpiNpnSD0lqtvkvB1PDxiMgT6+lKK7sPGvknWwIn9ki2UPX
+         Etn5UXz8lABZNRRaMJE0QgxomGjKi92h8KW6PldcIccb5lTvESaSsA5L+5voDj+zk+ij
+         zsLtvr8pWy2XFUaA8OycWTbcwaZHdREkD/Vq1ssnKpRLVy3hz4nR3+pWGGPj6pB6NVwT
+         JeETG51YCGj9Vz34wCRiK7TAj71HI7xo/DquFt2bDgXs2UXJTPnvNKYiEYw/aXdewoxX
+         +TBg==
+X-Gm-Message-State: AOJu0Ywu441uYphqCFDUvvuJNgWT3dLcJQO9qWDobZm+ZHP2UdESOruU
+        iMKzJ4t7SiNxhmTsDV6f2rjumlvGRkdUKg1LHXj6gA==
+X-Google-Smtp-Source: AGHT+IHP16b/24p2cCIV7n4Q7cd5HJrsKxZKw8dnvL5mJKLZdGd3Cr+uV8BwIRWfdrTaZTzeSNp5YYJi8ZndM84+dkE=
+X-Received: by 2002:a05:6214:18ec:b0:66d:593e:7722 with SMTP id
+ ep12-20020a05621418ec00b0066d593e7722mr17263102qvb.3.1698068905368; Mon, 23
+ Oct 2023 06:48:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231023093359.64265-1-raven@themaw.net>
+In-Reply-To: <20231023093359.64265-1-raven@themaw.net>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Mon, 23 Oct 2023 15:48:14 +0200
+Message-ID: <CADYN=9JUDjj=KS=xTWXbVkkDPsCi2+GjGfWqAL8naOEHpu4nHQ@mail.gmail.com>
+Subject: Re: [PATCH] autofs: fix add autofs_parse_fd()
+To:     Ian Kent <raven@themaw.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "Bill O'Donnell" <bodonnel@redhat.com>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        autofs mailing list <autofs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Functional Testing <lkft@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
-
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, 23 Oct 2023 at 11:34, Ian Kent <raven@themaw.net> wrote:
 >
-> As discussed previously, a lot of the older wifi drivers are likely
-> entirely unused, Though we can't know for sure.
+> We are seeing systemd hang on its autofs direct mount at
+> /proc/sys/fs/binfmt_misc.
 >
-> As suggested by both Greg and Jakub, let's remove the ones that look
-> are most likely to have no users left and also get in the way of the
-> wext cleanup. If anyone is still using any of these, we can revert the
-> driver removal individually.
+> Historically this was due to a mismatch in the communication structure
+> size between a 64 bit kernel and a 32 bit user space and was fixed by
+> making the pipe communication record oriented.
 >
-> I would suggest merging these for net-next after 6.7-rc1 is out
+> During autofs v5 development I decided to stay with the existing usage
+> instead of changing to a packed structure for autofs <=> user space
+> communications which turned out to be a mistake on my part.
+>
+> Problems arose and they were fixed by allowing for the 64 bit to 32
+> bit size difference in the automount(8) code.
+>
+> Along the way systemd started to use autofs and eventually encountered
+> this problem too. systemd refused to compensate for the length
+> difference insisting it be fixed in the kernel. Fortunately Linus
+> implemented the packetized pipe which resolved the problem in a
+> straight forward and simple way.
+>
+> In the autofs mount api conversion series I inadvertatly dropped the
+> packet pipe flag settings when adding the autofs_parse_fd() function.
+> This patch fixes that omission.
+>
+> Fixes: 546694b8f658 ("autofs: add autofs_parse_fd()")
+> Signed-off-by: Ian Kent <raven@themaw.net>
+> Cc: Bill O'Donnell <bodonnel@redhat.com>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Dan Carpenter <dan.carpenter@linaro.org>
+> Cc: Anders Roxell <anders.roxell@linaro.org>
+> Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Reported-by: Anders Roxell <anders.roxell@linaro.org>
 
-Why net-next? I want to take these to wireless-next to avoid any
-conflicts with other wireless patches.
+Thank you Ian for finding the issue so quickly.
 
-We could take these to wireless-next after we submit the last new
-features (-next) pull request to v6.7, so most likely already next week.
-So if anyone has any problems with these speak up now.
+Tested-by: Anders Roxell <anders.roxell@linaro.org>
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+I built todays next-20231023 with this patch and the kernel booted up
+fine in qemu.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
+Cheers,
+Anders
+
+> ---
+>  fs/autofs/autofs_i.h | 13 +++++++++----
+>  fs/autofs/inode.c    |  2 ++
+>  2 files changed, 11 insertions(+), 4 deletions(-)
+>
+> diff --git a/fs/autofs/autofs_i.h b/fs/autofs/autofs_i.h
+> index 244f18cdf23c..8c1d587b3eef 100644
+> --- a/fs/autofs/autofs_i.h
+> +++ b/fs/autofs/autofs_i.h
+> @@ -221,15 +221,20 @@ static inline int autofs_check_pipe(struct file *pipe)
+>         return 0;
+>  }
+>
+> -static inline int autofs_prepare_pipe(struct file *pipe)
+> +static inline void autofs_set_packet_pipe_flags(struct file *pipe)
+>  {
+> -       int ret = autofs_check_pipe(pipe);
+> -       if (ret < 0)
+> -               return ret;
+>         /* We want a packet pipe */
+>         pipe->f_flags |= O_DIRECT;
+>         /* We don't expect -EAGAIN */
+>         pipe->f_flags &= ~O_NONBLOCK;
+> +}
+> +
+> +static inline int autofs_prepare_pipe(struct file *pipe)
+> +{
+> +       int ret = autofs_check_pipe(pipe);
+> +       if (ret < 0)
+> +               return ret;
+> +       autofs_set_packet_pipe_flags(pipe);
+>         return 0;
+>  }
+>
+> diff --git a/fs/autofs/inode.c b/fs/autofs/inode.c
+> index 6d2e01c9057d..a3d62acc293a 100644
+> --- a/fs/autofs/inode.c
+> +++ b/fs/autofs/inode.c
+> @@ -177,6 +177,8 @@ static int autofs_parse_fd(struct fs_context *fc, struct autofs_sb_info *sbi,
+>                 return -EBADF;
+>         }
+>
+> +       autofs_set_packet_pipe_flags(pipe);
+> +
+>         if (sbi->pipe)
+>                 fput(sbi->pipe);
+>
+> --
+> 2.41.0
+>
