@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD7D7D3FD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D797D3FDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbjJWTJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
+        id S230386AbjJWTKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbjJWTI6 (ORCPT
+        with ESMTP id S229462AbjJWTKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:08:58 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9526894;
-        Mon, 23 Oct 2023 12:08:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1698088131; x=1698692931; i=rwarsow@gmx.de;
-        bh=Vwi4d8U2WvHM9a1gBvzV+bFasTgXN5c/Ui5gdhlG6vw=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-        b=mfColSN843shqALpswDQpgyUzNTRyglDU3kHMOC+Tr1zKsdgv5HYrBLwGsYOXC5P
-         9ugpN1BpKKi3BytE6wY7cI4GKRf4NAGFGBLe2Iv8U2aH2zp0RYPtBWJvaq/YCEtGx
-         J8tRBuUgOA4oCkZYEIwY1ikCHnloJyP9r5DPuuSf41GHQYMOQ3kV2St92ZubtWo2K
-         lqp7kznzILw0t/hHieMaQF0rdf8s2X45QkeIu7djRUg5uMT1blz3Kc+uEh9HM9ZNn
-         BNnq2P6xbkdGnYEuEDR95FOns3OH4F4Z5hQZX2T0yM79MGBAZzjkzc4JYzP30v9hK
-         Q15ZtSRQz0kfKYOH2Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.100.20] ([92.116.253.225]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MqaxU-1rGurC3nGa-00mfUM; Mon, 23
- Oct 2023 21:08:50 +0200
-Message-ID: <d7bfd814-91bc-4455-8a07-854eec908466@gmx.de>
-Date:   Mon, 23 Oct 2023 21:08:50 +0200
+        Mon, 23 Oct 2023 15:10:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D708D94;
+        Mon, 23 Oct 2023 12:10:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698088201; x=1729624201;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=6FMUuDYUTlK2LKUY1b0PZ+zy98w+sI48pzxcDNADCi0=;
+  b=fAZcs097bdJYP5PZWkn4oYp5f3l4akvhyvN1Zhk4m/9/HQk4nebf7qQp
+   fJSqnist22IDwDkKvrjIp/NI+4aSeQ+WP8LLdYdJAMSzqhALEi1UnGO10
+   6r1Joxy90vrWpiqdtVYu13g+DDtVqvvEvXZ8wsvr+NPFlZtzmvn7Y5tSh
+   nbM8giiUmBcS8x6A1G7i1INzF+QptL0v6hRA5O08slx5snFiTLLNyWc/O
+   LZJaLQk+EF/VxNU/8U5Dl4QOeJo5TAXTTkJwl3xz/tlfwJQREpoZ6LAOr
+   Pax4nXFY1xjfRR3DiKxYOGx9UGBJ8tY4/Naoc4c96XnkxjisDw/sTrwjG
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="386718669"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="386718669"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 12:10:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="824055761"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="824055761"
+Received: from qwilliam-mobl.amr.corp.intel.com (HELO desk) ([10.212.150.186])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 12:10:00 -0700
+Date:   Mon, 23 Oct 2023 12:09:49 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+Subject: Re: [RESEND][PATCH 1/6] x86/bugs: Add asm helpers for executing VERW
+Message-ID: <20231023190949.2gdrqisype5metpj@desk>
+References: <20231020-delay-verw-v1-0-cff54096326d@linux.intel.com>
+ <20231020-delay-verw-v1-1-cff54096326d@linux.intel.com>
+ <f620c7d4-6345-4ad0-8a45-c8089e3c34df@citrix.com>
+ <20231021011859.c2rtc4vl7l2cl4q6@desk>
+ <bdfefc38-c010-4423-b129-3f153078fd67@citrix.com>
+ <20231021022134.kbey242xq7n754rg@desk>
+ <20231023180806.udbnt4nx3r2bdyi3@treble>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Ronald Warsow <rwarsow@gmx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Language: de-DE, en-US
-Subject: Re: [PATCH 6.5 000/241] 6.5.9-rc1 review
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:jlqcWaTAtIZAVMLIwJPaSfMwi7bV05GnLrdIutsSqTEZaLMfCh5
- 0YsyOIS+aJdo79o5IHYhNrLdQUuy5A85RMpykjkoeE23yWtm3Dc7dQ6gOA9taHjp8CC6SIi
- 1G5uAXEj8pUXfQoIDbeR8GBrsY9YuOD2jkRfirvATGn9jqWHVeIcKWNN8MnRsNiPrq5P/hh
- khN/n/o3Om//+53jMgz4A==
-UI-OutboundReport: notjunk:1;M01:P0:GpPTMPAX57U=;YAnuBFsjwcAH1pRVIKy4ifHhnQk
- eDcORdaYjg3d9VWf6RNi2LfSg0KFlxkcR41JpnvHWm/0ATa/FbeR2ye6jSpZdDjx+QYsIIqV7
- 8cQBhalYvMuCeGj1d5qfKnOIB1CYJKpLOPUcbD/OF3ak/5LsuXhxoliu9hUBcADgWV4daKavT
- R/lqmskJeFouB+EJFiumBdZMrR86pjpHDbxRhADOWej4+wGPBP0QjjbcnaAf7hsORoYGuuFdC
- w17StnPmj56o6P4+elgSalJpzkg+gknlqFDZ4HdLdfpA+mmo8eEIle+U2JKCQFPssxXbeJD9K
- c4UbppWm4HXJA2GIFzBj77eJHwbZzZCKFTxOvifmaD6YbGX1n2XK6OMEWG14gclSQ3UVJEXnX
- qGUTK6k8ZZJIuV/AgMuR4ybNuh5k758CqXWQHPzcwGj2D0JTm6A0PbnPBCOV0SLuev/LQCf+a
- ekbzP/Jv7hz4SiB6oGVfuBiWdpf4dwPpWH+vk0EtD16C27ahfcCPoXebDotyvIebafzpiKFmy
- 4PgoJ3IDjUYiNoP9ix9gVbd2n2KddhlK2KnfrrGjGM54q7gfcx59QQViL06KveMYar1b0JvTi
- Zi6xbUc4SmXg5s5Rlo0bbRlzTuGKrPqylSMfA90BFEolBoIq7i2L8DHcqLp2fXfpavpXpIwa3
- ww/uvYfqctcj6nbNbAtQWSWR6fRIj57hQr9pDet+B6duTDxWFoqSpgxVZFXfmO7SHTiJEgfs2
- 7sbL+W4g8ydMwlNE6o5DUgIwOyBwSmw0vipIZp+hpf65jYBvIyl68GroyG5wB2HSS6jLks12D
- eqieud4GSzBZr5mItcIhBO3PVvlvVfYGu+J7wF4aCWFv/52iPGES1MgmG9/UCSlfYM0/Avyyz
- s1g23NqVFedy1361+HtthHhhPdTEtdWb7xQolMkfIuAb5j8z7NtozR+AJ4w8MsTmxumZy+h4M
- W2xnAZjWWXQRqEzq9PD8mTU5zvk=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231023180806.udbnt4nx3r2bdyi3@treble>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+On Mon, Oct 23, 2023 at 11:08:06AM -0700, Josh Poimboeuf wrote:
+> On Fri, Oct 20, 2023 at 07:21:34PM -0700, Pawan Gupta wrote:
+> > On Sat, Oct 21, 2023 at 02:33:47AM +0100, Andrew Cooper wrote:
+> > > On 21/10/2023 2:18 am, Pawan Gupta wrote:
+> > > > On Sat, Oct 21, 2023 at 12:55:45AM +0100, Andrew Cooper wrote:
+> > > >> Also it avoids playing games with hiding data inside an instruction.
+> > > >> It's a neat trick, but the neater trick is avoid it whenever possible.
+> > > > Thanks for the pointers. I think verw in 32-bit mode won't be able to
+> > > > address the operand outside of 4GB range.
+> > > 
+> > > And?  In a 32bit kernel, what lives outside of a 4G range?
+> > > 
+> > > > Maybe this is fine or could it
+> > > > be a problem addressing from e.g. KVM module?
+> > > 
+> > > RIP-relative addressing is disp32.  Which is the same as it is for
+> > > direct calls.
+> > > 
+> > > So if your module is far enough away for VERW to have issues, you've got
+> > > far more basic problems to solve first.
+> > 
+> > Sorry, I raised the wrong problem. In 64-bit mode, verww only has 32-bit
+> > of relative addressing, so memory operand has to be within 4GB of
+> > callsite. That could be a constraint.
+> 
+> Even on x86-64, modules are mapped within 4GB of the kernel, so I don't
+> think that's a concern.
 
-6.5.9-rc1
-
-compiles, boots and runs here on x86_64
-(Intel Rocket Lake, i5-11400)
-
-Thanks
-
-Tested-by: Ronald Warsow <rwarsow@gmx.de>
-
+You are correct, modules are indeed mapped within 4GB of the kernel. So
+what Andrew suggested is feasible. Is that your preference?
