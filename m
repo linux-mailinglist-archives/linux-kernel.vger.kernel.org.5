@@ -2,173 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 263FD7D2EF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A94047D2EF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233005AbjJWJyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
+        id S229807AbjJWJyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjJWJxw (ORCPT
+        with ESMTP id S233068AbjJWJyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:53:52 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1466AD6;
-        Mon, 23 Oct 2023 02:53:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1698054830; x=1729590830;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FNoNvvtB5z3IcYR2ZH7MUAtY5BnL5fBLxuEiKxvDcbc=;
-  b=TYfRc7HyOmu9gEuS5hRHTrlJhfEMM9iGGabSXYtzjU3k/mvVW9/Lmp8Q
-   WbblR9HW+NOkwbRIzhw9R3mrQYlQ6O2WHgQlcalohZNy9O5hLuQ0wGBR+
-   tz9oT8eiS341oS83gLQ4YJua+OzbBGyY4A7NCcBtwg1RGyhcgmw6oP869
-   1g8DNcl+vr0kcKQX9XE99rTXrTCG5V4bgYxHDl7qY01IYhUnq/tZaJ6K2
-   qymXbjusUWbXNuM4QK1O30hN1pEyHlZ9Xv6nUvDO/rdr0j2lTMZVWY/0b
-   GKbI43Kw1b7xr21FiXaWJ/sFatkU/NzieJpeLG5vo+PTRkWnTR6m6rsTV
-   Q==;
-X-CSE-ConnectionGUID: TBx8bJLWSmuGIqpOLwUp8w==
-X-CSE-MsgGUID: r6Pda/ZvQYCTNQ/C5Ofa5g==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="241192355"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Oct 2023 02:53:50 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 23 Oct 2023 02:53:49 -0700
-Received: from [10.159.245.205] (10.10.85.11) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
- Transport; Mon, 23 Oct 2023 02:53:47 -0700
-Message-ID: <db866599-3143-43a6-801d-012cdfd23019@microchip.com>
-Date:   Mon, 23 Oct 2023 11:53:19 +0200
+        Mon, 23 Oct 2023 05:54:08 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A03E8
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:54:06 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698054844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5TEX1NBJZk6RU6eh7yI/QX4WuIU+RE9lCnRfwDOqNss=;
+        b=VNlf5pocsQ++v3IobxwfV+H66+nuShGuhOyU+iM1OtSjL72LR3hJhXl5jLyWArxFrOA/mr
+        y+LuxVfZB08gMAJQ/1Df7/eeOQdJA5P0YZbnyvSX/GW+OiIML4PHtYf4L0xBrM/y4uE7HV
+        1hZkeakWXdItFmdpuXQczl6cVqEHuhdrsMYhwKMpK/xu/4BDm1InskDg6x+3yWIef8Lat/
+        l6m8Zz1gZTPwCvxe4tvVuudLmeCJPKVbrTLcat2N8Ihh/sTy8u1dV5Y28vr43k4+YlJhHa
+        TL8pL0w7OgX98zNLEWx2ObZ7FWKGNDg3tug9iDJKO9vliYbVNVTvYuJUDMSePA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698054844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5TEX1NBJZk6RU6eh7yI/QX4WuIU+RE9lCnRfwDOqNss=;
+        b=LX5l2lrehEuOuK04T+VNrQHu225DSxcg3CaEjcPMAEgBz1M2xig5WBsom6aw+mkPmFkBAE
+        7VkjjTAUFaX928Bw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk v2 3/4] printk: Skip unfinalized records in panic
+In-Reply-To: <ZS_puLYK4TZR12Cx@alley>
+References: <20231013204340.1112036-1-john.ogness@linutronix.de>
+ <20231013204340.1112036-4-john.ogness@linutronix.de>
+ <ZS5vrte2OZXcIc9L@alley> <87mswh6iwq.fsf@jogness.linutronix.de>
+ <ZS_Vg4vvT29LxWSD@alley> <ZS_puLYK4TZR12Cx@alley>
+Date:   Mon, 23 Oct 2023 11:59:58 +0206
+Message-ID: <87v8ax1x6x.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] MAINTAINERS: mmc: take over as maintainer of MCI & SDHCI
- MICROCHIP DRIVERS
-To:     Eugen Hristev <eugen.hristev@collabora.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        <aubin.constans@microchip.com>, <Ludovic.Desroches@microchip.com>
-CC:     <adrian.hunter@intel.com>, <linux-mmc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <Hari.PrasathGE@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>
-References: <20230911153246.137148-1-aubin.constans@microchip.com>
- <fd02d42e-7b24-4f50-849e-b0c752d1f011@microchip.com>
- <CAPDyKFpYzgwPvrWntgDQCZo97OZr2qd2FaVXpi7OnNc7i_gYtw@mail.gmail.com>
- <c4f43487-da93-4e67-0389-e31dde550d40@microchip.com>
- <55e85f31-fab6-07f9-0ffe-8ebcd2a56489@collabora.com>
-Content-Language: en-US, fr-FR
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-In-Reply-To: <55e85f31-fab6-07f9-0ffe-8ebcd2a56489@collabora.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ulf,
+On 2023-10-18, Petr Mladek <pmladek@suse.com> wrote:
+> I think about "empty line record" and "records with missing data".
+> And I would rename NO_LPOS to EMPTY_LINE_LPOS to make the meaning
+> more obvious.
 
-On 18/09/2023 at 13:03, Eugen Hristev wrote:
-> On 9/14/23 20:01, Nicolas Ferre wrote:
->> On 14/09/2023 at 16:21, Ulf Hansson wrote:
->>> On Tue, 12 Sept 2023 at 07:21, <Ludovic.Desroches@microchip.com> wrote:
->>>>
->>>> On 9/11/23 17:32, Aubin Constans wrote:
->>>>> On the one hand Eugen has taken responsibilities outside Microchip,
->>>>> on the other hand I have some experience with the Microchip SDMMC
->>>>> SDHCI controller.
->>>>> Change Eugen as reviewer and take over maintainership of the SDHCI
->>>>> MICROCHIP DRIVER.
->>>>> Also, take over maintainership of its predecessor, that is the MCI
->>>>> MICROCHIP DRIVER.
->>>>>
->>>>> Cc: Eugen Hristev <eugen.hristev@collabora.com>
->>>>> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
->>>>> Signed-off-by: Aubin Constans <aubin.constans@microchip.com>
->>>>
->>>> For atmel-mci:
->>>> Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
->>>
->>> Sounds like the patch could be split up, as there is an agreement on
->>> the atmel-mci part.
->>>
->>> Aubin, can you make a separate patch for the atmel-mci part and add
->>> Ludovic's ack to it?
->>>
->>> In regards to the sdhci driver, I suggest you just add yourself as a
->>> maintainer too, along with Eugen.
->>
->> For adding more background to this patch, in fact it was created in
->> coordination with Eugen. We can wait a bit for him to catch-up with
->> emails, no hurry there as Aubin won't have access to emails for a few
->> days anyway.
->>
->> If it has an interest you can add my:
->> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
->> But definitively, no problem to delay this change.
-> 
-> Hi,
-> 
-> I am fine with this change, as Nicolas has already discussed this with me.
-> 
-> Acked-by: Eugen Hristev <eugen.hristev@collabora.com>
+OK.
 
-I think we have all the required tags since Eugen email: aka ping...
+> Also it would make sense to use 0x2 for EMPTY_LINE_LPOS and
+>
+> #define FAILED_LPOS		0x1
+> #define EMPTY_LINE_LPOS		0x2
+> #define DATALESS_LPOS_MASK	(FAILED_LPOS | EMPTY_LINE_LPOS)
+>
+> #define LPOS_DATALESS(lpos)	((lpos) & DATALESS_LPOS_MASK)
 
-Tell me if you prefer that we use another route to Mainline (as you may 
-not have remaining changes to queue). Best regards,
-   Nicolas
+The existing debugging tools use bit0 to identify if there is data. Bit1
+is really the _reason_ for the missing data. This can be seen in the
+definition of LPOS_DATALESS(), but it needs to be documented
+better. (Ideally where FAILED_LPOS and EMPTY_LINE_LPOS are defined.)
 
-> P.S. I have a mailmap entry for the new e-mail so the change is not
-> compulsory, you can change as you see fit.
-> 
-> Eugen
-> 
->>
->> Thanks for your understanding. Best regards,
->>     Nicolas
->>
->>>>> ---
->>>>>     MAINTAINERS | 5 +++--
->>>>>     1 file changed, 3 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/MAINTAINERS b/MAINTAINERS
->>>>> index 2833e2da63e0..52beaf4f7fbb 100644
->>>>> --- a/MAINTAINERS
->>>>> +++ b/MAINTAINERS
->>>>> @@ -14022,7 +14022,7 @@ F:
->>>>> Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml
->>>>>     F:  drivers/iio/adc/mcp3911.c
->>>>>
->>>>>     MICROCHIP MMC/SD/SDIO MCI DRIVER
->>>>> -M:   Ludovic Desroches <ludovic.desroches@microchip.com>
->>>>> +M:   Aubin Constans <aubin.constans@microchip.com>
->>>>>     S:  Maintained
->>>>>     F:  drivers/mmc/host/atmel-mci.c
->>>>>
->>>>> @@ -19235,7 +19235,8 @@ F:
->>>>> Documentation/devicetree/bindings/mmc/sdhci-common.yaml
->>>>>     F:  drivers/mmc/host/sdhci*
->>>>>
->>>>>     SECURE DIGITAL HOST CONTROLLER INTERFACE (SDHCI) MICROCHIP DRIVER
->>>>> -M:   Eugen Hristev <eugen.hristev@microchip.com>
->>>>> +M:   Aubin Constans <aubin.constans@microchip.com>
->>>>> +R:   Eugen Hristev <eugen.hristev@collabora.com>
->>>>>     L:  linux-mmc@vger.kernel.org
->>>>>     S:  Supported
->>>>>     F:  drivers/mmc/host/sdhci-of-at91.c
->>>>
->>
-> 
-
+John
