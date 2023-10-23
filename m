@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F21C7D38E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6877D38D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233064AbjJWOGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
+        id S231517AbjJWOE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbjJWOGC (ORCPT
+        with ESMTP id S231401AbjJWOEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:06:02 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA841CC;
-        Mon, 23 Oct 2023 07:06:00 -0700 (PDT)
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39NBfTnK018126;
-        Mon, 23 Oct 2023 10:05:58 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3tvusf05fa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 10:05:58 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 39NE5u2E015815
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 23 Oct 2023 10:05:56 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Mon, 23 Oct
- 2023 10:05:55 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Mon, 23 Oct 2023 10:05:55 -0400
-Received: from rbolboac.ad.analog.com ([10.48.65.174])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 39NE5djU030054;
-        Mon, 23 Oct 2023 10:05:48 -0400
-From:   Ramona Gradinariu <ramona.gradinariu@analog.com>
-To:     <jic23@kernel.org>, <nuno.sa@analog.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     Ramona Gradinariu <ramona.gradinariu@analog.com>
-Subject: [PATCH v2 3/3] dt-bindings: adis16460: Add 'spi-cs-inactive-delay-ns' property
-Date:   Mon, 23 Oct 2023 17:05:34 +0300
-Message-ID: <20231023140534.704312-4-ramona.gradinariu@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231023140534.704312-1-ramona.gradinariu@analog.com>
-References: <20231023140534.704312-1-ramona.gradinariu@analog.com>
+        Mon, 23 Oct 2023 10:04:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E8BD79;
+        Mon, 23 Oct 2023 07:04:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698069894; x=1729605894;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+C2/Ry6NP0cEOVCtYHcHZQPHV/tKXSmdj1EwbBKyWs4=;
+  b=hJC2gYt4tuqh0NVWFmO9QIixix4LYzVZr7kdiph8gW1kK3fC9RWTwm/0
+   M6MbSBc+H3So7Hd8Dh18aGcmX4PsvbSu7U3Q6NeHmOo6kzMLVyxuZUmGt
+   bhj3q81uMbYDszAvuDOdxSJB232rC1HdMJh5k9pAF8cVD07CiNbCN8CCw
+   S1Xu8CLF8fDDlL3RsXqr3ofIdyftaVZxrH1n/pTeoBx19Ot5TuP+28aDs
+   gYi4t1U/x7n1xzthxPTjYhz5X1iyy1OB3zm1RWENQmA/DMx2+BVCTmiW8
+   ogcWuaYiDC5lvT2ouEBKfpF+wHIKeIaglbl1uX/N5WvcULIe8iJSYxIvN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="5470690"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="5470690"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 07:04:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="758151299"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="758151299"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by orsmga002.jf.intel.com with ESMTP; 23 Oct 2023 07:04:50 -0700
+Message-ID: <830bfe86-06bd-146e-af28-6f79e638060f@linux.intel.com>
+Date:   Mon, 23 Oct 2023 17:06:20 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: Tw5vtvQsXgYfnvAnGJR41xQO8eXoLcEY
-X-Proofpoint-ORIG-GUID: Tw5vtvQsXgYfnvAnGJR41xQO8eXoLcEY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_12,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- phishscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2310170000
- definitions=main-2310230123
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v2 05/10] xhci: dbc: Check for errors first in
+ xhci_dbc_stop()
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20231016130934.1158504-1-andriy.shevchenko@linux.intel.com>
+ <20231016130934.1158504-6-andriy.shevchenko@linux.intel.com>
+ <8b3537e4-db84-7ba7-7c63-0a605631507e@gmail.com>
+Content-Language: en-US
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+In-Reply-To: <8b3537e4-db84-7ba7-7c63-0a605631507e@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The adis16460 device requires a stall time between SPI
-transactions (during which the chip select is inactive),
-with a minimum value equal to 16 microseconds.
-This commit adds 'spi-cs-inactive-delay-ns' property, which should
-indicate the stall time between consecutive SPI transactions.
+On 16.10.2023 19.55, Sergei Shtylyov wrote:
+> On 10/16/23 4:09 PM, Andy Shevchenko wrote:
+> 
+>> The usual patter is to check for errors and then continue if none.
+> 
+>     Pattern. :-)
+> 
 
-Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
----
-changes in v2:
- - added default value
- - updated description
- - updated commit message
- .../devicetree/bindings/iio/imu/adi,adis16460.yaml          | 6 ++++++
- 1 file changed, 6 insertions(+)
+I'll fix it while applying
 
-diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-index 4e43c80e5119..f10469b86ee0 100644
---- a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-+++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-@@ -25,6 +25,12 @@ properties:
-
-   spi-cpol: true
-
-+  spi-cs-inactive-delay-ns:
-+    minimum: 16000
-+    default: 16000
-+    description:
-+      Indicates the stall time between consecutive SPI transactions.
-+
-   interrupts:
-     maxItems: 1
-
---
-2.34.1
+-Mathias
 
