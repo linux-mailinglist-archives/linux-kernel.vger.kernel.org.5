@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9E17D38B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A43D7D38BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbjJWOA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
+        id S231334AbjJWOBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbjJWOAV (ORCPT
+        with ESMTP id S233134AbjJWOBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:00:21 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0D5D73
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:00:19 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id CB1E8240104
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:00:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1698069617; bh=zwCuyhVmMr+6W+Jc6uApqtn4VjGeJRlPp4FvHh/J5fE=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
-         Content-Transfer-Encoding:From;
-        b=U/K/JPNl04rAE19qY8DvRu5Br7MpMde5s1OJ5R3sxavfVW42n8At+nCx1j0iD0fVi
-         4U/tn30rzk8OhC4sFUHEZWy+ZeeSauqtA7ctggg+9PFW+eH1uBLVI4fig4z0cubJTg
-         niTI3XC2IfEO/WNXa5JmQyVLwe0Vtz/xe8NNNqDxSBctzymKUBeCZsbSjz05lano9w
-         JpyHLkwzH2gs5Kn/0U6DAkzdQy4T4Rs75CHO1YUGZk2FuhbXJ2uF43iZf+Kr/XjWn2
-         Rrr5q6Z712DILTvX2X8BmXz9Q9Uwcocj4B/M18P9FoDqPiA2bdO3P1xRzh/C5o8LX2
-         L003NwS1i8arQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4SDcJw3V66z6tsB;
-        Mon, 23 Oct 2023 16:00:16 +0200 (CEST)
-From:   Mark O'Donovan <shiftee@posteo.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
-        axboe@kernel.dk, kbusch@kernel.org, hare@suse.de,
-        Mark O'Donovan <shiftee@posteo.net>
-Subject: [PATCH v2 3/3] nvme-auth: always set valid seq_num in dhchap reply
-Date:   Mon, 23 Oct 2023 14:00:03 +0000
-Message-Id: <20231023140003.58019-4-shiftee@posteo.net>
-In-Reply-To: <20231023140003.58019-1-shiftee@posteo.net>
-References: <20231023140003.58019-1-shiftee@posteo.net>
+        Mon, 23 Oct 2023 10:01:01 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A805110FA;
+        Mon, 23 Oct 2023 07:00:56 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c514cbbe7eso45921651fa.1;
+        Mon, 23 Oct 2023 07:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698069655; x=1698674455; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ep/A8Ui+ru8uebgA1aJ0Zc3GZKTR+UyP/z9Ha3kgeFE=;
+        b=KFk15ooS9nNtiwwtRxM/QkjtKIfLOJXbFqFhQ4wmftttoM2DSwJ5t2PLsOtPFNdVKk
+         7SaccQDWaf7KyPSv9upliv9sSoocDR19sUl2MDKPZNi8DOKRxxaTXW1FzLhC1AgP1+vK
+         Enk41ka7ow5bMA4gFJJo3BPAb2PXdvi7xjlAZB5co1u29wTEwsZS5ldXbGoPEQPUqImG
+         mHlnDHo3ZM3z1byiPRG2Lo5HjWEbYl1GIg38gsTppO2PCgrTbwGRWd//tTk4xTP9NDzo
+         Ws5lfGtrunJPvrrOHHX5a+UNqKJbjpaVQk4SgQLkDw9+OLwRwBlvBPnP6wCpvKRo5FfP
+         hpcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698069655; x=1698674455;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ep/A8Ui+ru8uebgA1aJ0Zc3GZKTR+UyP/z9Ha3kgeFE=;
+        b=f5qiSDxQDRaOon/dgfrciN278/rhYnLV08ymupaIvHBRIRF40qQD7R1IjMhivrjsK9
+         UFuNXEnMVPFrPJUVThnn+1SP4veqa+K0zOUPauHGj3g/QpVIZQAgJlirntKpIS/r0IxV
+         Jy1XW9SNqnHkJTTP0W3YVrJQID/iz281zrLa3LxG5InMEUWX9qW2HEMMCX+QKHmcVk6C
+         6fiSjAwV7m+vmmVNkAiBi4QXaDdi53o+d6CFh+L5+zxD6hPOH7nvDEPdPT15pWsYfV+z
+         uiArmqRhKI+WA9P0rVy3O0WvmlwXv4kmApDSatyFK3p3jO4pMcawQNJsgB3ta4Ku79Hy
+         cKeA==
+X-Gm-Message-State: AOJu0YwqixPZcGxFkdJQrRdE5ID0Dkm4J5YKuadue/KDdF3g0S/w6pD2
+        B0vWh6jdnUDnT9Ts08wQOFc=
+X-Google-Smtp-Source: AGHT+IFWnEUYFZAl4EhHBY6WzbA2S0DNEQDiwmXXUn9vVY94IJuTenmyBAJlGPFROluafjpBU/M8oQ==
+X-Received: by 2002:a05:651c:1a28:b0:2c5:14d3:f295 with SMTP id by40-20020a05651c1a2800b002c514d3f295mr7835810ljb.35.1698069654540;
+        Mon, 23 Oct 2023 07:00:54 -0700 (PDT)
+Received: from thinkpad-work.lan (13.red-83-35-58.dynamicip.rima-tde.net. [83.35.58.13])
+        by smtp.gmail.com with ESMTPSA id p12-20020a05600c358c00b00401b242e2e6sm14394370wmq.47.2023.10.23.07.00.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 07:00:54 -0700 (PDT)
+Message-ID: <b4a76c2f3440da1ab6449b34fb352d21c9347b7b.camel@gmail.com>
+Subject: Re: [PATCH v2 1/5] iio: pressure: bmp280: Use i2c_get_match_data()
+From:   Angel Iglesias <ang.iglesiasg@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-iio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+        linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Date:   Mon, 23 Oct 2023 16:00:53 +0200
+In-Reply-To: <ZTZXTLeWbUHKkHIn@smile.fi.intel.com>
+References: <cover.1697994521.git.ang.iglesiasg@gmail.com>
+         <0554ddae62ba04ccacf58c2de04ec598c876665e.1697994521.git.ang.iglesiasg@gmail.com>
+         <ZTZXTLeWbUHKkHIn@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 (by Flathub.org) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently a seqnum of zero is sent during uni-directional
-authentication. The zero value is reserved for the secure channel
-feature which is not yet implemented.
+On Mon, 2023-10-23 at 14:21 +0300, Andy Shevchenko wrote:
+> On Sun, Oct 22, 2023 at 07:22:17PM +0200, Angel Iglesias wrote:
+> > From: Biju Das <biju.das.jz@bp.renesas.com>
+> >=20
+> > Replace device_get_match_data() and id lookup for retrieving match data
+> > by i2c_get_match_data().
+> >=20
+> > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>=20
+> Hmm... What tools have you used to format/send this? It seems differs
+> to what `git format-patch` does.
+>=20
 
-Relevant extract from the spec:
-The value 0h is used to indicate that bidirectional authentication
-is not performed, but a challenge value C2 is carried in order to
-generate a pre-shared key (PSK) for subsequent establishment of a
-secure channel
+I just applied this patch from Biju's series with "git am" and then generat=
+ed
+this series running the following invocation:
+"git format-patch -v2 -p -n --thread --cover-letter=20
+--to=3Dlinux-iio@vger.kernel.org --base=3Diio_upstream/togreg HEAD~5"
+My work repository is publicly available here:
+https://github.com/angiglesias/linux/commits/iio-bmp280-add-bmp390-support
 
-Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
-
----
-v1: used incorrect prefix nvme-tcp
-v2: added spec extract to commit message
-
- drivers/nvme/host/auth.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/nvme/host/auth.c b/drivers/nvme/host/auth.c
-index 8558a02865ac..7f6b2e99a78c 100644
---- a/drivers/nvme/host/auth.c
-+++ b/drivers/nvme/host/auth.c
-@@ -316,15 +316,14 @@ static int nvme_auth_set_dhchap_reply_data(struct nvme_ctrl *ctrl,
- 		chap->bi_directional = true;
- 		get_random_bytes(chap->c2, chap->hash_len);
- 		data->cvalid = 1;
--		chap->s2 = nvme_auth_get_seqnum();
- 		memcpy(data->rval + chap->hash_len, chap->c2,
- 		       chap->hash_len);
- 		dev_dbg(ctrl->device, "%s: qid %d ctrl challenge %*ph\n",
- 			__func__, chap->qid, (int)chap->hash_len, chap->c2);
- 	} else {
- 		memset(chap->c2, 0, chap->hash_len);
--		chap->s2 = 0;
- 	}
-+	chap->s2 = nvme_auth_get_seqnum();
- 	data->seqnum = cpu_to_le32(chap->s2);
- 	if (chap->host_key_len) {
- 		dev_dbg(ctrl->device, "%s: qid %d host public key %*ph\n",
--- 
-2.39.2
-
+Kind regards,
+Angel
