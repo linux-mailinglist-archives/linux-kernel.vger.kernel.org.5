@@ -2,142 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DEF7D370A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339957D370E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbjJWMmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 08:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
+        id S230115AbjJWMmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 08:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbjJWMmA (ORCPT
+        with ESMTP id S230011AbjJWMmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 08:42:00 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFEC4E6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 05:41:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
-        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=19oFcHzo1e5daXEGUEKghD5VwAYxzu7JVMuNLspUkBw=; b=Cddk9alK8HHAdFhm8z1E6Sa+MP
-        I6chVeR1x3xklZggtvYorkFOhy2rxfvTfjsPvWl0SAUtGOjaU/wYvM1rOR/CSp3JpmdpuM6H+4wpJ
-        9bdWnJJNGJL3oBoz/8HOOhtHqdkaES3RgqnOHIMHcZjwwgE13qKGcgM3A9pJg3JlVZ9hnYdnvNzXE
-        lFumpaZEZXlDtwvzyzG2Ql+jxhx0i7AHSMy50xv1VRsKTj1RFSs8uUatkgR5VZzcj4xHAbbbXMbyl
-        hXCoVVq55OqDILuYt+wKu+7+U26u+++K6TOJoymL2Oy8CJMGNfiH+9vS2uU8SqbPLwBPkw3zVIjD4
-        O5sBdIig==;
-Received: from [192.168.1.4] (port=23007 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1quuFR-0000wl-0e;
-        Mon, 23 Oct 2023 14:41:33 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Mon, 23 Oct 2023 14:41:32 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <o.rempel@pengutronix.de>
-CC:     <UNGLinuxDriver@microchip.com>, <andrew@lunn.ch>,
-        <ante.knezic@helmholz.de>, <conor+dt@kernel.org>,
-        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
-        <edumazet@google.com>, <f.fainelli@gmail.com>,
-        <krzysztof.kozlowski+dt@linaro.org>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <marex@denx.de>,
-        <netdev@vger.kernel.org>, <olteanv@gmail.com>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <woojung.huh@microchip.com>
-Subject: Re: [PATCH net-next v4 2/2] net:dsa:microchip: add property to select
-Date:   Mon, 23 Oct 2023 14:41:30 +0200
-Message-ID: <20231023124130.3158-1-ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20231023114916.GC3787187@pengutronix.de>
-References: <20231023114916.GC3787187@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Mon, 23 Oct 2023 08:42:12 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5790F10C0;
+        Mon, 23 Oct 2023 05:42:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD5ACC433C7;
+        Mon, 23 Oct 2023 12:42:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698064928;
+        bh=Lqif46mCRudQTevrOAA5L+KHe8oQGS7ZwXRLj3li2O8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qb0gkoNJydStCtXvnfiV44i4BWgozYdKqkJxBXoEuWoRMPNp4AvUYSSfDGVCJ1Vve
+         Tys7uXBu0KZExUsZ5bkLSXKbzPPJlI7zeXExCDKTAN87vlZhGOMWxQQGdk8eiGSwz6
+         eS4XsX90bmuIrZq+8WzG7zmwarYZrf8ULgwPt2N9vZZ5ngwTDVr8Hb4gxtqipm2oLV
+         VlYH4HbeuCvEMoWqhWVZk8vO1ss3H6uSmw0BW2qaZ2K+td71WeeZgPMAK1DYnz2JWL
+         mkTru2RbfWD22adftaZQ3N6bk4ezfRP7IaTXhL6/ghsXnYiONTeZMIR/3BF8P7qipv
+         onMQM8KIODqdg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1quuFy-006qEF-A7;
+        Mon, 23 Oct 2023 13:42:06 +0100
+Date:   Mon, 23 Oct 2023 13:42:05 +0100
+Message-ID: <86y1ft4ijm.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v8 06/13] KVM: arm64: Sanitize PM{C,I}NTEN{SET,CLR}, PMOVS{SET,CLR} before first run
+In-Reply-To: <20231020214053.2144305-7-rananta@google.com>
+References: <20231020214053.2144305-1-rananta@google.com>
+        <20231020214053.2144305-7-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, alexandru.elisei@arm.com, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, yuzenghui@huawei.com, shahuang@redhat.com, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 13:49:16 +0200, Oleksij Rempel wrote:
-
-> In case of KSZ8873 we seems to have something like:
+On Fri, 20 Oct 2023 22:40:46 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
 > 
-> Switch MAC<-.
->             |
->   PLL -> clk sel -> REFCLKO
->             \-----< REFCLKI
+> For unimplemented counters, the registers PM{C,I}NTEN{SET,CLR}
+> and PMOVS{SET,CLR} are expected to have the corresponding bits RAZ.
+> Hence to ensure correct KVM's PMU emulation, mask out the bits in
+> these registers for these unimplemented counters before the first
+> vCPU run.
 > 
-> Clock select in this case is controlled by Register 198 (0xC6).
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  arch/arm64/kvm/arm.c      |  2 +-
+>  arch/arm64/kvm/pmu-emul.c | 11 +++++++++++
+>  include/kvm/arm_pmu.h     |  2 ++
+>  3 files changed, 14 insertions(+), 1 deletion(-)
 > 
-> In case of KSZ9897 we probably have something like:
-> 
-> Switch MAC<-.
->             |
->   PLL -> clk sel -> REFCLKO
->             \--x--< REFCLKI
->                |
->             Gate REFCLKI if REFCLKO is used.
-> 
-> In both cases:
-> - KSZ8873, Setting bit3 in Register 198 (0xC6) will control use of clk
->   select
-> - KSZ9897, setting bit2 in Register 0xN301, will controll use of clk
->   select and probably gate REFCLKI.
-> 
-> So far, it looks very similar to me and it is usually handled by
-> phy-mode rmii vs revrmii. Correct?
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index e3074a9e23a8b..3c0bb80483fb1 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -857,7 +857,7 @@ static int check_vcpu_requests(struct kvm_vcpu *vcpu)
+>  		}
+>  
+>  		if (kvm_check_request(KVM_REQ_RELOAD_PMU, vcpu))
+> -			kvm_pmu_handle_pmcr(vcpu, kvm_vcpu_read_pmcr(vcpu));
+> +			kvm_vcpu_handle_request_reload_pmu(vcpu);
 
-Thats correct I guess with one important point: default setting for KSZ88X3 is
-not to gate back to REFCLKI, while KSZ9897 will (correct me if I am wrong) 
-automatically gate to REFCLKI and does not have the ability to gate/not-to-gate
-REFCLKO to REFCLKI with any register setting. Thats more-less what this patch
-is all about. Something that is automatically active (and can not be changed
-during run-time?) on KSZ9897 needs to be manually configured on KSZ88X3.
+Please rename this to kvm_vcpu_reload_pmu(). That's long enough. But
+see below.
 
-> So, the main question is still, do we need this kind of configuration
-> per port or it is enough to have it per switch?
+>
+>  		if (kvm_check_request(KVM_REQ_RESYNC_PMU_EL0, vcpu))
+>  			kvm_vcpu_pmu_restore_guest(vcpu);
+> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
+> index 9e24581206c24..31e4933293b76 100644
+> --- a/arch/arm64/kvm/pmu-emul.c
+> +++ b/arch/arm64/kvm/pmu-emul.c
+> @@ -788,6 +788,17 @@ u64 kvm_pmu_get_pmceid(struct kvm_vcpu *vcpu, bool pmceid1)
+>  	return val & mask;
+>  }
+>  
+> +void kvm_vcpu_handle_request_reload_pmu(struct kvm_vcpu *vcpu)
+> +{
+> +	u64 mask = kvm_pmu_valid_counter_mask(vcpu);
+> +
+> +	kvm_pmu_handle_pmcr(vcpu, kvm_vcpu_read_pmcr(vcpu));
+> +
+> +	__vcpu_sys_reg(vcpu, PMOVSSET_EL0) &= mask;
+> +	__vcpu_sys_reg(vcpu, PMINTENSET_EL1) &= mask;
+> +	__vcpu_sys_reg(vcpu, PMCNTENSET_EL0) &= mask;
+> +}
 
-Thats something on which more experienced developers/maintainers may have more
-to say, my impression is that its somewhat specific to KSZ88X3 to have this
-option available and the location of the register itself also makes a point on
-its own. I may be wrong about this of course.
+Why is this done on a vcpu request? Why can't it be done upfront, when
+we're requesting the reload? Or when assigning the PMU? Or when
+setting PMCR_EL0?
 
-> For some reasons KSZ8863MLL datasheet provides RMII clock select
-> configuration for two ports (port 1 and 3)
-> https://ww1.microchip.com/downloads/aemDocuments/documents/UNG/ProductDocuments/DataSheets/KSZ8863MLL-FLL-RLL-Data-Sheet-00002335C.pdf
-> May be there are variants with two RMIIs?
+	M.
 
-As you noticed KSZ8863 provides configuration for port1 as well, but I was not
-able to find any reference to what it may actually select. The product
-identification system for ksz8863 does not mention devices with 2 RMII
-interfaces. The KSZ8873 has this bit set to "Reserved" so I can't really
-tell whats going on there...
-
-> Something similar but with multiple RMII interfaces seems to be
-> supported by KSZ8864CNX:
-> https://eu.mouser.com/datasheet/2/268/00002229A-1082534.pdf
-> 
-
-As well as these datasheets are sometimes muddled and difficult to get a grasp of
-by looking at the KSZ8873 datasheet it seems to me that it can select between
-"clock" (default) and "normal" mode, which is something similar to the 
-rmii-clk-internal property of KSZ88X3 devices, however this mode of operation 
-seems to be selectable only at boot time by strap pins (see description of 
-Register 12 (Global Control 10).
-
-> And all KSZ9xxx series seems to handle it per port as well.
-
-I guess you are refering to register 87 (RMII Management Control Register)?
-But this only selects whether to enable clock output on RXC pin?
-
-
+-- 
+Without deviation from the norm, progress is not possible.
