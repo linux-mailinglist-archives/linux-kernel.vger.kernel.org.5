@@ -2,132 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEB37D28F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 016C97D28FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233215AbjJWDRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 23:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54986 "EHLO
+        id S233202AbjJWDTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 23:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233256AbjJWDRq (ORCPT
+        with ESMTP id S229476AbjJWDTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 23:17:46 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD1BD67;
-        Sun, 22 Oct 2023 20:17:43 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39N1OgMv014626;
-        Mon, 23 Oct 2023 03:17:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ui8PfI4as8d/g70koofScTcWpt8bVff/TzAUGYePUnw=;
- b=JckPCHredHPCfHGp3qCzRHrRCzBPBpnVstdcR3Pxg+/VVS8dKqv2ZrWCq6uumgH97bcy
- NesUPlSNViIFANLlMoPFgUlxAlq/3mRwNV4M+VrXWOSfKsDxG9gFSiw7DOx1Dc0BCynH
- loL6+wQN2ZH6kvNOFNKP9tXu1UmXyhp/ROIj4L3YfX5eEIbRhQA5LS9IYD15P1oar1G3
- jOAyU++a+SE36ydhcRrUZUskZQAQ2NN9SyGqYl/WTKvF/+DhkcFWxaWKx8ViuimqWB7H
- R6vm8eQCmk30GXwCHBljlwvmZ5KJK+Bbd35d6jN7bA7CehD/THE1KE+rFh/q2v0UXDJy 8w== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv7xfuajg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 03:17:29 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39N3HTY1028838
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 03:17:29 GMT
-Received: from [10.239.133.211] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Sun, 22 Oct
- 2023 20:17:24 -0700
-Message-ID: <81d4dd90-81e6-4048-901f-b3d5c7d35dcc@quicinc.com>
-Date:   Mon, 23 Oct 2023 11:17:21 +0800
+        Sun, 22 Oct 2023 23:19:51 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A29F7;
+        Sun, 22 Oct 2023 20:19:48 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507cee17b00so4088676e87.2;
+        Sun, 22 Oct 2023 20:19:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698031187; x=1698635987; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PoHxDhurNoi7ABAIOjydGemVbw76Jn6sMUFspJpsTdg=;
+        b=aATVn9eqnz2f/mcbSdgngYVCiAzqqiBXGPHSJiBFj9uwLSdgaOwJ7ye4mi+EeZh5+G
+         B8CyyaKBr3thcLn+9dmtzMYKkqVS1OzroCy7vxKoEPDrSHR76ptia/ptfdnFc9dSbjt5
+         kKyINJxOkn/l1KwZunVjr5YjGUel9KYz/r2Qacu+1oAYSu2QZ1nZOCNEBQcv9IeYTa39
+         nyCXVTMoWG/AqGkW913uwKm4al/fo4eoDg8uI9DlqzF2KYmcG5/elduaLObl/VZ3BfcV
+         fz628qTpIhhSwnay2uh7vgrZ6CU/ZKmCi7mELapQm7aZwZy/vikl208Dm3GlxINoFA7N
+         aeZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698031187; x=1698635987;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PoHxDhurNoi7ABAIOjydGemVbw76Jn6sMUFspJpsTdg=;
+        b=vGwcvgEpYWmVugFWBMXp53eRZjOlzxfF5DaT4Mk6te0R53y+/9Fua2GcVM14QybLmm
+         dqaM7QomkigG3a/rPf/QXs5Q36b1zSGvxq5H8rixwKGBPF/hi0SuDpmgjT+wYaek0LRX
+         9xrxD/pQy5ZJxh0d5KWZdapJ8W8P8/bRPxOVHh8GCdYxLrhYb6pmVPXhNjRKuSVHrxNV
+         ijlT8ZVLpNBbqqNmbJSZ8oA1to8fYc1GLWdvrqTWrdGHvEanGXDwij+0vYJQsww3pSXl
+         3paej1oiKkauHRENWZLvgb3/DWGEAnai8ECgckFvnRYsvgdo9emIn7R4pMzQrD1QvEJa
+         //iA==
+X-Gm-Message-State: AOJu0YyqKvgHkxtNdce3ZwZ2ZBTEjxHU+8VAFjyaeNSSVoQquL/n6h11
+        QCEQNFUiegOA4rqbfDksIu4CwooPV66sTfWUOLZ+KmuY
+X-Google-Smtp-Source: AGHT+IEfZdoYjtp/SQVKQbfr7FTTTxJVVy+tG1DGFuvSJuUyhUJQFwv4G1ZGcA1OdREtN29We06C9NHHSNjMGV6Os9A=
+X-Received: by 2002:ac2:5550:0:b0:503:258f:fd1b with SMTP id
+ l16-20020ac25550000000b00503258ffd1bmr5613776lfk.18.1698031186879; Sun, 22
+ Oct 2023 20:19:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] coresight-tpdm: Correct the property name of MSR number
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC:     Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <andersson@kernel.org>
-References: <1697770311-15392-1-git-send-email-quic_taozha@quicinc.com>
- <07ef7cf2-c5dc-4248-b72b-bad913f4508d@linaro.org>
- <d6cba576-5b65-425a-b769-e26a2595b391@quicinc.com>
- <2bc15792-78f7-4498-b397-d8cf6053d864@linaro.org>
-Content-Language: en-US
-From:   Tao Zhang <quic_taozha@quicinc.com>
-In-Reply-To: <2bc15792-78f7-4498-b397-d8cf6053d864@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: uRCvsxINPKtPPInfyQ2MhXl1eMDit0kF
-X-Proofpoint-GUID: uRCvsxINPKtPPInfyQ2MhXl1eMDit0kF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-22_23,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- suspectscore=0 phishscore=0 adultscore=0 clxscore=1015 bulkscore=0
- impostorscore=0 lowpriorityscore=0 spamscore=0 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310230026
+References: <20231018151950.205265-1-masahiroy@kernel.org> <20231018151950.205265-4-masahiroy@kernel.org>
+ <ZTDlrkTXnkVN1cff@krava> <CAEf4BzZm4h4q6k9ZhuT5qiWC9PYA+c7XwVFd68iAq4mtMJ-qhw@mail.gmail.com>
+ <CAK7LNAR2kKwbzdFxfVXDxsy8pfyQDCR-BN=zpbcZg0JS9RpsKQ@mail.gmail.com>
+ <CAEf4BzbYwEFSNTFjJyhYmOOK5iwHjFAdcArkUbcQz5ntRvOOvA@mail.gmail.com>
+ <CAK7LNAQxFgOpuCBYPSx5Z6aw5MtKzPL39XLUvZuUBSyRGnOZUg@mail.gmail.com>
+ <CAEf4BzZqpqo3j33FkH3QJwezbJwarr1dXs4fCsp5So12_5MmTg@mail.gmail.com> <CAK7LNATAuLXCvN5=WiaKv9G4uF-cC2gNe5V-6G55b6fxGNZpeA@mail.gmail.com>
+In-Reply-To: <CAK7LNATAuLXCvN5=WiaKv9G4uF-cC2gNe5V-6G55b6fxGNZpeA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 22 Oct 2023 20:19:35 -0700
+Message-ID: <CAEf4BzbUqNW5UnhV9bzevtsUUeALca7CthBtzz7NjMCu2ZFmsw@mail.gmail.com>
+Subject: Re: [bpf-next PATCH v2 4/4] kbuild: refactor module BTF rule
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Oct 22, 2023 at 1:24=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+>
+> On Sun, Oct 22, 2023 at 4:33=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Sat, Oct 21, 2023 at 4:38=E2=80=AFAM Masahiro Yamada <masahiroy@kern=
+el.org> wrote:
+> > >
+> > > On Sat, Oct 21, 2023 at 5:52=E2=80=AFAM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Fri, Oct 20, 2023 at 12:03=E2=80=AFAM Masahiro Yamada <masahiroy=
+@kernel.org> wrote:
+> > > > >
+> > > > > On Fri, Oct 20, 2023 at 7:55=E2=80=AFAM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > >
+> > > > > > On Thu, Oct 19, 2023 at 1:15=E2=80=AFAM Jiri Olsa <olsajiri@gma=
+il.com> wrote:
+> > > > > > >
+> > > > > > > On Thu, Oct 19, 2023 at 12:19:50AM +0900, Masahiro Yamada wro=
+te:
+> > > > > > > > newer_prereqs_except and if_changed_except are ugly hacks o=
+f the
+> > > > > > > > newer-prereqs and if_changed in scripts/Kbuild.include.
+> > > > > > > >
+> > > > > > > > Remove.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > > > > > > ---
+> > > > > > > >
+> > > > > > > > Changes in v2:
+> > > > > > > >   - Fix if_changed_except to if_changed
+> > > > > > > >
+> > > > > > > >  scripts/Makefile.modfinal | 25 ++++++-------------------
+> > > > > > > >  1 file changed, 6 insertions(+), 19 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.m=
+odfinal
+> > > > > > > > index 9fd7a26e4fe9..fc07854bb7b9 100644
+> > > > > > > > --- a/scripts/Makefile.modfinal
+> > > > > > > > +++ b/scripts/Makefile.modfinal
+> > > > > > > > @@ -19,6 +19,9 @@ vmlinux :=3D
+> > > > > > > >  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> > > > > > > >  ifneq ($(wildcard vmlinux),)
+> > > > > > > >  vmlinux :=3D vmlinux
+> > > > > > > > +cmd_btf =3D ; \
+> > > > > > > > +     LLVM_OBJCOPY=3D"$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLA=
+GS) --btf_base vmlinux $@; \
+> > > > > > > > +     $(RESOLVE_BTFIDS) -b vmlinux $@
+> > > > > > > >  else
+> > > > > > > >  $(warning Skipping BTF generation due to unavailability of=
+ vmlinux)
+> > > > > > > >  endif
+> > > > > > > > @@ -41,27 +44,11 @@ quiet_cmd_ld_ko_o =3D LD [M]  $@
+> > > > > > > >        cmd_ld_ko_o +=3D                                    =
+             \
+> > > > > > > >       $(LD) -r $(KBUILD_LDFLAGS)                           =
+           \
+> > > > > > > >               $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)   =
+           \
+> > > > > > > > -             -T scripts/module.lds -o $@ $(filter %.o, $^)
+> > > > > > > > +             -T scripts/module.lds -o $@ $(filter %.o, $^)=
+           \
+> > > > > > > > +     $(cmd_btf)
+> > > > > > > >
+> > > > > > > > -quiet_cmd_btf_ko =3D BTF [M] $@
+> > > > > > >
+> > > > > > > nit not sure it's intentional but we no longer display 'BTF [=
+M] ...ko' lines,
+> > > > > > > I don't mind not displaying that, but we should mention that =
+in changelog
+> > > > > > >
+> > > > > >
+> > > > > > Thanks for spotting this! I think those messages are useful and
+> > > > > > important to keep. Masahiro, is it possible to preserve them?
+> > > > >
+> > > > >
+> > > > >
+> > > > > No, I do not think so.
+> > > > >
+> > > >
+> > > > That's too bad, I think it's a useful one.
+> > >
+> > >
+> > >
+> > > I prioritize that the code is correct.
+> > >
+> >
+> > Could you please also prioritize not regressing informativeness of a
+> > build log? With your changes it's not clear now if BTF was generated
+> > or not for a kernel module, while previously it was obvious and was
+> > easy to spot if for some reason BTF was not generated. I'd like to
+> > preserve this
+> > property, thank you.
+> >
+> > E.g, can we still have BTF generation as a separate command and do a
+> > separate $(call if_changed,btf_ko)? Or something along those lines.
+> > Would that work?
+>
+> If we have an intermediate file (say, *.no-btf.ko),
+> it would make sense to have separate
+> $(call if_changed,ld_ko_o) and $(call if_changed,btf_ko).
 
-On 10/20/2023 4:59 PM, Krzysztof Kozlowski wrote:
-> On 20/10/2023 10:13, Tao Zhang wrote:
->>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
->>>> index b25284e..97654aa 100644
->>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
->>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
->>>> @@ -892,7 +892,7 @@ static int tpdm_probe(struct amba_device *adev, const struct amba_id *id)
->>>>    
->>>>    	if (drvdata && tpdm_has_dsb_dataset(drvdata))
->>>>    		of_property_read_u32(drvdata->dev->of_node,
->>>> -			   "qcom,dsb_msr_num", &drvdata->dsb_msr_num);
->>>> +			   "qcom,dsb-msrs-num", &drvdata->dsb_msr_num);
->>> So you never tested your DTS... We can keep asking about this but still
->>> testing does not happen :/
->> Since this new property has not been applied on the exist upstream DTS,
->> I tested this driver with the
->>
->> local DTS. Unfortunately, the property name in the local DTS is not
->> updated, this is why it is not found
-> But your local DTS would not pass dtbs_check tests, so that's why I am
-> saying - you never tested it on mainline kernel.
+Currently we don't generate intermediate files, but we do rewrite
+original .ko file as a post-processing step.
 
-Thanks, we will add this test in the future to ensure that DTS, doc and 
-driver are consistent.
-
-
-Best,
-
-Tao
+And that rewriting step might not happen depending on Kconfig and
+toolchain (e.g., too old pahole makes it impossible to generate kernel
+module BTF). And that's why having a separate BTF [M] message in the
+build log is important.
 
 >
-> Best regards,
-> Krzysztof
 >
+>            LD                 RESOLVE_BTFIDS
+>  *.mod.o  ------> *.no-btf.ko ------------> *.ko
+>
+>
+> When vmlinux is changed, only the second step would
+> be re-run, but that would require extra file copy.
+
+Today we rewrite .ko with a new .ko ELF file which gains a new ELF
+section (.BTF), so we already pay this price when BTF is enabled (if
+that's your concern).
+
+>
+> Is this what you want to see?
+
+I don't have strong preferences for exact implementation, but what you
+propose will work, I think. What I'd like to avoid is unnecessarily
+relinking .ko files if all we need to do is regenerate BTF.
+
+>
+>
+>
+>
+>
+> >
+> > >
+> > >
+> > > >
+> > > > > Your code is wrong.
+> > > > >
+> > > >
+> > > > Could be, but note the comment you are removing:
+> > > >
+> > > > # Re-generate module BTFs if either module's .ko or vmlinux changed
+> > > >
+> > > > BTF has to be re-generated not just when module .ko is regenerated,
+> > > > but also when the vmlinux image itself changes.
+> > > >
+> > > > I don't see where this is done with your changes. Can you please po=
+int
+> > > > it out explicitly?
+> > >
+> > >
+> > >
+> > > That is too obvious; %.ko depends on $(vmlinux).
+> >
+> > Thank you for your gracious answer. We used to not rebuild module's
+> > .ko's when vmlinux didn't change (but we did regen BTFs), and that's
+> > why I was confused. Now we forcefully recompile modules, which is a
+> > change in behavior which would be nice to call out in the commit
+> > message.
+> >
+> >
+> > >
+> > >
+> > >
+> > > %.ko: %.o %.mod.o scripts/module.lds $(vmlinux) FORCE
+> > >
+> > >
+> > >
+> > >
+> > > --
+> > > Best Regards
+> > > Masahiro Yamada
+>
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
