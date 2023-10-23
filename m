@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B047D3CE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DCC7D3CBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbjJWQwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 12:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
+        id S229844AbjJWQku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 12:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjJWQwg (ORCPT
+        with ESMTP id S231395AbjJWQks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 12:52:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478B1DB;
-        Mon, 23 Oct 2023 09:52:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5199C433C9;
-        Mon, 23 Oct 2023 16:52:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698079953;
-        bh=nCtnA++YH4GS3eG6W2wL2J30XXMWQEHO20vUYEFJw1A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JNJRQ99IjKvayYTywMrhrwcvTxawuFRCQPVt8FxvXRfpypDLUJoCIvwcy7nCJOyxt
-         0tTrh9YBE4II+a8SjnIjo6c3EU4t4IoebfYWcg88gJAytZb+RXpZpTAPjrt8u8oihD
-         Qr4ajVFRo6jqcvyloTtNgGa6itseIG9AdFTG+DqK/G4H76sTAckI6nSZeEuAQkQzZk
-         HPSmChtWH7n+fjTPEQjDY97JfSjcswZJVfdPwxStcdMDD9Z7seGHWwECmRWJUz62g6
-         VQX1MoVxkR/NF7LqnG3unpfpSS6vWPO7ZY3Pm2ZpQf0RNQhxoIBVK3k4zWpyKg7mHk
-         IjLzOLdTImEng==
-Date:   Tue, 24 Oct 2023 00:40:20 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     "Schaffner, Tobias" <tobias.schaffner@siemens.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "minda.chen@starfivetech.com" <minda.chen@starfivetech.com>
-Subject: Re: [PATCH RT 0/3] riscv: add PREEMPT_RT support
-Message-ID: <ZTah9NOMbZkf6dfL@xhacker>
-References: <20230510162406.1955-1-jszhang@kernel.org>
- <a37fc706-78cd-4721-9af3-aabb610f49b1@siemens.com>
+        Mon, 23 Oct 2023 12:40:48 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6B993;
+        Mon, 23 Oct 2023 09:40:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=2Qgu3sV7JqSs1+xqVkj3Q4GC+iKi/Wf5NSoQxrtF3ew=; b=V/xOy/CXT9JTBGtsL7Y3xvmZwV
+        rnjrtnpa5D22ISWgGO9NXgw8FxE1TOh+Ky7E5bQuEIBPVohIRtEarYFHeqnEvmA8GPV33pt+97QuE
+        qNoxRycGKX+H0q2vf7UImSz8VoL2M2kkyftM18WG2htwIMUd1lNv1JzSTbHPyZMJga6Y=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1quxyl-0032zT-EI; Mon, 23 Oct 2023 18:40:35 +0200
+Date:   Mon, 23 Oct 2023 18:40:35 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Romain Gantois <romain.gantois@bootlin.com>
+Cc:     davem@davemloft.net, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        thomas.petazzoni@bootlin.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next 2/5] net: dsa: qca: Make the QCA8K hardware
+ library available globally
+Message-ID: <3f279720-5386-4ea2-b54c-ffc44277b1cc@lunn.ch>
+References: <20231023155013.512999-1-romain.gantois@bootlin.com>
+ <20231023155013.512999-3-romain.gantois@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a37fc706-78cd-4721-9af3-aabb610f49b1@siemens.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231023155013.512999-3-romain.gantois@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 04:33:13PM +0000, Schaffner, Tobias wrote:
-> On 10.05.23 18:24, Jisheng Zhang wrote:
-> > This series is to add PREEMPT_RT support to riscv. Compared with last
-> > try[1], there are two major changes:
-> > 
-> > 1. riscv has been converted to Generic Entry. And riscv uses
-> > asm-generic/preeempt.h, so we need to patch asm-generic's preeempt to
-> > enable lazy preempt support for riscv. This is what patch1 does.
-> > However, it duplicates the preempt_lazy_count() defintion, I'm sure
-> > there must be an elegant solution. Neverless, it doesn't impact the
-> > riscv PREEMPT_RT support itself.
-> > 
-> > 2. three preparation patches(patch1/2/3 in [1]) has been merged in
-> > mainline.
-> > 
-> > I back-ported the lastest linux-6.3.y-rt patches to the lastest Linus tree,
-> > then cook this series.
-> > 
-> > Link: https://lore.kernel.org/linux-riscv/20220831175920.2806-1-jszhang@kernel.org/
-> 
-> Any news on this series? Are there any open tasks blocking this?
-> I am willing to help, but do not see what's missing to get this merged.
+> @@ -62,21 +61,37 @@ const struct qca8k_mib_desc ar8327_mib[] = {
+>  	MIB_DESC(1, 0xa8, "RXUnicast"),
+>  	MIB_DESC(1, 0xac, "TXUnicast"),
+>  };
+> +EXPORT_SYMBOL(ar8327_mib);
 
-Hi Thomas, Sebastian
+Christian should decide, since he wrote most of this code, but i would
+prefer EXPORT_SYMBOL_GPL().
 
-could you please review? Any comments are appreciated. or do you want a
-rebase on linux-6.5.y-rt?
+> --- a/drivers/net/dsa/qca/qca8k.h
+> +++ b/include/linux/dsa/qca8k.h
+> @@ -13,6 +13,7 @@
+>  #include <linux/gpio.h>
+>  #include <linux/leds.h>
+>  #include <linux/dsa/tag_qca.h>
+> +#include <net/dsa.h>
+>  
+>  #define QCA8K_ETHERNET_MDIO_PRIORITY			7
+>  #define QCA8K_ETHERNET_PHY_PRIORITY			6
+> @@ -265,6 +266,7 @@
+>  #define   QCA8K_PORT_LOOKUP_STATE_LEARNING		QCA8K_PORT_LOOKUP_STATE(0x3)
+>  #define   QCA8K_PORT_LOOKUP_STATE_FORWARD		QCA8K_PORT_LOOKUP_STATE(0x4)
+>  #define   QCA8K_PORT_LOOKUP_LEARN			BIT(20)
+> +#define   QCA8K_PORT_LOOKUP_LOOPBACK_EN			BIT(21)
 
-Thanks
+Maybe do the move first, and then add new features in another patch?
 
-> 
-> > Jisheng Zhang (3):
-> >    asm-generic/preempt: also check preempt_lazy_count for
-> >      should_resched() etc.
-> >    riscv: add lazy preempt support
-> >    riscv: Allow to enable RT
-> > 
-> >   arch/riscv/Kconfig                   | 2 ++
-> >   arch/riscv/include/asm/thread_info.h | 5 ++++-
-> >   arch/riscv/kernel/asm-offsets.c      | 1 +
-> >   include/asm-generic/preempt.h        | 8 +++++++-
-> >   4 files changed, 14 insertions(+), 2 deletions(-)
-> > 
-> 
-
-
+      Andrew
