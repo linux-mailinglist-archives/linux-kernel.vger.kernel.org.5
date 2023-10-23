@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D377D280D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DF47D2814
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233070AbjJWBgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 21:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56576 "EHLO
+        id S233068AbjJWBkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 21:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232989AbjJWBgG (ORCPT
+        with ESMTP id S229457AbjJWBkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 21:36:06 -0400
-Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47880F1;
-        Sun, 22 Oct 2023 18:36:01 -0700 (PDT)
-X-QQ-mid: bizesmtp83t1698024860tdnh26oy
-Received: from localhost.localdomain ( [125.76.217.162])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 23 Oct 2023 09:34:19 +0800 (CST)
-X-QQ-SSF: 01400000000000D0H000000A0000000
-X-QQ-FEAT: 96k0+YG2NiUyz1G0D/IM+BKNUxvNFZDTYAB4ZDvOBD+DXNXWXPuQtJWLIipjA
-        AqxLFpw5Chk8czVf7bbrJ353Dx55otbHAEY2cKNF9LqaUDFs6Efs0k/nmnf9FVPEFjHPDrU
-        NadIZFzEqm03ijmBlbxR4fS+9WUTxSoKRppW4vwgTRc7kmwnzmYKfnY3zUXTGEPLNAn7KN6
-        GynZ9sKI+CLu4z05rjSp9Muzyy4JG6Q9+GR0vjElLCB++f7v/ug65JefVE1sGu3LYze+7f6
-        izjEbJoZkqSCo8JQDPfzC3ilcvhCoO4RKal37dJ9y5iYjfNq5gqsXv/2SP9LWixumq/HfBc
-        /ZkNY32XmtFWZnseebVbk58xI1WTDXUZwrUEwwTc6ldstQmbOK1qwRIKwbLAvfim+goXgn3
-        va21GN1LiZI=
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 7138792497209401315
-From:   Gou Hao <gouhao@uniontech.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        linux-ext4@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, gouhaojake@163.com
-Subject: [PATCH] ext4: delete redundant calculations in ext4_mb_get_buddy_page_lock()
-Date:   Mon, 23 Oct 2023 09:34:16 +0800
-Message-Id: <20231023013416.17246-1-gouhao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Sun, 22 Oct 2023 21:40:24 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21035F7;
+        Sun, 22 Oct 2023 18:40:22 -0700 (PDT)
+Received: from dggpemm500014.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SDHqv27F1z15Nhw;
+        Mon, 23 Oct 2023 09:37:31 +0800 (CST)
+Received: from huawei.com (10.67.108.248) by dggpemm500014.china.huawei.com
+ (7.185.36.153) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 23 Oct
+ 2023 09:40:19 +0800
+From:   felix <fuzhen5@huawei.com>
+To:     <trond.myklebust@hammerspace.com>, <anna@kernel.org>,
+        <chuck.lever@oracle.com>
+CC:     <jlayton@kernel.org>, <neilb@suse.de>, <kolga@netapp.com>,
+        <Dai.Ngo@oracle.com>, <davem@davemloft.net>, <tom@talpey.com>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <skinsbursky@parallels.com>, <linux-nfs@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: [PATCH -next] SUNRPC: Fix RPC client cleaned up the freed pipefs dentries
+Date:   Mon, 23 Oct 2023 09:40:19 +0800
+Message-ID: <20231023014019.886496-1-fuzhen5@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz7a-0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.108.248]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500014.china.huawei.com (7.185.36.153)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,30 +50,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'blocks_per_page' is always 1 after 'if (blocks_per_page >= 2)',
-'pnum' and 'block' is equal in this case.
+RPC client pipefs dentries cleanup is in separated rpc_remove_pipedir()
+workqueue,which takes care about pipefs superblock locking.
+In some special scenarios, when kernel frees the pipefs sb of the
+current client and immediately alloctes a new pipefs sb,
+rpc_remove_pipedir function would misjudge the existence of pipefs
+sb which is not the one it used to hold. As a result,
+the rpc_remove_pipedir would clean the released freed pipefs dentries.
 
-Signed-off-by: Gou Hao <gouhao@uniontech.com>
-Signed-off-by: Gou Hao <gouhaojake@163.com>
+To fix this issue, rpc_remove_pipedir should check whether the
+current pipefs sb is consistent with the original pipefs sb.
+
+This error can be catched by KASAN:
+=========================================================
+[  250.497700] BUG: KASAN: slab-use-after-free in dget_parent+0x195/0x200
+[  250.498315] Read of size 4 at addr ffff88800a2ab804 by task kworker/0:18/106503
+[  250.500549] Workqueue: events rpc_free_client_work
+[  250.501001] Call Trace:
+[  250.502880]  kasan_report+0xb6/0xf0
+[  250.503209]  ? dget_parent+0x195/0x200
+[  250.503561]  dget_parent+0x195/0x200
+[  250.503897]  ? __pfx_rpc_clntdir_depopulate+0x10/0x10
+[  250.504384]  rpc_rmdir_depopulate+0x1b/0x90
+[  250.504781]  rpc_remove_client_dir+0xf5/0x150
+[  250.505195]  rpc_free_client_work+0xe4/0x230
+[  250.505598]  process_one_work+0x8ee/0x13b0
+...
+[   22.039056] Allocated by task 244:
+[   22.039390]  kasan_save_stack+0x22/0x50
+[   22.039758]  kasan_set_track+0x25/0x30
+[   22.040109]  __kasan_slab_alloc+0x59/0x70
+[   22.040487]  kmem_cache_alloc_lru+0xf0/0x240
+[   22.040889]  __d_alloc+0x31/0x8e0
+[   22.041207]  d_alloc+0x44/0x1f0
+[   22.041514]  __rpc_lookup_create_exclusive+0x11c/0x140
+[   22.041987]  rpc_mkdir_populate.constprop.0+0x5f/0x110
+[   22.042459]  rpc_create_client_dir+0x34/0x150
+[   22.042874]  rpc_setup_pipedir_sb+0x102/0x1c0
+[   22.043284]  rpc_client_register+0x136/0x4e0
+[   22.043689]  rpc_new_client+0x911/0x1020
+[   22.044057]  rpc_create_xprt+0xcb/0x370
+[   22.044417]  rpc_create+0x36b/0x6c0
+...
+[   22.049524] Freed by task 0:
+[   22.049803]  kasan_save_stack+0x22/0x50
+[   22.050165]  kasan_set_track+0x25/0x30
+[   22.050520]  kasan_save_free_info+0x2b/0x50
+[   22.050921]  __kasan_slab_free+0x10e/0x1a0
+[   22.051306]  kmem_cache_free+0xa5/0x390
+[   22.051667]  rcu_core+0x62c/0x1930
+[   22.051995]  __do_softirq+0x165/0x52a
+[   22.052347]
+[   22.052503] Last potentially related work creation:
+[   22.052952]  kasan_save_stack+0x22/0x50
+[   22.053313]  __kasan_record_aux_stack+0x8e/0xa0
+[   22.053739]  __call_rcu_common.constprop.0+0x6b/0x8b0
+[   22.054209]  dentry_free+0xb2/0x140
+[   22.054540]  __dentry_kill+0x3be/0x540
+[   22.054900]  shrink_dentry_list+0x199/0x510
+[   22.055293]  shrink_dcache_parent+0x190/0x240
+[   22.055703]  do_one_tree+0x11/0x40
+[   22.056028]  shrink_dcache_for_umount+0x61/0x140
+[   22.056461]  generic_shutdown_super+0x70/0x590
+[   22.056879]  kill_anon_super+0x3a/0x60
+[   22.057234]  rpc_kill_sb+0x121/0x200
+
+Fixes: 0157d021d23a ("SUNRPC: handle RPC client pipefs dentries by network namespace aware routines")
+Signed-off-by: felix <fuzhen5@huawei.com>
 ---
- fs/ext4/mballoc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ include/linux/sunrpc/clnt.h | 1 +
+ net/sunrpc/clnt.c           | 5 ++++-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 454d5612641e..8442f5474b25 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1456,9 +1456,7 @@ static int ext4_mb_get_buddy_page_lock(struct super_block *sb,
- 		return 0;
- 	}
+diff --git a/include/linux/sunrpc/clnt.h b/include/linux/sunrpc/clnt.h
+index af7358277f1c..e9d4377d03c6 100644
+--- a/include/linux/sunrpc/clnt.h
++++ b/include/linux/sunrpc/clnt.h
+@@ -92,6 +92,7 @@ struct rpc_clnt {
+ 	};
+ 	const struct cred	*cl_cred;
+ 	unsigned int		cl_max_connect; /* max number of transports not to the same IP */
++	struct super_block *pipefs_sb;
+ };
  
--	block++;
--	pnum = block / blocks_per_page;
--	page = find_or_create_page(inode->i_mapping, pnum, gfp);
-+	page = find_or_create_page(inode->i_mapping, ++block, gfp);
- 	if (!page)
- 		return -ENOMEM;
- 	BUG_ON(page->mapping != inode->i_mapping);
+ /*
+diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
+index 9c210273d06b..f035cf0d138d 100644
+--- a/net/sunrpc/clnt.c
++++ b/net/sunrpc/clnt.c
+@@ -111,7 +111,8 @@ static void rpc_clnt_remove_pipedir(struct rpc_clnt *clnt)
+ 
+ 	pipefs_sb = rpc_get_sb_net(net);
+ 	if (pipefs_sb) {
+-		__rpc_clnt_remove_pipedir(clnt);
++		if (pipefs_sb == clnt->pipefs_sb)
++			__rpc_clnt_remove_pipedir(clnt);
+ 		rpc_put_sb_net(net);
+ 	}
+ }
+@@ -151,6 +152,8 @@ rpc_setup_pipedir(struct super_block *pipefs_sb, struct rpc_clnt *clnt)
+ {
+ 	struct dentry *dentry;
+ 
++	clnt->pipefs_sb = pipefs_sb;
++
+ 	if (clnt->cl_program->pipe_dir_name != NULL) {
+ 		dentry = rpc_setup_pipedir_sb(pipefs_sb, clnt);
+ 		if (IS_ERR(dentry))
 -- 
 2.34.1
 
