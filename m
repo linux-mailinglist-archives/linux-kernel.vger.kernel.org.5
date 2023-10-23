@@ -2,142 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F3C7D27ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B797D280A
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 03:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbjJWBZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 21:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49170 "EHLO
+        id S233095AbjJWBep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 21:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbjJWBZe (ORCPT
+        with ESMTP id S232989AbjJWBen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 21:25:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36386C2;
-        Sun, 22 Oct 2023 18:25:32 -0700 (PDT)
+        Sun, 22 Oct 2023 21:34:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3EC114;
+        Sun, 22 Oct 2023 18:34:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698024332; x=1729560332;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=GDJdAETLIziNh4cN75SjZvyOEmTfC2IC1ifXLGk9wgo=;
-  b=YP5ouhkbuITdC8mhB64jsmRFI/KE911ZhXLQiuXT2JMsFzvllb96yaQt
-   O+rjjbVFIjBl6PNa6Nnndsaz6Mn9ins2hXrngX6UyB2nDOtb6H5g3mKuM
-   BcAdIEdBipOV40Ks7ZawfLHK6THuWK2kO82KRdxOwb4azFL9QPRuMVvH9
-   Y/nqrOmg0gyB8m0bEJvuiOkgYZcUOorUiHoFIpBa2SNONdgY9CsA0BRnP
-   vbLF6M571pVmN4KOop9z6wNc+qZCwE9DqbGUyPV/0EWDz5pLtHHXBly8g
-   1cwi+a7AcUS0NRSwSrA+kM1Qkxa6RG3/98800BvMo8pZrh7pAYXwypnZW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="371814012"
+  t=1698024880; x=1729560880;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=wosFIAbG88UlMRFAmd1nOyQWoKJ7if7tiLwxbLNkGVg=;
+  b=BJ/Ts/hQcpnfJt+bUzpcJoeSjC3PopxyJhCbUCNZDW7/sAaiYmdU5oyT
+   WMnIKInchN+JTDW7v5UZb1vK73neapJUyOd04s5N/HQ5kXRulqsjKPZJl
+   Htgd38NiuVqCU5ElSPAfz/dEfiJk/lvs+7qJ32eLb4JONczFF/enORyF/
+   XHpjRQAR/8fSwYSuSrxsH00UHoYBt/y3gphkPDZ4acTdixql04De+2Lqp
+   2yslu5cJiUCBsM+MkgwMyEvUGfH1wb27DH9ij2oHEeb51gYwD365vLU7E
+   QM3V45xkJ+pvWzk+n2RdyXrLAS3+GvirXbuEJXDvQBUD28RJzCjNlFC8c
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="472959513"
 X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="371814012"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 18:25:31 -0700
+   d="scan'208";a="472959513"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 18:34:39 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="734501810"
 X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="734501810"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Oct 2023 18:25:31 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+   d="scan'208";a="5909423"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Oct 2023 18:34:35 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sun, 22 Oct 2023 18:25:30 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ 15.1.2507.32; Sun, 22 Oct 2023 18:34:38 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Sun, 22 Oct 2023 18:25:30 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ 15.1.2507.32; Sun, 22 Oct 2023 18:34:38 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Sun, 22 Oct 2023 18:34:38 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Sun, 22 Oct 2023 18:25:30 -0700
+ 15.1.2507.32; Sun, 22 Oct 2023 18:34:37 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CGxJ03fVfNS/ZzJG9Dea1EacTPMxAg/BFm90hKHqvO4zvVti38JioSGxwy/7Rm8rMfWBFb4elKRu/r1pdJpFvW8O9o/v6j8qymDWhltSwMoeCfXTiMVZ1Q6iyJOmLLEPV4/A2v/9ZrMvp9dsMAY85btmEBSGJGv3eVgrge1jkPxGJ7UtSgxBOqDLcG74L1hfA4s5fUHN3rLZJeM3Z5dT4SPM1PJtqSopoYJ1ovYUeLWKe/njCndLb8bHsMe2lzCDmgWrmnwQMJDjI9TKT4wmmb0+flwpPEU2bPZCOAqWYSLwP30O5xpN/MnmwUtMqNOSdH7bWCdTmssBDXBzNtJHuA==
+ b=a9dSyP1I1VSDTlk2ZdS/gESjFYXf88p71ocqc1VLpWHmljAwQCZbsP45u0ETWGuWoTC8SuAVBw1LaHsnqIY0d8ZXBWX/028OCK9oExuSLOXEBfThb3IEt/x6g0W87PUA05xuDgU7OiGq1qkHx160d6vPfysWNXyfdZPTOxSd2klh3CCe07ayr6YDIxVJCwwmRsqyiu9f6cU+Z+Hxi+up7748gGMwnDq/kPz0hAAOzWIRNWqCRqFWv/9ViLaJV5D7nV3A1iPubL9CZtrIj6H5ETppX55A3MY40s+naFl4A0W5+14UfDyYDZtKhTsh2q6FkVESj7ECNJAwcsAyZQCB8g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kulXsPvd4iFVK9rLsugiRvs6vHTuT5ROUaUaqOBG4pY=;
- b=f3FWZoDzootGx2eRh0vgKL6QpQvD8G5bXYiSNE45BdhkfVdFp1N6HtTritTUyyUdkHaCOH6NzV2y5KcW0ScsedgQcDLaofebBCjSDvwzCVq55fVpzC3Nw+dhN3Y3XBJh2JE25Xyyhu4XmTiTlwju2i/113pVThACunn6mFIbrD6+M5IHlqhb3NUOUHYRzNbA5yMpLXbg9F5iAxWq4ba/8FUCJo9zFAtyhgQQzoYIpui4srOaJzAwRJi4K/96sZEhMECHWaMWPmYx0AW4ljvxyIKxFfcE5OwKNO+orpMm6SLQ5xeOiQr4ncP2Zp0pL4iIPxTJvLHePXiWwLC4eZR8kg==
+ bh=IUq9end3n/+EmJy9sS5lyEjEsa0JIbxbTMorlNJ+HXY=;
+ b=nsnWi/AlKPy9ak3G+moDnsxGna9SHR1HlzWwkW6Nyb4UsxzrqIRJ2lg7sSdk21PNbd/ggKwOCwJflv6DTmYfWn2ZqIx5LqIZxOfJ4lx0sKKE+mjYDIaYbGkK48AKUyiFbQS8nEEvasGgOmvNfkmSpo5Na+fQXmfJhtVC8Eb0e97cNlQNKgxNPAee8qstKXzpBebivR+Ul+6v8IncuXUdsgqh5lh6Em92z/O164nFEFr6j5X3fHv6HOJHsGmNaCqUAapBH7q6A36boQzQT1fa/14sYsH0HfaNcJuRLTMrArNsW5ThEVHTKIz0eZj3LNu22hx1/7slY9q4oQqDcyDIrg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
- by MN0PR11MB6301.namprd11.prod.outlook.com (2603:10b6:208:3c3::8) with
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
+ by PH7PR11MB6746.namprd11.prod.outlook.com (2603:10b6:510:1b4::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Mon, 23 Oct
- 2023 01:25:28 +0000
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::21f8:775f:a94d:e1c0]) by CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::21f8:775f:a94d:e1c0%4]) with mapi id 15.20.6907.022; Mon, 23 Oct 2023
- 01:25:28 +0000
-Date:   Mon, 23 Oct 2023 09:20:37 +0800
-From:   kernel test robot <yujie.liu@intel.com>
-To:     Frank Li <Frank.Li@nxp.com>, <miquel.raynal@bootlin.com>,
-        <conor.culhane@silvaco.com>, <alexandre.belloni@bootlin.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <corbet@lwn.net>, <joe@perches.com>,
-        <linux-i3c@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
-CC:     <oe-kbuild-all@lists.linux.dev>, <gregkh@linuxfoundation.org>,
-        <imx@lists.linux.dev>, <jirislaby@kernel.org>,
-        <linux-serial@vger.kernel.org>
-Subject: Re: [PATCH 1/5] i3c: add slave mode support
-Message-ID: <202310211527.TeVTMxA7-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.34; Mon, 23 Oct
+ 2023 01:34:31 +0000
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::24ce:9f48:bce:5ade]) by MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::24ce:9f48:bce:5ade%6]) with mapi id 15.20.6907.032; Mon, 23 Oct 2023
+ 01:34:30 +0000
+Date:   Mon, 23 Oct 2023 09:25:12 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+CC:     Shakeel Butt <shakeelb@google.com>,
+        "Sang, Oliver" <oliver.sang@intel.com>,
+        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
+        lkp <lkp@intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "Yin, Fengwei" <fengwei.yin@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Michal Hocko" <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>,
+        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+Message-ID: <ZTXLeAAI1chMamkU@feng-clx>
+References: <20231010032117.1577496-4-yosryahmed@google.com>
+ <202310202303.c68e7639-oliver.sang@intel.com>
+ <CALvZod5hKvjm3WVSOGc5PpR9eNHFkt=BDmcrBe5CeWgFzP7jgQ@mail.gmail.com>
+ <CAJD7tkbjZri4ayBOT9rJ0yMAi__c-1SVmRh_5oXezr7U6dvALg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20231018215809.3477437-2-Frank.Li@nxp.com>
-X-ClientProxiedBy: SI2P153CA0011.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::14) To CY5PR11MB6392.namprd11.prod.outlook.com
- (2603:10b6:930:37::15)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkbjZri4ayBOT9rJ0yMAi__c-1SVmRh_5oXezr7U6dvALg@mail.gmail.com>
+X-ClientProxiedBy: SI2PR02CA0050.apcprd02.prod.outlook.com
+ (2603:1096:4:196::11) To MN0PR11MB6304.namprd11.prod.outlook.com
+ (2603:10b6:208:3c0::7)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|MN0PR11MB6301:EE_
-X-MS-Office365-Filtering-Correlation-Id: 39b9ca45-6a22-48c8-c6f6-08dbd366f0d1
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6304:EE_|PH7PR11MB6746:EE_
+X-MS-Office365-Filtering-Correlation-Id: c69c9c30-d005-45a5-9a28-08dbd36833a1
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q1Y4PtFlzmofhO4WMBCoZ+INaR8u4BldBOlYWgVy+taEjhY5A6cYM2cinjNoDp9RZDi8y8NRLtAgBYzHTnt83ArPL7FbCGQzgWMWkFegrMER35mGOHBXkDa6KGBqIERZGAjvZ8DAuEFYg7JDfo7ITzo7XCwf08OJiYFuP9bPtyfQpXTqaLWf34/zA98c4/Yjy/YvMeH8HNv/2FWGwAJa15PiwNnErIdscf6xbgKSspimLuUSCA0dtHepgYtYRkDgEJLQsSMrEiMNLfgmvIGGlzBb1lymim6saiv8d/r7iNNMQeed+1MGZkT2ADxXnMnBBqDZNv0BjLPisy/gLnpqOBqc/KwiMrqxAo3y01UbsN5XMFSLMBylp09z8XcV8OTm1MJPiwQ7stg8476XV3Leu+qE0Kv8ll3fev7zetS4uJR2FVMZcoVjGt4KOFIONzrS456/uG4JU7PkHIBUfVMNsniTNpMfkO7cu1AGzmN/MEjkPo9CPPQj7gb3YSvPSnane/t/x/UqRGYUbtpwqI6jTu1svGGsS/isoerl1/zgvB++9vfwRRic6uC0fS0PL0U0DjhrHY5T5xBVHDfzAHiSgVRcuDktR2161AAu/zIHLITHuV9IsnFdPFh0x4UuecyL
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(346002)(396003)(366004)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(921008)(4001150100001)(38100700002)(2906002)(41300700001)(86362001)(5660300002)(7416002)(36756003)(4326008)(8676002)(8936002)(6506007)(478600001)(6666004)(26005)(1076003)(82960400001)(66476007)(2616005)(66946007)(316002)(66556008)(83380400001)(966005)(6486002)(6512007);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: JJoja/VyXCnDCorWqIROeDudhuajvdpKTJw6icSZ2mdkZDe0QuxDxdMDWcMb93YfjdRa4q0egkRjuSNgW91U7tSFD0mYfHXEWgNZFLb7xNvkFvVSa38D6fnrzzpdlHVfu90wVJgXHBX3y1m2jcaV7HXJZaIT8mvgIoFH8wPHgKooeHP565F6nCWi2mjdzzha4Jn9dzcYleManf89Eo9mbNiVjY+LvRjSEE7eIEW51De4z7HfIwxhsD7LD8RLYwi6O8fJ8pEMSZkKZ7adgs1fsy3gos8n04i672QeZoX+w3bqlgbFaKt0vxoRVbfNctsh3/CpCS5MzYJrXU78TbE94XuC9bcxLKItYajbaY0pI96bVf+nauVXjsKhWaXikpA0nN7POi3t8B3EC6KxhnKUYnWxhot1Elykh48AnE9YfZ6236c7ISYO9KNu2oePb7blYKLyI8oCIDNvv2xfns9fp4Y8QahJ79KUkW6Vl8BIx7TbDpDOTyPRtmOnokU5naYwKH1MLOOdHbzsHJvdWEDCZrcPxFyflF2UOUDbSQcH+p4Qihk7QV5sgry8wcdxVu/1VW5d3pPZ3opxyNlH2QVm5A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6304.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(346002)(396003)(376002)(366004)(136003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(6512007)(7416002)(26005)(54906003)(478600001)(6506007)(9686003)(53546011)(6666004)(4326008)(5660300002)(66556008)(6916009)(66476007)(41300700001)(66946007)(38100700002)(83380400001)(2906002)(8676002)(316002)(82960400001)(6486002)(8936002)(966005)(86362001)(33716001)(44832011);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QssNjupezd39zV/EJaZgtKC81+U4SIYOLH7AV9FOpGTGBk5msu1MpByDGXY/?=
- =?us-ascii?Q?oIdW3+qQDF81Bk6t1wOBjVKPLPjGs+m8g5J+Ke1d9OwfWM74qI7Btrw4uxMO?=
- =?us-ascii?Q?Mlr4V2VkhSEa4FcWvlYT8R+MbMNF1KAT4qMU2L6KOUZMUEhoRblJ1p9Piru/?=
- =?us-ascii?Q?6II1lpR/sg6qIN/L40TdHVPKDDE0S8cKgSw8fQa1DkNrSZsfSyj5GNZFvtAv?=
- =?us-ascii?Q?EF3AsF+OMUNatlzrsI51xNOrw6k9zH5R1mZ4IEsLK81WTY/uRR8Y+takbO/Z?=
- =?us-ascii?Q?TaDHbgJyUlIrBZmXZD35UbP2WW060D8r08hZig+HNMX+t1BYNjkFSCHaMVxz?=
- =?us-ascii?Q?3Ktq5TnozFIROa9dkAYTCwkBfcz4VDREFq3EHgDpkcLX8PFTYpLdfKHRNgIj?=
- =?us-ascii?Q?dfKIoEl+retVeejZ4bE8jMIwXw26Lo1sIy1WfgrUdhH14V2uBh8iLr/D2qb0?=
- =?us-ascii?Q?3a2wlOHryfifeh0+CZcx8aJinSyIih3BdRKAS3wZTNYtHfqK+IxnEEuC0CnY?=
- =?us-ascii?Q?GQ2bUVVvf+q4DofM5qYSWV7MlzprnnfInyT3V8yCjm5Bb2JcaHInhzW2ph/c?=
- =?us-ascii?Q?9vdxtS20u+8vA9C2LRmJcFd9+rEY3pxxbDr97PJd2jtKQzKzE3p9N2CMDt1b?=
- =?us-ascii?Q?a+2zY4EVYpe10vPyX8RAhjs8LPGXcDkcA6lvXUoJW1Kr9eD0RLjfvmW2dPLj?=
- =?us-ascii?Q?721+/men03HqF7kHUnD0ig8PAeI/Zh4eNsWxTkFSXlc1nUXbi6Hf0BklmWhl?=
- =?us-ascii?Q?AOowZiQeItPTqi/f0QIHk6De11u54dn49+7h6VO7u8Gl2O0iD+8s/dUoZov9?=
- =?us-ascii?Q?nqvKdlcmcA0RQv6rMp14VwzATsFr9FDX+5NNy3juZoivREoiy+HsBEs7kD1r?=
- =?us-ascii?Q?Cw6Qasy5msqO+3GD25oJip3mQkguMFQG0tKIS9s+XAM51s0IyNSolYo+JoHh?=
- =?us-ascii?Q?P0dhSQncel73CleBCNoGu+wAFdfsuRfeGYm+WMEGknmjOU7ti7NLjKiAVzJ+?=
- =?us-ascii?Q?YBEuP2nq6k0c5CVGV2326/atR8cNhkCwqc4K5s6cNuvarTM6t0W7hzSZJGSd?=
- =?us-ascii?Q?I8td5VsZ784hKnG/Q7edX6ZuCm8LI0G//JW5DTnEpTCjYbg8FitV53thvuQa?=
- =?us-ascii?Q?qXiLbEnf1Lov88RcRfXFuOygjo0Ea6QlNvMyooeV2U7dO0pJBZNKDN4vh1iL?=
- =?us-ascii?Q?71wNNMOKG/efQQ7kn+AR9lqwlfk8hfMrUpFCVKF98EWBFdqPPZGrDkUKYS6h?=
- =?us-ascii?Q?spTo9VMroDuxdtDp5f2npIjxGPkPQJHgp+lA+uuvDrBpUrfu1ARt0dxp+f/R?=
- =?us-ascii?Q?4nrQwRj/vXjiEv4SQc5ySUv8fhG+L/ic1KG/YfBzHUFy0VV2X6dPvWGkf10Z?=
- =?us-ascii?Q?ncIe1euC7M/Q08t8ZQ0ZHSzpF1DpQttyVjI2Qd4Q69KIXLR9arrqIN9jT/3j?=
- =?us-ascii?Q?rDl8io5n5OYTM5PVajOOtzSmMNfmFZIfxkPi2cXssiDQOXZ1iJhyNCr7VrXl?=
- =?us-ascii?Q?8M8B7UPlzMVmMmZxFZw7oXJnzFGH8LyGZlKuUTz4rnQV9SRHBq4Ohdjxf5lV?=
- =?us-ascii?Q?wr0arViQ/nnMph8noGY37GLBi/F4q4bI9VcPV+Ou?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39b9ca45-6a22-48c8-c6f6-08dbd366f0d1
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q0FLdjhqL2pIRG9RdzZEVnpYZ1cxY3A3T0xPUVBEcDlrS0xtU296Zmc1UDFU?=
+ =?utf-8?B?SnZpN096T1NJazluVFFRTk82d3dueWtadUMwN29kTDFOblJXT00zVndYaUQr?=
+ =?utf-8?B?SW9aZDBCeU90V2lUWFhnWm1GWExZazFsNEV4WEVpTkEvelNrQUdSSUJTNWdK?=
+ =?utf-8?B?VTNqREgzNm1wY1N1Y0JwSnJUR0hsRE9QZVo3K1ZBN1k1REV3aW9qTnBsTktY?=
+ =?utf-8?B?Q3R3VXVnQURhSHFJMDY2MW1qTy9tNnRFSzJjRkl0VXg5czZLc1NveUVOOUZi?=
+ =?utf-8?B?RW5WQW9QdTNJYlIzbC9zMW1pN0FqR3A1VFZPU3NIcERqdlhiaXB3a3IybGtx?=
+ =?utf-8?B?QUxpTmF5MUpCY3lWTHYvZm9lME1nc1FsL1E0ZnlDVHo5ZGVhZHRFZG93djlJ?=
+ =?utf-8?B?SUdFNmRVWlhhSmw2Q2l1MHpSTTROU2NtMk82U0FaYldTMVJxYzFQZXNZbHNB?=
+ =?utf-8?B?MzFLUTFEd0NIeTlBem1iVGFRcTlZeHhkVW5jbFlOUVlpcnRMUXlSSXZqdFZ6?=
+ =?utf-8?B?ck5iUWEwYmxXcmhwNWdzbHAxRXZlTmk5cTNsd0NNSnE4UFc3OW9lMnFwQVdY?=
+ =?utf-8?B?Tkt2V1MyUFRjRmM2VTlqUG5DRSs3VEM1NEhYUUtRdTZRQ2wza09HbzhkYzZS?=
+ =?utf-8?B?djNnbHliVi9JQkFiemx4dU1MOTNWbE44MkkxczhqcU84a0Z5SHhjZE9QVE9m?=
+ =?utf-8?B?UmV4T3gvdVpVVkFTR1k2WlIxdTJPbWJYaUJPbS8yMDRRZnRPaXludmVOU2g3?=
+ =?utf-8?B?MFZWaHZ5YkJ1NWVjM0ZyZndCcmVReCs2OGhIVTUvTmVlN2s5bXgwQUFBSXR3?=
+ =?utf-8?B?dVZOSTdhQ2xUZW8wOE4yN2laNktDeDVjOGVSRTRDdnBVYWMyUWtCYXlucGRO?=
+ =?utf-8?B?OGFvT0g4QjZlbE1lUktTMEhQUUNnRE1DZ0R1QU5UQWRQNHdaTW4wMTNMOU01?=
+ =?utf-8?B?Zk5KbTU5NHNwOUJ0Y3JBOHVCZTlTUzZqdkI1dXV3YWkwQlAzN2UrU1pLckMy?=
+ =?utf-8?B?V2ZoUC9vSkhvZnlBTG1BRkJoeG8yY2ZTVFdXU2pQZFFDMjlRYWVzMFkvWWxC?=
+ =?utf-8?B?YVg5Q2VsL0RxR1Z1ZjN2U0xRc1ZzUGpYZ0ZTOU83Rlk2RFJqRDNGVERYcVls?=
+ =?utf-8?B?eitBMnVNNjZOVXk4SWl3aGw0dktWalVkcGw1ZXQrUnJvWW1sbWJaK3Z2YUNp?=
+ =?utf-8?B?bFhiSjF3WTRqZDA1aXlzYUtSaXhQZWNLa0ZrQnNMMXFhWmtkQm9MdDczaVhs?=
+ =?utf-8?B?OElnY2VEbmJVc0JPdjdFVXRVVk1HTXo5VkpVOFo1QkZVSGpZQjNBbzZLOVR6?=
+ =?utf-8?B?TjB4cG82WVBwcWNhK0ZRU2duRHZkd0JjMnYzbEU4ODJxWkVTT3F2RFl4UnZX?=
+ =?utf-8?B?UHppVkhjNDd6TFZHNk0xQ1RTSFZVM1NTSHQ4V1NRelJyY0tGbGJIVHBTYWlF?=
+ =?utf-8?B?UlE1ZVl2SmdmTjNlQ0NjQVFwOFNSQTErUW5aUnN5REcrWDI3VzJvcUxXcnY1?=
+ =?utf-8?B?eTFrNGdGbVlOb3ordUZZdzJIc1dORjdqV0N6eHJybmoxR3RkdXJXREErL0JZ?=
+ =?utf-8?B?UjhBcml0TVlueWxTaGs2ejlSQjIwVXBrNS85SEh4UXpoNkg2NjJaaHlObkpV?=
+ =?utf-8?B?OG5BdlVXTTJiQXpMeDlMT245VTkvampldUZYQ2RZcVZnUHFPQndyN3hSUEp6?=
+ =?utf-8?B?anpNeGsvdlB5MnZZQWxCcDJYRnROQ2x4S0lQUUFOQmh4M095cFNxbzJ6WGc3?=
+ =?utf-8?B?bkdhcUdxMzlkTHAxR1l3ZkNIRGtwU2JrenRVZnVaTEQ3WGdWRllwRnJyYlpG?=
+ =?utf-8?B?cVNJVC8xU3ozZXRnMjVjcnVrSlVFZXlRWnJaL1pyYno5NS94aVUxNzlVZDdD?=
+ =?utf-8?B?Y3ZJRXllMDBwbHc0WnZ1OEF5RWVQZzYvMm5JSllNeG5Fek9Kdkh2dE9ncytY?=
+ =?utf-8?B?dzIzbEVaMndvRm5vUXdud1A2cFljWmY4NUVHQkpHR1Q3VUl2aG10aFNwVUY4?=
+ =?utf-8?B?ZklxOWRkT1NZUjZFbHB3YnhGQi9QV205UHB2RzZZR3NvdUNrM0dESGFoOFBw?=
+ =?utf-8?B?cWVzTjEydkcwUDRFeWVkUXRuRGpqcEt0b09HNVplRi9pVEVMOGcydDI2R0gv?=
+ =?utf-8?Q?nQtfcTT50By9YwLygW9dag+bd?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c69c9c30-d005-45a5-9a28-08dbd36833a1
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6304.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 01:25:28.4581
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 01:34:30.0919
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +WBAXut9NTahCMu8OBjpWyrnmVtIDE3o4iDLbeo28JzYFTl90u3+UjrNjQGr5EuRtWAm9zZThXvDCBXT83XwQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6301
+X-MS-Exchange-CrossTenant-UserPrincipalName: tjfLaqO8ldqQcPm4CTEPRH+iHRZ52LLpAt5+h/IMfyWhCDB6jt8dJUaFLoM1Ig/4P77COtR+NTpE0RSLDruP7Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6746
 X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -149,89 +178,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
+On Sat, Oct 21, 2023 at 01:42:58AM +0800, Yosry Ahmed wrote:
+> On Fri, Oct 20, 2023 at 10:23 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > On Fri, Oct 20, 2023 at 9:18 AM kernel test robot <oliver.sang@intel.com> wrote:
+> > >
+> > >
+> > >
+> > > Hello,
+> > >
+> > > kernel test robot noticed a -25.8% regression of will-it-scale.per_thread_ops on:
+> > >
+> > >
+> > > commit: 51d74c18a9c61e7ee33bc90b522dd7f6e5b80bb5 ("[PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg")
+> > > url: https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-memcg-change-flush_next_time-to-flush_last_time/20231010-112257
+> > > base: https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-everything
+> > > patch link: https://lore.kernel.org/all/20231010032117.1577496-4-yosryahmed@google.com/
+> > > patch subject: [PATCH v2 3/5] mm: memcg: make stats flushing threshold per-memcg
+> > >
+> > > testcase: will-it-scale
+> > > test machine: 104 threads 2 sockets (Skylake) with 192G memory
+> > > parameters:
+> > >
+> > >         nr_task: 100%
+> > >         mode: thread
+> > >         test: fallocate1
+> > >         cpufreq_governor: performance
+> > >
+> > >
+> > > In addition to that, the commit also has significant impact on the following tests:
+> > >
+> > > +------------------+---------------------------------------------------------------+
+> > > | testcase: change | will-it-scale: will-it-scale.per_thread_ops -30.0% regression |
+> > > | test machine     | 104 threads 2 sockets (Skylake) with 192G memory              |
+> > > | test parameters  | cpufreq_governor=performance                                  |
+> > > |                  | mode=thread                                                   |
+> > > |                  | nr_task=50%                                                   |
+> > > |                  | test=fallocate1                                               |
+> > > +------------------+---------------------------------------------------------------+
+> > >
+> >
+> > Yosry, I don't think 25% to 30% regression can be ignored. Unless
+> > there is a quick fix, IMO this series should be skipped for the
+> > upcoming kernel open window.
+> 
+> I am currently looking into it. It's reasonable to skip the next merge
+> window if a quick fix isn't found soon.
+> 
+> I am surprised by the size of the regression given the following:
+>       1.12 ą  5%      +1.4        2.50 ą  2%
+> perf-profile.self.cycles-pp.__mod_memcg_lruvec_state
+> 
+> IIUC we are only spending 1% more time in __mod_memcg_lruvec_state().
 
-kernel test robot noticed the following build warnings:
+Yes, this is kind of confusing. And we have seen similar cases before,
+espcially for micro benchmark like will-it-scale, stressng, netperf
+etc, the change to those functions in hot path was greatly amplified
+in the final benchmark score.
 
-[auto build test WARNING on robh/for-next]
-[also build test WARNING on linus/master v6.6-rc6 next-20231020]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+In a netperf case, https://lore.kernel.org/lkml/20220619150456.GB34471@xsang-OptiPlex-9020/
+the affected functions have around 10% change in perf's cpu-cycles,
+and trigger 69% regression. IIRC, micro benchmarks are very sensitive
+to those statistics update, like memcg's and vmstat.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/i3c-add-slave-mode-support/20231019-055940
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20231018215809.3477437-2-Frank.Li%40nxp.com
-patch subject: [PATCH 1/5] i3c: add slave mode support
-config: microblaze-allyesconfig (https://download.01.org/0day-ci/archive/20231021/202310211527.TeVTMxA7-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231021/202310211527.TeVTMxA7-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <yujie.liu@intel.com>
-| Closes: https://lore.kernel.org/r/202310211527.TeVTMxA7-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/i3c/slave.c:11:
-   include/linux/i3c/slave.h: In function 'i3c_slave_ctrl_alloc_request':
-   include/linux/i3c/slave.h:272:23: error: implicit declaration of function 'kzalloc' [-Werror=implicit-function-declaration]
-     272 |                 req = kzalloc(sizeof(*req), gfp_flags);
-         |                       ^~~~~~~
->> include/linux/i3c/slave.h:272:21: warning: assignment to 'struct i3c_request *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     272 |                 req = kzalloc(sizeof(*req), gfp_flags);
-         |                     ^
-   include/linux/i3c/slave.h: In function 'i3c_slave_ctrl_free_request':
-   include/linux/i3c/slave.h:298:17: error: implicit declaration of function 'kfree'; did you mean 'kvfree'? [-Werror=implicit-function-declaration]
-     298 |                 kfree(req);
-         |                 ^~~~~
-         |                 kvfree
-   In file included from drivers/i3c/slave.c:13:
-   include/linux/slab.h: At top level:
->> include/linux/slab.h:227:6: warning: conflicting types for 'kfree'; have 'void(const void *)'
-     227 | void kfree(const void *objp);
-         |      ^~~~~
-   include/linux/i3c/slave.h:298:17: note: previous implicit declaration of 'kfree' with type 'void(const void *)'
-     298 |                 kfree(req);
-         |                 ^~~~~
-   include/linux/slab.h:718:37: error: conflicting types for 'kzalloc'; have 'void *(size_t,  gfp_t)' {aka 'void *(unsigned int,  unsigned int)'}
-     718 | static inline __alloc_size(1) void *kzalloc(size_t size, gfp_t flags)
-         |                                     ^~~~~~~
-   include/linux/i3c/slave.h:272:23: note: previous implicit declaration of 'kzalloc' with type 'int()'
-     272 |                 req = kzalloc(sizeof(*req), gfp_flags);
-         |                       ^~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +272 include/linux/i3c/slave.h
-
-a63b2858bd837d Frank Li 2023-10-18  256  
-a63b2858bd837d Frank Li 2023-10-18  257  /**
-a63b2858bd837d Frank Li 2023-10-18  258   * i3c_slave_ctrl_alloc_request() - Alloc an I3C transfer
-a63b2858bd837d Frank Li 2023-10-18  259   * @ctrl: I3C slave controller device
-a63b2858bd837d Frank Li 2023-10-18  260   * gfp_flags: additional gfp flags used when allocating the buffers
-a63b2858bd837d Frank Li 2023-10-18  261   *
-a63b2858bd837d Frank Li 2023-10-18  262   * Returns: Zero for success, or an error code in case of failure
-a63b2858bd837d Frank Li 2023-10-18  263   */
-a63b2858bd837d Frank Li 2023-10-18  264  static inline struct i3c_request *
-a63b2858bd837d Frank Li 2023-10-18  265  i3c_slave_ctrl_alloc_request(struct i3c_slave_ctrl *ctrl, gfp_t gfp_flags)
-a63b2858bd837d Frank Li 2023-10-18  266  {
-a63b2858bd837d Frank Li 2023-10-18  267  	struct i3c_request *req = NULL;
-a63b2858bd837d Frank Li 2023-10-18  268  
-a63b2858bd837d Frank Li 2023-10-18  269  	if (ctrl && ctrl->ops && ctrl->ops->alloc_request)
-a63b2858bd837d Frank Li 2023-10-18  270  		req = ctrl->ops->alloc_request(ctrl, gfp_flags);
-a63b2858bd837d Frank Li 2023-10-18  271  	else
-a63b2858bd837d Frank Li 2023-10-18 @272  		req = kzalloc(sizeof(*req), gfp_flags);
-a63b2858bd837d Frank Li 2023-10-18  273  
-a63b2858bd837d Frank Li 2023-10-18  274  	if (req)
-a63b2858bd837d Frank Li 2023-10-18  275  		req->ctrl = ctrl;
-a63b2858bd837d Frank Li 2023-10-18  276  
-a63b2858bd837d Frank Li 2023-10-18  277  	return req;
-a63b2858bd837d Frank Li 2023-10-18  278  }
-a63b2858bd837d Frank Li 2023-10-18  279  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+Thanks,
+Feng
