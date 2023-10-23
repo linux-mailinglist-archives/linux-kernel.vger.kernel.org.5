@@ -2,120 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1917D3AE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96EC17D3AE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjJWPfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
+        id S230519AbjJWPfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjJWPfl (ORCPT
+        with ESMTP id S229532AbjJWPfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:35:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA7CDE
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:35:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698075339; x=1729611339;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Rh3WIkroWfusSZh8pyM6xIJoI8clu8Gzvxh74Q9Cu1A=;
-  b=n4qN6Z1hoOI9qRcoyOz2V9+JJRbx1zyibaFeRFbXeiwf/ILtBMIo4m1p
-   HIQH1y7qrW0hZCjOaRn/ksdk86M4E+2aflIFhU70mI86XeSLRdEXt5Y5j
-   ueUB0OJSTmGXcxu8NJiUV61FsuYt1DqIBB8lpb3Fvon5vd2yQPvvY/31G
-   KCe0ZfOsIp0hxVbS/C3a1qHlZ6FumUGTUHh+5TYsvITtSq13u+l45TyyE
-   zByhDEbUhtK4f4XFXOKgESAOsKGFl0FO452e2fWPatnMq0Si3tg553FCk
-   /xexogwg21rJcNA3Y4+3QUMnhqnfbfQ5nRAFmFI/ivKb469Qq+YkwfRT1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="385762196"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="385762196"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 08:31:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="828480810"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="828480810"
-Received: from swidman-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.211.241])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 08:31:45 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id D62B9109B10; Mon, 23 Oct 2023 18:31:42 +0300 (+03)
-Date:   Mon, 23 Oct 2023 18:31:42 +0300
-From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "Nakajima, Jun" <jun.nakajima@intel.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "ashish.kalra@amd.com" <ashish.kalra@amd.com>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
-Subject: Re: [PATCHv2 02/13] kernel/cpu: Add support for declaring CPU
- offlining not supported
-Message-ID: <20231023153142.bes7zxcjc2soihsl@box>
-References: <20231020151242.1814-1-kirill.shutemov@linux.intel.com>
- <20231020151242.1814-3-kirill.shutemov@linux.intel.com>
- <0a29fef814e51a2aa0030ec9cc97366718859411.camel@intel.com>
+        Mon, 23 Oct 2023 11:35:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F805DB
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:35:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698075302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=gHSlX1YDGV5G2LskBeGoFUFpyleE33b46ppJ65LrH24=;
+        b=QTRZQ3b0/rTvwH9uECP6/LldKqm5bdgd/kqASoEdpUILChf20rkG27ms/Y1dLY49tcAT53
+        cwE82KKhNF3VZ+sYtvU8kZ/fHjV7BWHlsCR/Eo2aLtuHvvM++Qc29crPQ6K9mPgBUgJemb
+        TkAmKR0t9347+ux/uAZFFGLxFHL/0vQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-655-Ym4rw9vjNDiVwo4EWSsx4Q-1; Mon, 23 Oct 2023 11:34:46 -0400
+X-MC-Unique: Ym4rw9vjNDiVwo4EWSsx4Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B55BE185A79C;
+        Mon, 23 Oct 2023 15:34:45 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.92])
+        by smtp.corp.redhat.com (Postfix) with SMTP id AE44A40C6F79;
+        Mon, 23 Oct 2023 15:34:44 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 23 Oct 2023 17:33:44 +0200 (CEST)
+Date:   Mon, 23 Oct 2023 17:33:43 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] do_io_accounting: use __for_each_thread()
+Message-ID: <20231023153343.GA4629@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0a29fef814e51a2aa0030ec9cc97366718859411.camel@intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 09:30:59AM +0000, Huang, Kai wrote:
-> IMHO it's a little bit odd to have two mechanisms in place, even in this middle
-> state patch.  Is it better to completely replace CC_ATTR_HOTPLUG_DISABLED with
-> the new cpu_hotplug_offline_disabled in this patch? You can explicitly call
-> cpu_hotplug_disable_offlining() in tdx_early_init() so no functional change is
-> done.
+rather than while_each_thread() which should be avoided when possible.
 
-I can. But I don't see how it makes a difference.
+This makes the code more clear and allows the next change.
 
-> Or I am wondering why cannot just merge this and the next patch together, with a
-> proper justification?
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ fs/proc/base.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Because the very next thing reviewers would ask is to split them :P
-
-> Btw, IMHO the changelog (this and next patch's) seems didn't explain the true
-> reason to replace CC_ATTR_HOTPLUG_DISABLED.
-> 
-> 	Currently hotplug prevented based on the confidential computing
-> 	attribute which is set for Intel TDX. But TDX is not the only possible
-> 	user of the wake up method.
-> 
-> "TDX is not the only possible user of the wake up method" doesn't mean we need
-> to replace CC_ATTR_HOTPLUG_DISABLED.  E.g., other CoCo VM type can also select
-> CC_ATTR_HOTPLUG_DISABLED if it uses MADT wake up method.
-> 
-> To me the true reason is the new MADT wake up version actually brings the
-> support of offlining cpu, thus it's more suitable to decide whether the CoCo VM
-> needs to disable CPU offline based on the MADT wake up version, but not the CC_*
-> attributes that is determined by CoCo VM type.
-
-No. MADT is orthogonal to CoCo. It can be implemented outside of CoCo
-environment and CoCo platform can implement other wake up methods. It is
-not up to TDX/SEV/whatever to decide if offlining is supported. It is
-property of the wakeup method implemented on the platform.
-
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index c0e971cc6d41..0a39412332e2 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2976,7 +2976,7 @@ static const struct file_operations proc_coredump_filter_operations = {
+ #ifdef CONFIG_TASK_IO_ACCOUNTING
+ static int do_io_accounting(struct task_struct *task, struct seq_file *m, int whole)
+ {
+-	struct task_io_accounting acct = task->ioac;
++	struct task_io_accounting acct;
+ 	unsigned long flags;
+ 	int result;
+ 
+@@ -2990,14 +2990,18 @@ static int do_io_accounting(struct task_struct *task, struct seq_file *m, int wh
+ 	}
+ 
+ 	if (whole && lock_task_sighand(task, &flags)) {
+-		struct task_struct *t = task;
++		struct signal_struct *sig = task->signal;
++		struct task_struct *t;
+ 
+-		task_io_accounting_add(&acct, &task->signal->ioac);
+-		while_each_thread(task, t)
++		acct = sig->ioac;
++		__for_each_thread(sig, t)
+ 			task_io_accounting_add(&acct, &t->ioac);
+ 
+ 		unlock_task_sighand(task, &flags);
++	} else {
++		acct = task->ioac;
+ 	}
++
+ 	seq_printf(m,
+ 		   "rchar: %llu\n"
+ 		   "wchar: %llu\n"
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+2.25.1.362.g51ebf55
+
+
