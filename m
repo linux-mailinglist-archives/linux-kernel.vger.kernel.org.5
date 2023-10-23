@@ -2,125 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C17457D41B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A30437D41B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbjJWVam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 17:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56038 "EHLO
+        id S231848AbjJWVaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 17:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230356AbjJWVaj (ORCPT
+        with ESMTP id S229845AbjJWV36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 17:30:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9A497
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:29:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698096593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F1k2Vg92RJrxv+gYLNepXp/tJyAR04nx8wa9wG6p0is=;
-        b=CwjHaK++8fyEHoRWsDpAqoVJFLY17ifamAoZwS5lLWV3uGMk7KtSWx3t+oez0Dy/ofoLIQ
-        VjhFXi5/4jyR8h0W82KKyGuop6o72xXiUDB5VIxsvEcmadULN7QNHBJ5egpv1nR02FK8j1
-        ZJsCdvLUiKm9lyMzUO+uET2yOx3eZWE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-314-p0JPo5wsMpSbECmSy8HaPw-1; Mon, 23 Oct 2023 17:29:41 -0400
-X-MC-Unique: p0JPo5wsMpSbECmSy8HaPw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3f5df65f9f4so23179605e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:29:41 -0700 (PDT)
+        Mon, 23 Oct 2023 17:29:58 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96AAABD;
+        Mon, 23 Oct 2023 14:29:56 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7a6774da682so158611539f.3;
+        Mon, 23 Oct 2023 14:29:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698096596; x=1698701396; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DoTQ/KfDqFWYoDK3YaNrWba0skgnCglUsMepDshCCaM=;
+        b=IYAF9q2x3OQcG+eOGkyWH9xhD3OeCu7Ti5BuptdtWVRS2Rz4hCLV950aTKCCZDF6i7
+         Nlixd2YvfNkP0Vs1fqDYBT3CcHIM8KZMQvimABcLKl3aCFIyRRvbkZ6VOjge9/T4kZ96
+         PKsMc1p3fwUe0hh4Tjq/1lhOmuolvPJB0P/TUR0kK1mcIANi1OHqu2IDfnUa1R0EbisH
+         wEZWC7tclpDrB6kH0XJ5LlpxbRhVZ+gqcuYaH/ueuVYaWfF1sKcwEqBQGVbVYIgRXlXr
+         W2ePf8kuZx1vY+Ap3USvaW3U5lkvDgPJdGFxU5MlJE8+eeX08OHq+1SI0wH25qJPww/O
+         t5dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698096580; x=1698701380;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F1k2Vg92RJrxv+gYLNepXp/tJyAR04nx8wa9wG6p0is=;
-        b=tVaRamofngOfyqzP82gjrxMRNHWS/bsVx3M4ZRYgd1/gLiXNhxnTYpqociO7KlWPka
-         yiE7za7pb25ujEDFmMk5LzydSTKpnGCBWLaxk0ylF+SB4kyl/kjMn2Br3Nv0kBqvEdHl
-         ox1ro1n1FVjxk3DcSfTkwVEywqku8FCGxYxGBWW3Qlx2PXYdXrPo6p4MLNyRv3DjIl4V
-         HW9HhxLBXkbypmxdR2DwnlKvU/irai4/A44xSDJa9RSxZT9iH3gohBVFQOYNUauaXlA8
-         xnArLs02ModnIAjfKZopMra5+cp3/AaUbJAqrwmF07shNURn1DyTM4vrD6vtnqSD0yqM
-         TQ1g==
-X-Gm-Message-State: AOJu0Yzd7tVaN9+upFJXJnCE5slkRq33sB/o0T7Up986nABW3KpNqwEZ
-        GJavKHzB/ANZsuwv4qy6Vzmg0fBeCVxOW9qL1JEfBcDGpiiTLUQ/4GRp3dNJBRltUynk68hSSIJ
-        VZO+gJtPYnBdOdRb1oxnpSMVm
-X-Received: by 2002:a05:600c:45ca:b0:408:575e:f24f with SMTP id s10-20020a05600c45ca00b00408575ef24fmr5647876wmo.28.1698096580662;
-        Mon, 23 Oct 2023 14:29:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEwIqmyWxHtLCEV9sJcM7Mm48Qpb+Y1PSoNkRJSeRh4CaGlNviwDWwltxau6u5GNETKD69b9g==
-X-Received: by 2002:a05:600c:45ca:b0:408:575e:f24f with SMTP id s10-20020a05600c45ca00b00408575ef24fmr5647840wmo.28.1698096580275;
-        Mon, 23 Oct 2023 14:29:40 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id e7-20020a05600c218700b00407efbc4361sm14963606wme.9.2023.10.23.14.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 14:29:39 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Albert Esteve <aesteve@redhat.com>, qemu-devel@nongnu.org
-Cc:     zackr@vmware.com, contact@emersion.fr, linux-doc@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>, iforbes@vmware.com,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Chia-I Wu <olvaffe@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        David Airlie <airlied@gmail.com>, banackm@vmware.com,
-        Rob Clark <robdclark@gmail.com>, krastevm@vmware.com,
-        spice-devel@lists.freedesktop.org,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Airlie <airlied@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mombasawalam@vmware.com,
-        Daniel Vetter <daniel@ffwll.ch>, ppaalanen@gmail.com,
-        VMware Graphics Reviewers 
-        <linux-graphics-maintainer@vmware.com>,
-        Gerd Hoffmann <kraxel@redhat.com>
-Subject: Re: [PATCH v6 9/9] drm: Introduce documentation for hotspot properties
-In-Reply-To: <20231023074613.41327-10-aesteve@redhat.com>
-References: <20231023074613.41327-1-aesteve@redhat.com>
- <20231023074613.41327-10-aesteve@redhat.com>
-Date:   Mon, 23 Oct 2023 23:29:39 +0200
-Message-ID: <87h6mh10zg.fsf@minerva.mail-host-address-is-not-set>
+        d=1e100.net; s=20230601; t=1698096596; x=1698701396;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DoTQ/KfDqFWYoDK3YaNrWba0skgnCglUsMepDshCCaM=;
+        b=kLj7vsDSjF+BEyGq6JKAn7JgFEzSpwO9YQrFxrai1mq51KdfHFLoz9qQO3fo4cT1/w
+         zQpwInfkFsNGBv5CH+Aom2oQMWUT2z8Z4h9RLJ/hF1DcgFJ+v0azJcq3urvXt+MGnFPI
+         shNB7IONu35yCPViyrOtgcnj61l5DRYWAlDZ6kd7vrba+/nXiVxnz/FWUkA3BemsD/cr
+         9gh9N9sZ5srOxcbfAU/NQuUTxYWbhERsAdRId8BxralDTa0Y9KsfITbzZraY9uTD08gf
+         l63YmT6QXAySyZKDcrfTOLOYBskMBDG4INAqTHqmMrvLavjMCEroxvqFyr2f0V2NM0iw
+         V27g==
+X-Gm-Message-State: AOJu0YzXJJ66f+4/6iznRihNWTSIqR306ES0BPeugtPQlEjs0OuoEya4
+        8zzB6NQJqiZp+GqXNy8Vzw==
+X-Google-Smtp-Source: AGHT+IFWtFxd1g5W6/dz3htmkRiJFUxSNTpnlE3BXhqWBU1XXb1Og80FeZDQghqWwCQ8L0DypSsZng==
+X-Received: by 2002:a05:6602:2c46:b0:7a9:63fd:e277 with SMTP id x6-20020a0566022c4600b007a963fde277mr3666300iov.14.1698096595791;
+        Mon, 23 Oct 2023 14:29:55 -0700 (PDT)
+Received: from [192.168.1.3] ([161.97.241.227])
+        by smtp.googlemail.com with ESMTPSA id q11-20020a6bf20b000000b0079199e52035sm2691160ioh.52.2023.10.23.14.29.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 14:29:55 -0700 (PDT)
+Message-ID: <78787d18-0f30-4be0-9e7c-1b6dbf142fec@gmail.com>
+Date:   Mon, 23 Oct 2023 15:29:53 -0600
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] arch/x86: port I/O tracing on x86
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-serial <linux-serial@vger.kernel.org>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, peterz@infradead.org,
+        andriy.shevchenko@linux.intel.com, quic_saipraka@quicinc.com
+References: <b8eae358-a3b3-fd68-82f1-b2c53534b922@gmail.com>
+ <2023100344-dart-jailbreak-c371@gregkh>
+ <94e2b77c-9cc4-534f-e650-06d7e0697f9f@gmail.com>
+ <20231004195001.76a57417@gandalf.local.home>
+ <80b84be0-a0ad-d1a9-607a-a87c6cf509e0@gmail.com>
+ <cc7fba3b-9da2-b9eb-95c8-7336e1cd4449@gmail.com>
+ <2023102122-diabetes-trend-57d0@gregkh>
+ <20231021161503.382e3d2e@rorschach.local.home>
+From:   Dan Raymond <raymod2@gmail.com>
+In-Reply-To: <20231021161503.382e3d2e@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Albert Esteve <aesteve@redhat.com> writes:
+On 10/21/2023 2:15 PM, Steven Rostedt wrote:
 
-> From: Michael Banack <banackm@vmware.com>
->
-> To clarify the intent and reasoning behind the hotspot properties
-> introduce userspace documentation that goes over cursor handling
-> in para-virtualized environments.
->
-> The documentation is generic enough to not special case for any
-> specific hypervisor and should apply equally to all.
->
-> Signed-off-by: Zack Rusin <zackr@vmware.com>
+>> Why are these needed to be changed at all?  What code changes with it,
+>> and it's not mentioned in the changelog, so why is it required?
+> 
+> Agreed, if this has issues, it probably should be a separate patch.
 
-The author is Michael Banack but it's missing a SoB from them.
-I don't think there's a need to resend for this, can be added
-when applying. But either Michael or Zack should confirm that
-is the correct thing to do for this patch.
+As I mentioned to Greg, this fix is needed to avoid compiler warnings
+triggered by this patch.  If I submitted this separately it would have
+to be merged first.  Isn't it easier to combine them since this is
+not a functional change (it just makes a cast explicit)?
 
-The doc itself looks great to me and it clarifies a lot about
-cursor hotspots.
+>>> -#ifdef CONFIG_TRACEPOINTS
+>>> +#if defined(CONFIG_TRACEPOINTS) && !defined(DISABLE_TRACEPOINTS)  
+>>
+>> Why this global change?
+> 
+> Yeah, DISABLE_TRACEPOINTS does not currently exist. If this is to be a
+> new way to disable TRACEPOINTS it needs a separate patch and be able to
+> disable tracepoints everywhere (maybe include/trace/*.h files also need
+> to be modified?), and also be documented somewhere in Documentation/trace.
 
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+It's only needed to suppress compiler errors when building arch/x86/boot/*
+and arch/x86/realmode/*.  Those source files include various x86 headers
+such as <asm/msr.h> and <asm/shared/io.h>.  Those x86 headers include
+<linux/tracepoint-defs.h> which references static_key_false() in
+<linux/jump_label.h>.  DISABLE_TRACEPOINTS eliminates that reference and
+hence suppresses the compiler error.
 
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+I didn't intend for this macro to be used by developers adding new
+tracepoints so I didn't document it as such.  As far as creating a
+separate patch: again this is a requirement for this patch and it doesn't
+cause any functional changes so can't we combine them?
