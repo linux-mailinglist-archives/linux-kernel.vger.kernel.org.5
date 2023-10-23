@@ -2,189 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D62DB7D4328
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 01:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491657D4329
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 01:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbjJWXWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 19:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
+        id S229557AbjJWXYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 19:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJWXWv (ORCPT
+        with ESMTP id S229441AbjJWXYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 19:22:51 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8511C0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:22:48 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so51400531fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:22:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1698103367; x=1698708167; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZRqLVtJ4+w6Q7VE/TH5E+yurITf2hF65g/YIWSM61UI=;
-        b=NrGgcT1rZp9qMmxAnyHVNstXUYv6rt2UGqQiFTIt9ir6JX0xKKueSdQs7Wu0LLL2Ac
-         Tgag75fIkZRG/fElY8geqyDJJvVnbYHF9Gya4nWbvB1f3YgZ0xHlK9UsKrKPX1jYZPD5
-         PKTfQ6/3x7DrL1Odk4GrSnpY6heb74XhClsjXoEF4xO5g6Frgh34o7wza1NOPIQ0ykO1
-         9K89tmR1s8QHONUTQBYImaJcSM05a4ZmGjYLa3+8+pSjkn1B2q51uK7V0azaHS43H/gR
-         szbxuxGSIIbHwE1bVnBR8ipuhGh878O0cX1tSSEFCNmtLYI4bMz6odP9bWuiEPtYxKOw
-         wEFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698103367; x=1698708167;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZRqLVtJ4+w6Q7VE/TH5E+yurITf2hF65g/YIWSM61UI=;
-        b=JJzCA/Jnr1dYqLgpixYr1de2vTuK1WFwaa8lq+3OB/oF19g8L8lQvOinZD/mfCpHsf
-         tG2u8YpzQ5ThiXuvd6+Li1Hs0aeR4Ddts02AuVW971ap7wnwy5KbDDJ10Ic9BH/Wo9Ns
-         ifTiKzX+vtZHDnt9lFI46edE6XtyWPR45Yz4ZWi+IBJTi9+OOlW18ycsej8EzYUBWDNK
-         k8ef5CSk6Nky5knl6nRZpATNQ4/2WkM00FK+7H0FnaxsPE8IzGj0ZfzZc9T2yzQfQDJU
-         IM+ycePYgGeg44ZwGXJ68xsWuJgZ0fDUWPBRbCcW4J+qvsbvOxXMzNhmpEz/N6MRvfnF
-         +ldQ==
-X-Gm-Message-State: AOJu0Yw6E9BGHFUIAp5tUIpQ468C7LsPkutydxzHXDifYuO3Q2iWZRhX
-        to3YmXEQ2CYRlcjRokGBj0wM/XvjSex+YHevGC3aZQ==
-X-Google-Smtp-Source: AGHT+IGrfm5czbpRabF9/H2HucnSiA1Nms8R7DXTnfVVdNdF09Z9p2OOZlW7bFdTwCxsfO3w3b8p8sdYkkW250uGLeE=
-X-Received: by 2002:a2e:9691:0:b0:2bf:f32a:1f64 with SMTP id
- q17-20020a2e9691000000b002bff32a1f64mr7583173lji.18.1698103366961; Mon, 23
- Oct 2023 16:22:46 -0700 (PDT)
+        Mon, 23 Oct 2023 19:24:18 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2072.outbound.protection.outlook.com [40.107.220.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0709C
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:24:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RTwKAJH/pcqOFClLhZCfYV/K/C/yzD4kJXa3i4mWN8mFUmXDqo+XK9Z0zmEKc4SftwI6WhaK2MOIeFUbb5lfuon+zlcs30LxAMik3k/k5QFvCgk4FGk3ZlE23+SY2B4ULUiCBkvwx7JxDT3gT8l67w0ljv51atgzsoLjXk1NUhf9GZXlxaXTsJ0UMBGyjnKxNkgxum4mUiJOF+iZzG/63UOljNlDG3Lw9PsreFm5AQiGAcpYudath58qrT4wk5qTAjhLT7HnpH3yLjQYQl8JSjGqkxrAw6f0UG3p99vmWcmO5pKiHn/5waSKiuH4oAZyVjd9BjLA155xQiLQFksA4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pXFuPS29Y5AwVRc+dtnIEJC9QBnS9Xv4NdUNs5dsXWg=;
+ b=X8uCWpv0Xbctu0qUc1qXs1AwtvrAx+K1dIuLbCkpCyljnusD7+kjmbv0yxIdgCg7lQb2mO3kslNRdeXBv6PisJFlDvh6VUpiaUsO25T0cbmkAFKy0v3bQxjEYYTN2ZoMIj921VEhOw+tas+49YFSbpKPInlSdgcYwm9ISBz3KGDNNYZR8pWhuFW82UAiiitqAUrgoTafwrAYeGF48KcVMDVnjSzej+y7PedW9DPgp2kr35xJO7FVocP6kEDQUr9tTord8wM8mDVhakVHholGEheZPPlr11pAFUsrK2CPx1xaR111dThCM6PVCVv1YM3YGJ/o2FTHK9gc21+gPaMXBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pXFuPS29Y5AwVRc+dtnIEJC9QBnS9Xv4NdUNs5dsXWg=;
+ b=IKY13PKwj5zka3GEAJQ3abfGpfe4AVmcnGvzbv/fY5Bi0NQAmI42i1WUVhXBjTjhnKMU4V9OC51f8snhS3usDLBRmXpnXuurzmbd3rfd4HTuheIh+b2Em+vXI1ggK1FAqv6Y9yeP4qRGNyCG6RynqYe7jHvyFlFc5BngAw5IGpBzn2QpjDt9sqMA7Z2uaJk/9kKdzYSeL2zvLL7/qmjNK4W5tLU8xVahM/5zdaB7FjOLXIeRe1fTaHPew2osysOiqQXYqg0edGPHPR1S2kMWvIH0TkNCNRc1UnnU4JWLFfX2f5ElB6m3s0VD5mXqmnyiXaamL58v/ZA5vZ9j+SMlyQ==
+Received: from DM6PR03CA0083.namprd03.prod.outlook.com (2603:10b6:5:333::16)
+ by BN9PR12MB5193.namprd12.prod.outlook.com (2603:10b6:408:11a::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Mon, 23 Oct
+ 2023 23:24:14 +0000
+Received: from DS2PEPF0000343B.namprd02.prod.outlook.com
+ (2603:10b6:5:333:cafe::95) by DM6PR03CA0083.outlook.office365.com
+ (2603:10b6:5:333::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.34 via Frontend
+ Transport; Mon, 23 Oct 2023 23:24:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ DS2PEPF0000343B.mail.protection.outlook.com (10.167.18.38) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.15 via Frontend Transport; Mon, 23 Oct 2023 23:24:13 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 23 Oct
+ 2023 16:23:53 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Mon, 23 Oct 2023 16:23:53 -0700
+Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Mon, 23 Oct 2023 16:23:53 -0700
+Date:   Mon, 23 Oct 2023 16:23:51 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <kevin.tian@intel.com>, <joro@8bytes.org>, <will@kernel.org>,
+        <robin.murphy@arm.com>, <baolu.lu@linux.intel.com>,
+        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <yi.l.liu@intel.com>
+Subject: Re: [PATCH v3] iommufd: Only enforce cache coherency in
+ iommufd_hw_pagetable_alloc
+Message-ID: <ZTcAhwYjjzqM0A5M@Asurada-Nvidia>
+References: <20231023185700.11407-1-nicolinc@nvidia.com>
+ <20231023230509.GI3952@nvidia.com>
 MIME-Version: 1.0
-References: <CABWYdi1kiu1g1mAq6DpQWczg78tMzaVFnytNMemZATFHqYSqYw@mail.gmail.com>
- <20231020104728.2060-1-hdanton@sina.com> <CABWYdi0N7uvDex5CdKD60hNQ6UFuqoB=Ss52yQu6UoMJm0MFPw@mail.gmail.com>
- <20231021012322.1799-1-hdanton@sina.com>
-In-Reply-To: <20231021012322.1799-1-hdanton@sina.com>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Mon, 23 Oct 2023 16:22:35 -0700
-Message-ID: <CABWYdi0j4yXWV6-Pr=2q7S6SQSZR7O6F61BLRdU=gDxvuQ3e1w@mail.gmail.com>
-Subject: Re: wait_for_unix_gc can cause CPU overload for well behaved programs
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231023230509.GI3952@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF0000343B:EE_|BN9PR12MB5193:EE_
+X-MS-Office365-Filtering-Correlation-Id: 98bfbfe5-f8d9-406e-5d5d-08dbd41f2b69
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qZv9WZNMzU325QkRCRYAbSo6sf3/F4BvM8gcLTQRWYzeClFcW4MUTYN4M6LoBkstece2OIss91pegvSvYrCMV0DSop5liGHWNM5XULfRt03+AtitqHbZUo9Ds/oBq0OerWzmMN69IzXFoLGJFJpfNXIPZLgL1Go/ZlZsruwRI+sZmouZMY5mE7BVBPA9vSlquyV/uIHG4wvJ4sidyhv6HZ6TL052gcpw7/X3S8sUYbj3SJjPt9WRi7FgnARckbSMT9KAR9WQjTTGmx2lImcq24HrYSUnxxr7XCxopYFpR0sjU0JKgIUO3rt7Lp/cnDaeq9PyBBRjTEPr5f2QFV0UDB8Ik60FUhdFNgxr+faOGtYUXPtxbpJ8LrgCVBoJsAan4gP7M27wcj060h1udxwjh3t51wurq1SVCtLrABaVOqaxWuXLmqaZnrQCWybnaJlxN7PsoWLi0w4Ti3yI3WNNMJefU7C+V35HnGY4VOzOxTnBTHHnPqJa5PcEfuqUgczZuLiH7PuJWbR9znCbbjJ2KtJDtdS83OjLTtOHoR149LjFmpxviIV3/xGNW1Fgn+wsHuUGRe1OgLFVy1x3TEP1NDlV+Ab/yMqwOFdRfnO+xMH4VD4EkzUTbvg9S3gvTUuP8jGhSEHnuoACyAcLXPoSfKyCR6cnpwfLUp5xHh2MFYslwPWQqIcUm54ayzb2Y6QKjb3JgwEWy0B7qdi74Tbqabalku152TV9Gj3qInqacBD381YLjVcLv3p8EyKtz7+3WEFXj4Ok5Z2Ca2QT32lBuC/gv6nUCwClKuPAjUfS3ET90cpQTUfuG57No/BabaWJ
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(39860400002)(346002)(136003)(230922051799003)(64100799003)(451199024)(82310400011)(186009)(1800799009)(40470700004)(36840700001)(46966006)(33716001)(40480700001)(82740400003)(83380400001)(26005)(426003)(336012)(9686003)(86362001)(7636003)(356005)(47076005)(36860700001)(2906002)(966005)(41300700001)(478600001)(8676002)(6862004)(4326008)(70206006)(8936002)(70586007)(6636002)(5660300002)(316002)(54906003)(40460700003)(55016003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 23:24:13.9207
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98bfbfe5-f8d9-406e-5d5d-08dbd41f2b69
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF0000343B.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5193
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 6:23=E2=80=AFPM Hillf Danton <hdanton@sina.com> wro=
-te:
->
-> On Fri, 20 Oct 2023 10:25:25 -0700 Ivan Babrou <ivan@cloudflare.com>
-> >
-> > This could solve wait_for_unix_gc spinning, but it wouldn't affect
-> > unix_gc itself, from what I understand. There would always be one
-> > socket writer or destroyer punished by running the gc still.
->
-> See what you want. The innocents are rescued by kicking a worker off.
-> Only for thoughts.
->
-> --- x/net/unix/garbage.c
-> +++ y/net/unix/garbage.c
-> @@ -86,7 +86,6 @@
->  /* Internal data structures and random procedures: */
->
->  static LIST_HEAD(gc_candidates);
-> -static DECLARE_WAIT_QUEUE_HEAD(unix_gc_wait);
->
->  static void scan_inflight(struct sock *x, void (*func)(struct unix_sock =
-*),
->                           struct sk_buff_head *hitlist)
-> @@ -185,24 +184,25 @@ static void inc_inflight_move_tail(struc
->                 list_move_tail(&u->link, &gc_candidates);
->  }
->
-> -static bool gc_in_progress;
-> +static void __unix_gc(struct work_struct *w);
-> +static DECLARE_WORK(unix_gc_work, __unix_gc);
-> +
->  #define UNIX_INFLIGHT_TRIGGER_GC 16000
->
->  void wait_for_unix_gc(void)
->  {
->         /* If number of inflight sockets is insane,
-> -        * force a garbage collect right now.
-> -        * Paired with the WRITE_ONCE() in unix_inflight(),
-> -        * unix_notinflight() and gc_in_progress().
-> -        */
-> -       if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC &&
-> -           !READ_ONCE(gc_in_progress))
-> -               unix_gc();
-> -       wait_event(unix_gc_wait, gc_in_progress =3D=3D false);
-> +        * kick a garbage collect right now.
-> +        *
-> +        * todo s/wait_for_unix_gc/kick_unix_gc/
-> +        */
-> +       if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC /2)
-> +               queue_work(system_unbound_wq, &unix_gc_work);
->  }
->
-> -/* The external entry point: unix_gc() */
-> -void unix_gc(void)
-> +static DEFINE_MUTEX(unix_gc_mutex);
-> +
-> +static void __unix_gc(struct work_struct *w)
->  {
->         struct sk_buff *next_skb, *skb;
->         struct unix_sock *u;
-> @@ -211,15 +211,10 @@ void unix_gc(void)
->         struct list_head cursor;
->         LIST_HEAD(not_cycle_list);
->
-> +       if (!mutex_trylock(&unix_gc_mutex))
-> +               return;
->         spin_lock(&unix_gc_lock);
->
-> -       /* Avoid a recursive GC. */
-> -       if (gc_in_progress)
-> -               goto out;
-> -
-> -       /* Paired with READ_ONCE() in wait_for_unix_gc(). */
-> -       WRITE_ONCE(gc_in_progress, true);
-> -
->         /* First, select candidates for garbage collection.  Only
->          * in-flight sockets are considered, and from those only ones
->          * which don't have any external reference.
-> @@ -325,11 +320,12 @@ void unix_gc(void)
->         /* All candidates should have been detached by now. */
->         BUG_ON(!list_empty(&gc_candidates));
->
-> -       /* Paired with READ_ONCE() in wait_for_unix_gc(). */
-> -       WRITE_ONCE(gc_in_progress, false);
-> -
-> -       wake_up(&unix_gc_wait);
-> -
-> - out:
->         spin_unlock(&unix_gc_lock);
-> +       mutex_unlock(&unix_gc_mutex);
-> +}
-> +
-> +/* The external entry point: unix_gc() */
-> +void unix_gc(void)
-> +{
-> +       __unix_gc(NULL);
->  }
-> --
+On Mon, Oct 23, 2023 at 08:05:09PM -0300, Jason Gunthorpe wrote:
+> On Mon, Oct 23, 2023 at 11:57:00AM -0700, Nicolin Chen wrote:
+> > According to the conversion in the following link:
 
-This one results in less overall load than Kuniyuki's proposed patch
-with my repro:
+Ah, a typo here: conversation.
 
-* https://lore.kernel.org/netdev/20231020220511.45854-1-kuniyu@amazon.com/
+> > https://lore.kernel.org/linux-iommu/20231020135501.GG3952@nvidia.com/
+> > 
+> > The enforce_cache_coherency should be set/enforced in the hwpt allocation
+> > routine. The iommu driver in its attach_dev() op should decide whether to
+> > reject or not a device that doesn't match with the configuration of cache
+> > coherency. Drop the enforce_cache_coherency piece in the attach/replace()
+> > and move the remaining "num_devices" piece closer to the refcount that is
+> > using it.
+> > 
+> > Accordingly drop its function prototype in the header and mark it static.
+> > Also add some extra comments to clarify the expected behaviors.
+> > 
+> > Suggested-by: Kevin Tian <kevin.tian@intel.com>
+> > Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+> > Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> > ---
+> > Changelog
+> > v3:
+> >  * Reworked the first line of the added commets.
+> > v2: https://lore.kernel.org/all/20231023035733.27378-1-nicolinc@nvidia.com/
+> >  * Dropped "fixes" tags and merged two patches into one (Jason)
+> >  * Added comments to the remaining enforce_cache_coherency call (Jason)
+> >    [Please feel free to rephrase, or let me know what to change.]
+> >  * Replace "num_devices++" with list_for_each_entry (Baolu)
+> > v1: https://lore.kernel.org/all/cover.1697848510.git.nicolinc@nvidia.com/
+> > 
+> >  drivers/iommu/iommufd/device.c          | 20 ++------------------
+> >  drivers/iommu/iommufd/hw_pagetable.c    |  9 ++++++++-
+> >  drivers/iommu/iommufd/iommufd_private.h |  1 -
+> >  3 files changed, 10 insertions(+), 20 deletions(-)
+> 
+> This looks OK to me, Kevin is it what you think it should be now?
 
-My guess is that's because my repro is the one that is getting penalized th=
-ere.
+I will respin a v4 after Kevin's reply. And I can attach his
+"Reviewed-by" if everything looks good to him too.
 
-There's still a lot work done in unix_release_sock here, where GC runs
-as long as you have any fds inflight:
-
-* https://elixir.bootlin.com/linux/v6.1/source/net/unix/af_unix.c#L670
-
-Perhaps it can be improved.
+Thanks
+Nic
