@@ -2,181 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C90087D4060
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DE17D4062
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbjJWTkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
+        id S230237AbjJWTk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjJWTkE (ORCPT
+        with ESMTP id S230012AbjJWTkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:40:04 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8A2B4;
-        Mon, 23 Oct 2023 12:40:00 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id AC12F100009;
-        Mon, 23 Oct 2023 22:39:56 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru AC12F100009
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1698089996;
-        bh=Hhd9o3DW9H02Ejo8WGubQDNC+sSIsjqhUPhxroLp0IQ=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=Qzlt0w7tTATPGsbMuBs4DaPGSRQmI03REzogB+ki/buGpx2PFXzNGpKqthBzXJXF/
-         shjiwowWttLUICQjG2Sx2B2mOiIn9LtVx3rs9HdmxuZgW4TP9o19dw0RSU7cuXcZSY
-         NqJDExsc0U5rC8EHjFTAlCF1B19hD5E6vTGOG5610j7F3cLiIg6/0W9WVwjld0E83C
-         mgqUmhrQpsd4p4ZZXCCSzg3eSGsYyWYNnffrx8/9BPijeegCItjGGUBL46za6l6se7
-         cAJmooNCJFccC31E7K0+GgAqNhgSxniWvmGBAM61tNIFZnit5UU4/cP3mQZ9ScmZ9t
-         D60edgYn72r+w==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Mon, 23 Oct 2023 22:39:54 +0300 (MSK)
-Received: from [192.168.1.127] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 23 Oct 2023 22:39:54 +0300
-Message-ID: <07f978ec-2f18-4079-afb1-4d37827806a3@salutedevices.com>
-Date:   Mon, 23 Oct 2023 22:40:15 +0300
+        Mon, 23 Oct 2023 15:40:55 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E141D68
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:40:51 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-27e4e41a4fcso938197a91.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:40:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698090051; x=1698694851; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WVj+JLfwak+wPIlRvDRspF5/51cnTVEmP+dvEBCxyf4=;
+        b=nMdwC97Z6fOV9ac8g9iZQdfL62lYKXpejpVg9/IZDftqY1LQ6WCf+toAkNjtpVa63F
+         Of6J153pD0JrgIaCtl5fv0K14V/zmtQ7THJGqvsqnurE0AdkSbIf+TbDGA8VwbrnofzG
+         8dEwx8viMHEfzTmMvzBLNSKTqDz3P3dzHOxpSUwUkk4WFwlVXoStTUvAlax4yhddhr9j
+         aioU6iHnzDNoZeIOCRe8hIqGhFz1MEXRqPjLuNdHt5zd/PmcUQdD87X7NAW6s54nN5OS
+         CTpewvFnie0CyUrCg8Vaj/HKVAFU8NomYNex0ZwXobmMVlXBwKeMs7VXFAmsjIb3A1k1
+         5c/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698090051; x=1698694851;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WVj+JLfwak+wPIlRvDRspF5/51cnTVEmP+dvEBCxyf4=;
+        b=c9rOXsHob81wwrzpmGGcbCBbur1i/1Flh8p2f/N4TKeQl5tT5oP49eWQNxRY6Lu8JF
+         V57NRwZP5/SOfQk+cmJJnkYFTNBXpNxxJelfJF835YFqHoLvrQAC9U6l1yMxaZrzxFgi
+         3g/HdO3x4yLy5AkjZPdHVZZTjWvZDg8CY+W8F/XxYNsvO5OqqAxNLt4ZGiHN+SRuCBFM
+         yQfK07Vg0VLuFFFWCyNdTspTc1KUQGS2UXbhREVr8UN4Y7uxDkR+qUASqlk/23sOHArk
+         jmrkemCtRVLOCdHXOS9zbltn4fZbnpWYffif2JnQJ6Hkh7QnrxtcXMXq0EmOOKRjwJnP
+         +D3g==
+X-Gm-Message-State: AOJu0YyMzqDyP7AhHXhXqv6FQvnTY7EOtrE5kBYGqt69QOMpo5Ikrd03
+        APlq+SITAtC1lIsucP1wZ+a6lA==
+X-Google-Smtp-Source: AGHT+IEbL4Zez3ADFZnsI4I9Z1IZ1Vk9IdtY77ZM1DYNYAULr+jv5vBD3dJjcQNYbb83VYV0+fHH4Q==
+X-Received: by 2002:a17:90b:3d8c:b0:27d:c92:e897 with SMTP id pq12-20020a17090b3d8c00b0027d0c92e897mr8672798pjb.37.1698090050928;
+        Mon, 23 Oct 2023 12:40:50 -0700 (PDT)
+Received: from p14s ([2604:3d09:148c:c800:85b7:8283:12b2:30f8])
+        by smtp.gmail.com with ESMTPSA id az7-20020a17090b028700b0027d157e686asm5836594pjb.49.2023.10.23.12.40.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 12:40:50 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 13:40:48 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] rpmsg: virtio: replace deprecated strncpy with
+ strscpy/_pad
+Message-ID: <ZTbMQC9IhcJR3a/a@p14s>
+References: <20231023-strncpy-drivers-rpmsg-virtio_rpmsg_bus-c-v2-1-dc591c36f5ed@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3 RESEND] pwm: meson: add pwm support for S4
-Content-Language: en-US
-To:     Yixun Lan <dlan@gentoo.org>, JunYi Zhao <junyi.zhao@amlogic.com>
-CC:     <thierry.reding@gmail.com>, <u.kleine-koenig@pengutronix.de>,
-        <neil.armstrong@linaro.org>, <khilman@baylibre.com>,
-        <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
-        <linux-pwm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20231016052457.1191838-1-junyi.zhao@amlogic.com>
- <20231016223749.GA7647@ofsar>
-From:   George Stark <gnstark@salutedevices.com>
-In-Reply-To: <20231016223749.GA7647@ofsar>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180817 [Oct 23 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 542 542 3d23828e213bab96daa5e52f9cef518f74e40214, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;lists.infradead.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/10/23 18:44:00
-X-KSMG-LinksScanning: Clean, bases: 2023/10/23 18:45:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/23 18:09:00 #22267281
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023-strncpy-drivers-rpmsg-virtio_rpmsg_bus-c-v2-1-dc591c36f5ed@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Yixun Lan
-
-On 10/17/23 01:37, Yixun Lan wrote:
-> Hi JunYi
+On Mon, Oct 23, 2023 at 06:12:28PM +0000, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 > 
-> On 13:24 Mon 16 Oct     , JunYi Zhao wrote:
->> From: "junyi.zhao" <junyi.zhao@amlogic.com>
->>
->> Support PWM for S4 soc.
->> Now the PWM clock input is done in independent CLKCTRL registers.
->> And no more in the PWM registers.
->> PWM needs to obtain an external clock source.
->>
->> Signed-off-by: junyi.zhao <junyi.zhao@amlogic.com>
->> ---
->> V2 -> V3:
->> Rebase and Review the latest upstream code again.
->> After reconstruction, stick to the previous code as much as possible.
->>   drivers/pwm/pwm-meson.c | 19 +++++++++++++++++++
->>   1 file changed, 19 insertions(+)
->>
->> diff --git a/drivers/pwm/pwm-meson.c b/drivers/pwm/pwm-meson.c
->> index 25519cddc2a9..fe9fd75747c4 100644
->> --- a/drivers/pwm/pwm-meson.c
->> +++ b/drivers/pwm/pwm-meson.c
->> @@ -99,6 +99,7 @@ struct meson_pwm_channel {
->>   struct meson_pwm_data {
->>   	const char * const *parent_names;
->>   	unsigned int num_parents;
->> +	unsigned int extern_clk;
->>   };
->>   
->>   struct meson_pwm {
->> @@ -396,6 +397,10 @@ static const struct meson_pwm_data pwm_g12a_ao_cd_data = {
->>   	.num_parents = ARRAY_SIZE(pwm_g12a_ao_cd_parent_names),
->>   };
->>   
->> +static const struct meson_pwm_data pwm_s4_data = {
->> +	.extern_clk = true,
->> +};
->> +
->>   static const struct of_device_id meson_pwm_matches[] = {
->>   	{
->>   		.compatible = "amlogic,meson8b-pwm",
->> @@ -429,6 +434,10 @@ static const struct of_device_id meson_pwm_matches[] = {
->>   		.compatible = "amlogic,meson-g12a-ao-pwm-cd",
->>   		.data = &pwm_g12a_ao_cd_data
->>   	},
->> +	{
->> +		.compatible = "amlogic,s4-pwm",
->> +		.data = &pwm_s4_data,
->> +	},
->>   	{},
->>   };
->>   MODULE_DEVICE_TABLE(of, meson_pwm_matches);
->> @@ -451,6 +460,16 @@ static int meson_pwm_init_channels(struct meson_pwm *meson)
->>   		struct clk_parent_data div_parent = {}, gate_parent = {};
->>   		struct clk_init_data init = {};
->>   
->> +		if (meson->data->extern_clk) {
->> +			snprintf(name, sizeof(name), "clkin%u", i);
->> +			channel->clk = devm_clk_get(dev, name);
-> use devm_clk_get_optional() which would save you from introducing
-> the 'extern_clk' variable
-
-On S4 and other recent chips PWM clock resides in separate IP and it 
-must be provided to driver in order to control PWM frequency. So this 
-clock is not optional.
-
+> This patch replaces 3 callsites of strncpy().
 > 
->> +			if (IS_ERR(channel->clk)) {
->> +				dev_err(meson->chip.dev, "can't get device clock\n");
->> +				return PTR_ERR(channel->clk);
->> +			}
->> +			continue;
->> +		}
->> +
->>   		snprintf(name, sizeof(name), "%s#mux%u", dev_name(dev), i);
->>   
->>   		init.name = name;
->>
->> base-commit: 4d2c646ac07cf4a35ef1c4a935a1a4fd6c6b1a36
->> -- 
->> 2.41.0
->>
->>
->> _______________________________________________
->> linux-amlogic mailing list
->> linux-amlogic@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+> The first two populate the destination buffer `nsm.name` -- which we
+> expect to be NUL-terminated based on their use with format strings.
 > 
+> Firstly, as I understand it, virtio_rpmsg_announce_create() creates an
+> rpmsg_ns_msg and sends via:
+> 
+> virtio_rpmsg_bus.c:
+> 336: err = rpmsg_sendto(rpdev->ept, &nsm, sizeof(nsm), RPMSG_NS_ADDR);
+> 
+> ... which uses:
+> virtio_rpmsg_sendto() -> rpmsg_send_offchannel_raw()
+> 
+> ... which copies its data into an rpmsg_hdr `msg` in virtio_rpmsg_bus.c
+> 618: memcpy(msg->data, data, len);
+> 
+> This callback is invoked when a message is received from the remote
+> processor:
+> 
+> rpmsg_ns.c:
+> 30: /* invoked when a name service announcement arrives */
+> 31: static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
+> 32: 		       void *priv, u32 src)
+> 33: {
+> 34:         struct rpmsg_ns_msg *msg = data;
+> ...
+> 50:         /* don't trust the remote processor for null terminating the name */
+> 51:         msg->name[RPMSG_NAME_SIZE - 1] = '\0';
+> 
+> ... which leads into the use of `name` within a format string:
+> rpmsg_ns.c:
+> 57: dev_info(dev, "%sing channel %s addr 0x%x\n",
+> 58:          rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY ?
+> 59:          "destroy" : "creat", msg->name, chinfo.dst);
+> 
+> We can also observe that `nsm` is not zero-initialized and as such we
+> should maintain the NUL-padding behavior that strncpy() provides:
+> 
+> virtio_rpmsg_bus.c:
+> 330: struct rpmsg_ns_msg nsm;
+> 
+> Considering the above, a suitable replacement is `strscpy_pad` due to
+> the fact that it guarantees both NUL-termination and NUL-padding on the
+> destination buffer.
+> 
+> Now, for the third and final destination buffer rpdev->id.name we can
+> just go for strscpy() (not _pad()) as rpdev points to &vch->rpdev:
+> |       rpdev = &vch->rpdev;
+> 
+> ... and vch is zero-allocated:
+> |       vch = kzalloc(sizeof(*vch), GFP_KERNEL);
+> 
+> ... this renders any additional NUL-byte assignments (like the ones
+> strncpy() or strscpy_pad() does) redundant.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Changes in v2:
+> - update commit msg (thanks Mathieu)
+> - Link to v1: https://lore.kernel.org/r/20231021-strncpy-drivers-rpmsg-virtio_rpmsg_bus-c-v1-1-8abb919cbe24@google.com
+> ---
+> Note: build-tested only.
+> 
+> Found with: $ rg "strncpy\("
+> ---
+>  drivers/rpmsg/virtio_rpmsg_bus.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
 
--- 
-Best regards
-George
+I have applied all 3 of your patches.
+
+Thanks,
+Mathieu
+
+> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> index 905ac7910c98..dc87965f8164 100644
+> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> @@ -329,7 +329,7 @@ static int virtio_rpmsg_announce_create(struct rpmsg_device *rpdev)
+>  	    virtio_has_feature(vrp->vdev, VIRTIO_RPMSG_F_NS)) {
+>  		struct rpmsg_ns_msg nsm;
+>  
+> -		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
+> +		strscpy_pad(nsm.name, rpdev->id.name, sizeof(nsm.name));
+>  		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
+>  		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_CREATE);
+>  
+> @@ -353,7 +353,7 @@ static int virtio_rpmsg_announce_destroy(struct rpmsg_device *rpdev)
+>  	    virtio_has_feature(vrp->vdev, VIRTIO_RPMSG_F_NS)) {
+>  		struct rpmsg_ns_msg nsm;
+>  
+> -		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
+> +		strscpy_pad(nsm.name, rpdev->id.name, sizeof(nsm.name));
+>  		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
+>  		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_DESTROY);
+>  
+> @@ -424,7 +424,7 @@ static struct rpmsg_device *__rpmsg_create_channel(struct virtproc_info *vrp,
+>  	 */
+>  	rpdev->announce = rpdev->src != RPMSG_ADDR_ANY;
+>  
+> -	strncpy(rpdev->id.name, chinfo->name, RPMSG_NAME_SIZE);
+> +	strscpy(rpdev->id.name, chinfo->name, sizeof(rpdev->id.name));
+>  
+>  	rpdev->dev.parent = &vrp->vdev->dev;
+>  	rpdev->dev.release = virtio_rpmsg_release_device;
+> 
+> ---
+> base-commit: 9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
+> change-id: 20231020-strncpy-drivers-rpmsg-virtio_rpmsg_bus-c-dba15db4e890
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
