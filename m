@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 788AB7D2E18
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43E67D2E16
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbjJWJWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34550 "EHLO
+        id S233127AbjJWJVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233073AbjJWJVs (ORCPT
+        with ESMTP id S232982AbjJWJVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:21:48 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5046610DA
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:21:41 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8Dx_+sjOzZlQOozAA--.34210S3;
-        Mon, 23 Oct 2023 17:21:39 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx7twiOzZlLCQvAA--.34646S3;
-        Mon, 23 Oct 2023 17:21:38 +0800 (CST)
-Subject: Re: [PATCH v4 8/8] LoongArch: Add ORC stack unwinder support
-To:     Xi Ruoyao <xry111@xry111.site>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Huacai Chen <chenhuacai@kernel.org>
-References: <1698048691-19521-1-git-send-email-yangtiezhu@loongson.cn>
- <1698048691-19521-9-git-send-email-yangtiezhu@loongson.cn>
- <4d3363eb5f4d864cfd171d89b1a13da5ef8b784c.camel@xry111.site>
-Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <1a06a70d-5dae-93a7-c200-c5b58f1241d5@loongson.cn>
-Date:   Mon, 23 Oct 2023 17:21:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        Mon, 23 Oct 2023 05:21:41 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCFCD71;
+        Mon, 23 Oct 2023 02:21:38 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5ABFC433C7;
+        Mon, 23 Oct 2023 09:21:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698052897;
+        bh=uGmAHWWEHuC6CtTkdGrPEy+s20iQcX/+23N0QeT0Bkw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ublXkvkmewNO5+joVQ7EinSOUJ+/TGCa+HaP+yUl7fR8fEzCZKnjEGTQamdf4s6Tu
+         Eq611qj4Qv3n0bbj+bg6idQApdlwc8PYP7f4/8xHaFbmGBmLpRb2ohKubgYYZq//gf
+         iV2p0AnKrzU6hM6NXgqxC/a2OzXb5KV+t/zZ0tkStoa03ZJCHlmL8WnnkC9AQzvLe9
+         cAagHjNUonEAtB1egSy7/YwfmoEPSwx+ouI25HgdsVATWkUNE1LMFqDellVLOHdN2A
+         w/APbQM3fBYOLOOw0o4IPiMEV/2yOupLhjEFkWVBcsnXvLNNoO1Rl+E/4ErOlCEtw4
+         4w7D/PJ02BAcA==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qur8B-0007vL-2p;
+        Mon, 23 Oct 2023 11:21:51 +0200
+Date:   Mon, 23 Oct 2023 11:21:51 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com, ahalaney@redhat.com,
+        quic_shazhuss@quicinc.com
+Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
+ Glue driver
+Message-ID: <ZTY7Lwjd3_8NlfEi@hovoldconsulting.com>
+References: <20231007154806.605-1-quic_kriskura@quicinc.com>
+ <20231007154806.605-6-quic_kriskura@quicinc.com>
+ <ZTJ_T1UL8-s2cgNz@hovoldconsulting.com>
+ <14fc724c-bc99-4b5d-9893-3e5eff8895f7@quicinc.com>
 MIME-Version: 1.0
-In-Reply-To: <4d3363eb5f4d864cfd171d89b1a13da5ef8b784c.camel@xry111.site>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8Bx7twiOzZlLCQvAA--.34646S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7Jr1fuw17WF4UZw17AFWUtrc_yoW3WrXEk3
-        yruF1kC3yUZF1qg3W7Gan2vFy7Ga47Cw1UGFy0vrsrKryfta1DuF4qk3sYvFW8XF97CF1k
-        uan8X343C3Z29osvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbfAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6F4UJVW0owAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_
-        JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
-        CYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-        6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
-        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
-        0xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4
-        v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AK
-        xVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8CksDUUUUU==
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <14fc724c-bc99-4b5d-9893-3e5eff8895f7@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,28 +69,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 23, 2023 at 12:11:45AM +0530, Krishna Kurapati PSSNV wrote:
+> On 10/20/2023 6:53 PM, Johan Hovold wrote:
+> > On Sat, Oct 07, 2023 at 09:18:01PM +0530, Krishna Kurapati wrote:
 
+> >> +#define NUM_PHY_IRQ		4
+> >> +
+> >> +enum dwc3_qcom_ph_index {
+> > 
+> > "phy_index"
+> > 
+> >> +	DP_HS_PHY_IRQ_INDEX = 0,
+> >> +	DM_HS_PHY_IRQ_INDEX,
+> >> +	SS_PHY_IRQ_INDEX,
+> >> +	HS_PHY_IRQ_INDEX,
+> >> +};
+> >> +
+> >>   struct dwc3_acpi_pdata {
+> >>   	u32			qscratch_base_offset;
+> >>   	u32			qscratch_base_size;
+> >>   	u32			dwc3_core_base_size;
+> >> +	/*
+> >> +	 * The phy_irq_index corresponds to ACPI indexes of (in order) DP/DM/SS
+> >> +	 * IRQ's respectively.
+> >> +	 */
+> >> +	int			phy_irq_index[NUM_PHY_IRQ - 1];
+> >>   	int			hs_phy_irq_index;
+> >> -	int			dp_hs_phy_irq_index;
+> >> -	int			dm_hs_phy_irq_index;
+> >> -	int			ss_phy_irq_index;
+> >>   	bool			is_urs;
+> >>   };
+> >>   
+> >> @@ -73,10 +84,12 @@ struct dwc3_qcom {
+> >>   	int			num_clocks;
+> >>   	struct reset_control	*resets;
+> >>   
+> >> +	/*
+> >> +	 * The phy_irq corresponds to IRQ's registered for (in order) DP/DM/SS
+> >> +	 * respectively.
+> >> +	 */
+> >> +	int			phy_irq[NUM_PHY_IRQ - 1][DWC3_MAX_PORTS];
+> >>   	int			hs_phy_irq;
+> >> -	int			dp_hs_phy_irq;
+> >> -	int			dm_hs_phy_irq;
+> >> -	int			ss_phy_irq;
+> > 
+> > I'm not sure using arrays like this is a good idea (and haven't you
+> > switched the indexes above?).
+> > 
+> > Why not add a port structure instead?
+> > 
+> > 	struct dwc3_qcom_port {
+> > 		int hs_phy_irq;
+> > 		int dp_hs_phy_irq;
+> > 		int dm_hs_phy_irq;
+> > 		int ss_phy_irq;
+> > 	};
+> > 
+> > and then have
+> > 
+> > 	struct dwc3_qcom_port ports[DWC3_MAX_PORTS];
+> > 
+> > in dwc3_qcom. The port structure can the later also be amended with
+> > whatever other additional per-port data there is need for.
+> > 
+> > This should make the implementation cleaner.
+> > 
+> > I also don't like the special handling of hs_phy_irq; if this is really
+> > just another name for the pwr_event_irq then this should be cleaned up
+> > before making the code more complicated than it needs to be.
+> > 
+> > Make sure to clarify this before posting a new revision.
+> 
+> hs_phy_irq is different from pwr_event_irq.
 
-On 10/23/2023 04:43 PM, Xi Ruoyao wrote:
-> On Mon, 2023-10-23 at 16:11 +0800, Tiezhu Yang wrote:
->> +ifdef CONFIG_OBJTOOL
->> +KBUILD_CFLAGS			+= -fno-optimize-sibling-calls -fno-jump-tables -falign-functions=4
->> +endif
->
-> Why do we need to regress the code generation so much for objtool?
+How is it different and how are they used?
 
-Add the above options is to avoid generating some intractable
-instructions for objtool by now, I hope all of the extra options
-can be removed if possible.
+> AFAIK, there is only one of this per controller.
 
-For example, without -fno-jump-tables, there exist many objtool
-warnings like this:
+But previous controllers were all single port so this interrupt is
+likely also per-port, even if your comment below seems to suggest even
+SC8280XP has one, which is unexpected (and not described in the updated
+binding):
 
-"sibling call from callable instruction with modified stack frame"
+	Yes, all targets have the same IRQ's. Just that MP one's have
+	multiple IRQ's of each type. But hs-phy_irq is only one in
+	SC8280 as well.
 
-If the enhanced special function about jump table is implemented
-in objtool, -fno-jump-tables will be removed in the future.
+	https://lore.kernel.org/lkml/70b2495f-1305-05b1-2039-9573d171fe24@quicinc.com/
 
-Thanks,
-Tiezhu
+Please clarify.
 
+> >> -static int dwc3_qcom_prep_irq(struct dwc3_qcom *qcom, char *irq_name,
+> >> -				char *disp_name, int irq)
+> >> +static int dwc3_qcom_prep_irq(struct dwc3_qcom *qcom, const char *irq_name,
+> >> +				const char *disp_name, int irq)
+> > 
+> > Ok, here you did drop the second name parameter, but without renaming
+> > the first and hidden in a long diff without any mention anywhere.
+> > 
+> I didn't understand the comment. Can you please elaborate.
+> I didn't drop the second parameter. In the usage of this call, I passed 
+> same value to both irq_name and disp_name:
+> 
+> "dwc3_qcom_prep_irq(qcom, irq_names[i], irq_names[i], irq);"
+> 
+> I mentioned in cover-letter that I am using same name as obtained from 
+> DT to register the interrupts as well. Should've mentioned that in 
+> commit text of this patch. Will do it in next version.
+
+Ah, sorry I misread the diff. You never drop the second name even though
+it is now redundant as I pointed on in a comment to one of the earlier
+patches.
+
+Johan
