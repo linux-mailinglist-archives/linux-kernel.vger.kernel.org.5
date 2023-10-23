@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 467DE7D2DB5
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4637D2DB6
 	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232644AbjJWJKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52342 "EHLO
+        id S230092AbjJWJKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232440AbjJWJKH (ORCPT
+        with ESMTP id S232763AbjJWJKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:10:07 -0400
-Received: from out0-197.mail.aliyun.com (out0-197.mail.aliyun.com [140.205.0.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5E2FC;
-        Mon, 23 Oct 2023 02:10:02 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047194;MF=houwenlong.hwl@antgroup.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---.V5qfj3u_1698052197;
-Received: from localhost(mailfrom:houwenlong.hwl@antgroup.com fp:SMTPD_---.V5qfj3u_1698052197)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Oct 2023 17:09:58 +0800
-From:   "Hou Wenlong" <houwenlong.hwl@antgroup.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Hou Wenlong" <houwenlong.hwl@antgroup.com>,
-        "Juergen Gross" <jgross@suse.com>,
-        "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
-        "Darren Hart" <dvhart@infradead.org>,
-        "Andy Shevchenko" <andy@infradead.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>,
-        "=?UTF-8?B?bWFpbnRhaW5lcjpYODYgQVJDSElURUNUVVJFIDMyLUJJVCBBTkQgNjQtQklU?=" 
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "=?UTF-8?B?bW9kZXJhdGVkIGxpc3Q6WEVOIEhZUEVSVklTT1IgWDg2?=" 
-        <xen-devel@lists.xenproject.org>,
-        "=?UTF-8?B?b3BlbiBsaXN0Olg4NiBQTEFURk9STSBEUklWRVJTIC0gQVJDSA==?=" 
-        <platform-driver-x86@vger.kernel.org>
-Subject: [PATCH 2/2] x86/xen/pvh: Use fixed_percpu_data to set up GS base
-Date:   Mon, 23 Oct 2023 17:09:39 +0800
-Message-Id: <f3943c3bbcdfea836064d3556a979ad6f015c835.1698051454.git.houwenlong.hwl@antgroup.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1698051454.git.houwenlong.hwl@antgroup.com>
-References: <cover.1698051454.git.houwenlong.hwl@antgroup.com>
+        Mon, 23 Oct 2023 05:10:13 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C213910CF;
+        Mon, 23 Oct 2023 02:10:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=I9prQxPgmyE3xzWAyIMSdW1KLEhS2tX5PuKRMEYdlRA=;
+        t=1698052209; x=1699261809; b=e2YcLTUOka0p0YqRhSUXztdiwOYkcBVZ7InN4eXMV6N9Cc/
+        qJo+pPv9eDnMqAMcc74m3N/be9JORD66FAKb8sifBhQitFTh4hDzRDhoskrjfsrYSk/t2MLlREsPw
+        wkWlsEBKASHN2mqh+YcuycN/hkznBbJOvX4B/5IlRQyl1zIFaP/j4A/xzfO0oah3isvpmop8wNeO5
+        a4IpnxUI99TjY3E1FybYjG5gTiYoXGRlJflMWI/2QBxEVt5uyMIubwZSaSvmnNg7I8j/VI1c4nmNt
+        y+tWaqfqZ2osZS3MHSUYHhh7SaUrD2x/LNs1UY64ChCtR9IJZJCpF5ptmMIoGttw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97-RC1)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1quqwn-00000000BFA-3xSN;
+        Mon, 23 Oct 2023 11:10:06 +0200
+Message-ID: <433af526223619beabad96a9003cad05c5b6189b.camel@sipsolutions.net>
+Subject: Re: [PATCH] wifi: iwlwifi: Add check for kmemdup
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Kalle Valo <kvalo@kernel.org>, Chen Ni <nichen@iscas.ac.cn>
+Cc:     gregory.greenman@intel.com, mukesh.sisodiya@intel.com,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 23 Oct 2023 11:10:04 +0200
+In-Reply-To: <87zg09zowv.fsf@kernel.org>
+References: <20231023064501.274599-1-nichen@iscas.ac.cn>
+         <87zg09zowv.fsf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-startup_64() and startup_xen() both use "fixed_percpu_data" to set up GS
-base. So for consitency, use it too in PVH entry and remove the
-temporary variable "canary".
+On Mon, 2023-10-23 at 12:08 +0300, Kalle Valo wrote:
+> Chen Ni <nichen@iscas.ac.cn> writes:
+>=20
+> > Since the kmemdup may return NULL pointer,
+> > it should be better to add check for the return value
+> > in order to avoid NULL pointer dereference.
+> >=20
+> > Fixes: 5e31b3df86ec ("wifi: iwlwifi: dbg: print pc register data once
+> > fw dump occurred")
+>=20
+> The fixes tag should be in one line.
+>=20
 
-Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
----
- arch/x86/platform/pvh/head.S | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+It's also irrelevant because (a) the fix is incorrect, and (b) we
+already have a (correct) fix :)
 
-diff --git a/arch/x86/platform/pvh/head.S b/arch/x86/platform/pvh/head.S
-index cee4dadf5344..591ba165215f 100644
---- a/arch/x86/platform/pvh/head.S
-+++ b/arch/x86/platform/pvh/head.S
-@@ -96,7 +96,7 @@ SYM_CODE_START_LOCAL(pvh_start_xen)
- 1:
- 	/* Set base address in stack canary descriptor. */
- 	mov $MSR_GS_BASE,%ecx
--	mov $_pa(canary), %eax
-+	mov $_pa(INIT_PER_CPU_VAR(fixed_percpu_data)), %eax
- 	xor %edx, %edx
- 	wrmsr
- 
-@@ -160,8 +160,6 @@ SYM_DATA_START_LOCAL(gdt_start)
- SYM_DATA_END_LABEL(gdt_start, SYM_L_LOCAL, gdt_end)
- 
- 	.balign 16
--SYM_DATA_LOCAL(canary, .fill 48, 1, 0)
--
- SYM_DATA_START_LOCAL(early_stack)
- 	.fill BOOT_STACK_SIZE, 1, 0
- SYM_DATA_END_LABEL(early_stack, SYM_L_LOCAL, early_stack_end)
--- 
-2.31.1
-
+johannes
