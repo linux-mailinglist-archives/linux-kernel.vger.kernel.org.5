@@ -2,117 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A80717D2E99
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935937D2E52
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbjJWJiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36684 "EHLO
+        id S229734AbjJWJcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjJWJh5 (ORCPT
+        with ESMTP id S229532AbjJWJcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:37:57 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59DFC4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:37:54 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 39N9bjcT086204;
-        Mon, 23 Oct 2023 17:37:45 +0800 (+08)
-        (envelope-from xingxing.luo@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SDVNy2xh2z2Kv9s6;
-        Mon, 23 Oct 2023 17:33:22 +0800 (CST)
-Received: from zebjkernups01.spreadtrum.com (10.0.93.153) by
- shmbx04.spreadtrum.com (10.0.1.214) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Mon, 23 Oct 2023 17:37:42 +0800
-From:   Xingxing Luo <xingxing.luo@unisoc.com>
-To:     <b-liu@ti.com>, <gregkh@linuxfoundation.org>,
-        <keescook@chromium.org>, <nathan@kernel.org>,
-        <ndesaulniers@google.com>, <trix@redhat.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-hardening@vger.kernel.org>, <llvm@lists.linux.dev>,
-        <xingxing0070.luo@gmail.com>, <Zhiyong.Liu@unisoc.com>,
-        <Cixi.Geng1@unisoc.com>, <Orson.Zhai@unisoc.com>,
-        <zhang.lyra@gmail.com>
-Subject: [PATCH] usb: musb: Check requset->buf before use to avoid crash issue
-Date:   Mon, 23 Oct 2023 17:31:53 +0800
-Message-ID: <20231023093153.6748-1-xingxing.luo@unisoc.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 23 Oct 2023 05:32:24 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA3BBC
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:32:22 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9c773ac9b15so378834166b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698053540; x=1698658340; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8ft7MIvpYJY02cNf4li75+d93ztRdElHNTCufIUN/dc=;
+        b=lHRo4DTLmuqhdyCACYP/oG/S5loF6fEK5PRLi6yZ6eDCLlQ3IEH0bBl5WmyimgilzR
+         K5K40o8svr+fMGpWKprAMeu95LUOHuf7kcGqAyEv59vEoopRXJSxgBYiq1pt86K4wJ4l
+         cROae0xr0/r3MiEEuVU9zkxFSYxfpiNjbdNWoE78MRF/RsUJ43ocaJeO4rzoIxQg/YfZ
+         n2ZA1kXLPxiQyS+d2hBBb5pH8TVfSFZPpxl+Mhba+b/6ZVq5DIwl/tSvGb3vE0UaZkvI
+         QL8CyTgfGVgvtt2Ws0JuTPSs2VvEH7+eqAt4MT0g9fH5Nuo1ERlxbF+bABGqGmfqBqjL
+         Ry1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698053540; x=1698658340;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8ft7MIvpYJY02cNf4li75+d93ztRdElHNTCufIUN/dc=;
+        b=g7YjDKH5LJDilJO417ECpzXZPG/bYebq7zOTS8QFUAm/nrK4uj/QUxhvpph8GxVBuZ
+         URWS43/rRKVxyH2QzZLJRg/MblwuevOPFLtxace6e1nIZwrlIxTh9lvYXlZdCsSjKpy4
+         caYVP1sy1R2VpOOudtVDeK3q/Qly8jIyAQY1f5TbSWzzkN5ZydG+EOv8lrAQfCYrwz3i
+         lU1Hsdg5du05gxB1OuJYnKSckBUhyg21SoNn7dx+Gemc21I0T40Zt105h71yjeDXrls8
+         7daVS6/VsnxwctWwXMX3S/6LYh+rTjnAMC655fEsuaNtCranLpkda/2hdsdBmgC4lSyD
+         K9EQ==
+X-Gm-Message-State: AOJu0YzbI1aqX3GcIBvmDjENTfadcuEyKPqhQRt14reiJXmEprOg4Q23
+        4tQEdqCvLKskC5u+JSFn948/GA==
+X-Google-Smtp-Source: AGHT+IFs48ObQ/rUFpza+UFse27hu34z8lQM0x/pvnxVvQQIONYNvFU2OzHnJ/btQ31kR972S31c3w==
+X-Received: by 2002:a17:907:25c3:b0:9bf:39f3:f11a with SMTP id ae3-20020a17090725c300b009bf39f3f11amr6529060ejc.74.1698053540660;
+        Mon, 23 Oct 2023 02:32:20 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id z23-20020a170906075700b009b27d4153cfsm6389962ejb.176.2023.10.23.02.32.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 02:32:20 -0700 (PDT)
+Message-ID: <f3d3a532-bb01-4ed7-be0a-ec021095964a@linaro.org>
+Date:   Mon, 23 Oct 2023 11:32:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.0.93.153]
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- shmbx04.spreadtrum.com (10.0.1.214)
-X-MAIL: SHSQR01.spreadtrum.com 39N9bjcT086204
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 4/5] arm64: defconfig: enable Qcom Memory Dump driver
+Content-Language: en-US
+To:     Zhenhua Huang <quic_zhenhuah@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@quicinc.com,
+        quic_tingweiz@quicinc.com
+References: <1698052857-6918-1-git-send-email-quic_zhenhuah@quicinc.com>
+ <1698052857-6918-5-git-send-email-quic_zhenhuah@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <1698052857-6918-5-git-send-email-quic_zhenhuah@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When connecting USB to PC, there is a very low probability of kernel
-crash. The reason is that in ep0_txstate(), the buf member of struct
-usb_request used may be a null pointer. Therefore, it needs to
-determine whether it is null before using it.
+On 23/10/2023 11:20, Zhenhua Huang wrote:
+> Enable Qcom Memory Dump driver to allow storing debugging
 
-[ 4888.071462][T597@C0] Call trace:
-[ 4888.071467][T597@C0]  musb_default_write_fifo+0xa0/0x1ac [musb_hdrc]
-[ 4888.087190][T597@C0]  musb_write_fifo+0x3c/0x90 [musb_hdrc]
-[ 4888.099826][T597@C0]  ep0_txstate+0x78/0x218 [musb_hdrc]
-[ 4888.153918][T597@C0]  musb_g_ep0_irq+0x3c4/0xe10 [musb_hdrc]
-[ 4888.159663][T597@C0]  musb_interrupt+0xab4/0xf1c [musb_hdrc]
-[ 4888.165391][T597@C0]  sprd_musb_interrupt+0x1e4/0x484 [musb_sprd]
-[ 4888.171447][T597@C0]  __handle_irq_event_percpu+0xd8/0x2f8
-[ 4888.176901][T597@C0]  handle_irq_event+0x70/0xe4
-[ 4888.181487][T597@C0]  handle_fasteoi_irq+0x15c/0x230
-[ 4888.186420][T597@C0]  handle_domain_irq+0x88/0xfc
-[ 4888.191090][T597@C0]  gic_handle_irq+0x60/0x138
-[ 4888.195591][T597@C0]  call_on_irq_stack+0x40/0x70
-[ 4888.200263][T597@C0]  do_interrupt_handler+0x50/0xac
-[ 4888.205196][T597@C0]  el1_interrupt+0x34/0x64
-[ 4888.209524][T597@C0]  el1h_64_irq_handler+0x1c/0x2c
-[ 4888.214370][T597@C0]  el1h_64_irq+0x7c/0x80
-[ 4888.218525][T597@C0]  __check_heap_object+0x1ac/0x1fc
-[ 4888.223544][T597@C0]  __check_object_size+0x10c/0x20c
-[ 4888.228563][T597@C0]  simple_copy_to_iter+0x40/0x74
-[ 4888.233410][T597@C0]  __skb_datagram_iter+0xa0/0x310
-[ 4888.238343][T597@C0]  skb_copy_datagram_iter+0x44/0x110
-[ 4888.243535][T597@C0]  netlink_recvmsg+0xdc/0x364
-[ 4888.248123][T597@C0]  ____sys_recvmsg.llvm.16749613423860851707+0x358/0x6c0
-[ 4888.255045][T597@C0]  ___sys_recvmsg+0xe0/0x1dc
-[ 4888.259544][T597@C0]  __arm64_sys_recvmsg+0xc4/0x10c
-[ 4888.264478][T597@C0]  invoke_syscall+0x6c/0x15c
-[ 4888.268976][T597@C0]  el0_svc_common.llvm.12373701176611417606+0xd4/0x120
-[ 4888.275726][T597@C0]  do_el0_svc+0x34/0xac
-[ 4888.279795][T597@C0]  el0_svc+0x28/0x90
-[ 4888.283603][T597@C0]  el0t_64_sync_handler+0x88/0xec
-[ 4888.288548][T597@C0]  el0t_64_sync+0x1b4/0x1b8
-[ 4888.292956][T597@C0] Code: 540002c3 53027ea8 aa1303e9 71000508 (b840452a)
-[ 4888.299789][T597@C0] ---[ end trace 14a301b7253e83cc ]---
+s/Qcom/Qualcomm/
 
-Signed-off-by: Xingxing Luo <xingxing.luo@unisoc.com>
----
- drivers/usb/musb/musb_gadget_ep0.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> information after crash by firmware, including cache
+> contents, internal memory, registers.
 
-diff --git a/drivers/usb/musb/musb_gadget_ep0.c b/drivers/usb/musb/musb_gadget_ep0.c
-index 6d7336727388..5d0629866128 100644
---- a/drivers/usb/musb/musb_gadget_ep0.c
-+++ b/drivers/usb/musb/musb_gadget_ep0.c
-@@ -531,6 +531,11 @@ static void ep0_txstate(struct musb *musb)
- 
- 	request = &req->request;
- 
-+	if (!requset->buf) {
-+		musb_dbg(musb, "request->buf is NULL");
-+		return;
-+	}
-+
- 	/* load the data */
- 	fifo_src = (u8 *) request->buf + request->actual;
- 	fifo_count = min((unsigned) MUSB_EP0_FIFOSIZE,
--- 
-2.17.1
+Which boards and SoCs need it? This is a defconfig for all platforms,
+not for Qualcomm only.
+
+> 
+
+
+Best regards,
+Krzysztof
 
