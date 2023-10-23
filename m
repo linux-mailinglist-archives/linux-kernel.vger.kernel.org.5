@@ -2,116 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 329017D4084
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4B17D4086
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbjJWT43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
+        id S230033AbjJWT4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjJWT41 (ORCPT
+        with ESMTP id S229447AbjJWT4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:56:27 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714AF8F
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:56:22 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bb9a063f26so54449971fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:56:22 -0700 (PDT)
+        Mon, 23 Oct 2023 15:56:53 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80477EE;
+        Mon, 23 Oct 2023 12:56:51 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-27cfb8442f9so2368908a91.2;
+        Mon, 23 Oct 2023 12:56:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698090981; x=1698695781; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mYhFOHXUbUUqAX9R5BipqQxHYfvxGQDwg7kFXGU8wT0=;
-        b=sdrOchpYlCYRCOfEQUPFcKDl4U0d6kd5E4JIhdLDyk50/80977irilQO2hARSjnmb/
-         ZdG78+/Pgv0eY8pIxQFHhlWM75V4KE+qwMFhNg00dB8LW6EeQ+dPegwTN3cNObMxM7Wx
-         IpdxANo1iW2JCNopyixcQGwv0H4UDCNIC2VYF2ulFGEcSHWvPqACcwHhXgPIYd8nN6Z3
-         BtgEdPolnJQNLkL9Tpo8Td9bjMPzsb5x4HPvlGnd+nmojAajpy+Z1UR6lKw+NQYmhpAo
-         wa56dRlplKThCz2s92NlP09c4JL8Rvu+vvaQhbKB0SBdb5hrXTOCuAKD0P49CJ7gvSxD
-         Jg/A==
+        d=gmail.com; s=20230601; t=1698091011; x=1698695811; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=wc6K7DVSn4OJ7r3oQRSjAdBZCjLBaSJ+yDFvOsX+BDw=;
+        b=NohcOH0Ny2zbLvTmRW+qk5DkjNLEgnfeJraMaaBYKe/Kn7jmhRqW3ZO6UILjqDQtXB
+         EedKvUSBxp+d56N999f/Y7L0z20EIn2aTa65yJRO+Y/o1tlVLxeeheHChpTvWnPO5fwO
+         vF/7HL5x3viMdnA+e8OPH3EM1Z5K3fEpU6RlOGNWvCH5CrDzsQvu58zgdgzS5v89nJfY
+         u1A97cH4Uybjkk/8JpLUZ2MR3NM+jhp79wKdWl1835QmYW4awMublYvV6vpT98TgApnI
+         rCzFl7CfdkN2FXz2fQaiSvqS6FTYAuMPMS8lKrZ4NPfRNybJ9x+0QB6ablDcP8scyD7a
+         FkbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698090981; x=1698695781;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mYhFOHXUbUUqAX9R5BipqQxHYfvxGQDwg7kFXGU8wT0=;
-        b=he6l6wuZhicIPEUmtLxNdXIGSGqNKjtHHHWhzdr4+iHcW3c4mKuBUzum8hkPn4b934
-         neaX+MaJi+V534MClUkD7eGLwtqGPD4NA8JXQggPJDUw9512+ALzihjRXcPENBIH8ylJ
-         h06pB/FTkaNHDmgKZgEpQTXFTKi8FLdojWfWFuixcsxF1/owcbG2ZIpiG/AdsCVlcw/d
-         KbCWChJTWDAIdWDbiDTZJ4NcD423qfOOh0et8p2Ypbj2m6eZt61YDVOX7sjfT9moUng1
-         Ei+DAf8IK2oJ6fTwv0dtefrBUc5W6PAkTlxolsDvvswrACWNUVmJ6SPCUKxJncz/y5zz
-         0ZQQ==
-X-Gm-Message-State: AOJu0YzpZdJgx8HqDdgea+8Xfgd7MU8EA2RZgt3LpkEwhcBk0bA2rh9e
-        trds9H09kwUuYSiwaHBQbT1FBA==
-X-Google-Smtp-Source: AGHT+IEZRo53eGHUkTmV9yAU/caZEovr8bcqahgYebYJKx9jWWwMrAx2HKht91PNWIGfd2HQU1VUQQ==
-X-Received: by 2002:a19:6716:0:b0:500:9a29:bcb8 with SMTP id b22-20020a196716000000b005009a29bcb8mr6616129lfc.4.1698090980584;
-        Mon, 23 Oct 2023 12:56:20 -0700 (PDT)
-Received: from [172.30.205.82] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id a12-20020a056512200c00b005007da9f823sm1801580lfb.168.2023.10.23.12.56.17
+        d=1e100.net; s=20230601; t=1698091011; x=1698695811;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wc6K7DVSn4OJ7r3oQRSjAdBZCjLBaSJ+yDFvOsX+BDw=;
+        b=GrSdPEUhOr6FZRx6HlX+J/r0fhVqPgcc0LZVCwq4ovZiWowMygM1LJI3+Brfk/lW4F
+         9y3rhOr7JYIGIk3MzOcY5slbVykAtNBwMVRmsCUoCNKZoCu3q9oDlDFcboFHwoGOZRS1
+         i1MmJCNmKV+9qOGEhnkdvhTGL+V2pgGxXHJoM1aKpK7P1SQnAwv8YKJ1FUObelV7CME3
+         XjAuFbA1DWjadVhdhtO7L5Os/mkoWwhPK9A+hvlB9hYm9dPQjgIMvjdsGmk4fl+B6lq+
+         MDTJK40L7ddiag+NyQMYyWyBrWpFsMuHcWestJVEcJGsTmXZwk8Qn4YSByVSGQ9HBn49
+         H6Wg==
+X-Gm-Message-State: AOJu0YxqOnP5W18iQmLWKTgsUaLsVnSQ1sRjah91uGjYV2NAzWNObkvL
+        pw19wEKRJNTYzd78oFEI1RM=
+X-Google-Smtp-Source: AGHT+IFiOGCEgt/6NFMUK8O593DH6eSaJOZjIWQ05INXwwmBnsM/jdAeT1lwkl6CkuNceUr2bbsaZw==
+X-Received: by 2002:a17:90a:194b:b0:27d:1ea0:bc84 with SMTP id 11-20020a17090a194b00b0027d1ea0bc84mr7132522pjh.34.1698091010803;
+        Mon, 23 Oct 2023 12:56:50 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id mj7-20020a17090b368700b0026b70d2a8a2sm6049103pjb.29.2023.10.23.12.56.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 12:56:20 -0700 (PDT)
-Message-ID: <6a0398d1-22f4-4eb7-ba43-c448055be323@linaro.org>
-Date:   Mon, 23 Oct 2023 21:56:16 +0200
+        Mon, 23 Oct 2023 12:56:50 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <9737cd7b-f3c6-7e90-f92c-0ceeed788980@roeck-us.net>
+Date:   Mon, 23 Oct 2023 12:56:48 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/msm/adreno: Drop WARN_ON from patchid lookup for new
- GPUs
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Abel Vesa <abel.vesa@linaro.org>
-References: <20231023-topic-adreno_warn-v1-1-bb1ee9391aa2@linaro.org>
- <CAF6AEGuS3PhNbh9Gmu1g9YpUcr3LOh1gZK-XBE+urdb5jRjorg@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 5.15 000/137] 5.15.137-rc1 review
 Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <CAF6AEGuS3PhNbh9Gmu1g9YpUcr3LOh1gZK-XBE+urdb5jRjorg@mail.gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Marc Zyngier <maz@kernel.org>
+References: <20231023104820.849461819@linuxfoundation.org>
+ <724521b8-9c63-4645-b3e0-30d9635573a7@linaro.org>
+ <CAEUSe7-zbuRsgsr2EYq+OeW9iEJyZHmo8u9K3pDCAFRKnCEv0A@mail.gmail.com>
+ <CAMuHMdXYB6QAE15RYs7eg9sVofesqNN1+vmPHkosqC_8A-JTSg@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <CAMuHMdXYB6QAE15RYs7eg9sVofesqNN1+vmPHkosqC_8A-JTSg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/23/23 21:42, Rob Clark wrote:
-> On Mon, Oct 23, 2023 at 7:29 AM Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->>
->> New GPUs still use the lower 2 bytes of the chip id (in whatever form
->> it comes) to signify silicon revision. Drop the warning that makes it
->> sound as if that was unintended.
->>
->> Fixes: 90b593ce1c9e ("drm/msm/adreno: Switch to chip-id for identifying GPU")
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>   drivers/gpu/drm/msm/adreno/adreno_gpu.h | 5 -----
->>   1 file changed, 5 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
->> index 80b3f6312116..9a1ec42155fd 100644
->> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
->> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
->> @@ -203,11 +203,6 @@ struct adreno_platform_config {
->>
->>   static inline uint8_t adreno_patchid(const struct adreno_gpu *gpu)
->>   {
->> -       /* It is probably ok to assume legacy "adreno_rev" format
->> -        * for all a6xx devices, but probably best to limit this
->> -        * to older things.
->> -        */
->> -       WARN_ON_ONCE(gpu->info->family >= ADRENO_6XX_GEN1);
+On 10/23/23 11:50, Geert Uytterhoeven wrote:
+> CC maz
 > 
-> Maybe just change it to ADRENO_6XX_GEN4?
-That also applies to 700
+> On Mon, Oct 23, 2023 at 7:17 PM Daniel Díaz <daniel.diaz@linaro.org> wrote:
+>> On Mon, 23 Oct 2023 at 09:11, Daniel Díaz <daniel.diaz@linaro.org> wrote:
+>>> On 23/10/23 4:55 a. m., Greg Kroah-Hartman wrote:
+>>>> This is the start of the stable review cycle for the 5.15.137 release.
+>>>> There are 137 patches in this series, all will be posted as a response
+>>>> to this one.  If anyone has any issues with these being applied, please
+>>>> let me know.
+>>>>
+>>>> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
+>>>> Anything received after that time might be too late.
+>>>>
+>>>> The whole patch series can be found in one patch at:
+>>>>        https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.137-rc1.gz
+>>>> or in the git tree and branch at:
+>>>>        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+>>>> and the diffstat can be found below.
+>>>>
+>>>> thanks,
+>>>>
+>>>> greg k-h
+>>>
+>>> We see lots of errors on Arm 32-bits:
+>>>
+>>> -----8<-----
+>>> /builds/linux/drivers/gpio/gpio-vf610.c:249:11: error: 'IRQCHIP_IMMUTABLE' undeclared here (not in a function); did you mean 'IS_IMMUTABLE'?
+>>>     .flags = IRQCHIP_IMMUTABLE | IRQCHIP_MASK_ON_SUSPEND
+>>>              ^~~~~~~~~~~~~~~~~
+>>>              IS_IMMUTABLE
+>>> /builds/linux/drivers/gpio/gpio-vf610.c:251:2: error: 'GPIOCHIP_IRQ_RESOURCE_HELPERS' undeclared here (not in a function)
+>>>     GPIOCHIP_IRQ_RESOURCE_HELPERS,
+>>>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>> /builds/linux/drivers/gpio/gpio-vf610.c:251:2: warning: excess elements in struct initializer
+>>> /builds/linux/drivers/gpio/gpio-vf610.c:251:2: note: (near initialization for 'vf610_irqchip')
+>>> /builds/linux/drivers/gpio/gpio-vf610.c: In function 'vf610_gpio_probe':
+>>> /builds/linux/drivers/gpio/gpio-vf610.c:340:2: error: implicit declaration of function 'gpio_irq_chip_set_chip'; did you mean 'gpiochip_get_data'? [-Werror=implicit-function-declaration]
+>>>     gpio_irq_chip_set_chip(girq, &vf610_irqchip);
+>>>     ^~~~~~~~~~~~~~~~~~~~~~
+>>>     gpiochip_get_data
+>>> cc1: some warnings being treated as errors
+>>> ----->8-----
+>>
+>> Bisection points to "gpio: vf610: make irq_chip immutable" (upstream
+>> commit e6ef4f8ede09f4af7cde000717b349b50bc62576).
+> 
+> IRQCHIP_IMMUTABLE was introduced in commit 6c846d026d490b23 ("gpio:
+> Don't fiddle with irqchips marked as immutable") in v5.19.
+> Backporting (part of) that is probably not safe.
+> 
 
-Konrad
+In this context: What exactly does commit e6ef4f8ede09 fix that makes it
+a stable release candidate ?
+
+Outch, I realize I am violating the new "no more than 15 quoted lines"
+rule. Sigh.
+
+Guenter
+
