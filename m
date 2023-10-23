@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1D77D2C3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2F67D2C41
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbjJWIKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52696 "EHLO
+        id S229533AbjJWILA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJWIKQ (ORCPT
+        with ESMTP id S229476AbjJWIK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:10:16 -0400
-Received: from out-210.mta0.migadu.com (out-210.mta0.migadu.com [91.218.175.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0385CA1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:10:14 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698048613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=OZo8VSwhkKBAcb8XFz5ejDDhW5571Hea2aGRDnsLDFA=;
-        b=Y1fsLn4TadGxgdC5oUPAcBq39c+IUbfLzv53epHivnG2+eTgD7gGkPL9nwreL6tzas3s4b
-        b51YfMfCAsjY2m5T6wiSzsA6S+FoGG9GSXAN91u/96IAfJxjqIw0eoUI9UboCQLtDcfvbW
-        QeW6Zvglty70EMuxB3GkQGluNkYwHHQ=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH v2] sched/rt: Account execution time for cgroup and thread group if rt entity is task
-Date:   Mon, 23 Oct 2023 16:09:54 +0800
-Message-Id: <20231023080954.1628449-1-yajun.deng@linux.dev>
+        Mon, 23 Oct 2023 04:10:59 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25750D6B;
+        Mon, 23 Oct 2023 01:10:57 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32d9b507b00so2212529f8f.1;
+        Mon, 23 Oct 2023 01:10:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698048655; x=1698653455; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d7cqCaedoqoHpQD8+KvfrceThO52+AoPN4P2eMWZ0lk=;
+        b=NJ33L3H/QTwpLwqP0Lm6GJvUVM9jH76LiIt0iTIljXBJUwK23+1iO7yINTxHIKv8ow
+         6Vmid2unVbPV7jIoMMU4TeduilIlziXa0b8k4zx3M8tHkdCKDQnv1mPQrSkM0+OjaLnG
+         MupX44pVFqSYMd2Yz6exZBXIndgjpwMJ1CpbyVw1jVWGEKomK7+cPITfQwUydieUkN0U
+         VKKc1v0rWlHvpv1nkGvxZFqwdfUZnv6EagxYx+2PvvscN51i+Fe5v9r01deUpqoNksWd
+         /uvyuOTpvlC4FWioJtR1hYcvXNjRZ/JufRrWhwbNka4wOCXAnV2ivByTfhdijKJyR87t
+         uBww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698048655; x=1698653455;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d7cqCaedoqoHpQD8+KvfrceThO52+AoPN4P2eMWZ0lk=;
+        b=FRHMNP/DtV6pWR732dgZAjEyLG2sWgqUQi45hKW4HCP8YXgpRtj8ogqht0FSUghfUt
+         Dlk79WK0jVHa28E4M5n0Mhu3V0deiunb48LdlAJu0kWWbimC5lX2AchD6jhx89rSwPqS
+         cj05fY7ku8X4ftkkZk9fzCgswLLi1zUXYIBr0QTBVachSEHhTiCzemAdAwMejCPlc5Tx
+         h6fAzhKqhs1of+FsLC82VFAv+vF+vNvC0OFT+GQ/pRjEpjRvoPDx61/sf6vSwUOmO/mJ
+         dmIRj8JKQ/ttgzvwsajjy6InsINxVWjOE/DvbWWUxo741FKjk4hXjvwHwe1i3e6STvGm
+         zyLA==
+X-Gm-Message-State: AOJu0YygwLVZ0SqTQ1ZomJMCr2GEMxHJnkKe2HO5NIAJyHF5Rrwmdh17
+        HIwL7YsRXJ3KU6Mez7KGTsCM8ZW14Kk=
+X-Google-Smtp-Source: AGHT+IEuu1pCWAMxs1QZIe5QYfyRiSzhhF+pj2KcV9gO4YSBwJ73Q58dPai8HlEnY56JCt10KECh/Q==
+X-Received: by 2002:a5d:4a86:0:b0:32d:a2c4:18bf with SMTP id o6-20020a5d4a86000000b0032da2c418bfmr5607012wrq.59.1698048655302;
+        Mon, 23 Oct 2023 01:10:55 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id y5-20020adff145000000b0031fd849e797sm7218480wro.105.2023.10.23.01.10.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 01:10:54 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Jagath Jog J <jagathjog1996@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] iio: imu: Fix spelling mistake "accelrometer" -> "accelerometer"
+Date:   Mon, 23 Oct 2023 09:10:54 +0100
+Message-Id: <20231023081054.617292-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rt entity can be a task group. Like the fair scheduler class, we don't
-need to account execution time for cgroup and thread group if the rt
-entity isn't a task.
+There are two spelling mistakes in dev_err messages. Fix them.
 
-Check the scheduler class of the task and make sure that the rt entity is a
-task.
-
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 ---
-v2: Add the missing '#endif'.
-v1: https://lore.kernel.org/all/20231023065418.1548239-1-yajun.deng@linux.dev/
----
- kernel/sched/rt.c    |  4 ----
- kernel/sched/sched.h | 13 +++++++++++--
- 2 files changed, 11 insertions(+), 6 deletions(-)
+ drivers/iio/imu/bmi323/bmi323_core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 6aaf0a3d6081..ccded5670b61 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -165,8 +165,6 @@ static void destroy_rt_bandwidth(struct rt_bandwidth *rt_b)
- 	hrtimer_cancel(&rt_b->rt_period_timer);
- }
+diff --git a/drivers/iio/imu/bmi323/bmi323_core.c b/drivers/iio/imu/bmi323/bmi323_core.c
+index 0bd5dedd9a63..183af482828f 100644
+--- a/drivers/iio/imu/bmi323/bmi323_core.c
++++ b/drivers/iio/imu/bmi323/bmi323_core.c
+@@ -545,7 +545,7 @@ static int bmi323_tap_event_en(struct bmi323_data *data,
+ 	guard(mutex)(&data->mutex);
  
--#define rt_entity_is_task(rt_se) (!(rt_se)->my_q)
--
- static inline struct task_struct *rt_task_of(struct sched_rt_entity *rt_se)
- {
- #ifdef CONFIG_SCHED_DEBUG
-@@ -283,8 +281,6 @@ int alloc_rt_sched_group(struct task_group *tg, struct task_group *parent)
+ 	if (data->odrhz[BMI323_ACCEL] < 200) {
+-		dev_err(data->dev, "Invalid accelrometer parameter\n");
++		dev_err(data->dev, "Invalid accelerometer parameter\n");
+ 		return -EINVAL;
+ 	}
  
- #else /* CONFIG_RT_GROUP_SCHED */
+@@ -1453,7 +1453,7 @@ static int bmi323_enable_steps(struct bmi323_data *data, int val)
  
--#define rt_entity_is_task(rt_se) (1)
--
- static inline struct task_struct *rt_task_of(struct sched_rt_entity *rt_se)
- {
- 	return container_of(rt_se, struct task_struct, rt);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 65cad0e5729e..95d696e23a89 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -779,6 +779,12 @@ static inline long se_runnable(struct sched_entity *se)
- }
- #endif
- 
-+#ifdef CONFIG_RT_GROUP_SCHED
-+#define rt_entity_is_task(rt_se) (!(rt_se)->my_q)
-+#else
-+#define rt_entity_is_task(rt_se) (1)
-+#endif
-+
- #ifdef CONFIG_SMP
- /*
-  * XXX we want to get rid of these helpers and use the full load resolution.
-@@ -3266,9 +3272,12 @@ static inline void update_current_exec_runtime(struct task_struct *curr,
- 						u64 now, u64 delta_exec)
- {
- 	curr->se.sum_exec_runtime += delta_exec;
--	account_group_exec_runtime(curr, delta_exec);
--
- 	curr->se.exec_start = now;
-+
-+	if (curr->sched_class == &rt_sched_class && !rt_entity_is_task(&curr->rt))
-+		return;
-+
-+	account_group_exec_runtime(curr, delta_exec);
- 	cgroup_account_cputime(curr, delta_exec);
- }
+ 	guard(mutex)(&data->mutex);
+ 	if (data->odrhz[BMI323_ACCEL] < 200) {
+-		dev_err(data->dev, "Invalid accelrometer parameter\n");
++		dev_err(data->dev, "Invalid accelerometer parameter\n");
+ 		return -EINVAL;
+ 	}
  
 -- 
-2.25.1
+2.39.2
 
