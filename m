@@ -2,193 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 980007D3EB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332B07D3EBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbjJWSMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 14:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51694 "EHLO
+        id S231642AbjJWSO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 14:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjJWSMe (ORCPT
+        with ESMTP id S229829AbjJWSO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 14:12:34 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6E3D6
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:12:32 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7b10c488cso45051307b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:12:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698084752; x=1698689552; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qwS6ouQjPXWDmE5P6viXZdCgm6mkNLj5gTUqMttI1Y4=;
-        b=Adi5lAvZAE7ig7zrujT3lNJOLIpxchQed7flxGpk+0/WVoGDHf0yC12EvT8iGmgMUq
-         uAPjh0tkS1sZA3u9/5XCB1co1Sdn8cclvrm9AE3PFMXUWwvicCk26/xzF7HXCGcvsW9X
-         OGG71Ns2x/uYDjtth4zHgAoFdfTBz04m3m7qMuJxywx7wi9aP+m+rfxq1ry0f8gs14SP
-         L/EMp6MKJUqVo5bomDlQmh5NR0rMlubznixkakAbIPb+zl6OU8ke9gf+LHTvSpdAVRcu
-         qUJ7j4de68h7MaKqz+RHldFEPPZZEQGVFtMiqEIIydjgRrfMh7mN1qChA/ixENv9dbpw
-         CHOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698084752; x=1698689552;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qwS6ouQjPXWDmE5P6viXZdCgm6mkNLj5gTUqMttI1Y4=;
-        b=BSwIbkW3nwMLPrHmOMD+Yx8U/sYy9euVTfRRduXVfLmdLT7yTtw8LJBq7rQIRpqQ1v
-         Fb3KgMpOLBAY8aT4jSOtKNZOrHUSc/lMjnF8CfCrFqUWBMEHju1x6ZoW/It3p05jMT5M
-         wQHDGhOzi5UhQzbDGPIRRcC+NMQ0Kaqs/Uv4pXfMzUH9E+yIHVNtfMpAE7RclmghgXiB
-         Q/gqcAB+FovixvT75E77cpG+BQYGJ51lNn3ldB6ghDbhxzcOR4jXgmV4OUPMeyxpYL3e
-         6/DWvOJBgoJeDcyyPksGezVzY+7WbjSZs72Vc28ePWmVF8zqkutrTkeDKsPdLO2O379s
-         s/EQ==
-X-Gm-Message-State: AOJu0YwHVMdYQImbFnlDyUHKkelMhH3zaPh6rdA2eZQNGukTUfDDu9NU
-        Wwt4IhCANrf8hQHbK3jtnPpCMCKE6TqIIyVerQ==
-X-Google-Smtp-Source: AGHT+IH9j1Cv+kwDdU7FgeZN5Wos1b3Cm2atxCSiXLG/t3KumY5JzFlOjMOH2W6Ivr4HTyriL/EA2H0K2FFTy0PU/g==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a81:4ecf:0:b0:5a8:28be:bf86 with SMTP
- id c198-20020a814ecf000000b005a828bebf86mr208457ywb.5.1698084752050; Mon, 23
- Oct 2023 11:12:32 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 18:12:28 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAIu3NmUC/43NQQ6CMBCF4auQrh3TVkzAlfcwhNB2hEmUkhlsJ
- IS7W0ncu/zf4n2rEmRCUZdiVYyJhOKYwx4K5Ydu7BEo5FZW25PRVoPMPPppgcCUkAV4ekoPiXi
- m2O7RupeAh+A6cw6uxKrWKt9NjHd679StyT2QzJGXXU7mu/4Q8z+SDBioOudqU3uHtrz2MfYPP Pr4VM22bR+LaEc44QAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698084751; l=4380;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=uxFJFrgndnGhuJLwG5frR0Qr2jirCUbgI5LoxWmqOws=; b=jNFOf966tCsvUuHyU/MIBTXbl3z+Kcy+EGf0QsL9k/KBIYEub7+MVP4EUasN0VTkfXcYjmx5b
- pzGUMZGKY5vAkF48W7C5+fenvpx/deT714CI3sUvJvdtuWIwrLJZ+fn
-X-Mailer: b4 0.12.3
-Message-ID: <20231023-strncpy-drivers-rpmsg-virtio_rpmsg_bus-c-v2-1-dc591c36f5ed@google.com>
-Subject: [PATCH v2] rpmsg: virtio: replace deprecated strncpy with strscpy/_pad
-From:   Justin Stitt <justinstitt@google.com>
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 23 Oct 2023 14:14:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DBF9D;
+        Mon, 23 Oct 2023 11:14:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698084865; x=1729620865;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=P30FNT417k1cYRKrbeS6AdI66H28Gw47BUwkjsEDXmw=;
+  b=NvQsb73esoJaU+zbPW+IbLwQvQgHMwrj3m2RSFy7eKLOVzYsI1R1zwpJ
+   D2XdU2m24G7iXylJVnTM8yXLt5Cq3F2x9h1w4BQZkeqXdYZWwuH7GStMr
+   Cj2pfK4Wxkc/9aXrMcrVgMvo8p6HLbdq4QLi1pU105YCmwEzNoFw5fkMA
+   TORLB+54F8Dktv6v8vNQgr31e631xPLDixlb24a61rJVjn5pPzQZWBqo1
+   xmzkjCEs0AwsgjUtpIx3EcmGvKhVxGijkHnA5nbgXOKE8fId6juRnF+/l
+   9NikTQz0MAJGRF8taU7TaDNaotZ2tGNvJdx2jtJbJz10W1KXpDel1m4ER
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="384099283"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="384099283"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 11:14:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="787529774"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="787529774"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 11:14:06 -0700
+Date:   Mon, 23 Oct 2023 11:14:04 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Smita.KoralahalliChannabasappa@amd.com,
+        dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH v9 2/3] x86/mce: Add per-bank CMCI storm mitigation
+Message-ID: <ZTa37L2nlnbok8dz@agluck-desk3>
+References: <20230929181626.210782-1-tony.luck@intel.com>
+ <20231004183623.17067-1-tony.luck@intel.com>
+ <20231004183623.17067-3-tony.luck@intel.com>
+ <20231019151211.GHZTFHS3osBIL1IJbF@fat_crate.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019151211.GHZTFHS3osBIL1IJbF@fat_crate.local>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Thu, Oct 19, 2023 at 05:12:11PM +0200, Borislav Petkov wrote:
+> On Wed, Oct 04, 2023 at 11:36:22AM -0700, Tony Luck wrote:
+> > +/*
+> > + * history:	bitmask tracking whether errors were seen or not seen in
+> > + *		the most recent polls of a bank.
+> 
+> 		each bit in that bitmask represents an error seen.
 
-This patch replaces 3 callsites of strncpy().
+Yes. That reads better.
 
-The first two populate the destination buffer `nsm.name` -- which we
-expect to be NUL-terminated based on their use with format strings.
+> 
+> > + * timestamp:	last time (in jiffies) that the bank was polled
+> > + * storm:	Is this bank in storm mode?
+> > + */
+> > +struct storm_bank {
+> > +	u64 history;
+> > +	u64 timestamp;
+> > +	bool storm;
+> 
+> I guess "in_storm_mode" is even more descriptive:
+> 
+> 	storm->banks[bank].in_storm_mode = false;
+> 
+> etc.
 
-Firstly, as I understand it, virtio_rpmsg_announce_create() creates an
-rpmsg_ns_msg and sends via:
+Will fix.
 
-virtio_rpmsg_bus.c:
-336: err = rpmsg_sendto(rpdev->ept, &nsm, sizeof(nsm), RPMSG_NS_ADDR);
+> 
+> > +};
+> > +
+> > +/* How many errors within the history buffer mark the start of a storm. */
+> > +#define STORM_BEGIN_THRESHOLD	5
+> > +
+> > +/*
+> > + * How many polls of machine check bank without an error before declaring
+> > + * the storm is over. Since it is tracked by the bitmaks in the history
+> > + * field of struct storm_bank the mask is 30 bits [0 ... 29].
+> > + */
+> > +#define STORM_END_POLL_THRESHOLD	29
+> >  
+> >  #ifdef CONFIG_ACPI_APEI
+> >  int apei_write_mce(struct mce *m);
+> > diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+> > index f6e87443b37a..7c931f0c9251 100644
+> > --- a/arch/x86/kernel/cpu/mce/core.c
+> > +++ b/arch/x86/kernel/cpu/mce/core.c
+> > @@ -680,6 +680,8 @@ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b)
+> >  		barrier();
+> >  		m.status = mce_rdmsrl(mca_msr_reg(i, MCA_STATUS));
+> >  
+> > +		mce_track_storm(&m);
+> 
+> Lemme see if I understand the idea here:
+> 
+> the default polling interval is 5 mins. So the storm tracking is called
+> every 5 mins once to see how are banks "doing", so to speak and to get
+> them in or out of storm mode. So far so good...
+> 
+> > +
+> >  		/* If this entry is not valid, ignore it */
+> >  		if (!(m.status & MCI_STATUS_VAL))
+> >  			continue;
+> 
+> Btw, you're tracking storm even if the error is not valid - conditional
+> above here. Why?
 
-... which uses:
-virtio_rpmsg_sendto() -> rpmsg_send_offchannel_raw()
+I want to track whether each bank is in storm mode, or not. But there's
+no indication when a CMCI is delivered which bank was the source. Code
+just has to scan all the banks, and might find more than one with an
+error. While no bank is in polling mode, there isn't a set time interval
+between scanning banks. A scan is just triggered when a CMCI happens.
+So it's non-trivial to compute a rate. Would require saving a timestamp
+for every logged error.
 
-... which copies its data into an rpmsg_hdr `msg` in virtio_rpmsg_bus.c
-618: memcpy(msg->data, data, len);
+In a simple case there's just one bank responsible for a ton of CMCI.
+No need for complexity here, the count of interrupts from that bank will
+hit a threshold and a storm is declared.
 
-This callback is invoked when a message is received from the remote
-processor:
+But more complex scenarois are possible. Other banks may trigger small
+numbers of CMCI. Not enough to call it a storm.  Or multiple banks may
+be screaming together.
 
-rpmsg_ns.c:
-30: /* invoked when a name service announcement arrives */
-31: static int rpmsg_ns_cb(struct rpmsg_device *rpdev, void *data, int len,
-32: 		       void *priv, u32 src)
-33: {
-34:         struct rpmsg_ns_msg *msg = data;
-...
-50:         /* don't trust the remote processor for null terminating the name */
-51:         msg->name[RPMSG_NAME_SIZE - 1] = '\0';
+By tracking both the hits and misses in each bank, I end up with a
+bitmap history for the past 64 polls. If there are enough "1" bits in
+that bitmap to meet the threshold, then declare a storm for that bank.
 
-... which leads into the use of `name` within a format string:
-rpmsg_ns.c:
-57: dev_info(dev, "%sing channel %s addr 0x%x\n",
-58:          rpmsg32_to_cpu(rpdev, msg->flags) & RPMSG_NS_DESTROY ?
-59:          "destroy" : "creat", msg->name, chinfo.dst);
+> 
+> > @@ -1652,22 +1654,29 @@ static void mce_timer_fn(struct timer_list *t)
+> >  	else
+> >  		iv = min(iv * 2, round_jiffies_relative(check_interval * HZ));
+> >  
+> > -	__this_cpu_write(mce_next_interval, iv);
+> > -	__start_timer(t, iv);
+> > +	if (mce_is_storm()) {
+> > +		__start_timer(t, HZ);
+> > +	} else {
+> > +		__this_cpu_write(mce_next_interval, iv);
+> > +		__start_timer(t, iv);
+> > +	}
+> 
+> ... this is where it becomes, hm, interesting: the check interval will
+> be halved if an error has been seen during this round but then if we're
+> in storm mode, that check interval doesn't matter - you'll run the timer
+> each second.
+> 
+> Then you need to restructure this to check the storm condition and not
+> do anything to iv if storm.
+> 
+> Or, am I missing something?
 
-We can also observe that `nsm` is not zero-initialized and as such we
-should maintain the NUL-padding behavior that strncpy() provides:
+I need to stare at this again to refresh my memory of what's going on
+here. This code may need pulling apart into a routine that is used for
+systems with no CMCI (or have CMCI disabled). Then the whole "divide the
+poll interval by two" when you see an error and double the interval
+when you don't see an error makes sense.
 
-virtio_rpmsg_bus.c:
-330: struct rpmsg_ns_msg nsm;
+For systems with CMCI ... I think just polling a one second interval
+until the storm is over makes sense.
 
-Considering the above, a suitable replacement is `strscpy_pad` due to
-the fact that it guarantees both NUL-termination and NUL-padding on the
-destination buffer.
+> 
+> > diff --git a/arch/x86/kernel/cpu/mce/threshold.c b/arch/x86/kernel/cpu/mce/threshold.c
+> > index ef4e7bb5fd88..ecdf13f1bb7d 100644
+> > --- a/arch/x86/kernel/cpu/mce/threshold.c
+> > +++ b/arch/x86/kernel/cpu/mce/threshold.c
+> > @@ -29,3 +29,115 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_threshold)
+> >  	trace_threshold_apic_exit(THRESHOLD_APIC_VECTOR);
+> >  	apic_eoi();
+> >  }
+> > +
+> > +/*
+> > + * banks:		per-cpu, per-bank details
+> > + * stormy_bank_count:	count of MC banks in storm state
+> > + * poll_mode:		CPU is in poll mode
+> > + */
+> > +struct mca_storm_desc {
+> > +	struct storm_bank	banks[MAX_NR_BANKS];
+> > +	u8			stormy_bank_count;
+> > +	bool			poll_mode;
+> > +};
+> 
+> Yeah, put the struct definition into internal.h pls.
 
-Now, for the third and final destination buffer rpdev->id.name we can
-just go for strscpy() (not _pad()) as rpdev points to &vch->rpdev:
-|       rpdev = &vch->rpdev;
+These are only used in threshold.c now. What's the point of them
+being in internal.h. That's for defintiones shared by multiple
+mcs/*.c files. Isn't it? But will move there if you still want this.
 
-... and vch is zero-allocated:
-|       vch = kzalloc(sizeof(*vch), GFP_KERNEL);
+> 
+> > +static DEFINE_PER_CPU(struct mca_storm_desc, storm_desc);
+> > +
+> > +void mce_inherit_storm(unsigned int bank)
+> > +{
+> > +	struct mca_storm_desc *storm = this_cpu_ptr(&storm_desc);
+> > +
+> > +	storm->banks[bank].history = ~0ull;
+> 
+> So upon inheriting a bank, you set its history that it has seen errors
+> each time?
+> 
+> That's weird.
 
-... this renders any additional NUL-byte assignments (like the ones
-strncpy() or strscpy_pad() does) redundant.
+Ideally the new CPU would inherit the precise state of the previous
+owner of this bank. But there's no easy way to track that as the bank
+is abanoned by the CPU going offline, and there is a free-for-all with
+remaining CPUs racing to claim ownership. It is known that this bank
+was in storm mode (because the threshold in the CTL2 bank register is
+set to CMCI_STORM_THRESHOLD).
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- update commit msg (thanks Mathieu)
-- Link to v1: https://lore.kernel.org/r/20231021-strncpy-drivers-rpmsg-virtio_rpmsg_bus-c-v1-1-8abb919cbe24@google.com
----
-Note: build-tested only.
+I went with "worst case" to make sure the new CPU didn't prematurely
+declare an end to the storm.
 
-Found with: $ rg "strncpy\("
----
- drivers/rpmsg/virtio_rpmsg_bus.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I'll add a comment in mce_inherit_storm() to explain this.
 
-diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-index 905ac7910c98..dc87965f8164 100644
---- a/drivers/rpmsg/virtio_rpmsg_bus.c
-+++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-@@ -329,7 +329,7 @@ static int virtio_rpmsg_announce_create(struct rpmsg_device *rpdev)
- 	    virtio_has_feature(vrp->vdev, VIRTIO_RPMSG_F_NS)) {
- 		struct rpmsg_ns_msg nsm;
- 
--		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
-+		strscpy_pad(nsm.name, rpdev->id.name, sizeof(nsm.name));
- 		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
- 		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_CREATE);
- 
-@@ -353,7 +353,7 @@ static int virtio_rpmsg_announce_destroy(struct rpmsg_device *rpdev)
- 	    virtio_has_feature(vrp->vdev, VIRTIO_RPMSG_F_NS)) {
- 		struct rpmsg_ns_msg nsm;
- 
--		strncpy(nsm.name, rpdev->id.name, RPMSG_NAME_SIZE);
-+		strscpy_pad(nsm.name, rpdev->id.name, sizeof(nsm.name));
- 		nsm.addr = cpu_to_rpmsg32(rpdev, rpdev->ept->addr);
- 		nsm.flags = cpu_to_rpmsg32(rpdev, RPMSG_NS_DESTROY);
- 
-@@ -424,7 +424,7 @@ static struct rpmsg_device *__rpmsg_create_channel(struct virtproc_info *vrp,
- 	 */
- 	rpdev->announce = rpdev->src != RPMSG_ADDR_ANY;
- 
--	strncpy(rpdev->id.name, chinfo->name, RPMSG_NAME_SIZE);
-+	strscpy(rpdev->id.name, chinfo->name, sizeof(rpdev->id.name));
- 
- 	rpdev->dev.parent = &vrp->vdev->dev;
- 	rpdev->dev.release = virtio_rpmsg_release_device;
+> 
+> > +	storm->banks[bank].timestamp = jiffies;
+> > +}
+> > +
+> > +bool mce_is_storm(void)
+> 
+> That's a weird name. mce_get_storm_mode() perhaps?
 
----
-base-commit: 9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
-change-id: 20231020-strncpy-drivers-rpmsg-virtio_rpmsg_bus-c-dba15db4e890
+Sure.
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+> 
+> > +{
+> > +	return __this_cpu_read(storm_desc.poll_mode);
+> > +}
+> > +
+> > +void mce_set_storm(bool storm)
+> 
+> mce_set_storm_mode()
 
+Also sure.
+
+> 
+> > +{
+> > +	__this_cpu_write(storm_desc.poll_mode, storm);
+> > +}
+> > +
+> > +static void mce_handle_storm(unsigned int bank, bool on)
+> > +{
+> > +	switch (boot_cpu_data.x86_vendor) {
+> > +	}
+> > +}
+> 
+> ...
+> 
+> > +void mce_track_storm(struct mce *mce)
+> > +{
+> > +	struct mca_storm_desc *storm = this_cpu_ptr(&storm_desc);
+> > +	unsigned long now = jiffies, delta;
+> > +	unsigned int shift = 1;
+> > +	u64 history = 0;
+> > +
+> > +	/*
+> > +	 * When a bank is in storm mode it is polled once per second and
+> > +	 * the history mask will record about the last minute of poll results.
+> > +	 * If it is not in storm mode, then the bank is only checked when
+> > +	 * there is a CMCI interrupt. Check how long it has been since
+> > +	 * this bank was last checked, and adjust the amount of "shift"
+> > +	 * to apply to history.
+> > +	 */
+> > +	if (!storm->banks[mce->bank].storm) {
+> 
+> Yeah, if this were
+> 
+> 	if (!storm->banks[mce->bank].in_storm_mode)
+> 
+> it would've been perfectly clear what the condition tests.
+
+Yup.
+
+> 
+> > +		delta = now - storm->banks[mce->bank].timestamp;
+> > +		shift = (delta + HZ) / HZ;
+> > +	}
+> > +
+> > +	/* If it has been a long time since the last poll, clear history. */
+> > +	if (shift < 64)
+> 
+> Use a properly named define instead of a naked number.
+
+Like this?
+
+#define NUM_HISTORY_BITS (sizeof(u64) * BITS_PER_BYTE)
+
+	if (shift < NUM_HISTORY_BITS)
+> 
+> ...
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+
+-Tony
