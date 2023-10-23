@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1F67D418E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72757D418F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbjJWVRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 17:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43070 "EHLO
+        id S231545AbjJWVRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 17:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230483AbjJWVRj (ORCPT
+        with ESMTP id S229657AbjJWVRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 17:17:39 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074EB10A
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:17:38 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6ce2988d62eso2416994a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:17:37 -0700 (PDT)
+        Mon, 23 Oct 2023 17:17:41 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F7B10A
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:17:39 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5ac376d311aso13125157b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:17:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698095857; x=1698700657; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RjuCpZkTOQea0lODerpoBhUBPsuFVkeaJK9dO2sch2U=;
-        b=P8nEBo+/FJO88zARo8MrYpwquNuXA5LnkT+jrDoVzglCyxNYnJFmc49OFTC1KYEFmT
-         AeO16lxgOcdCdtfv2ceLGFyNE37AkB+0xhSniRD+uiPvq1t6XtpugE0vxF+2T7FRCXi5
-         ZDNd3rtRlT7fr8/g0kywJkBOWxfMj3Y0TZO1HQCZ55hesLsQOuQAm6YCE1rAEluEBiM6
-         v6jLSsn19zN69j+HtbkvuT/V/ZUSIiktvQ4PUecCbRa/QxDfMXYqiUC6BqroDqXDdWLq
-         k6pyEZXdpoPjqOsWJQMjjDDZaEdA4W7d7/jEvAn4RZWuh2fFLgKNbXEc4S5SPmu1I4X8
-         t3sw==
+        d=gmail.com; s=20230601; t=1698095858; x=1698700658; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MozeFj7AsxNvK40iWKEorOKKdXplrF78HG0tGDcuTc0=;
+        b=mPMlRFjRGMnGvJ5YGVNKgI7/9Cpr6OAO30MHnQIFWoZd2kuDqUXTRmwDHeEcVQigBO
+         yAsfSXuKXzgkDvhYShOeIZWsMumWvEyBdL6LyEp9IEDIWh2e/FPpDg4LxrN42W1Dlz18
+         8fzI2x9YiHlREACG+kd0MjX50JDzEIMhK4D/mEgbM4ZpSbR2Twt+ZRKZKS3glL5+/tbZ
+         TfXQSDkz1Va7PjRtWFzvAqevUL77ruiv13S6xVC35rSojFeD9jGsCsKZq6CK4C51o/jo
+         3kbWzi7hL/putZTi2jXhfHR5VR9BAD1Kx/qamT2ZLaKPtPuhWPncofhfH70MzLYfJj2n
+         v9ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698095857; x=1698700657;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RjuCpZkTOQea0lODerpoBhUBPsuFVkeaJK9dO2sch2U=;
-        b=PpIMeFaHMQiY8at7ohkRcfzCDduzv/I+tgVjSKUL+8mO5lnM0jczPbCWp1fWh12WoS
-         m/B3Km5tOaynV7U4nq97z/tCNc2c16XXGDxzMgbqSAxmD5K/c6PkEz52b11Nn6LKvhZx
-         n3Ozp4g5gkoscwp2pje32lEAQvytPU06zDDIgVlS6Pbfayjwe3MSjBegT4kct1VaZvR/
-         8+H1iGwtW4Ct0LaMWO3FjjtLBjCkz7RzKKu3glkp87JQt2j/NCqpiu1NCincjq1vFXOX
-         Wkw0Pb5Wk6KJGZ0t/c4Bkf6zX7ReE4k+VHzjQ9VsspNqVGWuAGfNB+PASI381U6pP+9E
-         GOUA==
-X-Gm-Message-State: AOJu0Yxl13hVnek1cLytYQXP21QEswbRjY5gfWQzDEFE0piig46OQcVk
-        s1cRS8Vgg997Dd79ayK7y/m9bDK9RA==
-X-Google-Smtp-Source: AGHT+IHPczHusIo0syP63L85pDXFu9VHkCbL4GggPRnet55dLTKKwgYLPLohQCSMK3b2EOsc6wWbPw==
-X-Received: by 2002:a9d:6a13:0:b0:6bf:df:66d5 with SMTP id g19-20020a9d6a13000000b006bf00df66d5mr10673224otn.35.1698095856874;
-        Mon, 23 Oct 2023 14:17:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698095858; x=1698700658;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MozeFj7AsxNvK40iWKEorOKKdXplrF78HG0tGDcuTc0=;
+        b=kvxcgLelmYj524Jc0UtVc8ly7dEbugsaXsWV1eHKRPcauifU3Vlq/044ifT6spy1g7
+         baR0BC7W4FiKdSz3j/f/cG0ThjCHvYSQFF7lKURXyPYO2DV7qw2Y+Dr1perUd9zpYUaz
+         wcyzs49q5V27k8JpYMXkLJ1yIhY4GPqDQygAKhA9iiZhi3uGNYj+halpR/h0lFmfl+0R
+         0XW2PYSbRH+PxW21MTNrUaTtIZgbtF1LXrvCDEbd4kt4LpVsDrc4Re7X10B1wcut0YOI
+         0EwW/nD2pMJbiKyGJJCMh1PjRhu5VLZB+adRoELVIiBAqDuTsGOvoytJ6PukrIc37Yua
+         mqcw==
+X-Gm-Message-State: AOJu0YzwBbFZ8cXzJTMirdQsT7hQE0u5+WSxfiTgFxXLHaSlh0BHAFQY
+        Uozlc+A4pkRPuDdDGEC4zweIZGay+g==
+X-Google-Smtp-Source: AGHT+IEuCPqe+IS0hOpSs2Z4PuwRfzAdub62aA+hbQ66+ZzWLjlFzdxQaj9h2Ph3lGDF8pr/8Gd9mg==
+X-Received: by 2002:a0d:f741:0:b0:59b:5696:c33 with SMTP id h62-20020a0df741000000b0059b56960c33mr10450976ywf.46.1698095857963;
+        Mon, 23 Oct 2023 14:17:37 -0700 (PDT)
 Received: from citadel.lan ([2600:6c4a:4d3f:6d5c::1019])
-        by smtp.gmail.com with ESMTPSA id o139-20020a0dcc91000000b00583e52232f1sm3485430ywd.112.2023.10.23.14.17.35
+        by smtp.gmail.com with ESMTPSA id o139-20020a0dcc91000000b00583e52232f1sm3485430ywd.112.2023.10.23.14.17.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 14:17:36 -0700 (PDT)
+        Mon, 23 Oct 2023 14:17:37 -0700 (PDT)
 From:   Brian Gerst <brgerst@gmail.com>
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -58,10 +59,12 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Uros Bizjak <ubizjak@gmail.com>,
         Brian Gerst <brgerst@gmail.com>
-Subject: [PATCH 0/9] x86-64: Stack protector and percpu improvements
-Date:   Mon, 23 Oct 2023 17:17:21 -0400
-Message-ID: <20231023211730.40566-1-brgerst@gmail.com>
+Subject: [PATCH 1/9] x86/stackprotector/32: Remove stack protector test script
+Date:   Mon, 23 Oct 2023 17:17:22 -0400
+Message-ID: <20231023211730.40566-2-brgerst@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231023211730.40566-1-brgerst@gmail.com>
+References: <20231023211730.40566-1-brgerst@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -74,63 +77,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, x86-64 uses an unusual per-cpu layout, where the percpu section
-is linked at absolute address 0.  The reason behind this is that older GCC
-versions placed the stack protector (if enabled) at a fixed offset from the
-GS segment base.  Since the GS segement is also used for percpu variables,
-this forced the current layout.
+Test for compiler support directly in Kconfig.
 
-GCC since version 8.1 supports a configurable location for the stack
-protector value, which allows removal of the restriction on how the percpu
-section is linked.  This allows the percpu section to be linked
-normally, like most other architectures.  In turn, this allows removal
-of code that was needed to support the zero-based percpu section.
-
-P.S.:  I posted this series back in 2021, and at the time it appeared that
-GCC 8.1 was too recent (released May 2, 2018) to be a requirement to keep
-stack protector support.  Two years later, support for the new compiler
-options should be much more widespread.
-
-Brian Gerst (9):
-  x86/stackprotector/32: Remove stack protector test script
-  x86/boot: Disable stack protector for early boot code
-  x86/stackprotector/64: Convert stack protector to normal percpu
-    variable
-  x86/percpu/64: Remove fixed_percpu_data
-  x86/percpu/64: Use relative percpu offsets
-  x86/boot/64: Remove inverse relocations
-  x86/percpu/64: Remove INIT_PER_CPU macros
-  percpu: Remove PER_CPU_FIRST_SECTION
-  kallsyms: Remove KALLSYMS_ABSOLUTE_PERCPU
-
- arch/x86/Kconfig                          |   7 +-
- arch/x86/Makefile                         |  19 +--
- arch/x86/boot/compressed/misc.c           |  14 +--
- arch/x86/entry/entry_64.S                 |   2 +-
- arch/x86/include/asm/percpu.h             |  22 ----
- arch/x86/include/asm/processor.h          |  28 +----
- arch/x86/include/asm/stackprotector.h     |  37 ++----
- arch/x86/kernel/Makefile                  |   2 +
- arch/x86/kernel/asm-offsets_64.c          |   6 -
- arch/x86/kernel/cpu/common.c              |   8 +-
- arch/x86/kernel/head_64.S                 |  10 +-
- arch/x86/kernel/irq_64.c                  |   1 -
- arch/x86/kernel/setup_percpu.c            |  12 +-
- arch/x86/kernel/vmlinux.lds.S             |  35 ------
- arch/x86/tools/relocs.c                   | 136 +---------------------
- arch/x86/xen/xen-head.S                   |   6 +-
- include/asm-generic/vmlinux.lds.h         |   1 -
- include/linux/percpu-defs.h               |  12 --
- init/Kconfig                              |  11 +-
- kernel/kallsyms.c                         |  12 +-
- scripts/gcc-x86_32-has-stack-protector.sh |   8 --
- scripts/gcc-x86_64-has-stack-protector.sh |   4 -
- scripts/kallsyms.c                        |  80 +++----------
- scripts/link-vmlinux.sh                   |   4 -
- 24 files changed, 60 insertions(+), 417 deletions(-)
+Signed-off-by: Brian Gerst <brgerst@gmail.com>
+---
+ arch/x86/Kconfig                          | 2 +-
+ scripts/gcc-x86_32-has-stack-protector.sh | 8 --------
+ 2 files changed, 1 insertion(+), 9 deletions(-)
  delete mode 100755 scripts/gcc-x86_32-has-stack-protector.sh
- delete mode 100755 scripts/gcc-x86_64-has-stack-protector.sh
 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 5ef081aa12ac..039872be1630 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -411,7 +411,7 @@ config PGTABLE_LEVELS
+ config CC_HAS_SANE_STACKPROTECTOR
+ 	bool
+ 	default $(success,$(srctree)/scripts/gcc-x86_64-has-stack-protector.sh $(CC) $(CLANG_FLAGS)) if 64BIT
+-	default $(success,$(srctree)/scripts/gcc-x86_32-has-stack-protector.sh $(CC) $(CLANG_FLAGS))
++	default $(cc-option,-mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard)
+ 	help
+ 	  We have to make sure stack protector is unconditionally disabled if
+ 	  the compiler produces broken code or if it does not let us control
+diff --git a/scripts/gcc-x86_32-has-stack-protector.sh b/scripts/gcc-x86_32-has-stack-protector.sh
+deleted file mode 100755
+index 825c75c5b715..000000000000
+--- a/scripts/gcc-x86_32-has-stack-protector.sh
++++ /dev/null
+@@ -1,8 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0
+-
+-# This requires GCC 8.1 or better.  Specifically, we require
+-# -mstack-protector-guard-reg, added by
+-# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81708
+-
+-echo "int foo(void) { char X[200]; return 3; }" | $* -S -x c -c -m32 -O0 -fstack-protector -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard - -o - 2> /dev/null | grep -q "%fs"
 -- 
 2.41.0
 
