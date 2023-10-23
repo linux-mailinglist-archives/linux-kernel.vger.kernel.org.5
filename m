@@ -2,292 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCF27D3E46
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929F97D3DE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbjJWRrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35922 "EHLO
+        id S232174AbjJWRhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjJWRrn (ORCPT
+        with ESMTP id S230301AbjJWRhj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:47:43 -0400
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFA0B0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:47:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
- h=Content-Transfer-Encoding: MIME-Version: References: In-Reply-To:
- Message-ID: Date: Subject: Cc: To: From; q=dns/txt; s=fe-e1b5cab7be;
- t=1698083255; bh=cjRrh96AZYNkNbpCUEmx8yOwvsiM/6COHGjHu5GOMaM=;
- b=p/xqtfAg0EvWifasf7rB2YPi1GbzUPt1ajaBMMVkLh3X3JABZMeSkvy8voWDVN02Zkm8az4O1
- CyZWaFI04EbFmX6Smr5rcH/UW8TDGwP0rXttWsqoyBYjLda8TfqXMjcJEX9nLIxdI7jFAkE728A
- /ctr5aN7JpPvTRJ0Ifl0iFtoJ2jweZ8v8ePwgH45i9Xw7OyqmSChB2fdGmbSLbvNLZw/IkH7fTi
- ikVIv30DdVWshm6cNyoNRMR3nvrnJnyFk254OhUgtmhnl1aYYV6lvSwgW55qL9cvLRXD7hYEn1P
- 0GqGLu7lotUy25NnMjsbKwiLPH5liOHVwlvqjwbjzFpA==
-From:   Jonas Karlman <jonas@kwiboo.se>
-To:     Heiko Stuebner <heiko@sntech.de>, Sandy Huang <hjc@rock-chips.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Christopher Obbard <chris.obbard@collabora.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v5 2/2] drm/rockchip: vop: Add NV15, NV20 and NV30 support
-Date:   Mon, 23 Oct 2023 17:37:15 +0000
-Message-ID: <20231023173718.188102-3-jonas@kwiboo.se>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231023173718.188102-1-jonas@kwiboo.se>
-References: <20231023173718.188102-1-jonas@kwiboo.se>
+        Mon, 23 Oct 2023 13:37:39 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A25F98
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:37:36 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso547248166b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698082654; x=1698687454; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mpIxc8lRkjmGHBrOrWkUutSpPEIyuqpJsUF79g+Yai8=;
+        b=X/2caegpxNZNOcEnZTD1VqbE/++yQuOtxJuJgUs8PGdvlqcGEaTNNonU8W+WeBDmEQ
+         JcCBi3tOQZ4wgNMLoJVgC/R9VGE4YNMdWbnzPzih5rY6GjtVdDhCW7yUC0Ji/8hfbFi2
+         h60e++NbET6pXi2NXwmiIewfTXc87UzdIdDq7yXx/mnI0X2sMfI/+EtivGX+SIkxIEBQ
+         bGZQyTMwS1ChBL9pnMLTiWk/AfDTo2AIF2Gz8bnHI0/JGrnV4VZJOpyiiUq0gr+zHqs8
+         S1XLziFEm/WikOVzKKcz4O6EmXi2uVcoBVOJ/fIzFpHiRQsa8XJEDETeJc6aEU1jXQLa
+         8BRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698082654; x=1698687454;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mpIxc8lRkjmGHBrOrWkUutSpPEIyuqpJsUF79g+Yai8=;
+        b=iNLPFOZ3CZbw6GFzaH6XQE5C0TbF/jaVFjamJ3hH+kOZAvYfgxnpYVRByXRmsdb9oj
+         jlzBrEZJKZKlhbLJDDLz/FkNXkcjcLfP7MR+heqqm/kaGSblOsyHEa5YqHjDI+HHC5+s
+         l8okrLis20tSVlobl/x/zbox4GhqbrdRKNE3EcbqzIFVd5ZEbfUp4ksgX0Gd0VgalBLA
+         fpqPGfJQwwDfq+a12Zn+l/92J9eN7AauCrVNTF6h8+bLokGgdiZCmjLYn3OCJqieOck2
+         GbkpvzqzFdxGxXAP3+rsaHyBuqKeY2bfaL11yS/vwLiu/kCR9xqETc6ACHwiWHZZI3aV
+         7+Rw==
+X-Gm-Message-State: AOJu0Yxn74JqemiIVUs93tiBlFHUwFlL3XB7mfiC2HIxxh9PVTew7BR2
+        4+IOlW/Mm6BCWIV/8KDda20l5g==
+X-Google-Smtp-Source: AGHT+IHidXufr99BQROxxi52qKHN2SrRZZW3iTTaRWOviu76uWx6FNOrVRKkBZbn8xpDn1uAO5YmAg==
+X-Received: by 2002:a17:907:c386:b0:9c7:fd91:4309 with SMTP id tm6-20020a170907c38600b009c7fd914309mr4570701ejc.0.1698082653885;
+        Mon, 23 Oct 2023 10:37:33 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id k17-20020a1709063e1100b009b2cc87b8c3sm6940519eji.52.2023.10.23.10.37.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 10:37:33 -0700 (PDT)
+Message-ID: <81d7b86e-aee2-4222-8c7a-52d0b710a2f2@linaro.org>
+Date:   Mon, 23 Oct 2023 19:37:30 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
- 149.28.215.223
-X-ForwardEmail-ID: 6536af5b288c5302e78a77f0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/5] net: dt-bindings: Introduce the Qualcomm
+ IPQESS Ethernet switch
+Content-Language: en-US
+To:     Romain Gantois <romain.gantois@bootlin.com>, davem@davemloft.net,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+References: <20231023155013.512999-1-romain.gantois@bootlin.com>
+ <20231023155013.512999-2-romain.gantois@bootlin.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231023155013.512999-2-romain.gantois@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for displaying 10-bit 4:2:0 and 4:2:2 formats produced by
-the Rockchip Video Decoder on RK322X, RK3288, RK3328 and RK3399.
-Also add support for 10-bit 4:4:4 format while at it.
+On 23/10/2023 17:50, Romain Gantois wrote:
+> Add the DT binding for the IPQESS Ethernet switch subsystem, that
+> integrates a modified QCA8K switch and an EDMA MAC controller. It inherits
+> from a basic ethernet switch binding and adds three regmaps, a phandle and
+> reset line for the PSGMII, a phandle to the MDIO bus, a clock, and 32
+> interrupts.
+> 
+> Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
+> ---
+>  .../bindings/net/qcom,ipq4019-ess.yaml        | 152 ++++++++++++++++++
+>  1 file changed, 152 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/qcom,ipq4019-ess.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-ess.yaml b/Documentation/devicetree/bindings/net/qcom,ipq4019-ess.yaml
+> new file mode 100644
+> index 000000000000..9bb6b010ea6a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-ess.yaml
+> @@ -0,0 +1,152 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/qcom,ipq4019-ess.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm IPQ4019 Ethernet switch subsystem driver
 
-V5: Use drm_format_info_min_pitch() for correct bpp
-    Add missing NV21, NV61 and NV42 formats
-V4: Rework RK3328/RK3399 win0/1 data to not affect RK3368
-V2: Added NV30 support
+Bindings should be about hardware. Please drop "driver". "Subsystem"
+also sounds like Linuxism.
 
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-Reviewed-by: Sandy Huang <hjc@rock-chips.com>
----
- drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 36 ++++++++---
- drivers/gpu/drm/rockchip/rockchip_drm_vop.h |  1 +
- drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 66 +++++++++++++++++----
- 3 files changed, 86 insertions(+), 17 deletions(-)
+> +
+> +maintainers:
+> +  - Romain Gantois <romain.gantois@bootlin.com>
+> +
+> +$ref: ethernet-switch.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: qca,ipq4019-qca8337n
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-index 14320bc73e5b..b3d0b6ae9294 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-@@ -272,6 +272,18 @@ static bool has_uv_swapped(uint32_t format)
- 	}
- }
- 
-+static bool is_fmt_10(uint32_t format)
-+{
-+	switch (format) {
-+	case DRM_FORMAT_NV15:
-+	case DRM_FORMAT_NV20:
-+	case DRM_FORMAT_NV30:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- static enum vop_data_format vop_convert_format(uint32_t format)
- {
- 	switch (format) {
-@@ -287,12 +299,15 @@ static enum vop_data_format vop_convert_format(uint32_t format)
- 	case DRM_FORMAT_BGR565:
- 		return VOP_FMT_RGB565;
- 	case DRM_FORMAT_NV12:
-+	case DRM_FORMAT_NV15:
- 	case DRM_FORMAT_NV21:
- 		return VOP_FMT_YUV420SP;
- 	case DRM_FORMAT_NV16:
-+	case DRM_FORMAT_NV20:
- 	case DRM_FORMAT_NV61:
- 		return VOP_FMT_YUV422SP;
- 	case DRM_FORMAT_NV24:
-+	case DRM_FORMAT_NV30:
- 	case DRM_FORMAT_NV42:
- 		return VOP_FMT_YUV444SP;
- 	default:
-@@ -944,7 +959,12 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
- 	dsp_sty = dest->y1 + crtc->mode.vtotal - crtc->mode.vsync_start;
- 	dsp_st = dsp_sty << 16 | (dsp_stx & 0xffff);
- 
--	offset = (src->x1 >> 16) * fb->format->cpp[0];
-+	if (fb->format->char_per_block[0])
-+		offset = drm_format_info_min_pitch(fb->format, 0,
-+						   src->x1 >> 16);
-+	else
-+		offset = (src->x1 >> 16) * fb->format->cpp[0];
-+
- 	offset += (src->y1 >> 16) * fb->pitches[0];
- 	dma_addr = rk_obj->dma_addr + offset + fb->offsets[0];
- 
-@@ -970,6 +990,7 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
- 	}
- 
- 	VOP_WIN_SET(vop, win, format, format);
-+	VOP_WIN_SET(vop, win, fmt_10, is_fmt_10(fb->format->format));
- 	VOP_WIN_SET(vop, win, yrgb_vir, DIV_ROUND_UP(fb->pitches[0], 4));
- 	VOP_WIN_SET(vop, win, yrgb_mst, dma_addr);
- 	VOP_WIN_YUV2YUV_SET(vop, win_yuv2yuv, y2r_en, is_yuv);
-@@ -979,15 +1000,16 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
- 		    (new_state->rotation & DRM_MODE_REFLECT_X) ? 1 : 0);
- 
- 	if (is_yuv) {
--		int hsub = fb->format->hsub;
--		int vsub = fb->format->vsub;
--		int bpp = fb->format->cpp[1];
--
- 		uv_obj = fb->obj[1];
- 		rk_uv_obj = to_rockchip_obj(uv_obj);
- 
--		offset = (src->x1 >> 16) * bpp / hsub;
--		offset += (src->y1 >> 16) * fb->pitches[1] / vsub;
-+		if (fb->format->char_per_block[1])
-+			offset = drm_format_info_min_pitch(fb->format, 1,
-+							   src->x1 >> 16);
-+		else
-+			offset = (src->x1 >> 16) * fb->format->cpp[1];
-+		offset /= fb->format->hsub;
-+		offset += (src->y1 >> 16) * fb->pitches[1] / fb->format->vsub;
- 
- 		dma_addr = rk_uv_obj->dma_addr + offset + fb->offsets[1];
- 		VOP_WIN_SET(vop, win, uv_vir, DIV_ROUND_UP(fb->pitches[1], 4));
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.h b/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
-index 5f56e0597df8..4b2daefeb8c1 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
-@@ -186,6 +186,7 @@ struct vop_win_phy {
- 	struct vop_reg enable;
- 	struct vop_reg gate;
- 	struct vop_reg format;
-+	struct vop_reg fmt_10;
- 	struct vop_reg rb_swap;
- 	struct vop_reg uv_swap;
- 	struct vop_reg act_info;
-diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-index 7b2805006776..f8cef0cb7bff 100644
---- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-@@ -53,6 +53,26 @@ static const uint32_t formats_win_full[] = {
- 	DRM_FORMAT_NV42,
- };
- 
-+static const uint32_t formats_win_full_10[] = {
-+	DRM_FORMAT_XRGB8888,
-+	DRM_FORMAT_ARGB8888,
-+	DRM_FORMAT_XBGR8888,
-+	DRM_FORMAT_ABGR8888,
-+	DRM_FORMAT_RGB888,
-+	DRM_FORMAT_BGR888,
-+	DRM_FORMAT_RGB565,
-+	DRM_FORMAT_BGR565,
-+	DRM_FORMAT_NV12,
-+	DRM_FORMAT_NV21,
-+	DRM_FORMAT_NV16,
-+	DRM_FORMAT_NV61,
-+	DRM_FORMAT_NV24,
-+	DRM_FORMAT_NV42,
-+	DRM_FORMAT_NV15,
-+	DRM_FORMAT_NV20,
-+	DRM_FORMAT_NV30,
-+};
-+
- static const uint64_t format_modifiers_win_full[] = {
- 	DRM_FORMAT_MOD_LINEAR,
- 	DRM_FORMAT_MOD_INVALID,
-@@ -627,11 +647,12 @@ static const struct vop_scl_regs rk3288_win_full_scl = {
- 
- static const struct vop_win_phy rk3288_win01_data = {
- 	.scl = &rk3288_win_full_scl,
--	.data_formats = formats_win_full,
--	.nformats = ARRAY_SIZE(formats_win_full),
-+	.data_formats = formats_win_full_10,
-+	.nformats = ARRAY_SIZE(formats_win_full_10),
- 	.format_modifiers = format_modifiers_win_full,
- 	.enable = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 0),
- 	.format = VOP_REG(RK3288_WIN0_CTRL0, 0x7, 1),
-+	.fmt_10 = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 4),
- 	.rb_swap = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 12),
- 	.uv_swap = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 15),
- 	.act_info = VOP_REG(RK3288_WIN0_ACT_INFO, 0x1fff1fff, 0),
-@@ -936,13 +957,38 @@ static const struct vop_win_yuv2yuv_data rk3399_vop_big_win_yuv2yuv_data[] = {
- 
- };
- 
--static const struct vop_win_phy rk3399_win01_data = {
-+static const struct vop_win_phy rk3399_win0_data = {
- 	.scl = &rk3288_win_full_scl,
--	.data_formats = formats_win_full,
--	.nformats = ARRAY_SIZE(formats_win_full),
-+	.data_formats = formats_win_full_10,
-+	.nformats = ARRAY_SIZE(formats_win_full_10),
- 	.format_modifiers = format_modifiers_win_full_afbc,
- 	.enable = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 0),
- 	.format = VOP_REG(RK3288_WIN0_CTRL0, 0x7, 1),
-+	.fmt_10 = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 4),
-+	.rb_swap = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 12),
-+	.uv_swap = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 15),
-+	.x_mir_en = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 21),
-+	.y_mir_en = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 22),
-+	.act_info = VOP_REG(RK3288_WIN0_ACT_INFO, 0x1fff1fff, 0),
-+	.dsp_info = VOP_REG(RK3288_WIN0_DSP_INFO, 0x0fff0fff, 0),
-+	.dsp_st = VOP_REG(RK3288_WIN0_DSP_ST, 0x1fff1fff, 0),
-+	.yrgb_mst = VOP_REG(RK3288_WIN0_YRGB_MST, 0xffffffff, 0),
-+	.uv_mst = VOP_REG(RK3288_WIN0_CBR_MST, 0xffffffff, 0),
-+	.yrgb_vir = VOP_REG(RK3288_WIN0_VIR, 0x3fff, 0),
-+	.uv_vir = VOP_REG(RK3288_WIN0_VIR, 0x3fff, 16),
-+	.src_alpha_ctl = VOP_REG(RK3288_WIN0_SRC_ALPHA_CTRL, 0xff, 0),
-+	.dst_alpha_ctl = VOP_REG(RK3288_WIN0_DST_ALPHA_CTRL, 0xff, 0),
-+	.channel = VOP_REG(RK3288_WIN0_CTRL2, 0xff, 0),
-+};
-+
-+static const struct vop_win_phy rk3399_win1_data = {
-+	.scl = &rk3288_win_full_scl,
-+	.data_formats = formats_win_full_10,
-+	.nformats = ARRAY_SIZE(formats_win_full_10),
-+	.format_modifiers = format_modifiers_win_full,
-+	.enable = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 0),
-+	.format = VOP_REG(RK3288_WIN0_CTRL0, 0x7, 1),
-+	.fmt_10 = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 4),
- 	.rb_swap = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 12),
- 	.uv_swap = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 15),
- 	.x_mir_en = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 21),
-@@ -965,9 +1011,9 @@ static const struct vop_win_phy rk3399_win01_data = {
-  * AFBC on the primary plane.
-  */
- static const struct vop_win_data rk3399_vop_win_data[] = {
--	{ .base = 0x00, .phy = &rk3399_win01_data,
-+	{ .base = 0x00, .phy = &rk3399_win0_data,
- 	  .type = DRM_PLANE_TYPE_PRIMARY },
--	{ .base = 0x40, .phy = &rk3368_win01_data,
-+	{ .base = 0x40, .phy = &rk3399_win1_data,
- 	  .type = DRM_PLANE_TYPE_OVERLAY },
- 	{ .base = 0x00, .phy = &rk3368_win23_data,
- 	  .type = DRM_PLANE_TYPE_OVERLAY },
-@@ -1099,11 +1145,11 @@ static const struct vop_intr rk3328_vop_intr = {
- };
- 
- static const struct vop_win_data rk3328_vop_win_data[] = {
--	{ .base = 0xd0, .phy = &rk3368_win01_data,
-+	{ .base = 0xd0, .phy = &rk3399_win1_data,
- 	  .type = DRM_PLANE_TYPE_PRIMARY },
--	{ .base = 0x1d0, .phy = &rk3368_win01_data,
-+	{ .base = 0x1d0, .phy = &rk3399_win1_data,
- 	  .type = DRM_PLANE_TYPE_OVERLAY },
--	{ .base = 0x2d0, .phy = &rk3368_win01_data,
-+	{ .base = 0x2d0, .phy = &rk3399_win1_data,
- 	  .type = DRM_PLANE_TYPE_CURSOR },
- };
- 
--- 
-2.42.0
+
+What do you want to express here? ipq4019 is not qca. This is Qualcomm
+(so qcom) SoC.
+
+> +
+> +  reg:
+> +    maxItems: 3
+> +    description: Base ESS registers, PSGMII registers and EDMA registers
+
+You need to describe the items, so:
+items:
+ - description: foo
+ - description: foo
+ - description: foo
+
+> +
+> +  reg-names:
+> +    maxItems: 3
+
+You need to list items instead.
+
+> +
+> +  resets:
+> +    maxItems: 2
+> +    description: Handles to the PSGMII and ESS reset lines
+
+You need to list items instead.
+
+> +
+> +  reset-names:
+> +    maxItems: 2
+
+You need to list items instead.
+
+
+> +
+> +  clocks:
+> +    maxItems: 1
+> +    description: Handle to the GCC ESS clock
+> +
+> +  clock-names:
+> +    maxItems: 1
+
+Drop clock-names, useless for one entry.
+
+> +
+> +  psgmii-ethphy:
+> +    maxItems: 1
+> +    description: Handle to the MDIO bus node corresponding to the PSGMII
+
+That's a bit odd property. Where is it defined?
+
+> +
+> +  mdio:
+> +    maxItems: 1
+> +    description: Handle to the IPQ4019 MDIO Controller
+> +
+> +  interrupts:
+> +    maxItems: 32
+> +    description: One interrupt per tx and rx queue, the first 16 are rx queues
+> +                 and the last 16 are the tx queues
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - resets
+> +  - reset-names
+> +  - clocks
+> +  - clock-names
+> +  - mdio
+> +  - interrupts
+> +
+> +unevaluatedProperties: false
+
+
+Best regards,
+Krzysztof
 
