@@ -2,118 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 700C47D3797
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5F07D37A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbjJWNSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
+        id S230386AbjJWNTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 09:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjJWNSW (ORCPT
+        with ESMTP id S230327AbjJWNTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:18:22 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836FFAF;
-        Mon, 23 Oct 2023 06:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=s31663417; t=1698067086; x=1698671886; i=j-p-t@gmx.net;
-        bh=94IQzn5Tn+Z/xQWn2VBX1irEJtj0YzFaK/sAp4nGiSw=;
-        h=X-UI-Sender-Class:Date:From:Subject:To:Cc:References:
-         In-Reply-To;
-        b=ppMmHtcGP2dOyafiEIQXCktraIaq8Qv5E4+rzYC4vys/Ax8Rx3V28mOpVelVDfJ4
-         7JB0vBbIqby87QTCunE8LNbraRFMh5b27VeaJvTALqrCjzpzn4WWTn4t0i45g0urg
-         8VcuouE4ckrwR1jsTk6cpGqAQREeVDSSvGYUhwAkH4UjVUhhrMZtdlbjZPVpxvGar
-         PGkk7zpp4GT+FEsafjUrbZ9eCa04sfKk9bPULI1GYFvhmhQvVKrIH9kehLnnFux8h
-         eQ2a9dSYXdTdiez+pAZk4smNcGxGiAwWwQlrDV1qqOfsETUDFqv30ZKWUWf5citzV
-         YJCPdORNcjk39yHWhw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.178.58] ([45.14.97.35]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N2V4P-1rdmdt0JAt-013wKz; Mon, 23
- Oct 2023 15:18:06 +0200
-Message-ID: <73357cb7-ba96-461b-a214-cd37b2223204@gmx.net>
-Date:   Mon, 23 Oct 2023 15:18:05 +0200
+        Mon, 23 Oct 2023 09:19:16 -0400
+Received: from mxout70.expurgate.net (mxout70.expurgate.net [194.37.255.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1DDE5;
+        Mon, 23 Oct 2023 06:19:14 -0700 (PDT)
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <prvs=9674b5d38b=fe@dev.tdt.de>)
+        id 1quupl-001Btl-JW; Mon, 23 Oct 2023 15:19:05 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <fe@dev.tdt.de>)
+        id 1quupk-0000u5-LJ; Mon, 23 Oct 2023 15:19:04 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 3D494240049;
+        Mon, 23 Oct 2023 15:19:04 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 9128B240040;
+        Mon, 23 Oct 2023 15:19:03 +0200 (CEST)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 30A0F2112C;
+        Mon, 23 Oct 2023 15:19:03 +0200 (CEST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   JPT <j-p-t@gmx.net>
-Subject: Re: si2157 not working at all?
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Media Subsystem <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Antti Palosaari <crope@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Gon Solo <gonsolo@gmail.com>
-References: <08125fef-3cb4-4f01-975c-d7c409153c4a@gmx.net>
- <ZTT0kZCijyLDN1LG@debian.me>
-Content-Language: de-DE
-In-Reply-To: <ZTT0kZCijyLDN1LG@debian.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:laEO7C2Ci12egju8q+e1AAlTuibeG9Yh+jD7vCfimOUpbmj3dQy
- NC8GUecT+N629YlwZK1steKYArVHeneEIbXoUJ22mpjFuIlCYvQeziTDJpIuWPmpjYWJBld
- O/jFsTSKph7GpOkhqzqmoSuZ/AbG/j50LpK+Ro9he4uLj0e8doMMfzMnRhU8SsPkSJLhJGc
- TneE6fvLF61ISnWIzOlyg==
-UI-OutboundReport: notjunk:1;M01:P0:wTtvp+o6wIs=;+f1z6jKZ7K4pxR79PT2lupH3JPr
- YSHoB+E9brRix146GzB5Pmid4xPlYrVMkKiIdpngnHqRzFcVAjXkYHH3nwgZGrd8G8xzKQ4Al
- 1GURi2Tf7Qsw6vCzxj+d4uJfGyfX3F7xLDq2T0gauINocoeThNmCpvmKb7EXfdZbQe4XWvolb
- l/vNdmouu9dvfuA5lBeZaUsJ12MDQvms0Q7Bnk/7Ijr4eCDQ3aNOOgFL0jk1rYeNzEZA0ksjb
- qQ/ajHFKmICEm6X+6wz0H/c7m0gWIRZuDGIwrMPqpJVFk7FEkT9ysXhVNXNYCqdkSRFbxu73N
- VUZgldam+hnsA0CedfaDrAwPMBpum3ZELy9CoePHieGBDz6rsjIM2iL2aDLdkuTZJjJ6za/iz
- ViTs+kfGi/i4IirpoYJVmLBU12mYbS7vt0JVo6oz0A2xn6l1hlnqB2HHHK/yxKy+IkxhvQk50
- TLvs0A/MumC/hw63chUbRILzcQMa2rMasQnds0QS0ya/0N1oMMFggVbeMv8LyE36TNdffmMG8
- aqXW9t6/E6X+F8szhbMNGRh/1k7E2zd5FV1kMH8aa5LTNyloWdPcDs6khA3ulcANtJe4OS4BK
- UAwgfdaJBOndi6WtNrvImEQPplmEzeQQbakPpt6E1vQknWVBGyUCfG0G3iPmG3tXG56XNrDqK
- ECHXQnwx7e+LGYkhgEAcJRV3SlsFIzr9MPaMPXvc7yfVYTj8NvZ+6RvT2GaxNkuHkXXq5oYyp
- DBc1vJo8tPk9xZeP5XKAuQnpwGRsDHZXtkbiHufiH03I7sPdAan3VwGLlSdkWcWygtWVShOqo
- 1dNuNUUQ09Rc8nO2elC94Ue7AseG3/xzRCtCXA3RhfwwjNsjqBvpmjHQIyXFO+076hdPobUu+
- gGrNzrKsw0mIRWLze4/V5nPUFpTWRFfTJYhpTHGYynQoSvu+E8bQsatBIjnz1ZUAGSMngSMFF
- oMA8nQ==
-X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 23 Oct 2023 15:19:03 +0200
+From:   Florian Eckert <fe@dev.tdt.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Eckert.Florian@googlemail.com, jirislaby@kernel.org, pavel@ucw.cz,
+        lee@kernel.org, kabel@kernel.org, u.kleine-koenig@pengutronix.de,
+        m.brock@vanmierlo.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] leds: ledtrig-tty: add new line mode evaluation
+In-Reply-To: <2023102333-skewer-reclining-8d04@gregkh>
+References: <20231023094205.2706812-1-fe@dev.tdt.de>
+ <20231023094205.2706812-3-fe@dev.tdt.de>
+ <2023102341-jogger-matching-dded@gregkh>
+ <7e8860574413505c314bdfd0f3e10188@dev.tdt.de>
+ <2023102320-princess-issuing-be13@gregkh>
+ <c4398f09d5a07672ad77f2100ccae0f4@dev.tdt.de>
+ <2023102333-skewer-reclining-8d04@gregkh>
+Message-ID: <f5825b317d4f6ca3a5c3a27c46f3c30e@dev.tdt.de>
+X-Sender: fe@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.17
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-purgate-ID: 151534::1698067145-D2E9A639-B61EDC45/0/0
+X-purgate: clean
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Am 22.10.23 um 12:08 schrieb Bagas Sanjaya:
- > Can you check latest mainline (currently v6.6-rc6) instead?
 
-sorry. My backup laptop broke down while trying, so I wont be able to
-build and test a selfbuilt kernel any time soon.
+On 2023-10-23 14:59, Greg KH wrote:
+> On Mon, Oct 23, 2023 at 02:45:55PM +0200, Florian Eckert wrote:
+>> 
+>> 
+>> On 2023-10-23 14:27, Greg KH wrote:
+>> > On Mon, Oct 23, 2023 at 02:15:55PM +0200, Florian Eckert wrote:
+>> > > > Again, I thought we had rx/tx already?  If not, how was that controlled
+>> > > > today?
+>> > >
+>> > > It could not be controlled! The LED flashed when data where
+>> > > transferred.
+>> > > This was the only function that the trigger supported.
+>> >
+>> > Ok, then maybe this needs to be a bit longer of a series.  One that does
+>> > the "tx/rx" feature, as that is needed today, and will be the more
+>> > complex one, and then one-per-line-setting that you want to apply.
+>> >
+>> > That should make it much easier to review overall, right?
+>> 
+>> Sorry for asking, but why should I split the change.
+>> What is the added value? But if it is necessary, then I will do it.
+>> 
+>> Before my change, the trigger could not be configured.
+>> The LED always flashed when data was transferred.
+> 
+> But you could configure that, right?  on/off, correct?
 
-I was able to make the device partly work on
-LibreElec12@raspberry pi 3B+ kernel 6.1.58
-dmesg see http://ix.io/4JKJ
+No, this could not be configured before. It always flashed as
+soon as data went through the configured tty. It couldn't even
+be switched off, only if I change the tty interface via sysfs
 
-But I wasn't able to tune into anything yet.
-The Hardware ID is a dublette and pulled a wrong driver on LibreElec.
-After blacklisting em28xx, the correct driver was loaded.
+>> So that the trigger behaves the same as before (flash on rx/tx
+>> transmission),
+>> I set the rx/tx bits in the function ledtrig_tty_activate() with the
+>> following code. Nothing changes for the user of the trigger.
+>> 
+>> /* Enable default rx/tx LED blink */
+>> set_bit(TRIGGER_TTY_TX, &trigger_data->ttytrigger);
+>> set_bit(TRIGGER_TTY_RX, &trigger_data->ttytrigger);
+> 
+> I agree, but now you are splitting this up into a much finer grained
+> feature.
+> 
+> Anyway, just a thought, I'll defer to the LED maintainers here as to 
+> how
+> they want to see this, I thought it would actually be easier this way,
+> maybe not, your call.
 
-I still get the message regarding firmware not loaded because buggy.
+Thank you for your review. I will incorporate your comments and split 
+the changes.
+:+1:
 
-> On Sun, Oct 22, 2023 at 09:57:07AM +0200, JPT wrote:
->> Hi,
->>
->> I've got a
->> 	TerraTec Cinergy TC2 Stick / Terratec Cinergy H6 rev. 2
->> DVB-T2/DVB-C USB stick using chips:
->> 	IT9306, Si2157, Si2168-B40
-
-> Do you already have latest linux-firmware package?
-
- From what source? Ubuntu repo?
-
-I manually fetched from openelec github:
-d8da7ff67cd56cd8aa4e101aea45e052  dvb-demod-si2168-02.fw
-c8e089c351e9834060e962356f8697b8  dvb-demod-si2168-b40-01.fw
-d643a75d2ced161bc5fb635aec694d9f  dvb-demod-si2168-b40-01.fw.bak (bad?)
-0c3f6bc5028bc37cfbf3a16d480bbaa5  dvb-usb-it9303-01.fw
-9822ca23d24c46569ede9e07b1f13eee  dvb-usb-terratec-htc-stick-drxk.fw
-
-thanks
-
-Jan
+---
+Florian
