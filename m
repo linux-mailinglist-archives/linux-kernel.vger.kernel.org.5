@@ -2,119 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E43C87D36BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB897D36C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbjJWMeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 08:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
+        id S233456AbjJWMei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 08:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233131AbjJWMeD (ORCPT
+        with ESMTP id S233161AbjJWMeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 08:34:03 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC15102;
-        Mon, 23 Oct 2023 05:34:01 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NCNjDg032629;
-        Mon, 23 Oct 2023 12:33:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=H+2TWuT+YWr9Us1Gv0HohP8Kf2RlZAPvYUoJubSqLYs=;
- b=B2OQkVIaVtVMGW2eBawebqsqbwdLoF6rrrrn8lFWG7RS5zmxYr387olONuH/CxYlAU5l
- phIZRmhm6D7mJPozPgsLrQ/rIwM/0q7t6DZYe5VGpCf/RqUJ0SfT6URWdkXDOh+RwWWR
- /GfuXp7jX9Ei6DmF2ykLFxKWSLt7aEqF2dinf93QHko7wUN+7yBL3+8KIKcAi/2N5LAD
- zSNJcgHU0g1Qs2ECrWq+3Xl4ZdF42qM+EBK/KxVrfgyUwLF8A0qbEmavl9XARaMsTuUJ
- z7bnYmiQIMjPUPI55Zxc+bPKpQdSNUN0jX/5iC0TTklL5Pheb8VgSRKDmloQ4xCsVHmC RQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv6873yms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 12:33:43 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39NCXgJp012933
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 12:33:42 GMT
-Received: from [10.216.55.75] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 23 Oct
- 2023 05:33:35 -0700
-Message-ID: <e640c995-4751-464b-b6fc-106be822ae1c@quicinc.com>
-Date:   Mon, 23 Oct 2023 18:03:32 +0530
+        Mon, 23 Oct 2023 08:34:36 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52934FF;
+        Mon, 23 Oct 2023 05:34:34 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cace3e142eso16473355ad.3;
+        Mon, 23 Oct 2023 05:34:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698064474; x=1698669274; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cCfeGAPmI/1C6hVy3j5HY6SeWT2q6xH+8rq3JEHka0s=;
+        b=L5ixgswJLEDr2m2u2dG+LgKdftPbLwF2n2vApNX6Ci+Hv2f9LBwaXVXQU2LAhWasFD
+         oXP0a8+C0jJOB2jtB9C56tkdt/CkaDOdGJcjLm7bUxoenMznTXHf4R/w9i6ITH/eliB/
+         vHUY9VB7AmiSZRWmAosbXlfg3f8rS+szw74e9GVCfia6WLJ7Av96tQePL37SnuIhI/Qv
+         HB8OHqWG+bdcpWEz9V7F2Z2EACXnHi/ZmzL7JNyhSgcdfPv5zSp332jvxdvaC09jVsJK
+         2yt4TJhlkAziJNCpB6w/Tj8yZXpxMLsLUEgdyCUkw7mEj1iSUiNtWvuPPfmlB4gUaE13
+         ZzkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698064474; x=1698669274;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cCfeGAPmI/1C6hVy3j5HY6SeWT2q6xH+8rq3JEHka0s=;
+        b=rtkY/MKMWIRrx3WJFeqKA8YzcYLaG0BtKPz1YLpOGNfK9CckGTJ70iAInMqgw+2ytb
+         n0FXWq2hUSJTtzIT83XCW1JsTV13uplUWHb6uiRQsyW6TEJifB0PUOq+QMsVJn/K7ZKj
+         waXgQTc//HvALlGSxqYhfimxicGND/aeREdORGqx6/DTtqoL0pWe3Ggi7Hd0diQoSIeM
+         tTQwjoNZ2tUjkOQ+3W/Am/F6vU+VkPlbr3h5UnOKlAjGqBQtUueQ8zovoPie+FM8YEUd
+         O7Ex6l6RLZZurLhnyH8uPkjudXbfC/bmlFNgMKhmXkcqDf5rqHYK/kFIVHCQTFZKzpqn
+         VTaA==
+X-Gm-Message-State: AOJu0YyWbi3LeyJVIN6ay8ogZIfqOFOMCEaycmK2HQqZAdnKaoa62nCs
+        hnrWhhZrBm/PGmKLfice/zQ=
+X-Google-Smtp-Source: AGHT+IH1wbasmBNgondsuKTvzLHD5UV7liWemEtyM+fqBb/NsiHuIK/oggwkA7jK0980y2/7I2tSkw==
+X-Received: by 2002:a17:902:efd1:b0:1c9:ba77:b27e with SMTP id ja17-20020a170902efd100b001c9ba77b27emr6801484plb.46.1698064473560;
+        Mon, 23 Oct 2023 05:34:33 -0700 (PDT)
+Received: from swarup-virtual-machine.localdomain ([171.76.85.44])
+        by smtp.gmail.com with ESMTPSA id c24-20020a170902d91800b001c9ab91d3d7sm5799275plz.37.2023.10.23.05.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 05:34:33 -0700 (PDT)
+From:   Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+To:     davem@davemloft.net, jiri@resnulli.us, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Cc:     Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+Subject: [PATCH v2] selftests:net change ifconfig with ip command
+Date:   Mon, 23 Oct 2023 18:04:22 +0530
+Message-Id: <20231023123422.2895-1-swarupkotikalapudi@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZTYc04N9VK7EarHY@nanopsycho>
+References: <ZTYc04N9VK7EarHY@nanopsycho>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 03/10] usb: dwc3: core: Refactor PHY logic to support
- Multiport Controller
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>,
-        Harsh Agarwal <quic_harshq@quicinc.com>,
-        kernel test robot <lkp@intel.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-4-quic_kriskura@quicinc.com>
- <ZTJPBcyZ_zLXbgE5@hovoldconsulting.com>
- <257716c4-7194-4d26-a34c-fff09234628f@quicinc.com>
- <ZTY42KvYCk9HhCIE@hovoldconsulting.com>
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZTY42KvYCk9HhCIE@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: MWqRsYOPB_OToFeM1eowGYgTkA03BNwm
-X-Proofpoint-ORIG-GUID: MWqRsYOPB_OToFeM1eowGYgTkA03BNwm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_10,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- suspectscore=0 priorityscore=1501 bulkscore=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=355 impostorscore=0
- spamscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310230109
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Change ifconfig with ip command,
+on a system where ifconfig is
+not used this script will not
+work correcly.
 
+Test result with this patchset:
 
-On 10/23/2023 2:41 PM, Johan Hovold wrote:
+sudo make TARGETS="net" kselftest
+....
+TAP version 13
+1..1
+ timeout set to 1500
+ selftests: net: route_localnet.sh
+ run arp_announce test
+ net.ipv4.conf.veth0.route_localnet = 1
+ net.ipv4.conf.veth1.route_localnet = 1
+ net.ipv4.conf.veth0.arp_announce = 2
+ net.ipv4.conf.veth1.arp_announce = 2
+ PING 127.25.3.14 (127.25.3.14) from 127.25.3.4 veth0: 56(84)
+  bytes of data.
+ 64 bytes from 127.25.3.14: icmp_seq=1 ttl=64 time=0.038 ms
+ 64 bytes from 127.25.3.14: icmp_seq=2 ttl=64 time=0.068 ms
+ 64 bytes from 127.25.3.14: icmp_seq=3 ttl=64 time=0.068 ms
+ 64 bytes from 127.25.3.14: icmp_seq=4 ttl=64 time=0.068 ms
+ 64 bytes from 127.25.3.14: icmp_seq=5 ttl=64 time=0.068 ms
 
->>>> Multiport currently.
->>>
->>> You use capitalised "Multiport" in several places it seems. Is this an
->>> established term for these controllers or should it just be "multiport"
->>> or "multiple ports"?
->>>
->> This is an established term AFAIK. So I've been using it here like this.
-> 
-> Do you have a pointer? A google search seems to mostly come up with
-> links to this patch series.
+ --- 127.25.3.14 ping statistics ---
+ 5 packets transmitted, 5 received, 0% packet loss, time 4073ms
+ rtt min/avg/max/mdev = 0.038/0.062/0.068/0.012 ms
+ ok
+ run arp_ignore test
+ net.ipv4.conf.veth0.route_localnet = 1
+ net.ipv4.conf.veth1.route_localnet = 1
+ net.ipv4.conf.veth0.arp_ignore = 3
+ net.ipv4.conf.veth1.arp_ignore = 3
+ PING 127.25.3.14 (127.25.3.14) from 127.25.3.4 veth0: 56(84)
+  bytes of data.
+ 64 bytes from 127.25.3.14: icmp_seq=1 ttl=64 time=0.032 ms
+ 64 bytes from 127.25.3.14: icmp_seq=2 ttl=64 time=0.065 ms
+ 64 bytes from 127.25.3.14: icmp_seq=3 ttl=64 time=0.066 ms
+ 64 bytes from 127.25.3.14: icmp_seq=4 ttl=64 time=0.065 ms
+ 64 bytes from 127.25.3.14: icmp_seq=5 ttl=64 time=0.065 ms
 
-Only pointer I had is the hardware programming guide internally. It 
-mentioned "Multiport" as an established term. I think that is self 
-explanatory in usb context. Isn't it ?
+ --- 127.25.3.14 ping statistics ---
+ 5 packets transmitted, 5 received, 0% packet loss, time 4092ms
+ rtt min/avg/max/mdev = 0.032/0.058/0.066/0.013 ms
+ ok
+ok 1 selftests: net: route_localnet.sh
+...
 
-Regards,
-Krishna,
+Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+---
+ tools/testing/selftests/net/route_localnet.sh | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/net/route_localnet.sh b/tools/testing/selftests/net/route_localnet.sh
+index 116bfeab72fa..e08701c750e3 100755
+--- a/tools/testing/selftests/net/route_localnet.sh
++++ b/tools/testing/selftests/net/route_localnet.sh
+@@ -18,8 +18,10 @@ setup() {
+     ip route del 127.0.0.0/8 dev lo table local
+     ip netns exec "${PEER_NS}" ip route del 127.0.0.0/8 dev lo table local
+ 
+-    ifconfig veth0 127.25.3.4/24 up
+-    ip netns exec "${PEER_NS}" ifconfig veth1 127.25.3.14/24 up
++    ip address add 127.25.3.4/24 dev veth0
++    ip link set dev veth0 up
++    ip netns exec "${PEER_NS}" ip address add 127.25.3.14/24 dev veth1
++    ip netns exec "${PEER_NS}" ip link set dev veth1 up
+ 
+     ip route flush cache
+     ip netns exec "${PEER_NS}" ip route flush cache
+-- 
+2.34.1
+
