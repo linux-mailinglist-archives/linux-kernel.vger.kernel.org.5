@@ -2,753 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A35C87D2B9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9159D7D2BBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbjJWHnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:43:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
+        id S233477AbjJWHr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233414AbjJWHnu (ORCPT
+        with ESMTP id S233412AbjJWHrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 03:43:50 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A90D65;
-        Mon, 23 Oct 2023 00:43:46 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso444364366b.2;
-        Mon, 23 Oct 2023 00:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698047025; x=1698651825; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c+xSq2VEEBtI6YfLIzXujyXYo7zN0oYKOxwJjgehpfI=;
-        b=K8vrnLOz9t/BrIQpXNDxK+lzqrAf2ybo+o/HfkTqFv2RfVjgvgYvL7RNP/5tAWLCJS
-         wtmMLhJCGdpqY2Vny3ZEMl3+bVeSrvmgx6KnNOhUD7XR3yTL7ciAyg/tZmZBXf3OL5wR
-         2cuC9/QQ7ZzBbm20YzMe6CyxCvTgbfqSAo9zqqOdrxZuWpcBaczE09kRwq0uDGhZcHeF
-         H4SNAcIb0poXLe5cz7dILr6BUWW5TXczCO52C4L5EYEqztY68SozMcGdhV6kl9CdUKpt
-         kJtqCkBzFB+Bj0MrzAbyrKuykg5Xlo1qJfK9HoBr3+6HCgFL+VJF2OmPaARVnL9HiAot
-         KL6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698047025; x=1698651825;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c+xSq2VEEBtI6YfLIzXujyXYo7zN0oYKOxwJjgehpfI=;
-        b=qQNnd0v0WceuKmGHc3nabFEaMRxbAhjRfsFubaOowCLI80h4M3RHlx9B3dbwRfXWbh
-         AW7DyHSBzIIQ9Oklhg4zD6TiQwET7+1CjC/roZQ7e3sp0lr8opJDs6LiyCtfTCYoBWdt
-         fSEJgCBtNnOnMcYjxDAceO8HXFU8K4eIzDLFlUWXz3DqOqLveSgBayvUE+1IBmEF4XUX
-         AGKrgF0l9C0wbWP/qikWgqV/mxriO2kh+7j4BqkKd8ILod2lM8nlNHTp6Ejnmyx8mHK5
-         gzTtG7JBvtmguXszAPhT39Ikd7+wO4xTNFwU+mE0NMe27NEzAX4j5cCw7Rh2aO6lMQ+/
-         6IbQ==
-X-Gm-Message-State: AOJu0YwcWOEuN0fKgFOdQ0RF6dAdjU16pCosgHB4MPXCOrwNV8C2uYrP
-        nk06cg6HPTIqWNy6Tl1+4SU=
-X-Google-Smtp-Source: AGHT+IFhrhy6iNwHHQiTjT0P42Ww2yOrlH2EFtQWXBghM1isUP1iyPa81l0GZYgKO6vMWbKKN9A2DA==
-X-Received: by 2002:a17:907:2ce1:b0:9c7:4d98:9847 with SMTP id hz1-20020a1709072ce100b009c74d989847mr6518277ejc.53.1698047024838;
-        Mon, 23 Oct 2023 00:43:44 -0700 (PDT)
-Received: from localhost.localdomain ([2a0d:3344:1b7d:7200::eba])
-        by smtp.gmail.com with ESMTPSA id la5-20020a170906ad8500b009adce1c97ccsm6123395ejb.53.2023.10.23.00.43.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 00:43:44 -0700 (PDT)
-From:   Luka Panio <lukapanio@gmail.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Cc:     Luka Panio <lukapanio@gmail.com>
-Subject: [PATCH v7 2/2] arm64: dts: qcom: sm8250-xiaomi-pipa: Add initial device tree
-Date:   Mon, 23 Oct 2023 09:43:36 +0200
-Message-ID: <20231023074336.14535-2-lukapanio@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231023074336.14535-1-lukapanio@gmail.com>
-References: <20231023074336.14535-1-lukapanio@gmail.com>
+        Mon, 23 Oct 2023 03:47:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBDBD78
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698047194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lNB6/ff+rLs+rmxProTi0SrXX83HkuqfjEdd5Y/zzwM=;
+        b=axkMRVU2hGVRxDNnmFiRnl7BTswV444eMtSXdXupyXwVhxWJMojr/CwZN2clKib8iqaevS
+        9lUMJ1rOtV5kLS7HNWwkIszxbof8Xde0kxewK/+YE+sWJtKo2rv+uAjlCnOxwtcVyGqrgq
+        i3LoXhsONZL7Aad5Mn+Br3CuiF1tjK4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-48-NDkQTlfHMPSrvp9XuJ_SMg-1; Mon, 23 Oct 2023 03:46:21 -0400
+X-MC-Unique: NDkQTlfHMPSrvp9XuJ_SMg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 09E4F88B767;
+        Mon, 23 Oct 2023 07:46:20 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.45.225.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D5A318CEF;
+        Mon, 23 Oct 2023 07:46:14 +0000 (UTC)
+From:   Albert Esteve <aesteve@redhat.com>
+To:     qemu-devel@nongnu.org
+Cc:     zackr@vmware.com, contact@emersion.fr, linux-doc@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>, iforbes@vmware.com,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        David Airlie <airlied@gmail.com>, banackm@vmware.com,
+        Rob Clark <robdclark@gmail.com>, javierm@redhat.com,
+        krastevm@vmware.com, spice-devel@lists.freedesktop.org,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Airlie <airlied@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mombasawalam@vmware.com,
+        Daniel Vetter <daniel@ffwll.ch>, ppaalanen@gmail.com,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Albert Esteve <aesteve@redhat.com>
+Subject: [PATCH v6 0/9] Fix cursor planes with virtualized drivers
+Date:   Mon, 23 Oct 2023 09:46:04 +0200
+Message-ID: <20231023074613.41327-1-aesteve@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initial support for Xiaomi Pad 6 tablet, that have sm8250 soc.
+v6: Shift DRIVER_CURSOR_HOTSPOT flag bit to BIT(9), since BIT(8)
+was already taken by DRIVER_GEM_GPUVA.
 
-Signed-off-by: Luka Panio <lukapanio@gmail.com>
----
-v2:
-Update commit message. Drop reserved gpio's as this device in reality do not have gpio, and pins are not protected.
+v5: Add a change with documentation from Michael, based on his discussion
+with Pekka and bump the kernel version DRM_CLIENT_CAP_CURSOR_PLANE_HOTSPOT
+might be introduced with to 6.6.
 
-v3:
-Update commit message.
+v4: Make drm_plane_create_hotspot_properties static, rename
+DRM_CLIENT_CAP_VIRTUALIZED_CURSOR_PLANE to DRM_CLIENT_CAP_CURSOR_PLANE_HOTSPOT
+and some minor stylistic fixes for things found by Javier and Pekka
+in v3.
 
-v4:
-Update commit message.
+v3: Renames, fixes and cleanups suggested by Daniel, Simon and Pekka
+after v2. There's no major changes in functionality. Please let me know
+if I missed anything, it's been a while since v2.
 
-v5:
-Update commit message.
+Virtualized drivers have had a lot of issues with cursor support on top
+of atomic modesetting. This set both fixes the long standing problems
+with atomic kms and virtualized drivers and adds code to let userspace
+use atomic kms on virtualized drivers while preserving functioning
+seamless cursors between the host and guest.
 
-v6:
-Update commit message.
+The first change in the set is one that should be backported as far as
+possible, likely 5.4 stable, because earlier stable kernels do not have
+virtualbox driver. The change makes virtualized drivers stop exposing
+a cursor plane for atomic clients, this fixes mouse cursor on all well
+formed compositors which will automatically fallback to software cursor.
 
-v7:
-Fix typo in "chassis-type", remove useless newlines, update license
----
- arch/arm64/boot/dts/qcom/Makefile             |   1 +
- .../boot/dts/qcom/sm8250-xiaomi-pipa.dts      | 623 ++++++++++++++++++
- 2 files changed, 624 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/sm8250-xiaomi-pipa.dts
+The rest of the changes until the last one ports the legacy hotspot code
+to atomic plane properties.
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 2cca20563a1d..41ab333d1f81 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -208,6 +208,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-sony-xperia-edo-pdx203.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-sony-xperia-edo-pdx206.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-xiaomi-elish-boe.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-xiaomi-elish-csot.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sm8250-xiaomi-pipa.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-hdk.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-microsoft-surface-duo2.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8350-mtp.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sm8250-xiaomi-pipa.dts b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-pipa.dts
-new file mode 100644
-index 000000000000..0dd84aff4f6f
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-pipa.dts
-@@ -0,0 +1,623 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023 luka177 <lukapanio@gmail.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/arm/qcom,ids.h>
-+#include <dt-bindings/phy/phy.h>
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include "sm8250.dtsi"
-+#include "pm8150.dtsi"
-+#include "pm8150b.dtsi"
-+#include "pm8150l.dtsi"
-+#include "pm8009.dtsi"
-+
-+/*
-+ * Delete following upstream (sm8250.dtsi) reserved
-+ * memory mappings which are different on this device.
-+ */
-+/delete-node/ &adsp_mem;
-+/delete-node/ &cdsp_secure_heap;
-+/delete-node/ &slpi_mem;
-+/delete-node/ &spss_mem;
-+/delete-node/ &xbl_aop_mem;
-+
-+/ {
-+
-+	model = "Xiaomi Pad 6";
-+	compatible = "xiaomi,pipa", "qcom,sm8250";
-+
-+	chassis-type = "tablet";
-+
-+	/* required for bootloader to select correct board */
-+	qcom,msm-id = <QCOM_ID_SM8250 0x20001>; /* SM8250 v2.1 */
-+	qcom,board-id = <0x34 0>;
-+
-+	chosen {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		framebuffer: framebuffer@9c000000 {
-+			compatible = "simple-framebuffer";
-+			reg = <0x0 0x9c000000 0x0 0x2300000>;
-+			width = <1800>;
-+			height = <2880>;
-+			stride = <(1800 * 4)>;
-+			format = "a8r8g8b8";
-+		};
-+	};
-+
-+	battery_l: battery-l {
-+		compatible = "simple-battery";
-+		voltage-min-design-microvolt = <3870000>;
-+		energy-full-design-microwatt-hours = <16700000>;
-+		charge-full-design-microamp-hours = <4420000>;
-+	};
-+
-+	battery_r: battery-r {
-+		compatible = "simple-battery";
-+		voltage-min-design-microvolt = <3870000>;
-+		energy-full-design-microwatt-hours = <16700000>;
-+		charge-full-design-microamp-hours = <4420000>;
-+	};
-+
-+	bl_vddpos_5p5: bl-vddpos-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "bl_vddpos_5p5";
-+		regulator-min-microvolt = <5500000>;
-+		regulator-max-microvolt = <5500000>;
-+		regulator-enable-ramp-delay = <233>;
-+		gpio = <&tlmm 130 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		regulator-boot-on;
-+	};
-+
-+	bl_vddneg_5p5: bl-vddneg-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "bl_vddneg_5p5";
-+		regulator-min-microvolt = <5500000>;
-+		regulator-max-microvolt = <5500000>;
-+		regulator-enable-ramp-delay = <233>;
-+		gpio = <&tlmm 131 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		regulator-boot-on;
-+	};
-+
-+	gpio_keys: gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&vol_up_n>;
-+
-+		key-vol-up {
-+			label = "Volume Up";
-+			gpios = <&pm8150_gpios 6 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_VOLUMEUP>;
-+			debounce-interval = <15>;
-+			linux,can-disable;
-+			wakeup-source;
-+		};
-+	};
-+
-+	vph_pwr: vph-pwr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vph_pwr";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+	};
-+
-+	/* S6c is really ebi.lvl but it's there for supply map completeness sake. */
-+	vreg_s6c_0p88: smpc6-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg_s6c_0p88";
-+		regulator-min-microvolt = <880000>;
-+		regulator-max-microvolt = <880000>;
-+		regulator-always-on;
-+		vin-supply = <&vph_pwr>;
-+	};
-+
-+	reserved-memory {
-+		xbl_aop_mem: xbl-aop@80700000 {
-+			reg = <0x0 0x80600000 0x0 0x260000>;
-+			no-map;
-+		};
-+
-+		slpi_mem: slpi@88c00000 {
-+			reg = <0x0 0x88c00000 0x0 0x2f00000>;
-+			no-map;
-+		};
-+
-+		adsp_mem: adsp@8bb00000 {
-+			reg = <0x0 0x8bb00000 0x0 0x2500000>;
-+			no-map;
-+		};
-+
-+		spss_mem: spss@8e000000 {
-+			reg = <0x0 0x8e000000 0x0 0x100000>;
-+			no-map;
-+		};
-+
-+		cdsp_secure_heap: cdsp-secure-heap@8e100000 {
-+			reg = <0x0 0x8e100000 0x0 0x4600000>;
-+			no-map;
-+		};
-+
-+		cont_splash_mem: cont-splash@9c000000 {
-+			reg = <0x0 0x9c000000 0x0 0x2300000>;
-+			no-map;
-+		};
-+
-+		ramoops@b0000000 {
-+			compatible = "ramoops";
-+			reg = <0x0 0xb0000000 0x0 0x400000>;
-+			record-size = <0x1000>;
-+			console-size = <0x200000>;
-+			ecc-size = <16>;
-+			no-map;
-+		};
-+	};
-+};
-+
-+&adsp {
-+	firmware-name = "qcom/sm8250/xiaomi/pipa/adsp.mbn";
-+	status = "okay";
-+};
-+
-+&apps_rsc {
-+	regulators-0 {
-+		compatible = "qcom,pm8150-rpmh-regulators";
-+		qcom,pmic-id = "a";
-+
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+		vdd-s7-supply = <&vph_pwr>;
-+		vdd-s8-supply = <&vph_pwr>;
-+		vdd-s9-supply = <&vph_pwr>;
-+		vdd-s10-supply = <&vph_pwr>;
-+		vdd-l1-l8-l11-supply = <&vreg_s6c_0p88>;
-+		vdd-l2-l10-supply = <&vreg_bob>;
-+		vdd-l3-l4-l5-l18-supply = <&vreg_s6a_0p95>;
-+		vdd-l6-l9-supply = <&vreg_s8c_1p35>;
-+		vdd-l7-l12-l14-l15-supply = <&vreg_s5a_1p9>;
-+		vdd-l13-l16-l17-supply = <&vreg_bob>;
-+
-+		/* (S1+S2+S3) - cx.lvl (ARC) */
-+
-+		vreg_s4a_1p8: smps4 {
-+			regulator-name = "vreg_s4a_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1920000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+			regulator-allow-set-load;
-+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-+						   RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_s5a_1p9: smps5 {
-+			regulator-name = "vreg_s5a_1p9";
-+			regulator-min-microvolt = <1900000>;
-+			regulator-max-microvolt = <2040000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_s6a_0p95: smps6 {
-+			regulator-name = "vreg_s6a_0p95";
-+			regulator-min-microvolt = <600000>;
-+			regulator-max-microvolt = <1128000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2a_3p1: ldo2 {
-+			regulator-name = "vreg_l2a_3p1";
-+			regulator-min-microvolt = <3072000>;
-+			regulator-max-microvolt = <3072000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3a_0p9: ldo3 {
-+			regulator-name = "vreg_l3a_0p9";
-+			regulator-min-microvolt = <928000>;
-+			regulator-max-microvolt = <932000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		/* L4 - lmx.lvl (ARC) */
-+
-+		vreg_l5a_0p88: ldo5 {
-+			regulator-name = "vreg_l5a_0p88";
-+			regulator-min-microvolt = <880000>;
-+			regulator-max-microvolt = <880000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6a_1p2: ldo6 {
-+			regulator-name = "vreg_l6a_1p2";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+			regulator-allow-set-load;
-+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-+						   RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		/* L7 is unused. */
-+
-+		vreg_l9a_1p2: ldo9 {
-+			regulator-name = "vreg_l9a_1p2";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		/* L10 is unused, L11 - lcx.lvl (ARC) */
-+
-+		vreg_l12a_1p8: ldo12 {
-+			regulator-name = "vreg_l12a_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		/* L13 is unused. */
-+
-+		vreg_l14a_1p88: ldo14 {
-+			regulator-name = "vreg_l14a_1p88";
-+			regulator-min-microvolt = <1880000>;
-+			regulator-max-microvolt = <1880000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		/* L15 & L16 are unused. */
-+
-+		vreg_l17a_3p0: ldo17 {
-+			regulator-name = "vreg_l17a_3p0";
-+			regulator-min-microvolt = <2496000>;
-+			regulator-max-microvolt = <3008000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+			regulator-allow-set-load;
-+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-+						   RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l18a_0p9: ldo18 {
-+			regulator-name = "vreg_l18a_0p9";
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <920000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	regulators-1 {
-+		compatible = "qcom,pm8150l-rpmh-regulators";
-+		qcom,pmic-id = "c";
-+
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+		vdd-s7-supply = <&vph_pwr>;
-+		vdd-s8-supply = <&vph_pwr>;
-+		vdd-l1-l8-supply = <&vreg_s4a_1p8>;
-+		vdd-l2-l3-supply = <&vreg_s8c_1p35>;
-+		vdd-l4-l5-l6-supply = <&vreg_bob>;
-+		vdd-l7-l11-supply = <&vreg_bob>;
-+		vdd-l9-l10-supply = <&vreg_bob>;
-+		vdd-bob-supply = <&vph_pwr>;
-+
-+		vreg_bob: bob {
-+			regulator-name = "vreg_bob";
-+			regulator-min-microvolt = <3350000>;
-+			regulator-max-microvolt = <3960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_AUTO>;
-+		};
-+
-+		/*
-+		 * S1-S6 are ARCs:
-+		 * (S1+S2) - gfx.lvl,
-+		 * S3 - mx.lvl,
-+		 * (S4+S5) - mmcx.lvl,
-+		 * S6 - ebi.lvl
-+		 */
-+
-+		vreg_s7c_0p35: smps7 {
-+			regulator-name = "vreg_s7c_0p35";
-+			regulator-min-microvolt = <348000>;
-+			regulator-max-microvolt = <1000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_s8c_1p35: smps8 {
-+			regulator-name = "vreg_s8c_1p35";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1400000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l1c_1p8: ldo1 {
-+			regulator-name = "vreg_l1c_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		/* L2-4 are unused. */
-+
-+		vreg_l5c_1p8: ldo5 {
-+			regulator-name = "vreg_l5c_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6c_2p9: ldo6 {
-+			regulator-name = "vreg_l6c_2p9";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+			regulator-allow-set-load;
-+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-+						   RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7c_2p85: ldo7 {
-+			regulator-name = "vreg_l7c_2p85";
-+			regulator-min-microvolt = <2856000>;
-+			regulator-max-microvolt = <3104000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l8c_1p8: ldo8 {
-+			regulator-name = "vreg_l8c_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l9c_2p9: ldo9 {
-+			regulator-name = "vreg_l9c_2p9";
-+			regulator-min-microvolt = <2704000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+			regulator-allow-set-load;
-+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-+						   RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l10c_3p3: ldo10 {
-+			regulator-name = "vreg_l10c_3p3";
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3312000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11c_3p0: ldo11 {
-+			regulator-name = "vreg_l11c_3p0";
-+			regulator-min-microvolt = <3104000>;
-+			regulator-max-microvolt = <3304000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	regulators-2 {
-+		compatible = "qcom,pm8009-rpmh-regulators";
-+		qcom,pmic-id = "f";
-+
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vreg_bob>;
-+		vdd-l2-supply = <&vreg_s8c_1p35>;
-+		vdd-l5-l6-supply = <&vreg_bob>;
-+		vdd-l7-supply = <&vreg_s4a_1p8>;
-+
-+		vreg_s1f_1p2: smps1 {
-+			regulator-name = "vreg_s1f_1p2";
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1300000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_s2f_0p5: smps2 {
-+			regulator-name = "vreg_s2f_0p5";
-+			regulator-min-microvolt = <512000>;
-+			regulator-max-microvolt = <1100000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		/* L1 is unused. */
-+
-+		vreg_l2f_1p3: ldo2 {
-+			regulator-name = "vreg_l2f_1p3";
-+			regulator-min-microvolt = <1056000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		/* L3 & L4 are unused. */
-+
-+		vreg_l5f_2p8: ldo5 {
-+			regulator-name = "vreg_l5f_2p85";
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <3000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6f_2p8: ldo6 {
-+			regulator-name = "vreg_l6f_2p8";
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <3000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7f_1p8: ldo7 {
-+			regulator-name = "vreg_l7f_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+};
-+
-+&cdsp {
-+	firmware-name = "qcom/sm8250/xiaomi/pipa/cdsp.mbn";
-+	status = "okay";
-+};
-+
-+&gmu {
-+	status = "okay";
-+};
-+
-+&gpi_dma0 {
-+	status = "okay";
-+};
-+
-+&gpi_dma1 {
-+	status = "okay";
-+};
-+
-+&gpi_dma2 {
-+	status = "okay";
-+};
-+
-+&gpu {
-+	status = "okay";
-+
-+	zap-shader {
-+		memory-region = <&gpu_mem>;
-+		firmware-name = "qcom/sm8250/xiaomi/pipa/a650_zap.mbn";
-+	};
-+};
-+
-+&i2c0 {
-+	clock-frequency = <400000>;
-+	status = "okay";
-+
-+	fuel-gauge@55 {
-+		compatible = "ti,bq27z561";
-+		reg = <0x55>;
-+		monitored-battery = <&battery_r>;
-+	};
-+};
-+
-+&i2c11 {
-+	clock-frequency = <400000>;
-+	status = "okay";
-+
-+	backlight: backlight@11 {
-+		compatible = "kinetic,ktz8866";
-+		reg = <0x11>;
-+		vddpos-supply = <&bl_vddpos_5p5>;
-+		vddneg-supply = <&bl_vddneg_5p5>;
-+		enable-gpios = <&tlmm 139 GPIO_ACTIVE_HIGH>;
-+		current-num-sinks = <5>;
-+		kinetic,current-ramp-delay-ms = <128>;
-+		kinetic,led-enable-ramp-delay-ms = <1>;
-+		kinetic,enable-lcd-bias;
-+	};
-+};
-+
-+&i2c13 {
-+	clock-frequency = <400000>;
-+	status = "okay";
-+
-+	fuel-gauge@55 {
-+		compatible = "ti,bq27z561";
-+		reg = <0x55>;
-+		monitored-battery = <&battery_l>;
-+	};
-+};
-+
-+&pcie0 {
-+	status = "okay";
-+};
-+
-+&pcie0_phy {
-+	vdda-phy-supply = <&vreg_l5a_0p88>;
-+	vdda-pll-supply = <&vreg_l9a_1p2>;
-+	status = "okay";
-+};
-+
-+&pm8150_gpios {
-+	vol_up_n: vol-up-n-state {
-+		pins = "gpio6";
-+		function = "normal";
-+		power-source = <1>;
-+		input-enable;
-+		bias-pull-up;
-+	};
-+};
-+
-+&pon_pwrkey {
-+	status = "okay";
-+};
-+
-+&pon_resin {
-+	linux,code = <KEY_VOLUMEDOWN>;
-+	status = "okay";
-+};
-+
-+&qupv3_id_0 {
-+	status = "okay";
-+};
-+
-+&qupv3_id_1 {
-+	status = "okay";
-+};
-+
-+&qupv3_id_2 {
-+	status = "okay";
-+};
-+
-+&slpi {
-+	firmware-name = "qcom/sm8250/xiaomi/pipa/slpi.mbn";
-+	status = "okay";
-+};
-+
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	dr_mode = "peripheral";
-+};
-+
-+&usb_1_hsphy {
-+	vdda-pll-supply = <&vreg_l5a_0p88>;
-+	vdda18-supply = <&vreg_l12a_1p8>;
-+	vdda33-supply = <&vreg_l2a_3p1>;
-+	status = "okay";
-+};
-+
-+&usb_1_qmpphy {
-+	status = "okay";
-+	vdda-phy-supply = <&vreg_l9a_1p2>;
-+	vdda-pll-supply = <&vreg_l18a_0p9>;
-+};
-+
-+&ufs_mem_hc {
-+	vcc-supply = <&vreg_l17a_3p0>;
-+	vcc-max-microamp = <800000>;
-+	vccq-supply = <&vreg_l6a_1p2>;
-+	vccq-max-microamp = <800000>;
-+	vccq2-supply = <&vreg_s4a_1p8>;
-+	vccq2-max-microamp = <800000>;
-+	status = "okay";
-+};
-+
-+&ufs_mem_phy {
-+	vdda-phy-supply = <&vreg_l5a_0p88>;
-+	vdda-pll-supply = <&vreg_l9a_1p2>;
-+	status = "okay";
-+};
-+
-+&venus {
-+	firmware-name = "qcom/sm8250/xiaomi/pipa/venus.mbn";
-+	status = "okay";
-+};
+Finally the last change introduces userspace API to let userspace
+clients advertise the fact that they are aware of additional restrictions
+placed upon the cursor plane by virtualized drivers and lets them use
+atomic kms with virtualized drivers (the clients are expected to set
+hotspots correctly when advertising support for virtual cursor plane).
+
+Link to the IGT test covering this patch (already merged):
+https://lists.freedesktop.org/archives/igt-dev/2023-July/058427.html
+
+Mutter patch:
+https://lists.freedesktop.org/archives/igt-dev/2023-July/058427.html
+
+Michael Banack (1):
+  drm: Introduce documentation for hotspot properties
+
+Zack Rusin (8):
+  drm: Disable the cursor plane on atomic contexts with virtualized
+    drivers
+  drm/atomic: Add support for mouse hotspots
+  drm/vmwgfx: Use the hotspot properties from cursor planes
+  drm/qxl: Use the hotspot properties from cursor planes
+  drm/vboxvideo: Use the hotspot properties from cursor planes
+  drm/virtio: Use the hotspot properties from cursor planes
+  drm: Remove legacy cursor hotspot code
+  drm: Introduce DRM_CLIENT_CAP_CURSOR_PLANE_HOTSPOT
+
+ Documentation/gpu/drm-kms.rst             |   6 ++
+ drivers/gpu/drm/drm_atomic_state_helper.c |  14 +++
+ drivers/gpu/drm/drm_atomic_uapi.c         |  20 ++++
+ drivers/gpu/drm/drm_ioctl.c               |   9 ++
+ drivers/gpu/drm/drm_plane.c               | 120 +++++++++++++++++++++-
+ drivers/gpu/drm/qxl/qxl_display.c         |  14 ++-
+ drivers/gpu/drm/qxl/qxl_drv.c             |   2 +-
+ drivers/gpu/drm/vboxvideo/vbox_drv.c      |   2 +-
+ drivers/gpu/drm/vboxvideo/vbox_mode.c     |   4 +-
+ drivers/gpu/drm/virtio/virtgpu_drv.c      |   2 +-
+ drivers/gpu/drm/virtio/virtgpu_plane.c    |   8 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c       |   2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c       |   9 +-
+ include/drm/drm_drv.h                     |   9 ++
+ include/drm/drm_file.h                    |  12 +++
+ include/drm/drm_framebuffer.h             |  12 ---
+ include/drm/drm_plane.h                   |  14 +++
+ include/uapi/drm/drm.h                    |  25 +++++
+ 18 files changed, 245 insertions(+), 39 deletions(-)
+
 -- 
-2.42.0
+2.41.0
 
