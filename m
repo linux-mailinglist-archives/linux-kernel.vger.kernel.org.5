@@ -2,198 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D760F7D3D6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722577D3D6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231958AbjJWRXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
+        id S231497AbjJWRXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231938AbjJWRXS (ORCPT
+        with ESMTP id S229453AbjJWRXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:23:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A57C5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:22:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698081749;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=7tOvXGzE2NpQ6tZnzJg9WmExIPulJp9KgVxJ9uvAFEE=;
-        b=c8mcHQebkracOY9Uv49m/G0T5zSbVcVmZO1U3pGL11TG9xsLLvEbb4Djjybmhb8eETVgSv
-        tQv0drtiADlDtaA9RSyAy7KLZPZ9MzrkirQIjUCeHKtt3Q/xn3qybaOKC0bty37oysEb+R
-        9iHlHdg1I1PorsuJXMRiOKmMWO6B3vM=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-621-exRlRLM6P7GQGmNCJeaekw-1; Mon, 23 Oct 2023 13:22:27 -0400
-X-MC-Unique: exRlRLM6P7GQGmNCJeaekw-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-32d9b520d15so1450936f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:22:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698081746; x=1698686546;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7tOvXGzE2NpQ6tZnzJg9WmExIPulJp9KgVxJ9uvAFEE=;
-        b=NPQNdGexNKyfpr3JwNczV8CdeqgAQpLvjwhwxGyhBeeA1JsPJ30P6lxrNREIgoQonV
-         htReuUZi8hGkRZ7APRAyRUEurz71oO58+X2xV7ScJuVNvrTOl5oFr7pAQIo+CqBr/WUN
-         F67zg6szSl47ifS1cjDGg3aN+8xQU9W2GFUWDl5PVpVv5jZTeGJeNrsgg4Erlw5x5TbL
-         XJKN5Q0M51c4o3g6DUKdLEfue7ewc64Nd66daznCwkvayuTJyigWoSQ2fqrsfm3BGla7
-         R/iC27o5ZYi+hkQPOX/FJkQOjAwljZHcE02jrb7XH6NyRlRiI7v7G+gFjjRJ84B0fbXK
-         xIdw==
-X-Gm-Message-State: AOJu0YwcmYmu6+fpJrU3A3YqzTo3HVPTfi7rlZemDqtVrZtBzeZmAo/L
-        w5zW+gHTReSpwSXQLjZ668hBJkm5ydlNP0LKZgqrVhZX9F8vevo3TnkrMAsKtFF1eEsnfv/Ch7v
-        xEd8P/B8gU2kWjJQw952zmIxQ
-X-Received: by 2002:a5d:5267:0:b0:31f:f65f:74ac with SMTP id l7-20020a5d5267000000b0031ff65f74acmr8223973wrc.70.1698081746191;
-        Mon, 23 Oct 2023 10:22:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFCMOI1KN9UzvpFgp9lfJ0fqVHI9JbN2l0Rq7ZKvD1mIJErINDA2Vo0dhINX9e9eZUR/WKTYg==
-X-Received: by 2002:a5d:5267:0:b0:31f:f65f:74ac with SMTP id l7-20020a5d5267000000b0031ff65f74acmr8223956wrc.70.1698081745763;
-        Mon, 23 Oct 2023 10:22:25 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c738:1900:b6ea:5b9:62c0:34e? (p200300cbc7381900b6ea05b962c0034e.dip0.t-ipconnect.de. [2003:cb:c738:1900:b6ea:5b9:62c0:34e])
-        by smtp.gmail.com with ESMTPSA id u16-20020adff890000000b0032d8ce46caasm8184399wrp.93.2023.10.23.10.22.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 10:22:25 -0700 (PDT)
-Message-ID: <11fa8d5a-483f-4460-acc0-79ba4eabc4c5@redhat.com>
-Date:   Mon, 23 Oct 2023 19:22:23 +0200
+        Mon, 23 Oct 2023 13:23:06 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E1F94;
+        Mon, 23 Oct 2023 10:23:04 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NFIHY8029974;
+        Mon, 23 Oct 2023 17:22:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=YBiruN5lcd/bt3zmAyAE5AHrGYVSZocWIiviVEybvDo=;
+ b=PgtnLtcveOQ70EnnMvzGrdvTQ6+iFwQovTuVz6U+yl9uOVd2hvtnuwFrG8aIhTXAX6cA
+ l7vBOhKjqEZh3DMwwx9t3GXQwrPawjFAbOk38jB1fq5JOnNB7OZowq2M7Y92IbSwUbRQ
+ i0YBLEnrzvLDoT94jUJguowuKz/I2YFNo6Kkxcz3bXyAF1esrBzwZuIk8An+a5LkwIx7
+ DmIjz4G14VgcS6m3TdRhUZIeqlRXM4we20bDatA8qUhfZ5apNUUOkbNle+dTluVc+/2O
+ J18NZ3q/ZTTr5CvuMpocY+Jm97JvLnPBzidcqaEjyhUO+gxnyPP+mlg5/BPSS2BvYT3P Og== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv5yr4q50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 17:22:50 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39NHMnl5021813
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 17:22:49 GMT
+Received: from [10.216.7.46] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 23 Oct
+ 2023 10:22:42 -0700
+Message-ID: <73168f4b-0dc2-4060-99f2-c5e9973dbf52@quicinc.com>
+Date:   Mon, 23 Oct 2023 22:52:38 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 06/37] mm: page_alloc: Allocate from movable pcp lists
- only if ALLOC_FROM_METADATA
+Subject: Re: [PATCH v13 07/10] usb: dwc3: qcom: Add multiport suspend/resume
+ support for wrapper
 Content-Language: en-US
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Hyesoo Yu <hyesoo.yu@samsung.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>, will@kernel.org,
-        oliver.upton@linux.dev, maz@kernel.org, james.morse@arm.com,
-        suzuki.poulose@arm.com, yuzenghui@huawei.com, arnd@arndb.de,
-        akpm@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        mhiramat@kernel.org, rppt@kernel.org, hughd@google.com,
-        pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-References: <20230823131350.114942-1-alexandru.elisei@arm.com>
- <20230823131350.114942-7-alexandru.elisei@arm.com>
- <CGME20231012013524epcas2p4b50f306e3e4d0b937b31f978022844e5@epcas2p4.samsung.com>
- <20231010074823.GA2536665@tiffany> <ZS0va9nICZo8bF03@monolith>
- <ZS5hXFHs08zQOboi@arm.com> <20231023071656.GA344850@tiffany>
- <ZTZP66CA1r35yTmp@arm.com> <25fad62e-b1d9-4d63-9d95-08c010756231@redhat.com>
- <ZTaohewXhtkqoLZD@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZTaohewXhtkqoLZD@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Johan Hovold <johan@kernel.org>
+CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Andy Gross" <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
+        <quic_shazhuss@quicinc.com>
+References: <20231007154806.605-1-quic_kriskura@quicinc.com>
+ <20231007154806.605-8-quic_kriskura@quicinc.com>
+ <ZTaYNjRyT1Fn4QWX@hovoldconsulting.com>
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <ZTaYNjRyT1Fn4QWX@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: dHTELLJ75Vh9V9kQ-GtM2PP3iOuaqSiK
+X-Proofpoint-GUID: dHTELLJ75Vh9V9kQ-GtM2PP3iOuaqSiK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-23_16,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ clxscore=1015 suspectscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310230151
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.10.23 19:08, Catalin Marinas wrote:
-> On Mon, Oct 23, 2023 at 01:55:12PM +0200, David Hildenbrand wrote:
->> On 23.10.23 12:50, Catalin Marinas wrote:
->>> On Mon, Oct 23, 2023 at 04:16:56PM +0900, Hyesoo Yu wrote:
->>>> Does tag storage itself supports tagging? Will the following version be unusable
->>>> if the hardware does not support it? The document of google said that
->>>> "If this memory is itself mapped as Tagged Normal (which should not happen!)
->>>> then tag updates on it either raise a fault or do nothing, but never change the
->>>> contents of any other page."
->>>> (https://github.com/google/sanitizers/blob/master/mte-dynamic-carveout/spec.md)
->>>>
->>>> The support of H/W is very welcome because it is good to make the patches simpler.
->>>> But if H/W doesn't support it, Can't the new solution be used?
->>>
->>> AFAIK on the current interconnects this is supported but the offsets
->>> will need to be configured by firmware in such a way that a tag access
->>> to the tag carve-out range still points to physical RAM, otherwise, as
->>> per Google's doc, you can get some unexpected behaviour.
-> [...]
->> I followed what you are saying, but I didn't quite read the following
->> clearly stated in your calculations: Using this model, how much memory would
->> you be able to reuse, and how much not?
+
+
+On 10/23/2023 9:28 PM, Johan Hovold wrote:
+> On Sat, Oct 07, 2023 at 09:18:03PM +0530, Krishna Kurapati wrote:
+>> QCOM SoC SA8295P's tertiary quad port controller supports 2 HS+SS
+>> ports and 2 HS only ports. Add support for configuring PWR_EVENT_IRQ's
+>> for all the ports during suspend/resume.
+> 
+> No need to mention SA8295P as this is needed for all multiport
+> controllers.
+>  > Say something about adding support for multiport controllers generally
+> instead and mention what the power event irqs are used for.
+>
+
+ACK.
+
+>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>> ---
+>>   drivers/usb/dwc3/dwc3-qcom.c | 35 ++++++++++++++++++++++++++++-------
+>>   1 file changed, 28 insertions(+), 7 deletions(-)
 >>
->> I suspect you would *not* be able to reuse "1/(32*32)" [second carve-out]
->> but be able to reuse "1/32 - 1/(32*32)" [first carve-out] or am I completely
->> off?
+>> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+>> index 651b9775a0c2..dbd4239e61c9 100644
+>> --- a/drivers/usb/dwc3/dwc3-qcom.c
+>> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+>> @@ -37,7 +37,11 @@
+>>   #define PIPE3_PHYSTATUS_SW			BIT(3)
+>>   #define PIPE_UTMI_CLK_DIS			BIT(8)
+>>   
+>> -#define PWR_EVNT_IRQ_STAT_REG			0x58
+>> +#define PWR_EVNT_IRQ1_STAT_REG			0x58
+>> +#define PWR_EVNT_IRQ2_STAT_REG			0x1dc
+>> +#define PWR_EVNT_IRQ3_STAT_REG			0x228
+>> +#define PWR_EVNT_IRQ4_STAT_REG			0x238
 > 
-> That's correct. In theory, from the hardware perspective, we could even
-> go recursively to the third/fourth etc. carveout until the last one is a
-> single page but I'd rather not complicate things further.
+> Not sure these defines makes sense on their own. You now only use them
+> via the array below.
 > 
->> Further, (just thinking about it) I assume you've taken care of the
->> condition that memory cannot self-host it's own tag memory. So that cannot
->> happen in the model proposed here, right?
+> I think I already asked you whether these offsets depend on SoC and you
+> said no, right?
 > 
-> I don't fully understand what you mean. The tags for the first data
-> range (0 .. ram_size * 31/32) are stored in the first tag carveout.
-> That's where we'll need CMA. For the tag carveout, when hosting data
-> pages as tagged, the tags go in the second carveout which is fully
-> reserved (still TBD but possibly the firmware won't even tell the kernel
-> about it).
+There are only 3 QC SoC's today that support multiport.
+The offsets mentioned here are for SC8280 based platforms.
 
-You got my cryptic question right: you make sure that the tag for the 
-first carveout go to the second carveout.
+For Sc8180 based platforms, these are the offsets:
+USB3_MP_PWR_EVNT_IRQ_STAT	0xA4F8858
+USB3_MP_PWR_EVNT_IRQ_1_STAT	0xA4F89DC
 
-Sounds very good, thanks.
+These would translate to 0x58 and 0x1DC
 
--- 
-Cheers,
+And for SX8380 the values are as follows:
 
-David / dhildenb
+USB3_MP_PWR_EVNT_IRQ_STAT	0xA4F8858
+USB3_MP_PWR_EVNT_IRQ_1_STAT	0xA4F89DC
 
+So here also, the offsets are same. 0x58 and 0x1DC.
+So these are not SoC specific (atleast looking at the controllers 
+present). But there is no mathematical pattern to denote this as in the 
+following form (x + (port_num) * y). So made an array like this.
+
+>> +
+>>   #define PWR_EVNT_LPM_IN_L2_MASK			BIT(4)
+>>   #define PWR_EVNT_LPM_OUT_L2_MASK		BIT(5)
+>>   
+>> @@ -107,6 +111,19 @@ struct dwc3_qcom {
+>>   	int			num_ports;
+>>   };
+>>   
+>> +/*
+>> + * Currently non-multiport controller have only one PWR_EVENT_IRQ register,
+>> + * but multiport controllers like SA8295 contain upto 4 of them.
+>> + */
+> 
+> Please try not talk about "currently" and as things are likely to
+> change or, in fact, even *are* changing with your very patch series.
+> 
+> Again, this is not SA8295 specific.
+> 
+>> +#define NUM_PWR_EVENT_STAT_REGS	4
+> 
+> You already have MAX_PORTS, why are you defining a new define that will
+> always have to be equal to MAX_PORTS?
+> 
+
+Do you recommend using the same max_ports ? If so, I can remove this 
+macro altogether.
+
+>> +
+>> +static u32 pwr_evnt_irq_stat_reg_offset[NUM_PWR_EVENT_STAT_REGS] = {
+> 
+> missing const
+> 
+>> +	PWR_EVNT_IRQ1_STAT_REG,
+>> +	PWR_EVNT_IRQ2_STAT_REG,
+>> +	PWR_EVNT_IRQ3_STAT_REG,
+>> +	PWR_EVNT_IRQ4_STAT_REG,
+>> +};
+>> +
+>>   static inline void dwc3_qcom_setbits(void __iomem *base, u32 offset, u32 val)
+>>   {
+>>   	u32 reg;
+>> @@ -446,9 +463,11 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
+>>   	if (qcom->is_suspended)
+>>   		return 0;
+>>   
+>> -	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
+>> -	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+>> -		dev_err(qcom->dev, "HS-PHY not in L2\n");
+>> +	for (i = 0; i < qcom->num_ports; i++) {
+>> +		val = readl(qcom->qscratch_base + pwr_evnt_irq_stat_reg_offset[i]);
+>> +		if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+>> +			dev_err(qcom->dev, "HS-PHY not in L2\n");
+> 
+> Error message should contain the port number.
+> 
+
+ACK
+
+>> +	}
+>>   
+>>   	for (i = qcom->num_clocks - 1; i >= 0; i--)
+>>   		clk_disable_unprepare(qcom->clks[i]);
+>> @@ -494,9 +513,11 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom, bool wakeup)
+>>   		dev_warn(qcom->dev, "failed to enable interconnect: %d\n", ret);
+>>   
+>>   	/* Clear existing events from PHY related to L2 in/out */
+>> -	dwc3_qcom_setbits(qcom->qscratch_base, PWR_EVNT_IRQ_STAT_REG,
+>> -			  PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
+>> -
+>> +	for (i = 0; i < qcom->num_ports; i++) {
+>> +		dwc3_qcom_setbits(qcom->qscratch_base,
+>> +			pwr_evnt_irq_stat_reg_offset[i],
+>> +			PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
+> 
+> Again, continuation lines should be indented at least two tabs further.
+> 
+
+ACK.
+
+Thanks for the review.
+
+Regards,
+Krishna,
