@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D4A7D2A50
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 08:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF80F7D2A55
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 08:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233356AbjJWGV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 02:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59700 "EHLO
+        id S233509AbjJWGVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 02:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233352AbjJWGVY (ORCPT
+        with ESMTP id S233491AbjJWGVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 02:21:24 -0400
+        Mon, 23 Oct 2023 02:21:36 -0400
 Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846D5D70;
-        Sun, 22 Oct 2023 23:21:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA1D10D5;
+        Sun, 22 Oct 2023 23:21:31 -0700 (PDT)
 Received: from authenticated-user (box.trvn.ru [194.87.146.52])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 48ADC4C0C8;
-        Mon, 23 Oct 2023 11:21:09 +0500 (+05)
+        by box.trvn.ru (Postfix) with ESMTPSA id 0BBE44C0CE;
+        Mon, 23 Oct 2023 11:21:11 +0500 (+05)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1698042069; bh=luFC7my9PJ6B7z1i59mt1ERZ1dlWg9/dkHvKsguCUSo=;
+        t=1698042071; bh=cGxQVt+NVbaQIsSjfqmJUKIMf/PR6FSgo/FLAfIdsik=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=N8kfWVYwZjQOXm4rGD8cA8cbc2f5ID92oAlwrty5fvsgH/SYZ2bV8IhnfPnUF4kyV
-         gwhH4PmlMmvTeF+h7AvT1FOFuc3JD3JT3oj54F5esz6JxKA6yBeWClW7ZNzM14XTEm
-         ffyHKlnWmhC6IGnuCyH/O6MOfytOevcjGIWijnqwzRpnexkVqp8ZoK2g/PLVK7g0NU
-         4b/xJ/svcGoLxDerDhCh8D67v9hiTk1RGVWuOvRPsKp22ZX3VRcRr1IV4KMLu7wae0
-         A6v6UQDmc0ttVIulu83e/YSsLYBaiJtEvk1ny+JYBpQxedb1GgaY8CZu3p93NcXmmK
-         jvaVczMxnZmiw==
+        b=ejXquwX3PnnIL3dZ7rb01Fjajr9FkFcJAWX30feIVvRbMCbZ3rmgqCfQyl/IkBDoo
+         GbeJgr7DIi8cARGXqSK6svS7dkF4TMu3CQEJs0c/q0IIcKiti2kWynIbBIZfvgRVvO
+         tBOIcW/RRXbbx+9ODfvB6xgFSTukqiUiVOj2rh0ERPCJ8mn+4BHm0jiMX5ePw9UUOk
+         4QpzNk1zTtXMc/lhxbKmkY40nD9L3FrB2hOfSeKk0jObrsjUY1jmSk4A3QIGUw21Ax
+         9eml7e9Zd8YYREc+ks0ZRwXoNhf9zDEdIb62T8GPCuyAGJcJZGBoRUllgAeKUoF7jd
+         WexgptyP2qxQA==
 From:   Nikita Travkin <nikita@trvn.ru>
-Date:   Mon, 23 Oct 2023 11:20:32 +0500
-Subject: [PATCH v2 1/3] dt-bindings: mfd: qcom,spmi-pmic: Add pm8916 vm-bms
- and lbc
+Date:   Mon, 23 Oct 2023 11:20:33 +0500
+Subject: [PATCH v2 2/3] arm64: dts: qcom: pm8916: Add BMS and charger
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231023-pm8916-dtsi-bms-lbc-v2-1-343e3dbf423e@trvn.ru>
+Message-Id: <20231023-pm8916-dtsi-bms-lbc-v2-2-343e3dbf423e@trvn.ru>
 References: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
 In-Reply-To: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
 To:     Andy Gross <agross@kernel.org>,
@@ -50,20 +49,20 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht,
         Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1246; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=luFC7my9PJ6B7z1i59mt1ERZ1dlWg9/dkHvKsguCUSo=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBlNhDRw3kL1xMo/oFuqFrVGmBx/J1tcSHs8Vlrm
- O5FI2hw13SJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZTYQ0QAKCRBDHOzuKBm/
- dTIRD/4m9cd91tQKb8ywplt7DOVB8WuPPqMB5SXFanHKRg6mQE9rcU4MiKF4Di68RkOqwvoU6eU
- pclYoN4+IEaZg4UW5UHumh1fl5CvCj6OvV9jwVl2XWoZ/FsizPpAmNWDMgylmAdzcRiNlGeQn5y
- rzndH7eloPc+NxP7dYAHiQ2pGS1cP8+xUnd5hgAH94vcOrxlYheYPXw6qzxPqEuhTIhnRdUSLAl
- f0sQg9oCVG4ZxZraplqeb/tZRKylaYh8YK5X+0f1wOvBKcMkuFB0L3tf/RbxZzTua6FNJO3eH4x
- OT9u+wavVvqWnXmUzpyO9n7FZpW9CJpwLI99Kpb8FqOcuX9cevuG2y8h2dq4ABqBQ/YbCQ+8KR8
- zM53rpNlpQAW90jXDDZWSBJleQXbPxuaWn1riEeabZbA6g83PML+vQxXhaAE47ZUWOqWT2XUE19
- UdSOKvcS1qzIOtRDii42YmLut4xb8PcFUOljer0ukxDOxqsN0J/OqFWD4eOicGtiAQpm9liNru5
- uvfLxvcm+gybq2RtYzDIpCZoBJV2ljmUeUyfZjULZx1vlpVVkUWF2O2b9cnzeOOsayrgse0bhT9
- GDwCKwiUMJimYwr87vxwDooyPEblCcRw73MmX4N92YJ5mvHNUjtnL3PeaxKjNR43cgCOcOUWB6k
- 7HJeSAfOVd+dn+A==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2360; i=nikita@trvn.ru;
+ h=from:subject:message-id; bh=cGxQVt+NVbaQIsSjfqmJUKIMf/PR6FSgo/FLAfIdsik=;
+ b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBlNhDRHM6Gt64pGbufSe8l9M5t5S0bp3svifn+y
+ QLkTSjDZFiJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZTYQ0QAKCRBDHOzuKBm/
+ dUxWEACdupMPoHhHcJ6VkcR5ikUEQLdMOqy04PTeJ1Jv3dwSUXnsHHA69p6wmYwCASI6zEtDEAx
+ mQK6Ao5Q4r31Q8s9CZzZW8PzJC70O9V275q8jd5+IlR8x8iArR1ToZ59hOk6lfp9Wruaf38f3kW
+ bOSuEh/NpiGWe7F4ULq001IchM4AbHCdhzfOuoIZGbZDFtwbAGSPGx6I7uIKlVRIDpNRWQO2Jzw
+ bBV3lUc04oRkJqaLeLc6eoJpBGyl20dFI57OPOp0JK3qtloWtymm+e73OZA+ynhtnPQiI8+8pcV
+ Ix14alS3x1tu/G1HH8oioUhNTxE+JGCZpDGckiZYm1OnMgqtso4DCUqDLFybPPZavG6881oSuez
+ 74pHrFo4g6Q6zYoM1o3K/z20NO6bZOiAlbdyulDAjZrs6ISgWQ/OrtSWJDyIqpAosofDhlclNq3
+ V/8vdcZ7ZgHs7Sz6WGej3wpvYs9BsEywKcY7H6i1rxhffhhCBz2LMBQY8jazQe/VorJfrLB2+Cw
+ kRRllP5wnizvQWdWhnRob4k2RcM2Doynf8qe+KCVNP3N3/L65BpuAI/NobdNiolPteO9dqU047a
+ wFMQjpT1nJU9vRPFUt7lz0kLwvakcjwLMvzcGVoaTimuVreiwqYmwob6/7BxGORMqI5xEfxVH+W
+ GaVDiepL/8mTaIQ==
 X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
  fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,35 +74,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PM8916 (and probably some other similar pmics) have hardware blocks for
-battery monitoring and charging. Add patterns for respecive nodes so the
-devicetree for those blocks can be validated properly.
+pm8916 contains some hardware blocks for battery powered devices:
+
+- VM-BMS: Battery voltage monitoring block.
+- LBC: Linear battery charger.
+
+Add them to the pmic dtsi so the devices that make use of those blocks
+can enable them.
 
 Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 ---
- Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm64/boot/dts/qcom/pm8916.dtsi | 48 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-index 9fa568603930..49103e07032a 100644
---- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-+++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-@@ -134,9 +134,15 @@ patternProperties:
-     type: object
-     $ref: /schemas/sound/qcom,pm8916-wcd-analog-codec.yaml#
+diff --git a/arch/arm64/boot/dts/qcom/pm8916.dtsi b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+index f4de86787743..4b2e8fb47d2d 100644
+--- a/arch/arm64/boot/dts/qcom/pm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/pm8916.dtsi
+@@ -41,6 +41,35 @@ watchdog {
+ 			};
+ 		};
  
-+  "^battery@[0-9a-f]+$":
-+    type: object
-+    oneOf:
-+      - $ref: /schemas/power/supply/qcom,pm8916-bms-vm.yaml#
++		pm8916_charger: charger@1000 {
++			compatible = "qcom,pm8916-lbc";
++			reg = <0x1000>, <0x1200>, <0x1300>, <0x1600>;
++			reg-names = "chgr", "bat_if", "usb", "misc";
 +
-   "^charger@[0-9a-f]+$":
-     type: object
-     oneOf:
-+      - $ref: /schemas/power/supply/qcom,pm8916-lbc.yaml#
-       - $ref: /schemas/power/supply/qcom,pm8941-charger.yaml#
-       - $ref: /schemas/power/supply/qcom,pm8941-coincell.yaml#
-       - $ref: /schemas/power/supply/qcom,pmi8998-charger.yaml#
++			interrupts = <0x0 0x10 0 IRQ_TYPE_EDGE_BOTH>,
++				     <0x0 0x10 5 IRQ_TYPE_EDGE_BOTH>,
++				     <0x0 0x10 6 IRQ_TYPE_EDGE_BOTH>,
++				     <0x0 0x10 7 IRQ_TYPE_EDGE_BOTH>,
++				     <0x0 0x12 0 IRQ_TYPE_EDGE_BOTH>,
++				     <0x0 0x12 1 IRQ_TYPE_EDGE_BOTH>,
++				     <0x0 0x13 0 IRQ_TYPE_EDGE_BOTH>,
++				     <0x0 0x13 1 IRQ_TYPE_EDGE_BOTH>,
++				     <0x0 0x13 2 IRQ_TYPE_EDGE_BOTH>,
++				     <0x0 0x13 4 IRQ_TYPE_EDGE_BOTH>;
++			interrupt-names = "vbat_det",
++					  "fast_chg",
++					  "chg_fail",
++					  "chg_done",
++					  "bat_pres",
++					  "temp_ok",
++					  "coarse_det",
++					  "usb_vbus",
++					  "chg_gone",
++					  "overtemp";
++
++			status = "disabled";
++		};
++
+ 		pm8916_usbin: usb-detect@1300 {
+ 			compatible = "qcom,pm8941-misc";
+ 			reg = <0x1300>;
+@@ -91,6 +120,25 @@ channel@f {
+ 			};
+ 		};
+ 
++		pm8916_bms: battery@4000 {
++			compatible = "qcom,pm8916-bms-vm";
++			reg = <0x4000>;
++			interrupts = <0x0 0x40 0 IRQ_TYPE_EDGE_RISING>,
++				     <0x0 0x40 1 IRQ_TYPE_EDGE_RISING>,
++				     <0x0 0x40 2 IRQ_TYPE_EDGE_RISING>,
++				     <0x0 0x40 3 IRQ_TYPE_EDGE_RISING>,
++				     <0x0 0x40 4 IRQ_TYPE_EDGE_RISING>,
++				     <0x0 0x40 5 IRQ_TYPE_EDGE_RISING>;
++			interrupt-names = "cv_leave",
++					  "cv_enter",
++					  "ocv_good",
++					  "ocv_thr",
++					  "fifo",
++					  "state_chg";
++
++			status = "disabled";
++		};
++
+ 		rtc@6000 {
+ 			compatible = "qcom,pm8941-rtc";
+ 			reg = <0x6000>, <0x6100>;
 
 -- 
 2.41.0
