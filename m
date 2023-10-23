@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2EC7D325A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EA67D3299
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233771AbjJWLTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49496 "EHLO
+        id S233835AbjJWLV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233548AbjJWLTH (ORCPT
+        with ESMTP id S233822AbjJWLV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:19:07 -0400
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EBF92;
-        Mon, 23 Oct 2023 04:19:04 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VukswFj_1698059941;
-Received: from 30.97.48.63(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VukswFj_1698059941)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Oct 2023 19:19:01 +0800
-Message-ID: <9b623c51-2052-9c0e-9ef7-6e9d841ad5ce@linux.alibaba.com>
-Date:   Mon, 23 Oct 2023 19:19:17 +0800
+        Mon, 23 Oct 2023 07:21:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749D4D6;
+        Mon, 23 Oct 2023 04:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698060115; x=1729596115;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dTMuOISm9OIG7zQeqd0pR9/QKceuYq5H6DY5SCz3AfI=;
+  b=LXCHS0PcGxRRTzeBCBjTfIn5xv89EnxUpRHbFYf788VRsLCKyqDeqjzY
+   xpZ3KLrq4jZFk5A1kFSJ7bLPs2/8yZ3RueU/bUiZiiGZIJYN28tSGp7yr
+   1p7r/iIdI8h2HA3pZo9RO8MuQyR88QO9ig2fBShpJGNo+NLDwUnXwMLui
+   VQoEykY29uKfmcB439W4MN08JKLWhTYveS3khqHzveo+0i3AraSKMUPNP
+   sPqjJinWwXJL01TyNtG65l2GlMVObBuW8tIkC2whP8EVUVWfUJJ1/m0Mu
+   zjQHzBCP7aZbvmaERqKSTOMrcXwpwlS4o4P8LRjucidTVwr5SuwNQtKqX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="5441793"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="5441793"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:21:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="881730411"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="881730411"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:21:52 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qut0H-00000007v6h-0qzY;
+        Mon, 23 Oct 2023 14:21:49 +0300
+Date:   Mon, 23 Oct 2023 14:21:48 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Angel Iglesias <ang.iglesiasg@gmail.com>
+Cc:     linux-iio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+        linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v2 1/5] iio: pressure: bmp280: Use i2c_get_match_data()
+Message-ID: <ZTZXTLeWbUHKkHIn@smile.fi.intel.com>
+References: <cover.1697994521.git.ang.iglesiasg@gmail.com>
+ <0554ddae62ba04ccacf58c2de04ec598c876665e.1697994521.git.ang.iglesiasg@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH V2 1/7] i2c: sprd: Add configurations that support 1Mhz
- and 3.4Mhz frequencies
-To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
-        Andi Shyti <andi.shyti@kernel.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-References: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
- <20231023081158.10654-2-Huangzheng.Lai@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20231023081158.10654-2-Huangzheng.Lai@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0554ddae62ba04ccacf58c2de04ec598c876665e.1697994521.git.ang.iglesiasg@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/23/2023 4:11 PM, Huangzheng Lai wrote:
-> Add support for 1Mhz and 3.4Mhz frequency configuration.
+On Sun, Oct 22, 2023 at 07:22:17PM +0200, Angel Iglesias wrote:
+> From: Biju Das <biju.das.jz@bp.renesas.com>
 > 
-> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-> Acked-by: Andi Shyti <andi.shyti@kernel.org>
-> ---
->   drivers/i2c/busses/i2c-sprd.c | 25 ++++++++++++++++++++-----
->   1 file changed, 20 insertions(+), 5 deletions(-)
+> Replace device_get_match_data() and id lookup for retrieving match data
+> by i2c_get_match_data().
 > 
-> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-> index ffc54fbf814d..b44916c6741d 100644
-> --- a/drivers/i2c/busses/i2c-sprd.c
-> +++ b/drivers/i2c/busses/i2c-sprd.c
-> @@ -343,10 +343,23 @@ static void sprd_i2c_set_clk(struct sprd_i2c *i2c_dev, u32 freq)
->   	writel(div1, i2c_dev->base + ADDR_DVD1);
->   
->   	/* Start hold timing = hold time(us) * source clock */
-> -	if (freq == I2C_MAX_FAST_MODE_FREQ)
-> -		writel((6 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> -	else if (freq == I2C_MAX_STANDARD_MODE_FREQ)
-> +	switch (freq) {
-> +	case I2C_MAX_STANDARD_MODE_FREQ:
->   		writel((4 * apb_clk) / 1000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
-> +	case I2C_MAX_FAST_MODE_FREQ:
-> +		writel((6 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
-> +	case I2C_MAX_FAST_MODE_PLUS_FREQ:
-> +		writel((8 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
-> +	case I2C_MAX_HIGH_SPEED_MODE_FREQ:
-> +		writel((8 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
-> +	default:
-> +		dev_err(i2c_dev->dev, "Unsupported frequency: %d\n", freq);
-> +		break;
-> +	}
->   }
->   
->   static void sprd_i2c_enable(struct sprd_i2c *i2c_dev)
-> @@ -519,9 +532,11 @@ static int sprd_i2c_probe(struct platform_device *pdev)
->   	if (!of_property_read_u32(dev->of_node, "clock-frequency", &prop))
->   		i2c_dev->bus_freq = prop;
->   
-> -	/* We only support 100k and 400k now, otherwise will return error. */
-> +	/* We only support 100k\400k\1m\3.4m now, otherwise will return error. */
->   	if (i2c_dev->bus_freq != I2C_MAX_STANDARD_MODE_FREQ &&
-> -	    i2c_dev->bus_freq != I2C_MAX_FAST_MODE_FREQ)
-> +			i2c_dev->bus_freq != I2C_MAX_FAST_MODE_FREQ &&
-> +			i2c_dev->bus_freq != I2C_MAX_FAST_MODE_PLUS_FREQ &&
-> +			i2c_dev->bus_freq != I2C_MAX_HIGH_SPEED_MODE_FREQ)
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Can you keep the same alignment format as the previous code? Otherwise 
-look good to me.
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Hmm... What tools have you used to format/send this? It seems differs
+to what `git format-patch` does.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
