@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEEB7D39F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269397D39F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233739AbjJWOoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40952 "EHLO
+        id S233790AbjJWOoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233693AbjJWOnq (ORCPT
+        with ESMTP id S233698AbjJWOnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:43:46 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067721FD4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:42:28 -0700 (PDT)
+        Mon, 23 Oct 2023 10:43:49 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC1426A4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:42:29 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 548FD1FE25;
-        Mon, 23 Oct 2023 14:42:27 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 17B541FE26;
+        Mon, 23 Oct 2023 14:42:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1698072147; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1698072148; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+I9ud1Xuz1QVsjjSIfjL5lCnrVLHZ6fU43dq2sdHnMY=;
-        b=ZnpY4uBkNksiRZIcuaIZLNFna9sII/TYaINRsWSXNc6OdlfhvABzLZ16+G+q94Tzm7blpJ
-        PMeCt0I7PQHC2/G80z3PJUEFkVOvR8qTtss5N2SydDmRGdI871w6Ja15+iK+hQjWSXzKJn
-        h+cGzSpnfJzOfDwOp68ksqiZVoAEzZo=
+        bh=iKEUG9SHB6x+trsiRcHBTizDjwB2rC51Fj16Z+SAh18=;
+        b=ZiOCAb8terQeWFu0Gp5FoprPiJsiQ3xSPzR2zvqOyloHHkz2+BgO9CTMpDQIG8xptvpcl6
+        AUUi8sw6p9HMOn+Szbj2g/ggFZcMNFQ+9rqo6xDw69lSkJ4N7zQDTF0IrZs0Es9DXdDyBN
+        hIO56oQg5WXvA4kFIATudttPc18+x+Y=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 39BE5139C2;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E62B5139C2;
         Mon, 23 Oct 2023 14:42:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id zHHgC1OGNmXFdgAAMHmgww
+        id mLeKNlOGNmXLdgAAMHmgww
         (envelope-from <aporta@suse.de>); Mon, 23 Oct 2023 14:42:27 +0000
 From:   Andrea della Porta <andrea.porta@suse.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -46,9 +46,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     nik.borisov@suse.com, arnd@arndb.de, mark.rutland@arm.com,
         Andrea della Porta <andrea.porta@suse.com>
-Subject: [PATCH v2 3/4] arm64/entry-common: Make Aarch32 exceptions' availability depend on aarch32_enabled()
-Date:   Mon, 23 Oct 2023 16:42:22 +0200
-Message-ID: <d0484051d8ff23e0ed1f2933789cde3d390a2fa6.1698069331.git.andrea.porta@suse.com>
+Subject: [PATCH v2 4/4] arm64: Make Aarch32 support boot time configurable
+Date:   Mon, 23 Oct 2023 16:42:23 +0200
+Message-ID: <c94183bbc07d4bd897e5c51a2930d1622f6fd61c.1698069331.git.andrea.porta@suse.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1698069331.git.andrea.porta@suse.com>
 References: <cover.1698069331.git.andrea.porta@suse.com>
@@ -89,96 +89,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Another major aspect of supporting running of 32bit processes is the
-ability to access 32bit syscalls and exceptions. Syscalls, in
-particular, can be invoked by using the svc instruction.
+Distributions would like to reduce their attack surface as much as
+possible but at the same time they'd want to retain flexibility to
+cater to a variety of legacy software. This stems from the conjecture
+that compat layer is likely rarely tested and could have latent
+security bugs. Ideally distributions will set their default policy
+and also give users the ability to override it as appropriate.
 
-If Aarch32 support is disabled ensure that calling svc (or any
-exceptions) from 32bit context results in the same behavior as if
-CONFIG_COMPAT has not been enabled (i.e. a kernel panic).
+To enable this use case, introduce CONFIG_AARCH32_SUPPORT_DEFAULT_DISABLED
+compile time option, which controls whether 32bit processes/exceptions
+should be allowed or not. This option is aimed mainly at distributions
+to set their preferred default behavior in their kernels.
+
+To allow users to override the distro's policy, introduce the
+'allow_32bit_el0' parameter which allows overriding
+CONFIG_AARCH32_SUPPORT_DEFAULT_DISABLED state at boot time.
 
 Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
 ---
- arch/arm64/include/asm/exception.h |  7 +++++++
- arch/arm64/kernel/entry-common.c   | 25 ++++++++++++++++++++++---
- 2 files changed, 29 insertions(+), 3 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 7 +++++++
+ arch/arm64/Kconfig                              | 9 +++++++++
+ arch/arm64/kernel/entry-common.c                | 8 +++++++-
+ 3 files changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/exception.h b/arch/arm64/include/asm/exception.h
-index ad688e157c9b..ccb41ba8d86c 100644
---- a/arch/arm64/include/asm/exception.h
-+++ b/arch/arm64/include/asm/exception.h
-@@ -48,6 +48,13 @@ asmlinkage void el0t_32_irq_handler(struct pt_regs *regs);
- asmlinkage void el0t_32_fiq_handler(struct pt_regs *regs);
- asmlinkage void el0t_32_error_handler(struct pt_regs *regs);
- 
-+#ifdef CONFIG_COMPAT
-+asmlinkage void el0t_32_sync_ni_handler(struct pt_regs *regs);
-+asmlinkage void el0t_32_irq_ni_handler(struct pt_regs *regs);
-+asmlinkage void el0t_32_fiq_ni_handler(struct pt_regs *regs);
-+asmlinkage void el0t_32_error_ni_handler(struct pt_regs *regs);
-+#endif
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0a1731a0f0ef..9752c4640bd7 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1,3 +1,10 @@
++	allow_32bit_el0=	[ARM64]
++			Format: <bool>
++			When true, allows loading 32-bit programs and executing
++			32-bit syscalls and exceptions, essentially overriding
++			AARCH32_SUPPORT_DEFAULT_DISABLED at boot time. when false,
++			unconditionally disables AARCH32 support.
 +
- asmlinkage void call_on_irq_stack(struct pt_regs *regs,
- 				  void (*func)(struct pt_regs *));
- asmlinkage void asm_exit_to_user_mode(struct pt_regs *regs);
+ 	acpi=		[HW,ACPI,X86,ARM64,RISCV64]
+ 			Advanced Configuration and Power Interface
+ 			Format: { force | on | off | strict | noirq | rsdt |
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index b10515c0200b..c8e1b3535018 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -1725,6 +1725,15 @@ config SETEND_EMULATION
+ 	  If unsure, say Y
+ endif # ARMV8_DEPRECATED
+ 
++config AARCH32_SUPPORT_DEFAULT_DISABLED
++	bool "Aarch32 support disabled by default"
++	default n
++	depends on COMPAT
++	help
++	  Make Aarch32 support disabled by default. This prevents loading 32-bit
++	  processes and access to 32-bit syscalls and exceptions.
++
++	  If unsure, leave it to its default value.
+ endif # COMPAT
+ 
+ menu "ARMv8.1 architectural features"
 diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 69ff9b8c0bde..32761760d9dd 100644
+index 32761760d9dd..7698057ef4ce 100644
 --- a/arch/arm64/kernel/entry-common.c
 +++ b/arch/arm64/kernel/entry-common.c
-@@ -802,6 +802,11 @@ asmlinkage void noinstr el0t_64_error_handler(struct pt_regs *regs)
+@@ -897,7 +897,13 @@ asmlinkage void noinstr el0t_32_error_handler(struct pt_regs *regs)
+ 		__el0_error_handler_common(regs);
  }
  
- #ifdef CONFIG_COMPAT
-+UNHANDLED(el0t, 32, sync_ni)
-+UNHANDLED(el0t, 32, irq_ni)
-+UNHANDLED(el0t, 32, fiq_ni)
-+UNHANDLED(el0t, 32, error_ni)
+-bool __aarch32_enabled __ro_after_init = true;
++bool __aarch32_enabled __ro_after_init = !IS_ENABLED(CONFIG_AARCH32_SUPPORT_DEFAULT_DISABLED);
 +
- static void noinstr el0_cp15(struct pt_regs *regs, unsigned long esr)
- {
- 	enter_from_user_mode(regs);
-@@ -821,6 +826,11 @@ static void noinstr el0_svc_compat(struct pt_regs *regs)
- 
- asmlinkage void noinstr el0t_32_sync_handler(struct pt_regs *regs)
- {
-+	if (!aarch32_enabled()) {
-+		el0t_32_sync_ni_handler(regs);
-+		return;
-+	}
-+
- 	unsigned long esr = read_sysreg(esr_el1);
- 
- 	switch (ESR_ELx_EC(esr)) {
-@@ -865,17 +875,26 @@ asmlinkage void noinstr el0t_32_sync_handler(struct pt_regs *regs)
- 
- asmlinkage void noinstr el0t_32_irq_handler(struct pt_regs *regs)
- {
--	__el0_irq_handler_common(regs);
-+	if (!aarch32_enabled())
-+		el0t_32_irq_ni_handler(regs);
-+	else
-+		__el0_irq_handler_common(regs);
- }
- 
- asmlinkage void noinstr el0t_32_fiq_handler(struct pt_regs *regs)
- {
--	__el0_fiq_handler_common(regs);
-+	if (!aarch32_enabled())
-+		el0t_32_fiq_ni_handler(regs);
-+	else
-+		__el0_fiq_handler_common(regs);
- }
- 
- asmlinkage void noinstr el0t_32_error_handler(struct pt_regs *regs)
- {
--	__el0_error_handler_common(regs);
-+	if (!aarch32_enabled())
-+		el0t_32_error_ni_handler(regs);
-+	else
-+		__el0_error_handler_common(regs);
- }
- 
- bool __aarch32_enabled __ro_after_init = true;
++static int aarch32_support_override_cmdline(char *arg)
++{
++	return kstrtobool(arg, &__aarch32_enabled);
++}
++early_param("allow_32bit_el0", aarch32_support_override_cmdline);
+ #else /* CONFIG_COMPAT */
+ UNHANDLED(el0t, 32, sync)
+ UNHANDLED(el0t, 32, irq)
 -- 
 2.35.3
 
