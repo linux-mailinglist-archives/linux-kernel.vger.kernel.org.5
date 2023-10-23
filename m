@@ -2,256 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEB47D3052
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF17A7D305B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbjJWKsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 06:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53552 "EHLO
+        id S229996AbjJWKsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 06:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjJWKsP (ORCPT
+        with ESMTP id S229661AbjJWKsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 06:48:15 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D1FDEE
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:48:13 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-4a8ba764ae3so664008e0c.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:48:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698058092; x=1698662892; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dDsOzmmnvUm1G11MYBhQGWKR4I6cbpM4/80jOVhzQFw=;
-        b=V2mpTn+RXmev0GNCyXxqFC+VC+e0BiuMHYv6FSY0G7AEiwXGEWlfljPZUjgLkYxKmw
-         lyZegSywbAkSwT+xTftY5LW8dCMGX6+DH5JEKdeh5453wzlkXsfI6uNEGDeC/CopICpw
-         lQq7UWz9KJIsvsQI00zUwVBlpW2zOJybOlQm8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698058092; x=1698662892;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dDsOzmmnvUm1G11MYBhQGWKR4I6cbpM4/80jOVhzQFw=;
-        b=DNJdhq9jIlfREJpwEeulFcP1NXv95bfGYxNTJLLE8QPjrcn0vaKL9pS0CkmhJGriVk
-         9JQZRGEcNWKzC0N4gJZ7LRDAZ6ysDHaElQq7e8HrmcVzhYtNiLXZ7tzxAs8CpoodCSR9
-         b6u+7QJ9MtugkgwNkpYAXGkE4Mme5z9KxYJB55+5FJ02xWOieVVPLuqhpVbBD1emBsls
-         xgsqwyenhlWz9JNUt3gOjDAo/c8O21mvfvdbbfj3zMQTqVoTkBJAitxbqVJzm2eSvNwm
-         hAWy9DoaHKnZC1y+xAfRuEWE0nUv2vv6PJYipBarS8fKivHBir/JamN7HsQRtAriUQMA
-         lldQ==
-X-Gm-Message-State: AOJu0Ywa3BOxAzc868R5PiwkHWBUimXqs9HoxIGG2YQ240grphl7R3Bh
-        CYKOu4FCUbDV26lnJA29ILv0/LwuqAymni8KDI0=
-X-Google-Smtp-Source: AGHT+IGve9u0NUaGzDDPLVNugYoFMUOlteA8Zifcfe9gvNMo/6ZWm+3T75K7EbtNJkVnhXAJpn5BgQ==
-X-Received: by 2002:a05:6122:2225:b0:496:80b6:2fd1 with SMTP id bb37-20020a056122222500b0049680b62fd1mr6812038vkb.5.1698058092191;
-        Mon, 23 Oct 2023 03:48:12 -0700 (PDT)
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com. [209.85.221.181])
-        by smtp.gmail.com with ESMTPSA id n4-20020ab071c4000000b007b0fe35afb3sm846148uao.35.2023.10.23.03.48.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 03:48:11 -0700 (PDT)
-Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4a8ba764ae3so663993e0c.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:48:11 -0700 (PDT)
-X-Received: by 2002:a1f:9dd4:0:b0:496:187e:b33f with SMTP id
- g203-20020a1f9dd4000000b00496187eb33fmr3723710vke.3.1698058090760; Mon, 23
- Oct 2023 03:48:10 -0700 (PDT)
+        Mon, 23 Oct 2023 06:48:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B6EEE;
+        Mon, 23 Oct 2023 03:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698058095; x=1729594095;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=j6gkewFE2ehbSRRm8yxR5V6tYph8e2bExlA+57BfIvw=;
+  b=bF0FOYM+BRR4CCf4BbSO3MbwKimuswQBUZn/illY++MONMcfP/6ch2cR
+   4mWlOuZTMAesYi3DqXv2DVGSCqNjxfwWgF5arYrQXnaaB0+xrJzh3EQIm
+   L7zIevLd8uXFgrQyaUAVCBkvkJEMXJ8UIr9sJhuOvmBxGoJxf26YMnbFj
+   l8TyX1xQQqKpRY8iHbvANwAuOkjWHc2FUjiu/OMOsG5cmI/FSuDn2I+uA
+   zJiemBV8RvU0tGA5oKJfXmvXUPdRLNOXpjR3zGeGdzM1K6umaCOZUDz2+
+   4Q5vLqPX+oEnjgxXPPLUrGRFnTiC18tLv7B3lM1ewQrw+FKStW7DW44Le
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="371880227"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="371880227"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 03:47:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="823925172"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="823925172"
+Received: from evlad-mobl.ger.corp.intel.com (HELO localhost) ([10.252.47.180])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 03:47:47 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
+        linux-pwm@vger.kernel.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6ni?= =?utf-8?Q?g?= 
+        <u.kleine-koenig@pengutronix.de>, Jonathan Corbet <corbet@lwn.net>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-hwmon@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] pwm: make it possible to apply pwm changes in
+ atomic context
+In-Reply-To: <a7fcd19938d5422abc59c968ff7b3d5c275577ed.1697534024.git.sean@mess.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <cover.1697534024.git.sean@mess.org>
+ <a7fcd19938d5422abc59c968ff7b3d5c275577ed.1697534024.git.sean@mess.org>
+Date:   Mon, 23 Oct 2023 13:47:44 +0300
+Message-ID: <87y1ftboof.fsf@intel.com>
 MIME-Version: 1.0
-References: <20231023043751.17114-1-jason-jh.lin@mediatek.com> <20231023043751.17114-8-jason-jh.lin@mediatek.com>
-In-Reply-To: <20231023043751.17114-8-jason-jh.lin@mediatek.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Mon, 23 Oct 2023 18:47:34 +0800
-X-Gmail-Original-Message-ID: <CAC=S1niRYwftnmi8VABzENf2g94ELEBZrB3NRRdvwn0Ro6tO1A@mail.gmail.com>
-Message-ID: <CAC=S1niRYwftnmi8VABzENf2g94ELEBZrB3NRRdvwn0Ro6tO1A@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] mailbox: mediatek: Add secure CMDQ driver support
- for CMDQ driver
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Jeffrey Kardatzke <jkardatzke@google.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
-
-On Mon, Oct 23, 2023 at 12:39=E2=80=AFPM Jason-JH.Lin <jason-jh.lin@mediate=
-k.com> wrote:
->
-> CMDQ driver will probe a secure CMDQ driver when has_sec flag
-> in platform data is true and its device node in dts has defined a
-> event id of CMDQ_SYNC_TOKEN_SEC_EOF.
->
-> Secure CMDQ driver support on mt8188 and mt8195 currently.
-> So add a has_sec flag to their driver data to probe it.
->
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
->  drivers/mailbox/mtk-cmdq-mailbox.c       | 42 ++++++++++++++++++++++--
->  include/linux/mailbox/mtk-cmdq-mailbox.h | 11 +++++++
->  2 files changed, 51 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
-q-mailbox.c
-> index 3bdfb9a60614..4db5eb76f353 100644
-> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
-> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-> @@ -87,6 +87,7 @@ struct gce_plat {
->         u8 shift;
->         bool control_by_sw;
->         bool sw_ddr_en;
-> +       bool has_sec;
->         u32 gce_num;
->  };
->
-> @@ -560,14 +561,23 @@ static int cmdq_probe(struct platform_device *pdev)
->         int alias_id =3D 0;
->         static const char * const clk_name =3D "gce";
->         static const char * const clk_names[] =3D { "gce0", "gce1" };
-> +       struct resource *res;
-> +       struct platform_device *mtk_cmdq_sec;
-> +       u32 hwid =3D 0;
->
->         cmdq =3D devm_kzalloc(dev, sizeof(*cmdq), GFP_KERNEL);
->         if (!cmdq)
->                 return -ENOMEM;
->
-> -       cmdq->base =3D devm_platform_ioremap_resource(pdev, 0);
-> -       if (IS_ERR(cmdq->base))
-> +       res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-The devm_platform_ioremap_resource() helper was added on purpose [1].
-Please stick to it unless you have a strong reason to re-split it.
-
-[1]: a04f30356e75 ("mailbox: mtk-cmdq: Make use of the helper function
-devm_platform_ioremap_resource()")
-
-> +       if (!res)
-> +               return -EINVAL;
-> +
-> +       cmdq->base =3D devm_ioremap_resource(dev, res);
-> +       if (IS_ERR(cmdq->base)) {
-> +               dev_err(dev, "failed to ioremap cmdq\n");
->                 return PTR_ERR(cmdq->base);
-> +       }
->
->         cmdq->irq =3D platform_get_irq(pdev, 0);
->         if (cmdq->irq < 0)
-> @@ -585,6 +595,8 @@ static int cmdq_probe(struct platform_device *pdev)
->                 dev, cmdq->base, cmdq->irq);
->
->         if (cmdq->pdata->gce_num > 1) {
-> +               hwid =3D of_alias_get_id(dev->of_node, clk_name);
-Why get hwid here while it's only used in the has_sec branch?
-
-> +
->                 for_each_child_of_node(phandle->parent, node) {
->                         alias_id =3D of_alias_get_id(node, clk_name);
->                         if (alias_id >=3D 0 && alias_id < cmdq->pdata->gc=
-e_num) {
-> @@ -653,6 +665,30 @@ static int cmdq_probe(struct platform_device *pdev)
->                 return err;
->         }
->
-> +       if (cmdq->pdata->has_sec) {
-> +               struct cmdq_sec_plat gce_sec_plat;
-> +
-> +               if (of_property_read_u32_index(dev->of_node, "mediatek,gc=
-e-events", 0,
-> +                                              &gce_sec_plat.cmdq_event) =
-=3D=3D 0) {
-> +                       gce_sec_plat.gce_dev =3D dev;
-> +                       gce_sec_plat.base =3D cmdq->base;
-> +                       gce_sec_plat.base_pa =3D res->start;
-> +                       gce_sec_plat.hwid =3D hwid;
-> +                       gce_sec_plat.gce_num =3D cmdq->pdata->gce_num;
-> +                       gce_sec_plat.clocks =3D cmdq->clocks;
-> +                       gce_sec_plat.thread_nr =3D cmdq->pdata->thread_nr=
-;
-> +
-> +                       mtk_cmdq_sec =3D platform_device_register_data(de=
-v, "mtk_cmdq_sec",
-> +                                                                    PLAT=
-FORM_DEVID_AUTO,
-> +                                                                    &gce=
-_sec_plat,
-> +                                                                    size=
-of(gce_sec_plat));
-> +                       if (IS_ERR(mtk_cmdq_sec)) {
-> +                               dev_err(dev, "failed to register platform=
-_device mtk_cmdq_sec\n");
-> +                               return PTR_ERR(mtk_cmdq_sec);
-> +                       }
-> +               }
-> +       }
-> +
->         return 0;
+On Tue, 17 Oct 2023, Sean Young <sean@mess.org> wrote:
+> diff --git a/drivers/gpu/drm/i915/display/intel_backlight.c b/drivers/gpu/drm/i915/display/intel_backlight.c
+> index 2e8f17c045222..cf516190cde8f 100644
+> --- a/drivers/gpu/drm/i915/display/intel_backlight.c
+> +++ b/drivers/gpu/drm/i915/display/intel_backlight.c
+> @@ -274,7 +274,7 @@ static void ext_pwm_set_backlight(const struct drm_connector_state *conn_state,
+>  	struct intel_panel *panel = &to_intel_connector(conn_state->connector)->panel;
+>  
+>  	pwm_set_relative_duty_cycle(&panel->backlight.pwm_state, level, 100);
+> -	pwm_apply_state(panel->backlight.pwm, &panel->backlight.pwm_state);
+> +	pwm_apply_cansleep(panel->backlight.pwm, &panel->backlight.pwm_state);
 >  }
->
-> @@ -693,6 +729,7 @@ static const struct gce_plat gce_plat_v6 =3D {
->         .thread_nr =3D 24,
->         .shift =3D 3,
->         .control_by_sw =3D true,
-> +       .has_sec =3D true,
->         .gce_num =3D 2
->  };
->
-> @@ -708,6 +745,7 @@ static const struct gce_plat gce_plat_v8 =3D {
->         .thread_nr =3D 32,
->         .shift =3D 3,
->         .control_by_sw =3D true,
-> +       .has_sec =3D true,
->         .gce_num =3D 2
->  };
->
-> diff --git a/include/linux/mailbox/mtk-cmdq-mailbox.h b/include/linux/mai=
-lbox/mtk-cmdq-mailbox.h
-> index f78a08e7c6ed..fdda995a69ce 100644
-> --- a/include/linux/mailbox/mtk-cmdq-mailbox.h
-> +++ b/include/linux/mailbox/mtk-cmdq-mailbox.h
-> @@ -79,6 +79,17 @@ struct cmdq_pkt {
->         bool                    loop;
->  };
->
-> +struct cmdq_sec_plat {
-> +       struct device *gce_dev;
-> +       void __iomem *base;
-> +       dma_addr_t base_pa;
-> +       u32 hwid;
-> +       u32 gce_num;
-> +       struct clk_bulk_data *clocks;
-> +       u32 thread_nr;
-> +       u32 cmdq_event;
-> +};
-I feel this should be in mtk-cmdq-sec-mailbox.h.
+>  
+>  static void
+> @@ -427,7 +427,7 @@ static void ext_pwm_disable_backlight(const struct drm_connector_state *old_conn
+>  	intel_backlight_set_pwm_level(old_conn_state, level);
+>  
+>  	panel->backlight.pwm_state.enabled = false;
+> -	pwm_apply_state(panel->backlight.pwm, &panel->backlight.pwm_state);
+> +	pwm_apply_cansleep(panel->backlight.pwm, &panel->backlight.pwm_state);
+>  }
+>  
+>  void intel_backlight_disable(const struct drm_connector_state *old_conn_state)
+> @@ -749,7 +749,7 @@ static void ext_pwm_enable_backlight(const struct intel_crtc_state *crtc_state,
+>  
+>  	pwm_set_relative_duty_cycle(&panel->backlight.pwm_state, level, 100);
+>  	panel->backlight.pwm_state.enabled = true;
+> -	pwm_apply_state(panel->backlight.pwm, &panel->backlight.pwm_state);
+> +	pwm_apply_cansleep(panel->backlight.pwm, &panel->backlight.pwm_state);
+>  }
+>  
+>  static void __intel_backlight_enable(const struct intel_crtc_state *crtc_state,
 
-Regards,
-Fei
+The i915 parts are
 
+Acked-by: Jani Nikula <jani.nikula@intel.com>
 
+for merging via whichever tree you find most convenient, and with
+whatever naming you end up with.
 
-> +
->  u8 cmdq_get_shift_pa(struct mbox_chan *chan);
->
->  #endif /* __MTK_CMDQ_MAILBOX_H__ */
-> --
-> 2.18.0
->
->
+-- 
+Jani Nikula, Intel
