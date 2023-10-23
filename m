@@ -2,148 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 246987D2E17
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FC97D2DFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbjJWJWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:22:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46688 "EHLO
+        id S231732AbjJWJVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232934AbjJWJVo (ORCPT
+        with ESMTP id S230056AbjJWJVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:21:44 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B448810D3;
-        Mon, 23 Oct 2023 02:21:40 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39N8Mr5o029770;
-        Mon, 23 Oct 2023 09:21:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=4+tRrjJHW/bnHCSG3tKfhqziZi7X03Kxepqnry+DFSc=;
- b=e7H46TRXMqYfDXMEDU99U/Hs/0InS3KfetgoRNVQ73E2F5WiwgDfwBF/PX0Hk0I3AiT8
- lqAHp/oFVej6Pqmf3hRojCyo0Q/AICK87vphBShjdKXp9AKGAatYaaazFKDgt+HEqdSY
- D0UZbWomDm+H5V5l7Nw7fLpYien3UQnmck7pjC5EK7wgC7jke9g92kbPS0ZhmdenLr4b
- NyiOsOQala9wpSHakQG0KeypnIhGfFdxPX+jdtrr8mnfd+WKvOOk3CWsZZuuS6HeInlb
- edxJGNbJvcKQeUSjwapycjk9I7iqfrcYI0YjGmps17bLVBDiW39/fKxCuEUv+ytFzfbJ Lw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv6873krx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 09:21:37 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39N9LZYg018595
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 09:21:36 GMT
-Received: from zhenhuah-gv.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 23 Oct 2023 02:21:30 -0700
-From:   Zhenhua Huang <quic_zhenhuah@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        <quic_tingweiz@quicinc.com>,
-        Zhenhua Huang <quic_zhenhuah@quicinc.com>
-Subject: [PATCH v1 5/5] arm64: dts: qcom: sm8250: Add memory dump node
-Date:   Mon, 23 Oct 2023 17:20:57 +0800
-Message-ID: <1698052857-6918-6-git-send-email-quic_zhenhuah@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1698052857-6918-1-git-send-email-quic_zhenhuah@quicinc.com>
-References: <1698052857-6918-1-git-send-email-quic_zhenhuah@quicinc.com>
+        Mon, 23 Oct 2023 05:21:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33338F5;
+        Mon, 23 Oct 2023 02:21:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698052870; x=1729588870;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=p1SAne+x2Vqn1d6KCvK50Z1tyZPw11rQLG9JPCmxBzc=;
+  b=hcrlfluXJjwzz25dpO1hf1++djIm+WBKaCWBfTkITLBFwwBOBEACXY9x
+   gsRdKAoj3xbbMXDlk4ZAko0kIA6KPy/GUcXBSw4WdfiXIWV0T7W5dAs2K
+   kEp6ga8/8NgioM8ODCQ5ba3pO25yOJVnmtm4bDEUA+EsnaFRyUHSItAd+
+   wOXMLrLFlGQGsRjhZmRSlRxJj7k+vOqBsBWAHBukoVBYH/oU3vBeIWBMh
+   GuqeaNhRZXrXiKA0vO6Sl9V3LG17crEt0wlJLFqKYSyL9CEgEBGf76KtX
+   mPvtvSyLJv3J19rxrg5DLouwUOyaOphkOH0AmIxYAWvUVddI6iV3IQXzr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="453270585"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="453270585"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 02:21:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="848737994"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="848737994"
+Received: from foliveix-mobl5.amr.corp.intel.com ([10.251.211.194])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 02:21:07 -0700
+Date:   Mon, 23 Oct 2023 12:21:01 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] tty: serial: 8250: Fix MOXA RS422/RS485 PCIe
+ boards not work by default
+In-Reply-To: <20231018091739.10125-6-crescentcy.hsieh@moxa.com>
+Message-ID: <f04e4269-0d9-ed2d-cfd1-6a9d462182a5@linux.intel.com>
+References: <20231018091739.10125-1-crescentcy.hsieh@moxa.com> <20231018091739.10125-6-crescentcy.hsieh@moxa.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: KE3nraj1n_KaN-1mmnFlERsTbk5orANf
-X-Proofpoint-ORIG-GUID: KE3nraj1n_KaN-1mmnFlERsTbk5orANf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_06,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- suspectscore=0 priorityscore=1501 bulkscore=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=744 impostorscore=0
- spamscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310230080
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device node for memory dump on sm8250. Usage of memory dump
-is to populate configuration in reserved memory, allowing
-firmware to do the dump accordingly.
+On Wed, 18 Oct 2023, Crescent CY Hsieh wrote:
 
-Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+> MOXA PCIe RS422/RS485 boards will not function by default because of the
+> initial default serial interface of all MOXA PCIe boards is set to RS232.
+> 
+> This patch fixes the problem above by setting the initial default serial
+> interface to RS422 for those MOXA RS422/RS485 PCIe boards.
+> 
+> Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+> ---
+>  drivers/tty/serial/8250/8250_pci.c | 52 ++++++++++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+> index b2be3783f..29a28e72b 100644
+> --- a/drivers/tty/serial/8250/8250_pci.c
+> +++ b/drivers/tty/serial/8250/8250_pci.c
+> @@ -1968,6 +1968,12 @@ pci_sunix_setup(struct serial_private *priv,
+>  
+>  #define MOXA_GPIO_PIN2	BIT(2)
+>  
+> +#define MOXA_RS232	0x00
+> +#define MOXA_RS422	0x01
+> +#define MOXA_RS485_4W	0x0B
+> +#define MOXA_RS485_2W	0x0F
+> +#define MOXA_UIR_OFFSET	0x04
+> +
+>  static bool pci_moxa_is_mini_pcie(unsigned short device)
+>  {
+>  	if (device == PCI_DEVICE_ID_MOXA_CP102N	||
+> @@ -1981,13 +1987,59 @@ static bool pci_moxa_is_mini_pcie(unsigned short device)
+>  	return false;
+>  }
+>  
+> +/*
+> + * The second digit of the MOXA PCIe device ID in hexadecimal indicates
+> + * which serial interface modes this board supports:
+> + *
+> + *	0x*0** - RS232
+> + *	0x*1** - RS232/RS422/RS485
+> + *	0x*3** - RS422/RS485
+> + *	0x*6** - RS232
+> + */
+> +static bool pci_moxa_match_second_digit(unsigned short device,
+> +					unsigned short pattern)
+> +{
+> +	return (device & 0x0F00) == pattern;
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index a4e58ad..d379524 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -674,6 +674,11 @@
- 		reg = <0x0 0x80000000 0x0 0x0>;
- 	};
- 
-+	mem-dump {
-+		compatible = "qcom,mem-dump";
-+		memory-region = <&dump_mem>;
-+	};
-+
- 	pmu {
- 		compatible = "arm,armv8-pmuv3";
- 		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
-@@ -851,6 +856,13 @@
- 			reg = <0x0 0x8bf00000 0x0 0x4600000>;
- 			no-map;
- 		};
-+
-+		dump_mem: mem-dump-region {
-+			compatible = "shared-dma-pool";
-+			size = <0 0x2800000>;
-+			alloc-ranges = <0x0 0x00000000 0x0 0xffffffff>;
-+			reusable;
-+		};
- 	};
- 
- 	smem {
-@@ -5424,6 +5436,25 @@
- 			};
- 		};
- 
-+		sram@146bf000 {
-+			compatible = "qcom,sm8250-imem", "syscon", "simple-mfd";
-+			reg = <0 0x146bf000 0 0x1000>;
-+			ranges = <0 0 0x146bf000 0x1000>;
-+
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			mem-dump-table@10 {
-+			    compatible = "qcom,qcom-imem-mem-dump-table";
-+			    reg = <0x10 0x8>;
-+			};
-+
-+			mem-dump-table-size@724 {
-+				compatible = "qcom,qcom-imem-mem-dump-table-size";
-+				reg = <0x724 0x8>;
-+			};
-+		};
-+
- 		apps_smmu: iommu@15000000 {
- 			compatible = "qcom,sm8250-smmu-500", "qcom,smmu-500", "arm,mmu-500";
- 			reg = <0 0x15000000 0 0x100000>;
+Define a named field, not literal.
+
+IMO, the function name is not good because it tells what code does, not 
+why it does. I think the name should be based on .
+
+> +}
+> +
+> +static int pci_moxa_set_interface(const struct pci_dev *dev,
+> +				  unsigned int port_idx,
+> +				  u8 mode)
+> +{
+> +	resource_size_t iobar_addr = pci_resource_start(dev, 2);
+> +	resource_size_t UIR_addr = iobar_addr + MOXA_UIR_OFFSET + port_idx / 2;
+> +	u8 val;
+> +
+> +	val = inb(UIR_addr);
+> +
+> +	if (port_idx % 2) {
+> +		val &= 0x0F;
+> +		val |= mode << 4;
+> +	} else {
+> +		val &= 0xF0;
+> +		val |= mode;
+
+These should use the typical pattern instead:
+
+	val &= ~NAMED_DEFINE;
+	val |= FIELD_PREP(NAMED_DEFINE, mode);
+
+Also, don't forget to add bitfield.h if it's not there yet among the 
+includes.
+
 -- 
-2.7.4
+ i.
 
+
+
+> +	}
+> +	outb(val, UIR_addr);
+> +
+> +	return 0;
+> +}
+> +
+>  static int pci_moxa_init(struct pci_dev *dev)
+>  {
+>  	unsigned short device = dev->device;
+>  	resource_size_t iobar_addr = pci_resource_start(dev, 2);
+> +	unsigned int i;
+>  	unsigned int num_ports = (device & 0x00F0) >> 4;
+
+Put declaration of i after num_ports.
+
+>  	u8 val;
+>  
+> +	/*
+> +	 * For the device IDs of MOXA PCIe boards match the pattern 0x*3**,
+> +	 * the initial default serial interface mode should be set to RS422.
+> +	 */
+> +	if (pci_moxa_match_second_digit(device, 0x0300)) {
+
+Name the literal with define, once you have better name for the function 
+and no literal, the comment is no longer necessary at all because the code 
+will document itself much better!
+
+> +		for (i = 0; i < num_ports; ++i)
+> +			pci_moxa_set_interface(dev, i, MOXA_RS422);
+> +	}
+>  	/*
+>  	 * Enable hardware buffer to prevent break signal output when system boots up.
+>  	 * This hardware buffer is only supported on Mini PCIe series.
+> 
