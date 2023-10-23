@@ -2,70 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DEA7D3FE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD2C7D3FEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 21:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbjJWTL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 15:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42974 "EHLO
+        id S231310AbjJWTL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 15:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbjJWTLZ (ORCPT
+        with ESMTP id S229499AbjJWTLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 15:11:25 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F37CA9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:11:23 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507e85ebf50so3655339e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:11:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698088281; x=1698693081; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IdB/BGfiU50tq91OXEW4jEb/ithHfUpM77EyD2syuso=;
-        b=IS7CutfvZvK07uFf0Jj4d+Ej5q4Xu5nL7NMxj/OQrzQC9xbr6mbBb6EhbDgOxD/Xl8
-         sWO5cJ2O2Up0ZfgfwBH0JGN7N+TY/r1rwGs/tyBYFbE6C1QN7K5j9tkR984jeXLJkamZ
-         urg5UM5zbEzKfUkNvXvD0v3nmGG2AsTULlQSJ82Vddqw3xBLozBJ4uJzzm2IgVrw4vyr
-         QpM2EHctQu3anSgrkQgR5ZcMdZEBbcWd9wXwOruhsbVgqj2IRgRcFjbva3E3GGa4NU4Y
-         O4gp70iGO4TKbWsYbkFwvOeUt9xiXSToFqnDKMY7GFIW0fOodll7TpYMhCMr0++RBLQI
-         2/Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698088281; x=1698693081;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IdB/BGfiU50tq91OXEW4jEb/ithHfUpM77EyD2syuso=;
-        b=fXhFeyP2GPhXlaZSMpFWsSo33bw5N0OkVxDs9YLhinDT9jJaFCAdmPM5IeR/BlD3Y6
-         +O5UBpb4QZPmJqDue6bKaqG+zmZC+xdYcFcPWXdpE9MNy9Wqlk23Q22pBSPKYlq3dAVH
-         0kkgUv2wrI/0iUKRboANxr7Z3xbhHA5szeMipJOoIHRKrBgCUFpCQiYdgwzTHCVCvFVT
-         OYGQq6vq6Se2yNSo1O3DVRigT3D3Z1FlJIIVhXYEjIq2QV845p3u7L+eIp9rxtmABEYf
-         6LLaHRUCWngBVFsctwqU49GKw1pCb4VH+htaNY999jrJ+/y+Sij6me0yDB4OIp3VrGFJ
-         KIZw==
-X-Gm-Message-State: AOJu0YxuSJ09eNw1lkz6cZh/xFmuVVmKgs6M62g0Lo63WS8Z921SuuY6
-        yFEl2MAvdP59hRFO8ioov3U=
-X-Google-Smtp-Source: AGHT+IH56wKrPVXYBFmpJ2Rc5ew0HtICHX6pQamTxBjFaB06LNEkOjvvgCoHVyCC782dakNLnMYRtQ==
-X-Received: by 2002:a19:f807:0:b0:507:96c7:eb1a with SMTP id a7-20020a19f807000000b0050796c7eb1amr6357924lff.54.1698088281341;
-        Mon, 23 Oct 2023 12:11:21 -0700 (PDT)
-Received: from Slimbook.. (181-251-201-31.ftth.glasoperator.nl. [31.201.251.181])
-        by smtp.gmail.com with ESMTPSA id vg18-20020a170907d31200b009adc77fe164sm7062459ejc.66.2023.10.23.12.11.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 12:11:21 -0700 (PDT)
-From:   Bouke Sybren Haarsma <boukehaarsma23@gmail.com>
-To:     maarten.lankhorst@linux.intel.com
-Cc:     boukehaarsma23@gmail.com, mripard@kernel.org, tzimmermann@suse.de,
-        airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND 2/2] drm: panel-orientation-quirks: Add quirk for Ayn Loki Max
-Date:   Mon, 23 Oct 2023 21:10:59 +0200
-Message-ID: <20231023191059.19915-3-boukehaarsma23@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231023191059.19915-1-boukehaarsma23@gmail.com>
-References: <20231023191059.19915-1-boukehaarsma23@gmail.com>
+        Mon, 23 Oct 2023 15:11:55 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id B1416101
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 12:11:50 -0700 (PDT)
+Received: (qmail 432947 invoked by uid 1000); 23 Oct 2023 15:11:49 -0400
+Date:   Mon, 23 Oct 2023 15:11:49 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Meng Li <Meng.Li@windriver.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        usb-storage@lists.one-eyed-alien.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: storage: add shutdown function for usb storage
+ driver
+Message-ID: <33bd0779-bfe7-4c87-8fe6-ea8455df3b6b@rowland.harvard.edu>
+References: <20231023054111.2744872-1-Meng.Li@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023054111.2744872-1-Meng.Li@windriver.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,34 +38,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add quirk orientation for Ayn Loki Max model.
+On Mon, Oct 23, 2023 at 01:41:11PM +0800, Meng Li wrote:
+> On ls1043/ls1046 rdb platform, if a PCIe-USB host controller is installed, and
+> an USB disk is also installed on the PCIe card, when executing "reboot -f" to
+> reset the board, there will be below error reported:
+> usb 2-2: device not accepting address 2, error -108
 
-This has been tested by JELOS team that uses their
-own patched kernel for a while now and confirmed by
-users in the ChimeraOS discord servers.
+Do you mean that this error occurs after the system has rebooted?  Or do 
+you mean that the error is reported while the reboot is taking place?
 
-Signed-off-by: Bouke Sybren Haarsma <boukehaarsma23@gmail.com>
----
- drivers/gpu/drm/drm_panel_orientation_quirks.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+That "device not accepting address" error message is generated by the 
+USB core, not by the usb-storage driver.  How will changing usb-storage 
+help fix the problem?
 
-diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-index 7466354c7e5b..5adf9ff07c3e 100644
---- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
-+++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-@@ -196,6 +196,12 @@ static const struct dmi_system_id orientation_data[] = {
- 		  DMI_MATCH(DMI_BOARD_NAME, "NEXT"),
- 		},
- 		.driver_data = (void *)&lcd800x1280_rightside_up,
-+	}, {    /* AYN Loki Max */
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ayn"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Loki Max"),
-+		},
-+		.driver_data = (void *)&lcd1080x1920_leftside_up,
- 	}, {	/* AYN Loki Zero */
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ayn"),
--- 
-2.41.0
+> This issue is introduced by linux-yocto commit 837547b64a34("driver: net:
+> dpaa: release resource when executing kexec") that cause to spend more
+> time on shutdown operation. So, the 2 platforms with DPAA are not reset
+> immediately after executing force reboot command. Moreover, the usb-storage
+> thread is still in active status, there is still control data transferred between
+> USB disk and PCIe host controller. But now the shutdown callback of usb pci driver
+> had been invoked to stop the PCIe host controller completely. In this situation,
+> the data transferring failed and report error.
 
+That's _supposed_ to happen.  By design, the "reboot -f" command is 
+meant to carry out an immediate reboot, without using the init system, 
+unmounting filesystems, or doing other cleanup operations.
+
+If you want a clean reboot with no errors, don't use the "-f" option.
+
+>  Therefore, add shutdown function
+> used to disconnect the usb mass storage device to avoid data transferring under
+> the stopped status of PCIe device.
+
+I don't see how this will fix the problems associated with a forced 
+reboot.  How is preventing data from being transferred any better than 
+getting an error when you do try to transfer it?
+
+> Signed-off-by: Meng Li <Meng.Li@windriver.com>
+> ---
+>  drivers/usb/storage/usb.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/usb/storage/usb.c b/drivers/usb/storage/usb.c
+> index ed7c6ad96a74..e076d7e3784f 100644
+> --- a/drivers/usb/storage/usb.c
+> +++ b/drivers/usb/storage/usb.c
+> @@ -1142,6 +1142,15 @@ static int storage_probe(struct usb_interface *intf,
+>  	return result;
+>  }
+>  
+> +static void usb_stor_shutdown(struct device *dev)
+> +{
+> +	struct usb_driver *driver = to_usb_driver(dev->driver);
+> +	struct usb_interface *intf = to_usb_interface(dev);
+> +
+> +	if (driver->disconnect)
+> +		driver->disconnect(intf);
+> +}
+> +
+>  static struct usb_driver usb_storage_driver = {
+>  	.name =		DRV_NAME,
+>  	.probe =	storage_probe,
+> @@ -1151,6 +1160,7 @@ static struct usb_driver usb_storage_driver = {
+>  	.reset_resume =	usb_stor_reset_resume,
+>  	.pre_reset =	usb_stor_pre_reset,
+>  	.post_reset =	usb_stor_post_reset,
+> +	.drvwrap.driver.shutdown = usb_stor_shutdown,
+
+This definitely looks like a layering violation.  If devices are to be 
+disconnected during a system shutdown, the USB core should take care of 
+it.  Not the individual device drivers.
+
+What will happen if you make this change to usb-storage?  In a little 
+while you'll want to do the same thing to the uas driver.  And then the 
+usbhid driver.  And the usb serial drivers.  And so on...
+
+This does not seem like the best solution to whatever problem you want 
+to solve.
+
+>  	.id_table =	usb_storage_usb_ids,
+>  	.supports_autosuspend = 1,
+>  	.soft_unbind =	1,
+
+Alan Stern
