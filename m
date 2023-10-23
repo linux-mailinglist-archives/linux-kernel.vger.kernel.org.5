@@ -2,117 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAC87D2789
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 02:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C277D27B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 02:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232882AbjJWApv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 20:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
+        id S232916AbjJWAtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 20:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbjJWAps (ORCPT
+        with ESMTP id S232910AbjJWAtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 20:45:48 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73131E7;
-        Sun, 22 Oct 2023 17:45:46 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6b44befac59so2749685b3a.0;
-        Sun, 22 Oct 2023 17:45:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698021946; x=1698626746; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GNPV+1khYPNoiNENeKlZWWTYFEnA3SXV9H6z2dWOrpM=;
-        b=kGwKMs3O/rMJtlcK+naL3fv7yiDiU5S4VOVzL6WHdcNNw3eUhSAHpKiPATv7ZlSfFA
-         q1Xs7CFFDcXXIEuu8afPF+Z+Rzr8XdxSIqJHFDJ+7pFd7rjSSIGGVrJ6JWodaAxrJr+U
-         64w+VQRqDvV9IGYE3iJWX/bfQxGcrduvdsStv5ifECe9O0U+oua+5LT087kjtaU+n3Vf
-         qGN6ExizYQFdswyg/BTwSa2sxbo88njsKQiTXCXuERk/AJPOwwvrCfNxKEyTwBY2z04Z
-         Uur4Tg1PbsD3Go1L7cPVIx77LaK+lDXgYYkln3r2eJweZ9pw1WPf49eCad8ija+BjIC5
-         l97A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698021946; x=1698626746;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GNPV+1khYPNoiNENeKlZWWTYFEnA3SXV9H6z2dWOrpM=;
-        b=Ee19VpBVaS0VXYB7Jq6YtMKwpDabwQG5FV/FkAWYVWFqd4+160iEHsySXdw3H2VfTZ
-         RFtYiPIeDKDXitQ76+vtD/nfYy1QfN8+0h8BagtzNRC5TluMGdtNu8rf60E3r8LjQK27
-         10t7RwJ1Dci0h8Ux5avvqkjyFeAORmNBF2/4oQxwlcAoHJZzGaAtWZ+CNjpfGTAXTm1w
-         VnJIgrDwI26CozvUltmLeCemUk0X6by1iJO6QXGlCTmxldeffu5R/tJUTSBBmeyJi7ZQ
-         /XvOwDjfPcxah2ghKDIW9dIGYkvtNYJeDNnF+2RVVbUSCZAOtrYmRD49VpZSCFp5nYDe
-         JqOw==
-X-Gm-Message-State: AOJu0YyzAw42nkOUibFbNWgTL3lpil/Cz/pskWQ8WVsVMFFcs0N+A6t5
-        lOp+s6ouZySk//38JIT7Wdk=
-X-Google-Smtp-Source: AGHT+IG8y0/YzjOTgyS/PVsCvncSF0Ip6rs/IDzBlHqt63zc+/GbcNXSo38GekWUOS0KxlNw5D0ShA==
-X-Received: by 2002:a05:6a20:1592:b0:17a:e2b9:77e0 with SMTP id h18-20020a056a20159200b0017ae2b977e0mr9905847pzj.7.1698021945796;
-        Sun, 22 Oct 2023 17:45:45 -0700 (PDT)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id k11-20020a056a00134b00b00692b2a63cccsm4963258pfu.210.2023.10.22.17.45.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Oct 2023 17:45:45 -0700 (PDT)
-Message-ID: <6c7a92d1-fe8e-4d05-854d-127b54907a46@gmail.com>
-Date:   Sun, 22 Oct 2023 21:45:41 -0300
+        Sun, 22 Oct 2023 20:49:01 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA37EE;
+        Sun, 22 Oct 2023 17:48:59 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 10B2A5C023A;
+        Sun, 22 Oct 2023 20:48:58 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Sun, 22 Oct 2023 20:48:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1698022138; x=1698108538; bh=FBzhOk1/MoLTpPe2mqzKOYM+gO3ovGaCBaJ
+        jCIQKups=; b=WVKo7cvTpb78V5zwABknuMAOGhhEkMF7+2tDi3O19sXGj6kGGD3
+        OIId9D3ZjIA1SYYUE4L4yoChKcTOosEzULTFdJH3HsqEndJZtW7BdIIgRSzO2xAR
+        cf3WyVOh6pT8HlC621Z16KFGObEccJsGxH88GHtoMIYWe+5rJaRQLnWWL6U1b3gh
+        0nd4UGaS2zazfC4gQF22iZRpspDsWVmN2hrYv/gQGk6ACBQ2iFfA41gvDQ5GSTJd
+        w1ZeqOdprfIb1w2WbA5yt4TPAHwj6uU2hEJ4ZQLoPN387AOnvNk3kFc/MV7zc77I
+        Ze6494508QGmfsyHC09/MpvlfEpWUp0ziog==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1698022138; x=1698108538; bh=FBzhOk1/MoLTpPe2mqzKOYM+gO3ovGaCBaJ
+        jCIQKups=; b=WWGx/VLx1wlsti84Lv7DUJUGP5PV/JV5xlPp9DHFK4IAjp96CVD
+        KNPrlIQe2DfCMv2OhfExGy5Hxl190N8wyOtqbAf9/G4SgQ1kF6q9YbZDKXghj/yG
+        2qhvBh3InrXLZllHXM+NHWLnh4OMhfgo9WAuLS3GGIFwMzFvi7s9tg16WQPfQmJa
+        QQEA729E/WWP8uThNI5GRM/EEbNbRSNIT7O/IDPgq9l0SX1sjqBTSSwxzZLhbXO0
+        X1KJf4dUE2MNC2YOJSHhzZ6FHBm0hVuxB+BlcVjbZZCLas3AQ7l4jdifxs+Ka9lY
+        jHi7wS4GleB+K/er3K9WSWcz7HZjVGeeEmw==
+X-ME-Sender: <xms:-cI1ZR4cetO7qgvDHFP3WPsxL3LaDkh9WzVcG_scPgIx3w10bb76PQ>
+    <xme:-cI1Ze4I3_e-PU2q681-szlCSSiAGHGoCQ6tIdckFamyDKXiMfJ0XjFNEjzyR7sOm
+    QEN-zRIRCk0>
+X-ME-Received: <xmr:-cI1ZYf5xIJISie6MP6hRsCH3LuVm47p5DIL2SyZUBtQDyWZbTp7kKRZ4gh9ZQeqBu-9jYCZxsYYnxc4f_BK4kbUF46529UzyUwxzsaZrJv-Pb6l6Z5JSUZs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeehgddvkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfhvfevfhfujggtgfesthekredttdefjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    ekueffkefhffetjeeikeevtdfhgefhgeetfedvgeevveejgeffleelffekveejtdenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:-cI1ZaL0ZAWpC0hup45FCz6RnuKLyiLjUO43efaoxXzptTYqpacqRA>
+    <xmx:-cI1ZVJ5YT0AX0XYY8AUIEnZUS_mZfE2xlq_hwasm7nAFr02zvQOxQ>
+    <xmx:-cI1ZTzw_iljQw22xyqNva7PKftPnwL3QTEw0ii_1S0nvEoBySmBxA>
+    <xmx:-sI1Zaqq9OsvlU3NflbwcJUWXWmK-yG8a_RIGX0I8jrtKXfzhIG2bg>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 22 Oct 2023 20:48:53 -0400 (EDT)
+Message-ID: <9217caeb-0d7e-b101-33f0-859da175a6ef@themaw.net>
+Date:   Mon, 23 Oct 2023 08:48:50 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/1] scripts: Build per module Rust crates
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Ian Kent <raven@themaw.net>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, linux-fsdevel@vger.kernel.org,
+        autofs@vger.kernel.org, Bill O'Donnell <bodonnel@redhat.com>,
+        Christian Brauner <brauner@kernel.org>
+References: <CA+G9fYt75r4i39DuB4E3y6jRLaLoSEHGbBcJy=AQZBQ2SmBbiQ@mail.gmail.com>
+ <71adfca4-4e80-4a93-b480-3031e26db409@app.fastmail.com>
+ <CADYN=9+HDwqAz-eLV7uVuMa+_+foj+_keSG-TmD2imkwVJ_mpQ@mail.gmail.com>
+ <432f1c1c-2f77-4b1b-b3f8-28330fd6bac3@kadam.mountain>
+ <f1cddf6e-2103-4786-84ff-12c305341d7c@app.fastmail.com>
+ <11ba98f2-2e59-d64b-1a1a-fd32fd8ba358@themaw.net>
 Content-Language: en-US
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org
-References: <20231006155739.246381-1-yakoyoku@gmail.com>
- <20231006155739.246381-2-yakoyoku@gmail.com>
- <CAK7LNAQhPRkSpBQcn44dPMmnBVR=aTxMpG3vS4-=FkgQ5T2PVQ@mail.gmail.com>
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <CAK7LNAQhPRkSpBQcn44dPMmnBVR=aTxMpG3vS4-=FkgQ5T2PVQ@mail.gmail.com>
+Subject: Re: autofs: add autofs_parse_fd()
+In-Reply-To: <11ba98f2-2e59-d64b-1a1a-fd32fd8ba358@themaw.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/23 13:21, Masahiro Yamada wrote:
-> On Sat, Oct 7, 2023 at 12:57 AM Martin Rodriguez Reboredo
-> <yakoyoku@gmail.com> wrote:
+On 20/10/23 21:09, Ian Kent wrote:
+> On 20/10/23 19:23, Arnd Bergmann wrote:
+>> On Fri, Oct 20, 2023, at 12:45, Dan Carpenter wrote:
+>>> On Fri, Oct 20, 2023 at 11:55:57AM +0200, Anders Roxell wrote:
+>>>> On Fri, 20 Oct 2023 at 08:37, Arnd Bergmann <arnd@arndb.de> wrote:
+>>>>> On Thu, Oct 19, 2023, at 17:27, Naresh Kamboju wrote:
+>>>>>> The qemu-x86_64 and x86_64 booting with 64bit kernel and 32bit 
+>>>>>> rootfs we call
+>>>>>> it as compat mode boot testing. Recently it started to failed to 
+>>>>>> get login
+>>>>>> prompt.
+>>>>>>
+>>>>>> We have not seen any kernel crash logs.
+>>>>>>
+>>>>>> Anders, bisection is pointing to first bad commit,
+>>>>>> 546694b8f658 autofs: add autofs_parse_fd()
+>>>>>>
+>>>>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>>>>> Reported-by: Anders Roxell <anders.roxell@linaro.org>
+>>>>> I tried to find something in that commit that would be different
+>>>>> in compat mode, but don't see anything at all -- this appears
+>>>>> to be just a simple refactoring of the code, unlike the commits
+>>>>> that immediately follow it and that do change the mount
+>>>>> interface.
+>>>>>
+>>>>> Unfortunately this makes it impossible to just revert the commit
+>>>>> on top of linux-next. Can you double-check your bisection by
+>>>>> testing 546694b8f658 and the commit before it again?
+>>>> I tried these two patches again:
+>>>> 546694b8f658 ("autofs: add autofs_parse_fd()") - doesn't boot
+>>>> bc69fdde0ae1 ("autofs: refactor autofs_prepare_pipe()") - boots
+>>>>
+>>> One difference that I notice between those two patches is that we no
+>>> long call autofs_prepare_pipe().  We just call autofs_check_pipe().
+>> Indeed, so some of the f_flags end up being different. I assumed
+>> this was done intentionally, but it might be worth checking if
+>> the patch below makes any difference when the flags get put
+>> back the way they were. This is probably not the correct fix, but
+>> may help figure out what is going on. It should apply to anything
+>> from 546694b8f658 ("autofs: add autofs_parse_fd()") to the current
+>> linux-next:
 >>
->> Enables compiling Rust crates as dependencies of kernel modules.
->>
->> When a composite object depends on an `.rlib` file, which by the way is
->> a current ar archive, Kbuild will compile it from its base Rust source
->> and link it.
->>
->> This makes possible to have Rust bindings for a subsystem that is
->> compiled as a module.
->>
->> Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> 
-> 
-> I could not understand how this will work because
-> there is no explanation how to use *.rlib in the later
-> build steps.
-> 
-> If I understand correctly, does this intend to link *.rlib
-> as a part of modules?
+>> --- a/fs/autofs/inode.c
+>> +++ b/fs/autofs/inode.c
+>> @@ -358,6 +358,11 @@ static int autofs_fill_super(struct super_block 
+>> *s, struct fs_context *fc)
+>>          pr_debug("pipe fd = %d, pgrp = %u\n",
+>>                   sbi->pipefd, pid_nr(sbi->oz_pgrp));
+>>   +        /* We want a packet pipe */
+>> +        sbi->pipe->f_flags |= O_DIRECT;
+>> +        /* We don't expect -EAGAIN */
+>> +        sbi->pipe->f_flags &= ~O_NONBLOCK;
+>> +
+>
+>
+> That makes sense, we do want a packet pipe and that does also mean
+>
+> we don't want a non-blocking pipe, it will be interesting to see
+>
+> if that makes a difference. It's been a long time since Linus
+>
+> implemented that packet pipe and I can't remember now what the
+>
+> case was that lead to it.
 
-Yes, the purpose of this RFC is to link the *.rlib, its members
-specifically, as part of modules to avoid the scenario of having
-Rust bindings linked statically and their C counterparts dynamically.
+After thinking about this over the weekend I'm pretty sure my mistake
 
-I'll write a v2 that'll clarify its usage. I've made more progress
-locally and had run tests with success.
+is dropping the call to autofs_prepare_pipe() without adding the tail
+
+end of it into autofs_parse_fd().
+
+
+To explain a bit of history which I'll include in the fix description.
+
+During autofs v5 development I decided to stay with the existing usage
+
+instead of changing to a packed structure for autofs <=> user space
+
+communications which turned out to be a mistake on my part.
+
+
+Problems arose and they were fixed by allowing for the 64 bit to 32 bit
+
+size difference in the automount(8) code.
+
+
+Along the way systemd started to use autofs and eventually encountered
+
+this problem too. systemd refused to compensate for the length difference
+
+insisting it be fixed in the kernel. Fortunately Linus implemented the
+
+packetized pipe which resolved the problem in a straight forward and
+
+simple way.
+
+
+So I pretty sure that the cause of the problem is the inadvertent dropping
+
+of the flags setting in autofs_fill_super() that Arnd spotted although I
+
+don't think putting it in autofs_fill_super() is the right thing to do.
+
+
+I'll produce a patch today which includes most of this explanation for
+
+future travelers ...
+
+
+>
+>
+> Ian
+>
+>>          sbi->flags &= ~AUTOFS_SBI_CATATONIC;
+>>            /*
