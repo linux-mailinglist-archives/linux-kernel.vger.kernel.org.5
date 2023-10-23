@@ -2,168 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC287D3DD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25FE7D3DD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbjJWReE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
+        id S233522AbjJWReG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233934AbjJWRd5 (ORCPT
+        with ESMTP id S233942AbjJWRd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Oct 2023 13:33:57 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CCA90
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:33:54 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5a84204e7aeso35023207b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:33:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698082434; x=1698687234; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jd2yjNaoQ2yfBc07aAbwU+MnAPablZLDgfD6SYP0lAY=;
-        b=oicsvCGmIBChkMYiu1IsCgFdLy95Mw2W4nn05UtI1lPw/Jl9JjreOTKe/DixFTSqlu
-         bJ82I0CTktajVEx9ASvwEh4kgttZ268Yq7N4XIwmTPAPl3MfAgkvXONG09XqJGr1rauy
-         ib9BIWOGiqsNmwvz1KewESasZ5mxRECu7PyVhs8AO8Zr+sE1gqHhrdZQin3nLFUm3RV1
-         Is3dBY6bKwJgkA83b0fYqq9E3tQtq6q8mOnd+1WfxS5BnAEYt471atT7DCv0DtbFDDR4
-         XcMs8CqdNlNjsMs2z7AuMuTihS2SaOqy6BNrzCo6WYueejwuHWgZQqm8PlJEc66SXcRP
-         kkpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698082434; x=1698687234;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jd2yjNaoQ2yfBc07aAbwU+MnAPablZLDgfD6SYP0lAY=;
-        b=kWG4J50SVxADOli+lVeFbSihNkeHn+CbXJvFWcPNY+2dH6magC3hi/ovqmV1fWtnD8
-         xxA5OUIjBkbNJQAQT102hIzlI5AWDVecZe+hnIN/WuyjF1PFmUBzvGHLpD3YE+NItGDh
-         YB5QmiqO74e/G6qvUaOFE4z7ZjveoltgCWrkKAcFgCQxYZU8dRO5hrjr6CTzPTokQBe9
-         Z7OhTcikV+DEUM0ISEdsm2DVA8XRadrwnktbEoQY2MZ821Jd9Y7/b7ODZ85bZIWCpwBa
-         sXuhdfAE8NohbK+eNRHaXCHROkZbMZbAx+4C8+qMaaTVbESAcWRWQskD8BZ9/sgb2W4P
-         6BHw==
-X-Gm-Message-State: AOJu0YxQF5XQxJDlUZvR2SxqXl4wHIhcAOTcOwdVQHcl4xQN4Zpn+Hts
-        8B3KWYbYTwUAgYrzzIFKMFFrf/RHNO8oeyMz7M7aaQ==
-X-Google-Smtp-Source: AGHT+IG+jQOlcjwF2YFFeRq9/LDUOmjHQCMNtQEttsid1pQGTmO6b4NBzjnjTdGq6JLSzjV0w9Ypj8Tb0eqN1ffJMmM=
-X-Received: by 2002:a0d:d943:0:b0:5a7:bcbb:b948 with SMTP id
- b64-20020a0dd943000000b005a7bcbbb948mr11236411ywe.15.1698082433789; Mon, 23
- Oct 2023 10:33:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E46C1;
+        Mon, 23 Oct 2023 10:33:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53682C433C8;
+        Mon, 23 Oct 2023 17:33:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698082435;
+        bh=4d7J4UL5e0se16HtXrPNAXciTYKxyup73uY3njGx/tc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rZZYcrZyJe7SIkIBEcxXv8DLargOmDFor0R5Wg1c8Zs2qP2sif0SJRN+HZHm034L4
+         Lr1pKF0ELhpLw7AnligOfRSqM5x2uvu6g5tagdVErPVluMvtzB8Z8uJKpejBs4c9eo
+         t1uuS14rnGCayd0d1QqemTvTCNbLAMYp6sP2gn0RDWyiFXfO0ZlbvFGT6sQSTTUg3T
+         OjtjVGY24jdMkqjjDSsAys0wWMBfEG5+yekGSe1hhjzBq3mShOfM842L+GdUdanOjN
+         T9zczlElvAuF6/1AoTxzki1nTwWvAazefXVPPop4ZSQR5Ly8aGPlBGzM9Jc27SPr7y
+         0BGfwgRhc1vRw==
+Date:   Mon, 23 Oct 2023 18:33:49 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Alexandre Mergnat <amergnat@baylibre.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Xinlei Lee <xinlei.lee@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 02/18] dt-bindings: display: mediatek: ccorr: add binding
+ for MT8365 SoC
+Message-ID: <20231023-marrow-modified-fdeff0fea45a@spud>
+References: <20231023-display-support-v1-0-5c860ed5c33b@baylibre.com>
+ <20231023-display-support-v1-2-5c860ed5c33b@baylibre.com>
+ <20231023-reshoot-liquefy-429aacb68694@spud>
 MIME-Version: 1.0
-References: <ZSlragGjFEw9QS1Y@x1n> <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com>
- <ZS2IjEP479WtVdMi@x1n> <8d187891-f131-4912-82d8-13112125b210@redhat.com>
- <ZS7ZqztMbhrG52JQ@x1n> <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com>
- <ZTGJHesvkV84c+l6@x1n> <81cf0943-e258-494c-812a-0c00b11cf807@redhat.com>
- <CAJuCfpHZWfjW530CvQCFx-PYNSaeQwkh-+Z6KgdfFyZHRGSEDQ@mail.gmail.com>
- <d34dfe82-3e31-4f85-8405-c582a0650688@redhat.com> <ZTVD18RgBfITsQC4@x1n>
- <1156ad46-1952-4892-8092-bfbb8588c3f3@redhat.com> <96899aa6-700b-41b9-ab11-2cae48d75549@redhat.com>
-In-Reply-To: <96899aa6-700b-41b9-ab11-2cae48d75549@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 23 Oct 2023 10:33:40 -0700
-Message-ID: <CAJuCfpF+ADAG=vn4y0EKo29j5zUx-TG=puF7Bq8oSp1_7T+OSw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="thOqX6IfbyWP13q3"
+Content-Disposition: inline
+In-Reply-To: <20231023-reshoot-liquefy-429aacb68694@spud>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 9:36=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 23.10.23 14:03, David Hildenbrand wrote:
-> > On 22.10.23 17:46, Peter Xu wrote:
-> >> On Fri, Oct 20, 2023 at 07:16:19PM +0200, David Hildenbrand wrote:
-> >>> These are rather the vibes I'm getting from Peter. "Why rename it, co=
-uld
-> >>> confuse people because the original patches are old", "Why exclude it=
- if it
-> >>> has been included in the original patches". Not the kind of reasoning=
- I can
-> >>> relate to when it comes to upstreaming some patches.
-> >>
-> >> You can't blame anyone if you misunderstood and biased the question.
-> >>
-> >> The first question is definitely valid, even until now.  You guys stil=
-l
-> >> prefer to rename it, which I'm totally fine with.
-> >>
-> >> The 2nd question is wrong from your interpretation.  That's not my poi=
-nt,
-> >> at least not starting from a few replies already.  What I was asking f=
-or is
-> >> why such page movement between mm is dangerous.  I don't think I get s=
-olid
-> >> answers even until now.
-> >>
-> >> Noticing "memcg is missing" is not an argument for "cross-mm is danger=
-ous",
-> >> it's a review comment.  Suren can address that.
-> >>
-> >> You'll propose a new feature that may tag an mm is not an argument eit=
-her,
-> >> if it's not merged yet.  We can also address that depending on what it=
- is,
-> >> also on which lands earlier.
-> >>
-> >> It'll be good to discuss these details even in a single-mm support.  A=
-nyone
-> >> would like to add that can already refer to discussion in this thread.
-> >>
-> >> I hope I'm clear.
-> >>
-> >
-> > I said everything I had to say, go read what I wrote.
->
-> Re-read your message after flying over first couple of paragraphs
-> previously a bit quick too quickly (can easily happen when I'm told that
-> I misunderstand questions and read them in a "biased" way).
->
-> I'll happy to discuss cross-mm support once we actually need it. I just
-> don't see the need to spend any energy on that right now, without any
-> users on the horizon.
->
-> [(a) I didn't blame anybody, I said that I don't understand the
-> reasoning. (b) I hope I made it clear that this is added complexity (and
-> not just currently dangerous) and so far I haven't heard a compelling
-> argument why we should do any of that or even spend our time discussing
-> that. (c) I never used "memcg is missing" as an argument for "cross-mm
-> is dangerous", all about added complexity without actual users. (d) "it
-> easily shows that there are cases  where this will require extra work --
-> without any current benefits" -- is IMHO a perfectly fine argument
-> against complexity that currently nobody needs]
 
-Thanks for the discussion, folks!
-I think posting the single-mm first and then following up with
-cross-mm and its test would help us move forward. That will provide
-functionality that is needed today quickly without unnecessary
-distractions and will give us more time to discuss cross-mm support.
-Also we will be able to test single-mm in isolation and make it more
-solid before moving onto cross-mm.
-I'll try to post the next version sometime this week.
-Thanks,
-Suren.
+--thOqX6IfbyWP13q3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> --
+On Mon, Oct 23, 2023 at 06:31:45PM +0100, Conor Dooley wrote:
+> On Mon, Oct 23, 2023 at 04:40:02PM +0200, Alexandre Mergnat wrote:
+> > Display Color Correction for MT8365 is compatible with another SoC.
+> > Then, add MT8365 binding along with MT8183 SoC.
+>=20
+> This commit message's first line is too vague & the second doesn't make
+> sense. I suspect something as succinct as "Document the display colour
+> correction on mt<foo>, which is compatible with that of the mt<bar>"
+> does what you are looking for.
+>=20
+> I suspect this is going to apply to the rest of the series...
+
+It does, as does the comment about s/binding/compatible/ I left on patch
+1.
+
+
+>=20
 > Cheers,
->
-> David / dhildenb
->
+> Conor.
+>=20
+>=20
+> >=20
+> > Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+> > ---
+> >  Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr.yaml=
+ | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/display/mediatek/mediate=
+k,ccorr.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+ccorr.yaml
+> > index 8c2a737237f2..9f8366763831 100644
+> > --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr=
+=2Eyaml
+> > +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr=
+=2Eyaml
+> > @@ -24,6 +24,9 @@ properties:
+> >        - enum:
+> >            - mediatek,mt8183-disp-ccorr
+> >            - mediatek,mt8192-disp-ccorr
+> > +      - items:
+> > +          - const: mediatek,mt8365-disp-ccorr
+> > +          - const: mediatek,mt8183-disp-ccorr
+> >        - items:
+> >            - enum:
+> >                - mediatek,mt8186-disp-ccorr
+> >=20
+> > --=20
+> > 2.25.1
+> >=20
+
+
+
+--thOqX6IfbyWP13q3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTaufAAKCRB4tDGHoIJi
+0kKzAQDMUo1M62BZW0+LDaZBbv8k7iM/aEWPjra25PQw/lkNHAD+Krqai8nG55h2
+m2Gi2YrEijqBX7inn96eMRSpD+rIfA8=
+=RW59
+-----END PGP SIGNATURE-----
+
+--thOqX6IfbyWP13q3--
