@@ -2,54 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9693D7D40A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 22:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28D27D40A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 22:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbjJWUJj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Oct 2023 16:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
+        id S230033AbjJWULY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 16:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjJWUJi (ORCPT
+        with ESMTP id S229498AbjJWULW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 16:09:38 -0400
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7712F9;
-        Mon, 23 Oct 2023 13:09:36 -0700 (PDT)
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-57de3096e25so325511eaf.1;
-        Mon, 23 Oct 2023 13:09:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698091776; x=1698696576;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VBRQn/+2CoCnRG/UpsIRpdz1Uxer0EBXhtYg8c4HrP8=;
-        b=F+8EPtuKJhSXVT9MmCijhEFG4yMGPV1ARLDfhI/l8H1gnrPrTvDkiyd3LycBMvnCfa
-         an4nAgSp+R9JAAdujvSvVjXAOePzdgZrUHHP6ytdkbkoY+JrXhHhpoXEVM5Ai/eAHkfX
-         ZQen0K+jpfV85aTmGncaOFha0JSEjqSgAp2YKVgrZe1hZEEp5hKGbU8asloQIjnuPCPa
-         UbdZXPDMoHn7XJuERK8nwXi2L2m5uwwTTOdJogTrxHFzopIXtgsilEg9oz7jSfmzP78A
-         UlBwFVtr9h/SoAoCj1luVM2jlz2tNdS8AI37qdUgUlLbD5DE01kKMIlLIpJFLAYND7gh
-         CLoQ==
-X-Gm-Message-State: AOJu0Yy3q/qrlDQrSiJWna1JMAgWAhips231IrVjqXux4a/JB9tGfXxE
-        5PXXCrMXVMbOkVMKxVhWpGOTPsnlqqFZxtlTUzvnI26p
-X-Google-Smtp-Source: AGHT+IGoqvQxwQn+qvVRNOgCRCySjLvm7UySkMEB0RQE4CLReVM7ZkEekFHMAZs1YAuLbjHJQCbuu6gpb0jhlXEaAsE=
-X-Received: by 2002:a4a:e7d1:0:b0:583:ec88:e0 with SMTP id y17-20020a4ae7d1000000b00583ec8800e0mr10230228oov.0.1698091775886;
- Mon, 23 Oct 2023 13:09:35 -0700 (PDT)
+        Mon, 23 Oct 2023 16:11:22 -0400
+Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8BC561A4;
+        Mon, 23 Oct 2023 13:11:19 -0700 (PDT)
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id C580F72C8D3;
+        Mon, 23 Oct 2023 23:11:18 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+        id BC0037CFF64; Mon, 23 Oct 2023 23:11:18 +0300 (IDT)
+Date:   Mon, 23 Oct 2023 23:11:18 +0300
+From:   "Dmitry V. Levin" <ldv@strace.io>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     dave.hansen@linux.intel.com, bp@alien8.de, x86@kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/uapi: fix SHADOW_STACK_SET_TOKEN type
+Message-ID: <20231023201118.GA19800@altlinux.org>
+References: <20231022222134.GA5334@altlinux.org>
+ <006699efc5ccdce1bd62f45ef2852ab0233e295c.camel@intel.com>
 MIME-Version: 1.0
-References: <cover.1698081019.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <cover.1698081019.git.christophe.jaillet@wanadoo.fr>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 23 Oct 2023 22:09:24 +0200
-Message-ID: <CAJZ5v0h9mfQoiok6URGaw7OHjHCFxPWDxiP68NGe9Ow-8PY0jA@mail.gmail.com>
-Subject: Re: [PATCH 0/4] ACPI: sysfs: Fix some issues in create_of_modalias()
- and create_pnp_modalias()
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <006699efc5ccdce1bd62f45ef2852ab0233e295c.camel@intel.com>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
         SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,32 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 7:32â€¯PM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> All issues have been introduced by the same commit, 8765c5ba1949 ("ACPI
-> / scan: Rework modalias creation when "compatible" is present")
->
-> The first 2 patches fixe some issues related to string truncation checks
-> and to computation of the available space in the output buffer.
->
-> The 2 others are just some clean-ups.
->
-> Christophe JAILLET (4):
->   ACPI: sysfs: Fix the check for a potential string truncation
->   ACPI: sysfs: Fix a potential out-of-bound write in
->     create_of_modalias()
->   ACPI: sysfs: Remove some useless trailing NULL writes
->   ACPI: sysfs: Remove some dead code
->
->  drivers/acpi/device_sysfs.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
->
-> --
+On Mon, Oct 23, 2023 at 04:36:48PM +0000, Edgecombe, Rick P wrote:
+> On Mon, 2023-10-23 at 01:21 +0300, Dmitry V. Levin wrote:
+> > Fix the type of SHADOW_STACK_SET_TOKEN to match the type of the
+> > corresponding "flags" argument of map_shadow_stack syscall which
+> > is of type "unsigned int".
+> > 
+> > Fixes: c35559f94ebc3 ("x86/shstk: Introduce map_shadow_stack
+> > syscall")
+> > Signed-off-by: Dmitry V. Levin <ldv@strace.io>
+> > ---
+> > šarch/x86/include/uapi/asm/mman.h | 2 +-
+> > š1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/include/uapi/asm/mman.h
+> > b/arch/x86/include/uapi/asm/mman.h
+> > index 46cdc941f958..8419e25bb617 100644
+> > --- a/arch/x86/include/uapi/asm/mman.h
+> > +++ b/arch/x86/include/uapi/asm/mman.h
+> > @@ -6,7 +6,7 @@
+> > š#define MAP_ABOVE4Gšššš0x80šššššššššššš/* only map above 4GB */
+> > š
+> > š/* Flags for map_shadow_stack(2) */
+> > -#define SHADOW_STACK_SET_TOKENš(1ULL << 0)ššššš/* Set up a restore
+> > token in the shadow stack */
+> > +#define SHADOW_STACK_SET_TOKENš(1U << 0)ššššššš/* Set up a restore
+> > token in the shadow stack */
+> > š
+> > š#include <asm-generic/mman.h>
+> 
+> Good point that they are mismatched. I don't remember why flags is not
+> an unsigned long though. I wonder if we should quick change it to an
+> unsigned long, if it's not too late. We probably won't run out of
+> flags, but maybe some value could get stuffed in the upper bits or
+> something someday.
 
-Thanks for the fixes!
+We usually don't use unsigned long for flags because we support 32-bit
+architectures.
 
-I would combine patch [1/4] with patch [2/4] and patch [3/4] with
-patch [4/4], though.
 
-If that's OK, I can do that while applying the patches.
+-- 
+ldv
