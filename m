@@ -2,69 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B25FE7D3DD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECE47D3DDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233522AbjJWReG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
+        id S232464AbjJWRfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233942AbjJWRd5 (ORCPT
+        with ESMTP id S229717AbjJWRfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:33:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E46C1;
-        Mon, 23 Oct 2023 10:33:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53682C433C8;
-        Mon, 23 Oct 2023 17:33:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698082435;
-        bh=4d7J4UL5e0se16HtXrPNAXciTYKxyup73uY3njGx/tc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rZZYcrZyJe7SIkIBEcxXv8DLargOmDFor0R5Wg1c8Zs2qP2sif0SJRN+HZHm034L4
-         Lr1pKF0ELhpLw7AnligOfRSqM5x2uvu6g5tagdVErPVluMvtzB8Z8uJKpejBs4c9eo
-         t1uuS14rnGCayd0d1QqemTvTCNbLAMYp6sP2gn0RDWyiFXfO0ZlbvFGT6sQSTTUg3T
-         OjtjVGY24jdMkqjjDSsAys0wWMBfEG5+yekGSe1hhjzBq3mShOfM842L+GdUdanOjN
-         T9zczlElvAuF6/1AoTxzki1nTwWvAazefXVPPop4ZSQR5Ly8aGPlBGzM9Jc27SPr7y
-         0BGfwgRhc1vRw==
-Date:   Mon, 23 Oct 2023 18:33:49 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Alexandre Mergnat <amergnat@baylibre.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Mon, 23 Oct 2023 13:35:03 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7449994;
+        Mon, 23 Oct 2023 10:35:01 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NFINoQ009003;
+        Mon, 23 Oct 2023 17:34:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yvlCbiRr18FdVxgfxneGyjIS4OoyzH6zgRsET/Jvi98=;
+ b=cN/m+cgb4c7nh3fve4+y6YT7hVUwJeS6ieqdGF6RWBYFOnlXV3EfpDY9LeoZL10yoPeh
+ nxY41pEJsan9ZcDOrExwBOGEMmJGqqEs63U1mX+fnyPC3PPJZEWBuihz0xe/nwfPLhKb
+ 1RG6pU1z76ZDtJ1J1zL/mgyaL+jsBgTpNFLafZ/NvVYHECSY3pxKz5FpqM32iu68kGfe
+ OkSTXo49bwSaCFe/TARbOnm3Wj7tZFDuyBNfsuFV/bfarmDpm4AOpc8Mpo6CSUquqznr
+ 00y4nSGjGH2E+aT9F0qS5wIAiZhTus4sXbw85sjv3CW/PE7yyM08JuO3kpI3ZvJUIeHs pQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv6r2cr1d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 17:34:52 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39NHYpPf017938
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 17:34:51 GMT
+Received: from [10.216.7.46] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 23 Oct
+ 2023 10:34:43 -0700
+Message-ID: <c50e9266-2308-4fd5-b102-f604bf4ce2e8@quicinc.com>
+Date:   Mon, 23 Oct 2023 23:04:38 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 08/10] arm64: dts: qcom: sc8280xp: Add multiport
+ controller node for SC8280
+Content-Language: en-US
+To:     Johan Hovold <johan@kernel.org>
+CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        "Andy Gross" <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Xinlei Lee <xinlei.lee@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 02/18] dt-bindings: display: mediatek: ccorr: add binding
- for MT8365 SoC
-Message-ID: <20231023-marrow-modified-fdeff0fea45a@spud>
-References: <20231023-display-support-v1-0-5c860ed5c33b@baylibre.com>
- <20231023-display-support-v1-2-5c860ed5c33b@baylibre.com>
- <20231023-reshoot-liquefy-429aacb68694@spud>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="thOqX6IfbyWP13q3"
-Content-Disposition: inline
-In-Reply-To: <20231023-reshoot-liquefy-429aacb68694@spud>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
+        <quic_shazhuss@quicinc.com>
+References: <20231007154806.605-1-quic_kriskura@quicinc.com>
+ <20231007154806.605-9-quic_kriskura@quicinc.com>
+ <ZTaauQewazaaFonF@hovoldconsulting.com>
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <ZTaauQewazaaFonF@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: f7QCm6TWSGo2izP2PykhLjqDjP3EZzbk
+X-Proofpoint-GUID: f7QCm6TWSGo2izP2PykhLjqDjP3EZzbk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-23_16,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ adultscore=0 clxscore=1015 priorityscore=1501 phishscore=0 spamscore=0
+ mlxlogscore=695 impostorscore=0 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310230153
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -72,73 +94,79 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---thOqX6IfbyWP13q3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 23, 2023 at 06:31:45PM +0100, Conor Dooley wrote:
-> On Mon, Oct 23, 2023 at 04:40:02PM +0200, Alexandre Mergnat wrote:
-> > Display Color Correction for MT8365 is compatible with another SoC.
-> > Then, add MT8365 binding along with MT8183 SoC.
->=20
-> This commit message's first line is too vague & the second doesn't make
-> sense. I suspect something as succinct as "Document the display colour
-> correction on mt<foo>, which is compatible with that of the mt<bar>"
-> does what you are looking for.
->=20
-> I suspect this is going to apply to the rest of the series...
+On 10/23/2023 9:39 PM, Johan Hovold wrote:
+> On Sat, Oct 07, 2023 at 09:18:04PM +0530, Krishna Kurapati wrote:
+>> Add USB and DWC3 node for tertiary port of SC8280 along with multiport
+>> IRQ's and phy's. This will be used as a base for SA8295P and SA8295-Ride
+>> platforms.
+>>
+>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 84 ++++++++++++++++++++++++++
+>>   1 file changed, 84 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+>> index cad59af7ccef..5f64f75b07db 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+>> @@ -3330,6 +3330,90 @@ system-cache-controller@9200000 {
+>>   			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
+>>   		};
+>>   
+>> +		usb_2: usb@a4f8800 {
+>> +			compatible = "qcom,sc8280xp-dwc3-mp", "qcom,dwc3";
+> 
+> So you went with a dedicated compatible even though you are now
+> inferring the number of ports from the interrupts property.
+> 
+> Should we drop that compatible again or is there any other reason to
+> keep a separate one?
+>  >> +			interrupts-extended = <&pdc 127 IRQ_TYPE_EDGE_RISING>,
+>> +					      <&pdc 126 IRQ_TYPE_EDGE_RISING>,
+>> +					      <&pdc 129 IRQ_TYPE_EDGE_RISING>,
+>> +					      <&pdc 128 IRQ_TYPE_EDGE_RISING>,
+>> +					      <&pdc 131 IRQ_TYPE_EDGE_RISING>,
+>> +					      <&pdc 130 IRQ_TYPE_EDGE_RISING>,
+>> +					      <&pdc 133 IRQ_TYPE_EDGE_RISING>,
+>> +					      <&pdc 132 IRQ_TYPE_EDGE_RISING>,
+>> +					      <&pdc 16 IRQ_TYPE_LEVEL_HIGH>,
+>> +					      <&pdc 17 IRQ_TYPE_LEVEL_HIGH>,
+>> +					      <&intc GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
+>> +					      <&intc GIC_SPI 135 IRQ_TYPE_LEVEL_HIGH>,
+>> +					      <&intc GIC_SPI 857 IRQ_TYPE_LEVEL_HIGH>,
+>> +					      <&intc GIC_SPI 856 IRQ_TYPE_LEVEL_HIGH>;
+>> +
+>> +			interrupt-names = "dp_hs_phy_1", "dm_hs_phy_1",
+>> +					  "dp_hs_phy_2", "dm_hs_phy_2",
+>> +					  "dp_hs_phy_3", "dm_hs_phy_3",
+>> +					  "dp_hs_phy_4", "dm_hs_phy_4",
+>> +					  "ss_phy_1", "ss_phy_2",
+>> +					  "pwr_event_1",
+>> +					  "pwr_event_2",
+>> +					  "pwr_event_3",
+>> +					  "pwr_event_4";
+> 
+> The interrupt order does not match the binding, where the power event
+> interrupts come first.
+> 
+> And we probably also want the hs_phy_irqs here after fixing the
+> incomplete binding.
 
-It does, as does the comment about s/binding/compatible/ I left on patch
-1.
+You want to update the driver code for this as well ? I have no problem 
+in adding it in DT and binding but not in driver.
 
+> 
+>> +			usb_2_dwc3: usb@a400000 {
+>> +				compatible = "snps,dwc3";
+>> +				reg = <0 0x0a400000 0 0xcd00>;
+>> +				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> 
+> I'd also like to know what that second dwc3 interrupt is for and whether
+> it should be defined here as well.
 
->=20
-> Cheers,
-> Conor.
->=20
->=20
-> >=20
-> > Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
-> > ---
-> >  Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr.yaml=
- | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/display/mediatek/mediate=
-k,ccorr.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-ccorr.yaml
-> > index 8c2a737237f2..9f8366763831 100644
-> > --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr=
-=2Eyaml
-> > +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,ccorr=
-=2Eyaml
-> > @@ -24,6 +24,9 @@ properties:
-> >        - enum:
-> >            - mediatek,mt8183-disp-ccorr
-> >            - mediatek,mt8192-disp-ccorr
-> > +      - items:
-> > +          - const: mediatek,mt8365-disp-ccorr
-> > +          - const: mediatek,mt8183-disp-ccorr
-> >        - items:
-> >            - enum:
-> >                - mediatek,mt8186-disp-ccorr
-> >=20
-> > --=20
-> > 2.25.1
-> >=20
+Second interrupts is for HW acceleration I believe for which support is 
+not there currently.
 
-
-
---thOqX6IfbyWP13q3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTaufAAKCRB4tDGHoIJi
-0kKzAQDMUo1M62BZW0+LDaZBbv8k7iM/aEWPjra25PQw/lkNHAD+Krqai8nG55h2
-m2Gi2YrEijqBX7inn96eMRSpD+rIfA8=
-=RW59
------END PGP SIGNATURE-----
-
---thOqX6IfbyWP13q3--
+Regards,
+Krishna,
