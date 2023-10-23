@@ -2,69 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D387D2D05
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFDE7D2D09
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbjJWInl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        id S229848AbjJWIoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjJWInk (ORCPT
+        with ESMTP id S229687AbjJWIoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:43:40 -0400
-Received: from xry111.site (xry111.site [89.208.246.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81B0AF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:43:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-        s=default; t=1698050611;
-        bh=5sGQLj6Xe46sp6vsAAGQQglvUAz3OFwB9FX1yIiN66M=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=jKwtdBW+zLw3ADx5pYsywAV1ucmNbz6JD+sg07zzSGSUugKIlUoR15wdiiV3kaC5y
-         8EP6476kRPacm9EeenCUuq1xlgM2E6S7d03kNNRJxtN2diKnEax/6f5B35Pek9i8db
-         gZUbxUemJbCybBSBA/TfbxYLTlNX9Gy7CSYQEA5M=
-Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@xry111.site)
-        by xry111.site (Postfix) with ESMTPSA id 1495866B50;
-        Mon, 23 Oct 2023 04:43:28 -0400 (EDT)
-Message-ID: <4d3363eb5f4d864cfd171d89b1a13da5ef8b784c.camel@xry111.site>
-Subject: Re: [PATCH v4 8/8] LoongArch: Add ORC stack unwinder support
-From:   Xi Ruoyao <xry111@xry111.site>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-Date:   Mon, 23 Oct 2023 16:43:26 +0800
-In-Reply-To: <1698048691-19521-9-git-send-email-yangtiezhu@loongson.cn>
-References: <1698048691-19521-1-git-send-email-yangtiezhu@loongson.cn>
-         <1698048691-19521-9-git-send-email-yangtiezhu@loongson.cn>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        Mon, 23 Oct 2023 04:44:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D645DD;
+        Mon, 23 Oct 2023 01:44:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CB4DC433C7;
+        Mon, 23 Oct 2023 08:44:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698050641;
+        bh=u7NlD1Q+yOeYznnIX1NVopvkTd5tWg++cwHdsd8xV9c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F9CvIn0J0RMwF/S119USSKPzO0larT1HgWg65t/5hmyR0VWd8BN4NDchR3gyJi5rk
+         WkEfkSIkJom9+ATFcmZjEkHDBklwwLnEWV9neWYBrs6SWKZWZ/OOh3rz65uvwbUlCe
+         b556SNpPjp1XIuDZrp3JhLl4gpinZq0inwcycAE0rXZJavjhegx6usGIs9GR93x2jo
+         ZhJc4z0VaXilVdDdraN+P+Y9FOgkOsVB+1dwWKQDp7awVIPzN9y6SE9RKamRtI9Dpw
+         vXOf84SUl7z2EcB+32pA3W4sR2R7sDjaO1TvJ6dIxfclxU71S8IzEw+cSlWe56GilE
+         X3HQZAqr9hFDA==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1quqXm-0007eU-2X;
+        Mon, 23 Oct 2023 10:44:14 +0200
+Date:   Mon, 23 Oct 2023 10:44:14 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com, ahalaney@redhat.com,
+        quic_shazhuss@quicinc.com
+Subject: Re: [PATCH v13 01/10] usb: dwc3: core: Access XHCI address space
+ temporarily to read port info
+Message-ID: <ZTYyXhyZN3jBXEfm@hovoldconsulting.com>
+References: <20231007154806.605-1-quic_kriskura@quicinc.com>
+ <20231007154806.605-2-quic_kriskura@quicinc.com>
+ <ZTI7AtCJWgAnACSh@hovoldconsulting.com>
+ <279a54f2-7260-4270-83c7-d6f5c5ba0873@quicinc.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <279a54f2-7260-4270-83c7-d6f5c5ba0873@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-23 at 16:11 +0800, Tiezhu Yang wrote:
-> +ifdef CONFIG_OBJTOOL
-> +KBUILD_CFLAGS			+=3D -fno-optimize-sibling-calls -fno-jump-tables -falig=
-n-functions=3D4
-> +endif
+On Fri, Oct 20, 2023 at 03:12:44PM +0530, Krishna Kurapati PSSNV wrote:
+> On 10/20/2023 2:02 PM, Johan Hovold wrote:
+> > On Sat, Oct 07, 2023 at 09:17:57PM +0530, Krishna Kurapati wrote:
+> >> Currently host-only capable DWC3 controllers support Multiport.
+> > 
+> > You use the word "currently" in a few places like this (e.g. in comments
+> > in the code). What exactly do you mean? That all current multiport
+> > controllers are host-only, or that this is all that the driver supports
+> > after your changes?
+> > 
+> This means that, today the capable multiport controllers are host-only 
+> capable, not that the driver is designed that way.
 
-Why do we need to regress the code generation so much for objtool?
+Ok.
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+> > Please rephrase accordingly throughout so that this becomes clear.
+
+Johan
