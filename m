@@ -2,139 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 560F37D419E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A57E7D419F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 23:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbjJWVZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 17:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
+        id S232005AbjJWVZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 17:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231187AbjJWVZr (ORCPT
+        with ESMTP id S229845AbjJWVZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 23 Oct 2023 17:25:47 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539A910A
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:25:44 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b6559cbd74so578953366b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 14:25:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698096343; x=1698701143; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fi/lKgniZUuLKgl9B9aJ0yNCeztsPozgNIRB0HC6oYk=;
-        b=OvKfoYcd29qJoc/8/kWzDv0zwc3ghu5t7ZsJhSdrOoCu/En63uRbYb7sToApH9FQox
-         fvNxqvC23prxbUZ143QyA0epvLzx53L6OopmB2A/MpdWerkw8eYC4mqdmC2yTfhDo6cl
-         t8wJZMK32dZwsOKyhRHvzhzbstdZ3xoAqDOErKPSwgOZNvZbHEryNUZ4A/v81HXyJZEU
-         GXKXvNitrqK0zWcxodu2y8lFJNHwPkQbtpHbkEvyGPdzZ/KGTH4FPT/MwFqcRYtqZheE
-         tJJmkFb9aY2kOsysP9/8rmi1Acn2PIcwud6CiiWMNyedu4kYBY96jc4+wxzB8hU8aRkW
-         JDhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698096343; x=1698701143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fi/lKgniZUuLKgl9B9aJ0yNCeztsPozgNIRB0HC6oYk=;
-        b=HDFzdseqylmYEHYoqjFPMCW2+hEelNYqXvPi7YdvB5R7sjWyKdl2/jfjEqhRMLsq9P
-         wZPVoHVkm6qc8Tr78LDnvbFfyhTQzj3/UEr2ObwZMSQHW7flodLGxw+fwU4chynyOkBs
-         W6N8mQ0kyJRoWCN7SxzmOsjSq+8shH/1eQCXAOPhztKu57yHJ7EiKIl3Gg8STMgRMT8E
-         HSM/pVbC2gk8dTNfic7MpcqSG2c96en5izxqEPd2bi8ayu07RabgVFs3QnfmopObcotC
-         W2TP3DMZPL96QIdnPJ1uOPYVtJCPNU9sZ6LQjqoIfzSE+5+BPMXmZCWU9Xms/lr2uSnd
-         Mc3g==
-X-Gm-Message-State: AOJu0Yzt/hQZh1hQQ3ewQJzXu89alwx38B0vGvZrRg1N9oj/oHKwilr8
-        HKR5BzCVAdkCj0IK7I9K2kdS7Ju6vQeCEeDW1C5qgg==
-X-Google-Smtp-Source: AGHT+IGA0FlzuzIfVcl5vaifYlDlaLFETVMz/ociXdF8lFENs1AgW3Dgv3XHRg7JNrQ9Ivq0v9kwjf/I9swu05xiL98=
-X-Received: by 2002:a17:907:7fa7:b0:9ae:701a:6efa with SMTP id
- qk39-20020a1709077fa700b009ae701a6efamr10411814ejc.69.1698096342652; Mon, 23
- Oct 2023 14:25:42 -0700 (PDT)
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEC497;
+        Mon, 23 Oct 2023 14:25:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698096344;
+        bh=7uXHn8pBcJ0jOZNZBOlglgGkqTNXgYQlWSwFgLjI7R0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aJ2YYv0HfyygmNj7zfnXZZHS4mPnRbad83wFeMRyRpVkUpTe8Eq7nA0dwRcafDguz
+         7CPeMxc4P/XWCigrOXt5qGaDCdWbukDGZOEW7lGC9OXcLY4SeBTlo734QJMnKoK76n
+         iLm2IUf2KO0DLvLeHsGtnVVQsJnEBRQOoM31hwe39xaMBsVtM1JI17UMUdpp+OwKhH
+         fKOAucsfICYDFMjT1Vq+vTqUtDP6/75kD14NCjDu76oNJ17ULqvRknaX3R0132bWHe
+         UcHhyYOJ+2jWPX0m+Hn+MaxJrGSDXNyAqCFfjd4t8hMICQyo8nFeGD3Fm/byVuucA5
+         z6EN6O4X9eA/Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SDpBw08Rgz4wcZ;
+        Tue, 24 Oct 2023 08:25:43 +1100 (AEDT)
+Date:   Tue, 24 Oct 2023 08:25:43 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the vfs-brauner tree with the btrfs
+ tree
+Message-ID: <20231024082543.575b3edd@canb.auug.org.au>
+In-Reply-To: <20231023175513.GL26353@twin.jikos.cz>
+References: <20231009104840.1bdadc80@canb.auug.org.au>
+        <20231009-bauch-gedanken-e02e35804e03@brauner>
+        <20231011083754.45a9ed53@canb.auug.org.au>
+        <20231011092004.GE2211@suse.cz>
+        <20231012154210.GI2211@suse.cz>
+        <20231023175513.GL26353@twin.jikos.cz>
 MIME-Version: 1.0
-References: <20231019185319.2714000-5-arakesh@google.com> <202310200457.GwPPFuHX-lkp@intel.com>
- <738df245-e7d1-4fc0-9076-3ac5afebaa44@google.com> <2023102103-casually-wavy-6a54@gregkh>
-In-Reply-To: <2023102103-casually-wavy-6a54@gregkh>
-From:   Avichal Rakesh <arakesh@google.com>
-Date:   Mon, 23 Oct 2023 14:25:30 -0700
-Message-ID: <CAMHf4WKgzvMoL6tKCiQYsuudQWgGBKkhfbmYgUxVXvLEqxi1GQ@mail.gmail.com>
-Subject: Re: [PATCH v6 4/4] usb: gadget: uvc: Fix use-after-free for inflight usb_requests
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     etalvala@google.com, jchowdhary@google.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com,
-        m.grzeschik@pengutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/AT3nUgAc7rvRCgMGlJb6co9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 21, 2023 at 3:05=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Thu, Oct 19, 2023 at 03:30:00PM -0700, Avichal Rakesh wrote:
-> >
-> >
-> > On 10/19/23 13:32, kernel test robot wrote:
-> > > Hi Avichal,
-> > >
-> > > kernel test robot noticed the following build warnings:
-> > >
-> > > [auto build test WARNING on usb/usb-testing]
-> > > [also build test WARNING on usb/usb-next usb/usb-linus linus/master v=
-6.6-rc6 next-20231019]
-> > > [If your patch is applied to the wrong git tree, kindly drop us a not=
-e.
-> > > And when submitting patch, we suggest to use '--base' as documented i=
-n
-> > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> > >
-> > > url:    https://github.com/intel-lab-lkp/linux/commits/Avichal-Rakesh=
-/usb-gadget-uvc-prevent-use-of-disabled-endpoint/20231020-025512
-> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.gi=
-t usb-testing
-> > > patch link:    https://lore.kernel.org/r/20231019185319.2714000-5-ara=
-kesh%40google.com
-> > > patch subject: [PATCH v6 4/4] usb: gadget: uvc: Fix use-after-free fo=
-r inflight usb_requests
-> > > config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20=
-231020/202310200457.GwPPFuHX-lkp@intel.com/config)
-> > > compiler: m68k-linux-gcc (GCC) 13.2.0
-> > > reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/a=
-rchive/20231020/202310200457.GwPPFuHX-lkp@intel.com/reproduce)
-> > >
-> > > If you fix the issue in a separate patch/commit (i.e. not just a new =
-version of
-> > > the same patch/commit), kindly add following tags
-> > > | Reported-by: kernel test robot <lkp@intel.com>
-> > > | Closes: https://lore.kernel.org/oe-kbuild-all/202310200457.GwPPFuHX=
--lkp@intel.com/
-> > >
-> > > All warnings (new ones prefixed by >>):
-> > >
-> > >>> drivers/usb/gadget/function/uvc_video.c:231: warning: This comment =
-starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-=
-guide/kernel-doc.rst
-> > >     * Must be called with req_lock held as it modifies the list ureq =
-is held in
-> > >
-> > >
-> >
-> > Greg, apologies for the newb question: do you want me to upload
-> > the fix for this as a reply to [PATCH v6 4/4], or upload a new chain of
-> > v7s with this patch fixed?
->
-> A whole new v7 series please.
->
+--Sig_/AT3nUgAc7rvRCgMGlJb6co9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Had a feeling, so sent out v7 series preemptively. Let me know if that
-doesn't work.
+Hi David,
 
-v7: https://lore.kernel.org/20231020173626.2978356-1-arakesh@google.com/
+On Mon, 23 Oct 2023 19:55:13 +0200 David Sterba <dsterba@suse.cz> wrote:
+>
+> I have updated my for-next branch again, sorry (top commit 1a4dc97c883a4f=
+763cbaf50).
+> There are some fixes I don't want to miss from the 6.7 pull request.
+> There should be minimal change to the VFS tree conflict resolution so
+> the diff should be reusable.
 
-Thank you!
-- Avi
+So, why did you not just merge in v6.6-rc7 (or better yet, the branch
+that contains the fix(es) that Linus merged) and then apply your new
+commits on top of that?  All the commits that were in the btrfs tree
+have been rebased unchanged.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/AT3nUgAc7rvRCgMGlJb6co9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU25NcACgkQAVBC80lX
+0GzE9gf+OuDtCnNFpw5eqx1zq5PigPgMZgPbQ9glGv+ObDUVGNxi+IbhqKgKTCux
+UbviCpVeHt5aqXqlWLdLt5jpQPrR6QfUuadeBr6b5sP4INvdmYpo9fwqCKgRNecu
+rS1Uf2cOAKZNUimMMBYjfcPY7DywuGoLl9Ue0i4+bqfcK7MxPQ0IP8eOyzOaw8AT
+Dvrz07vu9M9jlZWaIy2FE0KHomWQeMFwsKd9Xlggm6JpZDB1I9hH5HoI5MS3/cxQ
+FmUOZz8kLMoIJw3UXV961DKizjOgEqDI+qaPKWiN9UE2ZAMsLoagKImz8JcJXvlB
+/GL00jvoUWH1IpCTGCxYekPS+4Q18w==
+=v3KC
+-----END PGP SIGNATURE-----
+
+--Sig_/AT3nUgAc7rvRCgMGlJb6co9--
