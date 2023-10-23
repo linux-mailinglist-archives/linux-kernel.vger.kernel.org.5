@@ -2,147 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1167D3F97
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FC77D3E82
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbjJWSx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 14:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
+        id S232031AbjJWSDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 14:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231827AbjJWRx4 (ORCPT
+        with ESMTP id S231736AbjJWSDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:53:56 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFF694
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:53:51 -0700 (PDT)
-Received: from [IPv6:2a00:23c8:b70a:ae01:e088:d5b:55b6:2378] (unknown [IPv6:2a00:23c8:b70a:ae01:e088:d5b:55b6:2378])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: obbardc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 45D9B6606F65;
-        Mon, 23 Oct 2023 18:53:50 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698083630;
-        bh=mAdE0i3lSX6JHY+m7zAvbJfzqqYqVMR9RAyMV2T3DPc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=F5FfXq3YMM1aOnKt7dKLVy5owBZ2wZl5zNAMHWfvFU7NpMr3+hBTEh/w4ezCGuHek
-         wIW+MsF7jUQb+ngB0U0mOGO8dG9LE+6x1MfybMOC89cTdF4GWyDY/MrocbXVvVDZx7
-         39kdfA9r06AgcgUiIcbSFaTQSHFwQg8L6rVfc6+eKLLH7Nr+dxCurgWu24KxsCpDW4
-         A7sTOJffam+1CadFYJwW1txbL0Tadc6Y09i02ALxOk7ChtHAfBxaR4ktc3SrnNYeVs
-         Zzv9Jrmk1bJ/VJiOSmaFlJJG10knXIxTdKLln73IDF5syUPA/N3bfM+Q6rQRqh4XNg
-         WLinUSRhggcRQ==
-Message-ID: <0fab9851ef3e19b2f5b01139b308ba0613cbb95b.camel@collabora.com>
-Subject: Re: [PATCH v5 1/2] drm/fourcc: Add NV20 and NV30 YUV formats
-From:   Christopher Obbard <chris.obbard@collabora.com>
-To:     Jonas Karlman <jonas@kwiboo.se>, Heiko Stuebner <heiko@sntech.de>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel <kernel@collabora.com>
-Date:   Mon, 23 Oct 2023 18:53:47 +0100
-In-Reply-To: <20231023173718.188102-2-jonas@kwiboo.se>
-References: <20231023173718.188102-1-jonas@kwiboo.se>
-         <20231023173718.188102-2-jonas@kwiboo.se>
-Autocrypt: addr=chris.obbard@collabora.com; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0-1 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 23 Oct 2023 14:03:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CECD7A;
+        Mon, 23 Oct 2023 11:03:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6A741C433C9;
+        Mon, 23 Oct 2023 18:03:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698084208;
+        bh=XO15aQ4OaTTwsEmZcdXBiWanfxRs+POYEmcfVMrr2lw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=CTid+8KpEObxYzsmWNTkSTB3TZ7cfgnFSx3Lm3oOYagfFERmHC2k5TA8M1oHTFqHc
+         t/1DVjyduRj3cE8NbE/OT/v93W2Z43a3NaO8R/pvXQXN9Fxv9jha0Qm1e7qxExnAsi
+         WcuKsYtWoo+9CDWPZ9RWQJk/PD34TRlAr92B4HauLNYikhQpV9EJylX/F+kVfoNWw2
+         lzhaXev0drhvOOKvE2nA7SEZwcJwOOaV3R7fgd/1yqWguWdvFAo1HprWMjD1tCl0Iz
+         vfE96Zi2U6jYPk5cd2/xVuiKZPlYCqchq6oieryg9XWvNnCSwCvJJsFG7BlFWCDRGe
+         WL/id1mV2QNfw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 57A55E4CC11;
+        Mon, 23 Oct 2023 18:03:28 +0000 (UTC)
+Subject: Re: [GIT PULL] virtio: last minute fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20231023010207-mutt-send-email-mst@kernel.org>
+References: <20231023010207-mutt-send-email-mst@kernel.org>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20231023010207-mutt-send-email-mst@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+X-PR-Tracked-Commit-Id: 061b39fdfe7fd98946e67637213bcbb10a318cca
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7c14564010fc1d0f16ca7d39b0ff948b43344209
+Message-Id: <169808420834.25326.6759202324452461756.pr-tracker-bot@kernel.org>
+Date:   Mon, 23 Oct 2023 18:03:28 +0000
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arei.gonglei@huawei.com, catalin.marinas@arm.com,
+        dtatulea@nvidia.com, eric.auger@redhat.com, gshan@redhat.com,
+        jasowang@redhat.com, liming.wu@jaguarmicro.com, mheyne@amazon.de,
+        mst@redhat.com, pasic@linux.ibm.com, pizhenwei@bytedance.com,
+        shawn.shao@jaguarmicro.com, xuanzhuo@linux.alibaba.com,
+        zhenyzha@redhat.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonas,
+The pull request you sent on Mon, 23 Oct 2023 01:02:07 -0400:
 
-On Mon, 2023-10-23 at 17:37 +0000, Jonas Karlman wrote:
-> DRM_FORMAT_NV20 and DRM_FORMAT_NV30 formats is the 2x1 and non-subsampled
-> variant of NV15, a 10-bit 2-plane YUV format that has no padding between
-> components. Instead, luminance and chrominance samples are grouped into 4=
-s
-> so that each group is packed into an integer number of bytes:
->=20
-> YYYY =3D UVUV =3D 4 * 10 bits =3D 40 bits =3D 5 bytes
->=20
-> The '20' and '30' suffix refers to the optimum effective bits per pixel
-> which is achieved when the total number of luminance samples is a multipl=
-e
-> of 4.
->=20
-> V2: Added NV30 format
->=20
-> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-> Reviewed-by: Sandy Huang <hjc@rock-chips.com>
+> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
-Reviewed-by: Christopher Obbard <chris.obbard@collabora.com>
-Tested-by: Christopher Obbard <chris.obbard@collabora.com>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7c14564010fc1d0f16ca7d39b0ff948b43344209
 
+Thank you!
 
-Cheers!
-
-Chris
-
-> ---
-> =C2=A0drivers/gpu/drm/drm_fourcc.c=C2=A0 | 8 ++++++++
-> =C2=A0include/uapi/drm/drm_fourcc.h | 2 ++
-> =C2=A02 files changed, 10 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/drm_fourcc.c b/drivers/gpu/drm/drm_fourcc.c
-> index 0f17dfa8702b..193cf8ed7912 100644
-> --- a/drivers/gpu/drm/drm_fourcc.c
-> +++ b/drivers/gpu/drm/drm_fourcc.c
-> @@ -299,6 +299,14 @@ const struct drm_format_info *__drm_format_info(u32
-> format)
-> =C2=A0		=C2=A0 .num_planes =3D 2, .char_per_block =3D { 5, 5, 0 },
-> =C2=A0		=C2=A0 .block_w =3D { 4, 2, 0 }, .block_h =3D { 1, 1, 0 }, .hsub =
-=3D
-> 2,
-> =C2=A0		=C2=A0 .vsub =3D 2, .is_yuv =3D true },
-> +		{ .format =3D DRM_FORMAT_NV20,		.depth =3D 0,
-> +		=C2=A0 .num_planes =3D 2, .char_per_block =3D { 5, 5, 0 },
-> +		=C2=A0 .block_w =3D { 4, 2, 0 }, .block_h =3D { 1, 1, 0 }, .hsub =3D
-> 2,
-> +		=C2=A0 .vsub =3D 1, .is_yuv =3D true },
-> +		{ .format =3D DRM_FORMAT_NV30,		.depth =3D 0,
-> +		=C2=A0 .num_planes =3D 2, .char_per_block =3D { 5, 5, 0 },
-> +		=C2=A0 .block_w =3D { 4, 2, 0 }, .block_h =3D { 1, 1, 0 }, .hsub =3D
-> 1,
-> +		=C2=A0 .vsub =3D 1, .is_yuv =3D true },
-> =C2=A0		{ .format =3D DRM_FORMAT_Q410,		.depth =3D 0,
-> =C2=A0		=C2=A0 .num_planes =3D 3, .char_per_block =3D { 2, 2, 2 },
-> =C2=A0		=C2=A0 .block_w =3D { 1, 1, 1 }, .block_h =3D { 1, 1, 1 }, .hsub =
-=3D
-> 1,
-> diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.=
-h
-> index 8db7fd3f743e..3151f1fc7ebb 100644
-> --- a/include/uapi/drm/drm_fourcc.h
-> +++ b/include/uapi/drm/drm_fourcc.h
-> @@ -323,6 +323,8 @@ extern "C" {
-> =C2=A0 * index 1 =3D Cr:Cb plane, [39:0] Cr1:Cb1:Cr0:Cb0 little endian
-> =C2=A0 */
-> =C2=A0#define DRM_FORMAT_NV15		fourcc_code('N', 'V', '1', '5') /*
-> 2x2 subsampled Cr:Cb plane */
-> +#define DRM_FORMAT_NV20		fourcc_code('N', 'V', '2', '0') /*
-> 2x1 subsampled Cr:Cb plane */
-> +#define DRM_FORMAT_NV30		fourcc_code('N', 'V', '3', '0') /*
-> non-subsampled Cr:Cb plane */
-> =C2=A0
-> =C2=A0/*
-> =C2=A0 * 2 plane YCbCr MSB aligned
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
