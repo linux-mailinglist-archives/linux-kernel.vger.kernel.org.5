@@ -2,311 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A330A7D2C06
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8F67D2C0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbjJWH6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55402 "EHLO
+        id S229514AbjJWH6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjJWH6A (ORCPT
+        with ESMTP id S229498AbjJWH6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 03:58:00 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E59CC
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:57:57 -0700 (PDT)
-Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com [209.85.128.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7A1DC3F443
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:57:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1698047875;
-        bh=u7GScWjArWDBsmslExt09yQ/w9U+lCmA3/2l6avmmBw=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=tfVD9j1P7Xps3Vk6/Bex/qKbcUa+VlqpzKJOBfCy7GA8mfin1XCOIswuuDcOUYMvP
-         607oPZ3TXVasWtZ5K1wZPG8tVcDte3W1QoUOeESboGVVBlRyh3/8qQeLM0ZhA6gunv
-         eo5sTodlpiv/yeE0kYTLCec0C7heacmb2RJT94mRRKRwRp5C6KjVUR1ozWrESTwJBX
-         TcyjCHs6t5Y4GMclMWABinkHAMidNjKMwFQwrvjKxhdk4u4ysa2H0sw73+OcMixUqo
-         Am5EuOyD7Mn8XtnUF4O1U82F3yxea591PSy7k3MLhokOyb033IBRHhoiHRlYD24Va0
-         MK2T4ALW64FSQ==
-Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-5a8ebc70d33so38322107b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:57:55 -0700 (PDT)
+        Mon, 23 Oct 2023 03:58:38 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5352EF5
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:58:35 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a7eef0b931so31502707b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698047914; x=1698652714; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Hc1HQxMK6cov0ESZHcOE2hl8RJaLivF3ZZ3pITnRe4=;
+        b=dEDJpjG3E9QicDV/6CPz2khqGc+ze6HAwGYcRmhSEQizzis6mJhooPs3K2uIDKs8bq
+         g6ltCafmP6S0Kso9TVDLppWiTRCCtVEcZHNZ3uvqtr5qc+SrjFuORKcuyoZQ9j//X0E6
+         tj7qpji+G/Dh1EcGzp2TOBYEb05MNaWCePvlw94zeNakXNTZJxb27fZe04hHE14tgQmQ
+         9JKL08LD9pHa0nTvX8Dm6S/8Sd0VIXkTNjddimzuHfQ1hQEE4rb7P6/utU1CAo17bQ58
+         Cd3PE5ZM53mQtAwBnennJDeDxCYu8kDJJqSCwc0kDJre3+hCHifjwNWV5pRo++C770tI
+         tnDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698047873; x=1698652673;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u7GScWjArWDBsmslExt09yQ/w9U+lCmA3/2l6avmmBw=;
-        b=YWStON0/ajQbLSp+DNrqwXnMOyGoei7OjyR9nB3nmQ3ueH+yYu4NGBaC1gSIAWtdc6
-         i7DRs8GfFB/9DjaOhgAdnjkvrwXhRAqcdQjumXbxhSWrPlKQ3OhcrOHZdMXAyv4NBM9P
-         09dkV17YIDKILavKV8ivINegFW9qFhjqih+TZQWM7AU/WbQB2YGdqNL67qlZBF4dJG9Q
-         SD0AwZOqCxZOH/GB7YsMdkm5K08M1sgI3cEpTsEqurnfYsGNkKBkeNp5M9HpbOIejYsw
-         hSekvO161DJJS0XFJtHJ/10fJnmOM8S6RG/pgGizpCuTkETIVQbrkQSvPmdgFAY5QgPR
-         CHsA==
-X-Gm-Message-State: AOJu0YzjTr9ZFMkkBG3D6L02JpV5dDOAaZcElJSSTyNpzmKwkfqi94/j
-        esps04TrJFJ81ydHEsJD3vf9SE0AG9ojSfztWFJTR8+1sngTfWEx0efl75Q3TYYxpAFELT2HDGB
-        nZuB0TLQ0RhvsbEpSpVlwlOCXSgxNrxeixJiPZGFOokrxeM0NR++SK/MRZw==
-X-Received: by 2002:a81:a091:0:b0:5a7:d9ce:363c with SMTP id x139-20020a81a091000000b005a7d9ce363cmr7817502ywg.6.1698047873207;
-        Mon, 23 Oct 2023 00:57:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHy+WSIuaqer8Tu4PIB5kMYpkbya8+N3WwyVpebn8chFwLsb/rKl1kccsuRoPtpYrp1bhd7Au/PM2ka8Xarfnc=
-X-Received: by 2002:a81:a091:0:b0:5a7:d9ce:363c with SMTP id
- x139-20020a81a091000000b005a7d9ce363cmr7817492ywg.6.1698047872886; Mon, 23
- Oct 2023 00:57:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698047914; x=1698652714;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9Hc1HQxMK6cov0ESZHcOE2hl8RJaLivF3ZZ3pITnRe4=;
+        b=q+tu3Zldi0pw/JCVmoNarJnFHA46aJYR3mUeNinjKneCQEf6cmd9VYFwaQxC2j1Gh4
+         M0jm2bXe/+3BxDXE83dlSYfFstjd+iwoODcsOSSYnp7g1RyHft+NJffxAYV4hJjAVRDz
+         kwo7QqVBcpk8pAqz8NTp3MQkHVfkfJXwdlfRzcdPshwGH1PJf8OsjuETNYlUCRFvnmn3
+         Ec/6jXRFg3JXMciD4ZZuZYhK8dLCs9jw32NAVLg1O47V6d8z/NrCpuCCRRp8eEyfn7s8
+         7Nsnl3fdntoGJqwHxwGCcjO5i2YDeTgj20dCItn44ng2Xhp/qtcXY8HAtsIDbnYO4Ox1
+         U5wA==
+X-Gm-Message-State: AOJu0Yz4bMYkhQgnAyKa+FMPS46m6lR+EryEHyllvmDX0ffBW6+7qjjk
+        gebE4ilCXWLqv20HT4DkE1VzUwwlqdydxBt1//+sCOcvZ5qd2rvg
+X-Google-Smtp-Source: AGHT+IHcGE7eYAlI8p2WSlLx/bFwKZDKurAJkefqlL92QCw9E55DVNlDs2SBU6J1Dc2EK+Fwg347Fnxddm2kJpuCkrA=
+X-Received: by 2002:a25:2d14:0:b0:d9b:4f28:f6ce with SMTP id
+ t20-20020a252d14000000b00d9b4f28f6cemr8193335ybt.1.1698047914463; Mon, 23 Oct
+ 2023 00:58:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230807132626.182101-1-aleksandr.mikhalitsyn@canonical.com>
- <bcda164b-e4b7-1c16-2714-13e3c6514b47@redhat.com> <CAEivzxf-W1-q=BkG1UndFcX_AbzH-HtHX7p6j4iAwVbKnPn+sQ@mail.gmail.com>
- <772a6282-d690-b299-6cf4-c96dd20792fa@redhat.com>
-In-Reply-To: <772a6282-d690-b299-6cf4-c96dd20792fa@redhat.com>
-From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Date:   Mon, 23 Oct 2023 09:57:41 +0200
-Message-ID: <CAEivzxf56EXhNToVZRNZ9HsS4NKYidXqE-89oT6L-XY=s0nPcQ@mail.gmail.com>
-Subject: Re: [PATCH v10 00/12] ceph: support idmapped mounts
-To:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>
-Cc:     brauner@kernel.org, stgraber@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230708072835.3035398-1-quic_jprakash@quicinc.com>
+ <20230708072835.3035398-10-quic_jprakash@quicinc.com> <20230708162318.1e2b169f@jic23-huawei>
+ <2dc93e2b-61b4-943c-f938-296922fbece4@quicinc.com>
+In-Reply-To: <2dc93e2b-61b4-943c-f938-296922fbece4@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 23 Oct 2023 10:58:23 +0300
+Message-ID: <CAA8EJprQFPvBdiwnnkGet7SQiv9nuo4zaDCn9kuLWS0QZ5Kc9Q@mail.gmail.com>
+Subject: Re: [PATCH 09/11] iio: adc: Update QCOM ADC drivers for bindings path change
+To:     Jishnu Prakash <quic_jprakash@quicinc.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>, agross@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linus.walleij@linaro.org, Jonathan.Cameron@huawei.com,
+        sboyd@kernel.org, quic_subbaram@quicinc.com,
+        quic_collinsd@quicinc.com, quic_kamalw@quicinc.com,
+        marijn.suijten@somainline.org, andriy.shevchenko@linux.intel.com,
+        krzysztof.kozlowski@linaro.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-arm-msm@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-arm-msm-owner@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 7:42=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wrote:
+On Mon, 23 Oct 2023 at 09:17, Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
 >
+> Hi Jonathan,
 >
-> On 10/17/23 17:20, Aleksandr Mikhalitsyn wrote:
-> > On Tue, Aug 8, 2023 at 2:45=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wro=
-te:
-> >> LGTM.
-> >>
-> >> Reviewed-by: Xiubo Li <xiubli@redhat.com>
-> >>
-> >> I will queue this to the 'testing' branch and then we will run ceph qa
-> >> tests.
-> >>
-> >> Thanks Alex.
-> >>
-> >> - Xiubo
-> > Hi Xiubo,
+> On 7/8/2023 8:53 PM, Jonathan Cameron wrote:
+> > On Sat, 8 Jul 2023 12:58:33 +0530
+> > Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
 > >
-> > will this series be landed to 6.6?
+> >> Update ADC dt-bindings file paths in QCOM ADC driver files to
+> >> match the dt-bindings change moving the files from 'iio' to
+> >> 'iio/adc' folder.
+> >>
+> >> Signed-off-by: Jishnu Prakash <quic_jprakash@quicinc.com>
+> > Do the move in one go.
 > >
-> > Userspace part was backported and merged to the Ceph Quincy release
-> > (https://github.com/ceph/ceph/pull/53139)
-> > And waiting to be tested and merged to the Ceph reef and pacific releas=
-es.
-> > But the kernel part is still in the testing branch.
->
-> This changes have been in the 'testing' branch for more than two mounts
-> and well test, till now we haven't seen any issue.
->
-> IMO it should be ready.
-
-Thanks, Xiubo!
-It would be awesome to have this in v.6.6.
-
-Kind regards,
-Alex
-
->
-> Ilya ?
->
-> Thanks
->
-> - Xiubo
->
->
-> > Kind regards,
-> > Alex
+> > Diff rename detection will make the resulting patch more trivial
+> > to look at than this multistep version.
 > >
-> >> On 8/7/23 21:26, Alexander Mikhalitsyn wrote:
-> >>> Dear friends,
-> >>>
-> >>> This patchset was originally developed by Christian Brauner but I'll =
-continue
-> >>> to push it forward. Christian allowed me to do that :)
-> >>>
-> >>> This feature is already actively used/tested with LXD/LXC project.
-> >>>
-> >>> Git tree (based on https://github.com/ceph/ceph-client.git testing):
-> >>> v10: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v10
-> >>> current: https://github.com/mihalicyn/linux/tree/fs.idmapped.ceph
-> >>>
-> >>> In the version 3 I've changed only two commits:
-> >>> - fs: export mnt_idmap_get/mnt_idmap_put
-> >>> - ceph: allow idmapped setattr inode op
-> >>> and added a new one:
-> >>> - ceph: pass idmap to __ceph_setattr
-> >>>
-> >>> In the version 4 I've reworked the ("ceph: stash idmapping in mdsc re=
-quest")
-> >>> commit. Now we take idmap refcounter just in place where req->r_mnt_i=
-dmap
-> >>> is filled. It's more safer approach and prevents possible refcounter =
-underflow
-> >>> on error paths where __register_request wasn't called but ceph_mdsc_r=
-elease_request is
-> >>> called.
-> >>>
-> >>> Changelog for version 5:
-> >>> - a few commits were squashed into one (as suggested by Xiubo Li)
-> >>> - started passing an idmapping everywhere (if possible), so a caller
-> >>> UID/GID-s will be mapped almost everywhere (as suggested by Xiubo Li)
-> >>>
-> >>> Changelog for version 6:
-> >>> - rebased on top of testing branch
-> >>> - passed an idmapping in a few places (readdir, ceph_netfs_issue_op_i=
-nline)
-> >>>
-> >>> Changelog for version 7:
-> >>> - rebased on top of testing branch
-> >>> - this thing now requires a new cephfs protocol extension CEPHFS_FEAT=
-URE_HAS_OWNER_UIDGID
-> >>> https://github.com/ceph/ceph/pull/52575
-> >>>
-> >>> Changelog for version 8:
-> >>> - rebased on top of testing branch
-> >>> - added enable_unsafe_idmap module parameter to make idmapped mounts
-> >>> work with old MDS server versions
-> >>> - properly handled case when old MDS used with new kernel client
-> >>>
-> >>> Changelog for version 9:
-> >>> - added "struct_len" field in struct ceph_mds_request_head as request=
-ed by Xiubo Li
-> >>>
-> >>> Changelog for version 10:
-> >>> - fill struct_len field properly (use cpu_to_le32)
-> >>> - add extra checks IS_CEPH_MDS_OP_NEWINODE(..) as requested by Xiubo =
-to match
-> >>>     userspace client behavior
-> >>> - do not set req->r_mnt_idmap for MKSNAP operation
-> >>> - atomic_open: set req->r_mnt_idmap only for CEPH_MDS_OP_CREATE as us=
-erspace client does
-> >>>
-> >>> I can confirm that this version passes xfstests and
-> >>> tested with old MDS (without CEPHFS_FEATURE_HAS_OWNER_UIDGID)
-> >>> and with recent MDS version.
-> >>>
-> >>> Links to previous versions:
-> >>> v1: https://lore.kernel.org/all/20220104140414.155198-1-brauner@kerne=
-l.org/
-> >>> v2: https://lore.kernel.org/lkml/20230524153316.476973-1-aleksandr.mi=
-khalitsyn@canonical.com/
-> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v2
-> >>> v3: https://lore.kernel.org/lkml/20230607152038.469739-1-aleksandr.mi=
-khalitsyn@canonical.com/#t
-> >>> v4: https://lore.kernel.org/lkml/20230607180958.645115-1-aleksandr.mi=
-khalitsyn@canonical.com/#t
-> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v4
-> >>> v5: https://lore.kernel.org/lkml/20230608154256.562906-1-aleksandr.mi=
-khalitsyn@canonical.com/#t
-> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v5
-> >>> v6: https://lore.kernel.org/lkml/20230609093125.252186-1-aleksandr.mi=
-khalitsyn@canonical.com/
-> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v6
-> >>> v7: https://lore.kernel.org/all/20230726141026.307690-1-aleksandr.mik=
-halitsyn@canonical.com/
-> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v7
-> >>> v8: https://lore.kernel.org/all/20230803135955.230449-1-aleksandr.mik=
-halitsyn@canonical.com/
-> >>> tree: -
-> >>> v9: https://lore.kernel.org/all/20230804084858.126104-1-aleksandr.mik=
-halitsyn@canonical.com/
-> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v9
-> >>>
-> >>> Kind regards,
-> >>> Alex
-> >>>
-> >>> Original description from Christian:
-> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>> This patch series enables cephfs to support idmapped mounts, i.e. the
-> >>> ability to alter ownership information on a per-mount basis.
-> >>>
-> >>> Container managers such as LXD support sharaing data via cephfs betwe=
-en
-> >>> the host and unprivileged containers and between unprivileged contain=
-ers.
-> >>> They may all use different idmappings. Idmapped mounts can be used to
-> >>> create mounts with the idmapping used for the container (or a differe=
-nt
-> >>> one specific to the use-case).
-> >>>
-> >>> There are in fact more use-cases such as remapping ownership for
-> >>> mountpoints on the host itself to grant or restrict access to differe=
-nt
-> >>> users or to make it possible to enforce that programs running as root
-> >>> will write with a non-zero {g,u}id to disk.
-> >>>
-> >>> The patch series is simple overall and few changes are needed to ceph=
-fs.
-> >>> There is one cephfs specific issue that I would like to discuss and
-> >>> solve which I explain in detail in:
-> >>>
-> >>> [PATCH 02/12] ceph: handle idmapped mounts in create_request_message(=
-)
-> >>>
-> >>> It has to do with how to handle mds serves which have id-based access
-> >>> restrictions configured. I would ask you to please take a look at the
-> >>> explanation in the aforementioned patch.
-> >>>
-> >>> The patch series passes the vfs and idmapped mount testsuite as part =
-of
-> >>> xfstests. To run it you will need a config like:
-> >>>
-> >>> [ceph]
-> >>> export FSTYP=3Dceph
-> >>> export TEST_DIR=3D/mnt/test
-> >>> export TEST_DEV=3D10.103.182.10:6789:/
-> >>> export TEST_FS_MOUNT_OPTS=3D"-o name=3Dadmin,secret=3D$password
-> >>>
-> >>> and then simply call
-> >>>
-> >>> sudo ./check -g idmapped
-> >>>
-> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>
-> >>> Alexander Mikhalitsyn (3):
-> >>>     fs: export mnt_idmap_get/mnt_idmap_put
-> >>>     ceph: add enable_unsafe_idmap module parameter
-> >>>     ceph: pass idmap to __ceph_setattr
-> >>>
-> >>> Christian Brauner (9):
-> >>>     ceph: stash idmapping in mdsc request
-> >>>     ceph: handle idmapped mounts in create_request_message()
-> >>>     ceph: pass an idmapping to mknod/symlink/mkdir
-> >>>     ceph: allow idmapped getattr inode op
-> >>>     ceph: allow idmapped permission inode op
-> >>>     ceph: allow idmapped setattr inode op
-> >>>     ceph/acl: allow idmapped set_acl inode op
-> >>>     ceph/file: allow idmapped atomic_open inode op
-> >>>     ceph: allow idmapped mounts
-> >>>
-> >>>    fs/ceph/acl.c                 |  6 +--
-> >>>    fs/ceph/crypto.c              |  2 +-
-> >>>    fs/ceph/dir.c                 |  4 ++
-> >>>    fs/ceph/file.c                | 11 ++++-
-> >>>    fs/ceph/inode.c               | 29 +++++++------
-> >>>    fs/ceph/mds_client.c          | 78 +++++++++++++++++++++++++++++++=
-+---
-> >>>    fs/ceph/mds_client.h          |  8 +++-
-> >>>    fs/ceph/super.c               |  7 +++-
-> >>>    fs/ceph/super.h               |  3 +-
-> >>>    fs/mnt_idmapping.c            |  2 +
-> >>>    include/linux/ceph/ceph_fs.h  | 10 ++++-
-> >>>    include/linux/mnt_idmapping.h |  3 ++
-> >>>    12 files changed, 136 insertions(+), 27 deletions(-)
-> >>>
+> > Jonathan
 >
+>
+> Hi Jonathan,
+>
+> Just to recap, in patches 8-11, the intention is to move the dt-binding
+> files used for QCOM ADCs from /dt-bindings/iio folder to the
+> /dt-bindings/iio/adc folder.
+>
+> I'm just confirming, can we move the files and update documentation,
+> bindings, driver and devicetree files all in one patch? Or you mean one
+> patch for documentation, bindings and driver files and one patch for
+> devicetree files (based on the comment from Krzysztof for the next patch
+> 10 in this series)?
+>
+> Based on this patch series:
+> https://lore.kernel.org/all/cover.1646388139.git.zong.li@sifive.com/,
+> I'm wondering if I should add the files in the new location first, do
+> the file path updates and then completely remove the files in the old
+> path to avoid breaking the kernel.....or is it possible to get the
+> devicetree changes picked along with the binding changes, to avoid any
+> problems with bisectability?
+
+Perform git mv & fix all failing DT and drivers in a single commit.
+You might also update guarding defines, if you wish. Perform all other
+changes in a separate commit.
+
+This way git diff will actually tell what has happened, instead of us
+seeing a series of add files, perform changes, remove files. It is
+impossible to review your changes otherwise.
+
+>
+>
+> >> ---
+> >>   drivers/iio/adc/qcom-spmi-adc5-gen3.c | 2 +-
+> >>   drivers/iio/adc/qcom-spmi-adc5.c      | 2 +-
+> >>   drivers/iio/adc/qcom-spmi-vadc.c      | 2 +-
+> >>   3 files changed, 3 insertions(+), 3 deletions(-)
+> >>
+> Thanks,
+>
+> Jishnu
+>
+
+
+-- 
+With best wishes
+Dmitry
