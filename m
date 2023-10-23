@@ -2,114 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F20F67D297F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 06:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFB67D2982
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 06:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjJWEyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 00:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
+        id S229645AbjJWE4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 00:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJWEyE (ORCPT
+        with ESMTP id S229450AbjJWE4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 00:54:04 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D15AE8;
-        Sun, 22 Oct 2023 21:54:02 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-27e1eea2f0dso1244609a91.1;
-        Sun, 22 Oct 2023 21:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698036842; x=1698641642; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mFb+Ar0GcO5xQuWTfgdau5HGbQ+ui9RngdB/9LQgP9M=;
-        b=AWu1dSCXNGOz2Y52eORdEitnVD055ZirExbzla7Nrak9viSi9ybXktYegSRl8aONBV
-         TSuZwapWkHZB6ozG7gt00QxF6CZgyEPjm00jrazNkEmEjrY1tni/hfZl1AtShfSXfUHT
-         cALl6LNN4mskFcq6pA+tcBqycw7YKMUArtA3oENv2z2UStfStVXuGuK+EufO3MvsKLdd
-         UiKLdPgivrsm/LbPXIEvLujXxqIIfTKCAkQ6GDttkPw5ON5uT9Jp8cSJ556T/ZpIBKQN
-         gTIZp0KkA+PiCKtZdnwFs1G09z4VUH17E1MEKSwLd2Z+lV22F8qSr6k0szYLgXmJ8SS+
-         AUlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698036842; x=1698641642;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mFb+Ar0GcO5xQuWTfgdau5HGbQ+ui9RngdB/9LQgP9M=;
-        b=ScRwCI/vuG00ixUpgX5EQAIoKbG8+3QHAShdwekadLueyWjDgWn7BOciB+JkVb+YMJ
-         kBFYzhluI7kW8oaT3Imo/mBR7gmPfb1mFULXTONCCXQ5c+Yz0ElMCRMyoOpiKsrvhCD/
-         2s+0BGNe4mGgPmoy4MOFsDia57lac6VYawguw/9IW0x62mmqMEooCAwDxIsoxkHFU7e9
-         Hh6h2HutBf6Pa/ol5nhitgnl4nAu56JZfeP4rhT4Ywcwi2CmJfNvVXgeCKsPDuwCwe7H
-         DhThm/XmulEwN6O9RfjYVMMC/7Ed/YeIchI3dw2UFwqYgA81v+VPTfrR7xipSgyZzeff
-         Rexw==
-X-Gm-Message-State: AOJu0Yz9iM8xmrdJNlPjAK3s8Qa8KS8FVSy94qyyLsjqBFKNVFA+25FP
-        f2xf57QWa26Na+wEmtQ/uuo=
-X-Google-Smtp-Source: AGHT+IHwFwAEKGMqvCGzNHLFpPCCWPKpfB28wRRs6BA6fMnALzkwSmlTmQomrA/+J4WTH+/GeD+b6Q==
-X-Received: by 2002:a17:90a:1918:b0:27d:2371:9f74 with SMTP id 24-20020a17090a191800b0027d23719f74mr6041245pjg.0.1698036841736;
-        Sun, 22 Oct 2023 21:54:01 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id pw4-20020a17090b278400b0026f4bb8b2casm6798844pjb.6.2023.10.22.21.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Oct 2023 21:54:01 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 48E76937521F; Mon, 23 Oct 2023 11:53:57 +0700 (WIB)
-Date:   Mon, 23 Oct 2023 11:53:56 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Vegard Nossum <vegard.nossum@oracle.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh@kernel.org>, linux-next@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] Documentation: coresight: fix `make refcheckdocs` warning
-Message-ID: <ZTX8ZPY3NQE_5cGX@debian.me>
-References: <20231022185806.919434-1-vegard.nossum@oracle.com>
+        Mon, 23 Oct 2023 00:56:14 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAC0E8;
+        Sun, 22 Oct 2023 21:56:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698036971;
+        bh=Ke4ba6atseiCGvNMRr/6znd5xtFRbtHUZz7Nfd0RhdA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LLO7UO65CQSyEzJX1LilTBbq237FrMpbkgF4VAnw07wbiFcUpFESRACMoy//fZSH0
+         CDUyM5y9il2yconpoCpwR7YGEktpMn0lxbs6Mt304gTFNmId/ZEEml9ApLPQLEv1ww
+         C2A0/wEOZ7u0vM5oUpHGp2HGXqjzWl6Zw9O7zNpppPGlAjtPAgnWUfHvWMCWprkYHx
+         kwp2Ohji9ldBpEjtdrsQXC4X0xNcEm2hS940mRtro7S21if/ziPWD3SmhOY98vHzen
+         pO85SMgYKK22EtlZllljJ0zicgHJzKbahkABNFy3vgF82QiPqDLs3T2LLmf7woUWBA
+         //ff/B+PpmZLg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SDNF44qKcz4wcN;
+        Mon, 23 Oct 2023 15:56:08 +1100 (AEDT)
+Date:   Mon, 23 Oct 2023 15:56:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: linux-next: manual merge of the iommufd tree with the iommu tree
+Message-ID: <20231023155606.247fa998@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="evayvaUGlLi0LV8Z"
-Content-Disposition: inline
-In-Reply-To: <20231022185806.919434-1-vegard.nossum@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/i8kNvNtmyJ2frJSNEGZqtf8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---evayvaUGlLi0LV8Z
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+--Sig_/i8kNvNtmyJ2frJSNEGZqtf8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Oct 22, 2023 at 08:58:06PM +0200, Vegard Nossum wrote:
-> -See Documentation/devicetree/bindings/arm/arm,coresight-\*.yaml for deta=
-ils.
-> +See ``Documentation/devicetree/bindings/arm/arm,coresight-*.yaml`` for d=
-etails.
+Hi all,
 
-Oh, I should have inlined that path when I fixed the original warning. Anyw=
-ay,
+Today's linux-next merge of the iommufd tree got a conflict in:
 
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+  drivers/iommu/intel/pasid.c
+
+between commit:
+
+  c61c255e114c ("iommu/vt-d: Remove unused function")
+
+from the iommu tree and commit:
+
+  3c576c995219 ("iommu/intel: Access/Dirty bit support for SL domains")
+
+from the iommufd tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
 --=20
-An old man doll... just what I always wanted! - Clara
+Cheers,
+Stephen Rothwell
 
---evayvaUGlLi0LV8Z
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --cc drivers/iommu/intel/pasid.c
+index 06ddb3c927f5,b9264b9174e8..000000000000
+--- a/drivers/iommu/intel/pasid.c
++++ b/drivers/iommu/intel/pasid.c
+@@@ -335,6 -340,45 +340,36 @@@ static inline void pasid_set_fault_enab
+  	pasid_set_bits(&pe->val[0], 1 << 1, 0);
+  }
+ =20
++ /*
++  * Enable second level A/D bits by setting the SLADE (Second Level
++  * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
++  * entry.
++  */
++ static inline void pasid_set_ssade(struct pasid_entry *pe)
++ {
++ 	pasid_set_bits(&pe->val[0], 1 << 9, 1 << 9);
++ }
++=20
++ /*
++  * Disable second level A/D bits by clearing the SLADE (Second Level
++  * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
++  * entry.
++  */
++ static inline void pasid_clear_ssade(struct pasid_entry *pe)
++ {
++ 	pasid_set_bits(&pe->val[0], 1 << 9, 0);
++ }
++=20
++ /*
++  * Checks if second level A/D bits specifically the SLADE (Second Level
++  * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
++  * entry is set.
++  */
++ static inline bool pasid_get_ssade(struct pasid_entry *pe)
++ {
++ 	return pasid_get_bits(&pe->val[0]) & (1 << 9);
++ }
++=20
+ -/*
+ - * Setup the WPE(Write Protect Enable) field (Bit 132) of a
+ - * scalable mode PASID entry.
+ - */
+ -static inline void pasid_set_wpe(struct pasid_entry *pe)
+ -{
+ -	pasid_set_bits(&pe->val[2], 1 << 4, 1 << 4);
+ -}
+ -
+  /*
+   * Setup the P(Present) field (Bit 0) of a scalable mode PASID
+   * entry.
+
+--Sig_/i8kNvNtmyJ2frJSNEGZqtf8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZTX8YAAKCRD2uYlJVVFO
-owAGAQDq0UqUHK2blzaxbHy8g9mmvLl4ouKjvmjPsvi8Kkv/igEA4WjVvIxUbT6f
-zN9AJJDKc7MN9vPOz+twls/Do2dyQwo=
-=Jd0O
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU1/OYACgkQAVBC80lX
+0Gz9ggf+PsOZQoqj/mYWFO5ZRm/XgJfvS9W5hSatw5MHZVabtn54FtLG1WNlp3+V
+FFA/wGFRouJ/4W0F6MSU2kgjQvvzFQh/dxsBLtCm/VUORM/Qg5+cRrxV4sdfdsIf
+Zy9JeIXqYnzkYWeY8X9o9e2XioTb82qWNkMv4zJC8gesUAlbnIN32WyvMaP8y4VU
+VFbHTWZSbxa/3fYTPQ5wQEHDlvzwASpiIO3Lhrphqup0J0X1Cph8wYx0oIUv7vS/
+eCroqqLp/NN79fHZVbzQdV5kTGP7qDSlxJOLG1xoA+gfQ88psIWzhMu1QVXmyGhd
+rBrvf6WKSxRBqlwtycl3xF7pu+iiHQ==
+=5G2a
 -----END PGP SIGNATURE-----
 
---evayvaUGlLi0LV8Z--
+--Sig_/i8kNvNtmyJ2frJSNEGZqtf8--
