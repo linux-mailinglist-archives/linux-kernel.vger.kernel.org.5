@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1527D3C4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9827D3C7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233676AbjJWQXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 12:23:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47210 "EHLO
+        id S233692AbjJWQ3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 12:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233406AbjJWQXK (ORCPT
+        with ESMTP id S230338AbjJWQ3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 12:23:10 -0400
-Received: from out-197.mta0.migadu.com (out-197.mta0.migadu.com [91.218.175.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267C6FF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:23:07 -0700 (PDT)
+        Mon, 23 Oct 2023 12:29:35 -0400
+Received: from out-201.mta1.migadu.com (out-201.mta1.migadu.com [95.215.58.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5572E4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:29:31 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698078180;
+        t=1698078243;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bMe0IukHdtXUzp2BGVWle8stWPjWZ8/o4+6QYAoowVk=;
-        b=rkq81ZIHIptQkPMqAJh4zbGsz6Tf/Km8HtCA+J1L5FmEVUWRXZFPtR3mYiLwbXzLU1ve+m
-        ipP9E4g9fFYH2AhD85YBltaGTWSFkAJKRvJkJTSAujCAdfb7pv+ffb4OXZf2EtpweYEmBM
-        QWsHiUJVDHj2Hr+JhC9QlyMPSRnLRJ0=
+        bh=6w0l/5/OLmmiPtUBy12XvNW481vH2W+yw4PJnFK30wA=;
+        b=tTmhSqriTq1xAUwIMKx9hsGiOaqTSZIq/wKJLXRg6daSa2A/wpp5RWjZ1i+KFXZWKiTvL7
+        FT80+nqHJsuFFL2EcMj7absCsQ1tHdiG6bPU8EWrNzLrOT2cqyLQvL1bQUd/tEodCi1gSB
+        pSo03HvvDVMKsmPPsyN4xZhauDuuzOs=
 From:   andrey.konovalov@linux.dev
 To:     Marco Elver <elver@google.com>,
         Alexander Potapenko <glider@google.com>
@@ -37,17 +37,17 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v3 05/19] lib/stackdepot: use fixed-sized slots for stack records
-Date:   Mon, 23 Oct 2023 18:22:36 +0200
-Message-Id: <4340f57fa82fde81e00f64f98d69ee4a5d5ed9a8.1698077459.git.andreyknvl@google.com>
+Subject: [PATCH v3 06/19] lib/stackdepot: fix and clean-up atomic annotations
+Date:   Mon, 23 Oct 2023 18:22:37 +0200
+Message-Id: <8f649d7e5919c56bcc5d2d356c9584fdcb87800e.1698077459.git.andreyknvl@google.com>
 In-Reply-To: <cover.1698077459.git.andreyknvl@google.com>
 References: <cover.1698077459.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -56,97 +56,125 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Instead of storing stack records in stack depot pools one right after
-another, use fixed-sized slots.
+Drop smp_load_acquire from next_pool_required in depot_init_pool, as both
+depot_init_pool and the all smp_store_release's to this variable are
+executed under the stack depot lock.
 
-Add a new Kconfig option STACKDEPOT_MAX_FRAMES that allows to select
-the size of the slot in frames. Use 64 as the default value, which is
-the maximum stack trace size both KASAN and KMSAN use right now.
+Also simplify and clean up comments accompanying the use of atomic
+accesses in the stack depot code.
 
-Also add descriptions for other stack depot Kconfig options.
-
-This is preparatory patch for implementing the eviction of stack records
-from the stack depot.
-
+Reviewed-by: Alexander Potapenko <glider@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
 ---
 
+This patch is not strictly required, as the atomic accesses are fully
+removed in one of the latter patches. However, I decided to keep the
+patch just in case we end up needing these atomics in the following
+iterations of this series.
+
 Changes v2->v3:
-- Keep previously existing Kconfig options not configurable by users.
+- Keep parentheses when referring to functions in comments.
+- Add comment that explains why depot_init_pool reads next_pool_required
+  non-atomically.
 
 Changes v1->v2:
-- Add and use STACKDEPOT_MAX_FRAMES Kconfig option.
+- Minor comment fix as suggested by Marco.
+- Drop READ_ONCE marking for next_pool_required.
 ---
- lib/Kconfig      | 10 ++++++++++
- lib/stackdepot.c | 13 +++++++++----
- 2 files changed, 19 insertions(+), 4 deletions(-)
+ lib/stackdepot.c | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
 
-diff --git a/lib/Kconfig b/lib/Kconfig
-index c686f4adc124..5f3fa3659fa9 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -710,10 +710,20 @@ config ARCH_STACKWALK
- config STACKDEPOT
- 	bool
- 	select STACKTRACE
-+	help
-+	  Stack depot: stack trace storage that avoids duplication
- 
- config STACKDEPOT_ALWAYS_INIT
- 	bool
- 	select STACKDEPOT
-+	help
-+	  Always initialize stack depot during early boot
-+
-+config STACKDEPOT_MAX_FRAMES
-+	int "Maximum number of frames in trace saved in stack depot"
-+	range 1 256
-+	default 64
-+	depends on STACKDEPOT
- 
- config REF_TRACKER
- 	bool
 diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 9a004f15f59d..128ece21afe9 100644
+index 128ece21afe9..60aea549429a 100644
 --- a/lib/stackdepot.c
 +++ b/lib/stackdepot.c
-@@ -58,9 +58,12 @@ struct stack_record {
- 	u32 hash;			/* Hash in the hash table */
- 	u32 size;			/* Number of stored frames */
- 	union handle_parts handle;
--	unsigned long entries[];	/* Variable-sized array of frames */
-+	unsigned long entries[CONFIG_STACKDEPOT_MAX_FRAMES];	/* Frames */
- };
+@@ -225,10 +225,10 @@ static void depot_init_pool(void **prealloc)
+ 	/*
+ 	 * If the next pool is already initialized or the maximum number of
+ 	 * pools is reached, do not use the preallocated memory.
+-	 * smp_load_acquire() here pairs with smp_store_release() below and
+-	 * in depot_alloc_stack().
++	 * Access next_pool_required non-atomically, as there are no concurrent
++	 * write accesses to this variable.
+ 	 */
+-	if (!smp_load_acquire(&next_pool_required))
++	if (!next_pool_required)
+ 		return;
  
-+#define DEPOT_STACK_RECORD_SIZE \
-+	ALIGN(sizeof(struct stack_record), 1 << DEPOT_STACK_ALIGN)
-+
- static bool stack_depot_disabled;
- static bool __stack_depot_early_init_requested __initdata = IS_ENABLED(CONFIG_STACKDEPOT_ALWAYS_INIT);
- static bool __stack_depot_early_init_passed __initdata;
-@@ -258,9 +261,7 @@ static struct stack_record *
- depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+ 	/* Check if the current pool is not yet allocated. */
+@@ -249,8 +249,8 @@ static void depot_init_pool(void **prealloc)
+ 		 * At this point, either the next pool is initialized or the
+ 		 * maximum number of pools is reached. In either case, take
+ 		 * note that initializing another pool is not required.
+-		 * This smp_store_release pairs with smp_load_acquire() above
+-		 * and in stack_depot_save().
++		 * smp_store_release() pairs with smp_load_acquire() in
++		 * stack_depot_save().
+ 		 */
+ 		smp_store_release(&next_pool_required, 0);
+ 	}
+@@ -273,7 +273,7 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+ 
+ 		/*
+ 		 * Move on to the next pool.
+-		 * WRITE_ONCE pairs with potential concurrent read in
++		 * WRITE_ONCE() pairs with potential concurrent read in
+ 		 * stack_depot_fetch().
+ 		 */
+ 		WRITE_ONCE(pool_index, pool_index + 1);
+@@ -281,8 +281,8 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+ 		/*
+ 		 * If the maximum number of pools is not reached, take note
+ 		 * that the next pool needs to initialized.
+-		 * smp_store_release() here pairs with smp_load_acquire() in
+-		 * stack_depot_save() and depot_init_pool().
++		 * smp_store_release() pairs with smp_load_acquire() in
++		 * stack_depot_save().
+ 		 */
+ 		if (pool_index + 1 < DEPOT_MAX_POOLS)
+ 			smp_store_release(&next_pool_required, 1);
+@@ -323,7 +323,7 @@ static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
  {
- 	struct stack_record *stack;
--	size_t required_size = struct_size(stack, entries, size);
--
--	required_size = ALIGN(required_size, 1 << DEPOT_STACK_ALIGN);
-+	size_t required_size = DEPOT_STACK_RECORD_SIZE;
+ 	union handle_parts parts = { .handle = handle };
+ 	/*
+-	 * READ_ONCE pairs with potential concurrent write in
++	 * READ_ONCE() pairs with potential concurrent write in
+ 	 * depot_alloc_stack().
+ 	 */
+ 	int pool_index_cached = READ_ONCE(pool_index);
+@@ -413,8 +413,7 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
  
- 	/* Check if there is not enough space in the current pool. */
- 	if (unlikely(pool_offset + required_size > DEPOT_POOL_SIZE)) {
-@@ -295,6 +296,10 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
- 	if (stack_pools[pool_index] == NULL)
- 		return NULL;
- 
-+	/* Limit number of saved frames to CONFIG_STACKDEPOT_MAX_FRAMES. */
-+	if (size > CONFIG_STACKDEPOT_MAX_FRAMES)
-+		size = CONFIG_STACKDEPOT_MAX_FRAMES;
-+
- 	/* Save the stack trace. */
- 	stack = stack_pools[pool_index] + pool_offset;
- 	stack->hash = hash;
+ 	/*
+ 	 * Fast path: look the stack trace up without locking.
+-	 * The smp_load_acquire() here pairs with smp_store_release() to
+-	 * |bucket| below.
++	 * smp_load_acquire() pairs with smp_store_release() to |bucket| below.
+ 	 */
+ 	found = find_stack(smp_load_acquire(bucket), entries, nr_entries, hash);
+ 	if (found)
+@@ -424,8 +423,8 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+ 	 * Check if another stack pool needs to be initialized. If so, allocate
+ 	 * the memory now - we won't be able to do that under the lock.
+ 	 *
+-	 * The smp_load_acquire() here pairs with smp_store_release() to
+-	 * |next_pool_inited| in depot_alloc_stack() and depot_init_pool().
++	 * smp_load_acquire() pairs with smp_store_release() in
++	 * depot_alloc_stack() and depot_init_pool().
+ 	 */
+ 	if (unlikely(can_alloc && smp_load_acquire(&next_pool_required))) {
+ 		/*
+@@ -451,8 +450,8 @@ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+ 		if (new) {
+ 			new->next = *bucket;
+ 			/*
+-			 * This smp_store_release() pairs with
+-			 * smp_load_acquire() from |bucket| above.
++			 * smp_store_release() pairs with smp_load_acquire()
++			 * from |bucket| above.
+ 			 */
+ 			smp_store_release(bucket, new);
+ 			found = new;
 -- 
 2.25.1
 
