@@ -2,155 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFB67D2982
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 06:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E017D2984
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 06:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbjJWE4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 00:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48698 "EHLO
+        id S233216AbjJWE5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 00:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJWE4O (ORCPT
+        with ESMTP id S229451AbjJWE5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 00:56:14 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAC0E8;
-        Sun, 22 Oct 2023 21:56:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698036971;
-        bh=Ke4ba6atseiCGvNMRr/6znd5xtFRbtHUZz7Nfd0RhdA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LLO7UO65CQSyEzJX1LilTBbq237FrMpbkgF4VAnw07wbiFcUpFESRACMoy//fZSH0
-         CDUyM5y9il2yconpoCpwR7YGEktpMn0lxbs6Mt304gTFNmId/ZEEml9ApLPQLEv1ww
-         C2A0/wEOZ7u0vM5oUpHGp2HGXqjzWl6Zw9O7zNpppPGlAjtPAgnWUfHvWMCWprkYHx
-         kwp2Ohji9ldBpEjtdrsQXC4X0xNcEm2hS940mRtro7S21if/ziPWD3SmhOY98vHzen
-         pO85SMgYKK22EtlZllljJ0zicgHJzKbahkABNFy3vgF82QiPqDLs3T2LLmf7woUWBA
-         //ff/B+PpmZLg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SDNF44qKcz4wcN;
-        Mon, 23 Oct 2023 15:56:08 +1100 (AEDT)
-Date:   Mon, 23 Oct 2023 15:56:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: linux-next: manual merge of the iommufd tree with the iommu tree
-Message-ID: <20231023155606.247fa998@canb.auug.org.au>
+        Mon, 23 Oct 2023 00:57:51 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8E7D5B
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 21:57:46 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40839652b97so22121805e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 21:57:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698037064; x=1698641864; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GGtz+/MQRxfrHAnpLCrq4BoXI5MCTMZCHiUBxRPLmA4=;
+        b=XkpDxcz8EPSAKEWLhsycUqoH1jv+5syUJlRB1nXyosfQn2pUgker5qRWK0UQ7dre7r
+         p5MQ1WDXbeTihFJ7SzCAuFRsVhWNadEflGsH0kiS0TePAI2KZ8Ic8bGzJ3lMPjWCR9+q
+         Z+Go6/WODNYPLfoWn3c/Y7PqovfVjX6EZj1VoTZLTsTXZhPcwvJUNptv4O7MZw864xkF
+         lRGBxre9E/hDp8Fq+IaGXPI1kF0ssGl8Rj5NsHNxCziZpk5Y4FCNjzIROcLT9hhQrpMA
+         s4rUHxbzlbebQhnfUAVuOLzxKQekB/NQLFGTL21USBWxalSntp4+wMG1+5mm1jvVRIHA
+         wTIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698037064; x=1698641864;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GGtz+/MQRxfrHAnpLCrq4BoXI5MCTMZCHiUBxRPLmA4=;
+        b=B34ZpGL63a6gvC2wyYxQwNCF9SDsR+1XSbnwMzZktU3lQ48RvchojsOhKSBwodNIB/
+         59JNd+H3oGim63go2oz7rqe5Gg1jkl8mKiKuTaqC2oQefi7NFcBvJMq06clU6Pv2f1ex
+         nHddLuCHN815BgRJ9azwkpK/DmzxiLXqhhJWCcH2GuaIBjeCXlcrqWe88S6aOWzWjjXt
+         LIdIPzSVvfrdlxgAEk7xS/6L66EgqRJP/sPX2TU3rOBRqBuLHOruPEYT50oiel00BWRW
+         y6VziJiigZaWpoetJQbDH6y/3nhO1n//MI4AMxKZBFiUw6Bbwbyvu8/eKZJpxifs9qDB
+         cnLw==
+X-Gm-Message-State: AOJu0YyZKseG8hMF+9/Vof2M4sXyUls324pU9PuWEM6uBvkT3CdyRnKE
+        Zxy9bKI7oWauf02/mAY70A0dzg==
+X-Google-Smtp-Source: AGHT+IHqIdzJg+L6hUh5BLy9YGIX2wSFREX8EVuNJRZShwD3/E5x+3628NUW3Ueua6+MNnid9Tvi7Q==
+X-Received: by 2002:a1c:7c0d:0:b0:406:53aa:7a5f with SMTP id x13-20020a1c7c0d000000b0040653aa7a5fmr6526369wmc.10.1698037064341;
+        Sun, 22 Oct 2023 21:57:44 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id je20-20020a05600c1f9400b004063ea92492sm8536386wmb.22.2023.10.22.21.57.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Oct 2023 21:57:43 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 07:57:40 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Zach O'Keefe <zokeefe@google.com>, Yang Shi <shy828301@gmail.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm/khugepaged: Fix an uninitialized variable bug
+Message-ID: <cc831c0f-fa67-410d-a4f4-c9774e75019d@kadam.mountain>
+References: <a1f3242f-1aae-4b46-9893-36b11ee0a6dd@moroto.mountain>
+ <20231020093407.02be8ef4984ce31a7222f69f@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/i8kNvNtmyJ2frJSNEGZqtf8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231020093407.02be8ef4984ce31a7222f69f@linux-foundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/i8kNvNtmyJ2frJSNEGZqtf8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Oct 20, 2023 at 09:34:07AM -0700, Andrew Morton wrote:
+> On Fri, 20 Oct 2023 17:13:32 +0300 Dan Carpenter <dan.carpenter@linaro.org> wrote:
+> 
+> > Smatch complains that "hpage" can be used uninitialized:
+> > 
+> >     mm/khugepaged.c:1234 collapse_huge_page()
+> >     error: uninitialized symbol 'hpage'.
+> > 
+> > Initialized it on this path.
+> > 
+> > --- a/mm/khugepaged.c
+> > +++ b/mm/khugepaged.c
+> > @@ -1062,8 +1062,10 @@ static int alloc_charge_hpage(struct page **hpage, struct mm_struct *mm,
+> >  	int node = hpage_collapse_find_target_node(cc);
+> >  	struct folio *folio;
+> >  
+> > -	if (!hpage_collapse_alloc_folio(&folio, gfp, node, &cc->alloc_nmask))
+> > +	if (!hpage_collapse_alloc_folio(&folio, gfp, node, &cc->alloc_nmask)) {
+> > +		*hpage = NULL;
+> >  		return SCAN_ALLOC_HUGE_PAGE_FAIL;
+> > +	}
+> >  
+> >  	if (unlikely(mem_cgroup_charge(folio, mm, gfp))) {
+> >  		folio_put(folio);
+> 
+> Thanks.   Seems this was accidentally fixed by 
+> 
+> Author:     Peter Xu <peterx@redhat.com>
+> AuthorDate: Wed Feb 22 14:52:47 2023 -0500
+> Commit:     Andrew Morton <akpm@linux-foundation.org>
+> CommitDate: Tue Mar 28 16:20:06 2023 -0700
+> 
+>     mm/khugepaged: alloc_charge_hpage() take care of mem charge errors
+> 
+> 
+> Which was quite a long time ago.  Are you scanning old kernel versions?
 
-Hi all,
+There are two error paths.  Peter's patch changed the second
+SCAN_CGROUP_CHARGE_FAIL error path but left the first
+SCAN_ALLOC_HUGE_PAGE_FAIL error path.
 
-Today's linux-next merge of the iommufd tree got a conflict in:
+To be honest, it's probably a better idea to just add a *hpage = NULL
+at the start of the function.
 
-  drivers/iommu/intel/pasid.c
+regards,
+dan carpenter
 
-between commit:
-
-  c61c255e114c ("iommu/vt-d: Remove unused function")
-
-from the iommu tree and commit:
-
-  3c576c995219 ("iommu/intel: Access/Dirty bit support for SL domains")
-
-from the iommufd tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/iommu/intel/pasid.c
-index 06ddb3c927f5,b9264b9174e8..000000000000
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@@ -335,6 -340,45 +340,36 @@@ static inline void pasid_set_fault_enab
-  	pasid_set_bits(&pe->val[0], 1 << 1, 0);
-  }
- =20
-+ /*
-+  * Enable second level A/D bits by setting the SLADE (Second Level
-+  * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
-+  * entry.
-+  */
-+ static inline void pasid_set_ssade(struct pasid_entry *pe)
-+ {
-+ 	pasid_set_bits(&pe->val[0], 1 << 9, 1 << 9);
-+ }
-+=20
-+ /*
-+  * Disable second level A/D bits by clearing the SLADE (Second Level
-+  * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
-+  * entry.
-+  */
-+ static inline void pasid_clear_ssade(struct pasid_entry *pe)
-+ {
-+ 	pasid_set_bits(&pe->val[0], 1 << 9, 0);
-+ }
-+=20
-+ /*
-+  * Checks if second level A/D bits specifically the SLADE (Second Level
-+  * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
-+  * entry is set.
-+  */
-+ static inline bool pasid_get_ssade(struct pasid_entry *pe)
-+ {
-+ 	return pasid_get_bits(&pe->val[0]) & (1 << 9);
-+ }
-+=20
- -/*
- - * Setup the WPE(Write Protect Enable) field (Bit 132) of a
- - * scalable mode PASID entry.
- - */
- -static inline void pasid_set_wpe(struct pasid_entry *pe)
- -{
- -	pasid_set_bits(&pe->val[2], 1 << 4, 1 << 4);
- -}
- -
-  /*
-   * Setup the P(Present) field (Bit 0) of a scalable mode PASID
-   * entry.
-
---Sig_/i8kNvNtmyJ2frJSNEGZqtf8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU1/OYACgkQAVBC80lX
-0Gz9ggf+PsOZQoqj/mYWFO5ZRm/XgJfvS9W5hSatw5MHZVabtn54FtLG1WNlp3+V
-FFA/wGFRouJ/4W0F6MSU2kgjQvvzFQh/dxsBLtCm/VUORM/Qg5+cRrxV4sdfdsIf
-Zy9JeIXqYnzkYWeY8X9o9e2XioTb82qWNkMv4zJC8gesUAlbnIN32WyvMaP8y4VU
-VFbHTWZSbxa/3fYTPQ5wQEHDlvzwASpiIO3Lhrphqup0J0X1Cph8wYx0oIUv7vS/
-eCroqqLp/NN79fHZVbzQdV5kTGP7qDSlxJOLG1xoA+gfQ88psIWzhMu1QVXmyGhd
-rBrvf6WKSxRBqlwtycl3xF7pu+iiHQ==
-=5G2a
------END PGP SIGNATURE-----
-
---Sig_/i8kNvNtmyJ2frJSNEGZqtf8--
