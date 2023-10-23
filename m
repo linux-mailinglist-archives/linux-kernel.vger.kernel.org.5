@@ -2,351 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9E87D39E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33D17D39C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:41:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbjJWOmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
+        id S233823AbjJWOlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:41:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbjJWOmZ (ORCPT
+        with ESMTP id S233822AbjJWOlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:42:25 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0802E1722
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:41:22 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-778940531dbso209235485a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:41:22 -0700 (PDT)
+        Mon, 23 Oct 2023 10:41:05 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE6A19A3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:40:54 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-56f75e70190so1764782a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:40:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1698072081; x=1698676881; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=595ulVabtRF3llgdI31WX9Gdt75QPCMf8//5psjHRtY=;
-        b=lZxFFr9EeRtaV/ScucOqIOCJQjdyABo3gCeRqt0Z9x9wWdn84scdTaWTn3N1yu9DFL
-         RRWqU73DB3aG8u1niBmG87aw6FUKSp5xAkKtwmPsuZ8OcTzBLVk8RVVURK0qimA3yPzo
-         BqbWJQMYnsKT/2Ip/uNytwPghiwQS67mlsARsEU/ISWqusgpUoLWWSEeDEbFk1H8rkyP
-         0xrEnX6xjFBzYDF6MPBcaY/sDJTBRKYNWqdqO9PFIPxJg9S4YQZ/heIZjbVu0gQyS56B
-         7IMMGIXIQwoa2I5HFzaKlkRr1SoRUO3QTOzaElm6Q/7AWE94s+LyOL8GOv0FWg8EUGzQ
-         Omcw==
+        d=google.com; s=20230601; t=1698072052; x=1698676852; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TOIO+H7vBCJRfyqao5vTRDK/ZnUXqp5753SeNzy629c=;
+        b=icPSHz+UroMs95NxI4XfLTvL65qkzFMyB76dWy3dX7FOfk3GeCmT3+tlFRpq2ALk0B
+         QQ2isgkhaL0kdWIlxrQ/9JzlXpfArq2tQlzMhOYN2KJRc1FfEMc+CthNH5BsZWDRVh70
+         d0qfTJQv71x5Zpi1ppXjrTMFbqFQ9c+//sDxqh0BNrCVmf1S7REZJ598uQ9/rjXrNCbC
+         HgB4vPsH8F4yB9y2A1E3QiFezAXVyYzyXPtuXY5AwSICpUJfmwG/bsEOLxTcHx7pLv5o
+         DqP8f5onetS06vqym3kjlmotfIesRYyQJp4wrHLIVrDGKept/baSWzMMJxruB0WNe3J6
+         PhGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698072082; x=1698676882;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=595ulVabtRF3llgdI31WX9Gdt75QPCMf8//5psjHRtY=;
-        b=oa0ch7D7+1JuMNimRE4wvVJugliqrZgVBHkPTlO2zRiHlgXuvbuXuQh72yNbjIynzK
-         82xRfsowxbD88dzySjS6n6+jnNEdEe1yhnnhadyYIVYRMf8STA3oxVienM3cSQ17gL47
-         8EvX0n7GszeGetm5qbotwlMdX/pyTnxIbPahP5xBA0/gwoQoOqAUu+je7yD95yppDht2
-         /SzRKabDGg9bnJHlEL8EXhde6uvDk3P2ZsGJWCG56yBCEnvuQgm4SiGSqA7SdL6lfHr5
-         7PeFJ78q53uXU/ehb2JDuv6dbvIaPbCxZnkjfsmQZsVl2z6YirPaJhVIU0R9G25RMd4I
-         lMUg==
-X-Gm-Message-State: AOJu0YwahvQ23M4cpdml0X5KoqFam5HVJf3F1DHK66Rzx/q+9smvtGx9
-        3lzKKxVlshV6uR1jD+k7mLb3Eg==
-X-Google-Smtp-Source: AGHT+IEcl8tn7kc5yak43uDO4NKC4OFhGJ1HhbnGe+skc/PMjn6o3r+j8Un5vwm66cBdZQOBlHJ8Rw==
-X-Received: by 2002:a05:620a:bc9:b0:76e:f62e:45cc with SMTP id s9-20020a05620a0bc900b0076ef62e45ccmr9656082qki.32.1698072081572;
-        Mon, 23 Oct 2023 07:41:21 -0700 (PDT)
-Received: from [127.0.1.1] ([93.5.22.158])
-        by smtp.googlemail.com with ESMTPSA id f1-20020a05620a408100b007789a3499casm2725020qko.115.2023.10.23.07.41.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 07:41:21 -0700 (PDT)
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-Date:   Mon, 23 Oct 2023 16:40:18 +0200
-Subject: [PATCH 18/18] arm64: dts: mediatek: add display support for
- mt8365-evk
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231023-display-support-v1-18-5c860ed5c33b@baylibre.com>
-References: <20231023-display-support-v1-0-5c860ed5c33b@baylibre.com>
-In-Reply-To: <20231023-display-support-v1-0-5c860ed5c33b@baylibre.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Xinlei Lee <xinlei.lee@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pwm@vger.kernel.org,
-        Alexandre Mergnat <amergnat@baylibre.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6023; i=amergnat@baylibre.com;
- h=from:subject:message-id; bh=pcJBtWjpwilqxNWOakxNZQwRB91WeJf0Sg90BfqV228=;
- b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBlNoXPkea0Zqy/PQcdnRsfgCu3AEXfk7wmG8tbv9W6
- 6/bMYLmJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZTaFzwAKCRArRkmdfjHURSDAEA
- CQA7Cf4KSXMTBTFLJLDn3nVGt/R5YFfqc4INXDjm6cldZkidaTUTKIifrfDCxHp1r0Ja/JaBxMYzh0
- pHhJvAuYtIecogTkNQHbTaEPok1TVVQBfaC39ZpgywxOcQ5R4V5wmk3JZo7ZSibtsAgR+NsmIDQXD1
- gMcHUflijw+a1lUpZ3wIGoCtZbrP/M+Gas8r4P6vb7YOIEP4kFZinEF+hPfGadJ7SAzsKKeOS2Am2q
- tiiB2z92LubE4muqkhtO4YRYBrSLpNkF52xFJfMkp8uweHjtZr8PCrr8AsRMr3ktLamN03DP1LKDDj
- 2FzODsOY5xZ9SxTdcO5ktlVOW9oyereFUcwssEjDOSm3KneJeNTPngCGOdk+cxVYvKD05XG7WmxJLx
- Uk6KmO2qNJkS3JSRK6PRltlbvAk3zvHerOVqe1ytnDco6jzVC8hdmhQkOKGLl9l7wUGt93yBAFYYBA
- 3UUUwXMvgprT3kjgAmhG1P0utomkLEv00dx3r7MhZEFIkKAo++sOZspVHKQNkmAe6HtWJ7Qe24ZjPg
- lqqmS2yVrDfBExc1i7WvB4nAC0RpGxnkLTV4AjGMsXk0sTh76HJXEAGlACHyNPpd5V+zTZ6z6cXVdq
- MPQDooC/3O8BIsyi+aQiGQNxmm8cZQnAU/HDVEjWBR0A6OWhBeZxaSBmuYrQ==
-X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
- fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698072052; x=1698676852;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TOIO+H7vBCJRfyqao5vTRDK/ZnUXqp5753SeNzy629c=;
+        b=Flldu+ZocTaI1+/qdrR/ertuXpu/zNtli+tK8axfarqXnJM+SJYmHaM3qZfu5Zd8bF
+         h7TbmMzH2cMDFwGHQZQHGedMhsPFn+v55M+NhrAc0H1nc0RGFgpCmeLos7OtckTb70qv
+         mPOxw/x/DT/6vvjeOUBcu3G2v2h6SOyemZ5FR/SAqQX08W3ZNc7+54P2wMQMUuCduZcU
+         y46ZqMCflmn2pepTI7G4nQyGPJq8x2R3CsMlPeW0fky1MtaNt+zvpfQW1VwAjy7CVn9A
+         A1jkRHhex3x/0bpCTEO6jKTpW5rXYIs0G8oZXw1HFWzESaMZPlse2PSbNmTenhKCEpmC
+         gwUQ==
+X-Gm-Message-State: AOJu0YylD3fWQydCaIcpUUg1OINRR/PeEGvqwYtWBv6JrMpJTwGbhnZe
+        ZEPJQZOGL/1X9YfKia+2IGIareGjxZI=
+X-Google-Smtp-Source: AGHT+IExAuTTDvPv+uDKpzbze6eiqwdc7PLWiowzJWFsT1Fls/h45TIz/DhVhP8uEFt0TqXIZLj2MgO8bn8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:e551:0:b0:584:dd94:24c1 with SMTP id
+ z17-20020a63e551000000b00584dd9424c1mr155269pgj.11.1698072052492; Mon, 23 Oct
+ 2023 07:40:52 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 07:40:50 -0700
+In-Reply-To: <87r0ll4thx.fsf@redhat.com>
+Mime-Version: 1.0
+References: <20231020151242.1814-1-kirill.shutemov@linux.intel.com>
+ <20231020151242.1814-5-kirill.shutemov@linux.intel.com> <87wmvh47zb.fsf@redhat.com>
+ <ZTKg9XMxeBQ36f5L@google.com> <87r0ll4thx.fsf@redhat.com>
+Message-ID: <ZTaF8n9WM5BQ3rYS@google.com>
+Subject: Re: [PATCHv2 04/13] x86/kvm: Do not try to disable kvmclock if it was
+ not enabled
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Kai Huang <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MIPI DSI:
-- Add "vsys_lcm_reg" regulator support and setup the "mt6357_vsim1_reg",
-to power the pannel plugged to the DSI connector.
-- Setup the Display Parallel Interface.
-  - Add the startek kd070fhfid015 pannel support.
+On Mon, Oct 23, 2023, Vitaly Kuznetsov wrote:
+> Sean Christopherson <seanjc@google.com> writes:
+> 
+> > On Fri, Oct 20, 2023, Vitaly Kuznetsov wrote:
+> >> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> >> index b8ab9ee5896c..1ee49c98e70a 100644
+> >> --- a/arch/x86/kernel/kvm.c
+> >> +++ b/arch/x86/kernel/kvm.c
+> >> @@ -454,7 +454,9 @@ static void kvm_guest_cpu_offline(bool shutdown)
+> >>         kvm_pv_disable_apf();
+> >>         if (!shutdown)
+> >>                 apf_task_wake_all();
+> >> -       kvmclock_disable();
+> >> +       if (kvm_para_has_feature(KVM_FEATURE_CLOCKSOURCE2) ||
+> >> +           kvm_para_has_feature(KVM_FEATURE_CLOCKSOURCE))
+> >> +               kvmclock_disable();
+> >>  }
+> >
+> > That would result in an unnecessray WRMSR in the case where kvmclock is disabled
+> > on the command line.  It _should_ be benign given how the code is written, but
+> > it's not impossible to imagine a scenario where someone disabled kvmclock in the
+> > guest because of a hypervisor bug.  And the WRMSR would become a bogus write to
+> > MSR 0x0 if someone made a "cleanup" to set msr_kvm_system_time if and only if
+> > kvmclock is actually used, e.g. if someone made Kirill's change sans the check in
+> > kvmclock_disable().
+> 
+> True but we don't have such module params to disable other PV features so
+> e.g. KVM_FEATURE_PV_EOI/KVM_FEATURE_MIGRATION_CONTROL are written to
+> unconditionally. Wouldn't it be better to handle parameters like
+> 'no-kvmclock' by clearing the feature bit in kvm_arch_para_features()'s
+> return value so all kvm_para_has_feature() calls for it just return
+> 'false'? We can even do an umbreall "no-kvm-features=<mask>" to cover
+> all possible debug cases.
 
-HDMI:
-- Add HDMI connector support.
-- Add the "ite,it66121" HDMI bridge support, driven by I2C1.
-- Setup the Display Parallel Interface.
+I don't know that it's worth the effort, or that it'd even be a net positive.
 
-Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
----
- arch/arm64/boot/dts/mediatek/mt8365-evk.dts | 183 ++++++++++++++++++++++++++++
- 1 file changed, 183 insertions(+)
+Today, kvm_para_has_feature() goes through to CPUID every time, e.g. we'd have
+to add a small bit of infrastructure to snapshot and clear bits, or rework things
+to let kvm_para_has_feature peek at kvmclock.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts b/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-index 50cbaefa1a99..823d7623b8b8 100644
---- a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-@@ -26,6 +26,18 @@ chosen {
- 		stdout-path = "serial0:921600n8";
- 	};
- 
-+	connector {
-+		compatible = "hdmi-connector";
-+		label = "hdmi";
-+		type = "d";
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint = <&hdmi_connector_out>;
-+			};
-+		};
-+	};
-+
- 	firmware {
- 		optee {
- 			compatible = "linaro,optee-tz";
-@@ -86,6 +98,57 @@ optee_reserved: optee@43200000 {
- 			reg = <0 0x43200000 0 0x00c00000>;
- 		};
- 	};
-+
-+	vsys_lcm_reg: regulator-vsys-lcm {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&pio 129 GPIO_ACTIVE_HIGH>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-min-microvolt = <5000000>;
-+		regulator-name = "vsys_lcm";
-+	};
-+};
-+
-+&dpi0 {
-+	pinctrl-0 = <&dpi_default_pins>;
-+	pinctrl-1 = <&dpi_idle_pins>;
-+	pinctrl-names = "default", "sleep";
-+	status = "okay";
-+
-+	port {
-+		dpi_out: endpoint {
-+			remote-endpoint = <&it66121_in>;
-+		};
-+	};
-+};
-+
-+
-+&dsi0 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	panel@0 {
-+		compatible = "startek,kd070fhfid015";
-+		status = "okay";
-+		reg = <0>;
-+		enable-gpios = <&pio 67 GPIO_ACTIVE_HIGH>;
-+		reset-gpios = <&pio 20 GPIO_ACTIVE_HIGH>;
-+		iovcc-supply = <&mt6357_vsim1_reg>;
-+		power-supply = <&vsys_lcm_reg>;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&dsi_out>;
-+			};
-+		};
-+	};
-+
-+	port {
-+		dsi_out: endpoint {
-+			remote-endpoint = <&panel_in>;
-+		};
-+	};
- };
- 
- &cpu0 {
-@@ -138,6 +201,50 @@ &i2c0 {
- 	status = "okay";
- };
- 
-+&i2c1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	clock-div = <2>;
-+	clock-frequency = <100000>;
-+	pinctrl-0 = <&i2c1_pins>;
-+	pinctrl-names = "default";
-+	status = "okay";
-+
-+	it66121hdmitx: it66121hdmitx@4c {
-+		#sound-dai-cells = <0>;
-+		compatible = "ite,it66121";
-+		interrupt-parent = <&pio>;
-+		interrupts = <68 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-0 = <&ite_pins>;
-+		pinctrl-names = "default";
-+		reg = <0x4c>;
-+		reset-gpios = <&pio 69 GPIO_ACTIVE_LOW>;
-+		vcn18-supply = <&mt6357_vsim2_reg>;
-+		vcn33-supply = <&mt6357_vibr_reg>;
-+		vrf12-supply = <&mt6357_vrf12_reg>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			port@0 {
-+				reg = <0>;
-+				it66121_in: endpoint {
-+					bus-width = <12>;
-+					remote-endpoint = <&dpi_out>;
-+				};
-+			};
-+
-+			port@1 {
-+				reg = <1>;
-+				hdmi_connector_out: endpoint {
-+					remote-endpoint = <&hdmi_connector_in>;
-+				};
-+			};
-+		};
-+	};
-+};
-+
- &mmc0 {
- 	assigned-clock-parents = <&topckgen CLK_TOP_MSDCPLL>;
- 	assigned-clocks = <&topckgen CLK_TOP_MSDC50_0_SEL>;
-@@ -180,7 +287,55 @@ &mt6357_pmic {
- 	#interrupt-cells = <2>;
- };
- 
-+&mt6357_vsim1_reg {
-+	regulator-min-microvolt = <1800000>;
-+	regulator-max-microvolt = <1800000>;
-+};
-+
- &pio {
-+	dpi_default_pins: dpi-default-pins {
-+		pins {
-+			pinmux = <MT8365_PIN_0_GPIO0__FUNC_DPI_D0>,
-+				 <MT8365_PIN_1_GPIO1__FUNC_DPI_D1>,
-+				 <MT8365_PIN_2_GPIO2__FUNC_DPI_D2>,
-+				 <MT8365_PIN_3_GPIO3__FUNC_DPI_D3>,
-+				 <MT8365_PIN_4_GPIO4__FUNC_DPI_D4>,
-+				 <MT8365_PIN_5_GPIO5__FUNC_DPI_D5>,
-+				 <MT8365_PIN_6_GPIO6__FUNC_DPI_D6>,
-+				 <MT8365_PIN_7_GPIO7__FUNC_DPI_D7>,
-+				 <MT8365_PIN_8_GPIO8__FUNC_DPI_D8>,
-+				 <MT8365_PIN_9_GPIO9__FUNC_DPI_D9>,
-+				 <MT8365_PIN_10_GPIO10__FUNC_DPI_D10>,
-+				 <MT8365_PIN_11_GPIO11__FUNC_DPI_D11>,
-+				 <MT8365_PIN_12_GPIO12__FUNC_DPI_DE>,
-+				 <MT8365_PIN_13_GPIO13__FUNC_DPI_VSYNC>,
-+				 <MT8365_PIN_14_GPIO14__FUNC_DPI_CK>,
-+				 <MT8365_PIN_15_GPIO15__FUNC_DPI_HSYNC>;
-+			drive-strength = <MTK_DRIVE_4mA>;
-+		};
-+	};
-+
-+	dpi_idle_pins: dpi-idle-pins {
-+		pins {
-+			pinmux = <MT8365_PIN_0_GPIO0__FUNC_GPIO0>,
-+				 <MT8365_PIN_1_GPIO1__FUNC_GPIO1>,
-+				 <MT8365_PIN_2_GPIO2__FUNC_GPIO2>,
-+				 <MT8365_PIN_3_GPIO3__FUNC_GPIO3>,
-+				 <MT8365_PIN_4_GPIO4__FUNC_GPIO4>,
-+				 <MT8365_PIN_5_GPIO5__FUNC_GPIO5>,
-+				 <MT8365_PIN_6_GPIO6__FUNC_GPIO6>,
-+				 <MT8365_PIN_7_GPIO7__FUNC_GPIO7>,
-+				 <MT8365_PIN_8_GPIO8__FUNC_GPIO8>,
-+				 <MT8365_PIN_9_GPIO9__FUNC_GPIO9>,
-+				 <MT8365_PIN_10_GPIO10__FUNC_GPIO10>,
-+				 <MT8365_PIN_11_GPIO11__FUNC_GPIO11>,
-+				 <MT8365_PIN_12_GPIO12__FUNC_GPIO12>,
-+				 <MT8365_PIN_13_GPIO13__FUNC_GPIO13>,
-+				 <MT8365_PIN_14_GPIO14__FUNC_GPIO14>,
-+				 <MT8365_PIN_15_GPIO15__FUNC_GPIO15>;
-+		};
-+	};
-+
- 	ethernet_pins: ethernet-pins {
- 		phy_reset_pins {
- 			pinmux = <MT8365_PIN_133_TDM_TX_DATA1__FUNC_GPIO133>;
-@@ -222,6 +377,34 @@ pins {
- 		};
- 	};
- 
-+	i2c1_pins: i2c1-pins {
-+		pins {
-+			pinmux = <MT8365_PIN_59_SDA1__FUNC_SDA1_0>,
-+				 <MT8365_PIN_60_SCL1__FUNC_SCL1_0>;
-+			bias-pull-up;
-+		};
-+	};
-+
-+	ite_pins: ite-pins {
-+
-+		irq_ite_pins {
-+			pinmux = <MT8365_PIN_68_CMDAT0__FUNC_GPIO68>;
-+			input-enable;
-+			bias-pull-up;
-+		};
-+
-+		pwr_pins {
-+			pinmux = <MT8365_PIN_70_CMDAT2__FUNC_GPIO70>,
-+				 <MT8365_PIN_71_CMDAT3__FUNC_GPIO71>;
-+			output-high;
-+		};
-+
-+		rst_ite_pins {
-+			pinmux = <MT8365_PIN_69_CMDAT1__FUNC_GPIO69>;
-+			output-high;
-+		};
-+	};
-+
- 	mmc0_default_pins: mmc0-default-pins {
- 		clk-pins {
- 			pinmux = <MT8365_PIN_99_MSDC0_CLK__FUNC_MSDC0_CLK>;
+And things like KVM_FEATURE_PV_TLB_FLUSH would be quite weird, e.g. we either end
+up leaving the feature bit set while returning "false" for pv_tlb_flush_supported(),
+or we'd clear the feature bit for a rather large number of conditions that don't
+really have anything to do with KVM_FEATURE_PV_TLB_FLUSH being available.
 
--- 
-2.25.1
-
+  static bool pv_tlb_flush_supported(void)
+  {
+	return (kvm_para_has_feature(KVM_FEATURE_PV_TLB_FLUSH) &&
+		!kvm_para_has_hint(KVM_HINTS_REALTIME) &&
+		kvm_para_has_feature(KVM_FEATURE_STEAL_TIME) &&
+		!boot_cpu_has(X86_FEATURE_MWAIT) &&
+		(num_possible_cpus() != 1));
+  }
