@@ -2,145 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAC57D3D70
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA757D3DCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjJWRYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59710 "EHLO
+        id S233662AbjJWRcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJWRYe (ORCPT
+        with ESMTP id S230228AbjJWRc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:24:34 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB73A2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:24:32 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5aa7fdd1420so1916175a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:24:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698081872; x=1698686672; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BbbHD0YVJk9RufSxoYcq0y3n5cPhLMIwtkNHWUlAfWQ=;
-        b=dSOslNcwyAix9UllTlLTRabeAZh85m57t8Mj7ws5bhMzQd+pUnOYxujudcsnJuhJzl
-         KnsX1oxZ6VYQXsaBa2QcAW7/WhRFOGxo8nuY8LbAK4J0VFjI0AMHF6ZqwpzpXeDf4K5h
-         SqT9kItDb82gSUU7CouIpZMMWrRsf5dwARIzd+7aZJyF6RIFgB0GPusNyPGcXTOpE1i+
-         6Oownm+XphIZpUoZg96uZrgqh91bh17MVALhQvYDGrG95bXicAvhVqoe2v2TAqciL8xU
-         69WIv2GOzKxPojIllusOYKRbt4DP8etEqczpOMGF5Ajxb/jR5UOk6mov+fsOPUM0mAdJ
-         1FsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698081872; x=1698686672;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BbbHD0YVJk9RufSxoYcq0y3n5cPhLMIwtkNHWUlAfWQ=;
-        b=lWJoR2RfD6X71sV5f++3pRGTo19YQLlRMsU0B1hG2mEjl/wNW8dmR4lp3MVzfUEpYo
-         iIufjruAmFhGdiRzEsXbv1XVDplZ484KmKjBw/Oqz9tPameDIi/3hQGub0xw6Gqi7Qed
-         PIv2iK8NQtw3kKjgXIgyMGCnjdVSPmL8D4qlWKjMlIY9xw57pzc0z1fT9tXh4Pbh9jQX
-         QbsdW6iLJDR8aTAFom834UkfSNmum32fdSW+th+z+kkv7gDcUmEs6n0gHpYEylqQQ4bW
-         ZV1mXkKAWd3h9gHdgiYgzfyupk/VUZolU2GQvhyQsxloSKzOqGiaqqji5csY3jyZvvIt
-         1a8A==
-X-Gm-Message-State: AOJu0YziVNzgrktnahx/Z3WUpymOrZqYVdheUtbB+AWJOGxRac22x2bx
-        1lxZPY/EaVnjtZ4JMuDzrImsHg==
-X-Google-Smtp-Source: AGHT+IH5zn+p2FocGpHxAFS8gSDBMs+R8rkPa0KF41+FQfuasRuzkg4dmkOhZbI85fDx40K/Hlwn2w==
-X-Received: by 2002:a05:6a21:498b:b0:17b:d39c:1d6 with SMTP id ax11-20020a056a21498b00b0017bd39c01d6mr239194pzc.30.1698081871694;
-        Mon, 23 Oct 2023 10:24:31 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:85b7:8283:12b2:30f8])
-        by smtp.gmail.com with ESMTPSA id cx3-20020a17090afd8300b0027d1366d113sm7419661pjb.43.2023.10.23.10.24.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 10:24:31 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 11:24:28 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        alexander.stein@ew.tq-group.com,
-        "S.J. Wang" <shengjiu.wang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mpuaudiosw <Mpuaudiosw@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        linux-imx <linux-imx@nxp.com>, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        LnxRevLi <LnxRevLi@nxp.com>
-Subject: Re: [PATCH v4 2/2] arm64: dts: imx8mp: add reserve-memory nodes for
- DSP
-Message-ID: <ZTasTEvw4//SEMlW@p14s>
-References: <20231013152731.23471-1-iuliana.prodan@oss.nxp.com>
- <20231013152731.23471-3-iuliana.prodan@oss.nxp.com>
+        Mon, 23 Oct 2023 13:32:26 -0400
+X-Greylist: delayed 450 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Oct 2023 10:32:16 PDT
+Received: from out.smtpout.orange.fr (out-18.smtpout.orange.fr [193.252.22.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B8098110
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:32:16 -0700 (PDT)
+Received: from localhost.localdomain ([89.207.171.96])
+        by smtp.orange.fr with ESMTPA
+        id uyfSqiNV2aLS1uyfTqByU0; Mon, 23 Oct 2023 19:24:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698081884;
+        bh=t7dPTH86r3T7OE/Hsg6Sc2j1I/GQSk2tQP+zV+h/AG8=;
+        h=From:To:Cc:Subject:Date;
+        b=MFBZI8p7FmZLlPFCzeqUapweAH47vcCK4oyUBogCqv7EhD1XnR6I6QzcFo4tbNaM/
+         9WoAIH9zWCABgwlyw+DoowNcv/UinyDoP2xX86rAW77+CpXkm6NCGxaBmrHi+t02W0
+         qeh4Ax+YLsbjbn2Pc3gqcgu60E+eySej/jW/0rKCUhEcrCCywNj8RS2QgOjXdptSkz
+         syd+ioJdbyJRyBluDc3kBs7PIoC1ScZYf137hks9+/XjQcboh4MP1dLRwA06HkKc7S
+         6Vx+Rg552JZnrz1IrgcHC3ocgZXZGNCq2GiHYAZRkQDdrVYfzm2tK5d1qjMPL0cmyV
+         YNOkBT5NZZB2A==
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 23 Oct 2023 19:24:44 +0200
+X-ME-IP: 89.207.171.96
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     rafael@kernel.org, lenb@kernel.org
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 0/4] ACPI: sysfs: Fix some issues in create_of_modalias() and create_pnp_modalias()
+Date:   Mon, 23 Oct 2023 19:24:37 +0200
+Message-Id: <cover.1698081019.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231013152731.23471-3-iuliana.prodan@oss.nxp.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey guys,
+All issues have been introduced by the same commit, 8765c5ba1949 ("ACPI
+/ scan: Rework modalias creation when "compatible" is present")
 
-On Fri, Oct 13, 2023 at 06:27:31PM +0300, Iuliana Prodan (OSS) wrote:
-> From: Iuliana Prodan <iuliana.prodan@nxp.com>
-> 
-> Add the reserve-memory nodes used by DSP when the rpmsg
-> feature is enabled.
-> 
-> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 22 ++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-> index fa37ce89f8d3..b677ad8ef042 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-> @@ -125,6 +125,28 @@
->  		};
->  
->  	};
-> +
-> +	reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		dsp_vdev0vring0: vdev0vring0@942f0000 {
-> +			reg = <0 0x942f0000 0 0x8000>;
-> +			no-map;
-> +		};
-> +
-> +		dsp_vdev0vring1: vdev0vring1@942f8000 {
-> +			reg = <0 0x942f8000 0 0x8000>;
-> +			no-map;
-> +		};
-> +
-> +		dsp_vdev0buffer: vdev0buffer@94300000 {
-> +			compatible = "shared-dma-pool";
-> +			reg = <0 0x94300000 0 0x100000>;
-> +			no-map;
-> +		};
-> +	};
+The first 2 patches fixe some issues related to string truncation checks
+and to computation of the available space in the output buffer.
 
-Alexander: Are you good with the refactoring?
+The 2 others are just some clean-ups.
 
-Rob and Krzysztof: I'm not sure if you want to ack this patch but giving you the
-benefit of the doubt.
+Christophe JAILLET (4):
+  ACPI: sysfs: Fix the check for a potential string truncation
+  ACPI: sysfs: Fix a potential out-of-bound write in
+    create_of_modalias()
+  ACPI: sysfs: Remove some useless trailing NULL writes
+  ACPI: sysfs: Remove some dead code
 
-Shawn and Sascha: Did you plan on picking up this patch or shoud I?
+ drivers/acpi/device_sysfs.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-Thanks,
-Mathieu
+-- 
+2.32.0
 
->  };
->  
->  &flexspi {
-> -- 
-> 2.17.1
-> 
