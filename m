@@ -2,124 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3317D2F66
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 12:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172FB7D331B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbjJWKDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 06:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35134 "EHLO
+        id S233957AbjJWL0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbjJWKDI (ORCPT
+        with ESMTP id S233942AbjJWL0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 06:03:08 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D807DF5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:03:05 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53f6ccea1eeso4645109a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 03:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1698055384; x=1698660184; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Ip92rbHjEjBMgAx7FNr3A0maZqLC50ltIPpQtdwaJ28=;
-        b=iwdzWjLqRcJDEE6EiAYlfHeoXZW0f2G1ZaRFE5/9fa+UVRCfSXiIbf5HmsBm4nttqV
-         1w9iSdeEIqcW7fo36L+4KQWJfohTe5O5AWZFlG+qZ0a83yyhIgCB4ITaXE8CVqK1SUDn
-         UpPNrnG2C5bGfTsQ2UGc89hmF3g+XG7x9slyEnxJkI2sW3MncUHNX7scPVjPYKeE2UHD
-         0dI2XyJjC8M9NMEXGFcjO6Fgv5BdODaucjmtJSWqK3upGy/uysIASayjqqH8euraW5xO
-         duUk2BUe2EDga7S/wHzqYYI2LIQwZ9DDejtJL7AuXRa/BYLaK2GC/ZliJ+GLFYWQnWHG
-         HCAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698055384; x=1698660184;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ip92rbHjEjBMgAx7FNr3A0maZqLC50ltIPpQtdwaJ28=;
-        b=nEJNeVAmuDmpcLrumc0rJFD6uFWsT+FmDgyVcQ0dsg4wfNxHtjxrdRH17TPgQSlsRo
-         ynkxub+dGUBt1eaX3oFxzLkwYa1HTXl+pK9/rWFh03cwXdTimqqxQUsmRLTHB+SUkDNF
-         K6mZ8R87CmrwY75sdekEPo3FYyWRYSp7X/zmXzMXcXZ7ObACeCg5ZpygB8WU2i/KZtEh
-         4qP/Vkug01Vlg82wK8NmTFhILadwf7xuZNLnm3gB24rpI7iUUZkBtMEEnR/NdObNHgxJ
-         mEQey5tzgzgtuuV/xbM32u8eQx7kFRXOox6+H84KPpa2AU1ypWzHOYs/0rvqNGKIi8ae
-         kbSQ==
-X-Gm-Message-State: AOJu0YzejKwPhKmq5EonW961DjSX72mqZlsvQ++7ng8iTqDgtmhg4YJU
-        ynrF/c5UAqAdX8ngXAlhr0FSqg==
-X-Google-Smtp-Source: AGHT+IHbP1iRP01wtTj0lGIg97SfHpaSuq3jc10bBcdA9nz/72Ux0bRd2wnzPV3aAOMKFVCBoQdHEA==
-X-Received: by 2002:a17:907:1b11:b0:9bf:d70b:9873 with SMTP id mp17-20020a1709071b1100b009bfd70b9873mr7388887ejc.39.1698055384364;
-        Mon, 23 Oct 2023 03:03:04 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id p26-20020a170906229a00b009b65a698c16sm6401969eja.220.2023.10.23.03.03.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 03:03:04 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 12:03:03 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH 3/5] riscv: kernel: Use correct SYM_DATA_*() macro for
- data
-Message-ID: <20231023-153a19dd516176d3d3b9334e@orel>
-References: <20231004143054.482091-1-cleger@rivosinc.com>
- <20231004143054.482091-4-cleger@rivosinc.com>
+        Mon, 23 Oct 2023 07:26:47 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A76D6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:26:44 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:375d:2b56:c03f:d72d])
+        by xavier.telenet-ops.be with bizsmtp
+        id 1PSb2B00A3CbNjd01PSbRR; Mon, 23 Oct 2023 13:26:35 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qut4m-007K8B-8v;
+        Mon, 23 Oct 2023 13:26:35 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1quqre-005cBC-NP;
+        Mon, 23 Oct 2023 11:04:46 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Support Opensource <support.opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] dt-bindings: regulator: dlg,da9210: Convert to json-schema
+Date:   Mon, 23 Oct 2023 11:04:45 +0200
+Message-Id: <bfd1cf9d620a8229f5a5e62e6fe9e59c153d0830.1698051619.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231004143054.482091-4-cleger@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 04:30:52PM +0200, Clément Léger wrote:
-> Some data were incorrectly annotated with SYM_FUNC_*() instead of
-> SYM_DATA_*() ones. Use the correct ones.
-> 
-> Signed-off-by: Clément Léger <cleger@rivosinc.com>
-> ---
->  arch/riscv/kernel/entry.S | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-> index 64ac0dd6176b..a7aa2fd599d6 100644
-> --- a/arch/riscv/kernel/entry.S
-> +++ b/arch/riscv/kernel/entry.S
-> @@ -324,7 +324,7 @@ SYM_FUNC_END(__switch_to)
->  	.section ".rodata"
->  	.align LGREG
->  	/* Exception vector table */
-> -SYM_CODE_START(excp_vect_table)
-> +SYM_DATA_START_LOCAL(excp_vect_table)
->  	RISCV_PTR do_trap_insn_misaligned
->  	ALT_INSN_FAULT(RISCV_PTR do_trap_insn_fault)
->  	RISCV_PTR do_trap_insn_illegal
-> @@ -342,12 +342,11 @@ SYM_CODE_START(excp_vect_table)
->  	RISCV_PTR do_page_fault   /* load page fault */
->  	RISCV_PTR do_trap_unknown
->  	RISCV_PTR do_page_fault   /* store page fault */
-> -excp_vect_table_end:
-> -SYM_CODE_END(excp_vect_table)
-> +SYM_DATA_END_LABEL(excp_vect_table, SYM_L_LOCAL, excp_vect_table_end)
->  
->  #ifndef CONFIG_MMU
-> -SYM_CODE_START(__user_rt_sigreturn)
-> +SYM_DATA_START(__user_rt_sigreturn)
->  	li a7, __NR_rt_sigreturn
->  	ecall
-> -SYM_CODE_END(__user_rt_sigreturn)
-> +SYM_DATA_END(__user_rt_sigreturn)
->  #endif
-> -- 
-> 2.42.0
->
+Convert the Dialog Semiconductor DA9210 Multi-Phase 12A DC-DC Buck
+Converter Device Tree binding documentation to json-schema.
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ .../devicetree/bindings/regulator/da9210.txt  | 29 -----------
+ .../bindings/regulator/dlg,da9210.yaml        | 52 +++++++++++++++++++
+ 2 files changed, 52 insertions(+), 29 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/regulator/da9210.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/dlg,da9210.yaml
+
+diff --git a/Documentation/devicetree/bindings/regulator/da9210.txt b/Documentation/devicetree/bindings/regulator/da9210.txt
+deleted file mode 100644
+index 58065ca9e3b46892..0000000000000000
+--- a/Documentation/devicetree/bindings/regulator/da9210.txt
++++ /dev/null
+@@ -1,29 +0,0 @@
+-* Dialog Semiconductor DA9210 Multi-phase 12A DCDC BUCK Converter
+-
+-Required properties:
+-
+-- compatible:	must be "dlg,da9210"
+-- reg:		the i2c slave address of the regulator. It should be 0x68.
+-
+-Optional properties:
+-
+-- interrupts:	a reference to the DA9210 interrupt, if available.
+-
+-Any standard regulator properties can be used to configure the single da9210
+-DCDC.
+-
+-Example:
+-
+-	da9210@68 {
+-		compatible = "dlg,da9210";
+-		reg = <0x68>;
+-
+-		interrupt-parent = <...>;
+-		interrupts = <...>;
+-
+-		regulator-min-microvolt = <300000>;
+-		regulator-max-microvolt = <1570000>;
+-		regulator-min-microamp = <1600000>;
+-		regulator-max-microamp = <4600000>;
+-		regulator-boot-on;
+-	};
+diff --git a/Documentation/devicetree/bindings/regulator/dlg,da9210.yaml b/Documentation/devicetree/bindings/regulator/dlg,da9210.yaml
+new file mode 100644
+index 0000000000000000..81f23de36de4c2f1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/regulator/dlg,da9210.yaml
+@@ -0,0 +1,52 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/regulator/dlg,da9210.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Dialog Semiconductor DA9210 Multi-Phase 12A DC-DC Buck Converter
++
++maintainers:
++  - Support Opensource <support.opensource@diasemi.com>
++
++allOf:
++  - $ref: regulator.yaml#
++
++properties:
++  compatible:
++    const: dlg,da9210
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        regulator@68 {
++            compatible = "dlg,da9210";
++            reg = <0x68>;
++
++            interrupt-parent = <&irqc0>;
++            interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
++
++            regulator-min-microvolt = <300000>;
++            regulator-max-microvolt = <1570000>;
++            regulator-min-microamp = <1600000>;
++            regulator-max-microamp = <4600000>;
++            regulator-boot-on;
++        };
++    };
+-- 
+2.34.1
+
