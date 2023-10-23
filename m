@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6004C7D2E2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976417D2E34
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232747AbjJWJ1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32902 "EHLO
+        id S229734AbjJWJ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231972AbjJWJ1H (ORCPT
+        with ESMTP id S229589AbjJWJ2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:27:07 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C99FD66
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:27:04 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40850b244beso24009755e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:27:04 -0700 (PDT)
+        Mon, 23 Oct 2023 05:28:04 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8631BC
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:28:02 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c5210a1515so46315051fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:28:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698053223; x=1698658023; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698053281; x=1698658081; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=uzKn9ZeksQ9p/OpB5UW9n5bh5oNl306T9AasHql+ieA=;
-        b=hQKRLjFSRohTvqyN1cklNJ9zYjHyG2mWcRWq4hLD/dYSBYINXEUYpaC7ZURLLQafMN
-         brw4UarAHqBfKI6E1ZEfHu6oUG2S+A0V6q7BQ32VbEufRz2R91OetHqE5VSQKoqiwcaI
-         euQvGwSQXi0W9hdtf045wq/ni3LCb+Ck7QHaqOge6ubzK3iMUIB62hbYVXIOiTVu67h3
-         xpxIyVzGkHfkzJLayHV2saAwKMYVm75ef+pk2rnszniy+UWO8VDZLkpC5/kWV2XSmvzV
-         uvx7HqF4GS5tl8LVdSzpexfv2lE96IwhbdL79//7MFVQblKH52xKQP5NjtWow1XBoRfp
-         CJPg==
+        bh=scRXt0dR4CqMVIcOX1nOBi21OWZarp+zt7whuTxTtKA=;
+        b=YUT9tY/fYXdmqYOxebNOpyjKUJOz4Rd0Y9yjJm8il9qIornj7NOrDH4ZUADniyMCvs
+         bTQeaQiectW8dWewiJWGeJMv+P+ZtE2koSo0mR0EKQrN91ElP8OAgPSGHNdytGCBVWtb
+         3OAw3rcDYztgnntbRtgSbEZve35qCdKPkIJuAf39MLGj9utNKLjxxQMLb1sbSVMwkDq2
+         As91DkVPNS9cSA8x+3hB5tvW9H2BBDebnf4c/g0PKHeJYvQlMnHXbs5oz0wQyvpNRbD2
+         SCM1rUu4/73UKSxnwx74rtAxTOMI2qi05vjdFErhNKCI5ML4WzmGm/DhmfSZT7UCIXgz
+         Si0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698053223; x=1698658023;
+        d=1e100.net; s=20230601; t=1698053281; x=1698658081;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uzKn9ZeksQ9p/OpB5UW9n5bh5oNl306T9AasHql+ieA=;
-        b=enJh9s4Sl7a32NJIMLl5lBPwLWet08eOLuBAX/ONU+lyVoh+x0Yfh8Ix+dEeAWd0Q7
-         4omtqjfVMFPMq39hYbymwtw8Fpa08zsfxKacHSEarE4kRovyi4R+3Qi59f1TfiCQUQax
-         m8+zhKfzFrIhbEBKNL7PwHlvNxMm2Th9UASgxQKzksoGevT1dF8HYBDAzEBoBN+0hNPi
-         1zcG5IcIDvGooalOm2mIm1xJ6m8rZK2nPScTCjRJenabSozCGvzOn5eIGnlZ7ZJDY+++
-         rdii4AedZukV2rgs0SiCI/jJIJViCwhvncmbch8Ij84fwuGxCbxncE4W8vUL804y0wNg
-         z72g==
-X-Gm-Message-State: AOJu0YxKQ5Psfzsxhq+zs1Sy5N4YtQixBNgRi2RVsQK+KSP7c064T0oJ
-        SffVkKK3uXziluf6wIa6Y+NETg==
-X-Google-Smtp-Source: AGHT+IGJi4MiDraW1b1J9l0aoIiVp3+7EUrWyEd8qAyuHc2ztqQUDlj9GWIQdtfDIG8AUg0BWEhPtg==
-X-Received: by 2002:a05:600c:4588:b0:409:2f7:d771 with SMTP id r8-20020a05600c458800b0040902f7d771mr1362277wmo.4.1698053222655;
-        Mon, 23 Oct 2023 02:27:02 -0700 (PDT)
+        bh=scRXt0dR4CqMVIcOX1nOBi21OWZarp+zt7whuTxTtKA=;
+        b=dUocziS6P8XQWC5lCMT/S6bUVDVWU7hyCGWEGlh8FGy8WUt0/jJk3qUUnU/dMdF0OO
+         P7i+u/rAxAMl52arIxLkfqBKektpyGSHz6fFlaXPb1JCBZ0ri0Afr53R0YPjB0kmApfH
+         7odUynGdDA1C9dwZudBGpadRhLIMWKYpHy57i2LDPXVH7zjLCF4319l3kGMQi0T1+/U/
+         h3lEANjSwpuTG/dZ7itz1zxp2+fhg51b+ymC65smK6WwtbrLltj/vC4sxW+ahpFoNhdI
+         f9xnumN19kmExuvddm4FjvVN+vQuz7UaV2EBaldyYjDcOlDhg5kqmhnOiHocr+MKotAl
+         Eqiw==
+X-Gm-Message-State: AOJu0YxYzC+sh0eGUkJ6ApkYFoGVrQesQWGzwjJz800rNOg2krvwg0FI
+        Ri3F8nuvF2zBz3483Vi9mIxf6w==
+X-Google-Smtp-Source: AGHT+IECaGiniILui9bl1pv2xFFLV6cw+DLoJLhHyz3h7YdS1a4kxiXrJ7ohCt65Z1NMwnfN9f7swg==
+X-Received: by 2002:a05:651c:14c:b0:2c5:9a5:a1c2 with SMTP id c12-20020a05651c014c00b002c509a5a1c2mr6124119ljd.30.1698053280948;
+        Mon, 23 Oct 2023 02:28:00 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id p12-20020a05600c418c00b0040773c69fc0sm13481557wmh.11.2023.10.23.02.27.01
+        by smtp.gmail.com with ESMTPSA id p12-20020a05600c418c00b0040773c69fc0sm13481557wmh.11.2023.10.23.02.27.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 02:27:02 -0700 (PDT)
-Message-ID: <27fcdcc1-b29b-43b2-8b1a-c648dd9e696c@linaro.org>
-Date:   Mon, 23 Oct 2023 11:27:01 +0200
+        Mon, 23 Oct 2023 02:28:00 -0700 (PDT)
+Message-ID: <bd85254e-b08b-4fec-ad42-b34e4183b5ff@linaro.org>
+Date:   Mon, 23 Oct 2023 11:27:59 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/5] dt-bindings: soc: qcom: Add memory_dump driver
- bindings
+Subject: Re: [PATCH v1 2/5] dt-bindings: sram: qcom,imem: document sm8250
 Content-Language: en-US
 To:     Zhenhua Huang <quic_zhenhuah@quicinc.com>, agross@kernel.org,
         andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
@@ -64,7 +63,7 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel@quicinc.com,
         quic_tingweiz@quicinc.com
 References: <1698052857-6918-1-git-send-email-quic_zhenhuah@quicinc.com>
- <1698052857-6918-2-git-send-email-quic_zhenhuah@quicinc.com>
+ <1698052857-6918-3-git-send-email-quic_zhenhuah@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -110,11 +109,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1698052857-6918-2-git-send-email-quic_zhenhuah@quicinc.com>
+In-Reply-To: <1698052857-6918-3-git-send-email-quic_zhenhuah@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -124,54 +123,31 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 23/10/2023 11:20, Zhenhua Huang wrote:
-> Add bindings for the QCOM Memory Dump driver providing debug
-
-Bindings are for hardware, not driver. This suggests it is not suitable
-for bindings at all.
-
-> facilities. Firmware dumps system cache, internal memory,
-> peripheral registers to reserved DDR as per the table which
-> populated by the driver, after crash and warm reset.
-
-Again driver :/
-
+> Add compatible for sm8250 IMEM.
 > 
 > Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
 > ---
->  .../bindings/soc/qcom/qcom,mem-dump.yaml           | 42 +++++++++++++++++++++
->  .../devicetree/bindings/sram/qcom,imem.yaml        | 44 ++++++++++++++++++++++
->  2 files changed, 86 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,mem-dump.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,mem-dump.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,mem-dump.yaml
-> new file mode 100644
-> index 0000000..87f8f51
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,mem-dump.yaml
-> @@ -0,0 +1,42 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/soc/qcom/qcom,mem-dump.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>  Documentation/devicetree/bindings/sram/qcom,imem.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 
-Drop quotes.
 
-It does not look like you tested the bindings, at least after quick
-look. Please run `make dt_binding_check` (see
-Documentation/devicetree/bindings/writing-schema.rst for instructions).
-Maybe you need to update your dtschema and yamllint.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> +
-> +title: Qualcomm memory dump
+---
 
-Describe hardware, not driver.
+This is an automated instruction, just in case, because many review tags
+are being ignored. If you know the process, you can skip it (please do
+not feel offended by me posting it here - no bad intentions intended).
+If you do not know the process, here is a short explanation:
 
-> +
-> +description: |
-> +  Qualcomm memory dump driver dynamically reserves memory and provides hints(id and size)
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
 
-Again, driver, so not suitable for DTS and bindings.
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
 
 Best regards,
 Krzysztof
