@@ -2,93 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9969D7D2D01
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D387D2D05
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbjJWIm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36070 "EHLO
+        id S232268AbjJWInl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjJWIm4 (ORCPT
+        with ESMTP id S229513AbjJWInk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:42:56 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5DFDD
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:42:53 -0700 (PDT)
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+        Mon, 23 Oct 2023 04:43:40 -0400
+Received: from xry111.site (xry111.site [89.208.246.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81B0AF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:43:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+        s=default; t=1698050611;
+        bh=5sGQLj6Xe46sp6vsAAGQQglvUAz3OFwB9FX1yIiN66M=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=jKwtdBW+zLw3ADx5pYsywAV1ucmNbz6JD+sg07zzSGSUugKIlUoR15wdiiV3kaC5y
+         8EP6476kRPacm9EeenCUuq1xlgM2E6S7d03kNNRJxtN2diKnEax/6f5B35Pek9i8db
+         gZUbxUemJbCybBSBA/TfbxYLTlNX9Gy7CSYQEA5M=
+Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4SDTGd4JwDz9sTb;
-        Mon, 23 Oct 2023 10:42:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1698050569;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YYr2H+MAjRLIImn6u5izyM0A6DQVXuI2FZoqu1Z6Zbo=;
-        b=jdaPcrNcB0xPtWIjsdigdQ70FAWRJl6niRDY5quiNqwNwysBi+0kCJRpbvjn3YMhihAwO7
-        HN/9HBOcph42sMLVmWNH5QGfZsUjlc2qCTmgsfmmRdcmG/qJvJMwhn9AeFcNzvvEsNIrXt
-        LGIAtefpIutewUUSbk5o4NvQy/SYmxCMTgkrRHXpJVS2E8ftQNfUNq5gjh3/a+UzM9Dy9j
-        ZBMrAzibEJh7QWT/OVTeTq18o/lHBd+VDuAHcbFTB8fZoVw6qLZH8SUeFp5rG77ntcV0wZ
-        obfKOzZW3aTFipizNpD1UgzRmabU/SZvV9gY/kMWD8ZY29hPBkEd6zCRdwZagw==
-Message-ID: <745e35ee-d617-9ce0-8b4e-795c84a5af48@mailbox.org>
-Date:   Mon, 23 Oct 2023 10:42:45 +0200
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@xry111.site)
+        by xry111.site (Postfix) with ESMTPSA id 1495866B50;
+        Mon, 23 Oct 2023 04:43:28 -0400 (EDT)
+Message-ID: <4d3363eb5f4d864cfd171d89b1a13da5ef8b784c.camel@xry111.site>
+Subject: Re: [PATCH v4 8/8] LoongArch: Add ORC stack unwinder support
+From:   Xi Ruoyao <xry111@xry111.site>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Date:   Mon, 23 Oct 2023 16:43:26 +0800
+In-Reply-To: <1698048691-19521-9-git-send-email-yangtiezhu@loongson.cn>
+References: <1698048691-19521-1-git-send-email-yangtiezhu@loongson.cn>
+         <1698048691-19521-9-git-send-email-yangtiezhu@loongson.cn>
+Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
+ keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-Subject: Re: [PATCH v7 4/6] drm: Refuse to async flip with atomic prop changes
-Content-Language: de-CH-frami, en-CA
-To:     Simon Ser <contact@emersion.fr>
-Cc:     pierre-eric.pelloux-prayer@amd.com,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        dri-devel@lists.freedesktop.org, kernel-dev@igalia.com,
-        alexander.deucher@amd.com, hwentlan@amd.com,
-        christian.koenig@amd.com, joshua@froggi.es
-References: <20231017092837.32428-1-andrealmeid@igalia.com>
- <20231017092837.32428-5-andrealmeid@igalia.com>
- <CzEtDALWvF3EU4DDLLEmH3ms0B25PbsEHRU9b_IqwfyhzdG4zC-XXAU6fm2PnMcngAYmntH7s4iuew0vocN6cO8zUit8kgi-Sb1hBQXNYiw=@emersion.fr>
- <3r5-_03WC5dK3LaRt1Is78zD_bmT2aaGc5h9jpUGzo2o5GCtGP1zpQNzUxglsieewFklY7xwTrOS9jtI18YlNnnzHNx2Ccw9yM2NuJpDQZU=@emersion.fr>
- <8c1641e4-a7e2-ecb2-ab7a-c6e2bb3e951b@mailbox.org>
- <Bi9El_nuZXA997YlVyCzD5s7KfP820IVUuYiB69mgXnjQbfCgOucCBe6aKvSFrMzB_9DwxO2lli_MqLzMuGZ-rmrRp57vePsTwUarEweLJs=@emersion.fr>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
-In-Reply-To: <Bi9El_nuZXA997YlVyCzD5s7KfP820IVUuYiB69mgXnjQbfCgOucCBe6aKvSFrMzB_9DwxO2lli_MqLzMuGZ-rmrRp57vePsTwUarEweLJs=@emersion.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-MBO-RS-ID: 5f900b922b850b866e6
-X-MBO-RS-META: wpapn7uy8zys441xyzy5gwxubqa7ewo4
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/23 10:27, Simon Ser wrote:
-> On Sunday, October 22nd, 2023 at 12:12, Michel Dänzer <michel.daenzer@mailbox.org> wrote:
->> On 10/17/23 14:16, Simon Ser wrote:
->>
->>> After discussing with André it seems like we missed a plane type check
->>> here. We need to make sure FB_ID changes are only allowed on primary
->>> planes.
->>
->> Can you elaborate why that's needed?
-> 
-> Current drivers are in general not prepared to perform async page-flips
-> on planes other than primary. For instance I don't think i915 has logic
-> to perform async page-flip on an overlay plane FB_ID change.
+On Mon, 2023-10-23 at 16:11 +0800, Tiezhu Yang wrote:
+> +ifdef CONFIG_OBJTOOL
+> +KBUILD_CFLAGS			+=3D -fno-optimize-sibling-calls -fno-jump-tables -falig=
+n-functions=3D4
+> +endif
 
-That should be handled in the driver's atomic_check then?
+Why do we need to regress the code generation so much for objtool?
 
-Async flips of overlay planes would be useful e.g. for presenting a windowed application with tearing, while the rest of the desktop is tear-free.
-
-
--- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
-
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
