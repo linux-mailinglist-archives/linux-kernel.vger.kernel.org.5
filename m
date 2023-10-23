@@ -2,48 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E11DB7D37A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D337D37EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbjJWNUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37502 "EHLO
+        id S230259AbjJWNZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 09:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbjJWNUU (ORCPT
+        with ESMTP id S232511AbjJWNZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:20:20 -0400
+        Mon, 23 Oct 2023 09:25:14 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F74AF
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:20:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45953C433C8;
-        Mon, 23 Oct 2023 13:20:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F8A270C;
+        Mon, 23 Oct 2023 06:23:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF2B8C433C9;
+        Mon, 23 Oct 2023 13:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698067218;
-        bh=h+Jyfyknx4YJBVNzv+TnNizm+sIT9p+Md9k3LAUuzY0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DPuok6o583VpS6tG5KDC0yJx8vj9gJ6gSlA3QqnTYYk+/GMdmuI3fW3dMwKr3hkYj
-         Ymlna77W8ac4A+gIt6W60moB2l91ABkHr00MYLUvyvObUY1TdfDj23XhDSdkxI28UW
-         A90TlKGwdEn5OguW60M5u2F/GgsSEytJhDJJSx/mrHGSd6B7w86uvlB6L6tjlAJ/OZ
-         aTKsNTE7tT2/rplgklmJTXethWP4VJdJoCRNlh51NWPn3J4MqWvpd4w29w7HkSVqCO
-         ZrYOaxB6asux5BtI/E9LzlXDDYwmvRu6dnxUpBfV/HeTVs8xHfqWf+F89Li1ZSEoot
-         6ZC5WhXoWPjCQ==
-Date:   Mon, 23 Oct 2023 14:20:13 +0100
+        s=k20201202; t=1698067406;
+        bh=WuXo+hl017On/dv4mXs2jfRGaw2UtVf9077Uy1SbwGI=;
+        h=From:Subject:Date:To:Cc:From;
+        b=opVAdzew2cj23GxSoUDjFLwrfwYXiZMmeiEu7MJBKUIZwRain6lhHn0qy3Be+OVDv
+         PtYkQIUsxaVUiSikZkpuQVqibgAg7UYGeOGLbSOcHHSZ6STOoQcFbYxU3TM7P1Nh/b
+         kFEbukMHw92d/8nZ2U4bd7JtRhxOgjWoHedD8uemMn5Nxu73jmD7Scxbcs6C8+P7KM
+         WJPcr/oOsDCigWnaTcs6JVcJm8FQeszUnqpAxzW+y+PsliKtuurpPdRF1fZgYyKR1H
+         KlD4/WIXHu3XOMNFnjVnrtNIsB+0rHzcWgc8kWWiAiU3QfwyJ+1YEybwrP9S+GIuk4
+         uyRWETRpIB8/g==
 From:   Mark Brown <broonie@kernel.org>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tools/nolibc: Add Linux specific waitpid() flags
-Message-ID: <fc236f5a-8763-417f-8e9b-57da15d5dea3@sirena.org.uk>
-References: <20231020-nolibc-waitpid-flags-v1-1-8137072dae14@kernel.org>
- <633402b0-7167-465f-99c6-d959b5f48073@t-8ch.de>
- <ZTOWQnFwrQufHUyw@1wt.eu>
+Subject: [PATCH RFC RFT 0/5] fork: Support shadow stacks in clone3()
+Date:   Mon, 23 Oct 2023 14:20:39 +0100
+Message-Id: <20231023-clone3-shadow-stack-v1-0-d867d0b5d4d0@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8/zfyLwjdpXmZrxg"
-Content-Disposition: inline
-In-Reply-To: <ZTOWQnFwrQufHUyw@1wt.eu>
-X-Cookie: Never reveal your best argument.
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAChzNmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDA0NL3eSc/LxUY93ijMSU/HLd4pLE5GxdQ9MUE4MUo6Q0U2MzJaDOgqL
+ UtMwKsKnRSkFuziCxILcQpdjaWgBkqKSUcQAAAA==
+To:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-api@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        David Hildenbrand <david@redhat.com>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4488; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=WuXo+hl017On/dv4mXs2jfRGaw2UtVf9077Uy1SbwGI=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlNnPC6R+tB0Xy00AJDIdmFhiDw43xBruz0mgu1aUK
+ 0yMkzauJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZTZzwgAKCRAk1otyXVSH0L2nB/
+ sGH3e076WCR4fBGI26gY30gODX/A7H4HzZA5XzxsBALw1UpV7dYno2Et+pFxbiE+ixbTiLhye7903K
+ K1Vu8vqZqaWnK8jDCAdr/jaKNcQJ8fDSiFQHOFWymYl9t8zPZ2GsZD10Z5vAjCqpUm5lBtNqIBPSg+
+ xNYOcuABDCGtrHefdjECAXpWIhlTabVtfFfzT4tJHjpAJiiYrpjydxnq8kvPK/y/bdG5DJQLDmpvju
+ Bev+TPPk/d5yfKaDBF373iRut9QbrE44b8PIFxc4b85sEcSO5SyJgbV/AlNAtvpdsEnx98xJYMfynb
+ AENS0iX2NSUY+bqi6Lt+Yu/RjY574v
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -53,52 +82,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The kernel has recently added support for shadow stacks, currently
+x86 only using their CET feature but both arm64 and RISC-V have
+equivalent features (GCS and Zisslpcfi respectively), I am actively
+working on GCS[1].  With shadow stacks the hardware maintains an
+additional stack containing only the return addresses for branch
+instructions which is not generally writeable by userspace and ensures
+that any returns are to the recorded addresses.  This provides some
+protection against ROP attacks and making it easier to collect call
+stacks.  These shadow stacks are allocated in the address space of the
+userspace process.
 
---8/zfyLwjdpXmZrxg
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Our API for shadow stacks does not currently offer userspace any
+flexiblity for managing the allocation of shadow stacks for newly
+created threads, instead the kernel allocates a new shadow stack with
+the same size as the normal stack whenever a thread is created with the
+feature enabled.  The stacks allocated in this way are freed by the
+kernel when the thread exits or shadow stacks are disabled for the
+thread.  This lack of flexibility and control isn't ideal, in the vast
+majority of cases the shadow stack will be over allocated and the
+implicit allocation and deallocation is not consistent with other
+interfaces.  As far as I can tell the interface is done in this manner
+mainly because the shadow stack patches were in development since before
+clone3() was implemented.
 
-On Sat, Oct 21, 2023 at 11:13:38AM +0200, Willy Tarreau wrote:
-> On Sat, Oct 21, 2023 at 11:00:20AM +0200, Thomas Wei=DFschuh  wrote:
-> > Oct 20, 2023 23:57:01 Mark Brown <broonie@kernel.org>:
+Since clone3() is readily extensible let's add support for specifying a
+shadow stack when creating a new thread or process in a similar manner
+to how the normal stack is specified, keeping the current implicit
+allocation behaviour if one is not specified either with clone3() or
+through the use of clone().  When the shadow stack is specified
+explicitly the kernel will not free it, the inconsistency with
+implicitly allocated shadow stacks is a bit awkward but that's existing
+ABI so we can't change it.
 
-> > > Linux defines a few custom flags for waitpid(), make them available to
-> > > nolibc based programs.
+The memory provided must have been allocated for use as a shadow stack,
+the expectation is that this will be done using the map_shadow_stack()
+syscall.  I opted not to add validation for this in clone3() since it
+will be enforced by hardware anyway.
 
-> > Wouldn't it be easier to include linux/wait.h instead?
+Please note that the x86 portions of this code are build tested only, I
+don't appear to have a system that can run CET avaible to me, I have
+done testing with an integration into my pending work for GCS.  There is
+some possibility that the arm64 implementation may require the use of
+clone3() and explicit userspace allocation of shadow stacks, this is
+still under discussion.
 
-> That's indeed the trend we should follow whenever possible. We've got
-> caught a few times in the past with build errors depending on the
-> includes ordering due to such redefinitions. I don't know if that's the
-> case for these ones (nor if including linux/wait.h would cause other
-> breakage) but it's worth considering at least.
+A new architecture feature Kconfig option for shadow stacks is added as
+here, this was suggested as part of the review comments for the arm64
+GCS series and since we need to detect if shadow stacks are supported it
+seemed sensible to roll it in here.
 
-> The difficulty here is that originally nolibc did not *explicitly* depend
-> on UAPI headers, and was supposed to be self-sufficient (that was the
-> main point). Adapting to multiple archs caused the addition of ifdefs
-> all around, then trying to standardize the include file names instead
-> of just "nolibc.h" caused conflicts with programs already including
-> linux/anything.h. Anyway now we depend on linux/lots-of-stuff so I
-> think it's worth continuing in that direction so that we don't replicate
-> the UAPI maintenance effort.
+The selftest portions of this depend on 34dce23f7e40 ("selftests/clone3:
+Report descriptive test names") in -next[2].
 
-OK, I'll do that - I'd not noticed that nolibc had started pulling in
-linux/ headers so was trying to maintain the deliberate duplication.
+[1] https://lore.kernel.org/r/20231009-arm64-gcs-v6-0-78e55deaa4dd@kernel.org/
+[2] https://lore.kernel.org/r/20231018-kselftest-clone3-output-v1-1-12b7c50ea2cf@kernel.org
 
---8/zfyLwjdpXmZrxg
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Mark Brown (5):
+      mm: Introduce ARCH_HAS_USER_SHADOW_STACK
+      fork: Add shadow stack support to clone3()
+      selftests/clone3: Factor more of main loop into test_clone3()
+      selftests/clone3: Allow tests to flag if -E2BIG is a valid error code
+      kselftest/clone3: Test shadow stack support
 
------BEGIN PGP SIGNATURE-----
+ arch/x86/Kconfig                                  |   1 +
+ arch/x86/include/asm/shstk.h                      |  11 +-
+ arch/x86/kernel/process.c                         |   2 +-
+ arch/x86/kernel/shstk.c                           |  36 ++++-
+ fs/proc/task_mmu.c                                |   2 +-
+ include/linux/mm.h                                |   2 +-
+ include/linux/sched/task.h                        |   2 +
+ include/uapi/linux/sched.h                        |  17 +-
+ kernel/fork.c                                     |  40 ++++-
+ mm/Kconfig                                        |   6 +
+ tools/testing/selftests/clone3/clone3.c           | 180 +++++++++++++++++-----
+ tools/testing/selftests/clone3/clone3_selftests.h |   5 +
+ 12 files changed, 247 insertions(+), 57 deletions(-)
+---
+base-commit: 80ab9b52e8d4add7735abdfb935877354b69edb6
+change-id: 20231019-clone3-shadow-stack-15d40d2bf536
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU2cw0ACgkQJNaLcl1U
-h9DgEgf+Mj/4MWqwmRLWrbshIma/gJxD2aDCgbB6u/Z3r4WtORWBGpCLHu2HwuUw
-1l9FvVIosz/dvUMEYsyCdsRieKYD+G4y7d7mrMOsDy89btenS2ZCISpdeI/UNXun
-m1xZyscHvpryRBMg6T89Eu+woMqPly3flZ1N0yPc/fD2xmdnN27WDjveN8VPgY9W
-p/ZVQdpnmUvHKIZ7buns17GsXXk27j4rcLbFExCQyz4sOJn1uyT3Wtvq/kiu+EPe
-SKkk5NaEn+o6QLUtKyw9t162v5BEjNj47vtXFRcEsVFp6cqEE5guBbsqcE1jbuJB
-9qgUjQC6m/o4KdMvtJJz0Qwh4QykPQ==
-=W+4M
------END PGP SIGNATURE-----
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
 
---8/zfyLwjdpXmZrxg--
