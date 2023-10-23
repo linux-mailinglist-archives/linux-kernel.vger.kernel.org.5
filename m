@@ -2,340 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8B87D3DA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AEF7D3DA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 19:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233337AbjJWR3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 13:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
+        id S233324AbjJWR2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 13:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233406AbjJWR2m (ORCPT
+        with ESMTP id S233269AbjJWR2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 13:28:42 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBE310D5
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:28:34 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-3529f5f5dadso5085ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 10:28:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698082114; x=1698686914; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hh5gbGTjwswNSJut0j41J9mky6NNqMMsm33VLdUTGQU=;
-        b=ARHEb9Uw32OUtRDh2U8KGmEmLIl89Gy+AiTgHDj3OL8gOv24T7ht8nGPr6WLw5PnnP
-         edUWMjzneYNV2Bqv8P9EP6f3dw5EXLPe87B/qWDwumYEVVFFGWf+LuZuK1uBGf5jXGmI
-         Z/Ibc2Ft9Wfd/nBto4G3HFa72tzTR+xSZNgWbYcpSH6v65/G55EqDGgeQ/CJNJJHxV/n
-         l1javPbmR9OnkrYu6WHRfDhqjS+I4QsXnyfoahEWHqoNu46qur0vFJbklD+4XdQVFsPf
-         USo2u+jxbGkLyWZeQWDEZ4Fw2S0W4zeaTdc0U1aYIr5J3+4NbbO5hUf+IPTc2G2hwUFD
-         6s3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698082114; x=1698686914;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hh5gbGTjwswNSJut0j41J9mky6NNqMMsm33VLdUTGQU=;
-        b=B6VkpoHlP+cFbwYvZfBJHN01a+TjI62wPwZewLmGgTewsCCKWB+L6MUN0cVL52Erdl
-         6dV/YWRNh7vSQIChsBgalR0t3Z+LwVHn/7XOprvQE2z1p5NGIXCGbkfnqgKHMg5McQat
-         ZE304DALjikh3QJ34N+MFO+gzsmsP7kzShX4018qkBKyN1CjDtZotGUhiX3ZkvcJnHdp
-         rucPL0dkY13gfY/O4NIr/eM5mNZsxfEH0XqM61PR7nWeyzZGLqZ6aDpnr5EbWSee2W8B
-         ZXgKjkIfM8a9XHWWuFESgNKZLZukQdUG0EIFLu2R20Qjg41tjHZoIlaYJGmbtvMJl+ci
-         ZIHQ==
-X-Gm-Message-State: AOJu0YxOFYnvWVWsGLYCEBp6SN5K6plRrktjXBS6usnykrQ7226ixoDh
-        9SpjQz/ZpglYVJWk04pUklKm+XlhhB++1G9MqBlDLA==
-X-Google-Smtp-Source: AGHT+IGVUVY7CGh97Fb45OyO1PzaUAleRd5IyCXNtJ+bUNq5F5zhjHvvOXBRC7PVZbE40qgq9FQjlIBjiiboUleG7b8=
-X-Received: by 2002:a92:ac07:0:b0:351:ad4:85b with SMTP id r7-20020a92ac07000000b003510ad4085bmr27471ilh.4.1698082113782;
- Mon, 23 Oct 2023 10:28:33 -0700 (PDT)
+        Mon, 23 Oct 2023 13:28:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21B510F4;
+        Mon, 23 Oct 2023 10:28:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20BC4C433C8;
+        Mon, 23 Oct 2023 17:28:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698082105;
+        bh=TLivfB44UxdfVbE+MzCIog1D5VWcCwPdoKI99i6xnCE=;
+        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+        b=s5ub6U/UxLnTwuZhn8iz8TW7wK8h0v3A12hCS9WPknjxY4DuOA9IvXI2R5I5YYgO6
+         ZVhSNkhpdNaiTdFPFO4scWc4AwhdSZ81hYsVLhun9FBkPQlpfbaiHrbL+mXtBxnh3+
+         HWHaby7VO20pqj/Yv8veK8GpEL2tVIinqN8hqzyZYpEyORfqgLb1Y3ZbBnp/P+ER9x
+         5Yn8DgXmLkoIAdkiEx1JxqqHRKtnYsYp4XupWlAwYYPYNvTro/wSpc7ww9bgarPX+B
+         lKZLw5llMS7nlZq7cBKaY4LFjimipYiuv4vVhxclsRF5NWO/kISm9NfgBsGCKlzHFw
+         xbxO4BXKeOaZw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20231020214053.2144305-1-rananta@google.com> <20231020214053.2144305-6-rananta@google.com>
- <86zg094j1o.wl-maz@kernel.org>
-In-Reply-To: <86zg094j1o.wl-maz@kernel.org>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 23 Oct 2023 10:28:21 -0700
-Message-ID: <CAJHc60z97PZ5adQEzW-m2GyTPf2=f5RECMQ5P-2e-rObr1LbaQ@mail.gmail.com>
-Subject: Re: [PATCH v8 05/13] KVM: arm64: Add {get,set}_user for
- PM{C,I}NTEN{SET,CLR}, PMOVS{SET,CLR}
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v2] wifi: wl1251: replace deprecated strncpy with strscpy
+From:   Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <20231018-strncpy-drivers-net-wireless-ti-wl1251-main-c-v2-1-67b63dfcb1b8@google.com>
+References: <20231018-strncpy-drivers-net-wireless-ti-wl1251-main-c-v2-1-67b63dfcb1b8@google.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169808210208.695306.1186396061221375137.kvalo@kernel.org>
+Date:   Mon, 23 Oct 2023 17:28:23 +0000 (UTC)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 5:31=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
-:
->
-> On Fri, 20 Oct 2023 22:40:45 +0100,
-> Raghavendra Rao Ananta <rananta@google.com> wrote:
-> >
-> > For unimplemented counters, the bits in PM{C,I}NTEN{SET,CLR} and
-> > PMOVS{SET,CLR} registers are expected to RAZ. To honor this,
-> > explicitly implement the {get,set}_user functions for these
-> > registers to mask out unimplemented counters for userspace reads
-> > and writes.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  arch/arm64/kvm/sys_regs.c | 91 ++++++++++++++++++++++++++++++++++++---
-> >  1 file changed, 85 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> > index faf97878dfbbb..2e5d497596ef8 100644
-> > --- a/arch/arm64/kvm/sys_regs.c
-> > +++ b/arch/arm64/kvm/sys_regs.c
-> > @@ -987,6 +987,45 @@ static bool access_pmu_evtyper(struct kvm_vcpu *vc=
-pu, struct sys_reg_params *p,
-> >       return true;
-> >  }
-> >
-> > +static void set_pmreg_for_valid_counters(struct kvm_vcpu *vcpu,
-> > +                                       u64 reg, u64 val, bool set)
-> > +{
-> > +     struct kvm *kvm =3D vcpu->kvm;
-> > +
-> > +     mutex_lock(&kvm->arch.config_lock);
-> > +
-> > +     /* Make the register immutable once the VM has started running */
-> > +     if (kvm_vm_has_ran_once(kvm)) {
-> > +             mutex_unlock(&kvm->arch.config_lock);
-> > +             return;
-> > +     }
-> > +
-> > +     val &=3D kvm_pmu_valid_counter_mask(vcpu);
-> > +     mutex_unlock(&kvm->arch.config_lock);
-> > +
-> > +     if (set)
-> > +             __vcpu_sys_reg(vcpu, reg) |=3D val;
-> > +     else
-> > +             __vcpu_sys_reg(vcpu, reg) &=3D ~val;
-> > +}
-> > +
-> > +static int get_pmcnten(struct kvm_vcpu *vcpu, const struct sys_reg_des=
-c *r,
-> > +                     u64 *val)
-> > +{
-> > +     u64 mask =3D kvm_pmu_valid_counter_mask(vcpu);
-> > +
-> > +     *val =3D __vcpu_sys_reg(vcpu, PMCNTENSET_EL0) & mask;
-> > +     return 0;
-> > +}
-> > +
-> > +static int set_pmcnten(struct kvm_vcpu *vcpu, const struct sys_reg_des=
-c *r,
-> > +                     u64 val)
-> > +{
-> > +     /* r->Op2 & 0x1: true for PMCNTENSET_EL0, else PMCNTENCLR_EL0 */
-> > +     set_pmreg_for_valid_counters(vcpu, PMCNTENSET_EL0, val, r->Op2 & =
-0x1);
-> > +     return 0;
-> > +}
->
-> Huh, this is really ugly. Why the explosion of pointless helpers when
-> the whole design of the sysreg infrastructure to have *common* helpers
-> for registers that behave the same way?
->
-> I'd expect something like the hack below instead.
->
->         M.
->
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index a2c5f210b3d6..8f560a2496f2 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -987,42 +987,46 @@ static bool access_pmu_evtyper(struct kvm_vcpu *vcp=
-u, struct sys_reg_params *p,
->         return true;
->  }
->
-> -static void set_pmreg_for_valid_counters(struct kvm_vcpu *vcpu,
-> -                                         u64 reg, u64 val, bool set)
-> +static int set_pmreg(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r=
-, u64 val)
->  {
->         struct kvm *kvm =3D vcpu->kvm;
-> +       bool set;
->
->         mutex_lock(&kvm->arch.config_lock);
->
->         /* Make the register immutable once the VM has started running */
->         if (kvm_vm_has_ran_once(kvm)) {
->                 mutex_unlock(&kvm->arch.config_lock);
-> -               return;
-> +               return 0;
->         }
->
->         val &=3D kvm_pmu_valid_counter_mask(vcpu);
->         mutex_unlock(&kvm->arch.config_lock);
->
-> +       switch(r->reg) {
-> +       case PMOVSSET_EL0:
-> +               /* CRm[1] being set indicates a SET register, and CLR oth=
-erwise */
-> +               set =3D r->CRm & 2;
-> +               break;
-> +       default:
-> +               /* Op2[0] being set indicates a SET register, and CLR oth=
-erwise */
-> +               set =3D r->Op2 & 1;
-> +               break;
-> +       }
-> +
->         if (set)
-> -               __vcpu_sys_reg(vcpu, reg) |=3D val;
-> +               __vcpu_sys_reg(vcpu, r->reg) |=3D val;
->         else
-> -               __vcpu_sys_reg(vcpu, reg) &=3D ~val;
-> -}
-> -
-> -static int get_pmcnten(struct kvm_vcpu *vcpu, const struct sys_reg_desc =
-*r,
-> -                       u64 *val)
-> -{
-> -       u64 mask =3D kvm_pmu_valid_counter_mask(vcpu);
-> +               __vcpu_sys_reg(vcpu, r->reg) &=3D ~val;
->
-> -       *val =3D __vcpu_sys_reg(vcpu, PMCNTENSET_EL0) & mask;
->         return 0;
->  }
->
-> -static int set_pmcnten(struct kvm_vcpu *vcpu, const struct sys_reg_desc =
-*r,
-> -                       u64 val)
-> +static int get_pmreg(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r=
-, u64 *val)
->  {
-> -       /* r->Op2 & 0x1: true for PMCNTENSET_EL0, else PMCNTENCLR_EL0 */
-> -       set_pmreg_for_valid_counters(vcpu, PMCNTENSET_EL0, val, r->Op2 & =
-0x1);
-> +       u64 mask =3D kvm_pmu_valid_counter_mask(vcpu);
-> +
-> +       *val =3D __vcpu_sys_reg(vcpu, r->reg) & mask;
->         return 0;
->  }
->
-> @@ -1054,23 +1058,6 @@ static bool access_pmcnten(struct kvm_vcpu *vcpu, =
-struct sys_reg_params *p,
->         return true;
->  }
->
-> -static int get_pminten(struct kvm_vcpu *vcpu, const struct sys_reg_desc =
-*r,
-> -                       u64 *val)
-> -{
-> -       u64 mask =3D kvm_pmu_valid_counter_mask(vcpu);
-> -
-> -       *val =3D __vcpu_sys_reg(vcpu, PMINTENSET_EL1) & mask;
-> -       return 0;
-> -}
-> -
-> -static int set_pminten(struct kvm_vcpu *vcpu, const struct sys_reg_desc =
-*r,
-> -                       u64 val)
-> -{
-> -       /* r->Op2 & 0x1: true for PMINTENSET_EL1, else PMINTENCLR_EL1 */
-> -       set_pmreg_for_valid_counters(vcpu, PMINTENSET_EL1, val, r->Op2 & =
-0x1);
-> -       return 0;
-> -}
-> -
->  static bool access_pminten(struct kvm_vcpu *vcpu, struct sys_reg_params =
-*p,
->                            const struct sys_reg_desc *r)
->  {
-> @@ -1095,23 +1082,6 @@ static bool access_pminten(struct kvm_vcpu *vcpu, =
-struct sys_reg_params *p,
->         return true;
->  }
->
-> -static int set_pmovs(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r=
-,
-> -                     u64 val)
-> -{
-> -       /* r->CRm & 0x2: true for PMOVSSET_EL0, else PMOVSCLR_EL0 */
-> -       set_pmreg_for_valid_counters(vcpu, PMOVSSET_EL0, val, r->CRm & 0x=
-2);
-> -       return 0;
-> -}
-> -
-> -static int get_pmovs(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r=
-,
-> -                     u64 *val)
-> -{
-> -       u64 mask =3D kvm_pmu_valid_counter_mask(vcpu);
-> -
-> -       *val =3D __vcpu_sys_reg(vcpu, PMOVSSET_EL0) & mask;
-> -       return 0;
-> -}
-> -
->  static bool access_pmovs(struct kvm_vcpu *vcpu, struct sys_reg_params *p=
-,
->                          const struct sys_reg_desc *r)
->  {
-> @@ -2311,10 +2281,10 @@ static const struct sys_reg_desc sys_reg_descs[] =
-=3D {
->
->         { PMU_SYS_REG(PMINTENSET_EL1),
->           .access =3D access_pminten, .reg =3D PMINTENSET_EL1,
-> -         .get_user =3D get_pminten, .set_user =3D set_pminten },
-> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
->         { PMU_SYS_REG(PMINTENCLR_EL1),
->           .access =3D access_pminten, .reg =3D PMINTENSET_EL1,
-> -         .get_user =3D get_pminten, .set_user =3D set_pminten },
-> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
->         { SYS_DESC(SYS_PMMIR_EL1), trap_raz_wi },
->
->         { SYS_DESC(SYS_MAIR_EL1), access_vm_reg, reset_unknown, MAIR_EL1 =
-},
-> @@ -2366,13 +2336,13 @@ static const struct sys_reg_desc sys_reg_descs[] =
-=3D {
->           .reg =3D PMCR_EL0, .get_user =3D get_pmcr, .set_user =3D set_pm=
-cr },
->         { PMU_SYS_REG(PMCNTENSET_EL0),
->           .access =3D access_pmcnten, .reg =3D PMCNTENSET_EL0,
-> -         .get_user =3D get_pmcnten, .set_user =3D set_pmcnten },
-> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
->         { PMU_SYS_REG(PMCNTENCLR_EL0),
->           .access =3D access_pmcnten, .reg =3D PMCNTENSET_EL0,
-> -         .get_user =3D get_pmcnten, .set_user =3D set_pmcnten },
-> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
->         { PMU_SYS_REG(PMOVSCLR_EL0),
->           .access =3D access_pmovs, .reg =3D PMOVSSET_EL0,
-> -         .get_user =3D get_pmovs, .set_user =3D set_pmovs },
-> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
->         /*
->          * PM_SWINC_EL0 is exposed to userspace as RAZ/WI, as it was
->          * previously (and pointlessly) advertised in the past...
-> @@ -2401,7 +2371,7 @@ static const struct sys_reg_desc sys_reg_descs[] =
-=3D {
->           .reset =3D reset_val, .reg =3D PMUSERENR_EL0, .val =3D 0 },
->         { PMU_SYS_REG(PMOVSSET_EL0),
->           .access =3D access_pmovs, .reg =3D PMOVSSET_EL0,
-> -         .get_user =3D get_pmovs, .set_user =3D set_pmovs },
-> +         .get_user =3D get_pmreg, .set_user =3D set_pmreg },
->
->         { SYS_DESC(SYS_TPIDR_EL0), NULL, reset_unknown, TPIDR_EL0 },
->         { SYS_DESC(SYS_TPIDRRO_EL0), NULL, reset_unknown, TPIDRRO_EL0 },
->
+Justin Stitt <justinstitt@google.com> wrote:
 
-Thanks for the suggestion. I'll consider this in the next iteration.
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> Based on other assignments of similar fw_version fields we can see that
+> NUL-termination is required but not NUL-padding:
+> ethernet/intel/ixgbe/ixgbe_ethtool.c
+> 1111:   strscpy(drvinfo->fw_version, adapter->eeprom_id,
+> 1112:           sizeof(drvinfo->fw_version));
+> 
+> ethernet/intel/igc/igc_ethtool.c
+> 147:    scnprintf(adapter->fw_version,
+> 148:              sizeof(adapter->fw_version),
+> 153:    strscpy(drvinfo->fw_version, adapter->fw_version,
+> 154:            sizeof(drvinfo->fw_version));
+> 
+> wireless/broadcom/brcm80211/brcmfmac/core.c
+> 569:    strscpy(info->fw_version, drvr->fwver, sizeof(info->fw_version));
+> 
+> wireless/broadcom/brcm80211/brcmsmac/main.c
+> 7867:           snprintf(wlc->wiphy->fw_version,
+> 7868:                    sizeof(wlc->wiphy->fw_version), "%u.%u", rev, patch);
+> 
+> wireless/broadcom/b43legacy/main.c
+> 1765:   snprintf(wiphy->fw_version, sizeof(wiphy->fw_version), "%u.%u",
+> 
+> wireless/broadcom/b43/main.c
+> 2730:   snprintf(wiphy->fw_version, sizeof(wiphy->fw_version), "%u.%u",
+> 
+> wireless/intel/iwlwifi/dvm/main.c
+> 1465:   snprintf(priv->hw->wiphy->fw_version,
+> 1466:            sizeof(priv->hw->wiphy->fw_version),
+> 
+> wireless/intel/ipw2x00/ipw2100.c
+> 5905:   snprintf(info->fw_version, sizeof(info->fw_version), "%s:%d:%s",
+> 
+> A suitable replacement is `strscpy` due to the fact that it guarantees
+> NUL-termination on the destination buffer without unnecessarily
+> NUL-padding.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-- Raghavendra
+Patch applied to wireless-next.git, thanks.
+
+70bd8e0d01f6 wifi: wl1251: replace deprecated strncpy with strscpy
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20231018-strncpy-drivers-net-wireless-ti-wl1251-main-c-v2-1-67b63dfcb1b8@google.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
