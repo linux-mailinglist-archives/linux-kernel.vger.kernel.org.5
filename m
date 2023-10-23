@@ -2,82 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A94047D2EF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C587D2EF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbjJWJyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        id S230346AbjJWJyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233068AbjJWJyI (ORCPT
+        with ESMTP id S229667AbjJWJyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:54:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A03E8
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:54:06 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698054844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5TEX1NBJZk6RU6eh7yI/QX4WuIU+RE9lCnRfwDOqNss=;
-        b=VNlf5pocsQ++v3IobxwfV+H66+nuShGuhOyU+iM1OtSjL72LR3hJhXl5jLyWArxFrOA/mr
-        y+LuxVfZB08gMAJQ/1Df7/eeOQdJA5P0YZbnyvSX/GW+OiIML4PHtYf4L0xBrM/y4uE7HV
-        1hZkeakWXdItFmdpuXQczl6cVqEHuhdrsMYhwKMpK/xu/4BDm1InskDg6x+3yWIef8Lat/
-        l6m8Zz1gZTPwCvxe4tvVuudLmeCJPKVbrTLcat2N8Ihh/sTy8u1dV5Y28vr43k4+YlJhHa
-        TL8pL0w7OgX98zNLEWx2ObZ7FWKGNDg3tug9iDJKO9vliYbVNVTvYuJUDMSePA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698054844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5TEX1NBJZk6RU6eh7yI/QX4WuIU+RE9lCnRfwDOqNss=;
-        b=LX5l2lrehEuOuK04T+VNrQHu225DSxcg3CaEjcPMAEgBz1M2xig5WBsom6aw+mkPmFkBAE
-        7VkjjTAUFaX928Bw==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v2 3/4] printk: Skip unfinalized records in panic
-In-Reply-To: <ZS_puLYK4TZR12Cx@alley>
-References: <20231013204340.1112036-1-john.ogness@linutronix.de>
- <20231013204340.1112036-4-john.ogness@linutronix.de>
- <ZS5vrte2OZXcIc9L@alley> <87mswh6iwq.fsf@jogness.linutronix.de>
- <ZS_Vg4vvT29LxWSD@alley> <ZS_puLYK4TZR12Cx@alley>
-Date:   Mon, 23 Oct 2023 11:59:58 +0206
-Message-ID: <87v8ax1x6x.fsf@jogness.linutronix.de>
+        Mon, 23 Oct 2023 05:54:37 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5681DA
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:54:34 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-32d834ec222so2098463f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:54:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698054873; x=1698659673; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rTcKZO6NcS9zLgdR8p3dSmC3zXIR6VRO4KTY9FbrWgE=;
+        b=BQ04f7DMLqnlNsZCpxx8cNMpmargO/kTa4BlVArpZSnsagzMVk57237PEawIuyljmS
+         FhKYEVqQilaNv1vIb0nfZEEKW9yV9rhwU/Ro2uHR3hyLXWY6S3ViSTAqdt7Ndrs98wSE
+         aO6YBnoWNZnhdaxdza/SmKoxZ+lcURlPCpTspvNQ2vvMBkfgV131BwmLK5WHY5LpMHw7
+         7zbiDmRxegKPY1TeROoIC/+6U7WePUq++IZuSsGX+TEBhIVfTSC1afALEL7kH6x+By+a
+         g5l0yO0OMrUb5YmZZSYQ7prUfgvLPBZS8Dsoh+HLKObaxe1qDdHyobYOqmjlF9/VMITU
+         F43Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698054873; x=1698659673;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rTcKZO6NcS9zLgdR8p3dSmC3zXIR6VRO4KTY9FbrWgE=;
+        b=aWBXcV25RX8xLqWanScWSPe2AjgEyLah9mC2wSSbnY/Wjv8AgXKwGGbAMO+sh2ye6Z
+         WL7wcs9F9xOy5XeIBa3rPefQIddpvqtvTPfd1Y+JLErbV49+GuuDd6DPMJAzztWFRj64
+         ffkpFFE3od8LJ4nWHtQUbGRPpN8KYUuPks2vO23zDTIfxzQpiMi9z9YTGVCSKYrxRrjo
+         rjP7LRDJ6llgZYq6nDDI2VVt3WcficP2v2fPLOQ6jC8e77sW9z3LKhC7CsSJ2rVcnJxt
+         99tflxEtX16cRftmroDhSB+2RCxKwffLPMPO7xyoL7AZkEbavn3bFmrxLAIk9GdQMPrB
+         Az4g==
+X-Gm-Message-State: AOJu0YzquU+Z77EM+UdKObffvts5gL4tyxT+sk+45yudHj1GQmGqGb4o
+        qxuQC3ACMOzJUxxxEmbzAZm/tQ==
+X-Google-Smtp-Source: AGHT+IH4YMgo74ZZgvJQJgKdwM3SfC8BbUD6h8XrLpB46b2XDtd+ZKDWDharijaoUjIIgua9r87kug==
+X-Received: by 2002:a5d:4ccf:0:b0:32d:8cd1:52e4 with SMTP id c15-20020a5d4ccf000000b0032d8cd152e4mr6670616wrt.6.1698054873279;
+        Mon, 23 Oct 2023 02:54:33 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id u14-20020a5d468e000000b00323330edbc7sm7428801wrq.20.2023.10.23.02.54.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 02:54:32 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-tegra@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [RFT PATCH 00/17] ASoC: fix widget name comparisons (consider DAI name prefix)
+Date:   Mon, 23 Oct 2023 11:54:11 +0200
+Message-Id: <20231023095428.166563-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-18, Petr Mladek <pmladek@suse.com> wrote:
-> I think about "empty line record" and "records with missing data".
-> And I would rename NO_LPOS to EMPTY_LINE_LPOS to make the meaning
-> more obvious.
+Hi,
 
-OK.
+Some codec drivers compare widget names with strcmp, ignoring
+the component name prefix.  If prefix is used, the comparisons start failing.
 
-> Also it would make sense to use 0x2 for EMPTY_LINE_LPOS and
->
-> #define FAILED_LPOS		0x1
-> #define EMPTY_LINE_LPOS		0x2
-> #define DATALESS_LPOS_MASK	(FAILED_LPOS | EMPTY_LINE_LPOS)
->
-> #define LPOS_DATALESS(lpos)	((lpos) & DATALESS_LPOS_MASK)
+Except Qualcomm lpass-rx-macro, none of the patches were tested
+on hardware.
 
-The existing debugging tools use bit0 to identify if there is data. Bit1
-is really the _reason_ for the missing data. This can be seen in the
-definition of LPOS_DATALESS(), but it needs to be documented
-better. (Ideally where FAILED_LPOS and EMPTY_LINE_LPOS are defined.)
+Best regards,
+Krzysztof
 
-John
+Krzysztof Kozlowski (17):
+  ASoC: codecs: 88pm860x: Handle component name prefix
+  ASoC: codecs: adau1373: Handle component name prefix
+  ASoC: codecs: adav80x: Handle component name prefix
+  ASoC: codecs: lpass-rx-macro: Handle component name prefix
+  ASoC: codecs: max9867: Handle component name prefix
+  ASoC: codecs: rt5682s: Handle component name prefix
+  ASoC: codecs: rtq9128: Handle component name prefix
+  ASoC: codecs: wcd9335: Handle component name prefix
+  ASoC: codecs: wm8962: Handle component name prefix
+  ASoC: codecs: wm8994: Handle component name prefix
+  ASoC: codecs: wm8995: Handle component name prefix
+  ASoC: mediatek: mt8183: Handle component name prefix
+  ASoC: mediatek: mt8186: Handle component name prefix
+  ASoC: mediatek: mt8188: Handle component name prefix
+  ASoC: mediatek: mt8192: Handle component name prefix
+  ASoC: samsung: speyside: Handle component name prefix
+  ASoC: tegra: machine: Handle component name prefix
+
+ sound/soc/codecs/88pm860x-codec.c              |  4 ++--
+ sound/soc/codecs/adau1373.c                    |  2 +-
+ sound/soc/codecs/adav80x.c                     |  2 +-
+ sound/soc/codecs/lpass-rx-macro.c              |  6 +++---
+ sound/soc/codecs/max9867.c                     |  8 ++++----
+ sound/soc/codecs/rt5682s.c                     |  4 ++--
+ sound/soc/codecs/rtq9128.c                     |  6 +++---
+ sound/soc/codecs/wcd9335.c                     | 18 +++++++++---------
+ sound/soc/codecs/wm8962.c                      |  4 ++--
+ sound/soc/codecs/wm8994.c                      |  2 +-
+ sound/soc/codecs/wm8995.c                      |  2 +-
+ sound/soc/mediatek/mt8183/mt8183-dai-i2s.c     |  4 ++--
+ sound/soc/mediatek/mt8186/mt8186-dai-adda.c    |  2 +-
+ sound/soc/mediatek/mt8186/mt8186-dai-hw-gain.c |  2 +-
+ sound/soc/mediatek/mt8186/mt8186-dai-i2s.c     |  4 ++--
+ sound/soc/mediatek/mt8186/mt8186-dai-src.c     |  4 ++--
+ sound/soc/mediatek/mt8188/mt8188-dai-etdm.c    |  4 ++--
+ sound/soc/mediatek/mt8192/mt8192-dai-adda.c    |  4 ++--
+ sound/soc/mediatek/mt8192/mt8192-dai-i2s.c     |  4 ++--
+ sound/soc/samsung/speyside.c                   |  4 ++--
+ sound/soc/tegra/tegra_asoc_machine.c           | 12 ++++++++----
+ 21 files changed, 53 insertions(+), 49 deletions(-)
+
+-- 
+2.34.1
+
