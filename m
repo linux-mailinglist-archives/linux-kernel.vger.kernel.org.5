@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E9A7D2F01
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959037D2EFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbjJWJy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
+        id S233242AbjJWJzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:55:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233344AbjJWJyp (ORCPT
+        with ESMTP id S233308AbjJWJys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:54:45 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB31C10C9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:54:43 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-32db8f8441eso2495980f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:54:43 -0700 (PDT)
+        Mon, 23 Oct 2023 05:54:48 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5752DF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:54:45 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32da9ef390fso2147591f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:54:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698054882; x=1698659682; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698054884; x=1698659684; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xuBgkJ0BPVMUW15lL794m55ZCdp9DH+A+t98MliJqVQ=;
-        b=Zj9OmFDc7H0EOLdlEIyihpTwTgsjQha9cs5zBhn7fhSUHvTAnfDk3ZdkbBXgm2q4OC
-         QJhpxZSqEcXIp4OE7d6pV475j/OpwtaLxp04kqRDiRgTlXaSM+mVIdARA5K2ADUHvOCk
-         3VvwWTYzCCUAp4w/pLuuJe8Eg6AGGHXPYhP1muAACKRmpc6ovPdC3e4XZvQQifiCfrkS
-         Uw2HUGT+5VdZVAuaq0dpnoGZTtsXGgQFmzCb9vZesk+mbRgCcKieM9+U9wcXK9YkQepi
-         rd06ebYwYKYZnWPzXD9Ig6u4ClYDOrJKQpS9j5D6vzGzjT2tIswMvhNXcab0MQySziVU
-         mtSw==
+        bh=TezS6fAbmZRfIE/9gAJPYUtZvuonet12GZ8K7ihJ9/I=;
+        b=ayJhQrpXmLmMXWo1EwzEqgPt++PCP8UH54XqBtXG4HoxoZG6P8WO3bRbxxOGjerUUT
+         7Htx1d5FbDG9piodG2LDi2AxETFHr9R/XVQWeO8EIYz++bBQp/8kXCvWRNW0wuiQYxJB
+         dv1SBgFSCpGf9LsXPOrvldEzO/2JdfzmC71rFVbbabfKwSlhixo7/6a0DAaQ70/EGxhx
+         qyfhgIfeHd7MITkf23r0XmZJAEASQFzDVFIQy4sCbftIP4MxZvaZphl5wDhTn6Jkhjzo
+         bxOgyFMWvWll9IVGBcUmuBsRv5xx3asLYV/Mbd++wonwNkk9AMYE6cGTd2nIjEsmmQLq
+         9+DA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698054882; x=1698659682;
+        d=1e100.net; s=20230601; t=1698054884; x=1698659684;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xuBgkJ0BPVMUW15lL794m55ZCdp9DH+A+t98MliJqVQ=;
-        b=UO+PwajOP9SKS+7vThxGTy6/yIN5gaJo+rlboHrtl/JMPssbEJ+evxQFWgr2i4ygmO
-         colOW2374qKYZ7Rr0phvnTaggrQxcZ34eHOzC9DukWIQFiwqOwq/Mee8VAsRMJ/h7MUt
-         RJ+ipxjkKnJ6MOcfCrLmo4xZ/T2bc33fcEwdoN96+fySH/K0ktFFtJNkZ7erpvI9R4D1
-         KE1tKTVL+wrdDKVN4CYNgC7djx+Fjy0SSsRR0JTBxzEXmbUnII0VOOxs+6mPjreTjziv
-         hXOrBbpQ9QAnxly24bNLkzX+q6Kw/UH/y72igIw8tJCm5Vd/znhsn2Scjz/XktFAhYUk
-         AGrQ==
-X-Gm-Message-State: AOJu0Yx9vZSA9be53/AoCvOs4mtv54mjInDiTL7SSQIEke1rl1pgDgXP
-        4KvAQ4DovccBpE1gD5ZMIwnRqA==
-X-Google-Smtp-Source: AGHT+IG3Sib29NO6K06c5CyIqf4YSqLzbtzzhUEleL/6uhtgyT7dZmxfyYTlGNAw3kPpeYYlW/TKCQ==
-X-Received: by 2002:a05:6000:152:b0:31f:8999:c409 with SMTP id r18-20020a056000015200b0031f8999c409mr6421464wrx.66.1698054882090;
-        Mon, 23 Oct 2023 02:54:42 -0700 (PDT)
+        bh=TezS6fAbmZRfIE/9gAJPYUtZvuonet12GZ8K7ihJ9/I=;
+        b=A7TO+8fhHTfv2LnxmAkMAwcw0RF58j5RLzI6YexIhKFjwHAPnUwv21F3J5N/6feF0H
+         7APHE5CGJ7yDIn3cp2XaPpqdGVWOQ8a2t3ZcB0SMmnE5eXDpJpNmVfE9b6egrHicZoS+
+         Q2nsxbv10Z+gC3/wi0NSTAJUfvL2ZOEa/IqrfBhbsdFUA1n6NxJSqXP7/1LWsTci/I1h
+         uPAxzGUrIjqQMeF/gci/szry1k/8F7PWCAlZElRniPrDb1AevY4wbN3G/074HC46oPCC
+         3ypWTdHMXuYVw5Z/Cxxj8gfgTzxvXstDlKAvvY2DS8oNIeQGeJ5Rf4nWuoxpjdtWEWHQ
+         scZA==
+X-Gm-Message-State: AOJu0YwmzDQJ+upjh/Bol2UYUV9gDuujmbmeGCrjIT2AY5dRFcg8LdGi
+        beMw/cjha58AGGetgnOWB0N3bw==
+X-Google-Smtp-Source: AGHT+IHsx/9dXkgIRE0i/tyQBHSemsOVRBosIhYnxE5jqsYSPyBJogKhqbIAWQxRyZ17AF8k0sON7w==
+X-Received: by 2002:adf:f603:0:b0:31a:d450:c513 with SMTP id t3-20020adff603000000b0031ad450c513mr6210328wrp.26.1698054884307;
+        Mon, 23 Oct 2023 02:54:44 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id u14-20020a5d468e000000b00323330edbc7sm7428801wrq.20.2023.10.23.02.54.39
+        by smtp.gmail.com with ESMTPSA id u14-20020a5d468e000000b00323330edbc7sm7428801wrq.20.2023.10.23.02.54.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 02:54:41 -0700 (PDT)
+        Mon, 23 Oct 2023 02:54:43 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -71,9 +71,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, linux-tegra@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 04/17] ASoC: codecs: lpass-rx-macro: Handle component name prefix
-Date:   Mon, 23 Oct 2023 11:54:15 +0200
-Message-Id: <20231023095428.166563-5-krzysztof.kozlowski@linaro.org>
+Subject: [RFT PATCH 05/17] ASoC: codecs: max9867: Handle component name prefix
+Date:   Mon, 23 Oct 2023 11:54:16 +0200
+Message-Id: <20231023095428.166563-6-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231023095428.166563-1-krzysztof.kozlowski@linaro.org>
 References: <20231023095428.166563-1-krzysztof.kozlowski@linaro.org>
@@ -93,31 +93,31 @@ to include also the component's name prefix.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/lpass-rx-macro.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/max9867.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index 29197d34ec09..f35187d69cac 100644
---- a/sound/soc/codecs/lpass-rx-macro.c
-+++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -2906,14 +2906,14 @@ static int rx_macro_enable_echo(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index b616ad39858c..3b9dd158c34b 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -56,13 +56,13 @@ static int max9867_adc_dac_event(struct snd_soc_dapm_widget *w,
+ 	struct max9867_priv *max9867 = snd_soc_component_get_drvdata(component);
+ 	enum max9867_adc_dac adc_dac;
  
- 	val = snd_soc_component_read(component,
- 			CDC_RX_INP_MUX_RX_MIX_CFG4);
--	if (!(strcmp(w->name, "RX MIX TX0 MUX")))
-+	if (!(snd_soc_dapm_widget_name_cmp(w, "RX MIX TX0 MUX")))
- 		ec_tx = ((val & 0xf0) >> 0x4) - 1;
--	else if (!(strcmp(w->name, "RX MIX TX1 MUX")))
-+	else if (!(snd_soc_dapm_widget_name_cmp(w, "RX MIX TX1 MUX")))
- 		ec_tx = (val & 0x0f) - 1;
- 
- 	val = snd_soc_component_read(component,
- 			CDC_RX_INP_MUX_RX_MIX_CFG5);
--	if (!(strcmp(w->name, "RX MIX TX2 MUX")))
-+	if (!(snd_soc_dapm_widget_name_cmp(w, "RX MIX TX2 MUX")))
- 		ec_tx = (val & 0x0f) - 1;
- 
- 	if (ec_tx < 0 || (ec_tx >= RX_MACRO_EC_MUX_MAX)) {
+-	if (!strcmp(w->name, "ADCL"))
++	if (!snd_soc_dapm_widget_name_cmp(w, "ADCL"))
+ 		adc_dac = MAX9867_ADC_LEFT;
+-	else if (!strcmp(w->name, "ADCR"))
++	else if (!snd_soc_dapm_widget_name_cmp(w, "ADCR"))
+ 		adc_dac = MAX9867_ADC_RIGHT;
+-	else if (!strcmp(w->name, "DACL"))
++	else if (!snd_soc_dapm_widget_name_cmp(w, "DACL"))
+ 		adc_dac = MAX9867_DAC_LEFT;
+-	else if (!strcmp(w->name, "DACR"))
++	else if (!snd_soc_dapm_widget_name_cmp(w, "DACR"))
+ 		adc_dac = MAX9867_DAC_RIGHT;
+ 	else
+ 		return 0;
 -- 
 2.34.1
 
