@@ -2,180 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED03E7D360E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D957F7D360B
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234643AbjJWMEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 08:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38450 "EHLO
+        id S234612AbjJWMEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 08:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234622AbjJWMEM (ORCPT
+        with ESMTP id S233409AbjJWMEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 08:04:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0DAE4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 05:03:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698062605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Hofm46pISELYVvTcrs2tDQX/iIBeSQbRrL6PHoZxa54=;
-        b=ZVRC0KJcb0eVXc2BVeUy2chrzUvC52jUlBFLJ4LtJsquZMm1FO6YKSVKfLHoSNNaP2k8yG
-        PrGAON0dZmoT4MhneGBDLWegf7gdvzw/45086RCmdr+r3bBjtq3Rm2HU+gK0J05BYGM80E
-        JqaMOTBhVioeIZUeozPqI2Smao33K+I=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-393-1orSMcDKONWAVmSzTkRs6w-1; Mon, 23 Oct 2023 08:03:19 -0400
-X-MC-Unique: 1orSMcDKONWAVmSzTkRs6w-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-408f9cee5e8so10449395e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 05:03:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698062598; x=1698667398;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hofm46pISELYVvTcrs2tDQX/iIBeSQbRrL6PHoZxa54=;
-        b=WpRubR8nBWRTsHK7ZKd40LKM3DeanEpVkWhJBo4fbaDa2U1M8hFA63+Y/vX4bUIbf+
-         qS78RSjmU2KLL6uqqDzhPKDzYKBTz7tdlvkwGSpzpaSoHhSHOl7Wu+WolbN6je8E6igR
-         CcMS4RNEWnMWGOWVSuZ0OBmtnFb/Dgou9FboaOfyFBinOr6/lGewZWi1XjmWRVZcK3Ak
-         8ZANNfptx9UEsga9jGnQX9KKg8wUIReVcxgijW2HMe1GMUFj4HUzVNmgDSi+fKjxi4Bj
-         hDUt8zmhS7q9m3rEYVURkSbrmO+w7YfjKYnp3wy26klj1bW1AsW4jebJ5DfMaF6/dCrM
-         4kqA==
-X-Gm-Message-State: AOJu0YxDsG21h5CiKAJKUwtCOs0WgoKcsFatIyswSTbD3vO2Envmx1kn
-        QTgVWRUYSdOcOb5f8Hkkk2fiMIFgyKfb9sDpqY5QSDr/CMP+eQvPHRIj8ZDVi8HwRjngLV728YZ
-        x1rSYJHInvLwCDBVKRNfxqC7E
-X-Received: by 2002:a05:600c:1992:b0:401:daf2:2735 with SMTP id t18-20020a05600c199200b00401daf22735mr6975939wmq.31.1698062598083;
-        Mon, 23 Oct 2023 05:03:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGjCM8aHYWLMLQFlLsMrI3+VgN1lbGjpOb416V0h+2yLN0yDsDmWXyw/czfkJyiu2/jCcJ95Q==
-X-Received: by 2002:a05:600c:1992:b0:401:daf2:2735 with SMTP id t18-20020a05600c199200b00401daf22735mr6975912wmq.31.1698062597638;
-        Mon, 23 Oct 2023 05:03:17 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c738:1900:b6ea:5b9:62c0:34e? (p200300cbc7381900b6ea05b962c0034e.dip0.t-ipconnect.de. [2003:cb:c738:1900:b6ea:5b9:62c0:34e])
-        by smtp.gmail.com with ESMTPSA id g16-20020a05600c311000b0040651505684sm9310909wmo.29.2023.10.23.05.03.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 05:03:17 -0700 (PDT)
-Message-ID: <1156ad46-1952-4892-8092-bfbb8588c3f3@redhat.com>
-Date:   Mon, 23 Oct 2023 14:03:15 +0200
+        Mon, 23 Oct 2023 08:04:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54476E8;
+        Mon, 23 Oct 2023 05:04:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42501C433C8;
+        Mon, 23 Oct 2023 12:03:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698062644;
+        bh=n/SYhgOy7PYoOMa/qRT/xqvF+V6QNHFqWYg+hu0aDj4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MY2dbfASZER6tuIdGGsFhjcDL09IA9tXH1K2hRODqDJmoBwN1y9Pn+s7KPAjTz4yb
+         9JPo8v456haLAbc55KVPK4k05l3EDrlzlGgCg7itvHppqavF+wM3J5IreBTFzbhIfB
+         kLQ24DWYhW6tANl7QVCqPNxPNSeWuykvVc7skyKlqMhb6XeBov4DJsAUrTf0Zkyszr
+         MzoffD2wL1QGU5T/xqwnIIQzr0YFM0MC/Nh0v2A2Bu5EYeYXfKE6DHwygsEIlmRIyw
+         AequAVKeZ4TbiC3hjQRz+JPCvpgJpmIy7hm8buNLxBNK59ViC3AYScv2oHmO7kX0eE
+         YXqYt+lr/L2RQ==
+Date:   Mon, 23 Oct 2023 13:03:53 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Yu Chien Peter Lin <peterlin@andestech.com>
+Cc:     acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com,
+        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
+        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
+        conor+dt@kernel.org, conor.dooley@microchip.com,
+        devicetree@vger.kernel.org, dminus@andestech.com,
+        evan@rivosinc.com, geert+renesas@glider.be, guoren@kernel.org,
+        heiko@sntech.de, irogers@google.com, jernej.skrabec@gmail.com,
+        jolsa@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, locus84@andestech.com,
+        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
+        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, peterz@infradead.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
+        robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
+        tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
+        wens@csie.org, will@kernel.org, ycliang@andestech.com
+Subject: Re: [PATCH v3 RESEND 10/13] dt-bindings: riscv: Add Andes PMU
+ extension description
+Message-ID: <20231023-spectacle-module-0516fb35995a@spud>
+References: <20231023004100.2663486-1-peterlin@andestech.com>
+ <20231023004100.2663486-11-peterlin@andestech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-References: <ZSlragGjFEw9QS1Y@x1n>
- <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com> <ZS2IjEP479WtVdMi@x1n>
- <8d187891-f131-4912-82d8-13112125b210@redhat.com> <ZS7ZqztMbhrG52JQ@x1n>
- <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com> <ZTGJHesvkV84c+l6@x1n>
- <81cf0943-e258-494c-812a-0c00b11cf807@redhat.com>
- <CAJuCfpHZWfjW530CvQCFx-PYNSaeQwkh-+Z6KgdfFyZHRGSEDQ@mail.gmail.com>
- <d34dfe82-3e31-4f85-8405-c582a0650688@redhat.com> <ZTVD18RgBfITsQC4@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZTVD18RgBfITsQC4@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="P1S9GHX9rhzdHs0r"
+Content-Disposition: inline
+In-Reply-To: <20231023004100.2663486-11-peterlin@andestech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.23 17:46, Peter Xu wrote:
-> On Fri, Oct 20, 2023 at 07:16:19PM +0200, David Hildenbrand wrote:
->> These are rather the vibes I'm getting from Peter. "Why rename it, could
->> confuse people because the original patches are old", "Why exclude it if it
->> has been included in the original patches". Not the kind of reasoning I can
->> relate to when it comes to upstreaming some patches.
-> 
-> You can't blame anyone if you misunderstood and biased the question.
-> 
-> The first question is definitely valid, even until now.  You guys still
-> prefer to rename it, which I'm totally fine with.
-> 
-> The 2nd question is wrong from your interpretation.  That's not my point,
-> at least not starting from a few replies already.  What I was asking for is
-> why such page movement between mm is dangerous.  I don't think I get solid
-> answers even until now.
-> 
-> Noticing "memcg is missing" is not an argument for "cross-mm is dangerous",
-> it's a review comment.  Suren can address that.
-> 
-> You'll propose a new feature that may tag an mm is not an argument either,
-> if it's not merged yet.  We can also address that depending on what it is,
-> also on which lands earlier.
-> 
-> It'll be good to discuss these details even in a single-mm support.  Anyone
-> would like to add that can already refer to discussion in this thread.
-> 
-> I hope I'm clear.
-> 
 
-I said everything I had to say, go read what I wrote.
+--P1S9GHX9rhzdHs0r
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
+On Mon, Oct 23, 2023 at 08:40:57AM +0800, Yu Chien Peter Lin wrote:
+> Document the ISA string for Andes Technology performance monitor
+> extension which provides counter overflow interrupt and mode
+> filtering mechanisms.
+>=20
+> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> ---
+> Changes v2 -> v3:
+>   - New patch
+> ---
+>  Documentation/devicetree/bindings/riscv/extensions.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Do=
+cumentation/devicetree/bindings/riscv/extensions.yaml
+> index 5e9291d258d5..e0694e2adbc2 100644
+> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> @@ -246,6 +246,13 @@ properties:
+>              in commit 2e5236 ("Ztso is now ratified.") of the
+>              riscv-isa-manual.
+> =20
+> +        - const: xandespmu
+> +          description:
+> +            The Andes Technology performance monitor extension for count=
+er overflow
+> +            and privilege mode filtering. For more details, see Counter =
+Related
+> +            Registers in the AX45MP datasheet.
+> +            https://www.andestech.com/wp-content/uploads/AX45MP-1C-Rev.-=
+5.0.0-Datasheet.pdf
+
+Does/will this PMU function identically on the other CPUs that support it?
+I assume the answer is yes.
+
 Cheers,
+Conor.
 
-David / dhildenb
+> +
+>          - const: xtheadpmu
+>            description:
+>              The T-Head performance monitor extension for counter overflo=
+w. For more
+> --=20
+> 2.34.1
+>=20
 
+--P1S9GHX9rhzdHs0r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTZhKQAKCRB4tDGHoIJi
+0q2MAP0VirheuKpWgXrPAEWaqZ66m6sp12MVuSOdCvU0US0f/AEA2BobNxX5Jk4Y
+UqRJn9N7kWZtJAvcqBjJPvvs15wdpgc=
+=/DQg
+-----END PGP SIGNATURE-----
+
+--P1S9GHX9rhzdHs0r--
