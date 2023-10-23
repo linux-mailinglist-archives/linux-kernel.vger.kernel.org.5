@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B4E7D2A4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 08:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D4A7D2A50
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 08:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbjJWGV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 02:21:26 -0400
+        id S233356AbjJWGV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 02:21:28 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233305AbjJWGVW (ORCPT
+        with ESMTP id S233352AbjJWGVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 02:21:22 -0400
+        Mon, 23 Oct 2023 02:21:24 -0400
 Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D325410C3;
-        Sun, 22 Oct 2023 23:21:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846D5D70;
+        Sun, 22 Oct 2023 23:21:22 -0700 (PDT)
 Received: from authenticated-user (box.trvn.ru [194.87.146.52])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 369214C0C6;
-        Mon, 23 Oct 2023 11:21:06 +0500 (+05)
+        by box.trvn.ru (Postfix) with ESMTPSA id 48ADC4C0C8;
+        Mon, 23 Oct 2023 11:21:09 +0500 (+05)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1698042069; bh=4dXuAwglO4a/qLy/zzCFzx4geirBGhzMB/dhxgDlnwc=;
-        h=From:Subject:Date:To:Cc:From;
-        b=zPo5cN9DIYUypUbh53SjjTp8ncPkGgdIiXk6fWHwryaOP+NPtw/4M/7lgAACeup7c
-         psGkjznGvc1pWZBWrGlqqJ0DX+9BDJGYX7bed+nhWOeln/40qXhBdVpVdJfRPoGzvV
-         RRBzA1f0fuVwxVBRkHMTcy5KZ+p6n9rmkMvyxvJ3qpuukt6znAOIjzUn14H7XFJFfl
-         Ir8Gr7cZhNDUtFPOWdfneIVoN3Wri79/Th4BS6Y8s3SqxLpX5SF1s/A6YQpDsDf919
-         j/PC72hYDa7BdFte7M1P9zdv4bspc82Zx7SiNrh9HxfGeMviw76JrkwC8Kw5APTC5L
-         TD/hzhYVQErfw==
+        t=1698042069; bh=luFC7my9PJ6B7z1i59mt1ERZ1dlWg9/dkHvKsguCUSo=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=N8kfWVYwZjQOXm4rGD8cA8cbc2f5ID92oAlwrty5fvsgH/SYZ2bV8IhnfPnUF4kyV
+         gwhH4PmlMmvTeF+h7AvT1FOFuc3JD3JT3oj54F5esz6JxKA6yBeWClW7ZNzM14XTEm
+         ffyHKlnWmhC6IGnuCyH/O6MOfytOevcjGIWijnqwzRpnexkVqp8ZoK2g/PLVK7g0NU
+         4b/xJ/svcGoLxDerDhCh8D67v9hiTk1RGVWuOvRPsKp22ZX3VRcRr1IV4KMLu7wae0
+         A6v6UQDmc0ttVIulu83e/YSsLYBaiJtEvk1ny+JYBpQxedb1GgaY8CZu3p93NcXmmK
+         jvaVczMxnZmiw==
 From:   Nikita Travkin <nikita@trvn.ru>
-Subject: [PATCH v2 0/3] pm8916: Add BMS and charger
-Date:   Mon, 23 Oct 2023 11:20:31 +0500
-Message-Id: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
+Date:   Mon, 23 Oct 2023 11:20:32 +0500
+Subject: [PATCH v2 1/3] dt-bindings: mfd: qcom,spmi-pmic: Add pm8916 vm-bms
+ and lbc
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAK8QNmUC/32NTQrCMBCFr1Jm7UgSRY0r7yFdOE1iB+wPmRiUk
- rub9gCuHt+D970FxEf2AtdmgegzC09jBbNroOsf49Mju8pglDkoq084D5c1XBJGGgRf1KEJpMl
- apz0ZqMs5+sCfzXpvK/csaYrf7STrtf3vyxoVnh0pOppgq/yWYh738Q1tKeUHGjl1B7QAAAA=
+Message-Id: <20231023-pm8916-dtsi-bms-lbc-v2-1-343e3dbf423e@trvn.ru>
+References: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
+In-Reply-To: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -50,20 +50,20 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht,
         Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1226; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=4dXuAwglO4a/qLy/zzCFzx4geirBGhzMB/dhxgDlnwc=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBlNhDOBV0ENqhP6SxR45w7p3/0ukR7TyALrk+mZ
- RN+opCke6yJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZTYQzgAKCRBDHOzuKBm/
- dbsrD/wLU8R0DUYQcnXKSryz0M3dtGe0z2es/wcfYOs4bxHdyhV52FVIl9OkuRXqYFdw38pRzVy
- +EQNChnhGwb9sCvWFDQYxWCZVXKmm77JEdGp1yr3On+Mw2T5q48qhxN8IrDH16nfNa9ik/PuztL
- F3kcax9dvxPimtmNifgqW42lgTc+o4zI+L4yVKO+ZnIVLexXIuNZQ8mlJ53c8icCSIPaqZaIDmQ
- qKO+Q5tSGEnjLRL1/5lS+W8DiKJXrblymGejlO9w3OSEjw9JDI20bdsIxym+NF0c9A6UHzrkD7Q
- lvN1y5w768IU06Q5Y8CiSEPMGTJLH7zY8sNqTaHZ+kqf7quSfxM2kW/ohc3umuSGCzHsL77mXss
- w+FdpzsTdQsDzc5Zstzx+L9EX0HD8Cu++6FUVoRJFRr3YpRNFMqclZbQclqnYy91YHYyscdwe+K
- VC88+fcWeOXzPAyTwT6I45NKPFRAEfC5nlJtOooyoeA74WuiCwBI+I/jM5oiVR6C1V/IXkiA8UT
- oAuEcKqOS+nlsUQVnA1ihDwP4UXq6NTYxWyNs14c73r9galqklEVahMgKaia8pQoTfjuUGBPwQD
- oWkG6bNNOpvfjvMGGgxO+FlyT9vGNveRffFIEvD/PV/lQuIxlmL/ag3LXptzxgkRexWWPNlkxNJ
- 5lPBbaq0AcxCBHg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1246; i=nikita@trvn.ru;
+ h=from:subject:message-id; bh=luFC7my9PJ6B7z1i59mt1ERZ1dlWg9/dkHvKsguCUSo=;
+ b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBlNhDRw3kL1xMo/oFuqFrVGmBx/J1tcSHs8Vlrm
+ O5FI2hw13SJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZTYQ0QAKCRBDHOzuKBm/
+ dTIRD/4m9cd91tQKb8ywplt7DOVB8WuPPqMB5SXFanHKRg6mQE9rcU4MiKF4Di68RkOqwvoU6eU
+ pclYoN4+IEaZg4UW5UHumh1fl5CvCj6OvV9jwVl2XWoZ/FsizPpAmNWDMgylmAdzcRiNlGeQn5y
+ rzndH7eloPc+NxP7dYAHiQ2pGS1cP8+xUnd5hgAH94vcOrxlYheYPXw6qzxPqEuhTIhnRdUSLAl
+ f0sQg9oCVG4ZxZraplqeb/tZRKylaYh8YK5X+0f1wOvBKcMkuFB0L3tf/RbxZzTua6FNJO3eH4x
+ OT9u+wavVvqWnXmUzpyO9n7FZpW9CJpwLI99Kpb8FqOcuX9cevuG2y8h2dq4ABqBQ/YbCQ+8KR8
+ zM53rpNlpQAW90jXDDZWSBJleQXbPxuaWn1riEeabZbA6g83PML+vQxXhaAE47ZUWOqWT2XUE19
+ UdSOKvcS1qzIOtRDii42YmLut4xb8PcFUOljer0ukxDOxqsN0J/OqFWD4eOicGtiAQpm9liNru5
+ uvfLxvcm+gybq2RtYzDIpCZoBJV2ljmUeUyfZjULZx1vlpVVkUWF2O2b9cnzeOOsayrgse0bhT9
+ GDwCKwiUMJimYwr87vxwDooyPEblCcRw73MmX4N92YJ5mvHNUjtnL3PeaxKjNR43cgCOcOUWB6k
+ 7HJeSAfOVd+dn+A==
 X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
  fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,37 +75,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series enables VM-BMS and LBC blocks in the pm8916 pmic.
-
-The VM-BMS is a simple voltage monitoring block that allows the software
-to estimate the battery capacity left.
-
-The LBC is a linear battery charger for lipo batteries.
-
-Add both devices to the pmic dtsi and enable them for Longcheer L8150
-which makes use of them.
+PM8916 (and probably some other similar pmics) have hardware blocks for
+battery monitoring and charging. Add patterns for respecive nodes so the
+devicetree for those blocks can be validated properly.
 
 Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 ---
-Changes in v2:
-- No changes - resend with minor commit message edits.
-- Link to v1: https://lore.kernel.org/r/20230916-pm8916-dtsi-bms-lbc-v1-0-7db0b42f9fb1@trvn.ru
+ Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
----
-Nikita Travkin (3):
-      dt-bindings: mfd: qcom,spmi-pmic: Add pm8916 vm-bms and lbc
-      arm64: dts: qcom: pm8916: Add BMS and charger
-      arm64: dts: qcom: msm8916-longcheer-l8150: Add battery and charger
+diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+index 9fa568603930..49103e07032a 100644
+--- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
++++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+@@ -134,9 +134,15 @@ patternProperties:
+     type: object
+     $ref: /schemas/sound/qcom,pm8916-wcd-analog-codec.yaml#
+ 
++  "^battery@[0-9a-f]+$":
++    type: object
++    oneOf:
++      - $ref: /schemas/power/supply/qcom,pm8916-bms-vm.yaml#
++
+   "^charger@[0-9a-f]+$":
+     type: object
+     oneOf:
++      - $ref: /schemas/power/supply/qcom,pm8916-lbc.yaml#
+       - $ref: /schemas/power/supply/qcom,pm8941-charger.yaml#
+       - $ref: /schemas/power/supply/qcom,pm8941-coincell.yaml#
+       - $ref: /schemas/power/supply/qcom,pmi8998-charger.yaml#
 
- .../devicetree/bindings/mfd/qcom,spmi-pmic.yaml    |  6 +++
- .../boot/dts/qcom/msm8916-longcheer-l8150.dts      | 43 ++++++++++++++++---
- arch/arm64/boot/dts/qcom/pm8916.dtsi               | 48 ++++++++++++++++++++++
- 3 files changed, 91 insertions(+), 6 deletions(-)
----
-base-commit: 2030579113a1b1b5bfd7ff24c0852847836d8fd1
-change-id: 20230916-pm8916-dtsi-bms-lbc-2fb1b99d1eb2
-
-Best regards,
 -- 
-Nikita Travkin <nikita@trvn.ru>
+2.41.0
 
