@@ -2,166 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE377D3B84
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D5F7D3B89
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232646AbjJWPxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36892 "EHLO
+        id S231147AbjJWPyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbjJWPxO (ORCPT
+        with ESMTP id S229570AbjJWPyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:53:14 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A65FE9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:53:12 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-57ad95c555eso2186713eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:53:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698076391; x=1698681191; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3pESWV7UJ55d7qINlkbCLhWv7/gJJfRWuDRI1OH0PCg=;
-        b=jVHTEq2V620PIvt6JjG9gqIiVjoXZ1nNLg6WWVO1qLBcr9tn8JFgEKJRLwmwCOML9Q
-         hg72b8JTDNXquKe1E3OdV4epUyk26mNk0Sb7Q5zjp25VxkVrMaLGxk4OCFasrxzxSimX
-         s7NdMJUiRfolK3+KKQF/0i+IrkiFgx+mIhHiHwDTfOJef6hFZ9hCBpwzEwNYDEqq0HiI
-         P+5WANSnCtC9EjAJyFpbJ/d3XqBu1xnhDPpPXha0rtNEz3ytuTP0EkrCgeqsa7pYvAJP
-         Jy5lw1yvCc1NCyBVCzOmTx7jSymwYMqwLoqHhII0xXx95vZoJUuC6nWYOxvd1sZEu+Nk
-         2u0A==
+        Mon, 23 Oct 2023 11:54:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB418103
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698076413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=+8vJbEXfjG2llIbmOpZuu40h7UHGL/n02nL+qHiJcNY=;
+        b=DoGlrEHkk1mV10DCDQHBd8P7JruDKtHneOe08WwRDwT1erd4YUGz5bOyCNT+jd9ALZ47cY
+        CW8GpsEIABaDrLZO5qfZShMmLvHs3bjb8J2uVbaJLEpOIEhdCdo+pxSuBB70OE1fhc1Kxn
+        qNoUXhb14t8/vovfnOy060Nch7XLu2Q=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-342-FV9OtMjRPZuXZqKt6-KTcA-1; Mon, 23 Oct 2023 11:53:27 -0400
+X-MC-Unique: FV9OtMjRPZuXZqKt6-KTcA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32d933caa8eso1376809f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:53:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698076391; x=1698681191;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3pESWV7UJ55d7qINlkbCLhWv7/gJJfRWuDRI1OH0PCg=;
-        b=Uumvm4QVE3PHtoqL4nlVntMgoA4LpbRMKqEHW58yACEB6ZB0H+emE4ULHzLkca9RBI
-         lybaKhh6bEmqUZDJULdT4QGOrYfWDdxTtvvzIL2/P+VNpdDAF+PazwX2QVBm3QiPOVRG
-         8vHGZ/Cd04BtBnP5rZnsMINBzqXGG4dkbCj/h9nG+nhjbRXYGuWAmMwcW78j5yjQpHnm
-         p8QUYmWFiu69H10AGmJBoLew456hYzRqeNKY+NjoFX3nW7SYJASOoPbGCUHD6eMnkv9b
-         rTb5UGinMAmJP7OfsoJXLQ/G9of6u5v8j55jGUp7FVs03+qjPvxpe9hN9EtnHmLHgAYC
-         KJ8g==
-X-Gm-Message-State: AOJu0Yw5iX0OdGkM8/O6vNuxbp/1SrLLFA2siEXKzTQkVDEC+JeA827T
-        +8b9ot4+xILcN4u90Zhg2gpKPQ==
-X-Google-Smtp-Source: AGHT+IErwb2zGwqwo8mngOGoEHja3MbBSskOnAf8uFSdGqj3xWXSUxOxdB5X5QXTg1fIKty78pKpUw==
-X-Received: by 2002:a4a:e64f:0:b0:581:e86d:3e87 with SMTP id q15-20020a4ae64f000000b00581e86d3e87mr8864366oot.4.1698076391243;
-        Mon, 23 Oct 2023 08:53:11 -0700 (PDT)
-Received: from [192.168.17.16] ([138.84.45.126])
-        by smtp.gmail.com with ESMTPSA id r134-20020a4a378c000000b00582014b0138sm1627506oor.39.2023.10.23.08.53.08
+        d=1e100.net; s=20230601; t=1698076406; x=1698681206;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:from:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+8vJbEXfjG2llIbmOpZuu40h7UHGL/n02nL+qHiJcNY=;
+        b=Gguz8Sr6Bf967xb2FtkdzM+8TdDJCiNA+Kwadwizp6veYlB68Uj0M8LUw7LUcTfXFM
+         +CvF3LTRTjLPCRfM0mO6765ZVhFaeefkpyjEOdgmeIpQJn+dz0MQJ4q/CDiu3inW/eDQ
+         vsD9JcNOg00Sk7pPoE8XUP+mxwXNs0UHom+eF44kkzs3WqlytvwgSWnDdImZs5dH00SV
+         dkw41Vd/y7Wfy+pTrpT/Zkte7R3xzQeOsn+NM967HkAnpwxV16Y3sPoeTd95Y/gOWVsT
+         4GzQ282anETRsEJbrKVMeeNjWaES63GZ+0aYDkOk310rUg5j9akAOTjewjlfEr3ZR5Ec
+         bERw==
+X-Gm-Message-State: AOJu0YxpmuVpKd7QlEUBnZHWerM/GBcKA+COGC/H+ST8J/ALynrYz24n
+        PdUvGkp6SmsmxcIu9ZKnuzJ8NKjVnBdFdkZFRooatNkvH7ekdqRe9X2B52y0hFLd7D7rJOHYQ2O
+        6650EpdI1cF8iKUoSCLiwuqxh
+X-Received: by 2002:adf:f0c2:0:b0:32d:ba78:d608 with SMTP id x2-20020adff0c2000000b0032dba78d608mr7352200wro.52.1698076406343;
+        Mon, 23 Oct 2023 08:53:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFxpXJYmPdOFI7Jgin8isqwV6KrIiZVpYfUGa85QxbTahHgcXINXvQTpmY/K0PMcQqqUPTmcQ==
+X-Received: by 2002:adf:f0c2:0:b0:32d:ba78:d608 with SMTP id x2-20020adff0c2000000b0032dba78d608mr7352182wro.52.1698076405892;
+        Mon, 23 Oct 2023 08:53:25 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c738:1900:b6ea:5b9:62c0:34e? (p200300cbc7381900b6ea05b962c0034e.dip0.t-ipconnect.de. [2003:cb:c738:1900:b6ea:5b9:62c0:34e])
+        by smtp.gmail.com with ESMTPSA id c1-20020adfa301000000b00323287186aasm8094491wrb.32.2023.10.23.08.53.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 08:53:10 -0700 (PDT)
-Message-ID: <eb759f41-db11-4f2e-b3a0-e9e92dea3196@linaro.org>
-Date:   Mon, 23 Oct 2023 09:53:08 -0600
+        Mon, 23 Oct 2023 08:53:25 -0700 (PDT)
+Message-ID: <045c35ba-7872-40a7-bd86-e37771076b88@redhat.com>
+Date:   Mon, 23 Oct 2023 17:53:23 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.4 000/123] 5.4.259-rc1 review
+Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20231023104817.691299567@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
-In-Reply-To: <20231023104817.691299567@linuxfoundation.org>
+From:   David Hildenbrand <david@redhat.com>
+To:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <20231009064230.2952396-1-surenb@google.com>
+ <20231009064230.2952396-3-surenb@google.com>
+ <721366d0-7909-45c9-ae49-f652c8369b9d@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <721366d0-7909-45c9-ae49-f652c8369b9d@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 23/10/23 4:55 a. m., Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.259 release.
-> There are 123 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 23.10.23 14:29, David Hildenbrand wrote:
+>> +
+>> +	/* Only allow remapping if both are mlocked or both aren't */
+>> +	if ((src_vma->vm_flags & VM_LOCKED) != (dst_vma->vm_flags & VM_LOCKED))
+>> +		return -EINVAL;
+>> +
+>> +	if (!(src_vma->vm_flags & VM_WRITE) || !(dst_vma->vm_flags & VM_WRITE))
+>> +		return -EINVAL;
 > 
-> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.259-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Why does one of both need VM_WRITE? If one really needs it, then the
+> destination (where we're moving stuff to).
 
-Same problems on Arm 32-bits as with 5.10 and 5.15:
+Just realized that we want both to be writable.
 
------8<-----
-/builds/linux/drivers/gpio/gpio-vf610.c:249:11: error: use of undeclared identifier 'IRQCHIP_IMMUTABLE'
-   249 |         .flags = IRQCHIP_IMMUTABLE | IRQCHIP_MASK_ON_SUSPEND
-       |                  ^
-/builds/linux/drivers/gpio/gpio-vf610.c:250:6: error: use of undeclared identifier 'IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND'
-   250 |                         | IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND,
-       |                           ^
-/builds/linux/drivers/gpio/gpio-vf610.c:251:2: error: use of undeclared identifier 'GPIOCHIP_IRQ_RESOURCE_HELPERS'
-   251 |         GPIOCHIP_IRQ_RESOURCE_HELPERS,
-       |         ^
-/builds/linux/drivers/gpio/gpio-vf610.c:340:2: error: implicit declaration of function 'gpio_irq_chip_set_chip' [-Werror,-Wimplicit-function-declaration]
-   340 |         gpio_irq_chip_set_chip(girq, &vf610_irqchip);
-       |         ^
-4 errors generated.
-make[3]: *** [/builds/linux/scripts/Makefile.build:262: drivers/gpio/gpio-vf610.o] Error 1
-make[3]: Target '__build' not remade because of errors.
-make[2]: *** [/builds/linux/scripts/Makefile.build:497: drivers/gpio] Error 2
-/builds/linux/drivers/gpu/drm/drm_lock.c:363:6: warning: misleading indentation; statement is not part of the previous 'if' [-Wmisleading-indentation]
-   363 |          */     mutex_lock(&dev->struct_mutex);
-       |                 ^
-/builds/linux/drivers/gpu/drm/drm_lock.c:357:2: note: previous statement is here
-   357 |         if (!drm_core_check_feature(dev, DRIVER_LEGACY))
-       |         ^
-1 warning generated.
------>8-----
+If you have this in place, there is no need to use maybe*_mkwrite(), you 
+can use the non-maybe variants.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+I recall that for UFFDIO_COPY we even support PROT_NONE VMAs, is there 
+any reason why we want to have different semantics here?
 
-Affected builds:
-* clang-17-defconfig                  arm
-* clang-17-imx_v6_v7_defconfig        arm
-* clang-17-lkftconfig                 arm
-* clang-17-lkftconfig-no-kselftest-frag arm
-* clang-nightly-defconfig             arm
-* clang-nightly-imx_v6_v7_defconfig   arm
-* clang-nightly-lkftconfig            arm
-* clang-nightly-lkftconfig-kselftest  arm
-* gcc-8-defconfig                     arm
-* gcc-8-imx_v6_v7_defconfig           arm
-* gcc-10-lkftconfig                   arm
-* gcc-10-lkftconfig-debug             arm
-* gcc-10-lkftconfig-debug-kmemleak    arm
-* gcc-10-lkftconfig-kselftest-kernel  arm
-* gcc-10-lkftconfig-libgpiod          arm
-* gcc-10-lkftconfig-perf-kernel       arm
-* gcc-10-lkftconfig-rcutorture        arm
-* gcc-12-defconfig                    arm
-* gcc-12-imx_v6_v7_defconfig          arm
-* gcc-12-lkftconfig                   arm
-* gcc-12-lkftconfig-debug             arm
-* gcc-12-lkftconfig-debug-kmemleak    arm
-* gcc-12-lkftconfig-kasan             arm
-* gcc-12-lkftconfig-kselftest         arm
-* gcc-12-lkftconfig-kunit             arm
-* gcc-12-lkftconfig-libgpiod          arm
-* gcc-12-lkftconfig-no-kselftest-frag arm
-* gcc-12-lkftconfig-perf              arm
-* gcc-12-lkftconfig-rcutorture        arm
+-- 
+Cheers,
 
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
+David / dhildenb
 
