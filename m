@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C877D3F26
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0105C7D3F2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 20:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbjJWSYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 14:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
+        id S232985AbjJWSYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 14:24:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233708AbjJWSX5 (ORCPT
+        with ESMTP id S230201AbjJWSYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 14:23:57 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685389D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:23:54 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bb9a063f26so53131331fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:23:54 -0700 (PDT)
+        Mon, 23 Oct 2023 14:24:23 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9C38E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:24:21 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-578b4981526so1981330a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 11:24:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698085432; x=1698690232; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jH+xgTdGBybTpfmszxd0jH64ej1Z8AlGRUmXL3RZD+E=;
-        b=TfLYPjNTO5DE3b2oOAeEdyXA6CjpxzFgEVtoXNy3TaUkCjIUIbI8KMANDCl+iK3hqv
-         tI3PbDj5gYEXZN9dJ5cuJnBmE+xCXOllS/ddUX4zUNTuDOVtCwSwHhEJ+qee61F5fvEK
-         ytSTfwad+RnSCxbmxIw8n+ZvgFomeML0+EzukGUZ9F5D3NcYEQMAQEjKKitPJlBcb37V
-         FmtN9/CnpakyiOMdo1EGQWkygA67yK1SQTaGj24tbXGK8BBR5g24dGo8Qtu8gYpADxvL
-         iYIAfTyGeFklyPyg2Z58tsmp6xgjpn/p6rey/dO23jtAOozZmbcNnw5G/j2QhUSC9ND8
-         odnA==
+        d=google.com; s=20230601; t=1698085461; x=1698690261; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pRUzO+vkA/3Zt2fqE2RqLUfgJAG2Koxv6V/JjBYAdSo=;
+        b=udM3V4sCt/BN1axuSpiL9PRQuAI/CqASmIvE7/B9TXdV4y3TsnKD2CvHq95xhG4QhE
+         8+Y6dhFkrLPjnnseMaXF05ub93djmLvwcxdpCK4wuCKKeLGn5iV/3egrkPQQSV8mwFTO
+         jB/Ka3G9+jbkSnhohuCim6yXdN4lywd+NUVKIRSa/SB9hZ7MA+rQgQYphzvWcC9Sw6uy
+         5SBt9o+oTrPXDk2/6Jt/ZBJvp5IFwawPPi2dSac38KtqNvIHUwyzkBOiI/b7s+eT8vjC
+         fxzEaeonMUx56SlZTjAwU0KQUsv/uW49CLwp43Ue5mNkvjfz6f0L+RTPJiGD/HWHhW9P
+         ZnKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698085432; x=1698690232;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jH+xgTdGBybTpfmszxd0jH64ej1Z8AlGRUmXL3RZD+E=;
-        b=X3g3Ng8X9FOiRS5wqL7f8Ntj1wt6yJzxK2LCDwsRcMOnlwNpeKys4J9bTHRJBixMrJ
-         T+CaBOwkEeknCjIFzMYv1tJgZglQY/GN/8kpV4aBA2pMwDepOGEv0aiYO2jskcSDT68p
-         5mjz2rX8JyPwhw2/qsSExmIe1RTyy3Jd8gGP1SRFUDL1SLQXys8WKG/XJtFjj7ZrXf8u
-         /HeEoqWboZTRKzq4k1pPXY2BtjHk4JPYWu9q4qF9YJBtpupPMwU4VJ3dj16qKSJjxVnz
-         u8CfiN2ii7DkMp338ZVi6xaxJrytu+O2+2Zi/ZmgvpkvUzHZi8kUJf/9U1wAw7yPiEtL
-         fSFw==
-X-Gm-Message-State: AOJu0YwfxPCLAVuQn0GvPjt9aFWymfBSB4eoP6i2/9Km+7TOUpp1aifU
-        ECypV0m4aVQORu7wB/4mX9M27IkycDmdJTqd4cN+zA==
-X-Google-Smtp-Source: AGHT+IEB5Xq1aY5x1xCr3qk4yDLLwsgqiYTB5BdIH+raasp//KeLJvmiD97BLkXk5ja6clWVenuP/A==
-X-Received: by 2002:a2e:b00d:0:b0:2c5:260:1026 with SMTP id y13-20020a2eb00d000000b002c502601026mr6726112ljk.12.1698085432161;
-        Mon, 23 Oct 2023 11:23:52 -0700 (PDT)
-Received: from [192.168.198.23] ([37.166.19.143])
-        by smtp.googlemail.com with ESMTPSA id m15-20020a7bcb8f000000b0040523bef620sm5242731wmi.0.2023.10.23.11.23.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 11:23:51 -0700 (PDT)
-Message-ID: <3a70280b-8cc4-9f22-92b7-088fa9cb45df@linaro.org>
-Date:   Mon, 23 Oct 2023 20:23:49 +0200
+        d=1e100.net; s=20230601; t=1698085461; x=1698690261;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pRUzO+vkA/3Zt2fqE2RqLUfgJAG2Koxv6V/JjBYAdSo=;
+        b=lNOPT4jDpf58ip5hvi31EscXIc/KOKh5akwsxDMpSnFwrzkUGkwVDO0HOrEGWSGOjx
+         SuLcx9VCAL/QfxCerTSvvGG76x3YsEO82OCX2k1ls7w+l4q3bpdwxHCjwqGf5W+7yGb3
+         6rjyhW+DoRwvVgfLnzrPPF19eKo+S/zZJaQshr4oaHLBwt0d2JrRmbpOOcS+dXF5qJk9
+         y3USHfvN19YIysBmA6Kw32OeSeEwCU0HyYhRqDWKQIr6yRspQuPZFYNN/cV2brcH9787
+         g5q5rrwWYDnk0ZlsDybo7bB0KvRg5xMdn+z47lhCf/VNnO/ofBCvCHbqNL5a5qOkwuke
+         e4nw==
+X-Gm-Message-State: AOJu0Yw2NQ8AnQnyJoNM1sr7tOm9ozBBwGTlC8PfAVSY35txFAgQe6ls
+        9Lqz3AfQiUEufABSx1GKdTkEiA==
+X-Google-Smtp-Source: AGHT+IGARxHq2zVxQ8Iid/WtBfTcT6aevXTje9qZk79/sXfRA5kbrUniRfbW0USHrmplTwKRjh9edQ==
+X-Received: by 2002:a05:6a20:c19d:b0:16b:aad0:effe with SMTP id bg29-20020a056a20c19d00b0016baad0effemr358243pzb.62.1698085460734;
+        Mon, 23 Oct 2023 11:24:20 -0700 (PDT)
+Received: from google.com (175.199.125.34.bc.googleusercontent.com. [34.125.199.175])
+        by smtp.gmail.com with ESMTPSA id p9-20020a63e649000000b0057412d84d25sm6055619pgj.4.2023.10.23.11.24.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 11:24:19 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 11:24:15 -0700
+From:   David Matlack <dmatlack@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 2/3] KVM: Always flush async #PF workqueue when vCPU is
+ being destroyed
+Message-ID: <ZTa6TxJS2erGBxgp@google.com>
+References: <20231018204624.1905300-1-seanjc@google.com>
+ <20231018204624.1905300-3-seanjc@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4 06/18] PM: EM: Check if the get_cost() callback is
- present in em_compute_costs()
-Content-Language: en-US
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, rafael@kernel.org
-Cc:     dietmar.eggemann@arm.com, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
-        viresh.kumar@linaro.org, len.brown@intel.com, pavel@ucw.cz,
-        mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com
-References: <20230925081139.1305766-1-lukasz.luba@arm.com>
- <20230925081139.1305766-7-lukasz.luba@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20230925081139.1305766-7-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231018204624.1905300-3-seanjc@google.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,49 +74,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/2023 10:11, Lukasz Luba wrote:
-> The em_compute_cost() is going to be re-used in runtime modified EM
-> code path. Thus, make sure that this common code is safe and won't
-> try to use the NULL pointer. The former em_compute_cost() didn't have to
-> care about runtime modification code path. The upcoming changes introduce
-> such option, but with different callback. Those two paths which use
-> get_cost() (during first EM registration) or update_power() (during
-> runtime modification) need to be safely handled in em_compute_costs().
+On 2023-10-18 01:46 PM, Sean Christopherson wrote:
+> Always flush the per-vCPU async #PF workqueue when a vCPU is clearing its
+> completion queue, i.e. when a VM and all its vCPUs is being destroyed.
+
+nit:
+
+  ... or when the guest toggles CR0.PG or async_pf support.
+
+> KVM must ensure that none of its workqueue callbacks is running when the
+> last reference to the KVM _module_ is put.  Gifting a reference to the
+> associated VM prevents the workqueue callback from dereferencing freed
+> vCPU/VM memory, but does not prevent the KVM module from being unloaded
+> before the callback completes.
 > 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->   kernel/power/energy_model.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Drop the misguided VM refcount gifting, as calling kvm_put_kvm() from
+> async_pf_execute() if kvm_put_kvm() flushes the async #PF workqueue will
+> result in deadlock.  async_pf_execute() can't return until kvm_put_kvm()
+> finishes, and kvm_put_kvm() can't return until async_pf_execute() finishes:
+>
+[...]
 > 
-> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-> index 7ea882401833..35e07933b34a 100644
-> --- a/kernel/power/energy_model.c
-> +++ b/kernel/power/energy_model.c
-> @@ -116,7 +116,7 @@ static int em_compute_costs(struct device *dev, struct em_perf_state *table,
->   	for (i = nr_states - 1; i >= 0; i--) {
->   		unsigned long power_res, cost;
->   
-> -		if (flags & EM_PERF_DOMAIN_ARTIFICIAL) {
-> +		if (flags & EM_PERF_DOMAIN_ARTIFICIAL && cb->get_cost) {
->   			ret = cb->get_cost(dev, table[i].frequency, &cost);
->   			if (ret || !cost || cost > EM_MAX_POWER) {
->   				dev_err(dev, "EM: invalid cost %lu %d\n",
+> Note, commit 5f6de5cbebee ("KVM: Prevent module exit until all VMs are
+> freed") *tried* to fix the module refcounting issue by having VMs grab a
+> reference to the module, but that only made the bug slightly harder to hit
+> as it gave async_pf_execute() a bit more time to complete before the KVM
+> module could be unloaded.
 
-I do believe & operator has lower precedence than && operator, thus the 
-test is actually:
+Blegh! Thanks for the fix.
 
-	(flags & (EM_PERF_DOMAIN_ARTIFICIAL && cb->get_cost))
+> 
+> Fixes: af585b921e5d ("KVM: Halt vcpu if page it tries to access is swapped out")
+> Cc: stable@vger.kernel.org
+> Cc: David Matlack <dmatlack@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-but it should be
-
-	((flags & EM_PERF_DOMAIN_ARTIFICIAL) && cb->get_cost)
-
-Right ?
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+Reviewed-by: David Matlack <dmatlack@google.com>
