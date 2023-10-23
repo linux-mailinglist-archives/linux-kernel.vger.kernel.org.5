@@ -2,50 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E277D2D7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D697D2D82
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbjJWJA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58792 "EHLO
+        id S232511AbjJWJBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJWJA0 (ORCPT
+        with ESMTP id S229898AbjJWJBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:00:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5487598;
-        Mon, 23 Oct 2023 02:00:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DE44CC433C8;
-        Mon, 23 Oct 2023 09:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698051624;
-        bh=ZlNpwhUkebIo3i3YOLtax4PKr90vncJVlptPpqAmTzY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WGrAye67GjP4iFW9muOWZAiOfYPRghgFf7X0BhCqiJa1e/h1oHH4dPHGbka/pYkGx
-         dZacYXs2sbTKxn1cMrzNqdj+Td9UvaxdxGSqI9DHvnMC30He47mwRFP0k6mYlwCmcm
-         nw2s7f6ybZKP10AoM46ruCuWlkTB8TghOMKtGjqjxSiqPhYoblmscQpHjzZDvc6lBf
-         Wy32p3uz0vYXfvk7ozWUJE0Jj9dSaehcKUiIAXDp/TyukmAoQYzwWiHHD55mNuI6f+
-         p4/WvOM4iCl3BLlun3OQM1SDWfJCswObZvc15CkJhHrG2pCrZqm4wQYLEXybkgWF4p
-         3j6G9IEpzUXWA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C2C03E4CC13;
-        Mon, 23 Oct 2023 09:00:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 23 Oct 2023 05:01:41 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A07D6B
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:01:37 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32da4ffd7e5so1687882f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:01:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1698051696; x=1698656496; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Mf+nKan86pP9YxvqNtFB3ioqbhRgtPm5GTm7s8KJe0I=;
+        b=QWfXkwqLCedWOyUHj73NFxHU0uVI8X9lDly8xxsv/mWpNgdxIkSjrHEtMvSVOGLohX
+         tjhuVyngYNeVeyhQ3yfLJXiT+G559gciUv9pwrF8aslWiX/v3zcgGcp/LQr/rmDeqsVE
+         G+O1144nSgElor2Df5Fb336SW5g8+FKdreYn5UgSldu/i1Xwd3h3gx0fJqRbjQmUwklp
+         sYm4vYigJ91xTgSJtC4fKGwKdTPAWf88dn8QGoZgTho7g5yHbnkYAInNlshLLVxTuMqa
+         3SwbfNthaALXa6MTU0S8Sa7P7uVRNJzWyyBLEqQ2HpZQ4URtdTs61RHwS3bqHqbhrxnj
+         R3vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698051696; x=1698656496;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mf+nKan86pP9YxvqNtFB3ioqbhRgtPm5GTm7s8KJe0I=;
+        b=OrjjosbAppkZG3Tj3pJb1NBF9+gjmmfokxZJ+FrAVXst35GqTJVfi6JMBeT848Gn8a
+         xG1UOdc8ZBQtev18d+7j/QGGi8PpkSgzai9jjYaao1pkddZzf7xT8PnKaQGEjnqnAeRe
+         DjNEL6x+54juiYD84pnIqgKj645e3abu2jsIQfXBil19qDaiO7mU55dn4YCXjE0gA495
+         enmNTUEsd8qFkTnt1KLidQpPcEi/5I+6YYV+TEgPuekwAYWW8RrHwbjWFMa5bIN1F22L
+         bdrkvA0PV+JSnbiwxj0dc5gFygrzD/fGn6p+lQg+wvw9A/kytHgFZG5boPtSm6mFDU65
+         qlvw==
+X-Gm-Message-State: AOJu0YyKB3TU09d3MKcOSsmd/HHnd//7tafMj3uL3kYzgUFdornD+uxs
+        wxuO/tFnL8t8D8qnobX8CN4Gpg==
+X-Google-Smtp-Source: AGHT+IGpWjcofGaS/GHzmAITo9rLeiMobJbEAZDzaHpa22JV7SGE2SfbIE4YVP8+tHl7DnA+Q7wPRA==
+X-Received: by 2002:adf:e487:0:b0:32d:84a5:bf5f with SMTP id i7-20020adfe487000000b0032d84a5bf5fmr7402288wrm.28.1698051695873;
+        Mon, 23 Oct 2023 02:01:35 -0700 (PDT)
+Received: from ?IPV6:2a02:8011:e80c:0:68fb:b41e:9c58:360c? ([2a02:8011:e80c:0:68fb:b41e:9c58:360c])
+        by smtp.gmail.com with ESMTPSA id k17-20020a5d66d1000000b00327cd5e5ac1sm7371699wrw.1.2023.10.23.02.01.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 02:01:35 -0700 (PDT)
+Message-ID: <435424a7-efba-4438-917c-61823c374770@isovalent.com>
+Date:   Mon, 23 Oct 2023 10:01:33 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/4] perf parse-events: Remove BPF event support
+Content-Language: en-GB
+To:     Manu Bretelle <chantr4@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev,
+        Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        He Kuang <hekuang@huawei.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>
+References: <20230810184853.2860737-1-irogers@google.com>
+ <20230810184853.2860737-2-irogers@google.com> <ZNZJCWi9MT/HZdQ/@kernel.org>
+ <ZNZWsAXg2px1sm2h@kernel.org> <ZTGHRAlQtF7Fq8vn@surya>
+ <ZTGa0Ukt7QyxWcVy@kernel.org> <ZTGyWHTOE8OEhQWq@surya>
+ <ZTLlfXM4MhW1GEIJ@kernel.org> <ZTMBLllcYRoIF8E1@surya>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <ZTMBLllcYRoIF8E1@surya>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: lan966x: remove useless code in lan966x_xtr_irq_handler
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169805162379.8476.6620826650761032188.git-patchwork-notify@kernel.org>
-Date:   Mon, 23 Oct 2023 09:00:23 +0000
-References: <20231020091625.206561-1-suhui@nfschina.com>
-In-Reply-To: <20231020091625.206561-1-suhui@nfschina.com>
-To:     Su Hui <suhui@nfschina.com>
-Cc:     horatiu.vultur@microchip.com, UNGLinuxDriver@microchip.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,27 +108,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On 20/10/2023 23:37, Manu Bretelle wrote:
+> On Fri, Oct 20, 2023 at 05:39:25PM -0300, Arnaldo Carvalho de Melo wrote:
+>> Em Thu, Oct 19, 2023 at 03:48:56PM -0700, Manu Bretelle escreveu:
+>>> On Thu, Oct 19, 2023 at 06:08:33PM -0300, Arnaldo Carvalho de Melo wrote:
+>>>> I wonder how to improve the current situation to detect these kinds of
+>>>> problems in the future, i.e. how to notice that some file needed by some
+>>>> Makefile, etc got removed or that some feature test fails because some
+>>>> change in the test .c files makes them fail and thus activates fallbacks
+>>>> like the one above :-\
+>>  
+>>> I think it is tricky. Specifically to this situation, some CI could try to build
+>>> the different combinaison of bpftool and check the features through the build
+>>> `bpftool --version`.
+>>
+>> Right, if the right packages are installed, we expect to get some
+>> bpftool build output, if that changes after some patch, flag it.
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Correct, this is what we do on the CI on the GitHub mirror (checking
+that the mirrored version builds correctly, with the expected features).
 
-On Fri, 20 Oct 2023 17:16:26 +0800 you wrote:
-> 'err' is useless after break, remove this to save space and
-> be more clear.
+>>
+>> Does bpftool have something like:
+>>
+>> ⬢[acme@toolbox perf-tools-next]$ perf version --build-options
+>> perf version 6.6.rc1.ga8dd62d05e56
+>>                  dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
+>>     dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
+>>          syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
+>>                 libbfd: [ OFF ]  # HAVE_LIBBFD_SUPPORT
+>>             debuginfod: [ on  ]  # HAVE_DEBUGINFOD_SUPPORT
+>>                 libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
+>>                libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+>> numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
+>>                libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
+>>              libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
+>>               libslang: [ on  ]  # HAVE_SLANG_SUPPORT
+>>              libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
+>>              libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
+>>     libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
+>>                   zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
+>>                   lzma: [ on  ]  # HAVE_LZMA_SUPPORT
+>>              get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
+>>                    bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
+>>                    aio: [ on  ]  # HAVE_AIO_SUPPORT
+>>                   zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
+>>                libpfm4: [ on  ]  # HAVE_LIBPFM
+>>          libtraceevent: [ on  ]  # HAVE_LIBTRACEEVENT
+>>          bpf_skeletons: [ on  ]  # HAVE_BPF_SKEL
+>> ⬢[acme@toolbox perf-tools-next]$
+>>
+>> ?
+>>
 > 
-> Signed-off-by: Su Hui <suhui@nfschina.com>
-> ---
->  drivers/net/ethernet/microchip/lan966x/lan966x_main.c | 1 -
->  1 file changed, 1 deletion(-)
+> It has
+> 
+>     $ ./tools/bpf/bpftool/bpftool --version -j | jq .features
+>     {
+>       "libbfd": false,
+>       "llvm": true,
+>       "skeletons": true,
+>       "bootstrap": false
+>     }
+> 
+> 
+> Maybe Quentin knows of something else.
 
-Here is the summary with links:
-  - net: lan966x: remove useless code in lan966x_xtr_irq_handler
-    https://git.kernel.org/netdev/net-next/c/6e7ce2d71bb9
+This, or ldd on the binary (unless it was a static build). But "bpftool
+version" should be enough to tell whether the LLVM disassembler is built
+in or not, so we haven't needed something else so far.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Quentin
 
