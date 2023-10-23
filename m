@@ -2,159 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F9A7D3B9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545497D3BA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbjJWQBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 12:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
+        id S232102AbjJWQCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 12:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233580AbjJWQBW (ORCPT
+        with ESMTP id S232058AbjJWQCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 12:01:22 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2070.outbound.protection.outlook.com [40.107.220.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B501722;
-        Mon, 23 Oct 2023 09:01:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hwXF6r+nMiNwNVIXTTPKazrpduYhOIa93Jz9FoAsfkdxyddia1e8oqQpegXOs93cc3FBBM5C3UUgVwxSckA9Pph21I75eOlviDIt6DdehdO8D2JIXYgtQ4lM+M7FPheM3J/+KZ9IQVHJSvMMDWZVz0Gy5mY/fUjnOpy/nP2KzaNNvFYFADqdf48XX40Scg7plvLYCns1zL5JivaqrGVTgO5f7T/yJlCyv/IsCO79MhkSPttICAUUjZPl9rrANV+aUGT3gTWhe+Eu4DPH2JdYSNO/hx5TqPq0WWGuKeoYxQnsFW334yIdRtR/ZyywfpUL630aPVRqgkmzVIJ32GNiNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uTis2q3/lcn436fubBaG0buk64NPTXNBw4MJC/nxed0=;
- b=IwBt7IPehOOmeifpTD8d/0LlOPj47rCNItQvLzXLIhPlpTHgIr2dJ5M0OGRZF18wwwg0aZ+WE0+h3J9H6vMYk5NpuMEHAKwmm7PrrzLNy22x3Nx2ebucZ/zRTHh1xporPprKC+o7RdwTuryItvNOsU21QLjoCPEBy1yHIFLw4vjOh8aanAjxPAVrqSIA3NG0SM8886UWo2FSj6eKjT7enmjvGbHcSERluiGbiAqMnhUxX3M2x12/jqjgl1LNmsRqcf5bfCIIxu+D6c88JLOHLrXtKjS4ceJ3Gsm6eT3KWMFU9mP/OkarAsL4yOuvXde/jdx2HfQ3vteZdlPym9ZNxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uTis2q3/lcn436fubBaG0buk64NPTXNBw4MJC/nxed0=;
- b=LMwsWQAsUtifepDXtYjMc2JYQvbpzBjN0OfhwAW2VbrMuH/oWRuxkdYHLtDfCzPMtiUSdSl/rBTdmb+al4i0IzbWN4aq3BYLgWmiGl/MXjNs+fyKf6qhFljLwlCqKy0qq7VunrB9MeFKKHp5ugOOpDpby7sxMnKR2dNIQmEqhsO+y3+KjQJQXFHCTsapReXVBpUEnJrzV4TqkIpMwe/zv39iGNtxqvcrYpdSIMl2VL7IpFTQT+cLJazJy/9cj013TGSNuoQ1Q2ycjkfUx1NCXGcbTYs+ofSSfn8wOGG/htRXtpenmDraqmpVKi72yjkMtuy5EUE0cV8r4WfqCMBiLg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM6PR12MB4153.namprd12.prod.outlook.com (2603:10b6:5:212::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Mon, 23 Oct
- 2023 16:01:12 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6886.034; Mon, 23 Oct 2023
- 16:01:12 +0000
-Date:   Mon, 23 Oct 2023 13:01:10 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Chengfeng Ye <dg573847474@gmail.com>,
-        dennis.dalessandro@cornelisnetworks.com
-Cc:     leon@kernel.org, dean.luick@cornelisnetworks.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] IB/hfi1: Fix potential deadlock on &irq_src_lock and
- &dd->uctxt_lock
-Message-ID: <20231023160110.GA886087@nvidia.com>
-References: <20230926101116.2797-1-dg573847474@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230926101116.2797-1-dg573847474@gmail.com>
-X-ClientProxiedBy: SA1P222CA0142.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:3c2::24) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Mon, 23 Oct 2023 12:02:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA9F103;
+        Mon, 23 Oct 2023 09:02:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698076920; x=1729612920;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=47p2DnbFJFIB8YHmN6OgskgJHRU2KmZYmsl/hUCGtgc=;
+  b=Br85S+xzH94amrHmW7CFo1Wa7OR/HOSPh6x2JXMFPuWb6bVJOJnfzI6Z
+   p1krd//BavkEtIw4z5XGi5j2wMoLsGtPeaA8A6H1jGW0pT8r/WA7XoTO1
+   7n6S4YUGxQ9f8K9l9jmRI454AC5p0pLC8HeAYO0iJNWsg9dDWK4AfZ/6c
+   mG/kEegee49XpzA/fwyCDNCViwzazu2fi+T5zGec3UdIS/FKLMejXQOW9
+   8APV1N9bfAfDVKZtHuhb1pjW8vdf0DBGUGzutkVtpuCpNOW0F+q7lg18P
+   dnmOG/y59+vOpGJysrFKM7WEP0JZfhhie2PxzwWEM+Enebtt7qupwRlHg
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="367100575"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="367100575"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 09:01:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="758177541"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="758177541"
+Received: from foliveix-mobl5.amr.corp.intel.com ([10.251.211.194])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 09:01:35 -0700
+Date:   Mon, 23 Oct 2023 19:01:32 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
+Subject: Re: [PATCH V4 11/17] platform/x86/intel/pmc: Split
+ pmc_core_ssram_get_pmc()
+In-Reply-To: <20231018231624.1044633-12-david.e.box@linux.intel.com>
+Message-ID: <b788487-df7c-78ac-e82a-fb48d36bbd26@linux.intel.com>
+References: <20231018231624.1044633-1-david.e.box@linux.intel.com> <20231018231624.1044633-12-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM6PR12MB4153:EE_
-X-MS-Office365-Filtering-Correlation-Id: 01960560-4d2a-4e44-96da-08dbd3e1475b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uQE1CwvYUmHpVmqsvfkuZvbOVYVxuChhbguWCKFkXQciGmX5YogpoLa4UTMmO1dr2pV4qAi7A8e8BPHJxC1O4mdJCeyUHWj8sCpdR8lQdMCVaartcf0mKf8RmyH/451LoyLPHxvuUsnBEr6YBjCUet6Q3rLY9dw8Unlq5qoQG1PU4D/GyF8VPGZM0pkJaRnPawBbw6zHuu1IMsNc49rAkbXabMHc2a7yUAS3/M5J/1TQScM187MVgnk+PNcXxNJI1EZHLKD9VAHwWxtiNakVbWlNvWOLYyv5cQ3RgqVRlesavVqxoIir+ugOUGz1EvEUbqhhFI1kcmfCiQDRCnEqhjfJIn+XU6krylFRk8cP5yAKN5s6Z5skgCAIH1UeAKMlzZc1jUmxRSsxIXm8WPt/UxoNNp8Xd5c/3/OX7/XXDgLZRwyGFw2fNc1CTI/qpI3vM9sqI6FQdSeplHk559bjg9AEBzc4gsxrbFx7dK1yBRhDT1+kMPwSaac6TOKEZA0cM4GOGYr4pXeBwNKF87ufHeaS0nHfkHssgHg+3m3qW1usYh2enyR62asvoN2a7vOn33JrBSYGU7xThNwe7WdUqTwBJgF+EqASUKaEnKiP/x0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(346002)(366004)(39860400002)(136003)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(36756003)(33656002)(66946007)(66476007)(316002)(66556008)(1076003)(86362001)(38100700002)(83380400001)(26005)(2616005)(6512007)(6506007)(8936002)(2906002)(478600001)(6486002)(8676002)(5660300002)(4326008)(41300700001)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Pvf7vEy9/bDmreYzBTkqmLIcccsckzEM2LySv/EsHUAl0l8Rr82At9/oFlmw?=
- =?us-ascii?Q?+CMApEAlAL3VJKKA/LoPG2YLKSC9MykbAhKLuxc2ydkFp/6+GVVr+k36IyeZ?=
- =?us-ascii?Q?ydV2geZd7kpbv3YGceh4uRgE75eiZU+qPDP7Yg/uLW0X+rsNzPXaupsUsT9b?=
- =?us-ascii?Q?RajURLyyoXJ/ZbMFK641or8hDO+HY8Hrv3gSztSUVaSF6qpQFdQavoAAp6Q5?=
- =?us-ascii?Q?BJsb4qdyjZRi5usOccF35mjMtUfFBSMOaqSz+zLNHV1ghNg6B1ZP7LtOqfuT?=
- =?us-ascii?Q?hwY14V3EpHq4HIq6nzvTnuKXODPuZMLgqCcWh0TAmD9yE+v9geR8RyJw+8fb?=
- =?us-ascii?Q?dS+uw8WoHnoLukSJm4qo9IEUV9j9Qr2NnbN0/+zPuzgux+a/+GRDU8qZU3fF?=
- =?us-ascii?Q?ZLpamhxp9H1aFwfAZVhTpKywRdII0mm9xZ1dnAzPn0MZzopxmTHp0IdSBVeD?=
- =?us-ascii?Q?xKhb00VU2gEWX+LEV/eWq+DvArgtItlyM6OboB1P/w6flB0VxOEqh+/VpPQq?=
- =?us-ascii?Q?eTRk0KQlVZBlhc3e6k4pPiYEcIaBOa8iB6FxGfkR1s7lSkXpISApPcZ5Gxr5?=
- =?us-ascii?Q?EixYOVO8Oh7lkp/Y7RUBq22OfGrRNh244v/W+y305NYOgxFk/c9aWQ+ZrU0Z?=
- =?us-ascii?Q?XEQgrcFcL1qPTAw54TPxaijHgxw02oNGAkgYy1DbuaWmL8s1LPOyaursxH4G?=
- =?us-ascii?Q?xtrvy31nwOCMLNgVnSV3mWXkIVaYAiNoIK0ssD5ElYQzYZ7S8BCKZ6ceGAzT?=
- =?us-ascii?Q?/f3/OcAuxwrRbl+89uXPRI5r8AGj/YQsqHnNe/iwD+X5+nPqdyKQIDH0egJM?=
- =?us-ascii?Q?lbDgVv4BAR6I1EuNo5625jA8lznMTjPsXqt5NzXKdDqqpAAqvXwvkhtxwmAC?=
- =?us-ascii?Q?xj1a4Jz/J0NH0h6UURS1M2+aCXe5E2vWtj10GgjIr7GBqHuygwoIFN5kg46L?=
- =?us-ascii?Q?0Elmj7Iz0IbBZOeZhgD6lUH3+9qqHwuXCVV9nvhfYCZRxhDeVin9UuUieDZ5?=
- =?us-ascii?Q?zI6UEwXiLDlHA1xjYNYcvpB7cBVy8E6BUDVIf4j+fKxQ53zxbKdCEMkunccK?=
- =?us-ascii?Q?P4QCluvb3VQMJRYSbB1n4j4A/DbcO4UiH+iL+FZ9HpWIIuRhEtKZbExw9HeB?=
- =?us-ascii?Q?hDn1JueUPzNbXOM8jDy0OEs34j9wWybFxaeE4b/S+W5VPGlPHmplLSdRIwJL?=
- =?us-ascii?Q?nHIXwTM4LvfDVwxN6ObTUtiUK7jr89g2S9Da2k+RlfeenyNsdmG75WuGe2BX?=
- =?us-ascii?Q?t+OHLxj8ZVge/taP6ZCJNWQ9QeY4SMqum9IUolYasWy+pd9gsP9bTjSN1cpD?=
- =?us-ascii?Q?t5WP/IXDn2oBKVTE2RX8p9dYyCbSp7QFz+omRlwEf3noqVPlFvwb361WWjae?=
- =?us-ascii?Q?RU3zYVzGDvqxuwkdGk5PsbZDQ8OY9HJeEoTejau2rWtkD+LM2pI9YUbkTypG?=
- =?us-ascii?Q?39/ldBnvZMLs5QR71ans5g3JKtjz+yXjWuwKEV9fSJqlFkSsOmCQTdvl2sZy?=
- =?us-ascii?Q?LpDvY78cg2eUlxhwy0HjRCL0lxBNzUfdokfLqrsxOzk86OYxGXOUltrvzt21?=
- =?us-ascii?Q?pC56bKrFBnJnSdIt2ttgqqyE1rD24VIETxxdf/FO?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01960560-4d2a-4e44-96da-08dbd3e1475b
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 16:01:12.5379
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cyBpPw1/l+juI8IM97yXoE4sIFv74eANrzCiRrkMOCq5JbifkbIxA+EnvGZV0kWp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4153
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 10:11:16AM +0000, Chengfeng Ye wrote:
-> handle_receive_interrupt_napi_sp() running inside interrupt handler
-> could introduce inverse lock ordering between &dd->irq_src_lock
-> and &dd->uctxt_lock, if read_mod_write() is preempted by the isr.
+On Wed, 18 Oct 2023, David E. Box wrote:
+
+> On supported hardware, each PMC may have an associated SSRAM device for
+> accessing additional counters.  However, only the SSRAM of the first
+> (primary) PMC is discoverable as a PCI device to the OS. The remaining
+> (secondary) devices are hidden but their BARs are still accessible and
+> their addresses are stored in the BAR of the exposed device. Clean up the
+> code handling the SSRAM discovery. Create two separate functions for
+> accessing the primary and secondary SSRAM devices.
 > 
->           [CPU0]                                        |          [CPU1]
-> hfi1_ipoib_dev_open()                                   |
-> --> hfi1_netdev_enable_queues()                         |
-> --> enable_queues(rx)                                   |
-> --> hfi1_rcvctrl()                                      |
-> --> set_intr_bits()                                     |
-> --> read_mod_write()                                    |
-> --> spin_lock(&dd->irq_src_lock)                        |
->                                                         | hfi1_poll()
->                                                         | --> poll_next()
->                                                         | --> spin_lock_irq(&dd->uctxt_lock)
->                                                         |
->                                                         | --> hfi1_rcvctrl()
->                                                         | --> set_intr_bits()
->                                                         | --> read_mod_write()
->                                                         | --> spin_lock(&dd->irq_src_lock)
-> <interrupt>                                             |
->    --> handle_receive_interrupt_napi_sp()               |
->    --> set_all_fastpath()                               |
->    --> hfi1_rcd_get_by_index()                          |
->    --> spin_lock_irqsave(&dd->uctxt_lock)               |
-> 
-> This flaw was found by an experimental static analysis tool I am
-> developing for irq-related deadlock.
-> 
-> To prevent the potential deadlock, the patch use spin_lock_irqsave()
-> on &dd->irq_src_lock inside read_mod_write() to prevent the possible
-> deadlock scenario.
-> 
-> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 > ---
->  drivers/infiniband/hw/hfi1/chip.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> V4 - Add checking the return value from pmc_core_sram_init() to mtl.c
+>    - Use iounmap cleanup from io.h
+> 
+> V3 - New patch split from previous PATCH 2
+>    - Update changelog
+>    - Use cleanup.h to cleanup ioremap
+> 
+> V2 - no change
+> 
+>  drivers/platform/x86/intel/pmc/core_ssram.c | 91 +++++++++++++--------
+>  drivers/platform/x86/intel/pmc/mtl.c        | 12 ++-
+>  2 files changed, 67 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/pmc/core_ssram.c b/drivers/platform/x86/intel/pmc/core_ssram.c
+> index 815950713e25..ccb3748dbed9 100644
+> --- a/drivers/platform/x86/intel/pmc/core_ssram.c
+> +++ b/drivers/platform/x86/intel/pmc/core_ssram.c
+> @@ -8,6 +8,7 @@
+>   *
+>   */
+>  
+> +#include <linux/cleanup.h>
+>  #include <linux/pci.h>
+>  #include <linux/io-64-nonatomic-lo-hi.h>
+>  
+> @@ -65,44 +66,74 @@ pmc_core_pmc_add(struct pmc_dev *pmcdev, u64 pwrm_base,
+>  	return 0;
+>  }
+>  
+> -static void
+> -pmc_core_ssram_get_pmc(struct pmc_dev *pmcdev, void __iomem *ssram, u32 offset,
+> -		       int pmc_idx)
+> +static int
+> +pmc_core_get_secondary_pmc(struct pmc_dev *pmcdev, int pmc_idx, u32 offset)
+>  {
+> -	u64 pwrm_base;
+> +	struct pci_dev *ssram_pcidev = pmcdev->ssram_pcidev;
+> +	void __iomem __free(iounmap) *main_ssram = NULL;
+> +	void __iomem __free(iounmap) *secondary_ssram = NULL;
+> +	const struct pmc_reg_map *map;
+> +	u64 ssram_base, pwrm_base;
+>  	u16 devid;
+>  
+> -	if (pmc_idx != PMC_IDX_SOC) {
+> -		u64 ssram_base = get_base(ssram, offset);
+> +	if (!pmcdev->regmap_list)
+> +		return -ENOENT;
+>  
+> -		if (!ssram_base)
+> -			return;
+> +	/*
+> +	 * The secondary PMC BARS (which are behind hidden PCI devices) are read
+> +	 * from fixed offsets in MMIO of the primary PMC BAR.
+> +	 */
+> +	ssram_base = ssram_pcidev->resource[0].start;
+> +	main_ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
+> +	if (!main_ssram)
+> +		return -ENOMEM;
+>  
+> -		ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
+> -		if (!ssram)
+> -			return;
+> -	}
+> +	ssram_base = get_base(main_ssram, offset);
+> +	secondary_ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
+> +	if (!secondary_ssram)
+> +		return -ENOMEM;
+> +
+> +	pwrm_base = get_base(secondary_ssram, SSRAM_PWRM_OFFSET);
+> +	devid = readw(secondary_ssram + SSRAM_DEVID_OFFSET);
+> +
+> +	map = pmc_core_find_regmap(pmcdev->regmap_list, devid);
+> +	if (!map)
+> +		return -ENODEV;
+> +
+> +	return pmc_core_pmc_add(pmcdev, pwrm_base, map, pmc_idx);
+> +}
+> +
+> +static int
+> +pmc_core_get_primary_pmc(struct pmc_dev *pmcdev)
+> +{
+> +	struct pci_dev *ssram_pcidev = pmcdev->ssram_pcidev;
+> +	void __iomem __free(iounmap) *ssram;
+> +	const struct pmc_reg_map *map;
+> +	u64 ssram_base, pwrm_base;
+> +	u16 devid;
+> +
+> +	if (!pmcdev->regmap_list)
+> +		return -ENOENT;
+> +
+> +	/* The primary PMC (SOC die) BAR is BAR 0 in config space. */
+> +	ssram_base = ssram_pcidev->resource[0].start;
+> +	ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
+> +	if (!ssram)
+> +		return -ENOMEM;
+>  
+>  	pwrm_base = get_base(ssram, SSRAM_PWRM_OFFSET);
+>  	devid = readw(ssram + SSRAM_DEVID_OFFSET);
+>  
+> -	if (pmcdev->regmap_list) {
+> -		const struct pmc_reg_map *map;
+> +	map = pmc_core_find_regmap(pmcdev->regmap_list, devid);
+> +	if (!map)
+> +		return -ENODEV;
+>  
+> -		map = pmc_core_find_regmap(pmcdev->regmap_list, devid);
+> -		if (map)
+> -			pmc_core_pmc_add(pmcdev, pwrm_base, map, pmc_idx);
+> -	}
+> -
+> -	if (pmc_idx != PMC_IDX_SOC)
+> -		iounmap(ssram);
+> +	return pmc_core_pmc_add(pmcdev, pwrm_base, map, PMC_IDX_MAIN);
 
-Dennis? This needs your ack/nack
+While I very much like the new way pmc_core_get_*_pmc() is structured with 
+early returns and use of cleanup.h, it feels somethat unnecessary to split 
+the main logic into two functions given how little there is different.
+I'd just handle the differences with if (secondary) { ... } and create 
+pmc_ssram local variable so as much as possible can be kept in common.
 
-Thanks,
-Jason
+It probably makes still sense to preserve 
+pmc_core_get_primary/secondary_pmc() functions from the caller point so 
+those two functions just become wrappers passing correct parameters to 
+pmc_core_get_pmc().
+
+-- 
+ i.
+
+
+>  }
+>  
+>  int pmc_core_ssram_init(struct pmc_dev *pmcdev)
+>  {
+> -	void __iomem *ssram;
+>  	struct pci_dev *pcidev;
+> -	u64 ssram_base;
+>  	int ret;
+>  
+>  	pcidev = pci_get_domain_bus_and_slot(0, 0, PCI_DEVFN(20, 2));
+> @@ -113,18 +144,14 @@ int pmc_core_ssram_init(struct pmc_dev *pmcdev)
+>  	if (ret)
+>  		goto release_dev;
+>  
+> -	ssram_base = pcidev->resource[0].start;
+> -	ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
+> -	if (!ssram)
+> -		goto disable_dev;
+> -
+>  	pmcdev->ssram_pcidev = pcidev;
+>  
+> -	pmc_core_ssram_get_pmc(pmcdev, ssram, 0, PMC_IDX_SOC);
+> -	pmc_core_ssram_get_pmc(pmcdev, ssram, SSRAM_IOE_OFFSET, PMC_IDX_IOE);
+> -	pmc_core_ssram_get_pmc(pmcdev, ssram, SSRAM_PCH_OFFSET, PMC_IDX_PCH);
+> +	ret = pmc_core_get_primary_pmc(pmcdev);
+> +	if (ret)
+> +		goto disable_dev;
+>  
+> -	iounmap(ssram);
+> +	pmc_core_get_secondary_pmc(pmcdev, PMC_IDX_IOE, SSRAM_IOE_OFFSET);
+> +	pmc_core_get_secondary_pmc(pmcdev, PMC_IDX_PCH, SSRAM_PCH_OFFSET);
+>  
+>  	return 0;
+>  
+> diff --git a/drivers/platform/x86/intel/pmc/mtl.c b/drivers/platform/x86/intel/pmc/mtl.c
+> index c3b5f4fe01d1..d1d3d33fb4b8 100644
+> --- a/drivers/platform/x86/intel/pmc/mtl.c
+> +++ b/drivers/platform/x86/intel/pmc/mtl.c
+> @@ -990,12 +990,16 @@ int mtl_core_init(struct pmc_dev *pmcdev)
+>  	mtl_d3_fixup();
+>  
+>  	pmcdev->resume = mtl_resume;
+> -
+>  	pmcdev->regmap_list = mtl_pmc_info_list;
+> -	pmc_core_ssram_init(pmcdev);
+>  
+> -	/* If regbase not assigned, set map and discover using legacy method */
+> -	if (!pmc->regbase) {
+> +	/*
+> +	 * If ssram init fails use legacy method to at least get the
+> +	 * primary PMC
+> +	 */
+> +	ret = pmc_core_ssram_init(pmcdev);
+> +	if (ret) {
+> +		dev_warn(&pmcdev->pdev->dev,
+> +			 "ssram init failed, %d, using legacy init\n", ret);
+>  		pmc->map = &mtl_socm_reg_map;
+>  		ret = get_primary_reg_base(pmc);
+>  		if (ret)
+> 
