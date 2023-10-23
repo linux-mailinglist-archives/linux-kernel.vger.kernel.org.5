@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5127D2BFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A333A7D2C05
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbjJWH4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54302 "EHLO
+        id S229495AbjJWH5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjJWH4v (ORCPT
+        with ESMTP id S229452AbjJWH5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 03:56:51 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FF5A6;
-        Mon, 23 Oct 2023 00:56:48 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3F05C1BF207;
-        Mon, 23 Oct 2023 07:56:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698047807;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FldUiPq2BVMslpj+LMlD/+0WOMlyM3q9lq9JRLhO7T4=;
-        b=CQ8TadK4mSFFfHLaFInunrFRvQzMXYmYLy+ebruncOoe0yXYLr2MXaXSlaUwxs2J0hNedI
-        FA9qvTLKnW2FMH8g8XmzkpRt2kCqi8Zk7YyzQZni2/v7uhiTSwl27qku0xUCSGK2Zkph+/
-        7YIY2fd5uIpMg2XJl2XRBBC2i1X346RcxG4uVEuHAOkAA0KkWegyAQe6rEbXIOBJa5P3nm
-        HFm3QMApYRifzOY+fz0EYu5NqLp7zTReO2Nqj7Tqs9IZ0WU0bnrE0B6pKlan/ZZKjfhf/d
-        JmDgGnxMvL18mL32D03WxdzGcipTkv0iqbrJ4XKdpZWvdAPuRAA2zjObu/EWEQ==
-Date:   Mon, 23 Oct 2023 09:56:41 +0200
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v6 12/16] net: Replace hwtstamp_source by
- timestamping layer
-Message-ID: <20231023095641.75dd89c6@kmaincent-XPS-13-7390>
-In-Reply-To: <20231020184714.3b3816fd@kernel.org>
-References: <20231019-feature_ptp_netnext-v6-0-71affc27b0e5@bootlin.com>
-        <20231019-feature_ptp_netnext-v6-12-71affc27b0e5@bootlin.com>
-        <20231020184714.3b3816fd@kernel.org>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 23 Oct 2023 03:57:49 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF0DA6;
+        Mon, 23 Oct 2023 00:57:46 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39N7RVnO003055;
+        Mon, 23 Oct 2023 07:57:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=c7KP3Zqe35K/UITXRHfu9WloJc95Zxfye7HE8lRDw1Q=;
+ b=LO04fbQGS+K5kWBRwLwH/SFLsQWsCW3igdRmGALdXuURqWRcSqyt4BlB7BYMaC97ikzK
+ uDSYPDrzPj7wMUpOwLdCxsFCqFkcWJruehMJg31XGB/2ncRDpOMa87kIqVfyZc/uugmK
+ PK2GgbY7EXuN1OTTVxg40OetT1ZbSv6+o/WbC1NclUNw+G+PYSpR4hzF/Ijy7LrRSmhO
+ oJaYBO0YF6HfUNZtzGBcAlQemjQaKHk5431stZMyYVLxu6odP5w9Jk85ts+56yDdP2xn
+ W1auaDR0oTnlkqjv/o+1z1T1Er7WM6TeSst1Rp9nepACXMF8My+gnqx/mwfhcei4rwbp /g== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv5ndue0r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 07:57:36 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39N7vZET002897
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 07:57:35 GMT
+Received: from aiquny2-gv.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Mon, 23 Oct 2023 00:57:29 -0700
+From:   Maria Yu <quic_aiquny@quicinc.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>, <arnd@arndb.de>
+CC:     Maria Yu <quic_aiquny@quicinc.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH] arm64: module: PLT allowed even !RANDOM_BASE
+Date:   Mon, 23 Oct 2023 15:57:14 +0800
+Message-ID: <20231023075714.21672-1-quic_aiquny@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: mFIgwhexEX5_sUkfBMghA9gGEGxsMVFw
+X-Proofpoint-ORIG-GUID: mFIgwhexEX5_sUkfBMghA9gGEGxsMVFw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-23_06,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=430 bulkscore=0
+ adultscore=0 impostorscore=0 mlxscore=0 phishscore=0 priorityscore=1501
+ clxscore=1011 suspectscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310230069
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 18:47:14 -0700
-Jakub Kicinski <kuba@kernel.org> wrote:
+Module PLT feature can be enabled even when RANDOM_BASE is disabled.
+Break BLT entry counts of relocation types will make module plt entry
+allocation fail and finally exec format error for even correct and plt
+allocation available modules.
 
-> On Thu, 19 Oct 2023 16:29:27 +0200 Kory Maincent wrote:
-> > Replace hwtstamp_source which is only used by the kernel_hwtstamp_config
-> > structure by the more widely use timestamp_layer structure. This is done
-> > to prepare the support of selectable timestamping source.
-> >=20
-> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com> =20
->=20
-> Temporarily breaks the build :(
->=20
-> net/core/dev_ioctl.c:335:44: error: use of undeclared identifier
-> 'NET_TIMESTAMPING'; did you mean 'NO_TIMESTAMPING'? cfg->source =3D phy_t=
-s ?
-> PHY_TIMESTAMPING : NET_TIMESTAMPING; ^~~~~~~~~~~~~~~~
->                                                   NO_TIMESTAMPING
-> include/uapi/linux/net_tstamp.h:18:2: note: 'NO_TIMESTAMPING' declared he=
-re
->         NO_TIMESTAMPING,
->         ^
+Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
+---
+ arch/arm64/kernel/module-plts.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Doh, I forgot to run the in-between patch build procedures. Sorry about tha=
-t.
+diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
+index bd69a4e7cd60..21a67d52d7a0 100644
+--- a/arch/arm64/kernel/module-plts.c
++++ b/arch/arm64/kernel/module-plts.c
+@@ -167,9 +167,6 @@ static unsigned int count_plts(Elf64_Sym *syms, Elf64_Rela *rela, int num,
+ 		switch (ELF64_R_TYPE(rela[i].r_info)) {
+ 		case R_AARCH64_JUMP26:
+ 		case R_AARCH64_CALL26:
+-			if (!IS_ENABLED(CONFIG_RANDOMIZE_BASE))
+-				break;
+-
+ 			/*
+ 			 * We only have to consider branch targets that resolve
+ 			 * to symbols that are defined in a different section.
 
-K=C3=B6ry
+base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
+-- 
+2.17.1
+
