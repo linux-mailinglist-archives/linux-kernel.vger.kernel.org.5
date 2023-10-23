@@ -2,259 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5FC7D40B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 22:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2ABD7D40C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 22:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjJWURb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 16:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
+        id S231172AbjJWUUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 16:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjJWUR3 (ORCPT
+        with ESMTP id S230489AbjJWUUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 16:17:29 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D80D6E;
-        Mon, 23 Oct 2023 13:17:27 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9adca291f99so543067966b.2;
-        Mon, 23 Oct 2023 13:17:27 -0700 (PDT)
+        Mon, 23 Oct 2023 16:20:19 -0400
+Received: from mail-oa1-x49.google.com (mail-oa1-x49.google.com [IPv6:2001:4860:4864:20::49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42921D79
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 13:20:17 -0700 (PDT)
+Received: by mail-oa1-x49.google.com with SMTP id 586e51a60fabf-1e9c1e06ce9so5130665fac.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 13:20:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698092245; x=1698697045; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F3p2PnLUVcsWhyg9y4I5JwaQK0DHEZVP7M5znrQSP0s=;
-        b=FMaZnOfwURsbnXVZ7L0SBH2BbWeaAl0FuDJ0Jee6F7jSUyByVahAsGEaR3YNG6IJAG
-         bJAKj/HuwlM8Q7q+kc/wr6VadWNNwweSEo72j6n5ce5lbG4pCc0lQJjcrCySn0HpVHkX
-         hiVCCL6WzGypAiuPMXbLavMY/H55Go8SG4oafr/BsWaJR6eP5TzvNw6cM8XLkekK9Nyg
-         DuO6OpIkeZheCCqNcoErZfg5DVGR8NshIWRF5+VoipeGtKQozyFjD1IdYqev7qlmJuym
-         7i5a9VDDOcujJaI51uuDA+u1d/hBvypmN/C+rhUyndH3myREkkOqnA0UM2LCPZaDnuCc
-         PMsg==
+        d=google.com; s=20230601; t=1698092415; x=1698697215; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HC2YENnbBf3idqNUjad+LLWvlI/rBfsrY/3c0Jg2xIA=;
+        b=IsgfIm2mc9Q+Tt9DydoqQ0cdfhOX9jeku/ZRH69WHJBzKa4KY6kyuhwihDbTXYbAJ/
+         UkJkP5L4obeZQJVEAG9BVtK8JUs1uh6APJP3bjEwLktkhCkq45j+AyXzXYbVsN8+muYP
+         J+EaVd+zYsRE+jWmYDQjJ5PA53eCGvQMUBUvgXjilkkr++2/CNHjdoltZY6YQU5kstn5
+         ks92vNdzmToSdUhtDpGzNfyxlkfq1UPaqVUYJtuxM1Qlk9+kYgcnBdGLGgu59EDnsA2r
+         MMxAIy3C0r+MPiexD02omEMVi0O9EzVAm2OxCjEj6w91Erm5cOW1DURALWdSHdye7tSb
+         Qwww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698092245; x=1698697045;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F3p2PnLUVcsWhyg9y4I5JwaQK0DHEZVP7M5znrQSP0s=;
-        b=k01Yfr7e9q9K1aX0uhf1J2Q30J+dT5/4oogCchcUBTVOiFEzMb+VbXuskGlEg6Y/aj
-         XTKw/IthqvMSFj41xdf7+LDx66x9Kp6KUHOCz6iMOZqhFdvO7qiEspnv1iO4ATRWUuZX
-         JkbCvWO0SbI1xg0uFxv1/ji+bEfTFrRiG0PnztFpiCc/JgAyaXdcR4SPv+WiX5n8VeKy
-         uekI+2fJbse5LiPys3V1gKDpy0+nKCFnToi9jTPZLZw+DdVGVpwXvtIia4EuUNWG/PUF
-         kE+b+q0rVxjfG5vhUcGiRkDnZc4VzbkA0EJAR1WJy5gCBAnxYR6iq0fo1Sc4NUKvdHtB
-         MJ8Q==
-X-Gm-Message-State: AOJu0Yy0k4i89IIhRTURk+ogRvSWbV1LnEaRM8eKCQuDV1nrt7DEK9G8
-        WriTcCM4XyK8FGKQ19fY62M=
-X-Google-Smtp-Source: AGHT+IHsyiIrO3EdEjsHS/lptDQDezlTNE0C1bRSK1xDXvjW4+pDoJfdRGlYrl4dSWu+v6fYeQOs6w==
-X-Received: by 2002:a17:907:9282:b0:9bd:fc4b:6c9b with SMTP id bw2-20020a170907928200b009bdfc4b6c9bmr8381154ejc.36.1698092245263;
-        Mon, 23 Oct 2023 13:17:25 -0700 (PDT)
-Received: from standask-GA-A55M-S2HP ([188.123.113.247])
-        by smtp.gmail.com with ESMTPSA id k2-20020a1709067ac200b0099bcf1c07c6sm7177770ejo.138.2023.10.23.13.17.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 13:17:24 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 22:17:22 +0200
-From:   Stanislav Jakubek <stano.jakubek@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Artur Weber <aweber.kernel@gmail.com>
-Subject: Re: [PATCH] dt-bindings: clock: brcm,kona-ccu: convert to YAML
-Message-ID: <ZTbU0rkGMhja+J24@standask-GA-A55M-S2HP>
-References: <ZTUIJrTc6KKyT4xj@standask-GA-A55M-S2HP>
- <3df06d79-ea51-4202-8cc8-468f741603bf@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3df06d79-ea51-4202-8cc8-468f741603bf@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698092415; x=1698697215;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HC2YENnbBf3idqNUjad+LLWvlI/rBfsrY/3c0Jg2xIA=;
+        b=XIppENXCP2f1c2/6GZpL+F9gMgfyw3YGSLIA4EP707hdxoncIOpPHdLIQEW/WyJzfg
+         +rHXSi4qyWuVEbLzzmEaQoxMkVFt882Fd7nU/FBwGqzVX1BDWFNVaZyTrR13xmR2mMgR
+         ltaQm3ykkPbknkcj43X90RtcOfDaCkhZowOuEtOvs6PE4FrrR3r3hX9t4ZzqQVSlJfYj
+         6HhGsv0MflSGL/EmV2xmt2pzeuLO0SvW2b3tTTAPxOfr4K7vL98IQTYdvJkNQu4trYYc
+         rHNhnliQVx7gUuXrNU5gkbsldcnGwy8vX2ib3r6/TNbXDNgL1YkW1zzOJsq/Mc4SJrWx
+         GJHw==
+X-Gm-Message-State: AOJu0YxB6+VbeX7DE3Ztp4+U/XkQ/D67jJUq5+9TFuELfZuHZu/NBHZv
+        7SnHqE30+aZ2WABhDO3U6bpuVTzPM+5stfsvkg==
+X-Google-Smtp-Source: AGHT+IH5IFKp3etRfm/SAzbR9yOQsUDxs6BH985hBKm3ShLIcpsgqParlvRl7HqmFgFcz+ULZw/IB2wls49btAYaVA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6870:171d:b0:1e9:9202:20c2 with
+ SMTP id h29-20020a056870171d00b001e9920220c2mr4686466oae.0.1698092415210;
+ Mon, 23 Oct 2023 13:20:15 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 20:20:14 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAH3VNmUC/x2MsQ6DMAwFfwV5riWSMPErqEP64oKXENkVaoX4d
+ 6ION9xwd5KLqTjNw0kmh7rutUt4DIQt11VYS3eKY0yhw/6xivbjYnqIOTtcGRuDY3oFlIwpAdT 7ZvLW7/+9PK/rBviHA6drAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1698092414; l=2576;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=u26UkFA2pIT/4F5ARGnp0D+oEDN12dlRus5r6WZtCT8=; b=Ct6Uk8Ut9tGzpS3O6U9vzqDZRCJthZZmKeW5UgOFzxoK3M24GkZxicWT3gFJsfPzm9KZNClPv
+ mwwAPCHwo5nCv/HfOtU+WtuThMSa6XqR6GQRXu4XZZcWh/6mHKr/yNm
+X-Mailer: b4 0.12.3
+Message-ID: <20231023-strncpy-drivers-scsi-ch-c-v1-1-dc67ba8075a3@google.com>
+Subject: [PATCH] scsi: ch: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 09:54:49AM +0200, Krzysztof Kozlowski wrote:
-> On 22/10/2023 13:31, Stanislav Jakubek wrote:
-> > Convert Broadcom Kona family clock controller unit (CCU) bindings
-> > to DT schema.
-> > 
-> > Signed-off-by: Stanislav Jakubek <stano.jakubek@gmail.com>
-> 
-> Thank you for your patch. There is something to discuss/improve.
-> 
-> > +description:
-> > +  Broadcom "Kona" style clock control unit (CCU) is a clock provider that
-> > +  manages a set of clock signals.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - brcm,bcm11351-aon-ccu
-> > +      - brcm,bcm11351-hub-ccu
-> > +      - brcm,bcm11351-master-ccu
-> > +      - brcm,bcm11351-root-ccu
-> > +      - brcm,bcm11351-slave-ccu
-> > +      - brcm,bcm21664-aon-ccu
-> > +      - brcm,bcm21664-master-ccu
-> > +      - brcm,bcm21664-root-ccu
-> > +      - brcm,bcm21664-slave-ccu
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  '#clock-cells':
-> > +    const: 1
-> > +
-> > +  clock-output-names:
-> > +    minItems: 1
-> > +    maxItems: 10
-> > +
-> > +allOf:
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - brcm,bcm11351-aon-ccu
-> > +              - brcm,bcm11351-hub-ccu
-> > +              - brcm,bcm11351-master-ccu
-> > +              - brcm,bcm11351-root-ccu
-> > +              - brcm,bcm11351-slave-ccu
-> > +    then:
-> > +      properties:
-> > +        clock-output-names:
-> > +          description: |
-> > +            The following table defines the set of CCUs and clock specifiers
-> > +            for BCM281XX family clocks.
-> > +            These clock specifiers are defined in:
-> > +                "include/dt-bindings/clock/bcm281xx.h"
-> > +
-> > +            CCU     Clock        Type  Index  Specifier
-> > +            ---     -----        ----  -----  ---------
-> > +            root    frac_1m      peri    0    BCM281XX_ROOT_CCU_FRAC_1M
-> > +
-> > +            aon     hub_timer    peri    0    BCM281XX_AON_CCU_HUB_TIMER
-> > +            aon     pmu_bsc      peri    1    BCM281XX_AON_CCU_PMU_BSC
-> > +            aon     pmu_bsc_var  peri    2    BCM281XX_AON_CCU_PMU_BSC_VAR
-> > +
-> > +            hub     tmon_1m      peri    0    BCM281XX_HUB_CCU_TMON_1M
-> > +
-> > +            master  sdio1        peri    0    BCM281XX_MASTER_CCU_SDIO1
-> > +            master  sdio2        peri    1    BCM281XX_MASTER_CCU_SDIO2
-> > +            master  sdio3        peri    2    BCM281XX_MASTER_CCU_SDIO3
-> > +            master  sdio4        peri    3    BCM281XX_MASTER_CCU_SDIO4
-> > +            master  dmac         peri    4    BCM281XX_MASTER_CCU_DMAC
-> > +            master  usb_ic       peri    5    BCM281XX_MASTER_CCU_USB_IC
-> > +            master  hsic2_48m    peri    6    BCM281XX_MASTER_CCU_HSIC_48M
-> > +            master  hsic2_12m    peri    7    BCM281XX_MASTER_CCU_HSIC_12M
-> > +
-> > +            slave   uartb        peri    0    BCM281XX_SLAVE_CCU_UARTB
-> > +            slave   uartb2       peri    1    BCM281XX_SLAVE_CCU_UARTB2
-> > +            slave   uartb3       peri    2    BCM281XX_SLAVE_CCU_UARTB3
-> > +            slave   uartb4       peri    3    BCM281XX_SLAVE_CCU_UARTB4
-> > +            slave   ssp0         peri    4    BCM281XX_SLAVE_CCU_SSP0
-> > +            slave   ssp2         peri    5    BCM281XX_SLAVE_CCU_SSP2
-> > +            slave   bsc1         peri    6    BCM281XX_SLAVE_CCU_BSC1
-> > +            slave   bsc2         peri    7    BCM281XX_SLAVE_CCU_BSC2
-> > +            slave   bsc3         peri    8    BCM281XX_SLAVE_CCU_BSC3
-> > +            slave   pwm          peri    9    BCM281XX_SLAVE_CCU_PWM
-> 
-> I don't really understand why this is in the binding schema. I guess you
-> wanted to copy it from the old binding, but, unless there is real reason
-> for it, don't. The clock IDs should be in the header file and that's it.
-> Nothing here.
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Hi Krzysztof, you're correct that I just copied this from the old bindings.
-brcm,iproc-clocks.yaml has a similar table, so I thought this would be fine.
-I'm OK with dropping it, but how should I document the clock-output-names
-values then? A bunch of if-then blocks (per compatible)? Or should I not even
-bother and just keep minItems/maxItems without documenting the values?
+These labels get copied out to the user so lets make sure they are
+NUL-terminated and NUL-padded.
 
-> 
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            enum:
-> > +              - brcm,bcm21664-aon-ccu
-> > +              - brcm,bcm21664-master-ccu
-> > +              - brcm,bcm21664-root-ccu
-> > +              - brcm,bcm21664-slave-ccu
-> > +    then:
-> > +      properties:
-> > +        clock-output-names:
-> > +          maxItems: 8
+vparams is already memset to 0 so we don't need to do any NUL-padding
+(like what strncpy() is doing).
 
-I've also noticed that dtbs_check gives out warnings(?) like this for
-bcm21664 ccu nodes:
+Considering the above, a suitable replacement is `strscpy` [2] due to
+the fact that it guarantees NUL-termination on the destination buffer
+without unnecessarily NUL-padding.
 
-/arch/arm/boot/dts/broadcom/bcm21664-garnet.dtb:
-    root_ccu@35001000: clock-output-names: ['frac_1m'] is too short
-    from schema $id: http://devicetree.org/schemas/clock/brcm,kona-ccu.yaml#
+Let's also opt to use the more idiomatic strscpy() usage of:
+(dest, src, sizeof(dest)) as this more closely ties the destination
+buffer to the length.
 
-and this maxItems:8 seems to me like the culprit (since the bcm11351 if-then
-doesn't have that). Seems to me like it also overrides the minItems to be 8
-as well. I don't understand why it would do that though.
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-I suppose just adding minItems: 1 would be the correct fix in this case?
+Found with: $ rg "strncpy\("
+---
+ drivers/scsi/ch.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-> > +          description: |
-> > +            The following table defines the set of CCUs and clock specifiers
-> > +            for BCM21664 family clocks.
-> > +            These clock specifiers are defined in:
-> > +                "include/dt-bindings/clock/bcm21664.h"
-> > +
-> > +            CCU     Clock         Type  Index  Specifier
-> > +            ---     -----         ----  -----  ---------
-> > +            root    frac_1m       peri    0    BCM21664_ROOT_CCU_FRAC_1M
-> > +
-> > +            aon     hub_timer     peri    0    BCM21664_AON_CCU_HUB_TIMER
-> > +
-> > +            master  sdio1         peri    0    BCM21664_MASTER_CCU_SDIO1
-> > +            master  sdio2         peri    1    BCM21664_MASTER_CCU_SDIO2
-> > +            master  sdio3         peri    2    BCM21664_MASTER_CCU_SDIO3
-> > +            master  sdio4         peri    3    BCM21664_MASTER_CCU_SDIO4
-> > +            master  sdio1_sleep   peri    4    BCM21664_MASTER_CCU_SDIO1_SLEEP
-> > +            master  sdio2_sleep   peri    5    BCM21664_MASTER_CCU_SDIO2_SLEEP
-> > +            master  sdio3_sleep   peri    6    BCM21664_MASTER_CCU_SDIO3_SLEEP
-> > +            master  sdio4_sleep   peri    7    BCM21664_MASTER_CCU_SDIO4_SLEEP
-> > +
-> > +            slave   uartb         peri    0    BCM21664_SLAVE_CCU_UARTB
-> > +            slave   uartb2        peri    1    BCM21664_SLAVE_CCU_UARTB2
-> > +            slave   uartb3        peri    2    BCM21664_SLAVE_CCU_UARTB3
-> > +            slave   uartb4        peri    3    BCM21664_SLAVE_CCU_UARTB4
-> > +            slave   bsc1          peri    4    BCM21664_SLAVE_CCU_BSC1
-> > +            slave   bsc2          peri    5    BCM21664_SLAVE_CCU_BSC2
-> > +            slave   bsc3          peri    6    BCM21664_SLAVE_CCU_BSC3
-> > +            slave   bsc4          peri    7    BCM21664_SLAVE_CCU_BSC4
-> 
-> Same comments.
-> 
-> In any case, allOf: goes after required: block.
+diff --git a/drivers/scsi/ch.c b/drivers/scsi/ch.c
+index cb0a399be1cc..2b864061e073 100644
+--- a/drivers/scsi/ch.c
++++ b/drivers/scsi/ch.c
+@@ -659,19 +659,23 @@ static long ch_ioctl(struct file *file,
+ 		memset(&vparams,0,sizeof(vparams));
+ 		if (ch->counts[CHET_V1]) {
+ 			vparams.cvp_n1  = ch->counts[CHET_V1];
+-			strncpy(vparams.cvp_label1,vendor_labels[0],16);
++			strscpy(vparams.cvp_label1, vendor_labels[0],
++				sizeof(vparams.cvp_label1));
+ 		}
+ 		if (ch->counts[CHET_V2]) {
+ 			vparams.cvp_n2  = ch->counts[CHET_V2];
+-			strncpy(vparams.cvp_label2,vendor_labels[1],16);
++			strscpy(vparams.cvp_label2, vendor_labels[1],
++				sizeof(vparams.cvp_label2));
+ 		}
+ 		if (ch->counts[CHET_V3]) {
+ 			vparams.cvp_n3  = ch->counts[CHET_V3];
+-			strncpy(vparams.cvp_label3,vendor_labels[2],16);
++			strscpy(vparams.cvp_label3, vendor_labels[2],
++				sizeof(vparams.cvp_label3));
+ 		}
+ 		if (ch->counts[CHET_V4]) {
+ 			vparams.cvp_n4  = ch->counts[CHET_V4];
+-			strncpy(vparams.cvp_label4,vendor_labels[3],16);
++			strscpy(vparams.cvp_label4, vendor_labels[3],
++				sizeof(vparams.cvp_label4));
+ 		}
+ 		if (copy_to_user(argp, &vparams, sizeof(vparams)))
+ 			return -EFAULT;
 
-Ack.
+---
+base-commit: 9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
+change-id: 20231023-strncpy-drivers-scsi-ch-c-23b1cdac43cc
 
-> 
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - '#clock-cells'
-> > +  - clock-output-names
-> > +
-> > +additionalProperties: false
-> > +
-> Best regards,
-> Krzysztof
-> 
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
-Thanks for the feedback,
-Stanislav
