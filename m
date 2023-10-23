@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C057D2DC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9697D2DC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbjJWJLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40106 "EHLO
+        id S230063AbjJWJMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 05:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbjJWJLo (ORCPT
+        with ESMTP id S229587AbjJWJMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:11:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE943D7B;
-        Mon, 23 Oct 2023 02:11:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FA22C433C8;
-        Mon, 23 Oct 2023 09:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698052299;
-        bh=4X70b+y5Rv1VPzOWwLZG3sDuDOPKJsxum64a06GpX2s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bnQk+4OxI/6+02PUkt2DxouJgD2tN/LJ+U0iSXfJjHydL4jTxJxALCeIQtOOh24wd
-         5Lag11TF2iApRxIyikbrXeQbRbsYURMXJbE5Tnx0hbX8945cY/NupCGzt8vgvlOCMp
-         tdR2NLep23Ii3z0p+P7AkjmTwcixVRwho95fuDkAHzgpxI5mqY+Nx8d2KhkBe46Q42
-         AANDVKC5FotJN8fz7cEU0oRQblQUe2WUgzXfTO4Bq+xBwX45+ecSPn+Fx1CbqKJcmx
-         E+GvDm3h2K5FaRHTYUH+YBBlGCD0QGfef1FAr3v1pPDhb0SyTK80QM7d3TProwUryT
-         gKmv3KIwYGVZA==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1quqyW-0007rt-2E;
-        Mon, 23 Oct 2023 11:11:53 +0200
-Date:   Mon, 23 Oct 2023 11:11:52 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com, Harsh Agarwal <quic_harshq@quicinc.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v13 03/10] usb: dwc3: core: Refactor PHY logic to support
- Multiport Controller
-Message-ID: <ZTY42KvYCk9HhCIE@hovoldconsulting.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-4-quic_kriskura@quicinc.com>
- <ZTJPBcyZ_zLXbgE5@hovoldconsulting.com>
- <257716c4-7194-4d26-a34c-fff09234628f@quicinc.com>
+        Mon, 23 Oct 2023 05:12:53 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA66E97
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:12:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=Prsb
+        8L/rB7hjs8LFPDfXLYORDTbC3nZD3UOHdKFhLsg=; b=DnyULfnhAuByToTpQwQ5
+        Oq1LqgmHxlSo+FSmJpNPenmMVuZmLxoFqEdB80vjqZSzwvX8dm31peW7tFRo+cz4
+        tjIvX5GGglCcqPFDZUHFg2ReG28Gx8ZN8E9eQg8PhUzd8RNCfkGr27cvwFJ2UXNP
+        NcmuLY6FrMEk0HJV9/kGhR53oEs5FYMK81cmtfjIqGh/hAjqrHthJI3Y/St4fEH6
+        8OxardlfX/VcquU2pskFNrKRnTk0NksArkel/ARed9AsGa3cbr5hvH39G3W0UCnp
+        tsdqDaignA8oDizHWneez47WY72TsNkWAhzE560sQ8Nv9kd8tIPTWst2Uf1nrF5H
+        xw==
+Received: (qmail 1886524 invoked from network); 23 Oct 2023 11:12:44 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 23 Oct 2023 11:12:44 +0200
+X-UD-Smtp-Session: l3s3148p1@VRj4n14I9K8ujnvq
+Date:   Mon, 23 Oct 2023 11:12:43 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Sergey Shtylyov <s.shtylyov@omp.ru>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/2] net: ethernet: renesas: group entries in
+ Makefile
+Message-ID: <ZTY5C0nxat6/dOXO@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        linux-renesas-soc@vger.kernel.org,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231022205316.3209-1-wsa+renesas@sang-engineering.com>
+ <20231022205316.3209-2-wsa+renesas@sang-engineering.com>
+ <94f652d4-4538-e6ed-9476-f982fd07ee97@omp.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+mZpJWQzj+NJ6ZRe"
 Content-Disposition: inline
-In-Reply-To: <257716c4-7194-4d26-a34c-fff09234628f@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <94f652d4-4538-e6ed-9476-f982fd07ee97@omp.ru>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 22, 2023 at 11:33:52PM +0530, Krishna Kurapati PSSNV wrote:
-> On 10/20/2023 3:27 PM, Johan Hovold wrote:
-> > On Sat, Oct 07, 2023 at 09:17:59PM +0530, Krishna Kurapati wrote:
-> >> From: Harsh Agarwal <quic_harshq@quicinc.com>
-> >>
-> >> Currently the DWC3 driver supports only single port controller
-> >> which requires at most one HS and one SS PHY.
-> > 
-> > Should that not be "at least one HS PHY and at most one SS PHY"?
-> >   
-> 
-> No, I think it would be appropriate to say "at least one phy (HS/SS)" as 
-> even one phy is sufficient to get things working.
 
-No, that would be a violation if the binding (even if the driver may not
-currently enforce it for generic phys) as well as the USB spec.
+--+mZpJWQzj+NJ6ZRe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Also note that your implementation (i.e. this very patch) assumes that
-num_usb2_ports >= num_usb3_ports.
- 
-> >> Add support for detecting, obtaining and configuring phy's supported
-> > 
-> > "PHYs" for consistency, no apostrophe
-> > 
-> >> by a multiport controller and. Limit the max number of ports
-> > 
-> > "and." what? Looks like part of the sentence is missing? Or just drop
-> > " and"?
-> > 
-> >> supported to 4 as only SC8280 which is a quad port controller supports
-> > 
-> > s/4/four/
-> > 
-> > Just change this to
-> > 
-> > 	Limit support to multiport controllers with up to four ports for
-> > 	now (e.g. as needed for SC8280XP).
-> > 
-> >> Multiport currently.
-> > 
-> > You use capitalised "Multiport" in several places it seems. Is this an
-> > established term for these controllers or should it just be "multiport"
-> > or "multiple ports"?
-> > 
-> This is an established term AFAIK. So I've been using it here like this.
 
-Do you have a pointer? A google search seems to mostly come up with
-links to this patch series.
+>    Wow! Another one? :-)
 
-Johan
+Yes. Hooray ;)
+
+
+--+mZpJWQzj+NJ6ZRe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmU2OQgACgkQFA3kzBSg
+KbZ9TA/+KoEDf70SZBJS/PaXDPl1Rg7e9ggvhjMjkMSXPu4maHyQXDMpS4wp0Q2G
+OkJdVm6Y4JVGaSQZIKOTrVABW5nONZlPiEtAIaroiDamIgld0xvG3yFZ2346hGzj
+zJZZzMUgIm61uq5AfP8ED4wp/OfBok5Bk2X7HGVzuW7H55sQ6FvgQ6jo3Pp/fUZp
+33TVLce2r/u3P9vLtB4utlyVz965CyUzAxKD/orVHbaApVA2y5mJJA4eHyLp33LE
+3KN7NFs9lpD44b+mBvVjrgyYa5wpDBgEs2qc6AqAd1osrFO/8yjMrQ+lyKsUQvm7
+l7H35VoAyxvywmFnp2trMBApZdvtbwcIsHuUpCBwEuLcAuzaDGcRVrJoxd4jCn/l
+t8DPpXWRlFWRmp3BVpBPgkhd1OLKGtghGjPLs+i5vc39XZ5VO7Svvkxy/W4RYNO9
+OxDfFGCGJF5eaJxa8tBSLx0eUGTwWl26ciFBMMHjecQCPI7TDX+ErS4tJcR5b/RE
+VO31By8j9YdtIlx945Up9F27EcdMfjHMm4cQobSO9TeV6KFzZ1ufcXxArHBwX6K1
+7JQsP0P1P54XzdnMUYHn4vI4iZUuNNLdaZvcliK+RPUUFqWO7wYUeVYHx04ZaQgC
+gwpANEGPlom4P8y8xQQ/Z7ygV9xOCDFuHKkAv1Us2IBgsRP5N5E=
+=fP2D
+-----END PGP SIGNATURE-----
+
+--+mZpJWQzj+NJ6ZRe--
