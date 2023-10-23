@@ -2,190 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B617D3769
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CEAE7D3749
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbjJWNGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:06:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55548 "EHLO
+        id S230113AbjJWM5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 08:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjJWNGe (ORCPT
+        with ESMTP id S229956AbjJWM47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:06:34 -0400
-X-Greylist: delayed 586 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 23 Oct 2023 06:06:32 PDT
-Received: from out-202.mta1.migadu.com (out-202.mta1.migadu.com [95.215.58.202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05548C4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:06:31 -0700 (PDT)
+        Mon, 23 Oct 2023 08:56:59 -0400
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C533C4;
+        Mon, 23 Oct 2023 05:56:58 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1caa7597af9so18185385ad.1;
+        Mon, 23 Oct 2023 05:56:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698065816; x=1698670616;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hl3nJU5BsEpBWbjRfzF4bwyn1uY9j6EZqMRdgM/vdP8=;
+        b=tOgXRdABucc7uusNAGBTBoy5sMmqE5UU6+W2vwnwgx9lZpKIukO6FGpEqu1X0qayRq
+         AyyAOqMOqnXczpTcLt6i4SxwyTKChEuAGJ4x9dNmJgD0QO064ein8g8ABOFv11p8I914
+         8AXdFvkTqPsg9i30lOJnanj+J0BrGRWIihHthFn9XKa4N9gEfz6eDXJRKimyecufCcaV
+         ycy6HVKakb1i/9gxVvkKJ+BRGLC9Lmz+R5ZvWY36i7Ho+SrP4fEJH1oWWSCJjTVqYKNT
+         fg+eZlYga0aNvRhlHGDZD4OZo+V0NhqA2gXvqEfjZhhm8gccLqcthdl2cwVCU75d0c65
+         jETg==
+X-Gm-Message-State: AOJu0Yz+OLQOTUOsbwEhwaK55xf4BpqpmLelP5VHCaJY7PasB7Vi7QuL
+        7CfH+i/jOp4WJ+5d3N3VOS8=
+X-Google-Smtp-Source: AGHT+IE72a1WPvc0Ersi+tqM0N2+bac0kxkCzj6wOYhc7GhUprhmzmATsoVL33HhwqXtUVKG3SgpQA==
+X-Received: by 2002:a17:902:e305:b0:1c9:dd6a:5bee with SMTP id q5-20020a170902e30500b001c9dd6a5beemr5277429plc.52.1698065816412;
+        Mon, 23 Oct 2023 05:56:56 -0700 (PDT)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id a8-20020a170902ecc800b001b8a2edab6asm5850832plh.244.2023.10.23.05.56.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 05:56:55 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 21:56:54 +0900
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the pci tree
+Message-ID: <20231023125654.GA701784@rocinante>
+References: <20231023110556.6f704b95@canb.auug.org.au>
+ <TYBPR01MB5341114CB14098217765790BD8D8A@TYBPR01MB5341.jpnprd01.prod.outlook.com>
+ <20231023073446.GA593739@rocinante>
+ <TYBPR01MB53418269A5C6F1419D007338D8D8A@TYBPR01MB5341.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698065801;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=DibBT+Cxaspvrrd75l4t/nEOTmiyvO/k87QOeRksta4=;
-        b=AWLfGLB5z/RmfcU++nipn2//MwZtuA2DZ+LXveRszl6H821gYpKH5MhhNkZnmAw10f8hoU
-        3MYFhD4F8XkMNkGISplDeOtwCWkSggvPeRdXrttSRhNbwwhzyiTZoxCImv9nTTo02uGATB
-        bK3lODWOHRh2gkcX66EjTciY4fpzO7I=
-Date:   Mon, 23 Oct 2023 12:56:37 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   qu.huang@linux.dev
-Message-ID: <4a687c592b0f1b04f4bbf684129f5ce02b2b6f7b@linux.dev>
-TLS-Required: No
-Subject: [PATCH] drm/amdgpu: Fix a null pointer access when the smc_rreg 
- pointer is NULL
-To:     alexander.deucher@amd.com
-Cc:     christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, sumit.semwal@linaro.org,
-        srinivasan.shanmugam@amd.com, Hawking.Zhang@amd.com,
-        Harish.Kasiviswanathan@amd.com, amd-gfx@lists.freedesktop.org,
-        Praful.Swarnakar@amd.com, le.ma@amd.com, victorchengchi.lu@amd.com,
-        tom.stdenis@amd.com, suhui@nfschina.com, dan.carpenter@linaro.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        qu.huang@linux.dev
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TYBPR01MB53418269A5C6F1419D007338D8D8A@TYBPR01MB5341.jpnprd01.prod.outlook.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In certain types of chips, such as VEGA20, reading the amdgpu_regs_smc fi=
-le could result in an abnormal null pointer access when the smc_rreg poin=
-ter is NULL. Below are the steps to reproduce this issue and the correspo=
-nding exception log:
+Hello,
 
-1. Navigate to the directory: /sys/kernel/debug/dri/0
-2. Execute command: cat amdgpu_regs_smc
-3. Exception Log::
-[4005007.702554] BUG: kernel NULL pointer dereference, address: 000000000=
-0000000
-[4005007.702562] #PF: supervisor instruction fetch in kernel mode
-[4005007.702567] #PF: error_code(0x0010) - not-present page
-[4005007.702570] PGD 0 P4D 0
-[4005007.702576] Oops: 0010 [#1] SMP NOPTI
-[4005007.702581] CPU: 4 PID: 62563 Comm: cat Tainted: G           OE     =
-5.15.0-43-generic #46-Ubunt       u
-[4005007.702590] RIP: 0010:0x0
-[4005007.702598] Code: Unable to access opcode bytes at RIP 0xfffffffffff=
-fffd6.
-[4005007.702600] RSP: 0018:ffffa82b46d27da0 EFLAGS: 00010206
-[4005007.702605] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffa82=
-b46d27e68
-[4005007.702609] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff994=
-0656e0000
-[4005007.702612] RBP: ffffa82b46d27dd8 R08: 0000000000000000 R09: ffff994=
-060c07980
-[4005007.702615] R10: 0000000000020000 R11: 0000000000000000 R12: 00007f5=
-e06753000
-[4005007.702618] R13: ffff9940656e0000 R14: ffffa82b46d27e68 R15: 00007f5=
-e06753000
-[4005007.702622] FS:  00007f5e0755b740(0000) GS:ffff99479d300000(0000) kn=
-lGS:0000000000000000
-[4005007.702626] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[4005007.702629] CR2: ffffffffffffffd6 CR3: 00000003253fc000 CR4: 0000000=
-0003506e0
-[4005007.702633] Call Trace:
-[4005007.702636]  <TASK>
-[4005007.702640]  amdgpu_debugfs_regs_smc_read+0xb0/0x120 [amdgpu]
-[4005007.703002]  full_proxy_read+0x5c/0x80
-[4005007.703011]  vfs_read+0x9f/0x1a0
-[4005007.703019]  ksys_read+0x67/0xe0
-[4005007.703023]  __x64_sys_read+0x19/0x20
-[4005007.703028]  do_syscall_64+0x5c/0xc0
-[4005007.703034]  ? do_user_addr_fault+0x1e3/0x670
-[4005007.703040]  ? exit_to_user_mode_prepare+0x37/0xb0
-[4005007.703047]  ? irqentry_exit_to_user_mode+0x9/0x20
-[4005007.703052]  ? irqentry_exit+0x19/0x30
-[4005007.703057]  ? exc_page_fault+0x89/0x160
-[4005007.703062]  ? asm_exc_page_fault+0x8/0x30
-[4005007.703068]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[4005007.703075] RIP: 0033:0x7f5e07672992
-[4005007.703079] Code: c0 e9 b2 fe ff ff 50 48 8d 3d fa b2 0c 00 e8 c5 1d=
- 02 00 0f 1f 44 00 00 f3 0f        1e fa 64 8b 04 25 18 00 00 00 85 c0 75=
- 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 e       c 28 =
-48 89 54 24
-[4005007.703083] RSP: 002b:00007ffe03097898 EFLAGS: 00000246 ORIG_RAX: 00=
-00000000000000
-[4005007.703088] RAX: ffffffffffffffda RBX: 0000000000020000 RCX: 00007f5=
-e07672992
-[4005007.703091] RDX: 0000000000020000 RSI: 00007f5e06753000 RDI: 0000000=
-000000003
-[4005007.703094] RBP: 00007f5e06753000 R08: 00007f5e06752010 R09: 00007f5=
-e06752010
-[4005007.703096] R10: 0000000000000022 R11: 0000000000000246 R12: 0000000=
-000022000
-[4005007.703099] R13: 0000000000000003 R14: 0000000000020000 R15: 0000000=
-000020000
-[4005007.703105]  </TASK>
-[4005007.703107] Modules linked in: nf_tables libcrc32c nfnetlink algif_h=
-ash af_alg binfmt_misc nls_       iso8859_1 ipmi_ssif ast intel_rapl_msr =
-intel_rapl_common drm_vram_helper drm_ttm_helper amd64_edac t       tm ed=
-ac_mce_amd kvm_amd ccp mac_hid k10temp kvm acpi_ipmi ipmi_si rapl sch_fq_=
-codel ipmi_devintf ipm       i_msghandler msr parport_pc ppdev lp parport=
- mtd pstore_blk efi_pstore ramoops pstore_zone reed_solo       mon ip_tab=
-les x_tables autofs4 ib_uverbs ib_core amdgpu(OE) amddrm_ttm_helper(OE) a=
-mdttm(OE) iommu_v       2 amd_sched(OE) amdkcl(OE) drm_kms_helper syscopy=
-area sysfillrect sysimgblt fb_sys_fops cec rc_core        drm igb ahci xh=
-ci_pci libahci i2c_piix4 i2c_algo_bit xhci_pci_renesas dca
-[4005007.703184] CR2: 0000000000000000
-[4005007.703188] ---[ end trace ac65a538d240da39 ]---
-[4005007.800865] RIP: 0010:0x0
-[4005007.800871] Code: Unable to access opcode bytes at RIP 0xfffffffffff=
-fffd6.
-[4005007.800874] RSP: 0018:ffffa82b46d27da0 EFLAGS: 00010206
-[4005007.800878] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffa82=
-b46d27e68
-[4005007.800881] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff994=
-0656e0000
-[4005007.800883] RBP: ffffa82b46d27dd8 R08: 0000000000000000 R09: ffff994=
-060c07980
-[4005007.800886] R10: 0000000000020000 R11: 0000000000000000 R12: 00007f5=
-e06753000
-[4005007.800888] R13: ffff9940656e0000 R14: ffffa82b46d27e68 R15: 00007f5=
-e06753000
-[4005007.800891] FS:  00007f5e0755b740(0000) GS:ffff99479d300000(0000) kn=
-lGS:0000000000000000
-[4005007.800895] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[4005007.800898] CR2: ffffffffffffffd6 CR3: 00000003253fc000 CR4: 0000000=
-0003506e0
+> > > > After merging the pci tree, today's linux-next build (x86_64 allmodconfig)
+> > > > failed like this:
+> > > >
+> > > > ERROR: modpost: "dw_pcie_write_dbi2" [drivers/pci/controller/dwc/pcie-rcar-gen4.ko] undefined!
+> > [...]
+> > 
+> > > However, I completely forgot it...
+> > 
+> > That's OK.  Don't worry. :)
+> > 
+> > > https://lore.kernel.org/linux-pci/20230926122431.3974714-8-yoshihiro.shimoda.uh@renesas.com/
+> > >
+> > > I confirmed that the patch above can be applied on the latest pci.git / next branch.
+> > 
+> > I will take care of it.
+> 
+> Thank you very much for your support!
+[...]
 
-Signed-off-by: Qu Huang <qu.huang@linux.dev>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Done.  Applied to the following branch:
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/dr=
-m/amd/amdgpu/amdgpu_debugfs.c
-index a4faea4..05405da 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-@@ -748,6 +748,9 @@ static ssize_t amdgpu_debugfs_regs_smc_read(struct fi=
-le *f, char __user *buf,
- 	ssize_t result =3D 0;
- 	int r;
+  https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/log/?h=controller/rcar
 
-+	if (!adev->smc_rreg)
-+		return -EPERM;
-+
- 	if (size & 0x3 || *pos & 0x3)
- 		return -EINVAL;
+Bjorn will push updated next when he has a moment.
 
-@@ -804,6 +807,9 @@ static ssize_t amdgpu_debugfs_regs_smc_write(struct f=
-ile *f, const char __user *
- 	ssize_t result =3D 0;
- 	int r;
+[...]
+> This is because I added COMPILE_TEST to the Kconfig like below:
+> 
+> ---
+> config PCIE_RCAR_GEN4_HOST
+>         tristate "Renesas R-Car Gen4 PCIe controller (host mode)"
+>         depends on ARCH_RENESAS || COMPILE_TEST
 
-+	if (!adev->smc_wreg)
-+		return -EPERM;
-+
- 	if (size & 0x3 || *pos & 0x3)
- 		return -EINVAL;
+Ah yes, sorry!  I should have assumed as much. :)  Thank you!
 
---
-1.8.3.1
+	Krzysztof
