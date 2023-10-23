@@ -2,179 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9A37D3B8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80B17D3B91
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 17:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbjJWP6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 11:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
+        id S230274AbjJWP7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 11:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjJWP6e (ORCPT
+        with ESMTP id S229448AbjJWP7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 11:58:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA92E9;
-        Mon, 23 Oct 2023 08:58:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16FEBC433C8;
-        Mon, 23 Oct 2023 15:58:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698076712;
-        bh=eHQE9AW+TMhNeP+Km14R1yq/+eqHlqagrK1M9EYQg3Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uu2nv3x2wZYIXNe6hKG4VpNBSs9klnoB6Bb9jinZaTd8TzjvSgHgniv6jtd9n5vFs
-         7kPHt1G0/UyPeCs5f2oc+JOzFHFSzHAaoPLgfK3egiOe/npAd/llQkGThbE92+Rw/j
-         NoA8DMcD2UXJbL9U0JXG+m76kB2I5WrB2TB9JCMoub9aaVcgSvGwot81pmP9hd0Xz7
-         sD8fyyNRFmCL0zDAjtPkml5IuANJf+/MJWrqXPSdmGnkv3RA7EC5GVijuQnEECGKh1
-         3nZJrLxj6l3ouSEfkjosuXJNH/UUEVZ7X4H6++FTg0YturEfuuZr1dmJP+44g3MMKZ
-         F+5hYBiCLvW5Q==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1quxKI-00022S-02;
-        Mon, 23 Oct 2023 17:58:46 +0200
-Date:   Mon, 23 Oct 2023 17:58:46 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v13 07/10] usb: dwc3: qcom: Add multiport suspend/resume
- support for wrapper
-Message-ID: <ZTaYNjRyT1Fn4QWX@hovoldconsulting.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-8-quic_kriskura@quicinc.com>
+        Mon, 23 Oct 2023 11:59:23 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86577FF
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 08:59:20 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698076757;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ge7YpKS4lssiAYM57LXq+mqFDhr1vlGo6+N9KkTg1zc=;
+        b=bpS9Eld8DBfJKJj232XqAploXznxrTK74B1at6SgN3SA59zoBSbspQjFle1B9eyIPvjW87
+        XFqmt9UBT1HRrEzH7ZvCxQhj+FQSKHhr9ht4WQ/Xq0ZOrwZsV61z7RpMZ27ext9d2WbUb0
+        a1oxKnjfX+/MaAhYR7UAMQqgswmUHZKVkhcy9yIn9v5CBLlM+WP4O2QCe6sJZRqNgCP3RG
+        fGiBOSvCkIiiMftLs5yYzhYlWzFJc0s0nsqzol/OVlAR7hDQkObJW9Qiq9CA3f47DABLXK
+        Tv+XH5njML+ELM6Z8qKbK0gR+r1/K3ZRr3bhMSp45w7WV43KTp1AVUEZZb1ibg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698076757;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ge7YpKS4lssiAYM57LXq+mqFDhr1vlGo6+N9KkTg1zc=;
+        b=CxujF1Mzrlhll7LfvH1lqopCZxUo4lOaGqs+sOYBy9rPaDygfQh1C4jmRNaB2B8WxaY5Jv
+        WMmSsa85010O84BA==
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Hans de Goede <hdegoede@redhat.com>, kys@microsoft.com,
+        hpa@linux.intel.com
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: PIC probing code from e179f6914152 failing
+In-Reply-To: <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
+References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
+ <878r7z4kb4.ffs@tglx> <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
+Date:   Mon, 23 Oct 2023 17:59:16 +0200
+Message-ID: <87ttqhcotn.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231007154806.605-8-quic_kriskura@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 07, 2023 at 09:18:03PM +0530, Krishna Kurapati wrote:
-> QCOM SoC SA8295P's tertiary quad port controller supports 2 HS+SS
-> ports and 2 HS only ports. Add support for configuring PWR_EVENT_IRQ's
-> for all the ports during suspend/resume.
+On Thu, Oct 19 2023 at 16:20, Mario Limonciello wrote:
+> On 10/18/2023 17:50, Thomas Gleixner wrote:
+>> The only interrupt which does not work is interrupt 0 because nothing
+>> allocates interrupt 0 due to nr_legacy_irqs == 0, but that's a trivially
+>> solvable problem.
+>
+>  From David's logs I can see that the timer interrupt gets wired up to 
+> IRQ2 instead of IRQ0.
 
-No need to mention SA8295P as this is needed for all multiport
-controllers.
+Sure, but that's not really a problem. Nothing needs the timer
+interrupt in principle.
 
-Say something about adding support for multiport controllers generally
-instead and mention what the power event irqs are used for.
- 
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> ---
->  drivers/usb/dwc3/dwc3-qcom.c | 35 ++++++++++++++++++++++++++++-------
->  1 file changed, 28 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index 651b9775a0c2..dbd4239e61c9 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -37,7 +37,11 @@
->  #define PIPE3_PHYSTATUS_SW			BIT(3)
->  #define PIPE_UTMI_CLK_DIS			BIT(8)
->  
-> -#define PWR_EVNT_IRQ_STAT_REG			0x58
-> +#define PWR_EVNT_IRQ1_STAT_REG			0x58
-> +#define PWR_EVNT_IRQ2_STAT_REG			0x1dc
-> +#define PWR_EVNT_IRQ3_STAT_REG			0x228
-> +#define PWR_EVNT_IRQ4_STAT_REG			0x238
+> IOAPIC[0]: Preconfigured routing entry (33-2 -> IRQ 2 Level:0 ActiveLow:0)
+>
+> In my hacked up forcing NULL pic case this fixes that:
+>
+> diff --git a/arch/x86/kernel/i8259.c b/arch/x86/kernel/i8259.c
+> index 43c1c24e934b..885687e64e4e 100644
+> --- a/arch/x86/kernel/i8259.c
+> +++ b/arch/x86/kernel/i8259.c
+> @@ -424,7 +424,7 @@ static int legacy_pic_probe(void)
+>   }
+>
+>   struct legacy_pic null_legacy_pic = {
+> -       .nr_legacy_irqs = 0,
+> +       .nr_legacy_irqs = 1,
+>          .chip = &dummy_irq_chip,
+>          .mask = legacy_pic_uint_noop,
+>          .unmask = legacy_pic_uint_noop,
+>
+> I think it's cleaner than changing all the places that use 
+> nr_legacy_irqs().
 
-Not sure these defines makes sense on their own. You now only use them
-via the array below.
+No. It's not cleaner. It's a hack and you still need to audit all places
+which depend on nr_legacy_irqs(). Also why '1'? You could as well use
+'16', no?
 
-I think I already asked you whether these offsets depend on SoC and you
-said no, right?
+> On my side this makes:
+>
+> IOAPIC[0]: Preconfigured routing entry (33-2 -> IRQ 0 Level:0
+> ActiveLow:0)
 
-> +
->  #define PWR_EVNT_LPM_IN_L2_MASK			BIT(4)
->  #define PWR_EVNT_LPM_OUT_L2_MASK		BIT(5)
->  
-> @@ -107,6 +111,19 @@ struct dwc3_qcom {
->  	int			num_ports;
->  };
->  
-> +/*
-> + * Currently non-multiport controller have only one PWR_EVENT_IRQ register,
-> + * but multiport controllers like SA8295 contain upto 4 of them.
-> + */
+Sure, but that can be achieved by other means in a clean way as
+well. Can we please focus on analyzing the underlying problems instead
+of trying random hacks? The timer part is well understood already.
 
-Please try not talk about "currently" and as things are likely to
-change or, in fact, even *are* changing with your very patch series.
+>> That machine does not even need the timer interrupt because it has a
+>> usable APIC and TSC deadline timer, so no APIC timer calibration
+>> required. The same is true for CPUs which do not have a TSC deadline
+>> timer, but enumerate the APIC frequency via CPUID or MSRs.
+>
+> Don't you need it for things like rtcwake to be able to work?
 
-Again, this is not SA8295 specific.
+Timer != RTC.
 
-> +#define NUM_PWR_EVENT_STAT_REGS	4
+The RTC interrupt is separate (IRQ 8), but in the case of this system it
+is using the HPET-RTC emulation which fails to initialize because
+interrupt 0 is not available.
 
-You already have MAX_PORTS, why are you defining a new define that will
-always have to be equal to MAX_PORTS?
+>> But that brings up an interesting question. How are those affected
+>> machines even reaching a state where the user notices that just the
+>> keyboard and the GPIO are not working? Why?
+>
+> So the GPIO controller driver (pinctrl-amd) uses platform_get_irq() to 
+> try to discover the IRQ to use.
+>
+> This calls acpi_irq_get() which isn't implemented on x86 (hardcodes 
+> -EINVAL).
+>
+> I can "work around it" by:
+>
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index 76bfcba25003..2b4b436c65d8 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -187,7 +187,8 @@ int platform_get_irq_optional(struct platform_device 
+> *dev, unsigned int num)
+>          }
+>
+>          r = platform_get_resource(dev, IORESOURCE_IRQ, num);
+> -       if (has_acpi_companion(&dev->dev)) {
+> +       if (IS_ENABLED(CONFIG_ACPI_GENERIC_GSI) &&
+> +            has_acpi_companion(&dev->dev)) {
+>                  if (r && r->flags & IORESOURCE_DISABLED) {
+>                          ret = acpi_irq_get(ACPI_HANDLE(&dev->dev), num, r);
+>                          if (ret)
 
-> +
-> +static u32 pwr_evnt_irq_stat_reg_offset[NUM_PWR_EVENT_STAT_REGS] = {
+So why is acpi_irq_get() reached when the PIC is disabled, but not when
+the PIC is enabled? Because of the below:
 
-missing const
+> but the resource that is returned from the next hunk ?
 
-> +	PWR_EVNT_IRQ1_STAT_REG,
-> +	PWR_EVNT_IRQ2_STAT_REG,
-> +	PWR_EVNT_IRQ3_STAT_REG,
-> +	PWR_EVNT_IRQ4_STAT_REG,
-> +};
-> +
->  static inline void dwc3_qcom_setbits(void __iomem *base, u32 offset, u32 val)
->  {
->  	u32 reg;
-> @@ -446,9 +463,11 @@ static int dwc3_qcom_suspend(struct dwc3_qcom *qcom, bool wakeup)
->  	if (qcom->is_suspended)
->  		return 0;
->  
-> -	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
-> -	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
-> -		dev_err(qcom->dev, "HS-PHY not in L2\n");
-> +	for (i = 0; i < qcom->num_ports; i++) {
-> +		val = readl(qcom->qscratch_base + pwr_evnt_irq_stat_reg_offset[i]);
-> +		if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
-> +			dev_err(qcom->dev, "HS-PHY not in L2\n");
+next hunk? The resource is returned by platform_get_resource() above, no?
 
-Error message should contain the port number.
+> has the resource flags set wrong in the NULL pic case:
+>
+> NULL case:
+> r: AMDI0030:00 flags: 0x30000418
+> PIC case:
+> r: AMDI0030:00 flags: 0x418
+>
+> IOW NULL pic case has IORESOURCE_DISABLED / IORESOURCE_UNSET
 
-> +	}
->  
->  	for (i = qcom->num_clocks - 1; i >= 0; i--)
->  		clk_disable_unprepare(qcom->clks[i]);
-> @@ -494,9 +513,11 @@ static int dwc3_qcom_resume(struct dwc3_qcom *qcom, bool wakeup)
->  		dev_warn(qcom->dev, "failed to enable interconnect: %d\n", ret);
->  
->  	/* Clear existing events from PHY related to L2 in/out */
-> -	dwc3_qcom_setbits(qcom->qscratch_base, PWR_EVNT_IRQ_STAT_REG,
-> -			  PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
-> -
-> +	for (i = 0; i < qcom->num_ports; i++) {
-> +		dwc3_qcom_setbits(qcom->qscratch_base,
-> +			pwr_evnt_irq_stat_reg_offset[i],
-> +			PWR_EVNT_LPM_IN_L2_MASK | PWR_EVNT_LPM_OUT_L2_MASK);
+So the real question is WHY are the DISABLED/UNSET flags not set in the
+PIC case?
 
-Again, continuation lines should be indented at least two tabs further.
+> NULL case:
+> handler:  handle_edge_irq
+> dstate:   0x3740c208
+>              IRQ_TYPE_LEVEL_LOW
+>
+> PIC case:
+> handler:  handle_fasteoi_irq
+> dstate:   0x3740e208
+>              IRQ_TYPE_LEVEL_LOW
+>              IRQD_LEVEL
+>
+> I guess something related to the callpath for mp_register_handler().
 
-> +	}
->  	qcom->is_suspended = false;
->  
->  	return 0;
+Guessing is not helpful.
 
-Johan
+There is a difference in how the allocation info is set up when legacy
+PIC is enabled, but that does not explain the above resource flag
+difference.
+
+As there is no override for IRQ7:
+
+[    0.011415] ACPI: INT_SRC_OVR (bus 0 bus_irq 0 global_irq 2 dfl dfl)
+[    0.011417] Int: type 0, pol 0, trig 0, bus 00, IRQ 00, APIC ID 20, APIC INT 02
+[    0.011418] ACPI: INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 low level)
+[    0.011419] Int: type 0, pol 3, trig 3, bus 00, IRQ 09, APIC ID 20, APIC INT 09
+...
+[    0.011425] Int: type 0, pol 0, trig 0, bus 00, IRQ 07, APIC ID 20, APIC INT 07
+
+the initial setup of the IOAPIC interrupt is edge, while the initial
+setup of the legacy PIC is level. But that gets changed later to edge
+when the IOAPIC is initialized.
+
+I'm not seeing the magic which make the above different yet, though I'm
+100% sure by now that this "works" definitely not by design. It just
+works by pure luck.
+
+Now when platform_get_irq_optional() sets the trigger type via
+irqd_set_trigger_type() it just sets LEVEL_LOW, but does not change the
+handler and does not set IRQD_LEVEL. It does neither change the IO/APIC
+pin setup. This happens because the IOAPIC interrupt chip does not
+implement an irq_set_type() callback.
+
+IOW the whole machinery depends on magic setup ordering vs. PIC and pure
+luck. Adding the callback is not rocket science, but while it should
+make the interrupt work it still does not explain the magic "working"
+when the legacy PIC is enabled.
+
+Let me sit down and add a pile of debug printks to all the relevant
+places as we really need to understand the underlying magic effects of
+legacy PIC first.
+
+Thanks,
+
+        tglx
