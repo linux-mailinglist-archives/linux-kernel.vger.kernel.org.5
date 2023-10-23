@@ -2,132 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D8B7D298D
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 07:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F017D2991
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 07:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbjJWFGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 01:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
+        id S229521AbjJWFKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 01:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjJWFGv (ORCPT
+        with ESMTP id S229450AbjJWFKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 01:06:51 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8F9AF;
-        Sun, 22 Oct 2023 22:06:49 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso4466216e87.1;
-        Sun, 22 Oct 2023 22:06:49 -0700 (PDT)
+        Mon, 23 Oct 2023 01:10:50 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95CB719E
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 22:10:47 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5b7f3f470a9so1492731a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 22:10:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698037608; x=1698642408; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K2snDo55DI2agPH+/29PJskhQ+34fC9SgaEoBFYImQk=;
-        b=OCiI4eEii5ugYc5Aerq2IXhBHZqLLXKiBbdeMgo7PO4lCbP86DfVO4jO5FHGmiZAad
-         CTqYlPB1d8BURfaAPFIUYaKB0AfG7g1IbkcfPqVJ5Zs5Ll3+2xmUZxhZoMDDN1xEGtBc
-         MLL5uc+zlinH69a7i+l1FnWRvibjTHUz7tH4CvE6JARiytfEhzDMFztWOf5BcdK73mrL
-         E4KxlHqkeVnkicNX805s4GfyRgY2w01X9RqG9nBst8xXvkXlJESkjbDwkthhYJIGrPc6
-         dQH0Eq1P39fcjgRP36HrbtdZgv4OpEMnKotJQoqpFr524Fg8mSzTefssWNlLKak7/f9x
-         CAtg==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698037847; x=1698642647; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QqEGZi5nSfEoo0Jf1Lc/9y+PU60tCr9cp+0wXyKg1dY=;
+        b=WxpQhsSgjgpx/wog202AYfXNgcUdaSKauuDbQod+1UQyjd46QuqHb0OvGScxtyP0UB
+         je6+UZAXBjkFzlSYzUCCgGpoOroAZHMDlTXUAFPIi89dbs53KrdgkxwFct0DOfcDSzYr
+         +3PGslm2nZARABs07tffy0rKsum8WWzSfjJzjrWYrZ6fr08x7QaHuc4Mk1o3fXSqSkRP
+         vrvg28a8vTOk76Fserr/i1WHfFXv1s5Uls6IND+CN5XKDWH88ZwcP4ltejAG6snqAImn
+         1oALZOCd0LpKDLdFSH/O6GmJvJYcDNrtZeiCAm75ur1XC+yQIvPgFnEb6iEkp69jcMDn
+         qDdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698037608; x=1698642408;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K2snDo55DI2agPH+/29PJskhQ+34fC9SgaEoBFYImQk=;
-        b=hXSBMmciVX8ya31d7N/FjPaR3/X52JAaAqi1f0QNM/gnLKg3nWNUHRJGvQYAiHsXqu
-         VKLFZGO+jv0PikuhXgW2vdGbM3jIh4m/PW9LCy20vJGoQs49HVjiCCSgLsCKK23Jh7JR
-         Ed+r6pgewksVxQCXLvfRWGS2TvRuLqkUFFXtAGLk80OdyYaZ6nT1cCfrr/dvfSAFdA8D
-         tfQvUcwhYKYdFSw0h4W+G23UUQQbUO1291s1s4J/co/2RqVp2F2yzRYBMUxIVPZ2XTyl
-         /rp9wCN01DLTQYBXCCo6L5pD1X/LUcDtUdqMOkXy0R2//66RfaiiPO3XPL/IOvD0Waab
-         tjIQ==
-X-Gm-Message-State: AOJu0Yz8UUn8nbqKyymTLKOe069FQzPF08q9BEKdR98YoAKJam2rO1Z2
-        WKLJNKn6T4bHOxnI98yv86Q9Fva4lToHOMAcydYIAStEMaVPsgHQ
-X-Google-Smtp-Source: AGHT+IFmwZfj6vmqFsTkTZUYhAugysNnUEUShA40/lJ2qZEuj76pkMz2KJOBu+q/06eUkm17zdHFRi26u6GvM4sQ8uU=
-X-Received: by 2002:a05:6512:475:b0:4f3:9136:9cd0 with SMTP id
- x21-20020a056512047500b004f391369cd0mr5626924lfd.44.1698037607549; Sun, 22
- Oct 2023 22:06:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698037847; x=1698642647;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QqEGZi5nSfEoo0Jf1Lc/9y+PU60tCr9cp+0wXyKg1dY=;
+        b=ERYkAAsh7VrfEYrqWpndn5Fb8NohBiHiVspY5/NMIqgp2b8/ydzyoZMvkyeqC5fcn+
+         bHemUuhdMoEQ7005tZznu2ykRKfc9yUfjaN+4z8YWnKat5wWUoxFt9qfzkkihXkbxj7K
+         Dp/p+WqUpxQWeJlp7hpZfV31hWUd0vMmHzzKKcNLHdQ14YP3KZk78TvHfDVoHfsEuOTf
+         vbQTZAem286XDxzXbdXzyQcKA6rs1yfLyyYnoqwjHkF4/4FIUSt3UW73CvMwJkTi+7rn
+         ZDBACQq1JlpY9YaURLheVCmME6r/F7RofQsigJdRmQUMU2LiJV/WN4DbzFAgcce+wsh6
+         nIjQ==
+X-Gm-Message-State: AOJu0YyxsRn8301jY4jI5MF9xwArjNj2Lzu8ysiw/Zm/EyNg5HXQnlPl
+        Xe/YxVJIXy193SwH/uWNspr83j/SGX9FnwH3BP4=
+X-Google-Smtp-Source: AGHT+IF4mdl/p7MwmT9rggEW5i0Pnb3I8vJIkySlMMIdR9Uuv2bBWBl35XUkOmugLgCh+EFAsIMURA==
+X-Received: by 2002:a05:6a21:35c4:b0:152:6b63:f1e7 with SMTP id ba4-20020a056a2135c400b001526b63f1e7mr6319229pzc.1.1698037846933;
+        Sun, 22 Oct 2023 22:10:46 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id h17-20020a170902f7d100b001aaf2e8b1eesm5178263plw.248.2023.10.22.22.10.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 22 Oct 2023 22:10:46 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qunD9-002jxt-0P;
+        Mon, 23 Oct 2023 16:10:43 +1100
+Date:   Mon, 23 Oct 2023 16:10:43 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: (subset) [PATCH 22/32] vfs: inode cache conversion to hash-bl
+Message-ID: <ZTYAUyiTYsX43O9F@dread.disaster.area>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-23-kent.overstreet@linux.dev>
+ <20230523-zujubeln-heizsysteme-f756eefe663e@brauner>
+ <20231019153040.lj3anuescvdprcq7@f>
+ <20231019155958.7ek7oyljs6y44ah7@f>
+ <ZTJmnsAxGDnks2aj@dread.disaster.area>
+ <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231021-sakuramist-mi11u-v2-0-fa82c91ecaf0@gmail.com>
- <20231021-sakuramist-mi11u-v2-1-fa82c91ecaf0@gmail.com> <CAA8EJprtd8htkDWAvhamgEo3DWMMDYe-P6cnr6nwLnms=N0k9A@mail.gmail.com>
-In-Reply-To: <CAA8EJprtd8htkDWAvhamgEo3DWMMDYe-P6cnr6nwLnms=N0k9A@mail.gmail.com>
-From:   Sophon Wu <wuxilin123@gmail.com>
-Date:   Mon, 23 Oct 2023 13:06:37 +0800
-Message-ID: <CAEPPPKt6fEyniHgietRcp0MYUErYfnLU-SjtsOofe8VaPiSwLg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] soc: qcom: pmic_glink: enable UCSI for SM8350
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGudoHHqpk+1b6KqeFr6ptnm-578A_72Ng3H848WZP0GoyUQbw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org> =E4=BA=8E2023=E5=B9=B410=E6=
-=9C=8822=E6=97=A5=E5=91=A8=E6=97=A5 18:51=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Sat, 21 Oct 2023 at 13:20, Xilin Wu via B4 Relay
-> <devnull+wuxilin123.gmail.com@kernel.org> wrote:
+On Fri, Oct 20, 2023 at 07:49:18PM +0200, Mateusz Guzik wrote:
+> On 10/20/23, Dave Chinner <david@fromorbit.com> wrote:
+> > On Thu, Oct 19, 2023 at 05:59:58PM +0200, Mateusz Guzik wrote:
+> >> > To be clear there is no urgency as far as I'm concerned, but I did run
+> >> > into something which is primarily bottlenecked by inode hash lock and
+> >> > looks like the above should sort it out.
+> >> >
+> >> > Looks like the patch was simply forgotten.
+> >> >
+> >> > tl;dr can this land in -next please
+> >>
+> >> In case you can't be arsed, here is something funny which may convince
+> >> you to expedite. ;)
+> >>
+> >> I did some benching by running 20 processes in parallel, each doing stat
+> >> on a tree of 1 million files (one tree per proc, 1000 dirs x 1000 files,
+> >> so 20 mln inodes in total).  Box had 24 cores and 24G RAM.
+> >>
+> >> Best times:
+> >> Linux:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
+> >> FreeBSD:        3.49s user 345.12s system 1983% cpu 17.573 total
+> >> OpenBSD:        5.01s user 6463.66s system 2000% cpu 5:23.42 total
+> >> DragonflyBSD:   11.73s user 1316.76s system 1023% cpu 2:09.78 total
+> >> OmniosCE:       9.17s user 516.53s system 1550% cpu 33.905 total
+> >>
+> >> NetBSD failed to complete the run, OOM-killing workers:
+> >> http://mail-index.netbsd.org/tech-kern/2023/10/19/msg029242.html
+> >> OpenBSD is shafted by a big kernel lock, so no surprise it takes a long
+> >> time.
+> >>
+> >> So what I find funny is that Linux needed more time than OmniosCE (an
+> >> Illumos variant, fork of Solaris).
+> >>
+> >> It also needed more time than FreeBSD, which is not necessarily funny
+> >> but not that great either.
+> >>
+> >> All systems were mostly busy contending on locks and in particular Linux
+> >> was almost exclusively busy waiting on inode hash lock.
 > >
-> > From: Xilin Wu <wuxilin123@gmail.com>
-> >
-> > UCSI is supported on SM8350. Allow it to enable USB role switch and
-> > altmode notifications on SM8350.
->
-> We have had troubles with UCSI on sm8350. I have a workaround for this
-> (and earlier) platforms. Once it is ready to be posted, I'll include
-> your patch in the series, if you don't mind.
+> > Did you bother to test the patch, or are you just complaining
+> > that nobody has already done the work for you?
+> 
+> Why are you giving me attitude?
 
-I don't mind of course. Do I possibly need to resend the series without the
-pmic_glink patch?
+Look in the mirror, mate.
 
->
+Starting off with a derogatory statement like:
+
+"In case you can't be arsed, ..."
+
+is a really good way to start a fight.
+
+I don't think anyone working on this stuff couldn't be bothered to
+get their lazy arses off their couches to get it merged. Though you
+may not have intended it that way, that's exactly what "can't be
+arsed" means. 
+
+I have not asked for this code to be merged because I'm not ready to
+ask for it to be merged. I'm trying to be careful and cautious about
+changing core kernel code that every linux installation out there
+uses because I care about this code being robust and stable. That's
+the exact opposite of "can't be arsed"....
+
+Further, you have asked for code that is not ready to be merged to
+be merged without reviewing it or even testing it to see if it
+solved your reported problem. This is pretty basic stuff - it you
+want it merged, then *you also need to put effort into getting it
+merged* regardless of who wrote the code. TANSTAAFL.
+
+But you've done neither - you've just made demands and thrown
+hypocritical shade implying busy people working on complex code are
+lazy arses.
+
+Perhaps you should consider your words more carefully in future?
+
+> > Because if you tested the patch, you'd have realised that by itself
+> > it does nothing to improve performance of the concurrent find+stat
+> > workload. The lock contention simply moves to the sb_inode_list_lock
+> > instead.
 > >
-> > Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
-> > ---
-> >  drivers/soc/qcom/pmic_glink.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glin=
-k.c
-> > index 914057331afd..1196e79e6fb3 100644
-> > --- a/drivers/soc/qcom/pmic_glink.c
-> > +++ b/drivers/soc/qcom/pmic_glink.c
-> > @@ -341,6 +341,7 @@ static const unsigned long pmic_glink_sm8450_client=
-_mask =3D BIT(PMIC_GLINK_CLIENT
-> >                                                            BIT(PMIC_GLI=
-NK_CLIENT_UCSI);
-> >
-> >  static const struct of_device_id pmic_glink_of_match[] =3D {
-> > +       { .compatible =3D "qcom,sm8350-pmic-glink", .data =3D &pmic_gli=
-nk_sm8450_client_mask },
-> >         { .compatible =3D "qcom,sm8450-pmic-glink", .data =3D &pmic_gli=
-nk_sm8450_client_mask },
-> >         { .compatible =3D "qcom,sm8550-pmic-glink", .data =3D &pmic_gli=
-nk_sm8450_client_mask },
-> >         { .compatible =3D "qcom,pmic-glink" },
-> >
-> > --
-> > 2.42.0
-> >
->
->
-> --
-> With best wishes
-> Dmitry
+> 
+> Is that something you benched? While it may be there is no change,
+> going from one bottleneck to another does not automatically mean there
+> are no gains in performance.
+
+Of course I have. I wouldn't have said anything if this wasn't a
+subject I have specific knowledge and expertise in. As I've already
+said, I've been running this specific "will it scale" find+stat
+micro-benchmark for well over a decade. For example:
+
+https://lore.kernel.org/linux-xfs/20130603074452.GZ29466@dastard/
+
+That's dated June 2013, and the workload is:
+
+"8-way 50 million zero-length file create, 8-way
+find+stat of all the files, 8-unlink of all the files:"
+
+Yeah, this workload only scaled to a bit over 4 CPUs a decade ago,
+hence I only tested to 8-way....
+
+> For example, this thing on FreeBSD used to take over one minute (just
+> like on Linux right now), vast majority of which was spent on
+> multicore issues. I massaged it down to ~18 seconds, despite it still
+> being mostly bottlenecked on locks.
+> 
+> So I benched the hashbl change and it provides a marked improvement:
+> stock:          7.60s user 1306.90s system 1863% cpu 1:10.55 total
+> patched:  6.34s user 453.87s system 1312% cpu 35.052 total
+> 
+> But indeed as expected it is still bottlenecked on locks.
+
+That's better than I expected, but then again I haven't looked at
+this code in detail since around 5.17 and lots has changed since
+then.  What filesystem was this? What kernel?  What locks is it
+bottlenecked on now?  Did you test the vfs-scale branch I pointed
+you at, or just the hash-bl patches?
+
+> > IOWs, those sb_inode_list_lock changes haven't been included for the
+> > same reason as the hash-bl patches: outside micro-benchmarks, these
+> > locks just don't show up in profiles on production machines.
+> > Hence there's no urgency to "fix" these lock contention
+> > problems despite the ease with which micro-benchmarks can reproduce
+> > it...
+> 
+> The above is not a made-up microbenchmark though.
+
+I didn't say anything about it being "made up".
+
+There's typically a huge difference in behaviour between the
+microbenchmark which immediately discards retrieved data and has no
+memory footprint to speak of versus an application that comparing
+the retrieved data with an in-memory index of inodes held
+in a memory constrained environment to determine if anything has
+changed and then doing different work if they have changed.
+
+IOWs, while microbenchmarks can easily produce contention, it's much
+less obvious that applications doing substantial userspace work
+between similar data retrieval operations will experience similar kernel
+level contention problems.
+
+What is lacking here is real world evidence showing this is a
+production level problem that needs to be solved immediately....
+
+> I got someone running FreeBSD whose workload mostly consists of
+> stating tens of millions of files in parallel and which was suffering
+> a lot from perf standpoint -- flamegraphs show that contending on
+> locks due to memory reclamation induced by stat calls is almost
+> everything that was going on at the time.
+
+.... and "one person's workload on FreeBSD" is not significant
+evidence there's a Linux kernel problem that needs to be solved
+immediately.
+
+> Said workload probably should not do that to begin with (instead
+> have a db with everything it normally stats for?), but here we
+> are.
+
+As you state, the right fix for the application is to avoid scanning
+tens of millions of inodes repeatedly.  We have functionality in
+linux like fanotify to watch and report changes to individual files
+in a huge filesystem, so even if this was running on Linux the
+push-back would be to use fanotify and avoid repeatedly poll the
+entire filesystem to find individual file changes.
+
+> That is to say, while I would not be in position to test Linux in the
+> above workload, the problem (high inode turnover in memory) is very
+> much real.
+
+Yup, XFS currently bottlenecks at about 800,000 inodes/s being
+streamed through memory my old 32p test machine - it's largely the
+sb->s_inode_list_lock that is the limitation. The vfs-scale branch
+I've pointed to brings that up to about 1.5 million inodes/s before
+the next set of limits are hit - the system is CPU bound due to the
+aggregate memory demand of ~10GB/s being allocated and freed by the
+mm subsystem (not lock contention). Hence further improvements are
+all about improving per-lookup operation CPU and memory efficiency..
+
+> All that said, if a real deployment which runs into the problem is
+> needed to justify the change, then I can't help (wrong system).
+
+Well, that's kind of the point, though - if users and customers are
+not reporting that they have production workloads where 800,000
+inodes/s throughput through the inode cache is the performance
+limiting factor, then why risk destabilising core code by changing
+it?
+
+Yes, we can go faster (as the vfs-scale branch shows), but if
+applications aren't limited by the existing code, why risk breaking
+every linux installation out there by pushing something that isn't
+100% baked?  Nobody wins if the new code is faster for a few but has
+bugs that many people hit, so if there's no urgency to change the
+code I won't hurry to push the change. I've carried this code for
+years, a few months here or there isn't going to change anything
+material....
+
+If you think that's wrong or want it faster than I might address it,
+then by all means you can take the vfs-scale branch and do the
+validation work needed to get it pushed it upstream sooner.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
