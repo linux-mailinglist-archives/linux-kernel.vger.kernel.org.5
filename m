@@ -2,237 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A896A7D2F4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3657D2F48
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbjJWJ7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
+        id S233520AbjJWJ6d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Oct 2023 05:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233622AbjJWJ6w (ORCPT
+        with ESMTP id S233400AbjJWJ6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:58:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753FC1991
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698055068; x=1729591068;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UPjDoU0ockPvp0hf/8FOxYtAdwZsw6RIVLnw5bNdlzk=;
-  b=eqwT+ltOlkbhL9FQipLwJrlCn+aWygHs2hcArEB7z6eA/dWxasXQwaMY
-   SaERKO7PwsX8bXYQSCDjxag12eImU7M6PqelN19MzZauyVnN/scL02jeX
-   oq6D5lyayUctOXV/bP/JKD0URR9nC3RcMSi27IjvJX16TBTrapRaRMTzU
-   KSYb0eoYHoH8nOSG9snzKPWNMo/f7MXjqfeU68YuV1pJoLVl0y6dGyMtk
-   r9PcQFqK92hHKrX5RD+5zNzlsDpz6wyPGSU+4niIJ3538LOVjCCYOoyDa
-   3J9zaxpqpTYYVpU3uwWXh2Jn+tzEK+3L+fEqbMCtCfMQkRoFXp4W4b87d
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="386622080"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="386622080"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 02:57:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="901759584"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="901759584"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 23 Oct 2023 02:55:28 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qurgt-0006nN-2S;
-        Mon, 23 Oct 2023 09:57:43 +0000
-Date:   Mon, 23 Oct 2023 17:56:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Wei-Ning Huang <wnhuang@google.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        suzuki.poulose@arm.com, james.clark@arm.com, leo.yan@linaro.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Wei-Ning Huang <wnhuang@google.com>
-Subject: Re: [PATCH] coresight: etm4x: Allow configuring cycle count threshold
-Message-ID: <202310231753.SaIFtaWg-lkp@intel.com>
-References: <20231019082357.1505047-1-wnhuang@google.com>
+        Mon, 23 Oct 2023 05:58:22 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5631FED;
+        Mon, 23 Oct 2023 02:57:05 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SDVr609zVz6J9fy;
+        Mon, 23 Oct 2023 17:53:25 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 23 Oct
+ 2023 10:57:00 +0100
+Date:   Mon, 23 Oct 2023 10:56:59 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Jishnu Prakash <quic_jprakash@quicinc.com>
+CC:     Jonathan Cameron <jic23@kernel.org>, <agross@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linus.walleij@linaro.org>, <sboyd@kernel.org>,
+        <dmitry.baryshkov@linaro.org>, <quic_subbaram@quicinc.com>,
+        <quic_collinsd@quicinc.com>, <quic_kamalw@quicinc.com>,
+        <quic_jestar@quicinc.com>, <marijn.suijten@somainline.org>,
+        <andriy.shevchenko@linux.intel.com>,
+        <krzysztof.kozlowski@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, Luca Weiss <luca@z3ntu.xyz>,
+        <linux-iio@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-arm-msm-owner@vger.kernel.org>
+Subject: Re: [PATCH 01/11] iio: adc: Update bindings for ADC7 name used on
+ QCOM PMICs
+Message-ID: <20231023105659.0000163e@Huawei.com>
+In-Reply-To: <0401d8fc-1162-ea60-bd91-ad18afece344@quicinc.com>
+References: <20230708072835.3035398-1-quic_jprakash@quicinc.com>
+        <20230708072835.3035398-2-quic_jprakash@quicinc.com>
+        <20230708155844.31c55ca0@jic23-huawei>
+        <0401d8fc-1162-ea60-bd91-ad18afece344@quicinc.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019082357.1505047-1-wnhuang@google.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wei-Ning,
+On Mon, 23 Oct 2023 11:35:43 +0530
+Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
 
-kernel test robot noticed the following build errors:
+> Hi Jonathan,
+> 
+> Sorry for the late reply, I could not get back earlier as I got occupied 
+> with other work till now. I have addressed your comments inline.
+> 
+> On 7/8/2023 8:28 PM, Jonathan Cameron wrote:
+> > On Sat, 8 Jul 2023 12:58:25 +0530
+> > Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
+> >  
+> >> The name used initially for this version of Qualcomm Technologies, Inc.
+> >> PMIC ADC was ADC7, following the convention of calling the PMIC generation
+> >> PMIC7. However, the names were later amended internally to ADC5 Gen2 and
+> >> PMIC5 Gen2. In addition, the latest PMIC generation now is known as
+> >> PMIC5 Gen3 with ADC5 Gen3 supported on it. With this addition, it makes more
+> >> sense to correct the name for this version of ADCs to ADC5 Gen2 from ADC7.
+> >> Since this affects ADC devices across some PMICs, update the names accordingly.
+> >>
+> >> In order to avoid breaking the existing implementations of ADC7, add
+> >> support for ADC5 Gen2 first now and remove the ADC7 support in a later
+> >> patch.
+> >>
+> >> Signed-off-by: Jishnu Prakash <quic_jprakash@quicinc.com>  
+> > Hi Jishnu.
+> >
+> > Whilst I can appreciate why you've picked this particular approach to
+> > deal with the renames I'm not sure it's the smoothest path - or the
+> > easiest to review.
+> >
+> > If doing a single patch for the complete rename was too much, perhaps
+> > doing one header (or if it makes sense set of headers)
+> > at a time would be easier to read?  With a final patch doing the compatible
+> > addition.  Maybe let's see what other reviewers think though.  
+> 
+> 
+> I don't completely understand what you mean here - but first let me 
+> briefly recap what I was trying to do here.
+> 
+> In patches 1-5 of this series, I intended to update all existing support 
+> for ADC7 by renaming it to ADC5 Gen2 to match the correct name used 
+> internally. In addition, since I am adding support for ADC5 Gen3 in 
+> patches 6 and 7, I thought it would make sense to rename this older 
+> peripheral, to make it more obvious to everyone that this version lies 
+> between ADC5 and ADC5 Gen3.
+> 
+> The patches were organized like  this:
+> 
+> Patch 1 - Update documentation to add gen2 compatible and update 
+> examples(without removing older compatible). Add new binding files 
+> equivalent to existing ADC7 files, just with macros and file names 
+> updated to use "adc5_gen2" instead of "adc7"
+> 
+> Patch 2 - Update driver files to replace usage of "adc7" with "adc5 
+> gen2", adding new compatible for adc5 gen2 without removing exsiting one 
+> for adc7.
+> 
+> Patch 3 - Update compatible, macros and binding files included in all 
+> devicetree files, based on the earlier two changes.
+> 
+> Patch 4 - Delete all instances of adc7 compatible from documentation 
+> files. Delete all older binding files
+> 
+> Patch 5 - Delete the adc7 compatible from the driver
+> 
+> 
+> Based on the comments I got, I understand I cannot proceed as such with 
+> patches 4 and 5, I can amend/drop them. But to get back to your above 
+> point about my overall approach, how exactly would you like me to 
+> structure my patch series?
+> 
+> Should I make one big patch for documentation, bindings, driver and 
+> devicetree changes where I update the naming and deprecate adc7 usage? 
+> This may be straightforward but also hard to review.
+> 
+> 
+> Or a patch series like this:
+> 
+> One patch to update documentation
+> 
+> One patch to update the bindings (headers) (Or one patch per header file?)
+> 
+> One patch to update driver file (adding new compatible and comment to 
+> deprecate old one)
+> 
+> One patch to update all devicetree files (or separate patches?)
 
-[auto build test ERROR on soc/for-next]
-[also build test ERROR on linus/master v6.6-rc7]
-[cannot apply to next-20231023]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+It must remain buildable at all times.  That can either be done by
+duplicating everything, or by pushing through a patch that performs
+all renames (maybe excluding bindings as we care less about that).
+The all renames in single patch is a lot easier to review as can
+see both sides of the change in a single patch.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Wei-Ning-Huang/coresight-etm4x-Allow-configuring-cycle-count-threshold/20231019-162600
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-patch link:    https://lore.kernel.org/r/20231019082357.1505047-1-wnhuang%40google.com
-patch subject: [PATCH] coresight: etm4x: Allow configuring cycle count threshold
-config: arm64-randconfig-001-20231023 (https://download.01.org/0day-ci/archive/20231023/202310231753.SaIFtaWg-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231023/202310231753.SaIFtaWg-lkp@intel.com/reproduce)
+Breaking that up into sets of renames will keep it manageable.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310231753.SaIFtaWg-lkp@intel.com/
+Jonathan
 
-All error/warnings (new ones prefixed by >>):
+> 
+> Please let me know what you think.
+> 
+> > A few other comments inline,
+> >
+> > Jonathan
+> >
+> >  
+> >>   
+> >>   properties:
+> >> @@ -27,6 +27,7 @@ properties:
+> >>             - qcom,spmi-adc5
+> >>             - qcom,spmi-adc-rev2
+> >>             - qcom,spmi-adc7
+> >> +          - qcom,spmi-adc5-gen2  
+> > Alphabetical order (roughly given currently list). So I'd stick
+> > this after qcom,spmi-adc5  
+> 
+> 
+> Will reorder them in the next patchset.
+> 
+> 
+> >>   
+> >>     reg:
+> >>       description: VADC base address in the SPMI PMIC register map
+> >> @@ -71,7 +72,7 @@ patternProperties:
+> >>           description: |
+> >>             ADC channel number.
+> >>             See include/dt-bindings/iio/qcom,spmi-vadc.h
+> >> -          For PMIC7 ADC, the channel numbers are specified separately per PMIC
+> >> +          For PMIC5 Gen2 ADC, the channel numbers are specified separately per PMIC
+> >>             in the PMIC-specific files in include/dt-bindings/iio/.
+> >>   
+> >>         label:
+> >> @@ -114,7 +115,7 @@ patternProperties:
+> >>                 channel calibration. If property is not found, channel will be
+> >>                 calibrated with 0.625V and 1.25V reference channels, also
+> >>                 known as absolute calibration.
+> >> -            - For compatible property "qcom,spmi-adc5", "qcom,spmi-adc7" and
+> >> +            - For compatible property "qcom,spmi-adc5", "qcom,spmi-adc5-gen2" and
+> >>                 "qcom,spmi-adc-rev2", if this property is specified VADC will use
+> >>                 the VDD reference (1.875V) and GND for channel calibration. If
+> >>                 property is not found, channel will be calibrated with 0V and 1.25V
+> >> @@ -213,7 +214,9 @@ allOf:
+> >>         properties:
+> >>           compatible:
+> >>             contains:
+> >> -            const: qcom,spmi-adc7
+> >> +            enum :
+> >> +                - qcom,spmi-adc7  
+> > There is a deprecated marking for dt-bindings. Might be good to use it here.  
+> 
+> 
+> Thanks for your suggestion, I'll do this in the next patchset.
+> 
+> 
+> >  
+> >> +                - qcom,spmi-adc5-gen2
+> >>   
+> >>       then:  
+> 
+> Thanks,
+> 
+> Jishnu
+> 
+> >>  
 
-   drivers/hwtracing/coresight/coresight-etm4x-core.c: In function 'etm4_parse_event_config':
->> drivers/hwtracing/coresight/coresight-etm4x-core.c:671:17: error: 'cyc_threshold' undeclared (first use in this function); did you mean 'cyc_threadhold'?
-     671 |                 cyc_threshold = ((attr->config >> ETM_OPT_CYC_THRESHOLD_SHIFT) &
-         |                 ^~~~~~~~~~~~~
-         |                 cyc_threadhold
-   drivers/hwtracing/coresight/coresight-etm4x-core.c:671:17: note: each undeclared identifier is reported only once for each function it appears in
->> drivers/hwtracing/coresight/coresight-etm4x-core.c:672:60: error: expected ')' before ';' token
-     672 |                                  ETM_OPT_CYC_THRESHOLD_MASK;
-         |                                                            ^
-   drivers/hwtracing/coresight/coresight-etm4x-core.c:671:33: note: to match this '('
-     671 |                 cyc_threshold = ((attr->config >> ETM_OPT_CYC_THRESHOLD_SHIFT) &
-         |                                 ^
->> drivers/hwtracing/coresight/coresight-etm4x-core.c:674:60: error: expected ';' before '}' token
-     674 |                                  ETM_CYC_THRESHOLD_DEFAULT;
-         |                                                            ^
-         |                                                            ;
-     675 |         }
-         |         ~                                                   
->> drivers/hwtracing/coresight/coresight-etm4x-core.c:648:13: warning: unused variable 'cyc_threadhold' [-Wunused-variable]
-     648 |         u64 cyc_threadhold;
-         |             ^~~~~~~~~~~~~~
-
-
-vim +671 drivers/hwtracing/coresight/coresight-etm4x-core.c
-
-   638	
-   639	static int etm4_parse_event_config(struct coresight_device *csdev,
-   640					   struct perf_event *event)
-   641	{
-   642		int ret = 0;
-   643		struct etmv4_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
-   644		struct etmv4_config *config = &drvdata->config;
-   645		struct perf_event_attr *attr = &event->attr;
-   646		unsigned long cfg_hash;
-   647		int preset;
- > 648		u64 cyc_threadhold;
-   649	
-   650		/* Clear configuration from previous run */
-   651		memset(config, 0, sizeof(struct etmv4_config));
-   652	
-   653		if (attr->exclude_kernel)
-   654			config->mode = ETM_MODE_EXCL_KERN;
-   655	
-   656		if (attr->exclude_user)
-   657			config->mode = ETM_MODE_EXCL_USER;
-   658	
-   659		/* Always start from the default config */
-   660		etm4_set_default_config(config);
-   661	
-   662		/* Configure filters specified on the perf cmd line, if any. */
-   663		ret = etm4_set_event_filters(drvdata, event);
-   664		if (ret)
-   665			goto out;
-   666	
-   667		/* Go from generic option to ETMv4 specifics */
-   668		if (attr->config & BIT(ETM_OPT_CYCACC)) {
-   669			config->cfg |= TRCCONFIGR_CCI;
-   670			/* TRM: Must program this for cycacc to work */
- > 671			cyc_threshold = ((attr->config >> ETM_OPT_CYC_THRESHOLD_SHIFT) &
- > 672					 ETM_OPT_CYC_THRESHOLD_MASK;
-   673			config->ccctlr = cyc_threshold ? cyc_threshold :
- > 674					 ETM_CYC_THRESHOLD_DEFAULT;
-   675		}
-   676		if (attr->config & BIT(ETM_OPT_TS)) {
-   677			/*
-   678			 * Configure timestamps to be emitted at regular intervals in
-   679			 * order to correlate instructions executed on different CPUs
-   680			 * (CPU-wide trace scenarios).
-   681			 */
-   682			ret = etm4_config_timestamp_event(drvdata);
-   683	
-   684			/*
-   685			 * No need to go further if timestamp intervals can't
-   686			 * be configured.
-   687			 */
-   688			if (ret)
-   689				goto out;
-   690	
-   691			/* bit[11], Global timestamp tracing bit */
-   692			config->cfg |= TRCCONFIGR_TS;
-   693		}
-   694	
-   695		/* Only trace contextID when runs in root PID namespace */
-   696		if ((attr->config & BIT(ETM_OPT_CTXTID)) &&
-   697		    task_is_in_init_pid_ns(current))
-   698			/* bit[6], Context ID tracing bit */
-   699			config->cfg |= TRCCONFIGR_CID;
-   700	
-   701		/*
-   702		 * If set bit ETM_OPT_CTXTID2 in perf config, this asks to trace VMID
-   703		 * for recording CONTEXTIDR_EL2.  Do not enable VMID tracing if the
-   704		 * kernel is not running in EL2.
-   705		 */
-   706		if (attr->config & BIT(ETM_OPT_CTXTID2)) {
-   707			if (!is_kernel_in_hyp_mode()) {
-   708				ret = -EINVAL;
-   709				goto out;
-   710			}
-   711			/* Only trace virtual contextID when runs in root PID namespace */
-   712			if (task_is_in_init_pid_ns(current))
-   713				config->cfg |= TRCCONFIGR_VMID | TRCCONFIGR_VMIDOPT;
-   714		}
-   715	
-   716		/* return stack - enable if selected and supported */
-   717		if ((attr->config & BIT(ETM_OPT_RETSTK)) && drvdata->retstack)
-   718			/* bit[12], Return stack enable bit */
-   719			config->cfg |= TRCCONFIGR_RS;
-   720	
-   721		/*
-   722		 * Set any selected configuration and preset.
-   723		 *
-   724		 * This extracts the values of PMU_FORMAT_ATTR(configid) and PMU_FORMAT_ATTR(preset)
-   725		 * in the perf attributes defined in coresight-etm-perf.c.
-   726		 * configid uses bits 63:32 of attr->config2, preset uses bits 3:0 of attr->config.
-   727		 * A zero configid means no configuration active, preset = 0 means no preset selected.
-   728		 */
-   729		if (attr->config2 & GENMASK_ULL(63, 32)) {
-   730			cfg_hash = (u32)(attr->config2 >> 32);
-   731			preset = attr->config & 0xF;
-   732			ret = cscfg_csdev_enable_active_config(csdev, cfg_hash, preset);
-   733		}
-   734	
-   735		/* branch broadcast - enable if selected and supported */
-   736		if (attr->config & BIT(ETM_OPT_BRANCH_BROADCAST)) {
-   737			if (!drvdata->trcbb) {
-   738				/*
-   739				 * Missing BB support could cause silent decode errors
-   740				 * so fail to open if it's not supported.
-   741				 */
-   742				ret = -EINVAL;
-   743				goto out;
-   744			} else {
-   745				config->cfg |= BIT(ETM4_CFG_BIT_BB);
-   746			}
-   747		}
-   748	
-   749	out:
-   750		return ret;
-   751	}
-   752	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
