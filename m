@@ -2,104 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A333A7D2C05
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A330A7D2C06
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 09:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbjJWH5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 03:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
+        id S229524AbjJWH6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 03:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjJWH5t (ORCPT
+        with ESMTP id S229452AbjJWH6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 03:57:49 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF0DA6;
-        Mon, 23 Oct 2023 00:57:46 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39N7RVnO003055;
-        Mon, 23 Oct 2023 07:57:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=c7KP3Zqe35K/UITXRHfu9WloJc95Zxfye7HE8lRDw1Q=;
- b=LO04fbQGS+K5kWBRwLwH/SFLsQWsCW3igdRmGALdXuURqWRcSqyt4BlB7BYMaC97ikzK
- uDSYPDrzPj7wMUpOwLdCxsFCqFkcWJruehMJg31XGB/2ncRDpOMa87kIqVfyZc/uugmK
- PK2GgbY7EXuN1OTTVxg40OetT1ZbSv6+o/WbC1NclUNw+G+PYSpR4hzF/Ijy7LrRSmhO
- oJaYBO0YF6HfUNZtzGBcAlQemjQaKHk5431stZMyYVLxu6odP5w9Jk85ts+56yDdP2xn
- W1auaDR0oTnlkqjv/o+1z1T1Er7WM6TeSst1Rp9nepACXMF8My+gnqx/mwfhcei4rwbp /g== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tv5ndue0r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 07:57:36 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39N7vZET002897
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 07:57:35 GMT
-Received: from aiquny2-gv.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 23 Oct 2023 00:57:29 -0700
-From:   Maria Yu <quic_aiquny@quicinc.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>, <arnd@arndb.de>
-CC:     Maria Yu <quic_aiquny@quicinc.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>
-Subject: [PATCH] arm64: module: PLT allowed even !RANDOM_BASE
-Date:   Mon, 23 Oct 2023 15:57:14 +0800
-Message-ID: <20231023075714.21672-1-quic_aiquny@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 23 Oct 2023 03:58:00 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E59CC
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:57:57 -0700 (PDT)
+Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com [209.85.128.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7A1DC3F443
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:57:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1698047875;
+        bh=u7GScWjArWDBsmslExt09yQ/w9U+lCmA3/2l6avmmBw=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=tfVD9j1P7Xps3Vk6/Bex/qKbcUa+VlqpzKJOBfCy7GA8mfin1XCOIswuuDcOUYMvP
+         607oPZ3TXVasWtZ5K1wZPG8tVcDte3W1QoUOeESboGVVBlRyh3/8qQeLM0ZhA6gunv
+         eo5sTodlpiv/yeE0kYTLCec0C7heacmb2RJT94mRRKRwRp5C6KjVUR1ozWrESTwJBX
+         TcyjCHs6t5Y4GMclMWABinkHAMidNjKMwFQwrvjKxhdk4u4ysa2H0sw73+OcMixUqo
+         Am5EuOyD7Mn8XtnUF4O1U82F3yxea591PSy7k3MLhokOyb033IBRHhoiHRlYD24Va0
+         MK2T4ALW64FSQ==
+Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-5a8ebc70d33so38322107b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 00:57:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698047873; x=1698652673;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u7GScWjArWDBsmslExt09yQ/w9U+lCmA3/2l6avmmBw=;
+        b=YWStON0/ajQbLSp+DNrqwXnMOyGoei7OjyR9nB3nmQ3ueH+yYu4NGBaC1gSIAWtdc6
+         i7DRs8GfFB/9DjaOhgAdnjkvrwXhRAqcdQjumXbxhSWrPlKQ3OhcrOHZdMXAyv4NBM9P
+         09dkV17YIDKILavKV8ivINegFW9qFhjqih+TZQWM7AU/WbQB2YGdqNL67qlZBF4dJG9Q
+         SD0AwZOqCxZOH/GB7YsMdkm5K08M1sgI3cEpTsEqurnfYsGNkKBkeNp5M9HpbOIejYsw
+         hSekvO161DJJS0XFJtHJ/10fJnmOM8S6RG/pgGizpCuTkETIVQbrkQSvPmdgFAY5QgPR
+         CHsA==
+X-Gm-Message-State: AOJu0YzjTr9ZFMkkBG3D6L02JpV5dDOAaZcElJSSTyNpzmKwkfqi94/j
+        esps04TrJFJ81ydHEsJD3vf9SE0AG9ojSfztWFJTR8+1sngTfWEx0efl75Q3TYYxpAFELT2HDGB
+        nZuB0TLQ0RhvsbEpSpVlwlOCXSgxNrxeixJiPZGFOokrxeM0NR++SK/MRZw==
+X-Received: by 2002:a81:a091:0:b0:5a7:d9ce:363c with SMTP id x139-20020a81a091000000b005a7d9ce363cmr7817502ywg.6.1698047873207;
+        Mon, 23 Oct 2023 00:57:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHy+WSIuaqer8Tu4PIB5kMYpkbya8+N3WwyVpebn8chFwLsb/rKl1kccsuRoPtpYrp1bhd7Au/PM2ka8Xarfnc=
+X-Received: by 2002:a81:a091:0:b0:5a7:d9ce:363c with SMTP id
+ x139-20020a81a091000000b005a7d9ce363cmr7817492ywg.6.1698047872886; Mon, 23
+ Oct 2023 00:57:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: mFIgwhexEX5_sUkfBMghA9gGEGxsMVFw
-X-Proofpoint-ORIG-GUID: mFIgwhexEX5_sUkfBMghA9gGEGxsMVFw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_06,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=430 bulkscore=0
- adultscore=0 impostorscore=0 mlxscore=0 phishscore=0 priorityscore=1501
- clxscore=1011 suspectscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310230069
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230807132626.182101-1-aleksandr.mikhalitsyn@canonical.com>
+ <bcda164b-e4b7-1c16-2714-13e3c6514b47@redhat.com> <CAEivzxf-W1-q=BkG1UndFcX_AbzH-HtHX7p6j4iAwVbKnPn+sQ@mail.gmail.com>
+ <772a6282-d690-b299-6cf4-c96dd20792fa@redhat.com>
+In-Reply-To: <772a6282-d690-b299-6cf4-c96dd20792fa@redhat.com>
+From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Date:   Mon, 23 Oct 2023 09:57:41 +0200
+Message-ID: <CAEivzxf56EXhNToVZRNZ9HsS4NKYidXqE-89oT6L-XY=s0nPcQ@mail.gmail.com>
+Subject: Re: [PATCH v10 00/12] ceph: support idmapped mounts
+To:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>
+Cc:     brauner@kernel.org, stgraber@ubuntu.com,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Module PLT feature can be enabled even when RANDOM_BASE is disabled.
-Break BLT entry counts of relocation types will make module plt entry
-allocation fail and finally exec format error for even correct and plt
-allocation available modules.
+On Thu, Oct 19, 2023 at 7:42=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wrote:
+>
+>
+> On 10/17/23 17:20, Aleksandr Mikhalitsyn wrote:
+> > On Tue, Aug 8, 2023 at 2:45=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wro=
+te:
+> >> LGTM.
+> >>
+> >> Reviewed-by: Xiubo Li <xiubli@redhat.com>
+> >>
+> >> I will queue this to the 'testing' branch and then we will run ceph qa
+> >> tests.
+> >>
+> >> Thanks Alex.
+> >>
+> >> - Xiubo
+> > Hi Xiubo,
+> >
+> > will this series be landed to 6.6?
+> >
+> > Userspace part was backported and merged to the Ceph Quincy release
+> > (https://github.com/ceph/ceph/pull/53139)
+> > And waiting to be tested and merged to the Ceph reef and pacific releas=
+es.
+> > But the kernel part is still in the testing branch.
+>
+> This changes have been in the 'testing' branch for more than two mounts
+> and well test, till now we haven't seen any issue.
+>
+> IMO it should be ready.
 
-Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
----
- arch/arm64/kernel/module-plts.c | 3 ---
- 1 file changed, 3 deletions(-)
+Thanks, Xiubo!
+It would be awesome to have this in v.6.6.
 
-diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
-index bd69a4e7cd60..21a67d52d7a0 100644
---- a/arch/arm64/kernel/module-plts.c
-+++ b/arch/arm64/kernel/module-plts.c
-@@ -167,9 +167,6 @@ static unsigned int count_plts(Elf64_Sym *syms, Elf64_Rela *rela, int num,
- 		switch (ELF64_R_TYPE(rela[i].r_info)) {
- 		case R_AARCH64_JUMP26:
- 		case R_AARCH64_CALL26:
--			if (!IS_ENABLED(CONFIG_RANDOMIZE_BASE))
--				break;
--
- 			/*
- 			 * We only have to consider branch targets that resolve
- 			 * to symbols that are defined in a different section.
+Kind regards,
+Alex
 
-base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
--- 
-2.17.1
-
+>
+> Ilya ?
+>
+> Thanks
+>
+> - Xiubo
+>
+>
+> > Kind regards,
+> > Alex
+> >
+> >> On 8/7/23 21:26, Alexander Mikhalitsyn wrote:
+> >>> Dear friends,
+> >>>
+> >>> This patchset was originally developed by Christian Brauner but I'll =
+continue
+> >>> to push it forward. Christian allowed me to do that :)
+> >>>
+> >>> This feature is already actively used/tested with LXD/LXC project.
+> >>>
+> >>> Git tree (based on https://github.com/ceph/ceph-client.git testing):
+> >>> v10: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v10
+> >>> current: https://github.com/mihalicyn/linux/tree/fs.idmapped.ceph
+> >>>
+> >>> In the version 3 I've changed only two commits:
+> >>> - fs: export mnt_idmap_get/mnt_idmap_put
+> >>> - ceph: allow idmapped setattr inode op
+> >>> and added a new one:
+> >>> - ceph: pass idmap to __ceph_setattr
+> >>>
+> >>> In the version 4 I've reworked the ("ceph: stash idmapping in mdsc re=
+quest")
+> >>> commit. Now we take idmap refcounter just in place where req->r_mnt_i=
+dmap
+> >>> is filled. It's more safer approach and prevents possible refcounter =
+underflow
+> >>> on error paths where __register_request wasn't called but ceph_mdsc_r=
+elease_request is
+> >>> called.
+> >>>
+> >>> Changelog for version 5:
+> >>> - a few commits were squashed into one (as suggested by Xiubo Li)
+> >>> - started passing an idmapping everywhere (if possible), so a caller
+> >>> UID/GID-s will be mapped almost everywhere (as suggested by Xiubo Li)
+> >>>
+> >>> Changelog for version 6:
+> >>> - rebased on top of testing branch
+> >>> - passed an idmapping in a few places (readdir, ceph_netfs_issue_op_i=
+nline)
+> >>>
+> >>> Changelog for version 7:
+> >>> - rebased on top of testing branch
+> >>> - this thing now requires a new cephfs protocol extension CEPHFS_FEAT=
+URE_HAS_OWNER_UIDGID
+> >>> https://github.com/ceph/ceph/pull/52575
+> >>>
+> >>> Changelog for version 8:
+> >>> - rebased on top of testing branch
+> >>> - added enable_unsafe_idmap module parameter to make idmapped mounts
+> >>> work with old MDS server versions
+> >>> - properly handled case when old MDS used with new kernel client
+> >>>
+> >>> Changelog for version 9:
+> >>> - added "struct_len" field in struct ceph_mds_request_head as request=
+ed by Xiubo Li
+> >>>
+> >>> Changelog for version 10:
+> >>> - fill struct_len field properly (use cpu_to_le32)
+> >>> - add extra checks IS_CEPH_MDS_OP_NEWINODE(..) as requested by Xiubo =
+to match
+> >>>     userspace client behavior
+> >>> - do not set req->r_mnt_idmap for MKSNAP operation
+> >>> - atomic_open: set req->r_mnt_idmap only for CEPH_MDS_OP_CREATE as us=
+erspace client does
+> >>>
+> >>> I can confirm that this version passes xfstests and
+> >>> tested with old MDS (without CEPHFS_FEATURE_HAS_OWNER_UIDGID)
+> >>> and with recent MDS version.
+> >>>
+> >>> Links to previous versions:
+> >>> v1: https://lore.kernel.org/all/20220104140414.155198-1-brauner@kerne=
+l.org/
+> >>> v2: https://lore.kernel.org/lkml/20230524153316.476973-1-aleksandr.mi=
+khalitsyn@canonical.com/
+> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v2
+> >>> v3: https://lore.kernel.org/lkml/20230607152038.469739-1-aleksandr.mi=
+khalitsyn@canonical.com/#t
+> >>> v4: https://lore.kernel.org/lkml/20230607180958.645115-1-aleksandr.mi=
+khalitsyn@canonical.com/#t
+> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v4
+> >>> v5: https://lore.kernel.org/lkml/20230608154256.562906-1-aleksandr.mi=
+khalitsyn@canonical.com/#t
+> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v5
+> >>> v6: https://lore.kernel.org/lkml/20230609093125.252186-1-aleksandr.mi=
+khalitsyn@canonical.com/
+> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v6
+> >>> v7: https://lore.kernel.org/all/20230726141026.307690-1-aleksandr.mik=
+halitsyn@canonical.com/
+> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v7
+> >>> v8: https://lore.kernel.org/all/20230803135955.230449-1-aleksandr.mik=
+halitsyn@canonical.com/
+> >>> tree: -
+> >>> v9: https://lore.kernel.org/all/20230804084858.126104-1-aleksandr.mik=
+halitsyn@canonical.com/
+> >>> tree: https://github.com/mihalicyn/linux/commits/fs.idmapped.ceph.v9
+> >>>
+> >>> Kind regards,
+> >>> Alex
+> >>>
+> >>> Original description from Christian:
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>> This patch series enables cephfs to support idmapped mounts, i.e. the
+> >>> ability to alter ownership information on a per-mount basis.
+> >>>
+> >>> Container managers such as LXD support sharaing data via cephfs betwe=
+en
+> >>> the host and unprivileged containers and between unprivileged contain=
+ers.
+> >>> They may all use different idmappings. Idmapped mounts can be used to
+> >>> create mounts with the idmapping used for the container (or a differe=
+nt
+> >>> one specific to the use-case).
+> >>>
+> >>> There are in fact more use-cases such as remapping ownership for
+> >>> mountpoints on the host itself to grant or restrict access to differe=
+nt
+> >>> users or to make it possible to enforce that programs running as root
+> >>> will write with a non-zero {g,u}id to disk.
+> >>>
+> >>> The patch series is simple overall and few changes are needed to ceph=
+fs.
+> >>> There is one cephfs specific issue that I would like to discuss and
+> >>> solve which I explain in detail in:
+> >>>
+> >>> [PATCH 02/12] ceph: handle idmapped mounts in create_request_message(=
+)
+> >>>
+> >>> It has to do with how to handle mds serves which have id-based access
+> >>> restrictions configured. I would ask you to please take a look at the
+> >>> explanation in the aforementioned patch.
+> >>>
+> >>> The patch series passes the vfs and idmapped mount testsuite as part =
+of
+> >>> xfstests. To run it you will need a config like:
+> >>>
+> >>> [ceph]
+> >>> export FSTYP=3Dceph
+> >>> export TEST_DIR=3D/mnt/test
+> >>> export TEST_DEV=3D10.103.182.10:6789:/
+> >>> export TEST_FS_MOUNT_OPTS=3D"-o name=3Dadmin,secret=3D$password
+> >>>
+> >>> and then simply call
+> >>>
+> >>> sudo ./check -g idmapped
+> >>>
+> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>
+> >>> Alexander Mikhalitsyn (3):
+> >>>     fs: export mnt_idmap_get/mnt_idmap_put
+> >>>     ceph: add enable_unsafe_idmap module parameter
+> >>>     ceph: pass idmap to __ceph_setattr
+> >>>
+> >>> Christian Brauner (9):
+> >>>     ceph: stash idmapping in mdsc request
+> >>>     ceph: handle idmapped mounts in create_request_message()
+> >>>     ceph: pass an idmapping to mknod/symlink/mkdir
+> >>>     ceph: allow idmapped getattr inode op
+> >>>     ceph: allow idmapped permission inode op
+> >>>     ceph: allow idmapped setattr inode op
+> >>>     ceph/acl: allow idmapped set_acl inode op
+> >>>     ceph/file: allow idmapped atomic_open inode op
+> >>>     ceph: allow idmapped mounts
+> >>>
+> >>>    fs/ceph/acl.c                 |  6 +--
+> >>>    fs/ceph/crypto.c              |  2 +-
+> >>>    fs/ceph/dir.c                 |  4 ++
+> >>>    fs/ceph/file.c                | 11 ++++-
+> >>>    fs/ceph/inode.c               | 29 +++++++------
+> >>>    fs/ceph/mds_client.c          | 78 +++++++++++++++++++++++++++++++=
++---
+> >>>    fs/ceph/mds_client.h          |  8 +++-
+> >>>    fs/ceph/super.c               |  7 +++-
+> >>>    fs/ceph/super.h               |  3 +-
+> >>>    fs/mnt_idmapping.c            |  2 +
+> >>>    include/linux/ceph/ceph_fs.h  | 10 ++++-
+> >>>    include/linux/mnt_idmapping.h |  3 ++
+> >>>    12 files changed, 136 insertions(+), 27 deletions(-)
+> >>>
+>
