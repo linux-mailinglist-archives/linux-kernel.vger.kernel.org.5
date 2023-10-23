@@ -2,88 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994E87D2C7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2917D2C86
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbjJWITf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:19:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
+        id S229687AbjJWIVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbjJWITe (ORCPT
+        with ESMTP id S229452AbjJWIVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:19:34 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66968D6B
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:19:32 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d9c7bba32beso2901384276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:19:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698049171; x=1698653971; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HC3BjQKSRGbfGvKwk72buIonbCnddDV5SKhzPxi6MnE=;
-        b=spBhu2pfvAg3IGMZDq5IrdF4h+U/n31rcG2nOA2VVtqnQujLGsuY3lUrNQH991hC7r
-         3x+/rez/RvyrbF2Ewc+WmtECAov9y+V4pHh2JSnnAhLfShNlS3vWDikg9N0UD+q8e7aP
-         BOJgG8OIZkJYDqmBl072tJCBCtWzIH7HHOCc9PVWAf25Q4jQ6gk4WhFZbENiVBfBfdKn
-         nnDlE5KyJlTsJcrLYy4lJAv4rd6mnfmkvysxdUazkINTQf8JlLPfXTlLJN9BkBbQ69t3
-         FNIvFUBW6Gu3XwT2SnumuOaOu3cLS7raPfoMYdKmtUGGqOcjDzfy5iXZf5tEOfHPlmdM
-         ZX7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698049171; x=1698653971;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HC3BjQKSRGbfGvKwk72buIonbCnddDV5SKhzPxi6MnE=;
-        b=WieHmhyio8ppqNGViUopxiK+koO19Z4lRjvV/kk5kPXeFDaTxeIytjfNE55FTcnsYZ
-         CDbA6e/LFkgPq9tQSi8rml4VQ8fIy7DyHH+iskrl4Z2x6dRkm6lhfh4dKoHEgHo729hj
-         k/3nTLxd2Z13v9TdBZLmuuyB/0xMBPE6p94fsiCIkKTOyZ8Idas/hqsqRytqb2kYSh5c
-         1TYJh5oppgg2OeU5ej4VfX93FowFD7dgRvgsXu79Ho1rVM3XMHGjKt5+npVmXf6L26Qf
-         Lw+D6nRtJSMkTgT+/7hQXAcPry4xWLMa+wIo3bztkk7hAk54WfrV/dn/hh5djqXXqsQv
-         pIdg==
-X-Gm-Message-State: AOJu0YwiyRtwf6oHerxr8YqsWXskgHXG2JLq5OlN97fyrpNPhSba61n3
-        sDFuw1elW8dYawSesb56AxQwQjTYx0891fXIELQnk8EV3t2a3HWGZ64=
-X-Google-Smtp-Source: AGHT+IFls47LNKk09hu89xcHyz6kQUqlyPLDSWRDcL+rZTMYQ0ze1963EHbVyobakwo9izU/36AdkSpBhIA0fgYRRXo=
-X-Received: by 2002:a25:6985:0:b0:d9c:c9a8:85cd with SMTP id
- e127-20020a256985000000b00d9cc9a885cdmr8511428ybc.61.1698049171488; Mon, 23
- Oct 2023 01:19:31 -0700 (PDT)
+        Mon, 23 Oct 2023 04:21:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52CD2C4;
+        Mon, 23 Oct 2023 01:21:49 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09788C433C8;
+        Mon, 23 Oct 2023 08:21:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698049309;
+        bh=XrV2myKEdPltpSB/WUfNxpDSBHC2mWbdDw5pNtMkL6M=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=HsfhGDoEfPjA5VsgPB61n9vuRtS3rRWTBrMJxZ+Bo6tM7z/z1gY0ODdqkX/ootUpJ
+         Uij7KHHIZAD7GmoTmzl6XhMuIRY8TEbBY0l8mDHPeSARhZkKnGMPpK+gCULQ//D3r+
+         ESETdzNLGF7IZoadYoeNWuUZwKxheYvcUpkxjmhDUXc2/pujLP6qtSQgzSPRqwItF0
+         Um9MD+/JpCiu65SLBEBdnxCTTdYrkaCk9+0nuJ4hcR/At4IBjLx8ayusk2RgFn43S+
+         2BV94J8y3n2MvzJZ2bSeuIG74HYw+b4AVo27cCwAb58ghmEPDd5pITeNozVmQnolaq
+         fMxm2jlP0If8g==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Chukun Pan <amadeus@jmu.edu.cn>
+Cc:     pkshih@realtek.com, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 1/1] wifi: rtw88: 8822b: disable call trace when write
+ RF mode table fail
+References: <8734yff8vr.fsf@kernel.org>
+        <20231022090901.430143-1-amadeus@jmu.edu.cn>
+Date:   Mon, 23 Oct 2023 11:21:45 +0300
+In-Reply-To: <20231022090901.430143-1-amadeus@jmu.edu.cn> (Chukun Pan's
+        message of "Sun, 22 Oct 2023 17:09:01 +0800")
+Message-ID: <878r7t21gm.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20231013145935.220945-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20231013145935.220945-1-krzysztof.kozlowski@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 23 Oct 2023 10:19:20 +0200
-Message-ID: <CACRpkdZUSkr2MLB870Y5O2Qxvbnz++XUKMm+BXG1yx9vrOEvwA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] pinctrl: qcom: lpass-lpi: allow slew rate bit in
- main pin config register
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 4:59=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+Chukun Pan <amadeus@jmu.edu.cn> writes:
 
+>> _Why_ is that warning printed? Are your devices uncalibrated or are they
+>> somehow else special?
+>
+> I don't know, but not only my rtl8822be wifi module will have this call trace
+> every time when the driver probes. This can be considered a common problem.
+> So I prefer to disable this call trace and use the driver warning instead.
 
-> Changes in v2
+Why do you say this is a common problem? AFAIK you are the only one
+reporting this issue, right? It would help to understand _why_ you are
+seeing this, ie. what's the root cause? Just randomly removing warnings
+without understanding the root cause is frowned upon.
 
-I tried to apply this to the pinctrl devel branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/lo=
-g/?h=3Ddevel
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-It doesn't apply, could you rebase it?
-
-Yours,
-Linus Walleij
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
