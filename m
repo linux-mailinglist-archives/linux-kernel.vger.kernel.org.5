@@ -2,149 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEEB7D2D37
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA52C7D2D36
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbjJWIvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbjJWIvv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230171AbjJWIvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 23 Oct 2023 04:51:51 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2085.outbound.protection.outlook.com [40.107.21.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E043D68;
-        Mon, 23 Oct 2023 01:51:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IBAaOpaxk8aWxiUzMydz17xM9BsCPt7Fugnoxx3uZImoNF4utEfCTOQ3LDDxdgcBZmjS0rLp68ssszf6aJ3W1y1wUooN9kgH5UXoOziimy0QbWw/VWIZIMK2F59EY2Amfoan0CoogLzKbGFKqy/AEZoerp8WPY2CY1bALcmgPLWsYuObQGS+6eQY7YCTKZFdSEqR+dLG3bFfmMrkZlGaZeS9HMbNh2IOWV+nhmw5ft9Q8DsX45OQeOscpnSYUAwDWDRD2qwbuilxViUdaxZuq8maWaazUekcd+pp3LFwiY/8g0VPbeQ3MxYgK9FR+0+cKIPK/THd1vOltkspOBxRYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZXBscckPulxgVIpjiR+QAHBRU3KjFXWrJXEU5Tl+aQE=;
- b=LsGtzK6W362dZcmISD9uOM+YR9KjPKkbx6jeQ+i4gZbDawV5/E06AQggQILk2Xlv3Tnw14ssTzWiOMcNKFhvd6RgbH8nXGlXa4KXhw/v/nTb+gSy4W0gbIc66XuLLJHdiaej2gmjtJivS4MhC9rKOwg7gb0i0hN/OM1tijMwumWS/Y29jA7rgAx+LCMYP/GzG3gNmsxxxvt5zIqButqDYQfc+IabuJm/Bk6QEMFpkX5LS+6vjYyNxIPuK6DGfuyPZz39sySgp3keU9i5ax+fbxOssVOcW5R0hUzkLQIqDO9P7ws1wgD37SC12xbiS7+P7+S6rKw8OlLuzoU5/MZJNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZXBscckPulxgVIpjiR+QAHBRU3KjFXWrJXEU5Tl+aQE=;
- b=BOTDFUahqNG1G4ueWuNl+EIRsOQ3t3AuI/ptKmCFcRnkTV5Nw1kkWWDmmJMiukq6saw+VEi4z/B2ye9izbqsSZOoMfVih/somvkxngiZQo8MW1/XmGJ3rNUpJnnLOzeJkSpg6y4n+PFYsT4BcBLUG5JkC5HngZfFBBzguhjpomTAHioIglrviqNYLexKIcfrEHJBzR9RZaRuNyEEHOijiDPO7i2PTgB7Y5c8nsJZM+cTow//ObJlmFPFI3ntXsUcOEqFcqKjnHFQCgEWNajP6twhO1Q5tE+bU1kLAoRG8hzxUxkdipbVcnJ6N0kWuIy1iFWR9aszw9Qd8yWd9Xylew==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by PR3PR04MB7355.eurprd04.prod.outlook.com (2603:10a6:102:8f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.11; Mon, 23 Oct
- 2023 08:51:45 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::edd3:f00:3088:6e61]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::edd3:f00:3088:6e61%4]) with mapi id 15.20.6933.011; Mon, 23 Oct 2023
- 08:51:44 +0000
-Message-ID: <56c57e1a-bb08-4ac8-9d3b-bdc649640cfb@suse.com>
-Date:   Mon, 23 Oct 2023 11:51:39 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/6] x86/bugs: Cleanup mds_user_clear
-Content-Language: en-US
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com
-References: <20231020-delay-verw-v1-0-cff54096326d@linux.intel.com>
- <20231020-delay-verw-v1-5-cff54096326d@linux.intel.com>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <20231020-delay-verw-v1-5-cff54096326d@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: ZR2P278CA0041.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:47::10) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbjJWIvu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 23 Oct 2023 04:51:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69E1D65;
+        Mon, 23 Oct 2023 01:51:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8500DC433C8;
+        Mon, 23 Oct 2023 08:51:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698051107;
+        bh=Vd28yKOH0TRadp/QldDFl+VqSlMewckCgsfZOnDua/4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nUI0p9EZzW5EQp/km//8FhM3hOl8F71DPi8ii981Mbq3jGfx6KbDZfgHYIE9N3Fma
+         y1C72eMRXudKHFGy6p5vLVoPBe++MBVnYtceYYMJiNxjMWbDPwkggr3X1ZZyfJ4mlN
+         CtIz+9XY1TYLR1s2nVwRpPPxxZqBq56jcNz/QBNz46qQMrTRkhUM5ohkd75GyZ9dPr
+         pEEDAZ9P6kijjxpXJxJMLL4FMpKxkjd01TcMMapZvvr7u26nrkaeukndMaRob2ZbEH
+         2HQW1lYiiQSm+u+gRO6UK84Fmd/Ek7Tj0nLLJ/3Ju6VYjQfhZKdLAlL4l8jcdcZX5R
+         OxGLlZpRlDlCQ==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1quqfJ-0007hO-1Q;
+        Mon, 23 Oct 2023 10:52:01 +0200
+Date:   Mon, 23 Oct 2023 10:52:01 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com, ahalaney@redhat.com,
+        quic_shazhuss@quicinc.com, Harsh Agarwal <quic_harshq@quicinc.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v13 03/10] usb: dwc3: core: Refactor PHY logic to support
+ Multiport Controller
+Message-ID: <ZTY0MYmiM-WrA5B6@hovoldconsulting.com>
+References: <20231007154806.605-1-quic_kriskura@quicinc.com>
+ <20231007154806.605-4-quic_kriskura@quicinc.com>
+ <ZTJPBcyZ_zLXbgE5@hovoldconsulting.com>
+ <157d1c8d-5aa4-4488-bf85-7806c8fb00bc@quicinc.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|PR3PR04MB7355:EE_
-X-MS-Office365-Filtering-Correlation-Id: dde0f53b-ad9d-4ec3-baa8-08dbd3a548a6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LjyTmz8nSrGGlQ0cVKKKXtigjFRMWZyBAiDrbxSiqAoYo4k0uDuy85X0jM1+slWkhBTMRmSNcXBjCjV73EPr/nZO+rsGu7rL4Em+W1sb0+IgnY8Phqqce6N27MrYhOmo3TxuDP7gyCS7ytjqj1cr3rKCSl2hOeeQoUknl/y+6roBR5I4y9+oBd5M+l1hCr2hJjCScOYqivcT2xhVOw1GpBGxO3n67E1OzElRyWyzOvdWMsQmdib4thfh8XNXm0IRnow6iLvenaPuKJ4TW5eZU7vq2IJ6PvnPohdK8RYayV6MEeUohGd4m/gmML5u0k11T4UWxTjcoa2Mf1uOBkulRp89vyU7kDPUR6EGizsGMPf0J9kFRW4yY92ORHCHc3Yq8YEt8o1synb+yl5m6aiz6ydY4uRG5O74NTTUQHD0A46qKDsU+hYlpAqG6+mA7Ev4zMgFC1MAUJccLrMxyo1qadsH7q/njWWgAevymQCOj1484a7KRZbVqvwLtuJW3yUhwrNdXaKm/bmBycnfCc94kPtQVoT9fGN6ZabcxmAbU4x0FA7AtcP8fBkgn1ukY6his5K94zMdprIqqY9qiD4LK1tVQnTBrMTSphTgc0wml4srFVcE3ifUx1R6ST7/seCH2w9gnmmi2eCICbCqBZRoUBTMuTUpc4cPbIQFqTRBP9I=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(346002)(39860400002)(366004)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(4744005)(2906002)(38100700002)(316002)(66946007)(66556008)(66476007)(54906003)(2616005)(110136005)(478600001)(6506007)(6666004)(6512007)(6486002)(41300700001)(7416002)(36756003)(31696002)(86362001)(5660300002)(8936002)(8676002)(4326008)(921008)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VmVaaE9MQmVrZmNEZzg2bVBuNG92SU1iS0lTeXl0MlhZczR4S01yeW5ZY2Z1?=
- =?utf-8?B?dnA0UG1NTjVXa3RueFBwSU00RXh3MUxUVE9iK2ZGRk1FY1J6WFNhR1RGbjd5?=
- =?utf-8?B?RUdKYkNQdXY2bWZ0RkV2TUlEMVl5bHhHY21VNzF2MVJxSmx6ZkhXa1JHMGxC?=
- =?utf-8?B?UHgzcXNGV0NYK0pvYlVFVDhYZ3ZnV1cyNTFyQlRzZlpSSkFOUDZkRmJEZUl2?=
- =?utf-8?B?a3QyNTR5TGVzN0xOY1IvL1M1YkhVTnF6aE9GMGVEdVFzY1M3eGRQTnJmQUYr?=
- =?utf-8?B?d2FCSERraVhqM29YbXVnenJ3S1pDRkQ5L2ZjR1ZVU1ZMbUttRGVXZjJ2K1pY?=
- =?utf-8?B?R3ZOUDYxdmhMUmlqcURwbkl3UzBCcGlVdEVrRVhkR3lLcVhUVmdoYmhZK21T?=
- =?utf-8?B?UWhsWU03V1M2L2F6b1R4Z2RNdUZXWFhsWG5jMjJnYW10S0dtUk9vMEtqbVcv?=
- =?utf-8?B?Sm5RaWVoWG5hdXFtV2JGNzVqUFlpbWhLL2Z0MVVLN0NsRWJqWTBNb3pScURi?=
- =?utf-8?B?ZlQvdjI5N0ZlMGxmMmJudjJhaHdoOGZ3SnZTK1RhTzJOL0N6clIrdXNsVEhL?=
- =?utf-8?B?bkFQSFBWWU0yUklEV0lCSTQzZDdYQjJCUzF1enk1eUZYenVGamY4WTd1VHZy?=
- =?utf-8?B?R2tBZVJQeDdEZFl1aHBOYmszU1hGRGY3dDEvWmdPeFNxSWtKOUFIQzNzLzBk?=
- =?utf-8?B?VGVId1Blc1VKV3ZzWG95TEVJMFhpdllCam1oaEV6QXpwdWZreGVONTF4VllQ?=
- =?utf-8?B?LzA0QTFmVlBpaXV5THJPYklzdXZDNm1IT2tYWFBIaEIxb0FnRkcxcVNUNXcw?=
- =?utf-8?B?OVc1Nm40NlRGbU9NdDRkRDgybU8xM0lQcUFVWGZLamlYMkpQeTU4Rnk4c3Jp?=
- =?utf-8?B?R1F0b1JpNk1kOEhRckQyd2I4TEUvVWVtNFhsUEZHUUZ5bzhNVVAyM1IyWE8v?=
- =?utf-8?B?LzMzVjdJSUJOSjYrakVKekRpR0gxY3N2YUozUnRiNGRjRXlZYXRvUjYyODN3?=
- =?utf-8?B?bU1qOFFqZ0NpaU92WWE4NDh3blJaMWR2ZWhZclhHcUx3OCtLM0pHMmVrTG1Q?=
- =?utf-8?B?RDhhY2FYcXl0bDJTbGx3QXZSZFhJZVlLUDhpTlhCOEg3Q1dxY1lKYk8wVXNI?=
- =?utf-8?B?MUVzWDd6cSthcFFkanNyZzMwbzRUaEtqdHQ2aHZCc3NjcFFzb3VYK0hDQTZ5?=
- =?utf-8?B?NVdGdE1nNG53RGRnYXlNWlpiQkdmb2d2Zk9mUWpXNU5nellDQlI4dFMxUklz?=
- =?utf-8?B?dkZSYUlheVk2L2h6RCtPc1F0cUQ2djJCUEZybXFVeTBVWXdkayt4V25lVEN5?=
- =?utf-8?B?b0dmYkVwdSt1SFVMN1BYemxQVGNTYUhsaTJkS2NQR1FEQXpnU2JqOXl5M0pK?=
- =?utf-8?B?LzJrejlibDMvWFFHK2NjeWRHR3hrMStVQklxdlBSc2RXYmR3N2JBSEZZMUk1?=
- =?utf-8?B?UFJOV1VwSFNOcjdya0tlZEhXUFRySFBEdDcvMW5tTmdpSmZmK09FNjVzOWlj?=
- =?utf-8?B?alUwQ0xqLzhBd0JaZklCR2owTHZuaXFmeWd4WG5rakZtMTd2aXR2WWJVempQ?=
- =?utf-8?B?ZDB5c1BHVFk4KzlHNzFlVVZBbm9ueGRPVVpFUjlmU0R3dlc1UElhUmxJSm9N?=
- =?utf-8?B?c2tGeXBkaGFaWVpRNmVkY3k3RlBHc0FvWlZ4MDlreFhxczRRbzhTQWQrTkxE?=
- =?utf-8?B?NHFnZzVxd0xNNUtEaENrTG5IZlhRODlhNVJrT212WHU0Tm1FRWdEUUtIRGF5?=
- =?utf-8?B?Ni9aTTg0VmdtNy91bWovNHdDTXhTd1ZTbU94NkVtandlbTd5NVUwYkRQd1ND?=
- =?utf-8?B?SHZyaEFIK25PV0ZxOXBtMDFSZFFlUU1pRmV4cVN1c29RWHVvbmhkWTMvTmdT?=
- =?utf-8?B?S0JUVnpHT3RBZUVjNUdjcDRmdlc1RjQ4d215RlZuWHMzbDBqdWpZamZ0dCsx?=
- =?utf-8?B?SG1JOHdiWDJkSkJYd09hK05KRUo2SHdxTG9qK2ZXc3ZQRFFwbDB1T2pacDIy?=
- =?utf-8?B?SDUrc0xQQlFzanNqUGhYejlBdGlHUjBwNTBaWElOVGQySDVJa3liQXZob0hK?=
- =?utf-8?B?SW9LbGVvclg4QkdBYThhRWxqbXRIZWVIdEZiV1Q1OU50TTVzcTNMVVhFd2c3?=
- =?utf-8?B?czYyOGZZM0hMTDJRb0JQLzJWZTVzVUtXeFo2bkF2YUhSSWZZaXh0RDMvVXhn?=
- =?utf-8?Q?9sI/CRyIhaQO8RUbfWe68fOrLJwa4Ggdg6l1gXMc5WNb?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dde0f53b-ad9d-4ec3-baa8-08dbd3a548a6
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2023 08:51:44.7498
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z5lkAOfPg4oTvKAyYl15VWYu1zsKteewruo3CuN3E/lt20LvqJRvhRFYgJO19fJIkFcGTPDakut13NCJKVKRvw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7355
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <157d1c8d-5aa4-4488-bf85-7806c8fb00bc@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 20, 2023 at 05:11:46PM +0530, Krishna Kurapati PSSNV wrote:
+> On 10/20/2023 3:27 PM, Johan Hovold wrote:
+> > On Sat, Oct 07, 2023 at 09:17:59PM +0530, Krishna Kurapati wrote:
+> >> From: Harsh Agarwal <quic_harshq@quicinc.com>
 
-
-On 20.10.23 г. 23:45 ч., Pawan Gupta wrote:
-> There are no more users of mds_user_clear static key, remove it.
+> >> Co-developed-by: Harsh Agarwal <quic_harshq@quicinc.com>
+> >> Signed-off-by: Harsh Agarwal <quic_harshq@quicinc.com>
+> >> Co-developed-by:Krishna Kurapati <quic_kriskura@quicinc.com>
+> >> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> > 
+> > Thinh pointed out the problems with the above which were also reported
+> > by checkpatch.pl.
 > 
-> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+> I see that removing Co-Developed by tag for Harsh is helping with one 
+> checkpatch issue. From what I know, although I made Harsh the Primary 
+> author for the patch, should we still mention his Co-Developed-by along 
+> with this Signed-Of by ?
 
-This patch can be squashed into the previous one. You've already done 
-the bulk of the work to eliminate usage of mds_user_clear there.
+This is all documented in the process document I pointed you at earlier.
+
+You don't need a Co-Developed-by tag for the primary author.
+
+> >> @@ -748,23 +781,32 @@ static int dwc3_phy_setup(struct dwc3 *dwc)
+> >>   static int dwc3_phy_init(struct dwc3 *dwc)
+> >>   {
+> >>   	int ret;
+> >> +	int i;
+> >> +	int j;
+> > 
+> > These could be declared on one line (same throughout).
+> > 
+> 
+> I did so in v7, but was asked to put them in separate lines:
+> https://lore.kernel.org/all/20230502221100.ecska23anlzv3iwq@synopsys.com/
+
+Ok, either is fine if Thinh prefers it this way.
+
+The problem is usually the other way round where people try to squeeze
+in too much (e.g. unrelated variables and declarations) on the same
+line.
+
+> >> @@ -1892,9 +1975,12 @@ static int dwc3_read_port_info(struct dwc3 *dwc)
+> >>   
+> >>   	dev_dbg(dwc->dev, "hs-ports: %u ss-ports: %u\n",
+> >>   			dwc->num_usb2_ports, dwc->num_usb3_ports);
+> >> -
+> > 
+> > Drop this random change.
+> 
+> The removal of extra line here done you mean ?
+
+Yes.
+
+> > 
+> >>   	iounmap(base);
+
+Johan
