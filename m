@@ -2,248 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C10417D3A04
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961EA7D3A05
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbjJWOqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
+        id S234015AbjJWOqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233929AbjJWOqD (ORCPT
+        with ESMTP id S233736AbjJWOqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:46:03 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBF719BF;
-        Mon, 23 Oct 2023 07:45:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF8D9C433C8;
-        Mon, 23 Oct 2023 14:45:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698072325;
-        bh=91a8VTs5JN9FYOXvxMQyestaa0PVYwRW42Ibsjs911E=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=lw4U4lAm7e7JjW7Twvx7dgnksnYjCafBZjdBtHp7UbNsZHBlltPUjwfAD3JJFobKK
-         YIclYbYbnUXV5wDd2QspXHH9j3ucue+ZaTh8WNKSNUeTT/zLjHvLj66WkoBv8ulyOf
-         /Qv0AVua2uCdW5bGV8Cx4N0ZBEiJ+F4c4V294klGZ4ucUjKrlazSO4ZiZLDV/8FzNB
-         yLpgjO9W+9YWCxRVa7jC03OI5RCnXRFtulL6oqaHgwpyiygr5K7T2jXwtye9F11REE
-         kyv23w34L5LNcObGEo7dvTpRRTVoq1aV70DkpmXFK+3I1AVp4x103QxLNAhdlZnnU/
-         zeSwwb9tkPHlA==
-Message-ID: <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Mon, 23 Oct 2023 10:45:21 -0400
-In-Reply-To: <ZTWfX3CqPy9yCddQ@dread.disaster.area>
-References: <20231018-mgtime-v1-0-4a7a97b1f482@kernel.org>
-         <20231018-mgtime-v1-2-4a7a97b1f482@kernel.org>
-         <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
-         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
-         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
-         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
-         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
-         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
-         <ZTGncMVw19QVJzI6@dread.disaster.area>
-         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
-         <ZTWfX3CqPy9yCddQ@dread.disaster.area>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 23 Oct 2023 10:46:13 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208591FDD
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:45:45 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40837124e1cso110775e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:45:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698072343; x=1698677143; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fuPb49Nb7aOChMQEH9g60s/ZbKYpeY4nlEVZ7HXBAiA=;
+        b=CYLNIaQNhE2DkcrwXUkdgVf3ZtN7Rv/bUKj/guuKB15zmVpWTqKYuYMKnQe1rL9uX3
+         RXInqhcjHcgfZsiRh5yVFDNSJAu4lWExB6vRaUx/vOxFxkZ+syTs6Sw9uUixztBcc7fA
+         xUcusAlVS7roKkIvFjbgeT29XgWgfKKRyj4tDLhry8DjgA49Q9OKTKfA0ZTmgym+Qj2/
+         8yaUMgDxTCCFCYLx3skrVPPnQMNfGeai/1sNoTwps+jhS8p/RwV/sQzkNQFfumCipkFw
+         v6DvVW5K0PeLU5CnTch/IlgycbMeUMCU5xMIbV8/JkVsKcSAruSK+UordbslkioKXhCA
+         J4MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698072343; x=1698677143;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fuPb49Nb7aOChMQEH9g60s/ZbKYpeY4nlEVZ7HXBAiA=;
+        b=RaiILuglQURuLpMtenbh/R6qRzFeHjZklAtHXgsE+kJ0FS9+/l98WtEAJcTsqxSuiz
+         YG8T7QjhQhdMCZVhz41kzUZeJLyeMFg7uQgoBvqSDYROTL8N4va4j3HSFdqnxoyflUfJ
+         D+vFmWTjga14T0Kcsc/c12VN8paiYhdY77Kp8BQIdyAzcstP1RV1fLgEiKKduKNmzlIT
+         ZP/r2OEq4SGMfA7cuHTnGtYgzwiVjZV2oDoHEwKQEEBcHu5OnKd+x8NpfwS+yfZL8EZv
+         lcMUrYcoEbJ3tkJbrF5MP4vHTMYHhDPtiBmHN/u49mRxiswZnGvNMqC75LqYVov6XrOV
+         HgZQ==
+X-Gm-Message-State: AOJu0Yw+Hn8Tlo0NI4wEjLdB8K4Cg5BLuKpthhmTFbuGnoJ/g9nzUVgg
+        8mXJsV3tj98+u6tOkqh6vsIPXA==
+X-Google-Smtp-Source: AGHT+IHqwhVuneopgxfquyjAU4kAvXwPMoACOMfUTgtwjupQH4aGGKknxjAFoNKlkarZI9e6tEFHlg==
+X-Received: by 2002:a05:600c:3b97:b0:408:3725:b96a with SMTP id n23-20020a05600c3b9700b004083725b96amr275253wms.0.1698072343243;
+        Mon, 23 Oct 2023 07:45:43 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id r9-20020a056000014900b003232f167df5sm7888468wrx.108.2023.10.23.07.45.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 07:45:42 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 14:45:41 +0000
+From:   Sebastian Ene <sebastianene@google.com>
+To:     Vincent Donnefort <vdonnefort@google.com>
+Cc:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        akpm@linux-foundation.org, maz@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, qperret@google.com, smostafa@google.com
+Subject: Re: [PATCH v2 11/11] arm64: ptdump: Add support for guest stage-2
+ pagetables dumping
+Message-ID: <ZTaHFQotXvRWad3Y@google.com>
+References: <20231019144032.2943044-1-sebastianene@google.com>
+ <20231019144032.2943044-13-sebastianene@google.com>
+ <ZTI85i0PmI_6doz1@google.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTI85i0PmI_6doz1@google.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-23 at 09:17 +1100, Dave Chinner wrote:
-> On Fri, Oct 20, 2023 at 08:12:45AM -0400, Jeff Layton wrote:
-> > On Fri, 2023-10-20 at 09:02 +1100, Dave Chinner wrote:
-> > > On Thu, Oct 19, 2023 at 07:28:48AM -0400, Jeff Layton wrote:
-> > > > On Thu, 2023-10-19 at 11:29 +0200, Christian Brauner wrote:
-> > > > > > Back to your earlier point though:
-> > > > > >=20
-> > > > > > Is a global offset really a non-starter? I can see about doing =
-something
-> > > > > > per-superblock, but ktime_get_mg_coarse_ts64 should be roughly =
-as cheap
-> > > > > > as ktime_get_coarse_ts64. I don't see the downside there for th=
-e non-
-> > > > > > multigrain filesystems to call that.
-> > > > >=20
-> > > > > I have to say that this doesn't excite me. This whole thing feels=
- a bit
-> > > > > hackish. I think that a change version is the way more sane way t=
-o go.
-> > > > >=20
-> > > >=20
-> > > > What is it about this set that feels so much more hackish to you? M=
-ost
-> > > > of this set is pretty similar to what we had to revert. Is it just =
-the
-> > > > timekeeper changes? Why do you feel those are a problem?
-> > > >=20
-> > > > > >=20
-> > > > > > On another note: maybe I need to put this behind a Kconfig opti=
-on
-> > > > > > initially too?
-> > > > >=20
-> > > > > So can we for a second consider not introducing fine-grained time=
-stamps
-> > > > > at all. We let NFSv3 live with the cache problem it's been living=
- with
-> > > > > forever.
-> > > > >=20
-> > > > > And for NFSv4 we actually do introduce a proper i_version for all
-> > > > > filesystems that matter to it.
-> > > > >=20
-> > > > > What filesystems exactly don't expose a proper i_version and what=
- does
-> > > > > prevent them from adding one or fixing it?
-> > > >=20
-> > > > Certainly we can drop this series altogether if that's the consensu=
-s.
-> > > >=20
-> > > > The main exportable filesystem that doesn't have a suitable change
-> > > > counter now is XFS. Fixing it will require an on-disk format change=
- to
-> > > > accommodate a new version counter that doesn't increment on atime
-> > > > updates. This is something the XFS folks were specifically looking =
-to
-> > > > avoid, but maybe that's the simpler option.
-> > >=20
-> > > And now we have travelled the full circle.
-> > >=20
-> >=20
-> > LOL, yes!
-> >=20
-> > > The problem NFS has with atime updates on XFS is a result of
-> > > the default behaviour of relatime - it *always* forces a persistent
-> > > atime update after mtime has changed. Hence a read-after-write
-> > > operation will trigger an atime update because atime is older than
-> > > mtime. This is what causes XFS to run a transaction (i.e. a
-> > > persistent atime update) and that bumps iversion.
-> > >=20
-> >=20
-> > Those particular atime updates are not a problem. If we're updating the
-> > mtime and ctime anyway, then bumping the change attribute is OK.
-> >=20
-> > The problem is that relatime _also_ does an on-disk update once a day
-> > for just an atime update. On XFS, this means that the change attribute
-> > also gets bumped and the clients invalidate their caches all at once.
-> >=20
-> > That doesn't sound like a big problem at first, but what if you're
-> > sharing a multi-gigabyte r/o file between multiple clients? This sort o=
-f
-> > thing is fairly common on render-farm workloads, and all of your client=
-s
-> > will end up invalidating their caches once once a day if you're serving
-> > from XFS.
->=20
-> So we have noatime inode and mount options for such specialised
-> workloads that cannot tolerate cached ever being invalidated, yes?
->=20
-> > > lazytime does not behave this way - it delays all persistent
-> > > timestamp updates until the next persistent change or until the
-> > > lazytime aggregation period expires (24 hours). Hence with lazytime,
-> > > read-after-write operations do not trigger a persistent atime
-> > > update, and so XFS does not run a transaction to update atime. Hence
-> > > i_version does not get bumped, and NFS behaves as expected.
-> > >=20
-> >=20
-> > Similar problem here. Once a day, NFS clients will invalidate the cache
-> > on any static content served from XFS.
->=20
-> Lazytime has /proc/sys/vm/dirtytime_expire_seconds to change the
-> interval that triggers persistent time changes. That could easily be
-> configured to be longer than a day for workloads that care about
-> this sort of thing. Indeed, we could just set up timestamps that NFS
-> says "do not make persistent" to only be persisted when the inode is
-> removed from server memory rather than be timed out by background
-> writeback....
->=20
-> -----
->=20
-> All I'm suggesting is that rather than using mount options for
-> noatime-like behaviour for NFSD accesses, we actually have the nfsd
-> accesses say "we'd like pure atime updates without iversion, please".
->=20
-> Keep in mind that XFS does actually try to avoid bumping i_version
-> on pure timestamp updates - we carved that out a long time ago (see
-> the difference in XFS_ILOG_CORE vs XFS_ILOG_TIMESTAMP in
-> xfs_vn_update_time() and xfs_trans_log_inode()) so that we could
-> optimise fdatasync() to ignore timestamp updates that occur as a
-> result of pure data overwrites.
->=20
-> Hence XFS only bumps i_version for pure timestamp updates if the
-> iversion queried flag is set. IOWs, XFS it is actually doing exactly
-> what the VFS iversion implementation is telling it to do with
-> timestamp updates for non-core inode metadata updates.
->=20
-> That's the fundamental issue here: nfsd has set VFS state that tells
-> the filesystem to "bump iversion on next persistent inode change",
-> but the nfsd then runs operations that can change non-critical
-> persistent inode state in "query-only" operations. It then expects
-> filesystems to know that it should ignore the iversion queried state
-> within this context.  However, without external behavioural control
-> flags, filesystems cannot know that an isolated metadata update has
-> context specific iversion behavioural constraints.
+On Fri, Oct 20, 2023 at 09:40:06AM +0100, Vincent Donnefort wrote:
+> On Thu, Oct 19, 2023 at 02:40:33PM +0000, Sebastian Ene wrote:
+> > Register a debugfs file on guest creation to be able to view their
+> > second translation tables with ptdump. This assumes that the host is in
+> > control of the guest stage-2 and has direct access to the pagetables.
+> 
+> What about pKVM? The walker you wrote for the host stage-2 should be
+> reusable in that case?
+> 
 
-> Hence fixing this is purely a VFS/nfsd i_version implementation
-> problem - if the nfsd is running a querying operation, it should
-> tell the filesystem that it should ignore iversion query state. If
-> nothing the application level cache cares about is being changed
-> during the query operation, it should tell the filesystem to ignore
-> iversion query state because it is likely the nfsd query itself will
-> set it (or have already set it itself in the case of compound
-> operations).
->=20
-> This does not need XFS on-disk format changes to fix. This does not
-> need changes to timestamp infrastructure to fix. We just need the
-> nfsd application to tell us that we should ignore the vfs i_version
-> query state when we update non-core inode metadata within query
-> operation contexts.
->=20
+Yes, when pKVM will be ready upstream the walker which duplicates the
+pagetables for the host will be re-used for the guests. We will have to
+add a separate HVC for this which receives as an argument the guest
+vmid.
 
+> > 
+> > Signed-off-by: Sebastian Ene <sebastianene@google.com>
+> > ---
+> >  arch/arm64/include/asm/ptdump.h | 21 +++++++--
+> >  arch/arm64/kvm/mmu.c            |  3 ++
+> >  arch/arm64/mm/ptdump.c          | 84 +++++++++++++++++++++++++++++++++
+> >  arch/arm64/mm/ptdump_debugfs.c  |  5 +-
+> >  4 files changed, 108 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/ptdump.h b/arch/arm64/include/asm/ptdump.h
+> > index 35b883524462..be86244d532b 100644
+> > --- a/arch/arm64/include/asm/ptdump.h
+> > +++ b/arch/arm64/include/asm/ptdump.h
+> > @@ -5,6 +5,8 @@
+> >  #ifndef __ASM_PTDUMP_H
+> >  #define __ASM_PTDUMP_H
+> >  
+> > +#include <asm/kvm_pgtable.h>
+> > +
+> >  #ifdef CONFIG_PTDUMP_CORE
+> >  
+> >  #include <linux/mm_types.h>
+> > @@ -30,14 +32,27 @@ struct ptdump_info {
+> >  void ptdump_walk(struct seq_file *s, struct ptdump_info *info);
+> >  #ifdef CONFIG_PTDUMP_DEBUGFS
+> >  #define EFI_RUNTIME_MAP_END	DEFAULT_MAP_WINDOW_64
+> > -void __init ptdump_debugfs_register(struct ptdump_info *info, const char *name);
+> > +struct dentry *ptdump_debugfs_register(struct ptdump_info *info,
+> > +				       const char *name);
+> >  #else
+> > -static inline void ptdump_debugfs_register(struct ptdump_info *info,
+> > -					   const char *name) { }
+> > +static inline struct dentry *ptdump_debugfs_register(struct ptdump_info *info,
+> > +						     const char *name)
+> > +{
+> > +	return NULL;
+> > +}
+> >  #endif
+> >  void ptdump_check_wx(void);
+> >  #endif /* CONFIG_PTDUMP_CORE */
+> >  
+> > +#ifdef CONFIG_NVHE_EL2_PTDUMP_DEBUGFS
+> > +void ptdump_register_guest_stage2(struct kvm_pgtable *pgt, void *lock);
+> > +void ptdump_unregister_guest_stage2(struct kvm_pgtable *pgt);
+> > +#else
+> > +static inline void ptdump_register_guest_stage2(struct kvm_pgtable *pgt,
+> > +						void *lock) { }
+> > +static inline void ptdump_unregister_guest_stage2(struct kvm_pgtable *pgt) { }
+> > +#endif /* CONFIG_NVHE_EL2_PTDUMP_DEBUGFS */
+> 
+> I believe this should be compatible with VHE as well, that option should be
+> renamed.
+> 
 
-I think you're missing the point of the problem I'm trying to solve.
-I'm not necessarily trying to guard nfsd against its own accesses. The
-reads that trigger an eventual atime update could come from anywhere --
-nfsd, userland accesses, etc.
+Good point, I will rename this.
 
-If you are serving an XFS filesystem, with the (default) relatime mount
-option, then you are guaranteed that the clients will invalidate their
-cache of a file once per day, assuming that at least one read was issued
-against the file during that day.
+> > +
+> >  #ifdef CONFIG_DEBUG_WX
+> >  #define debug_checkwx()	ptdump_check_wx()
+> >  #else
+> > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> > index 482280fe22d7..e47988dba34d 100644
+> > --- a/arch/arm64/kvm/mmu.c
+> > +++ b/arch/arm64/kvm/mmu.c
+> > @@ -11,6 +11,7 @@
+> >  #include <linux/sched/signal.h>
+> >  #include <trace/events/kvm.h>
+> >  #include <asm/pgalloc.h>
+> > +#include <asm/ptdump.h>
+> >  #include <asm/cacheflush.h>
+> >  #include <asm/kvm_arm.h>
+> >  #include <asm/kvm_mmu.h>
+> > @@ -908,6 +909,7 @@ int kvm_init_stage2_mmu(struct kvm *kvm, struct kvm_s2_mmu *mmu, unsigned long t
+> >  	if (err)
+> >  		goto out_free_pgtable;
+> >  
+> > +	ptdump_register_guest_stage2(pgt, &kvm->mmu_lock);
+> >  	mmu->last_vcpu_ran = alloc_percpu(typeof(*mmu->last_vcpu_ran));
+> >  	if (!mmu->last_vcpu_ran) {
+> >  		err = -ENOMEM;
+> > @@ -1021,6 +1023,7 @@ void kvm_free_stage2_pgd(struct kvm_s2_mmu *mmu)
+> >  	write_unlock(&kvm->mmu_lock);
+> >  
+> >  	if (pgt) {
+> > +		ptdump_unregister_guest_stage2(pgt);
+> >  		kvm_pgtable_stage2_destroy(pgt);
+> >  		kfree(pgt);
+> >  	}
+> > diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
+> > index 4687840dcb69..facfb15468f5 100644
+> > --- a/arch/arm64/mm/ptdump.c
+> > +++ b/arch/arm64/mm/ptdump.c
+> > @@ -26,6 +26,7 @@
+> >  #include <asm/ptdump.h>
+> >  #include <asm/kvm_pkvm.h>
+> >  #include <asm/kvm_pgtable.h>
+> > +#include <asm/kvm_host.h>
+> >  
+> >  
+> >  enum address_markers_idx {
+> > @@ -543,6 +544,22 @@ void ptdump_check_wx(void)
+> >  #ifdef CONFIG_NVHE_EL2_PTDUMP_DEBUGFS
+> >  static struct ptdump_info stage2_kernel_ptdump_info;
+> >  
+> > +#define GUEST_NAME_LEN	(32U)
+> > +
+> > +struct ptdump_registered_guest {
+> > +	struct list_head		reg_list;
+> > +	struct ptdump_info		info;
+> > +	struct mm_struct		mem;
+> > +	struct kvm_pgtable_snapshot	snapshot;
+> > +	struct dentry			*dentry;
+> > +	rwlock_t			*lock;
+> > +	char				reg_name[GUEST_NAME_LEN];
+> > +};
+> > +
+> > +static LIST_HEAD(ptdump_guest_list);
+> > +static DEFINE_MUTEX(ptdump_list_lock);
+> > +static u16 guest_no;
+> 
+> This is not robust enough: If 1 VM starts then 65535 others which are killed.
+> guest_no overflows. The next number is 0 which is already taken.
+>
 
-That read will cause an eventual atime bump to be logged, at which point
-the change attribute will change. The client will then assume that it
-needs to invalidate its cache when it sees that change.
+Yes, I guess this should be improved. In the case you described we won't
+register any debugfs file because of the name clash.
 
-Changing how nfsd does its own accesses won't fix anything, because the
-problematic atime bump can come from any sort of read access.
---=20
-Jeff Layton <jlayton@kernel.org>
+> Linux has and ID allocation to solve this problem, but I don't think this is
+> necessary anyway. This should simply reuse the struct kvm->debugfs_dentry.
+> 
+> Also probably most of the informations contained in ptdump_registered_guest can
+> be found in struct kvm. The debugfs should then probably simply take struct kvm
+> for the private argument.
+>
+
+I would prefer to keep it as a separate struct here as it gives some
+flexibility if we need to extend it for guests pKVM support. I think we
+can drop the struct mm_struct from here.
+
+Thanks,
+Sebastian
+
+> > +
+> >  static phys_addr_t ptdump_host_pa(void *addr)
+> >  {
+> >  	return __pa(addr);
+> > @@ -740,6 +757,73 @@ static void stage2_ptdump_walk(struct seq_file *s, struct ptdump_info *info)
+> >  
+> >  	kvm_pgtable_walk(pgtable, start_ipa, end_ipa, &walker);
+> >  }
+> 
+> [...]
