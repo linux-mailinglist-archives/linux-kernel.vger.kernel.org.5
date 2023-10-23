@@ -2,113 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 235CF7D28EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D317D28ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233242AbjJWDNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 23:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
+        id S232844AbjJWDNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 23:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjJWDNT (ORCPT
+        with ESMTP id S229468AbjJWDNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 23:13:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443B9AD
-        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 20:13:17 -0700 (PDT)
+        Sun, 22 Oct 2023 23:13:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B61AD
+        for <linux-kernel@vger.kernel.org>; Sun, 22 Oct 2023 20:13:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698030797; x=1729566797;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=AeWTtkCsGMX/D1evCPohfI5Y/jQTw5z4QJVr/hc1lsY=;
-  b=N8AnDAa+ugimiEowmqdXhv3if6CgwfDocfTj8R8RhRSACqAP71gPpf9o
-   VRfIs8+rgoyo5jmYTl2z1xgYHlUWT7R6H8BcIjDlUy9OH3aSYob2FwJl9
-   JLDG1KYSGa1UUN8WEFT7B/B6JXcdRKpmXhN+8jdFdWzRYFCBQb39COURB
-   aAPydZLNfxAvCux2UgGP406OftghXtpp+CRmCv4T/pN6HdC44zmSXjAWd
-   FGqmaCbS9Nb3Dwg4LptFjUPY6cSftdpvU/1Bl1q7gZeRI6wtA97jWc3Xl
-   6Y2enel7AeAFk25eslwZ+YMa0KQAnV+xF43m+wv7NLpz3nmRgU+SFlrc0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="389604102"
+  t=1698030785; x=1729566785;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=gyCg2+9VLduhMWu9FS7TlcphhtM5CN94k/MYoshLttE=;
+  b=cdJOOAQsu1t96+/2KKDY0RmkU5uPo1aAgDqmO8caMRNl3gIZL1OyQMpR
+   MdboaRwjYEYdnsAaZI2/FSM/EdqET4MCaz2UW5rqP7ynORawcTZRjk4g9
+   fpv3+grirC917/6yVp62i6HOF/BHJSKpVZyvpMiWSungAtcAMhnJfq9oK
+   OPvv/TDoHj/Q7Hq2EQYR1+2wjrY9lE2NUFGpwhpVz09u7lFkrnz66ZF3D
+   c71Ly75hpbNRonpb7RNT4LAkXBUeOPG5zo/0zjkp6hpWsQSxXBf3ThSB9
+   BP+1sLnGvAGhwlLRYxvVU+Jtf2UAIJ/LmtReBzln5J5Vc93xIZmTG7iDm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="390644195"
 X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="389604102"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 20:13:16 -0700
+   d="scan'208";a="390644195"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 20:13:04 -0700
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="931561560"
 X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="5932824"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmviesa001.fm.intel.com with ESMTP; 22 Oct 2023 20:13:09 -0700
-Message-ID: <400f2708-1186-4ca4-b4db-dc46b9e636b2@linux.intel.com>
-Date:   Mon, 23 Oct 2023 11:09:27 +0800
+   d="scan'208";a="931561560"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 20:13:00 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, rppt@kernel.org, david@redhat.com,
+        vbabka@suse.cz, mhocko@suse.com, willy@infradead.org,
+        mgorman@techsingularity.net, mingo@kernel.org,
+        aneesh.kumar@linux.ibm.com, hannes@cmpxchg.org, osalvador@suse.de,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v3 2/2] mm: memory_hotplug: drop memoryless node from
+ fallback lists
+In-Reply-To: <b6319738-0d71-4083-a5db-845430b8a5d8@bytedance.com> (Qi Zheng's
+        message of "Mon, 23 Oct 2023 10:53:08 +0800")
+References: <cover.1697711415.git.zhengqi.arch@bytedance.com>
+        <9f1dbe7ee1301c7163b2770e32954ff5e3ecf2c4.1697711415.git.zhengqi.arch@bytedance.com>
+        <87bkctg4f4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <4bfa007c-a20f-9e68-4a9f-935dacf43222@bytedance.com>
+        <8734y2f868.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <b6319738-0d71-4083-a5db-845430b8a5d8@bytedance.com>
+Date:   Mon, 23 Oct 2023 11:10:58 +0800
+Message-ID: <87pm16doe5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com, "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Liu, Yi L" <yi.l.liu@intel.com>
-Subject: Re: [PATCH 0/2] iommufd: Only enforce_cache_coherency when allocating
- hwpt
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>
-References: <cover.1697848510.git.nicolinc@nvidia.com>
- <2201ae4d-b825-49a5-ba73-c6b310e2969c@linux.intel.com>
- <BL1PR11MB5271F7BEA6187ACBD6BA88568CD8A@BL1PR11MB5271.namprd11.prod.outlook.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BL1PR11MB5271F7BEA6187ACBD6BA88568CD8A@BL1PR11MB5271.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/23 10:55 AM, Tian, Kevin wrote:
->> From: Baolu Lu <baolu.lu@linux.intel.com>
->> Sent: Saturday, October 21, 2023 9:33 AM
->>
->> On 2023/10/21 8:37, Nicolin Chen wrote:
->>> https://lore.kernel.org/linux-
->> iommu/20231020135501.GG3952@nvidia.com/
->>> The conversation above concluded that a hwpt should only enforce cache
->>> coherency per device at the stage of its allocation, and it should not
->>> be changed or updated in the attach/replace routines.
->>>
->>> Add two patches dropping the enforce_cache_coherency calls from attach
->>> and replce routines respectively, since they were introduced with two
->>> different commits.
->>>
->>> Nicolin Chen (2):
->>>     iommufd/device: Drop enforce_cache_coherency in
->>>       iommufd_device_do_replace
->>>     iommufd/device: Drop enforce_cache_coherency in
->>>       iommufd_hw_pagetable_attach
->>>
->>>    drivers/iommu/iommufd/device.c          | 19 ++-----------------
->>>    drivers/iommu/iommufd/hw_pagetable.c    |  2 +-
->>>    drivers/iommu/iommufd/iommufd_private.h |  1 -
->>>    3 files changed, 3 insertions(+), 19 deletions(-)
->>
->> Hi Kevin and Jason,
->>
->> With these two fixes, there's no issue in the intel driver any more. Do
->> I understand it right?
->>
-> 
-> But code-wise it's still good to explicitly disallow enforce-cc on a
-> non-empty domain if there is no plan to support it. Just no Fix to
-> stable.
+Qi Zheng <zhengqi.arch@bytedance.com> writes:
 
-Yes. Make sense. The device driver implementation should be self-
-contained.
+> Hi Ying,
+>
+> On 2023/10/23 09:18, Huang, Ying wrote:
+>> Qi Zheng <zhengqi.arch@bytedance.com> writes:
+>> 
+>>> Hi Ying,
+>>>
+>>> On 2023/10/20 15:05, Huang, Ying wrote:
+>>>> Qi Zheng <zhengqi.arch@bytedance.com> writes:
+>>>>
+>>>>> In offline_pages(), if a node becomes memoryless, we
+>>>>> will clear its N_MEMORY state by calling node_states_clear_node().
+>>>>> But we do this after rebuilding the zonelists by calling
+>>>>> build_all_zonelists(), which will cause this memoryless node to
+>>>>> still be in the fallback list of other nodes.
+>>>> For fallback list, do you mean pgdat->node_zonelists[]?  If so, in
+>>>> build_all_zonelists
+>>>>     __build_all_zonelists
+>>>>       build_zonelists
+>>>>         build_zonelists_in_node_order
+>>>>           build_zonerefs_node
+>>>> populated_zone() will be checked before adding zone into zonelist.
+>>>> So, IIUC, we will not try to allocate from the memory less node.
+>>>
+>>> Normally yes, but if it is the weird topology mentioned in [1], it's
+>>> possible to allocate memory from it, it is a memoryless node, but it
+>>> also has memory.
+>>>
+>>> In addition to the above case, I think it's reasonable to remove
+>>> memory less node from node_order[] in advance. In this way it will
+>>> not to be traversed in build_zonelists_in_node_order().
+>>>
+>>> [1]. https://lore.kernel.org/all/20230212110305.93670-1-zhengqi.arch@bytedance.com/
+>> Got it!  Thank you for information.  I think that it may be good to
+>> include this in the patch description to avoid potential confusing in
+>> the future.
+>
+> OK, maybe the commit message can be changed to the following:
+>
+> ```
+> In offline_pages(), if a node becomes memoryless, we
+> will clear its N_MEMORY state by calling node_states_clear_node().
+> But we do this after rebuilding the zonelists by calling
+> build_all_zonelists(), which will cause this memoryless node to
+> still be in the fallback nodes (node_order[]) of other nodes.
+>
+> To drop memoryless nodes from fallback nodes in this case, just
+> call node_states_clear_node() before calling build_all_zonelists().
+>
+> In this way, we will not try to allocate pages from memoryless
+> node0, then the panic mentioned in [1] will also be fixed. Even though
+> this problem has been solved by dropping the NODE_MIN_SIZE constrain
+> in x86 [2], it would be better to fix it in the core MM as well.
+>
+> [1]. https://lore.kernel.org/all/20230212110305.93670-1-zhengqi.arch@bytedance.com/
+> [2]. https://lore.kernel.org/all/20231017062215.171670-1-rppt@kernel.org/
+>
+> ```
 
-Best regards,
-baolu
+This is helpful.  Thanks!
+
+--
+Best Regards,
+Huang, Ying
+
+> Thanks,
+> Qi
+>
+>> --
+>> Best Regards,
+>> Huang, Ying
+>> 
+>>> Thanks,
+>>> Qi
+>>>
+>>>
+>>>> --
+>>>> Best Regards,
+>>>> Huang, Ying
+>>>>
+>>>>> This will incur
+>>>>> some runtime overhead.
+>>>>>
+>>>>> To drop memoryless node from fallback lists in this case, just
+>>>>> call node_states_clear_node() before calling build_all_zonelists().
+>>>>>
+>>>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>>>>> Acked-by: David Hildenbrand <david@redhat.com>
+>>>> [snip]
+>>>> --
+>>>> Best Regards,
+>>>> Huang, Ying
