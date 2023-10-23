@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C447D4355
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 01:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F267D4353
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 01:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231817AbjJWXkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 19:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
+        id S231565AbjJWXkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 19:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbjJWXkN (ORCPT
+        with ESMTP id S231607AbjJWXkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 19:40:13 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE9FCC
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:40:07 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7af69a4baso52648357b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:40:07 -0700 (PDT)
+        Mon, 23 Oct 2023 19:40:16 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D225CD6E
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:40:09 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da033914f7cso402280276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 16:40:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698104407; x=1698709207; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698104409; x=1698709209; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jf1tQhWhiUHsUcOyz6b9syOvbswpkBFGF9h9iOKMWy8=;
-        b=P966TVZ/R0NaGEdVlwjG21WF+qcIHmwPICnTwvETRjc65V9UfTjzkBucCMZ/TAdpuv
-         Mm6jK1vCno8DkckRhP0rPcjhbt4s5H3SY31sOW56OmfpvP45MzKyDi+k/VQNzmV60oKK
-         aW8zjLBc/QWjeAv3I9n7yUGY0fhF6bcs5/UX6r/fgZxzJOgtvtHCJM2zJ8URnfJ0Zzfu
-         AQMn3Noipq7tnQUrz7t1JwaXajWX1wkwF0wTSjmOUPt8efOj72siZ5DaS5HHZs3kq9I1
-         N1AyWHiXr0BDfQI2rfzOdedItpkYlZU1I3bk4UxJJDu3FnT9pGNj0e942rwYFh79fPK2
-         ZczQ==
+        bh=ncl3FNsJPI8hbq8cXsw5giqcYGS/9dRNgfVScKM3w+8=;
+        b=yeeyb2VUbRC6r8+YnM933njw2wWKCNaYXJlvdtAaMjBumtjXFJ2M8DWsK1Vg1MwJ3K
+         of4zsWTQOaBWpSr+Fsh4XGmIQoD1b01zl6U0SvlvzBMF4k+fxT0W/S/x3yDv6AvjV1dV
+         9UYNXThheTPDfat+5BBDkQ7AD3PfeZ3szkxbfFFRriwBsI3klBK7RXLDf8LkyXq6brms
+         9HHL+qDX2LT9NBL5W91rFXpANPLz2HoR4x2T39Cx5qlBjLXXaD47mPDnbBHRSlXO+Xfk
+         uDc4MfXDkxBGndLs6ZKgzi6Q/BsD+BIJNbpfLfBV+kxW1rRPnnz2sAaRPPriPq8bJOoD
+         qd8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698104407; x=1698709207;
+        d=1e100.net; s=20230601; t=1698104409; x=1698709209;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Jf1tQhWhiUHsUcOyz6b9syOvbswpkBFGF9h9iOKMWy8=;
-        b=rjWXvSxiH+8YQPki0iVpr7X3n3hsOwIQzva/8fSbEpgcHN1TI8TIPmsovebot//iy7
-         jEVjHa1+DfoY1wY5NWOUBkCghrVVWtgXB0hBDjdn5lyB7PnaAvUBbexviq/3HS5OS6uz
-         c+OVF42DuNXe13FrfUS1dWMaZLSnpesm7kGDlM3ClEU8m0ukPuKrGLGQj1dEJSdt+mXi
-         HidlCHvifLj8z2NgIXfcIwesg8EZ+ijkf6PjYZZn9iAIf7Rqcvo+mTTqzfDl/JQlreYG
-         SDEnCTxksbe/Kf5lsviRSJ/gwOuDwkpsjULx+2btxE0T9e/XND25C/5mY4yzG8+Ytc0Q
-         ZtYg==
-X-Gm-Message-State: AOJu0YwC6JNpXkj4OVld6HCoabCQ0ONzh6gHCDQDCf3yr0BueYfbJfGq
-        hC4R79y+HdO+hL9G7Ryg+IVtjvZfdKE=
-X-Google-Smtp-Source: AGHT+IFB7gkT4ats34fYJblhK65PLyXH0GidTgEeYOQzGsiLxPvYUCVeyGmEAxdjKxNhFRyCGJwD95zbBOQ=
+        bh=ncl3FNsJPI8hbq8cXsw5giqcYGS/9dRNgfVScKM3w+8=;
+        b=Jg+AddEkRTdsWpnZL/wAJecBFoTDImTLfmyF9aBb1M2FOFmYrwcihbiGPWrMK92ml1
+         wTl+eYDrnucWKHAVlAocOTsA3W3lBYbZWeBzWYywYt5KjwQH7FxRiCxvAi1qkJ7kqukg
+         1WoZFmKWEM8KEB9UOv3F35/AtdWe6onfMukLi4r9DO7U6qNzA9Ks2BQYgs+e6hpAtiXj
+         snSV4Dkueagm03hMn6BmhwRs1JgwtoOUjIeb7o5vBtu8A1cksMybYRlbFmFQwJ9iX/A5
+         uc1IZUEKolBd3BaBlHmW7Qu7kkj70+0Tv2h3j6QPOzhJInKBNffRM5+ulCIYKKeggyjx
+         vfgw==
+X-Gm-Message-State: AOJu0Ywy1WxmNorxKH4B975Mi2WtrtGQUbFONpQCc4J/eFcF3NkIttzu
+        ssoxRxR2yJxAq4AR4pEGIPG5fyyw9zw=
+X-Google-Smtp-Source: AGHT+IHkfZjGTo7iBRDmhKCATqJxU/ld84g8TFcJVjoXQahO7z2ttVEHXNfjaiCEHYf4ft9kRqJ37KV49N8=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:e245:0:b0:576:af04:3495 with SMTP id
- l66-20020a0de245000000b00576af043495mr245928ywe.9.1698104407226; Mon, 23 Oct
- 2023 16:40:07 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1083:b0:d9a:c3b8:4274 with SMTP id
+ v3-20020a056902108300b00d9ac3b84274mr279845ybu.7.1698104409129; Mon, 23 Oct
+ 2023 16:40:09 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 23 Oct 2023 16:39:56 -0700
+Date:   Mon, 23 Oct 2023 16:39:57 -0700
 In-Reply-To: <20231023234000.2499267-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231023234000.2499267-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Message-ID: <20231023234000.2499267-3-seanjc@google.com>
-Subject: [PATCH 2/6] KVM: x86/pmu: Reset the PMU, i.e. stop counters, before refreshing
+Message-ID: <20231023234000.2499267-4-seanjc@google.com>
+Subject: [PATCH 3/6] KVM: x86/pmu: Stop calling kvm_pmu_reset() at RESET (it's redundant)
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -66,88 +66,69 @@ Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Like Xu <like.xu.linux@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stop all counters and release all perf events before refreshing the vPMU,
-i.e. before reconfiguring the vPMU to respond to changes in the vCPU
-model.
+Drop kvm_vcpu_reset()'s call to kvm_pmu_reset(), the call is performed
+only for RESET, which is really just the same thing as vCPU creation,
+and kvm_arch_vcpu_create() *just* called kvm_pmu_init(), i.e. there can't
+possibly be any work to do.
 
-Clear need_cleanup in kvm_pmu_reset() as well so that KVM doesn't
-prematurely stop counters, e.g. if KVM enters the guest and enables
-counters before the vCPU is scheduled out.
+Unlike Intel, AMD's amd_pmu_refresh() does fill all_valid_pmc_idx even if
+guest CPUID is empty, but everything that is at all dynamic is guaranteed
+to be '0'/NULL, e.g. it should be impossible for KVM to have already
+created a perf event.
 
-Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/pmu.c | 35 ++++++++++++++++++++++-------------
- 1 file changed, 22 insertions(+), 13 deletions(-)
+ arch/x86/kvm/pmu.c | 2 +-
+ arch/x86/kvm/pmu.h | 1 -
+ arch/x86/kvm/x86.c | 1 -
+ 3 files changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-index 027e9c3c2b93..dc8e8e907cfb 100644
+index dc8e8e907cfb..458e836c6efe 100644
 --- a/arch/x86/kvm/pmu.c
 +++ b/arch/x86/kvm/pmu.c
-@@ -657,25 +657,14 @@ int kvm_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+@@ -657,7 +657,7 @@ int kvm_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
  	return 0;
  }
  
--/* refresh PMU settings. This function generally is called when underlying
-- * settings are changed (such as changes of PMU CPUID by guest VMs), which
-- * should rarely happen.
-- */
--void kvm_pmu_refresh(struct kvm_vcpu *vcpu)
--{
--	if (KVM_BUG_ON(kvm_vcpu_has_run(vcpu), vcpu->kvm))
--		return;
--
--	bitmap_zero(vcpu_to_pmu(vcpu)->all_valid_pmc_idx, X86_PMC_IDX_MAX);
--	static_call(kvm_x86_pmu_refresh)(vcpu);
--}
--
- void kvm_pmu_reset(struct kvm_vcpu *vcpu)
+-void kvm_pmu_reset(struct kvm_vcpu *vcpu)
++static void kvm_pmu_reset(struct kvm_vcpu *vcpu)
  {
  	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
  	struct kvm_pmc *pmc;
- 	int i;
+diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
+index a46aa9b25150..db9a12c0a2ef 100644
+--- a/arch/x86/kvm/pmu.h
++++ b/arch/x86/kvm/pmu.h
+@@ -243,7 +243,6 @@ bool kvm_pmu_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr);
+ int kvm_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info);
+ int kvm_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info);
+ void kvm_pmu_refresh(struct kvm_vcpu *vcpu);
+-void kvm_pmu_reset(struct kvm_vcpu *vcpu);
+ void kvm_pmu_init(struct kvm_vcpu *vcpu);
+ void kvm_pmu_cleanup(struct kvm_vcpu *vcpu);
+ void kvm_pmu_destroy(struct kvm_vcpu *vcpu);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 0c9686207996..c8ac83a7764e 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -12207,7 +12207,6 @@ void kvm_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ 	}
  
-+	pmu->need_cleanup = false;
-+
- 	bitmap_zero(pmu->reprogram_pmi, X86_PMC_IDX_MAX);
+ 	if (!init_event) {
+-		kvm_pmu_reset(vcpu);
+ 		vcpu->arch.smbase = 0x30000;
  
- 	for_each_set_bit(i, pmu->all_valid_pmc_idx, X86_PMC_IDX_MAX) {
-@@ -695,6 +684,26 @@ void kvm_pmu_reset(struct kvm_vcpu *vcpu)
- 	static_call_cond(kvm_x86_pmu_reset)(vcpu);
- }
- 
-+
-+/*
-+ * Refresh the PMU configuration for the vCPU, e.g. if userspace changes CPUID
-+ * and/or PERF_CAPABILITIES.
-+ */
-+void kvm_pmu_refresh(struct kvm_vcpu *vcpu)
-+{
-+	if (KVM_BUG_ON(kvm_vcpu_has_run(vcpu), vcpu->kvm))
-+		return;
-+
-+	/*
-+	 * Stop/release all existing counters/events before realizing the new
-+	 * vPMU model.
-+	 */
-+	kvm_pmu_reset(vcpu);
-+
-+	bitmap_zero(vcpu_to_pmu(vcpu)->all_valid_pmc_idx, X86_PMC_IDX_MAX);
-+	static_call(kvm_x86_pmu_refresh)(vcpu);
-+}
-+
- void kvm_pmu_init(struct kvm_vcpu *vcpu)
- {
- 	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+ 		vcpu->arch.msr_misc_features_enables = 0;
 -- 
 2.42.0.758.gaed0368e0e-goog
 
