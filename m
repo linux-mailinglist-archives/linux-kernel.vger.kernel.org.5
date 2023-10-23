@@ -2,225 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AEC7D366C
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C797D366D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbjJWM0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 08:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
+        id S230169AbjJWM0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 08:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbjJWM0L (ORCPT
+        with ESMTP id S229575AbjJWM0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 08:26:11 -0400
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE96100;
-        Mon, 23 Oct 2023 05:26:08 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VuktyZl_1698063962;
-Received: from 30.240.113.74(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VuktyZl_1698063962)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Oct 2023 20:26:05 +0800
-Message-ID: <d8aff089-8b7f-497c-9dbb-c02aa7abc0b6@linux.alibaba.com>
-Date:   Mon, 23 Oct 2023 20:26:00 +0800
+        Mon, 23 Oct 2023 08:26:45 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D647100;
+        Mon, 23 Oct 2023 05:26:40 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SDZ8R0r84zVlwb;
+        Mon, 23 Oct 2023 20:22:47 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 23 Oct
+ 2023 20:26:34 +0800
+Subject: Re: [PATCH net-next v12 1/5] page_pool: unify frag_count handling in
+ page_pool_is_last_frag()
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+References: <20231020095952.11055-1-linyunsheng@huawei.com>
+ <20231020095952.11055-2-linyunsheng@huawei.com> <ZTZcTrTy9ulPast5@hades>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <4da09821-d964-924f-470b-e5c1de18eecf@huawei.com>
+Date:   Mon, 23 Oct 2023 20:26:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-Subject: Re: [PATCH v9 3/4] drivers/perf: add DesignWare PCIe PMU driver
-To:     Yicong Yang <yangyicong@huawei.com>, chengyou@linux.alibaba.com,
-        kaishen@linux.alibaba.com, helgaas@kernel.org, will@kernel.org,
-        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
-        robin.murphy@arm.com
-Cc:     yangyicong@hisilicon.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        rdunlap@infradead.org, mark.rutland@arm.com,
-        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
-References: <20231020134230.53342-1-xueshuai@linux.alibaba.com>
- <20231020134230.53342-4-xueshuai@linux.alibaba.com>
- <5d8a8073-bdd2-9416-d93c-516416fcfd5e@huawei.com>
+In-Reply-To: <ZTZcTrTy9ulPast5@hades>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-In-Reply-To: <5d8a8073-bdd2-9416-d93c-516416fcfd5e@huawei.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/10/23 17:13, Yicong Yang wrote:
-> Hi Shuai,
+On 2023/10/23 19:43, Ilias Apalodimas wrote:
+> Hi Yunsheng, 
 > 
-> On 2023/10/20 21:42, Shuai Xue wrote:
->> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
->> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
->> Core controller IP which provides statistics feature. The PMU is a PCIe
->> configuration space register block provided by each PCIe Root Port in a
->> Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
->> injection, and Statistics).
->>
->> To facilitate collection of statistics the controller provides the
->> following two features for each Root Port:
->>
->> - one 64-bit counter for Time Based Analysis (RX/TX data throughput and
->>   time spent in each low-power LTSSM state) and
->> - one 32-bit counter for Event Counting (error and non-error events for
->>   a specified lane)
->>
->> Note: There is no interrupt for counter overflow.
->>
->> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
->> named based the BDF of Root Port. For example,
->>
->>     30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
->>
->> the PMU device name for this Root Port is dwc_rootport_3018.
->>
->> Example usage of counting PCIe RX TLP data payload (Units of bytes)::
->>
->>     $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
->>
->> average RX bandwidth can be calculated like this:
->>
->>     PCIe TX Bandwidth = Rx_PCIe_TLP_Data_Payload / Measure_Time_Window
->>
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> [...]
 > 
-> Just one nit below. Otherwise looks good to me,
+>> +	 * 1. 'n == 1': no need to actually overwrite it.
+>> +	 * 2. 'n != 1': overwrite it with one, which is the rare case
+>> +	 *              for pp_frag_count draining.
+>>  	 *
+>> -	 * The main advantage to doing this is that an atomic_read is
+>> -	 * generally a much cheaper operation than an atomic update,
+>> -	 * especially when dealing with a page that may be partitioned
+>> -	 * into only 2 or 3 pieces.
+>> +	 * The main advantage to doing this is that not only we avoid a atomic
+>> +	 * update, as an atomic_read is generally a much cheaper operation than
+>> +	 * an atomic update, especially when dealing with a page that may be
+>> +	 * partitioned into only 2 or 3 pieces; but also unify the pp_frag_count
+>> +	 * handling by ensuring all pages have partitioned into only 1 piece
+>> +	 * initially, and only overwrite it when the page is partitioned into
+>> +	 * more than one piece.
+>>  	 */
+>> -	if (atomic_long_read(&page->pp_frag_count) == nr)
+>> +	if (atomic_long_read(&page->pp_frag_count) == nr) {
+>> +		/* As we have ensured nr is always one for constant case using
+>> +		 * the BUILD_BUG_ON(), only need to handle the non-constant case
+>> +		 * here for pp_frag_count draining, which is a rare case.
+>> +		 */
+>> +		BUILD_BUG_ON(__builtin_constant_p(nr) && nr != 1);
+>> +		if (!__builtin_constant_p(nr))
+>> +			atomic_long_set(&page->pp_frag_count, 1);
 > 
-> Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+> Aren't we changing the behaviour of the current code here? IIRC is
+> atomic_long_read(&page->pp_frag_count) == nr we never updated the atomic
+> pp_frag_count and the reasoning was that the next caller can set it
+> properly. 
+
+If the next caller is calling the page_pool_alloc_frag(), then yes,
+because page_pool_fragment_page() will be used to reset the
+page->pp_frag_count, so it does not really matter what is the value
+of page->pp_frag_count when we are recycling a page.
+
+If the next caller is calling page_pool_alloc_pages() directly without
+fragmenting a page, the above code is used to ensure that pp_frag_count
+is always one when page_pool_alloc_pages() fetches a page from pool->alloc
+or pool->ring, because page_pool_fragment_page() is not used to reset the
+page->pp_frag_count for page_pool_alloc_pages() and we have removed the
+per page_pool PP_FLAG_PAGE_FRAG in page_pool_is_last_frag().
+
+As we don't know if the caller is page_pool_alloc_frag() or
+page_pool_alloc_pages(), so the above code ensure the page in pool->alloc
+or pool->ring always have the pp_frag_count being one.
 
 
-Hi, Yicong,
-
-Time flies indeed. I am pleasantly surprised to realize that it has been
-over a year since you sayed "Glad to see another PCIe PMU device!" in the
-initial version. I want to express my deepest gratitude for the significant
-time and effort you have invested in providing invaluable comments. Your
-dedication has played a pivotal role in greatly enhancing the quality of
-the code.
-
-Thank you so much.
-
-Best Regards,
-Shuai
-
+> 
 >> +
->> +static int dwc_pcie_pmu_probe(struct platform_device *plat_dev)
->> +{
->> +	struct pci_dev *pdev = NULL;
->> +	struct dwc_pcie_pmu *pcie_pmu;
->> +	bool notify = false;
->> +	char *name;
->> +	u32 bdf;
->> +	int ret;
->> +
->> +	/* Match the rootport with VSEC_RAS_DES_ID, and register a PMU for it */
->> +	for_each_pci_dev(pdev) {
->> +		u16 vsec;
->> +		u32 val;
->> +
->> +		if (!(pci_is_pcie(pdev) &&
->> +		      pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT))
->> +			continue;
->> +
->> +		vsec = pci_find_vsec_capability(pdev, PCI_VENDOR_ID_ALIBABA,
->> +						DWC_PCIE_VSEC_RAS_DES_ID);
->> +		if (!vsec)
->> +			continue;
->> +
->> +		pci_read_config_dword(pdev, vsec + PCI_VNDR_HEADER, &val);
->> +		if (PCI_VNDR_HEADER_REV(val) != 0x04)
->> +			continue;
->> +		pci_dbg(pdev,
->> +			"Detected PCIe Vendor-Specific Extended Capability RAS DES\n");
->> +
->> +		bdf = PCI_DEVID(pdev->bus->number, pdev->devfn);
->> +		name = devm_kasprintf(&plat_dev->dev, GFP_KERNEL, "dwc_rootport_%x",
->> +				      bdf);
->> +		if (!name) {
->> +			ret = -ENOMEM;
->> +			goto out;
->> +		}
->> +
->> +		/* All checks passed, go go go */
->> +		pcie_pmu = devm_kzalloc(&plat_dev->dev, sizeof(*pcie_pmu), GFP_KERNEL);
->> +		if (!pcie_pmu) {
->> +			ret = -ENOMEM;
->> +			goto out;
->> +		}
->> +
->> +		pcie_pmu->pdev = pdev;
->> +		pcie_pmu->ras_des_offset = vsec;
->> +		pcie_pmu->nr_lanes = pcie_get_width_cap(pdev);
->> +		pcie_pmu->on_cpu = -1;
->> +		pcie_pmu->pmu = (struct pmu){
->> +			.module		= THIS_MODULE,
->> +			.attr_groups	= dwc_pcie_attr_groups,
->> +			.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
->> +			.task_ctx_nr	= perf_invalid_context,
->> +			.event_init	= dwc_pcie_pmu_event_init,
->> +			.add		= dwc_pcie_pmu_event_add,
->> +			.del		= dwc_pcie_pmu_event_del,
->> +			.start		= dwc_pcie_pmu_event_start,
->> +			.stop		= dwc_pcie_pmu_event_stop,
->> +			.read		= dwc_pcie_pmu_event_update,
->> +		};
->> +
->> +		/* Add this instance to the list used by the offline callback */
->> +		ret = cpuhp_state_add_instance(dwc_pcie_pmu_hp_state,
->> +					       &pcie_pmu->cpuhp_node);
->> +		if (ret) {
->> +			pci_err(pdev,
->> +				"Error %d registering hotplug @%x\n", ret, bdf);
->> +			goto out;
->> +		}
->> +
->> +		/* Unwind when platform driver removes */
->> +		ret = devm_add_action_or_reset(
->> +			&plat_dev->dev, dwc_pcie_pmu_remove_cpuhp_instance,
->> +			&pcie_pmu->cpuhp_node);
->> +		if (ret)
->> +			goto out;
->> +
->> +		ret = perf_pmu_register(&pcie_pmu->pmu, name, -1);
->> +		if (ret) {
->> +			pci_err(pdev,
->> +				"Error %d registering PMU @%x\n", ret, bdf);
->> +			goto out;
->> +		}
->> +
->> +		/* Cache PMU to handle pci device hotplug */
->> +		list_add(&pcie_pmu->pmu_node, &dwc_pcie_pmu_head);
->> +		pcie_pmu->registered = true;
->> +		notify = true;
->> +
->> +		ret = devm_add_action_or_reset(
->> +			&plat_dev->dev, dwc_pcie_pmu_unregister_pmu, pcie_pmu);
->> +		if (ret)
->> +			goto out;
+>>  		return 0;
 >> +	}
+>>  
+>>  	ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+>>  	WARN_ON(ret < 0);
 >> +
->> +	if (notify && !bus_register_notifier(&pci_bus_type, &dwc_pcie_pmu_nb))
->> +		return devm_add_action_or_reset(
->> +			&plat_dev->dev, dwc_pcie_pmu_unregister_nb, NULL);
+>> +	/* We are the last user here too, reset pp_frag_count back to 1 to
+>> +	 * ensure all pages have been partitioned into 1 piece initially,
+>> +	 * this should be the rare case when the last two fragment users call
+>> +	 * page_pool_defrag_page() currently.
+>> +	 */
+>> +	if (unlikely(!ret))
+>> +		atomic_long_set(&page->pp_frag_count, 1);
+>> +
+>>  	return ret;
+>>  }
+>>  
+>  
+>  [....]
 > 
-> Maybe you can register the notifier firstly in the probe(). It'll be unregistered
-> once failed to add the PMU. If no PMU registered it also should be ok since the
-> PMU list will be empty and notifier callback will do nothing.
+>  Thanks
+>  /Ilias
 > 
-> This may address one potential race on driver removal. Since the notifier will be
-> unregistered firstly 
-
-You are right, the added action will be released in reverse order.
-
-> but the PMU's still registered and may have chance to
-> access pointer to the root port. However it's so extreme so may never happen.
+> .
 > 
-
-Good point, I will move to bus_register_notifier() to first order in probe().
-
