@@ -2,68 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2F67D2C41
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689877D2C44
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjJWILA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
+        id S229578AbjJWILm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjJWIK7 (ORCPT
+        with ESMTP id S229450AbjJWILl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:10:59 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25750D6B;
-        Mon, 23 Oct 2023 01:10:57 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32d9b507b00so2212529f8f.1;
-        Mon, 23 Oct 2023 01:10:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698048655; x=1698653455; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d7cqCaedoqoHpQD8+KvfrceThO52+AoPN4P2eMWZ0lk=;
-        b=NJ33L3H/QTwpLwqP0Lm6GJvUVM9jH76LiIt0iTIljXBJUwK23+1iO7yINTxHIKv8ow
-         6Vmid2unVbPV7jIoMMU4TeduilIlziXa0b8k4zx3M8tHkdCKDQnv1mPQrSkM0+OjaLnG
-         MupX44pVFqSYMd2Yz6exZBXIndgjpwMJ1CpbyVw1jVWGEKomK7+cPITfQwUydieUkN0U
-         VKKc1v0rWlHvpv1nkGvxZFqwdfUZnv6EagxYx+2PvvscN51i+Fe5v9r01deUpqoNksWd
-         /uvyuOTpvlC4FWioJtR1hYcvXNjRZ/JufRrWhwbNka4wOCXAnV2ivByTfhdijKJyR87t
-         uBww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698048655; x=1698653455;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d7cqCaedoqoHpQD8+KvfrceThO52+AoPN4P2eMWZ0lk=;
-        b=FRHMNP/DtV6pWR732dgZAjEyLG2sWgqUQi45hKW4HCP8YXgpRtj8ogqht0FSUghfUt
-         Dlk79WK0jVHa28E4M5n0Mhu3V0deiunb48LdlAJu0kWWbimC5lX2AchD6jhx89rSwPqS
-         cj05fY7ku8X4ftkkZk9fzCgswLLi1zUXYIBr0QTBVachSEHhTiCzemAdAwMejCPlc5Tx
-         h6fAzhKqhs1of+FsLC82VFAv+vF+vNvC0OFT+GQ/pRjEpjRvoPDx61/sf6vSwUOmO/mJ
-         dmIRj8JKQ/ttgzvwsajjy6InsINxVWjOE/DvbWWUxo741FKjk4hXjvwHwe1i3e6STvGm
-         zyLA==
-X-Gm-Message-State: AOJu0YygwLVZ0SqTQ1ZomJMCr2GEMxHJnkKe2HO5NIAJyHF5Rrwmdh17
-        HIwL7YsRXJ3KU6Mez7KGTsCM8ZW14Kk=
-X-Google-Smtp-Source: AGHT+IEuu1pCWAMxs1QZIe5QYfyRiSzhhF+pj2KcV9gO4YSBwJ73Q58dPai8HlEnY56JCt10KECh/Q==
-X-Received: by 2002:a5d:4a86:0:b0:32d:a2c4:18bf with SMTP id o6-20020a5d4a86000000b0032da2c418bfmr5607012wrq.59.1698048655302;
-        Mon, 23 Oct 2023 01:10:55 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id y5-20020adff145000000b0031fd849e797sm7218480wro.105.2023.10.23.01.10.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 01:10:54 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Jagath Jog J <jagathjog1996@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] iio: imu: Fix spelling mistake "accelrometer" -> "accelerometer"
-Date:   Mon, 23 Oct 2023 09:10:54 +0100
-Message-Id: <20231023081054.617292-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Mon, 23 Oct 2023 04:11:41 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 42B2BA1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:11:37 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8Dx_+u1KjZlWuYzAA--.34170S3;
+        Mon, 23 Oct 2023 16:11:33 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxG9y0KjZlQRAvAA--.34174S2;
+        Mon, 23 Oct 2023 16:11:32 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: [PATCH v4 0/8] Add objtool and orc support for LoongArch
+Date:   Mon, 23 Oct 2023 16:11:23 +0800
+Message-Id: <1698048691-19521-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8AxG9y0KjZlQRAvAA--.34174S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxZr4UJr1fAFykWr4Utr4UZFc_yoWrWrWfpF
+        9rZr95GF4UWr93Aw1Dta4UurWDJan7Gr12g3Waqry8AFW2qr1DJrsakryDXF9Fqa1rGFW0
+        qF1rGw1aga1jvabCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9Yb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        XVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
+        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+        AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
+        Ja73UjIFyTuYvjxU2MKZDUUUU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,35 +59,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two spelling mistakes in dev_err messages. Fix them.
+This version is based on 6.6-rc7, tested with the latest upstream
+gcc and binutils (20231009).
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/iio/imu/bmi323/bmi323_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v4:
+  -- Add "local_label" member in struct symbol, and set it
+     as true if symbol type is STT_NOTYPE and symbol name
+     starts with ".L" string
+  -- Add EM_LOONGARCH definition to avoid cross-compile error
+  -- Modify some coding issues of patch #8
 
-diff --git a/drivers/iio/imu/bmi323/bmi323_core.c b/drivers/iio/imu/bmi323/bmi323_core.c
-index 0bd5dedd9a63..183af482828f 100644
---- a/drivers/iio/imu/bmi323/bmi323_core.c
-+++ b/drivers/iio/imu/bmi323/bmi323_core.c
-@@ -545,7 +545,7 @@ static int bmi323_tap_event_en(struct bmi323_data *data,
- 	guard(mutex)(&data->mutex);
- 
- 	if (data->odrhz[BMI323_ACCEL] < 200) {
--		dev_err(data->dev, "Invalid accelrometer parameter\n");
-+		dev_err(data->dev, "Invalid accelerometer parameter\n");
- 		return -EINVAL;
- 	}
- 
-@@ -1453,7 +1453,7 @@ static int bmi323_enable_steps(struct bmi323_data *data, int val)
- 
- 	guard(mutex)(&data->mutex);
- 	if (data->odrhz[BMI323_ACCEL] < 200) {
--		dev_err(data->dev, "Invalid accelrometer parameter\n");
-+		dev_err(data->dev, "Invalid accelerometer parameter\n");
- 		return -EINVAL;
- 	}
- 
+Tiezhu Yang (8):
+  objtool/LoongArch: Enable objtool to be built
+  objtool/LoongArch: Implement instruction decoder
+  objtool/x86: Separate arch-specific and generic parts
+  objtool/LoongArch: Enable orc to be built
+  objtool: Check local label about sibling call
+  objtool: Check local label in add_dead_ends()
+  objtool: Check local label in read_unwind_hints()
+  LoongArch: Add ORC stack unwinder support
+
+ arch/loongarch/Kconfig                             |   2 +
+ arch/loongarch/Kconfig.debug                       |  11 +
+ arch/loongarch/Makefile                            |  19 +
+ arch/loongarch/include/asm/Kbuild                  |   2 +
+ arch/loongarch/include/asm/bug.h                   |   1 +
+ arch/loongarch/include/asm/exception.h             |   2 +
+ arch/loongarch/include/asm/module.h                |   7 +
+ arch/loongarch/include/asm/orc_header.h            |  18 +
+ arch/loongarch/include/asm/orc_lookup.h            |  31 ++
+ arch/loongarch/include/asm/orc_types.h             |  58 +++
+ arch/loongarch/include/asm/stackframe.h            |   3 +
+ arch/loongarch/include/asm/unwind.h                |  19 +-
+ arch/loongarch/include/asm/unwind_hints.h          |  28 ++
+ arch/loongarch/kernel/Makefile                     |   4 +
+ arch/loongarch/kernel/entry.S                      |   5 +
+ arch/loongarch/kernel/genex.S                      |   4 +
+ arch/loongarch/kernel/module.c                     |  22 +-
+ arch/loongarch/kernel/relocate_kernel.S            |   2 +
+ arch/loongarch/kernel/setup.c                      |   2 +
+ arch/loongarch/kernel/stacktrace.c                 |   1 +
+ arch/loongarch/kernel/traps.c                      |  42 +-
+ arch/loongarch/kernel/unwind_orc.c                 | 513 +++++++++++++++++++++
+ arch/loongarch/kernel/vmlinux.lds.S                |   3 +
+ arch/loongarch/lib/Makefile                        |   2 +
+ arch/loongarch/mm/tlb.c                            |  27 +-
+ arch/loongarch/mm/tlbex.S                          |   9 +
+ arch/loongarch/vdso/Makefile                       |   1 +
+ include/linux/compiler.h                           |   9 +
+ scripts/Makefile                                   |   7 +-
+ tools/arch/loongarch/include/asm/inst.h            | 161 +++++++
+ tools/arch/loongarch/include/asm/orc_types.h       |  58 +++
+ tools/include/linux/bitops.h                       |  11 +
+ tools/objtool/Makefile                             |   4 +
+ tools/objtool/arch/loongarch/Build                 |   3 +
+ tools/objtool/arch/loongarch/decode.c              | 356 ++++++++++++++
+ .../objtool/arch/loongarch/include/arch/cfi_regs.h |  22 +
+ tools/objtool/arch/loongarch/include/arch/elf.h    |  30 ++
+ .../objtool/arch/loongarch/include/arch/special.h  |  33 ++
+ tools/objtool/arch/loongarch/orc.c                 | 171 +++++++
+ tools/objtool/arch/loongarch/special.c             |  15 +
+ tools/objtool/arch/x86/Build                       |   1 +
+ tools/objtool/arch/x86/orc.c                       | 188 ++++++++
+ tools/objtool/check.c                              | 117 +++--
+ tools/objtool/include/objtool/elf.h                |   1 +
+ tools/objtool/include/objtool/orc.h                |  14 +
+ tools/objtool/orc_dump.c                           |  69 +--
+ tools/objtool/orc_gen.c                            | 113 +----
+ 47 files changed, 1962 insertions(+), 259 deletions(-)
+ create mode 100644 arch/loongarch/include/asm/orc_header.h
+ create mode 100644 arch/loongarch/include/asm/orc_lookup.h
+ create mode 100644 arch/loongarch/include/asm/orc_types.h
+ create mode 100644 arch/loongarch/include/asm/unwind_hints.h
+ create mode 100644 arch/loongarch/kernel/unwind_orc.c
+ create mode 100644 tools/arch/loongarch/include/asm/inst.h
+ create mode 100644 tools/arch/loongarch/include/asm/orc_types.h
+ create mode 100644 tools/objtool/arch/loongarch/Build
+ create mode 100644 tools/objtool/arch/loongarch/decode.c
+ create mode 100644 tools/objtool/arch/loongarch/include/arch/cfi_regs.h
+ create mode 100644 tools/objtool/arch/loongarch/include/arch/elf.h
+ create mode 100644 tools/objtool/arch/loongarch/include/arch/special.h
+ create mode 100644 tools/objtool/arch/loongarch/orc.c
+ create mode 100644 tools/objtool/arch/loongarch/special.c
+ create mode 100644 tools/objtool/arch/x86/orc.c
+ create mode 100644 tools/objtool/include/objtool/orc.h
+
 -- 
-2.39.2
+2.1.0
 
