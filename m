@@ -2,466 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B52837D3CAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7AF7D3CB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjJWQgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 12:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55850 "EHLO
+        id S231207AbjJWQhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 12:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbjJWQgC (ORCPT
+        with ESMTP id S229690AbjJWQhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 12:36:02 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74576E4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:35:57 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6bd32d1a040so3474795b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:35:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698078957; x=1698683757; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DMVX/GhftN5yh9sv3fwDEOoaUb6e/OAAVBmEWZ/Bba4=;
-        b=EfuOyv6Sd/eNiSBUct5+aTHWSXaeew7c9fnkvn/LtqKmgLCHgDWQUFbuv0bx1Qqu0y
-         sw89ay4dYdk9H2ZzNzYaM8rTn34AJHJcIerrtPoPHmRTK3XCnyifP5HJc544Z0/vqGYK
-         tZZ8n4kba8ZmlYn+QvO2Vdtj+OWXxf2gdkAuNM3j7siR82ItInNkHdFnbjDvhQU7JvcF
-         ymPP54/fl8e7CncN/OZq9MVAcdi6p9lqLjouV/NhoAZYtGEsiYld5vg/wG/xRlrjLNdp
-         8g2vX6HNZNut6Cox/bNecu/Ywm2wxOM6guG7hdQzCe5fi9mL7wtRDOXpJNULNs/yRGuw
-         JpqQ==
+        Mon, 23 Oct 2023 12:37:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF540E6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:36:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698078990;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=bPiDJtM89jSenAR/Vf9MLQS+0UWrEcUcrVIZ4BtSNrc=;
+        b=Thlvsk690YfRzt/DBolGl520EBK02SEnT3p0BAzVVPwUy8KRVO+5LJpb3WcNCXts5OF9tp
+        5lne872X4b8FEro/IUbaNAiExjJTQst9PtArpUD9CfqKRbMqITjew6L96Wu/h3JQPlAasm
+        U31XJChug6yxnknSjf9XvURbiwMJ0Xs=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-516-XReGluNaMxiY6gn6V_ZGbg-1; Mon, 23 Oct 2023 12:36:20 -0400
+X-MC-Unique: XReGluNaMxiY6gn6V_ZGbg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-402cd372b8bso24662395e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 09:36:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698078957; x=1698683757;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DMVX/GhftN5yh9sv3fwDEOoaUb6e/OAAVBmEWZ/Bba4=;
-        b=B/nOe3S0oNFNclFt3DykXbRv+KtmMCEkO6f3B3Csd5EvIPuL5/ZdpCfXczexpQedOZ
-         /ldfJAq7zAnFR82QhXId7xBAUFlHzxx1XSK1DKbZH5Xvi/FUS0G5Ip1m0CoazXT4NURK
-         Y2beTWK6LeV3O2aKUmH0Z9nlh/pYkvekbcrE4ZEvDzwYZr8IFtt5cqzyiyOFYxV3snJH
-         +ILmORBoc3u7WaFszx67C+buX0ZvezhU0Rd/ZAVy4StyRHARCsGWI1xkfIM8DWzElvE/
-         xrnOdsG4agYHHPfBFIeQbHlGNV2hMPigbcoYSUgBGTNxjhosHxfAU86vUzwONMQD1tCb
-         DHVg==
-X-Gm-Message-State: AOJu0YwXr0Io+elnD9276X6ncrf6Cbz8PFGc/Ehw1wytt5xgFTX9VCNy
-        VUFcr9NLhwcEgDGqbTh4DJk=
-X-Google-Smtp-Source: AGHT+IEupkzvHINBU8QY9H/+k6Vg9LtDhMvTdlM2jT/uPygHQBPC0FMJ0CeX+bHfTauhA20lG2ImkQ==
-X-Received: by 2002:a05:6a21:778d:b0:16b:8498:d9bc with SMTP id bd13-20020a056a21778d00b0016b8498d9bcmr66974pzc.62.1698078956643;
-        Mon, 23 Oct 2023 09:35:56 -0700 (PDT)
-Received: from nobara-desktop-pc.localnet (cpe-76-88-3-111.san.res.rr.com. [76.88.3.111])
-        by smtp.gmail.com with ESMTPSA id b4-20020aa79504000000b0068fe76cdc62sm382002pfp.93.2023.10.23.09.35.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 09:35:56 -0700 (PDT)
-From:   Jonathan LoBue <jlobue10@gmail.com>
-To:     Stefan Binding <sbinding@opensource.cirrus.com>,
-        Huayu Zhang <leviz.kernel.dev@gmail.com>
-Cc:     Luke Jones <luke@ljones.dev>, Takashi Iwai <tiwai@suse.de>,
-        tiwai@suse.com, james.schulman@cirrus.com, david.rhodes@cirrus.com,
-        rf@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com
-Subject: Re: [PATCH] ALSA: hda: cs35l41: Support ASUS 2023 laptops with missing DSD
-Date:   Mon, 23 Oct 2023 09:35:55 -0700
-Message-ID: <3261329.aeNJFYEL58@nobara-desktop-pc>
-In-Reply-To: <2165924.irdbgypaU6@nobara-desktop-pc>
-References: <20230823011008.13146-1-luke@ljones.dev>
- <CAE4DdFNy7QRtZrbbCFt+ptKGCFxY7p_qeODW7+jHmnqzzxifVA@mail.gmail.com>
- <2165924.irdbgypaU6@nobara-desktop-pc>
+        d=1e100.net; s=20230601; t=1698078979; x=1698683779;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:from:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bPiDJtM89jSenAR/Vf9MLQS+0UWrEcUcrVIZ4BtSNrc=;
+        b=aAg3Henbr4lVZcnQX1Ue4igSbh6FNwFdoG8IC4DEcxt3mBd3jyZ40aRjnPGppGetFx
+         4FlG4NwV07q1snO8IIRBii6YpGof1/h63hJuQ0qA7azU6GYrH41af94FNr6m3hH84J1J
+         PhIi3yysNHiLQjj+ZqcpHq/7pIbyipidElud2sTZtJDfLES6EWle04tHpm7tctNugvGP
+         T/38cJo2rxYxcXF0JLp3kHTCwwmfFHdvKGxMlEZoHeGkqp70s7BuEKwE1x/UD7dEhbKh
+         hpUHG0yAadnaAPYdhHakoug9NdeHRKgZft6Hlr35tZCOoXDK0alBN+fLUg9t/GcRBehY
+         zbpQ==
+X-Gm-Message-State: AOJu0YzaBfUWQ6NyqfeUdj7nNOGyjD88hHLlx2yAKTQHwFd/IQtd1hne
+        8n1+ZZG0HjSK+6cw6M5xdFk+Ie0LO3L+GpzyDeUuiKBzir30NxFrjE+khHjIFeRilVdojDXj+xS
+        pIJ8nQqQUQEcL6U99vhM8LXaJ
+X-Received: by 2002:a05:600c:5247:b0:401:db82:3edf with SMTP id fc7-20020a05600c524700b00401db823edfmr7218465wmb.39.1698078979130;
+        Mon, 23 Oct 2023 09:36:19 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGFiu1PKt56rYcdGr3G/LTpA9GAgKmQ19nPfcfMRPWQeiQKlKSKWX7+AvElPrWy601J7SQcwQ==
+X-Received: by 2002:a05:600c:5247:b0:401:db82:3edf with SMTP id fc7-20020a05600c524700b00401db823edfmr7218423wmb.39.1698078978642;
+        Mon, 23 Oct 2023 09:36:18 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c738:1900:b6ea:5b9:62c0:34e? (p200300cbc7381900b6ea05b962c0034e.dip0.t-ipconnect.de. [2003:cb:c738:1900:b6ea:5b9:62c0:34e])
+        by smtp.gmail.com with ESMTPSA id x22-20020a05600c189600b004083a105f27sm14361777wmp.26.2023.10.23.09.36.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 09:36:18 -0700 (PDT)
+Message-ID: <96899aa6-700b-41b9-ab11-2cae48d75549@redhat.com>
+Date:   Mon, 23 Oct 2023 18:36:16 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <ZSlragGjFEw9QS1Y@x1n>
+ <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com> <ZS2IjEP479WtVdMi@x1n>
+ <8d187891-f131-4912-82d8-13112125b210@redhat.com> <ZS7ZqztMbhrG52JQ@x1n>
+ <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com> <ZTGJHesvkV84c+l6@x1n>
+ <81cf0943-e258-494c-812a-0c00b11cf807@redhat.com>
+ <CAJuCfpHZWfjW530CvQCFx-PYNSaeQwkh-+Z6KgdfFyZHRGSEDQ@mail.gmail.com>
+ <d34dfe82-3e31-4f85-8405-c582a0650688@redhat.com> <ZTVD18RgBfITsQC4@x1n>
+ <1156ad46-1952-4892-8092-bfbb8588c3f3@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <1156ad46-1952-4892-8092-bfbb8588c3f3@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, October 23, 2023 12:38:42 AM PDT Jonathan LoBue wrote:
-> On Sunday, October 8, 2023 10:19:18 AM PDT Huayu Zhang wrote:
-> > Hi Stefan and all,
-> > 
-> > Thanks for examine my email. I'm just interesting in Linux kernel
-> > development and met sound issue with my `21J8 Lenovo ThinkBook 16p Gen
-> > 4`.
-> > Sorry for not familiar with the email process if any.
-> > 
-> > I wrote following changes based on some discovery and the downside
-> > speakers (bass) seems begin to work. But the volumn keys actually
-> > adjusting the frequence (I suppose). (Louder for high freq, and lower
-> > volumn for low freq)
-> > 
-> > Wondering if any suggestions on the patch or any plan for officially
-> > supporting of Lenovo ThinkBook 16p Gen 4. ^_^
-> > I'll also provide the alsa-info and dmesg output below. Thanks a lot~
-> > 
-> > Patch:
-> > 
-> > From 124161547483109cbb491a8e39d1b5ef0973cd80 Mon Sep 17 00:00:00 2001
-> > From: Huayu Zhang <zhanghuayu.dev@gmail.com>
-> > Date: Mon, 9 Oct 2023 00:59:56 +0800
-> > Subject: [PATCH] thinkbook 16p gen4 sound fix
-> > 
-> > ---
-> > sound/pci/hda/cs35l41_hda_property.c | 41 ++++++++++++++++++++++++++++
-> > sound/pci/hda/patch_realtek.c | 1 +
-> > 2 files changed, 42 insertions(+)
-> > 
-> > diff --git a/sound/pci/hda/cs35l41_hda_property.c
-> > b/sound/pci/hda/cs35l41_hda_property.c
-> > index b62a4e6968e2..af359fbeb671 100644
-> > --- a/sound/pci/hda/cs35l41_hda_property.c
-> > +++ b/sound/pci/hda/cs35l41_hda_property.c
-> > @@ -74,6 +74,46 @@ static int hp_vision_acpi_fix(struct cs35l41_hda
-> > *cs35l41, struct device *physde
-> > return 0;
-> > }
-> > +static int lenovo_thinkbook16pgen4_no_acpi(struct cs35l41_hda
-> > *cs35l41, struct device *physdev, int id,
-> > + const char *hid)
-> > +{
-> > + struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
-> > +
-> > + dev_info(cs35l41->dev, "Adding DSD properties for %s\n",
-> > cs35l41->acpi_subsystem_id);
-> > +
-> > + printk("CSC3551: id == 0x%x\n", id);
-> > +
-> > + // cirrus,dev-index
-> > + cs35l41->index = id == 0x40 ? 0 : 1;
-> > + cs35l41->channel_index = 0;
-> > +
-> > + // cs35l41->reset_gpio = gpiod_get_index(physdev, NULL,
-> > cs35l41->index, GPIOD_OUT_LOW);
-> > + cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
-> > + printk("CS3551: reset_gpio == 0x%x\n", cs35l41->reset_gpio);
-> > +
-> > + // cs35l41->speaker_id = cs35l41_get_speaker_id(physdev,
-> > cs35l41->index, nval, -1);
-> > + cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 2);
-> > +
-> > + // cirrus,speaker-position
-> > + hw_cfg->spk_pos = cs35l41->index;
-> > +
-> > + // cirrus,gpio1-func
-> > + hw_cfg->gpio1.func = CS35l41_VSPK_SWITCH;
-> > + hw_cfg->gpio1.valid = true;
-> > +
-> > + // cirrus,gpio2-func
-> > + hw_cfg->gpio2.func = CS35L41_INTERRUPT;
-> > + hw_cfg->gpio2.valid = true;
-> > +
-> > + hw_cfg->bst_type = CS35L41_EXT_BOOST;
-> > + hw_cfg->valid = true;
-> > +
-> > + put_device(physdev);
-> > + printk("CSC3551: Done.\n");
-> > +
-> > + return 0;
-> > +}
-> > +
-> > struct cs35l41_prop_model {
-> > const char *hid;
-> > const char *ssid;
-> > @@ -85,6 +125,7 @@ static const struct cs35l41_prop_model
-> > cs35l41_prop_model_table[] = {
-> > { "CLSA0100", NULL, lenovo_legion_no_acpi },
-> > { "CLSA0101", NULL, lenovo_legion_no_acpi },
-> > { "CSC3551", "103C89C6", hp_vision_acpi_fix },
-> > + { "CSC3551", "17AA38A9", lenovo_thinkbook16pgen4_no_acpi },
-> > {}
-> > };
-> > diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> > index 751783f3a15c..fc884fdcec5f 100644
-> > --- a/sound/pci/hda/patch_realtek.c
-> > +++ b/sound/pci/hda/patch_realtek.c
-> > @@ -10031,6 +10031,7 @@ static const struct snd_pci_quirk
-> > alc269_fixup_tbl[] = { SND_PCI_QUIRK(0x17aa, 0x3886, "Y780 VECO DUAL",
-> > ALC287_FIXUP_TAS2781_I2C), SND_PCI_QUIRK(0x17aa, 0x38a7, "Y780P AMD YG
-> > dual", ALC287_FIXUP_TAS2781_I2C), SND_PCI_QUIRK(0x17aa, 0x38a8, "Y780P AMD
-> > VECO dual", ALC287_FIXUP_TAS2781_I2C), + SND_PCI_QUIRK(0x17aa, 0x38a9,
-> > "Lenovo ThinkBook 16p Gen 4",
-> > ALC287_FIXUP_CS35L41_I2C_2),
-> > SND_PCI_QUIRK(0x17aa, 0x38ba, "Yoga S780-14.5 Air AMD quad YC",
-> > ALC287_FIXUP_TAS2781_I2C),
-> > SND_PCI_QUIRK(0x17aa, 0x38bb, "Yoga S780-14.5 Air AMD quad AAC",
-> > ALC287_FIXUP_TAS2781_I2C),
-> > SND_PCI_QUIRK(0x17aa, 0x38be, "Yoga S980-14.5 proX YC Dual",
-> > ALC287_FIXUP_TAS2781_I2C),
-> > 
-> > > On 03/10/2023 15:45, Luke Jones wrote:
-> > > > On Thu, Aug 24 2023 at 08:31:06 AM +12:00:00, Luke Jones
-> > > > 
-> > > > <luke@ljones.dev> wrote:
-> > > >>> The second member variable in cs35l41_prop_model_table is the SSID
-> > > >>> to
-> > > >>> match against.
-> > > >>> The Lenovo laptops in the initial patch didn't have different SSIDs
-> > > >>> so
-> > > >>> the entry was set to NULL for those.
-> > > >>> Future entries using CSC3551 MUST always have an accompanying SSID
-> > > >>> with this entry.
-> > > >>> Takashi was correct, the implementation is intended to also be used
-> > > >>> to
-> > > >>> patch incorrect DSD.
-> > > >>> 
-> > > >>> We have a potential solution to workaround the SPI cs-gpios issue
-> > > >>> inside here,
-> > > >>> though the drawback for that is that it only works for laptops with
-> > > >>> 2
-> > > >>> SPI amps.
-> > > >> 
-> > > >> Can you provide me this so I can test? I have laptops with SPI 2 and
-> > > >> 4 speaker setups.
-> > > > 
-> > > > Hi Stefan,
-> > > > 
-> > > > Do you have any further information about the status of this in
-> > > > regards to the 2023 laptops?
-> > > 
-> > > Hi,
-> > > 
-> > > We are currently working on adding support for 2023 ASUS laptops without
-> > > _DSD.
-> > > 
-> > > >>> I also took a look at the function for applying DSD properties for
-> > > >>> the
-> > > >>> 2023 ROG laptops.
-> > > >>> Unfortunately the one-size-fits-all approach will not work, some of
-> > > >>> these laptops are i2c
-> > > >>> and some are SPI, meaning the GPIO indexes are different for
-> > > >>> different
-> > > >>> laptops.
-> > > >> 
-> > > >> Do you mean "spk-id-gpios"? For all the laptops I know of this seems
-> > > >> to be
-> > > >> Package () { "spk-id-gpios", Package () {
-> > > >> 
-> > > >>    SPK1, 0x02, Zero, Zero,
-> > > >>    SPK1, 0x02, Zero, Zero
-> > > >> 
-> > > >> } },
-> > > >> 
-> > > >> There is one laptop where it is One not 0x02 (the GA402N)
-> > > >> 
-> > > >>> Some of the laptops do no have Speaker IDs.
-> > > >>> Also, no laptop other than the 2 I added already should ever use
-> > > >>> CS35L41_EXT_BOOST_NO_VSPK_SWITCH (in fact I believe all these
-> > > >>> laptops
-> > > >>> are internal
-> > > >>> boost anyway).
-> > > >> 
-> > > >> Grazie.
-> > > >> 
-> > > >>> We are currently working internally on adding support for the 2023
-> > > >>> ROG
-> > > >>> laptops, so we
-> > > >>> ask for you guys to hold off on trying to upstream support for these
-> > > >>> laptops.
-> > > >> 
-> > > >> Ah great. Thank you. I apologise for trying to rush things, but I do
-> > > >> have a discord server of over 4000 people, many of whom have laptops
-> > > >> with cirrus amps.
-> > > >> 
-> > > >> For now I'm including a patch in my kernel builds with this mapping:
-> > > >> 
-> > > >> const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
-> > > >> 
-> > > >>     { "CLSA0100", NULL, lenovo_legion_no_acpi },
-> > > >>     { "CLSA0101", NULL, lenovo_legion_no_acpi },
-> > > >>     { "CSC3551", "10431433", asus_rog_2023_no_acpi }, // ASUS GS650P
-> > > >> 
-> > > >> - i2c
-> > > >> 
-> > > >>     { "CSC3551", "10431463", asus_rog_2023_no_acpi }, // ASUS GA402X
-> > > >> 
-> > > >> - i2c
-> > > >> 
-> > > >>     { "CSC3551", "10431473", asus_rog_2023_no_acpi }, // ASUS GU604V
-> > > >> 
-> > > >> - spi
-> > > >> 
-> > > >>     { "CSC3551", "10431483", asus_rog_2023_no_acpi }, // ASUS GU603V
-> > > >> 
-> > > >> - spi
-> > > >> 
-> > > >>     { "CSC3551", "10431493", asus_rog_2023_no_acpi }, // ASUS GV601V
-> > > >> 
-> > > >> - spi
-> > > >> 
-> > > >>     { "CSC3551", "10431573", asus_rog_2023_no_acpi }, // ASUS GZ301V
-> > > >> 
-> > > >> - spi
-> > > >> 
-> > > >>     { "CSC3551", "104317F3", asus_rog_2023_no_acpi }, // ASUS ROG
-> > > >> 
-> > > >> ALLY - i2c
-> > > >> 
-> > > >>     { "CSC3551", "10431B93", asus_rog_2023_no_acpi }, // ASUS G614J -
-> > > >> 
-> > > >> spi
-> > > >> 
-> > > >>     { "CSC3551", "10431CAF", asus_rog_2023_no_acpi }, // ASUS G634J -
-> > > >> 
-> > > >> spi
-> > > >> 
-> > > >>     { "CSC3551", "10431C9F", asus_rog_2023_no_acpi }, // ASUS G614JI
-> > > >> 
-> > > >> -spi
-> > > >> 
-> > > >>     { "CSC3551", "10431D1F", asus_rog_2023_no_acpi }, // ASUS G713P -
-> > > >> 
-> > > >> i2c
-> > > >> 
-> > > >>     { "CSC3551", "10431F1F", asus_rog_2023_no_acpi }, // ASUS H7604JV
-> > > >> 
-> > > >> - spi
-> > > >> 
-> > > >>     {}
-> > > >> 
-> > > >> };
-> > > >> 
-> > > >> These are the machines I have verified the gpios and such for.
-> > > > 
-> > > > I have a new version of this patch with all listed models confirmed as
-> > > > working, and with slightly different settings for some. The only thing
-> > > > missing in a solution to the gpio-cs issue.
-> > > > 
-> > > > Can you please provide an update on where you are with ASUS support in
-> > > > particular so that I may consider if it is worth my time submitting
-> > > > the updated patch.
-> > > 
-> > > We would prefer for you to wait, as we are looking to push up this
-> > > support in the coming weeks.
-> > > 
-> > > >> Cheers,
-> > > >> Luke.
+On 23.10.23 14:03, David Hildenbrand wrote:
+> On 22.10.23 17:46, Peter Xu wrote:
+>> On Fri, Oct 20, 2023 at 07:16:19PM +0200, David Hildenbrand wrote:
+>>> These are rather the vibes I'm getting from Peter. "Why rename it, could
+>>> confuse people because the original patches are old", "Why exclude it if it
+>>> has been included in the original patches". Not the kind of reasoning I can
+>>> relate to when it comes to upstreaming some patches.
+>>
+>> You can't blame anyone if you misunderstood and biased the question.
+>>
+>> The first question is definitely valid, even until now.  You guys still
+>> prefer to rename it, which I'm totally fine with.
+>>
+>> The 2nd question is wrong from your interpretation.  That's not my point,
+>> at least not starting from a few replies already.  What I was asking for is
+>> why such page movement between mm is dangerous.  I don't think I get solid
+>> answers even until now.
+>>
+>> Noticing "memcg is missing" is not an argument for "cross-mm is dangerous",
+>> it's a review comment.  Suren can address that.
+>>
+>> You'll propose a new feature that may tag an mm is not an argument either,
+>> if it's not merged yet.  We can also address that depending on what it is,
+>> also on which lands earlier.
+>>
+>> It'll be good to discuss these details even in a single-mm support.  Anyone
+>> would like to add that can already refer to discussion in this thread.
+>>
+>> I hope I'm clear.
+>>
 > 
-> Stefan and all,
-> 
-> Thanks for the hard work getting the DSD properties sorted and installed on
-> various BIOSes. The one that I'm most concerned with and what got me
-> interested in this patching mechanism in the first place is the ASUS ROG
-> ALLY. From a DSD dump, it's clear that the latest ROG ALLY BIOS (330) has
-> the proper audio DSD properties. Unfortunately, certain things on many
-> people's setups across numerous ROG ALLYs (using various Linux distros)
-> have broken with the 330 BIOS. This led many of us to revert back to the
-> previous BIOS, 323. Knowing the proper internal boost corresponding values
-> now (cap, inductor, and peak current), it's ideal to push these properties
-> out for those people who prefer to stay on an older BIOS for the ROG ALLY.
-> I've developed a small patch that I've used on a custom 6.5.8 Nobara
-> kernel. Line numbers and whatnot may be different according to latest on
-> official Linux git, but I'd still like to share what I have. I think it is
-> a good addition. There's basically a small logic check versus BIOS number.
-> If the BIOS is 330 or greater, then the function to override DSD properties
-> is exited. If the BIOS has a smaller number than 330, then the DSD
-> overrides are applied. Here is my patch.
-> 
-> diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/
-> cs35l41_hda_property.c
-> index b39f944..b67c636 100644
-> --- a/sound/pci/hda/cs35l41_hda_property.c
-> +++ b/sound/pci/hda/cs35l41_hda_property.c
-> @@ -6,7 +6,9 @@
->  //
->  // Author: Stefan Binding <sbinding@opensource.cirrus.com>
-> 
-> +#include <linux/dmi.h>
->  #include <linux/gpio/consumer.h>
-> +#include <linux/kernel.h>
->  #include <linux/string.h>
->  #include "cs35l41_hda_property.h"
-> 
-> @@ -78,6 +80,40 @@ static int asus_rog_2023_spkr_id2(struct cs35l41_hda
-> *cs35l41, struct device *ph
->  	return 0;
->  }
-> 
-> +static int asus_rog_2023_ally_fix(struct cs35l41_hda *cs35l41, struct
-> device *physdev, int id,
-> +				const char *hid)
-> +{
-> +	const char *rog_ally_bios_ver =
-> dmi_get_system_info(DMI_BIOS_VERSION);
-> +	const char *rog_ally_bios_num = rog_ally_bios_ver + 6; // Dropping
-> the RC71L. part before the number
-> +	int rog_ally_bios_int;
-> +	kstrtoint(rog_ally_bios_num, 10, &rog_ally_bios_int);
-> +	if(rog_ally_bios_int >= 330){
-> +		printk(KERN_INFO "DSD properties exist in the %d
-> BIOS\n", rog_ally_bios_int);
-> +		return -ENOENT;
-> +	}
-> +
-> +	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
-> +
-> +	dev_info(cs35l41->dev, "Adding DSD properties for %s\n", cs35l41-
-> 
-> >acpi_subsystem_id);
-> 
-> +
-> +	cs35l41->index = id == 0x40 ? 0 : 1;
-> +	cs35l41->channel_index = 0;
-> +	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0,
-> GPIOD_OUT_HIGH);
-> +	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 2);
-> +	hw_cfg->spk_pos = cs35l41->index;
-> +	hw_cfg->gpio1.func = CS35L41_NOT_USED;
-> +	hw_cfg->gpio1.valid = true;
-> +	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
-> +	hw_cfg->gpio2.valid = true;
-> +	hw_cfg->bst_type = CS35L41_INT_BOOST;
-> +	hw_cfg->bst_ind = 1000; /* 1,000nH Inductance value */
-> +	hw_cfg->bst_ipk = 4500; /* 4,500mA peak current */
-> +	hw_cfg->bst_cap = 24; /* 24 microFarad cap value */
-> +	hw_cfg->valid = true;
-> +
-> +	return 0;
-> +}
-> +
->  struct cs35l41_prop_model {
->  	const char *hid;
->  	const char *ssid;
-> @@ -94,7 +130,7 @@ const struct cs35l41_prop_model
-> cs35l41_prop_model_table[] = {
->  	{ "CSC3551", "10431483", asus_rog_2023_spkr_id2 }, // ASUS GU603V 
--
-> spi, reset gpio 1
->  	{ "CSC3551", "10431493", asus_rog_2023_spkr_id2 }, // ASUS GV601V 
--
-> spi, reset gpio 1
->  	{ "CSC3551", "10431573", asus_rog_2023_spkr_id2 }, // ASUS GZ301V 
--
-> spi, reset gpio 0
-> -	{ "CSC3551", "104317F3", asus_rog_2023_spkr_id2 }, // ASUS ROG 
-ALLY
-> - i2c
-> +	{ "CSC3551", "104317F3", asus_rog_2023_ally_fix }, // ASUS ROG ALLY
-> - i2c
->  	{ "CSC3551", "10431B93", asus_rog_2023_spkr_id2 }, // ASUS G614J -
-> spi, reset gpio 0
->  	{ "CSC3551", "10431CAF", asus_rog_2023_spkr_id2 }, // ASUS G634J -
-> spi, reset gpio 0
->  	{ "CSC3551", "10431C9F", asus_rog_2023_spkr_id2 }, // ASUS G614JI 
--
-> spi, reset gpio 0
-> 
-> This patch is what my changes are after unpacking the kernel source RPM for
-> a Nobara kernel and applying a version of Luke's patches.
-> 
-> I think a similar BIOS version checking logic may come in handy again in the
-> future. Thanks.
-> 
-> Best Regards,
-> Jon LoBue
+> I said everything I had to say, go read what I wrote.
 
-One more minor change to my proposed patch is to replace the "return -ENOENT;" 
-line in the patch routine not applying and exiting to "return 0; //Patch not 
-applicable. Exiting successfully" since it's actually a successful exit if the 
-BIOS version is detected as 330 or greater and no patch is applied. Thanks.
+Re-read your message after flying over first couple of paragraphs 
+previously a bit quick too quickly (can easily happen when I'm told that 
+I misunderstand questions and read them in a "biased" way).
 
+I'll happy to discuss cross-mm support once we actually need it. I just 
+don't see the need to spend any energy on that right now, without any 
+users on the horizon.
 
-Best Regards,
-Jon LoBue
+[(a) I didn't blame anybody, I said that I don't understand the 
+reasoning. (b) I hope I made it clear that this is added complexity (and 
+not just currently dangerous) and so far I haven't heard a compelling 
+argument why we should do any of that or even spend our time discussing 
+that. (c) I never used "memcg is missing" as an argument for "cross-mm 
+is dangerous", all about added complexity without actual users. (d) "it 
+easily shows that there are cases  where this will require extra work -- 
+without any current benefits" -- is IMHO a perfectly fine argument 
+against complexity that currently nobody needs]
 
+-- 
+Cheers,
+
+David / dhildenb
 
