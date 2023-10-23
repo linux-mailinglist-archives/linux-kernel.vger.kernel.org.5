@@ -2,177 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 689287D3C9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7717D3C9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 18:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbjJWQby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 12:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
+        id S231159AbjJWQcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 12:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbjJWQbj (ORCPT
+        with ESMTP id S232602AbjJWQcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 12:31:39 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2A210E;
-        Mon, 23 Oct 2023 09:31:37 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NGRV07015709;
-        Mon, 23 Oct 2023 16:31:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=5zC/P5EPty0Y0r8h3zLsFuH5hC2+OJE4zNLyy2vAfiY=;
- b=pa4NZa4FBmpq+74FigJDuO4sct0Nk44m9gaaYycg1UCsIAJaR2tVSBeq64pI8txz2upN
- fBrzFAfD8bMHXwf0y034F8kk8OwgRzt6nx9M/x99DL2jMA6RYoVPl3rk0B0cSiQhvhH1
- ayIJXxqWB2E9s1APpGcbwdniTHYpublxzijhbGX5lmMKNNuM15ORJepTq4ubs4Fe0FDi
- OKepPmC8ZBLI5Jx6vH0BYRwPlcgdl5QH/C8TaEfZVPbwTH3s2vltkFcuzb/Ucb97rLzh
- H79hPpRWlxh7Ic7Bsp8unp+mdyH7C6z/Xy/bG6yOnoH/Wc+Ffn1cNn6vRmO+O52jcX8q Qw== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3twvc4r42p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 16:31:35 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39NGU9q5026870;
-        Mon, 23 Oct 2023 16:31:34 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tvsynhqjd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 16:31:34 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39NGVVZB16253628
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Oct 2023 16:31:31 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E32D2007A;
-        Mon, 23 Oct 2023 16:31:31 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B3FA820071;
-        Mon, 23 Oct 2023 16:31:30 +0000 (GMT)
-Received: from [9.179.15.215] (unknown [9.179.15.215])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 23 Oct 2023 16:31:30 +0000 (GMT)
-Message-ID: <711135296d62cfa0d5dee744a0de86141d57cd6d.camel@linux.ibm.com>
-Subject: Re: [PATCH] s390/pci: remove custom and misleading bitmap_vzalloc
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Vasily Gorbik <gor@linux.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Date:   Mon, 23 Oct 2023 18:31:30 +0200
-In-Reply-To: <your-ad-here.call-01698077514-ext-9164@work.hours>
-References: <your-ad-here.call-01697881440-ext-2458@work.hours>
-         <CAHk-=wgTUz1bdY6zvsN4ED0arCLE8Sb==1GH8d0sjm5bu7zesQ@mail.gmail.com>
-         <your-ad-here.call-01698077344-ext-9104@work.hours>
-         <your-ad-here.call-01698077514-ext-9164@work.hours>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: tFwXFMBfP2rXid9Rq4h2kAeYjfTKkggv
-X-Proofpoint-ORIG-GUID: tFwXFMBfP2rXid9Rq4h2kAeYjfTKkggv
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 23 Oct 2023 12:32:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798D810C8;
+        Mon, 23 Oct 2023 09:32:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698078725; x=1729614725;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=71FtCFcTRicDIGun+MMACfU1Xdh4zj+8nfZDz/4d+w8=;
+  b=KYf+XuOfDBr5zCCgOrrBmn7a+lkKg7OaYj68o6Lc9Cywq7aBld1kRsVq
+   0PU6ZJX4upAA7UmQA1d0+6K2o0Hj3cZaKOidMMWBnJn3mgi1x+bYhvrTB
+   dGKnsRKIlh7sMvQ4X5IaRfQHDd+pxwkC6FP9jNDZqsqJJU1aFJ5KfUwUA
+   BjveSj4G+wey6pm7y0QNHH4F6/zYpu0PWv2tAn1SdLsqLalS9ubN8SSZ7
+   2lO+WZfLJv3ybP7grH1ybNsky+jUlno+LvfWk0JeGL3bO1qqjH2LTdzlo
+   kvoFhSKTCuylXDGjkSo7aoVIri3s62tBpLMBqKKDVGhMwZ1qH7eCuXFN1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="5507240"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="5507240"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 09:31:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="881825089"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="881825089"
+Received: from foliveix-mobl5.amr.corp.intel.com ([10.251.211.194])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 09:31:39 -0700
+Date:   Mon, 23 Oct 2023 19:31:37 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
+Subject: Re: [PATCH V4 16/17] platform/x86/intel/pmc: Add debug attribute
+ for Die C6 counter
+In-Reply-To: <20231018231624.1044633-17-david.e.box@linux.intel.com>
+Message-ID: <5990e2f6-d1c3-875c-b660-ae42e48ca75@linux.intel.com>
+References: <20231018231624.1044633-1-david.e.box@linux.intel.com> <20231018231624.1044633-17-david.e.box@linux.intel.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-23_15,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- phishscore=0 priorityscore=1501 bulkscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310230144
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-23 at 18:11 +0200, Vasily Gorbik wrote:
-> This commit effectively reverts commit c1ae1c59c8c6 ("s390/pci: fix
-> iommu bitmap allocation") and applies a simpler fix instead. Commit
-> c1ae1c59c8c6 introduced a custom bitmap_vzalloc() function that included
-> unnecessary and misleading overflow handling.
->=20
-> This fix is only relevant for the current v6.6 and stable backports. It
-> will be superseded by the upcoming conversion to use the common
-> code DMA API on s390 (pending in linux-next [2]), which eliminates
-> arch/s390/pci/pci_dma.c entirely and, therefore, addresses the original
-> problem in another way.
->=20
-> Instead of relying on a custom bitmap_vzalloc() function, this change goes
-> back to straightforward allocation using vzalloc() with the appropriate
-> size calculated using the BITS_TO_LONGS() macro.
->=20
-> Link: https://lore.kernel.org/all/CAHk-=3DwgTUz1bdY6zvsN4ED0arCLE8Sb=3D=
-=3D1GH8d0sjm5bu7zesQ@mail.gmail.com/
-> Link: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git=
-/commit/?h=3Dnext-20231020&id=3Dc76c067e488c
-> Cc: stable@vger.kernel.org
-> Fixes: c1ae1c59c8c6 ("s390/pci: fix iommu bitmap allocation")
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+On Wed, 18 Oct 2023, David E. Box wrote:
+
+> Add a "die_c6_us_show" debugfs attribute.  Reads the counter value using
+> Intel Platform Monitoring Technology (PMT) driver API. This counter is
+> useful for determining the idle residency of CPUs in the compute tile.
+> 
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 > ---
->  arch/s390/pci/pci_dma.c | 17 ++++-------------
->  1 file changed, 4 insertions(+), 13 deletions(-)
->=20
-> diff --git a/arch/s390/pci/pci_dma.c b/arch/s390/pci/pci_dma.c
-> index 99209085c75b..1b4b123d79aa 100644
-> --- a/arch/s390/pci/pci_dma.c
-> +++ b/arch/s390/pci/pci_dma.c
-> @@ -565,17 +565,6 @@ static void s390_dma_unmap_sg(struct device *dev, st=
-ruct scatterlist *sg,
->  	}
+> V4 - no change
+> 
+> V3 - Split previous PATCH V2 13. Separates implementation (this patch) from
+>      platform specific use (next patch)
+> 
+> V2 - Remove use of __func__
+>    - Use HZ_PER_MHZ
+>    - Fix missing newlines in printks
+> 
+>  drivers/platform/x86/intel/pmc/core.c | 55 +++++++++++++++++++++++++++
+>  drivers/platform/x86/intel/pmc/core.h |  4 ++
+>  2 files changed, 59 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
+> index fcb0dc702aea..02f3e909cf22 100644
+> --- a/drivers/platform/x86/intel/pmc/core.c
+> +++ b/drivers/platform/x86/intel/pmc/core.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/pci.h>
+>  #include <linux/slab.h>
+>  #include <linux/suspend.h>
+> +#include <linux/units.h>
+>  
+>  #include <asm/cpu_device_id.h>
+>  #include <asm/intel-family.h>
+> @@ -27,6 +28,7 @@
+>  #include <asm/tsc.h>
+>  
+>  #include "core.h"
+> +#include "../pmt/telemetry.h"
+>  
+>  /* Maximum number of modes supported by platfoms that has low power mode capability */
+>  const char *pmc_lpm_modes[] = {
+> @@ -822,6 +824,47 @@ static int pmc_core_substate_req_regs_show(struct seq_file *s, void *unused)
 >  }
->=20=20
-> -static unsigned long *bitmap_vzalloc(size_t bits, gfp_t flags)
-> -{
-> -	size_t n =3D BITS_TO_LONGS(bits);
-> -	size_t bytes;
-> -
-> -	if (unlikely(check_mul_overflow(n, sizeof(unsigned long), &bytes)))
-> -		return NULL;
-> -
-> -	return vzalloc(bytes);
-> -}
-> -=09
->  int zpci_dma_init_device(struct zpci_dev *zdev)
+>  DEFINE_SHOW_ATTRIBUTE(pmc_core_substate_req_regs);
+>  
+> +static unsigned int pmc_core_get_crystal_freq(void)
+> +{
+> +	unsigned int eax_denominator, ebx_numerator, ecx_hz, edx;
+> +
+> +	if (boot_cpu_data.cpuid_level < 0x15)
+> +		return 0;
+> +
+> +	eax_denominator = ebx_numerator = ecx_hz = edx = 0;
+> +
+> +	/* CPUID 15H TSC/Crystal ratio, plus optionally Crystal Hz */
+> +	cpuid(0x15, &eax_denominator, &ebx_numerator, &ecx_hz, &edx);
+> +
+> +	if (ebx_numerator == 0 || eax_denominator == 0)
+> +		return 0;
+> +
+> +	return ecx_hz;
+> +}
+> +
+> +static int pmc_core_die_c6_us_show(struct seq_file *s, void *unused)
+> +{
+> +	struct pmc_dev *pmcdev = s->private;
+> +	u64 die_c6_res, count;
+> +	int ret;
+> +
+> +	if (!pmcdev->crystal_freq) {
+> +		dev_warn_once(&pmcdev->pdev->dev, "Bad crystal frequency\n");
+
+Isn't it more like crystal frequency is not provided rather than bad 
+frequency?
+
+> +		return -EINVAL;
+
+-EINVAL is not good value to return here since there was nothing wrong 
+with the input. Maybe -ENXIO would be better.
+
+> +	}
+> +
+> +	ret = pmt_telem_read(pmcdev->punit_ep, pmcdev->die_c6_offset,
+> +			     &count, 1);
+> +	if (ret)
+> +		return ret;
+> +
+> +	die_c6_res = div64_u64(count * HZ_PER_MHZ, pmcdev->crystal_freq);
+> +	seq_printf(s, "%llu\n", die_c6_res);
+> +
+> +	return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(pmc_core_die_c6_us);
+> +
+>  static int pmc_core_lpm_latch_mode_show(struct seq_file *s, void *unused)
 >  {
->  	u8 status;
-> @@ -615,13 +604,15 @@ int zpci_dma_init_device(struct zpci_dev *zdev)
->  				zdev->end_dma - zdev->start_dma + 1);
->  	zdev->end_dma =3D zdev->start_dma + zdev->iommu_size - 1;
->  	zdev->iommu_pages =3D zdev->iommu_size >> PAGE_SHIFT;
-> -	zdev->iommu_bitmap =3D bitmap_vzalloc(zdev->iommu_pages, GFP_KERNEL);
-> +	zdev->iommu_bitmap =3D vzalloc(BITS_TO_LONGS(zdev->iommu_pages) *
-> +				     sizeof(unsigned long));
->  	if (!zdev->iommu_bitmap) {
->  		rc =3D -ENOMEM;
->  		goto free_dma_table;
+>  	struct pmc_dev *pmcdev = s->private;
+> @@ -1118,6 +1161,12 @@ static void pmc_core_dbgfs_register(struct pmc_dev *pmcdev)
+>  				    pmcdev->dbgfs_dir, pmcdev,
+>  				    &pmc_core_substate_req_regs_fops);
 >  	}
->  	if (!s390_iommu_strict) {
-> -		zdev->lazy_bitmap =3D bitmap_vzalloc(zdev->iommu_pages, GFP_KERNEL);
-> +		zdev->lazy_bitmap =3D vzalloc(BITS_TO_LONGS(zdev->iommu_pages) *
-> +					    sizeof(unsigned long));
->  		if (!zdev->lazy_bitmap) {
->  			rc =3D -ENOMEM;
->  			goto free_bitmap;
+> +
+> +	if (pmcdev->has_die_c6) {
+> +		debugfs_create_file("die_c6_us_show", 0444,
+> +				    pmcdev->dbgfs_dir, pmcdev,
+> +				    &pmc_core_die_c6_us_fops);
+> +	}
+>  }
+>  
+>  static const struct x86_cpu_id intel_pmc_core_ids[] = {
+> @@ -1212,6 +1261,10 @@ static void pmc_core_clean_structure(struct platform_device *pdev)
+>  		pci_dev_put(pmcdev->ssram_pcidev);
+>  		pci_disable_device(pmcdev->ssram_pcidev);
+>  	}
+> +
+> +	if (pmcdev->punit_ep)
+> +		pmt_telem_unregister_endpoint(pmcdev->punit_ep);
+> +
+>  	platform_set_drvdata(pdev, NULL);
+>  	mutex_destroy(&pmcdev->lock);
+>  }
+> @@ -1232,6 +1285,8 @@ static int pmc_core_probe(struct platform_device *pdev)
+>  	if (!pmcdev)
+>  		return -ENOMEM;
+>  
+> +	pmcdev->crystal_freq = pmc_core_get_crystal_freq();
+> +
+>  	platform_set_drvdata(pdev, pmcdev);
+>  	pmcdev->pdev = pdev;
+>  
+> diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
+> index 85b6f6ae4995..6d7673145f90 100644
+> --- a/drivers/platform/x86/intel/pmc/core.h
+> +++ b/drivers/platform/x86/intel/pmc/core.h
+> @@ -16,6 +16,8 @@
+>  #include <linux/bits.h>
+>  #include <linux/platform_device.h>
+>  
+> +struct telem_endpoint;
+> +
 
-Mea culpa for the useless and misleading overflow check. I'm sorry, I
-should not have copied this over from kvmalloc_array() without actually
-thinking through whether it makes sense in the new place and you're
-right Linus it doesn't.
+This seems unrelated to the patch.
 
-Thank you Vasily for cleaning this up! Also as an additional point,
-note that the size of the bitmap is limited by the above min3() which
-in the largest possible case ensures a maximum of 128 MiB bitmaps which
-only happens for very large memory systems or if a user sets an
-unreasonably large s390_iommu_aperture kernel parameter.
+-- 
+ i.
 
-Also:
-Reviewed-by: Niklas Schnelle <schnelle@linux.ibm.com>
-
-Best regards,
-Niklas
+>  #define SLP_S0_RES_COUNTER_MASK			GENMASK(31, 0)
+>  
+>  #define PMC_BASE_ADDR_DEFAULT			0xFE000000
+> @@ -357,6 +359,7 @@ struct pmc {
+>   * @devs:		pointer to an array of pmc pointers
+>   * @pdev:		pointer to platform_device struct
+>   * @ssram_pcidev:	pointer to pci device struct for the PMC SSRAM
+> + * @crystal_freq:	crystal frequency from cpuid
+>   * @dbgfs_dir:		path to debugfs interface
+>   * @pmc_xram_read_bit:	flag to indicate whether PMC XRAM shadow registers
+>   *			used to read MPHY PG and PLL status are available
+> @@ -374,6 +377,7 @@ struct pmc_dev {
+>  	struct dentry *dbgfs_dir;
+>  	struct platform_device *pdev;
+>  	struct pci_dev *ssram_pcidev;
+> +	unsigned int crystal_freq;
+>  	int pmc_xram_read_bit;
+>  	struct mutex lock; /* generic mutex lock for PMC Core */
+>  
+> 
