@@ -2,126 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E267D34AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25207D34B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234288AbjJWLmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:42:12 -0400
+        id S233252AbjJWLmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:42:17 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234291AbjJWLmJ (ORCPT
+        with ESMTP id S234284AbjJWLmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:42:09 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C630D10E9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:41:47 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so48260381fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 04:41:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dberlin.org; s=google; t=1698061294; x=1698666094; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pWng4wsdvhQ3yYhP90X+fEaax78WLUNDXvIyDdQRoDY=;
-        b=EcaeOmUhQvXhvQ2qETBotdErcvU9+TVjCan2V/BKQUUEuInXUmyoVnwHjgbWh8o/1v
-         o36NWe0m74sDerBTPxNfXGg1gnABiKtAkaETn/v5DeOtnZuQvdRlVFh/0cZfQDDd/H8o
-         1PinCUJz9LLzhNi9R/aqbM3CFKuG+MPLQAG6gTdAk39XS0Qa5CGGS3ISSD5LR/mwcyPj
-         y4NegjKH9wgz8uUmSEmSPVizzzJb5C6yUdIMLCCQYlyQMIpKcgZm79IV9ofcfNrhD2vG
-         OVAIOFu5zksLfAQsVH8akRpqrHo6jNduS4mWhQuF1/0+p/JDnFUgBFr/0HfZTwyrtatV
-         QCcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698061294; x=1698666094;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pWng4wsdvhQ3yYhP90X+fEaax78WLUNDXvIyDdQRoDY=;
-        b=VcnAXH7z23X8XnjYdiIdjNkTjlz/3F9mNVvxOtVnzmuCSQsJvevdxD/kDkxCI0jujm
-         yF1Ey5fadhbVlaRNrdL/UNysDcGU90VUrVujJoohuWDe8dn15mdP7IQxek5UJU3jIkTU
-         78EVjy3uUVXssGFOP7PsEXSBovz3TkAktBwDj4gDh36pLOsfS29j+dldY9lbRNN5xgOc
-         FShzHI8V1RBYBskxq+4x4pY46xNz74NwKxneZ9rXt5UgeBLrvR2o9J3NPTD8mqCmdXtQ
-         ilI9k4B7B1MXJjL1WQUpAyFvknJL5jshyqrpsE2w5GMWw9VCyzFrEOlxO1cf8JH4Vdfe
-         OCrw==
-X-Gm-Message-State: AOJu0Ywhx0z+/UxywLgpTINZ4gf21jaF0P1OP2a3fcEmNybpRKfa9pYy
-        woHUCqyYMF3uJSFM/f7Md/ckV4iRuAR+uERCtsNugw==
-X-Google-Smtp-Source: AGHT+IHKyAxZ9BWFT88KkDwFTqwRm+kj+yDtGkA7wrn9qxMdb7UW+TdPB5lXGlcJ56NfQxyWhYkXIWbfCbq5XCJuPsc=
-X-Received: by 2002:a2e:86c4:0:b0:2c5:25f3:8e1c with SMTP id
- n4-20020a2e86c4000000b002c525f38e1cmr5732134ljj.21.1698061293768; Mon, 23 Oct
- 2023 04:41:33 -0700 (PDT)
+        Mon, 23 Oct 2023 07:42:12 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC101733;
+        Mon, 23 Oct 2023 04:41:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9C376218E0;
+        Mon, 23 Oct 2023 11:41:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1698061300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q3h7bYkmxNuybyYNDcveX5DD2P/BKzeu6mm/kPPgPdU=;
+        b=h/G7ygAoWyM5zG8eKGcVm8HrcWPzEDEivri0BJSGDEgVhXNBapQpqLSY/8WomkLmxcWnPW
+        Qd/etiyPEqAW5IiWxf5u3MHWyFl6LJVnk1+HZFFADVEBlP4wT4UihwYeIKatbtOywQW/Ot
+        59VmbHbqJsX44/2IWsJWPT+BxFhrie8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1698061300;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q3h7bYkmxNuybyYNDcveX5DD2P/BKzeu6mm/kPPgPdU=;
+        b=TfEkAPS+RDAVdr1D6jh0FO7uRl0fz6n7JS5sAVCpeRIX8ZVWMqM1dosMUdnVhvssKVsGwC
+        bSetY7o4jXdTWfDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 55407139C2;
+        Mon, 23 Oct 2023 11:41:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Q2VGE/RbNmWTDQAAMHmgww
+        (envelope-from <jdelvare@suse.de>); Mon, 23 Oct 2023 11:41:40 +0000
+Date:   Mon, 23 Oct 2023 13:41:39 +0200
+From:   Jean Delvare <jdelvare@suse.de>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] eeprom: remove doc and MAINTAINERS section after driver
+ was removed
+Message-ID: <20231023134139.66e95a04@endymion.delvare>
+In-Reply-To: <20231012042834.6663-1-lukas.bulwahn@gmail.com>
+References: <20231012042834.6663-1-lukas.bulwahn@gmail.com>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.34; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-References: <cover.1697650207.git.dberlin@dberlin.org> <52c993fd93e13ac015be935a5284294c9a74ea8e.1697650207.git.dberlin@dberlin.org>
- <cc58057b-bc08-f717-1676-13046fc26c5c@broadcom.com> <CAF4BwTUTmUd0c-y_NfSi9WkCnDO9bhtpx03Aai1ByH5auq9YXw@mail.gmail.com>
-In-Reply-To: <CAF4BwTUTmUd0c-y_NfSi9WkCnDO9bhtpx03Aai1ByH5auq9YXw@mail.gmail.com>
-From:   Daniel Berlin <dberlin@dberlin.org>
-Date:   Mon, 23 Oct 2023 07:41:22 -0400
-Message-ID: <CAF4BwTUJ7NxWomeDEa7TOtjfCjEP+dD68HeT3QyDcNoA1QbXVQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] [brcmfmac] Add support for 6G bands
-To:     Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -3.75
+X-Spamd-Result: default: False [-3.75 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-1.15)[88.68%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         HAS_ORG_HEADER(0.00)[];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         FREEMAIL_CC(0.00)[arndb.de,linuxfoundation.org,gmail.com,lwn.net,vger.kernel.org]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 12:35=E2=80=AFPM Daniel Berlin <dberlin@dberlin.org=
-> wrote:
->
-> >
-> > > -     brcmf_dbg(INFO, "nmode=3D%d, vhtmode=3D%d, bw_cap=3D(%d, %d)\n"=
-,
-> > > +     brcmf_dbg(INFO,
-> > > +               "nmode=3D%d, vhtmode=3D%d, bw_cap=3D(%d, %d, %d), he_=
-cap=3D(%d, %d)\n",
-> > >                 nmode, vhtmode, bw_cap[NL80211_BAND_2GHZ],
-> > > -               bw_cap[NL80211_BAND_5GHZ]);
-> > > +               bw_cap[NL80211_BAND_5GHZ], bw_cap[NL80211_BAND_6GHZ],
-> > > +               he_cap[0], he_cap[1]);
-> >
-> > So are these he mac and phy capabilities? ...
->
-> No, unfortunately, it's either 1 or 0 on these chips, and all chips i tes=
-ted.
-> This is the hardware capability iovar.
->
-> In the debug firmware i have access to (not apple's), i do see a
-> command that looks like it may give the he cap, but i can't find how
-> it would ever be triggered.
-> (The iovar code for the iovar above is either always just return 0 or ret=
-urn 1)
-> There are no obvious iovars that relate, and  the absolute latest
-> bcmdhd hardcodes the he caps, as do infineon's latest ifx code.
-> :(
-> I'l hack around see if i can get the caps out of it.
->
-> I'll double check other ones.
+On Thu, 12 Oct 2023 06:28:34 +0200, Lukas Bulwahn wrote:
+> Commit 0113a99b8a75 ("eeprom: Remove deprecated legacy eeprom driver")
+> already removes the eeprom driver's code.
+> 
+> Remove also the eeprom driver's documentation and MAINTAINERS section.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> Greg, please pick this patch into your -next char and misc tree on top
+> of the commit above.
+> 
+>  Documentation/misc-devices/eeprom.rst | 107 --------------------------
+>  Documentation/misc-devices/index.rst  |   1 -
+>  MAINTAINERS                           |   6 --
+>  3 files changed, 114 deletions(-)
+>  delete mode 100644 Documentation/misc-devices/eeprom.rst
+> (...)
 
+Probably too late, but anyway:
 
-So, I reached a  conclusion on this piece.
+Reviewed-by: Jean Delvare <jdelvare@suse.de>
 
-This is really an xtlv with subcommands that everyone (including me)
-is wrongly treating as a non-xtlv.
-The above is really showing you the enable value.
-There is also hardware cap value (which is 0/1 as well).
-
-In the 4398/4390 firmware, a "defcap" subcommand was added to the
-firmware which can retrieve the default HE capabilities bytes for the
-mac and phy and be used to fill them in.
-However, it is unsupported in the firmware for earlier chips,
-including these chips (or at least, any firmware i've found for it,
-apple's or not)
-
-As such, at least for these, STA/AP caps will have to be hardcoded.
-
-I have updated the code to include the subcommands that exist here,
-and properly use an xtlv command to retrieve this (it's really a uint8
-value).
+Thanks,
+-- 
+Jean Delvare
+SUSE L3 Support
