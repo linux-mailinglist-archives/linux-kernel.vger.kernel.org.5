@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F159C7D3711
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D317D3714
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbjJWMnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 08:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
+        id S230003AbjJWMoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 08:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjJWMnS (ORCPT
+        with ESMTP id S229575AbjJWMoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 08:43:18 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA63C4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 05:43:16 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32d9cb5e0fcso2357343f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 05:43:16 -0700 (PDT)
+        Mon, 23 Oct 2023 08:44:15 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE1EA4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 05:44:13 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4084095722aso26641265e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 05:44:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698064994; x=1698669794; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698065051; x=1698669851; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mFdh5G+nv58LZOrSzNGUC39fRLszbh4b6sgwuqs17uQ=;
-        b=Jq3+3DKWdu8apJHp+H1//2gmdtsQ/dQ1duaBcMM5PdDAzAMbAT32NXJZedxY7C+LLl
-         cg7kG40ONzNNo6vuualrv2I/htvAZedmGlkBJXfG1ssZmFeAZUPgN+4bTftBRkojN1GW
-         xht91bYtbYv0USUccSUtua7NMP7dtW72zqHYySy/9/knHgHED+bWpzSScX9ZCHVJAHvx
-         eEBi7vNECvMyBlcoiVyy/5FDkjkZ4LbtCkFFGRUY3MfYgOUWsPeF59hdBJbLnuOvQ2vR
-         Simo4A6Ceu0k2sr8RTK0kg5JrIsvwQMXtj0NZSFKTJH6e17XIursLJm/opWL7ptOHqeG
-         RrMg==
+        bh=BkZRd/nHdW+WFHWWBpjALYN0SW0pUOeRbQK7UPlimYM=;
+        b=L89AmZQCB9iLHyYABe2q4kIcxj7cE2ivu43J/gjhJdahI5pU+36fOzei6+6lL00Mlq
+         gKFkZw6201ej9qqBvuY6vnRF7z8OxsjgbhRIlB39LF/FKlPm8FF9aaHRXHAgwWPQ7Dp7
+         B1ZmAYTtbpftdeZS9XPTrILrvEuoTvmByJgtiI7IYPSkmxdh+s2Hbf1wLsjIuPjHuXen
+         uC4o27pLZCo7NLN9x8vhp8zoG2M3LvbfGBtQOKnTW8n+RpNjFK2/lVz0nBikswRPEZGv
+         8IHV3sTHz8A52ETxod+2WnvSHJSlUyAJI9Wb99k2delZ5rhLmnICGS4uie9SM+lhTA8q
+         YXUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698064994; x=1698669794;
+        d=1e100.net; s=20230601; t=1698065051; x=1698669851;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=mFdh5G+nv58LZOrSzNGUC39fRLszbh4b6sgwuqs17uQ=;
-        b=r2BGe+Pe8zIBwi9r5lMHyZgE9ZfU9jOiq7SeKS+kUjJPs7z++XPGzrEJMDWzFlC55v
-         nyeEh+4CXDECGvd6sEqZwNuegczZnaRcaBir3BZPD6oDWOFl0HCzBR/NBKxJh0Z59ve+
-         bkavornjKVQjKnyi/zqtpNlzZzm7uW7qLq4usKmJBbqdvrDWctu1q9MTAr7VuzM5MxPu
-         vZ211NMSlCjnEs6zPTAbaGNCUKZEgN8H+OQ9B/NfdxNL+FvsE0r1AIJn7zibOT8DLdUf
-         cYXqcQkppcBZ0f8Y8gJTJavDRQG8JtVGxHAj72wtWtQ0LH53Bv4JLuoFmnp8L9pKT+47
-         3aIQ==
-X-Gm-Message-State: AOJu0YyCeN5iF6O1wmg25z3r5rNz1pGEMfIZWEswpcTy9xjL9rGxDKlX
-        R5eNy4ZpPIpett9s3Tk2gBx21iM/IAo+QEeZ
-X-Google-Smtp-Source: AGHT+IEwsKOgRUhhbfQLT339ns73v1EyjcSeeaaESooiiWcUg6nS9KIIoGR28XZAwZJZUvXTBn1MdA==
-X-Received: by 2002:adf:fe48:0:b0:323:15d7:900e with SMTP id m8-20020adffe48000000b0032315d7900emr5583684wrs.53.1698064994353;
-        Mon, 23 Oct 2023 05:43:14 -0700 (PDT)
+        bh=BkZRd/nHdW+WFHWWBpjALYN0SW0pUOeRbQK7UPlimYM=;
+        b=klMrFg84X084RwR8zwhCV1BmiYvv3YNMhOutUGTltIrdtqsObtanCjMGt/wLwG+cii
+         /dlwknN4upO6uQniiXuiT/BhXh8IMWIc+agDmYNPzxLruDhisJRHrSGQRVJe7YRT62qF
+         MDrULmJ6MdIYrgj5x84gP0+9oCUiA6asH9bvUWkDhpltWMaT6wIk2DLpe8oA2YBDDu48
+         7ivHYHHhMIEbfXo+pgPRqBCHXHLAKIeokAvbcUwy1gaXqBjOiLG5KeO+eWxKDw5/Or2F
+         S9uM/5GrQ3GmIqtWTtzT8V6NFf8lgJmaItPWUhQ0HS1g0e9ET5Qm3iVg291Ne5In4FBv
+         Lskw==
+X-Gm-Message-State: AOJu0YyI74ikrGYfw+Cx/734O2IBoTcVQcwlzlMOtaCDKRTdZDI1utng
+        po/ksgvyMPDmwcr67VTuZixc2v8O8/O0nq/q
+X-Google-Smtp-Source: AGHT+IGw+nUZMaJ9mJIq7rzL1i64NwpFMYW0i1QgrS3kX1Y10Na1RE0woSyN1ZqRE9qNTnnTquWm1w==
+X-Received: by 2002:a05:600c:4fd6:b0:406:84a0:bc87 with SMTP id o22-20020a05600c4fd600b0040684a0bc87mr6918063wmq.15.1698065051179;
+        Mon, 23 Oct 2023 05:44:11 -0700 (PDT)
 Received: from dreambig.dreambig.corp ([58.27.187.115])
-        by smtp.gmail.com with ESMTPSA id o12-20020adfe80c000000b0032da49e18fasm7766632wrm.23.2023.10.23.05.43.12
+        by smtp.gmail.com with ESMTPSA id ay20-20020a05600c1e1400b00407460234f9sm9389753wmb.21.2023.10.23.05.44.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 05:43:14 -0700 (PDT)
+        Mon, 23 Oct 2023 05:44:10 -0700 (PDT)
 From:   Muhammad Muzammil <m.muzzammilashraf@gmail.com>
 To:     willy@infradead.org, James.Bottomley@hansenpartnership.com,
         rdunlap@infradead.org
@@ -56,14 +56,14 @@ Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Muhammad Muzammil <m.muzzammilashraf@gmail.com>
 Subject: [PATCH v2] mm: Fixed multiple typos in multiple files
-Date:   Mon, 23 Oct 2023 17:43:00 +0500
-Message-Id: <20231023124300.36829-1-m.muzzammilashraf@gmail.com>
+Date:   Mon, 23 Oct 2023 17:44:05 +0500
+Message-Id: <20231023124405.36981-1-m.muzzammilashraf@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,7 +71,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-    memcontrol.c: Fixed type 'relies'
+    memcontrol.c: Fixed typo 'relies'
 
 Signed-off-by: Muhammad Muzammil <m.muzzammilashraf@gmail.com>
 
