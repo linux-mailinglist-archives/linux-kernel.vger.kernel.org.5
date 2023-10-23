@@ -2,87 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2147D3967
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A132C7D3977
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233435AbjJWOeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48748 "EHLO
+        id S233443AbjJWOhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbjJWOeL (ORCPT
+        with ESMTP id S233353AbjJWOhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:34:11 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430D9DD;
-        Mon, 23 Oct 2023 07:34:09 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507a0907896so4983543e87.2;
-        Mon, 23 Oct 2023 07:34:09 -0700 (PDT)
+        Mon, 23 Oct 2023 10:37:41 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D0BDD;
+        Mon, 23 Oct 2023 07:37:39 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d9a58f5f33dso3125365276.1;
+        Mon, 23 Oct 2023 07:37:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698071647; x=1698676447; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SAEPvwxGBHu171CY7R5Lgx+2jNo1g9so2I50+cUeJJY=;
-        b=DkMD4csZsCaOgAbI962j63v5ELKB55YS1ZCX5DP+WhA8JjJRKT757z0/iUYZ+QiUnz
-         K7cJIk9r49cfX6c6t1snVkl2l7RV6iueynrNlMpCOg12Y/wVhp4oz3Q/Bv9w1M1fD6YT
-         GlfKVmrFU5tuSZk0QYQq+ZdH+dFp30ElPeItDTt9pwEFnH6SFulvFYdDpSaycCVz15jB
-         PJ0cbm0P4aZFfDfKBYJPBe44Pf5f/BHaEds2bvZRT1PmYUL8LBxsD1ZVES0KqCG7HJ6O
-         ZQHmyuLOAwrAy6aLkTkb+X8CI4k5NZZtb3z+SYXKD3lTHXw9TvrgWmAxgOWymdu4iWdj
-         m1Xw==
+        d=gmail.com; s=20230601; t=1698071859; x=1698676659; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=GD6GktRQA8yNZ+0bir+1mpmuzkKcfcqAuwhKX54GTeM=;
+        b=jdwRoCI1G3gxwAxsMoetQmLTwrfK7yg33jfn7E1r/9zKU+TVewGCEJ05LzVpsKYYiX
+         PM9d5jDclqQZb6w60fSMpCPQ1WivAKCFplkc9QR4+K5VtR8T6kUzd1zRirfinlZDAEBu
+         tqW+KsPXJoA/VKMARIWwDKTixOm3NVMX5HKBKyw9gjqXxty3/HOOCqHveAoutGyf1Etm
+         OgsPWsZPi9PbirmNWjtKJz3kg7kyvy9sCy2miYevW03QCenkCdE/rxR4fzu8J31xXNxT
+         y9rS4TNQMpmkDP6ZNHeTTDW2QI5LiIUjTmqceBssUAzaJvwC1Zx5UTe7MMvyyTkZJNMl
+         T/1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698071647; x=1698676447;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SAEPvwxGBHu171CY7R5Lgx+2jNo1g9so2I50+cUeJJY=;
-        b=m8nssr9KJ8VSAGcOPphByoUQObm/4g5k9MPd1AkzGLGD8wej2IaVko/TyJDU3KA/WG
-         jzOtt63J5CsG4PxHjNp9P7+0uh1muaDqIPwEHSeM7quBpSPZ+NBupCwU9edvQQ70gbp6
-         REUhycZpUj36fMvN06XY24WgoCevPNqscB+a4FF5af5whPBSRA/syzBVhYgClgu7SpfD
-         fNBfS/er5AKQWxdYwASxAq/1Mp+EPb/fyY+8nWjvJwgFyS4j8RWMI5sJpO3iF66RcGTf
-         +f90TBxs8X16jTnsd0hEaXWLheTa5IvLRw/RIyWZiF77txIU0N9IYNIGbAzKNqfcXlaz
-         CBMw==
-X-Gm-Message-State: AOJu0YzGbaEXIpDFKrF6EZOmSjlBO1jy/sl0tbIp+EcKrW7WWQxxEaK6
-        I8+QV5uMKZGYeO8N7qgQ2WM=
-X-Google-Smtp-Source: AGHT+IH/yoYRCoTrukDj3opINmf//MKljNUeMqhtNo0TsFui/hJge/i58U3IqUqhX0zMysOwtxvUHg==
-X-Received: by 2002:ac2:5ec6:0:b0:502:9fce:b6d4 with SMTP id d6-20020ac25ec6000000b005029fceb6d4mr6203704lfq.25.1698071647113;
-        Mon, 23 Oct 2023 07:34:07 -0700 (PDT)
-Received: from ?IPv6:2003:f6:ef1b:2000:4423:d503:bf11:e8c6? (p200300f6ef1b20004423d503bf11e8c6.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:4423:d503:bf11:e8c6])
-        by smtp.gmail.com with ESMTPSA id u22-20020a50c056000000b0054037c6676esm2628483edd.69.2023.10.23.07.34.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 07:34:06 -0700 (PDT)
-Message-ID: <a1ddec9a04c8a978d50d04c69d675510b05eedb1.camel@gmail.com>
-Subject: Re: [PATCH v3 2/2] drivers: misc: adi-axi-tdd: Add TDD engine
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Eliza Balas <Eliza.Balas@analog.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "derek.kiernan@amd.com" <derek.kiernan@amd.com>,
-        "dragan.cvetic@amd.com" <dragan.cvetic@amd.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org
-Date:   Mon, 23 Oct 2023 16:36:57 +0200
-In-Reply-To: <15f25d73-32d5-4809-8096-32c856559d66@app.fastmail.com>
-References: <20231019125646.14236-1-eliza.balas@analog.com>
-         <20231019125646.14236-3-eliza.balas@analog.com>
-         <2023101917-cork-numeric-dab8@gregkh>
-         <BN7PR03MB4545E7EAB2D72B9098C30C6797DBA@BN7PR03MB4545.namprd03.prod.outlook.com>
-         <2023102030-resort-glance-57ef@gregkh>
-         <BN7PR03MB4545FF54B96514EC9F41887E97D8A@BN7PR03MB4545.namprd03.prod.outlook.com>
-         <2023102339-outcast-scone-5a63@gregkh>
-         <BN7PR03MB4545DA4A9404F349170CBA1097D8A@BN7PR03MB4545.namprd03.prod.outlook.com>
-         <15f25d73-32d5-4809-8096-32c856559d66@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+        d=1e100.net; s=20230601; t=1698071859; x=1698676659;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GD6GktRQA8yNZ+0bir+1mpmuzkKcfcqAuwhKX54GTeM=;
+        b=Qmvb7AEtcztpZoeD+3YZbOdRJ9+b/PlOrQfvqaTmmRkTMJLiqkRpGzCHtVDJcorMiy
+         OWArT6Z2v53QsMKT2JPlZHeXjUEc2kM+IEanbC5qwzJHo7gPqMrhiARm3YE8/jE9vJWe
+         4S++9w6vPlKcXUCav4d4K2wxCsJLWuqJLWM8B6roigOfgqrI+RCR1hjoC6YLyFmRgeDf
+         4AQ0HYUm6TcKIVdJqFrNSS1s2TI8MuX7DNi7uZ9ZU6WohzsL0BF6wbhaEroWWS6iKbmm
+         VtfqWIyFndqWB8HLGKvatiwfFGcTWEUJafZiLVDOC+GPnxH4ctDG/VlIxL1ixGZefZvf
+         BAwQ==
+X-Gm-Message-State: AOJu0Yw9/gjZY2lKdXtTjzN9/A/gCiA9N0C+0BiyB4E7KxVSa8hP2IAH
+        jOMyJdh3PyZlvNHWohiJV+Q=
+X-Google-Smtp-Source: AGHT+IHlNnVJG0aPd0n5jhr07oAGy616t7g1PbVB+dq4ioUiC/w/rkWTiYrDoff9rT4Sc1vxM33F4Q==
+X-Received: by 2002:a05:6902:1890:b0:d9a:d196:67c1 with SMTP id cj16-20020a056902189000b00d9ad19667c1mr11112332ybb.10.1698071858942;
+        Mon, 23 Oct 2023 07:37:38 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w10-20020a25ef4a000000b00d815cb9accbsm2727163ybm.32.2023.10.23.07.37.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 07:37:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <f3b2a4ac-042d-4c20-4020-3a09822811ac@roeck-us.net>
+Date:   Mon, 23 Oct 2023 07:37:36 -0700
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 4.14 00/66] 4.14.328-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20231023104810.781270702@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20231023104810.781270702@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,52 +83,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-23 at 16:19 +0200, Arnd Bergmann wrote:
-> On Mon, Oct 23, 2023, at 15:30, Balas, Eliza wrote:
-> > > -----Original Message-----
-> > > Cvetic <dragan.cvetic@amd.com>; Arnd Bergmann <arnd@arndb.de>
-> > > Subject: Re: [PATCH v3 2/2] drivers: misc: adi-axi-tdd: Add TDD engin=
-e
->=20
-> > > > > > Since the device is not an iio device, using an iio function wo=
-uld
-> > > > > > be confusing.
-> > > > >=20
-> > > > > Why isn't this an iio device?
-> > > >=20
-> > > > The device is not registered into the IIO device tree,
-> > > > and does not rely on IIO kernel APIs.
-> > > > Even though there are a few attributes that resemble the
-> > > > ones from iio, and the sysfs structure is similar,
-> > > > this is not an IIO device.
-> > > > In the previous patch versions 1 and 2 we concluded
-> > > > that this device fits better in the misc subsystem.
-> > >=20
-> > > Ok, can you point to that in the changelog where the IIO maintainer
-> > > agreed that this doesn't fit into that subsystem?
-> > >=20
-> > This was one of the discussions from previous v2 :=20
-> > https://lore.kernel.org/all/5b6318f16799e6e2575fe541e83e42e0afebe6cf.ca=
-mel@gmail.com/
-> >=20
-> > I will add it to the changelog the next time I submit the patches.
->=20
-> It sounds like Jonathan wasn't quite sure either here, and I would
-> still argue (as I did in that thread), that drivers/iio is probably
-> a better option than drivers/misc.
->=20
+On 10/23/23 03:55, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.328 release.
+> There are 66 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
+> Anything received after that time might be too late.
+> 
 
-Well, if Jonathan agrees to have this in IIO, it would actually be better f=
-or
-us... The below hack would not be needed at all and IIO is very familiar.
+Building s390:allmodconfig ... failed
+--------------
+Error log:
+In file included from include/linux/kernel.h:10,
+                  from arch/s390/pci/pci_dma.c:8:
+arch/s390/pci/pci_dma.c: In function 'bitmap_vzalloc':
+arch/s390/pci/pci_dma.c:536:15: error: implicit declaration of function 'check_mul_overflow'
 
-> In particular, you mention that you actually make this device
-> appear as an IIO device to user space using the "iio-fake" hack.
->=20
-
-I want to emphasize that is just our hack to make use of libiio RPC so that=
- we
-can remotely access this device.
-=20
-- Nuno S=C3=A1
+Guenter
 
