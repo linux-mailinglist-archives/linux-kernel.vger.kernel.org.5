@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EEC7D2918
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97EB7D2919
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 05:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbjJWDax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 22 Oct 2023 23:30:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
+        id S233280AbjJWDa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 22 Oct 2023 23:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233392AbjJWDaX (ORCPT
+        with ESMTP id S233353AbjJWDaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 22 Oct 2023 23:30:23 -0400
+        Sun, 22 Oct 2023 23:30:24 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC4210CE;
-        Sun, 22 Oct 2023 20:30:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A517C10D3;
+        Sun, 22 Oct 2023 20:30:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698031814; x=1729567814;
+  t=1698031815; x=1729567815;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=cbeVU1+sXbzRi3Zrjrq4r+R4+mYuY+Z+kUuHc+fyWyE=;
-  b=R/stuqen7WWUYDV8R8tHersQhVdScPwyp3IuWl3p4VKDb5vF9IQMXSAQ
-   WWE/8dVze2RCDMJuc6YSxfRGuZ8mksOBv0/PCdYL5+Wa8Its1R8rEae+v
-   V0Xul/zHfJQcqu869NiWcUPOeJoi8pv9eWF8Yv/EK90sK6Q/dVoAXdYGw
-   vDCGwJbii/mIKIENcY3Z327lEfl21uHVU1Y7iRPl/5TnfmIFsngsDPAJa
-   QkPhqoHKh019nqJhdLqockxaBHGXW7RgI32JDBRvMjffM+oLSwtAqVn5m
-   a8cA8/6MS7dAmxmiEmtf6aHEe5yEVclZJD/7vsFjdFtLgHcLHiRg2w2D/
+  bh=KyMoHWShCcyV3MRbZKpVC/E1DYBRT6LqwzkBXptqrAo=;
+  b=MVYBsTvjipWSPUfEAWKwEazuwuFGsD9t8K10AxLyA567jfWDB0D2+rnb
+   4qndguMndfcI8U+nOsc700nL0kRL+3tn4EUVpfYflNSMKzQVXij6Fhn0M
+   cSjQbYCQCrRaovgoZi9bnOoKV+ZKjEyiFCL9xlRl9k9LU+kwl742LIjVe
+   UVAK/oxeax8xlOdQ0FZ48jzOm/SJOERgHgIWpDqnF5TKGRUjz1YUIklJo
+   n3hQxii/pOxwVbwpuOqBvZCPido/E1OgiFDropS5OIkdyVgA4YBLaZx8t
+   xA7Bjsn+4vEmq3jSq+TXyzZgo8HqJ5eQRxMfuqJcYDm11g8zlm0v1WDcp
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="5380107"
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="5380110"
 X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="5380107"
+   d="scan'208";a="5380110"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 20:30:13 -0700
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2023 20:30:15 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="881617671"
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="881617680"
 X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="881617671"
+   d="scan'208";a="881617680"
 Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.165])
-  by orsmga004.jf.intel.com with ESMTP; 22 Oct 2023 20:30:10 -0700
+  by orsmga004.jf.intel.com with ESMTP; 22 Oct 2023 20:30:13 -0700
 From:   Xu Yilun <yilun.xu@linux.intel.com>
 To:     gregkh@linuxfoundation.org
 Cc:     hao.wu@intel.com, mdf@kernel.org, linux-fpga@vger.kernel.org,
         linux-kernel@vger.kernel.org, yilun.xu@intel.com
-Subject: [RESEND PATCH 1/2] fpga: m10bmc-sec: Change contact for secure update driver
-Date:   Mon, 23 Oct 2023 11:28:56 +0800
-Message-Id: <20231023032857.902699-2-yilun.xu@linux.intel.com>
+Subject: [RESEND PATCH 2/2] fpga: Fix memory leak for fpga_region_test_class_find()
+Date:   Mon, 23 Oct 2023 11:28:57 +0800
+Message-Id: <20231023032857.902699-3-yilun.xu@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231023032857.902699-1-yilun.xu@linux.intel.com>
 References: <20231023032857.902699-1-yilun.xu@linux.intel.com>
@@ -60,101 +60,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russ Weight <russell.h.weight@intel.com>
+From: Jinjie Ruan <ruanjinjie@huawei.com>
 
-Change the maintainer for the Intel MAX10 BMC Secure Update driver from
-Russ Weight to Peter Colberg. Update the ABI documentation contact
-information as well.
+fpga_region_class_find() in fpga_region_test_class_find() will call
+get_device() if the data is matched, which will increment refcount for
+dev->kobj, so it should call put_device() to decrement refcount for
+dev->kobj to free the region, because fpga_region_unregister() will call
+fpga_region_dev_release() only when the refcount for dev->kobj is zero
+but fpga_region_test_init() call device_register() in
+fpga_region_register_full(), which also increment refcount.
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-Acked-by: Peter Colberg <peter.colberg@intel.com>
-Link: https://lore.kernel.org/r/20230928164753.278684-1-russell.h.weight@intel.com
+So call put_device() after calling fpga_region_class_find() in
+fpga_region_test_class_find(). After applying this patch, the following
+memory leak is never detected.
+
+unreferenced object 0xffff88810c8ef000 (size 1024):
+  comm "kunit_try_catch", pid 1875, jiffies 4294715298 (age 836.836s)
+  hex dump (first 32 bytes):
+    b8 d1 fb 05 81 88 ff ff 08 f0 8e 0c 81 88 ff ff  ................
+    08 f0 8e 0c 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff817ebad7>] kmalloc_trace+0x27/0xa0
+    [<ffffffffa02385e1>] fpga_region_register_full+0x51/0x430 [fpga_region]
+    [<ffffffffa0228e47>] 0xffffffffa0228e47
+    [<ffffffff829c479d>] kunit_try_run_case+0xdd/0x250
+    [<ffffffff829c9f2a>] kunit_generic_run_threadfn_adapter+0x4a/0x90
+    [<ffffffff81238b85>] kthread+0x2b5/0x380
+    [<ffffffff81097ded>] ret_from_fork+0x2d/0x70
+    [<ffffffff810034d1>] ret_from_fork_asm+0x11/0x20
+unreferenced object 0xffff888105fbd1b8 (size 8):
+  comm "kunit_try_catch", pid 1875, jiffies 4294715298 (age 836.836s)
+  hex dump (first 8 bytes):
+    72 65 67 69 6f 6e 30 00                          region0.
+  backtrace:
+    [<ffffffff817ec023>] __kmalloc_node_track_caller+0x53/0x150
+    [<ffffffff82995590>] kvasprintf+0xb0/0x130
+    [<ffffffff83f713b1>] kobject_set_name_vargs+0x41/0x110
+    [<ffffffff8304ac1b>] dev_set_name+0xab/0xe0
+    [<ffffffffa02388a2>] fpga_region_register_full+0x312/0x430 [fpga_region]
+    [<ffffffffa0228e47>] 0xffffffffa0228e47
+    [<ffffffff829c479d>] kunit_try_run_case+0xdd/0x250
+    [<ffffffff829c9f2a>] kunit_generic_run_threadfn_adapter+0x4a/0x90
+    [<ffffffff81238b85>] kthread+0x2b5/0x380
+    [<ffffffff81097ded>] ret_from_fork+0x2d/0x70
+    [<ffffffff810034d1>] ret_from_fork_asm+0x11/0x20
+unreferenced object 0xffff88810b3b8a00 (size 256):
+  comm "kunit_try_catch", pid 1875, jiffies 4294715298 (age 836.836s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 08 8a 3b 0b 81 88 ff ff  ..........;.....
+    08 8a 3b 0b 81 88 ff ff e0 ac 04 83 ff ff ff ff  ..;.............
+  backtrace:
+    [<ffffffff817ebad7>] kmalloc_trace+0x27/0xa0
+    [<ffffffff83056d7a>] device_add+0xa2a/0x15e0
+    [<ffffffffa02388b1>] fpga_region_register_full+0x321/0x430 [fpga_region]
+    [<ffffffffa0228e47>] 0xffffffffa0228e47
+    [<ffffffff829c479d>] kunit_try_run_case+0xdd/0x250
+    [<ffffffff829c9f2a>] kunit_generic_run_threadfn_adapter+0x4a/0x90
+    [<ffffffff81238b85>] kthread+0x2b5/0x380
+    [<ffffffff81097ded>] ret_from_fork+0x2d/0x70
+    [<ffffffff810034d1>] ret_from_fork_asm+0x11/0x20
+
+Fixes: 64a5f972c93d ("fpga: add an initial KUnit suite for the FPGA Region")
+Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+Reviewed-by: Marco Pagani <marpagan@redhat.com>
+Acked-by: Xu Yilun <yilun.xu@intel.com>
+Link: https://lore.kernel.org/r/20231007094321.3447084-1-ruanjinjie@huawei.com
+[yilun.xu@intel.com: slightly changes the commit message]
 Signed-off-by: Xu Yilun <yilun.xu@linux.intel.com>
 ---
- .../testing/sysfs-driver-intel-m10-bmc-sec-update  | 14 +++++++-------
- MAINTAINERS                                        |  2 +-
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/fpga/tests/fpga-region-test.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-sec-update b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-sec-update
-index 0a41afe0ab4c..9051695d2211 100644
---- a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-sec-update
-+++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-sec-update
-@@ -1,7 +1,7 @@
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/sr_root_entry_hash
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns the root entry hash for the static
- 		region if one is programmed, else it returns the
- 		string: "hash not programmed".  This file is only
-@@ -11,7 +11,7 @@ Description:	Read only. Returns the root entry hash for the static
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/pr_root_entry_hash
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns the root entry hash for the partial
- 		reconfiguration region if one is programmed, else it
- 		returns the string: "hash not programmed".  This file
-@@ -21,7 +21,7 @@ Description:	Read only. Returns the root entry hash for the partial
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/bmc_root_entry_hash
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns the root entry hash for the BMC image
- 		if one is programmed, else it returns the string:
- 		"hash not programmed".  This file is only visible if the
-@@ -31,7 +31,7 @@ Description:	Read only. Returns the root entry hash for the BMC image
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/sr_canceled_csks
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns a list of indices for canceled code
- 		signing keys for the static region. The standard bitmap
- 		list format is used (e.g. "1,2-6,9").
-@@ -39,7 +39,7 @@ Description:	Read only. Returns a list of indices for canceled code
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/pr_canceled_csks
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns a list of indices for canceled code
- 		signing keys for the partial reconfiguration region. The
- 		standard bitmap list format is used (e.g. "1,2-6,9").
-@@ -47,7 +47,7 @@ Description:	Read only. Returns a list of indices for canceled code
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/bmc_canceled_csks
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns a list of indices for canceled code
- 		signing keys for the BMC.  The standard bitmap list format
- 		is used (e.g. "1,2-6,9").
-@@ -55,7 +55,7 @@ Description:	Read only. Returns a list of indices for canceled code
- What:		/sys/bus/platform/drivers/intel-m10bmc-sec-update/.../security/flash_count
- Date:		Sep 2022
- KernelVersion:	5.20
--Contact:	Russ Weight <russell.h.weight@intel.com>
-+Contact:	Peter Colberg <peter.colberg@intel.com>
- Description:	Read only. Returns number of times the secure update
- 		staging area has been flashed.
- 		Format: "%u".
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b19995690904..6f627a12ef9f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10700,7 +10700,7 @@ F:	drivers/mfd/intel-m10-bmc*
- F:	include/linux/mfd/intel-m10-bmc.h
+diff --git a/drivers/fpga/tests/fpga-region-test.c b/drivers/fpga/tests/fpga-region-test.c
+index 9f9d50ee7871..baab07e3fc59 100644
+--- a/drivers/fpga/tests/fpga-region-test.c
++++ b/drivers/fpga/tests/fpga-region-test.c
+@@ -93,6 +93,8 @@ static void fpga_region_test_class_find(struct kunit *test)
  
- INTEL MAX10 BMC SECURE UPDATES
--M:	Russ Weight <russell.h.weight@intel.com>
-+M:	Peter Colberg <peter.colberg@intel.com>
- L:	linux-fpga@vger.kernel.org
- S:	Maintained
- F:	Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-sec-update
+ 	region = fpga_region_class_find(NULL, &ctx->region_pdev->dev, fake_region_match);
+ 	KUNIT_EXPECT_PTR_EQ(test, region, ctx->region);
++
++	put_device(&region->dev);
+ }
+ 
+ /*
 -- 
 2.25.1
 
