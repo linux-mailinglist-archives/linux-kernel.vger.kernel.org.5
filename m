@@ -2,100 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F415B7D39F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C390E7D39FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 16:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbjJWOor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 10:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40802 "EHLO
+        id S233832AbjJWOpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 10:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233778AbjJWOod (ORCPT
+        with ESMTP id S234063AbjJWOp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 10:44:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F1A19B0;
+        Mon, 23 Oct 2023 10:45:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926DF1735
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:43:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698072202;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EY/dfoODqe4KZBPQl8Uid5gopBq/vqnIAJCIMWwL5kA=;
+        b=ZcY0dq9JKDcHgueFL/WqQK7TiEUHqM7rs7uvdOMsiZr6wksogxGGWEQrJxziaOSeZShru+
+        DOI4+4qI12nQSw8qfFlI3YVfhTDKXH8JZ+6H/5NFfr3vSY915aLfCfki8Kgn2TZbd7qfmQ
+        WQPmAbeWtoQQe/CPLPcj016CQ9yzQlQ=
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
+ [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-532-Aq6JmeiwN2qVlWIfTdBEqQ-1; Mon, 23 Oct 2023 10:43:16 -0400
+X-MC-Unique: Aq6JmeiwN2qVlWIfTdBEqQ-1
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7a64eb9c96aso399490339f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 07:43:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698072195; x=1698676995;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EY/dfoODqe4KZBPQl8Uid5gopBq/vqnIAJCIMWwL5kA=;
+        b=pRHpr1pcwsGY+MfXBPH/zohyrWe4x+zcQ/ycG5NSusgiAd0II9PfEVUtwugpP5VvtQ
+         FS324ZpukrDBRAXkwFB+f9iNstMJB/Cc9QWBbZZD1wnY17M+Xdc/liW1lsmEiTFyPzqo
+         SQvaVAyyNY5GUuF2UppfIYS87hqVpt4QQBmf9lQyouZJrwV8/vPw5chKDbMFCvGjkfqk
+         Wrlgb4t3lNpT3ul4acYdjsFqpHjQixS8BWVg8G5iDRq2H2LNPq61QtUCxWzuUyS+ae8F
+         DCeHDEoL70RYTZ48p0bcaDbHx+0YMaqnAjxAHZiuqZ8PVt8oJ3pv47O7Apjs/zVjrU/9
+         +fIg==
+X-Gm-Message-State: AOJu0YzPXbYG2d9r3J9zZACd3Q3scDrU3meDlGggy6gPLOFOg6fRNKVR
+        AySO8rnxJJKTrU48OGKJlKmG/tVTmnSG25evPTMQ9aAZ5D/MktktHP0gksLv9X6kfBK+QBRAcNk
+        +q+ky6Yg10GVK0kcx2dlJmFXy
+X-Received: by 2002:a05:6e02:1a6c:b0:357:a272:dbc with SMTP id w12-20020a056e021a6c00b00357a2720dbcmr11030721ilv.9.1698072195627;
+        Mon, 23 Oct 2023 07:43:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IETQ/NKPL5aS7r/tBMY5aQ03fUPAyygLBa/RltaXqJiYNfjK+Gb4Ihw4y17lmg1ikWSIXQfgA==
+X-Received: by 2002:a05:6e02:1a6c:b0:357:a272:dbc with SMTP id w12-20020a056e021a6c00b00357a2720dbcmr11030701ilv.9.1698072195310;
+        Mon, 23 Oct 2023 07:43:15 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id o11-20020a02cc2b000000b0045c5908ddb7sm2309724jap.69.2023.10.23.07.43.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 23 Oct 2023 07:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698072194; x=1729608194;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=c+vwHWtU4SYe45hCSutTEEchOiP/C8YWbfE6MM6PUfQ=;
-  b=fZ1bQVRqMikzcZXly6+WJZ2mg0ZYLxZbXR2sCmPg4i18jIH6nYOfySei
-   MGmuIBtV5LRIvXbUU493dbc30Unrecm0AVIDvGkq1kNU0Q5lE0AeY91ad
-   dzUk1nTatYDkACZJRr+8g6HKkwh/F8idsuqZrVHRFBKIAtG3BdCXGQBcd
-   b6HFW96G4dJGaU5GO9b+2sCcgVWjvHiaXJkjTMD3+eihCDTzP21JNnR3b
-   nY3Po3BSPCk91ameJoBQX9oS4Md2SXaehB/4rzw5O+fXFqPR2blcAn3UT
-   YdZ1EBHhIyl4SsdH+T80mRlHYKz5a0B9MMO5AP4vDnhtDvA08BgO5e5MZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="417985236"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="417985236"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 07:42:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="793150451"
-X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
-   d="scan'208";a="793150451"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 07:42:51 -0700
-Date:   Mon, 23 Oct 2023 17:42:48 +0300
-From:   Raag Jadav <raag.jadav@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     rafael@kernel.org, len.brown@intel.com, robert.moore@intel.com,
-        mika.westerberg@linux.intel.com, mark.rutland@arm.com,
-        will@kernel.org, linux@roeck-us.net, Jonathan.Cameron@huawei.com,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Subject: Re: [PATCH v2 2/6] pinctrl: intel: use acpi_dev_uid_match() for
- matching _UID
-Message-ID: <ZTaGaDweYpBlxBez@black.fi.intel.com>
-References: <20231023053530.5525-1-raag.jadav@intel.com>
- <20231023053530.5525-3-raag.jadav@intel.com>
- <ZTZacR86hSmV04M9@smile.fi.intel.com>
+Date:   Mon, 23 Oct 2023 08:43:12 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Ankit Agrawal <ankita@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Andy Currid <acurrid@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <danw@nvidia.com>,
+        "Anuj Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v12 1/1] vfio/nvgpu: Add vfio pci variant module for
+ grace hopper
+Message-ID: <20231023084312.15b8e37e.alex.williamson@redhat.com>
+In-Reply-To: <BY5PR12MB3763356FC8CD2A7B307BD9AAB0D8A@BY5PR12MB3763.namprd12.prod.outlook.com>
+References: <20231015163047.20391-1-ankita@nvidia.com>
+        <20231017165437.69a84f0c.alex.williamson@redhat.com>
+        <BY5PR12MB3763356FC8CD2A7B307BD9AAB0D8A@BY5PR12MB3763.namprd12.prod.outlook.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTZacR86hSmV04M9@smile.fi.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 02:35:13PM +0300, Andy Shevchenko wrote:
-> On Mon, Oct 23, 2023 at 11:05:26AM +0530, Raag Jadav wrote:
-> > Convert manual _UID references to use the standard ACPI helper.
-> 
-> > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> It has a hidden logic that is not aligned with acpi_dev_hid_uid_match().
-> Or revert to your v1 I assume.
+On Mon, 23 Oct 2023 12:48:22 +0000
+Ankit Agrawal <ankita@nvidia.com> wrote:
 
-I don't see how this has to be aligned with acpi_dev_hid_uid_match() or
-if acpi_dev_hid_uid_match() implementation concerns this specific change,
-since that's not what we intend to do here.
+> > After looking at Yishai's virtio-vfio-pci driver where BAR0 is emulated
+> > as an IO Port BAR, it occurs to me that there's no config space
+> > emulation of BAR2 (or BAR3) here.=C2=A0 Doesn't this mean that QEMU reg=
+isters
+> > the BAR as 32-bit, non-prefetchable?=C2=A0 ie. VFIOBAR.type & .mem64 are
+> > wrong? =20
+>=20
+> Maybe I didn't understand the question, but the PCI config space read/wri=
+te
+> would still be handled by vfio_pci_core_read/write() which returns the
+> appropriate flags. I have checked that the device BARs are 64b and
+> prefetchable in the VM.
 
-Also, I think acpi_dev_uid_match() implementation in v2 is actually more
-aligned with the previous logic that we're replacing here, since it gives
-us a guaranteed match result as originally intended with strcmp in this
-case. And the "hidden logic" in v1 implementation (match with @uid2 == NULL)
-is what ends up breaking it in my opinion.
+vfio_pci_core_read/write() accesses the physical device, which doesn't
+implement BAR2.  Why would an unimplemented BAR2 on the physical device
+report 64-bit, prefetchable?
 
-Regardless, for any version (v1 or v2) the usage still remains the same
-in this case.
+QEMU records VFIOBAR.type and .mem64 from reading the BAR register in
+vfio_bar_prepare() and passes this type to pci_register_bar() in
+vfio_bar_register().  Without an implementation of a config space read
+op in the variant driver and with no physical implementation of BAR2 on
+the device, I don't see how we get correct values in these fields.
 
-> As I asked you, please drop this one.
+> > We also need to decide how strictly variant drivers need to emulate
+> > vfio_pci_config_rw with respect to BAR sizing, where the core code
+> > provides emulation of sizing and Yishai's virtio driver only emulates
+> > the IO port indicator bit. =20
+>=20
+> Sorry, it isn't clear to me how would resizable BAR is applicable in this
+> variant driver as the BAR represents the device memory. Should we be
+> exposing such feature as unsupported for this variant driver?
 
-But okay, as you wish :(
+Bar SIZING, not resizing.  This is the standard in-band mechanism for
+determining the BAR size as described in PCIe 6.0.1, 7.5.1.2.1.  QEMU
+makes use of the region size but does rely on the BAR flags when
+registering the BAR into QEMU as described above.  Additionally,
+vfio-pci-core supports this in-band sizing mechanism for physical BARs.
+A variant driver which does not implement config space BAR sizing for a
+virtual BAR is arguably not presenting a PCI compatible config space
+where a non-QEMU userspace may depend on standard PCI behavior here.
+Thanks,
 
-Rafael, should I send a v3 with dropped tags?
+Alex
 
-Raag
