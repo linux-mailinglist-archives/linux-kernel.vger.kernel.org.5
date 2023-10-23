@@ -2,152 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9477D2EAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060357D2EB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 11:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjJWJmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 05:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
+        id S232725AbjJWJmm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 23 Oct 2023 05:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjJWJmN (ORCPT
+        with ESMTP id S229927AbjJWJm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 05:42:13 -0400
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EB9A4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:42:11 -0700 (PDT)
-Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-49d8fbd307fso1194686e0c.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:42:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698054130; x=1698658930; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VH/fPEZ9qkWTKaawDCHK7vBhKEbCdSgmYhzD32um79w=;
-        b=IGHNxUuKjy5+P/9FjPTgnVZXmF42slr5o9vrpWd7ep1m5Ws+/ZgUWDGn+04TcRZe/E
-         6AM4jeF/tB7Kxv3dh/aArFRxOvx4iHFjqHBzYcfM+wjeP7vquWmJ49iyObiljzmuOQFW
-         ga5eAuLZ4JiQE6Znrp6zuj0da8qbZq+PDTUbM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698054130; x=1698658930;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VH/fPEZ9qkWTKaawDCHK7vBhKEbCdSgmYhzD32um79w=;
-        b=weAjPfpHclMojwWWe31yVIA4Zn8ukq8HAxGj+IV8GBXrCk827ftwYBkKR6/+k0Xrs9
-         1mPzOnilJiruntvUFiIRin2Lhiddbsh9+VCHeCMaLHnlK23ItJRXxXiKTA8N5CEDNcSk
-         V5FmWqnuXFeKS6Mfsec1gfvE4NLiMTiEceEeZAEr3NAdb5YqJdP1J+Yjthl0eTsI0kHP
-         S4oLn1w+ywB9dPIaXiv0Df7Hkus78mXW3XatFsoRm7z5Msvnq9ubJGqUSQZQGUIdDHHB
-         4o3HVwM41Xs7NvYE5BoRAYLWm1GfUfgzUHtX7t/lzfEDUwxZtOzDEVnW/EevpbpqPFdQ
-         6h8Q==
-X-Gm-Message-State: AOJu0YxT8xZdwT/PC0zRx6D/fe+HumFc1NhAwsjCZR+7E9SYmbAr+2Dq
-        itpMegbCsJuR23qhPIVex7FWmhktvif9HhOTS3Y=
-X-Google-Smtp-Source: AGHT+IF4Fmi5idt2dZAC9nnYo1TfZ9qhTiwutAQb0TBvLAW05EOu3PtjEzXlHHkctPkgEgJXmS5PuA==
-X-Received: by 2002:a1f:1d07:0:b0:4a1:8aa1:8dcd with SMTP id d7-20020a1f1d07000000b004a18aa18dcdmr6146623vkd.15.1698054130591;
-        Mon, 23 Oct 2023 02:42:10 -0700 (PDT)
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
-        by smtp.gmail.com with ESMTPSA id r8-20020a056122008800b0049d20faf953sm826949vka.55.2023.10.23.02.42.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 02:42:10 -0700 (PDT)
-Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-49d8fbd307fso1194675e0c.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 02:42:10 -0700 (PDT)
-X-Received: by 2002:a05:6122:2020:b0:4a1:a334:57f6 with SMTP id
- l32-20020a056122202000b004a1a33457f6mr7545591vkd.1.1698054129715; Mon, 23 Oct
- 2023 02:42:09 -0700 (PDT)
+        Mon, 23 Oct 2023 05:42:26 -0400
+Received: from mxout70.expurgate.net (mxout70.expurgate.net [91.198.224.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8CAF5;
+        Mon, 23 Oct 2023 02:42:22 -0700 (PDT)
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.92)
+        (envelope-from <prvs=9674b5d38b=fe@dev.tdt.de>)
+        id 1qurRv-003GsW-2T; Mon, 23 Oct 2023 11:42:15 +0200
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <fe@dev.tdt.de>)
+        id 1qurRu-003GsG-5m; Mon, 23 Oct 2023 11:42:14 +0200
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id BA66C24004B;
+        Mon, 23 Oct 2023 11:42:13 +0200 (CEST)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 18EC8240040;
+        Mon, 23 Oct 2023 11:42:13 +0200 (CEST)
+Received: from localhost.localdomain (unknown [10.2.3.40])
+        by mail.dev.tdt.de (Postfix) with ESMTPSA id 8C6AC216D6;
+        Mon, 23 Oct 2023 11:42:12 +0200 (CEST)
+From:   Florian Eckert <fe@dev.tdt.de>
+To:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, pavel@ucw.cz, lee@kernel.org,
+        kabel@kernel.org, u.kleine-koenig@pengutronix.de,
+        m.brock@vanmierlo.com
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: [PATCH v5 0/2] ledtrig-tty: add additional tty state evaluation
+Date:   Mon, 23 Oct 2023 11:42:03 +0200
+Message-ID: <20231023094205.2706812-1-fe@dev.tdt.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20231023043751.17114-1-jason-jh.lin@mediatek.com> <20231023043751.17114-7-jason-jh.lin@mediatek.com>
-In-Reply-To: <20231023043751.17114-7-jason-jh.lin@mediatek.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Mon, 23 Oct 2023 17:41:33 +0800
-X-Gmail-Original-Message-ID: <CAC=S1njt-esHwUEr4O5BVUmmgpB=Gm084h+tY-KsKp9LkPXNBQ@mail.gmail.com>
-Message-ID: <CAC=S1njt-esHwUEr4O5BVUmmgpB=Gm084h+tY-KsKp9LkPXNBQ@mail.gmail.com>
-Subject: Re: [PATCH v2 6/9] mailbox: mediatek: Add CMDQ driver support for mt8188
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Jeffrey Kardatzke <jkardatzke@google.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8BIT
+X-purgate: clean
+X-purgate-type: clean
+X-purgate-ID: 151534::1698054134-FA0CB49D-5E1EB346/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+Changes in v5:
+==============
+- Update commit message as request by greg k-h, to make the commit message
+  more generic and not focusing on my use case [1]. Thanks for that.
+- Removing PATCH v4 1/3 from previous set. This has been already applied to
+  tty-testing [2] by greg k-h.
+- As requested by greq k-h. I have also made the following changes to
+  PATCH v4 3/3 [3].
+  * Add a comment to the enum that this is already used for bit evaluation and
+    sysfs read and write.
+  * Renaming the variable 'unsigned long mode' to 'unsigned long ttytrigger'
+    in the ledtrig_tty_data structure to make it clearer that the selected
+    triggers are stored there.
+  * Using sysfs_emit() function to dump the requestd ttytrigger to userland.
+  * Also using the kstrtobool() function to write the selected ttytrigger
+    via the sysfs. This values are booleans.
+- I also removed the function ledtrig_tty_evaluate() from my last patchset.
+  PATCH v4 3/3 [3]. The new API tty_get_tiocm() function is only called once
+  now and checked for each ttytrigger bit. Previously this function was
+  called for each bit, which is not necessary.
 
-On Mon, Oct 23, 2023 at 12:58=E2=80=AFPM Jason-JH.Lin <jason-jh.lin@mediate=
-k.com> wrote:
->
-> Add CMDQ driver support for mt8188 by adding its compatible and
-> driver data in CMDQ driver.
->
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> ---
->  drivers/mailbox/mtk-cmdq-mailbox.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
-q-mailbox.c
-> index 56fe01cd9731..3bdfb9a60614 100644
-> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
-> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-> @@ -704,12 +704,20 @@ static const struct gce_plat gce_plat_v7 =3D {
->         .gce_num =3D 1
->  };
->
-> +static const struct gce_plat gce_plat_v8 =3D {
-> +       .thread_nr =3D 32,
-> +       .shift =3D 3,
-> +       .control_by_sw =3D true,
-> +       .gce_num =3D 2
-> +};
-> +
->  static const struct of_device_id cmdq_of_ids[] =3D {
->         {.compatible =3D "mediatek,mt8173-gce", .data =3D (void *)&gce_pl=
-at_v2},
->         {.compatible =3D "mediatek,mt8183-gce", .data =3D (void *)&gce_pl=
-at_v3},
->         {.compatible =3D "mediatek,mt8186-gce", .data =3D (void *)&gce_pl=
-at_v7},
->         {.compatible =3D "mediatek,mt6779-gce", .data =3D (void *)&gce_pl=
-at_v4},
->         {.compatible =3D "mediatek,mt8192-gce", .data =3D (void *)&gce_pl=
-at_v5},
-> +       {.compatible =3D "mediatek,mt8188-gce", .data =3D (void *)&gce_pl=
-at_v8},
-I guess I understand your intention here... but the ordering doesn't
-make sense to most people. Put this line after mt8186.
+Links:
+[1] https://lore.kernel.org/linux-leds/2023102115-stock-scrambled-f7d5@gregkh/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git/commit/?h=tty-testing&id=838eb763c3e939a8de8d4c55a17ddcce737685c1
+[3] https://lore.kernel.org/linux-leds/20231019112809.881730-4-fe@dev.tdt.de/
 
-It's up to you to ignore the outlier mt6779 for now or send a separate
-patch to fully sort the list by the compatible strings.
+Changes in v4:
+==============
+v4: https://lore.kernel.org/linux-leds/20231019112809.881730-1-fe@dev.tdt.de/
+- Merging patch 3/4 into patch number 4/4 from previous series, because
+  it fixes a problem that does not exist upstream. This was a note from
+  the build robot regarding my change that I added with previous series.
+  This change was never upstream and therefore this is not relevant.
+- Update the commit message of patch 1/3 of this series, that this commit
+  also changes the 'ndashes' to simple dashes. There were no changes, so
+  I add the 'Reviewed-by' that the commit received before.
+- With this patchset version I have reworked my implementation for the
+  evaluation of the additional line state, so that this changes becomes
+  smaller. As basis I have used the staged commits from Christian Marangi
+  that makes this changes to the netdev trigger. This has already been
+  applied to 'for-leds-next-next' by Lee Jones. I adapted this to the
+  tty trigger.
+  Convert device attr to macro:
+  https://git.kernel.org/pub/scm/linux/kernel/git/lee/leds.git/commit/drivers/leds/trigger?h=for-leds-next-next&id=509412749002f4bac4c29f2012fff90c08d8afca
+  Unify sysfs and state handling:
+  https://git.kernel.org/pub/scm/linux/kernel/git/lee/leds.git/commit/drivers/leds/trigger?h=for-leds-next-next&id=0fd93ac8582627bee9a3c824489f302dff722881
 
-Regards,
-Fei
+Changes in v3:
+==============
+v3: https://lore.kernel.org/linux-leds/20231016071332.597654-1-fe@dev.tdt.de/
+- Add missing 'kernel test robot' information to the commit message.
+- Additional information added to the commit message
 
+Changes in v2:
+==============
+v2: https://lore.kernel.org/linux-leds/20230928132632.200263-1-fe@dev.tdt.de/
+- rename new function from tty_get_mget() to tty_get_tiocm() as
+  requested by 'Jiri Slaby'.
+- As suggested by 'Jiri Slaby', fixed tabs in function documentation
+  throughout the file '/drivers/tty/tty_io.c' in a separate commit.
+- Move the variable definition to the top in function
+  'ledtrig_tty_work()'.
+  This was reported by the 'kernel test robot' after my change in v1.
+- Also set the 'max_brightness' to 'blink_brightness' if no
+  'blink_brightness' was set. This fixes a problem at startup when the
+  brightness is still set to 0 and only 'line_*' is evaluated. I looked
+  in the netdev trigger and that's exactly how it's done there.
 
->         {.compatible =3D "mediatek,mt8195-gce", .data =3D (void *)&gce_pl=
-at_v6},
->         {}
->  };
-> --
-> 2.18.0
->
->
+Changes in v1:
+==============
+v1: https://lore.kernel.org/linux-leds/20230926093607.59536-1-fe@dev.tdt.de/
+This is a follow-up patchset, based on the mailing list discussion from
+March 2023 based on the old patchset v8 [1]. I have changed, the LED
+trigger handling via the sysfs interfaces as suggested by Uwe Kleine-König.
+Links:
+[1] https://lore.kernel.org/linux-leds/20230306094113.273988-1-fe@dev.tdt.de/
+
+Florian Eckert (2):
+  tty: add new helper function tty_get_tiocm
+  leds: ledtrig-tty: add new line mode evaluation
+
+ .../ABI/testing/sysfs-class-led-trigger-tty   |  54 +++++
+ drivers/leds/trigger/ledtrig-tty.c            | 187 ++++++++++++++++--
+ drivers/tty/tty_io.c                          |  28 ++-
+ include/linux/tty.h                           |   1 +
+ 4 files changed, 253 insertions(+), 17 deletions(-)
+
+-- 
+2.30.2
+
