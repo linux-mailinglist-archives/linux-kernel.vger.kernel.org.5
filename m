@@ -2,300 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E940F7D3807
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 15:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED03E7D360E
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 14:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbjJWN22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 09:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
+        id S234643AbjJWMEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 08:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbjJWN21 (ORCPT
+        with ESMTP id S234622AbjJWMEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 09:28:27 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD557E8
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:28:24 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cace3e142eso16946275ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 06:28:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698067704; x=1698672504; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Sa6E4Qj1oc9mMqsv5L9bh8Mbh/T7iNaz8w1q2WI91v8=;
-        b=XgEXL+9D25ypiK5fi/37uxEUkRROtQMltU7UlzPEumbysvq8JAvkH+GV1RI6A3ccH3
-         ZqO84ndGvSX+LB2vjuFubu9QvSlOxL4nuDzo/6mCdm7s/O+H+ex9Xlf93hyn1xZlUXrD
-         l1h9luIeYmce9xSihZqAbzcQSGrIhxPIKi/DBFS9Sq0o8+WgidmB27kF6ng0+PY71qdV
-         gFwePtk9gk16kHKppF7m1nwkq5EQz/C5iszlNshDRFQctFffU69DfbK3RRCw6/eZ8eFB
-         5332WakRgtHlXG5VfcBZ/mNpon7QYJx5nPXR4Q6uAoTUk8xv3GOir+nokyULTfq31MnA
-         Kj1Q==
+        Mon, 23 Oct 2023 08:04:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0DAE4
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 05:03:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698062605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Hofm46pISELYVvTcrs2tDQX/iIBeSQbRrL6PHoZxa54=;
+        b=ZVRC0KJcb0eVXc2BVeUy2chrzUvC52jUlBFLJ4LtJsquZMm1FO6YKSVKfLHoSNNaP2k8yG
+        PrGAON0dZmoT4MhneGBDLWegf7gdvzw/45086RCmdr+r3bBjtq3Rm2HU+gK0J05BYGM80E
+        JqaMOTBhVioeIZUeozPqI2Smao33K+I=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-393-1orSMcDKONWAVmSzTkRs6w-1; Mon, 23 Oct 2023 08:03:19 -0400
+X-MC-Unique: 1orSMcDKONWAVmSzTkRs6w-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-408f9cee5e8so10449395e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 05:03:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698067704; x=1698672504;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sa6E4Qj1oc9mMqsv5L9bh8Mbh/T7iNaz8w1q2WI91v8=;
-        b=kfwDypGMl7oo7o+VzvxDxWRXLfzeU5t2UVxM0V/p7pjSyU7fOiWq0GIjD+OUvjmNf4
-         AigA/JJodAOLTxNsBWKw5Mleu05Lv5cCtb7NS5zi+4+4zKFpCSaI84NGw5ZUNIe1kBTf
-         Mxk1NfU0dPgZ2GhPAX+IV4N9nXask/9Eq7wxMWZCneUljTpKM+Z7DzWDer0WlKa8VCA0
-         aEf8JYOqsxtoFlH9Jc5U6X9o+uSY77oTaJLk0LhWZd1WgjsM3DDTbKbwkwndFZZRvQKB
-         5Mt+Y7KCPmHod4ZENG8g6miQFQPBX9xA0N/5mhaFNiG7n5J2Ih6geP+9aZmBpfORuC1c
-         CPOA==
-X-Gm-Message-State: AOJu0Yz4/l/mpUCikSlSvC44z9HBK7NslkF2dkdVM/dfetAdHJ2S5MZO
-        ANt4UZqWIuOOrvTem/12tJs=
-X-Google-Smtp-Source: AGHT+IFvottFAmnA7SB2WAWQGZ9+jtpVVAczNTCh+JHMH8eODQoBHsYfdkkToljNxaQi/f+AKQzL6g==
-X-Received: by 2002:a17:902:da8e:b0:1ca:4681:eb39 with SMTP id j14-20020a170902da8e00b001ca4681eb39mr7180734plx.17.1698067704143;
-        Mon, 23 Oct 2023 06:28:24 -0700 (PDT)
-Received: from [10.0.2.15] ([103.37.201.177])
-        by smtp.gmail.com with ESMTPSA id u15-20020a170902e80f00b001c9d2360b2asm5898797plg.22.2023.10.23.06.28.20
+        d=1e100.net; s=20230601; t=1698062598; x=1698667398;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hofm46pISELYVvTcrs2tDQX/iIBeSQbRrL6PHoZxa54=;
+        b=WpRubR8nBWRTsHK7ZKd40LKM3DeanEpVkWhJBo4fbaDa2U1M8hFA63+Y/vX4bUIbf+
+         qS78RSjmU2KLL6uqqDzhPKDzYKBTz7tdlvkwGSpzpaSoHhSHOl7Wu+WolbN6je8E6igR
+         CcMS4RNEWnMWGOWVSuZ0OBmtnFb/Dgou9FboaOfyFBinOr6/lGewZWi1XjmWRVZcK3Ak
+         8ZANNfptx9UEsga9jGnQX9KKg8wUIReVcxgijW2HMe1GMUFj4HUzVNmgDSi+fKjxi4Bj
+         hDUt8zmhS7q9m3rEYVURkSbrmO+w7YfjKYnp3wy26klj1bW1AsW4jebJ5DfMaF6/dCrM
+         4kqA==
+X-Gm-Message-State: AOJu0YxDsG21h5CiKAJKUwtCOs0WgoKcsFatIyswSTbD3vO2Envmx1kn
+        QTgVWRUYSdOcOb5f8Hkkk2fiMIFgyKfb9sDpqY5QSDr/CMP+eQvPHRIj8ZDVi8HwRjngLV728YZ
+        x1rSYJHInvLwCDBVKRNfxqC7E
+X-Received: by 2002:a05:600c:1992:b0:401:daf2:2735 with SMTP id t18-20020a05600c199200b00401daf22735mr6975939wmq.31.1698062598083;
+        Mon, 23 Oct 2023 05:03:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGjCM8aHYWLMLQFlLsMrI3+VgN1lbGjpOb416V0h+2yLN0yDsDmWXyw/czfkJyiu2/jCcJ95Q==
+X-Received: by 2002:a05:600c:1992:b0:401:daf2:2735 with SMTP id t18-20020a05600c199200b00401daf22735mr6975912wmq.31.1698062597638;
+        Mon, 23 Oct 2023 05:03:17 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c738:1900:b6ea:5b9:62c0:34e? (p200300cbc7381900b6ea05b962c0034e.dip0.t-ipconnect.de. [2003:cb:c738:1900:b6ea:5b9:62c0:34e])
+        by smtp.gmail.com with ESMTPSA id g16-20020a05600c311000b0040651505684sm9310909wmo.29.2023.10.23.05.03.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 06:28:23 -0700 (PDT)
-Message-ID: <339774d7-b50b-b4bc-7c49-b128b781428b@gmail.com>
-Date:   Tue, 17 Oct 2023 17:35:30 +0530
+        Mon, 23 Oct 2023 05:03:17 -0700 (PDT)
+Message-ID: <1156ad46-1952-4892-8092-bfbb8588c3f3@redhat.com>
+Date:   Mon, 23 Oct 2023 14:03:15 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] jfs: fix array-index-out-of-bounds in dbAdjTree
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] userfaultfd: UFFDIO_MOVE uABI
 Content-Language: en-US
-To:     dave.kleikamp@oracle.com, shaggy@kernel.org
-Cc:     Linux-kernel-mentees@lists.linuxfoundation.org,
-        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        syzbot+39ba34a099ac2e9bd3cb@syzkaller.appspotmail.com
-References: <20231017120356.55322-1-ghandatmanas@gmail.com>
-From:   Manas Ghandat <ghandatmanas@gmail.com>
-In-Reply-To: <20231017120356.55322-1-ghandatmanas@gmail.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <ZSlragGjFEw9QS1Y@x1n>
+ <12588295-2616-eb11-43d2-96a3c62bd181@redhat.com> <ZS2IjEP479WtVdMi@x1n>
+ <8d187891-f131-4912-82d8-13112125b210@redhat.com> <ZS7ZqztMbhrG52JQ@x1n>
+ <d40b8c86-6163-4529-ada4-d2b3c1065cba@redhat.com> <ZTGJHesvkV84c+l6@x1n>
+ <81cf0943-e258-494c-812a-0c00b11cf807@redhat.com>
+ <CAJuCfpHZWfjW530CvQCFx-PYNSaeQwkh-+Z6KgdfFyZHRGSEDQ@mail.gmail.com>
+ <d34dfe82-3e31-4f85-8405-c582a0650688@redhat.com> <ZTVD18RgBfITsQC4@x1n>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZTVD18RgBfITsQC4@x1n>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.3 required=5.0 tests=BAYES_00,DATE_IN_PAST_96_XX,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just a friendly remainder
+On 22.10.23 17:46, Peter Xu wrote:
+> On Fri, Oct 20, 2023 at 07:16:19PM +0200, David Hildenbrand wrote:
+>> These are rather the vibes I'm getting from Peter. "Why rename it, could
+>> confuse people because the original patches are old", "Why exclude it if it
+>> has been included in the original patches". Not the kind of reasoning I can
+>> relate to when it comes to upstreaming some patches.
+> 
+> You can't blame anyone if you misunderstood and biased the question.
+> 
+> The first question is definitely valid, even until now.  You guys still
+> prefer to rename it, which I'm totally fine with.
+> 
+> The 2nd question is wrong from your interpretation.  That's not my point,
+> at least not starting from a few replies already.  What I was asking for is
+> why such page movement between mm is dangerous.  I don't think I get solid
+> answers even until now.
+> 
+> Noticing "memcg is missing" is not an argument for "cross-mm is dangerous",
+> it's a review comment.  Suren can address that.
+> 
+> You'll propose a new feature that may tag an mm is not an argument either,
+> if it's not merged yet.  We can also address that depending on what it is,
+> also on which lands earlier.
+> 
+> It'll be good to discuss these details even in a single-mm support.  Anyone
+> would like to add that can already refer to discussion in this thread.
+> 
+> I hope I'm clear.
+> 
 
-On 17/10/23 17:33, Manas Ghandat wrote:
-> Currently there is a bound check missing in the dbAdjTree while
-> accessing the dmt_stree. To add the required check added the bool is_ctl
-> which is required to determine the size as suggest in the following
-> commit.
-> https://lore.kernel.org/linux-kernel-mentees/f9475918-2186-49b8-b801-6f0f9e75f4fa@oracle.com/
->
-> Reported-by: syzbot+39ba34a099ac2e9bd3cb@syzkaller.appspotmail.com
-> Fixes: https://syzkaller.appspot.com/bug?extid=39ba34a099ac2e9bd3cb
-> Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
-> ---
->   fs/jfs/jfs_dmap.c | 57 ++++++++++++++++++++++++++---------------------
->   1 file changed, 31 insertions(+), 26 deletions(-)
->
-> diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-> index 88afd108c2dd..57fba21994c3 100644
-> --- a/fs/jfs/jfs_dmap.c
-> +++ b/fs/jfs/jfs_dmap.c
-> @@ -63,10 +63,10 @@
->    */
->   static void dbAllocBits(struct bmap * bmp, struct dmap * dp, s64 blkno,
->   			int nblocks);
-> -static void dbSplit(dmtree_t * tp, int leafno, int splitsz, int newval);
-> -static int dbBackSplit(dmtree_t * tp, int leafno);
-> -static int dbJoin(dmtree_t * tp, int leafno, int newval);
-> -static void dbAdjTree(dmtree_t * tp, int leafno, int newval);
-> +static void dbSplit(dmtree_t * tp, int leafno, int splitsz, int newval, bool is_ctl);
-> +static int dbBackSplit(dmtree_t * tp, int leafno, bool is_ctl);
-> +static int dbJoin(dmtree_t * tp, int leafno, int newval, bool is_ctl);
-> +static void dbAdjTree(dmtree_t * tp, int leafno, int newval, bool is_ctl);
->   static int dbAdjCtl(struct bmap * bmp, s64 blkno, int newval, int alloc,
->   		    int level);
->   static int dbAllocAny(struct bmap * bmp, s64 nblocks, int l2nb, s64 * results);
-> @@ -2096,7 +2096,7 @@ static int dbFreeDmap(struct bmap * bmp, struct dmap * dp, s64 blkno,
->   		 * system.
->   		 */
->   		if (dp->tree.stree[word] == NOFREE)
-> -			dbBackSplit((dmtree_t *) & dp->tree, word);
-> +			dbBackSplit((dmtree_t *) & dp->tree, word, false);
->   
->   		dbAllocBits(bmp, dp, blkno, nblocks);
->   	}
-> @@ -2182,7 +2182,7 @@ static void dbAllocBits(struct bmap * bmp, struct dmap * dp, s64 blkno,
->   			 * the binary system of the leaves if need be.
->   			 */
->   			dbSplit(tp, word, BUDMIN,
-> -				dbMaxBud((u8 *) & dp->wmap[word]));
-> +				dbMaxBud((u8 *) & dp->wmap[word]),false);
->   
->   			word += 1;
->   		} else {
-> @@ -2222,7 +2222,7 @@ static void dbAllocBits(struct bmap * bmp, struct dmap * dp, s64 blkno,
->   				 * system of the leaves to reflect the current
->   				 * allocation (size).
->   				 */
-> -				dbSplit(tp, word, size, NOFREE);
-> +				dbSplit(tp, word, size, NOFREE, false);
->   
->   				/* get the number of dmap words handled */
->   				nw = BUDSIZE(size, BUDMIN);
-> @@ -2329,7 +2329,7 @@ static int dbFreeBits(struct bmap * bmp, struct dmap * dp, s64 blkno,
->   			/* update the leaf for this dmap word.
->   			 */
->   			rc = dbJoin(tp, word,
-> -				    dbMaxBud((u8 *) & dp->wmap[word]));
-> +				    dbMaxBud((u8 *) & dp->wmap[word]),false);
->   			if (rc)
->   				return rc;
->   
-> @@ -2362,7 +2362,7 @@ static int dbFreeBits(struct bmap * bmp, struct dmap * dp, s64 blkno,
->   
->   				/* update the leaf.
->   				 */
-> -				rc = dbJoin(tp, word, size);
-> +				rc = dbJoin(tp, word, size, false);
->   				if (rc)
->   					return rc;
->   
-> @@ -2514,16 +2514,16 @@ dbAdjCtl(struct bmap * bmp, s64 blkno, int newval, int alloc, int level)
->   		 * that it is at the front of a binary buddy system.
->   		 */
->   		if (oldval == NOFREE) {
-> -			rc = dbBackSplit((dmtree_t *) dcp, leafno);
-> +			rc = dbBackSplit((dmtree_t *) dcp, leafno, true);
->   			if (rc) {
->   				release_metapage(mp);
->   				return rc;
->   			}
->   			oldval = dcp->stree[ti];
->   		}
-> -		dbSplit((dmtree_t *) dcp, leafno, dcp->budmin, newval);
-> +		dbSplit((dmtree_t *) dcp, leafno, dcp->budmin, newval, true);
->   	} else {
-> -		rc = dbJoin((dmtree_t *) dcp, leafno, newval);
-> +		rc = dbJoin((dmtree_t *) dcp, leafno, newval, true);
->   		if (rc) {
->   			release_metapage(mp);
->   			return rc;
-> @@ -2554,7 +2554,7 @@ dbAdjCtl(struct bmap * bmp, s64 blkno, int newval, int alloc, int level)
->   				 */
->   				if (alloc) {
->   					dbJoin((dmtree_t *) dcp, leafno,
-> -					       oldval);
-> +					       oldval, true);
->   				} else {
->   					/* the dbJoin() above might have
->   					 * caused a larger binary buddy system
-> @@ -2564,9 +2564,9 @@ dbAdjCtl(struct bmap * bmp, s64 blkno, int newval, int alloc, int level)
->   					 */
->   					if (dcp->stree[ti] == NOFREE)
->   						dbBackSplit((dmtree_t *)
-> -							    dcp, leafno);
-> +							    dcp, leafno, true);
->   					dbSplit((dmtree_t *) dcp, leafno,
-> -						dcp->budmin, oldval);
-> +						dcp->budmin, oldval, true);
->   				}
->   
->   				/* release the buffer and return the error.
-> @@ -2614,7 +2614,7 @@ dbAdjCtl(struct bmap * bmp, s64 blkno, int newval, int alloc, int level)
->    *
->    * serialization: IREAD_LOCK(ipbmap) or IWRITE_LOCK(ipbmap) held on entry/exit;
->    */
-> -static void dbSplit(dmtree_t * tp, int leafno, int splitsz, int newval)
-> +static void dbSplit(dmtree_t * tp, int leafno, int splitsz, int newval, bool is_ctl)
->   {
->   	int budsz;
->   	int cursz;
-> @@ -2636,7 +2636,7 @@ static void dbSplit(dmtree_t * tp, int leafno, int splitsz, int newval)
->   		while (cursz >= splitsz) {
->   			/* update the buddy's leaf with its new value.
->   			 */
-> -			dbAdjTree(tp, leafno ^ budsz, cursz);
-> +			dbAdjTree(tp, leafno ^ budsz, cursz, is_ctl);
->   
->   			/* on to the next size and buddy.
->   			 */
-> @@ -2648,7 +2648,7 @@ static void dbSplit(dmtree_t * tp, int leafno, int splitsz, int newval)
->   	/* adjust the dmap tree to reflect the specified leaf's new
->   	 * value.
->   	 */
-> -	dbAdjTree(tp, leafno, newval);
-> +	dbAdjTree(tp, leafno, newval, is_ctl);
->   }
->   
->   
-> @@ -2679,7 +2679,7 @@ static void dbSplit(dmtree_t * tp, int leafno, int splitsz, int newval)
->    *
->    * serialization: IREAD_LOCK(ipbmap) or IWRITE_LOCK(ipbmap) held on entry/exit;
->    */
-> -static int dbBackSplit(dmtree_t * tp, int leafno)
-> +static int dbBackSplit(dmtree_t * tp, int leafno, bool is_ctl)
->   {
->   	int budsz, bud, w, bsz, size;
->   	int cursz;
-> @@ -2730,7 +2730,7 @@ static int dbBackSplit(dmtree_t * tp, int leafno)
->   				 * system in two.
->   				 */
->   				cursz = leaf[bud] - 1;
-> -				dbSplit(tp, bud, cursz, cursz);
-> +				dbSplit(tp, bud, cursz, cursz, is_ctl);
->   				break;
->   			}
->   		}
-> @@ -2758,7 +2758,7 @@ static int dbBackSplit(dmtree_t * tp, int leafno)
->    *
->    * RETURN VALUES: none
->    */
-> -static int dbJoin(dmtree_t * tp, int leafno, int newval)
-> +static int dbJoin(dmtree_t * tp, int leafno, int newval, bool is_ctl)
->   {
->   	int budsz, buddy;
->   	s8 *leaf;
-> @@ -2813,12 +2813,12 @@ static int dbJoin(dmtree_t * tp, int leafno, int newval)
->   			if (leafno < buddy) {
->   				/* leafno is the left buddy.
->   				 */
-> -				dbAdjTree(tp, buddy, NOFREE);
-> +				dbAdjTree(tp, buddy, NOFREE, is_ctl);
->   			} else {
->   				/* buddy is the left buddy and becomes
->   				 * leafno.
->   				 */
-> -				dbAdjTree(tp, leafno, NOFREE);
-> +				dbAdjTree(tp, leafno, NOFREE, is_ctl);
->   				leafno = buddy;
->   			}
->   
-> @@ -2831,7 +2831,7 @@ static int dbJoin(dmtree_t * tp, int leafno, int newval)
->   
->   	/* update the leaf value.
->   	 */
-> -	dbAdjTree(tp, leafno, newval);
-> +	dbAdjTree(tp, leafno, newval, is_ctl);
->   
->   	return 0;
->   }
-> @@ -2852,15 +2852,20 @@ static int dbJoin(dmtree_t * tp, int leafno, int newval)
->    *
->    * RETURN VALUES: none
->    */
-> -static void dbAdjTree(dmtree_t * tp, int leafno, int newval)
-> +static void dbAdjTree(dmtree_t * tp, int leafno, int newval, bool is_ctl)
->   {
->   	int lp, pp, k;
-> -	int max;
-> +	int max, size;
-> +
-> +	size = is_ctl ? CTLTREESIZE : TREESIZE;
->   
->   	/* pick up the index of the leaf for this leafno.
->   	 */
->   	lp = leafno + le32_to_cpu(tp->dmt_leafidx);
->   
-> +	if (lp > size || lp < 0)
-> +		return;
-> +
->   	/* is the current value the same as the old value ?  if so,
->   	 * there is nothing to do.
->   	 */
+I said everything I had to say, go read what I wrote.
+
+-- 
+Cheers,
+
+David / dhildenb
+
