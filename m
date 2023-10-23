@@ -2,128 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DC87D2CD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA8F7D2CDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjJWIhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34832 "EHLO
+        id S229512AbjJWIhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjJWIhS (ORCPT
+        with ESMTP id S229463AbjJWIhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:37:18 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72D1188
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:37:16 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so44599151fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:37:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698050235; x=1698655035; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=me2MC4nn/CV3tpkA7KZB34ZTwycbNAKshOBYMr2X+Pk=;
-        b=PPhvIOR7tf5eRKVGIOnItTLxoqVfUtMphG2mxi5WG83HKhPmatY8WspWdceVH+Cg98
-         tPjI+S9JB2VUevZ5k4WVdY/GNpKFmANGaU62cBOwNV+d875stIGB6pGbDiHI0/guxG3O
-         cZ5GUT+jyJqDHGUcrZrryE0G6mura5rZPg+ZhayY0tiW3RPFhmGdPJg3TJ0iDTRVy+7R
-         UymCwJWTXvYwYgB4+1SBaeX0BSbkVVhmEqPyc5eB//esbWk8et42rprRHXGu/q/nfi/J
-         WDQaBL4CDuTbYmsdvnkZWs+0P7RfzJka7VqSHui7+91ih2KozkMrxwxp4M6d6gUX/TW+
-         Mg+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698050235; x=1698655035;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=me2MC4nn/CV3tpkA7KZB34ZTwycbNAKshOBYMr2X+Pk=;
-        b=fddnmx1AfDfU39iPuEafg2knzvV4yirvRnsyV6XNXX0iU5XZIDMA7BLuxuju57FZL8
-         3hTYfsnMaqcf4I3VdaLjF+qRnZPvXSoIEQVgOoanVgi1avNfrpDyPg1zzyc5On5l2o4j
-         Ipxe9657MweNxUBgeay9hilcEmbBi5SxhEySlVONvWQABS9GAiCTA594qLOebinz+jBJ
-         sCc/z//k182gJLR14EnB1G05B56RNpKn8eF1OCYT2AAo85SZcgvFZ9uNL1hJVYWaYVR9
-         NxVRfl62wujJNDQ/jHt2ogGSx4GoQQo8klXUUYgTmJBipSOVqetLQNP6MSnylysR97Zj
-         JdzA==
-X-Gm-Message-State: AOJu0Yy2qaWqJ0QMy4LDzQYBFn9RvLSAs8nr4aI7TvrZqxJHrBN8A/An
-        1UgAlsCrDr4HNgmFDUE/SV0ssw==
-X-Google-Smtp-Source: AGHT+IHlKoNRRLj9D+bLl/GMYZXBlYtqehKTnbdPLVHoetbAT9+UytWeVgCL/DfTleBsee6/yAUHYQ==
-X-Received: by 2002:a2e:a589:0:b0:2c5:1a8e:e4c9 with SMTP id m9-20020a2ea589000000b002c51a8ee4c9mr6107923ljp.31.1698050234775;
-        Mon, 23 Oct 2023 01:37:14 -0700 (PDT)
-Received: from [192.168.86.24] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id az20-20020a05600c601400b004054dcbf92asm8758062wmb.20.2023.10.23.01.37.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 01:37:14 -0700 (PDT)
-Message-ID: <06a2c115-278a-47e0-b5ba-74639b6b23aa@linaro.org>
-Date:   Mon, 23 Oct 2023 09:37:10 +0100
+        Mon, 23 Oct 2023 04:37:51 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B97FC;
+        Mon, 23 Oct 2023 01:37:48 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 09C1CC0004;
+        Mon, 23 Oct 2023 08:37:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1698050266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v2qWqEWwWxgzTB5vBK4eUVGzwwb4KGMgVk1+rMugYSY=;
+        b=I+qXGtKjWACc+95J3bxM740AW7ZhuwMsitmdSpakULn3nkAShIyZmAK/lJnq1wlUd7qNKp
+        ToHV1Zz1KfIOmy74YTi2yd0Dm5UQ7Y7NApLfo2z48EbNSxuJKEA0Sh7wT5FBvI1DIByCaz
+        IUgnve6EG+gsLFmHDpsuHgWC2YSFPnRBvBejHvqykWy0XjriEmjVqoZiYoIdR3ePVH0MF1
+        shAKlro8Chqv6dCsMXzdTXJTIpqDc7Z+Vt0M3HLIN5tDbXJm8j3s45WdvqyN9eJzwk+94m
+        H8cKtVya75rHIMRlfJU2ZKdKLm3yUiPq1aHPGSTh+5FIF0SocS1LqmCQOlmkLA==
+Date:   Mon, 23 Oct 2023 10:37:44 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>
+Subject: Re: [PATCH v4] mtd: cfi_cmdset_0001: Byte swap OTP info
+Message-ID: <20231023103745.054bc2d3@xps-13>
+In-Reply-To: <CACRpkdYaq=RxgLJhRanfgw1+280N1K-aRvpy_BTM3SYY9Xtokw@mail.gmail.com>
+References: <20231020-mtd-otp-byteswap-v4-1-0d132c06aa9d@linaro.org>
+        <20231023102552.4b053b17@xps-13>
+        <CACRpkdYaq=RxgLJhRanfgw1+280N1K-aRvpy_BTM3SYY9Xtokw@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: qcom,q6dsp-lpass-ports: Add WSA2
- audio ports IDs
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231019153541.49753-1-krzysztof.kozlowski@linaro.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20231019153541.49753-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Hi Linus,
 
-On 19/10/2023 16:35, Krzysztof Kozlowski wrote:
-> Add defines for audio ports used on Qualcomm WSA2 LPASS (Low Power
-> Audio SubSystem).
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->   include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
-> index 39f203256c4f..c5ea35abf129 100644
-> --- a/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
-> +++ b/include/dt-bindings/sound/qcom,q6dsp-lpass-ports.h
-> @@ -139,6 +139,11 @@
->   #define DISPLAY_PORT_RX_5	133
->   #define DISPLAY_PORT_RX_6	134
->   #define DISPLAY_PORT_RX_7	135
-> +#define WSA2_CODEC_DMA_RX_0	136
-> +#define WSA2_CODEC_DMA_TX_0	137
-> +#define WSA2_CODEC_DMA_RX_1	138
-> +#define WSA2_CODEC_DMA_TX_1	139
-> +#define WSA2_CODEC_DMA_TX_2	140
->   
+linus.walleij@linaro.org wrote on Mon, 23 Oct 2023 10:35:24 +0200:
 
-Patches looks fine as it is, but do you realize that this s a dead code 
-w.r.t upstream.
-WSA2 is used only with 4 speaker setup and in such cases we use WSA 
-codec dma to drive 4 channels.
+> On Mon, Oct 23, 2023 at 10:25=E2=80=AFAM Miquel Raynal
+> <miquel.raynal@bootlin.com> wrote:
+>=20
+> > linus.walleij@linaro.org wrote on Fri, 20 Oct 2023 22:30:29 +0200:
+> > =20
+> > > Currently the offset into the device when looking for OTP
+> > > bits can go outside of the address of the MTD NOR devices,
+> > > and if that memory isn't readable, bad things happen
+> > > on the IXP4xx (added prints that illustrate the problem before
+> > > the crash):
+> > >
+> > > cfi_intelext_otp_walk walk OTP on chip 0 start at reg_prot_offset 0x0=
+0000100
+> > > ixp4xx_copy_from copy from 0x00000100 to 0xc880dd78
+> > > cfi_intelext_otp_walk walk OTP on chip 0 start at reg_prot_offset 0x1=
+2000000
+> > > ixp4xx_copy_from copy from 0x12000000 to 0xc880dd78
+> > > 8<--- cut here ---
+> > > Unable to handle kernel paging request at virtual address db000000
+> > > [db000000] *pgd=3D00000000
+> > > (...)
+> > >
+> > > This happens in this case because the IXP4xx is big endian and
+> > > the 32- and 16-bit fields in the struct cfi_intelext_otpinfo are not
+> > > properly byteswapped. Compare to how the code in read_pri_intelext()
+> > > byteswaps the fields in struct cfi_pri_intelext.
+> > >
+> > > Adding a small byte swapping loop for the OTP in read_pri_intelext()
+> > > and the crash goes away.
+> > >
+> > > The problem went unnoticed for many years until I enabled
+> > > CONFIG_MTD_OTP on the IXP4xx as well, triggering the bug.
+> > >
+> > > Cc: stable@vger.kernel.org =20
+> >
+> > Would you like to add a Fixes tag as well? Or is this skipped on
+> > purpose? =20
+>=20
+> Yes the actual commit predates existing git history... :/
+>=20
+> Git blame looks like that:
+>=20
+> ^1da177e4c3f4 (Linus Torvalds         2005-04-16 15:20:36 -0700  423)
+> ^1da177e4c3f4 (Linus Torvalds         2005-04-16 15:20:36 -0700  424)
+>          /* Protection Register info */
+> b359ed5184aeb (Jean-Philippe Brucker  2020-04-17 16:23:26 +0200  425)
+>          if (extp->NumProtectionFields)
+> b359ed5184aeb (Jean-Philippe Brucker  2020-04-17 16:23:26 +0200  426)
+>                  extra_size +=3D (extp->NumProtectionFields - 1) *
+> b359ed5184aeb (Jean-Philippe Brucker  2020-04-17 16:23:26 +0200  427)
+>                                sizeof(struct cfi_intelext_otpinfo);
+>=20
+> Jean-Philippe's patch is not the root cause AFAICT, but something
+> predating it, and predating git history.
+>=20
+> The fix easily applies to all maintained stable kernels.
 
-So WSA2 will not be used by itself.
-I would prefer support for this to be added when we are really able to 
-test WSA2 by itself.
+Ack.
 
-thanks,
-Srini
+> > > Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
+> > > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> > > ---
+> > > ChangeLog v3->v4:
+> > > - Collected Nico's ACK.
+> > > - Stalled since june! Has this been missed? =20
+> >
+> > Our current organization relies on Vignesh to pick-up (or tell me to
+> > pick-up) cfi patches. But he is slightly less active these days, so if I
+> > don't get any feedback from him soon I will take it for the next merge
+> > window.
+> >
+> > Sorry for the delay anyway. =20
+>=20
+> No worries it's not like the patch is urgent.
 
->   #define LPASS_CLK_ID_PRI_MI2S_IBIT	1
->   #define LPASS_CLK_ID_PRI_MI2S_EBIT	2
+Haha, well, yes :)
+
+Thanks,
+Miqu=C3=A8l
