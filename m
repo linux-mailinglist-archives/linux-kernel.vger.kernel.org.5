@@ -2,118 +2,410 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3B67D2C79
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C18D77D2C7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 10:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbjJWITW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 04:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38088 "EHLO
+        id S230045AbjJWIT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 04:19:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjJWITU (ORCPT
+        with ESMTP id S229492AbjJWITz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 04:19:20 -0400
-Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B455C4;
-        Mon, 23 Oct 2023 01:19:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail2; t=1698049156; x=1698308356;
-        bh=WxADqybr844I3oyxhgF11CfEL7UzS7ZR4cFdELQGNvc=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=U2RcwxLU7ur57UbIqCUc41rPeN8/K52RWTLgORhgJU5QCGJ7yuP/p1Xi0EqVjMKAW
-         htgDguF11LRmmTvNhgmHoWbDlWHHq+nQnEHLaJAHT4svQzQszctKAuxU9jcXg88xeW
-         /r2ObbAxjn+pX9LpZfk8L9RoxG1aw0Sj7i6a3cEfZXXbMmPTGUNkHqYZbxBv0yVjvM
-         gbTu505EB44iV5R0BwC6vJmBbDIR8ChlOn9NLzI1ZWR4hajxOIzWT2zrQkcSw4/Usw
-         EsgsAcaN63gmyTSJc7XKGcWmJi9D+KDCEIwpQtvoHTOf0n7dSJHFC02fFuln/MkBmO
-         eYnQkIKLYP0Ig==
-Date:   Mon, 23 Oct 2023 08:19:05 +0000
-To:     Albert Esteve <aesteve@redhat.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     qemu-devel@nongnu.org, zackr@vmware.com, linux-doc@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>, iforbes@vmware.com,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Chia-I Wu <olvaffe@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        David Airlie <airlied@gmail.com>, banackm@vmware.com,
-        Rob Clark <robdclark@gmail.com>, javierm@redhat.com,
-        krastevm@vmware.com, spice-devel@lists.freedesktop.org,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Airlie <airlied@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mombasawalam@vmware.com,
-        Daniel Vetter <daniel@ffwll.ch>, ppaalanen@gmail.com,
-        VMware Graphics Reviewers 
-        <linux-graphics-maintainer@vmware.com>,
-        Gerd Hoffmann <kraxel@redhat.com>
-Subject: Re: [PATCH v6 0/9] Fix cursor planes with virtualized drivers
-Message-ID: <219B7sJmmuzo8lj-2i5F6y0pc8XM03X6NdxHUq_R76N71AcTptEPcpjKLO9Rutriw88YtJDRNqibuR-YICIkhPnrBnQSM-Uu9YCc2uZoOiM=@emersion.fr>
-In-Reply-To: <CADSE00KW4+hpbAbZAusBngq5FYSa067wYJCGeetqngWRJaD9Kg@mail.gmail.com>
-References: <20231023074613.41327-1-aesteve@redhat.com> <-ngmaSLF2S5emYjTBWcLRNzvJRoe_eZ-Nv9HQhE6ZLuK8nIE2ZbfVh2G2O2Z41GoIFIRpts0ukEtFXUx8pNAptmrZBhlXxaQGykx_qCZ_9k=@emersion.fr> <CADSE00KW4+hpbAbZAusBngq5FYSa067wYJCGeetqngWRJaD9Kg@mail.gmail.com>
-Feedback-ID: 1358184:user:proton
+        Mon, 23 Oct 2023 04:19:55 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98CE2DA
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 01:19:52 -0700 (PDT)
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39N81xYs016757;
+        Mon, 23 Oct 2023 10:19:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=siHF/uCtPQkVMEwTMfpU+6+WpBxC4YUFN9WRzW275G0=; b=3b
+        wDQ8rq7OApxq2/pW/zumNb4wjwj0O1xGH7BLTP5+kTYkqTFSdYDlFXUSI8Emrdro
+        2WTiPC0GY/NL0+PTwWDnKPWrvxnsUGhALZTL2uzNFON/H9k7idjHDSyUNUwc3Kfr
+        JrBzWWjJuSHN00dfMJwywS8U8j6E9IjrBqlm8rChXMOxE/rVZq0UFdF8K3ZNlmGg
+        QWlUolfildhKK6hnVySgrdpZPm2apSV5w4GMZ/3Nxj/hrnMRhnq7ub9APgk5EIw3
+        dvaFf6+DdViHnLd9QrF2+DU6YlM3seTiEwXzvxInT6kNfkg/nyRUmREteMTrq+yv
+        iQzDzZv+Z5nP82pcfs4g==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3tv42fps6y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 10:19:12 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3422D10002A;
+        Mon, 23 Oct 2023 10:19:11 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 225CF2138C4;
+        Mon, 23 Oct 2023 10:19:11 +0200 (CEST)
+Received: from [10.252.24.200] (10.252.24.200) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 23 Oct
+ 2023 10:19:10 +0200
+Message-ID: <8ec28237-8641-4c4c-b448-824ac01f313b@foss.st.com>
+Date:   Mon, 23 Oct 2023 10:19:10 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/stm: Avoid use-after-free issues with crtc and plane
+Content-Language: en-US
+To:     Katya Orlova <e.orlova@ispras.ru>,
+        Yannick Fertre <yannick.fertre@foss.st.com>
+CC:     Philippe Cornu <philippe.cornu@foss.st.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+References: <20231020102935.27634-1-e.orlova@ispras.ru>
+From:   Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+In-Reply-To: <20231020102935.27634-1-e.orlova@ispras.ru>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.252.24.200]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-23_06,2023-10-19_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, October 23rd, 2023 at 10:14, Albert Esteve <aesteve@redhat.com> =
-wrote:
+Hello Katya,
 
-> On Mon, Oct 23, 2023 at 9:55=E2=80=AFAM Simon Ser <contact@emersion.fr> w=
-rote:
->=20
-> > On Monday, October 23rd, 2023 at 09:46, Albert Esteve <aesteve@redhat.c=
-om> wrote:
-> >=20
-> > > Link to the IGT test covering this patch (already merged):
-> > > https://lists.freedesktop.org/archives/igt-dev/2023-July/058427.html
-> >=20
-> > Hmm. IGT should not be merged before the kernel, because as long as the
-> > kernel is not merged there might be some uAPI changes.
->=20
-> Right, but uAPI header was not updated on the IGT side. As per suggestion=
- of the
-> maintainers, I added a static variable that matches the definition on thi=
-s patch:
-> https://lists.freedesktop.org/archives/igt-dev/2023-August/058803.html
->=20
-> +/**
-> + * Clients which do set cursor hotspot and treat the cursor plane
-> + * like a mouse cursor should set this property.
-> + */
-> +#define LOCAL_DRM_CLIENT_CAP_CURSOR_PLANE_HOTSPOT=096
->=20
-> Once this patch gets upstreamed, the localized definition will be removed=
-,
-> replaced by the real one.
 
-What if this patch gets delayed and another patch using the same number
-is merged into the kernel first? What if someone finds a design flaw in
-the uAPI and it needs to be completely changed? The IGT test would then
-be completely broken.
+Thanks for your submission.
 
-As a rule of thumb: never merge user-space patches before kernel. As
-soon as the kernel part is merged, it's fine to locally copy definitions
-if desirable.
 
-> > > Mutter patch:
-> > > https://lists.freedesktop.org/archives/igt-dev/2023-July/058427.html
-> >=20
-> > Seems like this link is same as IGT? Copy-pasta fail maybe?
->=20
-> Ah yes, my bad, this is the correct link:
-> https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3337
+Please see drivers/gpu/drm/cr
 
-Thanks!
+On 10/20/23 12:29, Katya Orlova wrote:
+> ltdc_load() calls functions drm_crtc_init_with_planes() and
+> drm_universal_plane_init(). These functions should not be called with
+> parameters allocated with devm_kzalloc() to avoid use-after-free issues [1].
+
+What about drmm_kzalloc() ? By doing so the drm device is properly destroyed
+using DRM internals, rather than handling the allocation within the LTDC driver.
+
+This way has two benefits IMHO : you don't have to implement the .destroy hook
+for CRTC and planes and since the allocation is managed by the DRM framework it
+is less likely to make resources allocation errors on future patches.
+
+
+You would then have to use drmm_universal_plane_init() and
+drmm_crtc_init_with_planes().
+
+see include/drm/drm_plane.h:779 and drivers/gpu/drm/drm_crtc.c:409
+
+
+Regards,
+
+Raphaël Gallais-Pou
+
+>
+> The patch replaces managed resource allocations with regular ones.
+>
+> Found by Linux Verification Center (linuxtesting.org).
+>
+> [1]
+> https://lore.kernel.org/lkml/u366i76e3qhh3ra5oxrtngjtm2u5lterkekcz6y2jkndhuxzli@diujon4h7qwb/
+>
+> Signed-off-by: Katya Orlova <e.orlova@ispras.ru>
+> ---
+>  drivers/gpu/drm/stm/drv.c  | 11 ++++--
+>  drivers/gpu/drm/stm/ltdc.c | 72 ++++++++++++++++++++++++++------------
+>  2 files changed, 58 insertions(+), 25 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
+> index cb4404b3ce62..409f26d3e400 100644
+> --- a/drivers/gpu/drm/stm/drv.c
+> +++ b/drivers/gpu/drm/stm/drv.c
+> @@ -74,7 +74,7 @@ static int drv_load(struct drm_device *ddev)
+>  
+>  	DRM_DEBUG("%s\n", __func__);
+>  
+> -	ldev = devm_kzalloc(ddev->dev, sizeof(*ldev), GFP_KERNEL);
+> +	ldev = kzalloc(sizeof(*ldev), GFP_KERNEL);
+>  	if (!ldev)
+>  		return -ENOMEM;
+>  
+> @@ -82,7 +82,7 @@ static int drv_load(struct drm_device *ddev)
+>  
+>  	ret = drmm_mode_config_init(ddev);
+>  	if (ret)
+> -		return ret;
+> +		goto err;
+>  
+>  	/*
+>  	 * set max width and height as default value.
+> @@ -98,7 +98,7 @@ static int drv_load(struct drm_device *ddev)
+>  
+>  	ret = ltdc_load(ddev);
+>  	if (ret)
+> -		return ret;
+> +		goto err;
+>  
+>  	drm_mode_config_reset(ddev);
+>  	drm_kms_helper_poll_init(ddev);
+> @@ -106,6 +106,9 @@ static int drv_load(struct drm_device *ddev)
+>  	platform_set_drvdata(pdev, ddev);
+>  
+>  	return 0;
+> +err:
+> +	kfree(ldev);
+> +	return ret;
+>  }
+>  
+>  static void drv_unload(struct drm_device *ddev)
+> @@ -114,6 +117,8 @@ static void drv_unload(struct drm_device *ddev)
+>  
+>  	drm_kms_helper_poll_fini(ddev);
+>  	ltdc_unload(ddev);
+> +	kfree(ddev->dev_private);
+> +	ddev->dev_private = NULL;
+>  }
+>  
+>  static __maybe_unused int drv_suspend(struct device *dev)
+> diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+> index b8be4c1db423..ec3bc3637a63 100644
+> --- a/drivers/gpu/drm/stm/ltdc.c
+> +++ b/drivers/gpu/drm/stm/ltdc.c
+> @@ -1120,6 +1120,12 @@ static const struct drm_crtc_helper_funcs ltdc_crtc_helper_funcs = {
+>  	.get_scanout_position = ltdc_crtc_get_scanout_position,
+>  };
+>  
+> +static void ltdc_crtc_destroy(struct drm_crtc *crtc)
+> +{
+> +	drm_crtc_cleanup(crtc);
+> +	kfree(crtc);
+> +}
+> +
+>  static int ltdc_crtc_enable_vblank(struct drm_crtc *crtc)
+>  {
+>  	struct ltdc_device *ldev = crtc_to_ltdc(crtc);
+> @@ -1200,7 +1206,7 @@ static void ltdc_crtc_atomic_print_state(struct drm_printer *p,
+>  }
+>  
+>  static const struct drm_crtc_funcs ltdc_crtc_funcs = {
+> -	.destroy = drm_crtc_cleanup,
+> +	.destroy = ltdc_crtc_destroy,
+>  	.set_config = drm_atomic_helper_set_config,
+>  	.page_flip = drm_atomic_helper_page_flip,
+>  	.reset = drm_atomic_helper_crtc_reset,
+> @@ -1213,7 +1219,7 @@ static const struct drm_crtc_funcs ltdc_crtc_funcs = {
+>  };
+>  
+>  static const struct drm_crtc_funcs ltdc_crtc_with_crc_support_funcs = {
+> -	.destroy = drm_crtc_cleanup,
+> +	.destroy = ltdc_crtc_destroy,
+>  	.set_config = drm_atomic_helper_set_config,
+>  	.page_flip = drm_atomic_helper_page_flip,
+>  	.reset = drm_atomic_helper_crtc_reset,
+> @@ -1543,10 +1549,16 @@ static void ltdc_plane_atomic_print_state(struct drm_printer *p,
+>  	fpsi->counter = 0;
+>  }
+>  
+> +static void ltdc_plane_destroy(struct drm_plane *plane)
+> +{
+> +	drm_plane_cleanup(plane);
+> +	kfree(plane);
+> +}
+> +
+>  static const struct drm_plane_funcs ltdc_plane_funcs = {
+>  	.update_plane = drm_atomic_helper_update_plane,
+>  	.disable_plane = drm_atomic_helper_disable_plane,
+> -	.destroy = drm_plane_cleanup,
+> +	.destroy = ltdc_plane_destroy,
+>  	.reset = drm_atomic_helper_plane_reset,
+>  	.atomic_duplicate_state = drm_atomic_helper_plane_duplicate_state,
+>  	.atomic_destroy_state = drm_atomic_helper_plane_destroy_state,
+> @@ -1565,7 +1577,6 @@ static struct drm_plane *ltdc_plane_create(struct drm_device *ddev,
+>  {
+>  	unsigned long possible_crtcs = CRTC_MASK;
+>  	struct ltdc_device *ldev = ddev->dev_private;
+> -	struct device *dev = ddev->dev;
+>  	struct drm_plane *plane;
+>  	unsigned int i, nb_fmt = 0;
+>  	u32 *formats;
+> @@ -1576,7 +1587,7 @@ static struct drm_plane *ltdc_plane_create(struct drm_device *ddev,
+>  	int ret;
+>  
+>  	/* Allocate the biggest size according to supported color formats */
+> -	formats = devm_kzalloc(dev, (ldev->caps.pix_fmt_nb +
+> +	formats = kzalloc((ldev->caps.pix_fmt_nb +
+>  			       ARRAY_SIZE(ltdc_drm_fmt_ycbcr_cp) +
+>  			       ARRAY_SIZE(ltdc_drm_fmt_ycbcr_sp) +
+>  			       ARRAY_SIZE(ltdc_drm_fmt_ycbcr_fp)) *
+> @@ -1614,15 +1625,20 @@ static struct drm_plane *ltdc_plane_create(struct drm_device *ddev,
+>  		}
+>  	}
+>  
+> -	plane = devm_kzalloc(dev, sizeof(*plane), GFP_KERNEL);
+> -	if (!plane)
+> +	plane = kzalloc(sizeof(*plane), GFP_KERNEL);
+> +	if (!plane) {
+> +		kfree(formats);
+>  		return NULL;
+> +	}
+>  
+>  	ret = drm_universal_plane_init(ddev, plane, possible_crtcs,
+>  				       &ltdc_plane_funcs, formats, nb_fmt,
+>  				       modifiers, type, NULL);
+> -	if (ret < 0)
+> +	kfree(formats);
+> +	if (ret < 0) {
+> +		kfree(plane);
+>  		return NULL;
+> +	}
+>  
+>  	if (ldev->caps.ycbcr_input) {
+>  		if (val & (LXCR_C1R_YIA | LXCR_C1R_YSPA | LXCR_C1R_YFPA))
+> @@ -1650,7 +1666,7 @@ static void ltdc_plane_destroy_all(struct drm_device *ddev)
+>  
+>  	list_for_each_entry_safe(plane, plane_temp,
+>  				 &ddev->mode_config.plane_list, head)
+> -		drm_plane_cleanup(plane);
+> +		ltdc_plane_destroy(plane);
+>  }
+>  
+>  static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
+> @@ -1936,7 +1952,7 @@ int ltdc_load(struct drm_device *ddev)
+>  	if (!nb_endpoints)
+>  		return -ENODEV;
+>  
+> -	ldev->pixel_clk = devm_clk_get(dev, "lcd");
+> +	ldev->pixel_clk = clk_get(dev, "lcd");
+>  	if (IS_ERR(ldev->pixel_clk)) {
+>  		if (PTR_ERR(ldev->pixel_clk) != -EPROBE_DEFER)
+>  			DRM_ERROR("Unable to get lcd clock\n");
+> @@ -1982,7 +1998,7 @@ int ltdc_load(struct drm_device *ddev)
+>  		}
+>  	}
+>  
+> -	rstc = devm_reset_control_get_exclusive(dev, NULL);
+> +	rstc = reset_control_get_exclusive(dev, NULL);
+>  
+>  	mutex_init(&ldev->err_lock);
+>  
+> @@ -1993,25 +2009,25 @@ int ltdc_load(struct drm_device *ddev)
+>  	}
+>  
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	ldev->regs = devm_ioremap_resource(dev, res);
+> +	ldev->regs = ioremap(res->start, resource_size(res));
+>  	if (IS_ERR(ldev->regs)) {
+>  		DRM_ERROR("Unable to get ltdc registers\n");
+>  		ret = PTR_ERR(ldev->regs);
+>  		goto err;
+>  	}
+>  
+> -	ldev->regmap = devm_regmap_init_mmio(&pdev->dev, ldev->regs, &stm32_ltdc_regmap_cfg);
+> +	ldev->regmap = regmap_init_mmio(&pdev->dev, ldev->regs, &stm32_ltdc_regmap_cfg);
+>  	if (IS_ERR(ldev->regmap)) {
+>  		DRM_ERROR("Unable to regmap ltdc registers\n");
+>  		ret = PTR_ERR(ldev->regmap);
+> -		goto err;
+> +		goto err_iounmap;
+>  	}
+>  
+>  	ret = ltdc_get_caps(ddev);
+>  	if (ret) {
+>  		DRM_ERROR("hardware identifier (0x%08x) not supported!\n",
+>  			  ldev->caps.hw_version);
+> -		goto err;
+> +		goto err_regmap_exit;
+>  	}
+>  
+>  	/* Disable interrupts */
+> @@ -2034,49 +2050,57 @@ int ltdc_load(struct drm_device *ddev)
+>  		irq = platform_get_irq(pdev, i);
+>  		if (irq < 0) {
+>  			ret = irq;
+> -			goto err;
+> +			goto err_regmap_exit;
+>  		}
+>  
+> -		ret = devm_request_threaded_irq(dev, irq, ltdc_irq,
+> +		ret = request_threaded_irq(irq, ltdc_irq,
+>  						ltdc_irq_thread, IRQF_ONESHOT,
+>  						dev_name(dev), ddev);
+>  		if (ret) {
+>  			DRM_ERROR("Failed to register LTDC interrupt\n");
+> -			goto err;
+> +			goto err_regmap_exit;
+>  		}
+>  	}
+>  
+> -	crtc = devm_kzalloc(dev, sizeof(*crtc), GFP_KERNEL);
+> +	crtc = kzalloc(sizeof(*crtc), GFP_KERNEL);
+>  	if (!crtc) {
+>  		DRM_ERROR("Failed to allocate crtc\n");
+>  		ret = -ENOMEM;
+> -		goto err;
+> +		goto err_regmap_exit;
+>  	}
+>  
+>  	ret = ltdc_crtc_init(ddev, crtc);
+>  	if (ret) {
+>  		DRM_ERROR("Failed to init crtc\n");
+> -		goto err;
+> +		goto free_crtc;
+>  	}
+>  
+>  	ret = drm_vblank_init(ddev, NB_CRTC);
+>  	if (ret) {
+>  		DRM_ERROR("Failed calling drm_vblank_init()\n");
+> -		goto err;
+> +		goto free_crtc;
+>  	}
+>  
+>  	clk_disable_unprepare(ldev->pixel_clk);
+> +	clk_put(ldev->pixel_clk);
+>  
+>  	pinctrl_pm_select_sleep_state(ddev->dev);
+>  
+>  	pm_runtime_enable(ddev->dev);
+>  
+>  	return 0;
+> +free_crtc:
+> +	kfree(crtc);
+> +err_regmap_exit:
+> +	regmap_exit(ldev->regmap);
+> +err_iounmap:
+> +	iounmap(ldev->regs);
+>  err:
+>  	for (i = 0; i < nb_endpoints; i++)
+>  		drm_of_panel_bridge_remove(ddev->dev->of_node, 0, i);
+>  
+>  	clk_disable_unprepare(ldev->pixel_clk);
+> +	clk_put(ldev->pixel_clk);
+>  
+>  	return ret;
+>  }
+> @@ -2084,6 +2108,7 @@ int ltdc_load(struct drm_device *ddev)
+>  void ltdc_unload(struct drm_device *ddev)
+>  {
+>  	struct device *dev = ddev->dev;
+> +	struct ltdc_device *ldev = ddev->dev_private;
+>  	int nb_endpoints, i;
+>  
+>  	DRM_DEBUG_DRIVER("\n");
+> @@ -2094,6 +2119,9 @@ void ltdc_unload(struct drm_device *ddev)
+>  		drm_of_panel_bridge_remove(ddev->dev->of_node, 0, i);
+>  
+>  	pm_runtime_disable(ddev->dev);
+> +
+> +	regmap_exit(ldev->regmap);
+> +	iounmap(ldev->regs);
+>  }
+>  
+>  MODULE_AUTHOR("Philippe Cornu <philippe.cornu@st.com>");
