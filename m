@@ -2,200 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9217D3427
-	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857867D344D
+	for <lists+linux-kernel@lfdr.de>; Mon, 23 Oct 2023 13:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbjJWLhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 07:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
+        id S234200AbjJWLiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 07:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234164AbjJWLhC (ORCPT
+        with ESMTP id S234194AbjJWLiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 07:37:02 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83ADDFF;
-        Mon, 23 Oct 2023 04:36:58 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VuktlA6_1698061013;
-Received: from 30.97.48.63(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VuktlA6_1698061013)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Oct 2023 19:36:54 +0800
-Message-ID: <d028322f-ca9c-f18e-2a96-8c950a991a1a@linux.alibaba.com>
-Date:   Mon, 23 Oct 2023 19:37:10 +0800
+        Mon, 23 Oct 2023 07:38:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212B9FD;
+        Mon, 23 Oct 2023 04:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698061096; x=1729597096;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=WI0PePkdjm80l6TXZuuvvHh3AmbwA3xAEz4yXz4Whpo=;
+  b=DjHywYZvovT8amsyr1X+HY5UxAk9vcWbK7Z2mw7LSrOWHUkijgLI/2RF
+   GrDxVsuR/uMsQQr0AH3+E62BgzLUyNbf05WV4g8pwvO7Y8spOfl31W3lP
+   syc31KoDfFCeB0yb+kbjgoBbuvHoHMuhGyX2tHCBcoG515dg9o8T8LJbb
+   cVTdhTbKX7l8XrKXDjIw/+F6h8AZQ/BGB5wXctf9RxuKHxlYVphpyaJy9
+   sYhzfCdy3TIxz6I+NoSlrn5/uJockg1niEAV+F2yIloduwOH61Q4IxTX2
+   bygL6cyBa/i+0obqzJxW+33u9YutfPzEw30UmryIc66C2ohz8Xb63XynI
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="389667036"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="389667036"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:38:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10871"; a="793099976"
+X-IronPort-AV: E=Sophos;i="6.03,244,1694761200"; 
+   d="scan'208";a="793099976"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.40.60])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 04:38:12 -0700
+Message-ID: <78bb4ad2-853a-4ed4-9998-c4e1122545b6@intel.com>
+Date:   Mon, 23 Oct 2023 14:38:09 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH V2 4/7] i2c: sprd: Add I2C controller driver to support
- dynamic switching of 400K/1M/3.4M frequency
-To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
-        Andi Shyti <andi.shyti@kernel.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-References: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
- <20231023081158.10654-5-Huangzheng.Lai@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20231023081158.10654-5-Huangzheng.Lai@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: cqhci: Be more verbose in error irq handler
+Content-Language: en-US
+To:     =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Asutosh Das <quic_asutoshd@quicinc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Radoslaw Biernacki <biernacki@google.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>, upstream@semihalf.com
+References: <20231016095610.1095084-1-korneld@chromium.org>
+ <613c51f0-c32e-4de5-9627-525d92fb06ed@intel.com>
+ <CAD=NsqybNrf-=9=5wvoj+9MT3xK3SbX7nDk3N3VLBMyA_u3KTQ@mail.gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <CAD=NsqybNrf-=9=5wvoj+9MT3xK3SbX7nDk3N3VLBMyA_u3KTQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/23/2023 4:11 PM, Huangzheng Lai wrote:
-> When I2C-slaves supporting different frequencies use the same I2C
-> controller, the I2C controller usually only operates at lower frequencies.
-> In order to improve the performance of I2C-slaves transmission supporting
-> faster frequencies, we dynamically configure the I2C operating frequency
-> based on the value of the input parameter msg ->flag.
-
-I am not sure if this is suitable to expand the msg->flag. Andi, how do 
-you think? Thanks.
-
-> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-> ---
->   drivers/i2c/busses/i2c-sprd.c | 101 +++++++++++++++++++---------------
->   1 file changed, 57 insertions(+), 44 deletions(-)
+On 20/10/23 11:53, Kornel Dulęba wrote:
+> On Fri, Oct 20, 2023 at 9:41 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> On 16/10/23 12:56, Kornel Dulęba wrote:
+>>> There are several reasons for controller to generate an error interrupt.
+>>> They include controller<->card timeout, and CRC mismatch error.
+>>> Right now we only get one line in the logs stating that CQE recovery was
+>>> triggered, but with no information about what caused it.
+>>> To figure out what happened be more verbose and dump the registers from
+>>> irq error handler logic.
+>>> This matches the behaviour of the software timeout logic, see
+>>> cqhci_timeout.
+>>>
+>>> Signed-off-by: Kornel Dulęba <korneld@chromium.org>
+>>> ---
+>>>  drivers/mmc/host/cqhci-core.c | 5 +++--
+>>>  1 file changed, 3 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+>>> index b3d7d6d8d654..33abb4bd53b5 100644
+>>> --- a/drivers/mmc/host/cqhci-core.c
+>>> +++ b/drivers/mmc/host/cqhci-core.c
+>>> @@ -700,8 +700,9 @@ static void cqhci_error_irq(struct mmc_host *mmc, u32 status, int cmd_error,
+>>>
+>>>       terri = cqhci_readl(cq_host, CQHCI_TERRI);
+>>>
+>>> -     pr_debug("%s: cqhci: error IRQ status: 0x%08x cmd error %d data error %d TERRI: 0x%08x\n",
+>>> -              mmc_hostname(mmc), status, cmd_error, data_error, terri);
+>>> +     pr_warn("%s: cqhci: error IRQ status: 0x%08x cmd error %d data error %d\n",
+>>> +              mmc_hostname(mmc), status, cmd_error, data_error);
+>>> +     cqhci_dumpregs(cq_host);
+>>
+>> For debugging, isn't dynamic debug seems more appropriate?
 > 
-> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-> index dec627ef408c..f1f7fad42ecd 100644
-> --- a/drivers/i2c/busses/i2c-sprd.c
-> +++ b/drivers/i2c/busses/i2c-sprd.c
-> @@ -75,7 +75,14 @@
->   #define SPRD_I2C_PM_TIMEOUT	1000
->   /* timeout (ms) for transfer message */
->   #define I2C_XFER_TIMEOUT	1000
-> -
-> +/* dynamic modify clk_freq flag  */
-> +#define I2C_3M4_FLAG		0x0100
-> +#define I2C_1M_FLAG		0x0080
-> +#define I2C_400K_FLAG		0x0040
-> +
-> +#define I2C_FREQ_400K		400000
-> +#define I2C_FREQ_1M		1000000
-> +#define I2C_FREQ_3_4M		3400000
->   /* SPRD i2c data structure */
->   struct sprd_i2c {
->   	struct i2c_adapter adap;
-> @@ -94,6 +101,49 @@ struct sprd_i2c {
->   	int err;
->   };
->   
-> +static void sprd_i2c_set_clk(struct sprd_i2c *i2c_dev, u32 freq)
-> +{
-> +	u32 apb_clk = i2c_dev->src_clk;
-> +	/*
-> +	 * From I2C databook, the prescale calculation formula:
-> +	 * prescale = freq_i2c / (4 * freq_scl) - 1;
-> +	 */
-> +	u32 i2c_dvd = apb_clk / (4 * freq) - 1;
-> +	/*
-> +	 * From I2C databook, the high period of SCL clock is recommended as
-> +	 * 40% (2/5), and the low period of SCL clock is recommended as 60%
-> +	 * (3/5), then the formula should be:
-> +	 * high = (prescale * 2 * 2) / 5
-> +	 * low = (prescale * 2 * 3) / 5
-> +	 */
-> +	u32 high = ((i2c_dvd << 1) * 2) / 5;
-> +	u32 low = ((i2c_dvd << 1) * 3) / 5;
-> +	u32 div0 = I2C_ADDR_DVD0_CALC(high, low);
-> +	u32 div1 = I2C_ADDR_DVD1_CALC(high, low);
-> +
-> +	writel(div0, i2c_dev->base + ADDR_DVD0);
-> +	writel(div1, i2c_dev->base + ADDR_DVD1);
-> +
-> +	/* Start hold timing = hold time(us) * source clock */
-> +	switch (freq) {
-> +	case I2C_MAX_STANDARD_MODE_FREQ:
-> +		writel((4 * apb_clk) / 1000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
-> +	case I2C_MAX_FAST_MODE_FREQ:
-> +		writel((6 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
-> +	case I2C_MAX_FAST_MODE_PLUS_FREQ:
-> +		writel((8 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
-> +	case I2C_MAX_HIGH_SPEED_MODE_FREQ:
-> +		writel((8 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
-> +	default:
-> +		dev_err(i2c_dev->dev, "Unsupported frequency: %d\n", freq);
-> +		break;
-> +	}
-> +}
-> +
->   static void sprd_i2c_set_count(struct sprd_i2c *i2c_dev, u32 count)
->   {
->   	writel(count, i2c_dev->base + I2C_COUNT);
-> @@ -269,6 +319,12 @@ static int sprd_i2c_handle_msg(struct i2c_adapter *i2c_adap,
->   		sprd_i2c_send_stop(i2c_dev, !!is_last_msg);
->   	}
->   
-> +	if (msg->flags & I2C_400K_FLAG)
-> +		sprd_i2c_set_clk(i2c_dev, I2C_FREQ_400K);
-> +	else if (msg->flags & I2C_1M_FLAG)
-> +		sprd_i2c_set_clk(i2c_dev, I2C_FREQ_1M);
-> +	else if (msg->flags & I2C_3M4_FLAG)
-> +		sprd_i2c_set_clk(i2c_dev, I2C_FREQ_3_4M);
->   	/*
->   	 * We should enable rx fifo full interrupt to get data when receiving
->   	 * full data.
-> @@ -331,49 +387,6 @@ static const struct i2c_algorithm sprd_i2c_algo = {
->   	.functionality = sprd_i2c_func,
->   };
->   
-> -static void sprd_i2c_set_clk(struct sprd_i2c *i2c_dev, u32 freq)
-> -{
-> -	u32 apb_clk = i2c_dev->src_clk;
-> -	/*
-> -	 * From I2C databook, the prescale calculation formula:
-> -	 * prescale = freq_i2c / (4 * freq_scl) - 1;
-> -	 */
-> -	u32 i2c_dvd = apb_clk / (4 * freq) - 1;
-> -	/*
-> -	 * From I2C databook, the high period of SCL clock is recommended as
-> -	 * 40% (2/5), and the low period of SCL clock is recommended as 60%
-> -	 * (3/5), then the formula should be:
-> -	 * high = (prescale * 2 * 2) / 5
-> -	 * low = (prescale * 2 * 3) / 5
-> -	 */
-> -	u32 high = ((i2c_dvd << 1) * 2) / 5;
-> -	u32 low = ((i2c_dvd << 1) * 3) / 5;
-> -	u32 div0 = I2C_ADDR_DVD0_CALC(high, low);
-> -	u32 div1 = I2C_ADDR_DVD1_CALC(high, low);
-> -
-> -	writel(div0, i2c_dev->base + ADDR_DVD0);
-> -	writel(div1, i2c_dev->base + ADDR_DVD1);
-> -
-> -	/* Start hold timing = hold time(us) * source clock */
-> -	switch (freq) {
-> -	case I2C_MAX_STANDARD_MODE_FREQ:
-> -		writel((4 * apb_clk) / 1000000, i2c_dev->base + ADDR_STA0_DVD);
-> -		break;
-> -	case I2C_MAX_FAST_MODE_FREQ:
-> -		writel((6 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> -		break;
-> -	case I2C_MAX_FAST_MODE_PLUS_FREQ:
-> -		writel((8 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> -		break;
-> -	case I2C_MAX_HIGH_SPEED_MODE_FREQ:
-> -		writel((8 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> -		break;
-> -	default:
-> -		dev_err(i2c_dev->dev, "Unsupported frequency: %d\n", freq);
-> -		break;
-> -	}
-> -}
-> -
->   static void sprd_i2c_enable(struct sprd_i2c *i2c_dev)
->   {
->   	u32 tmp = I2C_DVD_OPT;
+> Dynamic debug is an option, but my personal preference would be to
+> just log more info in the error handler.
+
+Interrupt handlers can get called very rapidly, so some kind of rate
+limiting should be used if the message is unconditional.  Also you need
+to provide actual reasons for your preference.
+
+For dynamic debug of the register dump, something like below is
+possible.
+
+#define cqhci_dynamic_dumpregs(cqhost) \
+	_dynamic_func_call_no_desc("cqhci_dynamic_dumpregs", cqhci_dumpregs, cqhost)
+
+> To give you some background.
+> We're seeing some "running CQE recovery" lines in the logs, followed
+> by a dm_verity mismatch error.
+> The reports come from the field, with no feasible way to reproduce the
+> issue locally.
+
+If it is a software error, some kind of error injection may well
+reproduce it.  Also if it is a hardware error that only happens
+during recovery, error injection could increase the likelihood of
+reproducing it.
+
+> 
+> I'd argue that logging only the info that CQE recovery was executed is
+> not particularly helpful for someone looking into those logs.
+
+As the comment says, that message is there because recovery reduces
+performance, it is not to aid debugging per se.
+
+> Ideally we would have more data about the state the controller was in
+> when the error happened, or at least what caused the recovery to be
+> triggered.
+> The question here is how verbose should we be in this error scenario.
+> Looking at other error scenarios, in the case of a software timeout
+> we're dumping the controller registers. (cqhci_timeout)
+
+Timeout means something is broken - either the driver, the cq engine
+or the card.  On the other hand, an error interrupt is most likely a
+CRC error which is not unexpected occasionally, due to thermal drift
+or perhaps interference.
+
+> Hence I thought that I'd be appropriate to match that and do the same
+> in CQE recovery logic.
+
+It needs to be consistent. There are other pr_debugs, such as:
+
+		pr_debug("%s: cqhci: Failed to clear tasks\n",
+		pr_debug("%s: cqhci: Failed to halt\n", mmc_hostname(mmc));
+		pr_debug("%s: cqhci: disable / re-enable\n", mmc_hostname(mmc));
+
+which should perhaps be treated the same.
+
+And there are no messages for errors from the commands in
+mmc_cqe_recovery().
+
+> 
+>>
+>>>
+>>>       /* Forget about errors when recovery has already been triggered */
+>>>       if (cq_host->recovery_halt)
+>>
+
