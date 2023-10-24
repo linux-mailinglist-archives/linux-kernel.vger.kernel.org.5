@@ -2,104 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4204E7D4F54
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172137D4F57
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbjJXMCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56366 "EHLO
+        id S233500AbjJXMCV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 08:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbjJXMCK (ORCPT
+        with ESMTP id S233435AbjJXMCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:02:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF00120;
-        Tue, 24 Oct 2023 05:02:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698148924; x=1729684924;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=aPOLTqz6uP6WaCFzg7y4GFdJcJn10yPDR/rrSJsgu+M=;
-  b=KFwjoNcIVGNKcnTvLXq4rWR7S9Esk0KXPLSWad/5Yjb6/qJsCs4Fh9yG
-   3eDsiF2HUw8PkOxtFlUlWojcbc3nSHxF11EkI/fiRZbTy6ynYbKaLwa1u
-   xlxT1WOGJ+1er02AZz3qszFEtAUuK44KVYwdJgRkb+Oz6hHWGM+Bs5fIW
-   w42BsnPe4q5+p8h/EBizrrdpYXz/TJQjbdmQFc+ntKyGIcQhoNcikyX8M
-   b7VKyPKSMgFYMSSOq6zmWnhgaSNGWohqQmPO6YsCqHCa1viGK/pdZ1MdN
-   oS/zF945vZ4euOamj4KJ4vm0JkdxgeF2QF9U74OruhOQCwW8NwVhTLwWa
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="384239727"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="384239727"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 05:01:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="1005635705"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="1005635705"
-Received: from qiangfu1-mobl1.ccr.corp.intel.com (HELO [10.254.212.47]) ([10.254.212.47])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 05:01:27 -0700
-Message-ID: <b53672fe-cad4-4aa7-94ef-59895892b75a@linux.intel.com>
-Date:   Tue, 24 Oct 2023 20:01:25 +0800
+        Tue, 24 Oct 2023 08:02:19 -0400
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC31E120;
+        Tue, 24 Oct 2023 05:02:17 -0700 (PDT)
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3b2d9a9c824so1006841b6e.0;
+        Tue, 24 Oct 2023 05:02:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698148937; x=1698753737;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q2pHDhFBV3p+9e1mZi2uGJDDYekveY6SeTMBwmaYx/4=;
+        b=SzR3QQEYyvhYRcAV2mt9thqEo+GgfpLYPwXexHxaEJ8URGnqceLxSYECZzWRCJkKx0
+         rZ2QGxui+UFef4QKs9ZbZ45IEqIU4mSud3D0mKPeZe0F3PZWmONM8i3tu9n+iESja9tP
+         RkCV0l7UwYXx8zBZP4Ubdivsxj0YFr4MuEmtuJ6izvEU/Re8WQx9H+As1Sr/pHsGfSpX
+         qjYpgkoJZs32R7TDoasiTfEdfogF59ApFtrRbvDIILONyAKudftuwdQj4m68+fqRIth7
+         +nhPUHwfHQF++EJNw3bEUg+zac3MaCxcqioi26tXrteZKXIpjVQQxXYc6L3PFGEAnffp
+         bmlw==
+X-Gm-Message-State: AOJu0Yys0jeFsrf8FGpN2jdKNA6LLUavTE2B2MxGPzULME9GMfwm40ZN
+        4p6yDIcocdahMT87J7v55JLqG99qPAk6YcQ9gmU=
+X-Google-Smtp-Source: AGHT+IGIETBiiFD1D2fRVRb8FftiTW+n7MOvkpWXai2dprUcsPzAq6Nyi8wxC+U5gNTBl00FSuUydUoDBwyRfxz40/M=
+X-Received: by 2002:a05:6808:1513:b0:3ae:5e6a:5693 with SMTP id
+ u19-20020a056808151300b003ae5e6a5693mr13497868oiw.0.1698148937006; Tue, 24
+ Oct 2023 05:02:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com, jacob.jun.pan@linux.intel.com,
-        kevin.tian@intel.com, yi.y.sun@intel.com, kvm@vger.kernel.org
-Subject: Re: [PATCH 2/2] iommu/vt-d: Adopt new helper for looking up pci
- device
-Content-Language: en-US
-To:     Huang Jiaqing <jiaqing.huang@intel.com>, joro@8bytes.org,
-        will@kernel.org, robin.murphy@arm.com, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev
-References: <20231024084124.11155-1-jiaqing.huang@intel.com>
- <20231024084124.11155-2-jiaqing.huang@intel.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20231024084124.11155-2-jiaqing.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <E1qtuWW-00AQ7P-0W@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1qtuWW-00AQ7P-0W@rmk-PC.armlinux.org.uk>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 24 Oct 2023 14:02:05 +0200
+Message-ID: <CAJZ5v0hEXaYSgre=F=hZ0XTRqupaBR5Grnck=tQtfj4inDkOKA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: Rename acpi_scan_device_not_present() to be about enumeration
+To:     Russell King <rmk+kernel@armlinux.org.uk>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, James Morse <james.morse@arm.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/24 16:41, Huang Jiaqing wrote:
-> Adopt the new iopf_queue_find_pdev func() to look up PCI device
-> for better efficiency and avoid the CPU stuck issue with parallel
-> heavy dsa_test.
-> 
-> Signed-off-by: Huang Jiaqing <jiaqing.huang@intel.com>
+On Fri, Oct 20, 2023 at 8:47 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+>
+> From: James Morse <james.morse@arm.com>
+>
+> acpi_scan_device_not_present() is called when a device in the
+> hierarchy is not available for enumeration. Historically enumeration
+> was only based on whether the device was present.
+>
+> To add support for only enumerating devices that are both present
+> and enabled, this helper should be renamed. It was only ever about
+> enumeration, rename it acpi_scan_device_not_enumerated().
+>
+> No change in behaviour is intended.
+>
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > ---
->   drivers/iommu/intel/svm.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-> index 659de9c16024..0f1018b76557 100644
-> --- a/drivers/iommu/intel/svm.c
-> +++ b/drivers/iommu/intel/svm.c
-> @@ -672,7 +672,7 @@ static irqreturn_t prq_event_thread(int irq, void *d)
->   		if (unlikely(req->lpig && !req->rd_req && !req->wr_req))
->   			goto prq_advance;
->   
-> -		pdev = pci_get_domain_bus_and_slot(iommu->segment,
-> +		pdev = iopf_queue_find_pdev(iommu->iopf_queue,
->   						   PCI_BUS_NUM(req->rid),
->   						   req->rid & 0xff);
+> This is another patch from James' aarch64 hotplug vcpu series.
+>
+> I asked:
+> > Is this another patch which ought to be submitted without waiting
+> > for the rest of the series?
+> to which Jonathan Cameron replied:
+> > Looks like a valid standalone change to me.
+>
+> So let's get this queued up.
+>
+>  drivers/acpi/scan.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index ed01e19514ef..17ab875a7d4e 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -289,10 +289,10 @@ static int acpi_scan_hot_remove(struct acpi_device *device)
+>         return 0;
+>  }
+>
+> -static int acpi_scan_device_not_present(struct acpi_device *adev)
+> +static int acpi_scan_device_not_enumerated(struct acpi_device *adev)
+>  {
+>         if (!acpi_device_enumerated(adev)) {
+> -               dev_warn(&adev->dev, "Still not present\n");
+> +               dev_warn(&adev->dev, "Still not enumerated\n");
+>                 return -EALREADY;
+>         }
+>         acpi_bus_trim(adev);
+> @@ -327,7 +327,7 @@ static int acpi_scan_device_check(struct acpi_device *adev)
+>                         error = -ENODEV;
+>                 }
+>         } else {
+> -               error = acpi_scan_device_not_present(adev);
+> +               error = acpi_scan_device_not_enumerated(adev);
+>         }
+>         return error;
+>  }
+> @@ -339,7 +339,7 @@ static int acpi_scan_bus_check(struct acpi_device *adev, void *not_used)
+>
+>         acpi_bus_get_status(adev);
+>         if (!acpi_device_is_present(adev)) {
+> -               acpi_scan_device_not_present(adev);
+> +               acpi_scan_device_not_enumerated(adev);
+>                 return 0;
+>         }
+>         if (handler && handler->hotplug.scan_dependent)
+> --
 
-Minor: align the new line with the left parenthesis.
-
->   		/*
-> @@ -688,7 +688,6 @@ static irqreturn_t prq_event_thread(int irq, void *d)
->   			trace_prq_report(iommu, &pdev->dev, req->qw_0, req->qw_1,
->   					 req->priv_data[0], req->priv_data[1],
->   					 iommu->prq_seq_number++);
-> -		pci_dev_put(pdev);
->   prq_advance:
->   		head = (head + sizeof(*req)) & PRQ_RING_MASK;
->   	}
-
-Best regards,
-baolu
+Applied as 6.7 material, thanks!
