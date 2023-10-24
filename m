@@ -2,675 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4737D5AA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2E77D5AA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344181AbjJXSgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 14:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53376 "EHLO
+        id S1344183AbjJXSgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344143AbjJXSgI (ORCPT
+        with ESMTP id S1344184AbjJXSgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:36:08 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F3510D3;
-        Tue, 24 Oct 2023 11:36:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1698172554; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Xxuv4+fd2Pb9vATAPvYzs341X+mQkIv6Vp8rKYB6jc4ygkRW24/8niVitekyd8xBuu
-    vRY/B+6VsA+ipg6VUx0pqP5LSMyqE2Y72f5gZjUVsnFeBC9srBqI4/vIlpdlLLrHjJ4V
-    cf0fmhX1aaEnjmvlHMLnQpqfzQr9ZIvcXS0i9Sh0yvJbY4S8D4kznjQhp4H1Fv+L+YsO
-    z6ZIt3BasqsD66tuk8XgxyeZMPzXH8u+oDlVGSmaN7YVIswDV2/8zfF/NrjheVO2gRUd
-    ccjSg6LFhec6W2Rr/MpkNSZb9u7rvL22RL/ujxNEpcvJMvuZf4+XwlaK3+9g9VGoqYOl
-    XvjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698172554;
-    s=strato-dkim-0002; d=strato.com;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=REaKDc3ecuGqAeo08fXeRUV5mCnAuSiC6X9qIu311LQ=;
-    b=GWrvNns+uAaWJXrlh86KtNUPxtMAuiqQon4Ie0lNnKWPVGnxXpfw0sbtpr45XlM9LI
-    4SVMWeAY7eCy7E7VgOxEIP6nF68VkPk0QatvOqLI582Ana6wm5kt2zjXu8eEb4gfCm3p
-    IedWUGCXVJ4DaXBdkA9E9osRdr8CBaVOZSbKAk23eJoJN9fN0HyLQmFBEL1W6VoAF/Nr
-    haaB/CVO8OpXBBH6Vrib+2c1EOXv+H/wFr01CpwjPQqVqX1e1C9UbCwGOwQw755kx14K
-    lq6t9IOf79LOibgtchEGMJ0k1hkoFRBW2SHwa2izuuKzQjKBpVTh3vgAiNMtTw3sQ2lQ
-    YQ9g==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698172554;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=REaKDc3ecuGqAeo08fXeRUV5mCnAuSiC6X9qIu311LQ=;
-    b=nKxkfAeRO3iKIngg/NUEd8qpefbpeHO5IB9TxPX4yY6A3a1F2Vk66V8vksLDfvx5Xh
-    C072D7dJcLn4zVRSCcLtFDpgq0CMhfzcvDCeG0pRdXjEOSMu4D+VH+yepqCNNDYWb/jH
-    53+wftobRb4nMaaBq8kIuiNyrJURPKnk+CqQaYdI89PfXvZKBlfZXi5RJzbeosa+MUu3
-    WxdKdHkiAE9sfXD3UGTAXLbd/XX9rVIfF8GkmOqnBsIVPfUD1nIChI9SsUal2Y8Sp+UV
-    AJXpgsz3WpmTlvLL2yfQ4zDN7iT4KL7ti2nXSyNjs9xlVoe0ulfnpqSIqBEF1pG7fOoq
-    9Y8g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698172554;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
-    From:Subject:Sender;
-    bh=REaKDc3ecuGqAeo08fXeRUV5mCnAuSiC6X9qIu311LQ=;
-    b=YgznZ7tjxChKfMGg4+ZuLkqkGtekAHYicdBXByDYg06B6H7BHa/csX8uuNuybCq3je
-    zAl3/C7l/XUkD4p3fbCQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u4p39TY="
-Received: from [192.168.244.3]
-    by smtp.strato.de (RZmta 49.9.0 DYNA|AUTH)
-    with ESMTPSA id j34a49z9OIZsRxi
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 24 Oct 2023 20:35:54 +0200 (CEST)
-From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Tue, 24 Oct 2023 20:35:46 +0200
-Subject: [PATCH v3 2/2] Input: add Himax HX852x(ES) touchscreen driver
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231024-hx852x-v3-2-a1890d3a81e9@gerhold.net>
-References: <20231024-hx852x-v3-0-a1890d3a81e9@gerhold.net>
-In-Reply-To: <20231024-hx852x-v3-0-a1890d3a81e9@gerhold.net>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeff LaBundy <jeff@labundy.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
-        Stephan Gerhold <stephan@gerhold.net>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 24 Oct 2023 14:36:15 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4422810D0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:36:10 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5b837dc4d91so2923582a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:36:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698172570; x=1698777370; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9pSPStWZfaGxyc7aEXpJ6QS+ToFKtNrTx418c5IJDrY=;
+        b=AszNQvyTG0rBaRm2oTeWgi5f4lPhpY1koStvSI4QRdbXz+0RW1acV/2BruGNejGY4p
+         gRMyD0nKbyuKZAMJ3EJ2WWT1TA6yOINJZOsFJ0sknMk6jplLt5HNeSa/hJct/ZtbhYc7
+         /12ocCvdcoP7fqyX0Sd+fE6lAsa449kWb4/r5WwrMlUocELP/2g+PgRQZ4fM5ryyVMYU
+         mRhIS4ROEvoBxT0iwIP4+xvJCi8wrPielwItpURAkAkQvHFhDTXyF9oQ1z/Jfl5uRK2n
+         d77P9+7kvTku1ymqH4+YhGQJ0B00ZPVCqbQtQPqwPQwGvWd6iIa33MgYjNgNl09DK6Bl
+         AdpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698172570; x=1698777370;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9pSPStWZfaGxyc7aEXpJ6QS+ToFKtNrTx418c5IJDrY=;
+        b=JE8I/NWnAyS5cu4t9gjuSW1KWRJS0z1q+vze9lqhIQAubKJssLZIt4EYH+kbk+Uwfl
+         4imbViH3x2JIi2xLOxqrVNx5WQODB5XDYbzjpX1wzkiIuaQh3HtEUAJtjgmuDKCl3+B0
+         4YDLLc1GlpblIEk139onsAq3i5tQgFwW0QjSOb4S/kmfW/ihGd/xz6t3o0buRnKnddPl
+         P55/mMpAEkPDSonubwTjaCHZcfRVIRbqxQj79tBNJ2yDmon95sl/8bmN/wzzKvWM7B3v
+         ghKoYskICd4NuaDce6iyj9En5mVlZhlR4iREYepu/9wiAWqI4stIHB0eti6R0Ir/dndo
+         +WLQ==
+X-Gm-Message-State: AOJu0YwGyNY9caPZp4/R+lYVrnUfFOmmslagLhM7pB2jMa/6QZhJ6+3U
+        5orYmlGfpHku84qkWfv0htoQMEQnel9C
+X-Google-Smtp-Source: AGHT+IGF4ec2OsqBj8ginbVS/9WeUIxJ+C59Iean6BF2PMJyIM5JDZ+PokeOUDoeN0vF4TxCDWr5AzpQANjo
+X-Received: from hi-h2o-specialist.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:3cef])
+ (user=arakesh job=sendgmr) by 2002:a63:2012:0:b0:584:cd3d:f91e with SMTP id
+ g18-20020a632012000000b00584cd3df91emr210931pgg.11.1698172569638; Tue, 24 Oct
+ 2023 11:36:09 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 11:36:02 -0700
+In-Reply-To: <20231019185319.2714000-1-arakesh@google.com>
+Mime-Version: 1.0
+References: <20231019185319.2714000-1-arakesh@google.com>
+X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
+Message-ID: <20231024183605.908253-1-arakesh@google.com>
+Subject: [PATCH v8 1/4] usb: gadget: uvc: prevent use of disabled endpoint
+From:   Avichal Rakesh <arakesh@google.com>
+To:     arakesh@google.com, dan.scally@ideasonboard.com,
+        gregkh@linuxfoundation.org, laurent.pinchart@ideasonboard.com
+Cc:     etalvala@google.com, jchowdhary@google.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        m.grzeschik@pengutronix.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Currently the set_alt callback immediately disables the endpoint and queues
+the v4l2 streamoff event. However, as the streamoff event is processed
+asynchronously, it is possible that the video_pump thread attempts to queue
+requests to an already disabled endpoint.
 
-Add a simple driver for the Himax HX852x(ES) touch panel controller,
-with support for multi-touch and capacitive touch keys.
+This change moves disabling usb endpoint to the end of streamoff event
+callback. As the endpoint's state can no longer be used, video_pump is
+now guarded by uvc->state as well. To be consistent with the actual
+streaming state, uvc->state is now toggled between CONNECTED and STREAMING
+from the v4l2 event callback only.
 
-The driver is somewhat based on sample code from Himax. However, that
-code was so extremely confusing that we spent a significant amount of
-time just trying to understand the packet format and register commands.
-In this driver they are described with clean structs and defines rather
-than lots of magic numbers and offset calculations.
-
-Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Link: https://lore.kernel.org/20230615171558.GK741@pendragon.ideasonboard.com/
+Link: https://lore.kernel.org/20230531085544.253363-1-dan.scally@ideasonboard.com/
+Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Signed-off-by: Avichal Rakesh <arakesh@google.com>
 ---
- MAINTAINERS                              |   7 +
- drivers/input/touchscreen/Kconfig        |  10 +
- drivers/input/touchscreen/Makefile       |   1 +
- drivers/input/touchscreen/himax_hx852x.c | 500 +++++++++++++++++++++++++++++++
- 4 files changed, 518 insertions(+)
+v1 -> v2: Rebased to ToT and reworded commit message.
+v2 -> v3: Fix email threading goof-up
+v3 -> v4: Address review comments & re-rebase to ToT
+v4 -> v5: Add Reviewed-by & Tested-by
+v5 -> v6: No change
+v6 -> v7: No change
+v7 -> v8: No change. Getting back in review queue
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4cc6bf79fdd8..c0004b25b524 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9264,6 +9264,13 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/input/touchscreen/himax,hx83112b.yaml
- F:	drivers/input/touchscreen/himax_hx83112b.c
- 
-+HIMAX HX852X TOUCHSCREEN DRIVER
-+M:	Stephan Gerhold <stephan@gerhold.net>
-+L:	linux-input@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/input/touchscreen/himax,hx852es.yaml
-+F:	drivers/input/touchscreen/himax_hx852x.c
+ drivers/usb/gadget/function/f_uvc.c     | 11 +++++------
+ drivers/usb/gadget/function/f_uvc.h     |  2 +-
+ drivers/usb/gadget/function/uvc.h       |  2 +-
+ drivers/usb/gadget/function/uvc_v4l2.c  | 20 +++++++++++++++++---
+ drivers/usb/gadget/function/uvc_video.c |  3 ++-
+ 5 files changed, 26 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
+index faa398109431..ae08341961eb 100644
+--- a/drivers/usb/gadget/function/f_uvc.c
++++ b/drivers/usb/gadget/function/f_uvc.c
+@@ -263,10 +263,13 @@ uvc_function_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
+ 	return 0;
+ }
+
+-void uvc_function_setup_continue(struct uvc_device *uvc)
++void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep)
+ {
+ 	struct usb_composite_dev *cdev = uvc->func.config->cdev;
+
++	if (disable_ep && uvc->video.ep)
++		usb_ep_disable(uvc->video.ep);
 +
- HIPPI
- M:	Jes Sorensen <jes@trained-monkey.org>
- L:	linux-hippi@sunsite.dk
-diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-index e3e2324547b9..8e5667ae5dab 100644
---- a/drivers/input/touchscreen/Kconfig
-+++ b/drivers/input/touchscreen/Kconfig
-@@ -427,6 +427,16 @@ config TOUCHSCREEN_HIDEEP
- 	  To compile this driver as a module, choose M here : the
- 	  module will be called hideep_ts.
- 
-+config TOUCHSCREEN_HIMAX_HX852X
-+	tristate "Himax HX852x(ES) touchscreen"
-+	depends on I2C
-+	help
-+	  Say Y here if you have a Himax HX852x(ES) touchscreen.
-+	  If unsure, say N.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called himax_hx852x.
-+
- config TOUCHSCREEN_HYCON_HY46XX
- 	tristate "Hycon hy46xx touchscreen support"
- 	depends on I2C
-diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-index 62bd24f3ac8e..f42a87faa86c 100644
---- a/drivers/input/touchscreen/Makefile
-+++ b/drivers/input/touchscreen/Makefile
-@@ -48,6 +48,7 @@ obj-$(CONFIG_TOUCHSCREEN_EXC3000)	+= exc3000.o
- obj-$(CONFIG_TOUCHSCREEN_FUJITSU)	+= fujitsu_ts.o
- obj-$(CONFIG_TOUCHSCREEN_GOODIX)	+= goodix_ts.o
- obj-$(CONFIG_TOUCHSCREEN_HIDEEP)	+= hideep.o
-+obj-$(CONFIG_TOUCHSCREEN_HIMAX_HX852X)	+= himax_hx852x.o
- obj-$(CONFIG_TOUCHSCREEN_HYNITRON_CSTXXX)	+= hynitron_cstxxx.o
- obj-$(CONFIG_TOUCHSCREEN_ILI210X)	+= ili210x.o
- obj-$(CONFIG_TOUCHSCREEN_ILITEK)	+= ilitek_ts_i2c.o
-diff --git a/drivers/input/touchscreen/himax_hx852x.c b/drivers/input/touchscreen/himax_hx852x.c
-new file mode 100644
-index 000000000000..6aa39f02829d
---- /dev/null
-+++ b/drivers/input/touchscreen/himax_hx852x.c
-@@ -0,0 +1,500 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Himax HX852x(ES) Touchscreen Driver
-+ * Copyright (c) 2020-2023 Stephan Gerhold <stephan@gerhold.net>
-+ * Copyright (c) 2020 Jonathan Albrieux <jonathan.albrieux@gmail.com>
-+ *
-+ * Based on the Himax Android Driver Sample Code Ver 0.3 for HMX852xES chipset:
-+ * Copyright (c) 2014 Himax Corporation.
-+ */
-+
-+#include <asm/unaligned.h>
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/i2c.h>
-+#include <linux/input.h>
-+#include <linux/input/mt.h>
-+#include <linux/input/touchscreen.h>
-+#include <linux/interrupt.h>
-+#include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/regulator/consumer.h>
-+
-+#define HX852X_COORD_SIZE(fingers)	((fingers) * sizeof(struct hx852x_coord))
-+#define HX852X_WIDTH_SIZE(fingers)	ALIGN(fingers, 4)
-+#define HX852X_BUF_SIZE(fingers)	(HX852X_COORD_SIZE(fingers) + \
-+					 HX852X_WIDTH_SIZE(fingers) + \
-+					 sizeof(struct hx852x_touch_info))
-+
-+#define HX852X_MAX_FINGERS		12
-+#define HX852X_MAX_KEY_COUNT		4
-+#define HX852X_MAX_BUF_SIZE		HX852X_BUF_SIZE(HX852X_MAX_FINGERS)
-+
-+#define HX852X_TS_SLEEP_IN		0x80
-+#define HX852X_TS_SLEEP_OUT		0x81
-+#define HX852X_TS_SENSE_OFF		0x82
-+#define HX852X_TS_SENSE_ON		0x83
-+#define HX852X_READ_ONE_EVENT		0x85
-+#define HX852X_READ_ALL_EVENTS		0x86
-+#define HX852X_READ_LATEST_EVENT	0x87
-+#define HX852X_CLEAR_EVENT_STACK	0x88
-+
-+#define HX852X_REG_SRAM_SWITCH		0x8c
-+#define HX852X_REG_SRAM_ADDR		0x8b
-+#define HX852X_REG_FLASH_RPLACE		0x5a
-+
-+#define HX852X_SRAM_SWITCH_TEST_MODE	0x14
-+#define HX852X_SRAM_ADDR_CONFIG		0x7000
-+
-+struct hx852x {
-+	struct i2c_client *client;
-+	struct input_dev *input_dev;
-+	struct touchscreen_properties props;
-+	struct gpio_desc *reset_gpiod;
-+	struct regulator_bulk_data supplies[2];
-+	unsigned int max_fingers;
-+	unsigned int keycount;
-+	unsigned int keycodes[HX852X_MAX_KEY_COUNT];
-+};
-+
-+struct hx852x_config {
-+	u8 rx_num;
-+	u8 tx_num;
-+	u8 max_pt;
-+	u8 padding1[3];
-+	__be16 x_res;
-+	__be16 y_res;
-+	u8 padding2[2];
-+} __packed __aligned(4);
-+
-+struct hx852x_coord {
-+	__be16 x;
-+	__be16 y;
-+} __packed __aligned(4);
-+
-+struct hx852x_touch_info {
-+	u8 finger_num;
-+	__le16 finger_pressed;
-+	u8 padding;
-+} __packed __aligned(4);
-+
-+static int hx852x_i2c_read(struct hx852x *hx, u8 cmd, void *data, u16 len)
-+{
-+	struct i2c_client *client = hx->client;
-+	int ret;
-+
-+	struct i2c_msg msg[] = {
-+		{
-+			.addr = client->addr,
-+			.flags = 0,
-+			.len = 1,
-+			.buf = &cmd,
-+		},
-+		{
-+			.addr = client->addr,
-+			.flags = I2C_M_RD,
-+			.len = len,
-+			.buf = data,
-+		},
-+	};
-+
-+	ret = i2c_transfer(client->adapter, msg, ARRAY_SIZE(msg));
-+	if (ret != ARRAY_SIZE(msg)) {
-+		dev_err(&client->dev, "failed to read %#x: %d\n", cmd, ret);
+ 	usb_composite_setup_continue(cdev);
+ }
+
+@@ -337,15 +340,11 @@ uvc_function_set_alt(struct usb_function *f, unsigned interface, unsigned alt)
+ 		if (uvc->state != UVC_STATE_STREAMING)
+ 			return 0;
+
+-		if (uvc->video.ep)
+-			usb_ep_disable(uvc->video.ep);
+-
+ 		memset(&v4l2_event, 0, sizeof(v4l2_event));
+ 		v4l2_event.type = UVC_EVENT_STREAMOFF;
+ 		v4l2_event_queue(&uvc->vdev, &v4l2_event);
+
+-		uvc->state = UVC_STATE_CONNECTED;
+-		return 0;
++		return USB_GADGET_DELAYED_STATUS;
+
+ 	case 1:
+ 		if (uvc->state != UVC_STATE_CONNECTED)
+diff --git a/drivers/usb/gadget/function/f_uvc.h b/drivers/usb/gadget/function/f_uvc.h
+index 1db972d4beeb..e7f9f13f14dc 100644
+--- a/drivers/usb/gadget/function/f_uvc.h
++++ b/drivers/usb/gadget/function/f_uvc.h
+@@ -11,7 +11,7 @@
+
+ struct uvc_device;
+
+-void uvc_function_setup_continue(struct uvc_device *uvc);
++void uvc_function_setup_continue(struct uvc_device *uvc, int disale_ep);
+
+ void uvc_function_connect(struct uvc_device *uvc);
+
+diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+index 6751de8b63ad..989bc6b4e93d 100644
+--- a/drivers/usb/gadget/function/uvc.h
++++ b/drivers/usb/gadget/function/uvc.h
+@@ -177,7 +177,7 @@ struct uvc_file_handle {
+  * Functions
+  */
+
+-extern void uvc_function_setup_continue(struct uvc_device *uvc);
++extern void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep);
+ extern void uvc_function_connect(struct uvc_device *uvc);
+ extern void uvc_function_disconnect(struct uvc_device *uvc);
+
+diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget/function/uvc_v4l2.c
+index 3f0a9795c0d4..7cb8d027ff0c 100644
+--- a/drivers/usb/gadget/function/uvc_v4l2.c
++++ b/drivers/usb/gadget/function/uvc_v4l2.c
+@@ -451,7 +451,7 @@ uvc_v4l2_streamon(struct file *file, void *fh, enum v4l2_buf_type type)
+ 	 * Complete the alternate setting selection setup phase now that
+ 	 * userspace is ready to provide video frames.
+ 	 */
+-	uvc_function_setup_continue(uvc);
++	uvc_function_setup_continue(uvc, 0);
+ 	uvc->state = UVC_STATE_STREAMING;
+
+ 	return 0;
+@@ -463,11 +463,18 @@ uvc_v4l2_streamoff(struct file *file, void *fh, enum v4l2_buf_type type)
+ 	struct video_device *vdev = video_devdata(file);
+ 	struct uvc_device *uvc = video_get_drvdata(vdev);
+ 	struct uvc_video *video = &uvc->video;
++	int ret = 0;
+
+ 	if (type != video->queue.queue.type)
+ 		return -EINVAL;
+
+-	return uvcg_video_enable(video, 0);
++	uvc->state = UVC_STATE_CONNECTED;
++	ret = uvcg_video_enable(video, 0);
++	if (ret < 0)
 +		return ret;
-+	}
 +
++	uvc_function_setup_continue(uvc, 1);
 +	return 0;
-+}
-+
-+static int hx852x_power_on(struct hx852x *hx)
-+{
-+	struct device *dev = &hx->client->dev;
-+	int error;
-+
-+	error = regulator_bulk_enable(ARRAY_SIZE(hx->supplies), hx->supplies);
-+	if (error) {
-+		dev_err(dev, "failed to enable regulators: %d\n", error);
-+		return error;
-+	}
-+
-+	gpiod_set_value_cansleep(hx->reset_gpiod, 1);
-+	msleep(20);
-+	gpiod_set_value_cansleep(hx->reset_gpiod, 0);
-+	msleep(20);
-+
-+	return 0;
-+}
-+
-+static int hx852x_start(struct hx852x *hx)
-+{
-+	struct device *dev = &hx->client->dev;
-+	int error;
-+
-+	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SLEEP_OUT);
-+	if (error) {
-+		dev_err(dev, "failed to send TS_SLEEP_OUT: %d\n", error);
-+		return error;
-+	}
-+	msleep(30);
-+
-+	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SENSE_ON);
-+	if (error) {
-+		dev_err(dev, "failed to send TS_SENSE_ON: %d\n", error);
-+		return error;
-+	}
-+	msleep(20);
-+
-+	return 0;
-+}
-+
-+static int hx852x_stop(struct hx852x *hx)
-+{
-+	struct device *dev = &hx->client->dev;
-+	int error;
-+
-+	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SENSE_OFF);
-+	if (error) {
-+		dev_err(dev, "failed to send TS_SENSE_OFF: %d\n", error);
-+		return error;
-+	}
-+	msleep(20);
-+
-+	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SLEEP_IN);
-+	if (error) {
-+		dev_err(dev, "failed to send TS_SLEEP_IN: %d\n", error);
-+		return error;
-+	}
-+	msleep(30);
-+
-+	return 0;
-+}
-+
-+static int hx852x_power_off(struct hx852x *hx)
-+{
-+	struct device *dev = &hx->client->dev;
-+	int error;
-+
-+	error = regulator_bulk_disable(ARRAY_SIZE(hx->supplies), hx->supplies);
-+	if (error) {
-+		dev_err(dev, "failed to disable regulators: %d\n", error);
-+		return error;
-+	}
-+
-+	return 0;
-+}
-+
-+static int hx852x_read_config(struct hx852x *hx)
-+{
-+	struct device *dev = &hx->client->dev;
-+	struct hx852x_config conf;
-+	int x_res, y_res;
-+	int error;
-+
-+	error = hx852x_power_on(hx);
-+	if (error)
-+		return error;
-+
-+	/* Sensing must be turned on briefly to load the config */
-+	error = hx852x_start(hx);
-+	if (error)
-+		goto err_power_off;
-+
-+	error = hx852x_stop(hx);
-+	if (error)
-+		goto err_power_off;
-+
-+	error = i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH,
-+					  HX852X_SRAM_SWITCH_TEST_MODE);
-+	if (error)
-+		goto err_power_off;
-+
-+	error = i2c_smbus_write_word_data(hx->client, HX852X_REG_SRAM_ADDR,
-+					  HX852X_SRAM_ADDR_CONFIG);
-+	if (error)
-+		goto err_test_mode;
-+
-+	error = hx852x_i2c_read(hx, HX852X_REG_FLASH_RPLACE, &conf, sizeof(conf));
-+	if (error)
-+		goto err_test_mode;
-+
-+	x_res = be16_to_cpu(conf.x_res);
-+	y_res = be16_to_cpu(conf.y_res);
-+	hx->max_fingers = (conf.max_pt & 0xf0) >> 4;
-+	dev_dbg(dev, "x res: %u, y res: %u, max fingers: %u\n",
-+		x_res, y_res, hx->max_fingers);
-+
-+	if (hx->max_fingers > HX852X_MAX_FINGERS) {
-+		dev_err(dev, "max supported fingers: %u, found: %u\n",
-+			HX852X_MAX_FINGERS, hx->max_fingers);
-+		error = -EINVAL;
-+		goto err_test_mode;
-+	}
-+
-+	if (x_res && y_res) {
-+		input_set_abs_params(hx->input_dev, ABS_MT_POSITION_X, 0, x_res - 1, 0, 0);
-+		input_set_abs_params(hx->input_dev, ABS_MT_POSITION_Y, 0, y_res - 1, 0, 0);
-+	}
-+
-+err_test_mode:
-+	error = i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0) ? : error;
-+err_power_off:
-+	return hx852x_power_off(hx) ? : error;
-+}
-+
-+static int hx852x_handle_events(struct hx852x *hx)
-+{
+ }
+
+ static int
+@@ -500,6 +507,14 @@ uvc_v4l2_subscribe_event(struct v4l2_fh *fh,
+ static void uvc_v4l2_disable(struct uvc_device *uvc)
+ {
+ 	uvc_function_disconnect(uvc);
 +	/*
-+	 * The event packets have variable size, depending on the amount of
-+	 * supported fingers (hx->max_fingers). They are laid out as follows:
-+	 *  - struct hx852x_coord[hx->max_fingers]: Coordinates for each finger
-+	 *  - u8[ALIGN(hx->max_fingers, 4)]: Touch width for each finger
-+	 *      with padding for 32-bit alignment
-+	 *  - struct hx852x_touch_info
-+	 *
-+	 * Load everything into a 32-bit aligned buffer so the coordinates
-+	 * can be assigned directly, without using get_unaligned_*().
++	 * Drop uvc->state to CONNECTED if it was streaming before.
++	 * This ensures that the usb_requests are no longer queued
++	 * to the controller.
 +	 */
-+	u8 buf[HX852X_MAX_BUF_SIZE] __aligned(4);
-+	struct hx852x_coord *coord = (struct hx852x_coord *)buf;
-+	u8 *width = &buf[HX852X_COORD_SIZE(hx->max_fingers)];
-+	struct hx852x_touch_info *info = (struct hx852x_touch_info *)
-+		&width[HX852X_WIDTH_SIZE(hx->max_fingers)];
-+	unsigned long finger_pressed, key_pressed;
-+	unsigned int i, x, y, w;
-+	int error;
++	if (uvc->state == UVC_STATE_STREAMING)
++		uvc->state = UVC_STATE_CONNECTED;
 +
-+	error = hx852x_i2c_read(hx, HX852X_READ_ALL_EVENTS, buf,
-+				HX852X_BUF_SIZE(hx->max_fingers));
-+	if (error)
-+		return error;
-+
-+	finger_pressed = get_unaligned_le16(&info->finger_pressed);
-+	key_pressed = finger_pressed >> HX852X_MAX_FINGERS;
-+
-+	/* All bits are set when no touch is detected */
-+	if (info->finger_num == 0xff || !(info->finger_num & 0x0f))
-+		finger_pressed = 0;
-+	if (key_pressed == 0xf)
-+		key_pressed = 0;
-+
-+	for_each_set_bit(i, &finger_pressed, hx->max_fingers) {
-+		x = be16_to_cpu(coord[i].x);
-+		y = be16_to_cpu(coord[i].y);
-+		w = width[i];
-+
-+		input_mt_slot(hx->input_dev, i);
-+		input_mt_report_slot_state(hx->input_dev, MT_TOOL_FINGER, 1);
-+		touchscreen_report_pos(hx->input_dev, &hx->props, x, y, true);
-+		input_report_abs(hx->input_dev, ABS_MT_TOUCH_MAJOR, w);
-+	}
-+	input_mt_sync_frame(hx->input_dev);
-+
-+	for (i = 0; i < hx->keycount; i++)
-+		input_report_key(hx->input_dev, hx->keycodes[i], key_pressed & BIT(i));
-+
-+	input_sync(hx->input_dev);
-+	return 0;
-+}
-+
-+static irqreturn_t hx852x_interrupt(int irq, void *ptr)
-+{
-+	struct hx852x *hx = ptr;
-+	int error;
-+
-+	error = hx852x_handle_events(hx);
-+	if (error) {
-+		dev_err_ratelimited(&hx->client->dev, "failed to handle events: %d\n", error);
-+		return IRQ_NONE;
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int hx852x_input_open(struct input_dev *dev)
-+{
-+	struct hx852x *hx = input_get_drvdata(dev);
-+	int error;
-+
-+	error = hx852x_power_on(hx);
-+	if (error)
-+		return error;
-+
-+	error = hx852x_start(hx);
-+	if (error) {
-+		hx852x_power_off(hx);
-+		return error;
-+	}
-+
-+	enable_irq(hx->client->irq);
-+	return 0;
-+}
-+
-+static void hx852x_input_close(struct input_dev *dev)
-+{
-+	struct hx852x *hx = input_get_drvdata(dev);
-+
-+	hx852x_stop(hx);
-+	disable_irq(hx->client->irq);
-+	hx852x_power_off(hx);
-+}
-+
-+static int hx852x_parse_properties(struct hx852x *hx)
-+{
-+	struct device *dev = &hx->client->dev;
-+	int error, count;
-+
-+	count = device_property_count_u32(dev, "linux,keycodes");
-+	if (count == -EINVAL) {
-+		/* Property does not exist, keycodes are optional */
-+		return 0;
-+	} else if (count < 0) {
-+		dev_err(dev, "Failed to read linux,keycodes: %d\n", count);
-+		return count;
-+	} else if (count > HX852X_MAX_KEY_COUNT) {
-+		dev_err(dev, "max supported keys: %u, found: %u\n",
-+			HX852X_MAX_KEY_COUNT, hx->keycount);
-+		return -EINVAL;
-+	}
-+	hx->keycount = count;
-+
-+	error = device_property_read_u32_array(dev, "linux,keycodes",
-+					       hx->keycodes, hx->keycount);
-+	if (error) {
-+		dev_err(dev, "failed to read linux,keycodes: %d\n", error);
-+		return error;
-+	}
-+
-+	return 0;
-+}
-+
-+static int hx852x_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct hx852x *hx;
-+	int error, i;
-+
-+	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C |
-+				     I2C_FUNC_SMBUS_WRITE_BYTE |
-+				     I2C_FUNC_SMBUS_WRITE_BYTE_DATA |
-+				     I2C_FUNC_SMBUS_WRITE_WORD_DATA)) {
-+		dev_err(dev, "not all required i2c functionality supported\n");
-+		return -ENXIO;
-+	}
-+
-+	hx = devm_kzalloc(dev, sizeof(*hx), GFP_KERNEL);
-+	if (!hx)
-+		return -ENOMEM;
-+
-+	hx->client = client;
-+	hx->input_dev = devm_input_allocate_device(dev);
-+	if (!hx->input_dev)
-+		return -ENOMEM;
-+
-+	hx->input_dev->name = "Himax HX852x";
-+	hx->input_dev->id.bustype = BUS_I2C;
-+	hx->input_dev->open = hx852x_input_open;
-+	hx->input_dev->close = hx852x_input_close;
-+
-+	i2c_set_clientdata(client, hx);
-+	input_set_drvdata(hx->input_dev, hx);
-+
-+	hx->supplies[0].supply = "vcca";
-+	hx->supplies[1].supply = "vccd";
-+	error = devm_regulator_bulk_get(dev, ARRAY_SIZE(hx->supplies), hx->supplies);
-+	if (error)
-+		return dev_err_probe(dev, error, "failed to get regulators\n");
-+
-+	hx->reset_gpiod = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(hx->reset_gpiod))
-+		return dev_err_probe(dev, PTR_ERR(hx->reset_gpiod),
-+				     "failed to get reset gpio\n");
-+
-+	error = devm_request_threaded_irq(dev, client->irq, NULL, hx852x_interrupt,
-+					  IRQF_ONESHOT | IRQF_NO_AUTOEN, NULL, hx);
-+	if (error)
-+		return dev_err_probe(dev, error, "failed to request irq %d", client->irq);
-+
-+	error = hx852x_read_config(hx);
-+	if (error)
-+		return error;
-+
-+	input_set_capability(hx->input_dev, EV_ABS, ABS_MT_POSITION_X);
-+	input_set_capability(hx->input_dev, EV_ABS, ABS_MT_POSITION_Y);
-+	input_set_abs_params(hx->input_dev, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
-+
-+	touchscreen_parse_properties(hx->input_dev, true, &hx->props);
-+	error = hx852x_parse_properties(hx);
-+	if (error)
-+		return error;
-+
-+	hx->input_dev->keycode = hx->keycodes;
-+	hx->input_dev->keycodemax = hx->keycount;
-+	hx->input_dev->keycodesize = sizeof(hx->keycodes[0]);
-+	for (i = 0; i < hx->keycount; i++)
-+		input_set_capability(hx->input_dev, EV_KEY, hx->keycodes[i]);
-+
-+	error = input_mt_init_slots(hx->input_dev, hx->max_fingers,
-+				    INPUT_MT_DIRECT | INPUT_MT_DROP_UNUSED);
-+	if (error)
-+		return dev_err_probe(dev, error, "failed to init MT slots\n");
-+
-+	error = input_register_device(hx->input_dev);
-+	if (error)
-+		return dev_err_probe(dev, error, "failed to register input device\n");
-+
-+	return 0;
-+}
-+
-+static int hx852x_suspend(struct device *dev)
-+{
-+	struct hx852x *hx = dev_get_drvdata(dev);
-+	int error = 0;
-+
-+	mutex_lock(&hx->input_dev->mutex);
-+	if (input_device_enabled(hx->input_dev))
-+		error = hx852x_stop(hx);
-+	mutex_unlock(&hx->input_dev->mutex);
-+
-+	return error;
-+}
-+
-+static int hx852x_resume(struct device *dev)
-+{
-+	struct hx852x *hx = dev_get_drvdata(dev);
-+	int error = 0;
-+
-+	mutex_lock(&hx->input_dev->mutex);
-+	if (input_device_enabled(hx->input_dev))
-+		error = hx852x_start(hx);
-+	mutex_unlock(&hx->input_dev->mutex);
-+
-+	return error;
-+}
-+
-+static DEFINE_SIMPLE_DEV_PM_OPS(hx852x_pm_ops, hx852x_suspend, hx852x_resume);
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id hx852x_of_match[] = {
-+	{ .compatible = "himax,hx852es" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, hx852x_of_match);
-+#endif
-+
-+static struct i2c_driver hx852x_driver = {
-+	.probe = hx852x_probe,
-+	.driver = {
-+		.name = "himax_hx852x",
-+		.pm = pm_sleep_ptr(&hx852x_pm_ops),
-+		.of_match_table = of_match_ptr(hx852x_of_match),
-+	},
-+};
-+module_i2c_driver(hx852x_driver);
-+
-+MODULE_DESCRIPTION("Himax HX852x(ES) Touchscreen Driver");
-+MODULE_AUTHOR("Jonathan Albrieux <jonathan.albrieux@gmail.com>");
-+MODULE_AUTHOR("Stephan Gerhold <stephan@gerhold.net>");
-+MODULE_LICENSE("GPL");
+ 	uvcg_video_enable(&uvc->video, 0);
+ 	uvcg_free_buffers(&uvc->video.queue);
+ 	uvc->func_connected = false;
+@@ -647,4 +662,3 @@ const struct v4l2_file_operations uvc_v4l2_fops = {
+ 	.get_unmapped_area = uvcg_v4l2_get_unmapped_area,
+ #endif
+ };
+-
+diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+index 91af3b1ef0d4..c334802ac0a4 100644
+--- a/drivers/usb/gadget/function/uvc_video.c
++++ b/drivers/usb/gadget/function/uvc_video.c
+@@ -384,13 +384,14 @@ static void uvcg_video_pump(struct work_struct *work)
+ 	struct uvc_video_queue *queue = &video->queue;
+ 	/* video->max_payload_size is only set when using bulk transfer */
+ 	bool is_bulk = video->max_payload_size;
++	struct uvc_device *uvc = video->uvc;
+ 	struct usb_request *req = NULL;
+ 	struct uvc_buffer *buf;
+ 	unsigned long flags;
+ 	bool buf_done;
+ 	int ret;
 
--- 
-2.42.0
-
+-	while (video->ep->enabled) {
++	while (uvc->state == UVC_STATE_STREAMING && video->ep->enabled) {
+ 		/*
+ 		 * Retrieve the first available USB request, protected by the
+ 		 * request lock.
+--
+2.42.0.758.gaed0368e0e-goog
