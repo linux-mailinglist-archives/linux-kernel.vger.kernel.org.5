@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A40C37D5BDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6E37D5BE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344313AbjJXTwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 15:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59910 "EHLO
+        id S1344322AbjJXTw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 15:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234918AbjJXTwb (ORCPT
+        with ESMTP id S1344318AbjJXTwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 15:52:31 -0400
-Received: from mail-oa1-x49.google.com (mail-oa1-x49.google.com [IPv6:2001:4860:4864:20::49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6741710C9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 12:52:29 -0700 (PDT)
-Received: by mail-oa1-x49.google.com with SMTP id 586e51a60fabf-1c8c1f34aadso6766355fac.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 12:52:29 -0700 (PDT)
+        Tue, 24 Oct 2023 15:52:54 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9992C10D3;
+        Tue, 24 Oct 2023 12:52:52 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1ea05b3f228so3228931fac.1;
+        Tue, 24 Oct 2023 12:52:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698177148; x=1698781948; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=e8aQgWjy+g6rrzKEDI21tp5NK7yplRQyyhfNiiPxWK0=;
-        b=mo5et0EQNBbjn0YYf02+tHNMi5Qt8QpTnjDmOuLVZYB0UbKp9TfDe3btq2w2wPliL7
-         EeraHHLcoG/hLzSbFfqh6+y3OTE9FdUbjn6LaKGcLSYK5JR5aYI+DrmWvoOXiPoF1d1a
-         KpnlQggqhHvgEHG1SFukRaZGxughB1L1oCYupjw94amlcVhwA/waaUw/kPL7SpdIeUnF
-         jb1RRcnzItOmxt2sTAiYNcdAdFQV7/HtHJOLgV3Zssx5M4LEryZ3edxorQMK+cr+ab5r
-         +laiovkXixdEMnEv02VlmDnBq1JHhxHrdyrvVOjR1VqN65fPfCpwsQviQQBCzzy2OcsC
-         qWVw==
+        d=gmail.com; s=20230601; t=1698177172; x=1698781972; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j4v0Tx3LEGkdavh4vYYD99MkxxVJWO8xEM2BO5mWKw0=;
+        b=Gpi77K2lRhIiYDXvP/TemUoLJ8wLxskX4dpU/rgpxRUkc1Yeh2uf825uArq7xNgzsc
+         P1lNtQ+e+EfqbE8BN8zdEkLCIOXcCi5ztfFTKzz7n7AEz5uNY8Xc02mlVD4rYaYemk4P
+         zSqfgg4O6Ztbpjt5aKGT4mRruIsev1xZ8DY6FthHKymVuGHLpkBlFWg7Zy0zmN1igujT
+         EKIqvdShOxc4ymFZTjVSg1LmzPIuTMXoy8/m8P6fFRSKkf0EI7yKZ0gSc1xrgCY7UNv+
+         c4dcBHd4rreLkelbIwbygZEWbR7txTi9oRowwdFTX01Z0xgyEIPnLNdVJb1ftfIpY+wv
+         4+pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698177148; x=1698781948;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=e8aQgWjy+g6rrzKEDI21tp5NK7yplRQyyhfNiiPxWK0=;
-        b=UzTIKZXsLxPYImYkx0A3bs/psUG+cS72gXYbD20Cfp+MtZT26clP4SVvNqwuXdL58N
-         uRYBp1vKNZH0TO0gUlC0ASUKKUASBO/wOnX0UGA7aEojsNzkDfOCAU9Fk4wpGgwK1OOp
-         nV02e+gjuWxMjTz6ZLO9VQyoLDZh6ZwKb66eiUD1MEXL7YxBGn3+jBGD/TdHOAXZJGFI
-         WKQCX67qSpJZSUWk4KTVvXIqbcOhL0cRIMzxFjn+GIPdsSJsRDa1RXZ6+taCqkl1FiMr
-         406nlvz6KAI/7sofAcWhN4HvZHaF1oS03Ms4KOihhqptcBWpQZM8axl1fAz6uzx6UJcj
-         CZHg==
-X-Gm-Message-State: AOJu0YxdKrMyldMb/ctSMhX8bz/CwcaVYOf55SGL/T7IS2FJjOd8DtgL
-        jIuctDLH1mlX8Sifqxxvyg8GEoItgyS2YRMpvA==
-X-Google-Smtp-Source: AGHT+IGGhfv6HHv8vXiL6PZflYVg3AGRykgoK0m9EB5iPd5E7rZQ1ga5+DHB0xzvTTrUTEMzpkPIvFiJFLGLMgeCwg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6870:148d:b0:1d6:5e45:3bc7 with
- SMTP id k13-20020a056870148d00b001d65e453bc7mr6259319oab.5.1698177148786;
- Tue, 24 Oct 2023 12:52:28 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 19:52:27 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAHogOGUC/x2NwQqDMBAFf0X23IUkrSD+SilFkt26lyj7ilTEf
- 2/wMjCXmYMgbgIau4NcNoMttUm8dZTnqX6ErTSnFNI9hvRgfL3mdefitomDkWGseZELb+xQcOY gsajKkIa+pxZbXdR+1+j5Os8/ZQjSqngAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698177147; l=2135;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=x4lXZ/M2v+LVXy5eVUWTnpdEr6YXqOCKy8sodhN2WbQ=; b=kNvSxaD6+DzKoEiD6sLJnAjh94iZPbZ1UevGx+Ev4FErVJiOdmvYoPiz8xLD17iSe3bcC4IOa
- Hd8masltLb4DdvVMlYaADHPOuC3Dpr7PWEcQ4FlU+zfiGwohD+QaLT2
-X-Mailer: b4 0.12.3
-Message-ID: <20231024-strncpy-drivers-scsi-fcoe-fcoe_sysfs-c-v1-1-1e0026ee032d@google.com>
-Subject: [PATCH] scsi: fcoe: replace deprecated strncpy with strscpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Hannes Reinecke <hare@suse.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        d=1e100.net; s=20230601; t=1698177172; x=1698781972;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j4v0Tx3LEGkdavh4vYYD99MkxxVJWO8xEM2BO5mWKw0=;
+        b=MPtF9BcBqNl3N0eHVcxHE3c9DL8Y0XMSCxdrCn56cuZqK4pvSmB3DD5nGRmfg/N+3s
+         bIMn2FJtMlxPvvLMe3yh+i9BZ+9yzz5arF1eFESEgczCP+nFblRY+6QZ1GWRfAYeIGZI
+         +fEZU1CiZDJDoa4AzgrCpflstKSQHufUg72KtEinx3NVciUzoyNcZ9bUr3F5wgiqEPcE
+         aTzRY2tHNscp0JrLOvfCCY4rs6uQ9rl6zRW1MWL58vUCtPPrKwIiYJB0giS+ATfUO4WW
+         iSy2YDuMzR6+eNcxkdFXvAy+J0K+M4YUd+Z4HYTIOLwgVShEiQwVRDy2qKdXPIfYafFg
+         vOeA==
+X-Gm-Message-State: AOJu0Yz+qPIYf1+q2l8RFoDzySpyupZLFiR+rIRTLtYZXr8xPgq7YSb4
+        I+jUMMjys9GGf5Eijz0Y7BfLRp+ZsorscEzE2p0=
+X-Google-Smtp-Source: AGHT+IF5+l/sIaMZYDwt0jM872L+aYqrqvPjN3KGyHM9mIDlE++bIFQ2z35Msbz7vXspgGElyXY2/Rr4ZNW2sTnJAJ8=
+X-Received: by 2002:a05:6870:4c02:b0:1be:ceca:c666 with SMTP id
+ pk2-20020a0568704c0200b001bececac666mr19072674oab.14.1698177171769; Tue, 24
+ Oct 2023 12:52:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231010124357.5251e100@canb.auug.org.au> <20231019120618.71424848@canb.auug.org.au>
+ <20231024115903.2d73440c@canb.auug.org.au> <CADnq5_Od1cQFp=5__LexMKzXwtnmcmcAidE-XsLkL3N4oz+5sg@mail.gmail.com>
+In-Reply-To: <CADnq5_Od1cQFp=5__LexMKzXwtnmcmcAidE-XsLkL3N4oz+5sg@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 24 Oct 2023 15:52:40 -0400
+Message-ID: <CADnq5_P1fOw4pmh56D6E8m6JvMggsMFQhtGv=xhdkUbsUhdRYQ@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the amdgpu tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Dave Airlie <airlied@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Roman Li <roman.li@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,71 +76,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Tue, Oct 24, 2023 at 8:57=E2=80=AFAM Alex Deucher <alexdeucher@gmail.com=
+> wrote:
+>
+> On Mon, Oct 23, 2023 at 8:59=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.o=
+rg.au> wrote:
+> >
+> > Hi all,
+> >
+> > On Thu, 19 Oct 2023 12:06:18 +1100 Stephen Rothwell <sfr@canb.auug.org.=
+au> wrote:
+> > >
+> > > On Tue, 10 Oct 2023 12:43:57 +1100 Stephen Rothwell <sfr@canb.auug.or=
+g.au> wrote:
+> > > >
+> > > > After merging the amdgpu tree, today's linux-next build (x86_64
+> > > > allmodconfig) failed like this:
+> > > >
+> > > > drivers/gpu/drm/amd/amdgpu/../display/dc/dml2/display_mode_core.c: =
+In function 'dml_core_mode_support':
+> > > > drivers/gpu/drm/amd/amdgpu/../display/dc/dml2/display_mode_core.c:8=
+229:1: error: the frame size of 2736 bytes is larger than 2048 bytes [-Werr=
+or=3Dframe-larger-than=3D]
+> > > >  8229 | } // dml_core_mode_support
+> > > >       | ^
+> > > > cc1: all warnings being treated as errors
+> > > >
+> > > > Caused by commit
+> > > >
+> > > >   7966f319c66d ("drm/amd/display: Introduce DML2")
+> > > >
+> > > > (or maybe something later that changed storage size).
+> > > >
+> > > > I have used the amdgpu tree from next-20231009 for today.
+> > >
+> > > This build failure now (presumably) exists in the drm tree.  I am sti=
+ll
+> > > applying the 2 patches from Rodrigo to my tree as a work around.
+> > >
+> > > I would have expected that this was fixed in the amdgpu tree before
+> > > Dave was asked to merge it ...
+> >
+> > Any progress here?  I am still applying the 2 patches.
+>
+> The two patches are in my -next tree and in the PR I sent last week.
 
-We expect `mode` to be NUL-terminated based on its usage with
-strcasecmp():
+Looks like the gitlab migration over the weekend lost some history.
+I've fixed it up.
 
-|       ctlr->mode = fcoe_parse_mode(mode);
-...
-|       static enum fip_conn_type fcoe_parse_mode(const char *buf)
-|       {
-|       	int i;
-|
-|       	for (i = 0; i < ARRAY_SIZE(fip_conn_type_names); i++) {
-|       		if (strcasecmp(buf, fip_conn_type_names[i]) == 0)
-|       			return i;
-|       	}
-|
-|       	return FIP_CONN_TYPE_UNKNOWN;
-|       }
-
-Considering the above, a suitable replacement is `strscpy` [2] due to
-the fact that it guarantees NUL-termination on the destination buffer
-without unnecessarily NUL-padding.
-
-We can drop the manual NUL-byte assignment but should keep the newline
-removal so newlines don't creep into the string.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/scsi/fcoe/fcoe_sysfs.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/fcoe/fcoe_sysfs.c b/drivers/scsi/fcoe/fcoe_sysfs.c
-index e17957f8085c..7a3ca6cd3030 100644
---- a/drivers/scsi/fcoe/fcoe_sysfs.c
-+++ b/drivers/scsi/fcoe/fcoe_sysfs.c
-@@ -279,12 +279,10 @@ static ssize_t store_ctlr_mode(struct device *dev,
- 	if (count > FCOE_MAX_MODENAME_LEN)
- 		return -EINVAL;
- 
--	strncpy(mode, buf, count);
-+	strscpy(mode, buf, count);
- 
- 	if (mode[count - 1] == '\n')
- 		mode[count - 1] = '\0';
--	else
--		mode[count] = '\0';
- 
- 	switch (ctlr->enabled) {
- 	case FCOE_CTLR_ENABLED:
-
----
-base-commit: d88520ad73b79e71e3ddf08de335b8520ae41c5c
-change-id: 20231024-strncpy-drivers-scsi-fcoe-fcoe_sysfs-c-0e1dffe82855
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Alex
