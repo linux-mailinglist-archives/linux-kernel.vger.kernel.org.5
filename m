@@ -2,168 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF757D5CBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3A37D5CC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344155AbjJXU6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 16:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
+        id S1344095AbjJXU6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 16:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233350AbjJXU6L (ORCPT
+        with ESMTP id S1344399AbjJXU62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 16:58:11 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8CEE5;
-        Tue, 24 Oct 2023 13:58:08 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fJJZkI+E6B70cwLuwkzJztPpydBmNN2zVZWw2Pq+4OISX1g7M15w73xKjPFVERAKv4yn4GHXZQlszBRD2OBFSzAbEIf5YLIISBLyKvU4xKhdmczYt6KarqDdP3zdz3gSg/0P6ZADbLXX4iQHAjsimny4zclIZxnGleSHb0ElvrLi0zimuAi0w/ndMNPLrl88hhoD8Fr7Dyp4kq+zro2zbMQNNlhWycFLWhqLixfXx3qz1HAUOTu12vLXICgHFo8Ivq4Le3jWtAa6ko5pHwCK4dcDdgTzNVvEGYJrvNPOG5Zg7XnZzkhf32C95ApS9WOHwN0mzBfWTscC9CHmrOfoXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qTuw1hZXtOTINltcUsdgTW4XtPdXmLCObXPMnryJKKU=;
- b=XTen9RjhoHMC0N+69cNq50pIT6Q9X3abN0P0SXMeVTv2+bGZk0FkaunbRRhxFNgFr7gnaOD4vYwMaZPytOMUoeKPZMaB/T3TBYnAy8v3w1jPBUJG/K7hWJA4+O6zuB6mgrAijzbVIjNcDsX2KcLRufxWUMFGAVXfmqkzKrXXQvk9QMSnjAVo8qy1Q83ej7mJY0+40HCLVOGIU7neFWOdlpXgBlXeUK6AZJhAAEd7BUS+06rXYNGOF3pw/qkoKAYQQbEydFYccHHlJXOyhSjs5wNJ28zm4X8Fx7lGHxEDWQJnzbgrrPOMp8Q/zPiZTCCzuaUV82bE4LPW26RM9tsKEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qTuw1hZXtOTINltcUsdgTW4XtPdXmLCObXPMnryJKKU=;
- b=1OR2An/b5hQEL5gOInI5bgZvRCe4QvSIfSOwRQKvInhnvrP93J9NqFxMeZLjTVobxn3cbf0Aq8QIyt73EL+bi/QZHshDpg+xKdiIKu21hpBCyRE0liROGM8FEzo4xsNry5EMvwPpAcT0jcnir5L8d7o9oOE+gRVgjrjmvra07G4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
- CH3PR12MB9098.namprd12.prod.outlook.com (2603:10b6:610:19e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
- 2023 20:58:03 +0000
-Received: from DS0PR12MB6583.namprd12.prod.outlook.com
- ([fe80::3d14:1fe0:fcb0:958c]) by DS0PR12MB6583.namprd12.prod.outlook.com
- ([fe80::3d14:1fe0:fcb0:958c%2]) with mapi id 15.20.6933.019; Tue, 24 Oct 2023
- 20:58:03 +0000
-Message-ID: <c50f2d3d-98dd-4194-9080-81298dd0563c@amd.com>
-Date:   Tue, 24 Oct 2023 13:58:00 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] amd/pds_core: core: No need for Null pointer check before
- kfree
-To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
-        brett.creeley@amd.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231024182051.48513-1-bragathemanick0908@gmail.com>
-Content-Language: en-US
-From:   "Nelson, Shannon" <shannon.nelson@amd.com>
-In-Reply-To: <20231024182051.48513-1-bragathemanick0908@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PH8PR07CA0036.namprd07.prod.outlook.com
- (2603:10b6:510:2cf::9) To DS0PR12MB6583.namprd12.prod.outlook.com
- (2603:10b6:8:d1::12)
+        Tue, 24 Oct 2023 16:58:28 -0400
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA7010FB;
+        Tue, 24 Oct 2023 13:58:23 -0700 (PDT)
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5845a94dae1so102465eaf.0;
+        Tue, 24 Oct 2023 13:58:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698181103; x=1698785903;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gImLv6Y8NnjeTz7dQ0WcIB2xeIpe49LYR/tvFnfDL/Q=;
+        b=k+vmq5pz3enf5Rz73t6tiTmYXovGi3tF2WtiSkqr7ZXiEKARrZAv1FhFJWxrE2ySqX
+         M65R3MOPgTSLuRBt4xRmeKA1e0W1A8w9HHJSd5mBotceQ3n6qM57n3NkoY4YGIpWZPFl
+         fvlOomIz7OCsmeq/Uczy6fYIRgPaeMXbrELUS5V5xYBRtQCHFXx9OxGecqFQthQVz1gO
+         GNPWm/W5b6dSdl4nCXZU0NhgDPQIoiHpAzOgk4BoCcsXbQMsMcYcMb4dEe/WhQAu/BPR
+         PEfNSCoeEj1lEBTx9yXSs0WdCAHNMZzSJ220iA7nJ4jTVPW8J9R6ZciixjzUtV+ILYXF
+         8iXQ==
+X-Gm-Message-State: AOJu0YxFsrfmWyMTFgsmW164jACb8rRxJuEinQZxnUnnMSAZpcZ8yOce
+        lOjRpAhlGWJFs5UE8NpYCr6a6Yj0/g==
+X-Google-Smtp-Source: AGHT+IE1z5Wnc9bHS6/09yv+hrma7Pg98VUrO9Y8WkEXtI0anq09u6uD9L71sy3NQfmWDCVp/Pnt6Q==
+X-Received: by 2002:a05:6870:459a:b0:1e9:cba3:a329 with SMTP id y26-20020a056870459a00b001e9cba3a329mr9010193oao.14.1698181102804;
+        Tue, 24 Oct 2023 13:58:22 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id eg41-20020a05687098a900b001eb0e8b75cdsm2022007oab.10.2023.10.24.13.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 13:58:22 -0700 (PDT)
+Received: (nullmailer pid 559118 invoked by uid 1000);
+        Tue, 24 Oct 2023 20:58:21 -0000
+Date:   Tue, 24 Oct 2023 15:58:21 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Lee Jones <lee@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] dt-bindings: mfd: ams,as3711: Convert to json-schema
+Message-ID: <20231024205821.GA529288-robh@kernel.org>
+References: <9af48b816f2b6397f5ada58a9b5ced85213e5194.1698085945.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|CH3PR12MB9098:EE_
-X-MS-Office365-Filtering-Correlation-Id: a31801d8-21b8-4ce6-fc2b-08dbd4d3e9be
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YG6H9zH5Lj4e2vGcxXKamJ6Jrfl2tFMu9XryWmMl1AQx+6Q5eZ0bDH2c4EvRHYx/HH4Bhc8OoL2dUgZzlMI83mAtJmbXly9x+oRhdIcOL8ISXzjdMGxntu5qmOZeVu2PyaANHZoZSEhiJ4hptv+qhYvSJR6f3yrPK+QyIxBpE4F18mLulYLC7ovVL1ndxJNIjkDaJADXdzdLvvwD0NYrs2XPqMfbLIzPJq4g5nLG5pAoq7bBox90YWdK2ZyFEGemL9FU3SeHm0EgBq2HDh557mMSc57LNyN2XOoTsFGi3xYwxk7wGwGcv79F8Fc2MsQirpPl5ql+Fy70kE9siC3jt41+OzWTq6sJ0e3rarHZiAtOXWy6CbWvlxEcvIpy2tRliFxg+4DEIvsfDOnDHJizzgORHIa9nHGy2drtsMEuEUuDCznHLYN5jBOBjpls/E/iNvxIhoZ8z6/LdVyQmry9b93gjYH9azNKnLHSooCOpRhdmRukFlZPMomQSI8SUMcv+brTIFwqz6mNmIADZVCgFOGxyo5SJaC9PNe6+s+BD+e+GN/rdzk2XBGjkuy4KBwaDxQJCRJhNnOPWnqqaB37usacjNO1yLhXQhOYk7GT86mR0iBhvNiPT2o2inqcciGETNd3+nntXl/4fvPzfcsXqw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(346002)(39860400002)(136003)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(83380400001)(31686004)(2906002)(36756003)(4326008)(8676002)(26005)(53546011)(8936002)(2616005)(38100700002)(6506007)(66476007)(6512007)(478600001)(6486002)(316002)(31696002)(5660300002)(86362001)(66946007)(41300700001)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZjJKSlc4Q21mN0lVV2ZKdVNkN2tMRzBPNTVjMHljUEY1U3VnTkZodGVzNFVE?=
- =?utf-8?B?MGlxRDQ5ZEtRa2lrWkhJMzZmMGFTYlJrTDRYVDZwZ3Bab204MHYrVlpuSFow?=
- =?utf-8?B?VUhIQUlLMzJ0QnNQaFZWTkkzY1FTT3c0ZGhXbU5kQW5LdTB1bmQzbExyQ3dF?=
- =?utf-8?B?aTJzWVpoVURaai9RNWJQVU9oS3ZHcjk2VlZoY3ZOZlhRS0d4K0wwbEh1VlVM?=
- =?utf-8?B?RWwwOHNOaG9QSUJ6eHI3cTBoYysyY0YvSDdIaW5jbjF1K2VNVlQrNkFEOHJW?=
- =?utf-8?B?RjY3WlhKWGxjbmdOUWNrYk5pRGFsOHQ5VGN5TDBXYTYxT2J5VEUybm92YjNn?=
- =?utf-8?B?amZzQXlIWlRwd2JtMzJEeWl2VUVPc0sxdkdnOHQwVVZic001SE03T0xmdjc3?=
- =?utf-8?B?TTFpcWxnUHFka1Z5ZVFFZ2c2OTJyWFJxZjV6U0JPYVIyZ3F0QmJCYmxLS0Fa?=
- =?utf-8?B?ZEw5NlJXdkpHUWNRT09mU1Yzb3FqTUU0TmRlbGJHOWJDN0s1VGJqQU82dUxL?=
- =?utf-8?B?LzJVRjBzR0dVcDdOUjVMa2pJc3JhMUNUS1FJN2hheEVsQUlva1lRWjF0aWNK?=
- =?utf-8?B?amVPUS9LV0NIRUxUV2hKYmpzNm9NdUVSMVJGMFZXZ3pVOVFCQloyRGtiVERI?=
- =?utf-8?B?ZVExOUh5QjZRMmlBUDZtMngzd1BrNFl3azhjblYwdzdhK001SE1sUjB6enpU?=
- =?utf-8?B?K2tvb0s0RDEwK0Z3N2t4R3QwOU1vS09LUkd0bFY4UTZKYVVKejVLUzVTL3JU?=
- =?utf-8?B?d2tEQkcwWk14UjlMQ1BnSWlxVkt1cklRSFpERllZeXU2YXcyOG9FZG11SkJK?=
- =?utf-8?B?c0hGSGEyMEN0UTEzT2h0SG5UM04xVmRxUHVMMVQvRjl0cGlKUUI2UnNkZmc1?=
- =?utf-8?B?TEJwN2xtOVFQWmpYRkJsTjU1UkpxcitOSkJ4dmFacEtwSHVOb0VDSEhjdjZn?=
- =?utf-8?B?YjRpSlNGVHhQYUJJNFNiSFE5R1VVK1ZiWHJvMi9hZ2g2b1A0dVZaMzNmM2s1?=
- =?utf-8?B?Y2JxMHVtbVhWaXorZldZWXk0YWNqNVE1U2pIcVNYTkhlNUFKbHAxbDVMeVhB?=
- =?utf-8?B?V1hhNyswKzg1NldSdFZ1MEhZRnRXdGp3aUZUMGExbFkwYTJZeXZtYWE1Mkc3?=
- =?utf-8?B?amVNYXRiT3pQUFc0MjgxMHFMRjhCQ1hZT0VOemIxeUlBNC9nNmRBaUdaeVNa?=
- =?utf-8?B?SXVHKzlZdzc0a3NwK3h3TlJOMHhSUGlYRHdLMEdveC9TNDdrd0RyL3YrcFEx?=
- =?utf-8?B?cmNjWWM5T1NSNkVVM1UydXEyTzBkb25BeVhMWmNubWdqOW4zWDJTTjZEbktW?=
- =?utf-8?B?UXZpRE5HSldtUDR0K3MyKzhURmFxOXd4YlpkZnBwZGZPNmVYaTl4VlZvY0VX?=
- =?utf-8?B?dFRoUVd1aW5jYWY1UVl2T0E0QXZwOUY0aGpUM0c1bHBOUFYxZmlEeVZLNkNV?=
- =?utf-8?B?RFp4VjdTbmJJQU5BWmtjbE1PNkNITmtuOXhIdVBHS2V0YzE0SkZETVpJdXpS?=
- =?utf-8?B?WlNGZGdhQldDNTR5TXlEcGhjZXB0VWk2TFZtS1d3OEZzbU9GMXJ4K1dFQ3Bj?=
- =?utf-8?B?MENTZW92cGpBakkrTk1ZZFdEenRtbzNab2RqeExqUnVFcnFTbmR5ekhBeGZ4?=
- =?utf-8?B?Um1CQnoyVERDVGplN2QzaGdlYUtYbFZDbExKRktVVVNWOGN5dUw2MzRXNDVG?=
- =?utf-8?B?ekRqMnJBNnZrQ3FlckVDbWg0L1dJM1BpYVowYjJkYlZJY0s4L3NNY3VmWDNl?=
- =?utf-8?B?dG1KbFk0ZnUzNzFqbjFEejJScUVPL01XNGsxU1poYVhqQ3dGa01Hek05MlBW?=
- =?utf-8?B?QzdRRmVmVXdwK0VKUEUyVHFkUjlLZWF2OVRBc0EwSHQ4dUVucGtkS05JdWMw?=
- =?utf-8?B?aEVnUXBVc0ZXOS9LcDZSZHc2VHh5ZUFnK3hkKzNyVmtUM3lQeGhrM1o4QW5a?=
- =?utf-8?B?RndKcElWSDVxSXEwUFM4U0VKNmxVL1hDQjI5bTZNUkxuNHNvbWFycEZrL1pU?=
- =?utf-8?B?T3pkTStsVmpsTFZ4WmpoRkZlU0d6RVc0SU1PNFZmbTN3UnpISjRCOGc3S0pB?=
- =?utf-8?B?VUF1WE50cDRrcnZIeHlmYTcyQUczN2w0N2R2ZWtTZ0tIdG1BN0UxWnhvUlpP?=
- =?utf-8?Q?4BRaFBH46fxuqoAC0wRa7UFHO?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a31801d8-21b8-4ce6-fc2b-08dbd4d3e9be
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 20:58:02.9941
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F77bqHzjDjTPuUM7phe0uh1WzXWJuuX36I0Ems6RY+SOpNrQeiuAmxrk29QGdme7vjSnDdc1Kv6iMf6TIGpXgg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9098
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9af48b816f2b6397f5ada58a9b5ced85213e5194.1698085945.git.geert+renesas@glider.be>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/24/2023 11:20 AM, Bragatheswaran Manickavel wrote:
+On Mon, Oct 23, 2023 at 08:38:07PM +0200, Geert Uytterhoeven wrote:
+> Convert the Austria MicroSystems AS3711 Quad Buck High Current PMIC with
+> Charger Device Tree binding documentation to json-schema.
 > 
-> kfree()/vfree() internally perform NULL check on the
-> pointer handed to it and take no action if it indeed is
-> NULL. Hence there is no need for a pre-check of the memory
-> pointer before handing it to kfree()/vfree().
-> 
-> Issue reported by ifnullfree.cocci Coccinelle semantic
-> patch script.
-> 
-> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
-
-Thanks -sln
-
-Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
-
-
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->   drivers/net/ethernet/amd/pds_core/core.c | 7 ++-----
->   1 file changed, 2 insertions(+), 5 deletions(-)
+> RFC, as I couldn't get the multiple dependencies right (see FIXMEs):
+>   1. How to incorporate "su2-dev: [ su2-max-uA ]" and
+>      "su2-feedback-curr-auto: [ su2-dev ]"?
+>   2. su2-dev requiring one of su2-fbprot-* does not seem to work?
 > 
-> diff --git a/drivers/net/ethernet/amd/pds_core/core.c b/drivers/net/ethernet/amd/pds_core/core.c
-> index 2a8643e167e1..0d2091e9eb28 100644
-> --- a/drivers/net/ethernet/amd/pds_core/core.c
-> +++ b/drivers/net/ethernet/amd/pds_core/core.c
-> @@ -152,11 +152,8 @@ void pdsc_qcq_free(struct pdsc *pdsc, struct pdsc_qcq *qcq)
->                  dma_free_coherent(dev, qcq->cq_size,
->                                    qcq->cq_base, qcq->cq_base_pa);
-> 
-> -       if (qcq->cq.info)
-> -               vfree(qcq->cq.info);
-> -
-> -       if (qcq->q.info)
-> -               vfree(qcq->q.info);
-> +       vfree(qcq->cq.info);
-> +       vfree(qcq->q.info);
-> 
->          memset(qcq, 0, sizeof(*qcq));
->   }
-> --
-> 2.34.1
-> 
+> Anyone with better *Of foo? Thanks!
+> ---
+>  .../devicetree/bindings/mfd/ams,as3711.yaml   | 223 ++++++++++++++++++
+>  .../devicetree/bindings/mfd/as3711.txt        |  73 ------
+>  2 files changed, 223 insertions(+), 73 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/ams,as3711.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/mfd/as3711.txt
+
+
+> +    dependencies:
+> +      # To use the SU1 converter as a backlight source the following two
+> +      # properties must be provided:
+> +      su1-dev: [ su1-max-uA ]
+> +      su1-max-uA: [ su1-dev ]
+> +
+> +      # To use the SU2 converter as a backlight source the following two
+> +      # properties must be provided:
+> +      # FIXME How to incorporate "su2-dev: [ su2-max-uA ]"?
+
+You've stumbled into the evolution of jsonschema. Newer versions split 
+'dependencies' into 'dependentSchemas' and 'dependentRequired' (more 
+generally, they split keywords that could be either a list or schema). 
+That will let you have both forms. The new keywords are already 
+supported and you can use them (internally, dtschema is converting 
+every 'dependencies' to the new forms because json-schema likes flag 
+days, sigh).
+
+
+> +      # FIXME su2-dev requiring one of su2-fbprot-* does not seem to work?
+> +      su2-dev:
+> +        allOf:
+> +          - oneOf:
+> +              - required:
+> +                  - su2-feedback-voltage
+> +              - required:
+> +                  - su2-feedback-curr1
+> +              - required:
+> +                  - su2-feedback-curr2
+> +              - required:
+> +                  - su2-feedback-curr3
+> +              - required:
+> +                  - su2-feedback-curr-auto
+> +          - oneof:
+
+Your second problem is here.
+
+s/oneof/oneOf/
+
+Got to love json-schema's default silence on unknown keywords. I'll 
+figure out why we don't descend here and find this.
+
+> +              - required:
+> +                  - su2-fbprot-lx-sd4
+> +              - required:
+> +                  - su2-fbprot-gpio2
+> +              - required:
+> +                  - su2-fbprot-gpio3
+> +              - required:
+> +                  - su2-fbprot-gpio4
