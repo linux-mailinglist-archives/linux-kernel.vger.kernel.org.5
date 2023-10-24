@@ -2,112 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB867D4FD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BBE7D4FD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233306AbjJXMde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        id S233400AbjJXMeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233265AbjJXMdc (ORCPT
+        with ESMTP id S231876AbjJXMeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:33:32 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDB4A2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:33:29 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53b32dca0bfso9261095a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:33:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1698150808; x=1698755608; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a+d68ElJXb15txlNQvNv4dpc2clYVoBlH5oUxqTkrhg=;
-        b=v4CwPlmVjoGf+STU+UdvRuBYXIlFCvGPV3W6hScV0bT/LKFe6N2manye//X2QNkEHJ
-         trUSoi5DFfwY21qFcgvlL3vpMSyhKtQoLoN1jX1sqFE6At3Y3BTGvjCR/Zsv8BcOhKqi
-         ldecWwnCkLbYvlVZ4t9X1lY1L4/EMBEol7/jgrcyyLN7Ng51NfyQ/GomSPmO7UtWZZl2
-         ghucLEKWN3V58AI7OmeE87DhbprvnMi1ZEEWc/EezbC2eLsACZtKo7Fx2/RzjGeW8mWa
-         yP8qI2r65a3yMsUPmosoHZyVTspYaXf1HS0GXhrCjCcifSB2+rfdha+cvIpEqJSFVNSQ
-         yCWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698150808; x=1698755608;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a+d68ElJXb15txlNQvNv4dpc2clYVoBlH5oUxqTkrhg=;
-        b=l49gFRnjU94fcV+6sUJbptILmI7CbbV+l1/HiJmoo2JBNwIZG2jm4LGS+z+v2LeSh2
-         2NY9h6wD1UE8Yo+EIDF6dfwq80G5V5nxQOM2oVF05CtyERMrfPdePrkaN7XRnAOyO0Yg
-         NVdDg0wGKacyxvWXd4UMkozGnNTNidkMqbGoEkY+HFHyc5YMTnFEcSbRAOWXjPXN+osK
-         bdLxsk3DNfYnZPuYjqR2Hc7zYh4QDkgnWHqD8IYyPdFyG01S5vXdorAs1WirqDA1BKjL
-         UdGyUddElfWfv3KwbkLYhvq6+VbBGkyPN2e0skciLUcwToePdWS5mzdoqhBEP2p+0XcQ
-         PMxA==
-X-Gm-Message-State: AOJu0YzDuPB1arEA+TqAedGOYaainOfSCL5F53B2H0gir6sw8+GJxy3h
-        cUDhj+Z9Yqkc/RmDQmyJ4P4hLw5IeGMM34d0EyU+vg==
-X-Google-Smtp-Source: AGHT+IFIE9BIMcYN4kQR4ERtaL5CfnISK2mhAZ8gLDndSgRZW3ZOJJxhy0/w+R7raxMOicROhqY26qlwaC+yMCMevAo=
-X-Received: by 2002:a05:6402:430b:b0:53e:264d:be1f with SMTP id
- m11-20020a056402430b00b0053e264dbe1fmr13478212edc.2.1698150807522; Tue, 24
- Oct 2023 05:33:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231023104828.488041585@linuxfoundation.org>
-In-Reply-To: <20231023104828.488041585@linuxfoundation.org>
-From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date:   Tue, 24 Oct 2023 21:33:16 +0900
-Message-ID: <CAKL4bV4D4VD=kQuocwjvZxjLd3h6xUCx4mKugDGhY8muxH1gNw@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/196] 6.1.60-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Tue, 24 Oct 2023 08:34:02 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A6190
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:33:59 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6C55A21BC6;
+        Tue, 24 Oct 2023 12:33:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1698150838; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PvFtimT42egl7lSXKvcHrXpUbqrpZQ1+pLP7hpk228Q=;
+        b=v16Hu4Bvm4a5b1sPrXTUO15okErDMgpALTAtRqeUU/J0ryOiTSqZRSP+elbDNKRDKFv2TO
+        21hFM9y2N58Qf2wGnzzxQ4Kv7B+j3VZWysdmY08YEvqI4DW1TVeKxiMENr7EW4kEYwzy4V
+        EksezotwwOgMf0SHhe/Ev7yEj4A0rec=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1698150838;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PvFtimT42egl7lSXKvcHrXpUbqrpZQ1+pLP7hpk228Q=;
+        b=QCCLBoVSJAZmH5WgrOWRn6KZ9KfEoLo8uSvLpoWdnGqPTs3+vdWYjhLxykLYdD1PEF2Fv3
+        1NsfK3RNymbmDSDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2247C134F5;
+        Tue, 24 Oct 2023 12:33:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 1D1dB7a5N2U+aQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 24 Oct 2023 12:33:58 +0000
+Date:   Tue, 24 Oct 2023 14:33:57 +0200
+Message-ID: <87ttqgurm2.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Matias Ezequiel Vara Larsen <mvaralar@redhat.com>
+Cc:     anton.yakovlev@opensynergy.com, mst@redhat.com, perex@perex.cz,
+        tiwai@suse.com, virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        manos.pitsidianakis@linaro.org, mripard@redhat.com
+Subject: Re: [PATCH v3] ALSA: virtio: use ack callback
+In-Reply-To: <ZTemo0P/kEcceK/O@fedora>
+References: <ZTaMEUZUTrRRUD6y@fedora>
+        <87edhlwd7b.wl-tiwai@suse.de>
+        <ZTemo0P/kEcceK/O@fedora>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -10.10
+X-Spamd-Result: default: False [-10.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         MID_CONTAINS_FROM(1.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[99.98%]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+On Tue, 24 Oct 2023 13:12:35 +0200,
+Matias Ezequiel Vara Larsen wrote:
+> 
+> On Mon, Oct 23, 2023 at 05:50:00PM +0200, Takashi Iwai wrote:
+> > On Mon, 23 Oct 2023 17:06:57 +0200,
+> > Matias Ezequiel Vara Larsen wrote:
+> > > 
+> > > +static int virtsnd_pcm_ack(struct snd_pcm_substream *substream)
+> > > +{
+> > > +	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
+> > > +	struct virtio_snd_queue *queue = virtsnd_pcm_queue(vss);
+> > > +	unsigned long flags;
+> > > +	struct snd_pcm_runtime *runtime = vss->substream->runtime;
+> > > +	ssize_t appl_pos = frames_to_bytes(runtime, runtime->control->appl_ptr);
+> > > +	ssize_t buf_size = frames_to_bytes(runtime, runtime->buffer_size);
+> > > +	int rc;
+> > > +
+> > > +	spin_lock_irqsave(&queue->lock, flags);
+> > > +	spin_lock(&vss->lock);
+> > > +
+> > > +	ssize_t bytes = (appl_pos - vss->appl_ptr) % buf_size;
+> > 
+> > The variable declaration should be moved to the beginning of the
+> > function.
+> > 
+> > Also, there can be a overlap beyond runtime->boundary (which easily
+> > happens for 32bit apps), so the calculation can be a bit more complex
+> > with conditional.
+> > 
+> 
+> Should I use as an example `cs46xx_playback/capture_transfer()` which relies on
+> the `snd_pcm_indirect_playback/capture_transfer()`? It looks like it
+> does already that calculation.
 
-On Mon, Oct 23, 2023 at 8:20=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.1.60 release.
-> There are 196 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.60-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Yes, using the existing helper is a good idea.
+The only problem is that this helper isn't well documented ;-<
 
-6.1.60-rc1 tested.
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
+thanks,
 
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
-
-Thanks
-
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+Takashi
