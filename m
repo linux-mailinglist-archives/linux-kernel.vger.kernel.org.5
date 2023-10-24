@@ -2,135 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBB17D46EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3E97D46ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbjJXFb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 01:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
+        id S232304AbjJXFeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 01:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbjJXFb4 (ORCPT
+        with ESMTP id S232051AbjJXFeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 01:31:56 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CABE9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 22:31:55 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6bd73395bceso2992312b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 22:31:55 -0700 (PDT)
+        Tue, 24 Oct 2023 01:34:03 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25476E9;
+        Mon, 23 Oct 2023 22:34:01 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1e19cb7829bso3030247fac.1;
+        Mon, 23 Oct 2023 22:34:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1698125514; x=1698730314; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TMgZBMWXzo4q6vwznsY5I4wwZsoXDFPKydTpbp5gDQw=;
-        b=JKroqlfcHG8a6N6YvGdwfOhxawfooodjYM0sMf7u1n2XvdJKgBRVvlXS303QotoGo8
-         XgJVqiLnq9Qy/W6lpRtsp2rPHRX7g+d5DEpLykgIkHlrnD0KmYt3BJFJ7FvHhm7EHcao
-         DLFJaIHXHQkXR32FiQXVPsRUzkjojKN5IK27jqP9+4eqV3B/pCk25ucgPEe4q7NGCSb1
-         l7LDZoQEm/1zeGWiVeHuimbZC8KTg1SKU+yhGBEEVZghGfcQ2kTMRbo4stf8vSO4rq1n
-         o2r2nGy/kKMgIaumLtBvfPZHe5ZBNyiiFzZrMczFzSTaujCiYHdNBRjczMI785zEWFZD
-         o/8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698125514; x=1698730314;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698125640; x=1698730440; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TMgZBMWXzo4q6vwznsY5I4wwZsoXDFPKydTpbp5gDQw=;
-        b=v7etYk6I48BeJCUZjarMQHbXgPOjzIWY2L5NKJQ9EaavRCu5OYytVthH7IfKrwotrB
-         lE8e323iNTbPU6H0/XEBKhZkkhZzT2tI5ivK3d5gKnxQPk7MmHaoy4mYxcjeAI4yvaJA
-         rMRk5LCB5yXAyJ/fMb8Jr88OsXQoZVzUuw1VVN7y9+MHVYtzdkrAxkG7tQhnFt+aiF2H
-         VDNys+JxL3gCwv5JYjZCFthLQjaiZ6rdHTHyEw8MQhiC0M6J6hGrEamWWjZ1NRn308fR
-         alQw7hxgUpec6OU2KkbphEKIfMSae07VsrWV6zK0YTU2D+c95oRcEzvmrjoXoFf9Dp51
-         DuMA==
-X-Gm-Message-State: AOJu0YxAe5n+nIB3XnZeSOriw1LvL1iwhuPSI4Ue16BJnqFoCPp6Omem
-        Rlay6b2GDjITFIdsD/JGumaEVQ==
-X-Google-Smtp-Source: AGHT+IEXabVD0I42LfRfAleaLrDfaEeikt+nTW/LvpW+v1yM0hF9QKpCxuvRXO4yGRldBbG6ljXApg==
-X-Received: by 2002:a05:6a20:7348:b0:17b:2c56:70bc with SMTP id v8-20020a056a20734800b0017b2c5670bcmr2083668pzc.10.1698125514459;
-        Mon, 23 Oct 2023 22:31:54 -0700 (PDT)
-Received: from sunil-laptop ([2409:4071:6e9d:1e7:259:d68d:db3b:3cc])
-        by smtp.gmail.com with ESMTPSA id y15-20020aa79aef000000b0068883728c16sm7216982pfp.144.2023.10.23.22.31.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 22:31:53 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 11:01:37 +0530
-From:   Sunil V L <sunilvl@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v11 12/14] irqchip/riscv-aplic: Add support for MSI-mode
-Message-ID: <ZTdWueglO1iXuS1D@sunil-laptop>
-References: <20231023172800.315343-1-apatel@ventanamicro.com>
- <20231023172800.315343-13-apatel@ventanamicro.com>
+        bh=v9l4yWO5IYnmruSJerE1/J9bNO/v7+P+ZDUoIpWw7cM=;
+        b=DvsDOKD/DS8dB8k8p5OqdUmcWGPFuLYZZJyoKF/wblH+5/+PdHtOGj4q6/dqpJhAtb
+         /ShUiC0BmmrkCF0cYI5tD/GKseOUj9xpWCGkDGKsUQApsTi/O9yR1ZIP+FfL85NW/Fpr
+         GuTvEaAau2YcaNAd22GyB43QpgLLUsWsiSckySIVn9ynx+GWPZ25TGpFaC7W2J/oEbxg
+         8fc+roeCe9Iz0v2L9sogJD/GbDti5XsJjgvLLKFJ58LSWVwA25uvD8m7Iy9sC0zAWN+O
+         QlqpkR0QxDjCBqr1N1z66d36hjZ0+ueW4W1GtyCr0N2posVWRJcvmp6Q2VSVXhInbgmE
+         hSDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698125640; x=1698730440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v9l4yWO5IYnmruSJerE1/J9bNO/v7+P+ZDUoIpWw7cM=;
+        b=ZB0rczSx2F7ewblpOwB5mDw1kO2K9FobsomPYeFD8SB4HHwnErx2k6ycUg1MmioEPZ
+         FZwnpJsAZhlfatLsnmQwZQHIv89a9y0Ag2VSRltMeqKX6qJpf0e2uK+wa50LwR2+CUUA
+         3Mj8RnhlEpS7LCeoApul9hTWD6V09SCMCZyn2XsNK4agoExoHhrMbDPxacykntLfbWB1
+         G8mzCT97rbKA6cpMZIMiz7Md6jxX2M+uMjzulYwiFTYAQAn71FhpslCcwTh1gRZw035h
+         iRCaQoQ50ThAPHejjboDC0t3ccIv8OLU3wAzxC0SOk5XC2Q+RG9RNx7ZxBEQBMOgw3ri
+         PYIw==
+X-Gm-Message-State: AOJu0YwHFAsxJB+3fW11kUPQ/JIq/IMnE37elweIXvi5wU2Plma7Lwps
+        wNLDW80N/p4GoOhOhmzP2Fduns0vDkwFeoB8Hn/zKWpL
+X-Google-Smtp-Source: AGHT+IEcYN1h3j2Era38wqdWbWdgcyvQM/WIdxTXDby68IOTN5tX/P8ClV3LtRidM0yMP9cC2VJb5T3KlWZSsgoGhwA=
+X-Received: by 2002:a05:6871:a302:b0:1d5:21cd:7069 with SMTP id
+ vx2-20020a056871a30200b001d521cd7069mr12991818oab.8.1698125640332; Mon, 23
+ Oct 2023 22:34:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023172800.315343-13-apatel@ventanamicro.com>
+References: <20231022090633.792831-1-sergio.paracuellos@gmail.com>
+ <1d6804f3-a5e2-4840-a4ae-7cd2632b3b64@phrozen.org> <CAMhs-H8Stk8_xWLFu2sozjXPgy2GjJMOCP2bwAH0FXxmYRr-=w@mail.gmail.com>
+In-Reply-To: <CAMhs-H8Stk8_xWLFu2sozjXPgy2GjJMOCP2bwAH0FXxmYRr-=w@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Tue, 24 Oct 2023 07:33:50 +0200
+Message-ID: <CAMhs-H8a-a1gnsS5-avVt6j3CYK5zmvw3u7a++wwxLQeNHPZ9Q@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Add myself as maintainer of the Ralink architecture
+To:     John Crispin <john@phrozen.org>
+Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anup,
+On Mon, Oct 23, 2023 at 6:50=E2=80=AFAM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> On Sun, Oct 22, 2023 at 4:33=E2=80=AFPM John Crispin <john@phrozen.org> w=
+rote:
+> >
+> >
+> > On 22.10.23 11:06, Sergio Paracuellos wrote:
+> > > Its been a while since I am making contributions to this architecture=
+.
+> > > Hence add myself as maintainer.
+> > >
+> > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> >
+> > Acked-by: John Crispin <john@phrozen.org>
+>
+> Thanks, John!
 
-On Mon, Oct 23, 2023 at 10:57:58PM +0530, Anup Patel wrote:
-> The RISC-V advanced platform-level interrupt controller (APLIC) has
-> two modes of operation: 1) Direct mode and 2) MSI mode.
-> (For more details, refer https://github.com/riscv/riscv-aia)
-> 
-> In APLIC MSI-mode, wired interrupts are forwared as message signaled
-> interrupts (MSIs) to CPUs via IMSIC.
-> 
-> We extend the existing APLIC irqchip driver to support MSI-mode for
-> RISC-V platforms having both wired interrupts and MSIs.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
-[...]
-> +int aplic_msi_setup(struct device *dev, void __iomem *regs)
-> +{
-> +	const struct imsic_global_config *imsic_global;
-> +	struct irq_domain *irqdomain;
-> +	struct aplic_priv *priv;
-> +	struct aplic_msicfg *mc;
-> +	phys_addr_t pa;
-> +	int rc;
-> +
-> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	rc = aplic_setup_priv(priv, dev, regs);
-> +	if (!priv) {
-This should check rc instead of priv.
+Hi Thomas,
 
-> +		dev_err(dev, "failed to create APLIC context\n");
-> +		return rc;
-> +	}
-> +	mc = &priv->msicfg;
-> +
-> +	/*
-> +	 * The APLIC outgoing MSI config registers assume target MSI
-> +	 * controller to be RISC-V AIA IMSIC controller.
-> +	 */
-> +	imsic_global = imsic_get_global_config();
-> +	if (!imsic_global) {
-> +		dev_err(dev, "IMSIC global config not found\n");
-> +		return -ENODEV;
-For all error return paths, priv should be freed.
+Is this patch supposed to go through the mips git tree? If not, which
+tree is used in these cases?
 
-Thanks,
-Sunil
+Thanks in advance for clarification.
+
+Best regards,
+    Sergio Paracuellos
