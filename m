@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5FA97D5E25
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B924B7D5E12
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344594AbjJXW1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        id S1344506AbjJXWZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344494AbjJXW1Y (ORCPT
+        with ESMTP id S234983AbjJXWZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:27:24 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBFF1FDA
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:52 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a909b4e079so58021657b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:52 -0700 (PDT)
+        Tue, 24 Oct 2023 18:25:29 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADE610D4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:54 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da03c5ae220so243979276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698186291; x=1698791091; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698186293; x=1698791093; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=XKH/5K4bvubvIr9pw7ZYc/Z4ET3hwQ4HW4s3RX+AQbw=;
-        b=ti0BxZOqkKM1O8RMMAUyNmmZ2o8mbX3dMm8Vjr/jsi/SElnTLRGvvf7tm75ekFnwiP
-         aTja6tBcUnRlTYdAa/U5yaTaroVUtJWEYClh9UtPf3AR59z5jFFreWEiQzusSQnVGRY3
-         S3OLHaoUGOB4ZHSNhCYtNRDALBRJ6eGzSS4AWWWDf0TvXoUOCWwbmgX7ZsTzq0+S74/B
-         Ahn6YidRiKy/TTgwUS9p/Cnai3YnI5tyiTz7S6UBux/y8JM1d2ch5KkkZPaseNvy7xx0
-         ZeX0cs0pJ6lhq1L9FybhTefYg7fLVyVZG5gYtjm/N/lm4c306xGJDGGw6kvBGfSvO6uU
-         Edbw==
+        bh=te3vsO4FFSO2xyEIikKiywGT5AKUPIsHpoNC65majkY=;
+        b=EU+aw5wBe8FZvBL8crMRweg+EtN2PXjPDp24t4tZS6NGh7DtAdvSifsXhDpa7oPG2k
+         KkOOlBOnHKnfaheuCAgsfj9gHTQ4vEBNywX9PstW6/fHnbM+k/a0K/Rmj/TtX16vgSHW
+         PfNKFSB8NLH+JrFWJ0liIgra8hQLQtpmh5gug/6yNu2u3YHiT/A/UVZ4NJFSHHxEqkAV
+         v4++5qYr61lq72+p72jh6f2VMbCdX3hxx4EKP23L3aFlSsmIFsUXqO+MitPidgKrY7YL
+         x2pwSUk7v0woASAcnX9mwYdqqd7PcBY4Ju40gJRGohUmUgsyKaDNOAUDoEVgdNu/xR8S
+         HI9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698186291; x=1698791091;
+        d=1e100.net; s=20230601; t=1698186293; x=1698791093;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XKH/5K4bvubvIr9pw7ZYc/Z4ET3hwQ4HW4s3RX+AQbw=;
-        b=GsSvgl859Tocmw8iUcGeeb563eKVSNDEryb6aP1gyEE3nLgkVCKuxjNVmxrzQNp6v6
-         L7QAV3cU0GzHRrxOJ2pHPPe8hJiOUcsrUaaqpr5ZcKQLQSjT2TpwWXyKK6h88jsTq+6y
-         JQxjObktZFdD8YbzqXiZrkKGYRrFXa/o51elgRpolmsoN7u9GcR6tJ6tkRlr7FRTozoc
-         oIy+uCJ+xMU12wVdtAahPm2CxFDx8BevKbbk3k6UTfGhkNOLbB+Ub/WVz+QS+oi1C+Zg
-         J4NfCLv0yHX+sZ53ts0cHj0Z5CIzYZsgY2XGo9faBS4K/rT2GE1MaZgRmq2KNuUi6gSw
-         Us/g==
-X-Gm-Message-State: AOJu0Yy3FvSPJuxcEktqqBxINR3ofjmaZAYPJImrMd3sCHrytW6VsB7D
-        6G5xb6JL+xaZ3pU0NkOCh5HflXAIbTZh
-X-Google-Smtp-Source: AGHT+IEA4x6jExeY58G0RliZSteprXCMSpH7tFe0ZHu9NiKL3F8kX6ZLzfPBEolCHwOezoixk0P4f6/+giGa
+        bh=te3vsO4FFSO2xyEIikKiywGT5AKUPIsHpoNC65majkY=;
+        b=g2nDj8JgQyxkajFyrXcQD8ySDLlHLOSmZkEP0aCla0SAS7+bTEtwN0JGXxn5aDLQU9
+         M27Mi6JtXp5iok9akFue4zYlAyGMB2wLG6gdGQxdSFLmwehDhFoIbt8nNd9PdF7fkf75
+         3n2S08PUPZbOU0bk+oLJvOiItxjiG5sc+OH7iCcZ37oJDldG1AXHajqCxPoxIM0GZEfQ
+         1BxUf8vJpgR3JR/7zRjNT0tt2Ishx87gpyZ3VDbauMbXJ3TJIDBgCommq4uLdGPwc3rd
+         pofhs2Ujy3/Z8DFN3rvYqVs1oo78jLprKe3HweyPlTpzNsCx0F8w2/fQLpukj0tT4e+/
+         QXng==
+X-Gm-Message-State: AOJu0YyAzMX0CunaliaZg0+39WrLpSQ6wtQJKbySeSjIHbSkDEljmtJN
+        K76NtuiC90eQqP/bOYzbmQoEGMVpOm+r
+X-Google-Smtp-Source: AGHT+IG0qlkZIkteZoBsDEjUJuPv/qSoyKpAZj2pIJc3FbHR64e6ge1+0/2JSt3i23IoBIy48WvXUELizceV
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:93d2:18cc:4d63:45ba])
- (user=irogers job=sendgmr) by 2002:a0d:eb92:0:b0:59b:ca80:919a with SMTP id
- u140-20020a0deb92000000b0059bca80919amr270216ywe.0.1698186291218; Tue, 24 Oct
- 2023 15:24:51 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 15:23:20 -0700
+ (user=irogers job=sendgmr) by 2002:a25:34d1:0:b0:d9a:6360:485b with SMTP id
+ b200-20020a2534d1000000b00d9a6360485bmr385698yba.2.1698186293540; Tue, 24 Oct
+ 2023 15:24:53 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 15:23:21 -0700
 In-Reply-To: <20231024222353.3024098-1-irogers@google.com>
-Message-Id: <20231024222353.3024098-18-irogers@google.com>
+Message-Id: <20231024222353.3024098-19-irogers@google.com>
 Mime-Version: 1.0
 References: <20231024222353.3024098-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Subject: [PATCH v3 17/50] tools api fs: Avoid reading whole file for a 1 byte bool
+Subject: [PATCH v3 18/50] tools lib api: Add io_dir an allocation free readdir alternative
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -88,7 +88,7 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,53 +96,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sysfs__read_bool used the first byte from a fully read file into a
-string. It then looked at the first byte's value. Avoid doing this and
-just read the first byte.
+glibc's opendir allocates a minimum of 32kb, when called recursively
+for a directory tree the memory consumption can add up - nearly 300kb
+during perf start-up when processing modules. Add a stack allocated
+variant of readdir sized a little more than 1kb.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/lib/api/fs/fs.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ tools/lib/api/Makefile |  2 +-
+ tools/lib/api/io_dir.h | 72 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 73 insertions(+), 1 deletion(-)
+ create mode 100644 tools/lib/api/io_dir.h
 
-diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
-index 496812b5f1d2..4c35a689d1fc 100644
---- a/tools/lib/api/fs/fs.c
-+++ b/tools/lib/api/fs/fs.c
-@@ -447,15 +447,16 @@ int sysfs__read_str(const char *entry, char **buf, size_t *sizep)
+diff --git a/tools/lib/api/Makefile b/tools/lib/api/Makefile
+index 044860ac1ed1..186aa407de8c 100644
+--- a/tools/lib/api/Makefile
++++ b/tools/lib/api/Makefile
+@@ -99,7 +99,7 @@ install_lib: $(LIBFILE)
+ 		$(call do_install_mkdir,$(libdir_SQ)); \
+ 		cp -fpR $(LIBFILE) $(DESTDIR)$(libdir_SQ)
  
- int sysfs__read_bool(const char *entry, bool *value)
- {
--	char *buf;
--	size_t size;
--	int ret;
-+	struct io io;
-+	char bf[16];
-+	int ret = 0;
- 
--	ret = sysfs__read_str(entry, &buf, &size);
--	if (ret < 0)
--		return ret;
-+	io.fd = open(entry, O_RDONLY);
-+	if (io.fd < 0)
-+		return -errno;
- 
--	switch (buf[0]) {
-+	io__init(&io, io.fd, bf, sizeof(bf));
-+	switch (io__get_char(&io)) {
- 	case '1':
- 	case 'y':
- 	case 'Y':
-@@ -469,8 +470,7 @@ int sysfs__read_bool(const char *entry, bool *value)
- 	default:
- 		ret = -1;
- 	}
--
--	free(buf);
-+	close(io.fd);
- 
- 	return ret;
- }
+-HDRS := cpu.h debug.h io.h
++HDRS := cpu.h debug.h io.h io_dir.h
+ FD_HDRS := fd/array.h
+ FS_HDRS := fs/fs.h fs/tracing_path.h
+ INSTALL_HDRS_PFX := $(DESTDIR)$(prefix)/include/api
+diff --git a/tools/lib/api/io_dir.h b/tools/lib/api/io_dir.h
+new file mode 100644
+index 000000000000..8a70c0718df5
+--- /dev/null
++++ b/tools/lib/api/io_dir.h
+@@ -0,0 +1,72 @@
++/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
++/*
++ * Lightweight directory reading library.
++ */
++#ifndef __API_IO_DIR__
++#define __API_IO_DIR__
++
++#include <dirent.h>
++#include <fcntl.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <sys/stat.h>
++
++struct io_dirent64 {
++	ino64_t        d_ino;    /* 64-bit inode number */
++	off64_t        d_off;    /* 64-bit offset to next structure */
++	unsigned short d_reclen; /* Size of this dirent */
++	unsigned char  d_type;   /* File type */
++	char           d_name[NAME_MAX + 1]; /* Filename (null-terminated) */
++};
++
++struct io_dir {
++	int dirfd;
++	ssize_t available_bytes;
++	struct io_dirent64 *next;
++	struct io_dirent64 buff[4];
++};
++
++static inline void io_dir__init(struct io_dir *iod, int dirfd)
++{
++	iod->dirfd = dirfd;
++	iod->available_bytes = 0;
++}
++
++static inline void io_dir__rewinddir(struct io_dir *iod)
++{
++	lseek(iod->dirfd, 0, SEEK_SET);
++	iod->available_bytes = 0;
++}
++
++static inline struct io_dirent64 *io_dir__readdir(struct io_dir *iod)
++{
++	struct io_dirent64 *entry;
++
++	if (iod->available_bytes <= 0) {
++		ssize_t rc = getdents64(iod->dirfd, iod->buff, sizeof(iod->buff));
++
++		if (rc <= 0)
++			return NULL;
++		iod->available_bytes = rc;
++		iod->next = iod->buff;
++	}
++	entry = iod->next;
++	iod->next = (struct io_dirent64 *)((char *)entry + entry->d_reclen);
++	iod->available_bytes -= entry->d_reclen;
++	return entry;
++}
++
++static inline bool io_dir__is_dir(const struct io_dir *iod, const struct io_dirent64 *dent)
++{
++	if (dent->d_type == DT_UNKNOWN) {
++		struct stat st;
++
++		if (fstatat(iod->dirfd, dent->d_name, &st, /*flags=*/0))
++			return false;
++
++		return S_ISDIR(st.st_mode);
++	}
++	return dent->d_type == DT_DIR;
++}
++
++#endif
 -- 
 2.42.0.758.gaed0368e0e-goog
 
