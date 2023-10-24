@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D47BD7D5E4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504BA7D5E2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344609AbjJXWhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39712 "EHLO
+        id S1344684AbjJXW2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344588AbjJXWg6 (ORCPT
+        with ESMTP id S1344610AbjJXW2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:36:58 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6121FC1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:52 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a8ebc70d33so62725127b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:52 -0700 (PDT)
+        Tue, 24 Oct 2023 18:28:15 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2111FF7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:55 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9c4ae201e0so252759276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698186352; x=1698791152; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698186354; x=1698791154; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=UNZsWL7q61tQxw4sAWHRVjc8YNOyPUB86ZxyQzS9cbI=;
-        b=Zn8XNsJfLmg04e+nCbVxxpzHEOoCqg8El1s9vNUzY5D+1jvYoGYevXsCmJBGxhbwkT
-         SkDFIscTsJXX/kigFwQzv14uBhoP+3XQvU5Q5AMF0u6HAdemwSc/M7GvW5xU4JRmTwdc
-         fZNBJuQ45L85BWqbosnh7vlkreIddIbBKVnLxhgs7wgHN0p2mTXlTAV1JiAVh0Tm9IEx
-         OCU0BNGgblUj3tFE4j8u9tv+GVNWOYjC2UxmJpGohFsmAx9S0a/LpFrt0TJtHA0tgtgw
-         YG8TJtnYq0qHm6o8lk0hqyx/uo40fkhjQkSQOJgBcSspuJvMgqmy5FBq70eEtThIgg4r
-         0Y0g==
+        bh=fIRcu/3WTvtsQSdzqjdau/PJdT4wd5hzv4KiweKRc9Q=;
+        b=KEHxNGDmceKF1GzjwfJ/hvIZ5MVUiNH7xP5GbJs7S4/R6dZBesKAuLRTZ8FcMj0uoU
+         4ZIBJciWaJqpkCkEsmIXQKKBvEUkU1X4XJhytBpd8HeFnyAX57Vo3sCSE+Q+rqhyF4Jj
+         MBp/5lEGVeg4cwdyS5wtgU3kc8OnO4E3fnCjv29GtgMA9uycuIvgQvnKkQacWdwmKWQF
+         dkK03Prpw6AsmJqOALF12/rWBJwo5LfeCJ03Cbobh886ZrO5V/YxjISJEbIkkRd2LDW9
+         H/1j4QY4Ak3qYN1LsQmCb6Fa6S1cwfFQILbnfyVeNVV2FoI51nDOALjNPzR1UrzaOtpi
+         /e8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698186352; x=1698791152;
+        d=1e100.net; s=20230601; t=1698186354; x=1698791154;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UNZsWL7q61tQxw4sAWHRVjc8YNOyPUB86ZxyQzS9cbI=;
-        b=IzL+nc+2QWG5oVfcvQ64PKoGhQfY5Y3rWxtBtDKrJbisOPmWwbFz00XdVCw5AcmvS3
-         epJUpEXU76j9hmu9ilPCSkwqQKYhrCjwKuMT1C90ghvwSPN/l30HfXW2vxy2s6EI/9Xr
-         LW7/N5IvmGjN8NSp49+UAiHkoAuTezYp5gUQBtYvddll6WJhUxMbchNf+qm6sgMsRZ4F
-         CG2pApwwgppIMlEzsoPWf/IGLwXwUcRHWkG9r9jDOu+JU2RHvPIs8YiSmW1FguWKOd/R
-         RzgVvcWC3KuUkIRZWV4K4lls3urxgGre850xOFCeiU4ayMMXMCGyGPVyyCKX4Wun2OWB
-         OOAg==
-X-Gm-Message-State: AOJu0YzVzJplBLUh8YLmhsYRQHBQ1DZTKQxDQjpCgQVfsrs2VU3tMjL3
-        obQO9AwGncGdbJS09bpAwlSdZQj/3yt3
-X-Google-Smtp-Source: AGHT+IEwoYskH75V7nb3ukimfzwIkT6b8PDWGw3HSj+gQ6ooNT7CI/uN6pJzd9Rf7aW3+ZQ6jgVwCeVEBGKm
+        bh=fIRcu/3WTvtsQSdzqjdau/PJdT4wd5hzv4KiweKRc9Q=;
+        b=IcLDNq7Fzv8Y+wD+BtFV5Y6U/tf76w0LvZuetjBFwGx8kHXPSVPAdfh9F8XK3sgKNR
+         rAKD269F1X/OjkkXCZ1WWbY5i+NZ29iKPlvypSYrDwFJwSFzLiv18GjsFlQJgJ3YPzIX
+         dfS92f5fIKDZR1p+7eWBrBDJQWdKtrtKV/u7EzpWfTgjd1H7LF3LMVRQm79gRg9ZeqfD
+         NQdIvwlIji6FhOMwHq0LAfYNcscGcc70cUUtB6Gs/sZvmkPEAEs9w7gX1ftZ2TcKpet+
+         liT3GXtlECtr/tJtzDcqhy8qHkWKZwJM6olePS0Sea8qBxipjUDAADbkjV7dH8r7mc6v
+         yQTA==
+X-Gm-Message-State: AOJu0Yxui5IMjAu2vtjPZPH+LosIEfjefbNl3/yZR/whEgX0SGcw3iAQ
+        SW1cDa6eXhiVkCNkNtJdmLbov6Es7zdj
+X-Google-Smtp-Source: AGHT+IFz+w2ru/dlG5aLkrstAw3PTOBbYxHA4Q+PaH0OZaPwabvPmcAHYhGLLYSKLFiCBUmI71CpQhI5quSc
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:93d2:18cc:4d63:45ba])
- (user=irogers job=sendgmr) by 2002:a25:c785:0:b0:da0:4c77:e77c with SMTP id
- w127-20020a25c785000000b00da04c77e77cmr46443ybe.13.1698186352004; Tue, 24 Oct
- 2023 15:25:52 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 15:23:47 -0700
+ (user=irogers job=sendgmr) by 2002:a25:d1ca:0:b0:d9c:f811:eb9e with SMTP id
+ i193-20020a25d1ca000000b00d9cf811eb9emr321690ybg.4.1698186354204; Tue, 24 Oct
+ 2023 15:25:54 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 15:23:48 -0700
 In-Reply-To: <20231024222353.3024098-1-irogers@google.com>
-Message-Id: <20231024222353.3024098-45-irogers@google.com>
+Message-Id: <20231024222353.3024098-46-irogers@google.com>
 Mime-Version: 1.0
 References: <20231024222353.3024098-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Subject: [PATCH v3 44/50] perf dso: Reorder variables to save space in struct dso
+Subject: [PATCH v3 45/50] perf report: Sort child tasks by tid
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -88,7 +88,7 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,334 +96,368 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Save 40 bytes and move from 8 to 7 cache lines. Make variable dwfl
-dependent on being a powerpc build. Squeeze bits of int/enum types
-when appropriate. Remove holes/padding by reordering variables.
+Commit 91e467bc568f ("perf machine: Use hashtable for machine
+threads") made the iteration of thread tids unordered. The perf report
+--tasks output now shows child threads in an order determined by the
+hashing. For example, in this snippet tid 3 appears after tid 256 even
+though they have the same ppid 2:
 
-Before:
 ```
-struct dso {
-        struct mutex               lock;                 /*     0    40 */
-        struct list_head           node;                 /*    40    16 */
-        struct rb_node             rb_node __attribute__((__aligned__(8))); /*    56    24 */
-        /* --- cacheline 1 boundary (64 bytes) was 16 bytes ago --- */
-        struct rb_root *           root;                 /*    80     8 */
-        struct rb_root_cached      symbols;              /*    88    16 */
-        struct symbol * *          symbol_names;         /*   104     8 */
-        size_t                     symbol_names_len;     /*   112     8 */
-        struct rb_root_cached      inlined_nodes;        /*   120    16 */
-        /* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
-        struct rb_root_cached      srclines;             /*   136    16 */
-        struct {
-                u64                addr;                 /*   152     8 */
-                struct symbol *    symbol;               /*   160     8 */
-        } last_find_result;                              /*   152    16 */
-        void *                     a2l;                  /*   168     8 */
-        char *                     symsrc_filename;      /*   176     8 */
-        unsigned int               a2l_fails;            /*   184     4 */
-        enum dso_space_type        kernel;               /*   188     4 */
-        /* --- cacheline 3 boundary (192 bytes) --- */
-        _Bool                      is_kmod;              /*   192     1 */
-
-        /* XXX 3 bytes hole, try to pack */
-
-        enum dso_swap_type         needs_swap;           /*   196     4 */
-        enum dso_binary_type       symtab_type;          /*   200     4 */
-        enum dso_binary_type       binary_type;          /*   204     4 */
-        enum dso_load_errno        load_errno;           /*   208     4 */
-        u8                         adjust_symbols:1;     /*   212: 0  1 */
-        u8                         has_build_id:1;       /*   212: 1  1 */
-        u8                         header_build_id:1;    /*   212: 2  1 */
-        u8                         has_srcline:1;        /*   212: 3  1 */
-        u8                         hit:1;                /*   212: 4  1 */
-        u8                         annotate_warned:1;    /*   212: 5  1 */
-        u8                         auxtrace_warned:1;    /*   212: 6  1 */
-        u8                         short_name_allocated:1; /*   212: 7  1 */
-        u8                         long_name_allocated:1; /*   213: 0  1 */
-        u8                         is_64_bit:1;          /*   213: 1  1 */
-
-        /* XXX 6 bits hole, try to pack */
-
-        _Bool                      sorted_by_name;       /*   214     1 */
-        _Bool                      loaded;               /*   215     1 */
-        u8                         rel;                  /*   216     1 */
-
-        /* XXX 7 bytes hole, try to pack */
-
-        struct build_id            bid;                  /*   224    32 */
-        /* --- cacheline 4 boundary (256 bytes) --- */
-        u64                        text_offset;          /*   256     8 */
-        u64                        text_end;             /*   264     8 */
-        const char  *              short_name;           /*   272     8 */
-        const char  *              long_name;            /*   280     8 */
-        u16                        long_name_len;        /*   288     2 */
-        u16                        short_name_len;       /*   290     2 */
-
-        /* XXX 4 bytes hole, try to pack */
-
-        void *                     dwfl;                 /*   296     8 */
-        struct auxtrace_cache *    auxtrace_cache;       /*   304     8 */
-        int                        comp;                 /*   312     4 */
-
-        /* XXX 4 bytes hole, try to pack */
-
-        /* --- cacheline 5 boundary (320 bytes) --- */
-        struct {
-                struct rb_root     cache;                /*   320     8 */
-                int                fd;                   /*   328     4 */
-                int                status;               /*   332     4 */
-                u32                status_seen;          /*   336     4 */
-
-                /* XXX 4 bytes hole, try to pack */
-
-                u64                file_size;            /*   344     8 */
-                struct list_head   open_entry;           /*   352    16 */
-                u64                elf_base_addr;        /*   368     8 */
-                u64                debug_frame_offset;   /*   376     8 */
-                /* --- cacheline 6 boundary (384 bytes) --- */
-                u64                eh_frame_hdr_addr;    /*   384     8 */
-                u64                eh_frame_hdr_offset;  /*   392     8 */
-        } data;                                          /*   320    80 */
-        struct {
-                u32                id;                   /*   400     4 */
-                u32                sub_id;               /*   404     4 */
-                struct perf_env *  env;                  /*   408     8 */
-        } bpf_prog;                                      /*   400    16 */
-        union {
-                void *             priv;                 /*   416     8 */
-                u64                db_id;                /*   416     8 */
-        };                                               /*   416     8 */
-        struct nsinfo *            nsinfo;               /*   424     8 */
-        struct dso_id              id;                   /*   432    24 */
-        /* --- cacheline 7 boundary (448 bytes) was 8 bytes ago --- */
-        refcount_t                 refcnt;               /*   456     4 */
-        char                       name[];               /*   460     0 */
-
-        /* size: 464, cachelines: 8, members: 49 */
-        /* sum members: 440, holes: 4, sum holes: 18 */
-        /* sum bitfield members: 10 bits, bit holes: 1, sum bit holes: 6 bits */
-        /* padding: 4 */
-        /* forced alignments: 1 */
-        /* last cacheline: 16 bytes */
-} __attribute__((__aligned__(8)));
+$ perf report --tasks
+%      pid      tid     ppid  comm
+         0        0       -1 |swapper
+         2        2        0 | kthreadd
+       256      256        2 |  kworker/12:1H-k
+    693761   693761        2 |  kworker/10:1-mm
+   1301762  1301762        2 |  kworker/1:1-mm_
+   1302530  1302530        2 |  kworker/u32:0-k
+         3        3        2 |  rcu_gp
+...
 ```
 
-After:
+The output is easier to read if threads appear numerically
+increasing. To allow for this, read all threads into a list then sort
+with a comparator that orders by the child task's of the first common
+parent. The list creation and deletion are created as utilities on
+machine.  The indentation is possible by counting the number of
+parents a child has.
+
+With this change the output for the same data file is now like:
 ```
-struct dso {
-        struct mutex               lock;                 /*     0    40 */
-        struct list_head           node;                 /*    40    16 */
-        struct rb_node             rb_node __attribute__((__aligned__(8))); /*    56    24 */
-        /* --- cacheline 1 boundary (64 bytes) was 16 bytes ago --- */
-        struct rb_root *           root;                 /*    80     8 */
-        struct rb_root_cached      symbols;              /*    88    16 */
-        struct symbol * *          symbol_names;         /*   104     8 */
-        size_t                     symbol_names_len;     /*   112     8 */
-        struct rb_root_cached      inlined_nodes;        /*   120    16 */
-        /* --- cacheline 2 boundary (128 bytes) was 8 bytes ago --- */
-        struct rb_root_cached      srclines;             /*   136    16 */
-        struct {
-                u64                addr;                 /*   152     8 */
-                struct symbol *    symbol;               /*   160     8 */
-        } last_find_result;                              /*   152    16 */
-        struct build_id            bid;                  /*   168    32 */
-        /* --- cacheline 3 boundary (192 bytes) was 8 bytes ago --- */
-        u64                        text_offset;          /*   200     8 */
-        u64                        text_end;             /*   208     8 */
-        const char  *              short_name;           /*   216     8 */
-        const char  *              long_name;            /*   224     8 */
-        void *                     a2l;                  /*   232     8 */
-        char *                     symsrc_filename;      /*   240     8 */
-        struct nsinfo *            nsinfo;               /*   248     8 */
-        /* --- cacheline 4 boundary (256 bytes) --- */
-        struct auxtrace_cache *    auxtrace_cache;       /*   256     8 */
-        union {
-                void *             priv;                 /*   264     8 */
-                u64                db_id;                /*   264     8 */
-        };                                               /*   264     8 */
-        struct {
-                struct perf_env *  env;                  /*   272     8 */
-                u32                id;                   /*   280     4 */
-                u32                sub_id;               /*   284     4 */
-        } bpf_prog;                                      /*   272    16 */
-        struct {
-                struct rb_root     cache;                /*   288     8 */
-                struct list_head   open_entry;           /*   296    16 */
-                u64                file_size;            /*   312     8 */
-                /* --- cacheline 5 boundary (320 bytes) --- */
-                u64                elf_base_addr;        /*   320     8 */
-                u64                debug_frame_offset;   /*   328     8 */
-                u64                eh_frame_hdr_addr;    /*   336     8 */
-                u64                eh_frame_hdr_offset;  /*   344     8 */
-                int                fd;                   /*   352     4 */
-                int                status;               /*   356     4 */
-                u32                status_seen;          /*   360     4 */
-        } data;                                          /*   288    80 */
-
-        /* XXX last struct has 4 bytes of padding */
-
-        struct dso_id              id;                   /*   368    24 */
-        /* --- cacheline 6 boundary (384 bytes) was 8 bytes ago --- */
-        unsigned int               a2l_fails;            /*   392     4 */
-        int                        comp;                 /*   396     4 */
-        refcount_t                 refcnt;               /*   400     4 */
-        enum dso_load_errno        load_errno;           /*   404     4 */
-        u16                        long_name_len;        /*   408     2 */
-        u16                        short_name_len;       /*   410     2 */
-        enum dso_binary_type       symtab_type:8;        /*   412: 0  4 */
-        enum dso_binary_type       binary_type:8;        /*   412: 8  4 */
-        enum dso_space_type        kernel:2;             /*   412:16  4 */
-        enum dso_swap_type         needs_swap:2;         /*   412:18  4 */
-
-        /* Bitfield combined with next fields */
-
-        _Bool                      is_kmod:1;            /*   414: 4  1 */
-        u8                         adjust_symbols:1;     /*   414: 5  1 */
-        u8                         has_build_id:1;       /*   414: 6  1 */
-        u8                         header_build_id:1;    /*   414: 7  1 */
-        u8                         has_srcline:1;        /*   415: 0  1 */
-        u8                         hit:1;                /*   415: 1  1 */
-        u8                         annotate_warned:1;    /*   415: 2  1 */
-        u8                         auxtrace_warned:1;    /*   415: 3  1 */
-        u8                         short_name_allocated:1; /*   415: 4  1 */
-        u8                         long_name_allocated:1; /*   415: 5  1 */
-        u8                         is_64_bit:1;          /*   415: 6  1 */
-
-        /* XXX 1 bit hole, try to pack */
-
-        _Bool                      sorted_by_name;       /*   416     1 */
-        _Bool                      loaded;               /*   417     1 */
-        u8                         rel;                  /*   418     1 */
-        char                       name[];               /*   419     0 */
-
-        /* size: 424, cachelines: 7, members: 48 */
-        /* sum members: 415 */
-        /* sum bitfield members: 31 bits, bit holes: 1, sum bit holes: 1 bits */
-        /* padding: 5 */
-        /* paddings: 1, sum paddings: 4 */
-        /* forced alignments: 1 */
-        /* last cacheline: 40 bytes */
-} __attribute__((__aligned__(8)));
+$ perf report --tasks
+%      pid      tid     ppid  comm
+         0        0       -1 |swapper
+         1        1        0 | systemd
+       823      823        1 |  systemd-journal
+       853      853        1 |  systemd-udevd
+      3230     3230        1 |  systemd-timesyn
+      3236     3236        1 |  auditd
+      3239     3239     3236 |   audisp-syslog
+      3321     3321        1 |  accounts-daemon
+...
 ```
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/dso.h | 84 +++++++++++++++++++++----------------------
- 1 file changed, 42 insertions(+), 42 deletions(-)
+ tools/perf/builtin-report.c | 203 ++++++++++++++++++++----------------
+ tools/perf/util/machine.c   |  30 ++++++
+ tools/perf/util/machine.h   |  10 ++
+ 3 files changed, 155 insertions(+), 88 deletions(-)
 
-diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-index 3759de8c2267..8bdc17d78b02 100644
---- a/tools/perf/util/dso.h
-+++ b/tools/perf/util/dso.h
-@@ -158,66 +158,66 @@ struct dso {
- 		u64		addr;
- 		struct symbol	*symbol;
- 	} last_find_result;
--	void		 *a2l;
--	char		 *symsrc_filename;
--	unsigned int	 a2l_fails;
--	enum dso_space_type	kernel;
--	bool			is_kmod;
--	enum dso_swap_type	needs_swap;
--	enum dso_binary_type	symtab_type;
--	enum dso_binary_type	binary_type;
--	enum dso_load_errno	load_errno;
--	u8		 adjust_symbols:1;
--	u8		 has_build_id:1;
--	u8		 header_build_id:1;
--	u8		 has_srcline:1;
--	u8		 hit:1;
--	u8		 annotate_warned:1;
--	u8		 auxtrace_warned:1;
--	u8		 short_name_allocated:1;
--	u8		 long_name_allocated:1;
--	u8		 is_64_bit:1;
--	bool		 sorted_by_name;
--	bool		 loaded;
--	u8		 rel;
- 	struct build_id	 bid;
- 	u64		 text_offset;
- 	u64		 text_end;
- 	const char	 *short_name;
- 	const char	 *long_name;
--	u16		 long_name_len;
--	u16		 short_name_len;
-+	void		 *a2l;
-+	char		 *symsrc_filename;
-+#if defined(__powerpc__)
- 	void		*dwfl;			/* DWARF debug info */
-+#endif
-+	struct nsinfo	*nsinfo;
- 	struct auxtrace_cache *auxtrace_cache;
--	int		 comp;
--
-+	union { /* Tool specific area */
-+		void	 *priv;
-+		u64	 db_id;
-+	};
-+	/* bpf prog information */
-+	struct {
-+		struct perf_env	*env;
-+		u32		id;
-+		u32		sub_id;
-+	} bpf_prog;
- 	/* dso data file */
- 	struct {
- 		struct rb_root	 cache;
--		int		 fd;
--		int		 status;
--		u32		 status_seen;
--		u64		 file_size;
- 		struct list_head open_entry;
-+		u64		 file_size;
- 		u64		 elf_base_addr;
- 		u64		 debug_frame_offset;
- 		u64		 eh_frame_hdr_addr;
- 		u64		 eh_frame_hdr_offset;
-+		int		 fd;
-+		int		 status;
-+		u32		 status_seen;
- 	} data;
--	/* bpf prog information */
--	struct {
--		u32		id;
--		u32		sub_id;
--		struct perf_env	*env;
--	} bpf_prog;
--
--	union { /* Tool specific area */
--		void	 *priv;
--		u64	 db_id;
--	};
--	struct nsinfo	*nsinfo;
- 	struct dso_id	 id;
-+	unsigned int	 a2l_fails;
-+	int		 comp;
- 	refcount_t	 refcnt;
-+	enum dso_load_errno	load_errno;
-+	u16		 long_name_len;
-+	u16		 short_name_len;
-+	enum dso_binary_type	symtab_type:8;
-+	enum dso_binary_type	binary_type:8;
-+	enum dso_space_type	kernel:2;
-+	enum dso_swap_type	needs_swap:2;
-+	bool			is_kmod:1;
-+	u8		 adjust_symbols:1;
-+	u8		 has_build_id:1;
-+	u8		 header_build_id:1;
-+	u8		 has_srcline:1;
-+	u8		 hit:1;
-+	u8		 annotate_warned:1;
-+	u8		 auxtrace_warned:1;
-+	u8		 short_name_allocated:1;
-+	u8		 long_name_allocated:1;
-+	u8		 is_64_bit:1;
-+	bool		 sorted_by_name;
-+	bool		 loaded;
-+	u8		 rel;
- 	char		 name[];
- };
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index d7f1f3c8cb7d..3731e9bf7000 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -59,6 +59,7 @@
+ #include <linux/ctype.h>
+ #include <signal.h>
+ #include <linux/bitmap.h>
++#include <linux/list_sort.h>
+ #include <linux/string.h>
+ #include <linux/stringify.h>
+ #include <linux/time64.h>
+@@ -815,35 +816,6 @@ static void tasks_setup(struct report *rep)
+ 	rep->tool.no_warn = true;
+ }
  
+-struct task {
+-	struct thread		*thread;
+-	struct list_head	 list;
+-	struct list_head	 children;
+-};
+-
+-static struct task *tasks_list(struct task *task, struct machine *machine)
+-{
+-	struct thread *parent_thread, *thread = task->thread;
+-	struct task   *parent_task;
+-
+-	/* Already listed. */
+-	if (!list_empty(&task->list))
+-		return NULL;
+-
+-	/* Last one in the chain. */
+-	if (thread__ppid(thread) == -1)
+-		return task;
+-
+-	parent_thread = machine__find_thread(machine, -1, thread__ppid(thread));
+-	if (!parent_thread)
+-		return ERR_PTR(-ENOENT);
+-
+-	parent_task = thread__priv(parent_thread);
+-	thread__put(parent_thread);
+-	list_add_tail(&task->list, &parent_task->children);
+-	return tasks_list(parent_task, machine);
+-}
+-
+ struct maps__fprintf_task_args {
+ 	int indent;
+ 	FILE *fp;
+@@ -887,89 +859,144 @@ static size_t maps__fprintf_task(struct maps *maps, int indent, FILE *fp)
+ 	return args.printed;
+ }
+ 
+-static void task__print_level(struct task *task, FILE *fp, int level)
++static int thread_level(struct machine *machine, const struct thread *thread)
+ {
+-	struct thread *thread = task->thread;
+-	struct task *child;
+-	int comm_indent = fprintf(fp, "  %8d %8d %8d |%*s",
+-				  thread__pid(thread), thread__tid(thread),
+-				  thread__ppid(thread), level, "");
++	struct thread *parent_thread;
++	int res;
+ 
+-	fprintf(fp, "%s\n", thread__comm_str(thread));
++	if (thread__tid(thread) <= 0)
++		return 0;
+ 
+-	maps__fprintf_task(thread__maps(thread), comm_indent, fp);
++	if (thread__ppid(thread) <= 0)
++		return 1;
+ 
+-	if (!list_empty(&task->children)) {
+-		list_for_each_entry(child, &task->children, list)
+-			task__print_level(child, fp, level + 1);
++	parent_thread = machine__find_thread(machine, -1, thread__ppid(thread));
++	if (!parent_thread) {
++		pr_err("Missing parent thread of %d\n", thread__tid(thread));
++		return 0;
+ 	}
++	res = 1 + thread_level(machine, parent_thread);
++	thread__put(parent_thread);
++	return res;
+ }
+ 
+-static int tasks_print(struct report *rep, FILE *fp)
++static void task__print_level(struct machine *machine, struct thread *thread, FILE *fp)
+ {
+-	struct perf_session *session = rep->session;
+-	struct machine      *machine = &session->machines.host;
+-	struct task *tasks, *task;
+-	unsigned int nr = 0, itask = 0, i;
+-	struct rb_node *nd;
+-	LIST_HEAD(list);
++	int level = thread_level(machine, thread);
++	int comm_indent = fprintf(fp, "  %8d %8d %8d |%*s",
++				  thread__pid(thread), thread__tid(thread),
++				  thread__ppid(thread), level, "");
+ 
+-	/*
+-	 * No locking needed while accessing machine->threads,
+-	 * because --tasks is single threaded command.
+-	 */
++	fprintf(fp, "%s\n", thread__comm_str(thread));
+ 
+-	/* Count all the threads. */
+-	for (i = 0; i < THREADS__TABLE_SIZE; i++)
+-		nr += machine->threads[i].nr;
++	maps__fprintf_task(thread__maps(thread), comm_indent, fp);
++}
+ 
+-	tasks = malloc(sizeof(*tasks) * nr);
+-	if (!tasks)
+-		return -ENOMEM;
++static int task_list_cmp(void *priv, const struct list_head *la, const struct list_head *lb)
++{
++	struct machine *machine = priv;
++	struct thread_list *task_a = list_entry(la, struct thread_list, list);
++	struct thread_list *task_b = list_entry(lb, struct thread_list, list);
++	struct thread *a = task_a->thread;
++	struct thread *b = task_b->thread;
++	int level_a, level_b, res;
++
++	/* Compare a and b to root. */
++	if (thread__tid(a) == thread__tid(b))
++		return 0;
+ 
+-	for (i = 0; i < THREADS__TABLE_SIZE; i++) {
+-		struct threads *threads = &machine->threads[i];
++	if (thread__tid(a) == 0)
++		return -1;
+ 
+-		for (nd = rb_first_cached(&threads->entries); nd;
+-		     nd = rb_next(nd)) {
+-			task = tasks + itask++;
++	if (thread__tid(b) == 0)
++		return 1;
+ 
+-			task->thread = rb_entry(nd, struct thread_rb_node, rb_node)->thread;
+-			INIT_LIST_HEAD(&task->children);
+-			INIT_LIST_HEAD(&task->list);
+-			thread__set_priv(task->thread, task);
+-		}
++	/* If parents match sort by tid. */
++	if (thread__ppid(a) == thread__ppid(b)) {
++		return thread__tid(a) < thread__tid(b)
++			? -1
++			: (thread__tid(a) > thread__tid(b) ? 1 : 0);
+ 	}
+ 
+ 	/*
+-	 * Iterate every task down to the unprocessed parent
+-	 * and link all in task children list. Task with no
+-	 * parent is added into 'list'.
++	 * Find a and b such that if they are a child of each other a and b's
++	 * tid's match, otherwise a and b have a common parent and distinct
++	 * tid's to sort by. First make the depths of the threads match.
+ 	 */
+-	for (itask = 0; itask < nr; itask++) {
+-		task = tasks + itask;
+-
+-		if (!list_empty(&task->list))
+-			continue;
+-
+-		task = tasks_list(task, machine);
+-		if (IS_ERR(task)) {
+-			pr_err("Error: failed to process tasks\n");
+-			free(tasks);
+-			return PTR_ERR(task);
++	level_a = thread_level(machine, a);
++	level_b = thread_level(machine, b);
++	a = thread__get(a);
++	b = thread__get(b);
++	for (int i = level_a; i > level_b; i--) {
++		struct thread *parent = machine__find_thread(machine, -1, thread__ppid(a));
++
++		thread__put(a);
++		if (!parent) {
++			pr_err("Missing parent thread of %d\n", thread__tid(a));
++			thread__put(b);
++			return -1;
+ 		}
++		a = parent;
++	}
++	for (int i = level_b; i > level_a; i--) {
++		struct thread *parent = machine__find_thread(machine, -1, thread__ppid(b));
+ 
+-		if (task)
+-			list_add_tail(&task->list, &list);
++		thread__put(b);
++		if (!parent) {
++			pr_err("Missing parent thread of %d\n", thread__tid(b));
++			thread__put(a);
++			return 1;
++		}
++		b = parent;
++	}
++	/* Search up to a common parent. */
++	while (thread__ppid(a) != thread__ppid(b)) {
++		struct thread *parent;
++
++		parent = machine__find_thread(machine, -1, thread__ppid(a));
++		thread__put(a);
++		if (!parent)
++			pr_err("Missing parent thread of %d\n", thread__tid(a));
++		a = parent;
++		parent = machine__find_thread(machine, -1, thread__ppid(b));
++		thread__put(b);
++		if (!parent)
++			pr_err("Missing parent thread of %d\n", thread__tid(b));
++		b = parent;
++		if (!a || !b)
++			return !a && !b ? 0 : (!a ? -1 : 1);
++	}
++	if (thread__tid(a) == thread__tid(b)) {
++		/* a is a child of b or vice-versa, deeper levels appear later. */
++		res = level_a < level_b ? -1 : (level_a > level_b ? 1 : 0);
++	} else {
++		/* Sort by tid now the parent is the same. */
++		res = thread__tid(a) < thread__tid(b) ? -1 : 1;
+ 	}
++	thread__put(a);
++	thread__put(b);
++	return res;
++}
++
++static int tasks_print(struct report *rep, FILE *fp)
++{
++	struct machine *machine = &rep->session->machines.host;
++	LIST_HEAD(tasks);
++	int ret;
+ 
+-	fprintf(fp, "# %8s %8s %8s  %s\n", "pid", "tid", "ppid", "comm");
++	ret = machine__thread_list(machine, &tasks);
++	if (!ret) {
++		struct thread_list *task;
+ 
+-	list_for_each_entry(task, &list, list)
+-		task__print_level(task, fp, 0);
++		list_sort(machine, &tasks, task_list_cmp);
+ 
+-	free(tasks);
+-	return 0;
++		fprintf(fp, "# %8s %8s %8s  %s\n", "pid", "tid", "ppid", "comm");
++
++		list_for_each_entry(task, &tasks, list)
++			task__print_level(machine, task->thread, fp);
++	}
++	thread_list__delete(&tasks);
++	return ret;
+ }
+ 
+ static int __cmd_report(struct report *rep)
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index f9c77119af22..6d7a505850c8 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -3258,6 +3258,36 @@ int machines__for_each_thread(struct machines *machines,
+ 	return rc;
+ }
+ 
++
++static int thread_list_cb(struct thread *thread, void *data)
++{
++	struct list_head *list = data;
++	struct thread_list *entry = malloc(sizeof(*entry));
++
++	if (!entry)
++		return -ENOMEM;
++
++	entry->thread = thread__get(thread);
++	list_add_tail(&entry->list, list);
++	return 0;
++}
++
++int machine__thread_list(struct machine *machine, struct list_head *list)
++{
++	return machine__for_each_thread(machine, thread_list_cb, list);
++}
++
++void thread_list__delete(struct list_head *list)
++{
++	struct thread_list *pos, *next;
++
++	list_for_each_entry_safe(pos, next, list, list) {
++		thread__zput(pos->thread);
++		list_del(&pos->list);
++		free(pos);
++	}
++}
++
+ pid_t machine__get_current_tid(struct machine *machine, int cpu)
+ {
+ 	if (cpu < 0 || (size_t)cpu >= machine->current_tid_sz)
+diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
+index 1279acda6a8a..b738ce84817b 100644
+--- a/tools/perf/util/machine.h
++++ b/tools/perf/util/machine.h
+@@ -280,6 +280,16 @@ int machines__for_each_thread(struct machines *machines,
+ 			      int (*fn)(struct thread *thread, void *p),
+ 			      void *priv);
+ 
++struct thread_list {
++	struct list_head	 list;
++	struct thread		*thread;
++};
++
++/* Make a list of struct thread_list based on threads in the machine. */
++int machine__thread_list(struct machine *machine, struct list_head *list);
++/* Free up the nodes within the thread_list list. */
++void thread_list__delete(struct list_head *list);
++
+ pid_t machine__get_current_tid(struct machine *machine, int cpu);
+ int machine__set_current_tid(struct machine *machine, int cpu, pid_t pid,
+ 			     pid_t tid);
 -- 
 2.42.0.758.gaed0368e0e-goog
 
