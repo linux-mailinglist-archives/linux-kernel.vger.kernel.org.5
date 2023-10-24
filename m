@@ -2,161 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 634867D5BD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C9C7D5BD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344251AbjJXTul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 15:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
+        id S1344305AbjJXTvY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 15:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234736AbjJXTuj (ORCPT
+        with ESMTP id S1343871AbjJXTvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 15:50:39 -0400
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668F410C6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 12:50:37 -0700 (PDT)
-Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
-        by cmsmtp with ESMTPS
-        id vLJuqY461L9AgvNQCq02rn; Tue, 24 Oct 2023 19:50:36 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id vNQBq6qG05ZLUvNQCqBzbC; Tue, 24 Oct 2023 19:50:36 +0000
-X-Authority-Analysis: v=2.4 cv=S57KfagP c=1 sm=1 tr=0 ts=6538200c
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=_mNlVl-r0hj7kTaC:21 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10
- a=uwMjjtW2jUbwP7mzfGYA:9 a=QEXdDO2ut3YA:10 a=N_l3Vs37sht3-TxgB6J7:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:Cc:To:
-        Subject:From:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=g54kz6I2OxMrqzBsVAyW+xfzdHVn9xE3lpEyC5lhvJs=; b=OzZcSIgm+yEGFVLC3R0m8HijPQ
-        lhLIjWcJvlYi/ttwdT02zDdt8r9JXRcveNlKlsLuW9I7KEx90YSSUkyBAJxIasNaoBw5eXEBqryHR
-        TEfhawSfU7CSH/BkMqiMQyhXqNl3Fs58s+/XfkacYUo82q8kdpPPOM216HjPlf0GtmJqbFruaT5fA
-        mznRgRxTTfbSlBfcUdwb5pu6XgiDLRHx80NEsNF0uQF9GT1UA8/CP4SAcN926YU7vwzs0IYOE5kaz
-        qt6BR19MBBqj/VrGVPM93VlENWousMPGOcHUPdyW/6t60Vlk0T0YSHn9aFAImWY5q6MEKhderrafn
-        iSBqr1TQ==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:48784 helo=[192.168.15.10])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qvNQB-001ZQp-1F;
-        Tue, 24 Oct 2023 14:50:35 -0500
-Message-ID: <626ae2e7-66f8-423b-b17f-e75c1a6d29b3@embeddedor.com>
-Date:   Tue, 24 Oct 2023 13:50:34 -0600
+        Tue, 24 Oct 2023 15:51:21 -0400
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322919F;
+        Tue, 24 Oct 2023 12:51:20 -0700 (PDT)
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1e9e4636ce6so865383fac.0;
+        Tue, 24 Oct 2023 12:51:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698177079; x=1698781879;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GCcbj2+TpX1AiuupFD6KpXlDV8cvFcM8RGiHrVCQ+ns=;
+        b=tiGA9/eTCuKxbl36HTl42k01YBTlVyybJtnxgqDE9zze39mzoX9yRKKiKL0KtmzE/D
+         3H5Oc9aUa/1uCjOEvj2gkeAbvRMsj+Sl8AeKQAyZrJnHR08+cHPjmSfEHH5qE1nRI44h
+         0giukjekpBZD/rOBo4Mm43YRCrrDfV9IsAMLDjPGPelpaR/WaQReJl/ic3tLQmZIcOHE
+         7e3wG7wi9kZdTVFFUqq09AwLpIU/+w7rVwwzc9RPcifFtLBhxHV3wcfa+hOY5NmbEQ6+
+         p2KWNZ4nblQr179zA2nAEZ8q0HUk+CxPhZjEeMMXZH2uZOV4sGzgkl4e20gMNbN1C3El
+         0MCw==
+X-Gm-Message-State: AOJu0YyaSGFSEbBFp4eRSYHTRPgtSKZ8O2qLwjdnG0t9FpwIwUqgt+Lc
+        PvCEXgzYO3mjxmA+QsikgEZllo8VlYk88Y8Dl2s=
+X-Google-Smtp-Source: AGHT+IFA7hP6NhXLZCvkE4cfS644IU/fZFM51E6Latf3f9Vn4OdA8wXW6fRY9TNiSPPwJblhkTQr7AoOS/GUegqK0X0=
+X-Received: by 2002:a05:6871:220e:b0:1e9:adec:bf5e with SMTP id
+ sc14-20020a056871220e00b001e9adecbf5emr13474628oab.2.1698177079400; Tue, 24
+ Oct 2023 12:51:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [RFC - is this a bug?] wifi: ath10k: Asking for some light on this,
- please :)
-To:     Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qvNQB-001ZQp-1F
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:48784
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfNaxEG85vN4YnmZuttcFSRwuJF9RS1aUAXd+ljHjiLquJs1zLbb80MZkaEV5iZDlBoSJAY/b6i1+4y5opzKlcbukfLiNwimAz9So+JCvOCUDTQMEqET8
- WTqkYVHd8e7cZcoTt47/Tfm8AblRq6HVgNgV0O5eiTDxwAwhB7la0bqfvboP+vaV2aZztmmAq5DRbxPx8RlHpKV+53ALOIkqDRFCZAxBbws2rudx4mNUGNN/
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231024062018.23839-1-raag.jadav@intel.com> <20231024093010.GF3208943@black.fi.intel.com>
+In-Reply-To: <20231024093010.GF3208943@black.fi.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 24 Oct 2023 21:51:08 +0200
+Message-ID: <CAJZ5v0hLYcN_CxUOocKoN8EsQTwyL-sLbWENfFaQ+f3fjHRvqw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/6] Refine _UID references across kernel
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Raag Jadav <raag.jadav@intel.com>
+Cc:     rafael@kernel.org, len.brown@intel.com, robert.moore@intel.com,
+        andriy.shevchenko@linux.intel.com, mark.rutland@arm.com,
+        will@kernel.org, linux@roeck-us.net, Jonathan.Cameron@huawei.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Tue, Oct 24, 2023 at 11:30 AM Mika Westerberg
+<mika.westerberg@linux.intel.com> wrote:
+>
+> On Tue, Oct 24, 2023 at 11:50:12AM +0530, Raag Jadav wrote:
+> > This series refines _UID references across kernel by:
+> >
+> > - Extracting _UID matching functionality from acpi_dev_hid_uid_match()
+> >   helper and introducing it as a separate acpi_dev_uid_match() helper.
+> >
+> > - Converting manual _UID references to use the standard ACPI helpers.
+> >
+> > Changes since v2:
+> > - Drop review tags as suggested by Andy.
+> >
+> > Changes since v1:
+> > - Change acpi_dev_uid_match() to return false in case of NULL argument.
+> > - Drop accepted patches.
+> >
+> > Raag Jadav (6):
+> >   ACPI: utils: Introduce acpi_dev_uid_match() for matching _UID
+> >   pinctrl: intel: use acpi_dev_uid_match() for matching _UID
+> >   ACPI: utils: use acpi_dev_uid_match() for matching _UID
+> >   ACPI: x86: use acpi_dev_uid_match() for matching _UID
+> >   hwmon: nct6775: use acpi_dev_hid_uid_match() for matching _HID and
+> >     _UID
+> >   perf: arm_cspmu: use acpi_dev_hid_uid_match() for matching _HID and
+> >     _UID
+>
+> For the series,
+>
+> Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+>
+> >  drivers/acpi/utils.c                  | 34 ++++++++++++++++++++++-----
+> >  drivers/acpi/x86/utils.c              |  3 +--
+> >  drivers/hwmon/nct6775-platform.c      |  4 +---
+> >  drivers/perf/arm_cspmu/arm_cspmu.c    |  8 +++----
+> >  drivers/pinctrl/intel/pinctrl-intel.c |  2 +-
+>
+> This pinctrl one is also fine by me so if Andy does not have objections,
+> feel free to add my,
+>
+> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-While working on tranforming one-element array `peer_chan_list` in
-`struct wmi_tdls_peer_capabilities` into a flex-array member
-
-7187 struct wmi_tdls_peer_capabilities {
-...
-7199         struct wmi_channel peer_chan_list[1];
-7200 } __packed;
-
-the following line caught my attention:
-
-./drivers/net/wireless/ath/ath10k/wmi.c:
-8920         memset(skb->data, 0, sizeof(*cmd));
-
-Notice that before the flex-array transformation, we are zeroing 128
-bytes in `skb->data` because `sizeof(*cmd) == 128`, see below:
-
-$ pahole -C wmi_10_4_tdls_peer_update_cmd drivers/net/wireless/ath/ath10k/wmi.o
-struct wmi_10_4_tdls_peer_update_cmd {
-	__le32                     vdev_id;              /*     0     4 */
-	struct wmi_mac_addr        peer_macaddr;         /*     4     8 */
-	__le32                     peer_state;           /*    12     4 */
-	__le32                     reserved[4];          /*    16    16 */
-	struct wmi_tdls_peer_capabilities peer_capab;    /*    32    96 */
-
-	/* size: 128, cachelines: 2, members: 5 */
-};
-
-So, after the flex-array transformation (and the necessary adjustments
-to a few other lines of code) we would be zeroing 104 bytes in
-`skb->data` because `sizeof(*cmd) == 104`, see below:
-
-$ pahole -C wmi_10_4_tdls_peer_update_cmd drivers/net/wireless/ath/ath10k/wmi.o
-struct wmi_10_4_tdls_peer_update_cmd {
-	__le32                     vdev_id;              /*     0     4 */
-	struct wmi_mac_addr        peer_macaddr;         /*     4     8 */
-	__le32                     peer_state;           /*    12     4 */
-	__le32                     reserved[4];          /*    16    16 */
-	struct wmi_tdls_peer_capabilities peer_capab;    /*    32    72 */
-
-	/* size: 104, cachelines: 2, members: 5 */
-	/* last cacheline: 40 bytes */
-};
-
-This difference arises because the size of the element type for the
-`peer_chan_list` array, which is `sizeof(struct wmi_channel) == 24 `
-
-$ pahole -C wmi_channel drivers/net/wireless/ath/ath10k/wmi.o
-struct wmi_channel {
-	__le32                     mhz;                  /*     0     4 */
-	__le32                     band_center_freq1;    /*     4     4 */
-	__le32                     band_center_freq2;    /*     8     4 */
-
-[..]
-                                                /*    20     4 */
-
-	/* size: 24, cachelines: 1, members: 6 */
-	/* last cacheline: 24 bytes */
-};
-
-is included in `sizeof(*cmd)` before the transformation.
-
-So, my question is: do we really need to zero out those extra 24 bytes in
-`skb->data`? or is it rather a bug in the original code?
-
-Thanks!
---
-Gustavo
-
+Whole series applied as 6.7 material with tags as per the above, thanks!
