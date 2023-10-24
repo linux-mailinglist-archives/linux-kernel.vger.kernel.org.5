@@ -2,134 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 739117D4CF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CA37D4CF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234124AbjJXJvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44608 "EHLO
+        id S234186AbjJXJyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:54:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232119AbjJXJvc (ORCPT
+        with ESMTP id S232119AbjJXJyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:51:32 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553B810C2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:51:30 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4084f682d31so31488195e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698141089; x=1698745889; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dlhk8Z4MNGAJNlAwZKSD8+Gfu1Hv7jMp2quDDwwtBiw=;
-        b=QWmAcWMh7lyB1SpYJcoXvFp2ArSXQZm2+sPI/ZE6sadQyBBkUCVGBgeEiivbVQzCZ8
-         bpNwNrON6rJKI7kpwD3ZhhE7/+wnO7yDo1DbJaZK4VpBqbP1DpYrd9V3FqaX+C3foA8U
-         kTccY4Saos/+LnSgoK1tFk4nbki1//QPaDkIBWi12ccMG+YlwvHCnAGlPQquFe6dNXSw
-         ZnOmE1h8bDFsLWLBj0PaWzABy9zFwN2JssZTPIuwrlrh2HIoh8F1cuEgPs/ePTbtfu5Z
-         Cq3Sc931mVwPlgA8fjRnKd5m91PLVF0LUuwB05AYCQhfDjx3nQswh3thQkybqVZWqTpG
-         qgow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698141089; x=1698745889;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dlhk8Z4MNGAJNlAwZKSD8+Gfu1Hv7jMp2quDDwwtBiw=;
-        b=O4gLmKsd60KK2A2Tt+bCTajVDETw2v3ezk4ghgtRSkLTNG5Ojg1s7FsQm4Uio+f1FF
-         SSfTj4O/tJzNaeXANO7x+ZOxW6RYrd3hzCkrTXUknJ2FtNEG9lH5NJ9u5Gm6s9/f3TH2
-         Zdt/7wkJLIwDHJ/FxhNC7FnoOAnIfvo+f+0MgrNzYzOOXHxSXGQgqKUGdXzCJFka4psi
-         6x9uh/CA+nMvEt/3Z3WwzchPxcfRNmoE3S9Js+eyCdKhHR88WVLTOpyTSIka5x7pr+Ce
-         +ib6iSezloLnyjq/+7dYWKZW+SZP3+FmIgP4/KKlLQneC4IC9twALg4Mxi1DP4DaZz87
-         GRsQ==
-X-Gm-Message-State: AOJu0YwBGAQAfaK1u1YdCz6Pl65oyNfuAlObMWucIfur+WahmQc0ffTZ
-        HOoR5eoMMPONt+ZZGj9Nh3r94Q==
-X-Google-Smtp-Source: AGHT+IH9Kj04S7itMREQN6Y5d8cJZTKSFimqEcnJnixpWHPoL9XRQ/FUmKNnXVGhJvgXj2558wkCTQ==
-X-Received: by 2002:adf:e34f:0:b0:32d:a781:111 with SMTP id n15-20020adfe34f000000b0032da7810111mr8671201wrj.15.1698141088754;
-        Tue, 24 Oct 2023 02:51:28 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id x18-20020a5d60d2000000b003248a490e3asm9544652wrt.39.2023.10.24.02.51.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 02:51:28 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 12:50:59 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Cc:     Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
-        George Cherian <george.cherian@marvell.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Coiby Xu <coiby.xu@gmail.com>, Simon Horman <horms@kernel.org>,
-        Brett Creeley <brett.creeley@amd.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Aya Levin <ayal@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-kernel@vger.kernel.org, Benjamin Poirier <bpoirier@suse.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>
-Subject: Re: [PATCH net-next v3 08/11] net/mlx5: devlink health: use retained
- error fmsg API
-Message-ID: <8bd30131-c9f2-4075-a575-7fa2793a1760@moroto.mountain>
-References: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
- <20231018202647.44769-9-przemyslaw.kitszel@intel.com>
+        Tue, 24 Oct 2023 05:54:09 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EDB83;
+        Tue, 24 Oct 2023 02:54:07 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39O7xbcL002048;
+        Tue, 24 Oct 2023 09:54:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=R5T/Jdrr21/BhDX3iJZH8nMfjInIu+4kITpjaH/Ovvw=;
+ b=QUIG+DmLgwg2Wq+QWU+WhekQEHSk6ZTFsLMLeJ4b21T5cdP8ftHiUiL6+4gJDO3xmznt
+ wn9NufimGNmo6q4QUzLuXbXebjFHZSY0GZQMId7Du8I48+I8F5J6RunXjRhaNkx1OhLI
+ vvZiRiU0ZLF5E7lyXH1MHGRYmBz1Dmm3yMOKQCk6dQabKVI7P9VwH3xD/nI2pGT3PeIA
+ I+6xIIZpJHh2nfQaGWSdOYEqHgNgK6R1jXWhwiNOUGEbnBwOE2otfFRi1j9gazF/1Qnc
+ pWIcgfQuU1vd4temjJTBCLvBIpBew8kWOf6qHNiAwlyPkQ2TTVjPSzw9N3hE7c0eTwn0 Sg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3twxn41daq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 09:54:03 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39O9s2gP024070
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 09:54:02 GMT
+Received: from [10.239.132.245] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 24 Oct
+ 2023 02:53:57 -0700
+Message-ID: <0578d070-e41b-bd22-72ca-e366ea9a5ed2@quicinc.com>
+Date:   Tue, 24 Oct 2023 17:53:54 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018202647.44769-9-przemyslaw.kitszel@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 0/5] soc/arm64: qcom: add initial version of memory
+ dump
+Content-Language: en-US
+To:     Caleb Connolly <caleb.connolly@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <quic_tingweiz@quicinc.com>
+References: <1698052857-6918-1-git-send-email-quic_zhenhuah@quicinc.com>
+ <092c7a54-edb9-4ff5-8c35-a936461111df@linaro.org>
+From:   Zhenhua Huang <quic_zhenhuah@quicinc.com>
+In-Reply-To: <092c7a54-edb9-4ff5-8c35-a936461111df@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Kyb_eYZVwD-UAeDKlEI9qKMn5vq9IoCs
+X-Proofpoint-ORIG-GUID: Kyb_eYZVwD-UAeDKlEI9qKMn5vq9IoCs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-24_09,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ clxscore=1011 spamscore=0 mlxlogscore=536 lowpriorityscore=0 phishscore=0
+ mlxscore=0 impostorscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310240083
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 10:26:44PM +0200, Przemek Kitszel wrote:
->  	if (rq->icosq) {
->  		struct mlx5e_icosq *icosq = rq->icosq;
->  		u8 icosq_hw_state;
->  
-> -		err = mlx5_core_query_sq_state(rq->mdev, icosq->sqn, &icosq_hw_state);
-> -		if (err)
-> -			return err;
-> -
-> -		err = mlx5e_reporter_icosq_diagnose(icosq, icosq_hw_state, fmsg);
-> -		if (err)
-> -			return err;
-> +		mlx5_core_query_sq_state(rq->mdev, icosq->sqn, &icosq_hw_state);
 
-When we remove the error checking then Smatch correctly complains that
-icosq_hw_state is used uninitialized.
 
-    drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c:268 mlx5e_rx_reporter_build_diagnose_output_rq_common()
-    error: uninitialized symbol 'icosq_hw_state'.
+On 2023/10/23 22:31, Caleb Connolly wrote:
+> 
+> 
+> On 23/10/2023 10:20, Zhenhua Huang wrote:
+>> Qualcomm memory dump driver is to cooperate with firmware, providing the
+>> hints(id and size) of storing useful debugging information into pre-allocated
+>> memory. Firmware then does the real data capture. The debugging information
+>> includes cache contents, internal memory, registers.
+>>
+>> The driver dynamically reserves memory and provides the hints(dump id and size)
+>> following specified protocols with firmware. After crash and warm reboot,
+>> firmware scans these information and stores contents into reserved memory
+>> accordingly. Firmware then enters into full dump mode which dumps whole DDR
+>> to host through USB.
+>>
+>> User then get full dump using PCAT and can parse out these informations.
+> 
+> PCAT is a proprietary tool that requires signing up to qualcomm.com and
+> installing the Qualcomm Package Manager to access. It also relies on
+> another tool (QUTS) to actually interact with the board.
+> 
 
-> +		mlx5e_reporter_icosq_diagnose(icosq, icosq_hw_state, fmsg);
->  	}
->  
->  	return 0;
->  }
+Oh.. I saw PCAT is introduced in doc of RB5 development kit so tried 
+with it as well. I will investigate more on this. Thanks.
 
-See also:
-    drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:229 mlx5e_tx_reporter_build_diagnose_output_sq_common()
-    error: uninitialized symbol 'state'.
-
-regards,
-dan carpenter
+> Shouldn't we have a FOSS (or at the very least OSS) tool that can be
+> used to interact with these memory dumps?
+>>
+>> Dump id and size are provided by bootconfig. The expected format of a
+>> bootconfig file is as follows:-
+>> memory_dump_config {
+>> 	<node name> {
+>> 		id = <id of HW component>
+>> 		size = <dump size of HW component>
+>> 	}
+>> }
+>>
+>> for example:
+>> memory_dump_config {
+>>          c0_context_dump {
+>> 		id = 0
+>> 		size = 0x800
+>>          }
+>> }
+>>
+>> Test based on 6.6-rc1.
+>>
+>> Zhenhua Huang (5):
+>>    dt-bindings: soc: qcom: Add memory_dump driver bindings
+>>    dt-bindings: sram: qcom,imem: document sm8250
+>>    soc: qcom: memory_dump: Add memory dump driver
+>>    arm64: defconfig: enable Qcom Memory Dump driver
+>>    arm64: dts: qcom: sm8250: Add memory dump node
+>>
+>>   .../bindings/soc/qcom/qcom,mem-dump.yaml           |  42 ++
+>>   .../devicetree/bindings/sram/qcom,imem.yaml        |  45 ++
+>>   MAINTAINERS                                        |   7 +
+>>   arch/arm64/boot/dts/qcom/sm8250.dtsi               |  31 ++
+>>   arch/arm64/configs/defconfig                       |   1 +
+>>   drivers/soc/qcom/Kconfig                           |  11 +
+>>   drivers/soc/qcom/Makefile                          |   1 +
+>>   drivers/soc/qcom/memory_dump.c                     | 540 +++++++++++++++++++++
+>>   8 files changed, 678 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,mem-dump.yaml
+>>   create mode 100644 drivers/soc/qcom/memory_dump.c
+>>
+> 
