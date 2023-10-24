@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6E17D54F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5F27D54F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbjJXPMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51444 "EHLO
+        id S233522AbjJXPMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232607AbjJXPMR (ORCPT
+        with ESMTP id S230059AbjJXPMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:12:17 -0400
+        Tue, 24 Oct 2023 11:12:48 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8211BC6;
-        Tue, 24 Oct 2023 08:11:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81735C433C8;
-        Tue, 24 Oct 2023 15:11:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E39BA
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:12:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFB31C433C7;
+        Tue, 24 Oct 2023 15:12:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698160299;
-        bh=i3lEmr2804Re0R8BC/B+Wz81u5KMi4oOTUkxC/heGVk=;
+        s=k20201202; t=1698160348;
+        bh=Fq23oTVX0YBaNukXFPosDVGf8a1RsbhVsJ4u1q14Z5s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W83XrDyJOKyT6S6VLNOjrOxU5Ac7Y20mPs1IVs/CzLIAk3UAnHl7q8NPubqOFMLYk
-         lwNGhkVY09SMBJ+kej6OBXOHypHzyy6YU5KT636cForgUFLZRWQg7UzndJMDW28kE4
-         D4FtNUShbcCOWROXAGdvYx9EpR53M80SjyjG9aNnvwT4GD0Y2GmUcuGFndixEcA5rV
-         qNM2USGw3khqy0okLuqr9Pc6F0nGfhDJPAzNpRA4gBStgbrS/8Hio7jLdQ6wsEh5t/
-         H2QMa8SHbOWmfGIKrUTZx6oFlfhY8gLkfp9XxivpJhxNrUM6udi9aFMv5CRahhuooz
-         YA/JytV7GprhQ==
-Date:   Tue, 24 Oct 2023 16:11:35 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>,
-        Ramona Gradinariu <ramona.gradinariu@analog.com>,
-        jic23@kernel.org, nuno.sa@analog.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] dt-bindings: adis16460: Add
- 'spi-cs-inactive-delay-ns' property
-Message-ID: <20231024-backache-unranked-c4905d8944b7@spud>
-References: <20231023140534.704312-1-ramona.gradinariu@analog.com>
- <20231023140534.704312-4-ramona.gradinariu@analog.com>
- <e97ac024cb2654507ed8f7af715f3604efefbdbb.camel@gmail.com>
- <20231023-repost-coma-2f67ea8b95af@spud>
- <5c600a6db6173a56251302da8d2f438435959bd2.camel@gmail.com>
- <8391fb67-e575-49e6-9857-806cb85e9e59@linaro.org>
+        b=Ve9OAwmiHJiGnk42fCQsmjMzoYzh9dvNXjCkqn1oSDS6DYs5IV7xhkJLaXZsVjIzI
+         +dkdfq3ajHxeYgxVJv3n52vYoLOCMjliwrPPTirBtqh8W53/ESnbT+hIhwXevmqjhU
+         OzVmZgCeZ1xhizJk96njAxoioUEEr5JUW3eVUtV+yyDYksoZtesSM904QSzVmrsMlP
+         6rXlFn2pk7e+5NPgTW96mvmdK3wcERW2PceV1buJkXq5qhQZ2DB17dX+BBL2C3CtHR
+         x66SfoJV218GSGxF8HJUftDSLMhn/VVvUDDzPMzHFTnYhltIZMqK9yHJQH9Y5NGMUa
+         qAwX/4b8sKbnw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AD5794035D; Tue, 24 Oct 2023 12:12:24 -0300 (-03)
+Date:   Tue, 24 Oct 2023 12:12:24 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf build: Remove stray '\' before that is warned about
+ since grep 3.8
+Message-ID: <ZTfe2N+EQwEEBUml@kernel.org>
+References: <ZS7PIHUZfHcrfvi4@kernel.org>
+ <CAM9d7cjkFQU+dd8m8pq6-u6JruY9tFi_86ZyiQrXGL9js_vuuA@mail.gmail.com>
+ <ZTLkWVempj1xV6CV@kernel.org>
+ <CAM9d7cgW7PmgSj3kAowFOVLG56L=QHVCU=PfM+p7sVfQyJrt6Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="AVu1vVpv5euJ77HU"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8391fb67-e575-49e6-9857-806cb85e9e59@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7cgW7PmgSj3kAowFOVLG56L=QHVCU=PfM+p7sVfQyJrt6Q@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -60,113 +58,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Fri, Oct 20, 2023 at 02:15:03PM -0700, Namhyung Kim escreveu:
+> On Fri, Oct 20, 2023 at 1:34 PM Arnaldo Carvalho de Melo > <acme@kernel.org> wrote:
+> > Em Tue, Oct 17, 2023 at 12:02:20PM -0700, Namhyung Kim escreveu:
+> > > On Tue, Oct 17, 2023 at 11:15 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > > > To address this grep 3.8 warning:
 
---AVu1vVpv5euJ77HU
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > > >   grep: warning: stray \ before #
 
-On Tue, Oct 24, 2023 at 03:47:16PM +0200, Krzysztof Kozlowski wrote:
-> On 24/10/2023 08:53, Nuno S=E1 wrote:
-> > On Mon, 2023-10-23 at 17:06 +0100, Conor Dooley wrote:
-> >> On Mon, Oct 23, 2023 at 04:27:48PM +0200, Nuno S=E1 wrote:
-> >>> On Mon, 2023-10-23 at 17:05 +0300, Ramona Gradinariu wrote:
-> >>>> The adis16460 device requires a stall time between SPI
-> >>>> transactions (during which the chip select is inactive),
-> >>>> with a minimum value equal to 16 microseconds.
-> >>>> This commit adds 'spi-cs-inactive-delay-ns' property, which should
-> >>>> indicate the stall time between consecutive SPI transactions.
-> >>>>
-> >>>> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
-> >>>> ---
-> >>>> changes in v2:
-> >>>> =A0- added default value
-> >>>> =A0- updated description
-> >>>> =A0- updated commit message
-> >>>> =A0.../devicetree/bindings/iio/imu/adi,adis16460.yaml=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0 | 6 ++++++
-> >>>> =A01 file changed, 6 insertions(+)
-> >>>>
-> >>>> diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16460=
-=2Eyaml
-> >>>> b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> >>>> index 4e43c80e5119..f10469b86ee0 100644
-> >>>> --- a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> >>>> +++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> >>>> @@ -25,6 +25,12 @@ properties:
-> >>>>
-> >>>> =A0=A0 spi-cpol: true
-> >>>>
-> >>>> +=A0 spi-cs-inactive-delay-ns:
-> >>>> +=A0=A0=A0 minimum: 16000
-> >>>> +=A0=A0=A0 default: 16000
-> >>>> +=A0=A0=A0 description:
-> >>>> +=A0=A0=A0=A0=A0 Indicates the stall time between consecutive SPI tr=
-ansactions.
-> >>>> +
-> >>>
-> >>> You should drop the description...=20
-> >>>
-> >>> Also, give more time before posting a v2 so others get a chance to re=
-view
-> >>> your
-> >>> patches. It's also better for you since you can gather more change re=
-quests.
-> >>
-> >> Further, I don't see an answer to Krzysztof's question of why the stall
-> >> time would not just be set to 16,000 ns in the driver, based on the
-> >> compatible.
-> >=20
-> > Hi Conor,
-> >=20
-> > Regarding that, I'm the one to blame since I was the one asking for the=
- property
-> > during internal review... The reason is that "spi-cs-inactive-delay-ns"=
- is
-> > already part of spi-peripheral-props.yaml which we already reference. S=
-o my
-> > question would be why not using it?
-> >=20
-> > These devices are a bit sensitive regarding these timings. Not in devic=
-es
-> > supported by this driver but I already experienced having to set timing=
-s bigger
-> > than defined in the datasheet for spi to be reliable. this was true on =
-a RPI but
-> > might not be in another platform.
-> >=20
-> > Hence having the flexibility to change the time in an already supported=
- property
-> > does sound good to me. If not set, we still use the default value based=
- on the
-> > compatible. Now, if you tell me "let's just add this if we really get t=
-he need
-> > for it", I get it but I also don't understand why not add it now...
+> > > > +++ b/tools/perf/Makefile.perf
+> > > > @@ -361,7 +361,7 @@ python-clean := $(call QUIET_CLEAN, python) $(RM) -r $(PYTHON_EXTBUILD) $(OUTPUT
+> > > >  ifeq ($(CONFIG_LIBTRACEEVENT),y)
+> > > >    PYTHON_EXT_SRCS := $(shell grep -v ^\# util/python-ext-sources)
 
-I don't object to having the property, it'd just be good for the commit
-message to have mentioned that the minimum time may not be sufficient
-for all configurations.
+> > > Do we need to change it here too?  Otherwise looks good
 
-Cheers,
-Conor.
+> > I think I did tests and simply removing the \ in this case will comment
+> > out the rest of the line after the #, IIRC we would have to enclose it
+> > in '', like
+> >
+> >   PYTHON_EXT_SRCS := $(shell grep -v '^\#' util/python-ext-sources)
+> >
+> > But then if it works as-is, why pollute the patch? :-)
+> >
+> > In general the less lines you touch in a patch, the better, don't fix
+> > what isn't broken, helps reviewing, etc. :-)
+> 
+> Agreed, thanks!
+> Namhyung
 
-> I think it is okay to document specific SPI peripheral constraints in
-> each device. Just like we document sometimes SPI frequency. The v1 did
-> not explain this, but I see in this commit msg some rationale.
->=20
-> Best regards,
-> Krzysztof
->=20
+But while this makes it build in newer systems, it breaks on older ones:
 
---AVu1vVpv5euJ77HU
-Content-Type: application/pgp-signature; name="signature.asc"
+Makefile.perf:364: *** unterminated call to function 'shell': missing ')'.  Stop.
+make[1]: *** [Makefile.perf:242: sub-make] Error 2
+make: *** [Makefile:70: all] Error 2
+make: Leaving directory '/git/perf-6.6.0-rc1/tools/perf'
++ exit 1
+[perfbuilder@five ~]$ dsh opensuse:15.4
+sh-4.4$ rpm -q grep make
+grep-3.1-150000.4.6.1.x86_64
+make-4.2.1-7.3.2.x86_64
+sh-4.4$
 
------BEGIN PGP SIGNATURE-----
+Makefile.perf:364: *** unterminated call to function 'shell': missing ')'.  Stop.
+make[1]: *** [Makefile.perf:242: sub-make] Error 2
+make: *** [Makefile:70: all] Error 2
+make: Leaving directory '/git/perf-6.6.0-rc1/tools/perf'
++ exit 1
+[perfbuilder@five ~]$ dsh ubuntu:20.04
+$ dpkg -l make grep
+Desired=Unknown/Install/Remove/Purge/Hold
+| Status=Not/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWait/Trig-pend
+|/ Err?=(none)/Reinst-required (Status,Err: uppercase=bad)
+||/ Name           Version      Architecture Description
++++-==============-============-============-=================================
+ii  grep           3.4-1        amd64        GNU grep, egrep and fgrep
+ii  make           4.2.1-1.2    amd64        utility for directing compilation
+$
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTfepwAKCRB4tDGHoIJi
-0m47AP9JuRzFY22arJqLQuWt5Tr58NL/3Hj7VXErM+HcZoe+/QD/Wrag8T3+WCAM
-dWFxFeGkzqJcrP3fPRV3nAAtLUNslg4=
-=u8oN
------END PGP SIGNATURE-----
+Both these containers don't have libtraceevent-devel installed (not
+available).
 
---AVu1vVpv5euJ77HU--
+:-\
+
+- Arnaldo
