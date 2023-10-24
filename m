@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4D27D53FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2256E7D53FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343785AbjJXO0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 10:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45958 "EHLO
+        id S1343732AbjJXO10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 10:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234788AbjJXO0v (ORCPT
+        with ESMTP id S234705AbjJXO1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:26:51 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1DF12C
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:26:45 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-7788ebea620so298807185a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:26:45 -0700 (PDT)
+        Tue, 24 Oct 2023 10:27:24 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2F0118
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:27:22 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c9d407bb15so37827635ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:27:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1698157604; x=1698762404; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6S93RbRglo4zJtt34VMTicjVThmJc0ap31UZOgLJcsE=;
-        b=d3i0xTrtHY7fyNjAnemlo9hK6NiX9t3PE31O1zWq9PgxcDRJqY1q9oMNBafmkdCxgk
-         0XG+xpmDScIs8nxH+oOpTD+6eI1p2wLTjzvH2Sd56yxz1Ue0lfAtGjCSGQ7skl9ldEGZ
-         +HXu/IFuD0LmkZHj74zLH8g++vRotkEacJ5c3sPDCGJFjX7H4NkR5/X6KgFP0x91pSwN
-         Z5NP9/u/l2BKIm6D6AXwt+oFLMRGt9mijYipuDlMM+Bk9uoWDbxsvcqaOxn90fmDHHY9
-         reFmWU0jrLsHlDKGDMrEo6cXWq7bSgDQ8M2DH20mWqPKUYaCkzAuyLrHvt9yNtxOJPlw
-         6S+Q==
+        d=bytedance.com; s=google; t=1698157641; x=1698762441; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YcQTC+eJzzLlnaNT0UmsWQUFrQijvQZ05PsjYq0iiBE=;
+        b=ReFm1ccBKvcROySXJNFfIeYwVkc9xhxTm2kQHo9OOV+VtBCm3lr9tpyEf2D6LnSZt2
+         IBstcR6Sl3hq9n0kwpNRModkrUAWsJ9zq1mL41xuRjiUSCQpqvbw6BMahbhej5c6wlKW
+         +1XyYhlSrj0sLigAndFTPStHBTrx/SjxzdrBPIeUi8riRYSL/Cf72RsbrKZ7ietDnB1s
+         kQCxJv9YfXvfPTzX3Xtk0QnvmhIh9IGGVf8boUkCBLY7UGQW6JCULLnW7yY8QosekCOy
+         VTrP2pJVFjxpXYMgZom8jfxGxNFlYa4daV9qX03FZYNuHodglKjHDjvi3Ds/qmNlLT/f
+         w3PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698157604; x=1698762404;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6S93RbRglo4zJtt34VMTicjVThmJc0ap31UZOgLJcsE=;
-        b=oXn6PjzyHlDdTbtB4PYct35+0Rh/LQkyakYdvRgie+PwdZEoifzJCFnnqckK69S2kt
-         q+lFK0V01WTLy3m2eiSWf/92+Uy2o0Kf6V6IFHR7k06JgjXTr+ug0DM+Ho9hUCl+rHy/
-         k9bnekSGtF9+8qfqoUbAB5o2e3iKz+1V2jckoX7gvU9Fu0drtqh3TNq08lc2kgKQk+Zk
-         4Wunu2PLFb07X3rwf/qWcXlzyXX/W+ChbtA9A2RJkdEo+cIF5KQY+6fuVR8IoWYGMeoT
-         Wky23++nx0UMThJ1y0QJ7Lf6FemU+2k41bNSpi2hR3QpRNtul9YdLhn7wXubjAXkvf4h
-         4L+A==
-X-Gm-Message-State: AOJu0YyS1GGWZpJK5t2wlcuNNjd3418ylSLXmVPTf6O1mG50WQ+U9wPX
-        o+wYeg9UWueq3EWePAlrTeXQtQ==
-X-Google-Smtp-Source: AGHT+IGqmc9ObazHQIcORgt1GoGM9BTANTeWFmH8pIDBj9tAeDXqR61l4QBgrP+2+N2QECvBi+MYyg==
-X-Received: by 2002:a05:620a:d96:b0:767:c572:ab10 with SMTP id q22-20020a05620a0d9600b00767c572ab10mr13854304qkl.35.1698157604465;
-        Tue, 24 Oct 2023 07:26:44 -0700 (PDT)
-Received: from debian.debian ([140.141.197.139])
-        by smtp.gmail.com with ESMTPSA id l15-20020a05620a0c0f00b0077892023fc5sm3466575qki.120.2023.10.24.07.26.43
+        d=1e100.net; s=20230601; t=1698157641; x=1698762441;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YcQTC+eJzzLlnaNT0UmsWQUFrQijvQZ05PsjYq0iiBE=;
+        b=OJENbDSKyLidnFnEm57lm0w6usooQGTuPwS4lk4jhg7upSV18BpMKqnr1TmlxCtW6q
+         rViKDiHZdlvhteT6LleBfRjQp7gcez5GoDyMI57kJPRVIaEBEHS1AsvRkymgNtw53iTf
+         K/QwU+FqffdE7WARu55t4+vK6J1tPiUVIrJrHCmW7t6erVKDrwaokIYDBws0/4qn0XIL
+         T9nmpGl5k9WJTr3l1ekzHhLG7sDtXsUGMwg9r+ukUxPVBvrrceVhYXSA1uRqzLGKt+6A
+         ciAaoWnLknns4k9quGxSNPqvn43XrReix5bRFoCdh4hYFBAh2ncz7A4Q9ANxmCTy9fiK
+         uRpg==
+X-Gm-Message-State: AOJu0Yws15TzmtqUNYHGtsZN3JdG5RcjYTiBp3I9VDUH+MqbXkAVTMFo
+        g9x1WXYIhJcX+nwHeMI6/mGFPg==
+X-Google-Smtp-Source: AGHT+IHHAHbFJzr12MFDRq5IG9+LtJIaiU1yv0G+Yr3j00NhXl3Xbofdpc7yRWDb+5EBBHPOfNdDTQ==
+X-Received: by 2002:a17:902:c409:b0:1c5:a49e:7aa with SMTP id k9-20020a170902c40900b001c5a49e07aamr14869540plk.27.1698157641443;
+        Tue, 24 Oct 2023 07:27:21 -0700 (PDT)
+Received: from Tower.bytedance.net ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id 1-20020a170902ee4100b001c9db5e2929sm7488397plo.93.2023.10.24.07.27.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 07:26:43 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 07:26:40 -0700
-From:   Yan Zhai <yan@cloudflare.com>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
-        kernel-team@cloudflare.com, Florian Westphal <fw@strlen.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Alexander H Duyck <alexander.duyck@gmail.com>
-Subject: [PATCH v5 net-next 3/3] ipv6: avoid atomic fragment on GSO packets
-Message-ID: <90912e3503a242dca0bc36958b11ed03a2696e5e.1698156966.git.yan@cloudflare.com>
-References: <cover.1698156966.git.yan@cloudflare.com>
+        Tue, 24 Oct 2023 07:27:20 -0700 (PDT)
+From:   Zhongkun He <hezhongkun.hzk@bytedance.com>
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, yosryahmed@google.com, nphamcs@gmail.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>
+Subject: [PATCH] mm: zswap: fix the lack of page lru flag in  zswap_writeback_entry
+Date:   Tue, 24 Oct 2023 22:27:06 +0800
+Message-Id: <20231024142706.195517-1-hezhongkun.hzk@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1698156966.git.yan@cloudflare.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the ipv6 stack output a GSO packet, if its gso_size is larger than
-dst MTU, then all segments would be fragmented. However, it is possible
-for a GSO packet to have a trailing segment with smaller actual size
-than both gso_size as well as the MTU, which leads to an "atomic
-fragment". Atomic fragments are considered harmful in RFC-8021. An
-Existing report from APNIC also shows that atomic fragments are more
-likely to be dropped even it is equivalent to a no-op [1].
+The zswap_writeback_entry() will add a page to the swap cache, decompress
+the entry data into the page, and issue a bio write to write the page back
+to the swap device. Move the page to the tail of lru list  through
+SetPageReclaim(page) and folio_rotate_reclaimable().
 
-Add an extra check in the GSO slow output path. For each segment from
-the original over-sized packet, if it fits with the path MTU, then avoid
-generating an atomic fragment.
+Currently, about half of the pages will fail to move to the tail of lru
+list because there is no LRU flag in page which is not in the LRU list but
+the cpu_fbatches. So fix it.
 
-Link: https://www.potaroo.net/presentations/2022-03-01-ipv6-frag.pdf [1]
-Fixes: b210de4f8c97 ("net: ipv6: Validate GSO SKB before finish IPv6 processing")
-Reported-by: David Wragg <dwragg@cloudflare.com>
-Signed-off-by: Yan Zhai <yan@cloudflare.com>
+Signed-off-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
 ---
- net/ipv6/ip6_output.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ mm/zswap.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 4010dd97aaf8..a722a43dd668 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -164,7 +164,13 @@ ip6_finish_output_gso_slowpath_drop(struct net *net, struct sock *sk,
- 		int err;
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 083c693602b8..b9b94cbd403c 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1139,6 +1139,11 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
+ 	/* move it to the tail of the inactive list after end_writeback */
+ 	SetPageReclaim(page);
  
- 		skb_mark_not_on_list(segs);
--		err = ip6_fragment(net, sk, segs, ip6_finish_output2);
-+		/* Last GSO segment can be smaller than gso_size (and MTU).
-+		 * Adding a fragment header would produce an "atomic fragment",
-+		 * which is considered harmful (RFC-8021). Avoid that.
-+		 */
-+		err = segs->len > mtu ?
-+			ip6_fragment(net, sk, segs, ip6_finish_output2) :
-+			ip6_finish_output2(net, sk, segs);
- 		if (err && ret == 0)
- 			ret = err;
- 	}
++	if (!PageLRU(page)) {
++		/* drain lru cache to help folio_rotate_reclaimable() */
++		lru_add_drain();
++	}
++
+ 	/* start writeback */
+ 	__swap_writepage(page, &wbc);
+ 	put_page(page);
 -- 
-2.30.2
-
+2.25.1
 
