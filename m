@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83AF87D5CAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3B27D5C8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344390AbjJXUzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 16:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40762 "EHLO
+        id S1344268AbjJXUh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 16:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344341AbjJXUz2 (ORCPT
+        with ESMTP id S234576AbjJXUh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 16:55:28 -0400
-Received: from proxmox1.postmarketos.org (proxmox1.postmarketos.org [IPv6:2a01:4f8:a0:821d::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D359A10D5;
-        Tue, 24 Oct 2023 13:55:20 -0700 (PDT)
-From:   Stefan Hansson <newbyte@postmarketos.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=postmarketos.org;
-        s=donut; t=1698180448;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WyL/zzD9SEbdEVP0sS0d2jVD0oYU+zFu9fVpTgzQOmE=;
-        b=SOB6I4MEfwEiUdEZZlDPhXLfoW42dnJhtdjDII4/d6BwKVgSnhzcXTvN1J/KE9kXHot94B
-        lkkwp0eIo2G+RkZ/RPcdqkqjCX3bZ+rjRq/wnd4u3LMsV111AEty32B4KaRsQorYLo3Lxr
-        7P9C2J35wZRH121waAdu48qE4bgy0UA=
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Stefan Hansson <newbyte@postmarketos.org>
-Subject: [PATCH v2 4/4] ARM: dts: qcom: samsung-matisse-common: Add UART
-Date:   Tue, 24 Oct 2023 22:33:45 +0200
-Message-ID: <20231024204505.125813-5-newbyte@postmarketos.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231024204505.125813-1-newbyte@postmarketos.org>
-References: <20231024204505.125813-1-newbyte@postmarketos.org>
+        Tue, 24 Oct 2023 16:37:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5D6EA;
+        Tue, 24 Oct 2023 13:37:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DB6AC433C8;
+        Tue, 24 Oct 2023 20:37:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698179846;
+        bh=x7ktYcUkMNtPmHlHAYqJ+4Z7/N2PKnK+TRSa4Xb7n3M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dWNQNuaYvlSc3NTRCuoHcnwQ/eWqsLl3FW43KutTC9zOxYR5ODKuH4KGr57SwcFeJ
+         hzULR4rYgraQ+CtwFsbBFvLzgLydTX5Eidvje08Fjb3cDFeCMJRfdMyEuVgTtktShV
+         4/SMKe/28TnRflu4xZXySy71eygJpKbaSuiNunZ0AMN0JCB0fj036485xfapYfle0S
+         JFYw2w9bwLn1InCnKXIp1U/QpV9nga2bf1c1wWbYC0spjVRk8jW123PCD7NJWuRW2x
+         gVIVqKprj61qz9szutCcHR1dhrwWGNJ1xzu6EfHhhXc+6lk/VXNsyKjJ/wlYUE3i40
+         PGnV/OMXtoEuA==
+Date:   Tue, 24 Oct 2023 22:37:19 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] i2c: mv64xxx: add an optional reset-gpios property
+Message-ID: <20231024203719.bbk7g4q7e4mzar36@zenone.zhora.eu>
+References: <20231018210805.1569987-1-chris.packham@alliedtelesis.co.nz>
+ <20231018210805.1569987-3-chris.packham@alliedtelesis.co.nz>
+ <20231024191801.kofb6cbczswp7xxn@zenone.zhora.eu>
+ <4b548124-d1d5-4746-a5bd-03757013282d@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4b548124-d1d5-4746-a5bd-03757013282d@alliedtelesis.co.nz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was not enabled in the matisse-wifi tree.
+Hi Chris,
 
-Signed-off-by: Stefan Hansson <newbyte@postmarketos.org>
----
- .../boot/dts/qcom/qcom-msm8226-samsung-matisse-common.dtsi    | 4 ++++
- 1 file changed, 4 insertions(+)
+> > as you are working on the v4...
+> >
+> > ...
+> >
+> >> +	if (drv_data->reset_gpio) {
+> >> +		usleep_range(reset_duration, reset_duration + 10);
+> > I'm not against this, but it's not optimal unless we know more or
+> > less what to expect from reset_duration.
+> >
+> > Do we have a rough idea of what reset_duration is? If we don't
+> > then you could consider using a generic "fsleep(reset_duration);"
+> > Would it work?
+> flseep() would work for me. All of the devices I'm testing with seem to 
+> be fine with a very short reset pulse, they'd probably be fine with no 
+> delay at all.
 
-diff --git a/arch/arm/boot/dts/qcom/qcom-msm8226-samsung-matisse-common.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8226-samsung-matisse-common.dtsi
-index 11fec4e963b7..35290ce63b40 100644
---- a/arch/arm/boot/dts/qcom/qcom-msm8226-samsung-matisse-common.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-msm8226-samsung-matisse-common.dtsi
-@@ -233,6 +233,10 @@ muic: usb-switch@25 {
- 	};
- };
- 
-+&blsp1_uart3 {
-+	status = "okay";
-+};
-+
- &rpm_requests {
- 	regulators {
- 		compatible = "qcom,rpm-pm8226-regulators";
--- 
-2.41.0
+you know this better than me :-)
+If you say that a delay is not necessary, then I'm also fine.
 
+In any case, we are in probe and I don't think it's time
+critical, so that a little delay wouldn't hurt and make everyone
+happy.
+
+Either way I'm fine as long as you use the correct sleeping
+function.
+
+Andi
