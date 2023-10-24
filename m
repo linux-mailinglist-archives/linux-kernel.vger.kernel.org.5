@@ -2,478 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 855AC7D5CBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF757D5CBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344362AbjJXU6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 16:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
+        id S1344155AbjJXU6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 16:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232399AbjJXU6I (ORCPT
+        with ESMTP id S233350AbjJXU6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 16:58:08 -0400
-Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AD710D4;
-        Tue, 24 Oct 2023 13:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1698181080; bh=HyGxf3eRKKvaISqKeWweIM3LhQxTuZl10bQehGgtzJM=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc;
-        b=MSuDUfYRh/DfX77gHL6ExjXmqfNPLHafSU+X4ykM4DsAeTwwRHp6mjMrlOS9S3hAF
-         WgPPKXHM9mzUxmtZjARclO6RChtyCvSZRSt73bByWKia0vmaypqXGac987Q+QWiERD
-         KM3dM2difxRxkzgbVR1vymzGX6KPhIoM4Je8isXk=
-From:   Luca Weiss <luca@z3ntu.xyz>
-Date:   Tue, 24 Oct 2023 22:57:51 +0200
-Subject: [PATCH v2 3/3] ARM: dts: qcom: Add support for HTC One Mini 2
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+        Tue, 24 Oct 2023 16:58:11 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8CEE5;
+        Tue, 24 Oct 2023 13:58:08 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fJJZkI+E6B70cwLuwkzJztPpydBmNN2zVZWw2Pq+4OISX1g7M15w73xKjPFVERAKv4yn4GHXZQlszBRD2OBFSzAbEIf5YLIISBLyKvU4xKhdmczYt6KarqDdP3zdz3gSg/0P6ZADbLXX4iQHAjsimny4zclIZxnGleSHb0ElvrLi0zimuAi0w/ndMNPLrl88hhoD8Fr7Dyp4kq+zro2zbMQNNlhWycFLWhqLixfXx3qz1HAUOTu12vLXICgHFo8Ivq4Le3jWtAa6ko5pHwCK4dcDdgTzNVvEGYJrvNPOG5Zg7XnZzkhf32C95ApS9WOHwN0mzBfWTscC9CHmrOfoXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qTuw1hZXtOTINltcUsdgTW4XtPdXmLCObXPMnryJKKU=;
+ b=XTen9RjhoHMC0N+69cNq50pIT6Q9X3abN0P0SXMeVTv2+bGZk0FkaunbRRhxFNgFr7gnaOD4vYwMaZPytOMUoeKPZMaB/T3TBYnAy8v3w1jPBUJG/K7hWJA4+O6zuB6mgrAijzbVIjNcDsX2KcLRufxWUMFGAVXfmqkzKrXXQvk9QMSnjAVo8qy1Q83ej7mJY0+40HCLVOGIU7neFWOdlpXgBlXeUK6AZJhAAEd7BUS+06rXYNGOF3pw/qkoKAYQQbEydFYccHHlJXOyhSjs5wNJ28zm4X8Fx7lGHxEDWQJnzbgrrPOMp8Q/zPiZTCCzuaUV82bE4LPW26RM9tsKEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qTuw1hZXtOTINltcUsdgTW4XtPdXmLCObXPMnryJKKU=;
+ b=1OR2An/b5hQEL5gOInI5bgZvRCe4QvSIfSOwRQKvInhnvrP93J9NqFxMeZLjTVobxn3cbf0Aq8QIyt73EL+bi/QZHshDpg+xKdiIKu21hpBCyRE0liROGM8FEzo4xsNry5EMvwPpAcT0jcnir5L8d7o9oOE+gRVgjrjmvra07G4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
+ CH3PR12MB9098.namprd12.prod.outlook.com (2603:10b6:610:19e::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
+ 2023 20:58:03 +0000
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::3d14:1fe0:fcb0:958c]) by DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::3d14:1fe0:fcb0:958c%2]) with mapi id 15.20.6933.019; Tue, 24 Oct 2023
+ 20:58:03 +0000
+Message-ID: <c50f2d3d-98dd-4194-9080-81298dd0563c@amd.com>
+Date:   Tue, 24 Oct 2023 13:58:00 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] amd/pds_core: core: No need for Null pointer check before
+ kfree
+To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        brett.creeley@amd.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231024182051.48513-1-bragathemanick0908@gmail.com>
+Content-Language: en-US
+From:   "Nelson, Shannon" <shannon.nelson@amd.com>
+In-Reply-To: <20231024182051.48513-1-bragathemanick0908@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231024-htc-memul-v2-3-8912940b6f95@z3ntu.xyz>
-References: <20231024-htc-memul-v2-0-8912940b6f95@z3ntu.xyz>
-In-Reply-To: <20231024-htc-memul-v2-0-8912940b6f95@z3ntu.xyz>
-To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Luca Weiss <luca@z3ntu.xyz>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8772; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=HyGxf3eRKKvaISqKeWweIM3LhQxTuZl10bQehGgtzJM=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlOC/Wh0ui/RP3c8lmngF/I880bIFZ8BUXnZRUO
- IP9uJhLXeKJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZTgv1gAKCRBy2EO4nU3X
- Vng1EAC3xGEQ+hwiVmFnS6J9pkFGZpVwWTuyQeHT4Ojcck0PUcxz4y30QlZ03kHEYNX5wNZv23B
- cIJmxSAN/+dG7ILOHSUjVgc63kzKFFjjPuzpn5rLwVht3Mj5kTReZgZe9KdbTu7tVzcQo88OoSl
- YTureMARD+I0V7/bZw7LQ0PWeNmwI7ye13QRUeprpBgdrMWilGfDRgHsbSB0I4XPawDoozWAfTB
- dt98T+pul1LVGNa9KIIkdBgGIpTrr0ym7AODrygC12wbizkt9A2c2t050usjVp60aEEwl8nBjQp
- RaxU8MWwdc/vWJMxMOQg75bRw+RfyZ/wXccRaeSb2BF+9+I/r9MVSs3ShFB9RyC48udcBWfp0yN
- wgo5VYRsmgafIZkjkJ6espMftf/DX/dOhNh3CUg1IEFPO1xLTMC//j5sfpRaTBACCoDs9kyQkvr
- TcV9f2fEvsX/7yBSJRaY/TWtccVNJmkTmlFk3LInF+PpZqRF8ngpZYrrIQSRYJdPtGS6Dsy5+i6
- EyDcn1/1zpPi6HYhaHqxVYKpChDx+c3iW0ziBfai+WNAVGxMtEKSTqQ1J6zs+oXGAIcVn2tGzug
- G6M7MGxPwwOqDFSh1tMD3+ifcu7yT+rfxMNvwGWsupZA4ZupFlOzULKm5/gY8SNo9PeHGpfWXP+
- oXmc6TSOCRq7zNg==
-X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
- fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: PH8PR07CA0036.namprd07.prod.outlook.com
+ (2603:10b6:510:2cf::9) To DS0PR12MB6583.namprd12.prod.outlook.com
+ (2603:10b6:8:d1::12)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|CH3PR12MB9098:EE_
+X-MS-Office365-Filtering-Correlation-Id: a31801d8-21b8-4ce6-fc2b-08dbd4d3e9be
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YG6H9zH5Lj4e2vGcxXKamJ6Jrfl2tFMu9XryWmMl1AQx+6Q5eZ0bDH2c4EvRHYx/HH4Bhc8OoL2dUgZzlMI83mAtJmbXly9x+oRhdIcOL8ISXzjdMGxntu5qmOZeVu2PyaANHZoZSEhiJ4hptv+qhYvSJR6f3yrPK+QyIxBpE4F18mLulYLC7ovVL1ndxJNIjkDaJADXdzdLvvwD0NYrs2XPqMfbLIzPJq4g5nLG5pAoq7bBox90YWdK2ZyFEGemL9FU3SeHm0EgBq2HDh557mMSc57LNyN2XOoTsFGi3xYwxk7wGwGcv79F8Fc2MsQirpPl5ql+Fy70kE9siC3jt41+OzWTq6sJ0e3rarHZiAtOXWy6CbWvlxEcvIpy2tRliFxg+4DEIvsfDOnDHJizzgORHIa9nHGy2drtsMEuEUuDCznHLYN5jBOBjpls/E/iNvxIhoZ8z6/LdVyQmry9b93gjYH9azNKnLHSooCOpRhdmRukFlZPMomQSI8SUMcv+brTIFwqz6mNmIADZVCgFOGxyo5SJaC9PNe6+s+BD+e+GN/rdzk2XBGjkuy4KBwaDxQJCRJhNnOPWnqqaB37usacjNO1yLhXQhOYk7GT86mR0iBhvNiPT2o2inqcciGETNd3+nntXl/4fvPzfcsXqw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(346002)(39860400002)(136003)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(83380400001)(31686004)(2906002)(36756003)(4326008)(8676002)(26005)(53546011)(8936002)(2616005)(38100700002)(6506007)(66476007)(6512007)(478600001)(6486002)(316002)(31696002)(5660300002)(86362001)(66946007)(41300700001)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZjJKSlc4Q21mN0lVV2ZKdVNkN2tMRzBPNTVjMHljUEY1U3VnTkZodGVzNFVE?=
+ =?utf-8?B?MGlxRDQ5ZEtRa2lrWkhJMzZmMGFTYlJrTDRYVDZwZ3Bab204MHYrVlpuSFow?=
+ =?utf-8?B?VUhIQUlLMzJ0QnNQaFZWTkkzY1FTT3c0ZGhXbU5kQW5LdTB1bmQzbExyQ3dF?=
+ =?utf-8?B?aTJzWVpoVURaai9RNWJQVU9oS3ZHcjk2VlZoY3ZOZlhRS0d4K0wwbEh1VlVM?=
+ =?utf-8?B?RWwwOHNOaG9QSUJ6eHI3cTBoYysyY0YvSDdIaW5jbjF1K2VNVlQrNkFEOHJW?=
+ =?utf-8?B?RjY3WlhKWGxjbmdOUWNrYk5pRGFsOHQ5VGN5TDBXYTYxT2J5VEUybm92YjNn?=
+ =?utf-8?B?amZzQXlIWlRwd2JtMzJEeWl2VUVPc0sxdkdnOHQwVVZic001SE03T0xmdjc3?=
+ =?utf-8?B?TTFpcWxnUHFka1Z5ZVFFZ2c2OTJyWFJxZjV6U0JPYVIyZ3F0QmJCYmxLS0Fa?=
+ =?utf-8?B?ZEw5NlJXdkpHUWNRT09mU1Yzb3FqTUU0TmRlbGJHOWJDN0s1VGJqQU82dUxL?=
+ =?utf-8?B?LzJVRjBzR0dVcDdOUjVMa2pJc3JhMUNUS1FJN2hheEVsQUlva1lRWjF0aWNK?=
+ =?utf-8?B?amVPUS9LV0NIRUxUV2hKYmpzNm9NdUVSMVJGMFZXZ3pVOVFCQloyRGtiVERI?=
+ =?utf-8?B?ZVExOUh5QjZRMmlBUDZtMngzd1BrNFl3azhjblYwdzdhK001SE1sUjB6enpU?=
+ =?utf-8?B?K2tvb0s0RDEwK0Z3N2t4R3QwOU1vS09LUkd0bFY4UTZKYVVKejVLUzVTL3JU?=
+ =?utf-8?B?d2tEQkcwWk14UjlMQ1BnSWlxVkt1cklRSFpERllZeXU2YXcyOG9FZG11SkJK?=
+ =?utf-8?B?c0hGSGEyMEN0UTEzT2h0SG5UM04xVmRxUHVMMVQvRjl0cGlKUUI2UnNkZmc1?=
+ =?utf-8?B?TEJwN2xtOVFQWmpYRkJsTjU1UkpxcitOSkJ4dmFacEtwSHVOb0VDSEhjdjZn?=
+ =?utf-8?B?YjRpSlNGVHhQYUJJNFNiSFE5R1VVK1ZiWHJvMi9hZ2g2b1A0dVZaMzNmM2s1?=
+ =?utf-8?B?Y2JxMHVtbVhWaXorZldZWXk0YWNqNVE1U2pIcVNYTkhlNUFKbHAxbDVMeVhB?=
+ =?utf-8?B?V1hhNyswKzg1NldSdFZ1MEhZRnRXdGp3aUZUMGExbFkwYTJZeXZtYWE1Mkc3?=
+ =?utf-8?B?amVNYXRiT3pQUFc0MjgxMHFMRjhCQ1hZT0VOemIxeUlBNC9nNmRBaUdaeVNa?=
+ =?utf-8?B?SXVHKzlZdzc0a3NwK3h3TlJOMHhSUGlYRHdLMEdveC9TNDdrd0RyL3YrcFEx?=
+ =?utf-8?B?cmNjWWM5T1NSNkVVM1UydXEyTzBkb25BeVhMWmNubWdqOW4zWDJTTjZEbktW?=
+ =?utf-8?B?UXZpRE5HSldtUDR0K3MyKzhURmFxOXd4YlpkZnBwZGZPNmVYaTl4VlZvY0VX?=
+ =?utf-8?B?dFRoUVd1aW5jYWY1UVl2T0E0QXZwOUY0aGpUM0c1bHBOUFYxZmlEeVZLNkNV?=
+ =?utf-8?B?RFp4VjdTbmJJQU5BWmtjbE1PNkNITmtuOXhIdVBHS2V0YzE0SkZETVpJdXpS?=
+ =?utf-8?B?WlNGZGdhQldDNTR5TXlEcGhjZXB0VWk2TFZtS1d3OEZzbU9GMXJ4K1dFQ3Bj?=
+ =?utf-8?B?MENTZW92cGpBakkrTk1ZZFdEenRtbzNab2RqeExqUnVFcnFTbmR5ekhBeGZ4?=
+ =?utf-8?B?Um1CQnoyVERDVGplN2QzaGdlYUtYbFZDbExKRktVVVNWOGN5dUw2MzRXNDVG?=
+ =?utf-8?B?ekRqMnJBNnZrQ3FlckVDbWg0L1dJM1BpYVowYjJkYlZJY0s4L3NNY3VmWDNl?=
+ =?utf-8?B?dG1KbFk0ZnUzNzFqbjFEejJScUVPL01XNGsxU1poYVhqQ3dGa01Hek05MlBW?=
+ =?utf-8?B?QzdRRmVmVXdwK0VKUEUyVHFkUjlLZWF2OVRBc0EwSHQ4dUVucGtkS05JdWMw?=
+ =?utf-8?B?aEVnUXBVc0ZXOS9LcDZSZHc2VHh5ZUFnK3hkKzNyVmtUM3lQeGhrM1o4QW5a?=
+ =?utf-8?B?RndKcElWSDVxSXEwUFM4U0VKNmxVL1hDQjI5bTZNUkxuNHNvbWFycEZrL1pU?=
+ =?utf-8?B?T3pkTStsVmpsTFZ4WmpoRkZlU0d6RVc0SU1PNFZmbTN3UnpISjRCOGc3S0pB?=
+ =?utf-8?B?VUF1WE50cDRrcnZIeHlmYTcyQUczN2w0N2R2ZWtTZ0tIdG1BN0UxWnhvUlpP?=
+ =?utf-8?Q?4BRaFBH46fxuqoAC0wRa7UFHO?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a31801d8-21b8-4ce6-fc2b-08dbd4d3e9be
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 20:58:02.9941
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F77bqHzjDjTPuUM7phe0uh1WzXWJuuX36I0Ems6RY+SOpNrQeiuAmxrk29QGdme7vjSnDdc1Kv6iMf6TIGpXgg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9098
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for this smartphone based on the MSM8926 SoC, codenamed
-"memul".
+On 10/24/2023 11:20 AM, Bragatheswaran Manickavel wrote:
+> 
+> kfree()/vfree() internally perform NULL check on the
+> pointer handed to it and take no action if it indeed is
+> NULL. Hence there is no need for a pre-check of the memory
+> pointer before handing it to kfree()/vfree().
+> 
+> Issue reported by ifnullfree.cocci Coccinelle semantic
+> patch script.
+> 
+> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
 
-Supported functionality:
-* Power & volume buttons
-* ADSP
-* Magnetometer
-* Accelerometer
-* Touchscreen
-* Vibrator
-* SD card
-* Charger
-* USB
+Thanks -sln
 
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
----
- arch/arm/boot/dts/qcom/Makefile                   |   1 +
- arch/arm/boot/dts/qcom/qcom-msm8926-htc-memul.dts | 369 ++++++++++++++++++++++
- 2 files changed, 370 insertions(+)
+Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
 
-diff --git a/arch/arm/boot/dts/qcom/Makefile b/arch/arm/boot/dts/qcom/Makefile
-index a3d293e40820..0cb272f4fa45 100644
---- a/arch/arm/boot/dts/qcom/Makefile
-+++ b/arch/arm/boot/dts/qcom/Makefile
-@@ -32,6 +32,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
- 	qcom-msm8916-samsung-e7.dtb \
- 	qcom-msm8916-samsung-grandmax.dtb \
- 	qcom-msm8916-samsung-serranove.dtb \
-+	qcom-msm8926-htc-memul.dtb \
- 	qcom-msm8926-microsoft-superman-lte.dtb \
- 	qcom-msm8926-microsoft-tesla.dtb \
- 	qcom-msm8960-cdp.dtb \
-diff --git a/arch/arm/boot/dts/qcom/qcom-msm8926-htc-memul.dts b/arch/arm/boot/dts/qcom/qcom-msm8926-htc-memul.dts
-new file mode 100644
-index 000000000000..e4b0eaf101ff
---- /dev/null
-+++ b/arch/arm/boot/dts/qcom/qcom-msm8926-htc-memul.dts
-@@ -0,0 +1,369 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2023, Luca Weiss <luca@z3ntu.xyz>
-+ */
-+
-+/dts-v1/;
-+
-+#include "qcom-msm8226.dtsi"
-+#include "qcom-pm8226.dtsi"
-+
-+/delete-node/ &adsp_region;
-+/delete-node/ &smem_region;
-+
-+/ {
-+	model = "HTC One Mini 2";
-+	compatible = "htc,memul", "qcom,msm8926", "qcom,msm8226";
-+	chassis-type = "handset";
-+
-+	aliases {
-+		mmc1 = &sdhc_2; /* SDC2 SD card slot */
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		key-power {
-+			label = "Power";
-+			gpios = <&tlmm 106 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_POWER>;
-+			debounce-interval = <15>;
-+		};
-+
-+		key-volume-down {
-+			label = "Volume Down";
-+			gpios = <&tlmm 107 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_VOLUMEDOWN>;
-+			debounce-interval = <15>;
-+		};
-+
-+		key-volume-up {
-+			label = "Volume Up";
-+			gpios = <&tlmm 108 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_VOLUMEUP>;
-+			debounce-interval = <15>;
-+		};
-+	};
-+
-+	reserved-memory {
-+		unknown@5b00000 {
-+			reg = <0x05b00000 0x200000>;
-+			no-map;
-+		};
-+
-+		unknown@7500000 {
-+			reg = <0x07500000 0xb00000>;
-+			no-map;
-+		};
-+
-+		mpss_region: mpss@8000000 {
-+			reg = <0x08000000 0x4f00000>;
-+			no-map;
-+		};
-+
-+		unknown@cf00000 {
-+			reg = <0x0cf00000 0x200000>;
-+			no-map;
-+		};
-+
-+		mba_region: mba@d100000 {
-+			reg = <0x0d100000 0x3a000>;
-+			no-map;
-+		};
-+
-+		unknown@d13a000 {
-+			reg = <0x0d13a000 0xc6000>;
-+			no-map;
-+		};
-+
-+		wcnss_region: wcnss@d200000 {
-+			reg = <0x0d200000 0x650000>;
-+			no-map;
-+		};
-+
-+		unknown@d850000 {
-+			reg = <0x0d850000 0x3b0000>;
-+			no-map;
-+		};
-+
-+		adsp_region: adsp@dc00000 {
-+			reg = <0x0dc00000 0x1400000>;
-+			no-map;
-+		};
-+
-+		unknown@f000000 {
-+			reg = <0x0f000000 0x500000>;
-+			no-map;
-+		};
-+
-+		venus_region: venus@f500000 {
-+			reg = <0x0f500000 0x500000>;
-+			no-map;
-+		};
-+
-+		smem_region: smem@fa00000 {
-+			reg = <0x0fa00000 0x100000>;
-+			no-map;
-+		};
-+
-+		unknown@fb00000 {
-+			reg = <0x0fb00000 0x1b00000>;
-+			no-map;
-+		};
-+	};
-+};
-+
-+&adsp {
-+	firmware-name = "qcom/msm8926/memul/adsp.mbn";
-+	status = "okay";
-+};
-+
-+&blsp1_i2c2 {
-+	status = "okay";
-+
-+	magnetometer@d {
-+		compatible = "asahi-kasei,ak8963";
-+		reg = <0x0d>;
-+		interrupts-extended = <&tlmm 66 IRQ_TYPE_EDGE_RISING>;
-+		vdd-supply = <&pm8226_l19>;
-+		vid-supply = <&pm8226_l28>;
-+	};
-+
-+	accelerometer@18 {
-+		compatible = "bosch,bma250e";
-+		reg = <0x18>;
-+		interrupts-extended = <&tlmm 63 IRQ_TYPE_EDGE_RISING>;
-+		vdd-supply = <&pm8226_l19>;
-+		vddio-supply = <&pm8226_l28>;
-+	};
-+};
-+
-+&blsp1_i2c4 {
-+	status = "okay";
-+
-+	/* TFA9887 @ 34 */
-+	/* TFA9887 @ 35 */
-+};
-+
-+&blsp1_i2c5 {
-+	status = "okay";
-+
-+	touchscreen@20 {
-+		compatible = "syna,rmi4-i2c";
-+		reg = <0x20>;
-+
-+		interrupts-extended = <&tlmm 17 IRQ_TYPE_EDGE_FALLING>;
-+		vdd-supply = <&pm8226_l19>;
-+
-+		syna,startup-delay-ms = <160>;
-+
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		rmi4-f01@1 {
-+			reg = <0x1>;
-+			syna,nosleep-mode = <1>;
-+		};
-+
-+		rmi4-f12@12 {
-+			reg = <0x12>;
-+			syna,sensor-type = <1>;
-+		};
-+	};
-+};
-+
-+&blsp1_i2c6 {
-+	status = "okay";
-+
-+	/* NCP6924 Camera Regulators @ 10 */
-+	/* PN544 NFC @ 28 */
-+	/* TPS61310 Flash/Torch @ 33 */
-+};
-+
-+&pm8226_vib {
-+	status = "okay";
-+};
-+
-+&rpm_requests {
-+	regulators {
-+		compatible = "qcom,rpm-pm8226-regulators";
-+
-+		pm8226_s3: s3 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1350000>;
-+		};
-+
-+		pm8226_s4: s4 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2200000>;
-+		};
-+
-+		pm8226_s5: s5 {
-+			regulator-min-microvolt = <1150000>;
-+			regulator-max-microvolt = <1150000>;
-+		};
-+
-+		pm8226_l1: l1 {
-+			regulator-min-microvolt = <1225000>;
-+			regulator-max-microvolt = <1225000>;
-+		};
-+
-+		pm8226_l2: l2 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+		};
-+
-+		pm8226_l3: l3 {
-+			regulator-min-microvolt = <750000>;
-+			regulator-max-microvolt = <1337500>;
-+		};
-+
-+		pm8226_l4: l4 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+		};
-+
-+		pm8226_l5: l5 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+		};
-+
-+		pm8226_l6: l6 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+		};
-+
-+		pm8226_l7: l7 {
-+			regulator-min-microvolt = <1850000>;
-+			regulator-max-microvolt = <1850000>;
-+		};
-+
-+		pm8226_l8: l8 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+		};
-+
-+		pm8226_l9: l9 {
-+			regulator-min-microvolt = <2050000>;
-+			regulator-max-microvolt = <2050000>;
-+		};
-+
-+		pm8226_l10: l10 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+		};
-+
-+		pm8226_l12: l12 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+		};
-+
-+		pm8226_l14: l14 {
-+			regulator-min-microvolt = <2750000>;
-+			regulator-max-microvolt = <2750000>;
-+		};
-+
-+		pm8226_l15: l15 {
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3000000>;
-+		};
-+
-+		pm8226_l16: l16 {
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3350000>;
-+		};
-+
-+		pm8226_l17: l17 {
-+			regulator-min-microvolt = <2950000>;
-+			regulator-max-microvolt = <2950000>;
-+		};
-+
-+		pm8226_l18: l18 {
-+			regulator-min-microvolt = <2950000>;
-+			regulator-max-microvolt = <2950000>;
-+		};
-+
-+		pm8226_l19: l19 {
-+			regulator-min-microvolt = <2850000>;
-+			regulator-max-microvolt = <2850000>;
-+		};
-+
-+		pm8226_l20: l20 {
-+			regulator-min-microvolt = <3075000>;
-+			regulator-max-microvolt = <3075000>;
-+		};
-+
-+		pm8226_l21: l21 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2950000>;
-+		};
-+
-+		pm8226_l22: l22 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2950000>;
-+		};
-+
-+		pm8226_l23: l23 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <3000000>;
-+		};
-+
-+		pm8226_l24: l24 {
-+			regulator-min-microvolt = <1300000>;
-+			regulator-max-microvolt = <1350000>;
-+		};
-+
-+		pm8226_l25: l25 {
-+			regulator-min-microvolt = <1775000>;
-+			regulator-max-microvolt = <2125000>;
-+		};
-+
-+		pm8226_l26: l26 {
-+			regulator-min-microvolt = <1225000>;
-+			regulator-max-microvolt = <1225000>;
-+		};
-+
-+		pm8226_l27: l27 {
-+			regulator-min-microvolt = <2050000>;
-+			regulator-max-microvolt = <2050000>;
-+		};
-+
-+		pm8226_l28: l28 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+		};
-+
-+		pm8226_lvs1: lvs1 {};
-+	};
-+};
-+
-+&sdhc_2 {
-+	vmmc-supply = <&pm8226_l18>;
-+	vqmmc-supply = <&pm8226_l21>;
-+
-+	bus-width = <4>;
-+	cd-gpios = <&tlmm 38 GPIO_ACTIVE_LOW>;
-+
-+	status = "okay";
-+};
-+
-+&smbb {
-+	qcom,fast-charge-safe-current = <1750000>;
-+	qcom,fast-charge-current-limit = <1750000>;
-+	qcom,fast-charge-safe-voltage = <4360000>;
-+	qcom,fast-charge-high-threshold-voltage = <4350000>;
-+	qcom,auto-recharge-threshold-voltage = <4300000>;
-+	qcom,minimum-input-voltage = <4300000>;
-+};
-+
-+&usb {
-+	extcon = <&smbb>;
-+	dr_mode = "peripheral";
-+	status = "okay";
-+};
-+
-+&usb_hs_phy {
-+	extcon = <&smbb>;
-+	v1p8-supply = <&pm8226_l10>;
-+	v3p3-supply = <&pm8226_l20>;
-+};
 
--- 
-2.42.0
-
+> ---
+>   drivers/net/ethernet/amd/pds_core/core.c | 7 ++-----
+>   1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/amd/pds_core/core.c b/drivers/net/ethernet/amd/pds_core/core.c
+> index 2a8643e167e1..0d2091e9eb28 100644
+> --- a/drivers/net/ethernet/amd/pds_core/core.c
+> +++ b/drivers/net/ethernet/amd/pds_core/core.c
+> @@ -152,11 +152,8 @@ void pdsc_qcq_free(struct pdsc *pdsc, struct pdsc_qcq *qcq)
+>                  dma_free_coherent(dev, qcq->cq_size,
+>                                    qcq->cq_base, qcq->cq_base_pa);
+> 
+> -       if (qcq->cq.info)
+> -               vfree(qcq->cq.info);
+> -
+> -       if (qcq->q.info)
+> -               vfree(qcq->q.info);
+> +       vfree(qcq->cq.info);
+> +       vfree(qcq->q.info);
+> 
+>          memset(qcq, 0, sizeof(*qcq));
+>   }
+> --
+> 2.34.1
+> 
