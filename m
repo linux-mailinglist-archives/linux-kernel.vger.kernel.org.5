@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C32947D5D88
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FDF7D5D8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344419AbjJXVzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 17:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33462 "EHLO
+        id S1344426AbjJXV4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 17:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbjJXVzP (ORCPT
+        with ESMTP id S1344403AbjJXV4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:55:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFA7E8;
-        Tue, 24 Oct 2023 14:55:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F67EC433C8;
-        Tue, 24 Oct 2023 21:55:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698184513;
-        bh=P7/4e1Dwgwt6xkr0kjlejhcedqORVdLF8phzFc0FC4c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A45HtPK8zMeczF81V+jdlq9O1vbVl7KDiDIZ6k3hJb6Hn/TOoVdfNRpjxgDkrVyzC
-         OkcBER41dgrC2iegEaAOeAU4tlepjR/0azIex+fIS/hpEVkrfuZbDq43sEHofbbpIx
-         eWORneNvBI5STQMUfxZBO8PWWBP5HHTPZo6o97+K58XKJdDNHJoY4NKArS/7Q6bSSl
-         DiEhtFh3GKjQVpHCNbOokwIA8KXeh5fnl+IlK20RJgY6Z/KSS9ctwztNloUguMiTNE
-         qX78/cTki23SQzoL2NY6ZDT8ZEZN7OIJjijwH1/6CbbuDITYv/FFywxKW3FCi3A9kx
-         DGkSv66oBd7mg==
-Date:   Tue, 24 Oct 2023 23:55:09 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     =?utf-8?B?QW5kcsOp?= Draszik <andre.draszik@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, krzysztof.kozlowski@linaro.org,
-        alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v2] tty: serial: samsung_tty: remove dead code
-Message-ID: <20231024215509.ak4jbbahw2vsahs6@zenone.zhora.eu>
-References: <20231019100901.4026680-1-andre.draszik@linaro.org>
+        Tue, 24 Oct 2023 17:56:05 -0400
+Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B59210C6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:56:01 -0700 (PDT)
+Received: from localhost.localdomain ([141.170.221.62])
+        by smtp.orange.fr with ESMTPA
+        id vPNUqJGNq1FecvPNUqURC8; Tue, 24 Oct 2023 23:56:00 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698184560;
+        bh=PUTDQPvlFyPiEvyDiwi2WaoHEwZQ4gD1D9wjPH22Tg0=;
+        h=From:To:Cc:Subject:Date;
+        b=m3a5cy2Fq0IFJO5I90Z2OyNKDQtVh1a+EOqxMi1KRWgteOCtrQ7bKPq2vV+1rch2+
+         BP2NfvJYJPBRumCe4D0AQLFe00sgurSShw3jE7Ju3suGti7jr3UlnrdFpslqZGvRw9
+         mwk8PAfy3Hx2JBfsFXRY4risyQs+jfH3GrGVftKAk7zYWbKuA0EMsK0vB1RNJw1f2B
+         8ex1tKMtO/cNL8nYqFkYhJtHs3Opcf4HknbQpIaXmzaLpLLZCqUHKMVbIQ9dk0Ky0G
+         uA4pTg0GzMeXGCi7Sp54hrkiG7LT5pe1VAOoq0ac1NdsNN/ikSDkIvqepcd5BQBe1p
+         DARy2dv72SFow==
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 24 Oct 2023 23:56:00 +0200
+X-ME-IP: 141.170.221.62
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        trond.myklebust@hammerspace.com, anna@kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] net: sunrpc: Fix an off by one in root_nfs_cat()
+Date:   Tue, 24 Oct 2023 23:55:30 +0200
+Message-Id: <856a652a7e28dde246b00025da7d4115978ae75f.1698184400.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231019100901.4026680-1-andre.draszik@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andre,
+The intent is to check if the strings' are truncated or not. So, >= should
+be used instead of >, because strlcat() and snprintf() return the length of
+the output, excluding the trailing NULL.
 
-On Thu, Oct 19, 2023 at 11:09:01AM +0100, André Draszik wrote:
-> When support for various old platforms was removed in commit
-> 1ea35b355722 ("ARM: s3c: remove s3c24xx specific hacks"),
-> s3c24xx_serial_ops also became unused here because nothing sets port
-> type TYPE_S3C24XX anymore.
-> 
-> Remove s3c24xx_serial_ops and all the code that's unreachable now.
-> 
-> Fixes: 1ea35b355722 ("ARM: s3c: remove s3c24xx specific hacks")
+Fixes: a02d69261134 ("SUNRPC: Provide functions for managing universal addresses")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ net/sunrpc/addr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-is this really a fix? Or is it a cleanup?
+diff --git a/net/sunrpc/addr.c b/net/sunrpc/addr.c
+index d435bffc6199..97ff11973c49 100644
+--- a/net/sunrpc/addr.c
++++ b/net/sunrpc/addr.c
+@@ -284,10 +284,10 @@ char *rpc_sockaddr2uaddr(const struct sockaddr *sap, gfp_t gfp_flags)
+ 	}
+ 
+ 	if (snprintf(portbuf, sizeof(portbuf),
+-		     ".%u.%u", port >> 8, port & 0xff) > (int)sizeof(portbuf))
++		     ".%u.%u", port >> 8, port & 0xff) >= (int)sizeof(portbuf))
+ 		return NULL;
+ 
+-	if (strlcat(addrbuf, portbuf, sizeof(addrbuf)) > sizeof(addrbuf))
++	if (strlcat(addrbuf, portbuf, sizeof(addrbuf)) >= sizeof(addrbuf))
+ 		return NULL;
+ 
+ 	return kstrdup(addrbuf, gfp_flags);
+-- 
+2.32.0
 
-Andi
-
-> Signed-off-by: André Draszik <andre.draszik@linaro.org>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
