@@ -2,109 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EC27D4458
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7CD7D445A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbjJXA4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 20:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
+        id S231702AbjJXA44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 20:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjJXA4g (ORCPT
+        with ESMTP id S229510AbjJXA4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 20:56:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FAFEE
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:56:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75ACBC433C8;
-        Tue, 24 Oct 2023 00:56:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698108994;
-        bh=9JswtvnuZeTfrT6UZLP6xIqZ8XMw44neq1OfJu39tX8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LRXHqzNBrMKDyCAdYOdYwVgT4WQyVM8fTk4yL4MHlur0W/WVUqxkMerFmrVpmy7Pz
-         +Zuw7gKSH8Te+DuE9dmexdWyNSQNNhaWtsBSAKaxBLdPERZp0M8JjUDh6ggJBlmJzB
-         knjsLHqxfQpya1MnCgQpYw/l/YfQWbgYmvKGrplu9T/fic/xqAnkvdB4DN6cnZZzHc
-         63VSFYRngBPJ0j2tgymYkcpMwtAlA5OD500++zDN7WJ9WU2kOKXNXDOvJ5ld+lOYZ6
-         baDHA9tFED6SGjJO8h69YIFo1R5uSNtgfFVsn7KuBMJjhV7DdOyPv4BQoemvPAMjTl
-         zw4GiBtioOyUg==
-Date:   Tue, 24 Oct 2023 09:56:27 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
-        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
-        rostedt@goodmis.org, peterz@infradead.org,
-        akpm@linux-foundation.org, sander@svanheule.net,
-        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
-Subject: Re: [PATCH v1] lib,kprobes: using try_cmpxchg_local in objpool_push
-Message-Id: <20231024095627.0d19118925bb6d3c370671a7@kernel.org>
-In-Reply-To: <20231023112452.6290-1-wuqiang.matt@bytedance.com>
-References: <20231023112452.6290-1-wuqiang.matt@bytedance.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 23 Oct 2023 20:56:54 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DDD210E;
+        Mon, 23 Oct 2023 17:56:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=78+m0X28g+8K5fIS7BSl6fCBE5Ci01OLZTR2J9ZW1K4=; b=bW
+        et3xycyU6pd/IilZVvr/W60pMyg8jDYcWaWrsakzeGtJBPGJm+6EyueGFx5HUHZQvJla6ZYoqp9EF
+        LQUowD3SjVmArluMRq2HAvW3I8R+w+iaX236FuwicHclWDy3zmlA9fAI441J+OpyWcphlLTCAR9+p
+        gitztlkGwuGLQvc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qv5ir-0001eZ-O7; Tue, 24 Oct 2023 02:56:41 +0200
+Date:   Tue, 24 Oct 2023 02:56:41 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        corbet@lwn.net, steen.hegelund@microchip.com,
+        rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        horatiu.vultur@microchip.com, Woojung.Huh@microchip.com,
+        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
+        Thorsten.Kummermehr@microchip.com
+Subject: Re: [PATCH net-next v2 5/9] net: ethernet: oa_tc6: implement
+ internal PHY initialization
+Message-ID: <5c240b3b-60c2-45bb-8861-e3a8de28d00f@lunn.ch>
+References: <20231023154649.45931-1-Parthiban.Veerasooran@microchip.com>
+ <20231023154649.45931-6-Parthiban.Veerasooran@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231023154649.45931-6-Parthiban.Veerasooran@microchip.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 19:24:52 +0800
-"wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+> +	/* Minimum supported Chunk Payload Size */
+>  	mincps = FIELD_GET(MINCPS, regval);
+> +	/* Cut-Through Capability */
+>  	ctc = (regval & CTC) ? true : false;
 
-> The objpool_push can only happen on local cpu node, so only the local
-> cpu can touch slot->tail and slot->last, which ensures the correctness
-> of using cmpxchg without lock prefix (using try_cmpxchg_local instead
-> of try_cmpxchg_acquire).
-> 
-> Testing with IACA found the lock version of pop/push pair costs 16.46
-> cycles and local-push version costs 15.63 cycles. Kretprobe throughput
-> is improved to 1.019 times of the lock version for x86_64 systems.
-> 
-> OS: Debian 10 X86_64, Linux 6.6rc6 with freelist
-> HW: XEON 8336C x 2, 64 cores/128 threads, DDR4 3200MT/s
-> 
->                  1T         2T         4T         8T        16T
->   lock:    29909085   59865637  119692073  239750369  478005250
->   local:   30297523   60532376  121147338  242598499  484620355
->                 32T        48T        64T        96T       128T
->   lock:   957553042 1435814086 1680872925 2043126796 2165424198
->   local:  968526317 1454991286 1861053557 2059530343 2171732306
-> 
+These comment should be in the patch which added these, not here.
 
-Yeah, slot->tail is only used on the local CPU. This looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thanks!
-
-> Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
-> ---
->  lib/objpool.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/objpool.c b/lib/objpool.c
-> index ce0087f64400..a032701beccb 100644
-> --- a/lib/objpool.c
-> +++ b/lib/objpool.c
-> @@ -166,7 +166,7 @@ objpool_try_add_slot(void *obj, struct objpool_head *pool, int cpu)
->  		head = READ_ONCE(slot->head);
->  		/* fault caught: something must be wrong */
->  		WARN_ON_ONCE(tail - head > pool->nr_objs);
-> -	} while (!try_cmpxchg_acquire(&slot->tail, &tail, tail + 1));
-> +	} while (!try_cmpxchg_local(&slot->tail, &tail, tail + 1));
+> +	/* Direct PHY Register Access Capability */
+> +	dprac = (regval & DPRAC) ? true : false;
+> +	/* Indirect PHY Register access Capability */
+> +	iprac = (regval & IPRAC) ? true : false;
 >  
->  	/* now the tail position is reserved for the given obj */
->  	WRITE_ONCE(slot->entries[tail & slot->mask], obj);
-> -- 
-> 2.40.1
-> 
+>  	regval = 0;
+>  	oa_node = of_get_child_by_name(spi->dev.of_node, "oa-tc6");
+> @@ -242,7 +257,7 @@ static int oa_tc6_configure(struct oa_tc6 *tc6)
+>  			if (tc6->cps < mincps)
+>  				return -ENODEV;
+>  		} else {
+> -			tc6->cps = 64;
+> +			tc6->cps = OA_TC6_MAX_CPS;
 
+This also should of been in an earlier patch.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>  		}
+>  		if (of_property_present(oa_node, "oa-txcte")) {
+>  			/* Return error if the tx cut through mode is configured
+> @@ -266,8 +281,26 @@ static int oa_tc6_configure(struct oa_tc6 *tc6)
+>  			regval |= PROTE;
+>  			tc6->prote = true;
+>  		}
+> +		if (of_property_present(oa_node, "oa-dprac")) {
+> +			/* Return error if the direct phy register access mode
+> +			 * is configured but it is not supported by MAC-PHY.
+> +			 */
+> +			if (dprac)
+> +				tc6->dprac = true;
+> +			else
+> +				return -ENODEV;
+> +		}
+
+This is not in the binding. Why do we even need to be able to
+configure it. Direct is faster, so use it is available. If not, use
+indirect. And if both dprac and iproc are false, dev_err() and
+-ENODEV.
+
+> +static int oa_tc6_mdiobus_read(struct mii_bus *bus, int phy_id, int idx)
+
+It would be good to put direct in the name. If somebody implements
+indirect, it will make the naming easier.
+
+> +{
+> +	struct oa_tc6 *tc6 = bus->priv;
+> +	u32 regval;
+> +	bool ret;
+> +
+> +	ret = oa_tc6_read_register(tc6, 0xFF00 | (idx & 0xFF), &regval);
+> +	if (ret)
+> +		return -ENODEV;
+> +
+> +	return regval;
+> +}
+> +
+> +static int oa_tc6_mdiobus_write(struct mii_bus *bus, int phy_id, int idx,
+> +				u16 val)
+> +{
+> +	struct oa_tc6 *tc6 = bus->priv;
+> +
+> +	return oa_tc6_write_register(tc6, 0xFF00 | (idx & 0xFF), val);
+> +}
+> +
+> +static int oa_tc6_phy_init(struct oa_tc6 *tc6)
+> +{
+> +	int ret;
+> +
+> +	if (tc6->dprac) {
+
+You can avoid the indentation by first checking indirect is the only
+choice, and doing a dev_err() followed by return -ENODEV.
+
+> +		tc6->mdiobus = mdiobus_alloc();
+> +		if (!tc6->mdiobus) {
+> +			netdev_err(tc6->netdev, "MDIO bus alloc failed\n");
+> +			return -ENODEV;
+> +		}
+> +
+> +		tc6->mdiobus->phy_mask = ~(u32)BIT(1);
+
+Does the standard define this ? BIT(1), not BIT(0)?
+
+>  /**
+>   * oa_tc6_init - allocates and intializes oa_tc6 structure.
+>   * @spi: device with which data will be exchanged.
+> - * @prote: control data (register) read/write protection enable/disable.
+
+Something else which should of been in the previous patch. Please look
+through this patch and find all the other instances.
+
+> + * @netdev: network device to use.
+>   *
+>   * Returns pointer reference to the oa_tc6 structure if all the memory
+>   * allocation success otherwise NULL.
+>   */
+> -struct oa_tc6 *oa_tc6_init(struct spi_device *spi)
+> +struct oa_tc6 *oa_tc6_init(struct spi_device *spi, struct net_device *netdev)
+>  {
+>  	struct oa_tc6 *tc6;
+>  
+> @@ -395,15 +521,19 @@ struct oa_tc6 *oa_tc6_init(struct spi_device *spi)
+>  	if (!tc6)
+>  		return NULL;
+>  
+> +	/* Allocate memory for the control tx buffer used for SPI transfer. */
+>  	tc6->ctrl_tx_buf = devm_kzalloc(&spi->dev, TC6_CTRL_BUF_SIZE, GFP_KERNEL);
+>  	if (!tc6->ctrl_tx_buf)
+>  		return NULL;
+>  
+> +	/* Allocate memory for the control rx buffer used for SPI transfer. */
+>  	tc6->ctrl_rx_buf = devm_kzalloc(&spi->dev, TC6_CTRL_BUF_SIZE, GFP_KERNEL);
+>  	if (!tc6->ctrl_rx_buf)
+>  		return NULL;
+>  
+>  	tc6->spi = spi;
+> +	tc6->netdev = netdev;
+> +	SET_NETDEV_DEV(netdev, &spi->dev);
+>  
+>  	/* Perform MAC-PHY software reset */
+>  	if (oa_tc6_sw_reset(tc6)) {
+> @@ -417,10 +547,27 @@ struct oa_tc6 *oa_tc6_init(struct spi_device *spi)
+>  		return NULL;
+>  	}
+>  
+> +	/* Initialize PHY */
+> +	if (oa_tc6_phy_init(tc6)) {
+> +		dev_err(&spi->dev, "PHY initialization failed\n");
+> +		return NULL;
+> +	}
+> +
+>  	return tc6;
+>  }
+>  EXPORT_SYMBOL_GPL(oa_tc6_init);
+>  
+> +/**
+> + * oa_tc6_exit - exit function.
+> + * @tc6: oa_tc6 struct.
+> + *
+> + */
+> +void oa_tc6_exit(struct oa_tc6 *tc6)
+> +{
+> +	oa_tc6_phy_exit(tc6);
+> +}
+> +EXPORT_SYMBOL_GPL(oa_tc6_exit);
+> +
+>  MODULE_DESCRIPTION("OPEN Alliance 10BASE‑T1x MAC‑PHY Serial Interface Lib");
+>  MODULE_AUTHOR("Parthiban Veerasooran <parthiban.veerasooran@microchip.com>");
+>  MODULE_LICENSE("GPL");
+> diff --git a/include/linux/oa_tc6.h b/include/linux/oa_tc6.h
+> index 378636fd9ca8..36b729c384ac 100644
+> --- a/include/linux/oa_tc6.h
+> +++ b/include/linux/oa_tc6.h
+> @@ -5,54 +5,59 @@
+>   * Author: Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
+>   */
+>  
+> +#include <linux/etherdevice.h>
+>  #include <linux/spi/spi.h>
+>  
+>  /* Control header */
+> -#define CTRL_HDR_DNC		BIT(31)		/* Data-Not-Control */
+> -#define CTRL_HDR_HDRB		BIT(30)		/* Received Header Bad */
+> -#define CTRL_HDR_WNR		BIT(29)		/* Write-Not-Read */
+> -#define CTRL_HDR_AID		BIT(28)		/* Address Increment Disable */
+> -#define CTRL_HDR_MMS		GENMASK(27, 24)	/* Memory Map Selector */
+> -#define CTRL_HDR_ADDR		GENMASK(23, 8)	/* Address */
+> -#define CTRL_HDR_LEN		GENMASK(7, 1)	/* Length */
+> -#define CTRL_HDR_P		BIT(0)		/* Parity Bit */
+> +#define CTRL_HDR_DNC	BIT(31)		/* Data-Not-Control */
+> +#define CTRL_HDR_HDRB	BIT(30)		/* Received Header Bad */
+> +#define CTRL_HDR_WNR	BIT(29)		/* Write-Not-Read */
+> +#define CTRL_HDR_AID	BIT(28)		/* Address Increment Disable */
+> +#define CTRL_HDR_MMS	GENMASK(27, 24)	/* Memory Map Selector */
+> +#define CTRL_HDR_ADDR	GENMASK(23, 8)	/* Address */
+> +#define CTRL_HDR_LEN	GENMASK(7, 1)	/* Length */
+> +#define CTRL_HDR_P	BIT(0)		/* Parity Bit */
+
+Please don't change the whitespace like this.
+
+       Andrew
