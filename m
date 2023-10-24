@@ -2,102 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EA97D56DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3AE47D56E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343802AbjJXPrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
+        id S234241AbjJXPta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJXPrV (ORCPT
+        with ESMTP id S234724AbjJXPt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:47:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6D4C2;
-        Tue, 24 Oct 2023 08:47:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5267FC433C7;
-        Tue, 24 Oct 2023 15:47:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698162439;
-        bh=IoRcMqQobOWmVc0E97Y2wJjL+IlvKc3OjGUUBJBdy2Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gfyqkcXuTiq9JCbtgds/gyTx61nkkPRAH+LYRCaqwbIIXsi+rXAYSPHMjOsSHf+tA
-         O74wFQtvu2Pd7Sutu6+aumBA5QZKjF5jY4CqlMaEeHKYP2ZmbTxc+NaKB0dyhkddEc
-         8AbaXFhRunA43jgMPC1VbFwV6vjgWhdE4jvStFumGsfz2emXRAzhiIlBpu3zHsbYG+
-         309vL/WkHIjSK/7vdjkxRO03Lx6uAH7sUL9/KFBbVhwZMfqLp38FlrNVWqltqT1V0l
-         SobbKEOcRejC2X6ewHA5cUmzn3uxhWPdvJVWV3Vm+Z4JxSqJN5s+ddiqRbD6NGBcDW
-         BDCZ81BCBiweQ==
-Date:   Tue, 24 Oct 2023 16:47:14 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Jeff LaBundy <jeff@labundy.com>
-Cc:     James Ogletree <James.Ogletree@cirrus.com>,
-        James Ogletree <james.ogletree@opensource.cirrus.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Fred Treven <Fred.Treven@cirrus.com>,
-        Ben Bright <Ben.Bright@cirrus.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 3/4] mfd: cs40l50: Add support for CS40L50 core driver
-Message-ID: <20231024154714.GK8909@google.com>
-References: <20231018175726.3879955-1-james.ogletree@opensource.cirrus.com>
- <20231018175726.3879955-4-james.ogletree@opensource.cirrus.com>
- <20231019162359.GF2424087@google.com>
- <E3224624-7FF4-48F6-BA53-08312B69EF9F@cirrus.com>
- <20231023092046.GA8909@google.com>
- <ZTcZIMbrFEhz+rm4@nixie71>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZTcZIMbrFEhz+rm4@nixie71>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Tue, 24 Oct 2023 11:49:28 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61803C2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:49:26 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9cce40f7eso38798685ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:49:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698162566; x=1698767366; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G80d6SYNl+i6LLR4j1qPSwa+o2+/ZMsAHEKXJ7GB4aE=;
+        b=b3kjausxWoRgpyBk1nGj26eczvmNxVsJavTGXE5lQezJqNWoQ2BxoNG12rRUB3nTom
+         pN1HmxTbWY7RmK3OsJluezg1IlO162t9JmgENIdFSvKxBF3M9J52tZfuBLNIGGef55qK
+         qGcKmYq/ZY8+xlnF/J49KxUU6nXE684qB9G6T1wuE2+QQgMENpVxkuD4UeFo5k84NTT8
+         o9vJiKborwoR03oYnZPsKKKA9x1oVCNev3Ifs50n5M5I3pyJeXyL9XPTYU7P4+vrhWgh
+         nRpqLXk/Q35BryIv8uIPBT3ZLPo1dMkds0y28Wg8RiwyA/40QG7BMLLJE+T1y/2+fVNh
+         iUKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698162566; x=1698767366;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=G80d6SYNl+i6LLR4j1qPSwa+o2+/ZMsAHEKXJ7GB4aE=;
+        b=Ae+ppl7PVRBuy82RdH+X8jD0/hvXo1o6YddeK6Durtbn/qgAD/5uKZlbj/sXu0n2ag
+         WQ7S/l0D9bw+n4GnWjumHKOy4DcH4SP9Euv8STznBVEOr9w4dGOIL6oQQgsj8sUm4OvQ
+         slKLFQ+ko0UScww66t3M5NNp+8/cmFVMop1higXF/yfu0KITZHgJksoV5lINZT8MgXEr
+         rzJ8a60kpT0yVKADOyt6SoKAKgWsUmjn3T7JQIvMZcTPm6xb1A+qtYtVzJIIxcO5Hge1
+         W+3AYqklVf7n08kshRMCQxurDG5XGrKVwK3AvoH9CsDEvwUH3Dx5yX+4qv9PHLXLtbZo
+         AW8g==
+X-Gm-Message-State: AOJu0YwecLYwlmRtveXOvsWi4MoFnMEwEOHiNay7dng6V8pvS1D7Qoq5
+        pqbq7FHPtVZlkSqTyoIH8Y/iPnQJJIw=
+X-Google-Smtp-Source: AGHT+IFrYstubtGogYYYcQdAcTrL20qVe3GVL5ZbVLT3TtIo9yRZ89XR7AFp4qkyCa5YQYIh/rupFNgnsMI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:a3cd:b0:1cb:e677:2f08 with SMTP id
+ q13-20020a170902a3cd00b001cbe6772f08mr39702plb.10.1698162565810; Tue, 24 Oct
+ 2023 08:49:25 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 08:49:24 -0700
+In-Reply-To: <ZTd+i2I5n0NyzuuT@yilunxu-OptiPlex-7050>
+Mime-Version: 1.0
+References: <20231018204624.1905300-1-seanjc@google.com> <20231018204624.1905300-3-seanjc@google.com>
+ <ZTd+i2I5n0NyzuuT@yilunxu-OptiPlex-7050>
+Message-ID: <ZTfnhEocglG1AsO8@google.com>
+Subject: Re: [PATCH 2/3] KVM: Always flush async #PF workqueue when vCPU is
+ being destroyed
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xu Yilun <yilun.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023, Jeff LaBundy wrote:
-> I understand that no customer would ever build the to-be-added codec
-> driver _without_ the input driver, but the MFD must be generic enough
-> to support this case. Would a codec-only implementation use f0 and ReDC
-> estimation? If so, then these functions _do_ belong in the MFD, albeit
-> with some comments to explain their nature.
-
-I'm not going to be able to accept a single-function device into the
-multi-function devices subsystem.  Please submit both once the codec is
-ready.
-
-> > > >> + struct device *dev = cs40l50->dev;
-> > > >> + int error;
-> > > >> +
-> > > >> + mutex_init(&cs40l50->lock);
-> > > > 
-> > > > Don't you need to destroy this in the error path?
-> > > 
-> > > My understanding based on past feedback is that mutex_destroy()
-> > > is an empty function unless mutex debugging is enabled, and there
-> > > is no need cleanup the mutex explicitly. I will change this if you
-> > > disagree with that feedback.
-> > 
-> > It just seems odd to create something and not tear it down.
+On Tue, Oct 24, 2023, Xu Yilun wrote:
+> On Wed, Oct 18, 2023 at 01:46:23PM -0700, Sean Christopherson wrote:
+> > @@ -126,7 +124,19 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
+> >  			list_first_entry(&vcpu->async_pf.done,
+> >  					 typeof(*work), link);
+> >  		list_del(&work->link);
+> > +
+> > +		spin_unlock(&vcpu->async_pf.lock);
+> > +
+> > +		/*
+> > +		 * The async #PF is "done", but KVM must wait for the work item
+> > +		 * itself, i.e. async_pf_execute(), to run to completion.  If
+> > +		 * KVM is a module, KVM must ensure *no* code owned by the KVM
+> > +		 * (the module) can be run after the last call to module_put(),
+> > +		 * i.e. after the last reference to the last vCPU's file is put.
+> > +		 */
+> > +		flush_work(&work->work);
 > 
-> mutex_init() is not creating anything; the mutex struct is allocated as
-> part of the driver's private data, which is de-allocated as part of device
-> managed resources being freed when the module is unloaded.
+> I see the flush_work() is inside the check:
 > 
-> mutex_destroy() is a NOP unless CONFIG_DEBUG_MUTEXES is set, and there are
-> roughly 4x fewer instances of it than mutex_init() in mainline. I recommend
-> not to add mutex_destroy() because it adds unnecessary tear-down paths and
-> remove() callbacks that wouldn't otherwise have to exist.
+>   while (!list_empty(&vcpu->async_pf.done))
+> 
+> Is it possible all async_pf are already completed but the work item,
+> i.e. async_pf_execute, is not completed before this check? That the
+> work is scheduled out after kvm_arch_async_page_present_queued() and
+> all APF_READY requests have been handled. In this case the work
+> synchronization will be skipped...
 
-Fair enough.
+Good gravy.  Yes, I assumed KVM wouldn't be so crazy to delete the work before it
+completed, but I obviously didn't see this comment in async_pf_execute():
 
--- 
-Lee Jones [李琼斯]
+	/*
+	 * apf may be freed by kvm_check_async_pf_completion() after
+	 * this point
+	 */
+
+The most straightforward fix I see is to also flush the work in
+kvm_check_async_pf_completion(), and then delete the comment.  The downside is
+that there's a small chance a vCPU could be delayed waiting for the work to
+complete, but that's a very, very small chance, and likely a very small delay.
+kvm_arch_async_page_present_queued() unconditionaly makes a new request, i.e. will
+effectively delay entering the guest, so the remaining work is really just:
+
+ 	trace_kvm_async_pf_completed(addr, cr2_or_gpa);
+
+	__kvm_vcpu_wake_up(vcpu);
+
+	mmput(mm);
+
+Since mmput() can't drop the last reference to the page tables if the vCPU is
+still alive.
+
+I think I'll spin off the async #PF fix to a separate series.  There's are other
+tangetially related cleanups that can be done, e.g. there's no reason to pin the
+page tables while work is queued, async_pf_execute() can do mmget_not_zero() and
+then bail if the process is dying.  Then there's no need to do mmput() when
+canceling work.
