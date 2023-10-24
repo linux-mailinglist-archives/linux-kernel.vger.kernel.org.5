@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 038277D4B61
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574CC7D4B64
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233990AbjJXI7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
+        id S234009AbjJXI7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233946AbjJXI7l (ORCPT
+        with ESMTP id S233954AbjJXI7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:59:41 -0400
-Received: from out-190.mta1.migadu.com (out-190.mta1.migadu.com [IPv6:2001:41d0:203:375::be])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A203FAC
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:59:38 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 08:59:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698137975;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D6TYYpqy8N97kO8tVC2Cc3XTS86qRouwgud2Yw4OPK4=;
-        b=oFd6EYkL7idjhlxEaG6UTiY53c5RjtDdeG3QcRHlcOHPEzg95lcPHSAzMzHXNHO0bq+jwH
-        S0AjNrrfYFkVGFRIKIhvXqcpVLF/ujPhdmZwVQbJY99KGSuW/VvDTLLF9tS9aslIs6AP4R
-        wBfV8EFFpLCr8xGx0f3ThQAbDEldEms=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v8 05/13] KVM: arm64: Add {get,set}_user for
- PM{C,I}NTEN{SET,CLR}, PMOVS{SET,CLR}
-Message-ID: <ZTeHcj97B8sLw6oI@linux.dev>
-References: <20231020214053.2144305-1-rananta@google.com>
- <20231020214053.2144305-6-rananta@google.com>
+        Tue, 24 Oct 2023 04:59:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0C4C0;
+        Tue, 24 Oct 2023 01:59:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 927FCC433C7;
+        Tue, 24 Oct 2023 08:59:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698137984;
+        bh=bwCKOeae3hSrhlEhSnNT9VrO7FtptDrwqE+crRAZFB8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FTa9g/TqOKqBXjXKmQgF8Y1hSmWPP8Uh/y4umZIPLDC3hmeI8Vt/ybGibLbAMDr02
+         cTck6JUXSRUTu+VTFzDWBp0sRruPQ/fo7cLa6uGCjJLF6shyMoHk8DWeCnJm5qRBIt
+         HDNWccRQego6ymue7uYPY8eH21XV8ywrStWd60CcHzq+05wvZuLULy0sYVrt94e1YM
+         8A4KrjvGSvRsnhDYqJ1FLo25MwSMt1IgEyB48LHwJoGaN9C+y7eUsRQTKkt8qbjm75
+         Xt/mL0gSMkmbzB3HDkOYH9u+AiHF9Klskgs7ql8xE3LcABLReRUUXICC0DSMR7NQWy
+         X25txjdeylosQ==
+Date:   Tue, 24 Oct 2023 10:59:39 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>
+Subject: upcoming merge window: Re: linux-next: manual merge of the
+ vfs-brauner tree with the btrfs tree
+Message-ID: <20231024-kolossal-ungelegen-f95c436de174@brauner>
+References: <20231009104840.1bdadc80@canb.auug.org.au>
+ <20231009-bauch-gedanken-e02e35804e03@brauner>
+ <20231011083754.45a9ed53@canb.auug.org.au>
+ <20231011092004.GE2211@suse.cz>
+ <20231012154210.GI2211@suse.cz>
+ <20231023175513.GL26353@twin.jikos.cz>
+ <20231024082543.575b3edd@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231020214053.2144305-6-rananta@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231024082543.575b3edd@canb.auug.org.au>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 09:40:45PM +0000, Raghavendra Rao Ananta wrote:
-> For unimplemented counters, the bits in PM{C,I}NTEN{SET,CLR} and
-> PMOVS{SET,CLR} registers are expected to RAZ. To honor this,
-> explicitly implement the {get,set}_user functions for these
-> registers to mask out unimplemented counters for userspace reads
-> and writes.
+On Tue, Oct 24, 2023 at 08:25:43AM +1100, Stephen Rothwell wrote:
+> Hi David,
 > 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->  arch/arm64/kvm/sys_regs.c | 91 ++++++++++++++++++++++++++++++++++++---
->  1 file changed, 85 insertions(+), 6 deletions(-)
+> On Mon, 23 Oct 2023 19:55:13 +0200 David Sterba <dsterba@suse.cz> wrote:
+> >
+> > I have updated my for-next branch again, sorry (top commit 1a4dc97c883a4f763cbaf50).
+> > There are some fixes I don't want to miss from the 6.7 pull request.
+> > There should be minimal change to the VFS tree conflict resolution so
+> > the diff should be reusable.
 > 
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index faf97878dfbbb..2e5d497596ef8 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -987,6 +987,45 @@ static bool access_pmu_evtyper(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
->  	return true;
->  }
->  
-> +static void set_pmreg_for_valid_counters(struct kvm_vcpu *vcpu,
-> +					  u64 reg, u64 val, bool set)
-> +{
-> +	struct kvm *kvm = vcpu->kvm;
-> +
-> +	mutex_lock(&kvm->arch.config_lock);
-> +
-> +	/* Make the register immutable once the VM has started running */
+> So, why did you not just merge in v6.6-rc7 (or better yet, the branch
+> that contains the fix(es) that Linus merged) and then apply your new
+> commits on top of that?  All the commits that were in the btrfs tree
+> have been rebased unchanged.
 
-This is a considerable change from the existing behavior and lacks
-justification. These registers, or rather the state that these aliases
-update, is mutable from the guest. I see no reason for excluding
-userspace from this behavior.
+Please reconsider that and follow Stephen's suggestion. I'm sending pull
+requests this week and it'd be really annoying having to rebase
+vfs.super right before sending them.
 
-> +	if (kvm_vm_has_ran_once(kvm)) {
-> +		mutex_unlock(&kvm->arch.config_lock);
-> +		return;
-> +	}
-> +
-> +	val &= kvm_pmu_valid_counter_mask(vcpu);
-> +	mutex_unlock(&kvm->arch.config_lock);
+We let you carry the required patches in btrfs on your insistence even
+though this effectively blocked two patchsets for a whole cycle and then
+merged in btrfs into vfs.super for that. Rebasing on such short notice
+is really not very nice.
 
-I'm not entirely sold on taking the config_lock here.
-
- - If userspace is doing these ioctls in parallel then it cannot guarantee
-   ordering in the first place, even w/ locking under the hood. Any
-   garbage values will be discarded by KVM_REQ_RELOAD_PMU.
-
- - If the VM has already started PMCR.N is immutable, so there is no
-   race.
-
--- 
-Thanks,
-Oliver
+I'm going to wait with the rebase for a bit.
