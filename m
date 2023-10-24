@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAAD7D4FB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5447D4FB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbjJXM1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
+        id S231849AbjJXM2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbjJXM1L (ORCPT
+        with ESMTP id S231648AbjJXM2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:27:11 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26731129;
-        Tue, 24 Oct 2023 05:27:09 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SFB7s0hkbz6K6Gt;
-        Tue, 24 Oct 2023 20:24:25 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 24 Oct
- 2023 13:27:06 +0100
-Date:   Tue, 24 Oct 2023 13:27:05 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     Ramona Gradinariu <ramona.gradinariu@analog.com>,
-        <jic23@kernel.org>, <nuno.sa@analog.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 3/3] dt-bindings: adis16460: Add
- 'spi-cs-inactive-delay-ns' property
-Message-ID: <20231024132705.00003cf4@Huawei.com>
-In-Reply-To: <b7011f02-a412-4642-862d-c2df88ae316b@linaro.org>
-References: <20231023123542.582392-1-ramona.gradinariu@analog.com>
-        <20231023123542.582392-4-ramona.gradinariu@analog.com>
-        <b7011f02-a412-4642-862d-c2df88ae316b@linaro.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 24 Oct 2023 08:28:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1138CA2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:28:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 575E7C433C7;
+        Tue, 24 Oct 2023 12:28:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698150522;
+        bh=tuVRiGfQiWnM8E4jicwfik1xeBx/YMhxgZb/0MG2F4g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UWHLdykI0TYkRuv6Nspi+eoG1Ivf+2eKMvv2aHJ/3Jo30KcRddOiMAiVlRzG6+ygY
+         Uyr45a5l18MsV0KP9gEtiyRSdyCR9vguEzyjDILw8CvyGtsRkacg4TtQO65sjS26zC
+         kDIw5VTQEc7QZXgBVvur0LvFobYhyDuL1zjzTnW+50hp8LFUySFpztjP8SSADPx87U
+         CyY8I7gm7NiDqYChSRPsqTMY9Z1rBIq5rt2zKDUti9l6ZCxG/Bot7EloKKxUJrrivk
+         B8ycJVueAQqLCIGenpU95Cju5jNvGTBFiL+UZ/aXhpKTdOtenw/cqSRkQIBQ9XGoSr
+         lfydOIulMKjbg==
+Date:   Tue, 24 Oct 2023 13:28:33 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     wangweidong.a@awinic.com
+Cc:     13916275206@139.com, ajye_huang@compal.corp-partner.google.com,
+        alsa-devel@alsa-project.org, arnd@arndb.de,
+        ckeepax@opensource.cirrus.com, colin.i.king@gmail.com,
+        conor+dt@kernel.org, dan.carpenter@linaro.org,
+        devicetree@vger.kernel.org, harshit.m.mogalapalli@oracle.com,
+        herve.codina@bootlin.com, krzysztof.kozlowski+dt@linaro.org,
+        lgirdwood@gmail.com, linus.walleij@linaro.org,
+        linux-kernel@vger.kernel.org, liweilei@awinic.com, perex@perex.cz,
+        rf@opensource.cirrus.com, robh+dt@kernel.org, ryans.lee@analog.com,
+        sebastian.reichel@collabora.com, shumingf@realtek.com,
+        tiwai@suse.com, trix@redhat.com, yijiangtao@awinic.com
+Subject: Re: [PATCH V2 0/4] ASoC: codecs: Add aw88399 amplifier driver
+Message-ID: <7fc2d20d-935f-4721-9731-5719f27de5eb@sirena.org.uk>
+References: <21bfa0bb-d936-402d-9ca9-6bcf181a0f35@sirena.org.uk>
+ <20231024071419.85647-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qQX9jpEgbcrPJR92"
+Content-Disposition: inline
+In-Reply-To: <20231024071419.85647-1-wangweidong.a@awinic.com>
+X-Cookie: 1 bulls, 3 cows.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 15:22:30 +0200
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-> On 23/10/2023 14:35, Ramona Gradinariu wrote:
-> > Add 'spi-cs-inactive-delay-ns' property.  
-> 
-> This we see from the diff. Commit should explain: Why?
-> 
-> > 
-> > Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
-> > ---
-> >  Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> > index 4e43c80e5119..3691c0be4f9d 100644
-> > --- a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> > +++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> > @@ -25,6 +25,11 @@ properties:
-> >  
-> >    spi-cpol: true
-> >  
-> > +  spi-cs-inactive-delay-ns:
-> > +    minimum: 16000
-> > +    description:
-> > +      If not explicitly set in the device tree, the driver will set it to 16us.  
-> 
-> Why do you even need it here?
+--qQX9jpEgbcrPJR92
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Along side that, if you have a default
-default: xxxx
-rather than in the description.
+On Tue, Oct 24, 2023 at 03:14:15PM +0800, wangweidong.a@awinic.com wrote:
+> From: Weidong Wang <wangweidong.a@awinic.com>
+>=20
+> Add the awinic,aw88399 property to the awinic,aw88395.yaml file.
+>=20
+> Add i2c and amplifier registration for
+> aw88399 and their associated operation functions.
 
+This *still* doesn't apply against my current for-next (or for-6.7)
+branch, and you've resent it as another v2.  Please send something based
+against for-6.7 of my sound tree.
 
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
+--qQX9jpEgbcrPJR92
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU3uHEACgkQJNaLcl1U
+h9A92wf8CuLMWbP/AW27kNDmBWdIufdL3rInw6tXVuVaKQDuc1WEQc438WdrNbCn
+FCrOE2X0714a6ZE6I4qe+ffBJgZVsOyFqYr0glcH+/BJmhq1a4fMZ0Ox4cX8WtJL
+sBRrfI8vxohBLqhmZiuHBYf1gW/idYHqwejeno+8ywrboZ26P3krM8d+bozyIQaO
+tjsLl+X9JvQ+t2BBz15S8Fg7sm3tWb9Jfrsgeeiardf0gywyyM9pfolXNJ+LCINP
+HOwP09yGF+/yY/z+3eyhq7R/0VZLE1UB03JbeH4tCiubtuJ6QrCFbCARXe6Eca9o
+IKMUZtmzjGXZ5UFdTGva/qUCjVBH9w==
+=jGdD
+-----END PGP SIGNATURE-----
+
+--qQX9jpEgbcrPJR92--
