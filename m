@@ -2,203 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AFA7D5948
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B0B7D594A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344008AbjJXRB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 13:01:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
+        id S1343931AbjJXRC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 13:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232602AbjJXRBu (ORCPT
+        with ESMTP id S234835AbjJXRCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 13:01:50 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4205118;
-        Tue, 24 Oct 2023 10:01:47 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54041e33845so4119973a12.3;
-        Tue, 24 Oct 2023 10:01:47 -0700 (PDT)
+        Tue, 24 Oct 2023 13:02:24 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF8F122;
+        Tue, 24 Oct 2023 10:02:22 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7a66a7fc2d4so176736839f.0;
+        Tue, 24 Oct 2023 10:02:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698166906; x=1698771706; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tJLSiRFgr+vLugH53T/KVTL1ow4JkI7JxvtTgGarGgg=;
-        b=CVXprM8E3LNLGBlK8gbWhSNMFC0T7cvHR1MMjdbVaxXHRj5DY6xbE6BT3JLDMhtFsm
-         0AJxTc2Ufpwidj788vLJoZEtnFstFB2AJCw8iY8DduOvb9fY8ffmt/AKtEJNfPUZv9Wv
-         WfV+ZK9Qj2WNyHf03LmI3xEWJ9YFnZIIgVYHIHHJih9GP6QXptBXj2/UOc58KRA4Oxk7
-         xJCGuxDdIwgshnksH8kObDYXoze9omw3WoOJ404SQLSFs80CgxcnJxvn2rj8efcMJgqX
-         CYFnUBJNUEbUXx9YPSru1rYYOqa+jOxoE+bKt0Eh7A0F3z00m/6eyRcZMJUaI2xlFl05
-         6asg==
+        d=gmail.com; s=20230601; t=1698166942; x=1698771742; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hy3+CRPCNWCZ0YKD6OUXTpD5Qmway7xYPuUglUxE3qo=;
+        b=ZYziswNj+BpZnF7wRZzwPKEYIuw2ZSnd//0KRfExFWFgKKWn7ywuBBCCRKF2CNmz4H
+         hUbRO+A3oXdV8Pr0vDAyF4te6oK/HvKY0FhZ179zz2/flYnA4O/ftkGLrQHlTjpzRLLJ
+         QcFjZG+lvi0MrwGPSvv3wnBiva7iQ5ToCEvgOTOGTyPNu+wyVwMz4zKVcPfZRg6AvV2O
+         ZVEo+X5+Tqn/edtOD/JYVgGMv7VfluMHzW8gPfq/+0sbXBNhO9l+GS09HSGiGk94L3Zm
+         iLIu5qd6Hy7YVsxKHTPlWnlJxVtbRIdJkUXpAlBH/Mh2zR/O9d+EkeTbBuftIQFUc+83
+         N8sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698166906; x=1698771706;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tJLSiRFgr+vLugH53T/KVTL1ow4JkI7JxvtTgGarGgg=;
-        b=VS9f55CxZYSYQwUWpYydAps0+/zSvgUt6lTBMknxuh4eZDnVjQgcutwWvZHYHNvKfq
-         Bizk1zs54520x47hKN4msGaC3T6kFIgpMbi7GTuLwhnp+XRGTGqOg7/L4dWdBB22SFtP
-         Wmvv2WPNEfAKtxl3Rr50RKoCwRv/MAqzPpUXSH34YHwJ9mH42H/qWiylgRRl/BE3CfkP
-         TIwvGzjdjFDEBT+QYO3Mw2jFYn5KkSV0LZHpy7kMFdswxc7TUQP5KiXs1vSzXy1szPrR
-         whV7naq1gQt4VpuE4J81Bj/WPCOXfSs8ti+XxIngjHFBeTmp5y6GCcmVCMjTuCkJs+cA
-         QVag==
-X-Gm-Message-State: AOJu0YxpNnxRHrBE3wOhZOwU2D0Q1Dc/53fFYaDFpHlyHTDwNx1bPhMF
-        sm7iXa0X7jmgpDfWAUsUWxk=
-X-Google-Smtp-Source: AGHT+IHL7UMfiDcI9b7i6CuEP2RbI/XnIVBaFe2aZzyRZY7FPfL0RBwkSa6uIa0OZH/cy5TAIXfvcg==
-X-Received: by 2002:a50:bae5:0:b0:53d:e5d7:4148 with SMTP id x92-20020a50bae5000000b0053de5d74148mr9651463ede.1.1698166905845;
-        Tue, 24 Oct 2023 10:01:45 -0700 (PDT)
-Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
-        by smtp.gmail.com with ESMTPSA id dn22-20020a05640222f600b005401a4184ddsm5235818edb.27.2023.10.24.10.01.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 10:01:45 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 24 Oct 2023 19:01:42 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pm@vger.kernel.org, rafael@kernel.org,
-        pavel@ucw.cz, linux-perf-users@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 1/2] x86: Enable x2apic during resume from suspend if
- used previously
-Message-ID: <ZTf4dtWBTjiKIntj@gmail.com>
-References: <20231023160018.164054-1-mario.limonciello@amd.com>
- <20231023160018.164054-2-mario.limonciello@amd.com>
- <ZTeB9K4NYu1sRiZ1@gmail.com>
- <6894bebf-15ed-4bd2-aebc-f4ac0a30a395@amd.com>
+        d=1e100.net; s=20230601; t=1698166942; x=1698771742;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hy3+CRPCNWCZ0YKD6OUXTpD5Qmway7xYPuUglUxE3qo=;
+        b=faXm3DWuhmAEhXmMYwseSdopw6BM0qNejFJQTKy1FsCECBQgVORCcRGBnoceaOYprd
+         mmN3tqVWEzDSoIMpyDYo/ugjL7WpsxIeYUhq6LtF3bTmtc0fzLZxJbZfhlQ+ybih2Asy
+         FPdyfe29wJN7IJ4149EHZDK+2M/GtZONxNjD6KVidnZpNI0hojje/RRwI9jH+zNJQnYs
+         2q6yBYOyEtxt5iKs0frtTc7E/Q12U7a9NCyh0mRxESvSRteAo1xV4Jcyh0wYFCGpXc/a
+         2sZRxqfMM9eTlg9r2FIi5rZmC+XQvfMu8tdxkwLhVzqsbwsU0A1KRMBA5yqGa5fkBwzP
+         dD/w==
+X-Gm-Message-State: AOJu0YwkiftbYSMXW7vx4YvOegcWUPUwcnR5lCR1mN2C1cOfxJ63EvXn
+        RraV6UytY6VhepJE6jD/ggo=
+X-Google-Smtp-Source: AGHT+IHI4V/n+ADLtBEqfl2xmuUrCXu2vYEW+5AUBwfIlb3BtAEb99Q1BMOcudP1tfe86Fwy00bnWw==
+X-Received: by 2002:a05:6602:15c2:b0:791:1e87:b47e with SMTP id f2-20020a05660215c200b007911e87b47emr18096321iow.15.1698166942029;
+        Tue, 24 Oct 2023 10:02:22 -0700 (PDT)
+Received: from ?IPV6:2601:284:8200:b700:d8d6:5f8f:cf7b:edca? ([2601:284:8200:b700:d8d6:5f8f:cf7b:edca])
+        by smtp.googlemail.com with ESMTPSA id y16-20020a6be510000000b0076ffebfc9fasm3202921ioc.47.2023.10.24.10.02.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 10:02:21 -0700 (PDT)
+Message-ID: <6a1632a4-28fd-4fdd-b9ff-34dd2f0bba88@gmail.com>
+Date:   Tue, 24 Oct 2023 11:02:20 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6894bebf-15ed-4bd2-aebc-f4ac0a30a395@amd.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 iproute2-next 2/3] rdma: Add an option to set
+ privileged QKEY parameter
+To:     Patrisious Haddad <phaddad@nvidia.com>, jgg@ziepe.ca,
+        leon@kernel.org, stephen@networkplumber.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
+        huangjunxian6@hisilicon.com, michaelgur@nvidia.com
+References: <20231023112217.3439-1-phaddad@nvidia.com>
+ <20231023112217.3439-3-phaddad@nvidia.com>
+Content-Language: en-US
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <20231023112217.3439-3-phaddad@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/23/23 5:22 AM, Patrisious Haddad wrote:
+> diff --git a/rdma/sys.c b/rdma/sys.c
+> index fd785b25..db34cb41 100644
+> --- a/rdma/sys.c
+> +++ b/rdma/sys.c
+> @@ -40,6 +40,17 @@ static int sys_show_parse_cb(const struct nlmsghdr *nlh, void *data)
+>  				   mode_str);
+>  	}
+>  
+> +	if (tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]) {
+> +		uint8_t pqkey_mode;
+> +
+> +		pqkey_mode =
+> +			mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]);
 
-* Mario Limonciello <mario.limonciello@amd.com> wrote:
+just make it mode so it fits on one line.
 
-> +Tom
-> 
-> On 10/24/2023 03:36, Ingo Molnar wrote:
-> > 
-> > * Mario Limonciello <mario.limonciello@amd.com> wrote:
-> > 
-> > > If x2apic was enabled during boot with parallel startup
-> > > it will be needed during resume from suspend to ram as well.
-> > > 
-> > > Store whether to enable into the smpboot_control global variable
-> > > and during startup re-enable it if necessary.
-> > > 
-> > > Cc: stable@vger.kernel.org # 6.5+
-> > > Fixes: 0c7ffa32dbd6 ("x86/smpboot/64: Implement arch_cpuhp_init_parallel_bringup() and enable it")
-> > > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> > > ---
-> > >   arch/x86/include/asm/smp.h   |  1 +
-> > >   arch/x86/kernel/acpi/sleep.c | 12 ++++++++----
-> > >   arch/x86/kernel/head_64.S    | 15 +++++++++++++++
-> > >   3 files changed, 24 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-> > > index c31c633419fe..86584ffaebc3 100644
-> > > --- a/arch/x86/include/asm/smp.h
-> > > +++ b/arch/x86/include/asm/smp.h
-> > > @@ -190,6 +190,7 @@ extern unsigned long apic_mmio_base;
-> > >   #endif /* !__ASSEMBLY__ */
-> > >   /* Control bits for startup_64 */
-> > > +#define STARTUP_ENABLE_X2APIC	0x40000000
-> > >   #define STARTUP_READ_APICID	0x80000000
-> > >   /* Top 8 bits are reserved for control */
-> > > diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-> > > index 6dfecb27b846..29734a1299f6 100644
-> > > --- a/arch/x86/kernel/acpi/sleep.c
-> > > +++ b/arch/x86/kernel/acpi/sleep.c
-> > > @@ -11,6 +11,7 @@
-> > >   #include <linux/dmi.h>
-> > >   #include <linux/cpumask.h>
-> > >   #include <linux/pgtable.h>
-> > > +#include <asm/apic.h>
-> > >   #include <asm/segment.h>
-> > >   #include <asm/desc.h>
-> > >   #include <asm/cacheflush.h>
-> > > @@ -129,11 +130,14 @@ int x86_acpi_suspend_lowlevel(void)
-> > >   	 */
-> > >   	current->thread.sp = (unsigned long)temp_stack + sizeof(temp_stack);
-> > >   	/*
-> > > -	 * Ensure the CPU knows which one it is when it comes back, if
-> > > -	 * it isn't in parallel mode and expected to work that out for
-> > > -	 * itself.
-> > > +	 * Ensure x2apic is re-enabled if necessary and the CPU knows which
-> > > +	 * one it is when it comes back, if it isn't in parallel mode and
-> > > +	 * expected to work that out for itself.
-> > >   	 */
-> > > -	if (!(smpboot_control & STARTUP_PARALLEL_MASK))
-> > > +	if (smpboot_control & STARTUP_PARALLEL_MASK) {
-> > > +		if (x2apic_enabled())
-> > > +			smpboot_control |= STARTUP_ENABLE_X2APIC;
-> > > +	} else
-> > >   		smpboot_control = smp_processor_id();
-> > 
-> > Yeah, so instead of adding further kludges to the 'parallel bringup is
-> > possible' code path, which is arguably a functional feature that shouldn't
-> > have hardware-management coupled to it, would it be possible to fix
-> > parallel bringup to AMD-SEV systems, so that this code path isn't a
-> > quirk-dependent "parallel boot" codepath, but simply the "x86 SMP boot
-> > codepath", where all SMP x86 systems do a parallel bootup?
-> > 
-> > The original commit by Thomas says:
-> > 
-> >    0c7ffa32dbd6 ("x86/smpboot/64: Implement arch_cpuhp_init_parallel_bringup() and enable it")
-> > 
-> >    | Unfortunately there is no RDMSR GHCB protocol at the moment, so enabling
-> >    | AMD-SEV guests for parallel startup needs some more thought.
-> > 
-> > But that was half a year ago, isn't there RDMSR GHCB access code available now?
-> > 
-> > This code would all read a lot more natural if it was the regular x86 SMP
-> > bootup path - which it is 'almost' today already, modulo quirk.
-> > 
-> > Obviously coupling functional features with hardware quirks is fragile, for
-> > example your patch extending x86 SMP parallel bringup doesn't extend the
-> > AMD-SEV case, which may or may not matter in practice.
-> > 
-> > So, if it's possible, it would be nice to fix AMD-SEV systems as well and
-> > remove this artificial coupling.
-> 
-> It probably isn't clear since I didn't mention it in the commit message, but
-> this is not a system that supports AMD-SEV.  This is a workstation that
-> supports x2apic.  I'll clarify that for V2.
+40 characters for an attribute name .... I will never understand this
+fascination with writing a sentence for an attribute name.
 
-Yes, I suspected as much, but that's irrelevant to the arguments I 
-outlined, that extending upon this quirk that makes SMP parallel bringup HW 
-environment dependent, and then coupling s2ram x2apic re-enablement to that 
-functional feature is inviting trouble in the long run.
+> +
+> +		print_color_on_off(PRINT_ANY, COLOR_NONE, "privileged-qkey",
+> +				   "privileged-qkey %s ", pqkey_mode);
+> +
+> +	}
+> +
+>  	if (tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK])
+>  		cof = mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]);
+>  
 
-For example, what guarantees that the x2apic will be turned back on after 
-suspend if a system is booted with maxcpus=1?
-
-Obviously something very close to your fix is needed.
-
-> I've looped Tom in to comment whether it's possible to improve AMD-SEV as 
-> well.
-
-Thanks!
-
-	Ingo
+keep Petr's reviewed-by tag on the respin.
