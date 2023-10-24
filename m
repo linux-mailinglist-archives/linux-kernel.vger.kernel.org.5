@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EEB7D53A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D6A7D53A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343560AbjJXOHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 10:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
+        id S1343585AbjJXOIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 10:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234210AbjJXOHo (ORCPT
+        with ESMTP id S234210AbjJXOIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:07:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A259DA3;
-        Tue, 24 Oct 2023 07:07:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10A78C433C8;
-        Tue, 24 Oct 2023 14:07:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698156462;
-        bh=9jC8oNZgHX1Zi6aWIvKR5WIBscBYWtT/XNF7Ji+UiB8=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=gXC+envN88pZ16F8KzAjczjiWBqEKfHwpJD0p7P+wmzdB+o7NwKEiLXAFTNwGw/1g
-         dieOYHrquj917Fj/nh2ar4Oc8Wj2kFU+RX8UHAM2mzCoTWHtvOteXl2tsuuLYEvOpV
-         vhzNHq5eF96otmpUqWODLhOHYs0IfVbpKVmsjrwylxLKKgTAk8QVJUarSBxggH+LZv
-         9i00MapnXdOhEsMDCibsxQUOp13U/KyXxxJWIPHsUoJ3lwq3tzXcjuLzexDz/vbXRK
-         Si+n9xhtkO/wslDcK+pBQlm2SmySgNzvQuF0myT1gavca1fWMSqLJOW2UX0A4RLgpj
-         fctl56uXy/gww==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Johan Hovold <johan+linaro@kernel.org>
-Cc:     Jeff Johnson <quic_jjohnson@quicinc.com>,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] wifi: ath11k: fix event locking
-References: <20231019153115.26401-1-johan+linaro@kernel.org>
-Date:   Tue, 24 Oct 2023 17:07:38 +0300
-In-Reply-To: <20231019153115.26401-1-johan+linaro@kernel.org> (Johan Hovold's
-        message of "Thu, 19 Oct 2023 17:31:13 +0200")
-Message-ID: <87o7goxget.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Tue, 24 Oct 2023 10:08:46 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1193A3;
+        Tue, 24 Oct 2023 07:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=eDhesMhiwtf5oRFEe0tcbmQl0LJ8NdA55Y6empsfy2E=; b=2wTaoheinvFFan+20dLH3nGj5o
+        mtfWlWEKM8LyBNDOp+/JH7uDIycqEZtgXmeSlPZk3qP5zsH7TMOjFNf4ytimoM16XLKvRbaSVybhL
+        3ojnbBDMDu0/yiXSz7A5Xgu/xZi7OwNLheXWaf/4b7wdxXlzWMd9ZrOUMM17ZI35SsPY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qvI59-0004xO-Ki; Tue, 24 Oct 2023 16:08:31 +0200
+Date:   Tue, 24 Oct 2023 16:08:31 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Romain Gantois <romain.gantois@bootlin.com>
+Cc:     davem@davemloft.net, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        thomas.petazzoni@bootlin.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next 3/5] net: ipqess: introduce the Qualcomm IPQESS
+ driver
+Message-ID: <932bef01-b498-4c1a-a7f4-3357fe94e883@lunn.ch>
+References: <20231023155013.512999-1-romain.gantois@bootlin.com>
+ <20231023155013.512999-4-romain.gantois@bootlin.com>
+ <b8ac3558-b6f0-4658-b406-8ceba062a52c@lunn.ch>
+ <f4e6dcee-23cf-bf29-deef-cf876e63bb8a@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4e6dcee-23cf-bf29-deef-cf876e63bb8a@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johan Hovold <johan+linaro@kernel.org> writes:
+> > > +	for (c = 0; c < priv->info->mib_count; c++) {
+> > > +		mib = &ar8327_mib[c];
+> > > +		reg = QCA8K_PORT_MIB_COUNTER(port->index) + mib->offset;
+> > > +
+> > > +		ret = qca8k_read(priv, reg, &val);
+> > > +		if (ret < 0)
+> > > +			continue;
+> > 
+> > Given the switch is built in, is this fast? The 8k driver avoids doing
+> > register reads for this.
+> 
+> Sorry, I don't quite understand what you mean. Are you referring to the existing 
+> QCA8k DSA driver? From what I've seen, it calls qca8k_get_ethtool_stats defined 
+> in qca8k-common.c and this uses the same register read.
 
-> RCU lockdep reported suspicious RCU usage when accessing the temperature
-> sensor. Inspection revealed that the DFS radar event code was also
-> missing the required RCU read-side critical section marking.
->
-> Johan
->
->
-> Changes in v2
->  - add the missing rcu_read_unlock() to an
->    ath11k_wmi_pdev_temperature_event() error path as noticed by Jeff
->
->
-> Johan Hovold (2):
->   wifi: ath11k: fix temperature event locking
->   wifi: ath11k: fix dfs radar event locking
+It should actually build an Ethernet frame containing a command to get
+most of the statistics in one operation. That frame is sent to the
+switch over the SoCs ethernet interface. The switch replies with a
+frame containing the statistics. This should be faster than doing lots
+of register reads over a slow MDIO bus.
 
-Thanks for the fixes. I really like using lockdep_assert_held() to
-document if a function requires some lock held, is there anything
-similar for RCU?
+Now, given that this switch is built into the SoC, i assume the MDIO
+bus is gone, so register access is fast. So you don't need to use
+Ethernet frames.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+	 Andrew
