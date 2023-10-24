@@ -2,118 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BF07D5424
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BEF7D5425
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234437AbjJXOee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 10:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
+        id S234497AbjJXOe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 10:34:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232073AbjJXOed (ORCPT
+        with ESMTP id S232073AbjJXOex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:34:33 -0400
+        Tue, 24 Oct 2023 10:34:53 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E468F
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:34:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A79B2C433C7;
-        Tue, 24 Oct 2023 14:34:27 +0000 (UTC)
-Date:   Tue, 24 Oct 2023 10:34:26 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EF7C4
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:34:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86B2AC433C8;
+        Tue, 24 Oct 2023 14:34:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698158091;
+        bh=0EcLCqFouJP0hY8CNrI3CsIj9BAxE4T9i5fPItqAv0c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TSPUXGwOds8PIYzY2u1wv4dS+kG7ASiDxO6BPzFcICge3VQ2LE+LJ37M/PdrdGI7T
+         MIoZY7q1+456RCEme3UQ839oZi5qbfSnJunKgdcHb2zA4tkHOklL2VlYm7DLmeSy3d
+         SltmN1Q3N6xrOHFCpGsgXtrIxbrQBTznP4Im5V3PvCPC5+6pfFALAZTnj+8GRp8L3H
+         anN1xHdV5VXWBIT2QFich5957eHD3R9D0rL+yW++RO8UkTTu0z5AIIA3/+jzXUCaRX
+         zUJwVKqjY0yIxaYQpqdo1PLEsK0lW9UApaZg+ktQ9wmrj7ninWpnhrBHCiaufvcRWL
+         P8qyAbc3lkdiQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=valley-girl.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qvIUb-007Ewh-89;
+        Tue, 24 Oct 2023 15:34:49 +0100
+From:   Marc Zyngier <maz@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-Message-ID: <20231024103426.4074d319@gandalf.local.home>
-In-Reply-To: <87cyyfxd4k.ffs@tglx>
-References: <20230830184958.2333078-8-ankur.a.arora@oracle.com>
-        <20230908070258.GA19320@noisy.programming.kicks-ass.net>
-        <87zg1v3xxh.fsf@oracle.com>
-        <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
-        <87edj64rj1.fsf@oracle.com>
-        <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
-        <87zg1u1h5t.fsf@oracle.com>
-        <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
-        <20230911150410.GC9098@noisy.programming.kicks-ass.net>
-        <87h6o01w1a.fsf@oracle.com>
-        <20230912082606.GB35261@noisy.programming.kicks-ass.net>
-        <87cyyfxd4k.ffs@tglx>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        lpieralisi@kernel.org, Dominic Rath <dominic.rath@ibv-augsburg.net>
+Subject: [PATCH] irqchip/gic-v3-its: Don't override quirk settings with default values
+Date:   Tue, 24 Oct 2023 15:34:31 +0100
+Message-Id: <20231024143431.2144579-1-maz@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, lpieralisi@kernel.org, dominic.rath@ibv-augsburg.net
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 01:42:03 +0200
-Thomas Gleixner <tglx@linutronix.de> wrote:
+When splitting the allocation of the ITS node from its configuration,
+some of the default settings were kept in the latter instead of
+being moved to the former.
 
->    2) When the scheduler wants to set NEED_RESCHED due it sets
->       NEED_RESCHED_LAZY instead which is only evaluated in the return to
->       user space preemption points.
-> 
->       As NEED_RESCHED_LAZY is not folded into the preemption count the
->       preemption count won't become zero, so the task can continue until
->       it hits return to user space.
-> 
->       That preserves the existing behaviour.
+This has the side effect of negating some of the quirk detection that
+have happened in between, amongst which the dreaded Synquacer hack
+(that also affect Dominic's TI platform).
 
-I'm looking into extending this concept to user space and to VMs.
+Move the initialisation of these fields early, so that they can
+again be overriden by the Synquacer quirk.
 
-I'm calling this the "extended scheduler time slice" (ESTS pronounced "estis")
+Fixes: 9585a495ac93 ("irqchip/gic-v3-its: Split allocation from initialisation of its_node")
+Reported by: Dominic Rath <dominic.rath@ibv-augsburg.net>
+Tested-by: Dominic Rath <dominic.rath@ibv-augsburg.net>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20231024084831.GA3788@JADEVM-DRA
+---
 
-The ideas is this. Have VMs/user space share a memory region with the
-kernel that is per thread/vCPU. This would be registered via a syscall or
-ioctl on some defined file or whatever. Then, when entering user space /
-VM, if NEED_RESCHED_LAZY (or whatever it's eventually called) is set, it
-checks if the thread has this memory region and a special bit in it is
-set, and if it does, it does not schedule. It will treat it like a long
-kernel system call.
+Notes:
+    Hi Thomas,
+    
+    This is an urgent, last-minute fix for a regression that I introduced in -rc6.
+    I'd appreciate it if you could send it along to Linus before v6.6 gets released.
+    
+    Thanks,
+    
+            M.
 
-The kernel will then set another bit in the shared memory region that will
-tell user space / VM that the kernel wanted to schedule, but is allowing it
-to finish its critical section. When user space / VM is done with the
-critical section, it will check the bit that may be set by the kernel and
-if it is set, it should do a sched_yield() or VMEXIT so that the kernel can
-now schedule it.
+ drivers/irqchip/irq-gic-v3-its.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-What about DOS you say? It's no different than running a long system call.
-No task can run forever. It's not a "preempt disable", it's just "give me
-some more time". A "NEED_RESCHED" will always schedule, just like a kernel
-system call that takes a long time. The goal is to allow user space to get
-out of critical sections that we know can cause problems if they get
-preempted. Usually it's a user space / VM lock is held or maybe a VM
-interrupt handler that needs to wake up a task on another vCPU.
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 75a2dd550625..a8c89df1a997 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -5112,8 +5112,6 @@ static int __init its_probe_one(struct its_node *its)
+ 	}
+ 	its->cmd_base = (void *)page_address(page);
+ 	its->cmd_write = its->cmd_base;
+-	its->get_msi_base = its_irq_get_msi_base;
+-	its->msi_domain_flags = IRQ_DOMAIN_FLAG_ISOLATED_MSI;
+ 
+ 	err = its_alloc_tables(its);
+ 	if (err)
+@@ -5362,6 +5360,8 @@ static struct its_node __init *its_node_init(struct resource *res,
+ 	its->typer = gic_read_typer(its_base + GITS_TYPER);
+ 	its->base = its_base;
+ 	its->phys_base = res->start;
++	its->get_msi_base = its_irq_get_msi_base;
++	its->msi_domain_flags = IRQ_DOMAIN_FLAG_ISOLATED_MSI;
+ 
+ 	its->numa_node = numa_node;
+ 	its->fwnode_handle = handle;
+-- 
+2.39.2
 
-If we are worried about abuse, we could even punish tasks that don't call
-sched_yield() by the time its extended time slice is taken. Even without
-that punishment, if we have EEVDF, this extension will make it less
-eligible the next time around.
-
-The goal is to prevent a thread / vCPU being preempted while holding a lock
-or resource that other threads / vCPUs will want. That is, prevent
-contention, as that's usually the biggest issue with performance in user
-space and VMs.
-
-I'm going to work on a POC, and see if I can get some benchmarks on how
-much this could help tasks like databases and VMs in general.
-
--- Steve
