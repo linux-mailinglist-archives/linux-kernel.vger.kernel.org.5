@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1467D4AFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6327D4AF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233991AbjJXIwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45218 "EHLO
+        id S233982AbjJXIwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233907AbjJXIwc (ORCPT
+        with ESMTP id S233903AbjJXIwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 24 Oct 2023 04:52:32 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA929111;
-        Tue, 24 Oct 2023 01:52:28 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 08:52:26 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6C5128;
+        Tue, 24 Oct 2023 01:52:29 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 08:52:27 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1698137547;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lX5T14Mf8vnUqBaB2zBFckLBaXLCozl47d44enrzcSo=;
-        b=keb+WRb1PDGJgsRPbh1JPWpKUPNwaN7ZNInT9ogPKOzr8hzA1UpVk7nXKsQEwwholM2oGe
-        c7ykzkYUCMvc+5Ug6B84A3sqewL3k9bSgv7+MpvrK4oM/gRKiCsSWKyzr3JP9dt2+2lR3X
-        gmaSa0cpb/UWGjZluR+TDmETKPUlrrFbx0etTcFvucMJX0X4OagQBeU7JgaxEC83x7vdiI
-        x1LNRTzdUPv8v294VIFKECl5qULN5uV3+FDUSdMA8RDHxtjwe0a28icASd5110f18mjWdc
-        piM/21KQeOAFxZJh0bWEyLuiGdqPDXaB53jwuXnMCtNCC3emdz9bP71UWBzyWA==
+        bh=6mc2ImTGynSFGgCS40b/9mff9y6G7SrJMB/hVyO1Y/0=;
+        b=yNs2o+s7Q1vyhVddEyHUUTuzpl/CtVi1bapzZqwPgm4o/tpIaElFfDhgexdKQy+Y3k3Knw
+        g11mynAPTR4zs3PjA3Nms1cz97sHrNfoo0MxCeE/QuM5J3W3pFR8KYs1eiwNqV9uQoelkV
+        LK0oIh96kmkVLtMhaVF14fLplkVN96nForL9eVaY3wuiRoUz9Fc2I4d+vKJ0Zpmm9yMi+F
+        fUuCrOu++JNQD1L8ucvrfRg3v/TClJmuMh8LnL1WaVpVJFYGpStdL3RD4mvWFKszDDOC4D
+        kxLg/1W3NiITvYXfIXb0BH61/xJcmQGAEVBa3LrWsOgqVG3ujy18SOAdiV9tNg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1698137547;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,26 +36,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lX5T14Mf8vnUqBaB2zBFckLBaXLCozl47d44enrzcSo=;
-        b=3REin60+gGFENL31JJkSGtsrCdD8mHcmQ1V60IldstpgjS3V60O2kizUsCMkbC1vMZ0l7r
-        o8DAto6VvrY0PLAQ==
-From:   "tip-bot2 for Barry Song" <tip-bot2@linutronix.de>
+        bh=6mc2ImTGynSFGgCS40b/9mff9y6G7SrJMB/hVyO1Y/0=;
+        b=LkCkGGNMjmk2f1j/fJUdiiZy/WMpB6+Zi/YMpSjbCAlEYVGplMmZ/PnkcLvrvyyY5hAX7d
+        0MX6QZa2iZMgnwCQ==
+From:   "tip-bot2 for Hao Jia" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Add cpus_share_resources API
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
+Subject: [tip: sched/core] sched/core: Fix RQCF_ACT_SKIP leak
+Cc:     Igor Raits <igor.raits@gmail.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        K Prateek Nayak <kprateek.nayak@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231019033323.54147-2-yangyicong@huawei.com>
-References: <20231019033323.54147-2-yangyicong@huawei.com>
+        Hao Jia <jiahao.os@bytedance.com>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com>
+References: <a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com>
 MIME-Version: 1.0
-Message-ID: <169813754637.3135.6468203039885741701.tip-bot2@tip-bot2>
+Message-ID: <169813754711.3135.4535193844351356313.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -71,162 +68,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     b95303e0aeaf446b65169dd4142cacdaeb7d4c8b
-Gitweb:        https://git.kernel.org/tip/b95303e0aeaf446b65169dd4142cacdaeb7d4c8b
-Author:        Barry Song <song.bao.hua@hisilicon.com>
-AuthorDate:    Thu, 19 Oct 2023 11:33:21 +08:00
+Commit-ID:     5ebde09d91707a4a9bec1e3d213e3c12ffde348f
+Gitweb:        https://git.kernel.org/tip/5ebde09d91707a4a9bec1e3d213e3c12ffde348f
+Author:        Hao Jia <jiahao.os@bytedance.com>
+AuthorDate:    Thu, 12 Oct 2023 17:00:03 +08:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Tue, 24 Oct 2023 10:38:42 +02:00
 
-sched: Add cpus_share_resources API
+sched/core: Fix RQCF_ACT_SKIP leak
 
-Add cpus_share_resources() API. This is the preparation for the
-optimization of select_idle_cpu() on platforms with cluster scheduler
-level.
+Igor Raits and Bagas Sanjaya report a RQCF_ACT_SKIP leak warning.
 
-On a machine with clusters cpus_share_resources() will test whether
-two cpus are within the same cluster. On a non-cluster machine it
-will behaves the same as cpus_share_cache(). So we use "resources"
-here for cache resources.
+This warning may be triggered in the following situations:
 
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+    CPU0                                      CPU1
+
+__schedule()
+  *rq->clock_update_flags <<= 1;*   unregister_fair_sched_group()
+  pick_next_task_fair+0x4a/0x410      destroy_cfs_bandwidth()
+    newidle_balance+0x115/0x3e0       for_each_possible_cpu(i) *i=0*
+      rq_unpin_lock(this_rq, rf)      __cfsb_csd_unthrottle()
+      raw_spin_rq_unlock(this_rq)
+                                      rq_lock(*CPU0_rq*, &rf)
+                                      rq_clock_start_loop_update()
+                                      rq->clock_update_flags & RQCF_ACT_SKIP <--
+      raw_spin_rq_lock(this_rq)
+
+The purpose of RQCF_ACT_SKIP is to skip the update rq clock,
+but the update is very early in __schedule(), but we clear
+RQCF_*_SKIP very late, causing it to span that gap above
+and triggering this warning.
+
+In __schedule() we can clear the RQCF_*_SKIP flag immediately
+after update_rq_clock() to avoid this RQCF_ACT_SKIP leak warning.
+And set rq->clock_update_flags to RQCF_UPDATED to avoid
+rq->clock_update_flags < RQCF_ACT_SKIP warning that may be triggered later.
+
+Fixes: ebb83d84e49b ("sched/core: Avoid multiple calling update_rq_clock() in __cfsb_csd_unthrottle()")
+Closes: https://lore.kernel.org/all/20230913082424.73252-1-jiahao.os@bytedance.com
+Reported-by: Igor Raits <igor.raits@gmail.com>
+Reported-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Hao Jia <jiahao.os@bytedance.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
-Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Tested-and-reviewed-by: Chen Yu <yu.c.chen@intel.com>
-Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
-Link: https://lkml.kernel.org/r/20231019033323.54147-2-yangyicong@huawei.com
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/all/a5dd536d-041a-2ce9-f4b7-64d8d85c86dc@gmail.com
 ---
- include/linux/sched/sd_flags.h |  7 +++++++
- include/linux/sched/topology.h |  8 +++++++-
- kernel/sched/core.c            | 12 ++++++++++++
- kernel/sched/sched.h           |  1 +
- kernel/sched/topology.c        | 13 +++++++++++++
- 5 files changed, 40 insertions(+), 1 deletion(-)
+ kernel/sched/core.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/include/linux/sched/sd_flags.h b/include/linux/sched/sd_flags.h
-index fad77b5..a8b2864 100644
---- a/include/linux/sched/sd_flags.h
-+++ b/include/linux/sched/sd_flags.h
-@@ -110,6 +110,13 @@ SD_FLAG(SD_ASYM_CPUCAPACITY_FULL, SDF_SHARED_PARENT | SDF_NEEDS_GROUPS)
- SD_FLAG(SD_SHARE_CPUCAPACITY, SDF_SHARED_CHILD | SDF_NEEDS_GROUPS)
- 
- /*
-+ * Domain members share CPU cluster (LLC tags or L2 cache)
-+ *
-+ * NEEDS_GROUPS: Clusters are shared between groups.
-+ */
-+SD_FLAG(SD_CLUSTER, SDF_NEEDS_GROUPS)
-+
-+/*
-  * Domain members share CPU package resources (i.e. caches)
-  *
-  * SHARED_CHILD: Set from the base domain up until spanned CPUs no longer share
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 67b573d..4c14fe1 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -45,7 +45,7 @@ static inline int cpu_smt_flags(void)
- #ifdef CONFIG_SCHED_CLUSTER
- static inline int cpu_cluster_flags(void)
- {
--	return SD_SHARE_PKG_RESOURCES;
-+	return SD_CLUSTER | SD_SHARE_PKG_RESOURCES;
- }
- #endif
- 
-@@ -179,6 +179,7 @@ cpumask_var_t *alloc_sched_domains(unsigned int ndoms);
- void free_sched_domains(cpumask_var_t doms[], unsigned int ndoms);
- 
- bool cpus_share_cache(int this_cpu, int that_cpu);
-+bool cpus_share_resources(int this_cpu, int that_cpu);
- 
- typedef const struct cpumask *(*sched_domain_mask_f)(int cpu);
- typedef int (*sched_domain_flags_f)(void);
-@@ -232,6 +233,11 @@ static inline bool cpus_share_cache(int this_cpu, int that_cpu)
- 	return true;
- }
- 
-+static inline bool cpus_share_resources(int this_cpu, int that_cpu)
-+{
-+	return true;
-+}
-+
- #endif	/* !CONFIG_SMP */
- 
- #if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index dc724f5..5e1fb8a 100644
+index 264c2eb..dc724f5 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -3939,6 +3939,18 @@ bool cpus_share_cache(int this_cpu, int that_cpu)
- 	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
- }
+@@ -5361,8 +5361,6 @@ context_switch(struct rq *rq, struct task_struct *prev,
+ 	/* switch_mm_cid() requires the memory barriers above. */
+ 	switch_mm_cid(rq, prev, next);
  
-+/*
-+ * Whether CPUs are share cache resources, which means LLC on non-cluster
-+ * machines and LLC tag or L2 on machines with clusters.
-+ */
-+bool cpus_share_resources(int this_cpu, int that_cpu)
-+{
-+	if (this_cpu == that_cpu)
-+		return true;
-+
-+	return per_cpu(sd_share_id, this_cpu) == per_cpu(sd_share_id, that_cpu);
-+}
-+
- static inline bool ttwu_queue_cond(struct task_struct *p, int cpu)
- {
- 	/*
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 65cad0e..998f03d 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1853,6 +1853,7 @@ static inline struct sched_domain *lowest_flag_domain(int cpu, int flag)
- DECLARE_PER_CPU(struct sched_domain __rcu *, sd_llc);
- DECLARE_PER_CPU(int, sd_llc_size);
- DECLARE_PER_CPU(int, sd_llc_id);
-+DECLARE_PER_CPU(int, sd_share_id);
- DECLARE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
- DECLARE_PER_CPU(struct sched_domain __rcu *, sd_numa);
- DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index a63729f..dbb8c32 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -668,6 +668,7 @@ static void destroy_sched_domains(struct sched_domain *sd)
- DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
- DEFINE_PER_CPU(int, sd_llc_size);
- DEFINE_PER_CPU(int, sd_llc_id);
-+DEFINE_PER_CPU(int, sd_share_id);
- DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
- DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
- DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
-@@ -693,6 +694,17 @@ static void update_top_cache_domain(int cpu)
- 	per_cpu(sd_llc_id, cpu) = id;
- 	rcu_assign_pointer(per_cpu(sd_llc_shared, cpu), sds);
+-	rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
+-
+ 	prepare_lock_switch(rq, next, rf);
  
-+	sd = lowest_flag_domain(cpu, SD_CLUSTER);
-+	if (sd)
-+		id = cpumask_first(sched_domain_span(sd));
-+
-+	/*
-+	 * This assignment should be placed after the sd_llc_id as
-+	 * we want this id equals to cluster id on cluster machines
-+	 * but equals to LLC id on non-Cluster machines.
-+	 */
-+	per_cpu(sd_share_id, cpu) = id;
-+
- 	sd = lowest_flag_domain(cpu, SD_NUMA);
- 	rcu_assign_pointer(per_cpu(sd_numa, cpu), sd);
+ 	/* Here we just switch the register state and the stack. */
+@@ -6600,6 +6598,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
+ 	/* Promote REQ to ACT */
+ 	rq->clock_update_flags <<= 1;
+ 	update_rq_clock(rq);
++	rq->clock_update_flags = RQCF_UPDATED;
  
-@@ -1550,6 +1562,7 @@ static struct cpumask		***sched_domains_numa_masks;
-  */
- #define TOPOLOGY_SD_FLAGS		\
- 	(SD_SHARE_CPUCAPACITY	|	\
-+	 SD_CLUSTER		|	\
- 	 SD_SHARE_PKG_RESOURCES |	\
- 	 SD_NUMA		|	\
- 	 SD_ASYM_PACKING)
+ 	switch_count = &prev->nivcsw;
+ 
+@@ -6679,8 +6678,6 @@ static void __sched notrace __schedule(unsigned int sched_mode)
+ 		/* Also unlocks the rq: */
+ 		rq = context_switch(rq, prev, next, &rf);
+ 	} else {
+-		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
+-
+ 		rq_unpin_lock(rq, &rf);
+ 		__balance_callbacks(rq);
+ 		raw_spin_rq_unlock_irq(rq);
