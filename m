@@ -2,89 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A67467D4901
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BEB7D4907
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233818AbjJXHvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 03:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35614 "EHLO
+        id S233269AbjJXHxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 03:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232592AbjJXHvG (ORCPT
+        with ESMTP id S232544AbjJXHxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 03:51:06 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90674E5;
-        Tue, 24 Oct 2023 00:51:03 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 07C70C009; Tue, 24 Oct 2023 09:51:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1698133862; bh=h6e4ASUwqGKjNohmy7ZK23hAnr+NlDUoomsSYM9NmDA=;
+        Tue, 24 Oct 2023 03:53:00 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A226E5;
+        Tue, 24 Oct 2023 00:52:58 -0700 (PDT)
+Received: from ideasonboard.com (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 02F47B53;
+        Tue, 24 Oct 2023 09:52:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1698133966;
+        bh=LNElzporzpCaYnc+Rp+xusVwCai020KivGn+5e/4bF4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vIsF6+gWa0kHAb7tZfBSdiBafLWl8Q1SNrEbBQvBMAPGocduTP+LE7efo6iOHLn6c
-         cgw+DqozdzskNw851zv7uxsGcMPzopPpM8EYsAeP01lJriqoA1m+fi8wIIheZjaTyZ
-         Hzf5Xs5UAggytSVRhyDHO3WzT8H7yYByJcKQ+kI7CKhS7i/gYZVvf18haAG5c0lUbm
-         oN2WcCo54UPdFE14AeFCga6DWS3are91dUfbw1dGTbr0l8XVs0i2Dhi7b6XnUhFL56
-         GcRfWpVHkYHybxmC54SByQCFu8Ljq6BcE2/yRU12qTqzXNm0zltyiVZymJGzhaaN2+
-         PHqzwMkG82yFw==
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
-Received: from gaia (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id C99B5C01A;
-        Tue, 24 Oct 2023 09:50:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1698133859; bh=h6e4ASUwqGKjNohmy7ZK23hAnr+NlDUoomsSYM9NmDA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UBZ/gVPDGQTVf84yBhQvlQsIUrUF6fYaVV3MIrszKRmsijHOmviEm1BoBSXh48mUp
-         cIlJIdy1kfh00OWE5vJoXMGdCPc0k01x2Z9rH56/oddrgbjzlbAFSJtwO/gzqXs7ew
-         LYdxfNykrO4UILMEkI9avMnNShAix7pSfvqihPPBFvWDTBgRb6C8327bWIgZh0QlJ3
-         tVJRu+we9ZZDtBbTD1gHuFNQSEBskg/ukV7QlBY6PkGOaXoOpGOxyinM513mRwNvP1
-         JmLQRS+uE7Mow7c3GvuBcXBtylLzoBIiY0CFuaq7l0Lzw8IOgiHLf7775+b5cZTghu
-         Zs2EG5Ykn+Asg==
-Received: from localhost (gaia [local])
-        by gaia (OpenSMTPD) with ESMTPA id 31c69e22;
-        Tue, 24 Oct 2023 07:50:52 +0000 (UTC)
-Date:   Tue, 24 Oct 2023 16:50:37 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 5.10 000/202] 5.10.199-rc1 review
-Message-ID: <ZTd3TZ7oZH7nxKfY@codewreck.org>
-References: <20231023104826.569169691@linuxfoundation.org>
+        b=Ord7kv3k2vxeOOVOiFf+QDLZTPQWrwSpUUuc9CSCkwirXdoVBGwyo2jvEWf/d7W4a
+         LAGjvLuoopSMwUTVf4/2Cbh92qv0vfwSwowLAbEqa0fzghJ26klbK6QVtX0zdod516
+         SuW1NPP9Q8spz3S3uizL29f6jSjhXGQa9d/XePjA=
+Date:   Tue, 24 Oct 2023 09:52:44 +0200
+From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+To:     =?utf-8?B?QW5kcsOp?= Apitzsch <git@apitzsch.eu>
+Cc:     Ricardo Ribalda <ribalda@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 4/4] media: i2c: imx214: Add sensor's pixel matrix size
+Message-ID: <56kgwl7zehsxy2pp7nziwk2gt6joax42qpzs6eywufvcto7qxm@ts4i3ccdokjr>
+References: <20231023-imx214-v1-0-b33f1bbd1fcf@apitzsch.eu>
+ <20231023-imx214-v1-4-b33f1bbd1fcf@apitzsch.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231023104826.569169691@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231023-imx214-v1-4-b33f1bbd1fcf@apitzsch.eu>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman wrote on Mon, Oct 23, 2023 at 12:55:07PM +0200:
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.199-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+Hi Andre'
 
-Not much point in adding to the IRQCHIP_IMMUTABLE errors reports; I went
-ahead and reverted these two commits:
-da4ad7dba3a1 ("gpio: vf610: mask the gpio irq in system suspend and support wakeup")
-90225415cad6 ("gpio: vf610: make irq_chip immutable")
+On Mon, Oct 23, 2023 at 11:47:53PM +0200, André Apitzsch wrote:
+> Set effictive and active sensor pixel sizes as shown in product
 
-With these two commits out of the way, I could test this 5.10.199-rc1 on
-our armv7 and aarch64 boards (respectively Armadillo 640 and Armadillo
-G4, which do not use the above gpio driver).
-There was no other obvious regression:
-Tested-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
+s/effictive/effective
 
--- 
-Dominique Martinet | Asmadeus
+> brief[1].
+>
+> [1]: https://www.mouser.com/datasheet/2/897/ProductBrief_IMX214_20150428-1289331.pdf
+>
+> Signed-off-by: André Apitzsch <git@apitzsch.eu>
+> ---
+>  drivers/media/i2c/imx214.c | 39 ++++++++++++++++++++++++++++++++-------
+>  1 file changed, 32 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/media/i2c/imx214.c b/drivers/media/i2c/imx214.c
+> index bef8dc36e2d0..a2d441cd8dcd 100644
+> --- a/drivers/media/i2c/imx214.c
+> +++ b/drivers/media/i2c/imx214.c
+> @@ -36,6 +36,14 @@
+>  #define IMX214_EXPOSURE_STEP		1
+>  #define IMX214_EXPOSURE_DEFAULT		0x0c70
+>
+> +/* IMX214 native and active pixel array size */
+> +#define IMX214_NATIVE_WIDTH		4224U
+> +#define IMX214_NATIVE_HEIGHT		3136U
+> +#define IMX214_PIXEL_ARRAY_LEFT		8U
+> +#define IMX214_PIXEL_ARRAY_TOP		8U
+> +#define IMX214_PIXEL_ARRAY_WIDTH	4208U
+> +#define IMX214_PIXEL_ARRAY_HEIGHT	3120U
+> +
+
+I do get slightly different numbers from the datasheet version I have
+
+The sensor is said to have 4224x3208 total pixels of which 4208x3120
+are active ones.
+
+The pixel array diagram shows 64 "OPB" (optically black ?) lines,
+followed by 8 dummy lines, followed by 3120 valid lines. There are 8
+dummy columns at each side of the 4208 valid ones.
+
+Now, NATIVE which represents the full pixel array size seems to be
+4224x3208 (other parts of the datasheet only report 3200 lines though)
+
+BOUNDS represents the readabale array area, which I presume
+corresponds to what is named as 'effective area' by the datasheet. It
+excludes the OPB lines at the top of the image and seems to be
+represented by (0, 64, 4224, 3160).
+
+CROP_DEFAULT represents the default crop rectangle which covers the
+active pixel area, so it excludes 8 more lines of dummy pixels and 8
+dummy columns, which gives a rectangle (8, 72, 4208, 3120)
+
+Also note that the driver always reports a TGT_CROP rectangle with
+top/left points set to 0. If my understanding is correct, V4L2
+selection targets are defined from the most external target
+(TGT_NATIVE in this case), and the driver should be corrected to
+initialize the crop rectangle with a top-left corner at (8, 72).
+
+Does this make sense ?
+
+Thanks
+  j
+
+
+>  static const char * const imx214_supply_name[] = {
+>  	"vdda",
+>  	"vddd",
+> @@ -634,14 +642,31 @@ static int imx214_get_selection(struct v4l2_subdev *sd,
+>  {
+>  	struct imx214 *imx214 = to_imx214(sd);
+>
+> -	if (sel->target != V4L2_SEL_TGT_CROP)
+> -		return -EINVAL;
+> +	switch (sel->target) {
+> +	case V4L2_SEL_TGT_CROP:
+> +		mutex_lock(&imx214->mutex);
+> +		sel->r = *__imx214_get_pad_crop(imx214, sd_state, sel->pad,
+> +						sel->which);
+> +		mutex_unlock(&imx214->mutex);
+> +		return 0;
+>
+> -	mutex_lock(&imx214->mutex);
+> -	sel->r = *__imx214_get_pad_crop(imx214, sd_state, sel->pad,
+> -					sel->which);
+> -	mutex_unlock(&imx214->mutex);
+> -	return 0;
+> +	case V4L2_SEL_TGT_NATIVE_SIZE:
+> +		sel->r.top = 0;
+> +		sel->r.left = 0;
+> +		sel->r.width = IMX214_NATIVE_WIDTH;
+> +		sel->r.height = IMX214_NATIVE_HEIGHT;
+> +		return 0;
+> +
+> +	case V4L2_SEL_TGT_CROP_DEFAULT:
+> +	case V4L2_SEL_TGT_CROP_BOUNDS:
+> +		sel->r.top = IMX214_PIXEL_ARRAY_TOP;
+> +		sel->r.left = IMX214_PIXEL_ARRAY_LEFT;
+> +		sel->r.width = IMX214_PIXEL_ARRAY_WIDTH;
+> +		sel->r.height = IMX214_PIXEL_ARRAY_HEIGHT;
+> +		return 0;
+> +	}
+> +
+> +	return -EINVAL;
+>  }
+>
+>  static int imx214_entity_init_cfg(struct v4l2_subdev *subdev,
+>
+> --
+> 2.42.0
+>
