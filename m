@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C397D5A91
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A057D5A97
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344113AbjJXSeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 14:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
+        id S1343922AbjJXSfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:35:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbjJXSeO (ORCPT
+        with ESMTP id S1343992AbjJXSfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:34:14 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA49B9F;
-        Tue, 24 Oct 2023 11:34:12 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-27d17f5457fso54636a91.0;
-        Tue, 24 Oct 2023 11:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698172452; x=1698777252; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eInzOmV9CI5bvKZsQcE1o+qh/nZEiz4SXYl0oOFUVx8=;
-        b=KoHLe3mEcIszexE7BQOHOietAwA7IgBuZR5a088f+TEqfqLyAjbmoGaSsYOb3SxOfX
-         8WxO/07819+H1bcCnXbBaoSi9TdJzlX7CTqaf3fklgvLmzlcqIEi9ZsuejACKZlkILvo
-         WmyiqJ2P7HRIYMVppfuzxkg/eOsiCBP26EFQac7YRjpMc3loKeD7b42QzpGgF73Wp0hm
-         Mnh5TGlgbawXdCPU5yG8U6A4O8D21AJA3IHtbmGCduYM7rx0HNHKBEO/MPfIaYGNnHqN
-         JLjHDt5IeLGwXDEzsCqGGhc9pA6i2h581iKwZ785JPLqy9QexmsRZR9I40PsZoRdPKyl
-         6N4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698172452; x=1698777252;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eInzOmV9CI5bvKZsQcE1o+qh/nZEiz4SXYl0oOFUVx8=;
-        b=pN/dBjpV3LOVOBmW1t++WMEHG3fUij3zNMmdXlXDdvEjlSqrI9Y/W8vLoM/jhJ0z6H
-         /4NzhN0ZbfEYCyx4Pfs8bTCjfDnKja2i7UnqLveq8mdNE3OfQV/q/nxqi+nsNmwPCgmJ
-         6jCYWMkk+zxROjH1TMOuJMLQkkLkQijZR7rEIDLy/Ug1ISA0nLjD8aNxkyJ1OMMy80Yb
-         Z3rz6R5UdxHKVhxtDoyjIQASbrmcTx4U1Nh1UAyj40ihVvFYl1CRkoUWo/4O3TlfoV9/
-         XdoxAAoho/r99AWuHg5mV9VhyQZ0yKnDtUiLHpcWD0M2zC+ba5ccFF6j+ZRHQk7LIL8Z
-         HSPQ==
-X-Gm-Message-State: AOJu0YxbpSVSOwweGJqvrQ5uL2Ea9KH3GggvkhqIALrR1DxRSPwq3W6/
-        sT0xiJ2FazrgyZeKY+qg7kg=
-X-Google-Smtp-Source: AGHT+IF4B61LYgmB49ohAKA6Ab4qdJgSoPOKtvhEF36Uzskljg76AFvZn6JVPokXIAcmZCWGFM0fSw==
-X-Received: by 2002:a17:90a:9a6:b0:27c:fa8f:4e91 with SMTP id 35-20020a17090a09a600b0027cfa8f4e91mr22597340pjo.23.1698172452246;
-        Tue, 24 Oct 2023 11:34:12 -0700 (PDT)
-Received: from brag-vm.. ([117.243.121.127])
-        by smtp.gmail.com with ESMTPSA id rm10-20020a17090b3eca00b0027476c68cc3sm7202125pjb.22.2023.10.24.11.34.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 11:34:12 -0700 (PDT)
-From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        stanley.chu@mediatek.com, mani@kernel.org, quic_cang@quicinc.com,
-        quic_asutoshd@quicinc.com, peter.wang@mediatek.com,
-        beanhuo@micron.com, quic_nguyenb@quicinc.com,
-        Arthur.Simchaev@wdc.com
-Cc:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ufs/core: ufshcd: Conversion to bool not necessary
-Date:   Wed, 25 Oct 2023 00:04:01 +0530
-Message-Id: <20231024183401.48888-1-bragathemanick0908@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 24 Oct 2023 14:35:43 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090769F;
+        Tue, 24 Oct 2023 11:35:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1698172537; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=JOi7zEdl6i/B/DH1FqnymWly4M+XR05uQDqLnykXdPHkigpIY9795qQGNyYPAxVv4m
+    AEGwUj3GCwAW9mk7SRcjSAa9nzGLSf/a3Re7Oc5LKQe/eIdj+DLVs5uYZCuU7y0OJobg
+    Dzo4QB4Lm/8TNPGAO8LXrLTqElye6zln4RQARNXI7D6yD8lJmywvQii8gRVH0Y+xWBFg
+    hMklyhKr9V+T+Tg/FiXKMicOLjUynZpqRHcQjGJUEjyD5d0Irl0GGQb82Ul++bOnegi5
+    kssPkscmGV7soRh9g2E8pxvHB9hyLV/ixP7OQOSYPgcJ7BM9KzKz8fwr8QPhfOSCWfiX
+    rM5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698172537;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=ZhyaPj2qq7l4XRxCAh7rMgoC4OVkj1DXYeH9isKDKq4=;
+    b=PnhbRX60J+Od0IR7AyQKEd6+gc1lTwpvUqIHE8a3zk/Yu2p7PgngA828Pe9B0HlHMI
+    3i20S4xBCFrnMMxwiwfTQdM3UbgozhAvRgxFcnSE9h7APEMANZUounbk9OuKP5zc0TYT
+    Jl5T9ccPmO5cAZCyYHPdpo69m6PmkH5aCfwczC9mzOQdjkkH0SgdRiP5+3VIRDZT6DSN
+    jQLFMSFeK5sgRrQRiYufpj9nxsYat4Q8B0OOWySZomqudY/iYXHHg26VowV90rZf46/2
+    gYFaNs77rq0MvqQe2Q//at4ntItXwifGWRu4hB9yXQlMtDCELVTXFFRiD13780NMRDRE
+    gejg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698172537;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=ZhyaPj2qq7l4XRxCAh7rMgoC4OVkj1DXYeH9isKDKq4=;
+    b=jnmZicsfgfoW0zdQL6YjNmZptR9RhpRzMNpx9OjdHQupgi2Dl/idOSdSNtPrAiNfTp
+    UlT0X3iioI3P5Je1wZRmo1dWzPBnq4ls5HrQRZCessY82iHTuGS8mA9tyq/i2XGBvLSM
+    nsIf00d1ZLSdSw7vwnZYdym7YLJVv265BouwuYTiNhShvexFcNj1uqSvcghhQUFLiEwu
+    1DugMoaXbBvYTtgUpH3htuvm4kcywTXAfEQ8tWmiQngc9U+Gjfr5s/49ShNBOa1xqr8B
+    LWgdpWDHfYrp1janE8c8sdKUgsnoyqDMx0MUWBY0b5OV/EA2mF4faR7BUN4Fdzu2txYJ
+    zIGA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698172537;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=ZhyaPj2qq7l4XRxCAh7rMgoC4OVkj1DXYeH9isKDKq4=;
+    b=NVJPYMG7OzsRPW776iS1dZlrmLce2AHI/DqDzAXXfDyedbKnFlusvNDZpLxieoN548
+    7NRmNgfUYMknVcJYyrBQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8Z+P1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.9.0 DYNA|AUTH)
+    with ESMTPSA id j34a49z9OIZbRxe
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 24 Oct 2023 20:35:37 +0200 (CEST)
+Date:   Tue, 24 Oct 2023 20:35:29 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Jeff LaBundy <jeff@labundy.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Subject: Re: [PATCH v2 2/2] Input: add Himax HX852x(ES) touchscreen driver
+Message-ID: <ZTgOcXMKVY2o_ikx@gerhold.net>
+References: <20230930-hx852x-v2-0-c5821947b225@gerhold.net>
+ <20230930-hx852x-v2-2-c5821947b225@gerhold.net>
+ <ZTVoiklUJaDn5576@nixie71>
+ <ZTVuqW7oU5BmPzTS@gerhold.net>
+ <ZTcPrC+0K1unNPIv@nixie71>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTcPrC+0K1unNPIv@nixie71>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,29 +97,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A logical evaluation already results in bool. There is no need for using
-a ternary operator based evaluation and bool conversion of the outcome.
+Hi Jeff,
 
-Issue identified using boolconv.cocci Coccinelle semantic patch.
+On Mon, Oct 23, 2023 at 07:28:28PM -0500, Jeff LaBundy wrote:
+> On Sun, Oct 22, 2023 at 08:49:13PM +0200, Stephan Gerhold wrote:
+> > > > +static int hx852x_read_config(struct hx852x *hx)
+> > > > +{
+> > > > +	struct device *dev = &hx->client->dev;
+> > > > +	struct hx852x_config conf;
+> > > > +	int x_res, y_res;
+> > > > +	int error;
+> > > > +
+> > > > +	error = hx852x_power_on(hx);
+> > > > +	if (error)
+> > > > +		return error;
+> > > > +
+> > > > +	/* Sensing must be turned on briefly to load the config */
+> > > > +	error = hx852x_start(hx);
+> > > > +	if (error)
+> > > > +		goto err_power_off;
+> > > > +
+> > > > +	error = hx852x_stop(hx);
+> > > > +	if (error)
+> > > > +		goto err_power_off;
+> > > > +
+> > > > +	error = i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH,
+> > > > +					  HX852X_SRAM_SWITCH_TEST_MODE);
+> > > > +	if (error)
+> > > > +		goto err_power_off;
+> > > > +
+> > > > +	error = i2c_smbus_write_word_data(hx->client, HX852X_REG_SRAM_ADDR,
+> > > > +					  HX852X_SRAM_ADDR_CONFIG);
+> > > > +	if (error)
+> > > > +		goto err_test_mode;
+> > > > +
+> > > > +	error = hx852x_i2c_read(hx, HX852X_REG_FLASH_RPLACE, &conf, sizeof(conf));
+> > > > +	if (error)
+> > > > +		goto err_test_mode;
+> > > > +
+> > > > +	x_res = be16_to_cpu(conf.x_res);
+> > > > +	y_res = be16_to_cpu(conf.y_res);
+> > > > +	hx->max_fingers = (conf.max_pt & 0xf0) >> 4;
+> > > > +	dev_dbg(dev, "x res: %u, y res: %u, max fingers: %u\n",
+> > > > +		x_res, y_res, hx->max_fingers);
+> > > > +
+> > > > +	if (hx->max_fingers > HX852X_MAX_FINGERS) {
+> > > > +		dev_err(dev, "max supported fingers: %u, found: %u\n",
+> > > > +			HX852X_MAX_FINGERS, hx->max_fingers);
+> > > > +		error = -EINVAL;
+> > > > +		goto err_test_mode;
+> > > > +	}
+> > > > +
+> > > > +	if (x_res && y_res) {
+> > > > +		input_set_abs_params(hx->input_dev, ABS_MT_POSITION_X, 0, x_res - 1, 0, 0);
+> > > > +		input_set_abs_params(hx->input_dev, ABS_MT_POSITION_Y, 0, y_res - 1, 0, 0);
+> > > > +	}
+> > > > +
+> > > > +	error = i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0);
+> > > > +	if (error)
+> > > > +		goto err_power_off;
+> > > > +
+> > > > +	return hx852x_power_off(hx);
+> > > > +
+> > > > +err_test_mode:
+> > > > +	i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0);
+> > > > +err_power_off:
+> > > > +	hx852x_power_off(hx);
+> > > > +	return error;
+> > > 
+> > > Your new version is an improvement, but maybe we can remove duplicate
+> > > code by introducing some helper variables:
+> > > 
+> > > 	int error, error2 = 0, error3;
+> > > 
+> > > 	/* ... */
+> > > 
+> > > err_test_mode:
+> > > 	error2 = i2c_smbus_write_byte_data(...);
+> > > 
+> > > err_power_off:
+> > > 	error3 = hx852x_power_off(...);
+> > > 
+> > > 	if (error)
+> > > 		return error;
+> > > 
+> > > 	return error2 ? : error3;
+> > > 
+> > > In this case we achieve our goal of attempting to return the device to a
+> > > safe state in both passing and failing cases. In the event of multiple
+> > > errors, we return the first to occur.
+> > > 
+> > 
+> > Right, this would work as well. Personally I think my solution is
+> > slightly easier to read though. In your version my eyes somewhat
+> > "stumble" over the multiple "error" variables and then about the purpose
+> > of the "? : " construction. This is probably highly subjective. :-)
+> 
+> Agreed, my suggestion is a bit unwieldy, and prone to uninitialized
+> variable bugs. However, I feel that duplicate code, especially side
+> by side like this, is also confusing and prone to bugs in case the
+> sequence must be updated in the future. As a compromise, how about
+> something closer to my first idea:
+> 
+> err_test_mode:
+> 	error = i2c_smbus_write_byte_data(...) ? : error;
+> 
+> err_power_off:
+> 	return hx852x_power_off(...) ? : error;
+> 
+> This is nice and compact, and ensures that errors returned by the two
+> functions are reported no matter the flow. The only functional change
+> is that the _last_ error takes priority; but in practice this does not
+> really matter. Normally if one I2C write fails, all subsequent writes
+> will fail with the same return code until the hardware is recovered
+> somehow.
+> 
+> For the corner case where the code jumps to exit_test_mode with error
+> equal to -EINVAL, and i2c_smbus_write_byte_data() then fails and changes
+> error to something like -EIO, I don't think we care. After the HW issue
+> is fixed and all I2C writes succeed, the developer will then see that
+> the number of contacts reported by the FW is invalid anyway :)
+> 
+> Side note: the '? :' syntax is just a shortcut that sets error equal
+> to the return value of i2c_smbus_write_byte_data() if true (failure)
+> without having to declare a temporary variable. If false (no failure),
+> error is assigned to itself. It is perfectly legal.
+> 
 
-Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
----
- drivers/ufs/core/ufshcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks a lot for your detailed review and explanations!
 
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index 406885671665..bbd8e83be6c6 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -2406,7 +2406,7 @@ static inline bool ufshcd_ready_for_uic_cmd(struct ufs_hba *hba)
- 	int ret = read_poll_timeout(ufshcd_readl, val, val & UIC_COMMAND_READY,
- 				    500, UIC_CMD_TIMEOUT * 1000, false, hba,
- 				    REG_CONTROLLER_STATUS);
--	return ret == 0 ? true : false;
-+	return ret == 0;
- }
- 
- /**
--- 
-2.34.1
+In v3 I have changed the code to your suggestion above and also
+addressed your other comments in the initial reply. :)
 
+Stephan
