@@ -2,215 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 535F27D5776
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5DE7D57BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344093AbjJXQJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41450 "EHLO
+        id S232357AbjJXQPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344083AbjJXQJQ (ORCPT
+        with ESMTP id S1344022AbjJXP6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:09:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDDD10CE
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:09:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698163752; x=1729699752;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=2pV0njvceG1yP8TEVnAggZ39CaiG94yX2lM8ClTppZQ=;
-  b=I44SO8wBH08cefKF6MbSxStTDWXF/0KJ7uNgUv2+whN3d/l0VtABUYGx
-   +I6PnXKtpUBscfJJuqtUYmBt6YZKtGJO3dhIwHhxvOLbQTm0qwK48vaE9
-   KKu4NjG+l1c4btDhyqJVpxCJZJEV3dzPZW49pgb6U1unCSE5oXJCkfccP
-   kppAEZBGg0PRmzV2vWboDcT8xm8Z24Z8ks4VHwtwb48OP7vIaZI/a88jz
-   H196jEtzzNqUppxPbc/1C6mCh1ekothXXkhznSEk5sV/e+aaT0blJ00Y1
-   vLJlQZLBCTSF3K0KZFa3eSOenlcIrBxfDkUire+ItogpCSLCuuAussM4s
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="473328737"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="473328737"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 08:57:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="708354975"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="708354975"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 24 Oct 2023 08:57:47 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 57C4DBD4; Tue, 24 Oct 2023 18:57:42 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 5/7] drm/i915/dsi: Replace poking of VLV GPIOs behind the driver's back
-Date:   Tue, 24 Oct 2023 18:57:37 +0300
-Message-Id: <20231024155739.3861342-6-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20231024155739.3861342-1-andriy.shevchenko@linux.intel.com>
-References: <20231024155739.3861342-1-andriy.shevchenko@linux.intel.com>
+        Tue, 24 Oct 2023 11:58:53 -0400
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC8010E7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:58:50 -0700 (PDT)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1e10507a4d6so3364841fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698163129; x=1698767929; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2h3Pr99/wr+elIZYIboeXZV4Sf7vm+Md0LWnpo9m7D4=;
+        b=V+5hVwrMlIcIt9zWF/kHWHC405nMKDngIWY1HV4lSyC7Qmmsf7Fy5pnKhpPh6lOOEE
+         fy1svPRM1kQl17yisgUrjTIr8CDLtgtMp1tUwDVdojhbVCYkzSMXQyf1Q5TW+CbnpWhs
+         sJgchG4PlI112ekQWrjQfBhMMOTPJGySEw8cU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698163129; x=1698767929;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2h3Pr99/wr+elIZYIboeXZV4Sf7vm+Md0LWnpo9m7D4=;
+        b=s1pOSES6xRnkRBUChF1+KmRoxf4P04XPBg7ljgf9vCgsX3KByDjYTj5HOj6gy3B1jL
+         KRxTYVPcha4/dftssxRzmqQ7Ovp9SPxl73nUTYcV7Od+yTBtYWSNxIlPJdp0MzisBRYt
+         IBB5kUXcYb94moIfyfnKdIR6nowDHhZJtZES+TBneX1ghnroHCN1BXZfwTRtXjnyDFo2
+         vFCFGFoOAlpsaqEFPNs9m21g9gNtoDJjIF6hsPMQ0KsV3eCHCTvR0L+dMVBLFEnD7KFA
+         PR81X5FCOtS0rZfInEWWUhPbcGfmkS7XnooqgQwF4ZG7l8ki/eIS7B8UmJNxjLZYx4LQ
+         KNWg==
+X-Gm-Message-State: AOJu0YxhZGvL7zxmPneBIIA2mwuTxX5EMADyhta9w94E/0ILzfI2mkn/
+        b0Sm/s6CKxCjvvU1RWoQur+BEBEiNsCPNcTb348=
+X-Google-Smtp-Source: AGHT+IFreDcORcG+8B2F6MuWAG0pjfNTXfDb+IiQaEV8LArvld9y9K0AMVGQBqwBzbDVlzTbWn4YVg==
+X-Received: by 2002:a05:6870:3d9b:b0:1e9:919d:83ec with SMTP id lm27-20020a0568703d9b00b001e9919d83ecmr16573165oab.28.1698163128949;
+        Tue, 24 Oct 2023 08:58:48 -0700 (PDT)
+Received: from lalithkraj-glaptop.corp.google.com ([2620:15c:2a:201:ab6e:39db:e561:4a0f])
+        by smtp.gmail.com with ESMTPSA id zh10-20020a0568716b8a00b001dcde628a6fsm2174332oab.42.2023.10.24.08.58.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 08:58:48 -0700 (PDT)
+From:   Lalith Rajendran <lalithkraj@chromium.org>
+X-Google-Original-From: Lalith Rajendran <lalithkraj@google.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Lalith Rajendran <lalithkraj@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Raul E Rangel <rrangel@chromium.org>,
+        Tim Van Patten <timvp@chromium.org>,
+        Tzung-Bi Shih <tzungbi@kernel.org>,
+        chrome-platform@lists.linux.dev
+Subject: [PATCH v3] platform/chrome: cros_ec_lpc: Separate host command and irq disable
+Date:   Tue, 24 Oct 2023 10:58:21 -0500
+Message-ID: <20231024105820.v3.1.Icccaed152371dbab868295a6c83d257e8409cf2d@changeid>
+X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's a dirty hack in the driver that pokes GPIO registers behind
-the driver's back. Moreoever it might be problematic as simultaneous
-I/O may hang the system, see the commit 40ecab551232 ("pinctrl:
-baytrail: Really serialize all register accesses") for the details.
-Taking all this into consideration replace the hack with proper
-GPIO APIs being used.
+From: Lalith Rajendran <lalithkraj@chromium.org>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Both cros host command and irq disable were moved to suspend
+prepare stage from late suspend recently. This is causing EC
+to report MKBP event timeouts during suspend stress testing.
+When the MKBP event timeouts happen during suspend, subsequent
+wakeup of AP by EC using MKBP doesn't happen properly. Move the
+irq disabling part back to late suspend stage which is a general
+suggestion from the suspend kernel documentaiton to do irq
+disable as late as possible.
+
+Fixes: 4b9abbc132b8 ("platform/chrome: cros_ec_lpc: Move host command to prepare/complete")
+Signed-off-by: Lalith Rajendran <lalithkraj@chromium.org>
 ---
- drivers/gpu/drm/i915/display/intel_dsi_vbt.c | 98 ++++++--------------
- 1 file changed, 28 insertions(+), 70 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-index 3fb85b6d320e..8fc82aceae14 100644
---- a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-+++ b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
-@@ -55,43 +55,6 @@
- #define MIPI_VIRTUAL_CHANNEL_SHIFT	1
- #define MIPI_PORT_SHIFT			3
+Changes in v3:
+- Replace commit message s/Although there ... this change move/\nMove/.
+
+Changes in v2:
+- applied mainter feedback from https://patchwork.kernel.org/project/
+chrome-platform/patch/20231017124047.1.Icc99145043c8d44142bb5ca64ea4c63a417c267b
+@changeid/#25558414
+
+ drivers/platform/chrome/cros_ec.c     | 116 +++++++++++++++++++++-----
+ drivers/platform/chrome/cros_ec.h     |   4 +
+ drivers/platform/chrome/cros_ec_lpc.c |  22 ++++-
+ 3 files changed, 116 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/cros_ec.c
+index 5d36fbc75e1b..ff85f7507060 100644
+--- a/drivers/platform/chrome/cros_ec.c
++++ b/drivers/platform/chrome/cros_ec.c
+@@ -321,17 +321,8 @@ void cros_ec_unregister(struct cros_ec_device *ec_dev)
+ EXPORT_SYMBOL(cros_ec_unregister);
  
--/* base offsets for gpio pads */
--#define VLV_GPIO_NC_0_HV_DDI0_HPD	0x4130
--#define VLV_GPIO_NC_1_HV_DDI0_DDC_SDA	0x4120
--#define VLV_GPIO_NC_2_HV_DDI0_DDC_SCL	0x4110
--#define VLV_GPIO_NC_3_PANEL0_VDDEN	0x4140
--#define VLV_GPIO_NC_4_PANEL0_BKLTEN	0x4150
--#define VLV_GPIO_NC_5_PANEL0_BKLTCTL	0x4160
--#define VLV_GPIO_NC_6_HV_DDI1_HPD	0x4180
--#define VLV_GPIO_NC_7_HV_DDI1_DDC_SDA	0x4190
--#define VLV_GPIO_NC_8_HV_DDI1_DDC_SCL	0x4170
--#define VLV_GPIO_NC_9_PANEL1_VDDEN	0x4100
--#define VLV_GPIO_NC_10_PANEL1_BKLTEN	0x40E0
--#define VLV_GPIO_NC_11_PANEL1_BKLTCTL	0x40F0
--
--#define VLV_GPIO_PCONF0(base_offset)	(base_offset)
--#define VLV_GPIO_PAD_VAL(base_offset)	((base_offset) + 8)
--
--struct gpio_map {
--	u16 base_offset;
--	bool init;
--};
--
--static struct gpio_map vlv_gpio_table[] = {
--	{ VLV_GPIO_NC_0_HV_DDI0_HPD },
--	{ VLV_GPIO_NC_1_HV_DDI0_DDC_SDA },
--	{ VLV_GPIO_NC_2_HV_DDI0_DDC_SCL },
--	{ VLV_GPIO_NC_3_PANEL0_VDDEN },
--	{ VLV_GPIO_NC_4_PANEL0_BKLTEN },
--	{ VLV_GPIO_NC_5_PANEL0_BKLTCTL },
--	{ VLV_GPIO_NC_6_HV_DDI1_HPD },
--	{ VLV_GPIO_NC_7_HV_DDI1_DDC_SDA },
--	{ VLV_GPIO_NC_8_HV_DDI1_DDC_SCL },
--	{ VLV_GPIO_NC_9_PANEL1_VDDEN },
--	{ VLV_GPIO_NC_10_PANEL1_BKLTEN },
--	{ VLV_GPIO_NC_11_PANEL1_BKLTCTL },
--};
--
- struct i2c_adapter_lookup {
- 	u16 slave_addr;
- 	struct intel_dsi *intel_dsi;
-@@ -269,52 +232,47 @@ static void soc_exec_gpio(struct intel_connector *connector, const char *con_id,
- 	}
- }
+ #ifdef CONFIG_PM_SLEEP
+-/**
+- * cros_ec_suspend() - Handle a suspend operation for the ChromeOS EC device.
+- * @ec_dev: Device to suspend.
+- *
+- * This can be called by drivers to handle a suspend event.
+- *
+- * Return: 0 on success or negative error code.
+- */
+-int cros_ec_suspend(struct cros_ec_device *ec_dev)
++static void cros_ec_send_suspend_event(struct cros_ec_device *ec_dev)
+ {
+-	struct device *dev = ec_dev->dev;
+ 	int ret;
+ 	u8 sleep_event;
  
-+static void soc_exec_opaque_gpio(struct intel_connector *connector,
-+				 const char *chip, const char *con_id,
-+				 u8 gpio_index, bool value)
+@@ -343,7 +334,26 @@ int cros_ec_suspend(struct cros_ec_device *ec_dev)
+ 	if (ret < 0)
+ 		dev_dbg(ec_dev->dev, "Error %d sending suspend event to ec\n",
+ 			ret);
++}
+ 
++/**
++ * cros_ec_suspend_prepare() - Handle a suspend prepare operation for the ChromeOS EC device.
++ * @ec_dev: Device to suspend.
++ *
++ * This can be called by drivers to handle a suspend prepare stage of suspend.
++ *
++ * Return: 0 on success or negative error code.
++ */
++int cros_ec_suspend_prepare(struct cros_ec_device *ec_dev)
 +{
-+	struct gpiod_lookup_table *lookup;
++	cros_ec_send_suspend_event(ec_dev);
++	return 0;
++}
++EXPORT_SYMBOL(cros_ec_suspend_prepare);
 +
-+	lookup = kzalloc(struct_size(lookup, table, 2), GFP_KERNEL);
-+	if (!lookup)
-+		return;
-+
-+	lookup->dev_id = "0000:00:02.0";
-+	lookup->table[0] =
-+		GPIO_LOOKUP_IDX(chip, gpio_index, con_id, gpio_index, GPIO_ACTIVE_HIGH);
-+
-+	gpiod_add_lookup_table(lookup);
-+
-+	soc_exec_gpio(connector, con_id, gpio_index, value);
-+
-+	gpiod_remove_lookup_table(lookup);
-+	kfree(lookup);
++static void cros_ec_disable_irq(struct cros_ec_device *ec_dev)
++{
++	struct device *dev = ec_dev->dev;
+ 	if (device_may_wakeup(dev))
+ 		ec_dev->wake_enabled = !enable_irq_wake(ec_dev->irq);
+ 	else
+@@ -351,7 +361,35 @@ int cros_ec_suspend(struct cros_ec_device *ec_dev)
+ 
+ 	disable_irq(ec_dev->irq);
+ 	ec_dev->suspended = true;
 +}
 +
- static void vlv_exec_gpio(struct intel_connector *connector,
- 			  u8 gpio_source, u8 gpio_index, bool value)
- {
- 	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
--	struct gpio_map *map;
--	u16 pconf0, padval;
--	u32 tmp;
--	u8 port;
++/**
++ * cros_ec_suspend_late() - Handle a suspend late operation for the ChromeOS EC device.
++ * @ec_dev: Device to suspend.
++ *
++ * This can be called by drivers to handle a suspend late stage of suspend.
++ *
++ * Return: 0 on success or negative error code.
++ */
++int cros_ec_suspend_late(struct cros_ec_device *ec_dev)
++{
++	cros_ec_disable_irq(ec_dev);
++	return 0;
++}
++EXPORT_SYMBOL(cros_ec_suspend_late);
  
--	if (gpio_index >= ARRAY_SIZE(vlv_gpio_table)) {
--		drm_dbg_kms(&dev_priv->drm, "unknown gpio index %u\n",
--			    gpio_index);
--		return;
--	}
--
--	map = &vlv_gpio_table[gpio_index];
--
--	if (connector->panel.vbt.dsi.seq_version >= 3) {
--		/* XXX: this assumes vlv_gpio_table only has NC GPIOs. */
--		port = IOSF_PORT_GPIO_NC;
--	} else {
--		if (gpio_source == 0) {
--			port = IOSF_PORT_GPIO_NC;
--		} else if (gpio_source == 1) {
-+	/* XXX: this assumes vlv_gpio_table only has NC GPIOs. */
-+	if (connector->panel.vbt.dsi.seq_version < 3) {
-+		if (gpio_source == 1) {
- 			drm_dbg_kms(&dev_priv->drm, "SC gpio not supported\n");
- 			return;
--		} else {
-+		}
-+		if (gpio_source > 1) {
- 			drm_dbg_kms(&dev_priv->drm,
- 				    "unknown gpio source %u\n", gpio_source);
- 			return;
- 		}
++/**
++ * cros_ec_suspend() - Handle a suspend operation for the ChromeOS EC device.
++ * @ec_dev: Device to suspend.
++ *
++ * This can be called by drivers to handle a suspend event.
++ *
++ * Return: 0 on success or negative error code.
++ */
++int cros_ec_suspend(struct cros_ec_device *ec_dev)
++{
++	cros_ec_send_suspend_event(ec_dev);
++	cros_ec_disable_irq(ec_dev);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(cros_ec_suspend);
+@@ -370,22 +408,11 @@ static void cros_ec_report_events_during_suspend(struct cros_ec_device *ec_dev)
  	}
- 
--	pconf0 = VLV_GPIO_PCONF0(map->base_offset);
--	padval = VLV_GPIO_PAD_VAL(map->base_offset);
--
--	vlv_iosf_sb_get(dev_priv, BIT(VLV_IOSF_SB_GPIO));
--	if (!map->init) {
--		/* FIXME: remove constant below */
--		vlv_iosf_sb_write(dev_priv, port, pconf0, 0x2000CC00);
--		map->init = true;
--	}
--
--	tmp = 0x4 | value;
--	vlv_iosf_sb_write(dev_priv, port, padval, tmp);
--	vlv_iosf_sb_put(dev_priv, BIT(VLV_IOSF_SB_GPIO));
-+	soc_exec_opaque_gpio(connector, "INT33FC:01", "Panel N", gpio_index, value);
  }
  
- static void chv_exec_gpio(struct intel_connector *connector,
+-/**
+- * cros_ec_resume() - Handle a resume operation for the ChromeOS EC device.
+- * @ec_dev: Device to resume.
+- *
+- * This can be called by drivers to handle a resume event.
+- *
+- * Return: 0 on success or negative error code.
+- */
+-int cros_ec_resume(struct cros_ec_device *ec_dev)
++static void cros_ec_send_resume_event(struct cros_ec_device *ec_dev)
+ {
+ 	int ret;
+ 	u8 sleep_event;
+ 
+-	ec_dev->suspended = false;
+-	enable_irq(ec_dev->irq);
+-
+ 	sleep_event = (!IS_ENABLED(CONFIG_ACPI) || pm_suspend_via_firmware()) ?
+ 		      HOST_SLEEP_EVENT_S3_RESUME :
+ 		      HOST_SLEEP_EVENT_S0IX_RESUME;
+@@ -394,6 +421,24 @@ int cros_ec_resume(struct cros_ec_device *ec_dev)
+ 	if (ret < 0)
+ 		dev_dbg(ec_dev->dev, "Error %d sending resume event to ec\n",
+ 			ret);
++}
++
++/**
++ * cros_ec_resume_complete() - Handle a resume complete operation for the ChromeOS EC device.
++ * @ec_dev: Device to resume.
++ *
++ * This can be called by drivers to handle a resume complete stage of resume.
++ */
++void cros_ec_resume_complete(struct cros_ec_device *ec_dev)
++{
++	cros_ec_send_resume_event(ec_dev);
++}
++EXPORT_SYMBOL(cros_ec_resume_complete);
++
++static void cros_ec_enable_irq(struct cros_ec_device *ec_dev)
++{
++	ec_dev->suspended = false;
++	enable_irq(ec_dev->irq);
+ 
+ 	if (ec_dev->wake_enabled)
+ 		disable_irq_wake(ec_dev->irq);
+@@ -403,8 +448,35 @@ int cros_ec_resume(struct cros_ec_device *ec_dev)
+ 	 * suspend. This way the clients know what to do with them.
+ 	 */
+ 	cros_ec_report_events_during_suspend(ec_dev);
++}
+ 
++/**
++ * cros_ec_resume_early() - Handle a resume early operation for the ChromeOS EC device.
++ * @ec_dev: Device to resume.
++ *
++ * This can be called by drivers to handle a resume early stage of resume.
++ *
++ * Return: 0 on success or negative error code.
++ */
++int cros_ec_resume_early(struct cros_ec_device *ec_dev)
++{
++	cros_ec_enable_irq(ec_dev);
++	return 0;
++}
++EXPORT_SYMBOL(cros_ec_resume_early);
+ 
++/**
++ * cros_ec_resume() - Handle a resume operation for the ChromeOS EC device.
++ * @ec_dev: Device to resume.
++ *
++ * This can be called by drivers to handle a resume event.
++ *
++ * Return: 0 on success or negative error code.
++ */
++int cros_ec_resume(struct cros_ec_device *ec_dev)
++{
++	cros_ec_enable_irq(ec_dev);
++	cros_ec_send_resume_event(ec_dev);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(cros_ec_resume);
+diff --git a/drivers/platform/chrome/cros_ec.h b/drivers/platform/chrome/cros_ec.h
+index bbca0096868a..566332f48789 100644
+--- a/drivers/platform/chrome/cros_ec.h
++++ b/drivers/platform/chrome/cros_ec.h
+@@ -14,7 +14,11 @@ int cros_ec_register(struct cros_ec_device *ec_dev);
+ void cros_ec_unregister(struct cros_ec_device *ec_dev);
+ 
+ int cros_ec_suspend(struct cros_ec_device *ec_dev);
++int cros_ec_suspend_late(struct cros_ec_device *ec_dev);
++int cros_ec_suspend_prepare(struct cros_ec_device *ec_dev);
+ int cros_ec_resume(struct cros_ec_device *ec_dev);
++int cros_ec_resume_early(struct cros_ec_device *ec_dev);
++void cros_ec_resume_complete(struct cros_ec_device *ec_dev);
+ 
+ irqreturn_t cros_ec_irq_thread(int irq, void *data);
+ 
+diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chrome/cros_ec_lpc.c
+index 9083a7d58d53..ed498278a223 100644
+--- a/drivers/platform/chrome/cros_ec_lpc.c
++++ b/drivers/platform/chrome/cros_ec_lpc.c
+@@ -560,22 +560,36 @@ MODULE_DEVICE_TABLE(dmi, cros_ec_lpc_dmi_table);
+ static int cros_ec_lpc_prepare(struct device *dev)
+ {
+ 	struct cros_ec_device *ec_dev = dev_get_drvdata(dev);
+-
+-	return cros_ec_suspend(ec_dev);
++	return cros_ec_suspend_prepare(ec_dev);
+ }
+ 
+ static void cros_ec_lpc_complete(struct device *dev)
+ {
+ 	struct cros_ec_device *ec_dev = dev_get_drvdata(dev);
+-	cros_ec_resume(ec_dev);
++	cros_ec_resume_complete(ec_dev);
++}
++
++static int cros_ec_lpc_suspend_late(struct device *dev)
++{
++	struct cros_ec_device *ec_dev = dev_get_drvdata(dev);
++
++	return cros_ec_suspend_late(ec_dev);
++}
++
++static int cros_ec_lpc_resume_early(struct device *dev)
++{
++	struct cros_ec_device *ec_dev = dev_get_drvdata(dev);
++
++	return cros_ec_resume_early(ec_dev);
+ }
+ #endif
+ 
+ static const struct dev_pm_ops cros_ec_lpc_pm_ops = {
+ #ifdef CONFIG_PM_SLEEP
+ 	.prepare = cros_ec_lpc_prepare,
+-	.complete = cros_ec_lpc_complete
++	.complete = cros_ec_lpc_complete,
+ #endif
++	SET_LATE_SYSTEM_SLEEP_PM_OPS(cros_ec_lpc_suspend_late, cros_ec_lpc_resume_early)
+ };
+ 
+ static struct platform_driver cros_ec_lpc_driver = {
 -- 
-2.40.0.1.gaa8946217a0b
+2.42.0.758.gaed0368e0e-goog
 
