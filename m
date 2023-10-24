@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C427D5B7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AA97D5B81
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344138AbjJXTcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 15:32:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
+        id S1344178AbjJXTdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 15:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234736AbjJXTct (ORCPT
+        with ESMTP id S234736AbjJXTdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 15:32:49 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25E910C6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 12:32:47 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5401bab7525so5521415a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 12:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698175965; x=1698780765; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lz2UiFW5H33iZ4N++uZ6e03nG8WnF5BOmzOOzIXzHlc=;
-        b=AMMnbyrxnwb4Wd2Divu7uVHhOlH0wHlKyBnM8ebKtJiDJUkh8Fqz1y+wifxMFO+dJQ
-         Ot0joZEHM/9CYdP1bVYf1A9tOQ9bvcypKBlAd3wB7BcN8LXDMjjxj3jKDyN2mxI6fGEl
-         RrUqxlAlGyaA1XHqAEb4xCdrjJDRjDp6Ij3wU=
+        Tue, 24 Oct 2023 15:33:44 -0400
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FF310CF;
+        Tue, 24 Oct 2023 12:33:43 -0700 (PDT)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6c4cbab83aaso3204801a34.1;
+        Tue, 24 Oct 2023 12:33:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698175965; x=1698780765;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Lz2UiFW5H33iZ4N++uZ6e03nG8WnF5BOmzOOzIXzHlc=;
-        b=edUTa1qubVGX6eSAhvSQ7TelWhnk1tc7djAkiJZAo70+kWJytKaegekYkh6jqlihpj
-         lT2bw14+IIPuwLAN8hm7aypkCJPtoQSA+Q9sXmn8AdeDE6eSeJkh16qF3CsHR9Bo2Qnc
-         bO6JlqfdJE6L1CUE5eSIPegnqBjN2irzXb+Llp4oEVF0g9Obx9hyEJ+Dk86ihMxTwHMR
-         +V+qzVrL4JQps2m+zrTjeoCykJjgo6+LwWrnEbzikuG0oX/AcPMamXffNRzXHdN4O3rH
-         NDN3ETCML4p7m6dO6lCLDS/8X+S/Az7uCNPAZfqhkl1O6bSyyyYx35hlMqaZzutC9K4M
-         RATA==
-X-Gm-Message-State: AOJu0YxeiOqYqOikBU5yMC0Nov/nS5qkhnLstZbwxq3ApcJUThBtRV8G
-        HBSOk9GdITZXS08LyLBuwr4Oq2NRN6Sndg1alIafN2yo
-X-Google-Smtp-Source: AGHT+IEdTbTZv8LDORJoQinISrn4DNK7gBHcUfS+P0Pl3EJEDdpvvef44t/NmkR5gA4VoLxWnMrpHw==
-X-Received: by 2002:a50:9ec4:0:b0:53d:9471:76b3 with SMTP id a62-20020a509ec4000000b0053d947176b3mr9415086edf.7.1698175965558;
-        Tue, 24 Oct 2023 12:32:45 -0700 (PDT)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
-        by smtp.gmail.com with ESMTPSA id cf15-20020a0564020b8f00b0053deb97e8e6sm8215590edb.28.2023.10.24.12.32.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 12:32:44 -0700 (PDT)
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5401bab7525so5521375a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 12:32:44 -0700 (PDT)
-X-Received: by 2002:a17:906:7956:b0:9be:e153:3b82 with SMTP id
- l22-20020a170906795600b009bee1533b82mr10308422ejo.17.1698175964167; Tue, 24
- Oct 2023 12:32:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698176022; x=1698780822;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i6EGD2hnIl5nJ7jHbhHkDFGMf4JT3GmrlWO/gNgXFm4=;
+        b=dpBhEVsErF/oPa2MM9Fx0Dii+lvnhlcnboZacDnCMRpP5mBMzLqeGjfx9loOiuE2dB
+         yfnOJS6wwl5Yx2UP5wFu3HUl3h3KPKaS55VKZEcJbIABqzYvrCCR7bvPHFT5F2Wm6Dgc
+         7AAxIBpy2Upit+qhq1RBFDXZjzRWzeiHb23hwpTq8N3VORjvHc+Vk29Q0uxN4cfBjvBn
+         ADRx33HX+9202q0bSn/kT80DvcxErVW7AhCgJ4Sso0/K1GuYJLnD+82IKY/mflYBvNEs
+         lwubtLUhRogCJDT0ro8dYrHGObESI5ZOkpH0VXVK6OGh8ellcoSBrVoiOoNfoXVcTZ5z
+         NfVA==
+X-Gm-Message-State: AOJu0Ywben8M9TUNfqCspz9yGoI+Zmh0+vfun97cpTVHZwsC3ZgvciQe
+        eqrZGmTyeGx6oYMBo5UmDw==
+X-Google-Smtp-Source: AGHT+IG/DnkHUUOZYFCdzFFTsrG7seFDZnhT/cLwyWjOZwqYmjSjpPehEOcMAqlsYZ3B6i2VOy4xRQ==
+X-Received: by 2002:a9d:7e84:0:b0:6cc:cc02:6ea4 with SMTP id m4-20020a9d7e84000000b006cccc026ea4mr13324831otp.38.1698176022379;
+        Tue, 24 Oct 2023 12:33:42 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id s5-20020a056830148500b006b9443ce478sm1946874otq.27.2023.10.24.12.33.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 12:33:41 -0700 (PDT)
+Received: (nullmailer pid 430587 invoked by uid 1000);
+        Tue, 24 Oct 2023 19:33:39 -0000
+Date:   Tue, 24 Oct 2023 14:33:39 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Luca Weiss <luca.weiss@fairphone.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        linux-usb@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: usb: fsa4480: Add data-lanes
+ property to endpoint
+Message-ID: <169817601855.430514.5700076619485106727.robh@kernel.org>
+References: <20231020-fsa4480-swap-v2-0-9a7f9bb59873@fairphone.com>
+ <20231020-fsa4480-swap-v2-1-9a7f9bb59873@fairphone.com>
 MIME-Version: 1.0
-References: <20231024161931.78567-1-sebastian.reichel@collabora.com> <20231024161931.78567-2-sebastian.reichel@collabora.com>
-In-Reply-To: <20231024161931.78567-2-sebastian.reichel@collabora.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 24 Oct 2023 09:32:27 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whYDbZ29fx_xeSxtYSjtF8WJkaLjzyB8RN5_Rk9Sh-YyQ@mail.gmail.com>
-Message-ID: <CAHk-=whYDbZ29fx_xeSxtYSjtF8WJkaLjzyB8RN5_Rk9Sh-YyQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] math.h: add DIV_ROUND_UP_NO_OVERFLOW
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231020-fsa4480-swap-v2-1-9a7f9bb59873@fairphone.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,44 +73,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Since you're cc'ing the s390 people, I assume that means that this
-all ended up being a follow-up to the s390 issue discussion ]
 
-On Tue, 24 Oct 2023 at 06:19, Sebastian Reichel
-<sebastian.reichel@collabora.com> wrote:
->
-> Add a new DIV_ROUND_UP helper, which cannot overflow when
-> big numbers are being used.
+On Fri, 20 Oct 2023 11:33:18 +0200, Luca Weiss wrote:
+> Allow specifying data-lanes to reverse the muxing orientation between
+> AUX+/- and SBU1/2 where necessary by the hardware design.
+> 
+> In the mux there's a switch that needs to be controlled from the OS, and
+> it either connects AUX+ -> SBU1 and AUX- -> SBU2, or the reverse: AUX+
+> -> SBU2 and AUX- -> SBU1, depending on the orientation of how the USB-C
+> connector is plugged in.
+> 
+> With this data-lanes property we can now specify that AUX+ and AUX-
+> connections are swapped between the SoC and the mux, therefore the OS
+> needs to consider this and reverse the direction of this switch in the
+> mux.
+> 
+> _______          _______
+>       |          |     |
+>       |-- HP   --|     |
+>       |-- MIC  --|     |or
+> SoC   |          | MUX |-- SBU1 --->  To the USB-C
+> Codec |-- AUX+ --|     |-- SBU2 --->  connected
+>       |-- AUX- --|     |
+> ______|          |_____|
+> 
+> (thanks to Neil Armstrong for this ASCII art)
+> 
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+>  .../devicetree/bindings/usb/fcs,fsa4480.yaml       | 29 +++++++++++++++++++++-
+>  1 file changed, 28 insertions(+), 1 deletion(-)
+> 
 
-This is really horrendously bad on some architectures (ie it might
-require *two* divisions):
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-> +#define DIV_ROUND_UP_NO_OVERFLOW(n, d) (((n) / (d)) + !!((n) % (d)))
-
-but David Laight at least had a suggestion for that: when allowing
-multiple uses, you can just do
-
-   #define DIV_ROUND_UP(n,d) ((n) ? ((n)-1)/(d)+1 : 0)
-
-so now you're back to just one division and no horrible extra expense.
-
-But we can't allow those multiple uses in general, sadly.
-
-I would really prefer to just make our regular DIV_ROUND_UP() DTRT.  But:
-
- - people do use it with complex first arguments (ie function calls
-etc) that we don't want to evaluate twice
-
- - we can't make it an inline function, because the types aren't fixed
-
- - we can't even use a statement expression and __auto_type, because
-these things are used in type definitions etc and need to be constant
-expressions
-
-That last thing means that even the "__builtin_choose_expr()" doesn't
-work, because the statement expression still needs to be _parsed_ as
-such, and that's not something we can do in those contexts.
-
-Very annoying. Let me think about this.
-
-                     Linus
