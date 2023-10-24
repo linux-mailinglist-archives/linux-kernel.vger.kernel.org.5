@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AF17D5AE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC617D5AE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343995AbjJXSwM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 14:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54286 "EHLO
+        id S1344151AbjJXSwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbjJXSwK (ORCPT
+        with ESMTP id S234883AbjJXSwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:52:10 -0400
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C063BA6;
-        Tue, 24 Oct 2023 11:52:08 -0700 (PDT)
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1ea1742c1a5so1380458fac.0;
-        Tue, 24 Oct 2023 11:52:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698173528; x=1698778328;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b47eW1W1ZA3iY9fGQWptMYQkO14e99bJy5u+/oy5i2Y=;
-        b=aZEwBny9h18y3Sexpm1gP6WTOHnyV+grEkCz6WuZVsCCwZ2JVuDM/GR3oH2n2MVgMD
-         LMBQCQfVWdV92nSSvAl2DZXuMIyxyToOV8EuiEVpohVVvZZQs0wIDl6ntkLK/jEWlva3
-         6IaMeyzOO0loI1COrMmRKa6SzTehfiZeOoRb9o6Blu6BNbO8iPIjX1rX81lZ2h/R6yQK
-         /YtksuEUYxoJM3KCIaW9z55oPKD1O5F1Hy8XmzvOgSxXYD/hBxQjZLeZiUqdr5cRlDV6
-         sBWjeBgQgbHpak/qLLWZ+7+6fbhI+pbyo9zyEbPFDDSXtrif6mpxwrR9gEt0qt4GYXSt
-         iVVA==
-X-Gm-Message-State: AOJu0Yw04wr7yV0HId29biuCd9JJWS9GVl7/RWdLVvMRccapd6clWVIQ
-        gL4fvXGmmZnXr4XK5ctYVGhDuJt0pUTfNjcawZg=
-X-Google-Smtp-Source: AGHT+IGEyL46Vaabh0PQgToQaEorF+rTwJ2e/VuAsoUSTFafddKjwzGKWYy/ed+ekhC8GDeNVIsCZEpkTFfXDb/+gKo=
-X-Received: by 2002:a05:6870:9a98:b0:1e9:9e04:1d24 with SMTP id
- hp24-20020a0568709a9800b001e99e041d24mr16645138oab.5.1698173528060; Tue, 24
- Oct 2023 11:52:08 -0700 (PDT)
+        Tue, 24 Oct 2023 14:52:20 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C5EA6;
+        Tue, 24 Oct 2023 11:52:14 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 27AB4120046;
+        Tue, 24 Oct 2023 21:52:12 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 27AB4120046
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1698173532;
+        bh=ZfnwsoCFNLWxYlhF3Ype4MK6VdYqony+g3yIue3PzsQ=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=A1njmlfTnNiQFmP0AhqW2IbeOLkX1fhd8vSFmE+snlE6wgCPFcyXc3T+8TxjNMzAx
+         w6D6Elr7sohany6Ydo3sJCswxk0Sai1Wx9Tk9T23j3v+bga7OhCNvYTIDW3yaOtrMb
+         KG8utSnwMhP834AVnHQU67WJdJjcjWouj2dfnHa0ceCo448EbtshzKcgCMFMukXe7d
+         TPqu2h+gLkCYpFfmti6HsACB6EWqyHlsF1z0eUII1P+opWfR1AJ1m0miCt21KF/lk8
+         F/2E4dMPh5qaT6ZRd+j2H+gTIODXbs0bxaUADilhp9qUY1uEUMgUv4JOgMVxqK5IFF
+         F1eHn41HJdXIw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Tue, 24 Oct 2023 21:52:12 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 24 Oct
+ 2023 21:52:11 +0300
+Date:   Tue, 24 Oct 2023 21:52:11 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <lee@kernel.org>, <pavel@ucw.cz>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andy.shevchenko@gmail.com>, <kernel@sberdevices.ru>,
+        <rockosov@gmail.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>
+Subject: Re: [DMARC error] Re: [PATCH v2 03/11] dt-bindings: leds: aw200xx:
+ introduce optional hwen-gpios property
+Message-ID: <20231024185211.x753eonmq5flwqa3@CAB-WSD-L081021>
+References: <20231018182943.18700-1-ddrokosov@salutedevices.com>
+ <20231018182943.18700-4-ddrokosov@salutedevices.com>
+ <20231024183014.GA243505-robh@kernel.org>
 MIME-Version: 1.0
-References: <20230712223448.145079-1-jeshuas@nvidia.com> <ZTfhpRRA4bga0qSI@agluck-desk3>
-In-Reply-To: <ZTfhpRRA4bga0qSI@agluck-desk3>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 24 Oct 2023 20:51:57 +0200
-Message-ID: <CAJZ5v0j2mbKOqDaL_31fL9ftTZRhUiURx3nubLmLUo3-R_w3gw@mail.gmail.com>
-Subject: Re: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
-To:     Tony Luck <tony.luck@intel.com>, Jeshua Smith <jeshuas@nvidia.com>
-Cc:     keescook@chromium.org, gpiccoli@igalia.com, rafael@kernel.org,
-        lenb@kernel.org, james.morse@arm.com, bp@alien8.de,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-tegra@vger.kernel.org,
-        treding@nvidia.com, jonathanh@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231024183014.GA243505-robh@kernel.org>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180848 [Oct 24 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/24 17:39:00 #22277133
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 5:27 PM Tony Luck <tony.luck@intel.com> wrote:
->
-> On Wed, Jul 12, 2023 at 10:34:48PM +0000, Jeshua Smith wrote:
-> > Slow devices such as flash may not meet the default 1ms timeout value,
-> > so use the ERST max execution time value that they provide as the
-> > timeout if it is larger.
-> >
-> > Signed-off-by: Jeshua Smith <jeshuas@nvidia.com>
->
-> > +/* ERST Exec max timings */
-> > +#define ERST_EXEC_TIMING_MAX_MASK      0xFFFFFFFF00000000
-> > +#define ERST_EXEC_TIMING_MAX_SHIFT     32
->
-> I've recently become a fan of <linux/bitfield.h> I think this would
-> be easier on the eyes as:
->
-> #define ERST_EXEC_TIMING_MAX    GENMASK_ULL(63, 32)
->
-> > +static inline u64 erst_get_timeout(void)
-> > +{
-> > +     u64 timeout = FIRMWARE_TIMEOUT;
-> > +
-> > +     if (erst_erange.attr & ERST_RANGE_SLOW) {
-> > +             timeout = ((erst_erange.timings & ERST_EXEC_TIMING_MAX_MASK) >>
-> > +                     ERST_EXEC_TIMING_MAX_SHIFT) * NSEC_PER_MSEC;
->
-> then this becomes:
->
->                 timeout = FIELD_GET(ERST_EXEC_TIMING_MAX, erst_erange.timings) *
->                           NSEC_PER_MSEC;
->
-> > +             if (timeout < FIRMWARE_TIMEOUT)
-> > +                     timeout = FIRMWARE_TIMEOUT;
->
-> But that's just a matter of style.  Otherwise the patch looks fine.
->
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
+On Tue, Oct 24, 2023 at 01:30:14PM -0500, Rob Herring wrote:
+> On Wed, Oct 18, 2023 at 09:29:35PM +0300, Dmitry Rokosov wrote:
+> > Property 'hwen-gpios' is optional, it can be used by the board
+> > developer to connect AW200XX LED controller with appropriate poweron
+> > GPIO pad.
+> > 
+> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+> > ---
+> >  Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
+> > index feb5febaf361..255eb0563737 100644
+> > --- a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
+> > +++ b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
+> > @@ -41,6 +41,9 @@ properties:
+> >      description:
+> >        Leds matrix size
+> >  
+> > +  hwen-gpios:
+> > +    maxItems: 1
+> 
+> The standard enable-gpios or powerdown-gpios don't work for you?
 
-Applied as 6.7 material, thanks!
+HWEN is the name from the official datasheet. I thought it's always
+better to use a naming convention that is similar to the notations used
+in the datasheet.
+
+-- 
+Thank you,
+Dmitry
