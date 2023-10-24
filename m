@@ -2,105 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 054997D4B6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F08417D4B78
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233854AbjJXJC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
+        id S233885AbjJXJFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbjJXJC5 (ORCPT
+        with ESMTP id S232865AbjJXJFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:02:57 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F6CAC;
-        Tue, 24 Oct 2023 02:02:54 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6811360014;
-        Tue, 24 Oct 2023 09:02:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698138173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=moXvoXVL8BeanjUNuJ9YxDMbdmP0XoJ1UTP44gG4/CA=;
-        b=QWj0mk9S2F0YTHYn+XipNAFVia5mjtFwMXs6WlSlTZQRuWmnD7IMIKCVumCfRzOcbLKFP8
-        Ev+dwdtdCU5Vou1ysduGfB8wsDve7DAAPUVNM0T4ISKZ0zFWkW0vtD+ggctbRd3e0MBlDV
-        Ifyq3r6355gUsmwddN0WQmXghNVOgTWOkxO1MNc70F5cMkQzX8aO6bIpO3bP9R/PgtRDWX
-        em6Q72W8DqhJGTzKiVG+rL2htx6/a93cOfNOscntGTQi3Ux0xN1v4xrGQcaBULHbwKg0ie
-        N68o2iFkPIcNaZfVQPVlDwT6NcR4XeTsS3VueGSW9WprdiXJSQfoAh1rCEcJOw==
-Date:   Tue, 24 Oct 2023 11:03:05 +0200 (CEST)
-From:   Romain Gantois <romain.gantois@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-cc:     Romain Gantois <romain.gantois@bootlin.com>, davem@davemloft.net,
+        Tue, 24 Oct 2023 05:05:05 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A013EC0;
+        Tue, 24 Oct 2023 02:05:02 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id DB11492009C; Tue, 24 Oct 2023 11:05:00 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id D5D0392009B;
+        Tue, 24 Oct 2023 10:05:00 +0100 (BST)
+Date:   Tue, 24 Oct 2023 10:05:00 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        "paulburton@kernel.org" <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        thomas.petazzoni@bootlin.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next 4/5] net: ipqess: add a PSGMII calibration
- procedure to the IPQESS driver
-In-Reply-To: <df71bbe5-fec0-45cc-adb4-acfbcc356ba3@lunn.ch>
-Message-ID: <9d447cb5-c8f9-06d2-0909-2870d57f0f7a@bootlin.com>
-References: <20231023155013.512999-1-romain.gantois@bootlin.com> <20231023155013.512999-5-romain.gantois@bootlin.com> <df71bbe5-fec0-45cc-adb4-acfbcc356ba3@lunn.ch>
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 03/11] MIPS: support RAM beyond 32-bit
+In-Reply-To: <b35d73e8-260e-4296-a710-f20676e17c27@app.fastmail.com>
+Message-ID: <alpine.DEB.2.21.2310240303440.63803@angie.orcam.me.uk>
+References: <20231004161038.2818327-1-gregory.clement@bootlin.com> <20231004161038.2818327-4-gregory.clement@bootlin.com> <f98d0cf9-6339-4cb1-8019-56bc71bfb822@app.fastmail.com> <87edi3bxcl.fsf@BL-laptop> <e5b8c68e-8a1d-45e7-92bf-db0c2fa812ad@app.fastmail.com>
+ <878r89b4jh.fsf@BL-laptop> <b35d73e8-260e-4296-a710-f20676e17c27@app.fastmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-X-GND-Sasl: romain.gantois@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andrew,
+On Thu, 12 Oct 2023, Jiaxun Yang wrote:
 
-On Mon, 23 Oct 2023, Andrew Lunn wrote:
-
-> On Mon, Oct 23, 2023 at 05:50:11PM +0200, Romain Gantois wrote:
-> > The IPQ4019 Ethernet Switch Subsystem uses a PSGMII link to communicate
-> > with a QCA8075 5-port PHY. This 1G link requires calibration before it can
-> > be used reliably.
-> > 
-> > This commit introduces a calibration procedure followed by thourough
-> > testing of the link between each switch port and its corresponding PHY
-> > port.
+> > There is a kind of mirror but its physical address start at 0x8000000
+> > so beyond the first 512MBytes that are used for KSEG0.
 > 
-> Could you explain the architecture in a bit more detail.
+> Really, KSEG0 range is 0x00000000 to 0x20000000, and 0x08000000 to 0x10000000
+> is definitely within that range.
 > 
-> When i see MAC code messing with a PHY, i normally say move it into
-> the PHY driver. But its not clear to me if you are talking about the
-> real PHYs here, or this is the switch end of the link, and it has some
-> sort of a PHY to talk to the quint PHY?
+> But I'd agree that 0x08000000 to 0x10000000 (32MB) seems too small for kernel
+> text and data. So yeah, it makes sense to load kernel into XKPHYS.
 
-Yes, I'll add more detailed comments to the code in the v2. The calibration 
-procedure itself targets the PSGMII device, which is internal to the SoC and can 
-be logically accessed as a PHY device on the MDIO bus. This component is a 
-little opaque and has some nonstandard MII register definitions.
+ Hmm, my calculation indicates the range shown spans 128MiB, which I think 
+is usually suitably large to hold kernel static text and data even for the 
+richest configurations.  Regardless, loading into XKPHYS isn't wrong, with 
+some platforms we've been doing it for decades now.
 
-The "testing" phase that follows the calibration accesses both the internal 
-QCA8K switch ports and the external QCA8075 PHY. For example, it puts both the 
-switch ports and the PHY ports in loopback before starting packet generation on 
-the external PHYs. This is done to verify that the PSGMII link works correctly 
-after being calibrated.
-
-So this code interacts with both internal ESS devices and external PHYs, but 
-mostly the former, which is why I kept everything in the MAC/switch driver.
-
-Thanks,
-
-Romain
+  Maciej
