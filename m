@@ -2,134 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5387D59D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3027D59DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344045AbjJXRh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 13:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
+        id S1344042AbjJXRlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 13:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjJXRh5 (ORCPT
+        with ESMTP id S1344122AbjJXRiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 13:37:57 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2065.outbound.protection.outlook.com [40.107.94.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4359783;
-        Tue, 24 Oct 2023 10:37:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jHczbHEE+ILKJiZjRK0MCvOwoq2iJWVqW9Ftb7ULCbN1uYCNf0hzqD7RxzZfgzqmSUhr9WG98AK2+tQ1EAKA926WmM2JZ06pbIGVPWYh+7GvAtRreals3zSwN/4JhmGiM3u5qUJr9Yu150eMWJvIOHZ2djb6qLyWc8Ug039tUIGb9CTT4HjGV7BSdjrDhR4uWRI2A80YOiwU4vXRSpOfIR3cvZlexWWS+7lTFrCVzxR0poAU87GXZay+qZ4Zo4tJcqldE+ur+D5JsUpICGkdW46i3b9RnEDSXn87cTfs88m5msSpZItJ+FyGNfofkzrWZdyXIn8UhJZabw6kYo8LKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=81MpubfqIYGouh1IQ3xSc0yLXDkNkDRWTIag0waJYEc=;
- b=Y/YXvC1HIzyIBb5oQmKXCit+HPZFUJ9sRrGQbsz9JKW3hG9cMpEkPNL4mYZSwQkus881xj5q7NrIdbn2jZ8wM91ifUW5HI5kwK6Z4Nm7pgYS7jKc6ziu89TEcN6jd7cD34fye8/nHZjCiVAMnzwzWIXGqiVe1CypMNqLB3e9P5kPkAoTraQerpLJ2OjP9qxrf3s2tOEZqojnG0/J3tbwpRwgHdRHVW6dlfz0PCSjeHFRWOFRGHQCe2QUIdDLh5oCREUJCwprrYHtPrRIRKngUM8+L+wrTa67oi93TTPbSKjBX+hA2/pCy3LFnUZy7n7KeH5oFpN93KgJX0MUTB4lxQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=81MpubfqIYGouh1IQ3xSc0yLXDkNkDRWTIag0waJYEc=;
- b=sdz80kml7Gu4fI45rggbf4zHMeS6g8KG1yu+3u+9dU8X72vSVRGQRXG8RJ88PQeXCuJEPwNZNcWHzsfeZpHFFjyYx+LFJDwyKNvnf1RszIeK4mCPDgnIiWNijkR67o3zh3LLm4jUaKLxAxYuywgXrAHVoly2SLxFLPfYvQij6Qyw9ku6qodIhBhaZbd5O4hOigvaepk23c4WWSYn1NsixK5yN/y7BlssnPfdR61ZqedyFEOn7ps0xvIUeZ61OJ5IvZdwU6jo73YideaDfmsqZvuY2dftxynfV/khh/NosJ/c4R/LWGIgJI+fPBpi0fX8jJReLcKW2RSDscRB4A69Zw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SJ0PR12MB6941.namprd12.prod.outlook.com (2603:10b6:a03:448::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Tue, 24 Oct
- 2023 17:37:50 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6886.034; Tue, 24 Oct 2023
- 17:37:50 +0000
-Date:   Tue, 24 Oct 2023 14:37:49 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: Re: [PATCH v6 07/10] iommufd: Add a nested HW pagetable object
-Message-ID: <20231024173749.GS3952@nvidia.com>
-References: <20231024150609.46884-1-yi.l.liu@intel.com>
- <20231024150609.46884-8-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024150609.46884-8-yi.l.liu@intel.com>
-X-ClientProxiedBy: DM6PR01CA0014.prod.exchangelabs.com (2603:10b6:5:296::19)
- To LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+        Tue, 24 Oct 2023 13:38:07 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60E683
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:38:04 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b1d1099a84so4511480b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698169084; x=1698773884; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g7zN8TITOFW53OV70gZW15XJJiZwhp5pdZptIds+tMc=;
+        b=GtSy/i8dDphcrTPGs8l5GfzhsgFSqqNAm6m5aiMKCVcKBc6yVdH5iah1nuROb9yagY
+         NvtNTo7UWlJxuyrKYBrOsU/tYFpoy6FvzP7+6yjxyEgmE4KSX1d5dOP5eA3hTaKXOkO1
+         E1Y6d481j5sSAhDpfGJydqaJKSEC6lJJ0N3ENIgFNdiCx+lZCFWcM09R/d2EPTxXuZNd
+         4YshaUgQKnEIE2A52IGenVJkbICiIMZDQs1wTvFnuaRC01kekSWzN3M2kJpsCEHX42k1
+         x4VSnbd7L03z3GbaR2yCy9p+EQzjnzAaBzuRUc8FF1fDCsMdEIj7z26qvzX23bLsOxJz
+         j9cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698169084; x=1698773884;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g7zN8TITOFW53OV70gZW15XJJiZwhp5pdZptIds+tMc=;
+        b=SmEYT3AzqZaQXw+XVEPQiTETrvv5JJuw+KbBfa7vhZ1RPQZP+QJiWaq9xOBzo0b8f5
+         Or54SallUIUVlkvQJT8GPuGVXeEivAvX9d0uHPabKGY/F3sov6UiXXVRMuErZ0+N7ul7
+         lhOmYFubg6Keu/4tguX4cMc045fraf0j41QZWSyR/ZfzIksl7IUsgQpWMzdAYxt3Hlbd
+         h39sXeKOf6KfovWc91TqNRF8aOvXCK+HnzhYa5INEC+OVJIVRYUbC9PIVfLhMlfQc/Ma
+         gRKHRJfUcepcRtfvoHKMKTzhqxV0YJMR9GkD7j679Vcqox1Xo8TeWla3VVvUir1Qjazd
+         ZA1g==
+X-Gm-Message-State: AOJu0YzKqWvlImSocILKIhQtkILyS7yAycvz0sVTUUiFxTqHQq3YVYz3
+        4knM59x4bRykMQdKMZNl6RFEPZpsmUFl9GcDhOQr33VK
+X-Google-Smtp-Source: AGHT+IGH8x9WV2KFCDlabjXB0cys93DMPBhKOh3cSI9O76HdDAzZbggT47bUR1f0qAzCWvabzQbqFQFRUH4esfQPaVw=
+X-Received: by 2002:a05:6a20:12c5:b0:17a:284:de50 with SMTP id
+ v5-20020a056a2012c500b0017a0284de50mr4011177pzg.6.1698169084187; Tue, 24 Oct
+ 2023 10:38:04 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ0PR12MB6941:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0d3b3acd-9fab-42bb-f358-08dbd4b7f1e9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9YE78voNgh1bQ4bgHBdObZP3KyFrR05sU6u0UTN7CdpPMlSORSAvm2RWo7ZBNlVKS9OhJW4lLJTgiZigDhTyvq2uZDstNQovPJb5lG0c5FtKTMIc8ON4y2fsSkzYFPZH4qV0lQY+CLfnRxaKLY/SPDJjMJH/N/VTvVokU4cgznhGm5cPsNOlyEgi+wHzYBuaHWAIm2tC4Q//eJsO9gUGr19rYZcYMipiDNQ/b/ceUHLzipZPSXKn0M58alqJvljBV9mY2r41NHOKRj5Vl7a2wrIlF4Od/07CvyAas/PcfrJy2P8lncyZE+k5AKa3vfp/c+yXtHAkez2SKqC6mZ8jueFaD6lEYMBjhkJbyL3GUhH84F8q8HMYvV2wnGUFZwFWqzljiDUqOkSkCMn8zkKAyAMTPyrFR6v4O1wocOpSRTc/PmQD3KeMKZFwB1qUPVbskrACuy5uW7/PscSoUd6jiH51DDFdtkiKLk1TqdfGq1b0IhswEqP4qr+qMugfYNyANRebvASEVF30BAVMhAZVdZzUXDGUJe0CH/qMaYZ5ZQxcEL+Ed4doyNYDWSsu6l2X
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(136003)(376002)(366004)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(8676002)(86362001)(6916009)(38100700002)(36756003)(6506007)(2906002)(41300700001)(7416002)(4326008)(1076003)(5660300002)(4744005)(2616005)(6512007)(26005)(478600001)(6486002)(33656002)(8936002)(66556008)(66476007)(316002)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WPrXetCT/ExfQi5r3CWYK8trI7X1dCeSpIu7R3UmdfjfzGOsLQUC7ScDSnS4?=
- =?us-ascii?Q?bL+UjL98koVQhkpETnzuOgAh1ilElRPjIGCFPixKUw/nObMMJL3ogxP87G7B?=
- =?us-ascii?Q?RvdCxuKoQu5JWLOmiGSiXiRcX4RoBJf/NaQISbePWjAtG0HYrerYpzK0V1BY?=
- =?us-ascii?Q?gJ9wKDDaALVH+jZJGdtvyd+V8BMw/DE91ejLrt0i2HRRknCpdINNnvzl8JLw?=
- =?us-ascii?Q?eUpZkDXpo/tCI5BBo6fUUR2WgovwZ3pZNvu9dNmVkR4JqkqPpMnIrsB52mFw?=
- =?us-ascii?Q?3TkWJ2SfIQ4xWj7p6wLXJorZ5vqm3GrhNtvmYbnw9izph37tOR3Q49gzKs0Z?=
- =?us-ascii?Q?ZjYj3vm0GrJOP0mZ8IpDToeG2YLtzah58Ltj1Upqh/HSniHK1VapbrrcgGxu?=
- =?us-ascii?Q?vEiBDTxyWfluiyphaMA9FFBKgptEOhKZ7nqvAeovXlYEY3SViGVo2xXB4Ms0?=
- =?us-ascii?Q?ILUV05Bp8bUlkE5HyBKBht0XvByd+3l9H7SE9UpgX1Uxlv2DibrDMuNrLSCw?=
- =?us-ascii?Q?DRBbE2m6Zb0RQWPSDaZujiUgDoSA+pC+ZMxGmiE5xQMDNQ5QOSwWR2OCj7U6?=
- =?us-ascii?Q?07Hl5pansXcvvpEVlETCoroK2NtL0FpgLiYsKIbLqiKUmwIOwoChwG8ACtCi?=
- =?us-ascii?Q?Myg2v5Sczdvi+VZQIBDJn3KKYT5qy/YvltOwGEOmDBquE3aSyGfGTisJ7u8r?=
- =?us-ascii?Q?gBIBmrlgo4fe0WyyLC3J8fKRX0JlycMMgcANG6DBmCqc2fuDlvA2f1IO15nM?=
- =?us-ascii?Q?qpuc3wQhszxa1BYyabATkzZXQlR1R0M8C420P6BslmaPE+PS1MhDOxIU+LcF?=
- =?us-ascii?Q?X4MMdGXgT54mM9KFfuA37dgmjFFfefImU1JpbdKoMInRpywzT1mavZkL5aFQ?=
- =?us-ascii?Q?wvCsaOf2OgzXoHiW5G9TT+bseD/pFg4hmDI2XFmkZLMROcfXsrPZNqiv4sMX?=
- =?us-ascii?Q?iRXTToIMVVQ0grG9QtZp15QW5bhoDNlX8x2wFQ1HkV7XTUC8udO/HnxwUIaL?=
- =?us-ascii?Q?ylpWjHdiOZuGWfAo8L5ffcOOZkYv9MijrLgaMu/aLZUHMq/CpKGHHG1Hc21A?=
- =?us-ascii?Q?jNrze/idQRJ4wW1DkydR7En2qxmzhnIDts9mtaDg4w/YGezopfiVlAegy4o+?=
- =?us-ascii?Q?6eQMUOUBqVQl1JojjLMz8dtoPnjv8qKS9KSxbHeVt1JpSf/Wiibi7HijJ5nJ?=
- =?us-ascii?Q?ZEVqm8eSv0mYvFQWqK0rd0RafHKGvBp5NxqxJwwg/HSVMdrwGUegX/c0y1QE?=
- =?us-ascii?Q?1aOg7ncnaVtPJtXqgbTXRRAXU/ghdLtlo0EFbGeA+nPOTHbvsKRS/y66d6cJ?=
- =?us-ascii?Q?gK/SJORzjtdye27vw7QV5E2OeY3lO5N5wmJMpetsMcy3/KFGIWnrSvR22H6v?=
- =?us-ascii?Q?FJ61oRzYESXgtygl5aODoSoGFbZBmyGpcWaEXLVXMhMFZG8dRHVNozJXfpaq?=
- =?us-ascii?Q?ombsy9dcjKBTToHRiG2ANNUbjpSFMpUCmmmY5WLCAbAymNwR+2UW5VC7nkJd?=
- =?us-ascii?Q?+a15E3uTEaeXVn4U4rXPmXIJkDCsh7+IVa1xIoHLlfM3EWuMUNT6ZEHVFz/q?=
- =?us-ascii?Q?J7FWNtVSLFGqJpmmCl8sbWd4cF0ZLE9HRwjLoA19?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d3b3acd-9fab-42bb-f358-08dbd4b7f1e9
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 17:37:50.7072
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DHc2a0ipHbzuARhBU2ASS7QsJC4EQTV63yZMfLxOruY9+tsAxOFpSZlypQafJmBO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6941
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231020183331.10770-1-vishal.moola@gmail.com> <20231020183331.10770-2-vishal.moola@gmail.com>
+In-Reply-To: <20231020183331.10770-2-vishal.moola@gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 24 Oct 2023 10:37:52 -0700
+Message-ID: <CAHbLzkphG4XrV91WjeY9fuurTXcCnyev+RKbg+nzZk6hgZ=Kcg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] mm/khugepaged: Convert __collapse_huge_page_isolate()
+ to use folios
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 08:06:06AM -0700, Yi Liu wrote:
->  static inline void iommufd_hw_pagetable_put(struct iommufd_ctx *ictx,
->  					    struct iommufd_hw_pagetable *hwpt)
+On Fri, Oct 20, 2023 at 11:33=E2=80=AFAM Vishal Moola (Oracle)
+<vishal.moola@gmail.com> wrote:
+>
+> Replaces 11 calls to compound_head() with 1, and removes 1348 bytes of
+> kernel text.
+>
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+
+Reviewed-by: Yang Shi <shy828301@gmail.com>
+
+> ---
+>  mm/khugepaged.c | 45 +++++++++++++++++++++++----------------------
+>  1 file changed, 23 insertions(+), 22 deletions(-)
+>
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index 88433cc25d8a..500756604488 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -542,6 +542,7 @@ static int __collapse_huge_page_isolate(struct vm_are=
+a_struct *vma,
+>                                         struct list_head *compound_pageli=
+st)
 >  {
-> -	struct iommufd_hwpt_paging *hwpt_paging = to_hwpt_paging(hwpt);
-> +	if (WARN_ON(hwpt->obj.type != IOMMUFD_OBJ_HWPT_PAGING &&
-> +		    hwpt->obj.type != IOMMUFD_OBJ_HWPT_NESTED))
-> +		return;
-
-This is redundant, we have a C type, no need to check the type field
-like this
-
-Jason
+>         struct page *page =3D NULL;
+> +       struct folio *folio =3D NULL;
+>         pte_t *_pte;
+>         int none_or_zero =3D 0, shared =3D 0, result =3D SCAN_FAIL, refer=
+enced =3D 0;
+>         bool writable =3D false;
+> @@ -576,7 +577,8 @@ static int __collapse_huge_page_isolate(struct vm_are=
+a_struct *vma,
+>                         goto out;
+>                 }
+>
+> -               VM_BUG_ON_PAGE(!PageAnon(page), page);
+> +               folio =3D page_folio(page);
+> +               VM_BUG_ON_FOLIO(!folio_test_anon(folio), folio);
+>
+>                 if (page_mapcount(page) > 1) {
+>                         ++shared;
+> @@ -588,16 +590,15 @@ static int __collapse_huge_page_isolate(struct vm_a=
+rea_struct *vma,
+>                         }
+>                 }
+>
+> -               if (PageCompound(page)) {
+> -                       struct page *p;
+> -                       page =3D compound_head(page);
+> +               if (folio_test_large(folio)) {
+> +                       struct folio *f;
+>
+>                         /*
+>                          * Check if we have dealt with the compound page
+>                          * already
+>                          */
+> -                       list_for_each_entry(p, compound_pagelist, lru) {
+> -                               if (page =3D=3D p)
+> +                       list_for_each_entry(f, compound_pagelist, lru) {
+> +                               if (folio =3D=3D f)
+>                                         goto next;
+>                         }
+>                 }
+> @@ -608,7 +609,7 @@ static int __collapse_huge_page_isolate(struct vm_are=
+a_struct *vma,
+>                  * is needed to serialize against split_huge_page
+>                  * when invoked from the VM.
+>                  */
+> -               if (!trylock_page(page)) {
+> +               if (!folio_trylock(folio)) {
+>                         result =3D SCAN_PAGE_LOCK;
+>                         goto out;
+>                 }
+> @@ -624,8 +625,8 @@ static int __collapse_huge_page_isolate(struct vm_are=
+a_struct *vma,
+>                  * but not from this process. The other process cannot wr=
+ite to
+>                  * the page, only trigger CoW.
+>                  */
+> -               if (!is_refcount_suitable(page)) {
+> -                       unlock_page(page);
+> +               if (!is_refcount_suitable(&folio->page)) {
+> +                       folio_unlock(folio);
+>                         result =3D SCAN_PAGE_COUNT;
+>                         goto out;
+>                 }
+> @@ -634,27 +635,27 @@ static int __collapse_huge_page_isolate(struct vm_a=
+rea_struct *vma,
+>                  * Isolate the page to avoid collapsing an hugepage
+>                  * currently in use by the VM.
+>                  */
+> -               if (!isolate_lru_page(page)) {
+> -                       unlock_page(page);
+> +               if (!folio_isolate_lru(folio)) {
+> +                       folio_unlock(folio);
+>                         result =3D SCAN_DEL_PAGE_LRU;
+>                         goto out;
+>                 }
+> -               mod_node_page_state(page_pgdat(page),
+> -                               NR_ISOLATED_ANON + page_is_file_lru(page)=
+,
+> -                               compound_nr(page));
+> -               VM_BUG_ON_PAGE(!PageLocked(page), page);
+> -               VM_BUG_ON_PAGE(PageLRU(page), page);
+> +               node_stat_mod_folio(folio,
+> +                               NR_ISOLATED_ANON + folio_is_file_lru(foli=
+o),
+> +                               folio_nr_pages(folio));
+> +               VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
+> +               VM_BUG_ON_FOLIO(folio_test_lru(folio), folio);
+>
+> -               if (PageCompound(page))
+> -                       list_add_tail(&page->lru, compound_pagelist);
+> +               if (folio_test_large(folio))
+> +                       list_add_tail(&folio->lru, compound_pagelist);
+>  next:
+>                 /*
+>                  * If collapse was initiated by khugepaged, check that th=
+ere is
+>                  * enough young pte to justify collapsing the page
+>                  */
+>                 if (cc->is_khugepaged &&
+> -                   (pte_young(pteval) || page_is_young(page) ||
+> -                    PageReferenced(page) || mmu_notifier_test_young(vma-=
+>vm_mm,
+> +                   (pte_young(pteval) || folio_test_young(folio) ||
+> +                    folio_test_referenced(folio) || mmu_notifier_test_yo=
+ung(vma->vm_mm,
+>                                                                      addr=
+ess)))
+>                         referenced++;
+>
+> @@ -668,13 +669,13 @@ static int __collapse_huge_page_isolate(struct vm_a=
+rea_struct *vma,
+>                 result =3D SCAN_LACK_REFERENCED_PAGE;
+>         } else {
+>                 result =3D SCAN_SUCCEED;
+> -               trace_mm_collapse_huge_page_isolate(page, none_or_zero,
+> +               trace_mm_collapse_huge_page_isolate(&folio->page, none_or=
+_zero,
+>                                                     referenced, writable,=
+ result);
+>                 return result;
+>         }
+>  out:
+>         release_pte_pages(pte, _pte, compound_pagelist);
+> -       trace_mm_collapse_huge_page_isolate(page, none_or_zero,
+> +       trace_mm_collapse_huge_page_isolate(&folio->page, none_or_zero,
+>                                             referenced, writable, result)=
+;
+>         return result;
+>  }
+> --
+> 2.40.1
+>
