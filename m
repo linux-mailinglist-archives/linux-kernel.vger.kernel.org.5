@@ -2,99 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 164C87D4E7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F17C7D4E83
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjJXLDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 07:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
+        id S229629AbjJXLED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 07:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjJXLDW (ORCPT
+        with ESMTP id S229620AbjJXLDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 07:03:22 -0400
-Received: from out-209.mta1.migadu.com (out-209.mta1.migadu.com [95.215.58.209])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B1F109
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 04:03:20 -0700 (PDT)
-Message-ID: <f4739117-ac81-4831-820b-60b496c7dd61@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698145398;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pnFxFP6a7DC4iJ/6GwDjjDb4geFq6Fz2jY2wNEaiS7k=;
-        b=jKwIBvyPM2uA62TA6wyKo/Lq3aaRaNCjr9vCoIifxAicQgMoTLgsuSkuh0uK10cuL7URWL
-        FJsiTWdcjjlZq/hXmcivjEyoRlXg9Ba5f8aPyRNoEhvnDOj9YuwSsQWeULiMBB/yoLNFcP
-        aaHspv/BG+IAoOZdZ0ILwo4e4by/JlE=
-Date:   Tue, 24 Oct 2023 19:03:10 +0800
+        Tue, 24 Oct 2023 07:03:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA4A109;
+        Tue, 24 Oct 2023 04:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698145431; x=1729681431;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=eOz+mubXLSx9K9zlN9NDqmuVHCXQNwHXNA07ESAmT7I=;
+  b=UByKVe9fQC1MVGvoWf+IbeR7ENRjSlqI/3+YIoCDMR5LLZBq2ACvQC1Y
+   9ju7XF2jSJURlsddZ1ihycMIY45E+MFgZVf3tWdr1IiY2SvQqKzhP3jPj
+   eFgfdlnq/GSikcX6jVnw5G1OsGgnNCdvi3Cskwd1KMtMQyouh/fP+6K4c
+   yHCdtoBIRiMk37xNFSv+EVbSb9d1ihq7SgawDp38kePbbWdJdkOky0/Eu
+   EzYcoH5avuCfL0Dry3alJeWMdoApUGfKD2m+THceKmK5Z2w8xqOXykdVE
+   So2hmOAnQbuhE8YTnqoJP1gLJtXIayx6s8xwNi+usgs8wcZuU6pYIpykl
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="8582477"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="8582477"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 04:03:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="758441641"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="758441641"
+Received: from hprosing-mobl.ger.corp.intel.com (HELO localhost) ([10.249.40.219])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 04:03:47 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v2 1/1] PCI: dwc: Use FIELD_GET/PREP()
+Date:   Tue, 24 Oct 2023 14:03:36 +0300
+Message-Id: <20231024110336.26264-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v2 0/6] slub: Delay freezing of CPU partial slabs
-Content-Language: en-US
-To:     "Christoph Lameter (Ampere)" <cl@gentwo.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, willy@infradead.org, pcc@google.com,
-        tytso@mit.edu, maz@kernel.org, ruansy.fnst@fujitsu.com,
-        vishal.moola@gmail.com, lrh2000@pku.edu.cn, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20231021144317.3400916-1-chengming.zhou@linux.dev>
- <4134b039-fa99-70cd-3486-3d0c7632e4a3@suse.cz>
- <fcb9b7f0-fb21-cce8-d452-766a5cc73d4a@gentwo.org>
- <ba3d6ac7-6900-3e8d-46b5-8302ca61f8ef@suse.cz>
- <c6f12967-e7bc-bf36-9c6b-0111dea1f0de@gentwo.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <c6f12967-e7bc-bf36-9c6b-0111dea1f0de@gentwo.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/24 05:05, Christoph Lameter (Ampere) wrote:
-> On Mon, 23 Oct 2023, Vlastimil Babka wrote:
-> 
->>> For much of the frozen handling we must be holding the node list lock
->>> anyways in order to add/remove from the list. So we already have a lock
->>> that could be used to protect flag operations.
->>
->> I can see the following differences between the traditional frozen bit and
->> the new flag:
->>
->> frozen bit advantage:
->> - __slab_free() on an already-frozen slab can ignore list operations and
->> list_lock completely
->>
->> frozen bit disadvantage:
->> - acquire_slab() trying to do cmpxchg_double() under list_lock (see commit
->> 9b1ea29bc0d7)
-> 
-> 
-> Ok so a slab is frozen if either of those conditions are met. That gets a bit complicated to test for. Can we just get away with the slab_node_partial flag?
-> 
-> The advantage with the frozen state is that it can be changed with a cmpxchg together with some other values (list pointer, counter) that need updating at free and allocation.
-> 
-> But frozen updates are rarer so maybe its worth to completely drop the frozen bit. If both need to be updates then we would have two atomic ops. One is the cmpxchg and the other the operation on the page flag.
-> 
+Convert open-coded variants of PCI field access into FIELD_GET/PREP()
+to make the code easier to understand.
 
-This introduced page flag bit is using non-atomic operations, which is protected
-by the node list_lock.
+Add two missing defines into pci_regs.h. Logically, the Max No-Snoop
+Latency Register is a separate word sized register in the PCIe spec,
+but the pre-existing LTR defines in pci_regs.h with dword long values
+seem to consider the registers together (the same goes for the only
+user). Thus, follow the custom and make the new values also take both
+word long LTR registers as a joint dword register.
 
-As for completely dropping the "frozen" bit, I find it hard because we have the
-DEACTIVATE_BYPASS optimization in get_freelist(), which clear the "frozen" bit
-without the synchronization of node list_lock. So __slab_free() still need to
-rely on the "frozen" bit for CPU active slab.
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
 
-This patch series mainly optimize the cmpxchg cost in moving partial slabs
-between node partial list and CPU partial list, and alleviate the contention
-of node list_lock meanwhile.
+This patch REPLACES the previous patch which caused the build fail on
+arm and also failed to copy the entire value into nosnoop register
+like the original code did.
 
-Thanks!
+v2:
+- Correct define name used in FIELD_PREP()
+- Correctly copy the contents of the full register, not just the
+  Max Latency Value field.
+- Wrap also the 110 literal into FIELD_PREP()
+
+ drivers/pci/controller/dwc/pcie-designware-ep.c |  7 ++++---
+ drivers/pci/controller/dwc/pcie-tegra194.c      | 10 +++++++---
+ include/uapi/linux/pci_regs.h                   |  2 ++
+ 3 files changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+index f9182f8d552f..20bef1436bfb 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-ep.c
++++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+@@ -6,6 +6,7 @@
+  * Author: Kishon Vijay Abraham I <kishon@ti.com>
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+ 
+@@ -334,7 +335,7 @@ static int dw_pcie_ep_get_msi(struct pci_epc *epc, u8 func_no, u8 vfunc_no)
+ 	if (!(val & PCI_MSI_FLAGS_ENABLE))
+ 		return -EINVAL;
+ 
+-	val = (val & PCI_MSI_FLAGS_QSIZE) >> 4;
++	val = FIELD_GET(PCI_MSI_FLAGS_QSIZE, val);
+ 
+ 	return val;
+ }
+@@ -357,7 +358,7 @@ static int dw_pcie_ep_set_msi(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
+ 	reg = ep_func->msi_cap + func_offset + PCI_MSI_FLAGS;
+ 	val = dw_pcie_readw_dbi(pci, reg);
+ 	val &= ~PCI_MSI_FLAGS_QMASK;
+-	val |= (interrupts << 1) & PCI_MSI_FLAGS_QMASK;
++	val |= FIELD_PREP(PCI_MSI_FLAGS_QMASK, interrupts);
+ 	dw_pcie_dbi_ro_wr_en(pci);
+ 	dw_pcie_writew_dbi(pci, reg, val);
+ 	dw_pcie_dbi_ro_wr_dis(pci);
+@@ -584,7 +585,7 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
+ 
+ 	reg = ep_func->msix_cap + func_offset + PCI_MSIX_TABLE;
+ 	tbl_offset = dw_pcie_readl_dbi(pci, reg);
+-	bir = (tbl_offset & PCI_MSIX_TABLE_BIR);
++	bir = FIELD_GET(PCI_MSIX_TABLE_BIR, tbl_offset);
+ 	tbl_offset &= PCI_MSIX_TABLE_OFFSET;
+ 
+ 	msix_tbl = ep->epf_bar[bir]->addr + tbl_offset;
+diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+index 248cd9347e8f..f2a515b639ab 100644
+--- a/drivers/pci/controller/dwc/pcie-tegra194.c
++++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+@@ -126,7 +126,7 @@
+ 
+ #define APPL_LTR_MSG_1				0xC4
+ #define LTR_MSG_REQ				BIT(15)
+-#define LTR_MST_NO_SNOOP_SHIFT			16
++#define LTR_NOSNOOP_MSG_REQ			BIT(31)
+ 
+ #define APPL_LTR_MSG_2				0xC8
+ #define APPL_LTR_MSG_2_LTR_MSG_REQ_STATE	BIT(3)
+@@ -496,8 +496,12 @@ static irqreturn_t tegra_pcie_ep_irq_thread(int irq, void *arg)
+ 		ktime_t timeout;
+ 
+ 		/* 110us for both snoop and no-snoop */
+-		val = 110 | (2 << PCI_LTR_SCALE_SHIFT) | LTR_MSG_REQ;
+-		val |= (val << LTR_MST_NO_SNOOP_SHIFT);
++		val = FIELD_PREP(PCI_LTR_VALUE_MASK, 110) |
++		      FIELD_PREP(PCI_LTR_SCALE_MASK, 2) |
++		      LTR_MSG_REQ |
++		      FIELD_PREP(PCI_LTR_NOSNOOP_VALUE, 110) |
++		      FIELD_PREP(PCI_LTR_NOSNOOP_SCALE, 2) |
++		      LTR_NOSNOOP_MSG_REQ;
+ 		appl_writel(pcie, val, APPL_LTR_MSG_1);
+ 
+ 		/* Send LTR upstream */
+diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+index e5f558d96493..495f0ae4ecd5 100644
+--- a/include/uapi/linux/pci_regs.h
++++ b/include/uapi/linux/pci_regs.h
+@@ -975,6 +975,8 @@
+ #define  PCI_LTR_VALUE_MASK	0x000003ff
+ #define  PCI_LTR_SCALE_MASK	0x00001c00
+ #define  PCI_LTR_SCALE_SHIFT	10
++#define  PCI_LTR_NOSNOOP_VALUE	0x03ff0000 /* Max No-Snoop Latency Value */
++#define  PCI_LTR_NOSNOOP_SCALE	0x1c000000 /* Scale for Max Value */
+ #define PCI_EXT_CAP_LTR_SIZEOF	8
+ 
+ /* Access Control Service */
+-- 
+2.30.2
+
