@@ -2,143 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 036297D4C75
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7157D4C2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbjJXJc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50282 "EHLO
+        id S234283AbjJXJ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234489AbjJXJbh (ORCPT
+        with ESMTP id S234193AbjJXJ1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:31:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC12A1BC7;
-        Tue, 24 Oct 2023 02:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698139812; x=1729675812;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=1rS7dOlEZmpZ+PuUamvzhE47459WoiCsJ336xs2d7Tc=;
-  b=A07DuuYp1ggXcBt3Sbsggr9IqcL2L/E53wJvPzeguo/eRpFsSCwpUjZg
-   xV3tYbujAHQ6UTvxQr547FlmlhyXCTsQQ8PSF12rGpGcZa3aT2YeMaKfH
-   BZuqLe1zGuFvqD9yd0TjaiIPR/YYfkP7DmoLiE85tuEXqtFEdkYLc6HWr
-   n2gXRfhbjsZ0Hoqm5171TDPUWhavfQtx0pOMnve3nXCg4k2XFLLNddijF
-   ebfBVw7rNmwQryYSrJJrP0Krb0ptI1hq4+2XXvKaYsblDeddlo4dkTxs7
-   R33DSU76lef2v1Csffvns6mijYPijr9rv+I3OUtiqW65e8RanY+6AVMCH
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="366364219"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="366364219"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 02:30:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="849076026"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="849076026"
-Received: from hprosing-mobl.ger.corp.intel.com (HELO localhost) ([10.249.40.219])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 02:30:07 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     linux-kselftest@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 24/24] selftests/resctrl: Ignore failures from L2 CAT test with <= 2 bits
-Date:   Tue, 24 Oct 2023 12:26:34 +0300
-Message-Id: <20231024092634.7122-25-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com>
-References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com>
+        Tue, 24 Oct 2023 05:27:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651BD1739
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:27:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 809DBC433C9;
+        Tue, 24 Oct 2023 09:27:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698139638;
+        bh=+OZ/RtjQyCJCTnws85wXqbhd+IrZjqPDKhLQnwiy5A8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R3F3xzwTzUU3+OaJD4RWUKFcrtjlg/tBftpB0s9sG7U9ER3EIot2eDOCkH8HJbvYb
+         PLBrd9bTbcF3dwATX3GHgxjZ18OSFkXPpZyizvyO6Pjpk0IxGuUqrwzRC/uwJckDD0
+         oCODsYu4x/dps3+7MgIie741cEhzX9TyEo+hEP+g=
+Date:   Tue, 24 Oct 2023 11:27:16 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Avichal Rakesh <arakesh@google.com>
+Cc:     etalvala@google.com, jchowdhary@google.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com,
+        m.grzeschik@pengutronix.de
+Subject: Re: [PATCH v6 4/4] usb: gadget: uvc: Fix use-after-free for inflight
+ usb_requests
+Message-ID: <2023102440-retaining-eskimo-92b0@gregkh>
+References: <20231019185319.2714000-5-arakesh@google.com>
+ <202310200457.GwPPFuHX-lkp@intel.com>
+ <738df245-e7d1-4fc0-9076-3ac5afebaa44@google.com>
+ <2023102103-casually-wavy-6a54@gregkh>
+ <CAMHf4WKgzvMoL6tKCiQYsuudQWgGBKkhfbmYgUxVXvLEqxi1GQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAMHf4WKgzvMoL6tKCiQYsuudQWgGBKkhfbmYgUxVXvLEqxi1GQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-L2 CAT test with low number of bits tends to occasionally fail because
-of what seems random variation. The margin is quite small to begin with
-for <= 2 bits in CBM. At times, the result can even become negative.
-While it would be possible to allow negative values for those cases, it
-would be more confusing to user.
+On Mon, Oct 23, 2023 at 02:25:30PM -0700, Avichal Rakesh wrote:
+> On Sat, Oct 21, 2023 at 3:05 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Oct 19, 2023 at 03:30:00PM -0700, Avichal Rakesh wrote:
+> > >
+> > >
+> > > On 10/19/23 13:32, kernel test robot wrote:
+> > > > Hi Avichal,
+> > > >
+> > > > kernel test robot noticed the following build warnings:
+> > > >
+> > > > [auto build test WARNING on usb/usb-testing]
+> > > > [also build test WARNING on usb/usb-next usb/usb-linus linus/master v6.6-rc6 next-20231019]
+> > > > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > > > And when submitting patch, we suggest to use '--base' as documented in
+> > > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > > >
+> > > > url:    https://github.com/intel-lab-lkp/linux/commits/Avichal-Rakesh/usb-gadget-uvc-prevent-use-of-disabled-endpoint/20231020-025512
+> > > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+> > > > patch link:    https://lore.kernel.org/r/20231019185319.2714000-5-arakesh%40google.com
+> > > > patch subject: [PATCH v6 4/4] usb: gadget: uvc: Fix use-after-free for inflight usb_requests
+> > > > config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231020/202310200457.GwPPFuHX-lkp@intel.com/config)
+> > > > compiler: m68k-linux-gcc (GCC) 13.2.0
+> > > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231020/202310200457.GwPPFuHX-lkp@intel.com/reproduce)
+> > > >
+> > > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > > > the same patch/commit), kindly add following tags
+> > > > | Reported-by: kernel test robot <lkp@intel.com>
+> > > > | Closes: https://lore.kernel.org/oe-kbuild-all/202310200457.GwPPFuHX-lkp@intel.com/
+> > > >
+> > > > All warnings (new ones prefixed by >>):
+> > > >
+> > > >>> drivers/usb/gadget/function/uvc_video.c:231: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> > > >     * Must be called with req_lock held as it modifies the list ureq is held in
+> > > >
+> > > >
+> > >
+> > > Greg, apologies for the newb question: do you want me to upload
+> > > the fix for this as a reply to [PATCH v6 4/4], or upload a new chain of
+> > > v7s with this patch fixed?
+> >
+> > A whole new v7 series please.
+> >
+> 
+> Had a feeling, so sent out v7 series preemptively. Let me know if that
+> doesn't work.
+> 
+> v7: https://lore.kernel.org/20231020173626.2978356-1-arakesh@google.com/
 
-Ignore failures from the tests where <= 2 were used to avoid false
-negative results.
+I have already dropped that from my review queue as your emails crossed
+with that, so I thought it was obsolete by now, sorry.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- tools/testing/selftests/resctrl/cat_test.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
+Can you send a v8 please?
 
-diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-index a9c72022bb5a..bc88eb891f35 100644
---- a/tools/testing/selftests/resctrl/cat_test.c
-+++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -28,7 +28,7 @@
-  */
- #define MIN_DIFF_PERCENT_PER_BIT	1
- 
--static int show_results_info(__u64 sum_llc_val, int no_of_bits,
-+static int show_results_info(__u64 sum_llc_val, int no_of_bits, bool ignore_fail,
- 			     unsigned long cache_span, long min_diff_percent,
- 			     unsigned long num_of_runs, bool platform,
- 			     __s64 *prev_avg_llc_val)
-@@ -40,12 +40,18 @@ static int show_results_info(__u64 sum_llc_val, int no_of_bits,
- 	avg_llc_val = sum_llc_val / num_of_runs;
- 	if (*prev_avg_llc_val) {
- 		float delta = (__s64)(avg_llc_val - *prev_avg_llc_val);
-+		char *res_str;
- 
- 		avg_diff = delta / *prev_avg_llc_val;
- 		ret = platform && (avg_diff * 100) < (float)min_diff_percent;
- 
-+		res_str = ret ? "Fail:" : "Pass:";
-+		if (ret && ignore_fail) {
-+			res_str = "Pass (failure ignored):";
-+			ret = 0;
-+		}
- 		ksft_print_msg("%s Check cache miss rate changed more than %.1f%%\n",
--			       ret ? "Fail:" : "Pass:", (float)min_diff_percent);
-+			       res_str, (float)min_diff_percent);
- 
- 		ksft_print_msg("Percent diff=%.1f\n", avg_diff * 100);
- 	}
-@@ -85,6 +91,7 @@ static int check_results(struct resctrl_val_param *param, const char *cache_type
- 
- 	while (fgets(temp, sizeof(temp), fp)) {
- 		char *token = strtok(temp, ":\t");
-+		bool ignore_fail = false;
- 		int fields = 0;
- 		int bits;
- 
-@@ -108,7 +115,15 @@ static int check_results(struct resctrl_val_param *param, const char *cache_type
- 
- 		bits = count_bits(current_mask);
- 
--		ret = show_results_info(sum_llc_perf_miss, bits,
-+		/*
-+		 * L2 CAT test with low number of bits has too small margin to
-+		 * always remain positive. As negative values would be confusing
-+		 * for the user, ignore failure instead.
-+		 */
-+		if (bits <= 2 && !strcmp(cache_type, "L2"))
-+			ignore_fail = true;
-+
-+		ret = show_results_info(sum_llc_perf_miss, bits, ignore_fail,
- 					alloc_size / 64,
- 					MIN_DIFF_PERCENT_PER_BIT * (bits - 1), runs,
- 					get_vendor() == ARCH_INTEL,
--- 
-2.30.2
+thanks,
 
+greg k-h
