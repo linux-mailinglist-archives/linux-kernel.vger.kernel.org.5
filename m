@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 872497D4A03
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8537D4A01
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233823AbjJXI1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
+        id S233780AbjJXI1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233122AbjJXI1g (ORCPT
+        with ESMTP id S233870AbjJXI1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:27:36 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796F2128
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:27:34 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507c78d258fso6016694e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:27:34 -0700 (PDT)
+        Tue, 24 Oct 2023 04:27:10 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A919AD7E
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:27:06 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6ce31c4a653so2650343a34.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:27:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698136052; x=1698740852; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yhceSFM1hF3sghD+dtG2lSmmlVSuNVGZPGjZf8ESzpA=;
-        b=sYdkngCaxIxVFpRow36WwN4O/t3zWSge5EMhvVmUQsRNXrDSYhlLkNEuuMdsIoT5J1
-         Bb3d4wsF3Ho843o3O0I1D5hfmby4DubHYnKDgZibS64GRzc4rm8jQDpT0wbIxOG6n/pl
-         bu9lujKq+VE+GIiO8Gk50gGPBLnEehDflSLmoIn61Agn5u66SB0GBPXuPbKHrzDTUWJg
-         sSNPZDJz5k2qYkRp2sqzi20Ad3BIN9JjvtgwKBKAjpfhqi1mTRquSFdkTidS2BqgM9rI
-         dmPBmVjBPQPNvLXR0+n/CuqP7wa41ZqPKiVV7WAotLvteCYvtP81I3fFOvvX+Z5DNBEO
-         YFag==
+        d=linaro.org; s=google; t=1698136026; x=1698740826; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=r6xFOWkzDc9VNNDhFj5k3kApmxSIikFRxzXsDT+7/Oc=;
+        b=jOw6n9QTANPWLcKxYRxEp2GYk9mmuHmTeryajIeAhkqgC0pBsgicWpjN8O/XJSQTgs
+         d484Ach+uxvdQoZ3WfZSWtcj6WLvNjP54d9xsZAHCP6+68qnOXjyGy4S2y4o4cVcATSY
+         fH1Smx36f5MbGDnqVYsoQAHh/+2qUQGUi70UtQKvA+BWmBkDSNpBvDfgU30Kh3/WuuCG
+         YMdLz4q0bbAR+ODrCfEQQ+dHFIwCaCvtUA/56UVAo0rJ7ZvAzLPJ9/du63oMqD+GKV2j
+         De+pKptoaf/0/M7XXn/KjIMSRLlPjHsFQgNM4LsHTpbgHXds7RSByMo+3heG0fjD3cm4
+         MZJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698136052; x=1698740852;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yhceSFM1hF3sghD+dtG2lSmmlVSuNVGZPGjZf8ESzpA=;
-        b=mVK+Zi73EpS02ZALqtzQ17neCPqpATbcNJ9a1Vs4/r7ZwMQAoqWTE5ZR4c909i6oSC
-         uClFjDOMoAkpwYBKUDKBNbFwss0kYYQRw6dq2H/bsDNHZDvKbESQCXruwhpZ/2jx/9PS
-         SxN04Alu5mmMkKrKVtHwxHs6qSfmOOlZCTvOf9sN8K/6txQqHTf0FeUhS8Yb2cSae4vN
-         1S6PpWvXLTX6BVa4Ri3IYNQEna7/+TKinomywKg1dZoe3a8KMIGpaG5xmBncvES7Gwnn
-         YVhBzD4Byc8K55DCGxlOSQ5rPIXqvSSyei88f5fK5OlLhQlkhftl2vR7rTPbOSbDKelQ
-         waUg==
-X-Gm-Message-State: AOJu0Yx2ObdmOgh4iz4HlR7CqeInBgfToDDisy5PJedkPBODV7jhILoF
-        dAF0BkwP5nW0YSOW3/hmebrVtbkZXww9SwVY94LmYw==
-X-Google-Smtp-Source: AGHT+IH+ppXE9oWNrw78/puY+ozs8vEdItnvs9Q/9Zcip+MRe8OiG/+W6Q4qeBTs/jJZilq9miabv75lYqkM2xc06q8=
-X-Received: by 2002:a19:644d:0:b0:507:9618:dc1f with SMTP id
- b13-20020a19644d000000b005079618dc1fmr7693069lfj.69.1698136052607; Tue, 24
- Oct 2023 01:27:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698136026; x=1698740826;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=r6xFOWkzDc9VNNDhFj5k3kApmxSIikFRxzXsDT+7/Oc=;
+        b=h30Yj3g/EtnLWwrt0clc6J+TLO4yw9pf7IJXpdS1oOWgt9YOhpCz+X5KikF63GerLX
+         YpJl2SMl6bjxFfOhhYQ5tExuhr4Ks7lNzzbgCVdBsO3r7GSU8jnrUsOhMy0k5XDJKOu3
+         IKX8irSozLbhuHQupBr38AJLA5Y3QuB9gqypunEUWHoVySL9kye4RQ2XRE30+S7i+XH9
+         9dER2wjJwNclFmUqqhlT9lm0M5Exaent/Hdgi34VZdZBn9oHo1dJaux5Wbm6e/N6FgDO
+         WTvKfT33Rqr4yvNbdALtyW/wGr1tOk8JIsadhosekcAN5hNfz61i5b1F3WP7WVs/5OAb
+         zw2Q==
+X-Gm-Message-State: AOJu0YxczH5Bh/6UqZZBl31JmJP5tiOPkUwg8CejRNZf04ndQCQuFgWf
+        jGwK9Q2pH5RDhnf1IAempXmsUg==
+X-Google-Smtp-Source: AGHT+IG/PZxz2wLDicsKHgvZOahUW87F+0RkArgSq4FocJWiU6Di3+djYJ8FiaqiO9l7L9TCeE8cCg==
+X-Received: by 2002:a05:6830:1d6c:b0:6ce:25da:6e9a with SMTP id l12-20020a0568301d6c00b006ce25da6e9amr12570527oti.34.1698136025872;
+        Tue, 24 Oct 2023 01:27:05 -0700 (PDT)
+Received: from [192.168.17.16] ([138.84.45.126])
+        by smtp.gmail.com with ESMTPSA id v25-20020a9d69d9000000b006c65f431799sm1790208oto.23.2023.10.24.01.27.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 01:27:05 -0700 (PDT)
+Message-ID: <ea064789-9dd7-48e4-9415-2c6333229ec7@linaro.org>
+Date:   Tue, 24 Oct 2023 02:27:03 -0600
 MIME-Version: 1.0
-References: <20231020095952.11055-1-linyunsheng@huawei.com>
- <20231020095952.11055-2-linyunsheng@huawei.com> <ZTZcTrTy9ulPast5@hades> <4da09821-d964-924f-470b-e5c1de18eecf@huawei.com>
-In-Reply-To: <4da09821-d964-924f-470b-e5c1de18eecf@huawei.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Tue, 24 Oct 2023 11:26:56 +0300
-Message-ID: <CAC_iWj+JXev-Hyip1KtZv5pCQz6PU9u-d8iU5ZPaAeyVZYeKDg@mail.gmail.com>
-Subject: Re: [PATCH net-next v12 1/5] page_pool: unify frag_count handling in page_pool_is_last_frag()
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.5 000/241] 6.5.9-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231023104833.832874523@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
+In-Reply-To: <20231023104833.832874523@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -73,94 +78,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 at 15:27, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2023/10/23 19:43, Ilias Apalodimas wrote:
-> > Hi Yunsheng,
-> >
-> > [...]
-> >
-> >> +     * 1. 'n == 1': no need to actually overwrite it.
-> >> +     * 2. 'n != 1': overwrite it with one, which is the rare case
-> >> +     *              for pp_frag_count draining.
-> >>       *
-> >> -     * The main advantage to doing this is that an atomic_read is
-> >> -     * generally a much cheaper operation than an atomic update,
-> >> -     * especially when dealing with a page that may be partitioned
-> >> -     * into only 2 or 3 pieces.
-> >> +     * The main advantage to doing this is that not only we avoid a atomic
-> >> +     * update, as an atomic_read is generally a much cheaper operation than
-> >> +     * an atomic update, especially when dealing with a page that may be
-> >> +     * partitioned into only 2 or 3 pieces; but also unify the pp_frag_count
-> >> +     * handling by ensuring all pages have partitioned into only 1 piece
-> >> +     * initially, and only overwrite it when the page is partitioned into
-> >> +     * more than one piece.
-> >>       */
-> >> -    if (atomic_long_read(&page->pp_frag_count) == nr)
-> >> +    if (atomic_long_read(&page->pp_frag_count) == nr) {
-> >> +            /* As we have ensured nr is always one for constant case using
-> >> +             * the BUILD_BUG_ON(), only need to handle the non-constant case
-> >> +             * here for pp_frag_count draining, which is a rare case.
-> >> +             */
-> >> +            BUILD_BUG_ON(__builtin_constant_p(nr) && nr != 1);
-> >> +            if (!__builtin_constant_p(nr))
-> >> +                    atomic_long_set(&page->pp_frag_count, 1);
-> >
-> > Aren't we changing the behaviour of the current code here? IIRC is
-> > atomic_long_read(&page->pp_frag_count) == nr we never updated the atomic
-> > pp_frag_count and the reasoning was that the next caller can set it
-> > properly.
->
-> If the next caller is calling the page_pool_alloc_frag(), then yes,
-> because page_pool_fragment_page() will be used to reset the
-> page->pp_frag_count, so it does not really matter what is the value
-> of page->pp_frag_count when we are recycling a page.
->
-> If the next caller is calling page_pool_alloc_pages() directly without
-> fragmenting a page, the above code is used to ensure that pp_frag_count
-> is always one when page_pool_alloc_pages() fetches a page from pool->alloc
-> or pool->ring, because page_pool_fragment_page() is not used to reset the
-> page->pp_frag_count for page_pool_alloc_pages() and we have removed the
-> per page_pool PP_FLAG_PAGE_FRAG in page_pool_is_last_frag().
->
-> As we don't know if the caller is page_pool_alloc_frag() or
-> page_pool_alloc_pages(), so the above code ensure the page in pool->alloc
-> or pool->ring always have the pp_frag_count being one.
+Hello!
+
+On 23/10/23 4:53 a. m., Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.5.9 release.
+> There are 241 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.9-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 6.5.9-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.5.y
+* git commit: b83aad774cc81f19bac02dd06d3d3c907ea44893
+* git describe: v6.5.7-432-gb83aad774cc8
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.7-432-gb83aad774cc8
+
+## No test regressions (compared to v6.5.7-191-gbe4ec7370801)
+
+## No metric regressions (compared to v6.5.7-191-gbe4ec7370801)
+
+## No test fixes (compared to v6.5.7-191-gbe4ec7370801)
+
+## No metric fixes (compared to v6.5.7-191-gbe4ec7370801)
+
+## Test result summary
+total: 142426, pass: 122802, fail: 2262, skip: 17248, xfail: 114
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 270 total, 270 passed, 0 failed
+* arm64: 86 total, 86 passed, 0 failed
+* i386: 64 total, 64 passed, 0 failed
+* mips: 52 total, 52 passed, 0 failed
+* parisc: 6 total, 6 passed, 0 failed
+* powerpc: 67 total, 67 passed, 0 failed
+* riscv: 43 total, 43 passed, 0 failed
+* s390: 24 total, 24 passed, 0 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x86_64: 73 total, 73 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
 
 
-Fair enough, Jakub pulled the series before I managed to ack them, but
-that's okay. It's been long overdue apologies. FWIW I went through the
-patches and didn't find anything wrong coding-wise
+Greetings!
 
-Thanks
-/Ilias
->
->
->
-> >
-> >> +
-> >>              return 0;
-> >> +    }
-> >>
-> >>      ret = atomic_long_sub_return(nr, &page->pp_frag_count);
-> >>      WARN_ON(ret < 0);
-> >> +
-> >> +    /* We are the last user here too, reset pp_frag_count back to 1 to
-> >> +     * ensure all pages have been partitioned into 1 piece initially,
-> >> +     * this should be the rare case when the last two fragment users call
-> >> +     * page_pool_defrag_page() currently.
-> >> +     */
-> >> +    if (unlikely(!ret))
-> >> +            atomic_long_set(&page->pp_frag_count, 1);
-> >> +
-> >>      return ret;
-> >>  }
-> >>
-> >
-> >  [....]
-> >
-> >  Thanks
-> >  /Ilias
-> >
-> > .
-> >
+Daniel Díaz
+daniel.diaz@linaro.org
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
