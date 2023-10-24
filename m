@@ -2,135 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CA77D5D6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF777D5D70
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344469AbjJXVq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 17:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
+        id S1344413AbjJXVsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 17:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344477AbjJXVqw (ORCPT
+        with ESMTP id S234971AbjJXVsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:46:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C101AE8;
-        Tue, 24 Oct 2023 14:46:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE75DC433C7;
-        Tue, 24 Oct 2023 21:46:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698184009;
-        bh=AqHnLeB5xem2kiRsFLowge6w/ot0AAmqtV9xGzicirc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EDaO3ZmCJO3fKoF+gIfWqQroBqbgxx5f8hX2+JrCOc4JsdJNI38tcDbzDbxDd9IiD
-         lQQjafqLkkawzo6WRYBYq6iBDRLc6rw/K82bL4QufhCMuuMtuiIDHLj1HTZLkWwhv0
-         Y7mPAxMD5NRzchUhYgtYdpyVNGyV6qMUsXDOOPc0ShJDQv6YARd0YrIOFvg4uFaCm6
-         1ngaB9X+/AarJdFS3TRUPmWau++XTxbJE6uZMiH0YYWipraB8z3fgsqMiLJkFXYbza
-         ZaAmHAP183sCvV3XzoyR81WsOfdotWNwXasO1UWQeKF/ElKrOC4OzjJFDnqlnpa/LJ
-         dKFkktu+IKyVw==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 4/4] sched: Exclude CPU boot code from PF_IDLE area
-Date:   Tue, 24 Oct 2023 23:46:25 +0200
-Message-ID: <20231024214625.6483-5-frederic@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231024214625.6483-1-frederic@kernel.org>
-References: <20231024214625.6483-1-frederic@kernel.org>
+        Tue, 24 Oct 2023 17:48:30 -0400
+Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8791B3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:48:27 -0700 (PDT)
+Received: from localhost.localdomain ([141.170.221.62])
+        by smtp.orange.fr with ESMTPA
+        id vPGBqZo62QRiPvPGBqyjSG; Tue, 24 Oct 2023 23:48:25 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1698184105;
+        bh=1yYR+ID0Mz0XbBfGN+NzNx5JNviXZsmBmncVbRmUG7g=;
+        h=From:To:Cc:Subject:Date;
+        b=RyiQB+iFm3iOfwasBnQWnJn1ove8eCS7mgflHV15KRBlHBVJtSCA4HkPhL1LZTQ3E
+         VxHDWNKDd+hpHmWlDx9ATTHXlVRRieE4SDUaHYD93pzWE00pvmJf9+O5fPAXr4zAdm
+         GwhCULy2kBImzbQsRMHIo7tdR9ws4d+DvbitdaXzei91gkp8rmxwUdqodV82z0smqX
+         nJKGQM8MpNFoUuV2lgLH0CGyyJK9JjLnK06mSQvHuyaCFMvV7QJXJOrfZqqJs2u67z
+         Q5uKZvCXF9fZscpRJw22480bt5mkw0d1dfSPinDZjX8k7sodRCUdAfuiUAKY0B6+6j
+         8OZasVVLpv4rg==
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 24 Oct 2023 23:48:25 +0200
+X-ME-IP: 141.170.221.62
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     trond.myklebust@hammerspace.com, anna@kernel.org,
+        chuck.lever@oracle.com
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] NFS: Fix an off by one in root_nfs_cat()
+Date:   Tue, 24 Oct 2023 23:47:42 +0200
+Message-Id: <7f97bb62c4e8137c5d7f7a7a30789440a5102b3f.1698183837.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit:
+The intent is to check if the 'dest' is truncated or not. So, >+ should be
+used instead of >, because strlcat() returns the length of 'dest' and 'src'
+excluding the trailing NULL.
 
-	cff9b2332ab7 ("kernel/sched: Modify initial boot task idle setup")
-
-has changed the semantics of what is to be considered an idle task in
-such a way that only the actual idle loop is accounted as PF_IDLE. The
-intent is to exclude the CPU boot code from that coverage.
-
-However this doesn't clear the flag when the CPU goes down. Therefore
-when the CPU goes up again, its boot code is part of the PF_IDLE zone.
-
-Make sure this flag behave consistently and clear the flag when a CPU
-exits from the idle loop. If anything, RCU-tasks relies on it to exclude
-CPU boot code from its quiescent states.
-
-Fixes: cff9b2332ab7 ("kernel/sched: Modify initial boot task idle setup")
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Fixes: 56463e50d1fc ("NFS: Use super.c for NFSROOT mount option parsing")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- include/linux/sched.h | 2 +-
- kernel/cpu.c          | 4 ++++
- kernel/sched/idle.c   | 1 -
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ fs/nfs/nfsroot.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 8885be2c143e..ad18962b921d 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1945,7 +1945,7 @@ extern struct task_struct *idle_task(int cpu);
-  */
- static __always_inline bool is_idle_task(const struct task_struct *p)
- {
--	return !!(p->flags & PF_IDLE);
-+	return !!(READ_ONCE(p->flags) & PF_IDLE);
+diff --git a/fs/nfs/nfsroot.c b/fs/nfs/nfsroot.c
+index 7600100ba26f..432612d22437 100644
+--- a/fs/nfs/nfsroot.c
++++ b/fs/nfs/nfsroot.c
+@@ -175,10 +175,10 @@ static int __init root_nfs_cat(char *dest, const char *src,
+ 	size_t len = strlen(dest);
+ 
+ 	if (len && dest[len - 1] != ',')
+-		if (strlcat(dest, ",", destlen) > destlen)
++		if (strlcat(dest, ",", destlen) >= destlen)
+ 			return -1;
+ 
+-	if (strlcat(dest, src, destlen) > destlen)
++	if (strlcat(dest, src, destlen) >= destlen)
+ 		return -1;
+ 	return 0;
  }
- 
- extern struct task_struct *curr_task(int cpu);
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 3b9d5c7eb4a2..3a1991010f4e 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1394,7 +1394,9 @@ void cpuhp_report_idle_dead(void)
- {
- 	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
- 
-+	WRITE_ONCE(current->flags, current->flags & ~PF_IDLE);
- 	BUG_ON(st->state != CPUHP_AP_OFFLINE);
-+
- 	rcutree_report_cpu_dead();
- 	st->state = CPUHP_AP_IDLE_DEAD;
- 	/*
-@@ -1642,6 +1644,8 @@ void cpuhp_online_idle(enum cpuhp_state state)
- {
- 	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
- 
-+	WRITE_ONCE(current->flags, current->flags | PF_IDLE);
-+
- 	/* Happens for the boot cpu */
- 	if (state != CPUHP_AP_ONLINE_IDLE)
- 		return;
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 5007b25c5bc6..342f58a329f5 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -373,7 +373,6 @@ EXPORT_SYMBOL_GPL(play_idle_precise);
- 
- void cpu_startup_entry(enum cpuhp_state state)
- {
--	current->flags |= PF_IDLE;
- 	arch_cpu_idle_prepare();
- 	cpuhp_online_idle(state);
- 	while (1)
 -- 
-2.41.0
+2.32.0
 
