@@ -2,169 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2000B7D47C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56837D47BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbjJXGx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 02:53:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
+        id S232772AbjJXGua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 02:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232627AbjJXGxY (ORCPT
+        with ESMTP id S232694AbjJXGu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 02:53:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A3792
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:52:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698130362;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vnCv+G93neJ+iTTfLV4dLwiSeZXfPaixO3SHIVGZX+k=;
-        b=IjlAt9Qvztx4lsB9BvHtocKzdRvkE0bsGQoZXB+7rYYnErSkUpMXdy/ngkPnltUMXBMbyH
-        lU90FKkZnpwlt2JcJf+ewDIZWRJPDrztduqPoht10pGurXaw4TXnymcnCvw2Vn5rCR0waQ
-        xDATR05DaZgz9jMjmhBisuqnO6zfy8s=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-692-dBMwt7qqNGWm6_nqvD9P0g-1; Tue, 24 Oct 2023 02:52:35 -0400
-X-MC-Unique: dBMwt7qqNGWm6_nqvD9P0g-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5344aaf2703so2449847a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:52:35 -0700 (PDT)
+        Tue, 24 Oct 2023 02:50:28 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A121D7E;
+        Mon, 23 Oct 2023 23:50:25 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9c75ceea588so578589366b.3;
+        Mon, 23 Oct 2023 23:50:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698130223; x=1698735023; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=52cX480DMRmgJFxJt8gKXrV9geIY85JmDTGzaX2CpEg=;
+        b=BVU93BF0/34g+RErf6ezRAzfl7J18ANUSxPYX2gYyTxvRHbMSuWJkuJxQerFItFWvB
+         cvFvfx82AKFYS1zHXiKOu/pmeu7NwttFXRoxAbakSb/pU1Ue7O/87IJVhWiZR/67ifu7
+         7RibMByoknM0SziosrfRZ/6lRBqOI+bylry5o5eSg4jdLxESFq9tcSuGLrReBZMkW2/D
+         ZQOtaR8+zIVixH0Da6ABH8oFS0YAcVzOMLWt+Mf1ffcWBvGSMeNPq+r3no1oKY+paqkZ
+         Pv4HnkVPSPtCy9mlQ4gGFL8fhq5pztpLivEvRVgDL/XI8ZbV09dtO5DFGzes1X2HQUB6
+         gTkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698130354; x=1698735154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vnCv+G93neJ+iTTfLV4dLwiSeZXfPaixO3SHIVGZX+k=;
-        b=NK6cUrnwWelbOS1TsSCHKUgtY2Yb4TpkKo6WrxmxW0bLGzyHsN0V0fEcVw8Z2E/YMn
-         xCt5I2tu4dYTm3/HRmRp6XSHwYD9xbrSc3PeA7qz6B45Eil29SgPtlTCyqcBuSBh1iBS
-         OxcGPsF2BkSDdyO0luIW/sdmYQ+vDEtRVa4SxYe24q/g/YHwR8mdxX2WbD1+wmkTucTA
-         6OHtXMwKzrAEi6pDkue/uoe9c8NQFnJf4zg816csJGK/yZw865uKMU05Nr2ep6xtQGSf
-         bF2qDwceZeUclLeRhWZemnO+sRh6uRLnje60AWkwTOmmbTiDeC/ezZaJeymMeHs4Ci0b
-         DBaw==
-X-Gm-Message-State: AOJu0YymlWis7tiUwr3q8ntwq7j2absJJkyd5UagpEVVJ/fMmC7j3SVD
-        XDbJypiYWXmwyB7Gx/vAsPHDWu49QSnsTnUX6pLoYxBD+RzXjbd65yZlCc8sxbhiJew9nsCGvkf
-        5zqZuLKTjoCBLIQcMsPaRc5t2Y2DQW3E6wxUjsWcE
-X-Received: by 2002:a05:6402:510d:b0:53f:731a:e513 with SMTP id m13-20020a056402510d00b0053f731ae513mr8646625edd.25.1698130354362;
-        Mon, 23 Oct 2023 23:52:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGsWCnETG+7zp6SrPsIxQM2EKZaH7Gl3Rt1zMlO3YvwXykQRxizaPcJFuO8XSuzYjl5bQN6s+A6qZmc4b5nTII=
-X-Received: by 2002:a05:6402:510d:b0:53f:731a:e513 with SMTP id
- m13-20020a056402510d00b0053f731ae513mr8646612edd.25.1698130354074; Mon, 23
- Oct 2023 23:52:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <1697880319-4937-1-git-send-email-si-wei.liu@oracle.com>
- <CACGkMEvkSFcHXC0HFw-NoDtDNnaucJbpfPO0Yho2r1QP8F6zSw@mail.gmail.com> <4d03661b-4289-46e7-8760-32a186783b73@oracle.com>
-In-Reply-To: <4d03661b-4289-46e7-8760-32a186783b73@oracle.com>
-From:   Lei Yang <leiyang@redhat.com>
-Date:   Tue, 24 Oct 2023 14:51:57 +0800
-Message-ID: <CAPpAL=za9VKy2csCPKOKHEKe3qGDQ=89n_08G_MWd7XMiNpUvQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] vdpa: decouple reset of iotlb mapping from device reset
-To:     Si-Wei Liu <si-wei.liu@oracle.com>
-Cc:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
-        eperezma@redhat.com, sgarzare@redhat.com, dtatulea@nvidia.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
+        d=1e100.net; s=20230601; t=1698130223; x=1698735023;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=52cX480DMRmgJFxJt8gKXrV9geIY85JmDTGzaX2CpEg=;
+        b=Q/IeWb3BD4eNF/7x5+QC7ao/m9sI0+w5grYlINPhNkuXVnnX1J10BUP1CUSfNiPH9i
+         Oty9R7P3JVVTC8/aYUT/6V2KJk/660UFlD2tNtptc3INJXEfLuiz3HFR9YYPgnoez9dy
+         T2hkRqqMPXkKatabIFFDiG46K/qBgY+TVGpBfWj2x2Yimrbk4+3DIfrpOExYjCedYW0p
+         gLuP6Fk/ImSbrJgFZk6vDIPB2ULmlEAqV1/cJltY1CISffGMoI7tPovT5dVwmaloDHIe
+         RXbZfjkO6qtfxdAhpQ0UGxj+46gvQcQIEeT7rikZSJOcmOjqTW2fD4YYoZA7GEqrnSFO
+         iu8w==
+X-Gm-Message-State: AOJu0YwL2dVNtw009OIXB20uSkp1I+ykfnunEJmo7syPf6Md8N06eC5E
+        m2dYsD4VToSNZrX+cU9GTfk=
+X-Google-Smtp-Source: AGHT+IFEhMmhUR6aWcmp9FSFfDcol5+C0CsyhpYiUyBbE8PDIpq7LYECLq7CiUklSI1W8JJ2yN68eA==
+X-Received: by 2002:a17:906:da88:b0:9be:7de2:927c with SMTP id xh8-20020a170906da8800b009be7de2927cmr8007488ejb.70.1698130223374;
+        Mon, 23 Oct 2023 23:50:23 -0700 (PDT)
+Received: from ?IPv6:2003:f6:ef1b:2000:361b:8f29:1cbf:5e69? (p200300f6ef1b2000361b8f291cbf5e69.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:361b:8f29:1cbf:5e69])
+        by smtp.gmail.com with ESMTPSA id x20-20020a170906149400b0098884f86e41sm7694117ejc.123.2023.10.23.23.50.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 23:50:22 -0700 (PDT)
+Message-ID: <5c600a6db6173a56251302da8d2f438435959bd2.camel@gmail.com>
+Subject: Re: [PATCH v2 3/3] dt-bindings: adis16460: Add
+ 'spi-cs-inactive-delay-ns' property
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Ramona Gradinariu <ramona.gradinariu@analog.com>, jic23@kernel.org,
+        nuno.sa@analog.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Date:   Tue, 24 Oct 2023 08:53:14 +0200
+In-Reply-To: <20231023-repost-coma-2f67ea8b95af@spud>
+References: <20231023140534.704312-1-ramona.gradinariu@analog.com>
+         <20231023140534.704312-4-ramona.gradinariu@analog.com>
+         <e97ac024cb2654507ed8f7af715f3604efefbdbb.camel@gmail.com>
+         <20231023-repost-coma-2f67ea8b95af@spud>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.50.0 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QE tested this series v4 with regression testing on real nic, there is
-no new regression bug.
+On Mon, 2023-10-23 at 17:06 +0100, Conor Dooley wrote:
+> On Mon, Oct 23, 2023 at 04:27:48PM +0200, Nuno S=C3=A1 wrote:
+> > On Mon, 2023-10-23 at 17:05 +0300, Ramona Gradinariu wrote:
+> > > The adis16460 device requires a stall time between SPI
+> > > transactions (during which the chip select is inactive),
+> > > with a minimum value equal to 16 microseconds.
+> > > This commit adds 'spi-cs-inactive-delay-ns' property, which should
+> > > indicate the stall time between consecutive SPI transactions.
+> > >=20
+> > > Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
+> > > ---
+> > > changes in v2:
+> > > =C2=A0- added default value
+> > > =C2=A0- updated description
+> > > =C2=A0- updated commit message
+> > > =C2=A0.../devicetree/bindings/iio/imu/adi,adis16460.yaml=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 6 ++++++
+> > > =C2=A01 file changed, 6 insertions(+)
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.=
+yaml
+> > > b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> > > index 4e43c80e5119..f10469b86ee0 100644
+> > > --- a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> > > +++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> > > @@ -25,6 +25,12 @@ properties:
+> > >=20
+> > > =C2=A0=C2=A0 spi-cpol: true
+> > >=20
+> > > +=C2=A0 spi-cs-inactive-delay-ns:
+> > > +=C2=A0=C2=A0=C2=A0 minimum: 16000
+> > > +=C2=A0=C2=A0=C2=A0 default: 16000
+> > > +=C2=A0=C2=A0=C2=A0 description:
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Indicates the stall time between cons=
+ecutive SPI transactions.
+> > > +
+> >=20
+> > You should drop the description...=20
+> >=20
+> > Also, give more time before posting a v2 so others get a chance to revi=
+ew
+> > your
+> > patches. It's also better for you since you can gather more change requ=
+ests.
+>=20
+> Further, I don't see an answer to Krzysztof's question of why the stall
+> time would not just be set to 16,000 ns in the driver, based on the
+> compatible.
 
-Tested-by: Lei Yang <leiyang@redhat.com>
+Hi Conor,
 
-On Tue, Oct 24, 2023 at 6:02=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.com> =
-wrote:
->
->
->
-> On 10/22/2023 8:51 PM, Jason Wang wrote:
-> > Hi Si-Wei:
-> >
-> > On Sat, Oct 21, 2023 at 5:28=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracle.c=
-om> wrote:
-> >> In order to reduce needlessly high setup and teardown cost
-> >> of iotlb mapping during live migration, it's crucial to
-> >> decouple the vhost-vdpa iotlb abstraction from the virtio
-> >> device life cycle, i.e. iotlb mappings should be left
-> >> intact across virtio device reset [1]. For it to work, the
-> >> on-chip IOMMU parent device could implement a separate
-> >> .reset_map() operation callback to restore 1:1 DMA mapping
-> >> without having to resort to the .reset() callback, the
-> >> latter of which is mainly used to reset virtio device state.
-> >> This new .reset_map() callback will be invoked only before
-> >> the vhost-vdpa driver is to be removed and detached from
-> >> the vdpa bus, such that other vdpa bus drivers, e.g.
-> >> virtio-vdpa, can start with 1:1 DMA mapping when they
-> >> are attached. For the context, those on-chip IOMMU parent
-> >> devices, create the 1:1 DMA mapping at vdpa device creation,
-> >> and they would implicitly destroy the 1:1 mapping when
-> >> the first .set_map or .dma_map callback is invoked.
-> >>
-> >> This patchset is rebased on top of the latest vhost tree.
-> >>
-> >> [1] Reducing vdpa migration downtime because of memory pin / maps
-> >> https://www.mail-archive.com/qemu-devel@nongnu.org/msg953755.html
-> >>
-> >> ---
-> >> v4:
-> >> - Rework compatibility using new .compat_reset driver op
-> > I still think having a set_backend_feature()
-> This will overload backend features with the role of carrying over
-> compatibility quirks, which I tried to avoid from. While I think the
-> .compat_reset from the v4 code just works with the backend features
-> acknowledgement (and maybe others as well) to determine, but not
-> directly tie it to backend features itself. These two have different
-> implications in terms of requirement, scope and maintaining/deprecation,
-> better to cope with compat quirks in explicit and driver visible way.
->
-> >   or reset_map(clean=3Dtrue) might be better.
-> An explicit op might be marginally better in driver writer's point of
-> view. Compliant driver doesn't have to bother asserting clean_map never
-> be true so their code would never bother dealing with this case, as
-> explained in the commit log for patch 5 "vhost-vdpa: clean iotlb map
-> during reset for older userspace":
->
-> "
->      The separation of .compat_reset from the regular .reset allows
->      vhost-vdpa able to know which driver had broken behavior before, so =
-it
->      can apply the corresponding compatibility quirk to the individual
-> driver
->      whenever needed.  Compared to overloading the existing .reset with
->      flags, .compat_reset won't cause any extra burden to the implementat=
-ion
->      of every compliant driver.
-> "
->
-> >   As it tries hard to not introduce new stuff on the bus.
-> Honestly I don't see substantial difference between these other than the
-> color. There's no single best solution that stands out among the 3. And
-> I assume you already noticed it from all the above 3 approaches will
-> have to go with backend features negotiation, that the 1st vdpa reset
-> before backend feature negotiation will use the compliant version of
-> .reset that doesn't clean up the map. While I don't think this nuance
-> matters much to existing older userspace apps, as the maps should
-> already get cleaned by previous process in vhost_vdpa_cleanup(), but if
-> bug-for-bug behavioral compatibility is what you want, module parameter
-> will be the single best answer.
->
-> Regards,
-> -Siwei
->
-> > But we can listen to others for sure.
-> >
-> > Thanks
-> >
->
+Regarding that, I'm the one to blame since I was the one asking for the pro=
+perty
+during internal review... The reason is that "spi-cs-inactive-delay-ns" is
+already part of spi-peripheral-props.yaml which we already reference. So my
+question would be why not using it?
+
+These devices are a bit sensitive regarding these timings. Not in devices
+supported by this driver but I already experienced having to set timings bi=
+gger
+than defined in the datasheet for spi to be reliable. this was true on a RP=
+I but
+might not be in another platform.
+
+Hence having the flexibility to change the time in an already supported pro=
+perty
+does sound good to me. If not set, we still use the default value based on =
+the
+compatible. Now, if you tell me "let's just add this if we really get the n=
+eed
+for it", I get it but I also don't understand why not add it now...
+
+Thanks!
+- Nuno S=C3=A1
 
