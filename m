@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CE17D5BEA
+	by mail.lfdr.de (Postfix) with ESMTP id C5AC57D5BEB
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344318AbjJXTyl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 15:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
+        id S1344325AbjJXTyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 15:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344218AbjJXTyk (ORCPT
+        with ESMTP id S1344323AbjJXTyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 15:54:40 -0400
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152B79F;
-        Tue, 24 Oct 2023 12:54:39 -0700 (PDT)
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1e99a55a9c0so749663fac.1;
-        Tue, 24 Oct 2023 12:54:39 -0700 (PDT)
+        Tue, 24 Oct 2023 15:54:43 -0400
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36219F;
+        Tue, 24 Oct 2023 12:54:41 -0700 (PDT)
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5849fc56c62so1527424eaf.3;
+        Tue, 24 Oct 2023 12:54:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698177278; x=1698782078;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6P7wT8dPYf9bvLIbftJ6d8ATBxM0oX1gXkP2jSioPM4=;
-        b=FZ9AXa0ikSTVZrd1vbh6BdeMFPTneSOX6f7AYnKtYtzA68bU7NoWmXyJWHPYHmq2b9
-         QPwwtGJjuU0TDo1/zfg3gZ0UTBDjJ+qcAJ76H3lshagZB2GezVoE6JZTudIO3AFeYX2E
-         6TsrfZRP2QuxqpNwOnF353KrBuyhiB5zVw757wN6BdpkPGpppXO1YMZ7zYlnggYKnsDD
-         NTleHFlu/vROB6xcGPl0bJqIyqDkQDqCcXDMkHsBpvCjDFNjYRs3PXPyhx0Vil76Tm5E
-         iwoHK7L0cU24myTV3XmcKllFb5Yt5XV7cSP38r/A8jaYsY833xCHTKSTXlkpgNczdAvj
-         LcmQ==
-X-Gm-Message-State: AOJu0YygDCZG3yPXeJ5wwCv2OebSbzmRGGEH21th9FepZ8cSNideotmn
-        JkqDf+SgmEjejWZZJ6ZhAwpO17vz+Glntjvpeog=
-X-Google-Smtp-Source: AGHT+IHCqHmceYE8XJ7PlWLF1hKBttKjqRKUza1U4LOA0OtKWg7zJxRbW4wjhJVNQzQXA++7Q99biKhGlswVPKpuHU4=
-X-Received: by 2002:a05:6870:fb86:b0:1e9:e605:27a1 with SMTP id
- kv6-20020a056870fb8600b001e9e60527a1mr14651916oab.2.1698177278384; Tue, 24
- Oct 2023 12:54:38 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698177281; x=1698782081;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E4P06uBzRipjLzoJkzz9LoHUG6EOJqfFmfgLk3ncgqU=;
+        b=DooPxiaizi7/RpogsBzZEL7ncXKnoLymqyUnfylA8zUPePA5VEo19jiGEds1IFlFVJ
+         ZUEP0leFhxviN3gvydJXn5FYSrZgzTjrSo1Sd6F/0ZMAXjb1LPxVkNUlvr2Mg9/sc6a0
+         6P5+lRp6Z3jxPTwtWCW3/f6FBh6iy6AAzTrlwkGkZCiqmi4VYLuNbcOGYkAngq3dosRh
+         +CcPJASSEaIARC3TD/HCm9bLpMk918gbQFXr9Vv8lkwikKt09dvD3WbZOZ0xKA8yGB5n
+         hMtg7Us0L4hJ1G1yniWL2NSU4Gd7KLJFFNoce0+sLAh0s3BUUZyxPbAxXtMP/FtZ6gfX
+         ydxg==
+X-Gm-Message-State: AOJu0YyW5hN3bi4blBuQboe8nJedR4YBSVbfMM3xRNvoFjKKj+drwaSp
+        pLxEKROK5Za8dkjUV4Pkhg==
+X-Google-Smtp-Source: AGHT+IGJlL1IDM7XNuSkK/cZeKu2ijhkQt/tcYgIoTGAD6lhjIkGNrjtnZ7Di/EIt0MnbI4/V2YbFA==
+X-Received: by 2002:a05:6870:9728:b0:1e9:e02e:f4c8 with SMTP id n40-20020a056870972800b001e9e02ef4c8mr16749561oaq.54.1698177280866;
+        Tue, 24 Oct 2023 12:54:40 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id i1-20020a056870344100b001ea7e2adbc2sm2298295oah.1.2023.10.24.12.54.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 12:54:40 -0700 (PDT)
+Received: (nullmailer pid 458983 invoked by uid 1000);
+        Tue, 24 Oct 2023 19:54:39 -0000
+Date:   Tue, 24 Oct 2023 14:54:39 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor@kernel.org>
+Cc:     Nik Bune <n2h9z4@gmail.com>, wim@linux-watchdog.org,
+        linux@roeck-us.net, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, skhan@linuxfoundation.org, t-kristo@ti.com,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: watchdog: davinci-wdt: convert txt to yaml
+Message-ID: <20231024195439.GA455431-robh@kernel.org>
+References: <20231021171323.113208-1-n2h9z4@gmail.com>
+ <20231023-sanitizer-blank-44916ffa043b@spud>
+ <229b7c61-f1fb-4a38-9479-d65349c72956@linaro.org>
 MIME-Version: 1.0
-References: <20231024091336.1.Ie25ddf26b761bf185b7152c6a9884977f0ce73f9@changeid>
-In-Reply-To: <20231024091336.1.Ie25ddf26b761bf185b7152c6a9884977f0ce73f9@changeid>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 24 Oct 2023 21:54:27 +0200
-Message-ID: <CAJZ5v0gOmqK66NA_FAqEx59f0yd5PzdhH7jio3A0EN8=Tpp5nA@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: EC: Add quirk for HP 250 G7 Notebook PC
-To:     Jonathan Denose <jdenose@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-acpi@vger.kernel.org,
-        Jonathan Denose <jdenose@google.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <229b7c61-f1fb-4a38-9479-d65349c72956@linaro.org>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 4:14 PM Jonathan Denose <jdenose@chromium.org> wrote:
->
-> Added GPE quirk entry for HP 250 G7 Notebook PC. This change
-> allows the lid switch to be identified as the lid switch and not
-> a keyboard button. With the lid switch properly identified, the
-> device triggers suspend correctly on lid close.
->
-> Signed-off-by: Jonathan Denose <jdenose@google.com>
-> ---
->
->  drivers/acpi/ec.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-> index c95d0edb0be9e..a59c11df73754 100644
-> --- a/drivers/acpi/ec.c
-> +++ b/drivers/acpi/ec.c
-> @@ -1924,6 +1924,16 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
->                         DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion Gaming Laptop 15-dk1xxx"),
->                 },
->         },
-> +       {
-> +               /*
-> +                * HP 250 G7 Notebook PC
-> +                */
-> +               .callback = ec_honor_dsdt_gpe,
-> +               .matches = {
-> +                       DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> +                       DMI_MATCH(DMI_PRODUCT_NAME, "HP 250 G7 Notebook PC"),
-> +               },
-> +       },
->         {
->                 /*
->                  * Samsung hardware
-> --
+On Mon, Oct 23, 2023 at 07:12:16PM +0200, Krzysztof Kozlowski wrote:
+> On 23/10/2023 19:02, Conor Dooley wrote:
+> > I'd swear I replied here already, but I checked on lore and saw
+> > nothing...
+> 
+> You're almost right:
+> https://lore.kernel.org/all/20231022120328.137788-1-n2h9z4@gmail.com/
+> Different binding, but same things to fix. :)
 
-Applied as 6.7 material, thanks!
+Welcome to the blur of DT maintainership. :)
+
+Rob
