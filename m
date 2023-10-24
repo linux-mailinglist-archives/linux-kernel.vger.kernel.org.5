@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 219067D4B8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C857D4BA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234099AbjJXJHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52650 "EHLO
+        id S233780AbjJXJMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbjJXJHU (ORCPT
+        with ESMTP id S229595AbjJXJMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:07:20 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F89212E
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:07:17 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 888771FD71;
-        Tue, 24 Oct 2023 09:07:15 +0000 (UTC)
-Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 24 Oct 2023 05:12:52 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9434D8E;
+        Tue, 24 Oct 2023 02:12:50 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 0129F2CAF7;
-        Tue, 24 Oct 2023 09:07:14 +0000 (UTC)
-Date:   Tue, 24 Oct 2023 11:07:14 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Li kunyu <kunyu@nfschina.com>
-Cc:     rostedt@goodmis.org, john.ogness@linutronix.de,
-        senozhatsky@chromium.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: printk: =?utf-8?Q?Remo?=
- =?utf-8?B?dmUgdW5uZWNlc3Nhcnkgc3RhdGVtZW50c++8h2xlbiA9IDA777yH?=
-Message-ID: <ZTeJQheCpVUE5o6n@alley>
-References: <20231023062359.130633-1-kunyu@nfschina.com>
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 271BE66072F6;
+        Tue, 24 Oct 2023 10:12:48 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698138769;
+        bh=XfXPQ0oVnRctPph3CPb1I9j9606bGUTiH9V9O3ZMIGk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ZAayU1HWjcx40JeBjgKxWYWr2uAdaRzRDwg9CptGRQK3F8N4pyyUl2MsZhjqgUsQD
+         fhbujYDWpmUiB7lf2ZUIY/Xu5puKX9BnVL5bj/iwpU7ejqKeJGJ6QbSFys85w9jz0Q
+         kbioJO+PH7U7OYD0xsCDzUgpA/uWV4NE9CPdTF02KEEc5cONRV686zrqpC1gL8lZYE
+         zlOo8aeMWJR46gNbtozQval7ZcQpcrrmQFPKf9lg7yH565yJyyiSrBSPtDfYCyKSMu
+         aJN/1EZcPEim62/9Ew16sOnkydctMMXSRwMOtR6x2wlHI2uFOxKc+AJSNUkdG2TM2f
+         6FrBSYu0Pe33g==
+Message-ID: <cf25a3cc-6411-45f5-bc7a-6b69cf28c860@collabora.com>
+Date:   Tue, 24 Oct 2023 11:12:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023062359.130633-1-kunyu@nfschina.com>
-X-Spamd-Bar: +++++++++++++++
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
-        spf=fail (smtp-out2.suse.de: domain of pmladek@suse.com does not designate 149.44.160.134 as permitted sender) smtp.mailfrom=pmladek@suse.com
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [15.00 / 50.00];
-         ARC_NA(0.00)[];
-         R_SPF_FAIL(1.00)[-all];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
-         RCPT_COUNT_FIVE(0.00)[5];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         VIOLATED_DIRECT_SPF(3.50)[];
-         MX_GOOD(-0.01)[];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MID_RHS_NOT_FQDN(0.50)[];
-         R_DKIM_NA(0.20)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-0.01)[50.20%]
-X-Spam-Score: 15.00
-X-Rspamd-Queue-Id: 888771FD71
-X-Spam: Yes
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 14/18] drm/mediatek: dpi: add support for dpi clock
+Content-Language: en-US
+To:     amergnat@baylibre.com, Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Xinlei Lee <xinlei.lee@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pwm@vger.kernel.org, Fabien Parent <fparent@baylibre.com>
+References: <20231023-display-support-v1-0-5c860ed5c33b@baylibre.com>
+ <20231023-display-support-v1-14-5c860ed5c33b@baylibre.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231023-display-support-v1-14-5c860ed5c33b@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,15 +73,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2023-10-23 14:23:59, Li kunyu wrote:
-> In the following two functions, len has already been assigned a value of
-> 0 when defining the variable, so remove 'len=0;'.
+Il 23/10/23 16:40, amergnat@baylibre.com ha scritto:
+> From: Fabien Parent <fparent@baylibre.com>
 > 
-> Signed-off-by: Li kunyu <kunyu@nfschina.com>
+> MT8365 requires an additional clock for DPI. Add support for that
+> additional clock.
+> 
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+I'm not convinced that this is right... at all.
 
-The patch has been committed into printk/linux.git, branch for-6.7.
+ From a fast check of the MT8365 DPI clocks, I can see that the DPI0 clock declares
+parent VPLL_DPIX (a fixed clock), but nothing ever has VPLL_DPIX_EN (which is the
+GATE clock, enabling output of DPIx VPLL?).
 
-Best Regards,
-Petr
+But then, there's even more: no clock ever references the CLK_TOP_DPI0_SEL nor the
+CLK_TOP_DPI1_SEL gate, which is a PLL parent selector... in other platforms, that
+is muxing through the TVDPLL, but on MT8365 that is LVDSPLL?!
+
+I have many questions now:
+* Two PLLs are apparently brought up, but which one is the right one?!
+   * Is the LVDS PLL really used for DisplayPort? (dpi0_sel)
+   * Is the VPLL_DPIx PLL used for DisplayPort instead? (dpi0_dpi0)
+* Why is the LVDSTX_PXL clock using the same PLL as DPI0?!
+   * Why is the VPLL_DPIx gate never enabled?
+* Are you sure that CLK_MM_DPI0_DPI0's parent shouldn't be dpi0_sel instead?
+* Where is DPI1 in this SoC? Why is there a dpi1_sel clock, but no MM clock
+   for the DPI1 controller? Is there any DPI1 controller, even?!
+   * Why is there a DPI1 MUX, if there's no DPI1 controller?!
+
+Answering all those questions will lead you to the right change, which I believe
+to be in the clock drivers, not here in mtk_dpi.c.
+
+Cheers!
+Angelo
+
