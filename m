@@ -2,762 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B597D46E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBB17D46EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbjJXF2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 01:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
+        id S232248AbjJXFb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 01:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232265AbjJXF2G (ORCPT
+        with ESMTP id S232051AbjJXFb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 01:28:06 -0400
-Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F9B125
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 22:28:00 -0700 (PDT)
-Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3b3ebbbdb1aso7566714b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 22:27:59 -0700 (PDT)
+        Tue, 24 Oct 2023 01:31:56 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CABE9
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 22:31:55 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6bd73395bceso2992312b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 22:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1698125514; x=1698730314; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TMgZBMWXzo4q6vwznsY5I4wwZsoXDFPKydTpbp5gDQw=;
+        b=JKroqlfcHG8a6N6YvGdwfOhxawfooodjYM0sMf7u1n2XvdJKgBRVvlXS303QotoGo8
+         XgJVqiLnq9Qy/W6lpRtsp2rPHRX7g+d5DEpLykgIkHlrnD0KmYt3BJFJ7FvHhm7EHcao
+         DLFJaIHXHQkXR32FiQXVPsRUzkjojKN5IK27jqP9+4eqV3B/pCk25ucgPEe4q7NGCSb1
+         l7LDZoQEm/1zeGWiVeHuimbZC8KTg1SKU+yhGBEEVZghGfcQ2kTMRbo4stf8vSO4rq1n
+         o2r2nGy/kKMgIaumLtBvfPZHe5ZBNyiiFzZrMczFzSTaujCiYHdNBRjczMI785zEWFZD
+         o/8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698125279; x=1698730079;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RV2zqh9O7bFqhyKUw47IdqX7Z6Ws3WDa13Tz8qgU20g=;
-        b=U9AR8ekdBYhrFuOVCMP+hmI53reoaXEln6qsZwkRvtmteBFNJCHF9SrVDxvU1/7sUl
-         Ar7PPo17Gk8j+nDTk2gtprGvdjp6UZPdeyN2vIBuHG2F74hJQWtEVomXfmM/adAUWSFY
-         xaSGFUlAqfiTN9lwuEijpYcTe0qQsnCbKkvMgrkImKiLxOq1VR6Nkr6NTzmW62D8y+s1
-         +zRsJqLdJvC7g5ASUua24QZr6Sq+pSQA/3xuLWLvJxgxXHL7Y21yNqZ0M0Pr80+PKstH
-         yC3spJ47W241VqwD+Ve+PRbFBDYVtVV+3FBya4yAXg4G86kZs1J5WaPKoXV8o407R1hX
-         o+fg==
-X-Gm-Message-State: AOJu0YwIsqU7fTvpoFO/MncwNS8VmL4m/TlFCPgDR9WBS0qsbbuvjzpD
-        UmWHxMawd2PSI9jNb4lkCObjbs2XZ1RX72HyfnbjlMQ/BTfy
-X-Google-Smtp-Source: AGHT+IGa4EGfYEXi9CHVlhLWMWoyZCz3lMNt0BNKAdMq8P9LinToqKEvukKjcLtm2PnvEeCDBKEBsKTuUILkFjPgdHoAiXVmkptm
+        d=1e100.net; s=20230601; t=1698125514; x=1698730314;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TMgZBMWXzo4q6vwznsY5I4wwZsoXDFPKydTpbp5gDQw=;
+        b=v7etYk6I48BeJCUZjarMQHbXgPOjzIWY2L5NKJQ9EaavRCu5OYytVthH7IfKrwotrB
+         lE8e323iNTbPU6H0/XEBKhZkkhZzT2tI5ivK3d5gKnxQPk7MmHaoy4mYxcjeAI4yvaJA
+         rMRk5LCB5yXAyJ/fMb8Jr88OsXQoZVzUuw1VVN7y9+MHVYtzdkrAxkG7tQhnFt+aiF2H
+         VDNys+JxL3gCwv5JYjZCFthLQjaiZ6rdHTHyEw8MQhiC0M6J6hGrEamWWjZ1NRn308fR
+         alQw7hxgUpec6OU2KkbphEKIfMSae07VsrWV6zK0YTU2D+c95oRcEzvmrjoXoFf9Dp51
+         DuMA==
+X-Gm-Message-State: AOJu0YxAe5n+nIB3XnZeSOriw1LvL1iwhuPSI4Ue16BJnqFoCPp6Omem
+        Rlay6b2GDjITFIdsD/JGumaEVQ==
+X-Google-Smtp-Source: AGHT+IEXabVD0I42LfRfAleaLrDfaEeikt+nTW/LvpW+v1yM0hF9QKpCxuvRXO4yGRldBbG6ljXApg==
+X-Received: by 2002:a05:6a20:7348:b0:17b:2c56:70bc with SMTP id v8-20020a056a20734800b0017b2c5670bcmr2083668pzc.10.1698125514459;
+        Mon, 23 Oct 2023 22:31:54 -0700 (PDT)
+Received: from sunil-laptop ([2409:4071:6e9d:1e7:259:d68d:db3b:3cc])
+        by smtp.gmail.com with ESMTPSA id y15-20020aa79aef000000b0068883728c16sm7216982pfp.144.2023.10.23.22.31.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 22:31:53 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 11:01:37 +0530
+From:   Sunil V L <sunilvl@ventanamicro.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v11 12/14] irqchip/riscv-aplic: Add support for MSI-mode
+Message-ID: <ZTdWueglO1iXuS1D@sunil-laptop>
+References: <20231023172800.315343-1-apatel@ventanamicro.com>
+ <20231023172800.315343-13-apatel@ventanamicro.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2109:b0:3b2:daf2:7d7b with SMTP id
- r9-20020a056808210900b003b2daf27d7bmr3888667oiw.2.1698125279350; Mon, 23 Oct
- 2023 22:27:59 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 22:27:59 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000f598306086f9aba@google.com>
-Subject: [syzbot] [net?] Internal error in _prb_read_valid
-From:   syzbot <syzbot+088ad6cca3ef2686c143@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
-        edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023172800.315343-13-apatel@ventanamicro.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Anup,
 
-syzbot found the following issue on:
+On Mon, Oct 23, 2023 at 10:57:58PM +0530, Anup Patel wrote:
+> The RISC-V advanced platform-level interrupt controller (APLIC) has
+> two modes of operation: 1) Direct mode and 2) MSI mode.
+> (For more details, refer https://github.com/riscv/riscv-aia)
+> 
+> In APLIC MSI-mode, wired interrupts are forwared as message signaled
+> interrupts (MSIs) to CPUs via IMSIC.
+> 
+> We extend the existing APLIC irqchip driver to support MSI-mode for
+> RISC-V platforms having both wired interrupts and MSIs.
+> 
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+[...]
+> +int aplic_msi_setup(struct device *dev, void __iomem *regs)
+> +{
+> +	const struct imsic_global_config *imsic_global;
+> +	struct irq_domain *irqdomain;
+> +	struct aplic_priv *priv;
+> +	struct aplic_msicfg *mc;
+> +	phys_addr_t pa;
+> +	int rc;
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	rc = aplic_setup_priv(priv, dev, regs);
+> +	if (!priv) {
+This should check rc instead of priv.
 
-HEAD commit:    e017769f4ce2 Merge tag 'for-6.6-rc7-tag' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17ba300d680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=596c7ccf9ad8d0ca
-dashboard link: https://syzkaller.appspot.com/bug?extid=088ad6cca3ef2686c143
-compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm
+> +		dev_err(dev, "failed to create APLIC context\n");
+> +		return rc;
+> +	}
+> +	mc = &priv->msicfg;
+> +
+> +	/*
+> +	 * The APLIC outgoing MSI config registers assume target MSI
+> +	 * controller to be RISC-V AIA IMSIC controller.
+> +	 */
+> +	imsic_global = imsic_get_global_config();
+> +	if (!imsic_global) {
+> +		dev_err(dev, "IMSIC global config not found\n");
+> +		return -ENODEV;
+For all error return paths, priv should be freed.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-e017769f.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/33251365cab5/vmlinux-e017769f.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/15b4e5108566/zImage-e017769f.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+088ad6cca3ef2686c143@syzkaller.appspotmail.com
-
-Insufficient stack space to handle exception!
-Task stack:     [0xeb154000..0xeb156000]
-IRQ stack:      [0xdf800000..0xdf802000]
-Overflow stack: [0x82cb6000..0x82cb7000]
-Internal error: kernel stack overflow: 0 [#1] PREEMPT SMP ARM
-Modules linked in:
-CPU: 0 PID: 12768 Comm: kworker/0:2 Not tainted 6.6.0-rc7-syzkaller #0
-Hardware name: ARM-Versatile Express
-Workqueue: mld mld_ifc_work
-PC is at _prb_read_valid+0x18/0x2b8 kernel/printk/printk_ringbuffer.c:1887
-LR is at 0x0
-pc : [<802bb1f8>]    lr : [<00000000>]    psr: 60000113
-sp : eb153fd8  ip : eb154048  fp : eb154044
-r10: 82629d20  r9 : 0000189f  r8 : 828571a0
-r7 : eb15408c  r6 : 00000000  r5 : eb154098  r4 : 00000001
-r3 : 00000000  r2 : eb15408c  r1 : eb154048  r0 : 82629dcc
-Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 30c5387d  Table: 8461bf80  DAC: fffffffd
-Register r0 information: non-slab/vmalloc memory
-Register r1 information: 2-page vmalloc region starting at 0xeb154000 allocated at kernel_clone+0xac/0x424 kernel/fork.c:2909
-Register r2 information: 2-page vmalloc region starting at 0xeb154000 allocated at kernel_clone+0xac/0x424 kernel/fork.c:2909
-Register r3 information: NULL pointer
-Register r4 information: non-paged memory
-Register r5 information: 2-page vmalloc region starting at 0xeb154000 allocated at kernel_clone+0xac/0x424 kernel/fork.c:2909
-Register r6 information: NULL pointer
-Register r7 information: 2-page vmalloc region starting at 0xeb154000 allocated at kernel_clone+0xac/0x424 kernel/fork.c:2909
-Register r8 information: non-slab/vmalloc memory
-Register r9 information: non-paged memory
-Register r10 information: non-slab/vmalloc memory
-Register r11 information: 2-page vmalloc region starting at 0xeb154000 allocated at kernel_clone+0xac/0x424 kernel/fork.c:2909
-Register r12 information: 2-page vmalloc region starting at 0xeb154000 allocated at kernel_clone+0xac/0x424 kernel/fork.c:2909
-Process kworker/0:2 (pid: 12768, stack limit = 0xeb154000)
-Stack: (0xeb153fd8 to 0xeb156000)
-3fc0:                                                       ???????? ????????
-3fe0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ????????
-4000: 57ac6e9d 00000000 00000000 00000000 00000000 00000000 00000000 00000001
-4020: eb154098 00000000 eb15408c 828571a0 0000189f 82629d20 eb15405c eb154048
-4040: 802bc220 802bb1ec 0000189f 00000000 eb154134 eb154060 802b7fc0 802bc208
-4060: eb15408c 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4080: 0001e774 eb154170 eb1540d0 eb154098 828571a0 00000800 00000000 00000000
-40a0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-40c0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-40e0: 00000000 00000000 00000000 00000000 8214b2c0 81815d70 ffff0a00 3ffff89f
-4100: 00000039 e7d4f996 eb1541bc 8274eca8 00000000 00000000 00000001 eb1541cf
-4120: eb1541d0 00000000 eb1541bc eb154138 802b85b4 802b7f38 00000000 00000001
-4140: 00000035 82876510 eb1541cf 00000000 82629d20 8260c494 00000000 82622a84
-4160: 00000000 00000039 84732f00 82857040 828571a0 00000000 00000000 00000000
-4180: 00000000 00000000 00000000 e7d4f996 eea41c68 00000035 82857040 82629d20
-41a0: 82629db8 84732f00 8214b2a0 00000000 eb154204 eb1541c0 802b8b38 802b8484
-41c0: 81845170 80278ea8 eb1541ec 001541d8 00000000 00000000 00000035 e7d4f996
-41e0: eb154204 00000035 ffffffff 00000000 00000000 84732f00 eb154244 eb154208
-4200: 802ba44c 802b8abc eb15429c 00000000 858c3f84 eb1542d4 eb1542d8 84732f00
-4220: 824b32c8 00000000 84052a00 00000000 82c95900 00000000 eb15425c eb154248
-4240: 802ba548 802ba2b4 eb15429c eb154258 eb15427c eb154260 802badc8 802ba52c
-4260: 8180ac64 8184514c 85abcd80 85750000 eb154294 eb154280 8181de08 802bad60
-4280: eb15429c e7d4f996 eb154314 eb1542a8 8136d534 8181dde4 8214b2a0 85750000
-42a0: 00001400 84732f00 eb1543bc 84534810 eb154394 00000000 81651794 00000001
-42c0: 824b1f84 858fe580 00c2b780 fffffff4 00000004 84534840 84534800 8260c5f0
-42e0: 82161774 e7d4f996 eb15438c 00000000 85abcd80 8586cf00 0000000e 00000010
-4300: 840d5e00 8571a800 eb154374 eb154318 815e5448 8136c8b4 85abcd80 00000000
-4320: 00000000 846d0000 00000000 00000000 00000000 00000000 00000000 00000000
-4340: 00000000 e7d4f996 00000000 85abcd80 840d5e00 846d0000 00000000 000005dc
-4360: 8568d000 eb1544b0 eb1543b4 eb154378 815e9664 815e51d4 854b2d90 eb1544b0
-4380: eb1543b4 eb154390 8146c750 85abcd80 846d0000 840d5e00 00000001 85750000
-43a0: 8568d000 eb1544b0 eb1543fc eb1543b8 815e97f4 815e943c 8166abf0 00000a04
-43c0: 8568d000 85750000 840d5e00 846d0000 815e9430 e7d4f996 85abcd80 846d0000
-43e0: 840d5e00 00000001 846d0000 85ac9800 eb15441c eb154400 8166ac8c 815e9788
-4400: 85abcd80 00000000 8568d000 00000001 eb154504 eb154420 80bcfbd0 8166ac58
-4420: 00000000 00000000 85abcd80 00000000 00000000 00000000 00000000 00000000
-4440: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4460: 00000000 00000000 00000000 00000000 00000031 00000001 00000000 000000b4
-4480: 01110000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-44a0: 000000fc 00000000 00000000 01000000 00000000 00000000 00000000 0b1414ac
-44c0: 00000000 00000000 00000000 00000000 00000000 e7d4f996 eb154600 85750000
-44e0: 000000b4 85750000 84732f00 00000000 84052a00 00000000 eb154524 eb154508
-4500: 80bd0160 80bcf6cc 85abcd80 81b683a8 85750000 84732f00 eb154574 eb154528
-4520: 8136c5a0 80bd0154 82c95900 00000000 eb154574 eb15459c 8260c494 824b32ca
-4540: 8260eeb8 000000b4 85abcd80 85abcd80 824b32c8 85750000 84052a00 eb154578
-4560: 82c95900 00000000 eb1545e4 eb154578 8136ca7c 8136c4c4 eb15468c 84534810
-4580: eb154664 00000000 81651794 00000001 824b1f84 858fe580 00c2b780 fffffff4
-45a0: 00000004 84534840 84534800 8260c5f0 82161774 e7d4f996 eb15465c 00000000
-45c0: 85abcd80 8586cf00 0000000e 00000010 840d5e00 8571a800 eb154644 eb1545e8
-45e0: 815e5448 8136c8b4 85abcd80 00000000 00000000 846d0000 00000000 00000000
-4600: 00000000 00000000 00000000 00000000 00000000 e7d4f996 00000000 85abcd80
-4620: 840d5e00 846d0000 00000000 000005dc 8568d000 eb154780 eb154684 eb154648
-4640: 815e9664 815e51d4 854b2d90 eb154780 eb154684 eb154660 8146c750 85abcd80
-4660: 846d0000 840d5e00 00000001 85750000 8568d000 eb154780 eb1546cc eb154688
-4680: 815e97f4 815e943c 8166abf0 00000a04 8568d000 85750000 840d5e00 846d0000
-46a0: 815e9430 e7d4f996 85abcd80 846d0000 840d5e00 00000001 846d0000 85ac9800
-46c0: eb1546ec eb1546d0 8166ac8c 815e9788 85abcd80 00000000 8568d000 00000001
-46e0: eb1547d4 eb1546f0 80bcfbd0 8166ac58 00000000 00000000 85abcd80 00000000
-4700: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4720: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4740: 00000031 00000001 00000000 000000b4 01110000 00000000 00000000 00000000
-4760: 00000000 00000000 00000000 00000000 000000fc 00000000 00000000 01000000
-4780: 00000000 00000000 00000000 0b1414ac 00000000 00000000 00000000 00000000
-47a0: 00000000 e7d4f996 eb1548d0 85750000 000000b4 85750000 84732f00 00000000
-47c0: 84052a00 00000000 eb1547f4 eb1547d8 80bd0160 80bcf6cc 85abcd80 81b683a8
-47e0: 85750000 84732f00 eb154844 eb1547f8 8136c5a0 80bd0154 82c95900 00000000
-4800: eb154844 eb15486c 8260c494 824b32ca 8260eeb8 000000b4 85abcd80 85abcd80
-4820: 824b32c8 85750000 84052a00 eb154848 82c95900 00000000 eb1548b4 eb154848
-4840: 8136ca7c 8136c4c4 eb15495c 84534810 eb154934 00000000 81651794 00000001
-4860: 824b1f84 858fe580 00c2b780 fffffff4 00000004 84534840 84534800 8260c5f0
-4880: 82161774 e7d4f996 eb15492c 00000000 85abcd80 8586cf00 0000000e 00000010
-48a0: 840d5e00 8571a800 eb154914 eb1548b8 815e5448 8136c8b4 85abcd80 00000000
-48c0: 00000000 846d0000 00000000 00000000 00000000 00000000 00000000 00000000
-48e0: 00000000 e7d4f996 00000000 85abcd80 840d5e00 846d0000 00000000 000005dc
-4900: 8568d000 eb154a50 eb154954 eb154918 815e9664 815e51d4 854b2d90 eb154a50
-4920: eb154954 eb154930 8146c750 85abcd80 846d0000 840d5e00 00000001 85750000
-4940: 8568d000 eb154a50 eb15499c eb154958 815e97f4 815e943c 8166abf0 00000a04
-4960: 8568d000 85750000 840d5e00 846d0000 815e9430 e7d4f996 85abcd80 846d0000
-4980: 840d5e00 00000001 846d0000 85ac9800 eb1549bc eb1549a0 8166ac8c 815e9788
-49a0: 85abcd80 00000000 8568d000 00000001 eb154aa4 eb1549c0 80bcfbd0 8166ac58
-49c0: 00000000 00000000 85abcd80 00000000 00000000 00000000 00000000 00000000
-49e0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4a00: 00000000 00000000 00000000 00000000 00000031 00000001 00000000 000000b4
-4a20: 01110000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4a40: 000000fc 00000000 00000000 01000000 00000000 00000000 00000000 0b1414ac
-4a60: 00000000 00000000 00000000 00000000 00000000 e7d4f996 eb154ba0 85750000
-4a80: 000000b4 85750000 84732f00 00000000 84052a00 00000000 eb154ac4 eb154aa8
-4aa0: 80bd0160 80bcf6cc 85abcd80 81b683a8 85750000 84732f00 eb154b14 eb154ac8
-4ac0: 8136c5a0 80bd0154 82c95900 00000000 eb154b14 eb154b3c 8260c494 824b32ca
-4ae0: 8260eeb8 000000b4 85abcd80 85abcd80 824b32c8 85750000 84052a00 eb154b18
-4b00: 82c95900 00000000 eb154b84 eb154b18 8136ca7c 8136c4c4 eb154c2c 84534810
-4b20: eb154c04 00000000 81651794 00000001 824b1f84 858fe580 00c2b780 fffffff4
-4b40: 00000004 84534840 84534800 8260c5f0 82161774 e7d4f996 eb154bfc 00000000
-4b60: 85abcd80 8586cf00 0000000e 00000010 840d5e00 8571a800 eb154be4 eb154b88
-4b80: 815e5448 8136c8b4 85abcd80 00000000 00000000 846d0000 00000000 00000000
-4ba0: 00000000 00000000 00000000 00000000 00000000 e7d4f996 00000000 85abcd80
-4bc0: 840d5e00 846d0000 00000000 000005dc 8568d000 eb154d20 eb154c24 eb154be8
-4be0: 815e9664 815e51d4 854b2d90 eb154d20 eb154c24 eb154c00 8146c750 85abcd80
-4c00: 846d0000 840d5e00 00000001 85750000 8568d000 eb154d20 eb154c6c eb154c28
-4c20: 815e97f4 815e943c 8166abf0 00000a04 8568d000 85750000 840d5e00 846d0000
-4c40: 815e9430 e7d4f996 85abcd80 846d0000 840d5e00 00000001 846d0000 85ac9800
-4c60: eb154c8c eb154c70 8166ac8c 815e9788 85abcd80 00000000 8568d000 00000001
-4c80: eb154d74 eb154c90 80bcfbd0 8166ac58 00000000 00000000 85abcd80 00000000
-4ca0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4cc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4ce0: 00000031 00000001 00000000 000000b4 01110000 00000000 00000000 00000000
-4d00: 00000000 00000000 00000000 00000000 000000fc 00000000 00000000 01000000
-4d20: 00000000 00000000 00000000 0b1414ac 00000000 00000000 00000000 00000000
-4d40: 00000000 e7d4f996 eb154e70 85750000 000000b4 85750000 84732f00 00000000
-4d60: 84052a00 00000000 eb154d94 eb154d78 80bd0160 80bcf6cc 85abcd80 81b683a8
-4d80: 85750000 84732f00 eb154de4 eb154d98 8136c5a0 80bd0154 82c95900 00000000
-4da0: eb154de4 eb154e0c 8260c494 824b32ca 8260eeb8 000000b4 85abcd80 85abcd80
-4dc0: 824b32c8 85750000 84052a00 eb154de8 82c95900 00000000 eb154e54 eb154de8
-4de0: 8136ca7c 8136c4c4 eb154efc 84534810 eb154ed4 00000000 81651794 00000001
-4e00: 824b1f84 858fe580 00c2b780 fffffff4 00000004 84534840 84534800 8260c5f0
-4e20: 82161774 e7d4f996 eb154ecc 00000000 85abcd80 8586cf00 0000000e 00000010
-4e40: 840d5e00 8571a800 eb154eb4 eb154e58 815e5448 8136c8b4 85abcd80 00000000
-4e60: 00000000 846d0000 00000000 00000000 00000000 00000000 00000000 00000000
-4e80: 00000000 e7d4f996 00000000 85abcd80 840d5e00 846d0000 00000000 000005dc
-4ea0: 8568d000 eb154ff0 eb154ef4 eb154eb8 815e9664 815e51d4 854b2d90 eb154ff0
-4ec0: eb154ef4 eb154ed0 8146c750 85abcd80 846d0000 840d5e00 00000001 85750000
-4ee0: 8568d000 eb154ff0 eb154f3c eb154ef8 815e97f4 815e943c 8166abf0 00000a04
-4f00: 8568d000 85750000 840d5e00 846d0000 815e9430 e7d4f996 85abcd80 846d0000
-4f20: 840d5e00 00000001 846d0000 85ac9800 eb154f5c eb154f40 8166ac8c 815e9788
-4f40: 85abcd80 00000000 8568d000 00000001 eb155044 eb154f60 80bcfbd0 8166ac58
-4f60: 00000000 00000000 85abcd80 00000000 00000000 00000000 00000000 00000000
-4f80: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4fa0: 00000000 00000000 00000000 00000000 00000031 00000001 00000000 000000b4
-4fc0: 01110000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-4fe0: 000000fc 00000000 00000000 01000000 00000000 00000000 00000000 0b1414ac
-5000: 00000000 00000000 00000000 00000000 00000000 e7d4f996 eb155140 85750000
-5020: 000000b4 85750000 84732f00 00000000 84052a00 00000000 eb155064 eb155048
-5040: 80bd0160 80bcf6cc 85abcd80 81b683a8 85750000 84732f00 eb1550b4 eb155068
-5060: 8136c5a0 80bd0154 82c95900 00000000 eb1550b4 eb1550dc 8260c494 824b32ca
-5080: 8260eeb8 000000b4 85abcd80 85abcd80 824b32c8 85750000 84052a00 eb1550b8
-50a0: 82c95900 00000000 eb155124 eb1550b8 8136ca7c 8136c4c4 eb1551cc 84534810
-50c0: eb1551a4 00000000 81651794 00000001 824b1f84 858fe580 00c2b780 fffffff4
-50e0: 00000004 84534840 84534800 8260c5f0 82161774 e7d4f996 eb15519c 00000000
-5100: 85abcd80 8586cf00 0000000e 00000010 840d5e00 8571a800 eb155184 eb155128
-5120: 815e5448 8136c8b4 85abcd80 00000000 00000000 846d0000 00000000 00000000
-5140: 00000000 00000000 00000000 00000000 00000000 e7d4f996 00000000 85abcd80
-5160: 840d5e00 846d0000 00000000 000005dc 8568d000 eb1552c0 eb1551c4 eb155188
-5180: 815e9664 815e51d4 854b2d90 eb1552c0 eb1551c4 eb1551a0 8146c750 85abcd80
-51a0: 846d0000 840d5e00 00000001 85750000 8568d000 eb1552c0 eb15520c eb1551c8
-51c0: 815e97f4 815e943c 8166abf0 00000a04 8568d000 85750000 840d5e00 846d0000
-51e0: 815e9430 e7d4f996 85abcd80 846d0000 840d5e00 00000001 846d0000 85ac9800
-5200: eb15522c eb155210 8166ac8c 815e9788 85abcd80 00000000 8568d000 00000001
-5220: eb155314 eb155230 80bcfbd0 8166ac58 00000000 00000000 85abcd80 00000000
-5240: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-5260: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-5280: 00000031 00000001 00000000 000000b4 01110000 00000000 00000000 00000000
-52a0: 00000000 00000000 00000000 00000000 000000fc 00000000 00000000 01000000
-52c0: 00000000 00000000 00000000 0b1414ac 00000000 00000000 00000000 00000000
-52e0: 00000000 e7d4f996 eb155410 85750000 000000b4 85750000 84732f00 00000000
-5300: 84052a00 00000000 eb155334 eb155318 80bd0160 80bcf6cc 85abcd80 81b683a8
-5320: 85750000 84732f00 eb155384 eb155338 8136c5a0 80bd0154 82c95900 00000000
-5340: eb155384 eb1553ac 8260c494 824b32ca 8260eeb8 000000b4 85abcd80 85abcd80
-5360: 824b32c8 85750000 84052a00 eb155388 82c95900 00000000 eb1553f4 eb155388
-5380: 8136ca7c 8136c4c4 eb15549c 84534810 eb155474 00000000 81651794 00000001
-53a0: 824b1f84 858fe580 00c2b780 fffffff4 00000004 84534840 84534800 8260c5f0
-53c0: 82161774 e7d4f996 eb15546c 00000000 85abcd80 8586cf00 0000000e 00000010
-53e0: 840d5e00 8571a800 eb155454 eb1553f8 815e5448 8136c8b4 85abcd80 00000000
-5400: 00000000 846d0000 00000000 00000000 00000000 00000000 00000000 00000000
-5420: 00000000 e7d4f996 00000000 85abcd80 840d5e00 846d0000 00000000 000005dc
-5440: 8568d000 eb155590 eb155494 eb155458 815e9664 815e51d4 854b2d90 eb155590
-5460: eb155494 eb155470 8146c750 85abcd80 846d0000 840d5e00 00000001 85750000
-5480: 8568d000 eb155590 eb1554dc eb155498 815e97f4 815e943c 8166abf0 00000a04
-54a0: 8568d000 85750000 840d5e00 846d0000 815e9430 e7d4f996 85abcd80 846d0000
-54c0: 840d5e00 00000001 846d0000 85ac9800 eb1554fc eb1554e0 8166ac8c 815e9788
-54e0: 85abcd80 00000000 8568d000 00000001 eb1555e4 eb155500 80bcfbd0 8166ac58
-5500: 00000000 00000000 85abcd80 00000000 00000000 00000000 00000000 00000000
-5520: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-5540: 00000000 00000000 00000000 00000000 00000031 00000001 00000000 000000b4
-5560: 01110000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-5580: 000000fc 00000000 00000000 01000000 00000000 00000000 00000000 0b1414ac
-55a0: 00000000 00000000 00000000 00000000 00000000 e7d4f996 eb1556e0 85750000
-55c0: 000000b4 85750000 84732f00 00000000 84052a00 00000000 eb155604 eb1555e8
-55e0: 80bd0160 80bcf6cc 85abcd80 81b683a8 85750000 84732f00 eb155654 eb155608
-5600: 8136c5a0 80bd0154 82c95900 00000000 eb155654 eb15567c 8260c494 824b32ca
-5620: 8260eeb8 000000b4 85abcd80 85abcd80 824b32c8 85750000 84052a00 eb155658
-5640: 82c95900 00000000 eb1556c4 eb155658 8136ca7c 8136c4c4 eb15576c 84534810
-5660: eb155744 00000000 81651794 00000001 824b1f84 858fe580 00c2b780 fffffff4
-5680: 00000004 84534840 84534800 8260c5f0 82161774 e7d4f996 eb15573c 00000000
-56a0: 85abcd80 8586cf00 0000000e 00000010 840d5e00 8571a800 eb155724 eb1556c8
-56c0: 815e5448 8136c8b4 85abcd80 00000000 00000000 846d0000 00000000 00000000
-56e0: 00000000 00000000 00000000 00000000 00000000 e7d4f996 00000000 85abcd80
-5700: 840d5e00 846d0000 00000000 000005dc 8568d000 eb155860 eb155764 eb155728
-5720: 815e9664 815e51d4 854b2d90 eb155860 eb155764 eb155740 8146c750 85abcd80
-5740: 846d0000 840d5e00 00000001 85750000 8568d000 eb155860 eb1557ac eb155768
-5760: 815e97f4 815e943c 8166abf0 00000a04 8568d000 85750000 840d5e00 846d0000
-5780: 815e9430 e7d4f996 85abcd80 846d0000 840d5e00 00000001 846d0000 85ac9800
-57a0: eb1557cc eb1557b0 8166ac8c 815e9788 85abcd80 00000000 8568d000 00000001
-57c0: eb1558b4 eb1557d0 80bcfbd0 8166ac58 eb1557ec eb1557e0 85abcd80 00000000
-57e0: eb15585c eb1557f0 8088d564 8184514c eb155864 81376810 81376938 00002920
-5800: 8586cf00 00002920 eb155824 82c01180 00000000 00002920 8260c9bc a0000113
-5820: 00000031 00000001 00000000 000000b4 01110000 00000000 00000000 00000000
-5840: 00000000 00000000 00000000 00000000 000000fc 00000000 00000000 01000000
-5860: 00000000 00000000 00000000 0b1414ac 00000000 00000000 00000000 00000000
-5880: 0001aae2 e7d4f996 00000000 85750000 000000b4 85750000 84732f00 00000000
-58a0: 84052a00 00000000 eb1558d4 eb1558b8 80bd0160 80bcf6cc 85abcd80 81b683a8
-58c0: 85750000 84732f00 eb155924 eb1558d8 8136c5a0 80bd0154 82c95900 00000000
-58e0: eb155924 eb15594c 8260c494 824b32ca 8260eeb8 000000b4 85abcd80 85abcd80
-5900: 824b32c8 85750000 84052a00 eb155928 82c95900 00000000 eb155994 eb155928
-5920: 8136ca7c 8136c4c4 8184504c 8024bc28 eb1559ac eb155940 8137e2fc 8184502c
-5940: 000086dd 8586cf60 00155974 fffffff4 813d6dd0 81348be8 813d6dac 00000000
-5960: 85abcd80 e7d4f996 eb155994 8586cf00 00000000 85abcd80 80bcff18 85750000
-5980: 841b7c00 8571a800 eb1559c4 eb155998 8137cec8 8136c8b4 00000000 000000a6
-59a0: eb1559c4 85750000 85abcd80 8586cf00 00000009 85ac9842 eb155a24 eb1559c8
-59c0: 815e5378 8137cdc0 85abcd80 00000000 00000000 846d0000 00000000 00000000
-59e0: 00000000 00000000 00000000 00000000 00000000 e7d4f996 00000000 85abcd80
-5a00: 841b7c00 846d0000 00000000 000005dc 85766000 00000000 eb155a64 eb155a28
-5a20: 815e9664 815e51d4 854b2d90 00000000 eb155a64 eb155a40 8146c750 85abcd80
-5a40: 846d0000 841b7c00 00000001 85750000 85766000 00000000 eb155aac eb155a68
-5a60: 815e97f4 815e943c 8166abf0 00000a04 85766000 85750000 841b7c00 846d0000
-5a80: 815e9430 e7d4f996 85abcd80 846d0000 841b7c00 000000a6 00000070 85ac982a
-5aa0: eb155acc eb155ab0 8166ac8c 815e9788 85abcd80 85766000 85ac9800 000000a6
-5ac0: eb155b0c eb155ad0 8166da64 8166ac58 0000007e 857666b8 00000000 841b7c00
-5ae0: 80c29244 85abcd80 85766000 857666b8 82c95900 85766680 00000040 0000fd5b
-5b00: eb155c34 eb155b10 80c2bf8c 8166d8f0 eb155be0 eb155bd0 00000000 00000040
-5b20: 00000000 0000fd5b 0000c117 00000000 00000000 dddd5858 eb155b54 00000000
-5b40: 85ac9870 85ac9800 00000000 846d0000 846d0000 85ad6000 8134a9f8 00002920
-5b60: 8586c800 00002920 eb155b84 82c01180 00000000 00002920 8260c9bc a0000113
-5b80: eb155bac eb155b90 8020bf9c 8020d04c 00000000 00000001 81844cc4 8586c8d0
-5ba0: 00000000 00000001 00000000 000000b4 00110000 00000000 00000000 00000000
-5bc0: 00000000 00000000 00000000 00000000 000000fc 00000000 00000000 01000000
-5be0: 00000000 00000000 00000000 0b1414ac 00000000 fd5bc117 00000000 00000000
-5c00: eb155cab e7d4f996 85abcd80 85abcd80 81b6dc3c 85766000 84732f00 00000000
-5c20: 857c8000 00000000 eb155c84 eb155c38 8136c5a0 80c2bca0 82c95cc0 00000000
-5c40: eb155c84 eb155cac 8260c494 824b32ca 8260eeb8 0000006e 85abcd80 85abcd80
-5c60: 824b32c8 85766000 857c8000 eb155c88 82c95cc0 00000000 eb155cf4 eb155c88
-5c80: 8136ca7c 8136c4c4 eb155cf8 8027a844 8137cf04 00000000 00000000 e7d4f996
-5ca0: 84732f00 00000001 00abcd80 fffffff4 eb155ccc eb155cc0 81839550 8183941c
-5cc0: 000086dd e7d4f996 eb155cf4 8586c800 00000000 85abcd80 813d6dac 85766000
-5ce0: ff7e4f20 85728000 eb155d24 eb155cf8 8137cec8 8136c8b4 00000000 00000060
-5d00: eb155d24 85766000 85abcd80 8586c800 00000009 85ac9888 eb155d84 eb155d28
-5d20: 815e5378 8137cdc0 85abcd80 00000000 00000113 846d0000 00000000 00000000
-5d40: 00000000 00000000 00000000 00000000 00000000 e7d4f996 00000000 85abcd80
-5d60: 840d5e00 846d0000 00000000 000005dc 85766000 00000030 eb155dc4 eb155d88
-5d80: 815e9664 815e51d4 854b2d90 00000030 eb155dc4 eb155da0 8146c750 85abcd80
-5da0: 846d0000 840d5e00 00000001 85766000 85766000 00000030 eb155e0c eb155dc8
-5dc0: 815e97f4 815e943c 85abcd80 00000a04 85766000 85766000 840d5e00 846d0000
-5de0: 815e9430 e7d4f996 85abcd80 00000001 846d0000 85728000 840d5e00 85ac9878
-5e00: eb155ec4 eb155e10 8161ed1c 815e9788 85ac9888 0000003d 00000a03 00000000
-5e20: 85766000 840d5e00 846d0000 8161d0ac 0000003d 00000000 00000000 00000000
-5e40: 003a0000 00000001 00000000 00000000 00000000 00000000 00000000 00000000
-5e60: 000002ff 00000000 00000000 16000000 00000000 00000000 00000000 00000000
-5e80: 00000000 0000008f 00000000 00000000 00000000 e7d4f996 eb155ebc 00000000
-5ea0: 85abcd80 00000000 00000001 85728130 85728000 85728058 eb155f04 eb155ec8
-5ec0: 81620870 8161eacc 00000001 00000000 80266378 eb155f84 eb155f48 85904280
-5ee0: 85728058 84026000 dddd22c0 00000000 84732f00 84026005 eb155f44 eb155f08
-5f00: 80265fdc 816206b0 eb155f2c eb155f18 eb155f44 eb155f20 8026196c 85904280
-5f20: 859042ac dddd22c0 82604d40 dddd22e0 84732f00 61c88647 eb155f84 eb155f48
-5f40: 80266528 80265e4c eb155f64 eb155f58 81845170 80278ea8 eb155f84 8578a2c0
-5f60: 84732f00 802662e8 85904280 8578a8c0 eab81e90 00000000 eb155fac eb155f88
-5f80: 8026d920 802662f4 8578a2c0 8026d81c 00000000 00000000 00000000 00000000
-5fa0: 00000000 eb155fb0 80200104 8026d828 00000000 00000000 00000000 00000000
-5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-5fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
-Backtrace: 
-[<802bb1e0>] (_prb_read_valid) from [<802bc220>] (prb_read_valid+0x24/0x2c kernel/printk/printk_ringbuffer.c:1940)
- r10:82629d20 r9:0000189f r8:828571a0 r7:eb15408c r6:00000000 r5:eb154098
- r4:00000001
-[<802bc1fc>] (prb_read_valid) from [<802b7fc0>] (printk_get_next_message+0x94/0x31c kernel/printk/printk.c:2816)
-[<802b7f2c>] (printk_get_next_message) from [<802b85b4>] (console_emit_next_record kernel/printk/printk.c:2877 [inline])
-[<802b7f2c>] (printk_get_next_message) from [<802b85b4>] (console_flush_all.constprop.0+0x13c/0x638 kernel/printk/printk.c:2966)
- r10:00000000 r9:eb1541d0 r8:eb1541cf r7:00000001 r6:00000000 r5:00000000
- r4:8274eca8
-[<802b8478>] (console_flush_all.constprop.0) from [<802b8b38>] (console_unlock+0x88/0xe8 kernel/printk/printk.c:3035)
- r10:00000000 r9:8214b2a0 r8:84732f00 r7:82629db8 r6:82629d20 r5:82857040
- r4:00000035
-[<802b8ab0>] (console_unlock) from [<802ba44c>] (vprintk_emit+0x1a4/0x278 kernel/printk/printk.c:2307)
- r8:84732f00 r7:00000000 r6:00000000 r5:ffffffff r4:00000035
-[<802ba2a8>] (vprintk_emit) from [<802ba548>] (vprintk_default+0x28/0x30 kernel/printk/printk.c:2322)
- r10:00000000 r9:82c95900 r8:00000000 r7:84052a00 r6:00000000 r5:824b32c8
- r4:84732f00
-[<802ba520>] (vprintk_default) from [<802badc8>] (vprintk+0x74/0x94 kernel/printk/printk_safe.c:45)
-[<802bad54>] (vprintk) from [<8181de08>] (_printk+0x34/0x58 kernel/printk/printk.c:2332)
- r6:85750000 r4:85abcd80
-[<8181ddd4>] (_printk) from [<8136d534>] (__dev_queue_xmit+0xc8c/0xe84 net/core/dev.c:4384)
- r3:84732f00 r2:00001400 r1:85750000 r0:8214b2a0
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (dev_queue_xmit include/linux/netdevice.h:3082 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_hh_output include/net/neighbour.h:526 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_output include/net/neighbour.h:540 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (ip6_finish_output2+0x280/0x854 net/ipv6/ip6_output.c:135)
- r10:8571a800 r9:840d5e00 r8:00000010 r7:0000000e r6:8586cf00 r5:85abcd80
- r4:00000000
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (__ip6_finish_output net/ipv6/ip6_output.c:196 [inline])
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (ip6_finish_output+0x234/0x34c net/ipv6/ip6_output.c:207)
- r10:eb1544b0 r9:8568d000 r8:000005dc r7:00000000 r6:846d0000 r5:840d5e00
- r4:85abcd80
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (NF_HOOK_COND include/linux/netfilter.h:293 [inline])
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (ip6_output+0x78/0x1e4 net/ipv6/ip6_output.c:228)
- r10:eb1544b0 r9:8568d000 r8:85750000 r7:00000001 r6:840d5e00 r5:846d0000
- r4:85abcd80
-[<815e977c>] (ip6_output) from [<8166ac8c>] (dst_output include/net/dst.h:458 [inline])
-[<815e977c>] (ip6_output) from [<8166ac8c>] (ip6_local_out+0x40/0x44 net/ipv6/output_core.c:155)
- r9:85ac9800 r8:846d0000 r7:00000001 r6:840d5e00 r5:846d0000 r4:85abcd80
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_v6_outbound drivers/net/ipvlan/ipvlan_core.c:483 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_outbound drivers/net/ipvlan/ipvlan_core.c:529 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_xmit_mode_l3 drivers/net/ipvlan/ipvlan_core.c:593 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_queue_xmit+0x510/0x5dc drivers/net/ipvlan/ipvlan_core.c:659)
- r7:00000001 r6:8568d000 r5:00000000 r4:85abcd80
-[<80bcf6c0>] (ipvlan_queue_xmit) from [<80bd0160>] (ipvlan_start_xmit+0x18/0xc4 drivers/net/ipvlan/ipvlan_main.c:222)
- r10:00000000 r9:84052a00 r8:00000000 r7:84732f00 r6:85750000 r5:000000b4
- r4:85750000
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (__netdev_start_xmit include/linux/netdevice.h:4889 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (netdev_start_xmit include/linux/netdevice.h:4903 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (xmit_one net/core/dev.c:3573 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (dev_hard_start_xmit+0xe8/0x2ac net/core/dev.c:3589)
- r7:84732f00 r6:85750000 r5:81b683a8 r4:85abcd80
-[<8136c4b8>] (dev_hard_start_xmit) from [<8136ca7c>] (__dev_queue_xmit+0x1d4/0xe84 net/core/dev.c:4369)
- r10:00000000 r9:82c95900 r8:eb154578 r7:84052a00 r6:85750000 r5:824b32c8
- r4:85abcd80
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (dev_queue_xmit include/linux/netdevice.h:3082 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_hh_output include/net/neighbour.h:526 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_output include/net/neighbour.h:540 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (ip6_finish_output2+0x280/0x854 net/ipv6/ip6_output.c:135)
- r10:8571a800 r9:840d5e00 r8:00000010 r7:0000000e r6:8586cf00 r5:85abcd80
- r4:00000000
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (__ip6_finish_output net/ipv6/ip6_output.c:196 [inline])
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (ip6_finish_output+0x234/0x34c net/ipv6/ip6_output.c:207)
- r10:eb154780 r9:8568d000 r8:000005dc r7:00000000 r6:846d0000 r5:840d5e00
- r4:85abcd80
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (NF_HOOK_COND include/linux/netfilter.h:293 [inline])
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (ip6_output+0x78/0x1e4 net/ipv6/ip6_output.c:228)
- r10:eb154780 r9:8568d000 r8:85750000 r7:00000001 r6:840d5e00 r5:846d0000
- r4:85abcd80
-[<815e977c>] (ip6_output) from [<8166ac8c>] (dst_output include/net/dst.h:458 [inline])
-[<815e977c>] (ip6_output) from [<8166ac8c>] (ip6_local_out+0x40/0x44 net/ipv6/output_core.c:155)
- r9:85ac9800 r8:846d0000 r7:00000001 r6:840d5e00 r5:846d0000 r4:85abcd80
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_v6_outbound drivers/net/ipvlan/ipvlan_core.c:483 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_outbound drivers/net/ipvlan/ipvlan_core.c:529 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_xmit_mode_l3 drivers/net/ipvlan/ipvlan_core.c:593 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_queue_xmit+0x510/0x5dc drivers/net/ipvlan/ipvlan_core.c:659)
- r7:00000001 r6:8568d000 r5:00000000 r4:85abcd80
-[<80bcf6c0>] (ipvlan_queue_xmit) from [<80bd0160>] (ipvlan_start_xmit+0x18/0xc4 drivers/net/ipvlan/ipvlan_main.c:222)
- r10:00000000 r9:84052a00 r8:00000000 r7:84732f00 r6:85750000 r5:000000b4
- r4:85750000
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (__netdev_start_xmit include/linux/netdevice.h:4889 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (netdev_start_xmit include/linux/netdevice.h:4903 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (xmit_one net/core/dev.c:3573 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (dev_hard_start_xmit+0xe8/0x2ac net/core/dev.c:3589)
- r7:84732f00 r6:85750000 r5:81b683a8 r4:85abcd80
-[<8136c4b8>] (dev_hard_start_xmit) from [<8136ca7c>] (__dev_queue_xmit+0x1d4/0xe84 net/core/dev.c:4369)
- r10:00000000 r9:82c95900 r8:eb154848 r7:84052a00 r6:85750000 r5:824b32c8
- r4:85abcd80
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (dev_queue_xmit include/linux/netdevice.h:3082 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_hh_output include/net/neighbour.h:526 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_output include/net/neighbour.h:540 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (ip6_finish_output2+0x280/0x854 net/ipv6/ip6_output.c:135)
- r10:8571a800 r9:840d5e00 r8:00000010 r7:0000000e r6:8586cf00 r5:85abcd80
- r4:00000000
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (__ip6_finish_output net/ipv6/ip6_output.c:196 [inline])
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (ip6_finish_output+0x234/0x34c net/ipv6/ip6_output.c:207)
- r10:eb154a50 r9:8568d000 r8:000005dc r7:00000000 r6:846d0000 r5:840d5e00
- r4:85abcd80
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (NF_HOOK_COND include/linux/netfilter.h:293 [inline])
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (ip6_output+0x78/0x1e4 net/ipv6/ip6_output.c:228)
- r10:eb154a50 r9:8568d000 r8:85750000 r7:00000001 r6:840d5e00 r5:846d0000
- r4:85abcd80
-[<815e977c>] (ip6_output) from [<8166ac8c>] (dst_output include/net/dst.h:458 [inline])
-[<815e977c>] (ip6_output) from [<8166ac8c>] (ip6_local_out+0x40/0x44 net/ipv6/output_core.c:155)
- r9:85ac9800 r8:846d0000 r7:00000001 r6:840d5e00 r5:846d0000 r4:85abcd80
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_v6_outbound drivers/net/ipvlan/ipvlan_core.c:483 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_outbound drivers/net/ipvlan/ipvlan_core.c:529 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_xmit_mode_l3 drivers/net/ipvlan/ipvlan_core.c:593 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_queue_xmit+0x510/0x5dc drivers/net/ipvlan/ipvlan_core.c:659)
- r7:00000001 r6:8568d000 r5:00000000 r4:85abcd80
-[<80bcf6c0>] (ipvlan_queue_xmit) from [<80bd0160>] (ipvlan_start_xmit+0x18/0xc4 drivers/net/ipvlan/ipvlan_main.c:222)
- r10:00000000 r9:84052a00 r8:00000000 r7:84732f00 r6:85750000 r5:000000b4
- r4:85750000
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (__netdev_start_xmit include/linux/netdevice.h:4889 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (netdev_start_xmit include/linux/netdevice.h:4903 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (xmit_one net/core/dev.c:3573 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (dev_hard_start_xmit+0xe8/0x2ac net/core/dev.c:3589)
- r7:84732f00 r6:85750000 r5:81b683a8 r4:85abcd80
-[<8136c4b8>] (dev_hard_start_xmit) from [<8136ca7c>] (__dev_queue_xmit+0x1d4/0xe84 net/core/dev.c:4369)
- r10:00000000 r9:82c95900 r8:eb154b18 r7:84052a00 r6:85750000 r5:824b32c8
- r4:85abcd80
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (dev_queue_xmit include/linux/netdevice.h:3082 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_hh_output include/net/neighbour.h:526 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_output include/net/neighbour.h:540 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (ip6_finish_output2+0x280/0x854 net/ipv6/ip6_output.c:135)
- r10:8571a800 r9:840d5e00 r8:00000010 r7:0000000e r6:8586cf00 r5:85abcd80
- r4:00000000
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (__ip6_finish_output net/ipv6/ip6_output.c:196 [inline])
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (ip6_finish_output+0x234/0x34c net/ipv6/ip6_output.c:207)
- r10:eb154d20 r9:8568d000 r8:000005dc r7:00000000 r6:846d0000 r5:840d5e00
- r4:85abcd80
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (NF_HOOK_COND include/linux/netfilter.h:293 [inline])
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (ip6_output+0x78/0x1e4 net/ipv6/ip6_output.c:228)
- r10:eb154d20 r9:8568d000 r8:85750000 r7:00000001 r6:840d5e00 r5:846d0000
- r4:85abcd80
-[<815e977c>] (ip6_output) from [<8166ac8c>] (dst_output include/net/dst.h:458 [inline])
-[<815e977c>] (ip6_output) from [<8166ac8c>] (ip6_local_out+0x40/0x44 net/ipv6/output_core.c:155)
- r9:85ac9800 r8:846d0000 r7:00000001 r6:840d5e00 r5:846d0000 r4:85abcd80
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_v6_outbound drivers/net/ipvlan/ipvlan_core.c:483 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_outbound drivers/net/ipvlan/ipvlan_core.c:529 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_xmit_mode_l3 drivers/net/ipvlan/ipvlan_core.c:593 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_queue_xmit+0x510/0x5dc drivers/net/ipvlan/ipvlan_core.c:659)
- r7:00000001 r6:8568d000 r5:00000000 r4:85abcd80
-[<80bcf6c0>] (ipvlan_queue_xmit) from [<80bd0160>] (ipvlan_start_xmit+0x18/0xc4 drivers/net/ipvlan/ipvlan_main.c:222)
- r10:00000000 r9:84052a00 r8:00000000 r7:84732f00 r6:85750000 r5:000000b4
- r4:85750000
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (__netdev_start_xmit include/linux/netdevice.h:4889 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (netdev_start_xmit include/linux/netdevice.h:4903 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (xmit_one net/core/dev.c:3573 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (dev_hard_start_xmit+0xe8/0x2ac net/core/dev.c:3589)
- r7:84732f00 r6:85750000 r5:81b683a8 r4:85abcd80
-[<8136c4b8>] (dev_hard_start_xmit) from [<8136ca7c>] (__dev_queue_xmit+0x1d4/0xe84 net/core/dev.c:4369)
- r10:00000000 r9:82c95900 r8:eb154de8 r7:84052a00 r6:85750000 r5:824b32c8
- r4:85abcd80
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (dev_queue_xmit include/linux/netdevice.h:3082 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_hh_output include/net/neighbour.h:526 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_output include/net/neighbour.h:540 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (ip6_finish_output2+0x280/0x854 net/ipv6/ip6_output.c:135)
- r10:8571a800 r9:840d5e00 r8:00000010 r7:0000000e r6:8586cf00 r5:85abcd80
- r4:00000000
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (__ip6_finish_output net/ipv6/ip6_output.c:196 [inline])
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (ip6_finish_output+0x234/0x34c net/ipv6/ip6_output.c:207)
- r10:eb154ff0 r9:8568d000 r8:000005dc r7:00000000 r6:846d0000 r5:840d5e00
- r4:85abcd80
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (NF_HOOK_COND include/linux/netfilter.h:293 [inline])
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (ip6_output+0x78/0x1e4 net/ipv6/ip6_output.c:228)
- r10:eb154ff0 r9:8568d000 r8:85750000 r7:00000001 r6:840d5e00 r5:846d0000
- r4:85abcd80
-[<815e977c>] (ip6_output) from [<8166ac8c>] (dst_output include/net/dst.h:458 [inline])
-[<815e977c>] (ip6_output) from [<8166ac8c>] (ip6_local_out+0x40/0x44 net/ipv6/output_core.c:155)
- r9:85ac9800 r8:846d0000 r7:00000001 r6:840d5e00 r5:846d0000 r4:85abcd80
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_v6_outbound drivers/net/ipvlan/ipvlan_core.c:483 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_outbound drivers/net/ipvlan/ipvlan_core.c:529 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_xmit_mode_l3 drivers/net/ipvlan/ipvlan_core.c:593 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_queue_xmit+0x510/0x5dc drivers/net/ipvlan/ipvlan_core.c:659)
- r7:00000001 r6:8568d000 r5:00000000 r4:85abcd80
-[<80bcf6c0>] (ipvlan_queue_xmit) from [<80bd0160>] (ipvlan_start_xmit+0x18/0xc4 drivers/net/ipvlan/ipvlan_main.c:222)
- r10:00000000 r9:84052a00 r8:00000000 r7:84732f00 r6:85750000 r5:000000b4
- r4:85750000
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (__netdev_start_xmit include/linux/netdevice.h:4889 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (netdev_start_xmit include/linux/netdevice.h:4903 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (xmit_one net/core/dev.c:3573 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (dev_hard_start_xmit+0xe8/0x2ac net/core/dev.c:3589)
- r7:84732f00 r6:85750000 r5:81b683a8 r4:85abcd80
-[<8136c4b8>] (dev_hard_start_xmit) from [<8136ca7c>] (__dev_queue_xmit+0x1d4/0xe84 net/core/dev.c:4369)
- r10:00000000 r9:82c95900 r8:eb1550b8 r7:84052a00 r6:85750000 r5:824b32c8
- r4:85abcd80
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (dev_queue_xmit include/linux/netdevice.h:3082 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_hh_output include/net/neighbour.h:526 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_output include/net/neighbour.h:540 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (ip6_finish_output2+0x280/0x854 net/ipv6/ip6_output.c:135)
- r10:8571a800 r9:840d5e00 r8:00000010 r7:0000000e r6:8586cf00 r5:85abcd80
- r4:00000000
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (__ip6_finish_output net/ipv6/ip6_output.c:196 [inline])
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (ip6_finish_output+0x234/0x34c net/ipv6/ip6_output.c:207)
- r10:eb1552c0 r9:8568d000 r8:000005dc r7:00000000 r6:846d0000 r5:840d5e00
- r4:85abcd80
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (NF_HOOK_COND include/linux/netfilter.h:293 [inline])
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (ip6_output+0x78/0x1e4 net/ipv6/ip6_output.c:228)
- r10:eb1552c0 r9:8568d000 r8:85750000 r7:00000001 r6:840d5e00 r5:846d0000
- r4:85abcd80
-[<815e977c>] (ip6_output) from [<8166ac8c>] (dst_output include/net/dst.h:458 [inline])
-[<815e977c>] (ip6_output) from [<8166ac8c>] (ip6_local_out+0x40/0x44 net/ipv6/output_core.c:155)
- r9:85ac9800 r8:846d0000 r7:00000001 r6:840d5e00 r5:846d0000 r4:85abcd80
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_v6_outbound drivers/net/ipvlan/ipvlan_core.c:483 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_outbound drivers/net/ipvlan/ipvlan_core.c:529 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_xmit_mode_l3 drivers/net/ipvlan/ipvlan_core.c:593 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_queue_xmit+0x510/0x5dc drivers/net/ipvlan/ipvlan_core.c:659)
- r7:00000001 r6:8568d000 r5:00000000 r4:85abcd80
-[<80bcf6c0>] (ipvlan_queue_xmit) from [<80bd0160>] (ipvlan_start_xmit+0x18/0xc4 drivers/net/ipvlan/ipvlan_main.c:222)
- r10:00000000 r9:84052a00 r8:00000000 r7:84732f00 r6:85750000 r5:000000b4
- r4:85750000
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (__netdev_start_xmit include/linux/netdevice.h:4889 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (netdev_start_xmit include/linux/netdevice.h:4903 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (xmit_one net/core/dev.c:3573 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (dev_hard_start_xmit+0xe8/0x2ac net/core/dev.c:3589)
- r7:84732f00 r6:85750000 r5:81b683a8 r4:85abcd80
-[<8136c4b8>] (dev_hard_start_xmit) from [<8136ca7c>] (__dev_queue_xmit+0x1d4/0xe84 net/core/dev.c:4369)
- r10:00000000 r9:82c95900 r8:eb155388 r7:84052a00 r6:85750000 r5:824b32c8
- r4:85abcd80
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (dev_queue_xmit include/linux/netdevice.h:3082 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_hh_output include/net/neighbour.h:526 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_output include/net/neighbour.h:540 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (ip6_finish_output2+0x280/0x854 net/ipv6/ip6_output.c:135)
- r10:8571a800 r9:840d5e00 r8:00000010 r7:0000000e r6:8586cf00 r5:85abcd80
- r4:00000000
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (__ip6_finish_output net/ipv6/ip6_output.c:196 [inline])
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (ip6_finish_output+0x234/0x34c net/ipv6/ip6_output.c:207)
- r10:eb155590 r9:8568d000 r8:000005dc r7:00000000 r6:846d0000 r5:840d5e00
- r4:85abcd80
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (NF_HOOK_COND include/linux/netfilter.h:293 [inline])
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (ip6_output+0x78/0x1e4 net/ipv6/ip6_output.c:228)
- r10:eb155590 r9:8568d000 r8:85750000 r7:00000001 r6:840d5e00 r5:846d0000
- r4:85abcd80
-[<815e977c>] (ip6_output) from [<8166ac8c>] (dst_output include/net/dst.h:458 [inline])
-[<815e977c>] (ip6_output) from [<8166ac8c>] (ip6_local_out+0x40/0x44 net/ipv6/output_core.c:155)
- r9:85ac9800 r8:846d0000 r7:00000001 r6:840d5e00 r5:846d0000 r4:85abcd80
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_v6_outbound drivers/net/ipvlan/ipvlan_core.c:483 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_outbound drivers/net/ipvlan/ipvlan_core.c:529 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_xmit_mode_l3 drivers/net/ipvlan/ipvlan_core.c:593 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_queue_xmit+0x510/0x5dc drivers/net/ipvlan/ipvlan_core.c:659)
- r7:00000001 r6:8568d000 r5:00000000 r4:85abcd80
-[<80bcf6c0>] (ipvlan_queue_xmit) from [<80bd0160>] (ipvlan_start_xmit+0x18/0xc4 drivers/net/ipvlan/ipvlan_main.c:222)
- r10:00000000 r9:84052a00 r8:00000000 r7:84732f00 r6:85750000 r5:000000b4
- r4:85750000
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (__netdev_start_xmit include/linux/netdevice.h:4889 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (netdev_start_xmit include/linux/netdevice.h:4903 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (xmit_one net/core/dev.c:3573 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (dev_hard_start_xmit+0xe8/0x2ac net/core/dev.c:3589)
- r7:84732f00 r6:85750000 r5:81b683a8 r4:85abcd80
-[<8136c4b8>] (dev_hard_start_xmit) from [<8136ca7c>] (__dev_queue_xmit+0x1d4/0xe84 net/core/dev.c:4369)
- r10:00000000 r9:82c95900 r8:eb155658 r7:84052a00 r6:85750000 r5:824b32c8
- r4:85abcd80
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (dev_queue_xmit include/linux/netdevice.h:3082 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_hh_output include/net/neighbour.h:526 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (neigh_output include/net/neighbour.h:540 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<815e5448>] (ip6_finish_output2+0x280/0x854 net/ipv6/ip6_output.c:135)
- r10:8571a800 r9:840d5e00 r8:00000010 r7:0000000e r6:8586cf00 r5:85abcd80
- r4:00000000
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (__ip6_finish_output net/ipv6/ip6_output.c:196 [inline])
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (ip6_finish_output+0x234/0x34c net/ipv6/ip6_output.c:207)
- r10:eb155860 r9:8568d000 r8:000005dc r7:00000000 r6:846d0000 r5:840d5e00
- r4:85abcd80
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (NF_HOOK_COND include/linux/netfilter.h:293 [inline])
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (ip6_output+0x78/0x1e4 net/ipv6/ip6_output.c:228)
- r10:eb155860 r9:8568d000 r8:85750000 r7:00000001 r6:840d5e00 r5:846d0000
- r4:85abcd80
-[<815e977c>] (ip6_output) from [<8166ac8c>] (dst_output include/net/dst.h:458 [inline])
-[<815e977c>] (ip6_output) from [<8166ac8c>] (ip6_local_out+0x40/0x44 net/ipv6/output_core.c:155)
- r9:85ac9800 r8:846d0000 r7:00000001 r6:840d5e00 r5:846d0000 r4:85abcd80
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_v6_outbound drivers/net/ipvlan/ipvlan_core.c:483 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_process_outbound drivers/net/ipvlan/ipvlan_core.c:529 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_xmit_mode_l3 drivers/net/ipvlan/ipvlan_core.c:593 [inline])
-[<8166ac4c>] (ip6_local_out) from [<80bcfbd0>] (ipvlan_queue_xmit+0x510/0x5dc drivers/net/ipvlan/ipvlan_core.c:659)
- r7:00000001 r6:8568d000 r5:00000000 r4:85abcd80
-[<80bcf6c0>] (ipvlan_queue_xmit) from [<80bd0160>] (ipvlan_start_xmit+0x18/0xc4 drivers/net/ipvlan/ipvlan_main.c:222)
- r10:00000000 r9:84052a00 r8:00000000 r7:84732f00 r6:85750000 r5:000000b4
- r4:85750000
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (__netdev_start_xmit include/linux/netdevice.h:4889 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (netdev_start_xmit include/linux/netdevice.h:4903 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (xmit_one net/core/dev.c:3573 [inline])
-[<80bd0148>] (ipvlan_start_xmit) from [<8136c5a0>] (dev_hard_start_xmit+0xe8/0x2ac net/core/dev.c:3589)
- r7:84732f00 r6:85750000 r5:81b683a8 r4:85abcd80
-[<8136c4b8>] (dev_hard_start_xmit) from [<8136ca7c>] (__dev_queue_xmit+0x1d4/0xe84 net/core/dev.c:4369)
- r10:00000000 r9:82c95900 r8:eb155928 r7:84052a00 r6:85750000 r5:824b32c8
- r4:85abcd80
-[<8136c8a8>] (__dev_queue_xmit) from [<8137cec8>] (dev_queue_xmit include/linux/netdevice.h:3082 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<8137cec8>] (neigh_resolve_output net/core/neighbour.c:1554 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<8137cec8>] (neigh_resolve_output+0x114/0x1b8 net/core/neighbour.c:1534)
- r10:8571a800 r9:841b7c00 r8:85750000 r7:80bcff18 r6:85abcd80 r5:00000000
- r4:8586cf00
-[<8137cdb4>] (neigh_resolve_output) from [<815e5378>] (neigh_output include/net/neighbour.h:542 [inline])
-[<8137cdb4>] (neigh_resolve_output) from [<815e5378>] (ip6_finish_output2+0x1b0/0x854 net/ipv6/ip6_output.c:135)
- r8:85ac9842 r7:00000009 r6:8586cf00 r5:85abcd80 r4:85750000
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (__ip6_finish_output net/ipv6/ip6_output.c:196 [inline])
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (ip6_finish_output+0x234/0x34c net/ipv6/ip6_output.c:207)
- r10:00000000 r9:85766000 r8:000005dc r7:00000000 r6:846d0000 r5:841b7c00
- r4:85abcd80
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (NF_HOOK_COND include/linux/netfilter.h:293 [inline])
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (ip6_output+0x78/0x1e4 net/ipv6/ip6_output.c:228)
- r10:00000000 r9:85766000 r8:85750000 r7:00000001 r6:841b7c00 r5:846d0000
- r4:85abcd80
-[<815e977c>] (ip6_output) from [<8166ac8c>] (dst_output include/net/dst.h:458 [inline])
-[<815e977c>] (ip6_output) from [<8166ac8c>] (ip6_local_out+0x40/0x44 net/ipv6/output_core.c:155)
- r9:85ac982a r8:00000070 r7:000000a6 r6:841b7c00 r5:846d0000 r4:85abcd80
-[<8166ac4c>] (ip6_local_out) from [<8166da64>] (ip6tunnel_xmit include/net/ip6_tunnel.h:161 [inline])
-[<8166ac4c>] (ip6_local_out) from [<8166da64>] (udp_tunnel6_xmit_skb+0x180/0x2f0 net/ipv6/ip6_udp_tunnel.c:109)
- r7:000000a6 r6:85ac9800 r5:85766000 r4:85abcd80
-[<8166d8e4>] (udp_tunnel6_xmit_skb) from [<80c2bf8c>] (geneve6_xmit_skb drivers/net/geneve.c:1071 [inline])
-[<8166d8e4>] (udp_tunnel6_xmit_skb) from [<80c2bf8c>] (geneve_xmit+0x2f8/0xfe4 drivers/net/geneve.c:1100)
- r10:0000fd5b r9:00000040 r8:85766680 r7:82c95900 r6:857666b8 r5:85766000
- r4:85abcd80
-[<80c2bc94>] (geneve_xmit) from [<8136c5a0>] (__netdev_start_xmit include/linux/netdevice.h:4889 [inline])
-[<80c2bc94>] (geneve_xmit) from [<8136c5a0>] (netdev_start_xmit include/linux/netdevice.h:4903 [inline])
-[<80c2bc94>] (geneve_xmit) from [<8136c5a0>] (xmit_one net/core/dev.c:3573 [inline])
-[<80c2bc94>] (geneve_xmit) from [<8136c5a0>] (dev_hard_start_xmit+0xe8/0x2ac net/core/dev.c:3589)
- r10:00000000 r9:857c8000 r8:00000000 r7:84732f00 r6:85766000 r5:81b6dc3c
- r4:85abcd80
-[<8136c4b8>] (dev_hard_start_xmit) from [<8136ca7c>] (__dev_queue_xmit+0x1d4/0xe84 net/core/dev.c:4369)
- r10:00000000 r9:82c95cc0 r8:eb155c88 r7:857c8000 r6:85766000 r5:824b32c8
- r4:85abcd80
-[<8136c8a8>] (__dev_queue_xmit) from [<8137cec8>] (dev_queue_xmit include/linux/netdevice.h:3082 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<8137cec8>] (neigh_resolve_output net/core/neighbour.c:1554 [inline])
-[<8136c8a8>] (__dev_queue_xmit) from [<8137cec8>] (neigh_resolve_output+0x114/0x1b8 net/core/neighbour.c:1534)
- r10:85728000 r9:ff7e4f20 r8:85766000 r7:813d6dac r6:85abcd80 r5:00000000
- r4:8586c800
-[<8137cdb4>] (neigh_resolve_output) from [<815e5378>] (neigh_output include/net/neighbour.h:542 [inline])
-[<8137cdb4>] (neigh_resolve_output) from [<815e5378>] (ip6_finish_output2+0x1b0/0x854 net/ipv6/ip6_output.c:135)
- r8:85ac9888 r7:00000009 r6:8586c800 r5:85abcd80 r4:85766000
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (__ip6_finish_output net/ipv6/ip6_output.c:196 [inline])
-[<815e51c8>] (ip6_finish_output2) from [<815e9664>] (ip6_finish_output+0x234/0x34c net/ipv6/ip6_output.c:207)
- r10:00000030 r9:85766000 r8:000005dc r7:00000000 r6:846d0000 r5:840d5e00
- r4:85abcd80
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (NF_HOOK_COND include/linux/netfilter.h:293 [inline])
-[<815e9430>] (ip6_finish_output) from [<815e97f4>] (ip6_output+0x78/0x1e4 net/ipv6/ip6_output.c:228)
- r10:00000030 r9:85766000 r8:85766000 r7:00000001 r6:840d5e00 r5:846d0000
- r4:85abcd80
-[<815e977c>] (ip6_output) from [<8161ed1c>] (dst_output include/net/dst.h:458 [inline])
-[<815e977c>] (ip6_output) from [<8161ed1c>] (NF_HOOK include/linux/netfilter.h:304 [inline])
-[<815e977c>] (ip6_output) from [<8161ed1c>] (NF_HOOK include/linux/netfilter.h:298 [inline])
-[<815e977c>] (ip6_output) from [<8161ed1c>] (mld_sendpack+0x25c/0x520 net/ipv6/mcast.c:1818)
- r9:85ac9878 r8:840d5e00 r7:85728000 r6:846d0000 r5:00000001 r4:85abcd80
-[<8161eac0>] (mld_sendpack) from [<81620870>] (mld_send_cr net/ipv6/mcast.c:2119 [inline])
-[<8161eac0>] (mld_sendpack) from [<81620870>] (mld_ifc_work+0x1cc/0x434 net/ipv6/mcast.c:2651)
- r10:85728058 r9:85728000 r8:85728130 r7:00000001 r6:00000000 r5:85abcd80
- r4:00000000
-[<816206a4>] (mld_ifc_work) from [<80265fdc>] (process_one_work+0x19c/0x4a8 kernel/workqueue.c:2630)
- r10:84026005 r9:84732f00 r8:00000000 r7:dddd22c0 r6:84026000 r5:85728058
- r4:85904280
-[<80265e40>] (process_one_work) from [<80266528>] (process_scheduled_works kernel/workqueue.c:2703 [inline])
-[<80265e40>] (process_one_work) from [<80266528>] (worker_thread+0x240/0x48c kernel/workqueue.c:2784)
- r10:61c88647 r9:84732f00 r8:dddd22e0 r7:82604d40 r6:dddd22c0 r5:859042ac
- r4:85904280
-[<802662e8>] (worker_thread) from [<8026d920>] (kthread+0x104/0x134 kernel/kthread.c:388)
- r10:00000000 r9:eab81e90 r8:8578a8c0 r7:85904280 r6:802662e8 r5:84732f00
- r4:8578a2c0
-[<8026d81c>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
-Exception stack(0xeb155fb0 to 0xeb155ff8)
-5fa0:                                     00000000 00000000 00000000 00000000
-5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
- r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:8026d81c r4:8578a2c0
-Code: e24cb004 e24dd044 e1a0c001 e16fef12 (e50b3050) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	e24cb004 	sub	fp, ip, #4
-   4:	e24dd044 	sub	sp, sp, #68	@ 0x44
-   8:	e1a0c001 	mov	ip, r1
-   c:	e16fef12 	clz	lr, r2
-* 10:	e50b3050 	str	r3, [fp, #-80]	@ 0xffffffb0 <-- trapping instruction
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks,
+Sunil
