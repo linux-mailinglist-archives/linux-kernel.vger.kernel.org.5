@@ -2,116 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C287D4CBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C887D4CD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234167AbjJXJml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
+        id S234103AbjJXJq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:46:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234103AbjJXJme (ORCPT
+        with ESMTP id S233039AbjJXJq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:42:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB08DA;
-        Tue, 24 Oct 2023 02:42:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698140552; x=1729676552;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=ZABBBqBXwzWKXycM2zBL7WM0xuzkZT14L0Y1O1JUiu0=;
-  b=kI+v3vrd2JizyRWN+D1PX5RCqBjlItssx1Xn67S7DU/ZiUvc+mzqER6M
-   Vg886J3VZ6xPl72DqDrJKp+kv32bOBIpkXZmEzE4+RCkfddbZSj0Lt7ca
-   o1g0p4QMrFnzBc5BB6GTAWvFww0gSn+4rP7DGcvv8exj1d9ApTauccaXe
-   ESGld1okZpYF5aw6u6EDi1rYEr43h0PHeASMyAA2o218qpJBDuv851HPo
-   VBJrmKVUKEE/YRApDay1yJXQpbX1L2l29iBAjm/pyHPT0MzNXyAl27Fr8
-   3OGcRno2GCMtxBIKvmW1hmRBJCSZrpDlTuzSXYdL5ixhdPes//eW0IYlp
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="367249296"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="367249296"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 02:42:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="875013389"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="875013389"
-Received: from nkraljev-mobl.ger.corp.intel.com ([10.249.41.91])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 02:42:30 -0700
-Date:   Tue, 24 Oct 2023 12:42:28 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Cameron Williams <cang1@live.co.uk>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v4 06/11] tty: 8250: Fix port count of PX-257
-In-Reply-To: <DU0PR02MB7899C804D9F04E727B5A0E8FC4DBA@DU0PR02MB7899.eurprd02.prod.outlook.com>
-Message-ID: <f21a942c-5f1e-3c1a-945c-358632edb188@linux.intel.com>
-References: <BBPatchesV4> <20231020160412.118550-1-cang1@live.co.uk> <DU0PR02MB7899C804D9F04E727B5A0E8FC4DBA@DU0PR02MB7899.eurprd02.prod.outlook.com>
+        Tue, 24 Oct 2023 05:46:27 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499D092
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:46:24 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-408002b5b9fso35123195e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:46:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1698140783; x=1698745583; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YxL8IXJxK6nZZcgY+jbWAe4cJBK0AaStast6oXjM8uc=;
+        b=JBFbsdHMLjiHsJfN23h/bL5/bZRN5STqMmEVkurOvghVyYdEICgOCzcvTWXIEVGybU
+         jxlJ28SP2aXJvetZ/UhRPTqZOlungmIj1DnPAHPInpxAC7i+BktNQoKpZQfy9mU1egfD
+         KQQljiW/f0enPiiwJEilVXpjL6BA3TPIR/+1xcpFl4vyecgxX7QnfvY4jEAWK2Ts71Wp
+         RoRWVy8Z2IlYjqeAo/ITtV+9dQyxBSNX11T9+TI2aFoDgqarFQ2m/PeEUBwOLW0fDLNK
+         OSgTH3w34Jsqk8kmrhJLTFvSfn8HruEI5QFtEjWWHWXlyIMFqi5xicYAOVP0rzYO2LGO
+         LcdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698140783; x=1698745583;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YxL8IXJxK6nZZcgY+jbWAe4cJBK0AaStast6oXjM8uc=;
+        b=dr6Qku+aqGRcF6e4Qi6ttpcXe2py2xBmqzyjQjz0F2JVVYQgl5UlHmv2KCP0tZxBiU
+         ccJgLl6huQAERgHEMeiSdUpnjNNOE49CQkYKx5zKHjnmT6AF1q0a64penN8Bj4BdrMnt
+         8LvQckM+fu8g1M1xKh9gEyV1ury860CL2XOuigD3sZm/xdd+qbLqd2RG2XfDjRLSh6n3
+         C8ksnCaLZSQ5lpfcVqCOzRemtjxlk/Ogd5BSYiy8tMjqIzMnpFnrC9vijqlWW22Bf2p8
+         tEJEW0Z4CEX4xLgNIDWOqrwHdBHEQaZT+CYLbRh2yUeFMmSZMmpwvFvhrBu0xLsO3s6m
+         VBXA==
+X-Gm-Message-State: AOJu0YwWJn3Kq5pFkj3re/1ZM0FHiDnfgLLpvkG/AZ2Bj/8gjP5gxMMi
+        1dYEP+klFp2oLXQS3z6CsTD5ew==
+X-Google-Smtp-Source: AGHT+IGuXGfq4qBu5yB+kGBPSeAFqqYtQZB3elN3KJ3fMidrIDYRjfHKeVHnH6iQcYfviEGedXATNw==
+X-Received: by 2002:a7b:c8c2:0:b0:409:101e:235a with SMTP id f2-20020a7bc8c2000000b00409101e235amr901405wml.28.1698140782643;
+        Tue, 24 Oct 2023 02:46:22 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id r8-20020adff108000000b0032db1d741a6sm9602052wro.99.2023.10.24.02.46.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 02:46:22 -0700 (PDT)
+Message-ID: <314a5b37-bdc4-41d1-a3de-c6d557628be9@baylibre.com>
+Date:   Tue, 24 Oct 2023 11:46:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 4/4] arm64: dts: Add MediaTek MT8188 dts and evaluation
+ board and Makefile
+Content-Language: en-US
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
+        <nfraprado@collabora.com>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+References: <20231023083839.24453-1-jason-ch.chen@mediatek.com>
+ <20231023083839.24453-5-jason-ch.chen@mediatek.com>
+ <a1846955-e6d9-4217-8c9f-1f20be166f4b@baylibre.com>
+ <CAGXv+5Gdr4DuiGAZFdVdqjj8Rv2Onq78k+=Mmu0MOe=rxQkr3A@mail.gmail.com>
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <CAGXv+5Gdr4DuiGAZFdVdqjj8Rv2Onq78k+=Mmu0MOe=rxQkr3A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023, Cameron Williams wrote:
 
-> The port count of the PX-257 Rev3 is actually 2, not 4.
+
+On 24/10/2023 11:36, Chen-Yu Tsai wrote:
+> Hi,
 > 
-> Fixes: ef5a03a26c87 ("tty: 8250: Add support for Brainboxes PX cards.")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Cameron Williams <cang1@live.co.uk>
+> On Mon, Oct 23, 2023 at 6:55 PM Alexandre Mergnat <amergnat@baylibre.com> wrote:
+>>
+>>
+>>
+>> On 23/10/2023 10:38, Jason-ch Chen wrote:
+>>> From: jason-ch chen <Jason-ch.Chen@mediatek.com>
+>>>
+>>> MT8188 is a SoC based on 64bit ARMv8 architecture. It contains 6 CA55
+>>> and 2 CA78 cores. MT8188 share many HW IP with MT65xx series.
+>>>
+>>> We add basic chip support for MediaTek MT8188 on evaluation board.
+>>>
+>>> Signed-off-by: jason-ch chen <Jason-ch.Chen@mediatek.com>
+>>> ---
+>>>    arch/arm64/boot/dts/mediatek/Makefile       |   1 +
+>>>    arch/arm64/boot/dts/mediatek/mt8188-evb.dts | 387 ++++++++
+>>>    arch/arm64/boot/dts/mediatek/mt8188.dtsi    | 956 ++++++++++++++++++++
+>>>    3 files changed, 1344 insertions(+)
+>>>    create mode 100644 arch/arm64/boot/dts/mediatek/mt8188-evb.dts
+>>>    create mode 100644 arch/arm64/boot/dts/mediatek/mt8188.dtsi
+>>>
+>>> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+>>> index e6e7592a3645..8900b939ed52 100644
+>>> --- a/arch/arm64/boot/dts/mediatek/Makefile
+>>> +++ b/arch/arm64/boot/dts/mediatek/Makefile
+>>> @@ -44,6 +44,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
+>>>    dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
+>>>    dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-pumpkin.dtb
+>>>    dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-evb.dtb
+>>> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8188-evb.dtb
+>>>    dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-hayato-r1.dtb
+>>>    dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-hayato-r5-sku2.dtb
+>>>    dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-spherion-r0.dtb
 
-Please arrange your series such that the patches with Fixes are first, 
-not in the middle of your series.
+..snip..
+
+>>
+>> Order:
+>>
+>>
+>> #address-cells = <1>;
+>> #size-cells = <0>;
+>>
+>> pinctrl-0 = <&nor_pins_default>;
+>> pinctrl-names = "default";
+> 
+> I think pinctrl-names before pinctrl-* makes more sense. We declare the
+> names and by extension how many pinctrl-N entries are needed first. The
+> vast majority of the arm64 device tree files have pinctrl-names before
+> pinctrl-N. The only platform that exclusively has pinctrl-N before
+> pinctrl-names is amlogic.
+> 
+
+AFAIK, people have it own logic explanation to justify order.
+Personally, I use the dumb and generic one: pack related properties and 
+alphabetical order.
+
+Anyway, I don't have strong opinion of that
+
+> If there's a preference for a particular order platform-wide or tree-wide
+> then it should probably be documented somewhere?
+> 
+
+I'm agree
+
+>> status = "okay";
+> 
+> I think #address-cells and #size-cells belong at the end of the list,
+> even after "status", just before any child nodes. They describe
+> properties or requirements for the child nodes, not for the node they
+> sit in.
+> 
+>>> +
+>>> +     flash@0 {
+>>> +             compatible = "jedec,spi-nor";
+>>> +             reg = <0>;
+>>> +             spi-max-frequency = <52000000>;
+>>> +     };
+>>> +};
+>>> +
+>>
+>> ..snip..
+>>
+>>> +
+>>> +&pmic {
+>>> +     interrupts-extended = <&pio 222 IRQ_TYPE_LEVEL_HIGH>;
+>>> +};
+>>> +
+>>> +&scp {
+>>> +     memory-region = <&scp_mem_reserved>;
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&spi0 {
+>>> +     pinctrl-names = "default";
+>>> +     pinctrl-0 = <&spi0_pins>;
+>>
+>> Order:
+>>
+>> pinctrl-0 = <&spi0_pins>;
+>> pinctrl-names = "default";
+>>
+>> Please apply this to other nodes
+> 
+> See above.
+> 
+> ChenYu
+> 
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&spi1 {
+>>> +     pinctrl-names = "default";
+>>> +     pinctrl-0 = <&spi1_pins>;
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&spi2 {
+>>> +     pinctrl-names = "default";
+>>> +     pinctrl-0 = <&spi2_pins>;
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&u3phy0 {
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&u3phy1 {
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&u3phy2 {
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&uart0 {
+>>> +     pinctrl-names = "default";
+>>> +     pinctrl-0 = <&uart0_pins>;
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>
+>> ..snip..
+>>
+>>> +             };
+>>> +     };
+>>> +};
+>>
+>> After that:
+>> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+>>
+>> --
+>> Regards,
+>> Alexandre
 
 -- 
- i.
-
-> ---
-> For stable: This patch is only applicable to 5.15 LTS and up, other LTS
-> kernels dont have PX card support.
-> 
-> v3 - v4:
-> Split patch v3 part 5 into multiple Fixes patches and an Additions patch.
-> Add Fixes: and Cc: tag.
-> 
-> v2 - v3:
-> Alter commit message a little to make the additions/fixes cleaner
-> Re-submit patch series using git send-email to make threading work.
-> 
-> v1 - v2:
-> This is a resubmission series for the patch series below. That series
-> was lots of changes sent to lots of maintainers, this series is just for
-> the tty/serial/8250 subsystem.
-> 
-> [1] https://lore.kernel.org/all/DU0PR02MB789950E64D808DB57E9D7312C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-> [2] https://lore.kernel.org/all/DU0PR02MB7899DE53DFC900EFB50E53F2C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-> [3] https://lore.kernel.org/all/DU0PR02MB7899033E7E81EAF3694BC20AC4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-> [4] https://lore.kernel.org/all/DU0PR02MB7899EABA8C3DCAC94DCC79D4C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
-> 
->  drivers/tty/serial/8250/8250_pci.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-> index b0a632415d8e..59074a709254 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -5180,7 +5180,7 @@ static const struct pci_device_id serial_pci_tbl[] = {
->  	{	PCI_VENDOR_ID_INTASHIELD, 0x4015,
->  		PCI_ANY_ID, PCI_ANY_ID,
->  		0, 0,
-> -		pbn_oxsemi_4_15625000 },
-> +		pbn_oxsemi_2_15625000 },
->  	/*
->  	 * Brainboxes PX-260/PX-701
->  	 */
-> 
+Regards,
+Alexandre
