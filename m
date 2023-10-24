@@ -2,99 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7B57D4C53
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB3E7D4C62
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234302AbjJXJaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56504 "EHLO
+        id S234262AbjJXJbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234256AbjJXJ3i (ORCPT
+        with ESMTP id S234251AbjJXJan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:29:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAE6173F;
-        Tue, 24 Oct 2023 02:29:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6989C433C7;
-        Tue, 24 Oct 2023 09:29:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698139741;
-        bh=UZqrmiFyMb6iqj6CEJfrDan6NO1zF1ytYhlleAz7Zd8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cC0UEiL1k7DyE0KNQjYurtMYHM4qXlM+gG/UHQ6QuaXfo/L0CAmjZeRTLjvcott4W
-         WO7L+wlp5ixc4eKL0KekOYwy4Xzp8D/U1UUZPMydxEA4oWQ5gyTE6SZtWePOyZxozk
-         2IbsoIgHCnN1QNTwe6gHv+YV59WAa39VtLB/L19ZraaJ3fj3SJoYcSU1otuChayijA
-         VkBHTD3apxEO3/DMClob8moR71I4y576/sW7OgBpxrBcpR2bZww77O9KfIs1r36TEb
-         twQ3WGAMPM+35FVe8h/CQdIPaZRjjtWzfRuSs6GFh25A+X9zfECbLDce9KGkXgsvKO
-         kVkZykHUqd4Sw==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qvDiv-00044j-0D;
-        Tue, 24 Oct 2023 11:29:17 +0200
-Date:   Tue, 24 Oct 2023 11:29:17 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
- Glue driver
-Message-ID: <ZTeObdjSSok0tttg@hovoldconsulting.com>
-References: <ZTJ_T1UL8-s2cgNz@hovoldconsulting.com>
- <14fc724c-bc99-4b5d-9893-3e5eff8895f7@quicinc.com>
- <ZTY7Lwjd3_8NlfEi@hovoldconsulting.com>
- <cabf24d0-8eea-4eb5-8205-bf7fe6017ec2@quicinc.com>
- <ZTZ-EvvbuA6HpycT@hovoldconsulting.com>
- <fb5e5e1d-520c-4cbc-adde-f30e853421a1@quicinc.com>
- <ZTdqnSHq_Jo8AuPW@hovoldconsulting.com>
- <196601cc-f8c6-4266-bfff-3fd69f0ab31c@quicinc.com>
- <ZTeL4nSw6dMGKODm@hovoldconsulting.com>
- <2023102429-craftsman-student-ba77@gregkh>
+        Tue, 24 Oct 2023 05:30:43 -0400
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD84D1FD8;
+        Tue, 24 Oct 2023 02:29:41 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vuptvac_1698139776;
+Received: from 30.240.113.74(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vuptvac_1698139776)
+          by smtp.aliyun-inc.com;
+          Tue, 24 Oct 2023 17:29:38 +0800
+Message-ID: <5b695595-d243-4ea5-97bb-f4c74398fc27@linux.alibaba.com>
+Date:   Tue, 24 Oct 2023 17:29:34 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023102429-craftsman-student-ba77@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 3/4] drivers/perf: add DesignWare PCIe PMU driver
+Content-Language: en-US
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Yicong Yang <yangyicong@huawei.com>
+Cc:     chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        helgaas@kernel.org, baolin.wang@linux.alibaba.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
+        renyu.zj@linux.alibaba.com
+References: <20231020134230.53342-1-xueshuai@linux.alibaba.com>
+ <20231020134230.53342-4-xueshuai@linux.alibaba.com>
+ <20231023123202.GA3515@willie-the-truck>
+ <cf72afb6-44c7-45f0-bfaa-6881f6782ebf@arm.com>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <cf72afb6-44c7-45f0-bfaa-6881f6782ebf@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 11:23:19AM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Oct 24, 2023 at 11:18:26AM +0200, Johan Hovold wrote:
++ Will, Jonathan, Bjorn and Yicong for probe and hotplug handing.
 
-> > And we may even consider reverting the updated bindings as it appears
-> > they are still not correct.
+On 2023/10/24 02:51, Robin Murphy wrote:
+> On 2023-10-23 13:32, Will Deacon wrote:
+> [...]
+>>> +
+>>> +    /*
+>>> +     * The Group#1 event measures the amount of data processed in 16-byte
+>>> +     * units. Simplify the end-user interface by multiplying the counter
+>>> +     * at the point of read.
+>>> +     */
+>>> +    if (event_id >= 0x20 && event_id <= 0x23)
+>>> +        return (((u64)hi << 32) | lo) << 4;
+>>> +    else
+>>> +        return (((u64)hi << 32) | lo);
+>>
+>> nit, but I think it would be clearer to do:
+>>
+>>     ret = ((u64)hi << 32) | lo;
+>>
+>>     /* ... */
+>>     if (event_id >= 0x20 && event_id <= 0x23)
+>>         ret <<= 4;
 > 
-> If you can tell me what the git ids of them are, I'll be glad to do so
-> right now, sorry for taking them "early".
+> Nit: "ret *= 16;" since the comment says it's multiplying a value, not moving a bitfield. The compiler already knows the most efficient way to implement constant multiplication.
 
-That's
+Cool, will use multiplication directly.
 
-	ca58c4ae75b6 ("dt-bindings: usb: qcom,dwc3: Add bindings for SC8280 Multiport")
+> 
+>>
+>>     return ret;
+>>
+> [...]
+>>> +static int __init dwc_pcie_pmu_init(void)
+>>> +{
+>>> +    int ret;
+>>> +
+>>> +    ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN,
+>>> +                      "perf/dwc_pcie_pmu:online",
+>>> +                      dwc_pcie_pmu_online_cpu,
+>>> +                      dwc_pcie_pmu_offline_cpu);
+>>> +    if (ret < 0)
+>>> +        return ret;
+>>> +
+>>> +    dwc_pcie_pmu_hp_state = ret;
+>>> +
+>>> +    ret = platform_driver_register(&dwc_pcie_pmu_driver);
+>>> +    if (ret)
+>>> +        goto platform_driver_register_err;
+>>> +
+>>> +    dwc_pcie_pmu_dev = platform_device_register_simple(
+>>> +                "dwc_pcie_pmu", PLATFORM_DEVID_NONE, NULL, 0);
+>>> +    if (IS_ERR(dwc_pcie_pmu_dev)) {
+>>> +        ret = PTR_ERR(dwc_pcie_pmu_dev);
+>>> +        goto platform_device_register_error;
+>>> +    }
+>>
+>> I'm a bit confused as to why you're having to create a platform device
+>> for a PCI device -- is this because the main designware driver has already
+>> bound to it? A comment here explaining why you need to do this would be
+>> very helpful. In particular, is there any dependency on another driver
+>> to make sure that e.g. config space accesses work properly? If so, we
+>> probably need to enforce module load ordering or something like that.
+> 
+> AFAICS the platform device/driver serve no purpose other than being a hilariously roundabout way to run the for_each_pci_dev() loop in dwc_pcie_pmu_probe() upon module init, and to save explicitly freeing the PMU name/data. Furthermore the devres action for dwc_pcie_pmu_remove_cpuhp_instance() is apparently going for even more style points at module exit by not even relying on the corresponding .remove callback of the tenuous platform driver to undo what its .probe did, but (ab)using the device's devres list to avoid having to keep track of an explicit list of PMU instances at all.
 
-and
+You are right.
 
-	eb3f1d9e42b1 ("dt-bindings: usb: Add bindings for multiport properties on DWC3 controller")
+> 
+> Frankly I think it would be a lot more straightforward to just maintain that explicit list of PMU instances, do the PMU creation directly in dwc_pcie_pmu_init(), then unregister and free them in dwc_pcie_pmu_exit(). Not every driver has to contain a literal struct device_driver.
 
-It's probably best to just revert them now.
+Agreed, it might be more straightforward. But personally speaking, I prefer
+current implementation.
 
-Thanks.
+    - standard driver creation / probe flow is more normal
+    - it avoid maintaining list of PMU instances
+    - IMHO, both of them are temporary solution, if PCI core addes a
+      standard mechanism to discover and enbale PCIe VSEC/DVSEC capability,
+      the driver will use the standard way.
 
-Johan
+
+> 
+> It also smells a bit odd that it handles PCI hot-remove but not hot-add - if the underlying device really is hotpluggable, wouldn't we also want to handle new ones turning up after module load? Conversely if it isn't, why pretend to handle it being removed? Even if it's not to do with physical hotplug of the PMU but with the user unloading the PCI controller driver itself (since there's no module/driver-level dependency enforced) and thus tearing down the whole PCI bus, then the same point still applies - if that *can* happen, then what if the user then re-loads it again, or indeed if this module loads first to begin with; wouldn't we want to be able to (re-)discover the PMUs rather than leave the whole PMU driver degraded to a useless state?
+> 
+
+I see you point, there are three casees:
+1. hot-remove PCI root port firstly and then load the PMU module, the PMU
+of the removed PCI device will not be registered.
+
+I think it is the expected behavior.
+
+2. load the PMU module firstly and then hot-remove PCI root port, the PMU
+of the removed PCI device will be unregistered.
+
+it is what the dwc_pcie_pmu_unregister_nb() does upon BUS_NOTIFY_DEL_DEVICE
+
+3. load the PMU module firstly, hot-remove PCI root port, and then hot-plug
+the PCI root port the PMU of the hot-pluged device will not load again by
+current design upon BUS_NOTIFY_DEL_DEVICE.
+
+I guess it is the really problem. It can be workaround be reload the PMU
+module. It has been a bit complex around how the following interact:
+
+    - Driver loading/unloading
+    - CPU hotplug events
+    - PCI device add/del events
+
+We can also add action for BUS_NOTIFY_ADD_DEVICE to address the problem,
+
+    - scan all PCI device
+     - check RAS_DES cap
+     - check cached PMU node
+     - registers its PMU
+
+But I prefer leave as it is, just as x86 does in uncore_bus_notify().
+Certainly, if the community deems it necessary to implement
+BUS_NOTIFY_ADD_DEVICE action, I also would like to extend it.
