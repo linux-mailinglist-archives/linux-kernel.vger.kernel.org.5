@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 538A67D5D3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF617D5D42
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344338AbjJXVeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 17:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46064 "EHLO
+        id S1344272AbjJXVfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 17:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344391AbjJXVeF (ORCPT
+        with ESMTP id S234965AbjJXVfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:34:05 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAB5A6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:34:02 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1ca3a54d2c4so41504945ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:34:02 -0700 (PDT)
+        Tue, 24 Oct 2023 17:35:07 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AD3A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:35:05 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1caad0bcc95so32863595ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:35:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698183242; x=1698788042; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1698183305; x=1698788105; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qzgFevCEBoy3uNYPrdTwG0cJ6YSSUpVWwwpPOjVEOXo=;
-        b=UrsQHYjUvTU6nRO+F5HIbo8Kn7YlSd3bp723ISocx5x6L4bdujmvKLROgdZd45Q7Iy
-         NdpqM/jt2T8bnu5ZwkK2nQW3gB74zD3lBep5PN5XtakssfDl1XKDDA/wRDEaG2JzDudJ
-         MUTWT2bPaPefwDrYxxWqHZXq38l2yaxJKzhP0=
+        bh=NHsb4Ex0pB6bm1QiWPhIzbrZDkhX+OINEs8BrrsAL2I=;
+        b=DeEa4Phkr1la2u5YXkC5CeCHP+QSmSPD2awU1a9nGGQAlesheC9MH9+eSHS1O68fU+
+         WeVtTf8efKvEdP1EiMM+RkJ0QqL+6GMT8eTQ8EMb7JHkPRrNR4kTum2tjEFXt565xIAr
+         u7ZaS5rW1vuQiXLud7qJthLnLrxuZ4lj7Qki4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698183242; x=1698788042;
+        d=1e100.net; s=20230601; t=1698183305; x=1698788105;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qzgFevCEBoy3uNYPrdTwG0cJ6YSSUpVWwwpPOjVEOXo=;
-        b=qZa6yaQCKNu/AWQoSJg7aegRwgh0w2z/77g2rde1m3Jk1c20DaBwhJWSn8a76JRhiO
-         XpD3Bfo8MonpFlYCwZ1YWcE+uQM7rQzAagYDKeL9Q+FFZJogX8pBM+Ko8PjGrMupkwtx
-         6F/w/ZFtGZM3dU9Q/o7aCj/la4Y20L0kY4cg9Wc4NRpRfaBLkPZaRU5mYvRHyYonzjtt
-         AJ3IIO+8RF+sH0S34M8aGEaGe85o2ciKkuxopqeUKMw9wB2bvYHoCfGgqCOuOA41mzls
-         hWeO7RXjVCdeb+Dm6tSE5O7p0p+gKxIIB7diX4IxO+jt97o2oL6/dV0yu4KJ6uemmeZX
-         wn3Q==
-X-Gm-Message-State: AOJu0Yz4/ar/1M2gmg4e7mitDsgFcpfYNwfsivCXiJjAOTmnUewjkQyQ
-        EX85gAj3mSto6hLaxsMoRCg3kw==
-X-Google-Smtp-Source: AGHT+IG3/Sv64oN0pEa3F6T3eh9NZodgI82qw+e4xbTTKbOvoIpbPuuv5YdPvBGTxmOD/WWxRQbn/g==
-X-Received: by 2002:a17:902:e5c3:b0:1c9:aac5:df1a with SMTP id u3-20020a170902e5c300b001c9aac5df1amr16061797plf.51.1698183242169;
-        Tue, 24 Oct 2023 14:34:02 -0700 (PDT)
+        bh=NHsb4Ex0pB6bm1QiWPhIzbrZDkhX+OINEs8BrrsAL2I=;
+        b=TNz0Tbkbz8L5RXIrlG7CUj9p/7KR4f/xK6dyspxdeu4YJrM6L60lHhRyqdzyHSr4Ua
+         u+2atEx4LtZqCL9o6Vrc2Q+rvJZVSHGsQM3mNbj2aVxR8IIX9fZOdZzi+5U8K7dVTAiH
+         fesBpw5lbJtjqEKLUd/UZbJ+iWjzRx7ZUipTIpdM061EVIsELmCOzU7v+NhNOmgYeZsL
+         OVBiZ+oKAhq2zlxMZ+QvYabDoTem+gHdRfMUIpiZkNvQKwqGhFu+od6pzbZdJ4ikENyy
+         y65euoqVR2coyDOFLA9YSToPJSVLA8drY375RY/5wvZhwBlyXEbMea7uOdnR8xjOmlRz
+         6dDA==
+X-Gm-Message-State: AOJu0YwSyCa1eYU75ur5RXw2C7wuJG7KjdNaeOD4fanKlt9AcB9SS0n9
+        CwmERnDMtJMozswpfmeiAW+E4g==
+X-Google-Smtp-Source: AGHT+IH8PaF/n/DrhVjd3Tfui8Frjxc0yy2UwijaAjvCygeAOMkANgQntYz5ozjGkte9ZI6XbWx9OA==
+X-Received: by 2002:a17:902:ec8e:b0:1c6:d70:144d with SMTP id x14-20020a170902ec8e00b001c60d70144dmr14848663plg.34.1698183305222;
+        Tue, 24 Oct 2023 14:35:05 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id je22-20020a170903265600b001c625acfed0sm7857910plb.44.2023.10.24.14.34.01
+        by smtp.gmail.com with ESMTPSA id i13-20020a170902eb4d00b001c9b384731esm7865117pli.270.2023.10.24.14.35.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 14:34:01 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 14:34:01 -0700
+        Tue, 24 Oct 2023 14:35:04 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 14:35:04 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] wifi: ath10k: replace deprecated strncpy with memcpy
-Message-ID: <202310241428.0AA7B80@keescook>
-References: <20231024-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v2-1-4c1f4cd4b4df@google.com>
+To:     Mike Snitzer <snitzer@kernel.org>
+Cc:     Alasdair Kergon <agk@redhat.com>, dm-devel@lists.linux.dev,
+        Justin Stitt <justinstitt@google.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: dm crypt: replace open-coded kmemdup_nul
+Message-ID: <202310241434.54EF4068@keescook>
+References: <20230925-strncpy-drivers-md-dm-crypt-c-v1-1-eef875e4f9b2@google.com>
+ <169818232968.2100071.5806064081646325604.b4-ty@chromium.org>
+ <ZTg4GA005km7mmgC@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231024-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v2-1-4c1f4cd4b4df@google.com>
+In-Reply-To: <ZTg4GA005km7mmgC@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -70,73 +71,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 05:42:16PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated [1] and we should prefer less ambiguous
-> interfaces.
+On Tue, Oct 24, 2023 at 05:33:12PM -0400, Mike Snitzer wrote:
+> On Tue, Oct 24 2023 at  5:18P -0400,
+> Kees Cook <keescook@chromium.org> wrote:
 > 
-> In this case, arvif->u.ap.ssid has its length maintained by
-> arvif->u.ap.ssid_len which indicates it may not need to be
-> NUL-terminated. Make this explicit with __nonstring and use a plain old
-> memcpy.
+> > On Mon, 25 Sep 2023 06:35:54 +0000, Justin Stitt wrote:
+> > > kzalloc() followed by strncpy() on an expected NUL-terminated string is
+> > > just kmemdup_nul(). Let's simplify this code (while also dropping a
+> > > deprecated strncpy() call [1]).
+> > > 
+> > > 
+> > 
+> > Applied to for-next/hardening, thanks!
+> > 
+> > [1/1] dm crypt: replace open-coded kmemdup_nul
+> >       https://git.kernel.org/kees/c/17348b0a6a6d
+> > 
+> > Take care,
+> > 
+> > -- 
+> > Kees Cook
+> > 
 > 
-> This is also consistent with future copies into arvif->u.ap.ssid:
-> 
-> 	if (changed & BSS_CHANGED_SSID &&
-> 	    vif->type == NL80211_IFTYPE_AP) {
-> 		arvif->u.ap.ssid_len = vif->cfg.ssid_len;
-> 		if (vif->cfg.ssid_len)
-> 			memcpy(arvif->u.ap.ssid, vif->cfg.ssid,
-> 			       vif->cfg.ssid_len);
-> 		arvif->u.ap.hidden_ssid = info->hidden_ssid;
-> 	}
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Changes in v2:
-> - update subject to include wifi
-> - prefer memcpy() over strtomem() (thanks Kalle, Jeff)
-> - rebase onto 6.6-rc7 @d88520ad73b79e71
-> - Link to v1: https://lore.kernel.org/r/20231013-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v1-1-24e40201afa3@google.com
-> ---
-> Note: build-tested only.
-> 
-> Found with: $ rg "strncpy\("
-> ---
->  drivers/net/wireless/ath/ath10k/core.h | 2 +-
->  drivers/net/wireless/ath/ath10k/mac.c  | 3 +--
->  2 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 4b5239de4018..ba9795a8378a 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -607,7 +607,7 @@ struct ath10k_vif {
->  			u8 tim_bitmap[64];
->  			u8 tim_len;
->  			u32 ssid_len;
-> -			u8 ssid[IEEE80211_MAX_SSID_LEN];
-> +			u8 ssid[IEEE80211_MAX_SSID_LEN] __nonstring;
->  			bool hidden_ssid;
->  			/* P2P_IE with NoA attribute for P2P_GO case */
->  			u32 noa_len;
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 03e7bc5b6c0b..f3f6deb354c6 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -6125,9 +6125,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
->  
->  		if (ieee80211_vif_is_mesh(vif)) {
->  			/* mesh doesn't use SSID but firmware needs it */
-> -			strncpy(arvif->u.ap.ssid, "mesh",
-> -				sizeof(arvif->u.ap.ssid));
->  			arvif->u.ap.ssid_len = 4;
-> +			memcpy(arvif->u.ap.ssid, "mesh", arvif->u.ap.ssid_len);
+> I had picked up this patch and the 3 others in my local tree
+> yesterday, was going to push shortly... do you still want them to go
+> through your hardening tree?
 
-This is a behavior change, isn't it? i.e. arvif->u.ap.ssid is no longer
-zero-padded. Is this actually ok for the driver?
+Oh! Great; thank you! I'll drop them from my tree. :)
 
 -Kees
 
