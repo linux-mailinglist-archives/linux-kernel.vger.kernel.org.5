@@ -2,260 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EB87D5970
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CD47D5971
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344077AbjJXRId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 13:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54960 "EHLO
+        id S1344065AbjJXRIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 13:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344034AbjJXRIa (ORCPT
+        with ESMTP id S233065AbjJXRIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 13:08:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DE4118;
-        Tue, 24 Oct 2023 10:08:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698167305; x=1729703305;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=hUGirVag7S8n+zT+Bt5TDAK/SLrrk9OVdLzyMdWj1BM=;
-  b=MK0rHJbLLv/T5s/Xh7JJJg0HxouXOgh6hV+Tv8dzO0kjvhQ3DvGVXTCw
-   2V0Jel9mU1SFM2FcBkrblU+HU/VjodqXH3/KzqDqzejMGjb9zBQa54O+3
-   cOrSot/OYcEbMDHZFOTeZD0aQ5Bd/t+I9UYLrxsIlZNQG9Bcbhfym8hQ2
-   4QIN0Id3JeSLbaNKMdLB/rSUSF1e25uMGk8sEsLy/Z7Z5tcnYk67nxLQI
-   s+3QzNxHqs6ZeYuGr1vJOhdbruYg8B6UXePPdGyJHGRp2S0ExyuDTftSt
-   ta9cFGaKdzFpqX/AkvBFThLi3yZIL/OEJMv/3HKVRkbv2R7YwTisKtc4/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="5740573"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="5740573"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 10:08:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="758546619"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="758546619"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga002.jf.intel.com with SMTP; 24 Oct 2023 10:08:16 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Tue, 24 Oct 2023 20:08:16 +0300
-Date:   Tue, 24 Oct 2023 20:08:16 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     nirmal.patel@linux.intel.com, jonathan.derrick@linux.dev,
-        lorenzo.pieralisi@arm.com, hch@infradead.org, kw@linux.com,
-        robh@kernel.org, bhelgaas@google.com, michael.a.bottini@intel.com,
-        rafael@kernel.org, me@adhityamohan.in, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH V2] PCI: Move VMD ASPM/LTR fix to PCI quirk
-Message-ID: <ZTf6ALl3xNvhLN6M@intel.com>
-References: <20230411213323.1362300-1-david.e.box@linux.intel.com>
+        Tue, 24 Oct 2023 13:08:46 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFCF10D0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:08:43 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d9beb865a40so4367194276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:08:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698167322; x=1698772122; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c4gL1zk6o610KyaQl0n4olXPspFqgwU/6otslNbLOBs=;
+        b=WF/ZULq8VLYX+rkQgSzXWZrKSvXHNHZ6NF3OqyAi34Nnivy6FLhrH2v8sdnXbG67p1
+         q0yyqKGcyhSAuEovArml+Gi+wzBhVXEQEBlX75iObbHZ4fQuyXYt2sOCOUwvIJQXLubW
+         nPJl0SIhwuhRCn9UKmXO2o3WJrPSkwpImtxdQZ5R75Qg3XPxbHSufp1iVMhUxsRieViO
+         9+PZZTQKLLeEbnNJUa+bs+/D7r/8B5NHTUOMcAVuFBmrfj/lVFOKAfNnRg3xy70eEqdE
+         pb1lnrkXEBpoAJLPzu0vH5E1JkO94J7HnBfCZ/IoG/MwWk6OxfCqDT7Ys+nqika6DVBm
+         ZNyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698167322; x=1698772122;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=c4gL1zk6o610KyaQl0n4olXPspFqgwU/6otslNbLOBs=;
+        b=Lg7IUgKSFJ4gXn4gulJ5/Kvtp/svcFRkDGVAIiBqdRDDSa0DtJ1gejvsj8lpMllt4s
+         rvyo6Xpo1OD/A4BeJ6/lRGqH018L2g5psEhtS/V41W2cZfr7fQl1Ep8PBXiIdojOp3Pf
+         TqlYLNbN/jJ3GHJ1+eM9zDIDZh/HC4y2F5IfE0gzFxlsW3VpmjPVwqQa0R4AyAc89DRA
+         j1Uy2WXodlY9Gbi/U49uLpIFFKsE/9+ZEQQ3LSBCaBsVe6vylv3g4m3m3uTZRsbrMXWq
+         NiCK4yZvr5ldJWtitSu5aOZ1oS2VER99ygo/VAKePnTX882DaLFPX120Bb4frroY+rHF
+         2Bcg==
+X-Gm-Message-State: AOJu0YzvWQqeWYunk/z8gqcaMI441wFJEK/M7oMGaUuuw7uEX/2q+yvf
+        PcmHgV6kZRDFT140EKTKaW2hK4O82X7natqVvwHozIwumeQIe+i9LAI=
+X-Google-Smtp-Source: AGHT+IEMmbQmG6h1tUrhQzAtYVSW2KBkX5EctfRJdNr5PWSZ9TzjtzLouFsrreJlLUyO/+017lL6xIP52peq9IVt2Zw=
+X-Received: by 2002:a25:d107:0:b0:d9b:6262:43be with SMTP id
+ i7-20020a25d107000000b00d9b626243bemr12726896ybg.16.1698167322201; Tue, 24
+ Oct 2023 10:08:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230411213323.1362300-1-david.e.box@linux.intel.com>
-X-Patchwork-Hint: comment
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231024134637.3120277-1-surenb@google.com> <20231024134637.3120277-2-surenb@google.com>
+ <ZTfUCiFP3hVJ+EXh@smile.fi.intel.com>
+In-Reply-To: <ZTfUCiFP3hVJ+EXh@smile.fi.intel.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 24 Oct 2023 10:08:29 -0700
+Message-ID: <CAJuCfpFY0JF3trYVmp5YjY3A8cH8TejrscRpA+Mjro4aA-TO6g@mail.gmail.com>
+Subject: Re: [PATCH v2 01/39] lib/string_helpers: Add flags param to string_get_size()
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     akpm@linux-foundation.org, kent.overstreet@linux.dev,
+        keescook@chromium.org, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 02:33:23PM -0700, David E. Box wrote:
-> In commit f492edb40b54 ("PCI: vmd: Add quirk to configure PCIe ASPM and
-> LTR") the VMD driver calls pci_enabled_link_state as a callback from
-> pci_bus_walk. Both will acquire the pci_bus_sem lock leading to a lockdep
-> warning. Instead of doing the pci_bus_walk, move the fix to quirks.c using
-> DECLARE_PCI_FIXUP_FINAL.
+On Tue, Oct 24, 2023 at 7:26=E2=80=AFAM Andy Shevchenko <andy@kernel.org> w=
+rote:
+>
+> (Minimized the list of people for my review / comments)
 
-What happened to this patch? We're still carrying a local fix
-for this in drm-tip...
+Thanks! I'll let Kent address your feedback.
 
-> 
-> Fixes: f492edb40b54 ("PCI: vmd: Add quirk to configure PCIe ASPM and LTR")
-> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
-> 
-> V2 - Instead of adding a lock flag argument to pci_enabled_link_state, move
->      the fix to quirks.c
-> 
->  drivers/pci/controller/vmd.c | 55 +--------------------------
->  drivers/pci/quirks.c         | 72 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 73 insertions(+), 54 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-> index 990630ec57c6..47fa3e5f2dc5 100644
-> --- a/drivers/pci/controller/vmd.c
-> +++ b/drivers/pci/controller/vmd.c
-> @@ -66,22 +66,11 @@ enum vmd_features {
->  	 * interrupt handling.
->  	 */
->  	VMD_FEAT_CAN_BYPASS_MSI_REMAP		= (1 << 4),
-> -
-> -	/*
-> -	 * Enable ASPM on the PCIE root ports and set the default LTR of the
-> -	 * storage devices on platforms where these values are not configured by
-> -	 * BIOS. This is needed for laptops, which require these settings for
-> -	 * proper power management of the SoC.
-> -	 */
-> -	VMD_FEAT_BIOS_PM_QUIRK		= (1 << 5),
->  };
->  
-> -#define VMD_BIOS_PM_QUIRK_LTR	0x1003	/* 3145728 ns */
-> -
->  #define VMD_FEATS_CLIENT	(VMD_FEAT_HAS_MEMBAR_SHADOW_VSCAP |	\
->  				 VMD_FEAT_HAS_BUS_RESTRICTIONS |	\
-> -				 VMD_FEAT_OFFSET_FIRST_VECTOR |		\
-> -				 VMD_FEAT_BIOS_PM_QUIRK)
-> +				 VMD_FEAT_OFFSET_FIRST_VECTOR)
->  
->  static DEFINE_IDA(vmd_instance_ida);
->  
-> @@ -724,46 +713,6 @@ static void vmd_copy_host_bridge_flags(struct pci_host_bridge *root_bridge,
->  	vmd_bridge->native_dpc = root_bridge->native_dpc;
->  }
->  
-> -/*
-> - * Enable ASPM and LTR settings on devices that aren't configured by BIOS.
-> - */
-> -static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
-> -{
-> -	unsigned long features = *(unsigned long *)userdata;
-> -	u16 ltr = VMD_BIOS_PM_QUIRK_LTR;
-> -	u32 ltr_reg;
-> -	int pos;
-> -
-> -	if (!(features & VMD_FEAT_BIOS_PM_QUIRK))
-> -		return 0;
-> -
-> -	pci_enable_link_state(pdev, PCIE_LINK_STATE_ALL);
-> -
-> -	pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_LTR);
-> -	if (!pos)
-> -		return 0;
-> -
-> -	/*
-> -	 * Skip if the max snoop LTR is non-zero, indicating BIOS has set it
-> -	 * so the LTR quirk is not needed.
-> -	 */
-> -	pci_read_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, &ltr_reg);
-> -	if (!!(ltr_reg & (PCI_LTR_VALUE_MASK | PCI_LTR_SCALE_MASK)))
-> -		return 0;
-> -
-> -	/*
-> -	 * Set the default values to the maximum required by the platform to
-> -	 * allow the deepest power management savings. Write as a DWORD where
-> -	 * the lower word is the max snoop latency and the upper word is the
-> -	 * max non-snoop latency.
-> -	 */
-> -	ltr_reg = (ltr << 16) | ltr;
-> -	pci_write_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, ltr_reg);
-> -	pci_info(pdev, "VMD: Default LTR value set by driver\n");
-> -
-> -	return 0;
-> -}
-> -
->  static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
->  {
->  	struct pci_sysdata *sd = &vmd->sysdata;
-> @@ -936,8 +885,6 @@ static int vmd_enable_domain(struct vmd_dev *vmd, unsigned long features)
->  
->  	pci_assign_unassigned_bus_resources(vmd->bus);
->  
-> -	pci_walk_bus(vmd->bus, vmd_pm_enable_quirk, &features);
-> -
->  	/*
->  	 * VMD root buses are virtual and don't return true on pci_is_pcie()
->  	 * and will fail pcie_bus_configure_settings() early. It can instead be
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 44cab813bf95..2d86623f96e3 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -6023,3 +6023,75 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a2d, dpc_log_size);
->  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a2f, dpc_log_size);
->  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a31, dpc_log_size);
->  #endif
-> +
-> +#ifdef CONFIG_VMD
-> +/*
-> + * Enable ASPM on the PCIE root ports under VMD and set the default LTR of the
-> + * storage devices on platforms where these values are not configured by BIOS.
-> + * This is needed for laptops, which require these settings for proper power
-> + * management of the SoC.
-> + */
-> +#define VMD_DEVICE_LTR	0x1003	/* 3145728 ns */
-> +static void quirk_intel_vmd(struct pci_dev *pdev)
-> +{
-> +	struct pci_dev *parent;
-> +	u16 ltr = VMD_DEVICE_LTR;
-> +	u32 ltr_reg;
-> +	int pos;
-> +
-> +	/* Check in VMD domain */
-> +	if (pci_domain_nr(pdev->bus) < 0x10000)
-> +		return;
-> +
-> +	/* Get Root Port */
-> +	parent = pci_upstream_bridge(pdev);
-> +	if (!parent || parent->vendor != PCI_VENDOR_ID_INTEL)
-> +		return;
-> +
-> +	/* Get VMD Host Bridge */
-> +	parent = to_pci_dev(parent->dev.parent);
-> +	if (!parent)
-> +		return;
-> +
-> +	/* Get RAID controller */
-> +	parent = to_pci_dev(parent->dev.parent);
-> +	if (!parent)
-> +		return;
-> +
-> +	switch (parent->device) {
-> +	case 0x467f:
-> +	case 0x4c3d:
-> +	case 0xa77f:
-> +	case 0x7d0b:
-> +	case 0xad0b:
-> +	case 0x9a0b:
-> +		break;
-> +	default:
-> +		return;
-> +	}
-> +
-> +	pci_enable_link_state(pdev, PCIE_LINK_STATE_ALL);
-> +
-> +	pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_LTR);
-> +	if (!pos)
-> +		return;
-> +
-> +	/* Skip if the max snoop LTR is non-zero, indicating BIOS has set it */
-> +	pci_read_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, &ltr_reg);
-> +	if (!!(ltr_reg & (PCI_LTR_VALUE_MASK | PCI_LTR_SCALE_MASK)))
-> +		return;
-> +
-> +	/*
-> +	 * Set the LTR values to the maximum required by the platform to
-> +	 * allow the deepest power management savings. Write as a DWORD where
-> +	 * the lower word is the max snoop latency and the upper word is the
-> +	 * max non-snoop latency.
-> +	 */
-> +	ltr_reg = (ltr << 16) | ltr;
-> +	pci_write_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, ltr_reg);
-> +	pci_info(pdev, "LTR set by VMD PCI quick\n");
-> +
-> +}
-> +DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_ANY_ID, PCI_ANY_ID,
-> +			      PCI_CLASS_STORAGE_EXPRESS, 0, quirk_intel_vmd);
-> +#endif
-> -- 
-> 2.34.1
-
--- 
-Ville Syrjälä
-Intel
+>
+> On Tue, Oct 24, 2023 at 06:45:58AM -0700, Suren Baghdasaryan wrote:
+> > From: Kent Overstreet <kent.overstreet@linux.dev>
+> >
+> > The new flags parameter allows controlling
+> >  - Whether or not the units suffix is separated by a space, for
+> >    compatibility with sort -h
+> >  - Whether or not to append a B suffix - we're not always printing
+> >    bytes.
+>
+> ...
+>
+> >       string_get_size(nblocks, queue_logical_block_size(q),
+> > -                     STRING_UNITS_10, cap_str_10, sizeof(cap_str_10));
+> > +                     0, cap_str_10, sizeof(cap_str_10));
+>
+> This doesn't seem right (even if it works). We shouldn't rely on the
+> implementation details.
+>
+> ...
+>
+> > -     string_get_size(sdkp->capacity, sector_size,
+> > -                     STRING_UNITS_10, cap_str_10, sizeof(cap_str_10));
+>
+> > +     string_get_size(sdkp->capacity, sector_size, 0,
+> > +                     cap_str_10, sizeof(cap_str_10));
+>
+> Neither this.
+>
+> ...
+>
+> > -/* Descriptions of the types of units to
+> > - * print in */
+> > -enum string_size_units {
+> > -     STRING_UNITS_10,        /* use powers of 10^3 (standard SI) */
+> > -     STRING_UNITS_2,         /* use binary powers of 2^10 */
+> > +enum string_size_flags {
+>
+> So, please add UNITS_10 as it is now. It will help if anybody in the futu=
+re
+> wants to add, e.g., 8-base numbers.
+>
+> > +     STRING_SIZE_BASE2       =3D (1 << 0),
+> > +     STRING_SIZE_NOSPACE     =3D (1 << 1),
+> > +     STRING_SIZE_NOBYTES     =3D (1 << 2),
+> >  };
+>
+> Please, add necessary comments.
+>
+> ...
+>
+> > +enum string_size_units {
+> > +     STRING_UNITS_10,        /* use powers of 10^3 (standard SI) */
+> > +     STRING_UNITS_2,         /* use binary powers of 2^10 */
+> > +};
+>
+> And what a point now in having these?
+>
+> I assume you need to split this to a few patches:
+>
+> 1) rename parameter to be a flags without renaming the definitions (this =
+will
+>    touch only string_helpers part);
+> 2) do the end job by renaming it all over the drivers;
+> 3) add the other flags one-by-one (each in a separate change);
+> 4) use new flags where it's needed;
+>
+> Also see below.
+>
+> ...
+>
+> >       static const char *const units_10[] =3D {
+> > -             "B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"
+> > +             "", "k", "M", "G", "T", "P", "E", "Z", "Y"
+> >       };
+> >       static const char *const units_2[] =3D {
+> > -             "B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "Yi=
+B"
+> > +             "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"
+> >       };
+>
+> Ouch, instead of leaving this and actually "cutting the letter" with NO* =
+flags,
+> you did something different.
+>
+> ...
+>
+> Now the main part. Since in 50+% cases (I briefly estimated, it may be mo=
+re)
+> this is used in printf() why not introducing a new pointer extension for =
+that?
+>
+> Yes, it may be done separately, but it will look like a double effort to =
+me.
+> Instead it might give us a possibility to scale w/o touching users each t=
+ime
+> we want to do something and at the same time hide this complete API under
+> printf() implementation.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
