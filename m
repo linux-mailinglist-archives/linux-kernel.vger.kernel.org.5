@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCFB7D5E0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1919B7D5E0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344539AbjJXWYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59476 "EHLO
+        id S1344399AbjJXWY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344440AbjJXWYl (ORCPT
+        with ESMTP id S1344433AbjJXWYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:24:41 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D98110DB
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:29 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a92864859bso45292427b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:29 -0700 (PDT)
+        Tue, 24 Oct 2023 18:24:43 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F0AF1713
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:31 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da05b786f1dso667629276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698186268; x=1698791068; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698186271; x=1698791071; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=b/WYylQjwixRJXAqoqT9x2vsT/egkNyyGQzseJqJY9U=;
-        b=uT7w4lEcUTQXJpCxjyDA/TSOS6e54jIhBLpvXasOjLYIoosAK7q2RldpGD5bsFz2Hl
-         4WibsMTU5PYsS12Lb6iMR5AKHHZEhAFUbW7FyAf/fdqHr0KuuLmcRmHLi98Srsqc1j7w
-         URJ+83mJ5RWs4be6uAGHMoYyGoQpX+jFmSYNDHwPPD42UqnlXo1MKVHASfxJLu+ZxPzw
-         a5ZcpmOovxvmtoo4hoJLDgDdjNS2Pm4CRsQQMARVAzqlat11bLb1eNkRtmcIM3XDh5wP
-         KK+DRATMsBx1DWH7gPycIrobSjpCz/+4X9eVnb6shk7EnuS2Ps8fvOvlcjGsuDfSIED/
-         qpCg==
+        bh=E9Urizhv5WS8Bux3imXxMiLlOJqV8I9Pz4v3kegUcno=;
+        b=cj997KnqBuk1bJmOrE1IaIjCfFJfdq7f3X0TDebG3W1tvzl1CfqDsoRbsWSkZbq3EV
+         VILP3F1wqjbRACu+v39fc+dbw/umoBJed3H+6Z3KbqpiOSeTXGXKJaOdgrvzEg3CMPwO
+         FCknZrWklnt84Q14XXGuetp0yDNwIWUVTdVjyYNqz4FTPhU+8kI0nFochpdvBzosdypS
+         y63K/24yBnFMwIP4AmRbjjFMHDZjfPAU1k+jVBjJ25N6bh8kZaocYa2I5BH03L9AiuGR
+         fhbWg0PujwL3cGy4Ad9NGkHZeRYuD4mkPZvDjXGs1Ad8Lrh4IBf++4iHjGZKu36Qk9aX
+         skMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698186268; x=1698791068;
+        d=1e100.net; s=20230601; t=1698186271; x=1698791071;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b/WYylQjwixRJXAqoqT9x2vsT/egkNyyGQzseJqJY9U=;
-        b=f3sfyS/rWDCFCR1Rg7Ib9/hSRZ37YDFPag1baJJrEQaY5JadGD94O6M62VIjCYAnH4
-         /eDQTr/jMkhoIudobwbtzznt2mgg06FABgQbvQSnlHd8kv2DsKRFT9RvxMf2HVYFqIvo
-         S2TyI6x9FKNuVntDILAQ2YKW7rQRBckqMXpf8g02Tb58lTZGll8tQhm95uQ7k5AzJk3/
-         bkc3oyrFYLHHC3BoGVxpQLONx+mr3EFCEH5PEJHRzPnXRiGE6QwnEGjpkxgDXG4Oap7z
-         plzAMn9W5Pw4IG6amu4HUaKd+lDAzMMXnJMSwwzAWA2B/kpKCfzM7xdqKX+Gg7aQU1Kj
-         8Rag==
-X-Gm-Message-State: AOJu0YynMx+IE+4+EWJygcgu1D6NrkdHW2bnDcr/6yh/tFnZiTzpaX6R
-        rwsyoOuVb711N46eEMnnPCTT6PPjVsLx
-X-Google-Smtp-Source: AGHT+IEVRRWngcmzL9hheCR6+iyVRg4xT0ZCocehuI57VI8KP971CkhaKYhrnCw4jBnJQ57Sze30WMx5ZR00
+        bh=E9Urizhv5WS8Bux3imXxMiLlOJqV8I9Pz4v3kegUcno=;
+        b=oekuStW2mC2dZsC8QIIMwKkLGKworgUE0P8VNG+LSqI5taJEn71NKusXTnEfWQuZXj
+         A1kgl4htejTQ10NRWqa6eYmbY5d079f54a9CNK3r1o20EXbcbfz9LmQM+Uo71Ibd2HlE
+         DLmLA+6zquZ+VNizv7Mw8EOVCcoI/eKRfqRxVsnRY6QODU8l4K7Pd6vvbpdOrzGBU5PM
+         QxSa7s19qpJnfZEkz0Z7uGM+F3f1pG+WBSWzzeswziPF40ZPpwcOBUgm8GB9pQ/uYASz
+         acThix9vwXX3jrhnFBAhPupLP2+H7DJYEFpq7QeqGK0rOPwgAz3T2RCuRRb0JnHelC24
+         ikBg==
+X-Gm-Message-State: AOJu0YwTK/heHg9f1AjVZxHKaRsr4QApEAVnWulAoy2+Cgf6C5Djgtec
+        vCCXBjQcCE5/+rTRNZyUvc3OSQxKPqcl
+X-Google-Smtp-Source: AGHT+IHu39k4c6xkVV7pusgwib5ieSXUcE1SF5wxto++MOEMTeu8moZwxB1soQKzEQ9cZdZ4i+7cZYrcj7Fe
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:93d2:18cc:4d63:45ba])
- (user=irogers job=sendgmr) by 2002:a81:4c8f:0:b0:59f:3cde:b33a with SMTP id
- z137-20020a814c8f000000b0059f3cdeb33amr57926ywa.6.1698186268457; Tue, 24 Oct
- 2023 15:24:28 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 15:23:10 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:1083:b0:d9a:4f4c:961b with SMTP
+ id v3-20020a056902108300b00d9a4f4c961bmr353592ybu.1.1698186270729; Tue, 24
+ Oct 2023 15:24:30 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 15:23:11 -0700
 In-Reply-To: <20231024222353.3024098-1-irogers@google.com>
-Message-Id: <20231024222353.3024098-8-irogers@google.com>
+Message-Id: <20231024222353.3024098-9-irogers@google.com>
 Mime-Version: 1.0
 References: <20231024222353.3024098-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Subject: [PATCH v3 07/50] perf offcpu: Add missed btf_free
+Subject: [PATCH v3 08/50] perf callchain: Make display use of branch_type_stat const
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -88,7 +88,7 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,53 +96,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Caught by address/leak sanitizer.
+Display code doesn't modify the branch_type_stat so switch uses to
+const. This is done to aid refactoring struct callchain_list where
+current the branch_type_stat is embedded even if not used.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/bpf_off_cpu.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ tools/perf/util/branch.c    | 4 ++--
+ tools/perf/util/branch.h    | 4 ++--
+ tools/perf/util/callchain.c | 6 +++---
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.c
-index 21f4d9ba023d..6af36142dc5a 100644
---- a/tools/perf/util/bpf_off_cpu.c
-+++ b/tools/perf/util/bpf_off_cpu.c
-@@ -98,22 +98,22 @@ static void off_cpu_finish(void *arg __maybe_unused)
- /* v5.18 kernel added prev_state arg, so it needs to check the signature */
- static void check_sched_switch_args(void)
- {
--	const struct btf *btf = btf__load_vmlinux_btf();
-+	struct btf *btf = btf__load_vmlinux_btf();
- 	const struct btf_type *t1, *t2, *t3;
- 	u32 type_id;
- 
- 	type_id = btf__find_by_name_kind(btf, "btf_trace_sched_switch",
- 					 BTF_KIND_TYPEDEF);
- 	if ((s32)type_id < 0)
--		return;
-+		goto cleanup;
- 
- 	t1 = btf__type_by_id(btf, type_id);
- 	if (t1 == NULL)
--		return;
-+		goto cleanup;
- 
- 	t2 = btf__type_by_id(btf, t1->type);
- 	if (t2 == NULL || !btf_is_ptr(t2))
--		return;
-+		goto cleanup;
- 
- 	t3 = btf__type_by_id(btf, t2->type);
- 	/* btf_trace func proto has one more argument for the context */
-@@ -121,6 +121,8 @@ static void check_sched_switch_args(void)
- 		/* new format: pass prev_state as 4th arg */
- 		skel->rodata->has_prev_state = true;
- 	}
-+cleanup:
-+	btf__free(btf);
+diff --git a/tools/perf/util/branch.c b/tools/perf/util/branch.c
+index 378f16a24751..ab760e267d41 100644
+--- a/tools/perf/util/branch.c
++++ b/tools/perf/util/branch.c
+@@ -109,7 +109,7 @@ const char *get_branch_type(struct branch_entry *e)
+ 	return branch_type_name(e->flags.type);
  }
  
- int off_cpu_prepare(struct evlist *evlist, struct target *target,
+-void branch_type_stat_display(FILE *fp, struct branch_type_stat *st)
++void branch_type_stat_display(FILE *fp, const struct branch_type_stat *st)
+ {
+ 	u64 total = 0;
+ 	int i;
+@@ -171,7 +171,7 @@ static int count_str_scnprintf(int idx, const char *str, char *bf, int size)
+ 	return scnprintf(bf, size, "%s%s", (idx) ? " " : " (", str);
+ }
+ 
+-int branch_type_str(struct branch_type_stat *st, char *bf, int size)
++int branch_type_str(const struct branch_type_stat *st, char *bf, int size)
+ {
+ 	int i, j = 0, printed = 0;
+ 	u64 total = 0;
+diff --git a/tools/perf/util/branch.h b/tools/perf/util/branch.h
+index e41bfffe2217..87704d713ff6 100644
+--- a/tools/perf/util/branch.h
++++ b/tools/perf/util/branch.h
+@@ -86,8 +86,8 @@ void branch_type_count(struct branch_type_stat *st, struct branch_flags *flags,
+ const char *branch_type_name(int type);
+ const char *branch_new_type_name(int new_type);
+ const char *get_branch_type(struct branch_entry *e);
+-void branch_type_stat_display(FILE *fp, struct branch_type_stat *st);
+-int branch_type_str(struct branch_type_stat *st, char *bf, int bfsize);
++void branch_type_stat_display(FILE *fp, const struct branch_type_stat *st);
++int branch_type_str(const struct branch_type_stat *st, char *bf, int bfsize);
+ 
+ const char *branch_spec_desc(int spec);
+ 
+diff --git a/tools/perf/util/callchain.c b/tools/perf/util/callchain.c
+index 18d545c0629e..cde4860e6f28 100644
+--- a/tools/perf/util/callchain.c
++++ b/tools/perf/util/callchain.c
+@@ -1339,7 +1339,7 @@ static int count_float_printf(int idx, const char *str, float value,
+ static int branch_to_str(char *bf, int bfsize,
+ 			 u64 branch_count, u64 predicted_count,
+ 			 u64 abort_count,
+-			 struct branch_type_stat *brtype_stat)
++			 const struct branch_type_stat *brtype_stat)
+ {
+ 	int printed, i = 0;
+ 
+@@ -1403,7 +1403,7 @@ static int counts_str_build(char *bf, int bfsize,
+ 			     u64 abort_count, u64 cycles_count,
+ 			     u64 iter_count, u64 iter_cycles,
+ 			     u64 from_count,
+-			     struct branch_type_stat *brtype_stat)
++			     const struct branch_type_stat *brtype_stat)
+ {
+ 	int printed;
+ 
+@@ -1430,7 +1430,7 @@ static int callchain_counts_printf(FILE *fp, char *bf, int bfsize,
+ 				   u64 abort_count, u64 cycles_count,
+ 				   u64 iter_count, u64 iter_cycles,
+ 				   u64 from_count,
+-				   struct branch_type_stat *brtype_stat)
++				   const struct branch_type_stat *brtype_stat)
+ {
+ 	char str[256];
+ 
 -- 
 2.42.0.758.gaed0368e0e-goog
 
