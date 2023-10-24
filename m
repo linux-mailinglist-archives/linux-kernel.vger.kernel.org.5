@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B20477D57E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1907D57F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343807AbjJXQUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
+        id S1343894AbjJXQVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343692AbjJXQUn (ORCPT
+        with ESMTP id S1343651AbjJXQUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:20:43 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB59AF
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:20:39 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9b95622c620so717239266b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:20:39 -0700 (PDT)
+        Tue, 24 Oct 2023 12:20:51 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7590E10E7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:20:45 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-53ed4688b9fso6939512a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:20:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sigma-star.at; s=google; t=1698164437; x=1698769237; darn=vger.kernel.org;
+        d=sigma-star.at; s=google; t=1698164444; x=1698769244; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MkDVFnHKpZeBvZAqUqSNXQm1hU5ZxFlgCH2rl+2FSP4=;
-        b=a7nROXWRjMrfLV8WybzLhivU1dOTWhOkG71dN57qt5Co0KQMof1pXbCD0YTszIMY7V
-         WOrCkr9u7GOBTWi3ipRhl+VmcK0baWhlVtGpimEnSSXyylWd5h9ZWYMC7Hdk8fr0yuTQ
-         9SKAafTLK6HHD9q3hAvgT+3VEAU4LWsspOctT9PzfZ4+lm3VPy/XDhnxrQAUXJT+gxBc
-         pSmhX7oMuU3DVJ/ZyqyC3t2D5Zz7phL03Uth74GddvG4QjuwJu05n4wKhJIZ4wz/q6om
-         dtYiHmD6RKjZ6tXq4Y6a828ROpU+Et7f7wI8bUSsleXT+cyqq9JK9Q9IB2n+KxigU+Dc
-         iTSQ==
+        bh=7qjl1ICqoHOVFCUnQimBz2tnuDb3oH3Oe9S01rS6Brg=;
+        b=V/RnU9cyhIPG08MqRHZU50TF7vJZIomRsLHJS69AvyEMddblcvPeL/4nxdKJjs3WfN
+         M3QA6s0AddizlYLdyavfej4M6IVL04hCWUO5QojqfIU+LKApBJHRu/0PNz+fmIIF6jZC
+         mH5ej0BHtr3fGWKXGTgVhSQdeLSJJKcmbPwNtv5wR/L0/MJZrQTq4LuF6IpizbPTTIFo
+         l+XHv6suYmh90zVmDYGiuu0UkMYZXy5Eix/f0n6BLj6oG9+AbPBYjORY0AM1UiTM1OKp
+         OdnZF5Kka9g26hCk0z6n8ylFmxjGt+no4oagEhiDQiYCkbAZo4ygbmqrM9poqaDjvka8
+         xLyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698164437; x=1698769237;
+        d=1e100.net; s=20230601; t=1698164444; x=1698769244;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MkDVFnHKpZeBvZAqUqSNXQm1hU5ZxFlgCH2rl+2FSP4=;
-        b=hT0jGZIgC+AG84hYN91W5ffwdNt8jKZu/9PcoxZ8vSYaDfCdPESUM468fChEQ4epMy
-         oUK7lqManbacx4EGHbdKFCxCPqmG5+FATEJhR2znY8cISsWiithuOTBAXRZJaxWYw+cw
-         O2HNMSpw2LHMZJz8wZ+IVQD5avn7bkBWj0KMI5IuVVt9H/i4BQ0UBHXSjOt8AN92VvLS
-         djQjEF2SNfBiWQN3OkIiz5i7BUC8tkEUaGQnRIWP5yc7OH6FJPHpWSrNyguLCI6F+TYl
-         rDxHlOlBHxbKZS20J8BXHmXtuXnVRBCi7Jy874O3LvT6F2yrjysCozeJfTUA7i6U+dAd
-         f8zA==
-X-Gm-Message-State: AOJu0YwGhontTDPWd/CsIVwU7x+nlnU9mQmE6Q2k9/FCWhLHyq5kFW/u
-        CtZbiGDxan+IdoaHdEFNPNWHIw==
-X-Google-Smtp-Source: AGHT+IE4h1TAH8pQ2AZAd199OygwFb1+A3XvW63p43fHnI8xXvkn4qWzaNUifrSqdDcdHnP5J2Qseg==
-X-Received: by 2002:a17:906:2551:b0:9cc:450c:b0d5 with SMTP id j17-20020a170906255100b009cc450cb0d5mr1328682ejb.4.1698164437578;
-        Tue, 24 Oct 2023 09:20:37 -0700 (PDT)
+        bh=7qjl1ICqoHOVFCUnQimBz2tnuDb3oH3Oe9S01rS6Brg=;
+        b=W6mLRcarUo925TDp0n/C79Jwdep4XOpu1phhlatvrGgAB9u5iTMXylQkxKftiV6yOi
+         jOolclvV2AFl6TV20zrdPn6tSkNpJPLqP5rgnHGWOa3uTqHDoDpAU5oZCTuX9JZG/Ng7
+         HN+vx5Y4vlOsGUf/Rqei6tjxNUD2nyHLtEdA0rZZUD9mw5UmNSwbb//3Bf/Qe+VrO4mb
+         tSsdh0AcXFa6LjA2CwqihMnYMHyd1FL8eafxN2YZqGNnIZl2auyz/CPJr9GCn0ytaIDI
+         Ps0ZL4zllcAYW0pxkgLJbhbwju18v0p9m7ma2tWKvFZLLQjGXsWZgweCfX/jZ8lA5IWG
+         PogQ==
+X-Gm-Message-State: AOJu0YwI0YjRzo5z2XUWLBAETeP2LE9Jj5AdGUUlotu9H1owD4NPrAju
+        bIjiH1/FyLdVzb/iySxr+lVrXg==
+X-Google-Smtp-Source: AGHT+IG+uAeZrQ8AQKULYO468h/fCj0kjIanAvzEhYftPMshn9DybJ22XNeGoxJLVCypC6FhCsY5hA==
+X-Received: by 2002:a17:907:26c2:b0:9ae:6ffd:bdf7 with SMTP id bp2-20020a17090726c200b009ae6ffdbdf7mr9709201ejc.39.1698164443150;
+        Tue, 24 Oct 2023 09:20:43 -0700 (PDT)
 Received: from localhost (clnet-p106-198.ikbnet.co.at. [83.175.106.198])
-        by smtp.gmail.com with UTF8SMTPSA id lt13-20020a170906fa8d00b009c4cb1553edsm8520111ejb.95.2023.10.24.09.20.36
+        by smtp.gmail.com with UTF8SMTPSA id gz11-20020a170906f2cb00b0099cd008c1a4sm8463023ejb.136.2023.10.24.09.20.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 09:20:37 -0700 (PDT)
+        Tue, 24 Oct 2023 09:20:42 -0700 (PDT)
 From:   David Gstir <david@sigma-star.at>
 To:     Mimi Zohar <zohar@linux.ibm.com>,
         James Bottomley <jejb@linux.ibm.com>,
@@ -81,16 +81,16 @@ Cc:     David Gstir <david@sigma-star.at>, Shawn Guo <shawnguo@kernel.org>,
         linux-security-module@vger.kernel.org,
         Richard Weinberger <richard@nod.at>,
         David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH v4 1/5] crypto: mxs-dcp: Add support for hardware-bound keys
-Date:   Tue, 24 Oct 2023 18:20:15 +0200
-Message-ID: <20231024162024.51260-2-david@sigma-star.at>
+Subject: [PATCH v4 2/5] KEYS: trusted: Introduce NXP DCP-backed trusted keys
+Date:   Tue, 24 Oct 2023 18:20:16 +0200
+Message-ID: <20231024162024.51260-3-david@sigma-star.at>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231024162024.51260-1-david@sigma-star.at>
 References: <20231024162024.51260-1-david@sigma-star.at>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -99,27 +99,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DCP is capable of performing AES with two hardware-bound keys:
+DCP (Data Co-Processor) is the little brother of NXP's CAAM IP.
+Beside of accelerated crypto operations, it also offers support for
+hardware-bound keys. Using this feature it is possible to implement a blob
+mechanism similar to what CAAM offers. Unlike on CAAM, constructing and
+parsing the blob has to happen in software (i.e. the kernel).
 
-- The one-time programmable (OTP) key which is burnt via on-chip fuses
-- The unique key (UK) which is derived from the OTP key
+The software-based blob format used by DCP trusted keys encrypts
+the payload using AES-128-GCM with a freshly generated random key and nonce.
+The random key itself is AES-128-ECB encrypted using the DCP unique
+or OTP key.
 
-In addition to the two hardware-bound keys, DCP also supports
-storing keys in 4 dedicated key slots within its secure memory area
-(internal SRAM).
+The DCP trusted key blob format is:
+/*
+ * struct dcp_blob_fmt - DCP BLOB format.
+ *
+ * @fmt_version: Format version, currently being %1
+ * @blob_key: Random AES 128 key which is used to encrypt @payload,
+ *            @blob_key itself is encrypted with OTP or UNIQUE device key in
+ *            AES-128-ECB mode by DCP.
+ * @nonce: Random nonce used for @payload encryption.
+ * @payload_len: Length of the plain text @payload.
+ * @payload: The payload itself, encrypted using AES-128-GCM and @blob_key,
+ *           GCM auth tag of size AES_BLOCK_SIZE is attached at the end of it.
+ *
+ * The total size of a DCP BLOB is sizeof(struct dcp_blob_fmt) + @payload_len +
+ * AES_BLOCK_SIZE.
+ */
+struct dcp_blob_fmt {
+	__u8 fmt_version;
+	__u8 blob_key[AES_KEYSIZE_128];
+	__u8 nonce[AES_KEYSIZE_128];
+	__le32 payload_len;
+	__u8 payload[];
+} __packed;
 
-These keys are not stored in main memory and are therefore
-not directly accessible by the operating system. To use them
-for AES operations, a one-byte key reference has to supplied
-with the DCP operation descriptor in the control register.
-
-This adds support for using any of these 6 keys through the crypto API
-via their key reference after they have been set up. The main purpose
-is to add support for DCP-backed trusted keys. Other use cases are
-possible too (see similar existing paes implementations), but these
-should carefully be evaluated as e.g. enabling AF_ALG will give
-userspace full access to use keys. In scenarios with untrustworthy
-userspace, this will enable en-/decryption oracles.
+By default the unique key is used. It is also possible to use the
+OTP key. While the unique key should be unique it is not documented how
+this key is derived. Therefore selection the OTP key is supported as
+well via the use_otp_key module parameter.
 
 Co-developed-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
@@ -127,235 +145,409 @@ Co-developed-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: David Gstir <david@sigma-star.at>
 ---
- drivers/crypto/mxs-dcp.c | 104 ++++++++++++++++++++++++++++++++++-----
- include/soc/fsl/dcp.h    |  17 +++++++
- 2 files changed, 110 insertions(+), 11 deletions(-)
- create mode 100644 include/soc/fsl/dcp.h
+ include/keys/trusted_dcp.h                |  11 +
+ security/keys/trusted-keys/Kconfig        |   9 +-
+ security/keys/trusted-keys/Makefile       |   2 +
+ security/keys/trusted-keys/trusted_core.c |   6 +-
+ security/keys/trusted-keys/trusted_dcp.c  | 311 ++++++++++++++++++++++
+ 5 files changed, 337 insertions(+), 2 deletions(-)
+ create mode 100644 include/keys/trusted_dcp.h
+ create mode 100644 security/keys/trusted-keys/trusted_dcp.c
 
-diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
-index f6b7bce0e656..2dc664fb2faf 100644
---- a/drivers/crypto/mxs-dcp.c
-+++ b/drivers/crypto/mxs-dcp.c
-@@ -15,6 +15,7 @@
- #include <linux/platform_device.h>
- #include <linux/stmp_device.h>
- #include <linux/clk.h>
-+#include <soc/fsl/dcp.h>
- 
- #include <crypto/aes.h>
- #include <crypto/sha1.h>
-@@ -101,6 +102,7 @@ struct dcp_async_ctx {
- 	struct crypto_skcipher		*fallback;
- 	unsigned int			key_len;
- 	uint8_t				key[AES_KEYSIZE_128];
-+	bool				key_referenced;
- };
- 
- struct dcp_aes_req_ctx {
-@@ -155,6 +157,7 @@ static struct dcp *global_sdcp;
- #define MXS_DCP_CONTROL0_HASH_TERM		(1 << 13)
- #define MXS_DCP_CONTROL0_HASH_INIT		(1 << 12)
- #define MXS_DCP_CONTROL0_PAYLOAD_KEY		(1 << 11)
-+#define MXS_DCP_CONTROL0_OTP_KEY		(1 << 10)
- #define MXS_DCP_CONTROL0_CIPHER_ENCRYPT		(1 << 8)
- #define MXS_DCP_CONTROL0_CIPHER_INIT		(1 << 9)
- #define MXS_DCP_CONTROL0_ENABLE_HASH		(1 << 6)
-@@ -168,6 +171,8 @@ static struct dcp *global_sdcp;
- #define MXS_DCP_CONTROL1_CIPHER_MODE_ECB	(0 << 4)
- #define MXS_DCP_CONTROL1_CIPHER_SELECT_AES128	(0 << 0)
- 
-+#define MXS_DCP_CONTROL1_KEY_SELECT_SHIFT	8
-+
- static int mxs_dcp_start_dma(struct dcp_async_ctx *actx)
- {
- 	int dma_err;
-@@ -224,13 +229,16 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx,
- 	struct dcp *sdcp = global_sdcp;
- 	struct dcp_dma_desc *desc = &sdcp->coh->desc[actx->chan];
- 	struct dcp_aes_req_ctx *rctx = skcipher_request_ctx(req);
-+	bool key_referenced = actx->key_referenced;
- 	int ret;
- 
--	key_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_key,
--				  2 * AES_KEYSIZE_128, DMA_TO_DEVICE);
--	ret = dma_mapping_error(sdcp->dev, key_phys);
--	if (ret)
--		return ret;
-+	if (!key_referenced) {
-+		key_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_key,
-+					  2 * AES_KEYSIZE_128, DMA_TO_DEVICE);
-+		ret = dma_mapping_error(sdcp->dev, key_phys);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	src_phys = dma_map_single(sdcp->dev, sdcp->coh->aes_in_buf,
- 				  DCP_BUF_SZ, DMA_TO_DEVICE);
-@@ -255,8 +263,12 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx,
- 		    MXS_DCP_CONTROL0_INTERRUPT |
- 		    MXS_DCP_CONTROL0_ENABLE_CIPHER;
- 
--	/* Payload contains the key. */
--	desc->control0 |= MXS_DCP_CONTROL0_PAYLOAD_KEY;
-+	if (key_referenced)
-+		/* Set OTP key bit to select the key via KEY_SELECT. */
-+		desc->control0 |= MXS_DCP_CONTROL0_OTP_KEY;
-+	else
-+		/* Payload contains the key. */
-+		desc->control0 |= MXS_DCP_CONTROL0_PAYLOAD_KEY;
- 
- 	if (rctx->enc)
- 		desc->control0 |= MXS_DCP_CONTROL0_CIPHER_ENCRYPT;
-@@ -270,6 +282,9 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx,
- 	else
- 		desc->control1 |= MXS_DCP_CONTROL1_CIPHER_MODE_CBC;
- 
-+	if (key_referenced)
-+		desc->control1 |= sdcp->coh->aes_key[0] << MXS_DCP_CONTROL1_KEY_SELECT_SHIFT;
-+
- 	desc->next_cmd_addr = 0;
- 	desc->source = src_phys;
- 	desc->destination = dst_phys;
-@@ -284,9 +299,9 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx,
- err_dst:
- 	dma_unmap_single(sdcp->dev, src_phys, DCP_BUF_SZ, DMA_TO_DEVICE);
- err_src:
--	dma_unmap_single(sdcp->dev, key_phys, 2 * AES_KEYSIZE_128,
--			 DMA_TO_DEVICE);
--
-+	if (!key_referenced)
-+		dma_unmap_single(sdcp->dev, key_phys, 2 * AES_KEYSIZE_128,
-+				 DMA_TO_DEVICE);
- 	return ret;
- }
- 
-@@ -453,7 +468,7 @@ static int mxs_dcp_aes_enqueue(struct skcipher_request *req, int enc, int ecb)
- 	struct dcp_aes_req_ctx *rctx = skcipher_request_ctx(req);
- 	int ret;
- 
--	if (unlikely(actx->key_len != AES_KEYSIZE_128))
-+	if (unlikely(actx->key_len != AES_KEYSIZE_128 && !actx->key_referenced))
- 		return mxs_dcp_block_fallback(req, enc);
- 
- 	rctx->enc = enc;
-@@ -500,6 +515,7 @@ static int mxs_dcp_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 	 * there can still be an operation in progress.
- 	 */
- 	actx->key_len = len;
-+	actx->key_referenced = false;
- 	if (len == AES_KEYSIZE_128) {
- 		memcpy(actx->key, key, len);
- 		return 0;
-@@ -516,6 +532,32 @@ static int mxs_dcp_aes_setkey(struct crypto_skcipher *tfm, const u8 *key,
- 	return crypto_skcipher_setkey(actx->fallback, key, len);
- }
- 
-+static int mxs_dcp_aes_setrefkey(struct crypto_skcipher *tfm, const u8 *key,
-+				 unsigned int len)
-+{
-+	struct dcp_async_ctx *actx = crypto_skcipher_ctx(tfm);
-+
-+	if (len != DCP_PAES_KEYSIZE)
-+		return -EINVAL;
-+
-+	switch (key[0]) {
-+	case DCP_PAES_KEY_SLOT0:
-+	case DCP_PAES_KEY_SLOT1:
-+	case DCP_PAES_KEY_SLOT2:
-+	case DCP_PAES_KEY_SLOT3:
-+	case DCP_PAES_KEY_UNIQUE:
-+	case DCP_PAES_KEY_OTP:
-+		memcpy(actx->key, key, len);
-+		actx->key_len = len;
-+		actx->key_referenced = true;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int mxs_dcp_aes_fallback_init_tfm(struct crypto_skcipher *tfm)
- {
- 	const char *name = crypto_tfm_alg_name(crypto_skcipher_tfm(tfm));
-@@ -539,6 +581,13 @@ static void mxs_dcp_aes_fallback_exit_tfm(struct crypto_skcipher *tfm)
- 	crypto_free_skcipher(actx->fallback);
- }
- 
-+static int mxs_dcp_paes_init_tfm(struct crypto_skcipher *tfm)
-+{
-+	crypto_skcipher_set_reqsize(tfm, sizeof(struct dcp_aes_req_ctx));
-+
-+	return 0;
-+}
-+
- /*
-  * Hashing (SHA1/SHA256)
-  */
-@@ -889,6 +938,39 @@ static struct skcipher_alg dcp_aes_algs[] = {
- 		.ivsize			= AES_BLOCK_SIZE,
- 		.init			= mxs_dcp_aes_fallback_init_tfm,
- 		.exit			= mxs_dcp_aes_fallback_exit_tfm,
-+	}, {
-+		.base.cra_name		= "ecb(paes)",
-+		.base.cra_driver_name	= "ecb-paes-dcp",
-+		.base.cra_priority	= 401,
-+		.base.cra_alignmask	= 15,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_INTERNAL,
-+		.base.cra_blocksize	= AES_BLOCK_SIZE,
-+		.base.cra_ctxsize	= sizeof(struct dcp_async_ctx),
-+		.base.cra_module	= THIS_MODULE,
-+
-+		.min_keysize		= DCP_PAES_KEYSIZE,
-+		.max_keysize		= DCP_PAES_KEYSIZE,
-+		.setkey			= mxs_dcp_aes_setrefkey,
-+		.encrypt		= mxs_dcp_aes_ecb_encrypt,
-+		.decrypt		= mxs_dcp_aes_ecb_decrypt,
-+		.init			= mxs_dcp_paes_init_tfm,
-+	}, {
-+		.base.cra_name		= "cbc(paes)",
-+		.base.cra_driver_name	= "cbc-paes-dcp",
-+		.base.cra_priority	= 401,
-+		.base.cra_alignmask	= 15,
-+		.base.cra_flags		= CRYPTO_ALG_ASYNC | CRYPTO_ALG_INTERNAL,
-+		.base.cra_blocksize	= AES_BLOCK_SIZE,
-+		.base.cra_ctxsize	= sizeof(struct dcp_async_ctx),
-+		.base.cra_module	= THIS_MODULE,
-+
-+		.min_keysize		= DCP_PAES_KEYSIZE,
-+		.max_keysize		= DCP_PAES_KEYSIZE,
-+		.setkey			= mxs_dcp_aes_setrefkey,
-+		.encrypt		= mxs_dcp_aes_cbc_encrypt,
-+		.decrypt		= mxs_dcp_aes_cbc_decrypt,
-+		.ivsize			= AES_BLOCK_SIZE,
-+		.init			= mxs_dcp_paes_init_tfm,
- 	},
- };
- 
-diff --git a/include/soc/fsl/dcp.h b/include/soc/fsl/dcp.h
+diff --git a/include/keys/trusted_dcp.h b/include/keys/trusted_dcp.h
 new file mode 100644
-index 000000000000..cda89e260c46
+index 000000000000..9aaa42075b40
 --- /dev/null
-+++ b/include/soc/fsl/dcp.h
-@@ -0,0 +1,17 @@
++++ b/include/keys/trusted_dcp.h
+@@ -0,0 +1,11 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
 + * Copyright (C) 2021 sigma star gmbh
 + */
 +
-+#ifndef MXS_DCP_H
-+#define MXS_DCP_H
++#ifndef TRUSTED_DCP_H
++#define TRUSTED_DCP_H
 +
-+#define DCP_PAES_KEYSIZE 1
-+#define DCP_PAES_KEY_SLOT0 0x00
-+#define DCP_PAES_KEY_SLOT1 0x01
-+#define DCP_PAES_KEY_SLOT2 0x02
-+#define DCP_PAES_KEY_SLOT3 0x03
-+#define DCP_PAES_KEY_UNIQUE 0xfe
-+#define DCP_PAES_KEY_OTP 0xff
++extern struct trusted_key_ops dcp_trusted_key_ops;
 +
-+#endif /* MXS_DCP_H */
++#endif
+diff --git a/security/keys/trusted-keys/Kconfig b/security/keys/trusted-keys/Kconfig
+index dbfdd8536468..c6b80b7e5c78 100644
+--- a/security/keys/trusted-keys/Kconfig
++++ b/security/keys/trusted-keys/Kconfig
+@@ -33,6 +33,13 @@ config TRUSTED_KEYS_CAAM
+ 	  Enable use of NXP's Cryptographic Accelerator and Assurance Module
+ 	  (CAAM) as trusted key backend.
+ 
+-if !TRUSTED_KEYS_TPM && !TRUSTED_KEYS_TEE && !TRUSTED_KEYS_CAAM
++config TRUSTED_KEYS_DCP
++	bool "DCP-based trusted keys"
++	depends on CRYPTO_DEV_MXS_DCP >= TRUSTED_KEYS
++	default y
++	help
++	  Enable use of NXP's DCP (Data Co-Processor) as trusted key backend.
++
++if !TRUSTED_KEYS_TPM && !TRUSTED_KEYS_TEE && !TRUSTED_KEYS_CAAM && !TRUSTED_KEYS_DCP
+ comment "No trust source selected!"
+ endif
+diff --git a/security/keys/trusted-keys/Makefile b/security/keys/trusted-keys/Makefile
+index 735aa0bc08ef..f0f3b27f688b 100644
+--- a/security/keys/trusted-keys/Makefile
++++ b/security/keys/trusted-keys/Makefile
+@@ -14,3 +14,5 @@ trusted-$(CONFIG_TRUSTED_KEYS_TPM) += tpm2key.asn1.o
+ trusted-$(CONFIG_TRUSTED_KEYS_TEE) += trusted_tee.o
+ 
+ trusted-$(CONFIG_TRUSTED_KEYS_CAAM) += trusted_caam.o
++
++trusted-$(CONFIG_TRUSTED_KEYS_DCP) += trusted_dcp.o
+diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
+index c6fc50d67214..8af0988be850 100644
+--- a/security/keys/trusted-keys/trusted_core.c
++++ b/security/keys/trusted-keys/trusted_core.c
+@@ -10,6 +10,7 @@
+ #include <keys/trusted-type.h>
+ #include <keys/trusted_tee.h>
+ #include <keys/trusted_caam.h>
++#include <keys/trusted_dcp.h>
+ #include <keys/trusted_tpm.h>
+ #include <linux/capability.h>
+ #include <linux/err.h>
+@@ -30,7 +31,7 @@ MODULE_PARM_DESC(rng, "Select trusted key RNG");
+ 
+ static char *trusted_key_source;
+ module_param_named(source, trusted_key_source, charp, 0);
+-MODULE_PARM_DESC(source, "Select trusted keys source (tpm, tee or caam)");
++MODULE_PARM_DESC(source, "Select trusted keys source (tpm, tee, caam or dcp)");
+ 
+ static const struct trusted_key_source trusted_key_sources[] = {
+ #if defined(CONFIG_TRUSTED_KEYS_TPM)
+@@ -42,6 +43,9 @@ static const struct trusted_key_source trusted_key_sources[] = {
+ #if defined(CONFIG_TRUSTED_KEYS_CAAM)
+ 	{ "caam", &trusted_key_caam_ops },
+ #endif
++#if defined(CONFIG_TRUSTED_KEYS_DCP)
++	{ "dcp", &dcp_trusted_key_ops },
++#endif
+ };
+ 
+ DEFINE_STATIC_CALL_NULL(trusted_key_init, *trusted_key_sources[0].ops->init);
+diff --git a/security/keys/trusted-keys/trusted_dcp.c b/security/keys/trusted-keys/trusted_dcp.c
+new file mode 100644
+index 000000000000..8d19b92fe976
+--- /dev/null
++++ b/security/keys/trusted-keys/trusted_dcp.c
+@@ -0,0 +1,311 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2021 sigma star gmbh
++ */
++
++#include <crypto/aead.h>
++#include <crypto/aes.h>
++#include <crypto/algapi.h>
++#include <crypto/gcm.h>
++#include <crypto/skcipher.h>
++#include <keys/trusted-type.h>
++#include <linux/key-type.h>
++#include <linux/module.h>
++#include <linux/printk.h>
++#include <linux/random.h>
++#include <linux/scatterlist.h>
++#include <soc/fsl/dcp.h>
++
++#define DCP_BLOB_VERSION 1
++#define DCP_BLOB_AUTHLEN 16
++
++/**
++ * struct dcp_blob_fmt - DCP BLOB format.
++ *
++ * @fmt_version: Format version, currently being %1.
++ * @blob_key: Random AES 128 key which is used to encrypt @payload,
++ *            @blob_key itself is encrypted with OTP or UNIQUE device key in
++ *            AES-128-ECB mode by DCP.
++ * @nonce: Random nonce used for @payload encryption.
++ * @payload_len: Length of the plain text @payload.
++ * @payload: The payload itself, encrypted using AES-128-GCM and @blob_key,
++ *           GCM auth tag of size DCP_BLOB_AUTHLEN is attached at the end of it.
++ *
++ * The total size of a DCP BLOB is sizeof(struct dcp_blob_fmt) + @payload_len +
++ * DCP_BLOB_AUTHLEN.
++ */
++struct dcp_blob_fmt {
++	__u8 fmt_version;
++	__u8 blob_key[AES_KEYSIZE_128];
++	__u8 nonce[AES_KEYSIZE_128];
++	__le32 payload_len;
++	__u8 payload[];
++} __packed;
++
++static bool use_otp_key;
++module_param_named(dcp_use_otp_key, use_otp_key, bool, 0);
++MODULE_PARM_DESC(dcp_use_otp_key, "Use OTP instead of UNIQUE key for sealing");
++
++static bool skip_zk_test;
++module_param_named(dcp_skip_zk_test, skip_zk_test, bool, 0);
++MODULE_PARM_DESC(dcp_skip_zk_test, "Don't test whether device keys are zero'ed");
++
++static unsigned int calc_blob_len(unsigned int payload_len)
++{
++	return sizeof(struct dcp_blob_fmt) + payload_len + DCP_BLOB_AUTHLEN;
++}
++
++static int do_dcp_crypto(u8 *in, u8 *out, bool is_encrypt)
++{
++	int res = 0;
++	struct skcipher_request *req = NULL;
++	DECLARE_CRYPTO_WAIT(wait);
++	struct scatterlist src_sg, dst_sg;
++	struct crypto_skcipher *tfm;
++	u8 paes_key[DCP_PAES_KEYSIZE];
++
++	if (use_otp_key)
++		paes_key[0] = DCP_PAES_KEY_OTP;
++	else
++		paes_key[0] = DCP_PAES_KEY_UNIQUE;
++
++	tfm = crypto_alloc_skcipher("ecb-paes-dcp", CRYPTO_ALG_INTERNAL,
++				    CRYPTO_ALG_INTERNAL);
++	if (IS_ERR(tfm)) {
++		res = PTR_ERR(tfm);
++		pr_err("Unable to request DCP pAES-ECB cipher: %i\n", res);
++		tfm = NULL;
++		goto out;
++	}
++
++	req = skcipher_request_alloc(tfm, GFP_NOFS);
++	if (!req) {
++		res = -ENOMEM;
++		goto out;
++	}
++
++	skcipher_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG |
++				      CRYPTO_TFM_REQ_MAY_SLEEP,
++				      crypto_req_done, &wait);
++	res = crypto_skcipher_setkey(tfm, paes_key, sizeof(paes_key));
++	if (res < 0)
++		goto out;
++
++	sg_init_one(&src_sg, in, AES_KEYSIZE_128);
++	sg_init_one(&dst_sg, out, AES_KEYSIZE_128);
++	skcipher_request_set_crypt(req, &src_sg, &dst_sg, AES_KEYSIZE_128,
++				   NULL);
++
++	if (is_encrypt)
++		res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
++	else
++		res = crypto_wait_req(crypto_skcipher_decrypt(req), &wait);
++
++out:
++	skcipher_request_free(req);
++	crypto_free_skcipher(tfm);
++
++	return res;
++}
++
++static int do_aead_crypto(u8 *in, u8 *out, size_t len, u8 *key, u8 *nonce,
++			  bool is_encrypt)
++{
++	struct aead_request *aead_req = NULL;
++	struct scatterlist src_sg, dst_sg;
++	struct crypto_aead *aead;
++	int ret;
++
++	aead = crypto_alloc_aead("gcm(aes)", 0, CRYPTO_ALG_ASYNC);
++	if (IS_ERR(aead)) {
++		ret = PTR_ERR(aead);
++		pr_err("Unable to request AES-GCM cipher: %i\n", ret);
++		goto out;
++	}
++
++	ret = crypto_aead_setauthsize(aead, DCP_BLOB_AUTHLEN);
++	if (ret < 0) {
++		pr_err("Can't set crypto auth tag len: %d\n", ret);
++		goto free_aead;
++	}
++
++	aead_req = aead_request_alloc(aead, GFP_KERNEL);
++	if (!aead_req) {
++		ret = -ENOMEM;
++		goto free_aead;
++	}
++
++	sg_init_one(&src_sg, in, len);
++	if (is_encrypt) {
++		/*
++		 * If we encrypt our buffer has extra space for the auth tag.
++		 */
++		sg_init_one(&dst_sg, out, len + DCP_BLOB_AUTHLEN);
++	} else {
++		sg_init_one(&dst_sg, out, len);
++	}
++
++	aead_request_set_crypt(aead_req, &src_sg, &dst_sg, len, nonce);
++	aead_request_set_callback(aead_req, CRYPTO_TFM_REQ_MAY_SLEEP, NULL,
++				  NULL);
++	aead_request_set_ad(aead_req, 0);
++
++	if (crypto_aead_setkey(aead, key, AES_KEYSIZE_128)) {
++		pr_err("Can't set crypto AEAD key\n");
++		ret = -EINVAL;
++		goto free_req;
++	}
++
++	if (is_encrypt)
++		ret = crypto_aead_encrypt(aead_req);
++	else
++		ret = crypto_aead_decrypt(aead_req);
++
++free_req:
++	aead_request_free(aead_req);
++free_aead:
++	crypto_free_aead(aead);
++out:
++	return ret;
++}
++
++static int decrypt_blob_key(u8 *key)
++{
++	return do_dcp_crypto(key, key, false);
++}
++
++static int encrypt_blob_key(u8 *key)
++{
++	return do_dcp_crypto(key, key, true);
++}
++
++static int trusted_dcp_seal(struct trusted_key_payload *p, char *datablob)
++{
++	struct dcp_blob_fmt *b = (struct dcp_blob_fmt *)p->blob;
++	int blen, ret;
++
++	blen = calc_blob_len(p->key_len);
++	if (blen > MAX_BLOB_SIZE)
++		return -E2BIG;
++
++	b->fmt_version = DCP_BLOB_VERSION;
++	get_random_bytes(b->nonce, AES_KEYSIZE_128);
++	get_random_bytes(b->blob_key, AES_KEYSIZE_128);
++
++	ret = do_aead_crypto(p->key, b->payload, p->key_len, b->blob_key,
++			     b->nonce, true);
++	if (ret) {
++		pr_err("Unable to encrypt blob payload: %i\n", ret);
++		return ret;
++	}
++
++	ret = encrypt_blob_key(b->blob_key);
++	if (ret) {
++		pr_err("Unable to encrypt blob key: %i\n", ret);
++		return ret;
++	}
++
++	b->payload_len = get_unaligned_le32(&p->key_len);
++	p->blob_len = blen;
++	return 0;
++}
++
++static int trusted_dcp_unseal(struct trusted_key_payload *p, char *datablob)
++{
++	struct dcp_blob_fmt *b = (struct dcp_blob_fmt *)p->blob;
++	int blen, ret;
++
++	if (b->fmt_version != DCP_BLOB_VERSION) {
++		pr_err("DCP blob has bad version: %i, expected %i\n",
++		       b->fmt_version, DCP_BLOB_VERSION);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	p->key_len = le32_to_cpu(b->payload_len);
++	blen = calc_blob_len(p->key_len);
++	if (blen != p->blob_len) {
++		pr_err("DCP blob has bad length: %i != %i\n", blen,
++		       p->blob_len);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	ret = decrypt_blob_key(b->blob_key);
++	if (ret) {
++		pr_err("Unable to decrypt blob key: %i\n", ret);
++		goto out;
++	}
++
++	ret = do_aead_crypto(b->payload, p->key, p->key_len + DCP_BLOB_AUTHLEN,
++			     b->blob_key, b->nonce, false);
++	if (ret) {
++		pr_err("Unwrap of DCP payload failed: %i\n", ret);
++		goto out;
++	}
++
++	ret = 0;
++out:
++	return ret;
++}
++
++static int test_for_zero_key(void)
++{
++	static const u8 bad[] = {0x9a, 0xda, 0xe0, 0x54, 0xf6, 0x3d, 0xfa, 0xff,
++				 0x5e, 0xa1, 0x8e, 0x45, 0xed, 0xf6, 0xea, 0x6f};
++	void *buf = NULL;
++	int ret = 0;
++
++	if (skip_zk_test)
++		goto out;
++
++	buf = kmalloc(AES_BLOCK_SIZE, GFP_KERNEL);
++	if (!buf) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	memset(buf, 0x55, AES_BLOCK_SIZE);
++
++	ret = do_dcp_crypto(buf, buf, true);
++	if (ret)
++		goto out;
++
++	if (memcmp(buf, bad, AES_BLOCK_SIZE) == 0) {
++		pr_err("Device neither in secure nor trusted mode!\n");
++		ret = -EINVAL;
++	}
++out:
++	kfree(buf);
++	return ret;
++}
++
++static int trusted_dcp_init(void)
++{
++	int ret;
++
++	if (use_otp_key)
++		pr_info("Using DCP OTP key\n");
++
++	ret = test_for_zero_key();
++	if (ret) {
++		pr_err("Test for zero'ed keys failed: %i\n", ret);
++
++		return -EINVAL;
++	}
++
++	return register_key_type(&key_type_trusted);
++}
++
++static void trusted_dcp_exit(void)
++{
++	unregister_key_type(&key_type_trusted);
++}
++
++struct trusted_key_ops dcp_trusted_key_ops = {
++	.exit = trusted_dcp_exit,
++	.init = trusted_dcp_init,
++	.seal = trusted_dcp_seal,
++	.unseal = trusted_dcp_unseal,
++	.migratable = 0,
++};
 -- 
 2.35.3
 
