@@ -2,177 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A397D57B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9587D57B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343599AbjJXQOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40934 "EHLO
+        id S1343956AbjJXQOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344146AbjJXQN4 (ORCPT
+        with ESMTP id S234736AbjJXQOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:13:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672A310C2;
-        Tue, 24 Oct 2023 09:13:52 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 136262188C;
-        Tue, 24 Oct 2023 16:13:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1698164031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=65G5ZNQWiDjqZVlLnnNnzZnK3gIH0P1VMKPcZjBriZw=;
-        b=TOKvoMevPK9ep1x5Y2CeGPRRLW0DAGWpE6ozaK8R+CC/sxs3PwbkaAoHUQqKadsBI7W5CT
-        8medDQxT17HuuX36Ew6x5AEaX+tYoYm9IGay5lKwvgK5sx5/PyJlXgrZ+S25XTGRmaLrxl
-        tUF+0blB2NJIJsdSqHNta8nTaylXRN4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C98321391C;
-        Tue, 24 Oct 2023 16:13:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id qXU6MD7tN2UIZAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 24 Oct 2023 16:13:50 +0000
-Date:   Tue, 24 Oct 2023 18:13:49 +0200
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>
-Subject: Re: [PATCH v8 0/7] cgroup/cpuset: Support remote partitions
-Message-ID: <agjgbmdi2yqegjk7p7m52yb3wxmr64ivohbra5wapcd3lwynpw@jjmx6dsboo53>
-References: <20230905133243.91107-1-longman@redhat.com>
- <ahevhcy2aa7k3plmfvlepjehs6u3fun3j4oyskdz7axkhftlyi@zr3j473rciwi>
- <f75859e0-04d4-3da2-8df0-eb8841623a7c@redhat.com>
+        Tue, 24 Oct 2023 12:14:15 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1286A1;
+        Tue, 24 Oct 2023 09:14:13 -0700 (PDT)
+Received: (from willy@localhost)
+        by mail.home.local (8.17.1/8.17.1/Submit) id 39OGDsID004135;
+        Tue, 24 Oct 2023 18:13:54 +0200
+Date:   Tue, 24 Oct 2023 18:13:54 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
+Cc:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Zhangjin Wu <falcon@tinylab.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] selftests/nolibc: use EFI -bios for LoongArch qemu
+Message-ID: <ZTftQtrB0LL0nNK/@1wt.eu>
+References: <20231010-nolibc-out-of-tree-v1-0-b6a263859596@weissschuh.net>
+ <20231010-nolibc-out-of-tree-v1-2-b6a263859596@weissschuh.net>
+ <20231022092046.GC2669@1wt.eu>
+ <74f121c7-5356-4e58-87ca-e93fe48ccc39@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <f75859e0-04d4-3da2-8df0-eb8841623a7c@redhat.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -6.60
-X-Spamd-Result: default: False [-6.60 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <74f121c7-5356-4e58-87ca-e93fe48ccc39@t-8ch.de>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 13, 2023 at 12:03:18PM -0400, Waiman Long <longman@redhat.com> wrote:
-> > [chain]
-> >    root
-> >    |                           \
-> >    mid1a                        mid1b
-> >     cpuset.cpus=0-1              cpuset.cpus=2-15
-> >     cpuset.cpus.partition=root
-> >    |
-> >    mid2
-> >     cpuset.cpus=0-1
-> >     cpuset.cpus.partition=root
-> >    |
-> >    cont
-> >     cpuset.cpus=0-1
-> >     cpuset.cpus.partition=root
-> In this case, the effective CPUs of both mid1a and mid2 will be empty. IOW,
-> you can't have any task in these 2 cpusets.
-
-I see, that is relevant to a threaded subtree only where the admin / app
-can know how to distribute CPUs and place threads to internal nodes.
-
-> For the remote case, you can have intermediate tasks in both mid1a and mid2
-> as long as cpuset.cpus contains more CPUs than cpuset.cpus.exclusive.
-
-It's obvious that cpuset.cpus.exclusive should be exclusive among
-siblings.
-Should it also be so along the vertical path?
-
-  root
-  |                           
-  mid1a                       
-   cpuset.cpus=0-2
-   cpuset.cpus.exclusive=0    
-  |
-  mid2
-   cpuset.cpus=0-2
-   cpuset.cpus.exclusive=1
-  |
-  cont
-   cpuset.cpus=0-2
-   cpuset.cpus.exclusive=2
-   cpuset.cpus.partition=root
-
-IIUC, this should be a valid config regardless of cpuset.cpus.partition
-setting on mid1a and mid2.
-Whereas
-
-  root
-  |                           
-  mid1a                       
-   cpuset.cpus=0-2
-   cpuset.cpus.exclusive=0    
-  |
-  mid2
-   cpuset.cpus=0-2
-   cpuset.cpus.exclusive=1-2
-   cpuset.cpus.partition=root
-  |
-  cont
-   cpuset.cpus=1-2
-   cpuset.cpus.exclusive=1-2
-   cpuset.cpus.partition=root
-
-Here, I'm hesitating, will mid2 have any exclusively owned cpus?
-
-(I have flashes of understading cpus.exclusive as being a more
-expressive mechanism than partitions. OTOH, it seems non-intuitive when
-both are combined, thus I'm asking to internalize it better.
-Should partitions be deprecated for simplicty? They're still good to
-provide the notification mechanism of invalidation.
-cpuset.cpus.exclusive.effective don't have that.)
-
-> They will be ready eventually. This requirement of remote partition actually
-> came from our OpenShift team as the use of just local partition did not meet
-> their need. They don't need access to exclusive CPUs in the parent cgroup
-> layer for their management daemons. They do need to activate isolated
-> partition in selected child cgroups to support our Telco customers to run
-> workloads like DPDK.
+On Tue, Oct 24, 2023 at 06:06:11PM +0200, Thomas Weißschuh  wrote:
+> Oct 22, 2023 11:21:16 Willy Tarreau <w@1wt.eu>:
 > 
-> So they will add the support to upstream Kubernetes.
+> > On Tue, Oct 10, 2023 at 02:33:57PM +0200, Thomas Weißschuh wrote:
+> >> qemu for LoongArch does not work properly with direct kernel boot.
+> >> The kernel will panic during initialization and hang without any output.
+> >>
+> >> When booting in EFI mode everything work correctly.
+> >>
+> >> While users most likely don't have the LoongArch EFI binary installed at
+> >> least an explicit error about 'file not found' is better than a hanging
+> >> test without output that can never succeed.
+> >
+> > Agreed. Let's hope at least users will be able to figure what's
+> > missing depending on the message. There's one thing, though, you
+> > hard-coded the path to the file system, and it's unlikely to be
+> > located at the same place for everyone:
+> >
+> >    -bios /usr/share/edk2/loongarch64/OVMF_CODE.fd
+> >
+> > Sure, it's also possible to force QEMU_ARGS but it's becoming complicated
+> > due to the numerous arguments. Maybe use a QEMU_BIOS_loongarch variable
+> > for this ? This way if this starts to generalize to other archs, we can
+> > later simplify it and automatically append -bios when needed.
+> 
+> My hope was for it to be a purely temporary bandaid.
+> But you are right, let's do it properly from the beginning.
 
-Is it worth implementing anything touching (ancestral)
-cpuset.cpus.partition then?
+The right way to think about temporary code is that if it's supposed to
+be quick to address, you don't want to introduce a temporary way of
+proceeding that will change later as the change will annoy some users.
+And if the reason for the temporary step is a temporary difficulty, you
+can be certain nobody will ever try to address it and that temporary
+will be definitive. So thinking "temporary" should generally ring a
+bell "am I going to annoy users for no reason or am I putting myself in
+a wrong corner". That's why I really try to avoid anything "temporary".
+(But there's no problem with making the wrong choice and regretting
+later, of course ;-)).
 
-Thanks,
-Michal
-
+Cheers,
+Willy
