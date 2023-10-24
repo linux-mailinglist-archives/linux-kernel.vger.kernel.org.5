@@ -2,98 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9907C7D54B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB057D54B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229441AbjJXPI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
+        id S231553AbjJXPJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232248AbjJXPIy (ORCPT
+        with ESMTP id S232308AbjJXPJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:08:54 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765DB1B3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:08:52 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a7e5dc8573so45977687b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:08:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698160131; x=1698764931; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=L6YEOKFZgnFFaFZTb2aWNTq5tspoBeefaSbm2PKin5I=;
-        b=grWbncdaFAmgIa+rADUOXCvA1kgEps1HSgMbXt9/fZyUZJvlHbvAhYJyQrzkevsM25
-         EvujKf1LibhOl7eYRA+2OLk1n8ehyJJyMzsNZa6qOjyKbLQgFxaZmNF/yqbooEKBEbPm
-         nBSz0C8R4sSLtkLtAaKs5V/qHBzQ9ufULgk9fMQFgGx933mMzYUKomCwovAIjtK0GTOq
-         ub/3vybhVHGoQHoB7103/mKFXztt6WCgCUtvSo0z1oU/H+orDfv/UMvRkAsjiBjZbRHr
-         zil/x+6MoX6db9D4QhOJUGvmGkw2IVA+YdCIMyy9ZbkVMCndPWg8bVn45GpAdMebC1+R
-         k6vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698160131; x=1698764931;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L6YEOKFZgnFFaFZTb2aWNTq5tspoBeefaSbm2PKin5I=;
-        b=DyjC43OeNi/OH3SNqqIqolF9yj1jrh0Ymj2C8By35eCNmYv9kHPamBJLKQScsJjyEq
-         diLUhWHgKqY8OJAXQgNJrPjBiKnmWCb9v37ZxESl8+ppvoIHecCBI1QV133fLQ+knjdU
-         NT353ZZZwA/ia2tzHoXeyvKHyfIfHWyydU2FwwlNY+0WE6b0WQ+q7XrfhkqVWjMy6ZgD
-         D/ZYKaQ5mI/8Q43yvDU4pFQYbKnowLSz+puinadgzQYbB2QIYpe7rvnQHO0kEs1RDWYe
-         mroLy7yXcaiNynGuqU1oTAGT7kDITVQ76ofDXtHzdRbaZnUXLCJk56mC5YnBeML57ARl
-         /QNQ==
-X-Gm-Message-State: AOJu0Yx9FEs/mw+nEzeehusOMB5C6ROpcbdrYLZvRhBXFCl5gEn/kbB+
-        bOdeDs5jQCqKnMO5A1QWOiwH42cerBhi+VfJbYWyQw==
-X-Google-Smtp-Source: AGHT+IFdzxMRbfUafGldLvc0HICTqC1JOkySRW6UQmufXP4xHsBx58j8IAM3qrN6y3CJMnHbyWV5ul2UEmW+AdgnJ3I=
-X-Received: by 2002:a81:4814:0:b0:5a8:e303:1db2 with SMTP id
- v20-20020a814814000000b005a8e3031db2mr13315604ywa.23.1698160131018; Tue, 24
- Oct 2023 08:08:51 -0700 (PDT)
+        Tue, 24 Oct 2023 11:09:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D15210DB;
+        Tue, 24 Oct 2023 08:09:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 740BAC433C7;
+        Tue, 24 Oct 2023 15:08:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698160141;
+        bh=WjZOHjehQIEdnvElJew7f9x5ZqLGCeUVjwRuHOMlEjk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CgZv75zmnuoQ3ekkikQC5x9qSL7DET36FFJXesbijJrWTAliIFHfRSIjF6/JXUDQ0
+         d+cP6SIFduzbCM5SmWKiaiRL18S85MiUGZ8OX1xnjboThQELef/voEBlHUIIa4Yc80
+         0P++v7esCbdc9Z1jAU+oRLa52c7PCgm+7OaJJG19BLbu2WUUIDxnUugkzoKgEgtHig
+         xbqa1LPQHGhx0lPElbc/GcNikq8DiiOhwHgeUguRliY3sJJiAYe+wSeAuj/zX1NwXL
+         s9T/KMpbHqCf2cLHEaSW4y52qBo5mgOAtijYPOOu3uxicZgzGpkSpEPL5Unstd12Hi
+         /HclSTJxGaD5w==
+Date:   Tue, 24 Oct 2023 16:08:56 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] dt-bindings: backlight: mp3309c: remove two required
+ properties
+Message-ID: <20231024-paddling-spongy-be82eae03228@spud>
+References: <20231020135434.2598578-1-f.suligoi@asem.it>
+ <20231020135434.2598578-2-f.suligoi@asem.it>
+ <20231020-moonrise-senate-86d0edb2d404@spud>
+ <DU2PR01MB803498DFD93E82DD3947D72DF9D8A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+ <20231023-anybody-silver-4548023f8f26@spud>
+ <DU2PR01MB8034CF8EE4358B9446809AA2F9DFA@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
 MIME-Version: 1.0
-References: <1696440338-12561-1-git-send-email-quic_mojha@quicinc.com> <f3a4c114-b430-47ce-a746-4a840994dc58@quicinc.com>
-In-Reply-To: <f3a4c114-b430-47ce-a746-4a840994dc58@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 24 Oct 2023 18:08:39 +0300
-Message-ID: <CAA8EJpr0Nnn5Tr=2CBAADYfNU6cnKuq==x5L5YQoko9C=3q2tg@mail.gmail.com>
-Subject: Re: [PATCH 0/3 v7] Misc SCM changes
-To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-Cc:     Mukesh Ojha <quic_mojha@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        p.zabel@pengutronix.de, linus.walleij@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8Q3LPtznJIWd+xHE"
+Content-Disposition: inline
+In-Reply-To: <DU2PR01MB8034CF8EE4358B9446809AA2F9DFA@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023 at 16:31, Kathiravan Thirumoorthy
-<quic_kathirav@quicinc.com> wrote:
->
->
-> On 10/4/2023 10:55 PM, Mukesh Ojha wrote:
-> > I have given version to this series as v7 as it has already
-> > gone through v6 and later got added to minidump patch series
-> > However, these 3 patches can go independently and has no
-> > relation with minidump hence, separated it from minidump series.
->
->
-> Mukesh, Can you rebase this series on top of linux-next, since there is
-> a conflict?
->
->
-> Bjorn, after rebase is done, will you able to pick it up for v6.7 if
-> there is a time? These patches(#1  and #3) are required for the crash
-> dump collection on IPQ9574 and IPQ5332 SoCs.
 
-It is not obvious that they are fixes for the crash. You did not add
-Fixes tags, you didn't follow
-Documentation/process/stable-kernel-rules.rst. Cover letter is
-useless. How can we guess that they are urgent / important?
+--8Q3LPtznJIWd+xHE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-With best wishes
-Dmitry
+On Tue, Oct 24, 2023 at 07:53:38AM +0000, Flavio Suligoi wrote:
+> > On Mon, Oct 23, 2023 at 09:28:03AM +0000, Flavio Suligoi wrote:
+> > > > On Fri, Oct 20, 2023 at 03:54:33PM +0200, Flavio Suligoi wrote:
+> > > > > The two properties:
+> > > > >
+> > > > > - max-brightness
+> > > > > - default brightness
+> > > > >
+> > > > > are not really required, so they can be removed from the "require=
+d"
+> > > > > section.
+> > > >
+> > > > Why are they not required? You need to provide an explanation.
+> > >
+> > > The "max-brightness" is not more used now in the driver (I used it in
+> > > the first version of the driver).
+> >=20
+> > If it is not used any more, what happens when someone passes an old
+> > devicetree to the kernel, that contains max-brightness, but not any of =
+your
+> > new properties?
+>=20
+> This is not a problem, because the device driver has not yet been include=
+d in any kernel.
+> My patch for the device driver is still being analyzed by the maintainers.
+> Only this dt-binding yaml file is already included in the "for-backlight-=
+next" branch
+> of the "backlight" kernel repository.
+> At the moment, this driver is used only in a i.MX8MM board produced in my=
+ company,
+> under my full control. No other developer is using it now.
+
+Right. This is exactly the sort of commentary that you need to provide
+up front, to have us spent a bunch of time going back and forth to
+figure out :(
+
+> > > The "default-brightness", if omitted in the DT, is managed by the
+> > > device driver, using a default value. This depends on the dimming mode
+> > used:
+> >=20
+> > For default-brightness, has here always been support in the driver for =
+the
+> > property being omitted, or is this newly added?
+>=20
+> In the first version of the driver this property was a "required property=
+",
+> but nobody has used this driver before, so this should be not a problem.
+
+> > What I would like is an explanation in the commit message as to why the
+> > revised example is more helpful than the existing (and
+> > must-remain-valid) one.
+>=20
+> As said before, no one may have ever used this device driver,
+> so I would leave only this new version of the example.
+
+Okay. Please improve the commit message explaining why it is okay to
+make these changes & send a v2.
+The alternative is that Lee drops the dt-binding patch & you submit a
+revised version of the binding alongside the next iteration of the
+driver.
+
+Cheers,
+Conor.
+
+--8Q3LPtznJIWd+xHE
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTfeCAAKCRB4tDGHoIJi
+0iFhAP9S/FlnjK5C6KCH6pLyfeeCD1U8XFRW7kZPbpJplU8SCAD/bkAcQQd5VU9d
+3r2f744R9Cw33bKy5n99PAJBaey2KwU=
+=8wm8
+-----END PGP SIGNATURE-----
+
+--8Q3LPtznJIWd+xHE--
