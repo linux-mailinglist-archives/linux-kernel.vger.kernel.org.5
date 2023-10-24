@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 851987D5CEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87D27D5CF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344268AbjJXVLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 17:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
+        id S1344067AbjJXVS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 17:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232399AbjJXVLm (ORCPT
+        with ESMTP id S232399AbjJXVS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:11:42 -0400
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD1C10CE
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:11:40 -0700 (PDT)
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-581e2c9197bso6870264eaf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:11:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698181899; x=1698786699;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DZWvcvFWT3P94ESec92OyEYUrt6Ss1wkXtTKq4rDYxM=;
-        b=AuaJChwAqGLkvd3l774a88pBENGuhVV7sM8r0r4tZceXytjG4CwzpVvYQNeXEyXrjt
-         ZNXEXglDsem6z3+718c3+8KMbxdlPFBTyXZuBAGpG0Z6gZqb7LTCaZ/VMNlYd0hO/McD
-         TM40oHoXChHXeCfxvA8Wk44kd8P6XwL1PQNI8xpgDEkVrAMg05p5Ua1Pad65ju9mskqt
-         7nzWUdlUk7xFXPJml3t2Gz4+3tJla13VPNKeL6EDmVb6/7mMVZ6fAwlLtjNft9J73N+7
-         c14Iv9qZISH3WtBjC6X4Bvu1azA6JinsRzOWQwnkDwGCS8FlsHeBEOgfaENeoSylxABO
-         TBqA==
-X-Gm-Message-State: AOJu0YzDm1OOMrZ1ssLzsgYBi3lx+6dZQ7QpZ7msViaJE7550dF77+Ut
-        sCMQMTXL4/15QjdVd9fRGrlh1pCCVei2piCAUfc65gFne7Bd
-X-Google-Smtp-Source: AGHT+IFIGdjAGzKoTrnYimPKPHmDG1kjuJTZCw+8fwLQZBt4HO+eQF/KgxqQt+0nli6xsdzu/gL97sZ4XmiD0ErEiKHID+MmReGv
+        Tue, 24 Oct 2023 17:18:26 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23BD10CF;
+        Tue, 24 Oct 2023 14:18:24 -0700 (PDT)
+Received: from notapiano.myfiosgateway.com (unknown [IPv6:2600:4041:5b1a:cd00:524d:e95d:1a9c:492a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id E8CF66607333;
+        Tue, 24 Oct 2023 22:18:21 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698182303;
+        bh=YRq5099l8oQL4Fdgmj24/WWMHCqsGt/HPtK1ssRTRao=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ka/ZKhFp5M0+/HZbpCsb/pNnyzTib5pwvFEwqEMBcLpZKQeZl3X5l65mXPgALnchS
+         VNbg51Rugu1nhqbFGtYnMItn2Ejb7TtMvzMF2QflQezH3EN7NYYkYtsbBOY+8fSa9t
+         0nI1rqJNFcb3KDmnaBjK+3XaTkoHpOdKjlf3QguMmTba+Tnv8p+isVAZNP/kWI4n1V
+         t6fYkZQTThb+ISVq44KhCtxSKW9v5UIMLtgAYRsk7xlS03QUdMOQQ929+W+yAY5/Te
+         7Wnn4TVona2qfx9AlnFmBPk+MXH9BnhPe0DCKIWV3znm5faqxttQ8Q62xOkO+AmUp0
+         2MGixT6kVYbjg==
+From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>
+To:     Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-usb@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-kselftest@vger.kernel.org, kernel@collabora.com,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/2] Add test to verify probe of devices from discoverable busses on DT platforms
+Date:   Tue, 24 Oct 2023 17:17:58 -0400
+Message-ID: <20231024211818.365844-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-Received: by 2002:a4a:350f:0:b0:581:def4:738d with SMTP id
- l15-20020a4a350f000000b00581def4738dmr3989735ooa.0.1698181899638; Tue, 24 Oct
- 2023 14:11:39 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 14:11:39 -0700
-In-Reply-To: <0000000000003ee3610599d20096@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e45f1006087cc8ea@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in __media_entity_remove_links
-From:   syzbot <syzbot+0b0095300dfeb8a83dc8@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, laurent.pinchart@ideasonboard.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-usb@vger.kernel.org, mchehab@kernel.org, nogikh@google.com,
-        sakari.ailus@linux.intel.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This bug is marked as fixed by commit:
-media: uvcvideo: Avoid cyclic entity chains due to malformed USB descriptors
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+This is part of an effort to improve detection of regressions impacting
+device probe on all platforms. The recently merged DT kselftest [1]
+detects probe issues for all devices described statically in the DT.
+That leaves out devices discovered at run-time from discoverable busses.
 
-#syz fix: exact-commit-title
+This is where this test comes in. All of the devices that are connected
+through discoverable busses (ie USB and PCI), and which are internal and
+therefore always present, can be described in a per-platform file so
+they can be checked for. The test will check that the device has been
+instantiated and bound to a driver.
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+Patch 1 introduces the test. Patch 2 adds the test definitions for the
+google,spherion machine (Acer Chromebook 514) as an example.
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=0b0095300dfeb8a83dc8
+This is the sample output from the test running on Spherion:
 
----
-[1] I expect the commit to be present in:
+TAP version 13
+ Using board file:  boards/google,spherion
+1..10
+ok 1 usb.camera.0.device
+ok 2 usb.camera.0.driver
+ok 3 usb.camera.1.device
+ok 4 usb.camera.1.driver
+ok 5 usb.bluetooth.0.device
+ok 6 usb.bluetooth.0.driver
+ok 7 usb.bluetooth.1.device
+ok 8 usb.bluetooth.1.driver
+ok 9 pci.wifi.device
+ok 10 pci.wifi.driver
+ Totals: pass:10 fail:0 xfail:0 xpass:0 skip:0 error:0
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+[1] https://lore.kernel.org/all/20230828211424.2964562-1-nfraprado@collabora.com/
 
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+Nícolas F. R. A. Prado (2):
+  kselftest: Add test to verify probe of devices from discoverable
+    busses
+  kselftest: devices: Add board file for google,spherion
 
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/devices/.gitignore    |   1 +
+ tools/testing/selftests/devices/Makefile      |   8 +
+ .../selftests/devices/boards/google,spherion  |   3 +
+ .../devices/test_discoverable_devices.sh      | 165 ++++++++++++++++++
+ 5 files changed, 178 insertions(+)
+ create mode 100644 tools/testing/selftests/devices/.gitignore
+ create mode 100644 tools/testing/selftests/devices/Makefile
+ create mode 100644 tools/testing/selftests/devices/boards/google,spherion
+ create mode 100755 tools/testing/selftests/devices/test_discoverable_devices.sh
 
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+-- 
+2.42.0
+
