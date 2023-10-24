@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD0A7D43F1
+	by mail.lfdr.de (Postfix) with ESMTP id ABFA57D43F3
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbjJXA0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 20:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
+        id S231523AbjJXA06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 20:26:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231725AbjJXA0q (ORCPT
+        with ESMTP id S231775AbjJXA0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 20:26:46 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCC210D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:26:44 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9c83b656fso32912225ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:26:44 -0700 (PDT)
+        Mon, 23 Oct 2023 20:26:49 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D3110C6
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:26:46 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c9d4e38f79so28089905ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:26:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698107204; x=1698712004; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698107206; x=1698712006; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=F8dxA5PYrMgcC3TCFQUnjkCAgDkYN5FCICeYb/ZzON0=;
-        b=3ANCsRAOhw2Bys8XhAYGao+LqGKuUu60I6BcYMOl9QOwq9ONFG9TSzR7Db/ay/LHFA
-         Xd8NBJ+hpOPC/ocdqgLZnBu5DE/fOTJ90krxvyQ2J5UJk9h8Pz0y7r9m0LIBN2dnPy8D
-         wWBUmtudodW93UWc3NQdUIAdL1RWCFlkRce3lR+535kkwWn8yZFvMicZtm8MEC1qDk/5
-         5lcT0fugNM7bDMb4eJgdP4qsw1Vy2qpTUkfOC3OuBaxuye0wAY8lk0XVXrvvRjBk+zQI
-         lBUNt2mdmDA+q/X/U+0ipYte8bmyhk9lhbMjjQradhvWUDxGmKBEMF/Q+8RSWsYhyd4W
-         Xx2w==
+        bh=cKw2oFXjDBeLUy3TN9d0wAQBta1CYNuO3g/uAt5rkPU=;
+        b=vKn+/AUweDCsC14TZMn+KQtWldIkLL/EkEtYsn7yPtJgZgLCDuGNTFQyNehKIDs1R7
+         2FB+dXItFGodP1BAWiHTDoszQ/2epqk2+DLDZ3/icmwMhkqkXPB7LO/IEaZhjCoFY75L
+         KfyRKl2evBUXW1EqhZY37jGU9mukWm7yqYjEcVWsmx1MBH5F7zZFaVLBCmeaUs9euDKy
+         kV8CtKhvlLu+3oOrHnCLyg66x6ADD307XIa10ei2nGsQWCB9oF5lGxaxcfxvQ25lqhQJ
+         9YIhQ5BaLmhXjViiiGegjaV+2ew5fo0UFqXaFCOxQOvfna56hAqEm7rZ29ar39TuCVYF
+         t4zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698107204; x=1698712004;
+        d=1e100.net; s=20230601; t=1698107206; x=1698712006;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=F8dxA5PYrMgcC3TCFQUnjkCAgDkYN5FCICeYb/ZzON0=;
-        b=YeDPpcpsA9d56HW4RKf5dSw/tCCTgZDNvxajfo5V783FSaO6z7D5GH94kX7/UMop6g
-         CNwifPIDsOif6zuQxdeibTh3gw9Wz9KqSMPb5ibRQrSBsOydP51eDrza8QNrQORx2X4m
-         oEqHPjBuydA9f0preMHwDqsWAUA00H+Fav0QM1KUpaSdOV8wCppOhVBJBfviFhzcJSxE
-         uB3xgfPv24+zy/yP2SKr9UJPiK454cyjsM48QRRGrJKebMykKNUxfcGnCq7ksPXlq9fo
-         VN6ugV+krmiz3qQXdcHeGuh3NHVJw5W6MhnjQrQyFldiskHwC/MmM3KGyIoQ9099T3tt
-         yPng==
-X-Gm-Message-State: AOJu0Yw2L+sO2nGSYxbs6w38Sj9g/zGHFDTa/Z/nJA8sKvoTK2Tg/zw3
-        TA8jPifvTnUWdPtm8/ex4b/IWwWyZzI=
-X-Google-Smtp-Source: AGHT+IFxcLi6IwWcXtvtdZIs4kyjvjtoxoncPE9QN4ThjeMC3VX0DBhml+M+m1iSJrMtMUkKANjGOAL6YJM=
+        bh=cKw2oFXjDBeLUy3TN9d0wAQBta1CYNuO3g/uAt5rkPU=;
+        b=fkfihSrx5F1bT71qRyL+xn3alU/FE4tBHxzg+MTxSJKdW2dywnDx7Y56wtTD/FZnyZ
+         yidkp9KqzyVotucS55eqGwf3TIwFagIq1DwW3tFVCTaZeUC96ve1ts4AMK7plKtikxdO
+         zBxcyKJR8rVazN0Fa+noL18BVJ8qdWBe8/lCmxxnbMdtpAzxST+5VGTd/Qz2AiCICJ9Z
+         3BVpfSWsmG2OBEK2nfZJgayk5zVkvhTKiC8PuQDMqJg1Svef4Jl+jPt1NpRoca9bcYGW
+         Sab6YgZaK3BCQgYPPQZUY79UD3haN/FtPzME2P5DrQkAd3VXhSfYg4yhKfeXhZPlL9VC
+         5gag==
+X-Gm-Message-State: AOJu0YzUHgSeIFMnC5EzJGN+ti+LvhUE6qEKXl/8Ai8sRmGqC6V06x9a
+        lqv6nYu3D4S6ckitB4DQh8wbwTOV5zU=
+X-Google-Smtp-Source: AGHT+IHCk1iJEjqyU6r8Xnv/6T2nNERPiPMyxUaFyJVNh/usThtDLM2yp4ID9P1oppjz5D7IP0MxYMcn2uo=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:c1d4:b0:1bc:2547:b17c with SMTP id
- c20-20020a170902c1d400b001bc2547b17cmr202838plc.1.1698107204068; Mon, 23 Oct
- 2023 17:26:44 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:902:ab5a:b0:1c7:3462:ce8d with SMTP id
+ ij26-20020a170902ab5a00b001c73462ce8dmr193856plb.10.1698107205898; Mon, 23
+ Oct 2023 17:26:45 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Mon, 23 Oct 2023 17:26:24 -0700
+Date:   Mon, 23 Oct 2023 17:26:25 -0700
 In-Reply-To: <20231024002633.2540714-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231024002633.2540714-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Message-ID: <20231024002633.2540714-5-seanjc@google.com>
-Subject: [PATCH v5 04/13] KVM: selftests: Add vcpu_set_cpuid_property() to set properties
+Message-ID: <20231024002633.2540714-6-seanjc@google.com>
+Subject: [PATCH v5 05/13] KVM: selftests: Drop the "name" param from KVM_X86_PMU_FEATURE()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -72,74 +72,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jinrong Liang <cloudliang@tencent.com>
+Drop the "name" parameter from KVM_X86_PMU_FEATURE(), it's unused and
+the name is redundant with the macro, i.e. it's truly useless.
 
-Add vcpu_set_cpuid_property() helper function for setting properties, and
-use it instead of open coding an equivalent for MAX_PHY_ADDR.  Future vPMU
-testcases will also need to stuff various CPUID properties.
-
-Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-Co-developed-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../testing/selftests/kvm/include/x86_64/processor.h |  4 +++-
- tools/testing/selftests/kvm/lib/x86_64/processor.c   | 12 +++++++++---
- .../kvm/x86_64/smaller_maxphyaddr_emulation_test.c   |  2 +-
- 3 files changed, 13 insertions(+), 5 deletions(-)
+ tools/testing/selftests/kvm/include/x86_64/processor.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-index 25bc61dac5fb..a01931f7d954 100644
+index a01931f7d954..2d9771151dd9 100644
 --- a/tools/testing/selftests/kvm/include/x86_64/processor.h
 +++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-@@ -994,7 +994,9 @@ static inline void vcpu_set_cpuid(struct kvm_vcpu *vcpu)
- 	vcpu_ioctl(vcpu, KVM_GET_CPUID2, vcpu->cpuid);
- }
+@@ -289,7 +289,7 @@ struct kvm_x86_cpu_property {
+ struct kvm_x86_pmu_feature {
+ 	struct kvm_x86_cpu_feature anti_feature;
+ };
+-#define	KVM_X86_PMU_FEATURE(name, __bit)					\
++#define	KVM_X86_PMU_FEATURE(__bit)						\
+ ({										\
+ 	struct kvm_x86_pmu_feature feature = {					\
+ 		.anti_feature = KVM_X86_CPU_FEATURE(0xa, 0, EBX, __bit),	\
+@@ -298,7 +298,7 @@ struct kvm_x86_pmu_feature {
+ 	feature;								\
+ })
  
--void vcpu_set_cpuid_maxphyaddr(struct kvm_vcpu *vcpu, uint8_t maxphyaddr);
-+void vcpu_set_cpuid_property(struct kvm_vcpu *vcpu,
-+			     struct kvm_x86_cpu_property property,
-+			     uint32_t value);
+-#define X86_PMU_FEATURE_BRANCH_INSNS_RETIRED	KVM_X86_PMU_FEATURE(BRANCH_INSNS_RETIRED, 5)
++#define X86_PMU_FEATURE_BRANCH_INSNS_RETIRED	KVM_X86_PMU_FEATURE(5)
  
- void vcpu_clear_cpuid_entry(struct kvm_vcpu *vcpu, uint32_t function);
- void vcpu_set_or_clear_cpuid_feature(struct kvm_vcpu *vcpu,
-diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-index d8288374078e..9e717bc6bd6d 100644
---- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
-+++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-@@ -752,11 +752,17 @@ void vcpu_init_cpuid(struct kvm_vcpu *vcpu, const struct kvm_cpuid2 *cpuid)
- 	vcpu_set_cpuid(vcpu);
- }
- 
--void vcpu_set_cpuid_maxphyaddr(struct kvm_vcpu *vcpu, uint8_t maxphyaddr)
-+void vcpu_set_cpuid_property(struct kvm_vcpu *vcpu,
-+			     struct kvm_x86_cpu_property property,
-+			     uint32_t value)
+ static inline unsigned int x86_family(unsigned int eax)
  {
--	struct kvm_cpuid_entry2 *entry = vcpu_get_cpuid_entry(vcpu, 0x80000008);
-+	struct kvm_cpuid_entry2 *entry;
-+
-+	entry = __vcpu_get_cpuid_entry(vcpu, property.function, property.index);
-+
-+	(&entry->eax)[property.reg] &= ~GENMASK(property.hi_bit, property.lo_bit);
-+	(&entry->eax)[property.reg] |= value << (property.lo_bit);
- 
--	entry->eax = (entry->eax & ~0xff) | maxphyaddr;
- 	vcpu_set_cpuid(vcpu);
- }
- 
-diff --git a/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c b/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c
-index 06edf00a97d6..9b89440dff19 100644
---- a/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/smaller_maxphyaddr_emulation_test.c
-@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
- 	vm_init_descriptor_tables(vm);
- 	vcpu_init_descriptor_tables(vcpu);
- 
--	vcpu_set_cpuid_maxphyaddr(vcpu, MAXPHYADDR);
-+	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_MAX_PHY_ADDR, MAXPHYADDR);
- 
- 	rc = kvm_check_cap(KVM_CAP_EXIT_ON_EMULATION_FAILURE);
- 	TEST_ASSERT(rc, "KVM_CAP_EXIT_ON_EMULATION_FAILURE is unavailable");
 -- 
 2.42.0.758.gaed0368e0e-goog
 
