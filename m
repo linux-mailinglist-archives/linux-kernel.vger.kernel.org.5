@@ -2,93 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D10E07D589C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8127D588F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343947AbjJXQgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:36:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
+        id S234821AbjJXQgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234898AbjJXQgp (ORCPT
+        with ESMTP id S234835AbjJXQgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:36:45 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1872C93;
-        Tue, 24 Oct 2023 09:36:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FRhM1lkxrMQXB6nBknGKk7DxO1qxF/oGT3Z0ktDXX/c=; b=bvia4VeLbi96QgUtm2UwDli3dl
-        sD5sTqhoOKDHRkgmNgdpLszg1kwxUjO9vfBlgEViuJReaFKzlGwpl+1r94ig5eFb5jAWpfAM05VcI
-        l6ew3hQ2TkPFk+UwXNuNGFdFxLq/RLAfw1Lnb4PYf9wzRP6582UY7hEN7pjnUx2ytUfdj/kAUr0Dd
-        nUse4Z5ibfKe2COkrTmzj3AIIh1WHXltbvk/jSmvgW4FcfrlE3t5JVymO94gQuDuTicL2Rd8n2H0P
-        bkofqcMFA1Jd+X1LKHLHaLoL35pUo5YeI+woc+579kPk4t/GTz03Zs1UjA8Pfrbu8Fvl35vURJ96+
-        u2prTGew==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qvKOE-00Fdzk-0V;
-        Tue, 24 Oct 2023 16:36:22 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C9A5B300451; Tue, 24 Oct 2023 18:36:21 +0200 (CEST)
-Date:   Tue, 24 Oct 2023 18:36:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Alyssa Milburn <alyssa.milburn@intel.com>
-Subject: Re: [PATCH  v2 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20231024163621.GD40044@noisy.programming.kicks-ass.net>
-References: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com>
- <20231024-delay-verw-v2-1-f1881340c807@linux.intel.com>
- <20231024103601.GH31411@noisy.programming.kicks-ass.net>
- <20231024163515.aivo2xfmwmbmlm7z@desk>
+        Tue, 24 Oct 2023 12:36:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699D5133
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:36:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BE2AC433C9;
+        Tue, 24 Oct 2023 16:36:30 +0000 (UTC)
+Date:   Tue, 24 Oct 2023 12:36:28 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH] eventfs: Fix WARN_ON() in create_file_dentry()
+Message-ID: <20231024123628.62b88755@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024163515.aivo2xfmwmbmlm7z@desk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 09:35:15AM -0700, Pawan Gupta wrote:
-> On Tue, Oct 24, 2023 at 12:36:01PM +0200, Peter Zijlstra wrote:
-> > On Tue, Oct 24, 2023 at 01:08:21AM -0700, Pawan Gupta wrote:
-> > 
-> > > +.macro CLEAR_CPU_BUFFERS
-> > > +	ALTERNATIVE "jmp .Lskip_verw_\@;", "jmp .Ldo_verw_\@", X86_FEATURE_CLEAR_CPU_BUF
-> > > +		/* nopl __KERNEL_DS(%rax) */
-> > > +		.byte 0x0f, 0x1f, 0x80, 0x00, 0x00;
-> > > +.Lverw_arg_\@:	.word __KERNEL_DS;
-> > > +.Ldo_verw_\@:	verw _ASM_RIP(.Lverw_arg_\@);
-> > > +.Lskip_verw_\@:
-> > > +.endm
-> > 
-> > Why can't this be:
-> > 
-> > 	ALTERNATIVE "". "verw _ASM_RIP(mds_verw_sel)", X86_FEATURE_CLEAR_CPU_BUF
-> > 
-> > And have that mds_verw_sel thing be out-of-line ?
-> 
-> I haven't done this way because its a tad bit fragile as it depends on
-> modules being within 4GB of kernel.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-We 100% rely on that *everywhere*, nothing fragile about it.
+As the comment right above a WARN_ON() in create_file_dentry() states:
+
+  * Note, with the mutex held, the e_dentry cannot have content
+  * and the ei->is_freed be true at the same time.
+
+But the WARN_ON() only has:
+
+  WARN_ON_ONCE(ei->is_free);
+
+Where to match the comment (and what it should actually do) is:
+
+  dentry = *e_dentry;
+  WARN_ON_ONCE(dentry && ei->is_free)
+
+Also in that case, set dentry to NULL (although it should never happen).
+
+Fixes: 5790b1fb3d672 ("eventfs: Remove eventfs_file and just use eventfs_inode")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ fs/tracefs/event_inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index 09ab93357957..4d2da7480e5f 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -264,8 +264,9 @@ create_file_dentry(struct eventfs_inode *ei, struct dentry **e_dentry,
+ 		 * Note, with the mutex held, the e_dentry cannot have content
+ 		 * and the ei->is_freed be true at the same time.
+ 		 */
+-		WARN_ON_ONCE(ei->is_freed);
+ 		dentry = *e_dentry;
++		if (WARN_ON_ONCE(dentry && ei->is_freed))
++			dentry = NULL;
+ 		/* The lookup does not need to up the dentry refcount */
+ 		if (dentry && !lookup)
+ 			dget(dentry);
+-- 
+2.42.0
+
