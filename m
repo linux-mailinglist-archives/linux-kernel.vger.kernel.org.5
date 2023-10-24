@@ -2,45 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7977D45F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 05:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B11A87D45F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 05:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232035AbjJXDaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 23:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
+        id S232164AbjJXDa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 23:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232029AbjJXDaJ (ORCPT
+        with ESMTP id S232109AbjJXDaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 23:30:09 -0400
+        Mon, 23 Oct 2023 23:30:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E1FBC;
-        Mon, 23 Oct 2023 20:30:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93ECBC433C7;
-        Tue, 24 Oct 2023 03:30:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D161BD7D;
+        Mon, 23 Oct 2023 20:30:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B4ABC433C7;
+        Tue, 24 Oct 2023 03:30:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698118206;
-        bh=m6aDnL/Wqs3CWj+B9Tf1lfn61pxuZpDr4pD8/+/qlYU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=KHQ7sKHWH31O7ePKffnaxCnVkIz59sZ3XmACN8pX5LJL4JtG/MNhKzN+yVNF3EgW6
-         AmJ+IFocfqLTCC6Fh/ts9yYtDVaQZw74pQbwCiEKE9zrh34V1qZ/CzFsgfoZxdBU6t
-         wTpubIFUGFIDzWGG3+tP3RAhVw96PBGPhXeLCVb9203pOWTzz1kIcZG1hELthejFk/
-         as0abOc2kbA9ZGw1Zr0EB5K+Qp5sLhXxdKy8UVEHQ4iFYng2TEpgNoaetKACHqGUgF
-         sxS6W4+McVWZ3McNqhlnRvKV+F7vHrwuSs1Lhd2ffHhRRoMD0+Ctq6g5L8EqMZQ4Zw
-         ZrM3wq4/kJ0FA==
-Date:   Mon, 23 Oct 2023 21:30:03 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Dinh Nguyen <dinguyen@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: [PATCH v3 0/2][next] clk: socfpga: Fix undefined behavior bug and
- add bounds-checking coverage
-Message-ID: <cover.1698117815.git.gustavoars@kernel.org>
+        s=k20201202; t=1698118215;
+        bh=5757ZRY1gYQJ4UTUtBjnh/CeAcxG2frUh6o18xDOnRY=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=OkPGpDWgaBkHyJGw/OoWSqBPdBtxsecczehrPwMhbTaiQ4l1T5DVDnsHNDNa95yVt
+         zudgIBeabwyWF8Feoju9zmrYKiO/NsHTNDbAHW14BRUt34PN90eTX1L6iBs7EH+NLV
+         Yk23Si0svGaRu9LMN9hNMwEjeAfzpf8f6dIS8w+Ao0Qct3rfO1BbvrsC+0A9sOpeib
+         U5PVft6d4ud1kVABOOqURiTye/5IFyU7DGBuCnHgIfBC8Lhr7RDpyeZgUnc/GLzcWv
+         0SqRhYxOP0oDiaLgy127lHj3zf+rnWW/7fWjomcdXO2spRgwJZxfTcMRMqrTlhF0JU
+         4lQzpbb0LKdXg==
+Message-ID: <4027612d371dcb5c7dd2f48f9b74908b.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230725004248.381868-1-samuel.holland@sifive.com>
+References: <20230725004248.381868-1-samuel.holland@sifive.com>
+Subject: Re: [PATCH v2 1/2] clk: analogbits: Allow building the library as a module
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Samuel Holland <samuel.holland@sifive.com>
+Date:   Mon, 23 Oct 2023 20:30:13 -0700
+User-Agent: alot/0.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -50,33 +52,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series aims to fix an undefined behavior bug in
-`struct stratix10_clock_data` and add bounds-checking
-coverage at run-time for flexible-array member `hws`
-in `struct clk_hw_onecell_data` when accessed throught
-`struct stratix10_clock_data`.
+Quoting Samuel Holland (2023-07-24 17:42:47)
+> This library is only used by the SiFive PRCI driver. When that driver is
+> built as a module, it makes sense to build this library as a module too.
+>=20
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
 
-Changes in v3:
- - None, really. Just Cc linux-clk@vger.kernel.org this time.
-
-Changes in v2:
- - Mention -Wflex-array-member-not-at-end in the changelog text.
- - Link: https://lore.kernel.org/linux-hardening/cover.1697493574.git.gustavoars@kernel.org/
-
-v1:
- - Link: https://lore.kernel.org/linux-hardening/cover.1697059539.git.gustavoars@kernel.org/
-
-Gustavo A. R. Silva (2):
-  clk: socfpga: Fix undefined behavior bug in struct
-    stratix10_clock_data
-  clk: socfpga: agilex: Add bounds-checking coverage for struct
-    stratix10_clock_data
-
- drivers/clk/socfpga/clk-agilex.c    | 12 ++++++------
- drivers/clk/socfpga/clk-s10.c       |  6 +++---
- drivers/clk/socfpga/stratix10-clk.h |  4 +++-
- 3 files changed, 12 insertions(+), 10 deletions(-)
-
--- 
-2.34.1
-
+Applied to clk-next
