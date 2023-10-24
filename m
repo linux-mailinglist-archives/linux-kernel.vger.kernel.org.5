@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE637D59D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820807D59D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234859AbjJXRkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 13:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
+        id S1343699AbjJXRkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 13:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjJXRkD (ORCPT
+        with ESMTP id S1343855AbjJXRkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 13:40:03 -0400
+        Tue, 24 Oct 2023 13:40:31 -0400
 Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B605A1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:40:01 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-27dc1e4d8b6so4082374a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:40:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C0410C6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:40:28 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-27d3ede72f6so4146197a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:40:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698169200; x=1698774000; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698169228; x=1698774028; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0jqecopWEo5Tu0tYTbEKGg8fX65wX9DmJTQg6zHcs64=;
-        b=FlD4tfHaw5+yN4q116nrN4uczNqU8QPe3WA6vrYCX3G3kj0RwEEJxNoZb7wyb+ckQ5
-         M1NFBgOQkNbHt4TxOrTgHMy6RDDCZXuGYPdOiSMLUW9aOxS3JVOCsz6Zuv33kRoIX/7U
-         cmAaGOJkPvzLGEGkGQoqvb7OIFpSyBs50Z0vpam3/3kKg+/t9YZeWKduucSERiaEOUPp
-         mmG9wLIMowQOCC8uTijKC05SD6BvQrYjBJ30rzQpVvRDXBBZom9By+ngOILNvVtR6gD9
-         iHE/MZjVemLiMsZihddKyEXG7ysfeGOI7J9OMkbihD3q7118G59+OXZzkJKaB/tissP2
-         A4/Q==
+        bh=0xWGwGBYtGQcESxLDi2O/elWlIJtx15pyBUk6hkFzL4=;
+        b=BiElUKCdBmrM8nnWCzDSgZcRCi/swkiw43C4ZIGPFYmwM2SASkIoVtTbtWaMz9Ukbe
+         bscxYi6ZQ+i1EKFsQDGczk5tJ7cMYz6Uqx+J83Q42ZFYZATAsbLwV1fuMSuto+mBakF2
+         Np5cgKfr5K5AZoGrJHhXC1Wtm4HU2hdT6dC7YCW7qpm9gJVFWornt5tetmFHfxS4+PiG
+         NYTm6z0klfse4aSk8iq4ijnLwMI8oUEAzNGQeQCyVtHvNi+7cC0cTixsn696VqRZZ/Ys
+         oMAVBELz3gbUlI41+xFkxZLjNepiyo/WFfthb1jEgjm9hGb+xkUpv9kykkES/I0bneJy
+         T/YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698169200; x=1698774000;
+        d=1e100.net; s=20230601; t=1698169228; x=1698774028;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0jqecopWEo5Tu0tYTbEKGg8fX65wX9DmJTQg6zHcs64=;
-        b=v3B6NG5SH+ZxzSrBlDqiYK3HR2Ik1nOss/9nT+LvR2AkTFlPKgrNHQ5vdW/Gk9wpz0
-         SA0DQynTSzhz/akAcfT3AqvRiQfBIiKsUqdU1jt9gpJsNfIPWkqcT9P6B5f5GB2UhXuw
-         Y70HY3F2Rjiw74vIfgNLowCOON8r5IHNPPIa01TDszhZEw8RbViHgOnczFQeO6he1a3r
-         ppmbCuRGBUNPnAxQZ/2aFxyGjFURCpFLze9pxaRhJ/U23+3H8hIcElZZhGELqLzRe0nY
-         8Yii+QiNTcrADq6RhEaGlD6ItnNsvQjlHV6NzXejo1+kYhbyPyr4NY2Ci4Ntd3NpvxwO
-         MynQ==
-X-Gm-Message-State: AOJu0YxFA7k5Y0hqVj2CohD2zchBdJ55nM+l+uTxU/UQY8rxO2AG++79
-        U90jDMG8CO/WZOgB8moVZ1LQEUEzM6tWJzBFEfc=
-X-Google-Smtp-Source: AGHT+IE5ZgEF8eQPaKMnM8EC8El5a/KEonFn7iMq+f2p/cMBtJfWHu4pQe4ORYUeIhxTXVkEJkBlyyNue4O/gkCFHkI=
-X-Received: by 2002:a17:90a:2ec5:b0:27d:97e5:f3fa with SMTP id
- h5-20020a17090a2ec500b0027d97e5f3famr13021834pjs.29.1698169200572; Tue, 24
- Oct 2023 10:40:00 -0700 (PDT)
+        bh=0xWGwGBYtGQcESxLDi2O/elWlIJtx15pyBUk6hkFzL4=;
+        b=T6Y9xIrSbIxka08qhd3BPYdXkCE/Kx0RPRqgpskx1XRPsFoJ5vj6gu9X8ahsxMYmWf
+         cqzuCnP5qzN+3yD0lZmYeTYv0xFTHWTi7yzprlJL+EMBd52vgSVgT+TbvtEKg2zfZoFD
+         wrK5Wvp6s6GTTcUC5I/E+Ljj7cX4tgdnFiiZM1IFcuZDk+up3LSH6pdo77+LPmxTvLkN
+         Jbntx0Jkzp3Dai980xk6A2JEcivrmjCVXPqGmsZ0VOqKRfBK04O+HI/rijl9EXg4sBo8
+         KscnnAJSINhkXuJyXf8bNkDncBwDUHDoIDTdDNJlE5q9Yxxu8R0iJOX/fiHv+dv53atx
+         Jm/Q==
+X-Gm-Message-State: AOJu0YyXdGq8ZgqGTfq7ogkjvJV+BryTylnGRByx9ovsWsckVfwq7nHf
+        wh87FZT5yndF2PiyFYxgB/aS3lWaws6pzfK0sg4=
+X-Google-Smtp-Source: AGHT+IHIes8+KZbr5QFSv8mkeyL/tKYrsJTKUM8ciSJZzTy3Cni0SQN69j/7pYt+DueUNi+xQbN8hBmQTffZGeAIEdw=
+X-Received: by 2002:a17:90a:ac02:b0:27d:b3d:5c33 with SMTP id
+ o2-20020a17090aac0200b0027d0b3d5c33mr12739037pjq.28.1698169228336; Tue, 24
+ Oct 2023 10:40:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231020183331.10770-1-vishal.moola@gmail.com> <20231020183331.10770-5-vishal.moola@gmail.com>
-In-Reply-To: <20231020183331.10770-5-vishal.moola@gmail.com>
+References: <20231020183331.10770-1-vishal.moola@gmail.com> <20231020183331.10770-6-vishal.moola@gmail.com>
+In-Reply-To: <20231020183331.10770-6-vishal.moola@gmail.com>
 From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 24 Oct 2023 10:39:48 -0700
-Message-ID: <CAHbLzkref0EdCMSCrRnGR1b6LmBV9PrkuR1aFBT-wCgUsmXG_g@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] mm/khugepaged: Convert alloc_charge_hpage() to use folios
+Date:   Tue, 24 Oct 2023 10:40:16 -0700
+Message-ID: <CAHbLzkpzxs_6t4opKJJ6mGZnHqeJqA3zt74T39y-eyVt57WNhg@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] mm/khugepaged: Convert collapse_pte_mapped_thp()
+ to use folios
 To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         akpm@linux-foundation.org
@@ -72,110 +73,178 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Fri, Oct 20, 2023 at 11:34=E2=80=AFAM Vishal Moola (Oracle)
 <vishal.moola@gmail.com> wrote:
 >
-> Also remove count_memcg_page_event now that its last caller no longer use=
-s
-> it and reword hpage_collapse_alloc_page() to hpage_collapse_alloc_folio()=
-.
->
-> This removes 1 call to compound_head() and helps convert khugepaged to
+> This removes 2 calls to compound_head() and helps convert khugepaged to
 > use folios throughout.
+>
+> Previously, if the address passed to collapse_pte_mapped_thp()
+> corresponded to a tail page, the scan would fail immediately. Using
+> filemap_lock_folio() we get the corresponding folio back and try to
+> operate on the folio instead.
 >
 > Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
 Reviewed-by: Yang Shi <shy828301@gmail.com>
 
 > ---
->  include/linux/memcontrol.h | 14 --------------
->  mm/khugepaged.c            | 17 ++++++++++-------
->  2 files changed, 10 insertions(+), 21 deletions(-)
+>  mm/khugepaged.c | 45 ++++++++++++++++++++-------------------------
+>  1 file changed, 20 insertions(+), 25 deletions(-)
 >
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index ab94ad4597d0..3126bde982e8 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1080,15 +1080,6 @@ static inline void count_memcg_events(struct mem_c=
-group *memcg,
->         local_irq_restore(flags);
->  }
->
-> -static inline void count_memcg_page_event(struct page *page,
-> -                                         enum vm_event_item idx)
-> -{
-> -       struct mem_cgroup *memcg =3D page_memcg(page);
-> -
-> -       if (memcg)
-> -               count_memcg_events(memcg, idx, 1);
-> -}
-> -
->  static inline void count_memcg_folio_events(struct folio *folio,
->                 enum vm_event_item idx, unsigned long nr)
->  {
-> @@ -1565,11 +1556,6 @@ static inline void __count_memcg_events(struct mem=
-_cgroup *memcg,
->  {
->  }
->
-> -static inline void count_memcg_page_event(struct page *page,
-> -                                         int idx)
-> -{
-> -}
-> -
->  static inline void count_memcg_folio_events(struct folio *folio,
->                 enum vm_event_item idx, unsigned long nr)
->  {
 > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 9efd8ff68f06..6a7184cd291b 100644
+> index 6a7184cd291b..bc2d8ff269c7 100644
 > --- a/mm/khugepaged.c
 > +++ b/mm/khugepaged.c
-> @@ -888,16 +888,16 @@ static int hpage_collapse_find_target_node(struct c=
-ollapse_control *cc)
->  }
->  #endif
+> @@ -1477,7 +1477,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, u=
+nsigned long addr,
+>         bool notified =3D false;
+>         unsigned long haddr =3D addr & HPAGE_PMD_MASK;
+>         struct vm_area_struct *vma =3D vma_lookup(mm, haddr);
+> -       struct page *hpage;
+> +       struct folio *folio;
+>         pte_t *start_pte, *pte;
+>         pmd_t *pmd, pgt_pmd;
+>         spinlock_t *pml =3D NULL, *ptl;
+> @@ -1510,19 +1510,14 @@ int collapse_pte_mapped_thp(struct mm_struct *mm,=
+ unsigned long addr,
+>         if (userfaultfd_wp(vma))
+>                 return SCAN_PTE_UFFD_WP;
 >
-> -static bool hpage_collapse_alloc_page(struct page **hpage, gfp_t gfp, in=
-t node,
-> +static bool hpage_collapse_alloc_folio(struct folio **folio, gfp_t gfp, =
-int node,
->                                       nodemask_t *nmask)
->  {
-> -       *hpage =3D __alloc_pages(gfp, HPAGE_PMD_ORDER, node, nmask);
-> -       if (unlikely(!*hpage)) {
-> +       *folio =3D __folio_alloc(gfp, HPAGE_PMD_ORDER, node, nmask);
-> +
-> +       if (unlikely(!*folio)) {
->                 count_vm_event(THP_COLLAPSE_ALLOC_FAILED);
->                 return false;
+> -       hpage =3D find_lock_page(vma->vm_file->f_mapping,
+> +       folio =3D filemap_lock_folio(vma->vm_file->f_mapping,
+>                                linear_page_index(vma, haddr));
+> -       if (!hpage)
+> +       if (IS_ERR(folio))
+>                 return SCAN_PAGE_NULL;
+>
+> -       if (!PageHead(hpage)) {
+> -               result =3D SCAN_FAIL;
+> -               goto drop_hpage;
+> -       }
+> -
+> -       if (compound_order(hpage) !=3D HPAGE_PMD_ORDER) {
+> +       if (folio_order(folio) !=3D HPAGE_PMD_ORDER) {
+>                 result =3D SCAN_PAGE_COMPOUND;
+> -               goto drop_hpage;
+> +               goto drop_folio;
 >         }
 >
-> -       folio_prep_large_rmappable((struct folio *)*hpage);
->         count_vm_event(THP_COLLAPSE_ALLOC);
->         return true;
->  }
-> @@ -1064,17 +1064,20 @@ static int alloc_charge_hpage(struct page **hpage=
-, struct mm_struct *mm,
->         int node =3D hpage_collapse_find_target_node(cc);
->         struct folio *folio;
->
-> -       if (!hpage_collapse_alloc_page(hpage, gfp, node, &cc->alloc_nmask=
-))
-> +       if (!hpage_collapse_alloc_folio(&folio, gfp, node, &cc->alloc_nma=
-sk)) {
-> +               *hpage =3D NULL;
->                 return SCAN_ALLOC_HUGE_PAGE_FAIL;
-> +       }
->
-> -       folio =3D page_folio(*hpage);
->         if (unlikely(mem_cgroup_charge(folio, mm, gfp))) {
->                 folio_put(folio);
->                 *hpage =3D NULL;
->                 return SCAN_CGROUP_CHARGE_FAIL;
+>         result =3D find_pmd_or_thp_or_none(mm, haddr, &pmd);
+> @@ -1536,13 +1531,13 @@ int collapse_pte_mapped_thp(struct mm_struct *mm,=
+ unsigned long addr,
+>                  */
+>                 goto maybe_install_pmd;
+>         default:
+> -               goto drop_hpage;
+> +               goto drop_folio;
 >         }
-> -       count_memcg_page_event(*hpage, THP_COLLAPSE_ALLOC);
 >
-> +       count_memcg_folio_events(folio, THP_COLLAPSE_ALLOC, 1);
-> +
-> +       *hpage =3D folio_page(folio, 0);
->         return SCAN_SUCCEED;
+>         result =3D SCAN_FAIL;
+>         start_pte =3D pte_offset_map_lock(mm, pmd, haddr, &ptl);
+>         if (!start_pte)         /* mmap_lock + page lock should prevent t=
+his */
+> -               goto drop_hpage;
+> +               goto drop_folio;
+>
+>         /* step 1: check all mapped PTEs are to the right huge page */
+>         for (i =3D 0, addr =3D haddr, pte =3D start_pte;
+> @@ -1567,7 +1562,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, u=
+nsigned long addr,
+>                  * Note that uprobe, debugger, or MAP_PRIVATE may change =
+the
+>                  * page table, but the new page will not be a subpage of =
+hpage.
+>                  */
+> -               if (hpage + i !=3D page)
+> +               if (folio_page(folio, i) !=3D page)
+>                         goto abort;
+>         }
+>
+> @@ -1582,7 +1577,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, u=
+nsigned long addr,
+>          * page_table_lock) ptl nests inside pml. The less time we hold p=
+ml,
+>          * the better; but userfaultfd's mfill_atomic_pte() on a private =
+VMA
+>          * inserts a valid as-if-COWed PTE without even looking up page c=
+ache.
+> -        * So page lock of hpage does not protect from it, so we must not=
+ drop
+> +        * So page lock of folio does not protect from it, so we must not=
+ drop
+>          * ptl before pgt_pmd is removed, so uffd private needs pml taken=
+ now.
+>          */
+>         if (userfaultfd_armed(vma) && !(vma->vm_flags & VM_SHARED))
+> @@ -1606,7 +1601,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, u=
+nsigned long addr,
+>                         continue;
+>                 /*
+>                  * We dropped ptl after the first scan, to do the mmu_not=
+ifier:
+> -                * page lock stops more PTEs of the hpage being faulted i=
+n, but
+> +                * page lock stops more PTEs of the folio being faulted i=
+n, but
+>                  * does not stop write faults COWing anon copies from exi=
+sting
+>                  * PTEs; and does not stop those being swapped out or mig=
+rated.
+>                  */
+> @@ -1615,7 +1610,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, u=
+nsigned long addr,
+>                         goto abort;
+>                 }
+>                 page =3D vm_normal_page(vma, addr, ptent);
+> -               if (hpage + i !=3D page)
+> +               if (folio_page(folio, i) !=3D page)
+>                         goto abort;
+>
+>                 /*
+> @@ -1634,8 +1629,8 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, u=
+nsigned long addr,
+>
+>         /* step 3: set proper refcount and mm_counters. */
+>         if (nr_ptes) {
+> -               page_ref_sub(hpage, nr_ptes);
+> -               add_mm_counter(mm, mm_counter_file(hpage), -nr_ptes);
+> +               folio_ref_sub(folio, nr_ptes);
+> +               add_mm_counter(mm, mm_counter_file(&folio->page), -nr_pte=
+s);
+>         }
+>
+>         /* step 4: remove empty page table */
+> @@ -1659,14 +1654,14 @@ int collapse_pte_mapped_thp(struct mm_struct *mm,=
+ unsigned long addr,
+>  maybe_install_pmd:
+>         /* step 5: install pmd entry */
+>         result =3D install_pmd
+> -                       ? set_huge_pmd(vma, haddr, pmd, hpage)
+> +                       ? set_huge_pmd(vma, haddr, pmd, &folio->page)
+>                         : SCAN_SUCCEED;
+> -       goto drop_hpage;
+> +       goto drop_folio;
+>  abort:
+>         if (nr_ptes) {
+>                 flush_tlb_mm(mm);
+> -               page_ref_sub(hpage, nr_ptes);
+> -               add_mm_counter(mm, mm_counter_file(hpage), -nr_ptes);
+> +               folio_ref_sub(folio, nr_ptes);
+> +               add_mm_counter(mm, mm_counter_file(&folio->page), -nr_pte=
+s);
+>         }
+>         if (start_pte)
+>                 pte_unmap_unlock(start_pte, ptl);
+> @@ -1674,9 +1669,9 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, u=
+nsigned long addr,
+>                 spin_unlock(pml);
+>         if (notified)
+>                 mmu_notifier_invalidate_range_end(&range);
+> -drop_hpage:
+> -       unlock_page(hpage);
+> -       put_page(hpage);
+> +drop_folio:
+> +       folio_unlock(folio);
+> +       folio_put(folio);
+>         return result;
 >  }
 >
 > --
