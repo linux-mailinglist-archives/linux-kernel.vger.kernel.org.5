@@ -2,129 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C4E7D46D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 952577D46D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbjJXFOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 01:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
+        id S232191AbjJXFQI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 01:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJXFOb (ORCPT
+        with ESMTP id S229688AbjJXFQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 01:14:31 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A683111;
-        Mon, 23 Oct 2023 22:14:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698124467;
-        bh=wzR8CLBa7QGBbZgrmvfs3ZY6gA8A24eEIQIAttMtqjY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=etfA2Gn1XPFyC6LbBRzXA0IRy+bC1jbS/BDzAyTV14UTj/6VrVVRGNHGErlZnHWzq
-         SQKIErWm8MgrpysFWdEoOBB10W7M1vPXlYoll1QmXpYFUjvvuF4ht1BBp1HACHHN6m
-         /YerYZNqtHjIUXL/pOhmTTWF1g91ErIAQcdUgh2l28BhnRZPXown2VCOyA+jzwd/Zp
-         8qSlsSiPjdXZ4mEeVRgSvBQvkeiuVwbj3G8xOxCjHXavhCDvRaQbO2lJ7Q1qtarPEs
-         4lXSIbpXIi0KAv04AtTA0a5gSDIrAkjSvIslKTHIrbXgo/x7Mo3mrDKjvebWXQZJbP
-         X/mgeSriCS6dQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SF0bk6RNbz4wx5;
-        Tue, 24 Oct 2023 16:14:26 +1100 (AEDT)
-Date:   Tue, 24 Oct 2023 16:14:25 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>
-Cc:     Ilpo =?UTF-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the pci tree
-Message-ID: <20231024161425.0b382725@canb.auug.org.au>
+        Tue, 24 Oct 2023 01:16:06 -0400
+Received: from relay.hostedemail.com (smtprelay0014.hostedemail.com [216.40.44.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF872E5;
+        Mon, 23 Oct 2023 22:16:00 -0700 (PDT)
+Received: from omf05.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay09.hostedemail.com (Postfix) with ESMTP id 11ACD80D4B;
+        Tue, 24 Oct 2023 05:15:59 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id 453B520016;
+        Tue, 24 Oct 2023 05:15:56 +0000 (UTC)
+Message-ID: <d3ca8db7c045909c9fff6bc3e96a7b8de1b05f8d.camel@perches.com>
+Subject: Re: [PATCH V3 03/16] platform/x86/intel/vsec: Use cleanup.h
+From:   Joe Perches <joe@perches.com>
+To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com,
+        oe-kbuild-all@lists.linux.dev,
+        "David E. Box" <david.e.box@linux.intel.com>
+Date:   Mon, 23 Oct 2023 22:15:55 -0700
+In-Reply-To: <8fe01b6d8c558f11fe51f9da5fbfea6708766096.camel@perches.com>
+References: <20231012023840.3845703-4-david.e.box@linux.intel.com>
+         <202310121314.3Xpqom2w-lkp@intel.com>
+         <6ed4cd5ae37a054d4780c8fa519dc83396b15c14.camel@linux.intel.com>
+         <b93a3e8-2d15-256a-4172-a22ef17dde9@linux.intel.com>
+         <8fe01b6d8c558f11fe51f9da5fbfea6708766096.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/c9D.sJVtCE1BbXKOv91s9LP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Stat-Signature: 1bu1s17ue3tkzt64cfiuxtcbzt5z6u8e
+X-Rspamd-Server: rspamout07
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Rspamd-Queue-Id: 453B520016
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/BfWXPPjomueLq0tjzk7VysEFwj8EnymI=
+X-HE-Tag: 1698124556-615886
+X-HE-Meta: U2FsdGVkX1//oFGP91jE454ZqW93elOfmFLV5PdCnnVL2xiBGMydJs+EJJuBAZfq5QcLGfl7aC7XlHwBywypIJ6VXRY+i1EjpIOwVCNZDpe7Qo9hP1J/pame0gzvpmg+ltYZChg8PntfwLWtLaqHxnEiMb/1e1RIYbfuJdej79NBykaUk0yzMuUhD7wzeJ0CdtLAFISGa/s3Fc8LyYdr5mVRPFziKQzzwMAjAftj6z7rHJS94nRne+fG9YQ2CWP5kUoOaMZoLDNYW5/cP6YQge2OMC60Y0+XOy8jOt2jFX20U6b36Fo04H3SVxyDz9wZ
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/c9D.sJVtCE1BbXKOv91s9LP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, 2023-10-13 at 11:14 -0700, Joe Perches wrote:
+> On Fri, 2023-10-13 at 13:39 +0300, Ilpo Järvinen wrote:
+> > Hi,
+> > 
+> > I added checkpatch people, please check what looks a false positive below.
+> 
+> Yeah, thanks I guess.
+> The __free uses are very new.
+> I'll play around with adding it to $Attributes
+> and see what happens.
+> 
+> 
+> > On Thu, 12 Oct 2023, David E. Box wrote:
+> > > On Thu, 2023-10-12 at 13:25 +0800, kernel test robot wrote:
+> > > > kernel test robot noticed the following build warnings:
+> > > > # many are suggestions rather than must-fix
+> []
+> > > > ERROR:SPACING: need consistent spacing around '*' (ctx:WxV)
+> > > > #31: FILE: drivers/platform/x86/intel/vsec.c:159:
+> > > > +       struct intel_vsec_device __free(kfree) *intel_vsec_dev = NULL;
+> > > .
+> > > These looks like false positives.
+> > 
+> > I agree. If I interpret the error message right checkpatch seems to think
+> > that's a multiplication which is not the case here.
 
-Hi all,
+So __free is an odd $Attribute as it takes an argument.
+I've added it along with the other odd $Attribute __alloc_size
+to another variable called $ArgAttribute and $Attribute.
 
-After merging the pci tree, today's linux-next build (arm64 defconfig)
-failed like this:
+Oddly, I don't understand why perl does not perform
+the elimination using
 
-In file included from <command-line>:
-drivers/pci/controller/dwc/pcie-tegra194.c: In function 'tegra_pcie_ep_irq_=
-thread':
-include/linux/compiler_types.h:435:45: error: call to '__compiletime_assert=
-_497' declared with attribute error: FIELD_PREP: value too large for the fi=
-eld
-  435 |         _compiletime_assert(condition, msg, __compiletime_assert_, =
-__COUNTER__)
-      |                                             ^
-include/linux/compiler_types.h:416:25: note: in definition of macro '__comp=
-iletime_assert'
-  416 |                         prefix ## suffix();                        =
-     \
-      |                         ^~~~~~
-include/linux/compiler_types.h:435:9: note: in expansion of macro '_compile=
-time_assert'
-  435 |         _compiletime_assert(condition, msg, __compiletime_assert_, =
-__COUNTER__)
-      |         ^~~~~~~~~~~~~~~~~~~
-include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_a=
-ssert'
-   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-      |                                     ^~~~~~~~~~~~~~~~~~
-include/linux/bitfield.h:68:17: note: in expansion of macro 'BUILD_BUG_ON_M=
-SG'
-   68 |                 BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?      =
-     \
-      |                 ^~~~~~~~~~~~~~~~
-include/linux/bitfield.h:114:17: note: in expansion of macro '__BF_FIELD_CH=
-ECK'
-  114 |                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ")=
-;    \
-      |                 ^~~~~~~~~~~~~~~~
-drivers/pci/controller/dwc/pcie-tegra194.c:498:29: note: in expansion of ma=
-cro 'FIELD_PREP'
-  498 |                 val =3D 110 | FIELD_PREP(PCI_LTR_SCALE_SHIFT, 2) | =
-LTR_MSG_REQ;
-      |                             ^~~~~~~~~~
+	$foo =~ s/\b$ArgAttribute\b//g;
 
-Caused by commit
+but does do the elimination using
 
-  18ca6c2c2d0e ("PCI: dwc: Use FIELD_GET/PREP()")
+	$foo =~ s/\b$ArgAttribute//g;
 
-I have reverted that commit for today.
+maybe something to do with the closing parenthesis in the match.
 
---=20
-Cheers,
-Stephen Rothwell
+So now there is a separate substitution for this in a test.
 
---Sig_/c9D.sJVtCE1BbXKOv91s9LP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Comments?
 
------BEGIN PGP SIGNATURE-----
+---
+ scripts/checkpatch.pl | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU3UrEACgkQAVBC80lX
-0GxwkQf9FdfHiiEqqE90vNjgsYiESrccCbTsycZ+0vfWkuIrBgkVcQ2nm6quxaXv
-uiFaHAOOJLLRvEBK4baZxvC+YpjXv+2L80vmVCLwjgJQx4trfV7myjM8SkPAYPe2
-BFVmPi6hE1jaSbLZR8y+O9d3bcVHk9eEalIpRaZWuHyyRuFPDU6qNXLfnDo2iBOV
-Un5fP8hF/ljHfJO4wWSyJNBP8l2rynSbV+yj2ChMwzvpbMLM90ETdEmJiJ32uV6E
-kRxCTWa2TyEixr6quRfb/bGBKvSmijCTpneqDSA5PujHDzb+o7BfOmPBU1KOGsAI
-NttfMI9fI5JZoLAQC+vKycUa4nVANw==
-=HnH0
------END PGP SIGNATURE-----
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 25fdb7fda1128..501383fa31c55 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -488,9 +488,14 @@ our $InitAttributeConst = qr{$InitAttributePrefix(?:initconst\b)};
+ our $InitAttributeInit = qr{$InitAttributePrefix(?:init\b)};
+ our $InitAttribute = qr{$InitAttributeData|$InitAttributeConst|$InitAttributeInit};
+ 
++our $ArgAttribute = qr{(?x:
++			__alloc_size\s*\(\s*\d+\s*(?:,\s*\d+\s*)?\)|
++			__free\s*\(\s*\w+\s*\)
++)};
++
+ # Notes to $Attribute:
+ # We need \b after 'init' otherwise 'initconst' will cause a false positive in a check
+-our $Attribute	= qr{
++our $Attribute	= qr{(?x:
+ 			const|
+ 			volatile|
+ 			__percpu|
+@@ -516,8 +521,8 @@ our $Attribute	= qr{
+ 			____cacheline_aligned_in_smp|
+ 			____cacheline_internodealigned_in_smp|
+ 			__weak|
+-			__alloc_size\s*\(\s*\d+\s*(?:,\s*\d+\s*)?\)
+-		  }x;
++			$ArgAttribute
++		  )};
+ our $Modifier;
+ our $Inline	= qr{inline|__always_inline|noinline|__inline|__inline__};
+ our $Member	= qr{->$Ident|\.$Ident|\[[^]]*\]};
+@@ -4091,6 +4096,9 @@ sub process {
+ 			# remove $Attribute/$Sparse uses to simplify comparisons
+ 			$sl =~ s/\b(?:$Attribute|$Sparse)\b//g;
+ 			$pl =~ s/\b(?:$Attribute|$Sparse)\b//g;
++			$sl =~ s/\b(?:$ArgAttribute)//g;
++			$pl =~ s/\b(?:$ArgAttribute)//g;
++
+ 			if (($pl =~ /^\+\s+$Declare\s*$Ident\s*[=,;:\[]/ ||
+ 			# function pointer declarations
+ 			     $pl =~ /^\+\s+$Declare\s*\(\s*\*\s*$Ident\s*\)\s*[=,;:\[\(]/ ||
 
---Sig_/c9D.sJVtCE1BbXKOv91s9LP--
