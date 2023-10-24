@@ -2,132 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A5B7D45B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 04:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C23B7D45B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 04:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbjJXCss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 22:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58242 "EHLO
+        id S232358AbjJXCsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 22:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231459AbjJXCsq (ORCPT
+        with ESMTP id S231459AbjJXCsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 22:48:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFBEE10D0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 19:48:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698115718; x=1729651718;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Z0f1IlylB7+SscNjc1gnBRr78gaizZ2vo/6yZJVip1o=;
-  b=Ae5X2z0D1Yki7aKQPGvuCb5jTRm8LQuAJFFotzm4YCxKYX/mp7RR4Jrw
-   xW4bc/gRbBkKqTAvYbjcopQDw8OjdTgI82l01PHdwHCH/21kW4GkxfyyF
-   T5DfFuhzBYefxeWlFa5752WK31Jpkkz+Yl+lWHmcUwMdUezM9ebYJ+m7R
-   SBw0cjl2wFMLtBg+6kcz0J8v5Y4p2hfKWfSO8J4Rq52tBxFDFAndUhsbg
-   szIgCotUXOz095fwyPAYz+vN7Ufoynlpdu7zyqftx8hpZWeoKvBMrCf8u
-   QoNfdeAdkGhFGalq9kZfbMQbbDnQEal7iywo/bFMMbVG7j+2Gi5Jn3qtU
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="384172004"
-X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
-   d="scan'208";a="384172004"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 19:48:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
-   d="scan'208";a="6020661"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 23 Oct 2023 19:47:20 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qv7T8-0007Uv-0U;
-        Tue, 24 Oct 2023 02:48:34 +0000
-Date:   Tue, 24 Oct 2023 10:47:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Michael Shych <michaelsh@mellanox.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Vadim Pasternak <vadimp@mellanox.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: drivers/watchdog/mlx_wdt.c:55: warning: Function parameter or member
- 'regmap_val_sz' not described in 'mlxreg_wdt'
-Message-ID: <202310241044.lvqeOGli-lkp@intel.com>
+        Mon, 23 Oct 2023 22:48:10 -0400
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A384110C0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 19:48:04 -0700 (PDT)
+Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
+        by cmsmtp with ESMTPS
+        id v0QHqOm7L8Htev7SeqTcJ6; Tue, 24 Oct 2023 02:48:04 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id v7SdqGI41Zs8Wv7Sdqp7xm; Tue, 24 Oct 2023 02:48:03 +0000
+X-Authority-Analysis: v=2.4 cv=YKGMdDKx c=1 sm=1 tr=0 ts=65373063
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=cm27Pg_UAAAA:8 a=bPvv9e5oV8VUxCXHTe8A:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=t7CKU1w7OpaYK3Ge0/xhJSHPnQiYEEShMZbsXXGJ+VQ=; b=giuEr0GKXviQ84F1K4DT8KjCBk
+        JOLBlGXvyuL2n8jvzvfiG6WWNoiT3uOavQzkTuyrE02belY2H1q1dBfQQy8goumLbGznCRUWWmx54
+        3rTEeTFDuuWjFvQ1VBbbmsvprjYT9YoR6VBXCCgTLiGx5IuYW3Gd6Er/pd/tfYwzLA2jOg8dMB0uA
+        RwNkAgoc0HMyGKfMUUrHjNjpoc5rDggD9GAVaH2UfsRXvSaJtfw0CRo2iCWpPN8IaNarmwRTp1kf7
+        i45MHoio39R7hqLmRJ8C/6gZwldh9ofq2dtBVewixPZFxEMhh1UQ3R1E4YhRa0Ic0PeJ25L8s9kwP
+        7KrqgGeA==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:43030 helo=[192.168.15.10])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qv7Sc-002x6h-0e;
+        Mon, 23 Oct 2023 21:48:02 -0500
+Message-ID: <21b1ebbe-2bef-4f56-a4d6-3ed898a1e953@embeddedor.com>
+Date:   Mon, 23 Oct 2023 20:48:00 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2][next] clk: visconti: Fix undefined behavior bug in
+ struct visconti_pll_provider
+Content-Language: en-US
+To:     Stephen Boyd <sboyd@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     Kees Cook <keescook@chromium.org>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <cover.1697492890.git.gustavoars@kernel.org>
+ <57a831d94ee2b3889b11525d4ad500356f89576f.1697492890.git.gustavoars@kernel.org>
+ <9ebe2372491a76253e5597086d059b1d.sboyd@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <9ebe2372491a76253e5597086d059b1d.sboyd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qv7Sc-002x6h-0e
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:43030
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfDU8crjYM2vX4Q1QW4n3eIRTmIz1F6lXh0E34D8jjjvg+KdqUA9G6w9ukBbuKcJKEhc5iQFyoWp1s53s4Crnbma73rxT9bBcGIgy5XBo1HTFvBtxuf0w
+ ypP93/CQMJYl4DO1NdwSXGYdpQLb4qDd1Od4zT5I778/oedB3CkoNVNKj656amPISgChhFjYkzHVkSnmqCXe/Jbpyl0VOWE1vRA5y6lUydVQWGInejafgH3F
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   e017769f4ce20dc0d3fa3220d4d359dcc4431274
-commit: eee851143bca4422eeee3bb2e104b85537ba449d watchdog: mlx-wdt: support new watchdog type with longer timeout period
-date:   3 years, 3 months ago
-config: x86_64-randconfig-r013-20230824 (https://download.01.org/0day-ci/archive/20231024/202310241044.lvqeOGli-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231024/202310241044.lvqeOGli-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310241044.lvqeOGli-lkp@intel.com/
+>> Fixes: b4cbe606dc36 ("clk: visconti: Add support common clock driver and reset driver")
+>> Cc: stable@vger.kernel.org
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>> Acked-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+> 
+> Applied to clk-next
 
-All warnings (new ones prefixed by >>):
+Hi!
 
->> drivers/watchdog/mlx_wdt.c:55: warning: Function parameter or member 'regmap_val_sz' not described in 'mlxreg_wdt'
-   drivers/watchdog/mlx_wdt.c:55: warning: Function parameter or member 'wdt_type' not described in 'mlxreg_wdt'
+Here is another similar small series, in case you missed it:
 
+https://lore.kernel.org/linux-hardening/cover.1697493574.git.gustavoars@kernel.org/
 
-vim +55 drivers/watchdog/mlx_wdt.c
-
-c60923dd5feedc Michael Shych 2019-02-20  20  
-c60923dd5feedc Michael Shych 2019-02-20  21  #define MLXREG_WDT_CLOCK_SCALE		1000
-c60923dd5feedc Michael Shych 2019-02-20  22  #define MLXREG_WDT_MAX_TIMEOUT_TYPE1	32
-c60923dd5feedc Michael Shych 2019-02-20  23  #define MLXREG_WDT_MAX_TIMEOUT_TYPE2	255
-eee851143bca44 Michael Shych 2020-05-04  24  #define MLXREG_WDT_MAX_TIMEOUT_TYPE3	65535
-c60923dd5feedc Michael Shych 2019-02-20  25  #define MLXREG_WDT_MIN_TIMEOUT		1
-c60923dd5feedc Michael Shych 2019-02-20  26  #define MLXREG_WDT_OPTIONS_BASE (WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE | \
-c60923dd5feedc Michael Shych 2019-02-20  27  				 WDIOF_SETTIMEOUT)
-c60923dd5feedc Michael Shych 2019-02-20  28  
-c60923dd5feedc Michael Shych 2019-02-20  29  /**
-c60923dd5feedc Michael Shych 2019-02-20  30   * struct mlxreg_wdt - wd private data:
-c60923dd5feedc Michael Shych 2019-02-20  31   *
-c60923dd5feedc Michael Shych 2019-02-20  32   * @wdd:	watchdog device;
-c60923dd5feedc Michael Shych 2019-02-20  33   * @device:	basic device;
-c60923dd5feedc Michael Shych 2019-02-20  34   * @pdata:	data received from platform driver;
-c60923dd5feedc Michael Shych 2019-02-20  35   * @regmap:	register map of parent device;
-c60923dd5feedc Michael Shych 2019-02-20  36   * @timeout:	defined timeout in sec.;
-c60923dd5feedc Michael Shych 2019-02-20  37   * @action_idx:	index for direct access to action register;
-c60923dd5feedc Michael Shych 2019-02-20  38   * @timeout_idx:index for direct access to TO register;
-c60923dd5feedc Michael Shych 2019-02-20  39   * @tleft_idx:	index for direct access to time left register;
-c60923dd5feedc Michael Shych 2019-02-20  40   * @ping_idx:	index for direct access to ping register;
-c60923dd5feedc Michael Shych 2019-02-20  41   * @reset_idx:	index for direct access to reset cause register;
-c60923dd5feedc Michael Shych 2019-02-20  42   * @wd_type:	watchdog HW type;
-c60923dd5feedc Michael Shych 2019-02-20  43   */
-c60923dd5feedc Michael Shych 2019-02-20  44  struct mlxreg_wdt {
-c60923dd5feedc Michael Shych 2019-02-20  45  	struct watchdog_device wdd;
-c60923dd5feedc Michael Shych 2019-02-20  46  	struct mlxreg_core_platform_data *pdata;
-c60923dd5feedc Michael Shych 2019-02-20  47  	void *regmap;
-c60923dd5feedc Michael Shych 2019-02-20  48  	int action_idx;
-c60923dd5feedc Michael Shych 2019-02-20  49  	int timeout_idx;
-c60923dd5feedc Michael Shych 2019-02-20  50  	int tleft_idx;
-c60923dd5feedc Michael Shych 2019-02-20  51  	int ping_idx;
-c60923dd5feedc Michael Shych 2019-02-20  52  	int reset_idx;
-eee851143bca44 Michael Shych 2020-05-04  53  	int regmap_val_sz;
-c60923dd5feedc Michael Shych 2019-02-20  54  	enum mlxreg_wdt_type wdt_type;
-c60923dd5feedc Michael Shych 2019-02-20 @55  };
-c60923dd5feedc Michael Shych 2019-02-20  56  
-
-:::::: The code at line 55 was first introduced by commit
-:::::: c60923dd5feedc337b1450e3f4c6e19ffa305439 watchdog: mlx-wdt: introduce a watchdog driver for Mellanox systems.
-
-:::::: TO: Michael Shych <michaelsh@mellanox.com>
-:::::: CC: Wim Van Sebroeck <wim@linux-watchdog.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks
+--
+Gustavo
