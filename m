@@ -2,161 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6407D5678
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9967D5675
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbjJXPa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
+        id S1343815AbjJXPay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234828AbjJXPal (ORCPT
+        with ESMTP id S1343906AbjJXPaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:30:41 -0400
-Received: from sonic302-27.consmr.mail.ne1.yahoo.com (sonic302-27.consmr.mail.ne1.yahoo.com [66.163.186.153])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3C81FD2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:30:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1698161408; bh=/YWm8GWX2383RfzFLFlBBduZ0aqXcPqlJQ3Z3PAB/jk=; h=Date:Subject:To:References:From:In-Reply-To:From:Subject:Reply-To; b=oRrVD3MghqUvCPNNVDqxY5gD7/iZWJ5beBwVmbM46N6KeIOs98QvthAVhKEqsIkclvk2wr1RXcfh1Gr3Q9EPSBj8NdS4zZGcW9UCm5m1ulk8NLBRrAIHp+CVVALv42qCeuxR5m5DS0HrmwFxH+tX60aoePLSiKoJ0LtvYlVA03XZ4WYcRC4WsA/A5zYl7N5CcjC3dHDXaeztY6QqgwVUiiclG33TY2ZpLFZZPr9ZW9UcSVGNeRHEEmKbpeOgAEqshiva/kMjcAduiUARZTkk+jHai9o3jSo8NunwUuun3vGLXJ9W+Kcv6LQsU9AzT0aMWiZEOnCGA3OC+8k+opl/KA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1698161408; bh=CkIOfqZ9TC1VkyJ7eKh3XTtlD8DmK8bQcnLdZ7gE9j3=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=difXLLaq92rU/B3K+Bjmm2EFmg4IhMPFDeOBmICWrC4kLTaWJwpOmdJArLY/vgFDiaELYzA1wT6ByMn1aliB+dUL1vDBj/UgYwEbEiUr5WV8C9nt85x0TLFmAa1AoOy+TQpgngTEItfGFH+Uz2Ir+ASn4e09OoB7qsntaTkR1tpMNtf9j+2Ki4dyCU9u24ehTcEr9jonmsGS+XZaM0ZKvni/VuVTHxfEhiE45eVmjSgJ5pfa3l9I6YiEZWXZJbs9b8bAA78VatUKaZV7iuoLxvgIuNFFu+QFDPLGnpJkqB89Y0bqNSvpkUjNVcwvUS8TEruyVDdrz2JTKiEijrTFxg==
-X-YMail-OSG: B4ESFpwVM1kBZ6lSz8rkkaXhskytnfYU40elwEwgBiLLQZujXONemP5xHi72sOt
- ai7ZWBC8CJCZVw8MUfjwqrM7kujN_pfUkWR6Zt67bdR01U2nvtGsfaVBSHrZ3316B7mYc_IWswMN
- ggHnj0tqoBGKOUm238BxaeXRIZIb7Y7remZYF16w4dTf3g00wwfa2o7bO3bJshxzTdIS3n9bnr.Y
- zgkhl26mNCNNJd3ifh46QkCxH2cLgOiYrq2fzGI_CIAgPedHsCSRCBCJR.A9QobIPbYIKTUepx2b
- 9NEoDaq8c2EBUA3_SQsOU4SFDtvkREnQ4S5km3n6P8XHEgosm5ElHGSMq7hCXF6v7CW2ESUMpuGV
- kqyif8dqRE8x2kXdMZl4unuwbhGdQxYyMjWeleyaDZ75r.J9sq.70lsmOeAsTJlJk7bTqWvAns5j
- 9N3jGik3y_WrUhae2XxGtXPdwfspZN07uA8BrhekX1GU9CrdMY5bexy_y0bflZmRczNgzVOuxkEd
- N.JRSeGCb0bXiqurRm7wx0ukYjWlSSrITGsjSX4DiB8iNVbwY7s.8mrH0A9qXB1zuGpr3aFqKER_
- YsAXJ3Dub.E36nnjS01zDrGsXR8iyer5Lo39Wlr6IQxmxQkScTB8CP.G8xlCHJK7foJJZkrm2ITG
- k5EsS2oKD1n_jGS2fMv.HmDboZqQzb3EbOMSBeLTUcbTLoZsxAFFzz8W7.FJKHvxoocaPs6Mm..J
- 1NWrMNKhhSsALI1rgzQI4YVkCAOesI21bAt5LIw7qDpQbKjheooVsnGc7.ZQ2zk9FgJwP841XowD
- LHYXSgzJB.fPth.0GIf8VY8h.DzdmdVSRwJuE0RbY9hcPAep2EFO4hPDKdkG4N1n049FAKQTNIHE
- _mOkgno3yu7MdYLZ9Vafa_p1Aurny4ey2tihyVujaKTKUJWySHsgvJh9vuUPUIMEcx7tGGiDRmsm
- L9qDppwVWYk64CutoaIO4W8BSJRbkD7DNVyUTYGIWLmLtsye8mYBTr4Qpm1kktuQn6ntqNDW1tX.
- aPEk22pkRLczeUR0LLCuK7xguidMOmuwyom39hoQr93cFpQg6RnB7b0fC9Wz.1aAoJA.lXOGAdKp
- MDqq0k6h8JCoXYC8oY.k.oFiKzPhaqG2akyD2NZoeddH0QwuMRDKM5YBJrTupWtdU64rWwl0ev4l
- 5EySje8tQ.6JwdR1rEeXav9YhHq1DndSBnHS_sFLl5Fvyo1hp1ij6dpHltSamh1sdGwF3p8LD9UX
- VrcCEKAOFcLIpnQO24mVN9VlR8DHuN6orecrrTDxPZ4EhtMyZ9u4_vKTPzso_wgzUmX25PAbhxrn
- gkr3yR0Oqrv8fyOxKXqTpr7jmeGB7HY5xi0llqq892PQWtSG24g.sM4pn8qomh5awh_UkBYqUr7n
- FJmTPO5ygl39LKxOBgO.8AUELQZXuDED7yCozPTL2o1vp0IXWH9zJzHOGpPD.drvVlQbGhBR4BU3
- teZ.UGUYmCT12Ai1SlvovfEPawwJl5DTGxSZRfuuiLZJWayFO0W6s_F2sl8W3LOXd1i_XbEx6VIt
- X_nSzWMDPuzwpnqGbweg_fQq2gWezXFsxqNm0mY_LEu.UyjbmCbDQDSh8uph0Ui6fC19B9UC89ns
- 4_q6PUJxpnkDn0OHDZmaOJ0Yj0cF4AYaUga8QttzcCcBp2azGw3jkZC8u12c5phBZnzfeiAJKJqM
- Ul8H2Qezo2QN888BOZF1CqhlltfHFAECwvsGWOOj44Mff71H6inqBAI9zrdqeW3PMsPYyqRdbWDb
- WHWVZyM88odTnXedhvC8uaAUN_knRzbg5qveYAtspLDjA5dcotfI9tvJn6HonYV1iC.ewiopqRA7
- ..oT.N.99eAxxayy0qggE8iAYwCuBOXcZxAUmUT517W8cWADDOtUUT8Y4VDJkg36s_Dw5Y8WFSil
- 7PwsD5GVd2R.ojPy.fm1DL5PAP6IwySw0Mt3Y7tEI0d5jJkuVcSzM5RTPW41d50dZMcXHFrNrpy.
- mIB0rKUB18MHUyqQ3AivrRQuJHxz2Xk9Sdg4XHmozlxE9hF9BLUf6t.tIRDxEYAxYgW27qPjrQ5U
- Wd63CeBd70IjSp8Z38CmiuAYOOTg3usrE8MkoGDmdiunuNm45dx6jzp_7uN81VcYaKd.M8oI7igV
- UwfUmmtRbZb3tSSFtYZxWHAz1rojkTe5HxGVL1nLpWtn12nKKt6OFbKSPaJtvJCD2kn3cWdxXz.D
- 9ODnAeiXLD.YGqz7ntz8UGXx6K.yjOTZT7MEg8Uk22BDRSeQvNVgJa_SgAcfpqZERieIhgSddOJx
- LSqt7JB01NQ--
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: b51fecd6-b267-4256-b431-c807c318f436
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Tue, 24 Oct 2023 15:30:08 +0000
-Received: by hermes--production-ne1-68668bc7f7-tcb7m (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 5fc5461d31a49f2849dcb731ecf23d84;
-          Tue, 24 Oct 2023 15:30:03 +0000 (UTC)
-Message-ID: <b307ec62-7cfd-4a58-88ef-ea549c64e75e@schaufler-ca.com>
-Date:   Tue, 24 Oct 2023 08:30:00 -0700
-MIME-Version: 1.0
+        Tue, 24 Oct 2023 11:30:25 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2085.outbound.protection.outlook.com [40.107.220.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081551BEB;
+        Tue, 24 Oct 2023 08:30:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d7eo+Jh9vBISboiQ6P3JDy/ZINnZ5W7HIi79Ql3Qj+yEfpkDM3it5FCvrXdz00MHrjT3hpnWdVyr+CEbR0ZT33B25lGWLyphO7vs6L6hJnSGiTz4GXYVNajJaWS4Bp3FBzlaWJeMyiY9ebXqEqXOBZ7jot7CjYP8bYYOnjchVDDxfMFzOVEj8qLu+HFcvNGCJWJLnZ3n87+q0FU3HHlwrLMd3FvlE9R0UzS83d/22nKPP9WMSjYcSIaS3cK7DiSQk3/IIBPi8dviQaFn/leQXoh0vhaSSc9ktzvcGd6JVgIs/BBm0bu07/dtYSZ7m9eRC4ee1MfSMaxVBi9+OUz/tg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GgLuGlhFYWvYd4akK7GqFyJpiXLTx31wM4UMZy9E6gU=;
+ b=iNKScGn1Vf6WMg/UWX8AjgxdDCJ+e9ePPt25AKn4LSTa2wi3pmam/oDEruXU/QAnOXkKbDNb5TjWuDBbc0MNIvU9iJVlYnQOAwyCNQvEgQJDIphVvy1Dx1K72qe+6Pv1XvMV6l3pFhnbL+AeHbNGHObQ2p5JAOzgkw4W4O/CeIo2cLiDOPY8EofRZrqd/vv7Ot9HygCupyK8KJVgVO4a5o41sswxAqw4PoZUh3EQ82MCDa6U+MrJUued5TklQFHYb08jkpekioyQE99Mtpp2DuTSFw72NgDAgvOvmui0JjZw7bXOzSLztsngG/CiM4kXRmC8MOawQxFUB59j/Fz49A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GgLuGlhFYWvYd4akK7GqFyJpiXLTx31wM4UMZy9E6gU=;
+ b=dZDbxZx3x8gpHUgYkmF5JChJmFDoScEsb02HivlI0+ihKl8Y4i4+vwsKDO4Jghf1Uwa4jhRSPau9/W7Yz8kMwwX/1vAjqlNCMSvBvlanHSn5YgPI70q4GNglYoHqU9ec8fq/lN+TcFXYY2/WepHUxfS5B41TUcGZVlkmGURqEr8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by PH7PR12MB9254.namprd12.prod.outlook.com (2603:10b6:510:308::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.47; Tue, 24 Oct
+ 2023 15:30:04 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::9799:80fa:a7de:cbb1]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::9799:80fa:a7de:cbb1%4]) with mapi id 15.20.6933.019; Tue, 24 Oct 2023
+ 15:30:04 +0000
+Message-ID: <935d6e08-3754-4c06-ab25-69bda3fd8ea1@amd.com>
+Date:   Tue, 24 Oct 2023 11:30:01 -0400
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/4] vduse: Add LSM hooks to check Virtio device type
+Cc:     yazen.ghannam@amd.com, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+        john.allen@amd.com, william.roche@oracle.com
+Subject: Re: [PATCH v2 1/2] RAS: Introduce AMD Address Translation Library
+To:     kernel test robot <lkp@intel.com>, bp@alien8.de,
+        linux-edac@vger.kernel.org, tony.luck@intel.com
+References: <20231005173526.42831-2-yazen.ghannam@amd.com>
+ <202310162015.fuitGuiJ-lkp@intel.com>
 Content-Language: en-US
-To:     Maxime Coquelin <maxime.coquelin@redhat.com>, mst@redhat.com,
-        jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        xieyongji@bytedance.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        david.marchand@redhat.com, lulu@redhat.com,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20231020155819.24000-1-maxime.coquelin@redhat.com>
- <20231020155819.24000-5-maxime.coquelin@redhat.com>
- <c8f189e6-c79b-429a-ab36-2193bb68e3e9@schaufler-ca.com>
- <923f87a1-1871-479e-832e-db67b5ae87fd@redhat.com>
- <64626db9-e37a-4c65-a455-fc3985382216@schaufler-ca.com>
- <7524dee3-7c48-4864-8182-1b166b0f6faa@redhat.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <7524dee3-7c48-4864-8182-1b166b0f6faa@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+In-Reply-To: <202310162015.fuitGuiJ-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21797 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: BN8PR15CA0064.namprd15.prod.outlook.com
+ (2603:10b6:408:80::41) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|PH7PR12MB9254:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5085d3ff-78a1-419b-f107-08dbd4a617ee
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LUDxTyaLZDSdCSSl/ATsZjJd1Q0Q76RjEnvoIV03tnAEDv4mDLqChM7eFYos5EHNqLUxB72q7GU+XK4r2FRCSQWQ1Sho3BRjYc8hzFG3+RZ39OsSXyFH523SwCHKYEPVzcTUqK/DlkY4ybhwHlnm8sJaPYsSAX2uCOUxPCdvQmzObW2c1GqEQQfr15q3p2B8S+VeXUTANkBMK60u1xn0ogcEO+SP727BXD+IPui/rm9gT/50fFzUqm/sKikHRUcIa5sUN1jlWqr0q0mfs8aRFWPwDfwvwtxyHQ5Av3cN1VZBQri95j9gBUn28dvdfijIL+gZ3rFRIynVayp0Q+vKgTM3fUQtb61V+DMXmmvPACo9oXeO9vokmyhGjH0GsVX7CzUJmnCc937VLg4/0apehCWCmLVtzeiJuYYjXrhNFlNPfGjsYOBh5GhsUKu7iPXYotb2yyIQ2xUOOPiysXsBzqiCBZy1BEum9W8SKTD63SwU1pEGDdk8vTxf8v0SSSlYUMKxF5cbHI4x2ufWGw56C7jb2J1S0RQ9K9vH9KMXVsN53fEG9LotsPNTW9q22hgPvU17vh9g0GVCnbSFtIoG4ktmmQQU7at9KJ4bJ8AG7qfIxXMRYscj2iEkTeoeKeDbpPQbnxJYq22ahdPOeijoczm1ELRyQjAzBr0SNO/QdKQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(346002)(136003)(376002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(2616005)(6666004)(8676002)(6506007)(53546011)(4326008)(6512007)(8936002)(6486002)(966005)(478600001)(31686004)(26005)(83380400001)(31696002)(66946007)(36756003)(86362001)(44832011)(66556008)(66476007)(316002)(2906002)(41300700001)(38100700002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b2l6cmRIUWFhU0JDVnJKb2IvS2h3b0NYT1hwUnhFQlZuck9MRXpzREIzUGhv?=
+ =?utf-8?B?TlczSWNEQUl3NWFaekpkMk5xS3lBQVBGSVNqQUxJMHZBdDdTSW5ieFQxdmNu?=
+ =?utf-8?B?VWxUT3RIL2FKaDFWU0JXUjZacDFhNUNCMXphWUo2d2o0M3A2b1A3Sk85dmZE?=
+ =?utf-8?B?bUxYWnhoSjBvU21MclkwOENSQ3NiV0ZZeFlTdk5wY0RIaWZ3cUd6enFSY09Q?=
+ =?utf-8?B?ZThjRG9SQTNvS3ZSUmJudVp4aUNuTlNZNzU4MzQyNFhqanJlWXpqcjZaRmFE?=
+ =?utf-8?B?Tk5tZ1pvbVB0ZUxTYXVranRQd29PcW5Jd2owK2RxK2dYRmw1cXJ2MDROZkIz?=
+ =?utf-8?B?WG9rQi92cTV5YXR3SUk2L2FtYXhyc2c1MUdWVVl5ZzFJWElJcjFBRzZMMnZp?=
+ =?utf-8?B?UUdLUlVCdmUvMFBoN2FIQ0hZVDhaOE5RR3lKVlRDRVRWeWJabjR3ZjdBKzZL?=
+ =?utf-8?B?VVhtTTR2dG5JaHN1dVNPUThrRFlxWFNCSjFoWWtUcndXTnA3UVVrdnBOcXZl?=
+ =?utf-8?B?N3Y2dURrYnhRczR6eDdpb3ZneVIzcXhTSjJrL0RuQkNmNVZ1bm5rMVBUYjdy?=
+ =?utf-8?B?YVFaVDdjWjhJbVBpZEhaQmZPZjhuQmFaS3I0cHZ3OEtxQU94TjdEZnRFUXpL?=
+ =?utf-8?B?cUFyc2Nuc0hVMDhDenRTMVBpRW9sYVV6QUo2aUxvZ0Zua0Ztd3RQK2ozY3h6?=
+ =?utf-8?B?cXNCRDh6YnJlbWRCMGNHRWo1UVZRVXAvTDQyazRsSEFlVlJiWTBZQy9yNDFs?=
+ =?utf-8?B?eDhKOWZYYllodiszTmpGM3EzU2RhVklRTFF2UUFNakdXeC90S2RoUEd6R3RQ?=
+ =?utf-8?B?S3Q3cjZmNVZ0QjIrMXVzTEtGNHFRN3QvbWIxWTVhVDVuQmZzNUVnQkpxaTQw?=
+ =?utf-8?B?ZU1yVHQvUXNETUxrVXN5aHFnM2NVaUJPVkkxeVM4VDFzdXRLQlozb1J4MVYw?=
+ =?utf-8?B?QUp6TGlyaVpsRGFJV2grWnF1dEJMdVZ6cEd4K25RakFTRGZISUJJcm1VTnR5?=
+ =?utf-8?B?MDNwcGRtbDdQem1NZy9YbEJyR2lJbnkxa0o3ZEd6b2FuRXVScVdWcVFiajFn?=
+ =?utf-8?B?ZGRMeGE2T0JHbVNSTTZyc0NidkxGR2NUblcvOENEQzVzN2Fqczg2NHp2YWt0?=
+ =?utf-8?B?MmVBaFl6ZjJPQ2tjT3BrSlZpaFlXSGpLbWt0MllGMGpsL1M5OWZOa3N3QlRk?=
+ =?utf-8?B?VlpzeUdIMGFvZ2d0bEJNUXNkcnhibFJTUllLRno5VW0vc2V0Y0ZpQm5jVk5r?=
+ =?utf-8?B?VE1uU25UOTRDSHJrTjVDSllYdzZnWkRxM01yK0lLODN0U01BNE5GVGwxTFhv?=
+ =?utf-8?B?cTlhL3Y2RHRncEkrMHZyYXV5Wm9PUy9mdUFPWEtMcXg0Z1pQSllCeFpnR1RZ?=
+ =?utf-8?B?b3k5aEJsQ0VqUEw4eVU3WDh5TCtCNzNEK3Jtc0lBOGJ5MStnc3U1S0hldnhP?=
+ =?utf-8?B?R1pBVzF2b2VlMXpudnhxRGljWE1ReVVRVkN2MklhZ2dSZktrUWl4ZFZrZmFD?=
+ =?utf-8?B?K1FUbUN3Mi9EWmFYbTh3aWhIWUhvV0RBRUFiLy9mcytIZEdxSExLL2ZOSzBm?=
+ =?utf-8?B?ZTJOTzlTZ0tLYkkyM1N5NWk2L2hsNVBpa2hGQ3dCUHp5UFJrMEtVQy9pRzdY?=
+ =?utf-8?B?N25jUWI2eXRIVllFR1JBdjJyMjY4dGNkV05UWm5VbmJ2bEVBSjlJcU1aR0dn?=
+ =?utf-8?B?NW1uUHZUd1dJWU1zZThCbVd3a0YyTlhwVEY4M2lKNWkycHAybExYUmg0bnh1?=
+ =?utf-8?B?MnVUQ3lGeGZxUG9xLzFTeUVWUGs2NWVWVGVzSy9ucWh1YWxvZDJBa1hlVGRN?=
+ =?utf-8?B?ZXhlUExEM1ZZNlRqVkJzSXNjcDM3NENGc0pYc3lhWUxYMnkvNlMxQWFmVHZt?=
+ =?utf-8?B?MmRYODNiSVRPeUhHdkdWNnpZVGJFM2VETnBURHRURXdoUEUxSGR0TVh2K0xW?=
+ =?utf-8?B?Um5HRnVRRHJvNGNWKzZzVy9OcmwySmprVCtJMC9Edm45NllUZy9hb2M3RUpw?=
+ =?utf-8?B?V09qeHQ2bUxCMUtPTEZNTjFuTXI5RUJTa3RWYVRUSUxkeHAvMkpmVGprUDNo?=
+ =?utf-8?B?TWwwK1hEcVFPSjBWTm1XYWNLTm1leGI1Z1Jid3hUL1ZuWXM4ckIzblBoV1FE?=
+ =?utf-8?Q?ybHZnyPzuVmULHRAApqHU4Gfe?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5085d3ff-78a1-419b-f107-08dbd4a617ee
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 15:30:04.1682
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vtArCCiu0wBr5swwEUDabHAEF/MnLmJDIur1MHeaXFh4cXtRX5qVzqLmvpbDQEYFUtbx3hHvcYIf63on3ULXhg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9254
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/24/2023 2:49 AM, Maxime Coquelin wrote:
->
->
-> On 10/23/23 17:13, Casey Schaufler wrote:
->> On 10/23/2023 12:28 AM, Maxime Coquelin wrote:
->>>
->>>
->>> On 10/21/23 00:20, Casey Schaufler wrote:
->>>> On 10/20/2023 8:58 AM, Maxime Coquelin wrote:
->>>>> This patch introduces LSM hooks for devices creation,
->>>>> destruction and opening operations, checking the
->>>>> application is allowed to perform these operations for
->>>>> the Virtio device type.
->>>>
->>>> Why do you think that there needs to be a special LSM check for virtio
->>>> devices? What can't existing device attributes be used?
->>>
->>> Michael asked for a way for SELinux to allow/prevent the creation of
->>> some types of devices [0].
->>>
->>> A device is created using ioctl() on VDUSE control chardev. Its type is
->>> specified via a field in the structure passed in argument.
->>>
->>> I didn't see other way than adding dedicated LSM hooks to achieve this,
->>> but it is possible that their is a better way to do it?
->>
->> At the very least the hook should be made more general, and I'd have to
->> see a proposal before commenting on that. security_dev_destroy(dev)
->> might
->> be a better approach. If there's reason to control destruction of vduse
->> devices it's reasonable to assume that there are other devices with the
->> same or similar properties.
->
-> VDUSE is different from other devices as the device is actually
-> implemented by the user-space application, so this is very specific in
-> my opinion.
+On 10/16/2023 8:28 AM, kernel test robot wrote:
+> Hi Yazen,
+> 
+> kernel test robot noticed the following build errors:
+> 
+> [auto build test ERROR on ras/edac-for-next]
+> [also build test ERROR on linus/master v6.6-rc6 next-20231016]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Yazen-Ghannam/RAS-Introduce-AMD-Address-Translation-Library/20231006-014458
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git edac-for-next
+> patch link:    https://lore.kernel.org/r/20231005173526.42831-2-yazen.ghannam%40amd.com
+> patch subject: [PATCH v2 1/2] RAS: Introduce AMD Address Translation Library
+> config: i386-buildonly-randconfig-002-20231016 (https://download.01.org/0day-ci/archive/20231016/202310162015.fuitGuiJ-lkp@intel.com/config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231016/202310162015.fuitGuiJ-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202310162015.fuitGuiJ-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>     ld: drivers/ras/amd/atl/denormalize.o: in function `denormalize_address':
+>>> denormalize.c:(.text+0x84f): undefined reference to `__umoddi3'
+> 
 
-This is hardly unique. If you're implementing the device
-in user-space you may well be able to implement the desired
-controls there.
+This is the code of interest:
+	addr_mod = temp_addr_b % 3;
 
->
->>
->> Since SELinux is your target use case, can you explain why you can't
->> create SELinux policy to enforce the restrictions you're after? I
->> believe
->> (but can be proven wrong, of course) that SELinux has mechanism for
->> dealing
->> with controls on ioctls.
->>
->
-> I am not aware of such mechanism to deal with ioctl(), if you have a
-> pointer that would be welcome.
+"temp_addr_b" is a u64 value.
 
-security/selinux/hooks.c
+__umoddi3() takes "unsigned long" values as input. This works on x86_64 
+where "unsigned long" is 64-bits, but will fail on i386 where "unsigned 
+long" is 32-bits. I *think* __umodti3() should be used which takes 
+"unsigned long long" values as input. This would work on both i386 and 
+x86_64, since "unsigned long long" will be 64-bits.
 
->
-> Thanks,
-> Maxime
->
->>
->>>
->>> Thanks,
->>> Maxime
->>>
->>> [0]:
->>> https://lore.kernel.org/all/20230829130430-mutt-send-email-mst@kernel.org/
->>>
->>>
->>
->
+I was able to reproduce the issue with GCC 9 and 10, and the issue is 
+not present with GCC 11 and 12.
+
+I'm assuming a compiler/linker issue at the moment. In particular, I 
+wonder if gcc and ld need to be matched. I'm using a newer ld version 
+(2.38), and this works with newer gcc versions (11 and 12) but fails 
+with the older versions (9 and 10).
+
+Any thoughts?
+
+Thanks,
+Yazen
