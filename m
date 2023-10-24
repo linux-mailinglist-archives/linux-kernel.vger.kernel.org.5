@@ -2,205 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA187D570C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0C67D5711
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343960AbjJXP5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52826 "EHLO
+        id S1343980AbjJXP5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232602AbjJXP5c (ORCPT
+        with ESMTP id S234794AbjJXP5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:57:32 -0400
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8732310A;
-        Tue, 24 Oct 2023 08:57:30 -0700 (PDT)
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6c7b3adbeb6so3053821a34.0;
-        Tue, 24 Oct 2023 08:57:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698163050; x=1698767850;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NHcRvpJFapb0Q3P+9BlCR7HD1XqDuZe4P3/x1wWBCyM=;
-        b=e/aYb36J9bJmw7VKSOMzbPOlEo9IyRl6tUx+LJNhRMFWgJVtnuBi6XkOb6Fsd9K8a/
-         NbU1PnEo2IfER2htsqEQxHHvwEqduOog8PwY4/0IK2FH+eLF8wzzvteCfq6/LjzF1176
-         quxJMGllPmIbIKEUfKt+h6I2V6Nn6twxRVEF/kMRW0mcUA4nOXfyBoksbUw5vUgEjrfk
-         EvEg5p7FNLxzUvZFzx8bfU2tQuu5Ws1TjiKrChHZ1wq7aJdfmf/BMrc8mJrW6ASl6Xzj
-         VWygi5cKcqo2AE0HKnZOP3SZjbcggUYDpAI3y0r8P3nkmUwRX7dzEKJmbSTJqHr3QpCm
-         SFmA==
-X-Gm-Message-State: AOJu0YxmDLo5bGCtlYua/Hvv399yDu6HY8JdeiFP50g53oVdyaZMGVd9
-        gEFAD5BG8O3CLbX8V7d+Jg==
-X-Google-Smtp-Source: AGHT+IGHYmHNXEiTTfwOzmFz01R3ZgSU10kI3zUH744k0D8HWbiWLtUy7kIW318y+4z87Hn4RJxUqA==
-X-Received: by 2002:a9d:618d:0:b0:6b9:26ce:5e5c with SMTP id g13-20020a9d618d000000b006b926ce5e5cmr13881917otk.31.1698163049764;
-        Tue, 24 Oct 2023 08:57:29 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id f3-20020a4ae603000000b0057b74352e3asm1986286oot.25.2023.10.24.08.57.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 08:57:29 -0700 (PDT)
-Received: (nullmailer pid 3929057 invoked by uid 1000);
-        Tue, 24 Oct 2023 15:57:28 -0000
-Date:   Tue, 24 Oct 2023 10:57:28 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Simon Glass <sjg@chromium.org>
-Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Michael Walle <mwalle@kernel.org>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Tom Rini <trini@konsulko.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tue, 24 Oct 2023 11:57:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCD783
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:57:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698163068; x=1729699068;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=CGHK9hVViLLRXP1qkBxDzBZsDUdNwG2+XztuBNrzymU=;
+  b=XufQ+EyHCJ7RTzgQxDCFm8rp/LMFZfQNhns4p5pRPMloydw0Wfpuukz5
+   VnYTKtI2TWA7nrLRgl6Laghp4q1EaYeKnaU/k7HtRw6LKGoZ5bUlL2dZU
+   6bP2Cd0uuc4YD/MjJe/bBx0TmJNa2/iv6qngPSLXmJXUTVw/J9sjug9/A
+   PM0KrswE0jtF4WI1EKuv3uwp8MC9m36BsrG9pZGHMqjJpqJeA9UmSGCYV
+   yFaTTQBVI1+lTu57NenzPy33MnhxZmlQp7au+O5apwNTAX/gQzDwljmT6
+   1Jd2ErXdZ0wnaeC8MTqXe+xRYIqTKHGyuW3PLHYOyUQN00i+k7p5QZJdS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="8649780"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="8649780"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 08:57:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="902233850"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="902233850"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 24 Oct 2023 08:55:22 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 094E814F; Tue, 24 Oct 2023 18:57:41 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] dt-bindings: mtd: partitions: Add binman
- compatible
-Message-ID: <20231024155728.GA3707756-robh@kernel.org>
-References: <20231009220436.2164245-1-sjg@chromium.org>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH v2 1/7] drm/i915/dsi: Replace while(1) with one with clear exit condition
+Date:   Tue, 24 Oct 2023 18:57:33 +0300
+Message-Id: <20231024155739.3861342-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+In-Reply-To: <20231024155739.3861342-1-andriy.shevchenko@linux.intel.com>
+References: <20231024155739.3861342-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231009220436.2164245-1-sjg@chromium.org>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 09, 2023 at 04:04:13PM -0600, Simon Glass wrote:
-> Add a compatible string for binman, so we can extend fixed-partitions
-> in various ways.
-> 
-> Signed-off-by: Simon Glass <sjg@chromium.org>
-> ---
-> 
-> Changes in v4:
-> - Change subject line
-> 
-> Changes in v3:
-> - Drop fixed-partition additional compatible string
-> - Drop fixed-partitions from the example
-> - Mention use of compatible instead of label
-> 
-> Changes in v2:
-> - Drop mention of 'enhanced features' in fixed-partitions.yaml
-> - Mention Binman input and output properties
-> - Use plain partition@xxx for the node name
-> 
->  .../bindings/mtd/partitions/binman.yaml       | 63 +++++++++++++++++++
->  .../bindings/mtd/partitions/partitions.yaml   |  1 +
->  MAINTAINERS                                   |  5 ++
->  3 files changed, 69 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-> new file mode 100644
-> index 000000000000..7d6c8bd738f5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-> @@ -0,0 +1,63 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2023 Google LLC
-> +
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Binman firmware layout
-> +
-> +maintainers:
-> +  - Simon Glass <sjg@chromium.org>
-> +
-> +select: false
-> +
-> +description: |
-> +  The binman node provides a layout for firmware, used when packaging firmware
-> +  from multiple projects. It is based on fixed-partitions, with some
-> +  extensions, but uses 'compatible' to indicate the contents of the node, to
-> +  avoid perturbing or confusing existing installations which use 'label' for a
-> +  particular purpose.
-> +
-> +  Binman supports properties used as inputs to the firmware-packaging process,
-> +  such as those which control alignment of partitions. This binding addresses
-> +  these 'input' properties. For example, it is common for the 'reg' property
-> +  (an 'output' property) to be set by Binman, based on the alignment requested
-> +  in the input.
-> +
-> +  Once processing is complete, input properties have mostly served their
-> +  purpose, at least until the firmware is repacked later, e.g. due to a
-> +  firmware update. The 'fixed-partitions' binding should provide enough
-> +  information to read the firmware at runtime, including decompression if
-> +  needed.
-> +
-> +  Documentation for Binman is available at:
-> +
-> +  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
-> +
-> +  with the current image-description format at:
-> +
-> +  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
-> +
-> +allOf:
-> +  - $ref: /schemas/mtd/partitions/fixed-partitions.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: binman
+Move existing condition to while(), so it will be clear on what
+circumstances the loop is successfully finishing.
 
-This couldn't possibly pass validation. Including fixed-partitions.yaml 
-says the compatible must be one thing and this says something else.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/gpu/drm/i915/display/intel_dsi_vbt.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    partitions {
-> +        compatible = "binman";
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +
-> +        partition@100000 {
-> +            label = "u-boot";
-> +            reg = <0x100000 0xf00000>;
-> +        };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-> index 1dda2c80747b..849fd15d085c 100644
-> --- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-> @@ -15,6 +15,7 @@ maintainers:
->  
->  oneOf:
->    - $ref: arm,arm-firmware-suite.yaml
-> +  - $ref: binman.yaml
->    - $ref: brcm,bcm4908-partitions.yaml
->    - $ref: brcm,bcm947xx-cfe-partitions.yaml
->    - $ref: fixed-partitions.yaml
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c934244acc31..ebc8158fe67d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3536,6 +3536,11 @@ F:	Documentation/filesystems/bfs.rst
->  F:	fs/bfs/
->  F:	include/uapi/linux/bfs_fs.h
->  
-> +BINMAN
-> +M:	Simon Glass <sjg@chromium.org>
-> +S:	Supported
-> +F:	Documentation/devicetree/bindings/mtd/partitions/binman*
-> +
->  BITMAP API
->  M:	Yury Norov <yury.norov@gmail.com>
->  R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> -- 
-> 2.42.0.609.gbb76f46606-goog
-> 
+diff --git a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
+index 24b2cbcfc1ef..a6a6f1814967 100644
+--- a/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
++++ b/drivers/gpu/drm/i915/display/intel_dsi_vbt.c
+@@ -707,13 +707,10 @@ static void intel_dsi_vbt_exec(struct intel_dsi *intel_dsi,
+ 	if (connector->panel.vbt.dsi.seq_version >= 3)
+ 		data += 4;
+ 
+-	while (1) {
++	while (*data != MIPI_SEQ_ELEM_END) {
+ 		u8 operation_byte = *data++;
+ 		u8 operation_size = 0;
+ 
+-		if (operation_byte == MIPI_SEQ_ELEM_END)
+-			break;
+-
+ 		if (operation_byte < ARRAY_SIZE(exec_elem))
+ 			mipi_elem_exec = exec_elem[operation_byte];
+ 		else
+-- 
+2.40.0.1.gaa8946217a0b
+
