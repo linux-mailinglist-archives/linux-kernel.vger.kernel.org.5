@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 452D07D5D6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F045D7D5D81
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344411AbjJXVsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 17:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60944 "EHLO
+        id S1344410AbjJXVuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 17:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344397AbjJXVsF (ORCPT
+        with ESMTP id S234942AbjJXVuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:48:05 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB6EA6;
-        Tue, 24 Oct 2023 14:48:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698184081;
-        bh=+KNL7g0g6fROyWFjUkr+boWpQuBKjpa8CR0pq/4D8zM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZCxUosBEYc3Ms/YFf2OU6tOvfLg5nUfAgEjlslRBrH8HFsvnOX7p0RjNIbyXX5+vT
-         kLvhpB2z+xJXivQTCp/1CzLBBuTphl6IyheewahXkuCN2rMRrZzdM/w/+rfoJF/HbI
-         jUyyTgeI41MvCeTcqYty+7ILZz/AsD5DyKcOQspwfqv/bvfE8KVOJ7cFydPW33Kvgc
-         /FQNyobve+T5P+nhvvWAoCcvIR5EDLoGlqBSzb4ImlE5CVUflgsKKbQ7RsPtjiystC
-         iEZdea9SYjun90nkUk0ler8hcScISMAwy/oOkG4FSYN9D7OQ9tt+PhiSb3RSKlnW0N
-         U7GnVVMtOQW6w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SFQf85gM0z4wcc;
-        Wed, 25 Oct 2023 08:48:00 +1100 (AEDT)
-Date:   Wed, 25 Oct 2023 08:47:59 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Dave Airlie <airlied@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Roman Li <roman.li@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Subject: Re: linux-next: build failure after merge of the amdgpu tree
-Message-ID: <20231025084759.5685dac6@canb.auug.org.au>
-In-Reply-To: <CADnq5_Od1cQFp=5__LexMKzXwtnmcmcAidE-XsLkL3N4oz+5sg@mail.gmail.com>
-References: <20231010124357.5251e100@canb.auug.org.au>
-        <20231019120618.71424848@canb.auug.org.au>
-        <20231024115903.2d73440c@canb.auug.org.au>
-        <CADnq5_Od1cQFp=5__LexMKzXwtnmcmcAidE-XsLkL3N4oz+5sg@mail.gmail.com>
+        Tue, 24 Oct 2023 17:50:13 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADB5D7F
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:50:08 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ca74e77aecso1675995ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:50:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698184208; x=1698789008; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kUk/3FUrTP2O4nxINnBvX1NoZwU7c4mrwIneHTDtXz8=;
+        b=ecZEhEWNeFWjXXZhmpUQxqgQXST3Pc9zkLw3mrVneHts2vbd/VahNRRr8KbUiSEN4g
+         zsrzSYlJvaUxjgdvNncP533jdFysu9Uv1t2Mqt7/V+ysQmbSghDEKQA+0qXpSz1FV1Yw
+         U4EKIt+Hk7tBzbH9Bw8fEYCpv7y2cxaWN5tQY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698184208; x=1698789008;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kUk/3FUrTP2O4nxINnBvX1NoZwU7c4mrwIneHTDtXz8=;
+        b=mSQET9Kl68G66RM855J0kQg7f46QdXk64g+ROWoMHDDsRvqNoEGFUc3cQpdDWSzhXG
+         nD7BBBS+bwNmDrvT9AblV1hKNXOVtCLWZ4v/DTW6vZsh+A/aMl5y0P2V4z6hviT8D3TR
+         lq6X/P7g8UdGZjs+2FB4/RQqa74BXI7Dkd0oZ0fn8GQEqg7050goMJSibAI+xK4lH5O2
+         GOCSf/QaNDDHp/lL7ZfBTosWPFWttt3S7Pa4PrBllGjGL/+T7qTGzapa56Y9/NTB+4tv
+         U3bAfzm3nFnCA/oGQMPlVx5ZmW01ULu/sYjQxa8SGNwjfc6VHiI/isC1FPOrlf+fp7Wz
+         IVRQ==
+X-Gm-Message-State: AOJu0YyZ3n5MKzMmk5/3J0DpKzYXsheysxZWBue4B6Q0/X+Oyw3mgfpT
+        KqVXzoz84DGvV8P/CnQwAkNZCg==
+X-Google-Smtp-Source: AGHT+IF9lyQ5nSycCSb10w5BnVo03pMKn2LFjJp83sLHplgq6hXesFpem/RWipRfu7bv0jUOjIuR1w==
+X-Received: by 2002:a17:902:e54e:b0:1c9:ddd8:9950 with SMTP id n14-20020a170902e54e00b001c9ddd89950mr17532154plf.21.1698184208126;
+        Tue, 24 Oct 2023 14:50:08 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id k20-20020a170902ba9400b001b891259eddsm7867560pls.197.2023.10.24.14.50.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 14:50:07 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 14:50:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Justin Stitt <justinstitt@google.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH] powerpc: Remove initialisation of readpos
+Message-ID: <202310241449.7E91697@keescook>
+References: <20231024145600.739451-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/yyBbuB_Al3833GDe2bbEKuu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024145600.739451-1-willy@infradead.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/yyBbuB_Al3833GDe2bbEKuu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 24, 2023 at 03:55:59PM +0100, Matthew Wilcox (Oracle) wrote:
+> While powerpc doesn't use the seq_buf readpos, it did explicitly
+> initialise it for no good reason.
+> 
+> Fixes: d0ed46b60396 ("tracing: Move readpos from seq_buf to trace_seq")
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Hi Alex,
+Yeah, looks right -- it'd even be right if the member still existed. :)
 
-On Tue, 24 Oct 2023 08:57:16 -0400 Alex Deucher <alexdeucher@gmail.com> wro=
-te:
->
-> The two patches are in my -next tree and in the PR I sent last week.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Thanks.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/yyBbuB_Al3833GDe2bbEKuu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU4O48ACgkQAVBC80lX
-0GyZpQf/e3wzrXrl45ds0KDXf61j+fkFieASUD2DPn9l+KZ660gcLuc5/90qoVNF
-peUQwhGDMDyxVykOvKD0NH/kAtyZCl1kZYBlbG8SHYOenOy7V1G2k2NgSjBpGIVX
-u0XmEGi+arBcS5duyT8RhoOjQ1L9rtXXjPeBinPUCuICEORF9BaNFCKDtucLlOyB
-EBS/pv8zrwrl9OpSU/XcnFqSDsgy7YegGnIDPDhbK+9MPbvrts/TzbZ+DG5Ckd6e
-GKl/gfWS7iAJFdXwDC0AHR6ofkVh9I/0SrHJlhkfkLwAB9M+99luya+KPxCcNoUV
-XSuFYEGKPfWLlfe/Rhz5H4VFayxssA==
-=2aPf
------END PGP SIGNATURE-----
-
---Sig_/yyBbuB_Al3833GDe2bbEKuu--
+-- 
+Kees Cook
