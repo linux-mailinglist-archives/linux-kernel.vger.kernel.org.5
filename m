@@ -2,145 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F61B7D5A2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7577D5A2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344113AbjJXSIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 14:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
+        id S1344067AbjJXSLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344096AbjJXSIX (ORCPT
+        with ESMTP id S1343587AbjJXSLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:08:23 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBCD10D4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:08:21 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6b497c8575aso4738868b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:08:21 -0700 (PDT)
+        Tue, 24 Oct 2023 14:11:06 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8234910D1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:11:03 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32de9764793so755491f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:11:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698170900; x=1698775700; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=k3017rfLAsmBWrjhLTGlW8FveYh7+csB/i8dPVteIyE=;
-        b=KMSq+g5B/9/mmBrXtqyNbFrp+0a6B204TjFXffcvyOjFPY0rGmqwfBWVTDiv6HtseO
-         MvfxKD0P36CPrfLAwoKQATvJPJk2T8W1WCFYc6eZCoNaSuDnsCgUoX6S4CXvqIcaKQOW
-         ChWI30wJAjUeSLvpD7ATMycS43SqfZ3ziZ9j4=
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698171062; x=1698775862; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dKxR0O8nMebNGWqyGQ9J2L+zEiSIfrsVmyfDrAKwhR8=;
+        b=dl0Z3I2oLFlC18j2c/Kq7mwVvuHOK/vmrQpO0xeY+dLNbyhyQUrPkA1B3wOElJJNxS
+         zXKXVeAwL83tPLOh14ddkeLx7kHTVA+Ak9R03UL2B+/3BWlAtlNcPA+x5IeCcOpvMC9T
+         3mCh4aXi2UJaMYWkUBybnmW8wnOp3J4vuLuNvEC/jTuTg0slllVZffG4P4fKvEJr7VIr
+         SzgcQDldgZYeLA0fM08KcB5pbCF6BnrAXyh7abAS077+oLGk7/GpvbBo09Qj6ZZQ6G+F
+         ihrNE9Sv21gG5yFJBV7tmVahJPOEWHP0OaxxZeBHMkFEnruisafHAzilUECA/sYVpu7i
+         cgSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698170900; x=1698775700;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k3017rfLAsmBWrjhLTGlW8FveYh7+csB/i8dPVteIyE=;
-        b=Z8OX8e7z3Ns1XwI2lWWHnSkQV11rO0i3HByv+7GPiHr/B5dhKcW2iSjUr9eYKf5bnx
-         WyjNXPCJZj3hY7UkZSaU3MVoZ4NNp0e/F8MImuhdcM7FObalaY8LTD0RlqUQ1U4jliiQ
-         oYZsJbrhEYmsYph/8jh7voz8QOVxVrTcgc4okcp3wOPYT180wMrBsotFAOuRqjvKDXwM
-         SkISoEWiZvgwEX9TP/Pn5OsYkHULEfyVQg95QrLWKzjZ1BnC8mKPj8KFYzOtMok86Dkz
-         UlRY99Cu9fiOU5BuZL0B+1NzJypNk8yeeP2nuZcJH0KBIZY6GywfEN4TazlJbW2xjMtY
-         wt4w==
-X-Gm-Message-State: AOJu0YwH8YSjSQj5cNf8WmeaceStZ94TnFtNlHUljSntGSxmuVxnmAJt
-        FQKzknx8rtUOQezeNEdxTFKVOw==
-X-Google-Smtp-Source: AGHT+IFGxHFp5kySQjiH/D3DhnH8iCrDxB0Ra53C+jTN6JyknU2xEf0SERhhIgYYJS8DDiyE+OW6OQ==
-X-Received: by 2002:a05:6a21:7803:b0:16b:e46e:1246 with SMTP id be3-20020a056a21780300b0016be46e1246mr3564795pzc.30.1698170900569;
-        Tue, 24 Oct 2023 11:08:20 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d15-20020a65620f000000b0057e7ae47893sm6448886pgv.47.2023.10.24.11.08.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 11:08:19 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 11:08:19 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Alexandra Winter <wintera@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] s390/qeth: replace deprecated strncpy with strscpy
-Message-ID: <202310241029.3E4A634@keescook>
-References: <20231023-strncpy-drivers-s390-net-qeth_core_main-c-v1-1-e7ce65454446@google.com>
+        d=1e100.net; s=20230601; t=1698171062; x=1698775862;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dKxR0O8nMebNGWqyGQ9J2L+zEiSIfrsVmyfDrAKwhR8=;
+        b=FsZuv2VRu9i4Md7Uj3KAFsUe2t6rwP1Y7lX+hmDxyxB6T2nAI5m4HY8EhrOoMHY51Z
+         G0u4IZEGlHm7Xr1hxGDUnWTii9YmGi0/XgUOJNazDKExxX7Q9JjiQXGfI1IeUEtXS8I1
+         23jPd8cv4wF1yt/8ijJq1aeVCLYU4TeW7wZPwUiYVwHOchqlJLyuqJ+gW5suAHd1ufwF
+         KvX3l0xYlXNI63ZVMA1lIwSwleRAPisZeCohZriS84l7Ob+edxJHpeu8QYyzO9Oetjwz
+         n+NcF1FMp3jxpRU3j7qM4+ez2vETTUOO0Bg6KWSp1zzWYDdcN+jc4uJsnzh6RZ76xfpn
+         KmKA==
+X-Gm-Message-State: AOJu0YxvVOaqWmbUHCMbSEWThd3MGefUXBjPXys1QNO8rOCpOAdduDEY
+        ODjg1eFWARSBiDwvgIyV35LvdA==
+X-Google-Smtp-Source: AGHT+IEzTUYZHBwMWOmDylM23+SpgZ4YldKTRCyQKmiDghga3Ul4JN8Saqse9bLNdqzRU8gTtkmr7w==
+X-Received: by 2002:adf:b649:0:b0:32f:51c6:cd6c with SMTP id i9-20020adfb649000000b0032f51c6cd6cmr1688373wre.2.1698171061901;
+        Tue, 24 Oct 2023 11:11:01 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:9f43:3ca4:162c:d540? ([2a01:e0a:999:a3a0:9f43:3ca4:162c:d540])
+        by smtp.gmail.com with ESMTPSA id a10-20020adfe5ca000000b0032415213a6fsm10361744wrn.87.2023.10.24.11.11.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 11:11:01 -0700 (PDT)
+Message-ID: <3a5462f6-62d4-49e3-ae78-374fb5cbad5a@rivosinc.com>
+Date:   Tue, 24 Oct 2023 20:11:00 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023-strncpy-drivers-s390-net-qeth_core_main-c-v1-1-e7ce65454446@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/19] riscv: add ISA extension parsing for scalar
+ crypto
+Content-Language: en-US
+To:     Evan Green <evan@rivosinc.com>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Ortiz <sameo@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+References: <20231017131456.2053396-1-cleger@rivosinc.com>
+ <20231017131456.2053396-3-cleger@rivosinc.com>
+ <CALs-HssmufWCKzaGy7BwWz4n4hfwV9NjjRD-O_JeupM-p=Ov+w@mail.gmail.com>
+ <d0ea4996-5c48-47b4-99b0-f4211276e0b2@rivosinc.com>
+ <56f6af04-bdf4-4b85-99dc-9eb4f391d7ad@rivosinc.com>
+ <CALs-Hsvy411MnHQXHLK8u4JmM+LO5R2tuCxY6zQco7BKJONqPA@mail.gmail.com>
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <CALs-Hsvy411MnHQXHLK8u4JmM+LO5R2tuCxY6zQco7BKJONqPA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 07:39:39PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We expect new_entry->dbf_name to be NUL-terminated based on its use with
-> strcmp():
-> |       if (strcmp(entry->dbf_name, name) == 0) {
-> 
-> Moreover, NUL-padding is not required as new_entry is kzalloc'd just
-> before this assignment:
-> |       new_entry = kzalloc(sizeof(struct qeth_dbf_entry), GFP_KERNEL);
-> 
-> ... rendering any future NUL-byte assignments (like the ones strncpy()
-> does) redundant.
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-struct qeth_dbf_entry {
-        char dbf_name[DBF_NAME_LEN];
 
-The sizeof() replace looks right to me.
+On 24/10/2023 18:37, Evan Green wrote:
+> On Tue, Oct 24, 2023 at 2:30 AM Clément Léger <cleger@rivosinc.com> wrote:
+>>
+>>
+>>
+>> On 24/10/2023 09:18, Clément Léger wrote:
+>>>
+>>>
+>>> On 23/10/2023 18:21, Evan Green wrote:
+>>>> On Tue, Oct 17, 2023 at 6:15 AM Clément Léger <cleger@rivosinc.com> wrote:
+>>>>>
+>>>>> From: Evan Green <evan@rivosinc.com>
+>>>>>
+>>>>> The Scalar Crypto specification defines Zk as a shorthand for the
+>>>>> Zkn, Zkr and Zkt extensions. The same follows for both Zkn, Zks and Zbk,
+>>>>> which are all shorthands for various other extensions. The detailed
+>>>>> breakdown can be found in their dt-binding entries.
+>>>>>
+>>>>> Since Zkn also implies the Zbkb, Zbkc and Zbkx extensions, simply passing
+>>>>> "zk" through a DT should enable all of Zbkb, Zbkc, Zbkx, Zkn, Zkr and Zkt.
+>>>>> For example, setting the "riscv,isa" DT property to "rv64imafdc_zk"
+>>>>> should generate the following cpuinfo output:
+>>>>> "rv64imafdc_zicntr_zicsr_zifencei_zihpm_zbkb_zbkc_zbkx_zknd_zkne_zknh_zkr_zkt"
+>>>>>
+>>>>> riscv_isa_ext_data grows a pair of new members, to permit setting the
+>>>>> relevant bits for "bundled" extensions, both while parsing the ISA string
+>>>>> and the new dedicated extension properties
+>>>>>
+>>>>> Co-developed-by: Conor Dooley <conor.dooley@microchip.com>
+>>>>> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+>>>>> Signed-off-by: Evan Green <evan@rivosinc.com>
+>>>>> Signed-off-by: Clément Léger <cleger@rivosinc.com>
+>>>>
+>>>> My tree might be out of sync, but in my search for riscv_isa_ext, I
+>>>> also found a use in print_isa() (cpu.c) where we're reaching into
+>>>> riscv_isa_ext[].id and assuming it's always valid. If that's still in
+>>>> there we'll want to fix up that spot too, since now with bundles .id
+>>>> may or may not be valid.
+>>>
+>>> Oh indeed, the array is visible outside of this compilation unit :/.
+>>> I'll check that before sending V3.
+>>
+>> After looking a bit more at that, it actually seems that id is used in
+>> cpuinfo to determine which extensions are present which means you are
+>> right, bundle_size needs to be accounted for.
+>>
+>> Looking at it also raises the question (again) of exposing the "bundles"
+>> extensions themselves or not in cpuinfo output. With the current setup,
+>> the bundles extensions won't be visible in cpuinfo output. For instance
+>> if Zk was in the isa string, then it will not be visible in the cpuinfo
+>> output, only the child extensions. One solution would be to always have
+>> a valid id for each extension. So we would have one for Zk for instance.
+>>
+>> We would then have a similar setup for all "bundles" or "subset"
+>> extensions, they would have a id for all of them. For instance, Zk would
+>> become:
+>>
+>> __RISCV_ISA_EXT_DATA_BUNDLE(zk, RISCV_ISA_EXT_ZK, riscv_zk_bundled_exts)
+>>
+>> Same would go for zvbb (riscv_zvbb_subset_exts would only contain Zvkb):
+>>
+>> __RISCV_ISA_EXT_DATA_BUNDLE(zk, RISCV_ISA_EXT_ZVBB, riscv_zvbb_subset_exts)
+>>
+>> For the sake of completeness, I feel like it would be good to have all
+>> the extensions (bundles or not) visible in the riscv_isa_ext.
+>>
+>> Any objection ?
+> 
+> I could be persuaded that it's a good idea, but there are arguments to
+> be made for not defining them as separate bits:
+> 
+> 1. Having two (sets of) bits that mean the same thing means usermode
+> now has to decide which one to query, or query both. Multiple values
+> that mean the same thing is always something that makes me nervous.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+That is indeed an acceptable cons.
 
--Kees
+> 2. To avoid these two sets having different answers, we'd have to
+> solve the reverse problem too: If all of the bundled extensions that
+> make up Zk are on, we'd need to detect that and turn Zk on as well.
 
-> ---
-> Note: build-tested only.
-> 
-> Found with: $ rg "strncpy\("
-> ---
->  drivers/s390/net/qeth_core_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
-> index cd783290bde5..6af2511e070c 100644
-> --- a/drivers/s390/net/qeth_core_main.c
-> +++ b/drivers/s390/net/qeth_core_main.c
-> @@ -6226,7 +6226,7 @@ static int qeth_add_dbf_entry(struct qeth_card *card, char *name)
->  	new_entry = kzalloc(sizeof(struct qeth_dbf_entry), GFP_KERNEL);
->  	if (!new_entry)
->  		goto err_dbg;
-> -	strncpy(new_entry->dbf_name, name, DBF_NAME_LEN);
-> +	strscpy(new_entry->dbf_name, name, sizeof(new_entry->dbf_name));
->  	new_entry->dbf_info = card->debug;
->  	mutex_lock(&qeth_dbf_list_mutex);
->  	list_add(&new_entry->dbf_list, &qeth_dbf_list);
-> 
-> ---
-> base-commit: 9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
-> change-id: 20231023-strncpy-drivers-s390-net-qeth_core_main-c-0b0ee08672ec
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-> 
+Oh yes, sorry, already forgot that point :/ Well, I guess things sorted
+out by themselves. Let's do what you proposed:
 
--- 
-Kees Cook
+- Pure lasso extensions (Zk) will simply result in all the sub
+extensions being enable, there won't be any .id specified for these
+ones, simply a bundle of extensions.
+
+- "Superset" extensions (Zvbb for instance) will have their own .id as
+well as a bundle made of subsets extensions.
+
+Clément
+
+> That code would also need to know the difference between a pure lasso
+> like Zk, where you should flip it on if its components are on, and the
+> loose change variant we were discussing on the other thread (Zvkb?),
+> where you cannot.
+> 
+> Pretending pure lasso extensions didn't exist on their own was a way
+> to sidestep the problem.
+> -Evan
