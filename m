@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCB17D4FF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A887D4FF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233306AbjJXMkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
+        id S234315AbjJXMkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbjJXMkG (ORCPT
+        with ESMTP id S234301AbjJXMkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:40:06 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678C3123
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:40:04 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso6927212a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:40:04 -0700 (PDT)
+        Tue, 24 Oct 2023 08:40:19 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C749B;
+        Tue, 24 Oct 2023 05:40:16 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d9ca471cf3aso4179720276.2;
+        Tue, 24 Oct 2023 05:40:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698151203; x=1698756003; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qNeDAm67bVqR5ZuVcxBebip5vczn3fVpHDQR33oUAVo=;
-        b=fLfgbWO5O+SNH2GpL/BUCsJrQna9jR66467leW44Cr+KI00Mrmg+iiLOBHs8iZvcnV
-         wVhJXIme4TK+2hG/GYyZacK5RO8W6jQnsg8O+ykx43VMFcEQtY5vn13IQSIpB8oPSkiX
-         Os8AlkGIn9FKubzXlqwiP2/iHaMPCrEaxaIvAbbLexbvzDHkwJL+92oR5bsVwS6viq0C
-         YPZIs6N1fCtNHmpTy3drcVanu4vgTcHY69ZHiBihrDO0SHDwWtidcwyNbzQ/3QB0W0bE
-         qRFWuxsjVDITurAvHe9IY3tCcikdofmA8quXQzRx3RkKyeyIlO6t9kndrA2itYW40G9q
-         N6gQ==
+        d=gmail.com; s=20230601; t=1698151215; x=1698756015; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mcX/hzD8Y49+eJmQWvIVcsdqZ9oYpriIwYpFUDDsetQ=;
+        b=J9sxkL+OBITSat+TBJnLa5JCL0OhZRvyrJgu/ujpp0g93UPZdM501yDifn8/NHdNAb
+         ZscD0aXs2MNa5E6FxqKP5DmlehhaBOj05kFBW2TV01FXYYwvo+ALBV6lDfQe+NWm4ZhG
+         SZY1ivcCou+XV0/ulmtcWfjZArZPw8bp7zHHxevUFRtgA2JNNnd5nhqwywbwRxBcDzGf
+         UjCIIS16iGjNGQeMgewXlcbpO+cAbTjld2U9+plszx6B5GheychQZO7VfLMUs/HpZL5R
+         5aaTncmbeKnTcoAhkZHp9K+2s3g4oqeD/RCu+0za56M1sYsHSxodEgmY7QysSJYB/dGN
+         TD6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698151203; x=1698756003;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qNeDAm67bVqR5ZuVcxBebip5vczn3fVpHDQR33oUAVo=;
-        b=Hviaw6WHneC7Rd+PdX4K3qsUpV62LS7xMNbYoz7ZdNJDlVh6lyQNSVrdzISI+c6V/a
-         TIFva/GKLtHkFF9Za6HIKoMsP0ZkCJAR6kZgNUowiT6pOreKGbSCf6JznoKLNOuFnUgE
-         waNIkWMXeCdQTxJsKLvazyDkMbOzM6gfqccyioWPDHgq0B4d+o97Gc+RMpaZftNg7SfR
-         Qqy4C6yzrujYZXUuD/vlPph1bssoKd7jPp5wnj2d4MiQvGpCxByTfvFmt8yQzp+LRpD9
-         zQPA80azjxBMGHIz75QeTY13eoLwbD+bcMYvg6o025IscKunfQoDZtet2y8+O5T8kYZZ
-         PbPA==
-X-Gm-Message-State: AOJu0Yz0tZ0WefajI3LRLkeshqdi6I+PBoSFP9HJc6Jgo43iWGQ+JMtC
-        oVXfNURJU7Jhg+SGI+hyWdh+dZ/5EUjvAoS3wxc=
-X-Google-Smtp-Source: AGHT+IEQ+8YE/18wOPQQFUjWwYYyRJUhfP7rqGdIpQi569XvyrYGqbBkWlwOAt3Up3f7IhcGBzZ1l9KHvrG30EtQmmg=
-X-Received: by 2002:a05:6402:27d4:b0:540:88ad:11a1 with SMTP id
- c20-20020a05640227d400b0054088ad11a1mr2649983ede.39.1698151202414; Tue, 24
- Oct 2023 05:40:02 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698151215; x=1698756015;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mcX/hzD8Y49+eJmQWvIVcsdqZ9oYpriIwYpFUDDsetQ=;
+        b=Dc0qJdC3LEgOpC3RN6ENdKwqS+9aIkH8mEDzBidPiwza84pqHXnuFcOEohyvm5Qrn9
+         G1s/mAXdYXFJYaASP0kcTGBM7QcgV2HBKzP2H1y/9VVBez7i0Cm0lbeMVSkBPYJp1Hlh
+         KBkibNJQdazlWm9ESH/OWAEfLxFPTyBenqfpJFndIZXT3rRJz6RkxVC7XbZFZf6ScDja
+         0pwotU31bJN6d4xAX4HwweLS45Qxwp2Y56KsRLvDiyJwtjdPjmqW3/O6+aGaYDxW/e9A
+         RxY+AHp8MKybE90hKrVSBePcUy1UJcuEHvHi/fk8GWiAbw2BWBORDduXCOokt+pHI9/X
+         ZZFg==
+X-Gm-Message-State: AOJu0Ywk8eUAAEOn5ijcaB8t413RyxgnSrLLv9L1aXFfly60dwX+PlT5
+        cZJEgaGgGAN8apFTF5ZMSgtic0B6oalpYz0Txw==
+X-Google-Smtp-Source: AGHT+IET+uxJlGG5mYbUi3JeAKjIz21/jFr8kdJKn9wJU2XBeEh08Yqbn4/31c/YsVUEGKvmAZfW3jfOq7DkulfUQUM=
+X-Received: by 2002:a25:8703:0:b0:d9a:eed7:d034 with SMTP id
+ a3-20020a258703000000b00d9aeed7d034mr11327640ybl.8.1698151215094; Tue, 24 Oct
+ 2023 05:40:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231023211730.40566-1-brgerst@gmail.com> <20231023211730.40566-4-brgerst@gmail.com>
-In-Reply-To: <20231023211730.40566-4-brgerst@gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Tue, 24 Oct 2023 14:39:51 +0200
-Message-ID: <CAFULd4bGtZJorhUn7C-G9nMh4OsFtwcyo6eoHuN62nn0p4anrQ@mail.gmail.com>
-Subject: Re: [PATCH 3/9] x86/stackprotector/64: Convert stack protector to
- normal percpu variable
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Tue, 24 Oct 2023 14:40:04 +0200
+Message-ID: <CACkBjsY2q1_fUohD7hRmKGqv1MV=eP2f6XK8kjkYNw7BaiF8iQ@mail.gmail.com>
+Subject: bpf: shift-out-of-bounds in tnum_rshift()
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,298 +73,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 11:17=E2=80=AFPM Brian Gerst <brgerst@gmail.com> wr=
-ote:
->
-> Older versions of GCC fixed the location of the stack protector canary
-> at %gs:40.  This constraint forced the percpu section to be linked at
-> virtual address 0 so that the canary could be the first data object in
-> the percpu section.  Supporting the zero-based percpu section requires
-> additional code to handle relocations for RIP-relative references to
-> percpu data, extra complexity to kallsyms, and workarounds for linker
-> bugs due to the use of absolute symbols.
->
-> Since version 8.1, GCC has options to configure the location of the
-> canary value.  This allows the canary to be turned into a normal
-> percpu variable and removes the constraint that the percpu section
-> be zero-based.
->
-> Signed-off-by: Brian Gerst <brgerst@gmail.com>
-> ---
->  arch/x86/Kconfig                          |  5 ++-
->  arch/x86/Makefile                         | 19 +++++++-----
->  arch/x86/entry/entry_64.S                 |  2 +-
->  arch/x86/include/asm/processor.h          | 15 +--------
->  arch/x86/include/asm/stackprotector.h     | 37 +++++------------------
->  arch/x86/kernel/asm-offsets_64.c          |  6 ----
->  arch/x86/kernel/cpu/common.c              |  4 +--
->  scripts/gcc-x86_64-has-stack-protector.sh |  4 ---
->  8 files changed, 24 insertions(+), 68 deletions(-)
->  delete mode 100755 scripts/gcc-x86_64-has-stack-protector.sh
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 039872be1630..c95e0ce557da 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -410,12 +410,11 @@ config PGTABLE_LEVELS
->
->  config CC_HAS_SANE_STACKPROTECTOR
->         bool
-> -       default $(success,$(srctree)/scripts/gcc-x86_64-has-stack-protect=
-or.sh $(CC) $(CLANG_FLAGS)) if 64BIT
-> +       default $(cc-option,-mstack-protector-guard-reg=3Dgs -mstack-prot=
-ector-guard-symbol=3D__stack_chk_guard) if 64BIT
->         default $(cc-option,-mstack-protector-guard-reg=3Dfs -mstack-prot=
-ector-guard-symbol=3D__stack_chk_guard)
->         help
->           We have to make sure stack protector is unconditionally disable=
-d if
-> -         the compiler produces broken code or if it does not let us cont=
-rol
-> -         the segment on 32-bit kernels.
-> +         the compiler does not allow control of the segment and symbol.
+Hi,
 
-All compilers that support -mstack-protector-guard-reg=3Dgs
--mstack-protector-guard-symbol=3D__stack_chk_guard correctly emit
-segment prefix register, so checking for broken code here is indeed
-overkill. gcc-x86_64-has-stack-protector.sh can rightfully be removed.
+The following program can trigger a shift-out-of-bounds in
+tnum_rshift(), called by scalar32_min_max_rsh():
 
->
->  menu "Processor type and features"
->
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 22e41d9dbc23..169f086997ec 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -111,13 +111,7 @@ ifeq ($(CONFIG_X86_32),y)
->          # temporary until string.h is fixed
->          KBUILD_CFLAGS +=3D -ffreestanding
->
-> -       ifeq ($(CONFIG_STACKPROTECTOR),y)
-> -               ifeq ($(CONFIG_SMP),y)
-> -                       KBUILD_CFLAGS +=3D -mstack-protector-guard-reg=3D=
-fs -mstack-protector-guard-symbol=3D__stack_chk_guard
-> -               else
-> -                       KBUILD_CFLAGS +=3D -mstack-protector-guard=3Dglob=
-al
-> -               endif
-> -       endif
-> +       percpu_seg :=3D fs
->  else
->          BITS :=3D 64
->          UTS_MACHINE :=3D x86_64
-> @@ -167,6 +161,17 @@ else
->          KBUILD_CFLAGS +=3D -mcmodel=3Dkernel
->          KBUILD_RUSTFLAGS +=3D -Cno-redzone=3Dy
->          KBUILD_RUSTFLAGS +=3D -Ccode-model=3Dkernel
-> +
-> +       percpu_seg :=3D gs
-> +endif
-> +
-> +ifeq ($(CONFIG_STACKPROTECTOR),y)
-> +       ifeq ($(CONFIG_SMP),y)
-> +               KBUILD_CFLAGS +=3D -mstack-protector-guard-reg=3D$(percpu=
-_seg) \
-> +                                -mstack-protector-guard-symbol=3D__stack=
-_chk_guard
+0: (bc) w0 = w1
+1: (bf) r2 = r0
+2: (18) r3 = 0xd
+4: (bc) w4 = w0
+5: (bf) r5 = r0
+6: (bf) r7 = r3
+7: (bf) r8 = r4
+8: (2f) r8 *= r5
+9: (cf) r5 s>>= r5
+10: (a6) if w8 < 0xfffffffb goto pc+10
+11: (1f) r7 -= r5
+12: (71) r6 = *(u8 *)(r1 +17)
+13: (5f) r3 &= r8
+14: (74) w2 >>= 30
+15: (1f) r7 -= r5
+16: (5d) if r8 != r6 goto pc+4
+17: (c7) r8 s>>= 5
+18: (cf) r0 s>>= r0
+19: (7f) r0 >>= r0
+20: (7c) w5 >>= w8         # shift-out-bounds here
+21: exit
 
-Maybe use here:
+After load:
+================================================================================
+UBSAN: shift-out-of-bounds in kernel/bpf/tnum.c:44:9
+shift exponent 255 is too large for 64-bit type 'long long unsigned int'
+CPU: 2 PID: 8574 Comm: bpf-test Not tainted
+6.6.0-rc5-01400-g7c2f6c9fb91f-dirty #21
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x8e/0xb0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_shift_out_of_bounds+0x15a/0x2f0 lib/ubsan.c:387
+ tnum_rshift.cold+0x17/0x32 kernel/bpf/tnum.c:44
+ scalar32_min_max_rsh kernel/bpf/verifier.c:12999 [inline]
+ adjust_scalar_min_max_vals kernel/bpf/verifier.c:13224 [inline]
+ adjust_reg_min_max_vals+0x1936/0x5d50 kernel/bpf/verifier.c:13338
+ do_check kernel/bpf/verifier.c:16890 [inline]
+ do_check_common+0x2f64/0xbb80 kernel/bpf/verifier.c:19563
+ do_check_main kernel/bpf/verifier.c:19626 [inline]
+ bpf_check+0x65cf/0xa9e0 kernel/bpf/verifier.c:20263
+ bpf_prog_load+0x110e/0x1b20 kernel/bpf/syscall.c:2717
+ __sys_bpf+0xfcf/0x4380 kernel/bpf/syscall.c:5365
+ __do_sys_bpf kernel/bpf/syscall.c:5469 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5467 [inline]
+ __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5467
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x5610511e23cd
+Code: 24 80 00 00 00 48 0f 42 d0 48 89 94 24 68 0c 00 00 b8 41 01 00
+00 bf 05 00 00 00 ba 90 00 00 00 48 8d b44
+RSP: 002b:00007f5357fc7820 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000095 RCX: 00005610511e23cd
+RDX: 0000000000000090 RSI: 00007f5357fc8410 RDI: 0000000000000005
+RBP: 0000000000000000 R08: 00007f5357fca458 R09: 00007f5350005520
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000002b
+R13: 0000000d00000000 R14: 000000000000002b R15: 000000000000002b
+ </TASK>
 
-KBUILD_CFLAGS +=3D -mstack-protector-guard-reg=3D$(percpu_seg)
-KBUILD_CFLAGS +=3D -mstack-protector-guard-symbol=3D__stack_chk_guard
+If remove insn #20, the verifier gives:
+ -------- Verifier Log --------
+ func#0 @0
+ 0: R1=ctx(off=0,imm=0) R10=fp0
+ 0: (bc) w0 = w1                       ;
+R0_w=scalar(smin=0,smax=umax=4294967295,var_off=(0x0; 0xffffffff))
+R1=ctx(off=0,
+ imm=0)
+ 1: (bf) r2 = r0                       ;
+R0_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0;
+0xffffffff))
+ R2_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0; 0xffffffff))
+ 2: (18) r3 = 0xd                      ; R3_w=13
+ 4: (bc) w4 = w0                       ;
+R0_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0;
+0xffffffff))
+ R4_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0; 0xffffffff))
+ 5: (bf) r5 = r0                       ;
+R0_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0;
+0xffffffff))
+ R5_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0; 0xffffffff))
+ 6: (bf) r7 = r3                       ; R3_w=13 R7_w=13
+ 7: (bf) r8 = r4                       ;
+R4_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0;
+0xffffffff))
+ R8_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0; 0xffffffff))
+ 8: (2f) r8 *= r5                      ;
+R5_w=scalar(id=1,smin=0,smax=umax=4294967295,var_off=(0x0;
+0xffffffff))
+ R8_w=scalar()
+ 9: (cf) r5 s>>= r5                    ; R5_w=scalar()
+ 10: (a6) if w8 < 0xfffffffb goto pc+9         ;
+R8_w=scalar(smin=-9223372032559808520,umin=4294967288,smin32=-5,smax32=-1,
+ umin32=4294967291,var_off=(0xfffffff8; 0xffffffff00000007))
+ 11: (1f) r7 -= r5                     ; R5_w=scalar() R7_w=scalar()
+ 12: (71) r6 = *(u8 *)(r1 +17)         ; R1=ctx(off=0,imm=0)
+R6_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,
+ var_off=(0x0; 0xff))
+ 13: (5f) r3 &= r8                     ;
+R3_w=scalar(smin=umin=smin32=umin32=8,smax=umax=smax32=umax32=13,var_off=(0x8;
+ 0x5)) R8_w=scalar(smin=-9223372032559808520,umin=4294967288,smin32=-5,smax32=-1,umin32=4294967291,var_off=(0xffff)
+ 14: (74) w2 >>= 30                    ;
+R2_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=3,var_off=(0x0;
+0x3))
+ 15: (1f) r7 -= r5                     ; R5_w=scalar() R7_w=scalar()
+ 16: (5d) if r8 != r6 goto pc+3        ;
+R6_w=scalar(smin=umin=umin32=4294967288,smax=umax=umax32=255,smin32=-8,smax32=-1,
+ var_off=(0xfffffff8; 0x7))
+R8_w=scalar(smin=umin=4294967288,smax=umax=255,smin32=-5,smax32=-1,umin32=4294967291)
+ 17: (c7) r8 s>>= 5                    ; R8_w=134217727
+ 18: (cf) r0 s>>= r0                   ; R0_w=scalar()
+ 19: (7f) r0 >>= r0                    ; R0=scalar()
+ 20: (95) exit
 
-Looks nicer...
+ from 16 to 20: safe
 
-Uros.
+ from 10 to 20: safe
+ processed 22 insns (limit 1000000) max_states_per_insn 0 total_states
+1 peak_states 1 mark_read 1
+-------- End of Verifier Log --------
 
-> +       else
-> +               KBUILD_CFLAGS +=3D -mstack-protector-guard=3Dglobal
-> +       endif
->  endif
->
->  #
-> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> index 1a88ad8a7b48..cddcc236aaae 100644
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -190,7 +190,7 @@ SYM_FUNC_START(__switch_to_asm)
->
->  #ifdef CONFIG_STACKPROTECTOR
->         movq    TASK_stack_canary(%rsi), %rbx
-> -       movq    %rbx, PER_CPU_VAR(fixed_percpu_data + FIXED_stack_canary)
-> +       movq    %rbx, PER_CPU_VAR(__stack_chk_guard)
->  #endif
->
->         /*
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/proc=
-essor.h
-> index ae81a7191c1c..04371f60e3c6 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -394,16 +394,7 @@ struct irq_stack {
->
->  #ifdef CONFIG_X86_64
->  struct fixed_percpu_data {
-> -       /*
-> -        * GCC hardcodes the stack canary as %gs:40.  Since the
-> -        * irq_stack is the object at %gs:0, we reserve the bottom
-> -        * 48 bytes of the irq stack for the canary.
-> -        *
-> -        * Once we are willing to require -mstack-protector-guard-symbol=
-=3D
-> -        * support for x86_64 stackprotector, we can get rid of this.
-> -        */
->         char            gs_base[40];
-> -       unsigned long   stack_canary;
->  };
->
->  DECLARE_PER_CPU_FIRST(struct fixed_percpu_data, fixed_percpu_data) __vis=
-ible;
-> @@ -418,11 +409,7 @@ extern asmlinkage void entry_SYSCALL32_ignore(void);
->
->  /* Save actual FS/GS selectors and bases to current->thread */
->  void current_save_fsgs(void);
-> -#else  /* X86_64 */
-> -#ifdef CONFIG_STACKPROTECTOR
-> -DECLARE_PER_CPU(unsigned long, __stack_chk_guard);
-> -#endif
-> -#endif /* !X86_64 */
-> +#endif /* X86_64 */
->
->  struct perf_event;
->
-> diff --git a/arch/x86/include/asm/stackprotector.h b/arch/x86/include/asm=
-/stackprotector.h
-> index 00473a650f51..33abbd29ea26 100644
-> --- a/arch/x86/include/asm/stackprotector.h
-> +++ b/arch/x86/include/asm/stackprotector.h
-> @@ -2,26 +2,13 @@
->  /*
->   * GCC stack protector support.
->   *
-> - * Stack protector works by putting predefined pattern at the start of
-> + * Stack protector works by putting a predefined pattern at the start of
->   * the stack frame and verifying that it hasn't been overwritten when
-> - * returning from the function.  The pattern is called stack canary
-> - * and unfortunately gcc historically required it to be at a fixed offse=
-t
-> - * from the percpu segment base.  On x86_64, the offset is 40 bytes.
-> + * returning from the function.  The pattern is called the stack canary
-> + * and is a unique value for each task.
->   *
-> - * The same segment is shared by percpu area and stack canary.  On
-> - * x86_64, percpu symbols are zero based and %gs (64-bit) points to the
-> - * base of percpu area.  The first occupant of the percpu area is always
-> - * fixed_percpu_data which contains stack_canary at the appropriate
-> - * offset.  On x86_32, the stack canary is just a regular percpu
-> - * variable.
-> - *
-> - * Putting percpu data in %fs on 32-bit is a minor optimization compared=
- to
-> - * using %gs.  Since 32-bit userspace normally has %fs =3D=3D 0, we are =
-likely
-> - * to load 0 into %fs on exit to usermode, whereas with percpu data in
-> - * %gs, we are likely to load a non-null %gs on return to user mode.
-> - *
-> - * Once we are willing to require GCC 8.1 or better for 64-bit stackprot=
-ector
-> - * support, we can remove some of this complexity.
-> + * GCC is configured to read the stack canary value from the __stack_chk=
-_guard
-> + * per-cpu variable, which is changed on task switch.
->   */
->
->  #ifndef _ASM_STACKPROTECTOR_H
-> @@ -36,6 +23,8 @@
->
->  #include <linux/sched.h>
->
-> +DECLARE_PER_CPU(unsigned long, __stack_chk_guard);
-> +
->  /*
->   * Initialize the stackprotector canary value.
->   *
-> @@ -51,25 +40,13 @@ static __always_inline void boot_init_stack_canary(vo=
-id)
->  {
->         unsigned long canary =3D get_random_canary();
->
-> -#ifdef CONFIG_X86_64
-> -       BUILD_BUG_ON(offsetof(struct fixed_percpu_data, stack_canary) !=
-=3D 40);
-> -#endif
-> -
->         current->stack_canary =3D canary;
-> -#ifdef CONFIG_X86_64
-> -       this_cpu_write(fixed_percpu_data.stack_canary, canary);
-> -#else
->         this_cpu_write(__stack_chk_guard, canary);
-> -#endif
->  }
->
->  static inline void cpu_init_stack_canary(int cpu, struct task_struct *id=
-le)
->  {
-> -#ifdef CONFIG_X86_64
-> -       per_cpu(fixed_percpu_data.stack_canary, cpu) =3D idle->stack_cana=
-ry;
-> -#else
->         per_cpu(__stack_chk_guard, cpu) =3D idle->stack_canary;
-> -#endif
->  }
->
->  #else  /* STACKPROTECTOR */
-> diff --git a/arch/x86/kernel/asm-offsets_64.c b/arch/x86/kernel/asm-offse=
-ts_64.c
-> index bb65371ea9df..590b6cd0eac0 100644
-> --- a/arch/x86/kernel/asm-offsets_64.c
-> +++ b/arch/x86/kernel/asm-offsets_64.c
-> @@ -54,11 +54,5 @@ int main(void)
->         BLANK();
->  #undef ENTRY
->
-> -       BLANK();
-> -
-> -#ifdef CONFIG_STACKPROTECTOR
-> -       OFFSET(FIXED_stack_canary, fixed_percpu_data, stack_canary);
-> -       BLANK();
-> -#endif
->         return 0;
->  }
-> diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-> index b14fc8c1c953..f9c8bd27b642 100644
-> --- a/arch/x86/kernel/cpu/common.c
-> +++ b/arch/x86/kernel/cpu/common.c
-> @@ -2103,15 +2103,13 @@ void syscall_init(void)
->                X86_EFLAGS_AC|X86_EFLAGS_ID);
->  }
->
-> -#else  /* CONFIG_X86_64 */
-> +#endif /* CONFIG_X86_64 */
->
->  #ifdef CONFIG_STACKPROTECTOR
->  DEFINE_PER_CPU(unsigned long, __stack_chk_guard);
->  EXPORT_PER_CPU_SYMBOL(__stack_chk_guard);
->  #endif
->
-> -#endif /* CONFIG_X86_64 */
-> -
->  /*
->   * Clear all 6 debug registers:
->   */
-> diff --git a/scripts/gcc-x86_64-has-stack-protector.sh b/scripts/gcc-x86_=
-64-has-stack-protector.sh
-> deleted file mode 100755
-> index 75e4e22b986a..000000000000
-> --- a/scripts/gcc-x86_64-has-stack-protector.sh
-> +++ /dev/null
-> @@ -1,4 +0,0 @@
-> -#!/bin/sh
-> -# SPDX-License-Identifier: GPL-2.0
-> -
-> -echo "int foo(void) { char X[200]; return 3; }" | $* -S -x c -c -m64 -O0=
- -mcmodel=3Dkernel -fno-PIE -fstack-protector - -o - 2> /dev/null | grep -q=
- "%gs"
-> --
-> 2.41.0
->
+In adjust_scalar_min_max_vals(), src_reg.umax_value is 7, thus pass
+the check here:
+         if (umax_val >= insn_bitness) {
+             /* Shifts greater than 31 or 63 are undefined.
+              * This includes shifts by a negative number.
+              */
+             mark_reg_unknown(env, regs, insn->dst_reg);
+             break;
+         }
+
+However in scalar32_min_max_rsh(), both src_reg->u32_min_value and
+src_reg->u32_max_value is 134217727, causing tnum_rsh() shit by 255.
+
+Should we check if(src_reg->u32_max_value < insn_bitness) before calling
+scalar32_min_max_rsh(), rather than only checking umax_val? Or, is it
+because issues somewhere else, incorrectly setting u32_min_value to
+34217727
+
+Best
+Hao Sun
