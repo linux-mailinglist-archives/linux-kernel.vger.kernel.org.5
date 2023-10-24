@@ -2,188 +2,808 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD797D4504
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34C37D4507
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbjJXBbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 21:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
+        id S231812AbjJXBbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 21:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230373AbjJXBbG (ORCPT
+        with ESMTP id S230373AbjJXBbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 21:31:06 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDAD10A;
-        Mon, 23 Oct 2023 18:31:00 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39O1LSmS032325;
-        Mon, 23 Oct 2023 20:30:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:references:in-reply-to
-        :content-type:content-id:content-transfer-encoding:mime-version;
-         s=PODMain02222019; bh=c9q0I8kRzfpJB4LFximif8d5JDVLEG57pUSp6thCG
-        C4=; b=DhVEmLrpSbve6OKNTRpfBjQASBzakbQLwoYhaRXKcqptwT4Q211+oRMkS
-        smdO2C00Najt1mjn8bgc7GS81/UoXr1PKXEqd/aTbdqDbDGLVUFwiNzZiEuaf4ui
-        NyQC7AEWjn4IB6HaHl7FDnx3yuMvw7mHwY9fTW1l03cXcxJXHJz4SYZloxLa9mtu
-        WEjjrzyQUQbNRiMivKpbZhTvU97PIgpGmzp+hVqCZjrIDNeN0TxaqUR6q7xnkqtG
-        tU8ht3xaj4p94B8PsoYSEFyo1mpGTnd9lajh/Ao8RqVvLUBV9L4avpUvOBE81chz
-        5QD6GOPDEI7AoNzknQkd7rjMesj8w==
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3tvb2j304k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Oct 2023 20:30:53 -0500 (CDT)
+        Mon, 23 Oct 2023 21:31:09 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2054.outbound.protection.outlook.com [40.107.237.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D71EDE
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 18:31:05 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kRbQobKHjJDlqsX5vGUU2P+kXNnU+rkpIYwyQk8VgE/xQM1kxuL+yQjRdWlQoieW9TgJfuQcZ581BiaO399rfWlYVGoRIjeWVLolN5LVPty5JgOz+Oixxd9wZyv+Veb7AczdB9MOhNQ4m17Zqic+hSTMTZ44bgT5U80+QquEZAV5ZUg5S7BMVpyQPkx72ZWenUfqZzS77Wl5vY+bM9gmUcxfN5aFHqu71DWPPq3oZxfqXFmArmxIRlmdwxn2OHXMHqBPubpw7NbKfplm1vhCBgwv+LUgchR2O243E1eZ4MWO95CcYeAU6i5AENQLhhOrOqUjdJQTheeaQMYRk8cwZg==
+ b=Fe/EyAGDgm5BWeM5l/H3p0VF29s51It5WqtKUG3zrJroU6bOF69De9GfT1FFF52RQxLT7Un7LTaaEO3BXNxI9mDzfmzGrwaxVD7GLUw6LzPzUztQqsOTzTXPbwFT4LF0XPxhvstnObywJctEXbMCw1SsRKZ9tbPuKO8wJa5ZyuEYIB8EQ4GAgu+CawVl6OcxkpL0hVgaQOHWXo35V+DYqWd+vJD4I4f0x1sbQ/id4AlSgS2H2lXngHSEGXF8cyNO1XbSAVnygewcOIUfyV+y29Sv1T6VLfwuSAoe3piN5f2kC/W7f0veSW5thh55apW6FgMeaYaavlpUcRPV1+QFfw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c9q0I8kRzfpJB4LFximif8d5JDVLEG57pUSp6thCGC4=;
- b=FYtxkU0VL9Q9ZHMBRqOXH4ykPhNq470+U5EZFo7XgQeq38uVghJm9TSd4C/1zapgm3STFnyGkLHLUVIddZcoTO1R30idkMMByY4sYWzcfH3WSofpnzp2Kmj8uts0c8V6GQ6KobVwzYNIqoqoTtt56MKN+sEAdgy06z1QKI7p0pXamD68QuOo3JgEnxt0DM/KQ7lk4cU5/naAjG/1snoaFsJaWfMGv0rLWo/8d7IVabxSgouMozC3mtPwDvgKu1F4GTSIdnl1VZsNR0JtSOh6Cm6GdGamGCGEtiSXEUIM09htghfTMXi8Gz2VgzB/Ziyv0d7zX2bv6UFChsqXQZH9Ag==
+ bh=6PkPHVn71lPzKFJBlGFgI/rhy2nqOGBIioLT3GkRhw4=;
+ b=lavxncX217WPqx9ZJDbHmOfC1Gq4jtV8XO53zGb5tLAodxqbsUqWaY99zCAznk21M9tZtMu22TeZrlJV7PPcwTKECX/4xtqXubPhWjnid0+0LgqZQSg1pWMrr75AhD0LTECIaxz4RSv12c0hxPD7vhHf0aDzsr80c4azEJLzNlfU7iVPq7qw0MS6/BleNQi0/ibJNbvK56p6O6eR3IhYhy8yZnKfRh9vobGYBh04tcYx1XI6Sql5oPmP55CB8V8kxiYhORarMRQ8xVGLp0MPhisOy2sJHRrYJYGETcyjvUvHn5itPrse8oOoighyy46hPvrNMnJRswjlhPRe8trxAw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cirrus.com; dmarc=pass action=none header.from=cirrus.com;
- dkim=pass header.d=cirrus.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cirrus4.onmicrosoft.com; s=selector2-cirrus4-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c9q0I8kRzfpJB4LFximif8d5JDVLEG57pUSp6thCGC4=;
- b=TBxWvjtfG6hwLg5W2cjMbheoRKtyeXONF79ABKw3bc6pqgmNfhk0XfW1vGxPydzOlCS1FbvBG9ns+RzzFUAh117R6F+Z993ua2i8/qbE2x9xU2z6fIqWivhoFVMRb/rg5KZ5H6zXTVlwbi1xNXMJ3WxrMnGSsDwI1Y//zVcVOuE=
-Received: from BN8PR19MB3057.namprd19.prod.outlook.com (2603:10b6:408:95::13)
- by CH3PR19MB7660.namprd19.prod.outlook.com (2603:10b6:610:120::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Tue, 24 Oct
- 2023 01:30:45 +0000
-Received: from BN8PR19MB3057.namprd19.prod.outlook.com
- ([fe80::8a74:6925:435d:19a5]) by BN8PR19MB3057.namprd19.prod.outlook.com
- ([fe80::8a74:6925:435d:19a5%6]) with mapi id 15.20.6907.025; Tue, 24 Oct 2023
- 01:30:45 +0000
-From:   James Ogletree <James.Ogletree@cirrus.com>
-To:     Jeff LaBundy <jeff@labundy.com>
-CC:     Lee Jones <lee@kernel.org>,
-        James Ogletree <james.ogletree@opensource.cirrus.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Fred Treven <Fred.Treven@cirrus.com>,
-        Ben Bright <Ben.Bright@cirrus.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 3/4] mfd: cs40l50: Add support for CS40L50 core driver
-Thread-Topic: [PATCH v4 3/4] mfd: cs40l50: Add support for CS40L50 core driver
-Thread-Index: AQHaAeyf+2JrjyX4UUi0J9ryDkVps7BRTXqAgAGFxACABE1RAIABCOAAgAAGFQA=
-Date:   Tue, 24 Oct 2023 01:30:44 +0000
-Message-ID: <D8025A8C-8259-4EB0-8F08-7BF8B2E9350D@cirrus.com>
-References: <20231018175726.3879955-1-james.ogletree@opensource.cirrus.com>
- <20231018175726.3879955-4-james.ogletree@opensource.cirrus.com>
- <20231019162359.GF2424087@google.com>
- <E3224624-7FF4-48F6-BA53-08312B69EF9F@cirrus.com>
- <20231023092046.GA8909@google.com> <ZTcZIMbrFEhz+rm4@nixie71>
-In-Reply-To: <ZTcZIMbrFEhz+rm4@nixie71>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN8PR19MB3057:EE_|CH3PR19MB7660:EE_
-x-ms-office365-filtering-correlation-id: 02860591-3d00-463a-2242-08dbd430d7b5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jLbFHPeJwLCqYXAOeDzPzFFG+mwrqDhL8I/HUWAjH6Ebb8l8NDkKuMn0qsSLEuL9mkKaAKf70vgBrCTDie0/+gaH82W6BDSncu4lLQ8q1cgjERvw8EB8ragjkCtbRNe+VYdAY5IYsOtCk1q+KDy5kdEltvr/cuWWaTPLdQ2YCt8QTI53bVDCEs4l+xZEsDsARuJidI3x7hKg07uvcXQF2W5JdlorJ8ob1h66SsM5c5ibZR/GtMT5u6MMYelidpDpvrXP0eTySzKZ8Tl01KfkKzG0pgskjuZ+YZ2Jih3FKqB4bZqZJPqq3lRHsuTk26xzvaLY4i9mJLvW7+tXbUJEFRmU3tjbTFUTgFULhoVpipUs+mqRGvoir54J6LF6Mf+LVtmxCBVbRC2GDZaJo51Jev9q4kwpL4ENSHLwapSieKSsug/ZGfYhUl4FprW7lZY6n5n9Pk04hilbithTeoBq0lJy3Ye96j+l+D4gkBaXxgR53QT6xouNnoV9DL/XfMkmlXghnum33O82iKilGMRD5zDcaXHXgz6a1dm8hlv0NYaTUm8yI3sCZxuaObOs03AqGe+DHCVjMwlP0YghvNBfI6mO7rQs4nTqWzbDbnJyQ2bFuKfyJthLD2OPYIBbmrW26ELRxfIhyHVP5JL7Gqj9Dw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR19MB3057.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39850400004)(376002)(366004)(346002)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(8676002)(6916009)(86362001)(66946007)(66476007)(54906003)(66556008)(64756008)(316002)(478600001)(33656002)(6486002)(71200400001)(76116006)(91956017)(8936002)(66446008)(41300700001)(2906002)(4326008)(122000001)(53546011)(36756003)(6506007)(38100700002)(2616005)(26005)(6512007)(83380400001)(5660300002)(38070700009)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?j4MvfB7SPKRrLa9gF7o5wupWlPAntnTOn1ncAaugXlmDtTGjtxko153R3c1m?=
- =?us-ascii?Q?bRQYmpltdhRFGU6D+sd8PaLSBUxFc86jz5+miDc/HNw059K+LVi2H2DGRMYZ?=
- =?us-ascii?Q?2MFAyKfCzMGd+zEJpCZNTtTe0rR89vFPAOQMCJtoAT7ANR9lQcTqf1NOVNYe?=
- =?us-ascii?Q?cp1LlcMwyNz5pMALjf/dkODnMO8VaUEcfsQM87Cl5iZSZtpS2B3L/yTGkKtM?=
- =?us-ascii?Q?qdmUt/4jnW+EiHImafDuy/8SdDzUj+FeO/Enn0P6sLTLejHFt7Yes0l8S1a1?=
- =?us-ascii?Q?sKRGfbgdOmFauI9dS8dutVpFIV9PpX4hh4JgF0Ftl9YBVWjwnC1++ZUiIbjK?=
- =?us-ascii?Q?gG22dxc3KJSJociiJnoxpTSqRB+qDz3z9TBgBazYngfCmF6pAiAPS2+Ax8B9?=
- =?us-ascii?Q?ykP3RicEZA2x9eJFcGOtnLpG93Teq5uhZb5hq610RXhnD2i7741TrN72Ur2s?=
- =?us-ascii?Q?nPPL8egyluBVtEEszbYjJ3g5Ao0mv1bwgy+84Ca0Qs08g8c+VTI873joNBxs?=
- =?us-ascii?Q?4mNzQ3RZfkUeStoJLCoZbjfkBGCTKPe6FK/DZwYldHOfBdJ3Yr/kJ7i7zEtX?=
- =?us-ascii?Q?ZWH4wjPya16yAGYycaU2SJCasbi5hfh/DHNjMUWbpA85zr5e6kNRCD81owgV?=
- =?us-ascii?Q?5pj7kylMjfG7mXmWkR9for7um0G7O1e9zMSi5kWBSpSG6dru2rI+CAb5rKrL?=
- =?us-ascii?Q?j/FHpnPkk0Sh4FZZ9/1TJo7qziMnzisZ1OjoYzrxuYVvzcq99DZ+EqYQ7MjY?=
- =?us-ascii?Q?lxeNBsAI7wpCxHKQ7S4MELCZMiVssMIcR5/AiOiF9lT1grn5o6QfUjAGbfeB?=
- =?us-ascii?Q?N7+k0PFFaPsfiSxhDaGmKKWVtO2GtgJ/UwYEv4kn8soyIS5fkJN8nkouoVNK?=
- =?us-ascii?Q?1M6Z9leE1g1cpx/lWr4YG2kxYVQYhChViSaByaBprflKot+/yTgMFki9louz?=
- =?us-ascii?Q?GgGg+T5ajV5BIjEcgubGwjIp9RHfjF7TAVX+Qp6sAyrPVu0SHoyoulb5n8yH?=
- =?us-ascii?Q?TzX8aZovoImnfyvBIcB7ySgJtk8UTUvNSXTVrXBmXXkWD3ir8icwj/HT3aRn?=
- =?us-ascii?Q?zPTG82puYc+MxTQuWhe652MP46GFVKR7H47qCvaLanC3xLwJ91w2prHGHepY?=
- =?us-ascii?Q?fmnXsON7yDl4s9sYSP2V6AOKpLaOOw7D2Ze1xDorAL0XNlq/tzyMWNEAjbRk?=
- =?us-ascii?Q?2WvvHuqV4w9CcDB/BGe6OfgPVrZhgQgPaTP780vvptsNUW0P9aIYzK3WWkmZ?=
- =?us-ascii?Q?PSX7RuPwRxZDMjqL/f/AhbBh1nEuE5ye2r2mjCWnQ5CZzej2rhl2v8Uxvu6Y?=
- =?us-ascii?Q?nHE8v4/MKPszwQ7TFVGP4IWyWHcgaLhfRbVX58VYGVR0FD0tGXwTmOAM1rXf?=
- =?us-ascii?Q?LBsyYPJbuScDv2MVwYgbXbTz50RY8ok1dnnCI9lAo0A71C4pzAwpRzB9eHRg?=
- =?us-ascii?Q?wEdFxL1VxwVWAZwHZ/vdRyDYiIDaTB/hhuwaTPI9aqSUi25xJ72n12M8sRgy?=
- =?us-ascii?Q?UEOp9TFk38teoC06reZMGG44SJBevHaZ3oXx2WLv7H+9XYcuto55eBYyu9/F?=
- =?us-ascii?Q?kzEuBh2ksGdips/MKHsR9+EG6BpKnhm/NDCNygWng9iqD7Ay4ywnNZgaJQEY?=
- =?us-ascii?Q?xA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C261B374B23D534EA78EB613F8831779@namprd19.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ bh=6PkPHVn71lPzKFJBlGFgI/rhy2nqOGBIioLT3GkRhw4=;
+ b=Ez4/fySiihF7RDUW/NsYlWpen8pxTYmH+OGCTId5MhUQcQB6pTF+SReXAAjWESSRE9nbr8WkVFGjtZ7ItlZQlbG49bNo1phTkLczKJjjWAB0eM2myxOPgexZLHW4KOdV/byASuXKwUGon0lLW5SWDMUnEidFQ4YnRMg9eVAotac=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3370.namprd12.prod.outlook.com (2603:10b6:5:38::25) by
+ DS7PR12MB8324.namprd12.prod.outlook.com (2603:10b6:8:ec::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6907.26; Tue, 24 Oct 2023 01:31:01 +0000
+Received: from DM6PR12MB3370.namprd12.prod.outlook.com
+ ([fe80::b80b:7138:6ceb:9aef]) by DM6PR12MB3370.namprd12.prod.outlook.com
+ ([fe80::b80b:7138:6ceb:9aef%6]) with mapi id 15.20.6907.025; Tue, 24 Oct 2023
+ 01:31:01 +0000
+Message-ID: <c93600cb-8df1-44c6-a33c-edc771c6dbf8@amd.com>
+Date:   Mon, 23 Oct 2023 21:30:58 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
+ Thunderbird/115.3.3
+Subject: Re: [PATCH drm-misc-next v2] drm/sched: implement dynamic job-flow
+ control
+Content-Language: en-CA, en-US
+To:     Danilo Krummrich <dakr@redhat.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        christian.koenig@amd.com, faith.ekstrand@collabora.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231009223554.11846-1-dakr@redhat.com>
+ <20231010094151.4c116058@collabora.com> <ZTb6azSfTV+LRGYu@pollux>
+From:   Luben Tuikov <luben.tuikov@amd.com>
+Autocrypt: addr=luben.tuikov@amd.com; keydata=
+ xjMEY1i6jxYJKwYBBAHaRw8BAQdAhfD+Cc+P5t/fiF08Vw25EMLiwUuxULYRiDQAP6H50MTN
+ I0x1YmVuIFR1aWtvdiA8bHViZW4udHVpa292QGFtZC5jb20+wpkEExYKAEEWIQQyyR05VSHw
+ x45E/SoppxulNG8HhgUCY1i6jwIbAwUJCWYBgAULCQgHAgIiAgYVCgkICwIEFgIDAQIeBwIX
+ gAAKCRAppxulNG8Hhk53AP4k4UY5xfcje0c5OF1k22pNv8tErxtVpgKKZgvfetA4xwD+OoAh
+ vesLIYumBDxP0BoLiLN84udxdT15HwPFUGiDmwDOOARjWLqPEgorBgEEAZdVAQUBAQdAzSxY
+ a2EtvvIwd09NckBLSTarSLNDkUthmqPnwolwiDYDAQgHwn4EGBYKACYWIQQyyR05VSHwx45E
+ /SoppxulNG8HhgUCY1i6jwIbDAUJCWYBgAAKCRAppxulNG8HhnBLAP4yjSGpK6PE1mapKhrq
+ 8bSl9reo+F6EqdhE8X2TTHPycAEAt8EkTEstSiaOpM66gneU7r+xxzOYULo1b1XjXayGvwM=
+In-Reply-To: <ZTb6azSfTV+LRGYu@pollux>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQXP288CA0020.CANP288.PROD.OUTLOOK.COM
+ (2603:10b6:c00:41::49) To DM6PR12MB3370.namprd12.prod.outlook.com
+ (2603:10b6:5:38::25)
 MIME-Version: 1.0
-X-OriginatorOrg: cirrus.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3370:EE_|DS7PR12MB8324:EE_
+X-MS-Office365-Filtering-Correlation-Id: b8eb2123-52c0-40f7-e28d-08dbd430e119
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bkkgl/CTOxg2h4P4q6GURBZCw1YwYjDQQpRBFh14v757drhrrY4X32ImB5BLkJRT9Jh2+VDG4FVQl9IzL7mcaMR0QhDlrwkMZP2693lgjKZMkbdgSLC4bsDq2TwOb9E88X0Yqp1RSfJeVWhwRh5EFmbetvUSP4iePJF30bMN0WLeh3BeLH/PlvAU5FKxzwSXrZovx6Be+pAD7pSOWahIvvoE6GUUCwgCrzHOjg3wlrGziKYt6rny7KYUjh44vhuJ53FKdrDiw+BQV5o5rMff895ciwQrpPrwLeVMi9V4LmYoKDg4NYVs1SB8SCh4Tn3uKfKmV/12HiKpjhCVjLhM6z9jMbKvkPUXkh0w6UWzRZoD7SqublyX1wTq7hJ8PY1byRD0oMMI1gr174dOyoAFJ436SwZvR0FQSQZ4jtDXCWBOwwM7jcR/ZrBU9fFGPVGNdgLTsCQ+SbKpsUG36GHSmGImgtaLeCbleph2EJqxRNmlMJCt6xC5tADER+u8ihAlKAmxok5P+zcHGJArO8pORjiJjeRS47Lr4PtlzrqP8krm4bbTxyYg6K3G/XqTZ26c1wDih4UZ+jLwWey6CmX+r6sihHQ2hDFNTD9WgQAH4bkvGnSAozA2uMhBbOmRbijJQLdTWyER40uejBVSU2dwTDL26+YD1cVZkw8J62Y4AmY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3370.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(346002)(366004)(39860400002)(136003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(83380400001)(26005)(41300700001)(66899024)(36756003)(4001150100001)(2906002)(4326008)(8936002)(31696002)(86362001)(8676002)(38100700002)(2616005)(6666004)(53546011)(44832011)(6506007)(6512007)(316002)(5660300002)(30864003)(6486002)(110136005)(478600001)(66946007)(66556008)(66476007)(31686004)(21314003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SVZIQ0lSNXRsNWxhdXlLZTNFZzJVcUQyaGJiWFZrbVlzaTEzaUkybDNKYzBQ?=
+ =?utf-8?B?RXNHdHgvOU1USE1WMkZ0QTFjVGpuakVnUThqM2F0a0szWGl2Z2JCUXh1aDB2?=
+ =?utf-8?B?Y2I4Tm9ndGE2VmdmT05MbFEzTzF5Szd5U2pEVFNsK1BKbW8vWncxa0hGQ1ln?=
+ =?utf-8?B?dDcwVUErUHN3Q3daZTN3L043dmY5NVdreGppNTFzdndhdmpYVWJOSDBueVJY?=
+ =?utf-8?B?WVRZN1VCcHUrVUNhRFVjR0M3a0xLdStwVFE3b2p4R0ROK1FnSjc3MjF0RmNx?=
+ =?utf-8?B?WlQ2enZlaXdlQzZZeElGZ1MxMVNDK3V5Wjl0YjlzSDgrRlZvMml6QXhTWGg1?=
+ =?utf-8?B?Y1Q3VUw2WHpmNkhxN0R6WGg4VWwvOUgxbEM5WkxXQ3BhU0ZnRkREMGhpK0pt?=
+ =?utf-8?B?bDZlejBvUlhBdkU1aWFLaHQ1QWxmLzd3MDZvTDYwZndDaGNNdzRlLzV6VGdZ?=
+ =?utf-8?B?c2YwcnJZUk9vQXZGcXBuTnVoNGNHMkloR1ZXMTRFclQ5eFY1Z0Vrc1ZBWGdG?=
+ =?utf-8?B?TnNPRi92dVJnTlI2WDdrd0tHL3RndUk4V0JWL1N2MTVKd1NoL085TUFkWk8z?=
+ =?utf-8?B?QmNWZlFyRm9CSkhzZjZQanhIbXh5N2VwYlFuKzBnN1ZTUzFtOXZBM0pkdzU5?=
+ =?utf-8?B?K2NnWGdKZ2I2czB6d3NkMG5maGV0d1Q3ckV2bHJmS005SjJKQndnczJqbGpQ?=
+ =?utf-8?B?UHJDdTYxVGpBeU9VQVc0cCtPU091and3VXBqSlJoSmZJc0RhVndMbk14cFhk?=
+ =?utf-8?B?YXVwUDM5Q1k1VGxzL1BmOGhCNXgxTVQ0cHh5RjRuMUphUUJoMDBPZXNLeHpH?=
+ =?utf-8?B?eTVCL2hQNnpuM05GVjFGMDZoelpVbmxMbHlOZ3NtbVJmbGtINmNiRVlVMDZ0?=
+ =?utf-8?B?cERkSU56OEdhQTlCeU1CSTgyMlJFN0t4REFvNVdOVzBkd3o0bmtFRVdYUXY0?=
+ =?utf-8?B?NS9zMzQzaGRtRkVlNkZNbWFwZ29pVFROUUpybEtYTFJBSlVFUGJQeVYxWGdZ?=
+ =?utf-8?B?MHhqSW95MlBRSDZsV05DQmFaQUJoK1ZDZzdGamE1VXd1TW9yaTJsMjBOUnpQ?=
+ =?utf-8?B?d3RlTjdFYlhsK203cFhiTXNJaG15WmVoUWpWdVdGei9lSTVzZ01qamFpT1FZ?=
+ =?utf-8?B?Uk1vb1RkMlpVVTM2ZlZlcFkrUTNsWmEvQWh1aG1zVFZ4bk1WSTNia1FZZ1dk?=
+ =?utf-8?B?T1Zqd2VWbjdEdkhnWXVxVmdmcWRNRUtIUjYweDFNVEZqR3dyaXlsRmxuamM1?=
+ =?utf-8?B?Rk0vcUEvRkIzb2JrcVRBb1lYSzdFN09mVHAyK3BEaGJQQUVPV3Q1RGVMdDdw?=
+ =?utf-8?B?eSttMXZqa2tISVJOSDEyN09Cb29sZnZLbjNOVCtyVDc4YUZRMVVZMitHdFYx?=
+ =?utf-8?B?OFo0WmlYNEZiYzkvMmd3eXFiMGJXbm9WVTVKWFZtMU9KRzd2L1VlcEtua3Nj?=
+ =?utf-8?B?YUF3UDY3NCt2T3VuM0kzY1BxZmVaM3h0YXlZek9VQXF3ZG9VMDdVSFFMZkV3?=
+ =?utf-8?B?YVZmZDFvSG9WUVNUNzNJRzUxMElnMTFROWdFeVkvYWR2WkJERWxIQjRqS2hF?=
+ =?utf-8?B?VUlRWHFhNVNjNVM0bjN3VjVWdElERmlxMjZxZHhmcld1eXRvelgwZ1I3M09Q?=
+ =?utf-8?B?b084VEIxd0JVMVV1QTZpUytwY29GcTl2SUk5KzhuQ2cyb3lhK2NxdUNxbHRq?=
+ =?utf-8?B?eWtMc3hTLzFpeTBaUFdFd3BrK2ttQ3dTamUzK0tOWSs5ZmlpRlJQQ1ZJSjg0?=
+ =?utf-8?B?S3pRTlpiZ3FCZ1BULzhweG9OYUpJRjdZaXNKYndlMHZGWDN3aEduMktOZ2xq?=
+ =?utf-8?B?MUhlM1N4dEs0VzFMa3VYVWxERUpqTTlteVFwVklWMVQ2RFNZcXZ6NEd0U2JH?=
+ =?utf-8?B?eE5QaTAvM2VVT3ZUc094Vi9JRkcyejdrSUpUU1ppZmFzeGpsT0xSZDRLVkVi?=
+ =?utf-8?B?b1FNeTFkc1pTZXJlK1lFUEpDdmM4RzViSUNHZ3I4REJHMEpvUmhxSEd3aVpo?=
+ =?utf-8?B?Nm05R2NMaEhsQ0VTOXh1TlZsVnQrMG16TzJub2xFYmJqSXlNL2RrMFFQRkc3?=
+ =?utf-8?B?MFByVTRUR2g3UlZkdUovL3NKbHJrL1JBUjNsdll3a2lLNVZWcXhyL2tETGtP?=
+ =?utf-8?Q?KiQ4V4Ea/AAss/JbNN62SM0jT?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8eb2123-52c0-40f7-e28d-08dbd430e119
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3370.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR19MB3057.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02860591-3d00-463a-2242-08dbd430d7b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2023 01:30:44.5180
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 01:31:00.5758
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: bec09025-e5bc-40d1-a355-8e955c307de8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: m7K4TxCfLTqL19VKJIm8ee4U/tw59XYshcqd2+EvXglgyL1hLEkc21QO7eCGhUOjupvv9XyWPNMeRIfievRNduGbUC65ETlQ81qr34GRFAY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR19MB7660
-X-Proofpoint-GUID: laJy4LmgSwjkIrTv_BWCNJb7z7WCqDxk
-X-Proofpoint-ORIG-GUID: laJy4LmgSwjkIrTv_BWCNJb7z7WCqDxk
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GKat6Rn7DSyClHpNppcuHMIx1pKeNQ6cbDI+91Q7g2ZQsZl1HUrc+GhT3m8kmGFa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8324
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-10-23 18:57, Danilo Krummrich wrote:
+> On Tue, Oct 10, 2023 at 09:41:51AM +0200, Boris Brezillon wrote:
+>> On Tue, 10 Oct 2023 00:35:53 +0200
+>> Danilo Krummrich <dakr@redhat.com> wrote:
+>>
+>>> Currently, job flow control is implemented simply by limiting the number
+>>> of jobs in flight. Therefore, a scheduler is initialized with a
+>>> submission limit that corresponds to the number of jobs which can be
+>>> sent to the hardware.
+>>>
+>>> This implies that for each job, drivers need to account for the maximum
+>>> job size possible in order to not overflow the ring buffer.
+>>>
+>>> However, there are drivers, such as Nouveau, where the job size has a
+>>> rather large range. For such drivers it can easily happen that job
+>>> submissions not even filling the ring by 1% can block subsequent
+>>> submissions, which, in the worst case, can lead to the ring run dry.
+>>>
+>>> In order to overcome this issue, allow for tracking the actual job size
+>>> instead of the number of jobs. Therefore, add a field to track a job's
+>>> submission credits, which represents the number of credits a job
+>>> contributes to the scheduler's submission limit.
+>>>
+>>> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+>>> ---
+>>> Changes in V2:
+>>> ==============
+>>>   - fixed up influence on scheduling fairness due to consideration of a job's
+>>>     size
+>>>     - If we reach a ready entity in drm_sched_select_entity() but can't actually
+>>>       queue a job from it due to size limitations, just give up and go to sleep
+>>>       until woken up due to a pending job finishing, rather than continue to try
+>>>       other entities.
+>>>   - added a callback to dynamically update a job's credits (Boris)
+>>>   - renamed 'units' to 'credits'
+>>>   - fixed commit message and comments as requested by Luben
+>>> ---
+>>>  drivers/gpu/drm/amd/amdgpu/amdgpu_job.c       |   2 +-
+>>>  drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c  |   2 +-
+>>>  drivers/gpu/drm/lima/lima_sched.c             |   2 +-
+>>>  drivers/gpu/drm/msm/msm_gem_submit.c          |   2 +-
+>>>  drivers/gpu/drm/nouveau/nouveau_sched.c       |   2 +-
+>>>  drivers/gpu/drm/panfrost/panfrost_drv.c       |   2 +-
+>>>  .../gpu/drm/scheduler/gpu_scheduler_trace.h   |   2 +-
+>>>  drivers/gpu/drm/scheduler/sched_entity.c      |   5 +-
+>>>  drivers/gpu/drm/scheduler/sched_main.c        | 101 +++++++++++++-----
+>>>  drivers/gpu/drm/v3d/v3d_gem.c                 |   2 +-
+>>>  include/drm/gpu_scheduler.h                   |  33 ++++--
+>>>  11 files changed, 115 insertions(+), 40 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
+>>> index 78476bc75b4e..d54daaf64bf1 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
+>>> @@ -115,7 +115,7 @@ int amdgpu_job_alloc(struct amdgpu_device *adev, struct amdgpu_vm *vm,
+>>>  	if (!entity)
+>>>  		return 0;
+>>>  
+>>> -	return drm_sched_job_init(&(*job)->base, entity, owner);
+>>> +	return drm_sched_job_init(&(*job)->base, entity, 1, owner);
+>>>  }
+>>>  
+>>>  int amdgpu_job_alloc_with_ib(struct amdgpu_device *adev,
+>>> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c
+>>> index 45403ea38906..74a446711207 100644
+>>> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c
+>>> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c
+>>> @@ -538,7 +538,7 @@ int etnaviv_ioctl_gem_submit(struct drm_device *dev, void *data,
+>>>  
+>>>  	ret = drm_sched_job_init(&submit->sched_job,
+>>>  				 &ctx->sched_entity[args->pipe],
+>>> -				 submit->ctx);
+>>> +				 1, submit->ctx);
+>>>  	if (ret)
+>>>  		goto err_submit_put;
+>>>  
+>>> diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima/lima_sched.c
+>>> index 50c2075228aa..5dc6678e1eb9 100644
+>>> --- a/drivers/gpu/drm/lima/lima_sched.c
+>>> +++ b/drivers/gpu/drm/lima/lima_sched.c
+>>> @@ -123,7 +123,7 @@ int lima_sched_task_init(struct lima_sched_task *task,
+>>>  	for (i = 0; i < num_bos; i++)
+>>>  		drm_gem_object_get(&bos[i]->base.base);
+>>>  
+>>> -	err = drm_sched_job_init(&task->base, &context->base, vm);
+>>> +	err = drm_sched_job_init(&task->base, &context->base, 1, vm);
+>>>  	if (err) {
+>>>  		kfree(task->bos);
+>>>  		return err;
+>>> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+>>> index 3f1aa4de3b87..6d230c38e4f5 100644
+>>> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+>>> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+>>> @@ -48,7 +48,7 @@ static struct msm_gem_submit *submit_create(struct drm_device *dev,
+>>>  		return ERR_PTR(ret);
+>>>  	}
+>>>  
+>>> -	ret = drm_sched_job_init(&submit->base, queue->entity, queue);
+>>> +	ret = drm_sched_job_init(&submit->base, queue->entity, 1, queue);
+>>>  	if (ret) {
+>>>  		kfree(submit->hw_fence);
+>>>  		kfree(submit);
+>>> diff --git a/drivers/gpu/drm/nouveau/nouveau_sched.c b/drivers/gpu/drm/nouveau/nouveau_sched.c
+>>> index f26a814a9920..e991426d86e4 100644
+>>> --- a/drivers/gpu/drm/nouveau/nouveau_sched.c
+>>> +++ b/drivers/gpu/drm/nouveau/nouveau_sched.c
+>>> @@ -89,7 +89,7 @@ nouveau_job_init(struct nouveau_job *job,
+>>>  
+>>>  	}
+>>>  
+>>> -	ret = drm_sched_job_init(&job->base, &entity->base, NULL);
+>>> +	ret = drm_sched_job_init(&job->base, &entity->base, 1, NULL);
+>>>  	if (ret)
+>>>  		goto err_free_chains;
+>>>  
+>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>>> index b834777b409b..54d1c19bea84 100644
+>>> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+>>> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>>> @@ -274,7 +274,7 @@ static int panfrost_ioctl_submit(struct drm_device *dev, void *data,
+>>>  
+>>>  	ret = drm_sched_job_init(&job->base,
+>>>  				 &file_priv->sched_entity[slot],
+>>> -				 NULL);
+>>> +				 1, NULL);
+>>>  	if (ret)
+>>>  		goto out_put_job;
+>>>  
+>>> diff --git a/drivers/gpu/drm/scheduler/gpu_scheduler_trace.h b/drivers/gpu/drm/scheduler/gpu_scheduler_trace.h
+>>> index 3143ecaaff86..2e4ffdecc5dc 100644
+>>> --- a/drivers/gpu/drm/scheduler/gpu_scheduler_trace.h
+>>> +++ b/drivers/gpu/drm/scheduler/gpu_scheduler_trace.h
+>>> @@ -51,7 +51,7 @@ DECLARE_EVENT_CLASS(drm_sched_job,
+>>>  			   __assign_str(name, sched_job->sched->name);
+>>>  			   __entry->job_count = spsc_queue_count(&entity->job_queue);
+>>>  			   __entry->hw_job_count = atomic_read(
+>>> -				   &sched_job->sched->hw_rq_count);
+>>> +				   &sched_job->sched->submission_count);
+>>>  			   ),
+>>>  	    TP_printk("entity=%p, id=%llu, fence=%p, ring=%s, job count:%u, hw job count:%d",
+>>>  		      __entry->entity, __entry->id,
+>>> diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/scheduler/sched_entity.c
+>>> index 437c50867c99..6395090d5784 100644
+>>> --- a/drivers/gpu/drm/scheduler/sched_entity.c
+>>> +++ b/drivers/gpu/drm/scheduler/sched_entity.c
+>>> @@ -401,7 +401,8 @@ static void drm_sched_entity_wakeup(struct dma_fence *f,
+>>>  		container_of(cb, struct drm_sched_entity, cb);
+>>>  
+>>>  	drm_sched_entity_clear_dep(f, cb);
+>>> -	drm_sched_wakeup_if_can_queue(drm_sched_entity_to_scheduler(entity));
+>>> +	drm_sched_wakeup_if_can_queue(drm_sched_entity_to_scheduler(entity),
+>>> +				      entity);
+>>>  }
+>>>  
+>>>  /**
+>>> @@ -645,7 +646,7 @@ void drm_sched_entity_push_job(struct drm_sched_job *sched_job)
+>>>  		if (fifo)
+>>>  			drm_sched_rq_update_fifo(entity, submit_ts);
+>>>  
+>>> -		drm_sched_wakeup_if_can_queue(sched);
+>>> +		drm_sched_wakeup_if_can_queue(sched, entity);
+>>>  	}
+>>>  }
+>>>  EXPORT_SYMBOL(drm_sched_entity_push_job);
+>>> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+>>> index 88ef8be2d3c7..da86dd0782d6 100644
+>>> --- a/drivers/gpu/drm/scheduler/sched_main.c
+>>> +++ b/drivers/gpu/drm/scheduler/sched_main.c
+>>> @@ -93,6 +93,9 @@ int drm_sched_policy_default = DRM_SCHED_POLICY_FIFO;
+>>>  MODULE_PARM_DESC(sched_policy, "Specify the scheduling policy for entities on a run-queue, " __stringify(DRM_SCHED_POLICY_RR) " = Round Robin, " __stringify(DRM_SCHED_POLICY_FIFO) " = FIFO (default).");
+>>>  module_param_named(sched_policy, drm_sched_policy_default, int, 0444);
+>>>  
+>>> +static bool drm_sched_can_queue(struct drm_gpu_scheduler *sched,
+>>> +				struct drm_sched_entity *entity);
+>>
+>> Nit: can we move the function instead of adding this forward
+>> declaration? I know it tends to screw up the diff, so maybe do it in 2
+>> steps.
+> 
+> Sure, gonna move it up.
+> 
+>>
+>>> +
+>>>  static __always_inline bool drm_sched_entity_compare_before(struct rb_node *a,
+>>>  							    const struct rb_node *b)
+>>>  {
+>>> @@ -212,13 +215,15 @@ void drm_sched_rq_remove_entity(struct drm_sched_rq *rq,
+>>>  /**
+>>>   * drm_sched_rq_select_entity_rr - Select an entity which could provide a job to run
+>>>   *
+>>> + * @sched: the gpu scheduler
+>>>   * @rq: scheduler run queue to check.
+>>>   * @dequeue: dequeue selected entity
+>>>   *
+>>>   * Try to find a ready entity, returns NULL if none found.
+>>>   */
+>>>  static struct drm_sched_entity *
+>>> -drm_sched_rq_select_entity_rr(struct drm_sched_rq *rq, bool dequeue)
+>>> +drm_sched_rq_select_entity_rr(struct drm_gpu_scheduler *sched,
+>>> +			      struct drm_sched_rq *rq, bool dequeue)
+>>>  {
+>>>  	struct drm_sched_entity *entity;
+>>>  
+>>> @@ -228,6 +233,12 @@ drm_sched_rq_select_entity_rr(struct drm_sched_rq *rq, bool dequeue)
+>>>  	if (entity) {
+>>>  		list_for_each_entry_continue(entity, &rq->entities, list) {
+>>>  			if (drm_sched_entity_is_ready(entity)) {
+>>> +				/* If we can't queue yet, preserve the current
+>>> +				 * entity in terms of fairness.
+>>> +				 */
+>>> +				if (!drm_sched_can_queue(sched, entity))
+>>> +					goto out;
+>>> +
+>>>  				if (dequeue) {
+>>>  					rq->current_entity = entity;
+>>>  					reinit_completion(&entity->entity_idle);
+>>> @@ -239,8 +250,13 @@ drm_sched_rq_select_entity_rr(struct drm_sched_rq *rq, bool dequeue)
+>>>  	}
+>>>  
+>>>  	list_for_each_entry(entity, &rq->entities, list) {
+>>> -
+>>>  		if (drm_sched_entity_is_ready(entity)) {
+>>> +			/* If we can't queue yet, preserve the current entity in
+>>> +			 * terms of fairness.
+>>> +			 */
+>>> +			if (!drm_sched_can_queue(sched, entity))
+>>> +				goto out;
+>>> +
+>>>  			if (dequeue) {
+>>>  				rq->current_entity = entity;
+>>>  				reinit_completion(&entity->entity_idle);
+>>> @@ -253,21 +269,23 @@ drm_sched_rq_select_entity_rr(struct drm_sched_rq *rq, bool dequeue)
+>>>  			break;
+>>>  	}
+>>>  
+>>> +out:
+>>>  	spin_unlock(&rq->lock);
+>>> -
+>>>  	return NULL;
+>>>  }
+>>>  
+>>>  /**
+>>>   * drm_sched_rq_select_entity_fifo - Select an entity which provides a job to run
+>>>   *
+>>> + * @sched: the gpu scheduler
+>>>   * @rq: scheduler run queue to check.
+>>>   * @dequeue: dequeue selected entity
+>>>   *
+>>>   * Find oldest waiting ready entity, returns NULL if none found.
+>>>   */
+>>>  static struct drm_sched_entity *
+>>> -drm_sched_rq_select_entity_fifo(struct drm_sched_rq *rq, bool dequeue)
+>>> +drm_sched_rq_select_entity_fifo(struct drm_gpu_scheduler *sched,
+>>> +				struct drm_sched_rq *rq, bool dequeue)
+>>>  {
+>>>  	struct rb_node *rb;
+>>>  
+>>> @@ -277,6 +295,15 @@ drm_sched_rq_select_entity_fifo(struct drm_sched_rq *rq, bool dequeue)
+>>>  
+>>>  		entity = rb_entry(rb, struct drm_sched_entity, rb_tree_node);
+>>>  		if (drm_sched_entity_is_ready(entity)) {
+>>> +			/* If we can't queue yet, don't pick another entity
+>>> +			 * which's job might fit and wait until we got space for
+>>> +			 * this one in terms of fairness.
+>>> +			 */
+>>> +			if (!drm_sched_can_queue(sched, entity)) {
+>>> +				spin_unlock(&rq->lock);
+>>> +				return NULL;
+>>> +			}
+>>> +
+>>>  			if (dequeue) {
+>>>  				rq->current_entity = entity;
+>>>  				reinit_completion(&entity->entity_idle);
+>>> @@ -302,13 +329,32 @@ static void drm_sched_run_job_queue(struct drm_gpu_scheduler *sched)
+>>>  /**
+>>>   * drm_sched_can_queue -- Can we queue more to the hardware?
+>>>   * @sched: scheduler instance
+>>> + * @entity: the scheduler entity
+>>>   *
+>>> - * Return true if we can push more jobs to the hw, otherwise false.
+>>> + * Return true if we can push at least one more job from @entity, false
+>>> + * otherwise.
+>>>   */
+>>> -static bool drm_sched_can_queue(struct drm_gpu_scheduler *sched)
+>>> +static bool drm_sched_can_queue(struct drm_gpu_scheduler *sched,
+>>> +				struct drm_sched_entity *entity)
+>>>  {
+>>> -	return atomic_read(&sched->hw_rq_count) <
+>>> -		sched->hw_submission_limit;
+>>> +	struct drm_sched_job *s_job;
+>>> +
+>>> +	s_job = to_drm_sched_job(spsc_queue_peek(&entity->job_queue));
+>>> +	if (!s_job)
+>>> +		return false;
+>>> +
+>>> +	if (sched->ops->update_job_credits) {
+>>> +		u32 credits = sched->ops->update_job_credits(s_job);
+>>> +
+>>> +		if (credits)
+>>> +			s_job->submission_credits = credits;
+>>> +	}
+>>> +
+>>> +	WARN_ON(s_job->submission_credits > sched->submission_limit);
+>>> +
+>>> +	return (sched->submission_limit -
+>>> +		atomic_read(&sched->submission_count)) >=
+>>
+>> Nit: might be clearer with a dummy drm_sched_available_credits()
+>> helper:
+> 
+> Sure, why not.
+> 
+>>
+>> static u32
+>> drm_sched_available_credits(struct drm_gpu_scheduler *sched)
+>> {
+>> 	return sched->submission_limit -
+>> 	       atomic_read(&sched->submission_count);
+>> }
+>>
+>>> +		s_job->submission_credits;
+>>>  }
+>>>  
+>>>  /**
+>>> @@ -325,12 +371,10 @@ drm_sched_select_entity(struct drm_gpu_scheduler *sched, bool dequeue)
+>>>  	struct drm_sched_entity *entity;
+>>>  	int i;
+>>>  
+>>> -	if (!drm_sched_can_queue(sched))
+>>> -		return NULL;
+>>> -
+>>>  	if (sched->single_entity) {
+>>>  		if (!READ_ONCE(sched->single_entity->stopped) &&
+>>> -		    drm_sched_entity_is_ready(sched->single_entity))
+>>> +		    drm_sched_entity_is_ready(sched->single_entity) &&
+>>> +		    drm_sched_can_queue(sched, sched->single_entity))
+>>>  			return sched->single_entity;
+>>>  
+>>>  		return NULL;
+>>> @@ -339,9 +383,11 @@ drm_sched_select_entity(struct drm_gpu_scheduler *sched, bool dequeue)
+>>>  	/* Kernel run queue has higher priority than normal run queue*/
+>>>  	for (i = DRM_SCHED_PRIORITY_COUNT - 1; i >= DRM_SCHED_PRIORITY_MIN; i--) {
+>>>  		entity = sched->sched_policy == DRM_SCHED_POLICY_FIFO ?
+>>> -			drm_sched_rq_select_entity_fifo(&sched->sched_rq[i],
+>>> +			drm_sched_rq_select_entity_fifo(sched,
+>>> +							&sched->sched_rq[i],
+>>>  							dequeue) :
+>>> -			drm_sched_rq_select_entity_rr(&sched->sched_rq[i],
+>>> +			drm_sched_rq_select_entity_rr(sched,
+>>> +						      &sched->sched_rq[i],
+>>>  						      dequeue);
+>>>  		if (entity)
+>>>  			break;
+>>> @@ -399,7 +445,7 @@ static void drm_sched_job_done(struct drm_sched_job *s_job, int result)
+>>>  	struct drm_sched_fence *s_fence = s_job->s_fence;
+>>>  	struct drm_gpu_scheduler *sched = s_fence->sched;
+>>>  
+>>> -	atomic_dec(&sched->hw_rq_count);
+>>> +	atomic_sub(s_job->submission_credits, &sched->submission_count);
+>>>  	atomic_dec(sched->score);
+>>>  
+>>>  	trace_drm_sched_process_job(s_fence);
+>>> @@ -622,7 +668,8 @@ void drm_sched_stop(struct drm_gpu_scheduler *sched, struct drm_sched_job *bad)
+>>>  					      &s_job->cb)) {
+>>>  			dma_fence_put(s_job->s_fence->parent);
+>>>  			s_job->s_fence->parent = NULL;
+>>> -			atomic_dec(&sched->hw_rq_count);
+>>> +			atomic_sub(s_job->submission_credits,
+>>> +				   &sched->submission_count);
+>>>  		} else {
+>>>  			/*
+>>>  			 * remove job from pending_list.
+>>> @@ -683,7 +730,7 @@ void drm_sched_start(struct drm_gpu_scheduler *sched, bool full_recovery)
+>>>  	list_for_each_entry_safe(s_job, tmp, &sched->pending_list, list) {
+>>>  		struct dma_fence *fence = s_job->s_fence->parent;
+>>>  
+>>> -		atomic_inc(&sched->hw_rq_count);
+>>> +		atomic_add(s_job->submission_credits, &sched->submission_count);
+>>>  
+>>>  		if (!full_recovery)
+>>>  			continue;
+>>> @@ -764,6 +811,8 @@ EXPORT_SYMBOL(drm_sched_resubmit_jobs);
+>>>   * drm_sched_job_init - init a scheduler job
+>>>   * @job: scheduler job to init
+>>>   * @entity: scheduler entity to use
+>>> + * @submission_credits: the number of credits this job contributes to the
+>>> + * schdulers submission limit
+>>>   * @owner: job owner for debugging
+>>>   *
+>>>   * Refer to drm_sched_entity_push_job() documentation
+>>> @@ -781,6 +830,7 @@ EXPORT_SYMBOL(drm_sched_resubmit_jobs);
+>>>   */
+>>>  int drm_sched_job_init(struct drm_sched_job *job,
+>>>  		       struct drm_sched_entity *entity,
+>>> +		       u32 submission_credits,
+>>>  		       void *owner)
+>>>  {
+>>>  	if (!entity->rq && !entity->single_sched)
+>>> @@ -792,6 +842,7 @@ int drm_sched_job_init(struct drm_sched_job *job,
+>>>  		return -ENOMEM;
+>>>  
+>>>  	INIT_LIST_HEAD(&job->list);
+>>> +	job->submission_credits = submission_credits ? submission_credits : 1;
+>>>  
+>>>  	xa_init_flags(&job->dependencies, XA_FLAGS_ALLOC);
+>>>  
+>>> @@ -1004,12 +1055,14 @@ EXPORT_SYMBOL(drm_sched_job_cleanup);
+>>>  /**
+>>>   * drm_sched_wakeup_if_can_queue - Wake up the scheduler
+>>>   * @sched: scheduler instance
+>>> + * @entity: the scheduler entity
+>>>   *
+>>>   * Wake up the scheduler if we can queue jobs.
+>>>   */
+>>> -void drm_sched_wakeup_if_can_queue(struct drm_gpu_scheduler *sched)
+>>> +void drm_sched_wakeup_if_can_queue(struct drm_gpu_scheduler *sched,
+>>> +				   struct drm_sched_entity *entity)
+>>>  {
+>>> -	if (drm_sched_can_queue(sched))
+>>> +	if (drm_sched_can_queue(sched, entity))
+>>>  		drm_sched_run_job_queue(sched);
+>>>  }
+>>>  
+>>> @@ -1147,7 +1200,7 @@ static void drm_sched_run_job_work(struct work_struct *w)
+>>>  
+>>>  	s_fence = sched_job->s_fence;
+>>>  
+>>> -	atomic_inc(&sched->hw_rq_count);
+>>> +	atomic_add(sched_job->submission_credits, &sched->submission_count);
+>>>  	drm_sched_job_begin(sched_job);
+>>>  
+>>>  	trace_drm_run_job(sched_job, entity);
+>>> @@ -1183,7 +1236,7 @@ static void drm_sched_run_job_work(struct work_struct *w)
+>>>   * @ops: backend operations for this scheduler
+>>>   * @submit_wq: workqueue to use for submission. If NULL, an ordered wq is
+>>>   *	       allocated and used
+>>> - * @hw_submission: number of hw submissions that can be in flight
+>>> + * @max_submission_credits: number of submission credits that can be in flight
+>>>   * @hang_limit: number of times to allow a job to hang before dropping it
+>>>   * @timeout: timeout value in jiffies for the scheduler
+>>>   * @timeout_wq: workqueue to use for timeout work. If NULL, the system_wq is
+>>> @@ -1198,7 +1251,7 @@ static void drm_sched_run_job_work(struct work_struct *w)
+>>>  int drm_sched_init(struct drm_gpu_scheduler *sched,
+>>>  		   const struct drm_sched_backend_ops *ops,
+>>>  		   struct workqueue_struct *submit_wq,
+>>> -		   unsigned hw_submission, unsigned hang_limit,
+>>> +		   unsigned max_submission_credits, unsigned hang_limit,
+>>>  		   long timeout, struct workqueue_struct *timeout_wq,
+>>>  		   atomic_t *score, const char *name,
+>>>  		   enum drm_sched_policy sched_policy,
+>>> @@ -1211,7 +1264,7 @@ int drm_sched_init(struct drm_gpu_scheduler *sched,
+>>>  
+>>>  	sched->ops = ops;
+>>>  	sched->single_entity = NULL;
+>>> -	sched->hw_submission_limit = hw_submission;
+>>> +	sched->submission_limit = max_submission_credits;
+>>>  	sched->name = name;
+>>>  	if (!submit_wq) {
+>>>  		sched->submit_wq = alloc_ordered_workqueue(name, 0);
+>>> @@ -1238,7 +1291,7 @@ int drm_sched_init(struct drm_gpu_scheduler *sched,
+>>>  	init_waitqueue_head(&sched->job_scheduled);
+>>>  	INIT_LIST_HEAD(&sched->pending_list);
+>>>  	spin_lock_init(&sched->job_list_lock);
+>>> -	atomic_set(&sched->hw_rq_count, 0);
+>>> +	atomic_set(&sched->submission_count, 0);
+>>>  	INIT_DELAYED_WORK(&sched->work_tdr, drm_sched_job_timedout);
+>>>  	INIT_WORK(&sched->work_run_job, drm_sched_run_job_work);
+>>>  	INIT_WORK(&sched->work_free_job, drm_sched_free_job_work);
+>>> diff --git a/drivers/gpu/drm/v3d/v3d_gem.c b/drivers/gpu/drm/v3d/v3d_gem.c
+>>> index 2e94ce788c71..8479e5302f7b 100644
+>>> --- a/drivers/gpu/drm/v3d/v3d_gem.c
+>>> +++ b/drivers/gpu/drm/v3d/v3d_gem.c
+>>> @@ -417,7 +417,7 @@ v3d_job_init(struct v3d_dev *v3d, struct drm_file *file_priv,
+>>>  	job->free = free;
+>>>  
+>>>  	ret = drm_sched_job_init(&job->base, &v3d_priv->sched_entity[queue],
+>>> -				 v3d_priv);
+>>> +				 1, v3d_priv);
+>>>  	if (ret)
+>>>  		goto fail;
+>>>  
+>>> diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+>>> index 27f5778bbd6d..c4a53b259585 100644
+>>> --- a/include/drm/gpu_scheduler.h
+>>> +++ b/include/drm/gpu_scheduler.h
+>>> @@ -329,6 +329,8 @@ struct drm_sched_fence *to_drm_sched_fence(struct dma_fence *f);
+>>>   * @sched: the scheduler instance on which this job is scheduled.
+>>>   * @s_fence: contains the fences for the scheduling of job.
+>>>   * @finish_cb: the callback for the finished fence.
+>>> + * @submission_credits: the number of submission credits this job contributes to
+>>> + *                      the scheduler
+>>>   * @work: Helper to reschdeule job kill to different context.
+>>>   * @id: a unique id assigned to each job scheduled on the scheduler.
+>>>   * @karma: increment on every hang caused by this job. If this exceeds the hang
+>>> @@ -348,6 +350,8 @@ struct drm_sched_job {
+>>>  	struct drm_gpu_scheduler	*sched;
+>>>  	struct drm_sched_fence		*s_fence;
+>>>  
+>>> +	u32				submission_credits;
+>>> +
+>>>  	/*
+>>>  	 * work is used only after finish_cb has been used and will not be
+>>>  	 * accessed anymore.
+>>> @@ -471,6 +475,21 @@ struct drm_sched_backend_ops {
+>>>           * and it's time to clean it up.
+>>>  	 */
+>>>  	void (*free_job)(struct drm_sched_job *sched_job);
+>>> +
+>>> +	/**
+>>> +	 * @update_job_credits: Called once the scheduler is considering this
+>>> +	 * job for execution.
+>>> +	 *
+>>> +	 * Drivers may use this to update the job's submission credits, which is
+>>> +	 * useful to e.g. deduct the number of native fences which have been
+>>> +	 * signaled meanwhile.
+>>> +	 *
+>>> +	 * The callback must either return the new number of submission credits
+>>> +	 * for the given job, or zero if no update is required.
+>>
+>> Any reason for having this special zero-means-no-update case? I mean,
+>> drivers could just return sched_job->submission_credits if nothing
+>> changed, and that would simplify the semantics IMHO. Another option, if
+> 
+> I think I just did this because I thought it's a clever way to get rid of the
+> need to deal with zero-sized jobs, which do not make much sense. In
+> drm_sched_job_init() passing a zero job size defaults to one, which I think is
+> reasonable. Doing the same thing here is more likely to hide a bug. However, the
+> same is probably true for 'zero means no update' though. Maybe we should just
+> WARN() in such a case.
+> 
+>> we want to avoid the sched_job->submission_credits assignment when
+>> nothing changes would be to make it a void function and let it update
+>> the sched_job->submission_credits directly.
+> 
+> Sure, that's an option as well. However, I'd probably prefer the new job size to
+> be the return value. Having to sanity check job->submission_credits afterwards
+> isn't that nice either.
+> 
+>>
+>>> +	 *
+>>> +	 * This callback is optional.
+>>> +	 */
+>>> +	u32 (*update_job_credits)(struct drm_sched_job *sched_job);
+>>>  };
+>>>  
+>>>  /**
+>>> @@ -478,14 +497,14 @@ struct drm_sched_backend_ops {
+>>>   *
+>>>   * @ops: backend operations provided by the driver.
+>>>   * @single_entity: Single entity for the scheduler
+>>> - * @hw_submission_limit: the max size of the hardware queue.
+>>> + * @submission_limit: the maximim number of submission credits
+>>> + * @submission_count: the number of submission credits in flight
+>>
+>> Now that we use the term credit at the job level, I'd recommend using
+>> it here as well, for consistency. Maybe
+>> s/submission_count/assigned_credits/ and
+>> s/submission_limit/max_credits/?
+> 
+> IIRC, Luben is proposing something similar. Gonna change that.
 
 
-> On Oct 23, 2023, at 8:08 PM, Jeff LaBundy <jeff@labundy.com> wrote:
->=20
->>>> Should the last two drivers live in drivers/mailbox?
->>>=20
->>> Adopting the mailbox framework seems like an excessive amount
->>> of overhead for our requirements.
->>=20
->> MFD isn't a dumping a ground for miscellaneous functionality.
->>=20
->> MFD requests resources and registers devices.
->>=20
->> Mailbox functionality should live in drivers/mailbox.
->=20
-> I think this is just a misnomer; the code uses the terms "mailbox" and
-> "mbox" throughout because the relevant registers are named as such in
-> the datasheet.
->=20
-> Please correct me James, but I believe the datasheet uses this language
-> because both the host and the part itself have write access, meaning the
-> part may write a status code to the register after the host writes that
-> same register. There is no relation to IPC or the mbox subsystem.
->=20
-> That being said, some of the functions currently placed in this MFD,
-> namely those related to haptic motor properties (e.g. f0 and ReDC), do
-> seem more appropriate for the input/FF child device. My understanding
-> is that those functions serve only momentary haptic click effects and
-> not the I2S streaming case; please let me know if I have misunderstood.
->=20
-> I understand that no customer would ever build the to-be-added codec
-> driver _without_ the input driver, but the MFD must be generic enough
-> to support this case. Would a codec-only implementation use f0 and ReDC
-> estimation? If so, then these functions _do_ belong in the MFD, albeit
-> with some comments to explain their nature.
+From my email in this thread:
 
-Thank you for the clarifications, Jeff, and you are correct on all counts.
-I see that I spoke before having a good enough grasp on the mailbox
-framework. As regards the codec-only use case, they would not be used.
-So those functions do belong in the input driver.
+Is this clear enough?
+
+I mean, what really is a "submission_limit"? What is it limiting really?
+Number of what? "Submissions"? No. It's credits.
+
+("Submission" seems to have become very popular, see
+ Message-ID: <a39eb381-4f2b-439b-b223-c5148167b225@amd.com>, maybe through Lore.)
+
+So if "submission_credit_limit" and "submission_credit_count"
+seem too wordy, (and they kind of are), then perhaps use,
+
+	@credit_limit: the credit limit of this scheduler
+	@credit_count: the current credit count of this scheduler
+
+Also note the slight comment update for those two quantities.
+
+
+> 
+>>
+>>>   * @timeout: the time after which a job is removed from the scheduler.
+>>>   * @name: name of the ring for which this scheduler is being used.
+>>>   * @sched_rq: priority wise array of run queues.
+>>>   * @job_scheduled: once @drm_sched_entity_do_release is called the scheduler
+>>>   *                 waits on this wait queue until all the scheduled jobs are
+>>>   *                 finished.
+>>> - * @hw_rq_count: the number of jobs currently in the hardware queue.
+>>>   * @job_id_count: used to assign unique id to the each job.
+>>>   * @submit_wq: workqueue used to queue @work_run_job and @work_free_job
+>>>   * @timeout_wq: workqueue used to queue @work_tdr
+>>> @@ -511,12 +530,12 @@ struct drm_sched_backend_ops {
+>>>  struct drm_gpu_scheduler {
+>>>  	const struct drm_sched_backend_ops	*ops;
+>>>  	struct drm_sched_entity		*single_entity;
+>>> -	uint32_t			hw_submission_limit;
+>>> +	u32				submission_limit;
+>>> +	atomic_t			submission_count;
+>>>  	long				timeout;
+>>>  	const char			*name;
+>>>  	struct drm_sched_rq		sched_rq[DRM_SCHED_PRIORITY_COUNT];
+>>>  	wait_queue_head_t		job_scheduled;
+>>> -	atomic_t			hw_rq_count;
+>>>  	atomic64_t			job_id_count;
+>>>  	struct workqueue_struct		*submit_wq;
+>>>  	struct workqueue_struct		*timeout_wq;
+>>> @@ -539,7 +558,7 @@ struct drm_gpu_scheduler {
+>>>  int drm_sched_init(struct drm_gpu_scheduler *sched,
+>>>  		   const struct drm_sched_backend_ops *ops,
+>>>  		   struct workqueue_struct *submit_wq,
+>>> -		   uint32_t hw_submission, unsigned hang_limit,
+>>> +		   uint32_t max_submission_credits, unsigned hang_limit,
+>>>  		   long timeout, struct workqueue_struct *timeout_wq,
+>>>  		   atomic_t *score, const char *name,
+>>>  		   enum drm_sched_policy sched_policy,
+>>> @@ -548,6 +567,7 @@ int drm_sched_init(struct drm_gpu_scheduler *sched,
+>>>  void drm_sched_fini(struct drm_gpu_scheduler *sched);
+>>>  int drm_sched_job_init(struct drm_sched_job *job,
+>>>  		       struct drm_sched_entity *entity,
+>>> +		       u32 submission_credits,
+>>>  		       void *owner);
+>>
+>> Nit: we keep adding parameters to functions like drm_sched_init() and
+>> drm_sched_job_init() and every time this implies patching all call
+>> sites to pass the new default value. In a sense, that's a good thing,
+>> because it forces driver maintainers to check that the patch does the
+>> right thing. But overall, it makes the driver code harder to read, in
+>> that it forces the reader to go check the function prototype to figure
+>> out what these magic 1 or NULL values mean. So, I wonder if we
+>> shouldn't move to a model where we pass struct drm_sched[_job]_params
+>> objects around:
+>>
+>> 	const struct drm_sched_job_params params = {
+>> 		.entity = xxx,
+>> 		.submission_credits = xxx,
+>> 		.owner = THIS_MODULE,
+>> 	};
+>>
+>> 	...
+>>
+>> 	ret = drm_sched_job_init(job, &params);
+>>
+>> It would also let us add new fields and pick the right default when
+>> this field is zero, thus preventing cross-driver updates when such a
+>> field is added.
+> 
+> Yes, the same is true for drm_sched_init() - that's something for a separate
+> patch though.
+> 
+>>
+>>>  void drm_sched_job_arm(struct drm_sched_job *job);
+>>>  int drm_sched_job_add_dependency(struct drm_sched_job *job,
+>>> @@ -570,7 +590,8 @@ void drm_sched_entity_modify_sched(struct drm_sched_entity *entity,
+>>>  
+>>>  void drm_sched_tdr_queue_imm(struct drm_gpu_scheduler *sched);
+>>>  void drm_sched_job_cleanup(struct drm_sched_job *job);
+>>> -void drm_sched_wakeup_if_can_queue(struct drm_gpu_scheduler *sched);
+>>> +void drm_sched_wakeup_if_can_queue(struct drm_gpu_scheduler *sched,
+>>> +				   struct drm_sched_entity *entity);
+>>>  bool drm_sched_submit_ready(struct drm_gpu_scheduler *sched);
+>>>  void drm_sched_submit_stop(struct drm_gpu_scheduler *sched);
+>>>  void drm_sched_submit_start(struct drm_gpu_scheduler *sched);
+>>
+> 
+
+-- 
+Regards,
+Luben
+
