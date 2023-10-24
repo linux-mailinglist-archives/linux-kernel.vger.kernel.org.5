@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9587D57B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C177D57BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343956AbjJXQOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
+        id S1344113AbjJXQOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234736AbjJXQOP (ORCPT
+        with ESMTP id S234820AbjJXQOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:14:15 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1286A1;
-        Tue, 24 Oct 2023 09:14:13 -0700 (PDT)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 39OGDsID004135;
-        Tue, 24 Oct 2023 18:13:54 +0200
-Date:   Tue, 24 Oct 2023 18:13:54 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
-Cc:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Zhangjin Wu <falcon@tinylab.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] selftests/nolibc: use EFI -bios for LoongArch qemu
-Message-ID: <ZTftQtrB0LL0nNK/@1wt.eu>
-References: <20231010-nolibc-out-of-tree-v1-0-b6a263859596@weissschuh.net>
- <20231010-nolibc-out-of-tree-v1-2-b6a263859596@weissschuh.net>
- <20231022092046.GC2669@1wt.eu>
- <74f121c7-5356-4e58-87ca-e93fe48ccc39@t-8ch.de>
+        Tue, 24 Oct 2023 12:14:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B73A1;
+        Tue, 24 Oct 2023 09:14:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EE17C433CC;
+        Tue, 24 Oct 2023 16:14:26 +0000 (UTC)
+Date:   Tue, 24 Oct 2023 17:14:24 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the arm64 tree
+Message-ID: <ZTftYOqyCOxhjoxi@arm.com>
+References: <20231024172409.7b519868@canb.auug.org.au>
+ <ZTeUhsf1xWmkJcRh@arm.com>
+ <CAMj1kXGSG0KLa0NNnMM-_zh+wEJm94b2zpHtkSeUi1hdxMYa_Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <74f121c7-5356-4e58-87ca-e93fe48ccc39@t-8ch.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAMj1kXGSG0KLa0NNnMM-_zh+wEJm94b2zpHtkSeUi1hdxMYa_Q@mail.gmail.com>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 06:06:11PM +0200, Thomas Weißschuh  wrote:
-> Oct 22, 2023 11:21:16 Willy Tarreau <w@1wt.eu>:
+On Tue, Oct 24, 2023 at 03:42:20PM +0200, Ard Biesheuvel wrote:
+> On Tue, 24 Oct 2023 at 11:55, Catalin Marinas <catalin.marinas@arm.com> wrote:
+> >
+> > + Ard
+> >
+> > On Tue, Oct 24, 2023 at 05:24:09PM +1100, Stephen Rothwell wrote:
+> > > After merging the arm64 tree, today's linux-next build (arm64 defconfig)
+> > > produced this warning:
+> > >
+> > > WARNING: modpost: vmlinux: section mismatch in reference: __pi_$x+0x38 (section: .text) -> __pi_map_range (section: .init.text)
+> > >
+> > > I don't know what caused this.
+> >
+> > For some reason, building linux-next doesn't inline all the functions in
+> > the map_range.c file and we end up with some of them in different
+> > sections. I didn't get this when building the arm64 for-next/core
+> > separately.
+> >
 > 
-> > On Tue, Oct 10, 2023 at 02:33:57PM +0200, Thomas Weißschuh wrote:
-> >> qemu for LoongArch does not work properly with direct kernel boot.
-> >> The kernel will panic during initialization and hang without any output.
-> >>
-> >> When booting in EFI mode everything work correctly.
-> >>
-> >> While users most likely don't have the LoongArch EFI binary installed at
-> >> least an explicit error about 'file not found' is better than a hanging
-> >> test without output that can never succeed.
-> >
-> > Agreed. Let's hope at least users will be able to figure what's
-> > missing depending on the message. There's one thing, though, you
-> > hard-coded the path to the file system, and it's unlikely to be
-> > located at the same place for everyone:
-> >
-> >    -bios /usr/share/edk2/loongarch64/OVMF_CODE.fd
-> >
-> > Sure, it's also possible to force QEMU_ARGS but it's becoming complicated
-> > due to the numerous arguments. Maybe use a QEMU_BIOS_loongarch variable
-> > for this ? This way if this starts to generalize to other archs, we can
-> > later simplify it and automatically append -bios when needed.
+> Strange, I never ran into this before.
 > 
-> My hope was for it to be a purely temporary bandaid.
-> But you are right, let's do it properly from the beginning.
+> I guess commit 24cc769d70d8bda055a028aa6a is implicated in this, if we
+> run into more trouble like this i'll look whether we can bring that
+> logic back in some way.
+> 
+> The fix looks fine to me.
 
-The right way to think about temporary code is that if it's supposed to
-be quick to address, you don't want to introduce a temporary way of
-proceeding that will change later as the change will annoy some users.
-And if the reason for the temporary step is a temporary difficulty, you
-can be certain nobody will ever try to address it and that temporary
-will be definitive. So thinking "temporary" should generally ring a
-bell "am I going to annoy users for no reason or am I putting myself in
-a wrong corner". That's why I really try to avoid anything "temporary".
-(But there's no problem with making the wrong choice and regretting
-later, of course ;-)).
+Thanks. I applied this fix locally (will push it out in a bit). I added
+a fixes tag for a latter commit introducing map_segment() etc.
 
-Cheers,
-Willy
+-- 
+Catalin
