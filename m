@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B053F7D44F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7DE7D44F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbjJXBZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 21:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51590 "EHLO
+        id S231592AbjJXB01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 21:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230373AbjJXBZv (ORCPT
+        with ESMTP id S229456AbjJXB0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 21:25:51 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B298DE;
-        Mon, 23 Oct 2023 18:25:49 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so3828833b3a.2;
-        Mon, 23 Oct 2023 18:25:49 -0700 (PDT)
+        Mon, 23 Oct 2023 21:26:24 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578E8DF;
+        Mon, 23 Oct 2023 18:26:23 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6bf03b98b9bso3273428b3a.1;
+        Mon, 23 Oct 2023 18:26:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698110748; x=1698715548; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698110783; x=1698715583; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wFWDBFPcsetvScGtpbuAVby+9Wg9s996ooC10t7jxrQ=;
-        b=VzSDETPiQhGX0wY+giqdpVF6EJk+uSYb0vuUJap/xxoJbl51awhDXWWU38QN/EdkUP
-         BXp03Dtnki6R28548eFlZ7DsXPkB+UnUoMkkkNfNFfEOvMUvTM3CzDuT8hmcgfEl5Mzt
-         GcGu1gvR/lom+y1woGbBEhHSvXbQaifOD/4yyaTV6R1us5gIY/TGyV32xQfaw55t+idQ
-         JcIAJpt7AZPpcd1PaZYDi4MOKvZFzyAuNAWwP6em5Os0udOFh+2MtEJoSOfFBl0b5lVJ
-         RaFd2KOwmsQzjO/vmsVqN6ctQ3P7W0Z/Re+UAjl5s8Pmo8/dWwBtlBfZac9RMSyK3oN6
-         NpOg==
+        bh=khYmW5HSxSyYHJIQOnpslfulcxoPhqkUvde/HOe75Lw=;
+        b=VUYMLToKM9uHjYz7SKimL/RzylRV1ipgljXxC0nCUtUaN9yZBllKFDlYVc9GtqqKAs
+         GoYPTK9Yx+GonBkR39GdBsWDica5GwP/M8sor1ngjeVmABGvzQoQsiOwI69uY/oXxuEj
+         RhlO2lAgG8rYIF7axlYf+IMQGTh639h/RXhT72U/KACyFj4K6f6mntkw6w82eEdIANT1
+         2E+YDzZS1506y4NlkhDZ1MCmh8pEUa8h9aLQ8/KdZxWx4O3jUkivWYDjxHsNRd9ZAjau
+         nDW/iW5PxK6pIDFXFe6OMbqKhmw6pbW3GjHE0/CGBw8Z6sWuF06YZb5FTDA1DnwEYPjF
+         kJeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698110748; x=1698715548;
+        d=1e100.net; s=20230601; t=1698110783; x=1698715583;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wFWDBFPcsetvScGtpbuAVby+9Wg9s996ooC10t7jxrQ=;
-        b=p9gd2J5wGqYhEXg5Y5DhrS1b8pssHtEIcfBVgXzv87tv+ypuafCESrGqlvuJ9+Erfi
-         /rjqfLfyS3LpLSguQU77EpAkSKp18aDBNWlzNLmAqWTx6weguSTZ0/AscyehGbHnPyvd
-         LcgmsTM7WE1FNNEy2OGh+3OHK2p4RxTbVmePZPlTj5v+FIbHbEpDip7MlCIvsbjGGQn3
-         VkUhcjsNgt3OwQhC+Nirqny803jbrECQJ99xvNciC/yw/PrUlyIrKioBB5DJCrdvCXSm
-         nL4jfuJmXdiGTiZSuUAEmp0p4MuU1bfPpU/1GerZANsOrIu4/hHCV0GN8yGa2UkJIcYY
-         go4g==
-X-Gm-Message-State: AOJu0Yz04o9Bl1QGB/SvHzAa6km3cDzAabmdvJwLdT0Z+rjjNxwXVwNA
-        wCCC+YWekzGF3fyWap2HwZ8=
-X-Google-Smtp-Source: AGHT+IH53mfwQH1g7SOxu509UzXWkjYNbNoeilqRmzhJGPpjvhbQxp16Sb0xVMUMlHSpsoC7HXQrzw==
-X-Received: by 2002:a05:6a20:8e0f:b0:16b:e89b:fb18 with SMTP id y15-20020a056a208e0f00b0016be89bfb18mr1607328pzj.26.1698110748642;
-        Mon, 23 Oct 2023 18:25:48 -0700 (PDT)
+        bh=khYmW5HSxSyYHJIQOnpslfulcxoPhqkUvde/HOe75Lw=;
+        b=kzSDPTMzrzjE8pT1w1/G7CILCs9rm8Yy9ovb3rabjQpiDq/kVSF8dK90un3VdxVwzd
+         zAgZ8jByHITsQ7ltZetJFZ0SCWM3zj8mYeeGB8hP8G72eV4DWo0AYVUS9ZHOCDclBEkU
+         kFwn846SS09PGav02rhsfrXyM7roAr6rYjf/bFMjpULczSUnoKlePWGTjawBZ9pe6ZUE
+         nXY6QZ6h9ZewH9zvNv2TDoEgY4MZqFbBd0NyrQM64KLyYlW/LzvUwLCBVCsE5p5WDUsz
+         NabJXcWstT1FBEoq37/uMxA0G/aubqeM6BCG+uWVlDsnrWPqnb5sF0VH0Zsk+Ka3+bk4
+         puDA==
+X-Gm-Message-State: AOJu0YzcfyhZ8bES0qIv0a++l0To5nkgPzXCiArzxKo/YCzI1FfttlCf
+        7TulxtlWKXIevlVriE82iVo=
+X-Google-Smtp-Source: AGHT+IHmz2pOCei0LCvP+yXCiEXA+LozXeqa11KLKWUosiayRK9nW0emXepI+Id3MfyJODvnT0iSIA==
+X-Received: by 2002:a05:6a20:3c8d:b0:17b:65ec:776c with SMTP id b13-20020a056a203c8d00b0017b65ec776cmr1571270pzj.20.1698110782777;
+        Mon, 23 Oct 2023 18:26:22 -0700 (PDT)
 Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id k3-20020aa79d03000000b006bc3e8f58besm6757110pfp.56.2023.10.23.18.25.46
+        by smtp.gmail.com with ESMTPSA id k3-20020aa79d03000000b006bc3e8f58besm6757110pfp.56.2023.10.23.18.26.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 18:25:48 -0700 (PDT)
-Message-ID: <b120e95f-16e5-4590-80a7-1d825f581f77@gmail.com>
-Date:   Mon, 23 Oct 2023 18:25:46 -0700
+        Mon, 23 Oct 2023 18:26:22 -0700 (PDT)
+Message-ID: <e128a24b-0c05-4fa8-a5b1-c33da33b1687@gmail.com>
+Date:   Mon, 23 Oct 2023 18:26:19 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/8] r8152: Check for unplug in r8153b_ups_en() /
- r8153c_ups_en()
+Subject: Re: [PATCH v5 7/8] r8152: Rename RTL8152_UNPLUG to
+ RTL8152_INACCESSIBLE
 Content-Language: en-US
 To:     Douglas Anderson <dianders@chromium.org>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -71,7 +71,7 @@ Cc:     Edward Hill <ecgh@chromium.org>,
         Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org
 References: <20231020210751.3415723-1-dianders@chromium.org>
- <20231020140655.v5.6.I6405b1587446c157c6d6263957571f2b11f330a7@changeid>
+ <20231020140655.v5.7.Iaacab4e73761e7bd9bb622b30a804c5d20bd5b4c@changeid>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
  xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -106,7 +106,7 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20231020140655.v5.6.I6405b1587446c157c6d6263957571f2b11f330a7@changeid>
+In-Reply-To: <20231020140655.v5.7.Iaacab4e73761e7bd9bb622b30a804c5d20bd5b4c@changeid>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -122,10 +122,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 10/20/2023 2:06 PM, Douglas Anderson wrote:
-> If the adapter is unplugged while we're looping in r8153b_ups_en() /
-> r8153c_ups_en() we could end up looping for 10 seconds (20 ms * 500
-> loops). Add code similar to what's done in other places in the driver
-> to check for unplug and bail.
+> Whenever the RTL8152_UNPLUG is set that just tells the driver that all
+> accesses will fail and we should just immediately bail. A future patch
+> will use this same concept at a time when the driver hasn't actually
+> been unplugged but is about to be reset. Rename the flag in
+> preparation for the future patch.
+> 
+> This is a no-op change and just a search and replace.
 > 
 > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
