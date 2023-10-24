@@ -2,103 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E0B7D4ECB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DF27D4ECF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjJXL2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 07:28:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36860 "EHLO
+        id S229829AbjJXL3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 07:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjJXL2u (ORCPT
+        with ESMTP id S229629AbjJXL3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 07:28:50 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA74128;
-        Tue, 24 Oct 2023 04:28:48 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c9d132d92cso8264295ad.0;
-        Tue, 24 Oct 2023 04:28:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698146927; x=1698751727; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CX4+doENGmNchlwWpwv+1yjRTi3YVh0wXhBLOXVVrzE=;
-        b=Njhyf1s/QWkeaHdK34rzxZqNZRX8tFKGfAjLGyfwmMr+KpKVhSuYdcNr09hhREN+s2
-         DFczBtQIiblfsteU8dK9aHdJA6CjBFMgDbeXCz7CCqItxh2epYk45VW+2RiaY6MPJztl
-         z+Dp1OjasT6WTc9BeAILGRI2khHOcBP3bXN0pUAKakW+rOtnKuh6sgZbrF6UDkngrOmK
-         3GT44PJtAJ1KRye5uSJziKdy+xQDO8PqGo7Ws+cVTII6lGg80Wbyqmxr/tRBY3oMy1rS
-         X4SscLmNyAwsJK2YkYz4DMoSoJ9E0GXcAdwgqox0rHly9nDmnJAygj+iRdrnwtb+AbVM
-         sEWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698146927; x=1698751727;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CX4+doENGmNchlwWpwv+1yjRTi3YVh0wXhBLOXVVrzE=;
-        b=ZWDqFVjAK9OBS1PEEU2CSS1r2jAYXSVCHAyfQUm24hhqeBYOSqsIWPwiTK9tEIYXhh
-         9i+1zb/e4o838/h+RSyl++JZRpNL4V9e5eMmxKeojb4f3CXhoLWnNJoemZcGGUFSk726
-         q1eSdnSAOBD8z0p5RPfPh3IB4xREDIsdOzDs0RFtw2NALLcNOWOZo/4K2tikIiUDcIhi
-         /RWwtyZhKzBpYgYMuynFgJ0ETV7bnP1VgBCjkQNROJjMzpI+yMpE5215mMX3zkxewvUo
-         qtNYb3XLPLI4XucvjuWoN4fN038OEeAKo1GRs56b/Y9glWVILDwBRwr70dMH7JGeQ4pV
-         nGQA==
-X-Gm-Message-State: AOJu0YxkQDPVAy3RhXyWprjPIkTX5+HrJiZLWKlOSy09t+xlQXg90msP
-        OMJcloHQKu6vPMBTNQoOTsw=
-X-Google-Smtp-Source: AGHT+IHnUt4lOv0br/JRsZPJbyPC+wE41o4TMvkk1en97kacjTGvMMNuo1FHRQVaytnmZikbIAVbCw==
-X-Received: by 2002:a17:902:dac6:b0:1c1:fbec:bc3f with SMTP id q6-20020a170902dac600b001c1fbecbc3fmr11428938plx.5.1698146927571;
-        Tue, 24 Oct 2023 04:28:47 -0700 (PDT)
-Received: from abhinav.. ([103.75.161.208])
-        by smtp.gmail.com with ESMTPSA id q13-20020a17090311cd00b001b7f40a8959sm7219640plh.76.2023.10.24.04.28.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 04:28:47 -0700 (PDT)
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Abhinav Singh <singhabhinav9051571833@gmail.com>
-Subject: [PATCH] Fixing warning cast removes address space '__iomem' of expression
-Date:   Tue, 24 Oct 2023 16:58:32 +0530
-Message-Id: <20231024112832.737832-1-singhabhinav9051571833@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 24 Oct 2023 07:29:13 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6FD128;
+        Tue, 24 Oct 2023 04:29:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=p9Xk6+oVu2eZSCHniKsbVUw777g3shFxugtPS4C2Azc=; b=ZVtRI3i8atfSABmwqYOam92raQ
+        sGbWV0A3UKiGLSAkdhisvJ/Q3AW4A8vqe+K9zP0mN5nimUsw9Q/zg1bAMTEvwX3VL9oPE208SBLW5
+        CdkR3e9MhuDKI0nOCcqkMgGfjmaH0CjVXYUptjRbTY24/ebqcC69b3MRM7jiKvWj/Z8icCFy6dtK+
+        hmRSLuuC/iJ9jau8xMEmZGgM8xSCFtfxZxyNWuwijdN5Pmzom9RlONQ+ddjwAj+YxHH8f4rP9LN8b
+        jx5jcWOGsmFNUeFBI7LlmTTt5LkAl3+llaabm8ykn15h2Okzsikzg1rvRM/CnB5RupJcx2+whac05
+        /7r1Emsw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47178)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qvFal-00045E-1p;
+        Tue, 24 Oct 2023 12:28:59 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qvFaj-0005rQ-FG; Tue, 24 Oct 2023 12:28:57 +0100
+Date:   Tue, 24 Oct 2023 12:28:57 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Miguel Luis <miguel.luis@oracle.com>
+Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "x86@kernel.org" <x86@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "jianyong.wu@arm.com" <jianyong.wu@arm.com>,
+        "justin.he@arm.com" <justin.he@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH] ACPI: Rename acpi_scan_device_not_present() to be about
+ enumeration
+Message-ID: <ZTeqeRRbJgEdbMV3@shell.armlinux.org.uk>
+References: <E1qtuWW-00AQ7P-0W@rmk-PC.armlinux.org.uk>
+ <5589E5A5-9F97-416A-9C48-9828B0BE58CD@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <5589E5A5-9F97-416A-9C48-9828B0BE58CD@oracle.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes sparse complaining about the removal of __iomem address
-space when casting the return value of this function ioremap_cache(...)
-from `void __ioremap*` to `void*`.
+On Tue, Oct 24, 2023 at 10:15:07AM +0000, Miguel Luis wrote:
+> Hi Russell,
+> 
+> > On 20 Oct 2023, at 18:47, Russell King <rmk+kernel@armlinux.org.uk> wrote:
+> > 
+> > From: James Morse <james.morse@arm.com>
+> > 
+> > acpi_scan_device_not_present() is called when a device in the
+> > hierarchy is not available for enumeration. Historically enumeration
+> > was only based on whether the device was present.
+> > 
+> > To add support for only enumerating devices that are both present
+> > and enabled, this helper should be renamed. It was only ever about
+> > enumeration, rename it acpi_scan_device_not_enumerated().
+> > 
+> > No change in behaviour is intended.
+> > 
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > Reviewed-by: Gavin Shan <gshan@redhat.com>
+> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> 
+> Fixes: 443fc8202272 ("ACPI / hotplug: Rework generic code to handle suprise removals”) ?
 
-I think there are two way of fixing it, first one is changing the
-datatype of variable `ghcb_va` from `void*` to `void __iomem*` . 
-Second way of fixing it is using the memremap(...) which is 
-done in this patch.
+I'm not sure a patch that is merely renaming a function should ever
+have a Fixes tag, since it's just a naming issue, it doesn't fix a
+bug, change functionality or anything like that.
 
-Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
----
- arch/x86/hyperv/hv_init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I would suggest that there would need to be good reason why such a
+patch should be backported to stable kernels - for example, something
+else that does fix a user visible bug requires this change.
 
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 21556ad87f4b..c14161add274 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -70,7 +70,7 @@ static int hyperv_init_ghcb(void)
- 
- 	/* Mask out vTOM bit. ioremap_cache() maps decrypted */
- 	ghcb_gpa &= ~ms_hyperv.shared_gpa_boundary;
--	ghcb_va = (void *)ioremap_cache(ghcb_gpa, HV_HYP_PAGE_SIZE);
-+	ghcb_va = memremap(ghcb_gpa, HV_HYP_PAGE_SIZE, MEMREMAP_WB);
- 	if (!ghcb_va)
- 		return -ENOMEM;
- 
+Thanks.
+
 -- 
-2.39.2
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
