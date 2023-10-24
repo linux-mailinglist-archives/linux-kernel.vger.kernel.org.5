@@ -2,286 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E80FD7D54E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB147D54B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343621AbjJXPKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
+        id S230316AbjJXPI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234707AbjJXPKW (ORCPT
+        with ESMTP id S229441AbjJXPIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:10:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4FA10D3;
-        Tue, 24 Oct 2023 08:10:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698160210; x=1729696210;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=XE5jF6OW7porQXPFLCUQi1A9KvXzMNgmv7Ivc8UFC98=;
-  b=ZA+WXaJl5dyU4AkV7uecgWOFCK2BmDLhHgXBAGEQeMHsMp5xoIMO8iAz
-   ZHJ55L4ox6R9zP30KjMkLrJUoo3GBCNv8O9h7OnDeVBNWRCYh348Vujjh
-   BMYPnPGW6PBcrJ3tzmFCyhElWyqs1Jq9SKG4eFqKzu6gSsh+slA0Qgcpy
-   MmpbgicQ1UUCtcnc0XT0srZdK0Xhd3sWLV+3ptnpIo8+XQUushDHuoYG/
-   mVLDee5IIV/7hut6QVpMAUqY3hM1NDn/OV4afJevu/X57o2+0gj2xlRI9
-   TUWawtgNwA5pfYRCDnIgEBP1cY9Ajsf0Hz5k27s6I0nc36y422QvFd7jZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="418203162"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="418203162"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 08:06:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="6486203"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by fmviesa001.fm.intel.com with ESMTP; 24 Oct 2023 08:06:25 -0700
-From:   Yi Liu <yi.l.liu@intel.com>
-To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
-        kevin.tian@intel.com, robin.murphy@arm.com,
-        baolu.lu@linux.intel.com
-Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
-        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: [PATCH v6 10/10] iommufd/selftest: Add coverage for IOMMU_HWPT_ALLOC with nested HWPTs
-Date:   Tue, 24 Oct 2023 08:06:09 -0700
-Message-Id: <20231024150609.46884-11-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231024150609.46884-1-yi.l.liu@intel.com>
-References: <20231024150609.46884-1-yi.l.liu@intel.com>
+        Tue, 24 Oct 2023 11:08:25 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 446B9BA;
+        Tue, 24 Oct 2023 08:08:22 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 91BA32F4;
+        Tue, 24 Oct 2023 08:09:02 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.29.163])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD0633F762;
+        Tue, 24 Oct 2023 08:08:18 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 16:08:12 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "wuqiang . matt" <wuqiang.matt@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH] locking/atomic: sh: Use generic_cmpxchg_local for
+ arch_cmpxchg_local()
+Message-ID: <ZTfd3A3Unz6SWFD3@FVFF77S0Q05N.cambridge.arm.com>
+References: <169815917362.8695.13904684741526725648.stgit@devnote2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169815917362.8695.13904684741526725648.stgit@devnote2>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolin Chen <nicolinc@nvidia.com>
+On Tue, Oct 24, 2023 at 11:52:54PM +0900, Masami Hiramatsu (Google) wrote:
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Use generic_cmpxchg_local() for arch_cmpxchg_local() implementation
+> in SH architecture because it does not implement arch_cmpxchg_local().
 
-The IOMMU_HWPT_ALLOC ioctl now supports passing user_data to allocate a
-user-managed domain for nested HWPTs. Add its coverage for that. Also,
-update _test_cmd_hwpt_alloc() and add test_cmd/err_hwpt_alloc_nested().
+I do not think this is correct.
 
-Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
----
- tools/testing/selftests/iommu/iommufd.c       | 120 ++++++++++++++++++
- .../selftests/iommu/iommufd_fail_nth.c        |   3 +-
- tools/testing/selftests/iommu/iommufd_utils.h |  31 ++++-
- 3 files changed, 146 insertions(+), 8 deletions(-)
+The implementation in <asm-generic/cmpxchg-local.h> is UP-only (and it only
+disables interrupts), whereas arch/sh can be built SMP. We should probably add
+some guards into <asm-generic/cmpxchg-local.h> for that as we have in
+<asm-generic/cmpxchg.h>.
 
-diff --git a/tools/testing/selftests/iommu/iommufd.c b/tools/testing/selftests/iommu/iommufd.c
-index 76a4351e3434..7ad42656f4b1 100644
---- a/tools/testing/selftests/iommu/iommufd.c
-+++ b/tools/testing/selftests/iommu/iommufd.c
-@@ -264,6 +264,126 @@ TEST_F(iommufd_ioas, ioas_destroy)
- 	}
- }
- 
-+TEST_F(iommufd_ioas, alloc_hwpt_nested)
-+{
-+	const uint32_t min_data_len =
-+		offsetofend(struct iommu_hwpt_selftest, iotlb);
-+	struct iommu_hwpt_selftest data = {
-+		.iotlb =  IOMMU_TEST_IOTLB_DEFAULT,
-+	};
-+	uint32_t nested_hwpt_id[2] = {};
-+	uint32_t parent_hwpt_id = 0;
-+	uint32_t parent_hwpt_id_not_work = 0;
-+	uint32_t test_hwpt_id = 0;
-+
-+	if (self->device_id) {
-+		/* Negative tests */
-+		test_err_hwpt_alloc(ENOENT, self->ioas_id, self->device_id,
-+				    0, &test_hwpt_id);
-+		test_err_hwpt_alloc(EINVAL, self->device_id,
-+				    self->device_id, 0, &test_hwpt_id);
-+
-+		test_cmd_hwpt_alloc(self->device_id, self->ioas_id,
-+				    IOMMU_HWPT_ALLOC_NEST_PARENT,
-+				    &parent_hwpt_id);
-+
-+		test_cmd_hwpt_alloc(self->device_id, self->ioas_id,
-+				    0, &parent_hwpt_id_not_work);
-+
-+		/* Negative nested tests */
-+		test_err_hwpt_alloc_nested(EINVAL,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_NONE,
-+					   &data, sizeof(data));
-+		test_err_hwpt_alloc_nested(EOPNOTSUPP,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST + 1,
-+					   &data, sizeof(data));
-+		test_err_hwpt_alloc_nested(EINVAL,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, min_data_len - 1);
-+		test_err_hwpt_alloc_nested(EFAULT,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   NULL, sizeof(data));
-+		test_err_hwpt_alloc_nested(EOPNOTSUPP,
-+					   self->device_id, parent_hwpt_id,
-+					   IOMMU_HWPT_ALLOC_NEST_PARENT,
-+					   &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+		test_err_hwpt_alloc_nested(EINVAL, self->device_id,
-+					   parent_hwpt_id_not_work,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+
-+		/* Allocate two nested hwpts sharing one common parent hwpt */
-+		test_cmd_hwpt_alloc_nested(self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+		test_cmd_hwpt_alloc_nested(self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[1],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+
-+		/* Negative test: a nested hwpt on top of a nested hwpt */
-+		test_err_hwpt_alloc_nested(EINVAL,
-+					   self->device_id, nested_hwpt_id[0],
-+					   0, &test_hwpt_id,
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+		/* Negative test: parent hwpt now cannot be freed */
-+		EXPECT_ERRNO(EBUSY,
-+			     _test_ioctl_destroy(self->fd, parent_hwpt_id));
-+
-+		/* Attach device to nested_hwpt_id[0] that then will be busy */
-+		test_cmd_mock_domain_replace(self->stdev_id,
-+					     nested_hwpt_id[0]);
-+		EXPECT_ERRNO(EBUSY,
-+			     _test_ioctl_destroy(self->fd, nested_hwpt_id[0]));
-+
-+		/* Switch from nested_hwpt_id[0] to nested_hwpt_id[1] */
-+		test_cmd_mock_domain_replace(self->stdev_id,
-+					     nested_hwpt_id[1]);
-+		EXPECT_ERRNO(EBUSY,
-+			     _test_ioctl_destroy(self->fd, nested_hwpt_id[1]));
-+		test_ioctl_destroy(nested_hwpt_id[0]);
-+
-+		/* Detach from nested_hwpt_id[1] and destroy it */
-+		test_cmd_mock_domain_replace(self->stdev_id, parent_hwpt_id);
-+		test_ioctl_destroy(nested_hwpt_id[1]);
-+
-+		/* Detach from the parent hw_pagetable and destroy it */
-+		test_cmd_mock_domain_replace(self->stdev_id, self->ioas_id);
-+		test_ioctl_destroy(parent_hwpt_id);
-+		test_ioctl_destroy(parent_hwpt_id_not_work);
-+	} else {
-+		test_err_hwpt_alloc(ENOENT, self->device_id, self->ioas_id,
-+				    0, &parent_hwpt_id);
-+		test_err_hwpt_alloc_nested(ENOENT,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[0],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+		test_err_hwpt_alloc_nested(ENOENT,
-+					   self->device_id, parent_hwpt_id,
-+					   0, &nested_hwpt_id[1],
-+					   IOMMU_HWPT_DATA_SELFTEST,
-+					   &data, sizeof(data));
-+		test_err_mock_domain_replace(ENOENT,
-+					     self->stdev_id, nested_hwpt_id[0]);
-+		test_err_mock_domain_replace(ENOENT,
-+					     self->stdev_id, nested_hwpt_id[1]);
-+	}
-+}
-+
- TEST_F(iommufd_ioas, hwpt_attach)
- {
- 	/* Create a device attached directly to a hwpt */
-diff --git a/tools/testing/selftests/iommu/iommufd_fail_nth.c b/tools/testing/selftests/iommu/iommufd_fail_nth.c
-index ff735bdd833e..f590417cd67a 100644
---- a/tools/testing/selftests/iommu/iommufd_fail_nth.c
-+++ b/tools/testing/selftests/iommu/iommufd_fail_nth.c
-@@ -615,7 +615,8 @@ TEST_FAIL_NTH(basic_fail_nth, device)
- 	if (_test_cmd_get_hw_info(self->fd, idev_id, &info, sizeof(info), NULL))
- 		return -1;
- 
--	if (_test_cmd_hwpt_alloc(self->fd, idev_id, ioas_id, 0, &hwpt_id))
-+	if (_test_cmd_hwpt_alloc(self->fd, idev_id, ioas_id, 0, &hwpt_id,
-+				 IOMMU_HWPT_DATA_NONE, 0, 0))
- 		return -1;
- 
- 	if (_test_cmd_mock_domain_replace(self->fd, stdev_id, ioas_id2, NULL))
-diff --git a/tools/testing/selftests/iommu/iommufd_utils.h b/tools/testing/selftests/iommu/iommufd_utils.h
-index e263bf80a977..e5f1b4d66b80 100644
---- a/tools/testing/selftests/iommu/iommufd_utils.h
-+++ b/tools/testing/selftests/iommu/iommufd_utils.h
-@@ -154,13 +154,17 @@ static int _test_cmd_mock_domain_replace(int fd, __u32 stdev_id, __u32 pt_id,
- 							   pt_id, NULL))
- 
- static int _test_cmd_hwpt_alloc(int fd, __u32 device_id, __u32 pt_id,
--				__u32 flags, __u32 *hwpt_id)
-+				__u32 flags, __u32 *hwpt_id, __u32 data_type,
-+				void *data, size_t data_len)
- {
- 	struct iommu_hwpt_alloc cmd = {
- 		.size = sizeof(cmd),
- 		.flags = flags,
- 		.dev_id = device_id,
- 		.pt_id = pt_id,
-+		.data_type = data_type,
-+		.data_len = data_len,
-+		.data_uptr = (uint64_t)data,
- 	};
- 	int ret;
- 
-@@ -172,12 +176,25 @@ static int _test_cmd_hwpt_alloc(int fd, __u32 device_id, __u32 pt_id,
- 	return 0;
- }
- 
--#define test_cmd_hwpt_alloc(device_id, pt_id, flags, hwpt_id) \
--	ASSERT_EQ(0, _test_cmd_hwpt_alloc(self->fd, device_id, \
--					  pt_id, flags, hwpt_id))
--#define test_err_hwpt_alloc(_errno, device_id, pt_id, flags, hwpt_id) \
--	EXPECT_ERRNO(_errno, _test_cmd_hwpt_alloc(self->fd, device_id, \
--						  pt_id, flags, hwpt_id))
-+#define test_cmd_hwpt_alloc(device_id, pt_id, flags, hwpt_id)                \
-+	ASSERT_EQ(0, _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, flags, \
-+					  hwpt_id, IOMMU_HWPT_DATA_NONE,     \
-+					  NULL, 0))
-+#define test_err_hwpt_alloc(_errno, device_id, pt_id, flags, hwpt_id)         \
-+	EXPECT_ERRNO(_errno, _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, \
-+						  flags, hwpt_id,             \
-+						  IOMMU_HWPT_DATA_NONE,       \
-+						  NULL, 0))
-+
-+#define test_cmd_hwpt_alloc_nested(device_id, pt_id, flags, hwpt_id,          \
-+				   data_type, data, data_len)                 \
-+	ASSERT_EQ(0, _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, flags,  \
-+					  hwpt_id, data_type, data, data_len))
-+#define test_err_hwpt_alloc_nested(_errno, device_id, pt_id, flags, hwpt_id,  \
-+				   data_type, data, data_len)                 \
-+	EXPECT_ERRNO(_errno,                                                  \
-+		     _test_cmd_hwpt_alloc(self->fd, device_id, pt_id, flags,  \
-+					  hwpt_id, data_type, data, data_len))
- 
- static int _test_cmd_access_replace_ioas(int fd, __u32 access_id,
- 					 unsigned int ioas_id)
--- 
-2.34.1
+I think the right thing to do here is to define arch_cmpxchg_local() in terms
+of arch_cmpxchg(), i.e. at the bottom of arch/sh's <asm/cmpxchg.h> add:
 
+#define arch_cmpxchg_local              arch_cmpxchg
+
+Mark.
+
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202310241310.Ir5uukOG-lkp@intel.com/
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  arch/sh/include/asm/cmpxchg.h |    2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/sh/include/asm/cmpxchg.h b/arch/sh/include/asm/cmpxchg.h
+> index 288f6f38d98f..e920e61fb817 100644
+> --- a/arch/sh/include/asm/cmpxchg.h
+> +++ b/arch/sh/include/asm/cmpxchg.h
+> @@ -71,4 +71,6 @@ static inline unsigned long __cmpxchg(volatile void * ptr, unsigned long old,
+>  				    (unsigned long)_n_, sizeof(*(ptr))); \
+>    })
+>  
+> +#include <asm-generic/cmpxchg-local.h>
+> +
+>  #endif /* __ASM_SH_CMPXCHG_H */
+> 
