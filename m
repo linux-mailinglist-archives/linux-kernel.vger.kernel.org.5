@@ -2,100 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8427D4820
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 217827D4829
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232561AbjJXHNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 03:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
+        id S232681AbjJXHOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 03:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232681AbjJXHM5 (ORCPT
+        with ESMTP id S232391AbjJXHOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 03:12:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CE410C;
-        Tue, 24 Oct 2023 00:12:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ED6BC433CA;
-        Tue, 24 Oct 2023 07:12:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698131575;
-        bh=6CW+3Mmz6AosZy/4MFTzdVXxgv6Dow6fy47mc3T3cbY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dvuPMG3mLH4cjcaxdM5ceCtggaqLCvzsX/2dPTTtS5NUxh2/1joGMNATqlf2bSCeF
-         j6vqYdacne5LP0g6zwKGtySpTPtQ5obiwNCstYK2tBs/xSiU9JGrgRPx712CFLkems
-         n8+zCAq9bQULzmV38+BedJXQmNC9/am05bbI07dvLq6S4AKIvF163KiZ53WRc3oekU
-         5hs83xnaew8KGnCMugp+tFHq+Hz1OlzS9Ii56ZoFhQOextA1HgX4GnC3aVjKA6OFZO
-         BPQKB/WwTL/RWeogVgJbau3jPxR8qycQnSmMEQEDlbOiLtu1DhVD8OgXBcAnT7Yczi
-         sirlvGaXQfSrw==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qvBbD-0003dv-1g;
-        Tue, 24 Oct 2023 09:13:11 +0200
-Date:   Tue, 24 Oct 2023 09:13:11 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v13 08/10] arm64: dts: qcom: sc8280xp: Add multiport
- controller node for SC8280
-Message-ID: <ZTduh5LULBMYf3wq@hovoldconsulting.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-9-quic_kriskura@quicinc.com>
- <ZTaauQewazaaFonF@hovoldconsulting.com>
- <c50e9266-2308-4fd5-b102-f604bf4ce2e8@quicinc.com>
+        Tue, 24 Oct 2023 03:14:44 -0400
+Received: from out28-219.mail.aliyun.com (out28-219.mail.aliyun.com [115.124.28.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A351F10C;
+        Tue, 24 Oct 2023 00:14:38 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1912555|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00383916-7.02771e-05-0.996091;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=27;RT=27;SR=0;TI=SMTPD_---.V6azpiD_1698131664;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.V6azpiD_1698131664)
+          by smtp.aliyun-inc.com;
+          Tue, 24 Oct 2023 15:14:32 +0800
+From:   wangweidong.a@awinic.com
+To:     broonie@kernel.org
+Cc:     13916275206@139.com, ajye_huang@compal.corp-partner.google.com,
+        alsa-devel@alsa-project.org, arnd@arndb.de,
+        ckeepax@opensource.cirrus.com, colin.i.king@gmail.com,
+        conor+dt@kernel.org, dan.carpenter@linaro.org,
+        devicetree@vger.kernel.org, harshit.m.mogalapalli@oracle.com,
+        herve.codina@bootlin.com, krzysztof.kozlowski+dt@linaro.org,
+        lgirdwood@gmail.com, linus.walleij@linaro.org,
+        linux-kernel@vger.kernel.org, liweilei@awinic.com, perex@perex.cz,
+        rf@opensource.cirrus.com, robh+dt@kernel.org, ryans.lee@analog.com,
+        sebastian.reichel@collabora.com, shumingf@realtek.com,
+        tiwai@suse.com, trix@redhat.com, wangweidong.a@awinic.com,
+        yijiangtao@awinic.com
+Subject: [PATCH V2 0/4] ASoC: codecs: Add aw88399 amplifier driver
+Date:   Tue, 24 Oct 2023 15:14:15 +0800
+Message-ID: <20231024071419.85647-1-wangweidong.a@awinic.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <21bfa0bb-d936-402d-9ca9-6bcf181a0f35@sirena.org.uk>
+References: <21bfa0bb-d936-402d-9ca9-6bcf181a0f35@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c50e9266-2308-4fd5-b102-f604bf4ce2e8@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 11:04:38PM +0530, Krishna Kurapati PSSNV wrote:
-> On 10/23/2023 9:39 PM, Johan Hovold wrote:
-> > On Sat, Oct 07, 2023 at 09:18:04PM +0530, Krishna Kurapati wrote:
+From: Weidong Wang <wangweidong.a@awinic.com>
 
-> > The interrupt order does not match the binding, where the power event
-> > interrupts come first.
-> > 
-> > And we probably also want the hs_phy_irqs here after fixing the
-> > incomplete binding.
-> 
-> You want to update the driver code for this as well ? I have no problem 
-> in adding it in DT and binding but not in driver.
+Add the awinic,aw88399 property to the awinic,aw88395.yaml file.
 
-Possibly both.
- 
-> >> +			usb_2_dwc3: usb@a400000 {
-> >> +				compatible = "snps,dwc3";
-> >> +				reg = <0 0x0a400000 0 0xcd00>;
-> >> +				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-> > 
-> > I'd also like to know what that second dwc3 interrupt is for and whether
-> > it should be defined here as well.
-> 
-> Second interrupts is for HW acceleration I believe for which support is 
-> not there currently.
+Add i2c and amplifier registration for
+aw88399 and their associated operation functions.
 
-But the interrupt is there. And devicetree describes the hardware, not
-the implementation, as I've pointed out before.
+v1 -> v2: Modify the reset mode
+          Delete AW88399_DSP_I2C_WRITES macros
+           and related debugging statements
+          Change the value of max_register in aw88399
+          Change the value of max_register in aw88261
+          Delete the judgment of unnecessary pointers
+          Modify the judgment of the ret return value
 
-Johan
+Weidong Wang (4):
+  ASoC: dt-bindings: Add schema for "awinic,aw88399"
+  ASoC: codecs: Modify max_register usage error
+  ASoC: codecs: Add code for bin parsing compatible with aw88399
+  ASoC: codecs: Add aw88399 amplifier driver
+
+ .../bindings/sound/awinic,aw88395.yaml        |    1 +
+ sound/soc/codecs/Kconfig                      |   14 +
+ sound/soc/codecs/Makefile                     |    2 +
+ sound/soc/codecs/aw88261.c                    |    2 +-
+ sound/soc/codecs/aw88395/aw88395_lib.c        |    3 +
+ sound/soc/codecs/aw88395/aw88395_reg.h        |    1 +
+ sound/soc/codecs/aw88399.c                    | 1911 +++++++++++++++++
+ sound/soc/codecs/aw88399.h                    |  599 ++++++
+ 8 files changed, 2532 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/codecs/aw88399.c
+ create mode 100644 sound/soc/codecs/aw88399.h
+
+
+base-commit: ce55c22ec8b223a90ff3e084d842f73cfba35588
+-- 
+2.41.0
+
