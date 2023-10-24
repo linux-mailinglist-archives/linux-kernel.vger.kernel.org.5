@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4927D5B49
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB667D5B4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344236AbjJXTPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 15:15:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
+        id S1344235AbjJXTPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 15:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbjJXTPE (ORCPT
+        with ESMTP id S1344021AbjJXTPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 15:15:04 -0400
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 068C8109;
-        Tue, 24 Oct 2023 12:15:02 -0700 (PDT)
-Received: from [127.0.0.1] ([98.35.210.218])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 39OJERvQ3400109
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 24 Oct 2023 12:14:28 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 39OJERvQ3400109
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023101201; t=1698174870;
-        bh=JdRN/5MJBM/LR3Jboog2UEEm4N1T8ZmfUjckQ5zsnPU=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=XzvB6sbofNBXw3tkVUrVcKv2C+OIILQqGCQRAgCMRPD8LBmnMW1CYgKpXXHei0kP5
-         9zW8X/C3SVXfkwus6UfhI0n9e9mlq0F30lcFudjaxCvDgv07QolVOXOxU1It4NnA3p
-         9gP9Yupsmo+9X/6zzrJ5eqiSypmzNjcC54w259e1ZDY2bwmk77Q1eWU0zfnjysOW8g
-         HAT4pC24RRtwLeDLKbwcYMvkxHx46G2wcIaWU6cMswjvNlplK+kRCW3OeQpHaG1rWH
-         l0Y08WDtOI6RbGWAj1g2SznPDHpNzT2VJ+YJcAS65QnDxCWHbOXTF3inbCwp6t3MKg
-         YDqnenxLabZeA==
-Date:   Tue, 24 Oct 2023 12:14:25 -0700
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        "antonio.gomez.iglesias@linux.intel.com" 
-        <antonio.gomez.iglesias@linux.intel.com>,
-        "Milburn, Alyssa" <alyssa.milburn@intel.com>
-Subject: RE: [PATCH  v2 1/6] x86/bugs: Add asm helpers for executing VERW
-User-Agent: K-9 Mail for Android
-In-Reply-To: <SJ1PR11MB6083E3E2D35B30F4E40E8FE7FCDFA@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com> <20231024-delay-verw-v2-1-f1881340c807@linux.intel.com> <20231024103601.GH31411@noisy.programming.kicks-ass.net> <20231024163515.aivo2xfmwmbmlm7z@desk> <20231024163621.GD40044@noisy.programming.kicks-ass.net> <20231024164520.osvqo2dja2xhb7kn@desk> <20231024170248.GE40044@noisy.programming.kicks-ass.net> <DD2F34A0-4F2F-4C8C-A634-7DBEF31C40F0@zytor.com> <SJ1PR11MB6083E3E2D35B30F4E40E8FE7FCDFA@SJ1PR11MB6083.namprd11.prod.outlook.com>
-Message-ID: <5B8EB5F2-16A7-47BC-97FE-262ED0169DE3@zytor.com>
+        Tue, 24 Oct 2023 15:15:52 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631C1109;
+        Tue, 24 Oct 2023 12:15:50 -0700 (PDT)
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3b2ea7cc821so3393621b6e.1;
+        Tue, 24 Oct 2023 12:15:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698174949; x=1698779749;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fc7wsu+Ez53X61VDpaWVir82UtYO/AqwmwLE+WTcs7o=;
+        b=Ympkgw82amTwWMA7C8Sh93ah33FrMYi8aLpgaRRRxltyRb6tJuNXWzFUQ2B/YHuBel
+         6hACTWs9dHYkLHdHUyHNsqIPe82p5aGezlWKBF5jwaY58ojq6TXFiOXatAccCWQOAUx4
+         GdqEcuVCCw+7LffSEYWCATvmnxATyBL83wLjUomtjrpQNGTMGXYlYhRPESuq8ac+cKbl
+         tBPkU6qQm/rxDtrBRhut/gNDb8wOuZSi7JU+5JGW98oB5z1fAQY2UGC0aJ2WcND3aJ1L
+         GDr2TnpYi9jS1e42iQJo2Pr+CWtR/4pP6896cCDifvf5zMWbyqM88RUlyDCNOAVwuPzM
+         HK0A==
+X-Gm-Message-State: AOJu0YwUHxZTgUE3Hzulnered2bHQrQQf69XVjCcVx6crwRjcjRnGKEq
+        5D/YVjURPn80iv/GK2/GyA==
+X-Google-Smtp-Source: AGHT+IER1+W8thq+jVs5LXcjlTIf2E/TkcDrEDQn3qMEpjU+x8WiOWdAZMsl5sTg8R2Hr324uf0jDg==
+X-Received: by 2002:a05:6808:181:b0:3ab:8574:e8ab with SMTP id w1-20020a056808018100b003ab8574e8abmr14532474oic.21.1698174949695;
+        Tue, 24 Oct 2023 12:15:49 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id j5-20020a056830270500b006ce46212341sm1399103otu.54.2023.10.24.12.15.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 12:15:49 -0700 (PDT)
+Received: (nullmailer pid 403998 invoked by uid 1000);
+        Tue, 24 Oct 2023 19:15:48 -0000
+Date:   Tue, 24 Oct 2023 14:15:48 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, frowand.list@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        kernel@quicinc.com
+Subject: Re: [RFC PATCH 1/3] of: reserved_mem: Change the order that
+ reserved_mem regions are stored
+Message-ID: <20231024191548.GA358703-robh@kernel.org>
+References: <20231019184825.9712-1-quic_obabatun@quicinc.com>
+ <20231019184825.9712-2-quic_obabatun@quicinc.com>
+ <CAL_Jsq+pUv29277spzXB7QJ=OZTwGy_FmW55CzQPWYLPktA0EA@mail.gmail.com>
+ <7e6ddffc-81a5-4183-9e59-7060776c936a@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7e6ddffc-81a5-4183-9e59-7060776c936a@quicinc.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On October 24, 2023 11:49:07 AM PDT, "Luck, Tony" <tony=2Eluck@intel=2Ecom>=
- wrote:
->> the only overhead to modules other than load time (including the runtim=
-e linking) is that modules can't realistically be mapped using large page e=
-ntries=2E
->
->If there were some significant win for using large pages, couldn't the
->kernel pre-allocate some 2MB pages in the [-2GiB,0) range?  Boot paramete=
-r
->for how many (perhaps two for separate code/data pages)=2E First few load=
-ed
->modules get to use that space until it is all gone=2E
->
->It would all be quite messy if those modules were later unloaded/reloaded
->=2E=2E=2E so there would have to be some compelling benchmarks to justify
->the complexity=2E
->
->That's probably why Peter said "can't realistically"=2E
->
->-Tony
->
+On Thu, Oct 19, 2023 at 03:45:37PM -0700, Oreoluwa Babatunde wrote:
+> 
+> On 10/19/2023 12:46 PM, Rob Herring wrote:
+> > On Thu, Oct 19, 2023 at 1:49 PM Oreoluwa Babatunde
+> > <quic_obabatun@quicinc.com> wrote:
+> >> The dynamic allocation of the reserved_mem array needs to be done after
+> >> paging_init() is called because memory allocated using memblock_alloc()
+> >> is not writeable before that.
 
-Sure it could, but it would mean the kernel is sitting on an average of 6 =
-MB of unusable memory=2E It would also mean that unloaded modules would cre=
-ate holes in that memory which would have to be managed=2E
+
+> >> --- a/arch/arm64/kernel/setup.c
+> >> +++ b/arch/arm64/kernel/setup.c
+> >> @@ -27,6 +27,8 @@
+> >>  #include <linux/proc_fs.h>
+> >>  #include <linux/memblock.h>
+> >>  #include <linux/of_fdt.h>
+> >> +#include <linux/of_reserved_mem.h>
+> >> +
+> >>  #include <linux/efi.h>
+> >>  #include <linux/psci.h>
+> >>  #include <linux/sched/task.h>
+> >> @@ -346,6 +348,8 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+> >>
+> >>         paging_init();
+> >>
+> >> +       fdt_init_reserved_mem();
+> >> +
+> > You removed this call from the common code and add it to arm64 arch
+> > code, doesn't that break every other arch?
+> Yes, the same changes will be needed for every other arch. I was hoping to
+> get some feedback on the RFC before implementing this on other archs which
+> is why the change is currently only in arm64.
+> > The very next thing done here is unflattening the DT. So another call
+> > from the arch code to the DT code isn't needed either.
+> Yes, I see that unflatten_device_tree() is being called right after here.
+> Just to clarify, are you suggesting to move fdt_init_reserved_mem() into the
+> unflatten_device_tree() call?
+
+In general, I want fewer calls between arch code and DT core and for the 
+DT core to be more in control of the ordering that things happen. Your 
+series does the opposite.
+
+Rob
