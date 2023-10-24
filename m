@@ -2,76 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0D17D595A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97647D5964
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344028AbjJXREy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 13:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
+        id S232329AbjJXRHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 13:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234835AbjJXREw (ORCPT
+        with ESMTP id S230262AbjJXRHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 13:04:52 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D88C2;
-        Tue, 24 Oct 2023 10:04:50 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1eb6c559ab4so1466792fac.0;
-        Tue, 24 Oct 2023 10:04:50 -0700 (PDT)
+        Tue, 24 Oct 2023 13:07:17 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19159122
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:07:15 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a528c2c8bso5517910276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:07:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698167089; x=1698771889; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HZOuYQtLmfcXzSVfHqSRbgJNw20LhS1+3cK891c4fcU=;
-        b=jcBrLiEf53WJWafInLUtkDTpNg+HNJb2mF/aJy6zOisM4Rok8aVNw+p0Pwq+VUpO0H
-         BL628eW3cHYinJ3ZcO3NUafF/JSc1Fit5QLwYCN48bFn02iXFuTIfQxUoGflFD4NyTk9
-         kVXKes0N6jiY0QrgyLLIi5DnZnhHiohfsXnH0wleJB7Wgz2mi0s+7qkQd9mYVjqZMKJR
-         D55Qk1FmBxkazxSa9+z364Xw7rQ+vQONGA/TFnBesmSbcXsaCPTizamiKX3ERP9Y+5u8
-         1BCDyD088w4Cvelk1kyjDISPqMT9KO2BRRk2/Kk6FRyDK58k4seAcPCkvwWP7wMzcOpf
-         /zhw==
+        d=google.com; s=20230601; t=1698167234; x=1698772034; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GOKT7eBtwEJ4k1HBPZS+t7LF5MXiuApZ3Dql347Aiik=;
+        b=TbJx3tTnHx1lOsRXBSI25Lo8rtv7TOptkH2xDqRnE9aR3mt9CbNbHYDOEUgQXr8HH2
+         6HigF7jv/EJ5wnsqfoDpSJQ01VW2FP7kfZhU5J+WpfwCQq6EGlKOfYktmj7m2fas5HWu
+         rxLbxTqA7M6EkG6hVtk6+KuHfZ/Ej1Dmtw2T9ueZASqYjvhgDl/cPoy1YhLRNS3k8Tnt
+         bhPrR0BLLKlDWDvpmgUIp6m0VDp8bgiGeB1gXAKt79ekXzfBJ7P/kdtHRQGPqd80K8XE
+         MEaHr2h9/0Ugur0pHlNpNk3KPZ5JHM4CwJw+bBykWZSHT+UMqgn3NbXqGj9H3exAG5yG
+         oTmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698167089; x=1698771889;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HZOuYQtLmfcXzSVfHqSRbgJNw20LhS1+3cK891c4fcU=;
-        b=iodvMCY0PfyeWFyT2ojiQBgkaH3cOvahrH4ZSAgcc5AkcXQNil0w9phyGgduOxPVcs
-         /+MWLltFDy5Agt+DrWASDp/RQuXEnQiGsPghBZ1Nz/jL2A16Ylj0Y4HaX2XPZbkgaQag
-         uRK5TEuv/Jo6cMUzQlXD2scmSP7Lzh2R+CBxWd1z5mJvKpgn/H61XzSGMg++DfYAJDAa
-         qzQD7FkpdnkAUdaBP7TgIKFxp39KmpOKcDX/mKf1FgNEMRvxplf+FrwFUMaiVzOKdRF5
-         fYQtVCv6dxjDQ4xn+KlbgwoiXrNDBcGY464Xk58PPIemykHiqte6wAnj0Y0c+n/RL/iH
-         8LbQ==
-X-Gm-Message-State: AOJu0YyuIhEOi9I5x9l/tvVimMbGk2dQYtYljyz8bnYwC8s8ynSQ78KP
-        EiOru5zbnp5xftybQCiXUbo=
-X-Google-Smtp-Source: AGHT+IErFW7kHngINKDMEYohK3rgVPZMfEZ2IxWv+IqFG/CL/mD5Z7y15p8ziSSAXQuD0cYs6FaGWQ==
-X-Received: by 2002:a05:6870:3c8d:b0:1ea:ca54:e51a with SMTP id gl13-20020a0568703c8d00b001eaca54e51amr16214102oab.45.1698167089551;
-        Tue, 24 Oct 2023 10:04:49 -0700 (PDT)
-Received: from ?IPV6:2601:284:8200:b700:d8d6:5f8f:cf7b:edca? ([2601:284:8200:b700:d8d6:5f8f:cf7b:edca])
-        by smtp.googlemail.com with ESMTPSA id g15-20020a05663811cf00b0043a1b74a0e3sm2893089jas.90.2023.10.24.10.04.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 10:04:49 -0700 (PDT)
-Message-ID: <4d20e1bd-4b60-4bae-92f9-6bd7814a27d0@gmail.com>
-Date:   Tue, 24 Oct 2023 11:04:47 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 iproute2-next 3/3] rdma: Adjust man page for rdma
- system set privileged_qkey command
-Content-Language: en-US
-To:     Petr Machata <petrm@nvidia.com>,
-        Patrisious Haddad <phaddad@nvidia.com>
-Cc:     jgg@ziepe.ca, leon@kernel.org, stephen@networkplumber.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
-        huangjunxian6@hisilicon.com, michaelgur@nvidia.com
-References: <20231023112217.3439-1-phaddad@nvidia.com>
- <20231023112217.3439-4-phaddad@nvidia.com> <87zg0856io.fsf@nvidia.com>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <87zg0856io.fsf@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        d=1e100.net; s=20230601; t=1698167234; x=1698772034;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=GOKT7eBtwEJ4k1HBPZS+t7LF5MXiuApZ3Dql347Aiik=;
+        b=dU3VuaksBuOH+dMkc16eVI8It8AVb5ayO9yrWSJDaDl6SOp7Zq0k8Ofgk1P4mlnNIO
+         IPYlK+KUVx7BJAxbb8BzOwh9DiQCjV5tk8NpiNQl/mbX0wwh71M1nxpGWRHofd38pPOu
+         dFgdOWDko5GdnFgaLS2T5QxYurT3fZdoa4VUp/y6gZylcuEnuF7g2SsF2IxOdGlYv88N
+         8tQe/9uL55/pUFn3Da0JJmGd4luAcYbsGv8A9xHxw3HC90gGRwNVTS4bwaurHQ9FjKpg
+         6tW2KvfSmQIJDx/Jy8Ta2omnOcCE9CKQOnBQm4d0Uv5OSPg/R+8XOsBnFGba8DUWi8fQ
+         7vqg==
+X-Gm-Message-State: AOJu0Yzi/tGN4Eo71RObLEl23CD938GoUGdMwKePRC8N3pz88zXaD+dg
+        0G18mmU7AHuzk87lm6MoOtYz4STxgZ8=
+X-Google-Smtp-Source: AGHT+IFrvhm6CQzoWfCnOT8xnCe29kvGqRLP3KCWFWsXgigZgrlixJQBNXS+VkjIM6Ajz24QhucNgzwaUVM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:8e05:0:b0:d74:93a1:70a2 with SMTP id
+ p5-20020a258e05000000b00d7493a170a2mr258000ybl.5.1698167234230; Tue, 24 Oct
+ 2023 10:07:14 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 10:07:12 -0700
+In-Reply-To: <1347cf03-4598-f923-74e4-a3d193d9d2e9@intel.com>
+Mime-Version: 1.0
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+ <20230914063325.85503-7-weijiang.yang@intel.com> <e0db6ffd-5d92-2a1a-bdfb-a190fe1ccd25@intel.com>
+ <1347cf03-4598-f923-74e4-a3d193d9d2e9@intel.com>
+Message-ID: <ZTf5wPKXuHBQk0AN@google.com>
+Subject: Re: [PATCH v6 06/25] x86/fpu/xstate: Opt-in kernel dynamic bits when
+ calculate guest xstate size
+From:   Sean Christopherson <seanjc@google.com>
+To:     Weijiang Yang <weijiang.yang@intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,56 +75,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/24/23 10:09 AM, Petr Machata wrote:
-> 
-> Patrisious Haddad <phaddad@nvidia.com> writes:
-> 
->> Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
->> Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
->> ---
->>  man/man8/rdma-system.8 | 32 +++++++++++++++++++++++++++-----
->>  1 file changed, 27 insertions(+), 5 deletions(-)
->>
->> diff --git a/man/man8/rdma-system.8 b/man/man8/rdma-system.8
->> index ab1d89fd..a2914eb8 100644
->> --- a/man/man8/rdma-system.8
->> +++ b/man/man8/rdma-system.8
->> @@ -23,16 +23,16 @@ rdma-system \- RDMA subsystem configuration
->>  
->>  .ti -8
->>  .B rdma system set
->> -.BR netns
->> -.BR NEWMODE
->> +.BR netns/privileged_qkey
->> +.BR NEWMODE/NEWSTATE
-> 
-> What is this netns/priveleged_qkey syntax? I thought they are
-> independent options. If so, the way to express it is:
-> 
-> 	rdma system set [netns NEWMODE] [privileged_qkey NEWSTATE]
-> 
-> Also, your option is not actually privileged_qkey, but privileged-qkey.
+On Fri, Sep 15, 2023, Weijiang Yang wrote:
+> On 9/15/2023 1:40 AM, Dave Hansen wrote:
+> > On 9/13/23 23:33, Yang Weijiang wrote:
+> > > --- a/arch/x86/kernel/fpu/xstate.c
+> > > +++ b/arch/x86/kernel/fpu/xstate.c
+> > > @@ -1636,9 +1636,17 @@ static int __xstate_request_perm(u64 permitted=
+, u64 requested, bool guest)
+> > >   	/* Calculate the resulting kernel state size */
+> > >   	mask =3D permitted | requested;
+> > > -	/* Take supervisor states into account on the host */
+> > > +	/*
+> > > +	 * Take supervisor states into account on the host. And add
+> > > +	 * kernel dynamic xfeatures to guest since guest kernel may
+> > > +	 * enable corresponding CPU feaures and the xstate registers
+> > > +	 * need to be saved/restored properly.
+> > > +	 */
+> > >   	if (!guest)
+> > >   		mask |=3D xfeatures_mask_supervisor();
+> > > +	else
+> > > +		mask |=3D fpu_kernel_dynamic_xfeatures;
 
-yes, and the command lines below show 'privileged qkey'
+This looks wrong.  Per commit 781c64bfcb73 ("x86/fpu/xstate: Handle supervi=
+sor
+states in XSTATE permissions"), mask at this point only contains user featu=
+res,
+which somewhat unintuitively doesn't include CET_USER (I get that they're M=
+SRs
+and thus supervisor state, it's just the name that's odd).
 
-> 
->>  .ti -8
->>  .B rdma system help
->>  
->>  .SH "DESCRIPTION"
->> -.SS rdma system set - set RDMA subsystem network namespace mode
->> +.SS rdma system set - set RDMA subsystem network namespace mode or privileged qkey mode
->>  
->> -.SS rdma system show - display RDMA subsystem network namespace mode
->> +.SS rdma system show - display RDMA subsystem network namespace mode and privileged qkey state
-> 
-> Maybe make it just something like "configure RDMA system settings" or
-> whatever the umbrella term is? The next option will certainly have to do
-> something, this doesn't scale.
-> 
-> Plus the lines are waaay over 80, even over 90 that I think I've seen
-> Stephen or David mention as OK for iproute2 code.
+IIUC, the "dynamic" features contains CET_KERNEL, whereas xfeatures_mask_su=
+pervisor()
+conatins PASID, CET_USER, and CET_KERNEL.  PASID isn't virtualized by KVM, =
+but
+doesn't that mean CET_USER will get dropped/lost if userspace requests AMX/=
+XTILE
+enabling?
 
-a few over 80 is ok when it improves readability; over 90 (with the
-exception of print strings) is unacceptable.
+The existing code also seems odd, but I might be missing something.  Won't =
+the
+kernel drop PASID if the guest request AMX/XTILE?  I'm not at all familiar =
+with
+what PASID state is managed via XSAVE, so I've no idea if that's an actual =
+problem
+or just an oddity.
 
+> > >   	ksize =3D xstate_calculate_size(mask, compacted);
+> > Heh, you changed the "guest" naming in "fpu_kernel_dynamic_xfeatures"
+> > but didn't change the logic.
+> >=20
+> > As it's coded at the moment *ALL* "fpu_kernel_dynamic_xfeatures" are
+> > guest xfeatures.  So, they're different in name only.
+
+...
+
+> > Would there ever be any reason for KVM to be on a system which supports=
+ a
+> > dynamic kernel feature but where it doesn't get enabled for guest use, =
+or
+> > at least shouldn't have the FPU space allocated?
+>=20
+> I haven't heard of that kind of usage for other features so far, CET
+> supervisor xstate is the only dynamic kernel feature now,=C2=A0 not sure =
+whether
+> other CPU features having supervisor xstate would share the handling logi=
+c
+> like CET does one day.
+
+There are definitely scenarios where CET will not be exposed to KVM guests,=
+ but
+I don't see any reason to make the guest FPU space dynamically sized for CE=
+T.
+It's what, 40 bytes?
+
+I would much prefer to avoid the whole "dynamic" thing and instead make CET
+explicitly guest-only.  E.g. fpu_kernel_guest_only_xfeatures?  Or even bett=
+er
+if it doesn't cause weirdness elsewhere, a dedicated fpu_guest_cfg.  For me=
+ at
+least, a fpu_guest_cfg would make it easier to understand what all is going=
+ on.=20
