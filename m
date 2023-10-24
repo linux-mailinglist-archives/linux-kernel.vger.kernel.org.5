@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E277D4CB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA5E7D4CBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234403AbjJXJli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
+        id S234362AbjJXJmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234361AbjJXJlW (ORCPT
+        with ESMTP id S234412AbjJXJmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:41:22 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B793C1738
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:40:40 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507a3b8b113so6358222e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:40:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698140439; x=1698745239; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pFZJO3NvFyuTGjb36RJAaXGwhe1Ycdi/eoT9Ykdj5nc=;
-        b=fo3Mt5qXHkJmN0GxNHc1PPrFlGSTJIqT1L8gSxQOpIjdtvHvEsIyJFuNkqvvz6j/DW
-         MtMcWoAG5902Z1+OkZFOqm6noV4nRmqcmoSIgQk2YPRi8W1X4c/xabcfpGLchD2zBa/G
-         y3dMQ3FZSwKt7pImkkE3IblHTRz/jOrlEO3Dw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698140439; x=1698745239;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pFZJO3NvFyuTGjb36RJAaXGwhe1Ycdi/eoT9Ykdj5nc=;
-        b=Jl/bvWv4IZmkrTi6Uv4UaDpShSTcPcIWUrZVqsDrGkkAOLOnbWWhBW8MbOhv2Fgk7Y
-         V0frrLj3DxrbSONS4O9/ng0upqOJAjX3hik92b0QHSG/8uF54znS2EYrYNCT3jJvfEvI
-         27rc3g4FvjkGavRxytXlXM/V3n1uB88XivPVqnC/CmQzwjr3OGSDVsSaW47omVBkEp8q
-         BhS9wTZheuOZ8SW3BHFk1ZDTMhr6wB972uxuLDD6+OP3SCxo+QEpNKRUTwDH4SauSjzd
-         nbA1k45OpIsh0qNdC/Q6kGUoGjNY7G3qVLDov79Rm0lfmK0MqAWHM92P184pVceW1pKL
-         OdBg==
-X-Gm-Message-State: AOJu0YyMHYxmMGRWgYrpnFxNn5rWUteDeRYp0Iy4uK7IdT2MqdRvPQfZ
-        o2TG0yDX87m6P4J/uULeVeUyxbdtksEFO8sZtzolPA==
-X-Google-Smtp-Source: AGHT+IFRZoOVcRS4ZKYarSnzLWrQREggh2jb5IX+ohhI5nUZEVJ5YlSwxKC/Th6J+FUnLbHbkRFl8qn3j0n8dWEz5WA=
-X-Received: by 2002:ac2:58e2:0:b0:503:9eb:47f0 with SMTP id
- v2-20020ac258e2000000b0050309eb47f0mr7287602lfo.59.1698140438950; Tue, 24 Oct
- 2023 02:40:38 -0700 (PDT)
+        Tue, 24 Oct 2023 05:42:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E942F1998;
+        Tue, 24 Oct 2023 02:41:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698140506; x=1729676506;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=tVQ+svt2jXvzExnt2d/wwyQCA0p17A4isUzWQkmRUDo=;
+  b=BtWA1/4rO/G+LzpzYAMCz7LLmnJk/nxSfWoyB/2to9Y2V81aJBMlidue
+   ZFMnZpViAGgW/Uu5qdxxPZsEo/aMb0JSavwOB0AW6KPH5UhdHLmNW6BhZ
+   2EQpldx0ijK9GJ4m2yMsoSS+jZ3oc1qvl5a7sJABKDdZV83L9+/P5XYgD
+   aYYex9tt00BIth47PPBNmH2do9Tm0o776K8Dxk4a1+bE0P5FpspsOgucA
+   wlXKi252JUO/15nK0KQ8dh4UtFRW4UFqfnppfOGtysZUNoaSxd1+IcWY/
+   LiARgdWzTFx430wk+3hqTKI3O4kb6QMpOqKDKms3dCe3fQTqCcTL4WgcV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="386831913"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="386831913"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 02:41:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="751942077"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="751942077"
+Received: from nkraljev-mobl.ger.corp.intel.com ([10.249.41.91])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 02:41:44 -0700
+Date:   Tue, 24 Oct 2023 12:41:38 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Cameron Williams <cang1@live.co.uk>
+cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v4 05/11] tty: 8250: Add support for Intashield IS-100
+In-Reply-To: <DU0PR02MB7899A0E0CDAA505AF5A874CDC4DBA@DU0PR02MB7899.eurprd02.prod.outlook.com>
+Message-ID: <201af1d6-b82b-5588-017-5d8a9050c458@linux.intel.com>
+References: <BBPatchesV4> <20231020160412.118550-1-cang1@live.co.uk> <DU0PR02MB7899A0E0CDAA505AF5A874CDC4DBA@DU0PR02MB7899.eurprd02.prod.outlook.com>
 MIME-Version: 1.0
-References: <20231023-display-support-v1-0-5c860ed5c33b@baylibre.com> <20231023-display-support-v1-3-5c860ed5c33b@baylibre.com>
-In-Reply-To: <20231023-display-support-v1-3-5c860ed5c33b@baylibre.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Tue, 24 Oct 2023 17:40:27 +0800
-Message-ID: <CAGXv+5Hwe8jhgthnxwXEPezhwvhfcE=WMp_My3W8FisRagRTKQ@mail.gmail.com>
-Subject: Re: [PATCH 03/18] dt-bindings: display: mediatek: color: add binding
- for MT8365 SoC
-To:     Alexandre Mergnat <amergnat@baylibre.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Xinlei Lee <xinlei.lee@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pwm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 10:40=E2=80=AFPM Alexandre Mergnat
-<amergnat@baylibre.com> wrote:
->
-> Display Color for MT8365 is compatible with another SoC.
-> Then, add MT8365 binding along with MT8183 SoC.
+On Fri, 20 Oct 2023, Cameron Williams wrote:
 
-This unfortunately doesn't match what the patch is doing.
+> Add support for the Intashield IS-100 1 port serial card.
+> 
+> Cc: stable@vger.kernel.org
 
-ChenYu
+Why is this cc stable? I think it should be dropped.
 
-> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+-- 
+ i.
+
+> Signed-off-by: Cameron Williams <cang1@live.co.uk>
 > ---
->  Documentation/devicetree/bindings/display/mediatek/mediatek,color.yaml |=
- 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-color.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,co=
-lor.yaml
-> index f21e44092043..fbf15242af52 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,color.y=
-aml
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,color.y=
-aml
-> @@ -39,6 +39,7 @@ properties:
->                - mediatek,mt8188-disp-color
->                - mediatek,mt8192-disp-color
->                - mediatek,mt8195-disp-color
-> +              - mediatek,mt8365-disp-color
->            - const: mediatek,mt8173-disp-color
->    reg:
->      maxItems: 1
->
-> --
-> 2.25.1
->
->
+> v3 - v4:
+> Add Cc: tag.
+> 
+> v2 - v3:
+> Re-submit patch series using git send-email to make threading work.
+> 
+> v1 - v2:
+> This is a resubmission series for the patch series below. That series
+> was lots of changes sent to lots of maintainers, this series is just for
+> the tty/serial/8250 subsystem.
+> 
+> [1] https://lore.kernel.org/all/DU0PR02MB789950E64D808DB57E9D7312C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+> [2] https://lore.kernel.org/all/DU0PR02MB7899DE53DFC900EFB50E53F2C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+> [3] https://lore.kernel.org/all/DU0PR02MB7899033E7E81EAF3694BC20AC4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+> [4] https://lore.kernel.org/all/DU0PR02MB7899EABA8C3DCAC94DCC79D4C4F8A@DU0PR02MB7899.eurprd02.prod.outlook.com/
+> 
+>  drivers/tty/serial/8250/8250_pci.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+> index 1c46b65789c9..b0a632415d8e 100644
+> --- a/drivers/tty/serial/8250/8250_pci.c
+> +++ b/drivers/tty/serial/8250/8250_pci.c
+> @@ -4913,6 +4913,12 @@ static const struct pci_device_id serial_pci_tbl[] = {
+>  		0, 0,
+>  		pbn_b1_bt_1_115200 },
+>  
+> +	/*
+> +	 * IntaShield IS-100
+> +	 */
+> +	{	PCI_VENDOR_ID_INTASHIELD, 0x0D60,
+> +		PCI_ANY_ID, PCI_ANY_ID, 0, 0,
+> +		pbn_b2_1_115200 },
+>  	/*
+>  	 * IntaShield IS-200
+>  	 */
+> 
