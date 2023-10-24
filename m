@@ -2,111 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1CF7D4962
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDEE7D496C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbjJXIJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38486 "EHLO
+        id S233835AbjJXIKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233842AbjJXIJO (ORCPT
+        with ESMTP id S232893AbjJXIKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:09:14 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 47EC699;
-        Tue, 24 Oct 2023 01:09:01 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E43E82F4;
-        Tue, 24 Oct 2023 01:09:41 -0700 (PDT)
-Received: from [10.57.83.179] (unknown [10.57.83.179])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BCC823F762;
-        Tue, 24 Oct 2023 01:08:58 -0700 (PDT)
-Message-ID: <b68e15d1-87b0-4a60-8f09-3d8856c16919@arm.com>
-Date:   Tue, 24 Oct 2023 09:09:50 +0100
+        Tue, 24 Oct 2023 04:10:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A331A4;
+        Tue, 24 Oct 2023 01:10:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFC23C433C8;
+        Tue, 24 Oct 2023 08:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698135020;
+        bh=5xhUOdK0houexRKXcOj94zVlL2PpAocoXIRj8TfVKBU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KG5T8Mq204F7Y8wCR8YhBSH8HQhdygp9fDkcBf8ZbjAsamSjwbx9XVKJUTxcVpUKH
+         cgiqTFb8Et2+yKm7cGxUrh6kHKpQCi3p68Yb89KSDvvM0OKF/3L3OLYEfDvzJupvFi
+         /BrbMIvLz6iAAboqli2ryXqpYg2mCto1wk/3RNw4=
+Date:   Tue, 24 Oct 2023 10:10:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+Cc:     Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>
+Subject: Re: [PATCH v3 6/6] tty: serial: 8250: Add support for MOXA PCIe
+ boards to switch interface between RS422/RS485
+Message-ID: <2023102403-clash-utmost-8377@gregkh>
+References: <20231018091739.10125-1-crescentcy.hsieh@moxa.com>
+ <20231018091739.10125-7-crescentcy.hsieh@moxa.com>
+ <f49feb43-e255-43bb-4271-8a13db2859fc@linux.intel.com>
+ <ZTd2t9nsBx9pZKD9@moxa-ThinkCentre-M90t>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 04/18] PM: EM: Refactor em_pd_get_efficient_state() to
- be more flexible
-Content-Language: en-US
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     dietmar.eggemann@arm.com, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
-        viresh.kumar@linaro.org, len.brown@intel.com, pavel@ucw.cz,
-        mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rafael@kernel.org
-References: <20230925081139.1305766-1-lukasz.luba@arm.com>
- <20230925081139.1305766-5-lukasz.luba@arm.com>
- <6786c91e-12ce-a9dd-12fe-bc02c6d782b8@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <6786c91e-12ce-a9dd-12fe-bc02c6d782b8@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZTd2t9nsBx9pZKD9@moxa-ThinkCentre-M90t>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/23/23 18:39, Daniel Lezcano wrote:
-> On 25/09/2023 10:11, Lukasz Luba wrote:
->> The Energy Model (EM) is going to support runtime modification. There
->> are going to be 2 EM tables which store information. This patch aims
->> to prepare the code to be generic and use one of the tables. The function
->> will no longer get a pointer to 'struct em_perf_domain' (the EM) but
->> instead a pointer to 'struct em_perf_state' (which is one of the EM's
->> tables).
->>
->> Prepare em_pd_get_efficient_state() for the upcoming changes and
->> make it possible to re-use. Return an index for the best performance
->> state for a given EM table. The function arguments that are introduced
->> should allow to work on different performance state arrays. The caller of
->> em_pd_get_efficient_state() should be able to use the index either
->> on the default or the modifiable EM table.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
+On Tue, Oct 24, 2023 at 03:48:07PM +0800, Crescent CY Hsieh wrote:
+> On Mon, Oct 23, 2023 at 12:25:18PM +0300, Ilpo J�rvinen wrote:
+> > On Wed, 18 Oct 2023, Crescent CY Hsieh wrote:
+> > > +		/*
+> > > +		 * RS232 is not supported for MOXA PCIe boards with device IDs
+> > > +		 * matching the pattern 0x*3**.
+> > > +		 */
+> > > +		if (pci_moxa_match_second_digit(device, 0x0300))
+> > > +			return -EOPNOTSUPP;
+> > 
+> > This is not the correct error code I think. Maybe return -ENXIO instead.
 > 
-> [ ... ]
+> I think EOPNOTSUPP or ENOTSUPP would be more reasonable, they directly
+> indicates "operation is not supported".
 > 
->> @@ -251,7 +253,9 @@ static inline unsigned long em_cpu_energy(struct 
->> em_perf_domain *pd,
->>        * Find the lowest performance state of the Energy Model above the
->>        * requested frequency.
->>        */
->> -    ps = em_pd_get_efficient_state(pd, freq);
->> +    i = em_pd_get_efficient_state(pd->table, pd->nr_perf_states, freq,
->> +                      pd->flags);
+> However, EOPNOTSUPP is used for network-related and ENOTSUPP is used for
+> NFSv3 protocol, even though they are already been used throughout the
+> kernel.
 > 
-> nitpicking but s/i/state/
+> Maybe add a new one stand for serial, or clean them up into a general
+> one, or use EOPNOTSUPP and ENOTSUPP just for now?
 
-Here it makes sense, I'll try to use 'state', but if that could be a bit
-odd in later patches code, where I have:
+-ENODEV should be the proper one here.
 
-ps = &runtime_table->state[i];
+thanks,
 
-than:
-
-'->state[state]'
-
-won't fly. Although, let me check, because I'm going to drop the
-2 tables design so some fields might get different names.
-
-> 
-> Other than that:
-> 
-> Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-
-Thanks!
-
-> 
-> 
->> +    ps = &pd->table[i];
->>       /*
->>        * The capacity of a CPU in the domain at the performance state 
->> (ps)
-> 
+greg k-h
