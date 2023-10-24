@@ -2,199 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA2F7D59F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A757D59FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343922AbjJXRvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 13:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36538 "EHLO
+        id S1343898AbjJXRw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 13:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234315AbjJXRvS (ORCPT
+        with ESMTP id S234315AbjJXRw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 13:51:18 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2047.outbound.protection.outlook.com [40.107.237.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5939910D0;
-        Tue, 24 Oct 2023 10:51:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SEcUBhGvZZN2Y1U/iuG8fPip1phE004bSt356yldFv+uXdJ32t6JrvngrdmoUTkQNVAqR2Ki8nDAUkzzIXNnLd9RKxMQigaBjl9CsAQmpeciQb1I5PYufh2bq4HWx0lD54ADIaFRSh/E+fkRQcTD4SaJ7xgQYTO00UVazX4Gaks9J6h7gRb/W6bnIRxtHTd9tn3X0/d2ZuCWH6YKlvA8N3OOPmCMniSIrZf8NWtxkRhunY4DP3eJYaBvol1z8AA4k5VLdzZ2nAx8YgSzYQdipPO7t5LoelCm5Lrpv1zxnhwVXfPaFAblVnCFrblVMxEmk74u67/jVOXK9ACazgaunQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xLaFUHgoOt5elCfIb4qhOB4GNdpUf4Bu4zuAl/APZs0=;
- b=NtXeHmj432gKkNjQWNuY5msvfJN1qfYsOGqZLzB8gKvPY5lAoJ+KlQHRvoAZeRu21x6gE6qa7tPkiXiCbd3B2UGITdhaPVDhFJROkBoK7v2oqcvDQzOuLej8bqQrTdpAj6d5VQiZtXPdCxyn6Eua1t/DLeo7uH7Zhqu/v0tiumkG8C67ISZxIIsR5D0/3wj1DfdSha1DyLvYYQ4goMAZLDuNwGu10BiMSkaFcsTvvMmJraqdbuMcBCWOCfRU4plfsNSb+P2l3Hfwbu5MQG4PK9e02GAdKEqBD6HPvnZ8DOC/AOEsEeRe0a6r94SDWAyi5+kpeTkgaphzbzBLTK5D4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xLaFUHgoOt5elCfIb4qhOB4GNdpUf4Bu4zuAl/APZs0=;
- b=I6EsUrAUtiA5Thrlv4gk+7wDZG0N14XvhsxCJ9YMTEtGt43fIExzMD0s0AT+VOC7oQD0DIJ18FYhEwijlHZDCxW5G/fF/bZFm6qIuoo+ZLCppRaA7Up//LCjJ4jMzgxPMJb67z0p/sazd9EsEU99F3z5HSutVeWNZ047P7CzgHRUTLneYM262nG9el1mT5QrYJNyc5RC+LrFWPMpwJE253r/TXcYAW5gdsz1LHbPzITg9HzD5W9zIMimitPqr78DyEtA8JecYRBnXxrfGXXaiQGY5atfFnzIRjS2ihibcdyEzzE4p4suJjIUv+38IpkI0O4p0U6GtQTfSpzsJTrF/g==
-Received: from DM6PR08CA0042.namprd08.prod.outlook.com (2603:10b6:5:1e0::16)
- by IA1PR12MB7517.namprd12.prod.outlook.com (2603:10b6:208:41a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.29; Tue, 24 Oct
- 2023 17:51:13 +0000
-Received: from DS3PEPF000099D5.namprd04.prod.outlook.com
- (2603:10b6:5:1e0:cafe::3f) by DM6PR08CA0042.outlook.office365.com
- (2603:10b6:5:1e0::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33 via Frontend
- Transport; Tue, 24 Oct 2023 17:51:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- DS3PEPF000099D5.mail.protection.outlook.com (10.167.17.6) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.15 via Frontend Transport; Tue, 24 Oct 2023 17:51:13 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 24 Oct
- 2023 10:51:02 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 24 Oct
- 2023 10:51:01 -0700
-Received: from Asurada-Nvidia (10.127.8.12) by mail.nvidia.com (10.129.68.6)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Tue, 24 Oct 2023 10:51:00 -0700
-Date:   Tue, 24 Oct 2023 10:50:58 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Yi Liu <yi.l.liu@intel.com>, <joro@8bytes.org>,
-        <alex.williamson@redhat.com>, <kevin.tian@intel.com>,
-        <robin.murphy@arm.com>, <baolu.lu@linux.intel.com>,
-        <cohuck@redhat.com>, <eric.auger@redhat.com>,
-        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
-        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
-        <peterx@redhat.com>, <jasowang@redhat.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
-        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v6 07/10] iommufd: Add a nested HW pagetable object
-Message-ID: <ZTgEApUgriFj1dKa@Asurada-Nvidia>
-References: <20231024150609.46884-1-yi.l.liu@intel.com>
- <20231024150609.46884-8-yi.l.liu@intel.com>
- <20231024171810.GO3952@nvidia.com>
- <ZTf+zWJE2qlgkf1M@Asurada-Nvidia>
- <20231024173139.GR3952@nvidia.com>
+        Tue, 24 Oct 2023 13:52:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8192810D3;
+        Tue, 24 Oct 2023 10:52:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEBD1C433C7;
+        Tue, 24 Oct 2023 17:52:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698169976;
+        bh=KUF7e+OQ3Cmah38SMoodhEwyDPQhM9qKHEvTf9JRMLA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=szEiV2H2y6V69DSMmIjRsYCrp7HLNV/OYuRJb36ATW03CYFhw7JwfTZ7CE3WiiunT
+         IoMGGD+iW3gjfdM5coQnjSmuYY57kaitDfZG+vVWYuEmpF/W/TrEudTZP5J3hDKRpz
+         nTzMTiUHC3esNZ+ZqhB+LxOwRpxcbNgCohlcUegpEXuT3LncyOCpGY3CCJUvOThe/h
+         hyN+7Dv1qPOApEdX2Xif3Rbb72hl53NwpT/I2Bf0OHRQZaNG0VYw8ZDsqi4wy2zq2P
+         ixonxQTg+4Y7pKbQo8XdnBSzp/FiAHOgGLpH/jRqE2WRPdazUQFCecbe7oiv5iB+zU
+         xqeGovmWrEOTg==
+Date:   Tue, 24 Oct 2023 12:52:53 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Minda Chen <minda.chen@starfivetech.com>
+Cc:     Conor Dooley <conor@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v9 19/20] PCI: starfive: Add JH7110 PCIe controller
+Message-ID: <20231024175253.GA1662387@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231024173139.GR3952@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D5:EE_|IA1PR12MB7517:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5a124768-7477-4b96-666f-08dbd4b9d066
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6oqIrzJXMfDPJ+bqpKaJqQxWvEQMzuH1LYy7KCFvF0I2fsKpA/8znQo+mnwyzynwPX7QjillRFyTOTG41//zbXalXMUzm81/wT7FbnndpILXivvYKgYhQfxIoSek4KmYkOGxAV6yytrg/Y9nsQWMH1V3jpyeYG3NvzQo/JW2s8TNvQS7CZS9JAs771DM0KX8zO63gyMiijZi+PalCaUxbstFvFE0zLkqxCP37wGD5KzoCJGuFJ20mM3fT1IoAS7HiXzaEeqdmRDs7590bVzEQJkxRJjgysedH2N9Eub9sxMTGjemMuXEi2t/HX0kd+17M1mVas0IRzcNPHEji45OJophM5JeBYRkTZ8QuNcFOF8lXF/TQGmGFRfeZVA4gbmKbevRTWO4LpJpqx8KrxTHH6aq9aVfpwDpAevQjutNoN1F9WewwdRqnOS62C3fOnWTJioj4gMJTTDrp8n23TGyEdwRBNJ5UMwM615GEC7LHWq0UAY2Jhg9cHkTqv84DEheWJ5zsor+6YCw+6k2TW5Pva3P7bPybO2yoOVibgzCianB7TL/L//88UyCjUokO1V56Yp/ZGcj3DdKmghwHbXt6KN0xgCvHIxtfjhbFmcf6HZgk5jBoKVqEFOoyxHMt6AAC9bOlOKZRsgTiiipKdJMTjQNbdSsqpjHu476+HZFfDpQSGmNsnfZFkTwKL7bDfjw8U7u4r1QEHlDnSeuLk2By6DTlKO2oxgJR6JthBq88k1tPwfbCyFBa8U09MhiSSAD
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(346002)(376002)(39860400002)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(82310400011)(46966006)(40470700004)(36840700001)(2906002)(55016003)(36860700001)(40460700003)(82740400003)(356005)(7636003)(316002)(70586007)(70206006)(54906003)(478600001)(6636002)(9686003)(47076005)(426003)(336012)(83380400001)(40480700001)(5660300002)(86362001)(41300700001)(7416002)(8676002)(4326008)(6862004)(8936002)(33716001)(26005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 17:51:13.1904
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a124768-7477-4b96-666f-08dbd4b9d066
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099D5.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7517
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231020104341.63157-20-minda.chen@starfivetech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 02:31:39PM -0300, Jason Gunthorpe wrote:
-> On Tue, Oct 24, 2023 at 10:28:45AM -0700, Nicolin Chen wrote:
-> > On Tue, Oct 24, 2023 at 02:18:10PM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Oct 24, 2023 at 08:06:06AM -0700, Yi Liu wrote:
-> > > > @@ -195,6 +279,10 @@ int iommufd_hwpt_alloc(struct iommufd_ucmd *ucmd)
-> > > >  	if (pt_obj->type == IOMMUFD_OBJ_IOAS) {
-> > > >  		struct iommufd_hwpt_paging *hwpt_paging;
-> > > >  
-> > > > +		if (cmd->data_type != IOMMU_HWPT_DATA_NONE) {
-> > > > +			rc = -EINVAL;
-> > > > +			goto out_put_pt;
-> > > > +		}
-> > > >  		ioas = container_of(pt_obj, struct iommufd_ioas, obj);
-> > > >  		mutex_lock(&ioas->mutex);
-> > > >  		hwpt_paging = iommufd_hwpt_paging_alloc(ucmd->ictx, ioas, idev,
-> > > 
-> > > ?? What is this?
-> > > 
-> > > Ah something went wrong earlier in "iommu: Pass in parent domain with
-> > > user_data to domain_alloc_user op"
-> > > 
-> > > Once we added the user_data we should flow it through to the op
-> > > always.
-> > 
-> > Hmm, iommufd_hwpt_paging_alloc doesn't take (or need) user_data,
-> > but we could pass in a dummy one if that looks better?
-> 
-> The point is for the user_data to always be available, the driver
-> needs to check it if it is passed.
-> 
-> This should all be plumbed to allow drivers to also customize their
-> paging domains too.
+On Fri, Oct 20, 2023 at 06:43:40PM +0800, Minda Chen wrote:
+> Add StarFive JH7110 SoC PCIe controller platform
+> driver codes, JH7110 with PLDA host PCIe core.
 
-We don't have a use case of customizing the paging domains.
-And our selftest isn't covering this path. Nor the case is
-supported by the uAPI:
+Wrap all your commit logs to fill about 75 columns (as suggested
+before).  "git log" adds a few spaces, so if you fill to 75 columns,
+the result will still fit in a default 80 column window.
 
-458- * A kernel-managed HWPT will be created with the mappings from the given
-459- * IOAS via the @pt_id. The @data_type for this allocation must be set to
-460: * IOMMU_HWPT_DATA_NONE. The HWPT can be allocated as a parent HWPT for a
-461- * nesting configuration by passing IOMMU_HWPT_ALLOC_NEST_PARENT via @flags.
-462- *
+> +config PCIE_STARFIVE_HOST
+> +	tristate "StarFive PCIe host controller"
+> +	depends on OF && PCI_MSI
+> +	select PCIE_PLDA_HOST
+> +	help
+> +	  Say Y here if you want to support the StarFive PCIe controller
+> +	  in host mode. StarFive PCIe controller uses PLDA PCIe
+> +	  core.
 
+Add blank line between paragraphs.  Wrap to fill 75-78 columns.
 
-Also, if we do passing in the data, we'd need to...
+> +	  If you choose to build this driver as module it will
+> +	  be dynamically linked and module will be called
+> +	  pcie-starfive.ko
 
-280-static struct iommu_domain *
-281-mock_domain_alloc_user(struct device *dev, u32 flags,
-282-		       struct iommu_domain *parent,
-283:		       const struct iommu_user_data *user_data)
-284-{
-285-	struct mock_iommu_domain *mock_parent;
-286-	struct iommu_hwpt_selftest user_cfg;
-287-	int rc;
-288-
-289:	if (!user_data) {	/* must be mock_domain */
+> +++ b/drivers/pci/controller/plda/pcie-plda.h
+> @@ -6,14 +6,26 @@
+>  #ifndef _PCIE_PLDA_H
+>  #define _PCIE_PLDA_H
+>  
+> +#include <linux/phy/phy.h>
 
-...change this to if (!parent)...
+I don't think you need to #include this.  In this file you only use a
+pointer to struct phy, so declaring the struct should be enough, e.g.,
 
-290-		struct mock_dev *mdev = container_of(dev, struct mock_dev, dev);
-291-		bool has_dirty_flag = flags & IOMMU_HWPT_ALLOC_DIRTY_TRACKING;
-292-		bool no_dirty_ops = mdev->flags & MOCK_FLAGS_DEVICE_NO_DIRTY;
-293-
-294-		if (parent)
-295-			return ERR_PTR(-EINVAL);
+  struct phy;
 
-...and drop this.
+You will have to #include it in pcie-starfive.c where you actually
+*use* phy, of course.
 
-296-		if (has_dirty_flag && no_dirty_ops)
-297-			return ERR_PTR(-EOPNOTSUPP);
-298-		return __mock_domain_alloc_paging(IOMMU_DOMAIN_UNMANAGED,
-299-						  has_dirty_flag);
-300-	}
-301-
-302-	/* must be mock_domain_nested */
-303:	if (user_data->type != IOMMU_HWPT_DATA_SELFTEST)
-304-		return ERR_PTR(-EOPNOTSUPP);
+> +#define CONFIG_SPACE_ADDR			0x1000u
 
-Thanks
-Nicolin
+This looks like an *offset* that you add to ->bridge_addr.  Adding two
+addresses together doesn't really make sense.
+
+> +static int starfive_pcie_config_write(struct pci_bus *bus, unsigned int devfn,
+> +				      int where, int size, u32 value)
+> +{
+> +	if (starfive_pcie_hide_rc_bar(bus, devfn, where))
+> +		return PCIBIOS_BAD_REGISTER_NUMBER;
+
+I think this should probably return PCIBIOS_SUCCESSFUL.  There's
+nothing wrong with the register number; you just want to pretend that
+it's hardwired to zero.  That means ignore writes and always return 0
+for reads.
+
+> +	return pci_generic_config_write(bus, devfn, where, size, value);
+> +}
+> +
+> +static int starfive_pcie_config_read(struct pci_bus *bus, unsigned int devfn,
+> +				     int where, int size, u32 *value)
+> +{
+> +	if (starfive_pcie_hide_rc_bar(bus, devfn, where))
+> +		return PCIBIOS_BAD_REGISTER_NUMBER;
+
+Set *value to zero and return PCIBIOS_SUCCESSFUL.
+
+> +	return pci_generic_config_read(bus, devfn, where, size, value);
+> +}
+> +
+> +static int starfive_pcie_parse_dt(struct starfive_jh7110_pcie *pcie, struct device *dev)
+
+95% of this driver (and the rest of drivers/pci) is wrapped to fit in
+80 columns, e.g.,
+
+  static int starfive_pcie_parse_dt(struct starfive_jh7110_pcie *pcie,
+                                    struct device *dev)
+
+> +	domain_nr = of_get_pci_domain_nr(dev->of_node);
+> +
+> +	if (domain_nr < 0 || domain_nr > 1)
+> +		return dev_err_probe(dev, -ENODEV,
+> +				     "failed to get valid pcie id\n");
+
+"id" is too generic and doesn't hint about where the problem is.
+Update the message ("pcie id") to mention "domain" so it corresponds
+with the source ("linux,pci-domain" from DT).
+
+> +	ret = reset_control_deassert(pcie->resets);
+> +	if (ret) {
+> +		clk_bulk_disable_unprepare(pcie->num_clks, pcie->clks);
+> +		dev_err_probe(dev, ret, "failed to resets\n");
+
+"failed to ... resets" is missing a word.  "Failed to deassert
+resets", I guess?
+
+> +	/* Ensure that PERST has been asserted for at least 100 ms,
+> +	 * the sleep value is T_PVPERL from PCIe CEM spec r2.0 (Table 2-4)
+> +	 */
+
+Use multiline comment formatting (also below):
+
+  /*
+   * Ensure ...
+   */
+
+> +	msleep(100);
+> +	if (pcie->reset_gpio)
+> +		gpiod_set_value_cansleep(pcie->reset_gpio, 0);
+> +
+> +	/* As the requirement in PCIe base spec r6.0, system (<=5GT/s) must
+> +	 * wait a minimum of 100 ms following exit from a conventional reset
+> +	 * before sending a configuration request to the device.
+
+Mention sec 6.6.1, where (I think) this value comes from.  Eventually
+we should make a #define for this because it's not specific to any one
+PCIe controller.
+
+> +	msleep(100);
+> +
+> +	if (starfive_pcie_host_wait_for_link(pcie))
+> +		dev_info(dev, "port link down\n");
+> +
+> +	return ret;
+
+We know the value here, so return it explicitly:
+
+  return 0;
+
+> +static int starfive_pcie_suspend_noirq(struct device *dev)
+> +{
+> +	struct starfive_jh7110_pcie *pcie = dev_get_drvdata(dev);
+> +
+> +	if (!pcie)
+> +		return 0;
+
+How could it happen that "pcie" is zero?  I think it could only happen
+if there were a driver bug or a memory corruption.  Either way, we
+should remove the check so we take a NULL pointer fault and find out
+about the problem.
+
+> +static int starfive_pcie_resume_noirq(struct device *dev)
+> +{
+> +	struct starfive_jh7110_pcie *pcie = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret = starfive_pcie_enable_phy(dev, &pcie->plda);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = clk_bulk_prepare_enable(pcie->num_clks, pcie->clks);
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable clocks\n");
+> +		starfive_pcie_disable_phy(&pcie->plda);
+> +		return ret;
+> +	}
+> +
+> +	return ret;
+
+  return 0;
+
+Bjorn
