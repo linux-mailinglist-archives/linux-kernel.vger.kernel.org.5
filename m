@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C87A97D4453
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0DA27D4455
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbjJXAwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 20:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53434 "EHLO
+        id S231747AbjJXAwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 20:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbjJXAwN (ORCPT
+        with ESMTP id S231726AbjJXAwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 20:52:13 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92E0C0;
-        Mon, 23 Oct 2023 17:52:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698108729;
-        bh=pRZQGTQLgHsC5cvz7MkAgtW1cWzxBXH0WEqq3b3tmtA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fCY2f+5xM6nW/2gZ5/mvBnNmICJ3SSKMTtujVhzaxnd1571LiCyVvzkeMH9IakXQn
-         mrFdndvt7LeqzoRICPNLz45j5djwu60/9w3cU/hcTtdIO6nLc9Kj7rj8dYHC/Yuuwv
-         aCHNkiEPAenxk+kCM09ym1QLAJwES85Ig0HH8IQyTSrzVaNfiCDs2dalEVFsgPGRni
-         TbqPt0VxDLUWnx5uZUrggnMSjzzLKIri76hVzXFWzZuzkOWpI6SKUTgWna9AHY7oZY
-         dRjiwUvsEstZtndR8OHTLCLtt7fk4bA/GzIGOt8a38jONyHu1Rjjc0O12lN/KJ0mei
-         zjUkhpq9b5zfQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SDtn42cbGz4wnv;
-        Tue, 24 Oct 2023 11:52:08 +1100 (AEDT)
-Date:   Tue, 24 Oct 2023 11:52:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     DRI <dri-devel@lists.freedesktop.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Rob Clark <robdclark@chromium.org>
-Subject: linux-next: manual merge of the drm tree with the mm-stable tree
-Message-ID: <20231024115206.4ce24d96@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/E6gZg8B3hDt_KoJXk83GE/s";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        Mon, 23 Oct 2023 20:52:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA08D79
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:52:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D204C433C7;
+        Tue, 24 Oct 2023 00:52:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698108747;
+        bh=Cz2C33V7rW5mFx+/r38YL53PClSvAQtbG3qbhk9hvAs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rDYX/pqMphrx0x16wq56T8zNqw7D87iDLbydIUAmF//YqfycSHqDKdN7izTfqM6u1
+         5RgwT9aKniQfjiJ0FyyTTqy2CqREwu35OHcIxwcCNX4CvCnS6cmMVDfmZYI0TRQzeG
+         xs9oL8ml/6eM0p8qVv22KpmipXzV2mZ3T/vklDS1zwNT7VUaltF5lYf5RNFwpywm3i
+         92gji/oLrkEkp73Ap3oG1ae4CNbijzSvO3CLnyWokBzJMBtLcSm20unvJMB9NBjwY4
+         kRgH1quN43rR+7s5+Axr74sFrjTBNzsOukVDrdJRlKPpZfpn5v+ibIg14951EYPaic
+         lXpgjgYS0QoSQ==
+Date:   Tue, 24 Oct 2023 09:52:21 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Cc:     linux-trace-kernel@vger.kernel.org, davem@davemloft.net,
+        anil.s.keshavamurthy@intel.com, naveen.n.rao@linux.ibm.com,
+        rostedt@goodmis.org, peterz@infradead.org,
+        akpm@linux-foundation.org, sander@svanheule.net,
+        ebiggers@google.com, dan.j.williams@intel.com, jpoimboe@kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, mattwu@163.com
+Subject: Re: [PATCH v1] kprobes: unused header files removed
+Message-Id: <20231024095221.4a9ab55c6bd3abd875f0ac08@kernel.org>
+In-Reply-To: <20231023112245.6112-1-wuqiang.matt@bytedance.com>
+References: <20231023112245.6112-1-wuqiang.matt@bytedance.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,83 +54,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/E6gZg8B3hDt_KoJXk83GE/s
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 23 Oct 2023 19:22:45 +0800
+"wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
 
-Hi all,
+> As kernel test robot reported, lib/test_objpool.c (trace:probes/for-next)
+> has linux/version.h included, but version.h is not used at all. Then more
+> unused headers are found in test_objpool.c and rethook.c, and all of them
+> should be removed.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202310191512.vvypKU5Z-lkp@intel.com/
 
-Today's linux-next merge of the drm tree got a conflict in:
+Looks good to me.
 
-  drivers/gpu/drm/msm/msm_drv.c
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-between commit:
+Thanks,
 
-  cd61a76c210a ("drm/msm: dynamically allocate the drm-msm_gem shrinker")
+> 
+> Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
+> ---
+>  kernel/trace/rethook.c | 2 --
+>  lib/test_objpool.c     | 6 ------
+>  2 files changed, 8 deletions(-)
+> 
+> diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+> index 13c8e6773892..6fd7d4ecbbc6 100644
+> --- a/kernel/trace/rethook.c
+> +++ b/kernel/trace/rethook.c
+> @@ -8,8 +8,6 @@
+>  #include <linux/preempt.h>
+>  #include <linux/rethook.h>
+>  #include <linux/slab.h>
+> -#include <linux/sort.h>
+> -#include <linux/smp.h>
+>  
+>  /* Return hook list (shadow stack by list) */
+>  
+> diff --git a/lib/test_objpool.c b/lib/test_objpool.c
+> index 98b5b37b6eea..a94078402138 100644
+> --- a/lib/test_objpool.c
+> +++ b/lib/test_objpool.c
+> @@ -6,21 +6,15 @@
+>   * Copyright: wuqiang.matt@bytedance.com
+>   */
+>  
+> -#include <linux/version.h>
+>  #include <linux/errno.h>
+>  #include <linux/module.h>
+>  #include <linux/moduleparam.h>
+> -#include <linux/sched.h>
+> -#include <linux/cpumask.h>
+>  #include <linux/completion.h>
+>  #include <linux/kthread.h>
+> -#include <linux/cpu.h>
+> -#include <linux/cpuset.h>
+>  #include <linux/slab.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/delay.h>
+>  #include <linux/hrtimer.h>
+> -#include <linux/interrupt.h>
+>  #include <linux/objpool.h>
+>  
+>  #define OT_NR_MAX_BULK (16)
+> -- 
+> 2.40.1
+> 
 
-from the mm-stable tree and commit:
 
-  506efcba3129 ("drm/msm: carve out KMS code from msm_drv.c")
-
-from the drm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/msm/msm_drv.c
-index 7f20249d6071,443bbc3ed750..000000000000
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@@ -457,23 -265,12 +265,14 @@@ static int msm_drm_init(struct device *
-  	if (ret)
-  		goto err_deinit_vram;
- =20
-- 	/* the fw fb could be anywhere in memory */
-- 	ret =3D drm_aperture_remove_framebuffers(drv);
-- 	if (ret)
-- 		goto err_msm_uninit;
--=20
- -	msm_gem_shrinker_init(ddev);
- +	ret =3D msm_gem_shrinker_init(ddev);
- +	if (ret)
- +		goto err_msm_uninit;
- =20
-  	if (priv->kms_init) {
-- 		ret =3D priv->kms_init(ddev);
-- 		if (ret) {
-- 			DRM_DEV_ERROR(dev, "failed to load kms\n");
-- 			priv->kms =3D NULL;
-+ 		ret =3D msm_drm_kms_init(dev, drv);
-+ 		if (ret)
-  			goto err_msm_uninit;
-- 		}
-- 		kms =3D priv->kms;
-  	} else {
-  		/* valid only for the dummy headless case, where of_node=3DNULL */
-  		WARN_ON(dev->of_node);
-
---Sig_/E6gZg8B3hDt_KoJXk83GE/s
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU3FTYACgkQAVBC80lX
-0Gwj/Qf+Nnq6P1WtH2q7Cgnqn4r9QcG4VJV0wqdU8SslgQlNtGCpqdLXSn/BN6sC
-T8I2K3A8+dT1EPULcqZwWOQrnHjgaoQw0nCtACbGFJ2EYssxUHp7rxMPJwV7iVdM
-KRaPMvSySfoYxvoBDPUPzfshIwjJUpgi7xUo7cjU9+sllJuP/dwk15fBdiK9zwTr
-qQKYZr2HxxoAVu4BKX/ZeXvcdVxKqg0Iwl6CxamfEpuyAUM83jrDv6PCn0HQJSRF
-I/YeHP2HIcBRZKptGWolRML2xjhEsNb4wGDsZvc4G5Jk3al4u/OyE7EW7fhEhnS+
-qCHvJIcKuWiGMVzsafQ5iVq2aYDlJw==
-=wpW6
------END PGP SIGNATURE-----
-
---Sig_/E6gZg8B3hDt_KoJXk83GE/s--
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
