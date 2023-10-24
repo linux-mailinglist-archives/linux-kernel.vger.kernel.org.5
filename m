@@ -2,175 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 281987D45A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 04:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DFE7D45A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 04:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbjJXCla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 22:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
+        id S232200AbjJXCmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 22:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231913AbjJXCl3 (ORCPT
+        with ESMTP id S231913AbjJXCmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 22:41:29 -0400
-Received: from out-205.mta1.migadu.com (out-205.mta1.migadu.com [95.215.58.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB9D11A
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 19:41:23 -0700 (PDT)
-Message-ID: <217c52ba-3b06-488d-b21a-3d2dd62438a8@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698115281;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DTMaBMJj10j72PXuCPyuHbqbaXnXbH7yMFP0YeQy5dU=;
-        b=F7ahZY0dgoGIXkXYwFWekobD2zj7iTWYeiV7CLbeNV3qlWmjg9gT2ga1RcqKl5j3b8qvfE
-        3wzHyH9RmBW5BAPpvmLdu1339yHmL7YU9Lek9g/ptbinj3bWPwyT0hlYQqv8+0pqATAK5+
-        xxx08X/QjBGzzhxEWrbW0wWTekZ67kw=
-Date:   Tue, 24 Oct 2023 10:39:37 +0800
+        Mon, 23 Oct 2023 22:42:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5897910D0;
+        Mon, 23 Oct 2023 19:42:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC879C433C8;
+        Tue, 24 Oct 2023 02:42:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698115324;
+        bh=Axzhu/PU5pIRjTDxygVB5J4OxaQMp9aGqFHCG5Bu1kU=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=oE/fU/s40CdpBaHVlUL5Y0CN8wNwlg+lpdRdYH9dbEdA95IztWccl8K8dxFGEAarM
+         8k0FuOcks6KJTk5vPaKS0saEx4q0G4n/u/5n1iaW2cd3849kie8qNSwDZPPzhwUK+A
+         Yqmz9otXyyJQe55wZCkG6Th539MCh5Ow1XFay7BBca8GZ3IKnCc6Kk0pmkJvbzDiI3
+         YJC6x1zFu5PUDYxrMY3a0rAGu3eICRGfvE9/FESbBBHjYoWTEBnioW2aZJmfeqpuq1
+         BMeQBb0fPaYCVxTs0bxfvTv2xhNXDC1B3PGxuTJJTuNUF6mpxSwd3ImTCuk/PGJjnE
+         TnsZdOOaM+49A==
+Message-ID: <a21f9855c655e384501ae04636cf5297.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v2 3/6] slub: Don't freeze slabs for cpu partial
-Content-Language: en-US
-To:     Vlastimil Babka <vbabka@suse.cz>, cl@linux.com, penberg@kernel.org
-Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, willy@infradead.org, pcc@google.com,
-        tytso@mit.edu, maz@kernel.org, ruansy.fnst@fujitsu.com,
-        vishal.moola@gmail.com, lrh2000@pku.edu.cn, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20231021144317.3400916-1-chengming.zhou@linux.dev>
- <20231021144317.3400916-4-chengming.zhou@linux.dev>
- <79a879cc-f5f8-08ef-0afa-3688d433a756@suse.cz>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <79a879cc-f5f8-08ef-0afa-3688d433a756@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAKZGPAMj6umUvoc+supfTU4juGoUXw78UiveUJgZQFE_ErdGbg@mail.gmail.com>
+References: <CAKZGPAOurEwCs7B8RAinTEBwWKOEwW=8FLtAKSzLu9LjH9AHvg@mail.gmail.com> <CAKZGPAMj6umUvoc+supfTU4juGoUXw78UiveUJgZQFE_ErdGbg@mail.gmail.com>
+Subject: Re: Question on pre running clocks
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     mturquette@baylibre.com, Arun KS <getarunks@gmail.com>
+To:     Arun KS <arunks.linux@gmail.com>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 23 Oct 2023 19:42:01 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/24 00:00, Vlastimil Babka wrote:
-> On 10/21/23 16:43, chengming.zhou@linux.dev wrote:
->> From: Chengming Zhou <zhouchengming@bytedance.com>
->>
->> Now we will freeze slabs when moving them out of node partial list to
->> cpu partial list, this method needs two cmpxchg_double operations:
->>
->> 1. freeze slab (acquire_slab()) under the node list_lock
->> 2. get_freelist() when pick used in ___slab_alloc()
->>
->> Actually we don't need to freeze when moving slabs out of node partial
->> list, we can delay freeze to use slab freelist in ___slab_alloc(), so
->> we can save one cmpxchg_double().
->>
->> And there are other good points:
->>
->> 1. The moving of slabs between node partial list and cpu partial list
->>    becomes simpler, since we don't need to freeze or unfreeze at all.
->>
->> 2. The node list_lock contention would be less, since we only need to
->>    freeze one slab under the node list_lock. (In fact, we can first
->>    move slabs out of node partial list, don't need to freeze any slab
->>    at all, so the contention on slab won't transfer to the node list_lock
->>    contention.)
->>
->> We can achieve this because there is no concurrent path would manipulate
->> the partial slab list except the __slab_free() path, which is serialized
->> now.
->>
->> Note this patch just change the parts of moving the partial slabs for
->> easy code review, we will fix other parts in the following patches.
->> Specifically this patch change three paths:
->> 1. get partial slab from node: get_partial_node()
->> 2. put partial slab to node: __unfreeze_partials()
->> 3. cache partail slab on cpu when __slab_free()
-> 
-> So the problem with this approach that one patch breaks things and another
-> one fixes them up, is that git bisect becomes problematic, so we shouldn't
-> do that and instead bite the bullet and deal with a potentially large patch.
-> At some level it's unavoidable as one has to grasp all the moving pieces
-> anyway to see e.g. if the changes in allocation path are compatible with the
-> changes in freeing.
-> When possible, we can do preparatory stuff that doesn't break things like in
-> patches 1 and 2, maybe get_cpu_partial() could also be introduced (even if
-> unused) before switching the world over to the new scheme in a single patch
-> (and possible cleanups afterwards). So would it be possible to redo it in
-> such way please?
+Quoting Arun KS (2023-10-20 00:09:05)
+> + linux-clk
+>=20
+> On Fri, Oct 20, 2023 at 12:37=E2=80=AFPM Arun KS <arunks.linux@gmail.com>=
+ wrote:
+> >
+> > Hello,
+> >
+> > Lets say there is a clock which is enabled by bootloaders and is pre
+> > running as linux boots.
+> > Is it mandatory for the client drivers to call clk_prepare_enable() on
+> > them to initialise the enable_count to 1?
 
-Ok, I will change to this way. I didn't know how to handle this potentially
-large patch gracefully at first. Your detailed advice is very helpful to me,
-I will prepare all possible preparatory stuff, then change all parts over
-in one patch.
+Yes.
 
-> 
-> <snip>
-> 
->> @@ -2621,23 +2622,7 @@ static void __unfreeze_partials(struct kmem_cache *s, struct slab *partial_slab)
->>  			spin_lock_irqsave(&n->list_lock, flags);
->>  		}
->>  
->> -		do {
->> -
->> -			old.freelist = slab->freelist;
->> -			old.counters = slab->counters;
->> -			VM_BUG_ON(!old.frozen);
->> -
->> -			new.counters = old.counters;
->> -			new.freelist = old.freelist;
->> -
->> -			new.frozen = 0;
->> -
->> -		} while (!__slab_update_freelist(s, slab,
->> -				old.freelist, old.counters,
->> -				new.freelist, new.counters,
->> -				"unfreezing slab"));
->> -
->> -		if (unlikely(!new.inuse && n->nr_partial >= s->min_partial)) {
->> +		if (unlikely(!slab->inuse && n->nr_partial >= s->min_partial)) {
->>  			slab->next = slab_to_discard;
->>  			slab_to_discard = slab;
->>  		} else {
->> @@ -3634,18 +3619,8 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->>  		was_frozen = new.frozen;
->>  		new.inuse -= cnt;
->>  		if ((!new.inuse || !prior) && !was_frozen) {
->> -
->> -			if (kmem_cache_has_cpu_partial(s) && !prior) {
->> -
->> -				/*
->> -				 * Slab was on no list before and will be
->> -				 * partially empty
->> -				 * We can defer the list move and instead
->> -				 * freeze it.
->> -				 */
->> -				new.frozen = 1;
->> -
->> -			} else { /* Needs to be taken off a list */
->> +			/* Needs to be taken off a list */
->> +			if (!kmem_cache_has_cpu_partial(s) || prior) {
->>  
->>  				n = get_node(s, slab_nid(slab));
->>  				/*
->> @@ -3675,7 +3650,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->>  			 * activity can be necessary.
->>  			 */
->>  			stat(s, FREE_FROZEN);
->> -		} else if (new.frozen) {
->> +		} else if (kmem_cache_has_cpu_partial(s) && !prior) {
->>  			/*
->>  			 * If we just froze the slab then put it onto the
->>  			 * per cpu partial list.
-> 
-> I think this comment is now misleading, we didn't freeze the slab, so it's
-> now something like "if we started with a full slab...".
+> >
+> > Or is there a way we can specify to the kernel that this clock is
+> > already enabled by bootloader and initialise the enable_count for this
+> > clock to 1.
 
-Ok, will check and change these inconsistent comments by the way.
+No there isn't.
 
-Thanks!
+> >
+> > Because otherwise, clk_disable() prints a WARN() if a client driver
+> > uses clock handle where clk_prepare_enable() is not called.
+> >
+> > I grep through the code, but could find any details. Appreciate any poi=
+nters.
+> >
+> > Regards,
+> > Arun
