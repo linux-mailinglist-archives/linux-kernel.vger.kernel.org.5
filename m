@@ -2,52 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0417D5D35
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF76E7D5D3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344178AbjJXV2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 17:28:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
+        id S1344361AbjJXVeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 17:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234957AbjJXV2u (ORCPT
+        with ESMTP id S1344360AbjJXVeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:28:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5982E129;
-        Tue, 24 Oct 2023 14:28:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ABD0C433C8;
-        Tue, 24 Oct 2023 21:28:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698182928;
-        bh=dxrhK6LCO9BflPWhC3GRe1Rdi4pkkGtj7kI+Qk5b8Bo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qGBIhNIaE1xH+1+qgWIGeTpbwW6/cxmSTreC4JXj7U7jpsoNatrwQYhNouN8K8X4/
-         BK7fzq3jI5TVq+LkuEcCfhBOvonhE5xciHw/BMfOkK2ovzKw2RjDgAYCGI5PycCQeR
-         tdRCIMawrNz6Ou/vJKp0ZOe3wvVICTChriqBmHzsRqfAIAYKDQxhMD2XQHVsrdgOA2
-         b3/Pn30hF+QEWvtykpZiN85JnGn2Zry85e1RE3PaU0Ngh+/Yam1wt8tlErlbuKFYd2
-         1JAmpfLxR50gxbKX26KPvWyyDnm1nMCVLeQ+4QzC7LD+DRst+B4tDhV3d9ZXrDO+os
-         8yaC0MWrcnSOQ==
-Date:   Tue, 24 Oct 2023 23:28:45 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Subject: Re: [PATCH V2 4/7] i2c: sprd: Add I2C controller driver to support
- dynamic switching of 400K/1M/3.4M frequency
-Message-ID: <20231024212845.htjc2uwtg36mig5j@zenone.zhora.eu>
-References: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
- <20231023081158.10654-5-Huangzheng.Lai@unisoc.com>
+        Tue, 24 Oct 2023 17:34:03 -0400
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C84D9D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:33:15 -0700 (PDT)
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5822a990ea6so1986986eaf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:33:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698183194; x=1698787994;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ydoeA8bMPTFfL7KIyd2iImmXpydvV8NCmR/UYsYbpxw=;
+        b=j/vQ1TRlyyAN3ie6yDV2ON86JkY3J4V/omrKYHJDvlMSmkkQYxK/dOcztYBugGEQbI
+         jg0B21YFSFjJKJ1dW7g16CzC6LtTETAiKkcmQwwUvLnlVqdpgOx7PjFrh7mqWUmCBWse
+         qi7poXyzmRgu1/+OqYuMuEkolNzljg3ttsjEa6qpCLrFUZqrHNs+g+bz83vfFTGgd6xs
+         tcJPl1DmKDahVFD212Y6XGLeg39W7cy0QGUz2D16YzOICkY6ON+O9OscsztUWOpg9N+O
+         dpH47GEnCbhhgwX4+vx0m+54+cFmNspI0jo8FMpWcwnwX6zU+95hZ8G7CFdHdRIV3Tb/
+         QQZw==
+X-Gm-Message-State: AOJu0YwRrnMVW6ZgQvPewqBSF24gpRwacfsc/MaGnpVxeLt+iAf6Cpol
+        f0eV/guyI2uh+/tgbxsyG3PB
+X-Google-Smtp-Source: AGHT+IFqScwwPuBCfU8gLwXESZj/TMXWuFnwg6pun1lrsaq6xPSm0Hu7AUgBAWsoFigBdJfZnWdsrw==
+X-Received: by 2002:a05:6358:72a3:b0:168:e707:2e56 with SMTP id w35-20020a05635872a300b00168e7072e56mr4769109rwf.16.1698183194698;
+        Tue, 24 Oct 2023 14:33:14 -0700 (PDT)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id e20-20020ad442b4000000b0065d1380dd17sm3840065qvr.61.2023.10.24.14.33.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 14:33:14 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 17:33:12 -0400
+From:   Mike Snitzer <snitzer@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Alasdair Kergon <agk@redhat.com>, dm-devel@lists.linux.dev,
+        Justin Stitt <justinstitt@google.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: dm crypt: replace open-coded kmemdup_nul
+Message-ID: <ZTg4GA005km7mmgC@redhat.com>
+References: <20230925-strncpy-drivers-md-dm-crypt-c-v1-1-eef875e4f9b2@google.com>
+ <169818232968.2100071.5806064081646325604.b4-ty@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231023081158.10654-5-Huangzheng.Lai@unisoc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <169818232968.2100071.5806064081646325604.b4-ty@chromium.org>
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,45 +62,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huangzheng,
+On Tue, Oct 24 2023 at  5:18P -0400,
+Kees Cook <keescook@chromium.org> wrote:
 
-On Mon, Oct 23, 2023 at 04:11:55PM +0800, Huangzheng Lai wrote:
-> When I2C-slaves supporting different frequencies use the same I2C
-> controller, the I2C controller usually only operates at lower frequencies.
-> In order to improve the performance of I2C-slaves transmission supporting
-> faster frequencies, we dynamically configure the I2C operating frequency
-> based on the value of the input parameter msg ->flag.
+> On Mon, 25 Sep 2023 06:35:54 +0000, Justin Stitt wrote:
+> > kzalloc() followed by strncpy() on an expected NUL-terminated string is
+> > just kmemdup_nul(). Let's simplify this code (while also dropping a
+> > deprecated strncpy() call [1]).
+> > 
+> > 
 > 
-> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-> ---
->  drivers/i2c/busses/i2c-sprd.c | 101 +++++++++++++++++++---------------
->  1 file changed, 57 insertions(+), 44 deletions(-)
+> Applied to for-next/hardening, thanks!
 > 
-> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-> index dec627ef408c..f1f7fad42ecd 100644
-> --- a/drivers/i2c/busses/i2c-sprd.c
-> +++ b/drivers/i2c/busses/i2c-sprd.c
-> @@ -75,7 +75,14 @@
->  #define SPRD_I2C_PM_TIMEOUT	1000
->  /* timeout (ms) for transfer message */
->  #define I2C_XFER_TIMEOUT	1000
-> -
-> +/* dynamic modify clk_freq flag  */
-> +#define I2C_3M4_FLAG		0x0100
-> +#define I2C_1M_FLAG		0x0080
-> +#define I2C_400K_FLAG		0x0040
-> +
-> +#define I2C_FREQ_400K		400000
-> +#define I2C_FREQ_1M		1000000
-> +#define I2C_FREQ_3_4M		3400000
+> [1/1] dm crypt: replace open-coded kmemdup_nul
+>       https://git.kernel.org/kees/c/17348b0a6a6d
+> 
+> Take care,
+> 
+> -- 
+> Kees Cook
+> 
 
-Why are you redefining these values?
+Hey,
 
-You could use the defines you already have or, if you really want
-a different name you could do:
+I had picked up this patch and the 3 others in my local tree
+yesterday, was going to push shortly... do you still want them to go
+through your hardening tree?
 
-#define I2C_FREQ_3_4M		I2C_MAX_HIGH_SPEED_MODE_FREQ
+Mike
 
-Rest looks good.
 
-Andi
