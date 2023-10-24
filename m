@@ -2,137 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8207D47BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2000B7D47C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232694AbjJXGuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 02:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
+        id S232690AbjJXGx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 02:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232704AbjJXGus (ORCPT
+        with ESMTP id S232627AbjJXGxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 02:50:48 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409DED7D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:50:46 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a82f176860so41300847b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:50:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698130245; x=1698735045; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a3C4xL26+by/nNiNIi96kjQArUXkrd2oNhMsXtWit3Y=;
-        b=tjpZuc4Y1/xa8m5rEOsR9xAcoaedfTeNM84ipSUHJTvgSDpt/LmPKBCSZxeci1Ziis
-         KDqCRmQg+UNAwPHei0qzSYU6oNcWuwiVDW4DJ2eJ5Vizy6zFF0+0KrnN8DLHGC8nxL+S
-         RnbVh14ByE5Da/sPqWDF4bLApLXuPC4s2f2ehzMSFGUtWZ33mag0uJYTJGyQrb/YwYOE
-         oHMoI96+ueV/+3HROQ3gSQTXQbkDi5Gs9uWsWj+jjC0DJQq5B/KPWNsFmNlXAtRuv6pn
-         6qy8C913WDhFJ/RduKwmcPrug5vbGtSpLGiEMdNkHrXJpmzNYJVYeYri8hITiQbBNMle
-         8uSA==
+        Tue, 24 Oct 2023 02:53:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A3792
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:52:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698130362;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vnCv+G93neJ+iTTfLV4dLwiSeZXfPaixO3SHIVGZX+k=;
+        b=IjlAt9Qvztx4lsB9BvHtocKzdRvkE0bsGQoZXB+7rYYnErSkUpMXdy/ngkPnltUMXBMbyH
+        lU90FKkZnpwlt2JcJf+ewDIZWRJPDrztduqPoht10pGurXaw4TXnymcnCvw2Vn5rCR0waQ
+        xDATR05DaZgz9jMjmhBisuqnO6zfy8s=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-692-dBMwt7qqNGWm6_nqvD9P0g-1; Tue, 24 Oct 2023 02:52:35 -0400
+X-MC-Unique: dBMwt7qqNGWm6_nqvD9P0g-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5344aaf2703so2449847a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:52:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698130245; x=1698735045;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a3C4xL26+by/nNiNIi96kjQArUXkrd2oNhMsXtWit3Y=;
-        b=rMOIBGxoumqWXDezF2T/Ka8ZFDHEW2Ub/nHUVHVxPfc6fysQhIQe8MdYtpyDrn0xY7
-         FBtOEnvBZhjL9MZpHkga/Ynn1HKv5Ci/VQ1aC/PmvPx2/8TRLrU9EVDcXdl+ayiNhO7Y
-         NKTFCqqJv1mB3Fpn3sHpsOfqwsvuO5vlSEXErDX/XDT7GQYrASIjegoTh0NfjuxMdoQS
-         aBYxSVGUsHYcgKmuVmpkp4DbWRru96R+ELpfQ8q+CiHvtHGAh+n78wKHCRmfMd9+6yze
-         sIDZzo1kP/eocM7yAxmN439tIKBAJ7Yekd6LdRTbGgA+EB7CBqfCCdWIf7uREeAsLIGW
-         RMuw==
-X-Gm-Message-State: AOJu0YyI2xQoSaW5tzxMsECBmbnJFE0wh4/MYGcNZdJ2Ds4JVYltir+f
-        CyAs5M+eckP6JF4HLBGekM6yWQ==
-X-Google-Smtp-Source: AGHT+IHzuoz/z+GIe/hmLTh1Bx0JUA8EBXee8rMOTjxms3aAhBTqy3zTfa7HbZJDIwVTZL+QLCMlDw==
-X-Received: by 2002:a81:8441:0:b0:5a7:ba09:e58b with SMTP id u62-20020a818441000000b005a7ba09e58bmr12869572ywf.14.1698130245291;
-        Mon, 23 Oct 2023 23:50:45 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id e6-20020a0df506000000b005837633d9cbsm3781211ywf.64.2023.10.23.23.50.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 23:50:44 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 23:50:42 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Andi Kleen <ak@linux.intel.com>, Christoph Lameter <cl@linux.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH] mempolicy: migration attempt to match interleave nodes:
- fix
-In-Reply-To: <77954a5-9c9b-1c11-7d5c-3262c01b895f@google.com>
-Message-ID: <3311d544-fb05-a7f1-1b74-16aa0f6cd4fe@google.com>
-References: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com> <77954a5-9c9b-1c11-7d5c-3262c01b895f@google.com>
+        d=1e100.net; s=20230601; t=1698130354; x=1698735154;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vnCv+G93neJ+iTTfLV4dLwiSeZXfPaixO3SHIVGZX+k=;
+        b=NK6cUrnwWelbOS1TsSCHKUgtY2Yb4TpkKo6WrxmxW0bLGzyHsN0V0fEcVw8Z2E/YMn
+         xCt5I2tu4dYTm3/HRmRp6XSHwYD9xbrSc3PeA7qz6B45Eil29SgPtlTCyqcBuSBh1iBS
+         OxcGPsF2BkSDdyO0luIW/sdmYQ+vDEtRVa4SxYe24q/g/YHwR8mdxX2WbD1+wmkTucTA
+         6OHtXMwKzrAEi6pDkue/uoe9c8NQFnJf4zg816csJGK/yZw865uKMU05Nr2ep6xtQGSf
+         bF2qDwceZeUclLeRhWZemnO+sRh6uRLnje60AWkwTOmmbTiDeC/ezZaJeymMeHs4Ci0b
+         DBaw==
+X-Gm-Message-State: AOJu0YymlWis7tiUwr3q8ntwq7j2absJJkyd5UagpEVVJ/fMmC7j3SVD
+        XDbJypiYWXmwyB7Gx/vAsPHDWu49QSnsTnUX6pLoYxBD+RzXjbd65yZlCc8sxbhiJew9nsCGvkf
+        5zqZuLKTjoCBLIQcMsPaRc5t2Y2DQW3E6wxUjsWcE
+X-Received: by 2002:a05:6402:510d:b0:53f:731a:e513 with SMTP id m13-20020a056402510d00b0053f731ae513mr8646625edd.25.1698130354362;
+        Mon, 23 Oct 2023 23:52:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGsWCnETG+7zp6SrPsIxQM2EKZaH7Gl3Rt1zMlO3YvwXykQRxizaPcJFuO8XSuzYjl5bQN6s+A6qZmc4b5nTII=
+X-Received: by 2002:a05:6402:510d:b0:53f:731a:e513 with SMTP id
+ m13-20020a056402510d00b0053f731ae513mr8646612edd.25.1698130354074; Mon, 23
+ Oct 2023 23:52:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+References: <1697880319-4937-1-git-send-email-si-wei.liu@oracle.com>
+ <CACGkMEvkSFcHXC0HFw-NoDtDNnaucJbpfPO0Yho2r1QP8F6zSw@mail.gmail.com> <4d03661b-4289-46e7-8760-32a186783b73@oracle.com>
+In-Reply-To: <4d03661b-4289-46e7-8760-32a186783b73@oracle.com>
+From:   Lei Yang <leiyang@redhat.com>
+Date:   Tue, 24 Oct 2023 14:51:57 +0800
+Message-ID: <CAPpAL=za9VKy2csCPKOKHEKe3qGDQ=89n_08G_MWd7XMiNpUvQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/7] vdpa: decouple reset of iotlb mapping from device reset
+To:     Si-Wei Liu <si-wei.liu@oracle.com>
+Cc:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
+        eperezma@redhat.com, sgarzare@redhat.com, dtatulea@nvidia.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mm-unstable commit edd33b8807a1 ("mempolicy: migration attempt to match
-interleave nodes") added a second vma_iter search to do_mbind(), to
-determine the interleave index to be used in the MPOL_INTERLEAVE case.
+QE tested this series v4 with regression testing on real nic, there is
+no new regression bug.
 
-But sadly it added it just after the mmap_write_unlock(), leaving this
-new VMA search unprotected: and so syzbot reports suspicious RCU usage
-from lib/maple_tree.c:856.
+Tested-by: Lei Yang <leiyang@redhat.com>
 
-This could be fixed with an rcu_read_lock/unlock() pair (per Liam);
-but since we have been relying on the mmap_lock up to this point, it's
-slightly better to extend it over the new search too, for a well-defined
-result consistent with the policy this mbind() is establishing (rather
-than whatever might follow once the mmap_lock is dropped).
-
-Reported-by: syzbot+79fcba037b6df73756d3@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/linux-mm/000000000000c05f1b0608657fde@google.com/
-Fixes: edd33b8807a1 ("mempolicy: migration attempt to match interleave nodes")
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- mm/mempolicy.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 989293180eb6..5e472e6e0507 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -1291,8 +1291,6 @@ static long do_mbind(unsigned long start, unsigned long len,
- 		}
- 	}
- 
--	mmap_write_unlock(mm);
--
- 	if (!err && !list_empty(&pagelist)) {
- 		/* Convert MPOL_DEFAULT's NULL to task or default policy */
- 		if (!new) {
-@@ -1334,7 +1332,11 @@ static long do_mbind(unsigned long start, unsigned long len,
- 				mmpol.ilx -= page->index >> order;
- 			}
- 		}
-+	}
- 
-+	mmap_write_unlock(mm);
-+
-+	if (!err && !list_empty(&pagelist)) {
- 		nr_failed |= migrate_pages(&pagelist,
- 				alloc_migration_target_by_mpol, NULL,
- 				(unsigned long)&mmpol, MIGRATE_SYNC,
--- 
-2.35.3
+On Tue, Oct 24, 2023 at 6:02=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.com> =
+wrote:
+>
+>
+>
+> On 10/22/2023 8:51 PM, Jason Wang wrote:
+> > Hi Si-Wei:
+> >
+> > On Sat, Oct 21, 2023 at 5:28=E2=80=AFPM Si-Wei Liu <si-wei.liu@oracle.c=
+om> wrote:
+> >> In order to reduce needlessly high setup and teardown cost
+> >> of iotlb mapping during live migration, it's crucial to
+> >> decouple the vhost-vdpa iotlb abstraction from the virtio
+> >> device life cycle, i.e. iotlb mappings should be left
+> >> intact across virtio device reset [1]. For it to work, the
+> >> on-chip IOMMU parent device could implement a separate
+> >> .reset_map() operation callback to restore 1:1 DMA mapping
+> >> without having to resort to the .reset() callback, the
+> >> latter of which is mainly used to reset virtio device state.
+> >> This new .reset_map() callback will be invoked only before
+> >> the vhost-vdpa driver is to be removed and detached from
+> >> the vdpa bus, such that other vdpa bus drivers, e.g.
+> >> virtio-vdpa, can start with 1:1 DMA mapping when they
+> >> are attached. For the context, those on-chip IOMMU parent
+> >> devices, create the 1:1 DMA mapping at vdpa device creation,
+> >> and they would implicitly destroy the 1:1 mapping when
+> >> the first .set_map or .dma_map callback is invoked.
+> >>
+> >> This patchset is rebased on top of the latest vhost tree.
+> >>
+> >> [1] Reducing vdpa migration downtime because of memory pin / maps
+> >> https://www.mail-archive.com/qemu-devel@nongnu.org/msg953755.html
+> >>
+> >> ---
+> >> v4:
+> >> - Rework compatibility using new .compat_reset driver op
+> > I still think having a set_backend_feature()
+> This will overload backend features with the role of carrying over
+> compatibility quirks, which I tried to avoid from. While I think the
+> .compat_reset from the v4 code just works with the backend features
+> acknowledgement (and maybe others as well) to determine, but not
+> directly tie it to backend features itself. These two have different
+> implications in terms of requirement, scope and maintaining/deprecation,
+> better to cope with compat quirks in explicit and driver visible way.
+>
+> >   or reset_map(clean=3Dtrue) might be better.
+> An explicit op might be marginally better in driver writer's point of
+> view. Compliant driver doesn't have to bother asserting clean_map never
+> be true so their code would never bother dealing with this case, as
+> explained in the commit log for patch 5 "vhost-vdpa: clean iotlb map
+> during reset for older userspace":
+>
+> "
+>      The separation of .compat_reset from the regular .reset allows
+>      vhost-vdpa able to know which driver had broken behavior before, so =
+it
+>      can apply the corresponding compatibility quirk to the individual
+> driver
+>      whenever needed.  Compared to overloading the existing .reset with
+>      flags, .compat_reset won't cause any extra burden to the implementat=
+ion
+>      of every compliant driver.
+> "
+>
+> >   As it tries hard to not introduce new stuff on the bus.
+> Honestly I don't see substantial difference between these other than the
+> color. There's no single best solution that stands out among the 3. And
+> I assume you already noticed it from all the above 3 approaches will
+> have to go with backend features negotiation, that the 1st vdpa reset
+> before backend feature negotiation will use the compliant version of
+> .reset that doesn't clean up the map. While I don't think this nuance
+> matters much to existing older userspace apps, as the maps should
+> already get cleaned by previous process in vhost_vdpa_cleanup(), but if
+> bug-for-bug behavioral compatibility is what you want, module parameter
+> will be the single best answer.
+>
+> Regards,
+> -Siwei
+>
+> > But we can listen to others for sure.
+> >
+> > Thanks
+> >
+>
 
