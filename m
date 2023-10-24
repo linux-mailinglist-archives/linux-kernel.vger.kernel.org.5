@@ -2,60 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C2D7D5D49
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851987D5CEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344305AbjJXVht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 17:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
+        id S1344268AbjJXVLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 17:11:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbjJXVhr (ORCPT
+        with ESMTP id S232399AbjJXVLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:37:47 -0400
-X-Greylist: delayed 1674 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 24 Oct 2023 14:37:45 PDT
-Received: from stravinsky.debian.org (stravinsky.debian.org [IPv6:2001:41b8:202:deb::311:108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D68BA3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:37:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-        s=smtpauto.stravinsky; h=X-Debian-User:In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Reply-To:Content-ID:Content-Description;
-        bh=ChkYc+GULd0fN/nFw+559WVZQK+W9W42DJqglKFeScU=; b=jgS0xGKis2ZlA68GNnBZdMS9lD
-        oXP0rqV8nrev5Hm8P6PbGRjqoO0d35X0DquI6KsdZ+2y8e7KMp/O/vw84ZSaC+FHU/kkdtK+4Oc6W
-        tIy4SpCLEn3SOB80+ZzO/kHWQTl2R3/DiU3KrAvuJ7/p7ilBDYSFLl6rRoso34QL3qXjznQraJP9l
-        1Vi58fBIQUHN1ACufUi80hd+5Wfr74+TTtHf0kXwqXFGjDgR/78gXF0Ji1uuQ6wGPO/cuuyNS6f8Z
-        GP5TmRw4MlPYFa8RqA4RHDl+w6yAJLCqy3ou5sgU2jjfcsf/7ILH2L19WF3CF6ZWQ3ZxsLfcWipzX
-        X6BQ/EEA==;
-Received: from authenticated user
-        by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <carnil@debian.org>)
-        id 1qvOeG-00FPhY-LQ; Tue, 24 Oct 2023 21:09:12 +0000
-Received: by eldamar.lan (Postfix, from userid 1000)
-        id 9ED23BE2DE0; Tue, 24 Oct 2023 23:09:10 +0200 (CEST)
-Date:   Tue, 24 Oct 2023 23:09:10 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Timo Lindfors <timo.lindfors@iki.fi>, 1054514@bugs.debian.org
-Cc:     Gerd Hoffmann <kraxel@redhat.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, regressions@lists.linux.dev
-Subject: Re: Bug#1054514: linux-image-6.1.0-13-amd64: Debian VM with qxl
- graphics freezes frequently
-Message-ID: <ZTgydqRlK6WX_b29@eldamar.lan>
-References: <alpine.DEB.2.20.2310242308150.28457@mail.home>
+        Tue, 24 Oct 2023 17:11:42 -0400
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD1C10CE
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:11:40 -0700 (PDT)
+Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-581e2c9197bso6870264eaf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:11:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698181899; x=1698786699;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DZWvcvFWT3P94ESec92OyEYUrt6Ss1wkXtTKq4rDYxM=;
+        b=AuaJChwAqGLkvd3l774a88pBENGuhVV7sM8r0r4tZceXytjG4CwzpVvYQNeXEyXrjt
+         ZNXEXglDsem6z3+718c3+8KMbxdlPFBTyXZuBAGpG0Z6gZqb7LTCaZ/VMNlYd0hO/McD
+         TM40oHoXChHXeCfxvA8Wk44kd8P6XwL1PQNI8xpgDEkVrAMg05p5Ua1Pad65ju9mskqt
+         7nzWUdlUk7xFXPJml3t2Gz4+3tJla13VPNKeL6EDmVb6/7mMVZ6fAwlLtjNft9J73N+7
+         c14Iv9qZISH3WtBjC6X4Bvu1azA6JinsRzOWQwnkDwGCS8FlsHeBEOgfaENeoSylxABO
+         TBqA==
+X-Gm-Message-State: AOJu0YzDm1OOMrZ1ssLzsgYBi3lx+6dZQ7QpZ7msViaJE7550dF77+Ut
+        sCMQMTXL4/15QjdVd9fRGrlh1pCCVei2piCAUfc65gFne7Bd
+X-Google-Smtp-Source: AGHT+IFIGdjAGzKoTrnYimPKPHmDG1kjuJTZCw+8fwLQZBt4HO+eQF/KgxqQt+0nli6xsdzu/gL97sZ4XmiD0ErEiKHID+MmReGv
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <alpine.DEB.2.20.2310242308150.28457@mail.home>
-X-Debian-User: carnil
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,UNPARSEABLE_RELAY autolearn=ham
+X-Received: by 2002:a4a:350f:0:b0:581:def4:738d with SMTP id
+ l15-20020a4a350f000000b00581def4738dmr3989735ooa.0.1698181899638; Tue, 24 Oct
+ 2023 14:11:39 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 14:11:39 -0700
+In-Reply-To: <0000000000003ee3610599d20096@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e45f1006087cc8ea@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in __media_entity_remove_links
+From:   syzbot <syzbot+0b0095300dfeb8a83dc8@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, laurent.pinchart@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org, nogikh@google.com,
+        sakari.ailus@linux.intel.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,189 +57,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Timo,
+This bug is marked as fixed by commit:
+media: uvcvideo: Avoid cyclic entity chains due to malformed USB descriptors
 
-On Tue, Oct 24, 2023 at 11:14:32PM +0300, Timo Lindfors wrote:
-> Package: src:linux
-> Version: 6.1.55-1
-> Severity: normal
-> 
-> Steps to reproduce:
-> 1) Install Debian 12 as a virtual machine using virt-manager, choose qxl
->    graphics card. You only need basic installation without wayland or X.
-> 2) Login from the console and save thë following to reproduce.bash:
-> 
-> #!/bin/bash
-> 
-> chvt 3
-> for j in $(seq 80); do
->     echo "$(date) starting round $j"
->     if [ "$(journalctl --boot | grep "failed to allocate VRAM BO")" != "" ];
-> then
->         echo "bug was reproduced after $j tries"
->         exit 1
->     fi
->     for i in $(seq 100); do
->         dmesg > /dev/tty3
->     done
-> done
-> 
-> echo "bug could not be reproduced"
-> exit 0
-> 
-> 
-> 3) Run chmod a+x reproduce.bash
-> 4) Run ./reproduce.bash and wait for up to 20 minutes.
-> 
-> Expected results:
-> 4) The system prints a steady flow of text without kernel error messages
-> 
-> Actual messages:
-> 4) At some point the text stops flowing and the script prints "bug was
->    reproduced". If you run "journalctl --boot" you see
-> 
-> kernel: [TTM] Buffer eviction failed
-> kernel: qxl 0000:00:02.0: object_init failed for (3149824, 0x00000001)
-> kernel: [drm:qxl_alloc_bo_reserved [qxl]] *ERROR* failed to allocate VRAM BO
-> 
-> 
-> 
-> More info:
-> 1) The bug does not occur if I downgrade the kernel to
->    linux-image-5.10.0-26-amd64_5.10.197-1_amd64.deb from Debian 11.
-> 2) I used the following test_linux.bash to bisect this issue against
->    upstream source:
-> 
-> #!/bin/bash
-> set -x
-> 
-> gitversion="$(git describe HEAD|sed 's@^v@@')"
-> 
-> git checkout drivers/gpu/drm/ttm/ttm_bo.c include/drm/ttm/ttm_bo_api.h
-> git show bec771b5e0901f4b0bc861bcb58056de5151ae3a | patch -p1
-> # Build
-> cp ~/kernel.config .config
-> # cp /boot/config-$(uname -r) .config
-> # scripts/config --enable LOCALVERSION_AUTO
-> # scripts/config --disable DEBUG_INFO
-> # scripts/config --disable SYSTEM_TRUSTED_KEYRING
-> # scripts/config --set-str SYSTEM_TRUSTED_KEYS ''
-> # scripts/config --disable STACKPROTECTOR_STRONG
-> make olddefconfig
-> # make localmodconfig
-> make -j$(nproc --all) bindeb-pkg
-> rc="$?"
-> if [ "$rc" != "0" ]; then
->     exit 125
-> fi
-> git checkout drivers/gpu/drm/ttm/ttm_bo.c include/drm/ttm/ttm_bo_api.h
-> 
-> package="$(ls --sort=time ../linux-image-*_amd64.deb|head -n1)"
-> version=$(echo $package | cut -d_ -f1|cut -d- -f3-)
-> 
-> if [ "$gitversion" != "$version" ]; then
->     echo "Build produced version $gitversion but got $version, ignoring"
->     #exit 255
-> fi
-> 
-> # Deploy
-> scp $package target:a.deb
-> ssh target sudo apt install ./a.deb
-> ssh target rm -f a.deb
-> ssh target ./grub_set_default_version.bash $version
-> ssh target sudo shutdown -r now
-> sleep 40
-> 
-> detected_version=$(ssh target uname -r)
-> if [ "$detected_version" != "$version" ]; then
->     echo "Booted to $detected_version but expected $version"
->     exit 255
-> fi
-> 
-> # Test
-> exec ssh target sudo ./reproduce.bash
-> 
-> 
-> Bisect printed the following log:
-> 
-> git bisect start
-> # bad: [ed29c2691188cf7ea2a46d40b891836c2bd1a4f5] drm/i915: Fix userptr so we do not have to worry about obj->mm.lock, v7.
-> git bisect bad ed29c2691188cf7ea2a46d40b891836c2bd1a4f5
-> # bad: [762949bb1da78941b25e63f7e952af037eee15a9] drm: fix drm_mode_create_blob comment
-> git bisect bad 762949bb1da78941b25e63f7e952af037eee15a9
-> # bad: [e40f97ef12772f8eb04b6a155baa1e0e2e8f3ecc] drm/gma500: Drop DRM_GMA600 config option
-> git bisect bad e40f97ef12772f8eb04b6a155baa1e0e2e8f3ecc
-> # bad: [5a838e5d5825c85556011478abde708251cc0776] drm/qxl: simplify qxl_fence_wait
-> git bisect bad 5a838e5d5825c85556011478abde708251cc0776
-> # bad: [d2b6f8a179194de0ffc4886ffc2c4358d86047b8] Merge tag 'xfs-5.13-merge-3' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux
-> git bisect bad d2b6f8a179194de0ffc4886ffc2c4358d86047b8
-> # bad: [68a32ba14177d4a21c4a9a941cf1d7aea86d436f] Merge tag 'drm-next-2021-04-28' of git://anongit.freedesktop.org/drm/drm
-> git bisect bad 68a32ba14177d4a21c4a9a941cf1d7aea86d436f
-> # bad: [0698b13403788a646073fcd9b2294f2dce0ce429] drm/amdgpu: skip PP_MP1_STATE_UNLOAD on aldebaran
-> git bisect bad 0698b13403788a646073fcd9b2294f2dce0ce429
-> # bad: [e1a5e6a8c48bf99ea374fb3e535661cfe226bca4] drm/doc: Add RFC section
-> git bisect bad e1a5e6a8c48bf99ea374fb3e535661cfe226bca4
-> # bad: [ed29c2691188cf7ea2a46d40b891836c2bd1a4f5] drm/i915: Fix userptr so we do not have to worry about obj->mm.lock, v7.
-> git bisect bad ed29c2691188cf7ea2a46d40b891836c2bd1a4f5
-> # bad: [2c8ab3339e398bbbcb0980933e266b93bedaae52] drm/i915: Pin timeline map after first timeline pin, v4.
-> git bisect bad 2c8ab3339e398bbbcb0980933e266b93bedaae52
-> # bad: [2eb8e1a69d9f8cc9c0a75e327f854957224ba421] drm/i915/gem: Drop relocation support on all new hardware (v6)
-> git bisect bad 2eb8e1a69d9f8cc9c0a75e327f854957224ba421
-> # bad: [b5b6f6a610127b17f20c0ca03dd27beee4ddc2b2] drm/i915/gem: Drop legacy execbuffer support (v2)
-> git bisect bad b5b6f6a610127b17f20c0ca03dd27beee4ddc2b2
-> # bad: [06debd6e1b28029e6e77c41e59a162868f377897] Merge tag 'drm-intel-next-2021-03-16' of git://anongit.freedesktop.org/drm/drm-intel into drm-next
-> git bisect bad 06debd6e1b28029e6e77c41e59a162868f377897
-> # good: [e19eede54240d64b4baf9b0df4dfb8191f7ae48b] Merge branch 'dmi-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging
-> git bisect good e19eede54240d64b4baf9b0df4dfb8191f7ae48b
-> # good: [1e28eed17697bcf343c6743f0028cc3b5dd88bf0] Linux 5.12-rc3
-> git bisect good 1e28eed17697bcf343c6743f0028cc3b5dd88bf0
-> # bad: [6af70eb3b40edfc8bdf2373cdc2bcf9d5a20c8c7] drm/atmel-hlcdc: Rename custom plane state variable
-> git bisect bad 6af70eb3b40edfc8bdf2373cdc2bcf9d5a20c8c7
-> # good: [4ca77c513537700d3fae69030879f781dde1904c] drm/qxl: release shadow on shutdown
-> git bisect good 4ca77c513537700d3fae69030879f781dde1904c
-> # bad: [4a11bd1e88af130f50a72e0f54391c1c7d268e03] drm/ast: Add constants for VGACRCB register bits
-> git bisect bad 4a11bd1e88af130f50a72e0f54391c1c7d268e03
-> # bad: [5c209d8056b9763ce544ecd7dadb3782cdaf96ed] drm/gma500: psb_spank() doesn't need it's own file
-> git bisect bad 5c209d8056b9763ce544ecd7dadb3782cdaf96ed
-> # bad: [db0c6bd2c0c0dada8927cd46a7c34c316a3a6c04] drm/gem: Export drm_gem_vmap() and drm_gem_vunmap()
-> git bisect bad db0c6bd2c0c0dada8927cd46a7c34c316a3a6c04
-> # bad: [f4a84e165e6d58606097dd07b5b78767a94b870c] drm/qxl: allocate dumb buffers in ram
-> git bisect bad f4a84e165e6d58606097dd07b5b78767a94b870c
-> # good: [a7709b9b89a67f3ead2d188b1d0c261059b1f291] drm/qxl: handle shadow in primary destroy
-> git bisect good a7709b9b89a67f3ead2d188b1d0c261059b1f291
-> # bad: [5a838e5d5825c85556011478abde708251cc0776] drm/qxl: simplify qxl_fence_wait
-> git bisect bad 5a838e5d5825c85556011478abde708251cc0776
-> # good: [5f6c871fe919999774e8535ea611a6f84ee43ee4] drm/qxl: properly free qxl releases
-> git bisect good 5f6c871fe919999774e8535ea611a6f84ee43ee4
-> # first bad commit: [5a838e5d5825c85556011478abde708251cc0776] drm/qxl: simplify qxl_fence_wait
-> 
-> I took a look at
-> 
-> commit 5a838e5d5825c85556011478abde708251cc0776 (refs/bisect/bad)
-> Author: Gerd Hoffmann <kraxel@redhat.com>
-> Date:   Thu Feb 4 15:57:10 2021 +0100
-> 
->     drm/qxl: simplify qxl_fence_wait
-> 
->     Now that we have the new release_event wait queue we can just
->     use that in qxl_fence_wait() and simplify the code a lot.
-> 
->     Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
->     Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
->     Link: http://patchwork.freedesktop.org/patch/msgid/20210204145712.1531203-10-kraxel@redhat.com
-> 
-> 
-> and noticed that the bug does not occur if I boot 6.1 kernel with this patch
-> reverted (see attached file).
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-Thanks for the excelent constructed report! I think it's best to
-forward this directly to upstream including the people for the
-bisected commit to get some idea.
+#syz fix: exact-commit-title
 
-Can you reproduce the issue with 6.5.8-1 in unstable as well?
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-If not, are you able to isolate an upstream fix which should be
-backported to the 6.1.y series as well?
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=0b0095300dfeb8a83dc8
 
-Regards,
-Salvatore
+---
+[1] I expect the commit to be present in:
+
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
