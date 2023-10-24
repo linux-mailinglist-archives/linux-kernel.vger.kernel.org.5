@@ -2,150 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAAC7D46F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C8A7D46FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbjJXFhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 01:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45236 "EHLO
+        id S232335AbjJXFkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 01:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbjJXFhv (ORCPT
+        with ESMTP id S232234AbjJXFkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 01:37:51 -0400
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9668F125;
-        Mon, 23 Oct 2023 22:37:46 -0700 (PDT)
+        Tue, 24 Oct 2023 01:40:18 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73BE12B
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 22:40:14 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40906fc54fdso9827205e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 22:40:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1698125867; x=1729661867;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=GKCui9cJyGKr7oruPX4GBfO58GfHK6CS9FhEdXSU9BA=;
-  b=JNECnJUaCOWv/ygdgCyp8g5KUCLXm1aAFZJPq53rZ1NL0gYtlr/ruafv
-   nnhxlVDLqCQoIKN+1IVKC00Cige/bObcoNpamHZZbyo6D/Mp04qY6Y1pc
-   Z8PHwAXB2NY/NYg5XEIxi4j5Z/0zMI1yYOQP+3ROhIJ4A+1XQ/GOnt6Hy
-   yaLI9b9kdPdSll+vR8YU8jA8vxPHH6DPYS2NCtI1p5G+z2mrXTj9vm8gl
-   /RBEx7vp+g0O3s3Z8EGogmHBzsdXJpX1XKEE/MdOphr8kXU+LlqDU11ab
-   sx6jAm9E8PPtMMfyUXmzTgmTz4QtDOG7lwJeYVJ48bhlVL+0BBEEixJOM
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.03,246,1694728800"; 
-   d="scan'208";a="33612995"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 24 Oct 2023 07:37:44 +0200
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 7A71728007F;
-        Tue, 24 Oct 2023 07:37:44 +0200 (CEST)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "S.J. Wang" <shengjiu.wang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mpuaudiosw <Mpuaudiosw@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        linux-imx <linux-imx@nxp.com>, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        LnxRevLi <LnxRevLi@nxp.com>
-Subject: Re: [PATCH v4 2/2] arm64: dts: imx8mp: add reserve-memory nodes for DSP
-Date:   Tue, 24 Oct 2023 07:37:47 +0200
-Message-ID: <5883038.MhkbZ0Pkbq@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <ZTasTEvw4//SEMlW@p14s>
-References: <20231013152731.23471-1-iuliana.prodan@oss.nxp.com> <20231013152731.23471-3-iuliana.prodan@oss.nxp.com> <ZTasTEvw4//SEMlW@p14s>
+        d=linaro.org; s=google; t=1698126013; x=1698730813; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8S1Ffd5MfC34d7i9U6ZkEMWBIBXhcbh4VSbMEWH6zt0=;
+        b=YGjT/eJpUuJ6WzGSIqkVI/xe+u53gbpKkz4k0T3y5bfbFT+QWEBSgu/6lZ7QcrogK9
+         enAc4DKLtCkMP7miwVpiSFS/4qfSk+Lai/sq7YBHLS+jQuQfMI6m6EIvdqAp74FeNZx4
+         73RsvQaGNsdaYeKolCCNDxBNPvV7EiQ2KlbvhC4FwjGxWpnzPWI6ekBrexuypM610Efc
+         uRqjb6Ty5qPLu9cNMVqxTvokbb4U0VXLtEc2edzy/MEZ0bH/zLwC4RYv/t3XRneymEvK
+         9oqmuHSiRNntetPsTpQZMAvuBwflPJelCiARUdqBFAclbO9dDdTA3/iqqz8ZSJ2W0SKJ
+         x4pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698126013; x=1698730813;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8S1Ffd5MfC34d7i9U6ZkEMWBIBXhcbh4VSbMEWH6zt0=;
+        b=bqwAHGaPKBNWH56Pt7GPxPOJL7hORq++5hmIeSCLX3+liUPfBifLe9LNCtSrKKd5zY
+         l+mamJabCDbGZ9LywJBXJ80+K/e7UGM6W+dzFvfjkGdAasBjQW+hSR9vBWD58s/yAgkK
+         jZv9rdmBKBSKFWVKqw4bkfkH7lPSKEsH15vN1f/M6hV1bRZ+evwOZqpdrGQe90byb04q
+         LL3YUPJ+mkOsQJk9oXwDWyrXXOrdekSpTwXTZi8j9FXQ0kpMMCgxKo7jZwdiC1FjDS1a
+         xvWrCrymnefCUdqVn5qi53vUKbBCiupKCh+sU8xBF17BH1AfTDQrU4VezLjOEs4IIZbL
+         0fOg==
+X-Gm-Message-State: AOJu0YykvN7f158JapvP78W/7vcEIddp2Q7GVMkEFAWRfrrBzjVZd/rb
+        CNceXYWxm34wxg4/1P49Vu8gDW+owiszQIlw/ZQ=
+X-Google-Smtp-Source: AGHT+IHA5z2yygwPWwubIy2EilUpoOxRuMgdblCJ+l4dDMrjVLH40V93ZeffBsu1a9aDfRAGV4+rFQ==
+X-Received: by 2002:a05:600c:4444:b0:408:4120:bab7 with SMTP id v4-20020a05600c444400b004084120bab7mr8378115wmn.15.1698126013032;
+        Mon, 23 Oct 2023 22:40:13 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id p12-20020a05600c418c00b0040773c69fc0sm15515633wmh.11.2023.10.23.22.40.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 22:40:12 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 08:40:09 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     keescook@chromium.org, Robert Richter <rric@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Temerkhanov <s.temerkhanov@gmail.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        linux-edac@vger.kernel.org
+Subject: Re: [PATCH v2] EDAC/thunderx: Fix some potential buffer overflow in
+ thunderx_ocx_com_threaded_isr()
+Message-ID: <ea7ff4e8-c21c-4847-8fcd-7a038782872c@kadam.mountain>
+References: <91ec35cd8e2e86fa3d24c2e8ea6970e0437cdfd2.1697908406.git.christophe.jaillet@wanadoo.fr>
+ <70bd7480-508a-451d-bc0a-f78e652cf511@kadam.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70bd7480-508a-451d-bc0a-f78e652cf511@kadam.mountain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
-
-Am Montag, 23. Oktober 2023, 19:24:28 CEST schrieb Mathieu Poirier:
-> Hey guys,
->=20
-> On Fri, Oct 13, 2023 at 06:27:31PM +0300, Iuliana Prodan (OSS) wrote:
-> > From: Iuliana Prodan <iuliana.prodan@nxp.com>
-> >=20
-> > Add the reserve-memory nodes used by DSP when the rpmsg
-> > feature is enabled.
-> >=20
-> > Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
-> > ---
-> >=20
-> >  arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 22 ++++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
-> >=20
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-> > b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts index
-> > fa37ce89f8d3..b677ad8ef042 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-> > @@ -125,6 +125,28 @@
-> >=20
-> >  		};
-> >  =09
-> >  	};
-> >=20
+On Tue, Oct 24, 2023 at 08:35:33AM +0300, Dan Carpenter wrote:
+> On Sat, Oct 21, 2023 at 07:13:51PM +0200, Christophe JAILLET wrote:
+> > @@ -1127,27 +1128,26 @@ static irqreturn_t thunderx_ocx_com_threaded_isr(int irq, void *irq_id)
+> >  				ARRAY_SIZE(ocx->com_err_ctx));
+> >  		ctx = &ocx->com_err_ctx[tail];
+> >  
+> > -		snprintf(msg, OCX_MESSAGE_SIZE, "%s: OCX_COM_INT: %016llx",
+> > -			ocx->edac_dev->ctl_name, ctx->reg_com_int);
+> > -
+> >  		decode_register(other, OCX_OTHER_SIZE,
+> >  				ocx_com_errors, ctx->reg_com_int);
+> >  
+> > -		strncat(msg, other, OCX_MESSAGE_SIZE);
+> > +		remaining = OCX_MESSAGE_SIZE;
+> > +		remaining -= scnprintf(msg, remaining, "%s: OCX_COM_INT: %016llx%s",
+> > +				       ocx->edac_dev->ctl_name, ctx->reg_com_int,
+> > +				       other);
+> >  
+> >  		for (lane = 0; lane < OCX_RX_LANES; lane++)
+> >  			if (ctx->reg_com_int & BIT(lane)) {
+> > -				snprintf(other, OCX_OTHER_SIZE,
+> > -					 "\n\tOCX_LNE_INT[%02d]: %016llx OCX_LNE_STAT11[%02d]: %016llx",
+> > -					 lane, ctx->reg_lane_int[lane],
+> > -					 lane, ctx->reg_lane_stat11[lane]);
+> > -
+> > -				strncat(msg, other, OCX_MESSAGE_SIZE);
+> > -
+> >  				decode_register(other, OCX_OTHER_SIZE,
+> >  						ocx_lane_errors,
+> >  						ctx->reg_lane_int[lane]);
+> > -				strncat(msg, other, OCX_MESSAGE_SIZE);
 > > +
-> > +	reserved-memory {
-> > +		#address-cells =3D <2>;
-> > +		#size-cells =3D <2>;
-> > +		ranges;
-> > +
-> > +		dsp_vdev0vring0: vdev0vring0@942f0000 {
-> > +			reg =3D <0 0x942f0000 0 0x8000>;
-> > +			no-map;
-> > +		};
-> > +
-> > +		dsp_vdev0vring1: vdev0vring1@942f8000 {
-> > +			reg =3D <0 0x942f8000 0 0x8000>;
-> > +			no-map;
-> > +		};
-> > +
-> > +		dsp_vdev0buffer: vdev0buffer@94300000 {
-> > +			compatible =3D "shared-dma-pool";
-> > +			reg =3D <0 0x94300000 0 0x100000>;
-> > +			no-map;
-> > +		};
-> > +	};
->=20
-> Alexander: Are you good with the refactoring?
+> > +				remaining -= scnprintf(msg + (OCX_MESSAGE_SIZE - remaining),
+> > +						       remaining,
+> 
+> Instead of doing "remaining -=" the canonincal way is "off +=".  Then
+> the snprintf() becomes:
+> 
+> 	off += scnprintf(msg + off, OCX_MESSAGE_SIZE - off, ""\n\tOCX_...
+> 
+> Your way works but it makes my head hurt.
 
-Yes, adding this to EVK is good for me.
-Acked-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Sorry, I shouldn't have sent this email.  You're allowed to write it
+however you want if you're fixing the bug.
 
-> Rob and Krzysztof: I'm not sure if you want to ack this patch but giving =
-you
-> the benefit of the doubt.
->=20
-> Shawn and Sascha: Did you plan on picking up this patch or shoud I?
->=20
-> Thanks,
-> Mathieu
->=20
-> >  };
-> > =20
-> >  &flexspi {
-
-
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
+regards,
+dan carpenter
 
