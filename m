@@ -2,696 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 754E67D5115
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3957D5104
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbjJXNJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
+        id S234659AbjJXNH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234749AbjJXNHP (ORCPT
+        with ESMTP id S1343862AbjJXNHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:07:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DD330F0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:05:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61C33C433C9;
-        Tue, 24 Oct 2023 13:05:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698152752;
-        bh=ec+7XYNd57wOc8f0VV3Q/6vW+deLgEFswz0dkuEpwYk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=KBZId2cWNaayVjuSyDNE0wooRCSbDWZRoHzlnHbFIzJc7rAMt1oxcOwrKxklK2PEb
-         HuwBo53RjDwh3I8a3RRrviu5YVV3i40uZeuKkmOvoqd5rzQIzMc0ydpyT6e3EKJtGz
-         uC7KjAkskkxn6VD465rOlfOB+NGl0HxkbKIsUWGBzFGhYz3588VkTKYONJLQxltcS3
-         Ah8bDVtiHQtQUICRFX4deDNc0GBcwZAo5aXz8aH8dluWEtng7l4nUc/GBM8QVkd7Ne
-         t6eNIbqTkVzRj9SvbKUXv7U0amSnnDb9kWMpjQAZhNEEGPN33dGee4DWW+2gIMQO6n
-         pmpQ6mUtPA3zw==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Anup Patel <apatel@ventanamicro.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Tue, 24 Oct 2023 09:07:46 -0400
+Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC173D79;
+        Tue, 24 Oct 2023 06:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kernkonzept.com; s=mx1; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:Reply-To:
+        Content-ID:Content-Description;
+        bh=C0NEbr2Bu1GmyIhx8+vqJqdrFza7J7tVm5zNmo+rtEM=; b=ADmrSkg2+Vo/nMsjS9JnEWQIXA
+        qnIPxpsVa5vX7hU+d2iFiLkMCbCus5t3gQGnyi/Gna15ztciE7bHOxhxrsXZaUV/2TeSYz1WMSsYD
+        kxPy56li/HGPSAwcHTe4xw85iNjin0Zjh2I+PyE4IfCYnAXr5/pey5fxNFQ5k10fqmdKQQHZouWJL
+        91VwJaUsi1eW8Q9gNB4QAWNxAOaU4S8gF4clamZmBpWYe/3x0cQ+P9Fc0x5C2V8luReOAN9Z/4DUI
+        +MQno+CJaHqrMc2o0/48DLGBKayjODFol44/kHZYXjfhJgx5d1luLDZN+XjrVUsmLRSReydprX5iA
+        QmAY6MjQ==;
+Received: from [10.22.3.24] (helo=kernkonzept.com)
+        by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
+        id 1qvH7k-000kF4-06;
+        Tue, 24 Oct 2023 15:07:07 +0200
+Date:   Tue, 24 Oct 2023 15:07:02 +0200
+From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>
-Subject: Re: [PATCH v11 07/14] irqchip: Add RISC-V incoming MSI controller
- early driver
-In-Reply-To: <20231023172800.315343-8-apatel@ventanamicro.com>
-References: <20231023172800.315343-1-apatel@ventanamicro.com>
- <20231023172800.315343-8-apatel@ventanamicro.com>
-Date:   Tue, 24 Oct 2023 15:05:47 +0200
-Message-ID: <878r7srx04.fsf@all.your.base.are.belong.to.us>
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] cpufreq: qcom-nvmem: Enable virtual power domain
+ devices
+Message-ID: <ZTfBZqBwqskhFydZ@kernkonzept.com>
+References: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
+ <20231018-msm8909-cpufreq-v2-2-0962df95f654@kernkonzept.com>
+ <CAPDyKFot9=M1ooP_Q1AOgG5o_4DTQ2qsyai1ZdXAzBwf89W4uA@mail.gmail.com>
+ <CAPDyKFr5A-P=UhWs4rUMBWup3pH75WAhcZ56Y2_Sfk3=WfxRCQ@mail.gmail.com>
+ <ZTeyhR7YY7VgWQlU@kernkonzept.com>
+ <CAPDyKFrcV8iJnJ904j1jkx0E8PaOLmiTZ7CKk7EV8qQ71AZdbA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFrcV8iJnJ904j1jkx0E8PaOLmiTZ7CKk7EV8qQ71AZdbA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anup!
+On Tue, Oct 24, 2023 at 02:49:32PM +0200, Ulf Hansson wrote:
+> On Tue, 24 Oct 2023 at 14:03, Stephan Gerhold
+> <stephan.gerhold@kernkonzept.com> wrote:
+> >
+> > On Thu, Oct 19, 2023 at 01:26:19PM +0200, Ulf Hansson wrote:
+> > > On Thu, 19 Oct 2023 at 12:24, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > >
+> > > > On Wed, 18 Oct 2023 at 10:06, Stephan Gerhold
+> > > > <stephan.gerhold@kernkonzept.com> wrote:
+> > > > >
+> > > > > The genpd core caches performance state votes from devices that are
+> > > > > runtime suspended as of commit 3c5a272202c2 ("PM: domains: Improve
+> > > > > runtime PM performance state handling"). They get applied once the
+> > > > > device becomes active again.
+> > > > >
+> > > > > To attach the power domains needed by qcom-cpufreq-nvmem the OPP core
+> > > > > calls genpd_dev_pm_attach_by_id(). This results in "virtual" dummy
+> > > > > devices that use runtime PM only to control the enable and performance
+> > > > > state for the attached power domain.
+> > > > >
+> > > > > However, at the moment nothing ever resumes the virtual devices created
+> > > > > for qcom-cpufreq-nvmem. They remain permanently runtime suspended. This
+> > > > > means that performance state votes made during cpufreq scaling get
+> > > > > always cached and never applied to the hardware.
+> > > > >
+> > > > > Fix this by enabling the devices after attaching them and use
+> > > > > dev_pm_syscore_device() to ensure the power domains also stay on when
+> > > > > going to suspend. Since it supplies the CPU we can never turn it off
+> > > > > from Linux. There are other mechanisms to turn it off when needed,
+> > > > > usually in the RPM firmware (RPMPD) or the cpuidle path (CPR genpd).
+> > > >
+> > > > I believe we discussed using dev_pm_syscore_device() for the previous
+> > > > version. It's not intended to be used for things like the above.
+> > > >
+> > > > Moreover, I was under the impression that it wasn't really needed. In
+> > > > fact, I would think that this actually breaks things for system
+> > > > suspend/resume, as in this case the cpr driver's genpd
+> > > > ->power_on|off() callbacks are no longer getting called due this,
+> > > > which means that the cpr state machine isn't going to be restored
+> > > > properly. Or did I get this wrong?
+> > >
+> > > BTW, if you really need something like the above, the proper way to do
+> > > it would instead be to call device_set_awake_path() for the device.
+> > >
+> >
+> > Unfortunately this does not work correctly. When I use
+> > device_set_awake_path() it does set dev->power.wakeup_path = true.
+> > However, this flag is cleared again in device_prepare() when entering
+> > suspend. To me it looks a bit like wakeup_path is not supposed to be set
+> > directly by drivers? Before and after your commit 8512220c5782 ("PM /
+> > core: Assign the wakeup_path status flag in __device_prepare()") it
+> > seems to be internally bound to device_may_wakeup().
+> >
+> > It works if I make device_may_wakeup() return true, with
+> >
+> >         device_set_wakeup_capable(dev, true);
+> >         device_wakeup_enable(dev);
+> >
+> > but that also allows *disabling* the wakeup from sysfs which doesn't
+> > really make sense for the CPU.
+> >
+> > Any ideas?
+> 
+> The device_set_awake_path() should be called from a system suspend
+> callback. So you need to add that callback for the cpufreq driver.
+> 
+> Sorry, if that wasn't clear.
+> 
 
-Wow, I'm really happy to see that you're moving towards the 1-1 model!
+Hmm, but at the moment I'm calling this on the virtual genpd devices.
+How would it work for them? I don't have a suspend callback for them.
 
-Anup Patel <apatel@ventanamicro.com> writes:
+I guess could loop over the virtual devices in the cpufreq driver
+suspend callback, but is my driver suspend callback really guaranteed to
+run before the device_prepare() that clears "wakeup_path" on the virtual
+devices?
 
-> The RISC-V advanced interrupt architecture (AIA) specification
-> defines a new MSI controller called incoming message signalled
-> interrupt controller (IMSIC) which manages MSI on per-HART (or
-> per-CPU) basis. It also supports IPIs as software injected MSIs.
-> (For more details refer https://github.com/riscv/riscv-aia)
->
-> Let us add an early irqchip driver for RISC-V IMSIC which sets
-> up the IMSIC state and provide IPIs.
+Or is this the point where we need device links to make that work?
+A quick look suggests "wakeup_path" is just propagated to parents but
+not device links, so I don't think that would help, either.
 
-It would help (reviewers, and future bugfixers) if you add (here or in
-the cover) what design decisions you've taken instead of just saying
-that you're now supporting IMSIC.
-
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  drivers/irqchip/Kconfig                 |   6 +
->  drivers/irqchip/Makefile                |   1 +
->  drivers/irqchip/irq-riscv-imsic-early.c | 235 ++++++
->  drivers/irqchip/irq-riscv-imsic-state.c | 962 ++++++++++++++++++++++++
->  drivers/irqchip/irq-riscv-imsic-state.h | 109 +++
->  include/linux/irqchip/riscv-imsic.h     |  87 +++
->  6 files changed, 1400 insertions(+)
->  create mode 100644 drivers/irqchip/irq-riscv-imsic-early.c
->  create mode 100644 drivers/irqchip/irq-riscv-imsic-state.c
->  create mode 100644 drivers/irqchip/irq-riscv-imsic-state.h
->  create mode 100644 include/linux/irqchip/riscv-imsic.h
->
-> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-> index f7149d0f3d45..bdd80716114d 100644
-> --- a/drivers/irqchip/Kconfig
-> +++ b/drivers/irqchip/Kconfig
-> @@ -546,6 +546,12 @@ config SIFIVE_PLIC
->  	select IRQ_DOMAIN_HIERARCHY
->  	select GENERIC_IRQ_EFFECTIVE_AFF_MASK if SMP
->=20=20
-> +config RISCV_IMSIC
-> +	bool
-> +	depends on RISCV
-> +	select IRQ_DOMAIN_HIERARCHY
-> +	select GENERIC_MSI_IRQ
-> +
->  config EXYNOS_IRQ_COMBINER
->  	bool "Samsung Exynos IRQ combiner support" if COMPILE_TEST
->  	depends on (ARCH_EXYNOS && ARM) || COMPILE_TEST
-> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-> index ffd945fe71aa..d714724387ce 100644
-> --- a/drivers/irqchip/Makefile
-> +++ b/drivers/irqchip/Makefile
-> @@ -95,6 +95,7 @@ obj-$(CONFIG_QCOM_MPM)			+=3D irq-qcom-mpm.o
->  obj-$(CONFIG_CSKY_MPINTC)		+=3D irq-csky-mpintc.o
->  obj-$(CONFIG_CSKY_APB_INTC)		+=3D irq-csky-apb-intc.o
->  obj-$(CONFIG_RISCV_INTC)		+=3D irq-riscv-intc.o
-> +obj-$(CONFIG_RISCV_IMSIC)		+=3D irq-riscv-imsic-state.o irq-riscv-imsic-=
-early.o
->  obj-$(CONFIG_SIFIVE_PLIC)		+=3D irq-sifive-plic.o
->  obj-$(CONFIG_IMX_IRQSTEER)		+=3D irq-imx-irqsteer.o
->  obj-$(CONFIG_IMX_INTMUX)		+=3D irq-imx-intmux.o
-> diff --git a/drivers/irqchip/irq-riscv-imsic-early.c b/drivers/irqchip/ir=
-q-riscv-imsic-early.c
-> new file mode 100644
-> index 000000000000..23f689ff5807
-> --- /dev/null
-> +++ b/drivers/irqchip/irq-riscv-imsic-early.c
-> @@ -0,0 +1,235 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
-> + * Copyright (C) 2022 Ventana Micro Systems Inc.
-> + */
-> +
-> +#define pr_fmt(fmt) "riscv-imsic: " fmt
-> +#include <linux/cpu.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/irq.h>
-> +#include <linux/irqchip.h>
-> +#include <linux/irqchip/chained_irq.h>
-> +#include <linux/module.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/smp.h>
-> +
-> +#include "irq-riscv-imsic-state.h"
-> +
-> +static int imsic_parent_irq;
-> +
-> +#ifdef CONFIG_SMP
-> +static irqreturn_t imsic_local_sync_handler(int irq, void *data)
-> +{
-> +	imsic_local_sync();
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static void imsic_ipi_send(unsigned int cpu)
-> +{
-> +	struct imsic_local_config *local =3D
-> +				per_cpu_ptr(imsic->global.local, cpu);
-
-General nit for the series; There's a lot line breaks in the series. Try
-to use the full 100 chars for a line.
-
-> +
-> +	writel(IMSIC_IPI_ID, local->msi_va);
-
-Do you need the barriers here? If so, please document. If not, use the
-_releaxed() version.
-
-> +}
-> +
-> +static void imsic_ipi_starting_cpu(void)
-> +{
-> +	/* Enable IPIs for current CPU. */
-> +	__imsic_id_set_enable(IMSIC_IPI_ID);
-> +
-> +	/* Enable virtual IPI used for IMSIC ID synchronization */
-> +	enable_percpu_irq(imsic->ipi_virq, 0);
-
-Maybe pass IRQ_TYPE_NONE instead of 0, so it's clearer?
-
-> +}
-> +
-> +static void imsic_ipi_dying_cpu(void)
-> +{
-> +	/*
-> +	 * Disable virtual IPI used for IMSIC ID synchronization so
-> +	 * that we don't receive ID synchronization requests.
-> +	 */
-> +	disable_percpu_irq(imsic->ipi_virq);
-> +}
-> +
-> +static int __init imsic_ipi_domain_init(void)
-> +{
-> +	int virq;
-> +
-> +	/* Create IMSIC IPI multiplexing */
-> +	virq =3D ipi_mux_create(IMSIC_NR_IPI, imsic_ipi_send);
-> +	if (virq <=3D 0)
-> +		return (virq < 0) ? virq : -ENOMEM;
-> +	imsic->ipi_virq =3D virq;
-> +
-> +	/* First vIRQ is used for IMSIC ID synchronization */
-> +	virq =3D request_percpu_irq(imsic->ipi_virq, imsic_local_sync_handler,
-> +				  "riscv-imsic-lsync", imsic->global.local);
-> +	if (virq)
-> +		return virq;
-> +	irq_set_status_flags(imsic->ipi_virq, IRQ_HIDDEN);
-> +	imsic->ipi_lsync_desc =3D irq_to_desc(imsic->ipi_virq);
-> +
-> +	/* Set vIRQ range */
-> +	riscv_ipi_set_virq_range(imsic->ipi_virq + 1, IMSIC_NR_IPI - 1, true);
-> +
-> +	/* Announce that IMSIC is providing IPIs */
-> +	pr_info("%pfwP: providing IPIs using interrupt %d\n",
-> +		imsic->fwnode, IMSIC_IPI_ID);
-> +
-> +	return 0;
-> +}
-> +#else
-> +static void imsic_ipi_starting_cpu(void)
-> +{
-> +}
-> +
-> +static void imsic_ipi_dying_cpu(void)
-> +{
-> +}
-> +
-> +static int __init imsic_ipi_domain_init(void)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
-> +/*
-> + * To handle an interrupt, we read the TOPEI CSR and write zero in one
-> + * instruction. If TOPEI CSR is non-zero then we translate TOPEI.ID to
-> + * Linux interrupt number and let Linux IRQ subsystem handle it.
-> + */
-> +static void imsic_handle_irq(struct irq_desc *desc)
-> +{
-> +	struct irq_chip *chip =3D irq_desc_get_chip(desc);
-> +	int err, cpu =3D smp_processor_id();
-> +	struct imsic_vector *vec;
-> +	unsigned long local_id;
-> +
-> +	chained_irq_enter(chip, desc);
-> +
-> +	while ((local_id =3D csr_swap(CSR_TOPEI, 0))) {
-> +		local_id =3D local_id >> TOPEI_ID_SHIFT;
-> +
-> +		if (local_id =3D=3D IMSIC_IPI_ID) {
-> +#ifdef CONFIG_SMP
-> +			ipi_mux_process();
-> +#endif
-> +			continue;
-> +		}
-> +
-> +		if (unlikely(!imsic->base_domain))
-> +			continue;
-> +
-> +		vec =3D imsic_vector_from_local_id(cpu, local_id);
-> +		if (!vec) {
-> +			pr_warn_ratelimited(
-> +				"vector not found for local ID 0x%lx\n",
-> +				local_id);
-> +			continue;
-> +		}
-> +
-> +		err =3D generic_handle_domain_irq(imsic->base_domain,
-> +						vec->hwirq);
-> +		if (unlikely(err))
-> +			pr_warn_ratelimited(
-> +				"hwirq 0x%x mapping not found\n",
-> +				vec->hwirq);
-> +	}
-> +
-> +	chained_irq_exit(chip, desc);
-> +}
-> +
-> +static int imsic_starting_cpu(unsigned int cpu)
-> +{
-> +	/* Enable per-CPU parent interrupt */
-> +	enable_percpu_irq(imsic_parent_irq,
-> +			  irq_get_trigger_type(imsic_parent_irq));
-> +
-> +	/* Setup IPIs */
-> +	imsic_ipi_starting_cpu();
-> +
-> +	/*
-> +	 * Interrupts identities might have been enabled/disabled while
-> +	 * this CPU was not running so sync-up local enable/disable state.
-> +	 */
-> +	imsic_local_sync();
-> +
-> +	/* Enable local interrupt delivery */
-> +	imsic_local_delivery(true);
-> +
-> +	return 0;
-> +}
-> +
-> +static int imsic_dying_cpu(unsigned int cpu)
-> +{
-> +	/* Cleanup IPIs */
-> +	imsic_ipi_dying_cpu();
-> +
-> +	return 0;
-> +}
-> +
-> +static int __init imsic_early_probe(struct fwnode_handle *fwnode)
-> +{
-> +	int rc;
-> +	struct irq_domain *domain;
-> +
-> +	/* Find parent domain and register chained handler */
-> +	domain =3D irq_find_matching_fwnode(riscv_get_intc_hwnode(),
-> +					  DOMAIN_BUS_ANY);
-> +	if (!domain) {
-> +		pr_err("%pfwP: Failed to find INTC domain\n", fwnode);
-> +		return -ENOENT;
-> +	}
-> +	imsic_parent_irq =3D irq_create_mapping(domain, RV_IRQ_EXT);
-> +	if (!imsic_parent_irq) {
-> +		pr_err("%pfwP: Failed to create INTC mapping\n", fwnode);
-> +		return -ENOENT;
-> +	}
-> +	irq_set_chained_handler(imsic_parent_irq, imsic_handle_irq);
-> +
-> +	/* Initialize IPI domain */
-> +	rc =3D imsic_ipi_domain_init();
-> +	if (rc) {
-> +		pr_err("%pfwP: Failed to initialize IPI domain\n", fwnode);
-> +		return rc;
-> +	}
-> +
-> +	/*
-> +	 * Setup cpuhp state (must be done after setting imsic_parent_irq)
-> +	 *
-> +	 * Don't disable per-CPU IMSIC file when CPU goes offline
-> +	 * because this affects IPI and the masking/unmasking of
-> +	 * virtual IPIs is done via generic IPI-Mux
-> +	 */
-> +	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
-> +			  "irqchip/riscv/imsic:starting",
-> +			  imsic_starting_cpu, imsic_dying_cpu);
-> +
-> +	return 0;
-> +}
-> +
-> +static int __init imsic_early_dt_init(struct device_node *node,
-> +				      struct device_node *parent)
-> +{
-> +	int rc;
-> +	struct fwnode_handle *fwnode =3D &node->fwnode;
-> +
-> +	/* Setup IMSIC state */
-> +	rc =3D imsic_setup_state(fwnode);
-> +	if (rc) {
-> +		pr_err("%pfwP: failed to setup state (error %d)\n",
-> +			fwnode, rc);
-> +		return rc;
-> +	}
-> +
-> +	/* Do early setup of IPIs */
-> +	rc =3D imsic_early_probe(fwnode);
-> +	if (rc)
-> +		return rc;
-> +
-> +	/* Ensure that OF platform device gets probed */
-> +	of_node_clear_flag(node, OF_POPULATED);
-> +	return 0;
-> +}
-> +IRQCHIP_DECLARE(riscv_imsic, "riscv,imsics", imsic_early_dt_init);
-> diff --git a/drivers/irqchip/irq-riscv-imsic-state.c b/drivers/irqchip/ir=
-q-riscv-imsic-state.c
-> new file mode 100644
-> index 000000000000..54465e47851c
-> --- /dev/null
-> +++ b/drivers/irqchip/irq-riscv-imsic-state.c
-> @@ -0,0 +1,962 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
-> + * Copyright (C) 2022 Ventana Micro Systems Inc.
-> + */
-> +
-> +#define pr_fmt(fmt) "riscv-imsic: " fmt
-> +#include <linux/cpu.h>
-> +#include <linux/bitmap.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/irq.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_irq.h>
-> +#include <linux/seq_file.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/smp.h>
-> +#include <asm/hwcap.h>
-> +
-> +#include "irq-riscv-imsic-state.h"
-> +
-> +#define IMSIC_DISABLE_EIDELIVERY		0
-> +#define IMSIC_ENABLE_EIDELIVERY			1
-> +#define IMSIC_DISABLE_EITHRESHOLD		1
-> +#define IMSIC_ENABLE_EITHRESHOLD		0
-> +
-> +#define imsic_csr_write(__c, __v)		\
-> +do {						\
-> +	csr_write(CSR_ISELECT, __c);		\
-> +	csr_write(CSR_IREG, __v);		\
-> +} while (0)
-> +
-> +#define imsic_csr_read(__c)			\
-> +({						\
-> +	unsigned long __v;			\
-> +	csr_write(CSR_ISELECT, __c);		\
-> +	__v =3D csr_read(CSR_IREG);		\
-> +	__v;					\
-> +})
-> +
-> +#define imsic_csr_read_clear(__c, __v)		\
-> +({						\
-> +	unsigned long __r;			\
-> +	csr_write(CSR_ISELECT, __c);		\
-> +	__r =3D csr_read_clear(CSR_IREG, __v);	\
-> +	__r;					\
-> +})
-> +
-> +#define imsic_csr_set(__c, __v)			\
-> +do {						\
-> +	csr_write(CSR_ISELECT, __c);		\
-> +	csr_set(CSR_IREG, __v);			\
-> +} while (0)
-> +
-> +#define imsic_csr_clear(__c, __v)		\
-> +do {						\
-> +	csr_write(CSR_ISELECT, __c);		\
-> +	csr_clear(CSR_IREG, __v);		\
-> +} while (0)
-> +
-> +struct imsic_priv *imsic;
-> +
-> +const struct imsic_global_config *imsic_get_global_config(void)
-> +{
-> +	return (imsic) ? &imsic->global : NULL;
-
-Nit: No need for the parenthesis.
-
-> +}
-> +EXPORT_SYMBOL_GPL(imsic_get_global_config);
-> +
-> +static bool __imsic_eix_read_clear(unsigned long id, bool pend)
-> +{
-> +	unsigned long isel, imask;
-> +
-> +	isel =3D id / BITS_PER_LONG;
-> +	isel *=3D BITS_PER_LONG / IMSIC_EIPx_BITS;
-> +	isel +=3D (pend) ? IMSIC_EIP0 : IMSIC_EIE0;
-> +	imask =3D BIT(id & (__riscv_xlen - 1));
-> +
-> +	return (imsic_csr_read_clear(isel, imask) & imask) ? true : false;
-> +}
-> +
-> +#define __imsic_id_read_clear_enabled(__id)		\
-> +	__imsic_eix_read_clear((__id), false)
-> +#define __imsic_id_read_clear_pending(__id)		\
-> +	__imsic_eix_read_clear((__id), true)
-> +
-> +void __imsic_eix_update(unsigned long base_id,
-> +			unsigned long num_id, bool pend, bool val)
-> +{
-> +	unsigned long i, isel, ireg;
-> +	unsigned long id =3D base_id, last_id =3D base_id + num_id;
-> +
-> +	while (id < last_id) {
-> +		isel =3D id / BITS_PER_LONG;
-> +		isel *=3D BITS_PER_LONG / IMSIC_EIPx_BITS;
-> +		isel +=3D (pend) ? IMSIC_EIP0 : IMSIC_EIE0;
-
-Parenthesis nit.
-
-> +
-> +		ireg =3D 0;
-> +		for (i =3D id & (__riscv_xlen - 1);
-> +		     (id < last_id) && (i < __riscv_xlen); i++) {
-> +			ireg |=3D BIT(i);
-> +			id++;
-> +		}
-> +
-> +		/*
-> +		 * The IMSIC EIEx and EIPx registers are indirectly
-> +		 * accessed via using ISELECT and IREG CSRs so we
-> +		 * need to access these CSRs without getting preempted.
-> +		 *
-> +		 * All existing users of this function call this
-> +		 * function with local IRQs disabled so we don't
-> +		 * need to do anything special here.
-> +		 */
-> +		if (val)
-> +			imsic_csr_set(isel, ireg);
-> +		else
-> +			imsic_csr_clear(isel, ireg);
-> +	}
-> +}
-> +
-> +void imsic_local_sync(void)
-> +{
-> +	struct imsic_local_priv *lpriv =3D this_cpu_ptr(imsic->lpriv);
-> +	struct imsic_local_config *mlocal;
-> +	struct imsic_vector *mvec;
-> +	unsigned long flags;
-> +	int i;
-> +
-> +	raw_spin_lock_irqsave(&lpriv->ids_lock, flags);
-> +	for (i =3D 1; i <=3D imsic->global.nr_ids; i++) {
-> +		if (i =3D=3D IMSIC_IPI_ID)
-> +			continue;
-> +
-> +		if (test_bit(i, lpriv->ids_enabled_bitmap))
-> +			__imsic_id_set_enable(i);
-> +		else
-> +			__imsic_id_clear_enable(i);
-> +
-> +		mvec =3D lpriv->ids_move[i];
-> +		lpriv->ids_move[i] =3D NULL;
-> +		if (mvec) {
-> +			if (__imsic_id_read_clear_pending(i)) {
-> +				mlocal =3D per_cpu_ptr(imsic->global.local,
-> +						     mvec->cpu);
-> +				writel(mvec->local_id, mlocal->msi_va);
-
-Again, do you need all the barriers? If yes, document. No, then relax
-the call.
-
-> +			}
-> +
-> +			lpriv->vectors[i].hwirq =3D UINT_MAX;
-> +			lpriv->vectors[i].order =3D UINT_MAX;
-> +			clear_bit(i, lpriv->ids_used_bitmap);
-> +		}
-> +
-> +	}
-> +	raw_spin_unlock_irqrestore(&lpriv->ids_lock, flags);
-> +}
-> +
-> +void imsic_local_delivery(bool enable)
-> +{
-> +	if (enable) {
-> +		imsic_csr_write(IMSIC_EITHRESHOLD, IMSIC_ENABLE_EITHRESHOLD);
-> +		imsic_csr_write(IMSIC_EIDELIVERY, IMSIC_ENABLE_EIDELIVERY);
-> +	} else {
-> +		imsic_csr_write(IMSIC_EIDELIVERY, IMSIC_DISABLE_EIDELIVERY);
-> +		imsic_csr_write(IMSIC_EITHRESHOLD, IMSIC_DISABLE_EITHRESHOLD);
-> +	}
-
-My regular "early exit" nit. I guess I really dislike indentation. ;-)
-
-> +}
-> +
-> +#ifdef CONFIG_SMP
-> +static void imsic_remote_sync(unsigned int cpu)
-> +{
-> +	/*
-> +	 * We simply inject ID synchronization IPI to a target CPU
-> +	 * if it is not same as the current CPU. The ipi_send_mask()
-> +	 * implementation of IPI mux will inject ID synchronization
-> +	 * IPI only for CPUs that have enabled it so offline CPUs
-> +	 * won't receive IPI. An offline CPU will unconditionally
-> +	 * synchronize IDs through imsic_starting_cpu() when the
-> +	 * CPU is brought up.
-> +	 */
-> +	if (cpu_online(cpu)) {
-> +		if (cpu !=3D smp_processor_id())
-> +			__ipi_send_mask(imsic->ipi_lsync_desc, cpumask_of(cpu));
-> +		else
-> +			imsic_local_sync();
-> +	}
-> +}
-> +#else
-> +static inline void imsic_remote_sync(unsigned int cpu)
-
-Remove inline.
-
-> +{
-> +	imsic_local_sync();
-> +}
-> +#endif
-> +
-> +void imsic_vector_mask(struct imsic_vector *vec)
-> +{
-> +	struct imsic_local_priv *lpriv;
-> +	unsigned long flags;
-> +
-> +	lpriv =3D per_cpu_ptr(imsic->lpriv, vec->cpu);
-> +	if (WARN_ON(&lpriv->vectors[vec->local_id] !=3D vec))
-> +		return;
-> +
-> +	raw_spin_lock_irqsave(&lpriv->ids_lock, flags);
-> +	bitmap_clear(lpriv->ids_enabled_bitmap, vec->local_id, 1);
-> +	raw_spin_unlock_irqrestore(&lpriv->ids_lock, flags);
-> +
-> +	imsic_remote_sync(vec->cpu);
-
-x86 seems to set a timer instead, for the remote cpu cleanup, which can
-be much cheaper, and less in instrusive. Is that applicable here?
-
-> +}
-> +
-> +void imsic_vector_unmask(struct imsic_vector *vec)
-> +{
-> +	struct imsic_local_priv *lpriv;
-> +	unsigned long flags;
-> +
-> +	lpriv =3D per_cpu_ptr(imsic->lpriv, vec->cpu);
-> +	if (WARN_ON(&lpriv->vectors[vec->local_id] !=3D vec))
-> +		return;
-> +
-> +	raw_spin_lock_irqsave(&lpriv->ids_lock, flags);
-> +	bitmap_set(lpriv->ids_enabled_bitmap, vec->local_id, 1);
-> +	raw_spin_unlock_irqrestore(&lpriv->ids_lock, flags);
-> +
-> +	imsic_remote_sync(vec->cpu);
-> +}
-> +
-> +void imsic_vector_move(struct imsic_vector *old_vec,
-> +			struct imsic_vector *new_vec)
-> +{
-> +	struct imsic_local_priv *old_lpriv, *new_lpriv;
-> +	struct imsic_vector *ovec, *nvec;
-> +	unsigned long flags, flags1;
-> +	unsigned int i;
-> +
-> +	if (WARN_ON(old_vec->cpu =3D=3D new_vec->cpu ||
-> +		    old_vec->order !=3D new_vec->order ||
-> +		    (old_vec->local_id & IMSIC_VECTOR_MASK(old_vec)) ||
-> +		    (new_vec->local_id & IMSIC_VECTOR_MASK(new_vec))))
-> +		return;
-> +
-> +	old_lpriv =3D per_cpu_ptr(imsic->lpriv, old_vec->cpu);
-> +	if (WARN_ON(&old_lpriv->vectors[old_vec->local_id] !=3D old_vec))
-> +		return;
-> +
-> +	new_lpriv =3D per_cpu_ptr(imsic->lpriv, new_vec->cpu);
-> +	if (WARN_ON(&new_lpriv->vectors[new_vec->local_id] !=3D new_vec))
-> +		return;
-> +
-> +	raw_spin_lock_irqsave(&old_lpriv->ids_lock, flags);
-> +	raw_spin_lock_irqsave(&new_lpriv->ids_lock, flags1);
-> +
-> +	/* Move the state of each vector entry */
-> +	for (i =3D 0; i < BIT(old_vec->order); i++) {
-> +		ovec =3D old_vec + i;
-> +		nvec =3D new_vec + i;
-> +
-> +		/* Unmask the new vector entry */
-> +		if (test_bit(ovec->local_id, old_lpriv->ids_enabled_bitmap))
-> +			bitmap_set(new_lpriv->ids_enabled_bitmap,
-> +				   nvec->local_id, 1);
-> +
-> +		/* Mask the old vector entry */
-> +		bitmap_clear(old_lpriv->ids_enabled_bitmap, ovec->local_id, 1);
-> +
-> +		/*
-> +		 * Move and re-trigger the new vector entry based on the
-> +		 * pending state of the old vector entry because we might
-> +		 * get a device interrupt on the old vector entry while
-> +		 * device was being moved to the new vector entry.
-> +		 */
-> +		old_lpriv->ids_move[ovec->local_id] =3D nvec;
-> +	}
-
-Hmm, nested spinlocks, and reimplementing what the irq matrix allocator
-does.
-
-Convince me why irq matrix is not a good fit to track the interrupts IDs
-*and* get handling/tracking for managed/unmanaged interrupts. You said
-that it was the power-of-two blocks for MSI, but can't that be enfored
-on matrix alloc? Where are you doing the special handling of MSI?
-
-The reason I'm asking is because I'm pretty certain that x86 has proper
-MSI support (Thomas Gleixner can answer for sure! ;-))
-
-IMSIC smells a lot like the the LAPIC. The implementation could probably
-be *very* close to what arch/x86/kernel/apic/vector.c does.
-
-Am I completly off here?
-
-
-Bj=C3=B6rn
+Thanks,
+-- 
+Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Kernkonzept GmbH at Dresden, Germany, HRB 31129, CEO Dr.-Ing. Michael Hohmuth
