@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 078B47D4A4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52417D4A57
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234011AbjJXIe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:34:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
+        id S234037AbjJXIfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234058AbjJXIeN (ORCPT
+        with ESMTP id S233988AbjJXIem (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:34:13 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA1210E2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:34:10 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3b2ec5ee2e4so2865068b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:34:10 -0700 (PDT)
+        Tue, 24 Oct 2023 04:34:42 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166AA172C
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:34:16 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b497c8575aso4179705b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:34:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1698136449; x=1698741249; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1698136456; x=1698741256; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bzccM6C4HLhaCIv/SAdijHFdTidMSXBWQyZ1w5RDJYw=;
-        b=SNEB0fqkUuNyllJMMihVQAlGEvxlD846I1ZA7TkiLKmn/zyiO9QTOKglOHgTOcy7cw
-         YaQlyKeiffS0uBl0lsyehChNpguuAEKJpZsQ442epIy4bfYmwaCX82TCvQ9KN0h3NGUV
-         mxBJaH2rWV1QYqjdWxijJtnCIpnOTP9hu7rIzjFqVqMUYJZUP42NmhsYjTqDZpdFVIa2
-         rH4ZlQYIjLZVgBGvDx1lkWCUz+ETFTNWdf3q5XYEi5MWtUfNqfG7SY9kwJI6VQ7LHvzy
-         ccFB3SBBXl2A7Qla4vYnkGr+P0ogb5fKONd6b26qNaUv4Jvq4fW3EDpC0hAgGT5zTGbV
-         NUcg==
+        bh=NhuvPcTMRDCD3VOBYhVRa0kZDnR2cgXp2fXq7JVV3pE=;
+        b=cDbOB552h6db4BuaCuIYz243RmuvKZ+aUfLpkVe4LVKmgFYFETTGlPNrIudPP4bmyk
+         tM1Z0+r+O6TOBOTZzRqW6ltrR1KLFBeBpH95P1RcxfyZH7CNhaEMacg8J7qJY6fAGnS4
+         lKV7c5ei7X9V6noPFGKsDC5Af4uJybdUrpfMdS6F8sEfeOcFJwnL9xlFjg4wEjHfP2sN
+         JNQ8uaCcx2IggFkZPhw3iA4Sxvq25BF3Lvo+RFc45gMVneG/TF7vSQWrbkl6FbcMds08
+         Tt7bP2JrFPC8saqs1nDuF6PVUfTgYuDedyXL45QxuUV2Y9FMjDS0BE6z8QfoZekY8Y5M
+         94BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698136449; x=1698741249;
+        d=1e100.net; s=20230601; t=1698136456; x=1698741256;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bzccM6C4HLhaCIv/SAdijHFdTidMSXBWQyZ1w5RDJYw=;
-        b=DJuO2ePYeNl5jQu59XzFHLr1A8ZrQj+1aZgHPNHhVyYaNiQMUEY2MoYJuiHWe3ql0W
-         a8oGaNqSZUtBD4OAxMddPZkPhbOUamLmz0HTxNHWiHK/H/BoNCOZ5EQgpuW3IsLi41Cw
-         qXCtO6WN9XtwfB9xP6hB/9G8q7xR1PiN6VVLBjv+TYuMWIfhbfayvR/XXRTyJ5xC7pGe
-         xUlRJv5GUBXry7Xo48w4BnU9LAVYmawf4TGBBPk6FJQ7bvTOqiuZJauAk/g4koPii6Uj
-         90gYTSdwiZMjjClZ66KW3cZC4e4yx5mj6jQV6/cAcUkOoh/yBP4TTJPfCeiwiE1QTc93
-         c+Mw==
-X-Gm-Message-State: AOJu0YwrlXDyUMfTBSoXIUgHWcyyO5oojOJmGJ/YAGQIbsAXqLCWNbLX
-        XSezpLY84AcTaZpNr9m5SMU2pQ==
-X-Google-Smtp-Source: AGHT+IFL9wgTTdwcf5iN1EU6ZDwg7/3PqxSbUY7aeR+GMticX3N3Q7oIRaxH4CtsM5Y8o0vT2v0b1Q==
-X-Received: by 2002:a05:6358:810c:b0:168:d6cd:7b2e with SMTP id p12-20020a056358810c00b00168d6cd7b2emr7924030rwk.29.1698136449463;
-        Tue, 24 Oct 2023 01:34:09 -0700 (PDT)
+        bh=NhuvPcTMRDCD3VOBYhVRa0kZDnR2cgXp2fXq7JVV3pE=;
+        b=iDgnFN6m1EAZPa69rrKphuCmdP+buJn6+c0kmZuvApOE1Nfjky9OEGfOeq+mNwto4K
+         IDkAwirVe6044Mzez7J4lRwQRyt9omLXceJVtcGt4pKnN479Jp6WP1SuI6td7KPpUnVT
+         VUxzyM5yy8nLRzpqRuHfoDMmOhGMBUv5zKn44H8m/dc5L0ymX4Ou+B3/IIPjYMmHl3YB
+         edHTPXjarE6nxeYKaCaEcoKlJgeHV33JEpUo4hyMtEU1lfjsTkfDHr5iCO4zrK1iv2n2
+         3aMfXXelHuv7diGau/GQNX7PYVooW3Uc5V6W10ucbOOU442I/H85USeC1bCmJ1g2MFyW
+         7uUw==
+X-Gm-Message-State: AOJu0Yz2b9cBk1+HU2qyqzwg1rOYaqehOYXty3TOyttg/aGcDWO67jPX
+        DFb7JMH17ehx7Vvy94z9GZCjRA==
+X-Google-Smtp-Source: AGHT+IE1bFuZc+mJSxD+pVgtIXeCVNo3r5g8GwiOKV1aPw1h19MOC16mxaJFq0Q2g2TOYWxaSa9TjA==
+X-Received: by 2002:a05:6a00:c8b:b0:6be:5a1a:3bb8 with SMTP id a11-20020a056a000c8b00b006be5a1a3bb8mr14049796pfv.28.1698136456363;
+        Tue, 24 Oct 2023 01:34:16 -0700 (PDT)
 Received: from GL4FX4PXWL.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id y21-20020aa79af5000000b0068be348e35fsm7236977pfp.166.2023.10.24.01.34.03
+        by smtp.gmail.com with ESMTPSA id y21-20020aa79af5000000b0068be348e35fsm7236977pfp.166.2023.10.24.01.34.09
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 24 Oct 2023 01:34:09 -0700 (PDT)
+        Tue, 24 Oct 2023 01:34:16 -0700 (PDT)
 From:   Peng Zhang <zhangpeng.00@bytedance.com>
 To:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
         willy@infradead.org, brauner@kernel.org, surenb@google.com,
@@ -59,16 +59,16 @@ To:     Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
 Cc:     zhangpeng.00@bytedance.com, maple-tree@lists.infradead.org,
         linux-mm@kvack.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v6 09/10] maple_tree: Preserve the tree attributes when destroying maple tree
-Date:   Tue, 24 Oct 2023 16:32:57 +0800
-Message-Id: <20231024083258.65750-10-zhangpeng.00@bytedance.com>
+Subject: [PATCH v6 10/10] fork: Use __mt_dup() to duplicate maple tree in dup_mmap()
+Date:   Tue, 24 Oct 2023 16:32:58 +0800
+Message-Id: <20231024083258.65750-11-zhangpeng.00@bytedance.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 In-Reply-To: <20231024083258.65750-1-zhangpeng.00@bytedance.com>
 References: <20231024083258.65750-1-zhangpeng.00@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,28 +76,265 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When destroying maple tree, preserve its attributes and then turn it
-into an empty tree. This allows it to be reused without needing to be
-reinitialized.
+In dup_mmap(), using __mt_dup() to duplicate the old maple tree and then
+directly replacing the entries of VMAs in the new maple tree can result
+in better performance. __mt_dup() uses DFS pre-order to duplicate the
+maple tree, so it is efficient.
+
+The average time complexity of __mt_dup() is O(n), where n is the number
+of VMAs. The proof of the time complexity is provided in the commit log
+that introduces __mt_dup(). After duplicating the maple tree, each element
+is traversed and replaced (ignoring the cases of deletion, which are rare).
+Since it is only a replacement operation for each element, this process is
+also O(n).
+
+Analyzing the exact time complexity of the previous algorithm is
+challenging because each insertion can involve appending to a node, pushing
+data to adjacent nodes, or even splitting nodes. The frequency of each
+action is difficult to calculate. The worst-case scenario for a single
+insertion is when the tree undergoes splitting at every level. If we
+consider each insertion as the worst-case scenario, we can determine that
+the upper bound of the time complexity is O(n*log(n)), although this is a
+loose upper bound. However, based on the test data, it appears that the
+actual time complexity is likely to be O(n).
+
+As the entire maple tree is duplicated using __mt_dup(), if dup_mmap()
+fails, there will be a portion of VMAs that have not been duplicated in
+the maple tree. To handle this, we mark the failure point with
+XA_ZERO_ENTRY. In exit_mmap(), if this marker is encountered, stop
+releasing VMAs that have not been duplicated after this point.
+
+There is a "spawn" in byte-unixbench[1], which can be used to test the
+performance of fork(). I modified it slightly to make it work with
+different number of VMAs.
+
+Below are the test results. The first row shows the number of VMAs.
+The second and third rows show the number of fork() calls per ten seconds,
+corresponding to next-20231006 and the this patchset, respectively. The
+test results were obtained with CPU binding to avoid scheduler load
+balancing that could cause unstable results. There are still some
+fluctuations in the test results, but at least they are better than the
+original performance.
+
+21     121   221    421    821    1621   3221   6421   12821  25621  51221
+112100 76261 54227  34035  20195  11112  6017   3161   1606   802    393
+114558 83067 65008  45824  28751  16072  8922   4747   2436   1233   599
+2.19%  8.92% 19.88% 34.64% 42.37% 44.64% 48.28% 50.17% 51.68% 53.74% 52.42%
+
+[1] https://github.com/kdlucas/byte-unixbench/tree/master
 
 Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
+Suggested-by: Liam R. Howlett <Liam.Howlett@oracle.com>
 ---
- lib/maple_tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/mm.h | 11 +++++++++++
+ kernel/fork.c      | 40 +++++++++++++++++++++++++++++-----------
+ mm/internal.h      | 11 -----------
+ mm/memory.c        |  7 ++++++-
+ mm/mmap.c          |  9 ++++++---
+ 5 files changed, 52 insertions(+), 26 deletions(-)
 
-diff --git a/lib/maple_tree.c b/lib/maple_tree.c
-index 6704b5c507b2..b9e238e7a7af 100644
---- a/lib/maple_tree.c
-+++ b/lib/maple_tree.c
-@@ -6765,7 +6765,7 @@ void __mt_destroy(struct maple_tree *mt)
- 	if (xa_is_node(root))
- 		mte_destroy_walk(root, mt);
- 
--	mt->ma_flags = 0;
-+	mt->ma_flags = mt_attr(mt);
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 14d5aaff96d0..e9111ec5808c 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -996,6 +996,17 @@ static inline int vma_iter_bulk_alloc(struct vma_iterator *vmi,
+ 	return mas_expected_entries(&vmi->mas, count);
  }
- EXPORT_SYMBOL_GPL(__mt_destroy);
  
++static inline int vma_iter_clear_gfp(struct vma_iterator *vmi,
++			unsigned long start, unsigned long end, gfp_t gfp)
++{
++	__mas_set_range(&vmi->mas, start, end - 1);
++	mas_store_gfp(&vmi->mas, NULL, gfp);
++	if (unlikely(mas_is_err(&vmi->mas)))
++		return -ENOMEM;
++
++	return 0;
++}
++
+ /* Free any unused preallocations */
+ static inline void vma_iter_free(struct vma_iterator *vmi)
+ {
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 1e6c656e0857..1552ee66517b 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -650,7 +650,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 	int retval;
+ 	unsigned long charge = 0;
+ 	LIST_HEAD(uf);
+-	VMA_ITERATOR(old_vmi, oldmm, 0);
+ 	VMA_ITERATOR(vmi, mm, 0);
+ 
+ 	uprobe_start_dup_mmap();
+@@ -678,16 +677,22 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 		goto out;
+ 	khugepaged_fork(mm, oldmm);
+ 
+-	retval = vma_iter_bulk_alloc(&vmi, oldmm->map_count);
+-	if (retval)
++	/* Use __mt_dup() to efficiently build an identical maple tree. */
++	retval = __mt_dup(&oldmm->mm_mt, &mm->mm_mt, GFP_KERNEL);
++	if (unlikely(retval))
+ 		goto out;
+ 
+ 	mt_clear_in_rcu(vmi.mas.tree);
+-	for_each_vma(old_vmi, mpnt) {
++	for_each_vma(vmi, mpnt) {
+ 		struct file *file;
+ 
+ 		vma_start_write(mpnt);
+ 		if (mpnt->vm_flags & VM_DONTCOPY) {
++			retval = vma_iter_clear_gfp(&vmi, mpnt->vm_start,
++						    mpnt->vm_end, GFP_KERNEL);
++			if (retval)
++				goto loop_out;
++
+ 			vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
+ 			continue;
+ 		}
+@@ -749,9 +754,11 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 		if (is_vm_hugetlb_page(tmp))
+ 			hugetlb_dup_vma_private(tmp);
+ 
+-		/* Link the vma into the MT */
+-		if (vma_iter_bulk_store(&vmi, tmp))
+-			goto fail_nomem_vmi_store;
++		/*
++		 * Link the vma into the MT. After using __mt_dup(), memory
++		 * allocation is not necessary here, so it cannot fail.
++		 */
++		vma_iter_bulk_store(&vmi, tmp);
+ 
+ 		mm->map_count++;
+ 		if (!(tmp->vm_flags & VM_WIPEONFORK))
+@@ -760,15 +767,28 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 		if (tmp->vm_ops && tmp->vm_ops->open)
+ 			tmp->vm_ops->open(tmp);
+ 
+-		if (retval)
++		if (retval) {
++			mpnt = vma_next(&vmi);
+ 			goto loop_out;
++		}
+ 	}
+ 	/* a new mm has just been created */
+ 	retval = arch_dup_mmap(oldmm, mm);
+ loop_out:
+ 	vma_iter_free(&vmi);
+-	if (!retval)
++	if (!retval) {
+ 		mt_set_in_rcu(vmi.mas.tree);
++	} else if (mpnt) {
++		/*
++		 * The entire maple tree has already been duplicated. If the
++		 * mmap duplication fails, mark the failure point with
++		 * XA_ZERO_ENTRY. In exit_mmap(), if this marker is encountered,
++		 * stop releasing VMAs that have not been duplicated after this
++		 * point.
++		 */
++		mas_set_range(&vmi.mas, mpnt->vm_start, mpnt->vm_end - 1);
++		mas_store(&vmi.mas, XA_ZERO_ENTRY);
++	}
+ out:
+ 	mmap_write_unlock(mm);
+ 	flush_tlb_mm(oldmm);
+@@ -778,8 +798,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+ 	uprobe_end_dup_mmap();
+ 	return retval;
+ 
+-fail_nomem_vmi_store:
+-	unlink_anon_vmas(tmp);
+ fail_nomem_anon_vma_fork:
+ 	mpol_put(vma_policy(tmp));
+ fail_nomem_policy:
+diff --git a/mm/internal.h b/mm/internal.h
+index b52a526d239d..1825c3b2e15c 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -1154,17 +1154,6 @@ static inline void vma_iter_clear(struct vma_iterator *vmi)
+ 	mas_store_prealloc(&vmi->mas, NULL);
+ }
+ 
+-static inline int vma_iter_clear_gfp(struct vma_iterator *vmi,
+-			unsigned long start, unsigned long end, gfp_t gfp)
+-{
+-	__mas_set_range(&vmi->mas, start, end - 1);
+-	mas_store_gfp(&vmi->mas, NULL, gfp);
+-	if (unlikely(mas_is_err(&vmi->mas)))
+-		return -ENOMEM;
+-
+-	return 0;
+-}
+-
+ static inline struct vm_area_struct *vma_iter_load(struct vma_iterator *vmi)
+ {
+ 	return mas_walk(&vmi->mas);
+diff --git a/mm/memory.c b/mm/memory.c
+index 4f0dfbd5e4bf..163d8f09dafc 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -374,6 +374,8 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
+ 		 * be 0.  This will underflow and is okay.
+ 		 */
+ 		next = mas_find(mas, ceiling - 1);
++		if (unlikely(xa_is_zero(next)))
++			next = NULL;
+ 
+ 		/*
+ 		 * Hide vma from rmap and truncate_pagecache before freeing
+@@ -395,6 +397,8 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
+ 			       && !is_vm_hugetlb_page(next)) {
+ 				vma = next;
+ 				next = mas_find(mas, ceiling - 1);
++				if (unlikely(xa_is_zero(next)))
++					next = NULL;
+ 				if (mm_wr_locked)
+ 					vma_start_write(vma);
+ 				unlink_anon_vmas(vma);
+@@ -1743,7 +1747,8 @@ void unmap_vmas(struct mmu_gather *tlb, struct ma_state *mas,
+ 		unmap_single_vma(tlb, vma, start, end, &details,
+ 				 mm_wr_locked);
+ 		hugetlb_zap_end(vma, &details);
+-	} while ((vma = mas_find(mas, tree_end - 1)) != NULL);
++		vma = mas_find(mas, tree_end - 1);
++	} while (vma && likely(!xa_is_zero(vma)));
+ 	mmu_notifier_invalidate_range_end(&range);
+ }
+ 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 8b57e42fd980..9d9f124ef38b 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -3300,10 +3300,11 @@ void exit_mmap(struct mm_struct *mm)
+ 	arch_exit_mmap(mm);
+ 
+ 	vma = mas_find(&mas, ULONG_MAX);
+-	if (!vma) {
++	if (!vma || unlikely(xa_is_zero(vma))) {
+ 		/* Can happen if dup_mmap() received an OOM */
+ 		mmap_read_unlock(mm);
+-		return;
++		mmap_write_lock(mm);
++		goto destroy;
+ 	}
+ 
+ 	lru_add_drain();
+@@ -3338,11 +3339,13 @@ void exit_mmap(struct mm_struct *mm)
+ 		remove_vma(vma, true);
+ 		count++;
+ 		cond_resched();
+-	} while ((vma = mas_find(&mas, ULONG_MAX)) != NULL);
++		vma = mas_find(&mas, ULONG_MAX);
++	} while (vma && likely(!xa_is_zero(vma)));
+ 
+ 	BUG_ON(count != mm->map_count);
+ 
+ 	trace_exit_mmap(mm);
++destroy:
+ 	__mt_destroy(&mm->mm_mt);
+ 	mmap_write_unlock(mm);
+ 	vm_unacct_memory(nr_accounted);
 -- 
 2.20.1
 
