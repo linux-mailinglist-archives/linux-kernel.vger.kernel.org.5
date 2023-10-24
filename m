@@ -2,78 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D727D4585
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 04:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225F77D4587
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 04:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbjJXCdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 22:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
+        id S232047AbjJXCdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 22:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjJXCdm (ORCPT
+        with ESMTP id S229510AbjJXCdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 22:33:42 -0400
-Received: from out0-215.mail.aliyun.com (out0-215.mail.aliyun.com [140.205.0.215])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA6BE8;
-        Mon, 23 Oct 2023 19:33:33 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047202;MF=houwenlong.hwl@antgroup.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---.V6N0APV_1698114808;
-Received: from localhost(mailfrom:houwenlong.hwl@antgroup.com fp:SMTPD_---.V6N0APV_1698114808)
-          by smtp.aliyun-inc.com;
-          Tue, 24 Oct 2023 10:33:29 +0800
-Date:   Tue, 24 Oct 2023 10:33:28 +0800
-From:   "Hou Wenlong" <houwenlong.hwl@antgroup.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE 32-BIT AND 64-BIT" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "moderated list:XEN HYPERVISOR X86" <xen-devel@lists.xenproject.org>,
-        "open list:X86 PLATFORM DRIVERS - ARCH" 
-        <platform-driver-x86@vger.kernel.org>
-Subject: Re: [PATCH 1/2] x86/xen/pvh: Set up percpu for stack canary in
- 32-bit kernel entry
-Message-ID: <20231024023328.GA29837@k08j02272.eu95sqa>
-References: <cover.1698051454.git.houwenlong.hwl@antgroup.com>
- <90df6cf5674241a85ac7dfe0a1558f1fd025cc17.1698051454.git.houwenlong.hwl@antgroup.com>
- <CAHp75VeXiOprRDNakewo2iSe==EeLUxfxuPYS3R+ZsY2KDmQBQ@mail.gmail.com>
+        Mon, 23 Oct 2023 22:33:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB588E5;
+        Mon, 23 Oct 2023 19:33:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A34AC433C7;
+        Tue, 24 Oct 2023 02:33:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698114819;
+        bh=VHcurXXSVkvkAK2DzgY2dDmLC7I9sifMTFd/DQGKmkg=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=r/snLQnTJ95Wlg+c22LIo09Tx2/flpcOel9RGgxnIL6oaazo1K2PRRJN97/p4PhWH
+         9sushNZI0lpCZx5zTSd+Rs3uhu2XFc5dLExoJdFyR2eoKB8dEgRDCuencGJv94y50m
+         3dzCHo0VFEG/OaNQBQGcQ4hXo9zayZmZIwvdls/w6Aizpm5749/qLN2xi6D/oRUvUH
+         xP3/KHAQXdZQZfsyyCxkSMO4orlzXamCa0j4TL6gSSaa7mP8KrbR8M6rhWh8I+TeLG
+         zZt0AfyUltYk/qaHaHvccUNBQdpvJv36OkXp1bg0LC2/X+ZGm0CuwgpO9DR0Gcb3Mf
+         vqgu+IW873RPQ==
+Message-ID: <c63250265a1a4509675f8791756c064b.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VeXiOprRDNakewo2iSe==EeLUxfxuPYS3R+ZsY2KDmQBQ@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230909152847.16216-1-biju.das.jz@bp.renesas.com>
+References: <20230909152847.16216-1-biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH] clk: si521xx:  Use i2c_get_match_data() instead of device_get_match_data()
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Biju Das <biju.das.au@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>,
+        Michael Turquette <mturquette@baylibre.com>
+Date:   Mon, 23 Oct 2023 19:33:37 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 08:02:02PM +0800, Andy Shevchenko wrote:
-> On Mon, Oct 23, 2023 at 12:10 PM Hou Wenlong
-> <houwenlong.hwl@antgroup.com> wrote:
-> >
-> > In a 32-bit SMP kernel, the stack canary is a percpu variable accessed
-> > as %fs:__stack_chk_guard. However, the ABI for PVH entry does not
-> > specify the %fs register state. It currently works because the initial
-> > %fs register is 0x10 for QEMU, which is the same as $PVH_DS_SEL.
-> 
-> > %However, for added safety, the percpu should be set up explicitly
-> > %before calling xen_prepare_pvh(), which accesses the stack canary.
-> 
-> Stray leading % in two lines above.
->
-Oh, sorry for that. It was added by mistake by my editor, and I didn't
-carefully review it before sending.
- 
-Thanks!
+Quoting Biju Das (2023-09-09 08:28:47)
+> The device_get_match_data(), is to get match data for firmware interfaces
+> such as just OF/ACPI. This driver has I2C matching table as well. Use
+> i2c_get_match_data() to get match data for I2C, ACPI and DT-based
+> matching.
+>=20
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+Applied to clk-next
