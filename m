@@ -2,82 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9BC7D5B35
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E0B7D5B22
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344237AbjJXTK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 15:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52990 "EHLO
+        id S1344148AbjJXTJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 15:09:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343884AbjJXTKX (ORCPT
+        with ESMTP id S234903AbjJXTJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 15:10:23 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AE710C3;
-        Tue, 24 Oct 2023 12:10:21 -0700 (PDT)
-Received: from arisu.hitronhub.home (unknown [23.233.251.139])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: detlev)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B43936607333;
-        Tue, 24 Oct 2023 20:10:19 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698174620;
-        bh=QzXZQ5qW45emjNZOoZBacDZXLZ1f0TmfU80OiA4TC/E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UYvc3HSAZvat0g51dUgwMnhIxMzTeig7f+ZRkCB+EbDN/SJLW34szjzL56d22Gp/J
-         szJIoheeTE8w2mXrAj2lyu7Gs5PPUpJ/03vc3Zb5qfghWf7C9NeHSOtjksAVyrKQrR
-         NV9V9dOUrSoRItv3hi/Xs8gKC1PDCuxI1ZlfRe8m9oZoyMgTDod5PB3QabOGuTv0U1
-         0miFeOdpiydJDk33YtmXLbzJPbaYNsoPanqP+2dzbzWOifdDbBHaQwN/y6ulr62xOi
-         C0WGxZ4/TeZhRYumDIDXRoZNN6W/srooulskWly3Qq3MJ7Jmcx6GThxBXn8m+3ab6o
-         pSFaRocKP16Og==
-From:   Detlev Casanova <detlev.casanova@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-media@vger.kernel.org,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Detlev Casanova <detlev.casanova@collabora.com>
-Subject: [PATCH v2 1/5] media: visl: Fix params permissions/defaults mismatch
-Date:   Tue, 24 Oct 2023 15:09:46 -0400
-Message-ID: <20231024191027.305622-2-detlev.casanova@collabora.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231024191027.305622-1-detlev.casanova@collabora.com>
-References: <20231024191027.305622-1-detlev.casanova@collabora.com>
+        Tue, 24 Oct 2023 15:09:51 -0400
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F6D93;
+        Tue, 24 Oct 2023 12:09:49 -0700 (PDT)
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-1e98e97c824so38995fac.1;
+        Tue, 24 Oct 2023 12:09:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698174589; x=1698779389;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9jvsXPyYyeMVm041VffEFNntoLV0ZUl3p1HXdmdupPI=;
+        b=tEuQ8ow0R5iLCCuWMCLNHOttTTuP5XsIOE+Eo/+kzX+1khd3l0G49n8gClj5vBtBeB
+         6zPpnNv74RLiQe4cVf7peHvIRJIH52PDLvVSKCKGRjITTwN2QJH8jTidYvQu0tdI81p6
+         iqKJyDtrEyJQzKXHamOFgVwKD6tgMQeNl2wqaGESL35XRO6TN4vD4EzijhrLu8n/D6yW
+         I7sYusKQoo7cERsAh6I3zuqS2Omx4ZIUjTnPdl/7McYGCULVvYml9ZdIkpM8QLioLAqA
+         b/uqYH8uHgq7n5Ur8ln6SY9T/wbJ12iHhJL85lQASK2l+A8B9SGJNh8NHftLaLvcrzXy
+         fAwQ==
+X-Gm-Message-State: AOJu0YzhMJUb3OL+u2VYOXIVTefufRjqCMzO6m508mfeX0SBwzkQb0zO
+        eyQotm1rdWMnHGCYQz4YZg==
+X-Google-Smtp-Source: AGHT+IGB0umxgLN8yJ5dntvW4mlolJq1yY5b6Ey4WB6BCRoJ27UsNEqz5sGBksHAUyCv67SEcH5+ZQ==
+X-Received: by 2002:a05:6870:e38e:b0:1e9:e413:b9d with SMTP id x14-20020a056870e38e00b001e9e4130b9dmr8785833oad.2.1698174588665;
+        Tue, 24 Oct 2023 12:09:48 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id h36-20020a05687003e400b001b390c6e00bsm2253181oaf.56.2023.10.24.12.09.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 12:09:48 -0700 (PDT)
+Received: (nullmailer pid 344849 invoked by uid 1000);
+        Tue, 24 Oct 2023 19:09:47 -0000
+Date:   Tue, 24 Oct 2023 14:09:47 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Eliza Balas <eliza.balas@analog.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Derek Kiernan <derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: misc: adi,axi-tdd: Add device-tree
+ binding for TDD engine
+Message-ID: <20231024190947.GA270524-robh@kernel.org>
+References: <20231019125646.14236-1-eliza.balas@analog.com>
+ <20231019125646.14236-2-eliza.balas@analog.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019125646.14236-2-eliza.balas@analog.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`false` was used as the keep_bitstream_buffers parameter permissions.
-This looks more like a default value for the parameter, so change it to
-0 to avoid confusion.
+On Thu, Oct 19, 2023 at 03:56:45PM +0300, Eliza Balas wrote:
+> Add device tree documentation for the AXI TDD Core.
+> The generic TDD controller is in essence a waveform generator
+> capable of addressing RF applications which require Time Division
+> Duplexing, as well as controlling other modules of general
+> applications through its dedicated 32 channel outputs.
+> 
+> Signed-off-by: Eliza Balas <eliza.balas@analog.com>
+> ---
+>  .../devicetree/bindings/misc/adi,axi-tdd.yaml | 65 +++++++++++++++++++
+>  MAINTAINERS                                   |  7 ++
+>  2 files changed, 72 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml b/Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml
+> new file mode 100644
+> index 000000000000..4449d9abf46e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml
+> @@ -0,0 +1,65 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright 2023 Analog Devices Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/misc/adi,axi-tdd.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices AXI TDD Core
+> +
+> +maintainers:
+> +  - Eliza Balas <eliza.balas@analog.com>
+> +
+> +description: |
+> +  The TDD controller is a waveform generator capable of addressing RF
+> +  applications which require Time Division Duplexing, as well as controlling
+> +  other modules of general applications through its dedicated 32 channel
+> +  outputs. It solves the synchronization issue when transmitting and receiving
+> +  multiple frames of data through multiple buffers.
+> +  The TDD IP core is part of the Analog Devices hdl reference designs and has
+> +  the following features:
+> +    * Up to 32 independent output channels
+> +    * Start/stop time values per channel
+> +    * Enable and polarity bit values per channel
+> +    * 32 bit-max internal reference counter
+> +    * Initial startup delay before waveform generation
+> +    * Configurable frame length and number of frames per burst
+> +    * 3 sources of synchronization: external, internal and software generated
+> +  For more information see the wiki:
+> +  https://wiki.analog.com/resources/fpga/docs/axi_tdd
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,axi-tdd
 
-Reviewed-by: Daniel Almeida <daniel.almeida@collabora.com>
-Signed-off-by: Detlev Casanova <detlev.casanova@collabora.com>
----
- drivers/media/test-drivers/visl/visl-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I don't understand where the version number went. Now my question is is 
+there only one version of this (ever). It's not specific enough unless 
+there's a version register that can be relied on.
 
-diff --git a/drivers/media/test-drivers/visl/visl-core.c b/drivers/media/test-drivers/visl/visl-core.c
-index 9970dc739ca5..df6515530fbf 100644
---- a/drivers/media/test-drivers/visl/visl-core.c
-+++ b/drivers/media/test-drivers/visl/visl-core.c
-@@ -74,7 +74,7 @@ MODULE_PARM_DESC(visl_dprintk_nframes,
- 		 " the number of frames to trace with dprintk");
- 
- bool keep_bitstream_buffers;
--module_param(keep_bitstream_buffers, bool, false);
-+module_param(keep_bitstream_buffers, bool, 0);
- MODULE_PARM_DESC(keep_bitstream_buffers,
- 		 " keep bitstream buffers in debugfs after streaming is stopped");
- 
--- 
-2.41.0
+This patch needs to answer any questions raised in previous versions. 
+Assume the reviewers don't remember your patch and will ask the same 
+questions again otherwise.
 
+Rob
