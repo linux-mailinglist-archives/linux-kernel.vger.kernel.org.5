@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7867D517C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764A67D517F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234556AbjJXNVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44190 "EHLO
+        id S234684AbjJXNVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234490AbjJXNU6 (ORCPT
+        with ESMTP id S234533AbjJXNU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:20:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D3910F4;
-        Tue, 24 Oct 2023 06:20:53 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 13:20:50 -0000
+        Tue, 24 Oct 2023 09:20:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748EED7E;
+        Tue, 24 Oct 2023 06:20:54 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 13:20:51 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698153651;
+        s=2020; t=1698153652;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3BJJkCmggxAnwtZY1XsMLY7eU371NfjGYVmCHFfvrAQ=;
-        b=KWwGXICqtHYMHS3d51j8Ea0OvDMLpVp2mVLczVvTvjdaGuKoeRG9yOVM4WkjD8+og6We1l
-        JQYQKWo7/bszGHAGcrCdwOAk7M+tpM1/LuLI/gTMLxPIwWqvfLKhyBbFu0d0Q7JNnmQm5g
-        Wyg62agigyn2Lh7MxXLBHD4zRsuZqPSihI0kIGy76+mRdYB/8d/zqXdrOJ5SABgJ6/cTGZ
-        gowz04q60vJVE5SLm6nyBWvINsu9zt3CGG1vM8dWktyrcMCj80VaH88Trn1jO7XKD6R81/
-        dNkQ+Hepxs40bpucSCaBNEmmqxjFA0S2L73Jym/2UTUf7LnwAYsh9mdu2UE4wA==
+        bh=z8Q6m45DRvc+fLKdHVCG1nuNlm5KdR5Bik6GwrhH7jw=;
+        b=ySve58o5qnf7nSRGE4gfglzDbW4Yoj+sZvF/kZX77njbSkNuixhhsgb5PZkJH+7f3Bv3La
+        bvzrwOF6OhpC8jyTLEfUF8aN1t+SzJD/2E6JVZKH9GCAw1fTtbRhDB2ZU7ffj9BKecINuA
+        1X4IZFk0hSZVLF7hnecVpr1tBsqKbZCkdYlEDhX8aqN7EnOQoT812gkwbEo98qmwMdbjhz
+        aAaSBfKjQ8M040x3ob3U8bpiJLAF/kj02NonvidMQTWWEBEngC8p/WqoaSdEl3gq648HhV
+        4DUvs02Lo4ZA0lT8vKnVi4Ys6djI/EEuPZgLCdUgkbUJsQs7gBkyPTClNUukLQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698153651;
+        s=2020e; t=1698153652;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3BJJkCmggxAnwtZY1XsMLY7eU371NfjGYVmCHFfvrAQ=;
-        b=Oe35n+fpFVMhOxxyXb51BON6YRRBWRtfHzZHZWp54+7dPinY/+ItBDzOs+Zl9MZ/AacDo+
-        aC1PsSzweMdJtpAw==
+        bh=z8Q6m45DRvc+fLKdHVCG1nuNlm5KdR5Bik6GwrhH7jw=;
+        b=k//iEEZDTq/MhIzfxriq/Fhaokrm7r+RtfgOk4HYy9xfzVAfdB8mIfHQVu+VJ4//wNfkyY
+        fPZXLn1NjD6GeMBg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/microcode] x86/microcode: Protect against instrumentation
+Subject: [tip: x86/microcode] x86/microcode: Rendezvous and load in NMI
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231002115903.545969323@linutronix.de>
-References: <20231002115903.545969323@linutronix.de>
+In-Reply-To: <20231002115903.489900814@linutronix.de>
+References: <20231002115903.489900814@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169815365091.3135.7005664746879083949.tip-bot2@tip-bot2>
+Message-ID: <169815365169.3135.4479318752696201093.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,217 +66,222 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/microcode branch of tip:
 
-Commit-ID:     1582c0f4a21303792f523fe2839dd8433ee630c0
-Gitweb:        https://git.kernel.org/tip/1582c0f4a21303792f523fe2839dd8433ee630c0
+Commit-ID:     7eb314a22800457396f541c655697dabd71e44a7
+Gitweb:        https://git.kernel.org/tip/7eb314a22800457396f541c655697dabd71e44a7
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 02 Oct 2023 14:00:06 +02:00
+AuthorDate:    Mon, 02 Oct 2023 14:00:05 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
 CommitterDate: Tue, 24 Oct 2023 15:05:55 +02:00
 
-x86/microcode: Protect against instrumentation
+x86/microcode: Rendezvous and load in NMI
 
-The wait for control loop in which the siblings are waiting for the
-microcode update on the primary thread must be protected against
-instrumentation as instrumentation can end up in #INT3, #DB or #PF,
-which then returns with IRET. That IRET reenables NMI which is the
-opposite of what the NMI rendezvous is trying to achieve.
+stop_machine() does not prevent the spin-waiting sibling from handling
+an NMI, which is obviously violating the whole concept of rendezvous.
+
+Implement a static branch right in the beginning of the NMI handler
+which is nopped out except when enabled by the late loading mechanism.
+
+The late loader enables the static branch before stop_machine() is
+invoked. Each CPU has an nmi_enable in its control structure which
+indicates whether the CPU should go into the update routine.
+
+This is required to bridge the gap between enabling the branch and
+actually being at the point where it is required to enter the loader
+wait loop.
+
+Each CPU which arrives in the stopper thread function sets that flag and
+issues a self NMI right after that. If the NMI function sees the flag
+clear, it returns. If it's set it clears the flag and enters the
+rendezvous.
+
+This is safe against a real NMI which hits in between setting the flag
+and sending the NMI to itself. The real NMI will be swallowed by the
+microcode update and the self NMI will then let stuff continue.
+Otherwise this would end up with a spurious NMI.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231002115903.545969323@linutronix.de
+Link: https://lore.kernel.org/r/20231002115903.489900814@linutronix.de
 ---
- arch/x86/kernel/cpu/microcode/core.c | 111 +++++++++++++++++++-------
- 1 file changed, 83 insertions(+), 28 deletions(-)
+ arch/x86/include/asm/microcode.h         | 12 +++++++-
+ arch/x86/kernel/cpu/microcode/core.c     | 42 ++++++++++++++++++++---
+ arch/x86/kernel/cpu/microcode/intel.c    |  1 +-
+ arch/x86/kernel/cpu/microcode/internal.h |  3 +-
+ arch/x86/kernel/nmi.c                    |  4 ++-
+ 5 files changed, 57 insertions(+), 5 deletions(-)
 
+diff --git a/arch/x86/include/asm/microcode.h b/arch/x86/include/asm/microcode.h
+index 78f1eb2..8292482 100644
+--- a/arch/x86/include/asm/microcode.h
++++ b/arch/x86/include/asm/microcode.h
+@@ -72,4 +72,16 @@ static inline u32 intel_get_microcode_revision(void)
+ }
+ #endif /* !CONFIG_CPU_SUP_INTEL */
+ 
++bool microcode_nmi_handler(void);
++
++#ifdef CONFIG_MICROCODE_LATE_LOADING
++DECLARE_STATIC_KEY_FALSE(microcode_nmi_handler_enable);
++static __always_inline bool microcode_nmi_handler_enabled(void)
++{
++	return static_branch_unlikely(&microcode_nmi_handler_enable);
++}
++#else
++static __always_inline bool microcode_nmi_handler_enabled(void) { return false; }
++#endif
++
+ #endif /* _ASM_X86_MICROCODE_H */
 diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
-index 7b8ade5..6c90836 100644
+index 1c2710b..7b8ade5 100644
 --- a/arch/x86/kernel/cpu/microcode/core.c
 +++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -272,54 +272,65 @@ struct microcode_ctrl {
+@@ -23,6 +23,7 @@
+ #include <linux/miscdevice.h>
+ #include <linux/capability.h>
+ #include <linux/firmware.h>
++#include <linux/cpumask.h>
+ #include <linux/kernel.h>
+ #include <linux/delay.h>
+ #include <linux/mutex.h>
+@@ -31,6 +32,7 @@
+ #include <linux/fs.h>
+ #include <linux/mm.h>
  
- DEFINE_STATIC_KEY_FALSE(microcode_nmi_handler_enable);
++#include <asm/apic.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/perf_event.h>
+ #include <asm/processor.h>
+@@ -265,8 +267,10 @@ struct microcode_ctrl {
+ 	enum sibling_ctrl	ctrl;
+ 	enum ucode_state	result;
+ 	unsigned int		ctrl_cpu;
++	bool			nmi_enabled;
+ };
+ 
++DEFINE_STATIC_KEY_FALSE(microcode_nmi_handler_enable);
  static DEFINE_PER_CPU(struct microcode_ctrl, ucode_ctrl);
-+static unsigned int loops_per_usec;
  static atomic_t late_cpus_in;
  
--static bool wait_for_cpus(atomic_t *cnt)
-+static noinstr bool wait_for_cpus(atomic_t *cnt)
- {
--	unsigned int timeout;
-+	unsigned int timeout, loops;
+@@ -282,7 +286,8 @@ static bool wait_for_cpus(atomic_t *cnt)
  
--	WARN_ON_ONCE(atomic_dec_return(cnt) < 0);
-+	WARN_ON_ONCE(raw_atomic_dec_return(cnt) < 0);
+ 		udelay(1);
  
- 	for (timeout = 0; timeout < USEC_PER_SEC; timeout++) {
--		if (!atomic_read(cnt))
-+		if (!raw_atomic_read(cnt))
- 			return true;
- 
--		udelay(1);
-+		for (loops = 0; loops < loops_per_usec; loops++)
-+			cpu_relax();
- 
- 		/* If invoked directly, tickle the NMI watchdog */
--		if (!microcode_ops->use_nmi && !(timeout % USEC_PER_MSEC))
-+		if (!microcode_ops->use_nmi && !(timeout % USEC_PER_MSEC)) {
-+			instrumentation_begin();
+-		if (!(timeout % USEC_PER_MSEC))
++		/* If invoked directly, tickle the NMI watchdog */
++		if (!microcode_ops->use_nmi && !(timeout % USEC_PER_MSEC))
  			touch_nmi_watchdog();
-+			instrumentation_end();
-+		}
  	}
  	/* Prevent the late comers from making progress and let them time out */
--	atomic_inc(cnt);
-+	raw_atomic_inc(cnt);
- 	return false;
- }
- 
--static bool wait_for_ctrl(void)
-+static noinstr bool wait_for_ctrl(void)
- {
--	unsigned int timeout;
-+	unsigned int timeout, loops;
- 
- 	for (timeout = 0; timeout < USEC_PER_SEC; timeout++) {
--		if (this_cpu_read(ucode_ctrl.ctrl) != SCTRL_WAIT)
-+		if (raw_cpu_read(ucode_ctrl.ctrl) != SCTRL_WAIT)
+@@ -298,7 +303,8 @@ static bool wait_for_ctrl(void)
+ 		if (this_cpu_read(ucode_ctrl.ctrl) != SCTRL_WAIT)
  			return true;
--		udelay(1);
-+
-+		for (loops = 0; loops < loops_per_usec; loops++)
-+			cpu_relax();
-+
- 		/* If invoked directly, tickle the NMI watchdog */
--		if (!microcode_ops->use_nmi && !(timeout % 1000))
-+		if (!microcode_ops->use_nmi && !(timeout % USEC_PER_MSEC)) {
-+			instrumentation_begin();
+ 		udelay(1);
+-		if (!(timeout % 1000))
++		/* If invoked directly, tickle the NMI watchdog */
++		if (!microcode_ops->use_nmi && !(timeout % 1000))
  			touch_nmi_watchdog();
-+			instrumentation_end();
-+		}
  	}
  	return false;
- }
- 
--static void load_secondary(unsigned int cpu)
-+/*
-+ * Protected against instrumentation up to the point where the primary
-+ * thread completed the update. See microcode_nmi_handler() for details.
-+ */
-+static noinstr bool load_secondary_wait(unsigned int ctrl_cpu)
- {
--	unsigned int ctrl_cpu = this_cpu_read(ucode_ctrl.ctrl_cpu);
--	enum ucode_state ret;
--
- 	/* Initial rendezvous to ensure that all CPUs have arrived */
- 	if (!wait_for_cpus(&late_cpus_in)) {
--		pr_err_once("load: %d CPUs timed out\n", atomic_read(&late_cpus_in) - 1);
--		this_cpu_write(ucode_ctrl.result, UCODE_TIMEOUT);
--		return;
-+		raw_cpu_write(ucode_ctrl.result, UCODE_TIMEOUT);
-+		return false;
- 	}
- 
- 	/*
-@@ -329,9 +340,33 @@ static void load_secondary(unsigned int cpu)
- 	 * scheduler, watchdogs etc. There is no way to safely evacuate the
- 	 * machine.
- 	 */
--	if (!wait_for_ctrl())
--		panic("Microcode load: Primary CPU %d timed out\n", ctrl_cpu);
-+	if (wait_for_ctrl())
-+		return true;
-+
-+	instrumentation_begin();
-+	panic("Microcode load: Primary CPU %d timed out\n", ctrl_cpu);
-+	instrumentation_end();
-+}
- 
-+/*
-+ * Protected against instrumentation up to the point where the primary
-+ * thread completed the update. See microcode_nmi_handler() for details.
-+ */
-+static noinstr void load_secondary(unsigned int cpu)
-+{
-+	unsigned int ctrl_cpu = raw_cpu_read(ucode_ctrl.ctrl_cpu);
-+	enum ucode_state ret;
-+
-+	if (!load_secondary_wait(ctrl_cpu)) {
-+		instrumentation_begin();
-+		pr_err_once("load: %d CPUs timed out\n",
-+			    atomic_read(&late_cpus_in) - 1);
-+		instrumentation_end();
-+		return;
-+	}
-+
-+	/* Primary thread completed. Allow to invoke instrumentable code */
-+	instrumentation_begin();
- 	/*
- 	 * If the primary succeeded then invoke the apply() callback,
- 	 * otherwise copy the state from the primary thread.
-@@ -343,6 +378,7 @@ static void load_secondary(unsigned int cpu)
- 
- 	this_cpu_write(ucode_ctrl.result, ret);
- 	this_cpu_write(ucode_ctrl.ctrl, SCTRL_DONE);
-+	instrumentation_end();
- }
- 
- static void load_primary(unsigned int cpu)
-@@ -380,25 +416,43 @@ static void load_primary(unsigned int cpu)
+@@ -374,7 +380,7 @@ static void load_primary(unsigned int cpu)
  	}
  }
  
--static bool microcode_update_handler(void)
-+static noinstr bool microcode_update_handler(void)
+-static int load_cpus_stopped(void *unused)
++static bool microcode_update_handler(void)
  {
--	unsigned int cpu = smp_processor_id();
-+	unsigned int cpu = raw_smp_processor_id();
+ 	unsigned int cpu = smp_processor_id();
  
--	if (this_cpu_read(ucode_ctrl.ctrl_cpu) == cpu)
-+	if (raw_cpu_read(ucode_ctrl.ctrl_cpu) == cpu) {
-+		instrumentation_begin();
- 		load_primary(cpu);
--	else
-+		instrumentation_end();
-+	} else {
+@@ -383,7 +389,29 @@ static int load_cpus_stopped(void *unused)
+ 	else
  		load_secondary(cpu);
-+	}
  
-+	instrumentation_begin();
- 	touch_nmi_watchdog();
-+	instrumentation_end();
+-	/* No point to wait here. The CPUs will all wait in stop_machine(). */
++	touch_nmi_watchdog();
++	return true;
++}
 +
- 	return true;
++bool microcode_nmi_handler(void)
++{
++	if (!this_cpu_read(ucode_ctrl.nmi_enabled))
++		return false;
++
++	this_cpu_write(ucode_ctrl.nmi_enabled, false);
++	return microcode_update_handler();
++}
++
++static int load_cpus_stopped(void *unused)
++{
++	if (microcode_ops->use_nmi) {
++		/* Enable the NMI handler and raise NMI */
++		this_cpu_write(ucode_ctrl.nmi_enabled, true);
++		apic->send_IPI(smp_processor_id(), NMI_VECTOR);
++	} else {
++		/* Just invoke the handler directly */
++		microcode_update_handler();
++	}
+ 	return 0;
  }
  
--bool microcode_nmi_handler(void)
-+/*
-+ * Protection against instrumentation is required for CPUs which are not
-+ * safe against an NMI which is delivered to the secondary SMT sibling
-+ * while the primary thread updates the microcode. Instrumentation can end
-+ * up in #INT3, #DB and #PF. The IRET from those exceptions reenables NMI
-+ * which is the opposite of what the NMI rendezvous is trying to achieve.
-+ *
-+ * The primary thread is safe versus instrumentation as the actual
-+ * microcode update handles this correctly. It's only the sibling code
-+ * path which must be NMI safe until the primary thread completed the
-+ * update.
-+ */
-+bool noinstr microcode_nmi_handler(void)
- {
--	if (!this_cpu_read(ucode_ctrl.nmi_enabled))
-+	if (!raw_cpu_read(ucode_ctrl.nmi_enabled))
- 		return false;
+@@ -404,8 +432,14 @@ static int load_late_stop_cpus(void)
+ 	 */
+ 	store_cpu_caps(&prev_info);
  
--	this_cpu_write(ucode_ctrl.nmi_enabled, false);
-+	raw_cpu_write(ucode_ctrl.nmi_enabled, false);
- 	return microcode_update_handler();
- }
++	if (microcode_ops->use_nmi)
++		static_branch_enable_cpuslocked(&microcode_nmi_handler_enable);
++
+ 	stop_machine_cpuslocked(load_cpus_stopped, NULL, cpu_online_mask);
  
-@@ -425,6 +479,7 @@ static int load_late_stop_cpus(void)
- 	pr_err("You should switch to early loading, if possible.\n");
++	if (microcode_ops->use_nmi)
++		static_branch_disable_cpuslocked(&microcode_nmi_handler_enable);
++
+ 	/* Analyze the results */
+ 	for_each_cpu_and(cpu, cpu_present_mask, &cpus_booted_once_mask) {
+ 		switch (per_cpu(ucode_ctrl.result, cpu)) {
+diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
+index e5c5ddf..905ed3b 100644
+--- a/arch/x86/kernel/cpu/microcode/intel.c
++++ b/arch/x86/kernel/cpu/microcode/intel.c
+@@ -611,6 +611,7 @@ static struct microcode_ops microcode_intel_ops = {
+ 	.collect_cpu_info	= collect_cpu_info,
+ 	.apply_microcode	= apply_microcode_late,
+ 	.finalize_late_load	= finalize_late_load,
++	.use_nmi		= IS_ENABLED(CONFIG_X86_64),
+ };
  
- 	atomic_set(&late_cpus_in, num_online_cpus());
-+	loops_per_usec = loops_per_jiffy / (TICK_NSEC / 1000);
+ static __init void calc_llc_size_per_core(struct cpuinfo_x86 *c)
+diff --git a/arch/x86/kernel/cpu/microcode/internal.h b/arch/x86/kernel/cpu/microcode/internal.h
+index c699043..627d238 100644
+--- a/arch/x86/kernel/cpu/microcode/internal.h
++++ b/arch/x86/kernel/cpu/microcode/internal.h
+@@ -31,7 +31,8 @@ struct microcode_ops {
+ 	enum ucode_state	(*apply_microcode)(int cpu);
+ 	int			(*collect_cpu_info)(int cpu, struct cpu_signature *csig);
+ 	void			(*finalize_late_load)(int result);
+-	unsigned int		nmi_safe	: 1;
++	unsigned int		nmi_safe	: 1,
++				use_nmi		: 1;
+ };
  
- 	/*
- 	 * Take a snapshot before the microcode update in order to compare and
+ extern struct ucode_cpu_info ucode_cpu_info[];
+diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
+index a0c5518..a87d856 100644
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -33,6 +33,7 @@
+ #include <asm/reboot.h>
+ #include <asm/cache.h>
+ #include <asm/nospec-branch.h>
++#include <asm/microcode.h>
+ #include <asm/sev.h>
+ 
+ #define CREATE_TRACE_POINTS
+@@ -343,6 +344,9 @@ static noinstr void default_do_nmi(struct pt_regs *regs)
+ 
+ 	instrumentation_begin();
+ 
++	if (microcode_nmi_handler_enabled() && microcode_nmi_handler())
++		goto out;
++
+ 	handled = nmi_handle(NMI_LOCAL, regs);
+ 	__this_cpu_add(nmi_stats.normal, handled);
+ 	if (handled) {
