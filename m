@@ -2,121 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC37B7D4912
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4874D7D491A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbjJXHzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 03:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
+        id S233759AbjJXH4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 03:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232832AbjJXHzh (ORCPT
+        with ESMTP id S232076AbjJXH4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 03:55:37 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8764F9;
-        Tue, 24 Oct 2023 00:55:34 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9bf22fe05so25586045ad.2;
-        Tue, 24 Oct 2023 00:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698134133; x=1698738933; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rryMd0X9WV6QFu55eyAQUdUJEIXyug/kgmEK9WWRvfQ=;
-        b=mgPBBOZcnFhTdGj94p7wAnxLw9spkHglgm7IgCipSFkZn1vQakLdbiGxdCg3+1yL5j
-         3zX8UXURqNaVavfpIV1FhZO34DxBC2JsD8W4QSuWhp6AowAcA5o6CtkPWEKzHG0tt7PT
-         +MjdL9kfOOzP5nOiwPBmyX+Lb5eJuhKGFEz5fo0axneyAmtveP22R2/eEmAD1SbAVcsQ
-         DEys1xXGhujhinuo+EYBJMDE/Iid1qeKy6SkBatbNHgfEZBHcMHtmjlRsgwpmVnQ+5Hf
-         xXs7nGW+LYEH6yC+LjVf38loJqN01Vspmpwl4Lh6slE4EmqdaT3z+wrHnt9FrFGsMpa+
-         4lOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698134133; x=1698738933;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rryMd0X9WV6QFu55eyAQUdUJEIXyug/kgmEK9WWRvfQ=;
-        b=w7s1RRXM/9D1f/D2NgXRw1nDKsoRZDB7l8eZfbBHQUCQAjOVDSXKZuD4qMS6aH3177
-         5xkg/fxqlteUoLxAq/11GEw+tB/44f2kuJb9fqxdP5QQBR2O/vqveftC06FEKLef3lNl
-         UCItewoNytZdbBCnNmXZRtMWzeXcFn/U86obXNQmHsSjQF4x3vOeZMWx8EwRVwqqsH+G
-         33zmYykTh2OWXXMq14jdPAahUTh6UyUbjmjoaNDjIIiYHwY2x+mPTvMRo9qGmYN4JS5o
-         OoEhN3l4UD/HoKdNuxsUnoo0dG8DvJZQTOBkLNi4Wtcd9z8l2eQn2o/Ew4TaziFwqx45
-         e8hQ==
-X-Gm-Message-State: AOJu0YwiPe4GjmMJZp9qJGSdi6+Pq7aFi2TNwlnMVIbe8P3UksDcTv7u
-        QyBtfLwFcYl6sovCdJsCKx6dqRrhX+I=
-X-Google-Smtp-Source: AGHT+IFzIRaOleX12I4ui38DgrzuR5MDHSegKCH+0WDtTjaT5p3P/qRLJ2gPYCdahRV3qCjph6dhEw==
-X-Received: by 2002:a17:902:ca0b:b0:1c4:72c9:64ef with SMTP id w11-20020a170902ca0b00b001c472c964efmr7090388pld.40.1698134133184;
-        Tue, 24 Oct 2023 00:55:33 -0700 (PDT)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id iy17-20020a170903131100b001ca86a9caccsm7051112plb.228.2023.10.24.00.55.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 00:55:32 -0700 (PDT)
-Message-ID: <429b452c-2211-436a-9af7-21332f68db7d@gmail.com>
-Date:   Tue, 24 Oct 2023 14:55:27 +0700
+        Tue, 24 Oct 2023 03:56:54 -0400
+Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDEDEE
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 00:56:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
+        ; s=dkim1; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date
+        :Subject:CC:To:From:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=gTUwSHO2nVNMnz5LpsjKy9+4QK6G0Urt0UfdfGi+GbY=; b=tWkDh1iHID+tVnQOPl9CDjzo9W
+        S1wZb3uDqPtbPjBes44MFvUkWhQh+AWGWUa9A/qK4L5Eec2Kyw/aunleIqcOvv4p/Hnxa6mCJ4rRA
+        TGkB7ZKM+X2GJ+yKPxN1PSmmr6aKDGVVx0wHi/gN2GFDLHYPlen0/eCjpCd3m4CYL/gg7S0q/1BzJ
+        qJvY85mCISQM+JddbzoCLVWt22MiniVP6JompxMIwhm5N67x+2Ap+o4cb1yXvTMviEIwVUz3SX+5+
+        s33Y6eMvtAQBwu8KIsgg1Nho5ai4wN2kK8GdbJ23Ygt5011MRTIBGNXXmUU0MzKWfBY+jkpFyYjI/
+        nJWFU/Cg==;
+Received: from [192.168.1.4] (port=40489 helo=SH-EX2013.helmholz.local)
+        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+        (Exim 4.96)
+        (envelope-from <Ante.Knezic@helmholz.de>)
+        id 1qvCHO-0005Dd-1a;
+        Tue, 24 Oct 2023 09:56:46 +0200
+Received: from linuxdev.helmholz.local (192.168.6.7) by
+ SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.48; Tue, 24 Oct 2023 09:56:46 +0200
+From:   Ante Knezic <ante.knezic@helmholz.de>
+To:     <o.rempel@pengutronix.de>
+CC:     <UNGLinuxDriver@microchip.com>, <andrew@lunn.ch>,
+        <ante.knezic@helmholz.de>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <edumazet@google.com>, <f.fainelli@gmail.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marex@denx.de>,
+        <netdev@vger.kernel.org>, <olteanv@gmail.com>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <woojung.huh@microchip.com>
+Subject: Re: [PATCH net-next v4 2/2] net:dsa:microchip: add property to select
+Date:   Tue, 24 Oct 2023 09:56:43 +0200
+Message-ID: <20231024075643.25519-1-ante.knezic@helmholz.de>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20231023143635.GD3787187@pengutronix.de>
+References: <20231023143635.GD3787187@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Filesystem Development <linux-fsdevel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>, vladbu@nvidia.com
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: Memleaks in offset_ctx->xa (shmem)
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [192.168.6.7]
+X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
+ SH-EX2013.helmholz.local (192.168.1.4)
+X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 23 Oct 2023 16:36:35 +0200, Oleksij Rempel wrote:
+> If I see it correctly, in both cases there is only one bit to configure
+> direction. The code need to support two interface modes:
+> - PHY_INTERFACE_MODE_RMII (MAC mode) PLL is the clock provider. REFCLKO
+>  is used.
+> - PHY_INTERFACE_MODE_REVRMII (PHY mode) PLL is not used, REFCLKI is the
+   clock provider.
 
-I notice a regression report on Bugzilla [1]. Quoting from it:
+As you suggested, it looks like KSZ9897 clocking mode depends on RMII interface
+mode (with strapping pins), but I don't see this for KSZ8863. The PHY/MAC mode
+is selected with Register 0x35 bit 7 and the clocking mode is selected via
+strapping pins EN_REFCLKO and SMTXD32 (and additional register 0xC6 bit 3).
+I guess its possible for the KSZ8863 to be the clock provider/consumer
+regardless of PHY/MAC mode?
 
-> We have been getting memleaks in offset_ctx->xa in our networking tests:
+Table 3-5: RMII CLOCK SETTING of KSZ8863 datasheet describes the available 
+clocking modes. If we try to create a relation between KSZ9897 and KSZ8863:
+
+KSZ9897 "Normal Mode" is equivalent to KSZ8863 mode described in first column
+of table 3-5: 
+- EN_REFCLKO = 0, 0xC6(3) = 0 -> external 50Mhz OSC input to REFCLKI and X1 
+  pin directly
+
+KSZ9897 "Clock Mode" is equivalent to KSZ8863 mode described in fourth/fifth 
+column (difference is only clock frequency) of table 3-5:
+- EN_REFCLKO = 1, 0xC6(3) = 1 -> 50/25Mhz on X1 pin, 50/25Mhz RMII clock goes
+  to REFCLKI internally. REFCLKI can be pulled down by resistor.
+
+That leaves us with additional columns 2 and 3 of table 3-5 for KSZ8863, that
+are similar to KSZ9897 Clock mode, but REFCLKI needs to be fed externally from
+REFCLKO.
+
+> I already did some work to configure CPU interface, where which can be at least
+> partially reused for your work:
+> https://lore.kernel.org/all/20230517121034.3801640-2-o.rempel@pengutronix.de/
+> (Looks I forgot to complete mainlining for this patch)
 > 
-> unreferenced object 0xffff8881004cd080 (size 576):
->   comm "systemd", pid 1, jiffies 4294893373 (age 1992.864s)
->   hex dump (first 32 bytes):
->     00 00 06 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     38 5c 7c 02 81 88 ff ff 98 d0 4c 00 81 88 ff ff  8\|.......L.....
->   backtrace:
->     [<000000000f554608>] xas_alloc+0x306/0x430
->     [<0000000075537d52>] xas_create+0x4b4/0xc80
->     [<00000000a927aab2>] xas_store+0x73/0x1680
->     [<0000000020a61203>] __xa_alloc+0x1d8/0x2d0
->     [<00000000ae300af2>] __xa_alloc_cyclic+0xf1/0x310
->     [<000000001032332c>] simple_offset_add+0xd8/0x170
->     [<0000000073229fad>] shmem_mknod+0xbf/0x180
->     [<00000000242520ce>] vfs_mknod+0x3b0/0x5c0
->     [<000000001ef218dd>] unix_bind+0x2c2/0xdb0
->     [<0000000009b9a8dd>] __sys_bind+0x127/0x1e0
->     [<000000003c949fbb>] __x64_sys_bind+0x6e/0xb0
->     [<00000000b8a767c7>] do_syscall_64+0x3d/0x90
->     [<000000006132ae0d>] entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> 
-> Memleak trace points to some syscall performed by systemd and none of our tests do anything more advanced with it than 'systemctl restart ovs-vswitchd'. Basically it is a setup with Fedora and an upstream kernel that executes bunch of network offload tests with Open vSwitch, iproute2 tc, Linux bridge, etc.
-> 
-> It looks like those may be caused by recent commit 6faddda69f62 ("libfs: Add directory operations for stable offsets") but we don't have a proper reproduction, just sometimes arbitrary getting the memleak complains during/after the regression run.
+> If implanted as described, no new devicetree properties will be needed.
 
-See Bugzilla for the full thread.
+I don't quite get how the proposed patch might effect this topic? By setting
+PHY/MAC mode? As noted, I dont see the same relation between clock and
+MII mode for KSZ8863 as for KSZ9897? 
 
-Anyway, I'm adding it to regzbot:
 
-#regzbot introduced: 6faddda69f623d https://bugzilla.kernel.org/show_bug.cgi?id=218039
-#regzbot title: stable offsets directory operation support triggers offset_ctx->xa memory leak
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218039
-
--- 
-An old man doll... just what I always wanted! - Clara
