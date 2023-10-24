@@ -2,169 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F5C7D5B68
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E64D7D5B6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344219AbjJXTW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 15:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60310 "EHLO
+        id S1344240AbjJXTX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 15:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343612AbjJXTW0 (ORCPT
+        with ESMTP id S1343612AbjJXTX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 15:22:26 -0400
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E531710C3;
-        Tue, 24 Oct 2023 12:22:22 -0700 (PDT)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id AF9DD1C007B; Tue, 24 Oct 2023 21:22:20 +0200 (CEST)
-Date:   Tue, 24 Oct 2023 21:22:19 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Pavel Machek <pavel@denx.de>,
-        niklas.soderlund+renesas@ragnatech.se,
-        yoshihiro.shimoda.uh@renesas.com, geert+renesas@glider.be,
-        biju.das.jz@bp.renesas.com, Chris.Paterson2@renesas.com,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: renesas_sdhi problems in 5.10-stable was Re: [PATCH 5.10
- 000/226] 5.10.198-rc1 review
-Message-ID: <ZTgZa1ic1iFbdaTM@duo.ucw.cz>
-References: <20231009130126.697995596@linuxfoundation.org>
- <ZSRVgj5AqJbDXqZU@duo.ucw.cz>
- <ZSRe78MAQwbBdyFP@duo.ucw.cz>
- <ZSUy+zA0+Chm6dFb@duo.ucw.cz>
- <ZSU+GHl1q7T/TBp5@duo.ucw.cz>
- <ZSWg1fv3gOyV5t+h@shikoro>
- <2023101057-runny-pellet-8952@gregkh>
+        Tue, 24 Oct 2023 15:23:27 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 0C66F10C6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 12:23:23 -0700 (PDT)
+Received: (qmail 469860 invoked by uid 1000); 24 Oct 2023 15:23:23 -0400
+Date:   Tue, 24 Oct 2023 15:23:23 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "Li, Meng" <Meng.Li@windriver.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "usb-storage@lists.one-eyed-alien.net" 
+        <usb-storage@lists.one-eyed-alien.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: storage: add shutdown function for usb storage
+ driver
+Message-ID: <a6bb88cd-0b89-4eb1-b90d-8ad633b7a8f2@rowland.harvard.edu>
+References: <20231023054111.2744872-1-Meng.Li@windriver.com>
+ <33bd0779-bfe7-4c87-8fe6-ea8455df3b6b@rowland.harvard.edu>
+ <PH0PR11MB51918DD50651DB6BE937BEA3F1DFA@PH0PR11MB5191.namprd11.prod.outlook.com>
+ <3fe5b43c-a5aa-4c6a-8614-03a4d9dd53e2@rowland.harvard.edu>
+ <2023102428-zit-quickness-9b73@gregkh>
+ <5107f6ca-e972-4af1-a21d-6c95778969f3@rowland.harvard.edu>
+ <2023102459-protector-frequency-1033@gregkh>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="llYF3KVE0Ra1/NWQ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2023101057-runny-pellet-8952@gregkh>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <2023102459-protector-frequency-1033@gregkh>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 24, 2023 at 07:11:31PM +0200, gregkh@linuxfoundation.org wrote:
+> On Tue, Oct 24, 2023 at 11:58:37AM -0400, Alan Stern wrote:
+> > On Tue, Oct 24, 2023 at 05:45:40PM +0200, gregkh@linuxfoundation.org wrote:
+> > > On Tue, Oct 24, 2023 at 11:35:19AM -0400, Alan Stern wrote:
+> > > > Okay, that's a different matter.  In fact, I don't know what is supposed 
+> > > > to happen during a clean reboot.
+> > > 
+> > > Define "clean" :)
+> > 
+> > In this case, I mean what happens when you give the "reboot" command.
+> 
+> That's a userspace binary/script/whatever that can do loads of different
+> things not involving the kernel, so it all depends on the user's system
+> as to what will happen here.
+> 
+> Many "good" userspace implementation of reboot will go and sync and
+> unmount all mounted disks in the correct order, before the kernel is
+> told to reboot.
 
---llYF3KVE0Ra1/NWQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Even if the filesystems are unmounted, the kernel will still probe the 
+drive periodically (once every few seconds) if it claims to have 
+removable media.  Failure of those probes won't hurt anything, but it is 
+likely to generate an error message.  I don't know if that's what's 
+happening in this case, though.
 
-Hi!
+> All we can do in the kernel is act on the reboot system call.
+> 
+> So perhaps the original poster here can see why his userspace isn't
+> correctly shutting down their storage devices?
 
-> > > And testing failed. So
-> > >=20
-> > > commit f5799b4e142884c2e7aa99f813113af4a3395ffb
-> > > Author: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > > Date:   Tue Nov 10 15:20:57 2020 +0100
-> > >=20
-> > >     mmc: renesas_sdhi: populate SCC pointer at the proper place
-> > >    =20
-> > >     [ Upstream commit d14ac691bb6f6ebaa7eeec21ca04dd47300ff5b6 ]
-> > >=20
-> > > seems to be the buggy commit that breaks renesas boards in 5.10.
-> >=20
-> > This patch was part of a series. Did the other two patches come with it?
-> >=20
-> > b161d87dfd3d ("mmc: renesas_sdhi: probe into TMIO after SCC parameters =
-have been setup")
->=20
-> Yes.
->=20
-> > 45bffc371fef ("mmc: renesas_sdhi: only reset SCC when its pointer is po=
-pulated")
->=20
-> No :(
->=20
-> > If not, I could imagine that could lead to a crash. No idea why only
-> > with 5.10, though.
->=20
-> The above commit is only in 5.11, so newer kernels should be fine.
->=20
-> I'll go queue up the one missing patch now, thanks.
+Meng, can you do this?  Maybe you can fix the problem by adding a script 
+to be executed by the "reboot" command.  If the script writes to the 
+"remove" attribute file in the drive's sysfs directory, that will unbind 
+usb-storage from the device.  It should give the same result as your 
+patch, for clean reboots.  It won't help "reboot -f", though.
 
-Thank you. Patch indeed appears to be in 5.10.199.
+> > > > What happens with non-USB disk drives?  Or other removable devices?
+> > > 
+> > > It would have to come from "above" in the device tree, so does the PCI
+> > > or platform bus say that they should be shut down and their child
+> > > devices?
+> > 
+> > Well, the PCI layer invokes the HCD's ->shutdown callback.  But the 
+> > usb-storage driver and usbcore don't know this has happened, so they 
+> > start logging errors because they are suddenly unable to communicate 
+> > with a USB drive.  Meng Li is unhappy about these error messages.
+> > 
+> > Adding a shutdown callback of sorts to usb-storage allows the driver to 
+> > know that it shouldn't communicate with the drive any more, which 
+> > prevents the error message from appearing.  That's what this patch does.  
+> > 
+> > But that's all it does.  Basically it creates a layering violation just 
+> > to prevent some error messages from showing up in the system log during 
+> > a shutdown or reboot.  The question is whether we want to do this at 
+> > all, and if we do, shouldn't it be handled at the usbcore level rather 
+> > than just within usb-storage?
+> 
+> We should do this within the usb core if we care about it, but why did
+> the USB device suddenly go away before the USB storage driver was told
+> about it?  That feels like something else is pulling the power on the
+> device that is out-of-band here.
 
-But we still have failures on Renesas with 5.10.199-rc2:
+The device went away because the HCD shut down the host controller, 
+thereby stopping all USB communication.  The usb-storage driver wasn't 
+informed because this all happened inside the HCD's PCI ->shutdown 
+callback.  HCD shutdown doesn't do anything to the USB bus -- in 
+particular, it doesn't remove the root hub or anything else -- it just 
+turns off the host controller.
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/1=
-047368849
+Since USB class-device drivers don't have ->shutdown callbacks (there is 
+no shutdown() method in struct usb_driver), they don't know what's going 
+on while a shutdown or reboot is in progress.  All they see is a bunch 
+of errors.
 
-And they still happed during MMC init:
-
-    2.638013] renesas_sdhi_internal_dmac ee100000.mmc: Got CD GPIO
-[    2.638846] INFO: trying to register non-static key.
-[    2.644192] ledtrig-cpu: registered to indicate activity on CPUs
-[    2.649066] The code is fine but needs lockdep annotation, or maybe
-[    2.649069] you didn't initialize this object before use?
-[    2.649071] turning off the locking correctness validator.
-[    2.649080] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.199-rc2-arm64=
--renesas-ge31b6513c43d #1
-[    2.649082] Hardware name: HopeRun HiHope RZ/G2M with sub board (DT)
-[    2.649086] Call trace:
-[    2.655106] SMCCC: SOC_ID: ARCH_SOC_ID not implemented, skipping ....
-[    2.661354]  dump_backtrace+0x0/0x194
-[    2.661361]  show_stack+0x14/0x20
-[    2.667430] usbcore: registered new interface driver usbhid
-[    2.672230]  dump_stack+0xe8/0x130
-[    2.672238]  register_lock_class+0x480/0x514
-[    2.672244]  __lock_acquire+0x74/0x20ec
-[    2.681113] usbhid: USB HID core driver
-[    2.687450]  lock_acquire+0x218/0x350
-[    2.687456]  _raw_spin_lock+0x58/0x80
-[    2.687464]  tmio_mmc_irq+0x410/0x9ac
-[    2.688556] renesas_sdhi_internal_dmac ee160000.mmc: mmc0 base at 0x0000=
-0000ee160000, max clock rate 200 MHz
-[    2.744936]  __handle_irq_event_percpu+0xbc/0x340
-[    2.749635]  handle_irq_event+0x60/0x100
-[    2.753553]  handle_fasteoi_irq+0xa0/0x1ec
-[    2.757644]  __handle_domain_irq+0x7c/0xdc
-[    2.761736]  efi_header_end+0x4c/0xd0
-[    2.765393]  el1_irq+0xcc/0x180
-[    2.768530]  arch_cpu_idle+0x14/0x2c
-[    2.772100]  default_idle_call+0x58/0xe4
-[    2.776019]  do_idle+0x244/0x2c0
-[    2.779242]  cpu_startup_entry+0x20/0x6c
-[    2.783160]  rest_init+0x164/0x28c
-[    2.786561]  arch_call_rest_init+0xc/0x14
-[    2.790565]  start_kernel+0x4c4/0x4f8
-[    2.794233] Unable to handle kernel NULL pointer dereference at virtual =
-address 0000000000000014
-[    2.803011] Mem abort info:
-
-=66rom https://lava.ciplatform.org/scheduler/job/1025535
-=66rom
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/536097=
-3735 .
-
-Is there something else missing?
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---llYF3KVE0Ra1/NWQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZTgZawAKCRAw5/Bqldv6
-8lQ8AKCik1QaBTn5m7YuXb/lLY/car/XYwCgjDo/FjpueiEG4fDOuu7j9yjTttI=
-=quL0
------END PGP SIGNATURE-----
-
---llYF3KVE0Ra1/NWQ--
+Alan Stern
