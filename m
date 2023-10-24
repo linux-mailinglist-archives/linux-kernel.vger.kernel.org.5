@@ -2,175 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED50A7D57AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBBE7D57B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235001AbjJXQMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
+        id S1344182AbjJXQNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:13:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344164AbjJXQMf (ORCPT
+        with ESMTP id S235005AbjJXQNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:12:35 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA58610D0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:12:12 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d9abc069c8bso3660368276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:12:12 -0700 (PDT)
+        Tue, 24 Oct 2023 12:13:12 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E979D171A
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:12:47 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53eeb28e8e5so13244a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:12:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698163931; x=1698768731; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/pjBUbLx3Wj6CmYiqOhDTL336nEXm92LuAjn2RJuUXA=;
-        b=fB3MCDsolGJfkZXE5b8zs4f5XmqwhLMBgbB63lp+7mMp6sdBnXj0+8fG32rdlNOzED
-         nDHFNuIb4n/gIJJCzocYGTwdtgxCI7PjaTVsDNZ3v14s2WumO6QrZhl2Mhck8tJRXo/Y
-         zsjOOW04UFSUuJ6ADYxYcA72/jt56mREbjTyZi2plqrWuDONU2fkEQPSPyD6AQ4vMZ0D
-         WI7WweU045zlyBPLvk3xpDtdxjGS8nmlxHIdTnBQTI1HjPK/SKzjznzdixWHnhbZ8bwc
-         aIj6n/lQiU3H7WR+lmsKymv4nj7Xmy6A9SAhQvIoobUsfKSwVvRFXhS1nmSbFprCA3Zy
-         MC9A==
+        d=google.com; s=20230601; t=1698163966; x=1698768766; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UTa//f3CF6frOiaIViZbYmNtaYUVdbJcfKPBPGR/E6o=;
+        b=wU/pUNZowpJoYV2JJL1DpeVBnaPBuv7UvxbPvk6BRo1qz1Rr9H3Ljsv6+TMuOO5PvM
+         NiTi/gR0FqwDu3qlGz7Cyd6FGYz6KP4Qo9gHWih6owfGIybZEoFH388F5ZwJM/x09k2d
+         hOIZduSb8YG6G7YyKI92mvt/79Fxa9ZoO3P9wLQTHSHHGq2poroP9aoS6nR8yY4fQY3H
+         ySs9Z4NybZtLe/oGcBWT78bl9131vNrLpMZHK2dtmJXDBe7OOXod0AgUYL/54F8JPw4Y
+         ViUmH12pf6IYO0ooQYc3UrMZYO2KH3rVgPF6IdL5oJTjPTMZxvROphFbqcyUHpF+HXH0
+         AKZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698163931; x=1698768731;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/pjBUbLx3Wj6CmYiqOhDTL336nEXm92LuAjn2RJuUXA=;
-        b=XFdgSYfFIZIZ3WcE9I4Bkvp6Ft4+pM46j4UKn0cdTpWCTx66qU/SV0ZQMdIZPdZ18b
-         DhFGuI1judYGxx/WRD+eATQmRH/+AQ63KlAsCR2ydFkIKixWrD2QenvCZer9AMj95aro
-         KyHbXwhC5lTMddxnzL66xyDl4WGcJAlG9lxcJR7erj6FwXcXtyhQca6pQkTtaxzgwwMV
-         kG92fbLbtu+c8jKwbtdpdvh1zTdmLUomPMLUTCfQ+bwpVdpbs0O1SIC10NxOYawTZBpw
-         ES7bvhGYMeNmQxa/EoaPgw9NjQYoZzWzpuSUXFNX2J0D+iFHHDvJYbYoHogA4wejXJoG
-         fuXw==
-X-Gm-Message-State: AOJu0YztTBwaks5BGzygQ0srbA2ZBnfYjUYBasNGiNcDYTdO5b5RK/JG
-        W8M8NbaB2XM1fEZ+UKk+M28/dmvECeR2Up/idCIbDQ==
-X-Google-Smtp-Source: AGHT+IGTTwt4rHCuJ4w6CclzOwAHuYNSeyL9ErpNapwRYZRld/tKa5wE03Hs0mv9jEAhPtzgvqw2DogicE9JUIqA2Ug=
-X-Received: by 2002:a25:b203:0:b0:da0:50e6:12c5 with SMTP id
- i3-20020a25b203000000b00da050e612c5mr1524017ybj.62.1698163931147; Tue, 24 Oct
- 2023 09:12:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698163966; x=1698768766;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UTa//f3CF6frOiaIViZbYmNtaYUVdbJcfKPBPGR/E6o=;
+        b=lcjx8+3U7Auq/8zJkhYx2kQJRZ4x95G0Dx/Gqj4WmQoRRJu+a88Ne8JEl/kH8jnkbj
+         DRbGlJ6ov6EnbCyh0ko9Dz6OAnDqzAiqbc7khv5RHcDX6vGkuoZKyQWR1Z+IAr5XHX1C
+         7hq9AUEH7DUX4dnZr+1zwTcWRoPjRp2baaQnx9lZ/iw//1niC2ta9as9wgxQbpO27nRB
+         rjlPeaUL8WglFlDIhK6r5xQ+79NmK1FTdR6GYbofLekDYMass/EnkAKxlMLudYvHQBbG
+         qPsPH801JRmQ3iULt4efiJiYv89nYCjsBI8r8ozk/aNNF71WADYfBcLg4KN/D+QCnqaX
+         eoWQ==
+X-Gm-Message-State: AOJu0YwQbcXOVAJvyAY9/fqwVaU4igWLn+A/mwYntCgWqfPiRFkKUqa9
+        16MtWCYtB1uGQg2c2MLvjfq1Wk569vt1eT5BE2TMXg==
+X-Google-Smtp-Source: AGHT+IH4lKfrFeJgOMb4mTFEvhZTUWm5ejImQaZrlWnRs+8cmQM7UkjZN12WgMceOxLfpDMFiPWgyIDdE3glHiBrSC8=
+X-Received: by 2002:a05:6402:32c:b0:540:9f24:6006 with SMTP id
+ q12-20020a056402032c00b005409f246006mr117406edw.6.1698163965905; Tue, 24 Oct
+ 2023 09:12:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
- <20231018-msm8909-cpufreq-v2-2-0962df95f654@kernkonzept.com>
- <CAPDyKFot9=M1ooP_Q1AOgG5o_4DTQ2qsyai1ZdXAzBwf89W4uA@mail.gmail.com>
- <CAPDyKFr5A-P=UhWs4rUMBWup3pH75WAhcZ56Y2_Sfk3=WfxRCQ@mail.gmail.com>
- <ZTeyhR7YY7VgWQlU@kernkonzept.com> <CAPDyKFrcV8iJnJ904j1jkx0E8PaOLmiTZ7CKk7EV8qQ71AZdbA@mail.gmail.com>
- <ZTfBZqBwqskhFydZ@kernkonzept.com>
-In-Reply-To: <ZTfBZqBwqskhFydZ@kernkonzept.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 24 Oct 2023 18:11:34 +0200
-Message-ID: <CAPDyKFooPLCmJeqjhiMm7HRdW5UrEw0yHvGF9fgLvOigsgbWxg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] cpufreq: qcom-nvmem: Enable virtual power domain devices
-To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        stable@vger.kernel.org
+References: <20231012062359.1616786-1-irogers@google.com> <20231012062359.1616786-4-irogers@google.com>
+ <CAM9d7cg=v9rnPz4cy2yeNZNSCoZ3VReC895gHPTO-emn6XdLXg@mail.gmail.com>
+In-Reply-To: <CAM9d7cg=v9rnPz4cy2yeNZNSCoZ3VReC895gHPTO-emn6XdLXg@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 24 Oct 2023 09:12:33 -0700
+Message-ID: <CAP-5=fWBRyw=DZ-neHBMuC=nAjo-MrcUPFo6H-XzwrTPEvZ+yg@mail.gmail.com>
+Subject: Re: [PATCH v2 03/13] perf hist: Add missing puts to hist__account_cycles
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Song Liu <song@kernel.org>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Leo Yan <leo.yan@linaro.org>,
+        German Gomez <german.gomez@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Artem Savkov <asavkov@redhat.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023 at 15:07, Stephan Gerhold
-<stephan.gerhold@kernkonzept.com> wrote:
+On Wed, Oct 18, 2023 at 4:16=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
 >
-> On Tue, Oct 24, 2023 at 02:49:32PM +0200, Ulf Hansson wrote:
-> > On Tue, 24 Oct 2023 at 14:03, Stephan Gerhold
-> > <stephan.gerhold@kernkonzept.com> wrote:
-> > >
-> > > On Thu, Oct 19, 2023 at 01:26:19PM +0200, Ulf Hansson wrote:
-> > > > On Thu, 19 Oct 2023 at 12:24, Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > >
-> > > > > On Wed, 18 Oct 2023 at 10:06, Stephan Gerhold
-> > > > > <stephan.gerhold@kernkonzept.com> wrote:
-> > > > > >
-> > > > > > The genpd core caches performance state votes from devices that are
-> > > > > > runtime suspended as of commit 3c5a272202c2 ("PM: domains: Improve
-> > > > > > runtime PM performance state handling"). They get applied once the
-> > > > > > device becomes active again.
-> > > > > >
-> > > > > > To attach the power domains needed by qcom-cpufreq-nvmem the OPP core
-> > > > > > calls genpd_dev_pm_attach_by_id(). This results in "virtual" dummy
-> > > > > > devices that use runtime PM only to control the enable and performance
-> > > > > > state for the attached power domain.
-> > > > > >
-> > > > > > However, at the moment nothing ever resumes the virtual devices created
-> > > > > > for qcom-cpufreq-nvmem. They remain permanently runtime suspended. This
-> > > > > > means that performance state votes made during cpufreq scaling get
-> > > > > > always cached and never applied to the hardware.
-> > > > > >
-> > > > > > Fix this by enabling the devices after attaching them and use
-> > > > > > dev_pm_syscore_device() to ensure the power domains also stay on when
-> > > > > > going to suspend. Since it supplies the CPU we can never turn it off
-> > > > > > from Linux. There are other mechanisms to turn it off when needed,
-> > > > > > usually in the RPM firmware (RPMPD) or the cpuidle path (CPR genpd).
-> > > > >
-> > > > > I believe we discussed using dev_pm_syscore_device() for the previous
-> > > > > version. It's not intended to be used for things like the above.
-> > > > >
-> > > > > Moreover, I was under the impression that it wasn't really needed. In
-> > > > > fact, I would think that this actually breaks things for system
-> > > > > suspend/resume, as in this case the cpr driver's genpd
-> > > > > ->power_on|off() callbacks are no longer getting called due this,
-> > > > > which means that the cpr state machine isn't going to be restored
-> > > > > properly. Or did I get this wrong?
-> > > >
-> > > > BTW, if you really need something like the above, the proper way to do
-> > > > it would instead be to call device_set_awake_path() for the device.
-> > > >
-> > >
-> > > Unfortunately this does not work correctly. When I use
-> > > device_set_awake_path() it does set dev->power.wakeup_path = true.
-> > > However, this flag is cleared again in device_prepare() when entering
-> > > suspend. To me it looks a bit like wakeup_path is not supposed to be set
-> > > directly by drivers? Before and after your commit 8512220c5782 ("PM /
-> > > core: Assign the wakeup_path status flag in __device_prepare()") it
-> > > seems to be internally bound to device_may_wakeup().
-> > >
-> > > It works if I make device_may_wakeup() return true, with
-> > >
-> > >         device_set_wakeup_capable(dev, true);
-> > >         device_wakeup_enable(dev);
-> > >
-> > > but that also allows *disabling* the wakeup from sysfs which doesn't
-> > > really make sense for the CPU.
-> > >
-> > > Any ideas?
+> Hi Ian,
+>
+> On Wed, Oct 11, 2023 at 11:24=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
 > >
-> > The device_set_awake_path() should be called from a system suspend
-> > callback. So you need to add that callback for the cpufreq driver.
+> > Caught using reference count checking on perf top with
+> > "--call-graph=3Dlbr". After this no memory leaks were detected.
 > >
-> > Sorry, if that wasn't clear.
+> > Fixes: 57849998e2cd ("perf report: Add processing for cycle histograms"=
+)
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/hist.c | 10 +++++++---
+> >  1 file changed, 7 insertions(+), 3 deletions(-)
 > >
+> > diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
+> > index 3dc8a4968beb..ac8c0ef48a7f 100644
+> > --- a/tools/perf/util/hist.c
+> > +++ b/tools/perf/util/hist.c
+> > @@ -2676,8 +2676,6 @@ void hist__account_cycles(struct branch_stack *bs=
+, struct addr_location *al,
+> >
+> >         /* If we have branch cycles always annotate them. */
+> >         if (bs && bs->nr && entries[0].flags.cycles) {
+> > -               int i;
+> > -
 >
-> Hmm, but at the moment I'm calling this on the virtual genpd devices.
-> How would it work for them? I don't have a suspend callback for them.
+> Seems not necessary.
 >
-> I guess could loop over the virtual devices in the cpufreq driver
-> suspend callback, but is my driver suspend callback really guaranteed to
-> run before the device_prepare() that clears "wakeup_path" on the virtual
-> devices?
+> >                 bi =3D sample__resolve_bstack(sample, al);
+>
+> It looks like this increases the refcount for each bi entry and
+> it didn't put the refcounts.
 
-Yes, that's guaranteed. dpm_prepare() (which calls device_prepare())
-is always being executed before dpm_suspend().
+Right, this is why the loop doing the puts is added.
 
 >
-> Or is this the point where we need device links to make that work?
-> A quick look suggests "wakeup_path" is just propagated to parents but
-> not device links, so I don't think that would help, either.
+> >                 if (bi) {
+> >                         struct addr_map_symbol *prev =3D NULL;
+> > @@ -2692,7 +2690,7 @@ void hist__account_cycles(struct branch_stack *bs=
+, struct addr_location *al,
+> >                          * Note that perf stores branches reversed from
+> >                          * program order!
+> >                          */
+> > -                       for (i =3D bs->nr - 1; i >=3D 0; i--) {
+> > +                       for (int i =3D bs->nr - 1; i >=3D 0; i--) {
+> >                                 addr_map_symbol__account_cycles(&bi[i].=
+from,
+> >                                         nonany_branch_mode ? NULL : pre=
+v,
+> >                                         bi[i].flags.cycles);
+> > @@ -2701,6 +2699,12 @@ void hist__account_cycles(struct branch_stack *b=
+s, struct addr_location *al,
+> >                                 if (total_cycles)
+> >                                         *total_cycles +=3D bi[i].flags.=
+cycles;
+> >                         }
+> > +                       for (unsigned int i =3D 0; i < bs->nr; i++) {
+>
+> Can we just reuse the int i above?
 
-I don't think we need device-links for this, at least the way things
-are working currently.
+I wanted to move to unsigned for consistency with the rest of the
+branch_stack code, nr is a u64, but when iterating down the sign
+matters - so this fixes up where possible.
 
-Kind regards
-Uffe
+Thanks,
+Ian
+
+> Thanks,
+> Namhyung
+>
+>
+> > +                               map__put(bi[i].to.ms.map);
+> > +                               maps__put(bi[i].to.ms.maps);
+> > +                               map__put(bi[i].from.ms.map);
+> > +                               maps__put(bi[i].from.ms.maps);
+> > +                       }
+> >                         free(bi);
+> >                 }
+> >         }
+> > --
+> > 2.42.0.609.gbb76f46606-goog
+> >
