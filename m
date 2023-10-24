@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F997D44F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B053F7D44F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbjJXBZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 21:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
+        id S231753AbjJXBZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 21:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbjJXBZb (ORCPT
+        with ESMTP id S230373AbjJXBZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 21:25:31 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDAE139;
-        Mon, 23 Oct 2023 18:25:29 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5aaebfac4b0so2199593a12.2;
-        Mon, 23 Oct 2023 18:25:29 -0700 (PDT)
+        Mon, 23 Oct 2023 21:25:51 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B298DE;
+        Mon, 23 Oct 2023 18:25:49 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so3828833b3a.2;
+        Mon, 23 Oct 2023 18:25:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698110729; x=1698715529; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698110748; x=1698715548; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8KaCMGm9npj1FIdBGncPWTwlqFZNG+WJCMyR9WrIOWI=;
-        b=JgDPH/ugCXLIeohjO+MVA2AxCFGk71ZaCJC+cD15BOrVCa5yQd8Y/1JdZQqI60g5Zk
-         VTHDwxZkHcJqQ/L5d1ap6IeR18SW6iBtAH17+lqoA3KAPVANg2VqvuaHLnE+mO/+Okin
-         ipuxLjT8pExiOsqcZWGYEvW8+kPVOepfXTMjVnth2bTnlOE6xaR2ZZ9lxAwlxrnldtUG
-         SctOCbUE0Lk4rsaXizkRmTx+bu5CwKihHU8RK65o8AGxmuBTI7eHxosAS1OmYz4AwYyu
-         PfmF23pcnUSYphMGYEI8NHmx6bAf7YOejoCPxkYg7d8suuhamS8W5+igdMpyTNAmp62r
-         wRJw==
+        bh=wFWDBFPcsetvScGtpbuAVby+9Wg9s996ooC10t7jxrQ=;
+        b=VzSDETPiQhGX0wY+giqdpVF6EJk+uSYb0vuUJap/xxoJbl51awhDXWWU38QN/EdkUP
+         BXp03Dtnki6R28548eFlZ7DsXPkB+UnUoMkkkNfNFfEOvMUvTM3CzDuT8hmcgfEl5Mzt
+         GcGu1gvR/lom+y1woGbBEhHSvXbQaifOD/4yyaTV6R1us5gIY/TGyV32xQfaw55t+idQ
+         JcIAJpt7AZPpcd1PaZYDi4MOKvZFzyAuNAWwP6em5Os0udOFh+2MtEJoSOfFBl0b5lVJ
+         RaFd2KOwmsQzjO/vmsVqN6ctQ3P7W0Z/Re+UAjl5s8Pmo8/dWwBtlBfZac9RMSyK3oN6
+         NpOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698110729; x=1698715529;
+        d=1e100.net; s=20230601; t=1698110748; x=1698715548;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8KaCMGm9npj1FIdBGncPWTwlqFZNG+WJCMyR9WrIOWI=;
-        b=Ahlu9czLEYCcgfn0Jld8d0r6/V9/zQALOU/5hOaAOmj8TtPko0TKmwX724kvuzsEFS
-         TY+FwkGm1EfDtUoK3wpPk8cg1sCeG1RQA/ZWq0fVyxUUOJYODu6bKhLESxT7myM00vXT
-         WA9oX7+meHEq0tj30PpxBXKjgl5boAnPvLChQBp7MQ6Y4qXLkZrrfE3p8nemM/pHKEd5
-         b/GXU0jrZ+VpDj2Zaybs1p607p65qDqYGHxy9Qd5dR1nZUqNVKBKAGy3ElscR8VHuO3e
-         o3Cg7H/DXtBkmEOMaoEYWa/dv9lbL1QkLhZs7DsoXpFZoOK/g1s42732zSr3uYL3fD7r
-         SMmA==
-X-Gm-Message-State: AOJu0YxNYdfSS23Qc/cK/Z05CMdGm8HyUMJyEwfKUmdKALHgtOLjeEnh
-        uazmfA/hD7U5OvsWtBOv4kE=
-X-Google-Smtp-Source: AGHT+IFNpZ5A9aBsiH2fsNqzx5bHGesThJ2k5hLtI46VQSvGlevsYAogy9sdQeL/0/9GYeMmJ8sNag==
-X-Received: by 2002:a05:6a20:144c:b0:13d:5b8e:db83 with SMTP id a12-20020a056a20144c00b0013d5b8edb83mr1435067pzi.9.1698110728697;
-        Mon, 23 Oct 2023 18:25:28 -0700 (PDT)
+        bh=wFWDBFPcsetvScGtpbuAVby+9Wg9s996ooC10t7jxrQ=;
+        b=p9gd2J5wGqYhEXg5Y5DhrS1b8pssHtEIcfBVgXzv87tv+ypuafCESrGqlvuJ9+Erfi
+         /rjqfLfyS3LpLSguQU77EpAkSKp18aDBNWlzNLmAqWTx6weguSTZ0/AscyehGbHnPyvd
+         LcgmsTM7WE1FNNEy2OGh+3OHK2p4RxTbVmePZPlTj5v+FIbHbEpDip7MlCIvsbjGGQn3
+         VkUhcjsNgt3OwQhC+Nirqny803jbrECQJ99xvNciC/yw/PrUlyIrKioBB5DJCrdvCXSm
+         nL4jfuJmXdiGTiZSuUAEmp0p4MuU1bfPpU/1GerZANsOrIu4/hHCV0GN8yGa2UkJIcYY
+         go4g==
+X-Gm-Message-State: AOJu0Yz04o9Bl1QGB/SvHzAa6km3cDzAabmdvJwLdT0Z+rjjNxwXVwNA
+        wCCC+YWekzGF3fyWap2HwZ8=
+X-Google-Smtp-Source: AGHT+IH53mfwQH1g7SOxu509UzXWkjYNbNoeilqRmzhJGPpjvhbQxp16Sb0xVMUMlHSpsoC7HXQrzw==
+X-Received: by 2002:a05:6a20:8e0f:b0:16b:e89b:fb18 with SMTP id y15-20020a056a208e0f00b0016be89bfb18mr1607328pzj.26.1698110748642;
+        Mon, 23 Oct 2023 18:25:48 -0700 (PDT)
 Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id k3-20020aa79d03000000b006bc3e8f58besm6757110pfp.56.2023.10.23.18.25.27
+        by smtp.gmail.com with ESMTPSA id k3-20020aa79d03000000b006bc3e8f58besm6757110pfp.56.2023.10.23.18.25.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 18:25:28 -0700 (PDT)
-Message-ID: <6e34f5c7-3bde-48f5-b274-1e8d9a6f9868@gmail.com>
-Date:   Mon, 23 Oct 2023 18:25:27 -0700
+        Mon, 23 Oct 2023 18:25:48 -0700 (PDT)
+Message-ID: <b120e95f-16e5-4590-80a7-1d825f581f77@gmail.com>
+Date:   Mon, 23 Oct 2023 18:25:46 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 5/8] r8152: Check for unplug in rtl_phy_patch_request()
+Subject: Re: [PATCH v5 6/8] r8152: Check for unplug in r8153b_ups_en() /
+ r8153c_ups_en()
 Content-Language: en-US
 To:     Douglas Anderson <dianders@chromium.org>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -70,7 +71,7 @@ Cc:     Edward Hill <ecgh@chromium.org>,
         Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org
 References: <20231020210751.3415723-1-dianders@chromium.org>
- <20231020140655.v5.5.I300ed6c3269c77756bdd10dd0d6f97db85470186@changeid>
+ <20231020140655.v5.6.I6405b1587446c157c6d6263957571f2b11f330a7@changeid>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
  xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -105,7 +106,7 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20231020140655.v5.5.I300ed6c3269c77756bdd10dd0d6f97db85470186@changeid>
+In-Reply-To: <20231020140655.v5.6.I6405b1587446c157c6d6263957571f2b11f330a7@changeid>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -121,10 +122,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 10/20/2023 2:06 PM, Douglas Anderson wrote:
-> If the adapter is unplugged while we're looping in
-> rtl_phy_patch_request() we could end up looping for 10 seconds (2 ms *
-> 5000 loops). Add code similar to what's done in other places in the
-> driver to check for unplug and bail.
+> If the adapter is unplugged while we're looping in r8153b_ups_en() /
+> r8153c_ups_en() we could end up looping for 10 seconds (20 ms * 500
+> loops). Add code similar to what's done in other places in the driver
+> to check for unplug and bail.
 > 
 > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
