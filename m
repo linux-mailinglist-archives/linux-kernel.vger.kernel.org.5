@@ -2,150 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3BF7D5C93
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA997D5C99
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344155AbjJXUpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 16:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54794 "EHLO
+        id S1344191AbjJXUtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 16:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232399AbjJXUpV (ORCPT
+        with ESMTP id S232399AbjJXUtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 16:45:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D520F10CE;
-        Tue, 24 Oct 2023 13:45:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0104C433C8;
-        Tue, 24 Oct 2023 20:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698180319;
-        bh=63z3mlCd2bt7TLC2rgpK22XXpUyWBM3XWwyJwKwVcdQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M8hx/GLvW100t1CqGc4S2MJRFmDcQ+LGLfN46BJqv1FvMwlfj/E8ZZ1GETqW8mtA6
-         YEn+V8M2jPbJPIbhS27Jx3w05BRTeOYex8TWiBgqGu5BhxyCjsCjyrCPDBSeVerxh+
-         1hDVufmVTTGsu6qM8Uy/1omphgUKFx6x1nl72XLb3YE8nm5wUgXEo2+p//wqS6H5we
-         MW9pcqWdzAfReIT+fh+HbWvDb4Cwz9rZ05E6HF59ZY9X0uPA40yHPgXDfv5ogySMqU
-         ANn/d8Ems9MH/h0bVHQEV1tbEQElgwbVvhGJIjR8Y6AqUEkqcUaaO3JdasmRMMxJ3j
-         zL4w5qOFvmwOw==
-Date:   Tue, 24 Oct 2023 22:45:15 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Subject: Re: [PATCH V2 1/7] i2c: sprd: Add configurations that support 1Mhz
- and 3.4Mhz frequencies
-Message-ID: <20231024204515.vsmu5sllt7qafbq4@zenone.zhora.eu>
-References: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
- <20231023081158.10654-2-Huangzheng.Lai@unisoc.com>
+        Tue, 24 Oct 2023 16:49:39 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBD910CE;
+        Tue, 24 Oct 2023 13:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=n1hoWu1QQf0mXz91DzUGE4OYJa5WmwrJOSpDXP5IzqI=;
+        t=1698180576; x=1699390176; b=bWzwrTaYFO871kF17LNz7WP+SIeLlMVRtFbrMa5YBbdPF8R
+        2LJ0r4gIxXgLE6ndCjhpYXYg5MU+PsVOUiHfu4geyi8kNHXYMTO+scODdYP5Qtv+FNzSQcYarMOEf
+        xncewFLOf33lDoy9LZd7qOtrc5JF1LGVMugShLfZm2JI/42NLn5/r0QpcPa79V+wKIiGQHhC4otQJ
+        UAEkoLQxYGOW8L2ctWNa7YxnFZHPz4d82b4sfa3EmqPt1t+IiVI8WGfrLpdtXodtZAmSR8eMphr3q
+        kXtIvhXVzZ3LuBQSLYxWw4SspZCFcoZAQj2Fxk9YyjQNxA5DZVlZyeniGeiv67DQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97-RC1)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1qvOLC-00000001bbh-1i2d;
+        Tue, 24 Oct 2023 22:49:30 +0200
+Message-ID: <f8daa53ee8a8019e4fd2b823c1fcb85a6cc4d806.camel@sipsolutions.net>
+Subject: Re: [RFC - is this a bug?] wifi: ath10k: Asking for some light on
+ this, please :)
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Date:   Tue, 24 Oct 2023 22:49:29 +0200
+In-Reply-To: <07e9bb04-f9fc-46d5-bfb9-a00a63a707c0@embeddedor.com>
+References: <626ae2e7-66f8-423b-b17f-e75c1a6d29b3@embeddedor.com>
+         <26b15f4702cef17fe70b496a62f03735874bd16a.camel@sipsolutions.net>
+         <07e9bb04-f9fc-46d5-bfb9-a00a63a707c0@embeddedor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023081158.10654-2-Huangzheng.Lai@unisoc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huangzheng,
+On Tue, 2023-10-24 at 14:41 -0600, Gustavo A. R. Silva wrote:
+>=20
+> It seems we run into the same issue in the function below, even in the
+> case this `memset()` is unnecessary (which it seems it's not):
+>=20
+> 	8920         memset(skb->data, 0, sizeof(*cmd));
+>=20
+> Notice that if `cap->peer_chan_len =3D=3D 0` or `cap->peer_chan_len =3D=
+=3D 1`,
+> in the original code, we have `len =3D=3D sizeof(*cmd) =3D=3D 128`:
 
-On Mon, Oct 23, 2023 at 04:11:52PM +0800, Huangzheng Lai wrote:
-> Add support for 1Mhz and 3.4Mhz frequency configuration.
-> 
-> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-> Acked-by: Andi Shyti <andi.shyti@kernel.org>
+Right.
 
-you can make this:
+> -       /* tdls peer update cmd has place holder for one channel*/
+> -       chan_len =3D cap->peer_chan_len ? (cap->peer_chan_len - 1) : 0;
+> -
+> -       len =3D sizeof(*cmd) + chan_len * sizeof(*chan);
+> +       len =3D struct_size(cmd, peer_capab.peer_chan_list, cap->peer_cha=
+n_len);
+>=20
+>          skb =3D ath10k_wmi_alloc_skb(ar, len);
+>          if (!skb)
+>=20
+> which makes `round_len =3D=3D roundup(len, 4) =3D=3D struct_size(cmd,...,=
+...) =3D=3D 104`
+> when `cap->peer_chan_len =3D=3D 0`
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+And yeah, that's really the issue, it only matters for =3D=3D0. For a momen=
+t
+there I thought that doesn't even make sense, but it looks like it never
+even becomes non-zero.
 
-> ---
->  drivers/i2c/busses/i2c-sprd.c | 25 ++++++++++++++++++++-----
->  1 file changed, 20 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-> index ffc54fbf814d..b44916c6741d 100644
-> --- a/drivers/i2c/busses/i2c-sprd.c
-> +++ b/drivers/i2c/busses/i2c-sprd.c
-> @@ -343,10 +343,23 @@ static void sprd_i2c_set_clk(struct sprd_i2c *i2c_dev, u32 freq)
->  	writel(div1, i2c_dev->base + ADDR_DVD1);
->  
->  	/* Start hold timing = hold time(us) * source clock */
-> -	if (freq == I2C_MAX_FAST_MODE_FREQ)
-> -		writel((6 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> -	else if (freq == I2C_MAX_STANDARD_MODE_FREQ)
-> +	switch (freq) {
-> +	case I2C_MAX_STANDARD_MODE_FREQ:
->  		writel((4 * apb_clk) / 1000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
-> +	case I2C_MAX_FAST_MODE_FREQ:
-> +		writel((6 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
-> +	case I2C_MAX_FAST_MODE_PLUS_FREQ:
-> +		writel((8 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
-> +	case I2C_MAX_HIGH_SPEED_MODE_FREQ:
-> +		writel((8 * apb_clk) / 10000000, i2c_dev->base + ADDR_STA0_DVD);
-> +		break;
+No idea then, sorry. You'd hope firmware doesn't care about the actual
+message size if the inner data says "0 entries", but who knows? And how
+many firmware versions are there? :)
 
-so these were defined but not used.
+So I guess you'd want to stay compatible, even if it means having a
 
-> +	default:
-> +		dev_err(i2c_dev->dev, "Unsupported frequency: %d\n", freq);
-> +		break;
-> +	}
->  }
->  
->  static void sprd_i2c_enable(struct sprd_i2c *i2c_dev)
-> @@ -519,9 +532,11 @@ static int sprd_i2c_probe(struct platform_device *pdev)
->  	if (!of_property_read_u32(dev->of_node, "clock-frequency", &prop))
->  		i2c_dev->bus_freq = prop;
->  
-> -	/* We only support 100k and 400k now, otherwise will return error. */
-> +	/* We only support 100k\400k\1m\3.4m now, otherwise will return error. */
->  	if (i2c_dev->bus_freq != I2C_MAX_STANDARD_MODE_FREQ &&
-> -	    i2c_dev->bus_freq != I2C_MAX_FAST_MODE_FREQ)
-> +			i2c_dev->bus_freq != I2C_MAX_FAST_MODE_FREQ &&
-> +			i2c_dev->bus_freq != I2C_MAX_FAST_MODE_PLUS_FREQ &&
-> +			i2c_dev->bus_freq != I2C_MAX_HIGH_SPEED_MODE_FREQ)
->  		return -EINVAL;
+	chan_len =3D min(cap->peer_chan_len, 1);
 
-This is a bit of a weird management of the bus_freq because it
-goes like this:
+for the struct_size()?
 
-	i2c_dev->bus_freq = I2C_MAX_STANDARD_MODE_FREQ;
-	...
-	if (!of_property_read_u32(dev->of_node, "clock-frequency", &prop))
-		i2c_dev->bus_freq = prop;
-
-	if (...)
-		return -EINVAL;
-
-A follow-up cleanup can be removing the first assignement and
-instead of returning -EINVAL, we can keep going:
-
-	if (!of_property_read_u32(dev->of_node, "clock-frequency", &prop))
-		i2c_dev->bus_freq = prop;
-
-	if (...) {
-		dev_warn("...");
-		i2c_dev->bus_freq = I2C_MAX_STANDARD_MODE_FREQ;
-	}
-
-But this is topic for a different patch.
-
-Andi
-
->  
->  	ret = sprd_i2c_clk_init(i2c_dev);
-> -- 
-> 2.17.1
-> 
+johannes
