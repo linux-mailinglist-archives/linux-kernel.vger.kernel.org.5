@@ -2,202 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C807D4F94
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DE27D4F95
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbjJXMPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35212 "EHLO
+        id S231876AbjJXMP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbjJXLlA (ORCPT
+        with ESMTP id S233015AbjJXMBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 07:41:00 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28635128;
-        Tue, 24 Oct 2023 04:40:58 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id d9443c01a7336-1ca816f868fso27939765ad.1;
-        Tue, 24 Oct 2023 04:40:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698147657; x=1698752457; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5viv4icoi216uHnGHO1LdrBrwyZJtbpFGI9zPwr27r8=;
-        b=cEcs9CF2mSDyFfdHoVimws4ymF4InGv3XolYfQgmd61tLIiHV4eA+gntxY/1r/bM3j
-         SNJCsHvkh4VUehT4kGpIMkDXv7U/fTnZ25UCHCS8V15d+LeTV9CpdBQVUcCpTlLguf79
-         21Exrq1AhIwHfDdo1Z77CVhzZs/I0BnP915fpeOV3UnmzhipadxD9gBvqjVv2tRN0OZT
-         x7z0MF2PveeaMWOjwD/5iletT1dlRm90CGGCwQwHJVXx5n2q6cVRtFYuz4lUARkPJavd
-         bsQdgHGq8kBXQiS6zFs8w76kUOTgdXNrDucYEHV9yP6cb2Bv6x5z1AOak1aSvKg2DrXv
-         BylA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698147657; x=1698752457;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5viv4icoi216uHnGHO1LdrBrwyZJtbpFGI9zPwr27r8=;
-        b=KzFrlsDHwpiFwBsE0FG0kGrxqLoqB79JChelTTkQPsmYOPs/BPT6Wsu4HzQFUc3lHz
-         u73TMxkwqhfe1Ewc1l5+pRkqKT3u3yVApA88hm3JL0vdVjG5xLMzDtVEnMOGoDJd/Zhd
-         e9mVCzpbI2feFr0xOsPjNW6EPkLTxFS4dPvSkqXwSvtaxP0Nxjr1KysdHJqrNS5QrKHJ
-         ME7CSd353nua0W2vd0IV0ynHaORz3QYogZvL6LEWg53p5wqz/JFAgACqkccSgs9UOofE
-         Js4tP0KnXJpYuAaHkvWTEZDx7kBKfM/TUrlFiUy0Ae2qvMAGp4tS1gNFCEvaATajf7N8
-         Oldw==
-X-Gm-Message-State: AOJu0Yx2dFvlJEPLndrFeCHD+pcKnYroTKgsrKnvvPDshAIeQWcnW04c
-        uBZTHuOMHvKgDQLEahSEDF0=
-X-Google-Smtp-Source: AGHT+IHyfLJ8xGwyttzAqlikW6bhql9g45kc1vXlEUwmN3Lg1dicfzOvSTjmUM3LoOtfYwW0VUBtDA==
-X-Received: by 2002:a17:902:f94d:b0:1b5:561a:5ca9 with SMTP id kx13-20020a170902f94d00b001b5561a5ca9mr8645873plb.50.1698147657433;
-        Tue, 24 Oct 2023 04:40:57 -0700 (PDT)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id l11-20020a170903244b00b001c73f3a9b7fsm7212593pls.185.2023.10.24.04.40.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 04:40:57 -0700 (PDT)
-Message-ID: <957b598d-c2bc-4568-2f36-a4ae762b49a8@gmail.com>
-Date:   Tue, 24 Oct 2023 19:40:50 +0800
+        Tue, 24 Oct 2023 08:01:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189C4F9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698148912; x=1729684912;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=CmKA1g7S4EEDmTCv5Uwep01I1kZ/xpUY00fU6HxxbQ8=;
+  b=VU983Ulu9HZyR1WhMEX0PRGECnjlMvbKoRwBvsqAEB5Y7pFRj0dOhgTz
+   rwlR6fk3vAC5HieXyVG2ZouJyBkZgD4uw2GTyMGdpQy9CByXrJvQtMr79
+   /oIJ12pJBRFld1NIZkDe/AZad/j3tp33M0GF6pJVQjnVLmaqwyCqFqwUI
+   J1VSdeDUStqDbD9omACI2Nkzr9sXsfKVYig821vKaYsIa0s8FwetOlpa7
+   wxAXGdN1VrBayVaV9Zt5ALSa0zErpc2JGU/WVzHfuwrJQIeqC4n8KUZRQ
+   AVGZ/m+s1YQVkZTtdnDZahIm6Vkgs0aBbYVRl62sRTsZW2fjKxL191Xz+
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="384239636"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="384239636"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 05:00:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="1005635661"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="1005635661"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 24 Oct 2023 05:00:57 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qvG5f-0007qb-1b;
+        Tue, 24 Oct 2023 12:00:55 +0000
+Date:   Tue, 24 Oct 2023 20:00:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Richard Weinberger <richard@nod.at>
+Subject: fs/ubifs/replay.c:71: warning: Function parameter or member 'hash'
+ not described in 'replay_entry'
+Message-ID: <202310241921.eZLWvBcv-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.2.2
-Subject: Re: [PATCH v5 11/13] KVM: selftests: Test consistency of CPUID with
- num of fixed counters
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Like Xu <likexu@tencent.com>,
-        Jinrong Liang <cloudliang@tencent.com>
-References: <20231024002633.2540714-1-seanjc@google.com>
- <20231024002633.2540714-12-seanjc@google.com>
-From:   JinrongLiang <ljr.kernel@gmail.com>
-In-Reply-To: <20231024002633.2540714-12-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/10/24 08:26, Sean Christopherson 写道:
-> From: Jinrong Liang <cloudliang@tencent.com>
-> 
-> Extend the PMU counters test to verify KVM emulation of fixed counters in
-> addition to general purpose counters.  Fixed counters add an extra wrinkle
-> in the form of an extra supported bitmask.  Thus quoth the SDM:
-> 
->    fixed-function performance counter 'i' is supported if ECX[i] || (EDX[4:0] > i)
-> 
-> Test that KVM handles a counter being available through either method.
-> 
-> Co-developed-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-> Co-developed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   .../selftests/kvm/x86_64/pmu_counters_test.c  | 58 ++++++++++++++++++-
->   1 file changed, 55 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> index 274b7f4d4b53..f1d9cdd69a17 100644
-> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> @@ -227,13 +227,19 @@ __GUEST_ASSERT(expect_gp ? vector == GP_VECTOR : !vector,			\
->   	       expect_gp ? "#GP" : "no fault", msr, vector)			\
->   
->   static void guest_rd_wr_counters(uint32_t base_msr, uint8_t nr_possible_counters,
-> -				 uint8_t nr_counters)
-> +				 uint8_t nr_counters, uint32_t or_mask)
->   {
->   	uint8_t i;
->   
->   	for (i = 0; i < nr_possible_counters; i++) {
->   		const uint32_t msr = base_msr + i;
-> -		const bool expect_success = i < nr_counters;
-> +
-> +		/*
-> +		 * Fixed counters are supported if the counter is less than the
-> +		 * number of enumerated contiguous counters *or* the counter is
-> +		 * explicitly enumerated in the supported counters mask.
-> +		 */
-> +		const bool expect_success = i < nr_counters || (or_mask & BIT(i));
->   
->   		/*
->   		 * KVM drops writes to MSR_P6_PERFCTR[0|1] if the counters are
-> @@ -273,7 +279,7 @@ static void guest_test_gp_counters(void)
->   	else
->   		base_msr = MSR_IA32_PERFCTR0;
->   
-> -	guest_rd_wr_counters(base_msr, MAX_NR_GP_COUNTERS, nr_gp_counters);
-> +	guest_rd_wr_counters(base_msr, MAX_NR_GP_COUNTERS, nr_gp_counters, 0);
->   }
->   
->   static void test_gp_counters(uint8_t nr_gp_counters, uint64_t perf_cap)
-> @@ -292,10 +298,51 @@ static void test_gp_counters(uint8_t nr_gp_counters, uint64_t perf_cap)
->   	kvm_vm_free(vm);
->   }
->   
-> +static void guest_test_fixed_counters(void)
-> +{
-> +	uint64_t supported_bitmask = 0;
-> +	uint8_t nr_fixed_counters = 0;
-> +
-> +	/* KVM provides fixed counters iff the vPMU version is 2+. */
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   d88520ad73b79e71e3ddf08de335b8520ae41c5c
+commit: 16a26b20d2afd0cf063816725b45b12e78d5bb31 ubifs: authentication: Add hashes to index nodes
+date:   5 years ago
+config: x86_64-randconfig-x012-20230629 (https://download.01.org/0day-ci/archive/20231024/202310241921.eZLWvBcv-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231024/202310241921.eZLWvBcv-lkp@intel.com/reproduce)
 
-s/iff/if/
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310241921.eZLWvBcv-lkp@intel.com/
 
-> +	if (this_cpu_property(X86_PROPERTY_PMU_VERSION) >= 2)
-> +		nr_fixed_counters = this_cpu_property(X86_PROPERTY_PMU_NR_FIXED_COUNTERS);
-> +
-> +	/*
-> +	 * The supported bitmask for fixed counters was introduced in PMU
-> +	 * version 5.
-> +	 */
-> +	if (this_cpu_property(X86_PROPERTY_PMU_VERSION) >= 5)
-> +		supported_bitmask = this_cpu_property(X86_PROPERTY_PMU_FIXED_COUNTERS_BITMASK);
-> +
-> +	guest_rd_wr_counters(MSR_CORE_PERF_FIXED_CTR0, MAX_NR_FIXED_COUNTERS,
-> +			     nr_fixed_counters, supported_bitmask);
-> +}
-> +
-> +static void test_fixed_counters(uint8_t nr_fixed_counters,
-> +				uint32_t supported_bitmask, uint64_t perf_cap)
-> +{
-> +	struct kvm_vcpu *vcpu;
-> +	struct kvm_vm *vm;
-> +
-> +	vm = pmu_vm_create_with_one_vcpu(&vcpu, guest_test_fixed_counters);
-> +
-> +	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_FIXED_COUNTERS_BITMASK,
-> +				supported_bitmask);
-> +	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_NR_FIXED_COUNTERS,
-> +				nr_fixed_counters);
-> +	vcpu_set_msr(vcpu, MSR_IA32_PERF_CAPABILITIES, perf_cap);
-> +
-> +	run_vcpu(vcpu);
-> +
-> +	kvm_vm_free(vm);
-> +}
-> +
->   static void test_intel_counters(void)
->   {
-> +	uint8_t nr_fixed_counters = kvm_cpu_property(X86_PROPERTY_PMU_NR_FIXED_COUNTERS);
->   	uint8_t nr_gp_counters = kvm_cpu_property(X86_PROPERTY_PMU_NR_GP_COUNTERS);
->   	unsigned int i;
-> +	uint32_t k;
->   	uint8_t j;
->   
->   	const uint64_t perf_caps[] = {
-> @@ -306,6 +353,11 @@ static void test_intel_counters(void)
->   	for (i = 0; i < ARRAY_SIZE(perf_caps); i++) {
->   		for (j = 0; j <= nr_gp_counters; j++)
->   			test_gp_counters(j, perf_caps[i]);
-> +
-> +		for (j = 0; j <= nr_fixed_counters; j++) {
-> +			for (k = 0; k <= (BIT(nr_fixed_counters) - 1); k++)
-> +				test_fixed_counters(j, k, perf_caps[i]);
-> +		}
->   	}
->   }
->   
+All warnings (new ones prefixed by >>):
 
+>> fs/ubifs/replay.c:71: warning: Function parameter or member 'hash' not described in 'replay_entry'
+>> fs/ubifs/replay.c:359: warning: Function parameter or member 'hash' not described in 'insert_node'
+>> fs/ubifs/replay.c:408: warning: Function parameter or member 'hash' not described in 'insert_dent'
+   fs/ubifs/replay.c:792: warning: Excess function parameter 'ref_lnum' description in 'validate_ref'
+   fs/ubifs/replay.c:792: warning: Excess function parameter 'ref_offs' description in 'validate_ref'
+   fs/ubifs/replay.o: warning: objtool: ubifs_validate_entry()+0x225: sibling call from callable instruction with modified stack frame
+   fs/ubifs/replay.o: warning: objtool: replay_bud()+0x4e0: sibling call from callable instruction with modified stack frame
+
+
+vim +71 fs/ubifs/replay.c
+
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  37  
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  38  /**
+debf12d54182b3 Artem Bityutskiy   2011-05-15  39   * struct replay_entry - replay list entry.
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  40   * @lnum: logical eraseblock number of the node
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  41   * @offs: node offset
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  42   * @len: node length
+074bcb9b5ce698 Artem Bityutskiy   2011-05-15  43   * @deletion: non-zero if this entry corresponds to a node deletion
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  44   * @sqnum: node sequence number
+debf12d54182b3 Artem Bityutskiy   2011-05-15  45   * @list: links the replay list
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  46   * @key: node key
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  47   * @nm: directory entry name
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  48   * @old_size: truncation old size
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  49   * @new_size: truncation new size
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  50   *
+debf12d54182b3 Artem Bityutskiy   2011-05-15  51   * The replay process first scans all buds and builds the replay list, then
+debf12d54182b3 Artem Bityutskiy   2011-05-15  52   * sorts the replay list in nodes sequence number order, and then inserts all
+debf12d54182b3 Artem Bityutskiy   2011-05-15  53   * the replay entries to the TNC.
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  54   */
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  55  struct replay_entry {
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  56  	int lnum;
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  57  	int offs;
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  58  	int len;
+16a26b20d2afd0 Sascha Hauer       2018-09-07  59  	u8 hash[UBIFS_HASH_ARR_SZ];
+074bcb9b5ce698 Artem Bityutskiy   2011-05-15  60  	unsigned int deletion:1;
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  61  	unsigned long long sqnum;
+debf12d54182b3 Artem Bityutskiy   2011-05-15  62  	struct list_head list;
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  63  	union ubifs_key key;
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  64  	union {
+f4f61d2cc6d878 Richard Weinberger 2016-11-11  65  		struct fscrypt_name nm;
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  66  		struct {
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  67  			loff_t old_size;
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  68  			loff_t new_size;
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  69  		};
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  70  	};
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14 @71  };
+1e51764a3c2ac0 Artem Bityutskiy   2008-07-14  72  
+
+:::::: The code at line 71 was first introduced by commit
+:::::: 1e51764a3c2ac05a23a22b2a95ddee4d9bffb16d UBIFS: add new flash file system
+
+:::::: TO: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+:::::: CC: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
