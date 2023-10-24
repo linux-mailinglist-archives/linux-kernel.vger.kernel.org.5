@@ -2,55 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0E67D4A62
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37247D4A61
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbjJXIgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
+        id S229840AbjJXIgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233705AbjJXIgf (ORCPT
+        with ESMTP id S233677AbjJXIgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 24 Oct 2023 04:36:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9351910C6;
-        Tue, 24 Oct 2023 01:36:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99A69C433C7;
-        Tue, 24 Oct 2023 08:36:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698136591;
-        bh=VGwUu7FzzH7r/7ogFyc/mTwV5Aan2WfqrEhp54ZJT8w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WBKAL5VWdpB2Hu/G7ArFl44B2BKSAdrR3i114u2EesB8I0TnWX/eDUkbKrFJUma13
-         +bpK/mfzo5mBk7R2B+V6ZNBbobFoLWQgvVAIlNrWkRyDLu3x2ArnPniI2docSYNM67
-         Kknz8hW2DuPslCfYLpxRjKC0e7+R/eOcK8vpj7jI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C046910D0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:36:31 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-5832ea25c7eso1602135eaf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:36:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698136591; x=1698741391; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vFK5k+WyCRpKrbHhGAax9JXCvlUkc9VlqKKWcgFoIFk=;
+        b=fhxEMEVtQjb8hrnLg/78YHPje5uQQq3XefEd/TBq3ndzlsWmQ0aOhPqxMlONiSmWj/
+         uaVNnnRtSztDiOEazTrXHL3XxsM6H9HOh+3wZLjkThVpQE0NS8U0NtARrhpJmXIpHfMZ
+         kEHLnOBlFsctiKbXI5TNeXpT6s34kP68KmxB71Eirp86xzOkDbor/MZw02VQjtkzJFBn
+         BfZsatrU2w1PpluRSA2ssxgBZtO7gzT2ZJMLZXLl28bdsEeEZmh6o91rh/m2u73qS1jr
+         20htOQyI9bnFmUADB3PAgrWX2FKhpMQjRqSeUPrqfbvLT3D6hs7U8txqwcNWB3ftK1vQ
+         v/tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698136591; x=1698741391;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vFK5k+WyCRpKrbHhGAax9JXCvlUkc9VlqKKWcgFoIFk=;
+        b=oRMBafLCBZ8vJbQU5QukhaUUjxyq+1ZmxfysWCrlHWYru3iVVspEXiUcXp/e7AJmRL
+         +VfBqSyOoRY9QIYQ3sCv2c8l8cpYq6i/PBNl1BdYjWb6w3rxM4G1rJZF+FJ+hokaHz4c
+         r2jmuEBg5zkamwgfPF+M/1Ca6zR7His0uuWAkEgvaaB996aoRqTr5TysadmkJJP2Jhnh
+         P/FFgSHV5C4Mc9CirYYXc+GEZo9sauDNkhsJVqBH5/jTJxPVrWuvoEyQdgpMo3qSg0k2
+         ouTcNK5Hg4xIGEEpxrfz9evk4IiugZHZNltFdoD6VpQuO/XxRzS9Dk8izvF5hnFRz/22
+         YjmA==
+X-Gm-Message-State: AOJu0YwNV80xzglDpFlRxTUlTP8sdYQp3RpUSAdRH0WwSGSTqjf/lYy0
+        q2W6Wq0jCijyR0I2U2Y7kekYUg==
+X-Google-Smtp-Source: AGHT+IGSMJ0piiAiwfyvmnGbpCfN1/lJbhUActtZOTV0+s3MxR9fImA4LNHpZ4m5Zvp0GxJrO/sNQA==
+X-Received: by 2002:a4a:ca0b:0:b0:581:f2d8:3f9f with SMTP id w11-20020a4aca0b000000b00581f2d83f9fmr10227466ooq.7.1698136590993;
+        Tue, 24 Oct 2023 01:36:30 -0700 (PDT)
+Received: from [192.168.17.16] ([138.84.45.126])
+        by smtp.gmail.com with ESMTPSA id v18-20020a4aa512000000b00581f11e81c7sm1829225ook.7.2023.10.24.01.36.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 01:36:30 -0700 (PDT)
+Message-ID: <ad8d0dd9-d9dc-43f6-a112-8177bfb55b90@linaro.org>
+Date:   Tue, 24 Oct 2023 02:36:28 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4.14 00/66] 4.14.328-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
         torvalds@linux-foundation.org, akpm@linux-foundation.org,
         linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
         lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: [PATCH 4.14 00/65] 4.14.328-rc2 review
-Date:   Tue, 24 Oct 2023 10:36:27 +0200
-Message-ID: <20231024083251.452724764@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
-MIME-Version: 1.0
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.328-rc2.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.328-rc2
-X-KernelTest-Deadline: 2023-10-26T08:32+00:00
-Content-Type: text/plain; charset=UTF-8
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231023104810.781270702@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
+In-Reply-To: <20231023104810.781270702@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,293 +78,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.14.328 release.
-There are 65 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
-
-Responses should be made by Thu, 26 Oct 2023 08:32:31 +0000.
-Anything received after that time might be too late.
-
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.328-rc2.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.328-rc2
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: hci_event: Fix using memcmp when comparing keys
-
-Kees Cook <keescook@chromium.org>
-    Bluetooth: hci_sock: Correctly bounds check and pad HCI_MON_NEW_INDEX name
-
-Edward AD <twuufnxlz@gmail.com>
-    Bluetooth: hci_sock: fix slab oob read in create_monitor_event
-
-Haibo Chen <haibo.chen@nxp.com>
-    gpio: vf610: set value before the direction to avoid a glitch
-
-Niklas Schnelle <schnelle@linux.ibm.com>
-    s390/pci: fix iommu bitmap allocation
-
-Peter Zijlstra <peterz@infradead.org>
-    perf: Disallow mis-matched inherited group reads
-
-Puliang Lu <puliang.lu@fibocom.com>
-    USB: serial: option: add Fibocom to DELL custom modem FM101R-GL
-
-Benoît Monin <benoit.monin@gmx.fr>
-    USB: serial: option: add entry for Sierra EM9191 with new firmware
-
-Fabio Porcedda <fabio.porcedda@gmail.com>
-    USB: serial: option: add Telit LE910C4-WWX 0x1035 composition
-
-Sunil V L <sunilvl@ventanamicro.com>
-    ACPI: irq: Fix incorrect return value in acpi_register_gsi()
-
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-    Revert "pinctrl: avoid unsafe code pattern in find_pinctrl()"
-
-Avri Altman <avri.altman@wdc.com>
-    mmc: core: Capture correct oemid-bits for eMMC cards
-
-Kees Cook <keescook@chromium.org>
-    sky2: Make sure there is at least one frag_addr available
-
-Benjamin Berg <benjamin.berg@intel.com>
-    wifi: cfg80211: avoid leaking stack data into trace
-
-Wen Gong <quic_wgong@quicinc.com>
-    wifi: mac80211: allow transmitting EAPOL frames with tainted key
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: hci_core: Fix build warnings
-
-Ying Hsu <yinghsu@chromium.org>
-    Bluetooth: Avoid redundant authentication
-
-Ma Ke <make_ruc2021@163.com>
-    HID: holtek: fix slab-out-of-bounds Write in holtek_kbd_input_event
-
-Clément Léger <cleger@rivosinc.com>
-    tracing: relax trace_event_eval_update() execution with cond_resched()
-
-Damien Le Moal <dlemoal@kernel.org>
-    ata: libata-eh: Fix compilation warning in ata_eh_link_report()
-
-Chengfeng Ye <dg573847474@gmail.com>
-    gpio: timberdale: Fix potential deadlock on &tgpio->lock
-
-Jeff Layton <jlayton@kernel.org>
-    overlayfs: set ctime when setting mtime and atime
-
-Heiner Kallweit <hkallweit1@gmail.com>
-    i2c: mux: Avoid potential false error message in i2c_mux_add_adapter
-
-Josef Bacik <josef@toxicpanda.com>
-    btrfs: initialize start_slot in btrfs_log_prealloc_extents
-
-Tony Lindgren <tony@atomide.com>
-    ARM: dts: ti: omap: Fix noisy serial with overrun-throttle-ms for mapphone
-
-Michal Schmidt <mschmidt@redhat.com>
-    i40e: prevent crash on probe if hw registers have invalid values
-
-Dan Carpenter <dan.carpenter@linaro.org>
-    net: usb: smsc95xx: Fix an error code in smsc95xx_reset()
-
-Josua Mayer <josua@solid-run.com>
-    net: rfkill: gpio: prevent value glitch during probe
-
-Ma Ke <make_ruc2021@163.com>
-    net: ipv6: fix return value check in esp_remove_trailer
-
-Ma Ke <make_ruc2021@163.com>
-    net: ipv4: fix return value check in esp_remove_trailer
-
-Eric Dumazet <edumazet@google.com>
-    xfrm: fix a data-race in xfrm_gen_index()
-
-Florian Westphal <fw@strlen.de>
-    netfilter: nft_payload: fix wrong mac header matching
-
-Jim Mattson <jmattson@google.com>
-    KVM: x86: Mask LVTPC when handling a PMI
-
-Johan Hovold <johan+linaro@kernel.org>
-    regmap: fix NULL deref on lookup
-
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-    nfc: nci: fix possible NULL pointer dereference in send_acknowledge()
-
-Arnd Bergmann <arnd@arndb.de>
-    Bluetooth: avoid memcmp() out of bounds warning
-
-Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-    Bluetooth: hci_event: Fix coding style
-
-Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>
-    Bluetooth: vhci: Fix race when opening vhci device
-
-Ziyang Xuan <william.xuanziyang@huawei.com>
-    Bluetooth: Fix a refcnt underflow problem for hci_conn
-
-Lee, Chun-Yi <jlee@suse.com>
-    Bluetooth: Reject connection with the device which has same BD_ADDR
-
-Lee, Chun-Yi <jlee@suse.com>
-    Bluetooth: hci_event: Ignore NULL link key
-
-Ricardo Cañuelo <ricardo.canuelo@collabora.com>
-    usb: hub: Guard against accesses to uninitialized BOS descriptors
-
-Borislav Petkov (AMD) <bp@alien8.de>
-    x86/cpu: Fix AMD erratum #1485 on Zen4-based CPUs
-
-Krishna Kurapati <quic_kriskura@quicinc.com>
-    usb: gadget: ncm: Handle decoding of multiple NTB's in unwrap call
-
-Piyush Mehta <piyush.mehta@amd.com>
-    usb: gadget: udc-xilinx: replace memcpy with memcpy_toio
-
-Dmitry Torokhov <dmitry.torokhov@gmail.com>
-    pinctrl: avoid unsafe code pattern in find_pinctrl()
-
-Michal Koutný <mkoutny@suse.com>
-    cgroup: Remove duplicates in cgroup v1 tasks file
-
-Matthias Berndt <matthias_berndt@gmx.de>
-    Input: xpad - add PXN V900 support
-
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
-    Input: powermate - fix use-after-free in powermate_config_complete
-
-Xiubo Li <xiubli@redhat.com>
-    ceph: fix incorrect revoked caps assert in ceph_fill_file_size()
-
-Jorge Sanjuan Garcia <jorge.sanjuangarcia@duagon.com>
-    mcb: remove is_added flag from mcb_device struct
-
-Alexander Zangerl <az@breathe-safe.com>
-    iio: pressure: ms5611: ms5611_prom_is_valid false negative bug
-
-Phil Elwell <phil@raspberrypi.com>
-    iio: pressure: bmp280: Fix NULL pointer exception
-
-Xingxing Luo <xingxing.luo@unisoc.com>
-    usb: musb: Modify the "HWVers" register address
-
-Xingxing Luo <xingxing.luo@unisoc.com>
-    usb: musb: Get the musb_qh poniter after musb_giveback
-
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
-    net: usb: dm9601: fix uninitialized variable use in dm9601_mdio_read
-
-Wesley Cheng <quic_wcheng@quicinc.com>
-    usb: xhci: xhci-ring: Use sysdev for mapping bounce buffer
-
-Waiman Long <longman@redhat.com>
-    workqueue: Override implicit ordered attribute in workqueue_apply_unbound_cpumask()
-
-Jeremy Cline <jeremy@jcline.org>
-    nfc: nci: assert requested protocol is valid
-
-Dan Carpenter <dan.carpenter@linaro.org>
-    ixgbe: fix crash with empty VF macvlan list
-
-Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-    drm/vmwgfx: fix typo of sizeof argument
-
-Dinghao Liu <dinghao.liu@zju.edu.cn>
-    ieee802154: ca8210: Fix a potential UAF in ca8210_probe
-
-Martin Fuzzey <martin.fuzzey@flowbird.group>
-    drm: etvnaviv: fix bad backport leading to warning
-
-Hans de Goede <hdegoede@redhat.com>
-    HID: logitech-hidpp: Fix kernel crash on receiver USB disconnect
-
-Artem Chernyshev <artem.chernyshev@red-soft.ru>
-    RDMA/cxgb4: Check skb value for failure to allocate
-
-
--------------
-
-Diffstat:
-
- Makefile                                       |  4 +-
- arch/arm/boot/dts/omap4-droid4-xt894.dts       |  1 +
- arch/s390/pci/pci_dma.c                        | 16 +++++-
- arch/x86/include/asm/msr-index.h               |  4 ++
- arch/x86/kernel/cpu/amd.c                      |  9 ++++
- arch/x86/kvm/lapic.c                           |  8 ++-
- drivers/acpi/irq.c                             |  7 ++-
- drivers/ata/libata-eh.c                        |  2 +-
- drivers/base/regmap/regmap.c                   |  2 +-
- drivers/bluetooth/hci_vhci.c                   |  3 ++
- drivers/gpio/gpio-timberdale.c                 |  5 +-
- drivers/gpio/gpio-vf610.c                      |  4 +-
- drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c    |  2 +-
- drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c        |  2 +-
- drivers/hid/hid-holtek-kbd.c                   |  4 ++
- drivers/hid/hid-logitech-hidpp.c               |  3 +-
- drivers/i2c/i2c-mux.c                          |  2 +-
- drivers/iio/pressure/bmp280-core.c             |  2 +-
- drivers/iio/pressure/ms5611_core.c             |  2 +-
- drivers/infiniband/hw/cxgb4/cm.c               |  3 ++
- drivers/input/joystick/xpad.c                  |  2 +
- drivers/input/misc/powermate.c                 |  1 +
- drivers/mcb/mcb-core.c                         | 10 ++--
- drivers/mcb/mcb-parse.c                        |  2 -
- drivers/mmc/core/mmc.c                         |  2 +-
- drivers/net/ethernet/intel/i40e/i40e_common.c  |  4 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_sriov.c |  5 +-
- drivers/net/ethernet/marvell/sky2.h            |  2 +-
- drivers/net/ieee802154/ca8210.c                | 17 ++----
- drivers/net/usb/dm9601.c                       |  7 ++-
- drivers/net/usb/smsc95xx.c                     |  2 +-
- drivers/usb/core/hub.c                         | 28 ++++++++--
- drivers/usb/core/hub.h                         |  2 +-
- drivers/usb/gadget/function/f_ncm.c            | 26 +++++++---
- drivers/usb/gadget/udc/udc-xilinx.c            | 20 ++++---
- drivers/usb/host/xhci-ring.c                   |  4 +-
- drivers/usb/musb/musb_debugfs.c                |  2 +-
- drivers/usb/musb/musb_host.c                   |  9 +++-
- drivers/usb/serial/option.c                    |  7 +++
- fs/btrfs/tree-log.c                            |  2 +-
- fs/ceph/inode.c                                |  4 +-
- fs/overlayfs/copy_up.c                         |  2 +-
- include/linux/mcb.h                            |  1 -
- include/linux/perf_event.h                     |  1 +
- include/net/bluetooth/hci_core.h               |  2 +-
- include/net/netns/xfrm.h                       |  1 +
- kernel/cgroup/cgroup-v1.c                      |  5 +-
- kernel/events/core.c                           | 39 +++++++++++---
- kernel/trace/trace_events.c                    |  1 +
- kernel/workqueue.c                             |  8 ++-
- net/bluetooth/hci_conn.c                       | 72 ++++++++++++++++----------
- net/bluetooth/hci_core.c                       |  8 +--
- net/bluetooth/hci_event.c                      | 33 +++++++++---
- net/bluetooth/hci_sock.c                       |  3 +-
- net/ipv4/esp4.c                                |  4 +-
- net/ipv6/esp6.c                                |  4 +-
- net/mac80211/tx.c                              |  3 +-
- net/netfilter/nft_payload.c                    |  2 +-
- net/nfc/nci/core.c                             |  5 ++
- net/nfc/nci/spi.c                              |  2 +
- net/rfkill/rfkill-gpio.c                       |  4 +-
- net/wireless/nl80211.c                         |  2 +-
- net/xfrm/xfrm_policy.c                         |  6 +--
- 63 files changed, 310 insertions(+), 141 deletions(-)
-
+Hello!
+
+On 23/10/23 4:55 a. m., Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.328 release.
+> There are 66 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.328-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.14.328-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.14.y
+* git commit: 3ca3af8901320d3cbd71731933ed8a51bdbe55eb
+* git describe: v4.14.327-67-g3ca3af890132
+* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14.327-67-g3ca3af890132
+
+## No test regressions (compared to v4.14.327)
+
+## No metric regressions (compared to v4.14.327)
+
+## No test fixes (compared to v4.14.327)
+
+## No metric fixes (compared to v4.14.327)
+
+## Test result summary
+total: 55044, pass: 46798, fail: 1550, skip: 6658, xfail: 38
+
+## Build Summary
+* arc: 20 total, 20 passed, 0 failed
+* arm: 210 total, 200 passed, 10 failed
+* arm64: 62 total, 54 passed, 8 failed
+* i386: 36 total, 30 passed, 6 failed
+* mips: 42 total, 42 passed, 0 failed
+* parisc: 6 total, 0 passed, 6 failed
+* powerpc: 16 total, 14 passed, 2 failed
+* s390: 11 total, 9 passed, 2 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x86_64: 47 total, 39 passed, 8 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-zram
+* kunit
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-crypto
+* ltp-cve
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* rcutorture
+
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
 
