@@ -2,104 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B54447D5043
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49A57D503D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234399AbjJXMu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45064 "EHLO
+        id S234374AbjJXMuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234414AbjJXMuU (ORCPT
+        with ESMTP id S234390AbjJXMuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:50:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44AF590
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:49:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698151776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UVRePymm5LlGxEOZU5dUiW35O7/1kIgQIOIIucxo4g8=;
-        b=YpJQScyOjO40HPEN+Rit4n0M2Gi72tk9I1FrlYpb6F6fg7mReeTwIkGo2Tkr9QpKlmQa5g
-        mj4L8oOKmIaq0iW8ajHNvsTXDWCFnUMH9cTKlAY23qN1KNO1cxcsY8VoNtHIqdYkynOznF
-        SRr5x5FWRlJC+BNOYo/w5YLz7qftYTM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-99-vJLQkFovPimUQaMJtn9_zQ-1; Tue, 24 Oct 2023 08:49:22 -0400
-X-MC-Unique: vJLQkFovPimUQaMJtn9_zQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 23920185A790;
-        Tue, 24 Oct 2023 12:49:22 +0000 (UTC)
-Received: from [10.43.2.183] (unknown [10.43.2.183])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C6D9B2166B26;
-        Tue, 24 Oct 2023 12:49:20 +0000 (UTC)
-Message-ID: <349d8eb5-b499-45ea-8de5-2c3658d4c446@redhat.com>
-Date:   Tue, 24 Oct 2023 14:49:20 +0200
+        Tue, 24 Oct 2023 08:50:12 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12C3123
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:50:08 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a7af45084eso42847667b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:50:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698151808; x=1698756608; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=drfWjB6Z+XkamCb0RZVbD4fvzQ6BkCWkgYR2SPLQjDQ=;
+        b=HBszIJEjk1A4xHOEl31Ftpw3M74iAcPoDvlg1joH27lysuT+u6/oRSsfwP8BbqGlTi
+         0ZaHn5pwFJJ9WRGbQuiCUMSkKH1QyALpj8l+IyVSkSqZKclyEFki1BZbpiWZMXKgH5Rn
+         ezhXTKE1DesgDiXhA5dSC83H91HxHA6quA8E/JclciNLDNZ3VCoCub/NKw9NQTGfUVIF
+         lIe5KWZC4ccoBBiZansLoP01AaCHsBsruV+hmyc9Yc1Wso5XV40GWhywUHsnJ5EFzgvI
+         7z92i0kY3Yo7Ij4/f+sHnDGVdajC8CRYNK2j+lmcV/LComgsJS76Ozr/jr+PLeHr6Mf8
+         +4vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698151808; x=1698756608;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=drfWjB6Z+XkamCb0RZVbD4fvzQ6BkCWkgYR2SPLQjDQ=;
+        b=Burv/mq+Q6LdKEsS6WGpcRxrEiOwzgjx/zrJhLH5tYyoTQFGIIk8y1IwQIdehsqSfy
+         CvDVzvM7XjuycdvQXLvmTWQffR5fixdIONe0HHQHX+x/iCzmmyxDwGQNGM4cpQYOvfJc
+         9hXztC16UNKf9WKrT6dSEX44vX+hzDO8gJmH2WJ8UdPPp8vEL8lEWez40I+p7bJ5S3xu
+         wYDm8sVyY7e8Emrbef7amQkJ3YxGOH4SWII62uzKcMQvjrxgR36D4j2U/SPcrlcH7SOz
+         pp/7NFA7Q3w0lp6rwMKZohRtpPnvxIuIq3eeQGJUPZdqexbeYJNRI3elwJyyQesDWlc4
+         VRew==
+X-Gm-Message-State: AOJu0YwM4g2zvfEIiLKZdvKtlmNVRa13d80V6HMuWGf0uWvxqbU3cp6o
+        /qNIsBZM5x8Q2yDDCNkZ/3y7das4eIythGyw1YOtsQ==
+X-Google-Smtp-Source: AGHT+IFjIONF78/WztY+ctTp3jQcYaP/sv8H3kp8H8VN9BTRgIwpHhVc5auQGkToBIGdlLssWU70AqKJYsuKK+wEpe4=
+X-Received: by 2002:a0d:dac1:0:b0:598:7836:aac1 with SMTP id
+ c184-20020a0ddac1000000b005987836aac1mr10268798ywe.49.1698151807846; Tue, 24
+ Oct 2023 05:50:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] i40e: Do not call devlink_port_type_clear()
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        Jacob Keller <jacob.e.keller@intel.com>
-References: <20231024124245.837908-1-ivecera@redhat.com>
-Content-Language: en-US
-In-Reply-To: <20231024124245.837908-1-ivecera@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231018-msm8909-cpufreq-v2-0-0962df95f654@kernkonzept.com>
+ <20231018-msm8909-cpufreq-v2-2-0962df95f654@kernkonzept.com>
+ <CAPDyKFot9=M1ooP_Q1AOgG5o_4DTQ2qsyai1ZdXAzBwf89W4uA@mail.gmail.com>
+ <CAPDyKFr5A-P=UhWs4rUMBWup3pH75WAhcZ56Y2_Sfk3=WfxRCQ@mail.gmail.com> <ZTeyhR7YY7VgWQlU@kernkonzept.com>
+In-Reply-To: <ZTeyhR7YY7VgWQlU@kernkonzept.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 24 Oct 2023 14:49:32 +0200
+Message-ID: <CAPDyKFrcV8iJnJ904j1jkx0E8PaOLmiTZ7CKk7EV8qQ71AZdbA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] cpufreq: qcom-nvmem: Enable virtual power domain devices
+To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 24 Oct 2023 at 14:03, Stephan Gerhold
+<stephan.gerhold@kernkonzept.com> wrote:
+>
+> On Thu, Oct 19, 2023 at 01:26:19PM +0200, Ulf Hansson wrote:
+> > On Thu, 19 Oct 2023 at 12:24, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > On Wed, 18 Oct 2023 at 10:06, Stephan Gerhold
+> > > <stephan.gerhold@kernkonzept.com> wrote:
+> > > >
+> > > > The genpd core caches performance state votes from devices that are
+> > > > runtime suspended as of commit 3c5a272202c2 ("PM: domains: Improve
+> > > > runtime PM performance state handling"). They get applied once the
+> > > > device becomes active again.
+> > > >
+> > > > To attach the power domains needed by qcom-cpufreq-nvmem the OPP core
+> > > > calls genpd_dev_pm_attach_by_id(). This results in "virtual" dummy
+> > > > devices that use runtime PM only to control the enable and performance
+> > > > state for the attached power domain.
+> > > >
+> > > > However, at the moment nothing ever resumes the virtual devices created
+> > > > for qcom-cpufreq-nvmem. They remain permanently runtime suspended. This
+> > > > means that performance state votes made during cpufreq scaling get
+> > > > always cached and never applied to the hardware.
+> > > >
+> > > > Fix this by enabling the devices after attaching them and use
+> > > > dev_pm_syscore_device() to ensure the power domains also stay on when
+> > > > going to suspend. Since it supplies the CPU we can never turn it off
+> > > > from Linux. There are other mechanisms to turn it off when needed,
+> > > > usually in the RPM firmware (RPMPD) or the cpuidle path (CPR genpd).
+> > >
+> > > I believe we discussed using dev_pm_syscore_device() for the previous
+> > > version. It's not intended to be used for things like the above.
+> > >
+> > > Moreover, I was under the impression that it wasn't really needed. In
+> > > fact, I would think that this actually breaks things for system
+> > > suspend/resume, as in this case the cpr driver's genpd
+> > > ->power_on|off() callbacks are no longer getting called due this,
+> > > which means that the cpr state machine isn't going to be restored
+> > > properly. Or did I get this wrong?
+> >
+> > BTW, if you really need something like the above, the proper way to do
+> > it would instead be to call device_set_awake_path() for the device.
+> >
+>
+> Unfortunately this does not work correctly. When I use
+> device_set_awake_path() it does set dev->power.wakeup_path = true.
+> However, this flag is cleared again in device_prepare() when entering
+> suspend. To me it looks a bit like wakeup_path is not supposed to be set
+> directly by drivers? Before and after your commit 8512220c5782 ("PM /
+> core: Assign the wakeup_path status flag in __device_prepare()") it
+> seems to be internally bound to device_may_wakeup().
+>
+> It works if I make device_may_wakeup() return true, with
+>
+>         device_set_wakeup_capable(dev, true);
+>         device_wakeup_enable(dev);
+>
+> but that also allows *disabling* the wakeup from sysfs which doesn't
+> really make sense for the CPU.
+>
+> Any ideas?
 
+The device_set_awake_path() should be called from a system suspend
+callback. So you need to add that callback for the cpufreq driver.
 
-On 24. 10. 23 14:42, Ivan Vecera wrote:
-> Do not call devlink_port_type_clear() prior devlink port unregister
-> and let devlink core to take care about it.
-> 
-> Reproducer:
-> [root@host ~]# rmmod i40e
-> [ 4539.964699] i40e 0000:02:00.0: devlink port type for port 0 cleared without a software interface reference, device type not supported by the kernel?
-> [ 4540.319811] i40e 0000:02:00.1: devlink port type for port 1 cleared without a software interface reference, device type not supported by the kernel?
-> 
-> Fixes: 9e479d64dc58 ("i40e: Add initial devlink support")
-> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
-> ---
->   drivers/net/ethernet/intel/i40e/i40e_devlink.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_devlink.c b/drivers/net/ethernet/intel/i40e/i40e_devlink.c
-> index 74bc111b4849..cc4e9e2addb7 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_devlink.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_devlink.c
-> @@ -231,6 +231,5 @@ int i40e_devlink_create_port(struct i40e_pf *pf)
->    **/
->   void i40e_devlink_destroy_port(struct i40e_pf *pf)
->   {
-> -	devlink_port_type_clear(&pf->devlink_port);
->   	devlink_port_unregister(&pf->devlink_port);
->   }
+Sorry, if that wasn't clear.
 
-Please drop... there is missing net-next target.
-Will post v2.
-
-Ivan
-
+Kind regards
+Uffe
