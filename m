@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C08A7D4745
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8677D4744
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbjJXGTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 02:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
+        id S232603AbjJXGTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 02:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbjJXGS7 (ORCPT
+        with ESMTP id S232470AbjJXGS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 02:18:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE6BF9;
-        Mon, 23 Oct 2023 23:18:57 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 08:18:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698128335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oFscsjM+T6PwALwjNYUJz2BmZ8r/+Bj29Kd1auX4SPI=;
-        b=BofWcEkm9n8F6KpQ6sAdF6/ozNjQXcIY6g7k8pOO1SmfCTbgaD+RQTm9RqAzCWUBbQuGV0
-        un7vG2L0wYx237lB5f50LOol2XJGvmn0W3NpOQX00ayhQ4RslTJ4/9MtCvCEqF4upm+oh8
-        EAF8B2vLHl6ukQcKc29Bux68SLbCPD5KDTM0Mm7F1yHPJyPu+1tDsrL6oys2qHY0/+jgqU
-        HnFvB3W6znOKS6v6B2rT54+RkywOSAjyBW8BKE/ZVCa+GX/eOMOW5uDMjagGowbwZQf1Qa
-        p9/SvlC+0Yi0A/roVjEEFhZRTrxL+EIJPBccM8cgxVhrBQ6fnJNlSw6ImMZebA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698128335;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oFscsjM+T6PwALwjNYUJz2BmZ8r/+Bj29Kd1auX4SPI=;
-        b=/UoBr0b/57j7ff8wRdeBxkYeDv6oK9DKML3dMC7/hTKKEGwmFS0zuJEAMwtSWbVTaEQNh8
-        1DV7irNanUNEV7DA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     "Schaffner, Tobias" <tobias.schaffner@siemens.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "minda.chen@starfivetech.com" <minda.chen@starfivetech.com>
-Subject: Re: [PATCH RT 0/3] riscv: add PREEMPT_RT support
-Message-ID: <20231024061852.7BzoCFwW@linutronix.de>
-References: <20230510162406.1955-1-jszhang@kernel.org>
- <a37fc706-78cd-4721-9af3-aabb610f49b1@siemens.com>
- <ZTah9NOMbZkf6dfL@xhacker>
+        Tue, 24 Oct 2023 02:18:57 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3B8C0;
+        Mon, 23 Oct 2023 23:18:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Type:MIME-Version:
+        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=X1BeEIUyP17Oc9/0An+VaavshAKOs04P4D2EreDhKvc=; b=CORXTW5x4gbqjM5cBxVaG0J30z
+        3I20kBgT+earPcSSpcv9EBDHv4PCVBDJl1ORE3v/5qtO1bOqiyaoiiX+SW0JI6KwvE7IWacrucQSz
+        Ujstk3J7ZB7jIUb/bt8g/0P5EqsbA+Tw63X/madTNBecf0c8bkAJ1Z75sZ/y/3bSqAr7cNnh29cnD
+        R7ZX7VhM0D1yNobnGpGlUR3t1tKcAfLPhSOoLy0LrPMPGuWJIveGFDLdFl40VIfAjh7QIO9JXkwHJ
+        gf5jm3srib3kfacHoFcrTttv6smsKSAxrdIJSQE4Qt7QahYnyRapUqResrQSSrsV6L8H2FFXZNoDO
+        jQT/2V0Q==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qvAkf-004nKI-25;
+        Tue, 24 Oct 2023 06:18:53 +0000
+Date:   Tue, 24 Oct 2023 07:18:53 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: [git pull] nfsd fix
+Message-ID: <20231024061853.GG800259@ZenIV>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZTah9NOMbZkf6dfL@xhacker>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-24 00:40:20 [+0800], Jisheng Zhang wrote:
-> Hi Thomas, Sebastian
-> 
-> could you please review? Any comments are appreciated. or do you want a
-> rebase on linux-6.5.y-rt?
+Catch from lock_rename() audit; nfsd_rename() checked that both directories
+belonged to the same filesystem, but only after having done lock_rename().
+Trivial fix, tested and acked by nfs folks.  Sat in -next for a while...
 
-Please resend on top of latest v6.6-RT. Lazy preempt is gone so only
-PREEMPT_RT config switch remains from your three patch series. If you
-have generic-entry then you could use the new PREEMPT_AUTO.
+The following changes since commit 94f6f0550c625fab1f373bb86a6669b45e9748b3:
 
-Are there any reports of this booting without warnings with LOCKDEP and
-CONFIG_DEBUG_ATOMIC_SLEEP enabled? I remember there was something
-earlier.
+  Linux 6.6-rc5 (2023-10-08 13:49:43 -0700)
 
-> Thanks
+are available in the Git repository at:
 
-Sebastian
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git tags/pull-nfsd-fix
+
+for you to fetch changes up to 1aee9158bc978f91701c5992e395efbc6da2de3c:
+
+  nfsd: lock_rename() needs both directories to live on the same fs (2023-10-17 00:24:35 -0400)
+
+----------------------------------------------------------------
+fix for lock_rename() misuse in nfsd
+
+----------------------------------------------------------------
+Al Viro (1):
+      nfsd: lock_rename() needs both directories to live on the same fs
+
+ fs/nfsd/vfs.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
