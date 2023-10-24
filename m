@@ -2,142 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C28FA7D5D57
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E437D5D59
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344449AbjJXVkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 17:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
+        id S1344406AbjJXVkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 17:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344401AbjJXVj7 (ORCPT
+        with ESMTP id S1344272AbjJXVka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:39:59 -0400
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA2CA3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:39:57 -0700 (PDT)
-Received: from mail.home (82-181-196-180.bb.dnainternet.fi [82.181.196.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: timo.lindfors)
-        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4SFQSm4989z49Pyg;
-        Wed, 25 Oct 2023 00:39:47 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
-        t=1698183593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+8Hrl6tegBZ7YL46PueumA96t3uL0oJQe1ff1LEe7Zo=;
-        b=LditiTTvVWNoVAFavoOX6uuFJCXDgFTTY9hPWRUzsg425U4j6Q2rUxUp2lvvBZaFWdF7Lm
-        2Y1aecGwRLFXYfe0E1OqLsnZkwud2yyLH596B8sezPM6cxZizygaFNKDR83vo8x8bWdXsI
-        2P7xyKHyIgBIy1PTurpOrHhX/G+HXCp8pD096/O+F9ayXgRH9kecCqBLRBc6AWbzEkfLSQ
-        mAf4LdL4+UTO4CeIm0lA5OQ7QIxHHygSK8ZhUUOoGCQpY52nmkXPnqokgas+cYn1a6DOop
-        ex5gFgJTZD1pe7Nd2yGbSu67AMeDdFdQDf3DLExxscSdRcGVtCofHy7Hxf9enw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=lahtoruutu; t=1698183593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+8Hrl6tegBZ7YL46PueumA96t3uL0oJQe1ff1LEe7Zo=;
-        b=qr8NrFnVI+uyC40dCcQH6LX22wPKXffCx1ZF0v8a3nB0uv+RmGlVLRZ9QLi9d3Cu006oyt
-        8xQreQW8DW4WulqbUzjnwjtQl1WGV8Vc9deNFL/tQ2iHkzQPeUtZ05cjhe0bGQWTV6hc0t
-        cFI40YcXdDNZoF27EeXr6gXcfRc33cQAm033VEQXTQAN0dpjxjRBQoxgV7bPCl9Yju3UtR
-        3PnTtSUHj+jxT7lcxOkAF6JmW43VcOcxgIwoGi8yiytezV5JFp9bfQl4MZSh4680Rv4SF+
-        U8llOioTt4fJRJRgwRRYDeHeqBBUex4FiDzNs8zlonJHkr93IC3Jt5qI1O8DiA==
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1698183593; a=rsa-sha256;
-        cv=none;
-        b=MkTBklG/qhJpar/gXdwFSqhcySO2Wct/9kFGUHkWtJiKKhcEEhxnF0q3DIzKGoY6x4N4Nq
-        6Esg/W3QrEaDVbBGiIQd6ea5TPygg0Th7F1WCR6IsaXL32+SxkQ55nxyGCGCWJax6fOTT1
-        hx+KYOeETzuiZGAldv8BfaoiVxhPedEtSdWnplI83LLLewThA01Q1XalAZ5q4S//CSm6lU
-        6LlgMKQXE/a/Yhj9QzSiCNOsElRQIe2qi1Lr+lQmwwTOj7NbbLX3/6Msk3CIMZiJFCf1Eu
-        moiqL/w4LUbKFydCnzec9aGpgsNMBmn/76Ct+LcHK7EVIrb8uhIZDrEG/TMPcA==
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=timo.lindfors smtp.mailfrom=timo.lindfors@iki.fi
-Received: from localhost ([127.0.0.1])
-        by mail.home with esmtp (Exim 4.89)
-        (envelope-from <timo.lindfors@iki.fi>)
-        id 1qvP7r-0007TH-Ld; Wed, 25 Oct 2023 00:39:47 +0300
-Date:   Wed, 25 Oct 2023 00:39:47 +0300 (EEST)
-From:   Timo Lindfors <timo.lindfors@iki.fi>
-To:     Salvatore Bonaccorso <carnil@debian.org>
-cc:     Timo Lindfors <timo.lindfors@iki.fi>, 1054514@bugs.debian.org,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, regressions@lists.linux.dev
-Subject: Re: Bug#1054514: linux-image-6.1.0-13-amd64: Debian VM with qxl
- graphics freezes frequently
-In-Reply-To: <ZTgydqRlK6WX_b29@eldamar.lan>
-Message-ID: <alpine.DEB.2.20.2310250027230.28685@mail.home>
-References: <alpine.DEB.2.20.2310242308150.28457@mail.home> <ZTgydqRlK6WX_b29@eldamar.lan>
-User-Agent: Alpine 2.20 (DEB 67 2015-01-07)
+        Tue, 24 Oct 2023 17:40:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03401A6;
+        Tue, 24 Oct 2023 14:40:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FC3EC433C8;
+        Tue, 24 Oct 2023 21:40:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698183628;
+        bh=F4moDtJBsvM9k5YRWcGiZLJiEXlG4reTo0D2QY0C0dg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oosxYUuzADM8NPpyDf8JiuQjauehWEnVJjvBPI+XZbNdM6cP66MQ8UcicQ4XfXAur
+         j5i1meCrUH73sGd/0LE7t3kgZthIEtHRfAx5dSbVMY5anlaYejy5drPA4xt0v2zagM
+         VskR+wBh3JvCaC26F5NQiQroCoBXDYPd5t0pkosfmJACpJR+DNI2L1rEMK0FjuSs/X
+         YEOG0hdgStFnvEVJ/GqaqjGyTIa6LgsPGBX6Mzb8fv3W0NUfLwT/D4ABOBsItZwY/f
+         mMeA+mDDpMtfP8/X0os0lOV7ABxTqul/CGv+n0t9JT/nzzyaoclgXJZKKIRpQhOPK+
+         6F6hwk4SKQlVA==
+Date:   Tue, 24 Oct 2023 23:40:25 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huangzheng lai <laihuangzheng@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Subject: Re: [PATCH V2 0/7] i2c: sprd: Modification of UNISOC Platform I2C
+ Driver
+Message-ID: <20231024214025.rfix4tzqzxlazbgh@zenone.zhora.eu>
+References: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Huangzheng,
 
-On Tue, 24 Oct 2023, Salvatore Bonaccorso wrote:
-> Thanks for the excelent constructed report! I think it's best to
-> forward this directly to upstream including the people for the
-> bisected commit to get some idea.
+could you please use the [PATCH RESEND...] prefix when sending
+the patch as it is?
 
-Thanks for the quick reply!
+Thanks,
+Andi
 
-> Can you reproduce the issue with 6.5.8-1 in unstable as well?
-
-Unfortunately yes:
-
-ansible@target:~$ uname -r
-6.5.0-3-amd64
-ansible@target:~$ time sudo ./reproduce.bash
-Wed 25 Oct 2023 12:27:00 AM EEST starting round 1
-Wed 25 Oct 2023 12:27:24 AM EEST starting round 2
-Wed 25 Oct 2023 12:27:48 AM EEST starting round 3
-bug was reproduced after 3 tries
-
-real    0m48.838s
-user    0m1.115s
-sys     0m45.530s
-
-I also tested upstream tag v6.6-rc6:
-
-...
-+ detected_version=6.6.0-rc6
-+ '[' 6.6.0-rc6 '!=' 6.6.0-rc6 ']'
-+ exec ssh target sudo ./reproduce.bash
-Wed 25 Oct 2023 12:37:16 AM EEST starting round 1
-Wed 25 Oct 2023 12:37:42 AM EEST starting round 2
-Wed 25 Oct 2023 12:38:10 AM EEST starting round 3
-Wed 25 Oct 2023 12:38:36 AM EEST starting round 4
-Wed 25 Oct 2023 12:39:01 AM EEST starting round 5
-Wed 25 Oct 2023 12:39:27 AM EEST starting round 6
-bug was reproduced after 6 tries
-
-
-For completeness, here is also the grub_set_default_version.bash script 
-that I had to write to automate this (maybe these could be in debian 
-wiki?):
-
-#!/bin/bash
-set -x
-
-version="$1"
-
-idx=$(expr $(grep "menuentry " /boot/grub/grub.cfg | sed 1d |grep -n "'Debian GNU/Linux, with Linux $version'"|cut -d: -f1) - 1)
-exec sudo grub-set-default "1>$idx"
-
-
-
--Timo
-
+On Mon, Oct 23, 2023 at 04:11:51PM +0800, Huangzheng Lai wrote:
+> Recently, some bugs have been discovered during use, patch3 and 
+> patch5-6 are bug fixes. Also, this patchset add new features:
+> patch1 allows I2C to use more frequencies for communication,
+> patch2 allows I2C to use 'reset framework' for reset, and patch4 allows
+> I2C controller to dynamically switch frequencies during use.
+> 
+> change in V2
+> -Using 'I2C' instead of 'IIC' in the patch set.
+> -Using imperative form in patch subject.
+> -Use 'switch case' instead of 'else if' in PATCH 1/7.
+> -Modify if (i2c_dev->rst != NULL) to if (i2c_dev->rst) in PATCH 2/7.
+> -Modify some dev_err() to dev_warn() or dev_dbg().
+> -Clear i2c_dev->ack_flag in sprd_i2c_clear_ack() in PATCH 3/7.
+> -Modify the indentation format of the code in PATCH 4/7.
+> -Move sprd_i2c_enable() above its caller in PATCH 5/7.
+> -Remove 'Set I2C_RX_ACK when clear irq' commit.
+> -Add Fixes tags. 
+> 
+> Huangzheng Lai (7):
+>   i2c: sprd: Add configurations that support 1Mhz and 3.4Mhz frequencies
+>   i2c: sprd: Add I2C driver to use 'reset framework' function
+>   i2c: sprd: Use global variables to record I2C ack/nack status instead
+>     of local variables
+>   i2c: sprd: Add I2C controller driver to support dynamic switching of
+>     400K/1M/3.4M frequency
+>   i2c: sprd: Configure the enable bit of the I2C controller before each
+>     transmission initiation
+>   i2c: sprd: Increase the waiting time for I2C transmission to avoid
+>     system crash issues
+>   i2c: sprd: Add I2C_NACK_EN and I2C_TRANS_EN control bits
+> 
+>  drivers/i2c/busses/i2c-sprd.c | 166 ++++++++++++++++++++++------------
+>  1 file changed, 106 insertions(+), 60 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
