@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6158C7D5469
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD057D546B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343658AbjJXOxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 10:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S1343670AbjJXOxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 10:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234560AbjJXOxB (ORCPT
+        with ESMTP id S234594AbjJXOx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:53:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279B9B3;
-        Tue, 24 Oct 2023 07:53:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37CE6C433C7;
-        Tue, 24 Oct 2023 14:52:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698159179;
-        bh=nksVzI2sxDyYwDK77Qh9hxtLz14PivSCoDF4mQ1mj4M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=U16Q1nagA13WjsyrcYED+UgO0KdXjAHJxAU+n3rpd3ZUpmkIBNkBu3gpqgxL+2XnS
-         QCfnDZMDDr48vspTq6FbzfRkGKiL5iVVJxn7dPKtacOMB3UIYGdNKeMW9zd3NoVf5Y
-         V/BbtVZzMT6VG/GXa0kFIHsDSiQ5Kp8fS+29YN/VyrMTqthZD7upb3D0ly473Oig5L
-         abhyJip2bIy7BvNrl7pJ+nGrVEYaSFq8zciCTTTItv7GQZ2xp1bgbq9QrjJvWDyyU/
-         vaviig+xb8SZlBmHn9g+T8fxT8/gGiRrzU5YTdlWCUdUHfCLnPwGUw+PeRv48tJL1l
-         59OBo/Cb6GHrg==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     "wuqiang . matt" <wuqiang.matt@bytedance.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>, mhiramat@kernel.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-Subject: [PATCH] locking/atomic: sh: Use generic_cmpxchg_local for arch_cmpxchg_local()
-Date:   Tue, 24 Oct 2023 23:52:54 +0900
-Message-Id: <169815917362.8695.13904684741526725648.stgit@devnote2>
+        Tue, 24 Oct 2023 10:53:26 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DBBD7F
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:53:23 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:7faa:e55:54a:cff])
+        by albert.telenet-ops.be with bizsmtp
+        id 1qtK2B00X5Uc89d06qtKeQ; Tue, 24 Oct 2023 16:53:20 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qvImO-007Q3C-T2;
+        Tue, 24 Oct 2023 16:53:19 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qvImV-00BkS1-Nd;
+        Tue, 24 Oct 2023 16:53:19 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Song Shuai <songshuaishuai@tinylab.org>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] riscv: boot: Fix creation of loader.bin
+Date:   Tue, 24 Oct 2023 16:53:18 +0200
+Message-Id: <1086025809583809538dfecaa899892218f44e7e.1698159066.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
-User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+When flashing loader.bin for K210 using kflash:
 
-Use generic_cmpxchg_local() for arch_cmpxchg_local() implementation
-in SH architecture because it does not implement arch_cmpxchg_local().
+    [ERROR] This is an ELF file and cannot be programmed to flash directly: arch/riscv/boot/loader.bin
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310241310.Ir5uukOG-lkp@intel.com/
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Before, loader.bin relied on "OBJCOPYFLAGS := -O binary" in the main
+RISC-V Makefile to create a boot image with the right format.  With this
+removed, the image is now created in the wrong (ELF) format.
+
+Fix this by adding an explicit rule.
+
+Fixes: 505b02957e74f0c5 ("riscv: Remove duplicate objcopy flag")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- arch/sh/include/asm/cmpxchg.h |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/riscv/boot/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/sh/include/asm/cmpxchg.h b/arch/sh/include/asm/cmpxchg.h
-index 288f6f38d98f..e920e61fb817 100644
---- a/arch/sh/include/asm/cmpxchg.h
-+++ b/arch/sh/include/asm/cmpxchg.h
-@@ -71,4 +71,6 @@ static inline unsigned long __cmpxchg(volatile void * ptr, unsigned long old,
- 				    (unsigned long)_n_, sizeof(*(ptr))); \
-   })
+diff --git a/arch/riscv/boot/Makefile b/arch/riscv/boot/Makefile
+index 22b13947bd131e84..8e7fc0edf21d3ece 100644
+--- a/arch/riscv/boot/Makefile
++++ b/arch/riscv/boot/Makefile
+@@ -17,6 +17,7 @@
+ KCOV_INSTRUMENT := n
  
-+#include <asm-generic/cmpxchg-local.h>
-+
- #endif /* __ASM_SH_CMPXCHG_H */
+ OBJCOPYFLAGS_Image :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
++OBJCOPYFLAGS_loader.bin :=-O binary
+ OBJCOPYFLAGS_xipImage :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
+ 
+ targets := Image Image.* loader loader.o loader.lds loader.bin
+-- 
+2.34.1
 
