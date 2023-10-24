@@ -2,120 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 459B97D587D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32187D5880
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343921AbjJXQew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
+        id S234825AbjJXQfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343853AbjJXQeu (ORCPT
+        with ESMTP id S1343931AbjJXQfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:34:50 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C48AF;
-        Tue, 24 Oct 2023 09:34:48 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-41cc776ccb4so30547241cf.1;
-        Tue, 24 Oct 2023 09:34:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698165287; x=1698770087; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IxClnLtytb8/MqBwGt1ecf9l9O9+RMotMvVBbqDYLVk=;
-        b=Z4HXpvlt/vqEk4qrzr5qUiaUJQXX6vr6vA4bj61WC57uq2m691YeIoUzzc077RwNqn
-         vTu5Gd0uCSHN+SeC91PIDeVlFO43ZXIV5m68hNZ+rEc81OsOzSxOn3AJKoYpIIZJorqL
-         TFR5vT9F67+txAoBYgua/De8XLhRjmi5hM4p3iBRIpl1LdoxFBabM4SXYpOhYzFp1QQ4
-         G/5QndlZW87WEYZZfqzOHFFih53nbvd0OAUJEIHCtpPVmje+CBuLBVRLwnJ7SulBJ3y0
-         ppPUauXBOl+MLZXNGNMeh6whTCjcc0Vqh7IDH9ScQ7FullqXuM8Htp9/TwCRy2hlO9QU
-         WCUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698165287; x=1698770087;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IxClnLtytb8/MqBwGt1ecf9l9O9+RMotMvVBbqDYLVk=;
-        b=L0auW9WlUDn42bUvvU3S1/n29r1eCZ9i1zWUc1KHIBdOshgxodRRcGZSbkZoDRx+P4
-         JfmyaKSnWmpnSU/KtNmRU5Bb2W7/42q9WU1Q8lvlZnJQ+A9neC6HvjtGQIGwJ4PftH0j
-         g/tmuZYn4fwwjWky8MVs9JZFNlFEKgV/EKXH+S5HUWQVlYs5s4Eh54V58mhFfXR0FezY
-         IZA6AxVDWhSPPfg9+YoRKnB2W3O/DuvUem2clgUNnGEynM+iI0VRk8dpEURLQFHLcpRn
-         flGXvQYNCzqO0RJSRyqkxwRVgtRtvS7EqWYOElTEkys9yezcn0oN5G8spiKOJniLlAbj
-         013w==
-X-Gm-Message-State: AOJu0YwpA3k/AzGo0HRm2WyPYVymhotxHu2dUi5YzNV3DyVJf6ZiU8TN
-        aTYKDT8Hfjo7LFX7ksRPkSI=
-X-Google-Smtp-Source: AGHT+IHKYZqbBrPYHli1D1qsB6UUfOarb2uGevVzcLCfBkSiM5ZUkDbFq/5Fa6SNfrB98F7eoZlFjA==
-X-Received: by 2002:ac8:5e50:0:b0:418:1817:43a9 with SMTP id i16-20020ac85e50000000b00418181743a9mr14200224qtx.17.1698165287424;
-        Tue, 24 Oct 2023 09:34:47 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id h21-20020ac87455000000b00419b094537esm3590812qtr.59.2023.10.24.09.34.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 09:34:46 -0700 (PDT)
-Message-ID: <4df5ef7e-d3dd-45a7-8edb-182784167243@gmail.com>
-Date:   Tue, 24 Oct 2023 09:34:43 -0700
+        Tue, 24 Oct 2023 12:35:12 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462E812B;
+        Tue, 24 Oct 2023 09:35:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7aiZywvRsY6Q9Q6XdkE7hDVMPUu+CQ0jOQmrFXLh59M=; b=kQisp2ZwovIQVYckoNXGBwGKrG
+        3e5egzEVLe1e9mWSI3TxFDX2czlSZvM4r5St10+3Ba15FiqYx6/kgC6Ao/O2QQ3RFynG1n30yjLGl
+        0Q+aRCWgyu285A3GXng3Wv3VO5dd7T47Mlf3QyhvuBQRKylud7r7l6Se6giPpbRbMLsUVDM1zEs/h
+        BMPcGl/VXrAj7TbDJliAzOz0HPLD+lvQPpxqI9bjQXzYrhNUp3YqCYgbdwbbIRZk4QKxJG3jFh+G1
+        xf0KanQY+iQxsK6T6gyqjJJb4aB+0PltrXFk33g/5NTp+XJSKg6XyTlX9NsiLrAPpWR8b/Yl83hRs
+        qiKuv7Gw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qvKMl-00Fdwy-0L;
+        Tue, 24 Oct 2023 16:34:51 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BD326300392; Tue, 24 Oct 2023 18:34:50 +0200 (CEST)
+Date:   Tue, 24 Oct 2023 18:34:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pm@vger.kernel.org, rafael@kernel.org,
+        pavel@ucw.cz, linux-perf-users@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 2/2] perf/x86/amd: Don't allow pre-emption in
+ amd_pmu_lbr_reset()
+Message-ID: <20231024163450.GB13938@noisy.programming.kicks-ass.net>
+References: <20231023160018.164054-1-mario.limonciello@amd.com>
+ <20231023160018.164054-3-mario.limonciello@amd.com>
+ <ZTd6BYr17ycdHR2a@gmail.com>
+ <38ea48b4-aaba-4ba4-84a1-e88d6cb9df94@amd.com>
+ <20231024155939.GF33965@noisy.programming.kicks-ass.net>
+ <47518940-2803-4a6b-88fd-8cfc872b4219@amd.com>
+ <20231024163038.GC40044@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v7 2/7] dt-bindings: net: mvusb: Fix up DSA
- example
-Content-Language: en-US
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Rob Herring <robh@kernel.org>
-References: <20231024-marvell-88e6152-wan-led-v7-0-2869347697d1@linaro.org>
- <20231024-marvell-88e6152-wan-led-v7-2-2869347697d1@linaro.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231024-marvell-88e6152-wan-led-v7-2-2869347697d1@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024163038.GC40044@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/24/23 06:20, Linus Walleij wrote:
-> When adding a proper schema for the Marvell mx88e6xxx switch,
-> the scripts start complaining about this embedded example:
+On Tue, Oct 24, 2023 at 06:30:38PM +0200, Peter Zijlstra wrote:
+> On Tue, Oct 24, 2023 at 11:04:06AM -0500, Mario Limonciello wrote:
 > 
->    dtschema/dtc warnings/errors:
->    net/marvell,mvusb.example.dtb: switch@0: ports: '#address-cells'
->    is a required property
->    from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
->    net/marvell,mvusb.example.dtb: switch@0: ports: '#size-cells'
->    is a required property
->    from schema $id: http://devicetree.org/schemas/net/dsa/marvell,mv88e6xxx.yaml#
+> > > IIRC this is the hotplug thread running a teardown function on that CPU
+> > > itself. It being a strict per-cpu thread should not trip
+> > > smp_processor_id() wanrs.
+> > > 
+> > 
+> > BUG: using smp_processor_id() in preemptible [00000000] code: rtcwake/2960
+> > caller is amd_pmu_lbr_reset+0x19/0xc0
+> > CPU: 104 PID: 2960 Comm: rtcwake Not tainted 6.6.0-rc6-00002-g3e2c7f3ac51f
 > 
-> Fix this up by extending the example with those properties in
-> the ports node.
-> 
-> While we are at it, rename "ports" to "ethernet-ports" and rename
-> "switch" to "ethernet-switch" as this is recommended practice.
-> 
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> Very much not the cpuhp/%u thread :/, let me try and figure out how that
+> happens.
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Uhh, my bad, these are the PREPARE/DEAD handlers, they run before online
+and after dying. The CPU is completely dead. Running lbr_reset() here
+makes no sense.
 
+Did that want to be in amd_pmu_cpu_dying() ?
+
+> 
+> > #1025
+> > Call Trace:
+> >  <TASK>
+> >  dump_stack_lvl+0x44/0x60
+> >  check_preemption_disabled+0xce/0xf0
+> >  ? __pfx_x86_pmu_dead_cpu+0x10/0x10
+> >  amd_pmu_lbr_reset+0x19/0xc0
+> >  ? __pfx_x86_pmu_dead_cpu+0x10/0x10
+> >  amd_pmu_cpu_reset.constprop.0+0x51/0x60
+> >  amd_pmu_cpu_dead+0x3e/0x90
+> >  x86_pmu_dead_cpu+0x13/0x20
+> >  cpuhp_invoke_callback+0x169/0x4b0
+> >  ? __pfx_virtnet_cpu_dead+0x10/0x10
+> >  __cpuhp_invoke_callback_range+0x76/0xe0
+> >  _cpu_down+0x112/0x270
+> >  freeze_secondary_cpus+0x8e/0x280
