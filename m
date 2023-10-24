@@ -2,81 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF8C7D5950
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0D17D595A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344009AbjJXRDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 13:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
+        id S1344028AbjJXREy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 13:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232329AbjJXRDW (ORCPT
+        with ESMTP id S234835AbjJXREw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 13:03:22 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DCD123;
-        Tue, 24 Oct 2023 10:03:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=a8IeFdJ8fia0YpbA1ZcZvRmzA2TI5SE/1rrfo0EUgMw=; b=lcZZU9f+QLz2bVRJlnc/UxbjTE
-        nMk0Ob5/6FcqIEwN0NPgITv3XKH/BkS47qVAJYnx8r3lhYpiDcxdS215jd9kuls2QSrsI1kslzSOB
-        AUDZBvNIq8pu1syL0aXeyR/jcQYFauWKel20Qpjc4NBAErE6EFvPiTcplnLUwYvD3N/kEYrDIrrAZ
-        73w6BQIh8IJLNn+c52e0IisU8xHm/kOo53LlbrKwj2m5QJvQ/LOmxrXFc91IcBMP3/5Prki0v4A55
-        mnwHk9l8KjlmFYmlMWwPtsyIj5NyDz0JPghY/tylB+6DpMF7Sc87UMuH56nTJsx6A61Q1dy6IR40w
-        mYFbWLfQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qvKno-00FfSi-2Y;
-        Tue, 24 Oct 2023 17:02:48 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7175B300451; Tue, 24 Oct 2023 19:02:48 +0200 (CEST)
-Date:   Tue, 24 Oct 2023 19:02:48 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Alyssa Milburn <alyssa.milburn@intel.com>
-Subject: Re: [PATCH  v2 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20231024170248.GE40044@noisy.programming.kicks-ass.net>
-References: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com>
- <20231024-delay-verw-v2-1-f1881340c807@linux.intel.com>
- <20231024103601.GH31411@noisy.programming.kicks-ass.net>
- <20231024163515.aivo2xfmwmbmlm7z@desk>
- <20231024163621.GD40044@noisy.programming.kicks-ass.net>
- <20231024164520.osvqo2dja2xhb7kn@desk>
+        Tue, 24 Oct 2023 13:04:52 -0400
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D88C2;
+        Tue, 24 Oct 2023 10:04:50 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1eb6c559ab4so1466792fac.0;
+        Tue, 24 Oct 2023 10:04:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698167089; x=1698771889; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HZOuYQtLmfcXzSVfHqSRbgJNw20LhS1+3cK891c4fcU=;
+        b=jcBrLiEf53WJWafInLUtkDTpNg+HNJb2mF/aJy6zOisM4Rok8aVNw+p0Pwq+VUpO0H
+         BL628eW3cHYinJ3ZcO3NUafF/JSc1Fit5QLwYCN48bFn02iXFuTIfQxUoGflFD4NyTk9
+         kVXKes0N6jiY0QrgyLLIi5DnZnhHiohfsXnH0wleJB7Wgz2mi0s+7qkQd9mYVjqZMKJR
+         D55Qk1FmBxkazxSa9+z364Xw7rQ+vQONGA/TFnBesmSbcXsaCPTizamiKX3ERP9Y+5u8
+         1BCDyD088w4Cvelk1kyjDISPqMT9KO2BRRk2/Kk6FRyDK58k4seAcPCkvwWP7wMzcOpf
+         /zhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698167089; x=1698771889;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HZOuYQtLmfcXzSVfHqSRbgJNw20LhS1+3cK891c4fcU=;
+        b=iodvMCY0PfyeWFyT2ojiQBgkaH3cOvahrH4ZSAgcc5AkcXQNil0w9phyGgduOxPVcs
+         /+MWLltFDy5Agt+DrWASDp/RQuXEnQiGsPghBZ1Nz/jL2A16Ylj0Y4HaX2XPZbkgaQag
+         uRK5TEuv/Jo6cMUzQlXD2scmSP7Lzh2R+CBxWd1z5mJvKpgn/H61XzSGMg++DfYAJDAa
+         qzQD7FkpdnkAUdaBP7TgIKFxp39KmpOKcDX/mKf1FgNEMRvxplf+FrwFUMaiVzOKdRF5
+         fYQtVCv6dxjDQ4xn+KlbgwoiXrNDBcGY464Xk58PPIemykHiqte6wAnj0Y0c+n/RL/iH
+         8LbQ==
+X-Gm-Message-State: AOJu0YyuIhEOi9I5x9l/tvVimMbGk2dQYtYljyz8bnYwC8s8ynSQ78KP
+        EiOru5zbnp5xftybQCiXUbo=
+X-Google-Smtp-Source: AGHT+IErFW7kHngINKDMEYohK3rgVPZMfEZ2IxWv+IqFG/CL/mD5Z7y15p8ziSSAXQuD0cYs6FaGWQ==
+X-Received: by 2002:a05:6870:3c8d:b0:1ea:ca54:e51a with SMTP id gl13-20020a0568703c8d00b001eaca54e51amr16214102oab.45.1698167089551;
+        Tue, 24 Oct 2023 10:04:49 -0700 (PDT)
+Received: from ?IPV6:2601:284:8200:b700:d8d6:5f8f:cf7b:edca? ([2601:284:8200:b700:d8d6:5f8f:cf7b:edca])
+        by smtp.googlemail.com with ESMTPSA id g15-20020a05663811cf00b0043a1b74a0e3sm2893089jas.90.2023.10.24.10.04.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 10:04:49 -0700 (PDT)
+Message-ID: <4d20e1bd-4b60-4bae-92f9-6bd7814a27d0@gmail.com>
+Date:   Tue, 24 Oct 2023 11:04:47 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024164520.osvqo2dja2xhb7kn@desk>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 iproute2-next 3/3] rdma: Adjust man page for rdma
+ system set privileged_qkey command
+Content-Language: en-US
+To:     Petr Machata <petrm@nvidia.com>,
+        Patrisious Haddad <phaddad@nvidia.com>
+Cc:     jgg@ziepe.ca, leon@kernel.org, stephen@networkplumber.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
+        huangjunxian6@hisilicon.com, michaelgur@nvidia.com
+References: <20231023112217.3439-1-phaddad@nvidia.com>
+ <20231023112217.3439-4-phaddad@nvidia.com> <87zg0856io.fsf@nvidia.com>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <87zg0856io.fsf@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 09:45:20AM -0700, Pawan Gupta wrote:
+On 10/24/23 10:09 AM, Petr Machata wrote:
+> 
+> Patrisious Haddad <phaddad@nvidia.com> writes:
+> 
+>> Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+>> Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
+>> ---
+>>  man/man8/rdma-system.8 | 32 +++++++++++++++++++++++++++-----
+>>  1 file changed, 27 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/man/man8/rdma-system.8 b/man/man8/rdma-system.8
+>> index ab1d89fd..a2914eb8 100644
+>> --- a/man/man8/rdma-system.8
+>> +++ b/man/man8/rdma-system.8
+>> @@ -23,16 +23,16 @@ rdma-system \- RDMA subsystem configuration
+>>  
+>>  .ti -8
+>>  .B rdma system set
+>> -.BR netns
+>> -.BR NEWMODE
+>> +.BR netns/privileged_qkey
+>> +.BR NEWMODE/NEWSTATE
+> 
+> What is this netns/priveleged_qkey syntax? I thought they are
+> independent options. If so, the way to express it is:
+> 
+> 	rdma system set [netns NEWMODE] [privileged_qkey NEWSTATE]
+> 
+> Also, your option is not actually privileged_qkey, but privileged-qkey.
 
-> > > modules being within 4GB of kernel.
+yes, and the command lines below show 'privileged qkey'
 
-FWIW, it's 2G, it's a s32 displacement, the highest most address can
-jump 2g down, while the lowest most address can jump 2g up. Leaving a 2G
-directly addressable range.
+> 
+>>  .ti -8
+>>  .B rdma system help
+>>  
+>>  .SH "DESCRIPTION"
+>> -.SS rdma system set - set RDMA subsystem network namespace mode
+>> +.SS rdma system set - set RDMA subsystem network namespace mode or privileged qkey mode
+>>  
+>> -.SS rdma system show - display RDMA subsystem network namespace mode
+>> +.SS rdma system show - display RDMA subsystem network namespace mode and privileged qkey state
+> 
+> Maybe make it just something like "configure RDMA system settings" or
+> whatever the umbrella term is? The next option will certainly have to do
+> something, this doesn't scale.
+> 
+> Plus the lines are waaay over 80, even over 90 that I think I've seen
+> Stephen or David mention as OK for iproute2 code.
 
-And yeah, we ensure kernel text and modules are inside that 2G range.
+a few over 80 is ok when it improves readability; over 90 (with the
+exception of print strings) is unacceptable.
+
