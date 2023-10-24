@@ -2,156 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E56837D47BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D076F7D47C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232772AbjJXGua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 02:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
+        id S232695AbjJXG4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 02:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232694AbjJXGu2 (ORCPT
+        with ESMTP id S232566AbjJXG4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 02:50:28 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A121D7E;
-        Mon, 23 Oct 2023 23:50:25 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9c75ceea588so578589366b.3;
-        Mon, 23 Oct 2023 23:50:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698130223; x=1698735023; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=52cX480DMRmgJFxJt8gKXrV9geIY85JmDTGzaX2CpEg=;
-        b=BVU93BF0/34g+RErf6ezRAzfl7J18ANUSxPYX2gYyTxvRHbMSuWJkuJxQerFItFWvB
-         cvFvfx82AKFYS1zHXiKOu/pmeu7NwttFXRoxAbakSb/pU1Ue7O/87IJVhWiZR/67ifu7
-         7RibMByoknM0SziosrfRZ/6lRBqOI+bylry5o5eSg4jdLxESFq9tcSuGLrReBZMkW2/D
-         ZQOtaR8+zIVixH0Da6ABH8oFS0YAcVzOMLWt+Mf1ffcWBvGSMeNPq+r3no1oKY+paqkZ
-         Pv4HnkVPSPtCy9mlQ4gGFL8fhq5pztpLivEvRVgDL/XI8ZbV09dtO5DFGzes1X2HQUB6
-         gTkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698130223; x=1698735023;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=52cX480DMRmgJFxJt8gKXrV9geIY85JmDTGzaX2CpEg=;
-        b=Q/IeWb3BD4eNF/7x5+QC7ao/m9sI0+w5grYlINPhNkuXVnnX1J10BUP1CUSfNiPH9i
-         Oty9R7P3JVVTC8/aYUT/6V2KJk/660UFlD2tNtptc3INJXEfLuiz3HFR9YYPgnoez9dy
-         T2hkRqqMPXkKatabIFFDiG46K/qBgY+TVGpBfWj2x2Yimrbk4+3DIfrpOExYjCedYW0p
-         gLuP6Fk/ImSbrJgFZk6vDIPB2ULmlEAqV1/cJltY1CISffGMoI7tPovT5dVwmaloDHIe
-         RXbZfjkO6qtfxdAhpQ0UGxj+46gvQcQIEeT7rikZSJOcmOjqTW2fD4YYoZA7GEqrnSFO
-         iu8w==
-X-Gm-Message-State: AOJu0YwL2dVNtw009OIXB20uSkp1I+ykfnunEJmo7syPf6Md8N06eC5E
-        m2dYsD4VToSNZrX+cU9GTfk=
-X-Google-Smtp-Source: AGHT+IFEhMmhUR6aWcmp9FSFfDcol5+C0CsyhpYiUyBbE8PDIpq7LYECLq7CiUklSI1W8JJ2yN68eA==
-X-Received: by 2002:a17:906:da88:b0:9be:7de2:927c with SMTP id xh8-20020a170906da8800b009be7de2927cmr8007488ejb.70.1698130223374;
-        Mon, 23 Oct 2023 23:50:23 -0700 (PDT)
-Received: from ?IPv6:2003:f6:ef1b:2000:361b:8f29:1cbf:5e69? (p200300f6ef1b2000361b8f291cbf5e69.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:361b:8f29:1cbf:5e69])
-        by smtp.gmail.com with ESMTPSA id x20-20020a170906149400b0098884f86e41sm7694117ejc.123.2023.10.23.23.50.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 23:50:22 -0700 (PDT)
-Message-ID: <5c600a6db6173a56251302da8d2f438435959bd2.camel@gmail.com>
-Subject: Re: [PATCH v2 3/3] dt-bindings: adis16460: Add
- 'spi-cs-inactive-delay-ns' property
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Ramona Gradinariu <ramona.gradinariu@analog.com>, jic23@kernel.org,
-        nuno.sa@analog.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Date:   Tue, 24 Oct 2023 08:53:14 +0200
-In-Reply-To: <20231023-repost-coma-2f67ea8b95af@spud>
-References: <20231023140534.704312-1-ramona.gradinariu@analog.com>
-         <20231023140534.704312-4-ramona.gradinariu@analog.com>
-         <e97ac024cb2654507ed8f7af715f3604efefbdbb.camel@gmail.com>
-         <20231023-repost-coma-2f67ea8b95af@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+        Tue, 24 Oct 2023 02:56:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FED592;
+        Mon, 23 Oct 2023 23:56:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C924DC433C8;
+        Tue, 24 Oct 2023 06:56:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698130573;
+        bh=EV4VOJE8vL5U09j1FWreOW/O4tPUOMNuDQvuEyy9q84=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IV6DlaEAIJr9GrDxMfFMEbjQMrcJvLcsy0GuqAeJN080WDLom6NDCL+nVn7+eudl5
+         hkO49bsu+tzH0wXYnpbY9DKa1NnNBA/KjdX5M630I2Ut5N9NEUkAHZsQfMMhKCd6cx
+         WseiUXJJtBp7gqkkRi9AuWayM+PYG+VwK6MSJV1qXwIl9lqjwoaHTa9e6nmocZJrnD
+         fNIHAfbETiDI5Vjw5CLNp1oI+z7d2kqBexPb/xlzStqqNRMceBRdM4O5/CKMIutdXm
+         K9C1wvvYfWAuY826aPYbS8pPHUUGKWRElfG7k/PiXh3Re6EpnSubweH0GbZuWpNU/8
+         FoQo0ZYsW4+7w==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qvBL3-0003aq-0n;
+        Tue, 24 Oct 2023 08:56:29 +0200
+Date:   Tue, 24 Oct 2023 08:56:29 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
+        quic_jackp@quicinc.com, ahalaney@redhat.com,
+        quic_shazhuss@quicinc.com
+Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
+ Glue driver
+Message-ID: <ZTdqnSHq_Jo8AuPW@hovoldconsulting.com>
+References: <20231007154806.605-1-quic_kriskura@quicinc.com>
+ <20231007154806.605-6-quic_kriskura@quicinc.com>
+ <ZTJ_T1UL8-s2cgNz@hovoldconsulting.com>
+ <14fc724c-bc99-4b5d-9893-3e5eff8895f7@quicinc.com>
+ <ZTY7Lwjd3_8NlfEi@hovoldconsulting.com>
+ <cabf24d0-8eea-4eb5-8205-bf7fe6017ec2@quicinc.com>
+ <ZTZ-EvvbuA6HpycT@hovoldconsulting.com>
+ <fb5e5e1d-520c-4cbc-adde-f30e853421a1@quicinc.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb5e5e1d-520c-4cbc-adde-f30e853421a1@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-23 at 17:06 +0100, Conor Dooley wrote:
-> On Mon, Oct 23, 2023 at 04:27:48PM +0200, Nuno S=C3=A1 wrote:
-> > On Mon, 2023-10-23 at 17:05 +0300, Ramona Gradinariu wrote:
-> > > The adis16460 device requires a stall time between SPI
-> > > transactions (during which the chip select is inactive),
-> > > with a minimum value equal to 16 microseconds.
-> > > This commit adds 'spi-cs-inactive-delay-ns' property, which should
-> > > indicate the stall time between consecutive SPI transactions.
-> > >=20
-> > > Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
-> > > ---
-> > > changes in v2:
-> > > =C2=A0- added default value
-> > > =C2=A0- updated description
-> > > =C2=A0- updated commit message
-> > > =C2=A0.../devicetree/bindings/iio/imu/adi,adis16460.yaml=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 6 ++++++
-> > > =C2=A01 file changed, 6 insertions(+)
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.=
-yaml
-> > > b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> > > index 4e43c80e5119..f10469b86ee0 100644
-> > > --- a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> > > +++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
-> > > @@ -25,6 +25,12 @@ properties:
-> > >=20
-> > > =C2=A0=C2=A0 spi-cpol: true
-> > >=20
-> > > +=C2=A0 spi-cs-inactive-delay-ns:
-> > > +=C2=A0=C2=A0=C2=A0 minimum: 16000
-> > > +=C2=A0=C2=A0=C2=A0 default: 16000
-> > > +=C2=A0=C2=A0=C2=A0 description:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Indicates the stall time between cons=
-ecutive SPI transactions.
-> > > +
-> >=20
-> > You should drop the description...=20
-> >=20
-> > Also, give more time before posting a v2 so others get a chance to revi=
-ew
-> > your
-> > patches. It's also better for you since you can gather more change requ=
-ests.
->=20
-> Further, I don't see an answer to Krzysztof's question of why the stall
-> time would not just be set to 16,000 ns in the driver, based on the
-> compatible.
+On Mon, Oct 23, 2023 at 10:42:31PM +0530, Krishna Kurapati PSSNV wrote:
+> On 10/23/2023 7:37 PM, Johan Hovold wrote:
 
-Hi Conor,
+> > Right. And I assume there are hs_phy_irqs also for the first two USB
+> > controllers on sc8280xp?
 
-Regarding that, I'm the one to blame since I was the one asking for the pro=
-perty
-during internal review... The reason is that "spi-cs-inactive-delay-ns" is
-already part of spi-peripheral-props.yaml which we already reference. So my
-question would be why not using it?
+> There are, I can dig through and find out. Atleast in downstream I don't 
+> see any use of them.
 
-These devices are a bit sensitive regarding these timings. Not in devices
-supported by this driver but I already experienced having to set timings bi=
-gger
-than defined in the datasheet for spi to be reliable. this was true on a RP=
-I but
-might not be in another platform.
+Yes, please do post how these are wired as well for completeness.
 
-Hence having the flexibility to change the time in an already supported pro=
-perty
-does sound good to me. If not set, we still use the default value based on =
-the
-compatible. Now, if you tell me "let's just add this if we really get the n=
-eed
-for it", I get it but I also don't understand why not add it now...
+> > Can you find out anything more about what hs_phy_irq is used for? It
+> > appears to be an HS wakeup interrupt like the dp/dm ones, but there are
+> > not really any details on how it is supposed to be used.
+> 
+>   This IRQ is really not used in downstream controllers. Not sure if its 
+> a good idea to add driver code for that. I did some digging and I got 
+> the reason why I first said that there is only one hs_phy_irq for 
+> tertiary port of controller. The hardware programming sequence doesn't 
+> specify usage of these 4 IRQ's but the hw specifics mention that there 
+> are 4 of them. Adding driver support for these IRQ's is not a good idea 
+> (atleast at this point because they are not used in downstream and I am 
+> not sure what would be the side effect). For now I suggest we can add 
+> them in bindings and DT and not handle the 4 hs_phy_irq's in the driver 
+> code (meaning not add the hs_phy_irq to port structure we plan on adding 
+> to dwc3_qcom).
 
-Thanks!
-- Nuno S=C3=A1
+But there is already support for these interrupts in the driver. You
+work for Qualcomm who built the thing so surely you can figure how they
+intended these to be used?
 
+You need to provide this information so that we can determine what the
+binding should look like. The implementation would also be simplified if
+we don't have to add random hacks to it just because we don't know why
+the vendor driver you refer does not use it currently on this particular
+platform.
+
+> Also I plan on splitting the patchset into 4 parts (essentially 4 diff 
+> series):
+> 
+> 1. Bindings update for hs_phy_irq's
+> 2. DT patches for MP controller and platform specific files
+> 3. Core driver update for supporting multiport
+> 4. QCOM driver update for supporting wakeup/suspend/resume
+> 
+> This is in accordance to [1] and that way qcom code won't block core 
+> driver changes from getting merged. Core driver changes are independent 
+> and are sufficient to get multiport working.
+
+No, you clearly did not understand [1] at all. And stop trying to game
+the upstreaming process. Bindings and driver patches go together. The
+devicetree changes can be sent separately in case of USB but only
+*after* the first set has been merged.
+
+If the code had been in good shape from the start it would have been
+merged by now. Just learn from your mistakes and next time things will
+be smoother.
+
+> [1]: 
+> https://lore.kernel.org/all/d4663197-8295-4967-a4f5-6cc91638fc0d@linaro.org/
+
+Johan
