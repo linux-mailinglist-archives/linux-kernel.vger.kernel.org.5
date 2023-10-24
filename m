@@ -2,123 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FF07D53E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6667D53E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343760AbjJXOYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 10:24:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
+        id S1343795AbjJXOZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 10:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234716AbjJXOYy (ORCPT
+        with ESMTP id S234406AbjJXOZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:24:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB3F120;
-        Tue, 24 Oct 2023 07:24:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 570D0C433C7;
-        Tue, 24 Oct 2023 14:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698157491;
-        bh=JiAgJPKemF9Wi2E3Nn7vBcVAiqFYF94P9jyQ6bRIssY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GVjYHRiP6+XxzVH7PcvA+cqVtDnX8XjFr68MPXEr15HWpNxUubJZCvRUsGdSYooIB
-         96TTfcHjGLsQqmO1T/idyHpCLQAReQYVEHrT07OtneqwvON7jrBfaQgWr95vLuPB0Z
-         de2nNZifq44lq9aPDX3UXBBMf3N5vSxPvGY9mYyRvjNTz0pmvwQ+5qa2o8abfRAIUh
-         1ZGa4qjYnbCThn/DunhPbmAAcvqtUV1zGKMad0cd+AcGL9EtLouUkTgForBJ5hE4sx
-         09h28lmevoSWX3HbXOqTM+1X8xATWi7uw6BirOy+44AR+mwIVoNeSidc26ZQ+lAnYm
-         YNikKsPR4ggpA==
-Date:   Tue, 24 Oct 2023 16:24:49 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, airlied@gmail.com,
-        neil.armstrong@linaro.org, sam@ravnborg.org, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
-        corbet@lwn.net, sumit.semwal@linaro.org, christian.koenig@amd.com,
-        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] drm: docs: Remove item from TODO list
-Message-ID: <c6kwqxz2xgl64qb6dzetjjh6j2a6hj7mvbkeg57f5ulfs2hrib@ocjjsoxw3ns6>
-References: <DB3PR10MB683528B8252ED2A802A0E154E8D8A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
- <CAD=FV=W0G6C-=99viHMQaW2REGRQr2xgaejnJmadOdZkoE7AjA@mail.gmail.com>
+        Tue, 24 Oct 2023 10:25:06 -0400
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04E212C;
+        Tue, 24 Oct 2023 07:25:03 -0700 (PDT)
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-1e58a522e41so2967782fac.2;
+        Tue, 24 Oct 2023 07:25:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698157503; x=1698762303;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sTENRnFDH/MiSBA8uB23f0CHV3Zm50OBvimHwqLqTLY=;
+        b=eakaDoXDmjV8CfpH00qM2sTG9LQeJRyNZWNxcVv1Zabz0fJT11nPtNeCfSlAN21+0s
+         iGg4GVObMn5lxEZjcj1vfNHVhbiSNPViuFhLx1ibtlzr59K/VUh5AI0BOyS73gzHHWR1
+         ZwCf9e2I/cdazdbX5lxfXxEd/OMufOeF4BQqCUmueWwpAYA5LJ6zPfOxMeLr8YC8IPsx
+         gdefmWO5XRwzIAHP1JEI7D6YpLLGLYYDjTurnZ3dhTXPMB+HBBQ+2bOxL6x5USvV3QNj
+         IJ5HjXWyeoQv9tptsccsiys7lzI188RkLbQFziIbZtBGBbMu3vKLse6sCvWB31bfqTRd
+         E+2A==
+X-Gm-Message-State: AOJu0Yy9FtfmJWyPHLBFEW14JgCg5hAt/DCIX6WIYPWfO0QaWnf7gIbH
+        iZePnWJD+sbgcLYxlPAjtw==
+X-Google-Smtp-Source: AGHT+IFi+wUzpHfgZ8zfKt641YNAo4P94oG7imu28ijkctLr8rSHz5f9MF1hyEAgXwXwercbvcmRUQ==
+X-Received: by 2002:a05:6870:1f0c:b0:1e9:bbfe:6457 with SMTP id pd12-20020a0568701f0c00b001e9bbfe6457mr15080276oab.6.1698157502801;
+        Tue, 24 Oct 2023 07:25:02 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id k7-20020a056870d38700b001e9a7280a30sm2187892oag.0.2023.10.24.07.24.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 07:25:02 -0700 (PDT)
+Received: (nullmailer pid 3693654 invoked by uid 1000);
+        Tue, 24 Oct 2023 14:24:57 -0000
+Date:   Tue, 24 Oct 2023 09:24:57 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Shih <vincent.sunplus@gmail.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Lala Lin <lala.lin@mediatek.com>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>,
+        Kumar Thella <sthella@codeaurora.org>,
+        Keiji Hayashibara <hayashibara.keiji@socionext.com>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, asahi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH V2] dt-bindings: nvmem: move deprecated cells binding to
+ its own file
+Message-ID: <20231024142457.GA3684864-robh@kernel.org>
+References: <20231003064018.7502-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hybcvdpiqm52svmj"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAD=FV=W0G6C-=99viHMQaW2REGRQr2xgaejnJmadOdZkoE7AjA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231003064018.7502-1-zajec5@gmail.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 03, 2023 at 08:40:18AM +0200, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> Support for old NVMEM fixed cells was deprecated in favour of
+> "fixed-layout". It's still part of the nvmem.yaml though and may be
+> unknowingly used by new bindings added without much of analyze.
+> 
+> To make it more difficult to accidentally support old syntax move its
+> binding to separated file with "deprecated" in its name.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+> V2: Fix path to nvmem-deprecated-cells.yaml in amlogic,meson6-rtc.yaml
+> 
+>  .../devicetree/bindings/mtd/mtd.yaml          |  7 ++++-
+>  .../bindings/mtd/partitions/nvmem-cells.yaml  |  1 +
+>  .../nvmem/amlogic,meson-gxbb-efuse.yaml       |  1 +
+>  .../bindings/nvmem/amlogic,meson6-efuse.yaml  |  1 +
+>  .../bindings/nvmem/apple,efuses.yaml          |  1 +
+>  .../devicetree/bindings/nvmem/imx-ocotp.yaml  |  1 +
+>  .../bindings/nvmem/mediatek,efuse.yaml        |  1 +
+>  .../nvmem/microchip,sama7g5-otpc.yaml         |  1 +
+>  .../devicetree/bindings/nvmem/mxs-ocotp.yaml  |  1 +
+>  .../nvmem/nvmem-deprecated-cells.yaml         | 28 +++++++++++++++++++
+>  .../devicetree/bindings/nvmem/nvmem.yaml      |  9 ------
+>  .../bindings/nvmem/qcom,qfprom.yaml           |  1 +
+>  .../bindings/nvmem/qcom,sec-qfprom.yaml       |  1 +
+>  .../bindings/nvmem/qcom,spmi-sdam.yaml        |  1 +
+>  .../bindings/nvmem/rockchip,otp.yaml          |  1 +
+>  .../bindings/nvmem/rockchip-efuse.yaml        |  1 +
+>  .../nvmem/socionext,uniphier-efuse.yaml       |  1 +
+>  .../bindings/nvmem/sunplus,sp7021-ocotp.yaml  |  1 +
+>  .../bindings/rtc/amlogic,meson6-rtc.yaml      |  1 +
+>  19 files changed, 50 insertions(+), 10 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/nvmem/nvmem-deprecated-cells.yaml
 
---hybcvdpiqm52svmj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You missed allwinner,sun4i-a10-sid.yaml and at24.yaml 
+(arch/arm/boot/dts/broadcom/bcm53016-meraki-mr32.dts). Maybe we want to 
+fix the latter case because at24 will continually have new users.
 
-Hi,
-
-On Mon, Oct 23, 2023 at 10:25:50AM -0700, Doug Anderson wrote:
-> On Mon, Oct 23, 2023 at 9:31=E2=80=AFAM Yuran Pereira <yuran.pereira@hotm=
-ail.com> wrote:
-> >
-> > Since "Clean up checks for already prepared/enabled in panels" has
-> > already been done and merged [1], I think there is no longer a need
-> > for this item to be in the gpu TODO.
-> >
-> > [1] https://patchwork.freedesktop.org/patch/551421/
-> >
-> > Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
-> > ---
-> >  Documentation/gpu/todo.rst | 25 -------------------------
-> >  1 file changed, 25 deletions(-)
->=20
-> It's not actually all done. It's in a bit of a limbo state right now,
-> unfortunately. I landed all of the "simple" cases where panels were
-> needlessly tracking prepare/enable, but the less simple cases are
-> still outstanding.
->=20
-> Specifically the issue is that many panels have code to properly power
-> cycle themselves off at shutdown time and in order to do that they
-> need to keep track of the prepare/enable state. After a big, long
-> discussion [1] it was decided that we could get rid of all the panel
-> code handling shutdown if only all relevant DRM KMS drivers would
-> properly call drm_atomic_helper_shutdown().
->=20
-> I made an attempt to get DRM KMS drivers to call
-> drm_atomic_helper_shutdown() [2] [3] [4]. I was able to land the
-> patches that went through drm-misc, but currently many of the
-> non-drm-misc ones are blocked waiting for attention.
->=20
-> ...so things that could be done to help out:
->=20
-> a) Could review patches that haven't landed in [4]. Maybe adding a
-> Reviewed-by tag would help wake up maintainers?
->=20
-> b) Could see if you can identify panels that are exclusively used w/
-> DRM drivers that have already been converted and then we could post
-> patches for just those panels. I have no idea how easy this task would
-> be. Is it enough to look at upstream dts files by "compatible" string?
-
-I think it is, yes.
-
-Maxime
-
---hybcvdpiqm52svmj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZTfTsAAKCRDj7w1vZxhR
-xcQLAQDLOftRXQ2lHJ/6tZ1C2DlWodIPleYTRFzDQVKVJDBTtQEAvg5gQvFvDTgw
-ic2BwYSSUUEriwl/ml0eDvtollJE0gM=
-=HH4h
------END PGP SIGNATURE-----
-
---hybcvdpiqm52svmj--
+Rob
