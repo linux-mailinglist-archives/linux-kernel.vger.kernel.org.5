@@ -2,49 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C927D56D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2382E7D56DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343525AbjJXPpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:45:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
+        id S1343610AbjJXPq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234660AbjJXPpr (ORCPT
+        with ESMTP id S229441AbjJXPqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:45:47 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1543A10A
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:45:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4621DC433C8;
-        Tue, 24 Oct 2023 15:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1698162343;
-        bh=OwCxtPQ+z0MdwHi7seYQAGchK7270NewGnlvtxqCa/4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zc+9XqnzcMLfCLcSEemS5g8T472F71zf4Qy6HVN+g0LSZ2K6JyhsxEoJLOJxltTfS
-         jh2+EY78icHApVMgoVpSCvDKB+Mf6ijjEtWn5GYBsp/bU5aMvc1NqGAGzoQM5AMC54
-         KS9rxeRJ/f+n/NjXsK6Qj8an2W2A0eXewS9ZV4gQ=
-Date:   Tue, 24 Oct 2023 17:45:40 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Li, Meng" <Meng.Li@windriver.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "usb-storage@lists.one-eyed-alien.net" 
-        <usb-storage@lists.one-eyed-alien.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: storage: add shutdown function for usb storage
- driver
-Message-ID: <2023102428-zit-quickness-9b73@gregkh>
-References: <20231023054111.2744872-1-Meng.Li@windriver.com>
- <33bd0779-bfe7-4c87-8fe6-ea8455df3b6b@rowland.harvard.edu>
- <PH0PR11MB51918DD50651DB6BE937BEA3F1DFA@PH0PR11MB5191.namprd11.prod.outlook.com>
- <3fe5b43c-a5aa-4c6a-8614-03a4d9dd53e2@rowland.harvard.edu>
+        Tue, 24 Oct 2023 11:46:25 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA288DE;
+        Tue, 24 Oct 2023 08:46:23 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b87c1edfd5so3627581b3a.1;
+        Tue, 24 Oct 2023 08:46:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698162383; x=1698767183; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=broF79zHCDHtcT0lMzk4mTNTLoYN8J3GX3kjH8mcCUM=;
+        b=MSoN6t8TObG51diAn+H9kKszjtu2NAxqlEBFHlrs3oR7CPbYbaL9GMhH5SV2jkz5Dx
+         Y3fzLb71Ua31y5VOtA2MjMZ8NmG3iY92+aJS8L32clxf0yjq1KzFxqvkIit7KWP+bCuG
+         iTpy7CMcW0zj2pMOA6Gx6c/76IOrtNB97RXPxOMC0ZsLgQ9ca8Zc0zFiQJgF/S+pOGEt
+         Sogfa2BKEfzjOnZ4zfO3UDkymwUHlptAtHuV45FnWdcmUUCm36Z0XVdIGCnZIRnNaLRa
+         FJVOZ0JZ7g+1Q+QWnBTvTkPeQutmDiM3K8gadeRSO6MDXA7R5ALUG2OCjtR/k968va9Q
+         Qajg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698162383; x=1698767183;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=broF79zHCDHtcT0lMzk4mTNTLoYN8J3GX3kjH8mcCUM=;
+        b=NduAV1PeywPLR2duyu+948a8kST1fJ0Fr9GVt/RIm4MQ7BS6n/aX9soTTOg6FXclYM
+         eFXNx311ZEHibKq7rtK8+/n95n7jl1WAlfvcdJ0rBSHwQnckpvxPvdkA/+7vUzETA5yz
+         4QRLN8RgVhH8viIc21GMfgMklUQgIj3DaPlyQqRqol4fRFID36UoXRXfwkBGCNZRLtZN
+         Rz2FHaDwyoGDShxPlMjEhpBz6s4VsxRyjFkBMiQs7cFePBILLzigf32V6Lrb5GJp/N6W
+         AmmvdH3YVkV/sG6AFXohEUtqQOFjqYaI9i03XYzqsE/dAz9up2vuZiYAKEenupTS+fTD
+         2XdA==
+X-Gm-Message-State: AOJu0YxymVZdqJgrhI4nylF3Gesff+DmW+fPvmgU8kY4RwMU2W//qJDu
+        fQF6Q9xObOee6x5BeCgklF4=
+X-Google-Smtp-Source: AGHT+IEOtVboZSjZpVV9kZKORPcgmgBeOBXfWSWLkeVvGDprv0+eboKjsKz1pxeoTGPqG3Dau9h9vw==
+X-Received: by 2002:a05:6a21:7742:b0:17d:9da4:5eb3 with SMTP id bc2-20020a056a21774200b0017d9da45eb3mr2894397pzc.56.1698162383021;
+        Tue, 24 Oct 2023 08:46:23 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id j11-20020a63cf0b000000b005afdd58bab2sm7398084pgg.30.2023.10.24.08.46.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 08:46:22 -0700 (PDT)
+Message-ID: <42a345ec-fa05-400d-bc74-306241bc324a@gmail.com>
+Date:   Tue, 24 Oct 2023 08:46:20 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3fe5b43c-a5aa-4c6a-8614-03a4d9dd53e2@rowland.harvard.edu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.4 000/120] 5.4.259-rc2 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231024083306.700855687@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231024083306.700855687@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,63 +79,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 11:35:19AM -0400, Alan Stern wrote:
-> On Tue, Oct 24, 2023 at 03:43:56AM +0000, Li, Meng wrote:
-> > 
-> > 
-> > > -----Original Message-----
-> > > From: Alan Stern <stern@rowland.harvard.edu>
+On 10/24/23 01:36, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.259 release.
+> There are 120 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> > > On Mon, Oct 23, 2023 at 01:41:11PM +0800, Meng Li wrote:
-> > > > On ls1043/ls1046 rdb platform, if a PCIe-USB host controller is
-> > > > installed, and an USB disk is also installed on the PCIe card, when
-> > > > executing "reboot -f" to reset the board, there will be below error reported:
-> > > > usb 2-2: device not accepting address 2, error -108
+> Responses should be made by Thu, 26 Oct 2023 08:32:40 +0000.
+> Anything received after that time might be too late.
 > 
-> > > > This issue is introduced by linux-yocto commit 837547b64a34("driver: net:
-> > > > dpaa: release resource when executing kexec") that cause to spend more
-> > > > time on shutdown operation. So, the 2 platforms with DPAA are not
-> > > > reset immediately after executing force reboot command. Moreover, the
-> > > > usb-storage thread is still in active status, there is still control
-> > > > data transferred between USB disk and PCIe host controller. But now
-> > > > the shutdown callback of usb pci driver had been invoked to stop the
-> > > > PCIe host controller completely. In this situation, the data transferring failed
-> > > and report error.
-> > > 
-> > > That's _supposed_ to happen.  By design, the "reboot -f" command is meant
-> > > to carry out an immediate reboot, without using the init system, unmounting
-> > > filesystems, or doing other cleanup operations.
-> > > 
-> > 
-> > As my above said, I understand what you mean. I also thought over what you said.
-> > I am not sure, but I still sent patch to upstream community, and want to get some suggest from more authoritative maintainer.
-> > 
-> > > If you want a clean reboot with no errors, don't use the "-f" option.
-> > > 
-> > 
-> > There is also error report even if I use command "reboot"
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.259-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
 > 
-> Okay, that's a different matter.  In fact, I don't know what is supposed 
-> to happen during a clean reboot.
+> thanks,
+> 
+> greg k-h
 
-Define "clean" :)
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-reboot is a system thing that happens before the reboot syscall happens.
-So which are we talking nabout here?
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-> Greg, do you know?  Should we take the time to disconnect all the USB 
-> devices during a system shutdown?
-
-In the past we have not.  And if we switch to do so, we might get some
-complaints as we would now delaying the shutdown process to be longer
-than before.
-
-> What happens with non-USB disk drives?  Or other removable devices?
-
-It would have to come from "above" in the device tree, so does the PCI
-or platform bus say that they should be shut down and their child
-devices?
-
-thanks,
-
-greg k-h
