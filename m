@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F927D4C8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FE77D4CCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234216AbjJXJel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40138 "EHLO
+        id S234172AbjJXJoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234531AbjJXJeI (ORCPT
+        with ESMTP id S234546AbjJXJeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:34:08 -0400
-Received: from out-206.mta0.migadu.com (out-206.mta0.migadu.com [IPv6:2001:41d0:1004:224b::ce])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45085D7F
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:33:59 -0700 (PDT)
+        Tue, 24 Oct 2023 05:34:09 -0400
+Received: from out-190.mta0.migadu.com (out-190.mta0.migadu.com [91.218.175.190])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A57E1FC6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:34:01 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698140037;
+        t=1698140039;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mVsHpTi8/ybc90IBC2PUgLSTYbIjUF6GvQZHOJT0cXI=;
-        b=WkSYYMuXGHeVTVvJKeEDkqylfQ5ISuw3VBdmhEEMq+LWy2qJeirb8he9LzRmfOp5qZ6+kT
-        ZswKHPlHfUqDgf+oW4CzD+qBmu/0yksI5xZDpGRNHQHcev4VmDR1H8HChl9GYIrTSRecZo
-        StPLjAgG42c97ebsxtS4Z+pyEQMwhsc=
+        bh=h11SacZ+d1SZT9G0QAPU/rLkN5EaAt8R9Llcg4aahcg=;
+        b=XdLQFwKjBt2izoxJqBOj93psrMaXNRty4xClGHCDT9p4T6juuhYWB/eoSnFrU+EPl/QvmP
+        6gAcQ3g4yVWbXa8UyMXIbOBPExVeP2TXXqyMEawXzbGshHntMsONmYh2xHZQ0ydgsgepOq
+        WH5zAaZdRSTxxEDvvW3W5dkYKS7D57s=
 From:   chengming.zhou@linux.dev
 To:     cl@linux.com, penberg@kernel.org
 Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
@@ -33,9 +33,9 @@ Cc:     rientjes@google.com, iamjoonsoo.kim@lge.com,
         roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, chengming.zhou@linux.dev,
         Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [RFC PATCH v3 1/7] slub: Keep track of whether slub is on the per-node partial list
-Date:   Tue, 24 Oct 2023 09:33:39 +0000
-Message-Id: <20231024093345.3676493-2-chengming.zhou@linux.dev>
+Subject: [RFC PATCH v3 2/7] slub: Prepare __slab_free() for unfrozen partial slab out of node partial list
+Date:   Tue, 24 Oct 2023 09:33:40 +0000
+Message-Id: <20231024093345.3676493-3-chengming.zhou@linux.dev>
 In-Reply-To: <20231024093345.3676493-1-chengming.zhou@linux.dev>
 References: <20231024093345.3676493-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
@@ -52,80 +52,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chengming Zhou <zhouchengming@bytedance.com>
 
-Now we rely on the "frozen" bit to see if we should manipulate the
-slab->slab_list, which will be changed in the following patch.
+Now the partial slub will be frozen when taken out of node partial list,
+so the __slab_free() will know from "was_frozen" that the partial slab
+is not on node partial list and is used by one kmem_cache_cpu.
 
-Instead we introduce another way to keep track of whether slub is on
-the per-node partial list, here we reuse the PG_workingset bit.
-
-We use __set_bit and __clear_bit directly instead of the atomic version
-for better performance and it's safe since it's protected by the slub
-node list_lock.
+But we will change this, make partial slabs leave the node partial list
+with unfrozen state, so we need to change __slab_free() to use the new
+slab_test_node_partial() we just introduced.
 
 Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- mm/slab.h | 19 +++++++++++++++++++
- mm/slub.c |  3 +++
- 2 files changed, 22 insertions(+)
+ mm/slub.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/mm/slab.h b/mm/slab.h
-index 8cd3294fedf5..50522b688cfb 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -193,6 +193,25 @@ static inline void __slab_clear_pfmemalloc(struct slab *slab)
- 	__folio_clear_active(slab_folio(slab));
- }
- 
-+/*
-+ * Slub reuse PG_workingset bit to keep track of whether it's on
-+ * the per-node partial list.
-+ */
-+static inline bool slab_test_node_partial(const struct slab *slab)
-+{
-+	return folio_test_workingset((struct folio *)slab_folio(slab));
-+}
-+
-+static inline void slab_set_node_partial(struct slab *slab)
-+{
-+	__set_bit(PG_workingset, folio_flags(slab_folio(slab), 0));
-+}
-+
-+static inline void slab_clear_node_partial(struct slab *slab)
-+{
-+	__clear_bit(PG_workingset, folio_flags(slab_folio(slab), 0));
-+}
-+
- static inline void *slab_address(const struct slab *slab)
- {
- 	return folio_address(slab_folio(slab));
 diff --git a/mm/slub.c b/mm/slub.c
-index 63d281dfacdb..3fad4edca34b 100644
+index 3fad4edca34b..f568a32d7332 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2127,6 +2127,7 @@ __add_partial(struct kmem_cache_node *n, struct slab *slab, int tail)
- 		list_add_tail(&slab->slab_list, &n->partial);
- 	else
- 		list_add(&slab->slab_list, &n->partial);
-+	slab_set_node_partial(slab);
- }
+@@ -3610,6 +3610,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
+ 	unsigned long counters;
+ 	struct kmem_cache_node *n = NULL;
+ 	unsigned long flags;
++	bool on_node_partial;
  
- static inline void add_partial(struct kmem_cache_node *n,
-@@ -2141,6 +2142,7 @@ static inline void remove_partial(struct kmem_cache_node *n,
- {
- 	lockdep_assert_held(&n->list_lock);
- 	list_del(&slab->slab_list);
-+	slab_clear_node_partial(slab);
- 	n->nr_partial--;
- }
+ 	stat(s, FREE_SLOWPATH);
  
-@@ -4831,6 +4833,7 @@ static int __kmem_cache_do_shrink(struct kmem_cache *s)
+@@ -3657,6 +3658,7 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
+ 				 */
+ 				spin_lock_irqsave(&n->list_lock, flags);
  
- 			if (free == slab->objects) {
- 				list_move(&slab->slab_list, &discard);
-+				slab_clear_node_partial(slab);
- 				n->nr_partial--;
- 				dec_slabs_node(s, node, slab->objects);
- 			} else if (free <= SHRINK_PROMOTE_MAX)
++				on_node_partial = slab_test_node_partial(slab);
+ 			}
+ 		}
+ 
+@@ -3685,6 +3687,15 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
+ 		return;
+ 	}
+ 
++	/*
++	 * This slab was partial but not on the per-node partial list,
++	 * in which case we shouldn't manipulate its list, just return.
++	 */
++	if (prior && !on_node_partial) {
++		spin_unlock_irqrestore(&n->list_lock, flags);
++		return;
++	}
++
+ 	if (unlikely(!new.inuse && n->nr_partial >= s->min_partial))
+ 		goto slab_empty;
+ 
 -- 
 2.40.1
 
