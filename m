@@ -2,302 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D277D4732
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6185C7D4734
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232493AbjJXGIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 02:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
+        id S232566AbjJXGK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 02:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232213AbjJXGIg (ORCPT
+        with ESMTP id S232004AbjJXGK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 02:08:36 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFE0C0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:08:32 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31c5cac3ae2so2993711f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:08:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698127710; x=1698732510; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TqNCl8l+KnQqm1rHah7h5hq+q0hn/gFoy9mSnGDjiFI=;
-        b=B5/mt5PiqavyI7wpp6rQRuQOqXQg7jGGFPgl6lL6MSBq2ArbnP7tKJfxbntf8YjnQ0
-         YOPd0Asqi/+Ocz2HgN0Npg5BVxEXRxFLJKvUJLWmqWxXMMCbAhkvcXI4VmNehU0DiAKw
-         tMCeOBoR8bS0STlgedOLkMp8Lkc9RlwKUpYBZ4/MO58+ukQ66kryfpdKDX60DjCIhrRK
-         6fvK4OZDVVTV/19Ldt0/g1oE/W6flHrYYxHuoLDDzpjURqPIDRAOrpFPxCGIJP9lhecS
-         KcRhyOh3FpkbpIPokpWNUfGH9M0RH/hWX99OplGC+aoP8yiupTAIAGj4mJj1IZNEioHD
-         tEhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698127710; x=1698732510;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TqNCl8l+KnQqm1rHah7h5hq+q0hn/gFoy9mSnGDjiFI=;
-        b=iRorBmscmziBx/yEe6w0V39jjKLRTPzxUsW/wzfgWjFZkZR3TBM9g7Fji5N83P98Gc
-         1LXnYtP5Zm1UR2TkvUqWkWPvaE94+68i49oXYZEJJuO7vt2E8gM9WNZiyPH+OXXfVmQ1
-         RHE1f4ilDKV6E7KjbyazB4ad4HMs9g6IuppUsE6eAtd1yRLIWXkNie+i6kkd0yS/+rdH
-         tr00qIbwc1Q40BT412mW/4BUA+K7XTkjPYplotzx5zzETLK+TPlh4mL691k+fSMGxJZl
-         NLORpO1N/oYZqd8zmjsZbx0+6cx6Uo4VOdCU/MKYDf9eQE/6OXA4gviEzeG4ArXavs6P
-         Upxw==
-X-Gm-Message-State: AOJu0Ywf9ILuynBUNGqsI6sLwrQp5RC5q3iSoeOAllL3/ecxcoz871eo
-        PjggBK+Sb1+Y8WQh6/HfyXcH5Q==
-X-Google-Smtp-Source: AGHT+IE8pQjyPk0MmN1uOsGxmhiiTVjbFu+htr0cIvDHXFuoc2dgLg0tpeLOzrT2sKb4wWrJmZLy9A==
-X-Received: by 2002:a05:6000:bc3:b0:32d:a466:c470 with SMTP id dm3-20020a0560000bc300b0032da466c470mr7473958wrb.21.1698127710513;
-        Mon, 23 Oct 2023 23:08:30 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id q5-20020adfea05000000b0032d9548240fsm9138398wrm.82.2023.10.23.23.08.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 23:08:30 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 09:08:26 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 2/4] ACPI: sysfs: Fix a potential out-of-bound write in
- create_of_modalias()
-Message-ID: <ae1f9a0a-2058-4126-b716-44dc54449c4d@kadam.mountain>
-References: <cover.1698081019.git.christophe.jaillet@wanadoo.fr>
- <004a9aa85dcc37d112443e133c9edfd7624cd47b.1698081019.git.christophe.jaillet@wanadoo.fr>
- <df33bc21-4792-4395-bbe0-4c8893818f6b@kadam.mountain>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="bqF84jalhcFd/GyC"
+        Tue, 24 Oct 2023 02:10:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E76CA139
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698127852; x=1729663852;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=zloxMkV9BoUB/csQPio/P2wp2+Iveme2uyijxrZfG0I=;
+  b=n0LCRAy7uUJpykRF8PBB2gIaXojLWtI6LXNneByhEjM5l77nkz5YBTNZ
+   FxHpSkq+qap4Ku/jVnNy80uzBPl+lHvsJ9MnmjA30d9PanQyMncr2Lf/v
+   t+vEx2M9uUQTQ+7MiluJKqcVDQH7sgq36BKjQIjyZkCUdWNR2AG9xF6zo
+   YaLWF/ppu5dPIIm1aQ8oXEObpRpCn0cBfZbwia02iS9TGkH8g2OJO9MYn
+   /7Emh3LWd8d3Q4xSRB19HxNAo5yOh5/n21VRgeHCvVG2I9oMRPqW1uZdh
+   khzGU0d6MHzxYJhC9aTxuvLN67WY75Y51jaWMRBulxnKybqEodPHRQAjb
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="367222098"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="367222098"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 23:10:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="793383567"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="793383567"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Oct 2023 23:10:52 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 23 Oct 2023 23:10:52 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 23 Oct 2023 23:10:51 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 23 Oct 2023 23:10:51 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 23 Oct 2023 23:10:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nEqVd5tLLqvDpaMp/O1FQ0vyKIdhk+jbd7bk0VqYU1Lx4Tq/M/dkf7avCLIRY+6lD2B6KhHeqdJHdDWhn7NfpMml6Ol5hnhrW2EdI8xMrHAW+NMuy6PJuOswH52VLzZX2HuzQuJkGFwy0USuZPjwGKU41SnLfl+ATfX/Kr0bgTQIiG1B5wqXH8IjbrivXre8M23Ut/EXy6ssPRwscZrbLQ0xVLuld8wO+/hPq4fsCtJ/ZmPxhXoAC9hg4Lx4l5/ZXWYg5rVsIi4oAyvEXW2Z89zFr9hHJ5/QtIjTmrF114V4r4uxg89Rm9lEFHHrAUQ+qOzSM1LwVvTpytV8zMbbqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=p77/GY1JUFQ3AXYLthHc6IGHSm8NRE2aOtpISuolIec=;
+ b=Maqm7dUr+1LDStHZvQ9rvABye5a0uWn/BankH5guktM7YVYFUcMss+cXc0p7VHzuL1aP5SrvSiBCgLizhf/R2PdWjBhPkgHxUY7oXWxqWjEppsIDW9h52DsFz2wmGy3posm4JmT8Ti2y51iTNbvKEYiQuyFXGIZevydHR5+iYFLTX/qiaDg2N5CEBiY9dQFHkQEJ8mDPdtVB+uz/zkvowGgHTFCYtXTXhofHm/VGbqobU9xy9UzvqzfhxIr63G6iqtkcxID/E/Dvwi7mxIIRrBZvH3s0DfU6grL5yDX3HX8aUIgc143NP1rUkkKaVYH/3OjEOkBBjZ9aaYMm8Zwxew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6206.namprd11.prod.outlook.com (2603:10b6:208:3c6::8)
+ by SJ0PR11MB5184.namprd11.prod.outlook.com (2603:10b6:a03:2d5::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Tue, 24 Oct
+ 2023 06:10:44 +0000
+Received: from MN0PR11MB6206.namprd11.prod.outlook.com
+ ([fe80::9474:7e9c:c157:4ee9]) by MN0PR11MB6206.namprd11.prod.outlook.com
+ ([fe80::9474:7e9c:c157:4ee9%5]) with mapi id 15.20.6907.025; Tue, 24 Oct 2023
+ 06:10:43 +0000
+Date:   Tue, 24 Oct 2023 14:10:27 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+CC:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>,
+        "Tim Chen" <tim.c.chen@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, <x86@kernel.org>
+Subject: Re: [RFC PATCH v2 1/2] sched/fair: Introduce UTIL_FITS_CAPACITY
+ feature (v2)
+Message-ID: <ZTdf0529DL51pj8m@chenyu5-mobl2.ccr.corp.intel.com>
+References: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
+ <20231019160523.1582101-2-mathieu.desnoyers@efficios.com>
+ <f40522de-b71d-4848-8aa3-5b87d38bb847@arm.com>
+ <c79ac631-61c7-4953-a657-74047a264029@efficios.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <df33bc21-4792-4395-bbe0-4c8893818f6b@kadam.mountain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <c79ac631-61c7-4953-a657-74047a264029@efficios.com>
+X-ClientProxiedBy: SI2PR02CA0036.apcprd02.prod.outlook.com
+ (2603:1096:4:195::15) To MN0PR11MB6206.namprd11.prod.outlook.com
+ (2603:10b6:208:3c6::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6206:EE_|SJ0PR11MB5184:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3cfd2ed6-dc45-4df2-2d0d-08dbd457f4a9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rGHbx+BmQ2ZRSh5fwNDEEKSVnFpbELzwWPfzSCLAiZCT1X7bd0ca9G96GrAJycdFbLRQexAiqDJvHee2x9dRg26WqEzWcHSt9esuHoB5DIGi2nYV2RFAaBWAzVCOs7q6PlwUsChU6/5A/lXLcF59NLdEgM6EQtDj6TwTpsRSHA+UxG3lSec5nkLY4Qcc7e9XkAVsnmbUQMHFZTA1Z587vK6WU2qcMZD9QfFErSUHvsZ9BrpCUOyCCgPHPg3b17DUkvGda0CLMtoYUqK55eG+pXHChb7iI4hNLsTk0ykdg4rTp5OpcZ//+9SE/y7hazLobyWajWo0qZpCIPFeq7qxgeLd8DiwtkoXSw3hLrWGUfQHA2BM7k0alMAWDgWZptNqSkj2uIQMc4BWET5X94L1hj8pr8dE/XlN+2417aEw873LY2viBkyjrbITFJM/aFL6OpH+NV3pBv/B+M277vtuyaoDTwN9uMViKeiLSyQDYxNFRzsBAKq6TKT7fL1MM58khrtXC9OPv0adq6xyJ0C1WZW53M7j860eyi3BYfvBElclDyVH7by9M4joH8RnaKjI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6206.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(396003)(39860400002)(346002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(83380400001)(26005)(6666004)(6512007)(53546011)(38100700002)(86362001)(6506007)(82960400001)(6486002)(4326008)(8936002)(8676002)(478600001)(5660300002)(41300700001)(7416002)(2906002)(4001150100001)(66476007)(54906003)(316002)(66556008)(6916009)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?k6Rv3eUAKV28ht6sK0ZzbED4EnMDD9L4btZQa9wEB9HKsE9wM7xLcSNHnoCF?=
+ =?us-ascii?Q?vXgufHb7m5dmCxqMAhYg+FGI8V+Jcc1AsV3xKMAkLyVMtecjcxghgQD6SHB3?=
+ =?us-ascii?Q?q8n1LvV8f8IKPY9PvlpJ5Bf+6iuV5ztq6zoWK0dMi98t1Dd9pHnDlkFfpr9o?=
+ =?us-ascii?Q?cLceOf2GEh87wYtu7SkTRHXtXw4n/sjhPTQWS67RdXdTR6jzkFioQT2RmM5Y?=
+ =?us-ascii?Q?0bphpHdKjshY2Ure65JXeQSA17w6bAlb6TWWFCqXozDxNoLNKGftoSInJD7v?=
+ =?us-ascii?Q?4TUpLnDFtrO6UhvOrZCLn0GZR5aNA+14yZxxBRjfxafQzi3vuGNPLSoTOHSs?=
+ =?us-ascii?Q?hDAJVlzcU9OROuzu33pGqbsUX7REtHgAIp5U/unYvBZJtNCaocMRpfX3C+DM?=
+ =?us-ascii?Q?zHgzMT85VMiUfuW50tPOuOeOoF0v6JHSm1ocl/oLICPG93PoB/C8JS+KMYbQ?=
+ =?us-ascii?Q?kMI/PlLrWaOic2I8Vj2QR/DyqTGC4V1iFsEpeyyqLLxQq2icBWQ30cFDJDgH?=
+ =?us-ascii?Q?Io/DXqmVe461vDXAbwfheGDgWZJjD78mmtPsO0UUyLiiKUphoz5z2hEWfzKn?=
+ =?us-ascii?Q?8F2T58sTliMq47hlx4ZqQT93EKRscsI67jS3zBZ7GGZWvldy2ta079oiGUXF?=
+ =?us-ascii?Q?5ir726LiiZu/yfGbKLDcqz/pWH2RMx3hrjQBkxUXwafEpI+ICpjHxlQS0g5A?=
+ =?us-ascii?Q?H+9YZdvUABOfYZjA1NZesL8giyNwGs1Lqsj6AYARaimR/bng89SzmfAaUbKg?=
+ =?us-ascii?Q?w5tDahS/D0UXRRvd19LbeWQp8q2rNTmtGudlkR3lPEP6yzs2HUuOJT2n4TIU?=
+ =?us-ascii?Q?/u3xOIDHzcrJ4nNIk+dZ1h92vmbtx0v/cvpxOeeJK+Ud26EbHX+xpBLPOHWo?=
+ =?us-ascii?Q?EUt7PoA0EAH+Qg0o14/l5XuA09aOf7t9yAmfpUrFCp+z29TEjXratTbQktFX?=
+ =?us-ascii?Q?A8lc9uoVRTILX8BRwZELmQ26cPrQTg5LOsGnTs7KFOd/iHZkqVgjEGPmg39y?=
+ =?us-ascii?Q?HMlPb6mIbyh+pbAPFX+La51iAcBt6waR+Fa9x//6Juse0jQgxNhAJwwlgiVG?=
+ =?us-ascii?Q?/se3DsjMmCWrc3FzWmlNTLgwjGXTuAgtXYZ3ONoRITR8v008u6DCiobPdTmy?=
+ =?us-ascii?Q?suEMhlXXISqkRyBY7NzP4O3SNb38Ye+gJTmAjofDpquSfvaf52U+wCpOZveq?=
+ =?us-ascii?Q?6++LMQirBqDIFOhPX1suVXHis0WJypdVcBz+o9mtzDdpqBS/4xWjfKIanSHO?=
+ =?us-ascii?Q?QP/ruegdlq4NPWZe09IRSE8VD+WXM5V+/sgtOoT62HLSuSm8ZmsDyWAGSjIN?=
+ =?us-ascii?Q?Hpt/tabaPZlgo0LTf+wFdhZ0AVkwE7Y91NrprEI1Lb4IKOXyeqDf3mCZ/BB7?=
+ =?us-ascii?Q?rmvJ8JLhOHPrAftAX7jhABj3+auEvyZCAkFSefsuOxovS/NZidJUDHvrb4p8?=
+ =?us-ascii?Q?VAgAJnGlQzZ1Nx6+puM2LlFUqLd4mSASYCPoJOlshf1dPqDzJD0hbS2txhce?=
+ =?us-ascii?Q?CBJHoMK6zVla/G9RMVpSlTeaiIRBw9IRHPv0VSQRS0fSWj4KL8Nu0VKxEAE6?=
+ =?us-ascii?Q?DPsvlCWjUFmfkjMOzEn081MqVoMo8ErVP+aMAIfD?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3cfd2ed6-dc45-4df2-2d0d-08dbd457f4a9
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6206.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 06:10:43.6825
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9myWTHLGJ8sNGW4zZv+BwKA+oN5CZtJX/bXr7PvgyE5ZiXp3ABKLiyPXMbXViANLYp/WnkwwDeWh6iRXAdNW4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5184
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---bqF84jalhcFd/GyC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Oct 24, 2023 at 08:55:25AM +0300, Dan Carpenter wrote:
-> On Mon, Oct 23, 2023 at 09:33:16PM +0200, Christophe JAILLET wrote:
-> > The remaining size of the buffer used by snprintf() is not updated after
-> > the first write, so subsequent write in the 'for' loop a few lines below
-> > can write some data past the end of the 'modalias' buffer.
-> > 
-> > Correctly update the remaining size.
-> > 
-> > Note that this pattern is already correctly written in
-> > create_pnp_modalias().
-> > 
-> > Fixes: 8765c5ba1949 ("ACPI / scan: Rework modalias creation when "compatible" is present")
-> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > ---
-> >  drivers/acpi/device_sysfs.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
-> > index 4deb36dccb73..7ec3142f3eda 100644
-> > --- a/drivers/acpi/device_sysfs.c
-> > +++ b/drivers/acpi/device_sysfs.c
-> > @@ -215,6 +215,8 @@ static int create_of_modalias(const struct acpi_device *acpi_dev, char *modalias
-> >  	if (len >= size)
-> >  		return -ENOMEM;
-> >  
-> > +	size -= len;
-> > +
+On 2023-10-23 at 11:04:49 -0400, Mathieu Desnoyers wrote:
+> On 2023-10-23 10:11, Dietmar Eggemann wrote:
+> > On 19/10/2023 18:05, Mathieu Desnoyers wrote:
 > 
-> Yeah.  This is a good bugfix but it also shows why the canonical format
-> is better.  In the canonical format the "size - len" happens as part of
-> snprintf() instead of on a separate line where it can be forgotten.
+> [...]
+> > > +static unsigned long scale_rt_capacity(int cpu);
+> > > +
+> > > +/*
+> > > + * Returns true if adding the task utilization to the estimated
+> > > + * utilization of the runnable tasks on @cpu does not exceed the
+> > > + * capacity of @cpu.
+> > > + *
+> > > + * This considers only the utilization of _runnable_ tasks on the @cpu
+> > > + * runqueue, excluding blocked and sleeping tasks. This is achieved by
+> > > + * using the runqueue util_est.enqueued.
+> > > + */
+> > > +static inline bool task_fits_remaining_cpu_capacity(unsigned long task_util,
+> > > +						    int cpu)
+> > 
+> > Or like find_energy_efficient_cpu() (feec(), used in
+> > Energy-Aware-Scheduling (EAS)) which uses cpu_util(cpu, p, cpu, 0) to get:
+> > 
+> >    max(util_avg(CPU + p), util_est(CPU + p))
 > 
-> 	len += snprintf(buf + len, size - len, "string");
+> I've tried using cpu_util(), but unfortunately anything that considers
+> blocked/sleeping tasks in its utilization total does not work for my
+> use-case.
 > 
-> Also the user space version of snprintf() can fail but the
-> kernel space version can't.  This code is more complicated and introduces
-> a memory corruption bug because it is pretending that we need to check
-> for negatives.  People (someone) sometimes (once ten years ago) tell me
-> that checking for negatives is important for security but actually it's
-> the reverse.
+> From cpu_util():
+> 
+>  * CPU utilization is the sum of running time of runnable tasks plus the
+>  * recent utilization of currently non-runnable tasks on that CPU.
+>
 
-So I had a Smatch check for this kind of stuff but it was pretty junk.
-It also only looked for "modalias + len" and here the code is doing
-"&modalias[len]".
+I thought cpu_util() indicates the utilization decay sum of task that was once
+"running" on this CPU, but will not sum up the "util/load" of the blocked/sleeping
+task?
 
-I can fix it up a bit today and look again at the warnings.  Here is the
-the check and the warnings as-is.
+accumulate_sum()
+    /* only the running task's util will be sum up */
+    if (running)
+       sa->util_sum += contrib << SCHED_CAPACITY_SHIFT;
 
-regards,
-dan carpenter
+WRITE_ONCE(sa->util_avg, sa->util_sum / divider);
 
-
---bqF84jalhcFd/GyC
-Content-Type: text/x-csrc; charset=us-ascii
-Content-Disposition: attachment; filename="check_snprintf_no_minus.c"
-
-/*
- * Copyright (C) 2021 Oracle.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see http://www.gnu.org/copyleft/gpl.txt
- */
-
-#include "smatch.h"
-#include "smatch_slist.h"
-#include "smatch_extra.h"
-
-static int my_id;
-
-static bool is_plus(struct expression *expr)
-{
-	if (expr->type == EXPR_BINOP && expr->op == '+')
-		return true;
-	/* fixme: what about dst += snprintf() */
-	return false;
-}
-
-static void match_snprintf(const char *fn, struct expression *expr, void *unused)
-{
-	struct expression *dest, *limit;
-	char *name;
-
-	dest = get_argument_from_call_expr(expr->args, 0);
-	limit = get_argument_from_call_expr(expr->args, 1);
-	dest = strip_expr(dest);
-	limit = strip_expr(limit);
-	if (!dest || !limit)
-		return;
-
-	if (!is_plus(dest))
-		return;
-
-	if (limit->type == EXPR_BINOP && limit->op == '-')
-		return;
-
-	name = expr_to_str(limit);
-	sm_warning("expected subtract in snprintf limit '%s'", name);
-	free_string(name);
-}
-
-void check_snprintf_no_minus(int id)
-{
-	my_id = id;
-	add_function_hook("snprintf", &match_snprintf, NULL);
-	add_function_hook("scnprintf", &match_snprintf, NULL);
-}
-
-
---bqF84jalhcFd/GyC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=err-list
-
-kernel/locking/lockdep_proc.c:497 seq_stats() warn: expected subtract in snprintf limit '3'
-kernel/locking/lockdep_proc.c:501 seq_stats() warn: expected subtract in snprintf limit '3'
-kernel/time/clocksource.c:1429 available_clocksource_show() warn: expected subtract in snprintf limit '(null)'
-kernel/time/clocksource.c:1434 available_clocksource_show() warn: expected subtract in snprintf limit '(null)'
-kernel/trace/trace_probe.c:1635 __set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_probe.c:1639 __set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_probe.c:1642 __set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_probe.c:1645 __set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_probe.c:1646 __set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_probe.c:1649 __set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_probe.c:1652 __set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_probe.c:1663 __set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_probe.c:1670 __set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_synth.c:616 __set_synth_event_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_synth.c:619 __set_synth_event_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_synth.c:623 __set_synth_event_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_synth.c:628 __set_synth_event_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_synth.c:631 __set_synth_event_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_synth.c:634 __set_synth_event_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_syscalls.c:218 __set_enter_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_syscalls.c:220 __set_enter_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_syscalls.c:224 __set_enter_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_syscalls.c:227 __set_enter_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1330 user_dyn_field_set_string() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1332 user_dyn_field_set_string() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1353 user_field_set_string() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1354 user_field_set_string() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1355 user_field_set_string() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1358 user_field_set_string() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1361 user_field_set_string() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1373 user_event_set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1377 user_event_set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1379 user_event_set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1385 user_event_set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1390 user_event_set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-kernel/trace/trace_events_user.c:1393 user_event_set_print_fmt() warn: expected subtract in snprintf limit '(len) ?len - pos:0'
-lib/ref_tracker.c:99 __ref_tracker_dir_pr_ostream() warn: expected subtract in snprintf limit 'len'
-lib/ref_tracker.c:110 __ref_tracker_dir_pr_ostream() warn: expected subtract in snprintf limit 'len'
-lib/ref_tracker.c:116 __ref_tracker_dir_pr_ostream() warn: expected subtract in snprintf limit 'len'
-lib/dynamic_debug.c:828 __dynamic_emit_prefix() warn: expected subtract in snprintf limit 'remaining(pos)'
-lib/dynamic_debug.c:830 __dynamic_emit_prefix() warn: expected subtract in snprintf limit 'remaining(pos)'
-lib/dynamic_debug.c:836 __dynamic_emit_prefix() warn: expected subtract in snprintf limit 'remaining(pos)'
-lib/dynamic_debug.c:839 __dynamic_emit_prefix() warn: expected subtract in snprintf limit 'remaining(pos)'
-lib/dynamic_debug.c:841 __dynamic_emit_prefix() warn: expected subtract in snprintf limit 'remaining(pos)'
-lib/dynamic_debug.c:845 __dynamic_emit_prefix() warn: expected subtract in snprintf limit 'remaining(pos)'
-lib/dynamic_debug.c:847 __dynamic_emit_prefix() warn: expected subtract in snprintf limit 'remaining(pos)'
-drivers/net/ethernet/broadcom/bnx2x/bnx2x_ethtool.c:3204 bnx2x_get_strings() warn: expected subtract in snprintf limit '32'
-drivers/net/ethernet/sfc/siena/ethtool_common.c:229 efx_fill_test() warn: expected subtract in snprintf limit '32'
-drivers/net/ethernet/sfc/falcon/ethtool.c:229 ef4_fill_test() warn: expected subtract in snprintf limit '32'
-drivers/net/ethernet/sfc/ethtool_common.c:278 efx_fill_test() warn: expected subtract in snprintf limit '32'
-drivers/net/ethernet/mellanox/mlx5/core/main.c:243 mlx5_set_driver_version() warn: expected subtract in snprintf limit 'remaining_size'
-drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c:198 mlx5_lag_print_mapping() warn: expected subtract in snprintf limit '4'
-drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c:209 mlx5_lag_print_mapping() warn: expected subtract in snprintf limit '10'
-drivers/net/ethernet/mellanox/mlx4/eq.c:1264 mlx4_init_eq_table() warn: expected subtract in snprintf limit '32'
-drivers/net/ethernet/mellanox/mlx4/eq.c:1505 mlx4_assign_eq() warn: expected subtract in snprintf limit '32'
-drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c:2630 hns_dsaf_get_node_stats_strings() warn: expected subtract in snprintf limit '32'
-drivers/net/ethernet/hisilicon/hns/hns_dsaf_main.c:2633 hns_dsaf_get_node_stats_strings() warn: expected subtract in snprintf limit '32'
-drivers/net/ethernet/hisilicon/hns/hns_ethtool.c:436 __lb_other_process() warn: expected subtract in snprintf limit '3'
-drivers/net/ethernet/qlogic/qede/qede_main.c:1205 qede_log_probe() warn: expected subtract in snprintf limit 'left_size'
-drivers/ata/libata-transport.c:578 show_ata_dev_id() warn: expected subtract in snprintf limit '20'
-drivers/ata/libata-transport.c:597 show_ata_dev_gscr() warn: expected subtract in snprintf limit '20'
-drivers/usb/atm/cxacru.c:490 adsl_config_store() warn: expected subtract in snprintf limit '13'
-drivers/gpu/drm/i915/display/intel_sdvo.c:423 intel_sdvo_debug_write() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/i915/display/intel_sdvo.c:426 intel_sdvo_debug_write() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/i915/display/intel_sdvo.c:431 intel_sdvo_debug_write() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/i915/display/intel_sdvo.c:433 intel_sdvo_debug_write() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/i915/display/intel_sdvo.c:586 intel_sdvo_read_response() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/i915/display/intel_sdvo.c:588 intel_sdvo_read_response() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/i915/display/intel_sdvo.c:599 intel_sdvo_read_response() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/gma500/psb_intel_sdvo.c:416 psb_intel_sdvo_debug_write() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/gma500/psb_intel_sdvo.c:420 psb_intel_sdvo_debug_write() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/gma500/psb_intel_sdvo.c:425 psb_intel_sdvo_debug_write() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/gma500/psb_intel_sdvo.c:431 psb_intel_sdvo_debug_write() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/gma500/psb_intel_sdvo.c:541 psb_intel_sdvo_read_response() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/gma500/psb_intel_sdvo.c:543 psb_intel_sdvo_read_response() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/gma500/psb_intel_sdvo.c:554 psb_intel_sdvo_read_response() warn: expected subtract in snprintf limit '(null)'
-drivers/gpu/drm/drm_print.c:144 __drm_printfn_coredump() warn: expected subtract in snprintf limit 'iterator->remain'
-drivers/md/dm-ima.c:337 dm_ima_measure_on_table_load() warn: expected subtract in snprintf limit '3'
-drivers/input/input.c:1087 input_bits_to_string() warn: expected subtract in snprintf limit '(null)'
-drivers/input/input.c:1386 input_print_modalias_bits() warn: expected subtract in snprintf limit '(null)'
-drivers/input/input.c:1420 input_print_modalias() warn: expected subtract in snprintf limit '(null)'
-drivers/input/input.c:1543 input_print_bitmap() warn: expected subtract in snprintf limit '(null)'
-drivers/input/input.c:1554 input_print_bitmap() warn: expected subtract in snprintf limit '(null)'
-drivers/input/misc/keyspan_remote.c:132 keyspan_print() warn: expected subtract in snprintf limit '4'
-drivers/block/zram/zram_drv.c:878 read_block_state() warn: expected subtract in snprintf limit 'count'
-drivers/infiniband/hw/cxgb4/device.c:267 dump_qp() warn: expected subtract in snprintf limit 'space'
-drivers/infiniband/hw/cxgb4/device.c:288 dump_qp() warn: expected subtract in snprintf limit 'space'
-drivers/infiniband/hw/cxgb4/device.c:304 dump_qp() warn: expected subtract in snprintf limit 'space'
-drivers/infiniband/hw/cxgb4/device.c:390 dump_stag() warn: expected subtract in snprintf limit 'space'
-drivers/infiniband/hw/cxgb4/device.c:574 dump_ep() warn: expected subtract in snprintf limit 'space'
-drivers/infiniband/hw/cxgb4/device.c:595 dump_ep() warn: expected subtract in snprintf limit 'space'
-drivers/infiniband/hw/cxgb4/device.c:631 dump_listen_ep() warn: expected subtract in snprintf limit 'space'
-drivers/infiniband/hw/cxgb4/device.c:644 dump_listen_ep() warn: expected subtract in snprintf limit 'space'
-drivers/accel/habanalabs/gaudi/gaudi.c:8927 gaudi_fill_sobs_from_mon() warn: expected subtract in snprintf limit 'max_write'
-drivers/accel/habanalabs/gaudi/gaudi.c:8930 gaudi_fill_sobs_from_mon() warn: expected subtract in snprintf limit 'max_write'
-fs/ocfs2/filecheck.c:327 ocfs2_filecheck_attr_show() warn: expected subtract in snprintf limit 'remain'
-fs/ecryptfs/crypto.c:127 ecryptfs_derive_iv() warn: expected subtract in snprintf limit '16'
-sound/soc/sof/sof-client-probes.c:226 sof_probes_dfs_points_read() warn: expected subtract in snprintf limit 'remaining'
-sound/soc/sof/ipc4-mtrace.c:320 sof_ipc4_priority_mask_dfs_read() warn: expected subtract in snprintf limit 'remaining'
-
---bqF84jalhcFd/GyC--
+thanks,
+Chenyu
