@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71377D51DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466697D51E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234603AbjJXNez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
+        id S234654AbjJXNfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234575AbjJXNer (ORCPT
+        with ESMTP id S234720AbjJXNf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:34:47 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA166A7A
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:27:56 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32da42b8225so920781f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:27:55 -0700 (PDT)
+        Tue, 24 Oct 2023 09:35:28 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425816A7B
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:27:57 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-408ffb55b35so1895265e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:27:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698154074; x=1698758874; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698154075; x=1698758875; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JzJW8mbLnPSn6J2V5LPD0tHMd0DjHcRVmnBobw7QLdA=;
-        b=kfUuov924bX+nrLrP99Now6Jt4E8SxBVArsWKIkP6wV3PXv/CRCQ/1O5fQAgn0MR45
-         t+N1OfyxRV0RO+UYlbZGWvvaD1OMQv50iZ2FiLsoldp7chcXFrNc7ck/fwEyRE9vBIjI
-         dyJqxo0TbTdcFvpR95FdjTdgLKaGVj3ESQD+U/MTM1NqPzSKstlqr6lk42wpZbPuGzK6
-         CElg8PIP0DBL5kdiK6XJgMPnv5z5ECBeyeIu9u+A0uoQjkqk63HcIMSY3DeH8J0vcA3Q
-         2qmPyB/Ue7hDuh4Z4yFpOBHUKotr65sLHUTkE1AwxFdMSLX7pt1Ja/L+51Jxq6sjZwRq
-         FEtQ==
+        bh=AX7Kg3pLTr22HxmtrSzH05kFw/tkq3Ew+3ARfiqVrfA=;
+        b=OyVBZos68gZ3uKgmCwXMtsYUjogWMwz/jJwmNiVJqmRmbFwfyxK946EjgVT7mSyuxJ
+         b/DCZIPoE/hSxmjjQggOMZ/gNK/ThsTLFSUegbtLxKlGmcw1oOReD3QZ7OtFfQFfsVJd
+         Ao/eFatz2AGO+hA1qXQILBIe8v88y+l5YYgTs4qbUlnB4DTy32IKa0wK5AQb1dOrUmNE
+         BeycJa4ddcRZoEYt/FyI4GrHeQ+niHeFAUpLPeXn1JBAqZ9Ta3tZxabcLC2bgH644fI7
+         4sQCIBV8or+Dfii9cLtyrdEGbV9QyCHamlsNBmDF4mdKqRZrgq0CCUbvMrLKVaTWgg61
+         hAww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698154074; x=1698758874;
+        d=1e100.net; s=20230601; t=1698154075; x=1698758875;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JzJW8mbLnPSn6J2V5LPD0tHMd0DjHcRVmnBobw7QLdA=;
-        b=iK26GPtqaiqIavExr1FoH0QnBXIeVOnAn9MIMBLMjKkdAu/IifiR8j8Yn/yVXn1ZQs
-         4YJSyohSNg9X5TC4rYX5AoHQCbZPCtKnmt9Gjud9Mkx+nEk3jSwN8aGC0AsHdum1DEji
-         D5HhQ1U8qhw39M5GHUNRBGF/symnIO/+f0SqemtCJrUofsdUvMUKe0am13tAvFHD4Dsz
-         DzdVqJ6n3oOf614kY9UQ6DcNWxoLxz1phsIkP4XIvUu7D85NdcIsXjQiN2fOGaR+TmqA
-         qy9GPy8p26ZVY15r3ILIjwJROBZw31Sh61QF0vB4bRRI3UOQgj1fcyfq7iBEP0bvrM0+
-         Lp5Q==
-X-Gm-Message-State: AOJu0YxDa7HO9KbcHJfKy8yjU/El7a/PxzmoF37PSTRsbvd48HzPJDMw
-        kdfnoWbsea819/nHADFB/gFhHA==
-X-Google-Smtp-Source: AGHT+IERNbVtk7/d9BXKHcuFefqmMm7PIZc2yEvA/OiXxfNb0j+FczZRM6x6rXgzSE6bj8c3/9Em7g==
-X-Received: by 2002:adf:a455:0:b0:32d:d8ed:d6e0 with SMTP id e21-20020adfa455000000b0032dd8edd6e0mr7575871wra.0.1698154074488;
-        Tue, 24 Oct 2023 06:27:54 -0700 (PDT)
+        bh=AX7Kg3pLTr22HxmtrSzH05kFw/tkq3Ew+3ARfiqVrfA=;
+        b=p7eQA1NmYE2Gu+jGHcc9T7RRt54Lvww9Lv9HQa7l6dIEl3dsQmqwxD0p3vkTp8zY4p
+         bjnsXLjGRKu2HpKdM3qQuMA5fmz6vBrDaYrcWkpRqBTX8HHiNbfhznYhyxd9no9hKMxb
+         swhREDdFFHHb+DhM5zjtrCJvA2qG//zwwWNdpuN9X1+M6QTtg8Ah23D33GUo0Ee4gosT
+         BVsmZXtzdenZkRvl1tGekzL3FPzq5TxBx0OJvovgzkJJ0DVENiFCOwK0jPiFxGS1gx77
+         UsZA8tTlNr88v3a9ZwwJnfYdE7BqNDl0Aety+bcO/pB+00VpIZzdGOhpAuI8lerdFc6p
+         HBWQ==
+X-Gm-Message-State: AOJu0YwuGQgEaWntmO6/waRYH6Aa5HMc+RSKLOUGnPHVw5/OzfRG5J6v
+        GJ5XYkwAcBazGbXqkQRIp25hRw==
+X-Google-Smtp-Source: AGHT+IHA25WZkPnpG7hkj0epNRPJqd27SODY+lc7O8SDNKvya8GFTiFglhkKPL8RIhS/CoJQXkOmIg==
+X-Received: by 2002:a05:600c:35cc:b0:401:7d3b:cc84 with SMTP id r12-20020a05600c35cc00b004017d3bcc84mr9290453wmq.0.1698154075695;
+        Tue, 24 Oct 2023 06:27:55 -0700 (PDT)
 Received: from carbon-x1.. ([2a01:e0a:999:a3a0:597d:e2c5:6741:bac9])
-        by smtp.gmail.com with ESMTPSA id c17-20020a5d4151000000b0032d87b13240sm10034964wrq.73.2023.10.24.06.27.53
+        by smtp.gmail.com with ESMTPSA id c17-20020a5d4151000000b0032d87b13240sm10034964wrq.73.2023.10.24.06.27.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 06:27:53 -0700 (PDT)
+        Tue, 24 Oct 2023 06:27:54 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -60,9 +60,9 @@ To:     Paul Walmsley <paul.walmsley@sifive.com>,
 Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         kvm@vger.kernel.org, kvm-riscv@lists.infradead.org
-Subject: [PATCH v2 3/5] riscv: kernel: Use correct SYM_DATA_*() macro for data
-Date:   Tue, 24 Oct 2023 15:26:53 +0200
-Message-ID: <20231024132655.730417-4-cleger@rivosinc.com>
+Subject: [PATCH v2 4/5] riscv: kvm: Use SYM_*() assembly macros instead of deprecated ones
+Date:   Tue, 24 Oct 2023 15:26:54 +0200
+Message-ID: <20231024132655.730417-5-cleger@rivosinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231024132655.730417-1-cleger@rivosinc.com>
 References: <20231024132655.730417-1-cleger@rivosinc.com>
@@ -70,51 +70,111 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some data were incorrectly annotated with SYM_FUNC_*() instead of
-SYM_DATA_*() ones. Use the correct ones.
+ENTRY()/END()/WEAK() macros are deprecated and we should make use of the
+new SYM_*() macros [1] for better annotation of symbols. Replace the
+deprecated ones with the new ones and fix wrong usage of END()/ENDPROC()
+to correctly describe the symbols.
+
+[1] https://docs.kernel.org/core-api/asm-annotations.html
 
 Signed-off-by: Clément Léger <cleger@rivosinc.com>
 Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 ---
- arch/riscv/kernel/entry.S | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ arch/riscv/kvm/vcpu_switch.S | 28 ++++++++++++----------------
+ 1 file changed, 12 insertions(+), 16 deletions(-)
 
-diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-index 64ac0dd6176b..a7aa2fd599d6 100644
---- a/arch/riscv/kernel/entry.S
-+++ b/arch/riscv/kernel/entry.S
-@@ -324,7 +324,7 @@ SYM_FUNC_END(__switch_to)
- 	.section ".rodata"
- 	.align LGREG
- 	/* Exception vector table */
--SYM_CODE_START(excp_vect_table)
-+SYM_DATA_START_LOCAL(excp_vect_table)
- 	RISCV_PTR do_trap_insn_misaligned
- 	ALT_INSN_FAULT(RISCV_PTR do_trap_insn_fault)
- 	RISCV_PTR do_trap_insn_illegal
-@@ -342,12 +342,11 @@ SYM_CODE_START(excp_vect_table)
- 	RISCV_PTR do_page_fault   /* load page fault */
- 	RISCV_PTR do_trap_unknown
- 	RISCV_PTR do_page_fault   /* store page fault */
--excp_vect_table_end:
--SYM_CODE_END(excp_vect_table)
-+SYM_DATA_END_LABEL(excp_vect_table, SYM_L_LOCAL, excp_vect_table_end)
+diff --git a/arch/riscv/kvm/vcpu_switch.S b/arch/riscv/kvm/vcpu_switch.S
+index d74df8eb4d71..8b18473780ac 100644
+--- a/arch/riscv/kvm/vcpu_switch.S
++++ b/arch/riscv/kvm/vcpu_switch.S
+@@ -15,7 +15,7 @@
+ 	.altmacro
+ 	.option norelax
  
- #ifndef CONFIG_MMU
--SYM_CODE_START(__user_rt_sigreturn)
-+SYM_DATA_START(__user_rt_sigreturn)
- 	li a7, __NR_rt_sigreturn
- 	ecall
--SYM_CODE_END(__user_rt_sigreturn)
-+SYM_DATA_END(__user_rt_sigreturn)
+-ENTRY(__kvm_riscv_switch_to)
++SYM_FUNC_START(__kvm_riscv_switch_to)
+ 	/* Save Host GPRs (except A0 and T0-T6) */
+ 	REG_S	ra, (KVM_ARCH_HOST_RA)(a0)
+ 	REG_S	sp, (KVM_ARCH_HOST_SP)(a0)
+@@ -208,9 +208,9 @@ __kvm_switch_return:
+ 
+ 	/* Return to C code */
+ 	ret
+-ENDPROC(__kvm_riscv_switch_to)
++SYM_FUNC_END(__kvm_riscv_switch_to)
+ 
+-ENTRY(__kvm_riscv_unpriv_trap)
++SYM_CODE_START(__kvm_riscv_unpriv_trap)
+ 	/*
+ 	 * We assume that faulting unpriv load/store instruction is
+ 	 * 4-byte long and blindly increment SEPC by 4.
+@@ -231,12 +231,10 @@ ENTRY(__kvm_riscv_unpriv_trap)
+ 	csrr	a1, CSR_HTINST
+ 	REG_S	a1, (KVM_ARCH_TRAP_HTINST)(a0)
+ 	sret
+-ENDPROC(__kvm_riscv_unpriv_trap)
++SYM_CODE_END(__kvm_riscv_unpriv_trap)
+ 
+ #ifdef	CONFIG_FPU
+-	.align 3
+-	.global __kvm_riscv_fp_f_save
+-__kvm_riscv_fp_f_save:
++SYM_FUNC_START(__kvm_riscv_fp_f_save)
+ 	csrr t2, CSR_SSTATUS
+ 	li t1, SR_FS
+ 	csrs CSR_SSTATUS, t1
+@@ -276,10 +274,9 @@ __kvm_riscv_fp_f_save:
+ 	sw t0, KVM_ARCH_FP_F_FCSR(a0)
+ 	csrw CSR_SSTATUS, t2
+ 	ret
++SYM_FUNC_END(__kvm_riscv_fp_f_save)
+ 
+-	.align 3
+-	.global __kvm_riscv_fp_d_save
+-__kvm_riscv_fp_d_save:
++SYM_FUNC_START(__kvm_riscv_fp_d_save)
+ 	csrr t2, CSR_SSTATUS
+ 	li t1, SR_FS
+ 	csrs CSR_SSTATUS, t1
+@@ -319,10 +316,9 @@ __kvm_riscv_fp_d_save:
+ 	sw t0, KVM_ARCH_FP_D_FCSR(a0)
+ 	csrw CSR_SSTATUS, t2
+ 	ret
++SYM_FUNC_END(__kvm_riscv_fp_d_save)
+ 
+-	.align 3
+-	.global __kvm_riscv_fp_f_restore
+-__kvm_riscv_fp_f_restore:
++SYM_FUNC_START(__kvm_riscv_fp_f_restore)
+ 	csrr t2, CSR_SSTATUS
+ 	li t1, SR_FS
+ 	lw t0, KVM_ARCH_FP_F_FCSR(a0)
+@@ -362,10 +358,9 @@ __kvm_riscv_fp_f_restore:
+ 	fscsr t0
+ 	csrw CSR_SSTATUS, t2
+ 	ret
++SYM_FUNC_END(__kvm_riscv_fp_f_restore)
+ 
+-	.align 3
+-	.global __kvm_riscv_fp_d_restore
+-__kvm_riscv_fp_d_restore:
++SYM_FUNC_START(__kvm_riscv_fp_d_restore)
+ 	csrr t2, CSR_SSTATUS
+ 	li t1, SR_FS
+ 	lw t0, KVM_ARCH_FP_D_FCSR(a0)
+@@ -405,4 +400,5 @@ __kvm_riscv_fp_d_restore:
+ 	fscsr t0
+ 	csrw CSR_SSTATUS, t2
+ 	ret
++SYM_FUNC_END(__kvm_riscv_fp_d_restore)
  #endif
 -- 
 2.42.0
