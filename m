@@ -2,134 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DAEE7D5812
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CD07D57C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343774AbjJXQYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50060 "EHLO
+        id S232329AbjJXQQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234740AbjJXQYH (ORCPT
+        with ESMTP id S229544AbjJXQQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:24:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8451BE8;
-        Tue, 24 Oct 2023 09:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698164645; x=1729700645;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+n1qPH4vrHP2kR+bbs48XwN/8n1d9jlcd6QnuD/dU0Y=;
-  b=SFaMNCenTWUp33jkqK+7EV9DwViV/JX6GwJ0nFXurZT/7X5u6U8vPLty
-   DE0/hwXXShGh3R3Lia+sv8LThybjPJlMAg1pb4H+4xfchIEWlfWwg+d7b
-   fu/RhecU6ofM189pVJrUYCdHd4d/w/VJWr4B/8MrIbCG0OtFYtQJT6Ezg
-   9h08UdVt1NRUPAN62waio8cuIlckbNszJcpd4+5Fra12+henEo6Yh69rM
-   IPgCFrhoH0Qtcz/bBm45NBRg9YYHsS7NI3YYwobV4yVb94rGthcyrUSkV
-   A1X1dZplIcd+OGjhoqBBvw0to36XaxyEJzvmJLPyMEsFUdSQw/fiI7uLO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="473334674"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="473334674"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 09:17:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="708369080"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="708369080"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 24 Oct 2023 09:17:10 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qvK5b-00081l-2w;
-        Tue, 24 Oct 2023 16:17:07 +0000
-Date:   Wed, 25 Oct 2023 00:16:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jim Liu <jim.t90615@gmail.com>, JJLIU0@nuvoton.com,
-        linus.walleij@linaro.org, krzysztof.kozlowski+dt@linaro.org,
-        brgl@bgdev.pl
-Cc:     oe-kbuild-all@lists.linux.dev, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org
-Subject: Re: [PATCH v6 3/3] gpio: nuvoton: Add Nuvoton NPCM sgpio driver
-Message-ID: <202310250031.1SKs6CHt-lkp@intel.com>
-References: <20231024090631.3359592-4-jim.t90615@gmail.com>
+        Tue, 24 Oct 2023 12:16:39 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA6EA6;
+        Tue, 24 Oct 2023 09:16:35 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SFHDZ531bz6K66h;
+        Wed, 25 Oct 2023 00:13:50 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 24 Oct
+ 2023 17:16:32 +0100
+Date:   Tue, 24 Oct 2023 17:16:31 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Navneet Singh <navneet.singh@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC v2 02/18] cxl/mbox: Flag support for Dynamic
+ Capacity Devices (DCD)
+Message-ID: <20231024171631.000066c7@Huawei.com>
+In-Reply-To: <20230604-dcd-type2-upstream-v2-2-f740c47e7916@intel.com>
+References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
+        <20230604-dcd-type2-upstream-v2-2-f740c47e7916@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024090631.3359592-4-jim.t90615@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jim,
+On Mon, 28 Aug 2023 22:20:53 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-kernel test robot noticed the following build warnings:
+> Per the CXL 3.0 specification software must check the Command Effects
+> Log (CEL) to know if a device supports DC.  If the device does support
+> DC the specifics of the DC Regions (0-7) are read through the mailbox.
+> 
+> Flag DC Device (DCD) commands in a device if they are supported.
+> Subsequent patches will key off these bits to configure a DCD.
+> 
+> Co-developed-by: Navneet Singh <navneet.singh@intel.com>
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes for v2
+> [iweiny: new patch]
+> ---
+>  drivers/cxl/core/mbox.c | 38 +++++++++++++++++++++++++++++++++++---
+>  drivers/cxl/cxlmem.h    | 15 +++++++++++++++
+>  2 files changed, 50 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index f052d5f174ee..554ec97a7c39 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -111,6 +111,34 @@ static u8 security_command_sets[] = {
+>  	0x46, /* Security Passthrough */
+>  };
+>  
+Small note I noticed whilst rebasing this for some tests.
+Adding this in the middle of the stuff for security commands is
+a bit odd. I'd move it up or down a few lines.
 
-[auto build test WARNING on brgl/gpio/for-next]
-[also build test WARNING on robh/for-next linus/master v6.6-rc7 next-20231024]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> +static bool cxl_is_dcd_command(u16 opcode)
+> +{
+> +#define CXL_MBOX_OP_DCD_CMDS 0x48
+> +
+> +	return (opcode >> 8) == CXL_MBOX_OP_DCD_CMDS;
+> +}
+> +
+> +static void cxl_set_dcd_cmd_enabled(struct cxl_memdev_state *mds,
+> +					u16 opcode)
+> +{
+> +	switch (opcode) {
+> +	case CXL_MBOX_OP_GET_DC_CONFIG:
+> +		set_bit(CXL_DCD_ENABLED_GET_CONFIG, mds->dcd_cmds);
+> +		break;
+> +	case CXL_MBOX_OP_GET_DC_EXTENT_LIST:
+> +		set_bit(CXL_DCD_ENABLED_GET_EXTENT_LIST, mds->dcd_cmds);
+> +		break;
+> +	case CXL_MBOX_OP_ADD_DC_RESPONSE:
+> +		set_bit(CXL_DCD_ENABLED_ADD_RESPONSE, mds->dcd_cmds);
+> +		break;
+> +	case CXL_MBOX_OP_RELEASE_DC:
+> +		set_bit(CXL_DCD_ENABLED_RELEASE, mds->dcd_cmds);
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +}
+> +
+>  static bool cxl_is_security_command(u16 opcode)
+>  {
+>  	int i;
+> @@ -677,9 +705,10 @@ static void cxl_walk_cel(struct cxl_memdev_state *mds, size_t size, u8 *cel)
+>  		u16 opcode = le16_to_cpu(cel_entry[i].opcode);
+>  		struct cxl_mem_command *cmd = cxl_mem_find_command(opcode);
+>  
+> -		if (!cmd && !cxl_is_poison_command(opcode)) {
+> -			dev_dbg(dev,
+> -				"Opcode 0x%04x unsupported by driver\n", opcode);
+> +		if (!cmd && !cxl_is_poison_command(opcode) &&
+> +		    !cxl_is_dcd_command(opcode)) {
+> +			dev_dbg(dev, "Opcode 0x%04x unsupported by driver\n",
+> +				opcode);
+>  			continue;
+>  		}
+>  
+> @@ -689,6 +718,9 @@ static void cxl_walk_cel(struct cxl_memdev_state *mds, size_t size, u8 *cel)
+>  		if (cxl_is_poison_command(opcode))
+>  			cxl_set_poison_cmd_enabled(&mds->poison, opcode);
+>  
+> +		if (cxl_is_dcd_command(opcode))
+> +			cxl_set_dcd_cmd_enabled(mds, opcode);
+> +
+>  		dev_dbg(dev, "Opcode 0x%04x enabled\n", opcode);
+>  	}
+>  }
+> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+> index adfba72445fc..5f2e65204bf9 100644
+> --- a/drivers/cxl/cxlmem.h
+> +++ b/drivers/cxl/cxlmem.h
+> @@ -247,6 +247,15 @@ struct cxl_event_state {
+>  	struct mutex log_lock;
+>  };
+>  
+> +/* Device enabled DCD commands */
+> +enum dcd_cmd_enabled_bits {
+> +	CXL_DCD_ENABLED_GET_CONFIG,
+> +	CXL_DCD_ENABLED_GET_EXTENT_LIST,
+> +	CXL_DCD_ENABLED_ADD_RESPONSE,
+> +	CXL_DCD_ENABLED_RELEASE,
+> +	CXL_DCD_ENABLED_MAX
+> +};
+> +
+>  /* Device enabled poison commands */
+>  enum poison_cmd_enabled_bits {
+>  	CXL_POISON_ENABLED_LIST,
+> @@ -436,6 +445,7 @@ struct cxl_dev_state {
+>   *                (CXL 2.0 8.2.9.5.1.1 Identify Memory Device)
+>   * @mbox_mutex: Mutex to synchronize mailbox access.
+>   * @firmware_version: Firmware version for the memory device.
+> + * @dcd_cmds: List of DCD commands implemented by memory device
+>   * @enabled_cmds: Hardware commands found enabled in CEL.
+>   * @exclusive_cmds: Commands that are kernel-internal only
+>   * @total_bytes: sum of all possible capacities
+> @@ -460,6 +470,7 @@ struct cxl_memdev_state {
+>  	size_t lsa_size;
+>  	struct mutex mbox_mutex; /* Protects device mailbox and firmware */
+>  	char firmware_version[0x10];
+> +	DECLARE_BITMAP(dcd_cmds, CXL_DCD_ENABLED_MAX);
+>  	DECLARE_BITMAP(enabled_cmds, CXL_MEM_COMMAND_ID_MAX);
+>  	DECLARE_BITMAP(exclusive_cmds, CXL_MEM_COMMAND_ID_MAX);
+>  	u64 total_bytes;
+> @@ -525,6 +536,10 @@ enum cxl_opcode {
+>  	CXL_MBOX_OP_UNLOCK		= 0x4503,
+>  	CXL_MBOX_OP_FREEZE_SECURITY	= 0x4504,
+>  	CXL_MBOX_OP_PASSPHRASE_SECURE_ERASE	= 0x4505,
+> +	CXL_MBOX_OP_GET_DC_CONFIG	= 0x4800,
+> +	CXL_MBOX_OP_GET_DC_EXTENT_LIST	= 0x4801,
+> +	CXL_MBOX_OP_ADD_DC_RESPONSE	= 0x4802,
+> +	CXL_MBOX_OP_RELEASE_DC		= 0x4803,
+>  	CXL_MBOX_OP_MAX			= 0x10000
+>  };
+>  
+> 
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jim-Liu/dt-bindings-gpio-add-NPCM-sgpio-driver-bindings/20231024-170835
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-next
-patch link:    https://lore.kernel.org/r/20231024090631.3359592-4-jim.t90615%40gmail.com
-patch subject: [PATCH v6 3/3] gpio: nuvoton: Add Nuvoton NPCM sgpio driver
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20231025/202310250031.1SKs6CHt-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231025/202310250031.1SKs6CHt-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310250031.1SKs6CHt-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/gpio/gpio-npcm-sgpio.c: In function 'bank_reg':
->> drivers/gpio/gpio-npcm-sgpio.c:150:24: warning: returning 'int' from a function with return type 'void *' makes pointer from integer without a cast [-Wint-conversion]
-     150 |                 return -EINVAL;
-         |                        ^
-   drivers/gpio/gpio-npcm-sgpio.c: In function 'npcm_sgpio_setup_irqs':
->> drivers/gpio/gpio-npcm-sgpio.c:506:19: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-     506 |         irq->chip = &sgpio_irq_chip;
-         |                   ^
-   drivers/gpio/gpio-npcm-sgpio.c: In function 'npcm_sgpio_probe':
->> drivers/gpio/gpio-npcm-sgpio.c:559:36: warning: unused variable 'sgpio_freq' [-Wunused-variable]
-     559 |         u32 nin_gpios, nout_gpios, sgpio_freq;
-         |                                    ^~~~~~~~~~
-
-
-vim +150 drivers/gpio/gpio-npcm-sgpio.c
-
-   133	
-   134	static void __iomem *bank_reg(struct npcm_sgpio *gpio,
-   135				      const struct npcm_sgpio_bank *bank,
-   136					const enum npcm_sgpio_reg reg)
-   137	{
-   138		switch (reg) {
-   139		case READ_DATA:
-   140			return gpio->base + bank->rdata_reg;
-   141		case WRITE_DATA:
-   142			return gpio->base + bank->wdata_reg;
-   143		case EVENT_CFG:
-   144			return gpio->base + bank->event_config;
-   145		case EVENT_STS:
-   146			return gpio->base + bank->event_status;
-   147		default:
-   148			/* actually if code runs to here, it's an error case */
-   149			WARN(true, "Getting here is an error condition");
- > 150			return -EINVAL;
-   151		}
-   152	}
-   153	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
