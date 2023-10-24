@@ -2,157 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F8857D5726
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5C57D572F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343990AbjJXP7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52520 "EHLO
+        id S1343993AbjJXQAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343979AbjJXP7l (ORCPT
+        with ESMTP id S1343961AbjJXQAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:59:41 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2062.outbound.protection.outlook.com [40.107.244.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827AF10C3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:59:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gencJqoM8trKUeFm3fQ4ZBEw+mdPW1NjHp+pbuMRTFPxylzs9DqIF5J+rSlZIvJphUHvLP3bPjWZMpnT8Tvd4uzsNqytvsouEIzzUozsLtlWKlv3Bapo6ZivDv3lue7OyIjGQ2edkI0QQXmu/rGi69U/ahSoEO3leZY1SBq8KmutrpYkSu9ZeLro5iREnZyHWiNfcsJ35E2mFeqoYgsFqKZOGzbPkKs+/2qNI5Kj/i/B1+oXfpttr4NEvVy8+nQzy8IrjCvxOWRRIxWheIZIMyF5HF4YG7SGKM7vDJ7FKqxhSykAEyngAbrYYNNkdqBZFMtspZOXc+zTDR7KlfB7Yw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+GrfwRZJTicwXcvz1sjCSDMB9w+HjAai0sN+qjYnaPA=;
- b=f31EA+fclFm/2MrTiDTDix59NScLZ0h2Aou4NC0+NX3rTFfgtTiJLhroLJfS1V5kwE0T23tAOukENeb2a2waxvki5tMGfDrEnEgb47rKZO0lAM2mQMnzAt8FgX12qtgNZWf8cUfa6Nm14288TR+1jfLNuByryOgUSarsKJf3h8UHhZmGPLPCZeVkSJmcLIJtKW3m3+httpGYTHqbL9ypFOd7hoEtYbRAgDG1KibAkJO9dORDzaZ/Cn47jT32lnNCM9gvuA5yk7hMvaFVi8nxJ8O7UCUWqcbZCexM/WKqc2lEMJshf/iDkJgG9rFcbUFqxKfjaB986cD8uzruSK0qXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+GrfwRZJTicwXcvz1sjCSDMB9w+HjAai0sN+qjYnaPA=;
- b=oTeZyqsRrcZQ0Cc02Ds2nCPMquBf9eIr26jhPDRHBozEMGyjAGSG1v2ra+AC1o6Ia72kKvhHz3T5/Ns/Y6dEzLQmc7c6iyXQDmGPIEtXgGe599JnYsR6IuKPbSNOHLo16riBVPb3Q0WzVg4Q6ABeRk6odDWk3jXVY10IU6+T7nMOsRQ24qIjqFa4sjcpAoWbar0HXWbK9/JyX/aZoeEYVeVYeWdxzkL+eSd7RwAymcZURjDV8H/SZOdZVo+vsM39+dQZ+MGie4jxxWKJkHlzKsVBjJ2056D2B+NuzyPd+pCXcaPxiLZzcdG/2TmHO4i0Ci9NXk7vzVI+1LiBGBYnjA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM4PR12MB5772.namprd12.prod.outlook.com (2603:10b6:8:63::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.29; Tue, 24 Oct
- 2023 15:59:35 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6886.034; Tue, 24 Oct 2023
- 15:59:35 +0000
-Date:   Tue, 24 Oct 2023 12:59:33 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     kevin.tian@intel.com, joro@8bytes.org, will@kernel.org,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        yi.l.liu@intel.com
-Subject: Re: [PATCH v4] iommufd: Only enforce cache coherency in
- iommufd_hw_pagetable_alloc
-Message-ID: <20231024155933.GL3952@nvidia.com>
-References: <20231024012958.30842-1-nicolinc@nvidia.com>
+        Tue, 24 Oct 2023 12:00:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C0083;
+        Tue, 24 Oct 2023 09:00:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xvNEiBG63OMFNIn4OCYNrNvdsGaoHiuqOfDxDCymSUw=; b=AzsoK5Ff7sTZHDFak0kPEDI5yk
+        VC5DL953fZLBhoy4NmnC1rXy7r5I6rdvL2NC0M+aHyRp6uKWYYUbn9DOZdBDw6xFSwBZ9slONlyTd
+        k1ghMe19z8kQOYAsNOCjoMkXD77GJR7TDJshwXXHh20Lu0W4HJOOwNhAlpHUp7sFoGdIabSVz4slF
+        1hcl3DUGDzQAM7Md/UZiKdslYPr06ZMh7F1qiW5v5zAnNs9+NJm5HmtpjGb7lHtKWyJZU3bkHd8vw
+        VSZPes5rZWCFElEEf5vptiugjyRK6VOCu/y66iRufTApPD+hmDsio39eDk38OaIwYCzYlLKZCIl02
+        eYsb04Ew==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qvJoh-003Mtt-Ov; Tue, 24 Oct 2023 15:59:39 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6C3C7300451; Tue, 24 Oct 2023 17:59:39 +0200 (CEST)
+Date:   Tue, 24 Oct 2023 17:59:39 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pm@vger.kernel.org, rafael@kernel.org,
+        pavel@ucw.cz, linux-perf-users@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 2/2] perf/x86/amd: Don't allow pre-emption in
+ amd_pmu_lbr_reset()
+Message-ID: <20231024155939.GF33965@noisy.programming.kicks-ass.net>
+References: <20231023160018.164054-1-mario.limonciello@amd.com>
+ <20231023160018.164054-3-mario.limonciello@amd.com>
+ <ZTd6BYr17ycdHR2a@gmail.com>
+ <38ea48b4-aaba-4ba4-84a1-e88d6cb9df94@amd.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231024012958.30842-1-nicolinc@nvidia.com>
-X-ClientProxiedBy: DM6PR06CA0063.namprd06.prod.outlook.com
- (2603:10b6:5:54::40) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB5772:EE_
-X-MS-Office365-Filtering-Correlation-Id: dc2dd71d-5b01-4728-a00e-08dbd4aa3807
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7WNIsP6hf7teqhoAvTHrCj+jl/yBTqOEArnUNkhRrbngIh21HL4n2LloI8IGxgPosPMFVcBC9nK6Y4jhaD6z6rqUkQUdWiZFhwNdRfDMsBrURVal96/1nn1je45l3msxxB6BdWQhga/BFLVIji11UXjWa7M0OlJ1leM+4TZrRGtR7EnvTsqmhiAn22hQQ+xKGnZFSo2vOaOIBxonGRUBe/pyQXi027z5fBIiV4Ya2DcTyy4HrsASDa7I4JmWBRgqs310NhslYLiHM4d41tKyNKDMCcLKVqTYPNrlbKo+TIHPr4V/Cg3Ew//JRqQgpidm52jd5ubM4J3pi+TVw3r6b9KuOmskEdfHzpFtTOlkZD1qGIKbeybiX4iAaBvhnNzS6wjviweJsNfPaI33AeOM3F8opsME6ElLOMnDyUVI5MI4CZNl8hsn9rXMGwhQge602ZYmDKd8HUcKeaEVz3QWEYyAooif9r8OpM5spwz2vRr21VwBdT2oE7H0MCj4mqqG1n/1K4rtu4wkSgu40QQG6gE4ezjW+hdhUD0HCLvtn4gnPFDkdtcLAPTSPTGM6tGToSSgUCjU2yaFwI3Z962+QzKuA2Zh9SIzYYh7ykB9Z9xoNQZNfFGNOIJjk/eyOjkZzvmB2Sh5sgtXEBLOMxPqJg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(366004)(136003)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(66476007)(316002)(6636002)(66556008)(37006003)(66946007)(478600001)(5660300002)(8676002)(8936002)(4326008)(6862004)(966005)(6486002)(6512007)(6506007)(41300700001)(2906002)(38100700002)(83380400001)(2616005)(26005)(1076003)(33656002)(86362001)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?U7xJg/8zq8lyZoXWbPLGvidjAKL/1iCZ4ktok5E/CBQpibwL5pye6658Cch3?=
- =?us-ascii?Q?jH6d0hgFFx9JL6T7crdzHf4PNK90ylrfOsIJ77oaIprKK7iKDKrYWlHMPXdx?=
- =?us-ascii?Q?uBG1CzGvU1tTSnlLtHtxWHgGsmG35RHS1oBTELSShOPIl7hxzEVzruVUxMWc?=
- =?us-ascii?Q?eqej0QtSvIie/3rXu+wNqqSDnwKFbCKWqCucvjQp/qhVITv9jDcxDDKQavHw?=
- =?us-ascii?Q?ktvLLeFVd+GhhQB851F8gsKO3Y8lraCuwQfPBSq69IDoPwjRtOYY4RsEdsh5?=
- =?us-ascii?Q?uVJrPx8FgvUEa0hIoQmrFAk1/LWHmWgv/9lhSXmvSGEFzTrh7tvXL0BXhBoy?=
- =?us-ascii?Q?geKZSMlmQg2VpZp/5EqL5uA7bBY42fMUSTCHRZcpYwFhyw4/yMpIFWk3x8IK?=
- =?us-ascii?Q?e2ecivfe7/hOVO+axtTW99kYmGpGoepI4cSV4eBi/r8a2xBiGKauuA3twthA?=
- =?us-ascii?Q?izNbPp37h1Yli3yV2PDjLxBOv+mQc3W7zQPZhkDwLzbvRFoQGeGj/kr4zDLT?=
- =?us-ascii?Q?kdD8oPn4EqRqC8nyOBSxpS7fBp5TcwrGy0659YMLXm21c3mIyk9lvlUvS0o9?=
- =?us-ascii?Q?nz8/RWh9xowWR1H9SUwg1xgAmTzOkOh5wE0ocF6YYCuUVczCQTcbWHhbf5wP?=
- =?us-ascii?Q?PpzPC2XKgdo+5Vb7kpHZsqxjWBUxdLtC2QKqvZESI/Wv7MauiO2KVf5FBaZf?=
- =?us-ascii?Q?ZCyExZH/qukn6YdZxGTLq8QatY+yniYQeFh7dieJjoHrGpiakODJISVjUCJz?=
- =?us-ascii?Q?RUqVrxaaHO2QN8HTQFfZ6j4MMjnRlt7s/ag5rEPQAOWsvyGavY9R4I8RBug5?=
- =?us-ascii?Q?2eD0wyjv23v+1o7D/BazHZThP2ub7rRxP0rIbcSMRz7/de9F3tJbbBiKhaqd?=
- =?us-ascii?Q?/jnItScow6KdV6CetRKdZOQYb/10FC/shwJ+B894PXIrOZNwJrR3WiP/TQH8?=
- =?us-ascii?Q?aXHJdjjy+Lz7IjKl6WSIrk0VEV603d0rW36Qs7nqnDtvE4Xbzte6c1Fox1VY?=
- =?us-ascii?Q?aQAet3k765ueywP8+2lddqcjbMmuzpvKST9L5pg6XUSy9xHZJNy/zUz1VRm1?=
- =?us-ascii?Q?UXPVw3DNJfIBwgA6Sst0AfxPmr3xmAdXBYOhcg7Bjl4OQiAS4UTA40zzHdF1?=
- =?us-ascii?Q?2OX76hpBAtCUrqnx7J9AR1oD29h3KQnPA8GVozIlgwJtezYkK+PXM19a6iwz?=
- =?us-ascii?Q?7PFfavxL56Jldnq7OGhHq/itZSZsjlw9adkPgRRazu3Y78E4j37FV1qPTdau?=
- =?us-ascii?Q?YmNR3cmgHCRRzM8EnEYzsxRGZGl8EBSMDv+xbpjcFF6NSpLlB/8DBW8vhMMD?=
- =?us-ascii?Q?sFwHEoNGb7Emm5LDS17h5fxPf2Alz2GA8mphTMP9i+sYyjMd6lPl0naasXqh?=
- =?us-ascii?Q?X49aTETu1PJKGJswXBHhcnv2Crzt5nxcxwHE60oyE18vU6PBTvaDpxa9OUW2?=
- =?us-ascii?Q?7Sq84uDrmpLEL0ZIgPWZDUjQK89hvRyWI1jJ1uAoW2P0o08Ivq0vptIFpTWL?=
- =?us-ascii?Q?q+gXqyJxH81g3eX9YUXus5kPajQB0dHhaYJtdWu74iYnJEHRHxNezvHbfAKR?=
- =?us-ascii?Q?YU/BTjHirNSlv+qo3kZq+C+PozMmleD0lBItHDpw?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc2dd71d-5b01-4728-a00e-08dbd4aa3807
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 15:59:35.4638
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: j2qAnCrfJnbS8fb46SCHYoSx6rd27cjJmHLeJHyXVocIlCWOhtJXbpBzvbHnpwS7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5772
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <38ea48b4-aaba-4ba4-84a1-e88d6cb9df94@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 06:29:58PM -0700, Nicolin Chen wrote:
-> According to the conversation in the following link:
-> https://lore.kernel.org/linux-iommu/20231020135501.GG3952@nvidia.com/
+On Tue, Oct 24, 2023 at 10:32:27AM -0500, Mario Limonciello wrote:
+> On 10/24/2023 03:02, Ingo Molnar wrote:
+> > 
+> > * Mario Limonciello <mario.limonciello@amd.com> wrote:
+> > 
+> > > Fixes a BUG reported during suspend to ram testing.
+> > > 
+> > > ```
+> > > [  478.274752] BUG: using smp_processor_id() in preemptible [00000000] code: rtcwake/2948
+> > > [  478.274754] caller is amd_pmu_lbr_reset+0x19/0xc0
+> > > ```
+> > > 
+> > > Cc: stable@vger.kernel.org # 6.1+
+> > > Fixes: ca5b7c0d9621 ("perf/x86/amd/lbr: Add LbrExtV2 branch record support")
+> > > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> > > ---
+> > >   arch/x86/events/amd/lbr.c | 3 ++-
+> > >   1 file changed, 2 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/x86/events/amd/lbr.c b/arch/x86/events/amd/lbr.c
+> > > index eb31f850841a..5b98e8c7d8b7 100644
+> > > --- a/arch/x86/events/amd/lbr.c
+> > > +++ b/arch/x86/events/amd/lbr.c
+> > > @@ -321,7 +321,7 @@ int amd_pmu_lbr_hw_config(struct perf_event *event)
+> > >   void amd_pmu_lbr_reset(void)
+> > >   {
+> > > -	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> > > +	struct cpu_hw_events *cpuc = get_cpu_ptr(&cpu_hw_events);
+> > >   	int i;
+> > >   	if (!x86_pmu.lbr_nr)
+> > > @@ -335,6 +335,7 @@ void amd_pmu_lbr_reset(void)
+> > >   	cpuc->last_task_ctx = NULL;
+> > >   	cpuc->last_log_id = 0;
+> > > +	put_cpu_ptr(&cpu_hw_events);
+> > >   	wrmsrl(MSR_AMD64_LBR_SELECT, 0);
+> > >   }
+> > 
+> > Weird, amd_pmu_lbr_reset() is called from these places:
+> > 
+> >    - amd_pmu_lbr_sched_task(): during task sched-in during
+> >      context-switching, this should already have preemption disabled.
+> > 
+> >    - amd_pmu_lbr_add(): this gets indirectly called by amd_pmu::add
+> >      (amd_pmu_add_event()), called by event_sched_in(), which too should have
+> >      preemption disabled.
+> > 
+> > I clearly must have missed some additional place it gets called in.
+> > 
+> > Could you please cite the full log of the amd_pmu_lbr_reset() call that
+> > caused the critical section warning?
+> > 
+> > Thanks,
+> > 
+> > 	Ingo
 > 
-> The enforce_cache_coherency should be set/enforced in the hwpt allocation
-> routine. The iommu driver in its attach_dev() op should decide whether to
-> reject or not a device that doesn't match with the configuration of cache
-> coherency. Drop the enforce_cache_coherency piece in the attach/replace()
-> and move the remaining "num_devices" piece closer to the refcount that is
-> using it.
-> 
-> Accordingly drop its function prototype in the header and mark it static.
-> Also add some extra comments to clarify the expected behaviors.
-> 
-> Suggested-by: Kevin Tian <kevin.tian@intel.com>
-> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
-> ---
-> Changelog
-> v4:
->  * Fixed a typo in commit log
->  * Added Reviewed-by from Kevin
-> v3:
->  * Reworked the first line of the added commets.
-> v2: https://lore.kernel.org/all/20231023035733.27378-1-nicolinc@nvidia.com/
->  * Dropped "fixes" tags and merged two patches into one (Jason)
->  * Added comments to the remaining enforce_cache_coherency call (Jason)
->    [Please feel free to rephrase, or let me know what to change.]
->  * Replace "num_devices++" with list_for_each_entry (Baolu)
-> v1: https://lore.kernel.org/all/cover.1697848510.git.nicolinc@nvidia.com/
->  drivers/iommu/iommufd/device.c          | 20 ++------------------
->  drivers/iommu/iommufd/hw_pagetable.c    |  9 ++++++++-
->  drivers/iommu/iommufd/iommufd_private.h |  1 -
->  3 files changed, 10 insertions(+), 20 deletions(-)
+> Below is the call trace in case you think it's better to disable preemption
+> by the caller instead.  If you think it's better to keep it in
+> amd_pmu_lbr_reset() I'll add this trace to the commit message.
 
-Applied to for-next
+You cut too much; what task is running this?
 
-Thanks,
-Jason
+IIRC this is the hotplug thread running a teardown function on that CPU
+itself. It being a strict per-cpu thread should not trip
+smp_processor_id() wanrs.
+
+> 
+> Call Trace:
+>  <TASK>
+>  dump_stack_lvl+0x44/0x60
+>  check_preemption_disabled+0xce/0xf0
+>  ? __pfx_x86_pmu_dead_cpu+0x10/0x10
+>  amd_pmu_lbr_reset+0x19/0xc0
+>  ? __pfx_x86_pmu_dead_cpu+0x10/0x10
+>  amd_pmu_cpu_reset.constprop.0+0x51/0x60
+>  amd_pmu_cpu_dead+0x3e/0x90
+>  x86_pmu_dead_cpu+0x13/0x20
+>  cpuhp_invoke_callback+0x169/0x4b0
+>  ? __pfx_virtnet_cpu_dead+0x10/0x10
+>  __cpuhp_invoke_callback_range+0x76/0xe0
+>  _cpu_down+0x112/0x270
+>  freeze_secondary_cpus+0x8e/0x280
+>  suspend_devices_and_enter+0x342/0x900
+>  pm_suspend+0x2fd/0x690
+>  state_store+0x71/0xd0
+>  kernfs_fop_write_iter+0x128/0x1c0
+>  vfs_write+0x2db/0x400
+>  ksys_write+0x5f/0xe0
+>  do_syscall_64+0x59/0x90
+> 
