@@ -2,71 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC367D56B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A027D56AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343785AbjJXPjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
+        id S1343686AbjJXPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343730AbjJXPjh (ORCPT
+        with ESMTP id S234241AbjJXPjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:39:37 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA4E9B
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:39:35 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7b6cd2afaf2so1636538241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:39:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698161974; x=1698766774; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ey4VomTRBY3avfKTyvFYcfzW8AVbvE2wkpROIGAd9Vc=;
-        b=xSNHd5o0x454M+TWvM/yuR+elXo5JS/iGVrfCsc1yTygdwC36dni5va2R7/wyR7Hj9
-         EUWbeCSAkWGrWDd50NWzpBaQwkz036Pdxg2TRmFVUjbNxHFTv20ndBfpT+BLXnwreLlR
-         aR9pZhP8+eMxxFQP5HFpbUnNFPrMxs7veS2RwRzYpliu7wSkgzJZ9AnlcWrk3rFK7cKi
-         dxxN39auBEaov9X06tJLhpzcPwNRhog1DDQUSjPLW/ijdvJHrQr5YoEbihazUmjT7BDi
-         Ke8hmn88tO5uAKTsHIw/F3yDu7gdq5vLAHODhb/0clxjIjLJ0N9TR//xQM29kUM9k4dD
-         nciA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698161974; x=1698766774;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ey4VomTRBY3avfKTyvFYcfzW8AVbvE2wkpROIGAd9Vc=;
-        b=XthuARlnhz06W+e8+ev9WqCrz7drWI2Z3wb6sW0+mMZpHvQkQZ9PUIWwpuMKKD+TVu
-         edkP30Rd6BYT1UFEhe1dJcU7wfn65OiVSGTtjeWhx9/EwXTXgEvpaDMGOag8jIwWqnQd
-         HmwfGm/6D88HJ8yNJD08anvnv0Gm77apfS94j7Nb+6s/Ry8kNx/w3i5oWuljrZB5GgLd
-         ly4MIz7EK06rJtkXJfwfV5jfCeL1cqVs9yKiLqEFhPl0ts2upE9dFyVJA5NR0YvLRO7J
-         S1pi/bWavLlb95oCi+tI4CYivVdPit27D3ZsieYnVlRnl6dDdiKZ6VzfxUa8WURBa84H
-         hRqQ==
-X-Gm-Message-State: AOJu0YyKVET/DfpUHcMCT/sbR+JXF8yg5Bxa4lCLyVXnu3mTtts9Z3if
-        6fp4B6k2K3vJkVfl0nqt5pLJ7NUQtOHmKQ3sWC+Yyg==
-X-Google-Smtp-Source: AGHT+IGRHs5dvy9h28NcDmykUIafrHUuAhfRFaNAAqFctlM3EPafjqsw5rvTxrhrAeiDafc/HdNoJDjo9UT3nJy1ffE=
-X-Received: by 2002:a67:e019:0:b0:457:d3fd:caaa with SMTP id
- c25-20020a67e019000000b00457d3fdcaaamr9623309vsl.8.1698161974486; Tue, 24 Oct
- 2023 08:39:34 -0700 (PDT)
+        Tue, 24 Oct 2023 11:39:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BED6A3;
+        Tue, 24 Oct 2023 08:39:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCF29C433C7;
+        Tue, 24 Oct 2023 15:39:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698161946;
+        bh=/WC2xE/MloO7WOkbdOiY+gYM4E6FAb5qDVXBP6DKJgE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H6k38Jn6oekyNutgwdatRXSG/Bw1GzzQuEieqct4eWuKBwkOz9GspxoWar6n0juBE
+         F7bgw6ocWBEFUqFczUUnp4CGMTtpp6+H+BIQjXnY8FAIqP7p6msqBlf3PYnWBXps5l
+         CPIQBSvvc77kslT628HI7WbPZjdX3JQzd6kCV44zJRogUQ8iXMbM7FcC/YVnNtmsTw
+         us+LhBC4j7OYXOS59OQb5x2DnCpsoNY0kuFKibcb1SPH5dA+hmrdQlJgCHgnJCcq8B
+         0c+kP6gqqhToRx4cGM5SnSfZx9GlvMYhWGknhYHI3pKwn/Oa7/LSUDMvi0B0CDywjl
+         FH4Bx7+Y0G0PQ==
+Date:   Tue, 24 Oct 2023 08:39:06 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, martin.petersen@oracle.com,
+        himanshu.madhani@oracle.com
+Subject: Re: [PATCH 2/4] readv.2: Document RWF_ATOMIC flag
+Message-ID: <20231024153906.GJ11391@frogsfrogsfrogs>
+References: <20230929093717.2972367-1-john.g.garry@oracle.com>
+ <20230929093717.2972367-3-john.g.garry@oracle.com>
+ <20231009174438.GE21283@frogsfrogsfrogs>
+ <ZSRk9Z6/i2E+YV9A@dread.disaster.area>
+ <20231009210531.GB214073@frogsfrogsfrogs>
+ <7da93082-2985-85f4-7688-a082728de0a5@oracle.com>
 MIME-Version: 1.0
-References: <5fb11a4743eea9d9232a5284dea0716589088fec.1698161845.git.andreyknvl@google.com>
-In-Reply-To: <5fb11a4743eea9d9232a5284dea0716589088fec.1698161845.git.andreyknvl@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 24 Oct 2023 17:38:56 +0200
-Message-ID: <CANpmjNOJm=PUE0N856owRnxrZx7d5cW0MqCp9Me6GrSit=NcUg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] Documentation: ubsan: drop "the" from article title
-To:     andrey.konovalov@linux.dev
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7da93082-2985-85f4-7688-a082728de0a5@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,37 +56,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023 at 17:37, <andrey.konovalov@linux.dev> wrote:
->
-> From: Andrey Konovalov <andreyknvl@google.com>
->
-> Drop "the" from the title of the documentation article for UBSAN,
-> as it is redundant.
->
-> Also add SPDX-License-Identifier for ubsan.rst.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-
-Reviewed-by: Marco Elver <elver@google.com>
-
-> ---
->  Documentation/dev-tools/ubsan.rst | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/dev-tools/ubsan.rst b/Documentation/dev-tools/ubsan.rst
-> index 1be6618e232d..2de7c63415da 100644
-> --- a/Documentation/dev-tools/ubsan.rst
-> +++ b/Documentation/dev-tools/ubsan.rst
-> @@ -1,5 +1,7 @@
-> -The Undefined Behavior Sanitizer - UBSAN
-> -========================================
-> +.. SPDX-License-Identifier: GPL-2.0
+On Tue, Oct 24, 2023 at 01:35:33PM +0100, John Garry wrote:
+> On 09/10/2023 22:05, Darrick J. Wong wrote:
+> > > > If the file range is a sparse hole, the directio setup will allocate
+> > > > space and create an unwritten mapping before issuing the write bio.  The
+> > > > rest of the process works the same as preallocations and has the same
+> > > > behaviors.
+> > > > 
+> > > > If the file range is allocated and was previously written, the write is
+> > > > issued and that's all that's needed from the fs.  After a crash, reads
+> > > > of the storage device produce the old contents or the new contents.
+> > > This is exactly what I explained when reviewing the code that
+> > > rejected RWF_ATOMIC without O_DSYNC on metadata dirty inodes.
+> > I'm glad we agree. 😄
+> > 
+> > John, when you're back from vacation, can we get rid of this language
+> > and all those checks under _is_dsync() in the iomap patch?
+> > 
+> > (That code is 100% the result of me handwaving and bellyaching 6 months
+> > ago when the team was trying to get all the atomic writes bits working
+> > prior to LSF and I was too burned out to think the xfs part through.
+> > As a result, I decided that we'd only support strict overwrites for the
+> > first iteration.)
+> 
+> So this following additive code in iomap_dio_bio_iter() should be dropped:
+> 
+> ----8<-----
+> 
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -275,10 +275,11 @@ static inline blk_opf_t iomap_dio_bio_opflags(struct
+> iomap_dio *dio,
+>  static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>  		struct iomap_dio *dio)
+>  {
+> 
+> ...
+> 
+> @@ -292,6 +293,13 @@ static loff_t iomap_dio_bio_iter(const struct
+> iomap_iter *iter,
+>  	    !bdev_iter_is_aligned(iomap->bdev, dio->submit.iter))
+>  		return -EINVAL;
+> 
+> +	if (atomic_write && !iocb_is_dsync(dio->iocb)) {
+> +		if (iomap->flags & IOMAP_F_DIRTY)
+> +			return -EIO;
+> +		if (iomap->type != IOMAP_MAPPED)
+> +			return -EIO;
+> +	}
 > +
-> +Undefined Behavior Sanitizer - UBSAN
-> +====================================
->
->  UBSAN is a runtime undefined behaviour checker.
->
-> --
-> 2.25.1
->
+> 
+> ---->8-----
+> 
+> ok?
+
+Yes.
+
+> > 
+> > > > Summarizing:
+> > > > 
+> > > > An (ATOMIC|SYNC) request provides the strongest guarantees (data
+> > > > will not be torn, and all file metadata updates are persisted before
+> > > > the write is returned to userspace.  Programs see either the old data or
+> > > > the new data, even if there's a crash.
+> > > > 
+> > > > (ATOMIC|DSYNC) is less strong -- data will not be torn, and any file
+> > > > updates for just that region are persisted before the write is returned.
+> > > > 
+> > > > (ATOMIC) is the least strong -- data will not be torn.  Neither the
+> > > > filesystem nor the device make guarantees that anything ended up on
+> > > > stable storage, but if it does, programs see either the old data or the
+> > > > new data.
+> > > Yup, that makes sense to me.
+> > Perhaps this ^^ is what we should be documenting here.
+> > 
+> > > > Maybe we should rename the whole UAPI s/atomic/untorn/...
+> > > Perhaps, though "torn writes" is nomenclature that nobody outside
+> > > storage and filesystem developers really knows about. All I ever
+> > > hear from userspace developers is "we want atomic/all-or-nothing
+> > > data writes"...
+
+How about O_NOTEARS -> PWF_NOTEARS -> REQ_NOTEARS.
+
+<obligatory "There's no crying in baseball" link, etc.>
+
+--D
+
+> > Fair 'enuf.
+> 
+> 
+> Thanks,
+> John
