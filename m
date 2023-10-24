@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C6F7D50F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5EB57D50F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234400AbjJXNGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
+        id S234533AbjJXNG2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 09:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234610AbjJXNGF (ORCPT
+        with ESMTP id S234609AbjJXNGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 24 Oct 2023 09:06:05 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499FF4EDB
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:04:21 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so12502a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:04:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698152659; x=1698757459; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OoQb6YlfPBjYIy3Wpkmla/gijk8pUtPjEu2M/l2EG1U=;
-        b=umo0shyXRoOFhkvA5hTFCzgDIWSdxyXl3iBy9BEtCi3THojvIG9saT1n3NW9W8Lhws
-         C3y6SlVPsCXjNJqRN141eOJ4HSyQ1J6pjpsemSkucM4IWK5axUPiEHDnpx+1/bxK1B9W
-         e/u15OlTzkqqW+ZMQdVd6FMWGniW/hSH4q/39UIvDR2gH0CoCM7lq2UfQ5LVs/msYugX
-         NNQyR2vMtfmmJyOOO4f+t5f3UZ7zDJJJdbS+bGO56H2v5fRCr+of4lZkCDHmlQkM1iNx
-         /A16e4BlUJZP4+09slt0uzyt4593kInw0/sxfe+QV6ik9qoWdcIZk9TeKqALAtK3IJwa
-         k6rw==
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E514EDA;
+        Tue, 24 Oct 2023 06:04:21 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d9ac31cb051so4199341276.3;
+        Tue, 24 Oct 2023 06:04:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698152659; x=1698757459;
+        d=1e100.net; s=20230601; t=1698152660; x=1698757460;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OoQb6YlfPBjYIy3Wpkmla/gijk8pUtPjEu2M/l2EG1U=;
-        b=BxkP9QkQOp/Zjgth4Aj6HKd6PDfAQ5+CHGPpyqx1+mwMlF2oUKSZFa1vmfDdNODTH8
-         vst/GJauaDQtXADe6HHj6QoxRuGujHgOS5eZGGXuEIrVsvbZykrTY5YdhIjO6Ur89USY
-         +yw0/Fv3D1yqGukGLXrXXxm+sUt5CDn6zQ9wDxLSa3eUqj7L/eXYLAqbQXnvaSwKZpYC
-         COhpmCDxc7VVlHhLqKyc1H/j/gIk6F6aCwQKN3hfpSNETlKkyCLAiAn2EtULzgQ9z3PQ
-         lQICPtWPGPQ69+gpi4RFd0Yyu7RD82tphvqDHaHxVKgg5lG2SOcG7ZMMhaL/K2yTjRuw
-         V90Q==
-X-Gm-Message-State: AOJu0YzHGmjWQcL4y+rtU1uQS8xVFV2O5uthoUUy8LRNcpBcrd/gDUu0
-        QMuEJAIRPJKwZ/1HNgEB9/5s73zlIjngwix5eAKc/CS+wbh2RyiOdFY=
-X-Google-Smtp-Source: AGHT+IHHUEvBTRSqV64tSry+JE3ETQZUZKSAZ5x1xZ0zTNVhwA1XBFSWYOQzscm+T9fYeQZTqKRt9vNdTuLdje5x01o=
-X-Received: by 2002:aa7:c417:0:b0:540:9f5c:9a0d with SMTP id
- j23-20020aa7c417000000b005409f5c9a0dmr69803edq.1.1698152659489; Tue, 24 Oct
- 2023 06:04:19 -0700 (PDT)
+        bh=wHvmrlYR3ANScM/PMUCYI43KI777+90NRiRHddhNy8c=;
+        b=dhxyYXGjmxqb95MATT7xFpJj9ZUpaLDT+31GfHQJWtL/WBvRb6RwYHiXFpoPW4Q/TE
+         RNKaY7PhAXEkr2WfUqt5PgrquMFwKzdBhzFrxf3eo1ET++dv2bCeb7ajp2lnCZxeZcOn
+         BRnFZpHiMm5Vn4X7fKsE5HFOTxBX6yOSrQaWaF5LtSo1p/KzVrC8qtiae8XxfZPx5z7X
+         UJ1XajsLse3dq8fb8sHDyG4gwuZMHop48gH7BP+KJs4XonDVA6e8NWq0EFUTMG7gN5Q6
+         eD/u6EZ+mlY/bYC3JeYzfW03D4NrC6DSZzivbGnFOMjX9iVR6B1CqZX4WqePbOM9uuLP
+         ndgw==
+X-Gm-Message-State: AOJu0YyifiggVM44HL5yExeB+B3IrGX1ytTgnka7Liwtu7qdtHQZDlPh
+        Wk2gPUQY1Hfdw6g8fgXgPbObgM0p4kHNYQ==
+X-Google-Smtp-Source: AGHT+IFzctphmQ+Icxvoha1yYfi0pSUEcyxJPpaHFA2U+5N9GW+155l7YRUMWI17noliF3frKKaCGw==
+X-Received: by 2002:a25:aac8:0:b0:d9b:e043:96f5 with SMTP id t66-20020a25aac8000000b00d9be04396f5mr12501179ybi.0.1698152659786;
+        Tue, 24 Oct 2023 06:04:19 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id w31-20020a25ac1f000000b00d9ab86bdaffsm3543021ybi.12.2023.10.24.06.04.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 06:04:19 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d852b28ec3bso4198045276.2;
+        Tue, 24 Oct 2023 06:04:18 -0700 (PDT)
+X-Received: by 2002:a25:b097:0:b0:da0:3c34:2bf5 with SMTP id
+ f23-20020a25b097000000b00da03c342bf5mr2005654ybj.2.1698152658170; Tue, 24 Oct
+ 2023 06:04:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231024075748.1675382-1-dapeng1.mi@linux.intel.com> <20231024075748.1675382-3-dapeng1.mi@linux.intel.com>
-In-Reply-To: <20231024075748.1675382-3-dapeng1.mi@linux.intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 24 Oct 2023 06:03:58 -0700
-Message-ID: <CALMp9eRqGr+5+C1OLhxv1i8Q=YVRmFxkZQJoh7HzWkPg2z=WoA@mail.gmail.com>
-Subject: Re: [kvm-unit-tests Patch 2/5] x86: pmu: Change the minimum value of
- llc_misses event to 0
-To:     Dapeng Mi <dapeng1.mi@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>
+References: <20231022205316.3209-1-wsa+renesas@sang-engineering.com>
+ <20231022205316.3209-3-wsa+renesas@sang-engineering.com> <b0b4054adcb5250ad49e19d8f90c89de802f0125.camel@redhat.com>
+In-Reply-To: <b0b4054adcb5250ad49e19d8f90c89de802f0125.camel@redhat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 24 Oct 2023 15:04:05 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdViDiR+rfzH8VeHxOx0cZHaw27CUE5PRwxaQuaWmbWu=w@mail.gmail.com>
+Message-ID: <CAMuHMdViDiR+rfzH8VeHxOx0cZHaw27CUE5PRwxaQuaWmbWu=w@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/2] net: ethernet: renesas: drop SoC names in Kconfig
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-renesas-soc@vger.kernel.org,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 12:51=E2=80=AFAM Dapeng Mi <dapeng1.mi@linux.intel.=
-com> wrote:
->
-> Along with the CPU HW's upgrade and optimization, the count of LLC
-> misses event for running loop() helper could be 0 just like seen on
-> Sapphire Rapids.
->
-> So modify the lower limit of possible count range for LLC misses
-> events to 0 to avoid LLC misses event test failure on Sapphire Rapids.
+Hi Paolo,
 
-I'm not convinced that these tests are really indicative of whether or
-not the PMU is working properly. If 0 is allowed for llc misses, for
-instance, doesn't this sub-test pass even when the PMU is disabled?
-
-Surely, we can do better.
-
-> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
-> ---
->  x86/pmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Oct 24, 2023 at 12:54 PM Paolo Abeni <pabeni@redhat.com> wrote:
+> On Sun, 2023-10-22 at 22:53 +0200, Wolfram Sang wrote:
+> > Mentioning SoCs in Kconfig descriptions tends to get stale (e.g. RAVB is
+> > missing RZV2M) or imprecise (e.g. SH_ETH is not available on all
+> > R8A779x). Drop them instead of providing vague information. Improve the
+> > file description a tad while here.
 >
-> diff --git a/x86/pmu.c b/x86/pmu.c
-> index 0def28695c70..7443fdab5c8a 100644
-> --- a/x86/pmu.c
-> +++ b/x86/pmu.c
-> @@ -35,7 +35,7 @@ struct pmu_event {
->         {"instructions", 0x00c0, 10*N, 10.2*N},
->         {"ref cycles", 0x013c, 1*N, 30*N},
->         {"llc references", 0x4f2e, 1, 2*N},
-> -       {"llc misses", 0x412e, 1, 1*N},
-> +       {"llc misses", 0x412e, 0, 1*N},
->         {"branches", 0x00c4, 1*N, 1.1*N},
->         {"branch misses", 0x00c5, 0, 0.1*N},
->  }, amd_gp_events[] =3D {
-> --
-> 2.34.1
->
+> It's not a big deal, but assuming that keeping the SoC list up2date
+> requires too much effort, I would still keep it, with some additional
+> wording specifying it's partial and potentially inaccurate.
+
+Apparently it was too much effort...
+
+> Such list could be an useful starting point for an integrator looking
+> for the correct driver for his/her SoC.
+
+For modern DT-based systems, it's much easier to look up compatible
+values.
+
+See also scripts/dtc/dt_to_config.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
