@@ -2,67 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5FB7D5055
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CA37D505A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234428AbjJXMxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49716 "EHLO
+        id S234423AbjJXMzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:55:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234343AbjJXMxi (ORCPT
+        with ESMTP id S234343AbjJXMzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:53:38 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A05CC;
-        Tue, 24 Oct 2023 05:53:36 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b2e22f1937so2640499b6e.1;
-        Tue, 24 Oct 2023 05:53:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698152015; x=1698756815; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EM4Fv3c8UGojmnjnYetmNItfOCNpkkeFenXKakvLeSo=;
-        b=Y+TrhITclIRcUFmPoKsJ17xphlS7bSUNMUwsF117LM+ijrB/S4+WZizp5Cj8tpNC/D
-         Vgdd/vGqRJH+ZLu+MST9XCvpbNWekgcyNaYJ1Z57ZnIvTdQCISk83XiLyGN0BEis25sU
-         EeTPxSSzjlycYiaWMDzkYBEjwvsDLLRKrSLSXBWDtxrXLinnPlGDF6e8F1U+ufsYxafH
-         P9qJLLAwuZBIkw184Vb/9nhCoHoj5mRq14xUxReLyOlKiom0LzMSQVAlPvNp2yEnsbU5
-         YAMQ6pWjBueH1giluQhkT0quMcYX7Z4EQxwDlQh3KKhLrQVM7dO7SzcFtQxJzxxgVB/e
-         Kv+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698152015; x=1698756815;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EM4Fv3c8UGojmnjnYetmNItfOCNpkkeFenXKakvLeSo=;
-        b=KJn/L2KtMjibf2Xw4AMfmuqeV/ygblm8GH7ybDt6J23sH+U5WrLdWtAp2gXXkgSZ5P
-         /sPPPE6nwgjpkV/38hQrRXrCFGOEQmmUX/ijuXzXMgdlHbp1lMhlIRiJIwIuC9aU+MEf
-         nsmd7gVsjEAuOlTtVZkL4Srur69nhxc5/a15fS1/TdU6e1LvnjeJstFyuBHExAy2/KjF
-         lnlr4AS6+S0dJMrBbcmgYFNYBPu0QVcepZ6REUieL2XRiVFMeFS7zRlydkzM3OWE4/fy
-         G+Yk2o1ytnAIwSdJJ8JBwkrzQ7i30TgW1OkheGzDHnZCwp2Yb/dbKZvjYjttyGFjGAA1
-         wpPA==
-X-Gm-Message-State: AOJu0Yw2B2//R/HY0qGUUjb/HYBS/fDacwgCtWI9NItpS7tEGlYAF1b1
-        nkLL0YokpRCeCxL2sENc9xXijimcoEZbEpYm9T/OR0MOtDqszA==
-X-Google-Smtp-Source: AGHT+IFROi++TBTG5fQCokZI6lvT1I1p/ESAbrAV4OkrXB6oEmWv7QskQP+v15eyN2/jVo7Hgah70FotEqZbJneSTgw=
-X-Received: by 2002:a05:6808:1a8e:b0:3a7:57a6:e077 with SMTP id
- bm14-20020a0568081a8e00b003a757a6e077mr12319707oib.37.1698152015597; Tue, 24
- Oct 2023 05:53:35 -0700 (PDT)
+        Tue, 24 Oct 2023 08:55:00 -0400
+Received: from GBR01-CWX-obe.outbound.protection.outlook.com (mail-cwxgbr01on2135.outbound.protection.outlook.com [40.107.121.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBF3AC;
+        Tue, 24 Oct 2023 05:54:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ez8alrB9izFeNxDO/e7WVbsDdEtR/UNqlGf4cvQ7nqQy/v2SBsc/Zi/iLgkB6uFimEutqrUu9guGBvnM6R7E520bcCz7WqigyX+qVZ6hy+DRQK5J0b1Ydvx6RhhKHauGURa06TL5DVbee3r7jVLz2Q5rLt2JInHvz9G1UZu8D656GiVGv9WRQtt/hydNyowqqzNCRPThiWaH4P+N7V7OLysRcXofaLrAALWT/Olc0V23nwp/sF96eAKqMDJau33rz4O9vqEeXZXvwud/wHezqr0LGow3DClCkIG4UrZxaf1zZHi6vHLHMUCLHNPznAYoWEXxr2t8VCOryOy7RGyeZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bH4TUAkmJB8ZpWgOzu+hyrttw/cx+f+zZ0Ot0Grp/q0=;
+ b=T4DhBKeY735C/cX+s9raaxTpNAN0mgzd8TypRRGsN3Q076OO/ggLEUpy6o/b57kIUAm4Q69xDCctdtFRPj/5BghIWSClLo0OuDPTAYaN+BZc7O4Mq88EHJ/QPuoTku/z4Np4FXj7PqzIXwK1EVyTOe3cTl+8uEGO1y4CAVyRDYcOwNpI2BNCGZMwzCoXoumwOOkmqzs+UzIKijIXjTBCp/9X3smFpUYu3YykvJHh0+75fuRtL3hfZLmUTvSj7TNWXkFzHmUpE5irEsgA1h9RDkeBONLBlpHAhcVk6WwlChQMOS6yO9YcubRiV0gJHhkr8nMSUfJkLViSMOCUfZRaAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
+ dkim=pass header.d=garyguo.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bH4TUAkmJB8ZpWgOzu+hyrttw/cx+f+zZ0Ot0Grp/q0=;
+ b=Q/PX/KXciGYXSsgu8qUwNFQO/aH8tG1CDDPXxsjmvQIaiVL81msccObD5eRDQ1aMatmQtmqXAKSQ0bYRww6pBAoyGwG4zt0rTJUzGCBP2hcPPGmVnfv/W5nw9KJ/i+tGs69O/CGSPYEqzLIh5RDKebEWQNj7rNs+twS3A+BZBhE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=garyguo.net;
+Received: from CWLP265MB5186.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:15f::14)
+ by CWLP265MB6877.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1f9::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
+ 2023 12:54:55 +0000
+Received: from CWLP265MB5186.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::6af2:36f2:4aa:6e43]) by CWLP265MB5186.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::6af2:36f2:4aa:6e43%6]) with mapi id 15.20.6907.032; Tue, 24 Oct 2023
+ 12:54:55 +0000
+Date:   Tue, 24 Oct 2023 13:54:52 +0100
+From:   Gary Guo <gary@garyguo.net>
+To:     Trevor Gross <tmgross@umich.edu>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        =?UTF-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        FUJITA Tomonori <fujita.tomonori@gmail.com>
+Subject: Re: [PATCH] rust: macros: update 'paste!' macro to accept string
+ literals
+Message-ID: <20231024135452.223d8d85@eugeo>
+In-Reply-To: <20231008094816.320424-1-tmgross@umich.edu>
+References: <20231008094816.320424-1-tmgross@umich.edu>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO2P265CA0461.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a2::17) To CWLP265MB5186.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:400:15f::14)
 MIME-Version: 1.0
-References: <20231024120845.942815-1-zohar@linux.ibm.com>
-In-Reply-To: <20231024120845.942815-1-zohar@linux.ibm.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 24 Oct 2023 15:53:24 +0300
-Message-ID: <CAOQ4uxiWCm5o+iezCOKVcunZaec=3AxY+z6BWuX7thaZ3+6p6Q@mail.gmail.com>
-Subject: Re: [PATCH] ima: detect changes to the backing overlay file
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Raul Rangel <rrangel@chromium.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP265MB5186:EE_|CWLP265MB6877:EE_
+X-MS-Office365-Filtering-Correlation-Id: e52f65b2-45a9-4bd2-be95-08dbd4906bb2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hBHmTL3OGO2R3SkJsHbjm3syM8aFYS99l7509jhohZuhIT+FhtfpjAeLPgpJOI1ObwBU5LVo8ER7MI02k7XwWeLA5IT8Ix/PhfW4gTUpEXJy76oqNvc13Wm9jBZxhoc77QLGU8ZkZc0wm9L59dpztyj/7Otcb34eA9Wm48gqmtBlPALcnWte6FZ7mwAo3zUxXcHe1w+O3IojUqTGGPWaevc+xodMaAZxM4nyLFDzBkytoW5IU4qy8Rgpgd6lKVUFe1CLhMd79a8WrSK7Cgc0RGQJtk00mmo1OF3qMqrBobcT523tK4O0KwbmB9pvm6KMtLFcW2HNc7m1eCAZFkVUeUOvKfBnIpWX6kBI/7JBiuo8JhkbxrSkRsfQ5+I8FzUx5jJldNwqds+intPAoYUWJECDl+bV/JMNMqqDr5YBuHisbPtLSxk9zJyQ0PEBSn+U/5llK0kZwubTX19yaBeBjtxi0GTarqxnj9OCJQIxnwD1cfegr2228ur9zmPSDFlZ6jNG6eNVopZ1OKaUyy4yP0FSQIwVtrxMiqpCw07vQGE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB5186.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(39830400003)(136003)(366004)(396003)(346002)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(26005)(33716001)(38100700002)(41300700001)(2906002)(86362001)(5660300002)(7416002)(8936002)(8676002)(4326008)(6506007)(1076003)(478600001)(6666004)(66946007)(66476007)(54906003)(6916009)(316002)(66556008)(83380400001)(6486002)(966005)(9686003)(6512007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VeM/wipxsDTPMX5iNHdVccGXss+fvOjvaom23KQS1nPDLF57RqEQc9yo2RGj?=
+ =?us-ascii?Q?QvcMEIrKLELx1PwZ0ZXKDc4kQkSRhjDyzaVwnvYTbkrp1JIiBbxdj8O2EmZL?=
+ =?us-ascii?Q?pTyp/fw/6Rzfqpi7zY2QnfcnGucy2ew5TtZg1HPWWN24Enr98vpTNXc/MSy5?=
+ =?us-ascii?Q?zuDajrxP9oRkZ8KAJhEbxn0YHeqjGDWkNfMuKJ/DNf9vmMq6IMusgBeXAUNy?=
+ =?us-ascii?Q?HkxH1rYUoKFEhS6xRi7yvqPEe6sJzu2t5KKsso3715r3gCYeQy6hK3hbZNjJ?=
+ =?us-ascii?Q?y4i/IZIiTfQvZ/d96JV5d/+KPc07tgrKUiXzchU1PA+KiouKKrjdWen0VP6m?=
+ =?us-ascii?Q?ZxXxiSMDPGl+nX9kCxHrPACov9xwomZlWUD18rjmpkEI2aoSTKO5TploW8HT?=
+ =?us-ascii?Q?m+mfk5Cn5RK0mgbDJu9HpdD6XWYSc9UrEjSwozV/hA8eYmIDcNv7OT22N73T?=
+ =?us-ascii?Q?qAVNdXfDLokM9mnwSQ+EGAgWWWO8U2UwxDTJ4l2HB8WXSjZu2IP3i8c01VOJ?=
+ =?us-ascii?Q?9FY3z7dK6bdd40ibr8rJk8yjMyeaZzlzTGlcxki0bvDZBgs/K+TmMAiwvHz3?=
+ =?us-ascii?Q?NGxl80D+IsETG+SF46hPVmwh+m1/Z41RAiqcV1FH9aDpgKUjTI66fGNxsxOp?=
+ =?us-ascii?Q?A5HnbOA+7s7AbF+pNUvyG/UQuQmLYNhmEIL668Hphi3+86K8Ppj8oO2kAecE?=
+ =?us-ascii?Q?TcGoIWoKGVBSXGzYM2g79mvuPLinPp3jduNhjqXqLtTl1xE4HWbbVzEfluQB?=
+ =?us-ascii?Q?+RdXFxUMpJ5Cw4MRjaYdL3MaimqxBTvSL9y73wBLemKKOwYCc/3oGT+C0qdF?=
+ =?us-ascii?Q?vD+UQG8VnO1wVqHyClHvh7Xtzv8mlkw2NEjwgGg9kRBaLL+VfxWFk0CQAktu?=
+ =?us-ascii?Q?+4+nTMlub32Ib5Of3FHjGl/zWEN/646en3E+jg2IEG7//Zhx0ApCA44aEzHY?=
+ =?us-ascii?Q?A7jwfp28WDauHYT/h5DLYq8o/Ch9YrbAkAMUUT1zSXyD2h3gj9mi3rCLfDNz?=
+ =?us-ascii?Q?st7x4zaPG4DQAt13fRaw4Jr9cRlMXtNwrYCeJXCzXYmMyUd0TGJNmoHEoAxv?=
+ =?us-ascii?Q?o2rE/24Ofc0Pc2x4K8RtGgFhv9jjekQ7ubcJYdTaER+x/Wney+Nn5qYOVKJb?=
+ =?us-ascii?Q?YVfmj+mGMm3M2ENHnwGYAm4QhYu1i09ygnjxYh0j7CpjEoa3hQxUrJfg2NZB?=
+ =?us-ascii?Q?6fuVAlAXfm4wA45kwYznMTCtdZmFpaWEubfdjGoArCtAgGV4Pp7ZAxSKkenM?=
+ =?us-ascii?Q?jGldj9Ww01THhvF5p1hZHlti7XQBIgLAsL2Y/2qHvYDatYyiVMQVOftSagQy?=
+ =?us-ascii?Q?XGocDb0yVj+l6xD9AhE3rc0rDJ8Fpv4v/mBl5E4V2u5tBI0gqXHH9taUIenx?=
+ =?us-ascii?Q?4iFDpNh0Jw3h9nQj4U6VKeCnM8C1PD0/r/66h0S8lZ7N4SL/JLBcm7K7dve+?=
+ =?us-ascii?Q?hmF/IkzzQTJHtr0htab4vHJeS60m8I2c4cjW8k1m2C4ITfo6C9RBDCsGh19s?=
+ =?us-ascii?Q?CibfcwsFNeNrZquonbXAezX5Wh2s4/hspqWn5PDaWINTjmGys38KzmKB22VO?=
+ =?us-ascii?Q?JjE6A0NYikwloXFHwZGcYUv3J+r256/rP2oB/IYp?=
+X-OriginatorOrg: garyguo.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: e52f65b2-45a9-4bd2-be95-08dbd4906bb2
+X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB5186.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 12:54:55.2456
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Qtd1xtbOrIIe7iC/rtEgD9xivJv9pItMbvzBke7a7lrWE6QdqhQ856hjia7o+tRhnNyG6sH9xprx93kGVa1JIQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB6877
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,118 +124,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 3:09=E2=80=AFPM Mimi Zohar <zohar@linux.ibm.com> wr=
-ote:
->
-> Commit 18b44bc5a672 ("ovl: Always reevaluate the file signature for
-> IMA") forced signature re-evaulation on every file access.
->
-> IMA does not detect changes made to the backing overlay file.  Instead
-> of always re-evaluating the file's integrity, detect a change to the
-> backing overlay file, by comparing the i_version, as stored in the iint,
-> with the backing file's i_version.
->
-> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-> ---
->  fs/overlayfs/super.c              |  2 +-
->  security/integrity/ima/ima_api.c  |  1 +
->  security/integrity/ima/ima_main.c | 21 ++++++++++++++++++++-
->  3 files changed, 22 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> index def266b5e2a3..4d9137ba2293 100644
-> --- a/fs/overlayfs/super.c
-> +++ b/fs/overlayfs/super.c
-> @@ -1482,7 +1482,7 @@ int ovl_fill_super(struct super_block *sb, struct f=
-s_context *fc)
->                 ovl_trusted_xattr_handlers;
->         sb->s_fs_info =3D ofs;
->         sb->s_flags |=3D SB_POSIXACL;
-> -       sb->s_iflags |=3D SB_I_SKIP_SYNC | SB_I_IMA_UNVERIFIABLE_SIGNATUR=
-E;
-> +       sb->s_iflags |=3D SB_I_SKIP_SYNC;
->
->         err =3D -ENOMEM;
->         root_dentry =3D ovl_get_root(sb, ctx->upper.dentry, oe);
-> diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/im=
-a_api.c
-> index 452e80b541e5..d1c718ef9295 100644
-> --- a/security/integrity/ima/ima_api.c
-> +++ b/security/integrity/ima/ima_api.c
-> @@ -272,6 +272,7 @@ int ima_collect_measurement(struct integrity_iint_cac=
-he *iint,
->                                    AT_STATX_SYNC_AS_STAT);
->         if (!result && (stat.result_mask & STATX_CHANGE_COOKIE))
->                 i_version =3D stat.change_cookie;
-> +
->         hash.hdr.algo =3D algo;
->         hash.hdr.length =3D hash_digest_size[algo];
->
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/i=
-ma_main.c
-> index 365db0e43d7c..7c8aac81d16e 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -25,6 +25,7 @@
->  #include <linux/xattr.h>
->  #include <linux/ima.h>
->  #include <linux/fs.h>
-> +#include <linux/iversion.h>
->
->  #include "ima.h"
->
-> @@ -207,7 +208,7 @@ static int process_measurement(struct file *file, con=
-st struct cred *cred,
->                                u32 secid, char *buf, loff_t size, int mas=
-k,
->                                enum ima_hooks func)
->  {
-> -       struct inode *inode =3D file_inode(file);
-> +       struct inode *backing_inode, *inode =3D file_inode(file);
->         struct integrity_iint_cache *iint =3D NULL;
->         struct ima_template_desc *template_desc =3D NULL;
->         char *pathbuf =3D NULL;
-> @@ -284,6 +285,24 @@ static int process_measurement(struct file *file, co=
-nst struct cred *cred,
->                 iint->measured_pcrs =3D 0;
+On Sun,  8 Oct 2023 05:48:18 -0400
+Trevor Gross <tmgross@umich.edu> wrote:
+
+> Enable combining identifiers with string literals in the 'paste!' macro.
+> This allows combining user-specified strings with affixes to create
+> namespaced identifiers.
+> 
+> This sample code:
+> 
+>     macro_rules! m {
+>         ($name:lit) => {
+>             paste!(struct [<_some_ $name _struct_>];)
 >         }
->
-> +       /*
-> +        * IMA does not detect changes made to the backing overlay file.
-> +        * If the backing file's i_version is greater than the overlay
-> +        * file's i_version or the backing file doesn't support iversion,
-> +        * clear the cache to force the file's integrity to be re-evaluat=
-ed.
-> +        */
-> +       if (inode->i_sb->s_magic =3D=3D 0x794c7630 &&
+>     }
+> 
+>     m!("foo_bar");
+> 
+> Would previously cause a compilation error. It will now generate:
+> 
+>     struct _some_foo_bar_struct_;
+> 
+> Reported-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
+> Signed-off-by: Trevor Gross <tmgross@umich.edu>
 
-Please don't use magic to detect overlayfs.
-Overlayfs is not the only fs that can have a backing file
-and this test is not needed.
+Reviewed-by: Gary Guo <gary@garyguo.net>
 
-> +           (action & IMA_DO_MASK) && (iint->flags & IMA_DONE_MASK)) {
-> +               backing_inode =3D d_real_inode(file_dentry(file));
-> +               if (backing_inode !=3D inode) {
+> ---
+> 
+> Original mention of this problem in [1]
+> 
+> [1]: https://lore.kernel.org/rust-for-linux/20231008.164906.1151622782836568538.fujita.tomonori@gmail.com/
+> 
+>  rust/macros/paste.rs | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/rust/macros/paste.rs b/rust/macros/paste.rs
+> index 385a78434224..f40d42b35b58 100644
+> --- a/rust/macros/paste.rs
+> +++ b/rust/macros/paste.rs
+> @@ -9,7 +9,15 @@ fn concat(tokens: &[TokenTree], group_span: Span) -> TokenTree {
+>      loop {
+>          match tokens.next() {
+>              None => break,
+> -            Some(TokenTree::Literal(lit)) => segments.push((lit.to_string(), lit.span())),
+> +            Some(TokenTree::Literal(lit)) => {
+> +                // Allow us to concat string literals by stripping quotes
+> +                let mut value = lit.to_string();
+> +                if value.starts_with('"') && value.ends_with('"') {
+> +                    value.remove(0);
+> +                    value.pop();
+> +                }
+> +                segments.push((value, lit.span()));
+> +            }
+>              Some(TokenTree::Ident(ident)) => {
+>                  let mut value = ident.to_string();
+>                  if value.starts_with("r#") {
 
-This test is sufficient, because for regular files of filesystems
-without ->d_real(),
-backing_inode will always be =3D=3D inode.
-
-> +                       if (!IS_I_VERSION(backing_inode) ||
-> +                           inode_peek_iversion(backing_inode) > iint->ve=
-rsion) {
-
-
-IIUC, this checking > iint->version is not enough.
-The reason is that you could have recorded iint->version from i_version
-of a lower file, after open for write, lower file gets copied up to upper f=
-ile,
-which is a completely different backing_inode, so there is no guarantee
-that the copy up will not result in a smaller or even equal i_version.
-
-For a complete solution, you will need to store the backing_inode
-pointer or backing dev/ino in iint to make sure that backing_inode did not
-change.
-
-Thanks,
-Amir.
