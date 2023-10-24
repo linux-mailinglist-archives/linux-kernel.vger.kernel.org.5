@@ -2,137 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C13387D5318
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB837D5217
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343702AbjJXNuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43244 "EHLO
+        id S234568AbjJXNqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343647AbjJXNt2 (ORCPT
+        with ESMTP id S234374AbjJXNqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:49:28 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 352D410CE
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:47:45 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da03ef6fc30so675072276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:47:45 -0700 (PDT)
+        Tue, 24 Oct 2023 09:46:33 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A79E5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:46:31 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9936b3d0286so681005866b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:46:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698155264; x=1698760064; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7C50BM7p5C+vJ0clcF+/KvirWmdIP5XWEnNLFYgTdS0=;
-        b=gK9u6FzTkX3K1iRG91cMEhTsKa38/L/46VIeL5Cn6DYQweSChvvaPKT0wYJ0zaulsS
-         v3oYyFfQejo+/Wlr216GpD4ugSM+ghhKGtEXQpALFywvMH6tbnnyyxR/m1LAwap3fTjC
-         ONpYfnq0a6ggqJqWWIIli0hiQxldIOngGtsYbIu3hYNk8OTYY6Gz7WJJjQPXQGC3sTqI
-         x5a4QRlosGPO5OTPL/77kJSu1rntALwABru6sjyXil4t0nYV92T9GTiRiHI/EsfnqQYK
-         sSWgmjuEN/WWQfiYUO6N0BOUY1Km1BDv/aRDg8P6FDhpvJIQTCUr27/77t94dWfLn9ht
-         0Bbg==
+        d=linaro.org; s=google; t=1698155189; x=1698759989; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q/PDZ9kO7G74nmKb1u4SH9mYF0IVyBxsHL5CzZjHNxg=;
+        b=a2nmV7AAYue7cDE2kf8E3r2cs2/ufpJLS+2aXFOe6f5FbB+hA1iH5ah3ffb4loLVxv
+         KdXSMdwnvuzoudP0tGIWbvx17n8sB3EFVRrGK33REZhDnYoeyXW6xDfTcCLHCZJ95d+q
+         tLhD6R3UzUt3qsT48ZIX5dDHigRwXq8bAPlMM7urudRb/jCZuMR/62whvu5aYlnX7VDn
+         ALzhFqA/3sqAsPud2J4qC0p8So+5Dy6GIAzU50P0G+DfvylZPwMpIsSvFKasEn0G+ZpK
+         s2AXdjg6BOuoddcm1SJSBjUDhvQWH3ie1Ptt41ovEQJNh6eBrFwf2TfzUr/TofTyv9VO
+         1UKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698155264; x=1698760064;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7C50BM7p5C+vJ0clcF+/KvirWmdIP5XWEnNLFYgTdS0=;
-        b=Q4CDxsZXMcqXly/8mNaQwq8syAF8HkCA9hZf5+/U0VvzxJ5BXAQxlNTlJcxIShrek3
-         f3YEDScUZfImTcCxQoutQ1XnGrqBvuyGHWtNB8RfaSrYukkPGBrzmOccZ1M2O9Qi1/Ba
-         lN7qkH0eLlmec6nhR7nIdbUZSiHT1f3C3IHeRXTSqt10tK6IV76WEJrQc/ucxVoIyIHI
-         Dyzc00CFT/GiAWSdJmuknuLVcNoLWpBIRR83sdg7aZjMmwtTP6r0sDIxLlReUYC39bUx
-         TWsRaydBW0v1aKB9sUAmbsAo2UXOwEhRE6gER0LGKBg2v/CYXarLmNko3H4ZODA5T0Jc
-         bRlQ==
-X-Gm-Message-State: AOJu0YyC4u0woCGHF5zR0BxUuVLrwNJF7uOP35evi4lzZLJRagkCWFuM
-        +zvhBfL427ZykVIzlvLyk5W938OhaLc=
-X-Google-Smtp-Source: AGHT+IFgQR1uDgRKslLBvCkBHAk0T4yEqB1Qvs6h4RCMdoan4Z+72V6WbgepeSBkK71dX/nU/j0JJWPs+jY=
-X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:45ba:3318:d7a5:336a])
- (user=surenb job=sendgmr) by 2002:a25:d34e:0:b0:d9a:e3d9:99bd with SMTP id
- e75-20020a25d34e000000b00d9ae3d999bdmr212803ybf.5.1698155264079; Tue, 24 Oct
- 2023 06:47:44 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 06:46:25 -0700
-In-Reply-To: <20231024134637.3120277-1-surenb@google.com>
-Mime-Version: 1.0
-References: <20231024134637.3120277-1-surenb@google.com>
-X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Message-ID: <20231024134637.3120277-29-surenb@google.com>
-Subject: [PATCH v2 28/39] timekeeping: Fix a circular include dependency
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     akpm@linux-foundation.org
-Cc:     kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
-        hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
-        dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
-        corbet@lwn.net, void@manifault.com, peterz@infradead.org,
-        juri.lelli@redhat.com, ldufour@linux.ibm.com,
-        catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, peterx@redhat.com, david@redhat.com,
-        axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-        nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
-        muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-        pasha.tatashin@soleen.com, yosryahmed@google.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        andreyknvl@gmail.com, keescook@chromium.org,
-        ndesaulniers@google.com, vvvvvv@google.com,
-        gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-        iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-        elver@google.com, dvyukov@google.com, shakeelb@google.com,
-        songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-        minchan@google.com, kaleshsingh@google.com, surenb@google.com,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698155189; x=1698759989;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q/PDZ9kO7G74nmKb1u4SH9mYF0IVyBxsHL5CzZjHNxg=;
+        b=QgRmtqEXbpoEhHFHaGT+RqeHsncWOFH5Ru3U99dXJy2J3XMOPnmfQvq6eJKiM1rzG1
+         etZYXEaBQ74J6WZ+bblyVE563gcUwS1dquA7BCwerFFbo6Xxd+Mpb+OPvy9T8o6yp+Mr
+         LfiEcXspcLwjscp/i/015ox8Lwtw5vdVDcdmExVyyzbCwt1ijdkzrtA99bTilN6dPlaV
+         6TnBKhhzSam5bakmuiFafo/b7z1CINDk2FRssVEwRwPqtCP9w8rfq1jTK1P8prCj2J2+
+         LvoWmv1nYkKpnSP2oDxaiI1BGycEqjWZIDvue+/6b7OUQ0VLiduoKO6VQWUu7CypsyKk
+         XCWQ==
+X-Gm-Message-State: AOJu0YwCgZLHl19tx670wHOFj2TIwR+pNRDGcaxpvX48J/ujXS+1XFVe
+        SbK4nCb/wpKMzBN7jBuifQS9bg==
+X-Google-Smtp-Source: AGHT+IF+1tfBFlWZ5ekM05Nq5pyNWfVPceFIGTk4iLH6nqXJP1nu6iyfuNMw3LtQyviPzDKHUaf2XQ==
+X-Received: by 2002:a17:907:3ea5:b0:9c3:8242:e665 with SMTP id hs37-20020a1709073ea500b009c38242e665mr10019942ejc.8.1698155189411;
+        Tue, 24 Oct 2023 06:46:29 -0700 (PDT)
+Received: from hackbox.lan ([86.122.213.220])
+        by smtp.gmail.com with ESMTPSA id og43-20020a1709071deb00b0098951bb4dc3sm8320367ejc.184.2023.10.24.06.46.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 06:46:28 -0700 (PDT)
+From:   Abel Vesa <abel.vesa@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH] regulator: qcom-rpmh: Fix smps4 regulator for pm8550ve
+Date:   Tue, 24 Oct 2023 16:46:26 +0300
+Message-Id: <20231024134626.2364426-1-abel.vesa@linaro.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kent Overstreet <kent.overstreet@linux.dev>
+The type of the smps4 regulator from pm8550ve is actually FTSMPS525
+medium voltage. So fix it accordingly.
 
-This avoids a circular header dependency in an upcoming patch by only
-making hrtimer.h depend on percpu-defs.h
-
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+Fixes: e6e3776d682d ("regulator: qcom-rpmh: Add support for PM8550 regulators")
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 ---
- include/linux/hrtimer.h        | 2 +-
- include/linux/time_namespace.h | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/regulator/qcom-rpmh-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
-index 0ee140176f10..e67349e84364 100644
---- a/include/linux/hrtimer.h
-+++ b/include/linux/hrtimer.h
-@@ -16,7 +16,7 @@
- #include <linux/rbtree.h>
- #include <linux/init.h>
- #include <linux/list.h>
--#include <linux/percpu.h>
-+#include <linux/percpu-defs.h>
- #include <linux/seqlock.h>
- #include <linux/timer.h>
- #include <linux/timerqueue.h>
-diff --git a/include/linux/time_namespace.h b/include/linux/time_namespace.h
-index 03d9c5ac01d1..a9e61120d4e3 100644
---- a/include/linux/time_namespace.h
-+++ b/include/linux/time_namespace.h
-@@ -11,6 +11,8 @@
- struct user_namespace;
- extern struct user_namespace init_user_ns;
- 
-+struct vm_area_struct;
-+
- struct timens_offsets {
- 	struct timespec64 monotonic;
- 	struct timespec64 boottime;
+diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
+index d990ba19c50e..b2e359ac3169 100644
+--- a/drivers/regulator/qcom-rpmh-regulator.c
++++ b/drivers/regulator/qcom-rpmh-regulator.c
+@@ -1095,7 +1095,7 @@ static const struct rpmh_vreg_init_data pm8550ve_vreg_data[] = {
+ 	RPMH_VREG("smps1", "smp%s1", &pmic5_ftsmps525_lv, "vdd-s1"),
+ 	RPMH_VREG("smps2", "smp%s2", &pmic5_ftsmps525_lv, "vdd-s2"),
+ 	RPMH_VREG("smps3", "smp%s3", &pmic5_ftsmps525_lv, "vdd-s3"),
+-	RPMH_VREG("smps4", "smp%s4", &pmic5_ftsmps525_lv, "vdd-s4"),
++	RPMH_VREG("smps4", "smp%s4", &pmic5_ftsmps525_mv, "vdd-s4"),
+ 	RPMH_VREG("smps5", "smp%s5", &pmic5_ftsmps525_lv, "vdd-s5"),
+ 	RPMH_VREG("smps6", "smp%s6", &pmic5_ftsmps525_lv, "vdd-s6"),
+ 	RPMH_VREG("smps7", "smp%s7", &pmic5_ftsmps525_lv, "vdd-s7"),
 -- 
-2.42.0.758.gaed0368e0e-goog
+2.34.1
 
