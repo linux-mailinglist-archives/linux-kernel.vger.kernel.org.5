@@ -2,128 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AE47D56E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E507D56EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234241AbjJXPta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
+        id S1343812AbjJXPv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234724AbjJXPt2 (ORCPT
+        with ESMTP id S233628AbjJXPv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:49:28 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61803C2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:49:26 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9cce40f7eso38798685ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:49:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698162566; x=1698767366; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G80d6SYNl+i6LLR4j1qPSwa+o2+/ZMsAHEKXJ7GB4aE=;
-        b=b3kjausxWoRgpyBk1nGj26eczvmNxVsJavTGXE5lQezJqNWoQ2BxoNG12rRUB3nTom
-         pN1HmxTbWY7RmK3OsJluezg1IlO162t9JmgENIdFSvKxBF3M9J52tZfuBLNIGGef55qK
-         qGcKmYq/ZY8+xlnF/J49KxUU6nXE684qB9G6T1wuE2+QQgMENpVxkuD4UeFo5k84NTT8
-         o9vJiKborwoR03oYnZPsKKKA9x1oVCNev3Ifs50n5M5I3pyJeXyL9XPTYU7P4+vrhWgh
-         nRpqLXk/Q35BryIv8uIPBT3ZLPo1dMkds0y28Wg8RiwyA/40QG7BMLLJE+T1y/2+fVNh
-         iUKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698162566; x=1698767366;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G80d6SYNl+i6LLR4j1qPSwa+o2+/ZMsAHEKXJ7GB4aE=;
-        b=Ae+ppl7PVRBuy82RdH+X8jD0/hvXo1o6YddeK6Durtbn/qgAD/5uKZlbj/sXu0n2ag
-         WQ7S/l0D9bw+n4GnWjumHKOy4DcH4SP9Euv8STznBVEOr9w4dGOIL6oQQgsj8sUm4OvQ
-         slKLFQ+ko0UScww66t3M5NNp+8/cmFVMop1higXF/yfu0KITZHgJksoV5lINZT8MgXEr
-         rzJ8a60kpT0yVKADOyt6SoKAKgWsUmjn3T7JQIvMZcTPm6xb1A+qtYtVzJIIxcO5Hge1
-         W+3AYqklVf7n08kshRMCQxurDG5XGrKVwK3AvoH9CsDEvwUH3Dx5yX+4qv9PHLXLtbZo
-         AW8g==
-X-Gm-Message-State: AOJu0YwecLYwlmRtveXOvsWi4MoFnMEwEOHiNay7dng6V8pvS1D7Qoq5
-        pqbq7FHPtVZlkSqTyoIH8Y/iPnQJJIw=
-X-Google-Smtp-Source: AGHT+IFrYstubtGogYYYcQdAcTrL20qVe3GVL5ZbVLT3TtIo9yRZ89XR7AFp4qkyCa5YQYIh/rupFNgnsMI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:a3cd:b0:1cb:e677:2f08 with SMTP id
- q13-20020a170902a3cd00b001cbe6772f08mr39702plb.10.1698162565810; Tue, 24 Oct
- 2023 08:49:25 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 08:49:24 -0700
-In-Reply-To: <ZTd+i2I5n0NyzuuT@yilunxu-OptiPlex-7050>
-Mime-Version: 1.0
-References: <20231018204624.1905300-1-seanjc@google.com> <20231018204624.1905300-3-seanjc@google.com>
- <ZTd+i2I5n0NyzuuT@yilunxu-OptiPlex-7050>
-Message-ID: <ZTfnhEocglG1AsO8@google.com>
-Subject: Re: [PATCH 2/3] KVM: Always flush async #PF workqueue when vCPU is
- being destroyed
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xu Yilun <yilun.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 24 Oct 2023 11:51:56 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7404CDE;
+        Tue, 24 Oct 2023 08:51:54 -0700 (PDT)
+Received: from localhost.localdomain (unknown [116.71.169.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 04D0A660732E;
+        Tue, 24 Oct 2023 16:51:47 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698162713;
+        bh=YeYy3+CWlsTYWmE3ZY32EUBI7hsgZl3/P6viV1Tr3jo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lRD69P3Cm7hmctulCRoxmdcSFIIHWL4f6Yx+BmQrOIU8+qh2zV/lI0najChNE2Fs0
+         x6BqwVKEpJvPqYQ55vvI/5i8DAZeGa8MNIt6fmhT8z/2Je+0RKAXsTP0KXRBGUrVpv
+         iY3oiKE9pC4u3SjZr0NwOA2vRRo4GIRZ9r11xOkZD1D5RHLASoOalp6UVLDe9NlDUW
+         dGsM0eDdETHP0cxx4yyOP7oVmZ4yCk863OE5Zu+q2+pVPk3DkcvYsNsASIG2+MvnAu
+         N+quqP64kjvEnpw/tTn9HRp8ozlgqHkfgHaER7XB8ciQKGQNAyM9rFDYD/dFwm4e6l
+         9APAUG98fGlmg==
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+To:     Shuah Khan <shuah@kernel.org>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     kernel@collabora.com, Aishwarya TCV <aishwarya.tcv@arm.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests: core: include linux/close_range.h for CLOSE_RANGE_* macros
+Date:   Tue, 24 Oct 2023 20:51:25 +0500
+Message-ID: <20231024155137.219700-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023, Xu Yilun wrote:
-> On Wed, Oct 18, 2023 at 01:46:23PM -0700, Sean Christopherson wrote:
-> > @@ -126,7 +124,19 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
-> >  			list_first_entry(&vcpu->async_pf.done,
-> >  					 typeof(*work), link);
-> >  		list_del(&work->link);
-> > +
-> > +		spin_unlock(&vcpu->async_pf.lock);
-> > +
-> > +		/*
-> > +		 * The async #PF is "done", but KVM must wait for the work item
-> > +		 * itself, i.e. async_pf_execute(), to run to completion.  If
-> > +		 * KVM is a module, KVM must ensure *no* code owned by the KVM
-> > +		 * (the module) can be run after the last call to module_put(),
-> > +		 * i.e. after the last reference to the last vCPU's file is put.
-> > +		 */
-> > +		flush_work(&work->work);
-> 
-> I see the flush_work() is inside the check:
-> 
->   while (!list_empty(&vcpu->async_pf.done))
-> 
-> Is it possible all async_pf are already completed but the work item,
-> i.e. async_pf_execute, is not completed before this check? That the
-> work is scheduled out after kvm_arch_async_page_present_queued() and
-> all APF_READY requests have been handled. In this case the work
-> synchronization will be skipped...
+Correct header file is needed for getting CLOSE_RANGE_* macros.
+Previously it was tested with newer glibc which didn't show the need to
+include the header which was a mistake.
 
-Good gravy.  Yes, I assumed KVM wouldn't be so crazy to delete the work before it
-completed, but I obviously didn't see this comment in async_pf_execute():
+Fixes: ec54424923cf ("selftests: core: remove duplicate defines")
+Reported-by: Aishwarya TCV <aishwarya.tcv@arm.com>
+Link: https://lore.kernel.org/all/7161219e-0223-d699-d6f3-81abd9abf13b@arm.com
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+ tools/testing/selftests/core/close_range_test.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-	/*
-	 * apf may be freed by kvm_check_async_pf_completion() after
-	 * this point
-	 */
+diff --git a/tools/testing/selftests/core/close_range_test.c b/tools/testing/selftests/core/close_range_test.c
+index 534576f06df1c..c59e4adb905df 100644
+--- a/tools/testing/selftests/core/close_range_test.c
++++ b/tools/testing/selftests/core/close_range_test.c
+@@ -12,6 +12,7 @@
+ #include <syscall.h>
+ #include <unistd.h>
+ #include <sys/resource.h>
++#include <linux/close_range.h>
+ 
+ #include "../kselftest_harness.h"
+ #include "../clone3/clone3_selftests.h"
+-- 
+2.42.0
 
-The most straightforward fix I see is to also flush the work in
-kvm_check_async_pf_completion(), and then delete the comment.  The downside is
-that there's a small chance a vCPU could be delayed waiting for the work to
-complete, but that's a very, very small chance, and likely a very small delay.
-kvm_arch_async_page_present_queued() unconditionaly makes a new request, i.e. will
-effectively delay entering the guest, so the remaining work is really just:
-
- 	trace_kvm_async_pf_completed(addr, cr2_or_gpa);
-
-	__kvm_vcpu_wake_up(vcpu);
-
-	mmput(mm);
-
-Since mmput() can't drop the last reference to the page tables if the vCPU is
-still alive.
-
-I think I'll spin off the async #PF fix to a separate series.  There's are other
-tangetially related cleanups that can be done, e.g. there's no reason to pin the
-page tables while work is queued, async_pf_execute() can do mmget_not_zero() and
-then bail if the process is dying.  Then there's no need to do mmput() when
-canceling work.
