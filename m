@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D67C97D5628
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE5B7D5629
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343747AbjJXPZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
+        id S1343692AbjJXPZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234888AbjJXPYv (ORCPT
+        with ESMTP id S234525AbjJXPZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:24:51 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873004697
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:21:13 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9936b3d0286so697161466b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:21:13 -0700 (PDT)
+        Tue, 24 Oct 2023 11:25:22 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188854C05
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:22:05 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53e751aeb3cso7150051a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:22:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698160871; x=1698765671; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698160924; x=1698765724; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wTdO2bwcmB9lYlvex/v8irD1Z/qXj6h+zhKj6aeNxjE=;
-        b=rj8MI070d3MRaF3Rx+c5gQzVuiTJxS+eTrP+smO51WruK61DkzJMuiBxGut+ZAu2m6
-         WCLcaFonDh7mXP7gaVVnFoTkRJryVl/pnYXXcXmdv0cvFTls2+XGYEh+kVUxjPPmUE+G
-         IcKKYhHuNW6SFtFyzH6IKlcKDOiAappnYdLQOLkluQebI7RVwGGNkZjTSTIM9E5m41yj
-         XOo+8IOo3bkB3RxBPva0bCllMJtR6Ligvxf9XJrEQXh/4yRVoVr2jA6WVDcphEY93PtI
-         0HbYFCnuo8g9l8JR78hUxRtgcPfUcknu92G+QaVe/tDrcm69YW3NiS/AU9s6xrbG409R
-         /+Mg==
+        bh=CrLguzqmsBX1wh2886rw/oRPFldPzwSDNCeDBDlDpbk=;
+        b=Yx3q8hWpsLt432pvcR7GdOZa+xP1KQjkzqTBPPY8asoF25Pvn3CfVnvTW0TP8dRzC9
+         AjZzU7AmTvwUSZDGzl3AUq7JRTfk1ePJJPVvQJb+Q7Sj4tJvUyHbEOs1NrGzrWEFkyF7
+         RKF6ft0Aw2YjuISoSrlK2UIlQbD9/y+sIeRwrJPAdpyeRlnRsxog1lhGXHJbcubY9hsf
+         MEMg3SZHxGR/ShSm2+sVh49va5TfaL3hcryslf/UbDbLZjq4sfTrE1PEhGeCBPFB8UOM
+         VpP6lJugN5dMs2Bd3+XoypTc8EStPr718a9RAL/KPHGvm8vEhw7fU1+RZdKPTcDDwUlz
+         AvWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698160871; x=1698765671;
+        d=1e100.net; s=20230601; t=1698160924; x=1698765724;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wTdO2bwcmB9lYlvex/v8irD1Z/qXj6h+zhKj6aeNxjE=;
-        b=nvZ1MVdNkTGsRYQJVXEBcpRPVMhRVi40N6jwKFFrGIDr09Das5e6sc1347PdCrgXyj
-         KtwHv4pfp5WI4MwJBeIugK6yRK+YdTNu9Xj5/KFV6dFiRRukUEBQLmv+oSjqpyLoDe5/
-         De5qpHI4rWppJdjXzlXI2uusUni6Ioxjmojo2r9g+jRy6yzyGUPEyPIe4+ZwG1saylWI
-         ybjkICbJp782Sf+8rerJpM7tTqn5QLnlo5ZasjRLwsBDxoyLRuEsaveWX33RMK4oAf9h
-         O7uyu7jj2RJrYJRDOp4ajWKZsQobHjnrCpvtMbHVxyJ/jV+AMEJkgZcoPuLsR9ZSAoA4
-         A8DQ==
-X-Gm-Message-State: AOJu0YziTMarS7u7GyZGqdakfkerVmFBYAFVYLkgudXNEK/yqOoysnpU
-        YfGeKbZa6+vZZ7R4oLjdZGKSyA==
-X-Google-Smtp-Source: AGHT+IGJvICTlih/IQgT9bU7ZF9jpMZEmwZ5YEul1Gj+xewH/MJCPF+oJmRnccdYIuc61kE2u8i3zA==
-X-Received: by 2002:a17:907:9618:b0:9af:4561:591d with SMTP id gb24-20020a170907961800b009af4561591dmr9682642ejc.18.1698160871622;
-        Tue, 24 Oct 2023 08:21:11 -0700 (PDT)
+        bh=CrLguzqmsBX1wh2886rw/oRPFldPzwSDNCeDBDlDpbk=;
+        b=m8jJ2bJHvH8zu73GOdM5PAiOIaHn20UrAqcmAW5hzvv2iWSqLK9f1sDraxikuDGbwq
+         xOCbtNlo0Qzmkc2HaRrB1vq7bHA6GQGkBzlUYLwBuZKj/vkqO68qkeph9R66PhjtWD78
+         Gk06H7Q23v/OrWPe7+XRqvTewbbaBIdQbXxL+Z1OVWFn8LHXafvDJV5wJXT3C74244NJ
+         Y5bDQFn7Y581hY735jNnolOWDWq7vCrmAs/lD2+LNU3Hd51aa0bCCZBojggktIRCWiar
+         oyTzBL1Hrn27UVlHTVVBldp7O+ZddlnJMtHfcxYxcIBHnDwJvQlGQDu09HWpRqbREdj5
+         1vuA==
+X-Gm-Message-State: AOJu0Yyz98xvzlORml4YILCdUajzo4mMi0jIJmW56POmNo+xlDKHok9d
+        OEvNQD482qArZLmMm8gXr4rnKQ==
+X-Google-Smtp-Source: AGHT+IF+njeaPb0/PHYDKAchULPofnaS00XxZyQKvP8VftgcuCv2zu93TrgOHMJ5K3IjvdfOu4p3sA==
+X-Received: by 2002:a17:907:72d0:b0:99d:e617:abeb with SMTP id du16-20020a17090772d000b0099de617abebmr9565488ejc.23.1698160923908;
+        Tue, 24 Oct 2023 08:22:03 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id ze15-20020a170906ef8f00b009bf7a4d591bsm8335546ejb.45.2023.10.24.08.21.09
+        by smtp.gmail.com with ESMTPSA id ze15-20020a170906ef8f00b009bf7a4d591bsm8335546ejb.45.2023.10.24.08.22.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 08:21:10 -0700 (PDT)
-Message-ID: <53e9351a-87ca-42f1-b0a5-624c1fd86623@linaro.org>
-Date:   Tue, 24 Oct 2023 17:21:09 +0200
+        Tue, 24 Oct 2023 08:22:03 -0700 (PDT)
+Message-ID: <97679363-2544-4d96-b382-e81917853ff5@linaro.org>
+Date:   Tue, 24 Oct 2023 17:22:01 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/6] arm64: dts: mt8183: Add jacuzzi pico/pico6 board
+Subject: Re: [PATCH 4/6] arm64: dts: mt8183: Add jacuzzi makomo board
 Content-Language: en-US
 To:     Hsin-Yi Wang <hsinyi@chromium.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -72,7 +72,7 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
 References: <20231024000724.57714-1-hsinyi@chromium.org>
- <20231024000724.57714-7-hsinyi@chromium.org>
+ <20231024000724.57714-5-hsinyi@chromium.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,12 +118,13 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231024000724.57714-7-hsinyi@chromium.org>
+In-Reply-To: <20231024000724.57714-5-hsinyi@chromium.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -131,25 +132,22 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 24/10/2023 02:02, Hsin-Yi Wang wrote:
-> pico is also known as Acer Chromebook Spin 311.
+> makomo is also known as Lenovo 100e Chromebook 2nd Gen MTK 2.
 > 
 > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 > ---
+>  .../mt8183-kukui-jacuzzi-makomo-sku0.dts      | 25 +++++++++++++++++++
+>  .../mt8183-kukui-jacuzzi-makomo-sku1.dts      | 25 +++++++++++++++++++
+>  2 files changed, 50 insertions(+)
 
-...
 
-> +&wifi_pwrseq {
-> +	post-power-on-delay-ms = <50>;
 > +
-> +	/* Toggle WIFI_ENABLE to reset the chip. */
-> +	reset-gpios = <&pio 8 1>;
-
-Use proper defines.
-
+> +&qca_wifi {
+> +	qcom,ath10k-calibration-variant = "GO_FENNEL14";
 > +};
 > +
-> +&wifi_pins_pwrseq {
-> +	pins_wifi_enable {
+> +&mmc1_pins_uhs {
+> +	pins_clk {
 
 No underscores in node names.
 
