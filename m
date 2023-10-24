@@ -2,139 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FBA7D4AB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60AE7D4AC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbjJXIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
+        id S233456AbjJXIp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232298AbjJXIoR (ORCPT
+        with ESMTP id S233780AbjJXIpw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:44:17 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A91199;
-        Tue, 24 Oct 2023 01:44:12 -0700 (PDT)
-X-UUID: 7d13e7f4724911ee8051498923ad61e6-20231024
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=iN/cYNw0UBNU6pS7nhFH1FIimWvZP96iaW/lpJmIqTw=;
-        b=hb5ZPBvOHXRMszD2tulqM6eEWslsMET4yNvb50MwB1e6BgAQ8b56WhUveCOD23wgaUi5JVz5XqjFsAi3P7JFuW4VJAiSml0wl+YVaRzI4UX9JpHNXfB/pqspnD+rVtBdvy/epr8VhKMP4xRRN1/xI67so4y70QRs0BP5Io5mASI=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:55f39eb6-88a8-45b1-94c7-3648bf8656d4,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:b48840d7-04a0-4e50-8742-3543eab8cb8e,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 7d13e7f4724911ee8051498923ad61e6-20231024
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <alice.chao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1507860021; Tue, 24 Oct 2023 16:44:05 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 24 Oct 2023 16:44:03 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 24 Oct 2023 16:44:03 +0800
-From:   <alice.chao@mediatek.com>
-To:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-CC:     <wsd_upstream@mediatek.com>, <stanley.chu@mediatek.com>,
-        <peter.wang@mediatek.com>, <powen.kao@mediatek.com>,
-        <naomi.chu@mediatek.com>, <cc.chou@mediatek.com>,
-        <tun-yu.yu@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <casper.li@mediatek.com>, Alice Chao <alice.chao@mediatek.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH 1/1] core: ufs: fix racing issue between force complete and isr
-Date:   Tue, 24 Oct 2023 16:43:21 +0800
-Message-ID: <20231024084324.12197-1-alice.chao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 24 Oct 2023 04:45:52 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2052.outbound.protection.outlook.com [40.107.244.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FBFAC
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:45:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V1yXIvB3TaiQX6RU1reMbYutUHYQvrGn9YGrUXUJ1yW5PEWP8UEmMevjnhdH+iV5yHw6rOmPSvSvvFHfQTv5fL31fy+G8DrRm1lymGPZDnmsroBYLcuwGgyNLkHWvPVUMDX9A6N5CBXMHSVVEGwCD5e7P9eQwOcoQFa/xhH3EJhzj49jTVx4zWZ6mBWaHigHbDP7azUvZcSjMHftYSMt91yWi5+0XlN3Nt4QjWUb7hTtk79sd5OjnB6Q6KF0JdPBCGL301qW2oZKfjecv9I7yjEIR4mZL6Ooo8wN1ZffUBk3JSRJ9Pa0XnnEPKyHFAWwwb10jA3H/OvQvjhrevYWng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=J6DTYzc2HZxTrYBU4FlcbU3sZcGlA6jY7BJTsnbE7TI=;
+ b=cYYbndm625TUIZ7zdq/Pn943Jp2IddQBzxfwoG0iGyQJobUJ6Jr+/s8ILiAkJOq7HvlSRfPBZrp7RfbzOLQXnK+kT9vZyGZN94Tdzdi+ju76ALo0Tn8h2B/VTXdVeVNNSz5mpBphqN8jR5ywLm03o2KetsC8kTu6VH9xPypPAdgzFsl3vs23hwu+RRF9MNG4deD2L7UhWvVHWmNmvaGwg8LcIQZ3vXliZ6KBJBywXAoZO7CxVuHWJm3GogwMf1uF+BcJlmmhmLQQdvTwRTpXTyp8D/Qmk8qcel69UZXfqzWMiZRdqI5xF4XXBCr7Dv45ZPJEjWC8Vngg88ol8o2img==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J6DTYzc2HZxTrYBU4FlcbU3sZcGlA6jY7BJTsnbE7TI=;
+ b=qQLgBh891ODPUtxUd0QIv6KhBRJtxxhEQWMaqN+4LeS8T3UtBcNUa8mrx227BgC4BjH4m8D6zJMvQk99GAXl0pblU4FR6haW4hZ9iYv0U9YOUV5rUlle+m0NWSC41Po0+gWZ5juCpYZubhvT9olTVZejtqeNBhM6yx2+2vmDB1w=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by SA3PR12MB9158.namprd12.prod.outlook.com (2603:10b6:806:380::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
+ 2023 08:45:47 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::af19:f731:8846:68ba]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::af19:f731:8846:68ba%6]) with mapi id 15.20.6907.032; Tue, 24 Oct 2023
+ 08:45:47 +0000
+Message-ID: <ca76ef68-5fa4-4a2a-9da2-0378dd7bc2cf@amd.com>
+Date:   Tue, 24 Oct 2023 10:45:41 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH drm-misc-next v7 1/7] drm/gpuvm: convert WARN() to
+ drm_WARN() variants
+Content-Language: en-US
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith@gfxstrand.net
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231023201659.25332-1-dakr@redhat.com>
+ <20231023201659.25332-2-dakr@redhat.com>
+From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20231023201659.25332-2-dakr@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0265.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:e8::8) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--4.717400-8.000000
-X-TMASE-MatchedRID: 4PO3xRYykVLSny9D3D7cj0Zakoam9+aebd6rGhWOAwRNShtWKzkFv8bB
-        l+mdYPNDSJ98p/k48isBtjkcfRMmqZH0YXYnbGozFEUknJ/kEl7dB/CxWTRRuzBqYATSOgWj78T
-        SUWAmEuXDhdFgIBeVjG+CyFalGpOx8YHPyIbJBEDSU+hTwCSC7435hht3qJMTDFM6+OpJabFtlz
-        Lk1e/pyNvWO5JXDjg6gITnGkK0NFNRskXKHhdfKpij9M86UwHhsKHfMTjCprzAgTvs8QFuaX7cG
-        d19dSFd
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--4.717400-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 4F8ECFD8968BA5811C9F2C3A81AE4EDBFB36B326E3EB9A5C89A185A3FA9E72622000:8
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SA3PR12MB9158:EE_
+X-MS-Office365-Filtering-Correlation-Id: ce3bd261-5e68-4a08-2563-08dbd46d9db7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZYPZSvezkumiaEAjAAQirlkaYZPHpO8gS4BG42i0lEClm3AK5n13cP5ZAZImRB0dIPupa8JMegGOxGzbDn1uvc2iWxAZnOlFPQAaNX1f86RQbgxTsX3BHPfEed0S/FtM6IIDX70vmq1XMHQ+1MlRHcWC6osLh7lSVpvJi2W71pyvvTsYbYxFfeuVbXEk2Xo80WdHzhJh9TbwUgEl8qdvyoLiCqh8yXFcEur92tt/+C7hBuhg8UPTzwujq8o9NPGb1RuSqYTg9loa2EBJh+ZPfI2G6U+wBFAaJIIE76IIY9RQNrbvdcwR0FFaYYT40LpArIkbrbeuSMFAsKVujs8ovAvm5DD8y+oBQV5b8NPEi3+M6qfsLVjYC+ShI1ayHs08CGVspNBuDVZ/AZeGMWajVlboJizAw68B2cRMMzTLXrHNt0S3uWox5u2SN7P9P76Z9xBla1oh9/ojoc3RfW5tP7SkA45w0gZlZB9ePloVju12lo7JU4AlgSsILhfc5nJylSTQq+wUkhKlVkI/vjZyfwlb52Nijo1c4h2Z15WKu/NnlDPC0fLRC9DOpRUe5B6aFKzqUeAMLsj5mUkAyjm1C1lghD3aGvPv9NrGCDUBCr03uFdOGeACdqEZiTATQ6Z99Gn3jqlamU9W4WsOUEEzyA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(39860400002)(366004)(346002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(38100700002)(86362001)(31696002)(36756003)(6486002)(478600001)(26005)(7416002)(2616005)(6506007)(6512007)(5660300002)(8676002)(8936002)(4326008)(66946007)(66476007)(66556008)(6666004)(41300700001)(316002)(31686004)(2906002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V1JOVWp5MzFnS0hnWGJ2Y041S3pEbWRvUi93WTNwNHlvbytlU2JsU0ZvUlVM?=
+ =?utf-8?B?eFlKT0Q2M0JNWGw2anBZYWRSMEhSaTEvRlZaQXFwcGVXWDc4ajJHRjZxTVda?=
+ =?utf-8?B?TzYxN0ZvRjNsei9zVy9idEU5OWQrNnVjTWtXZVE0SSthdXBIYXFIN0JHTWhp?=
+ =?utf-8?B?QndpRkZhR3Y5ejhla2RjNWRIOElOK3p6T3ZDb1hwTVZOQzdkUXBURjJiYTBV?=
+ =?utf-8?B?Y2t5RGZpRkFITEkwaGY0YjUwRDd1YU1HQkpXS3YwZllncXdKVCsrR1ZXUDNK?=
+ =?utf-8?B?aWlVWFlNVFZCRjhPYldveVIrR2s0emJ5WDQyYUZwODF4OWh2TSt4U3dPY1NE?=
+ =?utf-8?B?Mk81cVhaU1FsUGtBK0hETGxxRXY3S1QzZHBZNHhQUHg2cm1pTVl1VXVXOTh5?=
+ =?utf-8?B?Z2VyMGwzWnlCcENsbXZNUXhTcW12eHlLTllWSHc0M2RxNUdIeEk5WUhCUE41?=
+ =?utf-8?B?YUU1R3oxMExvbkJPZXdKQkduVFJvNHdnM1liTSsrak9CY0tzMnpGQ2dQWi8r?=
+ =?utf-8?B?TDlkZnJydW14K0d1cFh4THZnUmhITFlnTHJHcFI5cEtSK1hBVTRDOXEwUnI4?=
+ =?utf-8?B?VjhobTBVWTY1ck5HcjZZcENmMnh4clhmWTJ4RERlampGMWUzc25LdVU5ZC93?=
+ =?utf-8?B?M0hES0h5NnY0NmpGc1ZtRUFlZ0dEcS8zWGpqbVZKYnhuWkk5VjdTbnRzRGZZ?=
+ =?utf-8?B?VHNJYUtDOW5DQ2FPSllJbGNkb1lYY2hPUkNNbXMyVFJpYXkybU8reWlPd0ht?=
+ =?utf-8?B?ZWxwSG9veDRqNTBFc1h0OHJRc3B2QjlJTFRPbUVOUXJMWmx5TE5LTVFNTWlh?=
+ =?utf-8?B?OXlXUzlwMTl2VnQ5SVRid2J2Tzk3ZktTMjVxYTQ4dDhYdFBwVlh6RTlXNUJR?=
+ =?utf-8?B?QTRYS0RnTzhHZk8yeEdFMUJaaTd5YXNxU1FHc1lqdTJMUmhTcGpxQ0psWTRz?=
+ =?utf-8?B?czdTVFNTOWh0ZGUzMmtld0VqU2FlRXdybTZqWU1nZVhKcGo0YlhvYWhhdmVn?=
+ =?utf-8?B?cUhZUGJNejIzV1RBTmVTcE5BblNhaFlHc0JFaXl2WXUvbFkzV3hQZmRmODQ5?=
+ =?utf-8?B?V3QwbUxJVU5XZHFVUTVraWlYaU1mUkQ1K3YwSUFvNkZsMmxRQ3l3V3ViQmc1?=
+ =?utf-8?B?SzZuRUVqdmk5YlBMK0tVS015RlB1QStGZERyS2VpQy82NjdQUWQrUU1GN2xv?=
+ =?utf-8?B?S0dJNWxKbmtaSFRPN2NvbG1pZFYrWHFycDVZbkdHSUorSnkyY3p4TG9jY0FE?=
+ =?utf-8?B?RTJQNnRGbUFBQ0hLd0VMTXZkTHk1T08zTWN1b09RY3hSRjZFZnoxajlmRWx4?=
+ =?utf-8?B?NjR5UzJiNndrSjUvb1UxdVBrMU1jR0hVY28rYVpwNnFiRGd4ZE9jOUtRNTNX?=
+ =?utf-8?B?VkFycDg5N1NuSGdmeDVJV2VsWTkzSUREaDAxY1p6QmdtZHNUQWlmeFlwdFBh?=
+ =?utf-8?B?TTAvaDdPbGtVVHBMcU16L084U2JmK1J6cjE0Z0RaUHJzNWdqOHExNXRGQUhz?=
+ =?utf-8?B?bnVyK1UzeC9xNDVORVovNldBRVJFanp2MTlIZG9pd056bXcxTmhHbUY0c2Y2?=
+ =?utf-8?B?eGIxSFYrSHl3YkVvTTY0SW9jTjdTdkhOZytBb0JSMmZ0V2dSQ1YrTE5Ob0tG?=
+ =?utf-8?B?QzZWdXJhNkFsbWs4WEtVWjRMZWpYcGgrYXYySWl6enl2SDdhYVZNNitpT0tm?=
+ =?utf-8?B?cmZFRHRnZ2RWRVMyRmI1RCtpRndwT3ZvNmxmbFBScFFmRkRhUW9WK2VHSkVW?=
+ =?utf-8?B?clg2VkNQMVJYalI3emRsaVdIaXRJU3J6ODJmMnVmZUhVY2k4bFovMHdTTFZH?=
+ =?utf-8?B?bG1GZUZPWER0dFdUSVdyRCtvbW00dUZQcm5FWGxBQnVDMjFnZ3k5a1FCamVN?=
+ =?utf-8?B?bk85QjNaQllCYXVDcCtUbVpiUGtMQnh1ZUkzeEdhMUlkbUh0T0pIVTlqbDAv?=
+ =?utf-8?B?TXR6MEo0OEt1M0VBMlIrSWtBVENPOS8zbjFZaStjUVdGSWx6aEU0MXYrS1Vp?=
+ =?utf-8?B?eWFlYzJxU2MvbjYva0FPb3JLL1g5TmRrc29GR3V3c2Zvd1kvNjZBUE1tMEVw?=
+ =?utf-8?B?Z0pjMmtTWFdJdGxydFgyT2RhMWJUSTFNUEs1U0svbjJpZ1pIOU10R2VsTEtI?=
+ =?utf-8?Q?qeV92ePXTr7awIEJegZwytHvw?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce3bd261-5e68-4a08-2563-08dbd46d9db7
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 08:45:46.7614
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tGQMKdaBYQUTRKl5IssgvrAgzeu2gc/dZddkubR9rQ2I5LcuUT7FJpERmf/6tCHq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9158
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_FILL_THIS_FORM_SHORT autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alice Chao <alice.chao@mediatek.com>
 
-While error handler force complete command (Thread A) and completion irq
-raising (Thread B) of the same command, it may cause race condition.
 
-Below is racing step (from 1 to 6):
-	ufshcd_mcq_compl_pending_transfer (Thread A)
-1	if (cmd && !test_bit(SCMD_STATE_COMPLETE, &cmd->state)) {
-5		spin_lock_irqsave(&hwq->cq_lock, flags);	// wait lock release
-		set_host_byte(cmd, DID_REQUEUE);
-6		ufshcd_release_scsi_cmd(hba, lrbp);	// access null pointer
-		scsi_done(cmd);
-		spin_unlock_irqrestore(&hwq->cq_lock, flags);
-	}
+Am 23.10.23 um 22:16 schrieb Danilo Krummrich:
+> Use drm_WARN() and drm_WARN_ON() variants to indicate drivers the
+> context the failing VM resides in.
+>
+> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+> ---
+>   drivers/gpu/drm/drm_gpuvm.c            | 32 ++++++++++++++------------
+>   drivers/gpu/drm/nouveau/nouveau_uvmm.c |  3 ++-
+>   include/drm/drm_gpuvm.h                |  7 ++++++
+>   3 files changed, 26 insertions(+), 16 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
+> index 08c088319652..d7367a202fee 100644
+> --- a/drivers/gpu/drm/drm_gpuvm.c
+> +++ b/drivers/gpu/drm/drm_gpuvm.c
+> @@ -614,12 +614,12 @@ static int __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
+>   static void __drm_gpuva_remove(struct drm_gpuva *va);
+>   
+>   static bool
+> -drm_gpuvm_check_overflow(u64 addr, u64 range)
+> +drm_gpuvm_check_overflow(struct drm_gpuvm *gpuvm, u64 addr, u64 range)
+>   {
+>   	u64 end;
+>   
+> -	return WARN(check_add_overflow(addr, range, &end),
+> -		    "GPUVA address limited to %zu bytes.\n", sizeof(end));
+> +	return drm_WARN(gpuvm->drm, check_add_overflow(addr, range, &end),
+> +			"GPUVA address limited to %zu bytes.\n", sizeof(end));
+>   }
+>   
+>   static bool
+> @@ -647,7 +647,7 @@ static bool
+>   drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
+>   		      u64 addr, u64 range)
+>   {
+> -	return !drm_gpuvm_check_overflow(addr, range) &&
+> +	return !drm_gpuvm_check_overflow(gpuvm, addr, range) &&
+>   	       drm_gpuvm_in_mm_range(gpuvm, addr, range) &&
+>   	       !drm_gpuvm_in_kernel_node(gpuvm, addr, range);
 
-	ufshcd_mcq_poll_cqe_lock (Thread B)
-2	spin_lock_irqsave(&hwq->cq_lock, flags);
-	 ufshcd_mcq_poll_cqe_nolock()
-	  ufshcd_compl_one_cqe()
-3	   ufshcd_release_scsi_cmd()	// lrbp->cmd = NULL;
-4	spin_unlock_irqrestore(&hwq->cq_lock, flags);
+When those parameters come from userspace you don't really want a 
+warning in the system log in the first place.
 
-Signed-off-by: Alice Chao <alice.chao@mediatek.com>
----
- drivers/ufs/core/ufshcd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Otherwise userspace can trivially spam the system log with warnings. The 
+usual approach is to make this debug level severity instead.
 
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index 8382e8cfa414..ef6bd146a767 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -5518,13 +5518,13 @@ static void ufshcd_mcq_compl_pending_transfer(struct ufs_hba *hba,
- 			 * For those cmds of which the cqes are not present
- 			 * in the cq, complete them explicitly.
- 			 */
-+			spin_lock_irqsave(&hwq->cq_lock, flags);
- 			if (cmd && !test_bit(SCMD_STATE_COMPLETE, &cmd->state)) {
--				spin_lock_irqsave(&hwq->cq_lock, flags);
- 				set_host_byte(cmd, DID_REQUEUE);
- 				ufshcd_release_scsi_cmd(hba, lrbp);
- 				scsi_done(cmd);
--				spin_unlock_irqrestore(&hwq->cq_lock, flags);
- 			}
-+			spin_unlock_irqrestore(&hwq->cq_lock, flags);
- 		} else {
- 			ufshcd_mcq_poll_cqe_lock(hba, hwq);
- 		}
--- 
-2.18.0
+Regards,
+Christian.
+
+>   }
+> @@ -656,6 +656,7 @@ drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
+>    * drm_gpuvm_init() - initialize a &drm_gpuvm
+>    * @gpuvm: pointer to the &drm_gpuvm to initialize
+>    * @name: the name of the GPU VA space
+> + * @drm: the &drm_device this VM resides in
+>    * @start_offset: the start offset of the GPU VA space
+>    * @range: the size of the GPU VA space
+>    * @reserve_offset: the start of the kernel reserved GPU VA area
+> @@ -668,8 +669,8 @@ drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
+>    * &name is expected to be managed by the surrounding driver structures.
+>    */
+>   void
+> -drm_gpuvm_init(struct drm_gpuvm *gpuvm,
+> -	       const char *name,
+> +drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
+> +	       struct drm_device *drm,
+>   	       u64 start_offset, u64 range,
+>   	       u64 reserve_offset, u64 reserve_range,
+>   	       const struct drm_gpuvm_ops *ops)
+> @@ -677,20 +678,20 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm,
+>   	gpuvm->rb.tree = RB_ROOT_CACHED;
+>   	INIT_LIST_HEAD(&gpuvm->rb.list);
+>   
+> -	drm_gpuvm_check_overflow(start_offset, range);
+> -	gpuvm->mm_start = start_offset;
+> -	gpuvm->mm_range = range;
+> -
+>   	gpuvm->name = name ? name : "unknown";
+>   	gpuvm->ops = ops;
+> +	gpuvm->drm = drm;
+>   
+> -	memset(&gpuvm->kernel_alloc_node, 0, sizeof(struct drm_gpuva));
+> +	drm_gpuvm_check_overflow(gpuvm, start_offset, range);
+> +	gpuvm->mm_start = start_offset;
+> +	gpuvm->mm_range = range;
+>   
+> +	memset(&gpuvm->kernel_alloc_node, 0, sizeof(struct drm_gpuva));
+>   	if (reserve_range) {
+>   		gpuvm->kernel_alloc_node.va.addr = reserve_offset;
+>   		gpuvm->kernel_alloc_node.va.range = reserve_range;
+>   
+> -		if (likely(!drm_gpuvm_check_overflow(reserve_offset,
+> +		if (likely(!drm_gpuvm_check_overflow(gpuvm, reserve_offset,
+>   						     reserve_range)))
+>   			__drm_gpuva_insert(gpuvm, &gpuvm->kernel_alloc_node);
+>   	}
+> @@ -712,8 +713,8 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
+>   	if (gpuvm->kernel_alloc_node.va.range)
+>   		__drm_gpuva_remove(&gpuvm->kernel_alloc_node);
+>   
+> -	WARN(!RB_EMPTY_ROOT(&gpuvm->rb.tree.rb_root),
+> -	     "GPUVA tree is not empty, potentially leaking memory.");
+> +	drm_WARN(gpuvm->drm, !RB_EMPTY_ROOT(&gpuvm->rb.tree.rb_root),
+> +		 "GPUVA tree is not empty, potentially leaking memory.\n");
+>   }
+>   EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
+>   
+> @@ -795,7 +796,8 @@ drm_gpuva_remove(struct drm_gpuva *va)
+>   	struct drm_gpuvm *gpuvm = va->vm;
+>   
+>   	if (unlikely(va == &gpuvm->kernel_alloc_node)) {
+> -		WARN(1, "Can't destroy kernel reserved node.\n");
+> +		drm_WARN(gpuvm->drm, 1,
+> +			 "Can't destroy kernel reserved node.\n");
+>   		return;
+>   	}
+>   
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> index 5cf892c50f43..aaf5d28bd587 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> @@ -1808,6 +1808,7 @@ int
+>   nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli *cli,
+>   		  u64 kernel_managed_addr, u64 kernel_managed_size)
+>   {
+> +	struct drm_device *drm = cli->drm->dev;
+>   	int ret;
+>   	u64 kernel_managed_end = kernel_managed_addr + kernel_managed_size;
+>   
+> @@ -1836,7 +1837,7 @@ nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli *cli,
+>   	uvmm->kernel_managed_addr = kernel_managed_addr;
+>   	uvmm->kernel_managed_size = kernel_managed_size;
+>   
+> -	drm_gpuvm_init(&uvmm->base, cli->name,
+> +	drm_gpuvm_init(&uvmm->base, cli->name, drm,
+>   		       NOUVEAU_VA_SPACE_START,
+>   		       NOUVEAU_VA_SPACE_END,
+>   		       kernel_managed_addr, kernel_managed_size,
+> diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
+> index bdfafc4a7705..687fd5893624 100644
+> --- a/include/drm/drm_gpuvm.h
+> +++ b/include/drm/drm_gpuvm.h
+> @@ -29,6 +29,7 @@
+>   #include <linux/rbtree.h>
+>   #include <linux/types.h>
+>   
+> +#include <drm/drm_device.h>
+>   #include <drm/drm_gem.h>
+>   
+>   struct drm_gpuvm;
+> @@ -201,6 +202,11 @@ struct drm_gpuvm {
+>   	 */
+>   	const char *name;
+>   
+> +	/**
+> +	 * @drm: the &drm_device this VM lives in
+> +	 */
+> +	struct drm_device *drm;
+> +
+>   	/**
+>   	 * @mm_start: start of the VA space
+>   	 */
+> @@ -241,6 +247,7 @@ struct drm_gpuvm {
+>   };
+>   
+>   void drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
+> +		    struct drm_device *drm,
+>   		    u64 start_offset, u64 range,
+>   		    u64 reserve_offset, u64 reserve_range,
+>   		    const struct drm_gpuvm_ops *ops);
 
