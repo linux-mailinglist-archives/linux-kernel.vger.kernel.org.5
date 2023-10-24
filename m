@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6387D7D4ED7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36A47D4EDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbjJXLdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 07:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
+        id S231590AbjJXLd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 07:33:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbjJXLdk (ORCPT
+        with ESMTP id S231437AbjJXLdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 07:33:40 -0400
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406FB128
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 04:33:38 -0700 (PDT)
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-581ec87fbf9so5782462eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 04:33:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698147217; x=1698752017;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AaTYNHgdiwduDFwtKX8AKfZd4H2At1jRAj58FEqtE6U=;
-        b=k0urgjRuhkUfWl8Ml2c9S6jGjykNlu/c11keBIXJ29VyIQ76/EKzfQO5eE1PxkF9WI
-         BX5PROqyUiIedgDb6MUlk4/pqwKmHPmlFlJ2QiMuqavPVJjonZfdfsWyQttUeJMdBkuv
-         LeThMHTnEoBu9x7sqcAMnsuHjr+mnOohrwuB/nCx80TXfAZuZgntJ4ixgMFPwq2Gbun2
-         0diTiSLrQRobp8OH9HDD3YzuicJ+IfRatqAkK3DWRyM+ZoZaFXXMl5Zx7fQnFHcd0860
-         DRV+ZguSu6tWMda408sOlytN4PEFE7dfzTOj868xRi7QLpF0YvQmmd81xxqTDKcTktNM
-         iPRQ==
-X-Gm-Message-State: AOJu0Yy6Vt1lwYzroJkunnAEFSV3IQmdn/WLz3te6Y8IqPS0YhtGn69Q
-        fw23dvS5SpNp2NQY42l51N0ybuWjgtwiju6k+zfyesxx1ANJ
-X-Google-Smtp-Source: AGHT+IFrYne8yLXL1ET+WDEDBf+xt2QE3KSP6eaYTev0+3X//lE9caLhReORSNgQSYQvG426Ztv+91cF7SCblZK1pglJi/jHxdmk
+        Tue, 24 Oct 2023 07:33:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8052D7F;
+        Tue, 24 Oct 2023 04:33:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC51DC433CA;
+        Tue, 24 Oct 2023 11:33:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698147233;
+        bh=X62QOZGcCHvGfKNC+rsSFzoHU54y9RQXxs/RK89NVxc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HU+aus46hGm70PmcX4/IPTBrSiVnbOW7VUGjUOqZ5+CMIrLFoQqsrbqqQPK85QxF4
+         zb0vKN1OSZmiC3D/LcvRMIvBIaU6RnNPtAx/alRNdBOzKFy2prZkc94niKFcXAw1v5
+         gtpmTH2teO3ZTPS3FU3N4fyQV7HZjN2imszkmNyBoNxemjbSon3jfFKLH1h6Q5ZmPz
+         knhMCXgM+/CxKf0C/lmuG2vVODN5asV/qM90vhqqlCeJVbGM7lTlSxF8FBoJ6FRgYR
+         PGtsHTHcnd4T529vg8Pe2YZ6MyOdXwlTisMAxvHu5bm5IzK+7CLHBm4xavjyoRzGwM
+         AZw4EEEG3hecQ==
+Date:   Tue, 24 Oct 2023 13:33:48 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Yikebaer Aizezi <yikebaer61@gmail.com>,
+        reiserfs-devel@vger.kernel.org,
+        "dchinner@redhat.com" <dchinner@redhat.com>, jlayton@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: KASAN use-after-free Read in search_by_entry_key
+Message-ID: <20231024-unmotiviert-bezog-0580682e4772@brauner>
+References: <CALcu4raE3hoh7pLNJBjxWeWv18QOR1XPt4E=XWmdg_b9CN-5Cg@mail.gmail.com>
+ <20231024100834.aqwedigye4qa3wfv@quack3>
 MIME-Version: 1.0
-X-Received: by 2002:a4a:d389:0:b0:56d:72ca:c4dc with SMTP id
- i9-20020a4ad389000000b0056d72cac4dcmr5258612oos.0.1698147217634; Tue, 24 Oct
- 2023 04:33:37 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 04:33:37 -0700
-In-Reply-To: <20231024111520.1986-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aefcc8060874b51e@google.com>
-Subject: Re: [syzbot] [bluetooth?] possible deadlock in hci_rfkill_set_block
-From:   syzbot <syzbot+f93d183bc91522d90de9@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231024100834.aqwedigye4qa3wfv@quack3>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,20 +52,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Oct 24, 2023 at 12:08:34PM +0200, Jan Kara wrote:
+> Hello!
+> 
+> On Tue 24-10-23 10:30:46, Yikebaer Aizezi wrote:
+> > When using Healer to fuzz the  Linux 6.6-rc7 Linux kernel,  the following crash
+> > was triggered.
+> 
+> Thanks for report but I don't think there's a big interest in fixing
+> reiserfs errors found by a fuzzer. Reiserfs is scheduled for removal from
+> the kernel so it would be mostly a wasted effort.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Agreed, but also note that this is from a private syzkaller instance
+with google drive links which makes me shy away from this tbh.
 
-Reported-and-tested-by: syzbot+f93d183bc91522d90de9@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         d88520ad Merge tag 'pull-nfsd-fix' of git://git.kernel..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=159aaf83680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=84ec698011085fee
-dashboard link: https://syzkaller.appspot.com/bug?extid=f93d183bc91522d90de9
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13ed6f33680000
-
-Note: testing is done by a robot and is best-effort only.
+I don't think we should encourage private syzbot reports as that will
+end up a nightmare for us all.
