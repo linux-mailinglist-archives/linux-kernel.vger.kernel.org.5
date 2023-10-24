@@ -2,186 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A6D7D50D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994B17D5086
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343509AbjJXNCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55782 "EHLO
+        id S234512AbjJXNAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234519AbjJXNBG (ORCPT
+        with ESMTP id S234346AbjJXNAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:01:06 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B2610EB;
-        Tue, 24 Oct 2023 06:01:01 -0700 (PDT)
-X-UUID: 5d57e018726d11eea33bb35ae8d461a2-20231024
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=wz5OALFXPakgkY/6zI5st3VnAGofoaR/7iQ2aldCR5g=;
-        b=kNempwyH/txmUM/+HPymeY02CvPmzu4HF/b7rceWSgJxQQWOvZEknZFjiDqH4ykGUyY1O0gjycOW8Oz0Yna6BAHOt332mnTabu/cIRmOrkKVtifHZaZzchUo2E+RrEyeoLdSMpGlPDb7v6uxjh2S9EjKeR9IWKk8A5v6KQ/F1/8=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:ba737c91-cf19-4077-90c4-78dccc852948,IP:0,U
-        RL:25,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:25
-X-CID-META: VersionHash:5f78ec9,CLOUDID:7c809394-10ce-4e4b-85c2-c9b5229ff92b,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
-X-UUID: 5d57e018726d11eea33bb35ae8d461a2-20231024
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
-        (envelope-from <shawn.sung@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 65593200; Tue, 24 Oct 2023 21:00:53 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 24 Oct 2023 21:00:52 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 24 Oct 2023 21:00:52 +0800
-From:   Hsiao Chien Sung <shawn.sung@mediatek.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Fei Shao <fshao@chromium.org>,
-        Sean Paul <sean@poorly.run>,
-        Johnson Wang <johnson.wang@mediatek.corp-partner.google.com>,
-        "Nancy . Lin" <nancy.lin@mediatek.com>,
-        Moudy Ho <moudy.ho@mediatek.com>,
-        Hsiao Chien Sung <shawn.sung@mediatek.com>,
-        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
-        Nathan Lu <nathan.lu@mediatek.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v11 04/23] dt-bindings: display: mediatek: padding: Add MT8188
-Date:   Tue, 24 Oct 2023 21:00:29 +0800
-Message-ID: <20231024130048.14749-5-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20231024130048.14749-1-shawn.sung@mediatek.com>
-References: <20231024130048.14749-1-shawn.sung@mediatek.com>
+        Tue, 24 Oct 2023 09:00:37 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3381010C2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:00:34 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so6961042a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:00:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1698152432; x=1698757232; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZWgZj0jWXyKIUpIqseNDFQ+Z3Ajt56Y9J6kThz0DfLU=;
+        b=2sD6BBIQO1lj4Kwx720Zfg3rgFovVh7nNSRRwmuXUB3v5G+YauzDqwDTC1LmFpghgH
+         /IAI3ZuZHVMQo4sTKradRg0zgX2lt1zERwEI7uCMhoqKExPfeZxnAdA9OAQ7Vdr6JpcU
+         QjLNvOc/+CZDjY6qPmJsWxpxSkUcTX7I4hDvAHxzrhRN05LzgVFIR+pA+SMEKo+BlFdb
+         3sl/H1GmcwAhntF90SsdLNrhWhWV9htkV2irNgOvi71rtKiUijJ24h0hoFB01/FH94vO
+         xSbgofR44bkZsrJZOTYSrZOLwp0ITuwOwtf/pLro5/2xQAPOoNZkCzWZoJRPaBUJws3L
+         ZadA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698152432; x=1698757232;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZWgZj0jWXyKIUpIqseNDFQ+Z3Ajt56Y9J6kThz0DfLU=;
+        b=ra7h7OSW+uoAsX7Dz9fCukH+lWvDRhjn4C3Px0pFe45VP0jM+jmL0OfPDbwG/62pXW
+         ttgi/iOgpg5em+b7taAo4Y1vVx+DxecM0MBLFOPZl7nJfQTmPuGUiyQ1U5XDhLgnbrsY
+         uPaGxeyZefgXilt1T8T/4H7LENtV+yTHgwePzRqdbar2Lwpabw3pIxHAyu1QVrQIhUE4
+         6BQ8ulaF3DIesAEICwOJ9Za3g7EsfXZCyclFWCsq7VkawWnd/RaE9UgfiO/r0rloRWFM
+         +yMW+gWlVa/rhXMQEoh/kcYRsIr9h/y8U2z3OyZR0Aj0Sr+vAetvL2tUa5z4qVe4Xea/
+         rm8A==
+X-Gm-Message-State: AOJu0YwXruNJ91eJqMZGnjy2x1uZUCVtTIcx4EozkzRoDXSnKeCzxxDt
+        Fi7APOgesB39wN0WGy2ZzCw+Eg==
+X-Google-Smtp-Source: AGHT+IEzcpYTuCTOHF/4/6Ur1ISFMPTfgKZaV6/zztDjAlr47wbdwfa+ojve+Wi/F7riNzmSUNX+5g==
+X-Received: by 2002:a50:d603:0:b0:53e:6624:5aeb with SMTP id x3-20020a50d603000000b0053e66245aebmr9243046edi.11.1698152432557;
+        Tue, 24 Oct 2023 06:00:32 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id h28-20020a50cddc000000b0053e589016a7sm7980698edj.16.2023.10.24.06.00.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 06:00:31 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 15:00:30 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Ivan Vecera <ivecera@redhat.com>
+Cc:     netdev@vger.kernel.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        Jacob Keller <jacob.e.keller@intel.com>
+Subject: Re: [PATCH net-next 1/2] i40e: Do not call devlink_port_type_clear()
+Message-ID: <ZTe/7nfMmS+6KhrE@nanopsycho>
+References: <20231024125109.844045-1-ivecera@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024125109.844045-1-ivecera@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Padding is a new hardware module on MediaTek MT8188,
-add dt-bindings for it.
+Tue, Oct 24, 2023 at 02:51:08PM CEST, ivecera@redhat.com wrote:
+>Do not call devlink_port_type_clear() prior devlink port unregister
+>and let devlink core to take care about it.
+>
+>Reproducer:
+>[root@host ~]# rmmod i40e
+>[ 4539.964699] i40e 0000:02:00.0: devlink port type for port 0 cleared without a software interface reference, device type not supported by the kernel?
+>[ 4540.319811] i40e 0000:02:00.1: devlink port type for port 1 cleared without a software interface reference, device type not supported by the kernel?
+>
+>Fixes: 9e479d64dc58 ("i40e: Add initial devlink support")
+>Signed-off-by: Ivan Vecera <ivecera@redhat.com>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
----
- .../display/mediatek/mediatek,padding.yaml    | 81 +++++++++++++++++++
- 1 file changed, 81 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml
+Ivan, I see that even if we have checks and warnings, it is not enough :)
 
-diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml
-new file mode 100644
-index 000000000000..6bad7dc2d69f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml
-@@ -0,0 +1,81 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/mediatek/mediatek,padding.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek Display Padding
-+
-+maintainers:
-+  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
-+  - Philipp Zabel <p.zabel@pengutronix.de>
-+
-+description:
-+  Padding provides ability to add pixels to width and height of a layer with
-+  specified colors. Due to hardware design, Mixer in VDOSYS1 requires
-+  width of a layer to be 2-pixel-align, or 4-pixel-align when ETHDR is enabled,
-+  we need Padding to deal with odd width.
-+  Please notice that even if the Padding is in bypass mode, settings in
-+  register must be cleared to 0, or undefined behaviors could happen.
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt8188-disp-padding
-+
-+  reg:
-+    maxItems: 1
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: Padding's clocks
-+
-+  mediatek,gce-client-reg:
-+    description:
-+      GCE (Global Command Engine) is a multi-core micro processor that helps
-+      its clients to execute commands without interrupting CPU. This property
-+      describes GCE client's information that is composed by 4 fields.
-+      1. Phandle of the GCE (there may be several GCE processors)
-+      2. Sub-system ID defined in the dt-binding like a user ID
-+         (Please refer to include/dt-bindings/gce/<chip>-gce.h)
-+      3. Offset from base address of the subsys you are at
-+      4. Size of the register the client needs
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    items:
-+      items:
-+        - description: Phandle of the GCE
-+        - description: Subsys ID defined in the dt-binding
-+        - description: Offset from base address of the subsys
-+        - description: Size of register
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - power-domains
-+  - clocks
-+  - mediatek,gce-client-reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/clock/mediatek,mt8188-clk.h>
-+    #include <dt-bindings/power/mediatek,mt8188-power.h>
-+    #include <dt-bindings/gce/mt8195-gce.h>
-+
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        padding0: padding@1c11d000 {
-+            compatible = "mediatek,mt8188-disp-padding";
-+            reg = <0 0x1c11d000 0 0x1000>;
-+            clocks = <&vdosys1 CLK_VDO1_PADDING0>;
-+            power-domains = <&spm MT8188_POWER_DOMAIN_VDOSYS1>;
-+            mediatek,gce-client-reg = <&gce0 SUBSYS_1c11XXXX 0xd000 0x1000>;
-+        };
-+    };
--- 
-2.18.0
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
+Btw, some (even brief) cover letter for patchset would be nice.
