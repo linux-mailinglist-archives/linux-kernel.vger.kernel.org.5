@@ -2,60 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 405F67D53A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EEB7D53A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343568AbjJXOGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 10:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
+        id S1343560AbjJXOHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 10:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234567AbjJXOGo (ORCPT
+        with ESMTP id S234210AbjJXOHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:06:44 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54238A4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:06:42 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qvI3H-00020n-B2; Tue, 24 Oct 2023 16:06:35 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qvI3G-003xaj-Oc; Tue, 24 Oct 2023 16:06:34 +0200
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qvI3G-00G8pr-MF; Tue, 24 Oct 2023 16:06:34 +0200
-Date:   Tue, 24 Oct 2023 16:06:34 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] regulator: fixed: add support for under-voltage
- IRQ
-Message-ID: <20231024140634.GD3803936@pengutronix.de>
-References: <20231024130842.2483208-1-o.rempel@pengutronix.de>
- <20231024130842.2483208-3-o.rempel@pengutronix.de>
- <471281bf-4126-496b-93ef-0807f4910ce7@sirena.org.uk>
+        Tue, 24 Oct 2023 10:07:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A259DA3;
+        Tue, 24 Oct 2023 07:07:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10A78C433C8;
+        Tue, 24 Oct 2023 14:07:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698156462;
+        bh=9jC8oNZgHX1Zi6aWIvKR5WIBscBYWtT/XNF7Ji+UiB8=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=gXC+envN88pZ16F8KzAjczjiWBqEKfHwpJD0p7P+wmzdB+o7NwKEiLXAFTNwGw/1g
+         dieOYHrquj917Fj/nh2ar4Oc8Wj2kFU+RX8UHAM2mzCoTWHtvOteXl2tsuuLYEvOpV
+         vhzNHq5eF96otmpUqWODLhOHYs0IfVbpKVmsjrwylxLKKgTAk8QVJUarSBxggH+LZv
+         9i00MapnXdOhEsMDCibsxQUOp13U/KyXxxJWIPHsUoJ3lwq3tzXcjuLzexDz/vbXRK
+         Si+n9xhtkO/wslDcK+pBQlm2SmySgNzvQuF0myT1gavca1fWMSqLJOW2UX0A4RLgpj
+         fctl56uXy/gww==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Jeff Johnson <quic_jjohnson@quicinc.com>,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] wifi: ath11k: fix event locking
+References: <20231019153115.26401-1-johan+linaro@kernel.org>
+Date:   Tue, 24 Oct 2023 17:07:38 +0300
+In-Reply-To: <20231019153115.26401-1-johan+linaro@kernel.org> (Johan Hovold's
+        message of "Thu, 19 Oct 2023 17:31:13 +0200")
+Message-ID: <87o7goxget.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <471281bf-4126-496b-93ef-0807f4910ce7@sirena.org.uk>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,40 +50,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 02:26:24PM +0100, Mark Brown wrote:
-> On Tue, Oct 24, 2023 at 03:08:42PM +0200, Oleksij Rempel wrote:
-> 
-> > Add interrupt support for under-voltage notification. This functionality
-> > can be used on systems capable to detect under-voltage state and having
-> > enough capacity to let the SoC do some emergency preparation.
-> > 
-> > This change enforce default policy to shutdown system as soon as
-> > interrupt is triggered.
-> 
-> ...
-> 
-> > +static irqreturn_t reg_fixed_under_voltage_irq_handler(int irq, void *data)
-> > +{
-> > +	hw_protection_shutdown("Critical voltage drop reached",
-> > +			       FV_DEF_EMERG_SHUTDWN_TMO);
-> > +
-> > +	return IRQ_HANDLED;
-> > +}
-> 
-> We need a bit more policy here - the regulator could be critical to
-> system function but it could also be well isolated and just affecting
-> whatever device it's directly supplying in a way that the system can
-> tolerate and might even want to (eg, for something like a SD card or USB
-> port where end users are plugging in external hardware).
+Johan Hovold <johan+linaro@kernel.org> writes:
 
-Hm, how about devicetree property to indicate system critical nature of
-the regulator. For example "system-critical-regulator" or
-"system-critical-undervoltage-interrupt" ?
+> RCU lockdep reported suspicious RCU usage when accessing the temperature
+> sensor. Inspection revealed that the DFS radar event code was also
+> missing the required RCU read-side critical section marking.
+>
+> Johan
+>
+>
+> Changes in v2
+>  - add the missing rcu_read_unlock() to an
+>    ath11k_wmi_pdev_temperature_event() error path as noticed by Jeff
+>
+>
+> Johan Hovold (2):
+>   wifi: ath11k: fix temperature event locking
+>   wifi: ath11k: fix dfs radar event locking
 
-Regards,
-Oleksij
+Thanks for the fixes. I really like using lockdep_assert_held() to
+document if a function requires some lock held, is there anything
+similar for RCU?
+
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
