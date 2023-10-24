@@ -2,133 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB987D4D0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A723D7D4D12
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234286AbjJXJ4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
+        id S234320AbjJXJ5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234201AbjJXJ4b (ORCPT
+        with ESMTP id S234208AbjJXJ5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:56:31 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CEFDA
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:56:28 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a6190af24aso676880166b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:56:28 -0700 (PDT)
+        Tue, 24 Oct 2023 05:57:02 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94B2F9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:56:59 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7b6cd2afaf2so1499953241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:56:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698141386; x=1698746186; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=60ZFZwF4er3TKAGEnzm55Rtk4c8tKPSREDPiN+K2PEI=;
-        b=CNJ2UCCUKNUVdFvfVRF8KT7EbupbGNSAmH7j7WSJJf2YsckQzgBguNoK88FPP3kaM7
-         2iVvvLAGBBsrHuUW2iejZ0F1TCv3ZYBX0NJ909GLfIIInJvRHuOrXpYMa5BUtD61ao5L
-         vq4IcV+rzu+ky/qiaKBemVuLg2b/I1ePRSptTMJxBCLavsyM2C6e4ZQZQusrpIa/K4+7
-         qjEuhapW2wQ6Nkdjpu33qGI9folN3cFjaI0EKMSq5fMMohg4Wo6SXv3c30CEmAjADdd1
-         j+VWtI+VCI2F32dm/aCJa4d3cU7qYIl//3q4MyuD9hqZTwkt2AiprFefEXF89gGb3sco
-         viTQ==
+        d=linaro.org; s=google; t=1698141418; x=1698746218; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9ZmQw87wWu1ilebiZdLFiZTY4pr7HbiJ8vUC+a+GPRs=;
+        b=Y1wxrMZy1k/4FBm8A2U476YZIHerlSRC/2lZEGR3TsdTro02PKRW9bEEBrI+OrX2jZ
+         x2O8pPR63iXPR79TfbMTP+2C6IsLwpYjWJyYkwUFE0a5pK8cVU+mxATxae2dhXHSafQ2
+         +HGVzVHt7HkKWb4QOZFVDb41tkfA+jSfeCwkM/G8OfAm3ACV/STR+eDTQE5z+P+DK82U
+         fWSB24SRol9vRk9f3S8AAf//8zzDVOyOr3K5WrmyxLMsGNYoZ96/yZYxXahdbZmRrlX+
+         6Q2ahxHTvVJxO3c9Ue4d/o4TOEP+iYl0cumWmsWUmKnrPTsaOHZiAZwBTkrddvfLXKYc
+         nA9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698141386; x=1698746186;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=60ZFZwF4er3TKAGEnzm55Rtk4c8tKPSREDPiN+K2PEI=;
-        b=E3B7RCAOytGBB0XbwO6DHfNdFzf1iSSY026ddlTzPkVgTSwvHn2+MbJBqsyPF0EOjJ
-         NFD0FimnZ4UQ1wQpmCHmYf80BxuHAN7JbzRWCHeYoCcEkVItfucUchdLJLhdYYiKzhz3
-         vjHH0OJ3FRZQFUZtFxzODbBWsXAAngyUE6Wm3FKKVWAViRgF1LJnViYMJxgLnh8eO/Xk
-         inj6NqmfZqLTwWljw14u2lYv6EvuX0IbB+aVdpASLbSVUvqWtDqAqsS/c7mFAQm9tKsL
-         q+RBJgAVTVueA3RNho0mfGc/QRxMGIO+8R9S4gT+Ul/Nb1YwyeWILz0hT5xOwWVeND2O
-         6rwg==
-X-Gm-Message-State: AOJu0YwoVDUzZz+Du0gY8/yLHNrDK209bFNca5tuDiE/RfdoGcYOQezh
-        IQlr2vRLfKoSMOT0qxMiXV+9fw==
-X-Google-Smtp-Source: AGHT+IG+zZuxdRmlw6cagq1o1d6dSDS4k99IffaUguajVPCrU/JlP/SY67n++9Zbk8CKacYOcemeKg==
-X-Received: by 2002:a17:907:72c2:b0:9b2:f941:6916 with SMTP id du2-20020a17090772c200b009b2f9416916mr10458123ejc.17.1698141386495;
-        Tue, 24 Oct 2023 02:56:26 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id la5-20020a170906ad8500b009adce1c97ccsm7933703ejb.53.2023.10.24.02.56.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 02:56:25 -0700 (PDT)
-Message-ID: <550cba92-39dc-4e45-beb3-c714d14d9d85@linaro.org>
-Date:   Tue, 24 Oct 2023 11:56:23 +0200
+        d=1e100.net; s=20230601; t=1698141418; x=1698746218;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9ZmQw87wWu1ilebiZdLFiZTY4pr7HbiJ8vUC+a+GPRs=;
+        b=LuSYQXCmwh70VzEKhuGQSMmya3kN9rjU7RuQsoCz5uXDJ5HdLlx1qihzief89xGXKI
+         KRVzSLnNQcNROb0TCF5ziLh8g54aD/M0ku8hyKOZyQH2Nwi5pIjr0bTZt1jg3WIZq1tv
+         2YMl3mGEVCB48CLCXsjROMWBQFwTJZgMqneQGM+zQbiGMYKU1vYsOnrhNQJg9iK/bPCJ
+         1CS8uOLTyY7Qc6m44izN9jp2SJLhB7rRzBHLD8tMP66934w9+/3wPL/gCshNTyU+A18k
+         qT+nA+Do7WVNgZK+VO1fEtUucYZMNs9uFkRu6e68bc479KWzyLF117gG8rp/9P9ZJGsu
+         z7jg==
+X-Gm-Message-State: AOJu0Yy8X+ezNI+dhmbaJ5EXI9Ohuwghh5qeNy/9hGSSlq2EyauQS5Af
+        U9+r4cTxuzlBM8dfIg8QVQpCwzFXRlhvdY0zyZGQZA==
+X-Google-Smtp-Source: AGHT+IF/FMkfyP/7/zLROy5Ws/WEeWc1OLNc41dw+XpTZWtkqgbB228Ev9XsffAxvviNM6m98X3y97EFL0UsiFArJ7o=
+X-Received: by 2002:a67:ac48:0:b0:45a:67da:658 with SMTP id
+ n8-20020a67ac48000000b0045a67da0658mr5359507vsh.33.1698141418696; Tue, 24 Oct
+ 2023 02:56:58 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 1/5] net: dt-bindings: Introduce the Qualcomm
- IPQESS Ethernet switch
-Content-Language: en-US
-To:     Romain Gantois <romain.gantois@bootlin.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Luka Perkov <luka.perkov@sartura.hr>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andy Gross <agross@kernel.org>, davem@davemloft.net,
-        thomas.petazzoni@bootlin.com, Paolo Abeni <pabeni@redhat.com>,
-        devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Robert Marko <robert.marko@sartura.hr>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-References: <20231023155013.512999-1-romain.gantois@bootlin.com>
- <20231023155013.512999-2-romain.gantois@bootlin.com>
- <169808266457.861402.14537617078362005098.robh@kernel.org>
- <35ec9e4b-21ee-1436-da00-02e11effdc23@bootlin.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <35ec9e4b-21ee-1436-da00-02e11effdc23@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231018162540.667646-1-vincent.guittot@linaro.org>
+ <20231018162540.667646-6-vincent.guittot@linaro.org> <CAJZ5v0hS7bdUv=-k4ut2Fw0LYfB7Hb1_rro7UOVTRq4=JLNchg@mail.gmail.com>
+ <60497d6d-dfe3-4edc-9553-311fdd9c63d0@arm.com>
+In-Reply-To: <60497d6d-dfe3-4edc-9553-311fdd9c63d0@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 24 Oct 2023 11:56:46 +0200
+Message-ID: <CAKfTPtCogPYyfe2aoNQE4BLRM+++3ezdx-3NsVFFMBKnZNWfiw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] cpufreq/cppc: set the frequency used for computing
+ the capacity
+To:     Pierre Gondois <pierre.gondois@arm.com>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, viresh.kumar@linaro.org,
+        lenb@kernel.org, robert.moore@intel.com, lukasz.luba@arm.com,
+        ionela.voinescu@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, conor.dooley@microchip.com,
+        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -139,29 +84,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/10/2023 11:54, Romain Gantois wrote:
-> Hello Rob,
-> 
-> On Mon, 23 Oct 2023, Rob Herring wrote:
-> 
->> pip3 install dtschema --upgrade
->>
->> Please check and re-submit after running the above command yourself. Note
->> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
->> your schema. However, it must be unset to test all examples with your schema.
->>
->>
-> 
-> Even after upgrading dtschema to 2023.9, installing yamllint 1.32.0 and running 
-> without DT_SCHEMA_FILES, I can't seem to reproduce this error. I've also tried 
-> rebasing on v6.5-rc1 which didn't show it either. However, It seems like 
+On Fri, 20 Oct 2023 at 18:05, Pierre Gondois <pierre.gondois@arm.com> wrote=
+:
+>
+> Hello Vincent,
+>
+> On 10/18/23 19:26, Rafael J. Wysocki wrote:
+> > On Wed, Oct 18, 2023 at 6:25=E2=80=AFPM Vincent Guittot
+> > <vincent.guittot@linaro.org> wrote:
+> >>
+> >> Save the frequency associated to the performance that has been used wh=
+en
+> >> initializing the capacity of CPUs.
+> >> Also, cppc cpufreq driver can register an artificial energy model. In =
+such
+> >> case, it needs the frequency for this compute capacity.
+> >> We moved and renamed cppc_perf_to_khz and cppc_perf_to_khz to use them
+> >> outside cppc_cpufreq in topology_init_cpu_capacity_cppc().
+> >>
+> >> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> >
+> > For the changes in drivers/acpi/cppc_acpi.c :
+> >
+> > Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> >
+> >> ---
+> >>   drivers/acpi/cppc_acpi.c       |  93 ++++++++++++++++++++++
+> >>   drivers/base/arch_topology.c   |  15 +++-
+> >>   drivers/cpufreq/cppc_cpufreq.c | 141 ++++++-------------------------=
+--
+> >>   include/acpi/cppc_acpi.h       |   2 +
+> >>   4 files changed, 133 insertions(+), 118 deletions(-)
+> >>
+>
+> [snip]
+>
+> >> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology=
+.c
+> >> index 9a073c2d2086..2372ce791bb4 100644
+> >> --- a/drivers/base/arch_topology.c
+> >> +++ b/drivers/base/arch_topology.c
+> >> @@ -350,6 +350,7 @@ bool __init topology_parse_cpu_capacity(struct dev=
+ice_node *cpu_node, int cpu)
+> >>   void topology_init_cpu_capacity_cppc(void)
+> >>   {
+> >>          struct cppc_perf_caps perf_caps;
+> >> +       u64 capacity, capacity_scale;
+>
+> I think capacity_scale should be initialized to 0 here,
+> since it is used to find the max value of raw_capacity[cpu].
 
-v6.5-rc1 is some ancient version, so how can you rebase on top of it?
+yes
 
-Which commit this is based on?
+>
+> >>          int cpu;
+> >>
+> >>          if (likely(!acpi_cpc_valid()))
+> >> @@ -365,6 +366,10 @@ void topology_init_cpu_capacity_cppc(void)
+> >>                      (perf_caps.highest_perf >=3D perf_caps.nominal_pe=
+rf) &&
+> >>                      (perf_caps.highest_perf >=3D perf_caps.lowest_per=
+f)) {
+> >>                          raw_capacity[cpu] =3D perf_caps.highest_perf;
+> >> +                       capacity_scale =3D max_t(u64, capacity_scale, =
+raw_capacity[cpu]);
+> >> +
+> >> +                       per_cpu(capacity_ref_freq, cpu) =3D cppc_perf_=
+to_khz(&perf_caps, raw_capacity[cpu]);
+>
+> I think capacity_ref_freq in in Hz, so the freq should be multiplied by 1=
+000 .
 
+yes, I forgot the *1000. I'm going to add * HZ_PER_KHZ
 
+>
+> With these two modifications, the patches worked well on a cppc-based pla=
+tform.
+>
+> Sorry I forgot to detail what it was. It's a modified Juno with CPPC enab=
+led. AMUs are not
+> enabled, so the CPPC performance counters are not handled correctly and F=
+IE cannot be enabled,
+> but it is possible to change frequencies.
+>
+> The _CPC objects are setup as:
+> little CPUs:
+> - lowest_freq =3D 450 (MHz)
+> - nominal_freq =3D 800 (MHz)
+> - highest_perf =3D 383 * 1000
+> - nominal_perf =3D 322 * 1000
+> - lowest_perf =3D 181 * 1000
+> - lowest_nonlinear_perf =3D 181 * 1000
+>
+> big CPUs:
+> - lowest_freq =3D 600 (MHz)
+> - nominal_freq =3D 1200 (MHz)
+> - highest_perf =3D 1024 * 1000
+> - nominal_perf =3D 833 * 1000
+> - lowest_perf =3D 512 * 1000
+> - lowest_nonlinear_perf =3D 512 * 1000
+>
+> As a remainder, available frequencies are:
+> - little CPUs: 450, 800, 950 MHz
+> - big CPUs: 600, 1000, 1200 Mhz
+> So the platform is setup to have the last frequency as a boost frequency =
+(for testing).
+>
+> ----
+>
+> Just to make a note of 2 potential side-issues for later (independent fro=
+m these patches):
+>
+> - When testing with boosted/non-bossted frequencies, it didn't seem that =
+cpu_overutilized()
+>    was taking the maximum frequency into consideration. This might mean t=
+hat when lowering the
+>    maximum frequency of a policy, the maximum capacity of the CPUs of thi=
+s policy is used
+>    to detect over-utilization.
+>    I would have thought that the over-utilization threshold would be lowe=
+red at the same time.
 
-Best regards,
-Krzysztof
+No it's not, It will be part of a next step patchset. This patchset
+aims to consolidate and use the same reference so we can then easily
+propagate changes if needed
 
+>
+> - Similarly for EAS, the energy computation doesn't take into account the=
+ maximum frequency
+>    of the policy. This should mean that EAS is taking into consideration =
+frequencies that
+>    are not actually available.
+>
+>
+> Regards,
+> Pierre
