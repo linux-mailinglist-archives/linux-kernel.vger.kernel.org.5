@@ -2,170 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 376387D5A8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C397D5A91
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344152AbjJXSbu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 14:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        id S1344113AbjJXSeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343871AbjJXSbs (ORCPT
+        with ESMTP id S231553AbjJXSeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:31:48 -0400
-Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9EDA2;
-        Tue, 24 Oct 2023 11:31:46 -0700 (PDT)
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1e99a55a9c0so735259fac.1;
-        Tue, 24 Oct 2023 11:31:46 -0700 (PDT)
+        Tue, 24 Oct 2023 14:34:14 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA49B9F;
+        Tue, 24 Oct 2023 11:34:12 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-27d17f5457fso54636a91.0;
+        Tue, 24 Oct 2023 11:34:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698172452; x=1698777252; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eInzOmV9CI5bvKZsQcE1o+qh/nZEiz4SXYl0oOFUVx8=;
+        b=KoHLe3mEcIszexE7BQOHOietAwA7IgBuZR5a088f+TEqfqLyAjbmoGaSsYOb3SxOfX
+         8WxO/07819+H1bcCnXbBaoSi9TdJzlX7CTqaf3fklgvLmzlcqIEi9ZsuejACKZlkILvo
+         WmyiqJ2P7HRIYMVppfuzxkg/eOsiCBP26EFQac7YRjpMc3loKeD7b42QzpGgF73Wp0hm
+         Mnh5TGlgbawXdCPU5yG8U6A4O8D21AJA3IHtbmGCduYM7rx0HNHKBEO/MPfIaYGNnHqN
+         JLjHDt5IeLGwXDEzsCqGGhc9pA6i2h581iKwZ785JPLqy9QexmsRZR9I40PsZoRdPKyl
+         6N4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698172306; x=1698777106;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XDoF8Vf3VyZumUoLFjmWZx8r9xJBfxkPhJpQuVboEpw=;
-        b=R4pDpEYAIaKdzH+wFybntzGrrxG2cfOypQ0kRSXVek1KvKpcnZFF81qBeFhkmNCUr8
-         1CakN+Vz8RfvFy7CYNqmpA4EnYkGpGG7r/vnMvDpTGX7FWsfsklwBCdO4VatBgbYfpdF
-         TJivEYKxJNQdSyVDN+mZBo8hNseaq/TV12u/hym9AMz40huDk32WVbGubs55BEB1/yQt
-         SFhpBXa5fbgWXrlxgloW/Wdk1bBCILZ0hCDZpqMoj3QoX7R4OJpSAoFaFW5exmyGlvmR
-         e7csJnV0Lz+dp2KjoU1A+xBXBuxyWFXBlVya9IfNiVwXyFRm9XC3hV5T/AgifUfBRI6V
-         rTbA==
-X-Gm-Message-State: AOJu0YzZGhPQrQS0QKqWMEeWGtit+ps1PIf+t4OcFjSYtd/nRWOdU06C
-        lZFP6RWhk+Vp6sDE9yq+AmFJXTR5ZzcPlRvQIrU=
-X-Google-Smtp-Source: AGHT+IH2EFbLWL/v9E/dQTTscrQum2xp8EVbFFAxX4pQ+ccP9+k7qxANEe03vrJQNqg6WZSi/OqmgP88n4f5zhsp9/A=
-X-Received: by 2002:a05:6871:3317:b0:1bf:9fa2:bfa3 with SMTP id
- nf23-20020a056871331700b001bf9fa2bfa3mr14098531oac.1.1698172305854; Tue, 24
- Oct 2023 11:31:45 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698172452; x=1698777252;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eInzOmV9CI5bvKZsQcE1o+qh/nZEiz4SXYl0oOFUVx8=;
+        b=pN/dBjpV3LOVOBmW1t++WMEHG3fUij3zNMmdXlXDdvEjlSqrI9Y/W8vLoM/jhJ0z6H
+         /4NzhN0ZbfEYCyx4Pfs8bTCjfDnKja2i7UnqLveq8mdNE3OfQV/q/nxqi+nsNmwPCgmJ
+         6jCYWMkk+zxROjH1TMOuJMLQkkLkQijZR7rEIDLy/Ug1ISA0nLjD8aNxkyJ1OMMy80Yb
+         Z3rz6R5UdxHKVhxtDoyjIQASbrmcTx4U1Nh1UAyj40ihVvFYl1CRkoUWo/4O3TlfoV9/
+         XdoxAAoho/r99AWuHg5mV9VhyQZ0yKnDtUiLHpcWD0M2zC+ba5ccFF6j+ZRHQk7LIL8Z
+         HSPQ==
+X-Gm-Message-State: AOJu0YxbpSVSOwweGJqvrQ5uL2Ea9KH3GggvkhqIALrR1DxRSPwq3W6/
+        sT0xiJ2FazrgyZeKY+qg7kg=
+X-Google-Smtp-Source: AGHT+IF4B61LYgmB49ohAKA6Ab4qdJgSoPOKtvhEF36Uzskljg76AFvZn6JVPokXIAcmZCWGFM0fSw==
+X-Received: by 2002:a17:90a:9a6:b0:27c:fa8f:4e91 with SMTP id 35-20020a17090a09a600b0027cfa8f4e91mr22597340pjo.23.1698172452246;
+        Tue, 24 Oct 2023 11:34:12 -0700 (PDT)
+Received: from brag-vm.. ([117.243.121.127])
+        by smtp.gmail.com with ESMTPSA id rm10-20020a17090b3eca00b0027476c68cc3sm7202125pjb.22.2023.10.24.11.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 11:34:12 -0700 (PDT)
+From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        stanley.chu@mediatek.com, mani@kernel.org, quic_cang@quicinc.com,
+        quic_asutoshd@quicinc.com, peter.wang@mediatek.com,
+        beanhuo@micron.com, quic_nguyenb@quicinc.com,
+        Arthur.Simchaev@wdc.com
+Cc:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ufs/core: ufshcd: Conversion to bool not necessary
+Date:   Wed, 25 Oct 2023 00:04:01 +0530
+Message-Id: <20231024183401.48888-1-bragathemanick0908@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231004183455.27797-1-ville.syrjala@linux.intel.com>
- <6d207eef73fb2ad32264921ae7d1a536b6b8da61.camel@intel.com>
- <ZR22I-9YgGW9vADB@intel.com> <ZTf6qwCLR3YEwL9K@intel.com>
-In-Reply-To: <ZTf6qwCLR3YEwL9K@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 24 Oct 2023 20:31:34 +0200
-Message-ID: <CAJZ5v0jzqZBHqh8dxChwJ65wT-pU3+9HxVi5f7DAcOTFpYTb9Q@mail.gmail.com>
-Subject: Re: [Intel-gfx] [PATCH] powercap: intel_rapl: Don't warn about BIOS
- locked limits during resume
-To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 7:11 PM Ville Syrjälä
-<ville.syrjala@linux.intel.com> wrote:
->
-> On Wed, Oct 04, 2023 at 09:59:47PM +0300, Ville Syrjälä wrote:
-> > On Wed, Oct 04, 2023 at 06:45:22PM +0000, Pandruvada, Srinivas wrote:
-> > > On Wed, 2023-10-04 at 21:34 +0300, Ville Syrjala wrote:
-> > > > From: Ville Syrjälä <ville.syrjala@linux.intel.com>
-> > > >
-> > > > Restore enough of the original behaviour to stop spamming
-> > > > dmesg with warnings about BIOS locked limits when trying
-> > > > to restore them during resume.
-> > > >
-> > > > This still doesn't 100% match the original behaviour
-> > > > as we no longer attempt to blindly restore the BIOS locked
-> > > > limits. No idea if that makes any difference in practice.
-> > > >
-> > > I lost the context here. Why can't we simply change pr_warn to pr_debug
-> > > here?
-> >
-> > I presume someone wanted to make it pr_warn() for a reason.
-> > I don't mind either way.
->
-> Ping. Can someone make a decision on how this should get fixed
-> so we get this moving forward?
+A logical evaluation already results in bool. There is no need for using
+a ternary operator based evaluation and bool conversion of the outcome.
 
-I thought we were going to replace the pr_warn() with pr_debug().
+Issue identified using boolconv.cocci Coccinelle semantic patch.
 
-> > > > Cc: Zhang Rui <rui.zhang@intel.com>
-> > > > Cc: Wang Wendy <wendy.wang@intel.com>
-> > > > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > > > Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
-> > > > Fixes: 9050a9cd5e4c ("powercap: intel_rapl: Cleanup Power Limits
-> > > > support")
-> > > > Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-> > > > ---
-> > > >  drivers/powercap/intel_rapl_common.c | 28 ++++++++++++++++++++------
-> > > > --
-> > > >  1 file changed, 20 insertions(+), 8 deletions(-)
-> > > >
-> > > > diff --git a/drivers/powercap/intel_rapl_common.c
-> > > > b/drivers/powercap/intel_rapl_common.c
-> > > > index 40a2cc649c79..9a6a40c83f82 100644
-> > > > --- a/drivers/powercap/intel_rapl_common.c
-> > > > +++ b/drivers/powercap/intel_rapl_common.c
-> > > > @@ -882,22 +882,34 @@ static int rapl_read_pl_data(struct rapl_domain
-> > > > *rd, int pl,
-> > > >         return rapl_read_data_raw(rd, prim, xlate, data);
-> > > >  }
-> > > >
-> > > > -static int rapl_write_pl_data(struct rapl_domain *rd, int pl,
-> > > > -                              enum pl_prims pl_prim,
-> > > > -                              unsigned long long value)
-> > > > +static int rapl_write_pl_data_nowarn(struct rapl_domain *rd, int pl,
-> > > > +                                    enum pl_prims pl_prim,
-> > > > +                                    unsigned long long value)
-> > > >  {
-> > > >         enum rapl_primitives prim = get_pl_prim(rd, pl, pl_prim);
-> > > >
-> > > >         if (!is_pl_valid(rd, pl))
-> > > >                 return -EINVAL;
-> > > >
-> > > > -       if (rd->rpl[pl].locked) {
-> > > > -               pr_warn("%s:%s:%s locked by BIOS\n", rd->rp->name,
-> > > > rd->name, pl_names[pl]);
-> > > > +       if (rd->rpl[pl].locked)
-> > > >                 return -EACCES;
-> > > > -       }
-> > > >
-> > > >         return rapl_write_data_raw(rd, prim, value);
-> > > >  }
-> > > > +
-> > > > +static int rapl_write_pl_data(struct rapl_domain *rd, int pl,
-> > > > +                             enum pl_prims pl_prim,
-> > > > +                             unsigned long long value)
-> > > > +{
-> > > > +       int ret;
-> > > > +
-> > > > +       ret = rapl_write_pl_data_nowarn(rd, pl, pl_prim, value);
-> > > > +       if (ret == -EACCES)
-> > > > +               pr_warn("%s:%s:%s locked by BIOS\n", rd->rp->name,
-> > > > rd->name, pl_names[pl]);
-> > > > +
-> > > > +       return ret;
-> > > > +}
-> > > > +
-> > > >  /*
-> > > >   * Raw RAPL data stored in MSRs are in certain scales. We need to
-> > > >   * convert them into standard units based on the units reported in
-> > > > @@ -1634,8 +1646,8 @@ static void power_limit_state_restore(void)
-> > > >                 rd = power_zone_to_rapl_domain(rp->power_zone);
-> > > >                 for (i = POWER_LIMIT1; i < NR_POWER_LIMITS; i++)
-> > > >                         if (rd->rpl[i].last_power_limit)
-> > > > -                               rapl_write_pl_data(rd, i, PL_LIMIT,
-> > > > -                                              rd-
-> > > > >rpl[i].last_power_limit);
-> > > > +                               rapl_write_pl_data_nowarn(rd, i,
-> > > > PL_LIMIT,
-> > > > +                                                         rd-
-> > > > >rpl[i].last_power_limit);
-> > > >         }
-> > > >         cpus_read_unlock();
-> > > >  }
-> > >
-> >
-> > --
+Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+---
+ drivers/ufs/core/ufshcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+index 406885671665..bbd8e83be6c6 100644
+--- a/drivers/ufs/core/ufshcd.c
++++ b/drivers/ufs/core/ufshcd.c
+@@ -2406,7 +2406,7 @@ static inline bool ufshcd_ready_for_uic_cmd(struct ufs_hba *hba)
+ 	int ret = read_poll_timeout(ufshcd_readl, val, val & UIC_COMMAND_READY,
+ 				    500, UIC_CMD_TIMEOUT * 1000, false, hba,
+ 				    REG_CONTROLLER_STATUS);
+-	return ret == 0 ? true : false;
++	return ret == 0;
+ }
+ 
+ /**
+-- 
+2.34.1
+
