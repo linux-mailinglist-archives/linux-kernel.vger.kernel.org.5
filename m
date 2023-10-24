@@ -2,356 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0DD7D5E6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6937D5E80
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344564AbjJXWok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:44:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
+        id S1344531AbjJXWwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344515AbjJXWoi (ORCPT
+        with ESMTP id S1344466AbjJXWwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:44:38 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2035.outbound.protection.outlook.com [40.92.90.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F0010CC;
-        Tue, 24 Oct 2023 15:44:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g12CXKSLhnqPEik0+rGDz1h+VcG+kRCE9I8thmHoNAHfDBT8/0f+h8jrEqQ/gyIKcjXWhM6USiv84dHSP8OsQK/KzRTjvN6+H/hbs1FRM8Thhh7pSC8aBLLdworpQTo2+MtbAcrTqbSVUQR/+UJaTo1gOHh7Qrhj762O8LGt8GO3A2gkvYRidCin1L1sWTAzN8eQn4oJkL2IWlVJxAh/1e0oPZr9H4jfm5ZeNuNUQFL7UKySHZl+p1Ywq1o6W+Mg668JE58GKFi9vPIjR4R6D8RRg+t6aaCbe++oqh6xtvQwJoopEyJEy3XshsPm/iggECsC7isOp+qQn4QrejR0uA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/4CGHoK/U8pNm/aSNzIvvseE3n3Cos4JFnIkgRy/hYY=;
- b=ZhdK0pqmiFrut0lbWiB8BjpBb65dCTcdvtb1l8d0OsiD7bv0nhDVi22O5KIgwO40se2F2/C9Cii1qLIUdRpOBT72noEAIdB3GAQ71kZM+PMOIpzkSOQY2zaw6OYC4+lM89g07aP/aUTuujBtBC8R5wDuyOv2mD4aEefZDQyTa9iG2k5uXWqrVnuXJt6t8N3iFBiC/mK0DjuyRRshRESXwnVkpUDWlf9OGFYbF20nW13Z0RghN+eJoOZrbHYd2vIqot9o+QetL0XaZ4y+2HpLTiOWvPq6IomduV81hFJmSRg40OkLxhwt5VOWAxNIdWIYmQ1FUwocgRvk7av6pGP2vQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/4CGHoK/U8pNm/aSNzIvvseE3n3Cos4JFnIkgRy/hYY=;
- b=k3MZ1hqdId2T5ubMUo/nFelzMV1+eB4SI6SZFDak9YsZYxW65Y+83u77IotnB4QgLCChDel3o35DwwN7KRlQcR0l6Pp1kWl8epDx1AW2mneqB4Y6Ey21SuPM2CXmv0VcVAvPvL99ME6C2wMTr+6RHdaax9yjW6SuGIoFVnUq0m6qc1Mcyv4cjHEoG1SpOxy+iB/fFfY5mA9FTxc9Y5xm3bHkjBFz+f8G7MQ0qcD2BrNq2ZvrrOOJMs8Xztyrd6VPw4rcxZwEmzeRvzexBPM8lL68lcroJZgcj9EFOgFdz+oOJD4dEOH/R8a2xMFfzccj4v90k9IDe9O80k3JxDIc0A==
-Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
- by AS2PR10MB7477.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:593::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
- 2023 22:44:31 +0000
-Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e2b0:8d7e:e293:bd97%6]) with mapi id 15.20.6907.032; Tue, 24 Oct 2023
- 22:44:31 +0000
-From:   Yuran Pereira <yuran.pereira@hotmail.com>
-To:     yonghong.song@linux.dev
-Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, shuah@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, mykolal@fb.com, brauner@kernel.org,
-        iii@linux.ibm.com, kuifeng@meta.com, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: Convert CHECK macros to ASSERT_* macros in bpf_iter
-Date:   Wed, 25 Oct 2023 04:13:20 +0530
-Message-ID: <DB3PR10MB683589A5F705C6CA5BE0D325E8DFA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [7lHMraXneiI0S4kqlweSKyiTwx8FGMau]
-X-ClientProxiedBy: JN3P275CA0001.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:70::12)
- To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
-X-Microsoft-Original-Message-ID: <20231024224320.1053343-1-yuran.pereira@hotmail.com>
+        Tue, 24 Oct 2023 18:52:33 -0400
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AF810C3;
+        Tue, 24 Oct 2023 15:52:29 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6b1e46ca282so4977517b3a.2;
+        Tue, 24 Oct 2023 15:52:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698187949; x=1698792749;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gLgl3JoRpkmOsEAdSnZ+hGTtDITuelVfD3+phK7PYJo=;
+        b=I9Li32P+uVSVN1IGORnphPJ04YRhMufbcJpTDXXXHr2Q7VFL8syIta7KNKauw/JV8w
+         O5hYwvq+ShUJy304OBBJWIO3F7gJpJNH4Ed6VmQccf1rWOQX8eovdTikP62twE/JBP7l
+         iBifL7WjkKW2Vl1uJX1w3pqpcpmeGxLG8idWgQIuvEONGzK4oenBC7jjGlqZog01Zxbp
+         pP6JTHqVgbW6SLyGjJfWOfeEuoFW359qpU4pLcga4TfsjmKk9dwT7W+KTVfrdEkwQvhw
+         arpsz5nKjPHJfY28FGXQYFBQWME6rSKPe2vy2XRvYFBQcT/2jE7h93RfZlVhlNTkG7wA
+         +hZA==
+X-Gm-Message-State: AOJu0YzRzBr2ZT+7jPCYqDMwhTBcFXKAmwoto7nttx8J9LGrvxdlAxbg
+        qFs8nxs56Wiutdyz1PtpIXI=
+X-Google-Smtp-Source: AGHT+IFbFZO7RaFrExyngVf4BsfO585yeLiM40sLmpbJtXKSBg2Dy6982w1rHywiWZAUVoEV44Os9Q==
+X-Received: by 2002:a05:6a20:72a2:b0:17a:eff5:fbbd with SMTP id o34-20020a056a2072a200b0017aeff5fbbdmr4733379pzk.43.1698187948892;
+        Tue, 24 Oct 2023 15:52:28 -0700 (PDT)
+Received: from dev-linux.lan (cpe-70-95-21-110.san.res.rr.com. [70.95.21.110])
+        by smtp.gmail.com with ESMTPSA id oa14-20020a17090b1bce00b00279163e52bbsm7469466pjb.17.2023.10.24.15.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 15:52:28 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 15:52:24 -0700
+From:   Sukrut Bellary <sukrut.bellary@linux.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Angelo Compagnucci <angelo.compagnucci@gmail.com>,
+        Nishanth Menon <nm@ti.com>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] iio: adc: ti-adc128s052: Add lower resolution
+ devices support
+Message-ID: <ZThKqFN6l8HHSXGw@dev-linux.lan>
+References: <20231022031203.632153-1-sukrut.bellary@linux.com>
+ <20231022031203.632153-3-sukrut.bellary@linux.com>
+ <20231022170048.289a1897@jic23-huawei>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|AS2PR10MB7477:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0d1b2614-83b8-4463-cb0d-08dbd4e2c93e
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GYTNssAkQ75cFkkJ7PtFtuOh+Tg3sg1wdGjA9XrR+wFKC6+fvhfLybaArcrgk9fZ3hMBI12ZNpi53mdtrfZ+GbTYjt4IL0Ylv933qjpkH264cv259eVPESU3HZPZmhVMN7MBbnZlavOYkMOjmRVJf7YTCc5jHk7Ig7/UJ/L3IVIPKDYXvgY5tHVHmAxlirFyAbAVvDk3FnavSZnm4BY6eXjObxrW1cYW8zxq7A0pA1PMQ1RtfZxeGRo933ujH3i/uYpeTkmNZP2vsd9qbaUADU72CQNtOE6PkpuZel5ONB6fKyyGftgkcQuvXV8D+ypYzvCo1rOW9PgeviVkXhmFXOIsdhixgxL+Sems52mqROEeUwKAhz2nuLF+Ow9FDXj/JVrYlPpJy+iPLa8451R52y6tExDR853Sy55SWv9vCswa3u4SQFWD6uQrrwbfFzca0HZ3H/e2tffWVoYDcP/9XC4FImC71L/+RkXPInvHf7gqEmqhpNKuupp0Uy2dAWwi4eKhgcDV+nuX7wgczLWJhyWIGFitxdACE37yxZ2ePGDDT2m7zFvz6/2/mMGmYfUdMZWeqHYgAjAG/YXGPCFXXGDbz8aVEbsqnAdA3hoK+u25kyjBpyaKElUSMZrWooG3
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7BW0md1gKnK5Isazinq9PzMRrS3MHd3+POlgTHwUJAt+pPIoITsjg+bZqQW1?=
- =?us-ascii?Q?bx//a3VYhxFx3LMh+HzO31+5FTi/eVkk1Smg5wDVVPA+1x/veqtotvGxkqmU?=
- =?us-ascii?Q?Q1LOLPh2JayXXtcFsGC1jNjddzfAkruG7QAkaZU+KuU3WYFp1j5JEZWghCa6?=
- =?us-ascii?Q?g/es72YXSCbUQ9ntYtm3xAnCIgxIB8Z1MKxNfIHMOKYkRQ++OMQnRVJYztIj?=
- =?us-ascii?Q?xKAZxd4pvdDMxnBClWkceRtUTkDkzBh7AL3sxr4W0yIaiObPrcYbtjSN5chz?=
- =?us-ascii?Q?jEmJAbHvjHyx0CIPH7pn0PDZ7V+WVP1lmsi95F9K2ARh2Ma35RQXZ3MHiIhz?=
- =?us-ascii?Q?2qHV4lvmGG2halBCoa68WmWJ7UUDZBNy6fFdbdvuyv7PgipWXNG5iZvZEjS/?=
- =?us-ascii?Q?D9OQwyDbVOqsBkMNDX5YC5cYSLRtmIUjzom4CcQr6wltQtVDzl+AtzYaOxMh?=
- =?us-ascii?Q?58k8B0FH9AKgLPq+srS0qugwX/edEhZwCkg2Sa/XLzfOeRkL/CaZbZu/e9eJ?=
- =?us-ascii?Q?iwfh7094gYR79L2TqFpOk5VhJbb/Rbl8QLBuLazkaQQ3LZLwrQpXPcchsson?=
- =?us-ascii?Q?KrGdQsShclUydXG/nm3iK1w4NQwXG3mz78xmKKO6PGPDQK3ZUKAsddUQqWw8?=
- =?us-ascii?Q?HQJXVWKHlL6tuVkyUDW6zBZeTdxZypCRRWCloqzJ6xcsIz1rRgPmlGrdqL9W?=
- =?us-ascii?Q?WH7tSbgW5oRAbZxBIDHfrIdHOKoEVNmctd/M96lANJ+18WWjNA5q8Xl2FC3Q?=
- =?us-ascii?Q?B1b1qmd1yvoReFeRzXEatVWMMNTaDm1Ykr+TZH9NNXvTI1GqMHO6Vc37+fj4?=
- =?us-ascii?Q?c43B4whLpovMY2bcR3CJqBWWp8p0E0x5kl9Je3u8C7Mw8tZQnVnFIAlbosTh?=
- =?us-ascii?Q?KZ6oc01nfN1J3Y528DbrFkwobQj8yHSA8DSXmIKEFN838RTw8AEmnC4slG4W?=
- =?us-ascii?Q?eQMo+Wt5KQclqdIv8AD8lGSp3EX2VCdYPoppEywSU0jTMZjV4LdzD3j1mpRt?=
- =?us-ascii?Q?KaIquse57qoI2G4O+zJBVc4yYPeT4/tbnkx+SPowK+HIFYpeGyoQ5sPCEo+n?=
- =?us-ascii?Q?sEg8Pk1kCgBnXf6UFTAyUpOiG5IiAqZaR8AGiGvi/c/fOukJdsgdBhYrBD1L?=
- =?us-ascii?Q?syV+GkVxCSskfIbdRnsCZId8h5kbs3crXF08xH4pWajLtEiw1qpPPHQ49e+X?=
- =?us-ascii?Q?vpkO5c7g3WrN1yyHJxU4D1FXN9hQYAaOUQKnTwK8ezVYdQywQrLU5SAxN/o?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d1b2614-83b8-4463-cb0d-08dbd4e2c93e
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 22:44:31.1897
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB7477
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231022170048.289a1897@jic23-huawei>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As it was pointed out by Yonghong Song [1], in the bpf selftests the use
-of the ASSERT_* series of macros is preferred over the CHECK macro.
-This patch replaces all CHECK calls in bpf_iter with the appropriate
-ASSERT_* macros.
+On Sun, Oct 22, 2023 at 05:00:48PM +0100, Jonathan Cameron wrote:
+> On Sat, 21 Oct 2023 20:12:03 -0700
+> Sukrut Bellary <sukrut.bellary@linux.com> wrote:
+> 
+> > The adcxx4s communicates with a host processor via an SPI/Microwire Bus
+> > interface. The device family responds with 12-bit data, of which the LSB
+> > bits are transmitted by the lower resolution devices as 0.
+> > The unavailable bits are 0 in LSB.
+> > Shift is calculated per resolution and used in scaling and
+> > raw data read.
+> > 
+> > Lets reuse the driver to support the family of devices with name
+> > ADC<bb><c>S<sss>, where
+> > * bb is the resolution in number of bits (8, 10, 12)
+> > * c is the number of channels (1, 2, 4, 8)
+> > * sss is the maximum conversion speed (021 for 200 kSPS, 051 for 500 kSPS
+> > and 101 for 1 MSPS)
+> > 
+> > Complete datasheets are available at TI's website here:
+> > https://www.ti.com/lit/gpn/adc<bb><c>s<sss>.pdf
+> > 
+> > Tested only with ti-adc102s051 on BegalePlay SBC.
+> > https://www.beagleboard.org/boards/beagleplay
+> > 
+> > arm64: dts: ti: k3-am625-beagleplay: Add adc102s051
+> > Add adc102s051 support.
+> > Tested on beaglePlay SBC
+> > https://www.beagleboard.org/boards/beagleplay
+> > 
+> > Co-developed-by: Nishanth Menon <nm@ti.com>
+> > Signed-off-by: Nishanth Menon <nm@ti.com>
+> > Signed-off-by: Sukrut Bellary <sukrut.bellary@linux.com>
+> > ---
+> > Changes in v2:
+> >         - Arranged of_device_id and spi_device_id in numeric order.
+> >         - Used enum to index into adc128_config.
+> >         - Reorder adc128_config in alphabetical.
+> >         - Include channel resolution information.
+> >         - Shift is calculated per resolution and used in scaling and 
+> >           raw data read.
+> > - Link to v1: https://lore.kernel.org/all/20220701042919.18180-3-nm@ti.com/
+> > ---
+> >  drivers/iio/adc/ti-adc128s052.c | 131 +++++++++++++++++++++++---------
+> >  1 file changed, 96 insertions(+), 35 deletions(-)
+> > 
+> > diff --git a/drivers/iio/adc/ti-adc128s052.c b/drivers/iio/adc/ti-adc128s052.c
+> > index a456ea78462f..61e3181b8daf 100644
+> > --- a/drivers/iio/adc/ti-adc128s052.c
+> > +++ b/drivers/iio/adc/ti-adc128s052.c
+> > @@ -7,6 +7,22 @@
+> >   * https://www.ti.com/lit/ds/symlink/adc128s052.pdf
+> >   * https://www.ti.com/lit/ds/symlink/adc122s021.pdf
+> >   * https://www.ti.com/lit/ds/symlink/adc124s021.pdf
+> > + *
+> > + * The adcxx4s communicates with a host processor via an SPI/Microwire Bus
+> > + * interface. This driver supports the whole family of devices with a name
+> > + * ADC<bb><c>S<sss>, where
+> > + * bb is the resolution in number of bits (8, 10, 12)
+> > + * c is the number of channels (1, 2, 4, 8)
+> > + * sss is the maximum conversion speed (021 for 200 kSPS, 051 for 500 kSPS
+> > + * and 101 for 1 MSPS)
+> > + *
+> > + * Complete datasheets are available at TI's website here:
+> > + *   https://www.ti.com/lit/gpn/adc<bb><c>s<sss>.pdf
+> > + *
+> > + * 8, 10, and 12 bits converters send 12-bit data with
+> > + * unavailable bits set to 0 in LSB.
+> > + * Shift is calculated per resolution and used in scaling and
+> > + * raw data read.
+> >   */
+> >  
+> >  #include <linux/err.h>
+> > @@ -53,7 +69,7 @@ static int adc128_adc_conversion(struct adc128 *adc, u8 channel)
+> >  	if (ret < 0)
+> >  		return ret;
+> >  
+> > -	return ((adc->buffer[0] << 8 | adc->buffer[1]) & 0xFFF);
+> > +	return (adc->buffer[0] << 8 | adc->buffer[1]);
+> Firstly outer brackets don't add anything.
+> Secondly, this is an endian conversion.
+> 
+> return be16_to_cpu(adc->buffer);
+> 
+> should do the job as we know it's aligned enough for a be16.
+> 
+>
 
-[1] https://lore.kernel.org/lkml/0a142924-633c-44e6-9a92-2dc019656bf2@linux.dev
+Thanks for the review.
+Yes, I will use be16_to_cpu().
 
-Suggested-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 80 +++++++++----------
- 1 file changed, 39 insertions(+), 41 deletions(-)
+> >  }
+> >  
+> >  static int adc128_read_raw(struct iio_dev *indio_dev,
+> > @@ -70,7 +86,8 @@ static int adc128_read_raw(struct iio_dev *indio_dev,
+> >  		if (ret < 0)
+> >  			return ret;
+> >  
+> > -		*val = ret;
+> > +		*val = (ret >> channel->scan_type.shift) &
+> > +			GENMASK(channel->scan_type.realbits - 1, 0);
+> >  		return IIO_VAL_INT;
+> >  
+> >  	case IIO_CHAN_INFO_SCALE:
+> > @@ -80,7 +97,7 @@ static int adc128_read_raw(struct iio_dev *indio_dev,
+> >  			return ret;
+> >  
+> >  		*val = ret / 1000;
+> > -		*val2 = 12;
+> > +		*val2 = channel->scan_type.realbits;
+> >  		return IIO_VAL_FRACTIONAL_LOG2;
+> >  
+> >  	default:
+> > @@ -89,24 +106,34 @@ static int adc128_read_raw(struct iio_dev *indio_dev,
+> >  
+> >  }
+> >  
+> > -#define ADC128_VOLTAGE_CHANNEL(num)	\
+> > -	{ \
+> > -		.type = IIO_VOLTAGE, \
+> > -		.indexed = 1, \
+> > -		.channel = (num), \
+> > -		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW), \
+> > -		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) \
+> > +#define _ADC128_VOLTAGE_CHANNEL(num, real_bits, store_bits)		\
+> > +	{								\
+> > +		.type = IIO_VOLTAGE,					\
+> > +		.indexed = 1,						\
+> > +		.channel = (num),					\
+> > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),		\
+> > +		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),	\
+> > +		.scan_index = (num),					\
+> > +		.scan_type = {						\
+> > +			.sign = 'u',					\
+> > +			.realbits = (real_bits),			\
+> > +			.storagebits = (store_bits),			\
+> > +			.shift = (12 - real_bits),			\
+> > +		},							\
+> >  	}
+> >  
+> > -static const struct iio_chan_spec adc128s052_channels[] = {
+> > -	ADC128_VOLTAGE_CHANNEL(0),
+> > -	ADC128_VOLTAGE_CHANNEL(1),
+> > -	ADC128_VOLTAGE_CHANNEL(2),
+> > -	ADC128_VOLTAGE_CHANNEL(3),
+> > -	ADC128_VOLTAGE_CHANNEL(4),
+> > -	ADC128_VOLTAGE_CHANNEL(5),
+> > -	ADC128_VOLTAGE_CHANNEL(6),
+> > -	ADC128_VOLTAGE_CHANNEL(7),
+> > +#define ADC082_VOLTAGE_CHANNEL(num) _ADC128_VOLTAGE_CHANNEL(num, 8, 16)
+> > +#define ADC102_VOLTAGE_CHANNEL(num) _ADC128_VOLTAGE_CHANNEL(num, 10, 16)
+> > +#define ADC128_VOLTAGE_CHANNEL(num) _ADC128_VOLTAGE_CHANNEL(num, 12, 16)
+> > +
+> > +static const struct iio_chan_spec adc082s021_channels[] = {
+> > +	ADC082_VOLTAGE_CHANNEL(0),
+> > +	ADC082_VOLTAGE_CHANNEL(1),
+> > +};
+> > +
+> > +static const struct iio_chan_spec adc102s021_channels[] = {
+> > +	ADC102_VOLTAGE_CHANNEL(0),
+> > +	ADC102_VOLTAGE_CHANNEL(1),
+> >  };
+> >  
+> >  static const struct iio_chan_spec adc122s021_channels[] = {
+> > @@ -121,10 +148,32 @@ static const struct iio_chan_spec adc124s021_channels[] = {
+> >  	ADC128_VOLTAGE_CHANNEL(3),
+> >  };
+> >  
+> > +static const struct iio_chan_spec adc128s052_channels[] = {
+> > +	ADC128_VOLTAGE_CHANNEL(0),
+> > +	ADC128_VOLTAGE_CHANNEL(1),
+> > +	ADC128_VOLTAGE_CHANNEL(2),
+> > +	ADC128_VOLTAGE_CHANNEL(3),
+> > +	ADC128_VOLTAGE_CHANNEL(4),
+> > +	ADC128_VOLTAGE_CHANNEL(5),
+> > +	ADC128_VOLTAGE_CHANNEL(6),
+> > +	ADC128_VOLTAGE_CHANNEL(7),
+> > +};
+> > +
+> >  static const struct adc128_configuration adc128_config[] = {
+> > -	{ adc128s052_channels, ARRAY_SIZE(adc128s052_channels) },
+> > +	{ adc082s021_channels, ARRAY_SIZE(adc082s021_channels) },
+> > +	{ adc102s021_channels, ARRAY_SIZE(adc102s021_channels) },
+> >  	{ adc122s021_channels, ARRAY_SIZE(adc122s021_channels) },
+> >  	{ adc124s021_channels, ARRAY_SIZE(adc124s021_channels) },
+> > +	{ adc128s052_channels, ARRAY_SIZE(adc128s052_channels) },
+> > +};
+> > +
+> > +/* Ensure match with adc128_config indices */
+> 
+> Make sure that is the case by using them when setting it up.
+> 
+> static const struct adc128_configuration adc128_config[] {
+> 	[ADC128_CONFIG_INDEX_082S] = {
+> 		adc082s021_channels, ARRAY_SIZE(..) 
+> 	},
+> 	[ADC128_CONFIG_INDEX_102S] = ..
+> }
+> 
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-index 1f02168103dd..526ac4e741ee 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -64,7 +64,7 @@ static void do_dummy_read_opts(struct bpf_program *prog, struct bpf_iter_attach_
- 	/* not check contents, but ensure read() ends without error */
- 	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
- 		;
--	CHECK(len < 0, "read", "read failed: %s\n", strerror(errno));
-+	ASSERT_GE(len, 0, "read");
- 
- 	close(iter_fd);
- 
-@@ -413,7 +413,7 @@ static int do_btf_read(struct bpf_iter_task_btf *skel)
- 		goto free_link;
- 	}
- 
--	if (CHECK(err < 0, "read", "read failed: %s\n", strerror(errno)))
-+	if (!ASSERT_GE(err, 0, "read"))
- 		goto free_link;
- 
- 	ASSERT_HAS_SUBSTR(taskbuf, "(struct task_struct)",
-@@ -526,11 +526,11 @@ static int do_read_with_fd(int iter_fd, const char *expected,
- 	start = 0;
- 	while ((len = read(iter_fd, buf + start, read_buf_len)) > 0) {
- 		start += len;
--		if (CHECK(start >= 16, "read", "read len %d\n", len))
-+		if (!ASSERT_LT(start, 16, "read"))
- 			return -1;
- 		read_buf_len = read_one_char ? 1 : 16 - start;
- 	}
--	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
-+	if (!ASSERT_GE(len, 0, "read"))
- 		return -1;
- 
- 	if (!ASSERT_STREQ(buf, expected, "read"))
-@@ -571,8 +571,7 @@ static int do_read(const char *path, const char *expected)
- 	int err, iter_fd;
- 
- 	iter_fd = open(path, O_RDONLY);
--	if (CHECK(iter_fd < 0, "open", "open %s failed: %s\n",
--		  path, strerror(errno)))
-+	if (!ASSERT_GE(iter_fd, 0, "open"))
- 		return -1;
- 
- 	err = do_read_with_fd(iter_fd, expected, false);
-@@ -600,7 +599,7 @@ static void test_file_iter(void)
- 	unlink(path);
- 
- 	err = bpf_link__pin(link, path);
--	if (CHECK(err, "pin_iter", "pin_iter to %s failed: %d\n", path, err))
-+	if (!ASSERT_OK(err, "pin_iter"))
- 		goto free_link;
- 
- 	err = do_read(path, "abcd");
-@@ -651,12 +650,10 @@ static void test_overflow(bool test_e2big_overflow, bool ret1)
- 	 * overflow and needs restart.
- 	 */
- 	map1_fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, 4, 8, 1, NULL);
--	if (CHECK(map1_fd < 0, "bpf_map_create",
--		  "map_creation failed: %s\n", strerror(errno)))
-+	if (!ASSERT_GE(map1_fd, 0, "bpf_map_create"))
- 		goto out;
- 	map2_fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, 4, 8, 1, NULL);
--	if (CHECK(map2_fd < 0, "bpf_map_create",
--		  "map_creation failed: %s\n", strerror(errno)))
-+	if (!ASSERT_GE(map2_fd, 0, "bpf_map_create"))
- 		goto free_map1;
- 
- 	/* bpf_seq_printf kernel buffer is 8 pages, so one map
-@@ -685,14 +682,12 @@ static void test_overflow(bool test_e2big_overflow, bool ret1)
- 	/* setup filtering map_id in bpf program */
- 	map_info_len = sizeof(map_info);
- 	err = bpf_map_get_info_by_fd(map1_fd, &map_info, &map_info_len);
--	if (CHECK(err, "get_map_info", "get map info failed: %s\n",
--		  strerror(errno)))
-+	if (!ASSERT_OK(err, "get_map_info"))
- 		goto free_map2;
- 	skel->bss->map1_id = map_info.id;
- 
- 	err = bpf_map_get_info_by_fd(map2_fd, &map_info, &map_info_len);
--	if (CHECK(err, "get_map_info", "get map info failed: %s\n",
--		  strerror(errno)))
-+	if (!ASSERT_OK(err, "get_map_info"))
- 		goto free_map2;
- 	skel->bss->map2_id = map_info.id;
- 
-@@ -714,16 +709,15 @@ static void test_overflow(bool test_e2big_overflow, bool ret1)
- 		while ((len = read(iter_fd, buf, expected_read_len)) > 0)
- 			total_read_len += len;
- 
--		CHECK(len != -1 || errno != E2BIG, "read",
--		      "expected ret -1, errno E2BIG, but get ret %d, error %s\n",
--			  len, strerror(errno));
-+		if (!ASSERT_EQ(len, -1, "read"))
-+			goto free_buf;
-+		ASSERT_EQ(errno, E2BIG, "read");
- 		goto free_buf;
- 	} else if (!ret1) {
- 		while ((len = read(iter_fd, buf, expected_read_len)) > 0)
- 			total_read_len += len;
- 
--		if (CHECK(len < 0, "read", "read failed: %s\n",
--			  strerror(errno)))
-+		if (!ASSERT_GE(len, 0, "read"))
- 			goto free_buf;
- 	} else {
- 		do {
-@@ -732,8 +726,7 @@ static void test_overflow(bool test_e2big_overflow, bool ret1)
- 				total_read_len += len;
- 		} while (len > 0 || len == -EAGAIN);
- 
--		if (CHECK(len < 0, "read", "read failed: %s\n",
--			  strerror(errno)))
-+		if (!ASSERT_GE(len, 0, "read"))
- 			goto free_buf;
- 	}
- 
-@@ -836,7 +829,7 @@ static void test_bpf_hash_map(void)
- 	/* do some tests */
- 	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
- 		;
--	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
-+	if (!ASSERT_GE(len, 0, "read"))
- 		goto close_iter;
- 
- 	/* test results */
-@@ -917,7 +910,7 @@ static void test_bpf_percpu_hash_map(void)
- 	/* do some tests */
- 	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
- 		;
--	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
-+	if (!ASSERT_GE(len, 0, "read"))
- 		goto close_iter;
- 
- 	/* test results */
-@@ -983,17 +976,15 @@ static void test_bpf_array_map(void)
- 	start = 0;
- 	while ((len = read(iter_fd, buf + start, sizeof(buf) - start)) > 0)
- 		start += len;
--	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
-+	if (!ASSERT_GE(len, 0, "read"))
- 		goto close_iter;
- 
- 	/* test results */
- 	res_first_key = *(__u32 *)buf;
- 	res_first_val = *(__u64 *)(buf + sizeof(__u32));
--	if (CHECK(res_first_key != 0 || res_first_val != first_val,
--		  "bpf_seq_write",
--		  "seq_write failure: first key %u vs expected 0, "
--		  " first value %llu vs expected %llu\n",
--		  res_first_key, res_first_val, first_val))
-+	if (!ASSERT_EQ(res_first_key, 0, "bpf_seq_write"))
-+		goto close_iter;
-+	else if (!ASSERT_EQ(res_first_val, first_val, "bpf_seq_write"))
- 		goto close_iter;
- 
- 	if (!ASSERT_EQ(skel->bss->key_sum, expected_key, "key_sum"))
-@@ -1092,7 +1083,7 @@ static void test_bpf_percpu_array_map(void)
- 	/* do some tests */
- 	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
- 		;
--	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
-+	if (!ASSERT_GE(len, 0, "read"))
- 		goto close_iter;
- 
- 	/* test results */
-@@ -1131,6 +1122,7 @@ static void test_bpf_sk_storage_delete(void)
- 	sock_fd = socket(AF_INET6, SOCK_STREAM, 0);
- 	if (!ASSERT_GE(sock_fd, 0, "socket"))
- 		goto out;
-+
- 	err = bpf_map_update_elem(map_fd, &sock_fd, &val, BPF_NOEXIST);
- 	if (!ASSERT_OK(err, "map_update"))
- 		goto out;
-@@ -1151,14 +1143,20 @@ static void test_bpf_sk_storage_delete(void)
- 	/* do some tests */
- 	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
- 		;
--	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
-+	if (!ASSERT_GE(len, 0, "read"))
- 		goto close_iter;
- 
- 	/* test results */
- 	err = bpf_map_lookup_elem(map_fd, &sock_fd, &val);
--	if (CHECK(!err || errno != ENOENT, "bpf_map_lookup_elem",
--		  "map value wasn't deleted (err=%d, errno=%d)\n", err, errno))
-+
-+	 /* Note: The following assertions serve to ensure
-+	  * the value was deleted. It does so by asserting
-+	  * that bpf_map_lookup_elem has failed. This might
-+	  * seem counterintuitivei at first.
-+	  */
-+	if (!ASSERT_ERR(err, "bpf_map_lookup_elem"))
- 		goto close_iter;
-+	ASSERT_EQ(errno, ENOENT, "bpf_map_lookup_elem");
- 
- close_iter:
- 	close(iter_fd);
-@@ -1203,17 +1201,17 @@ static void test_bpf_sk_storage_get(void)
- 	do_dummy_read(skel->progs.fill_socket_owner);
- 
- 	err = bpf_map_lookup_elem(map_fd, &sock_fd, &val);
--	if (CHECK(err || val != getpid(), "bpf_map_lookup_elem",
--	    "map value wasn't set correctly (expected %d, got %d, err=%d)\n",
--	    getpid(), val, err))
-+	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-+		goto close_socket;
-+	else if (!ASSERT_EQ(val, getpid(), "bpf_map_lookup_elem"))
- 		goto close_socket;
- 
- 	do_dummy_read(skel->progs.negate_socket_local_storage);
- 
- 	err = bpf_map_lookup_elem(map_fd, &sock_fd, &val);
--	CHECK(err || val != -getpid(), "bpf_map_lookup_elem",
--	      "map value wasn't set correctly (expected %d, got %d, err=%d)\n",
--	      -getpid(), val, err);
-+	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-+		goto close_socket;
-+	ASSERT_EQ(val, -getpid(), "bpf_map_lookup_elem");
- 
- close_socket:
- 	close(sock_fd);
-@@ -1290,7 +1288,7 @@ static void test_bpf_sk_storage_map(void)
- 	/* do some tests */
- 	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
- 		;
--	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
-+	if (!ASSERT_GE(len, 0, "read"))
- 		goto close_iter;
- 
- 	/* test results */
--- 
-2.25.1
+OK, I will use enum while setting it up
 
++static const struct adc128_configuration adc128_config[] = {
++       [ADC128_CONFIG_INDEX_082S] = {
++               .channels = adc082s021_channels,
++               .num_channels = ARRAY_SIZE(adc082s021_channels)
+}
+
+Use enum in spi_device_id[]
+
+static const struct spi_device_id adc128_id[] = {
++       { "adc082s021", (kernel_ulong_t)ADC128_CONFIG_INDEX_082S },
++       { "adc082s051", (kernel_ulong_t)ADC128_CONFIG_INDEX_082S },
+
+}
+
+And use it in probe to extract the config for channels and num_channels using
+
+config = &adc128_config[spi_get_device_id(spi)->driver_data];
+
+since we are not using of_device_id for extracting config, I can remove
+the .data entry or need to type case it.
+
+static const struct of_device_id adc128_of_match[] = {
+	{ .compatible = "ti,adc082s021", },
+}
+
+> Or I think you can make it irrelevant by not using an array at all.
+> static const struct ad128_configruation adc082s021_config = {
+> };
+> 
+> etc then just use the address of the right one directly.
+> 
+> In this driver, I suspect that is simpler than using the array.
+> 
+> > +enum adc128_configuration_index {
+> > +	ADC128_CONFIG_INDEX_082S,
+> > +	ADC128_CONFIG_INDEX_102S,
+> > +	ADC128_CONFIG_INDEX_122S,
+> > +	ADC128_CONFIG_INDEX_124S,
+> > +	ADC128_CONFIG_INDEX_128S,
+> 
+> >  };
+> >  
+> >  static const struct iio_info adc128_info = {
+> > @@ -177,31 +226,43 @@ static int adc128_probe(struct spi_device *spi)
+> >  }
+> >  
+> >  static const struct of_device_id adc128_of_match[] = {
+> > -	{ .compatible = "ti,adc128s052", .data = &adc128_config[0] },
+> > -	{ .compatible = "ti,adc122s021", .data = &adc128_config[1] },
+> > -	{ .compatible = "ti,adc122s051", .data = &adc128_config[1] },
+> > -	{ .compatible = "ti,adc122s101", .data = &adc128_config[1] },
+> > -	{ .compatible = "ti,adc124s021", .data = &adc128_config[2] },
+> > -	{ .compatible = "ti,adc124s051", .data = &adc128_config[2] },
+> > -	{ .compatible = "ti,adc124s101", .data = &adc128_config[2] },
+> > +	{ .compatible = "ti,adc082s021", .data = &adc128_config[ADC128_CONFIG_INDEX_082S] },
+> > +	{ .compatible = "ti,adc082s051", .data = &adc128_config[ADC128_CONFIG_INDEX_082S] },
+> > +	{ .compatible = "ti,adc082s101", .data = &adc128_config[ADC128_CONFIG_INDEX_082S] },
+> > +	{ .compatible = "ti,adc102s021", .data = &adc128_config[ADC128_CONFIG_INDEX_102S] },
+> > +	{ .compatible = "ti,adc102s051", .data = &adc128_config[ADC128_CONFIG_INDEX_102S] },
+> > +	{ .compatible = "ti,adc102s101", .data = &adc128_config[ADC128_CONFIG_INDEX_102S] },
+> > +	{ .compatible = "ti,adc122s021", .data = &adc128_config[ADC128_CONFIG_INDEX_122S] },
+> > +	{ .compatible = "ti,adc122s051", .data = &adc128_config[ADC128_CONFIG_INDEX_122S] },
+> > +	{ .compatible = "ti,adc122s101", .data = &adc128_config[ADC128_CONFIG_INDEX_122S] },
+> > +	{ .compatible = "ti,adc124s021", .data = &adc128_config[ADC128_CONFIG_INDEX_124S] },
+> > +	{ .compatible = "ti,adc124s051", .data = &adc128_config[ADC128_CONFIG_INDEX_124S] },
+> > +	{ .compatible = "ti,adc124s101", .data = &adc128_config[ADC128_CONFIG_INDEX_124S] },
+> > +	{ .compatible = "ti,adc128s052", .data = &adc128_config[ADC128_CONFIG_INDEX_128S] },
+> >  	{ /* sentinel */ },
+> >  };
+> >  MODULE_DEVICE_TABLE(of, adc128_of_match);
+> >  
+> >  static const struct spi_device_id adc128_id[] = {
+> > -	{ "adc128s052", (kernel_ulong_t)&adc128_config[0] },
+> > -	{ "adc122s021",	(kernel_ulong_t)&adc128_config[1] },
+> > -	{ "adc122s051",	(kernel_ulong_t)&adc128_config[1] },
+> > -	{ "adc122s101",	(kernel_ulong_t)&adc128_config[1] },
+> > -	{ "adc124s021", (kernel_ulong_t)&adc128_config[2] },
+> > -	{ "adc124s051", (kernel_ulong_t)&adc128_config[2] },
+> > -	{ "adc124s101", (kernel_ulong_t)&adc128_config[2] },
+> > +	{ "adc082s021", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_082S] },
+> > +	{ "adc082s051", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_082S] },
+> > +	{ "adc082s101", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_082S] },
+> > +	{ "adc102s021", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_102S] },
+> > +	{ "adc102s051", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_102S] },
+> > +	{ "adc102s101", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_102S] },
+> > +	{ "adc122s021",	(kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_122S] },
+> > +	{ "adc122s051",	(kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_122S] },
+> > +	{ "adc122s101",	(kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_122S] },
+> > +	{ "adc124s021", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
+> > +	{ "adc124s051", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
+> > +	{ "adc124s101", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
+> > +	{ "adc128s052", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_128S] },
+> >  	{ }
+> >  };
+> >  MODULE_DEVICE_TABLE(spi, adc128_id);
+> >  
+> >  static const struct acpi_device_id adc128_acpi_match[] = {
+> > -	{ "AANT1280", (kernel_ulong_t)&adc128_config[2] },
+> > +	{ "AANT1280", (kernel_ulong_t)&adc128_config[ADC128_CONFIG_INDEX_124S] },
+> >  	{ }
+> >  };
+> >  MODULE_DEVICE_TABLE(acpi, adc128_acpi_match);
+> 
