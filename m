@@ -2,100 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB837D5217
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A817D5320
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234568AbjJXNqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
+        id S1343722AbjJXNul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234374AbjJXNqd (ORCPT
+        with ESMTP id S1343664AbjJXNte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:46:33 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A79E5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:46:31 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9936b3d0286so681005866b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:46:30 -0700 (PDT)
+        Tue, 24 Oct 2023 09:49:34 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606C919B0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:47:47 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a3a98b34dso5242412276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:47:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698155189; x=1698759989; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q/PDZ9kO7G74nmKb1u4SH9mYF0IVyBxsHL5CzZjHNxg=;
-        b=a2nmV7AAYue7cDE2kf8E3r2cs2/ufpJLS+2aXFOe6f5FbB+hA1iH5ah3ffb4loLVxv
-         KdXSMdwnvuzoudP0tGIWbvx17n8sB3EFVRrGK33REZhDnYoeyXW6xDfTcCLHCZJ95d+q
-         tLhD6R3UzUt3qsT48ZIX5dDHigRwXq8bAPlMM7urudRb/jCZuMR/62whvu5aYlnX7VDn
-         ALzhFqA/3sqAsPud2J4qC0p8So+5Dy6GIAzU50P0G+DfvylZPwMpIsSvFKasEn0G+ZpK
-         s2AXdjg6BOuoddcm1SJSBjUDhvQWH3ie1Ptt41ovEQJNh6eBrFwf2TfzUr/TofTyv9VO
-         1UKQ==
+        d=google.com; s=20230601; t=1698155266; x=1698760066; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QaUscnVR3A9ivKzFSXLwhZ9WVAKd01wEmSHK760WXQ8=;
+        b=e8MH4gnJoAUpsPTyheF3wyTjBPTAOvkvqVsK4m8evYCMDbM6k+SRnEdexKewJMF7/C
+         EB+7Qnca8n5RsAn+fOZdyj4uFlE1s2YGQp4QnyfI9JXhdkE73Nt5gfPaBTfcjTUg3Sd8
+         HR73DgnWHRunS5r+0EAFzWrR12p/qSOSyHva2483Ojt6rdfZF5B2we8JKHfTgq3yhG9a
+         7XPCtBXakeJgYmQV/DyoXGmlJC5ndSrmERPszGYkrWw4D/k7TXi/210ANxAAb0ZUpvkQ
+         JYmaZyCTkTwCEXDflhlWc22d4aZm+PslZre6aCXyTUzv+wm7gMRlLH3VYHGPcYPYvzPv
+         1+KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698155189; x=1698759989;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q/PDZ9kO7G74nmKb1u4SH9mYF0IVyBxsHL5CzZjHNxg=;
-        b=QgRmtqEXbpoEhHFHaGT+RqeHsncWOFH5Ru3U99dXJy2J3XMOPnmfQvq6eJKiM1rzG1
-         etZYXEaBQ74J6WZ+bblyVE563gcUwS1dquA7BCwerFFbo6Xxd+Mpb+OPvy9T8o6yp+Mr
-         LfiEcXspcLwjscp/i/015ox8Lwtw5vdVDcdmExVyyzbCwt1ijdkzrtA99bTilN6dPlaV
-         6TnBKhhzSam5bakmuiFafo/b7z1CINDk2FRssVEwRwPqtCP9w8rfq1jTK1P8prCj2J2+
-         LvoWmv1nYkKpnSP2oDxaiI1BGycEqjWZIDvue+/6b7OUQ0VLiduoKO6VQWUu7CypsyKk
-         XCWQ==
-X-Gm-Message-State: AOJu0YwCgZLHl19tx670wHOFj2TIwR+pNRDGcaxpvX48J/ujXS+1XFVe
-        SbK4nCb/wpKMzBN7jBuifQS9bg==
-X-Google-Smtp-Source: AGHT+IF+1tfBFlWZ5ekM05Nq5pyNWfVPceFIGTk4iLH6nqXJP1nu6iyfuNMw3LtQyviPzDKHUaf2XQ==
-X-Received: by 2002:a17:907:3ea5:b0:9c3:8242:e665 with SMTP id hs37-20020a1709073ea500b009c38242e665mr10019942ejc.8.1698155189411;
-        Tue, 24 Oct 2023 06:46:29 -0700 (PDT)
-Received: from hackbox.lan ([86.122.213.220])
-        by smtp.gmail.com with ESMTPSA id og43-20020a1709071deb00b0098951bb4dc3sm8320367ejc.184.2023.10.24.06.46.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 06:46:28 -0700 (PDT)
-From:   Abel Vesa <abel.vesa@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH] regulator: qcom-rpmh: Fix smps4 regulator for pm8550ve
-Date:   Tue, 24 Oct 2023 16:46:26 +0300
-Message-Id: <20231024134626.2364426-1-abel.vesa@linaro.org>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1698155266; x=1698760066;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QaUscnVR3A9ivKzFSXLwhZ9WVAKd01wEmSHK760WXQ8=;
+        b=VyKmrrnnDIJMneeT6OnPscjenDpylLS7M3Fbhci/7nLuMZ1Z7G3/dC+Ce5ik+O7dRh
+         1LqIVRT3Du8adDd792tnD7vttUN+sRgWh6s461jtFiRhjikdd0Od8ljcDfzvCDI2bGVa
+         k+OdhKC0ACnrYMdsB6RCBb0C1Adys70D2lEJNgURlZiZPzzMquh0MkKyRWCms1q8oLt3
+         ik6JVg1uI9R39Z6iAN1NECxWnEedRjusWYhyA1y1Oi6IKbzkNlcgYwZ8Gm4ZojJEBY36
+         TteMPtcnc5Hl2ePWN5oPtGIkBIWhFoL44L4zwvTZ/Dj6qQEr2RgIoFfZRAb098N4GIWe
+         1eJg==
+X-Gm-Message-State: AOJu0Yx1pd+Od6vg4lY08DfA595Zb74GGUk7UJxnNf0xfIScbuX6M1qf
+        pLNSZkE5bgGri/Sy1HevT0WtdwjoicU=
+X-Google-Smtp-Source: AGHT+IH1Lkjv7kiNBXwNvQL565BH4DAdvvh1g2aWFQE+hKVCSXY8/YuVaym3f5veoHBOTW82zGAoDjJNWeM=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:45ba:3318:d7a5:336a])
+ (user=surenb job=sendgmr) by 2002:a05:6902:105:b0:da0:3da9:ce08 with SMTP id
+ o5-20020a056902010500b00da03da9ce08mr35592ybh.10.1698155266214; Tue, 24 Oct
+ 2023 06:47:46 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 06:46:26 -0700
+In-Reply-To: <20231024134637.3120277-1-surenb@google.com>
+Mime-Version: 1.0
+References: <20231024134637.3120277-1-surenb@google.com>
+X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
+Message-ID: <20231024134637.3120277-30-surenb@google.com>
+Subject: [PATCH v2 29/39] mm: percpu: Introduce pcpuobj_ext
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
+        hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+        dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+        corbet@lwn.net, void@manifault.com, peterz@infradead.org,
+        juri.lelli@redhat.com, ldufour@linux.ibm.com,
+        catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, peterx@redhat.com, david@redhat.com,
+        axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+        nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+        muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+        pasha.tatashin@soleen.com, yosryahmed@google.com,
+        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+        andreyknvl@gmail.com, keescook@chromium.org,
+        ndesaulniers@google.com, vvvvvv@google.com,
+        gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+        iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+        elver@google.com, dvyukov@google.com, shakeelb@google.com,
+        songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+        minchan@google.com, kaleshsingh@google.com, surenb@google.com,
+        kernel-team@android.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The type of the smps4 regulator from pm8550ve is actually FTSMPS525
-medium voltage. So fix it accordingly.
+From: Kent Overstreet <kent.overstreet@linux.dev>
 
-Fixes: e6e3776d682d ("regulator: qcom-rpmh: Add support for PM8550 regulators")
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+Upcoming alloc tagging patches require a place to stash per-allocation
+metadata.
+
+We already do this when memcg is enabled, so this patch generalizes the
+obj_cgroup * vector in struct pcpu_chunk by creating a pcpu_obj_ext
+type, which we will be adding to in an upcoming patch - similarly to the
+previous slabobj_ext patch.
+
+Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dennis Zhou <dennis@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: linux-mm@kvack.org
 ---
- drivers/regulator/qcom-rpmh-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/percpu-internal.h | 19 +++++++++++++++++--
+ mm/percpu.c          | 30 +++++++++++++++---------------
+ 2 files changed, 32 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
-index d990ba19c50e..b2e359ac3169 100644
---- a/drivers/regulator/qcom-rpmh-regulator.c
-+++ b/drivers/regulator/qcom-rpmh-regulator.c
-@@ -1095,7 +1095,7 @@ static const struct rpmh_vreg_init_data pm8550ve_vreg_data[] = {
- 	RPMH_VREG("smps1", "smp%s1", &pmic5_ftsmps525_lv, "vdd-s1"),
- 	RPMH_VREG("smps2", "smp%s2", &pmic5_ftsmps525_lv, "vdd-s2"),
- 	RPMH_VREG("smps3", "smp%s3", &pmic5_ftsmps525_lv, "vdd-s3"),
--	RPMH_VREG("smps4", "smp%s4", &pmic5_ftsmps525_lv, "vdd-s4"),
-+	RPMH_VREG("smps4", "smp%s4", &pmic5_ftsmps525_mv, "vdd-s4"),
- 	RPMH_VREG("smps5", "smp%s5", &pmic5_ftsmps525_lv, "vdd-s5"),
- 	RPMH_VREG("smps6", "smp%s6", &pmic5_ftsmps525_lv, "vdd-s6"),
- 	RPMH_VREG("smps7", "smp%s7", &pmic5_ftsmps525_lv, "vdd-s7"),
+diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
+index cdd0aa597a81..e62d582f4bf3 100644
+--- a/mm/percpu-internal.h
++++ b/mm/percpu-internal.h
+@@ -32,6 +32,16 @@ struct pcpu_block_md {
+ 	int			nr_bits;	/* total bits responsible for */
+ };
+ 
++struct pcpuobj_ext {
++#ifdef CONFIG_MEMCG_KMEM
++	struct obj_cgroup	*cgroup;
++#endif
++};
++
++#ifdef CONFIG_MEMCG_KMEM
++#define NEED_PCPUOBJ_EXT
++#endif
++
+ struct pcpu_chunk {
+ #ifdef CONFIG_PERCPU_STATS
+ 	int			nr_alloc;	/* # of allocations */
+@@ -64,8 +74,8 @@ struct pcpu_chunk {
+ 	int			end_offset;	/* additional area required to
+ 						   have the region end page
+ 						   aligned */
+-#ifdef CONFIG_MEMCG_KMEM
+-	struct obj_cgroup	**obj_cgroups;	/* vector of object cgroups */
++#ifdef NEED_PCPUOBJ_EXT
++	struct pcpuobj_ext	*obj_exts;	/* vector of object cgroups */
+ #endif
+ 
+ 	int			nr_pages;	/* # of pages served by this chunk */
+@@ -74,6 +84,11 @@ struct pcpu_chunk {
+ 	unsigned long		populated[];	/* populated bitmap */
+ };
+ 
++static inline bool need_pcpuobj_ext(void)
++{
++	return !mem_cgroup_kmem_disabled();
++}
++
+ extern spinlock_t pcpu_lock;
+ 
+ extern struct list_head *pcpu_chunk_lists;
+diff --git a/mm/percpu.c b/mm/percpu.c
+index a7665de8485f..5a6202acffa3 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -1392,9 +1392,9 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
+ 		panic("%s: Failed to allocate %zu bytes\n", __func__,
+ 		      alloc_size);
+ 
+-#ifdef CONFIG_MEMCG_KMEM
++#ifdef NEED_PCPUOBJ_EXT
+ 	/* first chunk is free to use */
+-	chunk->obj_cgroups = NULL;
++	chunk->obj_exts = NULL;
+ #endif
+ 	pcpu_init_md_blocks(chunk);
+ 
+@@ -1463,12 +1463,12 @@ static struct pcpu_chunk *pcpu_alloc_chunk(gfp_t gfp)
+ 	if (!chunk->md_blocks)
+ 		goto md_blocks_fail;
+ 
+-#ifdef CONFIG_MEMCG_KMEM
+-	if (!mem_cgroup_kmem_disabled()) {
+-		chunk->obj_cgroups =
++#ifdef NEED_PCPUOBJ_EXT
++	if (need_pcpuobj_ext()) {
++		chunk->obj_exts =
+ 			pcpu_mem_zalloc(pcpu_chunk_map_bits(chunk) *
+-					sizeof(struct obj_cgroup *), gfp);
+-		if (!chunk->obj_cgroups)
++					sizeof(struct pcpuobj_ext), gfp);
++		if (!chunk->obj_exts)
+ 			goto objcg_fail;
+ 	}
+ #endif
+@@ -1480,7 +1480,7 @@ static struct pcpu_chunk *pcpu_alloc_chunk(gfp_t gfp)
+ 
+ 	return chunk;
+ 
+-#ifdef CONFIG_MEMCG_KMEM
++#ifdef NEED_PCPUOBJ_EXT
+ objcg_fail:
+ 	pcpu_mem_free(chunk->md_blocks);
+ #endif
+@@ -1498,8 +1498,8 @@ static void pcpu_free_chunk(struct pcpu_chunk *chunk)
+ {
+ 	if (!chunk)
+ 		return;
+-#ifdef CONFIG_MEMCG_KMEM
+-	pcpu_mem_free(chunk->obj_cgroups);
++#ifdef NEED_PCPUOBJ_EXT
++	pcpu_mem_free(chunk->obj_exts);
+ #endif
+ 	pcpu_mem_free(chunk->md_blocks);
+ 	pcpu_mem_free(chunk->bound_map);
+@@ -1648,8 +1648,8 @@ static void pcpu_memcg_post_alloc_hook(struct obj_cgroup *objcg,
+ 	if (!objcg)
+ 		return;
+ 
+-	if (likely(chunk && chunk->obj_cgroups)) {
+-		chunk->obj_cgroups[off >> PCPU_MIN_ALLOC_SHIFT] = objcg;
++	if (likely(chunk && chunk->obj_exts)) {
++		chunk->obj_exts[off >> PCPU_MIN_ALLOC_SHIFT].cgroup = objcg;
+ 
+ 		rcu_read_lock();
+ 		mod_memcg_state(obj_cgroup_memcg(objcg), MEMCG_PERCPU_B,
+@@ -1665,13 +1665,13 @@ static void pcpu_memcg_free_hook(struct pcpu_chunk *chunk, int off, size_t size)
+ {
+ 	struct obj_cgroup *objcg;
+ 
+-	if (unlikely(!chunk->obj_cgroups))
++	if (unlikely(!chunk->obj_exts))
+ 		return;
+ 
+-	objcg = chunk->obj_cgroups[off >> PCPU_MIN_ALLOC_SHIFT];
++	objcg = chunk->obj_exts[off >> PCPU_MIN_ALLOC_SHIFT].cgroup;
+ 	if (!objcg)
+ 		return;
+-	chunk->obj_cgroups[off >> PCPU_MIN_ALLOC_SHIFT] = NULL;
++	chunk->obj_exts[off >> PCPU_MIN_ALLOC_SHIFT].cgroup = NULL;
+ 
+ 	obj_cgroup_uncharge(objcg, pcpu_obj_full_size(size));
+ 
 -- 
-2.34.1
+2.42.0.758.gaed0368e0e-goog
 
