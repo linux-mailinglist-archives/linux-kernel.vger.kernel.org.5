@@ -2,118 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0443D7D488D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91F37D488F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbjJXHaR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 03:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54028 "EHLO
+        id S233548AbjJXHao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 03:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232706AbjJXHaO (ORCPT
+        with ESMTP id S232706AbjJXHal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 03:30:14 -0400
-Received: from smtprelay04.ispgateway.de (smtprelay04.ispgateway.de [80.67.18.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F78DB;
-        Tue, 24 Oct 2023 00:30:10 -0700 (PDT)
-Received: from [92.206.139.21] (helo=note-book.lan)
-        by smtprelay04.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96.1)
-        (envelope-from <git@apitzsch.eu>)
-        id 1qvBra-0006IC-2U;
-        Tue, 24 Oct 2023 09:30:06 +0200
-Message-ID: <9117e551a4a4dd0e94a1395817d89cb18ac11b24.camel@apitzsch.eu>
-Subject: Re: [PATCH 1/4] media: i2c: imx214: Explain some magic numbers
-From:   =?ISO-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ricardo Ribalda <ribalda@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Date:   Tue, 24 Oct 2023 09:30:01 +0200
-In-Reply-To: <169810104910.2245571.16606813523946813634@ping.linuxembedded.co.uk>
-References: <20231023-imx214-v1-0-b33f1bbd1fcf@apitzsch.eu>
-         <20231023-imx214-v1-1-b33f1bbd1fcf@apitzsch.eu>
-         <169810104910.2245571.16606813523946813634@ping.linuxembedded.co.uk>
-Autocrypt: addr=git@apitzsch.eu; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.50.1 
+        Tue, 24 Oct 2023 03:30:41 -0400
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2080.outbound.protection.outlook.com [40.107.104.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B816B7;
+        Tue, 24 Oct 2023 00:30:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jUiCIbY7tdvtmXW0eWNmejhBtiEOlH/+1O4QNXXsH82kqtrQ5ihJiQK4TsMW7ivOa/WFYQ6VC2VZzCT9g0cSgUSYKk0lE8ugXWjg2qwV4EMnqLJqo7Hfn6sYAFOUxV5cTDYDeJ38ldoR+HlIVcoRJ8v8Rxm8xuBGdBNlFxlQ90munC7mss9IUwXc33NabjSrGFnz0/BBAYWdbZapd1a+jHpG27BfoxYzayIcJIUgXLBHfVC2bs/+YvlG/D9pLA07EgX28187l0z2oqiCuNXeTrxJRQfbfDiSlYV7vvRBhGLkNMMO2Zzm2O4FnOibP1Pi1vAfKmRGQsqbSgOmuTEPEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Vg95xOSLw7pUY4MKR7rO/dHd17vxH5GpixtqGPnRKlk=;
+ b=cFSyGMaVUBdzrzInFCPPozSemm8fqiRplF89YyqdhzU11qSEcuVcXHOvF/5lipqrUbvbkjkYTlJWxV+VSTXF43NGnVWdUTXPdqOTYAxoxUzajDKmz4gONuK+efgiq0ATb2fuEOkxEv3swp+UY4I1iLMzjmTrwJnB53jfug/xXSoPOHCAG4ILTNpBjzobIQd5VVeo4k95QaNNsUCVsQezdzhOqkxe1vi89gjacObQTSxYYWg/F3kREabrIowT+COrwNiTmkD/G2K9GcYLggQzoe+2nfwnTWZVQEUOvvaWfOtmnm3KeB7hJpXGfRXf3JaFmxSi3ZKHquUSUwvc9yy8VA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vg95xOSLw7pUY4MKR7rO/dHd17vxH5GpixtqGPnRKlk=;
+ b=ipJ4+hBKRqN7PnoDZnN1cPMx5U8JU209avewX/084hlqaCHvFDysxyHHe3vU1AecVm5F+wwEBs2LNDXanbelBsW+QnXC12y0eqRiADK/q+kAh1d0vllinw0IubIxvtDEZ8p2255IBwV+NBY4pJV0J/M4w7Y8nXajNF3tKDL+e3I=
+Received: from PA4PR04MB9638.eurprd04.prod.outlook.com (2603:10a6:102:273::20)
+ by PAXPR04MB8797.eurprd04.prod.outlook.com (2603:10a6:102:20c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.10; Tue, 24 Oct
+ 2023 07:30:36 +0000
+Received: from PA4PR04MB9638.eurprd04.prod.outlook.com
+ ([fe80::34dd:289e:9e8b:9c9b]) by PA4PR04MB9638.eurprd04.prod.outlook.com
+ ([fe80::34dd:289e:9e8b:9c9b%7]) with mapi id 15.20.6933.011; Tue, 24 Oct 2023
+ 07:30:36 +0000
+From:   David Lin <yu-hao.lin@nxp.com>
+To:     Francesco Dolcini <francesco@dolcini.it>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "briannorris@chromium.org" <briannorris@chromium.org>,
+        "kvalo@kernel.org" <kvalo@kernel.org>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Pete Hsieh <tsung-hsien.hsieh@nxp.com>
+Subject: RE: [EXT] Re: [PATCH v6 1/6] wifi: mwifiex: added code to support
+ host mlme.
+Thread-Topic: [EXT] Re: [PATCH v6 1/6] wifi: mwifiex: added code to support
+ host mlme.
+Thread-Index: AdoDCD3HfqdGXSjhR7u7/u1lbWxIUwBLzz6AAEfEgvAAEFZ8gAAs9bvg
+Date:   Tue, 24 Oct 2023 07:30:36 +0000
+Message-ID: <PA4PR04MB9638A0D7D64AB447EAE70C9FD1DFA@PA4PR04MB9638.eurprd04.prod.outlook.com>
+References: <PA4PR04MB9638DEFC074F41AAEE3AC471D1DBA@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <ZTP1OXGExKCMk14D@livingston.pivistrello.it>
+ <PA4PR04MB9638E6859D64EF4FC4762C03D1D8A@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <ZTZEfefJ8pvtnR7M@francesco-nb.int.toradex.com>
+In-Reply-To: <ZTZEfefJ8pvtnR7M@francesco-nb.int.toradex.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PA4PR04MB9638:EE_|PAXPR04MB8797:EE_
+x-ms-office365-filtering-correlation-id: 0fcfd714-d332-4996-d866-08dbd4631d8b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gQL0dcho/F7Os7Ce35lfqt30UKEEJa1dt0Y9Irsqb5lnhX5MB5CFYbLMqLb1U7RLHM+r2nv721q6F1ZoWQNjw/xGWtzrefSoshLnqeCkOpFvq1ckFTGnDP/tuUPCWmOqd40VLuwbIizca++t/eFS63rkwwPf9fIJYSktGfXZS1jACrctcufZW/jAwHFzEjFqJonnD5zSn24LqEivw7tXwBiWSngFps/X6uia4okpvScjo22yHmtDlEOP4zPJtIUG1+BbAs+IhZP+pQifboBModo0BgCsI/9gEnq0FXerEgd0Mo6LggsxLA+UeA8Qe0EGEbhCFcnkyZ1vTV7hRB8eqHEBqOhF8z9EdpY4dpLNwpuSgCJL6FCZHcHhgAO7yWnM0Xo+O2CWEZd+OHOiGD1tmxxg1jgq5SvP6QAu4AiFKsdxnRq/qSkc+MNlVhGX9T6qPJbFLjde82nNEMUbOpPNC2+UhLVWDZNmCQ9PiCoJUshRfsOTiw09I5S5s/lwAuZDcwO4+OMmMiZM+Bx3c0WL6ov1nEZprZHtbb6Vf9uzSCdSiwzWrvkVBDDxpqMntYf9cRZdVGjQ03WNephjh3JmW6QZkGxK1EDsK3oshc5ymKg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(346002)(39860400002)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(55016003)(52536014)(6506007)(38100700002)(41300700001)(7696005)(26005)(4326008)(5660300002)(83380400001)(122000001)(2906002)(53546011)(9686003)(38070700009)(966005)(33656002)(45080400002)(8936002)(86362001)(8676002)(478600001)(71200400001)(66946007)(54906003)(316002)(76116006)(66476007)(66556008)(6916009)(66446008)(64756008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?dun+ol0NWGxUnKPaIV8otbJMIAgj0OLPXtuwY2u0ybcsb5j96c4dSlVPMK7h?=
+ =?us-ascii?Q?HVZaWr0TBhZIkOZiAhXIPpaoRNDqXfetWxiLds5g85EReTBP6J10934CqQcY?=
+ =?us-ascii?Q?15nm/54fOxPtz1M+mWCGcSsKok1fJCu8HndrpjTy8Y+HsTKra8RningUELMc?=
+ =?us-ascii?Q?zI8VkC7Z/BG109Ext3eeuj8M9YGOhK150l0xg1DKuiXGR4vnrZyLBowHUeie?=
+ =?us-ascii?Q?6xSdVJgetOvw+zyVjwQr4Hzi25v7x/ppo/UJ0l9GGr2Wa3/fBHFMOHGXdgm0?=
+ =?us-ascii?Q?+aNe+guCwnkiu2Jo3rRkSdA5ztIMAUlAN2L7YBdpt7Rl8g/lzrAaiE8FU2FI?=
+ =?us-ascii?Q?AIyVZGbQVfzzBiCNuWpTS3hBBh6QpZ4qKe8Zp14gJvVZ+JmBzWqbbjvr6AsN?=
+ =?us-ascii?Q?q7pG54eurpqKiD4sZRGSn/cQt49KZLGgBPMc9Y1koKHvzAMj9i7tAE1jQC0O?=
+ =?us-ascii?Q?L+58DxSP3uzl3ndDr+b/OrCpkpTLyhkHrJgpVY24/M9M5AWQdc3gjIgVnCu4?=
+ =?us-ascii?Q?0+E0xm+vPnxmciw8jMk/J8dZggUIcrQBepuv8iMwbrZ09tjdZHIcqTSCaT4E?=
+ =?us-ascii?Q?VhMh7CLGvZM5BC5pvbBcQtq2aLxkSHAV7USUrG1bJwunGIDVC3zzBulD8csU?=
+ =?us-ascii?Q?BW6u94iBiQloezrcfft1JxIcKf5yrL+WIeoe4GTSsHaNbW7hc2XkHfOdjmvQ?=
+ =?us-ascii?Q?lLR3X0oLEjluC+Og7OvQNNJA2FwI164Ya67i+19I66scdtr3Bk/abuEZfVYX?=
+ =?us-ascii?Q?Q/kEiZnKioKrvqWmnld4MFvasEDXUVxGrhmb559JJI84H51WLXMOoExnmbyG?=
+ =?us-ascii?Q?RwryBYCzQJWVWPzTz2shya3MEQXWVlqqhraT+mWiQmAiGVofvafL0j5mT6P+?=
+ =?us-ascii?Q?1ErAhomckKAYk/1WppOze69HEjsPcREp2UVEugvMBekI/kHhz71Tb6NAu6+v?=
+ =?us-ascii?Q?icoIVK11DJsTtqAxYu4rSynID8MOYPzVVyn4iuNEAt4ivp5x/dFfPbNtzUWw?=
+ =?us-ascii?Q?hz+CHIwbEs1Eyc71eVrvvPVhxAKkAebr8az75EP3tYoEwx1aTUYbbZc8oO14?=
+ =?us-ascii?Q?4PP18YR2Cwj1xqYz7jBDzWggsu1WxQc7FtagkMf3hlhNaWVrhx7Oefstyt1L?=
+ =?us-ascii?Q?JPJ4oiRZeqpTzeV0QY0S8sHRshslCs2qEE2+TRCcUb1oxkR2KOXTscN4l0To?=
+ =?us-ascii?Q?RXAOqUWRDBgBTTMeIwpB/X2/ywjLrPIlmho1U6czxO6qy52qPviMvIvKx5Mb?=
+ =?us-ascii?Q?IsLnMGOwqlVV85ozhkUW0Ks8gELymooGuogyhcRx8ujKg5ZDGkV4mFu8xCdB?=
+ =?us-ascii?Q?ZQhYWO4ouNh4bxYK6ZRTiGcfiM2eH/JzMXoEpWt8aYEDQovgpLL8a6h3rmcT?=
+ =?us-ascii?Q?xQ8gOzAvrPE1MYEoBTjugrnCP30lpvVMzuTos3+r5SBkiaXHDqFI2LzZ8QX+?=
+ =?us-ascii?Q?6dTUJaw0JJ6vklXmBXFryrXMdRhZ6y7CWwuxUHvqUIbfZa2mRO6UdHxGJWt4?=
+ =?us-ascii?Q?gIJg/VX51vgDl2tO4ex0PZF6PhIdwrWDiKvQ6jAJ7Qvbc26dFNnY4nnLsXzE?=
+ =?us-ascii?Q?PjwNbtYBYnQIT+31tnu2f9zNzf5pUpMsLw+kp85T?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9638.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0fcfd714-d332-4996-d866-08dbd4631d8b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2023 07:30:36.4698
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bHBpaeLtUu6+/9Oq7jP80fPAWAWPUyof4+vhOON6iXkDauc6uFC9dkEngkML1CrEhz4GXB1vBusl7OAfLfhMuQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8797
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, dem 23.10.2023 um 23:44 +0100 schrieb Kieran Bingham:
-> Quoting André Apitzsch (2023-10-23 22:47:50)
-> > Code refinement, no functional changes.
-> > 
-> > Signed-off-by: André Apitzsch <git@apitzsch.eu>
-> > ---
-> >  drivers/media/i2c/imx214.c | 24 +++++++++++++++++++-----
-> >  1 file changed, 19 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/media/i2c/imx214.c
-> > b/drivers/media/i2c/imx214.c
-> > index 4f77ea02cc27..9218c149d4c8 100644
-> > --- a/drivers/media/i2c/imx214.c
-> > +++ b/drivers/media/i2c/imx214.c
-> > @@ -19,12 +19,23 @@
-> >  #include <media/v4l2-fwnode.h>
-> >  #include <media/v4l2-subdev.h>
-> >  
-> > +#define IMX214_REG_MODE_SELECT         0x0100
-> > +#define IMX214_MODE_STANDBY            0x00
-> > +#define IMX214_MODE_STREAMING          0x01
-> > +
-> >  #define IMX214_DEFAULT_CLK_FREQ        24000000
-> >  #define IMX214_DEFAULT_LINK_FREQ 480000000
-> >  #define IMX214_DEFAULT_PIXEL_RATE ((IMX214_DEFAULT_LINK_FREQ *
-> > 8LL) / 10)
-> >  #define IMX214_FPS 30
-> >  #define IMX214_MBUS_CODE MEDIA_BUS_FMT_SRGGB10_1X10
-> >  
-> > +/* Exposure control */
-> > +#define IMX214_REG_EXPOSURE            0x0202
-> > +#define IMX214_EXPOSURE_MIN            0
-> > +#define IMX214_EXPOSURE_MAX            3184
-> > +#define IMX214_EXPOSURE_STEP           1
-> > +#define IMX214_EXPOSURE_DEFAULT                0x0c70
-> 
-> I like this change, and I see that 0x0c70 was directly moved here
-> from
-> the code below. But could we replace 0xc70 here with 3184 please so
-> that
-> it's /far/ clearer that the Exposure Default == Exposure Max which is
-> otherwise hidden?
-> 
-Hi Kieran,
 
-I can do that. But I propose to replace 3184 with 0x0c70 instead.
-Because that matches the entries used in the reg_8 lists
-mode_4096x2304[] and mode_1920x1080[].
 
-	{0x0202, 0x0C},
-	{0x0203, 0x70}, 
+> -----Original Message-----
+> From: Francesco Dolcini <francesco@dolcini.it>
+> Sent: Monday, October 23, 2023 6:02 PM
+> To: David Lin <yu-hao.lin@nxp.com>
+> Cc: Francesco Dolcini <francesco@dolcini.it>; linux-wireless@vger.kernel.=
+org;
+> linux-kernel@vger.kernel.org; briannorris@chromium.org; kvalo@kernel.org;
+> Sharvari Harisangam <sharvari.harisangam@nxp.com>; Pete Hsieh
+> <tsung-hsien.hsieh@nxp.com>
+> Subject: Re: [EXT] Re: [PATCH v6 1/6] wifi: mwifiex: added code to suppor=
+t host
+> mlme.
+>
+> Caution: This is an external email. Please take care when clicking links =
+or
+> opening attachments. When in doubt, report the message using the 'Report
+> this email' button
+>
+>
+> On Mon, Oct 23, 2023 at 02:16:26AM +0000, David Lin wrote:
+> > > On Fri, Oct 20, 2023 at 03:48:11AM +0000, David Lin wrote:
+> > > I noticed that you ignored some (all?) of my feedback [1].
+> > >
+> > > Maybe my feedback got lost between the quotes, maybe you just forgot
+> > > to apply it. Please go back to the previous discussion and either
+> > > implement all requested changes or keep discussing them.
+> > >
+> >
+> > I think I replied your request and follow it. Please check following li=
+nk:
+> >
+> > https://patc/
+> >
+> hwork.kernel.org%2Fproject%2Flinux-wireless%2Fpatch%2FPA4PR04MB9638DE
+> F
+> >
+> C074F41AAEE3AC471D1DBA%40PA4PR04MB9638.eurprd04.prod.outlook.com
+> %2F&da
+> >
+> ta=3D05%7C01%7Cyu-hao.lin%40nxp.com%7C6878af1bfd2840a79d0708dbd3af0c
+> cb%7
+> >
+> C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C638336521007434968%
+> 7CUnkno
+> >
+> wn%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1ha
+> WwiL
+> >
+> CJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=3DAMCnU6bzMXwCJcn0VqXPnUF
+> xEQB8j8N4mF
+> > 4LZchFxOA%3D&reserved=3D0
+> >
+> > Please press "Series:   | expand", you will find cover letter with
+> > related patches there. You can review any commit and reply the e-mail
+> > separately. Thanks.
+>
+> I think we are not understanding each other, please have a look here
+> https://lore.kern/
+> el.org%2Fall%2FZRLsuJfxuvFk1K16%40francesco-nb.int.toradex.com%2F&data=3D
+> 05%7C01%7Cyu-hao.lin%40nxp.com%7C6878af1bfd2840a79d0708dbd3af0ccb
+> %7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C63833652100743496
+> 8%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLC
+> JBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=3DamdyTVGXjQn
+> js40yAAiVo3oN7pBEW5XmuG8UvNPNsyo%3D&reserved=3D0
+> where you can find my comment on v4 of your series. I cannot find any ans=
+wer
+> to that comments nor the changes I asked for implemented.
+>
 
-What do you think?
+Sorry. I missed lot of your comments on patch v4. I will check it and reply=
+ you. Any needed modifications will be added to Patch v7.
 
-Regards,
-André
-
-> --
-> Regards
-> 
-> Kieran
-> 
+> Francesco
 
