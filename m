@@ -2,178 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8AC7D4A21
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056EA7D4A1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233913AbjJXIcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        id S233915AbjJXIbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233341AbjJXIcl (ORCPT
+        with ESMTP id S233896AbjJXIbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:32:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0067C10D7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:31:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698136307;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ITFJy6PL18AxXcQ0tJtKX/riP17Qh3+LpE2GcIDMeCU=;
-        b=dFy3KW0SV74+SGVa0/t7EawHPFUSTH3ropzlqORy6kW3dEpVLTtj6ye8JlNolZMd3gUooz
-        HL9rB2GoS7gmV0QqhaudOSUHkOlDjtpxEItHn3dj3cmK/rOaDfA2NtlJf5ELjQFpk7muNb
-        W7RhehYCLP/EFnLJBEmrSoJ2r6QS9r4=
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-390-G5cFkz2QN86mT_4t5uKirA-1; Tue, 24 Oct 2023 04:31:45 -0400
-X-MC-Unique: G5cFkz2QN86mT_4t5uKirA-1
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7a944728f92so44610839f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:31:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698136305; x=1698741105;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ITFJy6PL18AxXcQ0tJtKX/riP17Qh3+LpE2GcIDMeCU=;
-        b=Cn0RQwoFXQtwJc2HPpXz+yfCoREzJ1roihcKw8bpGkrI3Z7JuSdYBRTt0z2KC1t7cR
-         EyiYiqZAoXOhAjL5piMvyVcWUA76JQJAqsevsvdpR4Jvy8pky1cD8pMJPV3f5dfOxe6K
-         zNU2NHIlus+To6ojsrzRN1GBBUQ3uJbkn4DQfcB8kf1yNZroy1AvEOZkobuKTRiA87sD
-         iAQXdyrqTH+ibBlfnwjgKy+GFpxkLf9iCyw3efKg6PFVNzCwh7BswAmjKLK/+adOghBq
-         kkBHPlVOFwKfmwDXw6B9nUw/XhaUM9dFf02iKX/bKf05oq6PftpqiliyCEgKZezf+WmV
-         4XSw==
-X-Gm-Message-State: AOJu0Yzq/dspz8/eoUiryqvGKzMK5YksIhYLfgXoRA1xR9kgWx6aq/g3
-        gALxScHWKRtaoREC6iXot0Wx9BOOV0Z1Znpj65bwAkgdkEU9VGLuGrT/FESSeuKrOugHQ8ghLE1
-        g4SU1iVFfwcpdEcEnDJ7POfTF1bZH6yO3neEm33OA
-X-Received: by 2002:a05:6e02:1d9d:b0:34f:7ba2:50e8 with SMTP id h29-20020a056e021d9d00b0034f7ba250e8mr13143888ila.2.1698136304773;
-        Tue, 24 Oct 2023 01:31:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEHTillXwi4Yy8mMt80SkVrJ/fr3lgQcdZQJr+vXNNVHsb99ljUAorE0YMkswPa6fZZ1r2eXFHDGKmKLVUFBEo=
-X-Received: by 2002:a05:6e02:1d9d:b0:34f:7ba2:50e8 with SMTP id
- h29-20020a056e021d9d00b0034f7ba250e8mr13143861ila.2.1698136304468; Tue, 24
- Oct 2023 01:31:44 -0700 (PDT)
+        Tue, 24 Oct 2023 04:31:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B37D10D4;
+        Tue, 24 Oct 2023 01:31:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C97CFC433C7;
+        Tue, 24 Oct 2023 08:31:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698136295;
+        bh=ngSvMto7V8dU1ORdVoFSudGElTy/pPNuoVmO5s5fusM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GrW4nr1oaKNjQtuaewrKBG0BcQdOE+2WQdUerNfWacN33AYQPTDEBNjKZWacn7Ezl
+         Ahh0HpsALsA1IyUrk1JU6X4AZmIj+l5nTqOc85Elu85c5PusWhlXV2oTnPcv8virIY
+         xg6nxy9d8tzHRfr8xZ37I2YfwlHNjVifeTW8K0FI=
+Date:   Tue, 24 Oct 2023 10:31:32 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH 5.15 000/137] 5.15.137-rc1 review
+Message-ID: <2023102453-backspin-immunize-b110@gregkh>
+References: <20231023104820.849461819@linuxfoundation.org>
+ <724521b8-9c63-4645-b3e0-30d9635573a7@linaro.org>
+ <CAEUSe7-zbuRsgsr2EYq+OeW9iEJyZHmo8u9K3pDCAFRKnCEv0A@mail.gmail.com>
+ <CAMuHMdXYB6QAE15RYs7eg9sVofesqNN1+vmPHkosqC_8A-JTSg@mail.gmail.com>
+ <9737cd7b-f3c6-7e90-f92c-0ceeed788980@roeck-us.net>
 MIME-Version: 1.0
-References: <20230912090051.4014114-17-ardb@google.com> <ZRt2ToOHm2XT8MlU@desktop>
- <CAMj1kXH--86-pqHp6W0gsRDAMw-iuYKrgHEpmZzaJnpsVTkkxw@mail.gmail.com>
- <ZTau5kbdB-9iRfcm@desktop> <CALu+AoQbBr0RyBG6JxyKO81Ur=0uG_FxZq3=-QYhF2OxV7+F7g@mail.gmail.com>
-In-Reply-To: <CALu+AoQbBr0RyBG6JxyKO81Ur=0uG_FxZq3=-QYhF2OxV7+F7g@mail.gmail.com>
-From:   Dave Young <dyoung@redhat.com>
-Date:   Tue, 24 Oct 2023 16:31:27 +0800
-Message-ID: <CALu+AoSPqDOAhwoLCYkGRnE96X6r7rpOwERmse+=YQyA4OW2ug@mail.gmail.com>
-Subject: Re: [PATCH v2 00/15] x86/boot: Rework PE header generation
-To:     Jan Hendrik Farr <kernel@jfarr.cc>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Ard Biesheuvel <ardb@google.com>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Jones <pjones@redhat.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Goyal, Vivek" <vgoyal@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9737cd7b-f3c6-7e90-f92c-0ceeed788980@roeck-us.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023 at 16:21, Dave Young <dyoung@redhat.com> wrote:
->
-> On Tue, 24 Oct 2023 at 01:37, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
-> >
-> > On 23 13:22:53, Ard Biesheuvel wrote:
-> > > On Tue, 3 Oct 2023 at 04:03, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
-> > > >
-> > > > On 12 09:00:51, Ard Biesheuvel wrote:
-> > > > > From: Ard Biesheuvel <ardb@kernel.org>
-> > > > >
-> > > > > Now that the EFI stub boot flow no longer relies on memory that is
-> > > > > executable and writable at the same time, we can reorganize the PE/COFF
-> > > > > view of the kernel image and expose the decompressor binary's code and
-> > > > > r/o data as a .text section and data/bss as a .data section, using 4k
-> > > > > alignment and limited permissions.
-> > > > >
-> > > > > Doing so is necessary for compatibility with hardening measures that are
-> > > > > being rolled out on x86 PCs built to run Windows (i.e., the majority of
-> > > > > them). The EFI boot environment that the Linux EFI stub executes in is
-> > > > > especially sensitive to safety issues, given that a vulnerability in the
-> > > > > loader of one OS can be abused to attack another.
-> > > >
-> > > > This split is also useful for the work of kexecing the next kernel as an
-> > > > EFI application. With the current EFI stub I have to set the memory both
-> > > > writable and executable which results in W^X warnings with a default
-> > > > config.
-> > > >
-> > > > What made this more confusing was that the flags of the .text section in
-> > > > current EFI stub bzImages are set to
-> > > > IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_READ. So if you load that section
-> > > > according to those flags the EFI stub will quickly run into issues.
-> > > >
-> > > > I assume current firmware on x86 machines does not set any restricted
-> > > > permissions on the memory. Can someone enlighten me on their behavior?
-> > > >
-> > >
-> > > No current x86 firmware does not use restricted permissions at all.
-> > > All memory is mapped with both writable and executable permissions,
-> > > except maybe the stack.
-> > >
-> > > The x86 Linux kernel has been depending on this behavior too, up until
-> > > recently (fixes are in -rc now for the v6.6 release). Before this, it
-> > > would copy its own executable image around in memory.
-> > >
-> > > So EFI based kexec will need to support this behavior if it targets
-> > > older x86 kernels, although I am skeptical that this is a useful
-> > > design goal.
-> >
-> > I don't see this as an important goal either.
-> >
-> > > I have been experimenting with running the EFI stub code in user space
-> > > all the way until ExitBootServices(). The same might work for UKI if
-> > > it is layered cleanly on top of the EFI APIs (rather than poking into
-> > > system registers or page tables under the hood).
-> > >
-> > > How this would work with signed images etc is TBD but I quite like the
-> > > idea of running everything in user space and having a minimal
-> > > purgatory (or none at all) if we can simply populate the entire
-> > > address space while running unprivileged, and just branch to it in the
-> > > kexec() syscall. I imagine this being something like a userspace
-> > > helper that is signed/trusted itself, and gets invoked by the kernel
-> > > to run EFI images that are trusted and tagged as being executable
-> > > unprivileged.
-> >
-> > I've been experimenting with running EFI apps inside kernel space instead.
-> > This is the more natural approach for signed images. Sure, a malicious EFI
-> > app could do arbitrary stuff in kernel mode, but they're signed. On the other
-> > hand running this entirely in user space would at least guarantee that the
-> > system can not crash due to a misbehaving EFI app (at least until
-> > ExitBootServices()).
-> >
-> > The question of whether or not to make this the job of a userspace helper that
-> > is signed must have come up when kexec_file_load syscall was added. It would
-> > have also been an option at the time to extend trust to a signed version of
-> > the userspace kexec tool.
-> >
-> > Why was kexec_file_load created instead of restricting kexec_load to a signed
-> > version of the kexec userspace tool?
->
-> I think one of the reasons is that it is hard to handle dynamic linked
-> libraries, not only the kexec-tools binary.
+On Mon, Oct 23, 2023 at 12:56:48PM -0700, Guenter Roeck wrote:
+> On 10/23/23 11:50, Geert Uytterhoeven wrote:
+> > CC maz
+> > 
+> > On Mon, Oct 23, 2023 at 7:17 PM Daniel Díaz <daniel.diaz@linaro.org> wrote:
+> > > On Mon, 23 Oct 2023 at 09:11, Daniel Díaz <daniel.diaz@linaro.org> wrote:
+> > > > On 23/10/23 4:55 a. m., Greg Kroah-Hartman wrote:
+> > > > > This is the start of the stable review cycle for the 5.15.137 release.
+> > > > > There are 137 patches in this series, all will be posted as a response
+> > > > > to this one.  If anyone has any issues with these being applied, please
+> > > > > let me know.
+> > > > > 
+> > > > > Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
+> > > > > Anything received after that time might be too late.
+> > > > > 
+> > > > > The whole patch series can be found in one patch at:
+> > > > >        https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.137-rc1.gz
+> > > > > or in the git tree and branch at:
+> > > > >        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > > > > and the diffstat can be found below.
+> > > > > 
+> > > > > thanks,
+> > > > > 
+> > > > > greg k-h
+> > > > 
+> > > > We see lots of errors on Arm 32-bits:
+> > > > 
+> > > > -----8<-----
+> > > > /builds/linux/drivers/gpio/gpio-vf610.c:249:11: error: 'IRQCHIP_IMMUTABLE' undeclared here (not in a function); did you mean 'IS_IMMUTABLE'?
+> > > >     .flags = IRQCHIP_IMMUTABLE | IRQCHIP_MASK_ON_SUSPEND
+> > > >              ^~~~~~~~~~~~~~~~~
+> > > >              IS_IMMUTABLE
+> > > > /builds/linux/drivers/gpio/gpio-vf610.c:251:2: error: 'GPIOCHIP_IRQ_RESOURCE_HELPERS' undeclared here (not in a function)
+> > > >     GPIOCHIP_IRQ_RESOURCE_HELPERS,
+> > > >     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > /builds/linux/drivers/gpio/gpio-vf610.c:251:2: warning: excess elements in struct initializer
+> > > > /builds/linux/drivers/gpio/gpio-vf610.c:251:2: note: (near initialization for 'vf610_irqchip')
+> > > > /builds/linux/drivers/gpio/gpio-vf610.c: In function 'vf610_gpio_probe':
+> > > > /builds/linux/drivers/gpio/gpio-vf610.c:340:2: error: implicit declaration of function 'gpio_irq_chip_set_chip'; did you mean 'gpiochip_get_data'? [-Werror=implicit-function-declaration]
+> > > >     gpio_irq_chip_set_chip(girq, &vf610_irqchip);
+> > > >     ^~~~~~~~~~~~~~~~~~~~~~
+> > > >     gpiochip_get_data
+> > > > cc1: some warnings being treated as errors
+> > > > ----->8-----
+> > > 
+> > > Bisection points to "gpio: vf610: make irq_chip immutable" (upstream
+> > > commit e6ef4f8ede09f4af7cde000717b349b50bc62576).
+> > 
+> > IRQCHIP_IMMUTABLE was introduced in commit 6c846d026d490b23 ("gpio:
+> > Don't fiddle with irqchips marked as immutable") in v5.19.
+> > Backporting (part of) that is probably not safe.
+> > 
+> 
+> In this context: What exactly does commit e6ef4f8ede09 fix that makes it
+> a stable release candidate ?
 
-Hmm, another one is that ptrace needs to be disabled in some way,
-anyway I think it is way too complicated, but I do not remember the
-details, added Vivek in cc.
-See this article: https://lwn.net/Articles/532778/
+It is needed as a dependency for 430232619791 ("gpio: vf610: mask the
+gpio irq in system suspend and support wakeup") which says it:
+  Fixes: 7f2691a19627 ("gpio: vf610: add gpiolib/IRQ chip driver for Vybrid")
+which was in the 3.19 kernel release.
 
->
-> Thanks
-> Dave
+That's why it was added.  And then none of my x86 builds caught this
+build failure before I pushed out the -rcs.
 
+thanks,
+
+greg k-h
