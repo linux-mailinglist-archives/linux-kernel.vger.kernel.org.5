@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B1A7D5197
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D4A7D5199
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234528AbjJXNWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41320 "EHLO
+        id S234593AbjJXNWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234695AbjJXNVq (ORCPT
+        with ESMTP id S1343493AbjJXNVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:21:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58C91728;
-        Tue, 24 Oct 2023 06:21:02 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 13:21:00 -0000
+        Tue, 24 Oct 2023 09:21:51 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429161738;
+        Tue, 24 Oct 2023 06:21:03 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 13:21:01 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1698153661;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2mUaKN+1VHCw6G06UDHp5hM9uyCVeZQZ+qilCr9Stwg=;
-        b=ge+KXS1yJa6LXLrKzd2Rzoh02T0uoO5umVPuXB1Suf544IZ5MAncZR1CJfvB6nhbx1O1Ms
-        nHd7OjsatteGTriMtjlAGfcHr+DMKiElkdH9kP6JsTaaBbeaqXkYHawo6mkHzE5sUIoiOg
-        dZsfPFhzCKvzbuW5+XygfZtqGlHKkdwLUI5s+P4e1VW1tKbPX2xgAU+f1rHw2UaJUO1iuj
-        rlxgQYrj1bBfzrxmHiDUds+ZFlBQfsQUgoooMpMNb9W2Y7J/vlUluaJB34kREbsSrDgRma
-        BVSTAPnAp9xAxqd4Ohb02AV0NpOcurfVE+m2Qf74tIzxsPBsq5K6dXK7WuBFPg==
+        bh=d3BWkAF3K0oG26y0zccu3hr2d5yCYQH1v5JkIZ4rBLc=;
+        b=PLoYSarO0OhwM8QaHFnDeQwE4PE/ikcA3EtOl59bBelUAIYbfOw4MmeBkw8+3ylSK/aCd3
+        gGRh16js5eK2X38IrsbGPYDwy6kanBFnc7TwFu1n6JCZ+PHaz32h5zRT3QF4+r3JER/HiZ
+        SeNhvLQCJi17FsWmkqPWBQGiJkPZ/OSnafAd++TMVRu1TV8faNfAzyIvRejzaprbhud8Xi
+        dYBv3aw6GEkO6fMB/7pCICSH3QSgAMvxjZDq9F5vGjUntRmhMQuHiXzXs+Xo2lWCGCjhbg
+        CsJBm1kvKJicePaT1/T60SI+525hgm6rPPf/SXPWAJwTOyWOyHHWH0CqzOC85Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1698153661;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2mUaKN+1VHCw6G06UDHp5hM9uyCVeZQZ+qilCr9Stwg=;
-        b=/BSyrnBSrHXJDaI4wfqXLNhnDcZa5KfvZBpqLciu8cFStmrNsJziZ0jEcZgSms5lUJuf7y
-        qNEAQkTijKeJ8yBg==
+        bh=d3BWkAF3K0oG26y0zccu3hr2d5yCYQH1v5JkIZ4rBLc=;
+        b=Q5i/RnKFz00s+huuyj1hW06mFR7Bge2+d/rDKEflzOfWhszkzk177Xp8pScXD7Kj+icF/g
+        OkSHmJjC5CLl02Dg==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/microcode] x86/microcode/amd: Use cached microcode for AP load
+Subject: [tip: x86/microcode] x86/microcode/amd: Cache builtin/initrd microcode early
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231017211723.243426023@linutronix.de>
-References: <20231017211723.243426023@linutronix.de>
+In-Reply-To: <20231017211723.187566507@linutronix.de>
+References: <20231017211723.187566507@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169815366020.3135.1361653882661471432.tip-bot2@tip-bot2>
+Message-ID: <169815366114.3135.14229193019329228281.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,160 +66,100 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/microcode branch of tip:
 
-Commit-ID:     5af05b8d51a8e3ff5905663655c0f46d1aaae44a
-Gitweb:        https://git.kernel.org/tip/5af05b8d51a8e3ff5905663655c0f46d1aaae44a
+Commit-ID:     a7939f01672034a58ad3fdbce69bb6c665ce0024
+Gitweb:        https://git.kernel.org/tip/a7939f01672034a58ad3fdbce69bb6c665ce0024
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 17 Oct 2023 23:23:55 +02:00
+AuthorDate:    Tue, 17 Oct 2023 23:23:53 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
 CommitterDate: Tue, 24 Oct 2023 15:05:54 +02:00
 
-x86/microcode/amd: Use cached microcode for AP load
+x86/microcode/amd: Cache builtin/initrd microcode early
 
-Now that the microcode cache is initialized before the APs are brought
-up, there is no point in scanning builtin/initrd microcode during AP
-loading.
+There is no reason to scan builtin/initrd microcode on each AP.
 
-Convert the AP loader to utilize the cache, which in turn makes the CPU
-hotplug callback which applies the microcode after initrd/builtin is
-gone, obsolete as the early loading during late hotplug operations
-including the resume path depends now only on the cache.
+Cache the builtin/initrd microcode in an early initcall so that the
+early AP loader can utilize the cache.
+
+The existing fs initcall which invoked save_microcode_in_initrd_amd() is
+still required to maintain the initrd_gone flag. Rename it accordingly.
+This will be removed once the AP loader code is converted to use the
+cache.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231017211723.243426023@linutronix.de
+Link: https://lore.kernel.org/r/20231017211723.187566507@linutronix.de
 ---
- arch/x86/kernel/cpu/microcode/amd.c      | 20 +++++++++++---------
- arch/x86/kernel/cpu/microcode/core.c     | 15 ++-------------
- arch/x86/kernel/cpu/microcode/internal.h |  2 --
- 3 files changed, 13 insertions(+), 24 deletions(-)
+ arch/x86/kernel/cpu/microcode/amd.c  |  8 +++++++-
+ arch/x86/kernel/cpu/microcode/core.c | 20 ++++----------------
+ 2 files changed, 11 insertions(+), 17 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/microcode/amd.c b/arch/x86/kernel/cpu/microcode/amd.c
-index 6717f0e..99aa5a8 100644
+index 2458379..6717f0e 100644
 --- a/arch/x86/kernel/cpu/microcode/amd.c
 +++ b/arch/x86/kernel/cpu/microcode/amd.c
-@@ -496,7 +496,7 @@ static bool get_builtin_microcode(struct cpio_data *cp, unsigned int family)
- 	return false;
- }
+@@ -527,12 +527,17 @@ void load_ucode_amd_early(unsigned int cpuid_1_eax)
  
--static void find_blobs_in_containers(unsigned int cpuid_1_eax, struct cpio_data *ret)
-+static void __init find_blobs_in_containers(unsigned int cpuid_1_eax, struct cpio_data *ret)
- {
- 	struct cpio_data cp;
- 
-@@ -506,12 +506,12 @@ static void find_blobs_in_containers(unsigned int cpuid_1_eax, struct cpio_data 
- 	*ret = cp;
- }
- 
--static void apply_ucode_from_containers(unsigned int cpuid_1_eax)
-+void __init load_ucode_amd_bsp(unsigned int cpuid_1_eax)
- {
- 	struct cpio_data cp = { };
- 
- 	/* Needed in load_microcode_amd() */
--	ucode_cpu_info[smp_processor_id()].cpu_sig.sig = cpuid_1_eax;
-+	ucode_cpu_info[0].cpu_sig.sig = cpuid_1_eax;
- 
- 	find_blobs_in_containers(cpuid_1_eax, &cp);
- 	if (!(cp.data && cp.size))
-@@ -520,11 +520,6 @@ static void apply_ucode_from_containers(unsigned int cpuid_1_eax)
- 	early_apply_microcode(cpuid_1_eax, cp.data, cp.size);
- }
- 
--void load_ucode_amd_early(unsigned int cpuid_1_eax)
--{
--	return apply_ucode_from_containers(cpuid_1_eax);
--}
--
  static enum ucode_state load_microcode_amd(u8 family, const u8 *data, size_t size);
  
- static int __init save_microcode_in_initrd(void)
-@@ -608,7 +603,6 @@ static struct ucode_patch *find_patch(unsigned int cpu)
- 	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
- 	u16 equiv_id;
- 
--
- 	equiv_id = find_equiv_id(&equiv_table, uci->cpu_sig.sig);
- 	if (!equiv_id)
- 		return NULL;
-@@ -710,6 +704,14 @@ out:
- 	return ret;
- }
- 
-+void load_ucode_amd_ap(unsigned int cpuid_1_eax)
-+{
-+	unsigned int cpu = smp_processor_id();
-+
-+	ucode_cpu_info[cpu].cpu_sig.sig = cpuid_1_eax;
-+	apply_microcode_amd(cpu);
-+}
-+
- static size_t install_equiv_cpu_table(const u8 *buf, size_t buf_size)
+-int __init save_microcode_in_initrd_amd(unsigned int cpuid_1_eax)
++static int __init save_microcode_in_initrd(void)
  {
- 	u32 equiv_tbl_len;
++	unsigned int cpuid_1_eax = native_cpuid_eax(1);
++	struct cpuinfo_x86 *c = &boot_cpu_data;
+ 	struct cont_desc desc = { 0 };
+ 	enum ucode_state ret;
+ 	struct cpio_data cp;
+ 
++	if (dis_ucode_ldr || c->x86_vendor != X86_VENDOR_AMD || c->x86 < 0x10)
++		return 0;
++
+ 	find_blobs_in_containers(cpuid_1_eax, &cp);
+ 	if (!(cp.data && cp.size))
+ 		return -EINVAL;
+@@ -549,6 +554,7 @@ int __init save_microcode_in_initrd_amd(unsigned int cpuid_1_eax)
+ 
+ 	return 0;
+ }
++early_initcall(save_microcode_in_initrd);
+ 
+ /*
+  * a small, trivial cache of per-family ucode patches
 diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
-index 3d769ff..15c5042 100644
+index cfc1f7a..3d769ff 100644
 --- a/arch/x86/kernel/cpu/microcode/core.c
 +++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -154,7 +154,7 @@ void __init load_ucode_bsp(void)
- 	if (intel)
- 		load_ucode_intel_bsp();
- 	else
--		load_ucode_amd_early(cpuid_1_eax);
-+		load_ucode_amd_bsp(cpuid_1_eax);
+@@ -180,24 +180,13 @@ void load_ucode_ap(void)
+ 	}
  }
  
- void load_ucode_ap(void)
-@@ -173,7 +173,7 @@ void load_ucode_ap(void)
- 		break;
- 	case X86_VENDOR_AMD:
- 		if (x86_family(cpuid_1_eax) >= 0x10)
--			load_ucode_amd_early(cpuid_1_eax);
-+			load_ucode_amd_ap(cpuid_1_eax);
- 		break;
- 	default:
- 		break;
-@@ -494,15 +494,6 @@ static struct syscore_ops mc_syscore_ops = {
- 	.resume	= microcode_bsp_resume,
- };
- 
--static int mc_cpu_starting(unsigned int cpu)
--{
--	enum ucode_state err = microcode_ops->apply_microcode(cpu);
--
--	pr_debug("%s: CPU%d, err: %d\n", __func__, cpu, err);
--
--	return err == UCODE_ERROR;
--}
--
- static int mc_cpu_online(unsigned int cpu)
+-static int __init save_microcode_in_initrd(void)
++/* Temporary workaround until find_microcode_in_initrd() is __init */
++static int __init mark_initrd_gone(void)
  {
- 	struct device *dev = get_cpu_device(cpu);
-@@ -590,8 +581,6 @@ static int __init microcode_init(void)
- 	schedule_on_each_cpu(setup_online_cpu);
+-	struct cpuinfo_x86 *c = &boot_cpu_data;
+-	int ret = -EINVAL;
+-
+-	switch (c->x86_vendor) {
+-	case X86_VENDOR_AMD:
+-		if (c->x86 >= 0x10)
+-			ret = save_microcode_in_initrd_amd(cpuid_eax(1));
+-		break;
+-	default:
+-		break;
+-	}
+-
+ 	initrd_gone = true;
+-
+-	return ret;
++	return 0;
+ }
++fs_initcall(mark_initrd_gone);
  
- 	register_syscore_ops(&mc_syscore_ops);
--	cpuhp_setup_state_nocalls(CPUHP_AP_MICROCODE_LOADER, "x86/microcode:starting",
--				  mc_cpu_starting, NULL);
- 	cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "x86/microcode:online",
- 				  mc_cpu_online, mc_cpu_down_prep);
+ struct cpio_data find_microcode_in_initrd(const char *path)
+ {
+@@ -615,5 +604,4 @@ static int __init microcode_init(void)
+ 	return error;
  
-diff --git a/arch/x86/kernel/cpu/microcode/internal.h b/arch/x86/kernel/cpu/microcode/internal.h
-index 32f6ad5..89fbf74 100644
---- a/arch/x86/kernel/cpu/microcode/internal.h
-+++ b/arch/x86/kernel/cpu/microcode/internal.h
-@@ -91,7 +91,6 @@ extern bool initrd_gone;
- #ifdef CONFIG_CPU_SUP_AMD
- void load_ucode_amd_bsp(unsigned int family);
- void load_ucode_amd_ap(unsigned int family);
--void load_ucode_amd_early(unsigned int cpuid_1_eax);
- int save_microcode_in_initrd_amd(unsigned int family);
- void reload_ucode_amd(unsigned int cpu);
- struct microcode_ops *init_amd_microcode(void);
-@@ -99,7 +98,6 @@ void exit_amd_microcode(void);
- #else /* CONFIG_CPU_SUP_AMD */
- static inline void load_ucode_amd_bsp(unsigned int family) { }
- static inline void load_ucode_amd_ap(unsigned int family) { }
--static inline void load_ucode_amd_early(unsigned int family) { }
- static inline int save_microcode_in_initrd_amd(unsigned int family) { return -EINVAL; }
- static inline void reload_ucode_amd(unsigned int cpu) { }
- static inline struct microcode_ops *init_amd_microcode(void) { return NULL; }
+ }
+-fs_initcall(save_microcode_in_initrd);
+ late_initcall(microcode_init);
