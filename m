@@ -2,87 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 406427D51CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C948D7D51D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234255AbjJXNaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
+        id S234483AbjJXNcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232073AbjJXNaI (ORCPT
+        with ESMTP id S234411AbjJXNbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:30:08 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A92B6EA1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:30:02 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 38FD0120037;
-        Tue, 24 Oct 2023 16:30:00 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 38FD0120037
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1698154200;
-        bh=uDFL+UiRh0fC+fhP1qbXLp0LfogzXYMs/LCjL9ObsmQ=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=ivDRJpEw2rF4222v+BO69JmmNfMvB7xycsx/ORGROPlPRZTsqoqnsuAxkSHzjBW+z
-         yqZ2KzG4OQUt2pTg4R6scREJrMc9JsGuvN1g+6AJrU9GgfjHFN246AvJr9c2Ol6yWH
-         NUOz8tisI+z98dS3X7eq/PgTT8SfPWI3U2taQEauakdD77pVajFGlWZeIzhHKS4L65
-         HZgThlEAN1eZFNgcfqXHdiM0svb4m20YisB0RZbEGg29b7nsRTjOOzPm9vCsFg32IG
-         AkdgsRKjWd1GyAglsZsJ6+SrFSYnAZ+9Bof9zAZno9vXTIwY1VA4yzTAUOcdXMUhxF
-         xek566jBdQO5A==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Tue, 24 Oct 2023 16:29:58 +0300 (MSK)
-Received: from [192.168.1.146] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Tue, 24 Oct 2023 16:29:58 +0300
-Message-ID: <b6b5b413-0fbe-4ce2-9d44-451b16555eb3@salutedevices.com>
-Date:   Tue, 24 Oct 2023 16:29:57 +0300
-MIME-Version: 1.0
+        Tue, 24 Oct 2023 09:31:55 -0400
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2054.outbound.protection.outlook.com [40.107.105.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA2B6EA1;
+        Tue, 24 Oct 2023 06:31:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mlnn9XHXcHO7TP1FF5nABix9uwYqYHnJXQrQnM3qcCgDvMbr8hrGyvXMkqF5B5xv5om2b1xo5uaHOs97eU99UZ2GS42czaSuiIvaIe6LSY1ld9IBh+C61CJHeJLAhZnetnDO4ql2JSfJD1vyYfeblo2ZCyjz+4eBpONjPmqdKK3ok/6Xe5vNkNPi4O6L0bCorPf5/fgZDAlHre43AKXv75Z0c0NwmyZ7UIn0aumdBWoIwykjfRJ2DKQWAe1VxSF9Zw4x61XwFz6bE3VMD2fAp7fD4JjrIzkSIIBlWB2mOM5XItHJvx+EHDdr/Y9MxhSQgQty/ejyJpMrqq7gICxjqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PJ5g8nyeFghsGUj68Wsm16tiMipGttHU7AltL3V6rYA=;
+ b=fMeEp1SFKsC+OYCFUWm7c3ee/3aDpLUI7vtp+vEsXWGpI5iq27qVVyDI8ZgJBK4QMDcJnXsq3QKR4qlaPgoVrsTRjhp5+Tu0OPx9YUdwbk88afAFWFX+rWOUcuf5CQY7R7Dt1h2MlNVRI2KuRxmtmsBr7/CVHb5Ve/Mvs9m1KzSX4iX9HrOZ/wrONadNc4kDu4XnGDkfCp3b6LnZT+XYQ+7XK0j6/BVnb3Qr3mnztelc7XxXg92rUM6YdqCfpVzq13V7LGMSD2e8z5zy5iYWRiYMIMkYG9z12BEbnqZaln55+aieWUcVGvoWrWn0NLU1ynlPhV82PiJcy7jEc13CDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PJ5g8nyeFghsGUj68Wsm16tiMipGttHU7AltL3V6rYA=;
+ b=vKN4gHee/gr4I8M6TyrH2PlnUqDhnWiA2IwDDr7dbEJ6Qo4MXrBpsm4Nu+HszaqKDwH00Cf2B4ZSAvtHatPV7tXHAgOxGsZqWPlX9Y24H2LVoUOy+6+GwrHuBF5uLr5CoBsxZgOO90IOOdYPlaalYA65rydIl4jGyp/VhVFwwVuQhKBQmls8qlS/5WfhygcDhnHtQBO6lbuMuhXniJtZSsAPFl9GGYISakZXtQnWzDEs94wFZkZof0pSI7ezZvFcCLtk1BXn25dxChneMgRhRQdSWYjImqNC84kvEqGnB3ncHtvVMyQtjOZbx7jq0EN5ntiBIpXNtRpvRfhR8CWKrQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
+ by PAXPR04MB8112.eurprd04.prod.outlook.com (2603:10a6:102:1cd::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.11; Tue, 24 Oct
+ 2023 13:31:50 +0000
+Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
+ ([fe80::edd3:f00:3088:6e61]) by PA4PR04MB7790.eurprd04.prod.outlook.com
+ ([fe80::edd3:f00:3088:6e61%4]) with mapi id 15.20.6933.011; Tue, 24 Oct 2023
+ 13:31:50 +0000
+Message-ID: <91b1fbc8-7308-43d1-a27a-90dc21fa7f40@suse.com>
+Date:   Tue, 24 Oct 2023 16:31:43 +0300
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/2] jffs2: make cleanmarker support option
-To:     Richard Weinberger <richard@nod.at>
-CC:     David Woodhouse <dwmw2@infradead.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Yu Zhe <yuzhe@nfschina.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        kernel <kernel@sberdevices.ru>
-References: <20231019073838.17586-1-mmkurbanov@salutedevices.com>
- <20231019073838.17586-3-mmkurbanov@salutedevices.com>
- <1258129392.18842.1697703134703.JavaMail.zimbra@nod.at>
- <3951ac21-a0a4-47b5-be94-edb0140c69a5@salutedevices.com>
- <406915015.32119.1698083084288.JavaMail.zimbra@nod.at>
+Subject: Re: [PATCH v14 12/23] x86/virt/tdx: Allocate and set up PAMTs for
+ TDMRs
 Content-Language: en-US
-From:   Martin Kurbanov <mmkurbanov@salutedevices.com>
-In-Reply-To: <406915015.32119.1698083084288.JavaMail.zimbra@nod.at>
-Content-Type: text/plain; charset="UTF-8"
+To:     "Huang, Kai" <kai.huang@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Shahar, Sagi" <sagis@google.com>,
+        "imammedo@redhat.com" <imammedo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "Gao, Chao" <chao.gao@intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>
+References: <cover.1697532085.git.kai.huang@intel.com>
+ <ac0e625f0a7a7207e1e7b52c75e9b48091a7f060.1697532085.git.kai.huang@intel.com>
+ <33857df5-3639-4db4-acdd-7b692852b601@suse.com>
+ <457f0b5366134c2b09d6312c32e5c84b123e7911.camel@intel.com>
+From:   Nikolay Borisov <nik.borisov@suse.com>
+In-Reply-To: <457f0b5366134c2b09d6312c32e5c84b123e7911.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180842 [Oct 24 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/24 11:32:00 #22275184
-X-KSMG-AntiVirus-Status: Clean, skipped
+X-ClientProxiedBy: ZR2P278CA0016.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:46::10) To PA4PR04MB7790.eurprd04.prod.outlook.com
+ (2603:10a6:102:cc::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|PAXPR04MB8112:EE_
+X-MS-Office365-Filtering-Correlation-Id: 440da009-8e08-4bc7-328e-08dbd4959359
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jUNvX0tQ30abpKfq8X3iDJP531MoJqFsRN2nmJwkGS3t94MZz/LSmGS9LPkTvqWqPah9OzWbTFP19uIiVf/l1zP98AtcOeWWZxfn8AmvFqu1KGtDmpYxRL5EZUKw9QGyDrjtlETmMnR3vHW8HG3U2wj6dFc/c1LvIIkmYjtyJSeCPPkqXysh2LES0xv6SOB2hTbQ7xgUraHTXGLScj7OnsYw6JseJGlfpdtQNaSacr1+Iw0LgW38bA2p6gc4ttjC6q4yiFbgF2jEtGzbtoSOOhN9h6V+T4AnVTUHRIAnmfm1W4DYEuQ6mJumg0YV1HvNX3V4ZT0eCNgHZjVtk/J+zceMgJLlTRrGWRSt5C5pLcEOJl8oWGweXJ77TUwKXsCfUEmJyZghwvOHOzaNkYfe2lr7+kBz9tqb7SI7a46Tf7yInbSCYoZZCvRhpCuXQIJSX9DSjyrb2DGXcJSZYl8XpJzytrjhqpO3nxNMeN1Rc9WBA9U7Pf+wimjGvU+NdKQ9LPysZWTRuWJBwflhtO2dliJySGsCBKDs/JLsLRFUXTck+CB+Zcih3k7fcBSsQbf4pNpyHQnnCFuIuoMRh2OAPeX8W7PbiEuElg1ddYtxikoL8+7eTNYuYxH15WVwQzjH3gBtqCK7cQ+vVopoTwrqPCKJggt19IZYIjBFKcWETOw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(366004)(136003)(346002)(376002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(36756003)(2616005)(6666004)(6486002)(6512007)(6506007)(38100700002)(316002)(110136005)(66476007)(66556008)(86362001)(31696002)(66946007)(54906003)(478600001)(83380400001)(31686004)(41300700001)(4326008)(8936002)(8676002)(7416002)(4001150100001)(2906002)(5660300002)(17423001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dXhIS2Q2SHhXNmZqQnJadk1QZ1JLb2tLa0NpMiszVzRIaktJajBwdTd2M2dO?=
+ =?utf-8?B?YlRVa3h4Tnd4ck9CVllIMEJRVWFHeDQ1cWtDdlpyOUdpK0tkeWlmR1VzYmkw?=
+ =?utf-8?B?d0RQaHpkV2hUWkxESVJwbk5UaGFicHhOOHhDNjhRQU1haS9WQnRSSUlYWjhi?=
+ =?utf-8?B?V0piWGx2OVcydi83RWMwbVhPMUp5ZzVlTVJhaGRYNzNrS3Y4dHhvNGZNcXVH?=
+ =?utf-8?B?aTJUZE1LdlJVMGdYZ0g2UVo4RUd4b21HWUhDZlJxWTBURk1sMHhiU2NCS0Yr?=
+ =?utf-8?B?UU11MGkySTFWSzFtbzQrUmh1MHl5MkJUOVhvL0JrRUpneHVGUEt5V0ljeVpw?=
+ =?utf-8?B?NmhlV2JVTldjdXJqK1g3Q1p2RHgvMHZyMy9WUGdsd29FWUo2Ym03R2tyZE1G?=
+ =?utf-8?B?eWR1QUZmOHowZG1YRkhXZmhSTDhiZ3MvZ3lVK2gwaFVzaldSenFDQTJhejhY?=
+ =?utf-8?B?R3NyZy9lVG1sWSs1cW1lb01hRjYwYzV4NDZOSlhuNit2bE5lMUYrRlhzWE9R?=
+ =?utf-8?B?ay92TWI1Nm4zYnY5NlAvNzJ0UWxKdlJOdWtkSjJqdDNrNXpjUUhGTWtLeXdM?=
+ =?utf-8?B?UDMrVzZ3Y3Z2eEdIRzB1V3g5bCtVSVg5QmRNMWF1UmNYNHFSakxsc01MNEVJ?=
+ =?utf-8?B?T0NCVHNNOC9GaUZNaE1VWEhkZE9JSjIwOHQrSkQ4NmxlV0VYMS90ME5wNHky?=
+ =?utf-8?B?SHhGWG12NWQrNFhLVTVQY1FlYy9MSjQ0ODQxK00vdHlvVXRwZWpuVTN2eUJx?=
+ =?utf-8?B?NlFZcW8xckp5UkEwMzBCd1hDalpkUFh0M1o1R1FpY25IUlluaVhmRW10ZTh1?=
+ =?utf-8?B?d2VCQjRUQ09mZGo2aWU2dVE2RGxiTnpPNXZrYjYzWCtVL0dxd3J5dndHZVRQ?=
+ =?utf-8?B?RUo4bXRkbjZBRTRseDhCZW40UzVVMHcvWjBhemtYbHY3WnFhTGh3cDJaV0lj?=
+ =?utf-8?B?aEkrVU13SmdrQUZlVFBuNmxja28xMWI2YnNFZXFoZUNXemdGVWZ0L0pveld2?=
+ =?utf-8?B?WEhUakFBSVZITlJNcEdHeTlaZC8zSTR0NEtHY240NFBuUkpyOHNnUW05TmV1?=
+ =?utf-8?B?NWRPVGFRaXhMNXFKNVJEa1lmWm1RcW52M3gvOU1qL2tMV3krR3A3SzJyeXpY?=
+ =?utf-8?B?amU4SkFOb1RjSWgvM2dzL0ZjWUNsdnlaQXNMd0htS1RqTGt4ZnJ5N1pUWG9x?=
+ =?utf-8?B?V2doMSs0aHVkTlhyeFFIT21tM1Y3VnZYWnF3bjRVOUNHRlFQN09JSTJUREhS?=
+ =?utf-8?B?YkkxQzl6N0tXbmcrU1RGRmgrVjQxWnJDMFFtMjZmVS80S1RYSitWWWF6UlJw?=
+ =?utf-8?B?WlFQZWRoQ1lZNVRTSzgwYkgxUGZaWUhHY0VCWCt4OGx0ZFZEK1FRTTZ2ZXhq?=
+ =?utf-8?B?ODgyYStJRDlpeTVVaHo2aWxSSjd2TG9NcityZHRqRUd2S0dVTEIxS09mSk9m?=
+ =?utf-8?B?dmtqVTR6aGdsLzd6UDI5R292ai9XWDZQV2xTWFVIR01pTnRsS1h6U3V1M2hL?=
+ =?utf-8?B?V0NPU0l5eE03MHB2eEFJU3NSWThrM253ZndqaHZZTEtIY3VYY1BYQ3N5NEFv?=
+ =?utf-8?B?eUh0SUQ4Qzh4V3hlbVNuOFAzZENMbzZQQmJGVC9xODd3dzhMYnFBL3lXSTgw?=
+ =?utf-8?B?MXdkL2hYQWlHZmVzcVYrYUJja3oydldtWnl0ajdLRThibWRhL1BmYXdpdzZW?=
+ =?utf-8?B?RXVHQTVCVFhtZ2VMQk04Nkcwc0oydFVGT3dNcWxLc1RMQnh0NDRCWmNRa0E1?=
+ =?utf-8?B?aUtRZDBvbEk3RVRmNDk5aGJmTGFieFcxTXJqcEZXdUFRV3R0VzAwdXhWalph?=
+ =?utf-8?B?R1cxWnpUM0hqeVlyTEhFeDIxNVFSdDhoY2hoK0xudEJSbytqd1JEMTJYYzZt?=
+ =?utf-8?B?VXBpODVEZUIxZzhpL2FTVDR6TmhTSkk1cEh2dEFRMkI2WkhQL1NHeEtCTWZB?=
+ =?utf-8?B?MnJOdVF6RmRyaTk2R2EzdUFWL1grQ2p6RkhmZkNtRlcxNnYraWtsZGg4bUJ0?=
+ =?utf-8?B?c3JKUDlaZk80Y2FTZFRBUmw0NSsxTmtpVk9KQWg4djhOMm93MHhnTnBray9Y?=
+ =?utf-8?B?RFVXdEh4SDdGd0w4SHVNVk9TdXdxd3ZKQ1FnbmFMZ25hVC96TVlmL2c5eUpK?=
+ =?utf-8?B?UDJnaTJZNEhWKy9KWUtYZ3FFbWVoVGgwejBHNXl5bXFlMFVGaFpTZW5rMkgx?=
+ =?utf-8?Q?YUZ2O2ik+fYHadgyl/0/COF9s4hIhgT/7fAetSkIwf/R?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 440da009-8e08-4bc7-328e-08dbd4959359
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 13:31:49.1844
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oMJduQ0tqAv6g/7Ma258Te0lOgvgP8KPlG7Rbk7crNaRwwle95bzsGnIyky5gOeZZyqYUjpIAE6Y5WDwjwGuIg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8112
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -91,61 +153,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 23.10.2023 20:44, Richard Weinberger wrote:
-> ----- Ursprüngliche Mail -----
->> Von: "Martin Kurbanov" <mmkurbanov@salutedevices.com>
->> If you disable the cleanmarker, the found clean block (filled with 0xff)
->> will be erased again (see fs/jffs2/scan.c#L162).
->> In my opinion, it is better to perform the block erasure again than to
->> not work with such a nand flash at all.
+On 24.10.23 г. 13:49 ч., Huang, Kai wrote:
+> On Tue, 2023-10-24 at 08:53 +0300, Nikolay Borisov wrote:
+>>
+>> On 17.10.23 г. 13:14 ч., Kai Huang wrote:
+>>
+>> <snip>
+>>
+>>>    arch/x86/Kconfig                  |   1 +
+>>>    arch/x86/include/asm/shared/tdx.h |   1 +
+>>>    arch/x86/virt/vmx/tdx/tdx.c       | 215 +++++++++++++++++++++++++++++-
+>>>    arch/x86/virt/vmx/tdx/tdx.h       |   1 +
+>>>    4 files changed, 213 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>>> index 864e43b008b1..ee4ac117aa3c 100644
+>>> --- a/arch/x86/Kconfig
+>>> +++ b/arch/x86/Kconfig
+>>> @@ -1946,6 +1946,7 @@ config INTEL_TDX_HOST
+>>>    	depends on KVM_INTEL
+>>>    	depends on X86_X2APIC
+>>>    	select ARCH_KEEP_MEMBLOCK
+>>> +	depends on CONTIG_ALLOC
+>>>    	help
+>>>    	  Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
+>>>    	  host and certain physical attacks.  This option enables necessary TDX
+>>> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
+>>> index abcca86b5af3..cb59fe329b00 100644
+>>> --- a/arch/x86/include/asm/shared/tdx.h
+>>> +++ b/arch/x86/include/asm/shared/tdx.h
+>>> @@ -58,6 +58,7 @@
+>>>    #define TDX_PS_4K	0
+>>>    #define TDX_PS_2M	1
+>>>    #define TDX_PS_1G	2
+>>> +#define TDX_PS_NR	(TDX_PS_1G + 1)
+>>
+>> nit: I'd prefer if you those defines are turned into an enum and
+>> subsequently this enum type can be used in the definition of
+>> tdmr_get_pamt_sz(). However, at this point I consider this a
+>> bikeshedding and you can do that iff you are going to respin the series
+>> due to other feedback as well.
+>>
+>> <snip>
 > 
-> Doesn't this case many re-erases at each mount time?
+> Thanks for comments.  But to be honest I don't get why enum is better, and I
+> would like to leave this to future work if really needed.  Please note these
+> TDX_PS_xx are also used by TDX guest code (see patch 2).
 
-You are right. David proposed the good solution.
-
-> BTW: I tried your patch in nandsim, jffs2 was unhappy.
-> [   56.147361] jffs2: notice: (440) jffs2_build_xattr_subsystem: complete building xattr subsystem, 0 of xdatum (0 unchecked, 0 orphan) and 0 of xref (0 dead, 0 orphan) found.
-> [   56.200438] nand: nand_do_write_ops: attempt to write non page aligned data
-> [   56.201090] jffs2: Write clean marker to block at 0x001f8000 failed: -22
-> 
-> Do you have an idea?
-
-According to this code from the function jffs2_mark_erased_block():
-
-```
-if (jffs2_cleanmarker_oob(c) || c->cleanmarker_size == 0) {
-
-    if (jffs2_cleanmarker_oob(c)) {
-        if (jffs2_write_nand_cleanmarker(c, jeb))
-            goto filebad;
-    }
-} else {
-
-    struct kvec vecs[1];
-    struct jffs2_unknown_node marker = {
-        .magic = cpu_to_je16(JFFS2_MAGIC_BITMASK),
-        .nodetype = cpu_to_je16(JFFS2_NODETYPE_CLEANMARKER),
-        .totlen = cpu_to_je32(c->cleanmarker_size)
-    };
-```
-
-the "if" branch should be executed because "cleanmarker_size" is set to
-0 for NAND flash:
-
-```
-int jffs2_nand_flash_setup(struct jffs2_sb_info *c)
-{
-    if (!c->mtd->oobsize)
-        return 0;
-
-    /* Cleanmarker is out-of-band, so inline size zero */
-    c->cleanmarker_size = 0;
-```
-
-In your case, the "else" branch was executed. I assume that "oobsize" is
-equal to 0. In this scenario, JFFS2 will not mount without
-applying my patch.
-
--- 
-Best Regards,
-Martin Kurbanov
+The reason being self-documenting code. In particular when looking at 
+the signature of tdmr_get_pamt_sz if the 2nd argument was enum 
+tdx_ps_size or some such it would be immediately evident what this 
+parameter is all about. Right now it's just a plain int which can be 
+anything. Indeed, this is mostly cosmetic so hence it's minor.
