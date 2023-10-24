@@ -2,189 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B28987D5CB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF397D5CC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344372AbjJXUz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 16:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46188 "EHLO
+        id S1344380AbjJXU6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 16:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344401AbjJXUzv (ORCPT
+        with ESMTP id S1344278AbjJXU6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 16:55:51 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D90BD170A;
-        Tue, 24 Oct 2023 13:55:44 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 39OKtOpR128045;
-        Tue, 24 Oct 2023 15:55:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1698180924;
-        bh=YdsC+VFRvEfUM56FQgYznvXwnR2rOdnu72PbP3mIbbw=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=YZ2w8E6g10yzwkwiGBpj0/8BK2mc18+KRKe5ZaTSzpsFjUqKpwweHcpRgX+agqWAR
-         pVJkJL1lQZ4feijGAOF5tupT4s+6wIGy6Jwg2eh7oLR6ylBJrdxDcCdElRafH5Rh4u
-         XTZ/6NRZsprnn7afZLDfJMTt/TEGG9spCaK1+mSk=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 39OKtO6r072122
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 24 Oct 2023 15:55:24 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 24
- Oct 2023 15:55:24 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 24 Oct 2023 15:55:24 -0500
-Received: from [10.250.38.120] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 39OKtNUo002203;
-        Tue, 24 Oct 2023 15:55:23 -0500
-Message-ID: <41408db6-89f9-4e0b-b407-96c6c922e8a4@ti.com>
-Date:   Tue, 24 Oct 2023 15:55:23 -0500
+        Tue, 24 Oct 2023 16:58:35 -0400
+Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0CB10E4;
+        Tue, 24 Oct 2023 13:58:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1698181080; bh=N0PLZ2NjQzjfPEsssiVQ2t7E5m+w3JYFmXuWa41WrYY=;
+        h=From:Subject:Date:To:Cc;
+        b=TUFQXnVzD6Dni3IP7Pf15z+o0ZYyI1I1G0dxOoj7D4uNuw3nB/4C6Ss/Gh/KURqBn
+         R6cRbJFQYczrLnT3HEO6D7bO3zqver1o4GUJR/R/RKHaRc++yUfwuiEHLke1V0WrNR
+         XgkgGI02oQcnX7V6k8GyyVhAvZtATSOBdQzus54Y=
+From:   Luca Weiss <luca@z3ntu.xyz>
+Subject: [PATCH v2 0/3] Add support for HTC One Mini 2 smartphone
+Date:   Tue, 24 Oct 2023 22:57:48 +0200
+Message-Id: <20231024-htc-memul-v2-0-8912940b6f95@z3ntu.xyz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dt-bindings: watchdog: davinci-wdt: convert txt to
- yaml
-To:     Nik Bune <n2h9z4@gmail.com>, <wim@linux-watchdog.org>,
-        <linux@roeck-us.net>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <skhan@linuxfoundation.org>, <m-karicheri2@ti.com>,
-        <ivan.khoronzhuk@ti.com>
-CC:     <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231024195839.49607-1-n2h9z4@gmail.com>
-Content-Language: en-US
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20231024195839.49607-1-n2h9z4@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIAMwvOGUC/3XMyw6CMBCF4VchXVsz04KlrnwPwwLLIE3kkhYIl
+ /DuFuKCjct/MudbmSdnybN7tDJHo/W2bUKIS8RMlTdv4rYIzQQIiQCCV73hNdXDh6tY5GmCqhD
+ xi4X/zlFpp8N6ZqEr6/vWzQc94n79KYgnZUQOXCsjNUKZQq4fi2z64TrNy47+W6gbJSpVEjWY0
+ yLbtu0LVHyjltQAAAA=
+To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Luca Weiss <luca@z3ntu.xyz>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1541; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=N0PLZ2NjQzjfPEsssiVQ2t7E5m+w3JYFmXuWa41WrYY=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlOC/NyjsDx1WKALpi6WpjAKQmizfieMow4aOhj
+ 7QB4qGINBOJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZTgvzQAKCRBy2EO4nU3X
+ Vn0gD/9Rlb1cX26i5VZcC+j8G/B8ejbBrquzxcmivLe8iiCxR2QddAGYvOqacR+vtDG4jhHafdU
+ ZCnFUMmbnfVD2SVqkQvSZ8Fx7KQZpnv/4bR1o91X6vyXSXm06ozymmxuVPIVXAEtBwMU2Ulb8a3
+ +U8DgnN5EcnOollP0joawfHAd/GXeX6MKmB12VnetdqVKTqsremGyLcJ4KYHawGis+RRafTSWlT
+ oJ+WLqnzLhhnriLbzi2q3AabTmz0SwNFn49Yibo+VZK20dKXplA+sF4Ojfq7U4t6eaCWFVCm6+Z
+ EoG4z9A1R682yccs4YnRIcQuxP+RLEYc0VkP5bXH9zYu/bWJK1LcmYMAu6eLa80J1CHdi6JqbCn
+ Kh9k4mwlyRo/osTE0T+Yiqu5nU2MxK4tnHwM/jFTMJjvR5k//o6gfzf2/aXN8a/5oNegbxZG3q1
+ R181LFlXYQd0+nJ5n/BOEY8ub6kwbVzl3pbCFAmOFHLmxamesYnT8TwpSFoZ8FVQkDKpGC26J+Q
+ 3RJ6ctKRgN/WLpUt2aNKZeyuOl2NGot170+mlAOoL5VW6Lk7y6bfmo1x0BEpQOCzo6ddEyFmdiv
+ H2FxXKyuVBCsMI/JrXKxFn872lNde4ngqoXKPSuIFQ8p64fwfoWw6UUKvydqcAguU10hD+ciFtx
+ 7D9GGKSkliXtUMw==
+X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
+ fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/24/23 2:58 PM, Nik Bune wrote:
-> Convert txt file to yaml.
-> Add maintainers list, based on the git history.
-> Mark clock as required property, by reviewer's suggestion.
-> 
-> Signed-off-by: Nik Bune <n2h9z4@gmail.com>
-> ---
-> 
-> Changes in v2 (according to review comments):
-> - Added clocks to the list of required properties.
-> - Updated clocks property to have only maxItems without $ref and description.
-> - Removed timeout-sec explicit definition, as it is defined in watchdog.yaml.
-> - Updated maintainers list from the git history.
-> 
-> v1 patch: https://lore.kernel.org/all/20231021171323.113208-1-n2h9z4@gmail.com/
-> 
->   .../bindings/watchdog/davinci-wdt.txt         | 24 ----------
->   .../bindings/watchdog/ti,davinci-wdt.yaml     | 47 +++++++++++++++++++
->   2 files changed, 47 insertions(+), 24 deletions(-)
->   delete mode 100644 Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
->   create mode 100644 Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt b/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
-> deleted file mode 100644
-> index aa10b8ec36e2..000000000000
-> --- a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
-> +++ /dev/null
-> @@ -1,24 +0,0 @@
-> -Texas Instruments DaVinci/Keystone Watchdog Timer (WDT) Controller
-> -
-> -Required properties:
-> -- compatible : Should be "ti,davinci-wdt", "ti,keystone-wdt"
-> -- reg : Should contain WDT registers location and length
-> -
-> -Optional properties:
-> -- timeout-sec : Contains the watchdog timeout in seconds
-> -- clocks : the clock feeding the watchdog timer.
-> -	   Needed if platform uses clocks.
-> -	   See clock-bindings.txt
-> -
-> -Documentation:
-> -Davinci DM646x - https://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
-> -Keystone - https://www.ti.com/lit/ug/sprugv5a/sprugv5a.pdf
-> -
-> -Examples:
-> -
-> -wdt: wdt@2320000 {
-> -	compatible = "ti,davinci-wdt";
-> -	reg = <0x02320000 0x80>;
-> -	timeout-sec = <30>;
-> -	clocks = <&clkwdtimer0>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml b/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
-> new file mode 100644
-> index 000000000000..4747be98b7d9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/watchdog/ti,davinci-wdt.yaml
-> @@ -0,0 +1,47 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/watchdog/ti,davinci-wdt.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments DaVinci/Keystone Watchdog Timer (WDT) Controller
-> +
-> +description: |
-> +  Documentation:
-> +  Davinci DM646x - https://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
-> +  Keystone - https://www.ti.com/lit/ug/sprugv5a/sprugv5a
-> +
-> +maintainers:
-> +  - Murali Karicheri <m-karicheri2@ti.com>
-> +  - Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+Add support for this smartphone from HTC which is based on the MSM8926
+SoC and codenamed "memul".
 
-Neither of these folks will be available for this, you can use me if
-you want an email that won't bounce for now.
+Depends on, runtime-only, bootloader enables watchdog so we need to pet
+it to stay alive:
+https://lore.kernel.org/linux-arm-msm/20231011-msm8226-msm8974-watchdog-v1-0-2c472818fbce@z3ntu.xyz/T/
 
-> +
-> +allOf:
-> +  - $ref: watchdog.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ti,davinci-wdt
-> +      - ti,keystone-wdt
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+Changes in v2:
+- Pick up tags
+- Add spaces around regulator nodes
+- Set firmware-name for adsp
+- Expand reserved memory regions to cover everything somehow reserved
+  downstream, leave no gaps. Seems to finally fix also nbd randomly
+  failing
+- Remove internal storage since somehow it has killed itself on my
+  device since last time, maybe by my random memory testing writing some
+  not-so-great commands to it. So let's be safe and remove it.
+- Link to v1: https://lore.kernel.org/r/20231011-htc-memul-v1-0-76e57873190c@z3ntu.xyz
 
-We also have some instances with an optional power-domains prop.
+---
+Luca Weiss (3):
+      dt-bindings: vendor-prefixes: document HTC Corporation
+      dt-bindings: arm: qcom: Add HTC One Mini 2
+      ARM: dts: qcom: Add support for HTC One Mini 2
 
-   power-domains:
-     description: A phandle and PM domain specifier as defined by bindings of
-       the power controller specified by phandle. See
-       Documentation/devicetree/bindings/power/power-domain.yaml for details.
+ Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ arch/arm/boot/dts/qcom/Makefile                    |   1 +
+ arch/arm/boot/dts/qcom/qcom-msm8926-htc-memul.dts  | 369 +++++++++++++++++++++
+ 4 files changed, 373 insertions(+)
+---
+base-commit: 9b969874004ff05d05e4340bacc1699f72f58686
+change-id: 20231002-htc-memul-742a8517d24b
 
-Andrew
+Best regards,
+-- 
+Luca Weiss <luca@z3ntu.xyz>
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    watchdog@2320000 {
-> +        compatible = "ti,davinci-wdt";
-> +        reg = <0x02320000 0x80>;
-> +        timeout-sec = <30>;
-> +        clocks = <&clkwdtimer0>;
-> +    };
