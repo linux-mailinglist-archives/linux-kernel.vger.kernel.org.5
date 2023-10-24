@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 566687D4FB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FAAD7D4FB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbjJXM0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        id S232280AbjJXM1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbjJXM0e (ORCPT
+        with ESMTP id S231794AbjJXM1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:26:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBABA2;
-        Tue, 24 Oct 2023 05:26:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=E1uJiQP/0ZbFuPQlvGkRtaII5wIDYiIztvXwmZQ2noc=; b=jEMUTvg3FQ1RTd795OQ7ZOVoRc
-        lHxEUt7t+evSaJwEBwlWiPrPrtYmQy/OJ6GkILGT0QliPAENo6l8f0tNI3ujocQv83odmqEF0edIq
-        qP2whhLqAuPyl4o0OV3kkCh3ZAkiF1wcmH8B2fa10iP/xGkEwKFcBDtqr8VmfzZSH/tlNyc6QbJlP
-        Wihkaj0KVhs4RqCDKs+AhZaTWh8JY0PEJk5V1C2jILuUDpi4fDztmg6DzKpewOT3P7F2qLEW6EizH
-        MmqBwU72A2zbi25qZQWneB9aF5yGEtShr2c2F3d3A0qgGexRajO0x+GT5TrRH7BbyCMiKA6+LmyKH
-        HMDQEyLg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qvGTw-002RRU-44; Tue, 24 Oct 2023 12:26:00 +0000
-Date:   Tue, 24 Oct 2023 13:26:00 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Alyssa Milburn <alyssa.milburn@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Subject: Re: [PATCH v2 0/6] Delay VERW
-Message-ID: <ZTe32IOvhBNkIlKa@casper.infradead.org>
-References: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com>
+        Tue, 24 Oct 2023 08:27:11 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26731129;
+        Tue, 24 Oct 2023 05:27:09 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SFB7s0hkbz6K6Gt;
+        Tue, 24 Oct 2023 20:24:25 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 24 Oct
+ 2023 13:27:06 +0100
+Date:   Tue, 24 Oct 2023 13:27:05 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     Ramona Gradinariu <ramona.gradinariu@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 3/3] dt-bindings: adis16460: Add
+ 'spi-cs-inactive-delay-ns' property
+Message-ID: <20231024132705.00003cf4@Huawei.com>
+In-Reply-To: <b7011f02-a412-4642-862d-c2df88ae316b@linaro.org>
+References: <20231023123542.582392-1-ramona.gradinariu@analog.com>
+        <20231023123542.582392-4-ramona.gradinariu@analog.com>
+        <b7011f02-a412-4642-862d-c2df88ae316b@linaro.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 01:08:14AM -0700, Pawan Gupta wrote:
-> Legacy instruction VERW was overloaded by some processors to clear
+On Mon, 23 Oct 2023 15:22:30 +0200
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-Can you raise a bug against the SDM?  The VERR/VERW instruction is
-out-of-order alphabetically; my copy of Volume 2 from June 2023 has it
-placed between VEXPANDPS and VEXTRACTF128.
+> On 23/10/2023 14:35, Ramona Gradinariu wrote:
+> > Add 'spi-cs-inactive-delay-ns' property.  
+> 
+> This we see from the diff. Commit should explain: Why?
+> 
+> > 
+> > Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
+> > ---
+> >  Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> > index 4e43c80e5119..3691c0be4f9d 100644
+> > --- a/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> > +++ b/Documentation/devicetree/bindings/iio/imu/adi,adis16460.yaml
+> > @@ -25,6 +25,11 @@ properties:
+> >  
+> >    spi-cpol: true
+> >  
+> > +  spi-cs-inactive-delay-ns:
+> > +    minimum: 16000
+> > +    description:
+> > +      If not explicitly set in the device tree, the driver will set it to 16us.  
+> 
+> Why do you even need it here?
+
+Along side that, if you have a default
+default: xxxx
+rather than in the description.
+
+
+> 
+> Best regards,
+> Krzysztof
+> 
+> 
+
