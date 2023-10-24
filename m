@@ -2,250 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BFF77D4A13
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8AC7D4A21
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbjJXIba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
+        id S233913AbjJXIcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233855AbjJXIbX (ORCPT
+        with ESMTP id S233341AbjJXIcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:31:23 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76879F
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:31:20 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6c4cbab83aaso2809741a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:31:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698136280; x=1698741080; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OK8Gn6Rp36Zb2Io1jphw894wwfjV0cDFBU0eNPjRUcQ=;
-        b=d4obKubrwgqQASIzP4uDQZgqX98P5McN3bGX7Lr0+kMKqgZO1I4Pw3ZGLmt0oMbLOl
-         THjRoGv7auTepRQ38pmg4SoB/UswPhDGlT/PfHJ9PG0g+24qt0T2ZNnMvgvDs976YZ0C
-         TSVwW56R5J5bK7MXi2Pwa72jRgUuHtBFPM3Ja1QKKQS0n4z+HdHpQvJSN+0+gFdhyjAZ
-         Nyj5adWreE9aKrfykI0/vzdaw2a4SCgD7WlPNDwGA8UHFvFzUhHTHfp8ErOtJREgG6sP
-         bkRFyFnuvQeB2DUxHHokG9w4FopZxf2D3Jm4kOWSqtTmIp52gpNxJ35UiwTDx4jSW9Cn
-         fPYQ==
+        Tue, 24 Oct 2023 04:32:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0067C10D7
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:31:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698136307;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ITFJy6PL18AxXcQ0tJtKX/riP17Qh3+LpE2GcIDMeCU=;
+        b=dFy3KW0SV74+SGVa0/t7EawHPFUSTH3ropzlqORy6kW3dEpVLTtj6ye8JlNolZMd3gUooz
+        HL9rB2GoS7gmV0QqhaudOSUHkOlDjtpxEItHn3dj3cmK/rOaDfA2NtlJf5ELjQFpk7muNb
+        W7RhehYCLP/EFnLJBEmrSoJ2r6QS9r4=
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-390-G5cFkz2QN86mT_4t5uKirA-1; Tue, 24 Oct 2023 04:31:45 -0400
+X-MC-Unique: G5cFkz2QN86mT_4t5uKirA-1
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7a944728f92so44610839f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:31:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698136280; x=1698741080;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OK8Gn6Rp36Zb2Io1jphw894wwfjV0cDFBU0eNPjRUcQ=;
-        b=D01H3UABTr6O1u1ehYE24nK+h43eBhSN/hb8PEcjmWFNpEeOAra+vg3RfvWVkBFTIJ
-         HJAP1BIdcJiBMjEZDr268b3FWODJLzC/uENkZB8uagf19woHuo9hBQuq3d8aXpZRAK4Y
-         57ZYe35gDgxmzQZ9i675P9Y/0SpS6dnfbaRawJXEbGeGrYgPWOZPZAuA8x1OAoMKRhbT
-         Nl7gWUv6B/a6rFXoozzbS389VOqdgJlsm3yxAbdUHVUovkLe6hXh5mUDlcnD1iYT3t3Z
-         ld89U75UHBh5r94Cc6KU/bklJBrYUwTKseOrHA3uLf9JPalYZtG2k/I69c9usGmH6hRL
-         eQiw==
-X-Gm-Message-State: AOJu0YwLN4grGNh2CIUlP1QdIhItMqKW1FnxyFHxMMSApTDYVn1YKi00
-        Q+1DwrLvlcDJfnhBNehBs1vgCw==
-X-Google-Smtp-Source: AGHT+IHAqrO3OmwwdLLODEm9PEja6ioShdlwwyEHXSmYi8fLAhn6FJiFRa+kTonvEtCIaJ2T2qnW4A==
-X-Received: by 2002:a05:6808:20a1:b0:3ae:251b:5552 with SMTP id s33-20020a05680820a100b003ae251b5552mr14782121oiw.12.1698136279952;
-        Tue, 24 Oct 2023 01:31:19 -0700 (PDT)
-Received: from [192.168.17.16] ([138.84.45.126])
-        by smtp.gmail.com with ESMTPSA id w13-20020a0568080d4d00b003ae165739bbsm1860215oik.7.2023.10.24.01.31.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 01:31:19 -0700 (PDT)
-Message-ID: <2d0fe6f7-9994-4beb-8791-a8e2c2ab286c@linaro.org>
-Date:   Tue, 24 Oct 2023 02:31:16 -0600
+        d=1e100.net; s=20230601; t=1698136305; x=1698741105;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ITFJy6PL18AxXcQ0tJtKX/riP17Qh3+LpE2GcIDMeCU=;
+        b=Cn0RQwoFXQtwJc2HPpXz+yfCoREzJ1roihcKw8bpGkrI3Z7JuSdYBRTt0z2KC1t7cR
+         EyiYiqZAoXOhAjL5piMvyVcWUA76JQJAqsevsvdpR4Jvy8pky1cD8pMJPV3f5dfOxe6K
+         zNU2NHIlus+To6ojsrzRN1GBBUQ3uJbkn4DQfcB8kf1yNZroy1AvEOZkobuKTRiA87sD
+         iAQXdyrqTH+ibBlfnwjgKy+GFpxkLf9iCyw3efKg6PFVNzCwh7BswAmjKLK/+adOghBq
+         kkBHPlVOFwKfmwDXw6B9nUw/XhaUM9dFf02iKX/bKf05oq6PftpqiliyCEgKZezf+WmV
+         4XSw==
+X-Gm-Message-State: AOJu0Yzq/dspz8/eoUiryqvGKzMK5YksIhYLfgXoRA1xR9kgWx6aq/g3
+        gALxScHWKRtaoREC6iXot0Wx9BOOV0Z1Znpj65bwAkgdkEU9VGLuGrT/FESSeuKrOugHQ8ghLE1
+        g4SU1iVFfwcpdEcEnDJ7POfTF1bZH6yO3neEm33OA
+X-Received: by 2002:a05:6e02:1d9d:b0:34f:7ba2:50e8 with SMTP id h29-20020a056e021d9d00b0034f7ba250e8mr13143888ila.2.1698136304773;
+        Tue, 24 Oct 2023 01:31:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEHTillXwi4Yy8mMt80SkVrJ/fr3lgQcdZQJr+vXNNVHsb99ljUAorE0YMkswPa6fZZ1r2eXFHDGKmKLVUFBEo=
+X-Received: by 2002:a05:6e02:1d9d:b0:34f:7ba2:50e8 with SMTP id
+ h29-20020a056e021d9d00b0034f7ba250e8mr13143861ila.2.1698136304468; Tue, 24
+ Oct 2023 01:31:44 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/196] 6.1.60-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20231023104828.488041585@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
-In-Reply-To: <20231023104828.488041585@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230912090051.4014114-17-ardb@google.com> <ZRt2ToOHm2XT8MlU@desktop>
+ <CAMj1kXH--86-pqHp6W0gsRDAMw-iuYKrgHEpmZzaJnpsVTkkxw@mail.gmail.com>
+ <ZTau5kbdB-9iRfcm@desktop> <CALu+AoQbBr0RyBG6JxyKO81Ur=0uG_FxZq3=-QYhF2OxV7+F7g@mail.gmail.com>
+In-Reply-To: <CALu+AoQbBr0RyBG6JxyKO81Ur=0uG_FxZq3=-QYhF2OxV7+F7g@mail.gmail.com>
+From:   Dave Young <dyoung@redhat.com>
+Date:   Tue, 24 Oct 2023 16:31:27 +0800
+Message-ID: <CALu+AoSPqDOAhwoLCYkGRnE96X6r7rpOwERmse+=YQyA4OW2ug@mail.gmail.com>
+Subject: Re: [PATCH v2 00/15] x86/boot: Rework PE header generation
+To:     Jan Hendrik Farr <kernel@jfarr.cc>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Ard Biesheuvel <ardb@google.com>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Jones <pjones@redhat.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Goyal, Vivek" <vgoyal@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Tue, 24 Oct 2023 at 16:21, Dave Young <dyoung@redhat.com> wrote:
+>
+> On Tue, 24 Oct 2023 at 01:37, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
+> >
+> > On 23 13:22:53, Ard Biesheuvel wrote:
+> > > On Tue, 3 Oct 2023 at 04:03, Jan Hendrik Farr <kernel@jfarr.cc> wrote:
+> > > >
+> > > > On 12 09:00:51, Ard Biesheuvel wrote:
+> > > > > From: Ard Biesheuvel <ardb@kernel.org>
+> > > > >
+> > > > > Now that the EFI stub boot flow no longer relies on memory that is
+> > > > > executable and writable at the same time, we can reorganize the PE/COFF
+> > > > > view of the kernel image and expose the decompressor binary's code and
+> > > > > r/o data as a .text section and data/bss as a .data section, using 4k
+> > > > > alignment and limited permissions.
+> > > > >
+> > > > > Doing so is necessary for compatibility with hardening measures that are
+> > > > > being rolled out on x86 PCs built to run Windows (i.e., the majority of
+> > > > > them). The EFI boot environment that the Linux EFI stub executes in is
+> > > > > especially sensitive to safety issues, given that a vulnerability in the
+> > > > > loader of one OS can be abused to attack another.
+> > > >
+> > > > This split is also useful for the work of kexecing the next kernel as an
+> > > > EFI application. With the current EFI stub I have to set the memory both
+> > > > writable and executable which results in W^X warnings with a default
+> > > > config.
+> > > >
+> > > > What made this more confusing was that the flags of the .text section in
+> > > > current EFI stub bzImages are set to
+> > > > IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_READ. So if you load that section
+> > > > according to those flags the EFI stub will quickly run into issues.
+> > > >
+> > > > I assume current firmware on x86 machines does not set any restricted
+> > > > permissions on the memory. Can someone enlighten me on their behavior?
+> > > >
+> > >
+> > > No current x86 firmware does not use restricted permissions at all.
+> > > All memory is mapped with both writable and executable permissions,
+> > > except maybe the stack.
+> > >
+> > > The x86 Linux kernel has been depending on this behavior too, up until
+> > > recently (fixes are in -rc now for the v6.6 release). Before this, it
+> > > would copy its own executable image around in memory.
+> > >
+> > > So EFI based kexec will need to support this behavior if it targets
+> > > older x86 kernels, although I am skeptical that this is a useful
+> > > design goal.
+> >
+> > I don't see this as an important goal either.
+> >
+> > > I have been experimenting with running the EFI stub code in user space
+> > > all the way until ExitBootServices(). The same might work for UKI if
+> > > it is layered cleanly on top of the EFI APIs (rather than poking into
+> > > system registers or page tables under the hood).
+> > >
+> > > How this would work with signed images etc is TBD but I quite like the
+> > > idea of running everything in user space and having a minimal
+> > > purgatory (or none at all) if we can simply populate the entire
+> > > address space while running unprivileged, and just branch to it in the
+> > > kexec() syscall. I imagine this being something like a userspace
+> > > helper that is signed/trusted itself, and gets invoked by the kernel
+> > > to run EFI images that are trusted and tagged as being executable
+> > > unprivileged.
+> >
+> > I've been experimenting with running EFI apps inside kernel space instead.
+> > This is the more natural approach for signed images. Sure, a malicious EFI
+> > app could do arbitrary stuff in kernel mode, but they're signed. On the other
+> > hand running this entirely in user space would at least guarantee that the
+> > system can not crash due to a misbehaving EFI app (at least until
+> > ExitBootServices()).
+> >
+> > The question of whether or not to make this the job of a userspace helper that
+> > is signed must have come up when kexec_file_load syscall was added. It would
+> > have also been an option at the time to extend trust to a signed version of
+> > the userspace kexec tool.
+> >
+> > Why was kexec_file_load created instead of restricting kexec_load to a signed
+> > version of the kexec userspace tool?
+>
+> I think one of the reasons is that it is hard to handle dynamic linked
+> libraries, not only the kexec-tools binary.
 
-On 23/10/23 4:54 a. m., Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.60 release.
-> There are 196 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.60-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Hmm, another one is that ptrace needs to be disabled in some way,
+anyway I think it is way too complicated, but I do not remember the
+details, added Vivek in cc.
+See this article: https://lwn.net/Articles/532778/
 
-Results from Linaro's test farm.
-No regressions on arm64, arm, x86_64, and i386.
+>
+> Thanks
+> Dave
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 6.1.60-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.1.y
-* git commit: fa9447b759f65cb3a25b4092562576311f245dff
-* git describe: v6.1.58-328-gfa9447b759f6
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.58-328-gfa9447b759f6
-
-## No test regressions (compared to v6.1.58-132-g9b707223d2e9)
-
-## No metric regressions (compared to v6.1.58-132-g9b707223d2e9)
-
-## No test fixes (compared to v6.1.58-132-g9b707223d2e9)
-
-## No metric fixes (compared to v6.1.58-132-g9b707223d2e9)
-
-## Test result summary
-total: 130174, pass: 111193, fail: 2397, skip: 16455, xfail: 129
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 279 total, 279 passed, 0 failed
-* arm64: 83 total, 83 passed, 0 failed
-* i386: 64 total, 64 passed, 0 failed
-* mips: 52 total, 52 passed, 0 failed
-* parisc: 6 total, 6 passed, 0 failed
-* powerpc: 68 total, 68 passed, 0 failed
-* riscv: 24 total, 24 passed, 0 failed
-* s390: 23 total, 23 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 11 total, 11 passed, 0 failed
-* x86_64: 73 total, 73 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
