@@ -2,92 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F14447D55A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6D47D55C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234739AbjJXPTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
+        id S234788AbjJXPVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232657AbjJXPSr (ORCPT
+        with ESMTP id S234860AbjJXPTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:18:47 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1246919AB;
-        Tue, 24 Oct 2023 08:17:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A63D2C433CB;
-        Tue, 24 Oct 2023 15:17:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698160659;
-        bh=Yc5CJPTtSMwymg05TTypHEKQD0X0q++YptYmz8lGZxQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Po9/XiE+0wrYuCxp539fhXU/t3kxxUsnbvYHpVX4cV9eLm3jfjmlx/7jlGdrWVBu8
-         0dpGrXF2+CLoF1C0YU0ELgszjrRXf0IOZDBT70I8hDQL5arhc8/k5uqpjETmpHyh4G
-         Biczvhq7i0Puygvw3RrjxILTmT6DFD4L9wZNZmtvV/zzxW5Of33TuNZBuaqhxTjbGc
-         MHRPkCGgb7zFfkf7XTA5PXG/pHZE6m6vNjShVGWCk3FceEe6fZq4NWy0lUKR+6jBw+
-         mP9NN+RU+TbQRZ8q5Hwm9TCNkRyNJdYdlnCM1AKN8SzKCMas/i4CJzxDOVgJJwIDvM
-         K9DlM5NbeHi6g==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qvJAK-0003r8-1q;
-        Tue, 24 Oct 2023 17:17:57 +0200
-Date:   Tue, 24 Oct 2023 17:17:56 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] wifi: ath11k: fix event locking
-Message-ID: <ZTfgJCBxsNv3bVjv@hovoldconsulting.com>
-References: <20231019153115.26401-1-johan+linaro@kernel.org>
- <87o7goxget.fsf@kernel.org>
+        Tue, 24 Oct 2023 11:19:41 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6DD26B0;
+        Tue, 24 Oct 2023 08:18:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
+        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=43MF1NLwRNfhTgg1mkqqRfKprjgdwDcm6G/emV9tDl0=; b=g7ptT6QiSfF8xD2ND6deIcduSx
+        1oWNNs2RIYv1m/RJRwbVluHdBvhGUL4sFxBJbBarfzI9j3A0AaPicP3V7vnTwiC+1Crz5pD4H6Nft
+        FRD4WrEAWEOoIdWEHVMlecdkHW4pnDuYuRlMEVHxzA9OEEcYXVpMxsLek0LaMaMDK+VDh/vgUmmVl
+        zt1jroD3eg5bIY/ABoCikdb7n56d6qlDOk6G/yAspE2zGPnfET5SjHWeEl4ofjtNMiKpuYh+27w8l
+        wT87KnyhkgzH6q2bYlY2sJbjZuQQa4MPj1xYVxqhh/Xfh1q/51K2Ghc/azqacAC5+y+ZbcaJQFw5V
+        hQsCbhfA==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:50178 helo=rmk-PC.armlinux.org.uk)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1qvJAJ-0004S0-2s;
+        Tue, 24 Oct 2023 16:17:55 +0100
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <rmk@rmk-PC.armlinux.org.uk>)
+        id 1qvJAL-00AqQs-BF; Tue, 24 Oct 2023 16:17:57 +0100
+In-Reply-To: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+From:   Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 21/39] ACPI: processor: Register all CPUs from
+ acpi_processor_get_info()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87o7goxget.fsf@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <E1qvJAL-00AqQs-BF@rmk-PC.armlinux.org.uk>
+Sender: Russell King <rmk@armlinux.org.uk>
+Date:   Tue, 24 Oct 2023 16:17:57 +0100
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 05:07:38PM +0300, Kalle Valo wrote:
-> Johan Hovold <johan+linaro@kernel.org> writes:
-> 
-> > RCU lockdep reported suspicious RCU usage when accessing the temperature
-> > sensor. Inspection revealed that the DFS radar event code was also
-> > missing the required RCU read-side critical section marking.
-> >
-> > Johan
-> >
-> >
-> > Changes in v2
-> >  - add the missing rcu_read_unlock() to an
-> >    ath11k_wmi_pdev_temperature_event() error path as noticed by Jeff
-> >
-> >
-> > Johan Hovold (2):
-> >   wifi: ath11k: fix temperature event locking
-> >   wifi: ath11k: fix dfs radar event locking
-> 
-> Thanks for the fixes. I really like using lockdep_assert_held() to
-> document if a function requires some lock held, is there anything
-> similar for RCU?
+From: James Morse <james.morse@arm.com>
 
-Not really, but the checking is instead built into the primitives like
-rcu_dereference() and enabled whenever CONFIG_PROVE_RCU is set.
+To allow ACPI to skip the call to arch_register_cpu() when the _STA
+value indicates the CPU can't be brought online right now, move the
+arch_register_cpu() call into acpi_processor_get_info().
 
-For some special cases, we have open-coded checks like:
+Systems can still be booted with 'acpi=off', or not include an
+ACPI description at all. For these, the CPUs continue to be
+registered by cpu_dev_register_generic().
 
-	RCU_LOCKDEP_WARN(!rcu_read_lock_held());
+This moves the CPU register logic back to a subsys_initcall(),
+while the memory nodes will have been registered earlier.
 
-which similarly depend on CONFIG_PROVE_RCU or simply
+Signed-off-by: James Morse <james.morse@arm.com>
+Reviewed-by: Gavin Shan <gshan@redhat.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+---
+Changes since RFC v2:
+ * Fixup comment in acpi_processor_get_info() (Gavin Shan)
+ * Add comment in cpu_dev_register_generic() (Gavin Shan)
+---
+ drivers/acpi/acpi_processor.c | 12 ++++++++++++
+ drivers/base/cpu.c            |  6 +++++-
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-	WARN_ON_ONCE(!rcu_read_lock_held());
+diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+index 0511f2bc10bc..e7ed4730cbbe 100644
+--- a/drivers/acpi/acpi_processor.c
++++ b/drivers/acpi/acpi_processor.c
+@@ -314,6 +314,18 @@ static int acpi_processor_get_info(struct acpi_device *device)
+ 			cpufreq_add_device("acpi-cpufreq");
+ 	}
+ 
++	/*
++	 * Register CPUs that are present. get_cpu_device() is used to skip
++	 * duplicate CPU descriptions from firmware.
++	 */
++	if (!invalid_logical_cpuid(pr->id) && cpu_present(pr->id) &&
++	    !get_cpu_device(pr->id)) {
++		int ret = arch_register_cpu(pr->id);
++
++		if (ret)
++			return ret;
++	}
++
+ 	/*
+ 	 *  Extra Processor objects may be enumerated on MP systems with
+ 	 *  less than the max # of CPUs. They should be ignored _iff
+diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+index d31c936f0955..6c70a004c198 100644
+--- a/drivers/base/cpu.c
++++ b/drivers/base/cpu.c
+@@ -537,7 +537,11 @@ static void __init cpu_dev_register_generic(void)
+ {
+ 	int i, ret;
+ 
+-	if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
++	/*
++	 * When ACPI is enabled, CPUs are registered via
++	 * acpi_processor_get_info().
++	 */
++	if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES) || !acpi_disabled)
+ 		return;
+ 
+ 	for_each_present_cpu(i) {
+-- 
+2.30.2
 
-Johan
