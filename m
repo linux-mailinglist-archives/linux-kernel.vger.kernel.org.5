@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBD07D44EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DAC7D44ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbjJXBZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 21:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
+        id S231548AbjJXBZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 21:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJXBY6 (ORCPT
+        with ESMTP id S230373AbjJXBZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 21:24:58 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFA2110;
-        Mon, 23 Oct 2023 18:24:55 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b2f5aed39cso2724061b6e.1;
-        Mon, 23 Oct 2023 18:24:55 -0700 (PDT)
+        Mon, 23 Oct 2023 21:25:15 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C1B110;
+        Mon, 23 Oct 2023 18:25:12 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6b77ab73c6fso2862008b3a.1;
+        Mon, 23 Oct 2023 18:25:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698110695; x=1698715495; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698110712; x=1698715512; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qWzdoSbVk/wvciOyV4nXI5Z0JYBfHSRkx33CdJrdgao=;
-        b=P9vIaZt7/UEswJwzn2bziumyZJXGMbhOGEH9GzEKwA8wvWGv0hMbNxZ7ijQRp8anGj
-         Y7p7SsNPIwhnUBkKIGBTo0YJhKw6aOnhyE598qcJaCHRG/f1oFgaeKQd3+VJMxgbDqtr
-         umrBHYi3pV6weKD84qvdZJDfUoxRk0Bm54TzaWphmYgYDgy+enwGibfhgEEdiD7JVACG
-         ZTxlucLC08tQYOTFF2/2kjqTYc5MattpFFAvMx6FgMSxx4bjP/gYpXDnVGQ9oSsOTDXz
-         k/w0/B37skm5G7szjn9QyF/wk94drC4+Eiok7HUhYl+2HbfBQA1yZr/XuLA9MpCTQts/
-         /P5w==
+        bh=iccc72CUWL+tdQoo/lU2s24lxXNfe553vrT60nkWVyQ=;
+        b=j0RvEhf/ezBmwv+oxaPDCvBA1UTmHkMb4CnWGVY6BXsOCuUVfXSjmmxkZld6seJnue
+         W+ukk5W3IOfNYmYzJNb5GHVtz+ejKII3NI7KByZL8ai5mKVN5PlT+KEIG6XUglpMqyrN
+         DNL0ekKYRtVtqml8Lq3idfg5+WGCUVDR+ucaqMVwhJ8EUDEmk8Atq3rcl+U0ruE1m9JX
+         REEMhvgnHZu9cUT1wXjgj8dXnAX5JOqw+viVmewFpiE2choM4+r3zl+wtOfX/tg5uCsc
+         rnV13TBo9rmviBDbjj291HKhE+7fkbsRwucfgOeuUyimsJD6d0zovXMI5c5Ke8qHLA82
+         L+3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698110695; x=1698715495;
+        d=1e100.net; s=20230601; t=1698110712; x=1698715512;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qWzdoSbVk/wvciOyV4nXI5Z0JYBfHSRkx33CdJrdgao=;
-        b=udJ01Hom5jCbD0hUdaEi7mXRfxpg19EAlmfOgpEeZtHHSnlAfmV+9e4HjN0c6SsZZz
-         TCJ7Z3UzY2sCdkF0uKIPJ2QnKuqkg1FTLW2oDNKzN4g2vQs+mIoOgjz+UkUILFhdGZvc
-         awS660Z9y35/L8dvjDekeukcUa2yO1xkRP1KILfdMn5zdNgPLKh1otbijhZzC/wv6iTO
-         QNi3Y7susiPk1I6HtAHSn9v23Z9fia0LBEqc26mJKKgVznPGwRoSaLj26DTWykOW+YVj
-         Y9mMGYnSGF4kYi5No+h0G0RJ6LEASIgBN+PKuM7z+5h6lo8FnXMt5YlQnoMHsGZOMmPI
-         S22w==
-X-Gm-Message-State: AOJu0YzAO8gqU6iPOfdhgJP1lYc4kafTqID2G3HDFQVELAulQx+r525J
-        z/MBycm0LQzzJ9wjhUXnnauJ5RhjBkM=
-X-Google-Smtp-Source: AGHT+IG13oZEvnYdT8MN0PiCZ5lmQG6IbHjQ/2seM0xTgG8O9046qPt/UYDQC3pGUsSpgX8vpZuaqQ==
-X-Received: by 2002:a05:6808:138f:b0:3ab:88a0:78f8 with SMTP id c15-20020a056808138f00b003ab88a078f8mr14045322oiw.23.1698110694820;
-        Mon, 23 Oct 2023 18:24:54 -0700 (PDT)
+        bh=iccc72CUWL+tdQoo/lU2s24lxXNfe553vrT60nkWVyQ=;
+        b=HOHpJ8/bmtN82QSNZVbM/4PtKrqPUvHn845B9sQjY8gK97iQ3T4ttgVY55RJytScAa
+         BFnrUippiiKurcF0mTxDXGqXvt8fGpkz5k8qEZyT6FEeMNqtV3YmUeL5ZgF4tt/Mk6aY
+         fueCTsdJWpC6r7H+g/Ss+21DM+tAG7CTvWScmYfokeeDjYZkr19vDk+97Qlx9rFe4DTV
+         1cJMfLSrp1dPOEv5BAHxiSk6c/CMZ6MXY9NNz0msb1AQe8LjktVnbsYynYloYD2kmnDk
+         tjzuVKA3XMse4AjwmT5XbOjiUzr8bBirgwRNriCdPb2ECJHh6z5W3GgaQ4q6Nve4Hh7G
+         eCTA==
+X-Gm-Message-State: AOJu0Yzid22Ha7bPxKUoEUssolLiERU0oLN3XugqbZpd6mkOHzayHkuj
+        Sf9WfFAA0gNNhs1Wdkx/5GJ8AXWM59U=
+X-Google-Smtp-Source: AGHT+IG2mAsmvq3VqKl8vDHOkpG6e+H+tw6ktt9pYQRZCSBiLKM9r3sEo4EzliuxdE1EY93mHqpFuw==
+X-Received: by 2002:a05:6a00:2daa:b0:68f:cb69:8e66 with SMTP id fb42-20020a056a002daa00b0068fcb698e66mr14191135pfb.15.1698110712359;
+        Mon, 23 Oct 2023 18:25:12 -0700 (PDT)
 Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id k3-20020aa79d03000000b006bc3e8f58besm6757110pfp.56.2023.10.23.18.24.52
+        by smtp.gmail.com with ESMTPSA id k3-20020aa79d03000000b006bc3e8f58besm6757110pfp.56.2023.10.23.18.25.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 18:24:54 -0700 (PDT)
-Message-ID: <ced1531b-ba67-4302-8bfa-3003219582e5@gmail.com>
-Date:   Mon, 23 Oct 2023 18:24:52 -0700
+        Mon, 23 Oct 2023 18:25:11 -0700 (PDT)
+Message-ID: <3332cc4b-8143-48e8-90ba-673ba417a660@gmail.com>
+Date:   Mon, 23 Oct 2023 18:25:10 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/8] r8152: Cancel hw_phy_work if we have an error in
+Subject: Re: [PATCH v5 4/8] r8152: Release firmware if we have an error in
  probe
 Content-Language: en-US
 To:     Douglas Anderson <dianders@chromium.org>,
@@ -68,10 +68,11 @@ Cc:     Edward Hill <ecgh@chromium.org>,
         Grant Grundler <grundler@chromium.org>,
         =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
         Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
+        Paolo Abeni <pabeni@redhat.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 References: <20231020210751.3415723-1-dianders@chromium.org>
- <20231020140655.v5.3.I33c8decabd2e77c37524db02b4e6b9b4dbc3a8d6@changeid>
+ <20231020140655.v5.4.I5cd5dd190df0826e38444df217f63918a8b4ad39@changeid>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
  xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -106,7 +107,7 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20231020140655.v5.3.I33c8decabd2e77c37524db02b4e6b9b4dbc3a8d6@changeid>
+In-Reply-To: <20231020140655.v5.4.I5cd5dd190df0826e38444df217f63918a8b4ad39@changeid>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -122,11 +123,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 10/20/2023 2:06 PM, Douglas Anderson wrote:
-> The error handling in rtl8152_probe() is missing a call to cancel the
-> hw_phy_work. Add it in to match what's in the cleanup code in
+> The error handling in rtl8152_probe() is missing a call to release
+> firmware. Add it in to match what's in the cleanup code in
 > rtl8152_disconnect().
 > 
-> Fixes: a028a9e003f2 ("r8152: move the settings of PHY to a work queue")
+> Fixes: 9370f2d05a2a ("r8152: support request_firmware for RTL8153")
 > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
