@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 220EE7D5705
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77EA7D570A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343969AbjJXP4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
+        id S1343984AbjJXP5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343973AbjJXP4w (ORCPT
+        with ESMTP id S234948AbjJXP5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:56:52 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A58410CF;
-        Tue, 24 Oct 2023 08:56:49 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-41cb615c6fbso28740191cf.1;
-        Tue, 24 Oct 2023 08:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698163008; x=1698767808; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=G3iJ9n4kZf5Fmlt/Zj0lshvC/7uIWRd7BIbE6REwALk=;
-        b=eaLqvcCFb/CUAhlyyFjgkQAFk3Z8QtAOsplyU/A57PDQEmqhIM0GgTbkgpzAepcwH6
-         OlPH0gyA+lG7PWYFcOBDzHtq4YAro2KZIEPThXufgsiOIJMo/jNez8TiZIaTjBu9TFOF
-         vYfOyBTUhNwiNjy102bQEBTM/jC0YtJ6WkBz2yBrq6NY6mEqX+0Z1ChoHMvSZuP/fn/t
-         JqN/qmcrkRKJfco6RANzc7CJOTk46VjStjXI0Ld2a4YnKRSCWdZpH+MvgqLd5SrXFEja
-         U2lprNCWpq4d2k1pFPlM9bZd5c5imxnkxxar/hdvG5M22CbQG5ShkiPI++/MvK+KASyT
-         oY0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698163008; x=1698767808;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G3iJ9n4kZf5Fmlt/Zj0lshvC/7uIWRd7BIbE6REwALk=;
-        b=u26p85kCHZh+71dfxn1/OVcEgDVkKuNWw5vAbK60ClQKF0XwIUnpbk3u91Y/4FjtOI
-         292qs7+p+pyO/Vi0VL632fSZo5s6faVzselOkWjDY+ZpzE+P2WVF0g/4luHVYG2scN4h
-         Q0Q6w5MkRtpEBRJ4CxShoRxZ8cKDPEpfNk+gaW2Y9WGj1krxvn8UoNLEoMX+fOxtE+mc
-         SoZ+GLyxrVYFQ6uAlxPe41FdBoWii3NYGkLn6bbfTaczS8Ii1mayK7ndWUO3/ipbOV7k
-         uK5u1lnKvZ5wyHte3fRCHt/q3j0GLMxdN5NarNAhatiF5t0nfDCkTf6K7OykUArs9ZKz
-         jvjQ==
-X-Gm-Message-State: AOJu0YyzcgU9V8DV7/MV5DdBHqb8u6kKNk+Ecz5CQh0R75IJYeW2ZJua
-        qI1FOOP1M1z4WnrvpMFULOA=
-X-Google-Smtp-Source: AGHT+IE1iGEuWcd/WUNh3/SL+ti517dmHtLT8RqAVaypZK3yGF8nikkVyL6c5agsMBer204IRfPWFA==
-X-Received: by 2002:ac8:5e08:0:b0:418:1084:1f4 with SMTP id h8-20020ac85e08000000b00418108401f4mr14267795qtx.48.1698163008461;
-        Tue, 24 Oct 2023 08:56:48 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id q8-20020ac84508000000b004198d026be6sm3582416qtn.35.2023.10.24.08.56.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 08:56:47 -0700 (PDT)
-Message-ID: <5b5a223b-b5bf-49f1-8259-3dbedf1dafb7@gmail.com>
-Date:   Tue, 24 Oct 2023 08:56:44 -0700
+        Tue, 24 Oct 2023 11:57:06 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7146F10FC;
+        Tue, 24 Oct 2023 08:57:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1698163020; bh=BNVJRacOEROOJUbOi3+VHcE+dWCyfrMR1wZHRSbWoM0=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=aK7qefabd1HYLkS2rsJZke9BfVu/vDcyrJRTkRqhCctijuPOl27YWMUK0xzwwgZD5
+         8Hnf4FIfOL37zBXuKz6VYkKnjsiSMvqtSihMZm414gVikRARfNR/ju5dcQOQNDWpU9
+         +QutV/PKBIwRHkhBgW/Oyoz9TVZ6JYpBVrap1NJg=
+Date:   Tue, 24 Oct 2023 17:56:47 +0200 (GMT+02:00)
+From:   =?UTF-8?Q?Thomas_Wei=C3=9Fschuh_?= <thomas@t-8ch.de>
+To:     Jeff LaBundy <jeff@labundy.com>
+Cc:     Anshul Dalal <anshulusr@gmail.com>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <51c4ab9a-1d45-4665-bb27-0214a9588a1c@t-8ch.de>
+In-Reply-To: <ZTbklpRhpMIPey2j@nixie71>
+References: <20231017034356.1436677-1-anshulusr@gmail.com> <20231017034356.1436677-2-anshulusr@gmail.com> <ZTWza+S+t+UZKlwu@nixie71> <00d2fcbc-3fd8-477d-8df1-afec20b458b6@t-8ch.de> <ZTbklpRhpMIPey2j@nixie71>
+Subject: Re: [PATCH v5 2/2] input: joystick: driver for Adafruit Seesaw
+ Gamepad
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.10 000/199] 5.10.199-rc2 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20231024083326.219645073@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231024083326.219645073@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Correlation-ID: <51c4ab9a-1d45-4665-bb27-0214a9588a1c@t-8ch.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/24/23 01:36, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.199 release.
-> There are 199 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 26 Oct 2023 08:32:45 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.199-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Hi Jeff,
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Oct 23, 2023 23:24:55 Jeff LaBundy <jeff@labundy.com>:
+> On Mon, Oct 23, 2023 at 07:55:52AM +0200, Thomas Wei=C3=9Fschuh=C2=A0 wro=
+te:
+>
+> [...]
+>
+>>>> +=C2=A0=C2=A0 err =3D i2c_master_send(client, write_buf, sizeof(write_=
+buf));
+>>>> +=C2=A0=C2=A0 if (err < 0)
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return err;
+>>>
+>>> You correctly return err (or rather, ret) for negative values, but you =
+should also
+>>> check that ret matches the size of the data sent. For 0 <=3D ret < size=
+of(writebuf),
+>>> return -EIO.
+>>
+>> The driver did this originally.
+>> I then requested it to be removed as this case
+>> can never happen.
+>> i2c_master_send will either return size of(writebuf) or an error.
+>
+> Great catch; indeed you are correct. Apologies for having missed this
+> in the change log; this is good to know in the future.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+I guess it would make sense to also adapt the
+function documentation to be more explicit
+about this invariant.
+No need to complicate every caller unnecessarily.
 
+I can send a patch somewhere next week, but
+if you want to send one I'll be happy to review it.
+
+> That being said, it's a moot point IMO; this driver seems like a good
+> candidate for regmap. If regmap cannot be made to work here for some
+> reason, then I'd like to at least see some wrapper functions to avoid
+> duplicate code and manual assignments to a buffer.
+
+Ack.
+
+Thomas
