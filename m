@@ -2,128 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4DAC7D501F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399717D501A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbjJXMnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57296 "EHLO
+        id S234349AbjJXMnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233306AbjJXMnp (ORCPT
+        with ESMTP id S233306AbjJXMnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:43:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08304122
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:42:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698151377;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uQvIAHxlIRsODDQvHhHg2yEUAX99/4EQzAeL/zSIx6I=;
-        b=b0uKoGGDzFst9h3a5/tEVb8Wh6aabsddsnxZa4XavLu4RIWdUbDAKw5hz8De8uUIRoI9dt
-        dGQMXnbScg9UhgDOssRNyF7VdXWzbrX3SqU48WuGu/UvMm8W0LOtdjITlslCCTv6bLiruJ
-        7wk9mUDYlmCcrsr5d0XvF7th1SkCrsY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-185-14QY-GXoMf2RcfJKXAovzg-1; Tue, 24 Oct 2023 08:42:51 -0400
-X-MC-Unique: 14QY-GXoMf2RcfJKXAovzg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 61162811E7E;
-        Tue, 24 Oct 2023 12:42:51 +0000 (UTC)
-Received: from p1.luc.com (unknown [10.43.2.183])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DFFE32166B26;
-        Tue, 24 Oct 2023 12:42:49 +0000 (UTC)
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        Jacob Keller <jacob.e.keller@intel.com>
-Subject: [PATCH 2/2] i40e: Fix devlink port unregistering
-Date:   Tue, 24 Oct 2023 14:42:45 +0200
-Message-ID: <20231024124245.837908-2-ivecera@redhat.com>
-In-Reply-To: <20231024124245.837908-1-ivecera@redhat.com>
-References: <20231024124245.837908-1-ivecera@redhat.com>
+        Tue, 24 Oct 2023 08:43:11 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 411E9133;
+        Tue, 24 Oct 2023 05:43:09 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 188B92F4;
+        Tue, 24 Oct 2023 05:43:50 -0700 (PDT)
+Received: from [10.57.5.116] (unknown [10.57.5.116])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 309D03F64C;
+        Tue, 24 Oct 2023 05:43:08 -0700 (PDT)
+Message-ID: <7161219e-0223-d699-d6f3-81abd9abf13b@arm.com>
+Date:   Tue, 24 Oct 2023 13:43:06 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 3/4] selftests: core: remove duplicate defines
+Content-Language: en-US
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     kernel@collabora.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, broonie@kernel.org
+References: <20231006100743.1631334-1-usama.anjum@collabora.com>
+ <20231006100743.1631334-3-usama.anjum@collabora.com>
+From:   Aishwarya TCV <aishwarya.tcv@arm.com>
+In-Reply-To: <20231006100743.1631334-3-usama.anjum@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ensure that devlink port is unregistered after unregistering
-of net device.
 
-Reproducer:
-[root@host ~]# rmmod i40e
-[ 4742.939386] i40e 0000:02:00.1: i40e_ptp_stop: removed PHC on enp2s0f1np1
-[ 4743.059269] ------------[ cut here ]------------
-[ 4743.063900] WARNING: CPU: 21 PID: 10766 at net/devlink/port.c:1078 devl_port_unregister+0x69/0x80
-...
 
-Fixes: 9e479d64dc58 ("i40e: Add initial devlink support")
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+On 06/10/2023 11:07, Muhammad Usama Anjum wrote:
+> Remove duplicate defines which are already defined in kernel headers and
+> re-definition isn't required.
+> 
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index df058540d277..3f396c100835 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -14181,8 +14181,7 @@ int i40e_vsi_release(struct i40e_vsi *vsi)
- 	}
- 	set_bit(__I40E_VSI_RELEASING, vsi->state);
- 	uplink_seid = vsi->uplink_seid;
--	if (vsi->type == I40E_VSI_MAIN)
--		i40e_devlink_destroy_port(pf);
-+
- 	if (vsi->type != I40E_VSI_SRIOV) {
- 		if (vsi->netdev_registered) {
- 			vsi->netdev_registered = false;
-@@ -14196,6 +14195,9 @@ int i40e_vsi_release(struct i40e_vsi *vsi)
- 		i40e_vsi_disable_irq(vsi);
- 	}
- 
-+	if (vsi->type == I40E_VSI_MAIN)
-+		i40e_devlink_destroy_port(pf);
-+
- 	spin_lock_bh(&vsi->mac_filter_hash_lock);
- 
- 	/* clear the sync flag on all filters */
-@@ -14370,14 +14372,14 @@ static struct i40e_vsi *i40e_vsi_reinit_setup(struct i40e_vsi *vsi)
- 
- err_rings:
- 	i40e_vsi_free_q_vectors(vsi);
--	if (vsi->type == I40E_VSI_MAIN)
--		i40e_devlink_destroy_port(pf);
- 	if (vsi->netdev_registered) {
- 		vsi->netdev_registered = false;
- 		unregister_netdev(vsi->netdev);
- 		free_netdev(vsi->netdev);
- 		vsi->netdev = NULL;
- 	}
-+	if (vsi->type == I40E_VSI_MAIN)
-+		i40e_devlink_destroy_port(pf);
- 	i40e_aq_delete_element(&pf->hw, vsi->seid, NULL);
- err_vsi:
- 	i40e_vsi_clear(vsi);
--- 
-2.41.0
+Hi Muhammad,
 
+Currently when building kselftest against next-master with arm64 arch
+and defconfig+kselftest  “error: 'CLOSE_RANGE_UNSHARE' undeclared (first
+use in this function)” is observed.
+
+The bisect log is below and a full log from a failing test job can be
+seen here:
+
+https://storage.kernelci.org/next/master/next-20231023/arm64/defconfig+kselftest/gcc-10/logs/kselftest.log
+
+close_range_test.c: In function 'close_range_unshare':
+close_range_test.c:111:11: error: 'CLOSE_RANGE_UNSHARE' undeclared
+(first use in this function)
+  111 |           CLOSE_RANGE_UNSHARE);
+      |           ^~~~~~~~~~~~~~~~~~~
+close_range_test.c:111:11: note: each undeclared identifier is reported
+only once for each function it appears in
+close_range_test.c: In function 'close_range_unshare_capped':
+close_range_test.c:200:11: error: 'CLOSE_RANGE_UNSHARE' undeclared
+(first use in this function)
+  200 |           CLOSE_RANGE_UNSHARE);
+      |           ^~~~~~~~~~~~~~~~~~~
+close_range_test.c: In function 'close_range_cloexec':
+close_range_test.c:234:36: error: 'CLOSE_RANGE_CLOEXEC' undeclared
+(first use in this function)
+  234 |  ret = sys_close_range(1000, 1000, CLOSE_RANGE_CLOEXEC);
+      |                                    ^~~~~~~~~~~~~~~~~~~
+close_range_test.c: In function 'close_range_cloexec_unshare':
+close_range_test.c:302:36: error: 'CLOSE_RANGE_CLOEXEC' undeclared
+(first use in this function)
+  302 |  ret = sys_close_range(1000, 1000, CLOSE_RANGE_CLOEXEC);
+      |                                    ^~~~~~~~~~~~~~~~~~~
+close_range_test.c:317:32: error: 'CLOSE_RANGE_UNSHARE' undeclared
+(first use in this function)
+  317 |          CLOSE_RANGE_CLOEXEC | CLOSE_RANGE_UNSHARE);
+      |                                ^~~~~~~~~~~~~~~~~~~
+close_range_test.c: In function 'close_range_cloexec_syzbot':
+close_range_test.c:378:33: error: 'CLOSE_RANGE_CLOEXEC' undeclared
+(first use in this function)
+  378 |   ret = sys_close_range(3, ~0U, CLOSE_RANGE_CLOEXEC);
+      |                                 ^~~~~~~~~~~~~~~~~~~
+close_range_test.c: In function 'close_range_cloexec_unshare_syzbot':
+close_range_test.c:472:34: error: 'CLOSE_RANGE_UNSHARE' undeclared
+(first use in this function)
+  472 |    ret = sys_close_range(3, ~0U, CLOSE_RANGE_UNSHARE |
+      |                                  ^~~~~~~~~~~~~~~~~~~
+close_range_test.c:473:13: error: 'CLOSE_RANGE_CLOEXEC' undeclared
+(first use in this function)
+  473 |             CLOSE_RANGE_CLOEXEC);
+      |             ^~~~~~~~~~~~~~~~~~~
+make[4]: *** [../lib.mk:181:
+/tmp/kci/linux/build/kselftest/core/close_range_test] Error 1
+
+
+git bisect log
+git bisect start
+# good: [58720809f52779dc0f08e53e54b014209d13eebb] Linux 6.6-rc6
+git bisect good 58720809f52779dc0f08e53e54b014209d13eebb
+# bad: [2030579113a1b1b5bfd7ff24c0852847836d8fd1] Add linux-next
+specific files for 20231020
+git bisect bad 2030579113a1b1b5bfd7ff24c0852847836d8fd1
+# good: [aa531ca5bb35637b6d235df5feba57ed94d3a462] Merge branch
+'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
+git bisect good aa531ca5bb35637b6d235df5feba57ed94d3a462
+# good: [37a9b505514f0ed4447757452f1e39d3a373df59] Merge branch
+'for-next' of
+https://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git
+git bisect good 37a9b505514f0ed4447757452f1e39d3a373df59
+# good: [695ee55348f6c3c7ec5f953ab297b4db9501962b] Merge branch
+'for-next' of
+git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
+git bisect good 695ee55348f6c3c7ec5f953ab297b4db9501962b
+# skip: [150dc54505f3395010784d2a5c8b2e0e9b2b2f37] Merge branch
+'counter-next' of
+git://git.kernel.org/pub/scm/linux/kernel/git/wbg/counter.git
+git bisect skip 150dc54505f3395010784d2a5c8b2e0e9b2b2f37
+# good: [bae023765199bef243b49c0f8860a3290a5c9f6d] staging: iio:
+resolver: ad2s1210: implement hysteresis as channel attr
+git bisect good bae023765199bef243b49c0f8860a3290a5c9f6d
+# good: [337c88ee5fb65f9c34ca7bb129915cb59de687b3] Merge branch 'next'
+of git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git
+git bisect good 337c88ee5fb65f9c34ca7bb129915cb59de687b3
+# good: [248f0927e11e09e6285383938b5c4b87079ee5a7] Merge branch
+'for-next' of
+git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+git bisect good 248f0927e11e09e6285383938b5c4b87079ee5a7
+# bad: [3e2f5dfe32e1a8fbd034b1060bd30b9b1179b4c7] Merge branch
+'rtc-next' of
+git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git
+git bisect bad 3e2f5dfe32e1a8fbd034b1060bd30b9b1179b4c7
+# bad: [1f6421f11948d0de9216b8f1c439c21dbc90da91] Merge branch 'next' of
+git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git
+git bisect bad 1f6421f11948d0de9216b8f1c439c21dbc90da91
+# bad: [34dce23f7e405ffb4eca04e83ee10c03a4cffb9b] selftests/clone3:
+Report descriptive test names
+git bisect bad 34dce23f7e405ffb4eca04e83ee10c03a4cffb9b
+# bad: [d3772e7badd2cd3813e2efba0034f6e39aecc97f] selftests/mm:
+Substitute attribute with a macro
+git bisect bad d3772e7badd2cd3813e2efba0034f6e39aecc97f
+# good: [071af0c9e582bc47e379e39490a2bc1adfe4ec68] selftests: timers:
+Convert posix_timers test to generate KTAP output
+git bisect good 071af0c9e582bc47e379e39490a2bc1adfe4ec68
+# bad: [2531f374f922e77ba51f24d1aa6fa11c7f4c36b8] Documentation:
+kselftests: Remove references to bpf tests
+git bisect bad 2531f374f922e77ba51f24d1aa6fa11c7f4c36b8
+# good: [44eebacd6b8f633eb3a38a6db093658636b844e8] selftests: clone3:
+remove duplicate defines
+git bisect good 44eebacd6b8f633eb3a38a6db093658636b844e8
+# bad: [ec54424923cf943b51dd5bf75fcbe27b0ca2c6ef] selftests: core:
+remove duplicate defines
+git bisect bad ec54424923cf943b51dd5bf75fcbe27b0ca2c6ef
+# first bad commit: [ec54424923cf943b51dd5bf75fcbe27b0ca2c6ef]
+selftests: core: remove duplicate defines
+
+Thanks,
+Aishwarya
