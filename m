@@ -2,188 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 544227D5ACF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E1F7D5ACE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344178AbjJXSm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 14:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53016 "EHLO
+        id S1344129AbjJXSmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:42:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344042AbjJXSmx (ORCPT
+        with ESMTP id S1344024AbjJXSmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 24 Oct 2023 14:42:53 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F20EB10C9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:42:49 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53f647c84d4so2393a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:42:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698172968; x=1698777768; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=09epGMxkhhjkdYiw8KiYrXokGkqZWFd0a0WWXHQ6/zM=;
-        b=Kqj8MJYkyul1ZOwP802BG3+Y4g+ksBOBskIt2PCkuuMJ0aBkI+mNNLyvhwukZHtiXM
-         VkseY0e4JT3qAAvdMZ1KNT4RoAPIHanq1/lRmyPtmNBM0d9JHmQQLX6wU9SCyehfdS73
-         eUXT55LTUccCYf32OBfv8/QUqLo42fJfX98r1OM4/1MDeCvhacT8vs0r0WxcC7Dj4UsD
-         rTvYnKrx4hz0ZbehcXiSe4A32Res0OT6QPB7QreN7J6zFOJ775X6bGbT5PcRQL3gdkqm
-         R3+UYIiOR5UB/Ux3ugwubMKPVTw6PEoYKujILK3mxDwuX4jF4apxevKArViMSmVRqAvh
-         FBww==
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886C010D0;
+        Tue, 24 Oct 2023 11:42:51 -0700 (PDT)
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1e5bc692721so3122505fac.0;
+        Tue, 24 Oct 2023 11:42:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698172968; x=1698777768;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=09epGMxkhhjkdYiw8KiYrXokGkqZWFd0a0WWXHQ6/zM=;
-        b=KoxlJht9dZE1zx3G21VJhWuoapD2FHKskUUPSb8u4VxJbkIN7ilVvR+sSpL+mtVtqe
-         K98Vj2tLRRUexurovkBEoz5apc0Qjyt3gWPtHGNvXRuQ33BJKPuG4FPzcZkOipnW/DXs
-         4l8fypbp03RsllrlW1d1obH0cn8hTeKPEhk8MnSc4FOs+cUlNJ4aNDBt48xKlYNmUJBE
-         c02DyiqtVphopjuChpimlAfUjGiudzI1KpP2uqqQiehUEynpw08ARBDlGq6pHRZcRFrE
-         1qa9Gvw9h0wtkqahCLk+UK7EsbP41jysW6hU7ejCngJw6LiO3m7bMtEBXYSnihQUeUyO
-         BMcQ==
-X-Gm-Message-State: AOJu0YwlbIU7sNiEPaA4Krp+MQ9qspCUtDibsqQJN1Eay4YXOcQsOslk
-        bQoUw2hSJVr7RipSXmlJchNGLeNw7Zgsa8o7I/G7zQ==
-X-Google-Smtp-Source: AGHT+IE5v1BzRWSVw3HW3sQr5xbR/mk1XD9T6KKRACBF8MxbgyF/bGD65mmBKo24Nf0gi8DonjtanmEogkSujhKR/0k=
-X-Received: by 2002:a05:6402:288e:b0:540:9e44:483f with SMTP id
- eg14-20020a056402288e00b005409e44483fmr115978edb.4.1698172967814; Tue, 24 Oct
- 2023 11:42:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698172971; x=1698777771;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e7tCIB9BylheYtMG7rMe1KZx7kNN6oaCCoyrHFzcP3w=;
+        b=WEeRrWQ1hKrYVce1JRJpJZBNVmCAnoAGas+mr07qDA0Fo1oBAWvWcswX4p80Z7lzqV
+         6TSJIHeFE2aUS9NGAf0tdPuwDOeX2+S+ynPaHUeBZWyZjDH/SrpfM5F/v7i55MGt8GvV
+         Vbero89zGdYid3bmGAoucnzcdGId7jxq08ih0j11h9fliTSO58zFFeGN7ctVALs4GcOM
+         ZNh8FFC13In6fsUKmcArB9QCK8TgFsF4t9u5850bTmd/8c8boIRLn05zXtwDil2L5Vhe
+         Xi0KjCZBF3m1Zhvz3GyijCaykHVxWXoPGHq9uebjKEGjxc8FlSEZEAi4TPSaRMDMFjIE
+         LGzg==
+X-Gm-Message-State: AOJu0YxHld/ZaZfOSp2FJV408CamJebegO0W4xF/mdk1hNaHBoJ4sQkH
+        a4jZPXOsHHlan/rD/JNTHg==
+X-Google-Smtp-Source: AGHT+IEwPD0r1BvSI+qia1MrYQNuHfFhmEEtqVIVoIHZoqHIvOzwAF1Y9oJIQUNl++IgJf0l1aNg1g==
+X-Received: by 2002:a05:6870:b90a:b0:1ea:4dc8:a17 with SMTP id gx10-20020a056870b90a00b001ea4dc80a17mr13544728oab.28.1698172970721;
+        Tue, 24 Oct 2023 11:42:50 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id sc17-20020a056871221100b001e0fd4c9b9asm2303077oab.6.2023.10.24.11.42.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 11:42:50 -0700 (PDT)
+Received: (nullmailer pid 263045 invoked by uid 1000);
+        Tue, 24 Oct 2023 18:42:48 -0000
+Date:   Tue, 24 Oct 2023 13:42:48 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Georgi Djakov <quic_c_gdjako@quicinc.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+        devicetree@vger.kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, quic_cgoldswo@quicinc.com,
+        quic_sukadev@quicinc.com, quic_pdaly@quicinc.com,
+        quic_sudaraja@quicinc.com, djakov@kernel.org
+Subject: Re: [PATCH 1/6] dt-bindings: iommu: Add Translation Buffer Unit
+ bindings
+Message-ID: <20231024184248.GA252155-robh@kernel.org>
+References: <20231019021923.13939-1-quic_c_gdjako@quicinc.com>
+ <20231019021923.13939-2-quic_c_gdjako@quicinc.com>
 MIME-Version: 1.0
-References: <20231012062359.1616786-1-irogers@google.com> <20231012062359.1616786-11-irogers@google.com>
- <f184e872-4673-419d-9ea8-2d449d9cfd5b@intel.com>
-In-Reply-To: <f184e872-4673-419d-9ea8-2d449d9cfd5b@intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 24 Oct 2023 11:42:33 -0700
-Message-ID: <CAP-5=fXcQwBk=JBof=MMB7LDoutXEvAkB2FbF46jo2xk3tS6QQ@mail.gmail.com>
-Subject: Re: [PATCH v2 10/13] perf record: Lazy load kernel symbols
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Leo Yan <leo.yan@linaro.org>,
-        German Gomez <german.gomez@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Artem Savkov <asavkov@redhat.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019021923.13939-2-quic_c_gdjako@quicinc.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 4:02=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> On 12/10/23 09:23, Ian Rogers wrote:
-> > Commit 5b7ba82a7591 ("perf symbols: Load kernel maps before using")
-> > changed it so that loading a kernel dso would cause the symbols for
-> > the dso to be eagerly loaded. For perf record this is overhead as the
-> > symbols won't be used. Add a symbol_conf to control the behavior and
-> > disable it for perf record and perf inject.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/builtin-inject.c   | 4 ++++
-> >  tools/perf/builtin-record.c   | 2 ++
-> >  tools/perf/util/event.c       | 4 ++--
-> >  tools/perf/util/symbol_conf.h | 3 ++-
-> >  4 files changed, 10 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> > index c8cf2fdd9cff..1539fb18c749 100644
-> > --- a/tools/perf/builtin-inject.c
-> > +++ b/tools/perf/builtin-inject.c
-> > @@ -2265,6 +2265,10 @@ int cmd_inject(int argc, const char **argv)
-> >               "perf inject [<options>]",
-> >               NULL
-> >       };
-> > +
-> > +     /* Disable eager loading of kernel symbols that adds overhead to =
-perf inject. */
-> > +     symbol_conf.lazy_load_kernel_maps =3D true;
->
-> Possibly not for itrace kernel decoding, so:
->
->         if (!inject->itrace_synth_opts.set)
->                 symbol_conf.lazy_load_kernel_maps =3D true;
+On Wed, Oct 18, 2023 at 07:19:18PM -0700, Georgi Djakov wrote:
+> The "apps_smmu" on the Qualcomm sdm845 platform is an implementation
+> of the ARM SMMU-500, that consists of a single TCU (Translation Control
+> Unit) and multiple TBUs (Translation Buffer Units). The TCU is already
+> being described in the ARM SMMU DT schema. Add also bindings for the
+> TBUs so that we can describe their properties.
 
-Thanks, added to v3.
+Arm SMMU-500 is an implementation, too. Is QCom's a modified 
+implementation or you are just the first to want to control TBU 
+resources?
 
-Ian
+You need to split this into what could be any SMMU-500 implementation 
+and what is truly QCom specific (i.e. modified). Unlike some licensed IP 
+that's a free-for-all on DT resources, Arm IP has public specs so we 
+don't have to guess.
 
-> > +
-> >  #ifndef HAVE_JITDUMP
-> >       set_option_nobuild(options, 'j', "jit", "NO_LIBELF=3D1", true);
-> >  #endif
-> > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> > index dcf288a4fb9a..8ec818568662 100644
-> > --- a/tools/perf/builtin-record.c
-> > +++ b/tools/perf/builtin-record.c
-> > @@ -3989,6 +3989,8 @@ int cmd_record(int argc, const char **argv)
-> >  # undef set_nobuild
-> >  #endif
-> >
-> > +     /* Disable eager loading of kernel symbols that adds overhead to =
-perf record. */
-> > +     symbol_conf.lazy_load_kernel_maps =3D true;
-> >       rec->opts.affinity =3D PERF_AFFINITY_SYS;
-> >
-> >       rec->evlist =3D evlist__new();
-> > diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
-> > index 923c0fb15122..68f45e9e63b6 100644
-> > --- a/tools/perf/util/event.c
-> > +++ b/tools/perf/util/event.c
-> > @@ -617,13 +617,13 @@ struct map *thread__find_map(struct thread *threa=
-d, u8 cpumode, u64 addr,
-> >       if (cpumode =3D=3D PERF_RECORD_MISC_KERNEL && perf_host) {
-> >               al->level =3D 'k';
-> >               maps =3D machine__kernel_maps(machine);
-> > -             load_map =3D true;
-> > +             load_map =3D !symbol_conf.lazy_load_kernel_maps;
-> >       } else if (cpumode =3D=3D PERF_RECORD_MISC_USER && perf_host) {
-> >               al->level =3D '.';
-> >       } else if (cpumode =3D=3D PERF_RECORD_MISC_GUEST_KERNEL && perf_g=
-uest) {
-> >               al->level =3D 'g';
-> >               maps =3D machine__kernel_maps(machine);
-> > -             load_map =3D true;
-> > +             load_map =3D !symbol_conf.lazy_load_kernel_maps;
-> >       } else if (cpumode =3D=3D PERF_RECORD_MISC_GUEST_USER && perf_gue=
-st) {
-> >               al->level =3D 'u';
-> >       } else {
-> > diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_con=
-f.h
-> > index 0b589570d1d0..2b2fb9e224b0 100644
-> > --- a/tools/perf/util/symbol_conf.h
-> > +++ b/tools/perf/util/symbol_conf.h
-> > @@ -42,7 +42,8 @@ struct symbol_conf {
-> >                       inline_name,
-> >                       disable_add2line_warn,
-> >                       buildid_mmap2,
-> > -                     guest_code;
-> > +                     guest_code,
-> > +                     lazy_load_kernel_maps;
-> >       const char      *vmlinux_name,
-> >                       *kallsyms_name,
-> >                       *source_prefix,
->
+> In this DT schema, the TBUs are modelled as a child devices of the TCU
+> and each of them is described with it's own resources such as clocks,
+> power domains, interconnects etc.
+> 
+> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
+> ---
+>  .../devicetree/bindings/iommu/arm,smmu.yaml   | 13 ++++
+>  .../bindings/iommu/qcom,qsmmuv500-tbu.yaml    | 67 +++++++++++++++++++
+>  2 files changed, 80 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> index cf29ab10501c..afc323b4bbc5 100644
+> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> @@ -230,6 +230,19 @@ properties:
+>        enabled for any given device.
+>      $ref: /schemas/types.yaml#/definitions/phandle
+>  
+> +  '#address-cells':
+> +    const: 2
+> +
+> +  '#size-cells':
+> +    const: 2
+> +
+> +  ranges: true
+> +
+> +patternProperties:
+> +  "^tbu@[0-9a-f]+$":
+> +    $ref: qcom,qsmmuv500-tbu.yaml
+
+Generic SMMU binding includes something QCom specific. That's not right.
+
+
+> +    description: The SMMU may include Translation Buffer Units (TBU) as subnodes
+> +
+>  required:
+>    - compatible
+>    - reg
+> diff --git a/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml b/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
+> new file mode 100644
+> index 000000000000..4baba7397e90
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
+> @@ -0,0 +1,67 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iommu/qcom,qsmmuv500-tbu.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm TBU (Translation Buffer Unit)
+> +
+> +maintainers:
+> +  - Georgi Djakov <quic_c_gdjako@quicinc.com>
+> +
+> +description:
+> +  TBU nodes represent Translation Buffer Units in an ARM SMMU. Each TBU node
+> +  should be a child node of the SMMU in the device tree.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,qsmmuv500-tbu
+> +
+> +  reg:
+> +    items:
+> +      - description: Address and size of the TBU's register space.
+> +
+> +  reg-names:
+> +    items:
+> +      - const: base
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  interconnects:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  qcom,stream-id-range:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    description: Stream ID range (address and size) that is assigned by the TBU
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interconnects
+> +  - qcom,stream-id-range
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,gcc-sdm845.h>
+> +    #include <dt-bindings/interconnect/qcom,sdm845.h>
+> +    #include <dt-bindings/power/qcom-rpmpd.h>
+> +
+> +
+> +    tbu@150e1000 {
+> +        compatible = "qcom,qsmmuv500-tbu";
+> +        reg = <0x150e1000 0x1000>;
+> +        reg-names = "base";
+> +        clocks = <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>;
+> +        power-domains = <&gcc HLOS1_VOTE_AGGRE_NOC_MMU_PCIE_TBU_GDSC>;
+> +        interconnects = <&system_noc MASTER_GNOC_SNOC 0 &config_noc SLAVE_IMEM_CFG 0>;
+> +        qcom,stream-id-range = <0x1c00 0x400>;
+> +    };
+> +
+> +...
