@@ -2,183 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D07A7D46DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A087D46E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbjJXFTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 01:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
+        id S232180AbjJXFZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 01:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJXFTg (ORCPT
+        with ESMTP id S229688AbjJXFZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 01:19:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E052E5;
-        Mon, 23 Oct 2023 22:19:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698124774; x=1729660774;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=MRmrUcwHWy3mkUYsQTE4raBpxOs+Zla7IRIOfm8KL0s=;
-  b=LdP94EYbwv/ytljH0cn7zpVWlkdSx6vV5lBpBgVHz+VxyZcO65eVYhqp
-   NRkFbCZg1HWova8I7SrwqrtqRvDt6oaDUdVH2F1nkcy0U+Opvp72aYoWJ
-   ixqrrkDzxVGWKLE8frV968dT73GfVnMKAeMgpcBBYnaoZEBso6yPjfTF0
-   UK57PaqvnsB8Uu5/QHsRdaVgy3vTTO16/PL850AokJeeVEN8aIUYuQ1bf
-   PYetRoOwJfvXVxZm3WG0FZrgsWNYO0jU8GOwaNe6MIjIyAtfBYlh+tP9k
-   hzebVvjXRYRsk+8TBhPUtNNSvRKiWT491B/HK4KkoPsteT+qC8bOkMitu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="5613032"
-X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
-   d="scan'208";a="5613032"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 22:19:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
-   d="scan'208";a="6335219"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.63.12])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 22:19:21 -0700
-Message-ID: <92fe21ab-af6f-4417-b241-eac0532e115a@intel.com>
-Date:   Tue, 24 Oct 2023 08:19:23 +0300
+        Tue, 24 Oct 2023 01:25:01 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6FA125
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 22:24:59 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 433FB21B65;
+        Tue, 24 Oct 2023 05:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1698125098; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3xKoNE41itsf53R8KnfXvJY7xIgN+SlleTH+6Hkx508=;
+        b=HQxVO+RZzP/2M9FrSXdLRF4zGbweYrjkWaC6nPce5cOf0UN1SCKPQa09F4T/IUVzWqSe//
+        BEdNB14zraXi8e20q+0QO9FIjeGXJXrDYyrmiHEW0QrSI8jINZ1rrZkaK/icfAaDz4pRag
+        q8CDTCsz4MAlKUV7aH8WmBX6owX4XNg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1698125098;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3xKoNE41itsf53R8KnfXvJY7xIgN+SlleTH+6Hkx508=;
+        b=l+uRzkjg4nqQow1Q67Km6jlgRB2GHIIV/48C5RkRlDf1K9Ia4loL+MqAhkGEin0t90xDHT
+        MXMV9zkxzmmU47BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 108471391F;
+        Tue, 24 Oct 2023 05:24:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id tq7HAipVN2XiAwAAMHmgww
+        (envelope-from <hare@suse.de>); Tue, 24 Oct 2023 05:24:58 +0000
+Message-ID: <de7adb36-183c-4ca1-b945-d3675ce87fb3@suse.de>
+Date:   Tue, 24 Oct 2023 07:24:57 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/13] perf machine thread: Remove exited threads by
- default
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Song Liu <song@kernel.org>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Leo Yan <leo.yan@linaro.org>,
-        German Gomez <german.gomez@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Artem Savkov <asavkov@redhat.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-References: <20231012062359.1616786-1-irogers@google.com>
- <20231012062359.1616786-14-irogers@google.com>
- <c04c196a-3f29-4b89-97a7-5e71def3d3ce@intel.com>
- <CAP-5=fX303b8-hQXWaRibtYFyBS2sQywDSKR6KhKMUMX_0gzrw@mail.gmail.com>
+Subject: Re: [PATCH] nvme-keyring: add MODULE_LICENSE()
 Content-Language: en-US
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAP-5=fX303b8-hQXWaRibtYFyBS2sQywDSKR6KhKMUMX_0gzrw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org
+References: <20231023230052.31161-1-rdunlap@infradead.org>
+From:   Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20231023230052.31161-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -11.05
+X-Spamd-Result: default: False [-11.05 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         XM_UA_NO_VERSION(0.01)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         BAYES_HAM(-2.96)[99.83%];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/23 21:49, Ian Rogers wrote:
-> On Mon, Oct 23, 2023 at 7:24 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> On 12/10/23 09:23, Ian Rogers wrote:
->>> struct thread values hold onto references to mmaps, dsos, etc. When a
->>> thread exits it is necessary to clean all of this memory up by
->>> removing the thread from the machine's threads. Some tools require
->>> this doesn't happen, such as perf report if offcpu events exist or if
->>> a task list is being generated, so add a symbol_conf value to make the
->>> behavior optional. When an exited thread is left in the machine's
->>> threads, mark it as exited.
->>>
->>> This change relates to commit 40826c45eb0b ("perf thread: Remove
->>> notion of dead threads"). Dead threads were removed as they had a
->>> reference count of 0 and were difficult to reason about with the
->>> reference count checker. Here a thread is removed from threads when it
->>> exits, unless via symbol_conf the exited thread isn't remove and is
->>> marked as exited. Reference counting behaves as it normally does.
->>
->> Can we exclude AUX area tracing?
->>
->> Essentially, the EXIT event happens when the task is still running
->> in kernel mode, so the thread has not in fact fully exited.
->>
->> Example:
->>
->> # perf record -a --kcore -e intel_pt// uname
->>
->> Before:
->>
->> # perf script --itrace=b --show-task-events -C6 | grep -C10 EXIT
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63124ee __perf_event_header__init_id+0x5e ([kernel.kallsyms]) => ffffffffb63124f7 __perf_event_header__init_id+0x67 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6312501 __perf_event_header__init_id+0x71 ([kernel.kallsyms]) => ffffffffb6312512 __perf_event_header__init_id+0x82 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6312531 __perf_event_header__init_id+0xa1 ([kernel.kallsyms]) => ffffffffb6316b3a perf_event_task_output+0x26a ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6316b40 perf_event_task_output+0x270 ([kernel.kallsyms]) => ffffffffb6316959 perf_event_task_output+0x89 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6316966 perf_event_task_output+0x96 ([kernel.kallsyms]) => ffffffffb6322040 perf_output_begin+0x0 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6322080 perf_output_begin+0x40 ([kernel.kallsyms]) => ffffffffb6194dc0 __rcu_read_lock+0x0 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) => ffffffffb6322085 perf_output_begin+0x45 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63220ce perf_output_begin+0x8e ([kernel.kallsyms]) => ffffffffb611d280 preempt_count_add+0x0 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb611d2bf preempt_count_add+0x3f ([kernel.kallsyms]) => ffffffffb63220d3 perf_output_begin+0x93 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63220e8 perf_output_begin+0xa8 ([kernel.kallsyms]) => ffffffffb63220ff perf_output_begin+0xbf ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638: PERF_RECORD_EXIT(14740:14740):(14739:14739)
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6322119 perf_output_begin+0xd9 ([kernel.kallsyms]) => ffffffffb6322128 perf_output_begin+0xe8 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6322146 perf_output_begin+0x106 ([kernel.kallsyms]) => ffffffffb63220ea perf_output_begin+0xaa ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63220f9 perf_output_begin+0xb9 ([kernel.kallsyms]) => ffffffffb63221ab perf_output_begin+0x16b ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63221ae perf_output_begin+0x16e ([kernel.kallsyms]) => ffffffffb63221b6 perf_output_begin+0x176 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6322202 perf_output_begin+0x1c2 ([kernel.kallsyms]) => ffffffffb6322167 perf_output_begin+0x127 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb632218c perf_output_begin+0x14c ([kernel.kallsyms]) => ffffffffb631696b perf_event_task_output+0x9b ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6316990 perf_event_task_output+0xc0 ([kernel.kallsyms]) => ffffffffb61034a0 __task_pid_nr_ns+0x0 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb61034b7 __task_pid_nr_ns+0x17 ([kernel.kallsyms]) => ffffffffb6194dc0 __rcu_read_lock+0x0 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) => ffffffffb61034bc __task_pid_nr_ns+0x1c ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6103503 __task_pid_nr_ns+0x63 ([kernel.kallsyms]) => ffffffffb610353b __task_pid_nr_ns+0x9b ([kernel.kallsyms])
->>
->> After:
->>
->> $ perf script --itrace=b --show-task-events -C6 | grep -C10 EXIT
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63124ee __perf_event_header__init_id+0x5e ([kernel.kallsyms]) => ffffffffb63124f7 __perf_event_header__init_id+0x67 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6312501 __perf_event_header__init_id+0x71 ([kernel.kallsyms]) => ffffffffb6312512 __perf_event_header__init_id+0x82 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6312531 __perf_event_header__init_id+0xa1 ([kernel.kallsyms]) => ffffffffb6316b3a perf_event_task_output+0x26a ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6316b40 perf_event_task_output+0x270 ([kernel.kallsyms]) => ffffffffb6316959 perf_event_task_output+0x89 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6316966 perf_event_task_output+0x96 ([kernel.kallsyms]) => ffffffffb6322040 perf_output_begin+0x0 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6322080 perf_output_begin+0x40 ([kernel.kallsyms]) => ffffffffb6194dc0 __rcu_read_lock+0x0 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) => ffffffffb6322085 perf_output_begin+0x45 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63220ce perf_output_begin+0x8e ([kernel.kallsyms]) => ffffffffb611d280 preempt_count_add+0x0 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb611d2bf preempt_count_add+0x3f ([kernel.kallsyms]) => ffffffffb63220d3 perf_output_begin+0x93 ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63220e8 perf_output_begin+0xa8 ([kernel.kallsyms]) => ffffffffb63220ff perf_output_begin+0xbf ([kernel.kallsyms])
->>            uname   14740 [006] 26795.092638: PERF_RECORD_EXIT(14740:14740):(14739:14739)
->>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6322119 perf_output_begin+0xd9 ([kernel.kallsyms]) => ffffffffb6322128 perf_output_begin+0xe8 ([kernel.kallsyms])
->>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6322146 perf_output_begin+0x106 ([kernel.kallsyms]) => ffffffffb63220ea perf_output_begin+0xaa ([kernel.kallsyms])
->>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb63220f9 perf_output_begin+0xb9 ([kernel.kallsyms]) => ffffffffb63221ab perf_output_begin+0x16b ([kernel.kallsyms])
->>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb63221ae perf_output_begin+0x16e ([kernel.kallsyms]) => ffffffffb63221b6 perf_output_begin+0x176 ([kernel.kallsyms])
->>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6322202 perf_output_begin+0x1c2 ([kernel.kallsyms]) => ffffffffb6322167 perf_output_begin+0x127 ([kernel.kallsyms])
->>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb632218c perf_output_begin+0x14c ([kernel.kallsyms]) => ffffffffb631696b perf_event_task_output+0x9b ([kernel.kallsyms])
->>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6316990 perf_event_task_output+0xc0 ([kernel.kallsyms]) => ffffffffb61034a0 __task_pid_nr_ns+0x0 ([kernel.kallsyms])
->>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb61034b7 __task_pid_nr_ns+0x17 ([kernel.kallsyms]) => ffffffffb6194dc0 __rcu_read_lock+0x0 ([kernel.kallsyms])
->>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) => ffffffffb61034bc __task_pid_nr_ns+0x1c ([kernel.kallsyms])
->>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6103503 __task_pid_nr_ns+0x63 ([kernel.kallsyms]) => ffffffffb610353b __task_pid_nr_ns+0x9b ([kernel.kallsyms])
->>
->> This will also affect samples made after PERF_RECORD_EXIT but before
->> the task finishes exiting.
+On 10/24/23 01:00, Randy Dunlap wrote:
+> When NVME_KEYRING=y (NVME_AUTH is not set), there is a modpost build
+> error:
 > 
-> Makes sense. Would an appropriate fix be in perf_session__open to set:
-> symbol_conf.keep_exited_threads = true;
+> ERROR: modpost: missing MODULE_LICENSE() in drivers/nvme/common/nvme-common.o
 > 
-> when:
-> perf_header__has_feat(&session->header, HEADER_AUXTRACE)
+> so add a MODULE_LICENSE() to keyring.c (copied from auth.c).
 > 
-> It is kind of hacky to be changing global state this way, but
-> symbol_conf is like that in general.
+> Fixes: 9d77eb527784 ("nvme-keyring: register '.nvme' keyring")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Keith Busch <kbusch@kernel.org>
+> Cc: Jens Axboe <axboe@fb.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Sagi Grimberg <sagi@grimberg.me>
+> Cc: Hannes Reinecke <hare@suse.de>
+> Cc: linux-nvme@lists.infradead.org
+> ---
+>   drivers/nvme/common/keyring.c |    2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff -- a/drivers/nvme/common/keyring.c b/drivers/nvme/common/keyring.c
+> --- a/drivers/nvme/common/keyring.c
+> +++ b/drivers/nvme/common/keyring.c
+> @@ -180,3 +180,5 @@ void nvme_keyring_exit(void)
+>   	key_put(nvme_keyring);
+>   }
+>   EXPORT_SYMBOL_GPL(nvme_keyring_exit);
+> +
+> +MODULE_LICENSE("GPL v2");
 
-That should work.  Alternatively, could be added to
-perf_event__process_auxtrace_info() which would tie it
-more directly to auxtrace, and wouldn't have to check
-HEADER_AUXTRACE.
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
+Myers, Andrew McDonald, Martje Boudien Moerman
 
