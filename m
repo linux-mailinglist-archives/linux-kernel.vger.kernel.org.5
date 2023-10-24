@@ -2,44 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CF77D56D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C927D56D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343944AbjJXPoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41010 "EHLO
+        id S1343525AbjJXPpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343938AbjJXPoW (ORCPT
+        with ESMTP id S234660AbjJXPpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:44:22 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 688F9DE
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:44:20 -0700 (PDT)
-Received: (qmail 461325 invoked by uid 1000); 24 Oct 2023 11:44:19 -0400
-Date:   Tue, 24 Oct 2023 11:44:19 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Hardik Gajjar <hgajjar@de.adit-jv.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, mathias.nyman@intel.com,
-        yangyingliang@huawei.com, jinpu.wang@ionos.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erosca@de.adit-jv.com
-Subject: Re: [PATCH v4] usb: core: hub: Add quirks for reducing device
- address timeout
-Message-ID: <de2ed64a-363a-464c-95be-584ce1a7a4ad@rowland.harvard.edu>
-References: <2023101155-unframed-satirical-f7ec@gregkh>
- <20231011164525.97616-1-hgajjar@de.adit-jv.com>
- <2023101620-shaky-sensitize-9708@gregkh>
- <20231017161021.GA62775@vmlxhi-118.adit-jv.com>
- <2023101750-bless-humorous-45c7@gregkh>
- <6c25beed-06fe-4be0-b51a-18e159d25072@rowland.harvard.edu>
- <2023102105-attribute-pajamas-a0dc@gregkh>
- <20231023161348.GA55951@vmlxhi-118.adit-jv.com>
+        Tue, 24 Oct 2023 11:45:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1543A10A
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:45:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4621DC433C8;
+        Tue, 24 Oct 2023 15:45:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698162343;
+        bh=OwCxtPQ+z0MdwHi7seYQAGchK7270NewGnlvtxqCa/4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zc+9XqnzcMLfCLcSEemS5g8T472F71zf4Qy6HVN+g0LSZ2K6JyhsxEoJLOJxltTfS
+         jh2+EY78icHApVMgoVpSCvDKB+Mf6ijjEtWn5GYBsp/bU5aMvc1NqGAGzoQM5AMC54
+         KS9rxeRJ/f+n/NjXsK6Qj8an2W2A0eXewS9ZV4gQ=
+Date:   Tue, 24 Oct 2023 17:45:40 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Li, Meng" <Meng.Li@windriver.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "usb-storage@lists.one-eyed-alien.net" 
+        <usb-storage@lists.one-eyed-alien.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: storage: add shutdown function for usb storage
+ driver
+Message-ID: <2023102428-zit-quickness-9b73@gregkh>
+References: <20231023054111.2744872-1-Meng.Li@windriver.com>
+ <33bd0779-bfe7-4c87-8fe6-ea8455df3b6b@rowland.harvard.edu>
+ <PH0PR11MB51918DD50651DB6BE937BEA3F1DFA@PH0PR11MB5191.namprd11.prod.outlook.com>
+ <3fe5b43c-a5aa-4c6a-8614-03a4d9dd53e2@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231023161348.GA55951@vmlxhi-118.adit-jv.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
+In-Reply-To: <3fe5b43c-a5aa-4c6a-8614-03a4d9dd53e2@rowland.harvard.edu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,61 +53,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 06:13:48PM +0200, Hardik Gajjar wrote:
-> On Sat, Oct 21, 2023 at 12:15:35PM +0200, Greg KH wrote:
-> > On Tue, Oct 17, 2023 at 02:59:54PM -0400, Alan Stern wrote:
-> > > On Tue, Oct 17, 2023 at 06:53:44PM +0200, Greg KH wrote:
-> > > > On Tue, Oct 17, 2023 at 06:10:21PM +0200, Hardik Gajjar wrote:
-> > > > > More logs and detailed in patch V1:
-> > > > > https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_linux-2Dusb_20230818092353.124658-2D1-2Dhgajjar-40de.adit-2Djv.com_T_-23m452ec9dad94e8181fdb050cd29483dd89437f7c1&d=DwICAg&c=euGZstcaTDllvimEN8b7jXrwqOf-v5A_CdpgnVfiiMM&r=SAhjP5GOmrADp1v_EE5jWoSuMlYCIt9gKduw-DCBPLs&m=P0HXZTx6ta7v5M4y2Y7WZkPrY-dpKkxBq8tAzuX8cI9aj9tE2NuVvJjLl3Uvojpw&s=N_HwnQeZb_gHMmgz53uTGDUZVi28EXb1l9Pg6PdbvVI&e=
-> > > > > > 
-> > > > > > > Achieving this is impossible in scenarios where the set_address is
-> > > > > > > not successful and waits for a timeout.
-> > > > > > 
-> > > > > > Agreed, broken hardware is a pain, but if your device is allowed to take
-> > > > > > longer, it can, and will, so you have to support that.
-> > > > > > 
-> > > > > The problem is not caused by the device taking an extended amount of time to
-> > > > > process the 'set_address' request. Instead, the issue lies in the absence of
-> > > > > any activity on the upstream bus until a timeout occurs.
-> > > > 
-> > > > So, a broken device.  Why are you then adding the hub to the quirk list
-> > > > and not the broken device?  We are used to adding broken devices to
-> > > > qurik lists all the time, this shouldn't be new.
-> > > 
-> > > Adding a quirk for the device isn't feasible, because the problem occurs 
-> > > before the device has been initialized and enumerated.  The kernel 
-> > > doesn't know anything about the device at this point; only that it has 
-> > > just connected.
+On Tue, Oct 24, 2023 at 11:35:19AM -0400, Alan Stern wrote:
+> On Tue, Oct 24, 2023 at 03:43:56AM +0000, Li, Meng wrote:
 > > 
-> > Ah, ick, you are right, but we do know the "broken hub" id, so that
-> > makes a bit more sense.  Should this be a hub-only type quirk?
+> > 
+> > > -----Original Message-----
+> > > From: Alan Stern <stern@rowland.harvard.edu>
 > 
-> In addition to the earlier comment, it appears that the issue is most likely
-> related to the hub. While we have identified one specific phone that triggers
-> this problem, we cannot determine how many other devices might encounter a
-> similar issue, where they enumerate as full speed initially and then switch
-> to high speed. To address this, we are proposing to use a 500 ms timeout for
-> all devices connected via the hub. This change aims to prevent potential
-> timeout-related problems with various devices
-
-So it sounds like the best approach is to make this a hub-specific 
-quirk.
-
-> It does appear that the issue is related to the hub, and the ideal solution would involve
-> modifying the hub's firmware. However, implementing such a firmware fix is currently not
-> a straightforward task. As a result, we have implemented this quirk-based solution to
-> mitigate the issue to some extent
+> > > On Mon, Oct 23, 2023 at 01:41:11PM +0800, Meng Li wrote:
+> > > > On ls1043/ls1046 rdb platform, if a PCIe-USB host controller is
+> > > > installed, and an USB disk is also installed on the PCIe card, when
+> > > > executing "reboot -f" to reset the board, there will be below error reported:
+> > > > usb 2-2: device not accepting address 2, error -108
 > 
-> Following is the LeCroy analyzer logs:
+> > > > This issue is introduced by linux-yocto commit 837547b64a34("driver: net:
+> > > > dpaa: release resource when executing kexec") that cause to spend more
+> > > > time on shutdown operation. So, the 2 platforms with DPAA are not
+> > > > reset immediately after executing force reboot command. Moreover, the
+> > > > usb-storage thread is still in active status, there is still control
+> > > > data transferred between USB disk and PCIe host controller. But now
+> > > > the shutdown callback of usb pci driver had been invoked to stop the
+> > > > PCIe host controller completely. In this situation, the data transferring failed
+> > > and report error.
+> > > 
+> > > That's _supposed_ to happen.  By design, the "reboot -f" command is meant
+> > > to carry out an immediate reboot, without using the init system, unmounting
+> > > filesystems, or doing other cleanup operations.
+> > > 
+> > 
+> > As my above said, I understand what you mean. I also thought over what you said.
+> > I am not sure, but I still sent patch to upstream community, and want to get some suggest from more authoritative maintainer.
+> > 
+> > > If you want a clean reboot with no errors, don't use the "-f" option.
+> > > 
+> > 
+> > There is also error report even if I use command "reboot"
 > 
-> 1. logs between Hub and phone with broken hub.
-> 
-> In packet 58, there is a Full-speed J (suspend) event that lasted for 5.347 seconds.
-> It's suspected that the hub was suspended due to incorrect chirp parsing.
-> This anomaly in chirp parsing may be a contributing factor to the issue we're facing.
+> Okay, that's a different matter.  In fact, I don't know what is supposed 
+> to happen during a clean reboot.
 
-Yes, that's probably true.  It's another indication that the hub is 
-somehow at fault.
+Define "clean" :)
 
-Alan Stern
+reboot is a system thing that happens before the reboot syscall happens.
+So which are we talking nabout here?
+
+> Greg, do you know?  Should we take the time to disconnect all the USB 
+> devices during a system shutdown?
+
+In the past we have not.  And if we switch to do so, we might get some
+complaints as we would now delaying the shutdown process to be longer
+than before.
+
+> What happens with non-USB disk drives?  Or other removable devices?
+
+It would have to come from "above" in the device tree, so does the PCI
+or platform bus say that they should be shut down and their child
+devices?
+
+thanks,
+
+greg k-h
