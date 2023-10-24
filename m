@@ -2,84 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B011A7D460E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 05:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF577D4614
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 05:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232146AbjJXDix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 23:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
+        id S232107AbjJXDks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 23:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbjJXDiv (ORCPT
+        with ESMTP id S232042AbjJXDko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 23:38:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39180B7;
-        Mon, 23 Oct 2023 20:38:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8FE1C433C8;
-        Tue, 24 Oct 2023 03:38:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698118728;
-        bh=xinKZF7gQ6fnFF1wJ3HeENUjv5ikkykRN2jQu+EuQJY=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=a7ImS2zH1XdVnvPAra1OedejZt+kVx5c/flpRjIPJPuFSiFPFK7G+NepTZD2KtYjY
-         pynIiAmYjBfyPCXFH0j9+m7tGW16kJBvyL0vLRLkTYO60uZFqDzB5I530YSz/NgXnx
-         QdNu7iSSPGRbjpn7yiFZ8ko3XIEXaA9v+nwKyrfN13A7lEgUa9BvedYgNahAcFiRqC
-         TW1hBalKv6fPFok36TPHuCdArmspBf4+59hqkEp1ZXg+Y+AsNoD7O2Np/qR3L1/fDH
-         yPbNkrFxxc6rY1A5PDEFXDKgIQhL+3s2/mU9jFKBDnlsziZa/dXcPv9NZfyYJ1Rdod
-         mOzIbWViQo8MA==
-Message-ID: <47616bcf9f17a2d8665767d9ada49f25.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        Mon, 23 Oct 2023 23:40:44 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A51DA
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 20:40:40 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cab2c24ecdso24555945ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 20:40:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1698118840; x=1698723640; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oWeGYZJ7Zqr0SZ51s3Tlaj8JTzPWhfxnA67l062INq8=;
+        b=Yka22y6GudilGqFN93hZ3gwUjSZ7fiAGVB18y4YS4VOx58FRysiSaOTltq7hIkbDBd
+         HPXEDh59iJ3MMQ96QGEDnefC0uQijgkyObUH9MU4SVox2nSN+nx8v13NOTjz8p3rnxMY
+         jD8H5GanpdTZOGT+9uo9YTlYuv2KagQsVwNsOG3qC3oci8YOhcZRYJ7jn0lz/Q/P6e27
+         PLsZyIvvJ5kJ+BVqjs3Gpf3tuW9rtUzbWudkY7Z16SUUP/5epPAtS32tHEwpdoAZO2rj
+         OZ5NlqtIiGQTPibS/tUMx/VVSgXuisk/853Fpn45b9rUTefWXD6Zy7yMeU/+HbSKPCG8
+         H4Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698118840; x=1698723640;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oWeGYZJ7Zqr0SZ51s3Tlaj8JTzPWhfxnA67l062INq8=;
+        b=LSeX9K3bVPYYZjEgUDN4JSHDRwJUy51WPca9mkWmtmm4KLISPHDQcuISw97HPLJXkZ
+         Si01kTy01NdwUN9ccv71mDWDGtWjSHn43Pfer/TmbV9XgCRwLWMH5RH4Wg9mJw0U+2nw
+         UR+wcQfxLxU3H7bDjYnsFYhvsaSYqIljQ9hGnriHcx9Wbrv3GVE9YxFI/WWjXDk7A4K/
+         CSeseR2ksrLNi4zrMRhX4Nj7oJOU3h6d389ycTVJXw4El3sOHfLX/ib8axgTg2dYyFyR
+         scIbK4rSp0Ny1qczJzKjnQhn/MRnh7EC4s7dD2XGeSaMfuh6x/xAXfuOzP9KYKHdi1DK
+         atXA==
+X-Gm-Message-State: AOJu0YxUYvsZPt/mpIFuo0qNcB3Kj0v0arv5yJpbH6XwKCG5YOutpbTo
+        Vew8PrUi8vDvmsHLg7L2JApuvw==
+X-Google-Smtp-Source: AGHT+IHBoF+8WS2RfetzLDwdufPuai+lmlctVilCrpXxsuy5LNKEo/W+GvWNVlLVD0/hEfe7bag85w==
+X-Received: by 2002:a17:903:84f:b0:1c9:d25c:17c6 with SMTP id ks15-20020a170903084f00b001c9d25c17c6mr8511411plb.1.1698118840059;
+        Mon, 23 Oct 2023 20:40:40 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id n14-20020a170902d2ce00b001c739768214sm6668917plc.92.2023.10.23.20.40.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Oct 2023 20:40:39 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qv8HU-0039F0-1Z;
+        Tue, 24 Oct 2023 14:40:36 +1100
+Date:   Tue, 24 Oct 2023 14:40:36 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+Message-ID: <ZTc8tClCRkfX3kD7@dread.disaster.area>
+References: <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+ <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+ <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+ <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+ <ZTGncMVw19QVJzI6@dread.disaster.area>
+ <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+ <ZTWfX3CqPy9yCddQ@dread.disaster.area>
+ <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+ <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+ <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231016113002.15929-2-jay.buddhabhatti@amd.com>
-References: <20231016113002.15929-1-jay.buddhabhatti@amd.com> <20231016113002.15929-2-jay.buddhabhatti@amd.com>
-Subject: Re: [PATCH RESEND 1/2] drivers: clk: zynqmp: calculate closest mux rate
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-To:     Jay Buddhabhatti <jay.buddhabhatti@amd.com>, michal.simek@amd.com,
-        mturquette@baylibre.com
-Date:   Mon, 23 Oct 2023 20:38:46 -0700
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jay Buddhabhatti (2023-10-16 04:30:01)
-> Currently zynqmp clock driver is not calculating closest mux rate and
-> because of that Linux is not setting proper frequency for CPU and
-> not able to set given frequency for dynamic frequency scaling.
->=20
-> E.g., In current logic initial acpu clock parent and frequency as below
-> apll1                  0    0    0  2199999978    0     0  50000      Y
->     acpu0_mux          0    0    0  2199999978    0     0  50000      Y
->         acpu0_idiv1    0    0    0  2199999978    0     0  50000      Y
->             acpu0      0    0    0  2199999978    0     0  50000      Y
->=20
-> After changing acpu frequency to 549999994 Hz using CPU freq scaling its
-> selecting incorrect parent which is not closest frequency.
-> rpll_to_xpd            0    0    0  1599999984    0     0  50000      Y
->     acpu0_mux          0    0    0  1599999984    0     0  50000      Y
->         acpu0_div1     0    0    0   533333328    0     0  50000      Y
->             acpu0      0    0    0   533333328    0     0  50000      Y
->=20
-> Parent should remain same since 549999994 =3D 2199999978 / 4.
->=20
-> So use __clk_mux_determine_rate_closest() generic function to calculate
-> closest rate for mux clock. After this change its selecting correct
-> parent and correct clock rate.
-> apll1                  0    0    0  2199999978    0     0  50000      Y
->     acpu0_mux          0    0    0  2199999978    0     0  50000      Y
->         acpu0_div1     0    0    0   549999995    0     0  50000      Y
->             acpu0      0    0    0   549999995    0     0  50000      Y
->=20
-> Signed-off-by: Jay Buddhabhatti <jay.buddhabhatti@amd.com>
-> ---
+On Mon, Oct 23, 2023 at 02:18:12PM -1000, Linus Torvalds wrote:
+> On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > The problem is the first read request after a modification has been
+> > made. That is causing relatime to see mtime > atime and triggering
+> > an atime update. XFS sees this, does an atime update, and in
+> > committing that persistent inode metadata update, it calls
+> > inode_maybe_inc_iversion(force = false) to check if an iversion
+> > update is necessary. The VFS sees I_VERSION_QUERIED, and so it bumps
+> > i_version and tells XFS to persist it.
+> 
+> Could we perhaps just have a mode where we don't increment i_version
+> for just atime updates?
+>
+> Maybe we don't even need a mode, and could just decide that atime
+> updates aren't i_version updates at all?
 
-Any Fixes tag here?
+We do that already - in memory atime updates don't bump i_version at
+all. The issue is the rare persistent atime update requests that
+still happen - they are the ones that trigger an i_version bump on
+XFS, and one of the relatime heuristics tickle this specific issue.
+
+If we push the problematic persistent atime updates to be in-memory
+updates only, then the whole problem with i_version goes away....
+
+> Yes, yes, it's obviously technically a "inode modification", but does
+> anybody actually *want* atime updates with no actual other changes to
+> be version events?
+
+Well, yes, there was. That's why we defined i_version in the on disk
+format this way well over a decade ago. It was part of some deep
+dark magical HSM beans that allowed the application to combine
+multiple scans for different inode metadata changes into a single
+pass. atime changes was one of the things it needed to know about
+for tiering and space scavenging purposes....
+
+> Or maybe i_version can update, but callers of getattr() could have two
+> bits for that STATX_CHANGE_COOKIE, one for "I care about atime" and
+> one for others, and we'd pass that down to inode_query_version, and
+> we'd have a I_VERSION_QUERIED and a I_VERSION_QUERIED_STRICT, and the
+> "I care about atime" case ould set the strict one.
+
+This makes correct behaviour reliant on the applicaiton using the
+query mechanism correctly. I have my doubts that userspace
+developers will be able to understand the subtle difference between
+the two options and always choose correctly....
+
+And then there's always the issue that we might end up with both
+flags set and we get conflicting bug reports about how atime is not
+behaving the way the applications want it to behave.
+
+> Then inode_maybe_inc_iversion() could - for atome updates - skip the
+> version update *unless* it sees that I_VERSION_QUERIED_STRICT bit.
+> 
+> Does that sound sane to people?
+
+I'd much prefer we just do the right thing transparently at the
+filesystem level; all we need is for the inode to be flagged that it
+should be doing in memory atime updates rather than persistent
+updates.
+
+Perhaps the nfs server should just set a new S_LAZYTIME flag on
+inodes it accesses similar to how we can set S_NOATIME on inodes to
+elide atime updates altogether. Once set, the inode will behave that
+way until it is reclaimed from memory....
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
