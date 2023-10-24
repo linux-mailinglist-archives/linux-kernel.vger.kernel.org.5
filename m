@@ -2,426 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 480C37D5450
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3F07D5454
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343665AbjJXOtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 10:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        id S1343674AbjJXOtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 10:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234483AbjJXOtN (ORCPT
+        with ESMTP id S1343664AbjJXOtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:49:13 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2040.outbound.protection.outlook.com [40.107.243.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62311EA;
-        Tue, 24 Oct 2023 07:49:11 -0700 (PDT)
+        Tue, 24 Oct 2023 10:49:33 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2096.outbound.protection.outlook.com [40.107.117.96])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B7110E3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:49:27 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UUHvSrkzMveQ98inc/DKPGJv4sUGeCJOi39J53IVPNBBIBg5fHFsJ6Dq30xWQRxPHZpt/hvp1vnX9L2c7rmvacaCg86saOJhYOJHnHiiDL0y1eepn0Vx67AXi6El3OR5fSaFFeUhlkl7FKG6TbHXtVodZo73aa9K4acMVgV3m2WmI4HyLcAHNLWBTIllz7aIEr/mjvfWohtxsfyFul7t7U8s1615r0WBd9k30378AvrbvIBIUtxMIqP48XDxz+XroUt7+PVXxirChHXg17X85QRMaahhX2nxJUElmJX+1WmZ6lZhUXLvvQPoZtsRPAmyInR4HH8d6BZ/z662azJ9aA==
+ b=iTUypjs5ro2LV4AvEoNIMCs04z1tPjBDdoHwLcH3qzOHMJlN8WSKF+GbEXCxZeIAvO1puqHhs96yCh8nH9+Zl+JTM8TEng7FYXpqocq7aoPuNxf/xu+Othadsoe047Onjathc3ebLuOcGObbBBxweByAMHkrOuAfw9t7KxaPvmlftIHdyArsNg3x9QsAZ3vVhZ/A7uBXRn7YnMWF7XZ8vRyZS3Lqsewpp7IU0iaN3Aq4qx4L5bpaiuI4HOIix5lj6wrhNQO+LpqagSBZARHJpqCjrjib0Ise+UNfpeVFv1En2BObntwGgylH36K5erhvQhF4yyhN8yS0RwzakKpZyg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D5mxZsl5nBupaT0BEqINEAw8IzFWjrHW1gL5vZTnYD8=;
- b=a4p8DRNU3iq4lzyoPt+1+wqd9SXcBaUgLkUqJsCJudgZ/z4KzOqkah9LQgVlVmBQYVTyKt3Z7jdFnJ6a8Q5KwM4DVnRzLjihyvx90npP4/Id87gKDLhpWNuOskPs7fZ6UPiCGty40yZUQY0vXOuBf11+BVCQ2buptgNLAJZ4ovFUeLFKgdRg53a51HeCEVOJhLw6i3pko0YCSr8AZSfsSwh443sYfjYbNzGCk7uwUkbzQ9F+SJs0m6Utm0rYSfVuS5NEyarbQo+mZjN4a2eJxSrVqrB8xVX5sfL9da67JTq0gKW18ozDiIHCvz5bQDn6BHn/KjJGQJnT0ShvjP4N+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=WBe3biSwq/g8Py8TGQTypNQHK2W9dqAaIRXgdU6MEo0=;
+ b=bfCzSU7VsXsf48t/82wRQwVHCwppZio+0pj42kkSk0LPaWaP9CHrC+vu4XO2EkIksod0LlsSPRiOKS8NR96L3RqjQuwNY+EwY2t7EmhQXzXE09VLMbEZHdnHNmfymRuZkyzbAI6gV4MUrTnHwYzD/LFFyeRf7oaIZGjNUfQm5IrXcInvQxhdY9ITo4guRBv8v8qfIeFZTR17sGDkRu8OMw5PHLY2LHzWCMGFaxCNP5NyLBpOqM4p2xHgSCu1ajjhQhBAUIbi8ZXZnsjoaq+MJB8ELWXg3zulcqX61XtLedZtlQmDE+N84PuUSEBFqxaRgvxj3ZhnIILDwqDGHD9Sjw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D5mxZsl5nBupaT0BEqINEAw8IzFWjrHW1gL5vZTnYD8=;
- b=iJ0yByExoR08trykP23UQAcatShGHmPMZQBa95soyEt08D6DN0kd6q1fdeqcoi2eQrubeqD3s6JAk7r0Jv1UYP7hk7WsG2Ps7Mm7U03Av7wxpDoBPZ/0uhp3PE8WKcD1uqcHkSDS5XnnFYgarVQILwFgOSjYiR2UKmbAVN/8Zbg=
-Received: from CYXPR02CA0034.namprd02.prod.outlook.com (2603:10b6:930:cc::22)
- by CH3PR12MB7642.namprd12.prod.outlook.com (2603:10b6:610:14a::14) with
+ bh=WBe3biSwq/g8Py8TGQTypNQHK2W9dqAaIRXgdU6MEo0=;
+ b=WB9tilSc73gx/u2a4Tbiv6hEaKzoolSJhUFC7AXIrp3LFFAycnSmmtbQ8hOjqbjOyPnZy1BuT2P1DTJqks++M3KUOHwHwaDRs0pXb3GJIhn7lHLrVtGmBnPTSzNgOiOGxdOrwOf75JqDAAI04pprVk/La8IMjxxD8UsIX3rCe558V0sfqHQgPOSSdr9G6JgfRLI3Hg5vyQCTfg38ILqKbQNT6kbERhq/g9Pe17EDWlUnIfPXTbqUuJE6EiDeQT7pj//UiN0B/iy8W76cKFa9809oISewXJeuGHbULYpwt+Lx8KNHtFfja53VSfJYojNDz4zb6XtVxDR5g+TwcNyJhA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
+ by PSAPR06MB4405.apcprd06.prod.outlook.com (2603:1096:301:84::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Tue, 24 Oct
- 2023 14:49:08 +0000
-Received: from CY4PEPF0000E9D1.namprd03.prod.outlook.com
- (2603:10b6:930:cc:cafe::86) by CYXPR02CA0034.outlook.office365.com
- (2603:10b6:930:cc::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.34 via Frontend
- Transport; Tue, 24 Oct 2023 14:49:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D1.mail.protection.outlook.com (10.167.241.144) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6933.15 via Frontend Transport; Tue, 24 Oct 2023 14:49:08 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 24 Oct
- 2023 09:49:07 -0500
-Received: from xhdsgoud40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Tue, 24 Oct 2023 09:49:03 -0500
-From:   Manikanta Guntupalli <manikanta.guntupalli@amd.com>
-To:     <git@amd.com>, <michal.simek@amd.com>,
-        <gregkh@linuxfoundation.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <jirislaby@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <radhey.shyam.pandey@amd.com>, <srinivas.goud@amd.com>,
-        <shubhrajyoti.datta@amd.com>, <manion05gk@gmail.com>,
-        Manikanta Guntupalli <manikanta.guntupalli@amd.com>
-Subject: [PATCH V3 2/2] tty: serial: uartps: Add rs485 support to uartps driver
-Date:   Tue, 24 Oct 2023 20:18:47 +0530
-Message-ID: <20231024144847.2316941-3-manikanta.guntupalli@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231024144847.2316941-1-manikanta.guntupalli@amd.com>
-References: <20231024144847.2316941-1-manikanta.guntupalli@amd.com>
-MIME-Version: 1.0
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
+ 2023 14:49:22 +0000
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::ed85:405e:a2c9:1f0d]) by JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::ed85:405e:a2c9:1f0d%3]) with mapi id 15.20.6907.032; Tue, 24 Oct 2023
+ 14:49:22 +0000
+From:   Zhiguo Jiang <justinjiang@vivo.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Zhiguo Jiang <justinjiang@vivo.com>
+Subject: [PATCH] mm/rmap: vm_flags including VM_EXEC can exit timely
+Date:   Tue, 24 Oct 2023 22:49:12 +0800
+Message-ID: <20231024144913.421-1-justinjiang@vivo.com>
+X-Mailer: git-send-email 2.41.0.windows.3
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: SI2PR02CA0006.apcprd02.prod.outlook.com
+ (2603:1096:4:194::8) To JH0PR06MB6849.apcprd06.prod.outlook.com
+ (2603:1096:990:47::12)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D1:EE_|CH3PR12MB7642:EE_
-X-MS-Office365-Filtering-Correlation-Id: c5e7543d-5ecc-4627-f177-08dbd4a06099
+X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|PSAPR06MB4405:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8f433359-562e-44bf-167b-08dbd4a06872
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ipnS8qWd+XDnjvld3m6uEOZrbjc3UqY1pelJohWRhYYHMVc6yHvGtOJwYJkw/coWykIQmVV+DUulFU8nD8fovTryRaVBKsEcl4xf2RXeWgx16STnRnGYg9RTEoAxRwOkegjg2Il4N5FFRJd9dGeJka0Q70C5qXmc8P43oKXmOjj57F67Aaf6RBrabFkjiZF31BfTo89iM4bEPjGQqsB1KOjhPatlcN3iCgARRB9yv5Q2Ub9fzgWpW2/cRzIu+vrk20KQfGIOvjgzwm9TRbiHdGnywIJdGE7emDTSN+Lxra4XRODkkCS2MjOAfhQnrmTD7LM/RCezgWtxuU9o3aDMmizDLpWyOYWRXsab1BiBtI93XZsZwpTM+qDV8vLlNpLEOj/Ua3tR6Qh4sW+51g/+JptC/3P4zE0H7C4RR0aAX9D/bcVdcEEXUFN7YUZLN+AT+j7RTI5CYtTZqzcb5giCGOKk8EHpyZ+3KmIPIiZrnPGQ1SGsLnQuG0ZlXkaO11u1mWkxWT7js2Ljnzru46t/OmnKXfrIUMjoZInMlyG9jgvlewTKCs1rzFXO2EeWR27HEhMfX7GTw7YZPXtcE73SehAtEUnXzNg2GMpV97juhKhdtyebIYfwK1KlXBh+fGLHTJbnzZTamT1uanfIrNHuuggQEo1ZjCCLL3y1wSzxryh2KG0Wt5qEppS73H4nDHdJ3CwuHTntBFrNlEEEILXiqw/odzk9CbbSZlXm/AhM46NqF+sxfiiKoaOS1df6T1Z8405pltACBZXUGeH0yAr7UjBTedCUh2hshn+Yk3/AnaI=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(136003)(39860400002)(230922051799003)(82310400011)(64100799003)(1800799009)(451199024)(186009)(36840700001)(46966006)(40470700004)(2906002)(7416002)(8676002)(8936002)(4326008)(44832011)(83380400001)(81166007)(356005)(82740400003)(41300700001)(5660300002)(47076005)(6666004)(86362001)(40480700001)(316002)(110136005)(336012)(426003)(1076003)(26005)(478600001)(921008)(2616005)(36756003)(70586007)(70206006)(40460700003)(54906003)(36860700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 14:49:08.2520
+X-Microsoft-Antispam-Message-Info: PgorZcR5DtH39ATUKa8+NIPR66zYVk+9exuYTCWbA8A7Xq5/Lg4tzYTSibhEfthze2u1kNlVzYnCQq6S5PI4JCGjvw23pKFTbmcDwDUVrrgvHbPCkvq5wRWumAvHxQt6vUUirVo9wfCdcBbvj9aQa9Rex7Q4jT6iOrAP3QiVI2ASHAGOnkwbtKF1l2sVeVxQ9vKWFJw636/22Cn8gmg4LW777UyyFbgVEuGFfGqoNaMnImeMBxrigNSPasRYvct5PIOnLa1LaA1etsCAplbwhNQTR0q39fcDZ8NSL8RaBJLuE2Pjd+JSglUA1RIkBE7XdCe/O6pRSW+oNBu4ArE3HTMwoudaZP38irnDc+VC5nzlWebX21POiRZhmaioPPs5mT9/Zr40QERUcwnDIn/ElpCjMb6nO0uv6nsTWVsTpS7B4C8uqzsjusY2mvLM0euDaY0q+HpnpRUSQ/neYm151eSeCdJIyWqWJm1acH9q83Jsna1GVfH0cuKbS/lRRQ2L6Tv74FzhwD46XBv2aQeDgx+jF9dhjQqPwmCzvSpCfU9/VIsvLTYl9BfbKLpFXYe4hh2GskCf/FBBt8wFYuk4dzq1G2riCrJ0OB831ie8HZEfcV+bmEwOSTs6SWkTvMC9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39850400004)(376002)(366004)(346002)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(6512007)(107886003)(2616005)(1076003)(26005)(38100700002)(36756003)(86362001)(38350700005)(83380400001)(8676002)(4326008)(8936002)(316002)(66476007)(66556008)(66946007)(5660300002)(4744005)(2906002)(41300700001)(6666004)(6506007)(52116002)(478600001)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Fh5J0CybLbq5JZW4MrMN8RUPpdZ2RxgccoLWLY7jZwyeJYcoClG+hVN4fd1Z?=
+ =?us-ascii?Q?VsP0dLb+bkphe5LtWYh5LewQv+P76i81CTSoDyEFoxLAX/Oqe4jPdU5/m+sE?=
+ =?us-ascii?Q?zZKdUs60DKez0meMxEO12iUV9tfddzK8KrF0/S0ZEXPOUU08lCx8RbpSlHzJ?=
+ =?us-ascii?Q?KYI7DDUZ7xjb/uPmJ0oaeWZGydUGxnKXmZ5I1n3k2XaEmHvsCHle6Ik+javK?=
+ =?us-ascii?Q?gH6XVRMJTBC79R2B/tpmWP1xeOmlB7HodrRYoTVFiTUve5f/QHXqtO+HIRy3?=
+ =?us-ascii?Q?hhm5P7uuLLOltpxrAVqkF0yD38rYCBQJMktId55WvD5kbA/ydHc8ra+izmK2?=
+ =?us-ascii?Q?XEFbJFdlviTyO7T1Oss+9L9evQ1tRaw3NFk9QoIuoAnmc86J0NBUDsQeLkVV?=
+ =?us-ascii?Q?AMxShEFMSP5mSshuKcJeV7EEGSU6SA7pcLJ0s35ux9P0WzI+BcYqzvucbwqn?=
+ =?us-ascii?Q?uHdN752GeAg+uccdOMk6wIf/6eh0sQ+jIsn/BRombdPsB3fcrs74j5QQkL/Z?=
+ =?us-ascii?Q?am16ohMFxtuI8KG/i31i+sKJaXkrJ7UaUS6fKEOsaZHxIHbc4oGdSE+hJ7UZ?=
+ =?us-ascii?Q?fAOedPpBqGp3A8FWpYCAKLitW0TQhJmYkLFah0cUCq7TbbLnzfIY5SnK+hXg?=
+ =?us-ascii?Q?ox+Dr5ww6zCcIjqH94kzG54RWdn7CZlYXSSbzHIrt8+GBUDdhout9+sL3f8Z?=
+ =?us-ascii?Q?z/au/X5EapEx/9hFx09ZDZQMCtmS63Vf3sl/rf6k9B4JhnmI5GiOvregG9Ai?=
+ =?us-ascii?Q?eSqvZlsWE13MIYlp3TUNzTeVX4VgscugZGWuSs02UdrUgBNf72zSVYDHX9t4?=
+ =?us-ascii?Q?Fu7PrAEOWqzetD7ddoAz7PVQg4NJkHAoE8vRBMN874rCKiZpYliqCFpTK6CY?=
+ =?us-ascii?Q?aTHl+FteiV6kMloTJegdru5hbgLzOPJG3SKJnZjBN8xhBruQr/ermHfkbtJX?=
+ =?us-ascii?Q?zzLMhinW1qnve8BJaHQflxUL88z0m7tWRa9uBTkV8QczDQx90EpwDhI+m0Hj?=
+ =?us-ascii?Q?KtB9FoibeM+CvekSoyQNae5R73WV4n5mgz0QoiM3UlxGI3l52kCZjBZ4siac?=
+ =?us-ascii?Q?XALePvy7AtsMO+dy6u57epUBlvM/tbR6PRv3foeEUr5mTySvYS46Hxi4yLC1?=
+ =?us-ascii?Q?c+9PH+0flLBKPAZJh4NgZNI8oV8pnCKupPZD38HAM7rJ+usTOXRrexLDRQv8?=
+ =?us-ascii?Q?0rPKfCNzLjSH5L1tWYE1DlDFR84ugGGffOewKK+/ZjuuzdwtQCFED3NkV7k9?=
+ =?us-ascii?Q?OgFr7LpJp/CQ9QKRWWC4vUro2j/jDd0HW+bTG/ZoMF4x9xWsuQajvRCOuihq?=
+ =?us-ascii?Q?zB4f7MjFzGf0v3BTXptYtTecXfQCwl1VpDyIafcin8fAg8Nh8yRYmM7dAkjX?=
+ =?us-ascii?Q?sFdkJkhoOfo0hr3a12vEkB1B2Y60U90JcqqN5SPZSNSwK21lXJRUI3gif4yX?=
+ =?us-ascii?Q?vD331FfrIfd34QvhE7WD+d7oIkUaoOw2DlU8k4+qjUrgQPOsXGzoZQAwMU64?=
+ =?us-ascii?Q?1DkhELyoId9kWCRmonr7eReWFMZX9CRalT4+ufBn1H5dbsU7x8T9pYe3LuXb?=
+ =?us-ascii?Q?QshbGqBoOWroaltmVrO5Jlt0dQ7xTSBoun9qL2NR?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f433359-562e-44bf-167b-08dbd4a06872
+X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 14:49:21.6986
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5e7543d-5ecc-4627-f177-08dbd4a06099
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D1.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7642
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 33Bhr7xODsbYO8PvxqbkZTq0xJ6C1BX7sIhS3py0Dm0AU7CXbKzI82qpadns4VDCz0zvu0kmN7Ba7b+c9cIFfQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR06MB4405
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add rs485 support to uartps driver. Use either rts-gpios or RTS
-to control RS485 phy as driver or a receiver.
+When pra->vm_flags include VM_EXEC flag and folio is file detected in
+folio_referenced_one(), the folio referenced traversal process can be
+exited timely to reduce the detecting folio referenced time.
 
-Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
+Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
 ---
-Changes for V2:
-Modify optional gpio name to xlnx,phy-ctrl-gpios.
-Update commit description.
-Add support for RTS, delay_rts_before_send and delay_rts_after_send in RS485 mode.
-Changes for V3:
-Modify optional gpio name to rts-gpios.
-Update commit description.
-Move cdns_uart_tx_empty function to avoid prototype statement.
-Remove assignment of struct serial_rs485 to port->rs485 as
-serial core performs that.
-Switch to native RTS in non GPIO case.
-Handle rs485 during stop tx.
-Remove explicit calls to configure gpio direction and value,
-as devm_gpiod_get_optional performs that by using GPIOD_OUT_LOW argument.
-Update implementation to support configuration of GPIO/RTS value
-based on user configuration of SER_RS485_RTS_ON_SEND and
-SER_RS485_RTS_AFTER_SEND. Move implementation to start_tx from handle_tx.
----
- drivers/tty/serial/xilinx_uartps.c | 180 ++++++++++++++++++++++++++---
- 1 file changed, 165 insertions(+), 15 deletions(-)
+ mm/rmap.c | 2 ++
+ 1 file changed, 2 insertions(+)
+ mode change 100644 => 100755 mm/rmap.c
 
-diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-index 9c13dac1d4d1..32229cf5c508 100644
---- a/drivers/tty/serial/xilinx_uartps.c
-+++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -23,6 +23,9 @@
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
- #include <linux/iopoll.h>
-+#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/delay.h>
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 7a27a2b41802..932f3b7e8521
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -884,6 +884,8 @@ static bool folio_referenced_one(struct folio *folio,
+ 	if (referenced) {
+ 		pra->referenced++;
+ 		pra->vm_flags |= vma->vm_flags & ~VM_LOCKED;
++		if ((pra->vm_flags | VM_EXEC) && folio_is_file_lru(folio))
++			return false;
+ 	}
  
- #define CDNS_UART_TTY_NAME	"ttyPS"
- #define CDNS_UART_NAME		"xuartps"
-@@ -193,6 +196,7 @@ MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
-  * @clk_rate_change_nb:	Notifier block for clock changes
-  * @quirks:		Flags for RXBS support.
-  * @cts_override:	Modem control state override
-+ * @gpiod:		Pointer to the gpio descriptor
-  */
- struct cdns_uart {
- 	struct uart_port	*port;
-@@ -203,10 +207,19 @@ struct cdns_uart {
- 	struct notifier_block	clk_rate_change_nb;
- 	u32			quirks;
- 	bool cts_override;
-+	struct gpio_desc	*gpiod;
- };
- struct cdns_platform_data {
- 	u32 quirks;
- };
-+
-+struct serial_rs485 cdns_rs485_supported = {
-+	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND |
-+		 SER_RS485_RTS_AFTER_SEND,
-+	.delay_rts_before_send = 1,
-+	.delay_rts_after_send = 1,
-+};
-+
- #define to_cdns_uart(_nb) container_of(_nb, struct cdns_uart, \
- 		clk_rate_change_nb)
- 
-@@ -305,6 +318,79 @@ static void cdns_uart_handle_rx(void *dev_id, unsigned int isrstatus)
- 	tty_flip_buffer_push(&port->state->port);
- }
- 
-+/**
-+ * cdns_rs485_config_gpio_rts_high - Configure GPIO/RTS to high
-+ * @cdns_uart: Handle to the cdns_uart
-+ */
-+static void cdns_rs485_config_gpio_rts_high(struct cdns_uart *cdns_uart)
-+{
-+	u32 val;
-+
-+	if (cdns_uart->gpiod) {
-+		gpiod_set_value(cdns_uart->gpiod, 1);
-+	} else {
-+		val = readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
-+		val &= ~CDNS_UART_MODEMCR_RTS;
-+		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
-+	}
-+}
-+
-+/**
-+ * cdns_rs485_config_gpio_rts_low - Configure GPIO/RTS to low
-+ * @cdns_uart: Handle to the cdns_uart
-+ */
-+static void cdns_rs485_config_gpio_rts_low(struct cdns_uart *cdns_uart)
-+{
-+	u32 val;
-+
-+	if (cdns_uart->gpiod) {
-+		gpiod_set_value(cdns_uart->gpiod, 0);
-+	} else {
-+		val = readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
-+		val |= CDNS_UART_MODEMCR_RTS;
-+		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
-+	}
-+}
-+
-+/**
-+ * cdns_rs485_tx_setup - Tx setup specific to rs485
-+ * @cdns_uart: Handle to the cdns_uart
-+ */
-+static void cdns_rs485_tx_setup(struct cdns_uart *cdns_uart)
-+{
-+	if (cdns_uart->port->rs485.flags & SER_RS485_RTS_ON_SEND)
-+		cdns_rs485_config_gpio_rts_high(cdns_uart);
-+	else
-+		cdns_rs485_config_gpio_rts_low(cdns_uart);
-+}
-+
-+/**
-+ * cdns_rs485_rx_setup - Rx setup specific to rs485
-+ * @cdns_uart: Handle to the cdns_uart
-+ */
-+static void cdns_rs485_rx_setup(struct cdns_uart *cdns_uart)
-+{
-+	if (cdns_uart->port->rs485.flags & SER_RS485_RTS_AFTER_SEND)
-+		cdns_rs485_config_gpio_rts_high(cdns_uart);
-+	else
-+		cdns_rs485_config_gpio_rts_low(cdns_uart);
-+}
-+
-+/**
-+ * cdns_uart_tx_empty -  Check whether TX is empty
-+ * @port: Handle to the uart port structure
-+ *
-+ * Return: TIOCSER_TEMT on success, 0 otherwise
-+ */
-+static unsigned int cdns_uart_tx_empty(struct uart_port *port)
-+{
-+	unsigned int status;
-+
-+	status = readl(port->membase + CDNS_UART_SR) &
-+		       (CDNS_UART_SR_TXEMPTY | CDNS_UART_SR_TACTIVE);
-+	return (status == CDNS_UART_SR_TXEMPTY) ? TIOCSER_TEMT : 0;
-+}
-+
- /**
-  * cdns_uart_handle_tx - Handle the bytes to be Txed.
-  * @dev_id: Id of the UART port
-@@ -571,6 +657,8 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
- static void cdns_uart_start_tx(struct uart_port *port)
- {
- 	unsigned int status;
-+	unsigned long time_out;
-+	struct cdns_uart *cdns_uart = port->private_data;
- 
- 	if (uart_tx_stopped(port))
- 		return;
-@@ -589,8 +677,31 @@ static void cdns_uart_start_tx(struct uart_port *port)
- 
- 	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
- 
-+	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-+		cdns_rs485_tx_setup(cdns_uart);
-+		if (cdns_uart->port->rs485.delay_rts_before_send)
-+			mdelay(cdns_uart->port->rs485.delay_rts_before_send);
-+	}
-+
- 	cdns_uart_handle_tx(port);
- 
-+	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-+		time_out = jiffies + usecs_to_jiffies(TX_TIMEOUT);
-+		/* Wait for tx completion */
-+		while ((cdns_uart_tx_empty(cdns_uart->port) != TIOCSER_TEMT) &&
-+		       time_before(jiffies, time_out))
-+			cpu_relax();
-+
-+		if (cdns_uart->port->rs485.delay_rts_after_send)
-+			mdelay(cdns_uart->port->rs485.delay_rts_after_send);
-+
-+		/*
-+		 * Default Rx should be setup, because RX signaling path
-+		 * need to enable to receive data.
-+		 */
-+		cdns_rs485_rx_setup(cdns_uart);
-+	}
-+
- 	/* Enable the TX Empty interrupt */
- 	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
- }
-@@ -602,6 +713,14 @@ static void cdns_uart_start_tx(struct uart_port *port)
- static void cdns_uart_stop_tx(struct uart_port *port)
- {
- 	unsigned int regval;
-+	struct cdns_uart *cdns_uart = port->private_data;
-+
-+	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-+		if (cdns_uart->port->rs485.delay_rts_after_send)
-+			mdelay(cdns_uart->port->rs485.delay_rts_after_send);
-+
-+		cdns_rs485_rx_setup(cdns_uart);
-+	}
- 
- 	regval = readl(port->membase + CDNS_UART_CR);
- 	regval |= CDNS_UART_CR_TX_DIS;
-@@ -626,21 +745,6 @@ static void cdns_uart_stop_rx(struct uart_port *port)
- 	writel(regval, port->membase + CDNS_UART_CR);
- }
- 
--/**
-- * cdns_uart_tx_empty -  Check whether TX is empty
-- * @port: Handle to the uart port structure
-- *
-- * Return: TIOCSER_TEMT on success, 0 otherwise
-- */
--static unsigned int cdns_uart_tx_empty(struct uart_port *port)
--{
--	unsigned int status;
--
--	status = readl(port->membase + CDNS_UART_SR) &
--		       (CDNS_UART_SR_TXEMPTY | CDNS_UART_SR_TACTIVE);
--	return (status == CDNS_UART_SR_TXEMPTY) ? TIOCSER_TEMT : 0;
--}
--
- /**
-  * cdns_uart_break_ctl - Based on the input ctl we have to start or stop
-  *			transmitting char breaks
-@@ -829,6 +933,9 @@ static int cdns_uart_startup(struct uart_port *port)
- 		(CDNS_UART_CR_TXRST | CDNS_UART_CR_RXRST))
- 		cpu_relax();
- 
-+	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED)
-+		cdns_rs485_rx_setup(cdns_uart);
-+
- 	/*
- 	 * Clear the RX disable bit and then set the RX enable bit to enable
- 	 * the receiver.
-@@ -1455,6 +1562,23 @@ MODULE_DEVICE_TABLE(of, cdns_uart_of_match);
- /* Temporary variable for storing number of instances */
- static int instances;
- 
-+/**
-+ * cdns_rs485_config - Called when an application calls TIOCSRS485 ioctl.
-+ * @port: Pointer to the uart_port structure
-+ * @termios: Pointer to the ktermios structure
-+ * @rs485: Pointer to the serial_rs485 structure
-+ *
-+ * Return: 0
-+ */
-+static int cdns_rs485_config(struct uart_port *port, struct ktermios *termios,
-+			     struct serial_rs485 *rs485)
-+{
-+	if (rs485->flags & SER_RS485_ENABLED)
-+		dev_dbg(port->dev, "Setting UART to RS485\n");
-+
-+	return 0;
-+}
-+
- /**
-  * cdns_uart_probe - Platform driver probe
-  * @pdev: Pointer to the platform device structure
-@@ -1463,6 +1587,7 @@ static int instances;
-  */
- static int cdns_uart_probe(struct platform_device *pdev)
- {
-+	u32 val;
- 	int rc, id, irq;
- 	struct uart_port *port;
- 	struct resource *res;
-@@ -1597,9 +1722,23 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 	port->private_data = cdns_uart_data;
- 	port->read_status_mask = CDNS_UART_IXR_TXEMPTY | CDNS_UART_IXR_RXTRIG |
- 			CDNS_UART_IXR_OVERRUN | CDNS_UART_IXR_TOUT;
-+	port->rs485_config = cdns_rs485_config;
-+	port->rs485_supported = cdns_rs485_supported;
- 	cdns_uart_data->port = port;
- 	platform_set_drvdata(pdev, port);
- 
-+	rc = uart_get_rs485_mode(port);
-+	if (rc)
-+		goto err_out_clk_notifier;
-+
-+	cdns_uart_data->gpiod = devm_gpiod_get_optional(&pdev->dev, "rts",
-+							GPIOD_OUT_LOW);
-+	if (IS_ERR(cdns_uart_data->gpiod)) {
-+		rc = PTR_ERR(cdns_uart_data->gpiod);
-+		dev_err(port->dev, "xuartps: devm_gpiod_get_optional failed\n");
-+		goto err_out_clk_notifier;
-+	}
-+
- 	pm_runtime_use_autosuspend(&pdev->dev);
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, UART_AUTOSUSPEND_TIMEOUT);
- 	pm_runtime_set_active(&pdev->dev);
-@@ -1638,6 +1777,16 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 	cdns_uart_data->cts_override = of_property_read_bool(pdev->dev.of_node,
- 							     "cts-override");
- 
-+	if (cdns_uart_data->port->rs485.flags & SER_RS485_ENABLED) {
-+		if (!cdns_uart_data->gpiod) {
-+			val = readl(cdns_uart_data->port->membase
-+				    + CDNS_UART_MODEMCR);
-+			val |= CDNS_UART_MODEMCR_RTS;
-+			writel(val, cdns_uart_data->port->membase
-+			       + CDNS_UART_MODEMCR);
-+		}
-+	}
-+
- 	instances++;
- 
- 	return 0;
-@@ -1646,6 +1795,7 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 	pm_runtime_disable(&pdev->dev);
- 	pm_runtime_set_suspended(&pdev->dev);
- 	pm_runtime_dont_use_autosuspend(&pdev->dev);
-+err_out_clk_notifier:
- #ifdef CONFIG_COMMON_CLK
- 	clk_notifier_unregister(cdns_uart_data->uartclk,
- 			&cdns_uart_data->clk_rate_change_nb);
+ 	if (!pra->mapcount)
 -- 
-2.25.1
+2.39.0
 
