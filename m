@@ -2,176 +2,469 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 288A27D5987
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2D17D5990
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343956AbjJXRNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 13:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42874 "EHLO
+        id S1344046AbjJXRPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 13:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343756AbjJXRNT (ORCPT
+        with ESMTP id S234423AbjJXRPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 13:13:19 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2047.outbound.protection.outlook.com [40.107.244.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1368122;
-        Tue, 24 Oct 2023 10:13:16 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SfoTx8nZQLQYxS+XihDO7F9890n/rkiqlgA7NDxb2WNSFqO/bJKwQv8PmaXXfhxqJpmyuKJTpz/y+50Qfur5RvIVUEdbcd75GLm2XrXrT2iRFRtHr9ArtPciOS3gSkz4iD7vF9VMbAAl4P/UNR8+O00c/AvZelfLfJ9Jw67V7BfWewSiiPPy2sdvP2kPHcyaHUj/EAbKXCgdtRPcoG5GoSWot87igTAysIgRSDNlQ7E/pcrwqON96sRzx33/uyql+8z8Rke/j7oh6Noqqqfi3YyGt95hn8cmRRDVDQg1ZeixZKKY1rWktCSn5nw9Ucanv44mDjsPIUkalbn2KUKcww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bPYM8mgDb0TZJkw6QWxbRl4SZU7cTubJFmbqpWDGflY=;
- b=WVm7xZhca9XWqs9lseH8s+5K/svRLI8/fLUpmsTLlngOYDM7ubxwBBR1w66nBnOiDC5nH3wGxZb32znol7rG2NJIm/H+pz7IUr3aQPkAIz31kxebTC2myJwIV9C+PcXdHgQdIGSDBc1V0vtchTj2FXFcMCqobwqH9yEEhw8pyAH6/4jQcyBZ+mnVtK2qoXwybrINz0Fb89oYYGBsekplj937Km7OkK3err+3VFNrDhYR7Zk5xqgEMvg0MFvzEZd+UWUbpbwCOMyiGcJc10M+BBA1tNve4+AeBR5AttVrfiQsGx3059ZZ+f+/e51Y2x9iHweXKVSI0gK/J0FmlVI+6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bPYM8mgDb0TZJkw6QWxbRl4SZU7cTubJFmbqpWDGflY=;
- b=ehi5wdMII25YZvi/nwRGexNYfB71WGDpjW0OhouIZTwcf/f8DLAGCBzOFr487dF8b5bwwRfZ6eLOpXX7vToO+/hilGP4VJaw0Y/dziSGNbBCLBiQqYbfewKcu35RS2ZzWBtOZf0cd+7ffEVXPfwlybv9W4r4OP32aPOOmjhRpuXhqtY8S6prrl+KbQ9owx1bplJIwM/OOa3U0mW/7uDL4T4ne6BL9lR/DFFjcRu70gaQeCzWfdravL55/psRBczHXzmJTSgGAlZ7R3vNr8SxgiKMXbLKI5E9BwWYMNkU089QP9HDSPIyITM34TpSbK8U8ggS80LP7GX2+wKSAYGgMA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MN2PR12MB4111.namprd12.prod.outlook.com (2603:10b6:208:1de::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.29; Tue, 24 Oct
- 2023 17:13:14 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::3f66:c2b6:59eb:78c2%6]) with mapi id 15.20.6886.034; Tue, 24 Oct 2023
- 17:13:14 +0000
-Date:   Tue, 24 Oct 2023 14:13:12 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yi Liu <yi.l.liu@intel.com>
-Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
-        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: Re: [PATCH v6 07/10] iommufd: Add a nested HW pagetable object
-Message-ID: <20231024171312.GN3952@nvidia.com>
-References: <20231024150609.46884-1-yi.l.liu@intel.com>
- <20231024150609.46884-8-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024150609.46884-8-yi.l.liu@intel.com>
-X-ClientProxiedBy: SA1P222CA0107.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:3c5::28) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Tue, 24 Oct 2023 13:15:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23350122
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:14:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698167671;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rPe5sErz69Kanovy14RWE3IYDmvNX5JNjcUdys3uWXo=;
+        b=DQaYIuB5oRvbhx4YevecFIbP1LwVtO/3i++W7pM1FACItia0zBwUdvor4NfEyFISXZw+ja
+        0t5iybFVjfKVUMtNDOGl+9U3TOxWcxNk2y5vTbukfC0xS72tTNSvn5iBkTeAiWVdhouUg+
+        npIUfbSsK4P1yo9qeff7JSdTOSITA6E=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-460-gM8BjP2PNh6CKggNWV5v8Q-1; Tue, 24 Oct 2023 13:14:29 -0400
+X-MC-Unique: gM8BjP2PNh6CKggNWV5v8Q-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-778a738a523so653239585a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:14:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698167669; x=1698772469;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rPe5sErz69Kanovy14RWE3IYDmvNX5JNjcUdys3uWXo=;
+        b=dy5aLlCTG35ielnC5BYO34+J1rzh1MB5pfA4f7SzsDZq4U5YL6j2nXicSdcq3CRkAw
+         36NowApP2APukMGzacPvzIQwPmVXPpEahCyiEm0VyCcUkd3ovBjtsSSSJKpXqV0D5n1t
+         ftDUBMovML6mbkSJGEcZS357z3pGmNnbltznpwsyh2DZlBzhg/jHWwRZK3QYx6nyKW+A
+         xn50juT4y55CV1VOsSpL1sjqYUNGwEFsXmACAMWBmvdZpgOQxuF0pQiUSk8OSDjOdOXy
+         RQaZPi69kpl3P4N6iGCmgiK6nmBUhOshtxe4I6KDXwF/pVeOu+28rQ+H/LASXFN+3WrF
+         RoCw==
+X-Gm-Message-State: AOJu0Yz2RidqOsk5/gl24PlC7ERW80eBGb8NC1I5Krj4gRId5JeQr4kE
+        FK+eNjmW9BoERhQKuqjmhnWDyiTu9NkPJglZnRxRz9ocTjzYobbXdL9Mfo4qy05AoQ0e+Mu+HXJ
+        kM0SNBj9k6U+7uHZV2i6Hz5g=
+X-Received: by 2002:a05:620a:75a:b0:778:9407:7fb2 with SMTP id i26-20020a05620a075a00b0077894077fb2mr13324449qki.22.1698167669448;
+        Tue, 24 Oct 2023 10:14:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHIdhxuxEfCx3j4I0HFbiJ43lsMpJusnNEfPAwg87n/MZ5TveZd/Xx4uN8x1QmqfRHILmwhjA==
+X-Received: by 2002:a05:620a:75a:b0:778:9407:7fb2 with SMTP id i26-20020a05620a075a00b0077894077fb2mr13324432qki.22.1698167669139;
+        Tue, 24 Oct 2023 10:14:29 -0700 (PDT)
+Received: from [192.168.9.16] (net-2-34-31-107.cust.vodafonedsl.it. [2.34.31.107])
+        by smtp.gmail.com with ESMTPSA id o8-20020a05620a2a0800b0077263636a95sm3570561qkp.93.2023.10.24.10.14.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 10:14:28 -0700 (PDT)
+Message-ID: <789aaf2b-4d68-4128-b8ff-c1ba4849e141@redhat.com>
+Date:   Tue, 24 Oct 2023 19:14:25 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN2PR12MB4111:EE_
-X-MS-Office365-Filtering-Correlation-Id: d3095d42-2328-4a01-dd65-08dbd4b481ef
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UH5EiV/YwFecdFYB+oY8RXEwqVvopD7j/zYupH9ywm63ZkM77v00yxaY36eF8Oe/auPks8uprSzu6mU3vghxgZ/S28xm4yJHnC2HLgSCXfdc+jhUnyn9qTbcBmisf/srxCZmdMSDUS5h1UkSM25OhsnrQFfNL7TxxQtC8KfAjbg9hfJQS9pne01LOfWAQsloes4Ax4rCjcqJncEvOHiKKaDKxqUXQb0UFgxGWT1oO3r+rs2XPYNkx5t0PaxNMWhrwLEewDpORYe8LDeQZ80IHNslhgV9NOZ9v1DB1iHl4zHtclRm6pVVvuq1Torr6pJ1EDwvqLvRPTrajXuPEKqEYWNkJdP6c8GJ7lfTcMl1Y9ZfF3/FMeaw/dwa3gVUMPdJZRWwCoTjWYxBQqduBN3v0u5oNTKJQ1VnuSD11faw47aFANC0F+IDJs9I5EMQPQ4WBZ5JpnGEc5NWwB7PcyzNNhSMLgRoKNRg82BgdWp2UYjYIhn7fXxaznUU9Px4Jww4AxNqohVM8VURXT8cAWeXh7FZ0RWVm+35HdADEF9MrvMb5LrjeHCQShCrqXNeLnOT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(366004)(346002)(136003)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(33656002)(6916009)(2906002)(5660300002)(7416002)(4326008)(8676002)(36756003)(8936002)(66476007)(66556008)(41300700001)(66946007)(86362001)(478600001)(6506007)(6486002)(6512007)(316002)(2616005)(26005)(1076003)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jZwF40CtG1GxoNtTObjpRGxFWvko2PHxmPsQF7FR4JynOO63+vCsDmtehmzr?=
- =?us-ascii?Q?3WS6xL87LWtrq3hjME0PU/g33Dv8PZ3JzOzCpk/0zWzNEQiFXk5BNNZSj8uc?=
- =?us-ascii?Q?Hm7A5tW2oFaPMXn46orzsBc3J61E/g9VUjet6vEc+1hKTmKvLWWysbJXXur8?=
- =?us-ascii?Q?PAOHDmxToxD+LzR4/OxN7xVTHO6IUmcwWWlNO55JJ8leMgsoNBg5JnP7f85T?=
- =?us-ascii?Q?KVJl+4WcPZfZngQhgUtNz3lecYsU8jkCEZPOLuwREagANfHx4jMyv2xvmvzZ?=
- =?us-ascii?Q?4TU1HsB8qAStJzxvCyY/u1zyTbUSvR6HwmLGndx6aNmkLSh0KxfhkSmwIYT4?=
- =?us-ascii?Q?VlBItLfaTfLxH2mftgnBxnTM0xUxeDWRulL/RXpxd3Itnd2hMXkYJRAubV5j?=
- =?us-ascii?Q?P9uHuZ/kqwqbHYNxVBclMnCTHbn+pbfjYYBu+8jV7rrmL1dpa05aQAOBTeeN?=
- =?us-ascii?Q?H8iraetgUKaBule3NneZpCxgAVDTT+bzJU+5YvhIvwrylLSZvFDDrXYvuMeH?=
- =?us-ascii?Q?OoIvxrWPWW1TFJaHGnizcQXc8aFlAQjyGTwnrBgf9lIJdXMjMEsk8NLcdmfP?=
- =?us-ascii?Q?ODRxz1jhHR/XqoMn2tgHZuJ0JFQkb0VzD2eqWZDInPFRu+nSLR8k+3+sA05m?=
- =?us-ascii?Q?fnoupIc5OLcc552XpT8gL7TGVb25iMEpPkjgeiwzPsKQ99IW5zQzZuhruyJL?=
- =?us-ascii?Q?EZ1zdzplR4J4VlZ/v66nBcjZfV1FdyREQmx50bytGHEBJcKZlrngL1R/UID2?=
- =?us-ascii?Q?9d9fCq2Tz8D9L6K9TqMLjDAppFMtA3m1Le5w56GPywsMTvsNSLTWc8OKA8+U?=
- =?us-ascii?Q?ZyloQC2gCzAc3po9lgN42RA1JU+dp8Nwq7S9GCRQc2xSkJS+hC3cNdNsg3Yw?=
- =?us-ascii?Q?6yQL5Yxl9Sudc+F9KQjufzfBjDba99vSIzpaHK3Q5v9KY9riQgxHIdTrvEqf?=
- =?us-ascii?Q?m+Fdd7Sm4wNHNz2ahaXlS2bgqXjyw/uGZDCqelFugJHpN8F2uCVVS2QxIpN9?=
- =?us-ascii?Q?ctRwUHv7BgGz/8qsfbgzclmVN9ZbtVr/KA7AG9A4yRAPM7b1k5ZQ2mLHZoUx?=
- =?us-ascii?Q?QXyd1idF+OYrPPLwi/XF9Wq9+zFVdBBWMdgEAF+vLeSg4RCaaBhym2ayn+Us?=
- =?us-ascii?Q?D3y7n4MP3nJKLTHSFzzfMBrVTWQU73Vpd1jTBPX8uFQIGD1O5PG6RTWOUs/o?=
- =?us-ascii?Q?CLx5nSG1ayqA7NzrUyIw1y3pxszFuu8tvPogoQA5gk2F72+npFTxNaoEciBf?=
- =?us-ascii?Q?0YpBBx0DkGfb3b4JbbqOuthPEw2QFc4AsJn4kFL0uKj9Ol9GX22xOpS0Xcpr?=
- =?us-ascii?Q?qcj+JDc8iMrDylu8FlcPrlBJ48/hrfenNB9ZROxL/zHnUwmz/7YzTKHqOSoP?=
- =?us-ascii?Q?i+Xdo5B9JEsWI7drKXrmOh2aknqyGV4XVDgJ3jbczvwh+5tUtyYN2Sz+BY+F?=
- =?us-ascii?Q?OpjlhoTmQlsPDaMqRKptCPXkYANeOuQTu1C19dowGGH8CIPgLBHMY4XkThRt?=
- =?us-ascii?Q?fY48xpxc94k/j+7D1Spssw6yDdjnaBY4BodTd5sVEIUHlEQw9skhW8zKX0H0?=
- =?us-ascii?Q?zRX+bHHeJigoqzhF3MKdXerQ+pFt6eSfhv4Sjw3H?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3095d42-2328-4a01-dd65-08dbd4b481ef
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 17:13:14.3555
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eNyHNYruIADH3Q5qu1k9rFt/t34HNUMnygL/OI1L7EHue0CzRsAdX/R3Ws7Yst46
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4111
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] drm/test: add a test suite for GEM objects backed by
+ shmem
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+References: <20231023164541.92913-1-marpagan@redhat.com>
+ <zakappnhljtx3axi2ovvis3evhju4cwqrena7j6gqn5kjdjtsb@mgrhkn5oboid>
+From:   Marco Pagani <marpagan@redhat.com>
+In-Reply-To: <zakappnhljtx3axi2ovvis3evhju4cwqrena7j6gqn5kjdjtsb@mgrhkn5oboid>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 08:06:06AM -0700, Yi Liu wrote:
-> +static struct iommufd_hwpt_nested *
-> +iommufd_hwpt_nested_alloc(struct iommufd_ctx *ictx,
-> +			  struct iommufd_hwpt_paging *parent,
-> +			  struct iommufd_device *idev, u32 flags,
-> +			  const struct iommu_user_data *user_data)
-> +{
-> +	const struct iommu_ops *ops = dev_iommu_ops(idev->dev);
-> +	struct iommufd_hwpt_nested *hwpt_nested;
-> +	struct iommufd_hw_pagetable *hwpt;
-> +	int rc;
-> +
-> +	if (flags != 0)
-> +		return ERR_PTR(-EOPNOTSUPP);
-> +	if (!user_data)
-> +		return ERR_PTR(-EINVAL);
-
-user_data is never NULL now, I removed this
-
-> +	if (user_data->type == IOMMU_HWPT_DATA_NONE)
-> +		return ERR_PTR(-EINVAL);
-> +	if (parent->auto_domain)
-> +		return ERR_PTR(-EINVAL);
-> +	if (!parent->nest_parent)
-> +		return ERR_PTR(-EINVAL);
-
-And put these all together
-
-	if (flags || user_data->type == IOMMU_HWPT_DATA_NONE ||
-	    !ops->domain_alloc_user)
-		return ERR_PTR(-EOPNOTSUPP);
-	if (parent->auto_domain || !parent->nest_parent)
-		return ERR_PTR(-EINVAL);
 
 
-> +
-> +	if (!ops->domain_alloc_user)
-> +		return ERR_PTR(-EOPNOTSUPP);
-> +
-> +	hwpt_nested = __iommufd_object_alloc(ictx, hwpt_nested,
-> +					     IOMMUFD_OBJ_HWPT_NESTED,
-> +					     common.obj);
-> +	if (IS_ERR(hwpt_nested))
-> +		return ERR_CAST(hwpt_nested);
-> +	hwpt = &hwpt_nested->common;
-> +
-> +	refcount_inc(&parent->common.obj.users);
-> +	hwpt_nested->parent = parent;
-> +
-> +	hwpt->domain = ops->domain_alloc_user(idev->dev, 0,
+On 2023-10-24 11:23, Maxime Ripard wrote:
+> Hi Marco,
+> 
+> On Mon, Oct 23, 2023 at 06:45:40PM +0200, Marco Pagani wrote:
+>> This patch introduces an initial KUnit test suite for GEM objects
+>> backed by shmem buffers.
+>>
+>> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+>> ---
+>>  drivers/gpu/drm/Kconfig                    |   1 +
+>>  drivers/gpu/drm/tests/Makefile             |   3 +-
+>>  drivers/gpu/drm/tests/drm_gem_shmem_test.c | 303 +++++++++++++++++++++
+>>  3 files changed, 306 insertions(+), 1 deletion(-)
+>>  create mode 100644 drivers/gpu/drm/tests/drm_gem_shmem_test.c
+>>
+>> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+>> index 3eee8636f847..f0a77e3e04d7 100644
+>> --- a/drivers/gpu/drm/Kconfig
+>> +++ b/drivers/gpu/drm/Kconfig
+>> @@ -84,6 +84,7 @@ config DRM_KUNIT_TEST
+>>  	select DRM_EXPORT_FOR_TESTS if m
+>>  	select DRM_KUNIT_TEST_HELPERS
+>>  	select DRM_EXEC
+>> +	select DRM_GEM_SHMEM_HELPER
+> 
+> I know that DRM_EXEC already stands out, but these should be ordered
+> alphabetically, so it should be before DRM_KUNIT_TEST_HELPERS.
+> 
+>>  	default KUNIT_ALL_TESTS
+>>  	help
+>>  	  This builds unit tests for DRM. This option is not useful for
+>> diff --git a/drivers/gpu/drm/tests/Makefile b/drivers/gpu/drm/tests/Makefile
+>> index ba7baa622675..b8227aab369e 100644
+>> --- a/drivers/gpu/drm/tests/Makefile
+>> +++ b/drivers/gpu/drm/tests/Makefile
+>> @@ -18,6 +18,7 @@ obj-$(CONFIG_DRM_KUNIT_TEST) += \
+>>  	drm_plane_helper_test.o \
+>>  	drm_probe_helper_test.o \
+>>  	drm_rect_test.o	\
+>> -	drm_exec_test.o
+>> +	drm_exec_test.o \
+>> +	drm_gem_shmem_test.o
+> 
+> Ditto.
+>
 
-And we may as well pass flags here even though we know it is 0 today.
+Right, I'll sort them alphabetically for v2.
 
-Jason
+>>  CFLAGS_drm_mm_test.o := $(DISABLE_STRUCTLEAK_PLUGIN)
+>> diff --git a/drivers/gpu/drm/tests/drm_gem_shmem_test.c b/drivers/gpu/drm/tests/drm_gem_shmem_test.c
+>> new file mode 100644
+>> index 000000000000..0bf6727f08d2
+>> --- /dev/null
+>> +++ b/drivers/gpu/drm/tests/drm_gem_shmem_test.c
+>> @@ -0,0 +1,303 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * KUnit test suite for GEM objects backed by shmem buffers
+>> + *
+>> + * Copyright (C) 2023 Red Hat, Inc.
+>> + *
+>> + * Author: Marco Pagani <marpagan@redhat.com>
+>> + */
+>> +
+>> +#include <linux/dma-buf.h>
+>> +#include <linux/iosys-map.h>
+>> +#include <linux/sizes.h>
+>> +
+>> +#include <kunit/test.h>
+>> +
+>> +#include <drm/drm_device.h>
+>> +#include <drm/drm_drv.h>
+>> +#include <drm/drm_gem.h>
+>> +#include <drm/drm_gem_shmem_helper.h>
+>> +#include <drm/drm_kunit_helpers.h>
+>> +
+>> +#define TEST_SIZE		SZ_1M
+>> +#define TEST_BYTE		0xae
+>> +
+>> +struct fake_dev {
+>> +	struct drm_device drm_dev;
+>> +	struct device *dev;
+>> +};
+>> +
+>> +/* Test creating a shmem GEM object */
+>> +static void drm_gem_shmem_test_obj_create(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +	KUNIT_ASSERT_EQ(test, shmem->base.size, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_NULL(test, shmem->base.filp);
+>> +	KUNIT_ASSERT_NOT_NULL(test, shmem->base.funcs);
+>> +
+>> +	drm_gem_shmem_free(shmem);
+>> +}
+>> +
+>> +/* Test creating a private shmem GEM object from a scatter/gather table */
+> 
+> Thanks for documenting those tests. I believe we should also document
+> what we expect from the test: should the test succeed? fail? if it
+> fails, what is the cause of failure?
+> 
+> Based on the following test, I think something like the following would
+> be good:
+> 
+> Test that creating a private shmem GEM object from a previously
+> allocated sg_table succeeds and is properly initialized
+> 
+> Feel free to change it to something else if you find something missing.
+>
+
+Sounds good to me. I'll improve the documentation for v2.
+
+>> +static void drm_gem_shmem_test_obj_create_private(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	struct drm_gem_object *gem_obj;
+>> +	struct dma_buf buf_mock;
+>> +	struct dma_buf_attachment attach_mock;
+>> +	struct sg_table *sgt;
+>> +	char *buf;
+>> +	int ret;
+>> +
+>> +	/* Create a mock scatter/gather table */
+>> +	buf = kunit_kzalloc(test, TEST_SIZE, GFP_KERNEL);
+>> +	KUNIT_ASSERT_NOT_NULL(test, buf);
+>> +
+>> +	sgt = kzalloc(sizeof(*sgt), GFP_KERNEL);
+>> +	KUNIT_ASSERT_NOT_NULL(test, sgt);
+>> +
+>> +	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +	sg_init_one(sgt->sgl, buf, TEST_SIZE);
+>> +
+>> +	/* Init a mock DMA-BUF */
+>> +	buf_mock.size = TEST_SIZE;
+>> +	attach_mock.dmabuf = &buf_mock;
+>> +
+>> +	gem_obj = drm_gem_shmem_prime_import_sg_table(&fdev->drm_dev, &attach_mock, sgt);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, gem_obj);
+>> +	KUNIT_ASSERT_EQ(test, gem_obj->size, TEST_SIZE);
+>> +	KUNIT_ASSERT_NULL(test, gem_obj->filp);
+>> +	KUNIT_ASSERT_NOT_NULL(test, gem_obj->funcs);
+>> +
+>> +	shmem = to_drm_gem_shmem_obj(gem_obj);
+>> +	KUNIT_ASSERT_PTR_EQ(test, shmem->sgt, sgt);
+>> +
+>> +	/* The scatter/gather table is freed by drm_gem_shmem_free */
+>> +	drm_gem_shmem_free(shmem);
+>> +}
+> 
+> KUNIT_ASSERT_* will stop the execution of the test on failure, you
+> should probably use a bit more of KUNIT_EXPECT_* calls otherwise you'll
+> leak resources.
+> 
+> You also probably want to use a kunit_action to clean up and avoid that
+> whole discussion
+>
+
+You are right. I slightly prefer using KUnit expectations (unless actions
+are strictly necessary) since I feel using actions makes test cases a bit
+less straightforward to understand. Is this okay for you?
+
+>> +
+>> +/* Test pinning backing pages */
+>> +static void drm_gem_shmem_test_pin_pages(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	int i, ret;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +	KUNIT_ASSERT_NULL(test, shmem->pages);
+>> +	KUNIT_ASSERT_EQ(test, shmem->pages_use_count, 0);
+>> +
+>> +	ret = drm_gem_shmem_pin(shmem);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +	KUNIT_ASSERT_NOT_NULL(test, shmem->pages);
+>> +	KUNIT_ASSERT_EQ(test, shmem->pages_use_count, 1);
+>> +
+>> +	for (i = 0; i < (shmem->base.size >> PAGE_SHIFT); i++)
+>> +		KUNIT_ASSERT_NOT_NULL(test, shmem->pages[i]);
+>> +
+>> +	drm_gem_shmem_unpin(shmem);
+>> +	KUNIT_ASSERT_NULL(test, shmem->pages);
+>> +	KUNIT_ASSERT_EQ(test, shmem->pages_use_count, 0);
+>> +
+>> +	drm_gem_shmem_free(shmem);
+>> +}
+>> +
+>> +/* Test creating a virtual mapping */
+>> +static void drm_gem_shmem_test_vmap(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	struct iosys_map map;
+>> +	int ret, i;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +	KUNIT_ASSERT_NULL(test, shmem->vaddr);
+>> +	KUNIT_ASSERT_EQ(test, shmem->vmap_use_count, 0);
+>> +
+>> +	ret = drm_gem_shmem_vmap(shmem, &map);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +	KUNIT_ASSERT_NOT_NULL(test, shmem->vaddr);
+>> +	KUNIT_ASSERT_EQ(test, shmem->vmap_use_count, 1);
+>> +	KUNIT_ASSERT_FALSE(test, iosys_map_is_null(&map));
+>> +
+>> +	iosys_map_memset(&map, 0, TEST_BYTE, TEST_SIZE);
+>> +	for (i = 0; i < TEST_SIZE; i++)
+>> +		KUNIT_ASSERT_EQ(test, iosys_map_rd(&map, i, u8), TEST_BYTE);
+>> +
+>> +	drm_gem_shmem_vunmap(shmem, &map);
+>> +	KUNIT_ASSERT_NULL(test, shmem->vaddr);
+>> +	KUNIT_ASSERT_EQ(test, shmem->vmap_use_count, 0);
+>> +
+>> +	drm_gem_shmem_free(shmem);
+>> +}
+>> +
+>> +/* Test exporting a scatter/gather table */
+>> +static void drm_gem_shmem_test_get_pages_sgt(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	struct sg_table *sgt;
+>> +	struct scatterlist *sg;
+>> +	unsigned int si, len = 0;
+>> +	int ret;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +
+>> +	ret = drm_gem_shmem_pin(shmem);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	sgt = drm_gem_shmem_get_sg_table(shmem);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, sgt);
+>> +	KUNIT_ASSERT_NULL(test, shmem->sgt);
+>> +
+>> +	for_each_sgtable_sg(sgt, sg, si) {
+>> +		KUNIT_ASSERT_NOT_NULL(test, sg);
+>> +		len += sg->length;
+>> +	}
+>> +	KUNIT_ASSERT_GE(test, len, TEST_SIZE);
+>> +
+>> +	kfree(sgt);
+>> +	drm_gem_shmem_free(shmem);
+>> +}
+>> +
+>> +/* Test exporting a scatter/gather pinned table for PRIME */
+>> +static void drm_gem_shmem_test_get_sg_table(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	struct sg_table *sgt;
+>> +	struct scatterlist *sg;
+>> +	unsigned int si, len = 0;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +
+>> +	sgt = drm_gem_shmem_get_pages_sgt(shmem);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, sgt);
+>> +	KUNIT_ASSERT_PTR_EQ(test, sgt, shmem->sgt);
+>> +
+>> +	for_each_sgtable_sg(sgt, sg, si) {
+>> +		KUNIT_ASSERT_NOT_NULL(test, sg);
+>> +		len += sg->length;
+>> +	}
+>> +	KUNIT_ASSERT_GE(test, len, TEST_SIZE);
+>> +
+>> +	/* The scatter/gather table is freed by drm_gem_shmem_free */
+>> +	drm_gem_shmem_free(shmem);
+>> +}
+>> +
+>> +/* Test updating madvise status */
+>> +static void drm_gem_shmem_test_madvise(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	int ret;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +	KUNIT_ASSERT_EQ(test, shmem->madv, 0);
+>> +
+>> +	ret = drm_gem_shmem_madvise(shmem, 1);
+>> +	KUNIT_ASSERT_TRUE(test, ret);
+>> +	KUNIT_ASSERT_EQ(test, shmem->madv, 1);
+>> +
+>> +	ret = drm_gem_shmem_madvise(shmem, -1);
+>> +	KUNIT_ASSERT_FALSE(test, ret);
+>> +	KUNIT_ASSERT_EQ(test, shmem->madv, -1);
+>> +
+>> +	ret = drm_gem_shmem_madvise(shmem, 0);
+>> +	KUNIT_ASSERT_FALSE(test, ret);
+>> +	KUNIT_ASSERT_EQ(test, shmem->madv, -1);
+>> +
+>> +	drm_gem_shmem_free(shmem);
+>> +}
+>> +
+>> +/* Test purging */
+>> +static void drm_gem_shmem_test_purge(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	struct sg_table *sgt;
+>> +	int ret;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +
+>> +	ret = drm_gem_shmem_is_purgeable(shmem);
+>> +	KUNIT_ASSERT_FALSE(test, ret);
+>> +
+>> +	ret = drm_gem_shmem_madvise(shmem, 1);
+>> +	KUNIT_ASSERT_TRUE(test, ret);
+>> +
+>> +	sgt = drm_gem_shmem_get_pages_sgt(shmem);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, sgt);
+>> +
+>> +	ret = drm_gem_shmem_is_purgeable(shmem);
+>> +	KUNIT_ASSERT_TRUE(test, ret);
+>> +
+>> +	drm_gem_shmem_purge(shmem);
+>> +	KUNIT_ASSERT_TRUE(test, ret);
+>> +
+>> +	drm_gem_shmem_free(shmem);
+>> +}
+>> +
+>> +static int drm_gem_shmem_test_init(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev;
+>> +	struct device *dev;
+>> +
+>> +	/* Allocate a parent device */
+>> +	dev = drm_kunit_helper_alloc_device(test);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
+>> +
+>> +	/*
+>> +	 * The DRM core will automatically initialize the GEM core and create
+>> +	 * a DRM Memory Manager object which provides an address space pool
+>> +	 * for GEM objects allocation.
+>> +	 */
+>> +	fdev = drm_kunit_helper_alloc_drm_device(test, dev, struct fake_dev,
+>> +						 drm_dev, DRIVER_GEM);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, fdev);
+>> +
+>> +	fdev->dev = dev;
+>> +	test->priv = fdev;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void drm_gem_shmem_test_exit(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +
+>> +	drm_kunit_helper_free_device(test, fdev->dev);
+>> +}
+> 
+> You don't need to call drm_kunit_helper_free_device() anymore
+> 
+> Maxime
+
+Right. Initially, I accidentally used an older tree that did not include
+commit 4f2b0b583baa4. I'll remove the whole exit function for v2.
+
+
+Thanks,
+Marco
+
