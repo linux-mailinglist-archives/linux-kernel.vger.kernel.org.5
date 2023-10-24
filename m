@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA2F7D5E05
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1407D5E06
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344459AbjJXWYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
+        id S1344476AbjJXWY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344431AbjJXWYU (ORCPT
+        with ESMTP id S1344438AbjJXWYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:24:20 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490E010CB
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:18 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da040c021aeso1140818276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:18 -0700 (PDT)
+        Tue, 24 Oct 2023 18:24:22 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A2710CB
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:20 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9cfec5e73dso4928212276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698186257; x=1698791057; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698186259; x=1698791059; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=soqORP6tbK7HSPMdiExWiSFnufIqC4NXz+eAMSjew4k=;
-        b=VAYKbecQNlVTg/B52zPDUaaiURDyjiKy7S+6RIJOxJpJ0eHhouwdTSRRBJ27EJULRu
-         dxqgDSMBuegaaEh2V9wyGFRlyBqDnas82lSaTbvD97QErmN4VbCrwd0kjJRS7TO3x9FG
-         tVNhfEvHEB2Z/CQ6oMCpKUWDBVFqU090UkqLf+jv2vfjskvOUE8FlHbCKTT2mZsnQ+CN
-         kegQ5T4b6AhmuMBRT431gSOe7l5kezCOzc/yHc/ZJmidQMGqyLqsQAIlmn4DT6WXgMhg
-         osWbRexaBrpnCVGgOf22q7eEulXwowZ8Lmy7vwtcI9C+cz0kdMMFoWER/jYCV8iUL5cC
-         4KLg==
+        bh=IMICwswuJ/vFGwUP8a8fOw6frHIgUKsDaScdLo+z8js=;
+        b=yzf29tqSgdydmD27uXNLY91T1l+1xEhTu+Qf8zjxwFlVdrHiJASm//O1glCrXisOlQ
+         4/Fft7aAdPvmDbUF2T1Z8H7eOVrKsKJuBlkATpb8TKk5f6WpRn7T7wQLo8TIUx7c1hKI
+         lD5ItFDFLWi1XtcDaIIlyzFSwXGHmWo+aB8v8W8hS67EBvh/pf+kLWe7ENxIbGcrKW67
+         O+VAkhdigKl6XKUvH2gAw1HyUfdA+HWgHkqIfFqtYo8M+lblSlMD8SMKsjSbgidOvU1Y
+         o0LJyyOdNnCPNiDCH1U2ZV+dgTqmTF2Y8Or5rJtJpP8boqX7MYnOC+Qfdj1n9tmY607J
+         vVsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698186257; x=1698791057;
+        d=1e100.net; s=20230601; t=1698186259; x=1698791059;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=soqORP6tbK7HSPMdiExWiSFnufIqC4NXz+eAMSjew4k=;
-        b=sleI/+GYK6CKPllGJMxQ6AGn6XD0RtnpwbU9MtV8TxctYRR+gYO/0sCv64cjDnbHJG
-         q/DdNpSJxKKrN/Qb9WzLtbnELFZrzPRixKa7VYrgKzn0kTCnYlteQ80SVlkvvd9UT1qu
-         IXUCMmP/sJwUTVN2Tqgrz7GRGWRs3Bhy2kmTWlNRthv4NdVZjSmYym1/ivzbyUvmw+Il
-         rpQYIoL8VgBZ0ZQ3zYUd4loBgSt9D/tVBQ38/Z/tN27E+4JeCy7PzGwplp++6gKHdfBC
-         s68wspFjR7R+RVL5TLlVNCK0m0bUlgVcm22AY3w4U1P+sYLaqBFNILhcIvA0Z7DTFzUP
-         9Law==
-X-Gm-Message-State: AOJu0YyFE3VJTigjuMj6UgYGtr41NybZjrb6Xqw/nh5aoT7oNMCafwpS
-        GuKtHNJTv1e4hf7a8Tq5VOgA7dJ8rPZS
-X-Google-Smtp-Source: AGHT+IEeWCPNZG1JcJgc7vYx5Xq8cYep1D+KXTRDSFxJng+4UHbNRG8N9ZPuO2UyyIN/UZxk0Kv+FVlm1ZMA
+        bh=IMICwswuJ/vFGwUP8a8fOw6frHIgUKsDaScdLo+z8js=;
+        b=drIuWMt24e/ZBG0lTjHAmH8pvp1bw9iJCNXnrOLGewEnFztmTFu8stdX57cRJ7plp3
+         7BG2OadFatT07HHxhX/GjDRO8B66DsVYD/q2BuvKqNDuA05ggXThyxjDoF/EOdmlWqXR
+         e3ZiZw1G1/QbN3RhWxVI0tF5eE/gnRpu6k8UpqvizK0Qa65cGoxdfCTrnYL6mL3qALfn
+         AOvH8vIurfUJnE6fgTHaLwL4YAyTTuAtJW5/DDtccq6I4nlZK36fTsm4g+xbGZEK+iuL
+         5G0X6Wr7G8rdeOXl2LFO57QC0lFFZ/Bq5i5nZgGbf7HT91QReH1uCZf8nqhuNI/gU8r1
+         mQGA==
+X-Gm-Message-State: AOJu0Yxy1DaZH4SPcWK4HCLqZVqlhZj+k6pwrhu3xuL+7bAdub6IHWbN
+        qitTw5BCVNGw07z3hQ9SIALG26KKpJ7v
+X-Google-Smtp-Source: AGHT+IGH1SZn1zn8K8NyiItgFc808ePGZb6XN4ZOKPcuHdsBubSFyT8X7390Havy+imS2kby0Hx4flUrLWTD
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:93d2:18cc:4d63:45ba])
- (user=irogers job=sendgmr) by 2002:a25:324b:0:b0:d9b:f88c:ca2b with SMTP id
- y72-20020a25324b000000b00d9bf88cca2bmr258271yby.11.1698186257401; Tue, 24 Oct
- 2023 15:24:17 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 15:23:05 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:168c:b0:d9a:e6ae:ddb7 with SMTP
+ id bx12-20020a056902168c00b00d9ae6aeddb7mr243432ybb.7.1698186259418; Tue, 24
+ Oct 2023 15:24:19 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 15:23:06 -0700
 In-Reply-To: <20231024222353.3024098-1-irogers@google.com>
-Message-Id: <20231024222353.3024098-3-irogers@google.com>
+Message-Id: <20231024222353.3024098-4-irogers@google.com>
 Mime-Version: 1.0
 References: <20231024222353.3024098-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Subject: [PATCH v3 02/50] perf machine: Avoid out of bounds LBR memory read
+Subject: [PATCH v3 03/50] libperf rc_check: Make implicit enabling work for GCC
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -96,49 +96,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running perf top with address sanitizer and "--call-graph=lbr" fails
-due to reading sample 0 when no samples exist. Add a guard to prevent
-this.
+Make the implicit REFCOUNT_CHECKING robust to when building with GCC.
 
-Fixes: e2b23483eb1d ("perf machine: Factor out lbr_callchain_add_lbr_ip()")
+Fixes: 9be6ab181b7b ("libperf rc_check: Enable implicitly with sanitizers")
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/machine.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ tools/lib/perf/include/internal/rc_check.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index addfae2f63ef..e0e2c4a943e4 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -2622,16 +2622,18 @@ static int lbr_callchain_add_lbr_ip(struct thread *thread,
- 		save_lbr_cursor_node(thread, cursor, i);
- 	}
+diff --git a/tools/lib/perf/include/internal/rc_check.h b/tools/lib/perf/include/internal/rc_check.h
+index d5d771ccdc7b..e88a6d8a0b0f 100644
+--- a/tools/lib/perf/include/internal/rc_check.h
++++ b/tools/lib/perf/include/internal/rc_check.h
+@@ -9,8 +9,12 @@
+  * Enable reference count checking implicitly with leak checking, which is
+  * integrated into address sanitizer.
+  */
+-#if defined(LEAK_SANITIZER) || defined(ADDRESS_SANITIZER)
++#if defined(__SANITIZE_ADDRESS__) || defined(LEAK_SANITIZER) || defined(ADDRESS_SANITIZER)
+ #define REFCNT_CHECKING 1
++#elif defined(__has_feature)
++#if __has_feature(address_sanitizer) || __has_feature(leak_sanitizer)
++#define REFCNT_CHECKING 1
++#endif
+ #endif
  
--	/* Add LBR ip from first entries.to */
--	ip = entries[0].to;
--	flags = &entries[0].flags;
--	*branch_from = entries[0].from;
--	err = add_callchain_ip(thread, cursor, parent,
--			       root_al, &cpumode, ip,
--			       true, flags, NULL,
--			       *branch_from);
--	if (err)
--		return err;
-+	if (lbr_nr > 0) {
-+		/* Add LBR ip from first entries.to */
-+		ip = entries[0].to;
-+		flags = &entries[0].flags;
-+		*branch_from = entries[0].from;
-+		err = add_callchain_ip(thread, cursor, parent,
-+				root_al, &cpumode, ip,
-+				true, flags, NULL,
-+				*branch_from);
-+		if (err)
-+			return err;
-+	}
- 
- 	return 0;
- }
+ /*
 -- 
 2.42.0.758.gaed0368e0e-goog
 
