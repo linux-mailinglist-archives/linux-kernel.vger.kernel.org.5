@@ -2,99 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50ED17D499A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CF67D49A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233865AbjJXINh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
+        id S233802AbjJXIPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:15:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233083AbjJXINb (ORCPT
+        with ESMTP id S233083AbjJXIPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:13:31 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A6EF2D7B;
-        Tue, 24 Oct 2023 01:13:28 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57E552F4;
-        Tue, 24 Oct 2023 01:14:09 -0700 (PDT)
-Received: from [10.57.83.179] (unknown [10.57.83.179])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D9DF3F762;
-        Tue, 24 Oct 2023 01:13:26 -0700 (PDT)
-Message-ID: <2ed209ec-2eef-4a41-9591-275e7d8f7676@arm.com>
-Date:   Tue, 24 Oct 2023 09:14:17 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 06/18] PM: EM: Check if the get_cost() callback is
- present in em_compute_costs()
+        Tue, 24 Oct 2023 04:15:07 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA94F109
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:15:03 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 5D9782C0547;
+        Tue, 24 Oct 2023 21:15:01 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1698135301;
+        bh=a7rNjQU28ksuExI8JtKe/7t79lDDXhncoO0YZS25u08=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=UbL6YWnQAR2ss1kkQh2SNlqiUghE7jiH+nPoIpn25rsuIEUhkfG2zx0hD6c2joj+C
+         sLf4+7WRWf7Ov1DMP64p4CeThlE8YetKH+jQehTyumsH0hxtn0w/1TTQjVu4QHP1Uj
+         toPkblITZQERvlXQ8KzvmcB5BkWhVkinV2tHghmkkULE8Zkl2bYd9SonxrBleQKIUI
+         3m4PambrY8cXDA4M4rImGe/IURLsC1sSjLigWltPmdaq2CVZs34IXSd9Ml2Ee/wUGU
+         XGtKSfrmcR1U9I0LqomZDT2JQ4eyLL1sSAdnoAC9ouhsiUH/imF/dCsVAz9XbobIFm
+         QZKFAIq5J/cvw==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B65377d050001>; Tue, 24 Oct 2023 21:15:01 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.39; Tue, 24 Oct 2023 21:15:01 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.48; Tue, 24 Oct 2023 21:15:00 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.039; Tue, 24 Oct 2023 21:15:00 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+        "andi.shyti@kernel.org" <andi.shyti@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>
+CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] i2c: mv64xxx: add an optional reset-gpios property
+Thread-Topic: [PATCH v3 2/2] i2c: mv64xxx: add an optional reset-gpios
+ property
+Thread-Index: AQHaAgcy5mKiozoBFUuv9b6R9rUkyLBXxl+A
+Date:   Tue, 24 Oct 2023 08:15:00 +0000
+Message-ID: <78c5eeb7-214d-43d2-91e7-7eb50a1543de@alliedtelesis.co.nz>
+References: <20231018210805.1569987-1-chris.packham@alliedtelesis.co.nz>
+ <20231018210805.1569987-3-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20231018210805.1569987-3-chris.packham@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
 Content-Language: en-US
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     dietmar.eggemann@arm.com, rui.zhang@intel.com,
-        linux-kernel@vger.kernel.org, amit.kucheria@verdurent.com,
-        amit.kachhap@gmail.com, viresh.kumar@linaro.org,
-        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
-        qyousef@layalina.io, wvw@google.com, linux-pm@vger.kernel.org,
-        rafael@kernel.org
-References: <20230925081139.1305766-1-lukasz.luba@arm.com>
- <20230925081139.1305766-7-lukasz.luba@arm.com>
- <3a70280b-8cc4-9f22-92b7-088fa9cb45df@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <3a70280b-8cc4-9f22-92b7-088fa9cb45df@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.32.14.96]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <726BCCC326F776428AD7BDA67F787942@atlnz.lc>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oOnywjR1vmkA:10 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=M7cbq605zZYUMcyVNpMA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/23/23 19:23, Daniel Lezcano wrote:
-> On 25/09/2023 10:11, Lukasz Luba wrote:
->> The em_compute_cost() is going to be re-used in runtime modified EM
->> code path. Thus, make sure that this common code is safe and won't
->> try to use the NULL pointer. The former em_compute_cost() didn't have to
->> care about runtime modification code path. The upcoming changes introduce
->> such option, but with different callback. Those two paths which use
->> get_cost() (during first EM registration) or update_power() (during
->> runtime modification) need to be safely handled in em_compute_costs().
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   kernel/power/energy_model.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
->> index 7ea882401833..35e07933b34a 100644
->> --- a/kernel/power/energy_model.c
->> +++ b/kernel/power/energy_model.c
->> @@ -116,7 +116,7 @@ static int em_compute_costs(struct device *dev, 
->> struct em_perf_state *table,
->>       for (i = nr_states - 1; i >= 0; i--) {
->>           unsigned long power_res, cost;
->> -        if (flags & EM_PERF_DOMAIN_ARTIFICIAL) {
->> +        if (flags & EM_PERF_DOMAIN_ARTIFICIAL && cb->get_cost) {
->>               ret = cb->get_cost(dev, table[i].frequency, &cost);
->>               if (ret || !cost || cost > EM_MAX_POWER) {
->>                   dev_err(dev, "EM: invalid cost %lu %d\n",
-> 
-> I do believe & operator has lower precedence than && operator, thus the 
-> test is actually:
-> 
->      (flags & (EM_PERF_DOMAIN_ARTIFICIAL && cb->get_cost))
-> 
-> but it should be
-> 
->      ((flags & EM_PERF_DOMAIN_ARTIFICIAL) && cb->get_cost)
-> 
-> Right ?
-> 
-
-The bitwise '&' is stronger than logical '&&', so the code will
-work as in your 2nd example. Although, I will change it and add
-parentheses for better reading.
-
-Thanks!
+DQpPbiAxOS8xMC8yMyAxMDowOCwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4gU29tZSBoYXJkd2Fy
+ZSBkZXNpZ25zIGhhdmUgYSBHUElPIHVzZWQgdG8gY29udHJvbCB0aGUgcmVzZXQgb2YgYWxsIHRo
+ZQ0KPiBkZXZpY2VzIG9uIGFuZCBJMkMgYnVzLiBJdCdzIG5vdCBwb3NzaWJsZSBmb3IgZXZlcnkg
+Y2hpbGQgbm9kZSB0bw0KPiBkZWNsYXJlIGEgcmVzZXQtZ3Bpb3MgcHJvcGVydHkgYXMgb25seSB0
+aGUgZmlyc3QgZGV2aWNlIHByb2JlZCB3b3VsZCBiZQ0KPiBhYmxlIHRvIHN1Y2Nlc3NmdWxseSBy
+ZXF1ZXN0IGl0ICh0aGUgb3RoZXJzIHdpbGwgZ2V0IC1FQlVTWSkuIFJlcHJlc2VudA0KPiB0aGlz
+IGtpbmQgb2YgaGFyZHdhcmUgZGVzaWduIGJ5IGFzc29jaWF0aW5nIHRoZSByZXNldC1ncGlvcyB3
+aXRoIHRoZQ0KPiBwYXJlbnQgSTJDIGJ1cy4gVGhlIHJlc2V0IGxpbmUgd2lsbCBiZSByZWxlYXNl
+ZCBwcmlvciB0byB0aGUgY2hpbGQgSTJDDQo+IGRldmljZXMgYmVpbmcgcHJvYmVkLg0KPg0KPiBT
+aWduZWQtb2ZmLWJ5OiBDaHJpcyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMu
+Y28ubno+DQo+IC0tLQ0KPg0KPiBOb3RlczoNCj4gICAgICBDaGFuZ2VzIGluIHYzOg0KPiAgICAg
+IC0gUmVuYW1lIHJlc2V0LWRlbGF5IHRvIHJlc2V0LWR1cmF0aW9uDQo+ICAgICAgLSBVc2UgcmVz
+ZXQtZHVyYXRpb24tdXMgcHJvcGVydHkgdG8gY29udHJvbCB0aGUgcmVzZXQgcHVsc2UgcmF0aGVy
+IHRoYW4NCj4gICAgICAgIGRlbGF5aW5nIGFmdGVyIHRoZSByZXNldA0KPiAgICAgIENoYW5nZXMg
+aW4gdjI6DQo+ICAgICAgLSBBZGQgYSBwcm9wZXJ0eSB0byBjb3ZlciB0aGUgbGVuZ3RoIG9mIGRl
+bGF5IGFmdGVyIHJlbGVhc2luZyB0aGUgcmVzZXQNCj4gICAgICAgIEdQSU8NCj4gICAgICAtIFVz
+ZSBkZXZfZXJyX3Byb2JlKCkgd2hlbiByZXF1ZXNpbmcgdGhlIEdQSU8gZmFpbHMNCj4NCj4gICBk
+cml2ZXJzL2kyYy9idXNzZXMvaTJjLW12NjR4eHguYyB8IDE1ICsrKysrKysrKysrKysrKw0KPiAg
+IDEgZmlsZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspDQo+DQo+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL2kyYy9idXNzZXMvaTJjLW12NjR4eHguYyBiL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXY2
+NHh4eC5jDQo+IGluZGV4IGVmZDI4YmJlY2Y2MS4uMjhmMTFkMmU4MDBiIDEwMDY0NA0KPiAtLS0g
+YS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW12NjR4eHguYw0KPiArKysgYi9kcml2ZXJzL2kyYy9i
+dXNzZXMvaTJjLW12NjR4eHguYw0KDQprZXJuZWwgdGVzdCByb2JvdCBwb2ludHMgb3V0IEknbSBt
+aXNzaW5nIGFuIGluY2x1ZGUgb2YgZ3Bpby9jb25zdW1lci5oIA0KSSdsbCBmaXggdGhhdCB3aXRo
+IGEgdjQuIEknbGwgZ2l2ZSBpdCBhIGNvdXBsZSBvZiBkYXlzIGJlZm9yZSBzZW5kaW5nIGl0IA0K
+b3V0IGp1c3QgaW4gY2FzZSB0aGVyZSBhcmUgYW55IG1vcmUgY29tbWVudHMuDQoNCj4gQEAgLTE2
+MCw2ICsxNjAsNyBAQCBzdHJ1Y3QgbXY2NHh4eF9pMmNfZGF0YSB7DQo+ICAgCWJvb2wJCQljbGtf
+bl9iYXNlXzA7DQo+ICAgCXN0cnVjdCBpMmNfYnVzX3JlY292ZXJ5X2luZm8JcmluZm87DQo+ICAg
+CWJvb2wJCQlhdG9taWM7DQo+ICsJc3RydWN0IGdwaW9fZGVzYwkqcmVzZXRfZ3BpbzsNCj4gICB9
+Ow0KPiAgIA0KPiAgIHN0YXRpYyBzdHJ1Y3QgbXY2NHh4eF9pMmNfcmVncyBtdjY0eHh4X2kyY19y
+ZWdzX212NjR4eHggPSB7DQo+IEBAIC0xMDM2LDYgKzEwMzcsNyBAQCBtdjY0eHh4X2kyY19wcm9i
+ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZCkNCj4gICAJc3RydWN0IG12NjR4eHhfaTJjX2Rh
+dGEJCSpkcnZfZGF0YTsNCj4gICAJc3RydWN0IG12NjR4eHhfaTJjX3BkYXRhCSpwZGF0YSA9IGRl
+dl9nZXRfcGxhdGRhdGEoJnBkLT5kZXYpOw0KPiAgIAlzdHJ1Y3QgcmVzb3VyY2UgKnJlczsNCj4g
+Kwl1MzIJcmVzZXRfZHVyYXRpb247DQo+ICAgCWludAlyYzsNCj4gICANCj4gICAJaWYgKCghcGRh
+dGEgJiYgIXBkLT5kZXYub2Zfbm9kZSkpDQo+IEBAIC0xMDgzLDYgKzEwODUsMTQgQEAgbXY2NHh4
+eF9pMmNfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGQpDQo+ICAgCWlmIChkcnZfZGF0
+YS0+aXJxIDwgMCkNCj4gICAJCXJldHVybiBkcnZfZGF0YS0+aXJxOw0KPiAgIA0KPiArCWRydl9k
+YXRhLT5yZXNldF9ncGlvID0gZGV2bV9ncGlvZF9nZXRfb3B0aW9uYWwoJnBkLT5kZXYsICJyZXNl
+dCIsIEdQSU9EX09VVF9ISUdIKTsNCj4gKwlpZiAoSVNfRVJSKGRydl9kYXRhLT5yZXNldF9ncGlv
+KSkNCj4gKwkJcmV0dXJuIGRldl9lcnJfcHJvYmUoJnBkLT5kZXYsIFBUUl9FUlIoZHJ2X2RhdGEt
+PnJlc2V0X2dwaW8pLA0KPiArCQkJCSAgICAgIkNhbm5vdCBnZXQgcmVzZXQgZ3Bpb1xuIik7DQo+
+ICsJcmMgPSBkZXZpY2VfcHJvcGVydHlfcmVhZF91MzIoJnBkLT5kZXYsICJyZXNldC1kdXJhdGlv
+bi11cyIsICZyZXNldF9kdXJhdGlvbik7DQo+ICsJaWYgKHJjKQ0KPiArCQlyZXNldF9kdXJhdGlv
+biA9IDE7DQo+ICsNCj4gICAJaWYgKHBkYXRhKSB7DQo+ICAgCQlkcnZfZGF0YS0+ZnJlcV9tID0g
+cGRhdGEtPmZyZXFfbTsNCj4gICAJCWRydl9kYXRhLT5mcmVxX24gPSBwZGF0YS0+ZnJlcV9uOw0K
+PiBAQCAtMTEyMSw2ICsxMTMxLDExIEBAIG12NjR4eHhfaTJjX3Byb2JlKHN0cnVjdCBwbGF0Zm9y
+bV9kZXZpY2UgKnBkKQ0KPiAgIAkJCWdvdG8gZXhpdF9kaXNhYmxlX3BtOw0KPiAgIAl9DQo+ICAg
+DQo+ICsJaWYgKGRydl9kYXRhLT5yZXNldF9ncGlvKSB7DQo+ICsJCXVzbGVlcF9yYW5nZShyZXNl
+dF9kdXJhdGlvbiwgcmVzZXRfZHVyYXRpb24gKyAxMCk7DQo+ICsJCWdwaW9kX3NldF92YWx1ZV9j
+YW5zbGVlcChkcnZfZGF0YS0+cmVzZXRfZ3BpbywgMCk7DQo+ICsJfQ0KPiArDQo+ICAgCXJjID0g
+cmVxdWVzdF9pcnEoZHJ2X2RhdGEtPmlycSwgbXY2NHh4eF9pMmNfaW50ciwgMCwNCj4gICAJCQkg
+TVY2NFhYWF9JMkNfQ1RMUl9OQU1FLCBkcnZfZGF0YSk7DQo+ICAgCWlmIChyYykgew==
