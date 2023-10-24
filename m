@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB227D5E4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DEC7D5E18
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344724AbjJXWhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
+        id S1344612AbjJXW0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:26:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344701AbjJXWgp (ORCPT
+        with ESMTP id S235051AbjJXWZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:36:45 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2FE19AB
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:12 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da04fb79246so1026198276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:12 -0700 (PDT)
+        Tue, 24 Oct 2023 18:25:47 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212A419AD
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:15 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a541b720aso5901684276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698186311; x=1698791111; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698186314; x=1698791114; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=7vTFa96ZEcmOMRrSkowrskUF+opgcolRiQV7lf4w06o=;
-        b=WwiL0kET0a95L0luaxOKtH4R3VPSPwxnyqOk+vFT+lD/MzeCiYgObQYh729/vSSpGv
-         l8dW9g0lS5N0Is1ijZzluZcmh5aykHF9Da8/sTNGfuZ/vZ6cBayNjPsDX/PNZCKWrbDi
-         PkAwiSBTIjir6zl+hYw5UCD6R+Krwkgnaapfc+rQxhRONPnWe71PXeRjTSbept7lKEp7
-         WRoHna46e1UPiNYnTkEMggPbHLnTDHDsfgA0Mu/rJBIv3iVhmO+1fg4k7ZbAVwQAngFM
-         nuM/AdNCt9uo/KnF1ObboCZPgrzn4ru7CHoekodr5CQl0B8aFI6d9dXhLzy75ir0qtqc
-         Vw/A==
+        bh=e5GSFwgTEaHeeY2eroEgFXWdX43cKEeIAHSJl2+ftFs=;
+        b=0I8qcJyc3yn8lYPUk7aGbCk15kVD0PJnIqIpfMbU1cSVQQPlXP7U3OjyPmOQGxmjiX
+         rjKs4Lo2BeOP+4NszZQAbgiABujNw5DuGX9G0+do0DukMj3YGTqsut8PsRGYFEBm2dhP
+         sVzbPdXeDPLMHzkQ85eInORAXgCOG7Mux+CH/FD6ORP4rDjoCfKKFpr3KBcEvmZwI4Rx
+         ZdQXu9y7Kt8PcmT54AEdsgCF1e/mISqGhqhrcmmRczT3x6QbW2XTiCsZM32b6pDATWW5
+         yEQY+LCNr7MO1+g5peninPgAi4fX4ND8OybYi1Ovx3cMuc2MguABw99JhAfadDBAmhdx
+         yHfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698186311; x=1698791111;
+        d=1e100.net; s=20230601; t=1698186314; x=1698791114;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7vTFa96ZEcmOMRrSkowrskUF+opgcolRiQV7lf4w06o=;
-        b=r2FHATGP2tLtBNAvgdVkg0e4GE6btr+IbcKTIna6qaUln2bOIUZXnz5Bxa0FNQI4wt
-         WP9U1MDll0eCdIjmd9dCaxJYEabvb0k6Po8pxtnpubqDEeGdoL2ksFjH0pu8WCyNvbBx
-         JefLetot6CabOyB2yWbo4lLYsNwFTEjNef6kDDS/1SY8eU3C+V6N/wBddWJ4+ZD0rhcW
-         I1b3fkQaEKXATXFcCTku0r0iWeYsXE50RgB3jybsa/nc7bHHnpNxrEJ3yGdl2Y3y4QqK
-         IiZyV9yJc3ZwT672dftyDQHko4/nC8UkjyQ70rtqDjIxpR/sguinBnQZYerQqM5OLEX8
-         gDCQ==
-X-Gm-Message-State: AOJu0YwLH0llvc5SqmCZUTWh59ohJ6noFNcqUp4pP9OL1S4/CD8uVWLv
-        6JlqA4F+Q2YPmJHf9afwn0Wl+5cxhPCq
-X-Google-Smtp-Source: AGHT+IGXXGc5DKusMxBPUMDaTFA+8Fb3jL2JT1jtI+8spbEXNI8FwyqOUjcmvYUrJTwL1FjS4seK1XiRUDbl
+        bh=e5GSFwgTEaHeeY2eroEgFXWdX43cKEeIAHSJl2+ftFs=;
+        b=jqs0H2Qjhqi0UHLi4tnhrhs0IKMWT+enojoKaa8UkrMS4hhE2cp3frprKVRLaxRHNC
+         GFC8v0g0+GVvigS5C+ClBON1RzxPS8Vo47rvscTCW3QoYFLglPfCDS+VnhQ5pF0o+yLl
+         kkJVBh/2y6rWXmcGDDOIcUMGTLuRq50LIhp68ibXI2aV9N9UNuNPaxwsHImoasdOqzhh
+         XFbnfTaqszTT9ieCIeH4kxUY/iPaVWGNX40BRoLjpSgEi/MeIISkoRH9DjfFRXiTVnG8
+         7EYfN6UBJ5rErnFUD5Yf8cwQmEeT6HOI/b20sEJAj4U6FsuhXbw8xs8VQcAqheTuLEV6
+         2bnA==
+X-Gm-Message-State: AOJu0YwKA0DnUVxos+qQCR/ptCU+1pMBesVkcajzB9SpCrkLSHtQNMTV
+        Iu4swQwQAZw9XOVSNi/d7oH2aSZnRM/w
+X-Google-Smtp-Source: AGHT+IFIFIL85ohk9wFL0+k1YIHYu3DYGpabOsSP/C4iBxiw3i3/xw7t4g7qwMBIwQ0eBdmNv5wNqmbfOdVw
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:93d2:18cc:4d63:45ba])
- (user=irogers job=sendgmr) by 2002:a25:aaa9:0:b0:d9a:3a14:a5a2 with SMTP id
- t38-20020a25aaa9000000b00d9a3a14a5a2mr247702ybi.13.1698186311625; Tue, 24 Oct
- 2023 15:25:11 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 15:23:29 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:544:b0:d13:856b:c10a with SMTP id
+ z4-20020a056902054400b00d13856bc10amr287911ybs.3.1698186314186; Tue, 24 Oct
+ 2023 15:25:14 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 15:23:30 -0700
 In-Reply-To: <20231024222353.3024098-1-irogers@google.com>
-Message-Id: <20231024222353.3024098-27-irogers@google.com>
+Message-Id: <20231024222353.3024098-28-irogers@google.com>
 Mime-Version: 1.0
 References: <20231024222353.3024098-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Subject: [PATCH v3 26/50] perf maps: Move symbol maps functions to maps.c
+Subject: [PATCH v3 27/50] perf thread: Add missing RC_CHK_ACCESS
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -96,590 +96,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the find and certain other symbol maps__* functions to maps.c for
-better abstraction.
+Comparing pointers without RC_CHK_ACCESS means the indirect object
+will be compared rather than the underlying maps when REFCNT_CHECKING
+is enabled. Fix by adding missing RC_CHK_ACCESS.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/maps.c   | 238 +++++++++++++++++++++++++++++++++++++
- tools/perf/util/maps.h   |  12 ++
- tools/perf/util/symbol.c | 248 ---------------------------------------
- tools/perf/util/symbol.h |   1 -
- 4 files changed, 250 insertions(+), 249 deletions(-)
+ tools/perf/util/thread.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
-index 233438c95b53..9a011aed4b75 100644
---- a/tools/perf/util/maps.c
-+++ b/tools/perf/util/maps.c
-@@ -475,3 +475,241 @@ struct map_rb_node *map_rb_node__next(struct map_rb_node *node)
+diff --git a/tools/perf/util/thread.c b/tools/perf/util/thread.c
+index fe5e6991ae4b..eae3041408a7 100644
+--- a/tools/perf/util/thread.c
++++ b/tools/perf/util/thread.c
+@@ -385,7 +385,7 @@ static int thread__clone_maps(struct thread *thread, struct thread *parent, bool
+ 	if (thread__pid(thread) == thread__pid(parent))
+ 		return thread__prepare_access(thread);
  
- 	return rb_entry(next, struct map_rb_node, rb_node);
- }
-+
-+static int map__strcmp(const void *a, const void *b)
-+{
-+	const struct map *map_a = *(const struct map **)a;
-+	const struct map *map_b = *(const struct map **)b;
-+	const struct dso *dso_a = map__dso(map_a);
-+	const struct dso *dso_b = map__dso(map_b);
-+	int ret = strcmp(dso_a->short_name, dso_b->short_name);
-+
-+	if (ret == 0 && map_a != map_b) {
-+		/*
-+		 * Ensure distinct but name equal maps have an order in part to
-+		 * aid reference counting.
-+		 */
-+		ret = (int)map__start(map_a) - (int)map__start(map_b);
-+		if (ret == 0)
-+			ret = (int)((intptr_t)map_a - (intptr_t)map_b);
-+	}
-+
-+	return ret;
-+}
-+
-+static int map__strcmp_name(const void *name, const void *b)
-+{
-+	const struct dso *dso = map__dso(*(const struct map **)b);
-+
-+	return strcmp(name, dso->short_name);
-+}
-+
-+void __maps__sort_by_name(struct maps *maps)
-+{
-+	qsort(maps__maps_by_name(maps), maps__nr_maps(maps), sizeof(struct map *), map__strcmp);
-+}
-+
-+static int map__groups__sort_by_name_from_rbtree(struct maps *maps)
-+{
-+	struct map_rb_node *rb_node;
-+	struct map **maps_by_name = realloc(maps__maps_by_name(maps),
-+					    maps__nr_maps(maps) * sizeof(struct map *));
-+	int i = 0;
-+
-+	if (maps_by_name == NULL)
-+		return -1;
-+
-+	up_read(maps__lock(maps));
-+	down_write(maps__lock(maps));
-+
-+	RC_CHK_ACCESS(maps)->maps_by_name = maps_by_name;
-+	RC_CHK_ACCESS(maps)->nr_maps_allocated = maps__nr_maps(maps);
-+
-+	maps__for_each_entry(maps, rb_node)
-+		maps_by_name[i++] = map__get(rb_node->map);
-+
-+	__maps__sort_by_name(maps);
-+
-+	up_write(maps__lock(maps));
-+	down_read(maps__lock(maps));
-+
-+	return 0;
-+}
-+
-+static struct map *__maps__find_by_name(struct maps *maps, const char *name)
-+{
-+	struct map **mapp;
-+
-+	if (maps__maps_by_name(maps) == NULL &&
-+	    map__groups__sort_by_name_from_rbtree(maps))
-+		return NULL;
-+
-+	mapp = bsearch(name, maps__maps_by_name(maps), maps__nr_maps(maps),
-+		       sizeof(*mapp), map__strcmp_name);
-+	if (mapp)
-+		return *mapp;
-+	return NULL;
-+}
-+
-+struct map *maps__find_by_name(struct maps *maps, const char *name)
-+{
-+	struct map_rb_node *rb_node;
-+	struct map *map;
-+
-+	down_read(maps__lock(maps));
-+
-+
-+	if (RC_CHK_ACCESS(maps)->last_search_by_name) {
-+		const struct dso *dso = map__dso(RC_CHK_ACCESS(maps)->last_search_by_name);
-+
-+		if (strcmp(dso->short_name, name) == 0) {
-+			map = RC_CHK_ACCESS(maps)->last_search_by_name;
-+			goto out_unlock;
-+		}
-+	}
-+	/*
-+	 * If we have maps->maps_by_name, then the name isn't in the rbtree,
-+	 * as maps->maps_by_name mirrors the rbtree when lookups by name are
-+	 * made.
-+	 */
-+	map = __maps__find_by_name(maps, name);
-+	if (map || maps__maps_by_name(maps) != NULL)
-+		goto out_unlock;
-+
-+	/* Fallback to traversing the rbtree... */
-+	maps__for_each_entry(maps, rb_node) {
-+		struct dso *dso;
-+
-+		map = rb_node->map;
-+		dso = map__dso(map);
-+		if (strcmp(dso->short_name, name) == 0) {
-+			RC_CHK_ACCESS(maps)->last_search_by_name = map;
-+			goto out_unlock;
-+		}
-+	}
-+	map = NULL;
-+
-+out_unlock:
-+	up_read(maps__lock(maps));
-+	return map;
-+}
-+
-+void maps__fixup_end(struct maps *maps)
-+{
-+	struct map_rb_node *prev = NULL, *curr;
-+
-+	down_write(maps__lock(maps));
-+
-+	maps__for_each_entry(maps, curr) {
-+		if (prev != NULL && !map__end(prev->map))
-+			map__set_end(prev->map, map__start(curr->map));
-+
-+		prev = curr;
-+	}
-+
-+	/*
-+	 * We still haven't the actual symbols, so guess the
-+	 * last map final address.
-+	 */
-+	if (curr && !map__end(curr->map))
-+		map__set_end(curr->map, ~0ULL);
-+
-+	up_write(maps__lock(maps));
-+}
-+
-+/*
-+ * Merges map into maps by splitting the new map within the existing map
-+ * regions.
-+ */
-+int maps__merge_in(struct maps *kmaps, struct map *new_map)
-+{
-+	struct map_rb_node *rb_node;
-+	LIST_HEAD(merged);
-+	int err = 0;
-+
-+	maps__for_each_entry(kmaps, rb_node) {
-+		struct map *old_map = rb_node->map;
-+
-+		/* no overload with this one */
-+		if (map__end(new_map) < map__start(old_map) ||
-+		    map__start(new_map) >= map__end(old_map))
-+			continue;
-+
-+		if (map__start(new_map) < map__start(old_map)) {
-+			/*
-+			 * |new......
-+			 *       |old....
-+			 */
-+			if (map__end(new_map) < map__end(old_map)) {
-+				/*
-+				 * |new......|     -> |new..|
-+				 *       |old....| ->       |old....|
-+				 */
-+				map__set_end(new_map, map__start(old_map));
-+			} else {
-+				/*
-+				 * |new.............| -> |new..|       |new..|
-+				 *       |old....|    ->       |old....|
-+				 */
-+				struct map_list_node *m = map_list_node__new();
-+
-+				if (!m) {
-+					err = -ENOMEM;
-+					goto out;
-+				}
-+
-+				m->map = map__clone(new_map);
-+				if (!m->map) {
-+					free(m);
-+					err = -ENOMEM;
-+					goto out;
-+				}
-+
-+				map__set_end(m->map, map__start(old_map));
-+				list_add_tail(&m->node, &merged);
-+				map__add_pgoff(new_map, map__end(old_map) - map__start(new_map));
-+				map__set_start(new_map, map__end(old_map));
-+			}
-+		} else {
-+			/*
-+			 *      |new......
-+			 * |old....
-+			 */
-+			if (map__end(new_map) < map__end(old_map)) {
-+				/*
-+				 *      |new..|   -> x
-+				 * |old.........| -> |old.........|
-+				 */
-+				map__put(new_map);
-+				new_map = NULL;
-+				break;
-+			} else {
-+				/*
-+				 *      |new......| ->         |new...|
-+				 * |old....|        -> |old....|
-+				 */
-+				map__add_pgoff(new_map, map__end(old_map) - map__start(new_map));
-+				map__set_start(new_map, map__end(old_map));
-+			}
-+		}
-+	}
-+
-+out:
-+	while (!list_empty(&merged)) {
-+		struct map_list_node *old_node;
-+
-+		old_node = list_entry(merged.next, struct map_list_node, node);
-+		list_del_init(&old_node->node);
-+		if (!err)
-+			err = maps__insert(kmaps, old_node->map);
-+		map__put(old_node->map);
-+		free(old_node);
-+	}
-+
-+	if (new_map) {
-+		if (!err)
-+			err = maps__insert(kmaps, new_map);
-+		map__put(new_map);
-+	}
-+	return err;
-+}
-diff --git a/tools/perf/util/maps.h b/tools/perf/util/maps.h
-index 83144e0645ed..a689149be8c4 100644
---- a/tools/perf/util/maps.h
-+++ b/tools/perf/util/maps.h
-@@ -21,6 +21,16 @@ struct map_rb_node {
- 	struct map *map;
- };
- 
-+struct map_list_node {
-+	struct list_head node;
-+	struct map *map;
-+};
-+
-+static inline struct map_list_node *map_list_node__new(void)
-+{
-+	return malloc(sizeof(struct map_list_node));
-+}
-+
- struct map_rb_node *maps__first(struct maps *maps);
- struct map_rb_node *map_rb_node__next(struct map_rb_node *node);
- struct map_rb_node *maps__find_node(struct maps *maps, struct map *map);
-@@ -133,4 +143,6 @@ int maps__merge_in(struct maps *kmaps, struct map *new_map);
- 
- void __maps__sort_by_name(struct maps *maps);
- 
-+void maps__fixup_end(struct maps *maps);
-+
- #endif // __PERF_MAPS_H
-diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-index 314c0263bf3c..1cc42b8d8afb 100644
---- a/tools/perf/util/symbol.c
-+++ b/tools/perf/util/symbol.c
-@@ -48,11 +48,6 @@ static bool symbol__is_idle(const char *name);
- int vmlinux_path__nr_entries;
- char **vmlinux_path;
- 
--struct map_list_node {
--	struct list_head node;
--	struct map *map;
--};
--
- struct symbol_conf symbol_conf = {
- 	.nanosecs		= false,
- 	.use_modules		= true,
-@@ -90,11 +85,6 @@ static enum dso_binary_type binary_type_symtab[] = {
- 
- #define DSO_BINARY_TYPE__SYMTAB_CNT ARRAY_SIZE(binary_type_symtab)
- 
--static struct map_list_node *map_list_node__new(void)
--{
--	return malloc(sizeof(struct map_list_node));
--}
--
- static bool symbol_type__filter(char symbol_type)
- {
- 	symbol_type = toupper(symbol_type);
-@@ -270,29 +260,6 @@ void symbols__fixup_end(struct rb_root_cached *symbols, bool is_kallsyms)
- 		curr->end = roundup(curr->start, 4096) + 4096;
- }
- 
--void maps__fixup_end(struct maps *maps)
--{
--	struct map_rb_node *prev = NULL, *curr;
--
--	down_write(maps__lock(maps));
--
--	maps__for_each_entry(maps, curr) {
--		if (prev != NULL && !map__end(prev->map))
--			map__set_end(prev->map, map__start(curr->map));
--
--		prev = curr;
--	}
--
--	/*
--	 * We still haven't the actual symbols, so guess the
--	 * last map final address.
--	 */
--	if (curr && !map__end(curr->map))
--		map__set_end(curr->map, ~0ULL);
--
--	up_write(maps__lock(maps));
--}
--
- struct symbol *symbol__new(u64 start, u64 len, u8 binding, u8 type, const char *name)
- {
- 	size_t namelen = strlen(name) + 1;
-@@ -1270,103 +1237,6 @@ static int kcore_mapfn(u64 start, u64 len, u64 pgoff, void *data)
- 	return 0;
- }
- 
--/*
-- * Merges map into maps by splitting the new map within the existing map
-- * regions.
-- */
--int maps__merge_in(struct maps *kmaps, struct map *new_map)
--{
--	struct map_rb_node *rb_node;
--	LIST_HEAD(merged);
--	int err = 0;
--
--	maps__for_each_entry(kmaps, rb_node) {
--		struct map *old_map = rb_node->map;
--
--		/* no overload with this one */
--		if (map__end(new_map) < map__start(old_map) ||
--		    map__start(new_map) >= map__end(old_map))
--			continue;
--
--		if (map__start(new_map) < map__start(old_map)) {
--			/*
--			 * |new......
--			 *       |old....
--			 */
--			if (map__end(new_map) < map__end(old_map)) {
--				/*
--				 * |new......|     -> |new..|
--				 *       |old....| ->       |old....|
--				 */
--				map__set_end(new_map, map__start(old_map));
--			} else {
--				/*
--				 * |new.............| -> |new..|       |new..|
--				 *       |old....|    ->       |old....|
--				 */
--				struct map_list_node *m = map_list_node__new();
--
--				if (!m) {
--					err = -ENOMEM;
--					goto out;
--				}
--
--				m->map = map__clone(new_map);
--				if (!m->map) {
--					free(m);
--					err = -ENOMEM;
--					goto out;
--				}
--
--				map__set_end(m->map, map__start(old_map));
--				list_add_tail(&m->node, &merged);
--				map__add_pgoff(new_map, map__end(old_map) - map__start(new_map));
--				map__set_start(new_map, map__end(old_map));
--			}
--		} else {
--			/*
--			 *      |new......
--			 * |old....
--			 */
--			if (map__end(new_map) < map__end(old_map)) {
--				/*
--				 *      |new..|   -> x
--				 * |old.........| -> |old.........|
--				 */
--				map__put(new_map);
--				new_map = NULL;
--				break;
--			} else {
--				/*
--				 *      |new......| ->         |new...|
--				 * |old....|        -> |old....|
--				 */
--				map__add_pgoff(new_map, map__end(old_map) - map__start(new_map));
--				map__set_start(new_map, map__end(old_map));
--			}
--		}
--	}
--
--out:
--	while (!list_empty(&merged)) {
--		struct map_list_node *old_node;
--
--		old_node = list_entry(merged.next, struct map_list_node, node);
--		list_del_init(&old_node->node);
--		if (!err)
--			err = maps__insert(kmaps, old_node->map);
--		map__put(old_node->map);
--		free(old_node);
--	}
--
--	if (new_map) {
--		if (!err)
--			err = maps__insert(kmaps, new_map);
--		map__put(new_map);
--	}
--	return err;
--}
--
- static int dso__load_kcore(struct dso *dso, struct map *map,
- 			   const char *kallsyms_filename)
- {
-@@ -2065,124 +1935,6 @@ int dso__load(struct dso *dso, struct map *map)
- 	return ret;
- }
- 
--static int map__strcmp(const void *a, const void *b)
--{
--	const struct map *map_a = *(const struct map **)a;
--	const struct map *map_b = *(const struct map **)b;
--	const struct dso *dso_a = map__dso(map_a);
--	const struct dso *dso_b = map__dso(map_b);
--	int ret = strcmp(dso_a->short_name, dso_b->short_name);
--
--	if (ret == 0 && map_a != map_b) {
--		/*
--		 * Ensure distinct but name equal maps have an order in part to
--		 * aid reference counting.
--		 */
--		ret = (int)map__start(map_a) - (int)map__start(map_b);
--		if (ret == 0)
--			ret = (int)((intptr_t)map_a - (intptr_t)map_b);
--	}
--
--	return ret;
--}
--
--static int map__strcmp_name(const void *name, const void *b)
--{
--	const struct dso *dso = map__dso(*(const struct map **)b);
--
--	return strcmp(name, dso->short_name);
--}
--
--void __maps__sort_by_name(struct maps *maps)
--{
--	qsort(maps__maps_by_name(maps), maps__nr_maps(maps), sizeof(struct map *), map__strcmp);
--}
--
--static int map__groups__sort_by_name_from_rbtree(struct maps *maps)
--{
--	struct map_rb_node *rb_node;
--	struct map **maps_by_name = realloc(maps__maps_by_name(maps),
--					    maps__nr_maps(maps) * sizeof(struct map *));
--	int i = 0;
--
--	if (maps_by_name == NULL)
--		return -1;
--
--	up_read(maps__lock(maps));
--	down_write(maps__lock(maps));
--
--	RC_CHK_ACCESS(maps)->maps_by_name = maps_by_name;
--	RC_CHK_ACCESS(maps)->nr_maps_allocated = maps__nr_maps(maps);
--
--	maps__for_each_entry(maps, rb_node)
--		maps_by_name[i++] = map__get(rb_node->map);
--
--	__maps__sort_by_name(maps);
--
--	up_write(maps__lock(maps));
--	down_read(maps__lock(maps));
--
--	return 0;
--}
--
--static struct map *__maps__find_by_name(struct maps *maps, const char *name)
--{
--	struct map **mapp;
--
--	if (maps__maps_by_name(maps) == NULL &&
--	    map__groups__sort_by_name_from_rbtree(maps))
--		return NULL;
--
--	mapp = bsearch(name, maps__maps_by_name(maps), maps__nr_maps(maps),
--		       sizeof(*mapp), map__strcmp_name);
--	if (mapp)
--		return *mapp;
--	return NULL;
--}
--
--struct map *maps__find_by_name(struct maps *maps, const char *name)
--{
--	struct map_rb_node *rb_node;
--	struct map *map;
--
--	down_read(maps__lock(maps));
--
--
--	if (RC_CHK_ACCESS(maps)->last_search_by_name) {
--		const struct dso *dso = map__dso(RC_CHK_ACCESS(maps)->last_search_by_name);
--
--		if (strcmp(dso->short_name, name) == 0) {
--			map = RC_CHK_ACCESS(maps)->last_search_by_name;
--			goto out_unlock;
--		}
--	}
--	/*
--	 * If we have maps->maps_by_name, then the name isn't in the rbtree,
--	 * as maps->maps_by_name mirrors the rbtree when lookups by name are
--	 * made.
--	 */
--	map = __maps__find_by_name(maps, name);
--	if (map || maps__maps_by_name(maps) != NULL)
--		goto out_unlock;
--
--	/* Fallback to traversing the rbtree... */
--	maps__for_each_entry(maps, rb_node) {
--		struct dso *dso;
--
--		map = rb_node->map;
--		dso = map__dso(map);
--		if (strcmp(dso->short_name, name) == 0) {
--			RC_CHK_ACCESS(maps)->last_search_by_name = map;
--			goto out_unlock;
--		}
--	}
--	map = NULL;
--
--out_unlock:
--	up_read(maps__lock(maps));
--	return map;
--}
--
- int dso__load_vmlinux(struct dso *dso, struct map *map,
- 		      const char *vmlinux, bool vmlinux_allocated)
- {
-diff --git a/tools/perf/util/symbol.h b/tools/perf/util/symbol.h
-index af87c46b3f89..071837ddce2a 100644
---- a/tools/perf/util/symbol.h
-+++ b/tools/perf/util/symbol.h
-@@ -189,7 +189,6 @@ void __symbols__insert(struct rb_root_cached *symbols, struct symbol *sym,
- void symbols__insert(struct rb_root_cached *symbols, struct symbol *sym);
- void symbols__fixup_duplicate(struct rb_root_cached *symbols);
- void symbols__fixup_end(struct rb_root_cached *symbols, bool is_kallsyms);
--void maps__fixup_end(struct maps *maps);
- 
- typedef int (*mapfn_t)(u64 start, u64 len, u64 pgoff, void *data);
- int file__read_maps(int fd, bool exe, mapfn_t mapfn, void *data,
+-	if (thread__maps(thread) == thread__maps(parent)) {
++	if (RC_CHK_ACCESS(thread__maps(thread)) == RC_CHK_ACCESS(thread__maps(parent))) {
+ 		pr_debug("broken map groups on thread %d/%d parent %d/%d\n",
+ 			 thread__pid(thread), thread__tid(thread),
+ 			 thread__pid(parent), thread__tid(parent));
 -- 
 2.42.0.758.gaed0368e0e-goog
 
