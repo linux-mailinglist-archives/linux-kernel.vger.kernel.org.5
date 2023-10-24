@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 997CE7D467A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 05:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2577D4681
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 05:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbjJXDyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 23:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
+        id S232562AbjJXDy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 23:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232384AbjJXDws (ORCPT
+        with ESMTP id S232317AbjJXDxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 23:52:48 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984F0170D
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 20:52:36 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-778a20df8c3so281477485a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 20:52:36 -0700 (PDT)
+        Mon, 23 Oct 2023 23:53:30 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79CD1716
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 20:52:37 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-778a6c440faso210008685a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 20:52:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1698119555; x=1698724355; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1698119556; x=1698724356; darn=vger.kernel.org;
         h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=55ZRJ15k5rlJjmFui052IxveaRjJKA9VJGl0uzNotB8=;
-        b=NOsjfUsiwJ6iZkl1CzbXPwvgzAEyZ3ahiAQdcJtdRzTg1KxCLIflQ32IHGJXELMhe5
-         XYZf6o62nBC47jGKfMuZhXz0tFU239x9gsK2mBXcfdav0bjk+8I5c+GYS1hYNieD0Cz+
-         zpatyfzG0HJIRkkMc+BJAPtiG0N+2G1oWAnQ33ujxNuvs5QGupUEirFdGtFE7zJA5nwa
-         fxgjJsU9y5d9HAAcnGSWHyjdv4A2FAqwC+h5Hz2z7gIG80oeDnprAdkDTZpl1pgEufGj
-         cjObeC16eeFfiC6/mXIaWl1BUmjoVswgU5kOFiAANUcwpw2JSTd5cEGjqU1IXitMBtVS
-         tNEg==
+        bh=rmddIeGleB+CvcksXIlwUEw0FkwTQo8xqUcvDqbnLkY=;
+        b=bwsnazR6ZZuMwadnjERsh/NRnerpmP1Ec6vOkf/ySCmP5i8DEO0UptP0I/LLzU5T3+
+         x1kPSjZGsXyNwA061wBem1iZiloGh3A8niXMkTnRbfjozpezswvP5/PqxyBSHRj4o2WC
+         36MqS1SlWG/XlkdbT7I4GThRkxp9q44TEO9myX3Vcl1NfejNWTlDVL/K0IMjqNrLM3X6
+         8KWlcW5IN1C91m2ah5qji5G8Gca1EfRArip/Zey6w9gFGLm6ngIc+B+WKPZsRPLh2WWR
+         c6bWEGq5AD2Xi/fRDYvM/HKx4CBFFk1wFEtfQkXy9p2z7Lm58jUklbQGDz8vjtJEYpEi
+         j0ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698119555; x=1698724355;
+        d=1e100.net; s=20230601; t=1698119556; x=1698724356;
         h=in-reply-to:references:subject:cc:to:from:message-id:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=55ZRJ15k5rlJjmFui052IxveaRjJKA9VJGl0uzNotB8=;
-        b=LRxhO8qAsQbfzuY/Ve3EmZ6Erm9sPIfgdumwcF5Ob2NvcGq1mqJwP7jWE4bEua9OAZ
-         RvjGqyvYh52C/7ZgT7YvRgKnng565GuQFbEvjytw4qzyqe7P/Q3KuKByOQH+qDl9znTE
-         fo3Ss2maAhPeFiEYEEDQ6vTpYc1dBdxfFW9tzJoUWn79nVqN41PWrnMCrWhgl39ojwMT
-         uaqtvlPOU/iwkQZ8bjn5m+n1nlIS1IlUvLgXtU6YopNjY6oR6bfz08/jwA8iunw5aELB
-         JawMnzUh60EbZuSOChtsVjtHE2URagwJTQaHa6tV6neFHxGONvgdwMTLUdN1cyE2H29d
-         wpwg==
-X-Gm-Message-State: AOJu0YzqUm3VDFqCBcRkgXUgir/6UsR3sA6orTAQwY10EXYCPc8L62/2
-        tYb9K/oSpSDIYmWGMfe1FRrt
-X-Google-Smtp-Source: AGHT+IFhehT5SBIN3u4k21hQKcqd9tt3cVRe5RSL6o1ZuOBt7dfMcEzUGFp3iEoi8dzbbuQJKBLFmg==
-X-Received: by 2002:a05:6214:626:b0:66d:5dec:6099 with SMTP id a6-20020a056214062600b0066d5dec6099mr11383093qvx.41.1698119555528;
-        Mon, 23 Oct 2023 20:52:35 -0700 (PDT)
+        bh=rmddIeGleB+CvcksXIlwUEw0FkwTQo8xqUcvDqbnLkY=;
+        b=AuP8x2opQ/nhggMTD7jIoFCU3dxwyWttHvlgIT59gT+tPolYwclW2tVQWCiZv7OKAn
+         S/6szuQNwCy16OHUeyK8wm5y48R8+8keaxZHB24CQdMW3sQUzVx0cwP1GSZGOFACHr/c
+         fgtFUURoWaWAMQOHHTEI/aY1CebVZ3pwIDQLPCjX1MymcA9NTqP3UVgNrJdTZkepetWj
+         xSVQhSj5Z0lmpXfV+OsP4BG1Kb1sPPYmCEv7c2s4198umWXgzSS8T3RQPsyxbnk5J0ZE
+         TZ/+LvRVSULy2ilWfim4ZJ8MLlOkWQPZycX7c6XwM98lDLR8+X7ysPJAN2phU1GS8tkd
+         RZaQ==
+X-Gm-Message-State: AOJu0Yyj5dDkkK3B2pPzFhSBKML5HmTuRE1TJcOn+Fg8H9Qsob+KT1Oe
+        MHcihXTdQXvTbKfPLWebdahD
+X-Google-Smtp-Source: AGHT+IFa4kcq1x8534opliGWAomlb7YsXdOWGv2jKnIrbHP0ah0tMcnkxxPdDx5NrEcrjlcEEcKHZw==
+X-Received: by 2002:a05:620a:172a:b0:775:9c22:e901 with SMTP id az42-20020a05620a172a00b007759c22e901mr12880926qkb.15.1698119556628;
+        Mon, 23 Oct 2023 20:52:36 -0700 (PDT)
 Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id ee3-20020a0562140a4300b0065b260eafd9sm3357598qvb.87.2023.10.23.20.52.34
+        by smtp.gmail.com with ESMTPSA id t14-20020a05620a0b0e00b007757fefea79sm3144655qkg.130.2023.10.23.20.52.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 20:52:34 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 23:52:34 -0400
-Message-ID: <c2a88a9292a6ce1e301ec2244657f385.paul@paul-moore.com>
+        Mon, 23 Oct 2023 20:52:36 -0700 (PDT)
+Date:   Mon, 23 Oct 2023 23:52:35 -0400
+Message-ID: <0c3ac562e5b8ea82d962478459bc7047.paul@paul-moore.com>
 From:   Paul Moore <paul@paul-moore.com>
 To:     Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net,
         zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
@@ -60,11 +60,11 @@ Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
         linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
         dm-devel@redhat.com, audit@vger.kernel.org,
         roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Fan Wu <wufan@linux.microsoft.com>,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [PATCH RFC v11 16/19] ipe: enable support for fs-verity as a trust  provider
-References: <1696457386-3010-17-git-send-email-wufan@linux.microsoft.com>
-In-Reply-To: <1696457386-3010-17-git-send-email-wufan@linux.microsoft.com>
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Fan Wu <wufan@linux.microsoft.com>
+Subject: Re: [PATCH RFC v11 17/19] scripts: add boot policy generation program
+References: <1696457386-3010-18-git-send-email-wufan@linux.microsoft.com>
+In-Reply-To: <1696457386-3010-18-git-send-email-wufan@linux.microsoft.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
@@ -76,159 +76,158 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
 > 
-> Enable IPE policy authors to indicate trust for a singular fsverity
-> file, identified by the digest information, through "fsverity_digest"
-> and all files using fsverity's builtin signatures via
-> "fsverity_signature".
-> 
-> This enables file-level integrity claims to be expressed in IPE,
-> allowing individual files to be authorized, giving some flexibility
-> for policy authors. Such file-level claims are important to be expressed
-> for enforcing the integrity of packages, as well as address some of the
-> scalability issues in a sole dm-verity based solution (# of loop back
-> devices, etc).
-> 
-> This solution cannot be done in userspace as the minimum threat that
-> IPE should mitigate is an attacker downloads malicious payload with
-> all required dependencies. These dependencies can lack the userspace
-> check, bypassing the protection entirely. A similar attack succeeds if
-> the userspace component is replaced with a version that does not
-> perform the check. As a result, this can only be done in the common
-> entry point - the kernel.
+> Enables an IPE policy to be enforced from kernel start, enabling access
+> control based on trust from kernel startup. This is accomplished by
+> transforming an IPE policy indicated by CONFIG_IPE_BOOT_POLICY into a
+> c-string literal that is parsed at kernel startup as an unsigned policy.
 > 
 > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
 > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 > ---
-> v1-v6:
->   + Not present
+> v2:
+>   + No Changes
+> 
+> v3:
+>   + No Changes
+> 
+> v4:
+>   + No Changes
+> 
+> v5:
+>   + No Changes
+> 
+> v6:
+>   + No Changes
 > 
 > v7:
->   Introduced
+>   + Move from 01/11 to 14/16
+>   + Don't return errno directly.
+>   + Make output of script more user-friendly
+>   + Add escaping for tab and '?'
+>   + Mark argv pointer const
+>   + Invert return code check in the boot policy parsing code path.
 > 
 > v8:
->   * Undo squash of 08/12, 10/12 - separating drivers/md/ from security/
->   * Use common-audit function for fsverity_signature.
->   + Change fsverity implementation to use fsverity_get_digest
->   + prevent unnecessary copy of fs-verity signature data, instead
->     just check for presence of signature data.
->   + Remove free_inode_security hook, as the digest is now acquired
->     at runtime instead of via LSM blob.
+>   + No significant changes.
 > 
 > v9:
->   + Adapt to the new parser
+>   + No changes
 > 
 > v10:
->   + Update the fsverity get digest call
+>   + Update the init part code for rcu changes in the eval loop patch
 > 
 > v11:
->   + No changes
+>   + Fix code style issues
 > ---
->  security/ipe/Kconfig         |  13 +++++
->  security/ipe/audit.c         |  23 ++++++++
->  security/ipe/eval.c          | 110 +++++++++++++++++++++++++++++++++++
->  security/ipe/eval.h          |  10 ++++
->  security/ipe/hooks.c         |  30 ++++++++++
->  security/ipe/hooks.h         |   7 +++
->  security/ipe/ipe.c           |  13 +++++
->  security/ipe/ipe.h           |   3 +
->  security/ipe/policy.h        |   3 +
->  security/ipe/policy_parser.c |   8 +++
->  10 files changed, 220 insertions(+)
+>  MAINTAINERS                   |   1 +
+>  scripts/Makefile              |   1 +
+>  scripts/ipe/Makefile          |   2 +
+>  scripts/ipe/polgen/.gitignore |   1 +
+>  scripts/ipe/polgen/Makefile   |   6 ++
+>  scripts/ipe/polgen/polgen.c   | 145 ++++++++++++++++++++++++++++++++++
+>  security/ipe/.gitignore       |   1 +
+>  security/ipe/Kconfig          |  10 +++
+>  security/ipe/Makefile         |  11 +++
+>  security/ipe/fs.c             |   8 ++
+>  security/ipe/ipe.c            |  12 +++
+>  11 files changed, 198 insertions(+)
+>  create mode 100644 scripts/ipe/Makefile
+>  create mode 100644 scripts/ipe/polgen/.gitignore
+>  create mode 100644 scripts/ipe/polgen/Makefile
+>  create mode 100644 scripts/ipe/polgen/polgen.c
+>  create mode 100644 security/ipe/.gitignore
 
 ...
 
-> diff --git a/security/ipe/audit.c b/security/ipe/audit.c
-> index b5c58655ac74..e3a8552a76a4 100644
-> --- a/security/ipe/audit.c
-> +++ b/security/ipe/audit.c
-> @@ -79,6 +100,8 @@ static void audit_rule(struct audit_buffer *ab, const struct ipe_rule *r)
->  		audit_log_format(ab, "%s", audit_prop_names[ptr->type]);
->  		if (ptr->type == IPE_PROP_DMV_ROOTHASH)
->  			audit_dmv_roothash(ab, ptr->value);
-> +		if (ptr->type == IPE_PROP_FSV_DIGEST)
-> +			audit_fsv_digest(ab, ptr->value);
+> diff --git a/scripts/ipe/polgen/polgen.c b/scripts/ipe/polgen/polgen.c
+> new file mode 100644
+> index 000000000000..40b6fe07f47b
+> --- /dev/null
+> +++ b/scripts/ipe/polgen/polgen.c
+> @@ -0,0 +1,145 @@
 
-My comments on audit_dmv_roothash() also apply here.
+...
 
->  		audit_log_format(ab, " ");
->  	}
-> diff --git a/security/ipe/eval.c b/security/ipe/eval.c
-> index 82ad48d7aa3d..f0194b0ca2ff 100644
-> --- a/security/ipe/eval.c
-> +++ b/security/ipe/eval.c
-> @@ -172,6 +191,91 @@ static bool evaluate_dmv_sig_true(const struct ipe_eval_ctx *const ctx,
->  }
->  #endif /* CONFIG_IPE_PROP_DM_VERITY */
->  
-> +#ifdef CONFIG_IPE_PROP_FS_VERITY
-> +/**
-> + * evaluate_fsv_digest - Analyze @ctx against a fsv digest property.
-> + * @ctx: Supplies a pointer to the context being evaluated.
-> + * @p: Supplies a pointer to the property being evaluated.
-> + *
-> + * Return:
-> + * * true	- The current @ctx match the @p
-> + * * false	- The current @ctx doesn't match the @p
-> + */
-> +static bool evaluate_fsv_digest(const struct ipe_eval_ctx *const ctx,
-> +				struct ipe_prop *p)
+> +static int write_boot_policy(const char *pathname, const char *buf, size_t size)
 > +{
-> +	enum hash_algo alg;
-> +	u8 digest[FS_VERITY_MAX_DIGEST_SIZE];
+> +	int rc = 0;
+> +	FILE *fd;
+> +	size_t i;
 > +
-> +	if (!ctx->ino)
-> +		return false;
-> +	if (!fsverity_get_digest((struct inode *)ctx->ino,
-> +				 digest,
-> +				 NULL,
-> +				 &alg))
-> +		return false;
+> +	fd = fopen(pathname, "w");
+> +	if (!fd) {
+> +		rc = errno;
+> +		goto err;
+> +	}
 > +
-> +	return ipe_digest_eval(p->value,
-> +			       digest,
-> +			       hash_digest_size[alg],
-> +			       hash_algo_name[alg]);
-> +}
+> +	fprintf(fd, "/* This file is automatically generated.");
+> +	fprintf(fd, " Do not edit. */\n");
+> +	fprintf(fd, "#include <linux/stddef.h>\n");
+> +	fprintf(fd, "\nextern const char *const ipe_boot_policy;\n\n");
+> +	fprintf(fd, "const char *const ipe_boot_policy =\n");
 > +
-> +/**
-> + * evaluate_fsv_sig_false - Analyze @ctx against a fsv sig false property.
-> + * @ctx: Supplies a pointer to the context being evaluated.
-> + * @p: Supplies a pointer to the property being evaluated.
-> + *
-> + * Return:
-> + * * true	- The current @ctx match the @p
-> + * * false	- The current @ctx doesn't match the @p
-> + */
-> +static bool evaluate_fsv_sig_false(const struct ipe_eval_ctx *const ctx,
-> +				   struct ipe_prop *p)
-> +{
-> +	return !ctx->ino ||
-> +	       !IS_VERITY(ctx->ino) ||
-> +	       !ctx->ipe_inode ||
-> +	       !ctx->ipe_inode->fs_verity_signed;
-> +}
+> +	if (!buf || size == 0) {
+> +		fprintf(fd, "\tNULL;\n");
+> +		fclose(fd);
+> +		return 0;
+> +	}
 > +
-> +/**
-> + * evaluate_fsv_sig_true - Analyze @ctx against a fsv sig true property.
-> + * @ctx: Supplies a pointer to the context being evaluated.
-> + * @p: Supplies a pointer to the property being evaluated.
-> + *
-> + * Return:
-> + * * true - The current @ctx match the @p
-> + * * false - The current @ctx doesn't match the @p
-> + */
-> +static bool evaluate_fsv_sig_true(const struct ipe_eval_ctx *const ctx,
-> +				  struct ipe_prop *p)
-> +{
-> +	return ctx->ino &&
-> +	       IS_VERITY(ctx->ino) &&
-> +	       ctx->ipe_inode &&
-> +	       ctx->ipe_inode->fs_verity_signed;
+> +	fprintf(fd, "\t\"");
+> +
+> +	for (i = 0; i < size; ++i) {
+> +		switch (buf[i]) {
+> +		case '"':
+> +			fprintf(fd, "\\\"");
+> +			break;
+> +		case '\'':
+> +			fprintf(fd, "'");
+> +			break;
+
+The revision of IPE proposed in this patchset doesn't support parsing
+single or double quotes, yes?
+
+> +		case '\n':
+> +			fprintf(fd, "\\n\"\n\t\"");
+> +			break;
+> +		case '\\':
+> +			fprintf(fd, "\\\\");
+> +			break;
+> +		case '\t':
+> +			fprintf(fd, "\\t");
+> +			break;
+> +		case '\?':
+> +			fprintf(fd, "\\?");
+> +			break;
+
+Similar, are question marks supported by the parser?
+
+> +		default:
+> +			fprintf(fd, "%c", buf[i]);
+> +		}
+> +	}
+> +	fprintf(fd, "\";\n");
+> +	fclose(fd);
+> +
+> +	return 0;
+> +
+> +err:
+> +	if (fd)
+> +		fclose(fd);
+> +	return rc;
 > +}
 
-See my previous comments about the false/true functions.
+...
 
-> +#else
+> diff --git a/security/ipe/.gitignore b/security/ipe/.gitignore
+> new file mode 100644
+> index 000000000000..eca22ad5ed22
+> --- /dev/null
+> +++ b/security/ipe/.gitignore
+> @@ -0,0 +1 @@
+> +boot-policy.c
+> \ No newline at end of file
+
+Add a newline please.
 
 --
 paul-moore.com
