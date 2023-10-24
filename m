@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A5A7D5C04
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202AC7D5C0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344261AbjJXT7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 15:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
+        id S1344218AbjJXUAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 16:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344012AbjJXT7w (ORCPT
+        with ESMTP id S1343922AbjJXUAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 15:59:52 -0400
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A010210C9;
-        Tue, 24 Oct 2023 12:59:50 -0700 (PDT)
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6c7b3adbeb6so3199443a34.0;
-        Tue, 24 Oct 2023 12:59:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698177590; x=1698782390;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Tue, 24 Oct 2023 16:00:50 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7689F129
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 13:00:48 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso707696066b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 13:00:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698177646; x=1698782446; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X34cwpBpiuP3aqf5QjDCKfEoi+InD6TZZpa1Cm188qc=;
-        b=Pv2pZVK+Je40RwnG8Ae1km7ocgLJvXvhzpRBZcwBbMvD+/78oK+wUydfKathlhsROV
-         8+PN2h7cQ6tHT5xwoSqe/4iHflrkYy4VX+w0rG1oPGpTku9LKlh95rjtM2chomxsLRfB
-         S7chYLHLx0Rt5nkN7yHLSYJkdqM2K8IBxCAwXaHCGnx/2rTRdXs7GEwAQMee9iTov0LO
-         vkTfYv+Yo+p0IVtnsHY5KdnoI0WUTKYmvbHlVpyFfMBChpWP3jNfbkn5dUSzKLGQIFZ/
-         ewWjQYl39ifGznDDBxfyfT6JuLq8JnPe5F7I+wlq0kLtHoJMyJi/ejI4MLkUDKTAgVw4
-         yKXQ==
-X-Gm-Message-State: AOJu0YyoORVT2IKYK9eAjxvimho2w/ctT6xiu4YZd7ftsk71MHMa2aoB
-        utUdfOgxELX1zcgabHgUsQ==
-X-Google-Smtp-Source: AGHT+IHIr4W8mfEnqO6DkV45UgvYeE2TGYjTXkCq8izEC3MLiXPtFc1Gm393ANejfie00c/rIq/f4w==
-X-Received: by 2002:a9d:6286:0:b0:6bd:152f:9918 with SMTP id x6-20020a9d6286000000b006bd152f9918mr14956463otk.14.1698177589921;
-        Tue, 24 Oct 2023 12:59:49 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id q13-20020a9d57cd000000b006ce2f4861c5sm1961116oti.62.2023.10.24.12.59.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 12:59:49 -0700 (PDT)
-Received: (nullmailer pid 465614 invoked by uid 1000);
-        Tue, 24 Oct 2023 19:59:48 -0000
-Date:   Tue, 24 Oct 2023 14:59:48 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Stanislav Jakubek <stano.jakubek@gmail.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Artur Weber <aweber.kernel@gmail.com>
-Subject: Re: [PATCH] dt-bindings: clock: brcm,kona-ccu: convert to YAML
-Message-ID: <20231024195948.GA459344-robh@kernel.org>
-References: <ZTUIJrTc6KKyT4xj@standask-GA-A55M-S2HP>
- <3df06d79-ea51-4202-8cc8-468f741603bf@linaro.org>
- <ZTbU0rkGMhja+J24@standask-GA-A55M-S2HP>
+        bh=DIN4mCJWlF4t4OQZVRc6T503X62iqMXHjjCRO+p+TuE=;
+        b=ICj9zbS0/2l2PzxgUsYWPQDsLzLoMz4pecmzKP+p1uXqnFGfrh9jqCTSDBYPEKvBLk
+         ZkfJ2Kztb7T6ZYGgGTmZom4WkSU1wuZ1okoOcI2D8+7vHu5yaxFzKUtFwACeuEC/bU7J
+         9aOlJOhZITTEaenQ9i46nhHBKEFQ86lQFT7mQFVCHZlGzZFC6FDWorStGbdtyP03QDLr
+         1g0MxBqC8Ww8rkBqJ8enkHH3YITFl5R9bUbJflJi3N9JnUG6AYMneQZqN5ypRqTdUH1A
+         RpQ70c/CTZ9rT1vhatMRejpWikzz3PKrDcl16Zo1Ab4heZLUMxtr10qC6Srx5PuI2ZkA
+         ewLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698177646; x=1698782446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DIN4mCJWlF4t4OQZVRc6T503X62iqMXHjjCRO+p+TuE=;
+        b=qnIx+o4FMMx+MZb5NchKUVgLBScxlhCVLhyw6/iZF5szm8wFTRAytQU6UjIobzCpTO
+         BK5WSKMhULmZ5Q+J8C4+CqV14P0INj59hO7gfy/25Foo+fWO3pylJEPZndzrXRlnX8+t
+         RqFUBxzc/Jb5a/7H3iNcQAQmRUaim3A/eLmincr4Mtu4WbMLZttLrwjQoODGy3YwLhi0
+         C8A0efkCwElEcrV2+sF+6jOVj04knkrJXF/ajG/sKLiJPc4pxlhI1kMGQ1DBjb7t8Rhv
+         dWs3zNy+QiLFqcuR8zcFD5D1XkYOHkMdoHkviP8WQCeMMlk20aruloGbcADzBcEj0/dQ
+         ERzw==
+X-Gm-Message-State: AOJu0Yzx0u7L/s2SCSovC8YVZJHFpY+cpwldxhpK3pg2j9XX6J3fTW5J
+        AgXGMEify8ijnamzABqFSc6D8VXa427qkaMRp7QBOA==
+X-Google-Smtp-Source: AGHT+IHSDiGEpDlRFQz+bKGVmlKZp5PGS0+WG2f3oJM+9ttLUJWAN6XpGIIrNHgDHfyWjv+/K4v+f/tZG5rZeZnkllQ=
+X-Received: by 2002:a17:906:dc89:b0:9bf:ad86:ece8 with SMTP id
+ cs9-20020a170906dc8900b009bfad86ece8mr11330327ejc.25.1698177646233; Tue, 24
+ Oct 2023 13:00:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTbU0rkGMhja+J24@standask-GA-A55M-S2HP>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+References: <20231019185319.2714000-5-arakesh@google.com> <202310200457.GwPPFuHX-lkp@intel.com>
+ <738df245-e7d1-4fc0-9076-3ac5afebaa44@google.com> <2023102103-casually-wavy-6a54@gregkh>
+ <CAMHf4WKgzvMoL6tKCiQYsuudQWgGBKkhfbmYgUxVXvLEqxi1GQ@mail.gmail.com> <2023102440-retaining-eskimo-92b0@gregkh>
+In-Reply-To: <2023102440-retaining-eskimo-92b0@gregkh>
+From:   Avichal Rakesh <arakesh@google.com>
+Date:   Tue, 24 Oct 2023 13:00:33 -0700
+Message-ID: <CAMHf4WLoB-8mp9=J82EZ5T2RsYzpWYkyv4v3DZ4Ag+Bpsxh=0A@mail.gmail.com>
+Subject: Re: [PATCH v6 4/4] usb: gadget: uvc: Fix use-after-free for inflight usb_requests
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     etalvala@google.com, jchowdhary@google.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com,
+        m.grzeschik@pengutronix.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,131 +74,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 10:17:22PM +0200, Stanislav Jakubek wrote:
-> On Mon, Oct 23, 2023 at 09:54:49AM +0200, Krzysztof Kozlowski wrote:
-> > On 22/10/2023 13:31, Stanislav Jakubek wrote:
-> > > Convert Broadcom Kona family clock controller unit (CCU) bindings
-> > > to DT schema.
-> > > 
-> > > Signed-off-by: Stanislav Jakubek <stano.jakubek@gmail.com>
-> > 
-> > Thank you for your patch. There is something to discuss/improve.
-> > 
-> > > +description:
-> > > +  Broadcom "Kona" style clock control unit (CCU) is a clock provider that
-> > > +  manages a set of clock signals.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - brcm,bcm11351-aon-ccu
-> > > +      - brcm,bcm11351-hub-ccu
-> > > +      - brcm,bcm11351-master-ccu
-> > > +      - brcm,bcm11351-root-ccu
-> > > +      - brcm,bcm11351-slave-ccu
-> > > +      - brcm,bcm21664-aon-ccu
-> > > +      - brcm,bcm21664-master-ccu
-> > > +      - brcm,bcm21664-root-ccu
-> > > +      - brcm,bcm21664-slave-ccu
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  '#clock-cells':
-> > > +    const: 1
-> > > +
-> > > +  clock-output-names:
-> > > +    minItems: 1
-> > > +    maxItems: 10
-> > > +
-> > > +allOf:
-> > > +  - if:
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            enum:
-> > > +              - brcm,bcm11351-aon-ccu
-> > > +              - brcm,bcm11351-hub-ccu
-> > > +              - brcm,bcm11351-master-ccu
-> > > +              - brcm,bcm11351-root-ccu
-> > > +              - brcm,bcm11351-slave-ccu
-> > > +    then:
-> > > +      properties:
-> > > +        clock-output-names:
-> > > +          description: |
-> > > +            The following table defines the set of CCUs and clock specifiers
-> > > +            for BCM281XX family clocks.
-> > > +            These clock specifiers are defined in:
-> > > +                "include/dt-bindings/clock/bcm281xx.h"
-> > > +
-> > > +            CCU     Clock        Type  Index  Specifier
-> > > +            ---     -----        ----  -----  ---------
-> > > +            root    frac_1m      peri    0    BCM281XX_ROOT_CCU_FRAC_1M
-> > > +
-> > > +            aon     hub_timer    peri    0    BCM281XX_AON_CCU_HUB_TIMER
-> > > +            aon     pmu_bsc      peri    1    BCM281XX_AON_CCU_PMU_BSC
-> > > +            aon     pmu_bsc_var  peri    2    BCM281XX_AON_CCU_PMU_BSC_VAR
-> > > +
-> > > +            hub     tmon_1m      peri    0    BCM281XX_HUB_CCU_TMON_1M
-> > > +
-> > > +            master  sdio1        peri    0    BCM281XX_MASTER_CCU_SDIO1
-> > > +            master  sdio2        peri    1    BCM281XX_MASTER_CCU_SDIO2
-> > > +            master  sdio3        peri    2    BCM281XX_MASTER_CCU_SDIO3
-> > > +            master  sdio4        peri    3    BCM281XX_MASTER_CCU_SDIO4
-> > > +            master  dmac         peri    4    BCM281XX_MASTER_CCU_DMAC
-> > > +            master  usb_ic       peri    5    BCM281XX_MASTER_CCU_USB_IC
-> > > +            master  hsic2_48m    peri    6    BCM281XX_MASTER_CCU_HSIC_48M
-> > > +            master  hsic2_12m    peri    7    BCM281XX_MASTER_CCU_HSIC_12M
-> > > +
-> > > +            slave   uartb        peri    0    BCM281XX_SLAVE_CCU_UARTB
-> > > +            slave   uartb2       peri    1    BCM281XX_SLAVE_CCU_UARTB2
-> > > +            slave   uartb3       peri    2    BCM281XX_SLAVE_CCU_UARTB3
-> > > +            slave   uartb4       peri    3    BCM281XX_SLAVE_CCU_UARTB4
-> > > +            slave   ssp0         peri    4    BCM281XX_SLAVE_CCU_SSP0
-> > > +            slave   ssp2         peri    5    BCM281XX_SLAVE_CCU_SSP2
-> > > +            slave   bsc1         peri    6    BCM281XX_SLAVE_CCU_BSC1
-> > > +            slave   bsc2         peri    7    BCM281XX_SLAVE_CCU_BSC2
-> > > +            slave   bsc3         peri    8    BCM281XX_SLAVE_CCU_BSC3
-> > > +            slave   pwm          peri    9    BCM281XX_SLAVE_CCU_PWM
-> > 
-> > I don't really understand why this is in the binding schema. I guess you
-> > wanted to copy it from the old binding, but, unless there is real reason
-> > for it, don't. The clock IDs should be in the header file and that's it.
-> > Nothing here.
-> 
-> Hi Krzysztof, you're correct that I just copied this from the old bindings.
-> brcm,iproc-clocks.yaml has a similar table, so I thought this would be fine.
-> I'm OK with dropping it, but how should I document the clock-output-names
-> values then? A bunch of if-then blocks (per compatible)? Or should I not even
-> bother and just keep minItems/maxItems without documenting the values?
-> 
-> > 
-> > > +  - if:
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            enum:
-> > > +              - brcm,bcm21664-aon-ccu
-> > > +              - brcm,bcm21664-master-ccu
-> > > +              - brcm,bcm21664-root-ccu
-> > > +              - brcm,bcm21664-slave-ccu
-> > > +    then:
-> > > +      properties:
-> > > +        clock-output-names:
-> > > +          maxItems: 8
-> 
-> I've also noticed that dtbs_check gives out warnings(?) like this for
-> bcm21664 ccu nodes:
-> 
-> /arch/arm/boot/dts/broadcom/bcm21664-garnet.dtb:
->     root_ccu@35001000: clock-output-names: ['frac_1m'] is too short
->     from schema $id: http://devicetree.org/schemas/clock/brcm,kona-ccu.yaml#
-> 
-> and this maxItems:8 seems to me like the culprit (since the bcm11351 if-then
-> doesn't have that). Seems to me like it also overrides the minItems to be 8
-> as well. I don't understand why it would do that though.
+On Tue, Oct 24, 2023 at 2:27=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+>
+> On Mon, Oct 23, 2023 at 02:25:30PM -0700, Avichal Rakesh wrote:
+> > On Sat, Oct 21, 2023 at 3:05=E2=80=AFAM Greg KH <gregkh@linuxfoundation=
+.org> wrote:
+> > >
+> > > On Thu, Oct 19, 2023 at 03:30:00PM -0700, Avichal Rakesh wrote:
+> > > >
+> > > >
+> > > > On 10/19/23 13:32, kernel test robot wrote:
+> > > > > Hi Avichal,
+> > > > >
+> > > > > kernel test robot noticed the following build warnings:
+> > > > >
+> > > > > [auto build test WARNING on usb/usb-testing]
+> > > > > [also build test WARNING on usb/usb-next usb/usb-linus linus/mast=
+er v6.6-rc6 next-20231019]
+> > > > > [If your patch is applied to the wrong git tree, kindly drop us a=
+ note.
+> > > > > And when submitting patch, we suggest to use '--base' as document=
+ed in
+> > > > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > > > >
+> > > > > url:    https://github.com/intel-lab-lkp/linux/commits/Avichal-Ra=
+kesh/usb-gadget-uvc-prevent-use-of-disabled-endpoint/20231020-025512
+> > > > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/us=
+b.git usb-testing
+> > > > > patch link:    https://lore.kernel.org/r/20231019185319.2714000-5=
+-arakesh%40google.com
+> > > > > patch subject: [PATCH v6 4/4] usb: gadget: uvc: Fix use-after-fre=
+e for inflight usb_requests
+> > > > > config: m68k-allyesconfig (https://download.01.org/0day-ci/archiv=
+e/20231020/202310200457.GwPPFuHX-lkp@intel.com/config)
+> > > > > compiler: m68k-linux-gcc (GCC) 13.2.0
+> > > > > reproduce (this is a W=3D1 build): (https://download.01.org/0day-=
+ci/archive/20231020/202310200457.GwPPFuHX-lkp@intel.com/reproduce)
+> > > > >
+> > > > > If you fix the issue in a separate patch/commit (i.e. not just a =
+new version of
+> > > > > the same patch/commit), kindly add following tags
+> > > > > | Reported-by: kernel test robot <lkp@intel.com>
+> > > > > | Closes: https://lore.kernel.org/oe-kbuild-all/202310200457.GwPP=
+FuHX-lkp@intel.com/
+> > > > >
+> > > > > All warnings (new ones prefixed by >>):
+> > > > >
+> > > > >>> drivers/usb/gadget/function/uvc_video.c:231: warning: This comm=
+ent starts with '/**', but isn't a kernel-doc comment. Refer Documentation/=
+doc-guide/kernel-doc.rst
+> > > > >     * Must be called with req_lock held as it modifies the list u=
+req is held in
+> > > > >
+> > > > >
+> > > >
+> > > > Greg, apologies for the newb question: do you want me to upload
+> > > > the fix for this as a reply to [PATCH v6 4/4], or upload a new chai=
+n of
+> > > > v7s with this patch fixed?
+> > >
+> > > A whole new v7 series please.
+> > >
+> >
+> > Had a feeling, so sent out v7 series preemptively. Let me know if that
+> > doesn't work.
+> >
+> > v7: https://lore.kernel.org/20231020173626.2978356-1-arakesh@google.com=
+/
+>
+> I have already dropped that from my review queue as your emails crossed
+> with that, so I thought it was obsolete by now, sorry.
+>
+> Can you send a v8 please?
+>
+Sent out v8! PTAL when you get the chance.
 
-Indeed it does. That should be fixed soon such that minItems/maxItems 
-will never be added implicitly to if/then/else schemas.
+https://lore.kernel.org/20231024183605.908253-1-arakesh@google.com/
 
-Rob
+Thank you!
+- Avi.
