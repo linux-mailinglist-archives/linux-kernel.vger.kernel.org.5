@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 417957D43C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A34B7D43C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbjJXAMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 20:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
+        id S231285AbjJXAOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 20:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbjJXAL5 (ORCPT
+        with ESMTP id S230421AbjJXAOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 20:11:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E14610C7
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:11:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BD0CC433C8;
-        Tue, 24 Oct 2023 00:11:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698106305;
-        bh=nunD+4gbQ43OWpDMzt1aMIddlChl+mgwV/NK5UI/DNM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JivXI1cLvpqztbdV9v6ENZOYrWK50wD/keeSE7slXsG0LBOG30oRoKeg0yEWml+0x
-         4dz4dID55O72HEKnF7KuwuI6/PqG0JweiNf7LJTpAvF/6u3+TBI6050umD/mosWvQ4
-         uVVNTz3xk1RdB/fgX3bY22RNduPlzKIAnJXcp1XOQbzOK1tnr0ulWMbOfhUi0qiuIB
-         YYPdcQVnRDhIYprIMLgK3fPVsbY2ziYnF8qzm+9HDXZyH41Eg2Dc6gv43FFObzSHRv
-         CMg0Q+UoGX1pbcsEoLXGZeX8ELI34XOul8AVRKymvtinLljzyv165Eh0Fhnyuw2XC6
-         jZw5AuYOhoZLg==
-Date:   Mon, 23 Oct 2023 17:11:43 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ciprian Regus <ciprian.regus@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        Dell Jin <dell.jin.code@outlook.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        "Andrew Lunn" <andrew@lunn.ch>, Simon Horman <horms@kernel.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-        <netdev@vger.kernel.org>
-Subject: Re: [net] net: ethernet: adi: adin1110: Fix uninitialized variable
-Message-ID: <20231023171143.47c83b0e@kernel.org>
-In-Reply-To: <20231020062055.449185-1-ciprian.regus@analog.com>
-References: <20231020062055.449185-1-ciprian.regus@analog.com>
+        Mon, 23 Oct 2023 20:14:12 -0400
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA7CD6E;
+        Mon, 23 Oct 2023 17:14:07 -0700 (PDT)
+Received: from [192.168.68.112] (ppp118-210-136-142.adl-adc-lon-bras33.tpg.internode.on.net [118.210.136.142])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id B500F20034;
+        Tue, 24 Oct 2023 08:13:55 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=codeconstruct.com.au; s=2022a; t=1698106442;
+        bh=xf45kMR6lFEzv3Mn9oNtZZ7uAthFMPRd7r9ZXIrWv7I=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=GUx5geqNxZPF0MtIxzsvsFTVESMyuDuDjKHiWQqcyqRia/okbxSE6uKQbWe5g5re7
+         isGkc4IGs2cHg8pQT52IimK+B9wasH2ws3jzSxcyJ2gEG3WnW1ey5CCyqVtaHHPwHa
+         uckM7NPQt/eBPF/181w1K6w9tX3stP3Hjc6j7N9fSlPeIyjF/ZgUoAwl+QzFiaKKUT
+         9bhPHskstheOQUIYsyupO760PTI21905eYXRhNDgDGmxKi0fqdHZqHLv3SPuwrm/5w
+         k+0crspYly9IZA0eq5iC9rzeTsO2uoNRITV5ohc6W8L0kgJB9+/Y0v+tsAuT06YqpS
+         j7oxYADgJPEIQ==
+Message-ID: <d4f77e13d3c5de613877450fd25bf5f77f1331a2.camel@codeconstruct.com.au>
+Subject: Re: [PATCH] drm: Use device_get_match_data()
+From:   Andrew Jeffery <andrew@codeconstruct.com.au>
+To:     Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Joel Stanley <joel@jms.id.au>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Inki Dae <inki.dae@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>, Stefan Agner <stefan@agner.ch>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Date:   Tue, 24 Oct 2023 10:43:55 +1030
+In-Reply-To: <20231020125214.2930329-1-robh@kernel.org>
+References: <20231020125214.2930329-1-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 09:20:53 +0300 Ciprian Regus wrote:
-> The spi_transfer struct has to have all it's fields initialized to 0 in
-> this case, since not all of them are set before starting the transfer.
-> Otherwise, spi_sync_transfer() will sometimes return an error.
-> 
-> Fixes: a526a3cc9c8d ("net: ethernet: adi: adin1110: Fix SPI transfers")
+On Fri, 2023-10-20 at 07:52 -0500, Rob Herring wrote:
+> Use preferred device_get_match_data() instead of of_match_device() to
+> get the driver match data in a single step. With this, adjust the
+> includes to explicitly include the correct headers. That also serves as
+> preparation to remove implicit includes within the DT headers
+> (of_device.h in particular).
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  drivers/gpu/drm/armada/armada_crtc.c    | 24 +++++++-----------------
+>  drivers/gpu/drm/aspeed/aspeed_gfx_drv.c | 10 ++++------
 
-Applied, thank you!
+For Aspeed:
+
+Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+
+Thanks!
