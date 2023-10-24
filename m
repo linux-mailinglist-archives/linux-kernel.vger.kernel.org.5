@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA8F7D5E08
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAB67D5E09
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344503AbjJXWYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
+        id S1344522AbjJXWYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344440AbjJXWY3 (ORCPT
+        with ESMTP id S1344481AbjJXWYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:24:29 -0400
+        Tue, 24 Oct 2023 18:24:31 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19B210DA
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:24 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9c4ae201e0so251735276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6231705
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:27 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9cb4de3bf0so5993692276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698186264; x=1698791064; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698186266; x=1698791066; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=cG5+OY088Om6+iLiqKt06WFCMXUosiNbLSusAjLjbIM=;
-        b=ZZqrKT+UjHHvy/H00VQVIZt3PiS/jfnqDnz7ouPps9VLW80Fv2MkQkEZp+0e3wLOvi
-         aIC9Le/kVULcDKBJ0GuhTEYHFDpIpHkFYeU2Vivs0+agAus9cmVUypi2M6ZIE5lsnBwd
-         F0x4UKY7hlNf8NIh4Hiky32niofP45ujmy8OV6r4DCzjX2xk21gGUPKeve6IZmY/i0/w
-         MpxWzRL0gKARR1KGhg9O6ItbnHJWZ/Fd1AVL3ooyhebg2Fnjq1GzBJGN8uO/fVV+FRBT
-         ef0MFik8vbgkT404AwvA9/VZ8dcmVWEn/uZN0ECmOGyWEFjzxotYS3SucyA82jueLp4D
-         b7Cw==
+        bh=TVGR9Xyq2raGKRiGJds6iUcO5Lwf67o/Z2QHhpJQbfc=;
+        b=ydbfqHeKgSmvFccd0/lADv3jDFkKDDTtxmixOmTXahACyrE+ZbWlkxxgbjNr/CQEeM
+         d+cfSwlTgZSyT6SM8NTk2sjvATpeYifQt66+2zi2i+FpB2gH0A5VVjJrkoAPKe4A8s0G
+         09dIdKRnwy2R1ipHQJPVWTt8+jS7TRPuFFkH6t0heiUigPwY35F0Bvmsp55cYhUVKROf
+         CiXKIeWui1hEXCBec5lnKU4Kqke7cIWHJg2bd4xtHQc5wmK4RZ9HBH7t7t/ZvTDu0PiF
+         JWwc5+dfjSDD2voG0Agh4C4fQVN4AehnvGsbJnZYty009NEwb+6UYRvsZbdoGEQYGUbx
+         ho5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698186264; x=1698791064;
+        d=1e100.net; s=20230601; t=1698186266; x=1698791066;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cG5+OY088Om6+iLiqKt06WFCMXUosiNbLSusAjLjbIM=;
-        b=d4WGfQrILMSEjNpPKavyT9Z51Sc1/isgzOdyugUqkEKw9C4Zt6LNROGEGoRohRiY6c
-         pY+LzyjDtdjmQZABMPpjAHXcyUtQBQX1YvB/NZS7rWNsmT+WYwaeuaUIMeqERPwIWQJk
-         euF4qgDjCHu/Jb5z46Q7q7rcDLKKnJaH+eeuVe/Si2UjbXdxOdX4QtjjfTnH7+5UPrUE
-         GKbQGa66dSGd2qSo2Pb+tAy76nEmqN7KIOUeaeEN3VCJ11te8NuSurLzeb/ZceN1H1h1
-         kMXputmf3bSKasKozuzrMdcu2ry6VzsVEupSxFmS9YHQtnOS/zW3XYBuqJeU1pnefLu3
-         icpQ==
-X-Gm-Message-State: AOJu0YxMN4ZeeLL1MDXvlvoIMHayYy9THt8Xd6zTc1xrIlgUMHXkz736
-        QwBvP+aP90kzOzeb9KxIR8sp5vCasfnl
-X-Google-Smtp-Source: AGHT+IFn//bqSDPEs2RC7FYYE8cGNXvKFT1zQAKQHXM0RMKa99x4nFnwh3d+RZhqnjrY7SobrnskwiRaU1e/
+        bh=TVGR9Xyq2raGKRiGJds6iUcO5Lwf67o/Z2QHhpJQbfc=;
+        b=CI41txB337NQS2u/XufX66uC0q3q6OEmB2zHTod/bMLWQOw92RQa3dzVJOwDvSTssj
+         HQ6rzRlp/crQUjAGuBz77xLzmQZN1iS+brgU8eccr1auSsZ/i53FJ98HwFNF3W+2rH1g
+         7rfm0i16QaNmx9bDCHvzyrA4gljfVxezxEv4F/Gtc4K+rxyEwfzTz7DammUELxmlqa4F
+         Z0pCVRlOX/yengzMMyhqBUX7TRSXhtWcx/rtB1qQIFoSGRJFrwIOEogk6IzQhSKnFNFh
+         az1RQ3yFpYvu5Dh3pXw9oc6ika71UzLqEcarEm78LyV8so316ZaF5sFrVnLSvKrAdfmk
+         vjYA==
+X-Gm-Message-State: AOJu0YzXle8Kzwc2aZMeLGhle9j9A99IBTdJCVDQfXTOivyigd1+j2dT
+        warLvKKyG1+y6+6Bj3mmc7hwJlQB1bVW
+X-Google-Smtp-Source: AGHT+IE0LnLyRZWa3HLVttfv23W2KKPiQIO0rXTRdCKvqzFZLAQ2zpqNdQtleswviPvhJJuZK+5ZXsYOiV7e
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:93d2:18cc:4d63:45ba])
- (user=irogers job=sendgmr) by 2002:a25:34d1:0:b0:d9a:6360:485b with SMTP id
- b200-20020a2534d1000000b00d9a6360485bmr385686yba.2.1698186263960; Tue, 24 Oct
- 2023 15:24:23 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 15:23:08 -0700
+ (user=irogers job=sendgmr) by 2002:a25:8541:0:b0:d89:b072:d06f with SMTP id
+ f1-20020a258541000000b00d89b072d06fmr256399ybn.7.1698186266012; Tue, 24 Oct
+ 2023 15:24:26 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 15:23:09 -0700
 In-Reply-To: <20231024222353.3024098-1-irogers@google.com>
-Message-Id: <20231024222353.3024098-6-irogers@google.com>
+Message-Id: <20231024222353.3024098-7-irogers@google.com>
 Mime-Version: 1.0
 References: <20231024222353.3024098-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Subject: [PATCH v3 05/50] perf hist: Add missing puts to hist__account_cycles
+Subject: [PATCH v3 06/50] perf threads: Remove unused dead thread list
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -96,50 +96,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Caught using reference count checking on perf top with
-"--call-graph=lbr". After this no memory leaks were detected.
+Commit 40826c45eb0b ("perf thread: Remove notion of dead threads")
+removed dead threads but the list head wasn't removed. Remove it here.
 
-Fixes: 57849998e2cd ("perf report: Add processing for cycle histograms")
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/hist.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ tools/perf/util/machine.c | 1 -
+ tools/perf/util/machine.h | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
-index cde0078e6c90..0aa7e231172a 100644
---- a/tools/perf/util/hist.c
-+++ b/tools/perf/util/hist.c
-@@ -2676,8 +2676,6 @@ void hist__account_cycles(struct branch_stack *bs, struct addr_location *al,
- 
- 	/* If we have branch cycles always annotate them. */
- 	if (bs && bs->nr && entries[0].flags.cycles) {
--		int i;
--
- 		bi = sample__resolve_bstack(sample, al);
- 		if (bi) {
- 			struct addr_map_symbol *prev = NULL;
-@@ -2692,7 +2690,7 @@ void hist__account_cycles(struct branch_stack *bs, struct addr_location *al,
- 			 * Note that perf stores branches reversed from
- 			 * program order!
- 			 */
--			for (i = bs->nr - 1; i >= 0; i--) {
-+			for (int i = bs->nr - 1; i >= 0; i--) {
- 				addr_map_symbol__account_cycles(&bi[i].from,
- 					nonany_branch_mode ? NULL : prev,
- 					bi[i].flags.cycles);
-@@ -2701,6 +2699,12 @@ void hist__account_cycles(struct branch_stack *bs, struct addr_location *al,
- 				if (total_cycles)
- 					*total_cycles += bi[i].flags.cycles;
- 			}
-+			for (unsigned int i = 0; i < bs->nr; i++) {
-+				map__put(bi[i].to.ms.map);
-+				maps__put(bi[i].to.ms.maps);
-+				map__put(bi[i].from.ms.map);
-+				maps__put(bi[i].from.ms.maps);
-+			}
- 			free(bi);
- 		}
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 098600d983c5..31fdbb0f27af 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -67,7 +67,6 @@ static void machine__threads_init(struct machine *machine)
+ 		threads->entries = RB_ROOT_CACHED;
+ 		init_rwsem(&threads->lock);
+ 		threads->nr = 0;
+-		INIT_LIST_HEAD(&threads->dead);
+ 		threads->last_match = NULL;
  	}
+ }
+diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
+index d034ecaf89c1..1279acda6a8a 100644
+--- a/tools/perf/util/machine.h
++++ b/tools/perf/util/machine.h
+@@ -35,7 +35,6 @@ struct threads {
+ 	struct rb_root_cached  entries;
+ 	struct rw_semaphore    lock;
+ 	unsigned int	       nr;
+-	struct list_head       dead;
+ 	struct thread	       *last_match;
+ };
+ 
 -- 
 2.42.0.758.gaed0368e0e-goog
 
