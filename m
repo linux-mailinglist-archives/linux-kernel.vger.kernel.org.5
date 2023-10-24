@@ -2,104 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 207F47D53B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04447D53B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343623AbjJXOO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 10:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
+        id S1343663AbjJXOOf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 10:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343518AbjJXOOZ (ORCPT
+        with ESMTP id S1343518AbjJXOOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:14:25 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5712DC4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:14:23 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b512dd7d5bso454747b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:14:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698156862; x=1698761662; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=scCY6Z97zhmNP1gAoFGdRujC/I+uoKWN9MG2mo0gcTs=;
-        b=iQh0FwQlMa87RELBXsNWCfDI3b2MGNPOe73mEkNZpz9fz2kQp+lJVOjgkfGZ9t8ve0
-         rE21QNzM9UIS+7IdD84dW9d9cMgMrNFAJMk/Zv6a4NicM9T+K8bED20twNghv6azdzoB
-         f2oLvj7bzm+g5GMafulru3VPe7B55rMGOmyNQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698156862; x=1698761662;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=scCY6Z97zhmNP1gAoFGdRujC/I+uoKWN9MG2mo0gcTs=;
-        b=GQUSKBMK42k2j1q9RyjdhrDlMCoqSS1uHLJkOjSkYHhC1mfox5JmkbdwKPIwIvqCFw
-         rDRGCcbTsQt9vorjbUfJcED4EVFU3w2Bvzj9fBy2STNh2G6TlhqDOpHzfnGw2B7kugYP
-         fVVYVRSe7nmQS0wE5FlV6Z9e/jihIN9vve65Q1MJf3VLtpLDgR6EdE49rgtMnytaOj5V
-         +vOEkYhQv/Eg1WYkGB581MKTEWJYU2USJZcI248Xnv8knZbeO2FbY5EVaaY+fYLz6omG
-         2SCahsEKB9QNwI9zahUXzyXif30IPnNMNv7LEHVe9K+79yJS3eYBOXwEmV2uIQ6JACM5
-         xD6w==
-X-Gm-Message-State: AOJu0YwjKamcYGHuFPx+ThLryOVbThJ80Z4kroqNoMelww7YUOgDYUCL
-        7CObt2XXmitelvTGdsuSyH4T2dW/VnVycTbe2W4=
-X-Google-Smtp-Source: AGHT+IGpC/t6xxkJj/reT4dvsvDu+Vx92dgL9E2tM2g9pdt3DgoDM4cfSf2pbaCWkKKxb14LJz1dpg==
-X-Received: by 2002:a05:6808:152a:b0:3b2:e48d:97bd with SMTP id u42-20020a056808152a00b003b2e48d97bdmr16779320oiw.23.1698156862206;
-        Tue, 24 Oct 2023 07:14:22 -0700 (PDT)
-Received: from jdenose34.roam.corp.google.com (99-137-158-190.lightspeed.cicril.sbcglobal.net. [99.137.158.190])
-        by smtp.gmail.com with ESMTPSA id bx20-20020a0568081b1400b003af60f06629sm1948590oib.6.2023.10.24.07.14.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 07:14:21 -0700 (PDT)
-From:   Jonathan Denose <jdenose@chromium.org>
-X-Google-Original-From: Jonathan Denose <jdenose@google.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-acpi@vger.kernel.org, Jonathan Denose <jdenose@google.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH] ACPI: EC: Add quirk for HP 250 G7 Notebook PC
-Date:   Tue, 24 Oct 2023 09:13:36 -0500
-Message-ID: <20231024091336.1.Ie25ddf26b761bf185b7152c6a9884977f0ce73f9@changeid>
-X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
+        Tue, 24 Oct 2023 10:14:33 -0400
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1486A109
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:14:31 -0700 (PDT)
+Received: from omf02.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay03.hostedemail.com (Postfix) with ESMTP id B44BDA019E;
+        Tue, 24 Oct 2023 14:14:29 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 7F1BC80012;
+        Tue, 24 Oct 2023 14:14:27 +0000 (UTC)
+Message-ID: <f3bacb7d1da93aee9a549da3b96faa4cb9350b3e.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: Recognise "Debugged-by" tags
+From:   Joe Perches <joe@perches.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, apw@canonical.com,
+        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com
+Date:   Tue, 24 Oct 2023 07:14:26 -0700
+In-Reply-To: <20231024111714.1814510-1-mpe@ellerman.id.au>
+References: <20231024111714.1814510-1-mpe@ellerman.id.au>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Rspamd-Queue-Id: 7F1BC80012
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+X-Rspamd-Server: rspamout02
+X-Stat-Signature: eqc39nishcsg83y9hkbf4qs6kc43o3xw
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19OuAsZtjVqdX/k4kaRNiC7q9ozjd07M70=
+X-HE-Tag: 1698156867-311397
+X-HE-Meta: U2FsdGVkX1+YwLjmbuMO33jW6DJnLn9o72PpeCDdQCumPiqqrYCebbRFlbuY/y212A+up10TeiXzxjmFy8QPSg4nXVvYiDuqC5AKNzuDHt+qhE/8Dz4omLP4ub7FQ/5wCUH2QjnxTAEBmGonwE21Pd8+lu2tITiNpQnjsi80EvRtQ4CsVWlhRmaBTnkvz3BcuDp3KE58uIK/38UqSsQsom+9VO2RrEgNjM+4bLvON13y2XkZQuSQQQkIbrUcIWdGHmA6N+w6j3truoU2eK5+UgvDLHcygxEYcVH1sIwjSdRgqrj8BKDgsCaK+b6tCC3M+GEhvY4uzyBYw+aqZCPwJqgLYIOQr79cU0t5t19IalRCLHlYK2v5knw0mjgF/XRy
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added GPE quirk entry for HP 250 G7 Notebook PC. This change
-allows the lid switch to be identified as the lid switch and not
-a keyboard button. With the lid switch properly identified, the
-device triggers suspend correctly on lid close.
+On Tue, 2023-10-24 at 22:17 +1100, Michael Ellerman wrote:
+> Currently checkpatch complains about "Debugged-by:" tags:
+> 
+>   WARNING: Non-standard signature: Debugged-by:
+>   #33:
+>   Debugged-by: Jane Doe <jane@doe.com>
+> 
+> There are over 150 Debugged-by tags already in the history, so
+> checkpatch should allow them.
 
-Signed-off-by: Jonathan Denose <jdenose@google.com>
----
+nack.
 
- drivers/acpi/ec.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-index c95d0edb0be9e..a59c11df73754 100644
---- a/drivers/acpi/ec.c
-+++ b/drivers/acpi/ec.c
-@@ -1924,6 +1924,16 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion Gaming Laptop 15-dk1xxx"),
- 		},
- 	},
-+	{
-+		/*
-+		 * HP 250 G7 Notebook PC
-+		 */
-+		.callback = ec_honor_dsdt_gpe,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP 250 G7 Notebook PC"),
-+		},
-+	},
- 	{
- 		/*
- 		 * Samsung hardware
--- 
-2.42.0.758.gaed0368e0e-goog
+Please do not use checkpatch to change process.
+Update the process docs then update checkpatch.
 
