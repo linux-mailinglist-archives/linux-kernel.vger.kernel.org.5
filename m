@@ -2,156 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3B07D4F9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D327D4FA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbjJXMQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47218 "EHLO
+        id S231951AbjJXMRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbjJXMQg (ORCPT
+        with ESMTP id S231478AbjJXMRg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:16:36 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8547B10C0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:16:33 -0700 (PDT)
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 880A23FAD3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 12:16:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1698149787;
-        bh=thwvxYYMUVPSY3nzBc7xApM08Kssn5NAFL9o/BCJG0g=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=nZSj4IliyasfjvdC4ZPXWVk4QNzAZMC4s2MadTa0AMCKlyPrLhK5znrt/M9U7BPKg
-         tt3gZObdEneza01sXSXHsFl8poxyaUo/w3/1gTrrVuhqwvqXvSt1o2XNtq9TIotWGB
-         3GojfzMSgSTFbLTmAb8j1jO68hOuNuGdA6XbDwDiATUqzkHTEpq3fDVbbeSOufbWHN
-         ggvkIkgmtifj5iYtmbaxWf47IIOtt0mRRMM/TCqfTrV+f6BLrYbqcgR4nPBvtei3DF
-         IABJGa3LgNJ/wKyvo/jBIE6qFWswb+OKhGCiBNuGJZXHaH7VJVlIE8NkGLW4oDdHjG
-         mG36JgrDIcadw==
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-41cc72fca99so59999971cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:16:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698149786; x=1698754586;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=thwvxYYMUVPSY3nzBc7xApM08Kssn5NAFL9o/BCJG0g=;
-        b=IXgifdMg5+LoQt7tvfCK0qOs8oMtwimqKchk8PpaY72z/7tf9UCmxJRhBblAbr0c1O
-         swOXBkm8mgx6MKWIrIRXc93JAGDJQpdDjhOy+TOWgBn6JnjtDgowqN6LBGx7KpHZi3Ef
-         UpYcpxRDW+8z5xCTA6ZPr2yjTYCWZYg5UrcgBWFNd0Tl7OWNo2tJuDnyBYAIBOJe46Nm
-         uQQCmmHTaaCLaSsGX7F3VChKJ/794A1mP3M7ZtkUHRfcfUCQGnQMFXMFgxA3yMqehFhB
-         1x1x45xmlPdarTss1Nw1O293hsW7JNVTw+2SbOrRi/IUncEDp5MyAmdroqGvzwtu80OF
-         MAPA==
-X-Gm-Message-State: AOJu0YzJ2mw6dHynbJgOr3ALJx9YxQvRSz0rlOcTTGZbHdVW+cFzI32b
-        ZkaWAXgleutGrkdRCnJl2fk7xh9y4RalPYf/4XplmgDc40prgHY1kK692+voagd//uzjLFNlwtX
-        4YPeIXCmkE4L9NiidVIPvyIPoXPW0jSr3cS5QQIXDrFD/F5I9GWWNLVeb1n4ZtGDPbA==
-X-Received: by 2002:a05:622a:2d2:b0:418:152d:bf4 with SMTP id a18-20020a05622a02d200b00418152d0bf4mr13460078qtx.51.1698149786494;
-        Tue, 24 Oct 2023 05:16:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEOE0qGS2pSUMsJf2A8W5Ex0DMIs+jJV1IcL5+p/qejHg+bJIzitFRzRk24ZJkjngpmMhUlqv5mwknRsepuX1A=
-X-Received: by 2002:a05:622a:2d2:b0:418:152d:bf4 with SMTP id
- a18-20020a05622a02d200b00418152d0bf4mr13460067qtx.51.1698149786276; Tue, 24
- Oct 2023 05:16:26 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 24 Oct 2023 05:16:25 -0700
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20231023-th1520-mmc-v3-6-abc5e7491166@baylibre.com>
-References: <20231023-th1520-mmc-v3-0-abc5e7491166@baylibre.com> <20231023-th1520-mmc-v3-6-abc5e7491166@baylibre.com>
-Mime-Version: 1.0
-Date:   Tue, 24 Oct 2023 05:16:25 -0700
-Message-ID: <CAJM55Z-OBUsnybSLTxB8RHwsYuWhsMKVH3x8ana4=LeZ98Yv1Q@mail.gmail.com>
-Subject: Re: [PATCH v3 6/7] riscv: dts: thead: Enable BeagleV Ahead eMMC and microSD
-To:     Drew Fustini <dfustini@baylibre.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>
-Cc:     devicetree@vger.kernel.org, Han Gao <gaohan@iscas.ac.cn>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Xi Ruoyao <xry111@xry111.site>, linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Tue, 24 Oct 2023 08:17:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A29A2;
+        Tue, 24 Oct 2023 05:17:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698149854; x=1729685854;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wuBMd3mo+5ZEGiZ3gwI9A1ReTEQWMLj66Y1biRz0ulw=;
+  b=ZgR1IZJWSokh3u0a7yTLfBwAkCRlBUy8LxFeMaMfA4JEU4gApFx3Temh
+   YZmEHXh8QAOZpvyPIxgoFYY2alVw30Ln8Q9v5gYC3T1Pvppkuo4WzmxcK
+   LF/x+x93Xgmf0SuT6Xyf8syTVaYyKojxy8ou6YFgrkECx0Ky+Qztbity9
+   vSfd+k/ohoSdnZSRn1/5pv4seV20LhavZrixmHZsMiTJL9pzDMY/f/32c
+   +3cAh75M7PNMIr+1DTky2Bx3pd+eNwoQofdlic8KnzQu5YdJhudQoS8SN
+   DNeSJ4eprHsaAbxQVpQc+XjA3lsMkZLBELb57tVbWzn00cZXq2AD6auKM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="451273155"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="451273155"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 05:17:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="902149502"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="902149502"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 05:15:09 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qvGLe-00000008HMX-3G6I;
+        Tue, 24 Oct 2023 15:17:26 +0300
+Date:   Tue, 24 Oct 2023 15:17:26 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh@kernel.org>, Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Subject: Re: [RFC PATCH 1/2] serial: core: Move tty and serdev to be children
+ of serial core port device
+Message-ID: <ZTe11rbKgcusPRD/@smile.fi.intel.com>
+References: <20231024113624.54364-1-tony@atomide.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024113624.54364-1-tony@atomide.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drew Fustini wrote:
-> Add mmc0 properties for the eMMC device and add mmc1 properties for
-> the microSD slot. Set the frequency for the sdhci clock.
->
-> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> ---
->  arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
->
-> diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> index 70e8042c8304..c4e748827889 100644
-> --- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> +++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
-> @@ -52,6 +52,10 @@ &uart_sclk {
->  	clock-frequency = <100000000>;
->  };
->
-> +&sdhci_clk {
-> +	clock-frequency = <198000000>;
-> +};
-> +
->  &dmac0 {
->  	status = "okay";
->  };
-> @@ -59,3 +63,19 @@ &dmac0 {
->  &uart0 {
->  	status = "okay";
->  };
-> +
-> +&mmc0 {
-> +	bus-width = <8>;
-> +	max-frequency = <198000000>;
-> +	mmc-hs400-1_8v;
-> +	non-removable;
-> +	no-sdio;
-> +	no-sd;
-> +	status = "okay";
-> +};
-> +
-> +&mmc1 {
-> +	max-frequency = <198000000>;
-> +	bus-width = <4>;
-> +	status = "okay";
-> +};
+On Tue, Oct 24, 2023 at 02:36:18PM +0300, Tony Lindgren wrote:
+> Let's move tty and serdev controller to be children of the serial core port
+> device. This way the runtime PM usage count of a child device propagates
+> to the serial hardware device.
+> 
+> The tty and serdev devices are associated with a specific serial port of
+> a serial hardware controller device, and we now have serial core hierarchy
+> of controllers and ports.
+> 
+> The tty device moves happily with just a change of the parent device.
+> The serdev device init needs some changes to separate the serial hardware
+> controller device from the parent device.
 
-Hi Drew,
+...
 
-For the StarFive device tree files we've agreed on sorting by / node, clock
-references, and then other node references alphabetically. I'm not
-insisting you should do the same, but it would be nice with some system to make
-it clear where new node refences should go. Or maybe I'm just not seeing the
-system you're already following.
+> -	ctrl->dev.of_node = parent->of_node;
+> +	ctrl->dev.of_node = host->of_node;
 
-/Emil
+Even above should have been using device_set_node(&ctrl->dev, dev_fwnode(host)).
 
->
-> --
-> 2.34.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+...
+
+>  	/* Make sure controller and ResourceSource handle match */
+> -	if (ACPI_HANDLE(ctrl->dev.parent) != lookup.controller_handle)
+> +	if (ACPI_HANDLE(ctrl->host) != lookup.controller_handle)
+
+This can be changed to use device_match_acpi_handle().
+
+>  		return -ENODEV;
+
+...
+
+> -	if (!has_acpi_companion(ctrl->dev.parent))
+> +	if (!has_acpi_companion(ctrl->host))
+
+I prefer is_acpi_device_node(dev_fwnode(...)) check, but here seems no other
+use for fwnode (haven't checked the full context, though).
+
+>  		return -ENODEV;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
