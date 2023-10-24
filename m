@@ -2,194 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 658E97D4393
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5217D4396
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbjJXAHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 20:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
+        id S230428AbjJXAHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 20:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjJXAHH (ORCPT
+        with ESMTP id S229679AbjJXAH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 20:07:07 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684D010A;
-        Mon, 23 Oct 2023 17:07:04 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c9b1e3a809so24365695ad.2;
-        Mon, 23 Oct 2023 17:07:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698106024; x=1698710824; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FVGJ5sudlybAUoU4/L69TVsLsQEiCat6/Z6vYWRvA+k=;
-        b=Y+JSA04Sf/kqSiWkNzN0Xtq16jXeaD95NvJKpPq8oYpg15id/7Ndd1C3MXPI/l78dh
-         aOpape3vrcSuitp6tXktXrozpbhBgxvwA3fgEiXdlptL1rX+76wcRcMzqCim/M4f6qT/
-         4ihbPaMIXOGvZZwLn5o3n4X9CgFILxlCZCVqj4IzVMnAxbVFxiV305Wa/yOSWJmF2is3
-         PxPKkKdLVc8wpCfGPRK0nckIOotnDkYqn5CMvW94e7h6V9u1R6ssmIIe3jy8Fril7HX/
-         zLyajVYr5kNeBm0ZTX6p6pKKr8Sy4Sz6NbOB7AknxUqJmjeYVr0hVEB3xc0nXMFI9fwY
-         3eMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698106024; x=1698710824;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FVGJ5sudlybAUoU4/L69TVsLsQEiCat6/Z6vYWRvA+k=;
-        b=LW5iIFky0R6jzG9nitlv97r0p5baxpaD1aSXZ9f5LDxbjhnMiVbj48ZCeyx5vnN8E2
-         awm+I/DGloFqFiqCHV5pgLBxOa91uJ3GTRDuzCo2ZBxpQUBQJ/E5pbnrWweDpo/8QxB7
-         2NlWI9wS6YfnTGEjQ6OSaeZduAfMQjoxsKYiWjMoyVbNSU9DvIjVwhXqZ6GH/gumb+/o
-         A+aWtKUxAVvAcMEQG0l85lQpG59PMKo/IM8L4CgUgCQw/Jw6tMTfrTeHnmE+OqwMRLo0
-         pRvcWRofMF3lhn+ZmVrAl6CIoKrfrU4b7qoSWIPCtotwP9iZNI9IqKRdK9GHMrNxUqkr
-         +kSA==
-X-Gm-Message-State: AOJu0YxoPqB9S5N1AT8NZpzeKkKD/oDvyoj/B5ApOsxzyOoSMmMXYNwj
-        Juk1NQZl/Ga1bpdxlef7Lqw=
-X-Google-Smtp-Source: AGHT+IE7EC9NzWgKAl37wbTsKByqXoQg4bH181CdHJEGVy0sZwB5krK0Q6/inRU8TgnzAMx4IqTjzQ==
-X-Received: by 2002:a17:902:ea09:b0:1c8:9d32:339e with SMTP id s9-20020a170902ea0900b001c89d32339emr8958779plg.50.1698106023659;
-        Mon, 23 Oct 2023 17:07:03 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-008.fbsv.net. [2a03:2880:ff:8::face:b00c])
-        by smtp.gmail.com with ESMTPSA id u8-20020a170902e5c800b001bc2831e1a8sm6438314plf.80.2023.10.23.17.07.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 17:07:03 -0700 (PDT)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH] zswap: export more zswap store failure stats
-Date:   Mon, 23 Oct 2023 17:07:02 -0700
-Message-Id: <20231024000702.1387130-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 23 Oct 2023 20:07:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6509110;
+        Mon, 23 Oct 2023 17:07:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698106047; x=1729642047;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NrjV4WGvbvWR86sSD3Ua1QhLRp1hvz/gEx/hUAAe/8U=;
+  b=U1GE9vi47lhBEYm9XwQhLw5ZIczUjJyYkrF43WrZAX3wE1TAp4cbk3DB
+   cz8OOczQtezSqeyUkN1fXm5Mcvip0OLjlWaxpwAgHNUdiKC8K+Ltyt3bd
+   ZSZAVAUBJymqbrj+CmpO4jUS+GXS5t+th4T/9WGknKcKxOEZvNX0IAylZ
+   UD2GVif38Dw87HmcBB/zXX5CE9/sbGRiBqR6Ln8sLYNxduTNLexsB6qCn
+   +fLwe/0LuScdeNqAJAZ3fnzaMPzg76/ibCaQ4GBndGmaDM2ApxeLQU6Jx
+   zhcjaFzmIq1TfFtAPUpDdqjpOAyqJakY8/bjjcDIRU3EjGXJEg2ItKy0i
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="386762742"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="386762742"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 17:07:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="881938260"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="881938260"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 23 Oct 2023 17:07:25 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qv4x8-0007OX-2q;
+        Tue, 24 Oct 2023 00:07:22 +0000
+Date:   Tue, 24 Oct 2023 08:07:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ai Chao <aichao@kylinos.cn>, hdegoede@redhat.com,
+        ilpo.jarvinen@linux.intel.com, markgross@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, Ai Chao <aichao@kylinos.cn>
+Subject: Re: [PATCH v4] platform/x86: inspur-wmi: Add platform profile support
+Message-ID: <202310240736.pU47RVwI-lkp@intel.com>
+References: <20231019030534.157971-1-aichao@kylinos.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019030534.157971-1-aichao@kylinos.cn>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since:
+Hi Ai,
 
-"42c06a0e8ebe mm: kill frontswap"
+kernel test robot noticed the following build warnings:
 
-we no longer have a counter to tracks the number of zswap store
-failures. This makes it hard to investigate and monitor for zswap
-issues.
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.6-rc7 next-20231023]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-This patch adds a global and a per-cgroup zswap store failure counter,
-as well as a dedicated debugfs counter for compression algorithm failure
-(which can happen for e.g when random data are passed to zswap).
+url:    https://github.com/intel-lab-lkp/linux/commits/Ai-Chao/platform-x86-inspur-wmi-Add-platform-profile-support/20231019-110800
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231019030534.157971-1-aichao%40kylinos.cn
+patch subject: [PATCH v4] platform/x86: inspur-wmi: Add platform profile support
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231024/202310240736.pU47RVwI-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231024/202310240736.pU47RVwI-lkp@intel.com/reproduce)
 
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- include/linux/vm_event_item.h |  1 +
- mm/memcontrol.c               |  1 +
- mm/vmstat.c                   |  1 +
- mm/zswap.c                    | 18 ++++++++++++++----
- 4 files changed, 17 insertions(+), 4 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310240736.pU47RVwI-lkp@intel.com/
 
-diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-index 8abfa1240040..7b2b117b193d 100644
---- a/include/linux/vm_event_item.h
-+++ b/include/linux/vm_event_item.h
-@@ -145,6 +145,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
- #ifdef CONFIG_ZSWAP
- 		ZSWPIN,
- 		ZSWPOUT,
-+		ZSWPOUT_FAIL,
- #endif
- #ifdef CONFIG_X86
- 		DIRECT_MAP_LEVEL2_SPLIT,
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 61c0c46c2d62..0e247e72a379 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -593,6 +593,7 @@ static const unsigned int memcg_vm_event_stat[] = {
- #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
- 	ZSWPIN,
- 	ZSWPOUT,
-+	ZSWPOUT_FAIL,
- #endif
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	THP_FAULT_ALLOC,
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 359460deb377..85cc79449355 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1401,6 +1401,7 @@ const char * const vmstat_text[] = {
- #ifdef CONFIG_ZSWAP
- 	"zswpin",
- 	"zswpout",
-+	"zswpout_fail",
- #endif
- #ifdef CONFIG_X86
- 	"direct_map_level2_splits",
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 37d2b1cb2ecb..38e6620f8b58 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -61,6 +61,8 @@ static u64 zswap_pool_limit_hit;
- static u64 zswap_written_back_pages;
- /* Store failed due to a reclaim failure after pool limit was reached */
- static u64 zswap_reject_reclaim_fail;
-+/* Store failed due to compression algorithm failure */
-+static u64 zswap_reject_compress_fail;
- /* Compressed page was too big for the allocator to (optimally) store */
- static u64 zswap_reject_compress_poor;
- /* Store failed because underlying allocator could not get memory */
-@@ -1213,10 +1215,10 @@ bool zswap_store(struct folio *folio)
- 
- 	/* Large folios aren't supported */
- 	if (folio_test_large(folio))
--		return false;
-+		goto out_reject;
- 
- 	if (!zswap_enabled || !tree)
--		return false;
-+		goto out_reject;
- 
- 	/*
- 	 * If this is a duplicate, it must be removed before attempting to store
-@@ -1309,8 +1311,10 @@ bool zswap_store(struct folio *folio)
- 	ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
- 	dlen = acomp_ctx->req->dlen;
- 
--	if (ret)
-+	if (ret) {
-+		zswap_reject_compress_fail++;
- 		goto put_dstmem;
-+	}
- 
- 	/* store */
- 	zpool = zswap_find_zpool(entry);
-@@ -1377,8 +1381,12 @@ bool zswap_store(struct folio *folio)
- freepage:
- 	zswap_entry_cache_free(entry);
- reject:
--	if (objcg)
-+	if (objcg) {
-+		count_objcg_event(objcg, ZSWPOUT_FAIL);
- 		obj_cgroup_put(objcg);
-+	}
-+out_reject:
-+	count_vm_event(ZSWPOUT_FAIL);
- 	return false;
- 
- shrink:
-@@ -1550,6 +1558,8 @@ static int zswap_debugfs_init(void)
- 			   zswap_debugfs_root, &zswap_reject_alloc_fail);
- 	debugfs_create_u64("reject_kmemcache_fail", 0444,
- 			   zswap_debugfs_root, &zswap_reject_kmemcache_fail);
-+	debugfs_create_u64("reject_compress_fail", 0444,
-+			   zswap_debugfs_root, &zswap_reject_compress_fail);
- 	debugfs_create_u64("reject_compress_poor", 0444,
- 			   zswap_debugfs_root, &zswap_reject_compress_poor);
- 	debugfs_create_u64("written_back_pages", 0444,
+All warnings (new ones prefixed by >>):
+
+>> drivers/platform/x86/inspur-wmi.c:27: warning: cannot understand function prototype: 'enum inspur_tmp_profile '
+   drivers/platform/x86/inspur-wmi.c:74: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Set Power Mode to EC RAM. If Power Mode value greater than 0x3,
+   drivers/platform/x86/inspur-wmi.c:123: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Get Power Mode from EC RAM, If Power Mode value greater than 0x3,
+
+
+vim +27 drivers/platform/x86/inspur-wmi.c
+
+    20	
+    21	/**
+    22	 * Power Mode:
+    23	 *           0x0: Balance Mode
+    24	 *           0x1: Performance Mode
+    25	 *           0x2: Power Saver Mode
+    26	 */
+  > 27	enum inspur_tmp_profile {
+    28		INSPUR_TMP_PROFILE_BALANCE	= 0,
+    29		INSPUR_TMP_PROFILE_PERFORMANCE	= 1,
+    30		INSPUR_TMP_PROFILE_POWERSAVE	= 2,
+    31	};
+    32	
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
