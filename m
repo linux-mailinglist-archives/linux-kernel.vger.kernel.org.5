@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D3C7D4DC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 12:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDE17D4E0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 12:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234015AbjJXKaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 06:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
+        id S234143AbjJXKhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 06:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233885AbjJXKau (ORCPT
+        with ESMTP id S231851AbjJXKhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 06:30:50 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0600410F
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 03:30:48 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so10815a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 03:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698143446; x=1698748246; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FrsY5SMpX0KhMxGlL3VcqlkeSm0skgCjxoXpak2azgY=;
-        b=nT+d7B4aVQNCGDPkOvARBEpL7iqabSuv2BLBnKqi6qB7gnHQWTK6jB4Il+w4dRqV0Z
-         yFqnig+qv/0VzDNVKwx/Kx+GugLjE1kiBiuk29vP1DmpI1bTHZdV/m3i/tOZp4bfr9W+
-         vLs3HNjSG8euU98bK+fyVk9/iplT04YUveHZAN7sCcoszETns0600BgXyoPh0JnjE5V4
-         /GWFqqt7peFHVs7C19mUumJhMNlFwdmTrndVGuOUWL3fBrUpn4GWfUcS3nwtkE4+UqQM
-         3hfIk9pjLKUZPW8gYOmFFHgCzJICs1DKGU41QIvGYrsAcwv0xF+5RZ4qi/lGMRoJimfz
-         hWWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698143446; x=1698748246;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FrsY5SMpX0KhMxGlL3VcqlkeSm0skgCjxoXpak2azgY=;
-        b=F8UMKzuvN6rZRIHz0avURZxBT2tzVNZJaAn4Rrqf/YbMy5xmjwUYR2iAN71XAy1AFq
-         IFbbuN7EbUywqJdTH9FAYwUNsHu0tlDk0AVZDG6nsYE3qkno4c29JpNe7tAgyiJ+oRZh
-         SGU0V1QHriSCTW+0G7PnCYVxF5DYIDZDWyuuTFKXTH/gokfhUHc157ZAROVM1xnJ4z0z
-         pcwaYSyhMDclNEFA3knGxrpXjpw/MNFM09nXV6MVycrS5BFennYlQiMQM17Frwyif4Fv
-         HjShERsg1dx4mmVg0rQauwhyhZFPzgfSgEV0feLQa1b6P/wq4odpH2lh4K4ydHogMF76
-         RXtw==
-X-Gm-Message-State: AOJu0Yz+QEBIvlGfx9h3cDou0p5pUQz+ev7zX57hN7DHxkkVKJS7lXfM
-        wlzx4hNkO9aixN1iQ98qQ3LuDGtTq/ItI5Qo1xf3JQ==
-X-Google-Smtp-Source: AGHT+IEayzEbnMU7KkNUnMx0j45kuBJVJCbt6AsX3FsNeWab2ahnXcU+1K1FPi/X+kZKl568n2jcupQXxPtNyDHJkEg=
-X-Received: by 2002:aa7:cd4c:0:b0:540:9db8:e357 with SMTP id
- v12-20020aa7cd4c000000b005409db8e357mr71204edw.0.1698143446154; Tue, 24 Oct
- 2023 03:30:46 -0700 (PDT)
+        Tue, 24 Oct 2023 06:37:03 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03283E5;
+        Tue, 24 Oct 2023 03:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KYIweJyPgr9jAYgFFkbgWAnl0FwkE/8DRBNzonPBpYs=; b=EvGpMu9X6nvshe85ULHBCy5v/f
+        C9JgwzXXscrhZXKuDcpU31k+pwk8Xm15cBQsSR9Q6fjRNN2uOWnCjDya2gRvha5K5qoSZUq6iafSb
+        wkyDZ8aM2xJCPR/UqcplUsQuezVo+KNxc0LYsjSiLU2reYFfzjkTDUbutGKaqrg85T7w85/nrVInl
+        UKuPLvzxP6YocbkDMLeWXfpylzjGF1/rNATP/3fk3gFOA2FwvtkXo7ZXnXOgbwETduTvsFqRk8RaL
+        ObomnPC3uKC/KSGTznkeClCRgJ/qVDVyJe3bLutna/bZDDns3H3f3pVakwlHIGzK9df1n6wAnYNQa
+        Tlj/SGng==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qvElX-00FR15-11;
+        Tue, 24 Oct 2023 10:36:03 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D6FCA300392; Tue, 24 Oct 2023 12:36:01 +0200 (CEST)
+Date:   Tue, 24 Oct 2023 12:36:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+Subject: Re: [PATCH  v2 1/6] x86/bugs: Add asm helpers for executing VERW
+Message-ID: <20231024103601.GH31411@noisy.programming.kicks-ass.net>
+References: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com>
+ <20231024-delay-verw-v2-1-f1881340c807@linux.intel.com>
 MIME-Version: 1.0
-References: <cover.1698114636.git.yan@cloudflare.com> <a79fe77d7308f7e6de7a019f23a509b84cbacd79.1698114636.git.yan@cloudflare.com>
- <20231024102201.GB2255@breakpoint.cc>
-In-Reply-To: <20231024102201.GB2255@breakpoint.cc>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 24 Oct 2023 12:30:32 +0200
-Message-ID: <CANn89iL8LfGJF2xJP0JhW7sMUXiMdJGAe7jhL0XW3pVMG7cmkw@mail.gmail.com>
-Subject: Re: [PATCH v4 net-next 1/3] ipv6: drop feature RTAX_FEATURE_ALLFRAG
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
-        kernel-team@cloudflare.com,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Alexander H Duyck <alexander.duyck@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024-delay-verw-v2-1-f1881340c807@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 12:22=E2=80=AFPM Florian Westphal <fw@strlen.de> wr=
-ote:
->
-> Yan Zhai <yan@cloudflare.com> wrote:
-> >  #define IPCORK_OPT   1       /* ip-options has been held in ipcork.opt=
- */
-> > -#define IPCORK_ALLFRAG       2       /* always fragment (for ipv6 for =
-now) */
-> > +#define IPCORK_ALLFRAG       2       /* (unused) always fragment (for =
-ipv6 for now) */
->
-> Nit: Why not remove the ALLFRAG define as well?
+On Tue, Oct 24, 2023 at 01:08:21AM -0700, Pawan Gupta wrote:
 
-I agree, this is not exposed to user space and should be deleted.
+> +.macro CLEAR_CPU_BUFFERS
+> +	ALTERNATIVE "jmp .Lskip_verw_\@;", "jmp .Ldo_verw_\@", X86_FEATURE_CLEAR_CPU_BUF
+> +		/* nopl __KERNEL_DS(%rax) */
+> +		.byte 0x0f, 0x1f, 0x80, 0x00, 0x00;
+> +.Lverw_arg_\@:	.word __KERNEL_DS;
+> +.Ldo_verw_\@:	verw _ASM_RIP(.Lverw_arg_\@);
+> +.Lskip_verw_\@:
+> +.endm
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Why can't this be:
 
->
-> Otherwise the series looks good to me, thanks!
->
-> Reviewed-by: Florian Westphal <fw@strlen.de>
->
+	ALTERNATIVE "". "verw _ASM_RIP(mds_verw_sel)", X86_FEATURE_CLEAR_CPU_BUF
+
+And have that mds_verw_sel thing be out-of-line ? That gives much better
+code for the case where we don't need this.
