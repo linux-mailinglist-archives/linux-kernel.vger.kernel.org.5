@@ -2,178 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4C77D479F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040C67D47AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbjJXGo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 02:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
+        id S232589AbjJXGqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 02:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjJXGo0 (ORCPT
+        with ESMTP id S232594AbjJXGqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 02:44:26 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFFDF9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:44:22 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9beb863816so3692711276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:44:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698129862; x=1698734662; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oWkAilm3qKxCzp8T0O3zII3wehqdTtuy7Tj/TdEVfLI=;
-        b=afOW5pvi6IxOeWreS3k6+dElC0aPPbXzl44LfwlkQKJag+i5aE37dxTBim87U8+WtH
-         qkjOcLb0wI4iaA4mNi0jB4POghkSQoG4CDAVICa6r42Xb0GHABV7bPwqMNkBcgyllmsn
-         78UhsPKf/f5wDidNEzKk8kdxvdutrjkN0sDMBvOVhS5i4VGvks/H8E3JTv4PW9A3JQgR
-         H4GE7+R5jbBGAH4texZg1VLWqq4v2WiAUiBkVoOONZjVA9Ef7q1mva2kZMZO6YCa47At
-         mUHq09/2P9gcITRQ4UtEUuTaeurWZXtEZVomDy27U5207gq5wO7hoekrbGJtUka/ykAg
-         Smyw==
+        Tue, 24 Oct 2023 02:46:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B28118
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:45:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698129956;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BE5jVX5fnuNHBiu/EslZBnrBPYvlGW0tmMa0k/b9PBk=;
+        b=NtKxy6/9JHQB4nYS/QfWGgsKITeSe1eXkRGEicS8xitv9Zjl1SX0O0HZ7foCLYihU18Agg
+        wfzOU3TjV7ANg+S8hODsQl6Iqo/V1cOg09Ofx/bKqaZAjxxfhdVv17kiCEiRqnJq9xmn6i
+        k98MgmS80VaETvJzTKFu0ksGjAI/L04=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-408-GY5KO74yNPOlHMByUW0eHg-1; Tue, 24 Oct 2023 02:45:52 -0400
+X-MC-Unique: GY5KO74yNPOlHMByUW0eHg-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-53e305a5a1bso2654915a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:45:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698129862; x=1698734662;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oWkAilm3qKxCzp8T0O3zII3wehqdTtuy7Tj/TdEVfLI=;
-        b=WkOI5Me/NoxDGP7/fq2o4iqNHU8o3b/PEF2l1g0vVn1N8WbgyYcm3ESyQnVpS9mfRv
-         g7/zsINk4ruGgNbIKJPVJYkMHw5pwG90kVVR5xpy2d8eJUoydUvuJFf47ae44wGjXwD3
-         UvgB8/TrbhUAPnjW5fhrHQKd1ruDDAPx94HDZcLcoHLmR9lAZqS19X6ficLIR5o4Pasp
-         mGcrcmZWTCHn3/4P6lJ+JNuuef+z/KJ+XTyAsXUCa3RmjSgzf26mm1rbCXz4X77OM3kA
-         6MhgEOhaldhWl3RRFZ6zLB8dquKYfXdZRAdTeZi61ywWvTS1Yt42pU2OiHmyU82Y9PE1
-         TZ1g==
-X-Gm-Message-State: AOJu0YwWcrRv/P6x2DIQBCvalh806WR4+yLArfeVAcABUfTW+SFkgoNX
-        MCPTUHR394q8viwKeuFHc2NV0Q==
-X-Google-Smtp-Source: AGHT+IFRjXjXsGt5DJkxXS0KJojysZ8XeQK/gsibTxLGbsR00Tz1R2O1nDPs/rt5ugs3IqWEGWnc/Q==
-X-Received: by 2002:a25:5f09:0:b0:d89:5638:8bb7 with SMTP id t9-20020a255f09000000b00d8956388bb7mr9710375ybb.20.1698129861840;
-        Mon, 23 Oct 2023 23:44:21 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id a32-20020a25ae20000000b00d7b9fab78bfsm3361396ybj.7.2023.10.23.23.44.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 23:44:21 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 23:44:18 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        domenico cerasuolo <mimmocerasuolo@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Christoph Lameter <cl@linux.co>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmamil.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Nhat Pham <nphamcs@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH] mempolicy: alloc_pages_mpol() for NUMA policy without vma:
- fix
-In-Reply-To: <20231023190555.GA1964810@cmpxchg.org>
-Message-ID: <00dc4f56-e623-7c85-29ea-4211e93063f6@google.com>
-References: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com> <74e34633-6060-f5e3-aee-7040d43f2e93@google.com> <1738368e-bac0-fd11-ed7f-b87142a939fe@google.com> <CAFYChMvWFdHq-OJHBE3DycmGtGmczDOHVGfoSqdvY-BxM2hWyg@mail.gmail.com>
- <20231023105331.311373ed33a0dfe78ddaa9e5@linux-foundation.org> <CAFYChMu9DO7OeXqQmKbfMY-iGKykHB21V8nqjy=tQa+StfDAUQ@mail.gmail.com> <20231023190555.GA1964810@cmpxchg.org>
+        d=1e100.net; s=20230601; t=1698129951; x=1698734751;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BE5jVX5fnuNHBiu/EslZBnrBPYvlGW0tmMa0k/b9PBk=;
+        b=eU6SK9uvTbQqbki69OrS+XM/tgRXPoZFt4sEDrBTvG4ROri/bDtYcLNLFhOhVMTyyA
+         sP59ppuCZ6s9H/0zHxsUP+a9j7k3QJg+WxDvqOL6RZc15Yf4/wpquqtDUVuNWj0JCl1P
+         pjsOzUPXEg45UO36SXGsH4PyyT+uYHHlVl8sKQaZSZAuE+2qUUnNmxzKPfpboFsR2A47
+         hlbeD0OTy5WO5dvq/pJwEAEd7z/+vGSm/a/9dvM45ES+3keSg2+7ZIN1xKI1JtkvqfpA
+         8uDZbTDQOeL9ZaxSnBzw9n7+JJVqgRNKZkwd7HpVWZAIoC4vbCTYktN/HjnA8vUtCDJ7
+         z2Eg==
+X-Gm-Message-State: AOJu0Yw1Xheb2DtQAUQRFMD0w7SwVMDchc8KXRHDS33AO3VXRqrN06Ak
+        MPqxoMuwdYWaDbmZuo1/OIH6bTqC0q15bCgqly9ucYC8i+oM12siLYCsohqy8sUiD8KekA09rFL
+        OsOpdT1mtF+vqsJq1isoD7jEPQeHGJnv9NZmEM5ds
+X-Received: by 2002:a05:6402:42c5:b0:540:2ece:79 with SMTP id i5-20020a05640242c500b005402ece0079mr5899804edc.10.1698129951283;
+        Mon, 23 Oct 2023 23:45:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGgNZWI9uhoTtkVPn63A9ZoXab5BfIhKlWbTreT3y3kifMYOd2sQUkJet981s6n86VslmjOv+KibM7qY9+2T5A=
+X-Received: by 2002:a05:6402:42c5:b0:540:2ece:79 with SMTP id
+ i5-20020a05640242c500b005402ece0079mr5899783edc.10.1698129950979; Mon, 23 Oct
+ 2023 23:45:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+References: <20231018171456.1624030-2-dtatulea@nvidia.com> <94caea55-b399-40c2-98ef-d435c228808f@oracle.com>
+In-Reply-To: <94caea55-b399-40c2-98ef-d435c228808f@oracle.com>
+From:   Lei Yang <leiyang@redhat.com>
+Date:   Tue, 24 Oct 2023 14:45:14 +0800
+Message-ID: <CAPpAL=zf=g0dyo4u7iOfmaTV+_voT+yLcx-Dav1ROFnya4aK_Q@mail.gmail.com>
+Subject: Re: [PATCH vhost v4 00/16] vdpa: Add support for vq descriptor mappings
+To:     Si-Wei Liu <si-wei.liu@oracle.com>
+Cc:     Dragos Tatulea <dtatulea@nvidia.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Eugenio Perez Martin <eperezma@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mm-unstable commit 48a7bd12d57f ("mempolicy: alloc_pages_mpol() for NUMA
-policy without vma") ended read_swap_cache_async() supporting NULL vma -
-okay; but missed the NULL mpol being passed to __read_swap_cache_async()
-by zswap_writeback_entry() - oops!
+QE tested this series v4 with regression testing on real nic, there
+are no new issues.
 
-Since its other callers all give good mpol, add get_task_policy(current)
-there in mm/zswap.c, to produce the same good-enough behaviour as before
-(and task policy, acted on in current task, does not require the refcount
-to be dup'ed).
+Tested-by: Lei Yang <leiyang@redhat.com>
 
-But if that policy is (quite reasonably) MPOL_INTERLEAVE, then ilx must
-be NO_INTERLEAVE_INDEX rather than 0, to provide the same distribution
-as before: move that definition from mempolicy.c to mempolicy.h.
 
-Reported-by: Domenico Cerasuolo <mimmocerasuolo@gmail.com>
-Closes: https://lore.kernel.org/linux-mm/74e34633-6060-f5e3-aee-7040d43f2e93@google.com/T/#mf08c877d1884fc7867f9e328cdf02257ff3b3ae9
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-Fixes: 48a7bd12d57f ("mempolicy: alloc_pages_mpol() for NUMA policy without vma")
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- include/linux/mempolicy.h | 2 ++
- mm/mempolicy.c            | 2 --
- mm/zswap.c                | 7 +++++--
- 3 files changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-index 2801d5b0a4e9..dd9ed2ce7fd5 100644
---- a/include/linux/mempolicy.h
-+++ b/include/linux/mempolicy.h
-@@ -17,6 +17,8 @@
- 
- struct mm_struct;
- 
-+#define NO_INTERLEAVE_INDEX (-1UL)	/* use task il_prev for interleaving */
-+
- #ifdef CONFIG_NUMA
- 
- /*
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 898ee2e3c85b..989293180eb6 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -114,8 +114,6 @@
- #define MPOL_MF_INVERT       (MPOL_MF_INTERNAL << 1)	/* Invert check for nodemask */
- #define MPOL_MF_WRLOCK       (MPOL_MF_INTERNAL << 2)	/* Write-lock walked vmas */
- 
--#define NO_INTERLEAVE_INDEX (-1UL)
+On Fri, Oct 20, 2023 at 7:50=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.com> =
+wrote:
+>
+> For patches 05-16:
+>
+> Reviewed-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> Tested-by: Si-Wei Liu <si-wei.liu@oracle.com>
+>
+> Thanks for the fixes!
+>
+> On 10/18/2023 10:14 AM, Dragos Tatulea wrote:
+> > This patch series adds support for vq descriptor table mappings which
+> > are used to improve vdpa live migration downtime. The improvement comes
+> > from using smaller mappings which take less time to create and destroy
+> > in hw.
+> >
+> > The first part adds the vdpa core changes from Si-Wei [0].
+> >
+> > The second part adds support in mlx5_vdpa:
+> > - Refactor the mr code to be able to cleanly add descriptor mappings.
+> > - Add hardware descriptor mr support.
+> > - Properly update iotlb for cvq during ASID switch.
+> >
+> > Changes in v4:
+> >
+> > - Improved the handling of empty iotlbs. See mlx5_vdpa_change_map
+> >    section in patch "12/16 vdpa/mlx5: Improve mr upate flow".
+> > - Fixed a invalid usage of desc_group_mkey hw vq field when the
+> >    capability is not there. See patch
+> >    "15/16 vdpa/mlx5: Enable hw support for vq descriptor map".
+> >
+> > Changes in v3:
+> >
+> > - dup_iotlb now checks for src =3D=3D dst case and returns an error.
+> > - Renamed iotlb parameter in dup_iotlb to dst.
+> > - Removed a redundant check of the asid value.
+> > - Fixed a commit message.
+> > - mx5_ifc.h patch has been applied to mlx5-vhost tree. When applying
+> >    this series please pull from that tree first.
+> >
+> > Changes in v2:
+> >
+> > - The "vdpa/mlx5: Enable hw support for vq descriptor mapping" change
+> >    was split off into two patches to avoid merge conflicts into the tre=
+e
+> >    of Linus.
+> >
+> >    The first patch contains only changes for mlx5_ifc.h. This must be
+> >    applied into the mlx5-vdpa tree [1] first. Once this patch is applie=
+d
+> >    on mlx5-vdpa, the change has to be pulled fom mlx5-vdpa into the vho=
+st
+> >    tree and only then the remaining patches can be applied.
+> >
+> > [0] https://lore.kernel.org/virtualization/1694248959-13369-1-git-send-=
+email-si-wei.liu@oracle.com
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/=
+log/?h=3Dmlx5-vhost
+> >
+> > Dragos Tatulea (13):
+> >    vdpa/mlx5: Expose descriptor group mkey hw capability
+> >    vdpa/mlx5: Create helper function for dma mappings
+> >    vdpa/mlx5: Decouple cvq iotlb handling from hw mapping code
+> >    vdpa/mlx5: Take cvq iotlb lock during refresh
+> >    vdpa/mlx5: Collapse "dvq" mr add/delete functions
+> >    vdpa/mlx5: Rename mr destroy functions
+> >    vdpa/mlx5: Allow creation/deletion of any given mr struct
+> >    vdpa/mlx5: Move mr mutex out of mr struct
+> >    vdpa/mlx5: Improve mr update flow
+> >    vdpa/mlx5: Introduce mr for vq descriptor
+> >    vdpa/mlx5: Enable hw support for vq descriptor mapping
+> >    vdpa/mlx5: Make iotlb helper functions more generic
+> >    vdpa/mlx5: Update cvq iotlb mapping on ASID change
+> >
+> > Si-Wei Liu (3):
+> >    vdpa: introduce dedicated descriptor group for virtqueue
+> >    vhost-vdpa: introduce descriptor group backend feature
+> >    vhost-vdpa: uAPI to get dedicated descriptor group id
+> >
+> >   drivers/vdpa/mlx5/core/mlx5_vdpa.h |  31 +++--
+> >   drivers/vdpa/mlx5/core/mr.c        | 194 ++++++++++++++++------------=
 -
- static struct kmem_cache *policy_cache;
- static struct kmem_cache *sn_cache;
- 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 37d2b1cb2ecb..060857adca76 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -24,6 +24,7 @@
- #include <linux/swap.h>
- #include <linux/crypto.h>
- #include <linux/scatterlist.h>
-+#include <linux/mempolicy.h>
- #include <linux/mempool.h>
- #include <linux/zpool.h>
- #include <crypto/acompress.h>
-@@ -1057,6 +1058,7 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
- {
- 	swp_entry_t swpentry = entry->swpentry;
- 	struct page *page;
-+	struct mempolicy *mpol;
- 	struct scatterlist input, output;
- 	struct crypto_acomp_ctx *acomp_ctx;
- 	struct zpool *pool = zswap_find_zpool(entry);
-@@ -1075,8 +1077,9 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
- 	}
- 
- 	/* try to allocate swap cache page */
--	page = __read_swap_cache_async(swpentry, GFP_KERNEL, NULL, 0,
--				       &page_was_allocated);
-+	mpol = get_task_policy(current);
-+	page = __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
-+				NO_INTERLEAVE_INDEX, &page_was_allocated);
- 	if (!page) {
- 		ret = -ENOMEM;
- 		goto fail;
--- 
-2.35.3
+> >   drivers/vdpa/mlx5/core/resources.c |   6 +-
+> >   drivers/vdpa/mlx5/net/mlx5_vnet.c  | 105 +++++++++++-----
+> >   drivers/vhost/vdpa.c               |  27 ++++
+> >   include/linux/mlx5/mlx5_ifc.h      |   8 +-
+> >   include/linux/mlx5/mlx5_ifc_vdpa.h |   7 +-
+> >   include/linux/vdpa.h               |  11 ++
+> >   include/uapi/linux/vhost.h         |   8 ++
+> >   include/uapi/linux/vhost_types.h   |   5 +
+> >   10 files changed, 272 insertions(+), 130 deletions(-)
+> >
+>
 
