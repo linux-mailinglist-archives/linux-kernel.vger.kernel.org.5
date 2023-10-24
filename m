@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA5A7D5C49
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACC47D5C4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344304AbjJXUTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 16:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
+        id S1343881AbjJXUUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 16:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343752AbjJXUTW (ORCPT
+        with ESMTP id S234576AbjJXUUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 16:19:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A70CD7A;
-        Tue, 24 Oct 2023 13:19:21 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63283C433C7;
-        Tue, 24 Oct 2023 20:19:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698178760;
-        bh=/jXqC7vbvPCmettO3DV3ntCzZ6lqFawlTkTOPw+dpkg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=cNFVEaHU/JSGFWmYYSgGbEUwcbU6E57XzHmF6PqxxLbNxe6qOiw0skHlgT2FAmt4E
-         pi7vTvmXtMoxa+QN5NsjIdLL7cod+koC+MMTHlEpmPJUMjUC2aCFbd6V/QPJYLMFs8
-         HeGKpzhI7MJVwlt6Q6WqHDPcW/boyVT98qJk/U++wdAZeq1FkdpLsbC5n4rWR+02Sm
-         4Zz7+vBjkN7QlHu9uefsCd9OegvQAC62mZ6Y5yTZ4a6WJMK/LSFJN+jV5JHIiYtpq6
-         BfJsXaU5B0axY0tFkCUNbOVQ0CdE3cC5UHu6WxcIlleK2U9pGJasSUCR6GhHkowEoo
-         o0g7zaVbON3Zw==
-Message-ID: <62828738f237c3d972f71f8da150b3366eb3e1a0.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Tue, 24 Oct 2023 16:19:17 -0400
-In-Reply-To: <CAHk-=wibJqQGBXAr2S69FifUXdJJ=unAQT5ag0qRSQNxGk31Lw@mail.gmail.com>
-References: <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
-         <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
-         <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
-         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
-         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
-         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
-         <ZTGncMVw19QVJzI6@dread.disaster.area>
-         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
-         <ZTWfX3CqPy9yCddQ@dread.disaster.area>
-         <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
-         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
-         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-         <2c74660bc44557dba8391758535e4012cbea3724.camel@kernel.org>
-         <CAHk-=wibJqQGBXAr2S69FifUXdJJ=unAQT5ag0qRSQNxGk31Lw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 24 Oct 2023 16:20:17 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17EFE8;
+        Tue, 24 Oct 2023 13:20:14 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53e08e439c7so8007352a12.0;
+        Tue, 24 Oct 2023 13:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698178813; x=1698783613; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oMOf6mvt5XWqcYfTZrj1wqL7HtLPA8K+oGsv6/KXbh0=;
+        b=cwAwqyI3vszZ63q+MUVJjrvaHL8/Uds3OBQUkJjP6+kSaZ+GnfXBXleZmqhjwNPAIs
+         la0gz3rgNfpN8QYhCCbtirC/uRqQrfq196f8/+41hXJJr45Wsbnb4Oa0JkTNgzv1VgMc
+         7QIaswtKSPQU4cf/JoObBeTzsyWEhv1x2Ht+MS5OU/2jBhk4HNSFEooVPEtFBs+GKvOn
+         x36XEqRl+5uOS2Mk+F3rnZK7p0UNRk0F4vQyEzx8BCkwkqVZyksVjwyfj1NzFyZ84/ME
+         i169FAvnRErNRz1GBNpofZ3fFyGDlatS4HW6TYHmUxLndjIasnAFYRJ3o0WhaXffupIN
+         2t+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698178813; x=1698783613;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oMOf6mvt5XWqcYfTZrj1wqL7HtLPA8K+oGsv6/KXbh0=;
+        b=PSCUFXLucQ1ELVYNnPLW5GNTXoNbcs2H/gcrgy1H+dLXd9u47qtCdY6uqJ2CdfhXws
+         viMERxk3sJro7nc0iTtW+BAq2KyCYE05rnImzVnRhDwQE709VVCo5k/kdzc5/jaRiSxc
+         FQVouDJDVWZ9XqScDcUxCtaArBNP1tUTYMcd5Ys3P6ljWNMs7W5gV7Brmi+6PLzaAjf3
+         COP1jWTMoCZQckx7HZjEfniZ/MsKBhOk3NJk27CdBYtCm8binM79t7kT1YV0H28h4kIr
+         cCF1jvjW2dyeoqoTDUyzRZo15cMBXuhrvm05NPCGNr+QkGQJU6OovoESXv3J/+3VONUO
+         HEBw==
+X-Gm-Message-State: AOJu0YzbuG3gP0+oc9qfBkqptbuB3zC4l15ZR2lajckO0xmjhCj66tRh
+        jQ0tG7QtxZsms+d7EPk97eI=
+X-Google-Smtp-Source: AGHT+IGyToQEaWdoT9WaOi2etA7oObeCX7wSy+SV5Ta1d1D2Xtbppj468ISKE/SauqAkAecwlJVjUw==
+X-Received: by 2002:a17:907:97d4:b0:9be:7b67:1673 with SMTP id js20-20020a17090797d400b009be7b671673mr10560452ejc.1.1698178812542;
+        Tue, 24 Oct 2023 13:20:12 -0700 (PDT)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id v21-20020a170906489500b00997d76981e0sm8675517ejq.208.2023.10.24.13.20.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 13:20:12 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 23:20:09 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Enrico Mioso <mrkiko.rs@gmail.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH net-next v7 5/7] ARM64: dts: marvell: Fix some common
+ switch mistakes
+Message-ID: <20231024202009.mq7fu7zetc3nfyum@skbuf>
+References: <20231024-marvell-88e6152-wan-led-v7-0-2869347697d1@linaro.org>
+ <20231024-marvell-88e6152-wan-led-v7-5-2869347697d1@linaro.org>
+ <20231024182842.flxrg3hjm3scnhjo@skbuf>
+ <1dff08d1-339b-4d5a-9dd4-6a6daca1dbde@alliedtelesis.co.nz>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1dff08d1-339b-4d5a-9dd4-6a6daca1dbde@alliedtelesis.co.nz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,46 +98,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-24 at 09:40 -1000, Linus Torvalds wrote:
-> On Tue, 24 Oct 2023 at 09:07, Jeff Layton <jlayton@kernel.org> wrote:
-> >=20
-> > The new flag idea is a good one. The catch though is that there are no
-> > readers of i_version in-kernel other than NFSD and IMA, so there would
-> > be no in-kernel users of I_VERSION_QUERIED_STRICT.
->=20
-> I actually see that as an absolute positive.
->=20
-> I think we should *conceptually* do those two flags, but then realize
-> that there are no users of the STRICT version, and just skip it.
->=20
-> So practically speaking, we'd end up with just a weaker version of
-> I_VERSION_QUERIED that is that "I don't care about atime" case.
->=20
+Hello Chris,
 
-To be clear, this is not kernel-wide behavior. Most filesystems already
-don't bump their i_version on atime updates. XFS is the only one that
-does. ext4 used to do that too, but we fixed that several months ago.
-I did try to just fix XFS in the same way, but the patch was NAK'ed.
+On Tue, Oct 24, 2023 at 08:10:14PM +0000, Chris Packham wrote:
+> > Chris, does this look okay?
+> 
+> There's nothing in the u-boot code for the CN9130-CRB that cares about 
+> the switch so I don't think there's any issue ABI wise. We are working 
+> on our own CN9130 based router with a L2 switch but it's at a point we 
+> can follow whatever upstream decide is the final schema.
 
-> I really can't find any use that would *want* to see i_version updates
-> for any atime updates. Ever.
->=20
-> We may have had historical user interfaces for i_version, but I can't
-> find any currently.
->=20
-> But to be very very clear: I've only done some random grepping, and I
-> may have missed something. I'm not dismissing Dave's worries, and he
-> may well be entirely correct.
->=20
-> Somebody would need to do a much more careful check than my "I can't
-> find anything".
+Thank you for taking the time to confirm.
 
-Exactly. I'm not really an XFS guy, so I took those folks at their word
-that this was behavior that they just can't trivially change.
+> In terms of my personal preference the schema quoted up thread has the 
+> pattern  '^(ethernet-)?switch(@.*)?$' (i.e. the 'ethernet-' part is 
+> optional) so I'd personally prefer switch0@6 -> switch@6 but that's only 
+> a slight preference because I deal with Ethernet switches day in day out.
 
-None of the in-kernel callers that look at i_version want it to be
-incremented on atime-onlt updates, however. So IIRC, the objection was
-due to offline repair/analysis tools that depend this the value being
-incremented in a specific way.
---=20
-Jeff Layton <jlayton@kernel.org>
+The movement originally came from "ports" to "ethernet-ports" at Rob's
+suggestion, because of the name clash with the ports from graph.yaml.
+Then we also did "switch" -> "ethernet-switch" because you'll also find
+"pcie-switch" in mainline device trees.
