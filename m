@@ -2,143 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD947D5524
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588B37D5526
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343540AbjJXPQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S234709AbjJXPQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233646AbjJXPQ3 (ORCPT
+        with ESMTP id S234146AbjJXPQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:16:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F93EA;
-        Tue, 24 Oct 2023 08:16:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 936FDC433CD;
-        Tue, 24 Oct 2023 15:16:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698160586;
-        bh=/C6E6tZNLUaoLoiYdGV1pjU5ihBkYuq/xjH5Z7ZWGMA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XPq9hWlX7HZJM1/Td4WXD6mSoaAVDSCjY0mEfEMvjtc3jYDQcxTEbdxj9mr02UrdW
-         NB9pInQWEb6VkuGnBIAQyfIxYQtEIUIadXnp75HUE3Y8tiopfjgF9EIeMXOzGsnaUD
-         zE4dcvlV2l4GYHjQ+XhKg6F3pbW6mmb+NcdCnBtEfxaT71Q/kVyoAJ2QL/vQiyCjk+
-         nDxy0t8OEKoIQw6wO/cn4spmC+CIgufdmbbcvdgFjF48IuQWYS8MLSnUfFuwvJY/Wi
-         8zz4kE1IUU4W8PpGjzgWwx+IH0H/g4ZvEjZiNIL9aHRsBaZjWSHLfHKajrOPxuT8La
-         Cxla92Qx+bhZA==
-Date:   Tue, 24 Oct 2023 18:16:21 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH -next] RDMA/core: Remove NULL check before dev_{put, hold}
-Message-ID: <20231024151621.GB1939579@unreal>
-References: <20231024003815.89742-1-yang.lee@linux.alibaba.com>
+        Tue, 24 Oct 2023 11:16:32 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E053DE;
+        Tue, 24 Oct 2023 08:16:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
+        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=4gqJUFEuje3fCbnl8mzHmlzSgskUoFHmtCeNWR/xAOg=; b=pXRu/zrS/dM6ClNwUhatLM+tl7
+        JuF0cN93+EPgQNTCgK7I+R4kUezGWGlCR9kOPU/4+hNgzfQ6ZOm0PWZ2Zx1kUZadMSsRDUQ+kR3eI
+        FwcxR+d06Bzs2MxjEmyjPvOnkah+I5WdsTSplkONSrI1sEQj8YOc1Tl9WV0eJ4RZs6c9BtJVUKouJ
+        u1YOTdFsgTyuldtOdpSGW/9qNMJ2xfLA7x7XgVvvgJeTuBrk6NNdnyYayN24mc8/8NDzUqtTlI26f
+        LYwHHpo8RBHZtEGBnKsoH2GUElaGo+p4MvORDwSn19oR7cJq/9JHOuAtD3gCKDzw0TvE3wAzTreRc
+        sfIx2URg==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:43858 helo=rmk-PC.armlinux.org.uk)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1qvJ8p-0004Ll-0n;
+        Tue, 24 Oct 2023 16:16:23 +0100
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <rmk@rmk-PC.armlinux.org.uk>)
+        id 1qvJ8q-00AqP4-NY; Tue, 24 Oct 2023 16:16:24 +0100
+In-Reply-To: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+From:   Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>
+Subject: [PATCH 03/39] ACPI: Rename acpi_scan_device_not_present() to be about
+ enumeration
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231024003815.89742-1-yang.lee@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <E1qvJ8q-00AqP4-NY@rmk-PC.armlinux.org.uk>
+Sender: Russell King <rmk@armlinux.org.uk>
+Date:   Tue, 24 Oct 2023 16:16:24 +0100
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 08:38:15AM +0800, Yang Li wrote:
-> The call netdev_{put, hold} of dev_{put, hold} will check NULL,
-> so there is no need to check before using dev_{put, hold},
-> remove it to silence the warning:
-> 
-> ./drivers/infiniband/core/nldev.c:375:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7047
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  drivers/infiniband/core/nldev.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+From: James Morse <james.morse@arm.com>
 
-I added the following hunk and applied the patch.
+acpi_scan_device_not_present() is called when a device in the
+hierarchy is not available for enumeration. Historically enumeration
+was only based on whether the device was present.
 
-diff --git a/drivers/infiniband/core/lag.c b/drivers/infiniband/core/lag.c
-index c77d7d2559a1..eca6e37c72ba 100644
---- a/drivers/infiniband/core/lag.c
-+++ b/drivers/infiniband/core/lag.c
-@@ -102,8 +102,7 @@ static struct net_device *rdma_get_xmit_slave_udp(struct ib_device *device,
+To add support for only enumerating devices that are both present
+and enabled, this helper should be renamed. It was only ever about
+enumeration, rename it acpi_scan_device_not_enumerated().
+
+No change in behaviour is intended.
+
+Signed-off-by: James Morse <james.morse@arm.com>
+Reviewed-by: Gavin Shan <gshan@redhat.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+---
+ drivers/acpi/scan.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index ed01e19514ef..17ab875a7d4e 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -289,10 +289,10 @@ static int acpi_scan_hot_remove(struct acpi_device *device)
+ 	return 0;
+ }
  
- void rdma_lag_put_ah_roce_slave(struct net_device *xmit_slave)
+-static int acpi_scan_device_not_present(struct acpi_device *adev)
++static int acpi_scan_device_not_enumerated(struct acpi_device *adev)
  {
--	if (xmit_slave)
--		dev_put(xmit_slave);
-+	dev_put(xmit_slave);
- }
- 
- struct net_device *rdma_lag_get_ah_roce_slave(struct ib_device *device,
-diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-index 343288b02792..a5e88185171f 100644
---- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-+++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_main.c
-@@ -1021,10 +1021,8 @@ static int pvrdma_pci_probe(struct pci_dev *pdev,
- 	pvrdma_free_irq(dev);
- 	pci_free_irq_vectors(pdev);
- err_free_cq_ring:
--	if (dev->netdev) {
--		dev_put(dev->netdev);
--		dev->netdev = NULL;
--	}
-+	dev_put(dev->netdev);
-+	dev->netdev = NULL;
- 	pvrdma_page_dir_cleanup(dev, &dev->cq_pdir);
- err_free_async_ring:
- 	pvrdma_page_dir_cleanup(dev, &dev->async_pdir);
-@@ -1064,10 +1062,8 @@ static void pvrdma_pci_remove(struct pci_dev *pdev)
- 
- 	flush_workqueue(event_wq);
- 
--	if (dev->netdev) {
--		dev_put(dev->netdev);
--		dev->netdev = NULL;
--	}
-+	dev_put(dev->netdev);
-+	dev->netdev = NULL;
- 
- 	/* Unregister ib device */
- 	ib_unregister_device(&dev->ib_dev);
-diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-index cf8b0822f5c8..967004ccad98 100644
---- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
-+++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
-@@ -2005,8 +2005,7 @@ static void ipoib_ndo_uninit(struct net_device *dev)
- 		priv->wq = NULL;
+ 	if (!acpi_device_enumerated(adev)) {
+-		dev_warn(&adev->dev, "Still not present\n");
++		dev_warn(&adev->dev, "Still not enumerated\n");
+ 		return -EALREADY;
  	}
- 
--	if (priv->parent)
--		dev_put(priv->parent);
-+	dev_put(priv->parent);
+ 	acpi_bus_trim(adev);
+@@ -327,7 +327,7 @@ static int acpi_scan_device_check(struct acpi_device *adev)
+ 			error = -ENODEV;
+ 		}
+ 	} else {
+-		error = acpi_scan_device_not_present(adev);
++		error = acpi_scan_device_not_enumerated(adev);
+ 	}
+ 	return error;
  }
+@@ -339,7 +339,7 @@ static int acpi_scan_bus_check(struct acpi_device *adev, void *not_used)
  
- static int ipoib_set_vf_link_state(struct net_device *dev, int vf, int link_state)
+ 	acpi_bus_get_status(adev);
+ 	if (!acpi_device_is_present(adev)) {
+-		acpi_scan_device_not_present(adev);
++		acpi_scan_device_not_enumerated(adev);
+ 		return 0;
+ 	}
+ 	if (handler && handler->hotplug.scan_dependent)
+-- 
+2.30.2
 
-> 
-> diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-> index 87b8cd657fb3..4900a0848124 100644
-> --- a/drivers/infiniband/core/nldev.c
-> +++ b/drivers/infiniband/core/nldev.c
-> @@ -371,8 +371,7 @@ static int fill_port_info(struct sk_buff *msg,
->  	}
->  
->  out:
-> -	if (netdev)
-> -		dev_put(netdev);
-> +	dev_put(netdev);
->  	return ret;
->  }
->  
-> -- 
-> 2.20.1.7.g153144c
-> 
