@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 983FF7D575E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E886A7D5760
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344057AbjJXQG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
+        id S1343987AbjJXQHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234605AbjJXQG0 (ORCPT
+        with ESMTP id S234605AbjJXQHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:06:26 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A8183;
-        Tue, 24 Oct 2023 09:06:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-        t=1698163581; bh=lgCmm4pAlZIdjfyCEORLh4I3sgHZhY4//gOUm6MGfDo=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=QciqZc1x0JuSI43jAIa5a+RYt7QQqoEfZHTT45m8buUn4zNcJjSPc65/93kpgMumY
-         E4C+4DFh699S0I4n/Vaw8VZx2Qv8HfFAorvgK0OnVd4yl0zMukc+O69gbDC4QhoGkW
-         w7KlO5EW8QUfvxTihcFCm+w5RF7D28EiW8mchtMc=
-Date:   Tue, 24 Oct 2023 18:06:11 +0200 (GMT+02:00)
-From:   =?UTF-8?Q?Thomas_Wei=C3=9Fschuh_?= <thomas@t-8ch.de>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Zhangjin Wu <falcon@tinylab.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <74f121c7-5356-4e58-87ca-e93fe48ccc39@t-8ch.de>
-In-Reply-To: <20231022092046.GC2669@1wt.eu>
-References: <20231010-nolibc-out-of-tree-v1-0-b6a263859596@weissschuh.net> <20231010-nolibc-out-of-tree-v1-2-b6a263859596@weissschuh.net> <20231022092046.GC2669@1wt.eu>
-Subject: Re: [PATCH 2/5] selftests/nolibc: use EFI -bios for LoongArch qemu
+        Tue, 24 Oct 2023 12:07:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0377F83
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:07:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698163640; x=1729699640;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SxHTvq6BPePXOTB4pvdjl6aHwNbPEB47pf2wiGfYb1o=;
+  b=MssigBuR5UyyazIqFLVNV3KsCNoK7agbkLyKL1Xk/0ZjhB/0bGGLYvn5
+   xsHQ/CzWe5TrXaOt75kbplJ5fcMI0/gBDT4FwyFeL0uu85T+XqN9K+ZZU
+   Yb8owXvCmbcxKZllOn6aqxgI7ksGubgPkN9rQhjthsxgoxivM2e6AJ3fR
+   7Pv1nW3kF8UFYr3JoD0NY4HEDslIa3KSfeTdKAakUFAH/ST7EimCdK320
+   vbvqf72gYwHPwA32Z7L+QaOpJmK8aeMBwLRcs/NPoa1unSLkwfhic7s41
+   EXRtZOS9jxqhBV6MVumWjhUt3C/L2gwA2Y4IFiDaTIFSZN724fXQUydx7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="5722825"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="5722825"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 09:06:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="735076664"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="735076664"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 24 Oct 2023 09:06:52 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id AE48F195; Tue, 24 Oct 2023 19:06:51 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     Peter Tyser <ptyser@xes-inc.com>
+Subject: [PATCH v1 1/1] mfd: lpc_ich: Mark *_gpio_offsets data with const
+Date:   Tue, 24 Oct 2023 19:06:50 +0300
+Message-Id: <20231024160650.3898959-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Correlation-ID: <74f121c7-5356-4e58-87ca-e93fe48ccc39@t-8ch.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oct 22, 2023 11:21:16 Willy Tarreau <w@1wt.eu>:
+There is no reason why the GPIO resource offsets should not be const.
+Mark them accordingly and update a qualifier in struct lpc_ich_gpio_info
+definition.
 
-> On Tue, Oct 10, 2023 at 02:33:57PM +0200, Thomas Wei=C3=9Fschuh wrote:
->> qemu for LoongArch does not work properly with direct kernel boot.
->> The kernel will panic during initialization and hang without any output.
->>
->> When booting in EFI mode everything work correctly.
->>
->> While users most likely don't have the LoongArch EFI binary installed at
->> least an explicit error about 'file not found' is better than a hanging
->> test without output that can never succeed.
->
-> Agreed. Let's hope at least users will be able to figure what's
-> missing depending on the message. There's one thing, though, you
-> hard-coded the path to the file system, and it's unlikely to be
-> located at the same place for everyone:
->
-> =C2=A0=C2=A0 -bios /usr/share/edk2/loongarch64/OVMF_CODE.fd
->
-> Sure, it's also possible to force QEMU_ARGS but it's becoming complicated
-> due to the numerous arguments. Maybe use a QEMU_BIOS_loongarch variable
-> for this ? This way if this starts to generalize to other archs, we can
-> later simplify it and automatically append -bios when needed.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/mfd/lpc_ich.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-My hope was for it to be a purely temporary bandaid.
-But you are right, let's do it properly from the beginning.
+diff --git a/drivers/mfd/lpc_ich.c b/drivers/mfd/lpc_ich.c
+index ea5f01e07daf..73a0e7f9bd31 100644
+--- a/drivers/mfd/lpc_ich.c
++++ b/drivers/mfd/lpc_ich.c
+@@ -139,7 +139,7 @@ struct lpc_ich_gpio_info {
+ 	size_t nr_devices;
+ 	struct resource **resources;
+ 	size_t nr_resources;
+-	resource_size_t *offsets;
++	const resource_size_t *offsets;
+ };
+ 
+ #define APL_GPIO_NORTH		0
+@@ -151,7 +151,7 @@ struct lpc_ich_gpio_info {
+ #define APL_GPIO_NR_RESOURCES	4
+ 
+ /* Offset data for Apollo Lake GPIO controllers */
+-static resource_size_t apl_gpio_offsets[APL_GPIO_NR_RESOURCES] = {
++static const resource_size_t apl_gpio_offsets[APL_GPIO_NR_RESOURCES] = {
+ 	[APL_GPIO_NORTH]	= 0xc50000,
+ 	[APL_GPIO_NORTHWEST]	= 0xc40000,
+ 	[APL_GPIO_WEST]		= 0xc70000,
+@@ -233,7 +233,7 @@ static const struct lpc_ich_gpio_info apl_gpio_info = {
+ #define DNV_GPIO_NR_RESOURCES	2
+ 
+ /* Offset data for Denverton GPIO controllers */
+-static resource_size_t dnv_gpio_offsets[DNV_GPIO_NR_RESOURCES] = {
++static const resource_size_t dnv_gpio_offsets[DNV_GPIO_NR_RESOURCES] = {
+ 	[DNV_GPIO_NORTH]	= 0xc20000,
+ 	[DNV_GPIO_SOUTH]	= 0xc50000,
+ };
+-- 
+2.40.0.1.gaa8946217a0b
 
->> Link: https://lore.kernel.org/loongarch/1738d60a-df3a-4102-b1da-d16a29b6=
-e06a@t-8ch.de/
->> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
->>
->> ---
->> Note: I'm wondering how this worked for anybody else.
->
-> Not much surprised. As I mentioned, my qemu currently doesn't support
-> loongarch so I didn't boot that one. Maybe Zhangjin had this one as
-> part of his other patches.
->
-> Overall, on the principle, Acked-by: Willy Tarreau <w@1wt.eu>
-
-Thanks!
