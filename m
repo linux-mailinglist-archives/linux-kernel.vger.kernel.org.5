@@ -2,103 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 873F07D46CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C4E7D46D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbjJXFJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 01:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
+        id S232082AbjJXFOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 01:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJXFJF (ORCPT
+        with ESMTP id S229688AbjJXFOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 01:09:05 -0400
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35024111;
-        Mon, 23 Oct 2023 22:09:02 -0700 (PDT)
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Tue, 24 Oct 2023 01:14:31 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A683111;
+        Mon, 23 Oct 2023 22:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698124467;
+        bh=wzR8CLBa7QGBbZgrmvfs3ZY6gA8A24eEIQIAttMtqjY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=etfA2Gn1XPFyC6LbBRzXA0IRy+bC1jbS/BDzAyTV14UTj/6VrVVRGNHGErlZnHWzq
+         SQKIErWm8MgrpysFWdEoOBB10W7M1vPXlYoll1QmXpYFUjvvuF4ht1BBp1HACHHN6m
+         /YerYZNqtHjIUXL/pOhmTTWF1g91ErIAQcdUgh2l28BhnRZPXown2VCOyA+jzwd/Zp
+         8qSlsSiPjdXZ4mEeVRgSvBQvkeiuVwbj3G8xOxCjHXavhCDvRaQbO2lJ7Q1qtarPEs
+         4lXSIbpXIi0KAv04AtTA0a5gSDIrAkjSvIslKTHIrbXgo/x7Mo3mrDKjvebWXQZJbP
+         X/mgeSriCS6dQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 55B0140905;
-        Tue, 24 Oct 2023 10:08:56 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1698124138; bh=q54NttpV1FfRW05qzlWZ1SqSwlAmXTZ6aSjxYGY7KXE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hEXV2o1UII+xmJcFSZnJF9UHZabf0GNo8plNax/SOiQvjPdXGQw1t66tRy0tESmxx
-         fyXivHulTTnVTzBUpZ/oKA9gVAxSwOh4x5yLEp/nqAVZPo86jbRAqpv83cZHucPS/N
-         1e1ZORQSy/cqxVIj0tOW4NLs6lo69cHqgWunMs799NN7429L8HeyC5UgFfWdXM76Vw
-         7ezMPFjk08haR6/gjUFq66RwZERpFqtKvRdmJfgFQaROHwJDMh3wJOxN9pCGjSrua8
-         8Uu4KDzuE6tnxNyMHs1CanW8d6L02bOAIz1gJ1m6kVHJVFzib2SWB2b6+rqIw/eBvC
-         wsdyznY9231jQ==
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SF0bk6RNbz4wx5;
+        Tue, 24 Oct 2023 16:14:26 +1100 (AEDT)
+Date:   Tue, 24 Oct 2023 16:14:25 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>
+Cc:     Ilpo =?UTF-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the pci tree
+Message-ID: <20231024161425.0b382725@canb.auug.org.au>
 MIME-Version: 1.0
-Date:   Tue, 24 Oct 2023 10:08:56 +0500
-From:   Nikita Travkin <nikita@trvn.ru>
-To:     Rob Herring <robh@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: mfd: qcom,spmi-pmic: Add pm8916
- vm-bms and lbc
-In-Reply-To: <169808265626.861066.13083505051202182067.robh@kernel.org>
-References: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
- <20231023-pm8916-dtsi-bms-lbc-v2-1-343e3dbf423e@trvn.ru>
- <169808265626.861066.13083505051202182067.robh@kernel.org>
-Message-ID: <53474576e3c860a1bb93f811cfe3964a@trvn.ru>
-X-Sender: nikita@trvn.ru
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/c9D.sJVtCE1BbXKOv91s9LP";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob Herring писал(а) 23.10.2023 22:40:
-> On Mon, 23 Oct 2023 11:20:32 +0500, Nikita Travkin wrote:
->> PM8916 (and probably some other similar pmics) have hardware blocks for
->> battery monitoring and charging. Add patterns for respecive nodes so the
->> devicetree for those blocks can be validated properly.
->>
->> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
->> ---
->>  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 6 ++++++
->>  1 file changed, 6 insertions(+)
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml:
-> Error in referenced schema matching $id: http://devicetree.org/schemas/power/supply/qcom,pm8916-bms-vm.yaml
-> 
-> doc reference errors (make refcheckdocs):
-> 
-> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231023-pm8916-dtsi-bms-lbc-v2-1-343e3dbf423e@trvn.ru
-> 
-> The base for the series is generally the latest rc1. A different dependency
-> should be noted in *this* patch.
-> 
+--Sig_/c9D.sJVtCE1BbXKOv91s9LP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Somehow I missed the memo and thought it tracks -next...
+Hi all,
 
-This patch depends on 7f590e3831 and 5cee843d56 in linux-next.git
-They were applied in [1].
+After merging the pci tree, today's linux-next build (arm64 defconfig)
+failed like this:
 
-I'm wondering if the bot just bails out when the "depend" is present
-or there is some more sophisticated logic to suggest the base to it?
+In file included from <command-line>:
+drivers/pci/controller/dwc/pcie-tegra194.c: In function 'tegra_pcie_ep_irq_=
+thread':
+include/linux/compiler_types.h:435:45: error: call to '__compiletime_assert=
+_497' declared with attribute error: FIELD_PREP: value too large for the fi=
+eld
+  435 |         _compiletime_assert(condition, msg, __compiletime_assert_, =
+__COUNTER__)
+      |                                             ^
+include/linux/compiler_types.h:416:25: note: in definition of macro '__comp=
+iletime_assert'
+  416 |                         prefix ## suffix();                        =
+     \
+      |                         ^~~~~~
+include/linux/compiler_types.h:435:9: note: in expansion of macro '_compile=
+time_assert'
+  435 |         _compiletime_assert(condition, msg, __compiletime_assert_, =
+__COUNTER__)
+      |         ^~~~~~~~~~~~~~~~~~~
+include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_a=
+ssert'
+   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+      |                                     ^~~~~~~~~~~~~~~~~~
+include/linux/bitfield.h:68:17: note: in expansion of macro 'BUILD_BUG_ON_M=
+SG'
+   68 |                 BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?      =
+     \
+      |                 ^~~~~~~~~~~~~~~~
+include/linux/bitfield.h:114:17: note: in expansion of macro '__BF_FIELD_CH=
+ECK'
+  114 |                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ")=
+;    \
+      |                 ^~~~~~~~~~~~~~~~
+drivers/pci/controller/dwc/pcie-tegra194.c:498:29: note: in expansion of ma=
+cro 'FIELD_PREP'
+  498 |                 val =3D 110 | FIELD_PREP(PCI_LTR_SCALE_SHIFT, 2) | =
+LTR_MSG_REQ;
+      |                             ^~~~~~~~~~
 
-Sorry for the inconvenience
-Nikita
+Caused by commit
 
-[1] https://lore.kernel.org/r/20230915-pm8916-bms-lbc-v3-0-f30881e951a0@trvn.ru/
+  18ca6c2c2d0e ("PCI: dwc: Use FIELD_GET/PREP()")
+
+I have reverted that commit for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/c9D.sJVtCE1BbXKOv91s9LP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU3UrEACgkQAVBC80lX
+0GxwkQf9FdfHiiEqqE90vNjgsYiESrccCbTsycZ+0vfWkuIrBgkVcQ2nm6quxaXv
+uiFaHAOOJLLRvEBK4baZxvC+YpjXv+2L80vmVCLwjgJQx4trfV7myjM8SkPAYPe2
+BFVmPi6hE1jaSbLZR8y+O9d3bcVHk9eEalIpRaZWuHyyRuFPDU6qNXLfnDo2iBOV
+Un5fP8hF/ljHfJO4wWSyJNBP8l2rynSbV+yj2ChMwzvpbMLM90ETdEmJiJ32uV6E
+kRxCTWa2TyEixr6quRfb/bGBKvSmijCTpneqDSA5PujHDzb+o7BfOmPBU1KOGsAI
+NttfMI9fI5JZoLAQC+vKycUa4nVANw==
+=HnH0
+-----END PGP SIGNATURE-----
+
+--Sig_/c9D.sJVtCE1BbXKOv91s9LP--
