@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C057D5E13
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3C37D5E2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344536AbjJXWZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59806 "EHLO
+        id S1344523AbjJXW3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344566AbjJXWZe (ORCPT
+        with ESMTP id S1344521AbjJXW3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:25:34 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F32C9210B
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:59 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da0631f977bso513269276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:59 -0700 (PDT)
+        Tue, 24 Oct 2023 18:29:49 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CCC211C
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:01 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a8d9dcdd2bso93987137b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698186298; x=1698791098; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698186300; x=1698791100; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=FTWwQ8YfXPTitLblRQYRVGGgeCbpOK/vEMTFXnHDMuM=;
-        b=cw1O5URq2Mma06yy6NvGqZMvJqNIMy+ocLnn9th9g6iBkdDYqrsVIDc9HBx/pQPGKP
-         E633Rh4yq9+3JZitBFsb9HDNLyuSD1g2+HM1XPhrDMqcXFDOtG+4dBA/i5tBOMJEw263
-         E7lla66VbrGC7vqW0OsakbQmF0i4p4YthUnNWnPna84nFa7fEneIciTQr6YkEXRLYHCj
-         Lo03ccU0G4zr18pZqBkSy1/qv+ImmRarxUENWJUT5Vn09JJ8qyl2Spl5S6PPnjDiPds3
-         ARsP7u+BdgNKAeFiWlBaIq7327xBKVHTScmsyCWhBT6fMLFHc8gKulzBOgUWn99+Hkcx
-         2JIA==
+        bh=vGp/3cu2x+AKrnRU7KWdBupCS5op7rBGMNR9ttA6zXA=;
+        b=ho7PysMAjwIJ3yIPe+0/b/7VBk4CN0/vnEqDCkDAR0t9wOPDgRfiS8RBAoZO2M9YUn
+         nsrWvo7n5hqAdTf5tyKzhTFyR9051FJUHrbpqxXsrz/cRb1xgPg2I8whqIaomG7JZNF3
+         nwNZ4QAYTJgPF+C1zp75z9njx2mG5+uwzEdSCYjquYMwL7LUUkZnWYVnoNsucYQ05fBK
+         2N+xKhINliTVjQP5OrD93WsjUsKk1bH+7u1DzPpIcZ6Yw5id3WruyxXsg38VYgh7a5lo
+         zq556AP8f3GodPF6g+gPZ93Y09BsiSyghWlltHWXIG5Ddr23Vb/juFmm+qYHS4IvfkFa
+         Jhfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698186298; x=1698791098;
+        d=1e100.net; s=20230601; t=1698186300; x=1698791100;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FTWwQ8YfXPTitLblRQYRVGGgeCbpOK/vEMTFXnHDMuM=;
-        b=IfY6sQn0K3PBGWN7FndFV+EeBlJF1z/GbUDRccwNmcjlC4ro+EtdSTC0zl2n7F+PMF
-         MY/vhHqd8hTb4eZkuHVY6NAbKUA6Kh6/a3oSuuNyrUsEfzjyYTno+5wKyyKvho1RAsNE
-         QjjLk9Cs9UTuJ+GG3oeM8ptT7aQSdVG/wb+YZYQ68bbdFcgy67y2A+vgtOlxvKE/6G6e
-         3fAvL0IaE93S9zm8JiZ5EZccIS3cjZPIIznim+BQvv+8T6mKqy72apBhENkNtevAja2Y
-         2bAnFhSY8A8JUn2Q/4miJUsY63JTV0Qd3iP46baMNSOJlpCsMy7uJZf8nUVLd+5XZIfE
-         yNEg==
-X-Gm-Message-State: AOJu0YxyHpgiTvk67nMzCGsKtarqeZqepfU1TMldFihurgHlN7RNuDe4
-        sIDO1u4JVQRYBWIRiwGRrxzY1JBcASMJ
-X-Google-Smtp-Source: AGHT+IFaOqY2yVaizOCYlulJuJEY1d+et6asX7PpUqzve62EmW3QbpYsbLIYzs8QMwOhWhSTrGe+fxfI6ngK
+        bh=vGp/3cu2x+AKrnRU7KWdBupCS5op7rBGMNR9ttA6zXA=;
+        b=UtvbnZrFrUZfMzgInr3xDODR7mKIlweuT5yt/En4cwoiWRdbh4VZf3SCPDBIHkxyR0
+         ZccpwNla4XKgq9RB1yBLu7n2eAKnTtmbj1CfCHBYf1XTKEDBuCFGhAJsSoVrAmf3dDqI
+         51uVMk5+Hg43lkVUO9+xrFzcCU5wUKj7AHK5lpPItRd0b7Bsnk2i40jQkDRk3CHYliek
+         dLqRA7DfHMFh1YrlJMuoyIPiVE/qrvVxQxMPIpuHUofc4HdOoeCe6UbBx2ukbzpKj9N7
+         kaUkKVNRJ6Zodu4xZKbhWJ7dV7cBAFDXUF9VMyA0wWGRBpAUWxqnJSXyCpC8ylNtfDWg
+         e2ZQ==
+X-Gm-Message-State: AOJu0YxZtV4DfjDC+Eu67k4wRXTFNuciVAy9Db1hd5o3LgJt+IRq1KK4
+        JjMgWdjWg2Dkr25eGvWrnnvOwIBxxs2h
+X-Google-Smtp-Source: AGHT+IFMkFd01myzF9RyTV4d34BIGfM6QWBED6N507yZ/SCniaudgBXMjhF+gfxS4Agu38v5epx9FcdWmPo9
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:93d2:18cc:4d63:45ba])
- (user=irogers job=sendgmr) by 2002:a25:3453:0:b0:d73:bcb7:7282 with SMTP id
- b80-20020a253453000000b00d73bcb77282mr270067yba.8.1698186297774; Tue, 24 Oct
- 2023 15:24:57 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 15:23:23 -0700
+ (user=irogers job=sendgmr) by 2002:a81:5206:0:b0:5a7:b672:4d88 with SMTP id
+ g6-20020a815206000000b005a7b6724d88mr288080ywb.0.1698186299914; Tue, 24 Oct
+ 2023 15:24:59 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 15:23:24 -0700
 In-Reply-To: <20231024222353.3024098-1-irogers@google.com>
-Message-Id: <20231024222353.3024098-21-irogers@google.com>
+Message-Id: <20231024222353.3024098-22-irogers@google.com>
 Mime-Version: 1.0
 References: <20231024222353.3024098-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Subject: [PATCH v3 20/50] perf record: Be lazier in allocating lost samples buffer
+Subject: [PATCH v3 21/50] perf pmu: Switch to io_dir__readdir
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -88,7 +88,7 @@ To:     Peter Zijlstra <peterz@infradead.org>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,77 +96,236 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wait until a lost sample occurs to allocate the lost samples buffer,
-often the buffer isn't necessary. This saves a 64kb allocation and
-5.3kb of peak memory consumption.
+Avoid DIR allocations when scanning sysfs by using io_dir for the
+readdir implementation, that allocates about 1kb on the stack.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-record.c | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+ tools/perf/util/pmu.c  | 48 +++++++++++++++++-------------------------
+ tools/perf/util/pmus.c | 30 ++++++++++----------------
+ 2 files changed, 30 insertions(+), 48 deletions(-)
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 9b4f3805ca92..b6c8c1371b39 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -1924,21 +1924,13 @@ static void __record__save_lost_samples(struct record *rec, struct evsel *evsel,
- static void record__read_lost_samples(struct record *rec)
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index a967d25e899b..91ae0ce06ef0 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -12,6 +12,7 @@
+ #include <stdbool.h>
+ #include <dirent.h>
+ #include <api/fs/fs.h>
++#include <api/io_dir.h>
+ #include <locale.h>
+ #include <fnmatch.h>
+ #include <math.h>
+@@ -184,19 +185,17 @@ static void perf_pmu_format__load(const struct perf_pmu *pmu, struct perf_pmu_fo
+  */
+ int perf_pmu__format_parse(struct perf_pmu *pmu, int dirfd, bool eager_load)
  {
- 	struct perf_session *session = rec->session;
--	struct perf_record_lost_samples *lost;
-+	struct perf_record_lost_samples *lost = NULL;
- 	struct evsel *evsel;
+-	struct dirent *evt_ent;
+-	DIR *format_dir;
++	struct io_dirent64 *evt_ent;
++	struct io_dir format_dir;
+ 	int ret = 0;
  
- 	/* there was an error during record__open */
- 	if (session->evlist == NULL)
+-	format_dir = fdopendir(dirfd);
+-	if (!format_dir)
+-		return -EINVAL;
++	io_dir__init(&format_dir, dirfd);
+ 
+-	while ((evt_ent = readdir(format_dir)) != NULL) {
++	while ((evt_ent = io_dir__readdir(&format_dir)) != NULL) {
+ 		struct perf_pmu_format *format;
+ 		char *name = evt_ent->d_name;
+ 
+-		if (!strcmp(name, ".") || !strcmp(name, ".."))
++		if (io_dir__is_dir(&format_dir, evt_ent))
+ 			continue;
+ 
+ 		format = perf_pmu__new_format(&pmu->format, name);
+@@ -223,7 +222,7 @@ int perf_pmu__format_parse(struct perf_pmu *pmu, int dirfd, bool eager_load)
+ 		}
+ 	}
+ 
+-	closedir(format_dir);
++	close(format_dir.dirfd);
+ 	return ret;
+ }
+ 
+@@ -599,8 +598,8 @@ static inline bool pmu_alias_info_file(const char *name)
+ static int pmu_aliases_parse(struct perf_pmu *pmu)
+ {
+ 	char path[PATH_MAX];
+-	struct dirent *evt_ent;
+-	DIR *event_dir;
++	struct io_dirent64 *evt_ent;
++	struct io_dir event_dir;
+ 	size_t len;
+ 	int fd, dir_fd;
+ 
+@@ -615,13 +614,9 @@ static int pmu_aliases_parse(struct perf_pmu *pmu)
+ 		return 0;
+ 	}
+ 
+-	event_dir = fdopendir(dir_fd);
+-	if (!event_dir){
+-		close (dir_fd);
+-		return -EINVAL;
+-	}
++	io_dir__init(&event_dir, dir_fd);
+ 
+-	while ((evt_ent = readdir(event_dir))) {
++	while ((evt_ent = io_dir__readdir(&event_dir))) {
+ 		char *name = evt_ent->d_name;
+ 		FILE *file;
+ 
+@@ -651,7 +646,6 @@ static int pmu_aliases_parse(struct perf_pmu *pmu)
+ 		fclose(file);
+ 	}
+ 
+-	closedir(event_dir);
+ 	close (dir_fd);
+ 	pmu->sysfs_aliases_loaded = true;
+ 	return 0;
+@@ -1879,10 +1873,9 @@ static void perf_pmu__del_caps(struct perf_pmu *pmu)
+  */
+ int perf_pmu__caps_parse(struct perf_pmu *pmu)
+ {
+-	struct stat st;
+ 	char caps_path[PATH_MAX];
+-	DIR *caps_dir;
+-	struct dirent *evt_ent;
++	struct io_dir caps_dir;
++	struct io_dirent64 *evt_ent;
+ 	int caps_fd;
+ 
+ 	if (pmu->caps_initialized)
+@@ -1893,24 +1886,21 @@ int perf_pmu__caps_parse(struct perf_pmu *pmu)
+ 	if (!perf_pmu__pathname_scnprintf(caps_path, sizeof(caps_path), pmu->name, "caps"))
+ 		return -1;
+ 
+-	if (stat(caps_path, &st) < 0) {
++	caps_fd = open(caps_path, O_CLOEXEC | O_DIRECTORY | O_RDONLY);
++	if (caps_fd == -1) {
+ 		pmu->caps_initialized = true;
+ 		return 0;	/* no error if caps does not exist */
+ 	}
+ 
+-	caps_dir = opendir(caps_path);
+-	if (!caps_dir)
+-		return -EINVAL;
+-
+-	caps_fd = dirfd(caps_dir);
++	io_dir__init(&caps_dir, caps_fd);
+ 
+-	while ((evt_ent = readdir(caps_dir)) != NULL) {
++	while ((evt_ent = io_dir__readdir(&caps_dir)) != NULL) {
+ 		char *name = evt_ent->d_name;
+ 		char value[128];
+ 		FILE *file;
+ 		int fd;
+ 
+-		if (!strcmp(name, ".") || !strcmp(name, ".."))
++		if (io_dir__is_dir(&caps_dir, evt_ent))
+ 			continue;
+ 
+ 		fd = openat(caps_fd, name, O_RDONLY);
+@@ -1932,7 +1922,7 @@ int perf_pmu__caps_parse(struct perf_pmu *pmu)
+ 		fclose(file);
+ 	}
+ 
+-	closedir(caps_dir);
++	close(caps_fd);
+ 
+ 	pmu->caps_initialized = true;
+ 	return pmu->nr_caps;
+diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+index ce4931461741..65b23b98666b 100644
+--- a/tools/perf/util/pmus.c
++++ b/tools/perf/util/pmus.c
+@@ -3,10 +3,10 @@
+ #include <linux/list_sort.h>
+ #include <linux/string.h>
+ #include <linux/zalloc.h>
++#include <api/io_dir.h>
+ #include <subcmd/pager.h>
+ #include <sys/types.h>
+ #include <ctype.h>
+-#include <dirent.h>
+ #include <pthread.h>
+ #include <string.h>
+ #include <unistd.h>
+@@ -184,8 +184,8 @@ static int pmus_cmp(void *priv __maybe_unused,
+ static void pmu_read_sysfs(bool core_only)
+ {
+ 	int fd;
+-	DIR *dir;
+-	struct dirent *dent;
++	struct io_dir dir;
++	struct io_dirent64 *dent;
+ 
+ 	if (read_sysfs_all_pmus || (core_only && read_sysfs_core_pmus))
+ 		return;
+@@ -194,13 +194,9 @@ static void pmu_read_sysfs(bool core_only)
+ 	if (fd < 0)
  		return;
  
--	lost = zalloc(PERF_SAMPLE_MAX_SIZE);
--	if (lost == NULL) {
--		pr_debug("Memory allocation failed\n");
+-	dir = fdopendir(fd);
+-	if (!dir) {
+-		close(fd);
 -		return;
 -	}
--
--	lost->header.type = PERF_RECORD_LOST_SAMPLES;
--
- 	evlist__for_each_entry(session->evlist, evsel) {
- 		struct xyarray *xy = evsel->core.sample_id;
- 		u64 lost_count;
-@@ -1961,6 +1953,14 @@ static void record__read_lost_samples(struct record *rec)
- 				}
++	io_dir__init(&dir, fd);
  
- 				if (count.lost) {
-+					if (!lost) {
-+						lost = zalloc(PERF_SAMPLE_MAX_SIZE);
-+						if (!lost) {
-+							pr_debug("Memory allocation failed\n");
-+							return;
-+						}
-+						lost->header.type = PERF_RECORD_LOST_SAMPLES;
-+					}
- 					__record__save_lost_samples(rec, evsel, lost,
- 								    x, y, count.lost, 0);
- 				}
-@@ -1968,9 +1968,18 @@ static void record__read_lost_samples(struct record *rec)
- 		}
- 
- 		lost_count = perf_bpf_filter__lost_count(evsel);
--		if (lost_count)
-+		if (lost_count) {
-+			if (!lost) {
-+				lost = zalloc(PERF_SAMPLE_MAX_SIZE);
-+				if (!lost) {
-+					pr_debug("Memory allocation failed\n");
-+					return;
-+				}
-+				lost->header.type = PERF_RECORD_LOST_SAMPLES;
-+			}
- 			__record__save_lost_samples(rec, evsel, lost, 0, 0, lost_count,
- 						    PERF_RECORD_MISC_LOST_SAMPLES_BPF);
-+		}
+-	while ((dent = readdir(dir))) {
++	while ((dent = io_dir__readdir(&dir)) != NULL) {
+ 		if (!strcmp(dent->d_name, ".") || !strcmp(dent->d_name, ".."))
+ 			continue;
+ 		if (core_only && !is_pmu_core(dent->d_name))
+@@ -209,7 +205,7 @@ static void pmu_read_sysfs(bool core_only)
+ 		perf_pmu__find2(fd, dent->d_name);
  	}
- out:
- 	free(lost);
+ 
+-	closedir(dir);
++	close(fd);
+ 	if (list_empty(&core_pmus)) {
+ 		if (!perf_pmu__create_placeholder_core_pmu(&core_pmus))
+ 			pr_err("Failure to set up any core PMUs\n");
+@@ -563,8 +559,8 @@ bool perf_pmus__supports_extended_type(void)
+ char *perf_pmus__default_pmu_name(void)
+ {
+ 	int fd;
+-	DIR *dir;
+-	struct dirent *dent;
++	struct io_dir dir;
++	struct io_dirent64 *dent;
+ 	char *result = NULL;
+ 
+ 	if (!list_empty(&core_pmus))
+@@ -574,13 +570,9 @@ char *perf_pmus__default_pmu_name(void)
+ 	if (fd < 0)
+ 		return strdup("cpu");
+ 
+-	dir = fdopendir(fd);
+-	if (!dir) {
+-		close(fd);
+-		return strdup("cpu");
+-	}
++	io_dir__init(&dir, fd);
+ 
+-	while ((dent = readdir(dir))) {
++	while ((dent = io_dir__readdir(&dir)) != NULL) {
+ 		if (!strcmp(dent->d_name, ".") || !strcmp(dent->d_name, ".."))
+ 			continue;
+ 		if (is_pmu_core(dent->d_name)) {
+@@ -589,7 +581,7 @@ char *perf_pmus__default_pmu_name(void)
+ 		}
+ 	}
+ 
+-	closedir(dir);
++	close(fd);
+ 	return result ?: strdup("cpu");
+ }
+ 
 -- 
 2.42.0.758.gaed0368e0e-goog
 
