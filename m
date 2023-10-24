@@ -2,125 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE93E7D49FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872497D4A03
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233805AbjJXI0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
+        id S233823AbjJXI1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233804AbjJXI0o (ORCPT
+        with ESMTP id S233122AbjJXI1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:26:44 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663B9D7B;
-        Tue, 24 Oct 2023 01:26:41 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39O7VSZq021879;
-        Tue, 24 Oct 2023 08:26:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=uElCGA3B+UiSIPKNkNNcfVvZAHci/QRPYuaJRfq0/Do=;
- b=HXb4Hzu40ISNEDoTWGjtKGIxDszkS41y5Wz0rxS7yFdDsDEbFU9qrbW7BG0nPGFbZuvR
- Ml/ucEDaL2Dg+SjkKGyxP/V7hCSBLBmfIdezv4lxkEvM/4LBK9IXoTjzWloNTpWNeLJQ
- JifY/dTf/P1tOBRry0VdQ0liiCOHLAC9GItvAW91eYEPjGOs9XE5QEdABV0/JkcYRZlG
- UyYS3MsbXdRvo4JXMN8OgiP/tn1NWu7o9oYLs3daZWKSXThVjepUk2SnAQbBdeMRVR6I
- 8+djZzjgEL5WdlBVNZljebi5x2q6NyThK/+/7nXeGRCfmqj0MFBbWfvqAvrDspB5TOIg VQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tx7r80av1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Oct 2023 08:26:27 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39O8QQbw002388
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Oct 2023 08:26:26 GMT
-Received: from [10.249.18.70] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 24 Oct
- 2023 01:26:20 -0700
-Message-ID: <78f672c9-cdab-4fd0-a611-9b6ae3407017@quicinc.com>
-Date:   Tue, 24 Oct 2023 13:56:15 +0530
+        Tue, 24 Oct 2023 04:27:36 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796F2128
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:27:34 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507c78d258fso6016694e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:27:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698136052; x=1698740852; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yhceSFM1hF3sghD+dtG2lSmmlVSuNVGZPGjZf8ESzpA=;
+        b=sYdkngCaxIxVFpRow36WwN4O/t3zWSge5EMhvVmUQsRNXrDSYhlLkNEuuMdsIoT5J1
+         Bb3d4wsF3Ho843o3O0I1D5hfmby4DubHYnKDgZibS64GRzc4rm8jQDpT0wbIxOG6n/pl
+         bu9lujKq+VE+GIiO8Gk50gGPBLnEehDflSLmoIn61Agn5u66SB0GBPXuPbKHrzDTUWJg
+         sSNPZDJz5k2qYkRp2sqzi20Ad3BIN9JjvtgwKBKAjpfhqi1mTRquSFdkTidS2BqgM9rI
+         dmPBmVjBPQPNvLXR0+n/CuqP7wa41ZqPKiVV7WAotLvteCYvtP81I3fFOvvX+Z5DNBEO
+         YFag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698136052; x=1698740852;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yhceSFM1hF3sghD+dtG2lSmmlVSuNVGZPGjZf8ESzpA=;
+        b=mVK+Zi73EpS02ZALqtzQ17neCPqpATbcNJ9a1Vs4/r7ZwMQAoqWTE5ZR4c909i6oSC
+         uClFjDOMoAkpwYBKUDKBNbFwss0kYYQRw6dq2H/bsDNHZDvKbESQCXruwhpZ/2jx/9PS
+         SxN04Alu5mmMkKrKVtHwxHs6qSfmOOlZCTvOf9sN8K/6txQqHTf0FeUhS8Yb2cSae4vN
+         1S6PpWvXLTX6BVa4Ri3IYNQEna7/+TKinomywKg1dZoe3a8KMIGpaG5xmBncvES7Gwnn
+         YVhBzD4Byc8K55DCGxlOSQ5rPIXqvSSyei88f5fK5OlLhQlkhftl2vR7rTPbOSbDKelQ
+         waUg==
+X-Gm-Message-State: AOJu0Yx2ObdmOgh4iz4HlR7CqeInBgfToDDisy5PJedkPBODV7jhILoF
+        dAF0BkwP5nW0YSOW3/hmebrVtbkZXww9SwVY94LmYw==
+X-Google-Smtp-Source: AGHT+IH+ppXE9oWNrw78/puY+ozs8vEdItnvs9Q/9Zcip+MRe8OiG/+W6Q4qeBTs/jJZilq9miabv75lYqkM2xc06q8=
+X-Received: by 2002:a19:644d:0:b0:507:9618:dc1f with SMTP id
+ b13-20020a19644d000000b005079618dc1fmr7693069lfj.69.1698136052607; Tue, 24
+ Oct 2023 01:27:32 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 09/10] arm64: dts: qcom: sa8295p: Enable tertiary
- controller and its 4 USB ports
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-10-quic_kriskura@quicinc.com>
- <ZTad-_toGkumYx6O@hovoldconsulting.com>
- <faa647ed-9692-4233-b421-b9e6271f8934@quicinc.com>
- <ZTdwNSvi1FJ5TNg3@hovoldconsulting.com>
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZTdwNSvi1FJ5TNg3@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: PHBu8NlQ-iHgdr31rkininCpII8ZbOZe
-X-Proofpoint-GUID: PHBu8NlQ-iHgdr31rkininCpII8ZbOZe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-24_07,2023-10-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- mlxlogscore=675 lowpriorityscore=0 bulkscore=0 phishscore=0 spamscore=0
- clxscore=1015 priorityscore=1501 suspectscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310240071
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231020095952.11055-1-linyunsheng@huawei.com>
+ <20231020095952.11055-2-linyunsheng@huawei.com> <ZTZcTrTy9ulPast5@hades> <4da09821-d964-924f-470b-e5c1de18eecf@huawei.com>
+In-Reply-To: <4da09821-d964-924f-470b-e5c1de18eecf@huawei.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Tue, 24 Oct 2023 11:26:56 +0300
+Message-ID: <CAC_iWj+JXev-Hyip1KtZv5pCQz6PU9u-d8iU5ZPaAeyVZYeKDg@mail.gmail.com>
+Subject: Re: [PATCH net-next v12 1/5] page_pool: unify frag_count handling in page_pool_is_last_frag()
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 23 Oct 2023 at 15:27, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> On 2023/10/23 19:43, Ilias Apalodimas wrote:
+> > Hi Yunsheng,
+> >
+> > [...]
+> >
+> >> +     * 1. 'n == 1': no need to actually overwrite it.
+> >> +     * 2. 'n != 1': overwrite it with one, which is the rare case
+> >> +     *              for pp_frag_count draining.
+> >>       *
+> >> -     * The main advantage to doing this is that an atomic_read is
+> >> -     * generally a much cheaper operation than an atomic update,
+> >> -     * especially when dealing with a page that may be partitioned
+> >> -     * into only 2 or 3 pieces.
+> >> +     * The main advantage to doing this is that not only we avoid a atomic
+> >> +     * update, as an atomic_read is generally a much cheaper operation than
+> >> +     * an atomic update, especially when dealing with a page that may be
+> >> +     * partitioned into only 2 or 3 pieces; but also unify the pp_frag_count
+> >> +     * handling by ensuring all pages have partitioned into only 1 piece
+> >> +     * initially, and only overwrite it when the page is partitioned into
+> >> +     * more than one piece.
+> >>       */
+> >> -    if (atomic_long_read(&page->pp_frag_count) == nr)
+> >> +    if (atomic_long_read(&page->pp_frag_count) == nr) {
+> >> +            /* As we have ensured nr is always one for constant case using
+> >> +             * the BUILD_BUG_ON(), only need to handle the non-constant case
+> >> +             * here for pp_frag_count draining, which is a rare case.
+> >> +             */
+> >> +            BUILD_BUG_ON(__builtin_constant_p(nr) && nr != 1);
+> >> +            if (!__builtin_constant_p(nr))
+> >> +                    atomic_long_set(&page->pp_frag_count, 1);
+> >
+> > Aren't we changing the behaviour of the current code here? IIRC is
+> > atomic_long_read(&page->pp_frag_count) == nr we never updated the atomic
+> > pp_frag_count and the reasoning was that the next caller can set it
+> > properly.
+>
+> If the next caller is calling the page_pool_alloc_frag(), then yes,
+> because page_pool_fragment_page() will be used to reset the
+> page->pp_frag_count, so it does not really matter what is the value
+> of page->pp_frag_count when we are recycling a page.
+>
+> If the next caller is calling page_pool_alloc_pages() directly without
+> fragmenting a page, the above code is used to ensure that pp_frag_count
+> is always one when page_pool_alloc_pages() fetches a page from pool->alloc
+> or pool->ring, because page_pool_fragment_page() is not used to reset the
+> page->pp_frag_count for page_pool_alloc_pages() and we have removed the
+> per page_pool PP_FLAG_PAGE_FRAG in page_pool_is_last_frag().
+>
+> As we don't know if the caller is page_pool_alloc_frag() or
+> page_pool_alloc_pages(), so the above code ensure the page in pool->alloc
+> or pool->ring always have the pp_frag_count being one.
 
 
-On 10/24/2023 12:50 PM, Johan Hovold wrote:
-> On Mon, Oct 23, 2023 at 11:12:40PM +0530, Krishna Kurapati PSSNV wrote:
->> On 10/23/2023 9:53 PM, Johan Hovold wrote:
->>> On Sat, Oct 07, 2023 at 09:18:05PM +0530, Krishna Kurapati wrote:
-> 
->>>> +	usb2_en_state: usb2-en-state {
->>>
->>> No need to include '_state' in the labels.
->>>
->> Any specific reason ? I have no problem if removing the suffix but just
->> wanted to know the reason.
-> 
-> For consistency with the rest of the sc8280xp devicetree sources
-> (including this file) where we've used that pattern (e.g. as reproducing
-> "state" in the label is mostly redundant). For example:
-> 
-> 	pcie2a_default: pcie2a-default-state {}
-> 
-> and
-> 
-> 	nvme_reg_en: nvme-reg-en-state {}
-> 
+Fair enough, Jakub pulled the series before I managed to ack them, but
+that's okay. It's been long overdue apologies. FWIW I went through the
+patches and didn't find anything wrong coding-wise
 
-Thanks for the reference.
-
-Regards,
-Krishna,
+Thanks
+/Ilias
+>
+>
+>
+> >
+> >> +
+> >>              return 0;
+> >> +    }
+> >>
+> >>      ret = atomic_long_sub_return(nr, &page->pp_frag_count);
+> >>      WARN_ON(ret < 0);
+> >> +
+> >> +    /* We are the last user here too, reset pp_frag_count back to 1 to
+> >> +     * ensure all pages have been partitioned into 1 piece initially,
+> >> +     * this should be the rare case when the last two fragment users call
+> >> +     * page_pool_defrag_page() currently.
+> >> +     */
+> >> +    if (unlikely(!ret))
+> >> +            atomic_long_set(&page->pp_frag_count, 1);
+> >> +
+> >>      return ret;
+> >>  }
+> >>
+> >
+> >  [....]
+> >
+> >  Thanks
+> >  /Ilias
+> >
+> > .
+> >
