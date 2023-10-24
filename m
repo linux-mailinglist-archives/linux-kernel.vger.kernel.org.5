@@ -2,151 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C277D4F77
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC747D4F85
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233866AbjJXMIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
+        id S234353AbjJXMKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232895AbjJXMIn (ORCPT
+        with ESMTP id S233761AbjJXMKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:08:43 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6783E120
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:08:40 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6b5cac99cfdso3610530b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:08:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1698149320; x=1698754120; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YMK1b0C/L5gsGLFeXRamJpztKKQzm+CIlOPG1sOdW0o=;
-        b=gaZ0qE5eA/5N9XyHas6AG+0zpwNE94cgLrm79DCrEQD9YyMLHBuhqpT64VMXQbg3ad
-         Cc8eiD+ABe2qworMHpL7pAVsjPXR5dfXuK9m5y7z9vZCDjqiXIbdq/fM2w9d0SmIhIKh
-         znv2Y5DxEFnXemz/uQq9oTCx9puATNc5RmgtOo+p2dj+lEt9JxsOrXrhc8CcxNZf0qpB
-         faHa6NZ+NrxcvlS/FtVvxJ1qzUiB9Lz2Pimpgy0MSsQeENPw1/uisiKMcW2L7IfAeL+Q
-         oCInm5k+YJkXhbTtKWpamnis0Vg7WgWCYQV/RXXYWF4nxgofn/NBensjzSBlvv3SF41c
-         Wwww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698149320; x=1698754120;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YMK1b0C/L5gsGLFeXRamJpztKKQzm+CIlOPG1sOdW0o=;
-        b=l5oW3lMhKY13jyKg2cjCmppLioK+XJX63eS7EJXuovJFV30L7feiS92EcHInQNijFs
-         yUIGv7CFhhLSBeQNwxncpjMISoGNpsFidvQc/NQTM9aUVcwPCfOw/b4G1ve7yJbpkx06
-         K2hwlCPcMzRDYSAl0BsYOMIFUnNmkx3nbzVemnM9h7xOta5uRihkn6iU0BLG385BCwMI
-         L8oVvM7vKAu1yEiymkgWxp0cTNDUsLZV+lCsdH2WZVS8BJHMJdugQ6cdgeq+VEQpMB7t
-         FPE1tj1PPLAuWJufay0ZfECWA4f+U9kiD0eH+EZlmAXldyRZ1UAPoHqunbwVgyJhapAd
-         TRHw==
-X-Gm-Message-State: AOJu0YwkOn4yE+WpPYm4+BR8PmH7UwJ0m5KioOLpJWY8eVDY4u4Z73cw
-        g4F79z/1Wx5aQuIwQexcZ6ZpBSS5g+OVWLwE8+N/ng==
-X-Google-Smtp-Source: AGHT+IFf5XQ1QrXyWpn6fYdMoI3iDWgIsJGguKE6SezMge8SlFoUeS1mh1uQTHY/nYilct4uGjuRE5tSWIeQFzBQE0E=
-X-Received: by 2002:a05:6a00:194a:b0:690:bdda:7c35 with SMTP id
- s10-20020a056a00194a00b00690bdda7c35mr10133732pfk.1.1698149319657; Tue, 24
- Oct 2023 05:08:39 -0700 (PDT)
+        Tue, 24 Oct 2023 08:10:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A06CC111
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:09:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698149388;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=efDOfqBOY7+QTlTqGFMqCfejaDDmVYLxZ1lQTyV6fFc=;
+        b=U6LL56DoZKIgbwkGJhH0Ah0IL/8yWlY6KTkq7Ok+xZbjd8lLyD+anPyOnfROx/oRBq7Mi6
+        R/UoYUX2/FMhKDssxmpm6uqbhZH9UaipPuXtf1R5AEfGEmj0zrgOtl5N1R5XKayySEyvHj
+        Uk0YqIAoPP81GqwuzXDqTFyFYqOD3ow=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-110-UnFRJ0rDMYOsmOly3Zbu0Q-1; Tue, 24 Oct 2023 08:09:45 -0400
+X-MC-Unique: UnFRJ0rDMYOsmOly3Zbu0Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1465F101A54C;
+        Tue, 24 Oct 2023 12:09:45 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.12])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9479A1120F;
+        Tue, 24 Oct 2023 12:09:42 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 24 Oct 2023 14:08:43 +0200 (CEST)
+Date:   Tue, 24 Oct 2023 14:08:40 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        "Ahmed S. Darwish" <darwi@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: [RFC PATCH 2/2] seqlock: introduce need_seqretry_xxx()
+Message-ID: <20231024120840.GA15391@redhat.com>
+References: <20231024120808.GA15382@redhat.com>
 MIME-Version: 1.0
-References: <20231023172800.315343-1-apatel@ventanamicro.com>
- <20231023172800.315343-8-apatel@ventanamicro.com> <20231024-arbitrate-glitter-2053d17d7260@spud>
-In-Reply-To: <20231024-arbitrate-glitter-2053d17d7260@spud>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Tue, 24 Oct 2023 17:38:28 +0530
-Message-ID: <CAK9=C2UxD1uKCvg26xzevtm4MAeGix-qS9PM296uCg3NqSyTaA@mail.gmail.com>
-Subject: Re: [PATCH v11 07/14] irqchip: Add RISC-V incoming MSI controller
- early driver
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024120808.GA15382@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 2:55=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Mon, Oct 23, 2023 at 10:57:53PM +0530, Anup Patel wrote:
->
-> > +#ifdef CONFIG_GENERIC_IRQ_DEBUGFS
-> > +void imsic_vector_debug_show(struct seq_file *m,
-> > +                          struct imsic_vector *vec, int ind)
-> > +{
-> > +     unsigned int mcpu =3D 0, mlocal_id =3D 0;
-> > +     struct imsic_local_priv *lpriv;
-> > +     bool move_in_progress =3D false;
-> > +     struct imsic_vector *mvec;
-> > +     bool is_enabled =3D false;
-> > +     unsigned long flags;
-> > +
-> > +     lpriv =3D per_cpu_ptr(imsic->lpriv, vec->cpu);
-> > +     if (WARN_ON(&lpriv->vectors[vec->local_id] !=3D vec))
-> > +             return;
-> > +
-> > +     raw_spin_lock_irqsave(&lpriv->ids_lock, flags);
-> > +     if (test_bit(vec->local_id, lpriv->ids_enabled_bitmap))
-> > +             is_enabled =3D true;
-> > +     mvec =3D lpriv->ids_move[vec->local_id];
-> > +     if (mvec) {
-> > +             move_in_progress =3D true;
-> > +             mcpu =3D mvec->cpu;
-> > +             mlocal_id =3D mvec->local_id;
-> > +     }
-> > +     raw_spin_unlock_irqrestore(&lpriv->ids_lock, flags);
-> > +
-> > +     seq_printf(m, "%*starget_cpu      : %5u\n", ind, "", vec->cpu);
-> > +     seq_printf(m, "%*starget_local_id : %5u\n", ind, "", vec->local_i=
-d);
-> > +     seq_printf(m, "%*sis_reserved     : %5u\n", ind, "",
-> > +                (vec->local_id <=3D IMSIC_IPI_ID) ? 1 : 0);
->
-> > +     seq_printf(m, "%*sis_enabled      : %5u\n", ind, "",
-> > +                (move_in_progress) ? 1 : 0);
->
-> gcc & clang report:
-> drivers/irqchip/irq-riscv-imsic-state.c:288:14: warning: variable 'is_ena=
-bled' set but not used [-Wunused-but-set-variable]
->
-> This looks to be a copy-pasta issue, and the move_in_progress here
-> should be is_enabled?
+Not for inclusion, just for discussion...
 
-Thanks for catching. Strangely,  I did not see this warning with
-the toolchain which I use.
+Modulo naming, do you think the new need_seqretry_xxx() makes sense?
 
-I will fix it in the next patch revision.
+Simpler to use and less error prone. thread_group_cputime() is changed
+as an example.
+---
+ include/linux/seqlock.h | 10 ++++++++++
+ kernel/sched/cputime.c  |  9 +++------
+ 2 files changed, 13 insertions(+), 6 deletions(-)
 
-Regards,
-Anup
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index d0050c889f26..9b3bc4ce3332 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -1165,6 +1165,16 @@ static inline int need_seqretry(seqlock_t *lock, int seq)
+ 	return !(seq & 1) && read_seqretry(lock, seq);
+ }
+ 
++static inline int need_seqretry_xxx(seqlock_t *lock, int *seq)
++{
++	int ret = !(*seq & 1) && read_seqretry(lock, *seq);
++
++	if (ret)
++		++*seq;	/* make this counter odd */
++
++	return ret;
++}
++
+ /**
+  * done_seqretry() - end seqlock_t "locking or lockless" reader section
+  * @lock: Pointer to seqlock_t
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index af7952f12e6c..45704a84baec 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -314,7 +314,7 @@ void thread_group_cputime(struct task_struct *tsk, struct task_cputime *times)
+ 	struct signal_struct *sig = tsk->signal;
+ 	u64 utime, stime;
+ 	struct task_struct *t;
+-	unsigned int seq, nextseq;
++	unsigned int seq;
+ 	unsigned long flags;
+ 
+ 	/*
+@@ -330,9 +330,8 @@ void thread_group_cputime(struct task_struct *tsk, struct task_cputime *times)
+ 
+ 	rcu_read_lock();
+ 	/* Attempt a lockless read on the first round. */
+-	nextseq = 0;
++	seq = 0;
+ 	do {
+-		seq = nextseq;
+ 		flags = read_seqbegin_or_lock_irqsave(&sig->stats_lock, &seq);
+ 		times->utime = sig->utime;
+ 		times->stime = sig->stime;
+@@ -344,9 +343,7 @@ void thread_group_cputime(struct task_struct *tsk, struct task_cputime *times)
+ 			times->stime += stime;
+ 			times->sum_exec_runtime += read_sum_exec_runtime(t);
+ 		}
+-		/* If lockless access failed, take the lock. */
+-		nextseq = 1;
+-	} while (need_seqretry(&sig->stats_lock, seq));
++	} while (need_seqretry_xxx(&sig->stats_lock, &seq));
+ 	done_seqretry_irqrestore(&sig->stats_lock, seq, flags);
+ 	rcu_read_unlock();
+ }
+-- 
+2.25.1.362.g51ebf55
 
->
-> > +     seq_printf(m, "%*sis_move_pending : %5u\n", ind, "",
-> > +                (move_in_progress) ? 1 : 0);
-> > +     if (move_in_progress) {
-> > +             seq_printf(m, "%*smove_cpu        : %5u\n", ind, "", mcpu=
-);
-> > +             seq_printf(m, "%*smove_local_id   : %5u\n", ind, "", mloc=
-al_id);
-> > +     }
-> > +}
+
