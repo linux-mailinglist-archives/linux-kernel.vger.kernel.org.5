@@ -2,131 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F2B7D48DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C857D48DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232864AbjJXHo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 03:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
+        id S232991AbjJXHqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 03:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232399AbjJXHo5 (ORCPT
+        with ESMTP id S232592AbjJXHqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 03:44:57 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7F390
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 00:44:54 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 1EF4DC01A; Tue, 24 Oct 2023 09:44:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1698133493; bh=k4l5me87UyJdn/SX3+43Lrzcu2MLLMcAwllwxSbsoL0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FRMXYCL1ONRet6xf1S6S/t0zwHlnGOaCPs4CYFx5kB0LoazOW4F6REOQl8l2fB616
-         r2bwacwcgypStortzUEdhXjaY6XhGO+8DkL9IqKDeeNEeUNli5bj658KNoFlvA+pCi
-         obzVRS/t631F6wp32LPljZylSpTtjhwu20H3eBEfs1qLLxCKX7G3rH6KeqJPlBI9hJ
-         SCQzXS7OJvHvpDfmqeQadY9U8fGha3AL3+zE0/DZoEwzxKOtmqtY692874+EdvpvIi
-         MHNW1o3jkLW+73Mkw/DPGKHirca8nzCCque+dirUwLivgqsKLgaB+nJeM83Ar/L4RZ
-         ROWLE9HHJB6TQ==
+        Tue, 24 Oct 2023 03:46:12 -0400
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DDEAB7;
+        Tue, 24 Oct 2023 00:46:10 -0700 (PDT)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1ea05b3f228so2809000fac.1;
+        Tue, 24 Oct 2023 00:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698133568; x=1698738368; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=crcJZphGqKpgNzGM6PW7RcwV7MNwfIsOtsxoD091HgM=;
+        b=cwOprteZyXg5iXCp7OgBNBLUwTFOauEpELSbXZeZDSwG7WB1jPLYQ8KhfsAS84bTgR
+         XEpu2zZYsEnA/VCCPEgS1yIvPr29ERwf3f4Zjt6d3fAIWXXcJzk1I5Pxj5ja5/J6jcfK
+         Jt3w8s2QSB7CRboYl5Ymur7SWvQIEQUVMmGXLK/WZcW8Zdelsj1J4Ee9gfY3ZR1ybOWk
+         NPpOs84by0p2uEo/EPDQyinfHqrpIXoG2xHdeJxWC5orzgjbTG1h3cHIjmiE7a4sqmeg
+         WysMhctOTqRku2Mft4sZlFDHNnlvvoB83TRn6b1DJDaI+3sEiMVDLJ7kq7CUJxBZkLVM
+         stCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698133568; x=1698738368;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=crcJZphGqKpgNzGM6PW7RcwV7MNwfIsOtsxoD091HgM=;
+        b=Nr1waz9Io7c3kAXXFntTzoi1tfm29AL5wbjmMsW9LijxJzejmFn3TleklzOk5azBCE
+         nDP9CfL/7jb1BVm1a+oc2+pqehsbw/F9yeozw8VwaHhPwmKVoueNxu/rZYlu3ln5Rpn9
+         xP/CHBwzuYiD5dx5Bi7P4rffCIoQd/AvQwfIeDEmXlP9p9j+ZzFHK8Ksk4dvz7324mCN
+         zONAI4HcoEGbSy+qEIVEjI5wNMlPLMiuRnD8OoFn7VC6S0Z9WAk2ZRyrAvYlEDJ2eyhG
+         lZsv1cPY00WtMUCQWyL7KkiofPMmBcNVOLP1o7hM7nIWOuISM/944Navh2/qR4tfmrYR
+         i9JQ==
+X-Gm-Message-State: AOJu0YxgukLNTnuvFl/30qcCIPEj2VFU214QlSQUA/bgfVs24MCmyach
+        N+CpI3fPXy7TNhFM7mVnF/TCt02QbBw=
+X-Google-Smtp-Source: AGHT+IHs1W1HIW7R0G5ajbRXMxhWCNb3B71kf0w4STqGqwHr8J1UnDLhCIs4OXoOxenNuC5X5YiAAg==
+X-Received: by 2002:a05:6870:1148:b0:1ea:eed:fd02 with SMTP id 8-20020a056870114800b001ea0eedfd02mr11468882oag.45.1698133568543;
+        Tue, 24 Oct 2023 00:46:08 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id k67-20020a632446000000b005657495b03bsm6366509pgk.38.2023.10.24.00.46.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 00:46:07 -0700 (PDT)
+Message-ID: <462c5ed5-d8ce-4862-b1e9-04787847b4a6@gmail.com>
+Date:   Tue, 24 Oct 2023 14:45:59 +0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVMe <linux-nvme@lists.infradead.org>,
+        Linux Block Devices <linux-block@vger.kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Yu Kuai <yukuai3@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>, michallinuxstuff@gmail.com
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: queue/scheduler missing under nvmf block device
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
-Received: from gaia (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 4627DC009;
-        Tue, 24 Oct 2023 09:44:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1698133489; bh=k4l5me87UyJdn/SX3+43Lrzcu2MLLMcAwllwxSbsoL0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mhie8GGazbK3MRGH2L88sLZ6+aAAOdoS3Rf+xMuEdA8oWKJhSY+3TWN5rIb+haARI
-         Z2sG67rpjvZdKg3p4qsCIYX5Gn3IQx1Uu4rLnxhN2EiekdveDjKrk1R76BDyefPAjG
-         DdN7AREO8nPtb5J88i+BMEjZUgI981s12mMixYVReh1GEaPyGQvezaNg1UE4Mqo32+
-         Ef0RaAOj13naAxrogh7oUpVzkJtM83opsU9rG6jxnXfwmJWtC82aQPWFUR0XJ0P12w
-         f+MO1DO/W/MmLcrvvc+dScpIHSrN0O8G5sHGI/YFf9DQlkuLqOsgqYGzL6SYO0HdqP
-         NQL/v4zICGoSA==
-Received: from localhost (gaia [local])
-        by gaia (OpenSMTPD) with ESMTPA id 8d12950e;
-        Tue, 24 Oct 2023 07:44:44 +0000 (UTC)
-Date:   Tue, 24 Oct 2023 16:44:28 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Marco Elver <elver@google.com>
-Cc:     v9fs@lists.linux.dev, ericvh@kernel.org, linux_oss@crudebyte.com,
-        lucho@ionkov.net, linux-kernel@vger.kernel.org,
-        syzbot+e441aeeb422763cc5511@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/3] 9p: Annotate data-racy writes to file::f_flags on fd
- mount
-Message-ID: <ZTd13Eh1ryuyQqyr@codewreck.org>
-References: <20231023233704.1185154-1-asmadeus@codewreck.org>
- <20231023233704.1185154-2-asmadeus@codewreck.org>
- <CANpmjNOUSci41NssMKgrNjC5P0doPWPekiizMOfjrr11CV-ogQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANpmjNOUSci41NssMKgrNjC5P0doPWPekiizMOfjrr11CV-ogQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco Elver wrote on Tue, Oct 24, 2023 at 09:12:56AM +0200:
-> > diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
-> > index f226953577b2..d89c88986950 100644
-> > --- a/net/9p/trans_fd.c
-> > +++ b/net/9p/trans_fd.c
-> > @@ -836,14 +836,16 @@ static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
-> >                 goto out_free_ts;
-> >         if (!(ts->rd->f_mode & FMODE_READ))
-> >                 goto out_put_rd;
-> > -       /* prevent workers from hanging on IO when fd is a pipe */
-> > -       ts->rd->f_flags |= O_NONBLOCK;
-> > +       /* Prevent workers from hanging on IO when fd is a pipe
+Hi,
+
+I notice a bug report on Bugzilla [1]. Quoting from it:
+
+> Noticed that under 6.5.6 (Fedora build, 6.5.6-100.fc37.x86_64) the queue/scheduler attr is not visible under namespace block device connected over nvme-fabrics. 
 > 
-> Add '.' at end of sentence(s)?
-
-I don't think we have any rule about this in the 9p part of the tree,
-looking around there seem to be more comments without '.' than with, but
-it's never too late to start... I'll add some in a v2 after we've agreed
-with the rest.
-
+> # readlink -f /sys/block/nvme0n1
+> /sys/devices/virtual/nvme-subsystem/nvme-subsys0/nvme0n1
+> # grep . /sys/devices/virtual/nvme-subsystem/nvme-subsys0/*/transport
+> /sys/devices/virtual/nvme-subsystem/nvme-subsys0/nvme0/transport:rdma
+> /sys/devices/virtual/nvme-subsystem/nvme-subsys0/nvme1/transport:rdma
+> # [[ -e /sys/block/nvme0n1/queue/scheduler ]] || echo oops
+> oops
 > 
-> > +        * We don't support userspace messing with the fd after passing it
-> > +        * to mount, so flag possible data race for KCSAN */
+> What's a bit confusing is that each of the ctrls attached to this subsystem also expose nvme*c*n1 device. These are marked as hidden under sysfs, hence not available as an actual block device (i.e. not present under /dev/). That said, these devices actually do have queue/scheduler attr available under sysfs.
 > 
-> The comment should explain why the data race is safe, independent of
-> KCSAN. I still don't quite get why it's safe.
+> # readlink -f /sys/block/nvme0*c*
+> /sys/devices/virtual/nvme-fabrics/ctl/nvme0/nvme0c0n1
+> /sys/devices/virtual/nvme-fabrics/ctl/nvme1/nvme0c1n1
+> # readlink -f  /sys/block/nvme0*c*/queue/scheduler
+> /sys/devices/virtual/nvme-fabrics/ctl/nvme0/nvme0c0n1/queue/scheduler
+> /sys/devices/virtual/nvme-fabrics/ctl/nvme1/nvme0c1n1/queue/scheduler
+> # grep . /sys/block/nvme0*c*/queue/scheduler
+> /sys/block/nvme0c0n1/queue/scheduler:[none] mq-deadline kyber bfq
+> /sys/block/nvme0c1n1/queue/scheduler:[none] mq-deadline kyber bfq
+> 
+> 
+> I have a little test infra which normally, after the nvmef got connected, would take the namespace device, set some sysfs attributes to specific values (that would include queue/scheduler) and then execute fio, targeting this namespace device.
+> 
+> The only clue I got is this https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6d85ebf95c44e, but then again I am not sure what to make of it. Initially, my thought was "ok, queue/scheduler is gone, so just don't try to touch it". But if the c*n* devices still do have this attribute available, are they meant to be used instead of the actual namespace device, to tweak these specific sysfs attributes?
+> 
+> The problem here is that I have two c*n* devices but only single block device (multipath setup). Would that mean that changing either of those devices' attributes would affect the actual namespace device? Or is each path independent here?
+> 
+> Any hints would be appreciated. :)
 
-I guess it depends on what we call 'safe' here: if we agree the worst
-thing that can happen is weird flags being set when we didn't request
-them and socket operations behaving oddly (of the level of block when
-they shouldn't), we don't care because there's no way to make concurrent
-usage of the fd work anyway.
-If it's possible to get an invalid value there such that a socket
-operation ends up executing user-controlled code somewhere, then we've
-got a bigger problem and we should take some lock (presumably the same
-lock fcntl(F_SETFD) is taking, as that's got more potential for breakage
-than another mount in my opinon)
+See Bugzilla for the full thread.
 
-> The case that syzbot found was 2 concurrent mount. Is that also disallowed?
+Thanks.
 
-Yes, there's no way you'll get a working filesystem out of two mounts
-using the same fd as the protocol has no muxing
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218042
 
-> Maybe something like: "We don't support userspace messing with the fd
-> after passing it to the first mount. While it's not officially
-> supported, concurrent modification of flags is unlikely to break this
-> code. So that tooling (like KCSAN) knows about it, mark them as
-> intentional data races."
-
-I'd word this as much likely to break, how about something like this?
-
-	/* Prevent workers from hanging on IO when fd is a pipe.
-	 * It's technically possible for userspace or concurrent mounts to
-	 * modify this flag concurrently, which will likely result in a
-	 * broken filesystem. However, just having bad flags here should
-	 * not crash the kernel or cause any other sort of bug, so mark this
-	 * particular data race as intentional so that tooling (like KCSAN)
-	 * can allow it and detect further problems.
-	 */
-
-Thanks,
 -- 
-Dominique Martinet | Asmadeus
+An old man doll... just what I always wanted! - Clara
