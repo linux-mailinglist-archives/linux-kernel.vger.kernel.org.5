@@ -2,150 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEE17D4E8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63AA7D4E8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbjJXLHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 07:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34862 "EHLO
+        id S230221AbjJXLHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 07:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjJXLHa (ORCPT
+        with ESMTP id S229669AbjJXLHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 07:07:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543C7B3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 04:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698145648; x=1729681648;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=5Bdi6X6/cY75CtGnE3qcdg4pXA8z6SQRb61GREk5O0Y=;
-  b=jBhcGrhEDoZ/EZAju9ldvW9jk6YwgbhF4nW/CMgjuZ0dvqXNpZGENUPZ
-   bx/vSKaS0S4fe9ofADN65D7lQ3Xbde8YFYkcGZSoSC6eT3o66PiFXOYRE
-   r86eWPim/d6u6GMGDGkf+C1Upcb4f6BzOL1uRhsry0uGuXFqKPy2C90ri
-   oKt1L4pzN5bVGr9KxSohI26WkaDVJZ3GCZfYIVgpCzmYeG6XaHAFLa4GK
-   KCX4Eg7S4b6Ed1SJm3yFr9KYMkpGqtpbJTV234W8KEd5FZF05FfyJrXcq
-   molm1IIGgjFYZBrQKpEV+Cy9A7iakPpNcYSfa+7eAU81VUXv3QwHP+z6z
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="8582996"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="8582996"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 04:07:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="787743165"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="787743165"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Oct 2023 04:07:27 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 24 Oct 2023 04:07:26 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 24 Oct 2023 04:07:26 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 24 Oct 2023 04:07:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EcMn96A/Y51i7751UAHRPxDCatC6PFEdhLg3MSd8NKKoOShtij9+hRPGYybnInAorMoLi2aJp0P3BbryVmkJnEg45LQcZJwDwzfI1tstWpgweVdZi7VqeEMpGhxovTeB/h+1Uoc1cbU+UH9nR5o9GgYzJLUjYcvBS/8FDUSSIcjaSi1ACVS6xOxGSbtXejaPs2iQrNupjbzhjXzbokaPWOy0s0iWrh7DG6xP3gWF+xLUECDq7CRD2+TQRx612Jxbr7btthxDu1O4NOGmwEIJIsa0Ew3N+J+8835IThAZlmAJAUrCcr+NSYVodkoL4DQQiNM/UvagQZe54sBjiXw43A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NQsmiX6XQK5AoWVlYxZX0aH5JNRKss7E9hVaFvQ52Jw=;
- b=V21NYxCDvCFC0h7Nry1/PIi7YcSoIGUeOCza2pWDBWbKNv0w66jKfW6fMPriSWeMSbnC4am+dFm64y3TpJLRYbhuOpn1AxXnUC9PMfuwMJ+NjH2vRcSIMc9Zhu9tEpwtiS+zEzT/v35FI0FWASkfSEJfpJdNtJw/5D1qB4oP8b9dlemNQQ89V1PMUCkUCAjo7wSYy4rpH6Nm/xJJcb4u2QPu2W/8wud9noKgR4ULpme+5LSJm5AaAvYvHIKxFpZz7YANiS/hvzd/C9Q8jE/wgxO0YPf0028yE6Qq95wyuCalB5jXU397NtHM6DJvJNyA+1KueWxNKYGt/X7Eo6I7qw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) by
- DM4PR11MB6042.namprd11.prod.outlook.com (2603:10b6:8:61::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6907.33; Tue, 24 Oct 2023 11:07:18 +0000
-Received: from DM4PR11MB5373.namprd11.prod.outlook.com
- ([fe80::760b:d339:54e1:27bb]) by DM4PR11MB5373.namprd11.prod.outlook.com
- ([fe80::760b:d339:54e1:27bb%4]) with mapi id 15.20.6907.032; Tue, 24 Oct 2023
- 11:07:18 +0000
-From:   =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
-To:     <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        "Thomas Zimmermann" <tzimmermann@suse.de>
-CC:     =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>,
-        "Lucas De Marchi" <lucas.demarchi@intel.com>
-Subject: [PATCH] iosys-map: Rename locals used inside macros
-Date:   Tue, 24 Oct 2023 13:07:10 +0200
-Message-ID: <20231024110710.3039807-1-michal.winiarski@intel.com>
-X-Mailer: git-send-email 2.42.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: WA0P291CA0019.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:1::21) To DM4PR11MB5373.namprd11.prod.outlook.com
- (2603:10b6:5:394::7)
+        Tue, 24 Oct 2023 07:07:46 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0124210C9;
+        Tue, 24 Oct 2023 04:07:44 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39O9UPQH010513;
+        Tue, 24 Oct 2023 11:07:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=zw1Vl4UXWdOGwHXgSaTvEAFKvHGzn9SXnQ7rMcUBl7w=;
+ b=Z1/oGFXxhYyrv742Ee5ei8TgC+T6gdX4vB5oSqKlHrF2nHO+VacMfAKYH6iGi+cPudoi
+ zaUULUnmLIBAmscQGIMlTzDWVPd8KkMPr4ZTWj+JiV0UoLwdkvq7vwQyLIggM+xfkWk5
+ fGlUyDjAy1RN417iQV00QWKLvUuhN+rbmxiMf0j9+XDU9hhlFcFVps2ppJAT9KwWzyhH
+ Zxz8DtqwPtq07BwYmAseo7kCUYQb9wRy/W0Jh5cJNTCxSgXopWBqQ4LNAWOFntSL39Ll
+ th7gsKFFww4fB1SKurod+/LO480xC0F8Jw8lplBp8mYrulP0gFHgRFmNGi7uBfjXKMKQ Jg== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3twxa0hp3r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 11:07:37 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39OB7aTh014072
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 11:07:36 GMT
+Received: from [10.239.132.245] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 24 Oct
+ 2023 04:07:31 -0700
+Message-ID: <b8b6ea74-8e25-ecf4-1ab2-0d4ffca9e743@quicinc.com>
+Date:   Tue, 24 Oct 2023 19:07:23 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB5373:EE_|DM4PR11MB6042:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0d3c7ed3-a17d-4c92-a998-08dbd481631a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qxp00wZalG0XibhM8T9OuMe6y5lF27SuCjBe0CmC5WFvonwvJBwgWDeyYQFdV6xF2Cz95ToILIMpRYVnG2EwSxJhZmqELPuNbBYmOSC1YRMiWF2W4ZIeohPVZVC+/KqQfHCc5UWihFbUF63vMt2mfKg+bYaQjF7FEb3CMxja2NN0/520swXr/XCO6FTOJ13uQTO05UXRvPDL3z1doNCGOmDw5x3jb/ZU/HOefURH8x6zR9akGrx8WvrGbY10WyRYTMUdkPRhoX19CurUCE7W3bQqtol7vnY3uCX81biPC1FNWFQckOatiMZEGBaqa69pOt6vJZCYSg+SCe4jZ/uhc96EVoacZrfa+c7CZaTEdhIHgDmI4B/VUzVF6ZKahl7zK7noaZbilh6MVE1lHI6qLRyYfonxKhFVdqd7uM4dSIiDMZTXjQAi1ci7gPmyDry/TMamhTq4nI08h44QdL2Xivj2awuqqa7VDbUbzLhQLR94smY4ju/H7W6l+604U9cfzHt+rrrveawdGpuGTCdRkpPbnECOnVnaJ03f1PbzZIfZiLb5QAFaHP2q2D7coIPl
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(366004)(376002)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(66556008)(66946007)(86362001)(66476007)(41300700001)(54906003)(6916009)(316002)(6506007)(6666004)(5660300002)(6486002)(478600001)(6512007)(8936002)(8676002)(4326008)(36756003)(2906002)(1076003)(26005)(38100700002)(2616005)(82960400001)(107886003)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NFRiUDJHU1JCclhucWVXZWU4WXYwWktHMGcxK1BIUkJNaERNZkJBQmFyRUho?=
- =?utf-8?B?eGRUK3RWN1VOLzY3MFMxbVRBL3dQZS9lNWhvTmJuZC81L3J5Zkl2NFRuQk05?=
- =?utf-8?B?Q2xIUVVMajlVKytwQzJBMjc3MndJY0Z5dnY4SzdMdXFuVk9XdlRWc2ltbkNk?=
- =?utf-8?B?blVHb1lPSUh3eWV1S2NwMGErdUFwaGRHdURhdEdpVCt5dTVFb1BJTDZFQ0tG?=
- =?utf-8?B?K3dJS3llaHNxdS9Od1E1RUtvRExvNjdlWVhTcHBySjh3bm5PMldLbkx3U1NN?=
- =?utf-8?B?K2c1enpvVDdHUlZpOHl4V3d3L0hVT1JVbXc5aHo3VTZFRzh4WnZQUmRjaXBh?=
- =?utf-8?B?cVFMeEJaQnVwN1dJL25VTTBwaDFiMXJ6dUd1WnVkVHR0ZCs0MFFwMWprdXVK?=
- =?utf-8?B?eDE3RUQzSFU5TFFTZzArU281NHl0R3lhVEVLaTFEcDZGTVArUjJNSmtsY2pq?=
- =?utf-8?B?SmtyZkhqZTJ1VlFuYkJ0SE1hd0JQck5ZaUQ5U2JVeTlXbXRDRy9vT0h6bG9q?=
- =?utf-8?B?OU5IN1E3WXFiL2M3SzB0ZlpzVUUyWCtCZG5kZS95aGV2ZFpiTmZTK0RycWMx?=
- =?utf-8?B?VUtxYTB1U2pJVVBhY1lqcklkZFhYd0ZpWjA2ZHpVRG01RHRxd1p3T0xQSWxq?=
- =?utf-8?B?R2ZsSmFzMndtSitiOGtnZVhHbW5wOExoempQUlN5bHVQMkJmUlhiRmhuMlBR?=
- =?utf-8?B?ejVqaXlvQjFkUUdHZXBSU3NIY09iMkMyN3pLaWZVU3FrS3JhRDI3Y0ZETTY4?=
- =?utf-8?B?K1ZMQzZCVjBrZXZ3V2thdjBQY3RDR2ZvSUdTQ0c2WVE1c2JWMDBQc2l3di9U?=
- =?utf-8?B?Sldtc25UQ2tFK2d6bDJmSk9LUXQyN2t0Y1E3SzZRcUc5djUrMHRNWDkvM0VT?=
- =?utf-8?B?a0NMWUJvZDlRakNIOVVkK0tlbFhtd0dGUnVkcDkzeHBRTElKMlI3b3RLdjZV?=
- =?utf-8?B?RW9DVm9pUTFBS2loS2txcEFMN0U1T0ZHRlVzaCtybUNNWFhTTks1VDVUeWFL?=
- =?utf-8?B?NWJSaGFiMjVNdFJKVk5tdk5QK1lWeHQrZ1Bjb1VaRlg2S0E0aXdVQkplUnBa?=
- =?utf-8?B?L3Zrd29Lc0hnNWU5T3BGTUJHV2p5MkNiNG82cTJmZkxjKy9TMFU2M1JvUWt1?=
- =?utf-8?B?MERQeWNIby9md2dWaUhXQTE1UlQ5eHFjcHJZZ0pCdk5ENG5lSWdSajBLNmov?=
- =?utf-8?B?MnF1bEJ5NzRMblVXNXFvbXBLd05FSGdRTmlZdzhXRWo4V1ViY3FJejE3SWVs?=
- =?utf-8?B?YklSWFpubm1menFVMkZUTElFVTFBUlpxQ0ljZ0ZWcWhPdjFkZitXQXR6TENM?=
- =?utf-8?B?dkswcWdXVU5HWnEwK3VJUWpSM2RLQXI3V01YdkNyQW42V2tHc2xwR2tBdGJS?=
- =?utf-8?B?S2h2WUkwSkZSMXZBMms4ZjRTaDdSSjgwZnJsdDFKQ08vS3ZObFJaTGd6RlB6?=
- =?utf-8?B?Z0d3OUY0eWZZSFpNNkhlV2xsOVk1SHJHaHR3Um91WVNuaHRHdi9BY09KL09v?=
- =?utf-8?B?bG1xbm9WdVZ3SjhQNnl1eUQzYjVxYWxRdnRlQXU1ZUJSYmY4TWIyYTFobnQv?=
- =?utf-8?B?RU9Mamc5VUJxeXQyRWdYcXBVQUxjbW9weC9aMVV1aUtybHVLVUgwR2pOcmQ3?=
- =?utf-8?B?RkJQbUJsbVZmQWdKSVJ4aDNJcWR0RjBWUUxZYmVqaTFCRSs5YWc5dzZlRk55?=
- =?utf-8?B?RDAvVU9ieTFtdWcreDM2cnV3dVZRbU9hUUYyMHpUTmN6ZHY0ZlRka3JNZExL?=
- =?utf-8?B?cDRyUHBkNFVWeXU2YThEa0FIbUpVTkV2dHFCNkZNTFA3TmZqUkNPTCsxbzd4?=
- =?utf-8?B?SHlpZngrQ3V1V3Q5VWFGc2lVM2pqTFJabUZYYVpIUWlFaTFxb29uUE9KOHVr?=
- =?utf-8?B?NDIrSnZXNG9GKzJPR0g0THQzSll4eHpGZXoyVUFJek5hVi9hMVA2VUJNdUFD?=
- =?utf-8?B?RGRKTnBRRGtVLzkxd01ldGJLWWswekwwdTRoSGRET1Q4YnVPdm1FTDZWTmV4?=
- =?utf-8?B?QzlVQ3hZZkNjdlgzMU05SWdzR2FnSUQxSjA2eFRKWENlZUJSSHVkLzN5N20w?=
- =?utf-8?B?dGExUTd5L251SlVoWGZUR3FrSU5JdEE4R2tBUTdvQSt2ZUpBNnQzUGVNeU9D?=
- =?utf-8?B?YlZvRWlpeC96cFo0YmY5SmhhRGtxRW54WkJFeitEUTlWazAxL0FEV1lQTDZG?=
- =?utf-8?B?Q2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d3c7ed3-a17d-4c92-a998-08dbd481631a
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5373.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 11:07:18.3039
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NdHuFq1XMv5GhDqRlWQvz7wfv1TU8IEQw6uk50BnxtWa0Z/RlUgUUArh/WhNl+qO8sIn4SvwQT0Hd7FTqLbt2oeGglLIVN4PD+6W5coK3S0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6042
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 2/5] dt-bindings: sram: qcom,imem: document sm8250
+To:     Rob Herring <robh@kernel.org>
+CC:     <robh+dt@kernel.org>, <quic_tingweiz@quicinc.com>,
+        <agross@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <andersson@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <konrad.dybcio@linaro.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <kernel@quicinc.com>
+References: <1698052857-6918-1-git-send-email-quic_zhenhuah@quicinc.com>
+ <1698052857-6918-3-git-send-email-quic_zhenhuah@quicinc.com>
+ <169808266064.861239.7420927840211548252.robh@kernel.org>
+Content-Language: en-US
+From:   Zhenhua Huang <quic_zhenhuah@quicinc.com>
+In-Reply-To: <169808266064.861239.7420927840211548252.robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: HUIbpJlwLIf7gHQHfPoFEOGN0AmccWs0
+X-Proofpoint-ORIG-GUID: HUIbpJlwLIf7gHQHfPoFEOGN0AmccWs0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-24_10,2023-10-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ mlxscore=0 phishscore=0 mlxlogscore=885 impostorscore=0 clxscore=1011
+ bulkscore=0 adultscore=0 spamscore=0 priorityscore=1501 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310240093
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -153,102 +85,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Widely used variable names can be used by macro users, potentially
-leading to name collisions.
-Suffix locals used inside the macros with an underscore, to reduce the
-collision potential.
 
-Suggested-by: Lucas De Marchi <lucas.demarchi@intel.com>
-Signed-off-by: Michał Winiarski <michal.winiarski@intel.com>
----
- include/linux/iosys-map.h | 44 +++++++++++++++++++--------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/include/linux/iosys-map.h b/include/linux/iosys-map.h
-index cb71aa616bd37..bb3a8c30fb920 100644
---- a/include/linux/iosys-map.h
-+++ b/include/linux/iosys-map.h
-@@ -168,9 +168,9 @@ struct iosys_map {
-  * about the use of uninitialized variable.
-  */
- #define IOSYS_MAP_INIT_OFFSET(map_, offset_) ({				\
--	struct iosys_map copy = *map_;					\
--	iosys_map_incr(&copy, offset_);					\
--	copy;								\
-+	struct iosys_map copy_ = *map_;					\
-+	iosys_map_incr(&copy_, offset_);				\
-+	copy_;								\
- })
- 
- /**
-@@ -391,14 +391,14 @@ static inline void iosys_map_memset(struct iosys_map *dst, size_t offset,
-  * Returns:
-  * The value read from the mapping.
-  */
--#define iosys_map_rd(map__, offset__, type__) ({				\
--	type__ val;								\
--	if ((map__)->is_iomem) {						\
--		__iosys_map_rd_io(val, (map__)->vaddr_iomem + (offset__), type__);\
--	} else {								\
--		__iosys_map_rd_sys(val, (map__)->vaddr + (offset__), type__);	\
--	}									\
--	val;									\
-+#define iosys_map_rd(map__, offset__, type__) ({					\
-+	type__ val_;									\
-+	if ((map__)->is_iomem) {							\
-+		__iosys_map_rd_io(val_, (map__)->vaddr_iomem + (offset__), type__);	\
-+	} else {									\
-+		__iosys_map_rd_sys(val_, (map__)->vaddr + (offset__), type__);		\
-+	}										\
-+	val_;										\
- })
- 
- /**
-@@ -413,13 +413,13 @@ static inline void iosys_map_memset(struct iosys_map *dst, size_t offset,
-  * or if pointer may be unaligned (and problematic for the architecture
-  * supported), use iosys_map_memcpy_to()
-  */
--#define iosys_map_wr(map__, offset__, type__, val__) ({				\
--	type__ val = (val__);							\
--	if ((map__)->is_iomem) {						\
--		__iosys_map_wr_io(val, (map__)->vaddr_iomem + (offset__), type__);\
--	} else {								\
--		__iosys_map_wr_sys(val, (map__)->vaddr + (offset__), type__);	\
--	}									\
-+#define iosys_map_wr(map__, offset__, type__, val__) ({					\
-+	type__ val_ = (val__);								\
-+	if ((map__)->is_iomem) {							\
-+		__iosys_map_wr_io(val_, (map__)->vaddr_iomem + (offset__), type__);	\
-+	} else {									\
-+		__iosys_map_wr_sys(val_, (map__)->vaddr + (offset__), type__);		\
-+	}										\
- })
- 
- /**
-@@ -485,9 +485,9 @@ static inline void iosys_map_memset(struct iosys_map *dst, size_t offset,
-  * The value read from the mapping.
-  */
- #define iosys_map_rd_field(map__, struct_offset__, struct_type__, field__) ({	\
--	struct_type__ *s;							\
-+	struct_type__ *s_;							\
- 	iosys_map_rd(map__, struct_offset__ + offsetof(struct_type__, field__),	\
--		     typeof(s->field__));					\
-+		     typeof(s_->field__));					\
- })
- 
- /**
-@@ -508,9 +508,9 @@ static inline void iosys_map_memset(struct iosys_map *dst, size_t offset,
-  * usage and memory layout.
-  */
- #define iosys_map_wr_field(map__, struct_offset__, struct_type__, field__, val__) ({	\
--	struct_type__ *s;								\
-+	struct_type__ *s_;								\
- 	iosys_map_wr(map__, struct_offset__ + offsetof(struct_type__, field__),		\
--		     typeof(s->field__), val__);					\
-+		     typeof(s_->field__), val__);					\
- })
- 
- #endif /* __IOSYS_MAP_H__ */
--- 
-2.42.0
+On 2023/10/24 1:40, Rob Herring wrote:
+> 
+> On Mon, 23 Oct 2023 17:20:54 +0800, Zhenhua Huang wrote:
+>> Add compatible for sm8250 IMEM.
+>>
+>> Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+>> ---
+>>   Documentation/devicetree/bindings/sram/qcom,imem.yaml | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> ./Documentation/devicetree/bindings/sram/qcom,imem.yaml:56:1: [error] duplication of key "patternProperties" in mapping (key-duplicates)
+> ./Documentation/devicetree/bindings/sram/qcom,imem.yaml:73:1: [error] duplication of key "patternProperties" in mapping (key-duplicates)
+> ./Documentation/devicetree/bindings/sram/qcom,imem.yaml:120:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
+> 
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/sram/qcom,imem.yaml:120:1: found a tab character where an indentation space is expected
+> ./Documentation/devicetree/bindings/sram/qcom,imem.yaml:120:1: found a tab character where an indentation space is expected
+> 
 
+Sorry for my carelessness... Will be more careful next time..
+
+> doc reference errors (make refcheckdocs):
+> 
+> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/1698052857-6918-3-git-send-email-quic_zhenhuah@quicinc.com
+> 
+> The base for the series is generally the latest rc1. A different dependency
+> should be noted in *this* patch.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit after running the above command yourself. Note
+> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> your schema. However, it must be unset to test all examples with your schema.
+> 
