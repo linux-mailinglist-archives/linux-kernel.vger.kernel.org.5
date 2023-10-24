@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF907D5E2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A799E7D5E46
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344478AbjJXW34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
+        id S1344710AbjJXWgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344552AbjJXW3t (ORCPT
+        with ESMTP id S1344706AbjJXWgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:29:49 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D45D212E
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:03 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a45e7e0f9so5775538276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:03 -0700 (PDT)
+        Tue, 24 Oct 2023 18:36:02 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549F5213C
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:06 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7b10c488cso62544877b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:25:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698186302; x=1698791102; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698186304; x=1698791104; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4cZX6FOP9Id6EVCdgsB1n601UiMDcX5xk8Ugm2UBQtA=;
-        b=fqBwKDGOCT1JJF7Lj2boSkxpXCAnWxWXKUp8yd2xS3Fp0JFaquGdgMoicOfUwGuZDF
-         H9K2FonFDUfPK9KHTBVqNSdRI5J9P/CEwWPO7qIhgfiC8e3OwPmla0U1dfiuuqfgq7ZO
-         AE7BOhQdTTRK3YWK7TP8n/fq3518AsRJbk0TkhIidO7DNQ6b+BWJ+ZGrSePdW9bP4EB+
-         1IrP29DhWSYktDWy5W8GtMGbDl4aKUPCIzHQQf378nGjo4OPuMWjFvZswvWiU5QEclte
-         l/NGR7w4DGiSd72L1Hjl3IK5q76J9lMt3RV299d1aTqdLH56OASadjHKANAqmG/BM9Os
-         buUQ==
+        bh=Tu7+ha5Pu/Ntln1eJ+Wk/N1rQ4pn7e+WtxhSwRWOU6E=;
+        b=nWMr1oTw8roaNp+9Sylu+T0C3hxhXC7feCnrnJO42Ym/bW5suRUwgU5aH5oox+Blw2
+         opyC/uehKO8wdm6bpayS0ZHdEvCaEXUJnCP5YqnNWgKv1jws5+ls0UtZiMPGAh+EjGVS
+         tR/hRFabU+/Zl0yQV1rDsZQr6ICwIDMzqQU3EftDDj1Jj1B9VdHBbQ6iDab33maBTpV0
+         WUJandZ00NdLY1NpXilU4zaWq3pq6Ug9Ztae7X2scryhQSfxwZHi0bMUAzp/t/VZ74fb
+         z23Jr/ruVmZ3pV2zAFxHAidX/mj5QiUZmGPSChC87GmTfV/X3GYGkMC5g6yE7FBQL2lE
+         agUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698186302; x=1698791102;
+        d=1e100.net; s=20230601; t=1698186304; x=1698791104;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4cZX6FOP9Id6EVCdgsB1n601UiMDcX5xk8Ugm2UBQtA=;
-        b=iB/pm3m0bYUOSofhOikSYlU0t0PynQU5Kx2rW3IMq6CM7e1r5ASOVFk21BZ4xSs9QP
-         xz6XqqdaY8/r5pFr0hLu5YLLbXj/q68gCSQOZBD3nkiAwbJlocVWmK1blJT9e4xsAdvZ
-         eSsSPdcPqO5B6qR4CZjtBS27iSWiAGscYOI+DkKa48fetQGgNY2Z57piLNPfY5VvVpxJ
-         H6wiTAqDTfj8wRNNxq3fDRNBeVxQPRvT1sxpzAv/sEZ8Ug6rPV12YTfiUebnTSpga9c8
-         jywmhvoZorpUMM/egUCh+DSjm1ypdi85lmYvZb7XkXbbrNZwbFt027XcpaXmGkqxYa1T
-         KQOA==
-X-Gm-Message-State: AOJu0YzU/6TPswhqO0lHgB81ssaNB0Cqs6yHxTxfazm6nSyX1YDRQzL/
-        dcidkSVkTa+/Jn4Ifs922hDDMLWRm9GZ
-X-Google-Smtp-Source: AGHT+IHiIg80UVxgn0ef1Q3+qtdWTTMqNK+8ZeTE8lM3zV2hmbAB53JCAibS99Jw+IqLwWJ58AoCFbXoW1Ou
+        bh=Tu7+ha5Pu/Ntln1eJ+Wk/N1rQ4pn7e+WtxhSwRWOU6E=;
+        b=dpY/VqDAfNzrxVE2v/ewPmAfXL6zL9ArCodL/YxQIO1IWDkp4vB88fCh6qlzXZ0H8i
+         /UjAEctLaXj92Vp+/RvVIhPu4n91rtK/K7YQpXjuAnQHy6INUsX3mUkNWSSHrJHg8B9m
+         fh9z0YoRSWuDIJUr9ZLZOpZS3ZfL22FO49cvzbRWo6mUR4KCThnEQyfeYzKkYJIUiDhg
+         rI+9uUo7TOI0PO+YnDQpOiGY9JH7M63vLS8UAEzAdzEIPKfEJSBjtZ/6qWXUBUEYUSYJ
+         q8VIts/SMSg6YhcV61/CVNDMnJPS0qjwL+++X8CaVnGJbbTJ0w92lUJSsaeuD8miYi/p
+         ds3g==
+X-Gm-Message-State: AOJu0YxBPRYleDIbAArlLx3U06Ujp+Jd8my5usClKf209emkpdq/myGA
+        +mnYJXVjKPW6Bt/0iqF+6G/lJjcKKXGY
+X-Google-Smtp-Source: AGHT+IHbUOpZ1mNL6MtiFPe23d21qsdlVbRyYddVESeEKyempcUhER3AlL7H32WDdpbQeSBz86Kn8XcfdQy4
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:93d2:18cc:4d63:45ba])
- (user=irogers job=sendgmr) by 2002:a25:ad49:0:b0:d81:582b:4661 with SMTP id
- l9-20020a25ad49000000b00d81582b4661mr259838ybe.8.1698186302403; Tue, 24 Oct
- 2023 15:25:02 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 15:23:25 -0700
+ (user=irogers job=sendgmr) by 2002:a0d:d403:0:b0:5a7:acc1:5142 with SMTP id
+ w3-20020a0dd403000000b005a7acc15142mr298455ywd.8.1698186304467; Tue, 24 Oct
+ 2023 15:25:04 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 15:23:26 -0700
 In-Reply-To: <20231024222353.3024098-1-irogers@google.com>
-Message-Id: <20231024222353.3024098-23-irogers@google.com>
+Message-Id: <20231024222353.3024098-24-irogers@google.com>
 Mime-Version: 1.0
 References: <20231024222353.3024098-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Subject: [PATCH v3 22/50] perf bpf: Don't synthesize BPF events when disabled
+Subject: [PATCH v3 23/50] perf header: Switch mem topology to io_dir__readdir
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -96,28 +96,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If BPF sideband events are disabled on the command line, don't
-synthesize BPF events too.
+Switch memory_node__read and build_mem_topology from opendir/readdir
+to io_dir__readdir, with smaller stack allocations. Reduces peak
+memory consumption of perf record by 10kb.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/bpf-event.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/perf/util/header.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index 38fcf3ba5749..830711cae30d 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -386,6 +386,9 @@ int perf_event__synthesize_bpf_events(struct perf_session *session,
- 	int err;
- 	int fd;
+diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+index e86b9439ffee..55f63d2ee232 100644
+--- a/tools/perf/util/header.c
++++ b/tools/perf/util/header.c
+@@ -44,6 +44,7 @@
+ #include "build-id.h"
+ #include "data.h"
+ #include <api/fs/fs.h>
++#include <api/io_dir.h>
+ #include "asm/bug.h"
+ #include "tool.h"
+ #include "time-utils.h"
+@@ -1341,11 +1342,11 @@ static int memory_node__read(struct memory_node *n, unsigned long idx)
+ {
+ 	unsigned int phys, size = 0;
+ 	char path[PATH_MAX];
+-	struct dirent *ent;
+-	DIR *dir;
++	struct io_dirent64 *ent;
++	struct io_dir dir;
  
-+	if (opts->no_bpf_event)
-+		return 0;
-+
- 	event = malloc(sizeof(event->bpf) + KSYM_NAME_LEN + machine->id_hdr_size);
- 	if (!event)
+ #define for_each_memory(mem, dir)					\
+-	while ((ent = readdir(dir)))					\
++	while ((ent = io_dir__readdir(&dir)) != NULL)			\
+ 		if (strcmp(ent->d_name, ".") &&				\
+ 		    strcmp(ent->d_name, "..") &&			\
+ 		    sscanf(ent->d_name, "memory%u", &mem) == 1)
+@@ -1354,9 +1355,9 @@ static int memory_node__read(struct memory_node *n, unsigned long idx)
+ 		  "%s/devices/system/node/node%lu",
+ 		  sysfs__mountpoint(), idx);
+ 
+-	dir = opendir(path);
+-	if (!dir) {
+-		pr_warning("failed: can't open memory sysfs data\n");
++	io_dir__init(&dir, open(path, O_CLOEXEC | O_DIRECTORY | O_RDONLY));
++	if (dir.dirfd < 0) {
++		pr_warning("failed: can't open memory sysfs data '%s'\n", path);
  		return -1;
+ 	}
+ 
+@@ -1368,20 +1369,20 @@ static int memory_node__read(struct memory_node *n, unsigned long idx)
+ 
+ 	n->set = bitmap_zalloc(size);
+ 	if (!n->set) {
+-		closedir(dir);
++		close(dir.dirfd);
+ 		return -ENOMEM;
+ 	}
+ 
+ 	n->node = idx;
+ 	n->size = size;
+ 
+-	rewinddir(dir);
++	io_dir__rewinddir(&dir);
+ 
+ 	for_each_memory(phys, dir) {
+ 		__set_bit(phys, n->set);
+ 	}
+ 
+-	closedir(dir);
++	close(dir.dirfd);
+ 	return 0;
+ }
+ 
+@@ -1404,8 +1405,8 @@ static int memory_node__sort(const void *a, const void *b)
+ static int build_mem_topology(struct memory_node **nodesp, u64 *cntp)
+ {
+ 	char path[PATH_MAX];
+-	struct dirent *ent;
+-	DIR *dir;
++	struct io_dirent64 *ent;
++	struct io_dir dir;
+ 	int ret = 0;
+ 	size_t cnt = 0, size = 0;
+ 	struct memory_node *nodes = NULL;
+@@ -1413,14 +1414,14 @@ static int build_mem_topology(struct memory_node **nodesp, u64 *cntp)
+ 	scnprintf(path, PATH_MAX, "%s/devices/system/node/",
+ 		  sysfs__mountpoint());
+ 
+-	dir = opendir(path);
+-	if (!dir) {
++	io_dir__init(&dir, open(path, O_CLOEXEC | O_DIRECTORY | O_RDONLY));
++	if (dir.dirfd < 0) {
+ 		pr_debug2("%s: couldn't read %s, does this arch have topology information?\n",
+ 			  __func__, path);
+ 		return -1;
+ 	}
+ 
+-	while (!ret && (ent = readdir(dir))) {
++	while (!ret && (ent = io_dir__readdir(&dir))) {
+ 		unsigned int idx;
+ 		int r;
+ 
+@@ -1447,7 +1448,7 @@ static int build_mem_topology(struct memory_node **nodesp, u64 *cntp)
+ 		ret = memory_node__read(&nodes[cnt++], idx);
+ 	}
+ out:
+-	closedir(dir);
++	close(dir.dirfd);
+ 	if (!ret) {
+ 		*cntp = cnt;
+ 		*nodesp = nodes;
 -- 
 2.42.0.758.gaed0368e0e-goog
 
