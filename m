@@ -2,98 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5728E7D43DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DBF7D43E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbjJXAS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 20:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
+        id S231215AbjJXAYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 20:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbjJXASz (ORCPT
+        with ESMTP id S229552AbjJXAYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 20:18:55 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B8D1A4
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:18:53 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9a6190af24aso618508566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:18:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698106731; x=1698711531; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iY8F6Fplz1VZOzDrso9gBBR3Wotc9sRtBic5aJbz6WE=;
-        b=NFkz4IY8yN89v12HPfLxH+qlwrs2qNUsUulQ5ZRSJHMsg3pU5tq9gXsABmSrkxlrZd
-         +cRzmR+NOKzFXMaXPlivzyfHFXat73apu1eFNdnDXH/Jv4LOkb2G1Qk1OMkR5mP7BlgM
-         pFm3IGzM7xd1KOPF2yN8/pws6EU2LMbNoCyFE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698106731; x=1698711531;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iY8F6Fplz1VZOzDrso9gBBR3Wotc9sRtBic5aJbz6WE=;
-        b=Cp10uD8m3zVEiA8/9BL1b+8k7W+h+4cmBVqNTA/0ClvhU+ZeM73dMvxBsUMk7ECKBy
-         6pv9y2p/JJ1nTh0DAMGDpBfgrcO0J1q3oyRj23zvnvc/yCL2LWdUi2KWVO6jMxJ2m7ap
-         7jdL9TzuRFti+coFpJDXVa6TaCxPmZYsjaJvkUrlP0YFM+ie+eXcokXQ3OM9vcTLrKTp
-         9hw9dwT5ZfK57BpGFTpHOUjnjSyPGQhby5IdjS9eBBY8j//gRqetkmB8yJkH/Gn3ms8R
-         nLVJBotxBXFurMpjzmcfa1Ajx2I6GphTmhs82Mb6BBdHzoZ54ege+k+4SDjQTWT5L9W/
-         oPMw==
-X-Gm-Message-State: AOJu0YyM5sc5Hedp+XiYjeN0EBbPENErCY0ofGNgiKw9C+5rqvgdkCKp
-        CqLUJrY7ZqbwWNc0zP75UB17eK9mFv8s1oP0omnAEYqo
-X-Google-Smtp-Source: AGHT+IGQ+ixnFU3bw2DLxg/ziXDwBBTMhK4L4iuFgYpT6/Qnl9LVbJ22QlgcEZ3D88228U2mGIeHUw==
-X-Received: by 2002:a17:907:3f09:b0:9ad:c763:bc7a with SMTP id hq9-20020a1709073f0900b009adc763bc7amr10483436ejc.23.1698106731708;
-        Mon, 23 Oct 2023 17:18:51 -0700 (PDT)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id os15-20020a170906af6f00b009930042510csm7377084ejb.222.2023.10.23.17.18.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 17:18:51 -0700 (PDT)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-53de8fc1ad8so5716625a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:18:51 -0700 (PDT)
-X-Received: by 2002:a50:d795:0:b0:53e:467c:33f1 with SMTP id
- w21-20020a50d795000000b0053e467c33f1mr8315209edi.8.1698106710154; Mon, 23 Oct
- 2023 17:18:30 -0700 (PDT)
+        Mon, 23 Oct 2023 20:24:32 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8AA10C;
+        Mon, 23 Oct 2023 17:24:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698107068;
+        bh=VHG3qd0ihqSbQoervLNrF0qsR2BSCx5XwGkeZm5mMJw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=B8VfHiqkm/9nfuJmVNKEvFAeiPqH1H0ap5GAPk+cBi5qGgddSX30Zy7qdV2kEDa7S
+         e89qqkyBRrHXoOGMrP25V/aHizh+IzgOKBWBX1xd0YQxaRWVEw6yfNw2DoOdP9LA/j
+         S0ig817d0NhJjZmma2iQr6mvsAVviY8RxE++ZaPZaD4yBmy6vKbga17IlAQaS6WA8k
+         mrOvPY4z7qU4xwrcPNPRZkdzdgv1Ly7kMVtahTWePkuz0o6+QTF0wyFdqQA1HnuJlh
+         dnWEBTLAxzwD1BMrEPC0Le3eOsfa+RXA0wGtco1oo1a7BaXZsf50uaHNTt+ZCsZyac
+         hpBg3E4Y0DaPg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SDt964JWwz4wdB;
+        Tue, 24 Oct 2023 11:24:26 +1100 (AEDT)
+Date:   Tue, 24 Oct 2023 11:24:24 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Kalle Valo <kvalo@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>
+Cc:     Wireless <linux-wireless@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Avraham Stern <avraham.stern@intel.com>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the net-next tree with the wireless
+ tree
+Message-ID: <20231024112424.7de86457@canb.auug.org.au>
 MIME-Version: 1.0
-References: <CAHk-=wixObEhBXM22JDopRdt7Z=tGGuizq66g4RnUmG9toA2DA@mail.gmail.com>
- <d6162230b83359d3ed1ee706cc1cb6eacfb12a4f.camel@kernel.org>
- <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
- <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
- <20231019-fluor-skifahren-ec74ceb6c63e@brauner> <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
- <ZTGncMVw19QVJzI6@dread.disaster.area> <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
- <ZTWfX3CqPy9yCddQ@dread.disaster.area> <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
- <ZTcBI2xaZz1GdMjX@dread.disaster.area>
-In-Reply-To: <ZTcBI2xaZz1GdMjX@dread.disaster.area>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 23 Oct 2023 14:18:12 -1000
-X-Gmail-Original-Message-ID: <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-Message-ID: <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: multipart/signed; boundary="Sig_/Nw9FIGoSTm34d8mrxtC=U0K";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,38 +59,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> wrote:
->
-> The problem is the first read request after a modification has been
-> made. That is causing relatime to see mtime > atime and triggering
-> an atime update. XFS sees this, does an atime update, and in
-> committing that persistent inode metadata update, it calls
-> inode_maybe_inc_iversion(force = false) to check if an iversion
-> update is necessary. The VFS sees I_VERSION_QUERIED, and so it bumps
-> i_version and tells XFS to persist it.
+--Sig_/Nw9FIGoSTm34d8mrxtC=U0K
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Could we perhaps just have a mode where we don't increment i_version
-for just atime updates?
+Hi all,
 
-Maybe we don't even need a mode, and could just decide that atime
-updates aren't i_version updates at all?
+Today's linux-next merge of the net-next tree got a conflict in:
 
-Yes, yes, it's obviously technically a "inode modification", but does
-anybody actually *want* atime updates with no actual other changes to
-be version events?
+  net/mac80211/rx.c
 
-Or maybe i_version can update, but callers of getattr() could have two
-bits for that STATX_CHANGE_COOKIE, one for "I care about atime" and
-one for others, and we'd pass that down to inode_query_version, and
-we'd have a I_VERSION_QUERIED and a I_VERSION_QUERIED_STRICT, and the
-"I care about atime" case ould set the strict one.
+between commit:
 
-Then inode_maybe_inc_iversion() could - for atome updates - skip the
-version update *unless* it sees that I_VERSION_QUERIED_STRICT bit.
+  91535613b609 ("wifi: mac80211: don't drop all unprotected public action f=
+rames")
 
-Does that sound sane to people?
+from the wireless tree and commit:
 
-Because it does sound completely insane to me to say "inode changed"
-and have a cache invalidation just for an atime update.
+  6c02fab72429 ("wifi: mac80211: split ieee80211_drop_unencrypted_mgmt() re=
+turn value")
 
-              Linus
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc net/mac80211/rx.c
+index 8f6b6f56b65b,051db97a92b4..000000000000
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@@ -2468,14 -2469,15 +2469,14 @@@ ieee80211_drop_unencrypted_mgmt(struct=20
+ =20
+  		/* drop unicast public action frames when using MPF */
+  		if (is_unicast_ether_addr(mgmt->da) &&
+ -		    ieee80211_is_public_action((void *)rx->skb->data,
+ -					       rx->skb->len))
+ +		    ieee80211_is_protected_dual_of_public_action(rx->skb))
+- 			return -EACCES;
++ 			return RX_DROP_U_UNPROT_UNICAST_PUB_ACTION;
+  	}
+ =20
+- 	return 0;
++ 	return RX_CONTINUE;
+  }
+ =20
+- static int
++ static ieee80211_rx_result
+  __ieee80211_data_to_8023(struct ieee80211_rx_data *rx, bool *port_control)
+  {
+  	struct ieee80211_sub_if_data *sdata =3D rx->sdata;
+
+--Sig_/Nw9FIGoSTm34d8mrxtC=U0K
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU3DrgACgkQAVBC80lX
+0GxQowgAjrrkc0sOifGahOamyKGt/SatG8ExWc66k2mkZDrxIkTp97v9XTACMawX
+ghc6Tr6alRgFWvjNGXGDZkR/l9nEqOz+UQKzjRV7FL3RtssbglmEQvO5B7M0XO1L
+LmZPuQIk1fbMIh9fC5QwFjQkQvRCH0E0IcFvwmqx6WGg/F+8a8HhM9gQPyhIy0UD
+nZCrQR938eNkEfWUJPJSWA4c79NYYwzxqgyAO7+wYRw/ywj56wMEEKN6TEujjed9
+k3knHieuIrlgjbSPDTlkIbqTq0p+7U46xOmhuybHn7aIDTWPKts+91suTTrTnZHJ
+sCqklT3h+BQlsNlrTSSR9iOC6oJBzA==
+=zLiy
+-----END PGP SIGNATURE-----
+
+--Sig_/Nw9FIGoSTm34d8mrxtC=U0K--
