@@ -2,412 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D483B7D549E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB2B7D54A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbjJXPDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
+        id S230006AbjJXPDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJXPDU (ORCPT
+        with ESMTP id S229441AbjJXPDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:03:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9C9111;
-        Tue, 24 Oct 2023 08:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698159798; x=1729695798;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=r47g194hEkB5Z9PKa+y8DVJGAzdshQtZiIXJLW56A0E=;
-  b=KMUkGJTrWEJy4S5SRml2QtKxO6DyKAac1HQxqsV2qfO+oeD1l5js9N87
-   C0XMRRQsOVu0HK6Ta2m0+sVr2RA1WOWQvc6BZGQTjCgLqp4RUhsY3VSK2
-   LcdNCHLNGXWTsiupw1P5GZqMQgUs1xxCFuAdp4nSCLXoccyd8uyVvSJIA
-   qjSJKmDXRLEvnif+tsqROWWX0/c8kYVOdRmPo2E8JR0GPKTPhcKWcZ4sP
-   6etVQVxVnqsitHCjxTHSWWGE9A0rMEgIsiwX13Q9s5p8BW3pG4c5CflUf
-   nvYx83CYdflW9uqmEdjLrpSAZ4EeOEbA45awbc1vnyKIGy8N/G6apTD0a
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="389927615"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="389927615"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 08:02:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="1089849125"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="1089849125"
-Received: from nkraljev-mobl.ger.corp.intel.com ([10.249.41.91])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 08:02:14 -0700
-Date:   Tue, 24 Oct 2023 18:02:12 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Manikanta Guntupalli <manikanta.guntupalli@amd.com>
-cc:     git@amd.com, michal.simek@amd.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-serial <linux-serial@vger.kernel.org>,
-        devicetree@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, radhey.shyam.pandey@amd.com,
-        srinivas.goud@amd.com, shubhrajyoti.datta@amd.com,
-        manion05gk@gmail.com
-Subject: Re: [PATCH V3 2/2] tty: serial: uartps: Add rs485 support to uartps
- driver
-In-Reply-To: <20231024144847.2316941-3-manikanta.guntupalli@amd.com>
-Message-ID: <f48b4dda-f78e-ce2b-39dd-af82db4b84@linux.intel.com>
-References: <20231024144847.2316941-1-manikanta.guntupalli@amd.com> <20231024144847.2316941-3-manikanta.guntupalli@amd.com>
+        Tue, 24 Oct 2023 11:03:34 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 14F8D10C2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:03:31 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D807E2F4;
+        Tue, 24 Oct 2023 08:04:11 -0700 (PDT)
+Received: from [192.168.2.82] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0CDF43F762;
+        Tue, 24 Oct 2023 08:03:27 -0700 (PDT)
+Message-ID: <14ab201e-0170-4dd7-a1ec-7587fe27385a@arm.com>
+Date:   Tue, 24 Oct 2023 17:03:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 1/2] sched/fair: Introduce UTIL_FITS_CAPACITY
+ feature (v2)
+Content-Language: en-US
+To:     Chen Yu <yu.c.chen@intel.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, Tim Chen <tim.c.chen@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
+References: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
+ <20231019160523.1582101-2-mathieu.desnoyers@efficios.com>
+ <f40522de-b71d-4848-8aa3-5b87d38bb847@arm.com>
+ <c79ac631-61c7-4953-a657-74047a264029@efficios.com>
+ <ZTdf0529DL51pj8m@chenyu5-mobl2.ccr.corp.intel.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <ZTdf0529DL51pj8m@chenyu5-mobl2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023, Manikanta Guntupalli wrote:
+On 24/10/2023 08:10, Chen Yu wrote:
+> On 2023-10-23 at 11:04:49 -0400, Mathieu Desnoyers wrote:
+>> On 2023-10-23 10:11, Dietmar Eggemann wrote:
+>>> On 19/10/2023 18:05, Mathieu Desnoyers wrote:
 
-> Add rs485 support to uartps driver. Use either rts-gpios or RTS
-> to control RS485 phy as driver or a receiver.
+[...]
+
+>>> Or like find_energy_efficient_cpu() (feec(), used in
+>>> Energy-Aware-Scheduling (EAS)) which uses cpu_util(cpu, p, cpu, 0) to get:
+>>>
+>>>    max(util_avg(CPU + p), util_est(CPU + p))
+>>
+>> I've tried using cpu_util(), but unfortunately anything that considers
+>> blocked/sleeping tasks in its utilization total does not work for my
+>> use-case.
+>>
+>> From cpu_util():
+>>
+>>  * CPU utilization is the sum of running time of runnable tasks plus the
+>>  * recent utilization of currently non-runnable tasks on that CPU.
+>>
 > 
-> Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
-> ---
-> Changes for V2:
-> Modify optional gpio name to xlnx,phy-ctrl-gpios.
-> Update commit description.
-> Add support for RTS, delay_rts_before_send and delay_rts_after_send in RS485 mode.
-> Changes for V3:
-> Modify optional gpio name to rts-gpios.
-> Update commit description.
-> Move cdns_uart_tx_empty function to avoid prototype statement.
-> Remove assignment of struct serial_rs485 to port->rs485 as
-> serial core performs that.
-> Switch to native RTS in non GPIO case.
-> Handle rs485 during stop tx.
-> Remove explicit calls to configure gpio direction and value,
-> as devm_gpiod_get_optional performs that by using GPIOD_OUT_LOW argument.
-> Update implementation to support configuration of GPIO/RTS value
-> based on user configuration of SER_RS485_RTS_ON_SEND and
-> SER_RS485_RTS_AFTER_SEND. Move implementation to start_tx from handle_tx.
-> ---
->  drivers/tty/serial/xilinx_uartps.c | 180 ++++++++++++++++++++++++++---
->  1 file changed, 165 insertions(+), 15 deletions(-)
+> I thought cpu_util() indicates the utilization decay sum of task that was once
+> "running" on this CPU, but will not sum up the "util/load" of the blocked/sleeping
+> task?
+
+cpu_util() here refers to:
+
+    cpu_util(int cpu, struct task_struct *p, int dst_cpu, int boost)
+
+which when called with (cpu, p, cpu, 0) and task_cpu(p) != cpu returns:
+
+    max(util_avg(CPU + p), util_est(CPU + p))
+
+The term `CPU utilization` in cpu_util()'s header stands for
+cfs_rq->avg.util_avg.
+
+It does not sum up the utilization of blocked tasks but it can contain
+it. They have to be a blocked tasks and not tasks which were running in
+cfs_rq since we subtract utilization of tasks which are migrating away
+from the cfs_rq (cfs_rq->removed.util_avg in remove_entity_load_avg()
+and update_cfs_rq_load_avg()).
+> accumulate_sum()
+>     /* only the running task's util will be sum up */
+>     if (running)
+>        sa->util_sum += contrib << SCHED_CAPACITY_SHIFT;
 > 
-> diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-> index 9c13dac1d4d1..32229cf5c508 100644
-> --- a/drivers/tty/serial/xilinx_uartps.c
-> +++ b/drivers/tty/serial/xilinx_uartps.c
-> @@ -23,6 +23,9 @@
->  #include <linux/module.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/iopoll.h>
-> +#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/delay.h>
->  
->  #define CDNS_UART_TTY_NAME	"ttyPS"
->  #define CDNS_UART_NAME		"xuartps"
-> @@ -193,6 +196,7 @@ MODULE_PARM_DESC(rx_timeout, "Rx timeout, 1-255");
->   * @clk_rate_change_nb:	Notifier block for clock changes
->   * @quirks:		Flags for RXBS support.
->   * @cts_override:	Modem control state override
-> + * @gpiod:		Pointer to the gpio descriptor
->   */
->  struct cdns_uart {
->  	struct uart_port	*port;
-> @@ -203,10 +207,19 @@ struct cdns_uart {
->  	struct notifier_block	clk_rate_change_nb;
->  	u32			quirks;
->  	bool cts_override;
-> +	struct gpio_desc	*gpiod;
->  };
->  struct cdns_platform_data {
->  	u32 quirks;
->  };
-> +
-> +struct serial_rs485 cdns_rs485_supported = {
-> +	.flags = SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND |
-> +		 SER_RS485_RTS_AFTER_SEND,
-> +	.delay_rts_before_send = 1,
-> +	.delay_rts_after_send = 1,
-> +};
-> +
->  #define to_cdns_uart(_nb) container_of(_nb, struct cdns_uart, \
->  		clk_rate_change_nb)
->  
-> @@ -305,6 +318,79 @@ static void cdns_uart_handle_rx(void *dev_id, unsigned int isrstatus)
->  	tty_flip_buffer_push(&port->state->port);
->  }
->  
-> +/**
-> + * cdns_rs485_config_gpio_rts_high - Configure GPIO/RTS to high
-> + * @cdns_uart: Handle to the cdns_uart
-> + */
-> +static void cdns_rs485_config_gpio_rts_high(struct cdns_uart *cdns_uart)
-> +{
-> +	u32 val;
-> +
-> +	if (cdns_uart->gpiod) {
-> +		gpiod_set_value(cdns_uart->gpiod, 1);
-> +	} else {
-> +		val = readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
-> +		val &= ~CDNS_UART_MODEMCR_RTS;
-> +		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
-> +	}
-> +}
-> +
-> +/**
-> + * cdns_rs485_config_gpio_rts_low - Configure GPIO/RTS to low
-> + * @cdns_uart: Handle to the cdns_uart
-> + */
-> +static void cdns_rs485_config_gpio_rts_low(struct cdns_uart *cdns_uart)
-> +{
-> +	u32 val;
-> +
-> +	if (cdns_uart->gpiod) {
-> +		gpiod_set_value(cdns_uart->gpiod, 0);
-> +	} else {
-> +		val = readl(cdns_uart->port->membase + CDNS_UART_MODEMCR);
-> +		val |= CDNS_UART_MODEMCR_RTS;
-> +		writel(val, cdns_uart->port->membase + CDNS_UART_MODEMCR);
-> +	}
-> +}
-> +
-> +/**
-> + * cdns_rs485_tx_setup - Tx setup specific to rs485
-> + * @cdns_uart: Handle to the cdns_uart
-> + */
-> +static void cdns_rs485_tx_setup(struct cdns_uart *cdns_uart)
-> +{
-> +	if (cdns_uart->port->rs485.flags & SER_RS485_RTS_ON_SEND)
-> +		cdns_rs485_config_gpio_rts_high(cdns_uart);
-> +	else
-> +		cdns_rs485_config_gpio_rts_low(cdns_uart);
-> +}
-> +
-> +/**
-> + * cdns_rs485_rx_setup - Rx setup specific to rs485
-> + * @cdns_uart: Handle to the cdns_uart
-> + */
-> +static void cdns_rs485_rx_setup(struct cdns_uart *cdns_uart)
-> +{
-> +	if (cdns_uart->port->rs485.flags & SER_RS485_RTS_AFTER_SEND)
-> +		cdns_rs485_config_gpio_rts_high(cdns_uart);
-> +	else
-> +		cdns_rs485_config_gpio_rts_low(cdns_uart);
-> +}
-> +
-> +/**
-> + * cdns_uart_tx_empty -  Check whether TX is empty
-> + * @port: Handle to the uart port structure
-> + *
-> + * Return: TIOCSER_TEMT on success, 0 otherwise
-> + */
-> +static unsigned int cdns_uart_tx_empty(struct uart_port *port)
-> +{
-> +	unsigned int status;
-> +
-> +	status = readl(port->membase + CDNS_UART_SR) &
-> +		       (CDNS_UART_SR_TXEMPTY | CDNS_UART_SR_TACTIVE);
+> WRITE_ONCE(sa->util_avg, sa->util_sum / divider);
 
-Split to two lines since you need two lines anyway.
+__update_load_avg_cfs_rq()
 
-> +	return (status == CDNS_UART_SR_TXEMPTY) ? TIOCSER_TEMT : 0;
-> +}
-> +
->  /**
->   * cdns_uart_handle_tx - Handle the bytes to be Txed.
->   * @dev_id: Id of the UART port
-> @@ -571,6 +657,8 @@ static int cdns_uart_clk_notifier_cb(struct notifier_block *nb,
->  static void cdns_uart_start_tx(struct uart_port *port)
->  {
->  	unsigned int status;
-> +	unsigned long time_out;
-> +	struct cdns_uart *cdns_uart = port->private_data;
->  
->  	if (uart_tx_stopped(port))
->  		return;
-> @@ -589,8 +677,31 @@ static void cdns_uart_start_tx(struct uart_port *port)
->  
->  	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_ISR);
->  
-> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-> +		cdns_rs485_tx_setup(cdns_uart);
-> +		if (cdns_uart->port->rs485.delay_rts_before_send)
-> +			mdelay(cdns_uart->port->rs485.delay_rts_before_send);
-> +	}
-> +
->  	cdns_uart_handle_tx(port);
->  
-> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-> +		time_out = jiffies + usecs_to_jiffies(TX_TIMEOUT);
-> +		/* Wait for tx completion */
-> +		while ((cdns_uart_tx_empty(cdns_uart->port) != TIOCSER_TEMT) &&
-> +		       time_before(jiffies, time_out))
-> +			cpu_relax();
+  ___update_load_sum(..., cfs_rq->curr != NULL
+                          ^^^^^^^^^^^^^^^^^^^^
+                          running
+    accumulate_sum()
 
-Use iopoll.h helper instead of handcrafted delay loop ?
+      if (periods)
+        /* decay _sum */
+        sa->util_sum = decay_load(sa->util_sum, ...)
 
-> +
-> +		if (cdns_uart->port->rs485.delay_rts_after_send)
-> +			mdelay(cdns_uart->port->rs485.delay_rts_after_send);
-> +
-> +		/*
-> +		 * Default Rx should be setup, because RX signaling path
-> +		 * need to enable to receive data.
-> +		 */
-> +		cdns_rs485_rx_setup(cdns_uart);
-> +	}
-> +
->  	/* Enable the TX Empty interrupt */
->  	writel(CDNS_UART_IXR_TXEMPTY, port->membase + CDNS_UART_IER);
->  }
-> @@ -602,6 +713,14 @@ static void cdns_uart_start_tx(struct uart_port *port)
->  static void cdns_uart_stop_tx(struct uart_port *port)
->  {
->  	unsigned int regval;
-> +	struct cdns_uart *cdns_uart = port->private_data;
-> +
-> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED) {
-> +		if (cdns_uart->port->rs485.delay_rts_after_send)
-> +			mdelay(cdns_uart->port->rs485.delay_rts_after_send);
-> +
-> +		cdns_rs485_rx_setup(cdns_uart);
-> +	}
->  
->  	regval = readl(port->membase + CDNS_UART_CR);
->  	regval |= CDNS_UART_CR_TX_DIS;
-> @@ -626,21 +745,6 @@ static void cdns_uart_stop_rx(struct uart_port *port)
->  	writel(regval, port->membase + CDNS_UART_CR);
->  }
->  
-> -/**
-> - * cdns_uart_tx_empty -  Check whether TX is empty
-> - * @port: Handle to the uart port structure
-> - *
-> - * Return: TIOCSER_TEMT on success, 0 otherwise
-> - */
-> -static unsigned int cdns_uart_tx_empty(struct uart_port *port)
-> -{
-> -	unsigned int status;
-> -
-> -	status = readl(port->membase + CDNS_UART_SR) &
-> -		       (CDNS_UART_SR_TXEMPTY | CDNS_UART_SR_TACTIVE);
-> -	return (status == CDNS_UART_SR_TXEMPTY) ? TIOCSER_TEMT : 0;
-> -}
+        if (load)
+          /* decay and accrue _sum */
+          contrib = __accumulate_pelt_segments(...)
 
-This is just a relocation of code? Move it in another patch in the 
-series, don't put it within the feature patch..
-
-> -
->  /**
->   * cdns_uart_break_ctl - Based on the input ctl we have to start or stop
->   *			transmitting char breaks
-> @@ -829,6 +933,9 @@ static int cdns_uart_startup(struct uart_port *port)
->  		(CDNS_UART_CR_TXRST | CDNS_UART_CR_RXRST))
->  		cpu_relax();
->  
-> +	if (cdns_uart->port->rs485.flags & SER_RS485_ENABLED)
-> +		cdns_rs485_rx_setup(cdns_uart);
-> +
->  	/*
->  	 * Clear the RX disable bit and then set the RX enable bit to enable
->  	 * the receiver.
-> @@ -1455,6 +1562,23 @@ MODULE_DEVICE_TABLE(of, cdns_uart_of_match);
->  /* Temporary variable for storing number of instances */
->  static int instances;
->  
-> +/**
-> + * cdns_rs485_config - Called when an application calls TIOCSRS485 ioctl.
-> + * @port: Pointer to the uart_port structure
-> + * @termios: Pointer to the ktermios structure
-> + * @rs485: Pointer to the serial_rs485 structure
-> + *
-> + * Return: 0
-> + */
-> +static int cdns_rs485_config(struct uart_port *port, struct ktermios *termios,
-> +			     struct serial_rs485 *rs485)
-> +{
-> +	if (rs485->flags & SER_RS485_ENABLED)
-> +		dev_dbg(port->dev, "Setting UART to RS485\n");
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * cdns_uart_probe - Platform driver probe
->   * @pdev: Pointer to the platform device structure
-> @@ -1463,6 +1587,7 @@ static int instances;
->   */
->  static int cdns_uart_probe(struct platform_device *pdev)
->  {
-> +	u32 val;
->  	int rc, id, irq;
->  	struct uart_port *port;
->  	struct resource *res;
-> @@ -1597,9 +1722,23 @@ static int cdns_uart_probe(struct platform_device *pdev)
->  	port->private_data = cdns_uart_data;
->  	port->read_status_mask = CDNS_UART_IXR_TXEMPTY | CDNS_UART_IXR_RXTRIG |
->  			CDNS_UART_IXR_OVERRUN | CDNS_UART_IXR_TOUT;
-> +	port->rs485_config = cdns_rs485_config;
-> +	port->rs485_supported = cdns_rs485_supported;
->  	cdns_uart_data->port = port;
->  	platform_set_drvdata(pdev, port);
->  
-> +	rc = uart_get_rs485_mode(port);
-> +	if (rc)
-> +		goto err_out_clk_notifier;
-> +
-> +	cdns_uart_data->gpiod = devm_gpiod_get_optional(&pdev->dev, "rts",
-> +							GPIOD_OUT_LOW);
-> +	if (IS_ERR(cdns_uart_data->gpiod)) {
-> +		rc = PTR_ERR(cdns_uart_data->gpiod);
-> +		dev_err(port->dev, "xuartps: devm_gpiod_get_optional failed\n");
-> +		goto err_out_clk_notifier;
-> +	}
-> +
->  	pm_runtime_use_autosuspend(&pdev->dev);
->  	pm_runtime_set_autosuspend_delay(&pdev->dev, UART_AUTOSUSPEND_TIMEOUT);
->  	pm_runtime_set_active(&pdev->dev);
-> @@ -1638,6 +1777,16 @@ static int cdns_uart_probe(struct platform_device *pdev)
->  	cdns_uart_data->cts_override = of_property_read_bool(pdev->dev.of_node,
->  							     "cts-override");
->  
-> +	if (cdns_uart_data->port->rs485.flags & SER_RS485_ENABLED) {
-> +		if (!cdns_uart_data->gpiod) {
-
-Combine the if conditions into a single if.
-
-> +			val = readl(cdns_uart_data->port->membase
-> +				    + CDNS_UART_MODEMCR);
-
-One line.
-
-> +			val |= CDNS_UART_MODEMCR_RTS;
-> +			writel(val, cdns_uart_data->port->membase
-> +			       + CDNS_UART_MODEMCR);
-
-Ditto.
-
-> +		}
-> +	}
-> +
->  	instances++;
->  
->  	return 0;
-> @@ -1646,6 +1795,7 @@ static int cdns_uart_probe(struct platform_device *pdev)
->  	pm_runtime_disable(&pdev->dev);
->  	pm_runtime_set_suspended(&pdev->dev);
->  	pm_runtime_dont_use_autosuspend(&pdev->dev);
-> +err_out_clk_notifier:
->  #ifdef CONFIG_COMMON_CLK
->  	clk_notifier_unregister(cdns_uart_data->uartclk,
->  			&cdns_uart_data->clk_rate_change_nb);
-> 
-
--- 
- i.
-
+When crossing periods we decay the old _sum and when additionally load
+!= 0 we decay and accrue the new _sum as well.
