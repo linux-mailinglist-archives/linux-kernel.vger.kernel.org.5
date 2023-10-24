@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB447D4B46
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8377D4B4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbjJXI41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34622 "EHLO
+        id S233950AbjJXI5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234151AbjJXI4I (ORCPT
+        with ESMTP id S229595AbjJXI4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:56:08 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A83DD79;
-        Tue, 24 Oct 2023 01:55:45 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5ac376d311aso17357387b3.1;
-        Tue, 24 Oct 2023 01:55:45 -0700 (PDT)
+        Tue, 24 Oct 2023 04:56:51 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C97D198D;
+        Tue, 24 Oct 2023 01:56:27 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4084095722aso34226865e9.1;
+        Tue, 24 Oct 2023 01:56:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698137744; x=1698742544; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oLZGqz6UYX/ddgHmGp/3YSovbVZZCzUQK2Gy9MOvl2s=;
-        b=WE3J4Xtt0lVjh1HpGOmoNmrYt0IRBfAvqwVgkLlQp1ihtWD3YT4C+P7Z+NZzhgU+7A
-         ktrA/aSglVZSPl8HIjgBQJFMbu0/1DdPOwrUPSdGMN+5h39+cOaVwIGSHLdJquX93VpK
-         Fgc/aPQlDySFcC2gJXU+/adC7KHeOi9iprK4QIzNh9BmQsj0ifvQg1sRtOEo+ufd3H3e
-         9BzW9y+X6RayJHjwBgcMJnbCrvlqDcbNX2Y1cHZ+HSsHJDR6+lt5oc0rr7E8v3ua+w6K
-         a3Wy033ULQuYOS1DIw6/ZKFFObCr4q5UPviz2Pt35fNuPQGFtxofJkYFHCKxQfR93NwK
-         coug==
+        d=gmail.com; s=20230601; t=1698137785; x=1698742585; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=miTVCU04yyCrzOSAI9EkRMIhzdyP2FapJh++0rrQ6Wg=;
+        b=AYgbKKURw+ZKtLiYOW1Qg6LZq8iU/oRvhHnaURUPPk0sZM57TDn1z1fOiebtMgMGRq
+         Lp/yZSEecW7T+FViTgoh6RdF/NXowpgzKh6nPwVjylU2qn5KSaOQ7iREQJOrD2cPACA3
+         YriXTizbEaZRiapZgM9fJcEW7IGHppR4r3LXfjc/wrKJv5g3MwzJW7R//RKdDIDLUlBm
+         LZBfUEF3khtksTBaYe6AClFSpDUzFIEmFskKe92IZO8bGyGfee65Rg9T1jtDwCcQCHGe
+         jFf0FftJJaDjhUYQlDyEsiDPz//NSC28rdpTFHv4ZHs1cMz7R+CQFrNq/NOf71ljac+g
+         26Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698137744; x=1698742544;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oLZGqz6UYX/ddgHmGp/3YSovbVZZCzUQK2Gy9MOvl2s=;
-        b=BiR1YZjKcGaBFClI4yXna7C2rYVPbiOfljkO+BMYgkf508L1x7b7I9ig2/W6jUcIu9
-         3+c8R0jjPs+HRaqejyEwUAc0K59O+EkXWsLIwXehBOPjTJaLD2eLRAeTCwFmWsDKmcqf
-         KMbV3ZRZUAn1YBEKGgWtgpY4YYrIFVcoWM4Q+NBxpnT7ZiwKp2AjWoxF9Zhptk/enURP
-         ELuH4gG3mynjhU4q6EVK8AHTDw5bMGMghJ8CQaBVB64K2RcydXdEKjEhnlfpFrxkBa5r
-         kMNiYH2tzHYwoT9u6w51Gy4gVfqEugH1/U5sw5VgFtmo2WaVknVCUJXa3q+sWhvWvbfi
-         APMw==
-X-Gm-Message-State: AOJu0YyAyucB4BFT+MGlpSui6TYDhb6ekujoRUdNf/0gp2SJTiMk5wCM
-        rrCoyqn+3WZmaOiD4LgT5lIhtaAtJrp2TFe1Ei4=
-X-Google-Smtp-Source: AGHT+IGG+PHV00fQVOh1xKFJBCV/fyXSVMUCW+/LlALS0zYopeOmD9HLQGdfyn9TCndvui+vGbcR/vNqzu3xWHKFtWg=
-X-Received: by 2002:a81:7bd6:0:b0:598:5bb5:1801 with SMTP id
- w205-20020a817bd6000000b005985bb51801mr3460956ywc.50.1698137744345; Tue, 24
- Oct 2023 01:55:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698137785; x=1698742585;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=miTVCU04yyCrzOSAI9EkRMIhzdyP2FapJh++0rrQ6Wg=;
+        b=exAUAwK2dFiMXCnCyIAaCsnc5FOXvhG7WNj4ZYw3rU+tLoCEfB6Y49wofnIvoHGjYr
+         q/LptBDkY/EhzhLqTj3TBb2khTc4KMbJM2lOVQ9dRXcnBjKjeTzw1N8mJ5WFxYkagAxc
+         4PBMntg9uDTDTRfg8t+tDGUbGWob9oxQo1H9+QfvV11IB+QlG0+hflqfxv1yd9taJvyp
+         7zF2GzhbXSrbj+6mNdAdit7q/rQzvAIU2t8MThkjHvUiMguBu2fbHK6TSHUBEyyarANS
+         JYo9N5fu/pY5EgHak5Yx7RGDFUoUB3nb32gCsrQpFbORnX/2ShBYVsUdWKjVOJP4f77Z
+         00Xg==
+X-Gm-Message-State: AOJu0YwkUnp0SylvyhSdcEmlr7gWu4ZxFqeT+h243B20M5zC4CbMdhG1
+        F220pd9UTqtKXDZ1Y2UP9fw=
+X-Google-Smtp-Source: AGHT+IGetQYjoPclj/kmbwPywiuFWtEc2VzhJ8b2Vn9XlycBsIp3g0AHLZEG3uwg270sYu4L4jCDRw==
+X-Received: by 2002:a05:600c:1c97:b0:401:d803:6243 with SMTP id k23-20020a05600c1c9700b00401d8036243mr8983012wms.32.1698137785245;
+        Tue, 24 Oct 2023 01:56:25 -0700 (PDT)
+Received: from debian ([63.135.72.41])
+        by smtp.gmail.com with ESMTPSA id o27-20020a05600c511b00b004067e905f44sm11655034wms.9.2023.10.24.01.56.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 01:56:25 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 09:56:23 +0100
+From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
+        rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 5.4 000/123] 5.4.259-rc1 review
+Message-ID: <ZTeGtz7cTimKctug@debian>
+References: <20231023104817.691299567@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20231018160922.1018962-1-ojeda@kernel.org> <d47553f1-1832-4c69-8a8c-71c58048ff30@lunn.ch>
- <CANiq72=E7TPLcq-yiQF9E8a33ghbogPcbv-yMqFKBxMQ0oOxNQ@mail.gmail.com> <5c3f3ef8-e93c-49f1-881f-11c02afdaf7d@lunn.ch>
-In-Reply-To: <5c3f3ef8-e93c-49f1-881f-11c02afdaf7d@lunn.ch>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 24 Oct 2023 10:55:33 +0200
-Message-ID: <CANiq72k8Q8QCc+6azwah7ApFM5+7J0f4nWY3Rud1wqPOB0wP+A@mail.gmail.com>
-Subject: Re: [PATCH] docs: rust: add "The Rust experiment" section
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>, linux-doc@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023104817.691299567@linuxfoundation.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,17 +75,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 20, 2023 at 5:00=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> I've talked to a small number of netdev developers, not many, but
-> some.
+Hi Greg,
 
-Thanks Andrew, this is valuable information (also for the upcoming
-talk in netdevconf).
+On Mon, Oct 23, 2023 at 12:55:58PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.259 release.
+> There are 123 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
+> Anything received after that time might be too late.
 
-We have been putting some of the meta-information you mention in our
-webpage instead, because it is easier to update (it is our `P:`
-field). We will do our best to keep expanding it in the future.
+Build test (gcc version 11.3.1 20230511):
+mips: 65 configs -> no failure
+arm: 106 configs -> failed
+arm64: 2 configs -> no failure
+x86_64: 4 configs -> no failure
+alpha allmodconfig -> no failure
+powerpc allmodconfig -> no failure
+riscv allmodconfig -> no failure
+s390 allmodconfig -> no failure
+xtensa allmodconfig -> no failure
 
-Cheers,
-Miguel
+Note:
+arm builds are failing with the error:
+drivers/gpio/gpio-vf610.c:251:9: error: 'GPIOCHIP_IRQ_RESOURCE_HELPERS' undeclared here (not in a function)
+  251 |         GPIOCHIP_IRQ_RESOURCE_HELPERS,
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpio/gpio-vf610.c:251:9: warning: excess elements in struct initializer
+drivers/gpio/gpio-vf610.c:251:9: note: (near initialization for 'vf610_irqchip')
+drivers/gpio/gpio-vf610.c: In function 'vf610_gpio_probe':
+drivers/gpio/gpio-vf610.c:340:9: error: implicit declaration of function 'gpio_irq_chip_set_chip' [-Werror=implicit-function-declaration]
+  340 |         gpio_irq_chip_set_chip(girq, &vf610_irqchip);
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/5353
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
