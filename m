@@ -2,69 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF8E7D5D1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80A07D5D19
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234978AbjJXVTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 17:19:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
+        id S234934AbjJXVU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 17:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234966AbjJXVTQ (ORCPT
+        with ESMTP id S235015AbjJXVUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:19:16 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB60F10E7
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:19:11 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c9daca2b85so1636845ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:19:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698182351; x=1698787151; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h+cZiVId6MMrE0VNYNpV7bLYZrEWEZQeY5gw9zkpQIc=;
-        b=TK6KIaPk3kelv3Tf5tWtx4WGjOBwy5AthpB3IIGdV/cHAkbO2JdenbHmCUmED/FlYZ
-         nAbHS2reyJzkkf1roTmiMyjgnxzVUtvthmuvdtW79Lc1CjiRYyweoyhYzrePggxxT6ql
-         yayGsFDMampYkm1xfTjkhSE1rbqMKBR18ELTw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698182351; x=1698787151;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h+cZiVId6MMrE0VNYNpV7bLYZrEWEZQeY5gw9zkpQIc=;
-        b=KwXi1b6Uv8Q06yMo1Mu65dEE4Oenky6Q8mukNOKoeTM/xDctX9SWIcJUj6YZ9x4Gz1
-         7ygmjr99pH8+1fVYakSs6G7CJlZSltDMJR441CvM66AIy34VW5FWI0sgThaqNUjKbYXR
-         2Q/hsc9XRfx3BUog9d2eEDEIHgYaTIWjMK+EZX9qD+lRUODCRMZD29n8HeFwDsB+xYJ8
-         XTrg1WJVKdVcNVyXZ8hQlkfLjIYEvbNdCP0koLXoGnjEFFg7bRS8H3tyU9ZCXhKdm2ys
-         dNOHgAzqzn06NQo/caQU1BIOqlzskaK4vvUwcpFci5VToPKl6U6pKJYHkuqOO+aVRD0V
-         5vuw==
-X-Gm-Message-State: AOJu0YzOS5JXMZ1MJ9JgkXSILDWYZtuEbm/u6kV5I45WcsPG18Wysm3F
-        pvv6CjIrZdkdNPXX3sgj282bnA9lXFRmmUwTEqU=
-X-Google-Smtp-Source: AGHT+IGjL3fm2X2hvJcIZ8vhkMxJoeoI99wJ8vtRUXaY4HddAxAKijf1XivLedwDrIyKkSWlkqxCEg==
-X-Received: by 2002:a17:902:dac5:b0:1c0:cbaf:6954 with SMTP id q5-20020a170902dac500b001c0cbaf6954mr19334024plx.25.1698182351138;
-        Tue, 24 Oct 2023 14:19:11 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h6-20020a170902f54600b001bb892a7a67sm7860951plf.1.2023.10.24.14.19.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 14:19:08 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Amit Shah <amit@kernel.org>, Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        virtualization@lists.linux-foundation.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] virtio_console: Annotate struct port_buffer with __counted_by
-Date:   Tue, 24 Oct 2023 14:18:56 -0700
-Message-Id: <169818232963.2100071.8744701530771099437.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230922175115.work.059-kees@kernel.org>
-References: <20230922175115.work.059-kees@kernel.org>
+        Tue, 24 Oct 2023 17:20:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDFA10E6;
+        Tue, 24 Oct 2023 14:20:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67E5DC433C7;
+        Tue, 24 Oct 2023 21:20:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698182407;
+        bh=c/dSmB2+7TABcInFdYu7kldVit4Y6fD+dg6VWYg0+oM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pJjX9zGcKCOSoYN22PbETI4bvQR8ZUFiLi3Alp5AFijhocOt/ivXUoNcOwDvfNH7X
+         BQUQl33eJi6a2poDckq8XjEI+BdAXyjuoMiC2QQS10PDIjlljX38nxmcjlTwUwzXB0
+         c9z0NMxGKwgSLr14lMPmkyZLoRzKxSh4sV3jEfdta/MfxiM+m99Rgzvg9f0VZyuZ9M
+         Uu4Hbqo+XCJTJdiYAAEJPIqTKY44uOxj2EKJHiwI1xkK/h3bUIEWe8SyV7C+KrKNoC
+         GJuOpaiB2YgoA3czd/55nFXg71hWy++Y4Yd/+LLVzNi+2rBngcT8beHEmgZ1po8yn0
+         haKiETCebPCVw==
+Date:   Tue, 24 Oct 2023 23:20:03 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huangzheng lai <laihuangzheng@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Subject: Re: [PATCH V2 3/7] i2c: sprd: Use global variables to record I2C
+ ack/nack status instead of local variables
+Message-ID: <20231024212003.rfakablxfst5nxba@zenone.zhora.eu>
+References: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
+ <20231023081158.10654-4-Huangzheng.Lai@unisoc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023081158.10654-4-Huangzheng.Lai@unisoc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,24 +55,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 10:51:15 -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+Hi Huangzheng,
+
+On Mon, Oct 23, 2023 at 04:11:54PM +0800, Huangzheng Lai wrote:
+> We found that when the interrupt bit of the I2C controller is cleared,
+> the ack/nack bit is also cleared at the same time. After clearing the
+> interrupt bit in sprd_i2c_isr(), incorrect ack/nack information will be
+> obtained in sprd_i2c_isr_thread(), resulting in incorrect communication
+> when nack cannot be recognized. To solve this problem, we used a global
+> variable to record ack/nack information before clearing the interrupt
+> bit instead of a local variable.
 > 
-> As found with Coccinelle[1], add __counted_by for struct port_buffer.
+> Fixes: 8b9ec0719834 ("i2c: Add Spreadtrum I2C controller driver")
+> Cc: <stable@vger.kernel.org> # v4.14+
+> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+> ---
+>  drivers/i2c/busses/i2c-sprd.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
 > 
-> [...]
+> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
+> index aa602958d4fd..dec627ef408c 100644
+> --- a/drivers/i2c/busses/i2c-sprd.c
+> +++ b/drivers/i2c/busses/i2c-sprd.c
+> @@ -85,6 +85,7 @@ struct sprd_i2c {
+>  	struct clk *clk;
+>  	u32 src_clk;
+>  	u32 bus_freq;
+> +	bool ack_flag;
 
-Applied to for-next/hardening, thanks!
+So that you are telling me that this is not racy because we won't
+receive any irq until we pull the ack down. Am I understanding
+correctly?
 
-[1/1] virtio_console: Annotate struct port_buffer with __counted_by
-      https://git.kernel.org/kees/c/bf5abc17bc43
+But if this patch is fixing an unstable ack flag, how can I
+believe this won't end up into a race?
 
-Take care,
+>  	struct completion complete;
+>  	struct reset_control *rst;
+>  	u8 *buf;
+> @@ -119,6 +120,7 @@ static void sprd_i2c_clear_ack(struct sprd_i2c *i2c_dev)
+>  {
+>  	u32 tmp = readl(i2c_dev->base + I2C_STATUS);
+>  
+> +	i2c_dev->ack_flag = 0;
+>  	writel(tmp & ~I2C_RX_ACK, i2c_dev->base + I2C_STATUS);
+>  }
+>  
+> @@ -393,7 +395,6 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
+>  {
+>  	struct sprd_i2c *i2c_dev = dev_id;
+>  	struct i2c_msg *msg = i2c_dev->msg;
+> -	bool ack = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
 
--- 
-Kees Cook
+Where exactly did you see the ack going to '0', here in the
+thread or in handler?
 
+>  	u32 i2c_tran;
+>  
+>  	if (msg->flags & I2C_M_RD)
+> @@ -409,7 +410,7 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
+>  	 * For reading data, ack is always true, if i2c_tran is not 0 which
+>  	 * means we still need to contine to read data from slave.
+>  	 */
+> -	if (i2c_tran && ack) {
+> +	if (i2c_tran && i2c_dev->ack_flag) {
+>  		sprd_i2c_data_transfer(i2c_dev);
+>  		return IRQ_HANDLED;
+>  	}
+> @@ -420,7 +421,7 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
+>  	 * If we did not get one ACK from slave when writing data, we should
+>  	 * return -EIO to notify users.
+>  	 */
+> -	if (!ack)
+> +	if (!i2c_dev->ack_flag)
+>  		i2c_dev->err = -EIO;
+>  	else if (msg->flags & I2C_M_RD && i2c_dev->count)
+>  		sprd_i2c_read_bytes(i2c_dev, i2c_dev->buf, i2c_dev->count);
+> @@ -437,7 +438,6 @@ static irqreturn_t sprd_i2c_isr(int irq, void *dev_id)
+>  {
+>  	struct sprd_i2c *i2c_dev = dev_id;
+>  	struct i2c_msg *msg = i2c_dev->msg;
+> -	bool ack = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
+>  	u32 i2c_tran;
+>  
+>  	if (msg->flags & I2C_M_RD)
+> @@ -456,7 +456,8 @@ static irqreturn_t sprd_i2c_isr(int irq, void *dev_id)
+>  	 * means we can read all data in one time, then we can finish this
+>  	 * transmission too.
+>  	 */
+> -	if (!i2c_tran || !ack) {
+> +	i2c_dev->ack_flag = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
+> +	if (!i2c_tran || !i2c_dev->ack_flag) {
+>  		sprd_i2c_clear_start(i2c_dev);
+
+this clear_start() is called both here and in the thread, why?
+
+Andi
+
+>  		sprd_i2c_clear_irq(i2c_dev);
+>  	}
+> -- 
+> 2.17.1
+> 
