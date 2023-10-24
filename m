@@ -2,164 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0081B7D56F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A57A7D56F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343856AbjJXPwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59062 "EHLO
+        id S1343953AbjJXPxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:53:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234736AbjJXPwf (ORCPT
+        with ESMTP id S234724AbjJXPxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:52:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12A883
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:51:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698162712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=ykD8SVnjwSHLbUyOrE2Qp1dyEU2wHlpnbGAShg0wi9s=;
-        b=awGxIITTsEGGRRwvM5x7G/0IWVImopIZbzK2otyTmPkodJTXT6bJb4K8BegueYkL97siUF
-        8/7GGRu9D8ITePoELmcfk4RvMicau2yPgJY9OcGCMI61vZz5VIaCoDIzFzP8e8RVSA08oz
-        5jWjFsvjOTsZlw0sT3Sf0jBUEO5Fu88=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-479-oJ_nPyEEO9WJ0VQ9UWzbDw-1; Tue, 24 Oct 2023 11:51:50 -0400
-X-MC-Unique: oJ_nPyEEO9WJ0VQ9UWzbDw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-402cd372b8bso32259485e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:51:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698162709; x=1698767509;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ykD8SVnjwSHLbUyOrE2Qp1dyEU2wHlpnbGAShg0wi9s=;
-        b=hOln9JFMTNkexHSozmSMYVpsHTUhY6/DkyHUmXM8pRxr0aMop+mRIa/QDt+YYcF2NT
-         6kf6RWnEy2mq8rsOk7a17KU/36M62F5W+n4uUtYFDGA4j3AsKETPuuR+hk9ntlGA3lDV
-         bTSwreeP9xbtpQUjUMZJC+VG2k+TlcjHXjwe7jpa8ljU7ABCYny1jk1bHFuA/LwsB6zK
-         Ghj2vEzyLBwSx3KkOXnJh/Dkf9KuxItVbypgcn5hilkiCkxd1Ft7fgsNjV9/bbRztnI2
-         DPJP+t4aJ621Q2Xk5Fo+EKew38h5DnouBj1pfGuITmxN2sHiwQzbjtYAGARqE8XrDbw7
-         sYLQ==
-X-Gm-Message-State: AOJu0YxdjYBeDm448xyXDxttKjrL+3h0M6tT55eMb3ixawbBH+b0M8A1
-        cN1S77KiVMtYwuN4t6nJxPTS9s3hhmT0R34jF7actuTfqer/APCJ+RMjlQygPjgi2Cr8cnWvm/Q
-        og4fkPOplwmlKmUyFY9GJ+bMZETUFkzv6
-X-Received: by 2002:a5d:474d:0:b0:32d:9cdd:a23 with SMTP id o13-20020a5d474d000000b0032d9cdd0a23mr9326428wrs.25.1698162709506;
-        Tue, 24 Oct 2023 08:51:49 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEpzLiuCO5jFAQCzmyeo0LDOpKqpB030TvSa3f0NBwyekBXoaN9gHhDxSI4oT75Hf+qndNY7g==
-X-Received: by 2002:a5d:474d:0:b0:32d:9cdd:a23 with SMTP id o13-20020a5d474d000000b0032d9cdd0a23mr9326414wrs.25.1698162709062;
-        Tue, 24 Oct 2023 08:51:49 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c741:ac00:f27c:e128:f876:f17e? (p200300cbc741ac00f27ce128f876f17e.dip0.t-ipconnect.de. [2003:cb:c741:ac00:f27c:e128:f876:f17e])
-        by smtp.gmail.com with ESMTPSA id k17-20020a5d4291000000b0032da87e32e2sm10249162wrq.4.2023.10.24.08.51.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 08:51:48 -0700 (PDT)
-Message-ID: <a1357e75-986a-4e00-a987-9d8c767a42a5@redhat.com>
-Date:   Tue, 24 Oct 2023 17:51:47 +0200
+        Tue, 24 Oct 2023 11:53:50 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438C010C2;
+        Tue, 24 Oct 2023 08:53:48 -0700 (PDT)
+Received: from [192.168.194.158] (unknown [116.71.169.209])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 87559660732E;
+        Tue, 24 Oct 2023 16:53:39 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698162827;
+        bh=r9JIoOMb3wHRtWT2d+zIyaVckC9zq82faziIof7icBk=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=b5qVVHGBVUSYs6b+oCDzIuZYlcqyH6gn3cBO7wogMh+ywlsvR8UyX31iM9gEHYiDT
+         eZqRs9bIEaZSibnBnjAPdberpRp95JRLUrVCyBTHWYPIweX0c6VS/dU5QnaY45Krki
+         6+VduTQBG78GOMLjBMRzGSXMl+v08Q9WxocpHct7RdAUnVmYeFyRLc6et0yrRzoPCm
+         /2rAkX4b7qebsgrOUchpK090Xg/QVOrEJtbINCdnQmv2FcSI+/j9PPnzRDX8wgoJlR
+         9ObGwW3UepIrEDtdk0sWtrNqBJqcvKlOp+RtcgWSs6tPGyrOsv+TqQSkqRnW9pjM2q
+         EeHNpNkZintgw==
+Message-ID: <559d9870-70ce-4856-8471-193337beda9c@collabora.com>
+Date:   Tue, 24 Oct 2023 20:53:31 +0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm/rmap: vm_flags including VM_EXEC can exit timely
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        kernel@collabora.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, broonie@kernel.org,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v2 3/4] selftests: core: remove duplicate defines
 Content-Language: en-US
-To:     Zhiguo Jiang <justinjiang@vivo.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-References: <20231024144913.421-1-justinjiang@vivo.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231024144913.421-1-justinjiang@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+To:     Aishwarya TCV <aishwarya.tcv@arm.com>
+References: <20231006100743.1631334-1-usama.anjum@collabora.com>
+ <20231006100743.1631334-3-usama.anjum@collabora.com>
+ <7161219e-0223-d699-d6f3-81abd9abf13b@arm.com>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <7161219e-0223-d699-d6f3-81abd9abf13b@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.10.23 16:49, Zhiguo Jiang wrote:
-> When pra->vm_flags include VM_EXEC flag and folio is file detected in
-> folio_referenced_one(), the folio referenced traversal process can be
-> exited timely to reduce the detecting folio referenced time.
+Hi Aishwarya,
+
+On 10/24/23 5:43 PM, Aishwarya TCV wrote:
 > 
-
-Can you further elaborate what the logic behind that is?
-
-Why can we stop here if we're dealing with a pagecache folio in an 
-executable VMA?
-
-> Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
-> ---
->   mm/rmap.c | 2 ++
->   1 file changed, 2 insertions(+)
->   mode change 100644 => 100755 mm/rmap.c
 > 
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 7a27a2b41802..932f3b7e8521
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -884,6 +884,8 @@ static bool folio_referenced_one(struct folio *folio,
->   	if (referenced) {
->   		pra->referenced++;
->   		pra->vm_flags |= vma->vm_flags & ~VM_LOCKED;
-> +		if ((pra->vm_flags | VM_EXEC) && folio_is_file_lru(folio))
-> +			return false;
->   	}
->   
->   	if (!pra->mapcount)
+> On 06/10/2023 11:07, Muhammad Usama Anjum wrote:
+>> Remove duplicate defines which are already defined in kernel headers and
+>> re-definition isn't required.
+>>
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> ---
+> 
+> Hi Muhammad,
+> 
+> Currently when building kselftest against next-master with arm64 arch
+> and defconfig+kselftest  “error: 'CLOSE_RANGE_UNSHARE' undeclared (first
+> use in this function)” is observed.
+Thanks for reporting. I've sent the fix:
+https://lore.kernel.org/all/20231024155137.219700-1-usama.anjum@collabora.com
+
+> 
+> The bisect log is below and a full log from a failing test job can be
+> seen here:
+> 
+> https://storage.kernelci.org/next/master/next-20231023/arm64/defconfig+kselftest/gcc-10/logs/kselftest.log
+> 
+> close_range_test.c: In function 'close_range_unshare':
+> close_range_test.c:111:11: error: 'CLOSE_RANGE_UNSHARE' undeclared
+> (first use in this function)
+>   111 |           CLOSE_RANGE_UNSHARE);
+>       |           ^~~~~~~~~~~~~~~~~~~
+> close_range_test.c:111:11: note: each undeclared identifier is reported
+> only once for each function it appears in
+> close_range_test.c: In function 'close_range_unshare_capped':
+> close_range_test.c:200:11: error: 'CLOSE_RANGE_UNSHARE' undeclared
+> (first use in this function)
+>   200 |           CLOSE_RANGE_UNSHARE);
+>       |           ^~~~~~~~~~~~~~~~~~~
+> close_range_test.c: In function 'close_range_cloexec':
+> close_range_test.c:234:36: error: 'CLOSE_RANGE_CLOEXEC' undeclared
+> (first use in this function)
+>   234 |  ret = sys_close_range(1000, 1000, CLOSE_RANGE_CLOEXEC);
+>       |                                    ^~~~~~~~~~~~~~~~~~~
+> close_range_test.c: In function 'close_range_cloexec_unshare':
+> close_range_test.c:302:36: error: 'CLOSE_RANGE_CLOEXEC' undeclared
+> (first use in this function)
+>   302 |  ret = sys_close_range(1000, 1000, CLOSE_RANGE_CLOEXEC);
+>       |                                    ^~~~~~~~~~~~~~~~~~~
+> close_range_test.c:317:32: error: 'CLOSE_RANGE_UNSHARE' undeclared
+> (first use in this function)
+>   317 |          CLOSE_RANGE_CLOEXEC | CLOSE_RANGE_UNSHARE);
+>       |                                ^~~~~~~~~~~~~~~~~~~
+> close_range_test.c: In function 'close_range_cloexec_syzbot':
+> close_range_test.c:378:33: error: 'CLOSE_RANGE_CLOEXEC' undeclared
+> (first use in this function)
+>   378 |   ret = sys_close_range(3, ~0U, CLOSE_RANGE_CLOEXEC);
+>       |                                 ^~~~~~~~~~~~~~~~~~~
+> close_range_test.c: In function 'close_range_cloexec_unshare_syzbot':
+> close_range_test.c:472:34: error: 'CLOSE_RANGE_UNSHARE' undeclared
+> (first use in this function)
+>   472 |    ret = sys_close_range(3, ~0U, CLOSE_RANGE_UNSHARE |
+>       |                                  ^~~~~~~~~~~~~~~~~~~
+> close_range_test.c:473:13: error: 'CLOSE_RANGE_CLOEXEC' undeclared
+> (first use in this function)
+>   473 |             CLOSE_RANGE_CLOEXEC);
+>       |             ^~~~~~~~~~~~~~~~~~~
+> make[4]: *** [../lib.mk:181:
+> /tmp/kci/linux/build/kselftest/core/close_range_test] Error 1
+> 
+> 
+> git bisect log
+> git bisect start
+> # good: [58720809f52779dc0f08e53e54b014209d13eebb] Linux 6.6-rc6
+> git bisect good 58720809f52779dc0f08e53e54b014209d13eebb
+> # bad: [2030579113a1b1b5bfd7ff24c0852847836d8fd1] Add linux-next
+> specific files for 20231020
+> git bisect bad 2030579113a1b1b5bfd7ff24c0852847836d8fd1
+> # good: [aa531ca5bb35637b6d235df5feba57ed94d3a462] Merge branch
+> 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
+> git bisect good aa531ca5bb35637b6d235df5feba57ed94d3a462
+> # good: [37a9b505514f0ed4447757452f1e39d3a373df59] Merge branch
+> 'for-next' of
+> https://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git
+> git bisect good 37a9b505514f0ed4447757452f1e39d3a373df59
+> # good: [695ee55348f6c3c7ec5f953ab297b4db9501962b] Merge branch
+> 'for-next' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
+> git bisect good 695ee55348f6c3c7ec5f953ab297b4db9501962b
+> # skip: [150dc54505f3395010784d2a5c8b2e0e9b2b2f37] Merge branch
+> 'counter-next' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/wbg/counter.git
+> git bisect skip 150dc54505f3395010784d2a5c8b2e0e9b2b2f37
+> # good: [bae023765199bef243b49c0f8860a3290a5c9f6d] staging: iio:
+> resolver: ad2s1210: implement hysteresis as channel attr
+> git bisect good bae023765199bef243b49c0f8860a3290a5c9f6d
+> # good: [337c88ee5fb65f9c34ca7bb129915cb59de687b3] Merge branch 'next'
+> of git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git
+> git bisect good 337c88ee5fb65f9c34ca7bb129915cb59de687b3
+> # good: [248f0927e11e09e6285383938b5c4b87079ee5a7] Merge branch
+> 'for-next' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+> git bisect good 248f0927e11e09e6285383938b5c4b87079ee5a7
+> # bad: [3e2f5dfe32e1a8fbd034b1060bd30b9b1179b4c7] Merge branch
+> 'rtc-next' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git
+> git bisect bad 3e2f5dfe32e1a8fbd034b1060bd30b9b1179b4c7
+> # bad: [1f6421f11948d0de9216b8f1c439c21dbc90da91] Merge branch 'next' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git
+> git bisect bad 1f6421f11948d0de9216b8f1c439c21dbc90da91
+> # bad: [34dce23f7e405ffb4eca04e83ee10c03a4cffb9b] selftests/clone3:
+> Report descriptive test names
+> git bisect bad 34dce23f7e405ffb4eca04e83ee10c03a4cffb9b
+> # bad: [d3772e7badd2cd3813e2efba0034f6e39aecc97f] selftests/mm:
+> Substitute attribute with a macro
+> git bisect bad d3772e7badd2cd3813e2efba0034f6e39aecc97f
+> # good: [071af0c9e582bc47e379e39490a2bc1adfe4ec68] selftests: timers:
+> Convert posix_timers test to generate KTAP output
+> git bisect good 071af0c9e582bc47e379e39490a2bc1adfe4ec68
+> # bad: [2531f374f922e77ba51f24d1aa6fa11c7f4c36b8] Documentation:
+> kselftests: Remove references to bpf tests
+> git bisect bad 2531f374f922e77ba51f24d1aa6fa11c7f4c36b8
+> # good: [44eebacd6b8f633eb3a38a6db093658636b844e8] selftests: clone3:
+> remove duplicate defines
+> git bisect good 44eebacd6b8f633eb3a38a6db093658636b844e8
+> # bad: [ec54424923cf943b51dd5bf75fcbe27b0ca2c6ef] selftests: core:
+> remove duplicate defines
+> git bisect bad ec54424923cf943b51dd5bf75fcbe27b0ca2c6ef
+> # first bad commit: [ec54424923cf943b51dd5bf75fcbe27b0ca2c6ef]
+> selftests: core: remove duplicate defines
+> 
+> Thanks,
+> Aishwarya
 
 -- 
-Cheers,
-
-David / dhildenb
-
+BR,
+Muhammad Usama Anjum
