@@ -2,241 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B07D57D5E94
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 01:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1217D5E9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 01:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344563AbjJXXQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 19:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34798 "EHLO
+        id S1344591AbjJXXTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 19:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231987AbjJXXQw (ORCPT
+        with ESMTP id S1344466AbjJXXTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 19:16:52 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4857C10C9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 16:16:49 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-7b7205bc5a3so1797239241.2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 16:16:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698189408; x=1698794208; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KOu+GUGt5bf45brXFu8qbvUcorQRuKU9cK9mjz8tCvw=;
-        b=JFCgmwK5PRupk7IkG62GPTIpYVaYbExLzbuYr+cG9q2eewmPCXmFpYijV9tvTZ+Ukw
-         fBVjdqAmyHzZfkKhqep5f2hfbDF2mOxR7Bz8LC+HOTzBoGA4PJ+AHxvsFt3iRdlZjKJ8
-         AUqVSFfIdNE6Ax/qhSq80joyY3fVJu+ecVWYPaapGcPgQF14nKCu7BEq+oANdNIkleGq
-         Gw2RfYjiPfGRqEc0HwtDxR0W8awsqMSiTEp40rXz9+SFKwqh7Q2hIO9r0gN9NkdOnBYr
-         i5pnIgBB9T8lf4zb4uMBvikFSZjT8GJS97JaFcjbZcjVN7nv+Uwk/8mUb5CHQnYnSeJ/
-         zNYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698189408; x=1698794208;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KOu+GUGt5bf45brXFu8qbvUcorQRuKU9cK9mjz8tCvw=;
-        b=Ekp/suRhruXfb6FrMFl9LF8QbvFuzsxKDm3Yg8uHZ3miCQCrnI0boe4ZFjw9877zTm
-         RqfbkTJR/jwBuUE2Gg2NO8TNKbnLw4aPpFX1z+pVPtQaWi7pP30rTKqxUcc8asv5vuAn
-         CieHrq6k+Mvx0bWbjMyZy11VrJOk6ZwJpa70bU6l37wBF5BJLjShckOct6dweZOr20wu
-         u2eTit0o7pBmkpO/ybS7i92U6hB/8IoAztmFSs3LGLaR8Sb/RakRh/RIWn2D1bU0CRXz
-         Urp/paTvIloRjLphcY0Em3KAkNuTbVYh7GC+OtaAiMkEFWA2EmHCE9zCZganqJLEl6aS
-         EAJw==
-X-Gm-Message-State: AOJu0YwkTvHZNlg7T/N7Fwi9EeqbDtHWT1zKwhxH1Hc4F451LESgWgqk
-        trxkx1p1g6k18d6iJRNYiCPJGLLcX3dpQKva8M7WnAuNLQv/CA==
-X-Google-Smtp-Source: AGHT+IFUhISub6RvDgagu1NeIrq/YwoFByzkIenUrghjxImmwcBRQQXlc1x+4E33oYimKOg/OqtJXARn26JO99YQRlk=
-X-Received: by 2002:a05:6102:20dc:b0:452:66a7:1ac with SMTP id
- i28-20020a05610220dc00b0045266a701acmr13577539vsr.6.1698189408226; Tue, 24
- Oct 2023 16:16:48 -0700 (PDT)
+        Tue, 24 Oct 2023 19:19:47 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80A110C6;
+        Tue, 24 Oct 2023 16:19:45 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39OMsdIW006452;
+        Tue, 24 Oct 2023 23:19:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=GEhGl3jIF7tnr2aO8luYKeblxM/VbrTylqhHINAwWI4=;
+ b=bFAgwGaBICGObjV6aDwtMi+VHoV0YRQlHsy/sjEkziy0ZUJAvZVkQDFMBXhbVwGVp02o
+ 6tXwhQRN6lXQkfZc2n8fsvc3PJF7p7//97ZWya9ZtX0IeCGf/cN4VaARPJndd1QyXz+O
+ OiTYF7xpq3Nf0PSSVsRO3KbU9sJx2uHBCQUXmSkZoPh6vxcChDDwmz7nmLd1reUsk3N/
+ i9NGVtUfY/zQLBpgOOZ2Ie142AnK5p7hO2KI4m/DDgAhrRHAaB3SvjPqDhE3hbLBk4kF
+ JI/xNlV7/2BJMAFV2mZrHQd+6VswtOAm6pzk/F3G6sPU71TkvEbBkEKT+y+swyqxm2XT Hw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tx43hanku-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 23:19:32 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39ONJVI2002808
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 23:19:31 GMT
+Received: from [10.48.243.236] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 24 Oct
+ 2023 16:19:30 -0700
+Message-ID: <b85a4e54-61c7-45fe-b97d-46338b237a64@quicinc.com>
+Date:   Tue, 24 Oct 2023 16:19:29 -0700
 MIME-Version: 1.0
-References: <ae3115778a3fa10ec77152e18beed54fafe0f6e7.1698151516.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <ae3115778a3fa10ec77152e18beed54fafe0f6e7.1698151516.git.baolin.wang@linux.alibaba.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Wed, 25 Oct 2023 07:16:36 +0800
-Message-ID: <CAGsJ_4zgdAmyU-075jd8KfXn=CdAVC8Rs481sCOd5N2a68yPUg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: mm: drop tlb flush operation when clearing the
- access bit
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, v-songbaohua@oppo.com,
-        yuzhao@google.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] wifi: ath10k: replace deprecated strncpy with memcpy
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        Justin Stitt <justinstitt@google.com>
+CC:     Kalle Valo <kvalo@kernel.org>, <ath10k@lists.infradead.org>,
+        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>
+References: <20231024-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v2-1-4c1f4cd4b4df@google.com>
+ <202310241428.0AA7B80@keescook>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <202310241428.0AA7B80@keescook>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: EQ8VpvQKgvrSn9MAgciz5iwhaJypNltA
+X-Proofpoint-ORIG-GUID: EQ8VpvQKgvrSn9MAgciz5iwhaJypNltA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-24_22,2023-10-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ impostorscore=0 clxscore=1015 bulkscore=0 adultscore=0 mlxlogscore=734
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310240200
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 8:57=E2=80=AFPM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
->
-> Now ptep_clear_flush_young() is only called by folio_referenced() to
-> check if the folio was referenced, and now it will call a tlb flush on
-> ARM64 architecture. However the tlb flush can be expensive on ARM64
-> servers, especially for the systems with a large CPU numbers.
->
-> Similar to the x86 architecture, below comments also apply equally to
-> ARM64 architecture. So we can drop the tlb flush operation in
-> ptep_clear_flush_young() on ARM64 architecture to improve the performance=
-.
-> "
-> /* Clearing the accessed bit without a TLB flush
->  * doesn't cause data corruption. [ It could cause incorrect
->  * page aging and the (mistaken) reclaim of hot pages, but the
->  * chance of that should be relatively low. ]
->  *
->  * So as a performance optimization don't flush the TLB when
->  * clearing the accessed bit, it will eventually be flushed by
->  * a context switch or a VM operation anyway. [ In the rare
->  * event of it not getting flushed for a long time the delay
->  * shouldn't really matter because there's no real memory
->  * pressure for swapout to react to. ]
->  */
-> "
-> Running the thpscale to show some obvious improvements for compaction
-> latency with this patch:
->                              base                   patched
-> Amean     fault-both-1      1093.19 (   0.00%)     1084.57 *   0.79%*
-> Amean     fault-both-3      2566.22 (   0.00%)     2228.45 *  13.16%*
-> Amean     fault-both-5      3591.22 (   0.00%)     3146.73 *  12.38%*
-> Amean     fault-both-7      4157.26 (   0.00%)     4113.67 *   1.05%*
-> Amean     fault-both-12     6184.79 (   0.00%)     5218.70 *  15.62%*
-> Amean     fault-both-18     9103.70 (   0.00%)     7739.71 *  14.98%*
-> Amean     fault-both-24    12341.73 (   0.00%)    10684.23 *  13.43%*
-> Amean     fault-both-30    15519.00 (   0.00%)    13695.14 *  11.75%*
-> Amean     fault-both-32    16189.15 (   0.00%)    14365.73 *  11.26%*
->                        base       patched
-> Duration User         167.78      161.03
-> Duration System      1836.66     1673.01
-> Duration Elapsed     2074.58     2059.75
->
-> Barry Song submitted a similar patch [1] before, that replaces the
-> ptep_clear_flush_young_notify() with ptep_clear_young_notify() in
-> folio_referenced_one(). However, I'm not sure if removing the tlb flush
-> operation is applicable to every architecture in kernel, so dropping
-> the tlb flush for ARM64 seems a sensible change.
->
-> Note: I am okay for both approach, if someone can help to ensure that
-> all architectures do not need the tlb flush when clearing the accessed
-> bit, then I also think Barry's patch is better (hope Barry can resend
-> his patch).
->
+On 10/24/2023 2:34 PM, Kees Cook wrote:
+> On Tue, Oct 24, 2023 at 05:42:16PM +0000, Justin Stitt wrote:
+>> strncpy() is deprecated [1] and we should prefer less ambiguous
+>> interfaces.
+>>
+>> In this case, arvif->u.ap.ssid has its length maintained by
+>> arvif->u.ap.ssid_len which indicates it may not need to be
+>> NUL-terminated. Make this explicit with __nonstring and use a plain old
+>> memcpy.
+>>
+>> This is also consistent with future copies into arvif->u.ap.ssid:
+>>
+>> 	if (changed & BSS_CHANGED_SSID &&
+>> 	    vif->type == NL80211_IFTYPE_AP) {
+>> 		arvif->u.ap.ssid_len = vif->cfg.ssid_len;
+>> 		if (vif->cfg.ssid_len)
+>> 			memcpy(arvif->u.ap.ssid, vif->cfg.ssid,
+>> 			       vif->cfg.ssid_len);
+>> 		arvif->u.ap.hidden_ssid = info->hidden_ssid;
+>> 	}
+>>
+>> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+>> Link: https://github.com/KSPP/linux/issues/90
+>> Cc: linux-hardening@vger.kernel.org
+>> Signed-off-by: Justin Stitt <justinstitt@google.com>
+>> ---
+>> Changes in v2:
+>> - update subject to include wifi
+>> - prefer memcpy() over strtomem() (thanks Kalle, Jeff)
+>> - rebase onto 6.6-rc7 @d88520ad73b79e71
+>> - Link to v1: https://lore.kernel.org/r/20231013-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v1-1-24e40201afa3@google.com
+>> ---
+>> Note: build-tested only.
+>>
+>> Found with: $ rg "strncpy\("
+>> ---
+>>   drivers/net/wireless/ath/ath10k/core.h | 2 +-
+>>   drivers/net/wireless/ath/ath10k/mac.c  | 3 +--
+>>   2 files changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+>> index 4b5239de4018..ba9795a8378a 100644
+>> --- a/drivers/net/wireless/ath/ath10k/core.h
+>> +++ b/drivers/net/wireless/ath/ath10k/core.h
+>> @@ -607,7 +607,7 @@ struct ath10k_vif {
+>>   			u8 tim_bitmap[64];
+>>   			u8 tim_len;
+>>   			u32 ssid_len;
+>> -			u8 ssid[IEEE80211_MAX_SSID_LEN];
+>> +			u8 ssid[IEEE80211_MAX_SSID_LEN] __nonstring;
+>>   			bool hidden_ssid;
+>>   			/* P2P_IE with NoA attribute for P2P_GO case */
+>>   			u32 noa_len;
+>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+>> index 03e7bc5b6c0b..f3f6deb354c6 100644
+>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>> @@ -6125,9 +6125,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+>>   
+>>   		if (ieee80211_vif_is_mesh(vif)) {
+>>   			/* mesh doesn't use SSID but firmware needs it */
+>> -			strncpy(arvif->u.ap.ssid, "mesh",
+>> -				sizeof(arvif->u.ap.ssid));
+>>   			arvif->u.ap.ssid_len = 4;
+>> +			memcpy(arvif->u.ap.ssid, "mesh", arvif->u.ap.ssid_len);
+> 
+> This is a behavior change, isn't it? i.e. arvif->u.ap.ssid is no longer
+> zero-padded. Is this actually ok for the driver?
 
-Thanks!
+yes, it is safe, and consistent with other uses of this field as noted 
+in the commit description.
 
-ptep_clear_flush_young() with "flush" in its name clearly says it needs a
-flush. but it happens in arm64, all other code which needs a flush has
-called other variants, for example __flush_tlb_page_nosync():
-
-static inline void arch_tlbbatch_add_pending(struct
-arch_tlbflush_unmap_batch *batch,
- struct mm_struct *mm, unsigned long uaddr)
-{
- __flush_tlb_page_nosync(mm, uaddr);
-}
-
-so it seems folio_referenced is the only left user of this
-ptep_clear_flush_young().
-The fact makes Baolin's patch look safe now.
-
-but this function still has "flush" in its name, so one day, one person mig=
-ht
-call it with the understanding that it will flush tlb but actually it
-won't. This is
-bad smell in code.
-
-I guess one side effect of not flushing tlb while clearing the access
-flag is that
-hardware won't see this cleared flag in the tlb, so it might not set this b=
-it in
-memory even though the bit has been cleared before in memory(but not in tlb=
-)
-while the page is accessed *again*.
-
-next time, someone reads the access flag in memory again by folio_reference=
-d,
-he/she will see the page is cold as hardware has lost a chance to set
-the bit again
-since it finds tlb already has a true access flag.
-
-But anyway, tlb is so small, it will be flushed by context switch and
-other running
-code soon. so it seems we don't actually require the access flag being inst=
-antly
-updated. the time gap, in which access flag might lose the new set by hardw=
-are,
-seems to be too short to really affect the accuracy of page reclamation. bu=
-t its
-cost is large.
-
-(A). Constant flush cost vs. (B). very very occasional reclaimed hot
-page,  B might
-be a correct choice.
-
-> [1] https://lore.kernel.org/lkml/20220617070555.344368-1-21cnbao@gmail.co=
-m/
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->  arch/arm64/include/asm/pgtable.h | 31 ++++++++++++++++---------------
->  1 file changed, 16 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pg=
-table.h
-> index 0bd18de9fd97..2979d796ba9d 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -905,21 +905,22 @@ static inline int ptep_test_and_clear_young(struct =
-vm_area_struct *vma,
->  static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
->                                          unsigned long address, pte_t *pt=
-ep)
->  {
-> -       int young =3D ptep_test_and_clear_young(vma, address, ptep);
-> -
-> -       if (young) {
-> -               /*
-> -                * We can elide the trailing DSB here since the worst tha=
-t can
-> -                * happen is that a CPU continues to use the young entry =
-in its
-> -                * TLB and we mistakenly reclaim the associated page. The
-> -                * window for such an event is bounded by the next
-> -                * context-switch, which provides a DSB to complete the T=
-LB
-> -                * invalidation.
-> -                */
-> -               flush_tlb_page_nosync(vma, address);
-> -       }
-> -
-> -       return young;
-> +       /*
-> +        * This comment is borrowed from x86, but applies equally to ARM6=
-4:
-> +        *
-> +        * Clearing the accessed bit without a TLB flush doesn't cause
-> +        * data corruption. [ It could cause incorrect page aging and
-> +        * the (mistaken) reclaim of hot pages, but the chance of that
-> +        * should be relatively low. ]
-> +        *
-> +        * So as a performance optimization don't flush the TLB when
-> +        * clearing the accessed bit, it will eventually be flushed by
-> +        * a context switch or a VM operation anyway. [ In the rare
-> +        * event of it not getting flushed for a long time the delay
-> +        * shouldn't really matter because there's no real memory
-> +        * pressure for swapout to react to. ]
-> +        */
-> +       return ptep_test_and_clear_young(vma, address, ptep);
->  }
->
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> --
-> 2.39.3
->
-
-Thanks
-Barry
