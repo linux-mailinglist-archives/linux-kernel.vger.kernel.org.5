@@ -2,325 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C2C7D5178
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554DB7D5156
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbjJXNVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44152 "EHLO
+        id S234412AbjJXNUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234486AbjJXNUw (ORCPT
+        with ESMTP id S234346AbjJXNUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:20:52 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FA9133;
-        Tue, 24 Oct 2023 06:20:40 -0700 (PDT)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39O2Kgrw022528;
-        Tue, 24 Oct 2023 06:19:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=2KyaPHQd7BOL7uJ0uTy9CvGRJygapKREQ5ztn/tDaa4=;
- b=fSbpsJk+MJ1fnKDS+h4VjMr8G4Qovv8RDhy96gvrc6qxlVoiKjOpVv2WnnevcPLScYRo
- 6mIz/TPzuj4c5NNf4fKdtJgM7S1LxCpy+i+hnBjaeJoMAEkb+H6zii6Ur/vigrtiM3nz
- 2n1oNWAQjFTB3KUIzhitbvaAertRGqwZnbYPjRJd30ZqMb9XwZoR6xiD41knpvrAIBv+
- beLAMUTEFbQrP26gKKFfrtLattADm8lTBX+U84QuOY+5ProMFtnE5CGrc0zksjL0TgEF
- Fs57nOyL7z2AZQVQB2+6l0yh0FWsxeQ81nskPHrvQmGBS3jyJiFk3EEIn9Hl/dlv5zW2 nw== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3tx523taq1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 24 Oct 2023 06:19:58 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 24 Oct
- 2023 06:19:57 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 24 Oct 2023 06:19:57 -0700
-Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
-        by maili.marvell.com (Postfix) with ESMTP id 55F193F7069;
-        Tue, 24 Oct 2023 06:19:54 -0700 (PDT)
-From:   Elad Nachman <enachman@marvell.com>
-To:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andrew@lunn.ch>,
-        <gregory.clement@bootlin.com>, <sebastian.hesselbarth@gmail.com>,
-        <pali@kernel.org>, <mrkiko.rs@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <enachman@marvell.com>
-Subject: [PATCH] arm64: dts: cn913x: add device trees for COM Express boards
-Date:   Tue, 24 Oct 2023 16:19:35 +0300
-Message-ID: <20231024131935.2567969-1-enachman@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 24 Oct 2023 09:20:38 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BACA110
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:20:32 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507c50b7c36so6215570e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698153630; x=1698758430; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ghqJxIDnoE/hX7jBp+fpHag8wHq883gTDRxbrmUkqq8=;
+        b=fDkFb0a3lL43LSwbiM1Ys3V3K3OXlaSiWiOiEMG+BvjVavhpH1cdCBmG3IVWx/bCi4
+         LPoIeDcEJ5647QmmZZfQSX3bpmufvdgpBaBQzHoQjZwlLYNbcYV6+mOcXVL3UHsLBdKR
+         WtH5jzhzzOwTXghj5sazRrDbROTwj9MLysWvhp2z0Pk8lNTBjt9cLhWcHvggRkKAI+i3
+         vMGxOHhnwuH+tfsX5pxMMvcBAhQTJZ0LVmDKG2AZmTebueykf/yafLfoGDZauvI3JWrv
+         psVbWo8p/J0m736WvwauKWiVrOBRSG/+Jv4XQJnHjz9Xm3XufS4LxpbucZ3/9RDp+GRR
+         okpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698153630; x=1698758430;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ghqJxIDnoE/hX7jBp+fpHag8wHq883gTDRxbrmUkqq8=;
+        b=EnDT8IrEFk2Ip2uVKOhiVkbsseCvUj1GWn/GYntq8yIlZpPYoVLndaWY6SrHbMYo3T
+         c3BFVJqTo3PDJJpROfpw5th5WJNAJpdL8aX6y1HkgtpLqJNRpG8LHOU0mia2N5qZ78sO
+         OzqRvx5M4pBq6CAkYGtU4zqPyDe6TObdVFYlzUrQIBOQ5PXEbfZQQBRZkZCNZrDrjtFm
+         /hMlZhcapG0Zoaw6xjqWvLAHHM/VPRK6h208o65fUf97OkkvZJB2cL/Yo+RmUyPg5cVJ
+         Z77HOkgRJPa33dKMQIXtUgVa6RvbgSxZavZO0pRYr/QChDjzYgLHdQssVflcVv6nkFK4
+         5bzQ==
+X-Gm-Message-State: AOJu0Yzyo6Fi7i+zN3wiHH07xjhEiMfvELBbbiDyLqM0ST8bQQIwR77T
+        0EBSoHFfjkYuo7YLsjdwmrA3nQ==
+X-Google-Smtp-Source: AGHT+IEjyPW1YPv9y5f9WgunQn67m75lsvsvcOghoaskN36pGEckN3frgS42V/pnigkml6usF9d/GQ==
+X-Received: by 2002:a19:f807:0:b0:507:96c7:eb1a with SMTP id a7-20020a19f807000000b0050796c7eb1amr7813749lff.54.1698153630455;
+        Tue, 24 Oct 2023 06:20:30 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id d5-20020a193845000000b00507ab956ab9sm2147365lfj.147.2023.10.24.06.20.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 06:20:29 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH net-next v7 0/7] Create a binding for the Marvell MV88E6xxx
+ DSA switches
+Date:   Tue, 24 Oct 2023 15:20:26 +0200
+Message-Id: <20231024-marvell-88e6152-wan-led-v7-0-2869347697d1@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: WKF1SpKmuX1iZYZ7yCIh_MGG95_m1j3p
-X-Proofpoint-ORIG-GUID: WKF1SpKmuX1iZYZ7yCIh_MGG95_m1j3p
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-24_13,2023-10-24_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJrEN2UC/33QyWrDMBQF0F8JWldF89BV/6N0oeEpEbhykI2aE
+ vzvVdyNi3GWl8s7D+4dTVAzTOjtdEcVWp7yWHrQLycULq6cAefYM2KEcUqIwV+uNhgGbAwoKhn
+ +dgUPEHsOgnudIksR9etrhZRvq/yBCsy4wG1Gn7255Gke68/6stG1/9MpP9QbxQQTTZl31hqpw
+ /uQi6vj61jPK9rYFhLHEOuQTsER45Uxwu4gvoXUMcQ7xE2IQtiYPJU7SGyh4+GaeEAAJCjNDfe
+ wg+QGYk82ko+NwDArGaHS6R2kttCTjVSHrOXOEyssF+IftCzLLzIq0dY2AgAA
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        =?utf-8?q?Marek_Beh=C3=BAn?= <kabel@kernel.org>
+Cc:     Christian Marangi <ansuelsmth@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for CN9130 and CN9131 COM Express Type 7 CPU module boards
-by Marvell.
-These boards differ from the existing CN913x DB boards by the type
-of ethernet connection (RGMII), the type of voltage regulators
-(not i2c expander based) and the USB phy (not UTMI based).
-CN9131 COM Express board is basically CN9130 COM Express board
-with an additional CP115 I/O co-processor, which in this case
-provides an additional USB host controller on the board.
+The Marvell switches are lacking DT bindings.
 
-Signed-off-by: Elad Nachman <enachman@marvell.com>
+I need proper schema checking to add LED support to the
+Marvell switch. Just how it is, it can't go on like this.
+
+Some Device Tree fixes are included in the series, these
+remove the major and most annoying warnings fallout noise:
+some warnings remain, and these are of more serious nature,
+such as missing phy-mode. They can be applied individually,
+or to the networking tree with the rest of the patches.
+
+Thanks to Andrew Lunn, Vladimir Oltean and Russell King
+for excellent review and feedback!
+
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- arch/arm64/boot/dts/marvell/Makefile          |   2 +
- .../boot/dts/marvell/cn9130-db-comexpress.dts | 100 ++++++++++++++++
- .../boot/dts/marvell/cn9131-db-comexpress.dts | 112 ++++++++++++++++++
- 3 files changed, 214 insertions(+)
- create mode 100644 arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dts
- create mode 100644 arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dts
+Changes in v7:
+- Fix the elaborate spacing to satisfy yamllint in the
+  ports/ethernet-ports requirement.
+- Link to v6: https://lore.kernel.org/r/20231024-marvell-88e6152-wan-led-v6-0-993ab0949344@linaro.org
 
-diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-index 79ac09b58a89..7708658d6ceb 100644
---- a/arch/arm64/boot/dts/marvell/Makefile
-+++ b/arch/arm64/boot/dts/marvell/Makefile
-@@ -26,4 +26,6 @@ dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db-B.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-A.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-B.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += cn9130-db-comexpress.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += cn9131-db-comexpress.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += ac5-98dx35xx-rd.dtb
-diff --git a/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dts b/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dts
-new file mode 100644
-index 000000000000..ed33076a34f5
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dts
-@@ -0,0 +1,100 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2023 Marvell International Ltd.
-+ *
-+ * Device tree for the CN9130-DB Com Express board.
-+ */
-+
-+#include "cn9130-db.dtsi"
-+
-+/ {
-+	model = "Marvell Armada CN9130-DB COM EXPRESS type 7 board";
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x2 0x00000000>;
-+	};
-+
-+};
-+
-+&ap0_reg_sd_vccq {
-+	regulator-max-microvolt = <1800000>;
-+	states = <1800000 0x1 1800000 0x0>;
-+	/delete-property/ gpios;
-+};
-+
-+&cp0_reg_usb3_vbus0 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_usb3_vbus1 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_sd_vcc {
-+	status = "disabled";
-+};
-+
-+&cp0_reg_sd_vccq {
-+	status = "disabled";
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth1 {
-+	status = "okay";
-+	phy = <&phy0>;
-+	phy-mode = "rgmii-id";
-+};
-+
-+&cp0_eth2 {
-+	status = "disabled";
-+};
-+
-+&cp0_mdio {
-+	status = "okay";
-+	pinctrl-0 = <&cp0_ge_mdio_pins>;
-+	phy0: ethernet-phy@0 {
-+		marvell,reg-init = <3 16 0 0x1a4a>;
-+		reg = <0>;
-+	};
-+};
-+
-+&cp0_syscon0 {
-+	cp0_pinctrl: pinctrl {
-+		compatible = "marvell,cp115-standalone-pinctrl";
-+
-+		cp0_ge_mdio_pins: ge-mdio-pins {
-+			marvell,pins = "mpp40", "mpp41";
-+			marvell,function = "ge";
-+		};
-+	};
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_spi1 {
-+	status = "okay";
-+};
-+
-+&cp0_usb3_0 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy0>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-+
-+&cp0_usb3_1 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy1>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-diff --git a/arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dts b/arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dts
-new file mode 100644
-index 000000000000..26d0bcacd405
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dts
-@@ -0,0 +1,112 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2023 Marvell International Ltd.
-+ *
-+ * Device tree for the CN9131-DB Com Express board.
-+ */
-+
-+#include "cn9131-db.dtsi"
-+
-+/ {
-+	model = "Marvell Armada CN9131-DB COM EXPRESS type 7 board";
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x2 0x00000000>;
-+	};
-+
-+};
-+
-+&ap0_reg_sd_vccq {
-+	regulator-max-microvolt = <1800000>;
-+	states = <1800000 0x1 1800000 0x0>;
-+	/delete-property/ gpios;
-+};
-+
-+&cp0_reg_usb3_vbus0 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_usb3_vbus1 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp1_reg_usb3_vbus0 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_sd_vcc {
-+	status = "disabled";
-+};
-+
-+&cp0_reg_sd_vccq {
-+	status = "disabled";
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth1 {
-+	status = "okay";
-+	phy = <&phy0>;
-+	phy-mode = "rgmii-id";
-+};
-+
-+&cp0_eth2 {
-+	status = "disabled";
-+};
-+
-+&cp0_mdio {
-+	status = "okay";
-+	pinctrl-0 = <&cp0_ge_mdio_pins>;
-+	phy0: ethernet-phy@0 {
-+		marvell,reg-init = <3 16 0 0x1a4a>;
-+		reg = <0>;
-+	};
-+};
-+
-+&cp0_syscon0 {
-+	cp0_pinctrl: pinctrl {
-+		compatible = "marvell,cp115-standalone-pinctrl";
-+
-+		cp0_ge_mdio_pins: ge-mdio-pins {
-+			marvell,pins = "mpp40", "mpp41";
-+			marvell,function = "ge";
-+		};
-+	};
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_spi1 {
-+	status = "okay";
-+};
-+
-+&cp0_usb3_0 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy0>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-+
-+&cp0_usb3_1 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy1>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-+
-+&cp1_usb3_1 {
-+	status = "okay";
-+	usb-phy = <&cp1_usb3_0_phy0>;
-+	/* Generic PHY, providing serdes lanes */
-+	phys = <&cp1_comphy3 1>;
-+	phy-names = "usb";
-+};
+Changes in v6:
+- Fix ports/ethernet-ports requirement with proper indenting
+  (hopefully).
+- Link to v5: https://lore.kernel.org/r/20231023-marvell-88e6152-wan-led-v5-0-0e82952015a7@linaro.org
+
+Changes in v5:
+- Consistently rename switch@n to ethernet-switch@n in all cleanup patches
+- Consistently rename ports to ethernet-ports in all cleanup patches
+- Consistently rename all port@n to ethernet-port@n in all cleanup patches
+- Consistently rename all phy@n to ethernet-phy@n in all cleanup patches
+- Restore the nodename on the Turris MOX which has a U-Boot binary using the
+  nodename as ABI, put in a blurb warning about this so no-one else tries
+  to change it in the future.
+- Drop dsa.yaml direct references where we reference dsa.yaml#/$defs/ethernet-ports
+- Replace the conjured MV88E6xxx example by a better one based on imx6qdl
+  plus strictly named nodes and added reset-gpios for a more complete example,
+  and another example using the interrupt controller based on
+  armada-381-netgear-gs110emx.dts
+- Bump lineage to 2008 as Vladimir says the code was developed starting 2008.
+- Link to v4: https://lore.kernel.org/r/20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org
+
+Changes in v4:
+- Rebase the series on top of Rob's series
+  "dt-bindings: net: Child node schema cleanups" (or the hex numbered
+  ports will not work)
+- Fix up a whitespacing error corrupting v3...
+- Add a new patch making the generic DSA binding require ports or
+  ethernet-ports in the switch node.
+- Drop any corrections of port@a in the patches.
+- Drop oneOf in the compatible enum for mv88e6xxx
+- Use ethernet-switch, ethernet-ports and ethernet-phy in the examples
+- Transclude the dsa.yaml#/$defs/ethernet-ports define for ports
+- Move the DTS and binding fixes first, before the actual bindings,
+  so they apply without (too many) warnings as fallout.
+- Drop stray colon in text.
+- Drop example port in the mveusb binding.
+- Link to v3: https://lore.kernel.org/r/20231016-marvell-88e6152-wan-led-v3-0-38cd449dfb15@linaro.org
+
+Changes in v3:
+- Fix up a related mvusb example in a different binding that
+  the scripts were complaining about.
+- Fix up the wording on internal vs external MDIO buses in the
+  mv88e6xxx binding document.
+- Remove pointless label and put the right rev-mii into the
+  MV88E6060 schema.
+- Link to v2: https://lore.kernel.org/r/20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org
+
+Changes in v2:
+- Break out a separate Marvell MV88E6060 binding file. I stand corrected.
+- Drop the idea to rely on nodename mdio-external for the external
+  MDIO bus, keep the compatible, drop patch for the driver.
+- Fix more Marvell DT mistakes.
+- Fix NXP DT mistakes in a separate patch.
+- Fix Marvell ARM64 mistakes in a separate patch.
+- Link to v1: https://lore.kernel.org/r/20231013-marvell-88e6152-wan-led-v1-0-0712ba99857c@linaro.org
+
+---
+Linus Walleij (7):
+      dt-bindings: net: dsa: Require ports or ethernet-ports
+      dt-bindings: net: mvusb: Fix up DSA example
+      ARM: dts: marvell: Fix some common switch mistakes
+      ARM: dts: nxp: Fix some common switch mistakes
+      ARM64: dts: marvell: Fix some common switch mistakes
+      dt-bindings: marvell: Rewrite MV88E6xxx in schema
+      dt-bindings: marvell: Add Marvell MV88E6060 DSA schema
+
+ Documentation/devicetree/bindings/net/dsa/dsa.yaml |   6 +
+ .../bindings/net/dsa/marvell,mv88e6060.yaml        |  88 ++++++
+ .../bindings/net/dsa/marvell,mv88e6xxx.yaml        | 330 +++++++++++++++++++++
+ .../devicetree/bindings/net/dsa/marvell.txt        | 109 -------
+ .../devicetree/bindings/net/marvell,mvusb.yaml     |   7 +-
+ MAINTAINERS                                        |   3 +-
+ arch/arm/boot/dts/marvell/armada-370-rd.dts        |  24 +-
+ .../dts/marvell/armada-381-netgear-gs110emx.dts    |  44 ++-
+ .../dts/marvell/armada-385-clearfog-gtr-l8.dts     |  38 +--
+ .../dts/marvell/armada-385-clearfog-gtr-s4.dts     |  22 +-
+ arch/arm/boot/dts/marvell/armada-385-linksys.dtsi  |  18 +-
+ .../boot/dts/marvell/armada-385-turris-omnia.dts   |  20 +-
+ arch/arm/boot/dts/marvell/armada-388-clearfog.dts  |  20 +-
+ .../boot/dts/marvell/armada-xp-linksys-mamba.dts   |  18 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts        |  14 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts    |  70 ++---
+ arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts        |  18 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts    |  20 +-
+ arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts   |  18 +-
+ .../dts/marvell/armada-3720-espressobin-ultra.dts  |  14 +-
+ .../boot/dts/marvell/armada-3720-espressobin.dtsi  |  20 +-
+ .../boot/dts/marvell/armada-3720-gl-mv1000.dts     |  20 +-
+ .../boot/dts/marvell/armada-3720-turris-mox.dts    | 189 ++++++------
+ .../boot/dts/marvell/armada-7040-mochabin.dts      |  24 +-
+ .../dts/marvell/armada-8040-clearfog-gt-8k.dts     |  22 +-
+ arch/arm64/boot/dts/marvell/cn9130-crb.dtsi        |  42 ++-
+ 26 files changed, 761 insertions(+), 457 deletions(-)
+---
+base-commit: 1c9be5fea84e409542a186893d219bf7cff22f5a
+change-id: 20231008-marvell-88e6152-wan-led-88c43b7fd2fd
+
+Best regards,
 -- 
-2.25.1
+Linus Walleij <linus.walleij@linaro.org>
 
