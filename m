@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B0B7D594A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF8C7D5950
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343931AbjJXRC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 13:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
+        id S1344009AbjJXRDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 13:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234835AbjJXRCY (ORCPT
+        with ESMTP id S232329AbjJXRDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 13:02:24 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF8F122;
-        Tue, 24 Oct 2023 10:02:22 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7a66a7fc2d4so176736839f.0;
-        Tue, 24 Oct 2023 10:02:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698166942; x=1698771742; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hy3+CRPCNWCZ0YKD6OUXTpD5Qmway7xYPuUglUxE3qo=;
-        b=ZYziswNj+BpZnF7wRZzwPKEYIuw2ZSnd//0KRfExFWFgKKWn7ywuBBCCRKF2CNmz4H
-         hUbRO+A3oXdV8Pr0vDAyF4te6oK/HvKY0FhZ179zz2/flYnA4O/ftkGLrQHlTjpzRLLJ
-         QcFjZG+lvi0MrwGPSvv3wnBiva7iQ5ToCEvgOTOGTyPNu+wyVwMz4zKVcPfZRg6AvV2O
-         ZVEo+X5+Tqn/edtOD/JYVgGMv7VfluMHzW8gPfq/+0sbXBNhO9l+GS09HSGiGk94L3Zm
-         iLIu5qd6Hy7YVsxKHTPlWnlJxVtbRIdJkUXpAlBH/Mh2zR/O9d+EkeTbBuftIQFUc+83
-         N8sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698166942; x=1698771742;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hy3+CRPCNWCZ0YKD6OUXTpD5Qmway7xYPuUglUxE3qo=;
-        b=faXm3DWuhmAEhXmMYwseSdopw6BM0qNejFJQTKy1FsCECBQgVORCcRGBnoceaOYprd
-         mmN3tqVWEzDSoIMpyDYo/ugjL7WpsxIeYUhq6LtF3bTmtc0fzLZxJbZfhlQ+ybih2Asy
-         FPdyfe29wJN7IJ4149EHZDK+2M/GtZONxNjD6KVidnZpNI0hojje/RRwI9jH+zNJQnYs
-         2q6yBYOyEtxt5iKs0frtTc7E/Q12U7a9NCyh0mRxESvSRteAo1xV4Jcyh0wYFCGpXc/a
-         2sZRxqfMM9eTlg9r2FIi5rZmC+XQvfMu8tdxkwLhVzqsbwsU0A1KRMBA5yqGa5fkBwzP
-         dD/w==
-X-Gm-Message-State: AOJu0YwkiftbYSMXW7vx4YvOegcWUPUwcnR5lCR1mN2C1cOfxJ63EvXn
-        RraV6UytY6VhepJE6jD/ggo=
-X-Google-Smtp-Source: AGHT+IHI4V/n+ADLtBEqfl2xmuUrCXu2vYEW+5AUBwfIlb3BtAEb99Q1BMOcudP1tfe86Fwy00bnWw==
-X-Received: by 2002:a05:6602:15c2:b0:791:1e87:b47e with SMTP id f2-20020a05660215c200b007911e87b47emr18096321iow.15.1698166942029;
-        Tue, 24 Oct 2023 10:02:22 -0700 (PDT)
-Received: from ?IPV6:2601:284:8200:b700:d8d6:5f8f:cf7b:edca? ([2601:284:8200:b700:d8d6:5f8f:cf7b:edca])
-        by smtp.googlemail.com with ESMTPSA id y16-20020a6be510000000b0076ffebfc9fasm3202921ioc.47.2023.10.24.10.02.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 10:02:21 -0700 (PDT)
-Message-ID: <6a1632a4-28fd-4fdd-b9ff-34dd2f0bba88@gmail.com>
-Date:   Tue, 24 Oct 2023 11:02:20 -0600
+        Tue, 24 Oct 2023 13:03:22 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DCD123;
+        Tue, 24 Oct 2023 10:03:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=a8IeFdJ8fia0YpbA1ZcZvRmzA2TI5SE/1rrfo0EUgMw=; b=lcZZU9f+QLz2bVRJlnc/UxbjTE
+        nMk0Ob5/6FcqIEwN0NPgITv3XKH/BkS47qVAJYnx8r3lhYpiDcxdS215jd9kuls2QSrsI1kslzSOB
+        AUDZBvNIq8pu1syL0aXeyR/jcQYFauWKel20Qpjc4NBAErE6EFvPiTcplnLUwYvD3N/kEYrDIrrAZ
+        73w6BQIh8IJLNn+c52e0IisU8xHm/kOo53LlbrKwj2m5QJvQ/LOmxrXFc91IcBMP3/5Prki0v4A55
+        mnwHk9l8KjlmFYmlMWwPtsyIj5NyDz0JPghY/tylB+6DpMF7Sc87UMuH56nTJsx6A61Q1dy6IR40w
+        mYFbWLfQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qvKno-00FfSi-2Y;
+        Tue, 24 Oct 2023 17:02:48 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7175B300451; Tue, 24 Oct 2023 19:02:48 +0200 (CEST)
+Date:   Tue, 24 Oct 2023 19:02:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+Subject: Re: [PATCH  v2 1/6] x86/bugs: Add asm helpers for executing VERW
+Message-ID: <20231024170248.GE40044@noisy.programming.kicks-ass.net>
+References: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com>
+ <20231024-delay-verw-v2-1-f1881340c807@linux.intel.com>
+ <20231024103601.GH31411@noisy.programming.kicks-ass.net>
+ <20231024163515.aivo2xfmwmbmlm7z@desk>
+ <20231024163621.GD40044@noisy.programming.kicks-ass.net>
+ <20231024164520.osvqo2dja2xhb7kn@desk>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 iproute2-next 2/3] rdma: Add an option to set
- privileged QKEY parameter
-To:     Patrisious Haddad <phaddad@nvidia.com>, jgg@ziepe.ca,
-        leon@kernel.org, stephen@networkplumber.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com, linux-kernel@vger.kernel.org,
-        huangjunxian6@hisilicon.com, michaelgur@nvidia.com
-References: <20231023112217.3439-1-phaddad@nvidia.com>
- <20231023112217.3439-3-phaddad@nvidia.com>
-Content-Language: en-US
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <20231023112217.3439-3-phaddad@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024164520.osvqo2dja2xhb7kn@desk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/23 5:22 AM, Patrisious Haddad wrote:
-> diff --git a/rdma/sys.c b/rdma/sys.c
-> index fd785b25..db34cb41 100644
-> --- a/rdma/sys.c
-> +++ b/rdma/sys.c
-> @@ -40,6 +40,17 @@ static int sys_show_parse_cb(const struct nlmsghdr *nlh, void *data)
->  				   mode_str);
->  	}
->  
-> +	if (tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]) {
-> +		uint8_t pqkey_mode;
-> +
-> +		pqkey_mode =
-> +			mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_PRIVILEGED_QKEY_MODE]);
+On Tue, Oct 24, 2023 at 09:45:20AM -0700, Pawan Gupta wrote:
 
-just make it mode so it fits on one line.
+> > > modules being within 4GB of kernel.
 
-40 characters for an attribute name .... I will never understand this
-fascination with writing a sentence for an attribute name.
+FWIW, it's 2G, it's a s32 displacement, the highest most address can
+jump 2g down, while the lowest most address can jump 2g up. Leaving a 2G
+directly addressable range.
 
-> +
-> +		print_color_on_off(PRINT_ANY, COLOR_NONE, "privileged-qkey",
-> +				   "privileged-qkey %s ", pqkey_mode);
-> +
-> +	}
-> +
->  	if (tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK])
->  		cof = mnl_attr_get_u8(tb[RDMA_NLDEV_SYS_ATTR_COPY_ON_FORK]);
->  
-
-keep Petr's reviewed-by tag on the respin.
+And yeah, we ensure kernel text and modules are inside that 2G range.
