@@ -2,60 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4925E7D4E7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164C87D4E7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbjJXLBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 07:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
+        id S229578AbjJXLDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 07:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbjJXLBe (ORCPT
+        with ESMTP id S229485AbjJXLDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 07:01:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C568410C9;
-        Tue, 24 Oct 2023 04:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698145292; x=1729681292;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=85PAA1+GqsYhqFpnQoQXck2TLmZV/C60H5Ubi4po3Rw=;
-  b=AwRgj5dnohVDVzsjGaFMMX3QUrcpYU6brBLDHQFsPgOq6rZ3ukFQYd76
-   kWW7DqfAD2Mpcx7ty4zOHYnyvAU3apwJ+A1AbbRjcxhZiIf7fvxA2tlUX
-   xVML909SqnPt5sXMuJa+upyiBexIQxRG43YS+G1+r1N9bPZk8+K3ztlg/
-   1d7plWKcK/BYzsKIPe1YhF0C1vgywycBR+Ff7naL3RK+7iDpLdAEgeUXU
-   l33PwfycajpKoxI5v9aBsZfThk4wKLVpGo/KC1WegboTUeAAUnBvoBd6j
-   3YOjgQho21+rOXKSsWErng3SWoxuz5x1uTpi82cFDGvEB1ZNqvF9BjxX6
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="377408813"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="377408813"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 04:01:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="708244687"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="708244687"
-Received: from nkraljev-mobl.ger.corp.intel.com ([10.249.41.91])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 04:01:29 -0700
-Date:   Tue, 24 Oct 2023 14:01:26 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Bjorn Helgaas <bhelgaas@google.com>
-cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the pci tree
-In-Reply-To: <20231024161425.0b382725@canb.auug.org.au>
-Message-ID: <a7d53cbd-d934-f0d3-af2a-fc16f642c4b9@linux.intel.com>
-References: <20231024161425.0b382725@canb.auug.org.au>
+        Tue, 24 Oct 2023 07:03:22 -0400
+Received: from out-209.mta1.migadu.com (out-209.mta1.migadu.com [95.215.58.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B1F109
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 04:03:20 -0700 (PDT)
+Message-ID: <f4739117-ac81-4831-820b-60b496c7dd61@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1698145398;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pnFxFP6a7DC4iJ/6GwDjjDb4geFq6Fz2jY2wNEaiS7k=;
+        b=jKwIBvyPM2uA62TA6wyKo/Lq3aaRaNCjr9vCoIifxAicQgMoTLgsuSkuh0uK10cuL7URWL
+        FJsiTWdcjjlZq/hXmcivjEyoRlXg9Ba5f8aPyRNoEhvnDOj9YuwSsQWeULiMBB/yoLNFcP
+        aaHspv/BG+IAoOZdZ0ILwo4e4by/JlE=
+Date:   Tue, 24 Oct 2023 19:03:10 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Subject: Re: [RFC PATCH v2 0/6] slub: Delay freezing of CPU partial slabs
+Content-Language: en-US
+To:     "Christoph Lameter (Ampere)" <cl@gentwo.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, roman.gushchin@linux.dev,
+        42.hyeyoo@gmail.com, willy@infradead.org, pcc@google.com,
+        tytso@mit.edu, maz@kernel.org, ruansy.fnst@fujitsu.com,
+        vishal.moola@gmail.com, lrh2000@pku.edu.cn, hughd@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20231021144317.3400916-1-chengming.zhou@linux.dev>
+ <4134b039-fa99-70cd-3486-3d0c7632e4a3@suse.cz>
+ <fcb9b7f0-fb21-cce8-d452-766a5cc73d4a@gentwo.org>
+ <ba3d6ac7-6900-3e8d-46b5-8302ca61f8ef@suse.cz>
+ <c6f12967-e7bc-bf36-9c6b-0111dea1f0de@gentwo.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <c6f12967-e7bc-bf36-9c6b-0111dea1f0de@gentwo.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,51 +59,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023, Stephen Rothwell wrote:
-
-> Hi all,
+On 2023/10/24 05:05, Christoph Lameter (Ampere) wrote:
+> On Mon, 23 Oct 2023, Vlastimil Babka wrote:
 > 
-> After merging the pci tree, today's linux-next build (arm64 defconfig)
-> failed like this:
+>>> For much of the frozen handling we must be holding the node list lock
+>>> anyways in order to add/remove from the list. So we already have a lock
+>>> that could be used to protect flag operations.
+>>
+>> I can see the following differences between the traditional frozen bit and
+>> the new flag:
+>>
+>> frozen bit advantage:
+>> - __slab_free() on an already-frozen slab can ignore list operations and
+>> list_lock completely
+>>
+>> frozen bit disadvantage:
+>> - acquire_slab() trying to do cmpxchg_double() under list_lock (see commit
+>> 9b1ea29bc0d7)
 > 
-> In file included from <command-line>:
-> drivers/pci/controller/dwc/pcie-tegra194.c: In function 'tegra_pcie_ep_irq_thread':
-> include/linux/compiler_types.h:435:45: error: call to '__compiletime_assert_497' declared with attribute error: FIELD_PREP: value too large for the field
->   435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->       |                                             ^
-> include/linux/compiler_types.h:416:25: note: in definition of macro '__compiletime_assert'
->   416 |                         prefix ## suffix();                             \
->       |                         ^~~~~~
-> include/linux/compiler_types.h:435:9: note: in expansion of macro '_compiletime_assert'
->   435 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
->       |         ^~~~~~~~~~~~~~~~~~~
-> include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
->    39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
->       |                                     ^~~~~~~~~~~~~~~~~~
-> include/linux/bitfield.h:68:17: note: in expansion of macro 'BUILD_BUG_ON_MSG'
->    68 |                 BUILD_BUG_ON_MSG(__builtin_constant_p(_val) ?           \
->       |                 ^~~~~~~~~~~~~~~~
-> include/linux/bitfield.h:114:17: note: in expansion of macro '__BF_FIELD_CHECK'
->   114 |                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
->       |                 ^~~~~~~~~~~~~~~~
-> drivers/pci/controller/dwc/pcie-tegra194.c:498:29: note: in expansion of macro 'FIELD_PREP'
->   498 |                 val = 110 | FIELD_PREP(PCI_LTR_SCALE_SHIFT, 2) | LTR_MSG_REQ;
->       |                             ^~~~~~~~~~
 > 
-> Caused by commit
+> Ok so a slab is frozen if either of those conditions are met. That gets a bit complicated to test for. Can we just get away with the slab_node_partial flag?
 > 
->   18ca6c2c2d0e ("PCI: dwc: Use FIELD_GET/PREP()")
+> The advantage with the frozen state is that it can be changed with a cmpxchg together with some other values (list pointer, counter) that need updating at free and allocation.
 > 
-> I have reverted that commit for today.
+> But frozen updates are rarer so maybe its worth to completely drop the frozen bit. If both need to be updates then we would have two atomic ops. One is the cmpxchg and the other the operation on the page flag.
+> 
 
-Thanks for providing the full error message. I already was trying to
-investigate it and reproduce the problem because LKP's report I got about 
-this failed to provide the full error message.
+This introduced page flag bit is using non-atomic operations, which is protected
+by the node list_lock.
 
-It seems that the original code was more complex than it looked and the 
-patch is wrong and suboptimal on multiple counts. I'll provide a fixed 
-v2.
+As for completely dropping the "frozen" bit, I find it hard because we have the
+DEACTIVATE_BYPASS optimization in get_freelist(), which clear the "frozen" bit
+without the synchronization of node list_lock. So __slab_free() still need to
+rely on the "frozen" bit for CPU active slab.
 
--- 
- i.
+This patch series mainly optimize the cmpxchg cost in moving partial slabs
+between node partial list and CPU partial list, and alleviate the contention
+of node list_lock meanwhile.
 
+Thanks!
