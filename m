@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECA27D4798
+	by mail.lfdr.de (Postfix) with ESMTP id D17007D479A
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 08:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbjJXGis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 02:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
+        id S232720AbjJXGi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 02:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232335AbjJXGiq (ORCPT
+        with ESMTP id S232634AbjJXGiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 02:38:46 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291BCF9
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:38:44 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a7b91faf40so41280417b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 23:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698129523; x=1698734323; darn=vger.kernel.org;
-        h=mime-version:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UXi6v2LbKa86tbarZSXs3eTomoCCL5BUs5KfudH0fXM=;
-        b=pplaE/v1KzadrnvkymvI/c+Jj3XiCYAkY8KiIDf7y3Ik/Jn/plJ8LE4Ie/BGdpYLXJ
-         yHeWyzITGtHIwK9IzfI/sBTzaSoSie5x0Cwk9zc7BeGQwpOeB0TWs+4D7vJ0mWsoWjCS
-         DyoucrHLt+Nbz9nsYv+gZkO+ne6c4cKeIsUaLjnUegQhEh2aTLMT7Ti5tSqUDo+d/Ouy
-         RYwBKLTD3yKOl9nNwrYMrVSqiGVPI/oiDqaft0hu84rmxCgkXXhZg76Q3BdBYLtUvcPr
-         I2AQwB6B++uidbSwlMObz7A1/jV98KQBHFsKfFiJPkQHGBNpmX7U2O3+Nom4mLmO44em
-         pGRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698129523; x=1698734323;
-        h=mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UXi6v2LbKa86tbarZSXs3eTomoCCL5BUs5KfudH0fXM=;
-        b=VH5esBdz7fTrqWtwctA/pmkd7Gr5pN+Z/KHrTTBb4dDg472MBCp549e/OXCAuaUQ8G
-         Iy79eWe2UfAVysT3g8VOn0bE/D9a+7Y+qxsks+gfAcAjAjW0yU2jn5pFtBR8EZdiaKXN
-         YcEbRrGuyBUrrbXiic3Kyzcqk2WsUvp1md0k7bRKLm5kls+m6549MiCvJlty+6MrUbAH
-         VCTExDfzw7oafBuSbdmPIlr9l+s8+ZDSgi/5FEqimwEOlwOFkqip2N9IoQK2z8HUkVU9
-         2qd0W3px4IE1jvzz/W+dOjkVap7XgAl93nEA3Z6jy+RNeaDmm/MIQsYe/C1a2g5vVyqQ
-         mw6Q==
-X-Gm-Message-State: AOJu0YwN6mNjBBcjtYkeUoWD74itHI5wZpLcCc1LwKLleQTO7njvQjFM
-        aoBAjz8Jo3y+2LwpbDKQKsaddYnYM9RrFIE3v3SEXA==
-X-Google-Smtp-Source: AGHT+IG0IW6r6OKt3t8wA3MRK4sQptJZdOLg5QTv5pLEidJzquHDgYh4NXUKWmkVGawKWVlb8hrCfQ==
-X-Received: by 2002:a0d:d48a:0:b0:5a7:b682:7929 with SMTP id w132-20020a0dd48a000000b005a7b6827929mr10904861ywd.17.1698129523237;
-        Mon, 23 Oct 2023 23:38:43 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w74-20020a81494d000000b005a206896d62sm3792514ywa.111.2023.10.23.23.38.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 23:38:42 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 23:38:41 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Yin Fengwei <fengwei.yin@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Stefan Roesch <shr@devkernel.io>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH] mm: mlock: avoid folio_within_range() on KSM pages
-Message-ID: <23852f6a-5bfa-1ffd-30db-30c5560ad426@google.com>
+        Tue, 24 Oct 2023 02:38:51 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26D7DD;
+        Mon, 23 Oct 2023 23:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698129524;
+        bh=Yjbi8baLATD/fHzOgylyef37xmECN0dtorEYBlgpJAo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bDdUKwTtceJdJmpW1npM8gL05L9yIA6l8I9K6l3S1aeZzuF+uwvzAv2fQqVBIabZN
+         ErnhUntr7EB5+K3b12a7j1QZYC/Srm+1F/5C5dg1/51V7vU3uYs/k5dnrgw7nAm77S
+         0g7wr/YOedGN1Np95gqYAR6cZRFICQvtgO8G2YSlvZRjQOshPDsHAUz2FMWX1AuefF
+         eWBBwN0xoIwf7MDYuUZIIvu2nbv9wCHT+jvJghDoQLv+u82wq7eCxgnr52HATyDTQM
+         wX5DSB/Zt4MfQyw3KkSO8O7WSTnsakiS4ePXZEDMzdPas8azsaZML2e+ovdjGBXoJf
+         HrQQcI30KG+PA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SF2Sz551tz4wdC;
+        Tue, 24 Oct 2023 17:38:43 +1100 (AEDT)
+Date:   Tue, 24 Oct 2023 17:38:43 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Sourabh Jain <sourabhjain@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the powerpc tree
+Message-ID: <20231024173843.07ca9afc@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/ZmEuILtJOwo8pcQ9yHFFAfJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since mm-hotfixes-stable commit dc68badcede4 ("mm: mlock: update
-mlock_pte_range to handle large folio") I've just occasionally seen
-VM_WARN_ON_FOLIO(folio_test_ksm) warnings from folio_within_range(),
-in a splurge after testing with KSM hyperactive.
+--Sig_/ZmEuILtJOwo8pcQ9yHFFAfJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-folio_referenced_one()'s use of folio_within_vma() is safe because
-it checks folio_test_large() first; but allow_mlock_munlock() needs
-to do the same to avoid those warnings (or check !folio_test_ksm()
-itself? or move either check into folio_within_range()? hard to tell
-without more examples of its use).
+Hi all,
 
-Fixes: dc68badcede4 ("mm: mlock: update mlock_pte_range to handle large folio")
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- mm/mlock.c | 4 ++++
- 1 file changed, 4 insertions(+)
+After merging the powerpc tree, today's linux-next build (powerpc
+allyesconfig) produced this warnings:
 
-diff --git a/mm/mlock.c b/mm/mlock.c
-index aa44456200e3..086546ac5766 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -346,6 +346,10 @@ static inline bool allow_mlock_munlock(struct folio *folio,
- 	if (!(vma->vm_flags & VM_LOCKED))
- 		return true;
- 
-+	/* folio_within_range() cannot take KSM, but any small folio is OK */
-+	if (!folio_test_large(folio))
-+		return true;
-+
- 	/* folio not in range [start, end), skip mlock */
- 	if (!folio_within_range(folio, vma, start, end))
- 		return false;
--- 
-2.35.3
+WARNING: modpost: vmlinux: section mismatch in reference: process_fadump+0x=
+2c8 (section: .text.process_fadump) -> fadump_setup_elfcorehdr_buf (section=
+: .init.text)
+WARNING: modpost: vmlinux: section mismatch in reference: process_fadump+0x=
+2f4 (section: .text.process_fadump) -> fadump_populate_elfcorehdr (section:=
+ .init.text)
 
+Probably introduced by commit
+
+  c17687d0d62d ("powerpc: make fadump resilient with memory add/remove even=
+ts")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ZmEuILtJOwo8pcQ9yHFFAfJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU3ZnMACgkQAVBC80lX
+0Gzx8Qf+KFI2SR2hDeKrZJa/tECX1cLqRx+/7vMPVE3k7qFJOfHJj/jm5zL9TkuQ
+iT6yyzyHcGKfqy1AS7u6vbsjDdeIEXpgOXSxfS9AKboWsDCcMnd4AcKBnjbuR0DV
+S0JOEfvjT+YTTXPmzaq7gnJj80y66R+DaAWtylGmnSH+9qZMyU3o9G563kHvUE4d
+df7R03M3OmlGXISG75/bS1zpYrEvAp3zRHFZPbkibVlOSCsR+NHvPsmHZhRyP2bc
+3DgGFSvLdUAJblONBqH99i0Atm520zencF0HHLWT1OwvhAePEV9WJL33M3NRPSRR
+uKvBqKdPxIRs+G8qliqCDUbUrfS2LQ==
+=bMPO
+-----END PGP SIGNATURE-----
+
+--Sig_/ZmEuILtJOwo8pcQ9yHFFAfJ--
