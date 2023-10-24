@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 707277D5406
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A697D5412
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343734AbjJXO3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 10:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
+        id S234474AbjJXObx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 10:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbjJXO3J (ORCPT
+        with ESMTP id S1343801AbjJXO2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:29:09 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD811C4
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:29:07 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507c8316abcso6125059e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:29:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1698157746; x=1698762546; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VF7d4jMMf4MfKI2w84pu3BWkSz+khKl3I43eAdPZFH8=;
-        b=UhOO9upf6IAiAOqwTt0PZlCNflI6+1EIhpxFEmTr4ZJCUxAljvIKouDj0GVqyUUELG
-         WzLznNZ353OvKc5GSC8ZuP1VQmdZedx+QagiPGqKlNC0ognqirbuoeTgW/X40xZ8eOoG
-         1l4Ahv/EAGIbi2RArCMSsHFRkUF/Mw2H5NqJxDkTJDC1K3oDxcmYQtF1OVVqQ5BNCNCN
-         P3F7Zyzd4F1UPHpW8+zLHkuucOygd/4oG4XY8epIVMU9gxhq1y8mK8ZLHBFPTFSyZFK9
-         ABYu0aUEb1RroAHgw3W5l3oMnFIzpPxQRiZwG5ivuIeLm+lKkqoKZbUshttmTRcR+Ur0
-         hnIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698157746; x=1698762546;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VF7d4jMMf4MfKI2w84pu3BWkSz+khKl3I43eAdPZFH8=;
-        b=GXadc+mR+iJvV/Rkhhn+NajKz7HfEAgRbC8X3G7qAgaL7CnO8dP9aaSIC5rM//5CRS
-         uaCEGCy4CInRZo+xVtH0UFXtY7QQHeioSEoLEHiyIq2BkdyEGnf5KNCC5i/m69XFRm84
-         rLhTJRWpgAFV1hZdG2IMBPsPYgom561tksPFAQkgDFeGZHXKfJLOh8T9/GkZ5Px8Snew
-         ftvHgC4agbo9orrh7H/XVyc362HV5qUCr0nj/gm/HXGqs4KuvbBCRgxnVUeF1RkpT7jN
-         /9IBVFw0/jvFndw2ax0cnZjGH30A1R8IY26hVEeTCJUHmtm0Z6kLI7LG5HaLoNnhoDdH
-         C+yw==
-X-Gm-Message-State: AOJu0YxYTEDOPxPHXL0hgd6TESAuhOPiZaLWGV6zRpwBhVEvKs5Iycmm
-        Xu2swuUO7e8+e5IShV722sXcRv7RjTACZjP9AIHWyQ==
-X-Google-Smtp-Source: AGHT+IEaUVpLjkEPg1Gwxq89Vzp9eDheQ49NKLnoKGe7P731lBXW4hmUVsVuOnscqMEw9jdFOmoebDwqlNbVvsERRQY=
-X-Received: by 2002:a19:2d5d:0:b0:507:9e6c:e165 with SMTP id
- t29-20020a192d5d000000b005079e6ce165mr7320188lft.50.1698157745751; Tue, 24
- Oct 2023 07:29:05 -0700 (PDT)
+        Tue, 24 Oct 2023 10:28:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6EA10D1;
+        Tue, 24 Oct 2023 07:28:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AAC1C433C8;
+        Tue, 24 Oct 2023 14:28:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698157730;
+        bh=ypIMNYS6FyQIe4ePxJ+5oz5tdfmsVd2FnFFM7K0THyQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tlDwkr7Eyhll2twIrEyMEwBLTavG1kyr+CWEQ2B2ZqyPbnY/TbuAeNOX3Ll1wDHBl
+         TygyF3lpuqVhzRJGWhol+qx5QNalxy+raSfqOnt44i4R4aRRR92f3JJsDk5tXd98a5
+         V8Pnks0xHYH7gu6tpSZEWMGOyyeZDbbDAIKa7QXbHFRYvR4WM4n/TEqMZLAo6DgWJ5
+         bD5ZsFfKUqZyYBJhCL47B7ZZUz+lr6tcsxwQ/j+jLnZ403pwZ7sRplkpgp+sPaSBaj
+         IsY1wg7aqo9Fek4rcJbdICYNb2zArlG7oZVNQwBcJIakMomr1DkO4eysy7nFcHjD2l
+         lVnY0egCFg92Q==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qvIP5-0003aY-08;
+        Tue, 24 Oct 2023 16:29:07 +0200
+Date:   Tue, 24 Oct 2023 16:29:07 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] wifi: ath11k: fix temperature event locking
+Message-ID: <ZTfUswqVkAgJvnye@hovoldconsulting.com>
+References: <20231019153115.26401-1-johan+linaro@kernel.org>
+ <20231019153115.26401-2-johan+linaro@kernel.org>
+ <87sf60xgs8.fsf@kernel.org>
 MIME-Version: 1.0
-References: <cover.1698114636.git.yan@cloudflare.com> <a79fe77d7308f7e6de7a019f23a509b84cbacd79.1698114636.git.yan@cloudflare.com>
- <20231024102201.GB2255@breakpoint.cc> <CANn89iL8LfGJF2xJP0JhW7sMUXiMdJGAe7jhL0XW3pVMG7cmkw@mail.gmail.com>
-In-Reply-To: <CANn89iL8LfGJF2xJP0JhW7sMUXiMdJGAe7jhL0XW3pVMG7cmkw@mail.gmail.com>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Tue, 24 Oct 2023 09:28:54 -0500
-Message-ID: <CAO3-Pbohogh1q=20ycPimoPaeAskcAGABvEW=YdZRg3ppRsJ3Q@mail.gmail.com>
-Subject: Re: [PATCH v4 net-next 1/3] ipv6: drop feature RTAX_FEATURE_ALLFRAG
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
-        kernel-team@cloudflare.com,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Alexander H Duyck <alexander.duyck@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sf60xgs8.fsf@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 5:30=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
-wrote:
->
-> On Tue, Oct 24, 2023 at 12:22=E2=80=AFPM Florian Westphal <fw@strlen.de> =
-wrote:
-> >
-> > Yan Zhai <yan@cloudflare.com> wrote:
-> > >  #define IPCORK_OPT   1       /* ip-options has been held in ipcork.o=
-pt */
-> > > -#define IPCORK_ALLFRAG       2       /* always fragment (for ipv6 fo=
-r now) */
-> > > +#define IPCORK_ALLFRAG       2       /* (unused) always fragment (fo=
-r ipv6 for now) */
-> >
-> > Nit: Why not remove the ALLFRAG define as well?
->
-> I agree, this is not exposed to user space and should be deleted.
->
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
->
-> >
-> > Otherwise the series looks good to me, thanks!
-> >
-> > Reviewed-by: Florian Westphal <fw@strlen.de>
-> >
+On Tue, Oct 24, 2023 at 04:59:35PM +0300, Kalle Valo wrote:
+> Johan Hovold <johan+linaro@kernel.org> writes:
+> 
+> > The ath11k active pdevs are protected by RCU but the temperature event
+> > handling code calling ath11k_mac_get_ar_by_pdev_id() was not marked as a
+> > read-side critical section as reported by RCU lockdep:
 
-I thought there was some convention of not deleting macros. I sent a
-V5 to fix this up (not sure if it is the right approach to go) and
-carried your review-by tags over since it's just a small change.
-Appreciate if there are any more suggestions there.
+> On what hardware and firmware version did you test this? As there's so
+> many different combos we use Tested-on tag to provide that information
+> in the commit message:
+> 
+> https://wireless.wiki.kernel.org/en/users/drivers/ath11k/submittingpatches#tested-on_tag
+> 
+> I can add that if you let me know what you used.
 
-thanks
-Yan
+I hit this on the Lenovo Thinkpad X13s and I guess the tag should be:
+
+Tested-on: QCNFA765 hw2.1 WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.23
+
+Note that I've only been able to test the ath11k fixes (not the
+corresponding ath12k) and I only tested this particular patch fully
+(e.g. since I didn't trigger any radar events).
+
+Johan
