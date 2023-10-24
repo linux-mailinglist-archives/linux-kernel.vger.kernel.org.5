@@ -2,176 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96DCA7D520F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B227D5211
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234210AbjJXNnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49340 "EHLO
+        id S1343498AbjJXNnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234404AbjJXNnF (ORCPT
+        with ESMTP id S233153AbjJXNnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:43:05 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AB7DD
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:43:03 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c9d132d92cso8561025ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:43:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698154983; x=1698759783; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=llE/A+xwdvnmuUTq+C1r2sdJnt3pwBP1QiuNoEB548A=;
-        b=bD3PbT0hQ1dVD+iDsHeJ2mlcykXCE8UIGyAqM43nFIuBix2pW20Lm5G2HtF1ERhOXM
-         ZMNyfx442D+cwbUGB4pHUFgN3m9uju1GeE7zYajeIFQ+UTvSivAe0B8f9eHFu35AcsK1
-         sUXnLfK2oivsbqMkYvogMnddmBFdF/jUGyVldQPf/YYe/5ye6sjxjmFZEEI6+6IsZL1+
-         eWOSov7frJ2Yt2EBqiuXFjQyvqrfAiO8uS6HcrSzUeU1lPeK+XtOApBcH6ayhKa8xnRE
-         7NKI9yr1SDXibE66M8J+JutmS0VMRbVD0VmefjO0kFwy427AHlNAz7Z6SH3o715TgzI8
-         prow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698154983; x=1698759783;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=llE/A+xwdvnmuUTq+C1r2sdJnt3pwBP1QiuNoEB548A=;
-        b=GzbdvclzC0N7ZjWGk5DdkaTNfL+ECukOsSmR6nPWASPWDi4UiXnWj9lTyEt9FhmEb7
-         C38rdL8mqptrOVJbxBpyRy+iGK8L7AozYShZb2d+8CvksKxOgm4yp3/1VX2CE0/F/EYP
-         Uh+t/U4PPsR4iWlycQg+yaKyQo0Rp0fsSGUmGltXgYWaIpNnDKlkm1tDrMQBEsrbcBYd
-         HGh6IclMMNs0XAhSr+rZ9PKV1DpmRvew0WjcPyLa/D8Bv15N/vF4KfGaSXgAaoL/nv59
-         sVgRzDsC96yNTez2JNrSBrQ9jKdSzrPJAiwmYqtNxfAW/92gQKbrxR6w/SJYI4kQEOb7
-         p4+Q==
-X-Gm-Message-State: AOJu0YzocTjxjjlQCxuqyGRzFdjziS+UaVwhIvLNIwwuWIImeUq/05cF
-        2oqaREXKmHvH3Pny+7iYnjuawi3ZbY1un0GdFUuusw==
-X-Google-Smtp-Source: AGHT+IGO3UGtt2ntifIx9N2oGOGvNFeTOoA1Q+nxYUjFjDT1CwynHW+luQG8rzi0DgBIyG+IUHTKdg==
-X-Received: by 2002:a17:903:6c7:b0:1ca:85b4:b962 with SMTP id kj7-20020a17090306c700b001ca85b4b962mr11793079plb.4.1698154982724;
-        Tue, 24 Oct 2023 06:43:02 -0700 (PDT)
-Received: from octopus ([2400:4050:c3e1:100:7c15:610f:1205:f10c])
-        by smtp.gmail.com with ESMTPSA id q12-20020a170902dacc00b001c71ec1866fsm7416507plx.258.2023.10.24.06.42.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 06:43:02 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 22:42:57 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Oleksii_Moisieiev@epam.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [RFC v2 5/5] dt-bindings: gpio: Add bindings for pinctrl based
- generic gpio driver
-Message-ID: <ZTfJ4b7VdTkA0sxo@octopus>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Oleksii_Moisieiev@epam.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-References: <20231006132346.GA3426353-robh@kernel.org>
- <CACRpkdaLsfSBEG-h9ZNT2_Lm8tW8AZO7tedDVNeuZoQAqSkyjw@mail.gmail.com>
- <ZSTgTC4cFFpofYAk@octopus>
- <CACRpkdYD6pkccYoy90AfzV3KT7oYkBPD2_4ZW-AXzT1eUVpchA@mail.gmail.com>
- <ZS3yK/f12Mxw9rXe@octopus>
- <CACRpkdarDrVkPmyDawhZ+H94S4F=dtDSDVuKegi-eNfQNDY3rg@mail.gmail.com>
- <ZTduWx7CH1ifI5Uc@octopus>
- <CACRpkdba=echR=rZYKVbROfaOp4mzjTQ9RphHFyzqSNgE1jZqg@mail.gmail.com>
- <ZTemAK/jBtv9b5xP@octopus>
- <CACRpkdY-5uS9EeXfDFVOiRKiFmwwSn3jRVGhT-n4JMqesHEumw@mail.gmail.com>
+        Tue, 24 Oct 2023 09:43:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F7C793;
+        Tue, 24 Oct 2023 06:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698155021; x=1729691021;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=KRo+2AD2u8nWJgx+4MOYr+5TEkrKOatN/EKo2KUhHRE=;
+  b=UwecES12rPk5MdcsmWM+ihtLUQ96vNPVEx1uZCmJDaxw8+iDlCT1GfHF
+   eUkiEK9Ngw5iE/SMVlxpCKp6IamDSeEmArIMpYtwoE+I3gIqxPqLZekMN
+   GlAPRcZr6kKXFQ4A22DEV07Lco3NkNApFlIv6b8t54Qca0vS+bM2Tpkrl
+   qnxG0x333PeG4/75Gfh9WLx6aBtzLBaFvpEULBWIzb9XuGvGZVTPVdvvm
+   1L9e7RvyPjEb2WY0sj1QaoHgQXSablOJMhDbZCn98jGn7OeixiBOAmKwI
+   bhrN6bltylP4bYS0/313Q9pVfjn6d4zySOqFzgFrMTaoPWHaLzZvOOt1k
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="366401150"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="366401150"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 06:43:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="793489938"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="793489938"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Oct 2023 06:43:40 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 24 Oct 2023 06:43:39 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 24 Oct 2023 06:43:39 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Tue, 24 Oct 2023 06:43:39 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Tue, 24 Oct 2023 06:43:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AzWgaQDhceb0n3pa39YEMEWvLUdiBbEiDO/cW11tx/0Sg9RhGW30YBL9zLPnt5wJOITaMRNA9uY865Egxbly1oteRaXloyfPGd6vT8qNAJtdYaXjGrI2poqVU5jUTauDRePoWA2neI1JggY2Ulr/ckIj/no1ZA7HkoIvxjWQ4W3Z9PbqTMPpDD6kfIVwMrrgMFtWGgPbsuHOYGCtH0V0RK5PyfokzEyrLEbHK6h8FUcLbiOdA3LyAuiLZRpIBx3Ijk531f0q7COxYDPs+SlRn6izR0L10jpb1ihVBENrESgak+KiY+APqzZ44y7t0kr9lHJI59xNPIvrWK8MFONK7Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KnYCz7BdskmPAla5Cf8eHHDfGqdq7ic1l9J6lUA2nyc=;
+ b=GIfCnorEuQktw2llfgkiJXbNuuyAwNPwmy3zGiRIZlC51qakbxH4wXe7kR0tonHQBHtOS0wD00MTNyF6iHbNmQtzYkPJ9p/JAF8NREFehq36xjNVkvee//njdfxwuyh4tQ36wk9OzycGN1gVJzaFnQIjgCRT8zudMm4cv7BojZRSWpQeITxazmU+K4Et56P6DA27PtILKrORw4xm9ntUJQCQ0bUXYOYIbR9hm1Fgim6EghUdWu62nZzRRn86C9pvLT+4kn8WVwFWluBj1V5h67Ys/ccwvScgvjQOSmz87cKcZ57EQWDEb/M0jofvJ+pZH2Dv6BGqXSROoTNxuwLqYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com (2603:10b6:a03:fa::30)
+ by DS0PR11MB7803.namprd11.prod.outlook.com (2603:10b6:8:f5::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
+ 2023 13:43:35 +0000
+Received: from BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48]) by BYAPR11MB3672.namprd11.prod.outlook.com
+ ([fe80::7666:c666:e6b6:6e48%4]) with mapi id 15.20.6907.021; Tue, 24 Oct 2023
+ 13:43:34 +0000
+Message-ID: <a7bd7ebd-5669-4eb2-55f8-9beb4c1431cc@intel.com>
+Date:   Tue, 24 Oct 2023 15:43:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.1
+Subject: Re: [PATCH net-next v3 08/11] net/mlx5: devlink health: use retained
+ error fmsg API
+Content-Language: en-US
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+CC:     Jiri Pirko <jiri@resnulli.us>, <netdev@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Shannon Nelson <shannon.nelson@amd.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "Cai Huoqing" <cai.huoqing@linux.dev>,
+        George Cherian <george.cherian@marvell.com>,
+        Danielle Ratson <danieller@nvidia.com>,
+        "Moshe Shemesh" <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Coiby Xu <coiby.xu@gmail.com>, Simon Horman <horms@kernel.org>,
+        Brett Creeley <brett.creeley@amd.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Petr Machata <petrm@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Aya Levin <ayal@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>
+References: <20231018202647.44769-1-przemyslaw.kitszel@intel.com>
+ <20231018202647.44769-9-przemyslaw.kitszel@intel.com>
+ <8bd30131-c9f2-4075-a575-7fa2793a1760@moroto.mountain>
+From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
+In-Reply-To: <8bd30131-c9f2-4075-a575-7fa2793a1760@moroto.mountain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0284.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:e6::8) To BYAPR11MB3672.namprd11.prod.outlook.com
+ (2603:10b6:a03:fa::30)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdY-5uS9EeXfDFVOiRKiFmwwSn3jRVGhT-n4JMqesHEumw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3672:EE_|DS0PR11MB7803:EE_
+X-MS-Office365-Filtering-Correlation-Id: 74c20840-2cd7-4626-7d53-08dbd49737b6
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5dcwgQ1mr6RHRcSUjfp4NwKWrK+HsVcLH14IJz/Mag90N0Ptbs81KcJJV7vGP2CNrSBHGXrUy3L4kOAOjgYLQpXl1Vh+sWgyOfczd1hFq8FpIpPAriMCqHD7iyYVFJ1VR3b+29ZSIZxm8q9o5n97D8+slDzuoy34tGAd9Y7kx79Px7ScgXnUQVEv2134LCWhwAyYTJK1LGfu9aiep+lOOQgFpAqty6rme5CaQM2G2isEvljVLD0FK4mJO/sfMeTwCvuZroOtY48Pw/aBY0wt6A+P8mDzD27Wq9Lc8X1W7HcBxF6SzgpurC40oAN2pshWoNVNV1j8ij0O8sFwm2ti/F2JQXHsg5+WMGfInN8mQiz/KsGCRxhecMS6L26hNV3Ne/Ou5hI6k5I5aGRrhJSzEah3Tg2b8S1b2kmbElUy9dmaHLxxcIzuSAijBHFbJEw3/jiUnpidP+t6lkSHFDBS/41VpCB6zZ6rPPzNB0upD8z6vrY1E6LrYl/FeZehAtVDWGKF8SHCc6eZKujFuf7zLdMHD9iLbKfVxsYUZsgJxnpWQGj0LJjDM3hXvsfPF3HucQqJF7OSSUYUiVy915y02kfH72Ybqb3UitaIKXixfF4hqvN9lTv606ESUf5ia+PovBE1Rw62lEtXt9gZjgKjQg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3672.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39860400002)(376002)(366004)(396003)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(26005)(31686004)(38100700002)(2906002)(86362001)(31696002)(36756003)(7406005)(7416002)(5660300002)(4326008)(8936002)(8676002)(478600001)(6506007)(2616005)(66476007)(41300700001)(54906003)(6666004)(6916009)(66556008)(66946007)(316002)(82960400001)(6486002)(6512007)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TlJaZWt4QnFXN1NmRzNlRmNFVkpPZGlmZUgvcE1ienJKb2ZNdXgxeHFQMTE2?=
+ =?utf-8?B?MzZlbklEcmVVMHdSbHFuTzJ6Y0FNVVhVb0llb2thdHRsWk85cmZFeE9UaWg4?=
+ =?utf-8?B?eW9tdzJHUE0yMnhRLzNFdEJOSm51azl0ZW5XeHZJK0xRUDkvaHlHeEZENFlm?=
+ =?utf-8?B?Nnp0WTdhM01OZ0k2cm5PYmhRMHdDZFFYMzFFbDJQaFJYMWUxUG16TVhWTk1y?=
+ =?utf-8?B?dHFDTWptL3czMHV0WDlDWXBsZjdFa3FrbGcrYklCS1RPSVgxZXhRS3BSTzVw?=
+ =?utf-8?B?T3BsTDFJUkhSVmVPNFhXazJRVEZpZmM5RlUxV2xOZXNBU1Y0N2t2VGpqMlJr?=
+ =?utf-8?B?QjEvbzhLaVdYVDdkcHArV2hLMUNNU2N0ODBNL2NSQTFoNVhqTG5heGpzYlM0?=
+ =?utf-8?B?K0U5RzN0ZkpMcDNWZzlpSkoyM2pLTG11STY0YWZ5MWpEVW1FOUZlUTdKb0Zy?=
+ =?utf-8?B?Y3VuTHQ3ekY5RS8zUWljZG5DYU1pU1A1a3R3a25MOVVuRWhidlFqSmdFejJq?=
+ =?utf-8?B?eTV4eUZnaFU3cWNaVHdOaHBQZ1hWNkpZcU1BUzVOOTJROS9ibForb0ZYc3pB?=
+ =?utf-8?B?cm03SzA1SnJqTlM5dGtMYVI2Z3dqWjBVQjZaZWh0RHRMUm1lUU1Pa2tHWU81?=
+ =?utf-8?B?a3RCQU1uQkFsMjZ2dEo2ekFYY1Q1OU9tUVBHN2FzQS84ek1MZGNqa3FoSklz?=
+ =?utf-8?B?anBXTC9oYWd0VzUwTVZaLzMrVjRRR21FcXhFajhBcDdTSkNvbUxBTnBOOWlo?=
+ =?utf-8?B?RVZvRTRZZnBqWklFaXZOOGFPOGR3ZDduQlBMcHdWLy9yQllLeUN4TWc1Sk5L?=
+ =?utf-8?B?M3ZEWi9yZnNEaVREZXBETnF5YXlaQlFUdVFRdHE3TE1XNDhlZmpKcDRFY3V4?=
+ =?utf-8?B?ODFFY3F2WUt3RmhQSVZRSjl1TXJIcXFEa3FydXFRZ1J6M0JtdjZtM01TZTEv?=
+ =?utf-8?B?d3JWMngxVjZPWm5xM3o3RDBsc0ZYUnExVUV2NU5yOXZvcFFib1RnVGswV1Yw?=
+ =?utf-8?B?NUQ0TGxSWGtjYWtKclhLL2V3cE5tZXlnZ3oyNFRYSHJoNUtGbjRZU2tnaHRT?=
+ =?utf-8?B?RFcwZUdHc3MvZDNYSDNSeG5YYXRiTHEzN2pGQUxhbnc0eUdpemZuMDl0RHM4?=
+ =?utf-8?B?RWlPMXdvNGNJTTRrcmoxYWFMdkltUVBxTEUwYWhSUTZWL2llVmREZ3FtemhN?=
+ =?utf-8?B?ekYvQ2J3N1RFWTlHV0U4QitESE12S1Rka3FSbFo0VzRPMFpRLzdWeW1LQUZi?=
+ =?utf-8?B?cFoxWFAvL01rMkZ1Sm9DYzA3RlFVcVBGbWVvaVhUWXNuaVlBVWQwYkhZKy9k?=
+ =?utf-8?B?Um4ybTc3d0diSWg2VVpCY2pVdko3aytudk0zZGhSZVdVZ1NlcThpR2hEZ2RO?=
+ =?utf-8?B?eWRuS1liK280SmRxVUhLV05Hd08xNkQyWUNaczE2dGZ0VlFNK0JraDdweXlD?=
+ =?utf-8?B?UUxzRWNJNVh0RHRnVzhkR25kTldTNnZ6M0lWNkx6OE9RQ09yRkk5bzQxZnJh?=
+ =?utf-8?B?Z0JyMlRvdGlPK09pYmZ4VUJPYmVOWjUzN1lmZ3cxbHlkdlU1cjl3NExkd3cw?=
+ =?utf-8?B?aC9LaURvcGUxMUpxUzZDUklTd1ZSK2kvUkhqdXR5QlpZbFVwUmlGTmd6dlhT?=
+ =?utf-8?B?Z0hZanRUZVdub3IwU01UMXJZTXMzSnY4SUFwaHdQY3ROREdKeldJRlhGaG1k?=
+ =?utf-8?B?d1dielYrTFhsemtMeWIyQVZqTUlDTnZFcjRac2I3Z1l3dGhEY29wbThzb2Iz?=
+ =?utf-8?B?R1BlQmFPQXdLVVZtazR2YWdrOWlZeEl1Z0xlU0RTaGZlQy9GZStqelloOGNn?=
+ =?utf-8?B?Vk1rZWJLVWI4L0dNT21PNk9kc1dwT2xWNnd4WFVMRk55K1UvdXVmZEVoL3VR?=
+ =?utf-8?B?bFVTa2JKOENlRmd3bGo0Mk5Wb3BNOVN2UkxIcjRKR3RKUmp1ZmFMZnpzZllM?=
+ =?utf-8?B?dDQvVFp3RDI0VUxOa3BwSzRZWmg3bHgydFJ4MDZxMzBUWWFoUkkzR05KbDRL?=
+ =?utf-8?B?WXF1c2twa2EzdFVqK3BEZ0hwblFkcjBiQUFuNVdZWUo5Rit4NEtHQlJZQlRW?=
+ =?utf-8?B?NStrMi9oanZMOVJlNDNJYlVOM3NCVnowemlwT1BQVzRTVmZrSnNCYnExMnlR?=
+ =?utf-8?B?N0d3TGgzbjc1LzAvb0srTE9vS2o5M1JmTG8zRUtEQ1p2dUhtV2hBc0Z3MldB?=
+ =?utf-8?B?ZWc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74c20840-2cd7-4626-7d53-08dbd49737b6
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3672.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 13:43:34.6555
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Fz8L9JuBZg23AThlMDrRc2Y5PR+j+3uGxDD6SJQHYRJ2V+RkWMJ/ehAmFuxqxDCTtouELlqoIkM5Smtm+hG4z97Dudki6JutSIemyd5u7rU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7803
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 03:12:51PM +0200, Linus Walleij wrote:
-> On Tue, Oct 24, 2023 at 1:10???PM AKASHI Takahiro
-> <takahiro.akashi@linaro.org> wrote:
+On 10/24/23 11:50, Dan Carpenter wrote:
+> On Wed, Oct 18, 2023 at 10:26:44PM +0200, Przemek Kitszel wrote:
+>>   	if (rq->icosq) {
+>>   		struct mlx5e_icosq *icosq = rq->icosq;
+>>   		u8 icosq_hw_state;
+>>   
+>> -		err = mlx5_core_query_sq_state(rq->mdev, icosq->sqn, &icosq_hw_state);
+>> -		if (err)
+>> -			return err;
+>> -
+>> -		err = mlx5e_reporter_icosq_diagnose(icosq, icosq_hw_state, fmsg);
+>> -		if (err)
+>> -			return err;
+>> +		mlx5_core_query_sq_state(rq->mdev, icosq->sqn, &icosq_hw_state);
 > 
-> > As far as I understand, there is only one way for SCMI gpio driver
-> > to know which pins are actually GPIO pins; Calling PINCNTRL_CONFIG_GET
-> > command with "Input-mode" or "Output-mode" configuration type
-> > against *every* pin-controller's pins.
-> > (Here I assume that the command would fail with INVALID_PARAMETERS or
-> > NOT_SUPPORTED if configuring the given pin as a GPIO input or output
-> > is not possible. But the specification seems to be a bit ambiguous.)
+> When we remove the error checking then Smatch correctly complains that
+> icosq_hw_state is used uninitialized.
 > 
-> As I also wrote in the reply to Christian, I expect the SCMI firmware
-> to consider GPIO a function on the pins, and either individual pins
-> (groups with just one pin in it) or entire groups of pins can be switched
-> to perform the "gpio function". ("gpio function" is akin to "i2c function"
-> or "HDMI function" etc.)
+>      drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c:268 mlx5e_rx_reporter_build_diagnose_output_rq_common()
+>      error: uninitialized symbol 'icosq_hw_state'.
+> 
+>> +		mlx5e_reporter_icosq_diagnose(icosq, icosq_hw_state, fmsg);
+>>   	}
+>>   
+>>   	return 0;
+>>   }
+> 
+> See also:
+>      drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c:229 mlx5e_tx_reporter_build_diagnose_output_sq_common()
+>      error: uninitialized symbol 'state'.
+> 
+> regards,
+> dan carpenter
 
-First of all, there is no pre-defined naming convention either for
-pins, groups or functions. SCMI firmware can give them any names.
-
-Secondly, What you said in the above is already implemented in
-my RFC patch. Please remember the example that I gave:
-
->     gpio-ranges = <&scmi_pinctrl 6 0 0>;
->     gpio-ranges-group-names = "pinmux_gpio";
-> 
-> means that SCMI *group*, "pinmux_gpio", are mapped to this driver's
-> gpio range which starts with 5. If "pinmux_gpio" indicates SCMI *pin*
-> range [20..24],
-> 
->     baa-gpios = <&gpio0 7>;
-> will refer to gpio pin#7 that is actually SCMI's 22 (=20 + (7-5)).
-
-Given the fact there is no naming convention, we need to explicitly
-specify an associated group name in "gpio-ranges-group-names" in any way.
-
-What my driver doesn't care for now is the case where a group of GPIO pins
-are multiplexed with other functions (UART, I2C or whatever else).
-In this case, we need to configure "pinconf" setup prior to using those
-pins as GPIO anyway. Simply, it is out of scope of my driver.
-(We can still use existing generic GPIO interfaces to operate them once
-set up, though.)
-
-After all, I still believe we need "gpio-ranges" property in most of
-all use cases (The only exception is, as I mentioned, to unconditionally
-map all pinctrl's pins to GPIO (if possible) when SCMI firmware provides
-only GPIO function for all pins. I think it is a simple and yet likely
-use case.
-
-Thanks,
--Takahiro Akashi
-
-
-> 
-> If the SCMI protocol considers GPIO usage to be something else
-> than a function of a pin, that is going to be a problem. Then the SCMI
-> protocol need some other way of determining that the pin is in
-> GPIO mode, and perhaps something would need to be added to
-> the protocol for that.
-> 
-> The reason is that in practice a lot of hardware has to decouple
-> the pin from any internal function in order to use it as GPIO, and
-> connect it to the GPIO block that can drive the line high and low.
-> And we don't select that as a function, how is the firmware going
-> to know that it needs to do this? Implicitly from the call requesting
-> the line to be output perhaps. But if the firmware can be altered
-> to do that, the firmware can just as well be altered to present
-> GPIO as a proper function.
-> 
-> Using a function makes most sense, because the board firmware
-> knows which pins are GPIO lines and what they are used for
-> (such as a LED or camera flash) and at boot certainly put them
-> into GPIO function and drive them high/low or set them as
-> input (high impedance).
-> 
-> > It means that, if SCMI firmware has 100 pinctrl pins, the driver needs
-> > to call the command 200 times in order to get the answer.
-> 
-> I think we should only need to check which function each pin
-> has and those that are in the GPIO function we put into the ranges.
-> 
-> Yours,
-> Linus Walleij
+thank you for the report, I will post a fix soon
