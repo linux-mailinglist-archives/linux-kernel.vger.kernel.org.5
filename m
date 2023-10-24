@@ -2,152 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A5F7D53F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F037D539E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343546AbjJXOZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 10:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52530 "EHLO
+        id S234525AbjJXOFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 10:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343742AbjJXOZb (ORCPT
+        with ESMTP id S234680AbjJXOFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:25:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B6910C2;
-        Tue, 24 Oct 2023 07:25:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698157527; x=1729693527;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=WwFLxwlK3z/Xf+xApxGXXQp0naSbrNazBZ+qab2Rats=;
-  b=gmHpGf89MAx2L7Vt495UY3aWAv33slfUsIkh0B7egGZ/CHcg5/mpREQ9
-   b1579gtbAv23yPC5NkKsnSC+8bbvxetAdYx0sCDm/W0lA+Njlypqk04AJ
-   qLYMRB3eMZJdQyZJk27LC21hGH3Rv0QVpz5NMBYQy/nhU7+/IDMCGX5sO
-   bBfbRf+WhjEedrIsRLeIhg5esBVJtCZLcLgcQfabz79nRc2MNGl7z2ods
-   aIM7BOic+hXzzRFEHbizFCtn8rnt3CzXdMzyNB8GIRXNO/6fxrWgWoUZz
-   ZtzGyXqNQAy0CDKx9CrorLkiWFpj8p2gNpxP6jjVehFigOQkap1SE/7e0
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="386873937"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="386873937"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 07:25:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="758491622"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="758491622"
-Received: from pwali-mobl.amr.corp.intel.com (HELO [10.209.188.4]) ([10.209.188.4])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 07:25:24 -0700
-Message-ID: <efa9cdd0-4e5b-4b54-a4ea-7ec735224f44@linux.intel.com>
-Date:   Tue, 24 Oct 2023 08:35:06 -0500
+        Tue, 24 Oct 2023 10:05:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BC6199F
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:56:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698155784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iQvE8OdPfOZYSkHw0w045+f5o9rL3SeUMTEWpiF8tRY=;
+        b=D4eMGwaFGH+mTZ2d95yL5c0yQ0vSD+UhAC+WMeyaW4pjxVtMjMVkCrE++D/zahOQJaPIoQ
+        4zgjIdK4rbPd0CD0dhJr7s8aLZX3P6FtRkrOLSoiK5rlLm31Z8msDzu05SCbbY5UMgjuiA
+        1vo94pqUmGyRnPw5fbQxGHq+IY+74T4=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-619-Z7nqNAE7Nz-yyRtWF7nvyQ-1; Tue, 24 Oct 2023 09:56:21 -0400
+X-MC-Unique: Z7nqNAE7Nz-yyRtWF7nvyQ-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-41e1ecf3350so5723321cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:56:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698155780; x=1698760580;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iQvE8OdPfOZYSkHw0w045+f5o9rL3SeUMTEWpiF8tRY=;
+        b=gTI8ADcdzDsJ7m/fPO1DU6uI4hu9bt/a9TUTkgoe+lN6z6CmxYZ4sqE9UI/b7jlc4K
+         wOmHeNhDnUxiVc9f3zQXoTkRgsDVQSYA+Hh4t3yx2rwJjO8ZkSvWkLwWWGrMkksBFkeS
+         bAPNjFcYtd7m9ih13rDblfhsWksE176Z2EXYsEb22+2zU33ENdRoXM/L10pd98+hwe6B
+         kX4UlPuDlI8Cp7H5p4OYg/m2SDPLEFAKsQBGbBcg6j1Ady9GvzrbobSxArcoOIep/3i6
+         i21v3WtYKOGA9J7wTviagStljMe/yBvRCTKUKtHLtfxei8JpP3IEfqlLR2JhJXjsp2RA
+         s1Ow==
+X-Gm-Message-State: AOJu0YxzCIKVDzNcAuARSJ98MGFEDu5H59NmJBGZ5AHZhuJ95NWn2PgG
+        DBexQXl6o9kQW7pnxms7a9ySUJTtUN7t5U+qnWlpeLr6zZnLk4oU73YFRgG3W/wGw+78i+rFhTh
+        kb0Xk0zQnOnPhXlkMXx8+9tmL
+X-Received: by 2002:a05:622a:15c2:b0:41c:d444:d08a with SMTP id d2-20020a05622a15c200b0041cd444d08amr14354094qty.5.1698155780640;
+        Tue, 24 Oct 2023 06:56:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGp3HkQo1SE5CjzQCJM1P53fM6YXXkusZPqIbLJPLZVwjCEjtEC1Ta45eBdaH/W2xlMVb/FOw==
+X-Received: by 2002:a05:622a:15c2:b0:41c:d444:d08a with SMTP id d2-20020a05622a15c200b0041cd444d08amr14354077qty.5.1698155780340;
+        Tue, 24 Oct 2023 06:56:20 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-242-180.dyn.eolo.it. [146.241.242.180])
+        by smtp.gmail.com with ESMTPSA id bn14-20020a05622a1dce00b0041aff9339a2sm3450689qtb.22.2023.10.24.06.56.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 06:56:19 -0700 (PDT)
+Message-ID: <addf492843338e853f7fda683ce35050f26c9da0.camel@redhat.com>
+Subject: Re: [PATCH] net: Do not break out of sk_stream_wait_memory() with
+ TIF_NOTIFY_SIGNAL
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Sascha Hauer <s.hauer@pengutronix.de>, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        kernel@pengutronix.de
+Date:   Tue, 24 Oct 2023 15:56:17 +0200
+In-Reply-To: <20231023121346.4098160-1-s.hauer@pengutronix.de>
+References: <20231023121346.4098160-1-s.hauer@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 34/34] ASoC: usb: Rediscover USB SND devices on USB
- port add
-To:     Wesley Cheng <quic_wcheng@quicinc.com>, mathias.nyman@intel.com,
-        gregkh@linuxfoundation.org, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, srinivas.kandagatla@linaro.org,
-        bgoswami@quicinc.com, Thinh.Nguyen@synopsys.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231017200109.11407-1-quic_wcheng@quicinc.com>
- <20231017200109.11407-35-quic_wcheng@quicinc.com>
- <b503058d-e23f-4a63-99b8-f0a62b2a2557@linux.intel.com>
- <6409c486-7393-4352-489c-ecd488597c4c@quicinc.com>
-Content-Language: en-US
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <6409c486-7393-4352-489c-ecd488597c4c@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2023-10-23 at 14:13 +0200, Sascha Hauer wrote:
+> It can happen that a socket sends the remaining data at close() time.
+> With io_uring and KTLS it can happen that sk_stream_wait_memory() bails
+> out with -512 (-ERESTARTSYS) because TIF_NOTIFY_SIGNAL is set for the
+> current task. This flag has been set in io_req_normal_work_add() by
+> calling task_work_add().
+>=20
+> It seems signal_pending() is too broad, so this patch replaces it with
+> task_sigpending(), thus ignoring the TIF_NOTIFY_SIGNAL flag.
+
+This looks dangerous, at best. Other possible legit users setting
+TIF_NOTIFY_SIGNAL will be broken.
+
+Can't you instead clear TIF_NOTIFY_SIGNAL in io_run_task_work() ?
 
 
-On 10/23/23 16:54, Wesley Cheng wrote:
-> Hi Pierre,
-> 
-> On 10/17/2023 4:11 PM, Pierre-Louis Bossart wrote:
->>
->>
->> On 10/17/23 15:01, Wesley Cheng wrote:
->>> In case the USB backend device has not been initialized/probed, USB SND
->>> device connections can still occur.  When the USB backend is eventually
->>> made available, previous USB SND device connections are not
->>> communicated to
->>> the USB backend.  Call snd_usb_rediscover_devices() to generate the
->>> connect
->>> callbacks for all USB SND devices connected.  This will allow for the
->>> USB
->>> backend to be updated with the current set of devices available.
->>>
->>> The chip array entries are all populated and removed while under the
->>> register_mutex, so going over potential race conditions:
->>>
->>> Thread#1:
->>>    q6usb_component_probe()
->>>      --> snd_soc_usb_add_port()
->>>        --> snd_usb_rediscover_devices()
->>>          --> mutex_lock(register_mutex)
->>>
->>> Thread#2
->>>    --> usb_audio_disconnect()
->>>      --> mutex_lock(register_mutex)
->>>
->>> So either thread#1 or thread#2 will complete first.  If
->>>
->>> Thread#1 completes before thread#2:
->>>    SOC USB will notify DPCM backend of the device connection.  Shortly
->>>    after, once thread#2 runs, we will get a disconnect event for the
->>>    connected device.
->>>
->>> Thread#2 completes before thread#1:
->>>    Then during snd_usb_rediscover_devices() it won't notify of any
->>>    connection for that particular chip index.
->> Looks like you are assuming the regular USB audio stuff is probed first?
->>
->> What if it's not the case? Have you tested with a manual 'blacklist' and
->> "modprobe" sequence long after all the DSP stuff is initialized?
->>
->> It really reminds me of audio+display issues, and the same opens apply
->> IMHO.
-> 
-> Not necessarily...if the USB audio driver is not probed, then that is
-> the same scenario as when there is no USB audio capable device plugged
-> in, while the offload path is waiting for the connect event. I think
-> this is the standard scenario.
-> 
-> In the situation where the platform sound card hasn't probed yet and USB
-> audio devices are being identified, then that is basically the scenario
-> that would be more of an issue, since its USB SND that notifies of the
-> connection state (at the time of connect/disconnect).
+Thanks!
 
-Not following if this scenario is covered?
-
-> I've tried with building these drivers as modules and probing them at
-> different times/sequences, and I haven't seen an issue so far.
-
-The scenario I have in mind is this:
-
-the platform driver is on the deny list, the USB driver detects a
-device. When the platform driver probes at a later time (with a manual
-modprobe to make delays really long), how would the notification be handled?
-
-Between audio and display, we use the 'drm_audio_component' layer to
-model these sort of run-time binding between independent driver stacks.
-It's not used here but we need a moral equivalent, don't we?
-
-It would really help if you documented a bit more the dependencies or
-timing assumptions, to make sure we have a stable solution to build on.
+Paolo
 
