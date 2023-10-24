@@ -2,101 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E437D5D59
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0647D5D5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344406AbjJXVkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 17:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53550 "EHLO
+        id S1344371AbjJXVlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 17:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344272AbjJXVka (ORCPT
+        with ESMTP id S1344272AbjJXVlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:40:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03401A6;
-        Tue, 24 Oct 2023 14:40:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FC3EC433C8;
-        Tue, 24 Oct 2023 21:40:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698183628;
-        bh=F4moDtJBsvM9k5YRWcGiZLJiEXlG4reTo0D2QY0C0dg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oosxYUuzADM8NPpyDf8JiuQjauehWEnVJjvBPI+XZbNdM6cP66MQ8UcicQ4XfXAur
-         j5i1meCrUH73sGd/0LE7t3kgZthIEtHRfAx5dSbVMY5anlaYejy5drPA4xt0v2zagM
-         VskR+wBh3JvCaC26F5NQiQroCoBXDYPd5t0pkosfmJACpJR+DNI2L1rEMK0FjuSs/X
-         YEOG0hdgStFnvEVJ/GqaqjGyTIa6LgsPGBX6Mzb8fv3W0NUfLwT/D4ABOBsItZwY/f
-         mMeA+mDDpMtfP8/X0os0lOV7ABxTqul/CGv+n0t9JT/nzzyaoclgXJZKKIRpQhOPK+
-         6F6hwk4SKQlVA==
-Date:   Tue, 24 Oct 2023 23:40:25 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Subject: Re: [PATCH V2 0/7] i2c: sprd: Modification of UNISOC Platform I2C
- Driver
-Message-ID: <20231024214025.rfix4tzqzxlazbgh@zenone.zhora.eu>
-References: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
+        Tue, 24 Oct 2023 17:41:12 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E161B3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:41:08 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507973f3b65so7855514e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698183666; x=1698788466; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8/l3iCnOIbHxgn209fI6Ue3Dyqs1H9WjYDgBhKPc4nY=;
+        b=Rrx1myZZxr6WTSJOyLzrBRa77/qO7kSqRvhLCzgtpCwtf3m8QHZ0VxKGn8PuadDVNa
+         5MtGgJLINumg344vQxOIMAGbgOGIbnCBzrRYATyErR5ddApbyqP7kvqHAm2aCxFDWF+J
+         NJtrlKivCxq4gkDR2OY43l5Ez2vrxXp26pLFw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698183666; x=1698788466;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8/l3iCnOIbHxgn209fI6Ue3Dyqs1H9WjYDgBhKPc4nY=;
+        b=NSFueKwtQu3eAHMdu1LErv0eGZ4dmMg4xnVRT/aHqm5UH8kZpyzcQlXzZ66hrp6Z2V
+         DKZOvIJm9C58+oclmci5J16x5h7zM5Ryt09w1ldYB5y/QbDXItDJb/yaBvoR9sxELm0g
+         xd4VdVuL/9RswnfT1B9FZK1BIKL+UCQcWVvK/CJncZnF+MOPzxeK0RDOkUiVZaRP1yqg
+         9s+dMNfd1/4BHea9yqvmJnVdxqzuqbEI2fAfL+A4K0M0CozypR8WAYTLBROqyqtje+5l
+         MW8mGroSjbsrsIEgXlm2y+BO8+EmzBAAcKIeGf9+0wL2DH/kxUPFBkq54YganY++dZv2
+         ouAg==
+X-Gm-Message-State: AOJu0Yxcxv1d/yaSr6VPOD9zk7y0tajqUSV0LhSHF03Aae85HdKK5Bj5
+        Kb8t9/NaH15KC61vGWcPwpCT7z4/FjUcgsSvauTyPA==
+X-Google-Smtp-Source: AGHT+IFScWIum/OTHr5wNhT1S/G7FDAmrtGJXwLdpLF1M/LYqy7vRAiXQHkkcwQgTLFDVP6Hd+bZsDD/O+/8wNKhQNw=
+X-Received: by 2002:a05:6512:3a8e:b0:507:a1e5:74fe with SMTP id
+ q14-20020a0565123a8e00b00507a1e574femr11574219lfu.54.1698183666243; Tue, 24
+ Oct 2023 14:41:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023081158.10654-1-Huangzheng.Lai@unisoc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231009220436.2164245-1-sjg@chromium.org> <20231009220436.2164245-2-sjg@chromium.org>
+ <20231024161644.GB3707756-robh@kernel.org>
+In-Reply-To: <20231024161644.GB3707756-robh@kernel.org>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Tue, 24 Oct 2023 14:40:54 -0700
+Message-ID: <CAPnjgZ0G3W0a1T5TMuS_8L+4OwqFU3xXBKPnTs+MDDFBWYP_VA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] dt-bindings: mtd: binman-partition: Add binman compatibles
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Michael Walle <mwalle@kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Tom Rini <trini@konsulko.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huangzheng,
+Hi Rob,
 
-could you please use the [PATCH RESEND...] prefix when sending
-the patch as it is?
+On Tue, 24 Oct 2023 at 09:16, Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, Oct 09, 2023 at 04:04:14PM -0600, Simon Glass wrote:
+> > Add two compatible for binman entries, as a starting point for the
+> > schema.
+> >
+> > Note that, after discussion on v2, we decided to keep the existing
+> > meaning of label so as not to require changes to existing userspace
+> > software when moving to use binman nodes to specify the firmware
+> > layout.
+> >
+> > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > ---
+> >
+> > Changes in v4:
+> > - Correct selection of multiple compatible strings
+> >
+> > Changes in v3:
+> > - Drop fixed-partitions from the example
+> > - Use compatible instead of label
+> >
+> > Changes in v2:
+> > - Use plain partition@xxx for the node name
+> >
+> >  .../mtd/partitions/binman-partition.yaml      | 49 +++++++++++++++++++
+> >  1 file changed, 49 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
+> > new file mode 100644
+> > index 000000000000..35a320359ec1
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
+> > @@ -0,0 +1,49 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +# Copyright 2023 Google LLC
+> > +
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/mtd/partitions/binman-partition.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Binman partition
+> > +
+> > +maintainers:
+> > +  - Simon Glass <sjg@chromium.org>
+> > +
+> > +select: false
+>
+> So this schema is never used. 'select: false' is only useful if
+> something else if referencing the schema.
 
-Thanks,
-Andi
+OK. Is there a user guide to this somewhere? I really don't understand
+it very well.
 
-On Mon, Oct 23, 2023 at 04:11:51PM +0800, Huangzheng Lai wrote:
-> Recently, some bugs have been discovered during use, patch3 and 
-> patch5-6 are bug fixes. Also, this patchset add new features:
-> patch1 allows I2C to use more frequencies for communication,
-> patch2 allows I2C to use 'reset framework' for reset, and patch4 allows
-> I2C controller to dynamically switch frequencies during use.
-> 
-> change in V2
-> -Using 'I2C' instead of 'IIC' in the patch set.
-> -Using imperative form in patch subject.
-> -Use 'switch case' instead of 'else if' in PATCH 1/7.
-> -Modify if (i2c_dev->rst != NULL) to if (i2c_dev->rst) in PATCH 2/7.
-> -Modify some dev_err() to dev_warn() or dev_dbg().
-> -Clear i2c_dev->ack_flag in sprd_i2c_clear_ack() in PATCH 3/7.
-> -Modify the indentation format of the code in PATCH 4/7.
-> -Move sprd_i2c_enable() above its caller in PATCH 5/7.
-> -Remove 'Set I2C_RX_ACK when clear irq' commit.
-> -Add Fixes tags. 
-> 
-> Huangzheng Lai (7):
->   i2c: sprd: Add configurations that support 1Mhz and 3.4Mhz frequencies
->   i2c: sprd: Add I2C driver to use 'reset framework' function
->   i2c: sprd: Use global variables to record I2C ack/nack status instead
->     of local variables
->   i2c: sprd: Add I2C controller driver to support dynamic switching of
->     400K/1M/3.4M frequency
->   i2c: sprd: Configure the enable bit of the I2C controller before each
->     transmission initiation
->   i2c: sprd: Increase the waiting time for I2C transmission to avoid
->     system crash issues
->   i2c: sprd: Add I2C_NACK_EN and I2C_TRANS_EN control bits
-> 
->  drivers/i2c/busses/i2c-sprd.c | 166 ++++++++++++++++++++++------------
->  1 file changed, 106 insertions(+), 60 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
+>
+> > +
+> > +description: |
+> > +  This corresponds to a binman 'entry'. It is a single partition which holds
+> > +  data of a defined type.
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/mtd/partitions/partition.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - const: binman,entry     # generic binman entry
+>
+> 'binman' is not a vendor. You could add it if you think that's useful.
+> Probably not with only 1 case...
+
+I think it is best to use this for generic things implemented by
+binman, rather than some other project. For example, binman supports a
+'fill' region. It also supports sections which are groups of
+sub-entries. So we will likely start with half a dozen of these and it
+will likely grow: binman,fill, binman,section, binman,files
+
+If we don't use 'binman', what do you suggest?
+
+>
+> > +      - items:
+> > +          - const: u-boot       # u-boot.bin from U-Boot project
+> > +          - const: atf-bl31     # bl31.bin or bl31.elf from TF-A project
+>
+> Probably should use the new 'tfa' rather than old 'atf'. Is this the
+> only binary for TFA? The naming seems inconsistent in that every image
+> goes in (or can go in) a bl?? section. Why does TFA have it but u-boot
+> doesn't? Perhaps BL?? is orthogonal to defining what is in each
+> partition. Perhaps someone more familar with all this than I am can
+> comment.
+
+From what I can tell TF-A can produce all sorts of binaries, of which
+bl31 is one. U-Boot can also produce lots of binaries, but its naming
+is different (u-boot, u-boot-spl, etc.). Bear in mind that U-Boot is
+used on ARM, where this terminology is defined, and on x86 (for
+example), where it is not.
+
+>
+> Once you actually test this, you'll find you are specifying:
+>
+> compatible = "u-boot", "atf-bl31";
+
+I don't understand that, sorry. I'll send a v5 and see if the problem goes away.
+
+>
+>
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    partitions {
+> > +        compatible = "binman";
+> > +        #address-cells = <1>;
+> > +        #size-cells = <1>;
+> > +
+> > +        partition@100000 {
+> > +            compatible = "u-boot";
+> > +            reg = <0x100000 0xf00000>;
+> > +        };
+> > +
+> > +        partition@200000 {
+> > +            compatible = "atf-bl31";
+> > +            reg = <0x200000 0x100000>;
+> > +        };
+> > +    };
+> > --
+> > 2.42.0.609.gbb76f46606-goog
+> >
+
+Regards,
+Simon
