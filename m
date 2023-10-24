@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1797D5A3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDAC7D5A42
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343929AbjJXSM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 14:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
+        id S1344102AbjJXSO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344093AbjJXSMZ (ORCPT
+        with ESMTP id S230304AbjJXSO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:12:25 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BC410DC;
-        Tue, 24 Oct 2023 11:12:23 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a7c7262d5eso49217577b3.1;
-        Tue, 24 Oct 2023 11:12:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698171142; x=1698775942; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E3EYlEUXN/TtJ8i/q/rreox/HAhcUMuzowMifNS8GMc=;
-        b=PZeMIXTGCQAsiMdUocr01G9sueyIrXDHTeANjs9cFU6bxTz/gKTBlyfLdL6XvwrpxE
-         PYBlmgMoUwxUQMzLviveiBPWXvxfLAhnwBzrjbRLcHOMC6toJYYAij9+Y+4XDP09xLg/
-         gcUfqJG/zEOlnMZH32u/jpyXvx8t5IKt05dfL5+padiIhleqHAZPDbB55SNRhC+gAxXf
-         meIYJ/pYdulW+t5JVCl6wjq65xR0saiG8StbnlqbKGxhSuRuP0IzORUijmlXGPyOaLbn
-         urEbpcz15vWbR6KB+b7lywGmK1BVv8EkZQIiXzfoK2frvQZnCO232W3XjOl8Co7RForE
-         9L8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698171142; x=1698775942;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E3EYlEUXN/TtJ8i/q/rreox/HAhcUMuzowMifNS8GMc=;
-        b=WHNwb5jEgzynM2bJ4MJwCkA7pQOUVOco+cy0OScaBvf1xzb/iYC30uVtRlDYciZLij
-         Gtw7yjZrSTcXFAAdn8z+v9rb9ozRXateYDlkEhfCWPxrs1F3dLQQV7rpBvk9ZuMra0SA
-         Z36hzQWnH+VKHt7cBuIkCv8gXaSW6nfI1YK6L1gNbLioegg/BCtllcWxWPsgddEJpL/m
-         wIeKBpjRwYPrkkZkPFFjdzkVQuRGW855yn8FoXqOlsFrPwCSxnXqyIRhf8aVgSAwBtN/
-         vb0D/bww+8oIurMgI2E2sGtkvwySG9l80EmgC6EVJh8jmCY7xZ6yYdIJXjdnOLs39qTh
-         V1Fw==
-X-Gm-Message-State: AOJu0YzrhWVNhKKsu2kAg6bOko2b8JiN8szZZwHv7Zli/6WoQLNWETUz
-        VAPevyIHIq323Upj1quignU=
-X-Google-Smtp-Source: AGHT+IGOfSgpOJ9UZkmStpd+Lyqgg4laPuyKw/q+P0QvkoKNB+/BPcz58iI8PlfdndlRRhfF14/lZA==
-X-Received: by 2002:a81:8415:0:b0:5a7:dad7:61dd with SMTP id u21-20020a818415000000b005a7dad761ddmr14071882ywf.20.1698171142163;
-        Tue, 24 Oct 2023 11:12:22 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o188-20020a8173c5000000b005a7dd6b7eefsm4245315ywc.66.2023.10.24.11.12.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 11:12:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 24 Oct 2023 11:12:20 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.5 000/241] 6.5.9-rc1 review
-Message-ID: <458d7cf1-3e6d-467a-be84-5053f730533c@roeck-us.net>
-References: <20231023104833.832874523@linuxfoundation.org>
+        Tue, 24 Oct 2023 14:14:56 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792CE10D0;
+        Tue, 24 Oct 2023 11:14:54 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39OEu7ll009708;
+        Tue, 24 Oct 2023 18:14:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=cTHcP7g736rXwQ/nASzpO40/4IpTvv0Zn+p4k+C0POQ=;
+ b=Ws4fpA3IktqCIJjALVBuab5OupNt9jrxE1J6ziOzdUBIsKy6xY8D+nV4vJU9NxMWRmuR
+ 00NM9jv4biqjT3uj3BjX9JVfc7lwsLyc2sgY6ZwkyUExFcIgc3Vfq6FoXO9+DgyuGf5v
+ rgn8jzNocBJC6/EpQ0fvqdYvevEAn+qhWvmT85myvz/AAk4k5UBZR5468M4CymNq3Any
+ aLlsmhXZna318mkmnHBlEllTk+ns/POCX+vozYcCeX4koqpPu5AFerrCIdg97Q1kuPAe
+ BQMLr8Zjl1tztWzAuuHzuN61DZNon7fFp9iN1k1ENvGpl4bzdWnKw83SP12aFZ+zwtJ6 6Q== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tx5f59udc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 18:14:45 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39OIEh3K000451
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 18:14:44 GMT
+Received: from [10.48.243.236] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 24 Oct
+ 2023 11:14:43 -0700
+Message-ID: <68281586-f75e-4995-a30f-130f3aa1e7a8@quicinc.com>
+Date:   Tue, 24 Oct 2023 11:14:42 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023104833.832874523@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] wifi: ath10k: replace deprecated strncpy with memcpy
+Content-Language: en-US
+To:     Justin Stitt <justinstitt@google.com>,
+        Kalle Valo <kvalo@kernel.org>
+CC:     <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>
+References: <20231024-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v2-1-4c1f4cd4b4df@google.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20231024-strncpy-drivers-net-wireless-ath-ath10k-mac-c-v2-1-4c1f4cd4b4df@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: AHpv-gD2BPzomyaq-KFnFaBSmVhO_kBX
+X-Proofpoint-ORIG-GUID: AHpv-gD2BPzomyaq-KFnFaBSmVhO_kBX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-24_17,2023-10-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 adultscore=0
+ priorityscore=1501 mlxlogscore=296 bulkscore=0 suspectscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310240156
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 12:53:06PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.9 release.
-> There are 241 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 10/24/2023 10:42 AM, Justin Stitt wrote:
+> strncpy() is deprecated [1] and we should prefer less ambiguous
+> interfaces.
 > 
-> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
-> Anything received after that time might be too late.
+> In this case, arvif->u.ap.ssid has its length maintained by
+> arvif->u.ap.ssid_len which indicates it may not need to be
+> NUL-terminated. Make this explicit with __nonstring and use a plain old
+> memcpy.
 > 
+> This is also consistent with future copies into arvif->u.ap.ssid:
+> 
+> 	if (changed & BSS_CHANGED_SSID &&
+> 	    vif->type == NL80211_IFTYPE_AP) {
+> 		arvif->u.ap.ssid_len = vif->cfg.ssid_len;
+> 		if (vif->cfg.ssid_len)
+> 			memcpy(arvif->u.ap.ssid, vif->cfg.ssid,
+> 			       vif->cfg.ssid_len);
+> 		arvif->u.ap.hidden_ssid = info->hidden_ssid;
+> 	}
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 530 pass: 530 fail: 0
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
