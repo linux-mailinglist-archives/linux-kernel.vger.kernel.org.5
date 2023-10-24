@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A07197D441F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3916F7D4420
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbjJXAiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 20:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
+        id S231172AbjJXAnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 20:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjJXAiX (ORCPT
+        with ESMTP id S229679AbjJXAni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 20:38:23 -0400
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C1290;
-        Mon, 23 Oct 2023 17:38:20 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vuo32gS_1698107896;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vuo32gS_1698107896)
+        Mon, 23 Oct 2023 20:43:38 -0400
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D1AA6;
+        Mon, 23 Oct 2023 17:43:35 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Vuo0ST7_1698108211;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vuo0ST7_1698108211)
           by smtp.aliyun-inc.com;
-          Tue, 24 Oct 2023 08:38:17 +0800
+          Tue, 24 Oct 2023 08:43:32 +0800
 From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     andreas.noever@gmail.com, michael.jamet@intel.com,
+        mika.westerberg@linux.intel.com, YehezkelShB@gmail.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         Yang Li <yang.lee@linux.alibaba.com>,
         Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH -next] RDMA/core: Remove NULL check before dev_{put, hold}
-Date:   Tue, 24 Oct 2023 08:38:15 +0800
-Message-Id: <20231024003815.89742-1-yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] thunderbolt: Fix one kernel-doc comment
+Date:   Tue, 24 Oct 2023 08:43:30 +0800
+Message-Id: <20231024004330.100898-1-yang.lee@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -40,33 +41,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The call netdev_{put, hold} of dev_{put, hold} will check NULL,
-so there is no need to check before using dev_{put, hold},
-remove it to silence the warning:
+Fix a spelling errors in kernel doc comment, silence the warning:
 
-./drivers/infiniband/core/nldev.c:375:2-9: WARNING: NULL check before dev_{put, hold} functions is not needed.
+drivers/thunderbolt/tb.c:760: warning: expecting prototype for tb_maximum_banwidth(). Prototype was for tb_maximum_bandwidth() instead
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7047
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7048
 Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- drivers/infiniband/core/nldev.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/thunderbolt/tb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
-index 87b8cd657fb3..4900a0848124 100644
---- a/drivers/infiniband/core/nldev.c
-+++ b/drivers/infiniband/core/nldev.c
-@@ -371,8 +371,7 @@ static int fill_port_info(struct sk_buff *msg,
- 	}
- 
- out:
--	if (netdev)
--		dev_put(netdev);
-+	dev_put(netdev);
- 	return ret;
+diff --git a/drivers/thunderbolt/tb.c b/drivers/thunderbolt/tb.c
+index f831aaf77efd..5acdeb766860 100644
+--- a/drivers/thunderbolt/tb.c
++++ b/drivers/thunderbolt/tb.c
+@@ -739,7 +739,7 @@ static bool tb_asym_supported(struct tb_port *src_port, struct tb_port *dst_port
  }
  
+ /**
+- * tb_maximum_banwidth() - Maximum bandwidth over a single link
++ * tb_maximum_bandwidth() - Maximum bandwidth over a single link
+  * @tb: Domain structure
+  * @src_port: Source protocol adapter
+  * @dst_port: Destination protocol adapter
 -- 
 2.20.1.7.g153144c
 
