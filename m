@@ -2,185 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FCC7D5D61
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28FA7D5D57
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 23:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344490AbjJXVlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 17:41:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
+        id S1344449AbjJXVkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 17:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344483AbjJXVlb (ORCPT
+        with ESMTP id S1344401AbjJXVj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 17:41:31 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B31910F6
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:41:23 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b36e1fcee9so4246827b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:41:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698183683; x=1698788483; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aochEXBDpOVdwQRDyloN4dJAYsQ0xcQP5GM4jBPJ4+0=;
-        b=d7tvpKYrzBtxtmlN0ix4M4txemIB0fozRONjstLOx6DOVdbYDjiL/ne12vpgExvIrO
-         YW7Gpr/tqqLL5tRTD0zLkhjyk6N1t/TjgOjpHhw5gTGDzDeomhjWPV1rwhbReCNIFsWL
-         fNvAlCnRviE3FLpQFpTrlXRTvlAANskf6PoPY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698183683; x=1698788483;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aochEXBDpOVdwQRDyloN4dJAYsQ0xcQP5GM4jBPJ4+0=;
-        b=KOWmvL56hJhrP+jCsVb/jl2biRhdHO4byXjDWWF07+GDU0gP2lYehCWGDs1G2CzbZg
-         ZcoFRz74vW0WqMMrmkeA57oq4g52QS/8UwEIozgaktR7La7SQ1byBIOiA8duYsNmtQ7j
-         3dZDBeoy1KhS1qCxIOjqgCdCaL6FixfkXEnD/sAwCjw0jXCysOAHkZM5tjBzV94hwdZV
-         Lk8TEuhGzevo2pVsdlsUmXXiHblW8gANl62PBBmIaG6u0zGKCv/AwjzhyHgf2Jf8yYEK
-         ZgLW2uv/wyKVbOXs9r08fgQX1FwUwsdOuerCucSbKQsPGNxnLP1uW+3k/Vs5HtWp3f2S
-         2sxw==
-X-Gm-Message-State: AOJu0Yy10K9ctcTepUmYX0IwuNI35DgJvUH2Q8+/QZhVtvNX+cdbcveR
-        YX0yhXGoP/f7ce2HJLPXnS6dHw==
-X-Google-Smtp-Source: AGHT+IHg7NIAL+/vq1uVaLXguXuYCzXyJKM8i2wy6dmakFvVWfsSo7C499cy58klAxaY3feF/mh9VA==
-X-Received: by 2002:a05:6a21:164a:b0:151:7d4c:899c with SMTP id no10-20020a056a21164a00b001517d4c899cmr3632385pzb.25.1698183682801;
-        Tue, 24 Oct 2023 14:41:22 -0700 (PDT)
-Received: from sjg1.roam.corp.google.com ([202.144.206.130])
-        by smtp.gmail.com with ESMTPSA id 18-20020a170902c21200b001c5f7e06256sm7861055pll.152.2023.10.24.14.41.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 14:41:22 -0700 (PDT)
-From:   Simon Glass <sjg@chromium.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-mtd@lists.infradead.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Michael Walle <mwalle@kernel.org>,
-        Tom Rini <trini@konsulko.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Rob Herring <robh@kernel.org>, Simon Glass <sjg@chromium.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Richard Weinberger <richard@nod.at>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 3/3] dt-bindings: mtd: binman-partitions: Add alignment properties
-Date:   Wed, 25 Oct 2023 10:39:18 +1300
-Message-ID: <20231024213940.3590507-3-sjg@chromium.org>
-X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-In-Reply-To: <20231024213940.3590507-1-sjg@chromium.org>
-References: <20231024213940.3590507-1-sjg@chromium.org>
+        Tue, 24 Oct 2023 17:39:59 -0400
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA2CA3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 14:39:57 -0700 (PDT)
+Received: from mail.home (82-181-196-180.bb.dnainternet.fi [82.181.196.180])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: timo.lindfors)
+        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4SFQSm4989z49Pyg;
+        Wed, 25 Oct 2023 00:39:47 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+        t=1698183593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+8Hrl6tegBZ7YL46PueumA96t3uL0oJQe1ff1LEe7Zo=;
+        b=LditiTTvVWNoVAFavoOX6uuFJCXDgFTTY9hPWRUzsg425U4j6Q2rUxUp2lvvBZaFWdF7Lm
+        2Y1aecGwRLFXYfe0E1OqLsnZkwud2yyLH596B8sezPM6cxZizygaFNKDR83vo8x8bWdXsI
+        2P7xyKHyIgBIy1PTurpOrHhX/G+HXCp8pD096/O+F9ayXgRH9kecCqBLRBc6AWbzEkfLSQ
+        mAf4LdL4+UTO4CeIm0lA5OQ7QIxHHygSK8ZhUUOoGCQpY52nmkXPnqokgas+cYn1a6DOop
+        ex5gFgJTZD1pe7Nd2yGbSu67AMeDdFdQDf3DLExxscSdRcGVtCofHy7Hxf9enw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=lahtoruutu; t=1698183593;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+8Hrl6tegBZ7YL46PueumA96t3uL0oJQe1ff1LEe7Zo=;
+        b=qr8NrFnVI+uyC40dCcQH6LX22wPKXffCx1ZF0v8a3nB0uv+RmGlVLRZ9QLi9d3Cu006oyt
+        8xQreQW8DW4WulqbUzjnwjtQl1WGV8Vc9deNFL/tQ2iHkzQPeUtZ05cjhe0bGQWTV6hc0t
+        cFI40YcXdDNZoF27EeXr6gXcfRc33cQAm033VEQXTQAN0dpjxjRBQoxgV7bPCl9Yju3UtR
+        3PnTtSUHj+jxT7lcxOkAF6JmW43VcOcxgIwoGi8yiytezV5JFp9bfQl4MZSh4680Rv4SF+
+        U8llOioTt4fJRJRgwRRYDeHeqBBUex4FiDzNs8zlonJHkr93IC3Jt5qI1O8DiA==
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1698183593; a=rsa-sha256;
+        cv=none;
+        b=MkTBklG/qhJpar/gXdwFSqhcySO2Wct/9kFGUHkWtJiKKhcEEhxnF0q3DIzKGoY6x4N4Nq
+        6Esg/W3QrEaDVbBGiIQd6ea5TPygg0Th7F1WCR6IsaXL32+SxkQ55nxyGCGCWJax6fOTT1
+        hx+KYOeETzuiZGAldv8BfaoiVxhPedEtSdWnplI83LLLewThA01Q1XalAZ5q4S//CSm6lU
+        6LlgMKQXE/a/Yhj9QzSiCNOsElRQIe2qi1Lr+lQmwwTOj7NbbLX3/6Msk3CIMZiJFCf1Eu
+        moiqL/w4LUbKFydCnzec9aGpgsNMBmn/76Ct+LcHK7EVIrb8uhIZDrEG/TMPcA==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=timo.lindfors smtp.mailfrom=timo.lindfors@iki.fi
+Received: from localhost ([127.0.0.1])
+        by mail.home with esmtp (Exim 4.89)
+        (envelope-from <timo.lindfors@iki.fi>)
+        id 1qvP7r-0007TH-Ld; Wed, 25 Oct 2023 00:39:47 +0300
+Date:   Wed, 25 Oct 2023 00:39:47 +0300 (EEST)
+From:   Timo Lindfors <timo.lindfors@iki.fi>
+To:     Salvatore Bonaccorso <carnil@debian.org>
+cc:     Timo Lindfors <timo.lindfors@iki.fi>, 1054514@bugs.debian.org,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev
+Subject: Re: Bug#1054514: linux-image-6.1.0-13-amd64: Debian VM with qxl
+ graphics freezes frequently
+In-Reply-To: <ZTgydqRlK6WX_b29@eldamar.lan>
+Message-ID: <alpine.DEB.2.20.2310250027230.28685@mail.home>
+References: <alpine.DEB.2.20.2310242308150.28457@mail.home> <ZTgydqRlK6WX_b29@eldamar.lan>
+User-Agent: Alpine 2.20 (DEB 67 2015-01-07)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add three properties for controlling alignment of partitions, aka
-'entries' in binman.
+Hi,
 
-For now there is no explicit mention of hierarchy, so a 'section' is
-just the 'binman' node.
+On Tue, 24 Oct 2023, Salvatore Bonaccorso wrote:
+> Thanks for the excelent constructed report! I think it's best to
+> forward this directly to upstream including the people for the
+> bisected commit to get some idea.
 
-These new properties are inputs to the packaging process, but are also
-needed if the firmware is repacked, to ensure that alignment
-constraints are not violated. Therefore they are provided as part of
-the schema.
+Thanks for the quick reply!
 
-Signed-off-by: Simon Glass <sjg@chromium.org>
----
+> Can you reproduce the issue with 6.5.8-1 in unstable as well?
 
-Changes in v5:
-- Add value ranges
-- Consistently mention alignment must be power-of-2
-- Mention that alignment refers to bytes
+Unfortunately yes:
 
-Changes in v2:
-- Fix 'a' typo in commit message
+ansible@target:~$ uname -r
+6.5.0-3-amd64
+ansible@target:~$ time sudo ./reproduce.bash
+Wed 25 Oct 2023 12:27:00 AM EEST starting round 1
+Wed 25 Oct 2023 12:27:24 AM EEST starting round 2
+Wed 25 Oct 2023 12:27:48 AM EEST starting round 3
+bug was reproduced after 3 tries
 
- .../mtd/partitions/binman-partition.yaml      | 54 +++++++++++++++++++
- 1 file changed, 54 insertions(+)
+real    0m48.838s
+user    0m1.115s
+sys     0m45.530s
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-index 37a413464b0ce5..cb1edd83ed29a9 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
-@@ -29,6 +29,57 @@ properties:
-         - u-boot       # u-boot.bin from U-Boot project
-         - tfa-bl31     # bl31.bin or bl31.elf from TF-A project
- 
-+  align:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 1
-+    maximum: 0x80000000
-+    multipleOf: 2
-+    description:
-+      This sets the alignment of the entry in bytes.
-+
-+      The entry offset is adjusted so that the entry starts on an aligned
-+      boundary within the containing section or image. For example ‘align =
-+      <16>’ means that the entry will start on a 16-byte boundary. This may
-+      mean that padding is added before the entry. The padding is part of
-+      the containing section but is not included in the entry, meaning that
-+      an empty space may be created before the entry starts. Alignment
-+      must be a power of 2. If ‘align’ is not provided, no alignment is
-+      performed.
-+
-+  align-size:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 1
-+    maximum: 0x80000000
-+    multipleOf: 2
-+    description:
-+      This sets the alignment of the entry size in bytes. It must be a power
-+      of 2.
-+
-+      For example, to ensure that the size of an entry is a multiple of 64
-+      bytes, set this to 64. While this does not affect the contents of the
-+      entry within binman itself (the padding is performed only when its
-+      parent section is assembled), the end result is that the entry ends
-+      with the padding bytes, so may grow. If ‘align-size’ is not provided,
-+      no alignment is performed.
-+
-+  align-end:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 1
-+    maximum: 0x80000000
-+    multipleOf: 2
-+    description:
-+      This sets the alignment (in bytes) of the end of an entry with respect
-+      to the containing section. It must be a power of 2.
-+
-+      Some entries require that they end on an alignment boundary,
-+      regardless of where they start. This does not move the start of the
-+      entry, so the contents of the entry will still start at the beginning.
-+      But there may be padding at the end. While this does not affect the
-+      contents of the entry within binman itself (the padding is performed
-+      only when its parent section is assembled), the end result is that the
-+      entry ends with the padding bytes, so may grow. If ‘align-end’ is not
-+      provided, no alignment is performed.
-+
- additionalProperties: false
- 
- examples:
-@@ -41,10 +92,13 @@ examples:
-         partition@100000 {
-             compatible = "u-boot";
-             reg = <0x100000 0xf00000>;
-+            align-size = <0x1000>;
-+            align-end = <0x10000>;
-         };
- 
-         partition@200000 {
-             compatible = "tfa-bl31";
-             reg = <0x200000 0x100000>;
-+            align = <0x4000>;
-         };
-     };
--- 
-2.42.0.758.gaed0368e0e-goog
+I also tested upstream tag v6.6-rc6:
+
+...
++ detected_version=6.6.0-rc6
++ '[' 6.6.0-rc6 '!=' 6.6.0-rc6 ']'
++ exec ssh target sudo ./reproduce.bash
+Wed 25 Oct 2023 12:37:16 AM EEST starting round 1
+Wed 25 Oct 2023 12:37:42 AM EEST starting round 2
+Wed 25 Oct 2023 12:38:10 AM EEST starting round 3
+Wed 25 Oct 2023 12:38:36 AM EEST starting round 4
+Wed 25 Oct 2023 12:39:01 AM EEST starting round 5
+Wed 25 Oct 2023 12:39:27 AM EEST starting round 6
+bug was reproduced after 6 tries
+
+
+For completeness, here is also the grub_set_default_version.bash script 
+that I had to write to automate this (maybe these could be in debian 
+wiki?):
+
+#!/bin/bash
+set -x
+
+version="$1"
+
+idx=$(expr $(grep "menuentry " /boot/grub/grub.cfg | sed 1d |grep -n "'Debian GNU/Linux, with Linux $version'"|cut -d: -f1) - 1)
+exec sudo grub-set-default "1>$idx"
+
+
+
+-Timo
 
