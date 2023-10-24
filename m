@@ -2,140 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8007D5422
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BF07D5424
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234512AbjJXOdF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 10:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39104 "EHLO
+        id S234437AbjJXOee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 10:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234500AbjJXOdC (ORCPT
+        with ESMTP id S232073AbjJXOed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:33:02 -0400
-Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B432B8F;
-        Tue, 24 Oct 2023 07:33:00 -0700 (PDT)
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1e9e4636ce6so816616fac.0;
-        Tue, 24 Oct 2023 07:33:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698157980; x=1698762780;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fbg6/Pf1XWF9qiAo/Bp62JB8vPkBgG8ganuOuh0wuf8=;
-        b=tzs9spvNuWbWclMrStZfrCtlFW6hponatDdM9HBAVCNzkEHPozhznVlKu4ewiDiHI/
-         5AhIhQzTp3fnckFdEi1Q++Njc+xm9ddHWjDV96NPkSG6cFomkXVvMoVVkjXyTSdRXwKQ
-         RmLn0yR8fGLjVgkYpvJo0Sfj6YlOvHVuPsWbqdtmG+kxjTJA2DrCd+ucc+oYTeXsZjjQ
-         0Tj/4KlTFkwV5UFdKF7EuL8oK344NQEQGmr+wJ3/KjvwGOxQEnULcQZGd8Aa4Iok6sKw
-         /zyfr8jkeFWs/FqWdqpZu6rpqPmAwSilgeTok0s5kUSjUo7rw/dz8vtdyhP/0vcT3xQ0
-         eLRQ==
-X-Gm-Message-State: AOJu0YxOfoNxF+PZ1azdXgX1ZB8FyGVvj+iepm3ha6QNzEASZaFolZi9
-        a8dclehjiRysD76e/aB4hlZFJD8az0uxqPsx3E0TpVx0
-X-Google-Smtp-Source: AGHT+IGxdYwV+5t593nxdBm55S75OJLko9wE0PsBu2QC9lWamPymlRTCxskxQktjdzG3dQGMeihta+/uXq2E5VLwAw8=
-X-Received: by 2002:a05:6871:220e:b0:1e9:adec:bf5e with SMTP id
- sc14-20020a056871220e00b001e9adecbf5emr12630628oab.2.1698157979897; Tue, 24
- Oct 2023 07:32:59 -0700 (PDT)
+        Tue, 24 Oct 2023 10:34:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E468F
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:34:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A79B2C433C7;
+        Tue, 24 Oct 2023 14:34:27 +0000 (UTC)
+Date:   Tue, 24 Oct 2023 10:34:26 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        Vineeth Pillai <vineethrp@google.com>,
+        Suleiman Souhlal <suleiman@google.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <20231024103426.4074d319@gandalf.local.home>
+In-Reply-To: <87cyyfxd4k.ffs@tglx>
+References: <20230830184958.2333078-8-ankur.a.arora@oracle.com>
+        <20230908070258.GA19320@noisy.programming.kicks-ass.net>
+        <87zg1v3xxh.fsf@oracle.com>
+        <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
+        <87edj64rj1.fsf@oracle.com>
+        <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+        <87zg1u1h5t.fsf@oracle.com>
+        <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+        <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+        <87h6o01w1a.fsf@oracle.com>
+        <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+        <87cyyfxd4k.ffs@tglx>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20230712223448.145079-1-jeshuas@nvidia.com> <DM6PR12MB3371BA50E3B76D2266273901DB09A@DM6PR12MB3371.namprd12.prod.outlook.com>
- <SJ1PR11MB6083426D3C663F47E707CF1AFC09A@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <DM6PR12MB3371D86F80417641B8479B28DB0EA@DM6PR12MB3371.namprd12.prod.outlook.com>
- <DM6PR12MB3371FA3AEEA4D17D94C889D5DB1BA@DM6PR12MB3371.namprd12.prod.outlook.com>
- <DM6PR12MB337153EE2DDDB427096446F0DBF2A@DM6PR12MB3371.namprd12.prod.outlook.com>
- <DM6PR12MB3371083F4E6BCE4A8D2389E7DBC5A@DM6PR12MB3371.namprd12.prod.outlook.com>
- <DM6PR12MB33710C8FE59EB3CB1404ABC0DBD8A@DM6PR12MB3371.namprd12.prod.outlook.com>
-In-Reply-To: <DM6PR12MB33710C8FE59EB3CB1404ABC0DBD8A@DM6PR12MB3371.namprd12.prod.outlook.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 24 Oct 2023 16:32:48 +0200
-Message-ID: <CAJZ5v0g2TsBo4hxsJBo5a-ggD2Cj65VS=tokpoRaNwzWbPoeNw@mail.gmail.com>
-Subject: Re: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
-To:     Jeshua Smith <jeshuas@nvidia.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "bp@alien8.de" <bp@alien8.de>
-Cc:     "keescook@chromium.org" <keescook@chromium.org>,
-        "gpiccoli@igalia.com" <gpiccoli@igalia.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 5:45 PM Jeshua Smith <jeshuas@nvidia.com> wrote:
->
-> Can we get this merged please, or at least instructions for what needs to happen to get it merged?
+On Tue, 19 Sep 2023 01:42:03 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-So there are 3 designated reviewers for APEI: Tony Luck, Borislav
-Petkov and James Morse.  I need an ACK or Reviewed-by from one of
-them, so I can proceed with an APEI patch.
+>    2) When the scheduler wants to set NEED_RESCHED due it sets
+>       NEED_RESCHED_LAZY instead which is only evaluated in the return to
+>       user space preemption points.
+> 
+>       As NEED_RESCHED_LAZY is not folded into the preemption count the
+>       preemption count won't become zero, so the task can continue until
+>       it hits return to user space.
+> 
+>       That preserves the existing behaviour.
 
-Thanks!
+I'm looking into extending this concept to user space and to VMs.
 
-> -----Original Message-----
-> From: Jeshua Smith
-> Sent: Monday, October 2, 2023 10:10 AM
-> To: Luck, Tony <tony.luck@intel.com>; keescook@chromium.org; gpiccoli@igalia.com; rafael@kernel.org; lenb@kernel.org; james.morse@arm.com; bp@alien8.de
-> Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-hardening@vger.kernel.org; linux-tegra@vger.kernel.org; Thierry Reding <treding@nvidia.com>; Jonathan Hunter <jonathanh@nvidia.com>
-> Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
->
-> Resending due to lack of responses.
->
-> -----Original Message-----
-> From: Jeshua Smith
-> Sent: Monday, September 11, 2023 10:16 AM
-> To: Luck, Tony <tony.luck@intel.com>; keescook@chromium.org; gpiccoli@igalia.com; rafael@kernel.org; lenb@kernel.org; james.morse@arm.com; bp@alien8.de
-> Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-hardening@vger.kernel.org; linux-tegra@vger.kernel.org; Thierry Reding <treding@nvidia.com>; Jonathan Hunter <jonathanh@nvidia.com>
-> Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
->
-> Any further questions? Anything else holding up this patch?
->
-> -----Original Message-----
-> From: Jeshua Smith <jeshuas@nvidia.com>
-> Sent: Friday, August 4, 2023 7:05 PM
-> To: Luck, Tony <tony.luck@intel.com>; keescook@chromium.org; gpiccoli@igalia.com; rafael@kernel.org; lenb@kernel.org; james.morse@arm.com; bp@alien8.de
-> Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-hardening@vger.kernel.org; linux-tegra@vger.kernel.org; Thierry Reding <treding@nvidia.com>; Jonathan Hunter <jonathanh@nvidia.com>
-> Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
->
-> Thanks for the reply.
->
-> It's not very easy to see. It's just a bit down from the link you sent. It's the last possible action in the Serialization Actions table:
-> https://uefi.org/specs/ACPI/6.5/18_Platform_Error_Interfaces.html#serialization-actions
->
-> 18.5.1.1. Serialization Actions
->
-> GET_EXECUTE-_OPERATION_TIMINGS
->
-> Returns an encoded QWORD:
-> [63:32] value in microseconds that the platform expects would be the maximum amount of time it will take to process and complete an EXECUTE_OPERATION.
-> [31:0] value in microseconds that the platform expects would be the nominal amount of time it will take to process and complete an EXECUTE_OPERATION.
->
-> -----Original Message-----
-> From: Luck, Tony <tony.luck@intel.com>
-> Sent: Friday, August 4, 2023 10:31 AM
-> To: Jeshua Smith <jeshuas@nvidia.com>; keescook@chromium.org; gpiccoli@igalia.com; rafael@kernel.org; lenb@kernel.org; james.morse@arm.com; bp@alien8.de
-> Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-hardening@vger.kernel.org; linux-tegra@vger.kernel.org; Thierry Reding <treding@nvidia.com>; Jonathan Hunter <jonathanh@nvidia.com>
-> Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
->
-> External email: Use caution opening links or attachments
->
->
-> > Can the maintainers please respond to my patch?
->
-> Can you give a reference to the ACPI spec where this timing information is documented? I'm looking at ACPI 6.5 and don't see anything about this.
->
-> https://uefi.org/specs/ACPI/6.5/18_Platform_Error_Interfaces.html#error-serialization
->
-> -Tony
+I'm calling this the "extended scheduler time slice" (ESTS pronounced "estis")
+
+The ideas is this. Have VMs/user space share a memory region with the
+kernel that is per thread/vCPU. This would be registered via a syscall or
+ioctl on some defined file or whatever. Then, when entering user space /
+VM, if NEED_RESCHED_LAZY (or whatever it's eventually called) is set, it
+checks if the thread has this memory region and a special bit in it is
+set, and if it does, it does not schedule. It will treat it like a long
+kernel system call.
+
+The kernel will then set another bit in the shared memory region that will
+tell user space / VM that the kernel wanted to schedule, but is allowing it
+to finish its critical section. When user space / VM is done with the
+critical section, it will check the bit that may be set by the kernel and
+if it is set, it should do a sched_yield() or VMEXIT so that the kernel can
+now schedule it.
+
+What about DOS you say? It's no different than running a long system call.
+No task can run forever. It's not a "preempt disable", it's just "give me
+some more time". A "NEED_RESCHED" will always schedule, just like a kernel
+system call that takes a long time. The goal is to allow user space to get
+out of critical sections that we know can cause problems if they get
+preempted. Usually it's a user space / VM lock is held or maybe a VM
+interrupt handler that needs to wake up a task on another vCPU.
+
+If we are worried about abuse, we could even punish tasks that don't call
+sched_yield() by the time its extended time slice is taken. Even without
+that punishment, if we have EEVDF, this extension will make it less
+eligible the next time around.
+
+The goal is to prevent a thread / vCPU being preempted while holding a lock
+or resource that other threads / vCPUs will want. That is, prevent
+contention, as that's usually the biggest issue with performance in user
+space and VMs.
+
+I'm going to work on a POC, and see if I can get some benchmarks on how
+much this could help tasks like databases and VMs in general.
+
+-- Steve
