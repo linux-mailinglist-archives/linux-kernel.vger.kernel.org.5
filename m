@@ -2,127 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B60AE7D4AC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F447D4AC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233456AbjJXIp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
+        id S232852AbjJXIqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233780AbjJXIpw (ORCPT
+        with ESMTP id S233725AbjJXIqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:45:52 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2052.outbound.protection.outlook.com [40.107.244.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FBFAC
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:45:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V1yXIvB3TaiQX6RU1reMbYutUHYQvrGn9YGrUXUJ1yW5PEWP8UEmMevjnhdH+iV5yHw6rOmPSvSvvFHfQTv5fL31fy+G8DrRm1lymGPZDnmsroBYLcuwGgyNLkHWvPVUMDX9A6N5CBXMHSVVEGwCD5e7P9eQwOcoQFa/xhH3EJhzj49jTVx4zWZ6mBWaHigHbDP7azUvZcSjMHftYSMt91yWi5+0XlN3Nt4QjWUb7hTtk79sd5OjnB6Q6KF0JdPBCGL301qW2oZKfjecv9I7yjEIR4mZL6Ooo8wN1ZffUBk3JSRJ9Pa0XnnEPKyHFAWwwb10jA3H/OvQvjhrevYWng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J6DTYzc2HZxTrYBU4FlcbU3sZcGlA6jY7BJTsnbE7TI=;
- b=cYYbndm625TUIZ7zdq/Pn943Jp2IddQBzxfwoG0iGyQJobUJ6Jr+/s8ILiAkJOq7HvlSRfPBZrp7RfbzOLQXnK+kT9vZyGZN94Tdzdi+ju76ALo0Tn8h2B/VTXdVeVNNSz5mpBphqN8jR5ywLm03o2KetsC8kTu6VH9xPypPAdgzFsl3vs23hwu+RRF9MNG4deD2L7UhWvVHWmNmvaGwg8LcIQZ3vXliZ6KBJBywXAoZO7CxVuHWJm3GogwMf1uF+BcJlmmhmLQQdvTwRTpXTyp8D/Qmk8qcel69UZXfqzWMiZRdqI5xF4XXBCr7Dv45ZPJEjWC8Vngg88ol8o2img==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J6DTYzc2HZxTrYBU4FlcbU3sZcGlA6jY7BJTsnbE7TI=;
- b=qQLgBh891ODPUtxUd0QIv6KhBRJtxxhEQWMaqN+4LeS8T3UtBcNUa8mrx227BgC4BjH4m8D6zJMvQk99GAXl0pblU4FR6haW4hZ9iYv0U9YOUV5rUlle+m0NWSC41Po0+gWZ5juCpYZubhvT9olTVZejtqeNBhM6yx2+2vmDB1w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by SA3PR12MB9158.namprd12.prod.outlook.com (2603:10b6:806:380::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
- 2023 08:45:47 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::af19:f731:8846:68ba]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::af19:f731:8846:68ba%6]) with mapi id 15.20.6907.032; Tue, 24 Oct 2023
- 08:45:47 +0000
-Message-ID: <ca76ef68-5fa4-4a2a-9da2-0378dd7bc2cf@amd.com>
-Date:   Tue, 24 Oct 2023 10:45:41 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH drm-misc-next v7 1/7] drm/gpuvm: convert WARN() to
- drm_WARN() variants
-Content-Language: en-US
-To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        faith@gfxstrand.net
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231023201659.25332-1-dakr@redhat.com>
- <20231023201659.25332-2-dakr@redhat.com>
-From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20231023201659.25332-2-dakr@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0265.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:e8::8) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Tue, 24 Oct 2023 04:46:17 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E428110
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:45:52 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c9e06f058bso38475225ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:45:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1698137152; x=1698741952; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QshcxRLMkYxbpDovzhpTFyvJdC1mbiOC7DrihsySHcY=;
+        b=XNxYoMp0h0HjwAWxHQ/ayhj6eghZugeHwIIGccbpsXTQRP9ELDvDGwD7XqE7C/C/H+
+         CMoNi+UcpIbMgKOG5TNHWyzYpMoQ5gG2wKmKcytgw3C2sqHq3qnEMeK2nR+/RnLz9N6l
+         8w9XzrCKcsOFHGVLa/j96zhbr8nyGkjlPHwTcSfzSGvbs3oQNx9IvNx+B4jmuYBzv1c/
+         Tv0fXek4J5mMX+oHCB8rWw7c/mOn7ME1oilob973Ugjwe5EbzGR2uSD6ntsPqsFRvh5J
+         6Ao/GbBoKrwn0eSTjGAIfdEnW+knS63enFU4ZQKcpl6RB+hiSfSUwZ0tcS4/wYd1GTwg
+         iGbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698137152; x=1698741952;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QshcxRLMkYxbpDovzhpTFyvJdC1mbiOC7DrihsySHcY=;
+        b=jrMAiwLlrwfsbIXgGDW+7Pf7lilzV74zRtYQ0cKogVby/KzHSYLGVznzX0HHOhcQh2
+         l4VdaWGe73KYLYH1wBvD2Nns0SeBPIVtJK5zYsLFG3fwhLXYMh71Mq0IOz+Bo78+jvRK
+         +F1FVnFs737t395sS2uCSeLNZR7yJXTtzqSrj2OPDPRJUd6sMpnjH+u+tZhI0ux36O8h
+         E2O9L1Ux2SAfZw7BwuGkRd3sZZ4tprm1d5Hy8V2CUvRVlgpiFGuXLephr4pewZ+7Thcz
+         w6wNuazaQe9a9Wp/+pDYJxWKLekdSeZ6p5BKoQ6SgBS2r1O7iO1TuJdgRkS5/TbKAxoq
+         Vkqw==
+X-Gm-Message-State: AOJu0YxlSL2YuLmuD97skZkBwYkQt9MkCFmV1TLd+I2ZpGY9akWV+2UU
+        aj/7R5Axkv3muoYv7/pdj9D5RQ==
+X-Google-Smtp-Source: AGHT+IHU/AWhNhPA3MvC+yOsf1y7zPifeXf6fsB2427YQf9ZBN+LQTweWv9W0xdu4HDJksTGqApvAw==
+X-Received: by 2002:a17:903:5d0:b0:1c7:27a1:a9e5 with SMTP id kf16-20020a17090305d000b001c727a1a9e5mr11537246plb.33.1698137151687;
+        Tue, 24 Oct 2023 01:45:51 -0700 (PDT)
+Received: from [10.84.146.196] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id x4-20020a170902ec8400b001c74df14e6fsm6990749plg.284.2023.10.24.01.45.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 01:45:51 -0700 (PDT)
+Message-ID: <2f4422ba-b9d3-4fc1-a502-1060436052ab@bytedance.com>
+Date:   Tue, 24 Oct 2023 16:45:43 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SA3PR12MB9158:EE_
-X-MS-Office365-Filtering-Correlation-Id: ce3bd261-5e68-4a08-2563-08dbd46d9db7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZYPZSvezkumiaEAjAAQirlkaYZPHpO8gS4BG42i0lEClm3AK5n13cP5ZAZImRB0dIPupa8JMegGOxGzbDn1uvc2iWxAZnOlFPQAaNX1f86RQbgxTsX3BHPfEed0S/FtM6IIDX70vmq1XMHQ+1MlRHcWC6osLh7lSVpvJi2W71pyvvTsYbYxFfeuVbXEk2Xo80WdHzhJh9TbwUgEl8qdvyoLiCqh8yXFcEur92tt/+C7hBuhg8UPTzwujq8o9NPGb1RuSqYTg9loa2EBJh+ZPfI2G6U+wBFAaJIIE76IIY9RQNrbvdcwR0FFaYYT40LpArIkbrbeuSMFAsKVujs8ovAvm5DD8y+oBQV5b8NPEi3+M6qfsLVjYC+ShI1ayHs08CGVspNBuDVZ/AZeGMWajVlboJizAw68B2cRMMzTLXrHNt0S3uWox5u2SN7P9P76Z9xBla1oh9/ojoc3RfW5tP7SkA45w0gZlZB9ePloVju12lo7JU4AlgSsILhfc5nJylSTQq+wUkhKlVkI/vjZyfwlb52Nijo1c4h2Z15WKu/NnlDPC0fLRC9DOpRUe5B6aFKzqUeAMLsj5mUkAyjm1C1lghD3aGvPv9NrGCDUBCr03uFdOGeACdqEZiTATQ6Z99Gn3jqlamU9W4WsOUEEzyA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(39860400002)(366004)(346002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(38100700002)(86362001)(31696002)(36756003)(6486002)(478600001)(26005)(7416002)(2616005)(6506007)(6512007)(5660300002)(8676002)(8936002)(4326008)(66946007)(66476007)(66556008)(6666004)(41300700001)(316002)(31686004)(2906002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V1JOVWp5MzFnS0hnWGJ2Y041S3pEbWRvUi93WTNwNHlvbytlU2JsU0ZvUlVM?=
- =?utf-8?B?eFlKT0Q2M0JNWGw2anBZYWRSMEhSaTEvRlZaQXFwcGVXWDc4ajJHRjZxTVda?=
- =?utf-8?B?TzYxN0ZvRjNsei9zVy9idEU5OWQrNnVjTWtXZVE0SSthdXBIYXFIN0JHTWhp?=
- =?utf-8?B?QndpRkZhR3Y5ejhla2RjNWRIOElOK3p6T3ZDb1hwTVZOQzdkUXBURjJiYTBV?=
- =?utf-8?B?Y2t5RGZpRkFITEkwaGY0YjUwRDd1YU1HQkpXS3YwZllncXdKVCsrR1ZXUDNK?=
- =?utf-8?B?aWlVWFlNVFZCRjhPYldveVIrR2s0emJ5WDQyYUZwODF4OWh2TSt4U3dPY1NE?=
- =?utf-8?B?Mk81cVhaU1FsUGtBK0hETGxxRXY3S1QzZHBZNHhQUHg2cm1pTVl1VXVXOTh5?=
- =?utf-8?B?Z2VyMGwzWnlCcENsbXZNUXhTcW12eHlLTllWSHc0M2RxNUdIeEk5WUhCUE41?=
- =?utf-8?B?YUU1R3oxMExvbkJPZXdKQkduVFJvNHdnM1liTSsrak9CY0tzMnpGQ2dQWi8r?=
- =?utf-8?B?TDlkZnJydW14K0d1cFh4THZnUmhITFlnTHJHcFI5cEtSK1hBVTRDOXEwUnI4?=
- =?utf-8?B?VjhobTBVWTY1ck5HcjZZcENmMnh4clhmWTJ4RERlampGMWUzc25LdVU5ZC93?=
- =?utf-8?B?M0hES0h5NnY0NmpGc1ZtRUFlZ0dEcS8zWGpqbVZKYnhuWkk5VjdTbnRzRGZZ?=
- =?utf-8?B?VHNJYUtDOW5DQ2FPSllJbGNkb1lYY2hPUkNNbXMyVFJpYXkybU8reWlPd0ht?=
- =?utf-8?B?ZWxwSG9veDRqNTBFc1h0OHJRc3B2QjlJTFRPbUVOUXJMWmx5TE5LTVFNTWlh?=
- =?utf-8?B?OXlXUzlwMTl2VnQ5SVRid2J2Tzk3ZktTMjVxYTQ4dDhYdFBwVlh6RTlXNUJR?=
- =?utf-8?B?QTRYS0RnTzhHZk8yeEdFMUJaaTd5YXNxU1FHc1lqdTJMUmhTcGpxQ0psWTRz?=
- =?utf-8?B?czdTVFNTOWh0ZGUzMmtld0VqU2FlRXdybTZqWU1nZVhKcGo0YlhvYWhhdmVn?=
- =?utf-8?B?cUhZUGJNejIzV1RBTmVTcE5BblNhaFlHc0JFaXl2WXUvbFkzV3hQZmRmODQ5?=
- =?utf-8?B?V3QwbUxJVU5XZHFVUTVraWlYaU1mUkQ1K3YwSUFvNkZsMmxRQ3l3V3ViQmc1?=
- =?utf-8?B?SzZuRUVqdmk5YlBMK0tVS015RlB1QStGZERyS2VpQy82NjdQUWQrUU1GN2xv?=
- =?utf-8?B?S0dJNWxKbmtaSFRPN2NvbG1pZFYrWHFycDVZbkdHSUorSnkyY3p4TG9jY0FE?=
- =?utf-8?B?RTJQNnRGbUFBQ0hLd0VMTXZkTHk1T08zTWN1b09RY3hSRjZFZnoxajlmRWx4?=
- =?utf-8?B?NjR5UzJiNndrSjUvb1UxdVBrMU1jR0hVY28rYVpwNnFiRGd4ZE9jOUtRNTNX?=
- =?utf-8?B?VkFycDg5N1NuSGdmeDVJV2VsWTkzSUREaDAxY1p6QmdtZHNUQWlmeFlwdFBh?=
- =?utf-8?B?TTAvaDdPbGtVVHBMcU16L084U2JmK1J6cjE0Z0RaUHJzNWdqOHExNXRGQUhz?=
- =?utf-8?B?bnVyK1UzeC9xNDVORVovNldBRVJFanp2MTlIZG9pd056bXcxTmhHbUY0c2Y2?=
- =?utf-8?B?eGIxSFYrSHl3YkVvTTY0SW9jTjdTdkhOZytBb0JSMmZ0V2dSQ1YrTE5Ob0tG?=
- =?utf-8?B?QzZWdXJhNkFsbWs4WEtVWjRMZWpYcGgrYXYySWl6enl2SDdhYVZNNitpT0tm?=
- =?utf-8?B?cmZFRHRnZ2RWRVMyRmI1RCtpRndwT3ZvNmxmbFBScFFmRkRhUW9WK2VHSkVW?=
- =?utf-8?B?clg2VkNQMVJYalI3emRsaVdIaXRJU3J6ODJmMnVmZUhVY2k4bFovMHdTTFZH?=
- =?utf-8?B?bG1GZUZPWER0dFdUSVdyRCtvbW00dUZQcm5FWGxBQnVDMjFnZ3k5a1FCamVN?=
- =?utf-8?B?bk85QjNaQllCYXVDcCtUbVpiUGtMQnh1ZUkzeEdhMUlkbUh0T0pIVTlqbDAv?=
- =?utf-8?B?TXR6MEo0OEt1M0VBMlIrSWtBVENPOS8zbjFZaStjUVdGSWx6aEU0MXYrS1Vp?=
- =?utf-8?B?eWFlYzJxU2MvbjYva0FPb3JLL1g5TmRrc29GR3V3c2Zvd1kvNjZBUE1tMEVw?=
- =?utf-8?B?Z0pjMmtTWFdJdGxydFgyT2RhMWJUSTFNUEs1U0svbjJpZ1pIOU10R2VsTEtI?=
- =?utf-8?Q?qeV92ePXTr7awIEJegZwytHvw?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce3bd261-5e68-4a08-2563-08dbd46d9db7
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 08:45:46.7614
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tGQMKdaBYQUTRKl5IssgvrAgzeu2gc/dZddkubR9rQ2I5LcuUT7FJpERmf/6tCHq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9158
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_FILL_THIS_FORM_SHORT autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 10/10] fork: Use __mt_dup() to duplicate maple tree in
+ dup_mmap()
+To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+References: <20231016032226.59199-1-zhangpeng.00@bytedance.com>
+ <20231016032226.59199-11-zhangpeng.00@bytedance.com>
+ <20231017135020.dqq3u6zwvnbrsgfo@revolver>
+Cc:     Peng Zhang <zhangpeng.00@bytedance.com>, corbet@lwn.net,
+        akpm@linux-foundation.org, willy@infradead.org, brauner@kernel.org,
+        surenb@google.com, michael.christie@oracle.com, mjguzik@gmail.com,
+        mathieu.desnoyers@efficios.com, npiggin@gmail.com,
+        peterz@infradead.org, oliver.sang@intel.com, mst@redhat.com,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+From:   Peng Zhang <zhangpeng.00@bytedance.com>
+In-Reply-To: <20231017135020.dqq3u6zwvnbrsgfo@revolver>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -131,174 +83,239 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-Am 23.10.23 um 22:16 schrieb Danilo Krummrich:
-> Use drm_WARN() and drm_WARN_ON() variants to indicate drivers the
-> context the failing VM resides in.
->
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-> ---
->   drivers/gpu/drm/drm_gpuvm.c            | 32 ++++++++++++++------------
->   drivers/gpu/drm/nouveau/nouveau_uvmm.c |  3 ++-
->   include/drm/drm_gpuvm.h                |  7 ++++++
->   3 files changed, 26 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
-> index 08c088319652..d7367a202fee 100644
-> --- a/drivers/gpu/drm/drm_gpuvm.c
-> +++ b/drivers/gpu/drm/drm_gpuvm.c
-> @@ -614,12 +614,12 @@ static int __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
->   static void __drm_gpuva_remove(struct drm_gpuva *va);
->   
->   static bool
-> -drm_gpuvm_check_overflow(u64 addr, u64 range)
-> +drm_gpuvm_check_overflow(struct drm_gpuvm *gpuvm, u64 addr, u64 range)
->   {
->   	u64 end;
->   
-> -	return WARN(check_add_overflow(addr, range, &end),
-> -		    "GPUVA address limited to %zu bytes.\n", sizeof(end));
-> +	return drm_WARN(gpuvm->drm, check_add_overflow(addr, range, &end),
-> +			"GPUVA address limited to %zu bytes.\n", sizeof(end));
->   }
->   
->   static bool
-> @@ -647,7 +647,7 @@ static bool
->   drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
->   		      u64 addr, u64 range)
->   {
-> -	return !drm_gpuvm_check_overflow(addr, range) &&
-> +	return !drm_gpuvm_check_overflow(gpuvm, addr, range) &&
->   	       drm_gpuvm_in_mm_range(gpuvm, addr, range) &&
->   	       !drm_gpuvm_in_kernel_node(gpuvm, addr, range);
-
-When those parameters come from userspace you don't really want a 
-warning in the system log in the first place.
-
-Otherwise userspace can trivially spam the system log with warnings. The 
-usual approach is to make this debug level severity instead.
-
-Regards,
-Christian.
-
->   }
-> @@ -656,6 +656,7 @@ drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
->    * drm_gpuvm_init() - initialize a &drm_gpuvm
->    * @gpuvm: pointer to the &drm_gpuvm to initialize
->    * @name: the name of the GPU VA space
-> + * @drm: the &drm_device this VM resides in
->    * @start_offset: the start offset of the GPU VA space
->    * @range: the size of the GPU VA space
->    * @reserve_offset: the start of the kernel reserved GPU VA area
-> @@ -668,8 +669,8 @@ drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm,
->    * &name is expected to be managed by the surrounding driver structures.
->    */
->   void
-> -drm_gpuvm_init(struct drm_gpuvm *gpuvm,
-> -	       const char *name,
-> +drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
-> +	       struct drm_device *drm,
->   	       u64 start_offset, u64 range,
->   	       u64 reserve_offset, u64 reserve_range,
->   	       const struct drm_gpuvm_ops *ops)
-> @@ -677,20 +678,20 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm,
->   	gpuvm->rb.tree = RB_ROOT_CACHED;
->   	INIT_LIST_HEAD(&gpuvm->rb.list);
->   
-> -	drm_gpuvm_check_overflow(start_offset, range);
-> -	gpuvm->mm_start = start_offset;
-> -	gpuvm->mm_range = range;
-> -
->   	gpuvm->name = name ? name : "unknown";
->   	gpuvm->ops = ops;
-> +	gpuvm->drm = drm;
->   
-> -	memset(&gpuvm->kernel_alloc_node, 0, sizeof(struct drm_gpuva));
-> +	drm_gpuvm_check_overflow(gpuvm, start_offset, range);
-> +	gpuvm->mm_start = start_offset;
-> +	gpuvm->mm_range = range;
->   
-> +	memset(&gpuvm->kernel_alloc_node, 0, sizeof(struct drm_gpuva));
->   	if (reserve_range) {
->   		gpuvm->kernel_alloc_node.va.addr = reserve_offset;
->   		gpuvm->kernel_alloc_node.va.range = reserve_range;
->   
-> -		if (likely(!drm_gpuvm_check_overflow(reserve_offset,
-> +		if (likely(!drm_gpuvm_check_overflow(gpuvm, reserve_offset,
->   						     reserve_range)))
->   			__drm_gpuva_insert(gpuvm, &gpuvm->kernel_alloc_node);
->   	}
-> @@ -712,8 +713,8 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
->   	if (gpuvm->kernel_alloc_node.va.range)
->   		__drm_gpuva_remove(&gpuvm->kernel_alloc_node);
->   
-> -	WARN(!RB_EMPTY_ROOT(&gpuvm->rb.tree.rb_root),
-> -	     "GPUVA tree is not empty, potentially leaking memory.");
-> +	drm_WARN(gpuvm->drm, !RB_EMPTY_ROOT(&gpuvm->rb.tree.rb_root),
-> +		 "GPUVA tree is not empty, potentially leaking memory.\n");
->   }
->   EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
->   
-> @@ -795,7 +796,8 @@ drm_gpuva_remove(struct drm_gpuva *va)
->   	struct drm_gpuvm *gpuvm = va->vm;
->   
->   	if (unlikely(va == &gpuvm->kernel_alloc_node)) {
-> -		WARN(1, "Can't destroy kernel reserved node.\n");
-> +		drm_WARN(gpuvm->drm, 1,
-> +			 "Can't destroy kernel reserved node.\n");
->   		return;
->   	}
->   
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> index 5cf892c50f43..aaf5d28bd587 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> @@ -1808,6 +1808,7 @@ int
->   nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli *cli,
->   		  u64 kernel_managed_addr, u64 kernel_managed_size)
->   {
-> +	struct drm_device *drm = cli->drm->dev;
->   	int ret;
->   	u64 kernel_managed_end = kernel_managed_addr + kernel_managed_size;
->   
-> @@ -1836,7 +1837,7 @@ nouveau_uvmm_init(struct nouveau_uvmm *uvmm, struct nouveau_cli *cli,
->   	uvmm->kernel_managed_addr = kernel_managed_addr;
->   	uvmm->kernel_managed_size = kernel_managed_size;
->   
-> -	drm_gpuvm_init(&uvmm->base, cli->name,
-> +	drm_gpuvm_init(&uvmm->base, cli->name, drm,
->   		       NOUVEAU_VA_SPACE_START,
->   		       NOUVEAU_VA_SPACE_END,
->   		       kernel_managed_addr, kernel_managed_size,
-> diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
-> index bdfafc4a7705..687fd5893624 100644
-> --- a/include/drm/drm_gpuvm.h
-> +++ b/include/drm/drm_gpuvm.h
-> @@ -29,6 +29,7 @@
->   #include <linux/rbtree.h>
->   #include <linux/types.h>
->   
-> +#include <drm/drm_device.h>
->   #include <drm/drm_gem.h>
->   
->   struct drm_gpuvm;
-> @@ -201,6 +202,11 @@ struct drm_gpuvm {
->   	 */
->   	const char *name;
->   
-> +	/**
-> +	 * @drm: the &drm_device this VM lives in
-> +	 */
-> +	struct drm_device *drm;
-> +
->   	/**
->   	 * @mm_start: start of the VA space
->   	 */
-> @@ -241,6 +247,7 @@ struct drm_gpuvm {
->   };
->   
->   void drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
-> +		    struct drm_device *drm,
->   		    u64 start_offset, u64 range,
->   		    u64 reserve_offset, u64 reserve_range,
->   		    const struct drm_gpuvm_ops *ops);
-
+在 2023/10/17 21:50, Liam R. Howlett 写道:
+> * Peng Zhang <zhangpeng.00@bytedance.com> [231015 23:23]:
+>> In dup_mmap(), using __mt_dup() to duplicate the old maple tree and then
+>> directly replacing the entries of VMAs in the new maple tree can result
+>> in better performance. __mt_dup() uses DFS pre-order to duplicate the
+>> maple tree, so it is efficient.
+>>
+>> The average time complexity of __mt_dup() is O(n), where n is the number
+>> of VMAs. The proof of the time complexity is provided in the commit log
+>> that introduces __mt_dup(). After duplicating the maple tree, each element
+>> is traversed and replaced (ignoring the cases of deletion, which are rare).
+>> Since it is only a replacement operation for each element, this process is
+>> also O(n).
+>>
+>> Analyzing the exact time complexity of the previous algorithm is
+>> challenging because each insertion can involve appending to a node, pushing
+>> data to adjacent nodes, or even splitting nodes. The frequency of each
+>> action is difficult to calculate. The worst-case scenario for a single
+>> insertion is when the tree undergoes splitting at every level. If we
+>> consider each insertion as the worst-case scenario, we can determine that
+>> the upper bound of the time complexity is O(n*log(n)), although this is a
+>> loose upper bound. However, based on the test data, it appears that the
+>> actual time complexity is likely to be O(n).
+>>
+>> As the entire maple tree is duplicated using __mt_dup(), if dup_mmap()
+>> fails, there will be a portion of VMAs that have not been duplicated in
+>> the maple tree. To handle this, we mark the failure point with
+>> XA_ZERO_ENTRY. In exit_mmap(), if this marker is encountered, stop
+>> releasing VMAs that have not been duplicated after this point.
+>>
+>> There is a "spawn" in byte-unixbench[1], which can be used to test the
+>> performance of fork(). I modified it slightly to make it work with
+>> different number of VMAs.
+>>
+>> Below are the test results. The first row shows the number of VMAs.
+>> The second and third rows show the number of fork() calls per ten seconds,
+>> corresponding to next-20231006 and the this patchset, respectively. The
+>> test results were obtained with CPU binding to avoid scheduler load
+>> balancing that could cause unstable results. There are still some
+>> fluctuations in the test results, but at least they are better than the
+>> original performance.
+>>
+>> 21     121   221    421    821    1621   3221   6421   12821  25621  51221
+>> 112100 76261 54227  34035  20195  11112  6017   3161   1606   802    393
+>> 114558 83067 65008  45824  28751  16072  8922   4747   2436   1233   599
+>> 2.19%  8.92% 19.88% 34.64% 42.37% 44.64% 48.28% 50.17% 51.68% 53.74% 52.42%
+>>
+>> [1] https://github.com/kdlucas/byte-unixbench/tree/master
+>>
+>> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
+>> ---
+>>   kernel/fork.c | 39 ++++++++++++++++++++++++++++-----------
+>>   mm/memory.c   |  7 ++++++-
+>>   mm/mmap.c     |  9 ++++++---
+>>   3 files changed, 40 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/kernel/fork.c b/kernel/fork.c
+>> index 0ff2e0cd4109..0be15501e52e 100644
+>> --- a/kernel/fork.c
+>> +++ b/kernel/fork.c
+>> @@ -650,7 +650,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>>   	int retval;
+>>   	unsigned long charge = 0;
+>>   	LIST_HEAD(uf);
+>> -	VMA_ITERATOR(old_vmi, oldmm, 0);
+>>   	VMA_ITERATOR(vmi, mm, 0);
+>>   
+>>   	uprobe_start_dup_mmap();
+>> @@ -678,16 +677,21 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>>   		goto out;
+>>   	khugepaged_fork(mm, oldmm);
+>>   
+>> -	retval = vma_iter_bulk_alloc(&vmi, oldmm->map_count);
+>> -	if (retval)
+>> +	/* Use __mt_dup() to efficiently build an identical maple tree. */
+>> +	retval = __mt_dup(&oldmm->mm_mt, &mm->mm_mt, GFP_KERNEL);
+>> +	if (unlikely(retval))
+>>   		goto out;
+>>   
+>>   	mt_clear_in_rcu(vmi.mas.tree);
+>> -	for_each_vma(old_vmi, mpnt) {
+>> +	for_each_vma(vmi, mpnt) {
+>>   		struct file *file;
+>>   
+>>   		vma_start_write(mpnt);
+>>   		if (mpnt->vm_flags & VM_DONTCOPY) {
+>> +			retval = mas_store_gfp(&vmi.mas, NULL, GFP_KERNEL);
+> 
+> vma_iter_clear_gfp() exists, but needs to be relocated from internal.h
+> to mm.h to be used here.
+Done in v6, thanks.
+> 
+>> +			if (retval)
+>> +				goto loop_out;
+>> +
+>>   			vm_stat_account(mm, mpnt->vm_flags, -vma_pages(mpnt));
+>>   			continue;
+>>   		}
+>> @@ -749,9 +753,11 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>>   		if (is_vm_hugetlb_page(tmp))
+>>   			hugetlb_dup_vma_private(tmp);
+>>   
+>> -		/* Link the vma into the MT */
+>> -		if (vma_iter_bulk_store(&vmi, tmp))
+>> -			goto fail_nomem_vmi_store;
+>> +		/*
+>> +		 * Link the vma into the MT. After using __mt_dup(), memory
+>> +		 * allocation is not necessary here, so it cannot fail.
+>> +		 */
+> 
+> Allocations didn't happen here with the bulk store either, and the
+> vma_iter_bulk_store() does a mas_store() - see include/linux/mm.h
+> 
+> The vma iterator is used when possible for type safety.
+Done in v6, thanks.
+> 
+>> +		mas_store(&vmi.mas, tmp);
+>>   
+>>   		mm->map_count++;
+>>   		if (!(tmp->vm_flags & VM_WIPEONFORK))
+>> @@ -760,15 +766,28 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>>   		if (tmp->vm_ops && tmp->vm_ops->open)
+>>   			tmp->vm_ops->open(tmp);
+>>   
+>> -		if (retval)
+>> +		if (retval) {
+>> +			mpnt = vma_next(&vmi);
+>>   			goto loop_out;
+>> +		}
+>>   	}
+>>   	/* a new mm has just been created */
+>>   	retval = arch_dup_mmap(oldmm, mm);
+>>   loop_out:
+>>   	vma_iter_free(&vmi);
+>> -	if (!retval)
+>> +	if (!retval) {
+>>   		mt_set_in_rcu(vmi.mas.tree);
+>> +	} else if (mpnt) {
+>> +		/*
+>> +		 * The entire maple tree has already been duplicated. If the
+>> +		 * mmap duplication fails, mark the failure point with
+>> +		 * XA_ZERO_ENTRY. In exit_mmap(), if this marker is encountered,
+>> +		 * stop releasing VMAs that have not been duplicated after this
+>> +		 * point.
+>> +		 */
+>> +		mas_set_range(&vmi.mas, mpnt->vm_start, mpnt->vm_end - 1);
+>> +		mas_store(&vmi.mas, XA_ZERO_ENTRY);
+> 
+> vma_iter_clear() exists but uses the preallocation call.  I really don't
+> want mas_ calls where unnecessary, but this seems like a special case.
+> We have a vma iterator here so it's messy.
+If mas_ interface is not used, it may be necessary to add another
+vma_iter_ interface to do this.
+> 
+>> +	}
+>>   out:
+>>   	mmap_write_unlock(mm);
+>>   	flush_tlb_mm(oldmm);
+>> @@ -778,8 +797,6 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>>   	uprobe_end_dup_mmap();
+>>   	return retval;
+>>   
+>> -fail_nomem_vmi_store:
+>> -	unlink_anon_vmas(tmp);
+>>   fail_nomem_anon_vma_fork:
+>>   	mpol_put(vma_policy(tmp));
+>>   fail_nomem_policy:
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index b320af6466cc..ea48bd4b1feb 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -374,6 +374,8 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
+>>   		 * be 0.  This will underflow and is okay.
+>>   		 */
+>>   		next = mas_find(mas, ceiling - 1);
+>> +		if (unlikely(xa_is_zero(next)))
+>> +			next = NULL;
+>>   
+>>   		/*
+>>   		 * Hide vma from rmap and truncate_pagecache before freeing
+>> @@ -395,6 +397,8 @@ void free_pgtables(struct mmu_gather *tlb, struct ma_state *mas,
+>>   			       && !is_vm_hugetlb_page(next)) {
+>>   				vma = next;
+>>   				next = mas_find(mas, ceiling - 1);
+>> +				if (unlikely(xa_is_zero(next)))
+>> +					next = NULL;
+>>   				if (mm_wr_locked)
+>>   					vma_start_write(vma);
+>>   				unlink_anon_vmas(vma);
+>> @@ -1743,7 +1747,8 @@ void unmap_vmas(struct mmu_gather *tlb, struct ma_state *mas,
+>>   		unmap_single_vma(tlb, vma, start, end, &details,
+>>   				 mm_wr_locked);
+>>   		hugetlb_zap_end(vma, &details);
+>> -	} while ((vma = mas_find(mas, tree_end - 1)) != NULL);
+>> +		vma = mas_find(mas, tree_end - 1);
+>> +	} while (vma && likely(!xa_is_zero(vma)));
+>>   	mmu_notifier_invalidate_range_end(&range);
+>>   }
+>>   
+>> diff --git a/mm/mmap.c b/mm/mmap.c
+>> index 1855a2d84200..12ce17863e62 100644
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -3213,10 +3213,11 @@ void exit_mmap(struct mm_struct *mm)
+>>   	arch_exit_mmap(mm);
+>>   
+>>   	vma = mas_find(&mas, ULONG_MAX);
+>> -	if (!vma) {
+>> +	if (!vma || unlikely(xa_is_zero(vma))) {
+>>   		/* Can happen if dup_mmap() received an OOM */
+>>   		mmap_read_unlock(mm);
+>> -		return;
+>> +		mmap_write_lock(mm);
+>> +		goto destroy;
+>>   	}
+>>   
+>>   	lru_add_drain();
+>> @@ -3251,11 +3252,13 @@ void exit_mmap(struct mm_struct *mm)
+>>   		remove_vma(vma, true);
+>>   		count++;
+>>   		cond_resched();
+>> -	} while ((vma = mas_find(&mas, ULONG_MAX)) != NULL);
+>> +		vma = mas_find(&mas, ULONG_MAX);
+>> +	} while (vma && likely(!xa_is_zero(vma)));
+>>   
+>>   	BUG_ON(count != mm->map_count);
+>>   
+>>   	trace_exit_mmap(mm);
+>> +destroy:
+>>   	__mt_destroy(&mm->mm_mt);
+>>   	mmap_write_unlock(mm);
+>>   	vm_unacct_memory(nr_accounted);
+>> -- 
+>> 2.20.1
+>>
+> 
