@@ -2,91 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 794A67D4F8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5C07D4F91
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbjJXMNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
+        id S233761AbjJXMPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232580AbjJXMNN (ORCPT
+        with ESMTP id S232761AbjJXMPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:13:13 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3FEF9;
-        Tue, 24 Oct 2023 05:13:07 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 21F7D240007;
-        Tue, 24 Oct 2023 12:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698149586;
+        Tue, 24 Oct 2023 08:15:30 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDAA4A2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:15:27 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698149725;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=93RoybtCmurkEhmIcEikf8HjaYFy2otQkCDnAt4Q9kg=;
-        b=ELKk/21vjkPETZrMa4aDzQBq4IDx0/H74mmiNL06MB34Yl/+2q6kw44OHlOe3F5XqibIT2
-        vsv04tEI8l3XtSsLBm8ygRdVQgM6cpCd1YODIunnTCtwWOmxewC/y5+GdKsvM7nrjlvcRZ
-        0Nb9Hztu7D/J1iqK7rrVlf+9wjwBSQu45suHEf95RVgoLU4I17N5JlWzTbleOtP5YU0QNs
-        8erlqmOSckGnRVrieB0s6uQ1Jqy1mQuAp2jB3y4XsKyegNhUsbwEL21xeJ/Ey3denUKuSY
-        0qSjLkJ4uiGdk2OF1I6ryrwoR7fubqZI2RL0FhvlVtZWM1yLbixuAseiOf3Z6w==
-Date:   Tue, 24 Oct 2023 14:13:17 +0200 (CEST)
-From:   Romain Gantois <romain.gantois@bootlin.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-cc:     Romain Gantois <romain.gantois@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andy Gross <agross@kernel.org>, davem@davemloft.net,
-        thomas.petazzoni@bootlin.com, Paolo Abeni <pabeni@redhat.com>,
-        devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Robert Marko <robert.marko@sartura.hr>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH net-next 1/5] net: dt-bindings: Introduce the Qualcomm
- IPQESS Ethernet switch
-In-Reply-To: <7018bf8b-1f89-408e-8649-3788a28f3b1a@linaro.org>
-Message-ID: <0389bcc9-b74e-5394-d15a-17914ec3c1a9@bootlin.com>
-References: <20231023155013.512999-1-romain.gantois@bootlin.com> <20231023155013.512999-2-romain.gantois@bootlin.com> <169808266457.861402.14537617078362005098.robh@kernel.org> <35ec9e4b-21ee-1436-da00-02e11effdc23@bootlin.com> <550cba92-39dc-4e45-beb3-c714d14d9d85@linaro.org>
- <498ee025-b1b7-eafc-3758-993c5d564f67@bootlin.com> <7018bf8b-1f89-408e-8649-3788a28f3b1a@linaro.org>
+         in-reply-to:in-reply-to; bh=07gZYsTHRr4IpF7/NnHkBXjK8ai5GvZ2wIbyODgIsGk=;
+        b=jVcCl2VTHO1Bgg9hoMdzE3QgkVZJ8zaknxpscT7hJF6KxMuqYkkJiYqC1cjBf0J5rzXFgR
+        aDD4+Spq+05NspJzt8YDqlfR1O5fCLx6lMajHitA1h2jq9xrM2idnyp70SttM9TLT8p9BZ
+        ug+szjQY9BEuL6afeV6qafVhI3VB+7/TT4c0wrhYgABE5yLMdnitCChJOo86aUzLrCI89v
+        fpL5U+UuvE05Xg/J/aSGtr+/XhqUH1qJL4PZn+eaIjX/HkUcgAzbSVW9FDQCa7kHs2oAJn
+        0ewNO7UvC9pjW1ZwWFQN5iXtkiGtN4Vo/wKPxKqjzUsjwRCqruW047vC1R6vow==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698149725;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=07gZYsTHRr4IpF7/NnHkBXjK8ai5GvZ2wIbyODgIsGk=;
+        b=Rrmr/x6ckg0rses0pUJS+BocRUGKCM7BcZIenpabqQifFVtNevg6Pwz/2adzEvP4glFhza
+        22dSVe1MKc+Zu6Dw==
+To:     paulmck@kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Frederic Weisbecker <fweisbec@gmail.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+In-Reply-To: <4c7d06b9-8f5b-43ff-a2d6-86f54116da52@paulmck-laptop>
+Date:   Tue, 24 Oct 2023 14:15:25 +0200
+Message-ID: <87cyx4cj36.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-GND-Sasl: romain.gantois@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023, Krzysztof Kozlowski wrote:
+Paul!
 
-> Rob's bot might be using not-yet-released dtschema from main branch,
-> thus the error. However the error is true: you added a custom field
-> without type. That's why I asked: where is it defined?
-> 
+On Thu, Oct 19 2023 at 12:13, Paul E. McKenney wrote:
+> On Thu, Oct 19, 2023 at 02:21:35AM +0200, Thomas Gleixner wrote:
+>> The important point is that at the very end the scheduler has the
+>> ultimate power to say: "Not longer Mr. Nice Guy" without the risk of any
+>> random damage due to the fact that preemption count is functional, which
+>> makes your life easier as well as you admitted already. But that does
+>> not mean you can eat the cake and still have it. :)
+>
+> Which is exactly why I need rcu_read_lock() to map to preempt_disable()
+> and rcu_read_unlock() to preempt_enable().  ;-)
 
-I didn't define it anywhere, that's an oversight on my part. The psgmii_ethphy 
-property is a handle to an MDIO device, which I thought was integrated to the 
-PSGMII bus in the IPQ4019. However, I just learned from Robert Marko that this 
-MDIO device corresponds to a SoC-facing PHY integrated in the external QCA807x 
-IP. Therefore, I'm not convinced that this MDIO device should be handled by 
-the ESS driver.
+After reading back in the thread, I think we greatly talked past each
+other mostly due to the different expectations and the resulting
+dependencies which seem to be hardwired into our brains.
 
-I'm going to have to consider refactoring the psgmii_ethphy handling out of 
-the IPQESS driver, which would make this device tree property unnecessary.
+I'm pleading guilty as charged as I failed completely to read your
+initial statement
 
-Best Regards,
+ "The key thing to note is that from RCU's viewpoint, with this change,
+  all kernels are preemptible, though rcu_read_lock() readers remain
+  non-preemptible."
 
-Romain
+with that in mind and instead of dissecting it properly I committed the
+fallacy of stating exactly the opposite, which obviously reflects only
+the point of view I'm coming from.
+
+With a fresh view, this turns out to be a complete non-problem because
+there is no semantical dependency between the preemption model and the
+RCU flavour.
+
+The unified kernel preemption model has the following properties:
+
+  1) It provides full preemptive multitasking.
+
+  2) Preemptability is limited by implicit and explicit mechanisms.
+
+  3) The ability to avoid overeager preemption for SCHED_OTHER tasks via
+     the PREEMPT_LAZY mechanism.
+
+     This emulates the NONE/VOLUNTARY preemption models which
+     semantically provide collaborative multitasking.
+
+     This emulation is not breaking the semantical properties of full
+     preemptive multitasking because the scheduler still has the ability
+     to enforce immediate preemption under consideration of #2.
+
+     Which in turn is a prerequiste for removing the semantically
+     ill-defined cond/might_resched() constructs.
+
+The compile time selectable RCU flavour (preemptible/non-preemptible) is
+not imposing a semantical change on this unified preemption model.
+
+The selection of the RCU flavour is solely affecting the preemptability
+(#2 above). Selecting non-preemptible RCU reduces preemptability by
+adding an implicit restriction via mapping rcu_read_lock()
+to preempt_disable().
+
+IOW, the current upstream enforcement of RCU_PREEMPT=n when PREEMPTION=n
+is only enforced by the the lack of the full preempt counter in
+PREEMPTION=n configs. Once the preemption counter is always enabled this
+hardwired dependency goes away.
+
+Even PREEMPT_DYNAMIC should just work with RCU_PREEMPT=n today because
+with PREEMPT_DYNAMIC the preemption counter is unconditionally
+available.
+
+So that makes these hardwired dependencies go away in practice and
+hopefully soon from our mental models too :)
+
+RT will keep its hard dependency on RCU_PREEMPT in the same way it
+depends hard on forced interrupt threading and other minor details to
+enable the spinlock substitution.
+
+>> That said, I completely understand your worries about the consequences,
+>> but please take the step back and look at it from a conceptual point of
+>> view.
+>
+> Conceptual point of view?  That sounds suspiciously academic.
+
+Hehehe.
+
+> Who are you and what did you do with the real Thomas Gleixner?  ;-)
+
+The point I'm trying to make is not really academic, it comes from a
+very practical point of view. As you know for almost two decades I'm
+mostly busy with janitoring and mopping up the kernel.
+
+A major takeaway from this eclectic experience is that there is a
+tendency to implement very specialized solutions for different classes
+of use cases.
+
+The reasons to do so in the first place:
+
+ 1) Avoid breaking the existing and established solutions:
+
+    E.g. the initial separation of x8664 and i386
+
+ 2) Enforcement due to dependencies on mechanisms, which are
+    considered "harmful" for particular use cases
+
+    E.g. Preemptible RCU, which is separate also due to #1
+
+ 3) Because we can and something is sooo special
+
+    You probably remember the full day we both spent in a room with SoC
+    people to make them understand that their SoCs are not so special at
+    all. :)
+
+So there are perfectly valid reasons (#1, #2) to separate things, but we
+really need to go back from time to time and think hard about the
+question whether a particular separation is still justified. This is
+especially true when dependencies or prerequisites change.
+
+But in many cases we just keep going, take the separation as set in
+stone forever and add features and workarounds on all ends without
+rethinking whether we could unify these things for the better. The real
+bad thing about this is that the more we add to the separation the
+harder consolidation or unification becomes.
+
+Granted that my initial take of consolidating on preemptible RCU might
+be too brisk or too naive, but I still think that with the prospect of
+an unified preemption model it's at least worth to have a very close
+look at this question.
+
+Not asking such questions or dismissing them upfront is a real danger
+for the long term sustainability and maintainability of the kernel in my
+opinion. Especially when the few people who actively "janitor" these
+things are massively outnumbered by people who indulge in
+specialization. :)
+
+That said, the real Thomas Gleixner and his grumpy self are still there,
+just slightly tired of handling the slurry brush all day long :)
+
+Thanks,
+
+        tglx
+
