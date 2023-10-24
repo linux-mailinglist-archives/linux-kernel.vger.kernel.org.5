@@ -2,172 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C6A7D5931
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077027D5930
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344024AbjJXQwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34282 "EHLO
+        id S1343881AbjJXQwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234630AbjJXQv7 (ORCPT
+        with ESMTP id S233092AbjJXQv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 24 Oct 2023 12:51:59 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504FDDA;
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101B5AF;
         Tue, 24 Oct 2023 09:51:53 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1dd1714b9b6so3200135fac.0;
-        Tue, 24 Oct 2023 09:51:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698166312; x=1698771112; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4KDQl75KbMe5uLN513yRphkBvJX1k6bz7ls81M+yKsc=;
-        b=LMje8IXszpXduRpCyhKxHO0NmedDYfQjOR2EQx6bdfnhyMiE09KFsy9wWXPEMMjUNQ
-         JiYG7slBWpuXMRlLX0tFkz26/F6/S099zKjkAj3nQGLcum/DOF+AF8ysfht6SYdxQ6Ro
-         UsjQLDbjN7UkV/t08ykqGKYbH7Fcw7cvkOrOBXsuPVWlpFmcgDMcx/guegOe1Vh+Spwb
-         plvS0Kfn8Cas6LWhFCraztIG+KDIsJHwe0jIa6dyHQteL6RWHb0hTHT74xCX3LLIROle
-         Ex5iS6jGwNZr6hHooc9loz0CeJtEy2u1b+WtfZUHWUIHkBkcm6EKXoL2ZAHg4l75/CVC
-         6aPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698166312; x=1698771112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4KDQl75KbMe5uLN513yRphkBvJX1k6bz7ls81M+yKsc=;
-        b=kvBF30B0hNIj/pqwxEtxP3J4wNxW0PtxjCM0Or35lhOKNDyAs0+uPNX5kjkf4XjAno
-         oeA6jN9aUo3j9d5OWIX6jPoSA6l71bJDkBF7fGBeILbvUaLgYowQaML197I4i/kyJl2P
-         nR5yCFFXCfHlz1XNjGwWuNcZnlTD0jnVTULpUGdxXUu4SwIwvQUnGWaoIUyrNCifiiJX
-         N72OhLbUnsAVna4OUaf4Tlz7/K+SiqWXQqzfF8szapNsh0ILQvH2V31l3Bie6f1jT3LD
-         fpPhoJufgAaVmrBLgJiyiwkspf/5YATgZd4rx1XjYzE4k6X5Bq+bKbvSLkoUG3/rFOJw
-         Va6Q==
-X-Gm-Message-State: AOJu0Yx9M5++T4gBuje22ggMwSdkKAzwVU/OzElJf8pCt//sgjFLNfoY
-        Ox+cvzpPFz66WyrvVaj9TOE=
-X-Google-Smtp-Source: AGHT+IGi/yuFN4nFlJtB+prJuFd9VC+vQzxoC0HUzYl6hU6ba6YsljDyerd5+Xs+6cpDul8Gf5s6lg==
-X-Received: by 2002:a05:6870:ebcb:b0:1ea:1b5e:fed4 with SMTP id cr11-20020a056870ebcb00b001ea1b5efed4mr16886877oab.39.1698166312474;
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507c50b7c36so6562798e87.3;
         Tue, 24 Oct 2023 09:51:52 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05620a056700b007788c1a81b6sm3570638qkp.46.2023.10.24.09.51.51
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698166311; x=1698771111; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Tt9VMNJm14dclxeRhCE5YUSAtNoTBtrJoCG/7gTbgYc=;
+        b=WXBrBbA/GfXdEMd47dbbQH9euZwTvnuAnEXaF/VFZgJTh6AO2/FFAFwpa/4yqLzxDR
+         EMI9EGD8+1DtRZhEpmaOnLuIBhRm5WzSt3dKcSMEVeFRwachfl4OpvUpklvFRWYTTi5V
+         FQNVXKhIa5EG5MnSimW+HxgzxwFLDSflm1MxjqFmOcwhaL6Gab9HCks6/O8nUFw7L1XR
+         pVlk6el8P3kvxVDRFU/57i/Q1UgViOLxq3VfJiNXf1HJQy4hatrizpSF27LebSh8eDPc
+         uQ/0ErYlq5Li3SU/hOGHSwkIXR+ulDhOiKEq044+SmMSliKUeAv+07QeuV4oLTcF/ZJk
+         B3AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698166311; x=1698771111;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Tt9VMNJm14dclxeRhCE5YUSAtNoTBtrJoCG/7gTbgYc=;
+        b=EuFNQqVi8jkxudr/8xDn5LkkSS5CECLIS5LHByxS52KKZFi57ys3gp812b0B22ymTT
+         FCiNDQqCqVHBYHsogFbRuea3nmVGFHPXrJlo0nGVfUtvgmI/piNZwmexehfJGCgTHEIX
+         5kJxr6EBSf5GditHj05NCwLpHSqjsfnbNgKSv4Zp1UJNw4osZzdy2lzPFEoH8nPYgTev
+         gcZfCjiJRfntNCT3QXUS9AD5iqC110y7qtbgmjIGDBUeD968tWR8EVU5l38zOrQTqoxZ
+         OJDXylsP9EmrgsOf0oTI8zarg/dX40p3iprCKlCT5FKysvRoifKktRMbUOAxwHtFW9+L
+         20Lw==
+X-Gm-Message-State: AOJu0YxVFHIpvG1qsigs5/8LLpGzPrxo66C8sCZKrNAHgrPsGm54m2NQ
+        GlNqyc+gBsK2VqBTsLuNCJo=
+X-Google-Smtp-Source: AGHT+IEgFXhtOsauhH1Njd4JIw/Q9HdWjMZpYxXGKriVaZAVypy+uOSK2ZD1Db6QYV6iOvYlQMwh6g==
+X-Received: by 2002:a19:6745:0:b0:507:9fc1:ca7e with SMTP id e5-20020a196745000000b005079fc1ca7emr8477325lfj.51.1698166310742;
+        Tue, 24 Oct 2023 09:51:50 -0700 (PDT)
+Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
+        by smtp.gmail.com with ESMTPSA id u20-20020a50a414000000b005346925a474sm815553edb.43.2023.10.24.09.51.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 09:51:51 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 1D1AD27C0060;
-        Tue, 24 Oct 2023 12:51:51 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 24 Oct 2023 12:51:51 -0400
-X-ME-Sender: <xms:JvY3ZTSY0KC9JXTx2NtsAk8Tq6w8xdhp5HOJNStv-0adxcCiXDG1kw>
-    <xme:JvY3ZUyidZGd7zun-VFXwGf5H_gksarpmX98NbZwYIgMnZtIOQNJT4Z_88cfKleP1
-    bhUHskP7VRvYp0owA>
-X-ME-Received: <xmr:JvY3ZY26Vhx_gv0CsU2fO_F_vQOb900cYNeMNfRPPvRwlzPZMsru_a6EgHM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeekgddutdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpefhtedvgfdtueekvdekieetieetjeeihedvteehuddujedvkedtkeefgedv
-    vdehtdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
-    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
-    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:JvY3ZTCIZ4EGmyP90o_hGYSdZRzRyEyklSh6adVP3GgRyiOv4Krzow>
-    <xmx:JvY3Zcjg84UK2P5DqeMrozetrqKMCJqYsYsW04Z_URVurPbzlebe4w>
-    <xmx:JvY3ZXoBEU67RqVvr1uAc426tF3iPFfyvTjZtnQrqjS0zfBEfSTbYw>
-    <xmx:J_Y3ZdZcA4z7qLr0geiZj5Ra3Zf2Pm3XAI0BoCWRvdT3IMyEL9vIMw>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 24 Oct 2023 12:51:50 -0400 (EDT)
-Date:   Tue, 24 Oct 2023 09:51:10 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Trevor Gross <tmgross@umich.edu>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        FUJITA Tomonori <fujita.tomonori@gmail.com>
-Subject: Re: [PATCH] rust: macros: update 'paste!' macro to accept string
- literals
-Message-ID: <ZTf1_iB9AgHlPnls@boqun-archlinux>
-References: <20231008094816.320424-1-tmgross@umich.edu>
+        Tue, 24 Oct 2023 09:51:50 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 24 Oct 2023 18:51:47 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pm@vger.kernel.org, rafael@kernel.org,
+        pavel@ucw.cz, linux-perf-users@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 2/2] perf/x86/amd: Don't allow pre-emption in
+ amd_pmu_lbr_reset()
+Message-ID: <ZTf2IxAVPUFq91F4@gmail.com>
+References: <20231023160018.164054-1-mario.limonciello@amd.com>
+ <20231023160018.164054-3-mario.limonciello@amd.com>
+ <ZTd6BYr17ycdHR2a@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231008094816.320424-1-tmgross@umich.edu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZTd6BYr17ycdHR2a@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 08, 2023 at 05:48:18AM -0400, Trevor Gross wrote:
-> Enable combining identifiers with string literals in the 'paste!' macro.
-> This allows combining user-specified strings with affixes to create
-> namespaced identifiers.
-> 
-> This sample code:
-> 
->     macro_rules! m {
->         ($name:lit) => {
->             paste!(struct [<_some_ $name _struct_>];)
->         }
->     }
-> 
->     m!("foo_bar");
-> 
-> Would previously cause a compilation error. It will now generate:
-> 
->     struct _some_foo_bar_struct_;
-> 
-> Reported-by: FUJITA Tomonori <fujita.tomonori@gmail.com>
-> Signed-off-by: Trevor Gross <tmgross@umich.edu>
 
-This looks good to me, but could you (in a follow-up patch mabye) add an
-example demonstrating the usage, which could also serve as a test if we
-can run doctest for macro doc. Thanks!
+* Ingo Molnar <mingo@kernel.org> wrote:
 
-Regards,
-Boqun
+> 
+> * Mario Limonciello <mario.limonciello@amd.com> wrote:
+> 
+> > Fixes a BUG reported during suspend to ram testing.
+> > 
+> > ```
+> > [  478.274752] BUG: using smp_processor_id() in preemptible [00000000] code: rtcwake/2948
+> > [  478.274754] caller is amd_pmu_lbr_reset+0x19/0xc0
+> > ```
+> > 
+> > Cc: stable@vger.kernel.org # 6.1+
+> > Fixes: ca5b7c0d9621 ("perf/x86/amd/lbr: Add LbrExtV2 branch record support")
+> > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> > ---
+> >  arch/x86/events/amd/lbr.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/events/amd/lbr.c b/arch/x86/events/amd/lbr.c
+> > index eb31f850841a..5b98e8c7d8b7 100644
+> > --- a/arch/x86/events/amd/lbr.c
+> > +++ b/arch/x86/events/amd/lbr.c
+> > @@ -321,7 +321,7 @@ int amd_pmu_lbr_hw_config(struct perf_event *event)
+> >  
+> >  void amd_pmu_lbr_reset(void)
+> >  {
+> > -	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> > +	struct cpu_hw_events *cpuc = get_cpu_ptr(&cpu_hw_events);
+> >  	int i;
+> >  
+> >  	if (!x86_pmu.lbr_nr)
+> > @@ -335,6 +335,7 @@ void amd_pmu_lbr_reset(void)
+> >  
+> >  	cpuc->last_task_ctx = NULL;
+> >  	cpuc->last_log_id = 0;
+> > +	put_cpu_ptr(&cpu_hw_events);
+> >  	wrmsrl(MSR_AMD64_LBR_SELECT, 0);
+> >  }
+> 
+> Weird, amd_pmu_lbr_reset() is called from these places:
+> 
+>   - amd_pmu_lbr_sched_task(): during task sched-in during 
+>     context-switching, this should already have preemption disabled.
+> 
+>   - amd_pmu_lbr_add(): this gets indirectly called by amd_pmu::add 
+>     (amd_pmu_add_event()), called by event_sched_in(), which too should have 
+>     preemption disabled.
+> 
+> I clearly must have missed some additional place it gets called in.
 
-> ---
-> 
-> Original mention of this problem in [1]
-> 
-> [1]: https://lore.kernel.org/rust-for-linux/20231008.164906.1151622782836568538.fujita.tomonori@gmail.com/
-> 
->  rust/macros/paste.rs | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/rust/macros/paste.rs b/rust/macros/paste.rs
-> index 385a78434224..f40d42b35b58 100644
-> --- a/rust/macros/paste.rs
-> +++ b/rust/macros/paste.rs
-> @@ -9,7 +9,15 @@ fn concat(tokens: &[TokenTree], group_span: Span) -> TokenTree {
->      loop {
->          match tokens.next() {
->              None => break,
-> -            Some(TokenTree::Literal(lit)) => segments.push((lit.to_string(), lit.span())),
-> +            Some(TokenTree::Literal(lit)) => {
-> +                // Allow us to concat string literals by stripping quotes
-> +                let mut value = lit.to_string();
-> +                if value.starts_with('"') && value.ends_with('"') {
-> +                    value.remove(0);
-> +                    value.pop();
-> +                }
-> +                segments.push((value, lit.span()));
-> +            }
->              Some(TokenTree::Ident(ident)) => {
->                  let mut value = ident.to_string();
->                  if value.starts_with("r#") {
-> -- 
-> 2.34.1
-> 
-> 
+Just for completeness, the additional place I missed is 
+amd_pmu_cpu_reset():
+
+                static_call(amd_pmu_branch_reset)();
+
+... and the amd_pmu_branch_reset static call is set up with 
+amd_pmu_lbr_reset, which is why git grep missed it.
+
+Anyway, amd_pmu_cpu_reset() is very much something that should run 
+non-preemptable to begin with, so your patch only papers over the real 
+problem AFAICS.
+
+Thanks,
+
+	Ingo
