@@ -2,126 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1EB7D559F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4997D5592
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343852AbjJXPTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55186 "EHLO
+        id S234707AbjJXPTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234830AbjJXPSK (ORCPT
+        with ESMTP id S234870AbjJXPS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:18:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7B01FFA
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:17:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F636C433B7;
-        Tue, 24 Oct 2023 15:17:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698160641;
-        bh=iUIoeX8BN34NwWD9hBWLO7g5NpDyH+v6HeWwgzPOy1E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=byMvMN9h5ae0wl3zjeJQma1pcFbfadVQvDGAkqoUOPfHHvmG4EL3v8oWEFwTPrtu6
-         +AiSAPhNwqFVuxcudaq65lC5m+kBTLfhYVVRMFT1EgjKkpI27KImRl9dvHcaMQ72TI
-         fiUN6V3RuxvVnpGFkL90fIYO+qplqiQPcNDi5U5r/04EmKypC/Z+pyYOYmqBJiRq4r
-         t4DWTSmLBVZOUB/uG4PVfT7kgLUu49q/khKuE9nJHLd7xxvDOKyce1WCcQoGjMrFa/
-         E3LYkFbzSbg+lol0f252T8LQACPfLnR12gkuy9Dyk1LuN3K1yWe+RA9/W/koStD9cN
-         9gjdGoMXQANcw==
-Date:   Tue, 24 Oct 2023 16:17:16 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado 
-        <nfraprado@collabora.com>,
-        Bernhard =?iso-8859-1?Q?Rosenkr=E4nzer?= <bero@baylibre.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        Tue, 24 Oct 2023 11:18:26 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C0D1999;
+        Tue, 24 Oct 2023 08:17:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
+        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=5K2XQGzhzcpec7D/0nXB7CsQhNIskiD1q2Og2Kjac48=; b=hLNHvW+8oAX6VRKsR4eCM/z06u
+        qApp1CIo0PA9XSXQc4m3gCZLj5+q2+waT/NzHKt2sx4xufRAmeZ4eZ2U+sZLE+H5dEJr9tUWGNanU
+        xlRkUNDuUVH+WcNmJB7AbwmEL4JI5dKo8f7b6rU5x7vIFug+y721i7KmM0ExnSCS/PLbfPnDk9iZA
+        kL7zP4B1qftMnSCJN3mer6g17MtzBWPI4Szhow/CTIJC0uFksrWEaZb3cXMJaBXTGPlMpdxcd//Mv
+        qQpaZOiitEJpPHm3AV7P93nF+qhA9B7K86kWsyNlntBdgrHNiJgQmrYcSezBVqi2KhFr9mPDTX0By
+        zy46moiA==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:34498 helo=rmk-PC.armlinux.org.uk)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1qvJ9j-0004PJ-2p;
+        Tue, 24 Oct 2023 16:17:19 +0100
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <rmk@rmk-PC.armlinux.org.uk>)
+        id 1qvJ9l-00AqQB-AJ; Tue, 24 Oct 2023 16:17:21 +0100
+In-Reply-To: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+From:   Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 3/6] dt-bindings: arm64: dts: mediatek: Add
- mt8183-kukui-jacuzzi-makomo
-Message-ID: <20231024-bobbed-although-06f341259ebb@spud>
-References: <20231024000724.57714-1-hsinyi@chromium.org>
- <20231024000724.57714-4-hsinyi@chromium.org>
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH 14/39] x86/topology: Switch over to GENERIC_CPU_DEVICES
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="kghOtZTw0vsKrKkb"
 Content-Disposition: inline
-In-Reply-To: <20231024000724.57714-4-hsinyi@chromium.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <E1qvJ9l-00AqQB-AJ@rmk-PC.armlinux.org.uk>
+Sender: Russell King <rmk@armlinux.org.uk>
+Date:   Tue, 24 Oct 2023 16:17:21 +0100
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: James Morse <james.morse@arm.com>
 
---kghOtZTw0vsKrKkb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Now that GENERIC_CPU_DEVICES calls arch_register_cpu(), which can be
+overridden by the arch code, switch over to this to allow common code
+to choose when the register_cpu() call is made.
 
-On Mon, Oct 23, 2023 at 05:02:26PM -0700, Hsin-Yi Wang wrote:
-> Add makomo sku0 and sku1 which uses different audio codec.
->=20
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Docume=
-ntation/devicetree/bindings/arm/mediatek.yaml
-> index fe8c488a3207..b131e0bdbf01 100644
-> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> @@ -250,6 +250,18 @@ properties:
->                - google,kodama-sku32
->            - const: google,kodama
->            - const: mediatek,mt8183
-> +      - description: Google Makomo (Lenovo 100e Chromebook 2nd Gen MTK 2)
-> +        items:
-> +          - const: google,makomo-rev4-sku0
-> +          - const: google,makomo-rev5-sku0
+x86's struct cpus come from struct x86_cpu, which has no other members
+or users. Remove this and use the version defined by common code.
 
-With these bindings, how does one describe a makomo-rev5-sku0?
-What you have here is only suitable for describing the makomo-rev4-sku0.
+This is an intermediate step to the logic being moved to drivers/acpi,
+where GENERIC_CPU_DEVICES will do the work when booting with acpi=off.
 
-Cheers,
-Conor.
+This patch also has the effect of moving the registration of CPUs from
+subsys to driver core initialisation, prior to any initcalls running.
 
-> +          - const: google,makomo
-> +          - const: mediatek,mt8183
-> +      - description: Google Makomo (Lenovo 100e Chromebook 2nd Gen MTK 2)
-> +        items:
-> +          - const: google,makomo-rev4-sku1
-> +          - const: google,makomo-rev5-sku1
-> +          - const: google,makomo
-> +          - const: mediatek,mt8183
->        - description: Google Willow (Acer Chromebook 311 C722/C722T)
->          items:
->            - enum:
-> --=20
-> 2.42.0.758.gaed0368e0e-goog
->=20
+Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+----
+Changes since RFC:
+ * Fixed the second copy of arch_register_cpu() used for non-hotplug
+Changes since RFC v2:
+ * Remove duplicate of the weak generic arch_register_cpu(), spotted
+   by Jonathan Cameron. Add note about initialisation order change.
+---
+ arch/x86/Kconfig           |  1 +
+ arch/x86/include/asm/cpu.h |  4 ----
+ arch/x86/kernel/topology.c | 27 ++++-----------------------
+ 3 files changed, 5 insertions(+), 27 deletions(-)
 
---kghOtZTw0vsKrKkb
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 18729edc879d..a11c0aea5176 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -148,6 +148,7 @@ config X86
+ 	select GENERIC_CLOCKEVENTS_MIN_ADJUST
+ 	select GENERIC_CMOS_UPDATE
+ 	select GENERIC_CPU_AUTOPROBE
++	select GENERIC_CPU_DEVICES
+ 	select GENERIC_CPU_VULNERABILITIES
+ 	select GENERIC_EARLY_IOREMAP
+ 	select GENERIC_ENTRY
+diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
+index 25050d953eee..91867a6a9f8e 100644
+--- a/arch/x86/include/asm/cpu.h
++++ b/arch/x86/include/asm/cpu.h
+@@ -23,10 +23,6 @@ static inline void prefill_possible_map(void) {}
+ 
+ #endif /* CONFIG_SMP */
+ 
+-struct x86_cpu {
+-	struct cpu cpu;
+-};
+-
+ #ifdef CONFIG_HOTPLUG_CPU
+ extern void soft_restart_cpu(void);
+ #endif
+diff --git a/arch/x86/kernel/topology.c b/arch/x86/kernel/topology.c
+index 0bab03130033..027897054424 100644
+--- a/arch/x86/kernel/topology.c
++++ b/arch/x86/kernel/topology.c
+@@ -35,38 +35,19 @@
+ #include <asm/io_apic.h>
+ #include <asm/cpu.h>
+ 
+-static DEFINE_PER_CPU(struct x86_cpu, cpu_devices);
+-
+ #ifdef CONFIG_HOTPLUG_CPU
+ int arch_register_cpu(int cpu)
+ {
+-	struct x86_cpu *xc = per_cpu_ptr(&cpu_devices, cpu);
++	struct cpu *c = per_cpu_ptr(&cpu_devices, cpu);
+ 
+-	xc->cpu.hotpluggable = cpu > 0;
+-	return register_cpu(&xc->cpu, cpu);
++	c->hotpluggable = cpu > 0;
++	return register_cpu(c, cpu);
+ }
+ EXPORT_SYMBOL(arch_register_cpu);
+ 
+ void arch_unregister_cpu(int num)
+ {
+-	unregister_cpu(&per_cpu(cpu_devices, num).cpu);
++	unregister_cpu(&per_cpu(cpu_devices, num));
+ }
+ EXPORT_SYMBOL(arch_unregister_cpu);
+-#else /* CONFIG_HOTPLUG_CPU */
+-
+-int __init arch_register_cpu(int num)
+-{
+-	return register_cpu(&per_cpu(cpu_devices, num).cpu, num);
+-}
+ #endif /* CONFIG_HOTPLUG_CPU */
+-
+-static int __init topology_init(void)
+-{
+-	int i;
+-
+-	for_each_present_cpu(i)
+-		arch_register_cpu(i);
+-
+-	return 0;
+-}
+-subsys_initcall(topology_init);
+-- 
+2.30.2
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTff/AAKCRB4tDGHoIJi
-0vryAP0SoSHM6UtxRF69U0/a77j0hR/fdNme03q3wM+4GTwriQEAq+HB9Lceez7W
-imKIWRG7GVNAo27CEJYOSyZEkYP9egQ=
-=fwLS
------END PGP SIGNATURE-----
-
---kghOtZTw0vsKrKkb--
