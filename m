@@ -2,117 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED5C7D4CB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA697D4C87
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234286AbjJXJkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
+        id S234173AbjJXJei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234387AbjJXJk3 (ORCPT
+        with ESMTP id S234175AbjJXJdt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:40:29 -0400
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E3F1BCE;
-        Tue, 24 Oct 2023 02:30:07 -0700 (PDT)
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 71434403C2;
-        Tue, 24 Oct 2023 14:29:48 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1698139798; bh=r9TCrD1Taj9N39LOJkMvCUyhLxDk2EU51QorwsqEIP4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DyZ5ATjGay9uJdJWM3VKywt/uGPlWIMw4zPa3vJfAHCVgNTsyXnsYxSv3HVwitcsA
-         JKyxBMgNl7dTDO3ruIt8Bk+3JQdUtGwDcw0Ewi782Sy+kpdCh6mAJ5WZ5SJpBf/3EP
-         rjfhkagGp6CTTAyQK0DBYZYgg4ptRUJdrTQXnrqqpHT7VjH2egs0zOWePUEhTd0lzy
-         8w3X3D5ft3ZJCYxjzTm+sxvBDfiidtGvl3tN30vlD3QMUVl8v7SEPSGZ94S+HNbL59
-         +7Ao8SoAHoVbFxGevR9HeifBvmCdVEeYN3vaqeDvu3n6bwxEO5BtGkEgncy9WRVUY5
-         vJY1fCrCwGTxg==
+        Tue, 24 Oct 2023 05:33:49 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E083B10F6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:32:56 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SF6Gf2ySWzrTwf;
+        Tue, 24 Oct 2023 17:30:02 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 24 Oct 2023 17:32:53 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <jonathan.cameron@huawei.com>, <will@kernel.org>,
+        <mark.rutland@arm.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <hejunhao3@huawei.com>, <prime.zeng@hisilicon.com>,
+        <yangyicong@hisilicon.com>, <linuxarm@huawei.com>
+Subject: [PATCH 0/2] Minor fix and cleanup for hisi_pcie_pmu
+Date:   Tue, 24 Oct 2023 17:29:52 +0800
+Message-ID: <20231024092954.42297-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Date:   Tue, 24 Oct 2023 14:29:48 +0500
-From:   Nikita Travkin <nikita@trvn.ru>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v2 2/3] arm64: dts: qcom: pm8916: Add BMS and charger
-In-Reply-To: <3dff444b-c439-4c40-9d21-1e390f449840@linaro.org>
-References: <20231023-pm8916-dtsi-bms-lbc-v2-0-343e3dbf423e@trvn.ru>
- <20231023-pm8916-dtsi-bms-lbc-v2-2-343e3dbf423e@trvn.ru>
- <3dff444b-c439-4c40-9d21-1e390f449840@linaro.org>
-Message-ID: <b9c7f8662e4c02a4f9f275d27469f3be@trvn.ru>
-X-Sender: nikita@trvn.ru
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Konrad Dybcio писал(а) 24.10.2023 13:34:
-> On 10/23/23 08:20, Nikita Travkin wrote:
->> pm8916 contains some hardware blocks for battery powered devices:
->>
->> - VM-BMS: Battery voltage monitoring block.
->> - LBC: Linear battery charger.
->>
->> Add them to the pmic dtsi so the devices that make use of those blocks
->> can enable them.
->>
->> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
->> ---
->>   arch/arm64/boot/dts/qcom/pm8916.dtsi | 48 ++++++++++++++++++++++++++++++++++++
->>   1 file changed, 48 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/pm8916.dtsi b/arch/arm64/boot/dts/qcom/pm8916.dtsi
->> index f4de86787743..4b2e8fb47d2d 100644
->> --- a/arch/arm64/boot/dts/qcom/pm8916.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/pm8916.dtsi
->> @@ -41,6 +41,35 @@ watchdog {
->>   			};
->>   		};
->>   +		pm8916_charger: charger@1000 {
->> +			compatible = "qcom,pm8916-lbc";
->> +			reg = <0x1000>, <0x1200>, <0x1300>, <0x1600>;
->> +			reg-names = "chgr", "bat_if", "usb", "misc";
->> +
->> +			interrupts = <0x0 0x10 0 IRQ_TYPE_EDGE_BOTH>,
->> +				     <0x0 0x10 5 IRQ_TYPE_EDGE_BOTH>,
->> +				     <0x0 0x10 6 IRQ_TYPE_EDGE_BOTH>,
->> +				     <0x0 0x10 7 IRQ_TYPE_EDGE_BOTH>,
->> +				     <0x0 0x12 0 IRQ_TYPE_EDGE_BOTH>,
->> +				     <0x0 0x12 1 IRQ_TYPE_EDGE_BOTH>,
->> +				     <0x0 0x13 0 IRQ_TYPE_EDGE_BOTH>,
->> +				     <0x0 0x13 1 IRQ_TYPE_EDGE_BOTH>,
->> +				     <0x0 0x13 2 IRQ_TYPE_EDGE_BOTH>,
->> +				     <0x0 0x13 4 IRQ_TYPE_EDGE_BOTH>;
->> +			interrupt-names = "vbat_det",
->> +					  "fast_chg",
->> +					  "chg_fail",
->> +					  "chg_done",
->> +					  "bat_pres",
->> +					  "temp_ok",
->> +					  "coarse_det",
->> +					  "usb_vbus",
-> So, both the charger and the USBIN driver use the same irq? :/
-> 
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-AFAIU the usbin extcon driver pretty much just tracks the state
-of the IRQ to report extcon. It happens to assume the same part
-of the pmic though, yes, which also means there will be no user
-that would enable both charger and vbus extcon, since charger
-driver provides this functionality as well.
+This patchset includes 2 minor updates for the hisi_pcie_pmu:
+- fix issue that we may touch others events in some case
+- modify the event->cpu only on the success pmu::event_init()
 
-Nikita
+Yicong Yang (2):
+  drivers/perf: hisi_pcie: Check the type first in pmu::event_init()
+  drivers/perf: hisi_pcie: Initialize event->cpu only on success
 
-> Konrad
+ drivers/perf/hisilicon/hisi_pcie_pmu.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+-- 
+2.24.0
+
