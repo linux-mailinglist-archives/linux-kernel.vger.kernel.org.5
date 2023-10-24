@@ -2,75 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 852B37D45B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 04:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE5F7D45B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 04:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbjJXCtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 22:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35418 "EHLO
+        id S232419AbjJXCvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 22:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232371AbjJXCtQ (ORCPT
+        with ESMTP id S232371AbjJXCvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 22:49:16 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF524D7C;
-        Mon, 23 Oct 2023 19:49:09 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-27e1eea2f0dso2143706a91.1;
-        Mon, 23 Oct 2023 19:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698115749; x=1698720549; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fVsLY+T+frlNzIkA4CFr7Weie77YHu/MtNXkFtXeImU=;
-        b=PpHqat7UBskqnGjF9nb7+MIy7y+ESBwE/P1PQfBSMOCQBG439cFZ3cOzd+FO6iTR1/
-         soPqNMDHIF5HBZLHNyCQaPOFYSYXWqdNhVcG/JssyQLtwasLbXBgYBXZ+u5MoUBcYcr2
-         mhsCC+RXVk0pt2AftP6VQfBGtINisxRUi72SE2LOifn/hNoNQQ1jj2+RbSpqZJ/JWcCR
-         L6ZPVSTjeud2QIo1vLydALRSvKL6PF7bqhUTrc3rjg+IYe3Hw36aFEeOMBylx1ZcJ+Io
-         IqY4IiXakSvVKaoM+PDv+yBGGmv4sHhwyj581muxmqB/6du6c/rkMlccGwf/Ql8dTezx
-         X5Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698115749; x=1698720549;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fVsLY+T+frlNzIkA4CFr7Weie77YHu/MtNXkFtXeImU=;
-        b=hgVkljQOLpgVk5qAg2BsYtYnDN7kHRAglMvI2VClUv41aL4nX+nXGO28tbY5X5S+ko
-         /B3+7HErwQaJcFhWn8GEFH35uGufB0uHmKWrZu3CTyJiBiuWNRM5FNPngNOiRJXVKeXw
-         SshfeJ5BthLKrCGhE9hMf6dFD/wTiJQfzll5ZWQdZ4pkCR2JkmVjVoJcqNZwrE15F9JM
-         E2rohuc5JRVI+EqLnElt3f7DPm3FN7521xVf+ZJQIZzBo6b6GS5FJ89KAnGkrwDLjCp2
-         dWyyr7OL/RAHVH+KVh19BDztiWhLGyBoE2HL4tm98opXbjuSH2kwiblgW1RPs1kpHutW
-         hZHg==
-X-Gm-Message-State: AOJu0YzQ1hOg0TtdBIiUiLuh/24EcLbgttpEMeuhiIT9ibBJFLdR9PMP
-        HB3i0Qg6Z6F8wIApu+YaRXM=
-X-Google-Smtp-Source: AGHT+IHLyzVPkA4hnl2AdL6IpBmZ0xApdXiqnfPpjWULmzyQMg0qxYpVuIJg/DFvlgCmtqTBjbguHQ==
-X-Received: by 2002:a17:90a:df95:b0:27d:4249:4040 with SMTP id p21-20020a17090adf9500b0027d42494040mr7884810pjv.43.1698115749277;
-        Mon, 23 Oct 2023 19:49:09 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id jh10-20020a170903328a00b001c736370245sm6628325plb.54.2023.10.23.19.49.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 19:49:08 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 0E98B835CB47; Tue, 24 Oct 2023 09:49:05 +0700 (WIB)
-Date:   Tue, 24 Oct 2023 09:49:05 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.5 000/241] 6.5.9-rc1 review
-Message-ID: <ZTcwoURTiNuvTLqt@debian.me>
-References: <20231023104833.832874523@linuxfoundation.org>
+        Mon, 23 Oct 2023 22:51:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170BE10A;
+        Mon, 23 Oct 2023 19:50:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DB15C433C7;
+        Tue, 24 Oct 2023 02:50:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698115858;
+        bh=ECr5ZJxdFFyYc11ubfZSs54qOOUCIcaZ7LR/5g5OzUQ=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=cgw613z2rQFqTj8u9QjDMQCOA5in+b3q/5FTcamjTg/UCWbpCYzFcYJeclK5mcg0l
+         EC1v98hT6UHw0SND4LyCUlSXqrF3xSvbNR0aBUb3VBZrrnt6R8bRsVhcXtVAt8aIMB
+         XkwzaFBzoyA3g2KR1p4IoXReFjsbWIsG8/+o0x0QDGt1lrw1CTLb+hVX8s8VUy+ry8
+         G3b4Dsy7m7Do6fVYAW3SyBRldrBKWeIi2guxxwAeDLNprBW3IblGgJPEpslE9bViBY
+         IgvhdCWPupt0vLMgNZi/MsKpUXu0Hnw2Bi8OHWj8Ab2mLOOWA+Z4wTLF6MiXydtW6z
+         3FcO/gsUKC2mA==
+Message-ID: <c67485276711555b1081ad5e2748230f.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EqdcrD72/hPiNIlf"
-Content-Disposition: inline
-In-Reply-To: <20231023104833.832874523@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,SPF_HELO_NONE,
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230915-ep93xx-v4-4-a1d779dcec10@maquefel.me>
+References: <20230915-ep93xx-v4-0-a1d779dcec10@maquefel.me> <20230915-ep93xx-v4-4-a1d779dcec10@maquefel.me>
+Subject: Re: [PATCH v4 04/42] clk: ep93xx: add DT support for Cirrus EP93xx
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Nikita Shubin via B4 Relay 
+        <devnull+nikita.shubin.maquefel.me@kernel.org>,
+        nikita.shubin@maquefel.me
+Date:   Mon, 23 Oct 2023 19:50:56 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,36 +53,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Nikita Shubin via B4 Relay (2023-09-15 01:10:46)
+> diff --git a/drivers/clk/clk-ep93xx.c b/drivers/clk/clk-ep93xx.c
+> new file mode 100644
+> index 000000000000..e8d3bd595255
+> --- /dev/null
+> +++ b/drivers/clk/clk-ep93xx.c
+> @@ -0,0 +1,753 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Clock control for Cirrus EP93xx chips.
+[...]
+> +#define EP93XX_SYSCON_KEYTCHCLKDIV_KEN 15
+> +#define EP93XX_SYSCON_KEYTCHCLKDIV_KDIV        0
+> +#define EP93XX_SYSCON_CHIPID           0x94
+> +#define EP93XX_SYSCON_CHIPID_ID                0x9213
+> +
+> +static const char adc_divisors[] =3D { 16, 4 };
+> +static const char sclk_divisors[] =3D { 2, 4 };
+> +static const char lrclk_divisors[] =3D { 32, 64, 128 };
+> +
+> +static const struct clk_parent_data ep93xx_clk_parents[] =3D {
+> +       { .fw_name =3D "xtali", .name =3D "xtali" },
 
---EqdcrD72/hPiNIlf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Drop name. And please drop fw_name too and set .index to 0 explicitly.
 
-On Mon, Oct 23, 2023 at 12:53:06PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.9 release.
-> There are 241 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+> +       { .index =3D -1, .name =3D "pll1" },
+> +       { .index =3D -1, .name =3D "pll2" },
 
-Successfully compiled and installed bindeb-pkgs on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+These two should come from DT via index as well. The binding should be
+changed to list the pll. In the previous review you mentioned the SoC
+driver was populating these. The answer is yes that you should be
+providing an OF clk provider (and updating the binding) to provide those
+clks to this device node. Otherwise it won't be possible to describe the
+connection besides with the name fallback method, which is not desired.
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---EqdcrD72/hPiNIlf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZTcwnAAKCRD2uYlJVVFO
-o+0WAP94eZENF6MiUrUvOeoXW+781DqNKWbD30r5KyXqRDt3JAD/WFw3zpBi1C0Z
-oUkb7VrL1V55aHO7O2u1ceyQv9EzXgM=
-=E6zm
------END PGP SIGNATURE-----
-
---EqdcrD72/hPiNIlf--
+> +};
+> +
