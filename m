@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B97647D5964
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9788C7D5967
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbjJXRHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 13:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40766 "EHLO
+        id S1344023AbjJXRIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 13:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbjJXRHR (ORCPT
+        with ESMTP id S230262AbjJXRIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 13:07:17 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19159122
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:07:15 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a528c2c8bso5517910276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:07:15 -0700 (PDT)
+        Tue, 24 Oct 2023 13:08:15 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5718E118;
+        Tue, 24 Oct 2023 10:08:13 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so4545375b3a.2;
+        Tue, 24 Oct 2023 10:08:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698167234; x=1698772034; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GOKT7eBtwEJ4k1HBPZS+t7LF5MXiuApZ3Dql347Aiik=;
-        b=TbJx3tTnHx1lOsRXBSI25Lo8rtv7TOptkH2xDqRnE9aR3mt9CbNbHYDOEUgQXr8HH2
-         6HigF7jv/EJ5wnsqfoDpSJQ01VW2FP7kfZhU5J+WpfwCQq6EGlKOfYktmj7m2fas5HWu
-         rxLbxTqA7M6EkG6hVtk6+KuHfZ/Ej1Dmtw2T9ueZASqYjvhgDl/cPoy1YhLRNS3k8Tnt
-         bhPrR0BLLKlDWDvpmgUIp6m0VDp8bgiGeB1gXAKt79ekXzfBJ7P/kdtHRQGPqd80K8XE
-         MEaHr2h9/0Ugur0pHlNpNk3KPZ5JHM4CwJw+bBykWZSHT+UMqgn3NbXqGj9H3exAG5yG
-         oTmg==
+        d=gmail.com; s=20230601; t=1698167293; x=1698772093; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w5+XaYJFN+NVWeY4zXTt2hZlhhgyD1PbfO78ZC5UnKI=;
+        b=Gt7e3AzYhOZBgledH9x/fP1Sxlnlvk2XZ43tA3jvXKRTLqhunEJvbYs9y3eyNhTjk6
+         ouQB0iEN3bZYPV0chFPg0QlheAuWcCI2zaJm3efn0zCYOgY9i23qy106bkUeJ+7T3AkW
+         L0UuHa4eiAQLH2Hp1vfKWOv/49QAASAC/Pxht95HiomGbQJ/WRzXRaESQ3Q1ac6Iyj0m
+         iaeTgS0DXcsAcv8ZG7EGafY8hCFZEWMX0XgPiKaDATQiOjI0kPBq/BWu2jHv7E43Ce1d
+         N4igLznIXzYTYlEr+xaDEzcIY6s60Jf+6DgOH5txt/Xu392g+hV/RWIzeLMVqBZRo6sY
+         2ZLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698167234; x=1698772034;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=GOKT7eBtwEJ4k1HBPZS+t7LF5MXiuApZ3Dql347Aiik=;
-        b=dU3VuaksBuOH+dMkc16eVI8It8AVb5ayO9yrWSJDaDl6SOp7Zq0k8Ofgk1P4mlnNIO
-         IPYlK+KUVx7BJAxbb8BzOwh9DiQCjV5tk8NpiNQl/mbX0wwh71M1nxpGWRHofd38pPOu
-         dFgdOWDko5GdnFgaLS2T5QxYurT3fZdoa4VUp/y6gZylcuEnuF7g2SsF2IxOdGlYv88N
-         8tQe/9uL55/pUFn3Da0JJmGd4luAcYbsGv8A9xHxw3HC90gGRwNVTS4bwaurHQ9FjKpg
-         6tW2KvfSmQIJDx/Jy8Ta2omnOcCE9CKQOnBQm4d0Uv5OSPg/R+8XOsBnFGba8DUWi8fQ
-         7vqg==
-X-Gm-Message-State: AOJu0Yzi/tGN4Eo71RObLEl23CD938GoUGdMwKePRC8N3pz88zXaD+dg
-        0G18mmU7AHuzk87lm6MoOtYz4STxgZ8=
-X-Google-Smtp-Source: AGHT+IFrvhm6CQzoWfCnOT8xnCe29kvGqRLP3KCWFWsXgigZgrlixJQBNXS+VkjIM6Ajz24QhucNgzwaUVM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:8e05:0:b0:d74:93a1:70a2 with SMTP id
- p5-20020a258e05000000b00d7493a170a2mr258000ybl.5.1698167234230; Tue, 24 Oct
- 2023 10:07:14 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 10:07:12 -0700
-In-Reply-To: <1347cf03-4598-f923-74e4-a3d193d9d2e9@intel.com>
-Mime-Version: 1.0
-References: <20230914063325.85503-1-weijiang.yang@intel.com>
- <20230914063325.85503-7-weijiang.yang@intel.com> <e0db6ffd-5d92-2a1a-bdfb-a190fe1ccd25@intel.com>
- <1347cf03-4598-f923-74e4-a3d193d9d2e9@intel.com>
-Message-ID: <ZTf5wPKXuHBQk0AN@google.com>
-Subject: Re: [PATCH v6 06/25] x86/fpu/xstate: Opt-in kernel dynamic bits when
- calculate guest xstate size
-From:   Sean Christopherson <seanjc@google.com>
-To:     Weijiang Yang <weijiang.yang@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>, pbonzini@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, chao.gao@intel.com,
-        rick.p.edgecombe@intel.com, john.allen@amd.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        d=1e100.net; s=20230601; t=1698167293; x=1698772093;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w5+XaYJFN+NVWeY4zXTt2hZlhhgyD1PbfO78ZC5UnKI=;
+        b=rXes7tMgWHEcJT30a7oBK6PKNrCbdltOKj9rkfGafb5I0KtwvwrsfdMzYJLpNTt1Hw
+         BpVewWFaFvk2lZG6s1DmmqiVtaOVbW3BMT+/xSWcBw0KEg7zFNN19BPC7gwVkdkBLymV
+         gFYArAbTM0b54BLqh2FGOtvdefXHtCGArnQ2dpf535kkFeOlFm8iaMCqTC2QTTFVThtA
+         nubu/CLb8CIXWwwx9lXg/rYxpA+HJvIrtnBPUad0nvC1zIXCKLHaV6RWihaKlO5/EJVL
+         BcvJoDfQgEb8BxX3e2NVR0mceiYWXjQi6h5de+jGTVJIyqE6Jq3hQXrcaWtsXTJhdswb
+         3WpQ==
+X-Gm-Message-State: AOJu0Yy++riVyM5CP3tS1QkdknCzDEj6Xwq7q+wNkSo9xsdbSvcdsn4z
+        uDh1D8INbtLzhA0MY+vWMn4=
+X-Google-Smtp-Source: AGHT+IHd3/Ozn+cdIOjsShL1jIxoFepfqKnj9txTltqWrGjBYe8Dn3VBv5QDIltIkx/ptDribRPnpg==
+X-Received: by 2002:a05:6a00:21ca:b0:6be:1f19:e5f0 with SMTP id t10-20020a056a0021ca00b006be1f19e5f0mr15216384pfj.25.1698167292690;
+        Tue, 24 Oct 2023 10:08:12 -0700 (PDT)
+Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
+        by smtp.gmail.com with ESMTPSA id d6-20020aa797a6000000b006b225011ee5sm7868310pfq.6.2023.10.24.10.08.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 10:08:12 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] drm/msm/gem: Demote userspace errors to DRM_UT_DRIVER
+Date:   Tue, 24 Oct 2023 10:08:04 -0700
+Message-ID: <20231024170806.194563-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,83 +77,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023, Weijiang Yang wrote:
-> On 9/15/2023 1:40 AM, Dave Hansen wrote:
-> > On 9/13/23 23:33, Yang Weijiang wrote:
-> > > --- a/arch/x86/kernel/fpu/xstate.c
-> > > +++ b/arch/x86/kernel/fpu/xstate.c
-> > > @@ -1636,9 +1636,17 @@ static int __xstate_request_perm(u64 permitted=
-, u64 requested, bool guest)
-> > >   	/* Calculate the resulting kernel state size */
-> > >   	mask =3D permitted | requested;
-> > > -	/* Take supervisor states into account on the host */
-> > > +	/*
-> > > +	 * Take supervisor states into account on the host. And add
-> > > +	 * kernel dynamic xfeatures to guest since guest kernel may
-> > > +	 * enable corresponding CPU feaures and the xstate registers
-> > > +	 * need to be saved/restored properly.
-> > > +	 */
-> > >   	if (!guest)
-> > >   		mask |=3D xfeatures_mask_supervisor();
-> > > +	else
-> > > +		mask |=3D fpu_kernel_dynamic_xfeatures;
+From: Rob Clark <robdclark@chromium.org>
 
-This looks wrong.  Per commit 781c64bfcb73 ("x86/fpu/xstate: Handle supervi=
-sor
-states in XSTATE permissions"), mask at this point only contains user featu=
-res,
-which somewhat unintuitively doesn't include CET_USER (I get that they're M=
-SRs
-and thus supervisor state, it's just the name that's odd).
+Error messages resulting from incorrect usage of the kernel uabi should
+not spam dmesg by default.  But it is useful to enable them to debug
+userspace.  So demote to DRM_UT_DRIVER.
 
-IIUC, the "dynamic" features contains CET_KERNEL, whereas xfeatures_mask_su=
-pervisor()
-conatins PASID, CET_USER, and CET_KERNEL.  PASID isn't virtualized by KVM, =
-but
-doesn't that mean CET_USER will get dropped/lost if userspace requests AMX/=
-XTILE
-enabling?
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_gem.c        |  6 ++---
+ drivers/gpu/drm/msm/msm_gem_submit.c | 36 ++++++++++++++++------------
+ 2 files changed, 24 insertions(+), 18 deletions(-)
 
-The existing code also seems odd, but I might be missing something.  Won't =
-the
-kernel drop PASID if the guest request AMX/XTILE?  I'm not at all familiar =
-with
-what PASID state is managed via XSAVE, so I've no idea if that's an actual =
-problem
-or just an oddity.
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index db1e748daa75..1113e6b2ec8e 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -226,9 +226,9 @@ static struct page **msm_gem_pin_pages_locked(struct drm_gem_object *obj,
+ 
+ 	msm_gem_assert_locked(obj);
+ 
+-	if (GEM_WARN_ON(msm_obj->madv > madv)) {
+-		DRM_DEV_ERROR(obj->dev->dev, "Invalid madv state: %u vs %u\n",
+-			msm_obj->madv, madv);
++	if (msm_obj->madv > madv) {
++		DRM_DEV_DEBUG_DRIVER(obj->dev->dev, "Invalid madv state: %u vs %u\n",
++				     msm_obj->madv, madv);
+ 		return ERR_PTR(-EBUSY);
+ 	}
+ 
+diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+index a105ca1f2102..9f16af761bf0 100644
+--- a/drivers/gpu/drm/msm/msm_gem_submit.c
++++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+@@ -17,6 +17,12 @@
+ #include "msm_gem.h"
+ #include "msm_gpu_trace.h"
+ 
++/* For userspace errors, use DRM_UT_DRIVER.. so that userspace can enable
++ * error msgs for debugging, but we don't spam dmesg by default
++ */
++#define SUBMIT_ERROR(submit, fmt, ...) \
++	DRM_DEV_DEBUG_DRIVER((submit)->dev->dev, fmt, ##__VA_ARGS__)
++
+ /*
+  * Cmdstream submission:
+  */
+@@ -136,7 +142,7 @@ static int submit_lookup_objects(struct msm_gem_submit *submit,
+ 
+ 		if ((submit_bo.flags & ~MSM_SUBMIT_BO_FLAGS) ||
+ 			!(submit_bo.flags & MANDATORY_FLAGS)) {
+-			DRM_ERROR("invalid flags: %x\n", submit_bo.flags);
++			SUBMIT_ERROR(submit, "invalid flags: %x\n", submit_bo.flags);
+ 			ret = -EINVAL;
+ 			i = 0;
+ 			goto out;
+@@ -158,7 +164,7 @@ static int submit_lookup_objects(struct msm_gem_submit *submit,
+ 		 */
+ 		obj = idr_find(&file->object_idr, submit->bos[i].handle);
+ 		if (!obj) {
+-			DRM_ERROR("invalid handle %u at index %u\n", submit->bos[i].handle, i);
++			SUBMIT_ERROR(submit, "invalid handle %u at index %u\n", submit->bos[i].handle, i);
+ 			ret = -EINVAL;
+ 			goto out_unlock;
+ 		}
+@@ -202,13 +208,13 @@ static int submit_lookup_cmds(struct msm_gem_submit *submit,
+ 		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
+ 			break;
+ 		default:
+-			DRM_ERROR("invalid type: %08x\n", submit_cmd.type);
++			SUBMIT_ERROR(submit, "invalid type: %08x\n", submit_cmd.type);
+ 			return -EINVAL;
+ 		}
+ 
+ 		if (submit_cmd.size % 4) {
+-			DRM_ERROR("non-aligned cmdstream buffer size: %u\n",
+-					submit_cmd.size);
++			SUBMIT_ERROR(submit, "non-aligned cmdstream buffer size: %u\n",
++				     submit_cmd.size);
+ 			ret = -EINVAL;
+ 			goto out;
+ 		}
+@@ -306,8 +312,8 @@ static int submit_lock_objects(struct msm_gem_submit *submit)
+ 
+ fail:
+ 	if (ret == -EALREADY) {
+-		DRM_ERROR("handle %u at index %u already on submit list\n",
+-				submit->bos[i].handle, i);
++		SUBMIT_ERROR(submit, "handle %u at index %u already on submit list\n",
++			     submit->bos[i].handle, i);
+ 		ret = -EINVAL;
+ 	}
+ 
+@@ -448,8 +454,8 @@ static int submit_bo(struct msm_gem_submit *submit, uint32_t idx,
+ 		struct drm_gem_object **obj, uint64_t *iova, bool *valid)
+ {
+ 	if (idx >= submit->nr_bos) {
+-		DRM_ERROR("invalid buffer index: %u (out of %u)\n",
+-				idx, submit->nr_bos);
++		SUBMIT_ERROR(submit, "invalid buffer index: %u (out of %u)\n",
++			     idx, submit->nr_bos);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -475,7 +481,7 @@ static int submit_reloc(struct msm_gem_submit *submit, struct drm_gem_object *ob
+ 		return 0;
+ 
+ 	if (offset % 4) {
+-		DRM_ERROR("non-aligned cmdstream buffer: %u\n", offset);
++		SUBMIT_ERROR(submit, "non-aligned cmdstream buffer: %u\n", offset);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -497,8 +503,8 @@ static int submit_reloc(struct msm_gem_submit *submit, struct drm_gem_object *ob
+ 		bool valid;
+ 
+ 		if (submit_reloc.submit_offset % 4) {
+-			DRM_ERROR("non-aligned reloc offset: %u\n",
+-					submit_reloc.submit_offset);
++			SUBMIT_ERROR(submit, "non-aligned reloc offset: %u\n",
++				     submit_reloc.submit_offset);
+ 			ret = -EINVAL;
+ 			goto out;
+ 		}
+@@ -508,7 +514,7 @@ static int submit_reloc(struct msm_gem_submit *submit, struct drm_gem_object *ob
+ 
+ 		if ((off >= (obj->size / 4)) ||
+ 				(off < last_offset)) {
+-			DRM_ERROR("invalid offset %u at reloc %u\n", off, i);
++			SUBMIT_ERROR(submit, "invalid offset %u at reloc %u\n", off, i);
+ 			ret = -EINVAL;
+ 			goto out;
+ 		}
+@@ -881,7 +887,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+ 		if (!submit->cmd[i].size ||
+ 			((submit->cmd[i].size + submit->cmd[i].offset) >
+ 				obj->size / 4)) {
+-			DRM_ERROR("invalid cmdstream size: %u\n", submit->cmd[i].size * 4);
++			SUBMIT_ERROR(submit, "invalid cmdstream size: %u\n", submit->cmd[i].size * 4);
+ 			ret = -EINVAL;
+ 			goto out;
+ 		}
+@@ -893,7 +899,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+ 
+ 		if (!gpu->allow_relocs) {
+ 			if (submit->cmd[i].nr_relocs) {
+-				DRM_ERROR("relocs not allowed\n");
++				SUBMIT_ERROR(submit, "relocs not allowed\n");
+ 				ret = -EINVAL;
+ 				goto out;
+ 			}
+-- 
+2.41.0
 
-> > >   	ksize =3D xstate_calculate_size(mask, compacted);
-> > Heh, you changed the "guest" naming in "fpu_kernel_dynamic_xfeatures"
-> > but didn't change the logic.
-> >=20
-> > As it's coded at the moment *ALL* "fpu_kernel_dynamic_xfeatures" are
-> > guest xfeatures.  So, they're different in name only.
-
-...
-
-> > Would there ever be any reason for KVM to be on a system which supports=
- a
-> > dynamic kernel feature but where it doesn't get enabled for guest use, =
-or
-> > at least shouldn't have the FPU space allocated?
->=20
-> I haven't heard of that kind of usage for other features so far, CET
-> supervisor xstate is the only dynamic kernel feature now,=C2=A0 not sure =
-whether
-> other CPU features having supervisor xstate would share the handling logi=
-c
-> like CET does one day.
-
-There are definitely scenarios where CET will not be exposed to KVM guests,=
- but
-I don't see any reason to make the guest FPU space dynamically sized for CE=
-T.
-It's what, 40 bytes?
-
-I would much prefer to avoid the whole "dynamic" thing and instead make CET
-explicitly guest-only.  E.g. fpu_kernel_guest_only_xfeatures?  Or even bett=
-er
-if it doesn't cause weirdness elsewhere, a dedicated fpu_guest_cfg.  For me=
- at
-least, a fpu_guest_cfg would make it easier to understand what all is going=
- on.=20
