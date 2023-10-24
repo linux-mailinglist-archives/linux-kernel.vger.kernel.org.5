@@ -2,70 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 027B47D5C5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF227D5C67
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344272AbjJXU07 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 16:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        id S1344191AbjJXUaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 16:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343896AbjJXU06 (ORCPT
+        with ESMTP id S234576AbjJXUau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 16:26:58 -0400
-Received: from mail.07d02.mspz7.gob.ec (mail.07d02.mspz7.gob.ec [181.196.186.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E926D7F
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 13:26:55 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.07d02.mspz7.gob.ec (Postfix) with ESMTP id D6648602BCECE;
-        Tue, 24 Oct 2023 15:22:05 -0500 (-05)
-Received: from mail.07d02.mspz7.gob.ec ([127.0.0.1])
-        by localhost (mail.07d02.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id vK5m4zc9B3nW; Tue, 24 Oct 2023 15:22:05 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.07d02.mspz7.gob.ec (Postfix) with ESMTP id 796C1602BFDD1;
-        Tue, 24 Oct 2023 15:22:05 -0500 (-05)
-X-Virus-Scanned: amavisd-new at 07d02.mspz7.gob.ec
-Received: from mail.07d02.mspz7.gob.ec ([127.0.0.1])
-        by localhost (mail.07d02.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id U3PzpKa_YiBB; Tue, 24 Oct 2023 15:22:05 -0500 (-05)
-Received: from [192.168.0.171] (unknown [197.210.78.234])
-        by mail.07d02.mspz7.gob.ec (Postfix) with ESMTPSA id 932DA602BF55D;
-        Tue, 24 Oct 2023 15:21:54 -0500 (-05)
-Content-Type: text/plain; charset="iso-8859-1"
+        Tue, 24 Oct 2023 16:30:50 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03AFEA;
+        Tue, 24 Oct 2023 13:30:48 -0700 (PDT)
+Received: from [127.0.0.1] ([98.35.210.218])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 39OKU61w3426385
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 24 Oct 2023 13:30:07 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 39OKU61w3426385
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023101201; t=1698179409;
+        bh=i9nl6v0XQTPlxSQ2dRSWnBYQvkoXzwqM1OBHxFm02uo=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=ngQUl/HXIc/IvUvksoAeojl9Bb4I82VGTs7uPEKlYj4COIE/kqJkOlYt29/vJkQG4
+         jFHVMeHrCIWVBJYzmmwB5oZ2PNkxFcdUBP77cCX0C6+TsIoBgsmQCwz9eThPJmVqf/
+         gxl4UHhBM9S58HgkQ22YbMOaUiyL7JwRkVKSPyKgMWrZLqL56+FpiBmV9YZef4Rhic
+         WBeX4WrB8juvYcbZgx9wzx9j3bQFCPt6RHmdJyg2pwlZ6O9oaSfFywOmwKGGLifRkT
+         8vNyIgQQuhx+YLt/M1nGycwC/OeDq5anb8KvUsHZez5Kgtr62jU0WcIZtyUK/G60zu
+         GoMxkx7t703kw==
+Date:   Tue, 24 Oct 2023 13:30:04 -0700
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        "antonio.gomez.iglesias@linux.intel.com" 
+        <antonio.gomez.iglesias@linux.intel.com>,
+        "Milburn, Alyssa" <alyssa.milburn@intel.com>
+Subject: RE: [PATCH  v2 1/6] x86/bugs: Add asm helpers for executing VERW
+User-Agent: K-9 Mail for Android
+In-Reply-To: <SJ1PR11MB6083FE98A35C6BCF027B568CFCDFA@SJ1PR11MB6083.namprd11.prod.outlook.com>
+References: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com> <20231024-delay-verw-v2-1-f1881340c807@linux.intel.com> <20231024103601.GH31411@noisy.programming.kicks-ass.net> <20231024163515.aivo2xfmwmbmlm7z@desk> <20231024163621.GD40044@noisy.programming.kicks-ass.net> <20231024164520.osvqo2dja2xhb7kn@desk> <20231024170248.GE40044@noisy.programming.kicks-ass.net> <DD2F34A0-4F2F-4C8C-A634-7DBEF31C40F0@zytor.com> <SJ1PR11MB6083E3E2D35B30F4E40E8FE7FCDFA@SJ1PR11MB6083.namprd11.prod.outlook.com> <5B8EB5F2-16A7-47BC-97FE-262ED0169DE3@zytor.com> <SJ1PR11MB6083FE98A35C6BCF027B568CFCDFA@SJ1PR11MB6083.namprd11.prod.outlook.com>
+Message-ID: <49A97ACF-24A3-452C-88A5-0D55F77B7780@zytor.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Good news
-To:     Recipients <janett.yangua@07d02.mspz7.gob.ec>
-From:   "Lisa Robinson" <janett.yangua@07d02.mspz7.gob.ec>
-Date:   Tue, 24 Oct 2023 13:21:43 -0700
-Reply-To: lsarbn01@gmail.com
-Message-Id: <20231024202154.932DA602BF55D@mail.07d02.mspz7.gob.ec>
-X-Spam-Status: Yes, score=5.6 required=5.0 tests=BAYES_50,
-        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,
-        MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [181.196.186.147 listed in list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5598]
-        *  0.0 SPF_NONE SPF: sender does not publish an SPF Record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [lsarbn01[at]gmail.com]
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  2.5 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-X-Spam-Level: *****
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Your email came out victorious in a random selection and you have been chosen for a cash donation of $950,000.00. Get back for your urgent claim.
+On October 24, 2023 12:40:02 PM PDT, "Luck, Tony" <tony=2Eluck@intel=2Ecom>=
+ wrote:
+>> Sure it could, but it would mean the kernel is sitting on an average of=
+ 6 MB of unusable memory=2E It would also mean that unloaded modules would =
+create holes in that memory which would have to be managed=2E
+>
+>On my Fedora38 desktop:
+>
+>$ lsmod | awk '{ bytes +=3D $2 } END {print bytes/(1024*1024)}'
+>21=2E0859
+>
+>Lots more than 6MB memory already essentially pinned by loaded modules=2E
+>
+>$ head -3 /proc/meminfo
+>MemTotal:       65507344 kB
+>MemFree:        56762336 kB
+>MemAvailable:   63358552 kB
+>
+>Pinning 20 or so Mbytes isn't going to make a dent in that free memory=2E
+>
+>Managing the holes for unloading/reloading modules adds some complexity =
+=2E=2E=2E but shouldn't be awful=2E
+>
+>If this code managed at finer granularity than "page", it would save some=
+ memory=2E
+>
+>$ lsmod | wc -l
+>123
+>
+>All those modules rounding text/data up to 4K boundaries is wasting a bun=
+ch of it=2E
+>
+>-Tony
+>
+>
+>
+
+Sure, but is it worth the effort?
