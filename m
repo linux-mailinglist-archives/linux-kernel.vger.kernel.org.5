@@ -2,67 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1437D469A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 06:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B38A7D46A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 06:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbjJXEFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 00:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+        id S232248AbjJXELF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 00:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232082AbjJXEFS (ORCPT
+        with ESMTP id S231986AbjJXEK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 00:05:18 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA938E;
-        Mon, 23 Oct 2023 20:57:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1698119831;
-        bh=IAhOV59IL0dDYPGzR0+4k0wjvyE6d0i0JVdfSx1wOqM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=a4QEyhDP0VqTgFZ9zxzlaqQC/4GByyJpTvk84VFb+90IYHaRdq5tVpIKlXPFwLIjl
-         KRI0XKjVZ45pxojown33ZbRCrjFgxmgnD/2KSjrIL7mJqQ4MfQeBJf4+H3nfl9/TaM
-         yUsnAhll712BIN/GVfO8/Ut8Bd7QjxIjj+cTVJFpGybXuvvFygy+jy7tmCim4eTYdM
-         7jfEXuKHv8wc0OuskDH6/m2UeXCFTwayUCcolpE4q8s01BbVaRWp8SFdjtCY/Gq6I8
-         ATam/zbdnfF2U3xhR5n6lcXhAiGXQwyF9XnOCEaUs0pWcXg0hRkBv/GCIFFLRBGEjZ
-         u1J+lt4kLq01g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SDytb0KQcz4wcN;
-        Tue, 24 Oct 2023 14:57:11 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the powerpc tree
-In-Reply-To: <20231024081617.686c086f@canb.auug.org.au>
-References: <20231024081617.686c086f@canb.auug.org.au>
-Date:   Tue, 24 Oct 2023 14:57:04 +1100
-Message-ID: <87o7god65r.fsf@mail.lhotse>
+        Tue, 24 Oct 2023 00:10:59 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 109C8FD
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 21:10:56 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9b95622c620so614205466b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 21:10:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1698120654; x=1698725454; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=R/DnLkXKcbtHeIdj2lNteiEcRFjQW0/FCeNT137Lkzs=;
+        b=Aw95fEiSWtFcR8obn3vjO/5M5aj1EuPgR5uJJkCqlvJnxOXShvYCdyhamojVfrIQpi
+         XDba13gNYmYGH0jiEeB8bDWs8chBIA8q/RfnAUFtqd+zRDiwEnVk235aoAUB8uQBnUNo
+         +/9a+5m38Q6YGXKdQ3OdZcrhH1ryorDounMfE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698120654; x=1698725454;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R/DnLkXKcbtHeIdj2lNteiEcRFjQW0/FCeNT137Lkzs=;
+        b=HenRyf4XQZ4sgbtKqj0b3FPr7c5XVPEmH02+AuDrcElLBWGIdqWjoksuEFH0ELOk1l
+         QJetTN5MKEokLYMDtnzWfyvXjXS5bZAgTkT/A0zm/r6HUUOiGET7H7CZpBRVdz/tYaec
+         DEzKQFHHVpcl/VRxT0k3Ljh/Acu2HUxWQ7F8RlfWnEN0as708Ab4NQ8n+ISmlGB2oiPR
+         Gq1TorKdoH+AYNf98D3tTvBxNWsfuVsXDIS9wRD78zkSBI29rMTfiKfKVPBn1lK4IiC5
+         APYH/pvftmY6wCuYThvQN79hfe/kMSRPxLW6NJ+g34Ap58MRR8cjyE7MicYFqlDcCNMP
+         f93Q==
+X-Gm-Message-State: AOJu0YyCvoMEJh8HG7rpft0nIx7vRUVlJpJ5FcAg9l0Zyg/mUpIRt9mW
+        JX4VPjWDywB6uTCguQLL+A+fRQ1o4JSQIpqiZGPlioxk
+X-Google-Smtp-Source: AGHT+IE3qzPx4H9Adl8a3ph9K/4Mn9CPlvhxJ76zj6VZYF3Rp9SSChSYZiRhPCRKuJ5dfRn11CgsyQ==
+X-Received: by 2002:a17:907:728b:b0:9be:481c:60bf with SMTP id dt11-20020a170907728b00b009be481c60bfmr9155833ejc.55.1698120654456;
+        Mon, 23 Oct 2023 21:10:54 -0700 (PDT)
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com. [209.85.128.42])
+        by smtp.gmail.com with ESMTPSA id ay18-20020a170906d29200b009b2c5363ebasm7489220ejb.26.2023.10.23.21.10.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 21:10:53 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4083f61322fso31538985e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 21:10:53 -0700 (PDT)
+X-Received: by 2002:a05:6402:274e:b0:53e:8e09:524d with SMTP id
+ z14-20020a056402274e00b0053e8e09524dmr2329463edd.5.1698120632873; Mon, 23 Oct
+ 2023 21:10:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+ <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+ <20231019-fluor-skifahren-ec74ceb6c63e@brauner> <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+ <ZTGncMVw19QVJzI6@dread.disaster.area> <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+ <ZTWfX3CqPy9yCddQ@dread.disaster.area> <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+ <ZTcBI2xaZz1GdMjX@dread.disaster.area> <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+ <ZTc8tClCRkfX3kD7@dread.disaster.area>
+In-Reply-To: <ZTc8tClCRkfX3kD7@dread.disaster.area>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 23 Oct 2023 18:10:15 -1000
+X-Gmail-Original-Message-ID: <CAHk-=wjUWM8VVJxUYb=XfqvrS38ACS8RxK2ac9qGp9FDT=USkw@mail.gmail.com>
+Message-ID: <CAHk-=wjUWM8VVJxUYb=XfqvrS38ACS8RxK2ac9qGp9FDT=USkw@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> Hi all,
+On Mon, 23 Oct 2023 at 17:40, Dave Chinner <david@fromorbit.com> wrote:
+> >
+> > Maybe we don't even need a mode, and could just decide that atime
+> > updates aren't i_version updates at all?
 >
-> Commit
->
->   351a050f602d ("Revert "powerpc: add `cur_cpu_spec` symbol to vmcoreinfo"")
->
-> is missing a Signed-off-by from its author and committer.
->
-> Reverts are commits as well ...
+> We do that already - in memory atime updates don't bump i_version at
+> all. The issue is the rare persistent atime update requests that
+> still happen - they are the ones that trigger an i_version bump on
+> XFS, and one of the relatime heuristics tickle this specific issue.
 
-Thanks, fixed.
+Yes, yes, but that's what I kind of allude to - maybe people still
+want the on-disk atime updates, but do they actually want the
+i_version updates just because they want more aggressive atime
+updates?
 
-cheers
+> > Or maybe i_version can update, but callers of getattr() could have two
+> > bits for that STATX_CHANGE_COOKIE, one for "I care about atime" and
+> > one for others, and we'd pass that down to inode_query_version, and
+> > we'd have a I_VERSION_QUERIED and a I_VERSION_QUERIED_STRICT, and the
+> > "I care about atime" case ould set the strict one.
+>
+> This makes correct behaviour reliant on the applicaiton using the
+> query mechanism correctly. I have my doubts that userspace
+> developers will be able to understand the subtle difference between
+> the two options and always choose correctly....
+
+I don't think we _have_ a user space interface.
+
+At least the STATX_CHANGE_COOKIE bit isn't exposed to user space at
+all. Not in the uapi headers, but not even in xstat():
+
+        /* STATX_CHANGE_COOKIE is kernel-only for now */
+        tmp.stx_mask = stat->result_mask & ~STATX_CHANGE_COOKIE;
+
+So the *only* users of STATX_CHANGE_COOKIE seem to be entirely
+in-kernel, unless there is something I'm missing where somebody uses
+i_version through some other interface (random ioctl?).
+
+End result: splitting STATX_CHANGE_COOKIE into a "I don't care about
+atime" and a "give me all change events" shouldn't possibly break
+anything that I can see.
+
+The only other uses of inode_query_iversion() seem to be the explicit
+directory optimizations (ie the "I'm caching the offset and don't want
+to re-check that it's valid unless required, so give me the inode
+version for the directory as a way to decide if I need to re-check"
+thing).
+
+And those *definitely* don't want i_version updates on any atime updates.
+
+There might be some other use of inode_query_iversion() that I missed,
+of course.  But from a quick look, it really looks to me like we can
+relax our i_version updates.
+
+              Linus
