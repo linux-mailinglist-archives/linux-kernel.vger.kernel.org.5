@@ -2,69 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3916F7D4420
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D8D7D4428
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbjJXAnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 20:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
+        id S231172AbjJXAqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 20:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjJXAni (ORCPT
+        with ESMTP id S230119AbjJXAqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 20:43:38 -0400
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D1AA6;
-        Mon, 23 Oct 2023 17:43:35 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Vuo0ST7_1698108211;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vuo0ST7_1698108211)
-          by smtp.aliyun-inc.com;
-          Tue, 24 Oct 2023 08:43:32 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     andreas.noever@gmail.com, michael.jamet@intel.com,
-        mika.westerberg@linux.intel.com, YehezkelShB@gmail.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH -next] thunderbolt: Fix one kernel-doc comment
-Date:   Tue, 24 Oct 2023 08:43:30 +0800
-Message-Id: <20231024004330.100898-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Mon, 23 Oct 2023 20:46:10 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389F19B
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:46:05 -0700 (PDT)
+Received: from localhost.localdomain (unknown [IPv6:2804:14d:e646:872b:1c98:7e30:3cb0:3153])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 41A42660576C;
+        Tue, 24 Oct 2023 01:45:58 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698108363;
+        bh=SaswpbkVdrBVcEGwp2lysUkf3YilP1553pBismvxcjA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FFExJTwgJfJ1YZGhj9AzbLdAUhcCUl7vNL/Awb7A0/xQjNofjw5SyM10sNLwdbmFT
+         uYzDioj9bfSZDBneky+GDZ9c+JywnWD21SNM0dOFAWr8hLi8S/iRxcw6ZlGQF66qmq
+         VogL9/FhDcS9Okopg8JBJ3uEmLvIUEynTrFEtA/BPdv6vwYU4ccNHmL9knpPwhliga
+         3zwsAFuiGb+NdrFZgqK4oPA4jFFfxdmw5oQPf8LHg4v850fM+YL6TRrjyCgtp905HH
+         4M324hoKmU+GX6KM75r8Z/My9p1hDsA7j+hvc2Va3EpLEJasXXOkaY8+K7kneIQJmc
+         qHpEQGEmhXMQg==
+From:   Helen Koike <helen.koike@collabora.com>
+To:     dri-devel@lists.freedesktop.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     robdclark@chromium.org, dmitry.baryshkov@linaro.org,
+        vignesh.raman@collabora.com, sergi.blanch.torne@collabora.com,
+        guilherme.gallo@collabora.com, david.heidelberg@collabora.com,
+        quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com,
+        mripard@kernel.org, daniels@collabora.com,
+        Helen Koike <helen.koike@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v3 00/10] drm/ci: fixes and improvements
+Date:   Mon, 23 Oct 2023 21:45:15 -0300
+Message-Id: <20231024004525.169002-1-helen.koike@collabora.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a spelling errors in kernel doc comment, silence the warning:
+This series contains the several fixes, making drm/ci much
+more reliable and useful.
 
-drivers/thunderbolt/tb.c:760: warning: expecting prototype for tb_maximum_banwidth(). Prototype was for tb_maximum_bandwidth() instead
+Highlights:
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7048
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/thunderbolt/tb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+* Current DRM/CI in drm-misc is broken, this series fixes it with mesa
+  uprev (commit 1/9).
 
-diff --git a/drivers/thunderbolt/tb.c b/drivers/thunderbolt/tb.c
-index f831aaf77efd..5acdeb766860 100644
---- a/drivers/thunderbolt/tb.c
-+++ b/drivers/thunderbolt/tb.c
-@@ -739,7 +739,7 @@ static bool tb_asym_supported(struct tb_port *src_port, struct tb_port *dst_port
- }
- 
- /**
-- * tb_maximum_banwidth() - Maximum bandwidth over a single link
-+ * tb_maximum_bandwidth() - Maximum bandwidth over a single link
-  * @tb: Domain structure
-  * @src_port: Source protocol adapter
-  * @dst_port: Destination protocol adapter
+* The fails.txt and flakes.txt lists were generated by a bogus script,
+  this series restart that initial list from scratch (commit 5/9),
+  which reduced considerably the number of flakes.
+
+* Jobs are run in a subset of available DUTs in the Lava farm
+  (commit 6/9) to not block merge requests for Mesa3D.
+
+* Add python script update-xfails.py to update the xfails lists
+  (commit 3/9).
+
+Tested on https://gitlab.freedesktop.org/helen.fornazier/linux/-/pipelines/1014358
+
+To work properly, the following patches are also required:
+
+[PATCH 2/2] drm/ci: force-enable CONFIG_MSM_MMCC_8996 as built-in
+https://patchwork.kernel.org/project/linux-arm-msm/patch/20231008132320.762542-2-dmitry.baryshkov@linaro.org/
+
+[PATCH] drm/ci: Enable CONFIG_BACKLIGHT_CLASS_DEVICE
+https://patchwork.kernel.org/project/dri-devel/patch/20231002164715.157298-1-robdclark@gmail.com/
+
+v3 changes:
+- adjust timeout of i915 so jobs can pass
+- small adjustments in the flakes list
+- point requirements.txt to new ci-collate to fix flakes
+- update to latest version of mesa to get the patch that disables bare-metal retries
+- fix typos
+
+Helen Koike (10):
+  drm/ci: uprev mesa version: fix container build & crosvm
+  drm/ci: fix DEBIAN_ARCH and get amdgpu probing
+  drm/ci: add helper script update-xfails.py
+  drm/ci: uprev IGT and make sure core_getversion is run
+  drm/ci: clean up xfails (specially flakes list)
+  drm/ci: add subset-1-gfx to LAVA_TAGS and adjust shards
+  drm/ci: increase i915 job timeout to 1h30m
+  drm/ci: export kernel config
+  drm/ci: do not automatically retry on error
+  drm/ci: docs: add step about how to request privileges
+
+ Documentation/gpu/automated_testing.rst       |   7 +-
+ drivers/gpu/drm/ci/build.sh                   |   3 +-
+ drivers/gpu/drm/ci/build.yml                  |   1 +
+ drivers/gpu/drm/ci/gitlab-ci.yml              |  38 ++--
+ drivers/gpu/drm/ci/igt_runner.sh              |  31 ++-
+ drivers/gpu/drm/ci/image-tags.yml             |   6 +-
+ drivers/gpu/drm/ci/lava-submit.sh             |   6 +-
+ drivers/gpu/drm/ci/test.yml                   |  34 +--
+ .../gpu/drm/ci/xfails/amdgpu-stoney-fails.txt |  12 +-
+ .../drm/ci/xfails/amdgpu-stoney-flakes.txt    |  20 --
+ drivers/gpu/drm/ci/xfails/i915-amly-fails.txt |   9 +
+ .../gpu/drm/ci/xfails/i915-amly-flakes.txt    |  32 ---
+ drivers/gpu/drm/ci/xfails/i915-apl-fails.txt  |  11 -
+ drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt |   1 -
+ drivers/gpu/drm/ci/xfails/i915-cml-fails.txt  |  14 +-
+ drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt |  38 ----
+ drivers/gpu/drm/ci/xfails/i915-glk-fails.txt  |  17 ++
+ drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt |  41 ----
+ drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt  |   7 +
+ drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt |  25 ---
+ drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt  |   1 -
+ drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt |   5 -
+ drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt |   1 -
+ .../drm/ci/xfails/mediatek-mt8173-flakes.txt  |   0
+ .../drm/ci/xfails/mediatek-mt8183-fails.txt   |   5 +-
+ .../drm/ci/xfails/mediatek-mt8183-flakes.txt  |  14 --
+ .../gpu/drm/ci/xfails/meson-g12b-fails.txt    |  14 +-
+ .../gpu/drm/ci/xfails/meson-g12b-flakes.txt   |   4 -
+ .../gpu/drm/ci/xfails/msm-apq8016-flakes.txt  |   4 -
+ .../gpu/drm/ci/xfails/msm-apq8096-fails.txt   |   2 +
+ .../gpu/drm/ci/xfails/msm-apq8096-flakes.txt  |   4 -
+ .../gpu/drm/ci/xfails/msm-sc7180-fails.txt    |  15 +-
+ .../gpu/drm/ci/xfails/msm-sc7180-flakes.txt   |  24 ++-
+ .../gpu/drm/ci/xfails/msm-sc7180-skips.txt    |  18 +-
+ .../gpu/drm/ci/xfails/msm-sdm845-fails.txt    |   9 +-
+ .../gpu/drm/ci/xfails/msm-sdm845-flakes.txt   |  19 +-
+ drivers/gpu/drm/ci/xfails/requirements.txt    |  17 ++
+ .../drm/ci/xfails/rockchip-rk3288-fails.txt   |   6 +
+ .../drm/ci/xfails/rockchip-rk3288-flakes.txt  |   9 -
+ .../drm/ci/xfails/rockchip-rk3399-fails.txt   |  40 +++-
+ .../drm/ci/xfails/rockchip-rk3399-flakes.txt  |  28 +--
+ drivers/gpu/drm/ci/xfails/update-xfails.py    | 204 ++++++++++++++++++
+ .../drm/ci/xfails/virtio_gpu-none-flakes.txt  |   0
+ 43 files changed, 464 insertions(+), 332 deletions(-)
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt
+ create mode 100644 drivers/gpu/drm/ci/xfails/requirements.txt
+ delete mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
+ create mode 100755 drivers/gpu/drm/ci/xfails/update-xfails.py
+ delete mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt
+
 -- 
-2.20.1.7.g153144c
+2.39.2
 
