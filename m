@@ -2,114 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7E77D4AE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1913C7D4AF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbjJXIv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53290 "EHLO
+        id S233972AbjJXIwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbjJXIvZ (ORCPT
+        with ESMTP id S233939AbjJXIwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:51:25 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D62110;
-        Tue, 24 Oct 2023 01:51:23 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-408382da7f0so34818945e9.0;
-        Tue, 24 Oct 2023 01:51:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698137481; x=1698742281; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AeBNyWOSZJ4kGFSxFtfrCpSWWHWhFOJFGqG73cu2x9o=;
-        b=P2m0Tz/n+KLlaaPmPUPS2SLROWU+/o5pG1KlcmsrSV8Zhom7X2LaSZmXr8Z19pBJfy
-         VU1uokbe49Oxns1u/l8nPoGu3P6kAmeC++9NoqH08W0XS0YlB6eVYYuo2prV0UvR0MVD
-         GNGjaxyc+QQr2llvnrTi6J2XeRW2iqZIzdA12mn1hg04CAyKJY0ML4nZYXfWz8tqiwHH
-         ggP8+/SA707OJ/mUOji/oJwofHl+AORWSBEsMB0RFD9fI/0+yvgaKcPEVWj4KOMGB/Bl
-         2LrIf+2E3UNCAGFNMxl0SN0LWjbjX2R80pX96UKzNTZmrg5tvZT0YXIqJGKaxn2rT2So
-         myrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698137481; x=1698742281;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AeBNyWOSZJ4kGFSxFtfrCpSWWHWhFOJFGqG73cu2x9o=;
-        b=sSPW4Rkq40OcZ5QHJ2iPQN12QBHx+xMcnXLqx+t65QetDRwD84k7uLWZRJ9ajAZPWN
-         aNBIAlF5Ej1fsZAczH53Af621QhDnPsuNwVW5F4rPZxRBKqvrOw0ihWD6ER9JoowLnvv
-         gDjyeBzTaTv8+7avBXszi+HozewRD8e4Cp3/Zhgn0nqO2Y1YvKo0RSN3b2isysbV2vH6
-         q4QlZHBKyRmAYGL49T81iMRP+gFXeoaH/Fj744KFWGimpstYbDNDbO0B+FpDFNvcPpwb
-         v93aLtSldVamO16iKMTWtyCq01LGLog6I6XebF0UyE98zcvF99YB7eJmquUTbVHLBtYT
-         CVfA==
-X-Gm-Message-State: AOJu0YyH/O4tP8XCejU+BTWztsobw2zfwg9k0qB5vDuz1ftjTmdGw4KN
-        bTlS5sdTVtvTsmfRaNbRvJI=
-X-Google-Smtp-Source: AGHT+IE9w6D63XEl5hV9qFn78ltfdOdyg1FtcX+URY3X/3j2HmjScxhbqOllBeM708t69ULHBZJXfQ==
-X-Received: by 2002:a05:600c:3d87:b0:3fe:1232:93fa with SMTP id bi7-20020a05600c3d8700b003fe123293famr9195220wmb.22.1698137481203;
-        Tue, 24 Oct 2023 01:51:21 -0700 (PDT)
-Received: from debian ([63.135.72.41])
-        by smtp.gmail.com with ESMTPSA id i18-20020a05600c481200b00407b93d8085sm15948043wmo.27.2023.10.24.01.51.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 01:51:20 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 09:51:19 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/196] 6.1.60-rc1 review
-Message-ID: <ZTeFh0eCFm-F4A1s@debian>
-References: <20231023104828.488041585@linuxfoundation.org>
+        Tue, 24 Oct 2023 04:52:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864C0D7B;
+        Tue, 24 Oct 2023 01:52:27 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 08:52:24 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698137545;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aYLSgSmfEX5h8g1Cbl2QcHxaZ5RLzEHT9cO/7p5eK40=;
+        b=dqPk5plGFRfPN6j5SsqQ2dLpn9CstUX5V+BwlWsGlZftHcfZd9DWea06+YsU1kwSQKOopR
+        wfQ4WR5G4Gi033by+kFDDh8GoqI+gK1EhrSImndhD67WV6dm5kDPr5/lqWLK0YjrBpbP2B
+        rSknM388wB5k3cZAiGUb7b2NtzCrT5aRUZuXuGd/qOTomho/f68LY91TI8v0KtH/0liYMW
+        sKwi/A7hpnRQ2B9lnAO6MiO+iSfeHKLJzq9RZGzi1yC39MGOs2okDWtRkhd0kKamRm84+F
+        VhjP7bTwYAL0tCd0BoCM61dTEtYAQZQd+/53ioan/sevpCYrbWDqYloPIXoHRA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698137545;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aYLSgSmfEX5h8g1Cbl2QcHxaZ5RLzEHT9cO/7p5eK40=;
+        b=FAywwt2CHktB+tK0j79Tdakp8Lj6tZQlmXXwKdX95RZH4KSwL0ATbumMyFKWz6z3nqjLOe
+        eFGtfjnFbikdMbAQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/fair: Remove SIS_PROP
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231020134337.GD33965@noisy.programming.kicks-ass.net>
+References: <20231020134337.GD33965@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023104828.488041585@linuxfoundation.org>
+Message-ID: <169813754422.3135.6065400628387990388.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+The following commit has been merged into the sched/core branch of tip:
 
-On Mon, Oct 23, 2023 at 12:54:25PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.60 release.
-> There are 196 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
-> Anything received after that time might be too late.
+Commit-ID:     984ffb6a4366752c949f7b39640aecdce222607f
+Gitweb:        https://git.kernel.org/tip/984ffb6a4366752c949f7b39640aecdce222607f
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Fri, 20 Oct 2023 12:35:33 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Tue, 24 Oct 2023 10:38:44 +02:00
 
-Build test (gcc version 13.2.1 20230827):
-mips: 52 configs -> no failure
-arm: 100 configs -> no failure
-arm64: 3 configs -> no failure
-x86_64: 4 configs -> no failure
-alpha allmodconfig -> no failure
-csky allmodconfig -> no failure
-powerpc allmodconfig -> no failure
-riscv allmodconfig -> no failure
-s390 allmodconfig -> no failure
-xtensa allmodconfig -> no failure
+sched/fair: Remove SIS_PROP
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-mips: Booted on ci20 board. No regression. [3]
+SIS_UTIL seems to work well, lets remove the old thing.
 
-[1]. https://openqa.qa.codethink.co.uk/tests/5361
-[2]. https://openqa.qa.codethink.co.uk/tests/5363
-[3]. https://openqa.qa.codethink.co.uk/tests/5372
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/20231020134337.GD33965@noisy.programming.kicks-ass.net
+---
+ include/linux/sched/topology.h |  2 +-
+ kernel/sched/core.c            |  5 +---
+ kernel/sched/fair.c            | 48 +---------------------------------
+ kernel/sched/features.h        |  1 +-
+ kernel/sched/sched.h           |  3 +--
+ 5 files changed, 59 deletions(-)
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
--- 
-Regards
-Sudip
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index 4c14fe1..de545ba 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -109,8 +109,6 @@ struct sched_domain {
+ 	u64 max_newidle_lb_cost;
+ 	unsigned long last_decay_max_lb_cost;
+ 
+-	u64 avg_scan_cost;		/* select_idle_sibling */
+-
+ #ifdef CONFIG_SCHEDSTATS
+ 	/* load_balance() stats */
+ 	unsigned int lb_count[CPU_MAX_IDLE_TYPES];
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5e1fb8a..7a0c161 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3792,9 +3792,6 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
+ 		if (rq->avg_idle > max)
+ 			rq->avg_idle = max;
+ 
+-		rq->wake_stamp = jiffies;
+-		rq->wake_avg_idle = rq->avg_idle / 2;
+-
+ 		rq->idle_stamp = 0;
+ 	}
+ #endif
+@@ -9953,8 +9950,6 @@ void __init sched_init(void)
+ 		rq->online = 0;
+ 		rq->idle_stamp = 0;
+ 		rq->avg_idle = 2*sysctl_sched_migration_cost;
+-		rq->wake_stamp = jiffies;
+-		rq->wake_avg_idle = rq->avg_idle;
+ 		rq->max_idle_balance_cost = sysctl_sched_migration_cost;
+ 
+ 		INIT_LIST_HEAD(&rq->cfs_tasks);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 523b5ae..8767988 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7209,45 +7209,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool 
+ 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_rq_mask);
+ 	int i, cpu, idle_cpu = -1, nr = INT_MAX;
+ 	struct sched_domain_shared *sd_share;
+-	struct rq *this_rq = this_rq();
+-	int this = smp_processor_id();
+-	struct sched_domain *this_sd = NULL;
+-	u64 time = 0;
+ 
+ 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+ 
+-	if (sched_feat(SIS_PROP) && !has_idle_core) {
+-		u64 avg_cost, avg_idle, span_avg;
+-		unsigned long now = jiffies;
+-
+-		this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
+-		if (!this_sd)
+-			return -1;
+-
+-		/*
+-		 * If we're busy, the assumption that the last idle period
+-		 * predicts the future is flawed; age away the remaining
+-		 * predicted idle time.
+-		 */
+-		if (unlikely(this_rq->wake_stamp < now)) {
+-			while (this_rq->wake_stamp < now && this_rq->wake_avg_idle) {
+-				this_rq->wake_stamp++;
+-				this_rq->wake_avg_idle >>= 1;
+-			}
+-		}
+-
+-		avg_idle = this_rq->wake_avg_idle;
+-		avg_cost = this_sd->avg_scan_cost + 1;
+-
+-		span_avg = sd->span_weight * avg_idle;
+-		if (span_avg > 4*avg_cost)
+-			nr = div_u64(span_avg, avg_cost);
+-		else
+-			nr = 4;
+-
+-		time = cpu_clock(this);
+-	}
+-
+ 	if (sched_feat(SIS_UTIL)) {
+ 		sd_share = rcu_dereference(per_cpu(sd_llc_shared, target));
+ 		if (sd_share) {
+@@ -7301,18 +7265,6 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool 
+ 	if (has_idle_core)
+ 		set_idle_cores(target, false);
+ 
+-	if (sched_feat(SIS_PROP) && this_sd && !has_idle_core) {
+-		time = cpu_clock(this) - time;
+-
+-		/*
+-		 * Account for the scan cost of wakeups against the average
+-		 * idle time.
+-		 */
+-		this_rq->wake_avg_idle -= min(this_rq->wake_avg_idle, time);
+-
+-		update_avg(&this_sd->avg_scan_cost, time);
+-	}
+-
+ 	return idle_cpu;
+ }
+ 
+diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+index f770168..a3ddf84 100644
+--- a/kernel/sched/features.h
++++ b/kernel/sched/features.h
+@@ -49,7 +49,6 @@ SCHED_FEAT(TTWU_QUEUE, true)
+ /*
+  * When doing wakeups, attempt to limit superfluous scans of the LLC domain.
+  */
+-SCHED_FEAT(SIS_PROP, false)
+ SCHED_FEAT(SIS_UTIL, true)
+ 
+ /*
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index ef4fe7b..2e5a954 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1059,9 +1059,6 @@ struct rq {
+ 	u64			idle_stamp;
+ 	u64			avg_idle;
+ 
+-	unsigned long		wake_stamp;
+-	u64			wake_avg_idle;
+-
+ 	/* This is used to determine avg_idle's max value */
+ 	u64			max_idle_balance_cost;
+ 
