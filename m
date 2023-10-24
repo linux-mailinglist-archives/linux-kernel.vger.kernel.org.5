@@ -2,199 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E1F7D5ACE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22EE47D5AD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344129AbjJXSmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 14:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53032 "EHLO
+        id S1344160AbjJXSo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344024AbjJXSmx (ORCPT
+        with ESMTP id S1344042AbjJXSo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:42:53 -0400
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886C010D0;
-        Tue, 24 Oct 2023 11:42:51 -0700 (PDT)
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1e5bc692721so3122505fac.0;
-        Tue, 24 Oct 2023 11:42:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698172971; x=1698777771;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e7tCIB9BylheYtMG7rMe1KZx7kNN6oaCCoyrHFzcP3w=;
-        b=WEeRrWQ1hKrYVce1JRJpJZBNVmCAnoAGas+mr07qDA0Fo1oBAWvWcswX4p80Z7lzqV
-         6TSJIHeFE2aUS9NGAf0tdPuwDOeX2+S+ynPaHUeBZWyZjDH/SrpfM5F/v7i55MGt8GvV
-         Vbero89zGdYid3bmGAoucnzcdGId7jxq08ih0j11h9fliTSO58zFFeGN7ctVALs4GcOM
-         ZNh8FFC13In6fsUKmcArB9QCK8TgFsF4t9u5850bTmd/8c8boIRLn05zXtwDil2L5Vhe
-         Xi0KjCZBF3m1Zhvz3GyijCaykHVxWXoPGHq9uebjKEGjxc8FlSEZEAi4TPSaRMDMFjIE
-         LGzg==
-X-Gm-Message-State: AOJu0YxHld/ZaZfOSp2FJV408CamJebegO0W4xF/mdk1hNaHBoJ4sQkH
-        a4jZPXOsHHlan/rD/JNTHg==
-X-Google-Smtp-Source: AGHT+IEwPD0r1BvSI+qia1MrYQNuHfFhmEEtqVIVoIHZoqHIvOzwAF1Y9oJIQUNl++IgJf0l1aNg1g==
-X-Received: by 2002:a05:6870:b90a:b0:1ea:4dc8:a17 with SMTP id gx10-20020a056870b90a00b001ea4dc80a17mr13544728oab.28.1698172970721;
-        Tue, 24 Oct 2023 11:42:50 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id sc17-20020a056871221100b001e0fd4c9b9asm2303077oab.6.2023.10.24.11.42.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 11:42:50 -0700 (PDT)
-Received: (nullmailer pid 263045 invoked by uid 1000);
-        Tue, 24 Oct 2023 18:42:48 -0000
-Date:   Tue, 24 Oct 2023 13:42:48 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Georgi Djakov <quic_c_gdjako@quicinc.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-        devicetree@vger.kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, quic_cgoldswo@quicinc.com,
-        quic_sukadev@quicinc.com, quic_pdaly@quicinc.com,
-        quic_sudaraja@quicinc.com, djakov@kernel.org
-Subject: Re: [PATCH 1/6] dt-bindings: iommu: Add Translation Buffer Unit
- bindings
-Message-ID: <20231024184248.GA252155-robh@kernel.org>
-References: <20231019021923.13939-1-quic_c_gdjako@quicinc.com>
- <20231019021923.13939-2-quic_c_gdjako@quicinc.com>
+        Tue, 24 Oct 2023 14:44:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65571186;
+        Tue, 24 Oct 2023 11:44:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698173064; x=1729709064;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0agB9+eKx+cq1VNd6N/1YyY/E3g2/msA0IL4s2WLDmQ=;
+  b=SnBVglyk0wFS6dpr3AvU/0hJJdOSqyceEZxeAky/n2xBHgUCtiUxA6Dz
+   TxrEAE5pKO0VQwwK79kjXH1sn32ajhSD+0QSkv6P8U/vipLPZ900uWKDN
+   jptiGFkpNK+8ryQT8yUK4dbufCLAPFn2xF658zruY4868QJKEaRDPdIbV
+   UwuGq+7oZNV+npZr3nDqu0p20CnDB5YkpNcDlcz+ZT41jdSCX5q3U8Psa
+   3pBZUx25b0lPYBWbxnx2vjHmeAG4ZJdBuTBB6j4hJtI3xyRNmT7/aM1yE
+   FW5Q14TgoL9iD1+VMx9hEHNB2XAvVUTAirFeGX1xp7uLl4YoIE5tVspvS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="389993647"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="389993647"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 11:44:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="6558968"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 24 Oct 2023 11:44:12 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qvMO0-0008AF-2R;
+        Tue, 24 Oct 2023 18:44:16 +0000
+Date:   Wed, 25 Oct 2023 02:43:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel =?iso-8859-1?Q?Gr=F6ber?= <dxld@darkboxed.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, wireguard@lists.zx2c4.com,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
+        Daniel =?iso-8859-1?Q?Gr=F6ber?= <dxld@darkboxed.org>
+Subject: Re: [PATCH] wireguard: Add netlink attrs for binding to address and
+ netdev
+Message-ID: <202310250256.kXWoLwJm-lkp@intel.com>
+References: <20231023160006.85992-1-dxld@darkboxed.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231019021923.13939-2-quic_c_gdjako@quicinc.com>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231023160006.85992-1-dxld@darkboxed.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 07:19:18PM -0700, Georgi Djakov wrote:
-> The "apps_smmu" on the Qualcomm sdm845 platform is an implementation
-> of the ARM SMMU-500, that consists of a single TCU (Translation Control
-> Unit) and multiple TBUs (Translation Buffer Units). The TCU is already
-> being described in the ARM SMMU DT schema. Add also bindings for the
-> TBUs so that we can describe their properties.
+Hi Daniel,
 
-Arm SMMU-500 is an implementation, too. Is QCom's a modified 
-implementation or you are just the first to want to control TBU 
-resources?
+kernel test robot noticed the following build errors:
 
-You need to split this into what could be any SMMU-500 implementation 
-and what is truly QCom specific (i.e. modified). Unlike some licensed IP 
-that's a free-for-all on DT resources, Arm IP has public specs so we 
-don't have to guess.
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.6-rc7 next-20231024]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> In this DT schema, the TBUs are modelled as a child devices of the TCU
-> and each of them is described with it's own resources such as clocks,
-> power domains, interconnects etc.
-> 
-> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
-> ---
->  .../devicetree/bindings/iommu/arm,smmu.yaml   | 13 ++++
->  .../bindings/iommu/qcom,qsmmuv500-tbu.yaml    | 67 +++++++++++++++++++
->  2 files changed, 80 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> index cf29ab10501c..afc323b4bbc5 100644
-> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> @@ -230,6 +230,19 @@ properties:
->        enabled for any given device.
->      $ref: /schemas/types.yaml#/definitions/phandle
->  
-> +  '#address-cells':
-> +    const: 2
-> +
-> +  '#size-cells':
-> +    const: 2
-> +
-> +  ranges: true
-> +
-> +patternProperties:
-> +  "^tbu@[0-9a-f]+$":
-> +    $ref: qcom,qsmmuv500-tbu.yaml
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Gr-ber/wireguard-Add-netlink-attrs-for-binding-to-address-and-netdev/20231024-000158
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231023160006.85992-1-dxld%40darkboxed.org
+patch subject: [PATCH] wireguard: Add netlink attrs for binding to address and netdev
+config: um-randconfig-002-20231024 (https://download.01.org/0day-ci/archive/20231025/202310250256.kXWoLwJm-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231025/202310250256.kXWoLwJm-lkp@intel.com/reproduce)
 
-Generic SMMU binding includes something QCom specific. That's not right.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310250256.kXWoLwJm-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   drivers/net/wireguard/netlink.c: In function 'wg_get_device_dump':
+>> drivers/net/wireguard/netlink.c:247:52: error: 'struct udp_port_cfg' has no member named 'local_ip6'; did you mean 'local_ip'?
+     247 |                                      &wg->port_cfg.local_ip6))
+         |                                                    ^~~~~~~~~
+         |                                                    local_ip
+   drivers/net/wireguard/netlink.c: In function 'set_port_cfg':
+   drivers/net/wireguard/netlink.c:348:34: error: 'struct udp_port_cfg' has no member named 'local_ip6'; did you mean 'local_ip'?
+     348 |                         port_cfg.local_ip6 = u_addr->addr6;
+         |                                  ^~~~~~~~~
+         |                                  local_ip
 
 
-> +    description: The SMMU may include Translation Buffer Units (TBU) as subnodes
-> +
->  required:
->    - compatible
->    - reg
-> diff --git a/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml b/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
-> new file mode 100644
-> index 000000000000..4baba7397e90
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iommu/qcom,qsmmuv500-tbu.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iommu/qcom,qsmmuv500-tbu.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm TBU (Translation Buffer Unit)
-> +
-> +maintainers:
-> +  - Georgi Djakov <quic_c_gdjako@quicinc.com>
-> +
-> +description:
-> +  TBU nodes represent Translation Buffer Units in an ARM SMMU. Each TBU node
-> +  should be a child node of the SMMU in the device tree.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,qsmmuv500-tbu
-> +
-> +  reg:
-> +    items:
-> +      - description: Address and size of the TBU's register space.
-> +
-> +  reg-names:
-> +    items:
-> +      - const: base
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  interconnects:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  qcom,stream-id-range:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description: Stream ID range (address and size) that is assigned by the TBU
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interconnects
-> +  - qcom,stream-id-range
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-sdm845.h>
-> +    #include <dt-bindings/interconnect/qcom,sdm845.h>
-> +    #include <dt-bindings/power/qcom-rpmpd.h>
-> +
-> +
-> +    tbu@150e1000 {
-> +        compatible = "qcom,qsmmuv500-tbu";
-> +        reg = <0x150e1000 0x1000>;
-> +        reg-names = "base";
-> +        clocks = <&gcc GCC_AGGRE_NOC_PCIE_TBU_CLK>;
-> +        power-domains = <&gcc HLOS1_VOTE_AGGRE_NOC_MMU_PCIE_TBU_GDSC>;
-> +        interconnects = <&system_noc MASTER_GNOC_SNOC 0 &config_noc SLAVE_IMEM_CFG 0>;
-> +        qcom,stream-id-range = <0x1c00 0x400>;
-> +    };
-> +
-> +...
+vim +247 drivers/net/wireguard/netlink.c
+
+   211	
+   212	static int wg_get_device_dump(struct sk_buff *skb, struct netlink_callback *cb)
+   213	{
+   214		struct wg_peer *peer, *next_peer_cursor;
+   215		struct dump_ctx *ctx = DUMP_CTX(cb);
+   216		struct wg_device *wg = ctx->wg;
+   217		struct nlattr *peers_nest;
+   218		int ret = -EMSGSIZE;
+   219		bool done = true;
+   220		void *hdr;
+   221	
+   222		rtnl_lock();
+   223		mutex_lock(&wg->device_update_lock);
+   224		cb->seq = wg->device_update_gen;
+   225		next_peer_cursor = ctx->next_peer;
+   226	
+   227		hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
+   228				  &genl_family, NLM_F_MULTI, WG_CMD_GET_DEVICE);
+   229		if (!hdr)
+   230			goto out;
+   231		genl_dump_check_consistent(cb, hdr);
+   232	
+   233		if (!ctx->next_peer) {
+   234			if (nla_put_u16(skb, WGDEVICE_A_LISTEN_PORT,
+   235					ntohs(wg->port_cfg.local_udp_port)) ||
+   236			    nla_put_u32(skb, WGDEVICE_A_LISTEN_IFINDEX, wg->port_cfg.bind_ifindex) ||
+   237			    nla_put_u32(skb, WGDEVICE_A_FWMARK, wg->fwmark) ||
+   238			    nla_put_u32(skb, WGDEVICE_A_IFINDEX, wg->dev->ifindex) ||
+   239			    nla_put_string(skb, WGDEVICE_A_IFNAME, wg->dev->name))
+   240				goto out;
+   241		        if (wg->port_cfg.family == AF_INET &&
+   242			    nla_put_in_addr(skb, WGDEVICE_A_LISTEN_ADDR,
+   243					    wg->port_cfg.local_ip.s_addr))
+   244					goto out;
+   245		        if (wg->port_cfg.family == AF_INET6 &&
+   246			    nla_put_in6_addr(skb, WGDEVICE_A_LISTEN_ADDR,
+ > 247					     &wg->port_cfg.local_ip6))
+   248					goto out;
+   249	
+   250			down_read(&wg->static_identity.lock);
+   251			if (wg->static_identity.has_identity) {
+   252				if (nla_put(skb, WGDEVICE_A_PRIVATE_KEY,
+   253					    NOISE_PUBLIC_KEY_LEN,
+   254					    wg->static_identity.static_private) ||
+   255				    nla_put(skb, WGDEVICE_A_PUBLIC_KEY,
+   256					    NOISE_PUBLIC_KEY_LEN,
+   257					    wg->static_identity.static_public)) {
+   258					up_read(&wg->static_identity.lock);
+   259					goto out;
+   260				}
+   261			}
+   262			up_read(&wg->static_identity.lock);
+   263		}
+   264	
+   265		peers_nest = nla_nest_start(skb, WGDEVICE_A_PEERS);
+   266		if (!peers_nest)
+   267			goto out;
+   268		ret = 0;
+   269		/* If the last cursor was removed via list_del_init in peer_remove, then
+   270		 * we just treat this the same as there being no more peers left. The
+   271		 * reason is that seq_nr should indicate to userspace that this isn't a
+   272		 * coherent dump anyway, so they'll try again.
+   273		 */
+   274		if (list_empty(&wg->peer_list) ||
+   275		    (ctx->next_peer && list_empty(&ctx->next_peer->peer_list))) {
+   276			nla_nest_cancel(skb, peers_nest);
+   277			goto out;
+   278		}
+   279		lockdep_assert_held(&wg->device_update_lock);
+   280		peer = list_prepare_entry(ctx->next_peer, &wg->peer_list, peer_list);
+   281		list_for_each_entry_continue(peer, &wg->peer_list, peer_list) {
+   282			if (get_peer(peer, skb, ctx)) {
+   283				done = false;
+   284				break;
+   285			}
+   286			next_peer_cursor = peer;
+   287		}
+   288		nla_nest_end(skb, peers_nest);
+   289	
+   290	out:
+   291		if (!ret && !done && next_peer_cursor)
+   292			wg_peer_get(next_peer_cursor);
+   293		wg_peer_put(ctx->next_peer);
+   294		mutex_unlock(&wg->device_update_lock);
+   295		rtnl_unlock();
+   296	
+   297		if (ret) {
+   298			genlmsg_cancel(skb, hdr);
+   299			return ret;
+   300		}
+   301		genlmsg_end(skb, hdr);
+   302		if (done) {
+   303			ctx->next_peer = NULL;
+   304			return 0;
+   305		}
+   306		ctx->next_peer = next_peer_cursor;
+   307		return skb->len;
+   308	
+   309		/* At this point, we can't really deal ourselves with safely zeroing out
+   310		 * the private key material after usage. This will need an additional API
+   311		 * in the kernel for marking skbs as zero_on_free.
+   312		 */
+   313	}
+   314	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
