@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAB67D5E09
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCFB7D5E0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344522AbjJXWYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
+        id S1344539AbjJXWYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344481AbjJXWYb (ORCPT
+        with ESMTP id S1344440AbjJXWYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:24:31 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE6231705
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:27 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9cb4de3bf0so5993692276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:27 -0700 (PDT)
+        Tue, 24 Oct 2023 18:24:41 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D98110DB
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:29 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a92864859bso45292427b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:24:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698186266; x=1698791066; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698186268; x=1698791068; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=TVGR9Xyq2raGKRiGJds6iUcO5Lwf67o/Z2QHhpJQbfc=;
-        b=ydbfqHeKgSmvFccd0/lADv3jDFkKDDTtxmixOmTXahACyrE+ZbWlkxxgbjNr/CQEeM
-         d+cfSwlTgZSyT6SM8NTk2sjvATpeYifQt66+2zi2i+FpB2gH0A5VVjJrkoAPKe4A8s0G
-         09dIdKRnwy2R1ipHQJPVWTt8+jS7TRPuFFkH6t0heiUigPwY35F0Bvmsp55cYhUVKROf
-         CiXKIeWui1hEXCBec5lnKU4Kqke7cIWHJg2bd4xtHQc5wmK4RZ9HBH7t7t/ZvTDu0PiF
-         JWwc5+dfjSDD2voG0Agh4C4fQVN4AehnvGsbJnZYty009NEwb+6UYRvsZbdoGEQYGUbx
-         ho5w==
+        bh=b/WYylQjwixRJXAqoqT9x2vsT/egkNyyGQzseJqJY9U=;
+        b=uT7w4lEcUTQXJpCxjyDA/TSOS6e54jIhBLpvXasOjLYIoosAK7q2RldpGD5bsFz2Hl
+         4WibsMTU5PYsS12Lb6iMR5AKHHZEhAFUbW7FyAf/fdqHr0KuuLmcRmHLi98Srsqc1j7w
+         URJ+83mJ5RWs4be6uAGHMoYyGoQpX+jFmSYNDHwPPD42UqnlXo1MKVHASfxJLu+ZxPzw
+         a5ZcpmOovxvmtoo4hoJLDgDdjNS2Pm4CRsQQMARVAzqlat11bLb1eNkRtmcIM3XDh5wP
+         KK+DRATMsBx1DWH7gPycIrobSjpCz/+4X9eVnb6shk7EnuS2Ps8fvOvlcjGsuDfSIED/
+         qpCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698186266; x=1698791066;
+        d=1e100.net; s=20230601; t=1698186268; x=1698791068;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TVGR9Xyq2raGKRiGJds6iUcO5Lwf67o/Z2QHhpJQbfc=;
-        b=CI41txB337NQS2u/XufX66uC0q3q6OEmB2zHTod/bMLWQOw92RQa3dzVJOwDvSTssj
-         HQ6rzRlp/crQUjAGuBz77xLzmQZN1iS+brgU8eccr1auSsZ/i53FJ98HwFNF3W+2rH1g
-         7rfm0i16QaNmx9bDCHvzyrA4gljfVxezxEv4F/Gtc4K+rxyEwfzTz7DammUELxmlqa4F
-         Z0pCVRlOX/yengzMMyhqBUX7TRSXhtWcx/rtB1qQIFoSGRJFrwIOEogk6IzQhSKnFNFh
-         az1RQ3yFpYvu5Dh3pXw9oc6ika71UzLqEcarEm78LyV8so316ZaF5sFrVnLSvKrAdfmk
-         vjYA==
-X-Gm-Message-State: AOJu0YzXle8Kzwc2aZMeLGhle9j9A99IBTdJCVDQfXTOivyigd1+j2dT
-        warLvKKyG1+y6+6Bj3mmc7hwJlQB1bVW
-X-Google-Smtp-Source: AGHT+IE0LnLyRZWa3HLVttfv23W2KKPiQIO0rXTRdCKvqzFZLAQ2zpqNdQtleswviPvhJJuZK+5ZXsYOiV7e
+        bh=b/WYylQjwixRJXAqoqT9x2vsT/egkNyyGQzseJqJY9U=;
+        b=f3sfyS/rWDCFCR1Rg7Ib9/hSRZ37YDFPag1baJJrEQaY5JadGD94O6M62VIjCYAnH4
+         /eDQTr/jMkhoIudobwbtzznt2mgg06FABgQbvQSnlHd8kv2DsKRFT9RvxMf2HVYFqIvo
+         S2TyI6x9FKNuVntDILAQ2YKW7rQRBckqMXpf8g02Tb58lTZGll8tQhm95uQ7k5AzJk3/
+         bkc3oyrFYLHHC3BoGVxpQLONx+mr3EFCEH5PEJHRzPnXRiGE6QwnEGjpkxgDXG4Oap7z
+         plzAMn9W5Pw4IG6amu4HUaKd+lDAzMMXnJMSwwzAWA2B/kpKCfzM7xdqKX+Gg7aQU1Kj
+         8Rag==
+X-Gm-Message-State: AOJu0YynMx+IE+4+EWJygcgu1D6NrkdHW2bnDcr/6yh/tFnZiTzpaX6R
+        rwsyoOuVb711N46eEMnnPCTT6PPjVsLx
+X-Google-Smtp-Source: AGHT+IEVRRWngcmzL9hheCR6+iyVRg4xT0ZCocehuI57VI8KP971CkhaKYhrnCw4jBnJQ57Sze30WMx5ZR00
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:93d2:18cc:4d63:45ba])
- (user=irogers job=sendgmr) by 2002:a25:8541:0:b0:d89:b072:d06f with SMTP id
- f1-20020a258541000000b00d89b072d06fmr256399ybn.7.1698186266012; Tue, 24 Oct
- 2023 15:24:26 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 15:23:09 -0700
+ (user=irogers job=sendgmr) by 2002:a81:4c8f:0:b0:59f:3cde:b33a with SMTP id
+ z137-20020a814c8f000000b0059f3cdeb33amr57926ywa.6.1698186268457; Tue, 24 Oct
+ 2023 15:24:28 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 15:23:10 -0700
 In-Reply-To: <20231024222353.3024098-1-irogers@google.com>
-Message-Id: <20231024222353.3024098-7-irogers@google.com>
+Message-Id: <20231024222353.3024098-8-irogers@google.com>
 Mime-Version: 1.0
 References: <20231024222353.3024098-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-Subject: [PATCH v3 06/50] perf threads: Remove unused dead thread list
+Subject: [PATCH v3 07/50] perf offcpu: Add missed btf_free
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -96,39 +96,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 40826c45eb0b ("perf thread: Remove notion of dead threads")
-removed dead threads but the list head wasn't removed. Remove it here.
+Caught by address/leak sanitizer.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/machine.c | 1 -
- tools/perf/util/machine.h | 1 -
- 2 files changed, 2 deletions(-)
+ tools/perf/util/bpf_off_cpu.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 098600d983c5..31fdbb0f27af 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -67,7 +67,6 @@ static void machine__threads_init(struct machine *machine)
- 		threads->entries = RB_ROOT_CACHED;
- 		init_rwsem(&threads->lock);
- 		threads->nr = 0;
--		INIT_LIST_HEAD(&threads->dead);
- 		threads->last_match = NULL;
- 	}
- }
-diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
-index d034ecaf89c1..1279acda6a8a 100644
---- a/tools/perf/util/machine.h
-+++ b/tools/perf/util/machine.h
-@@ -35,7 +35,6 @@ struct threads {
- 	struct rb_root_cached  entries;
- 	struct rw_semaphore    lock;
- 	unsigned int	       nr;
--	struct list_head       dead;
- 	struct thread	       *last_match;
- };
+diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.c
+index 21f4d9ba023d..6af36142dc5a 100644
+--- a/tools/perf/util/bpf_off_cpu.c
++++ b/tools/perf/util/bpf_off_cpu.c
+@@ -98,22 +98,22 @@ static void off_cpu_finish(void *arg __maybe_unused)
+ /* v5.18 kernel added prev_state arg, so it needs to check the signature */
+ static void check_sched_switch_args(void)
+ {
+-	const struct btf *btf = btf__load_vmlinux_btf();
++	struct btf *btf = btf__load_vmlinux_btf();
+ 	const struct btf_type *t1, *t2, *t3;
+ 	u32 type_id;
  
+ 	type_id = btf__find_by_name_kind(btf, "btf_trace_sched_switch",
+ 					 BTF_KIND_TYPEDEF);
+ 	if ((s32)type_id < 0)
+-		return;
++		goto cleanup;
+ 
+ 	t1 = btf__type_by_id(btf, type_id);
+ 	if (t1 == NULL)
+-		return;
++		goto cleanup;
+ 
+ 	t2 = btf__type_by_id(btf, t1->type);
+ 	if (t2 == NULL || !btf_is_ptr(t2))
+-		return;
++		goto cleanup;
+ 
+ 	t3 = btf__type_by_id(btf, t2->type);
+ 	/* btf_trace func proto has one more argument for the context */
+@@ -121,6 +121,8 @@ static void check_sched_switch_args(void)
+ 		/* new format: pass prev_state as 4th arg */
+ 		skel->rodata->has_prev_state = true;
+ 	}
++cleanup:
++	btf__free(btf);
+ }
+ 
+ int off_cpu_prepare(struct evlist *evlist, struct target *target,
 -- 
 2.42.0.758.gaed0368e0e-goog
 
