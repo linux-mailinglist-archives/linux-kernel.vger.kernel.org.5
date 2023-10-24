@@ -2,153 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B777D576F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C020D7D5847
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344042AbjJXQJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:09:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
+        id S1343883AbjJXQ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJXQJJ (ORCPT
+        with ESMTP id S229544AbjJXQ3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:09:09 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D9AA1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:09:06 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-7789cc5c8ccso377034185a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1698163745; x=1698768545; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VOgTqaWod2GIRMlQnZ21kgeA7fU4We2gZHXmH2gakWs=;
-        b=HnxUkBWN+fNe0/jn27fSEWXczaAvhrMLtG+uZiImetWKZhEDcOUzgTh8O/1YcJqPnp
-         nEUUQDEwok6hzsT4rdLO/+9a+kXx7pJWWQw2nlhAkMo51aKnxoI2q+NpOIgIMEC0hJog
-         Gmn79q3r8cwL4W6hHerFgFJQgXFpoTexI0UuiQbzW/o7bdEByShdf85fNneoQn9swLnk
-         S4diAq+8JY1jmc2g4T4v1tP0y3/g2Ta4o+f5Oj1qKGYP/572C4oUl7jJwG8nYY4Sf2ni
-         VBYr8BiEXVaHLITop5cQM6s5g1NpChFOfmv1qkjAnq5HzkIvEoUJJneFuj/gC00HXfCc
-         9mRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698163745; x=1698768545;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VOgTqaWod2GIRMlQnZ21kgeA7fU4We2gZHXmH2gakWs=;
-        b=HCBY9tN+5xHHnByYz9CLJLrUv0AOb+Zm4b3cakEDXdCHP+fSxv/BPpskxZO1viLgZp
-         2uVdPRimvL0qpDU+I7/ooUnY589VfvqziGCZxB+14p7GTxfLvJWqAQp0Y4kkFBujdOrz
-         hxi2pDYPXG9jZW6Cgqf8yWcuBEIMPoWlbYqvXFt/NcmMK4u18yEvj3g9vcWTP91fj2yL
-         lCgBtx18/K244EX/XDANdDMSQd9XVebMlPrbjrGVpwDDJeDiBtgEsbg5CkjarlEed1c7
-         bHw7tMqO1NZ4tRnim6DA6TGb5ZeC/dWqomw36sMu/JMk/NMdWurCAlkGwlo39t39AI80
-         epQQ==
-X-Gm-Message-State: AOJu0YzyXzjF/aX1tWVXf4AdAI4VQN3CuUquEiMToz4ftUYpa3iEJ/sA
-        q02JEgzwXsWB1ioUT++O/wHY2A==
-X-Google-Smtp-Source: AGHT+IE4iOSeMFxlVe/rUGgAvUrIKN/iHb2FxiHseAUx3vVefnmIsABNiiFtr0ZTnpRstzIYxb6ysQ==
-X-Received: by 2002:a05:620a:448a:b0:773:ac84:3f57 with SMTP id x10-20020a05620a448a00b00773ac843f57mr17278800qkp.5.1698163745326;
-        Tue, 24 Oct 2023 09:09:05 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id r16-20020a05620a299000b007756c8ce8f5sm3505539qkp.59.2023.10.24.09.09.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 09:09:05 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 12:09:04 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] zswap: export more zswap store failure stats
-Message-ID: <20231024160904.GA1971738@cmpxchg.org>
-References: <20231024000702.1387130-1-nphamcs@gmail.com>
+        Tue, 24 Oct 2023 12:29:11 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2052.outbound.protection.outlook.com [40.107.220.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEE9AC;
+        Tue, 24 Oct 2023 09:29:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VphV8SuaMVP7rj5Cq9toOjfQYoRK5ZrE6yvuVv7tS/vLIkW531GH+C4ZRRdz6Zbl8MicG7VPnzEUn+6X0qfxQBUOdZl8Idn2fxH3Ek1cxS7fVdGqq2/nIRDYEAVk+39kVUpHKirXhHfnHM66Sdf+C+vjymwWDc0rKTBkKUeuMzHDFXSX0T056MirwVygXgf8qKETgODuJGkC4+/pta6IbYHR7pHoP58lMamaY98tm+fZSb8k6SwuNuN66C6CwCZU4xP8xuG5PPNZ5lUsn21GgcYOLT2ionIkZWyXbCnYre7BDRM38jEWmZBkR/E6uqYAA6QphoZdHQmfAz0Gnif08Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=98tUsS069zVjIY6n9XGNQiNbXweySNhRfvFo7wYw+Kk=;
+ b=PXcE6pqnO2zGrQHzoGHPluoK/RMHKYZ6aPKSwcIxOkTZZ4WqIDL/ePGgTzF9eNoIqNoPAPCgkTwM5ZiYvyZb7AIwcrc9Q3cUUlYl42ONZH4jwv6zCye9Oiq8VrwU6Z843Jz7mlzqLropUkWi628NG8GceQT7ihua8PCMuNYYJpRibWZz+zV3GsQF/e2uT17BkhuA0hh4ZgMZYMQsNSwuEBtDlpobUrUiilP5zymXY9rfV0yPBMTPg2w6HD+DIv2gxcaz9v5vEW0PS40ZDuyNsDtc3BEatIkNa7k5i0QzCrgul8DBTaak87kGPmjliirjiZXu6vwktgS55C6XUz+Uvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=hisilicon.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=98tUsS069zVjIY6n9XGNQiNbXweySNhRfvFo7wYw+Kk=;
+ b=KkS9vhGXk34l7gCESHxyrLFrtF3fITdx2ZYn+hDINAtHQ7XX5Cidq9GcEK4nLueAp5qIJhd1W4pjP6+FNaALcGm18Ve48EcU9Y0C5NB6Tq24Xs6/HlLj0CxXfEBiZJXsbCuNH1Pivo5v7/GImuKAwtKABH6q6S5ZY0zXt6b3MRNNECBqDrIYms9/BKm4Vg21SkOf+HGL7jIvwh5T9ZLEKR0f5tRf6p0WSXd/o6SGYCzrobdd7d8k+t+s/Pk0wKiCmH8lE5ef7nDYEg/5sUyLhJCgvFPRGQV+573/w6ClkqYLFPvRCMalzAeGRmO+yrHnf7n1PC/N54eihvyFnfxalQ==
+Received: from SN7P222CA0029.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:124::23)
+ by DM4PR12MB5167.namprd12.prod.outlook.com (2603:10b6:5:396::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Tue, 24 Oct
+ 2023 16:29:06 +0000
+Received: from SA2PEPF00001504.namprd04.prod.outlook.com
+ (2603:10b6:806:124:cafe::88) by SN7P222CA0029.outlook.office365.com
+ (2603:10b6:806:124::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33 via Frontend
+ Transport; Tue, 24 Oct 2023 16:29:06 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SA2PEPF00001504.mail.protection.outlook.com (10.167.242.36) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.15 via Frontend Transport; Tue, 24 Oct 2023 16:29:06 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 24 Oct
+ 2023 09:28:52 -0700
+Received: from yaviefel (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 24 Oct
+ 2023 09:28:49 -0700
+References: <20231023112217.3439-1-phaddad@nvidia.com>
+ <20231023112217.3439-4-phaddad@nvidia.com>
+User-agent: mu4e 1.8.11; emacs 28.3
+From:   Petr Machata <petrm@nvidia.com>
+To:     Patrisious Haddad <phaddad@nvidia.com>
+CC:     <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
+        <stephen@networkplumber.org>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
+        <michaelgur@nvidia.com>
+Subject: Re: [PATCH v2 iproute2-next 3/3] rdma: Adjust man page for rdma
+ system set privileged_qkey command
+Date:   Tue, 24 Oct 2023 18:09:05 +0200
+In-Reply-To: <20231023112217.3439-4-phaddad@nvidia.com>
+Message-ID: <87zg0856io.fsf@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024000702.1387130-1-nphamcs@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.126.231.35]
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001504:EE_|DM4PR12MB5167:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f458bea-e33e-437e-9c28-08dbd4ae578e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xxEs2wb051KT/koFhZn30oN7Wo4tDo3d2cYlU/3Ich2JYwPqi7xGRoGBXGZe+VbZ7tVckyR2syRt/Tng3UdZ20gloZmST2/BcdAWoRCzd/0VA3TTo74hWrowyX38t1uwJ25Dx+nnvqY+OlEohTYsRV74ynqmd9fQCkuk0ll5E3M2bzv9/vSeNXLcJchDekwcsINzkBVlvm52puhsuFm8taKe562UeZK127JGjtdNVrct60ItmX8+5II3qhplECqHWYv7xaM9PEdjI6PH9hVYYsXEK6OKlaFTtRVNIeHNX3pFT4mT2jZ3V1xDMEhqtRkIunuVd7/156Dzoq+BfMz6HpUhQuetY+sk707FiqO14+HznBtadrxPkepuOKcljMGLiHMMWf66wjKDQt7Lwp94apSKbWsvDGVe0Lfkci9GyTUA3/gSD4FEcpcdvkcR2HV6dbTOHPTiR2shJfRwpMN8d8KdYk8onr6vZ0ZH2dUNvE3k6dz9Cr2Qo43dMnGblNIIow8TN8d/howVrhl8WLk0gIIiqCNKL8RgSn0UiuVuZXl4x+fjZW6Kj1XTH/szXdVL/B9R8p8j++MrUbNqM17iY2NI7+RtRKpmBs7oPGubGz5apJeFNseU04SCbRmPC10MzgH2yRwlUAGRZX9SEVBpibUVTUEGvrTFObwcoJu+dxHQiaMivpnPafDW2HPnhAqcSsKrXNXKobGDUaXxPZL+9Xo7jsJsSa3iNtNihVezv/knLh/2KMxZ++c1eY0AoKkE
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(136003)(396003)(346002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(82310400011)(46966006)(40470700004)(36840700001)(26005)(478600001)(426003)(336012)(40480700001)(6666004)(86362001)(316002)(37006003)(6636002)(40460700003)(54906003)(70586007)(70206006)(36756003)(36860700001)(47076005)(16526019)(2616005)(107886003)(356005)(7636003)(2906002)(83380400001)(8936002)(8676002)(4326008)(6862004)(82740400003)(5660300002)(41300700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 16:29:06.0012
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f458bea-e33e-437e-9c28-08dbd4ae578e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001504.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5167
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 05:07:02PM -0700, Nhat Pham wrote:
-> Since:
-> 
-> "42c06a0e8ebe mm: kill frontswap"
-> 
-> we no longer have a counter to tracks the number of zswap store
-> failures. This makes it hard to investigate and monitor for zswap
-> issues.
-> 
-> This patch adds a global and a per-cgroup zswap store failure counter,
-> as well as a dedicated debugfs counter for compression algorithm failure
-> (which can happen for e.g when random data are passed to zswap).
-> 
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 
-I agree this is an issue.
+Patrisious Haddad <phaddad@nvidia.com> writes:
 
+> Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+> Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
 > ---
->  include/linux/vm_event_item.h |  1 +
->  mm/memcontrol.c               |  1 +
->  mm/vmstat.c                   |  1 +
->  mm/zswap.c                    | 18 ++++++++++++++----
->  4 files changed, 17 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-> index 8abfa1240040..7b2b117b193d 100644
-> --- a/include/linux/vm_event_item.h
-> +++ b/include/linux/vm_event_item.h
-> @@ -145,6 +145,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
->  #ifdef CONFIG_ZSWAP
->  		ZSWPIN,
->  		ZSWPOUT,
-> +		ZSWPOUT_FAIL,
+>  man/man8/rdma-system.8 | 32 +++++++++++++++++++++++++++-----
+>  1 file changed, 27 insertions(+), 5 deletions(-)
+>
+> diff --git a/man/man8/rdma-system.8 b/man/man8/rdma-system.8
+> index ab1d89fd..a2914eb8 100644
+> --- a/man/man8/rdma-system.8
+> +++ b/man/man8/rdma-system.8
+> @@ -23,16 +23,16 @@ rdma-system \- RDMA subsystem configuration
+>  
+>  .ti -8
+>  .B rdma system set
+> -.BR netns
+> -.BR NEWMODE
+> +.BR netns/privileged_qkey
+> +.BR NEWMODE/NEWSTATE
 
-Would the writeback stat be sufficient to determine this?
+What is this netns/priveleged_qkey syntax? I thought they are
+independent options. If so, the way to express it is:
 
-Hear me out. We already have pswpout that shows when we're hitting
-disk swap. Right now we can't tell if this is because of a rejection
-or because of writeback. With a writeback counter we could.
+	rdma system set [netns NEWMODE] [privileged_qkey NEWSTATE]
 
-And I think we want the writeback counter anyway going forward in
-order to monitor and understand the dynamic shrinker's performance.
+Also, your option is not actually privileged_qkey, but privileged-qkey.
 
-Either way we go, one of the metrics needs to be derived from the
-other(s). But I think subtle and not so subtle shrinker issues are
-more concerning than outright configuration problems where zswap
-doesn't work at all. The latter is easier to catch before or during
-early deployment with simple functionality tests.
+>  .ti -8
+>  .B rdma system help
+>  
+>  .SH "DESCRIPTION"
+> -.SS rdma system set - set RDMA subsystem network namespace mode
+> +.SS rdma system set - set RDMA subsystem network namespace mode or privileged qkey mode
+>  
+> -.SS rdma system show - display RDMA subsystem network namespace mode
+> +.SS rdma system show - display RDMA subsystem network namespace mode and privileged qkey state
 
-Plus, rejections should be rare. They are now, and they should become
-even more rare or cease to exist going forward. Because every time
-they happen at scale, they represent problematic LRU inversions.  We
-have patched, have pending patches, or discussed changes to reduce
-every single one of them:
+Maybe make it just something like "configure RDMA system settings" or
+whatever the umbrella term is? The next option will certainly have to do
+something, this doesn't scale.
 
-	/* Store failed due to a reclaim failure after pool limit was reached */
-	static u64 zswap_reject_reclaim_fail;
+Plus the lines are waaay over 80, even over 90 that I think I've seen
+Stephen or David mention as OK for iproute2 code.
 
-With the shrinker this becomes less relevant. There was also the
-proposal to disable the bypass to swap and just keep the page.
+>  .PP
+>  .I "NEWMODE"
+> @@ -49,12 +49,21 @@ network namespaces is not needed, shared mode can be used.
+>  
+>  It is preferred to not change the subsystem mode when there is active
+>  RDMA traffic running, even though it is supported.
+> +.PP
+> +.I "NEWSTATE"
+> +- specifies the new state of the privileged_qkey parameter. Either enabled or disabled.
+> +Whereas this decides whether a non-privileged user is allowed to specify a controlled
+> +QKEY or not, since such QKEYS are considered privileged.
+> +
+> +When this parameter is enabled, non-privileged users will be allowed to
+> +specify a controlled QKEY.
 
-	/* Compressed page was too big for the allocator to (optimally) store */
-	static u64 zswap_reject_compress_poor;
+This is missing syntax notes. One might think that to enable it they
+need to say "enable", but in fact it's "on", and "off" for disabled.
+There should be an "{on | off}" somewhere in there.
 
-You were working on eradicating this (with zsmalloc at least).
+Also, line length.
 
-	/* Store failed because underlying allocator could not get memory */
-	static u64 zswap_reject_alloc_fail;
-	/* Store failed because the entry metadata could not be allocated (rare) */
-	static u64 zswap_reject_kmemcache_fail;
+Also, the paragraph is imho a bit long-winded. Maybe make it just this?
 
-These shouldn't happen at all due to PF_MEMALLOC.
+	determines whether a non-privileged user is allowed to specify a
+        controlled QKEY or not.
 
-IOW, the fail counter is expected to stay zero in healthy,
-well-configured systems. Rather than an MM event that needs counting,
-this strikes me as something that could be a WARN down the line...
+>  .SH "EXAMPLES"
+>  .PP
+>  rdma system show
+>  .RS 4
+> -Shows the state of RDMA subsystem network namespace mode on the system.
+> +Shows the state of RDMA subsystem network namespace mode on the system and
+> +the state of privileged qkey parameter.
+>  .RE
+>  .PP
+>  rdma system set netns exclusive
+> @@ -69,6 +78,19 @@ Sets the RDMA subsystem in network namespace shared mode. In this mode RDMA devi
+>  are shared among network namespaces.
+>  .RE
+>  .PP
+> +.PP
+> +rdma system set privileged_qkey enabled
+> +.RS 4
+> +Sets the privileged_qkey parameter to enabled. In this state non-privileged user
+> +is allowed to specify a controlled QKEY.
+> +.RE
+> +.PP
+> +rdma system set privileged_qkey disabled
+> +.RS 4
+> +Sets the privileged_qkey parameter to disabled. In this state non-privileged user
+> +is *not* allowed to specify a controlled QKEY.
+> +.RE
+> +.PP
 
-I agree with adding the debugfs counter though.
+on | off, not enabled | disabled.
+
+>  .SH SEE ALSO
+>  .BR rdma (8),
+
