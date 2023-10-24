@@ -2,129 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 298217D4682
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 05:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B837D4688
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 05:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232146AbjJXDyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 23:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54204 "EHLO
+        id S232320AbjJXD4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 23:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232544AbjJXDxh (ORCPT
+        with ESMTP id S232603AbjJXDz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 23:53:37 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056791725
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 20:52:38 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77897c4ac1fso262422585a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 20:52:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1698119558; x=1698724358; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XsaNGjlcimJtQjiAwAEMf2P9+0lBW+WKE/hjZAD7dek=;
-        b=ZzJPx0y19ajQdpatRHIV9OeYbUZdaaBZFXCshlqwJCZYO2u3kgFCbgta/xGM2jnj2p
-         8+kCX5JTZZ1VehON7byPvfJ5U6/lZGLLV2HrO7ImJwWRGysVUGepVz4oGfXDSxWpS01H
-         llWr0/T3mPVztmuSNR7LotGveoiuz5fcXyqySGe9L3uM8KoTajs1X9PyyL0LMbDIr0zz
-         wU8i7Zkr8+w0f9km6wDCmpyvw8I6jpaFQ46JySPHx7VHXazCIRGoGTUGtkcUXyKSOFyy
-         w/aOFa8b5S0U1O6CjzMwBBUajPeEcD5Cat7S04a9vo3XlUfv/5SiVcqa5keww9C74lKY
-         DXOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698119558; x=1698724358;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XsaNGjlcimJtQjiAwAEMf2P9+0lBW+WKE/hjZAD7dek=;
-        b=oulvM8iOsZ/hRShFpeX4CG/vU6ArDmdcTpwNvjSArlE/wa3zrz6m9i2KWrDpleFGRr
-         ttgvFo+N+dfCSay+dDWStm3JEZVAe+Xxtctiz//Yklm0eyuoGghAiOsAIlITPtpFA7rD
-         YNuksqcB091lT6xflksf/GOVaIvXi0zVsmnQtpqrrwZSPI6tV4ntZNsONi1zkRNRE01r
-         u6J8q0vw0Ecl1PxCn+/iBQnjYR6i/pRtGReZwlwCWxTdjBBOrRILO5LT3yTLYixiL4+5
-         f5uhIszg6xhS+THY92qEa6TnAlDzaXfC4A+RPQJBTzhuTiSgryvgSIqokilB5eFvTTah
-         muOg==
-X-Gm-Message-State: AOJu0YyiBLceCWNmuvsfn/jynRG+XN8qUCt/nTIYwDqlCft6xVQ6vUwG
-        4lor7Qysiz4ZOImP0F+QamP3
-X-Google-Smtp-Source: AGHT+IFgtMi4EqN6N9ZtnfOHbANV4Egy0LBPK5cs6vsX4rIphs5HUZhBFo1nSJ25zSqGEggCASqLKw==
-X-Received: by 2002:a05:620a:430d:b0:778:8dc1:bb7b with SMTP id u13-20020a05620a430d00b007788dc1bb7bmr13244374qko.27.1698119557740;
-        Mon, 23 Oct 2023 20:52:37 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id s4-20020ad45004000000b0063f88855ef2sm3286811qvo.101.2023.10.23.20.52.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Oct 2023 20:52:37 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 23:52:36 -0400
-Message-ID: <88259677752389b350614857e6003b8c.paul@paul-moore.com>
-From:   Paul Moore <paul@paul-moore.com>
-To:     Fan Wu <wufan@linux.microsoft.com>, corbet@lwn.net,
-        zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
-        tytso@mit.edu, ebiggers@kernel.org, axboe@kernel.dk,
-        agk@redhat.com, snitzer@kernel.org, eparis@redhat.com
-Cc:     linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Fan Wu <wufan@linux.microsoft.com>
-Subject: Re: [PATCH RFC v11 18/19] ipe: kunit test for parser
-References: <1696457386-3010-19-git-send-email-wufan@linux.microsoft.com>
-In-Reply-To: <1696457386-3010-19-git-send-email-wufan@linux.microsoft.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 23 Oct 2023 23:55:57 -0400
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120FC30E9;
+        Mon, 23 Oct 2023 20:53:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CVSXNcUpUTxl/nBT2LczxGdrQxY7bHQZW/3Wv9WHsEQ=; b=itlaKAC5qL9u6+/kbcFJg0RlPF
+        c5++gmOs1K0IhWwICRlAgZy6LvNGvHRMkc7kJUDRaWVSwJOuRxLxBPTeKry1qLfQbwKJveIo8BurO
+        DJCSIH6qXEwfXq1ZrcxALijEW6e+/EVRZG9IaeYmRx8ntD9JRMDtyQpxX5vcb0Atsmhu6b4T9RCc2
+        ktUXFAxVyTGiDSjmn7gVeCkfmARMa0tA4X73zJjlMk9o3rO7T5QWYFdBO/wwvLfmWhNexrKGazUaw
+        NVZhelf4Ud399ANIMhnT/Z/wha93UnbkFjiLBznW0Ptjnni9H4HdgbiBtU3V17Etws3tSoxMATVaM
+        e/9l9Rmg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qv8UI-004kZl-32;
+        Tue, 24 Oct 2023 03:53:51 +0000
+Date:   Tue, 24 Oct 2023 04:53:50 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        gus Gusenleitner Klaus <gus@keba.com>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [RFC][PATCH] fix csum_and_copy_..._user() idiocy.  Re: AW:
+ [PATCH] amd64: Fix csum_partial_copy_generic()
+Message-ID: <20231024035350.GE800259@ZenIV>
+References: <VI1PR0702MB3840F2D594B9681BF2E0CD81D9D4A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
+ <20231019050250.GV800259@ZenIV>
+ <20231019061427.GW800259@ZenIV>
+ <20231019063925.GX800259@ZenIV>
+ <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
+ <20231019080615.GY800259@ZenIV>
+ <20231021071525.GA789610@ZenIV>
+ <20231021222203.GA800259@ZenIV>
+ <20231022194020.GA972254@ZenIV>
+ <83a6e7e00f824f1daef01ad599aad663@AcuMS.aculab.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <83a6e7e00f824f1daef01ad599aad663@AcuMS.aculab.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
+On Mon, Oct 23, 2023 at 02:44:13PM +0000, David Laight wrote:
+> From: Al Viro
+> > Sent: 22 October 2023 20:40
+> ....
+> > We need a way for csum_and_copy_{from,to}_user() to report faults.
+> > The approach taken back in 2020 (avoid 0 as return value by starting
+> > summing from ~0U, use 0 to report faults) had been broken; it does
+> > yield the right value modulo 2^16-1, but the case when data is
+> > entirely zero-filled is not handled right.  It almost works, since
+> > for most of the codepaths we have a non-zero value added in
+> > and there 0 is not different from anything divisible by 0xffff.
+> > However, there are cases (ICMPv4 replies, for example) where we
+> > are not guaranteed that.
+> > 
+> > In other words, we really need to have those primitives return 0
+> > on filled-with-zeroes input.  So let's make them return a 64bit
+> > value instead; we can do that cheaply (all supported architectures
+> > do that via a couple of registers) and we can use that to report
+> > faults without disturbing the 32bit csum.
 > 
-> Add various happy/unhappy unit tests for both IPE's parser.
+> Does the ICMPv4 sum need to be zero if all zeros but 0xffff
+> if there are non-zero bytes in there?
 
-I'm going to suggest: "... for IPE's policy parser."
+No.  RTFRFC, please.  Or the discussion of the bug upthread, for that
+matter.
 
-Also, aside from the policy parser tests, are there any other IPE
-functional tests?  We do have a testing guideline for new LSM
-submissions:
+> IIRC the original buggy case was fixed by returning 0xffff
+> for the all-zero buffer.
 
- "New LSMs must be accompanied by a test suite to verify basic
-  functionality and help identify regressions. The test suite
-  must be publicly available without download restrictions
-  requiring accounts, subscriptions, etc. Test coverage does
-  not need to reach a specific percentage, but core functionality
-  and any user interfaces should be well covered by the test
-  suite. Maintaining the test suite in a public git repository is
-  preferable over tarball snapshots. Integrating the test suite
-  with existing automated Linux kernel testing services is
-  encouraged."
+YRIC.  For the benefit of those who can pass the Turing test better than
+ChatGPT would:
 
-https://github.com/LinuxSecurityModule/kernel/blob/main/README.md#new-lsm-guidelines
+Define a binary operation on [0..0xffff] by
 
-> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> ---
-> v1-v6:
->   + Not present
-> 
-> v7:
->   Introduced
-> 
-> v8:
->   + Remove the kunit tests with respect to the fsverity digest, as these
->     require significant changes to work with the new method of acquiring
->     the digest at runtime.
-> 
-> v9:
->   + Remove the kunit tests related to ipe_context
-> 
-> v10:
->   + No changes
-> 
-> v11:
->   + No changes
-> ---
->  security/ipe/Kconfig        |  17 +++
->  security/ipe/Makefile       |   3 +
->  security/ipe/policy_tests.c | 294 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 314 insertions(+)
->  create mode 100644 security/ipe/policy_tests.c
+	X PLUS Y = X + Y - ((X + Y > 0xffff) ? 0xffff : 0)
 
---
-paul-moore.com
+Properties:
+	X PLUS Y \in [0..0xffff]
+	X PLUS Y = 0 iff X = Y = 0
+	X PLUS Y is congruent to X + Y modulo 0xffff
+	X PLUS Y = Y PLUS X
+	(X PLUS Y) PLUS Z = X PLUS (Y PLUS Z)
+	X PLUS 0 = X
+	For any non-zero X, X PLUS 0xffff = X
+	X PLUS (0xffff ^ X) = 0xffff
+	byteswap(X) PLUS byteswap(Y) = byteswap(X PLUS Y)
+(hint: if X \in [0..0xffff], byteswap(X) is congruent to 256*X modulo 0xffff)
+
+	If A0,...,An are all in range 0..0xffff, \sum Ak * 0x1000^k is
+congruent to A0 PLUS A1 PLUS ... PLUS An modulo 0xffff.  That's pretty
+much the same thing as the usual rule for checking if decimal number
+is divisible by 9.
+
+	That's the math behind the checksum calculations.  You look at the
+data, append 0 if the length had been odd and sum the 16bit values up
+using PLUS as addition.  Result will be a 16bit value that will be
+	* congruent to that data taken as long integer modulo 0xffff
+	* 0 if and only if the data consists entirely of zeroes.
+Endianness does not matter - byteswap the entire thing and result will
+be byteswapped.
+
+	Note that since 0xffffffff is a multiple of 0xffff, we can
+calculate the remainder modulo 0xffffffff (by doing similar addition
+of 4-byte groups), then calculate the remainder of that modulo 0xffff;
+that's almost always cheaper - N/4 32bit operations vs N/2 16bit ones.
+For 64bit architecture we can do the same with 64bit operations, reducing
+to 32bit value in the end.  That's what csum_and_copy_...() stuff
+is doing - it's memcpy() (or copy_..._user()) combined with calculation
+of some 32bit value that would have the right reminder modulo 0xffff.
+
+	Requirement for ICMP is that this function of the payload should
+be 0xffff.  So we zero the "checksum" field, calculate the sum and then
+adjust that field so that the sum would become 0xffff.  I.e. if the
+value of the function with that field zeroed is N, we want to store
+0xffff ^ N into the damn field.
+
+	That's where it had hit the fan - getting 0xffff instead of 0
+on the "all zeroes" data ended up with "OK, store the 0xffff ^ 0xffff
+in there, everything will be fine".  Which yields the payload with
+actual sum being 0.
+
+	Special treatment of icmp_reply() is doable, but nobody is
+suggesting to check for "all zeroes" case - that would be insane and
+pointless.  The minimal workaround papering over that particular case
+would be to chech WTF have we stored in that field and always
+replacing 0 with 0xffff.  Note that if our data is e.g.
+	<40 zeroes> 0x7f 0xff 0x80 0x00
+the old rule would (correctly) suggest storing two zeroes into the
+checksum field, while that modification would yield two 0xff in
+there.  Which is still fine - 0xffff PLUS 0x7fff PLUS 0x8000 =
+0 PLUS 0x7fff PLUS 0x8000 = 0xffff, so both variants are acceptable.
+
+	However, I'm not at all sure that icmp_reply() is really
+the only place where we can get all-zero data possible to encounter.
+Most of the places where want to calculate checksums are not going
+to see all-zeroes data, but it would be a lot better not to have to
+rely upon that.
