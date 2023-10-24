@@ -2,162 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E6C7D5ABF
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D554A7D5AC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344167AbjJXSjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 14:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33600 "EHLO
+        id S1344184AbjJXSkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344127AbjJXSjJ (ORCPT
+        with ESMTP id S234866AbjJXSkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:39:09 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A68EB9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:39:05 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31c5cac3ae2so3490163f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:39:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698172744; x=1698777544; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kYl/hPQ1QO/qnjhfpaigT8V90o1Z/zrFBqqxchQb6PA=;
-        b=yCiaZWxXRcnAxiUlTsv9w7FhSeSFqNa67B2b3PjcLp2h/ZumDiW6QSLTrRBQH9RaTj
-         TSV2yfXmYFONRu5NIgMBuA4vev42FP04sO2ZTdbQ+5GgFeSM7tSZaqgxf/GapDfxIfPU
-         9xAikhkPlOFOObe6aupQlpMQT2eBHTGQ3JDVAnhf7oyYdcJ0ktOvvSspdJdesBZZQLuS
-         I5Bc19S1TYS7Hzg8ArNDDgEwv10Rxvtyda7md2HP8tMN1kfkXH+dP2yXhM/n9EetSPXw
-         g1mVoNIpzsaEv/WhfPSK2pnBz8Kc0zRyH92+tmfQvSP5rfw/HF/8XfE6a+/3PjqaZ75d
-         RC5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698172744; x=1698777544;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kYl/hPQ1QO/qnjhfpaigT8V90o1Z/zrFBqqxchQb6PA=;
-        b=f/myfddR9z90TmhOa2cb1X4tLouGuUL+URadSqaMD6q55NehCnDja7gljtmSaSWgvl
-         Yok8eqvKG6ZVIfDkI15/+HMvYFndVtEJMRfzd8SCEBBYu9pFS/o4RVg1j2L0lwO49obH
-         60+pO8tEO4A3qJM+WzNAFztxgypEFmQzLUti8o1a8X+/HAQF2FXw021kBLo9esw3O5NF
-         gGZ1sZs2gT101Zl/yFrTVeRfL8pQACIj0nUtvAg+A4gBPuK+aeACbCeT68IBsh2ZE39H
-         8BIYGaJ/w6wSV6R1So9oW4ut786N5VF3J+9MOfAFqDHLnAUaPHscbHreb+g6ZMiqWSqy
-         qpnw==
-X-Gm-Message-State: AOJu0YygwHId55OzpRh+4TL9dAxeTlZgf5WfDyew7IKi5cLxDY6rQT3t
-        1RJ2RIuJfHif0EaqppvQYFzBZqr5JQXYk7nNPv12nQ==
-X-Google-Smtp-Source: AGHT+IEBkrXV9tW6JjjS6KAesMgogqWbIPz6JOX8ffpbsI1yBbmL6peaStLCV8xe25eowD6jRKUcC8TJUMwxtgmJk8k=
-X-Received: by 2002:adf:fe8a:0:b0:32d:ad05:906c with SMTP id
- l10-20020adffe8a000000b0032dad05906cmr10224110wrr.3.1698172743492; Tue, 24
- Oct 2023 11:39:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231024134637.3120277-1-surenb@google.com> <ZTgM74EapT9mea2l@P9FQF9L96D.corp.robot.car>
-In-Reply-To: <ZTgM74EapT9mea2l@P9FQF9L96D.corp.robot.car>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 24 Oct 2023 11:38:47 -0700
-Message-ID: <CAJuCfpGNQpFLnUsEpGgiDmOBW17RXJ3B-u2+ogi7NNhfi-gBLQ@mail.gmail.com>
-Subject: Re: [PATCH v2 00/39] Memory allocation profiling
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     akpm@linux-foundation.org, kent.overstreet@linux.dev,
-        mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
-        mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
-        liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
-        peterz@infradead.org, juri.lelli@redhat.com, ldufour@linux.ibm.com,
-        catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, peterx@redhat.com, david@redhat.com,
-        axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-        nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
-        muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-        pasha.tatashin@soleen.com, yosryahmed@google.com,
-        yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
-        andreyknvl@gmail.com, keescook@chromium.org,
-        ndesaulniers@google.com, vvvvvv@google.com,
-        gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-        iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-        elver@google.com, dvyukov@google.com, shakeelb@google.com,
-        songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-        minchan@google.com, kaleshsingh@google.com,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-modules@vger.kernel.org,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+        Tue, 24 Oct 2023 14:40:12 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7C89F;
+        Tue, 24 Oct 2023 11:40:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8B1AC433C7;
+        Tue, 24 Oct 2023 18:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698172810;
+        bh=Xe0wF7mgvmZCFWwP7fcGH+Eub1oED/IAnnGG5PkQ1xU=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=aR5dfj2B+9L9WTja+3SyJ8WB9QMgZo4R+vxoFDhQoAUL1rtUOh+Oh5Q8DQmdfVTO4
+         yGp5tE/69QdXH5HxMqJHG7wcibIkHLtTyOezwvPMxpAm86wk65poIE/uewxy/Ie6v3
+         hSHpwvYzQ6e9UEWsvO3SaWQYijZfMxf09CUdubjLB4ttXC80RueJZB863KJ470NSzB
+         NMRpUvxtODKii5ufHHS1e4VgM9qMeTvQltU7KO0D7dMhAnpxAiASNlUi/neKfJiDK+
+         xe5dn9XSPdXwMQCwnpFDi/Iua7ZyggSyeH4EgK4Vnte8CUNiPzFVJE4c5FjHvkEK1O
+         cyliPAfxW2aoA==
+Message-ID: <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
+Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
+ timestamp handing
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Amir Goldstein <amir73il@gmail.com>,
+        Dave Chinner <david@fromorbit.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org
+Date:   Tue, 24 Oct 2023 14:40:06 -0400
+In-Reply-To: <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
+References: <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
+         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
+         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
+         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
+         <ZTGncMVw19QVJzI6@dread.disaster.area>
+         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
+         <ZTWfX3CqPy9yCddQ@dread.disaster.area>
+         <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
+         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
+         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
+         <ZTc8tClCRkfX3kD7@dread.disaster.area>
+         <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 11:29=E2=80=AFAM Roman Gushchin
-<roman.gushchin@linux.dev> wrote:
->
-> On Tue, Oct 24, 2023 at 06:45:57AM -0700, Suren Baghdasaryan wrote:
-> > Updates since the last version [1]
-> > - Simplified allocation tagging macros;
-> > - Runtime enable/disable sysctl switch (/proc/sys/vm/mem_profiling)
-> > instead of kernel command-line option;
-> > - CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT to select default enable state;
-> > - Changed the user-facing API from debugfs to procfs (/proc/allocinfo);
-> > - Removed context capture support to make patch incremental;
-> > - Renamed uninstrumented allocation functions to use _noprof suffix;
-> > - Added __GFP_LAST_BIT to make the code cleaner;
-> > - Removed lazy per-cpu counters; it turned out the memory savings was
-> > minimal and not worth the performance impact;
->
-> Hello Suren,
->
-> > Performance overhead:
-> > To evaluate performance we implemented an in-kernel test executing
-> > multiple get_free_page/free_page and kmalloc/kfree calls with allocatio=
-n
-> > sizes growing from 8 to 240 bytes with CPU frequency set to max and CPU
-> > affinity set to a specific CPU to minimize the noise. Below is performa=
-nce
-> > comparison between the baseline kernel, profiling when enabled, profili=
-ng
-> > when disabled and (for comparison purposes) baseline with
-> > CONFIG_MEMCG_KMEM enabled and allocations using __GFP_ACCOUNT:
-> >
-> >                         kmalloc                 pgalloc
-> > (1 baseline)            12.041s                 49.190s
-> > (2 default disabled)    14.970s (+24.33%)       49.684s (+1.00%)
-> > (3 default enabled)     16.859s (+40.01%)       56.287s (+14.43%)
-> > (4 runtime enabled)     16.983s (+41.04%)       55.760s (+13.36%)
-> > (5 memcg)               33.831s (+180.96%)      51.433s (+4.56%)
->
-> some recent changes [1] to the kmem accounting should have made it quite =
-a bit
-> faster. Would be great if you can provide new numbers for the comparison.
-> Maybe with the next revision?
->
-> And btw thank you (and Kent): your numbers inspired me to do this kmemcg
-> performance work. I expect it still to be ~twice more expensive than your
-> stuff because on the memcg side we handle separately charge and statistic=
-s,
-> but hopefully the difference will be lower.
+On Tue, 2023-10-24 at 10:08 +0300, Amir Goldstein wrote:
+> On Tue, Oct 24, 2023 at 6:40=E2=80=AFAM Dave Chinner <david@fromorbit.com=
+> wrote:
+> >=20
+> > On Mon, Oct 23, 2023 at 02:18:12PM -1000, Linus Torvalds wrote:
+> > > On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> wrot=
+e:
+> > > >=20
+> > > > The problem is the first read request after a modification has been
+> > > > made. That is causing relatime to see mtime > atime and triggering
+> > > > an atime update. XFS sees this, does an atime update, and in
+> > > > committing that persistent inode metadata update, it calls
+> > > > inode_maybe_inc_iversion(force =3D false) to check if an iversion
+> > > > update is necessary. The VFS sees I_VERSION_QUERIED, and so it bump=
+s
+> > > > i_version and tells XFS to persist it.
+> > >=20
+> > > Could we perhaps just have a mode where we don't increment i_version
+> > > for just atime updates?
+> > >=20
+> > > Maybe we don't even need a mode, and could just decide that atime
+> > > updates aren't i_version updates at all?
+> >=20
+> > We do that already - in memory atime updates don't bump i_version at
+> > all. The issue is the rare persistent atime update requests that
+> > still happen - they are the ones that trigger an i_version bump on
+> > XFS, and one of the relatime heuristics tickle this specific issue.
+> >=20
+> > If we push the problematic persistent atime updates to be in-memory
+> > updates only, then the whole problem with i_version goes away....
+> >=20
+> > > Yes, yes, it's obviously technically a "inode modification", but does
+> > > anybody actually *want* atime updates with no actual other changes to
+> > > be version events?
+> >=20
+> > Well, yes, there was. That's why we defined i_version in the on disk
+> > format this way well over a decade ago. It was part of some deep
+> > dark magical HSM beans that allowed the application to combine
+> > multiple scans for different inode metadata changes into a single
+> > pass. atime changes was one of the things it needed to know about
+> > for tiering and space scavenging purposes....
+> >=20
+>=20
+> But if this is such an ancient mystical program, why do we have to
+> keep this XFS behavior in the present?
+> BTW, is this the same HSM whose DMAPI ioctls were deprecated
+> a few years back?
+>=20
+> I mean, I understand that you do not want to change the behavior of
+> i_version update without an opt-in config or mount option - let the distr=
+o
+> make that choice.
+> But calling this an "on-disk format change" is a very long stretch.
+>=20
+> Does xfs_repair guarantee that changes of atime, or any inode changes
+> for that matter, update i_version? No, it does not.
+> So IMO, "atime does not update i_version" is not an "on-disk format chang=
+e",
+> it is a runtime behavior change, just like lazytime is.
+>=20
 
-Yes, I saw them! Well done! I'll definitely update my numbers once the
-patches land in their final form.
+This would certainly be my preference. I don't want to break any
+existing users though.
 
->
-> Thank you!
+Perhaps this ought to be a mkfs option? Existing XFS filesystems could
+still behave with the legacy behavior, but we could make mkfs.xfs build
+filesystems by default that work like NFS requires.
 
-Thank you for the optimizations!
-
->
-> [1]:
->   patches from next tree, so no stable hashes:
->     mm: kmem: reimplement get_obj_cgroup_from_current()
->     percpu: scoped objcg protection
->     mm: kmem: scoped objcg protection
->     mm: kmem: make memcg keep a reference to the original objcg
->     mm: kmem: add direct objcg pointer to task_struct
->     mm: kmem: optimize get_obj_cgroup_from_current()
+--=20
+Jeff Layton <jlayton@kernel.org>
