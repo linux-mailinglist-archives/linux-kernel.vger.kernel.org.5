@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F847D515F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AACD7D5169
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbjJXNUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39712 "EHLO
+        id S1343489AbjJXNVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234435AbjJXNUn (ORCPT
+        with ESMTP id S234461AbjJXNUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:20:43 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0C4D7A
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:20:37 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c5028e5b88so64591031fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:20:37 -0700 (PDT)
+        Tue, 24 Oct 2023 09:20:45 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D7B110
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:20:38 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso7063085e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:20:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698153635; x=1698758435; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698153636; x=1698758436; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VRBNUBWDvC8PjaXpudIsup23k/J35U9YbvcI1paPU+Q=;
-        b=jSmUCMqm3veBhVrlICesax5twZiS8m0M8rd9372IsIzq58FJsowVpH9NdPbvGgMqPZ
-         j8ooQJU9b6xuhRG2GGWbR2cggRC3nMNKxSxBPxIFrFo9grCgWVkwSDJFxxQ7UnoOxH4T
-         BYdQjQ5akHCWbrWTQTPYY0WuX3D0faN/TUM2L8gtHJWoJf7UvqpBK56tdpgJVXv0/ksJ
-         NN0vSK6hKadiI96+bCMJcu7N9h9rKEAy1P2Lc+byqmu68amLXmC1uqpfwWGmEGuDioA9
-         uqRDAIZaNYqFc0hcb5hjcmDzeEddSTyVi5A4bpPaCc7znMsGdZOQRVYElMxTjVk3IFKw
-         dewg==
+        bh=IL2ResPg+hiG9clxg6x2c6XDYehjwty0hK+xdAu13LQ=;
+        b=qRE/rY40ztLQzInS7OOexxFW2BVFErCF8B1RCM04fzDTMYEbfuO8r40ou09cJe4HS+
+         JdGz0BAhTd/GtWj3HjIiLHdJt1KYG3PHaE6kshmLG+lt3GUmuXEADzh2dwa8DnnYN/PV
+         393xYox7F4eQbJHJ/Z2Y8D9Z+LcvF4YsLjMldprHVXlScVzjx+OBaJotWPHGDCikbYzr
+         lqYC7SPoEbrSFLHfATGqQ6Dr6JZCnNTSRF1t72XS9iV/tf+BexCSeMYEWtzrGwjDuQUN
+         vUgeZ1t0WUmkEW3OhcRDQnk3XtjrXdzDTTcX2k+YSJ7/FNP5qUMp15mTOdPAAGLNC2k0
+         v2xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698153635; x=1698758435;
+        d=1e100.net; s=20230601; t=1698153636; x=1698758436;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VRBNUBWDvC8PjaXpudIsup23k/J35U9YbvcI1paPU+Q=;
-        b=mt1FQU+2r5qW4I3mVDZPLAS7YAstYTmNaMJkwUz1dq2pLeNFT1Z9jZNNKlc4hTAsun
-         YY1nAhKEULGVJElbop/siQ3HVl2FzCo3k+OLf9AeclKz8v6jJPOa22S+R+FowNcc+l/W
-         EiL+XiS501OnEJqDq38qjh9+gfnUHeDvEI3R8I/LGo7+fFRPDKh35UTcnVjnKMi2r1KE
-         +bZRWp5j0RrksQJaVXB44EOuRju1ZC3+mXKRmWqOJb0Q8unBrUoxBtoDqgDSx1vCM5y5
-         x7wr/iAKB1SHute33yRw2gkhkOiDsb0aTnZD5ErM1II1ecNWHNliw9OSFcv0dwcrmFc2
-         QtyQ==
-X-Gm-Message-State: AOJu0YxyzhnLU6DohWDOvzgH9jnQ1/5PFRhHehJu9eN37ER7mKtGSd6x
-        33g+sM6lLBVsfQo3hARLtD+umw==
-X-Google-Smtp-Source: AGHT+IF34VdJzUvD80/vmz2LmmtZnAD2Qoeq/kCU6BmvwMnOT9ScyelRzvMFVtlzKBmcaHj13li+Sg==
-X-Received: by 2002:a05:6512:318f:b0:502:d743:8a6c with SMTP id i15-20020a056512318f00b00502d7438a6cmr11688990lfe.9.1698153635374;
-        Tue, 24 Oct 2023 06:20:35 -0700 (PDT)
+        bh=IL2ResPg+hiG9clxg6x2c6XDYehjwty0hK+xdAu13LQ=;
+        b=MdErt5QMLrzh7jgZ0DRaR5nNhROpRTY2TNvI42FskwRzUqH6pCIZfGx9PCe5Jp9vMb
+         sSvBv3GvfVulIXW1lPuK+fjuMBPnOIm2thY8hTiNPsTsBTv9rMUo2oVlNQHsYI/PKc20
+         QMQvDlO0tjF+iSp+ZWZvmUDX9TxgAPZ7a8P/YRYwlkBlVaTlBhZ/URSszPcZ6br7NOkl
+         bQfjD99AN0d6/CYrs1tg4ygpcjxT7r7fag7VJyT+iC88t9VYx95phFRDs35tj/RWFreh
+         l/PdbEZA5MfR2B7GeJ0hrQWjPvRw9wAkTMZi8WBk05gcvrnBIGAFayLJeTIWc8+fMm5I
+         GXvw==
+X-Gm-Message-State: AOJu0YxPXO/z5jvreJDBnbAha1RBsf2eCDqX5fHKZetnTl3f84uOUKFn
+        56Ddceuv0qB33wJRlKdmex4b/g==
+X-Google-Smtp-Source: AGHT+IHTLgt0w7nTn5CFCPgpHuW2pwFk02eljfwLvvZjbUP6/BzrxV9dvc5WWfLIIuKTMVLjbJSm7g==
+X-Received: by 2002:ac2:5b12:0:b0:4fa:f96c:745f with SMTP id v18-20020ac25b12000000b004faf96c745fmr7901313lfn.38.1698153636559;
+        Tue, 24 Oct 2023 06:20:36 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id d5-20020a193845000000b00507ab956ab9sm2147365lfj.147.2023.10.24.06.20.34
+        by smtp.gmail.com with ESMTPSA id d5-20020a193845000000b00507ab956ab9sm2147365lfj.147.2023.10.24.06.20.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 06:20:34 -0700 (PDT)
+        Tue, 24 Oct 2023 06:20:36 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 24 Oct 2023 15:20:30 +0200
-Subject: [PATCH net-next v7 4/7] ARM: dts: nxp: Fix some common switch
- mistakes
+Date:   Tue, 24 Oct 2023 15:20:31 +0200
+Subject: [PATCH net-next v7 5/7] ARM64: dts: marvell: Fix some common
+ switch mistakes
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231024-marvell-88e6152-wan-led-v7-4-2869347697d1@linaro.org>
+Message-Id: <20231024-marvell-88e6152-wan-led-v7-5-2869347697d1@linaro.org>
 References: <20231024-marvell-88e6152-wan-led-v7-0-2869347697d1@linaro.org>
 In-Reply-To: <20231024-marvell-88e6152-wan-led-v7-0-2869347697d1@linaro.org>
 To:     Andrew Lunn <andrew@lunn.ch>,
@@ -81,7 +81,8 @@ Cc:     Christian Marangi <ansuelsmth@gmail.com>,
 X-Mailer: b4 0.12.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -89,550 +90,1113 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix some errors in the Marvell MV88E6xxx switch descriptions:
-- switch0@0 is not OK, should be ethernet-switch@0
+- The top node had no address size or cells.
+- switch0@0 is not OK, should be ethernet-switch@0.
 - ports should be ethernet-ports
-- port should be ethernet-port
-- phy should be ethernet-phy
+- port@0 should be ethernet-port@0
+- PHYs should be named ethernet-phy@
 
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts      | 14 ++---
- arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts  | 70 ++++++++++++------------
- arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts      | 18 +++---
- arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts  | 20 +++----
- arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts | 18 +++---
- 5 files changed, 70 insertions(+), 70 deletions(-)
+ .../dts/marvell/armada-3720-espressobin-ultra.dts  |  14 +-
+ .../boot/dts/marvell/armada-3720-espressobin.dtsi  |  20 +--
+ .../boot/dts/marvell/armada-3720-gl-mv1000.dts     |  20 +--
+ .../boot/dts/marvell/armada-3720-turris-mox.dts    | 189 +++++++++++----------
+ .../boot/dts/marvell/armada-7040-mochabin.dts      |  24 ++-
+ .../dts/marvell/armada-8040-clearfog-gt-8k.dts     |  22 +--
+ arch/arm64/boot/dts/marvell/cn9130-crb.dtsi        |  42 +++--
+ 7 files changed, 164 insertions(+), 167 deletions(-)
 
-diff --git a/arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts b/arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts
-index 1a19aec8957b..7e72f860c3c5 100644
---- a/arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts
-+++ b/arch/arm/boot/dts/nxp/vf/vf610-zii-cfu1.dts
-@@ -162,7 +162,7 @@ mdio1: mdio {
- 		suppress-preamble;
- 		status = "okay";
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+index f9abef8dcc94..870bb380a40a 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-ultra.dts
+@@ -126,32 +126,32 @@ &switch0 {
  
--		switch0: switch0@0 {
-+		switch0: ethernet-switch@0 {
- 			compatible = "marvell,mv88e6085";
- 			pinctrl-names = "default";
- 			pinctrl-0 = <&pinctrl_switch>;
-@@ -173,26 +173,26 @@ switch0: switch0@0 {
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
+ 	reset-gpios = <&gpiosb 23 GPIO_ACTIVE_LOW>;
  
--			ports {
-+			ethernet-ports {
- 				#address-cells = <1>;
- 				#size-cells = <0>;
+-	ports {
+-		switch0port1: port@1 {
++	ethernet-ports {
++		switch0port1: ethernet-port@1 {
+ 			reg = <1>;
+ 			label = "lan0";
+ 			phy-handle = <&switch0phy0>;
+ 		};
  
--				port@0 {
-+				ethernet-port@0 {
- 					reg = <0>;
- 					label = "eth_cu_1000_1";
- 				};
+-		switch0port2: port@2 {
++		switch0port2: ethernet-port@2 {
+ 			reg = <2>;
+ 			label = "lan1";
+ 			phy-handle = <&switch0phy1>;
+ 		};
  
--				port@1 {
-+				ethernet-port@1 {
- 					reg = <1>;
- 					label = "eth_cu_1000_2";
- 				};
+-		switch0port3: port@3 {
++		switch0port3: ethernet-port@3 {
+ 			reg = <3>;
+ 			label = "lan2";
+ 			phy-handle = <&switch0phy2>;
+ 		};
  
--				port@2 {
-+				ethernet-port@2 {
- 					reg = <2>;
- 					label = "eth_cu_1000_3";
- 				};
+-		switch0port4: port@4 {
++		switch0port4: ethernet-port@4 {
+ 			reg = <4>;
+ 			label = "lan3";
+ 			phy-handle = <&switch0phy3>;
+ 		};
  
--				port@5 {
-+				ethernet-port@5 {
- 					reg = <5>;
- 					label = "eth_fc_1000_1";
- 					phy-mode = "1000base-x";
-@@ -200,7 +200,7 @@ port@5 {
- 					sfp = <&sff>;
- 				};
+-		switch0port5: port@5 {
++		switch0port5: ethernet-port@5 {
+ 			reg = <5>;
+ 			label = "wan";
+ 			phy-handle = <&extphy>;
+@@ -160,7 +160,7 @@ switch0port5: port@5 {
+ 	};
  
--				port@6 {
-+				ethernet-port@6 {
- 					reg = <6>;
- 					phy-mode = "rmii";
- 					ethernet = <&fec1>;
-diff --git a/arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts b/arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts
-index df1335492a19..77492eeea450 100644
---- a/arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts
-+++ b/arch/arm/boot/dts/nxp/vf/vf610-zii-scu4-aib.dts
-@@ -47,17 +47,17 @@ mdio_mux_1: mdio@1 {
+ 	mdio {
+-		switch0phy3: switch0phy3@14 {
++		switch0phy3: ethernet-phy@14 {
+ 			reg = <0x14>;
+ 		};
+ 	};
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+index 5fc613d24151..86ec0df1c676 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dtsi
+@@ -145,19 +145,17 @@ &usb2 {
+ };
+ 
+ &mdio {
+-	switch0: switch0@1 {
++	switch0: ethernet-switch@1 {
+ 		compatible = "marvell,mv88e6085";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		reg = <1>;
+ 
+ 		dsa,member = <0 0>;
+ 
+-		ports {
++		ethernet-ports {
  			#address-cells = <1>;
  			#size-cells = <0>;
  
--			switch0: switch0@0 {
-+			switch0: ethernet-switch@0 {
- 				compatible = "marvell,mv88e6190";
+-			switch0port0: port@0 {
++			switch0port0: ethernet-port@0 {
  				reg = <0>;
- 				dsa,member = <0 0>;
- 				eeprom-length = <65536>;
- 
--				ports {
-+				ethernet-ports {
- 					#address-cells = <1>;
- 					#size-cells = <0>;
- 
--					port@0 {
-+					ethernet-port@0 {
- 						reg = <0>;
- 						phy-mode = "rmii";
- 						ethernet = <&fec1>;
-@@ -68,37 +68,37 @@ fixed-link {
- 						};
- 					};
- 
--					port@1 {
-+					ethernet-port@1 {
- 						reg = <1>;
- 						label = "aib2main_1";
- 					};
- 
--					port@2 {
-+					ethernet-port@2 {
- 						reg = <2>;
- 						label = "aib2main_2";
- 					};
- 
--					port@3 {
-+					ethernet-port@3 {
- 						reg = <3>;
- 						label = "eth_cu_1000_5";
- 					};
- 
--					port@4 {
-+					ethernet-port@4 {
- 						reg = <4>;
- 						label = "eth_cu_1000_6";
- 					};
- 
--					port@5 {
-+					ethernet-port@5 {
- 						reg = <5>;
- 						label = "eth_cu_1000_4";
- 					};
- 
--					port@6 {
-+					ethernet-port@6 {
- 						reg = <6>;
- 						label = "eth_cu_1000_7";
- 					};
- 
--					port@7 {
-+					ethernet-port@7 {
- 						reg = <7>;
- 						label = "modem_pic";
- 
-@@ -108,7 +108,7 @@ fixed-link {
- 						};
- 					};
- 
--					switch0port10: port@10 {
-+					switch0port10: ethernet-port@10 {
- 						reg = <10>;
- 						label = "dsa";
- 						phy-mode = "xgmii";
-@@ -130,32 +130,32 @@ mdio_mux_2: mdio@2 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 
--			switch1: switch1@0 {
-+			switch1: ethernet-switch@0 {
- 				compatible = "marvell,mv88e6190";
- 				reg = <0>;
- 				dsa,member = <0 1>;
- 				eeprom-length = <65536>;
- 
--				ports {
-+				ethernet-ports {
- 					#address-cells = <1>;
- 					#size-cells = <0>;
- 
--					port@1 {
-+					ethernet-port@1 {
- 						reg = <1>;
- 						label = "eth_cu_1000_3";
- 					};
- 
--					port@2 {
-+					ethernet-port@2 {
- 						reg = <2>;
- 						label = "eth_cu_100_2";
- 					};
- 
--					port@3 {
-+					ethernet-port@3 {
- 						reg = <3>;
- 						label = "eth_cu_100_3";
- 					};
- 
--					switch1port9: port@9 {
-+					switch1port9: ethernet-port@9 {
- 						reg = <9>;
- 						label = "dsa";
- 						phy-mode = "xgmii";
-@@ -168,7 +168,7 @@ fixed-link {
- 						};
- 					};
- 
--					switch1port10: port@10 {
-+					switch1port10: ethernet-port@10 {
- 						reg = <10>;
- 						label = "dsa";
- 						phy-mode = "xgmii";
-@@ -188,17 +188,17 @@ mdio_mux_4: mdio@4 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 
--			switch2: switch2@0 {
-+			switch2: ethernet-switch@0 {
- 				compatible = "marvell,mv88e6190";
- 				reg = <0>;
- 				dsa,member = <0 2>;
- 				eeprom-length = <65536>;
- 
--				ports {
-+				ethernet-ports {
- 					#address-cells = <1>;
- 					#size-cells = <0>;
- 
--					port@2 {
-+					ethernet-port@2 {
- 						reg = <2>;
- 						label = "eth_fc_1000_2";
- 						phy-mode = "1000base-x";
-@@ -206,7 +206,7 @@ port@2 {
- 						sfp = <&sff1>;
- 					};
- 
--					port@3 {
-+					ethernet-port@3 {
- 						reg = <3>;
- 						label = "eth_fc_1000_3";
- 						phy-mode = "1000base-x";
-@@ -214,7 +214,7 @@ port@3 {
- 						sfp = <&sff2>;
- 					};
- 
--					port@4 {
-+					ethernet-port@4 {
- 						reg = <4>;
- 						label = "eth_fc_1000_4";
- 						phy-mode = "1000base-x";
-@@ -222,7 +222,7 @@ port@4 {
- 						sfp = <&sff3>;
- 					};
- 
--					port@5 {
-+					ethernet-port@5 {
- 						reg = <5>;
- 						label = "eth_fc_1000_5";
- 						phy-mode = "1000base-x";
-@@ -230,7 +230,7 @@ port@5 {
- 						sfp = <&sff4>;
- 					};
- 
--					port@6 {
-+					ethernet-port@6 {
- 						reg = <6>;
- 						label = "eth_fc_1000_6";
- 						phy-mode = "1000base-x";
-@@ -238,7 +238,7 @@ port@6 {
- 						sfp = <&sff5>;
- 					};
- 
--					port@7 {
-+					ethernet-port@7 {
- 						reg = <7>;
- 						label = "eth_fc_1000_7";
- 						phy-mode = "1000base-x";
-@@ -246,7 +246,7 @@ port@7 {
- 						sfp = <&sff6>;
- 					};
- 
--					port@9 {
-+					ethernet-port@9 {
- 						reg = <9>;
- 						label = "eth_fc_1000_1";
- 						phy-mode = "1000base-x";
-@@ -254,7 +254,7 @@ port@9 {
- 						sfp = <&sff0>;
- 					};
- 
--					switch2port10: port@10 {
-+					switch2port10: ethernet-port@10 {
- 						reg = <10>;
- 						label = "dsa";
- 						phy-mode = "2500base-x";
-@@ -276,17 +276,17 @@ mdio_mux_8: mdio@8 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 
--			switch3: switch3@0 {
-+			switch3: ethernet-switch@0 {
- 				compatible = "marvell,mv88e6190";
- 				reg = <0>;
- 				dsa,member = <0 3>;
- 				eeprom-length = <65536>;
- 
--				ports {
-+				ethernet-ports {
- 					#address-cells = <1>;
- 					#size-cells = <0>;
- 
--					port@2 {
-+					ethernet-port@2 {
- 						reg = <2>;
- 						label = "eth_fc_1000_8";
- 						phy-mode = "1000base-x";
-@@ -294,7 +294,7 @@ port@2 {
- 						sfp = <&sff7>;
- 					};
- 
--					port@3 {
-+					ethernet-port@3 {
- 						reg = <3>;
- 						label = "eth_fc_1000_9";
- 						phy-mode = "1000base-x";
-@@ -302,7 +302,7 @@ port@3 {
- 						sfp = <&sff8>;
- 					};
- 
--					port@4 {
-+					ethernet-port@4 {
- 						reg = <4>;
- 						label = "eth_fc_1000_10";
- 						phy-mode = "1000base-x";
-@@ -310,7 +310,7 @@ port@4 {
- 						sfp = <&sff9>;
- 					};
- 
--					switch3port9: port@9 {
-+					switch3port9: ethernet-port@9 {
- 						reg = <9>;
- 						label = "dsa";
- 						phy-mode = "2500base-x";
-@@ -322,7 +322,7 @@ fixed-link {
- 						};
- 					};
- 
--					switch3port10: port@10 {
-+					switch3port10: ethernet-port@10 {
- 						reg = <10>;
- 						label = "dsa";
- 						phy-mode = "xgmii";
-diff --git a/arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts b/arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts
-index 1461804ecaea..2a490464660c 100644
---- a/arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts
-+++ b/arch/arm/boot/dts/nxp/vf/vf610-zii-spb4.dts
-@@ -123,7 +123,7 @@ mdio1: mdio {
- 		suppress-preamble;
- 		status = "okay";
- 
--		switch0: switch0@0 {
-+		switch0: ethernet-switch@0 {
- 			compatible = "marvell,mv88e6190";
- 			pinctrl-0 = <&pinctrl_gpio_switch0>;
- 			pinctrl-names = "default";
-@@ -134,11 +134,11 @@ switch0: switch0@0 {
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
- 
--			ports {
-+			ethernet-ports {
- 				#address-cells = <1>;
- 				#size-cells = <0>;
- 
--				port@0 {
-+				ethernet-port@0 {
- 					reg = <0>;
- 					phy-mode = "rmii";
- 					ethernet = <&fec1>;
-@@ -149,32 +149,32 @@ fixed-link {
- 					};
- 				};
- 
--				port@1 {
-+				ethernet-port@1 {
- 					reg = <1>;
- 					label = "eth_cu_1000_1";
- 				};
- 
--				port@2 {
-+				ethernet-port@2 {
- 					reg = <2>;
- 					label = "eth_cu_1000_2";
- 				};
- 
--				port@3 {
-+				ethernet-port@3 {
- 					reg = <3>;
- 					label = "eth_cu_1000_3";
- 				};
- 
--				port@4 {
-+				ethernet-port@4 {
- 					reg = <4>;
- 					label = "eth_cu_1000_4";
- 				};
- 
--				port@5 {
-+				ethernet-port@5 {
- 					reg = <5>;
- 					label = "eth_cu_1000_5";
- 				};
- 
--				port@6 {
-+				ethernet-port@6 {
- 					reg = <6>;
- 					label = "eth_cu_1000_6";
- 				};
-diff --git a/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts b/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts
-index 463c2452b9b7..078d8699e16d 100644
---- a/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts
-+++ b/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts
-@@ -112,7 +112,7 @@ mdio1: mdio {
- 		suppress-preamble;
- 		status = "okay";
- 
--		switch0: switch0@0 {
-+		switch0: ethernet-switch@0 {
- 			compatible = "marvell,mv88e6190";
- 			pinctrl-0 = <&pinctrl_gpio_switch0>;
- 			pinctrl-names = "default";
-@@ -123,11 +123,11 @@ switch0: switch0@0 {
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
- 
--			ports {
-+			ethernet-ports {
- 				#address-cells = <1>;
- 				#size-cells = <0>;
- 
--				port@0 {
-+				ethernet-port@0 {
- 					reg = <0>;
- 					phy-mode = "rmii";
- 					ethernet = <&fec1>;
-@@ -138,27 +138,27 @@ fixed-link {
- 					};
- 				};
- 
--				port@1 {
-+				ethernet-port@1 {
- 					reg = <1>;
- 					label = "eth_cu_100_3";
- 				};
- 
--				port@5 {
-+				ethernet-port@5 {
- 					reg = <5>;
- 					label = "eth_cu_1000_4";
- 				};
- 
--				port@6 {
-+				ethernet-port@6 {
- 					reg = <6>;
- 					label = "eth_cu_1000_5";
- 				};
- 
--				port@8 {
-+				ethernet-port@8 {
- 					reg = <8>;
- 					label = "eth_cu_1000_1";
- 				};
- 
--				port@9 {
-+				ethernet-port@9 {
- 					reg = <9>;
- 					label = "eth_cu_1000_2";
- 					phy-handle = <&phy9>;
-@@ -167,12 +167,12 @@ port@9 {
+ 				label = "cpu";
+ 				ethernet = <&eth0>;
+@@ -168,19 +166,19 @@ fixed-link {
  				};
  			};
  
--			mdio1 {
-+			mdio-external {
- 				compatible = "marvell,mv88e6xxx-mdio-external";
- 				#address-cells = <1>;
- 				#size-cells = <0>;
+-			switch0port1: port@1 {
++			switch0port1: ethernet-port@1 {
+ 				reg = <1>;
+ 				label = "wan";
+ 				phy-handle = <&switch0phy0>;
+ 			};
  
--				phy9: phy9@0 {
-+				phy9: ethernet-phy@0 {
- 					compatible = "ethernet-phy-ieee802.3-c45";
- 					pinctrl-0 = <&pinctrl_gpio_phy9>;
- 					pinctrl-names = "default";
-diff --git a/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts b/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts
-index f5ae0d5de315..22c8f44390a9 100644
---- a/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts
-+++ b/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-spu3.dts
-@@ -137,7 +137,7 @@ mdio1: mdio {
- 		suppress-preamble;
- 		status = "okay";
+-			switch0port2: port@2 {
++			switch0port2: ethernet-port@2 {
+ 				reg = <2>;
+ 				label = "lan0";
+ 				phy-handle = <&switch0phy1>;
+ 			};
  
--		switch0: switch0@0 {
-+		switch0: ethernet-switch@0 {
- 			compatible = "marvell,mv88e6190";
- 			pinctrl-0 = <&pinctrl_gpio_switch0>;
- 			pinctrl-names = "default";
-@@ -148,11 +148,11 @@ switch0: switch0@0 {
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
+-			switch0port3: port@3 {
++			switch0port3: ethernet-port@3 {
+ 				reg = <3>;
+ 				label = "lan1";
+ 				phy-handle = <&switch0phy2>;
+@@ -192,13 +190,13 @@ mdio {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
  
--			ports {
-+			ethernet-ports {
- 				#address-cells = <1>;
- 				#size-cells = <0>;
+-			switch0phy0: switch0phy0@11 {
++			switch0phy0: ethernet-phy@11 {
+ 				reg = <0x11>;
+ 			};
+-			switch0phy1: switch0phy1@12 {
++			switch0phy1: ethernet-phy@12 {
+ 				reg = <0x12>;
+ 			};
+-			switch0phy2: switch0phy2@13 {
++			switch0phy2: ethernet-phy@13 {
+ 				reg = <0x13>;
+ 			};
+ 		};
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts b/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts
+index b1b45b4fa9d4..63fbc8352161 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-gl-mv1000.dts
+@@ -152,31 +152,29 @@ &uart0 {
+ };
  
--				port@0 {
-+				ethernet-port@0 {
- 					reg = <0>;
- 					phy-mode = "rmii";
- 					ethernet = <&fec1>;
-@@ -163,32 +163,32 @@ fixed-link {
- 					};
- 				};
+ &mdio {
+-	switch0: switch0@1 {
++	switch0: ethernet-switch@1 {
+ 		compatible = "marvell,mv88e6085";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		reg = <1>;
  
--				port@1 {
-+				ethernet-port@1 {
- 					reg = <1>;
- 					label = "eth_cu_1000_1";
- 				};
+ 		dsa,member = <0 0>;
  
--				port@2 {
-+				ethernet-port@2 {
- 					reg = <2>;
- 					label = "eth_cu_1000_2";
- 				};
+-		ports: ports {
++		ports: ethernet-ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
  
--				port@3 {
-+				ethernet-port@3 {
- 					reg = <3>;
- 					label = "eth_cu_1000_3";
- 				};
+-			port@0 {
++			ethernet-port@0 {
+ 				reg = <0>;
+ 				label = "cpu";
+ 				ethernet = <&eth0>;
+ 			};
  
--				port@4 {
-+				ethernet-port@4 {
- 					reg = <4>;
- 					label = "eth_cu_1000_4";
- 				};
+-			port@1 {
++			ethernet-port@1 {
+ 				reg = <1>;
+ 				label = "wan";
+ 				phy-handle = <&switch0phy0>;
+ 			};
  
--				port@5 {
-+				ethernet-port@5 {
- 					reg = <5>;
- 					label = "eth_cu_1000_5";
- 				};
+-			port@2 {
++			ethernet-port@2 {
+ 				reg = <2>;
+ 				label = "lan0";
+ 				phy-handle = <&switch0phy1>;
+@@ -185,7 +183,7 @@ port@2 {
+ 				nvmem-cell-names = "mac-address";
+ 			};
  
--				port@6 {
-+				ethernet-port@6 {
- 					reg = <6>;
- 					label = "eth_cu_1000_6";
- 				};
+-			port@3 {
++			ethernet-port@3 {
+ 				reg = <3>;
+ 				label = "lan1";
+ 				phy-handle = <&switch0phy2>;
+@@ -199,13 +197,13 @@ mdio {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			switch0phy0: switch0phy0@11 {
++			switch0phy0: ethernet-phy@11 {
+ 				reg = <0x11>;
+ 			};
+-			switch0phy1: switch0phy1@12 {
++			switch0phy1: ethernet-phy@12 {
+ 				reg = <0x12>;
+ 			};
+-			switch0phy2: switch0phy2@13 {
++			switch0phy2: ethernet-phy@13 {
+ 				reg = <0x13>;
+ 			};
+ 		};
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+index 9eab2bb22134..cdf1b8bdb230 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+@@ -304,7 +304,12 @@ phy1: ethernet-phy@1 {
+ 		reg = <1>;
+ 	};
+ 
+-	/* switch nodes are enabled by U-Boot if modules are present */
++	/*
++	 * NOTE: switch nodes are enabled by U-Boot if modules are present
++	 * DO NOT change this node name (switch0@10) even if it is not following
++	 * conventions! Deployed U-Boot binaries are explicitly looking for
++	 * this node in order to augment the device tree!
++	 */
+ 	switch0@10 {
+ 		compatible = "marvell,mv88e6190";
+ 		reg = <0x10>;
+@@ -317,92 +322,92 @@ mdio {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			switch0phy1: switch0phy1@1 {
++			switch0phy1: ethernet-phy@1 {
+ 				reg = <0x1>;
+ 			};
+ 
+-			switch0phy2: switch0phy2@2 {
++			switch0phy2: ethernet-phy@2 {
+ 				reg = <0x2>;
+ 			};
+ 
+-			switch0phy3: switch0phy3@3 {
++			switch0phy3: ethernet-phy@3 {
+ 				reg = <0x3>;
+ 			};
+ 
+-			switch0phy4: switch0phy4@4 {
++			switch0phy4: ethernet-phy@4 {
+ 				reg = <0x4>;
+ 			};
+ 
+-			switch0phy5: switch0phy5@5 {
++			switch0phy5: ethernet-phy@5 {
+ 				reg = <0x5>;
+ 			};
+ 
+-			switch0phy6: switch0phy6@6 {
++			switch0phy6: ethernet-phy@6 {
+ 				reg = <0x6>;
+ 			};
+ 
+-			switch0phy7: switch0phy7@7 {
++			switch0phy7: ethernet-phy@7 {
+ 				reg = <0x7>;
+ 			};
+ 
+-			switch0phy8: switch0phy8@8 {
++			switch0phy8: ethernet-phy@8 {
+ 				reg = <0x8>;
+ 			};
+ 		};
+ 
+-		ports {
++		ethernet-ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@1 {
++			ethernet-port@1 {
+ 				reg = <0x1>;
+ 				label = "lan1";
+ 				phy-handle = <&switch0phy1>;
+ 			};
+ 
+-			port@2 {
++			ethernet-port@2 {
+ 				reg = <0x2>;
+ 				label = "lan2";
+ 				phy-handle = <&switch0phy2>;
+ 			};
+ 
+-			port@3 {
++			ethernet-port@3 {
+ 				reg = <0x3>;
+ 				label = "lan3";
+ 				phy-handle = <&switch0phy3>;
+ 			};
+ 
+-			port@4 {
++			ethernet-port@4 {
+ 				reg = <0x4>;
+ 				label = "lan4";
+ 				phy-handle = <&switch0phy4>;
+ 			};
+ 
+-			port@5 {
++			ethernet-port@5 {
+ 				reg = <0x5>;
+ 				label = "lan5";
+ 				phy-handle = <&switch0phy5>;
+ 			};
+ 
+-			port@6 {
++			ethernet-port@6 {
+ 				reg = <0x6>;
+ 				label = "lan6";
+ 				phy-handle = <&switch0phy6>;
+ 			};
+ 
+-			port@7 {
++			ethernet-port@7 {
+ 				reg = <0x7>;
+ 				label = "lan7";
+ 				phy-handle = <&switch0phy7>;
+ 			};
+ 
+-			port@8 {
++			ethernet-port@8 {
+ 				reg = <0x8>;
+ 				label = "lan8";
+ 				phy-handle = <&switch0phy8>;
+ 			};
+ 
+-			port@9 {
++			ethernet-port@9 {
+ 				reg = <0x9>;
+ 				label = "cpu";
+ 				ethernet = <&eth1>;
+@@ -410,7 +415,7 @@ port@9 {
+ 				managed = "in-band-status";
+ 			};
+ 
+-			switch0port10: port@a {
++			switch0port10: ethernet-port@a {
+ 				reg = <0xa>;
+ 				label = "dsa";
+ 				phy-mode = "2500base-x";
+@@ -430,7 +435,7 @@ port-sfp@a {
+ 		};
+ 	};
+ 
+-	switch0@2 {
++	ethernet-switch@2 {
+ 		compatible = "marvell,mv88e6085";
+ 		reg = <0x2>;
+ 		dsa,member = <0 0>;
+@@ -442,52 +447,52 @@ mdio {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			switch0phy1_topaz: switch0phy1@11 {
++			switch0phy1_topaz: ethernet-phy@11 {
+ 				reg = <0x11>;
+ 			};
+ 
+-			switch0phy2_topaz: switch0phy2@12 {
++			switch0phy2_topaz: ethernet-phy@12 {
+ 				reg = <0x12>;
+ 			};
+ 
+-			switch0phy3_topaz: switch0phy3@13 {
++			switch0phy3_topaz: ethernet-phy@13 {
+ 				reg = <0x13>;
+ 			};
+ 
+-			switch0phy4_topaz: switch0phy4@14 {
++			switch0phy4_topaz: ethernet-phy@14 {
+ 				reg = <0x14>;
+ 			};
+ 		};
+ 
+-		ports {
++		ethernet-ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@1 {
++			ethernet-port@1 {
+ 				reg = <0x1>;
+ 				label = "lan1";
+ 				phy-handle = <&switch0phy1_topaz>;
+ 			};
+ 
+-			port@2 {
++			ethernet-port@2 {
+ 				reg = <0x2>;
+ 				label = "lan2";
+ 				phy-handle = <&switch0phy2_topaz>;
+ 			};
+ 
+-			port@3 {
++			ethernet-port@3 {
+ 				reg = <0x3>;
+ 				label = "lan3";
+ 				phy-handle = <&switch0phy3_topaz>;
+ 			};
+ 
+-			port@4 {
++			ethernet-port@4 {
+ 				reg = <0x4>;
+ 				label = "lan4";
+ 				phy-handle = <&switch0phy4_topaz>;
+ 			};
+ 
+-			port@5 {
++			ethernet-port@5 {
+ 				reg = <0x5>;
+ 				label = "cpu";
+ 				phy-mode = "2500base-x";
+@@ -497,7 +502,7 @@ port@5 {
+ 		};
+ 	};
+ 
+-	switch1@11 {
++	ethernet-switch@11 {
+ 		compatible = "marvell,mv88e6190";
+ 		reg = <0x11>;
+ 		dsa,member = <0 1>;
+@@ -509,92 +514,92 @@ mdio {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			switch1phy1: switch1phy1@1 {
++			switch1phy1: ethernet-phy@1 {
+ 				reg = <0x1>;
+ 			};
+ 
+-			switch1phy2: switch1phy2@2 {
++			switch1phy2: ethernet-phy@2 {
+ 				reg = <0x2>;
+ 			};
+ 
+-			switch1phy3: switch1phy3@3 {
++			switch1phy3: ethernet-phy@3 {
+ 				reg = <0x3>;
+ 			};
+ 
+-			switch1phy4: switch1phy4@4 {
++			switch1phy4: ethernet-phy@4 {
+ 				reg = <0x4>;
+ 			};
+ 
+-			switch1phy5: switch1phy5@5 {
++			switch1phy5: ethernet-phy@5 {
+ 				reg = <0x5>;
+ 			};
+ 
+-			switch1phy6: switch1phy6@6 {
++			switch1phy6: ethernet-phy@6 {
+ 				reg = <0x6>;
+ 			};
+ 
+-			switch1phy7: switch1phy7@7 {
++			switch1phy7: ethernet-phy@7 {
+ 				reg = <0x7>;
+ 			};
+ 
+-			switch1phy8: switch1phy8@8 {
++			switch1phy8: ethernet-phy@8 {
+ 				reg = <0x8>;
+ 			};
+ 		};
+ 
+-		ports {
++		ethernet-ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@1 {
++			ethernet-port@1 {
+ 				reg = <0x1>;
+ 				label = "lan9";
+ 				phy-handle = <&switch1phy1>;
+ 			};
+ 
+-			port@2 {
++			ethernet-port@2 {
+ 				reg = <0x2>;
+ 				label = "lan10";
+ 				phy-handle = <&switch1phy2>;
+ 			};
+ 
+-			port@3 {
++			ethernet-port@3 {
+ 				reg = <0x3>;
+ 				label = "lan11";
+ 				phy-handle = <&switch1phy3>;
+ 			};
+ 
+-			port@4 {
++			ethernet-port@4 {
+ 				reg = <0x4>;
+ 				label = "lan12";
+ 				phy-handle = <&switch1phy4>;
+ 			};
+ 
+-			port@5 {
++			ethernet-port@5 {
+ 				reg = <0x5>;
+ 				label = "lan13";
+ 				phy-handle = <&switch1phy5>;
+ 			};
+ 
+-			port@6 {
++			ethernet-port@6 {
+ 				reg = <0x6>;
+ 				label = "lan14";
+ 				phy-handle = <&switch1phy6>;
+ 			};
+ 
+-			port@7 {
++			ethernet-port@7 {
+ 				reg = <0x7>;
+ 				label = "lan15";
+ 				phy-handle = <&switch1phy7>;
+ 			};
+ 
+-			port@8 {
++			ethernet-port@8 {
+ 				reg = <0x8>;
+ 				label = "lan16";
+ 				phy-handle = <&switch1phy8>;
+ 			};
+ 
+-			switch1port9: port@9 {
++			switch1port9: ethernet-port@9 {
+ 				reg = <0x9>;
+ 				label = "dsa";
+ 				phy-mode = "2500base-x";
+@@ -602,7 +607,7 @@ switch1port9: port@9 {
+ 				link = <&switch0port10>;
+ 			};
+ 
+-			switch1port10: port@a {
++			switch1port10: ethernet-port@a {
+ 				reg = <0xa>;
+ 				label = "dsa";
+ 				phy-mode = "2500base-x";
+@@ -622,7 +627,7 @@ port-sfp@a {
+ 		};
+ 	};
+ 
+-	switch1@2 {
++	ethernet-switch@2 {
+ 		compatible = "marvell,mv88e6085";
+ 		reg = <0x2>;
+ 		dsa,member = <0 1>;
+@@ -634,52 +639,52 @@ mdio {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			switch1phy1_topaz: switch1phy1@11 {
++			switch1phy1_topaz: ethernet-phy@11 {
+ 				reg = <0x11>;
+ 			};
+ 
+-			switch1phy2_topaz: switch1phy2@12 {
++			switch1phy2_topaz: ethernet-phy@12 {
+ 				reg = <0x12>;
+ 			};
+ 
+-			switch1phy3_topaz: switch1phy3@13 {
++			switch1phy3_topaz: ethernet-phy@13 {
+ 				reg = <0x13>;
+ 			};
+ 
+-			switch1phy4_topaz: switch1phy4@14 {
++			switch1phy4_topaz: ethernet-phy@14 {
+ 				reg = <0x14>;
+ 			};
+ 		};
+ 
+-		ports {
++		ethernet-ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@1 {
++			ethernet-port@1 {
+ 				reg = <0x1>;
+ 				label = "lan9";
+ 				phy-handle = <&switch1phy1_topaz>;
+ 			};
+ 
+-			port@2 {
++			ethernet-port@2 {
+ 				reg = <0x2>;
+ 				label = "lan10";
+ 				phy-handle = <&switch1phy2_topaz>;
+ 			};
+ 
+-			port@3 {
++			ethernet-port@3 {
+ 				reg = <0x3>;
+ 				label = "lan11";
+ 				phy-handle = <&switch1phy3_topaz>;
+ 			};
+ 
+-			port@4 {
++			ethernet-port@4 {
+ 				reg = <0x4>;
+ 				label = "lan12";
+ 				phy-handle = <&switch1phy4_topaz>;
+ 			};
+ 
+-			port@5 {
++			ethernet-port@5 {
+ 				reg = <0x5>;
+ 				label = "dsa";
+ 				phy-mode = "2500base-x";
+@@ -689,7 +694,7 @@ port@5 {
+ 		};
+ 	};
+ 
+-	switch2@12 {
++	ethernet-switch@12 {
+ 		compatible = "marvell,mv88e6190";
+ 		reg = <0x12>;
+ 		dsa,member = <0 2>;
+@@ -701,92 +706,92 @@ mdio {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			switch2phy1: switch2phy1@1 {
++			switch2phy1: ethernet-phy@1 {
+ 				reg = <0x1>;
+ 			};
+ 
+-			switch2phy2: switch2phy2@2 {
++			switch2phy2: ethernet-phy@2 {
+ 				reg = <0x2>;
+ 			};
+ 
+-			switch2phy3: switch2phy3@3 {
++			switch2phy3: ethernet-phy@3 {
+ 				reg = <0x3>;
+ 			};
+ 
+-			switch2phy4: switch2phy4@4 {
++			switch2phy4: ethernet-phy@4 {
+ 				reg = <0x4>;
+ 			};
+ 
+-			switch2phy5: switch2phy5@5 {
++			switch2phy5: ethernet-phy@5 {
+ 				reg = <0x5>;
+ 			};
+ 
+-			switch2phy6: switch2phy6@6 {
++			switch2phy6: ethernet-phy@6 {
+ 				reg = <0x6>;
+ 			};
+ 
+-			switch2phy7: switch2phy7@7 {
++			switch2phy7: ethernet-phy@7 {
+ 				reg = <0x7>;
+ 			};
+ 
+-			switch2phy8: switch2phy8@8 {
++			switch2phy8: ethernet-phy@8 {
+ 				reg = <0x8>;
+ 			};
+ 		};
+ 
+-		ports {
++		ethernet-ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@1 {
++			ethernet-port@1 {
+ 				reg = <0x1>;
+ 				label = "lan17";
+ 				phy-handle = <&switch2phy1>;
+ 			};
+ 
+-			port@2 {
++			ethernet-port@2 {
+ 				reg = <0x2>;
+ 				label = "lan18";
+ 				phy-handle = <&switch2phy2>;
+ 			};
+ 
+-			port@3 {
++			ethernet-port@3 {
+ 				reg = <0x3>;
+ 				label = "lan19";
+ 				phy-handle = <&switch2phy3>;
+ 			};
+ 
+-			port@4 {
++			ethernet-port@4 {
+ 				reg = <0x4>;
+ 				label = "lan20";
+ 				phy-handle = <&switch2phy4>;
+ 			};
+ 
+-			port@5 {
++			ethernet-port@5 {
+ 				reg = <0x5>;
+ 				label = "lan21";
+ 				phy-handle = <&switch2phy5>;
+ 			};
+ 
+-			port@6 {
++			ethernet-port@6 {
+ 				reg = <0x6>;
+ 				label = "lan22";
+ 				phy-handle = <&switch2phy6>;
+ 			};
+ 
+-			port@7 {
++			ethernet-port@7 {
+ 				reg = <0x7>;
+ 				label = "lan23";
+ 				phy-handle = <&switch2phy7>;
+ 			};
+ 
+-			port@8 {
++			ethernet-port@8 {
+ 				reg = <0x8>;
+ 				label = "lan24";
+ 				phy-handle = <&switch2phy8>;
+ 			};
+ 
+-			switch2port9: port@9 {
++			switch2port9: ethernet-port@9 {
+ 				reg = <0x9>;
+ 				label = "dsa";
+ 				phy-mode = "2500base-x";
+@@ -805,7 +810,7 @@ port-sfp@a {
+ 		};
+ 	};
+ 
+-	switch2@2 {
++	ethernet-switch@2 {
+ 		compatible = "marvell,mv88e6085";
+ 		reg = <0x2>;
+ 		dsa,member = <0 2>;
+@@ -817,52 +822,52 @@ mdio {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			switch2phy1_topaz: switch2phy1@11 {
++			switch2phy1_topaz: ethernet-phy@11 {
+ 				reg = <0x11>;
+ 			};
+ 
+-			switch2phy2_topaz: switch2phy2@12 {
++			switch2phy2_topaz: ethernet-phy@12 {
+ 				reg = <0x12>;
+ 			};
+ 
+-			switch2phy3_topaz: switch2phy3@13 {
++			switch2phy3_topaz: ethernet-phy@13 {
+ 				reg = <0x13>;
+ 			};
+ 
+-			switch2phy4_topaz: switch2phy4@14 {
++			switch2phy4_topaz: ethernet-phy@14 {
+ 				reg = <0x14>;
+ 			};
+ 		};
+ 
+-		ports {
++		ethernet-ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@1 {
++			ethernet-port@1 {
+ 				reg = <0x1>;
+ 				label = "lan17";
+ 				phy-handle = <&switch2phy1_topaz>;
+ 			};
+ 
+-			port@2 {
++			ethernet-port@2 {
+ 				reg = <0x2>;
+ 				label = "lan18";
+ 				phy-handle = <&switch2phy2_topaz>;
+ 			};
+ 
+-			port@3 {
++			ethernet-port@3 {
+ 				reg = <0x3>;
+ 				label = "lan19";
+ 				phy-handle = <&switch2phy3_topaz>;
+ 			};
+ 
+-			port@4 {
++			ethernet-port@4 {
+ 				reg = <0x4>;
+ 				label = "lan20";
+ 				phy-handle = <&switch2phy4_topaz>;
+ 			};
+ 
+-			port@5 {
++			ethernet-port@5 {
+ 				reg = <0x5>;
+ 				label = "dsa";
+ 				phy-mode = "2500base-x";
+diff --git a/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
+index 48202810bf78..40b7ee7ead72 100644
+--- a/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
++++ b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
+@@ -301,10 +301,8 @@ eth2phy: ethernet-phy@1 {
+ 	};
+ 
+ 	/* 88E6141 Topaz switch */
+-	switch: switch@3 {
++	switch: ethernet-switch@3 {
+ 		compatible = "marvell,mv88e6085";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		reg = <3>;
+ 
+ 		pinctrl-names = "default";
+@@ -314,35 +312,35 @@ switch: switch@3 {
+ 		interrupt-parent = <&cp0_gpio1>;
+ 		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
+ 
+-		ports {
++		ethernet-ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			swport1: port@1 {
++			swport1: ethernet-port@1 {
+ 				reg = <1>;
+ 				label = "lan0";
+ 				phy-handle = <&swphy1>;
+ 			};
+ 
+-			swport2: port@2 {
++			swport2: ethernet-port@2 {
+ 				reg = <2>;
+ 				label = "lan1";
+ 				phy-handle = <&swphy2>;
+ 			};
+ 
+-			swport3: port@3 {
++			swport3: ethernet-port@3 {
+ 				reg = <3>;
+ 				label = "lan2";
+ 				phy-handle = <&swphy3>;
+ 			};
+ 
+-			swport4: port@4 {
++			swport4: ethernet-port@4 {
+ 				reg = <4>;
+ 				label = "lan3";
+ 				phy-handle = <&swphy4>;
+ 			};
+ 
+-			port@5 {
++			ethernet-port@5 {
+ 				reg = <5>;
+ 				label = "cpu";
+ 				ethernet = <&cp0_eth1>;
+@@ -355,19 +353,19 @@ mdio {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			swphy1: swphy1@17 {
++			swphy1: ethernet-phy@17 {
+ 				reg = <17>;
+ 			};
+ 
+-			swphy2: swphy2@18 {
++			swphy2: ethernet-phy@18 {
+ 				reg = <18>;
+ 			};
+ 
+-			swphy3: swphy3@19 {
++			swphy3: ethernet-phy@19 {
+ 				reg = <19>;
+ 			};
+ 
+-			swphy4: swphy4@20 {
++			swphy4: ethernet-phy@20 {
+ 				reg = <20>;
+ 			};
+ 		};
+diff --git a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
+index 4125202028c8..67892f0d2863 100644
+--- a/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
++++ b/arch/arm64/boot/dts/marvell/armada-8040-clearfog-gt-8k.dts
+@@ -497,42 +497,42 @@ ge_phy: ethernet-phy@0 {
+ 		reset-deassert-us = <10000>;
+ 	};
+ 
+-	switch0: switch0@4 {
++	switch0: ethernet-switch@4 {
+ 		compatible = "marvell,mv88e6085";
+ 		reg = <4>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&cp1_switch_reset_pins>;
+ 		reset-gpios = <&cp1_gpio1 24 GPIO_ACTIVE_LOW>;
+ 
+-		ports {
++		ethernet-ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@1 {
++			ethernet-port@1 {
+ 				reg = <1>;
+ 				label = "lan2";
+ 				phy-handle = <&switch0phy0>;
+ 			};
+ 
+-			port@2 {
++			ethernet-port@2 {
+ 				reg = <2>;
+ 				label = "lan1";
+ 				phy-handle = <&switch0phy1>;
+ 			};
+ 
+-			port@3 {
++			ethernet-port@3 {
+ 				reg = <3>;
+ 				label = "lan4";
+ 				phy-handle = <&switch0phy2>;
+ 			};
+ 
+-			port@4 {
++			ethernet-port@4 {
+ 				reg = <4>;
+ 				label = "lan3";
+ 				phy-handle = <&switch0phy3>;
+ 			};
+ 
+-			port@5 {
++			ethernet-port@5 {
+ 				reg = <5>;
+ 				label = "cpu";
+ 				ethernet = <&cp1_eth2>;
+@@ -545,19 +545,19 @@ mdio {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			switch0phy0: switch0phy0@11 {
++			switch0phy0: ethernet-phy@11 {
+ 				reg = <0x11>;
+ 			};
+ 
+-			switch0phy1: switch0phy1@12 {
++			switch0phy1: ethernet-phy@12 {
+ 				reg = <0x12>;
+ 			};
+ 
+-			switch0phy2: switch0phy2@13 {
++			switch0phy2: ethernet-phy@13 {
+ 				reg = <0x13>;
+ 			};
+ 
+-			switch0phy3: switch0phy3@14 {
++			switch0phy3: ethernet-phy@14 {
+ 				reg = <0x14>;
+ 			};
+ 		};
+diff --git a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
+index 32cfb3e2efc3..7538ed56053b 100644
+--- a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
++++ b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
+@@ -207,11 +207,9 @@ phy0: ethernet-phy@0 {
+ 		reg = <0>;
+ 	};
+ 
+-	switch6: switch0@6 {
++	switch6: ethernet-switch@6 {
+ 		/* Actual device is MV88E6393X */
+ 		compatible = "marvell,mv88e6190";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		reg = <6>;
+ 		interrupt-parent = <&cp0_gpio1>;
+ 		interrupts = <28 IRQ_TYPE_LEVEL_LOW>;
+@@ -220,59 +218,59 @@ switch6: switch0@6 {
+ 
+ 		dsa,member = <0 0>;
+ 
+-		ports {
++		ethernet-ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			port@1 {
++			ethernet-port@1 {
+ 				reg = <1>;
+ 				label = "p1";
+ 				phy-handle = <&switch0phy1>;
+ 			};
+ 
+-			port@2 {
++			ethernet-port@2 {
+ 				reg = <2>;
+ 				label = "p2";
+ 				phy-handle = <&switch0phy2>;
+ 			};
+ 
+-			port@3 {
++			ethernet-port@3 {
+ 				reg = <3>;
+ 				label = "p3";
+ 				phy-handle = <&switch0phy3>;
+ 			};
+ 
+-			port@4 {
++			ethernet-port@4 {
+ 				reg = <4>;
+ 				label = "p4";
+ 				phy-handle = <&switch0phy4>;
+ 			};
+ 
+-			port@5 {
++			ethernet-port@5 {
+ 				reg = <5>;
+ 				label = "p5";
+ 				phy-handle = <&switch0phy5>;
+ 			};
+ 
+-			port@6 {
++			ethernet-port@6 {
+ 				reg = <6>;
+ 				label = "p6";
+ 				phy-handle = <&switch0phy6>;
+ 			};
+ 
+-			port@7 {
++			ethernet-port@7 {
+ 				reg = <7>;
+ 				label = "p7";
+ 				phy-handle = <&switch0phy7>;
+ 			};
+ 
+-			port@8 {
++			ethernet-port@8 {
+ 				reg = <8>;
+ 				label = "p8";
+ 				phy-handle = <&switch0phy8>;
+ 			};
+ 
+-			port@9 {
++			ethernet-port@9 {
+ 				reg = <9>;
+ 				label = "p9";
+ 				phy-mode = "10gbase-r";
+@@ -280,7 +278,7 @@ port@9 {
+ 				managed = "in-band-status";
+ 			};
+ 
+-			port@a {
++			ethernet-port@a {
+ 				reg = <10>;
+ 				ethernet = <&cp0_eth0>;
+ 				phy-mode = "10gbase-r";
+@@ -293,35 +291,35 @@ mdio {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			switch0phy1: switch0phy1@1 {
++			switch0phy1: ethernet-phy@1 {
+ 				reg = <0x1>;
+ 			};
+ 
+-			switch0phy2: switch0phy2@2 {
++			switch0phy2: ethernet-phy@2 {
+ 				reg = <0x2>;
+ 			};
+ 
+-			switch0phy3: switch0phy3@3 {
++			switch0phy3: ethernet-phy@3 {
+ 				reg = <0x3>;
+ 			};
+ 
+-			switch0phy4: switch0phy4@4 {
++			switch0phy4: ethernet-phy@4 {
+ 				reg = <0x4>;
+ 			};
+ 
+-			switch0phy5: switch0phy5@5 {
++			switch0phy5: ethernet-phy@5 {
+ 				reg = <0x5>;
+ 			};
+ 
+-			switch0phy6: switch0phy6@6 {
++			switch0phy6: ethernet-phy@6 {
+ 				reg = <0x6>;
+ 			};
+ 
+-			switch0phy7: switch0phy7@7 {
++			switch0phy7: ethernet-phy@7 {
+ 				reg = <0x7>;
+ 			};
+ 
+-			switch0phy8: switch0phy8@8 {
++			switch0phy8: ethernet-phy@8 {
+ 				reg = <0x8>;
+ 			};
+ 		};
 
 -- 
 2.34.1
