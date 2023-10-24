@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 548F57D4C79
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4567D4C85
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbjJXJdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        id S234097AbjJXJdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234276AbjJXJdB (ORCPT
+        with ESMTP id S234061AbjJXJdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:33:01 -0400
-Received: from mail-oa1-f78.google.com (mail-oa1-f78.google.com [209.85.160.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5081726
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:31:55 -0700 (PDT)
-Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-1dcdb642868so6682226fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:31:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698139915; x=1698744715;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5WvjhLNa8d2oEwSVAmtTQ9INn0GqgmohbDh5F5AEOmk=;
-        b=NzufHrXnsy3w9PJnpzOSR5uQw0AhDq1rbMrPBHXqAMtgMa9HPJpE8u4L777CDkRQda
-         wb1nuWd1/79ntF9rBOVGjW6GrwR93OeDylqMFAn64cHMB6J/LI2tbbs4QzvBswknCMUv
-         irAYq4Cy/8WI3gmdmuScb9gP7iZbM5wVQhPvNPQ240nKDHPfXXiLxRAR37Mod095DN5/
-         b34vfWXBTfUg5vN4j1S9OGMZm+hhrlICv6cZDSJeHvNFfsDxOYsZC6e0nyGnBdTN2ufd
-         Kzm6fJ2xTPDJBIP6X1C4jQ+XR0L8B/8cF5N+D9tzTBL4H9GH9S+M9yc5Xxg0+mURFt/G
-         Pl1g==
-X-Gm-Message-State: AOJu0YyeImrtZSV62/NyKI7YgpAVTeDYbXYvejlOUEJYWgewvgLRSdfg
-        MGjIukXirRlxO+gLo5WbeN7qKWO4GHpo3+GX/G/iTV8DvMD0
-X-Google-Smtp-Source: AGHT+IFughUpyRw+6yKUOu+n83Xwe4zpBla6bRfnTg2ykJ553IEHzVGgWSAuKzk2twJU7b5PD4scRcbbUurHT8ef5PfCqkIiRG9l
+        Tue, 24 Oct 2023 05:33:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7C03259;
+        Tue, 24 Oct 2023 02:32:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B569C433C7;
+        Tue, 24 Oct 2023 09:32:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698139964;
+        bh=UPQBF1hjWZNZJzepFfkVdTlAkejOqi2qCPHFJIJlpoo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1yRUBc8YUTQyJ3mKxupBcm8GBt5PJZ82/ESPqSF3ssB3JJfGEg1YaqKI/fYTogBPM
+         WVxqdjED8e1T7WhoxBzzvaZzA7qVJ7CO7CRW9AoAnOM85CmkLqckbMumWTm0jjs/BZ
+         SA8McnxFrETIDIRO1STRzZm/qBwhUsU7ueYbeC4k=
+Date:   Tue, 24 Oct 2023 11:32:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dan Raymond <raymod2@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-serial <linux-serial@vger.kernel.org>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, peterz@infradead.org,
+        andriy.shevchenko@linux.intel.com, quic_saipraka@quicinc.com,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH v5] arch/x86: port I/O tracing on x86
+Message-ID: <2023102406-prodigal-evidence-471d@gregkh>
+References: <b8eae358-a3b3-fd68-82f1-b2c53534b922@gmail.com>
+ <2023100344-dart-jailbreak-c371@gregkh>
+ <94e2b77c-9cc4-534f-e650-06d7e0697f9f@gmail.com>
+ <20231004195001.76a57417@gandalf.local.home>
+ <80b84be0-a0ad-d1a9-607a-a87c6cf509e0@gmail.com>
+ <cc7fba3b-9da2-b9eb-95c8-7336e1cd4449@gmail.com>
+ <2023102122-diabetes-trend-57d0@gregkh>
+ <62349c78-14b8-4d5c-87ea-00dbd662fe26@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:9215:b0:1e9:92d7:47d2 with SMTP id
- e21-20020a056870921500b001e992d747d2mr5438769oaf.10.1698139915199; Tue, 24
- Oct 2023 02:31:55 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 02:31:55 -0700
-In-Reply-To: <000000000000985ef90607610b0a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006cab1e06087302dd@google.com>
-Subject: Re: [syzbot] [mm?] WARNING: suspicious RCU usage in mas_walk (3)
-From:   syzbot <syzbot+79fcba037b6df73756d3@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, hughd@google.com,
-        liam.howlett@oracle.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, postmaster@duagon.onmicrosoft.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <62349c78-14b8-4d5c-87ea-00dbd662fe26@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,113 +57,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Mon, Oct 23, 2023 at 02:28:04PM -0600, Dan Raymond wrote:
+> > Anyway, it's up to the x86 maintainers now, good luck!
+> > 
+> > But personally, I don't see the real need for this at all.  It's a
+> > debugging thing for what exactly?  Who needs this?  Who will use it?
+> > When will they use it?  And why?
+> 
+> This comment confuses me.  As you know I originally submitted a patch
+> that added I/O tracing just to the 8250 serial driver.  The patch was
+> titled "create debugfs interface for UART register tracing".  You said
+> this at the time:
+> 
+>    "Anyway, again, cool feature, I like it, but if you can tie it into
+>    the existing trace framework better (either by using that entirely
+>    which might be best), or at the least, putting your hook into the
+>    data path with it, that would be best."
 
-HEAD commit:    e8361b005d7c Add linux-next specific files for 20231023
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1535f3a3680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=39bda8753f457952
-dashboard link: https://syzkaller.appspot.com/bug?extid=79fcba037b6df73756d3
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13714705680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1236430b680000
+Remember some of us, like myself, get on average 1000+ emails a day that
+they need to file/delete/review, so what I wrote yesterday I usually
+can't remember, let alone weeks ago :)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f6e9b9de3681/disk-e8361b00.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5aadf3761d05/vmlinux-e8361b00.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/704f56d3327c/bzImage-e8361b00.xz
+> My original patch went through a few revisions before Andy Shevchenko
+> suggested I should add portio tracing instead in a manner similar to
+> how CONFIG_TRACE_MMIO_ACCESS works.  You agreed.  Hence I created this
+> patch.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+79fcba037b6df73756d3@syzkaller.appspotmail.com
+That's great, but it turns out that the x86 maintainers don't like this,
+so perhaps that's not going to work out well.
 
-=============================
-WARNING: suspicious RCU usage
-6.6.0-rc6-next-20231023-syzkaller #0 Not tainted
------------------------------
-lib/maple_tree.c:856 suspicious rcu_dereference_check() usage!
+I still think the original idea of using tracepoints for serial data
+would be best, but hey, I don't need this feature :)
 
-other info that might help us debug this:
+thanks,
 
-
-rcu_scheduler_active = 2, debug_locks = 1
-no locks held by syz-executor445/16542.
-
-stack backtrace:
-CPU: 1 PID: 16542 Comm: syz-executor445 Not tainted 6.6.0-rc6-next-20231023-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- lockdep_rcu_suspicious+0x20b/0x3a0 kernel/locking/lockdep.c:6711
- mas_root lib/maple_tree.c:856 [inline]
- mas_root lib/maple_tree.c:854 [inline]
- mas_start lib/maple_tree.c:1385 [inline]
- mas_state_walk lib/maple_tree.c:3705 [inline]
- mas_walk+0x4d1/0x7d0 lib/maple_tree.c:4888
- mas_find_setup lib/maple_tree.c:5948 [inline]
- mas_find+0x1e6/0x400 lib/maple_tree.c:5989
- vma_find include/linux/mm.h:952 [inline]
- do_mbind+0xc8f/0x1010 mm/mempolicy.c:1328
- kernel_mbind+0x1d4/0x1f0 mm/mempolicy.c:1486
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x62/0x6a
-RIP: 0033:0x7f384f7bd229
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 1d 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f384f753158 EFLAGS: 00000212 ORIG_RAX: 00000000000000ed
-RAX: ffffffffffffffda RBX: 00007f384f8413f8 RCX: 00007f384f7bd229
-RDX: 0000000000000003 RSI: 0000000000005000 RDI: 0000000020182000
-RBP: 00007f384f8413f0 R08: 000000000000007f R09: 0000000000000003
-R10: 0000000020000040 R11: 0000000000000212 R12: 00007f384f8413fc
-R13: 000000000000006e R14: 00007ffdafb5ca20 R15: 00007ffdafb5cb08
- </TASK>
-
-=============================
-WARNING: suspicious RCU usage
-6.6.0-rc6-next-20231023-syzkaller #0 Not tainted
------------------------------
-lib/maple_tree.c:812 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-no locks held by syz-executor445/16542.
-
-stack backtrace:
-CPU: 0 PID: 16542 Comm: syz-executor445 Not tainted 6.6.0-rc6-next-20231023-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- lockdep_rcu_suspicious+0x20b/0x3a0 kernel/locking/lockdep.c:6711
- mt_slot lib/maple_tree.c:812 [inline]
- mt_slot lib/maple_tree.c:809 [inline]
- mtree_range_walk+0x6c5/0x9b0 lib/maple_tree.c:2827
- mas_state_walk lib/maple_tree.c:3712 [inline]
- mas_walk+0x374/0x7d0 lib/maple_tree.c:4888
- mas_find_setup lib/maple_tree.c:5948 [inline]
- mas_find+0x1e6/0x400 lib/maple_tree.c:5989
- vma_find include/linux/mm.h:952 [inline]
- do_mbind+0xc8f/0x1010 mm/mempolicy.c:1328
- kernel_mbind+0x1d4/0x1f0 mm/mempolicy.c:1486
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x62/0x6a
-RIP: 0033:0x7f384f7bd229
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 1d 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f384f753158 EFLAGS: 00000212 ORIG_RAX: 00000000000000ed
-RAX: ffffffffffffffda RBX: 00007f384f8413f8 RCX: 00007f384f7bd229
-RDX: 0000000000000003 RSI: 0000000000005000 RDI: 0000000020182000
-RBP: 00007f384f8413f0 R08: 000000000000007f R09: 0000000000000003
-R10: 0000000020000040 R11: 0000000000000212 R12: 00007f384f8413fc
-R13: 000000000000006e R14: 00007ffdafb5ca20 R15: 00007ffdafb5cb08
- </TASK>
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+greg k-h
