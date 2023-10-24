@@ -2,112 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0197D5205
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDD27D520D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbjJXNkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52860 "EHLO
+        id S234466AbjJXNmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234451AbjJXNkp (ORCPT
+        with ESMTP id S234210AbjJXNmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:40:45 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED7395;
-        Tue, 24 Oct 2023 06:40:41 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 694441BF210;
-        Tue, 24 Oct 2023 13:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1698154840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XAvwTUEXIaI0z46pwJVVezsvG++BVtQgJpn7cNB1ctk=;
-        b=fVfgHpnxlEj7KXhnlLkjkqIn4X+DlaVL28wNNDKsdKIyO3C3tvJQuTHYhg5CqnbLkuLnAJ
-        MhjWilxmzP1cRei4l0+6prxLMziuTntq9RysPTZe30dYV50oRayMr13kCzvEzclbcaYryh
-        ERnuCbdc2IHW4tbscWoIBlJ60sEyXnkg7y7EnGhxy0YUq0M5CPlkzk/nzoDiX74mJVuTCz
-        IZWE0bfR+0kPEB5Wen0qms4C9EAH4tE8o6XR0LueVCj8q8PRwjegXINaoQdEeC8sZWBfZR
-        WCKn4VSEZkKwpznLprcK4dM+i1TMkLP2POCtIyJUI0Q5OwBHZkyug+uSq8+HhQ==
-Date:   Tue, 24 Oct 2023 15:40:37 +0200
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v6 07/16] net_tstamp: Add TIMESTAMPING SOFTWARE
- and HARDWARE mask
-Message-ID: <20231024154037.2f61fe5b@kmaincent-XPS-13-7390>
-In-Reply-To: <CAF=yD-+O6QxuYJzijMes7J_DHHd7yYCz8sBLFERM1U6pYN0Gkg@mail.gmail.com>
-References: <20231019-feature_ptp_netnext-v6-0-71affc27b0e5@bootlin.com>
-        <20231019-feature_ptp_netnext-v6-7-71affc27b0e5@bootlin.com>
-        <CAF=yD-+O6QxuYJzijMes7J_DHHd7yYCz8sBLFERM1U6pYN0Gkg@mail.gmail.com>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 24 Oct 2023 09:42:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1B293;
+        Tue, 24 Oct 2023 06:42:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD88BC433C9;
+        Tue, 24 Oct 2023 13:42:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698154953;
+        bh=oLUw4HUETYTag/q+WgmsddbpnNeeKsiPxomQx+RAhQo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RnVNYQASnBUCi7hrFCOBYE/zVGD6T5aLyP0YOtluyOSHUDBMjO2GQu/0+y1MIfN0K
+         n9VVgaDU9jzdbNbLpfX7HnKPBdXM5rG8SdSWUUpYWHCqIWGYtZ7pUH1D8HveLn1GT2
+         YG94zDB63VHZiWgZiDxBKcMzX1muHDi1uhAKZY28iWx2WJ7IqNrliPV7rxjmSgFm5A
+         iLCkvGGUKLb3YjgvSQqiKD+jTKIxFMJDdx4ZeMurfFBRUzOiFfSCWoYmlgtK0rkJTP
+         tN/jgZCG5uzzA8wPz4Y+HXk4vuNGBjXVS4UARSn1QKZ7niibfBgPI7E8KV9DXTop5l
+         KCQxKWcsmOHkg==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-507bd644a96so6624926e87.3;
+        Tue, 24 Oct 2023 06:42:33 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwGPyNVrjj5iwVeR/RTFIlBujVuqNSNukX/CN/qI1e+ieB6DxGE
+        OT2kVgDPZ/1BNhMZtJPVoXkF39U5VXDjUm3P4F8=
+X-Google-Smtp-Source: AGHT+IEeBOhs0t8y/Hr0aF+QuXEThQOJnUMJRir36Ob9NXaBD+VMPSvQjk2UmmPL7QSj7rkMV8lNLpTXKIwn6NTX9jg=
+X-Received: by 2002:ac2:5333:0:b0:502:d743:9fc4 with SMTP id
+ f19-20020ac25333000000b00502d7439fc4mr8948350lfh.37.1698154951976; Tue, 24
+ Oct 2023 06:42:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231024172409.7b519868@canb.auug.org.au> <ZTeUhsf1xWmkJcRh@arm.com>
+In-Reply-To: <ZTeUhsf1xWmkJcRh@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 24 Oct 2023 15:42:20 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGSG0KLa0NNnMM-_zh+wEJm94b2zpHtkSeUi1hdxMYa_Q@mail.gmail.com>
+Message-ID: <CAMj1kXGSG0KLa0NNnMM-_zh+wEJm94b2zpHtkSeUi1hdxMYa_Q@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the arm64 tree
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 10:48:04 -0400
-Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
-
-> On Thu, Oct 19, 2023 at 10:29=E2=80=AFAM Kory Maincent
-> <kory.maincent@bootlin.com> wrote:
-> >
-> > Timestamping software or hardware flags are often used as a group,
-> > therefore adding these masks will easier future use. =20
->=20
-> This assumes that device support for timestamping is often symmetric:
-> a device supports both rx and tx, or neither.
+On Tue, 24 Oct 2023 at 11:55, Catalin Marinas <catalin.marinas@arm.com> wrote:
 >
-> All devices support software receive timestamping, as that timestamp
-> is taken in the core network stack. But to support transmit timestamps
-> drivers have to call sbk_tstamp_tx in their ndo_start_xmit.
+> + Ard
+>
+> On Tue, Oct 24, 2023 at 05:24:09PM +1100, Stephen Rothwell wrote:
+> > After merging the arm64 tree, today's linux-next build (arm64 defconfig)
+> > produced this warning:
+> >
+> > WARNING: modpost: vmlinux: section mismatch in reference: __pi_$x+0x38 (section: .text) -> __pi_map_range (section: .init.text)
+> >
+> > I don't know what caused this.
+>
+> For some reason, building linux-next doesn't inline all the functions in
+> the map_range.c file and we end up with some of them in different
+> sections. I didn't get this when building the arm64 for-next/core
+> separately.
+>
 
-Yes, and in that software only case they often call ethtool_op_get_ts_info =
-to
-fill the timestamp info.
+Strange, I never ran into this before.
 
-There is several drivers that support hardware and software timestamp, these
-mask could be useful for these. In case of asymmetric support we can still =
-use
-the SOF_TIMESTAMPING_RX/TX_SOFTWARE flags.
+I guess commit 24cc769d70d8bda055a028aa6a is implicated in this, if we
+run into more trouble like this i'll look whether we can bring that
+logic back in some way.
 
-I forgot to specify, in the commit message but this patch is mainly to ease
-the next patch of this series to deal with software/hardware time stamping.
-Maybe you prefer to have this squash into next patch as had suggested Flori=
-an
-in last version.
+The fix looks fine to me.
 
-K=C3=B6ry
+
+> My fix (I'll push it to the arm64 branch):
+>
+> diff --git a/arch/arm64/kernel/pi/map_kernel.c b/arch/arm64/kernel/pi/map_kernel.c
+> index be7caf07bfa7..e07f3ece5430 100644
+> --- a/arch/arm64/kernel/pi/map_kernel.c
+> +++ b/arch/arm64/kernel/pi/map_kernel.c
+> @@ -20,17 +20,17 @@ extern const u8 __eh_frame_start[], __eh_frame_end[];
+>
+>  extern void idmap_cpu_replace_ttbr1(void *pgdir);
+>
+> -static void map_segment(pgd_t *pg_dir, u64 *pgd, u64 va_offset,
+> -                       void *start, void *end, pgprot_t prot,
+> -                       bool may_use_cont, int root_level)
+> +static void __init map_segment(pgd_t *pg_dir, u64 *pgd, u64 va_offset,
+> +                              void *start, void *end, pgprot_t prot,
+> +                              bool may_use_cont, int root_level)
+>  {
+>         map_range(pgd, ((u64)start + va_offset) & ~PAGE_OFFSET,
+>                   ((u64)end + va_offset) & ~PAGE_OFFSET, (u64)start,
+>                   prot, root_level, (pte_t *)pg_dir, may_use_cont, 0);
+>  }
+>
+> -static void unmap_segment(pgd_t *pg_dir, u64 va_offset, void *start,
+> -                         void *end, int root_level)
+> +static void __init unmap_segment(pgd_t *pg_dir, u64 va_offset, void *start,
+> +                                void *end, int root_level)
+>  {
+>         map_segment(pg_dir, NULL, va_offset, start, end, __pgprot(0),
+>                     false, root_level);
+> @@ -205,7 +205,7 @@ static void __init remap_idmap_for_lpa2(void)
+>         memset(init_pg_dir, 0, (u64)init_pg_end - (u64)init_pg_dir);
+>  }
+>
+> -static void map_fdt(u64 fdt)
+> +static void __init map_fdt(u64 fdt)
+>  {
+>         static u8 ptes[INIT_IDMAP_FDT_SIZE] __initdata __aligned(PAGE_SIZE);
+>         u64 efdt = fdt + MAX_FDT_SIZE;
+>
