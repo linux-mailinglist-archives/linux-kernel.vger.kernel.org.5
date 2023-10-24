@@ -2,113 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 217497D5AD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA807D5ADC
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343871AbjJXSsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 14:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34280 "EHLO
+        id S1344078AbjJXStB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233104AbjJXSsn (ORCPT
+        with ESMTP id S234911AbjJXSsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:48:43 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890CDD7D;
-        Tue, 24 Oct 2023 11:48:40 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b1e46ca282so4765953b3a.2;
-        Tue, 24 Oct 2023 11:48:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698173320; x=1698778120; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DFRAuWK32VTGr08EDsBUV/zh4O1jsXdg+48RuQhbEtQ=;
-        b=JFIA/tsmUdlZ1PiPIhtHARJSNTuDiZlV/kAp0Xeh2QHQHm2/ZLj8iZxtP1MduvwU/B
-         /t09e0YHwmQimj295PtaUENLJhMQ0QBN6s+7e5gMtjJ6q0kCGgFs+i/xJMNS0W1KSfk/
-         oNCSy/y89EKG3IZ5jlOsJZ2iXdAXmwyg6Hdjydhh3rgpte6IGDyZbL3I1wONayC2pJkl
-         02EKRIpCCRmzTIGg6//m4sRWAxDIJ90/Uhr89REe6k0ndPsRd12dgYta2U9OEIpWkg9I
-         zaCRnGv14G3KEMy4Cn91aQubZXqGME3VR8MFYjp509AeCim0dcftgUCz7Bmr0A1wp2FT
-         22bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698173320; x=1698778120;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DFRAuWK32VTGr08EDsBUV/zh4O1jsXdg+48RuQhbEtQ=;
-        b=bCw/kEFHADIBesASZLKTmQ3Q8WVCPKs11TEthb39HPXgSFSi6+ISmXuc0d6KftS76B
-         4HPsTxXgSPDFke+io5eg9YjOZF2ti3Fa2hyqnr4iYFlszowpGNLgs/EZ4FN0CB0c7ifU
-         LDIpqdJeL1Wu3snne1k34mcwKh87eBClBfoKVfF4Ih/we+g0k8/IQbrXGK/BXxf9nTbd
-         ZwiGycJRh4GHgo+Hxea2UOdt3CvA3O5v7twpCYIiIvHNr4/SCeIkw4sQzyvqhyFXtACh
-         WpKNEkioW94mLCT8OV7cCXT1lhs1PzxmQ9q7vqq9v7e/BTfrq69HEoJINyUe16XaT74z
-         0uaA==
-X-Gm-Message-State: AOJu0YxQ6xQahET/lQrLSVGskl8BKzh8h1qk9ktGyyeAUjW0wdJhNMR4
-        BCqtEdp2zu6PMlaqD02L0jc=
-X-Google-Smtp-Source: AGHT+IGYqlQhFzyXGwIJxZYzz10J32/aPAHvTNFD/mHPn6Cz/ujm1FsJgr5vpKqfqwNFp0i0LrBu2A==
-X-Received: by 2002:a05:6a21:1448:b0:16b:c725:1dc with SMTP id oc8-20020a056a21144800b0016bc72501dcmr3160186pzb.35.1698173319867;
-        Tue, 24 Oct 2023 11:48:39 -0700 (PDT)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id h1-20020a625301000000b006be484e5b9asm8297905pfb.188.2023.10.24.11.48.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Oct 2023 11:48:39 -0700 (PDT)
-Message-ID: <cd0eb23b-6c46-4069-ba29-9820c99b8ca8@gmail.com>
-Date:   Tue, 24 Oct 2023 15:48:33 -0300
+        Tue, 24 Oct 2023 14:48:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49A4D7D;
+        Tue, 24 Oct 2023 11:48:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698173332; x=1729709332;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=5Zm8CKTJfVYV2t0aRhdkqi7b4PkC1YUGrClMQrdnlxc=;
+  b=PwC5uMUa73JBgHxCxHxdGQK+8I6673ReIcP1QwxmiktaVbZrF3FnTs9i
+   XFeDVcgrNKAnOZuNTvRF3lBS6kTKCl76MAaeUwPXhxBbKci1HirloqJTG
+   fTrUYJBIJKpcbnGCIrwfVUtplJysF6k+rABK2mUm1vvQstWwfN49+k87a
+   4JbaxJjLm4nsgRLPCBnD4yeOtLhQ68HfjkZ/9gfZ6GidPuztqYWwuJjiM
+   BwkYmi8x4rcMkqsP/1Ol/jW2HP3cij3ugPUAjWNeVV09pRQ2AApU8fg40
+   1yc0Iizxe0QkTu80JGPru2l3hHJ3bvkPKWUWjfJS7bKl7Vr6dSps3zObO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="377515063"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="377515063"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 11:48:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="875167071"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="875167071"
+Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
+  by fmsmga002.fm.intel.com with SMTP; 24 Oct 2023 11:48:37 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 24 Oct 2023 21:48:36 +0300
+Date:   Tue, 24 Oct 2023 21:48:36 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>
+Subject: Re: [Intel-gfx] [PATCH] powercap: intel_rapl: Don't warn about BIOS
+ locked limits during resume
+Message-ID: <ZTgRhFbp5wdsTa5W@intel.com>
+References: <20231004183455.27797-1-ville.syrjala@linux.intel.com>
+ <6d207eef73fb2ad32264921ae7d1a536b6b8da61.camel@intel.com>
+ <ZR22I-9YgGW9vADB@intel.com>
+ <ZTf6qwCLR3YEwL9K@intel.com>
+ <CAJZ5v0jzqZBHqh8dxChwJ65wT-pU3+9HxVi5f7DAcOTFpYTb9Q@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] x86/rust: depend on !RETHUNK
-Content-Language: en-US
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>, x86@kernel.org,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-References: <20231023174449.251550-1-ojeda@kernel.org>
- <20231023174449.251550-3-ojeda@kernel.org>
- <f53536ca-ec5b-4cdc-a340-e9c739ee30c4@gmail.com>
- <CANiq72nTE_qua9w+EeqiPCukst4876Gi7gHeusFLofYZRoJCDw@mail.gmail.com>
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <CANiq72nTE_qua9w+EeqiPCukst4876Gi7gHeusFLofYZRoJCDw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAJZ5v0jzqZBHqh8dxChwJ65wT-pU3+9HxVi5f7DAcOTFpYTb9Q@mail.gmail.com>
+X-Patchwork-Hint: comment
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/23 19:15, Miguel Ojeda wrote:
-> On Mon, Oct 23, 2023 at 8:43 PM Martin Rodriguez Reboredo
-> <yakoyoku@gmail.com> wrote:
->>
->> I'll mention that I've tested boots, both in bare metal and QEMU, with
->> `RUST=y` and `RETHUNK=y` and they were alright regardless of `objtool`
->> warnings. Although, if you had an issue in the past then I'd like to know
->> about it.
+On Tue, Oct 24, 2023 at 08:31:34PM +0200, Rafael J. Wysocki wrote:
+> On Tue, Oct 24, 2023 at 7:11 PM Ville Syrjälä
+> <ville.syrjala@linux.intel.com> wrote:
+> >
+> > On Wed, Oct 04, 2023 at 09:59:47PM +0300, Ville Syrjälä wrote:
+> > > On Wed, Oct 04, 2023 at 06:45:22PM +0000, Pandruvada, Srinivas wrote:
+> > > > On Wed, 2023-10-04 at 21:34 +0300, Ville Syrjala wrote:
+> > > > > From: Ville Syrjälä <ville.syrjala@linux.intel.com>
+> > > > >
+> > > > > Restore enough of the original behaviour to stop spamming
+> > > > > dmesg with warnings about BIOS locked limits when trying
+> > > > > to restore them during resume.
+> > > > >
+> > > > > This still doesn't 100% match the original behaviour
+> > > > > as we no longer attempt to blindly restore the BIOS locked
+> > > > > limits. No idea if that makes any difference in practice.
+> > > > >
+> > > > I lost the context here. Why can't we simply change pr_warn to pr_debug
+> > > > here?
+> > >
+> > > I presume someone wanted to make it pr_warn() for a reason.
+> > > I don't mind either way.
+> >
+> > Ping. Can someone make a decision on how this should get fixed
+> > so we get this moving forward?
 > 
-> These are mitigations -- things do functionally work if they are not
-> applied, but you would be vulnerable.
-> 
-> In other words, it is not like e.g. IBT where you could have noticed
-> it breaking by running it normally if you happened to have a supported
-> platform.
-> 
-> Cheers,
-> Miguel
+> I thought we were going to replace the pr_warn() with pr_debug().
 
-'Guess you have a point...
+I didn't get any answer whether anyone wants to keep the pr_warn().
+If everyone is happy with pr_debug() that then I can send a patch
+for it.
 
-Acked-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+> 
+> > > > > Cc: Zhang Rui <rui.zhang@intel.com>
+> > > > > Cc: Wang Wendy <wendy.wang@intel.com>
+> > > > > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > > > Cc: Srinivas Pandruvada <srinivas.pandruvada@intel.com>
+> > > > > Fixes: 9050a9cd5e4c ("powercap: intel_rapl: Cleanup Power Limits
+> > > > > support")
+> > > > > Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+> > > > > ---
+> > > > >  drivers/powercap/intel_rapl_common.c | 28 ++++++++++++++++++++------
+> > > > > --
+> > > > >  1 file changed, 20 insertions(+), 8 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/powercap/intel_rapl_common.c
+> > > > > b/drivers/powercap/intel_rapl_common.c
+> > > > > index 40a2cc649c79..9a6a40c83f82 100644
+> > > > > --- a/drivers/powercap/intel_rapl_common.c
+> > > > > +++ b/drivers/powercap/intel_rapl_common.c
+> > > > > @@ -882,22 +882,34 @@ static int rapl_read_pl_data(struct rapl_domain
+> > > > > *rd, int pl,
+> > > > >         return rapl_read_data_raw(rd, prim, xlate, data);
+> > > > >  }
+> > > > >
+> > > > > -static int rapl_write_pl_data(struct rapl_domain *rd, int pl,
+> > > > > -                              enum pl_prims pl_prim,
+> > > > > -                              unsigned long long value)
+> > > > > +static int rapl_write_pl_data_nowarn(struct rapl_domain *rd, int pl,
+> > > > > +                                    enum pl_prims pl_prim,
+> > > > > +                                    unsigned long long value)
+> > > > >  {
+> > > > >         enum rapl_primitives prim = get_pl_prim(rd, pl, pl_prim);
+> > > > >
+> > > > >         if (!is_pl_valid(rd, pl))
+> > > > >                 return -EINVAL;
+> > > > >
+> > > > > -       if (rd->rpl[pl].locked) {
+> > > > > -               pr_warn("%s:%s:%s locked by BIOS\n", rd->rp->name,
+> > > > > rd->name, pl_names[pl]);
+> > > > > +       if (rd->rpl[pl].locked)
+> > > > >                 return -EACCES;
+> > > > > -       }
+> > > > >
+> > > > >         return rapl_write_data_raw(rd, prim, value);
+> > > > >  }
+> > > > > +
+> > > > > +static int rapl_write_pl_data(struct rapl_domain *rd, int pl,
+> > > > > +                             enum pl_prims pl_prim,
+> > > > > +                             unsigned long long value)
+> > > > > +{
+> > > > > +       int ret;
+> > > > > +
+> > > > > +       ret = rapl_write_pl_data_nowarn(rd, pl, pl_prim, value);
+> > > > > +       if (ret == -EACCES)
+> > > > > +               pr_warn("%s:%s:%s locked by BIOS\n", rd->rp->name,
+> > > > > rd->name, pl_names[pl]);
+> > > > > +
+> > > > > +       return ret;
+> > > > > +}
+> > > > > +
+> > > > >  /*
+> > > > >   * Raw RAPL data stored in MSRs are in certain scales. We need to
+> > > > >   * convert them into standard units based on the units reported in
+> > > > > @@ -1634,8 +1646,8 @@ static void power_limit_state_restore(void)
+> > > > >                 rd = power_zone_to_rapl_domain(rp->power_zone);
+> > > > >                 for (i = POWER_LIMIT1; i < NR_POWER_LIMITS; i++)
+> > > > >                         if (rd->rpl[i].last_power_limit)
+> > > > > -                               rapl_write_pl_data(rd, i, PL_LIMIT,
+> > > > > -                                              rd-
+> > > > > >rpl[i].last_power_limit);
+> > > > > +                               rapl_write_pl_data_nowarn(rd, i,
+> > > > > PL_LIMIT,
+> > > > > +                                                         rd-
+> > > > > >rpl[i].last_power_limit);
+> > > > >         }
+> > > > >         cpus_read_unlock();
+> > > > >  }
+> > > >
+> > >
+> > > --
+
+-- 
+Ville Syrjälä
+Intel
