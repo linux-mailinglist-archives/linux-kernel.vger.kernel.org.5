@@ -2,66 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3357D5BCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634867D5BD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344302AbjJXTtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 15:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
+        id S1344251AbjJXTul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 15:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344207AbjJXTtp (ORCPT
+        with ESMTP id S234736AbjJXTuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 15:49:45 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5AA122
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 12:49:42 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59b5a586da6so1223467b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 12:49:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698176981; x=1698781781; darn=vger.kernel.org;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Eq9Uw3bJ9CtDZfbgv9i9x/0b/vFeu6BK0ERlK4TBVC8=;
-        b=bEoehSSl1/Oazt0nWtpDXR0SeUSEPA9x3oWcqJBOq8HjPeZOPN0LNRuKdF5ApzKkRB
-         BELfpZiXzOOy4+1Bh+YQ2W1oTMrzMfx5KnYNiM4eJ2Lno3DSLikRL59Gf3mG0R197Opw
-         5VXJx7ZpWaeuo13Mt9SksSsOMxNgrrqhYkxg1XMIAI/oT2FRgOQ037KgEY/yxdRthdIF
-         dn2EeVyQerJ7wqzVL4P05ri7+JFwQEMNhruPCzWNVBrCD5yOsF8gXqhaNEmHgUFLHIQP
-         XtSCOd8Z3po7vaDAiYz+IZGvP0S+d7WrtT0y9ouusALdTyhaB4UZjioVheGLwJ2hjZ/4
-         Y56w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698176981; x=1698781781;
-        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Eq9Uw3bJ9CtDZfbgv9i9x/0b/vFeu6BK0ERlK4TBVC8=;
-        b=Relp6rXCQztlmBeGgxqmTiRPm8CCnZM0CPVbgAWLobilJv4v+glej6eJykJdjeQLOh
-         h718CRWZjiAMvGuxQ+/jPlbMWaCyFecqh5Nknw5ZxUfZdU+yF+gAULzHB/gGJrlOR/yh
-         mWrkpXh6M6gusxFLuDHMeU0SVLFGjihyRogqSil/XSf22sRxFvUzBDOsasHPmxmxaBHh
-         LCTORpIkVQsA5uTwRBwh95UjSW4BJjf/JsCOFnWZp2ccqcntPvkXpzLVYC91tA3nuSDM
-         orBBSl5l9iK/LEnaRHOYwQwaQgdEbvfus1DsKlZMaCRmvKbAW4Ra1c+zHGjJhUzN1tRQ
-         Q76w==
-X-Gm-Message-State: AOJu0YymHDXNKOGYQNdd1n9pdecfNDogY/hIPojEBEwMjkniq4j7SdFh
-        g+q7YDf8+rceMdQ75xpBzJGCRFWDCZQ=
-X-Google-Smtp-Source: AGHT+IFnTbI6l93X7NfKGbQRYo+BNxCrWauKr/IGIM3luNTLtn9ZWkQHbLp4A+5Sm5uWobg8ccbIEcj2d+g=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:7815:0:b0:59b:b0b1:d75a with SMTP id
- t21-20020a817815000000b0059bb0b1d75amr478778ywc.4.1698176981543; Tue, 24 Oct
- 2023 12:49:41 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 12:49:40 -0700
-In-Reply-To: <20231024002633.2540714-9-seanjc@google.com>
-Mime-Version: 1.0
-References: <20231024002633.2540714-1-seanjc@google.com> <20231024002633.2540714-9-seanjc@google.com>
-Message-ID: <ZTgf1Cutah5VQp_q@google.com>
-Subject: Re: [PATCH v5 08/13] KVM: selftests: Test Intel PMU architectural
- events on gp counters
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Tue, 24 Oct 2023 15:50:39 -0400
+Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668F410C6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 12:50:37 -0700 (PDT)
+Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
+        by cmsmtp with ESMTPS
+        id vLJuqY461L9AgvNQCq02rn; Tue, 24 Oct 2023 19:50:36 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id vNQBq6qG05ZLUvNQCqBzbC; Tue, 24 Oct 2023 19:50:36 +0000
+X-Authority-Analysis: v=2.4 cv=S57KfagP c=1 sm=1 tr=0 ts=6538200c
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=_mNlVl-r0hj7kTaC:21 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10
+ a=uwMjjtW2jUbwP7mzfGYA:9 a=QEXdDO2ut3YA:10 a=N_l3Vs37sht3-TxgB6J7:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:Cc:To:
+        Subject:From:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=g54kz6I2OxMrqzBsVAyW+xfzdHVn9xE3lpEyC5lhvJs=; b=OzZcSIgm+yEGFVLC3R0m8HijPQ
+        lhLIjWcJvlYi/ttwdT02zDdt8r9JXRcveNlKlsLuW9I7KEx90YSSUkyBAJxIasNaoBw5eXEBqryHR
+        TEfhawSfU7CSH/BkMqiMQyhXqNl3Fs58s+/XfkacYUo82q8kdpPPOM216HjPlf0GtmJqbFruaT5fA
+        mznRgRxTTfbSlBfcUdwb5pu6XgiDLRHx80NEsNF0uQF9GT1UA8/CP4SAcN926YU7vwzs0IYOE5kaz
+        qt6BR19MBBqj/VrGVPM93VlENWousMPGOcHUPdyW/6t60Vlk0T0YSHn9aFAImWY5q6MEKhderrafn
+        iSBqr1TQ==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:48784 helo=[192.168.15.10])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qvNQB-001ZQp-1F;
+        Tue, 24 Oct 2023 14:50:35 -0500
+Message-ID: <626ae2e7-66f8-423b-b17f-e75c1a6d29b3@embeddedor.com>
+Date:   Tue, 24 Oct 2023 13:50:34 -0600
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [RFC - is this a bug?] wifi: ath10k: Asking for some light on this,
+ please :)
+To:     Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Like Xu <likexu@tencent.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qvNQB-001ZQp-1F
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:48784
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfNaxEG85vN4YnmZuttcFSRwuJF9RS1aUAXd+ljHjiLquJs1zLbb80MZkaEV5iZDlBoSJAY/b6i1+4y5opzKlcbukfLiNwimAz9So+JCvOCUDTQMEqET8
+ WTqkYVHd8e7cZcoTt47/Tfm8AblRq6HVgNgV0O5eiTDxwAwhB7la0bqfvboP+vaV2aZztmmAq5DRbxPx8RlHpKV+53ALOIkqDRFCZAxBbws2rudx4mNUGNN/
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,134 +90,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023, Sean Christopherson wrote:
-> +static void guest_measure_pmu_v1(struct kvm_x86_pmu_feature event,
-> +				 uint32_t counter_msr, uint32_t nr_gp_counters)
-> +{
-> +	uint8_t idx = event.f.bit;
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < nr_gp_counters; i++) {
-> +		wrmsr(counter_msr + i, 0);
-> +		wrmsr(MSR_P6_EVNTSEL0 + i, ARCH_PERFMON_EVENTSEL_OS |
-> +		      ARCH_PERFMON_EVENTSEL_ENABLE | intel_pmu_arch_events[idx]);
-> +		__asm__ __volatile__("loop ." : "+c"((int){NUM_BRANCHES}));
-> +
-> +		if (pmu_is_intel_event_stable(idx))
-> +			GUEST_ASSERT_EQ(this_pmu_has(event), !!_rdpmc(i));
-> +
-> +		wrmsr(MSR_P6_EVNTSEL0 + i, ARCH_PERFMON_EVENTSEL_OS |
-> +		      !ARCH_PERFMON_EVENTSEL_ENABLE |
-> +		      intel_pmu_arch_events[idx]);
-> +		wrmsr(counter_msr + i, 0);
-> +		__asm__ __volatile__("loop ." : "+c"((int){NUM_BRANCHES}));
-> +
-> +		if (pmu_is_intel_event_stable(idx))
-> +			GUEST_ASSERT(!_rdpmc(i));
-> +	}
-> +
-> +	GUEST_DONE();
-> +}
-> +
-> +static void guest_measure_loop(uint8_t idx)
-> +{
-> +	const struct {
-> +		struct kvm_x86_pmu_feature gp_event;
-> +	} intel_event_to_feature[] = {
-> +		[INTEL_ARCH_CPU_CYCLES]		   = { X86_PMU_FEATURE_CPU_CYCLES },
-> +		[INTEL_ARCH_INSTRUCTIONS_RETIRED]  = { X86_PMU_FEATURE_INSNS_RETIRED },
-> +		[INTEL_ARCH_REFERENCE_CYCLES]	   = { X86_PMU_FEATURE_REFERENCE_CYCLES },
-> +		[INTEL_ARCH_LLC_REFERENCES]	   = { X86_PMU_FEATURE_LLC_REFERENCES },
-> +		[INTEL_ARCH_LLC_MISSES]		   = { X86_PMU_FEATURE_LLC_MISSES },
-> +		[INTEL_ARCH_BRANCHES_RETIRED]	   = { X86_PMU_FEATURE_BRANCH_INSNS_RETIRED },
-> +		[INTEL_ARCH_BRANCHES_MISPREDICTED] = { X86_PMU_FEATURE_BRANCHES_MISPREDICTED },
-> +	};
-> +
-> +	uint32_t nr_gp_counters = this_cpu_property(X86_PROPERTY_PMU_NR_GP_COUNTERS);
-> +	uint32_t pmu_version = this_cpu_property(X86_PROPERTY_PMU_VERSION);
-> +	struct kvm_x86_pmu_feature gp_event;
-> +	uint32_t counter_msr;
-> +	unsigned int i;
-> +
-> +	if (rdmsr(MSR_IA32_PERF_CAPABILITIES) & PMU_CAP_FW_WRITES)
-> +		counter_msr = MSR_IA32_PMC0;
-> +	else
-> +		counter_msr = MSR_IA32_PERFCTR0;
-> +
-> +	gp_event = intel_event_to_feature[idx].gp_event;
-> +	TEST_ASSERT_EQ(idx, gp_event.f.bit);
-> +
-> +	if (pmu_version < 2) {
-> +		guest_measure_pmu_v1(gp_event, counter_msr, nr_gp_counters);
+Hi all,
 
-Looking at this again, testing guest PMU version 1 is practically impossible
-because this testcase doesn't force the guest PMU version.  I.e. unless I'm
-missing something, this requires old hardware or running in a VM with its PMU
-forced to '1'.
+While working on tranforming one-element array `peer_chan_list` in
+`struct wmi_tdls_peer_capabilities` into a flex-array member
 
-And if all subtests use similar inputs, the common configuration can be shoved
-into pmu_vm_create_with_one_vcpu().
+7187 struct wmi_tdls_peer_capabilities {
+...
+7199         struct wmi_channel peer_chan_list[1];
+7200 } __packed;
 
-It's easy enough to fold test_intel_arch_events() into test_intel_counters(),
-which will also provide coverage for running with full-width writes enabled.  The
-only downside is that the total runtime will be longer.
+the following line caught my attention:
 
-> +static void test_arch_events_cpuid(uint8_t i, uint8_t j, uint8_t idx)
-> +{
-> +	uint8_t arch_events_unavailable_mask = BIT_ULL(j);
-> +	uint8_t arch_events_bitmap_size = BIT_ULL(i);
-> +	struct kvm_vcpu *vcpu;
-> +	struct kvm_vm *vm;
-> +
-> +	vm = pmu_vm_create_with_one_vcpu(&vcpu, guest_measure_loop);
-> +
-> +	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_EBX_BIT_VECTOR_LENGTH,
-> +				arch_events_bitmap_size);
-> +	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_EVENTS_MASK,
-> +				arch_events_unavailable_mask);
-> +
-> +	vcpu_args_set(vcpu, 1, idx);
-> +
-> +	run_vcpu(vcpu);
-> +
-> +	kvm_vm_free(vm);
-> +}
-> +
-> +static void test_intel_arch_events(void)
-> +{
-> +	uint8_t idx, i, j;
-> +
-> +	for (idx = 0; idx < NR_INTEL_ARCH_EVENTS; idx++) {
+./drivers/net/wireless/ath/ath10k/wmi.c:
+8920         memset(skb->data, 0, sizeof(*cmd));
 
-There's no need to iterate over each event in the host, we can simply add a wrapper
-for guest_measure_loop() in the guest.  That'll be slightly faster since it won't
-require creating and destroying a VM for every event.
+Notice that before the flex-array transformation, we are zeroing 128
+bytes in `skb->data` because `sizeof(*cmd) == 128`, see below:
 
-> +		/*
-> +		 * A brute force iteration of all combinations of values is
-> +		 * likely to exhaust the limit of the single-threaded thread
-> +		 * fd nums, so it's test by iterating through all valid
-> +		 * single-bit values.
-> +		 */
-> +		for (i = 0; i < NR_INTEL_ARCH_EVENTS; i++) {
+$ pahole -C wmi_10_4_tdls_peer_update_cmd drivers/net/wireless/ath/ath10k/wmi.o
+struct wmi_10_4_tdls_peer_update_cmd {
+	__le32                     vdev_id;              /*     0     4 */
+	struct wmi_mac_addr        peer_macaddr;         /*     4     8 */
+	__le32                     peer_state;           /*    12     4 */
+	__le32                     reserved[4];          /*    16    16 */
+	struct wmi_tdls_peer_capabilities peer_capab;    /*    32    96 */
 
-This is flawed/odd.  'i' becomes arch_events_bitmap_size, i.e. it's a length,
-but the length is computed byt BIT(i).  That's nonsensical and will eventually
-result in undefined behavior.  Oof, that'll actually happen sooner than later
-because arch_events_bitmap_size is only a single byte, i.e. when the number of
-events hits 9, this will try to shove 256 into an 8-bit variable.
+	/* size: 128, cachelines: 2, members: 5 */
+};
 
-The more correct approach would be to pass in 0..NR_INTEL_ARCH_EVENTS inclusive
-as the size.  But I think we should actually test 0..length+1, where "length" is
-the max of the native length and NR_INTEL_ARCH_EVENTS, i.e. we should verify KVM
-KVM handles a size larger than the native length.
+So, after the flex-array transformation (and the necessary adjustments
+to a few other lines of code) we would be zeroing 104 bytes in
+`skb->data` because `sizeof(*cmd) == 104`, see below:
 
-> +			for (j = 0; j < NR_INTEL_ARCH_EVENTS; j++)
-> +				test_arch_events_cpuid(i, j, idx);
+$ pahole -C wmi_10_4_tdls_peer_update_cmd drivers/net/wireless/ath/ath10k/wmi.o
+struct wmi_10_4_tdls_peer_update_cmd {
+	__le32                     vdev_id;              /*     0     4 */
+	struct wmi_mac_addr        peer_macaddr;         /*     4     8 */
+	__le32                     peer_state;           /*    12     4 */
+	__le32                     reserved[4];          /*    16    16 */
+	struct wmi_tdls_peer_capabilities peer_capab;    /*    32    72 */
 
-And here, I think it makes sense to brute force all possible values for at least
-one configuration.  There aren't actually _that_ many values, e.g. currently it's
-64 (I think).  E.g. test the native PMU version with the "full" length, and then
-test single bits with varying lengths.
+	/* size: 104, cachelines: 2, members: 5 */
+	/* last cacheline: 40 bytes */
+};
 
-I'll send a v6 later this week.
+This difference arises because the size of the element type for the
+`peer_chan_list` array, which is `sizeof(struct wmi_channel) == 24 `
+
+$ pahole -C wmi_channel drivers/net/wireless/ath/ath10k/wmi.o
+struct wmi_channel {
+	__le32                     mhz;                  /*     0     4 */
+	__le32                     band_center_freq1;    /*     4     4 */
+	__le32                     band_center_freq2;    /*     8     4 */
+
+[..]
+                                                /*    20     4 */
+
+	/* size: 24, cachelines: 1, members: 6 */
+	/* last cacheline: 24 bytes */
+};
+
+is included in `sizeof(*cmd)` before the transformation.
+
+So, my question is: do we really need to zero out those extra 24 bytes in
+`skb->data`? or is it rather a bug in the original code?
+
+Thanks!
+--
+Gustavo
+
