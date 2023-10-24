@@ -2,112 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F70F7D5C31
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1487D5C32
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344272AbjJXULt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 16:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        id S1344308AbjJXULz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 16:11:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343896AbjJXULs (ORCPT
+        with ESMTP id S1343896AbjJXULx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 16:11:48 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CD8A2;
-        Tue, 24 Oct 2023 13:11:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=nfdtctD5s+siSQUr/kengnC4iQIqyN5aDOBCjVSm0Aw=;
-        t=1698178306; x=1699387906; b=CW1rVgPN9ACYbDs9KcCyOkgT54qDYgMO+Ev59qad5F9x/xQ
-        egyesXxAAE6rTo4Dw/o/1/3ZEe/ft+CJnamQ5mYdmM69n+uEwXTTJ7wUvqIdDLKAvHedExeTbm17r
-        vrUxxXm6LZqzNYhiQ6vDpkBFNf+gfrhMztsZw/Q7XfTBFMW4Tega6OxwuECBtHol1yzlyDZ1FTEFl
-        R3FhUKoFufDFRG5PlI9W2H3OlLVprEUcJ8g1HeSn1Xyka91qRZ0cq1ycC3uDjXNol5vR1M4Tbbwgw
-        vGFUCibVGLoOOQ439aJQtRJkcpoc7cqiqU/KBto4JFn03ajqWoK1YXptuhJTzpQg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.97-RC1)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1qvNkZ-00000001akU-3Ra3;
-        Tue, 24 Oct 2023 22:11:40 +0200
-Message-ID: <26b15f4702cef17fe70b496a62f03735874bd16a.camel@sipsolutions.net>
-Subject: Re: [RFC - is this a bug?] wifi: ath10k: Asking for some light on
- this, please :)
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Date:   Tue, 24 Oct 2023 22:11:38 +0200
-In-Reply-To: <626ae2e7-66f8-423b-b17f-e75c1a6d29b3@embeddedor.com>
-References: <626ae2e7-66f8-423b-b17f-e75c1a6d29b3@embeddedor.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 24 Oct 2023 16:11:53 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D149FD7A;
+        Tue, 24 Oct 2023 13:11:49 -0700 (PDT)
+Received: from [78.30.35.151] (port=58754 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qvNkf-008pvw-J8; Tue, 24 Oct 2023 22:11:47 +0200
+Date:   Tue, 24 Oct 2023 22:11:44 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Vladimir Smelhaus <vl.sm@email.cz>,
+        Linux Netfilter <netfilter@vger.kernel.org>,
+        coreteam@netfilter.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: Flowtables ignore timeout settings in recent kernels
+Message-ID: <ZTglADWVBgKxKOIC@calendula>
+References: <ughg4v$130b$1@ciao.gmane.io>
+ <ZSyBtn8cplLWoNn-@debian.me>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZSyBtn8cplLWoNn-@debian.me>
+X-Spam-Score: -1.9 (-)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-24 at 13:50 -0600, Gustavo A. R. Silva wrote:
-> Hi all,
->=20
-> While working on tranforming one-element array `peer_chan_list` in
-> `struct wmi_tdls_peer_capabilities` into a flex-array member
->=20
-> 7187 struct wmi_tdls_peer_capabilities {
-> ...
-> 7199         struct wmi_channel peer_chan_list[1];
-> 7200 } __packed;
->=20
-> the following line caught my attention:
->=20
-> ./drivers/net/wireless/ath/ath10k/wmi.c:
-> 8920         memset(skb->data, 0, sizeof(*cmd));
->=20
-> Notice that before the flex-array transformation, we are zeroing 128
-> bytes in `skb->data` because `sizeof(*cmd) =3D=3D 128`, see below:
+On Mon, Oct 16, 2023 at 07:20:06AM +0700, Bagas Sanjaya wrote:
+> On Sun, Oct 15, 2023 at 09:56:14PM +0200, Vladimir Smelhaus wrote:
+> > Netfilter ignores the timeout settings for a flowtable
+> > 
+> > # sysctl -a -r flowtable
+> > net.netfilter.nf_flowtable_tcp_timeout = 30
+> > net.netfilter.nf_flowtable_udp_timeout = 30
+> > 
+> > Situation. A long udp connection (tunnel) with some data flowing through a
+> > router. The connection is sent to a flowtable on the router. It's a few
+> > packets per second, more here and there, a pause here and there, and so on
+> > over and over. The pauses are minimal and are also limited by the tunnel
+> > settings to be no longer than 25 seconds. Everything is satisfying to make
+> > the connection last continuously in the flowtable and not reappear in
+> > forward. However, the connection keeps dropping out of the flowtable. It
+> > stays in the flowtable (offloaded) for a second at most and then it is
+> > kicked out, back to forward.
+> > 
+> > In an attached test script you can see counters that should be zero but are not. If I watch the normal packet flow on a particular router, I can see packets in the conntrack table that should be OFFLOAD as ASSURED.
+> > 
+> > Tested in kernel 6.5.6. In an old(er) kernel 5.10 it works as expected.
+> > 
+> 
+> Then please perform bisection to find a culprit that introduces your
+> regression (see Documentation/admin-guide/bug-bisect.rst in the kernel
+> sources for reference). Also, it'd been great if you also post the
+> reproducer script inline (within your email) instead, as some MUAs
+> (like mutt that I'm using now) may ignore the attachment.
+> 
+> Anyway, thanks for the regression report. I'm adding it to regzbot:
+> 
+> #regzbot ^introduced: v5.10..v6.5
 
+Fix here:
 
-> So, my question is: do we really need to zero out those extra 24 bytes in
-> `skb->data`? or is it rather a bug in the original code?
->=20
+https://patchwork.ozlabs.org/project/netfilter-devel/patch/20231024193815.1987-1-pablo@netfilter.org/
 
-If we look a step further, I _think_ even that memset is unnecessary?
+it is a bug from Jun 2023, regression was introduced in the v6.5
+development cycle.
 
-
-struct sk_buff *ath10k_wmi_alloc_skb(struct ath10k *ar, u32 len)
-{
-        struct sk_buff *skb;
-        u32 round_len =3D roundup(len, 4);
-
-        skb =3D ath10k_htc_alloc_skb(ar, WMI_SKB_HEADROOM + round_len);
-        if (!skb)
-                return NULL;
-
-        skb_reserve(skb, WMI_SKB_HEADROOM);
-        if (!IS_ALIGNED((unsigned long)skb->data, 4))
-                ath10k_warn(ar, "Unaligned WMI skb\n");
-
-        skb_put(skb, round_len);
-        memset(skb->data, 0, round_len);
-
-        return skb;
-}
-
-
-So shouldn't the outgoing skb be exactly the same?
-
-Anyway, just looking at the code out of curiosity, I don't actually know
-anything about this driver :)
-
-johannes
+Thanks for reporting.
