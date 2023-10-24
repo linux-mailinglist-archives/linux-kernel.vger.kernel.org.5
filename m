@@ -2,283 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B08D87D4C19
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153707D4C17
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234171AbjJXJ0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
+        id S234143AbjJXJ0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234082AbjJXJ0c (ORCPT
+        with ESMTP id S234154AbjJXJ02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:26:32 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E42B19B5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:25:44 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53f647c84d4so10165a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:25:44 -0700 (PDT)
+        Tue, 24 Oct 2023 05:26:28 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7081730;
+        Tue, 24 Oct 2023 02:25:39 -0700 (PDT)
+X-UUID: 4870cf2a724f11ee8051498923ad61e6-20231024
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=radsxxGhvz0N/hazyKGoLm3wbBwpAfXckGdNSc60hG0=;
+        b=RPnkQUu1OX5wjvn/tkaaOya2RmFBs6MMu53L+ASoBKwGIzfpjJt11K+ZdYCRTWZ1vaSnjpHtCpwXw5MqQWlr7gdBkr/bo0XUEepY0f1FmI8Z6i8eGYhjm8J4F5W1TJLp0uarhfkEirYWDoul57uKbjlmvKiqlgVR/Om+Jnzc84o=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:0d654daa-7ddb-4c6a-82cc-46461b07597c,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:5f78ec9,CLOUDID:501241d7-04a0-4e50-8742-3543eab8cb8e,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
+        NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 4870cf2a724f11ee8051498923ad61e6-20231024
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1447953106; Tue, 24 Oct 2023 17:25:33 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 24 Oct 2023 17:25:32 +0800
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 24 Oct 2023 17:25:32 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jDD/sj0LsNqXGeg2IfyLmFdNNdJWFavBltssBv6MLVgGrT8bxsNoKQTLVLQt7QHtfpHcQZBTZv1T1O8tvFyk72xTStWqxR/k1M936hC/XNmvqM4CjyNuWTWdrCKpYunReGoe4Nij5ZqA2HNXUPy5EAAv0ydjOSqtC1Du3xmum+sp9qxQUVzOJstI8GvlKUvMGh1bY0pb2QECirOOzRRYISRMDlvihYq9oVFbyo4MuKw4kaptPMA37dxaTSsOGG3lqy0M9R+IFtiEVHdVHg/e/Z+ngYehsfajpQ9EU5VW08yQ5NL66rCjDxqX/+8SXApvH5n8UTnc82rIJdPI47J+9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=radsxxGhvz0N/hazyKGoLm3wbBwpAfXckGdNSc60hG0=;
+ b=j5qE3MZ3xcT7CEbWsPc3NTU+yNir2MIYgfr8OLdROt35t6AVUjNbtjkDjcW5bsXiMyc+V5N0P/ur+qv7Bzjo1gY9sWk3CQL3cIYnTaGF9nP/E1XAqSX04g++n+h9jCyEfyL4T8mHlS2wGNMG6qXpp05hIBhcFXU0kDNnvPZoa8VTu3EmR4PdXy4ccJ0qk9L5danqqOH/KqsCIkiTkxd+BWr5uzGJ9X6wwoC02ASNmHZhYL+Uo+P/ydtD7Ub+aUgef+iZEiLzcoKDyw83/i3Dxq+uDoUPOkh4FgvIgdA//nmN4FY1srIi1aTZHQ4RalV4Gk1zTED9WmeNE7sX+fqIFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698139541; x=1698744341; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xeojdCUjcd3duImQfWD3kwvOxa2loPoxPnqbLL/r7ZA=;
-        b=BJc9QY7e/F40XH0xEihgLD6mCIiLLjkZrXmoY2/mKjSytBhPNqiSRHrvAmd+dCbj/U
-         C4fvuY34wtjaXc2R/X0S87Hf2loUWcQ67FnyoTn80YxGhG9M5EdFTKtOWA8Y4xb0SJEt
-         HRzqdBqc58lt8P3nDXD3h6k3gaXtxO/HUaPWUDmJQtK/y5TMvKvl8QlA+I6xCM8llxuF
-         hnEnh5yZlpdJR5BWHGQqf3fVD1aFBH6Yn5FxJfivRp44o+ODbBclhHH7kVSs5MIVsoQC
-         3HqgNtZ9JC9HtqS021s/DSj/TpJ9VJ832HJSsssL+5Yyc4FMuAP7zeFCuLOoj7UUEQfv
-         /Aeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698139541; x=1698744341;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xeojdCUjcd3duImQfWD3kwvOxa2loPoxPnqbLL/r7ZA=;
-        b=tnr640p73BH8dQ5hIAgUMND2pDUgapU2OxYIF9pp6BeXiFXh5+0YkMSCk2pqMs+YE+
-         z1A8h9XRCdwvXo/4J5KNQvYe/834fLgf+KVEcoFv5L8EPBpCXAp0CgxMtFKtnyQdIsd1
-         M8KnMm3hMxvaJuPU9NYorysMUrr5rE6bh9u7phC/MuO3kUfToA22MLtXu+CaDlyZzdhc
-         8LpN6wA9mTxjW/I6hQ1oLJoUhFRbndfAwC0Lmv12RrMhDhB4EqS6C9OgODhr6n1g0VWf
-         JoQGxD2aOwwDHRcX9DKe6xcG4ajsRXOVVICOkTnEBg8uPJ84+8GvwIZcMaR/CDkWQG0I
-         69Bg==
-X-Gm-Message-State: AOJu0YzqubjOEMmoHNnkNG2pSgPOhCsSjnQJOQZHxU9CNiXcCaT9Yk8+
-        zASoSw+wreImv5cCmWg6C2QTh92maMMMDrqM70cbzmYw5SAwMuQ4k/gSfA==
-X-Google-Smtp-Source: AGHT+IHPhOrpFO6GG+mYY0EVavaNnXlLQDydOf6WO+4g4d/hHIIeL/IsgVtv4kMcMxLJVw6MP4mbBYghpXUSANGWiVs=
-X-Received: by 2002:a05:6402:32c:b0:540:9f24:6006 with SMTP id
- q12-20020a056402032c00b005409f246006mr66754edw.6.1698139541247; Tue, 24 Oct
- 2023 02:25:41 -0700 (PDT)
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=radsxxGhvz0N/hazyKGoLm3wbBwpAfXckGdNSc60hG0=;
+ b=jBjTUIOz8DCGpvOL4/ZnsUpOmsLLxhsfivyCbHJeY/qq3bsXWmpqe+K/h5d4EnLCBJihbiWtWibLTjUGRzw3MR7w8Nv7JQ0of6gWD5YUaNogjjc4MxVYGfVPInv3rdkEGBnpEJUgjP9E3HwzZMRmkSKRaGkUaoXkbV1B4qvHaqg=
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
+ by SEZPR03MB7840.apcprd03.prod.outlook.com (2603:1096:101:18a::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.29; Tue, 24 Oct
+ 2023 09:25:30 +0000
+Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::fe5a:c0e7:4b72:64f3]) by TYZPR03MB6624.apcprd03.prod.outlook.com
+ ([fe80::fe5a:c0e7:4b72:64f3%4]) with mapi id 15.20.6907.025; Tue, 24 Oct 2023
+ 09:25:29 +0000
+From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
+To:     =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
+        <Shawn.Sung@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?utf-8?B?TW91ZHkgSG8gKOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>,
+        =?utf-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        =?utf-8?B?TmF0aGFuIEx1ICjlkYLmnbHpnJYp?= <Nathan.Lu@mediatek.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "sean@poorly.run" <sean@poorly.run>,
+        "johnson.wang@mediatek.corp-partner.google.com" 
+        <johnson.wang@mediatek.corp-partner.google.com>
+Subject: Re: [PATCH v10 15/24] drm/mediatek: Remove ineffectual power
+ management codes
+Thread-Topic: [PATCH v10 15/24] drm/mediatek: Remove ineffectual power
+ management codes
+Thread-Index: AQHaAlEm0dkQ5m+JsEiSR2VqoxkRGbBYs2yA
+Date:   Tue, 24 Oct 2023 09:25:29 +0000
+Message-ID: <1f85f397425fa3332bd594e4b953593a1665287f.camel@mediatek.com>
+References: <20231019055619.19358-1-shawn.sung@mediatek.com>
+         <20231019055619.19358-16-shawn.sung@mediatek.com>
+In-Reply-To: <20231019055619.19358-16-shawn.sung@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|SEZPR03MB7840:EE_
+x-ms-office365-filtering-correlation-id: 7528dbe7-2fb3-4f36-5770-08dbd4732a46
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZmImt8BbsNjiFsk6c8EFFFQAo3+ajO4oaL1ECen3/OjOV2fA7OCtLAjW5gErGsOMedSGHJbQQWDbWw6+ToZVj8HvcL4rRwPjNuAXY05utIRR+lwZCi1u86uC1Ea+XvXHganKzg8rwbNXQU7HrtyjzWHwYc9kc5aEP2kT5rqtwYGZeQIqzH5BI/T+tcpKCJfN1Ak/yzJ3ltxZJAfZNANRaBffnxWkkhLhN+qGi4JCZbvWXYTkly2UCpKnt17DKK3W4WWlz19cTjmXYEsrd645ZntFYgN7w54kViNAKVCzLcfJGiHsdPFdp8P9rhmz4GuHdd4UFIv93W0+PFUn38DncHpUxPa3HZY6uxzvGTwrhOkFkncbV/9t69PP4hLaE6XRMq/j7i31FTAhwJnhCYR6dXRYy3lvZx2RweX6DE1P62qgY7UmpAFXhEW2VXxbsUeteViyZ7Yoe2WUF6j6N31rI1EWZd/+aUez84Ct8A2myZP3JVdTmfsF5/niIWYcajTr4pmd940g4dJmnb+E3FgAMvbvV0jmss6+d200y6of9Zayxf74KbZkk7DCqzQexy7E1ch8cAyKh+F0byj+cH73fcyoADpRTaNj0NxgEKhmH9fQ+VdXvcOuwLLRGt93hct8HGzk5O9x6gtCDm4qTM9Smi44QruQAvgxwHXDzpv1BUk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(366004)(346002)(396003)(136003)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(2906002)(2616005)(316002)(54906003)(26005)(6512007)(86362001)(110136005)(76116006)(66946007)(6486002)(478600001)(6506007)(71200400001)(83380400001)(122000001)(38100700002)(64756008)(7416002)(85182001)(5660300002)(66556008)(41300700001)(66446008)(66476007)(8936002)(8676002)(4326008)(36756003)(38070700009)(4001150100001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YlcvbGE5RzRHajJjT1dqUEh5aDFZdkhDc2hMZGRMQWFJMUkyQnUrWmJtZWFs?=
+ =?utf-8?B?cHFLcUhDZG9EMCtrT1EzeXZSSm9hMmVJRTNOU0Z0OGV3NzMzMURwR1lLdk9n?=
+ =?utf-8?B?Rm9WSUpoRU4zeEg2ZHUzdDZoWGRlNExPRUdVQzNaRGRCeFVSL0c4dG1yU2VF?=
+ =?utf-8?B?OWp6MDBxL0ZsK1oxUE13cjJKMUJNWlJWR3RLS0c3R0hoVXl2RVFIRmw1czNI?=
+ =?utf-8?B?bTRwdU1mallld1lJV1N6blBFK3BUR1dYWmNqKzZZY0sxa1BTMFhLMnVlRXBV?=
+ =?utf-8?B?cTFtODNVdHZEdHZZTy83NllJN0VvU0xBWEFiVk9GOU5SQ2VGYW1yZEg1Y1Bv?=
+ =?utf-8?B?bGE3SUpvelFjbndFa2hZMHhRRHlNUlpqbmJvbXNHbVIyK1hrVWVxNUdnUUhJ?=
+ =?utf-8?B?T2dKNGpRMzlaWXVCcUI0UlpHZVJ6dlNybFJXeU83aDFmQVRDOUZVUmRaMzFi?=
+ =?utf-8?B?ZjdZZmtzN3Z0aEJ1Z3daNnVzTGZoNWcweVNWTmdyNzhHVDlZU1UvdVFWdlV5?=
+ =?utf-8?B?UlU5Uy9PdTlvYzdFcE03MHVJMzhWRXArbjVzaGFqbDRmRTUxWlVUaHBrVDUx?=
+ =?utf-8?B?ZnlURzNkZStXMVhqZnQzeWIrc0laMDJRTy9QcDFuemxaTnZ4a2FUS3RiU2dP?=
+ =?utf-8?B?RWFxbUZ6WCtTb3Q1YjZmS3I3SkduOFliYTUxemxxd0lTVnM2aGx2UEM0czVh?=
+ =?utf-8?B?QllmNkxWNDl4Y3hxT2ZZQmMzTTZsMmwvZXdPL0Q3U2NlWG1PUVF1dVdpOUNJ?=
+ =?utf-8?B?MFh6KzYxY2dvTVdrUnJrQXRJWjRXWlFIVnRBRTROMk1tTWdDWXMzc2Nnd0U4?=
+ =?utf-8?B?KzA0a2VmNWZSSHMzdG16T0VWbTZ5WEZEUlB3V05xQTJkQkRJbG5pS0ZUdVVW?=
+ =?utf-8?B?OXJJa0htdnkxTEc1ZWhCb0V2YThVRDhmN1pZOFFSVzJZYmxNcXBoYUdlSFV3?=
+ =?utf-8?B?ZVl0V3J3VlI0R3RvRk1rdUIzZzgyRjZLc3hrV01lWXd0aVZzTlc5LzhaZnhZ?=
+ =?utf-8?B?YjRVQjBJWThEWFNMY1M2R3JiWjg1UUVsTzhqMHJxY1l2MDltUTlyWnR5Y3dL?=
+ =?utf-8?B?STdLdktPeTB5SG9MUm1HWUR3a1pKbzZYQllBcVUzYnptSGFxNnFOZEZRYkZE?=
+ =?utf-8?B?THV1SU1yaFNzeG1HbXJ0U0VOdDZsU1liTm0vOWhka014WEdLZGFjNklQdGVK?=
+ =?utf-8?B?YWNYOGdnQlhqRFMrTE5scXhiMGpZc3J1NlBaU055aVY3dy9iWGtqT2hjd3pq?=
+ =?utf-8?B?cGxSYzVuLzhFMkJpa2xpRWt5R2cvR0VibXFrY3RxVFQ5cTE2Y1BnRHpWNHpZ?=
+ =?utf-8?B?a0NKaCtXbm52SHpxMTRaYTE5c091TkpsOUFNTzdtVVJqeGl6TEIrQWdiNWJH?=
+ =?utf-8?B?QkNENnJyZ21Kak1pUlBid2dJNGlaTno4MmlKSlVRT3NSZUovL2JNNStENzdH?=
+ =?utf-8?B?b2QwTHBIQ1V1eUQzZFZveWF1TWJpV0JTd0dRVVBSMDJnNGNEMDBEM3FPei9j?=
+ =?utf-8?B?aUtkQUpTR0ZmSCtNamZIQXFLVEJyaFBWRW05MnhKQWEyV2ROVEpFQjhwLzdD?=
+ =?utf-8?B?SjE2d2JpWXdxOXVicjVmOWJYcWI0MTFkVGFza1RYeENzOWp3NzJaallPL3k3?=
+ =?utf-8?B?bDBYVy9uK2sxZk5HekpPd2dmUk1xR3RFZEhKcEdBemJJcnJLc0NmYU45eGlU?=
+ =?utf-8?B?R1ZFVXBOWE9rUnNnbGpUc1FkaUs1M2JKR3lVdkJLOWNhMWFENmRJa0k1dWpD?=
+ =?utf-8?B?UlU1akRsNkoyYWxyVHJhTVB0WnNVYXVqVitETFJkTm9Bb3dHVWpmKzkvRVpP?=
+ =?utf-8?B?eUNuRGhoVkltNVBQcVVZaXM3MkplZDMxVTNkVHFkUW9oYTNwTnllUVkzdVZx?=
+ =?utf-8?B?cEx6eC85Y2VjZzhlQ2J2MjRpa3lsYXZVRjNOYkxhTlZtdFdpWDAxdDZHTVY3?=
+ =?utf-8?B?RzJOVE1jSzVlbjJ2elZhS1dpNmF6RlJhNFpLZHVBeGpVRnJ3Z2VocnNYVE90?=
+ =?utf-8?B?WG9vb0Q4dTZhTkswTDBHNm1rQUhzTHJiT3EwZHlYb2Z4b21nVGpna2ExR2RW?=
+ =?utf-8?B?aXNNNExpV0RNUXdFL2dDU0V0ajhoRWFSSGFwaUszUEMxMEtvM2szS3V4NnEy?=
+ =?utf-8?Q?0DgkHBjtrsEkEqQPImmGKnc4+?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E03E56B4896855459E25B506180EA809@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <2bf06faa-a0a7-4dee-90cd-a054b4e4c947@gmail.com> <17a017b9-9807-48ef-bc7b-be8f5df750c5@gmail.com>
-In-Reply-To: <17a017b9-9807-48ef-bc7b-be8f5df750c5@gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 24 Oct 2023 11:25:27 +0200
-Message-ID: <CANn89iJxCqGeEM2sJbs8TU00Rj-iddoyoabvB7x4eEaPwCKTMA@mail.gmail.com>
-Subject: Re: Fwd: kernel tried to execute NX-protected page - exploit attempt?
- (uid: 0) (qbittorrent with tx-nocache-copy)
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        "David S. Miller" <davem@davemloft.net>,
-        Benjamin Poirier <bpoirier@suse.de>,
-        Tom Herbert <therbert@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        CM76 <cmaff76@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7528dbe7-2fb3-4f36-5770-08dbd4732a46
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2023 09:25:29.8385
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RdDMvX3Yr6wukUk/2xiEClo8GCB4yk/HD1LXB6dkPYifnEv+0cr2czyHmSzI906XhG9rHCigOX91dfqmmLelQw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB7840
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,TVD_SUBJ_WIPE_DEBT,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 10:53=E2=80=AFAM Bagas Sanjaya <bagasdotme@gmail.co=
-m> wrote:
->
-> Hi CM76,
->
-> On 24/10/2023 15:15, Bagas Sanjaya wrote:
-> > Hi,
-> >
-> > I notice a regression report on Bugzilla [1]. Quoting from it:
-> >
-> >> I believe this is also an issue with the Broadcom bnx2 drivers since i=
-t only seem to happen when I enable "tx-nocache-copy" in ethtool.
-> >>
-> >> The issue started when I was running Mainline/stable Kernel v6.5.x on =
-another machine, after google-ing a bit I landed on an article from redhat =
-that pointed at the possibility of an issue caused by a failing hardware. I=
- was renting the server, so I didn't bother to fill a bug report and assume=
-d it was the server that was going bad. But then it happened again on my ot=
-her server as soon as I switched the bittorrent client to the same I was us=
-ing on that other server. I turned "tx-nocache-copy" off and ran mainline k=
-ernel v6.5 (on Ubuntu 23.04) for a day or two without issue. After that I s=
-witched the kernel back to Ubuntu's kernel (v6.2) and the server ran for a =
-couple more days without issue. Two days ago I turned "tx-nocache-copy" on =
-again out of curiosity (kernel v6.2), and the server didn't run into any is=
-sue with this setting set to on. This morning I upgraded to Ubuntu 23.10 th=
-at runs their version of Kernel v6.5. The kernel panicked and server reboot=
-ed a couple of hours later.
-> >>
-> >>
-> >> The issue seem to be triggered with a certain configuration of applica=
-tions, I've ran Mainline/stable kernel 6.5.x since its release (and before =
-that v6.4.x) with the rtorrent bittorrent client and "tx-nocache-copy" turn=
-ed on, the kernel didn't run into any issue for weeks until I switched to a=
-nother bittorrent client (qbittorrent) last week. It doesn't seem to matter=
- when it happens, the kernel can Opps when the client is downloading a sing=
-le small sized torrent to when it's downloading multiple torrents at the sa=
-me time.
-> >>
-> >>
-> >> I tried to use the crash utiliy to get the backtrace but it doesn't se=
-em to work correctly. I get "crash: invalid structure member offset: module=
-_core_size FILE: kernel.c  LINE: 3781  FUNCTION: module_init()" when I try =
-to load the kernel dump.
-> >>
-> >> The kernel panic happens with 6.5.x Mainline/stable kernel as well as =
-the 6.5 kernel that comes with ubuntu 23.10.
-> >>
-> >> The bittorrent clients run as systemd services with normal user privil=
-eges and "ProtectKernelModules=3Dyes" "NoNewPrivileges=3Dyes" set in the sy=
-stemd service.
-> >>
-> >> I joined the full dmesg as attachement, and I can send the kdump gener=
-ated kernel dump file if needed.
-> >>
-> >>
-> >> ------------------------
-> >> [12090.273551] kernel tried to execute NX-protected page - exploit att=
-empt? (uid: 0)
-> >> [12090.273577] BUG: unable to handle page fault for address: ffff9441c=
-9734458
-> >> [12090.273590] #PF: supervisor instruction fetch in kernel mode
-> >> [12090.273602] #PF: error_code(0x0011) - permissions violation
-> >> [12090.273614] PGD 157401067 P4D 157401067 PUD 23ffff067 PMD 108a81063=
- PTE 8000000109734063
-> >> [12090.273632] Oops: 0011 [#1] PREEMPT SMP PTI
-> >> [12090.273643] CPU: 1 PID: 0 Comm: swapper/1 Kdump: loaded Not tainted=
- 6.5.0-9-generic #9-Ubuntu
-> >> [12090.273658] Hardware name: Dell Inc. PowerEdge R210 II/03X6X0, BIOS=
- 2.10.0 05/24/2018
-> >> [12090.273674] RIP: 0010:0xffff9441c9734458
-> >> [12090.273694] Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0=
-0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0=
-0 <00> 00 00 00 00 00 00 00 58 44 73 c9 41 94 ff ff 00 00 00 00 00 00
-> >> [12090.273723] RSP: 0018:ffffb3c380138980 EFLAGS: 00010282
-> >> [12090.273734] RAX: ffff9441c9734458 RBX: ffff9441c9734400 RCX: 000000=
-0000000000
-> >> [12090.273746] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff94=
-41c9734400
-> >> [12090.273758] RBP: ffffb3c380138990 R08: 0000000000000000 R09: 000000=
-0000000000
-> >> [12090.273771] R10: 0000000000000000 R11: 0000000000000000 R12: ffff94=
-41c9734400
-> >> [12090.273783] R13: 00000000000005dc R14: ffff9441c49dda00 R15: ffffff=
-ff9e55ec40
-> >> [12090.273795] FS:  0000000000000000(0000) GS:ffff9442f7c40000(0000) k=
-nlGS:0000000000000000
-> >> [12090.273811] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >> [12090.273823] CR2: ffff9441c9734458 CR3: 0000000155a3a006 CR4: 000000=
-00001706e0
-> >> [12090.273837] Call Trace:
-> >> [12090.273845]  <IRQ>
-> >> [12090.273851]  ? show_regs+0x6d/0x80
-> >> [12090.273864]  ? __die+0x24/0x80
-> >> [12090.273873]  ? page_fault_oops+0x99/0x1b0
-> >> [12090.273884]  ? kernelmode_fixup_or_oops+0xb2/0x140
-> >> [12090.273896]  ? __bad_area_nosemaphore+0x1a5/0x2c0
-> >> [12090.273908]  ? bad_area_nosemaphore+0x16/0x30
-> >> [12090.273918]  ? do_kern_addr_fault+0x7b/0xa0
-> >> [12090.273927]  ? exc_page_fault+0x1a4/0x1b0
-> >> [12090.273939]  ? asm_exc_page_fault+0x27/0x30
-> >> [12090.273952]  ? skb_release_head_state+0x27/0xb0
-> >> [12090.273964]  consume_skb+0x33/0xf0
-> >> [12090.273973]  tcp_mtu_probe+0x565/0x5d0
-> >> [12090.273984]  tcp_write_xmit+0x579/0xab0
-> >> [12090.273994]  __tcp_push_pending_frames+0x37/0x110
-> >> [12090.274005]  tcp_rcv_established+0x264/0x730
-> >> [12090.274015]  ? security_sock_rcv_skb+0x39/0x60
-> >> [12090.274027]  tcp_v4_do_rcv+0x169/0x2a0
-> >> [12090.274037]  tcp_v4_rcv+0xd92/0xe00
-> >> [12090.274046]  ? raw_v4_input+0xaa/0x240
-> >> [12090.274056]  ip_protocol_deliver_rcu+0x3c/0x210
-> >> [12090.274068]  ip_local_deliver_finish+0x77/0xa0
-> >> [12090.274078]  ip_local_deliver+0x6e/0x120
-> >> [12090.274089]  ? __pfx_ip_local_deliver_finish+0x10/0x10
-> >> [12090.274369]  ip_sublist_rcv_finish+0x6f/0x80
-> >> [12090.274638]  ip_sublist_rcv+0x171/0x220
-> >> [12090.274931]  ? __pfx_ip_rcv_finish+0x10/0x10
-> >> [12090.275201]  ip_list_rcv+0x102/0x140
-> >> [12090.275459]  __netif_receive_skb_list_core+0x22d/0x250
-> >> [12090.275714]  netif_receive_skb_list_internal+0x1a3/0x2d0
-> >> [12090.275967]  napi_complete_done+0x74/0x1c0
-> >> [12090.276218]  bnx2_poll_msix+0xa1/0xe0 [bnx2]
-> >> [12090.276468]  __napi_poll+0x33/0x1f0
-> >> [12090.276708]  net_rx_action+0x181/0x2e0
-> >> [12090.276943]  __do_softirq+0xd9/0x346
-> >> [12090.277172]  ? handle_irq_event+0x52/0x80
-> >> [12090.277393]  ? handle_edge_irq+0xda/0x250
-> >> [12090.277604]  __irq_exit_rcu+0x75/0xa0
-> >> [12090.277812]  irq_exit_rcu+0xe/0x20
-> >> [12090.278015]  common_interrupt+0xa4/0xb0
-> >> [12090.278217]  </IRQ>
-> >> [12090.278411]  <TASK>
-> >> [12090.278602]  asm_common_interrupt+0x27/0x40
-> >> [12090.278798] RIP: 0010:cpuidle_enter_state+0xda/0x730
-> >> [12090.278992] Code: 11 04 ff e8 a8 f5 ff ff 8b 53 04 49 89 c7 0f 1f 4=
-4 00 00 31 ff e8 26 bb 02 ff 80 7d d0 00 0f 85 61 02 00 00 fb 0f 1f 44 00 0=
-0 <45> 85 f6 0f 88 f7 01 00 00 4d 63 ee 49 83 fd 0a 0f 83 17 05 00 00
-> >> [12090.279402] RSP: 0018:ffffb3c3800cbe18 EFLAGS: 00000246
-> >> [12090.279612] RAX: 0000000000000000 RBX: ffff9442f7c7ec00 RCX: 000000=
-0000000000
-> >> [12090.279827] RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000000=
-0000000000
-> >> [12090.280042] RBP: ffffb3c3800cbe68 R08: 0000000000000000 R09: 000000=
-0000000000
-> >> [12090.280259] R10: 0000000000000000 R11: 0000000000000000 R12: ffffff=
-ff9d0d24a0
-> >> [12090.280478] R13: 0000000000000003 R14: 0000000000000003 R15: 00000a=
-fefc75867b
-> >> [12090.280698]  ? cpuidle_enter_state+0xca/0x730
-> >> [12090.280918]  ? finish_task_switch.isra.0+0x89/0x2b0
-> >> [12090.281142]  cpuidle_enter+0x2e/0x50
-> >> [12090.281363]  call_cpuidle+0x23/0x60
-> >> [12090.281583]  cpuidle_idle_call+0x11d/0x190
-> >> [12090.281804]  do_idle+0x82/0xf0
-> >> [12090.282022]  cpu_startup_entry+0x1d/0x20
-> >> [12090.282240]  start_secondary+0x129/0x160
-> >> [12090.282460]  secondary_startup_64_no_verify+0x17e/0x18b
-> >> [12090.282685]  </TASK>
-> >> [12090.282902] Modules linked in: tcp_diag inet_diag ip6table_filter i=
-p6_tables xt_LOG nf_log_syslog xt_recent xt_limit xt_tcpudp xt_conntrack ip=
-table_filter xt_CT xt_set iptable_raw bpfilter ip_set_hash_ip ip_set_hash_n=
-et ip_set_hash_ipport ip_set_list_set ip_set_bitmap_port ip_set_hash_netifa=
-ce ip_set nfnetlink binfmt_misc intel_rapl_msr intel_rapl_common x86_pkg_te=
-mp_thermal intel_powerclamp coretemp crct10dif_pclmul polyval_clmulni polyv=
-al_generic ghash_clmulni_intel aesni_intel crypto_simd cryptd rapl intel_cs=
-tate ipmi_ssif mgag200 drm_shmem_helper cfg80211 input_leds drm_kms_helper =
-dcdbas at24 i2c_i801 lpc_ich i2c_smbus ie31200_edac acpi_ipmi i2c_algo_bit =
-ipmi_si ipmi_devintf ipmi_msghandler sch_fq tcp_bbr nf_conntrack nf_defrag_=
-ipv6 nf_defrag_ipv4 libcrc32c drm efi_pstore dmi_sysfs ip_tables x_tables a=
-utofs4 hid_generic usbhid hid crc32_pclmul ahci mpt3sas libahci raid_class =
-bnx2 scsi_transport_sas wmi
-> >> [12090.285082] CR2: ffff9441c9734458
-> >> ----
-> >
->
-> Please see [1] for how to decode stack trace symbols.
-> And also, the most important thing to get this regression fixed
-> is to find culprit commit by bisecting (for reference see
-> Documentation/admin-guide/bug-bisect.rst).
->
-> [1]: https://lore.kernel.org/all/CANn89iL9Twf+Rzm9v_dwsH_iG4YkW3fAc2Hnx2j=
-ypN_Qf9oojw@mail.gmail.com/
->
-> Thanks.
-
-This has been fixed already two weeks ago.
-
-commit 71c299c711d1f44f0bf04f1fea66baad565240f1
-Author: Jakub Kicinski <kuba@kernel.org>
-Date:   Tue Oct 10 10:36:51 2023 -0700
-
-    net: tcp: fix crashes trying to free half-baked MTU probes
-
-    tcp_stream_alloc_skb() initializes the skb to use tcp_tsorted_anchor
-    which is a union with the destructor. We need to clean that
-    TCP-iness up before freeing.
-
-    Fixes: 736013292e3c ("tcp: let tcp_mtu_probe() build headless packets")
-    Reviewed-by: Eric Dumazet <edumazet@google.com>
-    Link: https://lore.kernel.org/r/20231010173651.3990234-1-kuba@kernel.or=
-g
-    Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+SGksIEhzaWFvLWNoaWVuOg0KDQpPbiBUaHUsIDIwMjMtMTAtMTkgYXQgMTM6NTYgKzA4MDAsIEhz
+aWFvIENoaWVuIFN1bmcgd3JvdGU6DQo+IERpc3BsYXkgbW9kdWxlcyB3aWxsIGJlIHBvd2VyZWQg
+b24gd2hlbiAuYXRvbWljX2VuYWJsZSgpLA0KPiB0aGVyZSBpcyBubyBuZWVkIHRvIGRvIGl0IGFn
+YWluIGluIG10a19jcnRjX2RkcF9od19pbml0KCkuDQo+IEJlc2lkZXMsIHRoZSBEUk0gZGV2aWNl
+cyBhcmUgY3JlYXRlZCBtYW51YWxseSB3aGVuIG10ay1tbXN5cw0KPiBpcyBwcm9iZWQgYW5kIHRo
+ZXJlIGlzIG5vIHBvd2VyIGRvbWFpbiBsaW5rZWQgdG8gaXQuDQo+IA0KPiBGaXhlczogMTE5ZjUx
+NzM2MjhhICgiZHJtL21lZGlhdGVrOiBBZGQgRFJNIERyaXZlciBmb3IgTWVkaWF0ZWsgU29DDQo+
+IE1UODE3My4iKQ0KPiANCj4gU2lnbmVkLW9mZi1ieTogSHNpYW8gQ2hpZW4gU3VuZyA8c2hhd24u
+c3VuZ0BtZWRpYXRlay5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210
+a19kcm1fY3J0Yy5jIHwgMTggKysrLS0tLS0tLS0tLS0tLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwg
+MyBpbnNlcnRpb25zKCspLCAxNSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2
+ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9jcnRjLmMNCj4gYi9kcml2ZXJzL2dwdS9kcm0v
+bWVkaWF0ZWsvbXRrX2RybV9jcnRjLmMNCj4gaW5kZXggYmM0Y2M3NWNjYTE4Li5jN2VkZDgwYmU0
+MjggMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2NydGMu
+Yw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9jcnRjLmMNCj4gQEAg
+LTYsNyArNiw2IEBADQo+ICAjaW5jbHVkZSA8bGludXgvY2xrLmg+DQo+ICAjaW5jbHVkZSA8bGlu
+dXgvZG1hLW1hcHBpbmcuaD4NCj4gICNpbmNsdWRlIDxsaW51eC9tYWlsYm94X2NvbnRyb2xsZXIu
+aD4NCj4gLSNpbmNsdWRlIDxsaW51eC9wbV9ydW50aW1lLmg+DQo+ICAjaW5jbHVkZSA8bGludXgv
+c29jL21lZGlhdGVrL210ay1jbWRxLmg+DQo+ICAjaW5jbHVkZSA8bGludXgvc29jL21lZGlhdGVr
+L210ay1tbXN5cy5oPg0KPiAgI2luY2x1ZGUgPGxpbnV4L3NvYy9tZWRpYXRlay9tdGstbXV0ZXgu
+aD4NCj4gQEAgLTM2MiwyMiArMzYxLDE2IEBAIHN0YXRpYyBpbnQgbXRrX2NydGNfZGRwX2h3X2lu
+aXQoc3RydWN0DQo+IG10a19kcm1fY3J0YyAqbXRrX2NydGMsIHN0cnVjdCBkcm1fYXRvbWljDQo+
+ICAJCWRybV9jb25uZWN0b3JfbGlzdF9pdGVyX2VuZCgmY29ubl9pdGVyKTsNCj4gIAl9DQo+ICAN
+Cj4gLQlyZXQgPSBwbV9ydW50aW1lX3Jlc3VtZV9hbmRfZ2V0KGNydGMtPmRldi0+ZGV2KTsNCg0K
+Y3J0Yy0+ZGV2LT5kZXYgaXMgbW1zeXMgZGV2aWNlLiBJbiBtdDgxNzMuZHRzaSwgeW91IGNvdWxk
+IGZpbmQgdGhhdA0KbW1zeXMgaGFzIGl0cyBvd24gcG93ZXIuIFNvIEkgdGhpbmsgd2Ugc2hvdWxk
+IGtlZXAgdGhpcy4NCg0KUmVnYXJkcywNCkNLDQoNCj4gLQlpZiAocmV0IDwgMCkgew0KPiAtCQlE
+Uk1fRVJST1IoIkZhaWxlZCB0byBlbmFibGUgcG93ZXIgZG9tYWluOiAlZFxuIiwgcmV0KTsNCj4g
+LQkJcmV0dXJuIHJldDsNCj4gLQl9DQo+IC0NCj4gIAlyZXQgPSBtdGtfbXV0ZXhfcHJlcGFyZSht
+dGtfY3J0Yy0+bXV0ZXgpOw0KPiAgCWlmIChyZXQgPCAwKSB7DQo+ICAJCURSTV9FUlJPUigiRmFp
+bGVkIHRvIGVuYWJsZSBtdXRleCBjbG9jazogJWRcbiIsIHJldCk7DQo+IC0JCWdvdG8gZXJyX3Bt
+X3J1bnRpbWVfcHV0Ow0KPiArCQlnb3RvIGVycm9yOw0KPiAgCX0NCj4gIA0KPiAgCXJldCA9IG10
+a19jcnRjX2RkcF9jbGtfZW5hYmxlKG10a19jcnRjKTsNCj4gIAlpZiAocmV0IDwgMCkgew0KPiAg
+CQlEUk1fRVJST1IoIkZhaWxlZCB0byBlbmFibGUgY29tcG9uZW50IGNsb2NrczogJWRcbiIsDQo+
+IHJldCk7DQo+IC0JCWdvdG8gZXJyX211dGV4X3VucHJlcGFyZTsNCj4gKwkJZ290byBlcnJvcjsN
+Cj4gIAl9DQo+ICANCj4gIAlmb3IgKGkgPSAwOyBpIDwgbXRrX2NydGMtPmRkcF9jb21wX25yIC0g
+MTsgaSsrKSB7DQo+IEBAIC00MjYsMTYgKzQxOSwxMyBAQCBzdGF0aWMgaW50IG10a19jcnRjX2Rk
+cF9od19pbml0KHN0cnVjdA0KPiBtdGtfZHJtX2NydGMgKm10a19jcnRjLCBzdHJ1Y3QgZHJtX2F0
+b21pYw0KPiAgDQo+ICAJcmV0dXJuIDA7DQo+ICANCj4gLWVycl9tdXRleF91bnByZXBhcmU6DQo+
+ICtlcnJvcjoNCj4gIAltdGtfbXV0ZXhfdW5wcmVwYXJlKG10a19jcnRjLT5tdXRleCk7DQo+IC1l
+cnJfcG1fcnVudGltZV9wdXQ6DQo+IC0JcG1fcnVudGltZV9wdXQoY3J0Yy0+ZGV2LT5kZXYpOw0K
+PiAgCXJldHVybiByZXQ7DQo+ICB9DQo+ICANCj4gIHN0YXRpYyB2b2lkIG10a19jcnRjX2RkcF9o
+d19maW5pKHN0cnVjdCBtdGtfZHJtX2NydGMgKm10a19jcnRjKQ0KPiAgew0KPiAtCXN0cnVjdCBk
+cm1fZGV2aWNlICpkcm0gPSBtdGtfY3J0Yy0+YmFzZS5kZXY7DQo+ICAJc3RydWN0IGRybV9jcnRj
+ICpjcnRjID0gJm10a19jcnRjLT5iYXNlOw0KPiAgCWludCBpOw0KPiAgDQo+IEBAIC00NjUsOCAr
+NDU1LDYgQEAgc3RhdGljIHZvaWQgbXRrX2NydGNfZGRwX2h3X2Zpbmkoc3RydWN0DQo+IG10a19k
+cm1fY3J0YyAqbXRrX2NydGMpDQo+ICAJbXRrX2NydGNfZGRwX2Nsa19kaXNhYmxlKG10a19jcnRj
+KTsNCj4gIAltdGtfbXV0ZXhfdW5wcmVwYXJlKG10a19jcnRjLT5tdXRleCk7DQo+ICANCj4gLQlw
+bV9ydW50aW1lX3B1dChkcm0tPmRldik7DQo+IC0NCj4gIAlpZiAoY3J0Yy0+c3RhdGUtPmV2ZW50
+ICYmICFjcnRjLT5zdGF0ZS0+YWN0aXZlKSB7DQo+ICAJCXNwaW5fbG9ja19pcnEoJmNydGMtPmRl
+di0+ZXZlbnRfbG9jayk7DQo+ICAJCWRybV9jcnRjX3NlbmRfdmJsYW5rX2V2ZW50KGNydGMsIGNy
+dGMtPnN0YXRlLT5ldmVudCk7DQo=
