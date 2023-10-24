@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C6C7D502F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7567D5033
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 14:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234344AbjJXMqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 08:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59326 "EHLO
+        id S234378AbjJXMsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 08:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233166AbjJXMqo (ORCPT
+        with ESMTP id S234372AbjJXMsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 08:46:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6DA9B
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 05:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698151602; x=1729687602;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Wgfr8w1cbLPQHYG5iVU1irgIBoi2fm60vn3H7o4w7c8=;
-  b=LZZVwIIRKmJyS9IGA8DfDvDNosNmrKNLsQVeOczZKFCxnjn8qisn+9Dg
-   84mGlBORBSFHqM74DE09dIrIXHhMxu7vc0uAs8EP3Q2wDCsDrB7mQORMk
-   CCDnO5s7y7Oh8o0qQyHbPTm1uvEf0+dtk4M7j+YRMuK2/Frm1UQy90roF
-   sE/74OS5PA+h8D6QJlprRZE9iBlE2eQCcnZ6tY8EaeDUOXorkKEyNYOfF
-   oiYRgWCbFQcsFapCFgSGoOV9Cx6lY5ELeySiZNRisawLjD85GtixWnmyk
-   qNOjraaS8NhlhmsGZWLYGFt2V+qkxPiCfO2NoUdpQlnUqxnm7w+Yz3g26
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="453506411"
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="453506411"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 05:46:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
-   d="scan'208";a="6438628"
-Received: from marynguy-mobl1.amr.corp.intel.com (HELO [10.209.14.133]) ([10.209.14.133])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 05:46:34 -0700
-Message-ID: <af33711f-9240-429f-92ba-b0e67c572839@linux.intel.com>
-Date:   Tue, 24 Oct 2023 05:46:41 -0700
+        Tue, 24 Oct 2023 08:48:43 -0400
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE311CC;
+        Tue, 24 Oct 2023 05:48:41 -0700 (PDT)
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-58441865ffaso1721340eaf.1;
+        Tue, 24 Oct 2023 05:48:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698151721; x=1698756521;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=n7IhxXRlskYcJ5lLaoUuwURziaHmVBMP8WH2znEzqGs=;
+        b=Y1G1q7jMc74LjCLEaUd89MOJzvtgH/hCuk0gBlKSPZiBH/9khLZA19KdaebICO72dK
+         36+CA5S54aH2hJtaraXaG8bpOWtldTTVaucUqMqKa6cUlB6LCc4C6xmvSY819timovrU
+         8aYxXVAYaV9V2UxEd7xDUNq34qYfD2JyT0KCCfbJYUfIEifjesj9KSmlxtso954hZ2Nj
+         8MQOZSULS4QCkrktF/EYgSZtduEjx3g2vBDAEqEPi6ssONhK82FHbipHn+Xwn/eJhiE3
+         dxNwyxhchXkwf8YuAFHjJ0eiYHVWX5zJebiklKUkYJkfTcSuggvuCBdeBqMYzSz/d7JW
+         brpg==
+X-Gm-Message-State: AOJu0Yy22eGZP7B8TcvYu3ogQc4fsS1I1PbCeAWCPaaIBWxcYvA0hyvB
+        DOK17dUqUJpfldawpntU+Cejd1poUg==
+X-Google-Smtp-Source: AGHT+IERP02p8mG8jQwC1rb7eQXcVDY+PYIHSHNQTUPah9qW3w7GkcKnL2Mp8Z4hl+R+YXDXxBtwQg==
+X-Received: by 2002:a05:6808:18a9:b0:3af:5fea:2f7b with SMTP id bi41-20020a05680818a900b003af5fea2f7bmr15719454oib.47.1698151720916;
+        Tue, 24 Oct 2023 05:48:40 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id bj6-20020a056808198600b003adcaf28f61sm1924931oib.41.2023.10.24.05.48.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 05:48:40 -0700 (PDT)
+Received: (nullmailer pid 3451039 invoked by uid 1000);
+        Tue, 24 Oct 2023 12:48:34 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv2 12/13] x86/acpi: Rename fields in
- acpi_madt_multiproc_wakeup structure
-Content-Language: en-US
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kalra, Ashish" <ashish.kalra@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
-        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20231020151242.1814-1-kirill.shutemov@linux.intel.com>
- <20231020151242.1814-13-kirill.shutemov@linux.intel.com>
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20231020151242.1814-13-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        devicetree@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        =?utf-8?q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Gregory Clement <gregory.clement@bootlin.com>
+In-Reply-To: <20231024-marvell-88e6152-wan-led-v6-1-993ab0949344@linaro.org>
+References: <20231024-marvell-88e6152-wan-led-v6-0-993ab0949344@linaro.org>
+ <20231024-marvell-88e6152-wan-led-v6-1-993ab0949344@linaro.org>
+Message-Id: <169815156038.3447619.17571704457000261488.robh@kernel.org>
+Subject: Re: [PATCH net-next v6 1/7] dt-bindings: net: dsa: Require ports
+ or ethernet-ports
+Date:   Tue, 24 Oct 2023 07:48:34 -0500
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,70 +81,42 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 10/20/2023 8:12 AM, Kirill A. Shutemov wrote:
-> To prepare for the addition of support for MADT wakeup structure version
-> 1, it is necessary to provide more appropriate names for the fields in
-> the structure.
+On Tue, 24 Oct 2023 11:24:53 +0200, Linus Walleij wrote:
+> Bindings using dsa.yaml#/$defs/ethernet-ports specify that
+> a DSA switch node need to have a ports or ethernet-ports
+> subnode, and that is actually required, so add requirements
+> using oneOf.
 > 
-> The field 'mailbox_version' renamed as 'version'. This field signifies
-> the version of the structure and the related protocols, rather than the
-> version of the mailbox. This field has not been utilized in the code
-> thus far.
-> 
-> The field 'base_address' renamed as 'mailbox_address' to clarify the
-> kind of address it represents. In version 1, the structure includes the
-> reset vector address. Clear and distinct naming helps to prevent any
-> confusion.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Suggested-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
-
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-
->  arch/x86/kernel/acpi/madt_wakeup.c | 4 ++--
->  include/acpi/actbl2.h              | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
+>  Documentation/devicetree/bindings/net/dsa/dsa.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
-> index 9bbe829737e7..ad170def2367 100644
-> --- a/arch/x86/kernel/acpi/madt_wakeup.c
-> +++ b/arch/x86/kernel/acpi/madt_wakeup.c
-> @@ -79,7 +79,7 @@ int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
->  
->  	acpi_table_print_madt_entry(&header->common);
->  
-> -	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
-> +	acpi_mp_wake_mailbox_paddr = mp_wake->mailbox_address;
->  
->  	cpu_hotplug_disable_offlining();
->  
-> @@ -98,7 +98,7 @@ int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
->  	 *
->  	 * This is Linux-specific protocol and not reflected in ACPI spec.
->  	 */
-> -	mp_wake->base_address = 0;
-> +	mp_wake->mailbox_address = 0;
->  
->  	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
->  
-> diff --git a/include/acpi/actbl2.h b/include/acpi/actbl2.h
-> index 3751ae69432f..23b4cfb640fc 100644
-> --- a/include/acpi/actbl2.h
-> +++ b/include/acpi/actbl2.h
-> @@ -1109,9 +1109,9 @@ struct acpi_madt_generic_translator {
->  
->  struct acpi_madt_multiproc_wakeup {
->  	struct acpi_subtable_header header;
-> -	u16 mailbox_version;
-> +	u16 version;
->  	u32 reserved;		/* reserved - must be zero */
-> -	u64 base_address;
-> +	u64 mailbox_address;
->  };
->  
->  #define ACPI_MULTIPROC_WAKEUP_MB_OS_SIZE        2032
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/net/dsa/dsa.yaml:60:5: [warning] wrong indentation: expected 6 but found 4 (indentation)
+./Documentation/devicetree/bindings/net/dsa/dsa.yaml:62:5: [warning] wrong indentation: expected 6 but found 4 (indentation)
+
+dtschema/dtc warnings/errors:
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231024-marvell-88e6152-wan-led-v6-1-993ab0949344@linaro.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
