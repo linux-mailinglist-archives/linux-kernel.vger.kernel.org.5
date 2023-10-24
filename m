@@ -2,127 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB2B7D54A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446B87D54A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjJXPDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
+        id S229966AbjJXPD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJXPDe (ORCPT
+        with ESMTP id S230304AbjJXPDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:03:34 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 14F8D10C2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:03:31 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D807E2F4;
-        Tue, 24 Oct 2023 08:04:11 -0700 (PDT)
-Received: from [192.168.2.82] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0CDF43F762;
-        Tue, 24 Oct 2023 08:03:27 -0700 (PDT)
-Message-ID: <14ab201e-0170-4dd7-a1ec-7587fe27385a@arm.com>
-Date:   Tue, 24 Oct 2023 17:03:25 +0200
+        Tue, 24 Oct 2023 11:03:54 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CE6D7F;
+        Tue, 24 Oct 2023 08:03:51 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 65EA2C0009;
+        Tue, 24 Oct 2023 15:03:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1698159829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mnkAD7DkJI94ZoXAZ/b9DAALS/X6VFawfu3j3rG7d3E=;
+        b=HlMf3ubEdI6c9l2+/oyORY3sLlA40G1P7Vm5nLQ/AMYXbOMVRdQG5P5qwh69k59tCRx9Bh
+        o3PrM0DEB6ROXgjOneSl0lxdH31proVxENNo9ml32/qFSvIsctMBfpyL02CL2JaUsl33BL
+        HHOPrZEd1Hg194pBPdLsKSWXCAHVtvMJp7FkjBkh2uwFWu8s50VOSfpNISgDzxLjoPr+fc
+        X5otw/klEF8OZxNx5obWwHbHWyD15ia3v/IEHmwTmt2Mb53Df/mbg8TKxo4CIzrrlLb9xv
+        pf7KcDRbuYItSrmO4AjSuEHeyS2rILXo+vwiH2uVn53HODq35CUSGZ6nC4nHZw==
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Herve Codina <herve.codina@bootlin.com>, stable@vger.kernel.org
+Subject: [PATCH 1/1] genirq/generic_chip: Fix irq_remove_generic_chip() when an irq domain is used
+Date:   Tue, 24 Oct 2023 17:03:35 +0200
+Message-ID: <20231024150335.322282-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 1/2] sched/fair: Introduce UTIL_FITS_CAPACITY
- feature (v2)
-Content-Language: en-US
-To:     Chen Yu <yu.c.chen@intel.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Tim Chen <tim.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-References: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
- <20231019160523.1582101-2-mathieu.desnoyers@efficios.com>
- <f40522de-b71d-4848-8aa3-5b87d38bb847@arm.com>
- <c79ac631-61c7-4953-a657-74047a264029@efficios.com>
- <ZTdf0529DL51pj8m@chenyu5-mobl2.ccr.corp.intel.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <ZTdf0529DL51pj8m@chenyu5-mobl2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/10/2023 08:10, Chen Yu wrote:
-> On 2023-10-23 at 11:04:49 -0400, Mathieu Desnoyers wrote:
->> On 2023-10-23 10:11, Dietmar Eggemann wrote:
->>> On 19/10/2023 18:05, Mathieu Desnoyers wrote:
+irq_remove_generic_chip() can call (depending on the msk parameter
+value) several operations on irqs based on gc->irq_base such as
+irq_set_handler(irq, NULL) to remove an handler.
 
-[...]
+When the generic chip is present in an irq domain (created with a call
+to irq_alloc_domain_generic_chips()), gc->irq_base is the base hardware
+irq for this chip. It is set to 0 for the first chip in the domain,
+0 + n for the next chip (with n the number of hardware irqs per chip)
+and so on.
+In that case, the operations done on irqs based on gc->irq_base touch
+some irqs not related to the chip nor the domain breaking some unrelated
+components in the system.
 
->>> Or like find_energy_efficient_cpu() (feec(), used in
->>> Energy-Aware-Scheduling (EAS)) which uses cpu_util(cpu, p, cpu, 0) to get:
->>>
->>>    max(util_avg(CPU + p), util_est(CPU + p))
->>
->> I've tried using cpu_util(), but unfortunately anything that considers
->> blocked/sleeping tasks in its utilization total does not work for my
->> use-case.
->>
->> From cpu_util():
->>
->>  * CPU utilization is the sum of running time of runnable tasks plus the
->>  * recent utilization of currently non-runnable tasks on that CPU.
->>
-> 
-> I thought cpu_util() indicates the utilization decay sum of task that was once
-> "running" on this CPU, but will not sum up the "util/load" of the blocked/sleeping
-> task?
+In order to avoid touching these "outside" irqs, take care of the domain
+irq mapping and translate the chip hardware irq to an irq number
+suitable for the several operations done.
 
-cpu_util() here refers to:
+Fixes: cfefd21e693d ("genirq: Add chip suspend and resume callbacks")
+Cc: stable@vger.kernel.org
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+---
+ kernel/irq/generic-chip.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-    cpu_util(int cpu, struct task_struct *p, int dst_cpu, int boost)
+diff --git a/kernel/irq/generic-chip.c b/kernel/irq/generic-chip.c
+index c653cd31548d..494584e25ef4 100644
+--- a/kernel/irq/generic-chip.c
++++ b/kernel/irq/generic-chip.c
+@@ -544,21 +544,28 @@ EXPORT_SYMBOL_GPL(irq_setup_alt_chip);
+ void irq_remove_generic_chip(struct irq_chip_generic *gc, u32 msk,
+ 			     unsigned int clr, unsigned int set)
+ {
+-	unsigned int i = gc->irq_base;
++	unsigned int irq;
++	unsigned int i;
+ 
+ 	raw_spin_lock(&gc_lock);
+ 	list_del(&gc->list);
+ 	raw_spin_unlock(&gc_lock);
+ 
+-	for (; msk; msk >>= 1, i++) {
++	for (i = 0; msk; msk >>= 1, i++) {
+ 		if (!(msk & 0x01))
+ 			continue;
+ 
++		irq = gc->domain ?
++			irq_find_mapping(gc->domain, gc->irq_base + i) :
++			gc->irq_base + i;
++		if (!irq)
++			continue;
++
+ 		/* Remove handler first. That will mask the irq line */
+-		irq_set_handler(i, NULL);
+-		irq_set_chip(i, &no_irq_chip);
+-		irq_set_chip_data(i, NULL);
+-		irq_modify_status(i, clr, set);
++		irq_set_handler(irq, NULL);
++		irq_set_chip(irq, &no_irq_chip);
++		irq_set_chip_data(irq, NULL);
++		irq_modify_status(irq, clr, set);
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(irq_remove_generic_chip);
+-- 
+2.41.0
 
-which when called with (cpu, p, cpu, 0) and task_cpu(p) != cpu returns:
-
-    max(util_avg(CPU + p), util_est(CPU + p))
-
-The term `CPU utilization` in cpu_util()'s header stands for
-cfs_rq->avg.util_avg.
-
-It does not sum up the utilization of blocked tasks but it can contain
-it. They have to be a blocked tasks and not tasks which were running in
-cfs_rq since we subtract utilization of tasks which are migrating away
-from the cfs_rq (cfs_rq->removed.util_avg in remove_entity_load_avg()
-and update_cfs_rq_load_avg()).
-> accumulate_sum()
->     /* only the running task's util will be sum up */
->     if (running)
->        sa->util_sum += contrib << SCHED_CAPACITY_SHIFT;
-> 
-> WRITE_ONCE(sa->util_avg, sa->util_sum / divider);
-
-__update_load_avg_cfs_rq()
-
-  ___update_load_sum(..., cfs_rq->curr != NULL
-                          ^^^^^^^^^^^^^^^^^^^^
-                          running
-    accumulate_sum()
-
-      if (periods)
-        /* decay _sum */
-        sa->util_sum = decay_load(sa->util_sum, ...)
-
-        if (load)
-          /* decay and accrue _sum */
-          contrib = __accumulate_pelt_segments(...)
-
-When crossing periods we decay the old _sum and when additionally load
-!= 0 we decay and accrue the new _sum as well.
