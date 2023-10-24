@@ -2,104 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 440757D53EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCCA7D53F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 16:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343767AbjJXOZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 10:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47068 "EHLO
+        id S234716AbjJXO0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 10:26:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234717AbjJXOZO (ORCPT
+        with ESMTP id S1343742AbjJXO0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 10:25:14 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6734110C8;
-        Tue, 24 Oct 2023 07:25:11 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39ODrxKR001519;
-        Tue, 24 Oct 2023 14:25:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=3jI3kYo6MSjoZXwrxGZSSAnW85dfc/1b0/rMXhFki8s=;
- b=A8algEI68zxhUwb0GIR3ZUn62JOoMI5rg7yQ/HesbTjMA3pvobslekfU6V5pPTJtl1rG
- X0EMzTw/HtH7QtIrYkyaK5JNe/xBGXi/P3p2XYCAr/amiNMlrxCYWmnRX2OQW8H9QA1V
- 03VqoKEiOYhV4aE/mv04QhLJjLZ+QMxJHWgDqFHVyr5IN++hhyKWlsLx539wDHP/rJxL
- RcUev3AvLyDTvDzFOQKuCDPA7R/L5IJZ1bmFZDi3GKKjEEsNGbs69Weuac1E6j5Jngt3
- i8yKV9ra/POlQVP78vTI8ibAqYJWEC+I2MlvFHIj3CyAHN4HJgfN1TkHdaBbtj/1/Shb Vw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3twtxwtnra-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Oct 2023 14:25:08 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39OEP7Qq030556
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Oct 2023 14:25:07 GMT
-Received: from [10.48.243.236] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 24 Oct
- 2023 07:25:04 -0700
-Message-ID: <fc0bbd15-209e-412d-a132-6aac2e871c71@quicinc.com>
-Date:   Tue, 24 Oct 2023 07:25:03 -0700
+        Tue, 24 Oct 2023 10:26:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD490E8
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 07:26:30 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="389918644"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="389918644"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 07:26:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="787800546"
+X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
+   d="scan'208";a="787800546"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 07:26:22 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andy@kernel.org>)
+        id 1qvIMM-00000008Ixi-3mgW;
+        Tue, 24 Oct 2023 17:26:18 +0300
+Date:   Tue, 24 Oct 2023 17:26:18 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, kent.overstreet@linux.dev,
+        keescook@chromium.org, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/39] lib/string_helpers: Add flags param to
+ string_get_size()
+Message-ID: <ZTfUCiFP3hVJ+EXh@smile.fi.intel.com>
+References: <20231024134637.3120277-1-surenb@google.com>
+ <20231024134637.3120277-2-surenb@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/5] soc/arm64: qcom: add initial version of memory
- dump
-Content-Language: en-US
-To:     Zhenhua Huang <quic_zhenhuah@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        <quic_tingweiz@quicinc.com>
-References: <1698052857-6918-1-git-send-email-quic_zhenhuah@quicinc.com>
- <757382c1-142b-454c-b2b5-7ec97bd7328d@linaro.org>
- <ac42f27e-007d-1157-ae46-403420d9fdcb@quicinc.com>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <ac42f27e-007d-1157-ae46-403420d9fdcb@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: auGaGknsxaKm8eBOzPJWInTVbC7XxVvJ
-X-Proofpoint-GUID: auGaGknsxaKm8eBOzPJWInTVbC7XxVvJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-24_14,2023-10-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 clxscore=1011 phishscore=0 adultscore=0 spamscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 suspectscore=0 mlxscore=0
- mlxlogscore=622 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310240124
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024134637.3120277-2-surenb@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_SOFTFAIL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/24/2023 3:10 AM, Zhenhua Huang wrote:
-> 
-> 
-> On 2023/10/23 21:50, Konrad Dybcio wrote:
->> On 23.10.2023 11:20, Zhenhua Huang wrote:
->>> Qualcomm memory dump driver is to cooperate with firmware, providing the
->> Firmware == The hypervisor? The TZ? Some uncore chip?
-> 
-> It's part of bootloader which also needs to cooperate with TZ. After 
-> system crash and warm reset, system enters debug mode which needs the 
-> dump table.
+(Minimized the list of people for my review / comments)
 
-When you re-spin can you be clear about for which firmware this is 
-applicable? On a Qualcomm SoC there are multiple integrated peripherals 
-with their own firmware, so it is important to clarify which ones can 
-utilize this framework.
+On Tue, Oct 24, 2023 at 06:45:58AM -0700, Suren Baghdasaryan wrote:
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> The new flags parameter allows controlling
+>  - Whether or not the units suffix is separated by a space, for
+>    compatibility with sort -h
+>  - Whether or not to append a B suffix - we're not always printing
+>    bytes.
 
-/jeff
+...
+
+>  	string_get_size(nblocks, queue_logical_block_size(q),
+> -			STRING_UNITS_10, cap_str_10, sizeof(cap_str_10));
+> +			0, cap_str_10, sizeof(cap_str_10));
+
+This doesn't seem right (even if it works). We shouldn't rely on the
+implementation details.
+
+...
+
+> -	string_get_size(sdkp->capacity, sector_size,
+> -			STRING_UNITS_10, cap_str_10, sizeof(cap_str_10));
+
+> +	string_get_size(sdkp->capacity, sector_size, 0,
+> +			cap_str_10, sizeof(cap_str_10));
+
+Neither this.
+
+...
+
+> -/* Descriptions of the types of units to
+> - * print in */
+> -enum string_size_units {
+> -	STRING_UNITS_10,	/* use powers of 10^3 (standard SI) */
+> -	STRING_UNITS_2,		/* use binary powers of 2^10 */
+> +enum string_size_flags {
+
+So, please add UNITS_10 as it is now. It will help if anybody in the future
+wants to add, e.g., 8-base numbers.
+
+> +	STRING_SIZE_BASE2	= (1 << 0),
+> +	STRING_SIZE_NOSPACE	= (1 << 1),
+> +	STRING_SIZE_NOBYTES	= (1 << 2),
+>  };
+
+Please, add necessary comments.
+
+...
+
+> +enum string_size_units {
+> +	STRING_UNITS_10,	/* use powers of 10^3 (standard SI) */
+> +	STRING_UNITS_2,		/* use binary powers of 2^10 */
+> +};
+
+And what a point now in having these?
+
+I assume you need to split this to a few patches:
+
+1) rename parameter to be a flags without renaming the definitions (this will
+   touch only string_helpers part);
+2) do the end job by renaming it all over the drivers;
+3) add the other flags one-by-one (each in a separate change);
+4) use new flags where it's needed;
+
+Also see below.
+
+...
+
+>  	static const char *const units_10[] = {
+> -		"B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"
+> +		"", "k", "M", "G", "T", "P", "E", "Z", "Y"
+>  	};
+>  	static const char *const units_2[] = {
+> -		"B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"
+> +		"", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"
+>  	};
+
+Ouch, instead of leaving this and actually "cutting the letter" with NO* flags,
+you did something different.
+
+...
+
+Now the main part. Since in 50+% cases (I briefly estimated, it may be more)
+this is used in printf() why not introducing a new pointer extension for that?
+
+Yes, it may be done separately, but it will look like a double effort to me.
+Instead it might give us a possibility to scale w/o touching users each time
+we want to do something and at the same time hide this complete API under
+printf() implementation.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
