@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 129E27D5EB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 01:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B35B7D5EB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 01:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344652AbjJXXaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 19:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
+        id S1344656AbjJXXa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 19:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344636AbjJXXaT (ORCPT
+        with ESMTP id S1344662AbjJXXaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 19:30:19 -0400
+        Tue, 24 Oct 2023 19:30:25 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC8810D0;
-        Tue, 24 Oct 2023 16:30:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2930C433C8;
-        Tue, 24 Oct 2023 23:30:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E726A10D0;
+        Tue, 24 Oct 2023 16:30:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8F2CBC433CA;
+        Tue, 24 Oct 2023 23:30:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698190217;
-        bh=1O0jyc+9jRwfH+bIBSNC2AC/+zBx3VZH8zI/l7nXoXA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YJl5MOKTV73WhzWjI/s8noNzFiTyaPyRAuduREg0WYPPk8HpQrSx2L8P/a3dDaxGY
-         j7sqmqICC1xn1WvOc+Cp0SJZH337fifCL2PMyl7TAZxQTqJQzh7zuoRIPdYmvzZeLf
-         ZX07Y30lwsF6qmOhaIAuO3+P30QunXCHIu2S3YvFJazL4UYmqqsqg38S2GB8+Wsog8
-         DoDsazOV/Q4Y+qfa2tt3X9Bz+btPJkrhj/LuDZe+5fHLHnhQhvuQKzlcXeoh8AGXVL
-         jgW4krSo5BG/0TnGAEgvQYF/bTk4j0QHVnlS1LNSAz2k8fVLX1TmBPoY+LoeV3JskY
-         50N/qjx5GrmYA==
-Date:   Wed, 25 Oct 2023 01:30:13 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     gregory.clement@bootlin.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] i2c: mv64xxx: add an optional reset-gpios property
-Message-ID: <20231024233013.qtbdmnzek2flxk7a@zenone.zhora.eu>
-References: <20231024223032.3387487-1-chris.packham@alliedtelesis.co.nz>
- <20231024223032.3387487-3-chris.packham@alliedtelesis.co.nz>
+        s=k20201202; t=1698190223;
+        bh=nPcebSjON7KZOPqOoSwka0C7L9a918lmKOHNb+aeH6w=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=b/YFz+6XRZcBn7gGZ7+YLcbAidJA2RGcBpAFQ92RN+1e7QNdNH/zKO8ixhTI1HGgo
+         y+MV7CIT2Z1KFHITWhmSNXCZOmGY00B7h24f+hzNXbFuu3elisR/t0nCHQCFnW1Pt2
+         96ff/xjRFd9DM2Mmu5ZM/U72ZQBdltHV+/JD025wq39DxwOjZMNGf5D9MXMCKTe+eL
+         CxsvS6FC00xfMTwHgDIE3lnvA03VA4s/PGS7L0Lx9zQSxLMhtRcrJLBzoFja6rINR7
+         F9nyANPaMQe0ubxddvDOFmd7Q3tqynz1f/zgSLAGaIes/H/U6S9th4UY9s40T449ng
+         j8fMvnr10FgyA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 79E03C00446;
+        Tue, 24 Oct 2023 23:30:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024223032.3387487-3-chris.packham@alliedtelesis.co.nz>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/2] net: ethernet: renesas: infrastructure
+ preparations for upcoming driver
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169819022349.2903.16516627106945058864.git-patchwork-notify@kernel.org>
+Date:   Tue, 24 Oct 2023 23:30:23 +0000
+References: <20231022205316.3209-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20231022205316.3209-1-wsa+renesas@sang-engineering.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-renesas-soc@vger.kernel.org, niklas.soderlund@ragnatech.se,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -51,20 +52,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris,
+Hello:
 
-On Wed, Oct 25, 2023 at 11:30:32AM +1300, Chris Packham wrote:
-> Some hardware designs have a GPIO used to control the reset of all the
-> devices on and I2C bus. It's not possible for every child node to
-> declare a reset-gpios property as only the first device probed would be
-> able to successfully request it (the others will get -EBUSY). Represent
-> this kind of hardware design by associating the reset-gpios with the
-> parent I2C bus. The reset line will be released prior to the child I2C
-> devices being probed.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Sun, 22 Oct 2023 22:53:14 +0200 you wrote:
+> Before we upstream a new driver, Niklas and I thought that a few
+> cleanups for Kconfig/Makefile will help readability and maintainability.
+> Here they are, looking forward to comments.
 > 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> 
+> Wolfram Sang (2):
+>   net: ethernet: renesas: group entries in Makefile
+>   net: ethernet: renesas: drop SoC names in Kconfig
+> 
+> [...]
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+Here is the summary with links:
+  - [net-next,1/2] net: ethernet: renesas: group entries in Makefile
+    https://git.kernel.org/netdev/net-next/c/de0ad34b56de
+  - [net-next,2/2] net: ethernet: renesas: drop SoC names in Kconfig
+    https://git.kernel.org/netdev/net-next/c/2fc75e370e1d
 
-Thanks,
-Andi
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
