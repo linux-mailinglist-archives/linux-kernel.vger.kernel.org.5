@@ -2,195 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBE67D59B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414597D59B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 19:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343993AbjJXRZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 13:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
+        id S1343902AbjJXR1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 13:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234854AbjJXRZu (ORCPT
+        with ESMTP id S234315AbjJXR1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 13:25:50 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED16133;
-        Tue, 24 Oct 2023 10:25:48 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-35164833a21so12835ab.0;
-        Tue, 24 Oct 2023 10:25:48 -0700 (PDT)
+        Tue, 24 Oct 2023 13:27:39 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE53133
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 10:27:37 -0700 (PDT)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39OHR96h008011;
+        Tue, 24 Oct 2023 17:27:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=vQ10P3zIuZisLoaveRHNnGUDtux4PE3YWfataqyyFBo=;
+ b=i75/UWfsjlOh0vJXh4uKwbSbyqg/lbbhmBAq0WlOiL8o0dpcjy/loWEu7x2jxuBo5L5E
+ OtZSRsF5S51RHkMGgjNsD3Yhunryt0YFWUgvxcAtaZPZ6wqR8xMAhkpXbD+GkcYNzm7S
+ aYeowi8/JVwk/rdHMRivKLjclhbeiFI1x/lt5iJvPtIYVWU5ZVXjf8JXH7r3p9tb+Hhc
+ M60srZKnKahUj9yB7bAsAhp4+OOpiWe8QuUqhLMTsMf3t2dZIhxFm6XBadi92jaU30O/
+ rm8SQ4b1PU3SF+MwikYNQ5cb//mJFE36X347lHT/Q8ys0tzVIMC4VFWVogS8YJeiwHAl cg== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv5jbe1pp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Oct 2023 17:27:32 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39OH0ST5014155;
+        Tue, 24 Oct 2023 17:27:31 GMT
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tvbfjtwsd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Oct 2023 17:27:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vaeemo1+iTXDM6iYi+a+xJjTLcm8Zu6MbL77t7iL/A7wQrupYcvz5t4mGY5hZg4ng6vrYM4jp+xDPWRq+BZqlbn6RK0iZajpFUManZ9cnhImSA2NuvLB2n7tDEqt1/tflMG4LvmOVQllHyQ2jvR/Njwl3s00dnBYrpAlbeYxw31xWDoPjTldgcGdC9ZwK5cKhxyN4ErSeFmWq58KYaDNVKQSgAmRO31B0vCzWsH+CKGyTPXTlH/74Bx8khRqhOWJOrfseNdQjz6uJ3jzxCNYaRJrhQmmwrRwJS/fUsBDFDWJy1yruDE7nsY4j60SKIWuuocxhRI8G25+bQFC3lfOXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vQ10P3zIuZisLoaveRHNnGUDtux4PE3YWfataqyyFBo=;
+ b=bMShoVsgMDtHaAuNV0/UqMOBtuVDdGDZ4NlfpjZ1HM08/5y7nGfmuBNzyIZWRASN86xa0PMX4P0meux4pV2OYD0F6U+B/Qfk/yRABYKHQNGx824HhuM2wFYyHIRMWQbxtO1jVMTvHlnWo23AnedYfrzlyF+By2bagexgYyFY2eCIZ6Mjl9IBfF/JnomUAKCpSxa/Qpb1N91+b2UitgxsWQCocPwLSFRMK7GuxXBwJVPwUkSLzZRc9w9aYch0nKNdvJBiYsHtSn3L6RCi50HqZoA9zFlaZBsWZNvIhxMHPrs4jPNscrliRW+PxJodipLSy+DqbpKR62FqWRtRZeMlng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698168348; x=1698773148; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KyAmYbhNKRNC1zfPKtixIDHsRNfxwdhaIa0uB8FXo00=;
-        b=KYydULxMlhttsvQV9616jUKOCxbsqaGDAQExlroKeJdJfT5Rcv8WurOD1mKIa4Jw3w
-         g0Q/drWhsAxoJWMJEA7TzKNaHeuMUnycR5lOy0VfBuicLi5F5cPzRQKkpdPB3eIykJFW
-         yFTQMDe2O9zgWU+pXApMUwl0LVGJqNBp89CqCJZHXyk4kT/GH6C5tHK/hRQk3rYkblv/
-         G5WfpPTeoqpLZSXemYh1Bg+7BpD5uQYeSfVesjBg7ODSzXRNahZdfG75VZaGKce+15Zf
-         SbXZXWl7IkQkFzbkGH2E5QI6zWmBW5UcwZOGRMkitmtURjx1h2BHMuDpsDCbLA+6wuOk
-         fWmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698168348; x=1698773148;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KyAmYbhNKRNC1zfPKtixIDHsRNfxwdhaIa0uB8FXo00=;
-        b=jma2Nehlfcr62HJHOckI8hMT8P0Vc8ssdDbiImTb4GQSf7rVsVcxoy+DlglG3/5Yws
-         XmzPoawVHlnpwh3khQ1iLUOqLph/L2qFx1DXb2fQeH8zqJ3flIAi4AoG9zH9z8vmimgt
-         mbsGAY8917bFNMDu5PV/pw0hDE1Y2Lzs1eTIw6TPLXkYTei8KZoWepe1r7McmcRDu2ZG
-         t8G799HrS9RTtGx4L22fnExrJnl5tz8XyINKlGF3fD8duWIXEzfZVnVQvARrm3ChW2qd
-         h9Jta+XLZ1rpuKp6xjhTtSbhHAVfW2JjSavKaNmn/xqv0SdO8AWPjBAE2bqn6zSXP9IZ
-         n2qw==
-X-Gm-Message-State: AOJu0YweVjrrDVeQP6CJv7vU1JBP4rGj46kOtHPaotTq5aw2oWdfJ7hi
-        cFtAbGv/u2Sgx1w0x8tLpHjEeqaVENhxEsIVwJ0=
-X-Google-Smtp-Source: AGHT+IF+vxgskghZCA0NCHWlB1Q/r7kYFUjVNizx9+ZIXXSVzrK87LmX/ZotrdYY5apYuQ4vhLBKRTVkLEEBq2bzI6E=
-X-Received: by 2002:a05:6e02:20e2:b0:34f:20d9:74a9 with SMTP id
- q2-20020a056e0220e200b0034f20d974a9mr17350245ilv.11.1698168347662; Tue, 24
- Oct 2023 10:25:47 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vQ10P3zIuZisLoaveRHNnGUDtux4PE3YWfataqyyFBo=;
+ b=PLFyPd9v3xyoxrk8k3et9JYxweQy5QNa6Dvg7h7ofcipn5D0mQTFPbXNa7wFnmkNZ/xxzed/0UuDnuPWcuF6TCF3Gz/0ihzz8j9+Uuqrcv0YDA+vX06tc4gd4qC7F3iiUr6bw5E2CDAsN/ufenF8sbszv6evI32EUbn7XfN3I+c=
+Received: from MW4PR10MB6535.namprd10.prod.outlook.com (2603:10b6:303:225::12)
+ by PH0PR10MB4600.namprd10.prod.outlook.com (2603:10b6:510:36::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
+ 2023 17:27:29 +0000
+Received: from MW4PR10MB6535.namprd10.prod.outlook.com
+ ([fe80::3942:c32c:7de0:d930]) by MW4PR10MB6535.namprd10.prod.outlook.com
+ ([fe80::3942:c32c:7de0:d930%4]) with mapi id 15.20.6907.032; Tue, 24 Oct 2023
+ 17:27:29 +0000
+Message-ID: <b5dadd3d-8806-4d72-90c4-ee1ba6446c3a@oracle.com>
+Date:   Tue, 24 Oct 2023 10:27:23 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/7] vdpa: decouple reset of iotlb mapping from device
+ reset
+Content-Language: en-US
+To:     Lei Yang <leiyang@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>, mst@redhat.com,
+        eperezma@redhat.com, sgarzare@redhat.com, dtatulea@nvidia.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <1697880319-4937-1-git-send-email-si-wei.liu@oracle.com>
+ <CACGkMEvkSFcHXC0HFw-NoDtDNnaucJbpfPO0Yho2r1QP8F6zSw@mail.gmail.com>
+ <4d03661b-4289-46e7-8760-32a186783b73@oracle.com>
+ <CAPpAL=za9VKy2csCPKOKHEKe3qGDQ=89n_08G_MWd7XMiNpUvQ@mail.gmail.com>
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <CAPpAL=za9VKy2csCPKOKHEKe3qGDQ=89n_08G_MWd7XMiNpUvQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BYAPR05CA0003.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::16) To MW4PR10MB6535.namprd10.prod.outlook.com
+ (2603:10b6:303:225::12)
 MIME-Version: 1.0
-References: <20231024000702.1387130-1-nphamcs@gmail.com> <20231024160904.GA1971738@cmpxchg.org>
-In-Reply-To: <20231024160904.GA1971738@cmpxchg.org>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Tue, 24 Oct 2023 10:25:36 -0700
-Message-ID: <CAKEwX=PrLaJU2py+nqkSObBx8kafdbNYn0GZVLPkSixDAEb1GA@mail.gmail.com>
-Subject: Re: [PATCH] zswap: export more zswap store failure stats
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR10MB6535:EE_|PH0PR10MB4600:EE_
+X-MS-Office365-Filtering-Correlation-Id: c7bc4028-6bdd-44cd-8e74-08dbd4b67f2a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dRTzHhegye2klZzW74hh8jBU2fDgkyjUkZ2N3nhq8V55v8jWlcPEAR3VpGuXCkJsd3D1xIqBdbQhVXYKTTCdCb8HAD50xTPx7uOjooJGVAFhDzDQkS3kzQ9cVAh0SF4PNcbjlPKrW7GkC5CU9r7z/0+CCHzYt0GLSBu4SVh0PuS1d3gQgbgjjjQSBdhpB6xOCSTV6ATYnsKa3hTg3n12D78IJA/M5hy4HQinF0FoBB9ZJeS/IrgQ5Hzv8HtmKffxz5Vtgb1vj3Yv2GJ96fW6F0qYdIatm5my8Hl8yy5NVptWxke8CBYbU09UjaiV9Rw97dVaJKNYFD+U1Ifv56FAYfRQcifQImw9GLI/ofiFg8DSLWDUxPZViDlT0ab28Bpgg7pgWYSJpc9ryOBFr00P3VN+DeMPbFP53gjNbZAsJkKUKAbOF2Q075/a2MxRyrzMEj4aM8oqVbqLv0wAIFxn53GiiWptgWdDs5xqKD9jgQokmN+/4KmQVczmjid9h6NJ9OX+4fOvdTgfM+kmrB2dLGz5gLfOeuJIPZFlDcqyrPSKoZ1Wx88wYkV9z6atfInxYfwSew32LqY3F5PEqXgE7a1ZmnrtRNHDYTNZwKrWqWGqYa+3guoDe3Jf1u0W0ZJEum5PFfTb4Mmw4ujZnCJ8qPKrW2a8ceOHuQl7ywe46yk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR10MB6535.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(39860400002)(366004)(376002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(83380400001)(26005)(6512007)(2616005)(2906002)(316002)(66556008)(41300700001)(66476007)(4326008)(5660300002)(6916009)(8936002)(8676002)(36916002)(53546011)(6666004)(6506007)(6486002)(66946007)(478600001)(966005)(86362001)(38100700002)(31696002)(36756003)(31686004)(66899024)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QzE3TFNSNVlCQlBnUWxXcGRMdGZoOVRGMU9RZHA5VkdGR0lSRlZlZUs4T2Z4?=
+ =?utf-8?B?U093OVpzTWVJWnFVN1JkYVRyL0gvWTVCcVlVL0VXVnJTTzZlWjRNZVdEWnNw?=
+ =?utf-8?B?bE1aTzdsNjI5dS9WNFVVekNLWXhra3FGUjM5UFA3VjhSSW9EVk5Gb2ZTdGI3?=
+ =?utf-8?B?Y1VLMmczNEpQWnJnZW5iNnJCaWhXT3pSbkwvVUhCMHdXTWV0c3NRWFFQNUZO?=
+ =?utf-8?B?b05sNUdidnJ4dStVeUN0L0ZKN0VJWFVSWnl1NG5HZmRFYnhxdG9kNVl6SnF4?=
+ =?utf-8?B?YUEzSEIxbzZ2YjY2cGZkYnJldkJScktMbVNueU5pdVNnMkJ2Rm5LTEtJc0xl?=
+ =?utf-8?B?OG9GZCttTS9MK3hTNWRtcmVTMkl3VHQ1VGR1endUNlZhS0hRd3FoenV5Kzly?=
+ =?utf-8?B?U0t0Z0hGU0lKUndaYzl2b2JMVEZiVXJCNHExVUQvSkowdUFkZWgzUjBDbFd6?=
+ =?utf-8?B?bFhLUmJBekZUZUlLR3FxMWZvdjBlRHhCU1V0L1hVbTdsY0ZiWG9FaHlmSG5K?=
+ =?utf-8?B?Slh0UGdlazA4RDBsVk95aHIwV1BqNHNpZVdMWmViMSt6UEFtQUc1TytqVElk?=
+ =?utf-8?B?WkxEYnVNdW1sb0J6LzdJWHJQUzRja21LdXZRVW1jSE90dXRTUjlqUFNBOExq?=
+ =?utf-8?B?VWY1ckJRczdxb2hVUEU0WFhUNyt5NEIwK21NOUlTak01SFBWa1oxcm5aRFJB?=
+ =?utf-8?B?WmlxOHZxaE5ackNmTHhZaHNIV2J4YnFHQTdhTDFWbDhoU2RiSFZzaGNjUWM5?=
+ =?utf-8?B?Z3gxN0JBa0JaVU12UmthcmRRTUhwdm9ySkRtZURvbGtSZThHMldDTEROQ1Vi?=
+ =?utf-8?B?OGNFN3F4c0dsTGxLSDRSR0xqQzdrMzg1UXNxVlM1OWh3c1l5M0owN0VpVzgx?=
+ =?utf-8?B?U2t4MnBOaUhqZUVNMlhSRGduQjJlUHNreFYvamt0eVpPZFRoT3kyNTJkaDNE?=
+ =?utf-8?B?aEcrWDRjWi9XczA1NWNRcloxeFlEUGJLcjNnNDM5M0w5ZW1aY1ppUlFPdUJz?=
+ =?utf-8?B?VG1pOWZOdXhGdXhWazVIS3RJUllxK0xCTkVpVWdaWWhkbzZuWXpCUElZMTc3?=
+ =?utf-8?B?WE5Zd0RwcVVNNHdVc0tYNFc3SC9lWERQNDBXa0pDOTFOS2Z3TzBtd2g5UW1y?=
+ =?utf-8?B?L2p6endGMEc0YjNjaHQyd3grR1ZzVGRTeXd3MFBKUC9EMWxaRG91NmlvM0da?=
+ =?utf-8?B?VVBrQXBXeXZDUTdCV01NQjk5SjAxbDV6RjBRUlE0WFRPcGYwRjdxV3dGUUZP?=
+ =?utf-8?B?NVFNcDI0RWhOUDdXV1Boa1Z3ZmVyTEFZWEppck5jN2UxTkJzZjg2bGNDLytT?=
+ =?utf-8?B?bmp0RlBCazBZc09Ca3RNVm5sSnA0YlllOFh6WmVwRWIrTzJGVmhyZUFjdXpT?=
+ =?utf-8?B?UVgyRlRKanNhN0ErWEFoOGdhdmJjT2VWY0dWNmJHejUyR1ZmU1JUcm5jbDhU?=
+ =?utf-8?B?S1lybGVWLzlqOW5uVnYxMkZsQnZLWVJ2SmpsKzZyanRZTUkwaFJURGFMKzM3?=
+ =?utf-8?B?WW5GbzBNQVhnSWJwSjRWakVrTnVFb2lManB6ellNK0MzVW1zTlQxWUhMUDkw?=
+ =?utf-8?B?TmRZQ09ObW9XS01aM0tnK3BJS1RjLzlTSmVxZWs2M1UvTnVTalk1bk9qV2hE?=
+ =?utf-8?B?ZW9XV0xiSmIrOVpzMXlqTVB0YmFKcnpkTnpGUVB0Vk4rNE5ZdG5LemdEUml5?=
+ =?utf-8?B?UndIKzl4THZCZ1ZmSENEZCthWU9qY0x5emVFUHFZZk1kaWx3NE5DSWEvUWFU?=
+ =?utf-8?B?UWk4alVGWVdQV0dxckRUYUdldll4TlNWSlJUY1plVHdhTlJ3OXE5SFg3bHVH?=
+ =?utf-8?B?UDhmOVhueTZZU0dCYzBQK1cxelIyS2JZazYvZCtaOGtqRzZVWGlqUThYL0Vl?=
+ =?utf-8?B?aUp0NGRPSkhJWmF1Y255dzFJZmlpNjBvMkZZVUZ5MGVNVzNLY3g3ZGVXV3Zt?=
+ =?utf-8?B?aDhIaHZpSng4TXFGQ0VvM09TNEc3aG9yS3lsbDBtZGRqTWFkS09RSkdxTzZO?=
+ =?utf-8?B?b1ZIdHJ2dXhjQmg4MDZUbWJiTmRxY21zWVViaGFPQnFob2hqdDZhZ3lnMnRq?=
+ =?utf-8?B?T2U5RUlmSHlYaFpXSkxlQ2tjL3R1TEYrR3RrTFRCcFNFS2RYdkdyTDJJV0wv?=
+ =?utf-8?Q?zJ9YBVBUOS+uv3uLzITUZrg2H?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: mN5xipHj1RVOQjckVmcXAIsyRX+2WEYIqw6TYVueIecfP4vhmQ+5FWsCq5HCDRbPzAlwrlJLbglnLmb7RDqReWVtF1Mx5VJrROxZrM9ndlVtN+UMyxDPTP7sFbjDVMCKyxtSsrO4NHjfd3pIbNJpb7VuFredW3xvmUBajKcUhpzd5UvXRD46DmW49ZTZc1uhEDlSWjscWFmQSf8U04DvJQse9Z3uuEHopIOp/S6fku7W1Uqn4eiYhGG8zjpgk6HpJXONMfww9KVosreXvVJZPELF8wbeX+r+h5bRys5YIaspJrUfO+LB+XHSO+y0qgl1v4po1NtupczSh/2XO/L5r7WEVRDu7thNRSc8kThGHP7fJ8SeZ+S4PwI/7rzgjGrJgCuMIwY+YayR0I1tBvyDfbkIq6PnBxOU6WOnNWqLeYADpFCPaIprg0ix+1OjC29tp2fOLrupJxp0wgpdkBDBP1cG8CvDeIjqD6z/Td5r+I1gmOIXJOnOZrmTMNpyA7AbaSHL7t1I2mWjj1sJEREdgJwEehb3vUXyxVRNlxMZTzC4X0fsoxFFH4zN7EJ8Jh2pLJCsBBXn0a+mIuCb92+6wUVn63q8hZjiuvDl2nFad/9wiDrfxDS32ZkRUErWLBd47tpH1cyZpUQrgUIL1edYI26Uekf15tRPWcDOo5/QkqotDGheG1zYE4KaBfnTzI+lkMlH84QYOI+F1U8JNiWcBwHB8UtfWrDTG3QvTJQku9PlJe2m4UxxugW4CZddPL9sducfvPw8J9uxWH0cGGmFmoeNJ7WOoDEJjUhMHMRmRdoL9Rkw9LCi59qUxCr1Hv0M6YEXhJ/tLUNqD4Ra+F8PPhwDzNfRqr4QNXAiZI0QYjoIOfzYy8H6ZFYDNNJy3DG89PXYwe7XFqKqKRcplUGSBA==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7bc4028-6bdd-44cd-8e74-08dbd4b67f2a
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR10MB6535.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 17:27:28.8135
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a+eWVP2Upvg1MhfaIhmYP81fqASvcNSkH3Pkgc/BtBEOdLEfgfycUo+yHHw39iko1uDw2/Mxa51QbKFJkJJXHg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4600
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-24_17,2023-10-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310240149
+X-Proofpoint-GUID: Z0IMQNs5FYbqC8j_1X19yuN1j2PeGBn1
+X-Proofpoint-ORIG-GUID: Z0IMQNs5FYbqC8j_1X19yuN1j2PeGBn1
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 9:09=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Mon, Oct 23, 2023 at 05:07:02PM -0700, Nhat Pham wrote:
-> > Since:
-> >
-> > "42c06a0e8ebe mm: kill frontswap"
-> >
-> > we no longer have a counter to tracks the number of zswap store
-> > failures. This makes it hard to investigate and monitor for zswap
-> > issues.
-> >
-> > This patch adds a global and a per-cgroup zswap store failure counter,
-> > as well as a dedicated debugfs counter for compression algorithm failur=
-e
-> > (which can happen for e.g when random data are passed to zswap).
-> >
-> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
->
-> I agree this is an issue.
->
-> > ---
-> >  include/linux/vm_event_item.h |  1 +
-> >  mm/memcontrol.c               |  1 +
-> >  mm/vmstat.c                   |  1 +
-> >  mm/zswap.c                    | 18 ++++++++++++++----
-> >  4 files changed, 17 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_ite=
-m.h
-> > index 8abfa1240040..7b2b117b193d 100644
-> > --- a/include/linux/vm_event_item.h
-> > +++ b/include/linux/vm_event_item.h
-> > @@ -145,6 +145,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPO=
-UT,
-> >  #ifdef CONFIG_ZSWAP
-> >               ZSWPIN,
-> >               ZSWPOUT,
-> > +             ZSWPOUT_FAIL,
->
-> Would the writeback stat be sufficient to determine this?
->
-> Hear me out. We already have pswpout that shows when we're hitting
-> disk swap. Right now we can't tell if this is because of a rejection
-> or because of writeback. With a writeback counter we could.
+Thanks a lot for testing! Please be aware that there's a follow-up fix 
+for a potential oops in this v4 series:
 
-Oh I see! It's a bit of an extra step, but I supposed (pswpout - writeback)
-could give us the number of zswap store failures.
+https://lore.kernel.org/virtualization/1698102863-21122-1-git-send-email-si-wei.liu@oracle.com/
 
+Would be nice to have it applied for any tests.
+
+Thanks,
+-Siwei
+
+On 10/23/2023 11:51 PM, Lei Yang wrote:
+> QE tested this series v4 with regression testing on real nic, there is
+> no new regression bug.
 >
-> And I think we want the writeback counter anyway going forward in
-> order to monitor and understand the dynamic shrinker's performance.
-
-Domenico and I were talking about this, and we both agree the writeback
-counter is absolutely necessary - if anything, to make sure that the
-shrinker is not a) completely not working or b) going overboard.
-
-So it is coming as part of the shrinker regardless of this.
-I just didn't realize that it also solves this issue we're having too!
-
+> Tested-by: Lei Yang <leiyang@redhat.com>
 >
-> Either way we go, one of the metrics needs to be derived from the
-> other(s). But I think subtle and not so subtle shrinker issues are
-> more concerning than outright configuration problems where zswap
-> doesn't work at all. The latter is easier to catch before or during
-> early deployment with simple functionality tests.
->
-> Plus, rejections should be rare. They are now, and they should become
-> even more rare or cease to exist going forward. Because every time
-> they happen at scale, they represent problematic LRU inversions.  We
-> have patched, have pending patches, or discussed changes to reduce
-> every single one of them:
->
->         /* Store failed due to a reclaim failure after pool limit was rea=
-ched */
->         static u64 zswap_reject_reclaim_fail;
->
-> With the shrinker this becomes less relevant. There was also the
-> proposal to disable the bypass to swap and just keep the page.
+> On Tue, Oct 24, 2023 at 6:02 AM Si-Wei Liu <si-wei.liu@oracle.com> wrote:
+>>
+>>
+>> On 10/22/2023 8:51 PM, Jason Wang wrote:
+>>> Hi Si-Wei:
+>>>
+>>> On Sat, Oct 21, 2023 at 5:28 PM Si-Wei Liu <si-wei.liu@oracle.com> wrote:
+>>>> In order to reduce needlessly high setup and teardown cost
+>>>> of iotlb mapping during live migration, it's crucial to
+>>>> decouple the vhost-vdpa iotlb abstraction from the virtio
+>>>> device life cycle, i.e. iotlb mappings should be left
+>>>> intact across virtio device reset [1]. For it to work, the
+>>>> on-chip IOMMU parent device could implement a separate
+>>>> .reset_map() operation callback to restore 1:1 DMA mapping
+>>>> without having to resort to the .reset() callback, the
+>>>> latter of which is mainly used to reset virtio device state.
+>>>> This new .reset_map() callback will be invoked only before
+>>>> the vhost-vdpa driver is to be removed and detached from
+>>>> the vdpa bus, such that other vdpa bus drivers, e.g.
+>>>> virtio-vdpa, can start with 1:1 DMA mapping when they
+>>>> are attached. For the context, those on-chip IOMMU parent
+>>>> devices, create the 1:1 DMA mapping at vdpa device creation,
+>>>> and they would implicitly destroy the 1:1 mapping when
+>>>> the first .set_map or .dma_map callback is invoked.
+>>>>
+>>>> This patchset is rebased on top of the latest vhost tree.
+>>>>
+>>>> [1] Reducing vdpa migration downtime because of memory pin / maps
+>>>> https://www.mail-archive.com/qemu-devel@nongnu.org/msg953755.html
+>>>>
+>>>> ---
+>>>> v4:
+>>>> - Rework compatibility using new .compat_reset driver op
+>>> I still think having a set_backend_feature()
+>> This will overload backend features with the role of carrying over
+>> compatibility quirks, which I tried to avoid from. While I think the
+>> .compat_reset from the v4 code just works with the backend features
+>> acknowledgement (and maybe others as well) to determine, but not
+>> directly tie it to backend features itself. These two have different
+>> implications in terms of requirement, scope and maintaining/deprecation,
+>> better to cope with compat quirks in explicit and driver visible way.
+>>
+>>>    or reset_map(clean=true) might be better.
+>> An explicit op might be marginally better in driver writer's point of
+>> view. Compliant driver doesn't have to bother asserting clean_map never
+>> be true so their code would never bother dealing with this case, as
+>> explained in the commit log for patch 5 "vhost-vdpa: clean iotlb map
+>> during reset for older userspace":
+>>
+>> "
+>>       The separation of .compat_reset from the regular .reset allows
+>>       vhost-vdpa able to know which driver had broken behavior before, so it
+>>       can apply the corresponding compatibility quirk to the individual
+>> driver
+>>       whenever needed.  Compared to overloading the existing .reset with
+>>       flags, .compat_reset won't cause any extra burden to the implementation
+>>       of every compliant driver.
+>> "
+>>
+>>>    As it tries hard to not introduce new stuff on the bus.
+>> Honestly I don't see substantial difference between these other than the
+>> color. There's no single best solution that stands out among the 3. And
+>> I assume you already noticed it from all the above 3 approaches will
+>> have to go with backend features negotiation, that the 1st vdpa reset
+>> before backend feature negotiation will use the compliant version of
+>> .reset that doesn't clean up the map. While I don't think this nuance
+>> matters much to existing older userspace apps, as the maps should
+>> already get cleaned by previous process in vhost_vdpa_cleanup(), but if
+>> bug-for-bug behavioral compatibility is what you want, module parameter
+>> will be the single best answer.
+>>
+>> Regards,
+>> -Siwei
+>>
+>>> But we can listen to others for sure.
+>>>
+>>> Thanks
+>>>
 
-The shrinker and that proposal sound like good ideas ;)
-
->
->         /* Compressed page was too big for the allocator to (optimally) s=
-tore */
->         static u64 zswap_reject_compress_poor;
->
-> You were working on eradicating this (with zsmalloc at least).
->
->         /* Store failed because underlying allocator could not get memory=
- */
->         static u64 zswap_reject_alloc_fail;
->         /* Store failed because the entry metadata could not be allocated=
- (rare) */
->         static u64 zswap_reject_kmemcache_fail;
->
-> These shouldn't happen at all due to PF_MEMALLOC.
->
-> IOW, the fail counter is expected to stay zero in healthy,
-> well-configured systems. Rather than an MM event that needs counting,
-> this strikes me as something that could be a WARN down the line...
->
-
-Yup, I agree that it should (mostly) be at 0. It being non-zero (especially
-at a higher ratio w.r.t total number of zswap store counts) is an indicatio=
-n
-of something wrong - either a bug, misconfiguration, or a very
-ill-compressible workload (or again a bug with the compression algorithm).
-
-A WARN might be good too, but if it's just an ill-compressible workload
-that might be too many WARNS :)
-
-But we can always just monitor pswpout - writeback (both globally,
-and on a cgroup-basis, I assume?).
-
-> I agree with adding the debugfs counter though.
-
-Then I'll send a new patch that focuses on the debugfs counter
-(for the compression failure).
-
-Thanks for the feedback, Johannes.
