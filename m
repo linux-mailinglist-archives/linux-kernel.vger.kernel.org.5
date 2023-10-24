@@ -2,59 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131217D4B7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B7D7D4B82
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233888AbjJXJFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
+        id S233928AbjJXJHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbjJXJFp (ORCPT
+        with ESMTP id S229595AbjJXJHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:05:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7796CCC
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:05:43 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF8BCC433C8;
-        Tue, 24 Oct 2023 09:05:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698138343;
-        bh=59hvrldRJ6uHH8sM4+zj+t2v8z3bBouCHY3CG9BajyU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MGA4ESXhY0f2OKr4KInojAvuScuCjl6gw45D8810SB2NH1jT9Qkw2Fwh/77nYuDLm
-         WU/1Rhdxr1BvFskdbItp3xC5s6cgPLw/NT3evNHurwJUU5M9/tfCLWyEgV/9H6CIL7
-         TMMJOvJu/RDOG6ijDVUzPtUluBMs+OhpvNTzwRj3fz00rguNZ9arGfMB1njOu06jSI
-         4RVpXmoPLasREjRm3E+7wI2yzjK7367voCx5QTP6sMpAz9czVeZstHqriVgHLFlt4y
-         9lRiqs+t40TnJdB/wcohgUeoKMcsV2Iop/lmRxBAi85icypa8bB3NsSRry6JLg2wBP
-         VDos+C0gyn9ig==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Ian Kent <raven@themaw.net>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Bill O'Donnell <bodonnel@redhat.com>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        autofs mailing list <autofs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Functional Testing <lkft@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH] autofs: fix add autofs_parse_fd()
-Date:   Tue, 24 Oct 2023 11:05:30 +0200
-Message-Id: <20231024-vorarbeit-unmittelbar-009365985901@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231023093359.64265-1-raven@themaw.net>
-References: <20231023093359.64265-1-raven@themaw.net>
+        Tue, 24 Oct 2023 05:07:00 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FC5E8;
+        Tue, 24 Oct 2023 02:06:58 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5859d13f73dso2599477a12.1;
+        Tue, 24 Oct 2023 02:06:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698138418; x=1698743218; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yDL40uP+kAC3ujsM0EdFsGaQpPzT9QQURdIX1zfn8SM=;
+        b=Wu7DaDCnLS8i3gqtPJ3OCJzSxZCuHg49i81i7Ceo3kYIrHDyMtg1gO8a95W7jPMqL1
+         wHz1v/qH1VZ0zqQHh+zvbrcyEL6cxOQ4rkmLdFfm0f8Y6rXecAgaE1G1078KV6n+ZKTW
+         L3bXsGzbjKLxvD4kzbEHpodG+KEhuDxSjZh3/LbMCnKm8kOu5gGwFtxQZJBYnuUK3cRC
+         hZaFZeAuxcIz95ZBfAC2GX2a9O37SP0LiuMOIWP/sDjmawk7aQwTo4v/YKZQbVJ0/h8G
+         vALYiRNQMsmhUa/Xq+BuljmYApmNQScdCvDpRBIpAbmWelM6kTR4Slcq47xqGbwX0FV2
+         mtlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698138418; x=1698743218;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yDL40uP+kAC3ujsM0EdFsGaQpPzT9QQURdIX1zfn8SM=;
+        b=Lnj4CEGRoxFyyndLDAUKZQSNAEpgklGCBBVbtcF7xPANMpFQydngebuqSPEDlCbD1z
+         olunthskcz1e0EWwnhXjqpCZwHycUnWq/ro2nA3li1xeST5H7PRZ5N8R0lpjTjP67EE8
+         SciCULal3InbRZ/1OciOpXm6QzhpZG1eJbw6EJA3TI3cswQVHzg/R5HgrFLEJmYCnH79
+         SXx0qJ/p++65AaXG/4/rwvDWGdLBWK+T5oTVUlKMDzQAaB6a5Y+8sGE9MuF/f5fEPBgH
+         Ug+rH7QilgdERKPGAELWc9xaH318gVe4Y8odlNWh4agLdSe5lOwBN/DPO9VAdDZOOFYN
+         5x1A==
+X-Gm-Message-State: AOJu0Yyjihgq/jPKONEOoC9AK1hAHQWUZGIwnPv1LEfE7kKMO8dY46/F
+        o9GOMslgaMqiGOTzGXMTZ3o=
+X-Google-Smtp-Source: AGHT+IGPI0C1cwkNW52VsX90UmIRRS7/kDnveimVHYzyudFdRLFzW3L08ZWGf9t+sYXuJduWkE/VYw==
+X-Received: by 2002:a05:6a21:1448:b0:17a:d173:42f1 with SMTP id oc8-20020a056a21144800b0017ad17342f1mr1464806pzb.44.1698138418256;
+        Tue, 24 Oct 2023 02:06:58 -0700 (PDT)
+Received: from cs20-buildserver.lan ([1.200.144.223])
+        by smtp.gmail.com with ESMTPSA id c24-20020a170902d91800b001c9ab91d3d7sm7055324plz.37.2023.10.24.02.06.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 02:06:57 -0700 (PDT)
+From:   Jim Liu <jim.t90615@gmail.com>
+To:     jim.t90615@gmail.com, JJLIU0@nuvoton.com, linus.walleij@linaro.org,
+        krzysztof.kozlowski+dt@linaro.org, brgl@bgdev.pl
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
+Subject: [PATCH v6 0/3] Add Nuvoton NPCM SGPIO feature
+Date:   Tue, 24 Oct 2023 17:06:28 +0800
+Message-Id: <20231024090631.3359592-1-jim.t90615@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1107; i=brauner@kernel.org; h=from:subject:message-id; bh=aN5/eaaNILz6XykqLa8odZYq/sxBDsVAL1pYfRRqBBo=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSad+wXlSgyEkhNUlzaGalaaiWs94KfLf3doztHQo59nPL6 TfmUjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgInoZjP8D97ucS50F9fss3Mm+Si2qr JcP2F7feGBixtsgqZbqu72PM7wP/3PhByWVMfnBh8f/6v/8MZEN6uyY1Pxpf/VhzMONj1iZAQA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,34 +70,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 23 Oct 2023 17:33:59 +0800, Ian Kent wrote:
-> We are seeing systemd hang on its autofs direct mount at
-> /proc/sys/fs/binfmt_misc.
-> 
-> Historically this was due to a mismatch in the communication structure
-> size between a 64 bit kernel and a 32 bit user space and was fixed by
-> making the pipe communication record oriented.
-> 
-> [...]
+This SGPIO controller is for NUVOTON NPCM7xx and NPCM8xx SoC.
+Nuvoton NPCM SGPIO module is combine serial to parallel IC (HC595)
+and parallel to serial IC (HC165), and use APB3 clock to control it.
+This interface has 4 pins  (D_out , D_in, S_CLK, LDSH).
+NPCM7xx/NPCM8xx have two sgpio module each module can support up
+to 64 output pins,and up to 64 input pin, the pin is only for gpi or gpo.
+GPIO pins have sequential, First half is gpo and second half is gpi.
 
-Thanks for the fix!
 
----
+Jim Liu (3):
+  dt-bindings: gpio: add NPCM sgpio driver bindings
+  arm: dts: nuvoton: npcm: Add sgpio feature
+  gpio: nuvoton: Add Nuvoton NPCM sgpio driver
 
-Applied to the vfs.autofs branch of the vfs/vfs.git tree.
-Patches in the vfs.autofs branch should appear in linux-next soon.
+ .../bindings/gpio/nuvoton,sgpio.yaml          |  86 +++
+ .../dts/nuvoton/nuvoton-common-npcm7xx.dtsi   |  24 +
+ drivers/gpio/Kconfig                          |   8 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-npcm-sgpio.c                | 650 ++++++++++++++++++
+ 5 files changed, 769 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
+ create mode 100644 drivers/gpio/gpio-npcm-sgpio.c
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+-- 
+2.25.1
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.autofs
-
-[1/1] autofs: fix add autofs_parse_fd()
-      https://git.kernel.org/vfs/vfs/c/d3c50061765d
