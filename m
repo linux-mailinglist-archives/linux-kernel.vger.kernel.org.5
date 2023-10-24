@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2B47D5E3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B844B7D5E3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344664AbjJXWbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
+        id S1344601AbjJXWcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:32:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344668AbjJXWbg (ORCPT
+        with ESMTP id S1344670AbjJXWb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:31:36 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9524210FF;
-        Tue, 24 Oct 2023 15:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0xrKrG6QLKZInY7sNS1L6a1MY23Abv3L3T0w5lz/TMA=; b=VNspa/YtTP5+n3bl8xr0Vi9mpW
-        aY5dzdce1UF2qLu4fOB6a+NS8h9aviD7kgHLrvrJRwwYz+/ynf2FK/xBXtLrgfUMNvha6Lys9vVnH
-        CgUYX/75kt5d4Wi+9dcrgAidikQg1M0cDP9kMG+tRl1SAsyonyJTGEVdt1lVeN0G8SHu4mNhs1BdT
-        urnbZzaSJFWlZOob24Il0AQdI5BTM1yVyHWxfabm2J/YClX/enU6iX7M+d7DYwuXkcW33EEKF4q4Z
-        KSH8yK2Wp3U8vUbqz4Cqe/mu21CEbwwWUTH+BDkutTyfvqpH+RbSie9cS4o2IRONDl8mxTdEZ0LMd
-        DnGHQGHw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qvPuq-00FpoV-0q;
-        Tue, 24 Oct 2023 22:30:29 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BBD0E300451; Wed, 25 Oct 2023 00:30:23 +0200 (CEST)
-Date:   Wed, 25 Oct 2023 00:30:23 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        "antonio.gomez.iglesias@linux.intel.com" 
-        <antonio.gomez.iglesias@linux.intel.com>,
-        "Milburn, Alyssa" <alyssa.milburn@intel.com>
-Subject: Re: [PATCH  v2 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20231024223023.GI33965@noisy.programming.kicks-ass.net>
-References: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com>
- <20231024-delay-verw-v2-1-f1881340c807@linux.intel.com>
- <20231024103601.GH31411@noisy.programming.kicks-ass.net>
- <20231024163515.aivo2xfmwmbmlm7z@desk>
- <20231024163621.GD40044@noisy.programming.kicks-ass.net>
- <20231024164520.osvqo2dja2xhb7kn@desk>
- <20231024170248.GE40044@noisy.programming.kicks-ass.net>
- <DD2F34A0-4F2F-4C8C-A634-7DBEF31C40F0@zytor.com>
- <SJ1PR11MB6083E3E2D35B30F4E40E8FE7FCDFA@SJ1PR11MB6083.namprd11.prod.outlook.com>
+        Tue, 24 Oct 2023 18:31:56 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497622113
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:30:41 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 5208C2C02E0;
+        Wed, 25 Oct 2023 11:30:35 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1698186635;
+        bh=BJyb8WCZNp/Hae7wlZqfwiEnwQZsmQKh19okRh+cMxw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uzFlkGFQrkoMNSt/vOaQDLPxO9T1c/ee5kk4Z+BU6meMvLYLVnvIVKkyXSomppUZR
+         nC2G8VxoVyAQgYByl/0Dcr4/LnqUa/5qfua4dELW+gsWbIYABTSBVnZ3a1ScSqY9oC
+         lwglbP6bM+QbsMFtS9KX2o2hFG4AwiEn6kPvQZYp4TW3s2mPl164gwn22RlBv98ru7
+         oLzOvXRlvZ6wnyEi08HFXRiixHA6fn5+b6MGfyVkIVVJWCMG+8kNm1HDhaS+s3svjO
+         0pW9CobR+5bhSB0yQC8F+3mx8RJTn2txowcJGA0tFjo4NaT3+/JiyLBw6zNP9IJ1bD
+         h/49+hUZwgSCQ==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6538458b0000>; Wed, 25 Oct 2023 11:30:35 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+        by pat.atlnz.lc (Postfix) with ESMTP id 1363413EDA9;
+        Wed, 25 Oct 2023 11:30:35 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 0EF36280F0D; Wed, 25 Oct 2023 11:30:35 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     gregory.clement@bootlin.com, andi.shyti@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v4 0/2] i2c: mv64xxx: reset-gpios
+Date:   Wed, 25 Oct 2023 11:30:30 +1300
+Message-ID: <20231024223032.3387487-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SJ1PR11MB6083E3E2D35B30F4E40E8FE7FCDFA@SJ1PR11MB6083.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=L6ZjvNb8 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=bhdUkHdE2iEA:10 a=DesYK6339MVhjp1_Vu4A:9
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 06:49:07PM +0000, Luck, Tony wrote:
-> > the only overhead to modules other than load time (including the runtime linking) is that modules can't realistically be mapped using large page entries.
-> 
-> If there were some significant win for using large pages, couldn't the
+This series adds the ability to associate a gpio with an I2C bus so that
+downstream devices can be brought out of reset when the host controller i=
+s
+probed.
 
-There is. The 4k TLBs really hurt. Thomas and me ran into that when
-doing the retbleed call depth crud. Similarly Song ran into it with BPF,
-they really want eBPF JIT to write to large pages.
+Chris Packham (2):
+  dt-bindings: i2c: mv64xxx: add reset-gpios property
+  i2c: mv64xxx: add an optional reset-gpios property
+
+ .../bindings/i2c/marvell,mv64xxx-i2c.yaml        | 10 ++++++++++
+ drivers/i2c/busses/i2c-mv64xxx.c                 | 16 ++++++++++++++++
+ 2 files changed, 26 insertions(+)
+
+--=20
+2.42.0
+
