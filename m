@@ -2,251 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 824627D438A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B309C7D438C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 02:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231172AbjJXABP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 20:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40280 "EHLO
+        id S230483AbjJXACr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 20:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjJXABN (ORCPT
+        with ESMTP id S229552AbjJXACq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 20:01:13 -0400
-Received: from mail-oo1-f78.google.com (mail-oo1-f78.google.com [209.85.161.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F200810DA
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:01:08 -0700 (PDT)
-Received: by mail-oo1-f78.google.com with SMTP id 006d021491bc7-581e2609a5dso6708135eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 17:01:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698105668; x=1698710468;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tEd/f7LZgUzS+ngYsnvPoXCNP0+ejgA2jVF5JNK5yZc=;
-        b=i2LURaGNyPFme5byneMZ+Z9B9G0aTEj0+u1+aTkyIoRTVAZ8ljQNC49pCI/Tb+Ttoj
-         JAvBkZeeor2pr4iAou9psryr8a2E5t2eQk40dC7bc5bH+4PCjWjDlG3NzL+pO9sePhW7
-         WRH2I34XnVinQDbcz4C2+sx9PayTq/j/OCe5NBLjKrS/BlycvWvL61uGK+RkE6XnvO1b
-         Y+ETvZAdppiLfBEDLotbfPwRrLnwXQx0lKMDLDvbrccwy6kiY07MAAQ14+Rzn7D1L8sG
-         T6WcHYr5xO6O/Rx9cBK1PM0QLehD1XCh6hveWEs20K3bN8rPsh3sHz0aws5rNtTqYCFo
-         wCfA==
-X-Gm-Message-State: AOJu0YyGPPIF1XUkdIaVzars+atGPsycEkpFs7HmXv8NrOpGJ6hluMIM
-        Jw9M1/XAD3OWP256+LlPhsNVJvupR+i4J+nw2uSRbIwSYrkx
-X-Google-Smtp-Source: AGHT+IHmGdWwba43XdITPlqTMUiR7k4FEiyMN0ZGRt7F2DxOZ7rv4BwYWGaEziPuXrVQpamuAvpzP2dSkOiKVMzGw9NZUEdBc+pV
+        Mon, 23 Oct 2023 20:02:46 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50173DC;
+        Mon, 23 Oct 2023 17:02:44 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39NMK7d4025163;
+        Tue, 24 Oct 2023 00:02:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=uxvmUj4EhnsM0m5Wwednxb/2VPkkpIrKARmEWAk3OPk=;
+ b=DjiPHL9SYvZF5+AUPO8SH6g0BiaoaTGy4n5xyTlA0Qs7w6FEukpYqeWa6KNrHx8nHCq0
+ D3MPOW7YPAg5Tr366Y6/yOJNC9YuxLXKy20WTljzamsowfLswniaZeaVg0c3NS7onWdR
+ AdaGZQqPB5hZe6hwSfoNSSH7M7x6szLGLu3SAtZnAPWi2iOqgpGFv8Z6h+7qGvhfGQsu
+ zxLiiRtlOGl46M6zmnxP6sXeA97a3mGpUltICGsBcOZ4+4a/HV96e6nnrp0At98VkxVl
+ ZJFkuA4mK0Fv6s8B6/hofgr8Cxytqv9TRINB7nB5Z4zjS0CZgu1iBpyWKWuCgnhtFPui FA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3twtxws6af-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 00:02:32 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39O02VUt010002
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 00:02:31 GMT
+Received: from [10.48.243.236] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 23 Oct
+ 2023 17:02:30 -0700
+Message-ID: <d0865f9b-081b-4358-a039-2fc04f0575dc@quicinc.com>
+Date:   Mon, 23 Oct 2023 17:02:30 -0700
 MIME-Version: 1.0
-X-Received: by 2002:a05:6871:3328:b0:1e9:ffe1:8f92 with SMTP id
- nf40-20020a056871332800b001e9ffe18f92mr4987121oac.0.1698105667997; Mon, 23
- Oct 2023 17:01:07 -0700 (PDT)
-Date:   Mon, 23 Oct 2023 17:01:07 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000021d73706086b097c@google.com>
-Subject: [syzbot] [bluetooth?] possible deadlock in hci_rfkill_set_block
-From:   syzbot <syzbot+f93d183bc91522d90de9@syzkaller.appspotmail.com>
-To:     arkadiusz.bokowy@gmail.com, johan.hedberg@gmail.com,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, luiz.von.dentz@intel.com,
-        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/6] wifi: mwifiex: added code to support host mlme.
+Content-Language: en-US
+To:     Francesco Dolcini <francesco@dolcini.it>,
+        David Lin <yu-hao.lin@nxp.com>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "briannorris@chromium.org" <briannorris@chromium.org>,
+        "kvalo@kernel.org" <kvalo@kernel.org>,
+        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
+        Pete Hsieh <tsung-hsien.hsieh@nxp.com>
+References: <PA4PR04MB96388A628D6AB8359D3DAAD0D1DBA@PA4PR04MB9638.eurprd04.prod.outlook.com>
+ <ZTKbxe1bAkfRI29V@francesco-nb.int.toradex.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <ZTKbxe1bAkfRI29V@francesco-nb.int.toradex.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: YLr-aRyuR0rTGg23WE61FS5H94caHnEg
+X-Proofpoint-GUID: YLr-aRyuR0rTGg23WE61FS5H94caHnEg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-23_22,2023-10-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 clxscore=1011 phishscore=0 adultscore=0 spamscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 suspectscore=0 mlxscore=0
+ mlxlogscore=857 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310230211
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 10/20/2023 8:24 AM, Francesco Dolcini wrote:
+> On Fri, Oct 20, 2023 at 03:48:06AM +0000, David Lin wrote:
+>> Patch v6:
+>> Correct mailing sequence.
+> 
+> You are still doing something wrong sending the patches over email, the
+> various emails are not threaded as expected, git-send-email should do
+> everything for you.
+> 
+> No need to re-send now IMO, but please figure out what's wrong for the
+> next time.
+> 
+> To give you an idea here [1] you see this email alone.
+> 
+> This [2] and this [3] are examples of a properly sent patch series (just random
+> series from your NXP colleagues).
+> 
+> You have also a winmail.dat file attached to every email in this series,
+> not sure what it is, but I would try to not send it.
+> 
+> Francesco
+> 
+> [1] https://lore.kernel.org/all/PA4PR04MB96388A628D6AB8359D3DAAD0D1DBA@PA4PR04MB9638.eurprd04.prod.outlook.com/
+> [2] https://lore.kernel.org/all/1697794232-2607-1-git-send-email-shengjiu.wang@nxp.com/
+> [3] https://lore.kernel.org/all/20230811101232.844769-1-neeraj.sanjaykale@nxp.com/
+> 
 
-syzbot found the following issue on:
-
-HEAD commit:    ce55c22ec8b2 Merge tag 'net-6.6-rc7' of git://git.kernel.o..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=17645b9d680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=849fe52ba7c6d78a
-dashboard link: https://syzkaller.appspot.com/bug?extid=f93d183bc91522d90de9
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15bcf805680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1122c7b1680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f6762ae43666/disk-ce55c22e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9b2c191a2c66/vmlinux-ce55c22e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/931e7d3d48a1/bzImage-ce55c22e.xz
-
-The issue was bisected to:
-
-commit 92d4abd66f7080075793970fc8f241239e58a9e7
-Author: Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>
-Date:   Wed Sep 20 15:30:07 2023 +0000
-
-    Bluetooth: vhci: Fix race when opening vhci device
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=107ea899680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=127ea899680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=147ea899680000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f93d183bc91522d90de9@syzkaller.appspotmail.com
-Fixes: 92d4abd66f70 ("Bluetooth: vhci: Fix race when opening vhci device")
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.6.0-rc6-syzkaller-00182-gce55c22ec8b2 #0 Not tainted
-------------------------------------------------------
-syz-executor269/5035 is trying to acquire lock:
-ffff8880737b4dc0 ((work_completion)(&hdev->tx_work)){+.+.}-{0:0}, at: __flush_work+0xe9/0xac0 kernel/workqueue.c:3403
-
-but task is already holding lock:
-ffff8880737b50b8 (&hdev->req_lock){+.+.}-{3:3}, at: hci_dev_do_close net/bluetooth/hci_core.c:552 [inline]
-ffff8880737b50b8 (&hdev->req_lock){+.+.}-{3:3}, at: hci_rfkill_set_block+0x12d/0x210 net/bluetooth/hci_core.c:956
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #3 (&hdev->req_lock){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x136/0xd60 kernel/locking/mutex.c:747
-       hci_dev_do_close net/bluetooth/hci_core.c:552 [inline]
-       hci_rfkill_set_block+0x12d/0x210 net/bluetooth/hci_core.c:956
-       rfkill_set_block+0x1e7/0x430 net/rfkill/core.c:346
-       rfkill_fop_write+0x5bb/0x790 net/rfkill/core.c:1305
-       vfs_write+0x286/0xaf0 fs/read_write.c:582
-       ksys_write+0x1a0/0x2c0 fs/read_write.c:637
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #2 (rfkill_global_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x136/0xd60 kernel/locking/mutex.c:747
-       rfkill_register+0x34/0x8c0 net/rfkill/core.c:1075
-       hci_register_dev+0x4e3/0xa40 net/bluetooth/hci_core.c:2656
-       __vhci_create_device drivers/bluetooth/hci_vhci.c:437 [inline]
-       vhci_create_device+0x3ba/0x720 drivers/bluetooth/hci_vhci.c:478
-       vhci_get_user drivers/bluetooth/hci_vhci.c:535 [inline]
-       vhci_write+0x3c7/0x480 drivers/bluetooth/hci_vhci.c:615
-       call_write_iter include/linux/fs.h:1956 [inline]
-       new_sync_write fs/read_write.c:491 [inline]
-       vfs_write+0x782/0xaf0 fs/read_write.c:584
-       ksys_write+0x1a0/0x2c0 fs/read_write.c:637
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #1 (&data->open_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
-       __mutex_lock+0x136/0xd60 kernel/locking/mutex.c:747
-       vhci_send_frame+0x8e/0xf0 drivers/bluetooth/hci_vhci.c:78
-       hci_send_frame+0x1ef/0x370 net/bluetooth/hci_core.c:3039
-       hci_sched_acl_pkt net/bluetooth/hci_core.c:3651 [inline]
-       hci_sched_acl net/bluetooth/hci_core.c:3736 [inline]
-       hci_tx_work+0xed4/0x1ef0 net/bluetooth/hci_core.c:3835
-       process_one_work kernel/workqueue.c:2630 [inline]
-       process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
-       worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
-       kthread+0x2d3/0x370 kernel/kthread.c:388
-       ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
--> #0 ((work_completion)(&hdev->tx_work)){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3868 [inline]
-       __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5136
-       lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5753
-       __flush_work+0x102/0xac0 kernel/workqueue.c:3403
-       hci_dev_close_sync+0x237/0xfe0 net/bluetooth/hci_sync.c:4982
-       hci_dev_do_close net/bluetooth/hci_core.c:554 [inline]
-       hci_rfkill_set_block+0x135/0x210 net/bluetooth/hci_core.c:956
-       rfkill_set_block+0x1e7/0x430 net/rfkill/core.c:346
-       rfkill_fop_write+0x5bb/0x790 net/rfkill/core.c:1305
-       vfs_write+0x286/0xaf0 fs/read_write.c:582
-       ksys_write+0x1a0/0x2c0 fs/read_write.c:637
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-other info that might help us debug this:
-
-Chain exists of:
-  (work_completion)(&hdev->tx_work) --> rfkill_global_mutex --> &hdev->req_lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&hdev->req_lock);
-                               lock(rfkill_global_mutex);
-                               lock(&hdev->req_lock);
-  lock((work_completion)(&hdev->tx_work));
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor269/5035:
- #0: ffffffff8e794ea8 (rfkill_global_mutex){+.+.}-{3:3}, at: rfkill_fop_write+0x1a9/0x790 net/rfkill/core.c:1297
- #1: ffff8880737b50b8 (&hdev->req_lock){+.+.}-{3:3}, at: hci_dev_do_close net/bluetooth/hci_core.c:552 [inline]
- #1: ffff8880737b50b8 (&hdev->req_lock){+.+.}-{3:3}, at: hci_rfkill_set_block+0x12d/0x210 net/bluetooth/hci_core.c:956
-
-stack backtrace:
-CPU: 1 PID: 5035 Comm: syz-executor269 Not tainted 6.6.0-rc6-syzkaller-00182-gce55c22ec8b2 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- check_noncircular+0x375/0x4a0 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3868 [inline]
- __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5136
- lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5753
- __flush_work+0x102/0xac0 kernel/workqueue.c:3403
- hci_dev_close_sync+0x237/0xfe0 net/bluetooth/hci_sync.c:4982
- hci_dev_do_close net/bluetooth/hci_core.c:554 [inline]
- hci_rfkill_set_block+0x135/0x210 net/bluetooth/hci_core.c:956
- rfkill_set_block+0x1e7/0x430 net/rfkill/core.c:346
- rfkill_fop_write+0x5bb/0x790 net/rfkill/core.c:1305
- vfs_write+0x286/0xaf0 fs/read_write.c:582
- ksys_write+0x1a0/0x2c0 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f3ba6729479
-Code: 48 83 c4 28 c3 e8 e7 18 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc064fec88 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f3ba6780043 RCX: 00007f3ba6729479
-RDX: 0000000000000008 RSI: 0000000020000080 RDI: 0000000000000003
-RBP: 00007ffc064fecd0 R08: 000000ff00fff650 R09: 000000ff00fff650
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc064fecb8
-R13: 00007f3ba67ad5b0 R14: 0000000000000000 R15: 0000000000000001
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+If you are new to contributing to the kernel and don't have an 
+established workflow I strongly recommend using b4. It removes a lot of 
+steps from the standard workflow.
+<https://b4.docs.kernel.org/en/latest/contributor/overview.html>
