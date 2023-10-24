@@ -2,71 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D85737D4C1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A33A7D4C50
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbjJXJ1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
+        id S234269AbjJXJaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234128AbjJXJ04 (ORCPT
+        with ESMTP id S234236AbjJXJ3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:26:56 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C24170D
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 02:26:26 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 51CEE66072F6;
-        Tue, 24 Oct 2023 10:26:24 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698139584;
-        bh=eyPjnlFwB9ESs7GpmfTaYODwRkcUD8KIZ9RhyRcSESQ=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=hO+1C/+jaErCZfqqRqqHjQGulYk7w+MiPuEXZESWII4l4TeGM2pBldxFcFW19gn7B
-         3YChhT37kbYsi+kfHnsit30kt4IUo9mBODAXgp78Wlzadhrwjvm1Hr5cOO/6yTC/bz
-         N5vyzsgTOZ4Bh7A95FqPVDljYsgfape72asxOLXeDr19EIQwmAbxs/eH/1VYMZqvTp
-         DGwamU3f8Ctw26km+JgtI8tRE38IGmSAEvbjzNSiE3NCltwidvqAMTg5mp9NLmnxAv
-         lvsJGdFGEA78M9JGVMuOuh16RFwI7zRje8UKg67zYb9is2oAQzPjTjRmitabihpUpm
-         5EeTQZD9eOUVQ==
-Message-ID: <1d524b37-f95a-4f36-b78a-dcf865c1a922@collabora.com>
-Date:   Tue, 24 Oct 2023 11:26:24 +0200
+        Tue, 24 Oct 2023 05:29:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF27C1729;
+        Tue, 24 Oct 2023 02:28:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698139735; x=1729675735;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=bqHDSFhKyH5O4q+WlQcPjHBDU9dNxKX/Zht0fn5lHcg=;
+  b=aMtvfXymGwsc9tLQQCSu9gvp6/91FilF7HER6ERPLVwFJ5T1AcE6Dhxf
+   z2Dx9kuZCtOyaXGizSNXlpbR4/FCecoHuLGZ6w1eNaZjFMSHSfdmvMgkU
+   ife3J+PF0NYhu44xW0y4ZiOyjfImuUqXCawW8cjWTv1QrYkV+gWqot4Dq
+   qPr5Jpep0LxOIFpARMvBxB7xl9pml10n12CvPLHucA/sMoHQnBo//Kiwj
+   RYBJHsLbt0MWNAzgsinfRydDEyaycTz5f5pXEBCEZrA8REA+MAMCxa2Bu
+   0yZkDRkc1ULLOdeo0Gbsts+eNe2quhe76F1j+mtRCgz0258EsOSRpeqQx
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="384218902"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="384218902"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 02:28:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="6397798"
+Received: from hprosing-mobl.ger.corp.intel.com (HELO localhost) ([10.249.40.219])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 02:28:44 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-kselftest@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 15/24] selftests/resctrl: Read in less obvious order to defeat prefetch optimizations
+Date:   Tue, 24 Oct 2023 12:26:25 +0300
+Message-Id: <20231024092634.7122-16-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com>
+References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] ASoC: mediatek: mt7986: remove the
- mt7986_wm8960_priv structure
-Content-Language: en-US
-To:     Maso Huang <maso.huang@mediatek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20231024035019.11732-1-maso.huang@mediatek.com>
- <20231024035019.11732-3-maso.huang@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231024035019.11732-3-maso.huang@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 24/10/23 05:50, Maso Huang ha scritto:
-> Remove the mt7986_wm8960_priv structure.
-> 
-> Signed-off-by: Maso Huang <maso.huang@mediatek.com>
+When reading memory in order, HW prefetching optimizations will
+interfere with measuring how caches and memory are being accessed. This
+adds noise into the results.
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Change the fill_buf reading loop to not use an obvious in-order access
+using multiply by a prime and modulo.
+
+Using a prime multiplier with modulo ensures the entire buffer is
+eventually read. 23 is small enough that the reads are spread out but
+wrapping does not occur very frequently (wrapping too often can trigger
+L2 hits more frequently which causes noise to the test because getting
+the data from LLC is not required).
+
+It was discovered that not all primes work equally well and some can
+cause wildly unstable results (e.g., in an earlier version of this
+patch, the reads were done in reversed order and 59 was used as the
+prime resulting in unacceptably high and unstable results in MBA and
+MBM test on some architectures).
+
+Link: https://lore.kernel.org/linux-kselftest/TYAPR01MB6330025B5E6537F94DA49ACB8B499@TYAPR01MB6330.jpnprd01.prod.outlook.com/
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
+ tools/testing/selftests/resctrl/fill_buf.c | 38 +++++++++++++++++-----
+ 1 file changed, 30 insertions(+), 8 deletions(-)
+
+diff --git a/tools/testing/selftests/resctrl/fill_buf.c b/tools/testing/selftests/resctrl/fill_buf.c
+index 9d0b0bf4b85a..326d530425d0 100644
+--- a/tools/testing/selftests/resctrl/fill_buf.c
++++ b/tools/testing/selftests/resctrl/fill_buf.c
+@@ -51,16 +51,38 @@ static void mem_flush(unsigned char *buf, size_t buf_size)
+ 	sb();
+ }
+ 
++/*
++ * Buffer index step advance to workaround HW prefetching interfering with
++ * the measurements.
++ *
++ * Must be a prime to step through all indexes of the buffer.
++ *
++ * Some primes work better than others on some architectures (from MBA/MBM
++ * result stability point of view).
++ */
++#define FILL_IDX_MULT	23
++
+ static int fill_one_span_read(unsigned char *buf, size_t buf_size)
+ {
+-	unsigned char *end_ptr = buf + buf_size;
+-	unsigned char sum, *p;
+-
+-	sum = 0;
+-	p = buf;
+-	while (p < end_ptr) {
+-		sum += *p;
+-		p += (CL_SIZE / 2);
++	unsigned int size = buf_size / (CL_SIZE / 2);
++	unsigned int i, idx = 0;
++	unsigned char sum = 0;
++
++	/*
++	 * Read the buffer in an order that is unexpected by HW prefetching
++	 * optimizations to prevent them interfering with the caching pattern.
++	 *
++	 * The read order is (in terms of halves of cachelines):
++	 *	i * FILL_IDX_MULT % size
++	 * The formula is open-coded below to avoiding modulo inside the loop
++	 * as it improves MBA/MBM result stability on some architectures.
++	 */
++	for (i = 0; i < size; i++) {
++		sum += buf[idx * (CL_SIZE / 2)];
++
++		idx += FILL_IDX_MULT;
++		while (idx >= size)
++			idx -= size;
+ 	}
+ 
+ 	return sum;
+-- 
+2.30.2
 
