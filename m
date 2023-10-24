@@ -2,104 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 666607D51E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0313B7D51DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343502AbjJXNgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48828 "EHLO
+        id S234695AbjJXNew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234650AbjJXNg0 (ORCPT
+        with ESMTP id S234574AbjJXNer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:36:26 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959EC6A47
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:26:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60007C433C8;
-        Tue, 24 Oct 2023 13:26:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698153989;
-        bh=017iYigc54wK1AgkfF311wOfS8sHvclf3x7swW1vb8g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QOT/LD03H8E9/zD2wPkCLr4kRtmpkWEiOFzJyccnWaTUKi36w6Xr+JmXUIx5wYlRk
-         oenBdo3tCgTNO6WxpESGDrSmOIAKlfpL1P7zEdrP+xq2Z494umqDGXa8RteCF/kv2n
-         z41w/QIjd8B/MzqTainPyO3IC00mVPRkSN8HobHr1/90WGey1LhXXVSWKioN1zC/iI
-         JBDBt8qtbS31HW3qokkg7+buZJ21jne1Y0Slo0ReuCqt1pB3y4lCpwQGBkNFpNzWme
-         qfIRh5xv872/GLGR5CiOKrjKQ5Ogn+k7dWOg3bkSEpSPXSc8y1+88SC0NEugJkgOTW
-         2kNfyKAxg/+gA==
-Date:   Tue, 24 Oct 2023 14:26:24 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] regulator: fixed: add support for under-voltage
- IRQ
-Message-ID: <471281bf-4126-496b-93ef-0807f4910ce7@sirena.org.uk>
-References: <20231024130842.2483208-1-o.rempel@pengutronix.de>
- <20231024130842.2483208-3-o.rempel@pengutronix.de>
+        Tue, 24 Oct 2023 09:34:47 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E956A70
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:27:53 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-408363c2918so5186735e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:27:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698154071; x=1698758871; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=p7NxDbO7GUxLbtod+vtUf5vVuxdvzarRCEG44wnrlEM=;
+        b=xwUmhfBygJgbn9ZhfJx6kMQE/3xoShhv+BwNb498DMPgntOJZO0skb+jMsPBXAkaoJ
+         kLo/QGylY36f7bjKLy8RWH4YW1WIxyb+HWY0GEu6xgkPc68H/7nvjMwLFiciW09t/mYT
+         MfW8keRcVgh9QvzzRsrNBPJ5GensudLK4y1Kf1/DIBRJlVxqTMtPIcwbyXTb0k7ryaSZ
+         AYaGSXKL5pw2YN0JgzROVQdMEdj4nB2giRlkzD+vL1bvYQ70WkaYlV6PwPiMxyI+Kcqs
+         WXRygQGjPzMgGSEEknSJzgE1Tp0K4+EwItWL7Lgnl1QNReCHMsTg0cDk+TTG8zQ62qxw
+         fbkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698154071; x=1698758871;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p7NxDbO7GUxLbtod+vtUf5vVuxdvzarRCEG44wnrlEM=;
+        b=o6Hdg8jh9FjNZYco8/kTK1zB0skinbzWzQeDkfrLdFSWquaSZnI4ZS0qy0U75sd9Gl
+         wD9Aj6hNWqtXhrz+BQt6riND+8rv6ZLYLutt5NJpfZ9SGXHxktoJPNdpDZ3W19W1ekLk
+         sclwwcorw+iueQPx4t1w2A4EHZ6ejd7PsOXLAEyx3aTEmKV4aid243gHgVIA+1ERc04Z
+         Es5NSgltF+j2q3egKb6AVf5vrSwKQi8diLISf0h0xx+EH9kzx1BaNNEwJOYk1SL37gqh
+         MV5IdPvj0fbFQsCpUb9ZQLwor7JdrUFYw4iLn+m3o/hrUKLQ5sL+uZ0fU8NOFCJIc373
+         T3Ww==
+X-Gm-Message-State: AOJu0Yz4xEbgiixgtIDcnlSQJjU9RQHUqj0M/QH2lzTaw7JbN4/jzBGJ
+        vs5rdvZCuSeEk99aXUcQl+dDiQ==
+X-Google-Smtp-Source: AGHT+IH77/PUgfFp7lhNctpa+rJkehqrdIV97sCBXLPajMuJnwUEvoVFCh76kpQkxXAlg1/QWfUznw==
+X-Received: by 2002:a05:600c:2293:b0:403:334:fb0d with SMTP id 19-20020a05600c229300b004030334fb0dmr9098071wmf.4.1698154071124;
+        Tue, 24 Oct 2023 06:27:51 -0700 (PDT)
+Received: from carbon-x1.. ([2a01:e0a:999:a3a0:597d:e2c5:6741:bac9])
+        by smtp.gmail.com with ESMTPSA id c17-20020a5d4151000000b0032d87b13240sm10034964wrq.73.2023.10.24.06.27.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 06:27:50 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>
+Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org
+Subject: [PATCH v2 0/5] riscv: cleanup assembly usage of ENTRY()/END() and use local labels
+Date:   Tue, 24 Oct 2023 15:26:50 +0200
+Message-ID: <20231024132655.730417-1-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uF8HXoNA/AGKb/YU"
-Content-Disposition: inline
-In-Reply-To: <20231024130842.2483208-3-o.rempel@pengutronix.de>
-X-Cookie: 1 bulls, 3 cows.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series does a cleanup of all ENTRY()/END() macros that are used in
+arch/riscv/ as well as use of local labels. This allows to remove the
+use of the now deprecated ENTRY()/END()/WEAK() macros as well as using
+the new SYM_*() ones which provide a better understanding of what is
+meant to be annotated. Some wrong usage of SYM_FUNC_START() are also
+fixed in this series by using the correct annotations. Finally a few
+labels that were meant to be local have been renamed to use the .L
+suffix and thus not to be emitted as visible symbols.
 
---uF8HXoNA/AGKb/YU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Note: the patches have been split between arch/riscv/ and
+arch/riscv/kvm/ due to having different maintainers.
 
-On Tue, Oct 24, 2023 at 03:08:42PM +0200, Oleksij Rempel wrote:
+---
 
-> Add interrupt support for under-voltage notification. This functionality
-> can be used on systems capable to detect under-voltage state and having
-> enough capacity to let the SoC do some emergency preparation.
->=20
-> This change enforce default policy to shutdown system as soon as
-> interrupt is triggered.
+Changes in V2:
+ - Remove duplicated SYM_FUNC_END(memmove)
+ - Use SYM_DATA for simple .quad usage
+ - Added Andrew Rb:
 
-=2E..
+Clément Léger (5):
+  riscv: use ".L" local labels in assembly when applicable
+  riscv: Use SYM_*() assembly macros instead of deprecated ones
+  riscv: kernel: Use correct SYM_DATA_*() macro for data
+  riscv: kvm: Use SYM_*() assembly macros instead of deprecated ones
+  riscv: kvm: use ".L" local labels in assembly when applicable
 
-> +static irqreturn_t reg_fixed_under_voltage_irq_handler(int irq, void *da=
-ta)
-> +{
-> +	hw_protection_shutdown("Critical voltage drop reached",
-> +			       FV_DEF_EMERG_SHUTDWN_TMO);
-> +
-> +	return IRQ_HANDLED;
-> +}
+ arch/riscv/kernel/copy-unaligned.S            |  8 +--
+ arch/riscv/kernel/entry.S                     | 19 +++----
+ arch/riscv/kernel/fpu.S                       |  8 +--
+ arch/riscv/kernel/head.S                      | 30 +++++-----
+ arch/riscv/kernel/hibernate-asm.S             | 12 ++--
+ arch/riscv/kernel/mcount-dyn.S                | 20 +++----
+ arch/riscv/kernel/mcount.S                    | 18 +++---
+ arch/riscv/kernel/probes/rethook_trampoline.S |  4 +-
+ arch/riscv/kernel/suspend_entry.S             |  4 +-
+ arch/riscv/kernel/vdso/flush_icache.S         |  4 +-
+ arch/riscv/kernel/vdso/getcpu.S               |  4 +-
+ arch/riscv/kernel/vdso/rt_sigreturn.S         |  4 +-
+ arch/riscv/kernel/vdso/sys_hwprobe.S          |  4 +-
+ arch/riscv/kvm/vcpu_switch.S                  | 32 +++++------
+ arch/riscv/lib/memcpy.S                       |  6 +-
+ arch/riscv/lib/memmove.S                      | 57 +++++++++----------
+ arch/riscv/lib/memset.S                       |  6 +-
+ arch/riscv/lib/uaccess.S                      | 11 ++--
+ arch/riscv/purgatory/entry.S                  | 16 ++----
+ 19 files changed, 124 insertions(+), 143 deletions(-)
 
-We need a bit more policy here - the regulator could be critical to
-system function but it could also be well isolated and just affecting
-whatever device it's directly supplying in a way that the system can
-tolerate and might even want to (eg, for something like a SD card or USB
-port where end users are plugging in external hardware).
+-- 
+2.42.0
 
---uF8HXoNA/AGKb/YU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU3xf8ACgkQJNaLcl1U
-h9DtuAf+MSSbDFj6UK22EAUJGxqPboAwLoDDRg3zGxLEvO2ohr9XMV5N/KqVlsJI
-FOq474QBednEQeLQKZEvlgP6b/xy+hSbJSl0KNwDm+ViHqiKZSJsIkktGbEqdXfS
-hTalmmsiXjAF4ur04dgSRhd3i7bvIjktWH7RviF8zpYuBQvAhWcd9oO8H7L7y5Fw
-v2XKE3AYSJRqE0tM2WhufObe6coA5c0ihRmHv69iyncrM6UqsEasb0vpI+hrir8x
-ofqKsU8SUb5KvBfYMaqEXbp+mItuLZ25tUkQObZnAy+CLzONB4fPKroVccLpNc08
-YvLpMrUBpXoCv6Oax7PPak5qYXdipw==
-=TupP
------END PGP SIGNATURE-----
-
---uF8HXoNA/AGKb/YU--
