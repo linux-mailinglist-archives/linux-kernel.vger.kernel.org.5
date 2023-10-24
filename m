@@ -2,111 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 775DD7D4D2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 12:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72387D4D2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 12:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbjJXKDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 06:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48740 "EHLO
+        id S234195AbjJXKC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 06:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234227AbjJXKDK (ORCPT
+        with ESMTP id S232558AbjJXKC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 06:03:10 -0400
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3729DEA;
-        Tue, 24 Oct 2023 03:03:08 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 9B86F18685AA;
-        Tue, 24 Oct 2023 13:03:06 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id U9j6gZZ_QIsU; Tue, 24 Oct 2023 13:03:06 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 120331867D87;
-        Tue, 24 Oct 2023 13:03:06 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id timcU0KQJ8eb; Tue, 24 Oct 2023 13:03:05 +0300 (MSK)
-Received: from rbta-msk-lt-106062.astralinux.ru (unknown [10.177.20.58])
-        by mail.astralinux.ru (Postfix) with ESMTPSA id B322E186785A;
-        Tue, 24 Oct 2023 13:03:04 +0300 (MSK)
-From:   Anastasia Belova <abelova@astralinux.ru>
-To:     stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Anastasia Belova <abelova@astralinux.ru>,
-        Steve French <sfrench@samba.org>, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org, Tom Talpey <tom@talpey.com>,
-        Long Li <longli@microsoft.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.10 1/1] smbdirect: missing rc checks while waiting for rdma events
-Date:   Tue, 24 Oct 2023 13:02:26 +0300
-Message-Id: <20231024100226.25860-2-abelova@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231024100226.25860-1-abelova@astralinux.ru>
-References: <20231024100226.25860-1-abelova@astralinux.ru>
+        Tue, 24 Oct 2023 06:02:57 -0400
+Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35330F9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 03:02:55 -0700 (PDT)
+Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-3b2e2d3560bso6505274b6e.2
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 03:02:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698141774; x=1698746574;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vn0NoukJxAfZILvdsW+icS2xMfxi5fKAUjTvJNIqGUY=;
+        b=qVvHGBcOgGxRYYTWdzOpYk2jBENCYNhu10PcH2lgU9meU9eq9sXDB85C50s7htmQ/b
+         OZHjdPoQgoqP/NlIvhIuIAsf6IpdeQNQq2ksO4eFcGePB/ZIZCkx//ARy39gPYuEUp73
+         T958aN7A4YS/gp4nUZi19By8O45GC/o95WMVJAkUytLdi1PzJw6laal1h1yeXG2cs2iT
+         3LXRpbPcIFxYIn4FUIGFUAho/IqN4leJYXChUWLpkKpsXXkg1niqm64lG0QkMHHWuejH
+         OzoeZNjAQyH4pivs/Jx4w2Y+9cRgnaO6sva1lcFXoVYTzvqcPshHTFn2Vr0eUsV3CvPp
+         Zx/A==
+X-Gm-Message-State: AOJu0Yw3nKeqYvtKTBizFbQleMNEdeouoWNpq62l9HqK3eT6c0urIoVa
+        FKc/QKaQixVfxah8C5aa3u5ioz6VEz4w7XGDpbFxY5QDu6vj
+X-Google-Smtp-Source: AGHT+IGHhYm8RudYIBehaCc/J2WJHkqOLHGrUFdReEuwG4sAlvAFt8AhkmU5dW0ni+Q5yLBUZOSxzdGWvD9Grkji+80fry44dWAX
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:148d:b0:1d6:5e45:3bc7 with SMTP id
+ k13-20020a056870148d00b001d65e453bc7mr5668205oab.5.1698141774531; Tue, 24 Oct
+ 2023 03:02:54 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 03:02:54 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003fd455060873718b@google.com>
+Subject: [syzbot] [ntfs3?] WARNING in sys_pivot_root
+From:   syzbot <syzbot+a76a065ad30c6ddea4a1@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com, brauner@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+Hello,
 
-commit 0555b221528e9cb11f5766dcdee19c809187e42e upstream.
+syzbot found the following issue on:
 
-There were two places where we weren't checking for error
-(e.g. ERESTARTSYS) while waiting for rdma resolution.
+HEAD commit:    ce55c22ec8b2 Merge tag 'net-6.6-rc7' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11c0c24d680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=849fe52ba7c6d78a
+dashboard link: https://syzkaller.appspot.com/bug?extid=a76a065ad30c6ddea4a1
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e511bd680000
 
-Addresses-Coverity: 1462165 ("Unchecked return value")
-Reviewed-by: Tom Talpey <tom@talpey.com>
-Reviewed-by: Long Li <longli@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f6762ae43666/disk-ce55c22e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9b2c191a2c66/vmlinux-ce55c22e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/931e7d3d48a1/bzImage-ce55c22e.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/60186123065f/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a76a065ad30c6ddea4a1@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+DEBUG_RWSEMS_WARN_ON((rwsem_owner(sem) != current) && !rwsem_test_oflags(sem, RWSEM_NONSPINNABLE)): count = 0x0, magic = 0xffff888066862f70, owner = 0x0, curr 0xffff88807d629dc0, list empty
+WARNING: CPU: 1 PID: 9840 at kernel/locking/rwsem.c:1370 __up_write kernel/locking/rwsem.c:1369 [inline]
+WARNING: CPU: 1 PID: 9840 at kernel/locking/rwsem.c:1370 up_write+0x4f4/0x580 kernel/locking/rwsem.c:1626
+Modules linked in:
+CPU: 1 PID: 9840 Comm: syz-executor.5 Not tainted 6.6.0-rc6-syzkaller-00182-gce55c22ec8b2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+RIP: 0010:__up_write kernel/locking/rwsem.c:1369 [inline]
+RIP: 0010:up_write+0x4f4/0x580 kernel/locking/rwsem.c:1626
+Code: 48 c7 c7 a0 98 0a 8b 48 c7 c6 e0 9a 0a 8b 48 8b 54 24 28 48 8b 4c 24 18 4d 89 e0 4c 8b 4c 24 30 53 e8 e0 e9 e7 ff 48 83 c4 08 <0f> 0b e9 75 fd ff ff 48 c7 c1 90 dd 99 8e 80 e1 07 80 c1 03 38 c1
+RSP: 0018:ffffc9000b3ffca0 EFLAGS: 00010296
+RAX: da70038a13777500 RBX: ffffffff8b0a9980 RCX: ffff88807d629dc0
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffc9000b3ffd70 R08: ffffffff81543302 R09: 1ffff9200167fee8
+R10: dffffc0000000000 R11: fffff5200167fee9 R12: 0000000000000000
+R13: ffff888066862f70 R14: 1ffff9200167ff9c R15: dffffc0000000000
+FS:  00007f0d80dfe6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6ea5934000 CR3: 0000000073a48000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ inode_unlock include/linux/fs.h:807 [inline]
+ unlock_mount fs/namespace.c:2508 [inline]
+ __do_sys_pivot_root fs/namespace.c:4252 [inline]
+ __se_sys_pivot_root+0x591/0x1650 fs/namespace.c:4166
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0d81a7cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0d80dfe0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000009b
+RAX: ffffffffffffffda RBX: 00007f0d81b9c050 RCX: 00007f0d81a7cae9
+RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000020000000
+RBP: 00007f0d81ac847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f0d81b9c050 R15: 00007ffdbee6f518
+ </TASK>
+
+
 ---
- fs/cifs/smbdirect.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
-index bcc611069308..7d18b9268817 100644
---- a/fs/cifs/smbdirect.c
-+++ b/fs/cifs/smbdirect.c
-@@ -571,8 +571,13 @@ static struct rdma_cm_id *smbd_create_id(
- 		log_rdma_event(ERR, "rdma_resolve_addr() failed %i\n", rc);
- 		goto out;
- 	}
--	wait_for_completion_interruptible_timeout(
-+	rc =3D wait_for_completion_interruptible_timeout(
- 		&info->ri_done, msecs_to_jiffies(RDMA_RESOLVE_TIMEOUT));
-+	/* e.g. if interrupted returns -ERESTARTSYS */
-+	if (rc < 0) {
-+		log_rdma_event(ERR, "rdma_resolve_addr timeout rc: %i\n", rc);
-+		goto out;
-+	}
- 	rc =3D info->ri_rc;
- 	if (rc) {
- 		log_rdma_event(ERR, "rdma_resolve_addr() completed %i\n", rc);
-@@ -585,8 +590,13 @@ static struct rdma_cm_id *smbd_create_id(
- 		log_rdma_event(ERR, "rdma_resolve_route() failed %i\n", rc);
- 		goto out;
- 	}
--	wait_for_completion_interruptible_timeout(
-+	rc =3D wait_for_completion_interruptible_timeout(
- 		&info->ri_done, msecs_to_jiffies(RDMA_RESOLVE_TIMEOUT));
-+	/* e.g. if interrupted returns -ERESTARTSYS */
-+	if (rc < 0)  {
-+		log_rdma_event(ERR, "rdma_resolve_addr timeout rc: %i\n", rc);
-+		goto out;
-+	}
- 	rc =3D info->ri_rc;
- 	if (rc) {
- 		log_rdma_event(ERR, "rdma_resolve_route() completed %i\n", rc);
---=20
-2.30.2
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
