@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F897D44E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBD07D44EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbjJXBYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 21:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
+        id S231718AbjJXBZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 21:25:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJXBYl (ORCPT
+        with ESMTP id S229456AbjJXBY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 21:24:41 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C20A1;
-        Mon, 23 Oct 2023 18:24:40 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6bf03b98b9bso3272618b3a.1;
-        Mon, 23 Oct 2023 18:24:40 -0700 (PDT)
+        Mon, 23 Oct 2023 21:24:58 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFA2110;
+        Mon, 23 Oct 2023 18:24:55 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b2f5aed39cso2724061b6e.1;
+        Mon, 23 Oct 2023 18:24:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698110679; x=1698715479; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698110695; x=1698715495; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ukfZ2wDSYwLBJ91J8jVOY9qdOhwfvLQPwRB8zxLyUOI=;
-        b=ErFEmo7p7ozkpEqphqYyv56ZRMyjKo6XCVoLbw6Uwyg+FY7w84knJEVVk0mWOsADNg
-         GFFNsEhAMVnA2FeBKoYSFl8TLb1bVk8YwKWYaO3cy+wKbXGDZWW0YQRiL9BwRXXs89BJ
-         TEkrnAEkb01QcrtPw1NWWHvvwWwp6cbeGi4I7+7lj483x9pAFVh5A4VDoRox2QXbFUhX
-         1PYedkE/ALDilnpQkprtVhmlBEYwECoaKKYow4qR712y037HajHMSllkikuFQvVVvFbM
-         +3kzK0FDK/1F1hKpZ+n6qcL9XM/bdnJP8mHbvEXmmY46IH/YVM4Sww7KFEy9FuJamu/U
-         zTVQ==
+        bh=qWzdoSbVk/wvciOyV4nXI5Z0JYBfHSRkx33CdJrdgao=;
+        b=P9vIaZt7/UEswJwzn2bziumyZJXGMbhOGEH9GzEKwA8wvWGv0hMbNxZ7ijQRp8anGj
+         Y7p7SsNPIwhnUBkKIGBTo0YJhKw6aOnhyE598qcJaCHRG/f1oFgaeKQd3+VJMxgbDqtr
+         umrBHYi3pV6weKD84qvdZJDfUoxRk0Bm54TzaWphmYgYDgy+enwGibfhgEEdiD7JVACG
+         ZTxlucLC08tQYOTFF2/2kjqTYc5MattpFFAvMx6FgMSxx4bjP/gYpXDnVGQ9oSsOTDXz
+         k/w0/B37skm5G7szjn9QyF/wk94drC4+Eiok7HUhYl+2HbfBQA1yZr/XuLA9MpCTQts/
+         /P5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698110679; x=1698715479;
+        d=1e100.net; s=20230601; t=1698110695; x=1698715495;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ukfZ2wDSYwLBJ91J8jVOY9qdOhwfvLQPwRB8zxLyUOI=;
-        b=s7cqwdM6ljlYS+hgIAB+cDdPMbqkU2+RZcwbeCP8w318HDWnHjUCrh8NjXdtqxPCtj
-         xIojQnweItBVl0XbYBroFeXuLRG/CJ5t30vV4bBSaU1nmr73buMKckPcyoM7yMe0/Pi5
-         1y+8dUhqez7OTK1L78N8xPIyGbD7ZTqr1aXzi6SQGEhikCwGX6RLmaILRROZeH/5T41C
-         DdyaHHA4st92Ubk1NO4zvaT8Ch2u6OqJzLmkq/TqILhckfV0t96QCCiM42+NTjMc5D0o
-         rp0fcAp0GVVTUA19+7ijV39Am5Dl/6y5WY4kAVrbLfC7jXUmtLXarWD6iWjblYeJgRuW
-         QRKA==
-X-Gm-Message-State: AOJu0YxhRf78DNuWL1gjVvoKFksffk7pOAfBlX7lbakvijWAZ7plDuh8
-        xYazlwPntYrsxvRBLlpJpbM=
-X-Google-Smtp-Source: AGHT+IGagaBk//v+ZsQAZyQEwmI9Bg10n7RdkSy4LBgqGC0ayG6zxzVzATqffWGzqW1pR7hX1mXQZQ==
-X-Received: by 2002:a05:6a20:da9a:b0:17a:e2b9:77e0 with SMTP id iy26-20020a056a20da9a00b0017ae2b977e0mr1778169pzb.7.1698110679359;
-        Mon, 23 Oct 2023 18:24:39 -0700 (PDT)
+        bh=qWzdoSbVk/wvciOyV4nXI5Z0JYBfHSRkx33CdJrdgao=;
+        b=udJ01Hom5jCbD0hUdaEi7mXRfxpg19EAlmfOgpEeZtHHSnlAfmV+9e4HjN0c6SsZZz
+         TCJ7Z3UzY2sCdkF0uKIPJ2QnKuqkg1FTLW2oDNKzN4g2vQs+mIoOgjz+UkUILFhdGZvc
+         awS660Z9y35/L8dvjDekeukcUa2yO1xkRP1KILfdMn5zdNgPLKh1otbijhZzC/wv6iTO
+         QNi3Y7susiPk1I6HtAHSn9v23Z9fia0LBEqc26mJKKgVznPGwRoSaLj26DTWykOW+YVj
+         Y9mMGYnSGF4kYi5No+h0G0RJ6LEASIgBN+PKuM7z+5h6lo8FnXMt5YlQnoMHsGZOMmPI
+         S22w==
+X-Gm-Message-State: AOJu0YzAO8gqU6iPOfdhgJP1lYc4kafTqID2G3HDFQVELAulQx+r525J
+        z/MBycm0LQzzJ9wjhUXnnauJ5RhjBkM=
+X-Google-Smtp-Source: AGHT+IG13oZEvnYdT8MN0PiCZ5lmQG6IbHjQ/2seM0xTgG8O9046qPt/UYDQC3pGUsSpgX8vpZuaqQ==
+X-Received: by 2002:a05:6808:138f:b0:3ab:88a0:78f8 with SMTP id c15-20020a056808138f00b003ab88a078f8mr14045322oiw.23.1698110694820;
+        Mon, 23 Oct 2023 18:24:54 -0700 (PDT)
 Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id k3-20020aa79d03000000b006bc3e8f58besm6757110pfp.56.2023.10.23.18.24.37
+        by smtp.gmail.com with ESMTPSA id k3-20020aa79d03000000b006bc3e8f58besm6757110pfp.56.2023.10.23.18.24.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 18:24:38 -0700 (PDT)
-Message-ID: <1bb56c00-d7b1-4a81-8fd8-49e05d36a506@gmail.com>
-Date:   Mon, 23 Oct 2023 18:24:37 -0700
+        Mon, 23 Oct 2023 18:24:54 -0700 (PDT)
+Message-ID: <ced1531b-ba67-4302-8bfa-3003219582e5@gmail.com>
+Date:   Mon, 23 Oct 2023 18:24:52 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/8] r8152: Run the unload routine if we have errors
- during probe
+Subject: Re: [PATCH v5 3/8] r8152: Cancel hw_phy_work if we have an error in
+ probe
 Content-Language: en-US
 To:     Douglas Anderson <dianders@chromium.org>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -71,7 +71,7 @@ Cc:     Edward Hill <ecgh@chromium.org>,
         Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org
 References: <20231020210751.3415723-1-dianders@chromium.org>
- <20231020140655.v5.2.Ica8e16a84695e787d55e54e291fbf8a28e7f2f7b@changeid>
+ <20231020140655.v5.3.I33c8decabd2e77c37524db02b4e6b9b4dbc3a8d6@changeid>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; keydata=
  xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -106,12 +106,12 @@ Autocrypt: addr=f.fainelli@gmail.com; keydata=
  y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
  X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
  HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <20231020140655.v5.2.Ica8e16a84695e787d55e54e291fbf8a28e7f2f7b@changeid>
+In-Reply-To: <20231020140655.v5.3.I33c8decabd2e77c37524db02b4e6b9b4dbc3a8d6@changeid>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -122,11 +122,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 10/20/2023 2:06 PM, Douglas Anderson wrote:
-> The rtl8152_probe() function lacks a call to the chip-specific
-> unload() routine when it sees an error in probe. Add it in to match
-> the cleanup code in rtl8152_disconnect().
+> The error handling in rtl8152_probe() is missing a call to cancel the
+> hw_phy_work. Add it in to match what's in the cleanup code in
+> rtl8152_disconnect().
 > 
-> Fixes: ac718b69301c ("net/usb: new driver for RTL8152")
+> Fixes: a028a9e003f2 ("r8152: move the settings of PHY to a work queue")
 > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
