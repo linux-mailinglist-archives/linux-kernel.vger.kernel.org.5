@@ -2,145 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F177D5AFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA0D7D5B00
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343884AbjJXS4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 14:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57312 "EHLO
+        id S1344012AbjJXS7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233104AbjJXS4l (ORCPT
+        with ESMTP id S233104AbjJXS7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:56:41 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133D0A6;
-        Tue, 24 Oct 2023 11:56:39 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id B59D0120046;
-        Tue, 24 Oct 2023 21:56:37 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B59D0120046
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1698173797;
-        bh=naFGpJDVgQfr3ddLjEs1a+Y7mXYdp8rLT1hvnu+LyxE=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=RqHVRAC3JhqwsufFpiXSmn//sM7+Y6nbudl68bFHjokJzgOks/bCpLk3kgYQzKoqk
-         c4yIKd60G769WLQ7v7Lb3ROV+GiIaIFPRQfLBDeQZbp+jKr+zSlwuMM3elj/QeKuwm
-         SoscwNAg9Hgr7dnJsMhSW2engr0JwB3zvog62C0ecS2sE5M20zoujtbMIdNZLWYzJj
-         zMkFPItamNwzgydqNiTicH1k0RdJJaQAOFlJEmoaCHkPrY9WCRU3qMuE2Ovp3OBXy6
-         yCdcFqdAn0rb6Oxwxi7/CIDkGqzpXadrRVZg5WOfmINf0z8atKsHJmff6kSd8IFGRJ
-         KgWeZpGdcG+Dg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Tue, 24 Oct 2023 21:56:37 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 24 Oct
- 2023 21:56:37 +0300
-Date:   Tue, 24 Oct 2023 21:56:37 +0300
-From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
-To:     Conor Dooley <conor@kernel.org>
-CC:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andy.shevchenko@gmail.com>, <kernel@sberdevices.ru>,
-        <rockosov@gmail.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>
-Subject: Re: [PATCH v2 11/11] dt-bindings: leds: aw200xx: fix led pattern and
- add reg constraints
-Message-ID: <20231024185637.5v6yycfpjnu7xka6@CAB-WSD-L081021>
-References: <20231018182943.18700-1-ddrokosov@salutedevices.com>
- <20231018182943.18700-12-ddrokosov@salutedevices.com>
- <20231019-clarify-unstopped-71fe018b6a8b@spud>
+        Tue, 24 Oct 2023 14:59:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C49A6
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:59:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36F82C433C7;
+        Tue, 24 Oct 2023 18:59:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698173973;
+        bh=u5EeMKr3/pha+PNMYLOK1O+oeVWMMovczszv8DjeabU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lrOn28fGOR0s8kW7p1Vu2z2bQbmiUwNdPW/HfxGOiN28GwgeFzRwqT8duEDGRWPtE
+         aPhokm7AC4Th7pOd66Wr9ryvofd0bG93CBlHBSG8fWiNXCDN9V3eiXfiWhSLvkkVZD
+         bgzfNnZggZzIhAfaCfl3pUDaCJvW0I9PONw5JlR+mNuPeB8wqY/kZqzzaswh7jkHD1
+         yLqKdZvSE342LwkrThREOLsu9BcjudlVqJWFhE8vp7Au//iFT00mrcPYzFwIxTRPpL
+         WsGdP3VGKzJw9GqyE1P7D6VXpM/eVOZPmdB5Zvj20dQEFXYOR9xdLPmaD5v4E1lXKd
+         HORHaMOVwgf+g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B183FCE11D0; Tue, 24 Oct 2023 11:59:32 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 11:59:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com,
+        Frederic Weisbecker <fweisbec@gmail.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <73ecce1c-d321-4579-b892-13b1e0a0620a@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <4c7d06b9-8f5b-43ff-a2d6-86f54116da52@paulmck-laptop>
+ <87cyx4cj36.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231019-clarify-unstopped-71fe018b6a8b@spud>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180848 [Oct 24 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/24 17:39:00 #22277133
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <87cyx4cj36.ffs@tglx>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 19, 2023 at 03:08:38PM +0100, Conor Dooley wrote:
-> On Wed, Oct 18, 2023 at 09:29:43PM +0300, Dmitry Rokosov wrote:
-> > AW200XX controllers have the capability to declare more than 0xf LEDs,
-> > therefore, it is necessary to accept LED names using an appropriate
-> > regex pattern.
-> > 
-> > The register offsets can be adjusted within the specified range, with
-> > the maximum value corresponding to the highest number of LEDs that can
-> > be connected to the controller.
+On Tue, Oct 24, 2023 at 02:15:25PM +0200, Thomas Gleixner wrote:
+> Paul!
 > 
-> Do all of these controllers have identical max numbers of LEDs?
+> On Thu, Oct 19 2023 at 12:13, Paul E. McKenney wrote:
+> > On Thu, Oct 19, 2023 at 02:21:35AM +0200, Thomas Gleixner wrote:
+> >> The important point is that at the very end the scheduler has the
+> >> ultimate power to say: "Not longer Mr. Nice Guy" without the risk of any
+> >> random damage due to the fact that preemption count is functional, which
+> >> makes your life easier as well as you admitted already. But that does
+> >> not mean you can eat the cake and still have it. :)
+> >
+> > Which is exactly why I need rcu_read_lock() to map to preempt_disable()
+> > and rcu_read_unlock() to preempt_enable().  ;-)
+> 
+> After reading back in the thread, I think we greatly talked past each
+> other mostly due to the different expectations and the resulting
+> dependencies which seem to be hardwired into our brains.
+> 
+> I'm pleading guilty as charged as I failed completely to read your
+> initial statement
+> 
+>  "The key thing to note is that from RCU's viewpoint, with this change,
+>   all kernels are preemptible, though rcu_read_lock() readers remain
+>   non-preemptible."
+> 
+> with that in mind and instead of dissecting it properly I committed the
+> fallacy of stating exactly the opposite, which obviously reflects only
+> the point of view I'm coming from.
+> 
+> With a fresh view, this turns out to be a complete non-problem because
+> there is no semantical dependency between the preemption model and the
+> RCU flavour.
 
-Nope... I believe you are hinting at some conditional logic based on the
-value of 'compatible'. I will figure it out and send the appropriate
-implementation in the next version.
+Agreed, and been there and done that myself, as you well know!  ;-)
 
-> > 
-> > Fixes: e338a05e76ca ("dt-bindings: leds: Add binding for AW200xx")
-> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> > ---
-> >  .../devicetree/bindings/leds/awinic,aw200xx.yaml       | 10 ++++++----
-> >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-> > index efb18ddce383..677c73aa6232 100644
-> > --- a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-> > +++ b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-> > @@ -42,16 +42,18 @@ properties:
-> >      maxItems: 1
-> >  
-> >  patternProperties:
-> > -  "^led@[0-9a-f]$":
-> > +  "^led@[0-9a-f]+$":
-> >      type: object
-> >      $ref: common.yaml#
-> >      unevaluatedProperties: false
-> >  
-> >      properties:
-> >        reg:
-> > -        description:
-> > -          LED number
-> > -        maxItems: 1
-> > +        items:
-> > +          description:
-> > +            LED number
-> > +          minimum: 0
-> > +          maximum: 108
-> >  
-> >        led-max-microamp:
-> >          default: 9780
-> > -- 
-> > 2.36.0
-> > 
+> The unified kernel preemption model has the following properties:
+> 
+>   1) It provides full preemptive multitasking.
+> 
+>   2) Preemptability is limited by implicit and explicit mechanisms.
+> 
+>   3) The ability to avoid overeager preemption for SCHED_OTHER tasks via
+>      the PREEMPT_LAZY mechanism.
+> 
+>      This emulates the NONE/VOLUNTARY preemption models which
+>      semantically provide collaborative multitasking.
+> 
+>      This emulation is not breaking the semantical properties of full
+>      preemptive multitasking because the scheduler still has the ability
+>      to enforce immediate preemption under consideration of #2.
+> 
+>      Which in turn is a prerequiste for removing the semantically
+>      ill-defined cond/might_resched() constructs.
+> 
+> The compile time selectable RCU flavour (preemptible/non-preemptible) is
+> not imposing a semantical change on this unified preemption model.
+> 
+> The selection of the RCU flavour is solely affecting the preemptability
+> (#2 above). Selecting non-preemptible RCU reduces preemptability by
+> adding an implicit restriction via mapping rcu_read_lock()
+> to preempt_disable().
+> 
+> IOW, the current upstream enforcement of RCU_PREEMPT=n when PREEMPTION=n
+> is only enforced by the the lack of the full preempt counter in
+> PREEMPTION=n configs. Once the preemption counter is always enabled this
+> hardwired dependency goes away.
+> 
+> Even PREEMPT_DYNAMIC should just work with RCU_PREEMPT=n today because
+> with PREEMPT_DYNAMIC the preemption counter is unconditionally
+> available.
+> 
+> So that makes these hardwired dependencies go away in practice and
+> hopefully soon from our mental models too :)
 
+The real reason for tying RCU_PREEMPT to PREEMPTION back in the day was
+that there were no real-world uses of RCU_PREEMPT not matching PREEMPTION,
+so those combinations were ruled out in order to reduce the number of
+rcutorture scenarios.
 
+But now it appears that we do have a use case for PREEMPTION=y and
+RCU_PREEMPT=n, plus I have access to way more test hardware, so that
+the additional rcutorture scenarios are less of a testing burden.
 
--- 
-Thank you,
-Dmitry
+> RT will keep its hard dependency on RCU_PREEMPT in the same way it
+> depends hard on forced interrupt threading and other minor details to
+> enable the spinlock substitution.
+
+"other minor details".  ;-)
+
+Making PREEMPT_RT select RCU_PREEMPT makes sense to me!
+
+> >> That said, I completely understand your worries about the consequences,
+> >> but please take the step back and look at it from a conceptual point of
+> >> view.
+> >
+> > Conceptual point of view?  That sounds suspiciously academic.
+> 
+> Hehehe.
+> 
+> > Who are you and what did you do with the real Thomas Gleixner?  ;-)
+> 
+> The point I'm trying to make is not really academic, it comes from a
+> very practical point of view. As you know for almost two decades I'm
+> mostly busy with janitoring and mopping up the kernel.
+> 
+> A major takeaway from this eclectic experience is that there is a
+> tendency to implement very specialized solutions for different classes
+> of use cases.
+> 
+> The reasons to do so in the first place:
+> 
+>  1) Avoid breaking the existing and established solutions:
+> 
+>     E.g. the initial separation of x8664 and i386
+> 
+>  2) Enforcement due to dependencies on mechanisms, which are
+>     considered "harmful" for particular use cases
+> 
+>     E.g. Preemptible RCU, which is separate also due to #1
+> 
+>  3) Because we can and something is sooo special
+> 
+>     You probably remember the full day we both spent in a room with SoC
+>     people to make them understand that their SoCs are not so special at
+>     all. :)
+
+   4) Because we don't see a use for a given combination, and we
+      want to keep test time down to a dull roar, as noted above.
+
+> So there are perfectly valid reasons (#1, #2) to separate things, but we
+> really need to go back from time to time and think hard about the
+> question whether a particular separation is still justified. This is
+> especially true when dependencies or prerequisites change.
+> 
+> But in many cases we just keep going, take the separation as set in
+> stone forever and add features and workarounds on all ends without
+> rethinking whether we could unify these things for the better. The real
+> bad thing about this is that the more we add to the separation the
+> harder consolidation or unification becomes.
+> 
+> Granted that my initial take of consolidating on preemptible RCU might
+> be too brisk or too naive, but I still think that with the prospect of
+> an unified preemption model it's at least worth to have a very close
+> look at this question.
+> 
+> Not asking such questions or dismissing them upfront is a real danger
+> for the long term sustainability and maintainability of the kernel in my
+> opinion. Especially when the few people who actively "janitor" these
+> things are massively outnumbered by people who indulge in
+> specialization. :)
+
+Longer term, I do agree in principle with the notion of simplifying the
+Linux-kernel RCU implementation by eliminating the PREEMPT_RCU=n code.
+In the near term practice, here are the reasons for holding off on
+this consolidation:
+
+1.	Preemptible RCU needs more work for datacenter deployments,
+	as mentioned earlier.  I also reiterate that if you only have
+	a few thousand (or maybe even a few tens of thousand) servers,
+	preemptible RCU will be just fine for you.  Give or take the
+	safety criticality of your application.
+
+2.	RCU priority boosting has not yet been really tested and tuned
+	for systems that are adequately but not generously endowed with
+	memory.  Boost too soon and you needlessly burning cycles and
+	preempt important tasks.  Boost too late and it is OOM for you!
+
+3.	To the best of my knowledge, the scheduler doesn't take memory
+	footprint into account.  In particular, if a long-running RCU
+	reader is preempted in a memory-naive fashion, all we gain
+	is turning a potentially unimportant latency outlier into a
+	definitely important OOM.
+
+4.	There are probably a few gotchas that I haven't thought of or
+	that I am forgetting.  More likely, more than a few.  As always!
+
+But to your point, yes, these are things that we should be able to do
+something about, given appropriate time and effort.  My guess is five
+years, with the long pole being the reliability.  Preemptible RCU has
+been gone through line by line recently, which is an extremely good
+thing and an extremely welcome change from past practice, but that is
+just a start.  That effort was getting people familiar with the code,
+and should not be mistaken for a find-lots-of-bugs review session,
+let alone a find-all-bugs review session.
+
+> That said, the real Thomas Gleixner and his grumpy self are still there,
+> just slightly tired of handling the slurry brush all day long :)
+
+Whew!!!  Good to hear that the real Thomas Gleixner is still with us!!! ;-)
+
+							Thanx, Paul
