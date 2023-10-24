@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FEE7D517A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5F77D5177
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234421AbjJXNVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
+        id S234639AbjJXNVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234531AbjJXNU4 (ORCPT
+        with ESMTP id S234491AbjJXNUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:20:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C49D7A;
-        Tue, 24 Oct 2023 06:20:51 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 13:20:49 -0000
+        Tue, 24 Oct 2023 09:20:55 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B144CC;
+        Tue, 24 Oct 2023 06:20:52 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 13:20:50 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1698153650;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ubbKhCulsj2q4PUhz9A/DEc/a9AajgIXUfhHXnbqTao=;
-        b=LrTJtL0myt+lhVJcBHTlDoDGcc3wQIvwd6Esz8fVNhKLPRyRbb1Ki/HHlfUvSldEoWHEaL
-        ni+r80WGrTcUx7GgRXHz2EcO1U7Y+hJnvjBLgh8naRMS+1xlAw0QQhnZmODHFH6Ga1gZ1t
-        OMtQD6fqrR/KD6lZ+Ytgw7j2KIAFF3UL9FaL7xBO38l7UVYGoofNTJf7WcstdIbyoR6Bv+
-        PKcWsMRioBWOYF7Z7kWgobb8aqfM5NXAQhU0t1PgnwAZzvyPLbUjUs89y49wdv4YainCLV
-        jaCoFY0WZbuGRz0oqCgwe3F1rjyaTFKLUkvmPAqw0ss1Hu1ip/O9xk8Id8godQ==
+        bh=DHzz0+pu/Bt+oTOij9+XCvthouCL+Q3kebi5Xyb+BW0=;
+        b=QCJl0h75L0nnclWUZfu7bKoespitIoBl/ynk0pSjtvEHqPtbdMTJPnP5ggvVsF7WEBndY0
+        2cRQO6lzTmfs70XYd1rtHeRUaiHEaSQTy5Sb4ZtNfCIEkKpl6xmd8lkW9hLkqaC6jFjOgB
+        TYTEIYtGkS49HYzaLUEI8YZyX6MwrwCxXqRGyEtjMLgd85hc7KUm9X5h1WsALN4dlYX0RG
+        xcCuvvRMXanrQmnD8lK0tew73CINBOAsg2awp+gtB3iGAQmI1C57srXVl1sG2l42k50Q3Q
+        rTqyn4xXQq3hZRX0b6hS++5O3k10CruugNPxiGBhFX0iMyscLF199lNN22Igug==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1698153650;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ubbKhCulsj2q4PUhz9A/DEc/a9AajgIXUfhHXnbqTao=;
-        b=g/TGauzLHbsqF/uGn0/J7SybTxW+nrFtzLCTZY6Fcta73AWool7eTWgUyjwhawFyugkYWT
-        ptKed8n5mysihhCw==
+        bh=DHzz0+pu/Bt+oTOij9+XCvthouCL+Q3kebi5Xyb+BW0=;
+        b=dVX3FEXyB3m3opVTE1Y84UwGRcajmZwPWTBiYcxIyVmLQUh7cFaP6pOHCaiMvREHq3Se/H
+        lNBaoD3Sr+/XqBDw==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/microcode] x86/microcode: Handle "offline" CPUs correctly
+Subject: [tip: x86/microcode] x86/apic: Provide apic_force_nmi_on_cpu()
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231002115903.660850472@linutronix.de>
-References: <20231002115903.660850472@linutronix.de>
+In-Reply-To: <20231002115903.603100036@linutronix.de>
+References: <20231002115903.603100036@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169815364937.3135.892989407998967316.tip-bot2@tip-bot2>
+Message-ID: <169815365016.3135.17531359789109646623.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,259 +66,125 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/microcode branch of tip:
 
-Commit-ID:     8f849ff63bcbc77670da03cb8f2b78b06257f455
-Gitweb:        https://git.kernel.org/tip/8f849ff63bcbc77670da03cb8f2b78b06257f455
+Commit-ID:     9cab5fb776d4367e26950cf759211e948335288e
+Gitweb:        https://git.kernel.org/tip/9cab5fb776d4367e26950cf759211e948335288e
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 02 Oct 2023 14:00:08 +02:00
+AuthorDate:    Mon, 02 Oct 2023 14:00:07 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
 CommitterDate: Tue, 24 Oct 2023 15:05:55 +02:00
 
-x86/microcode: Handle "offline" CPUs correctly
+x86/apic: Provide apic_force_nmi_on_cpu()
 
-Offline CPUs need to be parked in a safe loop when microcode update is
-in progress on the primary CPU. Currently, offline CPUs are parked in
-mwait_play_dead(), and for Intel CPUs, its not a safe instruction,
-because the MWAIT instruction can be patched in the new microcode update
-that can cause instability.
+When SMT siblings are soft-offlined and parked in one of the play_dead()
+variants they still react on NMI, which is problematic on affected Intel
+CPUs. The default play_dead() variant uses MWAIT on modern CPUs, which is
+not guaranteed to be safe when updated concurrently.
 
-  - Add a new microcode state 'UCODE_OFFLINE' to report status on per-CPU
-  basis.
-  - Force NMI on the offline CPUs.
+Right now late loading is prevented when not all SMT siblings are online,
+but as they still react on NMI, it is possible to bring them out of their
+park position into a trivial rendezvous handler.
 
-Wake up offline CPUs while the update is in progress and then return
-them back to mwait_play_dead() after microcode update is complete.
+Provide a function which allows to do that. I does sanity checks whether
+the target is in the cpus_booted_once_mask and whether the APIC driver
+supports it.
+
+Mark X2APIC and XAPIC as capable, but exclude 32bit and the UV and NUMACHIP
+variants as that needs feedback from the relevant experts.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231002115903.660850472@linutronix.de
+Link: https://lore.kernel.org/r/20231002115903.603100036@linutronix.de
 ---
- arch/x86/include/asm/microcode.h         |   1 +-
- arch/x86/kernel/cpu/microcode/core.c     | 112 +++++++++++++++++++++-
- arch/x86/kernel/cpu/microcode/internal.h |   1 +-
- arch/x86/kernel/nmi.c                    |   5 +-
- 4 files changed, 113 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/apic.h           | 5 ++++-
+ arch/x86/kernel/apic/apic_flat_64.c   | 2 ++
+ arch/x86/kernel/apic/ipi.c            | 8 ++++++++
+ arch/x86/kernel/apic/x2apic_cluster.c | 1 +
+ arch/x86/kernel/apic/x2apic_phys.c    | 1 +
+ 5 files changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/microcode.h b/arch/x86/include/asm/microcode.h
-index 8292482..0ee6ed0 100644
---- a/arch/x86/include/asm/microcode.h
-+++ b/arch/x86/include/asm/microcode.h
-@@ -73,6 +73,7 @@ static inline u32 intel_get_microcode_revision(void)
- #endif /* !CONFIG_CPU_SUP_INTEL */
+diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
+index 5af4ec1..17f2f28 100644
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -276,7 +276,8 @@ struct apic {
  
- bool microcode_nmi_handler(void);
-+void microcode_offline_nmi_handler(void);
+ 	u32	disable_esr		: 1,
+ 		dest_mode_logical	: 1,
+-		x2apic_set_max_apicid	: 1;
++		x2apic_set_max_apicid	: 1,
++		nmi_to_offline_cpu	: 1;
  
- #ifdef CONFIG_MICROCODE_LATE_LOADING
- DECLARE_STATIC_KEY_FALSE(microcode_nmi_handler_enable);
-diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
-index 6c90836..718d648 100644
---- a/arch/x86/kernel/cpu/microcode/core.c
-+++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -272,8 +272,9 @@ struct microcode_ctrl {
+ 	u32	(*calc_dest_apicid)(unsigned int cpu);
  
- DEFINE_STATIC_KEY_FALSE(microcode_nmi_handler_enable);
- static DEFINE_PER_CPU(struct microcode_ctrl, ucode_ctrl);
-+static atomic_t late_cpus_in, offline_in_nmi;
- static unsigned int loops_per_usec;
--static atomic_t late_cpus_in;
-+static cpumask_t cpu_offline_mask;
+@@ -542,6 +543,8 @@ extern bool default_check_apicid_used(physid_mask_t *map, int apicid);
+ extern void default_ioapic_phys_id_map(physid_mask_t *phys_map, physid_mask_t *retmap);
+ extern int default_cpu_present_to_apicid(int mps_cpu);
  
- static noinstr bool wait_for_cpus(atomic_t *cnt)
- {
-@@ -381,7 +382,7 @@ static noinstr void load_secondary(unsigned int cpu)
- 	instrumentation_end();
++void apic_send_nmi_to_offline_cpu(unsigned int cpu);
++
+ #else /* CONFIG_X86_LOCAL_APIC */
+ 
+ static inline unsigned int read_apic_id(void) { return 0; }
+diff --git a/arch/x86/kernel/apic/apic_flat_64.c b/arch/x86/kernel/apic/apic_flat_64.c
+index 032a84e..cd16228 100644
+--- a/arch/x86/kernel/apic/apic_flat_64.c
++++ b/arch/x86/kernel/apic/apic_flat_64.c
+@@ -103,6 +103,7 @@ static struct apic apic_flat __ro_after_init = {
+ 	.send_IPI_allbutself		= default_send_IPI_allbutself,
+ 	.send_IPI_all			= default_send_IPI_all,
+ 	.send_IPI_self			= default_send_IPI_self,
++	.nmi_to_offline_cpu		= true,
+ 
+ 	.read				= native_apic_mem_read,
+ 	.write				= native_apic_mem_write,
+@@ -175,6 +176,7 @@ static struct apic apic_physflat __ro_after_init = {
+ 	.send_IPI_allbutself		= default_send_IPI_allbutself,
+ 	.send_IPI_all			= default_send_IPI_all,
+ 	.send_IPI_self			= default_send_IPI_self,
++	.nmi_to_offline_cpu		= true,
+ 
+ 	.read				= native_apic_mem_read,
+ 	.write				= native_apic_mem_write,
+diff --git a/arch/x86/kernel/apic/ipi.c b/arch/x86/kernel/apic/ipi.c
+index a44ba72..edad86f 100644
+--- a/arch/x86/kernel/apic/ipi.c
++++ b/arch/x86/kernel/apic/ipi.c
+@@ -97,6 +97,14 @@ sendmask:
+ 	__apic_send_IPI_mask(mask, CALL_FUNCTION_VECTOR);
  }
  
--static void load_primary(unsigned int cpu)
-+static void __load_primary(unsigned int cpu)
- {
- 	struct cpumask *secondaries = topology_sibling_cpumask(cpu);
- 	enum sibling_ctrl ctrl;
-@@ -416,6 +417,67 @@ static void load_primary(unsigned int cpu)
- 	}
- }
- 
-+static bool kick_offline_cpus(unsigned int nr_offl)
++void apic_send_nmi_to_offline_cpu(unsigned int cpu)
 +{
-+	unsigned int cpu, timeout;
-+
-+	for_each_cpu(cpu, &cpu_offline_mask) {
-+		/* Enable the rendezvous handler and send NMI */
-+		per_cpu(ucode_ctrl.nmi_enabled, cpu) = true;
-+		apic_send_nmi_to_offline_cpu(cpu);
-+	}
-+
-+	/* Wait for them to arrive */
-+	for (timeout = 0; timeout < (USEC_PER_SEC / 2); timeout++) {
-+		if (atomic_read(&offline_in_nmi) == nr_offl)
-+			return true;
-+		udelay(1);
-+	}
-+	/* Let the others time out */
-+	return false;
-+}
-+
-+static void release_offline_cpus(void)
-+{
-+	unsigned int cpu;
-+
-+	for_each_cpu(cpu, &cpu_offline_mask)
-+		per_cpu(ucode_ctrl.ctrl, cpu) = SCTRL_DONE;
-+}
-+
-+static void load_primary(unsigned int cpu)
-+{
-+	unsigned int nr_offl = cpumask_weight(&cpu_offline_mask);
-+	bool proceed = true;
-+
-+	/* Kick soft-offlined SMT siblings if required */
-+	if (!cpu && nr_offl)
-+		proceed = kick_offline_cpus(nr_offl);
-+
-+	/* If the soft-offlined CPUs did not respond, abort */
-+	if (proceed)
-+		__load_primary(cpu);
-+
-+	/* Unconditionally release soft-offlined SMT siblings if required */
-+	if (!cpu && nr_offl)
-+		release_offline_cpus();
-+}
-+
-+/*
-+ * Minimal stub rendezvous handler for soft-offlined CPUs which participate
-+ * in the NMI rendezvous to protect against a concurrent NMI on affected
-+ * CPUs.
-+ */
-+void noinstr microcode_offline_nmi_handler(void)
-+{
-+	if (!raw_cpu_read(ucode_ctrl.nmi_enabled))
++	if (WARN_ON_ONCE(!apic->nmi_to_offline_cpu))
 +		return;
-+	raw_cpu_write(ucode_ctrl.nmi_enabled, false);
-+	raw_cpu_write(ucode_ctrl.result, UCODE_OFFLINE);
-+	raw_atomic_inc(&offline_in_nmi);
-+	wait_for_ctrl();
++	if (WARN_ON_ONCE(!cpumask_test_cpu(cpu, &cpus_booted_once_mask)))
++		return;
++	apic->send_IPI(cpu, NMI_VECTOR);
 +}
-+
- static noinstr bool microcode_update_handler(void)
- {
- 	unsigned int cpu = raw_smp_processor_id();
-@@ -472,6 +534,7 @@ static int load_cpus_stopped(void *unused)
- static int load_late_stop_cpus(void)
- {
- 	unsigned int cpu, updated = 0, failed = 0, timedout = 0, siblings = 0;
-+	unsigned int nr_offl, offline = 0;
- 	int old_rev = boot_cpu_data.microcode;
- 	struct cpuinfo_x86 prev_info;
+ #endif /* CONFIG_SMP */
  
-@@ -479,6 +542,7 @@ static int load_late_stop_cpus(void)
- 	pr_err("You should switch to early loading, if possible.\n");
+ static inline int __prepare_ICR2(unsigned int mask)
+diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
+index affbff6..a830608 100644
+--- a/arch/x86/kernel/apic/x2apic_cluster.c
++++ b/arch/x86/kernel/apic/x2apic_cluster.c
+@@ -251,6 +251,7 @@ static struct apic apic_x2apic_cluster __ro_after_init = {
+ 	.send_IPI_allbutself		= x2apic_send_IPI_allbutself,
+ 	.send_IPI_all			= x2apic_send_IPI_all,
+ 	.send_IPI_self			= x2apic_send_IPI_self,
++	.nmi_to_offline_cpu		= true,
  
- 	atomic_set(&late_cpus_in, num_online_cpus());
-+	atomic_set(&offline_in_nmi, 0);
- 	loops_per_usec = loops_per_jiffy / (TICK_NSEC / 1000);
+ 	.read				= native_apic_msr_read,
+ 	.write				= native_apic_msr_write,
+diff --git a/arch/x86/kernel/apic/x2apic_phys.c b/arch/x86/kernel/apic/x2apic_phys.c
+index 788cdb4..c8ac1b1 100644
+--- a/arch/x86/kernel/apic/x2apic_phys.c
++++ b/arch/x86/kernel/apic/x2apic_phys.c
+@@ -166,6 +166,7 @@ static struct apic apic_x2apic_phys __ro_after_init = {
+ 	.send_IPI_allbutself		= x2apic_send_IPI_allbutself,
+ 	.send_IPI_all			= x2apic_send_IPI_all,
+ 	.send_IPI_self			= x2apic_send_IPI_self,
++	.nmi_to_offline_cpu		= true,
  
- 	/*
-@@ -501,6 +565,7 @@ static int load_late_stop_cpus(void)
- 		case UCODE_UPDATED:	updated++; break;
- 		case UCODE_TIMEOUT:	timedout++; break;
- 		case UCODE_OK:		siblings++; break;
-+		case UCODE_OFFLINE:	offline++; break;
- 		default:		failed++; break;
- 		}
- 	}
-@@ -512,6 +577,13 @@ static int load_late_stop_cpus(void)
- 		/* Nothing changed. */
- 		if (!failed && !timedout)
- 			return 0;
-+
-+		nr_offl = cpumask_weight(&cpu_offline_mask);
-+		if (offline < nr_offl) {
-+			pr_warn("%u offline siblings did not respond.\n",
-+				nr_offl - atomic_read(&offline_in_nmi));
-+			return -EIO;
-+		}
- 		pr_err("update failed: %u CPUs failed %u CPUs timed out\n",
- 		       failed, timedout);
- 		return -EIO;
-@@ -545,19 +617,49 @@ static int load_late_stop_cpus(void)
-  *    modern CPUs uses MWAIT, which is also not guaranteed to be safe
-  *    against a microcode update which affects MWAIT.
-  *
-- * 2) Initialize the per CPU control structure
-+ *    As soft-offlined CPUs still react on NMIs, the SMT sibling
-+ *    restriction can be lifted when the vendor driver signals to use NMI
-+ *    for rendezvous and the APIC provides a mechanism to send an NMI to a
-+ *    soft-offlined CPU. The soft-offlined CPUs are then able to
-+ *    participate in the rendezvous in a trivial stub handler.
-+ *
-+ * 2) Initialize the per CPU control structure and create a cpumask
-+ *    which contains "offline"; secondary threads, so they can be handled
-+ *    correctly by a control CPU.
-  */
- static bool setup_cpus(void)
- {
- 	struct microcode_ctrl ctrl = { .ctrl = SCTRL_WAIT, .result = -1, };
-+	bool allow_smt_offline;
- 	unsigned int cpu;
- 
-+	allow_smt_offline = microcode_ops->nmi_safe ||
-+		(microcode_ops->use_nmi && apic->nmi_to_offline_cpu);
-+
-+	cpumask_clear(&cpu_offline_mask);
-+
- 	for_each_cpu_and(cpu, cpu_present_mask, &cpus_booted_once_mask) {
-+		/*
-+		 * Offline CPUs sit in one of the play_dead() functions
-+		 * with interrupts disabled, but they still react on NMIs
-+		 * and execute arbitrary code. Also MWAIT being updated
-+		 * while the offline CPU sits there is not necessarily safe
-+		 * on all CPU variants.
-+		 *
-+		 * Mark them in the offline_cpus mask which will be handled
-+		 * by CPU0 later in the update process.
-+		 *
-+		 * Ensure that the primary thread is online so that it is
-+		 * guaranteed that all cores are updated.
-+		 */
- 		if (!cpu_online(cpu)) {
--			if (topology_is_primary_thread(cpu) || !microcode_ops->nmi_safe) {
--				pr_err("CPU %u not online\n", cpu);
-+			if (topology_is_primary_thread(cpu) || !allow_smt_offline) {
-+				pr_err("CPU %u not online, loading aborted\n", cpu);
- 				return false;
- 			}
-+			cpumask_set_cpu(cpu, &cpu_offline_mask);
-+			per_cpu(ucode_ctrl, cpu) = ctrl;
-+			continue;
- 		}
- 
- 		/*
-diff --git a/arch/x86/kernel/cpu/microcode/internal.h b/arch/x86/kernel/cpu/microcode/internal.h
-index 627d238..1a396fc 100644
---- a/arch/x86/kernel/cpu/microcode/internal.h
-+++ b/arch/x86/kernel/cpu/microcode/internal.h
-@@ -17,6 +17,7 @@ enum ucode_state {
- 	UCODE_NFOUND,
- 	UCODE_ERROR,
- 	UCODE_TIMEOUT,
-+	UCODE_OFFLINE,
- };
- 
- struct microcode_ops {
-diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
-index a87d856..2c6ede4 100644
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -502,8 +502,11 @@ DEFINE_IDTENTRY_RAW(exc_nmi)
- 	if (IS_ENABLED(CONFIG_NMI_CHECK_CPU))
- 		raw_atomic_long_inc(&nsp->idt_calls);
- 
--	if (IS_ENABLED(CONFIG_SMP) && arch_cpu_is_offline(smp_processor_id()))
-+	if (IS_ENABLED(CONFIG_SMP) && arch_cpu_is_offline(smp_processor_id())) {
-+		if (microcode_nmi_handler_enabled())
-+			microcode_offline_nmi_handler();
- 		return;
-+	}
- 
- 	if (this_cpu_read(nmi_state) != NMI_NOT_RUNNING) {
- 		this_cpu_write(nmi_state, NMI_LATCHED);
+ 	.read				= native_apic_msr_read,
+ 	.write				= native_apic_msr_write,
