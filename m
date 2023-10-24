@@ -2,176 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4057D4719
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69237D471C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbjJXFxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 01:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53232 "EHLO
+        id S232449AbjJXFyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 01:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbjJXFxu (ORCPT
+        with ESMTP id S231709AbjJXFym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 01:53:50 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2076.outbound.protection.outlook.com [40.107.6.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E805D9D;
-        Mon, 23 Oct 2023 22:53:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bOaC1L2VVBfEY4LSUkgzY7Lra4fkrAh7pDGOURAXD8Q+CuI/5jAed3L9cOdSJtHt/Tx0AvCkHyaudH7Nrsj3nOo0Avo7gR4hvmK9r9P6uH2edTrRChRQ4+Lkq3tGoFExVXpc5ddSi1SUHh4BZoZQQAiRGZydoSQJijrMB/NmJKr/vB5fi7dtJTQcAaF4PzGJRnDBKq4aUhwWj6tWuzZBAD39FLW8nJKGv692aXrCT5y982SVXMTdXhnXxB6sI2mFcItPGHGc4MvD8qANrCntoj6Rvkqh2fuGhH98l7Gn9PXX5jwsj4cw7lsqUM7K9BB3dNis4stDLWrEpBZwVmo2Yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MFU2ksAvIDGKM1H8nyu75i89Lgyb0NOBf74wCgY6ZAo=;
- b=X9PKgwbDJf8FTjPvaVtAI366t1z9Iombywp5DrjPEwFtr8onZcD6AX0VzAf6ZKfaBdNJTmA9k2qTfemSXCp4oGB8J+4F52WkEvO7u5//rs4e9O/jJ1i5mSnqzgaYCPa2IqavatplAgDWVc2PucV+ylP0xXNBFJ34HqnItTSdxadhpSoNljazVKD40LoJlRyZQXhoPCcAhloP6D1R5PjTRqohs+khFtJKPAV4yxkQ0pfrzM5w4kruPzQnMlKRW2Pet7F4IOTp9VZsYTs8pnr/2cTWmO8a+wA9kLGm9mvsHmnnlEp6qPMIWmx0PD7DxG89yP6u5FVL6uC3/Lp34sRGjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MFU2ksAvIDGKM1H8nyu75i89Lgyb0NOBf74wCgY6ZAo=;
- b=5mn1XHmY2S+JaS4OO4OZgRVsm0MWEQptZdJqLaGlFJImar06quVBwbCA38JwSUWaN/sXQlsDFlq+A7v3rakJPPh33dcwK6QeYcuCoBHn9kleVJoHEdjwYETBqDAkUfB9dSuKuwAyUSJaqEgw1wOjA9yGux+c4j4dpj9ootLEc2HZmvliJD7V9pzGnFMYw1irUcX2SLXC7nIvEw1ftqNCp83dTnkWIWdiQsvMNvgd4jUAQok+gQ9SUNEL1DinfebOS7qon05orh92kYoGMa1vOxZzDYIt91kpVHVgiFPqkK6zS6yvqD3qDBkEBr5M7oSOfsfK5e+mgTAD/bsGXpUQMw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by PAXPR04MB9203.eurprd04.prod.outlook.com (2603:10a6:102:222::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.10; Tue, 24 Oct
- 2023 05:53:44 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::edd3:f00:3088:6e61]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::edd3:f00:3088:6e61%4]) with mapi id 15.20.6933.011; Tue, 24 Oct 2023
- 05:53:43 +0000
-Message-ID: <33857df5-3639-4db4-acdd-7b692852b601@suse.com>
-Date:   Tue, 24 Oct 2023 08:53:40 +0300
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 12/23] x86/virt/tdx: Allocate and set up PAMTs for
- TDMRs
-Content-Language: en-US
-To:     Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, dave.hansen@intel.com,
-        kirill.shutemov@linux.intel.com, peterz@infradead.org,
-        tony.luck@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
-        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, bagasdotme@gmail.com,
-        sagis@google.com, imammedo@redhat.com
-References: <cover.1697532085.git.kai.huang@intel.com>
- <ac0e625f0a7a7207e1e7b52c75e9b48091a7f060.1697532085.git.kai.huang@intel.com>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <ac0e625f0a7a7207e1e7b52c75e9b48091a7f060.1697532085.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: ZR2P278CA0082.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:65::11) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+        Tue, 24 Oct 2023 01:54:42 -0400
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4119D;
+        Mon, 23 Oct 2023 22:54:39 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40859c466efso21197965e9.3;
+        Mon, 23 Oct 2023 22:54:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698126878; x=1698731678;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZhD7iOg0HoIyJp5L6C6NIB+fHBPORTpn/ViRkE3zKlA=;
+        b=m9kmhWLt7jDHXBPHgFghjO4ynxPExjzc7WyVK3u3CkNgQiD09Mo8buLvXeVmxoSNnv
+         TjV/XMOUpHpVgmsGLpyBcDcoGsAwMtXGKguaBffSIPINHMHxWS7bBaKAd2+JsLcRxQBO
+         XC2GU3ais/E02r/FE5gIZ+6rFnglHp/EPBJPGobIpq8vruTIDgM6M+J0m67gSKsJiLHm
+         HTeVS1fOU7tOJBfUfrFBDlNknMLJPMftMLaWYXNwKLEFyoO1tuTcQysxjt5lYoTU+GFS
+         A58UkrNQV7svIYyD79EAI6Msz4TaSWCDsvZTY9Sq0pvHO6zRoVWi7yyv8RIXUMpm8y/m
+         0H6A==
+X-Gm-Message-State: AOJu0Yx2fTRdkRJ/8+dsICUyOW79+ISuPO+Ok3qdx06jSe8ga7KvqoYr
+        yiXe+PSK9jIwffvXF4jKczPMe98mqZc=
+X-Google-Smtp-Source: AGHT+IE7ykVK+5d/va69E1PNd0zsha/Wou7RxjtYXqxdAMeSsUtDYEU/GOY7xTP7lbj1Hm2vtQ3KSw==
+X-Received: by 2002:a05:600c:468d:b0:409:ca6:d79d with SMTP id p13-20020a05600c468d00b004090ca6d79dmr974745wmo.18.1698126877358;
+        Mon, 23 Oct 2023 22:54:37 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id n16-20020a05600c3b9000b003fee6e170f9sm11113282wms.45.2023.10.23.22.54.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Oct 2023 22:54:36 -0700 (PDT)
+Message-ID: <ade1f1a4-0fa9-4233-9061-5a76178c94fb@kernel.org>
+Date:   Tue, 24 Oct 2023 07:54:35 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|PAXPR04MB9203:EE_
-X-MS-Office365-Filtering-Correlation-Id: fcbf2a2d-caed-4870-919a-08dbd45594b7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BMdnNHh5c8q9+6ipAGcntfVK1SfikFmPOsNpJGDVPVjEFewSWinRPorLX6MSEtdwRgOCxiKfibiWQr2A9owhPp7WQqxS/MNfAJMfiNN0xRDmgbZeBQLKLde3OQWpS2ucWOMHQWWJJ9xH+LwekMOzOfvFqKUwNNlREZI8E+H6O+3lispAS6lBUdKibvZyOtbL7F/Nbgovazx9DwZr3A5GQoGT0kkjLHMGAoE81+0mnK6fPfDxJLcQepZd6zUpELjuiLHdZEZuOa8Jx2s9X+uCYGcUxKqDJ/McAnA3fVG4XMD1LqBf1lRSqSwgfJ7H2QmmmWT/xR+IpAgKw0GRTgizN3/qacrhlYcSxRXD+v1r37doVCk+uK3qOuRdhJqobP/518EDggde7Mvgq/tYE0Gj/maDdaVY3GZhTcPojtEsY1VxOUibKbF+LeH5qgdqS5PxFu68dKHLNagv8YcM8BszfrnCYXmw92uaWLbc0+SEY5tXV8YqFUqGS1V+44hjxC85HO6mIFU3Qle/bVX3ey39sMgAY9AeF2nndYagWSZr3XoRMiBKLY8bNLxpc1dAfjbri6iQcTdyH4uaPwi+mBZrVWM+bD1Htb3glfxvbY0MQyTGIMcuhMgPaEMJZUfkeTEQPwcp1u73lGPdBlFL1nRnI+UBt3NmyoNJQz60teKA1lw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(346002)(376002)(136003)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(38100700002)(316002)(66946007)(66476007)(8936002)(66556008)(478600001)(6486002)(8676002)(31696002)(4326008)(2906002)(41300700001)(7416002)(36756003)(5660300002)(83380400001)(2616005)(86362001)(6506007)(6512007)(31686004)(17423001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YldFOGIxclVkWGFCZE9rb2FqajNTZmRuZmpqSTR3SVF5VGpCR0tEd1B1VFJY?=
- =?utf-8?B?d3lNSlc0S0V3ZWd1T1FuVWxCcHFjYzhvK1VTcXd3aTljUmpLUXYzeWlrc1Y0?=
- =?utf-8?B?T2JsRnZFSlR1Wk1hS29PVW00bzNGRVJ2UHhJY3Y4YUJwUnVtMEttTkhLUnRx?=
- =?utf-8?B?dVExZmxnNUowaCtUbi9jeFBMa3YzZENCanpkUU41V0NsdjVIc1FFUEMrS0c3?=
- =?utf-8?B?N3NvU2w5em93ekdub0cycm9tMU1IMFd2ZitYdmsvOXhWaUZJUXRwRWpORVMv?=
- =?utf-8?B?cjZNcnNmUmdqOEhaVUU4UStTb1JKamdFdmUvdTRidUQxV1lzR3ByaDhxTkcr?=
- =?utf-8?B?UkgvSmJsVDRDckFncTlaaHpmZmtnUHowVEIyOHBPUlBjQ3plejNMUmt5eWI0?=
- =?utf-8?B?Mkw3eWtwRzkvaUxIVm9pWWJWRVoyNFZlSGU0NDNiZWFPVVN4N20xTllFQWhw?=
- =?utf-8?B?SVZwWVBLaGtzbUZrdFFWL0RUelFoZVd1cHpLWHNDdHdFU01OUyt6RjJ0bC9W?=
- =?utf-8?B?ZkZjaW9IdjdQK25VLzlGY04wdS9TNm9zMzZPSnA3VlFlZ20reEUrZmlld1pU?=
- =?utf-8?B?QWdFcFdWTlpmU0loRmhRQnJZdU9MK2FPSjV6cTA2N2J4d1RNYklKMXJCOG1r?=
- =?utf-8?B?S3N2dDIrTk9NcGpHZXRzZUM3d3RUcmZRNytXVTI0b3lHajNvNUdhZnoySDZN?=
- =?utf-8?B?NzZ2WFFUbWJrZmJ6am5rbWcyZXkrYWNtWkh4NUxxcFZkQTNDajhKcFpsOWw5?=
- =?utf-8?B?T0FnVlJpSjZYb0c5QkxCR3BmR3B5NXM4TWJmM2F4ak50RTdxSE1wdk9hTVdZ?=
- =?utf-8?B?WUtQazMrUzlOS1cwT2lmM0Z4d3FMTHpnMkJ5cW13Smw4RWlBZTM4MnE1UGdR?=
- =?utf-8?B?V0hyNExTN2VlaUdHWWkzVGc2UFpiRjAxQ25KQ0pXZXp1OTBwbi9nZEVrRDly?=
- =?utf-8?B?R2RwYnZWdm5oQm8xUGMxaThzM1l2MG1na2V1RGRXeE9yMDJuS3hGdkliVVA2?=
- =?utf-8?B?VnppYm9tQzJReWoyeXZjSU9RTGM1MUphbE94OHBzNzJRUnhpdzRFbXBxanVH?=
- =?utf-8?B?TWcyb3luZzBWQXp5STcwYm1VSzEwWE9LMVRlcnVHN0t0TWVERFV3bzFxVTJS?=
- =?utf-8?B?V2MwdGRnRktUSmlvVmZxZVI3cmJvOWVuaWM2ZEM1RjBaYjRtb1IzZHFSaEVB?=
- =?utf-8?B?TzZFL0JvUmt0NnM4Rm9ONzN3cHRORFNWQnZlQ2xXcnNLbDdUM3kvTDVSczZF?=
- =?utf-8?B?SFpVMFh1NWc2ODRwbCttTGlUVUovVDQyemMxM0k2SFUrRDNrcUVwY1VuRmY0?=
- =?utf-8?B?dC81d3lkT2dqMjZDOXl4aWFVbDIvM2xNR0VxaWFLSjVFSC9sQzFtbkhBRm56?=
- =?utf-8?B?dE56L0dqVFZJendZQ2Y2S3dpMG5KS1hjVVdiZ3I1S0JMRUNMSno4YTVqbk84?=
- =?utf-8?B?Sm8xWnlNeFA5aThvUWprazBoTnpQcGdCd1NKQUZoWC9SVFllU1YyK0M0MWFl?=
- =?utf-8?B?dktRbFNjS3BEQVM1YXR1S1pnZDNsa0hXbFJXN0FGRkVYVXJuR3RrY0txNzA5?=
- =?utf-8?B?RHB2aFZ2SHQ2TThzRUNaSHJCZEsvTG9HUjhCSkxRZGVmZ2x1Q1U2YTA1QVNY?=
- =?utf-8?B?ZmFWMFhDSHFRUlAwalVhVnI0RDB3UktocXVkMkRUczJaSHd5bFB4c1RVcjZX?=
- =?utf-8?B?K0ZkWDhLNjkwNmlucmtMZGM0R1g3L2gzNnVlRkVzV25HMWVyWklxZmQwQ0tP?=
- =?utf-8?B?ZEtuS25PVXlhYWRQOFN0bklvTzRQeWFrZ0J4NTdnOW02SlZUZjgrWm5TSVJh?=
- =?utf-8?B?NUpaZDdvQ0g0ZEY0NDg5WlVBbitiQ094clA3TG5MT3BpSlNwQ1ZtQTl2UW5r?=
- =?utf-8?B?N0Y1TVNOQlZ2RUtDZ3I3dSsvSWQvN3FBeUtJclQrVjViQ2FUT09VL2h0SmM0?=
- =?utf-8?B?b0pYSklrQVVrRWZzeUY3MTJpUVV6OHhVbjZsdFhlTGdhdlo5aThCRmtON01z?=
- =?utf-8?B?NllMRmxRc21zTlpRd0VvRU1OUlJ6UXRpWm1kRi9rdXZyY0VwckdDWmlrVmlo?=
- =?utf-8?B?K3JiakRyUDN4NGJMUnJvdzZtR3Fwd2dwMy9iTXJDZ1lmVUFFbzMyRHFDeUZP?=
- =?utf-8?B?RUMwb3c5TU1JZGhaKzVidGZQTytLdEpnT1M4TmZIRmVXekd4V29KMkpJQzRY?=
- =?utf-8?Q?F3rhcqBX8w8HXloCeAMQnqru908zo5rhtym+mNhfMGPZ?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcbf2a2d-caed-4870-919a-08dbd45594b7
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 05:53:43.7402
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6PdYg5ergWztMTdCuNwXuziWMxwzz6CVimZkGtV0psr5ZM3Tg4dyS4j0j1MEOj+hNJXDG42F3EHdVXXwGUMfcg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9203
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 tty-next 2/2] serial: 8250: add driver for NI UARTs
+Content-Language: en-US
+To:     Brenda Streiff <brenda.streiff@ni.com>
+Cc:     Gratian Crisan <gratian.crisan@ni.com>,
+        Jason Smith <jason.smith@ni.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20231023210458.447779-1-brenda.streiff@ni.com>
+ <20231023210458.447779-3-brenda.streiff@ni.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20231023210458.447779-3-brenda.streiff@ni.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 17.10.23 г. 13:14 ч., Kai Huang wrote:
-
-<snip>
-
->   arch/x86/Kconfig                  |   1 +
->   arch/x86/include/asm/shared/tdx.h |   1 +
->   arch/x86/virt/vmx/tdx/tdx.c       | 215 +++++++++++++++++++++++++++++-
->   arch/x86/virt/vmx/tdx/tdx.h       |   1 +
->   4 files changed, 213 insertions(+), 5 deletions(-)
+On 23. 10. 23, 23:04, Brenda Streiff wrote:
+> The National Instruments (NI) 16550 is a 16550-like UART with larger
+> FIFOs and embedded RS-232/RS-485 transceiver control circuitry. This
+> patch adds a driver that can operate this UART, which is used for
+> onboard serial ports in several NI embedded controller designs.
 > 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 864e43b008b1..ee4ac117aa3c 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1946,6 +1946,7 @@ config INTEL_TDX_HOST
->   	depends on KVM_INTEL
->   	depends on X86_X2APIC
->   	select ARCH_KEEP_MEMBLOCK
-> +	depends on CONTIG_ALLOC
->   	help
->   	  Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
->   	  host and certain physical attacks.  This option enables necessary TDX
-> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-> index abcca86b5af3..cb59fe329b00 100644
-> --- a/arch/x86/include/asm/shared/tdx.h
-> +++ b/arch/x86/include/asm/shared/tdx.h
-> @@ -58,6 +58,7 @@
->   #define TDX_PS_4K	0
->   #define TDX_PS_2M	1
->   #define TDX_PS_1G	2
-> +#define TDX_PS_NR	(TDX_PS_1G + 1)
+> Portions of this driver were originally written by Jaeden Amero and
+> Karthik Manamcheri, with extensive cleanups and refactors since.
 
-nit: I'd prefer if you those defines are turned into an enum and 
-subsequently this enum type can be used in the definition of 
-tdmr_get_pamt_sz(). However, at this point I consider this a 
-bikeshedding and you can do that iff you are going to respin the series 
-due to other feedback as well.
+...
 
-<snip>
+> --- /dev/null
+> +++ b/drivers/tty/serial/8250/8250_ni.c
+...
+> +static int ni16550_probe(struct platform_device *pdev)
+> +{
+> +	const struct ni16550_device_info *info;
+> +	struct device *dev = &pdev->dev;
+> +	struct uart_8250_port uart = {};
+> +	unsigned int prescaler = 0;
+> +	struct ni16550_data *data;
+> +	const char *portmode;
+> +	int txfifosz, rxfifosz;
+
+Why not unsigned?
+
+> +	int rs232_property;
+
+bool
+
+> +	int ret;
+> +	int irq;
+> +
+> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	spin_lock_init(&uart.port.lock);
+> +
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq < 0)
+> +		return irq;
+> +
+> +	ret = ni16550_get_regs(pdev, &uart.port);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* early setup so that serial_in()/serial_out() work */
+> +	serial8250_set_defaults(&uart);
+> +
+> +	info = device_get_match_data(dev);
+> +
+> +	uart.port.dev		= dev;
+> +	uart.port.irq		= irq;
+> +	uart.port.irqflags	= IRQF_SHARED;
+> +	uart.port.flags		= UPF_SHARE_IRQ | UPF_BOOT_AUTOCONF
+> +					| UPF_FIXED_PORT | UPF_FIXED_TYPE;
+> +	uart.port.startup	= ni16550_port_startup;
+> +	uart.port.shutdown	= ni16550_port_shutdown;
+> +
+> +	/*
+> +	 * Hardware instantiation of FIFO sizes are held in registers.
+> +	 */
+> +	txfifosz = ni16550_read_fifo_size(&uart, NI16550_TFS_OFFSET);
+> +	rxfifosz = ni16550_read_fifo_size(&uart, NI16550_RFS_OFFSET);
+> +
+> +	dev_dbg(dev, "NI 16550 has TX FIFO size %d, RX FIFO size %d\n",
+> +		txfifosz, rxfifosz);
+> +
+> +	uart.port.type		= PORT_16550A;
+> +	uart.port.fifosize	= txfifosz;
+> +	uart.tx_loadsz		= txfifosz;
+> +	uart.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_10;
+> +	uart.capabilities	= UART_CAP_FIFO | UART_CAP_AFE | UART_CAP_EFR;
+> +
+> +	/*
+> +	 * Declaration of the base clock frequency can come from one of:
+> +	 * - static declaration in this driver (for older ACPI IDs)
+> +	 * - a "clock-frquency" ACPI or OF device property
+> +	 * - an associated OF clock definition
+> +	 */
+> +	if (info->uartclk)
+> +		uart.port.uartclk = info->uartclk;
+> +	if (device_property_read_u32(dev, "clock-frequency",
+> +				     &uart.port.uartclk)) {
+> +		data->clk = devm_clk_get_optional_enabled(dev, NULL);
+> +		if (data->clk)
+
+!IS_ERR(data->clk)
+
+> +			uart.port.uartclk = clk_get_rate(data->clk);
+> +	}
+> +
+> +	if (!uart.port.uartclk) {
+> +		dev_err(dev, "unable to determine clock frequency!\n");
+> +		ret = -ENODEV;
+> +		goto err;
+> +	}
+> +
+> +	if (info->prescaler)
+> +		prescaler = info->prescaler;
+> +	device_property_read_u32(dev, "clock-prescaler", &prescaler);
+> +
+> +	if (prescaler != 0) {
+> +		uart.port.set_mctrl = ni16550_set_mctrl;
+> +		ni16550_config_prescaler(&uart, (u8)prescaler);
+> +	}
+> +
+> +	/*
+> +	 * The determination of whether or not this is an RS-485 or RS-232 port
+> +	 * can come from a device property (if present), or it can come from
+> +	 * the PMR (if present), and otherwise we're solely an RS-485 port.
+> +	 *
+> +	 * This is a device-specific property, and thus has a vendor-prefixed
+> +	 * "ni,serial-port-mode" form as a devicetree binding. However, there
+> +	 * are old devices in the field using "transceiver" as an ACPI device
+> +	 * property, so we have to check for that as well.
+> +	 */
+> +	if (!device_property_read_string(dev, "ni,serial-port-mode", &portmode) ||
+> +	    !device_property_read_string(dev, "transceiver", &portmode)) {
+> +		rs232_property = strncmp(portmode, "RS-232", 6) == 0;
+> +
+> +		dev_dbg(dev, "port is in %s mode (via device property)",
+
+\n missing here and there.
+
+> +			rs232_property ? "RS-232" : "RS-485");
+> +	} else if (info->flags & NI_HAS_PMR) {
+> +		rs232_property = is_pmr_rs232_mode(&uart);
+> +
+> +		dev_dbg(dev, "port is in %s mode (via PMR)",
+> +			rs232_property ? "RS-232" : "RS-485");
+> +	} else {
+> +		rs232_property = 0;
+> +
+> +		dev_dbg(dev, "port is fixed as RS-485");
+> +	}
+> +
+> +	if (!rs232_property) {
+> +		/*
+> +		 * Neither the 'transceiver' property nor the PMR indicate
+> +		 * that this is an RS-232 port, so it must be an RS-485 one.
+> +		 */
+> +		ni16550_rs485_setup(&uart.port);
+> +	}
+> +
+> +	ret = serial8250_register_8250_port(&uart);
+> +	if (ret < 0)
+> +		goto err;
+> +	data->line = ret;
+> +
+> +	platform_set_drvdata(pdev, data);
+> +	return 0;
+> +
+> +err:
+> +	clk_disable_unprepare(data->clk);
+
+But you use devm_?
+
+> +	return ret;
+> +}
+> +
+> +static int ni16550_remove(struct platform_device *pdev)
+> +{
+> +	struct ni16550_data *data = platform_get_drvdata(pdev);
+> +
+> +	clk_disable_unprepare(data->clk);
+> +	serial8250_unregister_port(data->line);
+
+This should be likely inverted. But I don't know if it matters here at all.
+
+Actually, devm_ again, so the first is unnecessary?
+
+> +	return 0;
+> +}
+...
+> +MODULE_AUTHOR("Jaeden Amero <jaeden.amero@ni.com>");
+> +MODULE_AUTHOR("Karthik Manamcheri <karthik.manamcheri@ni.com>");
+
+Do the addresses work? Why not CC them?
+
+thanks,
+-- 
+js
+suse labs
+
