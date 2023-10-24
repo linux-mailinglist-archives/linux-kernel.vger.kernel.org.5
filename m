@@ -2,183 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 497247D480E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1A07D481B
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbjJXHKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 03:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
+        id S232562AbjJXHMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 03:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232560AbjJXHKi (ORCPT
+        with ESMTP id S232499AbjJXHMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 03:10:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D266128;
-        Tue, 24 Oct 2023 00:10:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB329C433C7;
-        Tue, 24 Oct 2023 07:10:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698131434;
-        bh=Z4ErVGiETF75rMOL77a2488vSE0IFuWOrinZbfg0xPg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R1yvNZZu5DGvgXDyFCxcIM+jrzKgSuFMG+l1IKizIC0Ats6DvD1G/mxrkDCB3sfNx
-         R5LDhxL2dbPjedFA0Hvuw906WKqNA0R5oeCJ4WZh+D3krVYPeS5lKl1+jqaySXDf8L
-         vpjsRItS1Fk6qju6gvPaGdTAg2jAIxqg3f3ovud6mF4xPqXEgDvJZq+OHJXy1fYQsW
-         kJO4+5wN4DRaMU3oFwEUg1Kyb2olF5eqElYRIEXFqY/9RCH1yAkWp4lIWe7y8QchbC
-         E/vA4wWRavESOPgeErsXvQ+SewOT1QseLUoSFFU6Ulk4Lq0erlFCkJmnm2aUTd0Mz2
-         QumVTpQ1bl62A==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qvBYx-0003dX-0K;
-        Tue, 24 Oct 2023 09:10:51 +0200
-Date:   Tue, 24 Oct 2023 09:10:51 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, ahalaney@redhat.com,
-        quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v13 06/10] usb: dwc3: qcom: Enable wakeup for applicable
- ports of multiport
-Message-ID: <ZTdt-wyCHh3i0SlK@hovoldconsulting.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-7-quic_kriskura@quicinc.com>
- <ZTaViatsRY7LCbIX@hovoldconsulting.com>
- <7e9bdd65-35b7-43c2-810a-2cd81f736084@quicinc.com>
+        Tue, 24 Oct 2023 03:12:36 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA52110
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 00:12:33 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6ba8eb7e581so1113035b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 00:12:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698131552; x=1698736352; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=amFp0BVeavttuQpXCOb46m8XpZ/bsIpXzEjd5+Ix8vo=;
+        b=a/83O0rdBkdMDQZyDt02QYcuE0lIIprKzdgEyUXSML5pdYXctr31KnCsKCICL4S57g
+         QhJ41BrV7b1nyxLPGWAg3srra3OV+13KA6pDUray43GHjicqllO51aC2vnJbULxfhGPE
+         Q8d1kiHEwKdCAB9URmvkGexBBeZ2jDuV6DepO8nXpEePkeQDEvZiaIcPncUFCCQFVT5w
+         yju/nX5zjb/WSqKFy4fhd4xXmNChTe0WL5cI7Kf5GdFUZ5DNFcmB6cAUmsFE9v4G8q5e
+         tDtezRD7tAfGyRLAJJA+2Wy1y0Gl9h8aLti4iGkCCJR6caXSh1lzju4K9W3gU+YqsTwp
+         XV+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698131552; x=1698736352;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=amFp0BVeavttuQpXCOb46m8XpZ/bsIpXzEjd5+Ix8vo=;
+        b=eIuwtIS2Zvz3skqA8bfjfWzsM6FytG2Pl3ADMnCZp6vIZrvcs0/V6bf91klUis61Is
+         Ctwc94EFhKivqlz+gkrRCbNvBOLQ0EjXaecrQx5/ymYx5m7jrPhdOKY/hGuHWD9N1Sf/
+         iPAF8Qaru9u2tg/SCDEFlaPmS9rkOFnvySGnOx1OnEDYVb3nfqMjAcW/UpsuWYsQkq3V
+         enOzYF8xM1bnntY8bmd80I3z8Sj1LWwpZ4uM2Uj0TSmUdNbO+hk69lFKFcvGMoVK/71V
+         YsDD0r04qjLQ4kV7Fy118jnHfbsp+nCRsM1LuL8Pgtq0Lgt8QowMSkCKxQ31i4OTfFLJ
+         /vWg==
+X-Gm-Message-State: AOJu0Yx+Gj6sBRaptQ6n3Mcr5UW+4kxeT3ndLMVVOzVVGERepcqD3b13
+        q0z4Um9sz1NkdTP1k1D7sAZcQg==
+X-Google-Smtp-Source: AGHT+IF7QdjXPOxjXon+i2oKSwso+lRkUoW9ta6jKJKZ5Gj11CuV1qcL5hoMrDkcOVH4ezKfGuWAow==
+X-Received: by 2002:a05:6a20:2451:b0:171:737:df97 with SMTP id t17-20020a056a20245100b001710737df97mr14371285pzc.2.1698131552304;
+        Tue, 24 Oct 2023 00:12:32 -0700 (PDT)
+Received: from octopus ([2400:4050:c3e1:100:7c15:610f:1205:f10c])
+        by smtp.gmail.com with ESMTPSA id ch20-20020a17090af41400b0026b3f76a063sm6535391pjb.44.2023.10.24.00.12.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 00:12:31 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 16:12:27 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>, sudeep.holla@arm.com,
+        cristian.marussi@arm.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, Oleksii_Moisieiev@epam.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: Re: [RFC v2 5/5] dt-bindings: gpio: Add bindings for pinctrl based
+ generic gpio driver
+Message-ID: <ZTduWx7CH1ifI5Uc@octopus>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>, sudeep.holla@arm.com,
+        cristian.marussi@arm.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, Oleksii_Moisieiev@epam.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+References: <20231005025843.508689-1-takahiro.akashi@linaro.org>
+ <20231005025843.508689-6-takahiro.akashi@linaro.org>
+ <20231006132346.GA3426353-robh@kernel.org>
+ <CACRpkdaLsfSBEG-h9ZNT2_Lm8tW8AZO7tedDVNeuZoQAqSkyjw@mail.gmail.com>
+ <ZSTgTC4cFFpofYAk@octopus>
+ <CACRpkdYD6pkccYoy90AfzV3KT7oYkBPD2_4ZW-AXzT1eUVpchA@mail.gmail.com>
+ <ZS3yK/f12Mxw9rXe@octopus>
+ <CACRpkdarDrVkPmyDawhZ+H94S4F=dtDSDVuKegi-eNfQNDY3rg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7e9bdd65-35b7-43c2-810a-2cd81f736084@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CACRpkdarDrVkPmyDawhZ+H94S4F=dtDSDVuKegi-eNfQNDY3rg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 10:57:04PM +0530, Krishna Kurapati PSSNV wrote:
-> On 10/23/2023 9:17 PM, Johan Hovold wrote:
-> > On Sat, Oct 07, 2023 at 09:18:02PM +0530, Krishna Kurapati wrote:
-> >> Currently wakeup is supported by only single port controllers. Read speed
-> >> of each port and accordingly enable IRQ's for those ports.
-> >>
-> >> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> >> ---
-  
-> >> -static enum usb_device_speed dwc3_qcom_read_usb2_speed(struct dwc3_qcom *qcom)
-> >> +static enum usb_device_speed dwc3_qcom_read_usb2_speed(struct dwc3_qcom *qcom,
-> >> +							int port_index)
-> > 
-> > No need for line break (since it's a function definition).
-> > 
-> >>   {
-> >>   	struct dwc3 *dwc = platform_get_drvdata(qcom->dwc3);
-> >>   	struct usb_device *udev;
-> >> @@ -348,12 +349,10 @@ static enum usb_device_speed dwc3_qcom_read_usb2_speed(struct dwc3_qcom *qcom)
-> >>   
-> >>   	/*
-> >>   	 * It is possible to query the speed of all children of
-> >> -	 * USB2.0 root hub via usb_hub_for_each_child(). DWC3 code
-> >> -	 * currently supports only 1 port per controller. So
-> >> -	 * this is sufficient.
-> >> +	 * USB2.0 root hub via usb_hub_for_each_child().
-> > 
-> > This comment no longer makes sense with your current implementation.
-> > 
-> Can you help elaborate on your comment ? Do you mean that this API 
-> doesn't get speed on all ports, but this has to be called in a loop to 
-> get all the port speeds ? In that sense, I agree, I can change the 
-> comments here.
+Hi Linus,
 
-It does not make sense to keep only half the comment after your update
-as it is a suggestion for how one could go about and generalise this for
-multiport, which is what you are now doing.
- 
-> > But perhaps this should be done using usb_hub_for_each_child() instead
-> > as that may be more efficient. Then you use this function to read out
-> > the speed for all the ports in go (and store it in the port structures I
-> > mentioned). Please determine which alternative is best.
-> > 
-> Either ways is fine. We would have qcom->num_ports to determine how many 
-> speeds we can read.
-
-That's not the point. I'm referring to which alternative is less
-computationally expensive and allows for a clean implementation.
-
-Please do try to figure it out yourself.
- 
-> >>   	 */
-> >>   #ifdef CONFIG_USB
-> >> -	udev = usb_hub_find_child(hcd->self.root_hub, 1);
-> >> +	udev = usb_hub_find_child(hcd->self.root_hub, port_index + 1);
-> >>   #else
-> >>   	udev = NULL;
-> >>   #endif
-> >> @@ -386,23 +385,29 @@ static void dwc3_qcom_disable_wakeup_irq(int irq)
-> >>   
-> >>   static void dwc3_qcom_disable_interrupts(struct dwc3_qcom *qcom)
-> >>   {
-> >> +	int i;
-> >> +
-> >>   	dwc3_qcom_disable_wakeup_irq(qcom->hs_phy_irq);
-> >>   
-> >> -	if (qcom->usb2_speed == USB_SPEED_LOW) {
-> >> -		dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DM_HS_PHY_IRQ_INDEX][0]);
-> >> -	} else if ((qcom->usb2_speed == USB_SPEED_HIGH) ||
-> >> -			(qcom->usb2_speed == USB_SPEED_FULL)) {
-> >> -		dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DP_HS_PHY_IRQ_INDEX][0]);
-> >> -	} else {
-> >> -		dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DP_HS_PHY_IRQ_INDEX][0]);
-> >> -		dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DM_HS_PHY_IRQ_INDEX][0]);
-> >> -	}
-> >> +	for (i = 0; i < qcom->num_ports; i++) {
-> >> +		if (qcom->usb2_speed[i] == USB_SPEED_LOW) {
-> >> +			dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DM_HS_PHY_IRQ_INDEX][i]);
-> >> +		} else if ((qcom->usb2_speed[i] == USB_SPEED_HIGH) ||
-> >> +			(qcom->usb2_speed[i] == USB_SPEED_FULL)) {
-> >> +			dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DP_HS_PHY_IRQ_INDEX][i]);
-> >> +		} else {
-> >> +			dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DP_HS_PHY_IRQ_INDEX][i]);
-> >> +			dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[DM_HS_PHY_IRQ_INDEX][i]);
-> >> +		}
-> >>   
-> >> -	dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[SS_PHY_IRQ_INDEX][0]);
-> >> +		dwc3_qcom_disable_wakeup_irq(qcom->phy_irq[SS_PHY_IRQ_INDEX][i]);
-> >> +	}
-> >>   }
-> > 
-> > The above is hardly readable, partly because of the 2d array that I
-> > think you should drop, and partly because you add the port loop here
-> > instead of in the caller.
-> > 
-> > A lot of these functions should become port operation where you either
-> > pass in a port structure directly or possibly a port index as I've
-> > mentioned before.
+On Mon, Oct 23, 2023 at 10:12:21AM +0200, Linus Walleij wrote:
+> Hi Takashi,
 > 
-> With your suggestion, yes, this can be refactored to be readable.
-> 
-> > 
-> > [ I realise that the confusion around hs_phy_irq may be partly to blame
-> > for this but since that one is also a per-port interrupt, that's no
-> > longer an issue. ]
-> 
-> I don't want to add support for this right away [1]. I would like to 
-> keep hs_phy_irq outside the loop for now.
+> sorry for slow response :(
 
-No. Stop trying to take shortcuts. Again, this is upstream, not
-Qualcomm's vendor kernel.
+Thank you for your feedback.
 
-Johan
+> On Tue, Oct 17, 2023 at 4:32???AM AKASHI Takahiro
+> <takahiro.akashi@linaro.org> wrote:
+> 
+> > > > > We can probably mandate that this has to be inside a pin controller
+> > > > > since it is a first.
+> > > >
+> > > > Yeah, my U-Boot implementation tentatively supports both (inside and
+> > > > outside pin controller). But it is not a user's choice, but we should
+> > > > decide which way to go.
+> > >
+> > > OK I have decided we are going to put it inside the pin control node,
+> > > as a subnode. (I don't expect anyone to object.)
+> >
+> > While I'm still thinking of how I can modify my current implementation
+> > to fit into 'inside' syntax, there are a couple of concerns:
+> >
+> > 1) invoke gpiochip_add_data() at probe function
+> > Probably we no longer need "compatible" property,
+> 
+> The DT binding people made it clear to me that they really
+> like compatibles for this kind of stuff so we should probably
+> keep it.
+
+Okay, I will assume this in the following discussion.
+
+> > but instead we need to
+> > call gpiochip_add_data() explicitly in SCMI pin controller's probe
+> > as follows:
+> >
+> > scmi_pinctrl_probe()
+> >     ...
+> >     devm_pinctrl_register_and_init(dev, ..., pctrldev);
+> >     pinctrl_enable(pctrldev);
+> >
+> >     device_for_each_child_node(dev, fwnode)
+> >         if (fwnode contains "gpio-controller") {
+> >             /* what pin_control_gpio_probe() does */
+> >             gc->get_direction = ...;
+> >             ...
+> >             devm_gpiochip_data_add(dev, gc, ...);
+> >         }
+> 
+> I think it is better of the pin controller just parse and add any
+> subdevices (GPIO or other) using of_platform_default_populate()
+> (just grep for this function and you will see how many device
+> drivers use that).
+
+IICU, then, we will have to add a "compatible" to pinctrl node
+to make of_platform_default_populate() work as expected. That is:
+
+scmi {
+    ...
+    protocol@19 {
+        compatible = "simple-bus"; // <- added
+        reg = <0x19>;
+
+        ... // a couple of pinconf nodes
+
+        scmi_gpio {
+            compatible = "pin-control-gpio";
+            ...
+        }
+    }
+}
+
+Is this what you meant?
+In this case, however, "protocol@19" has a mixture of sub-nodes,
+most are pinconf definitions which are the properties of the pin
+controller, while "scmi_gpio" is a separate device.
+
+The code will work, but is it sane from DT binding pov?
+
+> What is good with this approach is that if you place this call
+> last in the probe() we know the GPIO driver has all resources
+> it needs when it probes so it won't defer.
+> 
+> > 2) gpio-by-pinctrl.c
+> > While this file is SCMI-independent now, due to a change at (1),
+> > it would be better to move the whole content inside SCMI pin controller
+> > driver (because there is no other user for now).
+> 
+> That works, too. I have no strong opinion on this subject.
+
+I assumed that "compatible" had been removed here.
+If we retain "compatible" property, I don't care either way.
+
+> > 3) Then, pin-control-gpio.yaml may also be put into SCMI binding
+> > (i.e. firmware/arm,scmi.yaml). Can we leave the gpio binding outside?
+> 
+> There is no clear pattern whether to put subdevice bindings into
+> the parent device binding or not. Maybe? A lot of MFD devices does
+> this for sure.
+
+The same as above.
+
+> > 4) phandle in "gpio-ranges" property
+> > (As you mentioned)
+> > The first element in a tuple of "gpio-ranges" is a phandle to a pin
+> > controller node. Now that the gpio node is a sub node of pin controller,
+> > the phandle is trivial. But there is no easier way to represent it
+> > than using an explicit label:
+> > (My U-Boot implementation does this.)
+> >
+> > scmi {
+> >     ...
+> >     scmi_pinctrl: protocol@19 {
+> >         ...
+> >         gpio {
+> >             gpio-controller;
+> >             ...
+> >             gpio-ranges = <&scmi_pinctrl ... >;
+> >         }
+> >     }
+> > }
+> >
+> > I tried:
+> >     gpio-ranges = <0 ...>; // dtc passed, but '0' might be illegal by spec.
+> >     gpio-ranges = <(-1) ...>; // dtc passed, but ...
+> >     gpio-ranges = <&{..} ...>; // dtc error because it's not a full path.
+> >
+> > Do you have any other idea? Otherwise, I will modify my RFC
+> > with the changes above.
+> 
+> If you have the GPIO node inside the pin controller node
+> and have all the details of the existing ranges available, there
+> is no need to put that into the device tree at all, just omit it?
+
+Then, of_gpiochip_add_data() (hence, of_gpiochip_add()/gpiochip_add_data())
+won't work because it always assume phandle + 3 arguments. Right?
+
+In this case, "gpio-ranges" here may have different semantics from
+the other pinctrl-based gpio drivers. Doesn't matter from DT pov?
+
+> Instead just call gpiochip_add_pin_range() directly in Linux
+> after adding the pin controller and gpio_chip.
+> C.f. drivers/pinctrl/pinctrl-sx150x.c for an example of a driver
+> doing this. In this case the SX150X is hot-plugged (on a slow
+> bus) so it needs to figure out all ranges at runtime anyway.
+
+Are you suggesting implementing a custom function for parsing "gpio-ranges"
+and calling it in pin_control_gpio_probe() instead of a generic helper?
+
+Or do you want to always map all the pin controller's pins to
+gpio pins as sx150x does?
+
+-Takahiro Akashi
+
+> Yours,
+> Linus Walleij
