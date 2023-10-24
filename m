@@ -2,214 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C020D7D5847
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC117D577D
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343883AbjJXQ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59740 "EHLO
+        id S1344041AbjJXQJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjJXQ3L (ORCPT
+        with ESMTP id S234286AbjJXQJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:29:11 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2052.outbound.protection.outlook.com [40.107.220.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEE9AC;
-        Tue, 24 Oct 2023 09:29:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VphV8SuaMVP7rj5Cq9toOjfQYoRK5ZrE6yvuVv7tS/vLIkW531GH+C4ZRRdz6Zbl8MicG7VPnzEUn+6X0qfxQBUOdZl8Idn2fxH3Ek1cxS7fVdGqq2/nIRDYEAVk+39kVUpHKirXhHfnHM66Sdf+C+vjymwWDc0rKTBkKUeuMzHDFXSX0T056MirwVygXgf8qKETgODuJGkC4+/pta6IbYHR7pHoP58lMamaY98tm+fZSb8k6SwuNuN66C6CwCZU4xP8xuG5PPNZ5lUsn21GgcYOLT2ionIkZWyXbCnYre7BDRM38jEWmZBkR/E6uqYAA6QphoZdHQmfAz0Gnif08Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=98tUsS069zVjIY6n9XGNQiNbXweySNhRfvFo7wYw+Kk=;
- b=PXcE6pqnO2zGrQHzoGHPluoK/RMHKYZ6aPKSwcIxOkTZZ4WqIDL/ePGgTzF9eNoIqNoPAPCgkTwM5ZiYvyZb7AIwcrc9Q3cUUlYl42ONZH4jwv6zCye9Oiq8VrwU6Z843Jz7mlzqLropUkWi628NG8GceQT7ihua8PCMuNYYJpRibWZz+zV3GsQF/e2uT17BkhuA0hh4ZgMZYMQsNSwuEBtDlpobUrUiilP5zymXY9rfV0yPBMTPg2w6HD+DIv2gxcaz9v5vEW0PS40ZDuyNsDtc3BEatIkNa7k5i0QzCrgul8DBTaak87kGPmjliirjiZXu6vwktgS55C6XUz+Uvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=hisilicon.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=98tUsS069zVjIY6n9XGNQiNbXweySNhRfvFo7wYw+Kk=;
- b=KkS9vhGXk34l7gCESHxyrLFrtF3fITdx2ZYn+hDINAtHQ7XX5Cidq9GcEK4nLueAp5qIJhd1W4pjP6+FNaALcGm18Ve48EcU9Y0C5NB6Tq24Xs6/HlLj0CxXfEBiZJXsbCuNH1Pivo5v7/GImuKAwtKABH6q6S5ZY0zXt6b3MRNNECBqDrIYms9/BKm4Vg21SkOf+HGL7jIvwh5T9ZLEKR0f5tRf6p0WSXd/o6SGYCzrobdd7d8k+t+s/Pk0wKiCmH8lE5ef7nDYEg/5sUyLhJCgvFPRGQV+573/w6ClkqYLFPvRCMalzAeGRmO+yrHnf7n1PC/N54eihvyFnfxalQ==
-Received: from SN7P222CA0029.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:124::23)
- by DM4PR12MB5167.namprd12.prod.outlook.com (2603:10b6:5:396::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Tue, 24 Oct
- 2023 16:29:06 +0000
-Received: from SA2PEPF00001504.namprd04.prod.outlook.com
- (2603:10b6:806:124:cafe::88) by SN7P222CA0029.outlook.office365.com
- (2603:10b6:806:124::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33 via Frontend
- Transport; Tue, 24 Oct 2023 16:29:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- SA2PEPF00001504.mail.protection.outlook.com (10.167.242.36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.15 via Frontend Transport; Tue, 24 Oct 2023 16:29:06 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 24 Oct
- 2023 09:28:52 -0700
-Received: from yaviefel (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 24 Oct
- 2023 09:28:49 -0700
-References: <20231023112217.3439-1-phaddad@nvidia.com>
- <20231023112217.3439-4-phaddad@nvidia.com>
-User-agent: mu4e 1.8.11; emacs 28.3
-From:   Petr Machata <petrm@nvidia.com>
-To:     Patrisious Haddad <phaddad@nvidia.com>
-CC:     <jgg@ziepe.ca>, <leon@kernel.org>, <dsahern@gmail.com>,
-        <stephen@networkplumber.org>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>,
-        <michaelgur@nvidia.com>
-Subject: Re: [PATCH v2 iproute2-next 3/3] rdma: Adjust man page for rdma
- system set privileged_qkey command
-Date:   Tue, 24 Oct 2023 18:09:05 +0200
-In-Reply-To: <20231023112217.3439-4-phaddad@nvidia.com>
-Message-ID: <87zg0856io.fsf@nvidia.com>
+        Tue, 24 Oct 2023 12:09:56 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36152D7D
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:09:54 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a7afd45199so48056157b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:09:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698163793; x=1698768593; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9uwebOammgYNOokYzgscdbftdR0pMLZxQ7ReST9beIs=;
+        b=xrDdVZEPl66hK7bC1XfxTZe0LV7yfnlWwEF7VPeBCjlH5AqJqAA5dnfJsa92rfMES7
+         hV16HfB/fLbvkIRn9MtLyq3txz1O5Wbtzn/B0oFRaR9Kn0L6GlhHUZRlOr1KjaXDIaMX
+         Qfs7xwhYVdVCmpLY9at3ElYTs5TWtuSUJGA14geTrLMMu1zrDTkKuXHg+0jA+D3ZsMOw
+         vZ3GCIwfEj8YoUY0hyy+bW4p5PSM4UxvVEgm8IIYSgggQrpf+GLnLlGRRoJkCYujBCBK
+         iarZUTS+husiAM/Pr5Lg04krJfGpqIHkcHjw9/p+b3VWkrt7/OU4NTpdTlYFICkLJJk9
+         7GKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698163793; x=1698768593;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9uwebOammgYNOokYzgscdbftdR0pMLZxQ7ReST9beIs=;
+        b=Ve580ClGiOjPOHoKoxUdnixXAoiI2GeALG1pGkRZUeV2jqViAcjJIDCww1SK4N2mqT
+         d2wC2awmvl0gBw0zHL1THxBKkakdNroUBcaausFRCNk3KkQAln/qHLNN8tHIuU+2m3KL
+         b8q+unH8yBP10yIkH3vYt0ZBzSy8+VgK8NR9UPMWRXHrLhph3h5reFlz2pN/JORha9Jj
+         k1FMoHci0M9NRZnki1RY1CoBbsJx8CThogCGD4gZzdj7PM4j3K43dFGVyaYRI/0IAZca
+         puevN2OYdsiQoVsT3sZwah0ChzJsOoCP+u3IAPdV41hQBzlF/87SfsrKAln6SDsnEMAP
+         SBaw==
+X-Gm-Message-State: AOJu0YwkYYtGtxPOhckwmQ33tYDJ+qCjW07HkBS6FG7Xy/B2/32G9fOf
+        eN0oemYnOsSXXxYxG9NNsnCzRw==
+X-Google-Smtp-Source: AGHT+IFYSVPo7yy9HeVbLbMVQ6/aFEFb+qcE4/a5SXXKaSxcMB9+EZkYJQg5qpUHBV1yTvOcAtoRQA==
+X-Received: by 2002:a0d:d494:0:b0:5a8:78b0:a9fd with SMTP id w142-20020a0dd494000000b005a878b0a9fdmr13896756ywd.29.1698163793274;
+        Tue, 24 Oct 2023 09:09:53 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id e6-20020a0df506000000b005837633d9cbsm4117562ywf.64.2023.10.24.09.09.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 09:09:52 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 09:09:39 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        domenico cerasuolo <mimmocerasuolo@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Christoph Lameter <cl@linux.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmammil.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Nhat Pham <nphamcs@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH v2] mempolicy: alloc_pages_mpol() for NUMA policy without
+ vma: fix
+In-Reply-To: <00dc4f56-e623-7c85-29ea-4211e93063f6@google.com>
+Message-ID: <ea419956-4751-0102-21f7-9c93cb957892@google.com>
+References: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com> <74e34633-6060-f5e3-aee-7040d43f2e93@google.com> <1738368e-bac0-fd11-ed7f-b87142a939fe@google.com> <CAFYChMvWFdHq-OJHBE3DycmGtGmczDOHVGfoSqdvY-BxM2hWyg@mail.gmail.com>
+ <20231023105331.311373ed33a0dfe78ddaa9e5@linux-foundation.org> <CAFYChMu9DO7OeXqQmKbfMY-iGKykHB21V8nqjy=tQa+StfDAUQ@mail.gmail.com> <20231023190555.GA1964810@cmpxchg.org> <00dc4f56-e623-7c85-29ea-4211e93063f6@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001504:EE_|DM4PR12MB5167:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f458bea-e33e-437e-9c28-08dbd4ae578e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xxEs2wb051KT/koFhZn30oN7Wo4tDo3d2cYlU/3Ich2JYwPqi7xGRoGBXGZe+VbZ7tVckyR2syRt/Tng3UdZ20gloZmST2/BcdAWoRCzd/0VA3TTo74hWrowyX38t1uwJ25Dx+nnvqY+OlEohTYsRV74ynqmd9fQCkuk0ll5E3M2bzv9/vSeNXLcJchDekwcsINzkBVlvm52puhsuFm8taKe562UeZK127JGjtdNVrct60ItmX8+5II3qhplECqHWYv7xaM9PEdjI6PH9hVYYsXEK6OKlaFTtRVNIeHNX3pFT4mT2jZ3V1xDMEhqtRkIunuVd7/156Dzoq+BfMz6HpUhQuetY+sk707FiqO14+HznBtadrxPkepuOKcljMGLiHMMWf66wjKDQt7Lwp94apSKbWsvDGVe0Lfkci9GyTUA3/gSD4FEcpcdvkcR2HV6dbTOHPTiR2shJfRwpMN8d8KdYk8onr6vZ0ZH2dUNvE3k6dz9Cr2Qo43dMnGblNIIow8TN8d/howVrhl8WLk0gIIiqCNKL8RgSn0UiuVuZXl4x+fjZW6Kj1XTH/szXdVL/B9R8p8j++MrUbNqM17iY2NI7+RtRKpmBs7oPGubGz5apJeFNseU04SCbRmPC10MzgH2yRwlUAGRZX9SEVBpibUVTUEGvrTFObwcoJu+dxHQiaMivpnPafDW2HPnhAqcSsKrXNXKobGDUaXxPZL+9Xo7jsJsSa3iNtNihVezv/knLh/2KMxZ++c1eY0AoKkE
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(136003)(396003)(346002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(82310400011)(46966006)(40470700004)(36840700001)(26005)(478600001)(426003)(336012)(40480700001)(6666004)(86362001)(316002)(37006003)(6636002)(40460700003)(54906003)(70586007)(70206006)(36756003)(36860700001)(47076005)(16526019)(2616005)(107886003)(356005)(7636003)(2906002)(83380400001)(8936002)(8676002)(4326008)(6862004)(82740400003)(5660300002)(41300700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 16:29:06.0012
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f458bea-e33e-437e-9c28-08dbd4ae578e
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001504.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5167
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+mm-unstable commit 48a7bd12d57f ("mempolicy: alloc_pages_mpol() for NUMA
+policy without vma") ended read_swap_cache_async() supporting NULL vma -
+okay; but missed the NULL mpol being passed to __read_swap_cache_async()
+by zswap_writeback_entry() - oops!
 
-Patrisious Haddad <phaddad@nvidia.com> writes:
+Since its other callers all give good mpol, add get_task_policy(current)
+there in mm/zswap.c, to produce the same good-enough behaviour as before
+(and task policy, acted on in current task, does not require the refcount
+to be dup'ed).
 
-> Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-> Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
-> ---
->  man/man8/rdma-system.8 | 32 +++++++++++++++++++++++++++-----
->  1 file changed, 27 insertions(+), 5 deletions(-)
->
-> diff --git a/man/man8/rdma-system.8 b/man/man8/rdma-system.8
-> index ab1d89fd..a2914eb8 100644
-> --- a/man/man8/rdma-system.8
-> +++ b/man/man8/rdma-system.8
-> @@ -23,16 +23,16 @@ rdma-system \- RDMA subsystem configuration
->  
->  .ti -8
->  .B rdma system set
-> -.BR netns
-> -.BR NEWMODE
-> +.BR netns/privileged_qkey
-> +.BR NEWMODE/NEWSTATE
+But if that policy is (quite reasonably) MPOL_INTERLEAVE, then ilx must
+be NO_INTERLEAVE_INDEX rather than 0, to provide the same distribution
+as before: move that definition from mempolicy.c to mempolicy.h.
 
-What is this netns/priveleged_qkey syntax? I thought they are
-independent options. If so, the way to express it is:
+Reported-by: Domenico Cerasuolo <mimmocerasuolo@gmail.com>
+Closes: https://lore.kernel.org/linux-mm/74e34633-6060-f5e3-aee-7040d43f2e93@google.com/T/#mf08c877d1884fc7867f9e328cdf02257ff3b3ae9
+Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+Fixes: 48a7bd12d57f ("mempolicy: alloc_pages_mpol() for NUMA policy without vma")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+v2: !CONFIG_NUMA builds with a get_task_policy() added in mempolicy.h
 
-	rdma system set [netns NEWMODE] [privileged_qkey NEWSTATE]
+ include/linux/mempolicy.h | 7 +++++++
+ mm/mempolicy.c            | 2 --
+ mm/zswap.c                | 7 +++++--
+ 3 files changed, 12 insertions(+), 4 deletions(-)
 
-Also, your option is not actually privileged_qkey, but privileged-qkey.
-
->  .ti -8
->  .B rdma system help
->  
->  .SH "DESCRIPTION"
-> -.SS rdma system set - set RDMA subsystem network namespace mode
-> +.SS rdma system set - set RDMA subsystem network namespace mode or privileged qkey mode
->  
-> -.SS rdma system show - display RDMA subsystem network namespace mode
-> +.SS rdma system show - display RDMA subsystem network namespace mode and privileged qkey state
-
-Maybe make it just something like "configure RDMA system settings" or
-whatever the umbrella term is? The next option will certainly have to do
-something, this doesn't scale.
-
-Plus the lines are waaay over 80, even over 90 that I think I've seen
-Stephen or David mention as OK for iproute2 code.
-
->  .PP
->  .I "NEWMODE"
-> @@ -49,12 +49,21 @@ network namespaces is not needed, shared mode can be used.
->  
->  It is preferred to not change the subsystem mode when there is active
->  RDMA traffic running, even though it is supported.
-> +.PP
-> +.I "NEWSTATE"
-> +- specifies the new state of the privileged_qkey parameter. Either enabled or disabled.
-> +Whereas this decides whether a non-privileged user is allowed to specify a controlled
-> +QKEY or not, since such QKEYS are considered privileged.
-> +
-> +When this parameter is enabled, non-privileged users will be allowed to
-> +specify a controlled QKEY.
-
-This is missing syntax notes. One might think that to enable it they
-need to say "enable", but in fact it's "on", and "off" for disabled.
-There should be an "{on | off}" somewhere in there.
-
-Also, line length.
-
-Also, the paragraph is imho a bit long-winded. Maybe make it just this?
-
-	determines whether a non-privileged user is allowed to specify a
-        controlled QKEY or not.
-
->  .SH "EXAMPLES"
->  .PP
->  rdma system show
->  .RS 4
-> -Shows the state of RDMA subsystem network namespace mode on the system.
-> +Shows the state of RDMA subsystem network namespace mode on the system and
-> +the state of privileged qkey parameter.
->  .RE
->  .PP
->  rdma system set netns exclusive
-> @@ -69,6 +78,19 @@ Sets the RDMA subsystem in network namespace shared mode. In this mode RDMA devi
->  are shared among network namespaces.
->  .RE
->  .PP
-> +.PP
-> +rdma system set privileged_qkey enabled
-> +.RS 4
-> +Sets the privileged_qkey parameter to enabled. In this state non-privileged user
-> +is allowed to specify a controlled QKEY.
-> +.RE
-> +.PP
-> +rdma system set privileged_qkey disabled
-> +.RS 4
-> +Sets the privileged_qkey parameter to disabled. In this state non-privileged user
-> +is *not* allowed to specify a controlled QKEY.
-> +.RE
-> +.PP
-
-on | off, not enabled | disabled.
-
->  .SH SEE ALSO
->  .BR rdma (8),
+diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+index 2801d5b0a4e9..931b118336f4 100644
+--- a/include/linux/mempolicy.h
++++ b/include/linux/mempolicy.h
+@@ -17,6 +17,8 @@
+ 
+ struct mm_struct;
+ 
++#define NO_INTERLEAVE_INDEX (-1UL)	/* use task il_prev for interleaving */
++
+ #ifdef CONFIG_NUMA
+ 
+ /*
+@@ -179,6 +181,11 @@ extern bool apply_policy_zone(struct mempolicy *policy, enum zone_type zone);
+ 
+ struct mempolicy {};
+ 
++static inline struct mempolicy *get_task_policy(struct task_struct *p)
++{
++	return NULL;
++}
++
+ static inline bool mpol_equal(struct mempolicy *a, struct mempolicy *b)
+ {
+ 	return true;
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 898ee2e3c85b..989293180eb6 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -114,8 +114,6 @@
+ #define MPOL_MF_INVERT       (MPOL_MF_INTERNAL << 1)	/* Invert check for nodemask */
+ #define MPOL_MF_WRLOCK       (MPOL_MF_INTERNAL << 2)	/* Write-lock walked vmas */
+ 
+-#define NO_INTERLEAVE_INDEX (-1UL)
+-
+ static struct kmem_cache *policy_cache;
+ static struct kmem_cache *sn_cache;
+ 
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 37d2b1cb2ecb..060857adca76 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -24,6 +24,7 @@
+ #include <linux/swap.h>
+ #include <linux/crypto.h>
+ #include <linux/scatterlist.h>
++#include <linux/mempolicy.h>
+ #include <linux/mempool.h>
+ #include <linux/zpool.h>
+ #include <crypto/acompress.h>
+@@ -1057,6 +1058,7 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
+ {
+ 	swp_entry_t swpentry = entry->swpentry;
+ 	struct page *page;
++	struct mempolicy *mpol;
+ 	struct scatterlist input, output;
+ 	struct crypto_acomp_ctx *acomp_ctx;
+ 	struct zpool *pool = zswap_find_zpool(entry);
+@@ -1075,8 +1077,9 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
+ 	}
+ 
+ 	/* try to allocate swap cache page */
+-	page = __read_swap_cache_async(swpentry, GFP_KERNEL, NULL, 0,
+-				       &page_was_allocated);
++	mpol = get_task_policy(current);
++	page = __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
++				NO_INTERLEAVE_INDEX, &page_was_allocated);
+ 	if (!page) {
+ 		ret = -ENOMEM;
+ 		goto fail;
+-- 
+2.35.3
 
