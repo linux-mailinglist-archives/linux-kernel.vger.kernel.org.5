@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D47F7D5C55
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027B47D5C5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 22:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344347AbjJXUUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 16:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
+        id S1344272AbjJXU07 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 24 Oct 2023 16:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344272AbjJXUUh (ORCPT
+        with ESMTP id S1343896AbjJXU06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 16:20:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A45810C9;
-        Tue, 24 Oct 2023 13:20:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CD72C433C7;
-        Tue, 24 Oct 2023 20:20:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698178835;
-        bh=v9hilV1EOfsvRqh2/AHPVIjpQNl7T70xutch3qWr8xo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m7bx9hnDnZV0wyshh0v7/9x3P0ZiifuQbeUNkAo+np7fLiPZ9LB/mK89RYWBxxAhW
-         oloWeUTLwoGGIcm7ns0FY3PLK/hAzso5FnVEheVjTZMzqtZ8ftdmt9cGQYshij8m4E
-         4ZN4i6wz0dwe9QKCDZsDhfbgqzZhFNW6F9NUUNjxVKGR97CGckP8UQFi3dSmq8sZXy
-         qM+fyhnIX+Ah1X1aGZxaa2Jz1i/9FCpdmqjDfQm5Pak3ck/ey0yFeIDlDQfve0V4Lu
-         yOEQcdfhspfg4lF1oOvuZmCo3rr6ZotPXpW7GeCScERO9UWc1Y3cUb2Vr2WUIrXwUd
-         w+qufdCRed7UA==
-Date:   Tue, 24 Oct 2023 22:20:30 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     Peter Korsgaard <peter@korsgaard.com>,
-        Andrew Lunn <andrew@lunn.ch>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: ocores: Move system PM hooks to the NOIRQ phase
-Message-ID: <20231024202030.o3pyswa4css5lnwr@zenone.zhora.eu>
-References: <20230717203857.2626773-1-samuel.holland@sifive.com>
+        Tue, 24 Oct 2023 16:26:58 -0400
+Received: from mail.07d02.mspz7.gob.ec (mail.07d02.mspz7.gob.ec [181.196.186.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E926D7F
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 13:26:55 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.07d02.mspz7.gob.ec (Postfix) with ESMTP id D6648602BCECE;
+        Tue, 24 Oct 2023 15:22:05 -0500 (-05)
+Received: from mail.07d02.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.07d02.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id vK5m4zc9B3nW; Tue, 24 Oct 2023 15:22:05 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.07d02.mspz7.gob.ec (Postfix) with ESMTP id 796C1602BFDD1;
+        Tue, 24 Oct 2023 15:22:05 -0500 (-05)
+X-Virus-Scanned: amavisd-new at 07d02.mspz7.gob.ec
+Received: from mail.07d02.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.07d02.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id U3PzpKa_YiBB; Tue, 24 Oct 2023 15:22:05 -0500 (-05)
+Received: from [192.168.0.171] (unknown [197.210.78.234])
+        by mail.07d02.mspz7.gob.ec (Postfix) with ESMTPSA id 932DA602BF55D;
+        Tue, 24 Oct 2023 15:21:54 -0500 (-05)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230717203857.2626773-1-samuel.holland@sifive.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Good news
+To:     Recipients <janett.yangua@07d02.mspz7.gob.ec>
+From:   "Lisa Robinson" <janett.yangua@07d02.mspz7.gob.ec>
+Date:   Tue, 24 Oct 2023 13:21:43 -0700
+Reply-To: lsarbn01@gmail.com
+Message-Id: <20231024202154.932DA602BF55D@mail.07d02.mspz7.gob.ec>
+X-Spam-Status: Yes, score=5.6 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,
+        MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [181.196.186.147 listed in list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5598]
+        *  0.0 SPF_NONE SPF: sender does not publish an SPF Record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [lsarbn01[at]gmail.com]
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  2.5 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Samuel,
-
-On Mon, Jul 17, 2023 at 01:38:57PM -0700, Samuel Holland wrote:
-> When an I2C device contains a wake IRQ subordinate to a regmap-irq chip,
-> the regmap-irq code must be able to perform I2C transactions during
-> suspend_device_irqs() and resume_device_irqs(). Therefore, the bus must
-> be suspended/resumed during the NOIRQ phase.
-> 
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-
-I think this patch has failed to receive some comments, I'll go
-ahead and give it my blessing:
-
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-
-Thanks,
-Andi
+Your email came out victorious in a random selection and you have been chosen for a cash donation of $950,000.00. Get back for your urgent claim.
