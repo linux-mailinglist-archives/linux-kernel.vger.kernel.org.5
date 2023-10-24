@@ -2,235 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F257D44FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD797D4504
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbjJXBaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 21:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
+        id S231715AbjJXBbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 21:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJXBaN (ORCPT
+        with ESMTP id S230373AbjJXBbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 21:30:13 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE4DDE
-        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 18:30:11 -0700 (PDT)
+        Mon, 23 Oct 2023 21:31:06 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDAD10A;
+        Mon, 23 Oct 2023 18:31:00 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 39O1LSmS032325;
+        Mon, 23 Oct 2023 20:30:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:references:in-reply-to
+        :content-type:content-id:content-transfer-encoding:mime-version;
+         s=PODMain02222019; bh=c9q0I8kRzfpJB4LFximif8d5JDVLEG57pUSp6thCG
+        C4=; b=DhVEmLrpSbve6OKNTRpfBjQASBzakbQLwoYhaRXKcqptwT4Q211+oRMkS
+        smdO2C00Najt1mjn8bgc7GS81/UoXr1PKXEqd/aTbdqDbDGLVUFwiNzZiEuaf4ui
+        NyQC7AEWjn4IB6HaHl7FDnx3yuMvw7mHwY9fTW1l03cXcxJXHJz4SYZloxLa9mtu
+        WEjjrzyQUQbNRiMivKpbZhTvU97PIgpGmzp+hVqCZjrIDNeN0TxaqUR6q7xnkqtG
+        tU8ht3xaj4p94B8PsoYSEFyo1mpGTnd9lajh/Ao8RqVvLUBV9L4avpUvOBE81chz
+        5QD6GOPDEI7AoNzknQkd7rjMesj8w==
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3tvb2j304k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 23 Oct 2023 20:30:53 -0500 (CDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B8iU+e0fwNvvJ/gKYWfy126VL+9av66xAuSgPIJIisgWrjSmMV1fUPnr+rS1oEYn8PyIXcnpj2PdP9vnL0h6RNI+3DsviGIJboqaxO/On/QdcNPmX50IKdm6BdtAgR3mcPizgV8RBWQlTgVGevVAnyylEewlvF8fkha54A1m9oQosH8+JxzSdF/xCgtboPEBNJXDMSvmkV5XTnzJXQsQ77TZeRQYsKhBHzLLlnOYj+STdDdXVRg+LxVS2SnPMmKoRwnVXirN9oWvlVPWjBPmjETFIVbntangNWKITAFVA7gp9QeCvp7l6Jklh9MOJbYJixjAx2R6AGbF7pBPi0z00w==
+ b=kRbQobKHjJDlqsX5vGUU2P+kXNnU+rkpIYwyQk8VgE/xQM1kxuL+yQjRdWlQoieW9TgJfuQcZ581BiaO399rfWlYVGoRIjeWVLolN5LVPty5JgOz+Oixxd9wZyv+Veb7AczdB9MOhNQ4m17Zqic+hSTMTZ44bgT5U80+QquEZAV5ZUg5S7BMVpyQPkx72ZWenUfqZzS77Wl5vY+bM9gmUcxfN5aFHqu71DWPPq3oZxfqXFmArmxIRlmdwxn2OHXMHqBPubpw7NbKfplm1vhCBgwv+LUgchR2O243E1eZ4MWO95CcYeAU6i5AENQLhhOrOqUjdJQTheeaQMYRk8cwZg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AVWTRdAFrAoQUfm3ho3E57DlF9pc42pbnKcxTtyJDkU=;
- b=JbIMZY0wWHH8Xc1EtEf+aY+d7yUsvQ0s8h6NkJL+q16/khnRkpb8BRGk2Z1mOMRTksIWsSkoOGIm6ApWCRRtUK+31xbWexEYu2KFFm0MqLNsSSH70AsToP+HOu4Y83D/x7xavRM3vV0vq0S13VBe5fhMiZRFoPobEybn+oV0vZv4J1u4jWTIv4Iq0j5RKNhxzpeXV5lr0SItka6ohVTR9rcmCx4AWNMbWu6AzEr5YNtc+ZP67HG5QIZSVFx9E7lYHyGW8auO8m4N6DElslRVi9TG7mHqAlJgZOaL2V/zuByPygAXoiK/p3kA7FQb+UhOrtxFWcec0K0OQjyzCEeBxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=c9q0I8kRzfpJB4LFximif8d5JDVLEG57pUSp6thCGC4=;
+ b=FYtxkU0VL9Q9ZHMBRqOXH4ykPhNq470+U5EZFo7XgQeq38uVghJm9TSd4C/1zapgm3STFnyGkLHLUVIddZcoTO1R30idkMMByY4sYWzcfH3WSofpnzp2Kmj8uts0c8V6GQ6KobVwzYNIqoqoTtt56MKN+sEAdgy06z1QKI7p0pXamD68QuOo3JgEnxt0DM/KQ7lk4cU5/naAjG/1snoaFsJaWfMGv0rLWo/8d7IVabxSgouMozC3mtPwDvgKu1F4GTSIdnl1VZsNR0JtSOh6Cm6GdGamGCGEtiSXEUIM09htghfTMXi8Gz2VgzB/Ziyv0d7zX2bv6UFChsqXQZH9Ag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cirrus.com; dmarc=pass action=none header.from=cirrus.com;
+ dkim=pass header.d=cirrus.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=cirrus4.onmicrosoft.com; s=selector2-cirrus4-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AVWTRdAFrAoQUfm3ho3E57DlF9pc42pbnKcxTtyJDkU=;
- b=CtkqnY6OFe5xYfLptiwLaHGVoWL/T5HKOrAbNr44o31LbZlQ9kbbpxqTY0+XZEteEDVijPicFsAckUrhdUiY/0fScttRIC0V+FyKgYgWR+mw9HjjfBVUDZ+YL143NUNHrraIHrGNJbQfjkrmmxmUyGCRSpy71qGZjSLJ2Qi+BD1C/oQ2sFHl9zauluMJXWTgpNhBbG4tU1m3Y/rYKXuagehhEd8zv/VRG7f2fY7ZiuyaUY8jYGy8iSICMafmJko8Xndc93vqCiXUBj85W/IiNplOqdiHDVqh/28402aABCGP3Q0qNPwgDfSQRioNvd3XVKAMhHf6LS5ZtXf+r5OjuA==
-Received: from DS7PR03CA0097.namprd03.prod.outlook.com (2603:10b6:5:3b7::12)
- by CY8PR12MB7436.namprd12.prod.outlook.com (2603:10b6:930:50::17) with
+ bh=c9q0I8kRzfpJB4LFximif8d5JDVLEG57pUSp6thCGC4=;
+ b=TBxWvjtfG6hwLg5W2cjMbheoRKtyeXONF79ABKw3bc6pqgmNfhk0XfW1vGxPydzOlCS1FbvBG9ns+RzzFUAh117R6F+Z993ua2i8/qbE2x9xU2z6fIqWivhoFVMRb/rg5KZ5H6zXTVlwbi1xNXMJ3WxrMnGSsDwI1Y//zVcVOuE=
+Received: from BN8PR19MB3057.namprd19.prod.outlook.com (2603:10b6:408:95::13)
+ by CH3PR19MB7660.namprd19.prod.outlook.com (2603:10b6:610:120::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
- 2023 01:30:08 +0000
-Received: from DS3PEPF000099E1.namprd04.prod.outlook.com
- (2603:10b6:5:3b7:cafe::83) by DS7PR03CA0097.outlook.office365.com
- (2603:10b6:5:3b7::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33 via Frontend
- Transport; Tue, 24 Oct 2023 01:30:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- DS3PEPF000099E1.mail.protection.outlook.com (10.167.17.196) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.18 via Frontend Transport; Tue, 24 Oct 2023 01:30:08 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 23 Oct
- 2023 18:30:01 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 23 Oct
- 2023 18:30:00 -0700
-Received: from Asurada-Nvidia.nvidia.com (10.127.8.12) by mail.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Mon, 23 Oct 2023 18:30:00 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     <jgg@nvidia.com>, <kevin.tian@intel.com>
-CC:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
-        <baolu.lu@linux.intel.com>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <yi.l.liu@intel.com>
-Subject: [PATCH v4] iommufd: Only enforce cache coherency in iommufd_hw_pagetable_alloc
-Date:   Mon, 23 Oct 2023 18:29:58 -0700
-Message-ID: <20231024012958.30842-1-nicolinc@nvidia.com>
-X-Mailer: git-send-email 2.42.0
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Tue, 24 Oct
+ 2023 01:30:45 +0000
+Received: from BN8PR19MB3057.namprd19.prod.outlook.com
+ ([fe80::8a74:6925:435d:19a5]) by BN8PR19MB3057.namprd19.prod.outlook.com
+ ([fe80::8a74:6925:435d:19a5%6]) with mapi id 15.20.6907.025; Tue, 24 Oct 2023
+ 01:30:45 +0000
+From:   James Ogletree <James.Ogletree@cirrus.com>
+To:     Jeff LaBundy <jeff@labundy.com>
+CC:     Lee Jones <lee@kernel.org>,
+        James Ogletree <james.ogletree@opensource.cirrus.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Fred Treven <Fred.Treven@cirrus.com>,
+        Ben Bright <Ben.Bright@cirrus.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 3/4] mfd: cs40l50: Add support for CS40L50 core driver
+Thread-Topic: [PATCH v4 3/4] mfd: cs40l50: Add support for CS40L50 core driver
+Thread-Index: AQHaAeyf+2JrjyX4UUi0J9ryDkVps7BRTXqAgAGFxACABE1RAIABCOAAgAAGFQA=
+Date:   Tue, 24 Oct 2023 01:30:44 +0000
+Message-ID: <D8025A8C-8259-4EB0-8F08-7BF8B2E9350D@cirrus.com>
+References: <20231018175726.3879955-1-james.ogletree@opensource.cirrus.com>
+ <20231018175726.3879955-4-james.ogletree@opensource.cirrus.com>
+ <20231019162359.GF2424087@google.com>
+ <E3224624-7FF4-48F6-BA53-08312B69EF9F@cirrus.com>
+ <20231023092046.GA8909@google.com> <ZTcZIMbrFEhz+rm4@nixie71>
+In-Reply-To: <ZTcZIMbrFEhz+rm4@nixie71>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN8PR19MB3057:EE_|CH3PR19MB7660:EE_
+x-ms-office365-filtering-correlation-id: 02860591-3d00-463a-2242-08dbd430d7b5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: jLbFHPeJwLCqYXAOeDzPzFFG+mwrqDhL8I/HUWAjH6Ebb8l8NDkKuMn0qsSLEuL9mkKaAKf70vgBrCTDie0/+gaH82W6BDSncu4lLQ8q1cgjERvw8EB8ragjkCtbRNe+VYdAY5IYsOtCk1q+KDy5kdEltvr/cuWWaTPLdQ2YCt8QTI53bVDCEs4l+xZEsDsARuJidI3x7hKg07uvcXQF2W5JdlorJ8ob1h66SsM5c5ibZR/GtMT5u6MMYelidpDpvrXP0eTySzKZ8Tl01KfkKzG0pgskjuZ+YZ2Jih3FKqB4bZqZJPqq3lRHsuTk26xzvaLY4i9mJLvW7+tXbUJEFRmU3tjbTFUTgFULhoVpipUs+mqRGvoir54J6LF6Mf+LVtmxCBVbRC2GDZaJo51Jev9q4kwpL4ENSHLwapSieKSsug/ZGfYhUl4FprW7lZY6n5n9Pk04hilbithTeoBq0lJy3Ye96j+l+D4gkBaXxgR53QT6xouNnoV9DL/XfMkmlXghnum33O82iKilGMRD5zDcaXHXgz6a1dm8hlv0NYaTUm8yI3sCZxuaObOs03AqGe+DHCVjMwlP0YghvNBfI6mO7rQs4nTqWzbDbnJyQ2bFuKfyJthLD2OPYIBbmrW26ELRxfIhyHVP5JL7Gqj9Dw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR19MB3057.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39850400004)(376002)(366004)(346002)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(8676002)(6916009)(86362001)(66946007)(66476007)(54906003)(66556008)(64756008)(316002)(478600001)(33656002)(6486002)(71200400001)(76116006)(91956017)(8936002)(66446008)(41300700001)(2906002)(4326008)(122000001)(53546011)(36756003)(6506007)(38100700002)(2616005)(26005)(6512007)(83380400001)(5660300002)(38070700009)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?j4MvfB7SPKRrLa9gF7o5wupWlPAntnTOn1ncAaugXlmDtTGjtxko153R3c1m?=
+ =?us-ascii?Q?bRQYmpltdhRFGU6D+sd8PaLSBUxFc86jz5+miDc/HNw059K+LVi2H2DGRMYZ?=
+ =?us-ascii?Q?2MFAyKfCzMGd+zEJpCZNTtTe0rR89vFPAOQMCJtoAT7ANR9lQcTqf1NOVNYe?=
+ =?us-ascii?Q?cp1LlcMwyNz5pMALjf/dkODnMO8VaUEcfsQM87Cl5iZSZtpS2B3L/yTGkKtM?=
+ =?us-ascii?Q?qdmUt/4jnW+EiHImafDuy/8SdDzUj+FeO/Enn0P6sLTLejHFt7Yes0l8S1a1?=
+ =?us-ascii?Q?sKRGfbgdOmFauI9dS8dutVpFIV9PpX4hh4JgF0Ftl9YBVWjwnC1++ZUiIbjK?=
+ =?us-ascii?Q?gG22dxc3KJSJociiJnoxpTSqRB+qDz3z9TBgBazYngfCmF6pAiAPS2+Ax8B9?=
+ =?us-ascii?Q?ykP3RicEZA2x9eJFcGOtnLpG93Teq5uhZb5hq610RXhnD2i7741TrN72Ur2s?=
+ =?us-ascii?Q?nPPL8egyluBVtEEszbYjJ3g5Ao0mv1bwgy+84Ca0Qs08g8c+VTI873joNBxs?=
+ =?us-ascii?Q?4mNzQ3RZfkUeStoJLCoZbjfkBGCTKPe6FK/DZwYldHOfBdJ3Yr/kJ7i7zEtX?=
+ =?us-ascii?Q?ZWH4wjPya16yAGYycaU2SJCasbi5hfh/DHNjMUWbpA85zr5e6kNRCD81owgV?=
+ =?us-ascii?Q?5pj7kylMjfG7mXmWkR9for7um0G7O1e9zMSi5kWBSpSG6dru2rI+CAb5rKrL?=
+ =?us-ascii?Q?j/FHpnPkk0Sh4FZZ9/1TJo7qziMnzisZ1OjoYzrxuYVvzcq99DZ+EqYQ7MjY?=
+ =?us-ascii?Q?lxeNBsAI7wpCxHKQ7S4MELCZMiVssMIcR5/AiOiF9lT1grn5o6QfUjAGbfeB?=
+ =?us-ascii?Q?N7+k0PFFaPsfiSxhDaGmKKWVtO2GtgJ/UwYEv4kn8soyIS5fkJN8nkouoVNK?=
+ =?us-ascii?Q?1M6Z9leE1g1cpx/lWr4YG2kxYVQYhChViSaByaBprflKot+/yTgMFki9louz?=
+ =?us-ascii?Q?GgGg+T5ajV5BIjEcgubGwjIp9RHfjF7TAVX+Qp6sAyrPVu0SHoyoulb5n8yH?=
+ =?us-ascii?Q?TzX8aZovoImnfyvBIcB7ySgJtk8UTUvNSXTVrXBmXXkWD3ir8icwj/HT3aRn?=
+ =?us-ascii?Q?zPTG82puYc+MxTQuWhe652MP46GFVKR7H47qCvaLanC3xLwJ91w2prHGHepY?=
+ =?us-ascii?Q?fmnXsON7yDl4s9sYSP2V6AOKpLaOOw7D2Ze1xDorAL0XNlq/tzyMWNEAjbRk?=
+ =?us-ascii?Q?2WvvHuqV4w9CcDB/BGe6OfgPVrZhgQgPaTP780vvptsNUW0P9aIYzK3WWkmZ?=
+ =?us-ascii?Q?PSX7RuPwRxZDMjqL/f/AhbBh1nEuE5ye2r2mjCWnQ5CZzej2rhl2v8Uxvu6Y?=
+ =?us-ascii?Q?nHE8v4/MKPszwQ7TFVGP4IWyWHcgaLhfRbVX58VYGVR0FD0tGXwTmOAM1rXf?=
+ =?us-ascii?Q?LBsyYPJbuScDv2MVwYgbXbTz50RY8ok1dnnCI9lAo0A71C4pzAwpRzB9eHRg?=
+ =?us-ascii?Q?wEdFxL1VxwVWAZwHZ/vdRyDYiIDaTB/hhuwaTPI9aqSUi25xJ72n12M8sRgy?=
+ =?us-ascii?Q?UEOp9TFk38teoC06reZMGG44SJBevHaZ3oXx2WLv7H+9XYcuto55eBYyu9/F?=
+ =?us-ascii?Q?kzEuBh2ksGdips/MKHsR9+EG6BpKnhm/NDCNygWng9iqD7Ay4ywnNZgaJQEY?=
+ =?us-ascii?Q?xA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C261B374B23D534EA78EB613F8831779@namprd19.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099E1:EE_|CY8PR12MB7436:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3226a8eb-9741-47e6-a86b-08dbd430c208
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gRAFVgAolFff8TZCcGWW02GvaiDNqBCEykMFxlUjCyX+T58060PTGKuuIA2NnFm+NQarSMIr0Qg1laYevp6RPVeYXByklkfSd9nCvZ576dLc/F7ratr44EGa8hf99BHRrxrr/TMJr91KDKS79oUH1b0Y+GNrsmNO5FKXvX0A5FHawRCKnrX48TUdHlENKAmEbJYfsotj2jYX6ibGICwlB4y16eDL7/iQcX/a+rhfA224GViJjjKQ+cAXpvYtGDnejmR902fw6mOLwPi6fBPL7Sv7Wd0gK+V9gJHwb5rXbNwoFZ34/iaEjEl8PeGXf6cQJ5m+4aV0HtVSbingPadekSWscdJyS2N3pHLL3Qqrti0S8fpiuwYznYvbKDKh7RkuaBjmiXS3bvEfNwbv4bZ6sMujK9ykSDCmHc0KRoUcgdqdO1pWceOyVKeKPCVIDRX1vl1lWMoFmDH3XyXnMajA7AFEYnHkOlTghd5kSZ3E/amOqZQDMTuXMFE7bHUCpppX/0nIvJkb4fWz8eipmGa9zghyhXDaEpQj69I8v+/rFEBkisOJQhXaMkAuCxgRHbOws+MNflSv0n397i7Evooxb5VeLY1AYoasx7Pwa6mnSJosULSlUU7A/DsVPt9mDl6ESPSxvb0lmpGAiog59WYU5kBClFBicSS6jtLZsbSv9z7XW4dgxDln8Xez2/6eQFe/j1C5yPWd2amvQjAHp3F62gMiYQg6E88otIdxEill2Qresa6b80620VZcXWfTfPOl4WluW9l0LtDVelqtUNkuKROS3UrJEFpS+z9j7p8ndqD/zAt9j6YJQ4Sc/LfvOTHv
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(136003)(39860400002)(376002)(230922051799003)(64100799003)(1800799009)(82310400011)(451199024)(186009)(36840700001)(40470700004)(46966006)(36756003)(70206006)(4326008)(8676002)(8936002)(5660300002)(86362001)(966005)(41300700001)(316002)(70586007)(54906003)(110136005)(478600001)(2906002)(7636003)(36860700001)(356005)(82740400003)(2616005)(1076003)(7696005)(26005)(47076005)(83380400001)(426003)(336012)(40480700001)(40460700003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 01:30:08.0360
+X-OriginatorOrg: cirrus.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR19MB3057.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02860591-3d00-463a-2242-08dbd430d7b5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2023 01:30:44.5180
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3226a8eb-9741-47e6-a86b-08dbd430c208
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099E1.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7436
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bec09025-e5bc-40d1-a355-8e955c307de8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: m7K4TxCfLTqL19VKJIm8ee4U/tw59XYshcqd2+EvXglgyL1hLEkc21QO7eCGhUOjupvv9XyWPNMeRIfievRNduGbUC65ETlQ81qr34GRFAY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR19MB7660
+X-Proofpoint-GUID: laJy4LmgSwjkIrTv_BWCNJb7z7WCqDxk
+X-Proofpoint-ORIG-GUID: laJy4LmgSwjkIrTv_BWCNJb7z7WCqDxk
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the conversation in the following link:
-https://lore.kernel.org/linux-iommu/20231020135501.GG3952@nvidia.com/
 
-The enforce_cache_coherency should be set/enforced in the hwpt allocation
-routine. The iommu driver in its attach_dev() op should decide whether to
-reject or not a device that doesn't match with the configuration of cache
-coherency. Drop the enforce_cache_coherency piece in the attach/replace()
-and move the remaining "num_devices" piece closer to the refcount that is
-using it.
 
-Accordingly drop its function prototype in the header and mark it static.
-Also add some extra comments to clarify the expected behaviors.
+> On Oct 23, 2023, at 8:08 PM, Jeff LaBundy <jeff@labundy.com> wrote:
+>=20
+>>>> Should the last two drivers live in drivers/mailbox?
+>>>=20
+>>> Adopting the mailbox framework seems like an excessive amount
+>>> of overhead for our requirements.
+>>=20
+>> MFD isn't a dumping a ground for miscellaneous functionality.
+>>=20
+>> MFD requests resources and registers devices.
+>>=20
+>> Mailbox functionality should live in drivers/mailbox.
+>=20
+> I think this is just a misnomer; the code uses the terms "mailbox" and
+> "mbox" throughout because the relevant registers are named as such in
+> the datasheet.
+>=20
+> Please correct me James, but I believe the datasheet uses this language
+> because both the host and the part itself have write access, meaning the
+> part may write a status code to the register after the host writes that
+> same register. There is no relation to IPC or the mbox subsystem.
+>=20
+> That being said, some of the functions currently placed in this MFD,
+> namely those related to haptic motor properties (e.g. f0 and ReDC), do
+> seem more appropriate for the input/FF child device. My understanding
+> is that those functions serve only momentary haptic click effects and
+> not the I2S streaming case; please let me know if I have misunderstood.
+>=20
+> I understand that no customer would ever build the to-be-added codec
+> driver _without_ the input driver, but the MFD must be generic enough
+> to support this case. Would a codec-only implementation use f0 and ReDC
+> estimation? If so, then these functions _do_ belong in the MFD, albeit
+> with some comments to explain their nature.
 
-Suggested-by: Kevin Tian <kevin.tian@intel.com>
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
----
-Changelog
-v4:
- * Fixed a typo in commit log
- * Added Reviewed-by from Kevin
-v3:
- * Reworked the first line of the added commets.
-v2: https://lore.kernel.org/all/20231023035733.27378-1-nicolinc@nvidia.com/
- * Dropped "fixes" tags and merged two patches into one (Jason)
- * Added comments to the remaining enforce_cache_coherency call (Jason)
-   [Please feel free to rephrase, or let me know what to change.]
- * Replace "num_devices++" with list_for_each_entry (Baolu)
-v1: https://lore.kernel.org/all/cover.1697848510.git.nicolinc@nvidia.com/
- drivers/iommu/iommufd/device.c          | 20 ++------------------
- drivers/iommu/iommufd/hw_pagetable.c    |  9 ++++++++-
- drivers/iommu/iommufd/iommufd_private.h |  1 -
- 3 files changed, 10 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
-index 2a41fd2b6ef8..0a8867487508 100644
---- a/drivers/iommu/iommufd/device.c
-+++ b/drivers/iommu/iommufd/device.c
-@@ -337,13 +337,6 @@ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
- 		goto err_unlock;
- 	}
- 
--	/* Try to upgrade the domain we have */
--	if (idev->enforce_cache_coherency) {
--		rc = iommufd_hw_pagetable_enforce_cc(hwpt);
--		if (rc)
--			goto err_unlock;
--	}
--
- 	rc = iopt_table_enforce_dev_resv_regions(&hwpt->ioas->iopt, idev->dev,
- 						 &idev->igroup->sw_msi_start);
- 	if (rc)
-@@ -413,8 +406,8 @@ iommufd_device_do_replace(struct iommufd_device *idev,
- {
- 	struct iommufd_group *igroup = idev->igroup;
- 	struct iommufd_hw_pagetable *old_hwpt;
--	unsigned int num_devices = 0;
- 	struct iommufd_device *cur;
-+	unsigned int num_devices;
- 	int rc;
- 
- 	mutex_lock(&idev->igroup->lock);
-@@ -429,16 +422,6 @@ iommufd_device_do_replace(struct iommufd_device *idev,
- 		return NULL;
- 	}
- 
--	/* Try to upgrade the domain we have */
--	list_for_each_entry(cur, &igroup->device_list, group_item) {
--		num_devices++;
--		if (cur->enforce_cache_coherency) {
--			rc = iommufd_hw_pagetable_enforce_cc(hwpt);
--			if (rc)
--				goto err_unlock;
--		}
--	}
--
- 	old_hwpt = igroup->hwpt;
- 	if (hwpt->ioas != old_hwpt->ioas) {
- 		list_for_each_entry(cur, &igroup->device_list, group_item) {
-@@ -465,6 +448,7 @@ iommufd_device_do_replace(struct iommufd_device *idev,
- 
- 	igroup->hwpt = hwpt;
- 
-+	num_devices = list_count_nodes(&igroup->device_list);
- 	/*
- 	 * Move the refcounts held by the device_list to the new hwpt. Retain a
- 	 * refcount for this thread as the caller will free it.
-diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
-index fbfab638efea..2c55b808eed5 100644
---- a/drivers/iommu/iommufd/hw_pagetable.c
-+++ b/drivers/iommu/iommufd/hw_pagetable.c
-@@ -42,7 +42,7 @@ void iommufd_hw_pagetable_abort(struct iommufd_object *obj)
- 	iommufd_hw_pagetable_destroy(obj);
- }
- 
--int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt)
-+static int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt)
- {
- 	if (hwpt->enforce_cache_coherency)
- 		return 0;
-@@ -116,6 +116,13 @@ iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
- 	 * doing any maps. It is an iommu driver bug to report
- 	 * IOMMU_CAP_ENFORCE_CACHE_COHERENCY but fail enforce_cache_coherency on
- 	 * a new domain.
-+	 *
-+	 * The cache coherency mode must be configured here and unchanged later.
-+	 * Note that a HWPT (non-CC) created for a device (non-CC) can be later
-+	 * reused by another device (either non-CC or CC). However, A HWPT (CC)
-+	 * created for a device (CC) cannot be reused by another device (non-CC)
-+	 * but only devices (CC). Instead user space in this case would need to
-+	 * allocate a separate HWPT (non-CC).
- 	 */
- 	if (idev->enforce_cache_coherency) {
- 		rc = iommufd_hw_pagetable_enforce_cc(hwpt);
-diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
-index 1cc429a5227b..44828bba9e2c 100644
---- a/drivers/iommu/iommufd/iommufd_private.h
-+++ b/drivers/iommu/iommufd/iommufd_private.h
-@@ -266,7 +266,6 @@ struct iommufd_hw_pagetable *
- iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
- 			   struct iommufd_device *idev, u32 flags,
- 			   bool immediate_attach);
--int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt);
- int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
- 				struct iommufd_device *idev);
- struct iommufd_hw_pagetable *
--- 
-2.42.0
-
+Thank you for the clarifications, Jeff, and you are correct on all counts.
+I see that I spoke before having a good enough grasp on the mailbox
+framework. As regards the codec-only use case, they would not be used.
+So those functions do belong in the input driver.
