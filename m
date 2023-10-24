@@ -2,65 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3BE7D577E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061507D5780
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344082AbjJXQKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:10:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
+        id S1343960AbjJXQKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234286AbjJXQKE (ORCPT
+        with ESMTP id S234941AbjJXQKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:10:04 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 89D8910C2
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:10:00 -0700 (PDT)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 39OG9dT3004051;
-        Tue, 24 Oct 2023 18:09:39 +0200
-Date:   Tue, 24 Oct 2023 18:09:39 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Tue, 24 Oct 2023 12:10:21 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B652383;
+        Tue, 24 Oct 2023 09:10:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1698163817; bh=BGpGXa2le8JndayrpdMF4iQUDz4daWsh8s0cPrtB72I=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=ICCzYNDRGQwF9QhydliHxDt5L9j/Iigbw7rF2/9gYCgKRkj6mG3TKDqyMlGu/QVnr
+         W4V1dC8BvhL4B+MAr0yA5NOOKLQUguM28eGBlZXnFu1PPsPVmcVg2WbwHzd5ewiOB1
+         reCg/zrTIf9clY1sVTcg8onudIXQg3W3x/s4Id3Q=
+Date:   Tue, 24 Oct 2023 18:09:59 +0200 (GMT+02:00)
+From:   =?UTF-8?Q?Thomas_Wei=C3=9Fschuh_?= <thomas@t-8ch.de>
+To:     Willy Tarreau <w@1wt.eu>, Zhangjin Wu <falcon@tinylab.org>
+Cc:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] tools/nolibc: Use linux/wait.h rather than
- duplicating it
-Message-ID: <ZTfsQw3T5VP/LXQv@1wt.eu>
-References: <20231023-nolibc-waitpid-flags-v2-1-b09d096f091f@kernel.org>
- <d5d7dcdf-11d7-4bfb-9aeb-c440394ddfc4@t-8ch.de>
+Message-ID: <2fc4054a-ab4f-40c8-b378-1423751031f5@t-8ch.de>
+In-Reply-To: <20231022093117.GE2669@1wt.eu>
+References: <20231010-nolibc-out-of-tree-v1-0-b6a263859596@weissschuh.net> <20231010-nolibc-out-of-tree-v1-4-b6a263859596@weissschuh.net> <20231022093117.GE2669@1wt.eu>
+Subject: Re: [PATCH 4/5] selftests/nolibc: support out-of-tree builds
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d5d7dcdf-11d7-4bfb-9aeb-c440394ddfc4@t-8ch.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Correlation-ID: <2fc4054a-ab4f-40c8-b378-1423751031f5@t-8ch.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 05:59:13PM +0200, Thomas Weiﬂschuh  wrote:
-> Thanks!
-> 
-> Oct 23, 2023 20:42:52 Mark Brown <broonie@kernel.org>:
-> 
-> > Linux defines a few custom flags for waitpid() which aren't currently
-> > provided by nolibc, make them available to nolibc based programs by just
-> > including linux/wait.h where they are defined instead of defining our
-> > own copy of the flags.
-> >
-> > Signed-off-by: Mark Brown <broonie@kernel.org>
-> 
-> Acked-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> 
-> I can apply it, but only next week.
+Oct 22, 2023 11:31:32 Willy Tarreau <w@1wt.eu>:
 
-Yeah I'm fine as well, thanks Mark for this. I'm still too short on
-time these days but if I manage to upload it sooner, I'll let you know.
+> On Tue, Oct 10, 2023 at 02:33:59PM +0200, Thomas Wei=C3=9Fschuh wrote:
+>> Out of tree builds are much more convenient when building for multiple
+>> architectures or configurations in parallel.
+>>
+>> Only absolute O=3D parameters are supported as Makefile.include will
+>> always resolve relative paths in relation to $(srctree) instead of the
+>> current directory.
+>>
+>> Add a call to "make outputmakefile" to verify that the sourcetree is
+>> clean.
+>
+> At first this worried me, I thought you meant clean in the git meaning,
+> but it's clean as in "make clean" from what I'm seeing. Yeah that sounds
+> reasonable.
+>
+>> This is based on Zhangjins out-of-tree patch.
+>> It extends that work for get_init_cpio support and also drops relative
+>> O=3D specifications explicitly.
+>
+> Yeah I remember these discussions about these shortcomings, that's
+> pretty reasonable.
+>
+>> Link: https://lore.kernel.org/lkml/06d96bd81fe812a9718098a383678ad3beba9=
+8b1.1691215074.git.falcon@tinylab.org/
+>> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+> (...)
+>
+> I think you should add a Suggested-by at least since Zhangjin attempted
+> that work quite a few times already and allowed to make progress in that
+> direction (maybe even co-developed, I'm not sure).
+
+Indeed. For a proper Co-developed-by I also need
+a Signed-off-by by Zhangjin.
+
+Zhangjin, are you fine with giving me one for this
+patch?
+
+> Acked-by: Willy Tarreau <w@1wt.eu>
 
 Thanks!
-Willy
