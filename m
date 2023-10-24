@@ -2,197 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E397D4A5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0E67D4A62
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232119AbjJXIg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
+        id S230009AbjJXIgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233986AbjJXIgM (ORCPT
+        with ESMTP id S233705AbjJXIgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:36:12 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EDF1706;
-        Tue, 24 Oct 2023 01:36:09 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9be1ee3dc86so603233866b.1;
-        Tue, 24 Oct 2023 01:36:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698136567; x=1698741367; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bOL8OCLqjFGqywLwDSWAmh+dAQIlEiXw7hC0l8+jRxo=;
-        b=JOUk6tPJAEn/j07VqQxgRMH/FWm6l/WKdEpsfobgOO3+cpk6keAhA9C3P388tUmUl6
-         BiqbWpUVHKU/siLx3Y/cFeZgOA5EyJ27GqeXvE+iKIrDyizVr5I3UtGXQEbAFdDZqZkZ
-         1SS67B9qnyL+Fv8njR6nmmQ22EGDnhudtTqntyBh6235I1f86choi5jb69ITZcI6HeiT
-         BpDGQtLH5A4zIPXEIgbfoG73CK+aHIVuZZN+MePteS8pNYGSfyPUp1gDw0nRRMBp09dA
-         KTmTJbrSYlGlKJTzY9JjBEH3faY+CHoIFgpRe+jM8yjbhf1bd91w8luUjrhsKOTJerd8
-         l6xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698136567; x=1698741367;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bOL8OCLqjFGqywLwDSWAmh+dAQIlEiXw7hC0l8+jRxo=;
-        b=Mgj9hRyhivh/FJG/TAdovuY+wMawns72URmntXhEuqbspwshXJvAg4celWjZLnK2cd
-         o7xKSQpobfZ2IR48s7TtpOnKq5fOyRMWVB3d/a2LzrtsK+GIyt+NFKqRB5pAiNE3P4sO
-         +raAQ4XjZgMkBuueYsQJtOFm5NwzJoPZHEr5Jn1BNs904PtBoAmpd7lWLkhrx14/khcK
-         u43zC9ZXFZG+RJHSRmZPiPC1ryq3ZOmJEQiIDFm9y+ZXRQhlBYlyHiVdKBHytHJ1cyW8
-         WAmxM3KNK+imBz15TUyDdjkJz1U0I0+kTUsMl/lXPCe+vuljjHOyYLuI67KhPeETWPGa
-         9YCg==
-X-Gm-Message-State: AOJu0YxJHoD9eBzUCVWqUT2Zlr80fSLJxiunWHXmJ1BX3XhvCrUEinav
-        /4ZX4UFTnhbCh88NFAb34JE=
-X-Google-Smtp-Source: AGHT+IE/+goi/QlzSPGPwR+JAiu6ej3sLV3ACqYSpeOyeVBjBfuuH3B887h/XwfSfKD/8SsfgKyMuw==
-X-Received: by 2002:a17:907:1ca4:b0:9bf:5696:9155 with SMTP id nb36-20020a1709071ca400b009bf56969155mr9120278ejc.8.1698136567548;
-        Tue, 24 Oct 2023 01:36:07 -0700 (PDT)
-Received: from gmail.com (1F2EF1E7.nat.pool.telekom.hu. [31.46.241.231])
-        by smtp.gmail.com with ESMTPSA id n13-20020a17090673cd00b009b65a834dd6sm7950738ejl.215.2023.10.24.01.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 01:36:07 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 24 Oct 2023 10:36:04 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pm@vger.kernel.org, rafael@kernel.org,
-        pavel@ucw.cz, linux-perf-users@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 1/2] x86: Enable x2apic during resume from suspend if
- used previously
-Message-ID: <ZTeB9K4NYu1sRiZ1@gmail.com>
-References: <20231023160018.164054-1-mario.limonciello@amd.com>
- <20231023160018.164054-2-mario.limonciello@amd.com>
+        Tue, 24 Oct 2023 04:36:35 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9351910C6;
+        Tue, 24 Oct 2023 01:36:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99A69C433C7;
+        Tue, 24 Oct 2023 08:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698136591;
+        bh=VGwUu7FzzH7r/7ogFyc/mTwV5Aan2WfqrEhp54ZJT8w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WBKAL5VWdpB2Hu/G7ArFl44B2BKSAdrR3i114u2EesB8I0TnWX/eDUkbKrFJUma13
+         +bpK/mfzo5mBk7R2B+V6ZNBbobFoLWQgvVAIlNrWkRyDLu3x2ArnPniI2docSYNM67
+         Kknz8hW2DuPslCfYLpxRjKC0e7+R/eOcK8vpj7jI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: [PATCH 4.14 00/65] 4.14.328-rc2 review
+Date:   Tue, 24 Oct 2023 10:36:27 +0200
+Message-ID: <20231024083251.452724764@linuxfoundation.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023160018.164054-2-mario.limonciello@amd.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.328-rc2.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.14.328-rc2
+X-KernelTest-Deadline: 2023-10-26T08:32+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is the start of the stable review cycle for the 4.14.328 release.
+There are 65 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-* Mario Limonciello <mario.limonciello@amd.com> wrote:
+Responses should be made by Thu, 26 Oct 2023 08:32:31 +0000.
+Anything received after that time might be too late.
 
-> If x2apic was enabled during boot with parallel startup
-> it will be needed during resume from suspend to ram as well.
-> 
-> Store whether to enable into the smpboot_control global variable
-> and during startup re-enable it if necessary.
-> 
-> Cc: stable@vger.kernel.org # 6.5+
-> Fixes: 0c7ffa32dbd6 ("x86/smpboot/64: Implement arch_cpuhp_init_parallel_bringup() and enable it")
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
->  arch/x86/include/asm/smp.h   |  1 +
->  arch/x86/kernel/acpi/sleep.c | 12 ++++++++----
->  arch/x86/kernel/head_64.S    | 15 +++++++++++++++
->  3 files changed, 24 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-> index c31c633419fe..86584ffaebc3 100644
-> --- a/arch/x86/include/asm/smp.h
-> +++ b/arch/x86/include/asm/smp.h
-> @@ -190,6 +190,7 @@ extern unsigned long apic_mmio_base;
->  #endif /* !__ASSEMBLY__ */
->  
->  /* Control bits for startup_64 */
-> +#define STARTUP_ENABLE_X2APIC	0x40000000
->  #define STARTUP_READ_APICID	0x80000000
->  
->  /* Top 8 bits are reserved for control */
-> diff --git a/arch/x86/kernel/acpi/sleep.c b/arch/x86/kernel/acpi/sleep.c
-> index 6dfecb27b846..29734a1299f6 100644
-> --- a/arch/x86/kernel/acpi/sleep.c
-> +++ b/arch/x86/kernel/acpi/sleep.c
-> @@ -11,6 +11,7 @@
->  #include <linux/dmi.h>
->  #include <linux/cpumask.h>
->  #include <linux/pgtable.h>
-> +#include <asm/apic.h>
->  #include <asm/segment.h>
->  #include <asm/desc.h>
->  #include <asm/cacheflush.h>
-> @@ -129,11 +130,14 @@ int x86_acpi_suspend_lowlevel(void)
->  	 */
->  	current->thread.sp = (unsigned long)temp_stack + sizeof(temp_stack);
->  	/*
-> -	 * Ensure the CPU knows which one it is when it comes back, if
-> -	 * it isn't in parallel mode and expected to work that out for
-> -	 * itself.
-> +	 * Ensure x2apic is re-enabled if necessary and the CPU knows which
-> +	 * one it is when it comes back, if it isn't in parallel mode and
-> +	 * expected to work that out for itself.
->  	 */
-> -	if (!(smpboot_control & STARTUP_PARALLEL_MASK))
-> +	if (smpboot_control & STARTUP_PARALLEL_MASK) {
-> +		if (x2apic_enabled())
-> +			smpboot_control |= STARTUP_ENABLE_X2APIC;
-> +	} else
->  		smpboot_control = smp_processor_id();
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.328-rc2.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+and the diffstat can be found below.
 
-Yeah, so instead of adding further kludges to the 'parallel bringup is 
-possible' code path, which is arguably a functional feature that shouldn't 
-have hardware-management coupled to it, would it be possible to fix 
-parallel bringup to AMD-SEV systems, so that this code path isn't a 
-quirk-dependent "parallel boot" codepath, but simply the "x86 SMP boot 
-codepath", where all SMP x86 systems do a parallel bootup?
+thanks,
 
-The original commit by Thomas says:
+greg k-h
 
-  0c7ffa32dbd6 ("x86/smpboot/64: Implement arch_cpuhp_init_parallel_bringup() and enable it")
+-------------
+Pseudo-Shortlog of commits:
 
-  | Unfortunately there is no RDMSR GHCB protocol at the moment, so enabling 
-  | AMD-SEV guests for parallel startup needs some more thought.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.14.328-rc2
 
-But that was half a year ago, isn't there RDMSR GHCB access code available now?
+Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+    Bluetooth: hci_event: Fix using memcmp when comparing keys
 
-This code would all read a lot more natural if it was the regular x86 SMP 
-bootup path - which it is 'almost' today already, modulo quirk.
+Kees Cook <keescook@chromium.org>
+    Bluetooth: hci_sock: Correctly bounds check and pad HCI_MON_NEW_INDEX name
 
-Obviously coupling functional features with hardware quirks is fragile, for 
-example your patch extending x86 SMP parallel bringup doesn't extend the 
-AMD-SEV case, which may or may not matter in practice.
+Edward AD <twuufnxlz@gmail.com>
+    Bluetooth: hci_sock: fix slab oob read in create_monitor_event
 
-So, if it's possible, it would be nice to fix AMD-SEV systems as well and 
-remove this artificial coupling.
+Haibo Chen <haibo.chen@nxp.com>
+    gpio: vf610: set value before the direction to avoid a glitch
 
-Also, side note #1: curly braces should be balanced.
+Niklas Schnelle <schnelle@linux.ibm.com>
+    s390/pci: fix iommu bitmap allocation
 
->  #endif
->  	initial_code = (unsigned long)wakeup_long64;
-> diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-> index ea6995920b7a..fcfa79105928 100644
-> --- a/arch/x86/kernel/head_64.S
-> +++ b/arch/x86/kernel/head_64.S
-> @@ -236,10 +236,15 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
->  	 * used to look up the CPU number.  For booting a single CPU, the
->  	 * CPU number is encoded in smpboot_control.
->  	 *
-> +	 * Bit 30	STARTUP_ENABLE_X2APIC (Enable X2APIC mode)
->  	 * Bit 31	STARTUP_READ_APICID (Read APICID from APIC)
->  	 * Bit 0-23	CPU# if STARTUP_xx flags are not set
+Peter Zijlstra <peterz@infradead.org>
+    perf: Disallow mis-matched inherited group reads
 
-Side note #2: you mixed up the comment ordering here.
+Puliang Lu <puliang.lu@fibocom.com>
+    USB: serial: option: add Fibocom to DELL custom modem FM101R-GL
 
-Thanks,
+Benoît Monin <benoit.monin@gmx.fr>
+    USB: serial: option: add entry for Sierra EM9191 with new firmware
 
-	Ingo
+Fabio Porcedda <fabio.porcedda@gmail.com>
+    USB: serial: option: add Telit LE910C4-WWX 0x1035 composition
+
+Sunil V L <sunilvl@ventanamicro.com>
+    ACPI: irq: Fix incorrect return value in acpi_register_gsi()
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    Revert "pinctrl: avoid unsafe code pattern in find_pinctrl()"
+
+Avri Altman <avri.altman@wdc.com>
+    mmc: core: Capture correct oemid-bits for eMMC cards
+
+Kees Cook <keescook@chromium.org>
+    sky2: Make sure there is at least one frag_addr available
+
+Benjamin Berg <benjamin.berg@intel.com>
+    wifi: cfg80211: avoid leaking stack data into trace
+
+Wen Gong <quic_wgong@quicinc.com>
+    wifi: mac80211: allow transmitting EAPOL frames with tainted key
+
+Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+    Bluetooth: hci_core: Fix build warnings
+
+Ying Hsu <yinghsu@chromium.org>
+    Bluetooth: Avoid redundant authentication
+
+Ma Ke <make_ruc2021@163.com>
+    HID: holtek: fix slab-out-of-bounds Write in holtek_kbd_input_event
+
+Clément Léger <cleger@rivosinc.com>
+    tracing: relax trace_event_eval_update() execution with cond_resched()
+
+Damien Le Moal <dlemoal@kernel.org>
+    ata: libata-eh: Fix compilation warning in ata_eh_link_report()
+
+Chengfeng Ye <dg573847474@gmail.com>
+    gpio: timberdale: Fix potential deadlock on &tgpio->lock
+
+Jeff Layton <jlayton@kernel.org>
+    overlayfs: set ctime when setting mtime and atime
+
+Heiner Kallweit <hkallweit1@gmail.com>
+    i2c: mux: Avoid potential false error message in i2c_mux_add_adapter
+
+Josef Bacik <josef@toxicpanda.com>
+    btrfs: initialize start_slot in btrfs_log_prealloc_extents
+
+Tony Lindgren <tony@atomide.com>
+    ARM: dts: ti: omap: Fix noisy serial with overrun-throttle-ms for mapphone
+
+Michal Schmidt <mschmidt@redhat.com>
+    i40e: prevent crash on probe if hw registers have invalid values
+
+Dan Carpenter <dan.carpenter@linaro.org>
+    net: usb: smsc95xx: Fix an error code in smsc95xx_reset()
+
+Josua Mayer <josua@solid-run.com>
+    net: rfkill: gpio: prevent value glitch during probe
+
+Ma Ke <make_ruc2021@163.com>
+    net: ipv6: fix return value check in esp_remove_trailer
+
+Ma Ke <make_ruc2021@163.com>
+    net: ipv4: fix return value check in esp_remove_trailer
+
+Eric Dumazet <edumazet@google.com>
+    xfrm: fix a data-race in xfrm_gen_index()
+
+Florian Westphal <fw@strlen.de>
+    netfilter: nft_payload: fix wrong mac header matching
+
+Jim Mattson <jmattson@google.com>
+    KVM: x86: Mask LVTPC when handling a PMI
+
+Johan Hovold <johan+linaro@kernel.org>
+    regmap: fix NULL deref on lookup
+
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+    nfc: nci: fix possible NULL pointer dereference in send_acknowledge()
+
+Arnd Bergmann <arnd@arndb.de>
+    Bluetooth: avoid memcmp() out of bounds warning
+
+Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+    Bluetooth: hci_event: Fix coding style
+
+Arkadiusz Bokowy <arkadiusz.bokowy@gmail.com>
+    Bluetooth: vhci: Fix race when opening vhci device
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    Bluetooth: Fix a refcnt underflow problem for hci_conn
+
+Lee, Chun-Yi <jlee@suse.com>
+    Bluetooth: Reject connection with the device which has same BD_ADDR
+
+Lee, Chun-Yi <jlee@suse.com>
+    Bluetooth: hci_event: Ignore NULL link key
+
+Ricardo Cañuelo <ricardo.canuelo@collabora.com>
+    usb: hub: Guard against accesses to uninitialized BOS descriptors
+
+Borislav Petkov (AMD) <bp@alien8.de>
+    x86/cpu: Fix AMD erratum #1485 on Zen4-based CPUs
+
+Krishna Kurapati <quic_kriskura@quicinc.com>
+    usb: gadget: ncm: Handle decoding of multiple NTB's in unwrap call
+
+Piyush Mehta <piyush.mehta@amd.com>
+    usb: gadget: udc-xilinx: replace memcpy with memcpy_toio
+
+Dmitry Torokhov <dmitry.torokhov@gmail.com>
+    pinctrl: avoid unsafe code pattern in find_pinctrl()
+
+Michal Koutný <mkoutny@suse.com>
+    cgroup: Remove duplicates in cgroup v1 tasks file
+
+Matthias Berndt <matthias_berndt@gmx.de>
+    Input: xpad - add PXN V900 support
+
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+    Input: powermate - fix use-after-free in powermate_config_complete
+
+Xiubo Li <xiubli@redhat.com>
+    ceph: fix incorrect revoked caps assert in ceph_fill_file_size()
+
+Jorge Sanjuan Garcia <jorge.sanjuangarcia@duagon.com>
+    mcb: remove is_added flag from mcb_device struct
+
+Alexander Zangerl <az@breathe-safe.com>
+    iio: pressure: ms5611: ms5611_prom_is_valid false negative bug
+
+Phil Elwell <phil@raspberrypi.com>
+    iio: pressure: bmp280: Fix NULL pointer exception
+
+Xingxing Luo <xingxing.luo@unisoc.com>
+    usb: musb: Modify the "HWVers" register address
+
+Xingxing Luo <xingxing.luo@unisoc.com>
+    usb: musb: Get the musb_qh poniter after musb_giveback
+
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+    net: usb: dm9601: fix uninitialized variable use in dm9601_mdio_read
+
+Wesley Cheng <quic_wcheng@quicinc.com>
+    usb: xhci: xhci-ring: Use sysdev for mapping bounce buffer
+
+Waiman Long <longman@redhat.com>
+    workqueue: Override implicit ordered attribute in workqueue_apply_unbound_cpumask()
+
+Jeremy Cline <jeremy@jcline.org>
+    nfc: nci: assert requested protocol is valid
+
+Dan Carpenter <dan.carpenter@linaro.org>
+    ixgbe: fix crash with empty VF macvlan list
+
+Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+    drm/vmwgfx: fix typo of sizeof argument
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    ieee802154: ca8210: Fix a potential UAF in ca8210_probe
+
+Martin Fuzzey <martin.fuzzey@flowbird.group>
+    drm: etvnaviv: fix bad backport leading to warning
+
+Hans de Goede <hdegoede@redhat.com>
+    HID: logitech-hidpp: Fix kernel crash on receiver USB disconnect
+
+Artem Chernyshev <artem.chernyshev@red-soft.ru>
+    RDMA/cxgb4: Check skb value for failure to allocate
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                       |  4 +-
+ arch/arm/boot/dts/omap4-droid4-xt894.dts       |  1 +
+ arch/s390/pci/pci_dma.c                        | 16 +++++-
+ arch/x86/include/asm/msr-index.h               |  4 ++
+ arch/x86/kernel/cpu/amd.c                      |  9 ++++
+ arch/x86/kvm/lapic.c                           |  8 ++-
+ drivers/acpi/irq.c                             |  7 ++-
+ drivers/ata/libata-eh.c                        |  2 +-
+ drivers/base/regmap/regmap.c                   |  2 +-
+ drivers/bluetooth/hci_vhci.c                   |  3 ++
+ drivers/gpio/gpio-timberdale.c                 |  5 +-
+ drivers/gpio/gpio-vf610.c                      |  4 +-
+ drivers/gpu/drm/etnaviv/etnaviv_gem_prime.c    |  2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c        |  2 +-
+ drivers/hid/hid-holtek-kbd.c                   |  4 ++
+ drivers/hid/hid-logitech-hidpp.c               |  3 +-
+ drivers/i2c/i2c-mux.c                          |  2 +-
+ drivers/iio/pressure/bmp280-core.c             |  2 +-
+ drivers/iio/pressure/ms5611_core.c             |  2 +-
+ drivers/infiniband/hw/cxgb4/cm.c               |  3 ++
+ drivers/input/joystick/xpad.c                  |  2 +
+ drivers/input/misc/powermate.c                 |  1 +
+ drivers/mcb/mcb-core.c                         | 10 ++--
+ drivers/mcb/mcb-parse.c                        |  2 -
+ drivers/mmc/core/mmc.c                         |  2 +-
+ drivers/net/ethernet/intel/i40e/i40e_common.c  |  4 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_sriov.c |  5 +-
+ drivers/net/ethernet/marvell/sky2.h            |  2 +-
+ drivers/net/ieee802154/ca8210.c                | 17 ++----
+ drivers/net/usb/dm9601.c                       |  7 ++-
+ drivers/net/usb/smsc95xx.c                     |  2 +-
+ drivers/usb/core/hub.c                         | 28 ++++++++--
+ drivers/usb/core/hub.h                         |  2 +-
+ drivers/usb/gadget/function/f_ncm.c            | 26 +++++++---
+ drivers/usb/gadget/udc/udc-xilinx.c            | 20 ++++---
+ drivers/usb/host/xhci-ring.c                   |  4 +-
+ drivers/usb/musb/musb_debugfs.c                |  2 +-
+ drivers/usb/musb/musb_host.c                   |  9 +++-
+ drivers/usb/serial/option.c                    |  7 +++
+ fs/btrfs/tree-log.c                            |  2 +-
+ fs/ceph/inode.c                                |  4 +-
+ fs/overlayfs/copy_up.c                         |  2 +-
+ include/linux/mcb.h                            |  1 -
+ include/linux/perf_event.h                     |  1 +
+ include/net/bluetooth/hci_core.h               |  2 +-
+ include/net/netns/xfrm.h                       |  1 +
+ kernel/cgroup/cgroup-v1.c                      |  5 +-
+ kernel/events/core.c                           | 39 +++++++++++---
+ kernel/trace/trace_events.c                    |  1 +
+ kernel/workqueue.c                             |  8 ++-
+ net/bluetooth/hci_conn.c                       | 72 ++++++++++++++++----------
+ net/bluetooth/hci_core.c                       |  8 +--
+ net/bluetooth/hci_event.c                      | 33 +++++++++---
+ net/bluetooth/hci_sock.c                       |  3 +-
+ net/ipv4/esp4.c                                |  4 +-
+ net/ipv6/esp6.c                                |  4 +-
+ net/mac80211/tx.c                              |  3 +-
+ net/netfilter/nft_payload.c                    |  2 +-
+ net/nfc/nci/core.c                             |  5 ++
+ net/nfc/nci/spi.c                              |  2 +
+ net/rfkill/rfkill-gpio.c                       |  4 +-
+ net/wireless/nl80211.c                         |  2 +-
+ net/xfrm/xfrm_policy.c                         |  6 +--
+ 63 files changed, 310 insertions(+), 141 deletions(-)
+
+
