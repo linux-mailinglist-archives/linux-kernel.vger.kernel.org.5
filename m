@@ -2,207 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D62E7D458B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 04:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FEC7D4598
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 04:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbjJXCeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 22:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
+        id S232177AbjJXCgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 22:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbjJXCeE (ORCPT
+        with ESMTP id S232176AbjJXCf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 22:34:04 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F9F10E;
-        Mon, 23 Oct 2023 19:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=uRBH5xj5OQGLHiQskLOllsNyGfVBzFgpBHyO/FBi0PE=; b=Sv1DZlmjlpXWZMobMer65I5DgG
-        5ItL9ba2DyCOgt/qWmK+fK71kQrueOK/TyhNseWGggUVj/HYVy4yTqxtqHHQfPpUpN041XqfVRa+v
-        FnTtGPgLRSn1vK/dJSba8olxs6rpC5y3u5eyFAYIv8VHsCF3crzBt0+krftN2e0RC5Wc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qv7Em-00026a-OZ; Tue, 24 Oct 2023 04:33:44 +0200
-Date:   Tue, 24 Oct 2023 04:33:44 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        corbet@lwn.net, steen.hegelund@microchip.com,
-        rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        horatiu.vultur@microchip.com, Woojung.Huh@microchip.com,
-        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
-        Thorsten.Kummermehr@microchip.com
-Subject: Re: [PATCH net-next v2 8/9] microchip: lan865x: add driver support
- for Microchip's LAN865X MACPHY
-Message-ID: <eee6df3d-5e6b-4b4c-bfcc-55b31814fb82@lunn.ch>
-References: <20231023154649.45931-1-Parthiban.Veerasooran@microchip.com>
- <20231023154649.45931-9-Parthiban.Veerasooran@microchip.com>
+        Mon, 23 Oct 2023 22:35:58 -0400
+Received: from smtpbguseast2.qq.com (smtpbguseast2.qq.com [54.204.34.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A0210D5;
+        Mon, 23 Oct 2023 19:35:48 -0700 (PDT)
+X-QQ-mid: bizesmtp73t1698114915tkuo0ka1
+Received: from [10.7.13.54] ( [125.76.217.162])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 24 Oct 2023 10:35:14 +0800 (CST)
+X-QQ-SSF: 01400000000000D0H000000A0000000
+X-QQ-FEAT: qOAV9bwDT/nXIhLNlbreDjkXisHowUo93uM1zLloz1/5xKJL9qlE3NGpd0W78
+        A/s9YfCC86SmwPdYzQN2MslwSfeV182xY0AeA7cT17jBY/g12N44CUoytNVmRXQTPl9OBhQ
+        M6yIPEtkgpvVpJusF345wvhtz8BPHv0kj1nB4hnx6yDB28HyHFR2Bz8lPUIRZtIa/GIphrg
+        cCLfhsuTC8XL7tb9tKitQDxuiAtywvsQiLfK3TkYMzINpHO5OY0pxTXi/IRy6POvClmBe1v
+        OO9tBWakXA4RQxuZobacA5pqu8hpSDo1KByTCabd+1rFJCI3baHnGGuvRPP8BuvXgkL+75H
+        Fp4ADB+DLD8icPq2kkPlpsH8vCMWdgphzfkP/XCFHAMfhb7GgiDopy7aYreeAsdw+PtckOc
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 6538827013053437973
+Message-ID: <4CEE0B491E07CA77+c77a8b3d-095b-b33c-0091-dcb55fd40d28@uniontech.com>
+Date:   Tue, 24 Oct 2023 10:35:13 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023154649.45931-9-Parthiban.Veerasooran@microchip.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH] ext4: delete redundant calculations in
+ ext4_mb_get_buddy_page_lock()
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gouhaojake@163.com
+References: <20231023013416.17246-1-gouhao@uniontech.com>
+ <20231023114447.crn3bt4qdmkxkrxi@quack3>
+Content-Language: en-US
+Reply-To: 20231023114447.crn3bt4qdmkxkrxi@quack3
+From:   Gou Hao <gouhao@uniontech.com>
+In-Reply-To: <20231023114447.crn3bt4qdmkxkrxi@quack3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz7a-0
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
+        NICE_REPLY_A,SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static int lan865x_set_hw_macaddr(struct net_device *netdev)
-> +{
-> +	u32 regval;
-> +	bool ret;
-> +	struct lan865x_priv *priv = netdev_priv(netdev);
-> +	const u8 *mac = netdev->dev_addr;
-> +
-> +	ret = oa_tc6_read_register(priv->tc6, LAN865X_MAC_NCR, &regval);
-> +	if (ret)
-> +		goto error_mac;
-> +	if ((regval & LAN865X_TXEN) | (regval & LAN865X_RXEN)) {
+On 10/23/23 19:44, Jan Kara wrote:
 
-Would testing netif_running(netdev) be enough? That is a more common
-test you see. In fact, you already have that in
-lan865x_set_mac_address(). And in lan865x_probe() why would the
-hardware be enabled?
+> On Mon 23-10-23 09:34:16, Gou Hao wrote:
+>> 'blocks_per_page' is always 1 after 'if (blocks_per_page >= 2)',
+>> 'pnum' and 'block' is equal in this case.
+>>
+>> Signed-off-by: Gou Hao <gouhao@uniontech.com>
+>> Signed-off-by: Gou Hao <gouhaojake@163.com>
+> No need for two signed-off-by here. Any one from you is enough :)
+ok
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index 454d5612641e..8442f5474b25 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -1456,9 +1456,7 @@ static int ext4_mb_get_buddy_page_lock(struct super_block *sb,
+>>   		return 0;
+>>   	}
+>>   
+>> -	block++;
+>> -	pnum = block / blocks_per_page;
+>> -	page = find_or_create_page(inode->i_mapping, pnum, gfp);
+>> +	page = find_or_create_page(inode->i_mapping, ++block, gfp);
+> 						     ^^^ perhaps just
+> "block + 1" here? Maybe also add a comment before this call like:
 
+Yes, 'block +1' is better here, i will add a comment.
 
-> +		if (netif_msg_drv(priv))
-> +			netdev_warn(netdev, "Hardware must be disabled for MAC setting\n");
-> +		return -EBUSY;
-> +	}
-> +	/* MAC address setting */
-> +	regval = (mac[3] << 24) | (mac[2] << 16) | (mac[1] << 8) | mac[0];
-> +	ret = oa_tc6_write_register(priv->tc6, LAN865X_MAC_SAB1, regval);
-> +	if (ret)
-> +		goto error_mac;
-> +
-> +	regval = (mac[5] << 8) | mac[4];
-> +	ret = oa_tc6_write_register(priv->tc6, LAN865X_MAC_SAT1, regval);
-> +	if (ret)
-> +		goto error_mac;
-> +
-> +	return 0;
-> +
-> +error_mac:
-> +	return -ENODEV;
+Thanks for your review.
 
-oa_tc6_write_register() should return an error code, so return it.
+> 	/* blocks_per_page == 1, hence we need another page for the buddy */
+>
+> Otherwise the patch looks good!
+>
+> 								Honza
+>
+-- 
+thanks,
+Gou Hao <gouhao@uniontech.com>
 
-> +static int lan865x_set_mac_address(struct net_device *netdev, void *addr)
-> +{
-> +	struct sockaddr *address = addr;
-> +
-> +	if (netif_running(netdev))
-> +		return -EBUSY;
-> +
-> +	eth_hw_addr_set(netdev, address->sa_data);
-> +
-> +	return lan865x_set_hw_macaddr(netdev);
-
-You should ideally only update the netdev MAC address, if you managed
-to change the value in the hardware.
-
-> +static void lan865x_set_multicast_list(struct net_device *netdev)
-> +{
-> +	struct lan865x_priv *priv = netdev_priv(netdev);
-> +	u32 regval = 0;
-> +
-> +	if (netdev->flags & IFF_PROMISC) {
-> +		/* Enabling promiscuous mode */
-> +		regval |= MAC_PROMISCUOUS_MODE;
-> +		regval &= (~MAC_MULTICAST_MODE);
-> +		regval &= (~MAC_UNICAST_MODE);
-> +	} else if (netdev->flags & IFF_ALLMULTI) {
-> +		/* Enabling all multicast mode */
-> +		regval &= (~MAC_PROMISCUOUS_MODE);
-> +		regval |= MAC_MULTICAST_MODE;
-> +		regval &= (~MAC_UNICAST_MODE);
-> +	} else if (!netdev_mc_empty(netdev)) {
-> +		/* Enabling specific multicast addresses */
-> +		struct netdev_hw_addr *ha;
-> +		u32 hash_lo = 0;
-> +		u32 hash_hi = 0;
-> +
-> +		netdev_for_each_mc_addr(ha, netdev) {
-> +			u32 bit_num = lan865x_hash(ha->addr);
-> +			u32 mask = 1 << (bit_num & 0x1f);
-> +
-> +			if (bit_num & 0x20)
-> +				hash_hi |= mask;
-> +			else
-> +				hash_lo |= mask;
-> +		}
-> +		if (oa_tc6_write_register(priv->tc6, LAN865X_MAC_HRT, hash_hi)) {
-> +			if (netif_msg_timer(priv))
-> +				netdev_err(netdev, "Failed to write reg_hashh");
-> +			return;
-> +		}
-> +		if (oa_tc6_write_register(priv->tc6, LAN865X_MAC_HRB, hash_lo)) {
-> +			if (netif_msg_timer(priv))
-> +				netdev_err(netdev, "Failed to write reg_hashl");
-> +			return;
-> +		}
-> +		regval &= (~MAC_PROMISCUOUS_MODE);
-> +		regval &= (~MAC_MULTICAST_MODE);
-> +		regval |= MAC_UNICAST_MODE;
-> +	} else {
-> +		/* enabling local mac address only */
-> +		if (oa_tc6_write_register(priv->tc6, LAN865X_MAC_HRT, regval)) {
-> +			if (netif_msg_timer(priv))
-> +				netdev_err(netdev, "Failed to write reg_hashh");
-> +			return;
-> +		}
-> +		if (oa_tc6_write_register(priv->tc6, LAN865X_MAC_HRB, regval)) {
-> +			if (netif_msg_timer(priv))
-> +				netdev_err(netdev, "Failed to write reg_hashl");
-> +			return;
-> +		}
-> +	}
-> +	if (oa_tc6_write_register(priv->tc6, LAN865X_MAC_NCFGR, regval)) {
-> +		if (netif_msg_timer(priv))
-> +			netdev_err(netdev, "Failed to enable promiscuous mode");
-> +	}
-> +}
-
-Another of those big functions which could be lots of simple functions
-each doing one thing.
-
-> +/* Configures the number of bytes allocated to each buffer in the
-> + * transmit/receive queue. LAN865x supports only 64 and 32 bytes cps and also 64
-> + * is the default value. So it is enough to configure the queue buffer size only
-> + * for 32 bytes. Generally cps can't be changed during run time and also it is
-> + * configured in the device tree. The values for the Tx/Rx queue buffer size are
-> + * taken from the LAN865x datasheet.
-> + */
-
-Its unclear why this needs to be a callback. Why not just set it after
-oa_tc6_init() returns?
-
-> +static void lan865x_remove(struct spi_device *spi)
-> +{
-> +	struct lan865x_priv *priv = spi_get_drvdata(spi);
-> +
-> +	oa_tc6_exit(priv->tc6);
-> +	unregister_netdev(priv->netdev);
-
-Is that the correct order? Seems like you should unregister the netdev
-first.
-
-> +#ifdef CONFIG_ACPI
-> +static const struct acpi_device_id lan865x_acpi_ids[] = {
-> +	{ .id = "LAN865X",
-> +	},
-> +	{},
-
-Does this work? You don't have access to the device tree properties.
-
-     Andrew
