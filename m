@@ -2,175 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEA97D586F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 186E27D5871
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343920AbjJXQc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45994 "EHLO
+        id S1343930AbjJXQdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343747AbjJXQcz (ORCPT
+        with ESMTP id S1343881AbjJXQdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:32:55 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF4593;
-        Tue, 24 Oct 2023 09:32:53 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39OGJfKA023175;
-        Tue, 24 Oct 2023 16:32:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=UkAO23c+2aMfodExmELLTmdZvgxFGuee6Ajbo77NV1A=;
- b=cCqt93SENK/H+YC6+YVBf/QwswVEyBDTJkRD5/wEL08yW/3391sAXxNfKqOA+g0Vcctk
- Mzf7/hh2juzF6P9O/l3xIeuSIVQ/QuGwpqETG+lFidTRTkISHrBRuw8bcpfxyfPqLOvG
- ROWSGwYDqzmithCPHHdlbTyyjuznQZPllnTQi0IzEAckLTP3ujYnDDkeHHOEwDn8PCwj
- 16oPYFghnzp7d7zr9R4pH86DwoG0RHlCA6KjTWJ+S0bAQ5kcUMc0YJ8CiBNoxFDqNt+X
- MIdW4UQ3+04laaa8as0sWlqQfQX9mYoT1Rm8riYgu6AESoSxCy+GOr/s+jT6CzxFzmlq DQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3txhbkrgm4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Oct 2023 16:32:51 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39OGKm0R026944;
-        Tue, 24 Oct 2023 16:32:50 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3txhbkrgkj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Oct 2023 16:32:50 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39OG1UIi010218;
-        Tue, 24 Oct 2023 16:32:49 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tvsbygxgm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 24 Oct 2023 16:32:49 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39OGWkGS24707744
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 24 Oct 2023 16:32:46 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6A59E20040;
-        Tue, 24 Oct 2023 16:32:46 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A97F320043;
-        Tue, 24 Oct 2023 16:32:45 +0000 (GMT)
-Received: from [9.171.57.222] (unknown [9.171.57.222])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 24 Oct 2023 16:32:45 +0000 (GMT)
-Message-ID: <6302faa1-b0f3-4405-b4c0-28d309506823@linux.ibm.com>
-Date:   Tue, 24 Oct 2023 18:32:45 +0200
+        Tue, 24 Oct 2023 12:33:31 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2042.outbound.protection.outlook.com [40.107.237.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C0A93
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:33:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fhbyDnxM7R9XW67e2ij1POBjB7O2mDYtYcR0PP9OSq3vHHnHUD2FWK/UJBd++XqNrBaB35tUmBiGjHuRTpxStX6K98I2OiWDp8z5Oiy7T5omN/ro2+enE2NkNTBGVZHvXr5bHbMNY7JL2wJOAAaOj8slfv5H8KxN/x4X6ymd1qyw0Jpe5bFlfSv+Xu5U2SEbXwz4OS+6eCnlJl56sWpYvauH+VbdFJlaEMV9v2wYd+x/m2utOPQXqzMrq7hxvZ7yXWGKH79uotVzgvC0Z8IbEsX+c/rx/ghzor6E+FIWjt8mKynw7GDk5pPiqWFIk9Y0bs+yVh9qgSRcd2KiprZ2KQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zdPxYLzGgeQdUW9fMmK+mbFWUIOAi2eljhoHpYDKTnw=;
+ b=CFU/zGeDdZjvXjrjEN6yZJf6QWpHFy71+eTMvtr7LFXuLHu0oTplRWGDD8zDP1sHO4BBizXRtuC3VojsCPlAmeyxm2qjVlwLsFtjXmsz9gml1Ut0rzQN80X8+iyNmoB2kdlDTe78jpdfgbgSoqFX7lIAvIPqHjzwJ8xD3ZkyDMiK/Jn5aluHuBWr/4z4ZQ98850V5tqXhdfKGPc8mXdktIIVGz/emq9LfxEUAc2DZAIMZN6PzU7fSxq+tIEcq3EoZ4P0gBnxSRpzyeLPIGhzlGhyYPO2/FnghJNDakE5IM3hJFdXZMXZwF2P6VrgKSecJJTqrnNhk+Ovafqdz+XLew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zdPxYLzGgeQdUW9fMmK+mbFWUIOAi2eljhoHpYDKTnw=;
+ b=eQZYhqX8we1uAl99zQQKGeK1MDeTMy1ymwH9OHV97CEmPgjSWm1zK9mfxu1GMhQ+WyE+oj2uoqidalxms3N22HeR1Yw5zFD+cEQqiFkBfnBcdQ7DyGu5PPl7Y6MNW4pqICk56LLh3GS6ls/pNuftZe8hm1p0/j6ERr0ieB7GySM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
+ SA3PR12MB7973.namprd12.prod.outlook.com (2603:10b6:806:305::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
+ 2023 16:33:26 +0000
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::5588:7117:d54e:9466]) by DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::5588:7117:d54e:9466%6]) with mapi id 15.20.6907.028; Tue, 24 Oct 2023
+ 16:33:26 +0000
+Message-ID: <16225a07-c0da-4970-b0a1-39831b1bf616@amd.com>
+Date:   Tue, 24 Oct 2023 12:33:23 -0400
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] s390/ctcm: replace deprecated strncpy with strscpy
-Content-Language: en-GB
-To:     Justin Stitt <justinstitt@google.com>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20231023-strncpy-drivers-s390-net-ctcm_main-c-v1-1-265db6e78165@google.com>
-From:   Thorsten Winkler <twinkler@linux.ibm.com>
-In-Reply-To: <20231023-strncpy-drivers-s390-net-ctcm_main-c-v1-1-265db6e78165@google.com>
+Subject: Re: [PATCH v3] drm/client: Convert drm_client_buffer_addfb() to
+ drm_mode_addfb2()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Javier Martinez Canillas <javierm@redhat.com>
+References: <4b84adfc686288714e69d0442d22f1259ff74903.1697379891.git.geert@linux-m68k.org>
+Content-Language: en-US
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+In-Reply-To: <4b84adfc686288714e69d0442d22f1259ff74903.1697379891.git.geert@linux-m68k.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 3anXJQg1cO57P-0sE1YqQFOL8TGs8Bqs
-X-Proofpoint-ORIG-GUID: RB4OGPEHdMBidTDH8y5UceOR1haKTiMY
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+X-ClientProxiedBy: YQBPR01CA0005.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01::13)
+ To DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-24_16,2023-10-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 mlxscore=0 impostorscore=0 malwarescore=0
- suspectscore=0 clxscore=1011 adultscore=0 mlxlogscore=999
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2310170001 definitions=main-2310240142
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|SA3PR12MB7973:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8404caf7-e4c9-4c4a-7a28-08dbd4aef293
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tIkya6KMlpKTLxFdCEojdUF4P6Q6+TrQz+xCg3ao3aIy2O1QxAsgK2ulpDba+Ispx0u5xRPQiutU3txf29zGLDN/YM8/oRwqgYEYXEbfDrZmL/1S4hW/rQJj7aKtLJkAWG3scogrH8eDYmNvjoqEseShEYjuyzI5Y/Xxz7vslRxdN2HsWgYPuydmEEG/DrpkihnoTezA4llyJ8y6C//lH0NjWMXDJCKJQTweJGAYXTA3Kk9a25el2Xqhgfuo6X5Vr6QLNtecsDrg56w/koYvyw850be3k1NTUsJlsX32Yin+50l+4flmgR58nbxvaGwa636iCK5Nu0E8Beaeorb6z4dcWpixNO9+F0X02QQr9VtIHUS93h9fxskhK05+hWCe/AxBhLh1GErjZy3l1v2aqGSxRChqX5bGsBAA/Fpc3l+PPpUwxhqpjrCBwrgQg9YoMEyWjI9tLXTcxMi6kvjgVYUz2ghXPY8/4FoYSoCIFsuAR/KGc+wxiDuOfNfUsJ9/wunDYjqr3hlG4JRIWmioEocU4v6akDcv/OJMYRi3PVYlCocvy3Tcp5J7LoKCV2TwdOKDu/SjWai2H6qm8sdxgkbtUV8ar4AqecBCR5UGRPd6uIHK9VZkYBfAVVuf1J+no87Lzfj0+LU/26u8VpGodw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(396003)(136003)(376002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(44832011)(2906002)(38100700002)(110136005)(66476007)(66556008)(316002)(2616005)(6506007)(478600001)(6666004)(66946007)(26005)(53546011)(6486002)(83380400001)(6512007)(41300700001)(31696002)(36756003)(5660300002)(86362001)(4326008)(8936002)(8676002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SG5XZVd0bCsyVkxHNE9KeTQ3QkdJdWdLYWlUMGxISG1NOUdHV3hVNGViL1dR?=
+ =?utf-8?B?WU8wMGNZcHN2c2tDdVNrbjZaalZncjFLdG1yRXZYS01HeEhFTzQxUzRvVlVO?=
+ =?utf-8?B?NERDQTBmMEZwdEk1bVozZEMvc2VZVlRVenZZQ3FPOFBuZmpUZVdvTWUvelJG?=
+ =?utf-8?B?bFBGNWpyTk94eGEzQllnWC92b01ray81cWlweG9VNkZkRjdZbmhsNFdNTUx4?=
+ =?utf-8?B?QndZNnhISUhLSzY0Mi9uY3ZBL0dqc2xGMG5UUGtudXU3b2RxVnUza1BOMlJF?=
+ =?utf-8?B?dXR6SU94NC8vckFDb2JRYjI1M3lxSXByajc0QWFWL3lCQWhIaGMrV2ZOWlBm?=
+ =?utf-8?B?K3dJTVk3WlJrdWh4cHMxOXJ1NHU3NGZpZGZvVjF5MVZwYVJFeHB3aFNkd3BT?=
+ =?utf-8?B?VXlSOEdLTkRRU0dwbWFiY3FaMEFWcnlmWE9RVUoxODBMU25MNlkwNXJSL0tR?=
+ =?utf-8?B?cFE5amtESGdoV3pydlJvTS9qTXhhZGxMdENGeXkxdTNMeUNwRFU5Umt0ZU11?=
+ =?utf-8?B?RjNVVi9ROUxDeDdNYUdkTWg2Uzl6M3h2cEczN0p2ZTEzeDFMVjk2bVFlZlFV?=
+ =?utf-8?B?NzhvMFlVUVVlZ1gwSE9uQnJMWmNxb3hLc0RQaktQaHJUZFFVOURlbktGY29B?=
+ =?utf-8?B?YVBHVzhXQ1lxRHhaNTM2Q2JtRTRRMXJTRWtybjQ2Y2NLa05VcEVvY0d0ZnMw?=
+ =?utf-8?B?YXIrS2JJN3YyM2J1dlBQaGNNUld3eEdub2Z6L2Z4djd0M1N3L3lYaDVrVzBq?=
+ =?utf-8?B?RWllYWVzSGNpRGZMWDRvcVRVVmNnZFpJclk4VUxYbUNCamJQeUZpSVpqR3RX?=
+ =?utf-8?B?NGJISEtJbFA4OTUzTU5EYWpoQVpqMXJZUi9MUVBRUTlzNlV4bnZUanhQT3p4?=
+ =?utf-8?B?aHBvMFVjQy9NQk5WK1lGb1UwQm5VeDVsakJlQTY5MXlHdkdLZFIraTdnR3pk?=
+ =?utf-8?B?UE93L2NDbk9LUXV6ZEtjZ2c4M3ZkT09vS3VxME9nV3Q1MWsxSVVWQnRLRjZy?=
+ =?utf-8?B?WGJXbm5hKzhzYWdHYTRuc05obnZ5dFlFSGNPUW5xZTludjNLZjNHTTIxVEZk?=
+ =?utf-8?B?SzRRTUZjRFVUMEk2bG5uL1l3dStqblpNNVBGb0hERURzb0QvcjFKQ0FnbDVz?=
+ =?utf-8?B?RkdJWVBUQllBaW91WEVQa1BvRE5aR2R0ZElJTFVQZDZRcy9TVU5NYjNreXdP?=
+ =?utf-8?B?Ry9LbTdaT2hzQTBpZVFVaFFvdXlmb3g1dlNydXFkZjhPT2VpUWFFd2E2aFRr?=
+ =?utf-8?B?NkloR2JpQUVFV0wyN28zc21jdmowOWRBTWgrNXpOQkxNV05hL204S3h4R3Nh?=
+ =?utf-8?B?ZGpTWDVpMW5za2dlSkhuNDZvalpqdTd2LzlYUjVDcjFUZGc1Y2xSSDUySFpS?=
+ =?utf-8?B?MmVGM01uK1dMUktFdWdGSnBsVmkySXNDdVU3YTEvcDR1TFQ5WVNNQ1ZkZEg3?=
+ =?utf-8?B?dzZvQnBvN3pEYWJFaDRCRktVL2tqNmgyeE83YWc2REJDZ0tlMG43Nkc1UzF2?=
+ =?utf-8?B?Qi90ZG5qYkh6R1lRdS8yaVdPVmJsazdiUUI5eW5CVjN6TnNRSEJGR08zVW5a?=
+ =?utf-8?B?bURtVkFRK1U4NXpEZksxMWF0ODRaR0Y2VnRRS0dxNDdabWxBZjhMMXl3YjRl?=
+ =?utf-8?B?YnZQeUo5UE85Rk9PeVhha0lWb3VvY0kwVWgwcCtOWnQvb2YvZldMdGpSMTRK?=
+ =?utf-8?B?dnNhaTBhemZNaFdYRlh0QVBuTVdtS3dreUNDYkRKdUVNUlRvSXlZWFRTQldl?=
+ =?utf-8?B?QkVmOHN0SFI0WjdlOHdLVUZicUczWDJXR1ozbkt3dHdpS05JcjZJbURvWG1R?=
+ =?utf-8?B?Z1pWaDdZUlZrcHBxL001TDIyREo5VUNpaGNWRXVOeVVpRDZSeHI5R3d0REJY?=
+ =?utf-8?B?U2syVEhrczFyaWN0VXJKSkl6SFluUno1bWRXKzlnRmNQeWdOWHZkSGZsYi94?=
+ =?utf-8?B?SnNjTERjOFFHOTNjRm9OeWRydE05d0NjTXJNcWxabm1uRlZhRUV4bFRBa0NJ?=
+ =?utf-8?B?Nzl5WTR3WjdLcWJEL2ljRE03dDZCUzJaUlBBWGt0emhZZHBZMWs2N0VNbWEw?=
+ =?utf-8?B?cldZWWVVdDJvUVNIZ3lHSXJiVzRiRlJlMXp2UnpzV0lNUVF6bXdzYXNOZjJC?=
+ =?utf-8?Q?KA89Iy1Ucz++cHNXS9ZLuqSWA?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8404caf7-e4c9-4c4a-7a28-08dbd4aef293
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 16:33:26.3566
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: faeXnnn+PKnb7cDypAEafTUP4I08f7duvwEw1hJn2QWZbZSKXPNRz5uYOzhvA1+7KDQs27TGEnraUj6aHKKQWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7973
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/15/23 10:27, Geert Uytterhoeven wrote:
+> Currently drm_client_buffer_addfb() uses the legacy drm_mode_addfb(),
+> which uses bpp and depth to guess the wanted buffer format.
+> However, drm_client_buffer_addfb() already knows the exact buffer
+> format, so there is no need to convert back and forth between buffer
+> format and bpp/depth, and the function can just call drm_mode_addfb2()
+> directly instead.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+> Tested-by: Javier Martinez Canillas <javierm@redhat.com>
 
-
-On 23.10.23 21:35, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We expect chid to be NUL-terminated based on its use with format
-> strings:
-> 
-> 	CTCM_DBF_TEXT_(SETUP, CTC_DBF_INFO, "%s(%s) %s", CTCM_FUNTAIL,
-> 			chid, ok ? "OK" : "failed");
-> 
-> Moreover, NUL-padding is not required as it is _only_ used in this one
-> instance with a format string.
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> We can also drop the +1 from chid's declaration as we no longer need to
-> be cautious about leaving a spot for a NUL-byte. Let's use the more
-> idiomatic strscpy usage of (dest, src, sizeof(dest)) as this more
-> closely ties the destination buffer to the length.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-
-LGTM, thank you!
-
-Reviewed-by: Thorsten Winkler <twinkler@linux.ibm.com>
-Tested-by: Thorsten Winkler <twinkler@linux.ibm.com>
+Applied and pushed to drm-misc-next, thanks!
 
 > ---
-> Note: build-tested only.
-> 
-> Found with: $ rg "strncpy\("
+> v3:
+>    - Extract from series "[PATCH v2 0/8] drm: fb-helper/ssd130x: Add
+>      support for DRM_FORMAT_R1"
+>      (https://lore.kernel.org/all/cover.1692888745.git.geert@linux-m68k.org),
+>      as this patch has merits on its own,
+> v2:
+>    - Add Reviewed-by, Tested-by,
+>    - s/drm_mode_create_dumb/drm_client_buffer_addfb/ in one-line summary.
 > ---
->   drivers/s390/net/ctcm_main.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>   drivers/gpu/drm/drm_client.c | 13 +++++--------
+>   1 file changed, 5 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/s390/net/ctcm_main.c b/drivers/s390/net/ctcm_main.c
-> index 6faf27136024..ac15d7c2b200 100644
-> --- a/drivers/s390/net/ctcm_main.c
-> +++ b/drivers/s390/net/ctcm_main.c
-> @@ -200,13 +200,13 @@ static void channel_free(struct channel *ch)
->   static void channel_remove(struct channel *ch)
+> diff --git a/drivers/gpu/drm/drm_client.c b/drivers/gpu/drm/drm_client.c
+> index d4296440f297fc5a..a780832a0963fe38 100644
+> --- a/drivers/gpu/drm/drm_client.c
+> +++ b/drivers/gpu/drm/drm_client.c
+> @@ -395,19 +395,16 @@ static int drm_client_buffer_addfb(struct drm_client_buffer *buffer,
+>   				   u32 handle)
 >   {
->   	struct channel **c = &channels;
-> -	char chid[CTCM_ID_SIZE+1];
-> +	char chid[CTCM_ID_SIZE];
->   	int ok = 0;
+>   	struct drm_client_dev *client = buffer->client;
+> -	struct drm_mode_fb_cmd fb_req = { };
+> -	const struct drm_format_info *info;
+> +	struct drm_mode_fb_cmd2 fb_req = { };
+>   	int ret;
 >   
->   	if (ch == NULL)
->   		return;
->   	else
-> -		strncpy(chid, ch->id, CTCM_ID_SIZE);
-> +		strscpy(chid, ch->id, sizeof(chid));
+> -	info = drm_format_info(format);
+> -	fb_req.bpp = drm_format_info_bpp(info, 0);
+> -	fb_req.depth = info->depth;
+>   	fb_req.width = width;
+>   	fb_req.height = height;
+> -	fb_req.handle = handle;
+> -	fb_req.pitch = buffer->pitch;
+> +	fb_req.pixel_format = format;
+> +	fb_req.handles[0] = handle;
+> +	fb_req.pitches[0] = buffer->pitch;
 >   
->   	channel_free(ch);
->   	while (*c) {
-> 
-> ---
-> base-commit: 9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
-> change-id: 20231023-strncpy-drivers-s390-net-ctcm_main-c-f9180f470c69
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-> 
+> -	ret = drm_mode_addfb(client->dev, &fb_req, client->file);
+> +	ret = drm_mode_addfb2(client->dev, &fb_req, client->file);
+>   	if (ret)
+>   		return ret;
+>   
+-- 
+Hamza
+
