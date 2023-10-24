@@ -2,133 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8A17D51F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB3B7D51E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234765AbjJXNiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
+        id S234724AbjJXNge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234671AbjJXNhm (ORCPT
+        with ESMTP id S234707AbjJXNgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:37:42 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC736A6A;
-        Tue, 24 Oct 2023 06:27:52 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5F12E5C0216;
-        Tue, 24 Oct 2023 09:27:52 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 24 Oct 2023 09:27:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1698154072; x=1698240472; bh=mZ
-        Ic3ODqVfmRDC8OmnbKWJpKU+qowmrOocKwZsiY3KQ=; b=N2SBD4tqmXJ4l+91e6
-        AZFyVBxgNWMLBFtvzB30CRePi0TAgMxwUbAqeWtFIuhxhYz68kjMvDz+YyPSAwNW
-        7Ns+9zv87wrxdidXC0/b6vUXEF1RJz6Mi0CiF1NLC1VuIdHcZIlFU0V+3NmbAGh8
-        8zNg9sOFELaOeOZ0qQQ+Qy+S3st874WjXYH+9P3ekX98DJCertkx9m4XjlmPIofj
-        +ARnWrQ6EdGgfjc+DEImDfc3FeCyFCIpPoJfU93eJNONADQG4+Z6NDz7Wem8N9D+
-        csI6WVtNQA1s5BwvtuKFvHSzis91VePf+Ca8DVlSR+FzaTjlDRkqMeLtK2Vo/s1l
-        +Rww==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698154072; x=1698240472; bh=mZIc3ODqVfmRD
-        C8OmnbKWJpKU+qowmrOocKwZsiY3KQ=; b=n/lsjlFFRx6bOPjJKnOKg1uL6b/vM
-        KHNj7gagIRbS3iVK+OtV5dx2bo1ooZYtuoPbXyo/jNExhql+vwytKUp3grQtVaDQ
-        oblgJkQOFdptTjmuCTxrbdgx0X2QZVC3yPw74Lt938x/vgCKZnQ9+qlpnQsmq+nU
-        j3tZ2j0Wg1WJgWxZybFlsheVnG1zf4rMQzFDYflwwQciMJS1LapCEln6oozabXRY
-        QJdIz2Ob8muP+42zZTXtDAehcOzLc0FpMp0fN3FmftKwvtVlcHb5eK33N1rQhICA
-        nRyg3Uikgmt7VnfmldrZK4ev3LGT/tjPB6/4fceAVIByc++cjXfwo2i9A==
-X-ME-Sender: <xms:V8Y3ZQokJPmgs8ujhS_wU_xZZ-Q3nAHPCLd5Zqi8LtHrLhG-qF7riQ>
-    <xme:V8Y3ZWpw8rk-B10ghN4gwUem6yr_dDASbmWL__hYG0UIWx0JNpeKd8fV5-wJy540R
-    MlzcJAhR6PuwHB08vk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrkeekgdeifecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:V8Y3ZVNxUYJT52DG2H2Gf7pBL2Eg10nM313D0RYr39v1Z2wKfORkew>
-    <xmx:V8Y3ZX4-5V8tt3L78tqMcZWOaqnbC0LJTKXCdDj5AcbEOkPkSd9lQg>
-    <xmx:V8Y3Zf6TLOeIsQOhGN8vHJVT3Bmsz4AiscGKRW7gDuDkbcDDFzPpbg>
-    <xmx:WMY3ZZtU22rjjXit3OegHog0M1AvB2Za-q4CaDtvEcOzFxShRnaxtw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id AEBEFB60089; Tue, 24 Oct 2023 09:27:51 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
+        Tue, 24 Oct 2023 09:36:21 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841936E8B
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:28:22 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40859c466efso24582465e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:28:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698154100; x=1698758900; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DR6/xY9Jbak7of40B8dKrAXIlRqy2AVWzNDpU2vwx1E=;
+        b=anIJnEFUUMbODTt6R1E+pEmAjyS2kLgHr5xjFBbGaBE60gqs8Cgm39Lu/FsSb3egwa
+         P5nAdlen+eGsDxttv3gKWemy6zj5lKXn4O+vBMqmbEPtcKQeC7pN+JlV9F6z51j2kkxJ
+         9VwQ0POHL3y2HKb0/J+/GFJZH4rqpkfYXl8pYLyqSb8AOY7hDkOBuRBKFOOMM/LtKC1p
+         BS78J4/doH7BrYSPKH7+xWimnaKK2IYrDwwkgAKlmkFD/U+Ytw54fLg6hzFVjkV0qsFM
+         /YwHPslT8Uz2guJkD11k8A5/097n94ViOSCW4vNrp8C4CB3J9H5RLM63AUHzvgYFjGEl
+         Mqlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698154100; x=1698758900;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DR6/xY9Jbak7of40B8dKrAXIlRqy2AVWzNDpU2vwx1E=;
+        b=ByR5wow+afnUmmh386arTUqXRJ0+nJz8u2reecLjC4Ajqy537GXnQRS69UbI1wcW8D
+         aRYB5CsqFGxZ2122K7NF2Vqez+EHWoBFMT7ryp9upIxwBAW+yZNQPGFiIiWHbVja4GZI
+         QnRU6T6A5Y3zMPziKzZguSAJmkjkWrkReHdw81jRGj6xFk039n1qA7sbnxBKuUEVh2z0
+         ejcefFxHAPndkcoxmc9DPeGPmEeW7lSuVijuBtYGl0eMODJDfq/pWtDwZsNsBKR/NLD8
+         SfvMajaVtxJJjlkzBtue+rMCx2CpMnHmTzaYWCXBukYVToyw89hGlB/69B+MtQy1g+EA
+         NtHw==
+X-Gm-Message-State: AOJu0YxRAul8aCE3om6m9Rtod/q+GH8uhrTmglHUUvrc97jHsU5OHx41
+        6DCriBD6KtI+8eYG0VHgxcXejQ==
+X-Google-Smtp-Source: AGHT+IH0J8ruG5BqMAdSO0Rr9j7+eEnJr3xeOgkHD2FSD5PDkQ0fxnDH20ZHA1obZti9LULTeVUCaQ==
+X-Received: by 2002:a05:600c:4e87:b0:409:78e:1c3d with SMTP id f7-20020a05600c4e8700b00409078e1c3dmr3353581wmq.41.1698154100541;
+        Tue, 24 Oct 2023 06:28:20 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id t22-20020a05600c41d600b004083996dad8sm16570440wmh.18.2023.10.24.06.28.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 06:28:19 -0700 (PDT)
+Message-ID: <7ee1314f-1cf3-4e18-91ef-e8aa617f775b@linaro.org>
+Date:   Tue, 24 Oct 2023 15:28:17 +0200
 MIME-Version: 1.0
-Message-Id: <78427021-ddc0-45b6-a16b-bf8bc8f84003@app.fastmail.com>
-In-Reply-To: <20231023160539.1537355-2-arnd@kernel.org>
-References: <20231023160539.1537355-1-arnd@kernel.org>
- <20231023160539.1537355-2-arnd@kernel.org>
-Date:   Tue, 24 Oct 2023 15:27:30 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Arnd Bergmann" <arnd@kernel.org>,
-        "Martin Tuma" <martin.tuma@digiteqautomotive.com>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        "Hans Verkuil" <hverkuil-cisco@xs4all.nl>,
-        dmaengine@vger.kernel.org, "Lizhi Hou" <lizhi.hou@amd.com>,
-        "Brian Xu" <brian.xu@amd.com>,
-        "Raj Kumar Rampelli" <raj.kumar.rampelli@amd.com>,
-        "Vinod Koul" <vkoul@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] media: pci: mgb4: remove bogus 'select' statements
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: cn913x: add device trees for COM Express
+ boards
+Content-Language: en-US
+To:     Elad Nachman <enachman@marvell.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, pali@kernel.org,
+        mrkiko.rs@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20231024131935.2567969-1-enachman@marvell.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231024131935.2567969-1-enachman@marvell.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023, at 18:05, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> As this is just a regular device driver, it has no business force-enabling
-> other drivers in the system, it should be entirely independent of the
-> implementation of the spi-nor layer or the specific DMA engine.
->
-> The IIO symbols that are selected here are library modules that
-> are legitimately used.
->
-> Fixes: 0ab13674a9bd ("media: pci: mgb4: Added Digiteq Automotive MGB4 driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On 24/10/2023 15:19, Elad Nachman wrote:
+> Add support for CN9130 and CN9131 COM Express Type 7 CPU module boards
+> by Marvell.
+> These boards differ from the existing CN913x DB boards by the type
+> of ethernet connection (RGMII), the type of voltage regulators
+> (not i2c expander based) and the USB phy (not UTMI based).
+> CN9131 COM Express board is basically CN9130 COM Express board
+> with an additional CP115 I/O co-processor, which in this case
+> provides an additional USB host controller on the board.
+> 
+> Signed-off-by: Elad Nachman <enachman@marvell.com>
 > ---
->  drivers/media/pci/mgb4/Kconfig | 4 ----
->  1 file changed, 4 deletions(-)
->
-> diff --git a/drivers/media/pci/mgb4/Kconfig b/drivers/media/pci/mgb4/Kconfig
-> index f2a05a1c8ffa..b90347c7f19b 100644
-> --- a/drivers/media/pci/mgb4/Kconfig
-> +++ b/drivers/media/pci/mgb4/Kconfig
-> @@ -6,10 +6,6 @@ config VIDEO_MGB4
->  	select VIDEOBUF2_DMA_SG
->  	select IIO_BUFFER
->  	select IIO_TRIGGERED_BUFFER
-> -	select I2C_XILINX
-> -	select SPI_XILINX
-> -	select MTD_SPI_NOR
-> -	select XILINX_XDMA
+>  arch/arm64/boot/dts/marvell/Makefile          |   2 +
+>  .../boot/dts/marvell/cn9130-db-comexpress.dts | 100 ++++++++++++++++
+>  .../boot/dts/marvell/cn9131-db-comexpress.dts | 112 ++++++++++++++++++
+>  3 files changed, 214 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dts
+>  create mode 100644 arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dts
+> 
+> diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
+> index 79ac09b58a89..7708658d6ceb 100644
+> --- a/arch/arm64/boot/dts/marvell/Makefile
+> +++ b/arch/arm64/boot/dts/marvell/Makefile
+> @@ -26,4 +26,6 @@ dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db-B.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-A.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-B.dtb
+> +dtb-$(CONFIG_ARCH_MVEBU) += cn9130-db-comexpress.dtb
+> +dtb-$(CONFIG_ARCH_MVEBU) += cn9131-db-comexpress.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += ac5-98dx35xx-rd.dtb
+> diff --git a/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dts b/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dts
+> new file mode 100644
+> index 000000000000..ed33076a34f5
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dts
+> @@ -0,0 +1,100 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (C) 2023 Marvell International Ltd.
+> + *
+> + * Device tree for the CN9130-DB Com Express board.
+> + */
+> +
+> +#include "cn9130-db.dtsi"
+> +
+> +/ {
+> +	model = "Marvell Armada CN9130-DB COM EXPRESS type 7 board";
 
-Apparently, the XDMA reference was in fact needed, as MGB4
-calls some exported symbols from that particular dmaengine
-driver:
+You need compatible property for each board (plus document it in some of
+the bindings).
 
-aarch64-linux-ld: drivers/media/pci/mgb4/mgb4_core.o: in function `init_i2c': mgb4_core.c:(.text+0x3ec): undefined reference to `xdma_get_user_irq'
-aarch64-linux-ld: mgb4_core.c:(.text+0x404): undefined reference to `xdma_enable_user_irq'
+Best regards,
+Krzysztof
 
-I couldn't easily figure out what a 'user_irq' is here,
-but I wonder if this is the expected way to use the DMA engine
-layer. Maybe this should have been a nested irqchip instead,
-or it should be encoded in the DMA request specifier?
-
-     Arnd
