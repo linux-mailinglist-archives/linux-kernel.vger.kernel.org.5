@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD617D5EB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 01:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A5D7D5EB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 01:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344619AbjJXXcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 19:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
+        id S1344651AbjJXXfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 19:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343883AbjJXXcE (ORCPT
+        with ESMTP id S1343883AbjJXXfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 19:32:04 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F11D7A
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 16:32:02 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7b6edcce9a5so201752241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 16:32:02 -0700 (PDT)
+        Tue, 24 Oct 2023 19:35:05 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406A8D7A;
+        Tue, 24 Oct 2023 16:35:03 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-27d0acd0903so3479919a91.1;
+        Tue, 24 Oct 2023 16:35:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698190322; x=1698795122; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jbnIucsHHXNfggobjGeG2HVO4IB6KqsTKM5AKaOuMVs=;
-        b=U781W6VA0n4IywSOYH1X3JVWxp4p8gmsKkw1BklVr8OOq/o8a9YTzLdfETkvpzyJri
-         0Oi7O8UBpWp0PW7WbWPLgh8/erYBy3/T/Nq3WEGtTjDHa3i76FKS5MRaCXYxuzkDC8Di
-         rRxjKcRIKiKqo1zA50bilJFMYzTZv0MqOku6HfjMIspwHE3Alv75oMy94Q0MvJvlC3Tu
-         e6cWL8keoy5A3iW78L6gWoLLuSZLVk6VkCB3dAfqDLo/xNG0hTpV2mdrktShqLNcVpfP
-         FWCA/xltfO1OzyN2km7+X7zhv9yPB3ITFD5vDzA2i2uLFKbhIuUEXrLV02awI8a/sa1u
-         LPSQ==
+        d=gmail.com; s=20230601; t=1698190503; x=1698795303; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b4Ij5pQG5szV54GYUJBKO1wv/LZcmkWQRS+LtnyDhXg=;
+        b=WdYKUSCHUBauXXauG93WGbjZY9IVELVpeeX3nsNJpabNF0afu0SnOnh8A06PrYe/+G
+         tjAjg7RPQ9OsdQJPWTzPkY0LBRsjvHwOdnTyn14aFtsRr6c85SgfxWvNxS70XGhuMD2h
+         cCuqSsbHwY4NmGRdiXkAAsh1h7ITyywETFr9s4cWZvvaogx107MzNJyB0P28DIs1tSbs
+         5eRpG/8uOBsYEiL/c5OccYm32Sr+C7hPDVZY1/E8yxBV7gN+yDTMELGZLozFhxJR4Szp
+         X9Jtz3KGExFNZbfXR/l0ctA6BMu9ixVvMO0iTUkKDqYCfF3f3oCYs9Bb2uZcK9eaTF0o
+         n6dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698190322; x=1698795122;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jbnIucsHHXNfggobjGeG2HVO4IB6KqsTKM5AKaOuMVs=;
-        b=I1fVKbLATiYOAIAKkG2oKPsiOkieunbFJYx/QdTIZ24aMacKGq9NoR2J73bAd4I8ke
-         M0BhYEvVrgX/EoYIEmSmw1Ku4//jhcd26zhp+NxlrTazGlF2HBPgx9inRxKSq3r0vfzc
-         uc5Bv3c/bVUDGjqkjE9JrQWHVG/IgABr7cK8flORvvmbnPO56BkVXlSOUEfDPpgtyXuY
-         QuyBkRBvSd4xRmNaKMX6BWFWACAtUUQSZ2NICEnnu4U4IMCAZHVQTVaed0O2ACGURG2h
-         D0Psr+i3r5OLL1HtVxZg1eRZs1SxNvgz4pfDFPPXJgnbhNd8ENa/DvcywV++tu9cnaIc
-         6ugA==
-X-Gm-Message-State: AOJu0YwA/E57CWjYVb5i68RgtmKrsqxgqS+jbRoezrKWX5lCbeu2zIHs
-        eTtlRishvdOHYE7MLz9RzExVCb6x2XfqwR/WgEg=
-X-Google-Smtp-Source: AGHT+IE7/vUP+HZkBa0Sdc6BQRbBDGFfA+L9dp4137O2CF/zQxb/WK5pV4UYXQoAOHy/G9ipM5boP+oJQwOgofOI87Q=
-X-Received: by 2002:a67:c39a:0:b0:452:6ecb:e90 with SMTP id
- s26-20020a67c39a000000b004526ecb0e90mr8162460vsj.3.1698190321668; Tue, 24 Oct
- 2023 16:32:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698190503; x=1698795303;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b4Ij5pQG5szV54GYUJBKO1wv/LZcmkWQRS+LtnyDhXg=;
+        b=mY1t4k7panMlwOszVC/jfqYH/1unG7FjPFbj4LhgHp7mJn/XtUPmBPLygJEyseMLW5
+         KPbxW1+aNNi/mnixqY04/AAEBmBQMJEu77gsMqoZya9o1Rg9KpUo33pS6ZAL8LB7GOG3
+         h9kMcBBG3ARgLGSO07VyG7W7bAALeW55Dc0fapKf7ZQSj+jMufYFliSQ7ju/Pzx9mLPN
+         rLtT0yaEQu5UDrPJMBcROHxkiMmgeuzYnlRc5BvYDotVk5Lt2oZW0jVE5LFks3QURgl1
+         CbtYqBEtyl9payL65PfKM15qHTqP76hfhB6rnApmuHWP59fxHXWGX2HSL7+w+LUc2Vcl
+         wxrg==
+X-Gm-Message-State: AOJu0YyiuyUacinJB4omS1iO/lKL5W8re2o8GK+H1MoHBxPuxrXJl3YD
+        3G5+KfLgzVLtQdUJVpV4XEQ=
+X-Google-Smtp-Source: AGHT+IHnCRDw8I8GGeR+MlaaT+kwS4k/fxb61omhQzxfL7F7XleUyS/Kj/7XfTbFNLKOmrMdoESqhg==
+X-Received: by 2002:a17:90b:70b:b0:263:1f1c:ef4d with SMTP id s11-20020a17090b070b00b002631f1cef4dmr11664717pjz.10.1698190502525;
+        Tue, 24 Oct 2023 16:35:02 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-004.fbsv.net. [2a03:2880:ff:4::face:b00c])
+        by smtp.gmail.com with ESMTPSA id x89-20020a17090a6c6200b0027d06ddc06bsm10378267pjj.33.2023.10.24.16.35.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 16:35:02 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, yosryahmed@google.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
+        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        david@ixit.cz
+Subject: [RFC PATCH] memcontrol: implement swap bypassing
+Date:   Tue, 24 Oct 2023 16:35:01 -0700
+Message-Id: <20231024233501.2639043-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <ae3115778a3fa10ec77152e18beed54fafe0f6e7.1698151516.git.baolin.wang@linux.alibaba.com>
- <CAGsJ_4zgdAmyU-075jd8KfXn=CdAVC8Rs481sCOd5N2a68yPUg@mail.gmail.com>
-In-Reply-To: <CAGsJ_4zgdAmyU-075jd8KfXn=CdAVC8Rs481sCOd5N2a68yPUg@mail.gmail.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Wed, 25 Oct 2023 07:31:50 +0800
-Message-ID: <CAGsJ_4z1u4-_JXUM9GG2cqc4Nwrx1v69uHsbff5jDQZHQgWP+w@mail.gmail.com>
-Subject: Re: [PATCH] arm64: mm: drop tlb flush operation when clearing the
- access bit
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, v-songbaohua@oppo.com,
-        yuzhao@google.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,184 +76,271 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 7:16=E2=80=AFAM Barry Song <21cnbao@gmail.com> wrot=
-e:
->
-> On Tue, Oct 24, 2023 at 8:57=E2=80=AFPM Baolin Wang
-> <baolin.wang@linux.alibaba.com> wrote:
-> >
-> > Now ptep_clear_flush_young() is only called by folio_referenced() to
-> > check if the folio was referenced, and now it will call a tlb flush on
-> > ARM64 architecture. However the tlb flush can be expensive on ARM64
-> > servers, especially for the systems with a large CPU numbers.
-> >
-> > Similar to the x86 architecture, below comments also apply equally to
-> > ARM64 architecture. So we can drop the tlb flush operation in
-> > ptep_clear_flush_young() on ARM64 architecture to improve the performan=
-ce.
-> > "
-> > /* Clearing the accessed bit without a TLB flush
-> >  * doesn't cause data corruption. [ It could cause incorrect
-> >  * page aging and the (mistaken) reclaim of hot pages, but the
-> >  * chance of that should be relatively low. ]
-> >  *
-> >  * So as a performance optimization don't flush the TLB when
-> >  * clearing the accessed bit, it will eventually be flushed by
-> >  * a context switch or a VM operation anyway. [ In the rare
-> >  * event of it not getting flushed for a long time the delay
-> >  * shouldn't really matter because there's no real memory
-> >  * pressure for swapout to react to. ]
-> >  */
-> > "
-> > Running the thpscale to show some obvious improvements for compaction
-> > latency with this patch:
-> >                              base                   patched
-> > Amean     fault-both-1      1093.19 (   0.00%)     1084.57 *   0.79%*
-> > Amean     fault-both-3      2566.22 (   0.00%)     2228.45 *  13.16%*
-> > Amean     fault-both-5      3591.22 (   0.00%)     3146.73 *  12.38%*
-> > Amean     fault-both-7      4157.26 (   0.00%)     4113.67 *   1.05%*
-> > Amean     fault-both-12     6184.79 (   0.00%)     5218.70 *  15.62%*
-> > Amean     fault-both-18     9103.70 (   0.00%)     7739.71 *  14.98%*
-> > Amean     fault-both-24    12341.73 (   0.00%)    10684.23 *  13.43%*
-> > Amean     fault-both-30    15519.00 (   0.00%)    13695.14 *  11.75%*
-> > Amean     fault-both-32    16189.15 (   0.00%)    14365.73 *  11.26%*
-> >                        base       patched
-> > Duration User         167.78      161.03
-> > Duration System      1836.66     1673.01
-> > Duration Elapsed     2074.58     2059.75
-> >
-> > Barry Song submitted a similar patch [1] before, that replaces the
-> > ptep_clear_flush_young_notify() with ptep_clear_young_notify() in
-> > folio_referenced_one(). However, I'm not sure if removing the tlb flush
-> > operation is applicable to every architecture in kernel, so dropping
-> > the tlb flush for ARM64 seems a sensible change.
-> >
-> > Note: I am okay for both approach, if someone can help to ensure that
-> > all architectures do not need the tlb flush when clearing the accessed
-> > bit, then I also think Barry's patch is better (hope Barry can resend
-> > his patch).
-> >
->
-> Thanks!
->
-> ptep_clear_flush_young() with "flush" in its name clearly says it needs a
-> flush. but it happens in arm64, all other code which needs a flush has
-> called other variants, for example __flush_tlb_page_nosync():
->
-> static inline void arch_tlbbatch_add_pending(struct
-> arch_tlbflush_unmap_batch *batch,
->  struct mm_struct *mm, unsigned long uaddr)
-> {
->  __flush_tlb_page_nosync(mm, uaddr);
-> }
->
-> so it seems folio_referenced is the only left user of this
-> ptep_clear_flush_young().
-> The fact makes Baolin's patch look safe now.
->
-> but this function still has "flush" in its name, so one day, one person m=
-ight
-> call it with the understanding that it will flush tlb but actually it
-> won't. This is
-> bad smell in code.
->
-> I guess one side effect of not flushing tlb while clearing the access
-> flag is that
-> hardware won't see this cleared flag in the tlb, so it might not set this=
- bit in
-> memory even though the bit has been cleared before in memory(but not in t=
-lb)
-> while the page is accessed *again*.
->
-> next time, someone reads the access flag in memory again by folio_referen=
-ced,
-> he/she will see the page is cold as hardware has lost a chance to set
-> the bit again
-> since it finds tlb already has a true access flag.
->
-> But anyway, tlb is so small, it will be flushed by context switch and
-> other running
-> code soon. so it seems we don't actually require the access flag being in=
-stantly
-> updated. the time gap, in which access flag might lose the new set by har=
-dware,
-> seems to be too short to really affect the accuracy of page reclamation. =
-but its
-> cost is large.
->
-> (A). Constant flush cost vs. (B). very very occasional reclaimed hot
-> page,  B might
-> be a correct choice.
+During our experiment with zswap, we sometimes observe swap IOs due to
+occasional zswap store failures and writebacks. These swapping IOs
+prevent many users who cannot tolerate swapping from adopting zswap to
+save memory and improve performance where possible.
 
-Plus, I doubt B is really going to happen. as after a page is promoted to
-the head of lru list or new generation, it needs a long time to slide back
-to the inactive list tail or to the candidate generation of mglru. the time
-should have been large enough for tlb to be flushed. If the page is really
-hot, the hardware will get second, third, fourth etc opportunity to set an
-access flag in the long time in which the page is re-moved to the tail
-as the page can be accessed multiple times if it is really hot.
+This patch adds the option to bypass swap entirely: do not swap when an
+zswap store attempt fail, and do not write pages in the zswap pool back
+to swap. The feature is disabled by default (to preserve the existing
+behavior), and can be enabled on a cgroup-basis via a new cgroup file.
 
->
-> > [1] https://lore.kernel.org/lkml/20220617070555.344368-1-21cnbao@gmail.=
-com/
-> > Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> > ---
-> >  arch/arm64/include/asm/pgtable.h | 31 ++++++++++++++++---------------
-> >  1 file changed, 16 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/=
-pgtable.h
-> > index 0bd18de9fd97..2979d796ba9d 100644
-> > --- a/arch/arm64/include/asm/pgtable.h
-> > +++ b/arch/arm64/include/asm/pgtable.h
-> > @@ -905,21 +905,22 @@ static inline int ptep_test_and_clear_young(struc=
-t vm_area_struct *vma,
-> >  static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
-> >                                          unsigned long address, pte_t *=
-ptep)
-> >  {
-> > -       int young =3D ptep_test_and_clear_young(vma, address, ptep);
-> > -
-> > -       if (young) {
-> > -               /*
-> > -                * We can elide the trailing DSB here since the worst t=
-hat can
-> > -                * happen is that a CPU continues to use the young entr=
-y in its
-> > -                * TLB and we mistakenly reclaim the associated page. T=
-he
-> > -                * window for such an event is bounded by the next
-> > -                * context-switch, which provides a DSB to complete the=
- TLB
-> > -                * invalidation.
-> > -                */
-> > -               flush_tlb_page_nosync(vma, address);
-> > -       }
-> > -
-> > -       return young;
-> > +       /*
-> > +        * This comment is borrowed from x86, but applies equally to AR=
-M64:
-> > +        *
-> > +        * Clearing the accessed bit without a TLB flush doesn't cause
-> > +        * data corruption. [ It could cause incorrect page aging and
-> > +        * the (mistaken) reclaim of hot pages, but the chance of that
-> > +        * should be relatively low. ]
-> > +        *
-> > +        * So as a performance optimization don't flush the TLB when
-> > +        * clearing the accessed bit, it will eventually be flushed by
-> > +        * a context switch or a VM operation anyway. [ In the rare
-> > +        * event of it not getting flushed for a long time the delay
-> > +        * shouldn't really matter because there's no real memory
-> > +        * pressure for swapout to react to. ]
-> > +        */
-> > +       return ptep_test_and_clear_young(vma, address, ptep);
-> >  }
-> >
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > --
-> > 2.39.3
-> >
->
-> Thanks
-> Barry
+Note that this is subtly different from setting memory.swap.max to 0, as
+it still allows for pages to be stored in the zswap pool (which itself
+consumes swap space in its current form).
+
+This is the second attempt (spiritual successor) of the following patch:
+
+https://lore.kernel.org/linux-mm/20231017003519.1426574-2-nphamcs@gmail.com/
+
+and should be applied on top of the zswap shrinker series:
+
+https://lore.kernel.org/linux-mm/20231024203302.1920362-1-nphamcs@gmail.com/
+
+Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 11 +++++
+ Documentation/admin-guide/mm/zswap.rst  |  6 +++
+ include/linux/memcontrol.h              | 20 ++++++++++
+ mm/memcontrol.c                         | 53 +++++++++++++++++++++++++
+ mm/page_io.c                            |  6 +++
+ mm/shmem.c                              |  8 +++-
+ mm/zswap.c                              |  9 +++++
+ 7 files changed, 111 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 606b2e0eac4b..34306d70b3f7 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1657,6 +1657,17 @@ PAGE_SIZE multiple when read back.
+ 	higher than the limit for an extended period of time.  This
+ 	reduces the impact on the workload and memory management.
+ 
++  memory.swap.bypass.enabled
++	A read-write single value file which exists on non-root
++	cgroups.  The default value is "0".
++
++	When this is set to 1, all swapping attempts are disabled.
++	Note that this is subtly different from setting memory.swap.max to
++	0, as it still allows for pages to be written to the zswap pool
++	(which also consumes swap space in its current form). However,
++	zswap store failure will not lead to swapping, and zswap writebacks
++	will be disabled altogether.
++
+   memory.zswap.current
+ 	A read-only single value file which exists on non-root
+ 	cgroups.
+diff --git a/Documentation/admin-guide/mm/zswap.rst b/Documentation/admin-guide/mm/zswap.rst
+index 522ae22ccb84..b7bf481a3e25 100644
+--- a/Documentation/admin-guide/mm/zswap.rst
++++ b/Documentation/admin-guide/mm/zswap.rst
+@@ -153,6 +153,12 @@ attribute, e. g.::
+ 
+ Setting this parameter to 100 will disable the hysteresis.
+ 
++Some users cannot tolerate the swapping that comes with zswap store failures
++and zswap writebacks. Swapping can be disabled entirely (without disabling
++zswap itself) on a cgroup-basis as follows:
++
++	echo 1 > /sys/fs/cgroup/<cgroup-name>/memory.swap.bypass.enabled
++
+ When there is a sizable amount of cold memory residing in the zswap pool, it
+ can be advantageous to proactively write these cold pages to swap and reclaim
+ the memory for other use cases. By default, the zswap shrinker is disabled.
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index c1846e57011b..e481c5c609f2 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -221,6 +221,9 @@ struct mem_cgroup {
+ 	unsigned long zswap_max;
+ #endif
+ 
++	/* bypass swap (on zswap failure and writebacks) */
++	bool swap_bypass_enabled;
++
+ 	unsigned long soft_limit;
+ 
+ 	/* vmpressure notifications */
+@@ -1157,6 +1160,13 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ 						gfp_t gfp_mask,
+ 						unsigned long *total_scanned);
+ 
++static inline bool mem_cgroup_swap_bypass_enabled(struct mem_cgroup *memcg)
++{
++	return memcg && READ_ONCE(memcg->swap_bypass_enabled);
++}
++
++bool mem_cgroup_swap_bypass_folio(struct folio *folio);
++
+ #else /* CONFIG_MEMCG */
+ 
+ #define MEM_CGROUP_ID_SHIFT	0
+@@ -1615,6 +1625,16 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ {
+ 	return 0;
+ }
++
++static inline bool mem_cgroup_swap_bypass_enabled(struct mem_cgroup *memcg)
++{
++	return false;
++}
++
++static inline bool mem_cgroup_swap_bypass_folio(struct folio *folio)
++{
++	return false;
++}
+ #endif /* CONFIG_MEMCG */
+ 
+ static inline void __inc_lruvec_kmem_state(void *p, enum node_stat_item idx)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 568d9d037a59..f231cf2f745b 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7928,6 +7928,28 @@ bool mem_cgroup_swap_full(struct folio *folio)
+ 	return false;
+ }
+ 
++bool mem_cgroup_swap_bypass_folio(struct folio *folio)
++{
++	struct obj_cgroup *objcg = get_obj_cgroup_from_folio(folio);
++	struct mem_cgroup *memcg;
++	bool ret;
++
++	if (!objcg)
++		return false;
++
++	if (mem_cgroup_disabled()) {
++		obj_cgroup_put(objcg);
++		return false;
++	}
++
++	memcg = get_mem_cgroup_from_objcg(objcg);
++	ret = mem_cgroup_swap_bypass_enabled(memcg);
++
++	mem_cgroup_put(memcg);
++	obj_cgroup_put(objcg);
++	return ret;
++}
++
+ static int __init setup_swap_account(char *s)
+ {
+ 	pr_warn_once("The swapaccount= commandline option is deprecated. "
+@@ -8013,6 +8035,31 @@ static int swap_events_show(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ 
++static int swap_bypass_enabled_show(struct seq_file *m, void *v)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
++
++	seq_printf(m, "%d\n", READ_ONCE(memcg->swap_bypass_enabled));
++	return 0;
++}
++
++static ssize_t swap_bypass_enabled_write(struct kernfs_open_file *of,
++				char *buf, size_t nbytes, loff_t off)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
++	int swap_bypass_enabled;
++	ssize_t parse_ret = kstrtoint(strstrip(buf), 0, &swap_bypass_enabled);
++
++	if (parse_ret)
++		return parse_ret;
++
++	if (swap_bypass_enabled != 0 && swap_bypass_enabled != 1)
++		return -ERANGE;
++
++	WRITE_ONCE(memcg->swap_bypass_enabled, swap_bypass_enabled);
++	return nbytes;
++}
++
+ static struct cftype swap_files[] = {
+ 	{
+ 		.name = "swap.current",
+@@ -8042,6 +8089,12 @@ static struct cftype swap_files[] = {
+ 		.file_offset = offsetof(struct mem_cgroup, swap_events_file),
+ 		.seq_show = swap_events_show,
+ 	},
++	{
++		.name = "swap.bypass.enabled",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.seq_show = swap_bypass_enabled_show,
++		.write = swap_bypass_enabled_write,
++	},
+ 	{ }	/* terminate */
+ };
+ 
+diff --git a/mm/page_io.c b/mm/page_io.c
+index cb559ae324c6..0c84e1592c39 100644
+--- a/mm/page_io.c
++++ b/mm/page_io.c
+@@ -201,6 +201,12 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
+ 		folio_end_writeback(folio);
+ 		return 0;
+ 	}
++
++	if (mem_cgroup_swap_bypass_folio(folio)) {
++		folio_mark_dirty(folio);
++		return AOP_WRITEPAGE_ACTIVATE;
++	}
++
+ 	__swap_writepage(&folio->page, wbc);
+ 	return 0;
+ }
+diff --git a/mm/shmem.c b/mm/shmem.c
+index cab053831fea..6ce1d4a7a48b 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1514,8 +1514,12 @@ static int shmem_writepage(struct page *page, struct writeback_control *wbc)
+ 
+ 		mutex_unlock(&shmem_swaplist_mutex);
+ 		BUG_ON(folio_mapped(folio));
+-		swap_writepage(&folio->page, wbc);
+-		return 0;
++		/*
++		 * Seeing AOP_WRITEPAGE_ACTIVATE here indicates swapping is disabled on
++		 * zswap store failure. Note that in that case the folio is already
++		 * re-marked dirty by swap_writepage()
++		 */
++		return swap_writepage(&folio->page, wbc);
+ 	}
+ 
+ 	mutex_unlock(&shmem_swaplist_mutex);
+diff --git a/mm/zswap.c b/mm/zswap.c
+index c40697f07ba3..f19e26d647a3 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -535,6 +535,9 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
+ 	struct zswap_pool *pool = shrinker->private_data;
+ 	bool encountered_page_in_swapcache = false;
+ 
++	if (mem_cgroup_swap_bypass_enabled(sc->memcg))
++		return SHRINK_STOP;
++
+ 	nr_protected =
+ 		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
+ 	lru_size = list_lru_shrink_count(&pool->list_lru, sc);
+@@ -565,6 +568,9 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+ 	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
+ 	unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
+ 
++	if (mem_cgroup_swap_bypass_enabled(memcg))
++		return 0;
++
+ #ifdef CONFIG_MEMCG_KMEM
+ 	cgroup_rstat_flush(memcg->css.cgroup);
+ 	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
+@@ -890,6 +896,9 @@ static int shrink_memcg(struct mem_cgroup *memcg)
+ 	struct zswap_pool *pool;
+ 	int nid, shrunk = 0;
+ 
++	if (mem_cgroup_swap_bypass_enabled(memcg))
++		return -EINVAL;
++
+ 	/*
+ 	 * Skip zombies because their LRUs are reparented and we would be
+ 	 * reclaiming from the parent instead of the dead memcg.
+-- 
+2.34.1
