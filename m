@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E98337D5EC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 01:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618787D5ECB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 01:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344675AbjJXXpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 19:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
+        id S1344689AbjJXXqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 19:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344668AbjJXXpM (ORCPT
+        with ESMTP id S1344668AbjJXXqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 19:45:12 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADE110D0;
-        Tue, 24 Oct 2023 16:45:10 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so4894372b3a.2;
-        Tue, 24 Oct 2023 16:45:10 -0700 (PDT)
+        Tue, 24 Oct 2023 19:46:10 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD10B10CE
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 16:46:06 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6b5e6301a19so4823286b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 16:46:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698191110; x=1698795910; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+x0VqA3cD4M+ao6grVHPW3xmsMyW1K3p+Nk8uf2CQsI=;
-        b=KIonIqMbf4sAJeJGfxg0GjkAj94/XmT3HBe8IyeiTv6W/d8j4VDwDGKgT4do+m+3+d
-         oElF/JnipZueHqfY0/MJ+AfhJb+rWxN1BKmQuv9Hn5OU66pOIvjoY1XMgS7oj/08CxeF
-         KIixbF0hk1Zid5Lex4vfhjW9QeIm7dcfLiKgZempLR0jpfTnP0Uilfvf2++R601vGKva
-         bjaUTLnZmQl3uEwkdTDN+KPanFkPtZrJJwWq3UIqLNBqIivJ42Cioye99IHViyWd4T1z
-         xqhupeeUFcNLf7yP+RBzRchgIoMp58jHXGJoGVGwTh0UbBFg/upqLGFL1msULL57LwC7
-         lt/g==
+        d=chromium.org; s=google; t=1698191166; x=1698795966; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SQudVLvWcmKYsHmvQvFrVCaGB2Fcdq9CCmdIycleMZc=;
+        b=d4HejUPW5ZWDx7e3B3/tc11iOAub3J1eabAz9/VwkgoG8TPj2Qv0YZsQuBMYJjRBvg
+         X6hHqM9U1RbN309fPAFxkDcMZf1ng5IILGzL5cD9MSCOfLfU1qUbRDmrnx/1jGDTvPUH
+         fbrgDenpvSVFn0l+l4x0iVebIGj2mTJWW6Wn4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698191110; x=1698795910;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+x0VqA3cD4M+ao6grVHPW3xmsMyW1K3p+Nk8uf2CQsI=;
-        b=jnOelc3/5jAQZld8g/ZlE94O3gEQpYW62lEdAe23XTkZVGu98nqvv77u0yaPcl2R+h
-         Vpxg4/wH3slXwBkm9S2rA/pYHb2cynX69cmE9pqfAR1xfn9wVAgVzsAKlZLfbqhbunHY
-         C+0eQk3IkVgHXqjE1T9tC2jZg+lSJ7jB4aTC2I3gzty0ca7ivOFjwlQ4lDvmeWvKHQCW
-         5wV/uYIADOIsVbYyrvdLzj7xHYeh+E5F/lQLbsYf9CWfl+IUuK5/kWXCIji81qOBhO1p
-         H+u3uYO970/tALr0Uw7MRu5HL6fSUd7v7PtsKlx/Us03fMnuipgWxVO6r/XTra+Zzgkg
-         tXFA==
-X-Gm-Message-State: AOJu0YzwX409tWK0hp2m/FQduJ5/0GabV3fGtHYVjGHY/OQN1cp6/r2s
-        pUmW0amssZLN2Vla5AOn+d8=
-X-Google-Smtp-Source: AGHT+IG9b7uiwD4opdLGFWcO+BS8gEzyOBmXiwUWx48lzcMpqTQYDgS4zrtFiMvQGqA8/nHWUnmEHw==
-X-Received: by 2002:a05:6a00:2482:b0:6be:130a:22a0 with SMTP id c2-20020a056a00248200b006be130a22a0mr15986264pfv.14.1698191109799;
-        Tue, 24 Oct 2023 16:45:09 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-117.fbsv.net. [2a03:2880:ff:75::face:b00c])
-        by smtp.gmail.com with ESMTPSA id w14-20020aa7954e000000b00686b649cdd0sm8076226pfq.86.2023.10.24.16.45.09
+        d=1e100.net; s=20230601; t=1698191166; x=1698795966;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SQudVLvWcmKYsHmvQvFrVCaGB2Fcdq9CCmdIycleMZc=;
+        b=QtUcgeyygiKmfmmx2o1doS97SgsUelY5cn3MrRpc3QH8/a7L4DdxFp69S4i/7KssEO
+         Z7TDShN0Xdkage9AKJSF0CT8wzi8egBpVFZ0jf9dVaF0LcjvxlRSatPiVR+ve5+dHlG3
+         6yRQs2Qv5tpOD+ZEMzhlEjbqc+MpRnN5TcNi+W1rTWKRyiVLkMFXd09xqG4I+9GRD27A
+         kKHlBT/sZa9Otefr5OQhysEWKH6vI2q03Du42I7DrXJA9fu7NWEHBT6+lATQzzSn/YIC
+         unLK0Ko6zgBl+jTu4sUHWQNien4hbqSLfDZ3QTXdsHJjHlG3REUEAkQ9YkFMRBDxhALW
+         LM1w==
+X-Gm-Message-State: AOJu0YxSPxCdA9GMXqHDqzrdsQ8V/J2E4z2Jhf9QHQJ+Hw6k4s666IF2
+        MtXGRMDEEftEGq1TEMKgyxLyJw==
+X-Google-Smtp-Source: AGHT+IG9D2Aw99ZWyxncC7MZP37o9nAmXlhaRrCgASEzu3QBvsK5SxQS81VWgUJOGHj36wsSLEIUSA==
+X-Received: by 2002:a05:6a20:7487:b0:16b:74db:8fe1 with SMTP id p7-20020a056a20748700b0016b74db8fe1mr4383675pzd.29.1698191166190;
+        Tue, 24 Oct 2023 16:46:06 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h10-20020a056a00000a00b00688435a9915sm8177865pfk.189.2023.10.24.16.46.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 16:45:09 -0700 (PDT)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH] zswap: export compression failure stats
-Date:   Tue, 24 Oct 2023 16:45:09 -0700
-Message-Id: <20231024234509.2680539-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 24 Oct 2023 16:46:05 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 16:46:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] s390/sclp: replace deprecated strncpy with strtomem
+Message-ID: <202310241645.62B11FE65@keescook>
+References: <20231023-strncpy-drivers-s390-char-sclp-c-v1-1-eaeef80522bb@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231023-strncpy-drivers-s390-char-sclp-c-v1-1-eaeef80522bb@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,54 +73,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During a zswap store attempt, the compression algorithm could fail (for
-e.g due to the page containing incompressible random data). This is not
-tracked in any of existing zswap counters, making it hard to monitor for
-and investigate. We have run into this problem several times in our
-internal investigations on zswap store failures.
+On Mon, Oct 23, 2023 at 07:14:49PM +0000, Justin Stitt wrote:
+> Let's move away from using strncpy() as it is deprecated [1].
+> 
+> Instead use strtomem() as `e.id` is already marked as nonstring:
+> |       char id[4] __nonstring;
 
-This patch adds a dedicated debugfs counter for compression algorithm
-failures.
+I'm surprised the compiler didn't complain about this -- I thought that
+was the point of the __nonstring attribute: to diagnose when used with a
+string function. Hmpf.
 
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- mm/zswap.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> We don't need strtomem_pad() because `e` is already memset to 0 --
+> rendering any additional NUL-padding useless.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: build-tested only.
+> 
+> Found with: $ rg "strncpy\("
+> ---
+>  drivers/s390/char/sclp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/s390/char/sclp.c b/drivers/s390/char/sclp.c
+> index 8f74db689a0c..486cf57a1605 100644
+> --- a/drivers/s390/char/sclp.c
+> +++ b/drivers/s390/char/sclp.c
+> @@ -81,7 +81,7 @@ static inline void sclp_trace(int prio, char *id, u32 a, u64 b, bool err)
+>  	struct sclp_trace_entry e;
+>  
+>  	memset(&e, 0, sizeof(e));
+> -	strncpy(e.id, id, sizeof(e.id));
+> +	strtomem(e.id, id);
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 37d2b1cb2ecb..e12e76289226 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -61,6 +61,8 @@ static u64 zswap_pool_limit_hit;
- static u64 zswap_written_back_pages;
- /* Store failed due to a reclaim failure after pool limit was reached */
- static u64 zswap_reject_reclaim_fail;
-+/* Store failed due to compression algorithm failure */
-+static u64 zswap_reject_compress_fail;
- /* Compressed page was too big for the allocator to (optimally) store */
- static u64 zswap_reject_compress_poor;
- /* Store failed because underlying allocator could not get memory */
-@@ -1309,8 +1311,10 @@ bool zswap_store(struct folio *folio)
- 	ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
- 	dlen = acomp_ctx->req->dlen;
- 
--	if (ret)
-+	if (ret) {
-+		zswap_reject_compress_fail++;
- 		goto put_dstmem;
-+	}
- 
- 	/* store */
- 	zpool = zswap_find_zpool(entry);
-@@ -1550,6 +1554,8 @@ static int zswap_debugfs_init(void)
- 			   zswap_debugfs_root, &zswap_reject_alloc_fail);
- 	debugfs_create_u64("reject_kmemcache_fail", 0444,
- 			   zswap_debugfs_root, &zswap_reject_kmemcache_fail);
-+	debugfs_create_u64("reject_compress_fail", 0444,
-+			   zswap_debugfs_root, &zswap_reject_compress_fail);
- 	debugfs_create_u64("reject_compress_poor", 0444,
- 			   zswap_debugfs_root, &zswap_reject_compress_poor);
- 	debugfs_create_u64("written_back_pages", 0444,
+Looks right to me; thanks!
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-Kees
+
+>  	e.a = a;
+>  	e.b = b;
+>  	debug_event(&sclp_debug, prio, &e, sizeof(e));
+> 
+> ---
+> base-commit: 9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
+> change-id: 20231023-strncpy-drivers-s390-char-sclp-c-bb66226a7eaa
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
+> 
+
 -- 
-2.34.1
-
+Kees Cook
