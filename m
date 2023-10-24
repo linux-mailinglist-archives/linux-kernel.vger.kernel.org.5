@@ -2,151 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D554A7D5AC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A30727D5ACB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344184AbjJXSkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 14:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
+        id S1343888AbjJXSmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234866AbjJXSkM (ORCPT
+        with ESMTP id S232357AbjJXSmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:40:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A7C89F;
-        Tue, 24 Oct 2023 11:40:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8B1AC433C7;
-        Tue, 24 Oct 2023 18:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698172810;
-        bh=Xe0wF7mgvmZCFWwP7fcGH+Eub1oED/IAnnGG5PkQ1xU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=aR5dfj2B+9L9WTja+3SyJ8WB9QMgZo4R+vxoFDhQoAUL1rtUOh+Oh5Q8DQmdfVTO4
-         yGp5tE/69QdXH5HxMqJHG7wcibIkHLtTyOezwvPMxpAm86wk65poIE/uewxy/Ie6v3
-         hSHpwvYzQ6e9UEWsvO3SaWQYijZfMxf09CUdubjLB4ttXC80RueJZB863KJ470NSzB
-         NMRpUvxtODKii5ufHHS1e4VgM9qMeTvQltU7KO0D7dMhAnpxAiASNlUi/neKfJiDK+
-         xe5dn9XSPdXwMQCwnpFDi/Iua7ZyggSyeH4EgK4Vnte8CUNiPzFVJE4c5FjHvkEK1O
-         cyliPAfxW2aoA==
-Message-ID: <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Amir Goldstein <amir73il@gmail.com>,
-        Dave Chinner <david@fromorbit.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Tue, 24 Oct 2023 14:40:06 -0400
-In-Reply-To: <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
-References: <CAHk-=wiKJgOg_3z21Sy9bu+3i_34S86r8fd6ngvJpZDwa-ww8Q@mail.gmail.com>
-         <5f96e69d438ab96099bb67d16b77583c99911caa.camel@kernel.org>
-         <20231019-fluor-skifahren-ec74ceb6c63e@brauner>
-         <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
-         <ZTGncMVw19QVJzI6@dread.disaster.area>
-         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
-         <ZTWfX3CqPy9yCddQ@dread.disaster.area>
-         <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
-         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
-         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-         <ZTc8tClCRkfX3kD7@dread.disaster.area>
-         <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 24 Oct 2023 14:42:15 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B75912C;
+        Tue, 24 Oct 2023 11:42:12 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39OIWRau025039;
+        Tue, 24 Oct 2023 18:42:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=uGHRv3zuutbStD7E9MlZNXiGhV3IMVGQQ/a4No1Mr2E=;
+ b=OH6BGjQyGl+N4bgKZW2F9XyZXNIVRMsUO5bxNvNQlK7O32GQcJamz/Sz2Snj1jX64Kj0
+ +HaS86V+V+9NTC7MHZP0bUW05XmKMEv+fKEV9z9m9jbUywpwDHnaOI8BWZF4W+mA7L1D
+ yhgq1lqiQGv1x+oeO/L8+V9HesVRyVikfq8PYZ2ss5z6MHOdGQYg7bqS5YIbBlDVvNMt
+ vxhq9beFsSJLwGzUhza/pfqUendvZ/xUaOHppPVqplTS47/Wm/RRwcNUDOWS0CH1Vjlf
+ Qfdni6gud+3lv4zWxEG6Q8cY8/pJ1QH8R6pxSzXrO1dLrbZzLUTFiXZx9vDUnFFejJiG hA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tx7r81t01-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 18:42:04 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39OIg3MO031347
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 18:42:03 GMT
+Received: from [10.110.113.199] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 24 Oct
+ 2023 11:42:03 -0700
+Message-ID: <cd294a89-33e7-0569-81b3-df77a255f061@quicinc.com>
+Date:   Tue, 24 Oct 2023 11:41:51 -0700
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v4 3/3] usb: dwc3: Modify runtime pm ops to handle bus
+ suspend
+Content-Language: en-US
+To:     Roger Quadros <rogerq@kernel.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
+References: <20230814185043.9252-1-quic_eserrao@quicinc.com>
+ <20230814185043.9252-4-quic_eserrao@quicinc.com>
+ <9be9fae5-f6f2-42fe-bd81-78ab50aafa06@kernel.org>
+From:   Elson Serrao <quic_eserrao@quicinc.com>
+In-Reply-To: <9be9fae5-f6f2-42fe-bd81-78ab50aafa06@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: VU6LfGhr4GY0_tRn7IyMektX1o9WnNEj
+X-Proofpoint-GUID: VU6LfGhr4GY0_tRn7IyMektX1o9WnNEj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-24_18,2023-10-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ mlxlogscore=999 lowpriorityscore=0 bulkscore=0 phishscore=0 spamscore=0
+ clxscore=1015 priorityscore=1501 suspectscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310240160
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-10-24 at 10:08 +0300, Amir Goldstein wrote:
-> On Tue, Oct 24, 2023 at 6:40=E2=80=AFAM Dave Chinner <david@fromorbit.com=
-> wrote:
-> >=20
-> > On Mon, Oct 23, 2023 at 02:18:12PM -1000, Linus Torvalds wrote:
-> > > On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> wrot=
-e:
-> > > >=20
-> > > > The problem is the first read request after a modification has been
-> > > > made. That is causing relatime to see mtime > atime and triggering
-> > > > an atime update. XFS sees this, does an atime update, and in
-> > > > committing that persistent inode metadata update, it calls
-> > > > inode_maybe_inc_iversion(force =3D false) to check if an iversion
-> > > > update is necessary. The VFS sees I_VERSION_QUERIED, and so it bump=
-s
-> > > > i_version and tells XFS to persist it.
-> > >=20
-> > > Could we perhaps just have a mode where we don't increment i_version
-> > > for just atime updates?
-> > >=20
-> > > Maybe we don't even need a mode, and could just decide that atime
-> > > updates aren't i_version updates at all?
-> >=20
-> > We do that already - in memory atime updates don't bump i_version at
-> > all. The issue is the rare persistent atime update requests that
-> > still happen - they are the ones that trigger an i_version bump on
-> > XFS, and one of the relatime heuristics tickle this specific issue.
-> >=20
-> > If we push the problematic persistent atime updates to be in-memory
-> > updates only, then the whole problem with i_version goes away....
-> >=20
-> > > Yes, yes, it's obviously technically a "inode modification", but does
-> > > anybody actually *want* atime updates with no actual other changes to
-> > > be version events?
-> >=20
-> > Well, yes, there was. That's why we defined i_version in the on disk
-> > format this way well over a decade ago. It was part of some deep
-> > dark magical HSM beans that allowed the application to combine
-> > multiple scans for different inode metadata changes into a single
-> > pass. atime changes was one of the things it needed to know about
-> > for tiering and space scavenging purposes....
-> >=20
->=20
-> But if this is such an ancient mystical program, why do we have to
-> keep this XFS behavior in the present?
-> BTW, is this the same HSM whose DMAPI ioctls were deprecated
-> a few years back?
->=20
-> I mean, I understand that you do not want to change the behavior of
-> i_version update without an opt-in config or mount option - let the distr=
-o
-> make that choice.
-> But calling this an "on-disk format change" is a very long stretch.
->=20
-> Does xfs_repair guarantee that changes of atime, or any inode changes
-> for that matter, update i_version? No, it does not.
-> So IMO, "atime does not update i_version" is not an "on-disk format chang=
-e",
-> it is a runtime behavior change, just like lazytime is.
->=20
 
-This would certainly be my preference. I don't want to break any
-existing users though.
 
-Perhaps this ought to be a mkfs option? Existing XFS filesystems could
-still behave with the legacy behavior, but we could make mkfs.xfs build
-filesystems by default that work like NFS requires.
+On 10/24/2023 3:14 AM, Roger Quadros wrote:
+> Hi Elson,
+> 
+> On 14/08/2023 21:50, Elson Roy Serrao wrote:
+>> The current implementation blocks the runtime pm operations when cable
+>> is connected. This would block dwc3 to enter a low power state during
+>> bus suspend scenario. Modify the runtime pm ops to handle bus suspend
+>> case for such platforms where the controller low power mode entry/exit
+>> is handled by the glue driver. This enablement is controlled through a
+>> dt property and platforms capable of detecting bus resume can benefit
+>> from this feature. Also modify the remote wakeup operations to trigger
+>> runtime resume before sending wakeup signal.
+>>
+>> Signed-off-by: Elson Roy Serrao <quic_eserrao@quicinc.com>
+>> ---
+>>   drivers/usb/dwc3/core.c   | 28 ++++++++++++++++++++++++++--
+>>   drivers/usb/dwc3/core.h   |  3 +++
+>>   drivers/usb/dwc3/gadget.c | 32 +++++++++++++++++++++++++-------
+>>   3 files changed, 54 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+>> index 9c6bf054f15d..9bfd9bb18caf 100644
+>> --- a/drivers/usb/dwc3/core.c
+>> +++ b/drivers/usb/dwc3/core.c
+>> @@ -1518,6 +1518,9 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>>   	dwc->dis_split_quirk = device_property_read_bool(dev,
+>>   				"snps,dis-split-quirk");
+>>   
+>> +	dwc->runtime_suspend_on_usb_suspend = device_property_read_bool(dev,
+>> +				"snps,runtime-suspend-on-usb-suspend");
+>> +
+>>   	dwc->lpm_nyet_threshold = lpm_nyet_threshold;
+>>   	dwc->tx_de_emphasis = tx_de_emphasis;
+>>   
+>> @@ -2029,6 +2032,9 @@ static int dwc3_resume_common(struct dwc3 *dwc, pm_message_t msg)
+>>   
+>>   	switch (dwc->current_dr_role) {
+>>   	case DWC3_GCTL_PRTCAP_DEVICE:
+>> +		/* runtime resume on bus resume scenario */
+>> +		if (PMSG_IS_AUTO(msg) && dwc->connected)
+>> +			break;
+>>   		ret = dwc3_core_init_for_resume(dwc);
+>>   		if (ret)
+>>   			return ret;
+>> @@ -2090,8 +2096,13 @@ static int dwc3_runtime_checks(struct dwc3 *dwc)
+>>   {
+>>   	switch (dwc->current_dr_role) {
+>>   	case DWC3_GCTL_PRTCAP_DEVICE:
+>> -		if (dwc->connected)
+>> +		if (dwc->connected) {
+>> +			/* bus suspend scenario */
+>> +			if (dwc->runtime_suspend_on_usb_suspend &&
+>> +			    dwc->suspended)
+> 
+> If dwc is already suspended why do we return -EBUSY?
+> Should this be !dwc->suspended?
+> 
 
---=20
-Jeff Layton <jlayton@kernel.org>
+Hi Roger
+
+Thank you for reviewing.
+If dwc->suspended is true (i.e suspend event due to U3/L2 is received), 
+I am actually breaking from this switch statement and returning 0.
+
+>> +				break;
+>>   			return -EBUSY;
+>> +		}
+>>   		break;
+>>   	case DWC3_GCTL_PRTCAP_HOST:
+>>   	default:
+>> @@ -2107,9 +2118,22 @@ static int dwc3_runtime_suspend(struct device *dev)
+>>   	struct dwc3     *dwc = dev_get_drvdata(dev);
+>>   	int		ret;
+>>   
+>> -	if (dwc3_runtime_checks(dwc))
+>> +	ret = dwc3_runtime_checks(dwc);
+>> +	if (ret)
+>>   		return -EBUSY;
+>>   
+>> +	switch (dwc->current_dr_role) {
+>> +	case DWC3_GCTL_PRTCAP_DEVICE:
+>> +		/* bus suspend case */
+>> +		if (!ret && dwc->connected)
+> 
+> No need to check !ret again as it will never happen because
+> we are returning -EBUSY earlier if (ret);
+> 
+Thanks for this catch. I will remove !ret check in v5.
+
+>> +			return 0;
+>> +		break;
+>> +	case DWC3_GCTL_PRTCAP_HOST:
+>> +	default:
+>> +		/* do nothing */
+>> +		break;
+>> +	}
+>> +
+> 
+> While this takes care of runtime suspend case, what about system_suspend?
+> Should this check be moved to dwc3_suspend_common() instead?
+> 
+
+Sure I can move these checks to dwc3_suspend_common to make it generic.
+Will rename this patch to "Modify pm ops to handle bus suspend" since 
+this is now not limited to only runtime suspend/resume. Will also rename 
+dwc->runtime_suspend_on_usb_suspend to dwc->delegate_wakeup_interrupt 
+based on earlier feedback.
+
+I am still working on a clean way to enable/disable this feature (i.e 
+set dwc->delegate_wakeup_interrupt flag) from the glue driver based on 
+Thinh's feedback .
+I will accommodate above feedback as well and upload v5.
+
+Thanks
+Elson
+>>   	ret = dwc3_suspend_common(dwc, PMSG_AUTO_SUSPEND);
+>>   	if (ret)
+>>   		return ret;
+>> diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+>> index a69ac67d89fe..f2f788a6b4b5 100644
+>> --- a/drivers/usb/dwc3/core.h
+>> +++ b/drivers/usb/dwc3/core.h
+>> @@ -1124,6 +1124,8 @@ struct dwc3_scratchpad_array {
+>>    * @num_ep_resized: carries the current number endpoints which have had its tx
+>>    *		    fifo resized.
+>>    * @debug_root: root debugfs directory for this device to put its files in.
+>> + * @runtime_suspend_on_usb_suspend: true if dwc3 runtime suspend is allowed
+>> + *			during bus suspend scenario.
+>>    */
+>>   struct dwc3 {
+>>   	struct work_struct	drd_work;
+>> @@ -1340,6 +1342,7 @@ struct dwc3 {
+>>   	int			last_fifo_depth;
+>>   	int			num_ep_resized;
+>>   	struct dentry		*debug_root;
+>> +	bool			runtime_suspend_on_usb_suspend;
+>>   };
+>>   
+>>   #define INCRX_BURST_MODE 0
+>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>> index 5fd067151fbf..978ce0e91164 100644
+>> --- a/drivers/usb/dwc3/gadget.c
+>> +++ b/drivers/usb/dwc3/gadget.c
+>> @@ -2401,15 +2401,21 @@ static int dwc3_gadget_wakeup(struct usb_gadget *g)
+>>   		return -EINVAL;
+>>   	}
+>>   
+>> -	spin_lock_irqsave(&dwc->lock, flags);
+>>   	if (!dwc->gadget->wakeup_armed) {
+>>   		dev_err(dwc->dev, "not armed for remote wakeup\n");
+>> -		spin_unlock_irqrestore(&dwc->lock, flags);
+>>   		return -EINVAL;
+>>   	}
+>> -	ret = __dwc3_gadget_wakeup(dwc, true);
+>>   
+>> +	ret = pm_runtime_resume_and_get(dwc->dev);
+>> +	if (ret < 0) {
+>> +		pm_runtime_set_suspended(dwc->dev);
+>> +		return ret;
+>> +	}
+>> +
+>> +	spin_lock_irqsave(&dwc->lock, flags);
+>> +	ret = __dwc3_gadget_wakeup(dwc, true);
+>>   	spin_unlock_irqrestore(&dwc->lock, flags);
+>> +	pm_runtime_put_noidle(dwc->dev);
+>>   
+>>   	return ret;
+>>   }
+>> @@ -2428,6 +2434,12 @@ static int dwc3_gadget_func_wakeup(struct usb_gadget *g, int intf_id)
+>>   		return -EINVAL;
+>>   	}
+>>   
+>> +	ret = pm_runtime_resume_and_get(dwc->dev);
+>> +	if (ret < 0) {
+>> +		pm_runtime_set_suspended(dwc->dev);
+>> +		return ret;
+>> +	}
+>> +
+>>   	spin_lock_irqsave(&dwc->lock, flags);
+>>   	/*
+>>   	 * If the link is in U3, signal for remote wakeup and wait for the
+>> @@ -2438,6 +2450,7 @@ static int dwc3_gadget_func_wakeup(struct usb_gadget *g, int intf_id)
+>>   		ret = __dwc3_gadget_wakeup(dwc, false);
+>>   		if (ret) {
+>>   			spin_unlock_irqrestore(&dwc->lock, flags);
+>> +			pm_runtime_put_noidle(dwc->dev);
+>>   			return -EINVAL;
+>>   		}
+>>   		dwc3_resume_gadget(dwc);
+>> @@ -2452,6 +2465,7 @@ static int dwc3_gadget_func_wakeup(struct usb_gadget *g, int intf_id)
+>>   		dev_err(dwc->dev, "function remote wakeup failed, ret:%d\n", ret);
+>>   
+>>   	spin_unlock_irqrestore(&dwc->lock, flags);
+>> +	pm_runtime_put_noidle(dwc->dev);
+>>   
+>>   	return ret;
+>>   }
+>> @@ -2732,21 +2746,23 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+>>   	/*
+>>   	 * Avoid issuing a runtime resume if the device is already in the
+>>   	 * suspended state during gadget disconnect.  DWC3 gadget was already
+>> -	 * halted/stopped during runtime suspend.
+>> +	 * halted/stopped during runtime suspend except for bus suspend case
+>> +	 * where we would have skipped the controller halt.
+>>   	 */
+>>   	if (!is_on) {
+>>   		pm_runtime_barrier(dwc->dev);
+>> -		if (pm_runtime_suspended(dwc->dev))
+>> +		if (pm_runtime_suspended(dwc->dev) && !dwc->connected)
+>>   			return 0;
+>>   	}
+>>   
+>>   	/*
+>>   	 * Check the return value for successful resume, or error.  For a
+>>   	 * successful resume, the DWC3 runtime PM resume routine will handle
+>> -	 * the run stop sequence, so avoid duplicate operations here.
+>> +	 * the run stop sequence except for bus resume case, so avoid
+>> +	 * duplicate operations here.
+>>   	 */
+>>   	ret = pm_runtime_get_sync(dwc->dev);
+>> -	if (!ret || ret < 0) {
+>> +	if ((!ret && !dwc->connected) || ret < 0) {
+>>   		pm_runtime_put(dwc->dev);
+>>   		if (ret < 0)
+>>   			pm_runtime_set_suspended(dwc->dev);
+>> @@ -4331,6 +4347,8 @@ static void dwc3_gadget_suspend_interrupt(struct dwc3 *dwc,
+>>   	}
+>>   
+>>   	dwc->link_state = next;
+>> +	pm_runtime_mark_last_busy(dwc->dev);
+>> +	pm_request_autosuspend(dwc->dev);
+>>   }
+>>   
+>>   static void dwc3_gadget_interrupt(struct dwc3 *dwc,
+> 
