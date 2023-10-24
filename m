@@ -2,128 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D017D4F2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990317D4F2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 13:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbjJXLq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 07:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
+        id S231348AbjJXLsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 07:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjJXLq4 (ORCPT
+        with ESMTP id S229829AbjJXLsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 07:46:56 -0400
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37488F9
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 04:46:49 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VuqJKun_1698148004;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VuqJKun_1698148004)
-          by smtp.aliyun-inc.com;
-          Tue, 24 Oct 2023 19:46:45 +0800
-Message-ID: <1698147983.0338666-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH 1/2] virtio_pci: Don't make an extra copy of cpu affinity mask
-Date:   Tue, 24 Oct 2023 19:46:23 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
-        kernel-team@cloudflare.com, Caleb Raitto <caraitto@google.com>,
-        virtualization@lists.linux-foundation.org
-References: <20231019101625.412936-1-jakub@cloudflare.com>
- <1697720122.49851-2-xuanzhuo@linux.alibaba.com>
- <87il6x2rj6.fsf@cloudflare.com>
- <1698114697.434748-1-xuanzhuo@linux.alibaba.com>
- <87edhk2z03.fsf@cloudflare.com>
- <1698144808.8577316-1-xuanzhuo@linux.alibaba.com>
- <87a5s82qig.fsf@cloudflare.com>
-In-Reply-To: <87a5s82qig.fsf@cloudflare.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 24 Oct 2023 07:48:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2779FF9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 04:48:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B690C433C7;
+        Tue, 24 Oct 2023 11:48:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1698148122;
+        bh=K1yZ5Y/kn6qVIOzgf5AlQf61xblYYAfEXDw52gcn18A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kNIK7y8E7xV3EQUU5BYjE4pLRg7t2qHcryORasDbY+/J4USpmA0+Qtu26NHDUeBQK
+         pYpcA8T3dGw8x1oPwKZXpC44+4LLCYa/CaXnH+CyE9AzKGtoGAdmDWBd5PdfLMMlgc
+         DaoXLoZyg+MfFy79mSUu8luULRPVqikoBSNPFAQ4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] cxl: make cxl_class constant
+Date:   Tue, 24 Oct 2023 13:48:35 +0200
+Message-ID: <2023102434-haiku-uphill-0c11@gregkh>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Lines:  90
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2742; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=K1yZ5Y/kn6qVIOzgf5AlQf61xblYYAfEXDw52gcn18A=; b=owGbwMvMwCRo6H6F97bub03G02pJDKnm64Ve7Dm24tiyzxcOBJ/TqGwN8U1eI8Z0OFQzcu3tP 6nzYr2WdMSyMAgyMciKKbJ82cZzdH/FIUUvQ9vTMHNYmUCGMHBxCsBEfnAzzPfewsi8+0CScuy2 RQuPP/mwqf7M3YcM86uE+UICTJo+yHk+m/bOg/NWTp7qQQA=
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023 13:26:49 +0200, Jakub Sitnicki <jakub@cloudflare.com> wrote:
-> On Tue, Oct 24, 2023 at 06:53 PM +08, Xuan Zhuo wrote:
-> > On Tue, 24 Oct 2023 10:17:19 +0200, Jakub Sitnicki <jakub@cloudflare.com> wrote:
-> >> On Tue, Oct 24, 2023 at 10:31 AM +08, Xuan Zhuo wrote:
-> >> > On Mon, 23 Oct 2023 18:52:45 +0200, Jakub Sitnicki <jakub@cloudflare.com> wrote:
-> >> >> On Thu, Oct 19, 2023 at 08:55 PM +08, Xuan Zhuo wrote:
-> >> >> > On Thu, 19 Oct 2023 12:16:24 +0200, Jakub Sitnicki <jakub@cloudflare.com> wrote:
-> >> >> >> Since commit 19e226e8cc5d ("virtio: Make vp_set_vq_affinity() take a
-> >> >> >> mask.") it is actually not needed to have a local copy of the cpu mask.
-> >> >> >
-> >> >> >
-> >> >> > Could you give more info to prove this?
-> >> >
-> >> >
-> >> > Actually, my question is that can we pass a val on the stack(or temp value) to
-> >> > the irq_set_affinity_hint()?
-> >> >
-> >> > Such as the virtio-net uses zalloc_cpumask_var to alloc a cpu_mask, and
-> >> > that will be released.
-> >> >
-> >> >
-> >> >
-> >> > 	int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
-> >> > 				      bool setaffinity)
-> >> > 	{
-> >> > 		unsigned long flags;
-> >> > 		struct irq_desc *desc = irq_get_desc_lock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
-> >> >
-> >> > 		if (!desc)
-> >> > 			return -EINVAL;
-> >> > ->		desc->affinity_hint = m;
-> >> > 		irq_put_desc_unlock(desc, flags);
-> >> > 		if (m && setaffinity)
-> >> > 			__irq_set_affinity(irq, m, false);
-> >> > 		return 0;
-> >> > 	}
-> >> > 	EXPORT_SYMBOL_GPL(__irq_apply_affinity_hint);
-> >> >
-> >> > The above code directly refers the mask pointer. If the mask is a temp value, I
-> >> > think that is a bug.
-> >>
-> >> You are completely right. irq_set_affinity_hint stores the mask pointer.
-> >> irq_affinity_hint_proc_show later dereferences it when user reads out
-> >> /proc/irq/*/affinity_hint.
-> >>
-> >> I have failed to notice that. That's why we need cpumask_copy to stay.
-> >>
-> >> My patch is buggy. Please disregard.
-> >>
-> >> I will send a v2 to only migrate from deprecated irq_set_affinity_hint.
-> >>
-> >> > And I notice that many places directly pass the temp value to this API.
-> >> > And I am a little confused. ^_^ Or I missed something.
-> >>
-> >> There seem two be two gropus of callers:
-> >>
-> >> 1. Those that use get_cpu_mask/cpumask_of/cpumask_of_node to produce a
-> >>    cpumask pointer which is a preallocated constant.
-> >>
-> >>    $ weggli 'irq_set_affinity_hint(_, $func(_));' ~/src/linux
-> >>
-> >> 2. Those that pass a pointer to memory somewhere.
-> >>
-> >>    $ weggli 'irq_set_affinity_hint(_, $mask);' ~/src/linux
-> >>
-> >> (weggli tool can be found at https://github.com/weggli-rs/weggli)
-> >>
-> >> I've looked over the callers from group #2 but I couldn't find any
-> >> passing a pointer memory on stack :-)
-> >
-> > Pls check stmmac_request_irq_multi_msi()
->
-> Good catch. That one looks buggy.
->
-> I should also checked for callers that take an address of a var/field:
->
->   $ weggli 'irq_set_affinity_hint(_, &$mask);' ~/src/linux
+Now that the driver core allows for struct class to be in read-only
+memory, we should make all 'class' structures declared at build time
+placing them into read-only memory, instead of having to be dynamically
+allocated at runtime.
 
-Do you find more?
+Cc: Frederic Barrat <fbarrat@linux.ibm.com>
+Cc: Andrew Donnellan <ajd@linux.ibm.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/misc/cxl/file.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
-Thanks.
+diff --git a/drivers/misc/cxl/file.c b/drivers/misc/cxl/file.c
+index 144d1f2d78ce..012e11b959bc 100644
+--- a/drivers/misc/cxl/file.c
++++ b/drivers/misc/cxl/file.c
+@@ -38,8 +38,6 @@
+ 
+ static dev_t cxl_dev;
+ 
+-static struct class *cxl_class;
+-
+ static int __afu_open(struct inode *inode, struct file *file, bool master)
+ {
+ 	struct cxl *adapter;
+@@ -559,7 +557,10 @@ static char *cxl_devnode(const struct device *dev, umode_t *mode)
+ 	return kasprintf(GFP_KERNEL, "cxl/%s", dev_name(dev));
+ }
+ 
+-extern struct class *cxl_class;
++static const struct class cxl_class = {
++	.name =		"cxl",
++	.devnode =	cxl_devnode,
++};
+ 
+ static int cxl_add_chardev(struct cxl_afu *afu, dev_t devt, struct cdev *cdev,
+ 			   struct device **chardev, char *postfix, char *desc,
+@@ -575,7 +576,7 @@ static int cxl_add_chardev(struct cxl_afu *afu, dev_t devt, struct cdev *cdev,
+ 		return rc;
+ 	}
+ 
+-	dev = device_create(cxl_class, &afu->dev, devt, afu,
++	dev = device_create(&cxl_class, &afu->dev, devt, afu,
+ 			"afu%i.%i%s", afu->adapter->adapter_num, afu->slice, postfix);
+ 	if (IS_ERR(dev)) {
+ 		rc = PTR_ERR(dev);
+@@ -633,14 +634,14 @@ void cxl_chardev_afu_remove(struct cxl_afu *afu)
+ 
+ int cxl_register_afu(struct cxl_afu *afu)
+ {
+-	afu->dev.class = cxl_class;
++	afu->dev.class = &cxl_class;
+ 
+ 	return device_register(&afu->dev);
+ }
+ 
+ int cxl_register_adapter(struct cxl *adapter)
+ {
+-	adapter->dev.class = cxl_class;
++	adapter->dev.class = &cxl_class;
+ 
+ 	/*
+ 	 * Future: When we support dynamically reprogramming the PSL & AFU we
+@@ -678,13 +679,11 @@ int __init cxl_file_init(void)
+ 
+ 	pr_devel("CXL device allocated, MAJOR %i\n", MAJOR(cxl_dev));
+ 
+-	cxl_class = class_create("cxl");
+-	if (IS_ERR(cxl_class)) {
++	rc = class_register(&cxl_class);
++	if (rc) {
+ 		pr_err("Unable to create CXL class\n");
+-		rc = PTR_ERR(cxl_class);
+ 		goto err;
+ 	}
+-	cxl_class->devnode = cxl_devnode;
+ 
+ 	return 0;
+ 
+@@ -696,5 +695,5 @@ int __init cxl_file_init(void)
+ void cxl_file_exit(void)
+ {
+ 	unregister_chrdev_region(cxl_dev, CXL_NUM_MINORS);
+-	class_destroy(cxl_class);
++	class_unregister(&cxl_class);
+ }
+-- 
+2.42.0
+
