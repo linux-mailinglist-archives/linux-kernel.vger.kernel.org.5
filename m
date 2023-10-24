@@ -2,130 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A03D7D489E
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A82F7D48A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbjJXHfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 03:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
+        id S232864AbjJXHfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 03:35:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232513AbjJXHfT (ORCPT
+        with ESMTP id S232553AbjJXHfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 03:35:19 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E78BC;
-        Tue, 24 Oct 2023 00:35:17 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b2018a11efso4037881b3a.0;
-        Tue, 24 Oct 2023 00:35:17 -0700 (PDT)
+        Tue, 24 Oct 2023 03:35:20 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0966A11A
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 00:35:18 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c50ec238aeso60503161fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 00:35:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698132916; x=1698737716; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zAk87fwfB4GPS4RdbkGXzLRDRuyTfms5QnKn3W1HC/4=;
-        b=mV2QE2bvzFtzXTN5CsGJQ8iZXBJnqw/94T9MmANkzmD+zSxTNPnCIoOqiLL7ziCchx
-         OvIFQUrwEL0shfHf9PBjOccvFxm2xNsGI4IwA/TZ50mbsxMTOHkZfqPw/WDfHCiPT7TB
-         NMpU86Xvow4rvN9heHAHvrZnI8BW+7Bux6+rnNTeW8+OYruywQZwHzyvCxQfhvrt19RY
-         nYwLnkT3zBQZmAFjUIhXpMBpOLaD1pih3zE2DOBWK2yyWNctZxbbz4DVcgHSUNvZbMal
-         Jj93kVN5fsywlU3H1X/ZdSluVMu9Q592XowcsssuEcFzizUm0eBOlBoyrPONz0xvfvAw
-         bnUA==
+        d=linaro.org; s=google; t=1698132916; x=1698737716; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eJv6gqM+OTcCh7zIMBr0dC/szBwvLdyr8Zi+KxfKXXk=;
+        b=VzNEi096omLVAUcFCLMn83TiKqBHNIhNoqKBVyLjQMULRoPCaWknwcYfeEGOfDaKOW
+         hJuXDuGqIVIm/LELKPXecVOIx9ev06m2e6KgG1WV7+0eLmu4cyrpW0jfvEbg+/AQVLmG
+         Z+JDzubyc4z0+McUXa5BgNiDIH7nQDxSzRyW6bM9I0rKEPep/csXLUnTnBg8ElAcI09g
+         BcsXRhhcx7jiaWu7BOpubL9NGXPTQ9YvWczF6CPAZBdAHojmUqIX254ANsRzLK3AYdJk
+         fWU+KBcGXQxvrs0AZkJ7qHsl5KF6xP8RqOitHPQ8uGbyqWz9T1VqGOX/GPCCRSSnVHAg
+         BMYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1698132916; x=1698737716;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zAk87fwfB4GPS4RdbkGXzLRDRuyTfms5QnKn3W1HC/4=;
-        b=ElW1iE7AZuoCYF66gklB0CHIPGHXpCvqsSoIS9dDlEzhGSXLDCuR22g7wgDmK1I+1l
-         1It1tYEwWTx4xfiUxONJJbx+bDtgz60hiJkmJEpzoK7KhzzqdEeUiiqlrWKv3XcuBw+G
-         WfmeJneEPhvuTkqme/D0GkizBtlmkGU8whUu9G055JA8hNBhmmumNCwYenS+YWp76bGM
-         /Mi7qzn3XzOtGoGkPG94kicq2u6pvyB/Fb1NgHbO+VNqIl8gyFe1KNjGeq7h1upPDOIP
-         ys9zze+IMlZfw677U0Wtf5+hdFZ56ySC5rJQgt7ymQmfSygXSCmGyhXdXsu+JkDVUpeF
-         8A3g==
-X-Gm-Message-State: AOJu0YzKuay0zpuVMIgDAB13Y+rC4sJw+34VigtXO2D4ukId2TQDcgse
-        QGuWXIJpQghu7uqPl1Ci7u0=
-X-Google-Smtp-Source: AGHT+IE0Uq7uqHz1oIbdcOd9FYHSG1Olp2Da/FFL1UVSedr0nGPlznlaUKbQJg69OM208RfsD/qvBw==
-X-Received: by 2002:a05:6a20:7f81:b0:15a:3eaa:b7ea with SMTP id d1-20020a056a207f8100b0015a3eaab7eamr2295242pzj.5.1698132916411;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eJv6gqM+OTcCh7zIMBr0dC/szBwvLdyr8Zi+KxfKXXk=;
+        b=LuEdqjj6e8y4AeoCRUHugkf6cHzukRp4+xen74MSbRIbKihocr2yg7LTFaiIepCBup
+         e0hXvCHO9DkBzTAlWMBW208FIbQ+EPkNRc6Gefx+7YgBheHdN5GdfdGNl/m80xQZUfpb
+         MNUw9Ik9j6tK7MlDgA2b0ZcAioRDWCw0rU7OGnNcG1YzH0ixjU5pP6KGh42wGgx767LD
+         Nhu+IOkmKosS97F82o5BnUTcjS5EMMPatZwK0zjY6+yW7eK/1+BiKmP4x5gW/bNc13Oy
+         HepVz+Z9SU/wYF0qQlDSjmUyBBZoAcPulAbk0IOy8zS3m0pvDwWJy5p8zAbhlSmNIes4
+         Xmhg==
+X-Gm-Message-State: AOJu0Yyx+GLbobFbKb9SLD/riNpp3GLJanOh0mNL8EyycVBstUBbi0o9
+        8myYD7nB2hOzXJK8AC8m8iKutg==
+X-Google-Smtp-Source: AGHT+IFARmjYw5wDyWxwrUmv/qROfvnOdbej4Df0ElPnEMtUn0NSwrLyjovG1vRgr/O0m/HvTuWrfg==
+X-Received: by 2002:a2e:6819:0:b0:2c0:2ab7:9ab1 with SMTP id c25-20020a2e6819000000b002c02ab79ab1mr7684938lja.35.1698132916263;
         Tue, 24 Oct 2023 00:35:16 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id ik21-20020a170902ab1500b001c73f3a9b88sm7166353plb.110.2023.10.24.00.35.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id ay10-20020a05600c1e0a00b00405442edc69sm13486017wmb.14.2023.10.24.00.35.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Tue, 24 Oct 2023 00:35:15 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id ACD0B8126624; Tue, 24 Oct 2023 14:35:11 +0700 (WIB)
-Date:   Tue, 24 Oct 2023 14:35:11 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Simon Horman <horms@kernel.org>
-Subject: Re: [PATCH net v2 1/2] MAINTAINERS: Move M Chetan Kumar to CREDITS
-Message-ID: <ZTdzr3Dz_9K9P05E@debian.me>
-References: <20231023032905.22515-2-bagasdotme@gmail.com>
- <20231023032905.22515-3-bagasdotme@gmail.com>
- <20231023093837.49c7cb35@kernel.org>
- <e1b1f477-e41d-4834-984b-0db219342e5b@gmail.com>
- <20231023185221.2eb7cb38@kernel.org>
+Message-ID: <b6cb4233-9c07-46bc-9ff4-448e2b121edd@linaro.org>
+Date:   Tue, 24 Oct 2023 09:35:13 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EJ5R83yBRmw8TuIA"
-Content-Disposition: inline
-In-Reply-To: <20231023185221.2eb7cb38@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 2/2] arm64: dts: qcom: sm8250-xiaomi-pipa: Add initial
+ device tree
+Content-Language: en-US
+To:     Luka Panio <lukapanio@gmail.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20231024063740.4975-1-lukapanio@gmail.com>
+ <20231024063740.4975-2-lukapanio@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231024063740.4975-2-lukapanio@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24/10/2023 08:37, Luka Panio wrote:
+> Initial support for Xiaomi Pad 6 tablet, that have sm8250 soc.
+> 
+> Signed-off-by: Luka Panio <lukapanio@gmail.com>
+> ---
+> v2:
 
---EJ5R83yBRmw8TuIA
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-On Mon, Oct 23, 2023 at 06:52:21PM -0700, Jakub Kicinski wrote:
-> On Tue, 24 Oct 2023 07:11:12 +0700 Bagas Sanjaya wrote:
-> > > 14 patches authored and 15 signed off?
-> > > Let me be more clear this time - nak, please drop this patch. =20
-> >=20
-> > Or maybe as well drop INTEL WWAN IOSM DRIVER entry (and let
-> > WWAN subsystem maintainers handle it)? I don't want
-> > people get their inboxes spammed with bounces against
-> > his addresses, though.
->=20
-> Right, sorry, still delete him from the MAINTAINERS.
-> Just don't add him to the CREDITS.
->=20
-> > He's now in a state of limbo. He has significant contribution
-> > (and gets listed by get_maintainer script with (AFAIK) no way
-> > to filter him out), yet emails to him bounces. What will be
-> > the resolution then?
->=20
-> Yes :( Not much we can do about that (even if we drop him from
-> maintainers all fixes will CC him based on the sign-off tags).
+Best regards,
+Krzysztof
 
-OK, thanks!
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---EJ5R83yBRmw8TuIA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZTdznwAKCRD2uYlJVVFO
-o59DAP9J8AHNIFE/ww3V6sUQCSy3mqudmTHC3okZi6VFrBgIrgEAkkPnSd/WY5bY
-FSYTbkxlya1gKz04k/oSNi6z3O6LSws=
-=vZXK
------END PGP SIGNATURE-----
-
---EJ5R83yBRmw8TuIA--
