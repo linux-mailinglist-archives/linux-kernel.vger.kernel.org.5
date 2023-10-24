@@ -2,86 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9646E7D5A1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F2E7D5A20
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 20:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343983AbjJXSGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 14:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
+        id S1344079AbjJXSH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 14:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjJXSGq (ORCPT
+        with ESMTP id S230304AbjJXSHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 14:06:46 -0400
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2E310CF;
-        Tue, 24 Oct 2023 11:06:44 -0700 (PDT)
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3b2e330033fso3017176b6e.3;
-        Tue, 24 Oct 2023 11:06:44 -0700 (PDT)
+        Tue, 24 Oct 2023 14:07:24 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC2C10CF
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:07:22 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a824ef7a83so61314687b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 11:07:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698170841; x=1698775641; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KvKHj6lvKcZf5ivgAXSc25U17UutcrInn/p/8kAPU0M=;
+        b=FcOTLCs0TUpC9xBu4DwT84KPBtfvV1MBMXUfIS9zn3Ikn2X0CMi7OI2foIErI4uUv9
+         bupyWNYzkZcuGLImd/f2XvrpxyOmPCQ+nlOcdx4g+wXSLTkCDeKT6WAiSWrKF43pzoGv
+         +B700ywd9Cv6q2KFRVSDl35V+Ux1GD355waLfSCKq16hpmROeEY43C1KjxEMlVMUdseR
+         lSRF0qdswveFlgTCsY4AZUrTfc6L4Dr3tx4ggHBuHMOQqIAEeCClEwZqET8EvmeaB2ip
+         gSstcJcX8JgcVanstqZ/CBJItpwP4akK+QxoOXNUB0dF1lCLKSf3epBsUwZSWTBFMf3u
+         MERw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698170803; x=1698775603;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ae7vdk1cQp2CgRsl6yINY1JpUls8w4HQJ67tzSmt9A0=;
-        b=uDDFConsnqJFTtaPZxcoZC+63l8BtKn65hkUfBKamCudPeRKwcS66fTyqE69TMjErh
-         PEJLB+oW0s3O5v6smNo1cvBTJCEjvxkgkQaopD/sKdBVh2EA31oJDY5WYsTgkIDZx5/Q
-         OsvgzFP/TE6vIDh1oXjuD54249PM4Mv2jfqKoKHk1v2ySta1sYKCMDRAQ8UYQJwGcRBu
-         mjXMupCLjxQ4aSOIZKrbc8J0vTMomTbceOZOFWX5mkBtP4YzIMkfQyNevs10vApiRna9
-         x5Cqnso3igoHmZTw5hm3uPvz7s2Bp6D85Pb5VfPVAHGRXedB38DbsmTU3WSZIhjBLeoa
-         E02w==
-X-Gm-Message-State: AOJu0YxvcPc0xmNYx2NCS9GL8XGBKtIUV2wG3tlqi5Nn5O4Na93Vet0S
-        Vp4LjHXyuboNbMknciJLqQ==
-X-Google-Smtp-Source: AGHT+IG+8Y/FODuDVm+nbBrX5HhQB4VI2MEKaHKAdSIDI3y2soo5kgXrrhy01QfKUQw1pDP7XyUVoA==
-X-Received: by 2002:a05:6808:a06:b0:3b2:e469:903f with SMTP id n6-20020a0568080a0600b003b2e469903fmr14132710oij.15.1698170802826;
-        Tue, 24 Oct 2023 11:06:42 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id j19-20020aca1713000000b003b274008e46sm2044677oii.0.2023.10.24.11.06.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 11:06:42 -0700 (PDT)
-Received: (nullmailer pid 215374 invoked by uid 1000);
-        Tue, 24 Oct 2023 18:06:41 -0000
-Date:   Tue, 24 Oct 2023 13:06:41 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH] dt-bindings: pinctrl: qcom,sa8775p-tlmm: add missing
- wakeup-parent
-Message-ID: <169817080056.215320.12489087678601922929.robh@kernel.org>
-References: <20231018145750.429385-1-krzysztof.kozlowski@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018145750.429385-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1698170841; x=1698775641;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KvKHj6lvKcZf5ivgAXSc25U17UutcrInn/p/8kAPU0M=;
+        b=CEZH0lS67ywcfjZQDIK0MYvOb0CrW+vPrR68EebdLPIMRi+e/TW82dIRr25JtZJAbt
+         lyI39wsb3TcfxVlYuzqfn8O+M0EgM85HMx/R+2QSUmGsh+UEPoeefS4bVNdZP7FvgYC+
+         vr1i0E9yKwFyStGJU/FEPS/J1Kx/ZIah0XAwquUxU+ikiLkQC3lTApTaejbrkmrXwwIx
+         Y5iXOKpBvyhr34FFEzgW83+uBYpnP4QgGvtfZ+YhuJNttmH/jfzkotZskhYX0xAoSIHm
+         EF3fEuUQ4mahroEyYbHWeHLV4y4U3FOx6iFa8MKOBkuqqtYLa+RaTEwXZXyPIdrl7XzU
+         q+7g==
+X-Gm-Message-State: AOJu0YxiiLPzyvMG+7eGiNhzbGY9trxJUCk9XLkKV0I+9vlGXQqulRkh
+        froHQyKnp/LhKslxi46/tZYyum1AvflJ3LEnOw==
+X-Google-Smtp-Source: AGHT+IH2CaY4CHQBl3xO+aXc8ZEjFL8lcYqzhwM13eTCN17SWbYpWwJ5gmGZj4Je3zYYikmzIl/EFwaZCHKkyHRlUw==
+X-Received: from kalesh.mtv.corp.google.com ([2620:15c:211:201:f00a:a475:d412:628f])
+ (user=kaleshsingh job=sendgmr) by 2002:a81:4ecf:0:b0:59b:d33b:5ddc with SMTP
+ id c198-20020a814ecf000000b0059bd33b5ddcmr250113ywb.4.1698170841481; Tue, 24
+ Oct 2023 11:07:21 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 11:07:17 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
+Message-ID: <20231024180718.626055-1-kaleshsingh@google.com>
+Subject: [PATCH] PM/sleep: Instrument start of filesystems sync
+From:   Kalesh Singh <kaleshsingh@google.com>
+To:     rafael@kernel.org, harry.pan@intel.com
+Cc:     kernel-team@android.com, Kalesh Singh <kaleshsingh@google.com>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Systems, such as Android, that implement opportunistic sleep from
+a userspace power manager service need to guard the acquisition of
+new wakelocks (incrementing a counter in userspace) while attempting
+a suspend (write to /sys/power/state).
 
-On Wed, 18 Oct 2023 16:57:50 +0200, Krzysztof Kozlowski wrote:
-> Add missing wakeup-parent property, already used by DTS to indicate that
-> pins are wakeup capable:
-> 
->   sa8775p-ride.dtb: pinctrl@f000000: 'wakeup-parent' does not match any of the regexes: '-state$', 'pinctrl-[0-9]+'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  Documentation/devicetree/bindings/pinctrl/qcom,sa8775p-tlmm.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+While attempting to suspend, processes attempting to acquire a
+userspace wakelock are also blocked. If the suspend is blocked for
+too long it can cause a watchdog bite in android.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Some device vendors reported this issue in cases where the filesystem
+sync is not fast enough (sometimes > 100s):
+
+[ 2742.247785] [07-10 15:08:02.247] Filesystems sync: 107.127 seconds
+
+Commit b5dee3130bb4 ("PM / sleep: Refactor filesystems sync to reduce
+duplication") introduced ksys_sync_helper() which logged both the start
+and end of the filesystems sync.
+
+Commit c64546b17bc9 ("PM / sleep: Measure the time of filesystems syncing")
+improved on this by adding the elapsed time, but also removed instrumentation
+indicating the start of filesystems sync.
+
+Re-add the log indicating the start of filesystem sync. This helps to
+identify when the above scenario has occurred in production devices in
+the field.
+
+Cc: Rafael J. Wysocki <rafael@kernel.org>
+Cc: Harry Pan <harry.pan@intel.com>
+Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+---
+ kernel/power/main.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/power/main.c b/kernel/power/main.c
+index f6425ae3e8b0..b6a88b43b6da 100644
+--- a/kernel/power/main.c
++++ b/kernel/power/main.c
+@@ -87,6 +87,7 @@ void ksys_sync_helper(void)
+ 	ktime_t start;
+ 	long elapsed_msecs;
+ 
++	pr_info("Syncing filesystems ... ");
+ 	start = ktime_get();
+ 	ksys_sync();
+ 	elapsed_msecs = ktime_to_ms(ktime_sub(ktime_get(), start));
+
+base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
+-- 
+2.42.0.758.gaed0368e0e-goog
 
