@@ -2,49 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BEB7D4907
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C5B7D490C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 09:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbjJXHxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 03:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        id S233747AbjJXHxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 03:53:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232544AbjJXHxA (ORCPT
+        with ESMTP id S232832AbjJXHxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 03:53:00 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A226E5;
-        Tue, 24 Oct 2023 00:52:58 -0700 (PDT)
-Received: from ideasonboard.com (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 02F47B53;
-        Tue, 24 Oct 2023 09:52:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1698133966;
-        bh=LNElzporzpCaYnc+Rp+xusVwCai020KivGn+5e/4bF4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ord7kv3k2vxeOOVOiFf+QDLZTPQWrwSpUUuc9CSCkwirXdoVBGwyo2jvEWf/d7W4a
-         LAGjvLuoopSMwUTVf4/2Cbh92qv0vfwSwowLAbEqa0fzghJ26klbK6QVtX0zdod516
-         SuW1NPP9Q8spz3S3uizL29f6jSjhXGQa9d/XePjA=
-Date:   Tue, 24 Oct 2023 09:52:44 +0200
-From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-To:     =?utf-8?B?QW5kcsOp?= Apitzsch <git@apitzsch.eu>
-Cc:     Ricardo Ribalda <ribalda@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH 4/4] media: i2c: imx214: Add sensor's pixel matrix size
-Message-ID: <56kgwl7zehsxy2pp7nziwk2gt6joax42qpzs6eywufvcto7qxm@ts4i3ccdokjr>
-References: <20231023-imx214-v1-0-b33f1bbd1fcf@apitzsch.eu>
- <20231023-imx214-v1-4-b33f1bbd1fcf@apitzsch.eu>
+        Tue, 24 Oct 2023 03:53:47 -0400
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2044.outbound.protection.outlook.com [40.107.104.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B3CE8;
+        Tue, 24 Oct 2023 00:53:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IZ4DMiL8MDikIFL5YpF3o9t+tTHmMZuNTkQzC2RX6SUm7JSaJ/SwmsqOSgiAb8VYaiBOI0dC5dqm6On7HFT0Bd+0M3RFhdOSNwbRvA+YLcevDruYVGghri1heuKTqaN+sKxyWs11VpeBgilEThz2kZPXs+2l5tT95SZEJwS/aLb7DshkvMBOc4lqi5rcLNd4fqhus073694JmIltiyVukGpTVEaOXYJECLRdmgJbplGerWmtsoguptY5vHBzHVY9X7FO1nzfajj1MdVdmud7mh271wuiFKd4luARgjFim9q8yEBym1uTAsQmN62pD97D0Wq9OHE98CAou8qeDP1lrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BYC4gXUapCd9Z0fR61JtnrX4Tkcoc8jdmUIcOTsbrY0=;
+ b=SXYfsWZCXkD+AJU2+B/2Z3EpxMzmMPS209o6EyKu1qyo2cgv66PpIwQmuJNDmWNOgJmPtSFHkWkLNjoQr+IsSKabTJrhwnxkrFrSYVOMXCJ11gvUlr2qU3GDI/kaOMJqSS/kZyx1jODZJykLbefTigIR1S17rboYCJ4XqhyfFW6xZFAcoXi7L/bvurUpVWQKBxEnEzxS084r/Wal8yQaqr3chHFHb3Ph2XHaviR35yO4qmfTG2fs2lcGGlQwdMuAz+hY9oEgOkqjvTGAqiStsFlC7JNiroomp2tFM2waTBD4314nyVRAOhv9RyKiJNRDyRQtbMfDDNxiR70wZtKuAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
+ header.d=asem.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BYC4gXUapCd9Z0fR61JtnrX4Tkcoc8jdmUIcOTsbrY0=;
+ b=VajzmsHvIzr1huWSP2w+Zs9pfsNvttWoD6dvWuO+/eOwyn7DftG1e+TA4qpN5qOYsDXaj9JPJlw7BCYFVx2pgw09fzrUvOwXlBjNE5OHwUGhE1MP4wvpefvSPbViRnXQVPQEznlqT92P5ha2loQw4Ksv3NmX2MKLCeb5MUhK1x4=
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:273::14) by DU5PR01MB10437.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:51c::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
+ 2023 07:53:39 +0000
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::ad2b:a1e7:8828:ba2f]) by DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::ad2b:a1e7:8828:ba2f%7]) with mapi id 15.20.6907.032; Tue, 24 Oct 2023
+ 07:53:39 +0000
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Conor Dooley <conor@kernel.org>
+CC:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/1] dt-bindings: backlight: mp3309c: remove two required
+ properties
+Thread-Topic: [PATCH 1/1] dt-bindings: backlight: mp3309c: remove two required
+ properties
+Thread-Index: AQHaA10IhwE5ZkDArkS4RoPMFlMBm7BS1g+AgARFCACAAHpeAIAA+0AQ
+Date:   Tue, 24 Oct 2023 07:53:38 +0000
+Message-ID: <DU2PR01MB8034CF8EE4358B9446809AA2F9DFA@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+References: <20231020135434.2598578-1-f.suligoi@asem.it>
+ <20231020135434.2598578-2-f.suligoi@asem.it>
+ <20231020-moonrise-senate-86d0edb2d404@spud>
+ <DU2PR01MB803498DFD93E82DD3947D72DF9D8A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+ <20231023-anybody-silver-4548023f8f26@spud>
+In-Reply-To: <20231023-anybody-silver-4548023f8f26@spud>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=asem.it;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU2PR01MB8034:EE_|DU5PR01MB10437:EE_
+x-ms-office365-filtering-correlation-id: 61f1a778-2b52-4e1e-a847-08dbd4665584
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8SqwiEzDN4yTM3ylh4hwMdtNKMG1R2RDeNhC9o+eIdn5/3/jOXh3lbbOuWfGXWa2FCyDell0UBxSbL8t/3QQb6cK/j6HO9xpy3EGNovvbf5s9stPLXjXZCE6v8lyiLmFdGM5yIv3065/HDNU3ZKDSfZpQbaJHdGIRdXP2mFSmRS0CS7fOeupE2qzWUsVXqNF8/PGmRpQsZZtKXN+f6ycWLIxkz8c2e4hk6vY8ygZVvrnKnkseWQyCgDYOChxC2oS+R2wL/2NEXOQMFqiNWd/EdzWGI8IDrrZgb2XqVfwhmOg8n1bITUTzAdOgSVOdlJqsKHNHOfveb7OQlH2gcd69GJVgR+s7k4bq3/IxpSm3VykrmsmahkrAIqbTlPHf/FZPf6D6hVIFeZoeT1aNi5j85j/dOes1zo1jBj01aHgT1hBQJSJ5FZQ5zmUURLIiMm+GVNJ2VWuaRswIppx+YeTqOVXszSBYOanj24Gcmlh+utEOjdZqxasKHhxi559Vyh9CQISjCr8IBKNrZLAvWnkWdTtu7gnPzZGg9cP+Y9j9CdeqHQ/Xq7GP0wihgbX4nyTMmwmRdaOkhX1b2xfx8OBnZLEdqVyKyJIErw9okwSD+I=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR01MB8034.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39850400004)(396003)(346002)(136003)(376002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(86362001)(55016003)(2906002)(38100700002)(54906003)(122000001)(66476007)(76116006)(316002)(66946007)(66556008)(6916009)(66446008)(7696005)(478600001)(71200400001)(6506007)(9686003)(966005)(83380400001)(64756008)(4326008)(41300700001)(52536014)(5660300002)(7416002)(33656002)(8676002)(8936002)(26005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?eTdYAe98Ptx3BfIQCc5GgZBJ0ElOdhCrWJ9HGFE+wdGBUvUe9ll6LjYNRBax?=
+ =?us-ascii?Q?iYqObZlGpaa8L9OeBcbc419TBnEkO5upi34lsCDQXEx6McrFz/TFil0lcYue?=
+ =?us-ascii?Q?WT8UUg7M80fx+/hII7c+divAK3ln23TuWdN068rgKwPGqY+0LLeHZWVrRa6a?=
+ =?us-ascii?Q?7x3bccuE5T6S8MUnt+XEgcoq/0/poI8eTSYCYRop8aIdzq8+5V0CmF1BpGrs?=
+ =?us-ascii?Q?zrFsUVII99nf3imAG0wZz2PDOrGLN7V+WS89VEjgoWM5uUrGutMhRY1dScqS?=
+ =?us-ascii?Q?M4H7tyn8A9ypHkG8SBq0Iz1kWkx4OYG7tNHTQ1qHHMNX9I6uRgGRFt2z64N0?=
+ =?us-ascii?Q?Toq/2QmHegrI160EVkATu/gyv4f5N/vPMfBMxOg0nq5EIC9t6oDl9MJumJu5?=
+ =?us-ascii?Q?aIZJ2jkpAIlQg3Cdp9J1ioJxSlL+LuRqUpOndvaJeq8q2VEHN2xsHu5NpHCO?=
+ =?us-ascii?Q?CdjIJnsw+gywtrFEcdJIQldb89jQWCv2QbAiaZB3fjV7GJGnbj32g8wTOtGk?=
+ =?us-ascii?Q?RjcD7n9TAYKDFoYIXFz/6GTLkaRlI3Imj9fBZUpwmoe8+00YSbmum4NKa+Uj?=
+ =?us-ascii?Q?ycoxXWCauF6cPd+G1CFc3Y23l+iFGZGCkmRAmrJ5/GLmq7TWYKGTV15OOSba?=
+ =?us-ascii?Q?PtUaJHGCxjFy+mPfZkYC0FEyc4b6xy1KqvgMDibSus00zBE/YepS0piCp40J?=
+ =?us-ascii?Q?aIZNlb14XO1zcEuDoCCtu/RhaM1p/WvKhmQUe1tBjTz2gw4ij+kZvpgGwTHt?=
+ =?us-ascii?Q?/xI1xWjFynX5Rc3aAJYB9y57sZrnRT0w4CGGweA/YF/r4FuOWwmg38i8KHJf?=
+ =?us-ascii?Q?Pwhv45fMqb38f8QpzqfTYHub0J3fZl1WdJKahck/PsJwn+B10Hr6VyP7YkFc?=
+ =?us-ascii?Q?rO5CeDqePgDzSHsKMEulv8aRedI8vXEW0pVa5Z3y4iRJ1w0ckCuNDFwLbqzx?=
+ =?us-ascii?Q?EeIwz3ooOSAP2edgU1/CZ4YlhGV05Ezi43gRVxXIL2At0KGUIrJIFz9m+BKm?=
+ =?us-ascii?Q?LBWK55MnBPwo4shVN/afRIVT0xkbR55NHE4vcBrjgvA5M8h5uEE8VXxlDvii?=
+ =?us-ascii?Q?zEBZcVr3i5JtGn5Y+n29pBKlCUSWWuuukCS4AvA1hyfMcwN/4vp0QVabXupM?=
+ =?us-ascii?Q?1o7X++eKwzXG46D8eYWFioVhS0RCDuoahjzcMRSYZG7O/GObtgIHFC6JuUHF?=
+ =?us-ascii?Q?3+NRKqfGpWQQYWxTLXKQL0GtoIOXcImTsb/iBPBFQuFJN3lGhHrXBni26znw?=
+ =?us-ascii?Q?08KPtbn1N7T6/w4hyBTQmsNo+OvPXfEdbfc36S5yGBd7NdYHg0zwt/5aVx5m?=
+ =?us-ascii?Q?cuGPxIA38gD4pAvrSfoarTL/d+JfuTSmdPXS9fqkyo0DnJ4hFnOVTGuLlIQq?=
+ =?us-ascii?Q?PqdJHnbfxn31lmpf6f6JJDDEA0LKV2ud++wGkNZIZhyEuzSGeJPFo41S06r2?=
+ =?us-ascii?Q?lpueSYeZmM4QY0zsrUXMp8KjmK/jWe24YbShRNsIHWR5mg7KehAtLnXBmKqD?=
+ =?us-ascii?Q?XOGz3WDoTPm9HHmcUrlajGik89M7QSJZfMTb+02sXOn2k+m6PwVKyiBkJV/q?=
+ =?us-ascii?Q?gIBJs6M7F6a8wxps9Do=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231023-imx214-v1-4-b33f1bbd1fcf@apitzsch.eu>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=no
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61f1a778-2b52-4e1e-a847-08dbd4665584
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2023 07:53:38.9415
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Zn7Ihj5jUvFsPcsKbU7uKFAhPS3VFhYMJ8qWNIS34BkQ++RuFBLZV4k2jVZaCriKZwHuxGNxZ2o/c2bZMLb1gA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU5PR01MB10437
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,115 +131,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andre'
+Hi Conor,
 
-On Mon, Oct 23, 2023 at 11:47:53PM +0200, André Apitzsch wrote:
-> Set effictive and active sensor pixel sizes as shown in product
+...
 
-s/effictive/effective
+> On Mon, Oct 23, 2023 at 09:28:03AM +0000, Flavio Suligoi wrote:
+> > > On Fri, Oct 20, 2023 at 03:54:33PM +0200, Flavio Suligoi wrote:
+> > > > The two properties:
+> > > >
+> > > > - max-brightness
+> > > > - default brightness
+> > > >
+> > > > are not really required, so they can be removed from the "required"
+> > > > section.
+> > >
+> > > Why are they not required? You need to provide an explanation.
+> >
+> > The "max-brightness" is not more used now in the driver (I used it in
+> > the first version of the driver).
+>=20
+> If it is not used any more, what happens when someone passes an old
+> devicetree to the kernel, that contains max-brightness, but not any of yo=
+ur
+> new properties?
 
-> brief[1].
->
-> [1]: https://www.mouser.com/datasheet/2/897/ProductBrief_IMX214_20150428-1289331.pdf
->
-> Signed-off-by: André Apitzsch <git@apitzsch.eu>
-> ---
->  drivers/media/i2c/imx214.c | 39 ++++++++++++++++++++++++++++++++-------
->  1 file changed, 32 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/media/i2c/imx214.c b/drivers/media/i2c/imx214.c
-> index bef8dc36e2d0..a2d441cd8dcd 100644
-> --- a/drivers/media/i2c/imx214.c
-> +++ b/drivers/media/i2c/imx214.c
-> @@ -36,6 +36,14 @@
->  #define IMX214_EXPOSURE_STEP		1
->  #define IMX214_EXPOSURE_DEFAULT		0x0c70
->
-> +/* IMX214 native and active pixel array size */
-> +#define IMX214_NATIVE_WIDTH		4224U
-> +#define IMX214_NATIVE_HEIGHT		3136U
-> +#define IMX214_PIXEL_ARRAY_LEFT		8U
-> +#define IMX214_PIXEL_ARRAY_TOP		8U
-> +#define IMX214_PIXEL_ARRAY_WIDTH	4208U
-> +#define IMX214_PIXEL_ARRAY_HEIGHT	3120U
-> +
+This is not a problem, because the device driver has not yet been included =
+in any kernel.
+My patch for the device driver is still being analyzed by the maintainers.
+Only this dt-binding yaml file is already included in the "for-backlight-ne=
+xt" branch
+of the "backlight" kernel repository.
+At the moment, this driver is used only in a i.MX8MM board produced in my c=
+ompany,
+under my full control. No other developer is using it now.
 
-I do get slightly different numbers from the datasheet version I have
+> > The "default-brightness", if omitted in the DT, is managed by the
+> > device driver, using a default value. This depends on the dimming mode
+> used:
+>=20
+> For default-brightness, has here always been support in the driver for th=
+e
+> property being omitted, or is this newly added?
 
-The sensor is said to have 4224x3208 total pixels of which 4208x3120
-are active ones.
+In the first version of the driver this property was a "required property",
+but nobody has used this driver before, so this should be not a problem.
 
-The pixel array diagram shows 64 "OPB" (optically black ?) lines,
-followed by 8 dummy lines, followed by 3120 valid lines. There are 8
-dummy columns at each side of the 4208 valid ones.
+>=20
+> > - for the "analog mode", via I2C commands, this value is fixed by
+> > hardware (=3D31)
+> > - while in case of pwm mode the default used is the last value of the
+> >   brightness-levels array.
+> >
+> > Also the brightness-levels array is not required; if it is omitted,
+> > the driver uses a default array of 0..255 and the "default-brightness" =
+is the
+> last one, which is "255".
+>=20
+> Firstly, this is the sort of rationale that needs to be put into your com=
+mit
+> messages, rather than bullet pointed lists of what you have done.
 
-Now, NATIVE which represents the full pixel array size seems to be
-4224x3208 (other parts of the datasheet only report 3200 lines though)
+You are absolutely right, I'll include these details in the next commit mes=
+sage.
 
-BOUNDS represents the readabale array area, which I presume
-corresponds to what is named as 'effective area' by the datasheet. It
-excludes the OPB lines at the top of the image and seems to be
-represented by (0, 64, 4224, 3160).
+>=20
+> Secondly, what about other operating systems etc, do any of those support
+> this platform and depend on presence of these properties?
 
-CROP_DEFAULT represents the default crop rectangle which covers the
-active pixel area, so it excludes 8 more lines of dummy pixels and 8
-dummy columns, which gives a rectangle (8, 72, 4208, 3120)
+I used this backlight driver in our i.MX8MM board only, with Linux only.
 
-Also note that the driver always reports a TGT_CROP rectangle with
-top/left points set to 0. If my understanding is correct, V4L2
-selection targets are defined from the most external target
-(TGT_NATIVE in this case), and the driver should be corrected to
-initialize the crop rectangle with a top-left corner at (8, 72).
+>=20
+> >
+> > > > Other changes:
+> > > >
+> > > > - improve the backlight working mode description, in the "descripti=
+on"
+> > > >   section
+> > >
+> > > > - update the example, removing the "max-brightness" and introducing
+> the
+> > > >   "brightess-levels" property
+> > >
+> > > Why is this more useful?
+> >
+> > I introduced the "brightness-levels" instead of "max-brightness" for
+> > homogeneity, since the "analog mode" dimming has a brightness-levels ar=
+ray
+> fixed by hardware (0..31).
+> > In this way also the "pwm" mode can use the same concepts of array of
+> levels.
+>=20
+> What I would like is an explanation in the commit message as to why the
+> revised example is more helpful than the existing (and
+> must-remain-valid) one.
 
-Does this make sense ?
+As said before, no one may have ever used this device driver,
+so I would leave only this new version of the example.
 
-Thanks
-  j
+>=20
+> Cheers,
+> Conor.
 
+Thanks for your help and best regards,
+Flavio.
 
->  static const char * const imx214_supply_name[] = {
->  	"vdda",
->  	"vddd",
-> @@ -634,14 +642,31 @@ static int imx214_get_selection(struct v4l2_subdev *sd,
->  {
->  	struct imx214 *imx214 = to_imx214(sd);
->
-> -	if (sel->target != V4L2_SEL_TGT_CROP)
-> -		return -EINVAL;
-> +	switch (sel->target) {
-> +	case V4L2_SEL_TGT_CROP:
-> +		mutex_lock(&imx214->mutex);
-> +		sel->r = *__imx214_get_pad_crop(imx214, sd_state, sel->pad,
-> +						sel->which);
-> +		mutex_unlock(&imx214->mutex);
-> +		return 0;
->
-> -	mutex_lock(&imx214->mutex);
-> -	sel->r = *__imx214_get_pad_crop(imx214, sd_state, sel->pad,
-> -					sel->which);
-> -	mutex_unlock(&imx214->mutex);
-> -	return 0;
-> +	case V4L2_SEL_TGT_NATIVE_SIZE:
-> +		sel->r.top = 0;
-> +		sel->r.left = 0;
-> +		sel->r.width = IMX214_NATIVE_WIDTH;
-> +		sel->r.height = IMX214_NATIVE_HEIGHT;
-> +		return 0;
-> +
-> +	case V4L2_SEL_TGT_CROP_DEFAULT:
-> +	case V4L2_SEL_TGT_CROP_BOUNDS:
-> +		sel->r.top = IMX214_PIXEL_ARRAY_TOP;
-> +		sel->r.left = IMX214_PIXEL_ARRAY_LEFT;
-> +		sel->r.width = IMX214_PIXEL_ARRAY_WIDTH;
-> +		sel->r.height = IMX214_PIXEL_ARRAY_HEIGHT;
-> +		return 0;
-> +	}
-> +
-> +	return -EINVAL;
->  }
->
->  static int imx214_entity_init_cfg(struct v4l2_subdev *subdev,
->
-> --
-> 2.42.0
->
+>=20
+> > >
+> > > >
+> > > > Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> > > > ---
+> > > >  .../bindings/leds/backlight/mps,mp3309c.yaml           | 10 ++++--=
+----
+> > > >  1 file changed, 4 insertions(+), 6 deletions(-)
+> > > >
+> > > > diff --git
+> > > a/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> > > b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> > > > index 4191e33626f5..527a37368ed7 100644
+> > > > ---
+> > > a/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> > > > +++
+> > > b/Documentation/devicetree/bindings/leds/backlight/mps,mp3309c.yaml
+> > > > @@ -14,8 +14,8 @@ description: |
+> > > >    programmable switching frequency to optimize efficiency.
+> > > >    It supports two different dimming modes:
+> > > >
+> > > > -  - analog mode, via I2C commands (default)
+> > > > -  - PWM controlled mode.
+> > > > +  - analog mode, via I2C commands, as default mode (32 dimming
+> > > > + levels)
+> > > > +  - PWM controlled mode (optional)
+> > > >
+> > > >    The datasheet is available at:
+> > > >    https://www.monolithicpower.com/en/mp3309c.html
+> > > > @@ -50,8 +50,6 @@ properties:
+> > > >  required:
+> > > >    - compatible
+> > > >    - reg
+> > > > -  - max-brightness
+> > > > -  - default-brightness
+> > > >
+> > > >  unevaluatedProperties: false
+> > > >
+> > > > @@ -66,8 +64,8 @@ examples:
+> > > >              compatible =3D "mps,mp3309c";
+> > > >              reg =3D <0x17>;
+> > > >              pwms =3D <&pwm1 0 3333333 0>; /* 300 Hz --> (1/f) * 1*=
+10^9 */
+> > > > -            max-brightness =3D <100>;
+> > > > -            default-brightness =3D <80>;
+> > > > +            brightness-levels =3D <0 4 8 16 32 64 128 255>;
+> > > > +            default-brightness =3D <6>;
+> > > >              mps,overvoltage-protection-microvolt =3D <24000000>;
+> > > >          };
+> > > >      };
+> > > > --
+> > > > 2.34.1
+> > > >
