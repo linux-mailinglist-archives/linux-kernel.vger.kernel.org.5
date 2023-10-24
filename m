@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C957D4B88
+	by mail.lfdr.de (Postfix) with ESMTP id B3A6E7D4B8A
 	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 11:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233969AbjJXJHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 05:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49880 "EHLO
+        id S234013AbjJXJHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 05:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233962AbjJXJHF (ORCPT
+        with ESMTP id S234002AbjJXJHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 05:07:05 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3A0120;
-        Tue, 24 Oct 2023 02:07:03 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c434c33ec0so26979715ad.3;
-        Tue, 24 Oct 2023 02:07:03 -0700 (PDT)
+        Tue, 24 Oct 2023 05:07:09 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0F7120;
+        Tue, 24 Oct 2023 02:07:07 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-5b837db1b26so2400925a12.3;
+        Tue, 24 Oct 2023 02:07:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698138423; x=1698743223; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698138427; x=1698743227; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=palBtRjhdsNKVFR4Z7sz7xV1QIa2igJzdiqlgzEfdQo=;
-        b=hbvBXnK8Th70hF4StuO9mzT71pgJOq6qLrJli4xJLuAI2m31ttXoJxZR3qAsX6df6I
-         rFG8fmjlwYsQDIcoHibX3s7Uqxd+vNcJniez7DwNehFEkbNg/uuRSznfwZWfdt/dT6HS
-         A40g1U9NOBdrWLiTF573tqZWDH95zgt+Y0xiB2MQeJJcyRhl7YfCE/8URTvk9FKOEaOG
-         0SfAMhr7cOv5pebG0Y4b3xcBJHJoQFUZYIL26h0M/C6bR/soDf6mEHk3UmbmYlYsBX/C
-         xNN20IkaetmgGlVN6y8uC729tvwxkIGyAo2O19lFMZm5lLyvC+whO4kxLyGPRbtyqJhS
-         piyQ==
+        bh=89is/1LnKO4AiNutFqqrfRo5OqHC095NE9dIPIBTM0w=;
+        b=Zk/qjyqUPSamNrIK8xkPGLRGM9DBeX2hst17oKRjHDr7GscrxtfOQ3eMgWLEVddGso
+         c1pUYsyRnuDkgRe6olM0nkLYejnb9M8qLHPr/yEStCAfhLEjghtLurRbwyYWj3A98e+2
+         xVI5JG1dpwLj5C27y0Y8ztx9on4LiS71k/jNuOZawz83tkAk2b+lAR4Bz4ygW2NBYCOE
+         eSU3ITihlKgipzl5rYhb9OZjOodB1w/ukp7/46G5Aopb99Y5bFFPTS7DsU7IOlZqMW7E
+         UwcviFLUq11HqGSi8eafx3Cim+uW2pxg3jc+1wLGDe4h2/7gxPrV83wl4rg1ptEKEJjF
+         Z+7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698138423; x=1698743223;
+        d=1e100.net; s=20230601; t=1698138427; x=1698743227;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=palBtRjhdsNKVFR4Z7sz7xV1QIa2igJzdiqlgzEfdQo=;
-        b=JGyTQgoVNmWtuSsQ61YwhYplZ197eyuwMdCaQfZ3iukLNmNCKitTMYuSRo+Z8ClAU6
-         l6MhS/Sa1LiKo5aNUJcll7VE711M0RYmx7OboYnBno6CMywFRrYwCX82UxM5Gztbavqo
-         yNEQzxxUvSenDYkYcKUBCPnhjfmWkULeAV45wY8XDo3WsV+0N/asjWKnJsLOAyM971gX
-         jAIi6jaiPipghYzMvG3qKoKVJmFFOmLU0DgSa/IBdVY1AWJoM1xH2//fWhg301i43EKp
-         MbUUsgas165YbfaqaWMWuGVslYofUDX9YDrbbXFPHUdhv8V30WFl3dzramUDWMsLqX1M
-         HPWg==
-X-Gm-Message-State: AOJu0YzoxU3U8yYdrSoq4zgb+LdyTGBe5oLm3+YO+RVzVgEtW42i5kJR
-        Ub6ooUvmxAMxdLoyykfuZcTY/gAx61w=
-X-Google-Smtp-Source: AGHT+IFMziS3HBLi9OJgEgkfNJsIqawPXjSb6QqV0/hxIOzzXcDksvrVKwZFXLi5IPFJ4/3Vx4THHg==
-X-Received: by 2002:a17:903:1c8:b0:1c9:d6f8:1902 with SMTP id e8-20020a17090301c800b001c9d6f81902mr9932828plh.15.1698138422955;
-        Tue, 24 Oct 2023 02:07:02 -0700 (PDT)
+        bh=89is/1LnKO4AiNutFqqrfRo5OqHC095NE9dIPIBTM0w=;
+        b=YE/HfzfrLGNHXepv84LZpdvFfrV42IUR1xDCA+D2gHd+gB1LAXZf0iNRMdKaFKUhLi
+         4Aocdr/IWTshcwHgwNlLL/x1LZzrCLl5L8Rs/Qm3d+4jq3BICwC83PaFd3mc1FUVZfXq
+         LahtEKkVWklXPM8LfJwLwlYBWtIk41LLtmEyNSYdfWb6g4Sq7nk6JRoQxTLI28aYR1VH
+         koXM5nxspW/5d2r0+huDLXJpTAnPn5D72Yh/WKCpZbsDg/iKDnqQc1yB/hkCNh3vedor
+         1W3MyyxQK1eyXplKH0P1RQLbS3RZQ+U/6jbVQxxXdcDwyWy4tt2cI7LVF2IHoBHty3x+
+         xhDQ==
+X-Gm-Message-State: AOJu0YytdA0wY4ZEMd/wUCgW7LKmi03DNSTT+ihooM1NUZd6W422X8lQ
+        czzY0ekEbE4MuGGdLLktkuA=
+X-Google-Smtp-Source: AGHT+IFXCVSLmAd/Gy9fHDpoMR+ks/WKOE5Azs1P5XZslfAFdwlkPp3EP3ooHLrNau/WIBImlRnVAA==
+X-Received: by 2002:a17:902:e80d:b0:1bf:d92e:c5a7 with SMTP id u13-20020a170902e80d00b001bfd92ec5a7mr10570535plg.28.1698138427012;
+        Tue, 24 Oct 2023 02:07:07 -0700 (PDT)
 Received: from cs20-buildserver.lan ([1.200.144.223])
-        by smtp.gmail.com with ESMTPSA id c24-20020a170902d91800b001c9ab91d3d7sm7055324plz.37.2023.10.24.02.07.00
+        by smtp.gmail.com with ESMTPSA id c24-20020a170902d91800b001c9ab91d3d7sm7055324plz.37.2023.10.24.02.07.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 02:07:02 -0700 (PDT)
+        Tue, 24 Oct 2023 02:07:06 -0700 (PDT)
 From:   Jim Liu <jim.t90615@gmail.com>
 To:     jim.t90615@gmail.com, JJLIU0@nuvoton.com, linus.walleij@linaro.org,
         krzysztof.kozlowski+dt@linaro.org, brgl@bgdev.pl
 Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Subject: [PATCH v6 1/3] dt-bindings: gpio: add NPCM sgpio driver bindings
-Date:   Tue, 24 Oct 2023 17:06:29 +0800
-Message-Id: <20231024090631.3359592-2-jim.t90615@gmail.com>
+Subject: [PATCH v6 2/3] arm: dts: nuvoton: npcm: Add sgpio feature
+Date:   Tue, 24 Oct 2023 17:06:30 +0800
+Message-Id: <20231024090631.3359592-3-jim.t90615@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231024090631.3359592-1-jim.t90615@gmail.com>
 References: <20231024090631.3359592-1-jim.t90615@gmail.com>
@@ -73,123 +73,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dt-bindings document for the Nuvoton NPCM7xx sgpio driver
+Add the SGPIO controller to the NPCM7xx devicetree
 
 Signed-off-by: Jim Liu <jim.t90615@gmail.com>
 ---
 Changes for v6:
-   - Drop quotes for $ref
-   - Add and drop '|' for description
-   - Add space after 'exposed.'
-   - remove status
+   - remove bus-frequency
+   - check with dtbs_check
 Changes for v5:
-   - remove bus bus-frequency
-   - modify in/out description
+   - remove npcm8xx node
 Changes for v4:
-   - modify in/out property
-   - modify bus-frequency property
+   - add npcm8xx gpio node
 Changes for v3:
-   - modify description
+   - modify node name
    - modify in/out property name
 Changes for v2:
-   - modify description
----
- .../bindings/gpio/nuvoton,sgpio.yaml          | 86 +++++++++++++++++++
- 1 file changed, 86 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
+   - modify dts node
 
-diff --git a/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml b/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
-new file mode 100644
-index 000000000000..ddf01a77b8f8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/nuvoton,sgpio.yaml
-@@ -0,0 +1,86 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/nuvoton,sgpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+---
+ .../dts/nuvoton/nuvoton-common-npcm7xx.dtsi   | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
+index 868454ae6bde..df91517a4842 100644
+--- a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
++++ b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
+@@ -372,6 +372,30 @@ &fanin12_pins &fanin13_pins
+ 				status = "disabled";
+ 			};
+ 
++			gpio8: gpio@101000 {
++				compatible = "nuvoton,npcm750-sgpio";
++				reg = <0x101000 0x200>;
++				clocks = <&clk NPCM7XX_CLK_APB3>;
++				interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				nuvoton,input-ngpios = <64>;
++				nuvoton,output-ngpios = <64>;
++				status = "disabled";
++			};
 +
-+title: Nuvoton SGPIO controller
++			gpio9: gpio@102000 {
++				compatible = "nuvoton,npcm750-sgpio";
++				reg = <0x102000 0x200>;
++				clocks = <&clk NPCM7XX_CLK_APB3>;
++				interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				nuvoton,input-ngpios = <64>;
++				nuvoton,output-ngpios = <64>;
++				status = "disabled";
++			};
 +
-+maintainers:
-+  - Jim LIU <JJLIU0@nuvoton.com>
-+
-+description: |
-+  This SGPIO controller is for NUVOTON NPCM7xx and NPCM8xx SoC.
-+  Nuvoton NPCM7xx SGPIO module is combine serial to parallel IC (HC595)
-+  and parallel to serial IC (HC165), and use APB3 clock to control it.
-+  This interface has 4 pins  (D_out , D_in, S_CLK, LDSH).
-+  NPCM7xx/NPCM8xx have two sgpio module each module can support up
-+  to 64 output pins,and up to 64 input pin, the pin is only for gpi or gpo.
-+  GPIO pins have sequential, First half is gpo and second half is gpi.
-+  GPIO pins can be programmed to support the following options
-+  - Support interrupt option for each input port and various interrupt
-+    sensitivity option (level-high, level-low, edge-high, edge-low)
-+  - ngpios is number of nuvoton,input-ngpios GPIO lines and nuvoton,output-ngpios GPIO lines.
-+    nuvoton,input-ngpios GPIO lines is only for gpi.
-+    nuvoton,output-ngpios GPIO lines is only for gpo.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - nuvoton,npcm750-sgpio
-+      - nuvoton,npcm845-sgpio
-+
-+  reg:
-+    maxItems: 1
-+
-+  gpio-controller: true
-+
-+  '#gpio-cells':
-+    const: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  nuvoton,input-ngpios:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      The numbers of GPIO's exposed. GPIO lines is only for gpi.
-+    minimum: 0
-+    maximum: 64
-+
-+  nuvoton,output-ngpios:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      The numbers of GPIO's exposed. GPIO lines is only for gpo.
-+    minimum: 0
-+    maximum: 64
-+
-+required:
-+  - compatible
-+  - reg
-+  - gpio-controller
-+  - '#gpio-cells'
-+  - interrupts
-+  - nuvoton,input-ngpios
-+  - nuvoton,output-ngpios
-+  - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/nuvoton,npcm7xx-clock.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    gpio8: gpio@101000 {
-+        compatible = "nuvoton,npcm750-sgpio";
-+        reg = <0x101000 0x200>;
-+        clocks = <&clk NPCM7XX_CLK_APB3>;
-+        interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+        nuvoton,input-ngpios = <64>;
-+        nuvoton,output-ngpios = <64>;
-+    };
+ 			i2c0: i2c@80000 {
+ 				reg = <0x80000 0x1000>;
+ 				compatible = "nuvoton,npcm750-i2c";
 -- 
 2.25.1
 
