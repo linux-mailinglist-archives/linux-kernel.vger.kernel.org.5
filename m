@@ -2,137 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A33C7D44FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F257D44FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 03:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbjJXB1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 23 Oct 2023 21:27:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
+        id S231548AbjJXBaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 23 Oct 2023 21:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbjJXB1R (ORCPT
+        with ESMTP id S229456AbjJXBaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 23 Oct 2023 21:27:17 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F113ADF;
-        Mon, 23 Oct 2023 18:27:15 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so3829665b3a.2;
-        Mon, 23 Oct 2023 18:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698110835; x=1698715635; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VM1CeNLw8L77vrhtQf8LKN5yHFEm1SLkIaPJ3SSl+Hw=;
-        b=nfFJ1mojgiWpHjrTE+0pm1PVLbpRT2zuiyJSuGOxXVEclzN1C2ceVfypAj8CVbb4p6
-         PzCqUCAtVZaOPhKsZxtD/335x+CMyJ3Ig1HDEscuqKUPDLWYWW68BVGYqvBMNSuKqdEt
-         QIZfWNEZCfoAv1iQXKOV30zpXkRIhiOUcQUD9Bu3lRufjANtRLGLQSR2QAI4evfEpgbj
-         LGPpe8j7Vtqlj8XHdePcI5Y8G3LXlnFqRAM5Ohllkqq5NhVo2vQ9akjD7XmOYzzla8zT
-         h5HbGiq04KhUp7hBuCTIoEHvOYCl3e8q6qHAJ1WqCM69813OWr5Amr926ws4ZdDTLScN
-         UzEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698110835; x=1698715635;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VM1CeNLw8L77vrhtQf8LKN5yHFEm1SLkIaPJ3SSl+Hw=;
-        b=bBVdh1X41irPmhB+QhnhDL7dmvdV30VYUSQwrdAjL5o+vn1Z7hOocbBym+FBOAoaV+
-         3V0anzlN0Hk8Rxx9w0aHf0VCJfDAIEaWZckp1bQy/94FdTDCh7yIu9a+Rvvu8RTqtcBd
-         UHPTnlmuxA4GwaWMepTehGreJCWd35zD0fFJD/WqQ2y6r/rvaQFkOaD6MB8UMJHKJUv4
-         rHIfgkjWg36p83ELj55p1eSA3xOMaqk1RORXnnzn3qovNVo23bR6q1QbACYYciGFOP/h
-         IvKONK/2YXVw3724cIkW4me3d25s19NAgd9A5GbcvuSLTnPl54V+MDGswYgatizHXj+K
-         DT3A==
-X-Gm-Message-State: AOJu0YyRGCJtO/gdN4oBEyrlJjPZ0IOEg+Mk5iFar41pF4wG6DwIOKkT
-        a8z2vB1O93XTbYhGKimWX+w=
-X-Google-Smtp-Source: AGHT+IFXWWD7chmQ42QH3diOEz+0bOlvHVgq4mVkr79m6iJF8iWePzh9ECvPJHd2KOVftWHFMPaKfQ==
-X-Received: by 2002:aa7:888b:0:b0:6bd:9281:9446 with SMTP id z11-20020aa7888b000000b006bd92819446mr13055839pfe.10.1698110835338;
-        Mon, 23 Oct 2023 18:27:15 -0700 (PDT)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id k3-20020aa79d03000000b006bc3e8f58besm6757110pfp.56.2023.10.23.18.27.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Oct 2023 18:27:14 -0700 (PDT)
-Message-ID: <acc63cea-5b51-4837-91ad-988d1a00e796@gmail.com>
-Date:   Mon, 23 Oct 2023 18:27:13 -0700
+        Mon, 23 Oct 2023 21:30:13 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE4DDE
+        for <linux-kernel@vger.kernel.org>; Mon, 23 Oct 2023 18:30:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B8iU+e0fwNvvJ/gKYWfy126VL+9av66xAuSgPIJIisgWrjSmMV1fUPnr+rS1oEYn8PyIXcnpj2PdP9vnL0h6RNI+3DsviGIJboqaxO/On/QdcNPmX50IKdm6BdtAgR3mcPizgV8RBWQlTgVGevVAnyylEewlvF8fkha54A1m9oQosH8+JxzSdF/xCgtboPEBNJXDMSvmkV5XTnzJXQsQ77TZeRQYsKhBHzLLlnOYj+STdDdXVRg+LxVS2SnPMmKoRwnVXirN9oWvlVPWjBPmjETFIVbntangNWKITAFVA7gp9QeCvp7l6Jklh9MOJbYJixjAx2R6AGbF7pBPi0z00w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AVWTRdAFrAoQUfm3ho3E57DlF9pc42pbnKcxTtyJDkU=;
+ b=JbIMZY0wWHH8Xc1EtEf+aY+d7yUsvQ0s8h6NkJL+q16/khnRkpb8BRGk2Z1mOMRTksIWsSkoOGIm6ApWCRRtUK+31xbWexEYu2KFFm0MqLNsSSH70AsToP+HOu4Y83D/x7xavRM3vV0vq0S13VBe5fhMiZRFoPobEybn+oV0vZv4J1u4jWTIv4Iq0j5RKNhxzpeXV5lr0SItka6ohVTR9rcmCx4AWNMbWu6AzEr5YNtc+ZP67HG5QIZSVFx9E7lYHyGW8auO8m4N6DElslRVi9TG7mHqAlJgZOaL2V/zuByPygAXoiK/p3kA7FQb+UhOrtxFWcec0K0OQjyzCEeBxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AVWTRdAFrAoQUfm3ho3E57DlF9pc42pbnKcxTtyJDkU=;
+ b=CtkqnY6OFe5xYfLptiwLaHGVoWL/T5HKOrAbNr44o31LbZlQ9kbbpxqTY0+XZEteEDVijPicFsAckUrhdUiY/0fScttRIC0V+FyKgYgWR+mw9HjjfBVUDZ+YL143NUNHrraIHrGNJbQfjkrmmxmUyGCRSpy71qGZjSLJ2Qi+BD1C/oQ2sFHl9zauluMJXWTgpNhBbG4tU1m3Y/rYKXuagehhEd8zv/VRG7f2fY7ZiuyaUY8jYGy8iSICMafmJko8Xndc93vqCiXUBj85W/IiNplOqdiHDVqh/28402aABCGP3Q0qNPwgDfSQRioNvd3XVKAMhHf6LS5ZtXf+r5OjuA==
+Received: from DS7PR03CA0097.namprd03.prod.outlook.com (2603:10b6:5:3b7::12)
+ by CY8PR12MB7436.namprd12.prod.outlook.com (2603:10b6:930:50::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
+ 2023 01:30:08 +0000
+Received: from DS3PEPF000099E1.namprd04.prod.outlook.com
+ (2603:10b6:5:3b7:cafe::83) by DS7PR03CA0097.outlook.office365.com
+ (2603:10b6:5:3b7::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33 via Frontend
+ Transport; Tue, 24 Oct 2023 01:30:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ DS3PEPF000099E1.mail.protection.outlook.com (10.167.17.196) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.18 via Frontend Transport; Tue, 24 Oct 2023 01:30:08 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 23 Oct
+ 2023 18:30:01 -0700
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 23 Oct
+ 2023 18:30:00 -0700
+Received: from Asurada-Nvidia.nvidia.com (10.127.8.12) by mail.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Mon, 23 Oct 2023 18:30:00 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     <jgg@nvidia.com>, <kevin.tian@intel.com>
+CC:     <joro@8bytes.org>, <will@kernel.org>, <robin.murphy@arm.com>,
+        <baolu.lu@linux.intel.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <yi.l.liu@intel.com>
+Subject: [PATCH v4] iommufd: Only enforce cache coherency in iommufd_hw_pagetable_alloc
+Date:   Mon, 23 Oct 2023 18:29:58 -0700
+Message-ID: <20231024012958.30842-1-nicolinc@nvidia.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/8] r8152: Avoid writing garbage to the adapter's
- registers
-Content-Language: en-US
-To:     patchwork-bot+netdevbpf@kernel.org,
-        Doug Anderson <dianders@chromium.org>
-Cc:     kuba@kernel.org, hayeswang@realtek.com, davem@davemloft.net,
-        ecgh@chromium.org, laura.nao@collabora.com,
-        stern@rowland.harvard.edu, horms@kernel.org,
-        linux-usb@vger.kernel.org, grundler@chromium.org, bjorn@mork.no,
-        edumazet@google.com, pabeni@redhat.com, pmalani@chromium.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <20231020210751.3415723-1-dianders@chromium.org>
- <169797182424.5465.9720701078350268924.git-patchwork-notify@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
- xGlkaOSDuu09rxuW+69Y2f1TzjFuGpBk4ysWOR85O2Nx8AJ6fYGCoeTbovrNlGT1M9obSFGQ
- X3IzRnWoqlfudjTO5TKoqkbOgpYqIo5n1QbEjCCwCwCg3DOH/4ug2AUUlcIT9/l3pGvoRJ0E
- AICDzi3l7pmC5IWn2n1mvP5247urtHFs/uusE827DDj3K8Upn2vYiOFMBhGsxAk6YKV6IP0d
- ZdWX6fqkJJlu9cSDvWtO1hXeHIfQIE/xcqvlRH783KrihLcsmnBqOiS6rJDO2x1eAgC8meAX
- SAgsrBhcgGl2Rl5gh/jkeA5ykwbxA/9u1eEuL70Qzt5APJmqVXR+kWvrqdBVPoUNy/tQ8mYc
- nzJJ63ng3tHhnwHXZOu8hL4nqwlYHRa9eeglXYhBqja4ZvIvCEqSmEukfivk+DlIgVoOAJbh
- qIWgvr3SIEuR6ayY3f5j0f2ejUMYlYYnKdiHXFlF9uXm1ELrb0YX4GMHz80nRmxvcmlhbiBG
- YWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+wmYEExECACYCGyMGCwkIBwMCBBUCCAME
- FgIDAQIeAQIXgAUCVF/S8QUJHlwd3wAKCRBhV5kVtWN2DvCVAJ4u4/bPF4P3jxb4qEY8I2gS
- 6hG0gACffNWlqJ2T4wSSn+3o7CCZNd7SLSDOw00ESM+4EhAQAL/o09boR9D3Vk1Tt7+gpYr3
- WQ6hgYVON905q2ndEoA2J0dQxJNRw3snabHDDzQBAcqOvdi7YidfBVdKi0wxHhSuRBfuOppu
- pdXkb7zxuPQuSveCLqqZWRQ+Cc2QgF7SBqgznbe6Ngout5qXY5Dcagk9LqFNGhJQzUGHAsIs
- hap1f0B1PoUyUNeEInV98D8Xd/edM3mhO9nRpUXRK9Bvt4iEZUXGuVtZLT52nK6Wv2EZ1TiT
- OiqZlf1P+vxYLBx9eKmabPdm3yjalhY8yr1S1vL0gSA/C6W1o/TowdieF1rWN/MYHlkpyj9c
- Rpc281gAO0AP3V1G00YzBEdYyi0gaJbCEQnq8Vz1vDXFxHzyhgGz7umBsVKmYwZgA8DrrB0M
- oaP35wuGR3RJcaG30AnJpEDkBYHznI2apxdcuTPOHZyEilIRrBGzDwGtAhldzlBoBwE3Z3MY
- 31TOpACu1ZpNOMysZ6xiE35pWkwc0KYm4hJA5GFfmWSN6DniimW3pmdDIiw4Ifcx8b3mFrRO
- BbDIW13E51j9RjbO/nAaK9ndZ5LRO1B/8Fwat7bLzmsCiEXOJY7NNpIEpkoNoEUfCcZwmLrU
- +eOTPzaF6drw6ayewEi5yzPg3TAT6FV3oBsNg3xlwU0gPK3v6gYPX5w9+ovPZ1/qqNfOrbsE
- FRuiSVsZQ5s3AAMFD/9XjlnnVDh9GX/r/6hjmr4U9tEsM+VQXaVXqZuHKaSmojOLUCP/YVQo
- 7IiYaNssCS4FCPe4yrL4FJJfJAsbeyDykMN7wAnBcOkbZ9BPJPNCbqU6dowLOiy8AuTYQ48m
- vIyQ4Ijnb6GTrtxIUDQeOBNuQC/gyyx3nbL/lVlHbxr4tb6YkhkO6shjXhQh7nQb33FjGO4P
- WU11Nr9i/qoV8QCo12MQEo244RRA6VMud06y/E449rWZFSTwGqb0FS0seTcYNvxt8PB2izX+
- HZA8SL54j479ubxhfuoTu5nXdtFYFj5Lj5x34LKPx7MpgAmj0H7SDhpFWF2FzcC1bjiW9mjW
- HaKaX23Awt97AqQZXegbfkJwX2Y53ufq8Np3e1542lh3/mpiGSilCsaTahEGrHK+lIusl6mz
- Joil+u3k01ofvJMK0ZdzGUZ/aPMZ16LofjFA+MNxWrZFrkYmiGdv+LG45zSlZyIvzSiG2lKy
- kuVag+IijCIom78P9jRtB1q1Q5lwZp2TLAJlz92DmFwBg1hyFzwDADjZ2nrDxKUiybXIgZp9
- aU2d++ptEGCVJOfEW4qpWCCLPbOT7XBr+g/4H3qWbs3j/cDDq7LuVYIe+wchy/iXEJaQVeTC
- y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
- X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <169797182424.5465.9720701078350268924.git-patchwork-notify@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099E1:EE_|CY8PR12MB7436:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3226a8eb-9741-47e6-a86b-08dbd430c208
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gRAFVgAolFff8TZCcGWW02GvaiDNqBCEykMFxlUjCyX+T58060PTGKuuIA2NnFm+NQarSMIr0Qg1laYevp6RPVeYXByklkfSd9nCvZ576dLc/F7ratr44EGa8hf99BHRrxrr/TMJr91KDKS79oUH1b0Y+GNrsmNO5FKXvX0A5FHawRCKnrX48TUdHlENKAmEbJYfsotj2jYX6ibGICwlB4y16eDL7/iQcX/a+rhfA224GViJjjKQ+cAXpvYtGDnejmR902fw6mOLwPi6fBPL7Sv7Wd0gK+V9gJHwb5rXbNwoFZ34/iaEjEl8PeGXf6cQJ5m+4aV0HtVSbingPadekSWscdJyS2N3pHLL3Qqrti0S8fpiuwYznYvbKDKh7RkuaBjmiXS3bvEfNwbv4bZ6sMujK9ykSDCmHc0KRoUcgdqdO1pWceOyVKeKPCVIDRX1vl1lWMoFmDH3XyXnMajA7AFEYnHkOlTghd5kSZ3E/amOqZQDMTuXMFE7bHUCpppX/0nIvJkb4fWz8eipmGa9zghyhXDaEpQj69I8v+/rFEBkisOJQhXaMkAuCxgRHbOws+MNflSv0n397i7Evooxb5VeLY1AYoasx7Pwa6mnSJosULSlUU7A/DsVPt9mDl6ESPSxvb0lmpGAiog59WYU5kBClFBicSS6jtLZsbSv9z7XW4dgxDln8Xez2/6eQFe/j1C5yPWd2amvQjAHp3F62gMiYQg6E88otIdxEill2Qresa6b80620VZcXWfTfPOl4WluW9l0LtDVelqtUNkuKROS3UrJEFpS+z9j7p8ndqD/zAt9j6YJQ4Sc/LfvOTHv
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(136003)(39860400002)(376002)(230922051799003)(64100799003)(1800799009)(82310400011)(451199024)(186009)(36840700001)(40470700004)(46966006)(36756003)(70206006)(4326008)(8676002)(8936002)(5660300002)(86362001)(966005)(41300700001)(316002)(70586007)(54906003)(110136005)(478600001)(2906002)(7636003)(36860700001)(356005)(82740400003)(2616005)(1076003)(7696005)(26005)(47076005)(83380400001)(426003)(336012)(40480700001)(40460700003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 01:30:08.0360
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3226a8eb-9741-47e6-a86b-08dbd430c208
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099E1.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7436
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+According to the conversation in the following link:
+https://lore.kernel.org/linux-iommu/20231020135501.GG3952@nvidia.com/
 
+The enforce_cache_coherency should be set/enforced in the hwpt allocation
+routine. The iommu driver in its attach_dev() op should decide whether to
+reject or not a device that doesn't match with the configuration of cache
+coherency. Drop the enforce_cache_coherency piece in the attach/replace()
+and move the remaining "num_devices" piece closer to the refcount that is
+using it.
 
-On 10/22/2023 3:50 AM, patchwork-bot+netdevbpf@kernel.org wrote:
-> Hello:
-> 
-> This series was applied to netdev/net.git (main)
-> by David S. Miller <davem@davemloft.net>:
-> 
-> On Fri, 20 Oct 2023 14:06:51 -0700 you wrote:
->> This series is the result of a cooperative debug effort between
->> Realtek and the ChromeOS team. On ChromeOS, we've noticed that Realtek
->> Ethernet adapters can sometimes get so wedged that even a reboot of
->> the host can't get them to enumerate again, assuming that the adapter
->> was on a powered hub and din't lose power when the host rebooted. This
->> is sometimes seen in the ChromeOS automated testing lab. The only way
->> to recover adapters in this state is to manually power cycle them.
->>
->> [...]
+Accordingly drop its function prototype in the header and mark it static.
+Also add some extra comments to clarify the expected behaviors.
 
-Oh well, late to the party, but this looks great, thanks!
+Suggested-by: Kevin Tian <kevin.tian@intel.com>
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+---
+Changelog
+v4:
+ * Fixed a typo in commit log
+ * Added Reviewed-by from Kevin
+v3:
+ * Reworked the first line of the added commets.
+v2: https://lore.kernel.org/all/20231023035733.27378-1-nicolinc@nvidia.com/
+ * Dropped "fixes" tags and merged two patches into one (Jason)
+ * Added comments to the remaining enforce_cache_coherency call (Jason)
+   [Please feel free to rephrase, or let me know what to change.]
+ * Replace "num_devices++" with list_for_each_entry (Baolu)
+v1: https://lore.kernel.org/all/cover.1697848510.git.nicolinc@nvidia.com/
+ drivers/iommu/iommufd/device.c          | 20 ++------------------
+ drivers/iommu/iommufd/hw_pagetable.c    |  9 ++++++++-
+ drivers/iommu/iommufd/iommufd_private.h |  1 -
+ 3 files changed, 10 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
+index 2a41fd2b6ef8..0a8867487508 100644
+--- a/drivers/iommu/iommufd/device.c
++++ b/drivers/iommu/iommufd/device.c
+@@ -337,13 +337,6 @@ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
+ 		goto err_unlock;
+ 	}
+ 
+-	/* Try to upgrade the domain we have */
+-	if (idev->enforce_cache_coherency) {
+-		rc = iommufd_hw_pagetable_enforce_cc(hwpt);
+-		if (rc)
+-			goto err_unlock;
+-	}
+-
+ 	rc = iopt_table_enforce_dev_resv_regions(&hwpt->ioas->iopt, idev->dev,
+ 						 &idev->igroup->sw_msi_start);
+ 	if (rc)
+@@ -413,8 +406,8 @@ iommufd_device_do_replace(struct iommufd_device *idev,
+ {
+ 	struct iommufd_group *igroup = idev->igroup;
+ 	struct iommufd_hw_pagetable *old_hwpt;
+-	unsigned int num_devices = 0;
+ 	struct iommufd_device *cur;
++	unsigned int num_devices;
+ 	int rc;
+ 
+ 	mutex_lock(&idev->igroup->lock);
+@@ -429,16 +422,6 @@ iommufd_device_do_replace(struct iommufd_device *idev,
+ 		return NULL;
+ 	}
+ 
+-	/* Try to upgrade the domain we have */
+-	list_for_each_entry(cur, &igroup->device_list, group_item) {
+-		num_devices++;
+-		if (cur->enforce_cache_coherency) {
+-			rc = iommufd_hw_pagetable_enforce_cc(hwpt);
+-			if (rc)
+-				goto err_unlock;
+-		}
+-	}
+-
+ 	old_hwpt = igroup->hwpt;
+ 	if (hwpt->ioas != old_hwpt->ioas) {
+ 		list_for_each_entry(cur, &igroup->device_list, group_item) {
+@@ -465,6 +448,7 @@ iommufd_device_do_replace(struct iommufd_device *idev,
+ 
+ 	igroup->hwpt = hwpt;
+ 
++	num_devices = list_count_nodes(&igroup->device_list);
+ 	/*
+ 	 * Move the refcounts held by the device_list to the new hwpt. Retain a
+ 	 * refcount for this thread as the caller will free it.
+diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
+index fbfab638efea..2c55b808eed5 100644
+--- a/drivers/iommu/iommufd/hw_pagetable.c
++++ b/drivers/iommu/iommufd/hw_pagetable.c
+@@ -42,7 +42,7 @@ void iommufd_hw_pagetable_abort(struct iommufd_object *obj)
+ 	iommufd_hw_pagetable_destroy(obj);
+ }
+ 
+-int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt)
++static int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt)
+ {
+ 	if (hwpt->enforce_cache_coherency)
+ 		return 0;
+@@ -116,6 +116,13 @@ iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
+ 	 * doing any maps. It is an iommu driver bug to report
+ 	 * IOMMU_CAP_ENFORCE_CACHE_COHERENCY but fail enforce_cache_coherency on
+ 	 * a new domain.
++	 *
++	 * The cache coherency mode must be configured here and unchanged later.
++	 * Note that a HWPT (non-CC) created for a device (non-CC) can be later
++	 * reused by another device (either non-CC or CC). However, A HWPT (CC)
++	 * created for a device (CC) cannot be reused by another device (non-CC)
++	 * but only devices (CC). Instead user space in this case would need to
++	 * allocate a separate HWPT (non-CC).
+ 	 */
+ 	if (idev->enforce_cache_coherency) {
+ 		rc = iommufd_hw_pagetable_enforce_cc(hwpt);
+diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
+index 1cc429a5227b..44828bba9e2c 100644
+--- a/drivers/iommu/iommufd/iommufd_private.h
++++ b/drivers/iommu/iommufd/iommufd_private.h
+@@ -266,7 +266,6 @@ struct iommufd_hw_pagetable *
+ iommufd_hw_pagetable_alloc(struct iommufd_ctx *ictx, struct iommufd_ioas *ioas,
+ 			   struct iommufd_device *idev, u32 flags,
+ 			   bool immediate_attach);
+-int iommufd_hw_pagetable_enforce_cc(struct iommufd_hw_pagetable *hwpt);
+ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
+ 				struct iommufd_device *idev);
+ struct iommufd_hw_pagetable *
 -- 
-Florian
+2.42.0
+
