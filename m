@@ -2,123 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 481B07D5111
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF5D7D5118
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234759AbjJXNJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
+        id S234469AbjJXNLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234760AbjJXNJh (ORCPT
+        with ESMTP id S234449AbjJXNKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:09:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2F48F
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:09:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D214C433C7;
-        Tue, 24 Oct 2023 13:09:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698152975;
-        bh=dwCTjMWxulfmok8hvVUhl0To2h8rmkpi55JvtMmovYM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=SUcqiR/MI1naRN0Gf16J8VSkRwGc1fRy1LwHqQzo0IIgu3y0WmI7KmjkfOAo67NzT
-         LwrQB8py9L3UQLA//IghgTRsMT+id4QvBwMox4NZgylu6BD1q/qIdEoKMefvTR/xbc
-         IuPzmcEGzvRBGJUNDzwTVoy14dHfTyoSwRjHK/f+hrJl3zmo9kkCr/rIRPtCLJE6eS
-         76LIuehEj36TIfTp9XMnxBGJEGT5E3ka6j6oeWXataIOPl8YjUX6t4r+bwhAGXjkD6
-         WpzuhZCQf0O6wDwsm49vru4nTubMY41AZLQzQps5bhsRIljmCc8LrrxuFbVgNFarN4
-         RNInazFe2N9gA==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Anup Patel <apatel@ventanamicro.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>
-Subject: Re: [PATCH v11 09/14] irqchip/riscv-imsic: Add support for PCI MSI
- irqdomain
-In-Reply-To: <20231023172800.315343-10-apatel@ventanamicro.com>
-References: <20231023172800.315343-1-apatel@ventanamicro.com>
- <20231023172800.315343-10-apatel@ventanamicro.com>
-Date:   Tue, 24 Oct 2023 15:09:31 +0200
-Message-ID: <8734y0rwtw.fsf@all.your.base.are.belong.to.us>
+        Tue, 24 Oct 2023 09:10:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AFE10CF
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 06:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698153038; x=1729689038;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=2OYIKqekGYFQkTe39FRxK6w6NhQQdKSr+9CaKH7PW1Q=;
+  b=CgHqSXo5qll6oIKAE8W9r5vOEzBbDvp4U1bNd6APJ9SbaO9L0uWMWyqA
+   E3x4nERkXxxLbL0CT5mvfYGVT3bHywxTgnyJP+c255eiiAZ9T5OQBqEIm
+   5YhTR4/Sw1wZjbjwtlcj4AewMV7vAiUzPuppUyfi6sUp7ETNym5Q3IPeH
+   6ANjo9pujDJ/Z40DkFaIl7bQ9z3JwUoUvco1X5Tmrh4IYx8Z74JdcZI2f
+   GWFaWKEKt8pjt/TDCzYzFeUbUBZaHj/XeRACuMjKvar80xn3EJ1jbBIk9
+   WGaBun3ZQcZAJ+86RuYeDIYSmDnHQOPSG7Y4TRhrZFocCPRT9zvi/S8qi
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="453510330"
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="453510330"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 06:10:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,247,1694761200"; 
+   d="scan'208";a="6167770"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Oct 2023 06:09:20 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 24 Oct 2023 06:10:37 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Tue, 24 Oct 2023 06:10:37 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Tue, 24 Oct 2023 06:10:37 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=McOsfGbPhMpZ0SfSKObQe9KKEApsXgybBfnbf/r4n5vDqwM5sk5XyyJHvgGa7sdHRaaMkZZ0TjxCgU+QiNgs1N4U1nHQNZec2R0xUg9UMLDRUtNzp82nJGa5nR/wx0F9pPbtngOojhM5XA3PhGUzvHmbZ46Z1jMmZQ5MvdvfhGqh92fXO0ulWk3KB0u+0HYYhNe9Osi6Dz2EJXT83cFhAEVF0i+JQJHewxj+UGDQdxRzZKjvtnTRz43qz0WqJhqFnivl4kX+HDGpBj0IBOcU2ArgtEk/wzIvJc0KCRuFohubEMowOCwux9h+yNibWLUlHMzp/edRjuOiwx7mifE/Wg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2OYIKqekGYFQkTe39FRxK6w6NhQQdKSr+9CaKH7PW1Q=;
+ b=RoSwnSXobwFzsTWhLWADe1PE1OLmxmfoS6opsn5wEUJE6TaRwkd1nr5bnKPdBEt3nrFD0VHyDUX9X1b+cf6luSIszjRuJ8H7zCsXYbDLyyEA4snALbRLsBYt5ouEETab8hOWKpj4s3WD4euWY56IhgMd8Ylb+PJzgm2JVpNc1X5howjVeTP3NLYhy8cHf7kOG3gyMk+j4o1rCnX2JG7jNnD0mdGXWMBLxsuj4fRF6D62/BEMMBg9t7LjaH4jOxEf+qANmJv4Y1ydmsJ9y5IQZ3AW2UMyzXKki34w2HcIvqwjUgoFEX3/t7LOErnuQbzKGxK2IUvh/F4Bx8MFyyBrjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by SA2PR11MB5130.namprd11.prod.outlook.com (2603:10b6:806:11d::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Tue, 24 Oct
+ 2023 13:10:35 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::fab8:8ece:c8fe:fc7c]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::fab8:8ece:c8fe:fc7c%4]) with mapi id 15.20.6907.030; Tue, 24 Oct 2023
+ 13:10:35 +0000
+Date:   Tue, 24 Oct 2023 08:10:32 -0500
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     =?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>
+CC:     <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        "Thomas Zimmermann" <tzimmermann@suse.de>
+Subject: Re: [PATCH] iosys-map: Rename locals used inside macros
+Message-ID: <g7y5ivgobnrccjjtdczrj5gcksc5bftutkz4zeeynn6os3rkac@e44pxi6wng43>
+References: <20231024110710.3039807-1-michal.winiarski@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231024110710.3039807-1-michal.winiarski@intel.com>
+X-ClientProxiedBy: SJ0PR05CA0094.namprd05.prod.outlook.com
+ (2603:10b6:a03:334::9) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|SA2PR11MB5130:EE_
+X-MS-Office365-Filtering-Correlation-Id: c830b6dc-2902-4df5-5433-08dbd4929c29
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Eph/QUifC46Ofc87uJfkp/oaFdN5sqgmfQ+hy2190k4bOmvWtC9rMmr9WXGrtJbaCugvaljOe2QrmRvbv2Y162/nk8WD/n2WLS9p32FTlYGixEs1eZSSc7q0v09mhzzIuhGkxRuOWJHaab7HQFKap/MAohR/u5xPmWU1MqNVQNhD+G3DkAs2ZE5gi4ZM/ZEOUFUsoTPeSIr9YtVKzbH871aPkVgzrbd+xQ7gkWCgjU4JAJPGIzrKL7MLZDWA2c7ulj7BUhbJjp8k38Dc67jso2EwWR9DyfbHHtFEHauOesEkhB9CPI0ejQlGT/kRurRcihrI7++XFc5qgLRuRtIjgajIR5CCImSc/rIyKmBHt4SQo67TRJ/anIctOCDTHpd7KYqlXIOO0Hp7MzL1/B/ImtPimikSSGK/Bj16QgHiqTo2u+6k53Na/xx0Vje0v9WXPLxXiZhhpFifYbhgKvr7xYb8eMVdH+IWnY+R7t3iK/OPhkqiap0ljXH4calcdx17OU50NFLdF+QLGoTxx1OzUbH7rjiu2zPJZhjA6wLRfaZr2rt+kvzSnt+LZOWQ1Ysz
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(376002)(346002)(396003)(39860400002)(136003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(83380400001)(33716001)(82960400001)(86362001)(38100700002)(316002)(2906002)(9686003)(6512007)(26005)(6506007)(4744005)(6666004)(6486002)(478600001)(41300700001)(5660300002)(66946007)(6636002)(66556008)(66476007)(4326008)(8676002)(8936002)(6862004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aWtjL1IzR1VvRzBwaUxFdVNtL01sTUhxOHM2MDZWa0R0cWgvdUNWZjQxVHFQ?=
+ =?utf-8?B?YUFENUEvb2JsaHE1YnhxaWF3TVhmTWx0ZW41ckVCMWVoU3MvMXhJMkl4KzNF?=
+ =?utf-8?B?R3BnNE1vKy8vcWhGY05YcGlDSVJ4MUtzaWxkS1lzendlRGlkdkRSZnhSVk9y?=
+ =?utf-8?B?bFlhQm8vYUZTMFI0Uk9hNUFNSUY0WHpucnFJeWxQdHJ3b1AraWdhdVZRdFBq?=
+ =?utf-8?B?aFRtb3ZHRlptMVJ4cFYzMmhNenZxdUJFQURNY05CSGVyMjV3WDBCNitCR21m?=
+ =?utf-8?B?WmdibWtlOUh2OG52K3hGUmRKTHg4bFM4SHZzVnMwdDVzWGk0SVRGVDBlT1lz?=
+ =?utf-8?B?OVZSYmlKM2UzTzgvRmJSMUNrR2owNVoySk9XN3UzNmFHMm51NFdodUFHSGZV?=
+ =?utf-8?B?bjdTMWNSNzRXYjRWTVlsQytPSFRseUJwMGt5Z0tCcW9vcS9SSk5IU0ZIejgx?=
+ =?utf-8?B?eko5YmlKdW5pUzU5cDdXT25LYUZSL0kwMnBKaTFyWFhqNnUvSnhIWVM5QVJz?=
+ =?utf-8?B?b1kzV2VXdHNVbEtVcXZkRjNVb0dmWWp2WkVwbVJnSVJqRkVGbkFQNVV3TFRm?=
+ =?utf-8?B?UFpDWStTZVlRR1lhOWtZemhZb3FRZEhZbXh1V0VpY0hRU2FZN3FqZFVaUnRy?=
+ =?utf-8?B?aC93RDdhRkc0OUw5R2g0bGwrUGVkd2Y0TDFIcW9pU3pIVXpBV3MrdnlFalBM?=
+ =?utf-8?B?T1JTdnF6dVVOY2Zwek1aRzhsL0VUWTlQY1NQWjFub0hTckl6WHppdTNvaFRu?=
+ =?utf-8?B?empMMU1qcmxPK3BaYmFoV25rZWpqSEVKdi8zRWpxcEpaZkgvcFNrejQxZ2tO?=
+ =?utf-8?B?WGRMK2czaTVNWUprcC96anNIV0RBMkJkR0lkZjlUYzg2VjZDSHdCeXZNTjd2?=
+ =?utf-8?B?TWRNbUlqUmNsT0EyT1N4ZzlZcnZlZUt3OERmUDJucVpJR0lwOW5HNERaVitE?=
+ =?utf-8?B?aGpYSmVxSGVJOVI1bHQxNmFscTJvY3NPeXI5S3k1Q0FNZDZ5QUJMWjd1MWZL?=
+ =?utf-8?B?cEIrTmRRVW1DRThIYzVmbStyVmp0MkFoOHI4SnF0b3dSWVBrMWpkRmxCbitm?=
+ =?utf-8?B?WU8vM3Rjc3lqTnROSjFTN0FRYkNXNENBQlFuc0FjckZPNFJkdjNnbTZFRUpm?=
+ =?utf-8?B?VEJ1OWZPa1RGSUdBb3FVS1RHQWkxZ3k4R2JqSEphQVlBWEsyMFNZYUl3MExw?=
+ =?utf-8?B?TTNuV0J6dTh0Z3FlZ2FDazl5c2laTEVRVHVqb2hoUFl2TFUzVG13c3BRbThG?=
+ =?utf-8?B?WGw5SjVmeTFiejF4WVFwWk1XeUNnOERCd1NFbEdWRjd4ZStnYmFvRnpzWVdt?=
+ =?utf-8?B?THllV3BSdUc4QXdtUWhwSjNVTXpXa3ZFanRYdUE3UDdJOG52dktQY2lJMGQ4?=
+ =?utf-8?B?Qm5mZStURkl2bGdyMGtvd3ZldHE2a0xPVkNSSU1kejlobTlFWllZSDhqT2ZX?=
+ =?utf-8?B?dVF5Q2oyY1ZyekxwWFUvakRlMzFDTGRFaEtmVWUxencza1I4TXF4MURrL2ZR?=
+ =?utf-8?B?NjdlQU1lSUU1cXdzV014dXJKUmJiS3BQRTg2VmlOckVUYnhMTHVIQ0g0R1lO?=
+ =?utf-8?B?VVppSkIxWE1IZ0FFZEdNTTdRR3k3RHdpckx0NnVXMXk4MzhvS2xab3NHYzJL?=
+ =?utf-8?B?VXZkSTV1Ym5mOGMycUVRSXVyNmIycTllT3VlSURZTXVod2xmSGNkcERWRURa?=
+ =?utf-8?B?RTdFakVQYk1ia3VKQ1F1UXB0S2tpcFludjJEeFplRUx2UHFwaWVkQi9QaW92?=
+ =?utf-8?B?TWV4bXUyaDZFaHlVN3RTRVBuaDN1ZmFOVVV1WWJMQUp3blBGRjQzSURXb0RC?=
+ =?utf-8?B?eGdrMjMveDY3S3picWJjQkxzRmFqb0xWaTJZamxwL3RKcWxRdXJIanRWb0hh?=
+ =?utf-8?B?Sks4SFBuZnBxbDlZMVRyb3huZXpHY2MraTNwNkYrcG1zbDFmTHFERGNGanBx?=
+ =?utf-8?B?K1dCQlhOMWRYVjA3LzNwZ2x4cHA3bnFxY2JMbkwvb0s3WTlqRlJzWGZtaWls?=
+ =?utf-8?B?blY0Z3NLZzlJdjY3Qm00MkIzaFhLZ3huWW5EUmxpVTdHZmUxU2NlRUdocisr?=
+ =?utf-8?B?YS9HMmEyTldpTEpIcVpLRTVnQUVoZis0eGs4cVVRNlVHZm5vV21xeU9nOXR0?=
+ =?utf-8?B?TlcrejhmOXVZSDVxMmllNnZLRmhqMkF4QnA3U1VVTlI2YTVCZmFMRm5ORmdL?=
+ =?utf-8?B?Z0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c830b6dc-2902-4df5-5433-08dbd4929c29
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2023 13:10:35.4645
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rMCUacyrCl8cKQJW+lxsdkdkznNzGm7qFaZJGiI0j5L3m1Cb/GbGWtgy599b4/L8d+wT5mSHnZNpITUTNa0s1xE6O03FBqSb8IOXD/ltsYY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5130
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Anup Patel <apatel@ventanamicro.com> writes:
-
-> The Linux PCI framework requires it's own dedicated MSI irqdomain so
-> let us create PCI MSI irqdomain as child of the IMSIC base irqdomain.
+On Tue, Oct 24, 2023 at 01:07:10PM +0200, Michał Winiarski wrote:
+>Widely used variable names can be used by macro users, potentially
+>leading to name collisions.
+>Suffix locals used inside the macros with an underscore, to reduce the
+>collision potential.
 >
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  drivers/irqchip/Kconfig                    |  7 +++
->  drivers/irqchip/irq-riscv-imsic-platform.c | 51 ++++++++++++++++++++++
->  drivers/irqchip/irq-riscv-imsic-state.h    |  1 +
->  3 files changed, 59 insertions(+)
->
-> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-> index bdd80716114d..c1d69b418dfb 100644
-> --- a/drivers/irqchip/Kconfig
-> +++ b/drivers/irqchip/Kconfig
-> @@ -552,6 +552,13 @@ config RISCV_IMSIC
->  	select IRQ_DOMAIN_HIERARCHY
->  	select GENERIC_MSI_IRQ
->=20=20
-> +config RISCV_IMSIC_PCI
-> +	bool
-> +	depends on RISCV_IMSIC
-> +	depends on PCI
-> +	depends on PCI_MSI
-> +	default RISCV_IMSIC
-> +
->  config EXYNOS_IRQ_COMBINER
->  	bool "Samsung Exynos IRQ combiner support" if COMPILE_TEST
->  	depends on (ARCH_EXYNOS && ARM) || COMPILE_TEST
-> diff --git a/drivers/irqchip/irq-riscv-imsic-platform.c b/drivers/irqchip=
-/irq-riscv-imsic-platform.c
-> index 23d286cb017e..cdb659401199 100644
-> --- a/drivers/irqchip/irq-riscv-imsic-platform.c
-> +++ b/drivers/irqchip/irq-riscv-imsic-platform.c
-> @@ -13,6 +13,7 @@
->  #include <linux/irqdomain.h>
->  #include <linux/module.h>
->  #include <linux/msi.h>
-> +#include <linux/pci.h>
->  #include <linux/platform_device.h>
->  #include <linux/spinlock.h>
->  #include <linux/smp.h>
-> @@ -215,6 +216,42 @@ static const struct irq_domain_ops imsic_base_domain=
-_ops =3D {
->  #endif
->  };
->=20=20
-> +#ifdef CONFIG_RISCV_IMSIC_PCI
-> +
-> +static void imsic_pci_mask_irq(struct irq_data *d)
-> +{
-> +	pci_msi_mask_irq(d);
-> +	irq_chip_mask_parent(d);
+>Suggested-by: Lucas De Marchi <lucas.demarchi@intel.com>
+>Signed-off-by: Michał Winiarski <michal.winiarski@intel.com>
 
-I've asked this before, but I still don't get why you need to propagate
-to the parent? Why isn't masking on PCI enough?
+`git show --color-words` shows this is doing exactly what it should.
 
+Reviewed-by: Lucas De Marchi <lucas.demarchi@intel.com>
 
-Bj=C3=B6rn
+Maybe note in the commit message the compilation error we get with
+clang? Although that's in the xe driver that is still not merged
+upstream... so not really required.
+
+thanks
+Lucas De Marchi
