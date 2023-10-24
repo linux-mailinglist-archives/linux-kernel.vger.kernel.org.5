@@ -2,114 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CA07D4AD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D157B7D4ADA
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 10:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbjJXItG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 04:49:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34768 "EHLO
+        id S233677AbjJXIt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 04:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjJXItF (ORCPT
+        with ESMTP id S229595AbjJXIt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 04:49:05 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261BEAC;
-        Tue, 24 Oct 2023 01:49:03 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32d8c2c6dfdso2700956f8f.1;
-        Tue, 24 Oct 2023 01:49:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698137341; x=1698742141; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mo7Xx0J6SUzUUTIhfv7Y9XKD/ghnjNlWvwQxCcFYVUc=;
-        b=JsB+YcdF0+iN4o/1xf742Q3MS4sQEfSFjsYxvAm9oPGeaKF0yXxgz2lGwKfIVPU0My
-         h2Wh8x6nyHrFZp5LthQoIMLa8UtLeN0K81IF6GRAle71kkEogs8DxsiamoAm9CB3+FY/
-         lzFaEDTviIT7iI7zcbfZq1e6C2Ql6BrM4L56/lhZ2x4+QCHVk+b4hjxVJH2/VpqAuzKo
-         FHJ4vAFnuKTwyVSMScntwZOjkAhfWlAXaNdD88V1wSWBJYVvwaqZUccK8ehtUTTxYhNz
-         mqRs0W4rY8RihNtOlAM6atEHy5d7knYEL0YVuiGqcwwlIlzc1P1i8eyLVh8netUB/43h
-         j4IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698137341; x=1698742141;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mo7Xx0J6SUzUUTIhfv7Y9XKD/ghnjNlWvwQxCcFYVUc=;
-        b=JxiJomk5/G77x5H2WA49A4CjDHFMFYq2w32Uy1AJeRRboGn6GnuxWKknOsLTTrRivd
-         XnPiN1YjsuwwL2/yPyVeZcxvbBE+PK/5OZ44TAAzz6OPjPSA7QIKQFIWj+/gcWQUTDhU
-         zod3+DFV+rA/XRWFz+tkkhFxqgnx7gA/JFZgpi+T9GF0nQzsb1vW3YKN7TlgtIWEGRh8
-         d46mMAqEDei3YYMgZpmvjE8IkjrcFvUiXjFE/IxrHilG/npGdn9HOeh8aM2UAeJ2ilCy
-         CiE1GlL7ZegBCIeBTYwzNfbXbgczNNoJlO/pRj2d1mDDv9quLBZbIRt9du1d64/QbX06
-         mMVA==
-X-Gm-Message-State: AOJu0YzIjjkcmCQeImX6TbFPKFH02KJTrQtnuJsBL5Qz3BlImp8f/3tt
-        t7XfPmiguwxOZkDJGU2Gplg=
-X-Google-Smtp-Source: AGHT+IFYnntQKKmgFF57gLWNDHCriOfCR2w7Uuy18Hr38cyfpNHRgWxpL0oHJ/uZOKpa1PxvtEpIrw==
-X-Received: by 2002:a5d:5291:0:b0:32d:a717:717a with SMTP id c17-20020a5d5291000000b0032da717717amr10157922wrv.40.1698137341339;
-        Tue, 24 Oct 2023 01:49:01 -0700 (PDT)
-Received: from debian ([63.135.72.41])
-        by smtp.gmail.com with ESMTPSA id y10-20020a5d470a000000b0032d9efeccd8sm9465323wrq.51.2023.10.24.01.49.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 01:49:01 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 09:48:59 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.5 000/241] 6.5.9-rc1 review
-Message-ID: <ZTeE-_JQy4M2TfO6@debian>
-References: <20231023104833.832874523@linuxfoundation.org>
+        Tue, 24 Oct 2023 04:49:56 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14A599
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 01:49:53 -0700 (PDT)
+Received: from [IPv6:2a00:23c8:b70a:ae01:ac1f:eb17:af5f:732] (unknown [IPv6:2a00:23c8:b70a:ae01:ac1f:eb17:af5f:732])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: obbardc)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8948F66072F1;
+        Tue, 24 Oct 2023 09:49:52 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1698137392;
+        bh=y+9if2xRUXCYpq1BfCTax4XNidpivuPuzYgCUq4PMrE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=VTXnftn1pCJOll+tLfANinjLLinnkV+nDsVfde8INC5cD1VTX0k96aAGBxuA2w2Zu
+         7H2NgqaF305a7f+T9MWo5VYmhIQlWI5oKuglvcjCuYwBS7fuW2rK4YWucKi18/DF2r
+         XlKpJfoGJyn18m6qxqDY3vCauiAJueqM4MpOG23559/O5xJRCoHH0Sc6uL/ZwrGQWv
+         +kTy1bLM/H776VnVRdQeQyjtX/aIoQgi8UWa45yzDSBRx4q922dbdA0kHUIDgkCvTD
+         Gf6D+p7tC/Fd95zEWbmkvWgsUm9obB/zjm4P8C8PuHXW1EUghI9VceL21U+f+CqMZr
+         7PCXPMeXKBEsA==
+Message-ID: <a505d18044ccef9f188df91bc2afe73e6a15635f.camel@collabora.com>
+Subject: Re: [PATCH] drm/rockchip: vop: Fix color for RGB888/BGR888 format
+ on VOP full
+From:   Christopher Obbard <chris.obbard@collabora.com>
+To:     Jonas Karlman <jonas@kwiboo.se>, Heiko Stuebner <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel <kernel@collabora.com>
+Date:   Tue, 24 Oct 2023 09:49:35 +0100
+In-Reply-To: <20231023211158.424489-1-jonas@kwiboo.se>
+References: <20231023211158.424489-1-jonas@kwiboo.se>
+Autocrypt: addr=chris.obbard@collabora.com; prefer-encrypt=mutual;
+ keydata=mQINBF7k5dIBEACmD3CqXJiJOtLEjilK2ghCO47y9Fl8+jc8yQPNsp4rMZuzlryL3vLseG0DpR3XE0bK0ojRLhUAqw13epLR5/nWp5ehm8kcy8WyDMBco9DaEyoElKCfelMvTtwmYkJXj8Z831nzzyh1CocFoFStL8HyLHc2/iU1wjczkL0t5hC9KvukV3koQTc9w03sNHeZyZedZIwR/r83k1myJXJsOPXZbmI2KGKq5QV4kTqgQJw3OkSVIQ9Mz2zVZNLKedWr2syrHFgojb7WX5iXbMUgJ8/Ikdttou0B/2xfgKNyKFe0DsbgkcEsJTIsx+C/Ju0+ycEk/7dW69oQLJo0j1oBP+8QfAeAT+M5C0uHC87KAmmy83Sh0xMGAVpcH2lLrE+5SjV3rnB+x/R4B/x7+1uYB5n7MU4/W2lYuAe1hfLtqDbEOyqLzC0FvFiZoDKxexQzcGpSW/LliBEvjjA/LXWADaM+mZezzLSjDwsGVohQrP0ZWOZ1NtC0e1sEt870fa4f+YkZeVHJRDInTcecw6c2QpNH4TzcTMD7bW9YZVqNiT5t9z+BzjJk3LtdrYPQ1SSpov7TB3LVKLIZDxgSlrur0dIklFFYPIx1KStCzqbvOEvlz03iZX4+tqZauNTkVhCoDLG+Z4w3OQdmR/uNqXqsbI04+kM3tOcVnXsosSW6E0TAJQARAQABtCZDaHJpc3RvcGhlciBPYmJhcmQgPG9iYmFyZGNAZ21haWwuY29tPokCUQQTAQgAOwIbAwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgAIZARYhBPGL3ItsJfkKoj1RdGNNxPBocEb4BQJe+22mAAoJEGNNxPBocEb4iUIP+wWXh7bqqLWWo1uYYzMZN9WSnhC1qiD8RyK18DvN8UEOINmvuX2beZjVftZYLyp55bT09VZXY0s4hFVr3PbqIYnkDmXGGnG/fHtmHm4QLNozNRJNXlf+gRvA+
+        D2Zc41viquXrwrJEqrfz+g2rlO17jETQCJe5HWcvj3R1nps5MvymQ29KzmfYvMBmDYcYOVSSrqkItIFb9wppHHy8f1+sLM4pjb26OS1MUv02lRaptsV0wB3uVCNpZ8dS1aJdEYlLzKujKdVUG64ktwxboBbLSxa98J3oroHPBJbLPD+OjB9YUa3rkBIqf5JyrPPeQVzmU7rPb43o1vwWEGK1fj0N1riOWTb+v+xD00R+WBNSLYEouB+rd4d1+adBQY7DERemqQG9WlY2HHHbgcpK5SRYffwof3GL2Dgqd+K3KS+3uqenQByPGf5sXjuvo/uoI2TPoW5vYhApozM8voUycL7HA9f8MTZ7YCbPDHBfmioYiJN4y0EuO2JJ34jMZhySjft2JQ839yZP/iIwY3o6Y/ep97VDQqH8WrqfnnAKzw6WcJJ+5O088CANfI9xFsC5P8oPyBx2Ne3/zN/Bmv+3bLpcTPYyqfxZb3MIKAZXzxFU6Gn2MpNcQfMdwpJvd3NpMI7OAvhzgtW0aRe1Mj3m0gugbbOLiBw0SGPTgNwM4T7A2dltC9DaHJpc3RvcGhlciBPYmJhcmQgPGNocmlzLm9iYmFyZEBjb2xsYWJvcmEuY29tPokCTgQTAQgAOAIbAwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBPGL3ItsJfkKoj1RdGNNxPBocEb4BQJe+22uAAoJEGNNxPBocEb4JYwP+gMIrabuXS5llUz8yvICgusThLej0VSEWWF6BkiJdsaid1IbkbStYITE/jb834VdhjEHOT0A1SNVB6Yx38l9VNryyJkPZ38fELSUTI9FVLIfO3CP2qgJisoGh2LozSu9d+50hFIF0E9xQZCqcR7kS6j2xp14BiCoD94HCW9Z5r6gA57vFBupGwlcGxA5Z4MfFulpFaDry0R6ICksHe07vY49opWSXhSdhtv+apzaMC7r+5zJKBf1G4kNrKkauUiehgUB9f
+        xyA7CXuvB5KtZKILhv8bxyjB66u0REaigEUIBMtD2yE3Z7jXj8H42BV28/l7STNY5CoXaqSpKG82mpLPWiZ3kOd6vKT2q71LnSkk1qcQ3H9QwOTA1yCZk/GwH772nxajA5mfqets+6tAUj5Baj1Zp0MYmoquV2On9W5+0SSc/ei4NsTLj4IO9klPoHFmpd82HwthpkpCVvNKmp6cJdWIOfaIm6q71jPSnWW/YlqNnJ0T3OjwmOrJ1KXagJt1YJfGTlqRgNNrQ3x2gLJH+2upy5ZafgcZ8dZOl/P5MTVSoe5z3a5YPRBz8/hO2luFCLcOlah06ei/N0ZQfNBhzTD+FTn0Q0UB+FUkSb7D+BqBVfOConVQ+MTc51v2RGsIWIhiYo3czhdUPXr4R2Ba8WSvD54VYY1i0CKmfMHG8etCdDaHJpc3RvcGhlciBPYmJhcmQgPGNocmlzQDY0c3R1ZGlvLmNvbT6JAk4EEwEIADgCGwMFCwkIBwMFFQoJCAsFFgIDAQACHgECF4AWIQTxi9yLbCX5CqI9UXRjTcTwaHBG+AUCXvttrgAKCRBjTcTwaHBG+DemD/0RST9WJd1AYk4oq2ZwB9L/X6U9vi9Hcrm/FZDHLJ+kycin0D97hogOXU6YilI+2rV3Wkw6ugu9kxtxY/nFnlCvX80c4UDMca+wZgjFTqbesXSFyjgverZa6APZseiAY4sSWEp8lfKSbb+o5T12urdDPd9k9ok0so4c8O8TOEp2SANEibzb5wl6h3Mv40firL/mwyAFIR0c6UircPG4Skjj5h+dlAf/xA9DlgIGSPFZSD9ZLB+1JeEDMwdwJxHAVkSpAfPEWCcXEb58K0hnbGWasFUe9FugqvhezrxyJ14sVrvoWNKFbTmqamNqZQFuMRsCrNUqZaIvtu7Lz87sMxBfoVESSIDfJngWxBadTuIm5wXjCiAJHbqUclzTbF7GIQ8/JSzFrzOtv/lx+0mGAjXfsU6FTqU
+        OJ25iFzQmr2gYRcc28uu1HfnfXHFgaX344gGg8x3BTySIprJ17ie8VCHHAKmAatcNs96KLCHhre/3AYj15GkkllBuKBRUQdxcTlenvuU2XTl7PGCOa2OhPL8SzTfCof0NFl8kzOeHelFjcWu6gPTB0Z2Lc5tSWGUkzmzUfrQxYUpPGDsXDfNRPN7bCAR9BX1nzqh4CHR+cLSADI5ny96y4SUxdv/i19IoMUewPr9LTVhdJqo3rw1FvAxNYtoYytrVEvyv3zVBxqev+bkCDQRe5OXSARAAs9cI1CeIzb2rtAvIRS4hRKwMdt9ZT/1cdzVFo2IEthRsBs5NuV7s1cwXBXji5rcC/9SbEgGx7h93JJ5h1FjFuqKAgDEMZDu6jSUdbbGbIWWLe9rKETSIqmVSAjSxNg7pR0lFMTcOEkEKTJWkwP32au1WBmTiUZBwaurx+VvQypFpL6zAdnPVL0ajVLWmVeiRWDvPUIDpslMmAQX0ZY0OLG+Z8U55h3qOdXupjBdEXscDoFJNsCw3xLKnhc02Sf8pO6b4Gh3aj7UE6xqFH2Rc9B9KBLy6gxdZuqACz0tAsadYfOA9iJxxCsURchiRmdW66zAFfztYRItLZI7O8TCBKCm9OasxQ+KawbdVw1sn24h5kKpZ1+qRep5c1suSkHnnodhRlyVulRXQ7pA4fTaAez2UV/Qa556ov0/viaYhqUuCooQ82nDXyv2eulhVGWUuDtDpmyn3R6XesUwskmtgia4oWijOUpPGIYpjN6DvhhchTYB2UyAlMcCFAb4mtTpsT/qLb9NOTCuBMenaYr6Q52T9MQPagdgOSIv6p3gjsSoxLge1oGkNW9IZ6g+vNoKzQ87AfHsATZW8MJBsd5sabwlAhEDMAul9dNW0rlF7zdI2wr+OPMvruQ0PmPusPJ8H7x6Tbw1hgxapP8ZrEzoRLBqywDtdXQsbGByd2sc2z50AEQEAAYkCNgQYAQgAIAIbDBYhBPGL
+        3ItsJfkKoj1RdGNNxPBocEb4BQJe+223AAoJEGNNxPBocEb433UP/1ypX5gavjPU0rewv7SKxG4hOMiIzFjz4VouLgUcA/Q65Eq9PIIKgNBYpf4NKSf43OQO+ie1iuwe2l22lRg0ISba+1YZjLix00JnoUOaSBy7vQ+zFXIJxPGCB/7lzcs2V162nNTrQor+O8kpU/Bihr2C1rH0Eru6BHu0nQwky5+14b3LsD5V9mjY0ASVcV5/lBRFjRMcfgqTLCO9YGoSVwrb1+xn6MdMIDgqL6Om5SmPx2g+quF9WZ1ElmJkDIY97lmihdxsWccynwSeF7KnSPnsah1h8WCchBQezMucSA6rbY51oO/DK1rqSeLAhM5JOG3MRWcI8jm9k+wHwU1Ct/Hxnt0kr5t+Rbnvog3cAbnmS0d8oLMOYAPaqgRkH72hPHclxzL5xfAgZ0K5/EXBCpZShbVWk4FoxYKOaoyok3ThEufkOHTyL3CBjHoXqlXLe3e+8oDQ6mmZKSjdG1yVHUdOw14cYynCxZU3PAKNihjk6ElnWnrrg/RXh7aoZUNGCFRtvSfmN5fftY7WdHM6B40BQ4mcS6G0agaFHQOTexwyAq511pgynCsRn7ZhaQLFJU7eoyquh9N0J4vrqWDq7VVnJAEyw1tOZEqWbvJrIVfsvgKnD3eIkGbZV39lkB4mEp8I5Z5RQja1kWwqpkjLT8iAaLyh53MmQJ9yxJztCSoU
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231023104833.832874523@linuxfoundation.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi Jonas,
 
-On Mon, Oct 23, 2023 at 12:53:06PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.9 release.
-> There are 241 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 25 Oct 2023 10:47:57 +0000.
-> Anything received after that time might be too late.
+On Mon, 2023-10-23 at 21:11 +0000, Jonas Karlman wrote:
+> Use of DRM_FORMAT_RGB888 and DRM_FORMAT_BGR888 on e.g. RK3288, RK3328
+> and RK3399 result in wrong colors being displayed.
+>=20
+> The issue can be observed using modetest:
+>=20
+> =C2=A0 modetest -s <connector_id>@<crtc_id>:1920x1080-60@RG24
+> =C2=A0 modetest -s <connector_id>@<crtc_id>:1920x1080-60@BG24
+>=20
+> Vendor 4.4 kernel apply an inverted rb swap for these formats on VOP
+> full (major =3D 3).
+>=20
+> Fix colors by applying rb swap similar to vendor 4.4 kernel.
+>=20
+> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 
-Build test (gcc version 13.2.1 20230827):
-mips: 52 configs -> no failure
-arm: 70 configs -> no failure
-arm64: 3 configs -> no failure
-x86_64: 4 configs -> no failure
-alpha allmodconfig -> no failure
-csky allmodconfig -> no failure
-powerpc allmodconfig -> no failure
-riscv allmodconfig -> no failure
-s390 allmodconfig -> no failure
-xtensa allmodconfig -> no failure
+How about a fixes tag? Seems like this was introduced in commit 85a359f2538=
+8
+("drm/rockchip: Add BGR formats to VOP")
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-mips: Booted on ci20 board. No regression. [3]
+> ---
+> =C2=A0drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 9 ++++++---
+> =C2=A01 file changed, 6 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+> b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+> index b3d0b6ae9294..a1ce09a22f83 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+> @@ -247,14 +247,17 @@ static inline void vop_cfg_done(struct vop *vop)
+> =C2=A0	VOP_REG_SET(vop, common, cfg_done, 1);
+> =C2=A0}
+> =C2=A0
+> -static bool has_rb_swapped(uint32_t format)
+> +static bool has_rb_swapped(uint32_t version, uint32_t format)
+> =C2=A0{
+> =C2=A0	switch (format) {
+> =C2=A0	case DRM_FORMAT_XBGR8888:
+> =C2=A0	case DRM_FORMAT_ABGR8888:
+> -	case DRM_FORMAT_BGR888:
+> =C2=A0	case DRM_FORMAT_BGR565:
+> =C2=A0		return true;
+> +	case DRM_FORMAT_RGB888:
+> +		return VOP_MAJOR(version) =3D=3D 3;
+> +	case DRM_FORMAT_BGR888:
+> +		return VOP_MAJOR(version) !=3D 3;
 
-[1]. https://openqa.qa.codethink.co.uk/tests/5364
-[2]. https://openqa.qa.codethink.co.uk/tests/5365
-[3]. https://openqa.qa.codethink.co.uk/tests/5371
+The hardcoded bits are quite scary as it applies to all hardware variants ;=
+-).
+Is it worth adding an inline comment to describe what is going on and how i=
+t
+relates to VOPL and VOPH? Or would it be even better to add this as a quirk=
+ in
+the various vop_data structs?
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
--- 
-Regards
-Sudip
+Cheers!
+
+Chris
+
+> =C2=A0	default:
+> =C2=A0		return false;
+> =C2=A0	}
+> @@ -1035,7 +1038,7 @@ static void vop_plane_atomic_update(struct drm_plan=
+e
+> *plane,
+> =C2=A0	VOP_WIN_SET(vop, win, dsp_info, dsp_info);
+> =C2=A0	VOP_WIN_SET(vop, win, dsp_st, dsp_st);
+> =C2=A0
+> -	rb_swap =3D has_rb_swapped(fb->format->format);
+> +	rb_swap =3D has_rb_swapped(vop->data->version, fb->format->format);
+> =C2=A0	VOP_WIN_SET(vop, win, rb_swap, rb_swap);
+> =C2=A0
+> =C2=A0	/*
