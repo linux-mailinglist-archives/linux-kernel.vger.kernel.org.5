@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D9D7D5B0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A887D5B10
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 21:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344196AbjJXTEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 15:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
+        id S1344211AbjJXTE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 15:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343856AbjJXTEN (ORCPT
+        with ESMTP id S1343856AbjJXTEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 15:04:13 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D7310C3;
-        Tue, 24 Oct 2023 12:04:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=nSXgyrd5Any4zAA1VKJ/tcBAkJl4Oo+kDodKxkp5fqI=; b=iSh7QDXawUj1WtmbBAcT6DKVkS
-        riPILgcBVvE2T7tyuY3RM5X4ZpwG0b1ElkFC+uwnmiOdWdkzmY/m++sS81HeEbUe2iBChvQHSt8S8
-        vjEBndJu0yzNaFyOPsUm2j6sx2wYjpImnv4WgUNOAbt/zw7KDHbE71f4qVPpS6NqRo6kvqDjeUfXt
-        Mo/IVVyS+GLCYJVaE9B7ElT0o1xUxEUynSs0r0eH6txz6ENS5k6V5ZaRuMZrlpjccxLofmNzlvz+D
-        z1SeS3GXJ6BwxFMSFBllGqT0YiSJZUqP2q7xuE83QSTy6dcq/MqLNOiGb2MfoPmfgbCO8WvlIsLNd
-        1UBLwi/Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33170)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qvMgw-0004oC-14;
-        Tue, 24 Oct 2023 20:03:50 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qvMgt-00069P-BC; Tue, 24 Oct 2023 20:03:47 +0100
-Date:   Tue, 24 Oct 2023 20:03:47 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Enrico Mioso <mrkiko.rs@gmail.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v7 5/7] ARM64: dts: marvell: Fix some common
- switch mistakes
-Message-ID: <ZTgVE8TzMEPvVeOr@shell.armlinux.org.uk>
-References: <20231024-marvell-88e6152-wan-led-v7-0-2869347697d1@linaro.org>
- <20231024-marvell-88e6152-wan-led-v7-5-2869347697d1@linaro.org>
- <20231024182842.flxrg3hjm3scnhjo@skbuf>
+        Tue, 24 Oct 2023 15:04:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0F810CB;
+        Tue, 24 Oct 2023 12:04:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C509C433C7;
+        Tue, 24 Oct 2023 19:04:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698174292;
+        bh=UePWOfJRy8TLiNw0353xusU6uO7DUdE/+xmJDDjDZ7c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=VBYbvBKkk425mSdIbztpXW6CR7F5qv9qltj6V2LGVqPM/kbaivwHg9z7/lw76LN1y
+         CfPNZ+CfEKg+31ah9YmF7vViIY0VJ+TtWlRGUTKUcSzn7XrOlsn1VztglemzSCLkET
+         KNhNm7uof3lVl5PmSwzDQFfMJUkmW7aFVa/MvOdakIQ+iclDjaNG+Ck1o3nDAwl89M
+         guE0Jgoan78X1B7SnOAre9I3ysWehpIDYhirMh5PyDC1jJrddHQOie1Z5TutmSBvPg
+         8a24Eb+kaCgUG/d+ia0sJU1iHBRWwnaZIBk6uouEeTsczBWQek2wgzWOC5PPFE/7kC
+         PJJtKMLPNAWpw==
+From:   SeongJae Park <sj@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, damon@lists.linux.dev,
+        SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 5.15 000/135] 5.15.137-rc2 review
+Date:   Tue, 24 Oct 2023 19:04:49 +0000
+Message-Id: <20231024190449.189664-1-sj@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231024083327.980887231@linuxfoundation.org>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024182842.flxrg3hjm3scnhjo@skbuf>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 09:28:42PM +0300, Vladimir Oltean wrote:
-> U-Boot code does this, so you can't rename "ports":
+Hello,
+
+On Tue, 24 Oct 2023 10:36:50 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+
+> This is the start of the stable review cycle for the 5.15.137 release.
+> There are 135 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> 	/*
-> 	 * now if there are more switches or a SFP module coming after,
-> 	 * enable corresponding ports
-> 	 */
-> 	if (id < peridot + topaz - 1) {
-> 		res = fdt_status_okay_by_pathf(blob,
-> 					       "%s/switch%i@%x/ports/port@a",
-> 					       mdio_path, id, addr);
-> 	} else if (id == peridot - 1 && !topaz && sfp) {
-> 		res = fdt_status_okay_by_pathf(blob,
-> 					       "%s/switch%i@%x/ports/port-sfp@a",
-> 					       mdio_path, id, addr);
-> 	} else {
-> 		res = 0;
-> 	}
+> Responses should be made by Thu, 26 Oct 2023 08:32:55 +0000.
+> Anything received after that time might be too late.
 
-So that's now two platforms that do this. I think at this stage, we
-have to regard these node paths as an ABI that we just can't change
-without causing some breakage.
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
 
-If we can't fix up all platforms, doesn't that make the YAML
-conversion harder?
+Tested-by: SeongJae Park <sj@kernel.org>
 
-You've asked me to test the Clearfog GT-8k change - which is something
-that won't happen for a while as I don't have the hardware to hand at
-my current location, nor remotely.
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] bc0ffd9b5ee2 ("Linux 5.15.137-rc2")
 
-What I can do is poke about in the u-boot sources I have for that
-board and see# whether it's doing anything with those node paths. Off
-the top of my# head, given what the board is, I think it's highly
-unlikely though,# but I will check - possibly tomorrow.
+Thanks,
+SJ
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+[...]
+
+---
+
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_i386_idle_flag.sh
+ok 13 selftests: damon-tests: build_i386_highpte.sh
+ok 14 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
