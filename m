@@ -2,133 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F6F7D585F
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C997D588C
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343850AbjJXQbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56502 "EHLO
+        id S1344013AbjJXQgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234798AbjJXQbF (ORCPT
+        with ESMTP id S1343987AbjJXQf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:31:05 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6123112B;
-        Tue, 24 Oct 2023 09:31:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yw1JizmzQa21OHIpxEbqWsvPR+Hf7j2CXdWs4xmNF0k=; b=jyw7JHuwxzc7X7X8xzfcxQNQ1b
-        UjBFZlqt75ASSvoLbUxiITUd7kclX9FIdvcnTPmW7R34OmJNJaey6q//Ob1gJe2KDSsYBG6S1ld+D
-        0LFxu9pr0ctPh0ET/BczCKmpYg0PZgX9Ct5SgB9pi2RvbgB5F3hb66yBj0ILSJIUXeaR2Krsbn6L6
-        Fj5eJHWRLKGk1xqoMt0XqlwMdqDuz5M2G3N85hYwoRhAfdfAJYE2ekPn6bmWnilWiErAqNVPMu3YG
-        i0AR6202kThNeaa5o9Hiauquerm5AGL2qqHa96gTJHR+rlfOrK35qlGYv/BKBNxTTYairTWpK68Hc
-        lodsjShg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qvKIg-00Fdqo-3A;
-        Tue, 24 Oct 2023 16:30:39 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A4998300451; Tue, 24 Oct 2023 18:30:38 +0200 (CEST)
-Date:   Tue, 24 Oct 2023 18:30:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pm@vger.kernel.org, rafael@kernel.org,
-        pavel@ucw.cz, linux-perf-users@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 2/2] perf/x86/amd: Don't allow pre-emption in
- amd_pmu_lbr_reset()
-Message-ID: <20231024163038.GC40044@noisy.programming.kicks-ass.net>
-References: <20231023160018.164054-1-mario.limonciello@amd.com>
- <20231023160018.164054-3-mario.limonciello@amd.com>
- <ZTd6BYr17ycdHR2a@gmail.com>
- <38ea48b4-aaba-4ba4-84a1-e88d6cb9df94@amd.com>
- <20231024155939.GF33965@noisy.programming.kicks-ass.net>
- <47518940-2803-4a6b-88fd-8cfc872b4219@amd.com>
+        Tue, 24 Oct 2023 12:35:56 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89BED93;
+        Tue, 24 Oct 2023 09:35:50 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39OGRZRT005791;
+        Tue, 24 Oct 2023 16:35:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=gzAjjy82jfI/5Z+fp7XVCAqrdkII0tgN1G0UzbsZCZo=;
+ b=Fnb9y0ZriqGJj5MvDcRRkh1VycEDeuyBKKqq6BatKHg9/SgcJ8G2C/45OFMoBlHYdYE6
+ yTP2oay52RuQh5gl+5MtG0DpAYIm9EbnLMH7eukwj3POJTzvZUmbGqcmwCXOXpgoGJPp
+ 0Y8iXmGzmsbtx+aX/8+3ItQHJ5HPyVUlTDqZGOnWUesixqisyFczLKU0e2HhkeOwmGn2
+ qn48lyjHbCRUU4PjrO/UKLh2TGbYYCBWj5Xzj/2DajWvBe+ga4pVeiqMY2lzcyszMVE7
+ v57Duk43ML+p4Ykl+1V0yvtHneL0yiZUciRJkI4UichkMD/HQA2NIvri3MMXMUY8oulu Vw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3txhf5r641-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 16:35:48 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 39OGRY6k005735;
+        Tue, 24 Oct 2023 16:35:43 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3txhf5r4kk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 16:35:40 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39OFq1sP023782;
+        Tue, 24 Oct 2023 16:31:09 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tvryt11vj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Oct 2023 16:31:09 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39OGV6Lj37290336
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Oct 2023 16:31:06 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B611120043;
+        Tue, 24 Oct 2023 16:31:06 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 069E520040;
+        Tue, 24 Oct 2023 16:31:06 +0000 (GMT)
+Received: from [9.171.57.222] (unknown [9.171.57.222])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 24 Oct 2023 16:31:05 +0000 (GMT)
+Message-ID: <c82af527-d72a-476f-8a76-893d68b6a87f@linux.ibm.com>
+Date:   Tue, 24 Oct 2023 18:31:05 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] s390/qeth: replace deprecated strncpy with strscpy
+To:     Justin Stitt <justinstitt@google.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20231023-strncpy-drivers-s390-net-qeth_core_main-c-v1-1-e7ce65454446@google.com>
+Content-Language: en-GB
+From:   Thorsten Winkler <twinkler@linux.ibm.com>
+In-Reply-To: <20231023-strncpy-drivers-s390-net-qeth_core_main-c-v1-1-e7ce65454446@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: BwEG0FpVjPOs9G4YuxgdOSKf9jDJn1ZN
+X-Proofpoint-ORIG-GUID: XAQV7EPJWV3xI0saw8O4bh3S0Kz7Cesg
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47518940-2803-4a6b-88fd-8cfc872b4219@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-24_16,2023-10-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
+ phishscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 adultscore=0
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310240143
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 11:04:06AM -0500, Mario Limonciello wrote:
 
-> > IIRC this is the hotplug thread running a teardown function on that CPU
-> > itself. It being a strict per-cpu thread should not trip
-> > smp_processor_id() wanrs.
-> > 
+
+On 23.10.23 21:39, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 > 
-> BUG: using smp_processor_id() in preemptible [00000000] code: rtcwake/2960
-> caller is amd_pmu_lbr_reset+0x19/0xc0
-> CPU: 104 PID: 2960 Comm: rtcwake Not tainted 6.6.0-rc6-00002-g3e2c7f3ac51f
+> We expect new_entry->dbf_name to be NUL-terminated based on its use with
+> strcmp():
+> |       if (strcmp(entry->dbf_name, name) == 0) {
+> 
+> Moreover, NUL-padding is not required as new_entry is kzalloc'd just
+> before this assignment:
+> |       new_entry = kzalloc(sizeof(struct qeth_dbf_entry), GFP_KERNEL);
+> 
+> ... rendering any future NUL-byte assignments (like the ones strncpy()
+> does) redundant.
+> 
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Very much not the cpuhp/%u thread :/, let me try and figure out how that
-happens.
+LGTM, thank you!
 
-> #1025
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0x44/0x60
->  check_preemption_disabled+0xce/0xf0
->  ? __pfx_x86_pmu_dead_cpu+0x10/0x10
->  amd_pmu_lbr_reset+0x19/0xc0
->  ? __pfx_x86_pmu_dead_cpu+0x10/0x10
->  amd_pmu_cpu_reset.constprop.0+0x51/0x60
->  amd_pmu_cpu_dead+0x3e/0x90
->  x86_pmu_dead_cpu+0x13/0x20
->  cpuhp_invoke_callback+0x169/0x4b0
->  ? __pfx_virtnet_cpu_dead+0x10/0x10
->  __cpuhp_invoke_callback_range+0x76/0xe0
->  _cpu_down+0x112/0x270
->  freeze_secondary_cpus+0x8e/0x280
->  suspend_devices_and_enter+0x342/0x900
->  pm_suspend+0x2fd/0x690
->  state_store+0x71/0xd0
->  kernfs_fop_write_iter+0x128/0x1c0
->  vfs_write+0x2db/0x400
->  ksys_write+0x5f/0xe0
->  do_syscall_64+0x59/0x90
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? count_memcg_events.constprop.0+0x1a/0x30
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? handle_mm_fault+0x1e9/0x340
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? preempt_count_add+0x4d/0xa0
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? up_read+0x38/0x70
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? do_user_addr_fault+0x343/0x6b0
->  ? srso_alias_return_thunk+0x5/0x7f
->  ? exc_page_fault+0x74/0x170
->  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> RIP: 0033:0x7f32f8d14a77
-> Code: 10 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa
-> 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff
-> 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-> RSP: 002b:00007ffdc648de18 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f32f8d14a77
-> RDX: 0000000000000004 RSI: 000055b2fc2a5670 RDI: 0000000000000004
-> RBP: 000055b2fc2a5670 R08: 0000000000000000 R09: 000055b2fc2a5670
-> R10: 00007f32f8e1a2f0 R11: 0000000000000246 R12: 0000000000000004
-> R13: 000055b2fc2a2480 R14: 00007f32f8e16600 R15: 00007f32f8e15a00
->  </TASK>
+Reviewed-by: Thorsten Winkler <twinkler@linux.ibm.com>
+Tested-by: Thorsten Winkler <twinkler@linux.ibm.com>
+
+> ---
+> Note: build-tested only.
+> 
+> Found with: $ rg "strncpy\("
+> ---
+>   drivers/s390/net/qeth_core_main.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
+> index cd783290bde5..6af2511e070c 100644
+> --- a/drivers/s390/net/qeth_core_main.c
+> +++ b/drivers/s390/net/qeth_core_main.c
+> @@ -6226,7 +6226,7 @@ static int qeth_add_dbf_entry(struct qeth_card *card, char *name)
+>   	new_entry = kzalloc(sizeof(struct qeth_dbf_entry), GFP_KERNEL);
+>   	if (!new_entry)
+>   		goto err_dbg;
+> -	strncpy(new_entry->dbf_name, name, DBF_NAME_LEN);
+> +	strscpy(new_entry->dbf_name, name, sizeof(new_entry->dbf_name));
+>   	new_entry->dbf_info = card->debug;
+>   	mutex_lock(&qeth_dbf_list_mutex);
+>   	list_add(&new_entry->dbf_list, &qeth_dbf_list);
+> 
+> ---
+> base-commit: 9c5d00cb7b6bbc5a7965d9ab7d223b5402d1f02c
+> change-id: 20231023-strncpy-drivers-s390-net-qeth_core_main-c-0b0ee08672ec
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
+> 
