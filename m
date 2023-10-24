@@ -2,180 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AAD7D46D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D07A7D46DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 07:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232180AbjJXFRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 01:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48214 "EHLO
+        id S232177AbjJXFTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 01:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjJXFRw (ORCPT
+        with ESMTP id S229688AbjJXFTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 01:17:52 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6605EE5;
-        Mon, 23 Oct 2023 22:17:50 -0700 (PDT)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sebastianfricke)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 689F966072AE;
-        Tue, 24 Oct 2023 06:17:48 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698124668;
-        bh=YUECIn9F7kjCAWXeysCb2OmHfTThMl1ioFSUYe3i6tY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VKyzA5BFMfTebKGTpgbXOHlBI4TOBKxspJ2gEp7Y4c06wJ1oQN9VUymRMw1Wuc6Fi
-         dy1S3fuToU1nYW32KKfGvW3frKe7eOxhQADXeG6711QTInsixI7gaLmcrUfIZU4Z/R
-         sM58MTgt2EyULA8Qo+LjmzzZse9eUuLg8Lib57V6ZTYeu8tX2LewKqpiFHGvX8zX63
-         /ghgXZe4mEV/dnljf8Ar6HSgsK0dkPOpknoaIMTP2qQUqn9g0x9GTDRnse83rfwz9w
-         VkpWvStRr8eSfPpHjdWjwOQxMWLeDnKChtWxuwFxclE0Xn2z17qiu4OG/VT1tG+NK4
-         qw97avw+gd45g==
-Date:   Tue, 24 Oct 2023 07:17:45 +0200
-From:   Sebastian Fricke <sebastian.fricke@collabora.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Darren Etheridge <detheridge@ti.com>
-Subject: Re: [PATCH v13 6/8] media: dt-bindings: wave5: add Chips&Media 521c
- codec IP support
-Message-ID: <20231024051745.d663ekj7klrl4yzj@basti-XPS-13-9310>
-References: <20230929-wave5_v13_media_master-v13-0-5ac60ccbf2ce@collabora.com>
- <20230929-wave5_v13_media_master-v13-6-5ac60ccbf2ce@collabora.com>
- <b94e3561-f5ef-443f-98c7-9b79a8bbceec@linaro.org>
- <20231016134720.GA2650973-robh@kernel.org>
- <20231021120526.eqe3esyxyi5b3e5d@basti-XPS-13-9310>
- <3d465d3c-386d-467b-87e9-806962464ac5@linaro.org>
+        Tue, 24 Oct 2023 01:19:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E052E5;
+        Mon, 23 Oct 2023 22:19:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698124774; x=1729660774;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=MRmrUcwHWy3mkUYsQTE4raBpxOs+Zla7IRIOfm8KL0s=;
+  b=LdP94EYbwv/ytljH0cn7zpVWlkdSx6vV5lBpBgVHz+VxyZcO65eVYhqp
+   NRkFbCZg1HWova8I7SrwqrtqRvDt6oaDUdVH2F1nkcy0U+Opvp72aYoWJ
+   ixqrrkDzxVGWKLE8frV968dT73GfVnMKAeMgpcBBYnaoZEBso6yPjfTF0
+   UK57PaqvnsB8Uu5/QHsRdaVgy3vTTO16/PL850AokJeeVEN8aIUYuQ1bf
+   PYetRoOwJfvXVxZm3WG0FZrgsWNYO0jU8GOwaNe6MIjIyAtfBYlh+tP9k
+   hzebVvjXRYRsk+8TBhPUtNNSvRKiWT491B/HK4KkoPsteT+qC8bOkMitu
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10872"; a="5613032"
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="5613032"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 22:19:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,246,1694761200"; 
+   d="scan'208";a="6335219"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.63.12])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2023 22:19:21 -0700
+Message-ID: <92fe21ab-af6f-4417-b241-eac0532e115a@intel.com>
+Date:   Tue, 24 Oct 2023 08:19:23 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <3d465d3c-386d-467b-87e9-806962464ac5@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 13/13] perf machine thread: Remove exited threads by
+ default
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Song Liu <song@kernel.org>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Leo Yan <leo.yan@linaro.org>,
+        German Gomez <german.gomez@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Artem Savkov <asavkov@redhat.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+References: <20231012062359.1616786-1-irogers@google.com>
+ <20231012062359.1616786-14-irogers@google.com>
+ <c04c196a-3f29-4b89-97a7-5e71def3d3ce@intel.com>
+ <CAP-5=fX303b8-hQXWaRibtYFyBS2sQywDSKR6KhKMUMX_0gzrw@mail.gmail.com>
+Content-Language: en-US
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <CAP-5=fX303b8-hQXWaRibtYFyBS2sQywDSKR6KhKMUMX_0gzrw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Krzysztof,
-
-On 22.10.2023 18:01, Krzysztof Kozlowski wrote:
->On 21/10/2023 14:05, Sebastian Fricke wrote:
->> Hey Rob and Krzysztof,
+On 23/10/23 21:49, Ian Rogers wrote:
+> On Mon, Oct 23, 2023 at 7:24 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
 >>
->> On 16.10.2023 08:47, Rob Herring wrote:
->>> On Thu, Oct 12, 2023 at 03:24:12PM +0200, Krzysztof Kozlowski wrote:
->>>> On 12/10/2023 13:01, Sebastian Fricke wrote:
->>>>> From: Robert Beckett <bob.beckett@collabora.com>
->>>>>
->>>>> Add bindings for the chips&media wave5 codec driver
->>>>>
->>>>> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
->>>>> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
->>>>> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
->>>>> ---
->>>>>  .../devicetree/bindings/media/cnm,wave5.yaml       | 60 ++++++++++++++++++++++
->>>>>  1 file changed, 60 insertions(+)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/media/cnm,wave5.yaml b/Documentation/devicetree/bindings/media/cnm,wave5.yaml
->>>>> new file mode 100644
->>>>> index 000000000000..b31d34aec05b
->>>>> --- /dev/null
->>>>> +++ b/Documentation/devicetree/bindings/media/cnm,wave5.yaml
->>>>> @@ -0,0 +1,60 @@
->>>>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->>>>> +%YAML 1.2
->>>>> +---
->>>>> +$id: http://devicetree.org/schemas/media/cnm,wave5.yaml#
->>>>
->>>> Filename matching compatible, so: cnm,cm521c-vpu.yaml
->>
->> With which compatible should the filename match? (see below)
->> And just to be sure, this means that I rename the file to:
->> `.../devicetree/bindings/media/cnm,wave521c.yaml`
->
->With the fallback compatible.
->
->>
->>>>
->>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>>> +
->>>>> +title: Chips&Media Wave 5 Series multi-standard codec IP
->>>>> +
->>>>> +maintainers:
->>>>> +  - Nas Chung <nas.chung@chipsnmedia.com>
->>>>> +  - Jackson Lee <jackson.lee@chipsnmedia.com>
->>>>> +
->>>>> +description:
->>>>> +  The Chips&Media WAVE codec IP is a multi format video encoder/decoder
->>>>> +
->>>>> +properties:
->>>>> +  compatible:
->>>>> +    enum:
->>>>> +      - cnm,cm521c-vpu
->>>>
->>>> Can this device be anything else? Why VPU suffix?
+>> On 12/10/23 09:23, Ian Rogers wrote:
+>>> struct thread values hold onto references to mmaps, dsos, etc. When a
+>>> thread exits it is necessary to clean all of this memory up by
+>>> removing the thread from the machine's threads. Some tools require
+>>> this doesn't happen, such as perf report if offcpu events exist or if
+>>> a task list is being generated, so add a symbol_conf value to make the
+>>> behavior optional. When an exited thread is left in the machine's
+>>> threads, mark it as exited.
 >>>
->>> It needs an SoC specific compatible (TI something...) as well (or
->>> instead). Unless there's a public spec with details on how many
->>> clocks, resets, interrupts, etc. there are.
+>>> This change relates to commit 40826c45eb0b ("perf thread: Remove
+>>> notion of dead threads"). Dead threads were removed as they had a
+>>> reference count of 0 and were difficult to reason about with the
+>>> reference count checker. Here a thread is removed from threads when it
+>>> exits, unless via symbol_conf the exited thread isn't remove and is
+>>> marked as exited. Reference counting behaves as it normally does.
 >>
->> Okay so how about this, a bit similar to the Coda driver supplying both
->> a general option and a SoC specific version:
->
->Can generic compatible be used alone in board designs? If it is licensed
->block, then most likely you want a fallback.
-
-Alright, so a fallback seems appropriate, how do you like this?
-
-properties:
-   compatible:
-     items:
-       - enum:
-           - const: ti,k3-j721sX-wave521c
-       - const: cnm,wave521c
-
-Providing a fallback and adding a enum which can be extended later on.
-
->
+>> Can we exclude AUX area tracing?
 >>
->> properties:
->>    compatible:
->>      enum:
->>        - ti,k3-j721sX-wave521c
->>        - cnm,wave521c
+>> Essentially, the EXIT event happens when the task is still running
+>> in kernel mode, so the thread has not in fact fully exited.
 >>
->> (ti,k3-j721sX-wave521c = manufacturer,SoC-codec)
->> (tested on j721s2 but should work on other variations as well)
+>> Example:
 >>
->> Another alternative could be: ti,k3-wave521c (less specific on a single
->> SoC series but connected to a bigger range of devices)
->
->Best regards,
->Krzysztof
+>> # perf record -a --kcore -e intel_pt// uname
+>>
+>> Before:
+>>
+>> # perf script --itrace=b --show-task-events -C6 | grep -C10 EXIT
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63124ee __perf_event_header__init_id+0x5e ([kernel.kallsyms]) => ffffffffb63124f7 __perf_event_header__init_id+0x67 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6312501 __perf_event_header__init_id+0x71 ([kernel.kallsyms]) => ffffffffb6312512 __perf_event_header__init_id+0x82 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6312531 __perf_event_header__init_id+0xa1 ([kernel.kallsyms]) => ffffffffb6316b3a perf_event_task_output+0x26a ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6316b40 perf_event_task_output+0x270 ([kernel.kallsyms]) => ffffffffb6316959 perf_event_task_output+0x89 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6316966 perf_event_task_output+0x96 ([kernel.kallsyms]) => ffffffffb6322040 perf_output_begin+0x0 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6322080 perf_output_begin+0x40 ([kernel.kallsyms]) => ffffffffb6194dc0 __rcu_read_lock+0x0 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) => ffffffffb6322085 perf_output_begin+0x45 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63220ce perf_output_begin+0x8e ([kernel.kallsyms]) => ffffffffb611d280 preempt_count_add+0x0 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb611d2bf preempt_count_add+0x3f ([kernel.kallsyms]) => ffffffffb63220d3 perf_output_begin+0x93 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63220e8 perf_output_begin+0xa8 ([kernel.kallsyms]) => ffffffffb63220ff perf_output_begin+0xbf ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638: PERF_RECORD_EXIT(14740:14740):(14739:14739)
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6322119 perf_output_begin+0xd9 ([kernel.kallsyms]) => ffffffffb6322128 perf_output_begin+0xe8 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6322146 perf_output_begin+0x106 ([kernel.kallsyms]) => ffffffffb63220ea perf_output_begin+0xaa ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63220f9 perf_output_begin+0xb9 ([kernel.kallsyms]) => ffffffffb63221ab perf_output_begin+0x16b ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63221ae perf_output_begin+0x16e ([kernel.kallsyms]) => ffffffffb63221b6 perf_output_begin+0x176 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6322202 perf_output_begin+0x1c2 ([kernel.kallsyms]) => ffffffffb6322167 perf_output_begin+0x127 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb632218c perf_output_begin+0x14c ([kernel.kallsyms]) => ffffffffb631696b perf_event_task_output+0x9b ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6316990 perf_event_task_output+0xc0 ([kernel.kallsyms]) => ffffffffb61034a0 __task_pid_nr_ns+0x0 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb61034b7 __task_pid_nr_ns+0x17 ([kernel.kallsyms]) => ffffffffb6194dc0 __rcu_read_lock+0x0 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) => ffffffffb61034bc __task_pid_nr_ns+0x1c ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6103503 __task_pid_nr_ns+0x63 ([kernel.kallsyms]) => ffffffffb610353b __task_pid_nr_ns+0x9b ([kernel.kallsyms])
+>>
+>> After:
+>>
+>> $ perf script --itrace=b --show-task-events -C6 | grep -C10 EXIT
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63124ee __perf_event_header__init_id+0x5e ([kernel.kallsyms]) => ffffffffb63124f7 __perf_event_header__init_id+0x67 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6312501 __perf_event_header__init_id+0x71 ([kernel.kallsyms]) => ffffffffb6312512 __perf_event_header__init_id+0x82 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6312531 __perf_event_header__init_id+0xa1 ([kernel.kallsyms]) => ffffffffb6316b3a perf_event_task_output+0x26a ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6316b40 perf_event_task_output+0x270 ([kernel.kallsyms]) => ffffffffb6316959 perf_event_task_output+0x89 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6316966 perf_event_task_output+0x96 ([kernel.kallsyms]) => ffffffffb6322040 perf_output_begin+0x0 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6322080 perf_output_begin+0x40 ([kernel.kallsyms]) => ffffffffb6194dc0 __rcu_read_lock+0x0 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) => ffffffffb6322085 perf_output_begin+0x45 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63220ce perf_output_begin+0x8e ([kernel.kallsyms]) => ffffffffb611d280 preempt_count_add+0x0 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb611d2bf preempt_count_add+0x3f ([kernel.kallsyms]) => ffffffffb63220d3 perf_output_begin+0x93 ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638:          1   branches:  ffffffffb63220e8 perf_output_begin+0xa8 ([kernel.kallsyms]) => ffffffffb63220ff perf_output_begin+0xbf ([kernel.kallsyms])
+>>            uname   14740 [006] 26795.092638: PERF_RECORD_EXIT(14740:14740):(14739:14739)
+>>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6322119 perf_output_begin+0xd9 ([kernel.kallsyms]) => ffffffffb6322128 perf_output_begin+0xe8 ([kernel.kallsyms])
+>>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6322146 perf_output_begin+0x106 ([kernel.kallsyms]) => ffffffffb63220ea perf_output_begin+0xaa ([kernel.kallsyms])
+>>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb63220f9 perf_output_begin+0xb9 ([kernel.kallsyms]) => ffffffffb63221ab perf_output_begin+0x16b ([kernel.kallsyms])
+>>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb63221ae perf_output_begin+0x16e ([kernel.kallsyms]) => ffffffffb63221b6 perf_output_begin+0x176 ([kernel.kallsyms])
+>>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6322202 perf_output_begin+0x1c2 ([kernel.kallsyms]) => ffffffffb6322167 perf_output_begin+0x127 ([kernel.kallsyms])
+>>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb632218c perf_output_begin+0x14c ([kernel.kallsyms]) => ffffffffb631696b perf_event_task_output+0x9b ([kernel.kallsyms])
+>>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6316990 perf_event_task_output+0xc0 ([kernel.kallsyms]) => ffffffffb61034a0 __task_pid_nr_ns+0x0 ([kernel.kallsyms])
+>>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb61034b7 __task_pid_nr_ns+0x17 ([kernel.kallsyms]) => ffffffffb6194dc0 __rcu_read_lock+0x0 ([kernel.kallsyms])
+>>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6194de1 __rcu_read_lock+0x21 ([kernel.kallsyms]) => ffffffffb61034bc __task_pid_nr_ns+0x1c ([kernel.kallsyms])
+>>           :14740   14740 [006] 26795.092638:          1   branches:  ffffffffb6103503 __task_pid_nr_ns+0x63 ([kernel.kallsyms]) => ffffffffb610353b __task_pid_nr_ns+0x9b ([kernel.kallsyms])
+>>
+>> This will also affect samples made after PERF_RECORD_EXIT but before
+>> the task finishes exiting.
+> 
+> Makes sense. Would an appropriate fix be in perf_session__open to set:
+> symbol_conf.keep_exited_threads = true;
+> 
+> when:
+> perf_header__has_feat(&session->header, HEADER_AUXTRACE)
+> 
+> It is kind of hacky to be changing global state this way, but
+> symbol_conf is like that in general.
 
-Greetings,
-Sebastian
->
->_______________________________________________
->Kernel mailing list -- kernel@mailman.collabora.com
->To unsubscribe send an email to kernel-leave@mailman.collabora.com
+That should work.  Alternatively, could be added to
+perf_event__process_auxtrace_info() which would tie it
+more directly to auxtrace, and wouldn't have to check
+HEADER_AUXTRACE.
+
+
