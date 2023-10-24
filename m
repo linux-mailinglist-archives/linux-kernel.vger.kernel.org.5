@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5577D51D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A26E7D5185
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 15:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234387AbjJXNbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 09:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
+        id S234608AbjJXNWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 09:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343502AbjJXNVN (ORCPT
+        with ESMTP id S234587AbjJXNVO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 09:21:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F8610D5;
-        Tue, 24 Oct 2023 06:20:55 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 13:20:53 -0000
+        Tue, 24 Oct 2023 09:21:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDD510C2;
+        Tue, 24 Oct 2023 06:20:56 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 13:20:54 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698153654;
+        s=2020; t=1698153655;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5MqPqwLf8mXkrafTg2UGQBPmLjpBsqIYiEWFcLzr5D0=;
-        b=aK9hT9VYtc1FwNjIL105xXUCT2YucWMXYSyGNkPSOUwyh3Mk+F5IXwWyEBcYjPrc0QxRzl
-        rN+2NbsXA1W4x/Rh342chz2My9D2bJS9M03Wowf36zS1J/3kFVD0JG6pFd09Wio4WHvv99
-        cttUwaL8Kz+EeLr0t9wXwZqHURsamlL0orHItbLOY9aE+Vabox9pxmh8+9zXhWFLL1HqRr
-        pcZXXiE5lwPBtt4REsBCarJMzlYLkU8TNKx1FNrvHU1beks5klMr8/qwWcDLxz4yWQYjZz
-        SDKmYJH+DGc1MsTEaATKiCLE/q6jWKjdajSz42UbD6Vy3jO5wEBxBnuhPmwdCA==
+        bh=vw8iqs9QsHpfzltom5MR2q4mLnKifyKOmiEkeG+S3lw=;
+        b=KivRIFaDSOR7ggKVZpynIX7t0yeSQsxyya9TuC3DpNXw5PMwc0m9M3RB6BP1L46v1RLyQz
+        Ejy2HRtHpr3FEkyU8WUi6fYlRSO+koJxSUtRblNIu8+INxmfruUC96Cg985jCRQ9WaskeA
+        9I4882CfYf6ZooqMs8+lpSnx9Jg/9UbuN3y5ecTkw7ScYwXDPERRClBK8AQJn0r5d7ovg4
+        MRxJiHPsxGkiBaTToX30GxAeNNRD2xSXnPj47R8vIc9khrPjJzTaRerBBf3/JEle+tYAId
+        7z4Ch2Tt0FhA2s9lKmld8T+yDSWqyHB1gXM3KEtJINUWXX3QZtZSP5wTxqKAgw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698153654;
+        s=2020e; t=1698153655;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5MqPqwLf8mXkrafTg2UGQBPmLjpBsqIYiEWFcLzr5D0=;
-        b=3L6tv0uuL/nBk8cHNFYFf3uExk3vX5ZBgiItpGiU/kkDnF36EWLD7I6/tkPab1nzLuE3KP
-        qatHeTbM2anCrlAg==
+        bh=vw8iqs9QsHpfzltom5MR2q4mLnKifyKOmiEkeG+S3lw=;
+        b=O1PJheN8bBG8sCAOVIJWut+bMSC/MtAVNcoyfci9oraJCO+6VgVF2ia4WHYFAXmzi7byq9
+        Hevtvvf7wBaPnjBw==
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/microcode] x86/microcode: Provide new control functions
+Subject: [tip: x86/microcode] x86/microcode: Add per CPU control field
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231002115903.377922731@linutronix.de>
-References: <20231002115903.377922731@linutronix.de>
+In-Reply-To: <20231002115903.319959519@linutronix.de>
+References: <20231002115903.319959519@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <169815365354.3135.5223675509710461748.tip-bot2@tip-bot2>
+Message-ID: <169815365431.3135.1927037057530742543.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,131 +66,91 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/microcode branch of tip:
 
-Commit-ID:     6067788f04b1020b316344fe34746f96d594a042
-Gitweb:        https://git.kernel.org/tip/6067788f04b1020b316344fe34746f96d594a042
+Commit-ID:     ba3aeb97cb2c53025356f31c5a0a294385194115
+Gitweb:        https://git.kernel.org/tip/ba3aeb97cb2c53025356f31c5a0a294385194115
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 02 Oct 2023 14:00:02 +02:00
+AuthorDate:    Mon, 02 Oct 2023 14:00:01 +02:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Tue, 24 Oct 2023 15:05:55 +02:00
+CommitterDate: Tue, 24 Oct 2023 15:05:54 +02:00
 
-x86/microcode: Provide new control functions
+x86/microcode: Add per CPU control field
 
-The current all in one code is unreadable and really not suited for
-adding future features like uniform loading with package or system
-scope.
+Add a per CPU control field to ucode_ctrl and define constants for it
+which are going to be used to control the loading state machine.
 
-Provide a set of new control functions which split the handling of the
-primary and secondary CPUs. These will replace the current rendezvous
-all in one function in the next step. This is intentionally a separate
-change because diff makes an complete unreadable mess otherwise.
+In theory this could be a global control field, but a global control does
+not cover the following case:
 
-So the flow separates the primary and the secondary CPUs into their own
-functions which use the control field in the per CPU ucode_ctrl struct.
+ 15 primary CPUs load microcode successfully
+  1 primary CPU fails and returns with an error code
 
-   primary()			secondary()
-    wait_for_all()		 wait_for_all()
-    apply_ucode()		 wait_for_release()
-    release()			 apply_ucode()
+With global control the sibling of the failed CPU would either try again or
+the whole operation would be aborted with the consequence that the 15
+siblings do not invoke the apply path and end up with inconsistent software
+state. The result in dmesg would be inconsistent too.
+
+There are two additional fields added and initialized:
+
+ctrl_cpu and secondaries. ctrl_cpu is the CPU number of the primary thread
+for now, but with the upcoming uniform loading at package or system scope
+this will be one CPU per package or just one CPU. Secondaries hands the
+control CPU a CPU mask which will be required to release the secondary CPUs
+out of the wait loop.
+
+Preparatory change for implementing a properly split control flow for
+primary and secondary CPUs.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231002115903.377922731@linutronix.de
+Link: https://lore.kernel.org/r/20231002115903.319959519@linutronix.de
 ---
- arch/x86/kernel/cpu/microcode/core.c | 84 +++++++++++++++++++++++++++-
- 1 file changed, 84 insertions(+)
+ arch/x86/kernel/cpu/microcode/core.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/microcode/core.c b/arch/x86/kernel/cpu/microcode/core.c
-index 001c004..1ff38f9 100644
+index 67b8932..001c004 100644
 --- a/arch/x86/kernel/cpu/microcode/core.c
 +++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -290,6 +290,90 @@ static bool wait_for_cpus(atomic_t *cnt)
- 	return false;
- }
+@@ -252,8 +252,19 @@ static struct platform_device	*microcode_pdev;
+  *   requirement can be relaxed in the future. Right now, this is conservative
+  *   and good.
+  */
++enum sibling_ctrl {
++	/* Spinwait with timeout */
++	SCTRL_WAIT,
++	/* Invoke the microcode_apply() callback */
++	SCTRL_APPLY,
++	/* Proceed without invoking the microcode_apply() callback */
++	SCTRL_DONE,
++};
++
+ struct microcode_ctrl {
++	enum sibling_ctrl	ctrl;
+ 	enum ucode_state	result;
++	unsigned int		ctrl_cpu;
+ };
  
-+static bool wait_for_ctrl(void)
-+{
-+	unsigned int timeout;
-+
-+	for (timeout = 0; timeout < USEC_PER_SEC; timeout++) {
-+		if (this_cpu_read(ucode_ctrl.ctrl) != SCTRL_WAIT)
-+			return true;
-+		udelay(1);
-+		if (!(timeout % 1000))
-+			touch_nmi_watchdog();
-+	}
-+	return false;
-+}
-+
-+static __maybe_unused void load_secondary(unsigned int cpu)
-+{
-+	unsigned int ctrl_cpu = this_cpu_read(ucode_ctrl.ctrl_cpu);
-+	enum ucode_state ret;
-+
-+	/* Initial rendezvous to ensure that all CPUs have arrived */
-+	if (!wait_for_cpus(&late_cpus_in)) {
-+		pr_err_once("load: %d CPUs timed out\n", atomic_read(&late_cpus_in) - 1);
-+		this_cpu_write(ucode_ctrl.result, UCODE_TIMEOUT);
-+		return;
-+	}
-+
-+	/*
-+	 * Wait for primary threads to complete. If one of them hangs due
-+	 * to the update, there is no way out. This is non-recoverable
-+	 * because the CPU might hold locks or resources and confuse the
-+	 * scheduler, watchdogs etc. There is no way to safely evacuate the
-+	 * machine.
-+	 */
-+	if (!wait_for_ctrl())
-+		panic("Microcode load: Primary CPU %d timed out\n", ctrl_cpu);
-+
-+	/*
-+	 * If the primary succeeded then invoke the apply() callback,
-+	 * otherwise copy the state from the primary thread.
-+	 */
-+	if (this_cpu_read(ucode_ctrl.ctrl) == SCTRL_APPLY)
-+		ret = microcode_ops->apply_microcode(cpu);
-+	else
-+		ret = per_cpu(ucode_ctrl.result, ctrl_cpu);
-+
-+	this_cpu_write(ucode_ctrl.result, ret);
-+	this_cpu_write(ucode_ctrl.ctrl, SCTRL_DONE);
-+}
-+
-+static __maybe_unused void load_primary(unsigned int cpu)
-+{
-+	struct cpumask *secondaries = topology_sibling_cpumask(cpu);
-+	enum sibling_ctrl ctrl;
-+	enum ucode_state ret;
-+	unsigned int sibling;
-+
-+	/* Initial rendezvous to ensure that all CPUs have arrived */
-+	if (!wait_for_cpus(&late_cpus_in)) {
-+		this_cpu_write(ucode_ctrl.result, UCODE_TIMEOUT);
-+		pr_err_once("load: %d CPUs timed out\n", atomic_read(&late_cpus_in) - 1);
-+		return;
-+	}
-+
-+	ret = microcode_ops->apply_microcode(cpu);
-+	this_cpu_write(ucode_ctrl.result, ret);
-+	this_cpu_write(ucode_ctrl.ctrl, SCTRL_DONE);
-+
-+	/*
-+	 * If the update was successful, let the siblings run the apply()
-+	 * callback. If not, tell them it's done. This also covers the
-+	 * case where the CPU has uniform loading at package or system
-+	 * scope implemented but does not advertise it.
-+	 */
-+	if (ret == UCODE_UPDATED || ret == UCODE_OK)
-+		ctrl = SCTRL_APPLY;
-+	else
-+		ctrl = SCTRL_DONE;
-+
-+	for_each_cpu(sibling, secondaries) {
-+		if (sibling != cpu)
-+			per_cpu(ucode_ctrl.ctrl, sibling) = ctrl;
-+	}
-+}
-+
- static int load_cpus_stopped(void *unused)
+ static DEFINE_PER_CPU(struct microcode_ctrl, ucode_ctrl);
+@@ -398,7 +409,7 @@ static int load_late_stop_cpus(void)
+  */
+ static bool setup_cpus(void)
  {
- 	int cpu = smp_processor_id();
+-	struct microcode_ctrl ctrl = { .result = -1, };
++	struct microcode_ctrl ctrl = { .ctrl = SCTRL_WAIT, .result = -1, };
+ 	unsigned int cpu;
+ 
+ 	for_each_cpu_and(cpu, cpu_present_mask, &cpus_booted_once_mask) {
+@@ -408,7 +419,12 @@ static bool setup_cpus(void)
+ 				return false;
+ 			}
+ 		}
+-		/* Initialize the per CPU state */
++
++		/*
++		 * Initialize the per CPU state. This is core scope for now,
++		 * but prepared to take package or system scope into account.
++		 */
++		ctrl.ctrl_cpu = cpumask_first(topology_sibling_cpumask(cpu));
+ 		per_cpu(ucode_ctrl, cpu) = ctrl;
+ 	}
+ 	return true;
