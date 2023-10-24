@@ -2,123 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D39B87D586B
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7693B7D5870
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 18:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343922AbjJXQc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 12:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
+        id S1343929AbjJXQdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 12:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343878AbjJXQc0 (ORCPT
+        with ESMTP id S1343928AbjJXQdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 12:32:26 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEA593
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:32:25 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c9c83b656fso39212395ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:32:25 -0700 (PDT)
+        Tue, 24 Oct 2023 12:33:02 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E4A111
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:32:59 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d9a58aa4983so4464016276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 09:32:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698165144; x=1698769944; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5GzmymUe1pax62z1VC7ZEkV0i3+BeKVhxznyxpe6Bzc=;
-        b=ICjE6g+cydha7Wn6DtkNeViEFuDtY8z9DIibvhF5DWf1ht+ZhFaFPzj54lNUJTPP6t
-         NlxJAeGvAtPHAcrAgeQvDysSfmMAXi/izvDYadu330sV7BO7b4xRjTUC+944dCbp20Gd
-         aiL4E6TQZsebG/VCupYh95QQKum43s+FnGJNmjjtkRnEAWC4iMGE7UHV44VQAEktU6ya
-         rwQ/go4kjUkws5z969DI3WIyKwrp/GtqVBLyl1qgd5spIQe2L+tqOIsd6dFUJMXjIyHi
-         mEiVuJsWC7hr/iw5qKA3KWCc+Pg9EIODTurZ621o8Amvh6OriIrj8VZb1bzPn9FSYNkb
-         Zrwg==
+        d=google.com; s=20230601; t=1698165179; x=1698769979; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CZPaVFmaQu36ybSH1tOD+8dMQ/zySnsYpid63BLeaO8=;
+        b=J4iU1KxYecBj0fwomOaB3l4KJEsxMdVKQpJgeicTdkYzad1Knc2t7yfcBPWJeT2oy9
+         qbFgU0MkXeydZa8E33XxE+jY/+0WeZ1+Nf/S7G6Z3EWlxwDvVQkceR5rZvNGSLTrc7+m
+         SgkhH/fXLjz+Zn75d+wSg5mvE7RoVUjd2FQBnN/sQ4GA2YjFGuhEQoYDeQjIuQH1O3+R
+         UXlA1hqnBIsktDl2CWyAqX/b30q1HyahLHyMGK0d6XtiLZ6cjU2yxVEp0tLfXFrsNL+0
+         iahpGs9BVwku2jmfshMvLVW8FOIEAlo08LHGzLQgNCkMJ7e8ZiVIfvmxjRBLMZWDB7WO
+         b2Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698165144; x=1698769944;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5GzmymUe1pax62z1VC7ZEkV0i3+BeKVhxznyxpe6Bzc=;
-        b=I4aenZAwIT7RLbeHqyN7Sa0D46OOjS0fB3VdqbTaESC95goHGumkE546bTLhIh43XJ
-         Ssjr+zc8ta9WKgq+K4vSkc7v414XHj0DTKH0RSPmz6M+fo9sMlopzQr6OLNMObGazF4G
-         ufPwFtZOaW8Z59Jqvh7bKirwPdA/ZSxYZpWAqz2TTAL6+p7xiSksgqOp7e8dBS2m9ahP
-         K3bFyLKeUCBePeDfNyHl9Am3ptbSQBVSWPDNZA6j8FWS7V6bWyjYAjnDzgNfvcG0/eUP
-         oB7x+flHQnbN8lK4mRAIW0fU4PIgp1tGCenXJJfK4M1nizuCCJ/REyP+uJxpDqoJn4ba
-         ZFCw==
-X-Gm-Message-State: AOJu0YzzFoXM67+Fnmxtw18HQ53r1DXrxN0PgjrT7uaRhqxQzQo/GB2L
-        XN/k4SaXIOUeFsDyoN+6fsHShL50jsw=
-X-Google-Smtp-Source: AGHT+IHUwMUUKgwcg7lcFhCFzNYrNwiZ0J6zbrV6w6arrJF03RiDB9jgs8HGglnlW9P4SA4gsj6eGHjRmrY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:d04b:b0:1ca:2285:3757 with SMTP id
- l11-20020a170902d04b00b001ca22853757mr177379pll.2.1698165144606; Tue, 24 Oct
- 2023 09:32:24 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 09:32:23 -0700
-In-Reply-To: <e02b39c1-96aa-faf9-5750-4c53b5a5fb46@intel.com>
-Mime-Version: 1.0
-References: <20230914063325.85503-1-weijiang.yang@intel.com>
- <20230914063325.85503-3-weijiang.yang@intel.com> <ZTMdyR8e63sCTKWc@google.com>
- <e02b39c1-96aa-faf9-5750-4c53b5a5fb46@intel.com>
-Message-ID: <ZTfxly8573xdnruS@google.com>
-Subject: Re: [PATCH v6 02/25] x86/fpu/xstate: Fix guest fpstate allocation
- size calculation
-From:   Sean Christopherson <seanjc@google.com>
-To:     Weijiang Yang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dave.hansen@intel.com,
-        peterz@infradead.org, chao.gao@intel.com,
-        rick.p.edgecombe@intel.com, john.allen@amd.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1698165179; x=1698769979;
+        h=mime-version:references:message-id:in-reply-to:subject:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CZPaVFmaQu36ybSH1tOD+8dMQ/zySnsYpid63BLeaO8=;
+        b=iAG0JdySXTdIZB6fDvxtde5tHTiT1aARIBkNhHaARYalxmYl6vD9jqMPxFeU3XOgoV
+         XanKn0mAHN4xUZnujMPlS5MDx8yEPQ0KUfNP+7de2DtjD+gBH4kNRutKclUnk9OUr2JU
+         T6sw6fstgxtGIIC8i/4TGMWsds7VgLQD0IPHaCbZHhgTZVL8u68DttKUh2pJx7TI40Rn
+         xbKznCWG2wBGATqtG+FpE3XYn+jQB/rXH0lZOjjljle0jqWVmP77OLQvcobce4oksz4u
+         ol/5w+pT8stLpKhusoj4+gDrlJcprMwmqOBW+OQ6bcClDArC/ZVJ05FJSJbHq9Shm4I9
+         zKaQ==
+X-Gm-Message-State: AOJu0YzgiX/tu7dCxowlgeruTLg0wByQHeOcrwAGuFOiqDky6TatFuEG
+        eLu0ONNlsSKh/P6MsRpCWMQk9A==
+X-Google-Smtp-Source: AGHT+IG5cxpDFx0pwTrv4cdkOqCGMzhlQ+/6LRH3W8ygXnW19y/KuyT/3fCUVSO+WXmiXopiH78nNQ==
+X-Received: by 2002:a25:2302:0:b0:da0:50a9:a748 with SMTP id j2-20020a252302000000b00da050a9a748mr1775256ybj.11.1698165178508;
+        Tue, 24 Oct 2023 09:32:58 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id d191-20020a25e6c8000000b00d0b0bbe574asm3699140ybh.44.2023.10.24.09.32.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 09:32:57 -0700 (PDT)
+Date:   Tue, 24 Oct 2023 09:32:44 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Christoph Lameter <cl@linux.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        "Huang, Ying" <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] mempolicy: migration attempt to match interleave nodes:
+ fix
+In-Reply-To: <20231024151827.i7e2f6cheet4k5h5@revolver>
+Message-ID: <5b570bcd-e0fb-4473-7cfc-81b8b53d7712@google.com>
+References: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com> <77954a5-9c9b-1c11-7d5c-3262c01b895f@google.com> <3311d544-fb05-a7f1-1b74-16aa0f6cd4fe@google.com> <20231024151827.i7e2f6cheet4k5h5@revolver>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023, Weijiang Yang wrote:
-> On 10/21/2023 8:39 AM, Sean Christopherson wrote:
-> > On Thu, Sep 14, 2023, Yang Weijiang wrote:
-> > > Fix guest xsave area allocation size from fpu_user_cfg.default_size to
-> > > fpu_kernel_cfg.default_size so that the xsave area size is consistent
-> > > with fpstate->size set in __fpstate_reset().
-> > > 
-> > > With the fix, guest fpstate size is sufficient for KVM supported guest
-> > > xfeatures.
-> > > 
-> > > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> > > ---
-> > >   arch/x86/kernel/fpu/core.c | 4 +++-
-> > >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-> > > index a86d37052a64..a42d8ad26ce6 100644
-> > > --- a/arch/x86/kernel/fpu/core.c
-> > > +++ b/arch/x86/kernel/fpu/core.c
-> > > @@ -220,7 +220,9 @@ bool fpu_alloc_guest_fpstate(struct fpu_guest *gfpu)
-> > >   	struct fpstate *fpstate;
-> > >   	unsigned int size;
-> > > -	size = fpu_user_cfg.default_size + ALIGN(offsetof(struct fpstate, regs), 64);
-> > > +	size = fpu_kernel_cfg.default_size +
-> > > +	       ALIGN(offsetof(struct fpstate, regs), 64);
-> > Shouldn't all the other calculations in this function also switch to fpu_kernel_cfg?
-> > At the very least, this looks wrong when paired with the above:
+On Tue, 24 Oct 2023, Liam R. Howlett wrote:
+
+> * Hugh Dickins <hughd@google.com> [231024 02:50]:
+> > mm-unstable commit edd33b8807a1 ("mempolicy: migration attempt to match
+> > interleave nodes") added a second vma_iter search to do_mbind(), to
+> > determine the interleave index to be used in the MPOL_INTERLEAVE case.
 > > 
-> > 	gfpu->uabi_size		= sizeof(struct kvm_xsave);
-> > 	if (WARN_ON_ONCE(fpu_user_cfg.default_size > gfpu->uabi_size))
-> > 		gfpu->uabi_size = fpu_user_cfg.default_size;
+> > But sadly it added it just after the mmap_write_unlock(), leaving this
+> > new VMA search unprotected: and so syzbot reports suspicious RCU usage
+> > from lib/maple_tree.c:856.
+> > 
+> > This could be fixed with an rcu_read_lock/unlock() pair (per Liam);
+> > but since we have been relying on the mmap_lock up to this point, it's
+> > slightly better to extend it over the new search too, for a well-defined
+> > result consistent with the policy this mbind() is establishing (rather
+> > than whatever might follow once the mmap_lock is dropped).
 > 
-> Hi, Sean,
-> Not sure what's your concerns.
-> From my understanding fpu_kernel_cfg.default_size should include all enabled
-> xfeatures in host (XCR0 | XSS), this is also expected for supporting all
-> guest enabled xfeatures. gfpu->uabi_size only includes enabled user xfeatures
-> which are operated via KVM uABIs(KVM_GET_XSAVE/KVM_SET_XSAVE/KVM_GET_XSAVE2),
-> so the two sizes are relatively independent since guest supervisor xfeatures
-> are saved/restored via GET/SET_MSRS interfaces.
+> Would downgrading the lock work?  It would avoid the potential writing
+> issue and should still satisfy lockdep.
 
-Ah, right, I keep forgetting that KVM's ABI can't use XRSTOR because it forces
-the compacted format.
+Downgrading the lock would work, but it would be a pointless complication.
 
-This part still looks odd to me:
+The "second vma_iter search" is not a lengthy operation (normally it just
+checks pgoff,start,end of the first VMA and immediately breaks out; in
+worst case it just makes that check on each VMA involved: it doesn't get
+into splits or merges or pte scans), we already have mmap_lock, yes it's
+only needed for read during that scani, but it's not worth playing with.
 
-	gfpu->xfeatures		= fpu_user_cfg.default_features;
-	gfpu->perm		= fpu_user_cfg.default_features;
+Whereas migrating an indefinite number of pages, with all the allocating
+and unmapping and copying and remapping involved, really is something we
+prefer not to hold mmap_lock across.
 
-but I'm probably just not understanding something in the other patches changes yet.
+Hugh
