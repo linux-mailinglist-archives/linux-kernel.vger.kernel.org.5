@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBDB7D5721
-	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DC97D5724
+	for <lists+linux-kernel@lfdr.de>; Tue, 24 Oct 2023 17:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343997AbjJXP6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 11:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
+        id S1343987AbjJXP6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 11:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343993AbjJXP61 (ORCPT
+        with ESMTP id S1344019AbjJXP6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 11:58:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F47A10D1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698163104; x=1729699104;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Pco9+c9Eg9ly/9DbWSGwpJ4e3CXmtwOqtrtEus796lU=;
-  b=fQhM5ey5krIC7/30q/lSdTeYf90w1ZoD5hCtXr+WfdNhkoR0XTSxS5EI
-   gJ6zHHVpAhcW/ab17lx7EEdLTsANaMi5qi5Q7BDKlQKSQX0zbbh/2r8WR
-   A5asM3rfgYeYIqneZbeInedENVKEX3C6K3Btck86qFbtd75IMjKzfvgv4
-   aspn9N0yo9DfKWK1rE5AGMKYST/t6JINOh/IqWxugmuyaovcT9p2iEKe/
-   FN7te9ozPEhPv0yFi9G1fKDpg6RNrCAtFXv+JAJydaKpXFTIVgGhfeY1Q
-   aUsiPfE5kGO31VHcLXceLQwAslLdYESQaK7yH/CgHA09wh9n86VAsJxh/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="390972036"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="390972036"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 08:58:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="752041799"
-X-IronPort-AV: E=Sophos;i="6.03,248,1694761200"; 
-   d="scan'208";a="752041799"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 08:58:18 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qvJnL-00000008KH1-36if;
-        Tue, 24 Oct 2023 18:58:15 +0300
-Date:   Tue, 24 Oct 2023 18:58:15 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [rft, PATCH v1 0/2] drm/i915/dsi: An attempt to get rid of IOSF
- GPIO on VLV
-Message-ID: <ZTfpl/QE99fL3ii/@smile.fi.intel.com>
-References: <20231018051052.1328852-1-andriy.shevchenko@linux.intel.com>
- <0c88666a-ff36-b649-d244-ccce500b6c2f@redhat.com>
- <ZS/VE3w7bafj+Kuu@smile.fi.intel.com>
+        Tue, 24 Oct 2023 11:58:41 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 05E1B1701
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 08:58:37 -0700 (PDT)
+Received: (qmail 461759 invoked by uid 1000); 24 Oct 2023 11:58:37 -0400
+Date:   Tue, 24 Oct 2023 11:58:37 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "Li, Meng" <Meng.Li@windriver.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "usb-storage@lists.one-eyed-alien.net" 
+        <usb-storage@lists.one-eyed-alien.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] usb: storage: add shutdown function for usb storage
+ driver
+Message-ID: <5107f6ca-e972-4af1-a21d-6c95778969f3@rowland.harvard.edu>
+References: <20231023054111.2744872-1-Meng.Li@windriver.com>
+ <33bd0779-bfe7-4c87-8fe6-ea8455df3b6b@rowland.harvard.edu>
+ <PH0PR11MB51918DD50651DB6BE937BEA3F1DFA@PH0PR11MB5191.namprd11.prod.outlook.com>
+ <3fe5b43c-a5aa-4c6a-8614-03a4d9dd53e2@rowland.harvard.edu>
+ <2023102428-zit-quickness-9b73@gregkh>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZS/VE3w7bafj+Kuu@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2023102428-zit-quickness-9b73@gregkh>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 03:52:36PM +0300, Andy Shevchenko wrote:
-> On Wed, Oct 18, 2023 at 11:09:35AM +0200, Hans de Goede wrote:
-> > On 10/18/23 07:10, Andy Shevchenko wrote:
-
-...
-
-> > Yes I should be able to find a device or 2 which poke GPIOs from the
-> > VBT MIPI sequences. Unfortunately I don't know from the top of my head
-> > which devices actually use this, so I may need to try quite a few devices
-> > before finding one which actually uses this.
-> > 
-> > I'll try to get this series tested sometime the coming weeks,
-> > depending on when I can schedule some time for this.
+On Tue, Oct 24, 2023 at 05:45:40PM +0200, gregkh@linuxfoundation.org wrote:
+> On Tue, Oct 24, 2023 at 11:35:19AM -0400, Alan Stern wrote:
+> > Okay, that's a different matter.  In fact, I don't know what is supposed 
+> > to happen during a clean reboot.
 > 
-> No hurry. maybe you simply can add into your usual tree you run on your
+> Define "clean" :)
+
+In this case, I mean what happens when you give the "reboot" command.
+
+> reboot is a system thing that happens before the reboot syscall happens.
+> So which are we talking nabout here?
+> 
+> > Greg, do you know?  Should we take the time to disconnect all the USB 
+> > devices during a system shutdown?
+> 
+> In the past we have not.  And if we switch to do so, we might get some
+> complaints as we would now delaying the shutdown process to be longer
+> than before.
+
+Yes, that's what I'm afraid of.
+
+> > What happens with non-USB disk drives?  Or other removable devices?
+> 
+> It would have to come from "above" in the device tree, so does the PCI
+> or platform bus say that they should be shut down and their child
 > devices?
 
-FYI, I have just sent a v2, which includes CHV conversion.
+Well, the PCI layer invokes the HCD's ->shutdown callback.  But the 
+usb-storage driver and usbcore don't know this has happened, so they 
+start logging errors because they are suddenly unable to communicate 
+with a USB drive.  Meng Li is unhappy about these error messages.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Adding a shutdown callback of sorts to usb-storage allows the driver to 
+know that it shouldn't communicate with the drive any more, which 
+prevents the error message from appearing.  That's what this patch does.  
 
+But that's all it does.  Basically it creates a layering violation just 
+to prevent some error messages from showing up in the system log during 
+a shutdown or reboot.  The question is whether we want to do this at 
+all, and if we do, shouldn't it be handled at the usbcore level rather 
+than just within usb-storage?
 
+Alan Stern
