@@ -2,137 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D915C7D5E42
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00517D5E65
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 00:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344519AbjJXWd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 18:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
+        id S1344551AbjJXWnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 18:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344571AbjJXWdY (ORCPT
+        with ESMTP id S1344502AbjJXWnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 18:33:24 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0498199B
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:33:14 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53eeb28e8e5so1937a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:33:14 -0700 (PDT)
+        Tue, 24 Oct 2023 18:43:14 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0CB129
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:43:11 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4079ed65471so40923595e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 15:43:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698186793; x=1698791593; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4iRTEiIAHqdOTFjTizDZPjyhzdJk6A4pywAK9Lo2CAs=;
-        b=u9Vow3dPZ4aOOqWvjW2BQYVWZ+wrAmPCRBS8oVS/DIWMHQ8ECo0sBbHComztxC2ZHI
-         KHmSBPdgx57825ZE0fbvZ7jxw3AzjfQznc1/CPjQzjcDi6j+1imoR3HR/SSUFJCaNgsU
-         UREYonF50vCsp9ZgX0hjpTJwYfKb+1IhNTIxevlyQwttBc4K2X7b7ezoDj4SsyYvTZ2l
-         Ddz+1XFpGbCLSLxZNq7KjH9t/BT9POXeznI81evmY6yD7EUTvpUJX0RX2PXCrsriL09v
-         1GFomSKMr9iCB4siA2OFWFGbH8nMWLvl71cj/U/X6gzIehDypcBgnyExiKB2bWTyqAH4
-         smZA==
+        d=linaro.org; s=google; t=1698187390; x=1698792190; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pJhmv+TQSjKHEo0DycCEGNE2CWl5ZIeQ2W8fUwi7t7A=;
+        b=dw97K+ntoUbQBcsfLDVTvMWA3gofaLKOjXBJ2fZ+bp3fkgU4EV24+/p6oR9Ft0PYpc
+         msFadSNfqXj9mGEK/ZxV7Y7soPbWTQ9eYf72Q9ZvzPpd/pUWwS0pdrHjyZAa0pEY7HIb
+         DoO0530KVMBchwrtY7gn7rNwGhhBTrd8908D/+NDLow+K+bqZCCPofo/VOWCxSeZyT3k
+         kOWHuO0fQI6WhCbXvRDgztojhf5ZcUk9z9lsCOd1DFP0EURFOCrYfQvJHNnaG2mYQvbe
+         b+2Xik3v/CwZ12CMk9JrcO3O4x2K3yBGsFLcWnk078FQ81HJrSTf64ht3AEjgX9LlbYC
+         tfew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698186793; x=1698791593;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4iRTEiIAHqdOTFjTizDZPjyhzdJk6A4pywAK9Lo2CAs=;
-        b=O7/8IudWl2w9mM31ujBZs+GJPQqkyfW05NsxB6URvhEWNHGTppXN4Tj5mai/2SQfZs
-         msR6tNWqfrShkmTmgxAwR5z2JZ8EqBjv7ibc1DRuSJ0GZAR0HhVdB+9ttv8XtjvT5DYf
-         NShOSp3pAZuCEjMQ6dnsW6Ss8SgDJOgzJ5p0iIJikX14ybzPl5LfqQaCmv4Az/yPXN0o
-         ijT2hqe/UOkpb4Cew/x8FVnf38HMm+xN9az0YuaAJNlOBtbQUHtcBNrUQVTlqam2XcVx
-         zny4dM/S0jFwUgRDvv+U7B8yMHUaQppUzdsCogagdvaxLzrn+SdRZIAuscbJk50FJgmZ
-         ljug==
-X-Gm-Message-State: AOJu0YzMbX6Pl6TuOiNhRFPVO9TEN0H9jQtXiCYGCGTuZU4bhosNID2i
-        E3YAl21V319DgnMLL1wHsmNOvQVjc4QKfVbmY+160A==
-X-Google-Smtp-Source: AGHT+IEhKi2VOruYNNnNI/sR21aEEQlZTcHU2b10DJUQA6jXPDIAQq/Xqz+xSDCPlcNssBRl7QiDjS9G4VV5ayQdXYs=
-X-Received: by 2002:aa7:df94:0:b0:540:e4c3:430 with SMTP id
- b20-20020aa7df94000000b00540e4c30430mr311edy.6.1698186789616; Tue, 24 Oct
- 2023 15:33:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698187390; x=1698792190;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pJhmv+TQSjKHEo0DycCEGNE2CWl5ZIeQ2W8fUwi7t7A=;
+        b=NZcySvc9MSk3bMSg7I3Yv0PT1/e1/lMnIrMimrvy0A5vr9q1TGBHe9DCKZgm2FxZc4
+         8pmlvOaGpvAU+L8yHzUarIdfw6Dq5d4LkGc5vOtabXaSfOm1Nq/gVpCyIIqPr7sABSrv
+         l6bySaKyDXQLS7SCYQFO4j/OGOpBkXGasnN4wGZwE7RGiDaHus7bOTMyP+oPwybO2uip
+         G5LRG06IkpHm4eQ1ahE0Fp8EI5CPPIwglEyfDeu7HI/QR0P2LPHrbX1beyqGDTgMKAxV
+         U7ok63l9IQ87uq32rEX5naf0BBwSNdbBIxOBAgKQkv6xQ+KySlpd9akFgrjM38LCF2PS
+         bcEw==
+X-Gm-Message-State: AOJu0YxeNyRrgTE5wNXZS/tC3k8APYOs+pqf7KQGSBech/kJ08U2wQ66
+        0+uQAJ7ocVSEDgpp+PdNnPfCQw==
+X-Google-Smtp-Source: AGHT+IG4zV9bbHEG0COlZgIjz9Ddl+HZ6m3yJbeEiXmsOGqHi650xa+ImIgOsPZzHvsbNAUXkbrFHQ==
+X-Received: by 2002:a05:600c:1911:b0:409:351:873d with SMTP id j17-20020a05600c191100b004090351873dmr5266406wmq.31.1698187390277;
+        Tue, 24 Oct 2023 15:43:10 -0700 (PDT)
+Received: from sagittarius-a.nxsw.local ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id j6-20020a05600c190600b0040641a9d49bsm13049531wmq.17.2023.10.24.15.43.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 15:43:09 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        rfoss@kernel.org, todor.too@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH 0/4] media: qcom: camss: Introduce support for named power-domains
+Date:   Tue, 24 Oct 2023 23:42:51 +0100
+Message-ID: <20231024224255.754779-1-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <ae3115778a3fa10ec77152e18beed54fafe0f6e7.1698151516.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <ae3115778a3fa10ec77152e18beed54fafe0f6e7.1698151516.git.baolin.wang@linux.alibaba.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Tue, 24 Oct 2023 16:32:30 -0600
-Message-ID: <CAOUHufZwXUfvfHDAQZ-RftHut9ghxc4kNffjQFrwz1s0Nz-L0A@mail.gmail.com>
-Subject: Re: [PATCH] arm64: mm: drop tlb flush operation when clearing the
- access bit
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Minchan Kim <minchan@kernel.org>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, v-songbaohua@oppo.com,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 6:56=E2=80=AFAM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
->
-> Now ptep_clear_flush_young() is only called by folio_referenced() to
-> check if the folio was referenced, and now it will call a tlb flush on
-> ARM64 architecture. However the tlb flush can be expensive on ARM64
-> servers, especially for the systems with a large CPU numbers.
->
-> Similar to the x86 architecture, below comments also apply equally to
-> ARM64 architecture. So we can drop the tlb flush operation in
-> ptep_clear_flush_young() on ARM64 architecture to improve the performance=
-.
-> "
-> /* Clearing the accessed bit without a TLB flush
->  * doesn't cause data corruption. [ It could cause incorrect
->  * page aging and the (mistaken) reclaim of hot pages, but the
->  * chance of that should be relatively low. ]
->  *
->  * So as a performance optimization don't flush the TLB when
->  * clearing the accessed bit, it will eventually be flushed by
->  * a context switch or a VM operation anyway. [ In the rare
->  * event of it not getting flushed for a long time the delay
->  * shouldn't really matter because there's no real memory
->  * pressure for swapout to react to. ]
->  */
-> "
-> Running the thpscale to show some obvious improvements for compaction
-> latency with this patch:
->                              base                   patched
-> Amean     fault-both-1      1093.19 (   0.00%)     1084.57 *   0.79%*
-> Amean     fault-both-3      2566.22 (   0.00%)     2228.45 *  13.16%*
-> Amean     fault-both-5      3591.22 (   0.00%)     3146.73 *  12.38%*
-> Amean     fault-both-7      4157.26 (   0.00%)     4113.67 *   1.05%*
-> Amean     fault-both-12     6184.79 (   0.00%)     5218.70 *  15.62%*
-> Amean     fault-both-18     9103.70 (   0.00%)     7739.71 *  14.98%*
-> Amean     fault-both-24    12341.73 (   0.00%)    10684.23 *  13.43%*
-> Amean     fault-both-30    15519.00 (   0.00%)    13695.14 *  11.75%*
-> Amean     fault-both-32    16189.15 (   0.00%)    14365.73 *  11.26%*
->                        base       patched
-> Duration User         167.78      161.03
-> Duration System      1836.66     1673.01
-> Duration Elapsed     2074.58     2059.75
->
-> Barry Song submitted a similar patch [1] before, that replaces the
-> ptep_clear_flush_young_notify() with ptep_clear_young_notify() in
-> folio_referenced_one(). However, I'm not sure if removing the tlb flush
-> operation is applicable to every architecture in kernel, so dropping
-> the tlb flush for ARM64 seems a sensible change.
->
-> Note: I am okay for both approach, if someone can help to ensure that
-> all architectures do not need the tlb flush when clearing the accessed
-> bit, then I also think Barry's patch is better (hope Barry can resend
-> his patch).
->
-> [1] https://lore.kernel.org/lkml/20220617070555.344368-1-21cnbao@gmail.co=
-m/
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+At the moment the Qcom CAMSS driver relies on the declaration order of
+power-domains within the dtsi to determine which power-domain relates to a
+VFE and which power-domain relates to the top-level (top) CAMSS
+power-domain.
 
-+Minchan Kim
+VFE power-domains must be declared prior to the top power-domain. The top
+power-domain must be declared last. Early SoCs have just one top
+power-domain with later SoCs introducing VFE specific power-domains.
 
-Minchan and I discussed this (again) yesterday -- I'm in favor and he
-can voice his different opinion on this.
+Differentiating between the number of power-domains results in lots of code
+which is brittle and which we can mostly get rid of with named
+power-domains.
+
+The reliance on declaration ordering is in-effect magic number indexing.
+
+This series introduces named power-domains for CAMSS and refactors some of
+the code in CAMSS to support the new named power-domains. We continue to
+support the legacy indexing model with an intention to remove after a
+reasonable transition period.
+
+New SoC additions should use named power-domains from now on.
+
+Tested on x13s, rb5, db410c
+
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/linux-next-23-10-23-camss-named-power-domains
+
+Bryan O'Donoghue (4):
+  media: qcom: camss: Convert to per-VFE pointer for power-domain
+    linkages
+  media: qcom: camss: Use common VFE pm_domain_on/pm_domain_off where
+    applicable
+  media: qcom: camss: Move VFE power-domain specifics into vfe.c
+  media: qcom: camss: Add support for named power-domains
+
+ .../media/platform/qcom/camss/camss-vfe-170.c | 36 ---------
+ .../media/platform/qcom/camss/camss-vfe-4-1.c |  8 +-
+ .../media/platform/qcom/camss/camss-vfe-4-7.c | 36 ---------
+ .../media/platform/qcom/camss/camss-vfe-4-8.c | 31 --------
+ .../media/platform/qcom/camss/camss-vfe-480.c | 36 ---------
+ drivers/media/platform/qcom/camss/camss-vfe.c | 79 +++++++++++++++++++
+ drivers/media/platform/qcom/camss/camss-vfe.h | 16 ++++
+ drivers/media/platform/qcom/camss/camss.c     | 79 +++++++++++--------
+ drivers/media/platform/qcom/camss/camss.h     |  6 +-
+ 9 files changed, 149 insertions(+), 178 deletions(-)
+
+-- 
+2.42.0
+
