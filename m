@@ -2,110 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D167D6C0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D4D7D6C15
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344062AbjJYMhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37098 "EHLO
+        id S232807AbjJYMim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232807AbjJYMhg (ORCPT
+        with ESMTP id S234862AbjJYMil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:37:36 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0573129;
-        Wed, 25 Oct 2023 05:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=s31663417; t=1698237433; x=1698842233; i=j-p-t@gmx.net;
-        bh=PkdRxhsM568WFqpYCtZJdhLCVi8JSeQHaWDtFdzRt/Y=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=ELIsFPXGyy+9ZaosbLA5G8t0D9AyaFmV5IDbUVwB32LJOGpV2O6lpKKLrIr2v3i4
-         5Yiw8YFmCRbY2TQhfoBqlTeZMq69GrMEcPcS/Kb5RFpfx18hWpCFM3LYJ9iofOLU3
-         bmsYdmiRl8ZOSUl1r4CSYPS1qx/AkU1uZMbb6R92Pw78kqFSBRdL6UccqoacR036t
-         6bWF55QJVdqWxoV1X9/navQI7iwgIfRd48xfdBJDtPte0gNGzOAavkbjh1khRbBGU
-         Do4emAv/3fY46Qk/GozaGqlPyTB+/mlFwTjrAfEa+CrabaDICotDeKCtnkLJoUhx6
-         tXccOJW6IgQuQByI7Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.178.58] ([45.14.97.35]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M1Hdw-1qtyAx3cIk-002q5E; Wed, 25
- Oct 2023 14:37:10 +0200
-Message-ID: <80e8bc56-ed41-40ab-af04-1fb11d383a5f@gmx.net>
-Date:   Wed, 25 Oct 2023 14:37:09 +0200
+        Wed, 25 Oct 2023 08:38:41 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFA8C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:38:39 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53f98cbcd76so9720a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:38:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698237518; x=1698842318; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W3l3fK8JlnRDjMYiAMXlKadC5mulz1cY1IxH7egtavM=;
+        b=bFFgKStkFAry370sQGddW0mcTkJIE6k4/z2ZOaQjKIalzxTfWLEQBF8NzLLL7tLYjd
+         DxLWT0UsCFkeBoAK4UwuuvXSaIfdp/UaWfWqo0ZHiturCM8hr6hEbY3Jolis4YKqk9gM
+         NHWLrT8xqV2JUY2ZFCfbifNbbYIk70e+4USi5NtubxezhIUhVaTPOaEG/2myBNhOGUVk
+         w2q+hh02okgpaGzxKVl8k1KXXJ5+GskvoT4z8CLcEuo0kA1oteMmfJDPvyBTOScdmnPz
+         AkLQzheupyhecLjaYf+J+GOinlCXoid/Cf7lGVERDODSr6nrwjHQZGPX7qfHTZ7pLyb6
+         iUHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698237518; x=1698842318;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W3l3fK8JlnRDjMYiAMXlKadC5mulz1cY1IxH7egtavM=;
+        b=BLmx0wTsZa4dR8/1QT9cfseDZ3mBInqPLdHMYVG3QJOOas++l+eOkTmZIltjoxa5eP
+         JgrBFRAdfz0y6x2L0HLs6cZ5chKG0G2lEhRgza3Z6/THlPHO7wAgIWo5/2mLdWC1dUwN
+         5i5x3sZ+/W1peVtn8BB84X449qyiw6RDJG898V2plEVGdmHgZR84UoP3A3bzAGqNHV62
+         NV7FZyyOGEXGHoADbX3WIuDyUoXj/1gzVBryRKaR5IP6gVddqsWic910XyQkdTBy8dWE
+         bn+nTnwGQeA3X/8xSkzopBWuw0tUX5wzUBNxxlLJEkTEwkousL4FgBOv7yHoGBJcA1I9
+         S22g==
+X-Gm-Message-State: AOJu0YxsJEjbRGUXrm16Lery6be7qa1B6yF1+ksTHrZcR3IoZ41j93Vm
+        YEr1M8iLRWc3pc50f0UaFhxCSlptO96bVKozssti6n8EelqoHvHqcUM=
+X-Google-Smtp-Source: AGHT+IFV2kYyS0nXl907qHoBld9IgBOGa6z3I92wemf4cX+a+J09AbWj2FmewWIkgDqgwLMA1Zl/MsRimaHvir5XoA4=
+X-Received: by 2002:a50:9556:0:b0:53f:c607:c87a with SMTP id
+ v22-20020a509556000000b0053fc607c87amr73797eda.7.1698237517682; Wed, 25 Oct
+ 2023 05:38:37 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: si2157 not working at all?
-Content-Language: de-DE
-To:     Gonsolo <gonsolo@gmail.com>, Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux Media Subsystem <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Antti Palosaari <crope@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-References: <1cfa1365-ca0d-4e33-a149-751277183440@gmx.net>
- <ZThgwTieDv7Gi8UG@debian.me>
- <CANL0fFQMiubX3saR7fmQvYjKqDVCbDNTwyzj1_-aiN6HSB-hwg@mail.gmail.com>
-From:   JPT <j-p-t@gmx.net>
-In-Reply-To: <CANL0fFQMiubX3saR7fmQvYjKqDVCbDNTwyzj1_-aiN6HSB-hwg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20231024075748.1675382-1-dapeng1.mi@linux.intel.com>
+ <20231024075748.1675382-5-dapeng1.mi@linux.intel.com> <CALMp9eSQyyihzEz+xpB0QCZ4=WqQ9TGiSwMYiFob0D_Z7OY7mg@mail.gmail.com>
+ <305f1ee4-a8c3-48eb-9368-531329e5266e@linux.intel.com>
+In-Reply-To: <305f1ee4-a8c3-48eb-9368-531329e5266e@linux.intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 25 Oct 2023 05:38:25 -0700
+Message-ID: <CALMp9eT94bGZFr3sfPAssh4jJLnLe4jGosRieGVb4pK1E31b5Q@mail.gmail.com>
+Subject: Re: [kvm-unit-tests Patch 4/5] x86: pmu: Support validation for Intel
+ PMU fixed counter 3
+To:     "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/DKT4sNcFYRd10XdPzLLw9nhVc3ru6CzYzcJ8GNuYxjoJ0VzL0C
- FnX/6pGfPDucBVb2X9R0RXz0+mxP5JXFlm5GhBqTqkja1RdF7jNnv84/wBXF/wDjgwV/qSr
- kbdWGiJXYMc+lkqrOSU7z7zZt+mK5ZizmSqzejtB3qHuMG4MROX+3V9RttznMzmx7Fb+lrl
- kFPLnsd49TXEmyKxY7yXg==
-UI-OutboundReport: notjunk:1;M01:P0:Q0GHDGjUTyo=;SyzAtHAnp1irmVkn9/3ethD+Q6/
- D9tK726xOnLuxmSX37FAxLeEsPG7CzT9XudVClhESB5uyrzoxW0BeCwgswvasV5vd5z7FVArd
- 8qeNXxwHCm7BOAOz3Dgg7YKn3NI4lEyItSxFD0Js6Iez39IjDShCgqWSzXEr5y9sXlfoiXcUZ
- aZdraJR3gwehjmM1KG3Qr1eYBwnuzmO+r0GJX8ZdxcxSRiUPEO4zSInuhA4rxZXpHdoeK+rd3
- OWk1tzy3h5DIbMZxGPh40JjnY4BuoRB4YluS6d/0NpE5K/8+Umxi6Dgy+2ouaGdeyN5IIfZE8
- 8VSHloHWMttPnEtZQ5YmPDS6OoKmcwZxJNtBKq8MYY4LDFKT9VAxzpEElE4Uuc/1diXxn28hW
- F4MFgnpWD2BVisZH2mUQGbNUXlk4QGfsbCduxH1yamtweajD62AQnng8Mf7sJsss84aRSst0C
- P1uneSDecYu2lPsogjNDXfPV8tR7I0k06roBvscot8mw7Igo7SM9fTHSmeG/OcnPeEkRc9c7/
- 5ubj92IAULBF/IXqRTeTZ4cF8K/8h1BkInicMrKOfNVi1BB0eVMzpvWMj5San/u3mN4/gcie/
- 9IelL4utvl/kiQ3rYbH1HvrXVfW1G2H7Bl3mADA94v0FEwDwB3iOspWL+Lb3/mJ5+FHDuwmSl
- FEdQj9lxvrtK7j1cRWhJhaItQy2GvCwSr02lkTwEELmaD+vntUnXkPjMo3ULleUYEOyPkyG4r
- 7qUzMV0UBaq8xyakgrDeTcoDdJRiOGVhblvbY+BOQVbCb6qMmm8uyp8rU3nbDfefaF29x2S82
- w0
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-[TerraTec Cinergy TC2]
-> > could someone please have a look what is the problem with si2157?
+On Wed, Oct 25, 2023 at 4:26=E2=80=AFAM Mi, Dapeng <dapeng1.mi@linux.intel.=
+com> wrote:
 >
-> No problem.
 >
-> Support for your stick was added here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commi=
-t/?id=3Dc0e0d3138896f <https://git.kernel.org/pub/scm/linux/kernel/git/tor=
-valds/linux.git/commit/?id=3Dc0e0d3138896f>
+> On 10/25/2023 3:05 AM, Jim Mattson wrote:
+> > On Tue, Oct 24, 2023 at 12:51=E2=80=AFAM Dapeng Mi <dapeng1.mi@linux.in=
+tel.com> wrote:
+> >> Intel CPUs, like Sapphire Rapids, introduces a new fixed counter
+> >> (fixed counter 3) to counter/sample topdown.slots event, but current
+> >> code still doesn't cover this new fixed counter.
+> >>
+> >> So add code to validate this new fixed counter.
+> > Can you explain how this "validates" anything?
+>
+>
+> I may not describe the sentence clearly. This would validate the fixed
+> counter 3 can count the slots event and get a valid count in a
+> reasonable range. Thanks.
 
-Oops. Thank you very much.
-I was on the wrong trace all along.
-Sorry, for bothering. I have tried hard to learn a little bit of kernel
-development, but I am far from all of you :o)
+I thought the current vPMU implementation did not actually support
+top-down slots. If it doesn't work, how can it be validated?
 
-could someone please change the kernel message to something more specific?
-
-for example:
-
-drivers/media/tuners/si2157.c
-153c153
-<                        "device is buggy, skipping firmware download\n");
-=2D--
- >                        "firmware upload does not work, using firmware
-already installed\n");
-
-thank you very much
-
-Jan
+>
+> >
+> >> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+> >> ---
+> >>   x86/pmu.c | 3 ++-
+> >>   1 file changed, 2 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/x86/pmu.c b/x86/pmu.c
+> >> index 1bebf493d4a4..41165e168d8e 100644
+> >> --- a/x86/pmu.c
+> >> +++ b/x86/pmu.c
+> >> @@ -46,7 +46,8 @@ struct pmu_event {
+> >>   }, fixed_events[] =3D {
+> >>          {"fixed 1", MSR_CORE_PERF_FIXED_CTR0, 10*N, 10.2*N},
+> >>          {"fixed 2", MSR_CORE_PERF_FIXED_CTR0 + 1, 1*N, 30*N},
+> >> -       {"fixed 3", MSR_CORE_PERF_FIXED_CTR0 + 2, 0.1*N, 30*N}
+> >> +       {"fixed 3", MSR_CORE_PERF_FIXED_CTR0 + 2, 0.1*N, 30*N},
+> >> +       {"fixed 4", MSR_CORE_PERF_FIXED_CTR0 + 3, 1*N, 100*N}
+> >>   };
+> >>
+> >>   char *buf;
+> >> --
+> >> 2.34.1
+> >>
