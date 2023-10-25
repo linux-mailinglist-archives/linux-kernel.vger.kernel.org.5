@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B41647D6E5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B3E7D6F2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344806AbjJYOEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:04:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60612 "EHLO
+        id S1344857AbjJYOFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235071AbjJYOEh (ORCPT
+        with ESMTP id S234938AbjJYOF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:04:37 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20D918A
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:04:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1698242671;
-        bh=BETV4KNiAreEsHtti0xML6K5ApKQpOTbKlT/YsBc0xI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=SmBKWMxzorv+YQ5OGvpMGhELk2uO66JUCmEDEvuLQAbMBGVaP/m1oWxE1oekRmOnu
-         GGVWOlkrSVmPm41hbiMQv2UeUsJZzjCRUAdsn2Ex3eYPP7+v5cmZh9ecMurpdJZODO
-         M4aSXUX4ScurEl8tl3Nv6x5Wly6W6/FnbOaDFAQzXAG7ll+Mdp8RZDG2oTdK/9CBH6
-         axMbsY5sqlgA79BsneJ5yGDqENVn2dBjKHgyCVHjMmlSj9j2X9MlJhRTGBseUVt7ll
-         jBnUehbz4/Rq6u2pyjajBHdtiZKHP87zo6K41dYWODa6IQyoFV5P0ZD2I8QN2vfbHI
-         zmetcTSCyXKjw==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SFrJv3Jhdz1YyP;
-        Wed, 25 Oct 2023 10:04:31 -0400 (EDT)
-Message-ID: <57b3b129-9d89-4008-b160-b77116c4e8e0@efficios.com>
-Date:   Wed, 25 Oct 2023 10:04:46 -0400
+        Wed, 25 Oct 2023 10:05:27 -0400
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1562195;
+        Wed, 25 Oct 2023 07:05:22 -0700 (PDT)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6ce2ea3a944so3785319a34.1;
+        Wed, 25 Oct 2023 07:05:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698242722; x=1698847522;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2t9oxYN3rsKk69GT+sMAlcc8j8BCgsk4o9AAcXE61O8=;
+        b=pPG0cf1V7Pbtb4vNpqVyWshn4xmIQe8cc9KTUeOQhAWr06HHTaS6E70KZbwQG3aFKq
+         nTdGXuNx1kEBpW/ZKavrsxsWgbwxrldYzebv7reulMPznyXTwLcPbchGmU7pAK6nDts2
+         roLmfaBkEsve5ArrMAW6zIAkj00K/gX6gOHYDV9zxWM+C91+2IQFAoAUJBgNXLfIhMRZ
+         69Nuo2r6uId47P/VIFvSI98zhqIdRN8GQgM7patMkC9NqmO9Mx6OZMQX9wB/lnIe4Ihv
+         WenShQkCZWxsxfP3iucKym+7K4zvkKdcr1yzsC4XQmrtP3mD834nDwtY/shrgN7javcM
+         RK8Q==
+X-Gm-Message-State: AOJu0YzcOrbKkMj+jy7oqoZPaarH0t1fZo5zAADFigN2/PiyYzxUP0mI
+        Eu9XfJwip/I32+e6y3kOR9desP8Cew==
+X-Google-Smtp-Source: AGHT+IHZwbA7/T2Cie9xzSfVJjTlYJrns7ET5Ntkdpdj0CP3GCyvFAiFVZ/zk9i/aLQ4mMVrs1++Eg==
+X-Received: by 2002:a05:6830:11:b0:6c4:897a:31c4 with SMTP id c17-20020a056830001100b006c4897a31c4mr15222170otp.29.1698242721907;
+        Wed, 25 Oct 2023 07:05:21 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id y22-20020a4ade16000000b0057b38a94f38sm2366961oot.12.2023.10.25.07.05.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 07:05:21 -0700 (PDT)
+Received: (nullmailer pid 4149460 invoked by uid 1000);
+        Wed, 25 Oct 2023 14:05:20 -0000
+Date:   Wed, 25 Oct 2023 09:05:20 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH 6.7 fix 1/2] dt-bindings: nvmem: SID: allow NVMEM cells
+ based on old syntax
+Message-ID: <20231025140520.GA4143384-robh@kernel.org>
+References: <20231024171253.19976-1-zajec5@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 1/2] sched/fair: Introduce UTIL_FITS_CAPACITY
- feature (v2)
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-References: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
- <20231019160523.1582101-2-mathieu.desnoyers@efficios.com>
- <20231025075646.GB37471@noisy.programming.kicks-ass.net>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231025075646.GB37471@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231024171253.19976-1-zajec5@gmail.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-25 03:56, Peter Zijlstra wrote:
-> On Thu, Oct 19, 2023 at 12:05:22PM -0400, Mathieu Desnoyers wrote:
+On Tue, Oct 24, 2023 at 07:12:52PM +0200, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
->> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
->> index e93e006a942b..463e75084aed 100644
->> --- a/kernel/sched/sched.h
->> +++ b/kernel/sched/sched.h
->> @@ -2090,6 +2090,11 @@ static const_debug __maybe_unused unsigned int sysctl_sched_features =
->>   
->>   #endif /* SCHED_DEBUG */
->>   
->> +static __always_inline bool sched_util_fits_capacity_active(void)
->> +{
->> +	return sched_feat(UTIL_EST) && sched_feat(UTIL_FITS_CAPACITY);
->> +}
+> This binding supported NVMEM cells as subnodes and that syntax is used
+> by few in-kenel DTS files. Modify binding to allow it.
 > 
-> This generates pretty terrible code; it cannot collapse this into a
-> single branch. And since sched_feat is at best a debug interface for
-> people who knows wtf they're doing, just make this UTIL_FITS_CAPACITY
-> with a comment or so.
+> Reported-by: Rob Herring <robh@kernel.org>
+> Fixes: c5330723d5a0 ("dt-bindings: nvmem: move deprecated cells binding to its own file")
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+> This fixes issue introduced by v6.7 queued char-misc commit:
+> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git/commit/?h=char-misc-next&id=c5330723d5a0c77299a38a46e5611a584e887b87
+> ---
+>  .../devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml       | 1 +
+>  1 file changed, 1 insertion(+)
 
-OK, change applied for the next round, thanks!
-
-Mathieu
-
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Reviewed-by: Rob Herring <robh@kernel.org>
 
