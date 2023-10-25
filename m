@@ -2,154 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E23507D6258
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1CE7D6254
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbjJYHXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
+        id S232589AbjJYHX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232636AbjJYHXk (ORCPT
+        with ESMTP id S232346AbjJYHXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:23:40 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E8A185;
-        Wed, 25 Oct 2023 00:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oJ5H5HuNeUS44YCodtmW5YmlPErriupXrPKUq6nl7ds=; b=b+BSOUSUQZ5rSGSPcCKM8aHQzz
-        mgUmSZOyVtiTAQ6g6Vo0bJpvEV1Ybl3fTSfU/lwrBibTCBcGsWdDUyPHzGfdYi4Hgo1FQYs01XPJN
-        eCJZ5/cBBQRNAVLz/uAPJHn0NKXaLdyBaaw0Jufj6txzi+dD2HaoDqnRgMMz2a8KjO6W1k37RfWZW
-        WbKhNqdZiB/448MUC7WbrFkBLFHj4oBll1nDDgiVFZexO+HdVa/igEoHvMOE0sNz37Sh6gTjF9b5Y
-        QgNsACZWTW/stWlCMJpowpKI4TJGieizTwEbnwxrbfzDVhHXSbNXGSNAqTU6B99RxkmUmtgg1V39l
-        9K0hqNcw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qvYEC-00GBPR-0G;
-        Wed, 25 Oct 2023 07:22:56 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B84DC30047C; Wed, 25 Oct 2023 09:22:55 +0200 (CEST)
-Date:   Wed, 25 Oct 2023 09:22:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Alyssa Milburn <alyssa.milburn@intel.com>
-Subject: Re: [RESEND][PATCH 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20231025072255.GA37471@noisy.programming.kicks-ass.net>
-References: <20231020-delay-verw-v1-0-cff54096326d@linux.intel.com>
- <20231020-delay-verw-v1-1-cff54096326d@linux.intel.com>
- <f620c7d4-6345-4ad0-8a45-c8089e3c34df@citrix.com>
- <20231025062818.7kaerqklaut7dg5r@desk>
+        Wed, 25 Oct 2023 03:23:25 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FDE90
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:23:22 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b6559cbd74so809116566b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:23:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698218601; x=1698823401; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SnNqjmTumDhS9QjbNc2fsxDzSTTZE7f6qzo4FhoEWiY=;
+        b=Ofxr20scyQX8OmE/lhgFZest3nmgobuf/U7oVW6mmrSONt8Ce1RKLCqHH+/hE7jAjf
+         ew2SEL0AnzSc2LNRiNPKDIKJOtx5H6779NIN1F6+ri4fU+CWaUyIUEuhK9425XaEsVko
+         6pFgALtYtjmRehgGVLzjkWjv0We9q6swURQXu4oaPKcWEqm3CxREiPZMt53JFVevjlV7
+         lv8CTAaU6OAyaaUz+fNIwnJmjuhIf2nD47tgQcFlQN2/PGT9od6Y8i0xVQTdB+mQlgtI
+         mTBD+jLgZLIn/MTZ+8BYb6DA2biw8EmuNxFgjWsXjN8w+U6JbZ4EJkfT7vJxye4fOK1R
+         cTow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698218601; x=1698823401;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SnNqjmTumDhS9QjbNc2fsxDzSTTZE7f6qzo4FhoEWiY=;
+        b=EoYzjhMOIuKkiKjJ6MSDF99KSEIIPx5xUDcjgQhkxJXHcpD6Pf4EEm+Jw2HlRxOkS2
+         OR630j1l0nCWFKlZfLYqI0UExEMHLDBO1c4qJL7rHla9UF3wCs4o9Bu9L7FyPS5oZVhX
+         sn/TGwGRNriJhxS1aCjFucKW8tz4VX6gLCqtS0a1LqbkI7E50tuHXk3BnRWPc/XhyRJj
+         QC9RkqlAQUZfw1ik3g8hppgFcRCpct70x5B/m8eAo3uE8nfUdiIJvpP0czjl0l9lfrgV
+         2kh+w4aPN4hvPj5CNxzZBT7As3iDXUD6TJZ+xv2aycp0qzyDT9Wqqh/Pdlne+CMVyjJA
+         9/yQ==
+X-Gm-Message-State: AOJu0YwTv1kPw0UeoYJgarqeny/Zs7u5A0ziWmlqHZAh1Hjv1FmcYRbd
+        pkTFe01Mpy1vxnWMuzDhNucRFA==
+X-Google-Smtp-Source: AGHT+IGDzPdEPaKGrNOsr1qlrTkceEf3aDuIWmsxOt658eqmx0JDzDRBplXTPhd2sIMHpXKUFjspNw==
+X-Received: by 2002:a17:906:7310:b0:9c6:724:fa1f with SMTP id di16-20020a170906731000b009c60724fa1fmr12387261ejc.66.1698218600947;
+        Wed, 25 Oct 2023 00:23:20 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id jg36-20020a170907972400b0099d798a6bb5sm9403230ejc.67.2023.10.25.00.23.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 00:23:20 -0700 (PDT)
+Message-ID: <32edfc3c-321e-4816-b634-7b9540ab8c47@linaro.org>
+Date:   Wed, 25 Oct 2023 09:23:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025062818.7kaerqklaut7dg5r@desk>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: KASAN: slab-use-after-free Read in nfc_llcp_unregister_device
+Content-Language: en-US
+To:     Abagail ren <renzezhongucas@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller@googlegroups.com
+References: <CALkECRjyG8AtbUunWFYErQethdyCfiNC2-ZHP6oVtO3+GHxahA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CALkECRjyG8AtbUunWFYErQethdyCfiNC2-ZHP6oVtO3+GHxahA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 11:28:18PM -0700, Pawan Gupta wrote:
-
-> With .text.entry section I am getting getting below warnings and an
-> error:
+On 25/10/2023 08:27, Abagail ren wrote:
+> Good day, dear maintainers.
 > 
-> -----------------------------------------------------------------
->     LD      vmlinux.o
->   vmlinux.o: warning: objtool: .text.entry+0x0: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0x40: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0x80: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0xc0: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0x100: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0x140: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0x180: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0x1c0: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0x200: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0x240: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0x280: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0x2c0: unreachable instruction
->   vmlinux.o: warning: objtool: .text.entry+0x300: unreachable instruction
->   vmlinux.o: warning: objtool: .altinstr_replacement+0x2c: relocation to !ENDBR: .text.entry+0x0
->   vmlinux.o: warning: objtool: .altinstr_replacement+0x1c4: relocation to !ENDBR: .text.entry+0x0
->   vmlinux.o: warning: objtool: .altinstr_replacement+0x1d0: relocation to !ENDBR: .text.entry+0x0
->   vmlinux.o: warning: objtool: .altinstr_replacement+0x2d2: relocation to !ENDBR: .text.entry+0x80
->   vmlinux.o: warning: objtool: .altinstr_replacement+0x5d5: relocation to !ENDBR: .text.entry+0xc0
->     OBJCOPY modules.builtin.modinfo
->     GEN     modules.builtin
->     MODPOST vmlinux.symvers
->     UPD     include/generated/utsversion.h
->     CC      init/version-timestamp.o
->     LD      .tmp_vmlinux.kallsyms1
->   ld: error: unplaced orphan section `.text.entry' from `vmlinux.o'
->   make[2]: *** [scripts/Makefile.vmlinux:36: vmlinux] Error 1
-> -----------------------------------------------------------------
+> Since the email system replied that it refused to accept the email because
+> the text contained HTML, I sent it to you again in the form of shared files.
 > 
-> ... because my config has CONFIG_LD_ORPHAN_WARN_LEVEL="error" and
-> objtool needs to be told about this entry.
+> We found a bug using a modified kernel configuration file used by syzbot.
 > 
-> Do you think its worth fighting these warnings and error, or simply use
-> .rodata section for verw memory operand?
+> We enhanced the probability of vulnerability discovery using our prototype
+> system developed based on syzkaller and found a bug "' KASAN:
+> slab-use-after-free Read in nfc_llcp_unregister_device." I'm still working
+> on it to find out its root cause and availability.
+> 
+> The stack information:
+> https://docs.google.com/document/d/1gdHebCRsvVsSPKfilcoXVu3Pctvoj2FSZCACcVYZXns/edit?usp=sharing
+> 
+> Kernel Branch: 6.4.0-rc3
+> 
 
-I'm thinking you need to at the very least stay in a section that's
-actually still mapped with PTI :-)
+Hi,
 
-.entry.text is the only thing that is reliably mapped with PTI (IIRC),
-some configs also get a chunk of the kernel image, but not all.
+I received two emails from you, so I am not sure if these are separate
+issues or not.
 
-Something like the below should do I suppose.
+Anyway, there were fixes to these paths and you are testing quite old
+kernel. If you have the reproducer, it should be straightforward to test
+new kernel, so please do so. Test on linux-next.
 
----
- arch/x86/entry/entry.S | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+> Kernel Config:
+> https://docs.google.com/document/d/1WIM0btqS2dex18HQYaL2xyoW6WdX2TsaNguTnWzHMps/edit?usp=sharing
+> 
+> Reproducer:
+> https://docs.google.com/document/d/1LrgGdOgZwO8wz0opusZ7flP9QSFZa32GdozvoxGysyY/edit?usp=sharing
 
-diff --git a/arch/x86/entry/entry.S b/arch/x86/entry/entry.S
-index bfb7bcb362bc..9eb2b532c92a 100644
---- a/arch/x86/entry/entry.S
-+++ b/arch/x86/entry/entry.S
-@@ -6,6 +6,8 @@
- #include <linux/linkage.h>
- #include <asm/export.h>
- #include <asm/msr-index.h>
-+#include <asm/unwind_hints.h>
-+#include <asm/segment.h>
- 
- .pushsection .noinstr.text, "ax"
- 
-@@ -20,3 +22,16 @@ SYM_FUNC_END(entry_ibpb)
- EXPORT_SYMBOL_GPL(entry_ibpb);
- 
- .popsection
-+
-+.pushsection .entry.text, "ax"
-+
-+.align 64
-+SYM_CODE_START_NOALIGN(mds_verw_sel)
-+	UNWIND_HINT_UNDEFINED
-+	ANNOTATE_NOENDBR
-+1:
-+	.word __KERNEL_DS
-+	.skip 64 - (. - 1b), 0xcc
-+SYM_CODE_END(mds_verw_sel);
-+
-+.popsection
+
+Best regards,
+Krzysztof
+
