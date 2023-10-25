@@ -2,148 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AA87D5FF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 04:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DFE7D6001
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 04:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbjJYCbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 22:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
+        id S232099AbjJYChk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 22:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjJYCbp (ORCPT
+        with ESMTP id S232062AbjJYChi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 22:31:45 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31751B0;
-        Tue, 24 Oct 2023 19:31:44 -0700 (PDT)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39OLUSKg017506;
-        Wed, 25 Oct 2023 02:31:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-03-30;
- bh=M0348xx4p11NtqbP9B5tWm/RUhNh36Z1tyYGK+KC8WQ=;
- b=jpx71zbY1G1KVTnIGxTICugn15+MEjh4wmQKCtc2cRjSYJYs6g3bFNIO5aLEdpK8UJPD
- iBJ+X4Qnz9zcI/STV8Kt4hjugqw1z2GsI7r2+DT/f+m+Co4K3cMKoq+usm1u4TXOugSS
- ZRjoE59rY/NvkBJHwwXLOKjo2mbrnTvX68VjjZOquYq1o8xqh2yz8ChFSxsx4KZws8gB
- LCg3xGlDcmdun75wOldjEge80+ILe3GNeCt6y0z2ddVYhM45xPzg30xl5i/TiSb49GK4
- 7dmiJsXWI8SZEJyIV8WF+a+5VHKK68ySuBopXh1PpKXsrhAOXM364OD3jRPgrSIxo0oJ WQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv52dxrtg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Oct 2023 02:31:31 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39ONY78U018969;
-        Wed, 25 Oct 2023 02:31:31 GMT
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2040.outbound.protection.outlook.com [104.47.74.40])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tv536a2t5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Oct 2023 02:31:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EfQ5Ps14WOYYsrL78l8ZRa/9Nv1SZykI+S2N1sMi4hJxXjtkJh29PYssu2Jof9MdviGpXsI68sILrf0BythrzVUR2I6FzRwCLywEoVHSawLC9z+9RCabkRADVCNXngzOcn3UlpSw59MNc5cMToEXMiEFCzFMHsELYK7KnBBJQy52OO2rf+sgB9vbxOLhdRb2zZrm6YYjpw93JTO5jT8DIFi5I9TkP3yjEqoaBY4oIFAdfhszD2ZelBeCqInU7rHBgP2Z5kOv9a9iXO/6CMLdPAJNcVAeQC22eBy2BvAmzFSqUtIaeQ/2flyhvKFzuxs63dqplrgZYyHjRRH5mKDFlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M0348xx4p11NtqbP9B5tWm/RUhNh36Z1tyYGK+KC8WQ=;
- b=gEL2K4WrnApstKpsFEC8WKgLvV6YO5ltGvNXGOP1hPlZi4IaX7QT8L0HkRfE8a4qZZlwURQGn2PBy3PbHeHbeOv63GBsWJ4XwoVQ/BzxszBbjoir5Rco5ltQN8P2zHqk8vOcQ01EpLLmDIkj+pLeq4qQdNQ+zd9TJFmdTyqlxg3mYYe9gNelYeQmkkcVmJe+DOpMYdjvwQLD73bobZiwe94twKLGfBWHYeBkkj8RI5T49AKHvosDDV+YuQA8ZXpENVwx5uT+q7v/GQZj5gk4ZvFnNgSU+QbluvHC2BYrc2AC0yOZb8lMvSbEG0CT9aHzIXbWIbCnK/Lzg7gxD3CuTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M0348xx4p11NtqbP9B5tWm/RUhNh36Z1tyYGK+KC8WQ=;
- b=nUWfWqmil35pwztaRTxHnJfl/NFV/i40E+ihjI67IQc1W9J8/xo/8PPQNvz/oAv0D30Z+CZboUwg5sL6X4Yetb3lyGRSX1SKJRTZcj5kvn4oWEevO7oPjz5n+Yp0jcYb435hWitWWVYXBkrZk5DUtY3ejuAAeW5FzBEKGJVWc/o=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by CY8PR10MB7268.namprd10.prod.outlook.com (2603:10b6:930:7d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Wed, 25 Oct
- 2023 02:31:29 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::7afa:f0a6:e2d6:8e20]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::7afa:f0a6:e2d6:8e20%3]) with mapi id 15.20.6907.025; Wed, 25 Oct 2023
- 02:31:29 +0000
-To:     Wenchao Hao <haowenchao2@huawei.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <louhongxiang@huawei.com>
-Subject: Re: [PATCH v3 0/2] cleanup patch
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1r0lje8lp.fsf@ca-mkp.ca.oracle.com>
-References: <20231018113746.1940197-1-haowenchao2@huawei.com>
-Date:   Tue, 24 Oct 2023 22:31:26 -0400
-In-Reply-To: <20231018113746.1940197-1-haowenchao2@huawei.com> (Wenchao Hao's
-        message of "Wed, 18 Oct 2023 19:37:44 +0800")
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR13CA0209.namprd13.prod.outlook.com
- (2603:10b6:a03:2c3::34) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Tue, 24 Oct 2023 22:37:38 -0400
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9309A10D9
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 19:37:35 -0700 (PDT)
+Received: from eig-obgw-6009a.ext.cloudfilter.net ([10.0.30.184])
+        by cmsmtp with ESMTPS
+        id vLNhqpZkd6nOZvTm2qLpgV; Wed, 25 Oct 2023 02:37:34 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id vTm1qtE9COk5SvTm1q0r5e; Wed, 25 Oct 2023 02:37:33 +0000
+X-Authority-Analysis: v=2.4 cv=E+DeGIRl c=1 sm=1 tr=0 ts=65387f6d
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=_mNlVl-r0hj7kTaC:21 a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10
+ a=yiRjFQIvNRT05BO5IWcA:9 a=QEXdDO2ut3YA:10 a=N_l3Vs37sht3-TxgB6J7:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=IahuLxENwBvcQu5NawHPQqBuCWpwToxFKhWLnhbPsjA=; b=A6miGOebEelAgGO/y8Xg8CQaJ2
+        encD8KXpUYQA7Y57ewp1KWNFtAjLh0IdF7vZcMJdKh0a50bWUD68yixEX90aMwNzvTsEmGz3GoxEh
+        AIQcmyyGSlVF/ChA64778Ek8Oht/x9PZG/AMRI4kubCRbkcfQPCunXdX/qM6NeUaqcn5FnyOsiy42
+        e3ZVgbvPm5QZ9KGnMogaJ125PG3bV3rZSPAF5VbXNGPSX5VayntbfDeCN7dUHAqbwm94mt9MismLX
+        8MV0Yp01UBJoG34XnWNMIXZrJH2WiJicdU33zSLBTITiJQuEG+fPE6GOzWyOTTbBqN/JZkJAvXSTK
+        EVAt/XJA==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:56754 helo=[192.168.15.10])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qvTm0-003HJe-2k;
+        Tue, 24 Oct 2023 21:37:32 -0500
+Message-ID: <8219c79e-0359-4136-afa4-fba76fde191a@embeddedor.com>
+Date:   Tue, 24 Oct 2023 20:37:31 -0600
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|CY8PR10MB7268:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2dca7e05-a5b7-4112-5c2e-08dbd5027e48
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: L7qjbC6P0kpKUXd0HIEzy9iH2U024QzdX6VG1V+OfvYB2FC5ReLzKPPzvO4+KhaitMqf6uC4/SdHRMfNgT3pusTtZOjdLY5n+0Pz3NMeo8+4/3GCc9kqHZA+NfeYpy8lArrLeuBH5pjgOx1PT9lYilyYF1vnEQN+DWTln5+KTvHwWdEWoMbYSDQ06GD6wUps5RGoVNhwFISG3nKrlXcMFMhJ7wrDif7eSSUMVgn2CoekcV3lqoeHra3HVnrLsCx0iLhuXaDuAwx4BvN8Ywcm3fO/38UH3N193NaqmrCc/TmpchAsY3N6EKllDUduMhUwukUC7dNyyco3tUDi/G+rOsYp0dnh9MnSx3NrDeotiuAWdQ1fQsIhEzD5zBqvSZNhXzmoSYMtmdQRUopZtUTtFckgKZlU8bYzQCCXCn7pMPeazBUzykFXq4cIf5eTcYeCMSh+X8HAxJ1WBlQfMTUzzHe/xb4NFNducyPHgyjvdRIheztGnLfL1ksNuXCVXmtrzPD4NkkRjvOmr6zJcyEJmoiQF3Zm4l3KN85/mCYEP+2bB5J7mIVp8E4gzDArb+u1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(376002)(366004)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(5660300002)(6666004)(8936002)(66556008)(41300700001)(86362001)(66946007)(66476007)(478600001)(316002)(6916009)(6506007)(54906003)(6512007)(6486002)(36916002)(8676002)(4326008)(2906002)(26005)(38100700002)(558084003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lgBjfsCelMeAe2EBfdjAEqdi0Ml9T5RzF1CWh4gtX6bgtwsmItrcs8N59Aq6?=
- =?us-ascii?Q?AWb3Gc9lKZtEOFrzyiMdK34s/8xbDcK6uzTxcFD7hel3+1m8RLSkYFkRl84r?=
- =?us-ascii?Q?d4X2cEkoaHzuHnyjZ+q/ZragnHrDAmE5YU6mx7VOrwu92231jdsGSCse/heq?=
- =?us-ascii?Q?cr4wZw0Lsw+8zvGwmhHfx+Cm1gsu2bSx/e/5n4vIR1Vgjyv1e6v8ECglX7vX?=
- =?us-ascii?Q?bVPCmPzmTYdfJinZNbHkl0iQR6oWSz8TBPZquaKJAjvCWCRGRr1zpXCZJ/v6?=
- =?us-ascii?Q?MLNpwyTn0jhN+lA9EyIBvOclVwzIsSTw5vqBXLAodddFj+O3BsjbGCR7xjp1?=
- =?us-ascii?Q?oNGthns2ubQwa63wpT6hQjjanDIoEcnPt+QrkaoMhpmr+EyM3QQP8N57WLjm?=
- =?us-ascii?Q?q5mgvgToUvBA2aFINPpOgffR5lEjM3v26Et0M4uwZVtMl777KjzVcQ2BiKSl?=
- =?us-ascii?Q?QmkDXD8zNW38OESCMypwS215QXKYNlt0eb6E1SMBifgIwb6xcs09aZvUjVJ0?=
- =?us-ascii?Q?XC4AcRy7nN4s6LUd2fWSPtrkNL7U3pJrqAwYokc7PXBoSUoi9mjbT6ffPnas?=
- =?us-ascii?Q?ZQ4VUdsAPT1hgkLAgrkfnYOAzV19GyMmobBu8Bkh5vJ2YjHge/1l8t9uSdlY?=
- =?us-ascii?Q?w5iElfAf6gQovBO/2MTnJXvgfo6aXTqs8bIvgLqkDa73Tf4I3A/fByf4/jsL?=
- =?us-ascii?Q?TRRp8iltcXNFl6w7NavMxJQDD51tr8Dps6ifyArYAFwu8YDKI5yLSvAqi4+q?=
- =?us-ascii?Q?Ne/veS75GijsKhHIu/4Af2QlELLjbCHJe0tzG+gmTlA7dzhWjCwtWvY6iuKe?=
- =?us-ascii?Q?U0VSkYMAdOzo+fuKMuYLBEZzhvcx2IrCsYYZYCvRnSahGFX+G9F39E7BMORm?=
- =?us-ascii?Q?RylxsVk3Y8ekM6xOlxGahJdmoJ4jbwBzQ0OWRRUrB9OVK0y/4tVBKmrgaqr2?=
- =?us-ascii?Q?BgtFOkGolGLE3RG+WP2dqrcZq9EdniusMEWwSXncolqtPq9d+ENZT7o8OL71?=
- =?us-ascii?Q?oEfZCA7PkV0vylAxYuAsgmR76aLXXyySEmT2dBNrmgdOXCumoQIa75s3neDr?=
- =?us-ascii?Q?T/pllZK6h8A8Xg18EmLjIGAkX93pcGtvz/2zqHB6q4pj2Bd0qy1dCvCt+dle?=
- =?us-ascii?Q?5itF9JPjoZiA+qhiWvuMLztsCnMf45UmsLkZbDE/ONKFYLLYVsccCaGlDpx8?=
- =?us-ascii?Q?DJWVqqFaZNUj868rXZnEoFU/NBSMLijh/vE+nta/bzNkPjEiNgBqQBrZNoMr?=
- =?us-ascii?Q?aqtTZDdVVZQm3WP0Xdrtiizorqe/wyG38R5mma1j7SAGC5Zo81BgKkflLYyx?=
- =?us-ascii?Q?nt0mCfFnm8jFBTHrwAf1bpr6jAdO65RnDA9UVCzEApa45R/+3BmJSLPuSK7J?=
- =?us-ascii?Q?DWxedBrbyy0s6dma/0h6yI8iWvTEqKPPXBz95ZS2vGl8ohJlFZdoYWpa8ja5?=
- =?us-ascii?Q?XKdl/XXhaSWv3n992WYJYkpTbEAt24JGMZI1Q/vH8vaSDmRen6Y6cKJEaCHf?=
- =?us-ascii?Q?ik3ctXdQqGmH/GMWadus0fMnJkC0CMw7gVEkq+OxCERtV2K3nvW0dtdzdRy/?=
- =?us-ascii?Q?8tdL0eN8WLwVnAFzz7pRnB55LCYSJmoNOMUFeNSVJGAHQuxUi/6x+cwvhvr0?=
- =?us-ascii?Q?sw=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: iovzvw58SRM5Dh5oWIPGMQjAD/IRa+Wy7f4gumDRTjpPeo+goG1nr6dGgZnpZeSLqpcDbJuk8sLsoqH28Z3MyJjahC6toyh+95+lobHeKHclAYvYixAa3Hqi4CSHBFXJ9ttVDnTWazhI6vgT+jLhAAyVLIlsMQgDPPbKWHRZBe2QniwF0HL54IpayKkf/j8eCV0Y7yQ88glgJZdxiVNQWIFnS7YFWv2MfbovnX4Ud3SMPChbTu2HxbhDKphAqzQnuzmdtplvi0kUasU5Q4xJJlioWlBmzEYVqaE3aPVmrYl4v6lBL3Nb27AmLa2Bs3PFTILONOosWa/nKmKJoZlrc0/DAFEsl1nZoYo/oJXuB2teyP6tLCdG7fgzBv3xWxzQUGBJ6g3meNJErq6Z3w5NcminMe8osnt0Wwss2uDeGnSj4hT9vjSNsxckWehHOt+w5ESlNVCDT+TWG8EEHrsTIMcOVafRb42OtQEQvxuPieYgFV3ubgEYxgtp6B0tsx/LR1/Ex71JDS80+cuHEUbB5UNjdDmv/LKIvViOT71S8HCQ2GUSwbKj3GsF0sV5cPlmoTn3PgWf/qDOjjkZ9i5ccUYmtyNIHfa8a1FG+hDNW+nfvG7oG6VAdThMqOf+5PxOWnkEKGskZo5rkqfT+6WTRvtWFJIzzVBuA/W0+yrDUHEV2O3ReAWQyf/MWWA0veVb4uxNlcAOixxwM149Alwhh71HdeAVA8UVgAM/2t9iUviaJoB1L1Kmoj6NPZXiwx2I4lT0ovLoil6lV9P+f3lL9JVp9QQLEC3zRjztAoCfxAeC7ttFYAK7tOE/Vdq0GLlddK3FuAhjadeYrdjETatZdxwH8SEgDWQUOzuWSHnwNRs=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dca7e05-a5b7-4112-5c2e-08dbd5027e48
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 02:31:29.3058
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oMEFQuc8cB545dt04Vo74uYHCaTkQsT7DgP78Zvo+oNo097gyBtt4Qs71W/SqAw1jEMHLp6LGn/SXHtGbMvnSaST9iOns0t8YhuVgh+HTVs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB7268
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_01,2023-10-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
- mlxscore=0 suspectscore=0 phishscore=0 adultscore=0 mlxlogscore=760
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310250019
-X-Proofpoint-ORIG-GUID: Abh1Bhzf5l-9YlPVIrDB4CFNUEJV8MOM
-X-Proofpoint-GUID: Abh1Bhzf5l-9YlPVIrDB4CFNUEJV8MOM
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC - is this a bug?] wifi: ath10k: Asking for some light on
+ this, please :)
+Content-Language: en-US
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+References: <626ae2e7-66f8-423b-b17f-e75c1a6d29b3@embeddedor.com>
+ <26b15f4702cef17fe70b496a62f03735874bd16a.camel@sipsolutions.net>
+ <07e9bb04-f9fc-46d5-bfb9-a00a63a707c0@embeddedor.com>
+ <f8daa53ee8a8019e4fd2b823c1fcb85a6cc4d806.camel@sipsolutions.net>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <f8daa53ee8a8019e4fd2b823c1fcb85a6cc4d806.camel@sipsolutions.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qvTm0-003HJe-2k
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:56754
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfES+hWMGisRisjUK6MhRPwQzEbQ/VkW2wcMqTeqRa0FP4it/pF9e9OKOizrvu1YySjrSwFq6mdmY7uyI1wrUetej3xj16aKlB99zzlrnlzrYEmoobhrD
+ Ef/lDkeKnL4gu2DlOglB4TgMzuuJcrq9Yagu2RmFllgkXMM7eGJV7WByH+TMfnJBGbpYrxfbSjlLZsgraNlnW9Wy17iJG9zdU1OsK0ovtJG5LngWMjIKbkyV
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -151,15 +97,51 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Wenchao,
 
-> This is a cleanup patchset, no logic changed.
->
-> The first patch cleanup scsi_dev_queue_ready();
-> The second patch add comment to tell callback target_destroy of
-> scsi_host_template must not sleep.
+On 10/24/23 14:49, Johannes Berg wrote:
+> On Tue, 2023-10-24 at 14:41 -0600, Gustavo A. R. Silva wrote:
+>>
+>> It seems we run into the same issue in the function below, even in the
+>> case this `memset()` is unnecessary (which it seems it's not):
+>>
+>> 	8920         memset(skb->data, 0, sizeof(*cmd));
+>>
+>> Notice that if `cap->peer_chan_len == 0` or `cap->peer_chan_len == 1`,
+>> in the original code, we have `len == sizeof(*cmd) == 128`:
+> 
+> Right.
+> 
+>> -       /* tdls peer update cmd has place holder for one channel*/
+>> -       chan_len = cap->peer_chan_len ? (cap->peer_chan_len - 1) : 0;
+>> -
+>> -       len = sizeof(*cmd) + chan_len * sizeof(*chan);
+>> +       len = struct_size(cmd, peer_capab.peer_chan_list, cap->peer_chan_len);
+>>
+>>           skb = ath10k_wmi_alloc_skb(ar, len);
+>>           if (!skb)
+>>
+>> which makes `round_len == roundup(len, 4) == struct_size(cmd,...,...) == 104`
+>> when `cap->peer_chan_len == 0`
+> 
+> And yeah, that's really the issue, it only matters for ==0. For a moment
+> there I thought that doesn't even make sense, but it looks like it never
+> even becomes non-zero.
+> 
+> No idea then, sorry. You'd hope firmware doesn't care about the actual
+> message size if the inner data says "0 entries", but who knows? And how
+> many firmware versions are there? :)
+> 
+> So I guess you'd want to stay compatible, even if it means having a
+> 
+> 	chan_len = min(cap->peer_chan_len, 1);
+> 
+> for the struct_size()?
 
-Applied to 6.7/scsi-staging, thanks!
+Yeah, that's an alternative.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+I'll wait for the maintainers to chime in and see if they have a different
+opinion.
+
+Thanks
+--
+Gustavo
