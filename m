@@ -2,69 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA677D73B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7855D7D73BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbjJYS6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 14:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
+        id S233628AbjJYS7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 14:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234866AbjJYS6R (ORCPT
+        with ESMTP id S229797AbjJYS7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:58:17 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8451E1A7;
-        Wed, 25 Oct 2023 11:58:15 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c9fa869a63so179505ad.0;
-        Wed, 25 Oct 2023 11:58:15 -0700 (PDT)
+        Wed, 25 Oct 2023 14:59:19 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E87123;
+        Wed, 25 Oct 2023 11:59:17 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cc04494653so39285ad.2;
+        Wed, 25 Oct 2023 11:59:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698260295; x=1698865095; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1698260357; x=1698865157; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=USz6/9s71w0sLfPe0tPsO9rm/oa0H0AMSu7wCJkzwrk=;
-        b=mDAhm5cZqbU+ir+E5s7LtUD1Rk+1qafown1uf0FM0ZsYMq9K4TbWKKZ6BQojUabe4w
-         nOqIPJr1avIioxhvcKOYgcZbsjRITPf/ceQ934nOPZGOulBTQEsyc77CquJP88c5rXSB
-         K7bFzfdxsPU4quLBAENokg7sXfToCx95WqnNhRWjmOIq0tcMTjTAIBs0SazKJhgnOota
-         xJpyYBs0dbVB0SEz9fMo5sbV9Vl4Ph5CPmFVO/vQLqx6jEEmwrf9W8y5npbZcWb5hwJH
-         DcQLWsfgK7O5GITHRUKdkexQ9WRH/XhfATAd/mNObrcKbl66yJxZEPkP3YZYhfVFCSf1
-         S+jA==
+        bh=wT/xmiiSCLh2Y6rSvgnA+8oiaYPyDP9YFnNHMvs/gJ0=;
+        b=eWJCIBHzvGSr9z63EcWSkpu65+T5sAWpoqU1jWhnGkWPfaltRsUfKQErEl0iP644Gv
+         kYQRkMXZQKwJBoP8b733EAU26fv/T3gm8oYBx4vzG60JTAFp6ZR1U3I2FhabA+C35b5B
+         YwFi8sajmf3B20r3Y+82Byo6YeVJsAQ2plAmQ0MsP21CVXc4ZU+XP/hxZGfcgvZViApv
+         99lCM4CnjnbYYi/bO6PKQlO/6WE+0CkPqZpVsLzgLTVGQqr+Qz+qhSshwVtsXfBj6zpB
+         /1sNAMeRWgqTtmswPLnFA+fXADdJtQaYUehFxwR6MpU1sAUX/ByWGIHgvRl7dMexTlag
+         kZRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698260295; x=1698865095;
+        d=1e100.net; s=20230601; t=1698260357; x=1698865157;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=USz6/9s71w0sLfPe0tPsO9rm/oa0H0AMSu7wCJkzwrk=;
-        b=giF3/p37JXJTXX1DhLirl4BrQFXZqFfxtq77Y3vTXxwQiOrCinEHoM3SFav9Jc6Bnf
-         w+shc88BVy8aqSK+F3r5SnILJ1chNV/R4obP5sY6M0Pp6NyefvsJ8SxVHV8OKDV85TaM
-         2szNbz40bKh4E4twwoVWAKPzlcNa52LhbTG+4kllFUHcBswhVCFARhPFIgt5Ak52SLnU
-         MCPuMD76KmltqmMFkgqsGuJYE1LW7VyEt8yseJGnYI+g6iPun+5UFuCbHeB0kOX74+SI
-         NHN+WX4lZotUdGgYJps1A/LPhnuCF19d2oZq1jf02S5QZGxQr9vjM8FuKwtEMppTa3AE
-         bM9A==
-X-Gm-Message-State: AOJu0YwYvksmzau8J4fJmsTL0pt82QmXo+4JTJDk2k7jTgBrlgRkiHSX
-        g6j6Xoc1YQPnMrC4Iyf6yFU=
-X-Google-Smtp-Source: AGHT+IHQLq6txzQqOERaBYLD9jpZkK03lGzJoWlAfq34fiGSic3OdT/9uldu9Ab2DOD465RDLe7vcw==
-X-Received: by 2002:a17:903:2342:b0:1b8:8b72:fa28 with SMTP id c2-20020a170903234200b001b88b72fa28mr13880277plh.58.1698260294863;
-        Wed, 25 Oct 2023 11:58:14 -0700 (PDT)
+        bh=wT/xmiiSCLh2Y6rSvgnA+8oiaYPyDP9YFnNHMvs/gJ0=;
+        b=pbW5CkKjUgKWVru/E+jnSDLLTEo9XolIP2div3dPf/y08u+3Dmq7e4VT8i4YjzJDha
+         O9EHHtbGXV9eyI2JRfqImCt+8Z6g4wK3QHi5DObtoh7qlkHPfEjZvti5q9ZF/4lzlg14
+         gnweDqozPKfjCHwLahYhvBUVH+5usTHiMgwf6jwxe6A3R7QqBT7pgL5X+lNrL5mYJSZt
+         TXywV+6bbyNu97A/LQxV7DxPRQH0VZ4d96iz4oBfodjSMXD/9KbiyBPWsHKcmI/KBrjX
+         9vzDwZo/kyaLBSqSuVRflX6e6aswS+THQDkYlfb49n0/1zQf8VJuxwYhZJ+VjKlghFZf
+         4l5g==
+X-Gm-Message-State: AOJu0YxVjuLL7+2/E1eWXZbX92TggvsDJkCuv8mpBjFKyWCOddq6/2v5
+        kXk8tu3uPp3DEaK7T2sHPEa7niEDkmI=
+X-Google-Smtp-Source: AGHT+IFhm4YyvzAerma1M6k1s4kSO5X5DGgk6SBjZTke2iY40XTEWUcHPEcDP9BOolEpzhECGXlMAw==
+X-Received: by 2002:a17:903:294f:b0:1ca:5d1a:e77f with SMTP id li15-20020a170903294f00b001ca5d1ae77fmr11322986plb.43.1698260357028;
+        Wed, 25 Oct 2023 11:59:17 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id iw22-20020a170903045600b001bc930d4517sm9558792plb.42.2023.10.25.11.58.14
+        by smtp.gmail.com with ESMTPSA id jf20-20020a170903269400b001ca4c7bee0csm9591441plb.232.2023.10.25.11.59.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 11:58:14 -0700 (PDT)
+        Wed, 25 Oct 2023 11:59:16 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 25 Oct 2023 11:58:13 -0700
+Date:   Wed, 25 Oct 2023 11:59:15 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     Zhang Rui <rui.zhang@intel.com>
-Cc:     jdelvare@suse.com, fenghua.yu@intel.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lkp@intel.com, dave.hansen@linux.intel.com, len.brown@intel.com
-Subject: Re: [PATCH] hwmon: (coretemp) Fix potentially truncated sysfs
- attribute name
-Message-ID: <c5c1fb9a-2569-487f-9e16-9c637ba0db04@roeck-us.net>
-References: <20231025122316.836400-1-rui.zhang@intel.com>
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     rafael@kernel.org, len.brown@intel.com, robert.moore@intel.com,
+        mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        mark.rutland@arm.com, will@kernel.org, Jonathan.Cameron@huawei.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v3 5/6] hwmon: nct6775: use acpi_dev_hid_uid_match() for
+ matching _HID and _UID
+Message-ID: <1de5bd70-5001-4661-93e5-6135597bd9c1@roeck-us.net>
+References: <20231024062018.23839-1-raag.jadav@intel.com>
+ <20231024062018.23839-6-raag.jadav@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231025122316.836400-1-rui.zhang@intel.com>
+In-Reply-To: <20231024062018.23839-6-raag.jadav@intel.com>
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -76,36 +81,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 08:23:16PM +0800, Zhang Rui wrote:
-> When build with W=1 and "-Werror=format-truncation", below error is
-> observed in coretemp driver,
+On Tue, Oct 24, 2023 at 11:50:17AM +0530, Raag Jadav wrote:
+> Convert manual _UID references to use the standard ACPI helper.
 > 
->    drivers/hwmon/coretemp.c: In function 'create_core_data':
-> >> drivers/hwmon/coretemp.c:393:34: error: '%s' directive output may be truncated writing likely 5 or more bytes into a region of size between 3 and 13 [-Werror=format-truncation=]
->      393 |                          "temp%d_%s", attr_no, suffixes[i]);
->          |                                  ^~
->    drivers/hwmon/coretemp.c:393:26: note: assuming directive output of 5 bytes
->      393 |                          "temp%d_%s", attr_no, suffixes[i]);
->          |                          ^~~~~~~~~~~
->    drivers/hwmon/coretemp.c:392:17: note: 'snprintf' output 7 or more bytes (assuming 22) into a destination of size 19
->      392 |                 snprintf(tdata->attr_name[i], CORETEMP_NAME_LENGTH,
->          |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->      393 |                          "temp%d_%s", attr_no, suffixes[i]);
->          |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    cc1: all warnings being treated as errors
-> 
-> Given that
-> 1. '%d' could take 10 charactors,
-> 2. '%s' could take 10 charactors ("crit_alarm"),
-> 3. "temp", "_" and the NULL terminator take 6 charactors,
-> fix the problem by increasing CORETEMP_NAME_LENGTH to 28.
-> 
-> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-> Fixes: 7108b80a542b ("hwmon/coretemp: Handle large core ID value")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310200443.iD3tUbbK-lkp@intel.com/
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 
 Applied.
 
-Thanks,
 Guenter
