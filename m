@@ -2,127 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8905F7D6F93
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034C57D6F18
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345046AbjJYO0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56054 "EHLO
+        id S1344964AbjJYOZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345025AbjJYO0B (ORCPT
+        with ESMTP id S1344661AbjJYOZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:26:01 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AE71A7;
-        Wed, 25 Oct 2023 07:25:55 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PDRnRT009558;
-        Wed, 25 Oct 2023 14:25:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=e99QDKJaEJpo1UMwO5PwEV8yDUdbz8pwdXVIRWu8G5c=;
- b=GWzu9D4Rlclmb2iysQnxjiLPv16PJTPgueBAFN9yd7JfQJHvbNhABn1KtgeDZrwTRXZV
- bc3qkGOT5TKAlVwEGXzHGEIQjYG+qy/FfbqZY/oYzkl1VYbyu1HKctxI92T3vmsjqv4I
- XXb8TnOE7I5tOrt1YchoOqiJY5y3Nlg+dXonpIo+H8R+kYUbKctN6RlPN9l86XHeB5Gn
- b+NTI6FJ2sNefGMMyuewyPGbbxG3l+VBBdkXyoZW08d9Leyb2IWHBrQG2HF9r4auaxLd
- VDBZueq7EXuhSP/+sFx07Iqy3JK8dlfesSGif1hwvgeWhIiNfTh19haq8RDlhUn/VLtv 4g== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3txpj5hhd0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 14:25:36 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39PEPZj6018226
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 14:25:35 GMT
-Received: from blr-ubuntu-87.ap.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 25 Oct 2023 07:25:27 -0700
-From:   Sibi Sankar <quic_sibis@quicinc.com>
-To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <catalin.marinas@arm.com>, <ulf.hansson@linaro.org>
-CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
-        <ayan.kumar.halder@amd.com>, <j@jannau.net>,
-        <dmitry.baryshkov@linaro.org>, <nfraprado@collabora.com>,
-        <m.szyprowski@samsung.com>, <u-kumar1@ti.com>, <peng.fan@nxp.com>,
-        <lpieralisi@kernel.org>, <quic_rjendra@quicinc.com>,
-        <abel.vesa@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <quic_tsoni@quicinc.com>,
-        <neil.armstrong@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>
-Subject: [PATCH 5/5] arm64: defconfig: Enable SC8380XP SoC base configs
-Date:   Wed, 25 Oct 2023 19:54:27 +0530
-Message-ID: <20231025142427.2661-6-quic_sibis@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231025142427.2661-1-quic_sibis@quicinc.com>
-References: <20231025142427.2661-1-quic_sibis@quicinc.com>
+        Wed, 25 Oct 2023 10:25:17 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F57099;
+        Wed, 25 Oct 2023 07:25:15 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6ce2cf67be2so3654683a34.2;
+        Wed, 25 Oct 2023 07:25:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698243914; x=1698848714;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PsDU6unZ9oc6UCJkdOraO8O4Nijhy1TmXbsiiZnftNA=;
+        b=gw9ek/L9Itw033vgtb8l0IjmAR/T/6hKA26/cMGGXb6rErbH6nTKNwjnyuL3vGA35y
+         9aPVjgnLOZVNbI9vhNGMwQVKGPkzDS1OAFAJCW68EgAwvAf6g1y2LwvrJxnKERZe0mOV
+         BDJlvfG95ajNZXPiUrtGJEpPeQjCn4g6pg9WBGGbPkEMUVzppHD4Rm9y1hGfWJX5iHgM
+         JjVWnIsW5DUXxuYjvLjQvyee2yV88PGfIqIvCluPd4mXC2clPSGDbdGS1D/SmwyZb/KB
+         1N7auKv7Lf34fbNtjWJPON9w04Wdl8RE0aY6qlyzcJrRXkt3uAUcDuL0FGvVhdZ2kHgA
+         mxYA==
+X-Gm-Message-State: AOJu0YyJpG6r6x2hrPeU2v7ZqHviOAZcU9TJLaeG+OphjcGPTLEtTtQl
+        LRiYPrYO62rcqDOFLM4Odg==
+X-Google-Smtp-Source: AGHT+IEJMt/OKE5hn7HICeD4NHHvB/xTt8NPVXJOPA+84mEStvR1sIAotcj+fA8OdlowPY0s5aeQ6g==
+X-Received: by 2002:a05:6830:908:b0:6b9:bd9d:e333 with SMTP id v8-20020a056830090800b006b9bd9de333mr17227122ott.3.1698243914529;
+        Wed, 25 Oct 2023 07:25:14 -0700 (PDT)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id m6-20020a05683026c600b006c4d38e12b9sm2282446otu.65.2023.10.25.07.25.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 07:25:13 -0700 (PDT)
+Received: (nullmailer pid 112955 invoked by uid 1000);
+        Wed, 25 Oct 2023 14:25:12 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: rF8-UD9E1uD1lFHvPMaPGy7ymTT233qS
-X-Proofpoint-GUID: rF8-UD9E1uD1lFHvPMaPGy7ymTT233qS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_03,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- adultscore=0 phishscore=0 clxscore=1015 suspectscore=0 bulkscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=783 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310250124
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Wei-Shih Lin <frank101417@gmail.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-input@vger.kernel.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmitry.torokhov@gmail.com
+In-Reply-To: <20231025082054.1190-2-Weishih_Lin@novatek.com.tw>
+References: <20231025082054.1190-1-Weishih_Lin@novatek.com.tw>
+ <20231025082054.1190-2-Weishih_Lin@novatek.com.tw>
+Message-Id: <169824355638.62574.6102936426435011763.robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: touchscreen: Add Novatek NT519XX
+ series bindings
+Date:   Wed, 25 Oct 2023 09:25:12 -0500
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajendra Nayak <quic_rjendra@quicinc.com>
 
-Enable GCC, Pinctrl and Interconnect configs for SC8380XP needed to boot
-to a console shell.
+On Wed, 25 Oct 2023 16:20:53 +0800, Wei-Shih Lin wrote:
+> This patch adds device tree bindings for Novatek NT519XX series
+> touchscreen devices.
+> 
+> Signed-off-by: Wei-Shih Lin <Weishih_Lin@novatek.com.tw>
+> ---
+>  .../input/touchscreen/novatek,nt519xx.yaml    | 60 +++++++++++++++++++
+>  MAINTAINERS                                   |  9 +++
+>  2 files changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/novatek,nt519xx.yaml
+> 
 
-Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
----
- arch/arm64/configs/defconfig | 3 +++
- 1 file changed, 3 insertions(+)
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 509084d35bef..78d9a21118c6 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -595,6 +595,7 @@ CONFIG_PINCTRL_SC7280=y
- CONFIG_PINCTRL_SC7280_LPASS_LPI=m
- CONFIG_PINCTRL_SC8180X=y
- CONFIG_PINCTRL_SC8280XP=y
-+CONFIG_PINCTRL_SC8380XP=y
- CONFIG_PINCTRL_SDM660=y
- CONFIG_PINCTRL_SDM670=y
- CONFIG_PINCTRL_SDM845=y
-@@ -1244,6 +1245,7 @@ CONFIG_SC_GCC_7180=y
- CONFIG_SC_GCC_7280=y
- CONFIG_SC_GCC_8180X=y
- CONFIG_SC_GCC_8280XP=y
-+CONFIG_SC_GCC_8380XP=y
- CONFIG_SC_GPUCC_8280XP=m
- CONFIG_SC_LPASSCC_8280XP=m
- CONFIG_SDM_CAMCC_845=m
-@@ -1517,6 +1519,7 @@ CONFIG_INTERCONNECT_QCOM_SC7180=y
- CONFIG_INTERCONNECT_QCOM_SC7280=y
- CONFIG_INTERCONNECT_QCOM_SC8180X=y
- CONFIG_INTERCONNECT_QCOM_SC8280XP=y
-+CONFIG_INTERCONNECT_QCOM_SC8380XP=y
- CONFIG_INTERCONNECT_QCOM_SDM845=y
- CONFIG_INTERCONNECT_QCOM_SM8150=m
- CONFIG_INTERCONNECT_QCOM_SM8250=m
--- 
-2.17.1
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/input/touchscreen/novatek,nt519xx.yaml: title: 'Novatek nt519xx touchscreen controller bindings' should not be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
+	hint: Everything is a binding/schema, no need to say it. Describe what hardware the binding is for.
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+Error: Documentation/devicetree/bindings/input/touchscreen/novatek,nt519xx.example.dts:25.40-41 syntax error
+FATAL ERROR: Unable to parse input tree
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/input/touchscreen/novatek,nt519xx.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231025082054.1190-2-Weishih_Lin@novatek.com.tw
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
