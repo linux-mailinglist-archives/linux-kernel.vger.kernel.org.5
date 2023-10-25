@@ -2,136 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A16757D7296
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2807D7298
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbjJYRrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
+        id S233381AbjJYRsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJYRrN (ORCPT
+        with ESMTP id S231552AbjJYRsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:47:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC32CC;
-        Wed, 25 Oct 2023 10:47:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698256031; x=1729792031;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=y51ew40oLjwa3836YhR+S3DSxiZGQ240PtjmogMYv8s=;
-  b=cAf7mHYKTfu+ZBqa/ipE2E48e+yFyY3ce3p3jX+zS5xSz3PaQgxmRtTT
-   BnDgTNQTOD0bMXH8vRJXsamRqKKvnzKutcnaH479I2i0PTFJ85/jcfIk8
-   +m6L3PayoFKUPLhB3/hZ0+rJYTVZbEfuGgjN8ZtsR/lmKY0oTsSbb23b8
-   h4Gh6Or4/LUfnWfQFBvT4PsgYZzkgLfyA+Yx8V4N814K/UVbUlW8vybn4
-   5tRAhidR5pgGMnZqNwxPoIGgztEQCzT++i6eC7+q142wXkGswJYjZc6eE
-   elFbeGQVTJf1rnpVoICIh/4ya5a3fzQ8HRHP/1H0edkYzB4xGPL3PBDYJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="386247418"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="386247418"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 10:46:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="793909382"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="793909382"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 25 Oct 2023 10:46:21 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qvhxS-00094f-2p;
-        Wed, 25 Oct 2023 17:46:18 +0000
-Date:   Thu, 26 Oct 2023 01:46:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kaiwei Liu <kaiwei.liu@unisoc.com>, Vinod Koul <vkoul@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kaiwei liu <liukaiwei086@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-Subject: Re: [PATCH 1/3] dmaengine: sprd: support dma device suspend/resume
-Message-ID: <202310260136.yDATuOfv-lkp@intel.com>
-References: <20231025120500.8914-1-kaiwei.liu@unisoc.com>
+        Wed, 25 Oct 2023 13:48:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D59181
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:47:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4297AC433C7;
+        Wed, 25 Oct 2023 17:47:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698256077;
+        bh=7vCImhAy/djrVdzvnhfX4P8W3qXogIjUQ+V/wfWi/00=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=kOQSU+3nk0dQ+Hv5JJT9gxQfFdsDCc052I4UmnMXP/WUt9BEXML1WQSC4wZKxO4Sn
+         GNG0djPn5j5iWGsJ7fEdWHqwf077bkM+Px4zywVbB3ONUgDYtb5vlMXjUlu45NXIB6
+         V9ESq38pxoZMf4aSYbf9sJLpy5QBwXCznwUg4tTG2DjMAAY90jdkk9k3FIQMPolZ+V
+         n4y3C6BSE4W5rqOzPKCFl3MBV9WmAd7KFUz83frwevbfGXaLnQQpUchJTtDkfCPYC8
+         p0ufRLVXncYf6JXYMIDCyHZIo8fr2T6RjWPqsb4FOioC4xxgGSLWSq5HKHc8DCXkzr
+         Y67YkHYaI1FRA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+In-Reply-To: <20231010085906.3440452-1-o.rempel@pengutronix.de>
+References: <20231010085906.3440452-1-o.rempel@pengutronix.de>
+Subject: Re: (subset) [PATCH v1 1/3] regulator: dt-bindings:
+ fixed-regulator: Add under-voltage interrupt support
+Message-Id: <169825607496.44380.1474728681067592948.b4-ty@kernel.org>
+Date:   Wed, 25 Oct 2023 18:47:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025120500.8914-1-kaiwei.liu@unisoc.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kaiwei,
+On Tue, 10 Oct 2023 10:59:04 +0200, Oleksij Rempel wrote:
+> Add under-voltage interrupt support. This can be used with simple
+> regulators having no other way to communicate an under-voltage event
+> except as by toggling some GPIO line.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml b/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
+> index ac0281b1cceb..0f8760ed2fb1 100644
+> --- a/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
+> +++ b/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
+> @@ -100,6 +100,14 @@ properties:
+>    vin-supply:
+>      description: Input supply phandle.
+> 
+> [...]
 
-kernel test robot noticed the following build warnings:
+Applied to
 
-[auto build test WARNING on vkoul-dmaengine/next]
-[also build test WARNING on linus/master v6.6-rc7 next-20231025]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kaiwei-Liu/dmaengine-sprd-delete-enable-opreation-in-probe/20231025-201524
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git next
-patch link:    https://lore.kernel.org/r/20231025120500.8914-1-kaiwei.liu%40unisoc.com
-patch subject: [PATCH 1/3] dmaengine: sprd: support dma device suspend/resume
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231026/202310260136.yDATuOfv-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231026/202310260136.yDATuOfv-lkp@intel.com/reproduce)
+Thanks!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310260136.yDATuOfv-lkp@intel.com/
+[1/3] regulator: dt-bindings: fixed-regulator: Add under-voltage interrupt support
+      commit: 0ab1dc9c657f30434ca55a3dcc87e624af0b2116
+[2/3] regulator: fixed: add support for under-voltage IRQ
+      commit: ecb6f1f456144e9ade5a492192287decbeef4cfe
 
-All warnings (new ones prefixed by >>):
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-   drivers/dma/sprd-dma.c: In function 'sprd_dma_suspend_noirq':
-   drivers/dma/sprd-dma.c:1296:38: error: 'struct dev_pm_info' has no member named 'usage_count'
-    1296 |             (atomic_read(&(dev->power.usage_count)) > 1))
-         |                                      ^
-   drivers/dma/sprd-dma.c: In function 'sprd_dma_resume_early':
-   drivers/dma/sprd-dma.c:1305:38: error: 'struct dev_pm_info' has no member named 'usage_count'
-    1305 |             (atomic_read(&(dev->power.usage_count)) > 1))
-         |                                      ^
-   drivers/dma/sprd-dma.c: At top level:
->> drivers/dma/sprd-dma.c:1302:12: warning: 'sprd_dma_resume_early' defined but not used [-Wunused-function]
-    1302 | static int sprd_dma_resume_early(struct device *dev)
-         |            ^~~~~~~~~~~~~~~~~~~~~
->> drivers/dma/sprd-dma.c:1293:12: warning: 'sprd_dma_suspend_noirq' defined but not used [-Wunused-function]
-    1293 | static int sprd_dma_suspend_noirq(struct device *dev)
-         |            ^~~~~~~~~~~~~~~~~~~~~~
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-vim +/sprd_dma_resume_early +1302 drivers/dma/sprd-dma.c
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-  1292	
-> 1293	static int sprd_dma_suspend_noirq(struct device *dev)
-  1294	{
-  1295		if ((pm_runtime_status_suspended(dev)) ||
-  1296		    (atomic_read(&(dev->power.usage_count)) > 1))
-  1297			return 0;
-  1298	
-  1299		return sprd_dma_runtime_suspend(dev);
-  1300	}
-  1301	
-> 1302	static int sprd_dma_resume_early(struct device *dev)
-  1303	{
-  1304		if ((pm_runtime_status_suspended(dev)) ||
-  1305		    (atomic_read(&(dev->power.usage_count)) > 1))
-  1306			return 0;
-  1307	
-  1308		return sprd_dma_runtime_resume(dev);
-  1309	}
-  1310	
+Thanks,
+Mark
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
