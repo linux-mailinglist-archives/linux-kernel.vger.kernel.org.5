@@ -2,132 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A78847D69A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F75E7D69AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbjJYLAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 07:00:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35402 "EHLO
+        id S234537AbjJYLBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 07:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJYLAD (ORCPT
+        with ESMTP id S232076AbjJYLBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 07:00:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B30F1C1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 03:59:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698231557;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=hbl9d2tDVXT45ZlkhFJ2cNIXoUOP4mWOh9E5YishFi8=;
-        b=L4CsUodUg8/5OHDWmKzfKNzUo/IT/DvkEktBVWhI5EM2mVukCyJgi58gDjMd8E3eH7I5Az
-        L1KYNtfxptu6FlnLLoceIfn96DlAvf9XudRcqEzkcfao1mAISixKAcSLTtO6Uz05Bb0gUn
-        byIbgUPIfPZXC7ol9uUAQCXRVlrqPAY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-692-T7Rw2M5QPlWoXC_SolU-0g-1; Wed, 25 Oct 2023 06:59:14 -0400
-X-MC-Unique: T7Rw2M5QPlWoXC_SolU-0g-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5733F101A54C;
-        Wed, 25 Oct 2023 10:59:14 +0000 (UTC)
-Received: from p1.luc.cera.cz (unknown [10.45.225.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5086F492BD9;
-        Wed, 25 Oct 2023 10:59:12 +0000 (UTC)
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Michal Schmidt <mschmidt@redhat.com>
-Subject: [PATCH iwl-next] i40e: Delete unused i40e_mac_info fields
-Date:   Wed, 25 Oct 2023 12:59:11 +0200
-Message-ID: <20231025105911.1204326-1-ivecera@redhat.com>
+        Wed, 25 Oct 2023 07:01:30 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E244B9D;
+        Wed, 25 Oct 2023 04:01:27 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id d2e1a72fcca58-6b20577ef7bso4555059b3a.3;
+        Wed, 25 Oct 2023 04:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698231687; x=1698836487; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=piuEhlKzYYwzHRc+GXT0yNRApgseVG2f389HXHULRS8=;
+        b=N+Zq/6DkSuaGZ1gFcJfJ2+mjoJVVFxr7kXryJ/i/SOHnlHmkGeiA15ZsIKVVGbhwv6
+         UAWo1a79TRF8wenzI8+ZrrqKxh5OK2Eafl8zgPagtzq3iXRN5wpu+4VHjxOPfGP0lu54
+         V9u0R0WkQz1M03E3HSBnlEffDmG6qTlXPEqIxZW4+mFgZzW2VxSh/72L+tY3Bg43jcYq
+         oxbfWmKc7qZh/NpDZbwMYiZSASoZ/z6ccQ7Ps0pV7pC63cLu/xKpTqCn/PxOIj82U7W6
+         qSEZKHzMOELdzRRENb6uekOOkKJ5vSKUdfiJW7/BJ9th/p7Yeieti4exizGexSEVy1yz
+         WzoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698231687; x=1698836487;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=piuEhlKzYYwzHRc+GXT0yNRApgseVG2f389HXHULRS8=;
+        b=lkDUTrQXQ4R53/hB/1Mk6Dwn/ncYTStBMn9W7DQXisl1vDfkxcCrMLkbl4hY+48xHs
+         xwaeKz3wNM0tfQ34YfTrVXNlq9mYA5gtmtMme72dOO8TFMlnNyc1gVinrdUlG0NVmdtD
+         Eyq0G/OSDswelZVMb4foTe8wpHcbWFlTcgzMqpAR22MplKPY1NWd1jbxfEqZt/JLNaGK
+         x3m7tZ3P7YS1wxrp6qj7WTqhwQ6Zmm8YIIJpKir/qVjfLt0/ZDs6DGVNB6JgHedq2E8k
+         rjCENWz+JYAJ0X472MaeBT2jcoMZN+qOvOCb+qHnUuiIkELYo8Q3bKOIwvfzXoq0r7xx
+         tOVg==
+X-Gm-Message-State: AOJu0YxqwYM/pwCpixAqUTd3cjMnSW6uk+MiMjx8kuUsRMAF8cDANFVs
+        yXBDRnN8XrVnT/hz6mGwlxk=
+X-Google-Smtp-Source: AGHT+IEFeaSOeoi2yUNTRWdDS9nkIWcP8+NXq94HUP9lvXACogZgvVbynbMTtkQkCxXtKGnAYSN7jw==
+X-Received: by 2002:a05:6a00:27a0:b0:690:c306:151a with SMTP id bd32-20020a056a0027a000b00690c306151amr13059034pfb.0.1698231685948;
+        Wed, 25 Oct 2023 04:01:25 -0700 (PDT)
+Received: from dawn-Aspire-A715-74G.. ([183.198.109.198])
+        by smtp.gmail.com with ESMTPSA id r1-20020aa79881000000b006babcf86b84sm9139783pfl.34.2023.10.25.04.01.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 04:01:25 -0700 (PDT)
+From:   Li peiyu <579lpy@gmail.com>
+To:     jdelvare@suse.com, linux@roeck-us.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Li peiyu <579lpy@gmail.com>
+Subject: [PATCH] dt-bindings: hwmon: lm87: convert to YAML
+Date:   Wed, 25 Oct 2023 19:00:03 +0800
+Message-Id: <20231025110003.10769-1-579lpy@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FROM_STARTS_WITH_NUMS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From commit 9eed69a9147c ("i40e: Drop FCoE code from core driver files")
-the field i40e_mac_info.san_addr is unused (never filled).
-The field i40e_mac_info.max_fcoeq is unused from the beginning.
-Remove both.
+Convert the lm87 hwmon sensor bindings to DT schema
 
-Co-developed-by: Michal Schmidt <mschmidt@redhat.com>
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+Signed-off-by: Li peiyu <579lpy@gmail.com>
 ---
- drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c  | 5 +----
- drivers/net/ethernet/intel/i40e/i40e_debugfs.c | 3 +--
- drivers/net/ethernet/intel/i40e/i40e_type.h    | 2 --
- 3 files changed, 2 insertions(+), 8 deletions(-)
+ .../devicetree/bindings/hwmon/lm87.txt        | 30 ----------
+ .../devicetree/bindings/hwmon/lm87.yaml       | 59 +++++++++++++++++++
+ 2 files changed, 59 insertions(+), 30 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/hwmon/lm87.txt
+ create mode 100644 Documentation/devicetree/bindings/hwmon/lm87.yaml
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c b/drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c
-index 1ee77a2433c0..4721845fda6e 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_dcb_nl.c
-@@ -827,15 +827,12 @@ static void i40e_dcbnl_get_perm_hw_addr(struct net_device *dev,
- 					u8 *perm_addr)
- {
- 	struct i40e_pf *pf = i40e_netdev_to_pf(dev);
--	int i, j;
-+	int i;
- 
- 	memset(perm_addr, 0xff, MAX_ADDR_LEN);
- 
- 	for (i = 0; i < dev->addr_len; i++)
- 		perm_addr[i] = pf->hw.mac.perm_addr[i];
+diff --git a/Documentation/devicetree/bindings/hwmon/lm87.txt b/Documentation/devicetree/bindings/hwmon/lm87.txt
+deleted file mode 100644
+index 758ff398b67b..000000000000
+--- a/Documentation/devicetree/bindings/hwmon/lm87.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-*LM87 hwmon sensor.
 -
--	for (j = 0; j < dev->addr_len; j++, i++)
--		perm_addr[i] = pf->hw.mac.san_addr[j];
- }
- 
- static const struct dcbnl_rtnl_ops dcbnl_ops = {
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-index e0849f0c9c27..88240571721a 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-@@ -147,9 +147,8 @@ static void i40e_dbg_dump_vsi_seid(struct i40e_pf *pf, int seid)
- 			 "    state[%d] = %08lx\n",
- 			 i, vsi->state[i]);
- 	if (vsi == pf->vsi[pf->lan_vsi])
--		dev_info(&pf->pdev->dev, "    MAC address: %pM SAN MAC: %pM Port MAC: %pM\n",
-+		dev_info(&pf->pdev->dev, "    MAC address: %pM Port MAC: %pM\n",
- 			 pf->hw.mac.addr,
--			 pf->hw.mac.san_addr,
- 			 pf->hw.mac.port_addr);
- 	hash_for_each(vsi->mac_filter_hash, bkt, f, hlist) {
- 		dev_info(&pf->pdev->dev,
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_type.h b/drivers/net/ethernet/intel/i40e/i40e_type.h
-index e3d40630f689..76bcbaec8ae5 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_type.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_type.h
-@@ -270,9 +270,7 @@ struct i40e_mac_info {
- 	enum i40e_mac_type type;
- 	u8 addr[ETH_ALEN];
- 	u8 perm_addr[ETH_ALEN];
--	u8 san_addr[ETH_ALEN];
- 	u8 port_addr[ETH_ALEN];
--	u16 max_fcoeq;
- };
- 
- enum i40e_aq_resources_ids {
+-Required properties:
+-- compatible: Should be
+-	"ti,lm87"
+-
+-- reg: I2C address
+-
+-optional properties:
+-- has-temp3: This configures pins 18 and 19 to be used as a second
+-             remote temperature sensing channel. By default the pins
+-             are configured as voltage input pins in0 and in5.
+-
+-- has-in6: When set, pin 5 is configured to be used as voltage input
+-           in6. Otherwise the pin is set as FAN1 input.
+-
+-- has-in7: When set, pin 6 is configured to be used as voltage input
+-           in7. Otherwise the pin is set as FAN2 input.
+-
+-- vcc-supply: a Phandle for the regulator supplying power, can be
+-              configured to measure 5.0V power supply. Default is 3.3V.
+-
+-Example:
+-
+-lm87@2e {
+-	compatible = "ti,lm87";
+-	reg = <0x2e>;
+-	has-temp3;
+-	vcc-supply = <&reg_5v0>;
+-};
+diff --git a/Documentation/devicetree/bindings/hwmon/lm87.yaml b/Documentation/devicetree/bindings/hwmon/lm87.yaml
+new file mode 100644
+index 000000000000..54d6ef6700ef
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/lm87.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/hwmon/lm87.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: LM87 hwmon sensor
++
++maintainers:
++  - Jean Delvare <jdelvare@suse.com>
++  - Guenter Roeck <linux@roeck-us.net>
++
++properties:
++  compatible:
++    const: ti,lm87
++
++  reg:
++    maxItems: 1
++
++  has-temp3:
++    description: |
++      This configures pins 18 and 19 to be used as a second remote
++      temperature sensing channel. By default the pins are configured
++      as voltage input pins in0 and in5.
++
++  has-in6:
++    description: |
++      When set, pin 5 is configured to be used as voltage input in6.
++      Otherwise the pin is set as FAN1 input.
++
++  has-in7:
++    description: |
++      When set, pin 6 is configured to be used as voltage input in7.
++      Otherwise the pin is set as FAN2 input.
++
++  vcc-supply:
++    description: |
++      a Phandle for the regulator supplying power, can be configured to
++      measure 5.0V power supply. Default is 3.3V.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      lm87@2e {
++        compatible = "ti,lm87";
++        reg = <0x2e>;
++        has-temp3;
++	vcc-supply = <&reg_5v0>;
++      };
++    };
 -- 
-2.41.0
+2.34.1
 
