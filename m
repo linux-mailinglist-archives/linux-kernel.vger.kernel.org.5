@@ -2,265 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB3C7D7736
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676AB7D7710
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234602AbjJYVzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43336 "EHLO
+        id S230306AbjJYVtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:49:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbjJYVzg (ORCPT
+        with ESMTP id S229682AbjJYVtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:55:36 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3AB18C
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:55:33 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-581edcde26cso182746eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:55:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698270932; x=1698875732; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mvz4tU2Qi3kZRU4orX2BxAMTB3NfFO65aFnqQhNCI7Y=;
-        b=IbBCFGtkvHW2nsniiwm/p66FHrOymirM8oSScRZYq9Lj7t9r87YvQVFSC3dSkn5zkp
-         PbDhlXruZt7H/mOOGTLu+wXgKb6A/hDWhxM6mPkvieUU8nu2kwXAxihMzA+vnK5D4F0Y
-         ssnL+YSHZZdVyUQV6nWRd4dVGH1m/gr7nj470=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698270932; x=1698875732;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mvz4tU2Qi3kZRU4orX2BxAMTB3NfFO65aFnqQhNCI7Y=;
-        b=ToIjjndBQ4CRYKMjohTruvaEtaxV/0Lcfsez02U8cUr8zjkPsqz5747tl9DRTBuboQ
-         GMbaQHoJ1Mt2u9movQndXcUSSzrMASFN6GQ+cNO9LnTQ3oqlwHqocAB64VTNk6yYQd2f
-         1XVDb8VJLT9uhe9BOjBr2K3qcYDMZuIihBpOl1SfEkNQigW4T5OC1VKYGYuzhdukaWEX
-         ZmyvgSyJDhiNAjYXjgTHleCQ8hn3+qKysUtgycleahsforrbKqOc5NLaNj8ldguWg5BP
-         eeFnQEreFQasp8Uannov1LALWWM6M9Fl2Ydwj6GUAGF4wl80724JU0/+OV2GHYDBYteS
-         ORww==
-X-Gm-Message-State: AOJu0Yyovh76rPMjtXWuKvFVADY8KKDGRY204YEFXeSmfJNwQJ7XcEAe
-        wRukAiPEkW1CtyOsPoS+LTr5xg==
-X-Google-Smtp-Source: AGHT+IFzZGyrSX4bCvvYPaMFtrc5/5C2CQegRX6eJpmjL60TzO3nh2cFdtwYMUQ8abYyMq08g1gEfA==
-X-Received: by 2002:a05:6359:2e88:b0:168:dc03:5b90 with SMTP id rp8-20020a0563592e8800b00168dc035b90mr9214497rwb.23.1698270932278;
-        Wed, 25 Oct 2023 14:55:32 -0700 (PDT)
-Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:f0fe:5c3b:1d70:d0bb])
-        by smtp.gmail.com with ESMTPSA id w14-20020a63160e000000b005b8ebef9fa0sm2994943pgl.83.2023.10.25.14.55.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 14:55:31 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
-        <nfraprado@collabora.com>,
-        =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v3 7/7] arm64: dts: mt8183: Add jacuzzi pico/pico6 board
-Date:   Wed, 25 Oct 2023 14:48:49 -0700
-Message-ID: <20231025215517.1388735-8-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.42.0.758.gaed0368e0e-goog
-In-Reply-To: <20231025215517.1388735-1-hsinyi@chromium.org>
-References: <20231025215517.1388735-1-hsinyi@chromium.org>
+        Wed, 25 Oct 2023 17:49:14 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1ABB9;
+        Wed, 25 Oct 2023 14:49:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3004DC433C8;
+        Wed, 25 Oct 2023 21:49:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698270552;
+        bh=UBlwui6JXaWM1dHC4n9599bjvvRTpUdWTM8kRxLfVA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DlIKAJg5/J0kp89aSFTWjntfSUCBR8JmJ/nwvzDR1KOa/xQXGRYf1n4+D1EmF5wZi
+         moo6yCTKlRUpYxfsrsJ7RnHmzq6MsQx+jIu91Ten/GYPUEiyh+OZ6jtBX3e7dSL6w1
+         NYth1Y8dP0HwwuUjYpStlSYygiCcvb3435jdcIYm4DrWN9UWdHZvpPlK82tDtzSS/d
+         LqkPaNJiIMqtJ4qwkj3TpsHq9FrLUb5FNZO1Uwytm00qeRftaeDX3BK61Snem/Z97/
+         vxfeLM0+EG9M5VV2nch8gdDO6532a2mPe31wDo2dSFZMovqRGuhHRUH8MQ2/ZHLhzE
+         KD+OpBf8Qg2dQ==
+Date:   Wed, 25 Oct 2023 14:49:09 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+Subject: Re: [PATCH v3 1/6] x86/bugs: Add asm helpers for executing VERW
+Message-ID: <20231025214909.yxcldnporsnicrdi@treble>
+References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
+ <20231025-delay-verw-v3-1-52663677ee35@linux.intel.com>
+ <8b6d857f-cbf6-4969-8285-f90254bdafc0@citrix.com>
+ <20231025212806.pgykrxzcmbhrhix5@treble>
+ <da782a61-e7f6-45fa-88e9-9d974dcc1a87@citrix.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <da782a61-e7f6-45fa-88e9-9d974dcc1a87@citrix.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pico is also known as Acer Chromebook Spin 311.
+On Wed, Oct 25, 2023 at 10:30:52PM +0100, Andrew Cooper wrote:
+> On 25/10/2023 10:28 pm, Josh Poimboeuf wrote:
+> > On Wed, Oct 25, 2023 at 10:10:41PM +0100, Andrew Cooper wrote:
+> >> On 25/10/2023 9:52 pm, Pawan Gupta wrote:
+> >>> diff --git a/arch/x86/entry/entry.S b/arch/x86/entry/entry.S
+> >>> index bfb7bcb362bc..f8ba0c0b6e60 100644
+> >>> --- a/arch/x86/entry/entry.S
+> >>> +++ b/arch/x86/entry/entry.S
+> >>> @@ -20,3 +23,16 @@ SYM_FUNC_END(entry_ibpb)
+> >>>  EXPORT_SYMBOL_GPL(entry_ibpb);
+> >>>  
+> >>>  .popsection
+> >>> +
+> >>> +.pushsection .entry.text, "ax"
+> >>> +
+> >>> +.align L1_CACHE_BYTES, 0xcc
+> >>> +SYM_CODE_START_NOALIGN(mds_verw_sel)
+> >>> +	UNWIND_HINT_UNDEFINED
+> >>> +	ANNOTATE_NOENDBR
+> >>> +	.word __KERNEL_DS
+> >> You need another .align here.  Otherwise subsequent code will still
+> >> start in this cacheline and defeat the purpose of trying to keep it
+> >> separate.
+> >>
+> >>> +SYM_CODE_END(mds_verw_sel);
+> >> Thinking about it, should this really be CODE and not a data entry?
+> >>
+> >> It lives in .entry.text but it really is data and objtool shouldn't be
+> >> writing ORC data for it at all.
+> >>
+> >> (Not to mention that if it's marked as STT_OBJECT, objdump -d will do
+> >> the sensible thing and not even try to disassemble it).
+> >>
+> >> ~Andrew
+> >>
+> >> P.S. Please CC on the full series.  Far less effort than fishing the
+> >> rest off lore.
+> > +1 to putting it in .rodata or so.
+> 
+> It's necessarily in .entry.text so it doesn't explode with KPTI active.
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- arch/arm64/boot/dts/mediatek/Makefile         |   2 +
- .../mediatek/mt8183-kukui-jacuzzi-pico.dts    |  36 ++++++
- .../mediatek/mt8183-kukui-jacuzzi-pico6.dts   | 110 ++++++++++++++++++
- 3 files changed, 148 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts
+Ah, right.  In general tooling doesn't take too kindly to putting data
+in a text section.  But it might be ok.
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index 1b85a8c12850..ed174dde97e1 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -34,6 +34,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-kappa.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-kenzo.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-makomo-sku0.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-makomo-sku1.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-pico.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-pico6.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-willow-sku0.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-willow-sku1.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kakadu.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico.dts
-new file mode 100644
-index 000000000000..e230323b3a54
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico.dts
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2023 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8183-kukui-jacuzzi.dtsi"
-+#include "mt8183-kukui-audio-ts3a227e-max98357a.dtsi"
-+
-+/ {
-+	model = "Google pico board";
-+	chassis-type = "convertible";
-+	compatible = "google,pico-sku1", "google,pico", "mediatek,mt8183";
-+};
-+
-+&i2c_tunnel {
-+	google,remote-bus = <0>;
-+};
-+
-+&i2c2 {
-+	i2c-scl-internal-delay-ns = <25000>;
-+
-+	trackpad@2c {
-+		compatible = "hid-over-i2c";
-+		reg = <0x2c>;
-+		hid-descr-addr = <0x20>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&trackpad_pins>;
-+
-+		interrupts-extended = <&pio 7 IRQ_TYPE_LEVEL_LOW>;
-+
-+		wakeup-source;
-+	};
-+};
-+
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts
-new file mode 100644
-index 000000000000..a2e74b829320
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-pico6.dts
-@@ -0,0 +1,110 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2023 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8183-kukui-jacuzzi.dtsi"
-+#include "mt8183-kukui-audio-ts3a227e-max98357a.dtsi"
-+
-+/ {
-+	model = "Google pico6 board";
-+	chassis-type = "convertible";
-+	compatible = "google,pico-sku2", "google,pico", "mediatek,mt8183";
-+
-+	bt_wakeup: bt-wakeup {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&bt_pins_wakeup>;
-+
-+		wobt {
-+			label = "Wake on BT";
-+			gpios = <&pio 42 GPIO_ACTIVE_HIGH>;
-+			linux,code = <KEY_WAKEUP>;
-+			wakeup-source;
-+		};
-+	};
-+};
-+
-+&i2c_tunnel {
-+	google,remote-bus = <0>;
-+};
-+
-+&i2c2 {
-+	i2c-scl-internal-delay-ns = <25000>;
-+
-+	trackpad@2c {
-+		compatible = "hid-over-i2c";
-+		reg = <0x2c>;
-+		hid-descr-addr = <0x20>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&trackpad_pins>;
-+
-+		interrupts-extended = <&pio 7 IRQ_TYPE_LEVEL_LOW>;
-+
-+		wakeup-source;
-+	};
-+};
-+
-+&wifi_wakeup {
-+	wowlan {
-+		gpios = <&pio 113 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&wifi_pwrseq {
-+	post-power-on-delay-ms = <50>;
-+
-+	/* Toggle WIFI_ENABLE to reset the chip. */
-+	reset-gpios = <&pio 8 GPIO_ACTIVE_LOW>;
-+};
-+
-+&wifi_pins_pwrseq {
-+	pins-wifi-enable {
-+		pinmux = <PINMUX_GPIO8__FUNC_GPIO8>;
-+	};
-+};
-+
-+&mmc1_pins_default {
-+	pins-cmd-dat {
-+		drive-strength = <MTK_DRIVE_6mA>;
-+	};
-+	pins-clk {
-+		drive-strength = <MTK_DRIVE_6mA>;
-+	};
-+};
-+
-+&mmc1_pins_uhs {
-+	pins-clk {
-+		drive-strength = <MTK_DRIVE_6mA>;
-+	};
-+};
-+
-+&mmc1 {
-+	bt_reset: bt-reset {
-+		compatible = "mediatek,mt7921s-bluetooth";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&bt_pins_reset>;
-+		reset-gpios = <&pio 120 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&pio {
-+	bt_pins_wakeup: bt-pins-wakeup {
-+		piins-bt-wakeup {
-+			pinmux = <PINMUX_GPIO42__FUNC_GPIO42>;
-+			input-enable;
-+		};
-+	};
-+
-+	bt_pins_reset: bt-pins-reset {
-+		pins-bt-reset {
-+			pinmux = <PINMUX_GPIO120__FUNC_GPIO120>;
-+			output-high;
-+		};
-+	};
-+};
-+
-+/delete-node/ &bluetooth;
-+/delete-node/ &bt_pins;
 -- 
-2.42.0.758.gaed0368e0e-goog
-
+Josh
