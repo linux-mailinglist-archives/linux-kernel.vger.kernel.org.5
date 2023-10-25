@@ -2,208 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 079797D620C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8D47D620E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbjJYHCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41362 "EHLO
+        id S232537AbjJYHCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbjJYHCJ (ORCPT
+        with ESMTP id S232513AbjJYHCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:02:09 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2071.outbound.protection.outlook.com [40.107.20.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFD5A6;
-        Wed, 25 Oct 2023 00:02:05 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cd7QL0me3MlDcMdz8O1U7euEbpBe+BARKy4QAiAvrQPMxrMG+l5tY9PlzrS9+ykG9MVcXgzZuBfFdhkSXhvDmPpUvUohQxp8EKJv+kN9KiqYyb9Z1KIKensLl7GvKmdtA0ToZmltz4G95Fw9CNGr21BQ2IRvXG7dgjbbobvQkquPC8mUGpbDX1iHgkMLdYV/RfPpJn3jfVfCv6UvNIzbFa3tTfVXEWvAoH5+mujcNV1D3C9SM+rukmxC8FPpP1LH8Sh7MeiEUvUuC5kC1Un0LQgd2mbrdltw3nw5pLrs6GjSb92t8PrdVtefC6BINzDkNhhMejEXuckKFbWoZXKJ9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=i3tIfvHIcz2l+F98OvOvxxVvJi/wJSXL2Yeqp41821s=;
- b=bQe3WOuV2qzZ4aWTLxRTRGEf01GmStioi0i0poiU5xrczuW60CvKHAqMhaa4orp+eddHHHrkKiKdF6JJHH19ti2yQBep6l/FzeRh0vyPlmYOqF6yFibbHVXbJnTSbJ6X++roRbdnXgytby38AmBpYfwFp9Wd3PVq9N0hvAB2J9DMfwgr2mO+Gs7sGJy/iUsVSpo2mtU3HYBDOSeZku0h0VA3KylHa7VTFbKgpcbGKZLNlcXG/g8MmQNAoCdnwngxTjQtrpAUj26/UNSUs4pGnSMjU2PA7QcgAWZKxj3AXzx/T97Lb9U9ZhDzbonBSRUCQCRjCQtTgHJKUqda3f8FMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
- header.d=asem.it; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i3tIfvHIcz2l+F98OvOvxxVvJi/wJSXL2Yeqp41821s=;
- b=Ni3vlAvjhjmz6/kqc3oGnH6ZBv8B1PHVr+EVtpZ+yuwQNQpmaOx7uzudMraowqNtBY1nTUyRHh1qkKckYgYAV17kTPNsnvYhjK5lq9QTu5V7liGt+jcHQQRR97mhG4jOwQj65dhlK0S15veGjn7CW6IEKzPNm/4U8S9V8iYcXUk=
-Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:273::14) by AS8PR01MB7509.eurprd01.prod.exchangelabs.com
- (2603:10a6:20b:28b::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Wed, 25 Oct
- 2023 07:02:02 +0000
-Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
- ([fe80::ad2b:a1e7:8828:ba2f]) by DU2PR01MB8034.eurprd01.prod.exchangelabs.com
- ([fe80::ad2b:a1e7:8828:ba2f%7]) with mapi id 15.20.6907.032; Wed, 25 Oct 2023
- 07:02:02 +0000
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Conor Dooley <conor@kernel.org>
-CC:     Lee Jones <lee@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Wed, 25 Oct 2023 03:02:37 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D6319F
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:02:31 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53d9f001b35so7904589a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:02:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698217349; x=1698822149; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ISa8zL6UMcVxhtYUYtsZ90GndIzLZwLMRsock1IO5nw=;
+        b=U2T6AptnIIqV1wynN1MJ9K4RpvAYXZP719JjyvInNW08Ii3lO9akLH8HyIuTDrmat3
+         2nVXrAAc8hnSp1gBNCzc/3HDy/YenqwcyEF2W3NAWfSfb2vB9YCqPNIQP7boQXmbUiLg
+         HqUQ4GtYfWhJVutawMSCmGisITXmcLut+qU/2o/S98b4Q7I02dyP+kiaFT21pKy1qHG9
+         hZUxcipC8gfuBGgPUdfYMzxJvjHrtfAz/4gW8J1iwjbc9j0y9Zhcw0l2l9dZDhflfTZJ
+         5mMqbR3qOLdbY09Or/bwwdsbInSlYqvaeewTpPl0w55MiaAkdF3jiJ83PHm9xnbrSk69
+         aXrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698217349; x=1698822149;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ISa8zL6UMcVxhtYUYtsZ90GndIzLZwLMRsock1IO5nw=;
+        b=nfBNzUQ2OCykV++xueO4PyRpuvMsakyLShWprnW7S3lY25jdGmgYmAVUyIMw0qKUxw
+         eLqiD9ZXznomkKyA4F1N5UhRXMTT+Z+B8rVqvtwFSY7GLvvSyNtGZbd2ahA4B6by2jgu
+         Ecd1dw68fmsSEUsaG0ocZnaEWmWPL7uRUUSuSya5FhIKOF4sGI83jaz+RJuhQXSOXgi3
+         ficiXfaS50IGiaws6b9b/leN7r1Ry0bIJrWIlsrYiqfU4isupndQX2QjPoEomo9iI5bV
+         PzZZ9X9QQ0X6/yW16r/vZ6zt0gDV5BCeeqlLFrb/n02AWxkr9Dle00yhxlx5m9kt7StP
+         KalQ==
+X-Gm-Message-State: AOJu0Yxem4sHR6p2ui7z8ERzgaqhxL53l68vnwbuTtae+y2NqKDYptXi
+        cVC2NuyVyLH5lFZYN8jY9wfxBA==
+X-Google-Smtp-Source: AGHT+IFq1rm5Awxh+Wpr0IvxefH7nYNkUw4u4jWjGDDb3VxVcGrsc7FX4UTKbZejkxgRNAIWA7/LCA==
+X-Received: by 2002:a17:907:3f09:b0:9ad:c763:bc7a with SMTP id hq9-20020a1709073f0900b009adc763bc7amr13515922ejc.23.1698217349648;
+        Wed, 25 Oct 2023 00:02:29 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id l20-20020a1709065a9400b009786c8249d6sm9576921ejq.175.2023.10.25.00.02.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 00:02:29 -0700 (PDT)
+Message-ID: <2f3a4dcf-fa70-4834-9986-b5cf389f541c@linaro.org>
+Date:   Wed, 25 Oct 2023 09:02:27 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: ipq9574: enable GPIO based LED
+Content-Language: en-US
+To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/1] dt-bindings: backlight: mp3309c: remove two required
- properties
-Thread-Topic: [PATCH 1/1] dt-bindings: backlight: mp3309c: remove two required
- properties
-Thread-Index: AQHaA10IhwE5ZkDArkS4RoPMFlMBm7BS1g+AgARFCACAAHpeAIAA+0AQgACAlACAAQj6QA==
-Date:   Wed, 25 Oct 2023 07:02:02 +0000
-Message-ID: <DU2PR01MB803494D40BCC004F269080C1F9DEA@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
-References: <20231020135434.2598578-1-f.suligoi@asem.it>
- <20231020135434.2598578-2-f.suligoi@asem.it>
- <20231020-moonrise-senate-86d0edb2d404@spud>
- <DU2PR01MB803498DFD93E82DD3947D72DF9D8A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
- <20231023-anybody-silver-4548023f8f26@spud>
- <DU2PR01MB8034CF8EE4358B9446809AA2F9DFA@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
- <20231024-paddling-spongy-be82eae03228@spud>
-In-Reply-To: <20231024-paddling-spongy-be82eae03228@spud>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=asem.it;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU2PR01MB8034:EE_|AS8PR01MB7509:EE_
-x-ms-office365-filtering-correlation-id: d5539598-dfee-437d-29a6-08dbd5284a40
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: S/pRl01yDgdYGnH5eoTGJ0FT2EZM+cG9ag1vN6Xs7sMqSYcDSl84QZFrHkBB4BiH65cUOhQ6PvK2FOPrhJCtskxwpUAl5jRqmwR4T+0njq+zSz4Ub8zgm8KAmyXZhN1m1cj/OzFZmXrHsbY4/hF3h0vYNkBpwfgP+ExM0bJKITGsuBRCXEseEgwzutrtGMPIXuDp+fEPECdf/xapdn/WeG48adpnf/Td0ijDcgFPOcp5Cu6FLJ0Ig/l1whx59RtWBqqR8RQVomYrqtHb31r4d2uCr8UA0M/1NV+n2UtZmUvDYqf2Qj7eMwg3+X+HTow93NMSWmO4f2vxVk+1s6faA2O/PeR1IhHWjC6soemTviT8bcCSONmL3NgxEiokkF85Yt1rNez3ynuUtdovDUs0yXylHK5ahMXOfTF2bQFCNVgcpEf7+xmb2EHxepREwSdayLA/um3ckvWlRRL3K0Fs0EsX3dBgi7ZLTcbNOEBNh0Rim+LIkvcP9xmHUZ4gf1CXffCzu760F1d8fwRi34fFeWbMFLXhkzrw0KMSuUoYYiSIfhN3xRWy9XG5kX796Gj1dLD9epdmu5een1oRkX6GS/4SGhN5r0qAJzgDsTmHaZqUlqH+KqFhY4NBH6hnkH56
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR01MB8034.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39850400004)(366004)(346002)(376002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(122000001)(38100700002)(6506007)(7696005)(9686003)(478600001)(55016003)(8936002)(41300700001)(83380400001)(26005)(2906002)(7416002)(54906003)(6916009)(66946007)(66556008)(66446008)(76116006)(64756008)(66476007)(5660300002)(52536014)(4326008)(8676002)(316002)(71200400001)(86362001)(33656002)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?2TGWzRncV+BkhSyfcMj6KVXaRAdnYmnVr0QYX2HIOU+U44OGHSoqAQcx013t?=
- =?us-ascii?Q?00XGnrpBOZsuqj3gbMGIZ4oNZVtb6rSgkcYrGJsE/i5QlXB7cnUKaGQrNo9o?=
- =?us-ascii?Q?XcxX3+QiIwD4hLBRCElL1dyu/4/GIirboiqZZJ+OK+iNHGuGy9BFlru9SGP2?=
- =?us-ascii?Q?6TdAfGQMp1DGtCFeeH4gM++7JqL57MCCupL2ayv2zNX6MwuYTrUwvbitLSX5?=
- =?us-ascii?Q?vWo1E3D64pLYDfk9KDGKzlT4OnKBJo3QQlVUuJ9oXaBFR0YtaeFZZwmxYIF4?=
- =?us-ascii?Q?llU+PsdmO/5eeV5pM6d5K+N9JS0oNC3c5U4nVyiFIZxFZz7EJhfsDpuG5/Me?=
- =?us-ascii?Q?Cjxcjb6KBLNPoCIVR/A918PWYX9HQ3kawoLnCUxgooOPBxJHl5P52BtKKwuP?=
- =?us-ascii?Q?eqfZIQtaKb4xQB4tb7VoUIPgv5NQPmBtV6nJ2PnWhxnGlc3RFFe2lVSqmUAB?=
- =?us-ascii?Q?mz8UWv1Jvl3RzoRaE1jNUu+vSfmFNJRja0NSSDMu5Zu/8t+hrVBC7Pg0Gxvw?=
- =?us-ascii?Q?N2qnrJ0GIbT9BsY5hMMSS9aXt3mgVjgJIDN2xFJnGydq1f1OZEYcHDUHApQK?=
- =?us-ascii?Q?/eh6l5n5T4N/fPP3kzPVRxoLDsM3eN+9h0R+wXOwGgec+8wzyFX6Rt8Wa7pB?=
- =?us-ascii?Q?G4QI9F6A5CmvThsbtQDtc9B7kSglkPAxG6F3ML8/EqIvBitm8252zldnVx44?=
- =?us-ascii?Q?G9BeVhi3oGg8zfuqukDnCQwIZny0yKr7YNnNmZoOR4psxC37mC5hXscVLYqR?=
- =?us-ascii?Q?ksHfej1TUj1A16WiNpWOMK9aTGFXj2g0tcqTu9kQuefZb1CpjCzNLd7by6rn?=
- =?us-ascii?Q?MtrxK6DwS7cKVxO4Dk4L5ITD6+K7n3SYSk7Gq1HQjgnYfw4dFetoKZ9jsyNt?=
- =?us-ascii?Q?a2BnOBUaY/Yt5KxunMHlq+oPjdkDVM3XWtj3RUCBC9RfmwkyYGzFxrDfvSr8?=
- =?us-ascii?Q?RW8I0UAdno/RYPYEpBrxQB4etOpFWh+XAOcDjKnfH6RPs4FELPeZxGmJGl4v?=
- =?us-ascii?Q?6/CE7omduX7tiM0bG78bhmlHapMkgyy1or9swPxbX3Eo+ual+ryxwXROZ+Sp?=
- =?us-ascii?Q?ZzOMclDsFKxjWAQe3amRn4joZw8JV5SFzo+ZZckx/u0qMSTPCNIArRhG/q/C?=
- =?us-ascii?Q?55Z1tvFnbAZdx8uVBuCcYTza/faCsDlebd5DrNnUhkWelGryohrb4ldgg5d9?=
- =?us-ascii?Q?OH1CsEpzdqRJp3PNxRMPc974QaG37QOKlSgwaWn7w5XUJTF3Gzxqrl7ct7KO?=
- =?us-ascii?Q?uLuckFisXk9MORPQ04i6cZQfxp2QiypCkjj4gu79GhrAt6LAnCWIFFimkdjO?=
- =?us-ascii?Q?ac1zO5mjIb0FJ32zWPDwhWLzB+4bFv+y9zSvH2y06kraFHGZl6P+QLWWv7ou?=
- =?us-ascii?Q?Ha8/LJmi/ckwd55l1VzWuIMSa1jUlkAqQkUkU22xQSROkxb4WhdqDLPiE7Xm?=
- =?us-ascii?Q?gJsoygOZEgJrvHACR2DS5wEW6f/+5rdBCZZ0SYmv+FMOLSV8D2h8vlUDENUb?=
- =?us-ascii?Q?BRcMIPf0okVmbRtb40KhAOyiihmbsggdKBie8srqDkFlo+1ONbMEGXhUZh4z?=
- =?us-ascii?Q?raORVW73yUjlkB53lZI=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: asem.it
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR01MB8034.eurprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5539598-dfee-437d-29a6-08dbd5284a40
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2023 07:02:02.3812
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qHs2W26yRDAoDJ7OXw2jMjfPDN3ZJRPNviK3vxNuHnh2q93I2lTRbm9GSrIGgZmcPa7P03qXq8Ed5z5aZzacNw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR01MB7509
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231025-ipq9574-led-v1-1-b8217e997dfb@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231025-ipq9574-led-v1-1-b8217e997dfb@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
+On 25/10/2023 08:58, Kathiravan Thirumoorthy wrote:
+> Add support for wlan-2g LED on GPIO64.
+> 
+> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
+> index 49c9b6478357..b6f90da31778 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp-common.dtsi
+> @@ -51,6 +51,18 @@ button-wps {
+>  			debounce-interval = <60>;
+>  		};
+>  	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +		pinctrl-0 = <&gpio_leds_default>;
+> +		pinctrl-names = "default";
+> +
+> +		led-0 {
+> +			gpios = <&tlmm 64 GPIO_ACTIVE_LOW>;
+> +			linux,default-trigger = "phy0tx";
+> +			default-state = "off";
 
-...
+Missing function and color.
 
-> > > > > > The two properties:
-> > > > > >
-> > > > > > - max-brightness
-> > > > > > - default brightness
-> > > > > >
-> > > > > > are not really required, so they can be removed from the "requi=
-red"
-> > > > > > section.
-> > > > >
-> > > > > Why are they not required? You need to provide an explanation.
-> > > >
-> > > > The "max-brightness" is not more used now in the driver (I used it
-> > > > in the first version of the driver).
-> > >
-> > > If it is not used any more, what happens when someone passes an old
-> > > devicetree to the kernel, that contains max-brightness, but not any
-> > > of your new properties?
-> >
-> > This is not a problem, because the device driver has not yet been inclu=
-ded in
-> any kernel.
-> > My patch for the device driver is still being analyzed by the maintaine=
-rs.
-> > Only this dt-binding yaml file is already included in the
-> > "for-backlight-next" branch of the "backlight" kernel repository.
-> > At the moment, this driver is used only in a i.MX8MM board produced in
-> > my company, under my full control. No other developer is using it now.
->=20
-> Right. This is exactly the sort of commentary that you need to provide up
-> front, to have us spent a bunch of time going back and forth to figure ou=
-t :(
+Best regards,
+Krzysztof
 
-I'm sorry for wasting your time, I'll add this information in the next comm=
-it.
-
->=20
-> > > > The "default-brightness", if omitted in the DT, is managed by the
-> > > > device driver, using a default value. This depends on the dimming
-> > > > mode
-> > > used:
-> > >
-> > > For default-brightness, has here always been support in the driver
-> > > for the property being omitted, or is this newly added?
-> >
-> > In the first version of the driver this property was a "required
-> > property", but nobody has used this driver before, so this should be no=
-t a
-> problem.
->=20
-> > > What I would like is an explanation in the commit message as to why
-> > > the revised example is more helpful than the existing (and
-> > > must-remain-valid) one.
-> >
-> > As said before, no one may have ever used this device driver, so I
-> > would leave only this new version of the example.
->=20
-> Okay. Please improve the commit message explaining why it is okay to make
-> these changes & send a v2.
-> The alternative is that Lee drops the dt-binding patch & you submit a rev=
-ised
-> version of the binding alongside the next iteration of the driver.
-
-Ok, I'll send a new commit v2, explaining the reasons for the changes.
-
->=20
-> Cheers,
-> Conor.
-
-Thank you Conor,
-Flavio.
