@@ -2,113 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8020C7D6CF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0ED7D6CF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344521AbjJYNSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:18:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43044 "EHLO
+        id S1344307AbjJYNRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234976AbjJYNSK (ORCPT
+        with ESMTP id S233875AbjJYNRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:18:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08206131
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:17:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698239844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IozGvl6ym7FtpXWIgUQGELou+dXeHqFgoLDxKjZILp0=;
-        b=NKCvjXfR4AH8xREssTR8wBq4foj3H4Dm4XJd2qNgAMNcgJps1qfB9S71Zg5DG37Ka+l2qh
-        u2UZyh1jhDa5w7l1l4AbiPcHTOmMlcDb8oujqzaYB8gYND+V+JSNgPzVEboT/tFkzmUAEp
-        XM+EfFChlikdkK4RYj/6942Ryo89KHQ=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-618-ppDzhPDNN2-paG0RBetPZw-1; Wed, 25 Oct 2023 09:17:22 -0400
-X-MC-Unique: ppDzhPDNN2-paG0RBetPZw-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-27dd8d7d6c3so4291865a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:17:22 -0700 (PDT)
+        Wed, 25 Oct 2023 09:17:51 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DCC138
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:17:49 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7eef0b931so56781717b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:17:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1698239868; x=1698844668; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OhI+0U3C4maNiYVWrEGT2SlLeFp5Rtq5XADzsjH+0y0=;
+        b=YUExOLi3bB63BLB3LmYOz5fXJsFz3giuSe6MQq8EMmn0CbAicL3fynsuabXbu5RnpM
+         8YerNvWGWSvLxa4RpdC8ZKkr6GO+zdwHREY0+u6WbPDTZxY+HFatJXYan1fFXjo1IKdZ
+         vGEF4K/J3gwmKsairkEsU5iQ7q5Z1Av03mCrwGf7P42OsacRgFuwDhR5676fhGxlXki8
+         lFKd24FRToX7wRSQOqIZAmTOxSTYCIl9/0b9RZGhHsO3R6+yi2d9Zi1Uwp5XD+D9tPlf
+         s1OBenoev16RvP2Jd8aoDcQDGm7D28qgTAnINVZAzfr0KmVchGFRN/KpvWSgc+Mwd0iC
+         2fsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698239841; x=1698844641;
+        d=1e100.net; s=20230601; t=1698239868; x=1698844668;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IozGvl6ym7FtpXWIgUQGELou+dXeHqFgoLDxKjZILp0=;
-        b=lXGWV6FCBaX8xMhsJPWw09Z6D1QgWgJTkx6eGvr5llBoP9ksj2K+mHl8bo4ZvoqLV1
-         qPjkDfHl/7pMdkSL81+TJbEB8XtHwX+zLp2+KC1TaVmuZyUm6If6GIT+71sihGRtpC5w
-         /2pqgSXP+XAz05w8TcLfVb+uz6xnDL98g1+Qvu5K+1yLMhXt2kbL2vAF/MLrnRfC5LRL
-         +MwvX1XK/5EcofM1DVmEfywuX1B9NWbqA9lKgU1xPsgmAUZ34Izi616AQ/zotlAIRcp4
-         iB/PvhwidPVeQZ50QCyEcblCkzsv6ZrG8YVitcHsFal3iIU2Gy0d0wUhQdrtOSdjirhi
-         86fQ==
-X-Gm-Message-State: AOJu0Yz7xde/+9WbC/KNrQ8VBnjRvfDcXZPfjJi3uAu9XHie+O7YPbBE
-        VaWDClES7Xynee7ipUptFrKklZzCScYkEnEXPH93p2uWajhanSyZjsd0kTS/Fb3F1qqbQUJjqc+
-        CUEqVE0d7WIE1NZCeLUSuX61t140or9FUxnS4Sbif
-X-Received: by 2002:a17:90b:4b8a:b0:27d:4282:e3d2 with SMTP id lr10-20020a17090b4b8a00b0027d4282e3d2mr11790035pjb.30.1698239841313;
-        Wed, 25 Oct 2023 06:17:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEBXLRdWrDOrQCF5FvsKobYfb7nyIu56I/K8W5F1yWLZe9klbEb/Sixm0+WmmNoJIkM4fZDAptKQq/7701Eamw=
-X-Received: by 2002:a17:90b:4b8a:b0:27d:4282:e3d2 with SMTP id
- lr10-20020a17090b4b8a00b0027d4282e3d2mr11790015pjb.30.1698239841018; Wed, 25
- Oct 2023 06:17:21 -0700 (PDT)
+        bh=OhI+0U3C4maNiYVWrEGT2SlLeFp5Rtq5XADzsjH+0y0=;
+        b=bWApbU4YGNuAidkEovF4rL9tTYcwwGI/GBxoC+G2/LQguGn2g0FVRRmElZ8iB6XoT0
+         exfkviEKAgu1t6RUc10zgAyEvck/CTuGqGnGDaV/85DU+epVU3eBsuoLqTHWDl8X0mjy
+         z2VzkxYDBUTPyi9CcqV0uEa9yreqqdJ3cXqjmZqH5FfzUDsr85R3vsYcfJIUqnLzHLqa
+         MFERVJ7ETpwsh4CTmtFCrdgKQE4/4eBaMT8YMgjiDB0Pa7tOv6jscNHNMgCB53hdbDC7
+         lFHl8uMqxY2yZgLaaDeQD/nBK1plEjS7l2aFvmT6TBr5P2KTfm4XvL4Rn8Tf6kxFjAiH
+         xAfA==
+X-Gm-Message-State: AOJu0Yxka4GMQ9GJkdnmBl11WrGwkjlhHQZx21+JG6NqOVC5x0DvBdBL
+        Bxd+AIH+svOdONWxkmFVtD+rpzSs5UsE+G3s3T5f
+X-Google-Smtp-Source: AGHT+IEmM4VRNzvMlwEig7LRJ0/I8fW70H8OJI07w9jqnVgfL3k2gIIT/BmMHa1TUskU3QK75Bw+pBd7fYHozFYVqsg=
+X-Received: by 2002:a25:5856:0:b0:da0:86e8:aea4 with SMTP id
+ m83-20020a255856000000b00da086e8aea4mr840904ybb.57.1698239868426; Wed, 25 Oct
+ 2023 06:17:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230904133321.104584-1-git@andred.net> <20231018111508.3913860-1-git@andred.net>
- <717fd97a-6d14-4dc9-808c-d752d718fb80@ddn.com> <4b0b46f29955956916765d8d615f96849c8ce3f7.camel@linaro.org>
- <fa3510f3-d3cc-45d2-b38e-e8717e2a9f83@ddn.com> <1b03f355170333f20ee20e47c5f355dc73d3a91c.camel@linaro.org>
- <9afc3152-5448-42eb-a7f4-4167fc8bc589@ddn.com> <5cd87a64-c506-46f2-9fed-ac8a74658631@ddn.com>
- <8ae8ce4d-6323-4160-848a-5e94895ae60e@leemhuis.info>
-In-Reply-To: <8ae8ce4d-6323-4160-848a-5e94895ae60e@leemhuis.info>
-From:   Miklos Szeredi <mszeredi@redhat.com>
-Date:   Wed, 25 Oct 2023 15:17:09 +0200
-Message-ID: <CAOssrKdvy9qTGSwwPVqYLAYYEk0jbqhGg4Lz=jEff7U58O4Yqw@mail.gmail.com>
-Subject: Re: [PATCH v2] Revert "fuse: Apply flags2 only when userspace set the FUSE_INIT_EXT"
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Paul Lawrence <paullawrence@google.com>,
-        Daniel Rosenberg <drosen@google.com>,
-        Alessio Balsini <balsini@android.com>,
+References: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
+In-Reply-To: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 25 Oct 2023 09:17:37 -0400
+Message-ID: <CAHC9VhThNGA+qRgs=rOmEfvffj3qLzB=Jx4ii-uksuU1YJ6F5w@mail.gmail.com>
+Subject: Re: [RESEND RFC PATCH v2 00/14] device_cgroup: guard mknod for
+ non-initial user namespace
+To:     =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Cc:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
         Amir Goldstein <amir73il@gmail.com>,
-        Bernd Schubert <bschubert@ddn.com>,
-        =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+        "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        gyroidos@aisec.fraunhofer.de, linux-security-module@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 1:30=E2=80=AFPM Linux regression tracking (Thorsten
-Leemhuis) <regressions@leemhuis.info> wrote:
+On Wed, Oct 25, 2023 at 5:42=E2=80=AFAM Michael Wei=C3=9F
+<michael.weiss@aisec.fraunhofer.de> wrote:
+>
+> Introduce the flag BPF_DEVCG_ACC_MKNOD_UNS for bpf programs of type
+> BPF_PROG_TYPE_CGROUP_DEVICE which allows to guard access to mknod
+> in non-initial user namespaces.
+>
+> If a container manager restricts its unprivileged (user namespaced)
+> children by a device cgroup, it is not necessary to deny mknod()
+> anymore. Thus, user space applications may map devices on different
+> locations in the file system by using mknod() inside the container.
+>
+> A use case for this, we also use in GyroidOS, is to run virsh for
+> VMs inside an unprivileged container. virsh creates device nodes,
+> e.g., "/var/run/libvirt/qemu/11-fgfg.dev/null" which currently fails
+> in a non-initial userns, even if a cgroup device white list with the
+> corresponding major, minor of /dev/null exists. Thus, in this case
+> the usual bind mounts or pre populated device nodes under /dev are
+> not sufficient.
+>
+> To circumvent this limitation, allow mknod() by checking CAP_MKNOD
+> in the userns by implementing the security_inode_mknod_nscap(). The
+> hook implementation checks if the corresponding permission flag
+> BPF_DEVCG_ACC_MKNOD_UNS is set for the device in the bpf program.
+> To avoid to create unusable inodes in user space the hook also
+> checks SB_I_NODEV on the corresponding super block.
+>
+> Further, the security_sb_alloc_userns() hook is implemented using
+> cgroup_bpf_current_enabled() to allow usage of device nodes on super
+> blocks mounted by a guarded task.
+>
+> Patch 1 to 3 rework the current devcgroup_inode hooks as an LSM
+>
+> Patch 4 to 8 rework explicit calls to devcgroup_check_permission
+> also as LSM hooks and finalize the conversion of the device_cgroup
+> subsystem to a LSM.
+>
+> Patch 9 and 10 introduce new generic security hooks to be used
+> for the actual mknod device guard implementation.
+>
+> Patch 11 wires up the security hooks in the vfs
+>
+> Patch 12 and 13 provide helper functions in the bpf cgroup
+> subsystem.
+>
+> Patch 14 finally implement the LSM hooks to grand access
+>
+> Signed-off-by: Michael Wei=C3=9F <michael.weiss@aisec.fraunhofer.de>
+> ---
+> Changes in v2:
+> - Integrate this as LSM (Christian, Paul)
+> - Switched to a device cgroup specific flag instead of a generic
+>   bpf program flag (Christian)
+> - do not ignore SB_I_NODEV in fs/namei.c but use LSM hook in
+>   sb_alloc_super in fs/super.c
+> - Link to v1: https://lore.kernel.org/r/20230814-devcg_guard-v1-0-654971a=
+b88b1@aisec.fraunhofer.de
+>
+> Michael Wei=C3=9F (14):
+>   device_cgroup: Implement devcgroup hooks as lsm security hooks
+>   vfs: Remove explicit devcgroup_inode calls
+>   device_cgroup: Remove explicit devcgroup_inode hooks
+>   lsm: Add security_dev_permission() hook
+>   device_cgroup: Implement dev_permission() hook
+>   block: Switch from devcgroup_check_permission to security hook
+>   drm/amdkfd: Switch from devcgroup_check_permission to security hook
+>   device_cgroup: Hide devcgroup functionality completely in lsm
+>   lsm: Add security_inode_mknod_nscap() hook
+>   lsm: Add security_sb_alloc_userns() hook
+>   vfs: Wire up security hooks for lsm-based device guard in userns
+>   bpf: Add flag BPF_DEVCG_ACC_MKNOD_UNS for device access
+>   bpf: cgroup: Introduce helper cgroup_bpf_current_enabled()
+>   device_cgroup: Allow mknod in non-initial userns if guarded
+>
+>  block/bdev.c                                 |   9 +-
+>  drivers/gpu/drm/amd/amdkfd/kfd_priv.h        |   7 +-
+>  fs/namei.c                                   |  24 ++--
+>  fs/super.c                                   |   6 +-
+>  include/linux/bpf-cgroup.h                   |   2 +
+>  include/linux/device_cgroup.h                |  67 -----------
+>  include/linux/lsm_hook_defs.h                |   4 +
+>  include/linux/security.h                     |  18 +++
+>  include/uapi/linux/bpf.h                     |   1 +
+>  init/Kconfig                                 |   4 +
+>  kernel/bpf/cgroup.c                          |  14 +++
+>  security/Kconfig                             |   1 +
+>  security/Makefile                            |   2 +-
+>  security/device_cgroup/Kconfig               |   7 ++
+>  security/device_cgroup/Makefile              |   4 +
+>  security/{ =3D> device_cgroup}/device_cgroup.c |   3 +-
+>  security/device_cgroup/device_cgroup.h       |  20 ++++
+>  security/device_cgroup/lsm.c                 | 114 +++++++++++++++++++
+>  security/security.c                          |  75 ++++++++++++
+>  19 files changed, 294 insertions(+), 88 deletions(-)
+>  delete mode 100644 include/linux/device_cgroup.h
+>  create mode 100644 security/device_cgroup/Kconfig
+>  create mode 100644 security/device_cgroup/Makefile
+>  rename security/{ =3D> device_cgroup}/device_cgroup.c (99%)
+>  create mode 100644 security/device_cgroup/device_cgroup.h
+>  create mode 100644 security/device_cgroup/lsm.c
 
-> Miklos, I'm wondering what the status here is. The description in the
-> reverts Andr=C3=A9 sent[1] are maybe a bit vague[2], but it sounds a lot =
-like
-> he ran into a big regression that should be addressed somehow -- maybe
-> with a revert. But it seems we haven't got any closer to that in all
-> those ~7 weeks since the first revert was posted. But I might be missing
-> something, hence a quick evaluation from your side would help me a lot
-> here to understand the situation.
+Hi Michael,
 
-I don't think the Android use case counts as a regression.
+I think this was lost because it wasn't CC'd to the LSM list (see
+below).  I've CC'd the list on my reply, but future patch submissions
+that involve the LSM must be posted to the LSM list if you would like
+them to be considered.
 
-If they'd use an unmodified upstream kernel, it would be a different case.
+http://vger.kernel.org/vger-lists.html#linux-security-module
 
-But they modify the kernel heavily, and AFAICS this breakage is
-related to such a modification (as pointed out by Bernd upthread).
-
-Andr=C3=A9 might want to clarify, but I've not seen any concrete real world
-examples of regressions caused by this change outside of Android.
-
-Thanks,
-Miklos
-
+--=20
+paul-moore.com
