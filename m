@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D025F7D6CEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8020C7D6CF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 15:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343498AbjJYNQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
+        id S1344521AbjJYNSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233875AbjJYNQ4 (ORCPT
+        with ESMTP id S234976AbjJYNSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:16:56 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3849133;
-        Wed, 25 Oct 2023 06:16:53 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-41cc537ed54so36850601cf.2;
-        Wed, 25 Oct 2023 06:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698239813; x=1698844613; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g1tU5kbwVb+Wg1uvhO3+D2ibDL+pMHtlvIijrkuaPh8=;
-        b=JztT+RB5tT9OlVCWDTDHrk8Yb+mSxQGALK/XRzNVQ6Uai4dbyc4lOxSADoG1tjvg3/
-         1Oz9hBZSd1LbPvqKLtANYd9hsSSEhbRvLRBmG/VEMua51TfZi/Lq/9JNgfsfVm4mLK2z
-         uHybcIwIPPdQRwtsee0u0prDHLQwcQHlButJulpCLb8QJWxrdqb6NkfKvFDrIfxKa97F
-         3LpLMTuhSjtpu1dGiXEybaSidDKCWVFMOQqJV+hwFPvgVsYc6zNyUNRYenUJOLhFX50E
-         5jXXsVhRS6r7o4T4eRvCxRhskMd97iPJMBj9NH5vqX8awtOYbST1unPib0bHwC6QPY4u
-         xs5w==
+        Wed, 25 Oct 2023 09:18:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08206131
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:17:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698239844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IozGvl6ym7FtpXWIgUQGELou+dXeHqFgoLDxKjZILp0=;
+        b=NKCvjXfR4AH8xREssTR8wBq4foj3H4Dm4XJd2qNgAMNcgJps1qfB9S71Zg5DG37Ka+l2qh
+        u2UZyh1jhDa5w7l1l4AbiPcHTOmMlcDb8oujqzaYB8gYND+V+JSNgPzVEboT/tFkzmUAEp
+        XM+EfFChlikdkK4RYj/6942Ryo89KHQ=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-618-ppDzhPDNN2-paG0RBetPZw-1; Wed, 25 Oct 2023 09:17:22 -0400
+X-MC-Unique: ppDzhPDNN2-paG0RBetPZw-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-27dd8d7d6c3so4291865a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:17:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698239813; x=1698844613;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g1tU5kbwVb+Wg1uvhO3+D2ibDL+pMHtlvIijrkuaPh8=;
-        b=MJjZZFkTAzcKG5RK8lbTrZz7ZAfUAwXYz8P9ged/IxhpB3exi4zfglrl4KoJsTI0xf
-         YI7CThxWVdT4Ay7w73pfdabl57wtzszasenSe1Cz8kYrA6avUNOxoX2uIjubwj0JFUdG
-         Z1eq5LQzAhhd/8tg6J16F5aTE8ZF1qIERVk8YFQCllfxq/qaiU3r3TK/9NeNqLq/uOt4
-         h70N8BG6WQqJ4HZvngea9nlGeozBvNXrQYHD8Pvpvvswx9jLyLrQLr/mkzIM/0TJbjpH
-         HiDBZp6ph3bWjyPNxP5/Tcrrj+3cNxdnRG5l6YjMFsQKnRFvPHRLO/O0JbvOkK+QT+Ba
-         QZGg==
-X-Gm-Message-State: AOJu0Yyj9DnhhIfJfYEgRFZywojeJETWmvXRbnHR8Z24SHHk2dPw7WSA
-        Giy7YJs7OSVHzkU88wYsb+g=
-X-Google-Smtp-Source: AGHT+IGDdTkY4rbUQVfZKtiVec1opfPoUHwbLgxu9buNeZQ8XoSBU+I/OT31DE12H3tKf3Lub14xEg==
-X-Received: by 2002:ac8:5715:0:b0:418:11ee:6315 with SMTP id 21-20020ac85715000000b0041811ee6315mr16789523qtw.43.1698239812806;
-        Wed, 25 Oct 2023 06:16:52 -0700 (PDT)
-Received: from [192.168.20.212] (cpe-107-15-246-199.nc.res.rr.com. [107.15.246.199])
-        by smtp.gmail.com with ESMTPSA id g3-20020ac842c3000000b0041977932fc6sm4188578qtm.18.2023.10.25.06.16.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 06:16:52 -0700 (PDT)
-Message-ID: <c84f0999-5de0-1161-4061-75aa2795d45a@gmail.com>
-Date:   Wed, 25 Oct 2023 09:16:50 -0400
+        d=1e100.net; s=20230601; t=1698239841; x=1698844641;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IozGvl6ym7FtpXWIgUQGELou+dXeHqFgoLDxKjZILp0=;
+        b=lXGWV6FCBaX8xMhsJPWw09Z6D1QgWgJTkx6eGvr5llBoP9ksj2K+mHl8bo4ZvoqLV1
+         qPjkDfHl/7pMdkSL81+TJbEB8XtHwX+zLp2+KC1TaVmuZyUm6If6GIT+71sihGRtpC5w
+         /2pqgSXP+XAz05w8TcLfVb+uz6xnDL98g1+Qvu5K+1yLMhXt2kbL2vAF/MLrnRfC5LRL
+         +MwvX1XK/5EcofM1DVmEfywuX1B9NWbqA9lKgU1xPsgmAUZ34Izi616AQ/zotlAIRcp4
+         iB/PvhwidPVeQZ50QCyEcblCkzsv6ZrG8YVitcHsFal3iIU2Gy0d0wUhQdrtOSdjirhi
+         86fQ==
+X-Gm-Message-State: AOJu0Yz7xde/+9WbC/KNrQ8VBnjRvfDcXZPfjJi3uAu9XHie+O7YPbBE
+        VaWDClES7Xynee7ipUptFrKklZzCScYkEnEXPH93p2uWajhanSyZjsd0kTS/Fb3F1qqbQUJjqc+
+        CUEqVE0d7WIE1NZCeLUSuX61t140or9FUxnS4Sbif
+X-Received: by 2002:a17:90b:4b8a:b0:27d:4282:e3d2 with SMTP id lr10-20020a17090b4b8a00b0027d4282e3d2mr11790035pjb.30.1698239841313;
+        Wed, 25 Oct 2023 06:17:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEBXLRdWrDOrQCF5FvsKobYfb7nyIu56I/K8W5F1yWLZe9klbEb/Sixm0+WmmNoJIkM4fZDAptKQq/7701Eamw=
+X-Received: by 2002:a17:90b:4b8a:b0:27d:4282:e3d2 with SMTP id
+ lr10-20020a17090b4b8a00b0027d4282e3d2mr11790015pjb.30.1698239841018; Wed, 25
+ Oct 2023 06:17:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.12.0
-Subject: Re: [PATCH v9 01/20] dt-bindings: PCI: Add PLDA XpressRICH PCIe host
- common properties
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley <conor@kernel.org>
-Cc:     Minda Chen <minda.chen@starfivetech.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20231020104341.63157-1-minda.chen@starfivetech.com>
- <20231020104341.63157-2-minda.chen@starfivetech.com>
- <8ced1915-7b94-4abc-bd8b-cb4bf027fa01@linaro.org>
- <bd441e1d-73ae-4abc-8eb2-877419acb2df@starfivetech.com>
- <97e2decd-f6a3-91cb-6ca7-539f53b686f3@gmail.com>
- <20231025-dotted-almighty-ae489e9eb764@spud>
- <3d7a2dba-53f6-4625-8981-fbeb469418c1@linaro.org>
-Content-Language: en-US
-From:   John Clark <inindev@gmail.com>
-In-Reply-To: <3d7a2dba-53f6-4625-8981-fbeb469418c1@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230904133321.104584-1-git@andred.net> <20231018111508.3913860-1-git@andred.net>
+ <717fd97a-6d14-4dc9-808c-d752d718fb80@ddn.com> <4b0b46f29955956916765d8d615f96849c8ce3f7.camel@linaro.org>
+ <fa3510f3-d3cc-45d2-b38e-e8717e2a9f83@ddn.com> <1b03f355170333f20ee20e47c5f355dc73d3a91c.camel@linaro.org>
+ <9afc3152-5448-42eb-a7f4-4167fc8bc589@ddn.com> <5cd87a64-c506-46f2-9fed-ac8a74658631@ddn.com>
+ <8ae8ce4d-6323-4160-848a-5e94895ae60e@leemhuis.info>
+In-Reply-To: <8ae8ce4d-6323-4160-848a-5e94895ae60e@leemhuis.info>
+From:   Miklos Szeredi <mszeredi@redhat.com>
+Date:   Wed, 25 Oct 2023 15:17:09 +0200
+Message-ID: <CAOssrKdvy9qTGSwwPVqYLAYYEk0jbqhGg4Lz=jEff7U58O4Yqw@mail.gmail.com>
+Subject: Re: [PATCH v2] Revert "fuse: Apply flags2 only when userspace set the FUSE_INIT_EXT"
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Paul Lawrence <paullawrence@google.com>,
+        Daniel Rosenberg <drosen@google.com>,
+        Alessio Balsini <balsini@android.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Bernd Schubert <bschubert@ddn.com>,
+        =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,50 +87,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-That is correct, I tested the entire series against Linux 6.6-rc7 and 
-confirmed that pcie/nvme/usb work on the VisionFive2 device. I was 
-unable to test the Microchip side of the equation. I will be more clear 
-as to what I verified if I comment in the future.
+On Wed, Oct 25, 2023 at 1:30=E2=80=AFPM Linux regression tracking (Thorsten
+Leemhuis) <regressions@leemhuis.info> wrote:
 
-John Clark
+> Miklos, I'm wondering what the status here is. The description in the
+> reverts Andr=C3=A9 sent[1] are maybe a bit vague[2], but it sounds a lot =
+like
+> he ran into a big regression that should be addressed somehow -- maybe
+> with a revert. But it seems we haven't got any closer to that in all
+> those ~7 weeks since the first revert was posted. But I might be missing
+> something, hence a quick evaluation from your side would help me a lot
+> here to understand the situation.
 
+I don't think the Android use case counts as a regression.
 
-On 10/25/23 6:41 AM, Krzysztof Kozlowski wrote:
-> On 25/10/2023 12:28, Conor Dooley wrote:
->> Hi John,
->>
->> On Mon, Oct 23, 2023 at 11:09:50PM -0400, John Clark wrote:
->>>> On 2023/10/20 19:04, Krzysztof Kozlowski wrote:
->>>>> On 20/10/2023 12:43, Minda Chen wrote:
->>>>>> Add PLDA XpressRICH PCIe host common properties dt-binding doc.
->>>>>> Microchip PolarFire PCIe host using PLDA IP.
->>>>>> Move common properties from Microchip PolarFire PCIe host
->>>>>> to PLDA files.
->>>>>>
->>>>>> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
->>>>>> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
->>>>>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
->>>>>> Reviewed-by: Rob Herring <robh@kernel.org>
->>>>>> ---
->>>>>>    .../bindings/pci/microchip,pcie-host.yaml     | 55 +-------------
->>>>>>    .../pci/plda,xpressrich3-axi-common.yaml      | 75 +++++++++++++++++++
->>>>> Where was this patch reviewed?
->>>>>
->>>>> Best regards,
->>>>> Krzysztof
->>>>>
->>>> This Conor's review tag. v2 : https://patchwork.kernel.org/project/linux-pci/patch/20230727103949.26149-2-minda.chen@starfivetech.com/
->>>> This is Rob's review tag v3: https://patchwork.kernel.org/project/linux-pci/patch/20230814082016.104181-2-minda.chen@starfivetech.com/
->>> Tested-by: John Clark <inindev@gmail.com>:
->>> https://github.com/inindev/visionfive2/tree/main/kernel/patches
->> I suspect you don't mean that you tested this individual dt-binding, but
->> rather that you tested the whole series. If so, you should probably
->> provide this tested-by against the cover-letter instead of this bindings
->> patch.
-> Yeah, otherwise I would like to hear how do you test bindings (other
-> than dt_binding_check which is something similar to testing as compiling
-> code).
->
-> Best regards,
-> Krzysztof
->
+If they'd use an unmodified upstream kernel, it would be a different case.
+
+But they modify the kernel heavily, and AFAICS this breakage is
+related to such a modification (as pointed out by Bernd upthread).
+
+Andr=C3=A9 might want to clarify, but I've not seen any concrete real world
+examples of regressions caused by this change outside of Android.
+
+Thanks,
+Miklos
+
