@@ -2,178 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C89E27D64F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565AA7D64F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233953AbjJYIZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52370 "EHLO
+        id S234338AbjJYI0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:26:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234066AbjJYIZk (ORCPT
+        with ESMTP id S234172AbjJYIZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:25:40 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140EA130;
-        Wed, 25 Oct 2023 01:25:38 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 390E06607343;
-        Wed, 25 Oct 2023 09:25:36 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698222336;
-        bh=/MPWeMyHAxsAWZyZD0cLcFQjlH545S+f/HIffRuUkyk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=fYwIbmVddSkhLodZZOH9Fx8w+GTRLwjEsh6ZTa1A4fk1tMKMqUIkNsItdeAH6fXOi
-         auCk8Xk/4uNYkWXxMEmpjRO7zQEy1Tl6etkpwI/M7WIc9zxARd//FfC/mAY5S4INGF
-         Y+LkcEHG5kdBY9W/lK1KtJLVQ3JIqSQxqgV5FzV8Y3hKdve7GdWp+gql7J8w5HHrN1
-         pQf1pO3NbM3SdO08cg/H6uS7MszAREGg9+Dux4Nj13FBV1UtsiXystd1dU/BEe1Orp
-         sF8v1UsMEPHO6sNPheC458oYP0E4aSI3wT8nX6EybSmKmOiOsNd/tBJo/J42io78/y
-         cFzSindBf4fmA==
-Message-ID: <0dcc5a99-ef14-4250-b8c1-bf9d7471f5cb@collabora.com>
-Date:   Wed, 25 Oct 2023 10:25:33 +0200
+        Wed, 25 Oct 2023 04:25:57 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDD11AB
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:25:53 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40907b82ab9so3123475e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698222351; x=1698827151; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aiqLs+3J8ocbMk/USKLhzS0VZ0dnUDi87OArXxCKu9I=;
+        b=ae6SPT/ahDNGoCCzLyaRCoO1ly+U/yMUw3xs62NvHF6BrGJCIYhZW2enQDNouqg59c
+         STJ2eQttTgrlXZHj6q5zLzo2cgqtGYOsb8SrLgj7b8NixZ8iew2cZl4kLUVzbFci7u9H
+         vSINPGk+xWXC28xeuhi6Mokbq8/PJIhBEvz+OCeFC/tUg/hvleiRnEW+xsPAeCqsu0FA
+         B54PdPaVj+yVfcSwFQRJMNdxYlQzBmrq8RYjJV+alIYozOVvmZoYV32+6uU5OCPduvnU
+         Lv80oRq1q2tCERkd1PX6yEqe0+6H6u4MGKNblw+WXYEOJzcLe/lDSndyq+AUkklstFS1
+         XiSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698222351; x=1698827151;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aiqLs+3J8ocbMk/USKLhzS0VZ0dnUDi87OArXxCKu9I=;
+        b=dowa+DuhdrZMRYUK/jlt4yrojVf1JzLFUxmrFobVv3eGxe6YRw1A2MUvxASx+Calny
+         0DmCNKIKq8zG5nw/F9aF/FBfbf4GhmXKRUm43oUM385xtHQwYAIu1fTG7Md2rIAwzHku
+         ESbUFacsBnGnV5Yjz8ozGq0ZeMzh8HA6j21LiL5IBZNR0AJwpFpgeNyup+6u3yipMAA6
+         7EwdJ3WcZ9N1PYCC82RQhCLaAb4XKX6zJNowUSj+wCE0uyaQYsQMrUJWT5ZB9h0HYr4Y
+         YjVXhoS9sTJDiJraqanp2NdCj9NEBG3i2Hk8FcnGm2Mvmt1Ci3sceAh5HgQadcFC1dPR
+         2XlA==
+X-Gm-Message-State: AOJu0Yw/iuDulX3ptS5fkKeLkAeYFl8O79RVazdw5DMV9V10yASmH+C0
+        YZB0WTw2LieoZdSD3Y4xIg5oIw==
+X-Google-Smtp-Source: AGHT+IEi2BjEfe4yJYq061IxNTMQpM2ahhlufXypcgsDDRHR1BglE83aON7CdQqH9o2yY0qDiN8acw==
+X-Received: by 2002:a05:600c:b4d:b0:408:33ba:569a with SMTP id k13-20020a05600c0b4d00b0040833ba569amr18364282wmr.8.1698222351375;
+        Wed, 25 Oct 2023 01:25:51 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id j14-20020a05600c130e00b0040772934b12sm18473467wmf.7.2023.10.25.01.25.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 01:25:50 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Date:   Wed, 25 Oct 2023 10:25:47 +0200
+Subject: [PATCH v2] dt-bindings: mailbox: qcom-ipcc: document the SM8650
+ Inter-Processor Communication Controller
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/7] arm64: dts: mt8183: Add kukui katsu board
-Content-Language: en-US
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
-        <nfraprado@collabora.com>,
-        =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20231024212618.1079676-1-hsinyi@chromium.org>
- <20231024212618.1079676-4-hsinyi@chromium.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231024212618.1079676-4-hsinyi@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20231025-topic-sm8650-upstream-bindings-ipcc-v2-1-b1a4670ed6fa@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAArROGUC/42NSw6CMBBAr0Jm7ZhO+QRdeQ/DopQRJtG2aZFoC
+ He3Eg/g8r3FeyskjsIJzsUKkRdJ4l0GfSjATsaNjDJkBq10SYoanH0Qi+nRNrXCZ0hzZPPAXtw
+ gbkwowVpUfcV00hWzbiGXQuSbvPbLtcs8SZp9fO/Thb7219f1X/2FkNBYa6qS2kE1fLmLM9Eff
+ Ryh27btA8FxwmLXAAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1310;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=0PrADmM9pW58GSAafxMnkqLRaQh4TRNl79Py82x9/OY=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlONENlpNBhAxj66NUXtzE0TNkFnDmb+y5gacLK55l
+ h91n12GJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZTjRDQAKCRB33NvayMhJ0fwID/
+ 9wQhgQULh6+c5xAUA9DNlfrh6drHxSb+qOu27GhcitqZFqX+TAW9tO7i7tG8myvkZ5cWCNgeE6EOBj
+ Rm6A853hEh1eXLo5Xh+204OFjYVnPjNF+9LWIikwEPAXW9moCPi7YKUh9K5pnR5VIFh1vNDAkcO+BP
+ I0PQeIg6QbEoGaHRO+kol7G63jQeXjwVbwDYfhhP2jgVCmtzFOyz+NDW2tdB/hnp16ZOvvHqROutxP
+ UfNiEUC/kmnI9YgdP/tIxjggd8LcCqVpd/oUlmcnn/9Vzs8+RLgu9wde9aC5wXVB9RmKtA81kL2qE9
+ FCFt5EYZfgGfZVdLUhnfkKJ54ICoorqLeBB8iNVe7LSF0m/T/wOtaeWx/XrYe39ONG7JfrQL3t9Phy
+ IyVz/Vh0EASrCFhNUT6vroALv+wD6KPE2ebUpbswVIBYiQgW+cPQ2GDBsQz9l1oJb6VuVWYQJ4Uv3s
+ t4QVsSVVYMEXoYldtQioPjdL2sQ7zRTg7kq0wv44a+AUBP9+rhYY7NiN7OLuZ3rhM7e70xSAe8kSEt
+ 3QrE1D1bxhRb+jZMCz99eh77RkrPa3F/zUNSTaioSRbOtsiIghAm1YktGBoWDJME77QtU6bbdEAUtc
+ KAF1A5kBzcd3M/NBorZ38G4HOlhHAnNX7X3yLuHR6xtDP9dPQU5PjizCX0Pw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 24/10/23 23:22, Hsin-Yi Wang ha scritto:
-> katsu is also known as ASUS Chromebook Detachable CZ1.
-> 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
-> v1->v2: non sku38 is sku32
-> ---
->   arch/arm64/boot/dts/mediatek/Makefile         |  2 +
->   .../dts/mediatek/mt8183-kukui-katsu-sku32.dts | 40 +++++++++++++++++
->   .../dts/mediatek/mt8183-kukui-katsu-sku38.dts | 44 +++++++++++++++++++
->   3 files changed, 86 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-katsu-sku32.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-katsu-sku38.dts
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-> index e6e7592a3645..a13419e67e8e 100644
-> --- a/arch/arm64/boot/dts/mediatek/Makefile
-> +++ b/arch/arm64/boot/dts/mediatek/Makefile
-> @@ -36,6 +36,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-willow-sku0.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-willow-sku1.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kakadu.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kakadu-sku22.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-katsu-sku32.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-katsu-sku38.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku16.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku272.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku288.dtb
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-katsu-sku32.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-katsu-sku32.dts
-> new file mode 100644
-> index 000000000000..9fa205c06c74
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-katsu-sku32.dts
-> @@ -0,0 +1,40 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2023 Google LLC
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt8183-kukui-kakadu.dtsi"
-> +#include "mt8183-kukui-audio-da7219-rt1015p.dtsi"
-> +
-> +/ {
-> +	model = "Google katsu board";
-> +	chassis-type = "tablet";
-> +	compatible = "google,katsu-sku32", "google,katsu", "mediatek,mt8183";
-> +};
-> +
-> +&i2c0 {
-> +	status = "okay";
-> +
+Document the Inter-Processor Communication Controller on the SM8650 Platform.
 
-The i2c0 node already inherits status = "okay" from mt8183-kukui-kakadu.dtsi,
-this is redundant.
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+For convenience, a regularly refreshed linux-next based git tree containing
+all the SM8650 related work is available at:
+https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm85650/upstream/integ
+---
+Changes in v2:
+- Fixed typo in subject
+- Link to v1: https://lore.kernel.org/r/20231025-topic-sm8650-upstream-bindings-ipcc-v1-1-acca4318d06e@linaro.org
+---
+ Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-> +	/delete-node/touchscreen@10;
+diff --git a/Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml b/Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
+index cc6f66eccc84..a35f9483dc71 100644
+--- a/Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
++++ b/Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
+@@ -34,6 +34,7 @@ properties:
+           - qcom,sm8350-ipcc
+           - qcom,sm8450-ipcc
+           - qcom,sm8550-ipcc
++          - qcom,sm8650-ipcc
+       - const: qcom,ipcc
+ 
+   reg:
 
-You can definitely avoid those ugly /delete-node/ statements: if you check more
-closely, mt8183-kukui-kakadu.dtsi is used by only two *.dts files.
+---
+base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
+change-id: 20231016-topic-sm8650-upstream-bindings-ipcc-0b4e1924ee28
 
-I would propose to move the touchscreen@10 node from kakadu.dtsi to kakadu.dts
-and kakadu-sku22.dts: in my opinion, that will make things more readable, as
-every board defines its own touchscreen.
-
-It would be a different story if we had to duplicate that @10 node for something
-like five times or more, but that's not the case.
-
-> +	touchscreen1: touchscreen@5d {
-> +		compatible = "goodix,gt7375p";
-> +		reg = <0x5d>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&open_touch>;
-> +
-
-This....
-
-> +		interrupt-parent = <&pio>;
-> +		interrupts = <155 IRQ_TYPE_LEVEL_LOW>;
-
-...should be done in one line, like so:
-
-		interrupts-extended = <&pio 155 IRQ_TYPE_LEVEL_LOW>;
-
-> +
-> +		reset-gpios = <&pio 156 GPIO_ACTIVE_LOW>;
-> +		vdd-supply = <&lcd_pp3300>;
-> +	};
-> +};
-> +
-> +&panel {
-> +	compatible = "starry,2081101qfh032011-53g";
-
-Actually, same comment goes for the panel node: kakadu.dtsi defines a panel
-compatible "boe,tv105wum-nw0" but then you're overriding it here with the
-starry panel.
-
-You could leave the status = "okay" in kakadu.dtsi and move the panel compatible
-to each *.dts board file, therefore increasing readability.
-
-> +};
-> +
-> +&qca_wifi {
-> +	qcom,ath10k-calibration-variant = "GO_KATSU";
-> +};
-
-Same comment applies to sku38, of course.
-
-Regards,
-Angelo
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
 
