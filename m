@@ -2,82 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9397D60F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 06:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F527D60F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 06:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbjJYEtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 00:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        id S229688AbjJYE6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 00:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJYEtW (ORCPT
+        with ESMTP id S229456AbjJYE6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 00:49:22 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB079D;
-        Tue, 24 Oct 2023 21:49:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
-        s=s31663417; t=1698209341; x=1698814141; i=frank-w@public-files.de;
-        bh=wst+kn2LJYE18zgEoPvRJYkwsFDsuiJJ8r3xjJMaiIk=;
-        h=X-UI-Sender-Class:Date:From:To:CC:Subject:Reply-to:In-Reply-To:
-         References;
-        b=jYwS87Hql4nMv0v2E/Wuzs+1tfhcOZCWYLk/Wqvr/BX0ejFKt5isDFzsZmBZr//R
-         M4HYLcpjsJYixXzXNn9fkJvddQF36cYjPfUJKWvYryYF4NhqgzCgbvEZ38zT8LfbW
-         uEBxDktGRejtFh8DFC6m7xcK5u0DbEmsOZNVpF5cPBrJfG/Jmjf7bhBLfJDaH1Oqu
-         ++7s/Ke47N8k87ao2VxmXsYcEUy1tSGGCPF0O3Nbp4zLBvMYBYgKHk1+L+XvQZLcB
-         yMU8NDha14YH3FOuos9V3PfBYlcqMj7ZRhmPNsePn77IXcL3lr0Ya9FlnbxWh6ycK
-         YF802y93pSa8ky44dA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [127.0.0.1] ([217.61.159.50]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MTiU3-1r3ZuT40pp-00Tzz8; Wed, 25
- Oct 2023 06:49:01 +0200
-Date:   Wed, 25 Oct 2023 06:48:59 +0200
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?ISO-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E_Prado?= 
-        <nfraprado@collabora.com>,
-        =?ISO-8859-1?Q?Bernhard_Rosenkr=E4nzer?= <bero@baylibre.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2 0/7] Add a few mt8183 follower boards.
-User-Agent: K-9 Mail for Android
-Reply-to: frank-w@public-files.de
-In-Reply-To: <20231024212618.1079676-1-hsinyi@chromium.org>
-References: <20231024212618.1079676-1-hsinyi@chromium.org>
-Message-ID: <65CEE82D-B1A8-4153-AB21-9E0CE224896B@public-files.de>
+        Wed, 25 Oct 2023 00:58:04 -0400
+X-Greylist: delayed 401 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 24 Oct 2023 21:58:02 PDT
+Received: from smtp161.vfemail.net (smtp161.vfemail.net [146.59.185.161])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300E5128
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 21:58:01 -0700 (PDT)
+Received: (qmail 18737 invoked from network); 25 Oct 2023 04:51:19 +0000
+Received: from localhost (HELO nl101-3.vfemail.net) ()
+  by smtpout.vfemail.net with ESMTPS (ECDHE-RSA-AES256-GCM-SHA384 encrypted); 25 Oct 2023 04:51:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=openmail.cc; h=from:to:cc
+        :subject:date:message-id:mime-version:content-transfer-encoding;
+         s=2018; bh=z3I7BxJWkJGWMcauhe7x+lldOe3CDXrLlKAqfautbjk=; b=JKsc
+        ZA1fcTejIgxVxwE99gtg3mw34yQTjcVa8RC4teaG6ZfTDisPJTcXsKrmpjHFQ8G+
+        cSc8mTxgzsEiK2w8hBLAmKlLEOR1LT58CGC72gxYKa+RgYX8+f8HyndQSbL2QyPj
+        4Tvi2cTwrNsxT9rG4ZHe5LiQ7SEqK48PUHjxpes=
+Received: (qmail 80579 invoked from network); 25 Oct 2023 04:51:18 -0000
+Received: by simscan 1.4.0 ppid: 80549, pid: 80569, t: 1.8100s
+         scanners:none
+Received: from unknown (HELO bmwxMDEudmZlbWFpbC5uZXQ=) (ZXF1dUBvcGVubWFpbC5jYw==@MTkyLjE2OC4xLjE5Mg==)
+  by nl101.vfemail.net with ESMTPA; 25 Oct 2023 04:51:16 -0000
+From:   Edward Chow <equu@openmail.cc>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Edward Chow <equu@openmail.cc>
+Subject: [PATCH] dt-bindings: mtd-partitions: Export special values
+Date:   Wed, 25 Oct 2023 12:50:58 +0800
+Message-ID: <20231025045101.825236-1-equu@openmail.cc>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oicm5nJbPPy7E+3I1ex1Tbt4DJFzwklgPahjOUY4DjfDKavv/p7
- T4lrLmi/kJQfHhSetihtGYZm4b9TzihuHHWjZRwU6W/vsc/8YB6fA4uwRA4C9GOydkQfE/x
- XmsoFrF/r1MoxktB89aeHPFR9ZzWbFgty+hAK/vmktW6DzMYMvxQ4mTZ/TOtDW18pT+tLDh
- A7R4xgeK21B6LEW4Lthjw==
-UI-OutboundReport: notjunk:1;M01:P0:W40FPAuZuGQ=;v3CRKu6xe2CRwPI755dKmF1T7r5
- /MUWHUERNsQpnqfGirETHRXgLwVDrHx7UmKtb5VILcuoQBnOhzp+a3UczpVO57YmTISvUWSAJ
- wQ8NhLp+Bb1cpr5knL5XcTSXUDM+7gcKO+SJ9AKUHv7N3012G3bUc8R41TAKlbnznEs64Vajj
- Q/feNEgNlYLPkuDRxJ2pSJyNFizQtMT4SH8lIha8wwuw2s6088enNT4TTFgn4w3faM9IcYTI7
- BdTan8VzkO5X/46t8Roi80Gj14bESOqQ114s+Runi/e16JkzgcdkcD3c0ubvhrbkvt9v3lyf1
- BjlXLXoQUqDwueaLpngMqIdMAdfdKsfGnVhXQoAWFyQGQo4OIGgMIBT5MrOj9fmu7I2si+TiP
- W0+I8kEGzkbZw2htPeWP3+0VZKbWkPN05zFse7kRz6lhSLNsNydPBXvr5svveWP1oyDmLUu7D
- RL1x2b82//i/iBOFhqKWoqREJn5UStwa2sZ0RWFJyLqPbjW7jyRvvke54nCp+bmaLoZfvCk79
- zMeGX9Vw6I1pN1eeGXX59T8444KWB07DgZ2iqXZwsIPM11ERirloOJL5kmqwWbk2+tpbCqcHU
- nOy4+MN1YCVluKv/r9/aP5JLBvSJP+zKl4mZ9lI67ep7nBJvl0GJrXDYzuv1HZW0KD2q+eQJ+
- FvGbJil5O8HqSWj/HRiG0DnvcHthQv/JS5Yw3qYYOW6QsYl3m0tK+50tVBcqGLdeZEMtJ9I3j
- 6p994stt/b5CYuC54QvIiVFi7r0eQJszOHDktK5QsOO4I3XwSlz+EDNFHAaGk3xva3JIZO/xX
- 3dQ8AP9oPmhGhrFdWB5J3UurFR83S1MFwiY8Lp2JWpZuZQ86KL4cd6phwplh6Z/m5umPYkoP+
- AmwU3eo9hZxA8Q7BbuzP7qp7OtUIKgWOPsFtza+iOo6Y/7G/t2SXCDWnu666Mtq07VF0EVnSr
- IquFIg==
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,9 +49,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+There are special "offset" and "size" values defined and documented in
+linux/mtd/partitions.h:
 
-Please do not add me directly as i'm no maintainer and i do not have board=
-s with this SoC
+// consume as much as possible, leaving size after the end of partition.
 
-regards Frank
+// the partition will start at the next erase block.
+
+// the partition will start where the previous one ended.
+
+(Though not explicitly, they are compared against variables in uint64_t
+in drivers/mtd/mtdpart.c, so they had better be considered as such.)
+
+// the partition will extend to the end of the master MTD device.
+
+These special values could be used to define partitions automatically
+fitting to the size of the master MTD device at runtime.
+
+However, these values used not to be exported to dt-bindings, thus
+seldom used before, since they might have been only used in numeric form,
+such as "(-1) (-3)" for MTDPART_OFS_RETAIN.
+
+Now, they are exported in dt-bindings/mtd/partitions.h as 32-bit cell
+values, so 2-cell addressed should be defined to use special offset values,
+such as "MTDPART_OFS_SPECIAL MTDPART_OFS_RETAIN" for MTDPART_OFS_RETAIN in
+linux/mtd/partitions.h. An example is added to fixed-partitions.yaml.
+
+Signed-off-by: Edward Chow <equu@openmail.cc>
+---
+ .../mtd/partitions/fixed-partitions.yaml      | 29 +++++++++++++++++++
+ MAINTAINERS                                   |  2 ++
+ include/dt-bindings/mtd/partitions.h          | 15 ++++++++++
+ 3 files changed, 46 insertions(+)
+ create mode 100644 include/dt-bindings/mtd/partitions.h
+
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+index 331e564f29dc..a939fb52ef76 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+@@ -164,3 +164,32 @@ examples:
+             read-only;
+         };
+     };
++
++  - |
++    partitions {
++        compatible = "fixed-partitions";
++        #address-cells = <2>;
++        #size-cells = <1>;
++
++        partition@0 {
++            label = "bootloader";
++            reg = <0 0x000000 0x020000>;
++            read-only;
++        };
++
++        firmware@1 {
++            label = "firmware";
++            /* From the end of the last partition, occupying as mush
++             * as possible, retaining 0x010000 after it,
++             * "MTDPART_OFS_SPECIAL MTDPART_OFS_NXTBLK" similar to
++             * this, but always beginning at erase block boundary. */
++            reg = <MTDPART_OFS_SPECIAL MTDPART_OFS_RETAIN 0x010000>;
++        };
++
++        calibration@2 {
++            compatible = "fixed-partitions";
++            label = "calibration";
++            /* Appending to the last partition, occupying 0x010000 */
++            reg = <MTDPART_OFS_SPECIAL MTDPART_OFS_APPEND 0x010000>;
++        };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 668d1e24452d..7d6beadc8b36 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13771,9 +13771,11 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
+ F:	Documentation/devicetree/bindings/mtd/
+ F:	drivers/mtd/
++F:	include/dt-bindings/mtd/
+ F:	include/linux/mtd/
+ F:	include/uapi/mtd/
+ 
++
+ MEMSENSING MICROSYSTEMS MSA311 DRIVER
+ M:	Dmitry Rokosov <ddrokosov@sberdevices.ru>
+ L:	linux-iio@vger.kernel.org
+diff --git a/include/dt-bindings/mtd/partitions.h b/include/dt-bindings/mtd/partitions.h
+new file mode 100644
+index 000000000000..456a54a1259a
+--- /dev/null
++++ b/include/dt-bindings/mtd/partitions.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Device Tree constants identical to those in include/linux/mtd/partitions.h
++ */
++
++#ifndef _DT_BINDINGS_MTD_PARTITIONS_H
++#define _DT_BINDINGS_MTD_PARTITIONS_H
++
++#define MTDPART_OFS_SPECIAL	(-1)
++#define MTDPART_OFS_RETAIN	(-3)
++#define MTDPART_OFS_NXTBLK	(-2)
++#define MTDPART_OFS_APPEND	(-1)
++#define MTDPART_SIZ_FULL	(0)
++
++#endif
+-- 
+2.42.0
+
