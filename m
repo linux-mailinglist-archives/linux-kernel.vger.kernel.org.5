@@ -2,354 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 845DB7D620A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079797D620C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232469AbjJYHCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        id S232543AbjJYHCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232346AbjJYHCI (ORCPT
+        with ESMTP id S232397AbjJYHCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:02:08 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81145CE
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:02:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B468721D55;
-        Wed, 25 Oct 2023 07:02:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1698217323; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kop4RHx3I/qm5cVI02vI0zcS8kCCVSEvMKMqTpMXubU=;
-        b=LgEuwx3xKFezlqHMPPzqSfP2fj4/fjEmr58w3uFjGHB/hekiH+HcLmg6Gb8b6XyCGuFBce
-        6JFeXdyjCgAVogdio1TxlB3N5aGv9P2jBVs8xqSAj2TYpyuH+10zVC1xToLWg91b7WNH3q
-        ZbnNjQmXfuxoYQGTFGHpiG/XGSr9kzs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1698217323;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kop4RHx3I/qm5cVI02vI0zcS8kCCVSEvMKMqTpMXubU=;
-        b=LdGIokLBkNRWTjqelatOJC4BN8v2xvSBam3sfmKCJym+StnHl4MP/eYPqAXXQ+T738VDnM
-        7ezO+huOPnUJZsCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 83E4913524;
-        Wed, 25 Oct 2023 07:02:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ORSUHWu9OGWBUQAAMHmgww
-        (envelope-from <hare@suse.de>); Wed, 25 Oct 2023 07:02:03 +0000
-Message-ID: <60b7f4c3-c5e8-4fab-bf31-d576fff7a016@suse.de>
-Date:   Wed, 25 Oct 2023 09:02:02 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] [v2] nvme: keyring: fix conditional compilation
+        Wed, 25 Oct 2023 03:02:09 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2071.outbound.protection.outlook.com [40.107.20.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFD5A6;
+        Wed, 25 Oct 2023 00:02:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cd7QL0me3MlDcMdz8O1U7euEbpBe+BARKy4QAiAvrQPMxrMG+l5tY9PlzrS9+ykG9MVcXgzZuBfFdhkSXhvDmPpUvUohQxp8EKJv+kN9KiqYyb9Z1KIKensLl7GvKmdtA0ToZmltz4G95Fw9CNGr21BQ2IRvXG7dgjbbobvQkquPC8mUGpbDX1iHgkMLdYV/RfPpJn3jfVfCv6UvNIzbFa3tTfVXEWvAoH5+mujcNV1D3C9SM+rukmxC8FPpP1LH8Sh7MeiEUvUuC5kC1Un0LQgd2mbrdltw3nw5pLrs6GjSb92t8PrdVtefC6BINzDkNhhMejEXuckKFbWoZXKJ9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=i3tIfvHIcz2l+F98OvOvxxVvJi/wJSXL2Yeqp41821s=;
+ b=bQe3WOuV2qzZ4aWTLxRTRGEf01GmStioi0i0poiU5xrczuW60CvKHAqMhaa4orp+eddHHHrkKiKdF6JJHH19ti2yQBep6l/FzeRh0vyPlmYOqF6yFibbHVXbJnTSbJ6X++roRbdnXgytby38AmBpYfwFp9Wd3PVq9N0hvAB2J9DMfwgr2mO+Gs7sGJy/iUsVSpo2mtU3HYBDOSeZku0h0VA3KylHa7VTFbKgpcbGKZLNlcXG/g8MmQNAoCdnwngxTjQtrpAUj26/UNSUs4pGnSMjU2PA7QcgAWZKxj3AXzx/T97Lb9U9ZhDzbonBSRUCQCRjCQtTgHJKUqda3f8FMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
+ header.d=asem.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=i3tIfvHIcz2l+F98OvOvxxVvJi/wJSXL2Yeqp41821s=;
+ b=Ni3vlAvjhjmz6/kqc3oGnH6ZBv8B1PHVr+EVtpZ+yuwQNQpmaOx7uzudMraowqNtBY1nTUyRHh1qkKckYgYAV17kTPNsnvYhjK5lq9QTu5V7liGt+jcHQQRR97mhG4jOwQj65dhlK0S15veGjn7CW6IEKzPNm/4U8S9V8iYcXUk=
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:273::14) by AS8PR01MB7509.eurprd01.prod.exchangelabs.com
+ (2603:10a6:20b:28b::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Wed, 25 Oct
+ 2023 07:02:02 +0000
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::ad2b:a1e7:8828:ba2f]) by DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::ad2b:a1e7:8828:ba2f%7]) with mapi id 15.20.6907.032; Wed, 25 Oct 2023
+ 07:02:02 +0000
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Conor Dooley <conor@kernel.org>
+CC:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/1] dt-bindings: backlight: mp3309c: remove two required
+ properties
+Thread-Topic: [PATCH 1/1] dt-bindings: backlight: mp3309c: remove two required
+ properties
+Thread-Index: AQHaA10IhwE5ZkDArkS4RoPMFlMBm7BS1g+AgARFCACAAHpeAIAA+0AQgACAlACAAQj6QA==
+Date:   Wed, 25 Oct 2023 07:02:02 +0000
+Message-ID: <DU2PR01MB803494D40BCC004F269080C1F9DEA@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+References: <20231020135434.2598578-1-f.suligoi@asem.it>
+ <20231020135434.2598578-2-f.suligoi@asem.it>
+ <20231020-moonrise-senate-86d0edb2d404@spud>
+ <DU2PR01MB803498DFD93E82DD3947D72DF9D8A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+ <20231023-anybody-silver-4548023f8f26@spud>
+ <DU2PR01MB8034CF8EE4358B9446809AA2F9DFA@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+ <20231024-paddling-spongy-be82eae03228@spud>
+In-Reply-To: <20231024-paddling-spongy-be82eae03228@spud>
+Accept-Language: it-IT, en-US
 Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231020205521.3577821-1-arnd@kernel.org>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20231020205521.3577821-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -7.09
-X-Spamd-Result: default: False [-7.09 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         XM_UA_NO_VERSION(0.01)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=asem.it;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU2PR01MB8034:EE_|AS8PR01MB7509:EE_
+x-ms-office365-filtering-correlation-id: d5539598-dfee-437d-29a6-08dbd5284a40
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: S/pRl01yDgdYGnH5eoTGJ0FT2EZM+cG9ag1vN6Xs7sMqSYcDSl84QZFrHkBB4BiH65cUOhQ6PvK2FOPrhJCtskxwpUAl5jRqmwR4T+0njq+zSz4Ub8zgm8KAmyXZhN1m1cj/OzFZmXrHsbY4/hF3h0vYNkBpwfgP+ExM0bJKITGsuBRCXEseEgwzutrtGMPIXuDp+fEPECdf/xapdn/WeG48adpnf/Td0ijDcgFPOcp5Cu6FLJ0Ig/l1whx59RtWBqqR8RQVomYrqtHb31r4d2uCr8UA0M/1NV+n2UtZmUvDYqf2Qj7eMwg3+X+HTow93NMSWmO4f2vxVk+1s6faA2O/PeR1IhHWjC6soemTviT8bcCSONmL3NgxEiokkF85Yt1rNez3ynuUtdovDUs0yXylHK5ahMXOfTF2bQFCNVgcpEf7+xmb2EHxepREwSdayLA/um3ckvWlRRL3K0Fs0EsX3dBgi7ZLTcbNOEBNh0Rim+LIkvcP9xmHUZ4gf1CXffCzu760F1d8fwRi34fFeWbMFLXhkzrw0KMSuUoYYiSIfhN3xRWy9XG5kX796Gj1dLD9epdmu5een1oRkX6GS/4SGhN5r0qAJzgDsTmHaZqUlqH+KqFhY4NBH6hnkH56
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR01MB8034.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39850400004)(366004)(346002)(376002)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(122000001)(38100700002)(6506007)(7696005)(9686003)(478600001)(55016003)(8936002)(41300700001)(83380400001)(26005)(2906002)(7416002)(54906003)(6916009)(66946007)(66556008)(66446008)(76116006)(64756008)(66476007)(5660300002)(52536014)(4326008)(8676002)(316002)(71200400001)(86362001)(33656002)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?2TGWzRncV+BkhSyfcMj6KVXaRAdnYmnVr0QYX2HIOU+U44OGHSoqAQcx013t?=
+ =?us-ascii?Q?00XGnrpBOZsuqj3gbMGIZ4oNZVtb6rSgkcYrGJsE/i5QlXB7cnUKaGQrNo9o?=
+ =?us-ascii?Q?XcxX3+QiIwD4hLBRCElL1dyu/4/GIirboiqZZJ+OK+iNHGuGy9BFlru9SGP2?=
+ =?us-ascii?Q?6TdAfGQMp1DGtCFeeH4gM++7JqL57MCCupL2ayv2zNX6MwuYTrUwvbitLSX5?=
+ =?us-ascii?Q?vWo1E3D64pLYDfk9KDGKzlT4OnKBJo3QQlVUuJ9oXaBFR0YtaeFZZwmxYIF4?=
+ =?us-ascii?Q?llU+PsdmO/5eeV5pM6d5K+N9JS0oNC3c5U4nVyiFIZxFZz7EJhfsDpuG5/Me?=
+ =?us-ascii?Q?Cjxcjb6KBLNPoCIVR/A918PWYX9HQ3kawoLnCUxgooOPBxJHl5P52BtKKwuP?=
+ =?us-ascii?Q?eqfZIQtaKb4xQB4tb7VoUIPgv5NQPmBtV6nJ2PnWhxnGlc3RFFe2lVSqmUAB?=
+ =?us-ascii?Q?mz8UWv1Jvl3RzoRaE1jNUu+vSfmFNJRja0NSSDMu5Zu/8t+hrVBC7Pg0Gxvw?=
+ =?us-ascii?Q?N2qnrJ0GIbT9BsY5hMMSS9aXt3mgVjgJIDN2xFJnGydq1f1OZEYcHDUHApQK?=
+ =?us-ascii?Q?/eh6l5n5T4N/fPP3kzPVRxoLDsM3eN+9h0R+wXOwGgec+8wzyFX6Rt8Wa7pB?=
+ =?us-ascii?Q?G4QI9F6A5CmvThsbtQDtc9B7kSglkPAxG6F3ML8/EqIvBitm8252zldnVx44?=
+ =?us-ascii?Q?G9BeVhi3oGg8zfuqukDnCQwIZny0yKr7YNnNmZoOR4psxC37mC5hXscVLYqR?=
+ =?us-ascii?Q?ksHfej1TUj1A16WiNpWOMK9aTGFXj2g0tcqTu9kQuefZb1CpjCzNLd7by6rn?=
+ =?us-ascii?Q?MtrxK6DwS7cKVxO4Dk4L5ITD6+K7n3SYSk7Gq1HQjgnYfw4dFetoKZ9jsyNt?=
+ =?us-ascii?Q?a2BnOBUaY/Yt5KxunMHlq+oPjdkDVM3XWtj3RUCBC9RfmwkyYGzFxrDfvSr8?=
+ =?us-ascii?Q?RW8I0UAdno/RYPYEpBrxQB4etOpFWh+XAOcDjKnfH6RPs4FELPeZxGmJGl4v?=
+ =?us-ascii?Q?6/CE7omduX7tiM0bG78bhmlHapMkgyy1or9swPxbX3Eo+ual+ryxwXROZ+Sp?=
+ =?us-ascii?Q?ZzOMclDsFKxjWAQe3amRn4joZw8JV5SFzo+ZZckx/u0qMSTPCNIArRhG/q/C?=
+ =?us-ascii?Q?55Z1tvFnbAZdx8uVBuCcYTza/faCsDlebd5DrNnUhkWelGryohrb4ldgg5d9?=
+ =?us-ascii?Q?OH1CsEpzdqRJp3PNxRMPc974QaG37QOKlSgwaWn7w5XUJTF3Gzxqrl7ct7KO?=
+ =?us-ascii?Q?uLuckFisXk9MORPQ04i6cZQfxp2QiypCkjj4gu79GhrAt6LAnCWIFFimkdjO?=
+ =?us-ascii?Q?ac1zO5mjIb0FJ32zWPDwhWLzB+4bFv+y9zSvH2y06kraFHGZl6P+QLWWv7ou?=
+ =?us-ascii?Q?Ha8/LJmi/ckwd55l1VzWuIMSa1jUlkAqQkUkU22xQSROkxb4WhdqDLPiE7Xm?=
+ =?us-ascii?Q?gJsoygOZEgJrvHACR2DS5wEW6f/+5rdBCZZ0SYmv+FMOLSV8D2h8vlUDENUb?=
+ =?us-ascii?Q?BRcMIPf0okVmbRtb40KhAOyiihmbsggdKBie8srqDkFlo+1ONbMEGXhUZh4z?=
+ =?us-ascii?Q?raORVW73yUjlkB53lZI=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5539598-dfee-437d-29a6-08dbd5284a40
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2023 07:02:02.3812
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qHs2W26yRDAoDJ7OXw2jMjfPDN3ZJRPNviK3vxNuHnh2q93I2lTRbm9GSrIGgZmcPa7P03qXq8Ed5z5aZzacNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR01MB7509
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/23 22:54, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The keyring and auth functions can be called from both the host and
-> the target side and are controlled by Kconfig options for each of the
-> combinations, but the declarations are controlled by #ifdef checks
-> on the shared Kconfig symbols.
-> 
-> This leads to link failures in combinations where one of the frontends
-> is built-in and the other one is a module, and the keyring code
-> ends up in a module that is not reachable from the builtin code:
-> 
-> ld: drivers/nvme/host/core.o: in function `nvme_core_exit':
-> core.c:(.exit.text+0x4): undefined reference to `nvme_keyring_exit'
-> ld: drivers/nvme/host/core.o: in function `nvme_core_init':
-> core.c:(.init.text+0x94): undefined reference to `nvme_keyring_init
-> 
-> ld: drivers/nvme/host/tcp.o: in function `nvme_tcp_setup_ctrl':
-> tcp.c:(.text+0x4c18): undefined reference to `nvme_tls_psk_default'
-> 
-> aarch64-linux-ld: drivers/nvme/target/configfs.o: in function `nvmet_ports_make':
-> configfs.c:(.text+0x3c0c): undefined reference to `nvme_keyring_id'
-> 
-> Address this by wrapping the keyring code in stub functions that are
-> used exclusively by one or the other side. In the more complicated auth
-> interface, this is done in the separate drivers/nvme/{host,target}/auth.c
-> that are conditionally compiled, as well as through large #ifdef blocks,
-> but for the simpler keyring interface, it is sufficient to just wrap these
-> four functions to ensure that they are only called when the feature is
-> enabled in its caller.
-> 
-> In Kconfig, this requires changing the 'select NVME_KEYRING' since the
-> keyring calls are done from the host and target core module, which may
-> be built-in even when the tcp front-end is in a loadable module.
-> 
-> Fixes: be8e82caa6859 ("nvme-tcp: enable TLS handshake upcall")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Instead of keying the calls off the Kconfig symbols, replace
-> the broken stub helpers with separate ones for host and target
-> ---
->   drivers/nvme/host/Kconfig      |  2 +-
->   drivers/nvme/host/core.c       |  6 ++--
->   drivers/nvme/host/tcp.c        |  4 +--
->   drivers/nvme/target/Kconfig    |  2 +-
->   drivers/nvme/target/configfs.c |  4 +--
->   include/linux/nvme-keyring.h   | 56 +++++++++++++++++++++++++++++-----
->   6 files changed, 57 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/nvme/host/Kconfig b/drivers/nvme/host/Kconfig
-> index 8fe2dd619e80e..2d53c23f0a483 100644
-> --- a/drivers/nvme/host/Kconfig
-> +++ b/drivers/nvme/host/Kconfig
-> @@ -2,6 +2,7 @@
->   config NVME_CORE
->   	tristate
->   	select BLK_DEV_INTEGRITY_T10 if BLK_DEV_INTEGRITY
-> +	select NVME_KEYRING if NVME_TCP_TLS
->   
->   config BLK_DEV_NVME
->   	tristate "NVM Express block device"
-> @@ -95,7 +96,6 @@ config NVME_TCP
->   config NVME_TCP_TLS
->   	bool "NVMe over Fabrics TCP TLS encryption support"
->   	depends on NVME_TCP
-> -	select NVME_KEYRING
->   	select NET_HANDSHAKE
->   	select KEYS
->   	help
-> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> index 62612f87aafa2..c06fea3f8940a 100644
-> --- a/drivers/nvme/host/core.c
-> +++ b/drivers/nvme/host/core.c
-> @@ -4724,7 +4724,7 @@ static int __init nvme_core_init(void)
->   		result = PTR_ERR(nvme_ns_chr_class);
->   		goto unregister_generic_ns;
->   	}
-> -	result = nvme_keyring_init();
-> +	result = nvme_host_keyring_init();
->   	if (result)
->   		goto destroy_ns_chr;
->   	result = nvme_init_auth();
-> @@ -4733,7 +4733,7 @@ static int __init nvme_core_init(void)
->   	return 0;
->   
->   keyring_exit:
-> -	nvme_keyring_exit();
-> +	nvme_host_keyring_exit();
->   destroy_ns_chr:
->   	class_destroy(nvme_ns_chr_class);
->   unregister_generic_ns:
-> @@ -4757,7 +4757,7 @@ static int __init nvme_core_init(void)
->   static void __exit nvme_core_exit(void)
->   {
->   	nvme_exit_auth();
-> -	nvme_keyring_exit();
-> +	nvme_host_keyring_exit();
->   	class_destroy(nvme_ns_chr_class);
->   	class_destroy(nvme_subsys_class);
->   	class_destroy(nvme_class);
-> diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-> index 4714a902f4caa..7e4a878b95383 100644
-> --- a/drivers/nvme/host/tcp.c
-> +++ b/drivers/nvme/host/tcp.c
-> @@ -1585,7 +1585,7 @@ static int nvme_tcp_start_tls(struct nvme_ctrl *nctrl,
->   	int ret;
->   	struct tls_handshake_args args;
->   	unsigned long tmo = tls_handshake_timeout * HZ;
-> -	key_serial_t keyring = nvme_keyring_id();
-> +	key_serial_t keyring = nvme_host_keyring_id();
->   
->   	dev_dbg(nctrl->device, "queue %d: start TLS with key %x\n",
->   		qid, pskid);
-> @@ -1919,7 +1919,7 @@ static int nvme_tcp_alloc_admin_queue(struct nvme_ctrl *ctrl)
->   		if (ctrl->opts->tls_key)
->   			pskid = key_serial(ctrl->opts->tls_key);
->   		else
-> -			pskid = nvme_tls_psk_default(ctrl->opts->keyring,
-> +			pskid = nvme_host_tls_psk_default(ctrl->opts->keyring,
->   						      ctrl->opts->host->nqn,
->   						      ctrl->opts->subsysnqn);
->   		if (!pskid) {
-> diff --git a/drivers/nvme/target/Kconfig b/drivers/nvme/target/Kconfig
-> index 31633da9427c7..e5cdf92c628d0 100644
-> --- a/drivers/nvme/target/Kconfig
-> +++ b/drivers/nvme/target/Kconfig
-> @@ -6,6 +6,7 @@ config NVME_TARGET
->   	depends on CONFIGFS_FS
->   	select BLK_DEV_INTEGRITY_T10 if BLK_DEV_INTEGRITY
->   	select SGL_ALLOC
-> +	select NVME_KEYRING if NVME_TARGET_TCP_TLS
->   	help
->   	  This enabled target side support for the NVMe protocol, that is
->   	  it allows the Linux kernel to implement NVMe subsystems and
-> @@ -87,7 +88,6 @@ config NVME_TARGET_TCP
->   config NVME_TARGET_TCP_TLS
->   	bool "NVMe over Fabrics TCP target TLS encryption support"
->   	depends on NVME_TARGET_TCP
-> -	select NVME_KEYRING
->   	select NET_HANDSHAKE
->   	select KEYS
->   	help
-> diff --git a/drivers/nvme/target/configfs.c b/drivers/nvme/target/configfs.c
-> index 9eed6e6765eaa..337de8da1c178 100644
-> --- a/drivers/nvme/target/configfs.c
-> +++ b/drivers/nvme/target/configfs.c
-> @@ -1893,8 +1893,8 @@ static struct config_group *nvmet_ports_make(struct config_group *group,
->   		return ERR_PTR(-ENOMEM);
->   	}
->   
-> -	if (nvme_keyring_id()) {
-> -		port->keyring = key_lookup(nvme_keyring_id());
-> +	if (nvme_target_keyring_id()) {
-> +		port->keyring = key_lookup(nvme_target_keyring_id());
->   		if (IS_ERR(port->keyring)) {
->   			pr_warn("NVMe keyring not available, disabling TLS\n");
->   			port->keyring = NULL;
-> diff --git a/include/linux/nvme-keyring.h b/include/linux/nvme-keyring.h
-> index 6cc0696625f36..6da4cda7f2f45 100644
-> --- a/include/linux/nvme-keyring.h
-> +++ b/include/linux/nvme-keyring.h
-> @@ -6,8 +6,7 @@
->   #ifndef _NVME_KEYRING_H
->   #define _NVME_KEYRING_H
->   
-> -#if IS_ENABLED(CONFIG_NVME_KEYRING)
-> -
-> +/* internal helpers only, don't call directly */
->   key_serial_t nvme_tls_psk_default(struct key *keyring,
->   		const char *hostnqn, const char *subnqn);
->   
-> @@ -15,22 +14,63 @@ key_serial_t nvme_keyring_id(void);
->   int nvme_keyring_init(void);
->   void nvme_keyring_exit(void);
->   
-> -#else
-> +static inline key_serial_t nvme_host_tls_psk_default(struct key *keyring,
-> +		const char *hostnqn, const char *subnqn)
-> +{
-> +	if (IS_ENABLED(CONFIG_NVME_TCP_TLS))
-> +		return nvme_tls_psk_default(keyring, hostnqn, subnqn);
-> +
-> +	return 0;
-> +}
-> +static inline key_serial_t nvme_host_keyring_id(void)
-> +{
-> +	if (IS_ENABLED(CONFIG_NVME_TCP_TLS))
-> +		return nvme_keyring_id();
-> +
-> +	return 0;
-> +}
-> +static inline int nvme_host_keyring_init(void)
-> +{
-> +	if (IS_ENABLED(CONFIG_NVME_TCP_TLS))
-> +		return nvme_keyring_init();
-> +
-> +	return 0;
-> +}
-> +static inline void nvme_host_keyring_exit(void)
-> +{
-> +	if (IS_ENABLED(CONFIG_NVME_TCP_TLS))
-> +		nvme_keyring_exit();
-> +}
->   
-> -static inline key_serial_t nvme_tls_psk_default(struct key *keyring,
-> +static inline key_serial_t nvme_target_tls_psk_default(struct key *keyring,
->   		const char *hostnqn, const char *subnqn)
->   {
-> +	if (IS_ENABLED(CONFIG_NVME_TARGET_TCP_TLS))
-> +		return nvme_host_tls_psk_default(keyring, hostnqn, subnqn);
-> +
->   	return 0;
->   }
-> -static inline key_serial_t nvme_keyring_id(void)
-> +
-> +static inline key_serial_t nvme_target_keyring_id(void)
->   {
-> +	if (IS_ENABLED(CONFIG_NVME_TARGET_TCP_TLS))
-> +		return nvme_keyring_id();
-> +
->   	return 0;
->   }
-> -static inline int nvme_keyring_init(void)
-> +
-> +static inline int nvme_target_keyring_init(void)
->   {
-> +	if (IS_ENABLED(CONFIG_NVME_TCP_TLS))
-> +		return nvme_keyring_init();
-> +
->   	return 0;
->   }
-> -static inline void nvme_keyring_exit(void) {}
->   
-> -#endif /* !CONFIG_NVME_KEYRING */
-> +static inline void nvme_target_keyring_exit(void)
-> +{
-> +	if (IS_ENABLED(CONFIG_NVME_TARGET_TCP_TLS))
-> +		nvme_keyring_exit();
-> +}
-> +
->   #endif /* _NVME_KEYRING_H */
+Hi Conor,
 
-I guess the right way is to make 'keyring' a 'real' module, and move 
-'nvme_keyring_init()' and 'nvme_keyring_exit()' as the modules init/exit 
-functions. I'll prepare a patch.
+...
 
-Cheers,
+> > > > > > The two properties:
+> > > > > >
+> > > > > > - max-brightness
+> > > > > > - default brightness
+> > > > > >
+> > > > > > are not really required, so they can be removed from the "requi=
+red"
+> > > > > > section.
+> > > > >
+> > > > > Why are they not required? You need to provide an explanation.
+> > > >
+> > > > The "max-brightness" is not more used now in the driver (I used it
+> > > > in the first version of the driver).
+> > >
+> > > If it is not used any more, what happens when someone passes an old
+> > > devicetree to the kernel, that contains max-brightness, but not any
+> > > of your new properties?
+> >
+> > This is not a problem, because the device driver has not yet been inclu=
+ded in
+> any kernel.
+> > My patch for the device driver is still being analyzed by the maintaine=
+rs.
+> > Only this dt-binding yaml file is already included in the
+> > "for-backlight-next" branch of the "backlight" kernel repository.
+> > At the moment, this driver is used only in a i.MX8MM board produced in
+> > my company, under my full control. No other developer is using it now.
+>=20
+> Right. This is exactly the sort of commentary that you need to provide up
+> front, to have us spent a bunch of time going back and forth to figure ou=
+t :(
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
-Myers, Andrew McDonald, Martje Boudien Moerman
+I'm sorry for wasting your time, I'll add this information in the next comm=
+it.
 
+>=20
+> > > > The "default-brightness", if omitted in the DT, is managed by the
+> > > > device driver, using a default value. This depends on the dimming
+> > > > mode
+> > > used:
+> > >
+> > > For default-brightness, has here always been support in the driver
+> > > for the property being omitted, or is this newly added?
+> >
+> > In the first version of the driver this property was a "required
+> > property", but nobody has used this driver before, so this should be no=
+t a
+> problem.
+>=20
+> > > What I would like is an explanation in the commit message as to why
+> > > the revised example is more helpful than the existing (and
+> > > must-remain-valid) one.
+> >
+> > As said before, no one may have ever used this device driver, so I
+> > would leave only this new version of the example.
+>=20
+> Okay. Please improve the commit message explaining why it is okay to make
+> these changes & send a v2.
+> The alternative is that Lee drops the dt-binding patch & you submit a rev=
+ised
+> version of the binding alongside the next iteration of the driver.
+
+Ok, I'll send a new commit v2, explaining the reasons for the changes.
+
+>=20
+> Cheers,
+> Conor.
+
+Thank you Conor,
+Flavio.
