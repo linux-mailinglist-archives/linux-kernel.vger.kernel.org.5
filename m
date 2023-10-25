@@ -2,282 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6B87D6F02
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935F37D6F51
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343719AbjJYOP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
+        id S1344042AbjJYOQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235084AbjJYOP0 (ORCPT
+        with ESMTP id S233317AbjJYOQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:15:26 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA930195
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:15:20 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99de884ad25so864270066b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:15:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1698243319; x=1698848119; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TMrHKgdoS2NSiiT53fI7UOW8PjpyWT9P/fMnwOt5TEs=;
-        b=P8pLTOWA9LwpYNcDoYjC5UbCXf0z579RDyI30EBx84ld8JiMKWw4v0plD3XfJrzgLt
-         X7fKCCrHp4jGI2deq6VEAhuavaNKi38fsKs7oJmGYFLrbTUzrBAc6vY8bhyQrr76K+1T
-         51TDj4vpy7x+TZ36+juJA0VnIFyv+gYbeOYWyy7o1iPFqqBpv0xDHVryMkWYlIH1RTmW
-         ip1NfVlFf41MVu/RuxZsmk0RHtQrRgq8Kt4wLe01dPpEDgA9UJvgkEL250kLkyFMYjsd
-         IpwJOdtfv+wwk/XZULKxXBit0trrleS41Tjs8sWLcQvZfFGCYPeptTb3t1TiQoNZwBfr
-         3bFg==
+        Wed, 25 Oct 2023 10:16:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD0B13A
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:15:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698243356;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=/81fA64FEiSflbLmuEAcmfGAj2PLCOIEQJxZMC9ru3U=;
+        b=MEBXQUc3hLAlI0Js0sTRctL/OTvh27XYIUdcCr6yh9zPS/kpQoly4t/lKt8BbbBSOYupvb
+        N871KxpSkALzMkeuoy26ciFSjV7ixADzzUhj73KUrbVeQZSMDJ1SlusMf83f26XYH7yTt8
+        W4CY/CPwB9Q1UqbVjdTFZlZ9zORL/fg=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-443-zoDBZ58yPPOaVt_-wq5SOQ-1; Wed, 25 Oct 2023 10:15:34 -0400
+X-MC-Unique: zoDBZ58yPPOaVt_-wq5SOQ-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-77892f2ee51so752874685a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:15:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698243319; x=1698848119;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TMrHKgdoS2NSiiT53fI7UOW8PjpyWT9P/fMnwOt5TEs=;
-        b=ueJrdM8nlqgrtGFbVgo4MbR4mUNia9YqT3eBGNBZIvvGYhtWReuvZlf+BV/eY1gBV4
-         f+1sVJOboU9u1cQqrEfRnGeXYKAad1NA9IW+ug5cyju/jRu5PJti+T0gEzHt1TnCC5sz
-         /Wqj3NfP78fscokK4K27CvW4i/ONGshCN+S0u7Qa1gwamUR2RYZTXNuasssmyYXt58Vg
-         NkuEv8h5Glgc+eKKV8nLTEImmT1KQeqydHzfCBboj5qkiqcsVJFj2qhwQuf5qJOOKoI9
-         bH5jzeDhKNG0Y0xW3UQWHyx4a9svFH9LFAHgXGiM51bd0mpvAWc5y0usAhukOEH90CZx
-         cJTQ==
-X-Gm-Message-State: AOJu0YwIOg7Tu54gEfK/kH0ViFLo/bd4n6PJVZyXNpmmEffqdKJ+UFln
-        bRT8avMUMWuie/HqL4yHPMOWa0DHWIHmkNvl14JqLQ==
-X-Google-Smtp-Source: AGHT+IGQUK1phpk0aNSsV+HgwU/RjPPWJqN/gdg5zPRGrX5IaMuJzdXoimTDeIlAYb6gk2WCW1O6NQ==
-X-Received: by 2002:a17:907:2d10:b0:9c7:5186:de23 with SMTP id gs16-20020a1709072d1000b009c75186de23mr12593704ejc.2.1698243319077;
-        Wed, 25 Oct 2023 07:15:19 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5064:2dc::49:1a6])
-        by smtp.gmail.com with ESMTPSA id m16-20020a1709066d1000b009a1a5a7ebacsm9784394ejr.201.2023.10.25.07.15.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 07:15:18 -0700 (PDT)
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH] genirq: Own affinity hint
-Date:   Wed, 25 Oct 2023 16:15:17 +0200
-Message-ID: <20231025141517.375378-1-jakub@cloudflare.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20230601; t=1698243334; x=1698848134;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/81fA64FEiSflbLmuEAcmfGAj2PLCOIEQJxZMC9ru3U=;
+        b=iBxOVR7YHjWHnbfGOdK5mYAKdAwkRN2aTNWNhOG7dN214deNtGB868Di59I4Q1m4ta
+         EAdFuvEaLXeSTs3Ej/tpBm5+6U9fMBYhzdec8MIcGCxxi5SmlFne3WJpDN6rd6jnbSU3
+         1U/CNUUI261rh56c2q7rqvcnzHoich4k40zeVQqQgLOoJtA3sMDH/LbyGfaSSrPZXKfw
+         Nd1bdhNW8cn54OxZOuqg2pX4/kDRXK8bMNYGBIK2zXTJdDT5yebi2rL6B80eeD2rz1oE
+         o5+b/5Yi0SIrj8laWXOKmQ4+poWlHjzBv4C4LtgBQO07dIjZfLto6a9Aepb3ngDhgtRh
+         xlzg==
+X-Gm-Message-State: AOJu0YwD7HAP3yRHXdMKDAGVJQNy8UZq7Gl1Vt2Z1RlpfsziyLhh5q3h
+        fWn3chhe+kHOE4Hs9i6XgVFnL/M7XhPOoEHR4P52ECZQlAKKNiYDQdqilC723Neii02Bd0YoyYR
+        NDsarlmtuTo3WqpUBY+m+U22r
+X-Received: by 2002:a05:620a:22b0:b0:778:8bad:662d with SMTP id p16-20020a05620a22b000b007788bad662dmr14325292qkh.18.1698243334511;
+        Wed, 25 Oct 2023 07:15:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGfE1VnLuzVl6E6EdvQNDTyIsiizJgc29Rhv6SU3AInZ2/AsqpNr4cVN/tUZP3SFyiWPzMDwA==
+X-Received: by 2002:a05:620a:22b0:b0:778:8bad:662d with SMTP id p16-20020a05620a22b000b007788bad662dmr14325275qkh.18.1698243334254;
+        Wed, 25 Oct 2023 07:15:34 -0700 (PDT)
+Received: from [192.168.0.6] (ip-109-43-176-238.web.vodafone.de. [109.43.176.238])
+        by smtp.gmail.com with ESMTPSA id bk6-20020a05620a1a0600b00775afce4235sm4189754qkb.131.2023.10.25.07.15.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 07:15:33 -0700 (PDT)
+Message-ID: <8af7e036-1be2-4bb3-9ae8-3ee4aa49b00a@redhat.com>
+Date:   Wed, 25 Oct 2023 16:15:31 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] hexagon: Remove unusable symbols from the ptrace.h uapi
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        linux-hexagon@vger.kernel.org, Brian Cain <bcain@quicinc.com>
+Cc:     linux-kernel@vger.kernel.org, Richard Kuo <rkuo@codeaurora.org>
+References: <20231025073802.117625-1-thuth@redhat.com>
+ <5e5e3e9b-dc16-428c-bd7f-d723960beb3c@app.fastmail.com>
+From:   Thomas Huth <thuth@redhat.com>
+Autocrypt: addr=thuth@redhat.com; keydata=
+ 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
+In-Reply-To: <5e5e3e9b-dc16-428c-bd7f-d723960beb3c@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Interfaces for setting affinity hint [1] have a rather surprising contract
-with the caller [2]. The cpumask memory passed as a hint must be kept
-alive, and stay unchanged, until the affinity hint gets updated again or
-cleared.  Otherwise reading out /proc/irq/N/affinity_hint, which
-dereferences the pointer to the cpumask holding the hint, will access
-potentially invalid memory.
+On 25/10/2023 15.59, Arnd Bergmann wrote:
+> On Wed, Oct 25, 2023, at 09:38, Thomas Huth wrote:
+>> Kernel-internal prototypes, references to current_thread_info()
+>> and code hidden behind a CONFIG_HEXAGON_ARCH_VERSION switch are
+>> certainly not usable in userspace, so this should not reside
+>> in a uapi header. Move the code into an internal version of
+>> ptrace.h instead.
+>>
+>> Signed-off-by: Thomas Huth <thuth@redhat.com>
+>> ---
+>>   I've compile tested it now with a hexagon cross-compiler and the kernel
+>>   compiles fine with this change, so I think this should be good to go.
+> 
+> I've applied this to the asm-generic tree, thanks for the
+> patch.
 
-This forces callers to allocate the affinity hint on heap and mange its
-lifetime. That is unless they fall into the category of cpumask helpers -
-get_cpu_mask, cpu_mask_of[_node] - which produce a pointer to a mask
-constant.
+Thanks!
 
-Change the affinity hint interfaces to make a copy of the affinity
-hint. This way the operation from the caller point of view becomes a "set
-and forget." Also there is no catch any more that the passed cpumask can't
-be allocated on stack [3].
+>> +++ b/scripts/headers_install.sh
+>> @@ -74,7 +74,6 @@ arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_16K
+>>   arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_4K
+>>   arch/arc/include/uapi/asm/swab.h:CONFIG_ARC_HAS_SWAPE
+>>   arch/arm/include/uapi/asm/ptrace.h:CONFIG_CPU_ENDIAN_BE8
+>> -arch/hexagon/include/uapi/asm/ptrace.h:CONFIG_HEXAGON_ARCH_VERSION
+>>   arch/hexagon/include/uapi/asm/user.h:CONFIG_HEXAGON_ARCH_VERSION
+>>   arch/m68k/include/uapi/asm/ptrace.h:CONFIG_COLDFIRE
+>>   arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_NO
+> 
+> Would you like to send another patch for the other hexagon
+> file? It looks trivial enough as we can just drop the #if
+> portion there and keep the #else side.
 
-No updates are needed to the existing call sites right away. They can be
-adapted to simplify resource management on their side on their own
-schedule.
+Looks like we have at least to look carefully at 
+arch/hexagon/kernel/ptrace.c first ... pad1 is still used there and the of 
+offsetof(struct user_regs_struct, pad1) results in different values 
+depending on the CONFIG switch ... but sure, I can have a try to come up 
+with a patch.
 
-[1] commit 65c7cdedeb30 ("genirq: Provide new interfaces for affinity hints")
-[2] commit 18a048370b06 ("net: mana: Fix accessing freed irq affinity_hint")
-[3] commit 8deec94c6040 ("net: stmmac: set IRQ affinity hint for multi MSI vectors")
+  Thomas
 
-Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
- include/linux/interrupt.h |  4 ++++
- include/linux/irq.h       |  1 +
- kernel/irq/irqdesc.c      | 32 ++++++++++++++++++++------------
- kernel/irq/manage.c       | 11 ++++-------
- kernel/irq/proc.c         | 22 ++++++----------------
- 5 files changed, 35 insertions(+), 35 deletions(-)
-
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 4a1dc88ddbff..14ea8d2a39a5 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -320,6 +320,8 @@ extern int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
-  * @m:		cpumask pointer (NULL to clear the hint)
-  *
-  * Updates the affinity hint, but does not change the affinity of the interrupt.
-+ *
-+ * Memory pointed by @m is not accessed after the call returns.
-  */
- static inline int
- irq_update_affinity_hint(unsigned int irq, const struct cpumask *m)
-@@ -335,6 +337,8 @@ irq_update_affinity_hint(unsigned int irq, const struct cpumask *m)
-  *
-  * Updates the affinity hint and if @m is not NULL it applies it as the
-  * affinity of that interrupt.
-+ *
-+ * Memory pointed by @m is not accessed after the call returns.
-  */
- static inline int
- irq_set_affinity_and_hint(unsigned int irq, const struct cpumask *m)
-diff --git a/include/linux/irq.h b/include/linux/irq.h
-index d8a6fdce9373..329c7c7be5a1 100644
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -153,6 +153,7 @@ struct irq_common_data {
- 	struct msi_desc		*msi_desc;
- #ifdef CONFIG_SMP
- 	cpumask_var_t		affinity;
-+	cpumask_var_t		affinity_hint;
- #endif
- #ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
- 	cpumask_var_t		effective_affinity;
-diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index 27ca1c866f29..fb443b702f22 100644
---- a/kernel/irq/irqdesc.c
-+++ b/kernel/irq/irqdesc.c
-@@ -55,26 +55,33 @@ static int alloc_masks(struct irq_desc *desc, int node)
- {
- 	if (!zalloc_cpumask_var_node(&desc->irq_common_data.affinity,
- 				     GFP_KERNEL, node))
--		return -ENOMEM;
-+		goto err_affinity;
-+	if (!zalloc_cpumask_var_node(&desc->irq_common_data.affinity_hint,
-+				     GFP_KERNEL, node))
-+		goto err_affinity_hint;
- 
- #ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
- 	if (!zalloc_cpumask_var_node(&desc->irq_common_data.effective_affinity,
--				     GFP_KERNEL, node)) {
--		free_cpumask_var(desc->irq_common_data.affinity);
--		return -ENOMEM;
--	}
-+				     GFP_KERNEL, node))
-+		goto err_effective_affinity;
- #endif
- 
- #ifdef CONFIG_GENERIC_PENDING_IRQ
--	if (!zalloc_cpumask_var_node(&desc->pending_mask, GFP_KERNEL, node)) {
--#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
--		free_cpumask_var(desc->irq_common_data.effective_affinity);
--#endif
--		free_cpumask_var(desc->irq_common_data.affinity);
--		return -ENOMEM;
--	}
-+	if (!zalloc_cpumask_var_node(&desc->pending_mask, GFP_KERNEL, node))
-+		goto err_pending_mask;
- #endif
- 	return 0;
-+
-+err_pending_mask:
-+#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
-+	free_cpumask_var(desc->irq_common_data.effective_affinity);
-+#endif
-+err_effective_affinity:
-+	free_cpumask_var(desc->irq_common_data.affinity_hint);
-+err_affinity_hint:
-+	free_cpumask_var(desc->irq_common_data.affinity);
-+err_affinity:
-+	return -ENOMEM;
- }
- 
- static void desc_smp_init(struct irq_desc *desc, int node,
-@@ -391,6 +398,7 @@ static void free_masks(struct irq_desc *desc)
- 	free_cpumask_var(desc->pending_mask);
- #endif
- 	free_cpumask_var(desc->irq_common_data.affinity);
-+	free_cpumask_var(desc->irq_common_data.affinity_hint);
- #ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
- 	free_cpumask_var(desc->irq_common_data.effective_affinity);
- #endif
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index d309ba84e08a..573560645add 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -506,7 +506,10 @@ int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
- 
- 	if (!desc)
- 		return -EINVAL;
--	desc->affinity_hint = m;
-+	if (m)
-+		cpumask_copy(desc->irq_common_data.affinity_hint, m);
-+	else
-+		cpumask_clear(desc->irq_common_data.affinity_hint);
- 	irq_put_desc_unlock(desc, flags);
- 	if (m && setaffinity)
- 		__irq_set_affinity(irq, m, false);
-@@ -1916,12 +1919,6 @@ static struct irqaction *__free_irq(struct irq_desc *desc, void *dev_id)
- 		irq_shutdown(desc);
- 	}
- 
--#ifdef CONFIG_SMP
--	/* make sure affinity_hint is cleaned up */
--	if (WARN_ON_ONCE(desc->affinity_hint))
--		desc->affinity_hint = NULL;
--#endif
--
- 	raw_spin_unlock_irqrestore(&desc->lock, flags);
- 	/*
- 	 * Drop bus_lock here so the changes which were done in the chip
-diff --git a/kernel/irq/proc.c b/kernel/irq/proc.c
-index 623b8136e9af..733324bbfb91 100644
---- a/kernel/irq/proc.c
-+++ b/kernel/irq/proc.c
-@@ -39,6 +39,7 @@ static struct proc_dir_entry *root_irq_dir;
- enum {
- 	AFFINITY,
- 	AFFINITY_LIST,
-+	AFFINITY_HINT,
- 	EFFECTIVE,
- 	EFFECTIVE_LIST,
- };
-@@ -57,6 +58,9 @@ static int show_irq_affinity(int type, struct seq_file *m)
- 			mask = desc->pending_mask;
- #endif
- 		break;
-+	case AFFINITY_HINT:
-+		mask = desc->irq_common_data.affinity_hint;
-+		break;
- 	case EFFECTIVE:
- 	case EFFECTIVE_LIST:
- #ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
-@@ -73,6 +77,7 @@ static int show_irq_affinity(int type, struct seq_file *m)
- 		seq_printf(m, "%*pbl\n", cpumask_pr_args(mask));
- 		break;
- 	case AFFINITY:
-+	case AFFINITY_HINT:
- 	case EFFECTIVE:
- 		seq_printf(m, "%*pb\n", cpumask_pr_args(mask));
- 		break;
-@@ -82,22 +87,7 @@ static int show_irq_affinity(int type, struct seq_file *m)
- 
- static int irq_affinity_hint_proc_show(struct seq_file *m, void *v)
- {
--	struct irq_desc *desc = irq_to_desc((long)m->private);
--	unsigned long flags;
--	cpumask_var_t mask;
--
--	if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
--		return -ENOMEM;
--
--	raw_spin_lock_irqsave(&desc->lock, flags);
--	if (desc->affinity_hint)
--		cpumask_copy(mask, desc->affinity_hint);
--	raw_spin_unlock_irqrestore(&desc->lock, flags);
--
--	seq_printf(m, "%*pb\n", cpumask_pr_args(mask));
--	free_cpumask_var(mask);
--
--	return 0;
-+	return show_irq_affinity(AFFINITY_HINT, m);
- }
- 
- int no_irq_affinity;
--- 
-2.41.0
 
