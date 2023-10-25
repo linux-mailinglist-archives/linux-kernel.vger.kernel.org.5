@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 420A17D7245
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D6C7D7248
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbjJYR2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
+        id S229677AbjJYRbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJYR2r (ORCPT
+        with ESMTP id S229453AbjJYRbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:28:47 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7303112F;
-        Wed, 25 Oct 2023 10:28:45 -0700 (PDT)
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D9E5F6607349;
-        Wed, 25 Oct 2023 18:28:43 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1698254924;
-        bh=Z4WtJ1xqFzmPBgctE13UKDki4+fr/pOhtB+GxP+i85A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kszb2A+7dBcNadiOxkvyHf9+5QoAZZs4MehyZirD41VQYHIj58SwXW6CV3MN4EFKX
-         WPTCOx3mr7qrlQgJ0990AKfOWe2ivq5bg0uZNAoDlOJ0DA9jqhTrI4JaEbco39XNy8
-         2dXFYAY+1OShZ0lrd0/onfSetuV8u5qmkGQKQ8DfKhz3sOaOOCpuzgU1CcwWIRvR50
-         DIiaifRMBnTRfbGiTrJqmqQSKKiePvgy14hvCh1BlsxkXEP0NSAaBCf/0gswt0aP+O
-         gYiBOmFDsinsQjN4qJhYMkyhqeQ/1M4kZy5wX0Ds5uHLzBOIgajrC1AxoPrRZMdso8
-         Okbw3tG0+bRTg==
-Received: by mercury (Postfix, from userid 1000)
-        id 54DE3106057B; Wed, 25 Oct 2023 19:28:41 +0200 (CEST)
-Date:   Wed, 25 Oct 2023 19:28:41 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>, kernel@collabora.com
-Subject: Re: [PATCH v4 1/3] math.h: add DIV_ROUND_UP_NO_OVERFLOW
-Message-ID: <20231025172841.awb7s6o4ourqu4w5@mercury.elektranox.org>
-References: <20231024161931.78567-1-sebastian.reichel@collabora.com>
- <20231024161931.78567-2-sebastian.reichel@collabora.com>
- <CAHk-=whYDbZ29fx_xeSxtYSjtF8WJkaLjzyB8RN5_Rk9Sh-YyQ@mail.gmail.com>
+        Wed, 25 Oct 2023 13:31:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8205211F
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:31:29 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698255087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vEG9DpJeXgBAYLPyeI14/+zK1L5qo7Es6YcPCDpDJqY=;
+        b=G0XHM7hHdxbzCd18a8TdD6oAVZlDR9vznRRxNa5bLv3uvf/5iAHlTUxpz+8Mh77YEphF9B
+        wYEpaoTyidseaQCL1n89dbgDTw/khh7jZrvAxTU1rhVbNqOUIO9exkd+sXhWsQ1w5kkfMG
+        j4bUf/I9mHxGhXlafrhvUH4ZVW+SpdZOXWIzkyzNAVT3ZqrptFvieBh4rNqlSTgKDzs+rp
+        I4OQESSpqDdQi5IamdKOGMWLu7jKD/ef+OYRFW9s3oQBAlSbpgdjhFWM0aAhG3IgtonRSY
+        /HycP95xQd0YWzG019UvTL0AtSDYAC9BD4lYHDqWuWOvcQYlZ05T0Pdv5Se4xA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698255087;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vEG9DpJeXgBAYLPyeI14/+zK1L5qo7Es6YcPCDpDJqY=;
+        b=cXkzEnNrBP4t9sarFxPQ8Sr9WbRDVSrRoBBqHdJhQw5rdpgo7M4Ol1XT4VuAf2RER94VN+
+        Pvq2k779O4aNE1DQ==
+To:     David Lazar <dlazar@gmail.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, kys@microsoft.com,
+        hpa@linux.intel.com, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: PIC probing code from e179f6914152 failing
+In-Reply-To: <ZTkzYA3w2p3L4SVA@localhost>
+References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
+ <878r7z4kb4.ffs@tglx> <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
+ <87ttqhcotn.ffs@tglx> <87v8avawe0.ffs@tglx>
+ <32bcaa8a-0413-4aa4-97a0-189830da8654@amd.com>
+ <ZTkzYA3w2p3L4SVA@localhost>
+Date:   Wed, 25 Oct 2023 19:31:26 +0200
+Message-ID: <87jzra6235.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uxr4h7e7k7nksmyc"
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whYDbZ29fx_xeSxtYSjtF8WJkaLjzyB8RN5_Rk9Sh-YyQ@mail.gmail.com>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,96 +62,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 25 2023 at 17:25, David Lazar wrote:
+> --- On Wed, 25 Oct 2023, Mario Limonciello wrote:
+>> David - can you see if the below helps your hardware?
+>
+> The keyboard and mouse work fine with Thomas' patch.
+>
+> I've uploaded the debug info to the bug:
+>
+> https://bugzilla.kernel.org/attachment.cgi?id=305291&action=edit
 
---uxr4h7e7k7nksmyc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Let me write a changelog then. Unless Rafael has any objections to that
+approach.
 
-Hi,
+Thanks,
 
-On Tue, Oct 24, 2023 at 09:32:27AM -1000, Linus Torvalds wrote:
-> [ Since you're cc'ing the s390 people, I assume that means that this
-> all ended up being a follow-up to the s390 issue discussion ]
+        tglx
 
-Actually I've noticed the issue in the clock framework some time
-ago and Andy Shevchenko pointed me towards the s390 thread, which
-is more or less about the same fundamental problem. So I added
-everyone in Cc, to make sure this is solved properly and not just
-s390 specific.
-
-> On Tue, 24 Oct 2023 at 06:19, Sebastian Reichel
-> <sebastian.reichel@collabora.com> wrote:
-> >
-> > Add a new DIV_ROUND_UP helper, which cannot overflow when
-> > big numbers are being used.
->=20
-> This is really horrendously bad on some architectures (ie it might
-> require *two* divisions):
-
-I came up with this helper for the issue in the clock framework,
-which currently use DIV_ROUND_UP_ULL() as a workaround. That solves
-the issue on 32 bit systems (input arguments are of type 'unsigned
-long'). But it also means doing u64 / u32 and I expect that do be
-much more more expensive on 32 bit platforms than two divisons.
-
-On 64 bit platforms the workaround is wrong, since the second
-argument is reduced from 64 bit to 32 bit. It effectively breaks
-platforms trying to request a frequency above 4.3 GHz from a clock
-divider. Since that's not yet a common thing I guess this has not
-yet been found and fixed by somebody else. I also just found it as
-bycatch.
-
-> > +#define DIV_ROUND_UP_NO_OVERFLOW(n, d) (((n) / (d)) + !!((n) % (d)))
->=20
-> but David Laight at least had a suggestion for that: when allowing
-> multiple uses, you can just do
->=20
->    #define DIV_ROUND_UP(n,d) ((n) ? ((n)-1)/(d)+1 : 0)
->=20
-> so now you're back to just one division and no horrible extra expense.
->=20
-> But we can't allow those multiple uses in general, sadly.
->=20
-> I would really prefer to just make our regular DIV_ROUND_UP() DTRT.  But:
->=20
->  - people do use it with complex first arguments (ie function calls
-> etc) that we don't want to evaluate twice
->=20
->  - we can't make it an inline function, because the types aren't fixed
->=20
->  - we can't even use a statement expression and __auto_type, because
-> these things are used in type definitions etc and need to be constant
-> expressions
->=20
-> That last thing means that even the "__builtin_choose_expr()" doesn't
-> work, because the statement expression still needs to be _parsed_ as
-> such, and that's not something we can do in those contexts.
->=20
-> Very annoying. Let me think about this.
-
-Thanks.
-
--- Sebastian
-
---uxr4h7e7k7nksmyc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmU5UDgACgkQ2O7X88g7
-+poOpRAAkKKlCxY29dsN0u34xy/kd+1FGx+PGnCfzcjfAQ7bRCrxVR8aprksEv6H
-aODRrJMygHPJCNuEm6wssL1y/UuDbyFxi6Xt7eTvBKAnlv83i51d6j/Nke8aZdqV
-pFpBvQ6Joueu1s9Gz1f0bRGqPjtUiRzdgqspjkC/nKs1oO7qvZfNigWYMIaYpXSF
-+ffjEq3F4VMKMLtoQfzJ6YQXzanWDT8B5SDmi/59Rr09qa0WmROAYTDDhXUadq3w
-W2OgQPA1Iq3XcahaH19bZXLH9XUoBu+TSit6ybE77y3pCwmGZxbVUszEy96oyKs4
-G2qYRvwCrlOAEDZgjST87bdSKbSo5oEhTKGiwwfKFCwIUHudGDurcn0ii7VqMynz
-xUoa2efbk7I1HY48swLycUjqdc4M6mu+ARWD7em9852TqUBaJeuNqfwrPXJmeDdh
-OgpFm4N9leZWaL/6m+xbuE7POPPcVxBSENC9fyMCKWmIZan4Tj3VdKV+gY4p0P4G
-Ho670ITG4CoFm0gAZl1khJNbibLWYOjPQAGTC5CqZZX1B1LrPWlfG74kMQKg9aX7
-ujQ/jnwKLVyMpnOO2PeuZy/QkcmVPUvN8++z6hOCsdq/8+GJ4CVr5fPqcrroL0FM
-oiMd4ScT1uLisUBI9tzDsykTvXmimKv8l83DzFKM25EGNYUh+BE=
-=J0Yz
------END PGP SIGNATURE-----
-
---uxr4h7e7k7nksmyc--
