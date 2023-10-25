@@ -2,122 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4750A7D60E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 06:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D1A7D60E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 06:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbjJYEef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 00:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51544 "EHLO
+        id S229840AbjJYEfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 00:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJYEec (ORCPT
+        with ESMTP id S229583AbjJYEfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 00:34:32 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF54123
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 21:34:31 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-49ab6c1869dso319881e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 21:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698208470; x=1698813270; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gVkIC9fUmLZDVWvlN2mUA1mgD/rtwCOE8cYC+FdYHCM=;
-        b=WBjvNp+HnEACWYPtzRCqLdTSYUvxhIplEm6Tr5U4POMWqwTGDEAiSodQpNSEvZmWEP
-         CMrAlkvBV+gcpkljko+WQcG69kj4zJjWYVnUa2Z1esEHLPPy8CJ4HNPpL7atqVQuJCyc
-         I1tIeLuRZaTRpzPK++is+BHsWP/QWKrEPZoiYecW0fX5zG+U7Hr9ShqUCD1dr8xpsXfm
-         OVHim9my1NzOadPnJtBV3qffeVMxSE4AQZCwRK6ggqTt9SRFnS0fnY8AXFPmLdwY9vdV
-         iCmuJAaf/a+q6eqzSSYNoD6JCbKo/JgMU7uCRIq8/XEaqeV7q4q2CoxMIHTU0si4z2ll
-         s2Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698208470; x=1698813270;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gVkIC9fUmLZDVWvlN2mUA1mgD/rtwCOE8cYC+FdYHCM=;
-        b=DfdVa6LmU7NePpa6AHppZrLTgEYj4cWaiLgRhSDZbLBzwaPAPJGJpAq+1Qg5OkJ6eS
-         gwXyBhYjxnuIDgKT+8+JbtxEYGSDlV5sgKHS8yInmlY2YjcmIBfcB6nzZiyhYA0LqKMq
-         vMdHOMrei8lTO1vz8KIGFgwiSS6AZZhrqEGu7LgqT7sA7ra+PNquMcEbQncD03t+iM4f
-         Xx3S2xVvzzMw++E0o5lwnjmuLux4WSZxm/nKdIcOmvq/3N3aIdSHGd2ppYeSwK/QH+/u
-         hhBoyU7B1JMlH40XZG3JsB57KIxVBqh6ojhQ0cVgptyPiyojfTcjNpQrmwle7GHZ06VM
-         1EIA==
-X-Gm-Message-State: AOJu0YzUCBpY6kAsfk0l0wGWlY74JDH6zI6kA36Biv4uWN0+NU2ffkfS
-        gx4qBu1IPhFU0pkBYw+pf4vuU6qxN1T/eZNqkuA=
-X-Google-Smtp-Source: AGHT+IGiUkhtzGa/ALcklBUpWuoI87pHjz1Amg9Y6T9HuMGZ6JAacd/9bYmnL0qPHH8WVBV5CGsFZYlM2/DL0pUM9yQ=
-X-Received: by 2002:a1f:7309:0:b0:494:63f7:4e7f with SMTP id
- o9-20020a1f7309000000b0049463f74e7fmr6799213vkc.2.1698208470086; Tue, 24 Oct
- 2023 21:34:30 -0700 (PDT)
+        Wed, 25 Oct 2023 00:35:04 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2AD9F;
+        Tue, 24 Oct 2023 21:35:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698208497;
+        bh=SlmCHvb+gPuTe/iK2j/se12Dk/VBxmoZuPgcWC6Sdgw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RnkWABzF5rKYQOuI/mMByI2zQqog3xDsb7nI313lOY6K1o4CdvB7BkgEkSHgaYGr7
+         yonpLamzc5ZyJlvI+m+MPJpyF1evY5Jcwhx8MQ7BRd80AJyLIz5TNiN4ZzdMWyeYk9
+         /uV1lT+ec9wp/QU0ahHqkOvxLLMy73YZu4u7qb1U2vp9NcYSxWeEq4Rr3G4TTPUgDa
+         DOuyZOlphUxEzBmkZ/glDRELHkTXgY5qdv+OqkySp4bWbuZbXIHnx8ROgIWIAZeTP/
+         Ld9FCgWV/2z1iXh1YrVScbScfxOrI5zjQ/qv6Y4kdpALUUJFgob08zExjddzDEzFeZ
+         RJa6oeUCpFHhQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SFbgh0wRrz4wcg;
+        Wed, 25 Oct 2023 15:34:56 +1100 (AEDT)
+Date:   Wed, 25 Oct 2023 15:34:55 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Yi Liu <yi.l.liu@intel.com>
+Subject: linux-next: manual merge of the iommufd tree with the iommu tree
+Message-ID: <20231025153455.283c5b12@canb.auug.org.au>
 MIME-Version: 1.0
-References: <ae3115778a3fa10ec77152e18beed54fafe0f6e7.1698151516.git.baolin.wang@linux.alibaba.com>
- <CAGsJ_4zgdAmyU-075jd8KfXn=CdAVC8Rs481sCOd5N2a68yPUg@mail.gmail.com>
- <44e32b0e-0e41-4055-bdb9-15bc7d47197c@intel.com> <f3047412-a53c-f8ba-f8aa-4f46e04c5a31@linux.alibaba.com>
- <a4ae7473-636b-4ff3-9f66-f47dbe934593@intel.com>
-In-Reply-To: <a4ae7473-636b-4ff3-9f66-f47dbe934593@intel.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Wed, 25 Oct 2023 12:34:17 +0800
-Message-ID: <CAGsJ_4x+UBtJNaGw8CswRrcDtNwXAGRUN8NogKMd5=MJRpyisw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: mm: drop tlb flush operation when clearing the
- access bit
-To:     "Yin, Fengwei" <fengwei.yin@intel.com>
-Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>,
-        catalin.marinas@arm.com, will@kernel.org,
-        akpm@linux-foundation.org, v-songbaohua@oppo.com,
-        yuzhao@google.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/MPnDetDqs2Pu0DORcE=2QfW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 11:09=E2=80=AFAM Yin, Fengwei <fengwei.yin@intel.co=
-m> wrote:
->
->
->
-> On 10/25/2023 11:03 AM, Baolin Wang wrote:
-> >>
-> >> My understanding is that arm64 doesn't do invalidate the TLB during > =
-context switch. The flush_tlb_page_nosync() here + DSB during context
-> >
-> > Yes, we only perform a TLB flush when the ASID is exhausted during cont=
-ext switch, and I think this is same with x86 IIUC.
-> If we remove flush_tlb_page_nosync(), can we still claim TLB is flushed d=
-uring
-> context switch for ARM64?
+--Sig_/MPnDetDqs2Pu0DORcE=2QfW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-No. in this case, we will have to depend on hardware replacement of
-TLB on other CPUs. Considering LRU's list is
-really long and TLB is really small,  a hot page needs a long time to
-move-back to inactive tail, other CPUs' TLB is
-likely to be replaced somewhere. But we do have a very small chance
-other CPUs will lose setting access flags
-in some corner cases. now i have more understanding why this nosync
-tlb flush is still there though in practical,
-removing it seems not to hurt.
+Hi all,
 
->
-> >
-> >> switch make sure the TLB is invalidated during context switch.
-> >> So we can't remove flush_tlb_page_nosync() here? Or something was chan=
-ged
-> >> for arm64 (I have zero knowledge to TLB on arm64. So some obvious thin=
-g
-> >> may be missed)? Thanks.
-> >
-> > IMHO, the tlb can be easily evicted or flushed if the system is under m=
-emory pressure, so like Barry said, the chance of reclaiming hot page is re=
-latively low, at least on X86, we did not see any heavy refault issue.
-> >
-> > For MGLRU, it uses ptep_test_and_clear_young() instead of ptep_clear_fl=
-ush_young_notify(), and we did not find any problems until now since deploy=
-ing to ARM servers.
+Today's linux-next merge of the iommufd tree got a conflict in:
 
-Thanks
-Barry
+  drivers/iommu/intel/pasid.c
+
+between commit:
+
+  c61c255e114c ("iommu/vt-d: Remove unused function")
+
+from the iommu tree and commits:
+
+  f35f22cc760e ("iommu/vt-d: Access/Dirty bit support for SS domains")
+  cbf8b441ea08 ("iommu/vt-d: Add helper to setup pasid nested translation")
+
+from the iommufd tree.
+
+I fixed it up (the latter added a use of the function removed by
+the former, so I just used the latter) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/MPnDetDqs2Pu0DORcE=2QfW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU4mu8ACgkQAVBC80lX
+0GxsOQf/cDs5qODl+IFre4BTgsv113Iyu2EiWHVFwbLaTvnzKqWsaG1Csoy12oNY
+rlwTk82QwXZI4pxdFph8l82GJQ48IiD4QZOJY0Em/eMglpdbD/jBbxaCayoR3Gm9
+xBrA+s2BflRBg689AcDoe+PU6OA1Xo2k1LJmSjGM0sMZVhn1YuJWhHoLSJFnIio1
+ysX5Kfc2XWH+AA5J3EJbeEgpdRsi+ZRRF98KNYNE9hCzS7/dApOU5U7JhddLCsHL
+g23ruvCb+mMFkyeU1Sb7wXUOk24rsNgCRV1Jm0UkTepF8WULEhQKZ6gErj6jMCLK
+/tY+ZPgE41jjLXl7u+PFw30GX0iO9g==
+=zu5G
+-----END PGP SIGNATURE-----
+
+--Sig_/MPnDetDqs2Pu0DORcE=2QfW--
