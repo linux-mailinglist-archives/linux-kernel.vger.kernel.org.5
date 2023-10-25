@@ -2,52 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF747D606E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 05:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FD87D6074
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 05:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbjJYDRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 23:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40662 "EHLO
+        id S232544AbjJYDRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 23:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232688AbjJYDRA (ORCPT
+        with ESMTP id S232489AbjJYDRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 23:17:00 -0400
-Received: from mail-oo1-f78.google.com (mail-oo1-f78.google.com [209.85.161.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9523F1735
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 20:16:49 -0700 (PDT)
-Received: by mail-oo1-f78.google.com with SMTP id 006d021491bc7-583eeba3d76so7184864eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 20:16:49 -0700 (PDT)
+        Tue, 24 Oct 2023 23:17:32 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9078182;
+        Tue, 24 Oct 2023 20:17:28 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id d2e1a72fcca58-6b9af7d41d2so4477307b3a.0;
+        Tue, 24 Oct 2023 20:17:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698203848; x=1698808648; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lSBC2EEzIFGKkcvVEZdun9j4nAtpxrzV4OlXixgyLsk=;
+        b=Q010FynxLVxIlNPE/0gmFnT7sNDDWPb5IElqDHbSInlUK1hfNqMTy5dMdJaum9yVF1
+         05ZEDnuKyb+f/i8bLpc/3D1GdE2fSCGGTs72XSvIKnGYO1UI5TF1u/zEzvwnov1h6pxt
+         f8Og91Wj2F/GbajAjHRXOcIJet+RwpLPt80ydyAC781nfq58fhtAcZ0LhBG/Lf6N3HdJ
+         pqL/eVhQac3Kyb+uQanTEF1zIA/LJrmK8dzskrYEJlACiDxutO8QCTe0SS89stpWpiR3
+         +IL8+LARYNBGqovVt66tuo1EOjyNgdJJLl6YFGlp0bwd4jDJvcpGDTdNroVc7hg6eu3D
+         3oIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698203809; x=1698808609;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=e9QVC5H4vkyCeuiGpwFNYN03ir9tniFF2RawB0o4s0A=;
-        b=YHROcwfmCrcSAlQht2ADfor4QdcgY2dZfGNXTKNxrzQyxXjETY/gApOmvzMQ0Vblr7
-         k0Zbyk89CKB0kMtc1vr6v2xZWypw6Q/rkRgmSzesSV8uJW9xdrFq/pLLX9o5wxl+GKjK
-         2Fhag3dDLNj7is8SVIHAWsn9JE3LnydnOSG9C+gJQu1TW0YhiMT22klDDyvwHEOsCVUi
-         D/OFxZQB47N74HSgQ6WRJytTejSGF2QU85fpTj396Uj65YPX8s9ZvNpsSkTFqZpt0p+H
-         AT8T9ky0q4wRwF6jCkCrfWFndsJqYzeVS0ay/qm87jGphcAYPm22JlNcMdZmknZIM3a3
-         P6iw==
-X-Gm-Message-State: AOJu0YzBxZ90l8Qw+kfN/zwYIxZSFwOczdeGZr6QsIgXAGjHC4KHYgX1
-        DrGk20disilFld2vKMMEzz3FK+sJZ0IrTtMJ3x8EUKZ9p7zz
-X-Google-Smtp-Source: AGHT+IHmWrlfanHyoztjRjoH3IuASudmYC42YG5zvsrOwCnvY9Rp/tctN/TY4Q6D2QnwOgFL69hmjmjHu5sXd6kug9GIOOLb6q/m
+        d=1e100.net; s=20230601; t=1698203848; x=1698808648;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lSBC2EEzIFGKkcvVEZdun9j4nAtpxrzV4OlXixgyLsk=;
+        b=gROrsmy7K7kuZS8BDJTjKcO/ltcOm4uiol6Ja6tjj/QmAjQOqz/YDysYza38bDZmky
+         C4Lol65qaIyuBSI4RWMqySA6dRnLmVTAaMILL6nMu4ih94pYq2Q4tkWGLSPtY4ygtWJD
+         YLGmKhbulLbloGPcuqWfQxKCHAfe72w9V1kO3CH0kXPX3PMbcBemMiX0a2usA58CP72J
+         655lCs/K5P2fMqBx2DJRAvfV6nl999vugb4Ec7l8C6mluCtG+08vWPx+R76N3srYxMvR
+         lCwNUzdT6zSkzdeC2IXMY87H6sWCRgFaJGRyBjMLBAbhtVdF075Vs92gu5829XDIipsd
+         hAQw==
+X-Gm-Message-State: AOJu0Yx8hnGt7NSmRdpyXBRqAltCoaIPBcF4fL3Uf81INrMRM/FiN/xR
+        KuHAWnCr9IgrRHwMFt4ceAA=
+X-Google-Smtp-Source: AGHT+IG+PXQD+0Twc4cI6VT/NKbF/ORrJ8UovTK4yPuAQgl8aQYuGXR8hZ8Egak4wTQo4i6VCvlQJw==
+X-Received: by 2002:a62:f24c:0:b0:690:d620:7801 with SMTP id y12-20020a62f24c000000b00690d6207801mr9777229pfl.11.1698203847897;
+        Tue, 24 Oct 2023 20:17:27 -0700 (PDT)
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id z4-20020aa79904000000b006b6f3bc8123sm8284926pff.50.2023.10.24.20.17.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 20:17:27 -0700 (PDT)
+Message-ID: <f10b1eb8-db53-42e4-85ba-f38560724ae1@gmail.com>
+Date:   Wed, 25 Oct 2023 11:17:20 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:7181:b0:1ea:5659:8ed5 with SMTP id
- d1-20020a056870718100b001ea56598ed5mr6617458oah.6.1698203808778; Tue, 24 Oct
- 2023 20:16:48 -0700 (PDT)
-Date:   Tue, 24 Oct 2023 20:16:48 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c750b0060881e20e@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in remove_ticket
-From:   syzbot <syzbot+532944658f9546cd0135@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.2.2
+Subject: Re: [PATCH v5 08/13] KVM: selftests: Test Intel PMU architectural
+ events on gp counters
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Like Xu <likexu@tencent.com>,
+        Jinrong Liang <cloudliang@tencent.com>
+References: <20231024002633.2540714-1-seanjc@google.com>
+ <20231024002633.2540714-9-seanjc@google.com> <ZTgf1Cutah5VQp_q@google.com>
+From:   JinrongLiang <ljr.kernel@gmail.com>
+In-Reply-To: <ZTgf1Cutah5VQp_q@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,117 +77,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+在 2023/10/25 03:49, Sean Christopherson 写道:
+> On Mon, Oct 23, 2023, Sean Christopherson wrote:
+>> +static void guest_measure_pmu_v1(struct kvm_x86_pmu_feature event,
+>> +				 uint32_t counter_msr, uint32_t nr_gp_counters)
+>> +{
+>> +	uint8_t idx = event.f.bit;
+>> +	unsigned int i;
+>> +
+>> +	for (i = 0; i < nr_gp_counters; i++) {
+>> +		wrmsr(counter_msr + i, 0);
+>> +		wrmsr(MSR_P6_EVNTSEL0 + i, ARCH_PERFMON_EVENTSEL_OS |
+>> +		      ARCH_PERFMON_EVENTSEL_ENABLE | intel_pmu_arch_events[idx]);
+>> +		__asm__ __volatile__("loop ." : "+c"((int){NUM_BRANCHES}));
+>> +
+>> +		if (pmu_is_intel_event_stable(idx))
+>> +			GUEST_ASSERT_EQ(this_pmu_has(event), !!_rdpmc(i));
+>> +
+>> +		wrmsr(MSR_P6_EVNTSEL0 + i, ARCH_PERFMON_EVENTSEL_OS |
+>> +		      !ARCH_PERFMON_EVENTSEL_ENABLE |
+>> +		      intel_pmu_arch_events[idx]);
+>> +		wrmsr(counter_msr + i, 0);
+>> +		__asm__ __volatile__("loop ." : "+c"((int){NUM_BRANCHES}));
+>> +
+>> +		if (pmu_is_intel_event_stable(idx))
+>> +			GUEST_ASSERT(!_rdpmc(i));
+>> +	}
+>> +
+>> +	GUEST_DONE();
+>> +}
+>> +
+>> +static void guest_measure_loop(uint8_t idx)
+>> +{
+>> +	const struct {
+>> +		struct kvm_x86_pmu_feature gp_event;
+>> +	} intel_event_to_feature[] = {
+>> +		[INTEL_ARCH_CPU_CYCLES]		   = { X86_PMU_FEATURE_CPU_CYCLES },
+>> +		[INTEL_ARCH_INSTRUCTIONS_RETIRED]  = { X86_PMU_FEATURE_INSNS_RETIRED },
+>> +		[INTEL_ARCH_REFERENCE_CYCLES]	   = { X86_PMU_FEATURE_REFERENCE_CYCLES },
+>> +		[INTEL_ARCH_LLC_REFERENCES]	   = { X86_PMU_FEATURE_LLC_REFERENCES },
+>> +		[INTEL_ARCH_LLC_MISSES]		   = { X86_PMU_FEATURE_LLC_MISSES },
+>> +		[INTEL_ARCH_BRANCHES_RETIRED]	   = { X86_PMU_FEATURE_BRANCH_INSNS_RETIRED },
+>> +		[INTEL_ARCH_BRANCHES_MISPREDICTED] = { X86_PMU_FEATURE_BRANCHES_MISPREDICTED },
+>> +	};
+>> +
+>> +	uint32_t nr_gp_counters = this_cpu_property(X86_PROPERTY_PMU_NR_GP_COUNTERS);
+>> +	uint32_t pmu_version = this_cpu_property(X86_PROPERTY_PMU_VERSION);
+>> +	struct kvm_x86_pmu_feature gp_event;
+>> +	uint32_t counter_msr;
+>> +	unsigned int i;
+>> +
+>> +	if (rdmsr(MSR_IA32_PERF_CAPABILITIES) & PMU_CAP_FW_WRITES)
+>> +		counter_msr = MSR_IA32_PMC0;
+>> +	else
+>> +		counter_msr = MSR_IA32_PERFCTR0;
+>> +
+>> +	gp_event = intel_event_to_feature[idx].gp_event;
+>> +	TEST_ASSERT_EQ(idx, gp_event.f.bit);
+>> +
+>> +	if (pmu_version < 2) {
+>> +		guest_measure_pmu_v1(gp_event, counter_msr, nr_gp_counters);
+> 
+> Looking at this again, testing guest PMU version 1 is practically impossible
+> because this testcase doesn't force the guest PMU version.  I.e. unless I'm
+> missing something, this requires old hardware or running in a VM with its PMU
+> forced to '1'.
+> 
+> And if all subtests use similar inputs, the common configuration can be shoved
+> into pmu_vm_create_with_one_vcpu().
+> 
+> It's easy enough to fold test_intel_arch_events() into test_intel_counters(),
+> which will also provide coverage for running with full-width writes enabled.  The
+> only downside is that the total runtime will be longer.
+> 
+>> +static void test_arch_events_cpuid(uint8_t i, uint8_t j, uint8_t idx)
+>> +{
+>> +	uint8_t arch_events_unavailable_mask = BIT_ULL(j);
+>> +	uint8_t arch_events_bitmap_size = BIT_ULL(i);
+>> +	struct kvm_vcpu *vcpu;
+>> +	struct kvm_vm *vm;
+>> +
+>> +	vm = pmu_vm_create_with_one_vcpu(&vcpu, guest_measure_loop);
+>> +
+>> +	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_EBX_BIT_VECTOR_LENGTH,
+>> +				arch_events_bitmap_size);
+>> +	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_EVENTS_MASK,
+>> +				arch_events_unavailable_mask);
+>> +
+>> +	vcpu_args_set(vcpu, 1, idx);
+>> +
+>> +	run_vcpu(vcpu);
+>> +
+>> +	kvm_vm_free(vm);
+>> +}
+>> +
+>> +static void test_intel_arch_events(void)
+>> +{
+>> +	uint8_t idx, i, j;
+>> +
+>> +	for (idx = 0; idx < NR_INTEL_ARCH_EVENTS; idx++) {
+> 
+> There's no need to iterate over each event in the host, we can simply add a wrapper
+> for guest_measure_loop() in the guest.  That'll be slightly faster since it won't
+> require creating and destroying a VM for every event.
+> 
+>> +		/*
+>> +		 * A brute force iteration of all combinations of values is
+>> +		 * likely to exhaust the limit of the single-threaded thread
+>> +		 * fd nums, so it's test by iterating through all valid
+>> +		 * single-bit values.
+>> +		 */
+>> +		for (i = 0; i < NR_INTEL_ARCH_EVENTS; i++) {
+> 
+> This is flawed/odd.  'i' becomes arch_events_bitmap_size, i.e. it's a length,
+> but the length is computed byt BIT(i).  That's nonsensical and will eventually
+> result in undefined behavior.  Oof, that'll actually happen sooner than later
+> because arch_events_bitmap_size is only a single byte, i.e. when the number of
+> events hits 9, this will try to shove 256 into an 8-bit variable.
+> 
+> The more correct approach would be to pass in 0..NR_INTEL_ARCH_EVENTS inclusive
+> as the size.  But I think we should actually test 0..length+1, where "length" is
+> the max of the native length and NR_INTEL_ARCH_EVENTS, i.e. we should verify KVM
+> KVM handles a size larger than the native length.
+> 
+>> +			for (j = 0; j < NR_INTEL_ARCH_EVENTS; j++)
+>> +				test_arch_events_cpuid(i, j, idx);
+> 
+> And here, I think it makes sense to brute force all possible values for at least
+> one configuration.  There aren't actually _that_ many values, e.g. currently it's
+> 64 (I think).  E.g. test the native PMU version with the "full" length, and then
+> test single bits with varying lengths.
+> 
+> I'll send a v6 later this week.
 
-syzbot found the following issue on:
+Got it, thanks.
 
-HEAD commit:    2030579113a1 Add linux-next specific files for 20231020
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1370ea89680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=37404d76b3c8840e
-dashboard link: https://syzkaller.appspot.com/bug?extid=532944658f9546cd0135
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a99a981e5d78/disk-20305791.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/073a5ba6a2a6/vmlinux-20305791.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c7c1a7107f7b/bzImage-20305791.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+532944658f9546cd0135@syzkaller.appspotmail.com
-
-assertion failed: space_info->reclaim_size >= ticket->bytes, in fs/btrfs/space-info.c:436
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/space-info.c:436!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 18842 Comm: syz-executor.2 Not tainted 6.6.0-rc6-next-20231020-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:remove_ticket fs/btrfs/space-info.c:436 [inline]
-RIP: 0010:remove_ticket+0x1cf/0x240 fs/btrfs/space-info.c:431
-Code: 5f e9 f5 58 ed fd e8 f0 58 ed fd b9 b4 01 00 00 48 c7 c2 80 32 d9 8a 48 c7 c6 c0 32 d9 8a 48 c7 c7 20 33 d9 8a e8 a1 1c d0 fd <0f> 0b 48 89 ef e8 57 1f 44 fe e9 56 fe ff ff 48 89 ef e8 ea 1f 44
-RSP: 0018:ffffc900142a75e8 EFLAGS: 00010282
-RAX: 0000000000000059 RBX: ffffffffffffc000 RCX: ffffc900098f1000
-RDX: 0000000000000000 RSI: ffffffff816c4d42 RDI: 0000000000000005
-RBP: 000000000001c000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880286da000
-R13: ffff8880286da0e0 R14: ffffc900142c7738 R15: ffffc900133ef730
-FS:  00007fd63d5966c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005556cb3e3668 CR3: 0000000020c93000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_try_granting_tickets+0x2c6/0x450 fs/btrfs/space-info.c:468
- btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:232 [inline]
- block_rsv_release_bytes fs/btrfs/block-rsv.c:154 [inline]
- btrfs_block_rsv_release+0x5b3/0x6c0 fs/btrfs/block-rsv.c:295
- btrfs_delayed_refs_rsv_release+0xbb/0x130 fs/btrfs/delayed-ref.c:75
- btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:2038 [inline]
- __btrfs_run_delayed_refs+0x6c3/0x4020 fs/btrfs/extent-tree.c:2106
- btrfs_run_delayed_refs+0x1a6/0x320 fs/btrfs/extent-tree.c:2218
- btrfs_commit_transaction+0x783/0x3b20 fs/btrfs/transaction.c:2237
- btrfs_sync_fs+0x13b/0x780 fs/btrfs/super.c:1185
- sync_filesystem fs/sync.c:66 [inline]
- sync_filesystem+0x1c5/0x280 fs/sync.c:30
- btrfs_remount+0x1ff/0x17b0 fs/btrfs/super.c:1649
- legacy_reconfigure+0x119/0x180 fs/fs_context.c:685
- reconfigure_super+0x44f/0xb10 fs/super.c:1143
- do_remount fs/namespace.c:2884 [inline]
- path_mount+0x16ed/0x1ed0 fs/namespace.c:3656
- do_mount fs/namespace.c:3677 [inline]
- __do_sys_mount fs/namespace.c:3886 [inline]
- __se_sys_mount fs/namespace.c:3863 [inline]
- __x64_sys_mount+0x293/0x310 fs/namespace.c:3863
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fd63c87e1ea
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fd63d595ee8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fd63d595f80 RCX: 00007fd63c87e1ea
-RDX: 0000000020000180 RSI: 0000000020000140 RDI: 0000000000000000
-RBP: 0000000020000180 R08: 00007fd63d595f80 R09: 00000000039600ac
-R10: 00000000039600ac R11: 0000000000000206 R12: 0000000020000140
-R13: 00007fd63d595f40 R14: 0000000000000000 R15: 0000000020000080
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:remove_ticket fs/btrfs/space-info.c:436 [inline]
-RIP: 0010:remove_ticket+0x1cf/0x240 fs/btrfs/space-info.c:431
-Code: 5f e9 f5 58 ed fd e8 f0 58 ed fd b9 b4 01 00 00 48 c7 c2 80 32 d9 8a 48 c7 c6 c0 32 d9 8a 48 c7 c7 20 33 d9 8a e8 a1 1c d0 fd <0f> 0b 48 89 ef e8 57 1f 44 fe e9 56 fe ff ff 48 89 ef e8 ea 1f 44
-RSP: 0018:ffffc900142a75e8 EFLAGS: 00010282
-RAX: 0000000000000059 RBX: ffffffffffffc000 RCX: ffffc900098f1000
-RDX: 0000000000000000 RSI: ffffffff816c4d42 RDI: 0000000000000005
-RBP: 000000000001c000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880286da000
-R13: ffff8880286da0e0 R14: ffffc900142c7738 R15: ffffc900133ef730
-FS:  00007fd63d5966c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005556cb3e3668 CR3: 0000000020c93000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Please feel free to let me know if there's anything you'd like me to do.
