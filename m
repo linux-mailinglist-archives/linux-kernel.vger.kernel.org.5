@@ -2,188 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7D27D64C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEAA7D64C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbjJYIUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52880 "EHLO
+        id S233862AbjJYIUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbjJYIUF (ORCPT
+        with ESMTP id S233692AbjJYIUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:20:05 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B747B0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:20:02 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39P8CFuP028224;
-        Wed, 25 Oct 2023 08:19:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=8fyN1XSY3iCzycp1u1WIJ7TbJh+QRJ4JC+EH0GTwq6A=;
- b=gGEd1imBRlYBLjZWM4WWitsIvM7HE4nBnDRuC7pKeW4XsiLjLfrM+Q4pxokDwVlVc59s
- Lk1A348Mh9V+rWj8jrocKOnOLqQf3MoZBpvnb3/B8Ua43Mst8KheDWYj4QTGUMTsuF/H
- UlgLxpXXOkvc0NNl2XM1fVJV4/ED9wdL5uf54Y7C7YSbRN/ZE/f4OtOTGjDcHoEgkMpq
- jyfGXqR77NDQ38e6ddxhehWVfo1ZasA3T6g7MJnjGeFqgMpcl+90ZlJx7qcmpkmX6KtI
- +c9jjJFs/DRgVel5OEJOYQM9MLG7UtJkpbGaZQc4wlde2AZGbsTS0IHEwyAO1rCYqJac CQ== 
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3txya3r8d3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 08:19:55 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39P5wqWk024403;
-        Wed, 25 Oct 2023 08:19:55 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tvu6k4wkj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 08:19:54 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39P8JrmZ21430838
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Oct 2023 08:19:53 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 317C52004B;
-        Wed, 25 Oct 2023 08:19:53 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C83B920040;
-        Wed, 25 Oct 2023 08:19:52 +0000 (GMT)
-Received: from [9.171.32.46] (unknown [9.171.32.46])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 25 Oct 2023 08:19:52 +0000 (GMT)
-Message-ID: <9cdba213-d6cf-427e-abd3-a0e1e1b39299@linux.ibm.com>
-Date:   Wed, 25 Oct 2023 10:19:52 +0200
+        Wed, 25 Oct 2023 04:20:17 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414E1129
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:20:14 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso815761166b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698222013; x=1698826813; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mGyiHTf9h3E03+lmKUwJehfcVviZh7AZQ8Zot4O6MlY=;
+        b=R07pScq0hwtOS5DW2hc5Xb/TmNEHbUMk0teCMiLXJCqKDwIeBAGZzZHqP7og7GSWZV
+         6kvV/TNyS/IsDHvL0No++MWTbcBVTKUyMafThydArL080Ih+zp9Bo8ISnLoSm9TJUqmR
+         5vPtfjJl/4UTsAIBt/ciyXWq8eSOHCdpiJEUUVaQgE165BTw1q2r1RKAROCAHIeFqkJX
+         E0E4PKFvgauVdUOGflX3tZTuWWJMTjc+23tGlZ03yq4jd5xti7WUcNi2zwAhcWM+L1hB
+         YmPGSoXdwa8jY5i18lMvw3cK4WiDkmiyGCsKoluCQzJ6TVIp+wJw1xfdYelo0rUffvew
+         74Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698222013; x=1698826813;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mGyiHTf9h3E03+lmKUwJehfcVviZh7AZQ8Zot4O6MlY=;
+        b=NZYcw13U10VVWCWhOaARswu/MEjhYDYf0eWq1VDXG2zN21WJJb1Io3wXZ0ejZ3rATQ
+         YcIzfQUfRmTS929ktK/VeNvQLebOslGckm4VWSW8THFdOGP2pBmkMlK7sKCWuc2UKyvR
+         O1loegY6fRwLIhneGzbtPTaUyZoQSJ2uUpm1NPrjA8GXjRqnb33evOchoa5N7o2iJ3dp
+         1iO73q6ZCn9H1BkqeQhLyC2H+5erB63g8GTrbmd04N2jJNpmvrshmPeogEuQBzTifmY+
+         jFbmtoQ2oaITnAOSZthwyiaaIfkqeISGkwIqxfw266jEWv9vOXNkVFq9WT2LM/mHRBwB
+         Jzgw==
+X-Gm-Message-State: AOJu0YxwCezTzZY/iDdEks7xijmjY7+Sv2xTiwZHpXIdgTwl0iJNagkV
+        s4SBuS9jiYgwzC1Qhjx4EU/KRQ==
+X-Google-Smtp-Source: AGHT+IEAfSNLL1co6iHd1mFwS1BoytfPi1VstYidY2T+LrndLMHTAuZd0GJ4TdVeIPayVrfBlsulRA==
+X-Received: by 2002:a17:906:fe4c:b0:9ba:a38:f2b2 with SMTP id wz12-20020a170906fe4c00b009ba0a38f2b2mr12214189ejb.41.1698222012647;
+        Wed, 25 Oct 2023 01:20:12 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id dx22-20020a170906a85600b00991d54db2acsm9292600ejb.44.2023.10.25.01.20.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 01:20:12 -0700 (PDT)
+Message-ID: <b0e2a2c5-67e5-487e-9023-2fac5ce3ba47@linaro.org>
+Date:   Wed, 25 Oct 2023 10:20:10 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ocxl: make ocxl_class constant
+Subject: Re: [PATCH] dt-bindings: mtd-partitions: Export special values
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <2023102403-squirt-defraud-6c0c@gregkh>
-From:   Frederic Barrat <fbarrat@linux.ibm.com>
-In-Reply-To: <2023102403-squirt-defraud-6c0c@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Edward Chow <equu@openmail.cc>, Rob Herring <robh+dt@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231025052937.830813-1-equu@openmail.cc>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231025052937.830813-1-equu@openmail.cc>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: dNcJmMaG1T2GK9C19kaa-ksAv4XOWZdv
-X-Proofpoint-ORIG-GUID: dNcJmMaG1T2GK9C19kaa-ksAv4XOWZdv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_01,2023-10-24_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 adultscore=0 clxscore=1015 impostorscore=0 malwarescore=0
- spamscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310250070
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 24/10/2023 13:49, Greg Kroah-Hartman wrote:
-> Now that the driver core allows for struct class to be in read-only
-> memory, we should make all 'class' structures declared at build time
-> placing them into read-only memory, instead of having to be dynamically
-> allocated at runtime.
+On 25/10/2023 07:29, Edward Chow wrote:
+> There are special "offset" and "size" values defined and documented in
+> linux/mtd/partitions.h:
 > 
-> Cc: Frederic Barrat <fbarrat@linux.ibm.com>
-> Cc: Andrew Donnellan <ajd@linux.ibm.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> // consume as much as possible, leaving size after the end of partition.
+> 
+> // the partition will start at the next erase block.
+> 
+> // the partition will start where the previous one ended.
+> 
+> (Though not explicitly, they are compared against variables in uint64_t
+> in drivers/mtd/mtdpart.c, so they had better be considered as such.)
+> 
+> // the partition will extend to the end of the master MTD device.
+> 
+> These special values could be used to define partitions automatically
+> fitting to the size of the master MTD device at runtime.
+> 
+> However, these values used not to be exported to dt-bindings, thus
+> seldom used before, since they might have been only used in numeric form,
+> such as "(-1) (-3)" for MTDPART_OFS_RETAIN.
+> 
+> Now, they are exported in dt-bindings/mtd/partitions.h as 32-bit cell
+> values, so 2-cell addressed should be defined to use special offset values,
+> such as "MTDPART_OFS_SPECIAL MTDPART_OFS_RETAIN" for MTDPART_OFS_RETAIN in
+> linux/mtd/partitions.h. An example is added to fixed-partitions.yaml.
+> 
+> Signed-off-by: Edward Chow <equu@openmail.cc>
 > ---
-
-Thanks!
-
-Acked-by: Frederic Barrat <fbarrat@linux.ibm.com>
-
-   Fred
-
-
->   drivers/misc/ocxl/file.c | 27 +++++++++++++++------------
->   1 file changed, 15 insertions(+), 12 deletions(-)
+>  .../mtd/partitions/fixed-partitions.yaml      | 29 +++++++++++++++++++
+>  MAINTAINERS                                   |  2 ++
+>  include/dt-bindings/mtd/partitions.h          | 15 ++++++++++
+>  3 files changed, 46 insertions(+)
+>  create mode 100644 include/dt-bindings/mtd/partitions.h
 > 
-> diff --git a/drivers/misc/ocxl/file.c b/drivers/misc/ocxl/file.c
-> index 6e63f060e4cc..ac69b7f361f5 100644
-> --- a/drivers/misc/ocxl/file.c
-> +++ b/drivers/misc/ocxl/file.c
-> @@ -14,7 +14,6 @@
->   #define OCXL_NUM_MINORS 256 /* Total to reserve */
->   
->   static dev_t ocxl_dev;
-> -static struct class *ocxl_class;
->   static DEFINE_MUTEX(minors_idr_lock);
->   static struct idr minors_idr;
->   
-> @@ -509,6 +508,16 @@ static void ocxl_file_make_invisible(struct ocxl_file_info *info)
->   	cdev_del(&info->cdev);
->   }
->   
-> +static char *ocxl_devnode(const struct device *dev, umode_t *mode)
-> +{
-> +	return kasprintf(GFP_KERNEL, "ocxl/%s", dev_name(dev));
-> +}
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+> index 331e564f29dc..a939fb52ef76 100644
+> --- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+> @@ -164,3 +164,32 @@ examples:
+>              read-only;
+>          };
+>      };
 > +
-> +static const struct class ocxl_class = {
-> +	.name =		"ocxl",
-> +	.devnode =	ocxl_devnode,
-> +};
+> +  - |
+> +    partitions {
+> +        compatible = "fixed-partitions";
+> +        #address-cells = <2>;
+> +        #size-cells = <1>;
 > +
->   int ocxl_file_register_afu(struct ocxl_afu *afu)
->   {
->   	int minor;
-> @@ -529,7 +538,7 @@ int ocxl_file_register_afu(struct ocxl_afu *afu)
->   
->   	info->dev.parent = &fn->dev;
->   	info->dev.devt = MKDEV(MAJOR(ocxl_dev), minor);
-> -	info->dev.class = ocxl_class;
-> +	info->dev.class = &ocxl_class;
->   	info->dev.release = info_release;
->   
->   	info->afu = afu;
-> @@ -584,11 +593,6 @@ void ocxl_file_unregister_afu(struct ocxl_afu *afu)
->   	device_unregister(&info->dev);
->   }
->   
-> -static char *ocxl_devnode(const struct device *dev, umode_t *mode)
-> -{
-> -	return kasprintf(GFP_KERNEL, "ocxl/%s", dev_name(dev));
-> -}
-> -
->   int ocxl_file_init(void)
->   {
->   	int rc;
-> @@ -601,20 +605,19 @@ int ocxl_file_init(void)
->   		return rc;
->   	}
->   
-> -	ocxl_class = class_create("ocxl");
-> -	if (IS_ERR(ocxl_class)) {
-> +	rc = class_register(&ocxl_class);
-> +	if (rc) {
->   		pr_err("Unable to create ocxl class\n");
->   		unregister_chrdev_region(ocxl_dev, OCXL_NUM_MINORS);
-> -		return PTR_ERR(ocxl_class);
-> +		return rc;
->   	}
->   
-> -	ocxl_class->devnode = ocxl_devnode;
->   	return 0;
->   }
->   
->   void ocxl_file_exit(void)
->   {
-> -	class_destroy(ocxl_class);
-> +	class_unregister(&ocxl_class);
->   	unregister_chrdev_region(ocxl_dev, OCXL_NUM_MINORS);
->   	idr_destroy(&minors_idr);
->   }
+> +        partition@0 {
+> +            label = "bootloader";
+> +            reg = <0 0x000000 0x020000>;
+> +            read-only;
+> +        };
+> +
+> +        firmware@1 {
+> +            label = "firmware";
+> +            /* From the end of the last partition, occupying as mush
+
+Use Linux coding style comments.
+
+> +             * as possible, retaining 0x010000 after it,
+> +             * "MTDPART_OFS_SPECIAL MTDPART_OFS_NXTBLK" similar to
+> +             * this, but always beginning at erase block boundary. */
+> +            reg = <MTDPART_OFS_SPECIAL MTDPART_OFS_RETAIN 0x010000>;
+> +        };
+> +
+> +        calibration@2 {
+> +            compatible = "fixed-partitions";
+> +            label = "calibration";
+> +            /* Appending to the last partition, occupying 0x010000 */
+> +            reg = <MTDPART_OFS_SPECIAL MTDPART_OFS_APPEND 0x010000>;
+
+And where is any user of this? Example in the bindings is not user. I
+would expect that you will change at least one other DTS.
+
+> +        };
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 668d1e24452d..7d6beadc8b36 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13771,9 +13771,11 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/next
+>  F:	Documentation/devicetree/bindings/mtd/
+>  F:	drivers/mtd/
+> +F:	include/dt-bindings/mtd/
+>  F:	include/linux/mtd/
+>  F:	include/uapi/mtd/
+>  
+> +
+
+Drop.
+
+>  MEMSENSING MICROSYSTEMS MSA311 DRIVER
+>  M:	Dmitry Rokosov <ddrokosov@sberdevices.ru>
+>  L:	linux-iio@vger.kernel.org
+> diff --git a/include/dt-bindings/mtd/partitions.h b/include/dt-bindings/mtd/partitions.h
+> new file mode 100644
+> index 000000000000..456a54a1259a
+> --- /dev/null
+> +++ b/include/dt-bindings/mtd/partitions.h
+> @@ -0,0 +1,15 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+
+Dual license, as asked by checkpatch.
+
+Best regards,
+Krzysztof
+
