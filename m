@@ -2,239 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 931177D65AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DF67D65B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234561AbjJYIrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
+        id S234475AbjJYIs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234475AbjJYIrc (ORCPT
+        with ESMTP id S234456AbjJYIsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:47:32 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DC9C31BEE;
-        Wed, 25 Oct 2023 01:47:04 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C9BD2F4;
-        Wed, 25 Oct 2023 01:47:45 -0700 (PDT)
-Received: from monolith (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F06E3F64C;
-        Wed, 25 Oct 2023 01:46:58 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 09:47:36 +0100
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     Hyesoo Yu <hyesoo.yu@samsung.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>, will@kernel.org,
-        oliver.upton@linux.dev, maz@kernel.org, james.morse@arm.com,
-        suzuki.poulose@arm.com, yuzenghui@huawei.com, arnd@arndb.de,
-        akpm@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        mhiramat@kernel.org, rppt@kernel.org, hughd@google.com,
-        pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 00/37] Add support for arm64 MTE dynamic tag storage
- reuse
-Message-ID: <ZTjWKJ0K78jeCJr-@monolith>
-References: <ZOc0fehF02MohuWr@arm.com>
- <ebd3f142-43cc-dc92-7512-8f1c99073fce@redhat.com>
- <0b9c122a-c05a-b3df-c69f-85f520294adc@redhat.com>
- <ZOd2LvUKMguWdlgq@arm.com>
- <ZPhfNVWXhabqnknK@monolith>
- <ZP7/e8YFiosElvTm@arm.com>
- <0cc8a118-2522-f666-5bcc-af06263fd352@redhat.com>
- <ZQHVVdlN9QQztc7Q@arm.com>
- <CGME20231025031004epcas2p485a0b7a9247bc61d54064d7f7bdd1e89@epcas2p4.samsung.com>
- <20231025025932.GA3953138@tiffany>
+        Wed, 25 Oct 2023 04:48:11 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E161BD
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:48:08 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32d9d8284abso3588040f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:48:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698223687; x=1698828487; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PmU0JSwBBTCbuAIvfPvlwQrKuSI376moyh5uECvCBNA=;
+        b=xE+0qqNuS86IseO+0dm7hKlbTzSHBIX3S+WFFdpJENnavkfvetlH6ESLIjr1ycPyle
+         9u7Etn1r5MU47n8CqlA9I13sr2FgE6naSZPKpcUuMywguwIhxDuNtSeax8LF8WH4nD+g
+         /zk/Z2YNl5qKZ1+aR/ZJe2ZVcfSEXS5GLR/ckw5qsDmGmQnm5M3lGejSA+HR0QG91Qug
+         6S5Pn+lQ7PBjQc1MPUp6e2KpzEeflEFCj+a4z+AHHmoZ1sITjnesqpSND/n+NhuRSs5M
+         ggVxHF53Qp7ce86fFDGoIN5Mctadg8Q5iraEiYH3+85bWVSwHg2EFsEgoTgjxiqTCHWH
+         TXVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698223687; x=1698828487;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PmU0JSwBBTCbuAIvfPvlwQrKuSI376moyh5uECvCBNA=;
+        b=dqmv0Fs0XCDdb/uzsxJbRpuSHnE+Z/RLmovNNuN1VtEL0NVRdr9BAhH1g79WIYxlAG
+         ZZ1xMmfmJYgmLWo9hdqQVmMo8kY60mDVfWVd4xvWeU8kH2ehy3WU73Y+sHsoEZW76GZO
+         C5mw1XkOlDklTPZiWamv2NbP+rHjAlJfSOgFNV+TNb2cEG9Gc0G1g2+q5UUD0CjtTyuq
+         bnIhh719lf/ZpDwLcD7TzgwXQ0aUm4KhgLVtSqkNDyeAMX0VPTAU51XxxiIu9QhyUrR5
+         ns1ddQxAJsYq3wHUYEPCM4DOKYfZjpmvsdBZTS265UcESRmN186nslJArbVyF0PcJNmr
+         wHSg==
+X-Gm-Message-State: AOJu0YzQW2wn42GvvMiX+s/HQcEVnl3KM2e8zOnBJAygtTXeEbTT3dCV
+        uaBB+iBuCs+YRv3zfBBEcFzCCA==
+X-Google-Smtp-Source: AGHT+IGuYPayor/rtxON3pA5qwyVcx7ZIFA44YA8KYUSvbFp5oFPl7FBWsszIKelwt9ulWA6cZ7Q1Q==
+X-Received: by 2002:a05:6000:1ce:b0:32d:96dd:704d with SMTP id t14-20020a05600001ce00b0032d96dd704dmr9457920wrx.18.1698223686859;
+        Wed, 25 Oct 2023 01:48:06 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id q11-20020a056000136b00b0032dc74c093dsm11622009wrz.103.2023.10.25.01.48.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 01:48:06 -0700 (PDT)
+Message-ID: <04fae330-0866-408a-8016-b6f897f9550e@linaro.org>
+Date:   Wed, 25 Oct 2023 10:48:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025025932.GA3953138@tiffany>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/4] Add samsung-matisselte and common matisse dtsi
+Content-Language: en-US
+To:     Stefan Hansson <newbyte@postmarketos.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+References: <20231025083952.12367-1-newbyte@postmarketos.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231025083952.12367-1-newbyte@postmarketos.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Oct 25, 2023 at 11:59:32AM +0900, Hyesoo Yu wrote:
-> On Wed, Sep 13, 2023 at 04:29:25PM +0100, Catalin Marinas wrote:
-> > On Mon, Sep 11, 2023 at 02:29:03PM +0200, David Hildenbrand wrote:
-> > > On 11.09.23 13:52, Catalin Marinas wrote:
-> > > > On Wed, Sep 06, 2023 at 12:23:21PM +0100, Alexandru Elisei wrote:
-> > > > > On Thu, Aug 24, 2023 at 04:24:30PM +0100, Catalin Marinas wrote:
-> > > > > > On Thu, Aug 24, 2023 at 01:25:41PM +0200, David Hildenbrand wrote:
-> > > > > > > On 24.08.23 13:06, David Hildenbrand wrote:
-> > > > > > > > Regarding one complication: "The kernel needs to know where to allocate
-> > > > > > > > a PROT_MTE page from or migrate a current page if it becomes PROT_MTE
-> > > > > > > > (mprotect()) and the range it is in does not support tagging.",
-> > > > > > > > simplified handling would be if it's in a MIGRATE_CMA pageblock, it
-> > > > > > > > doesn't support tagging. You have to migrate to a !CMA page (for
-> > > > > > > > example, not specifying GFP_MOVABLE as a quick way to achieve that).
-> > > > > > > 
-> > > > > > > Okay, I now realize that this patch set effectively duplicates some CMA
-> > > > > > > behavior using a new migrate-type.
-> > > > [...]
-> > > > > I considered mixing the tag storage memory memory with normal memory and
-> > > > > adding it to MIGRATE_CMA. But since tag storage memory cannot be tagged,
-> > > > > this means that it's not enough anymore to have a __GFP_MOVABLE allocation
-> > > > > request to use MIGRATE_CMA.
-> > > > > 
-> > > > > I considered two solutions to this problem:
-> > > > > 
-> > > > > 1. Only allocate from MIGRATE_CMA is the requested memory is not tagged =>
-> > > > > this effectively means transforming all memory from MIGRATE_CMA into the
-> > > > > MIGRATE_METADATA migratetype that the series introduces. Not very
-> > > > > appealing, because that means treating normal memory that is also on the
-> > > > > MIGRATE_CMA lists as tagged memory.
-> > > > 
-> > > > That's indeed not ideal. We could try this if it makes the patches
-> > > > significantly simpler, though I'm not so sure.
-> > > > 
-> > > > Allocating metadata is the easier part as we know the correspondence
-> > > > from the tagged pages (32 PROT_MTE page) to the metadata page (1 tag
-> > > > storage page), so alloc_contig_range() does this for us. Just adding it
-> > > > to the CMA range is sufficient.
-> > > > 
-> > > > However, making sure that we don't allocate PROT_MTE pages from the
-> > > > metadata range is what led us to another migrate type. I guess we could
-> > > > achieve something similar with a new zone or a CPU-less NUMA node,
-> > > 
-> > > Ideally, no significant core-mm changes to optimize for an architecture
-> > > oddity. That implies, no new zones and no new migratetypes -- unless it is
-> > > unavoidable and you are confident that you can convince core-MM people that
-> > > the use case (giving back 3% of system RAM at max in some setups) is worth
-> > > the trouble.
-> > 
-> > If I was an mm maintainer, I'd also question this ;). But vendors seem
-> > pretty picky about the amount of RAM reserved for MTE (e.g. 0.5G for a
-> > 16G platform does look somewhat big). As more and more apps adopt MTE,
-> > the wastage would be smaller but the first step is getting vendors to
-> > enable it.
-> > 
-> > > I also had CPU-less NUMA nodes in mind when thinking about that, but not
-> > > sure how easy it would be to integrate it. If the tag memory has actually
-> > > different performance characteristics as well, a NUMA node would be the
-> > > right choice.
-> > 
-> > In general I'd expect the same characteristics. However, changing the
-> > memory designation from tag to data (and vice-versa) requires some cache
-> > maintenance. The allocation cost is slightly higher (not the runtime
-> > one), so it would help if the page allocator does not favour this range.
-> > Anyway, that's an optimisation to worry about later.
-> > 
-> > > If we could find some way to easily support this either via CMA or CPU-less
-> > > NUMA nodes, that would be much preferable; even if we cannot cover each and
-> > > every future use case right now. I expect some issues with CXL+MTE either
-> > > way , but are happy to be taught otherwise :)
-> > 
-> > I think CXL+MTE is rather theoretical at the moment. Given that PCIe
-> > doesn't have any notion of MTE, more likely there would be some piece of
-> > interconnect that generates two memory accesses: one for data and the
-> > other for tags at a configurable offset (which may or may not be in the
-> > same CXL range).
-> > 
-> > > Another thought I had was adding something like CMA memory characteristics.
-> > > Like, asking if a given CMA area/page supports tagging (i.e., flag for the
-> > > CMA area set?)?
-> > 
-> > I don't think adding CMA memory characteristics helps much. The metadata
-> > allocation wouldn't go through cma_alloc() but rather
-> > alloc_contig_range() directly for a specific pfn corresponding to the
-> > data pages with PROT_MTE. The core mm code doesn't need to know about
-> > the tag storage layout.
-> > 
-> > It's also unlikely for cma_alloc() memory to be mapped as PROT_MTE.
-> > That's typically coming from device drivers (DMA API) with their own
-> > mmap() implementation that doesn't normally set VM_MTE_ALLOWED (and
-> > therefore PROT_MTE is rejected).
-> > 
-> > What we need though is to prevent vma_alloc_folio() from allocating from
-> > a MIGRATE_CMA list if PROT_MTE (VM_MTE). I guess that's basically
-> > removing __GFP_MOVABLE in those cases. As long as we don't have large
-> > ZONE_MOVABLE areas, it shouldn't be an issue.
-> > 
+On 25/10/2023 10:37, Stefan Hansson wrote:
+> This series adds a common samsung-matisse dtsi and reworks
+> samsung-matisse-wifi to use it, and introduces samsung-matisselte. I
+> choose matisselte over matisse-lte as this is how most other devices
+> (klte, s3ve3g) do it and it is the codename that Samsung gave the
+> device. See individual commits for more information.
 > 
-> How about unsetting ALLOC_CMA if GFP_TAGGED ?
-> Removing __GFP_MOVABLE may cause movable pages to be allocated in un
-> unmovable migratetype, which may not be desirable for page fragmentation.
-
-Yes, not setting ALLOC_CMA in alloc_flags if __GFP_TAGGED is what I am
-intending to do.
-
+> ---
+> Changes since v1:
 > 
-> > > When you need memory that supports tagging and have a page that does not
-> > > support tagging (CMA && taggable), simply migrate to !MOVABLE memory
-> > > (eventually we could also try adding !CMA).
-> > > 
-> > > Was that discussed and what would be the challenges with that? Page
-> > > migration due to compaction comes to mind, but it might also be easy to
-> > > handle if we can just avoid CMA memory for that.
-> > 
-> > IIRC that was because PROT_MTE pages would have to come only from
-> > !MOVABLE ranges. Maybe that's not such big deal.
-> > 
-> 
-> Could you explain what it means that PROT_MTE have to come only from
-> !MOVABLE range ? I don't understand this part very well.
+>  - Rebased on latest linux-next
+>  - Added qcom,msm8226 compatible to matisselte inspired by recent Lumia
+>    830 patch. This is done as in v1, the patch was rejected because I
+>    included the msm8226 dtsi despite not marking matisselte as
+>    compatible with msm8226, and I was not sure how to resolve that. As
+>    such, I'm copying what was done in the Lumia 830 (microsoft-tesla)
+>    patch given that it was accepted.
 
-I believe that was with the old approach, where tag storage cannot be tagged.
+One version per day, so you won't ignore tags.
 
-I'm guessing that the idea was that during migration of a tagged page, to make
-sure that the destination page is not a tag storage page (which cannot be
-tagged), the gfp flags used for allocating the destination page would be set
-without __GFP_MOVABLE, which ensures that the destination page is not
-allocated from MIGRATE_CMA. But that is not needed anymore, if we don't set
-ALLOC_CMA if __GFP_TAGGED.
-
-Thanks,
-Alex
-
-> 
-> Thanks,
-> Hyesoo.
-> 
-> > We'll give this a go and hopefully it simplifies the patches a bit (it
-> > will take a while as Alex keeps going on holiday ;)). In the meantime,
-> > I'm talking to the hardware people to see whether we can have MTE pages
-> > in the tag storage/metadata range. We'd still need to reserve about 0.1%
-> > of the RAM for the metadata corresponding to the tag storage range when
-> > used as data but that's negligible (1/32 of 1/32). So if some future
-> > hardware allows this, we can drop the page allocation restriction from
-> > the CMA range.
-> > 
-> > > > though the latter is not guaranteed not to allocate memory from the
-> > > > range, only make it less likely. Both these options are less flexible in
-> > > > terms of size/alignment/placement.
-> > > > 
-> > > > Maybe as a quick hack - only allow PROT_MTE from ZONE_NORMAL and
-> > > > configure the metadata range in ZONE_MOVABLE but at some point I'd
-> > > > expect some CXL-attached memory to support MTE with additional carveout
-> > > > reserved.
-> > > 
-> > > I have no idea how we could possibly cleanly support memory hotplug in
-> > > virtual environments (virtual DIMMs, virtio-mem) with MTE. In contrast to
-> > > s390x storage keys, the approach that arm64 with MTE took here (exposing tag
-> > > memory to the VM) makes it rather hard and complicated.
-> > 
-> > The current thinking is that the VM is not aware of the tag storage,
-> > that's entirely managed by the host. The host would treat the guest
-> > memory similarly to the PROT_MTE user allocations, reserve metadata etc.
-> > 
-> > Thanks for the feedback so far, very useful.
-> > 
-> > -- 
-> > Catalin
-> > 
-
+Best regards,
+Krzysztof
 
