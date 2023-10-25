@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 272E57D5F9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 03:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4A17D5FAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 04:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjJYB42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 21:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
+        id S230284AbjJYCCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 22:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJYB41 (ORCPT
+        with ESMTP id S229441AbjJYCCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 21:56:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6377B10D4;
-        Tue, 24 Oct 2023 18:56:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6874C433D9;
-        Wed, 25 Oct 2023 01:56:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698198984;
-        bh=+Ke3Py58KPo3fESPPIaGbDvnIdqyhoEV9dsK/zBAFes=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=a2Wz53+fv+kMQXAC8g8UKH51fJKka53EryWc+nlhdqehGcVmChIc4HtWFCUGjMzJR
-         EOFTSm9pT6SWS4ixGuVGREm75RCw47/sTutHGwT50t4Z6lCIDcptJMEQiig0KKQHwQ
-         aGqV8dhwjPhNSrAB2NzSFGEcu06xp3H7mKMbwXs6ZycaIKhR/ucGheJmxM8uJzUBze
-         YofpSEcHkVk5ZR3cjCJ6JuiQQoq85tYd44dMwxnr6KeeTF67ekIMzH9qpU6ALGuirx
-         QKOjzMq5TKOClr0LBFcHMeUyUUeW8pG0h4N3JQLbCByKZR9f1vj3A8lrZHW7HV24sF
-         ZSu9/3i7mPDfw==
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-9c2a0725825so757149866b.2;
-        Tue, 24 Oct 2023 18:56:24 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwX1fqYgYc1U7hEelZXtlzNLN+M5dS634xLWC63UZATk1xIvTg6
-        ELRJxlKFPglst1qvzKjsQqBb9CFQgXppVM3UQAo=
-X-Google-Smtp-Source: AGHT+IFS7k+iLv3jg6MtAyOtyKsAlec2Gf+Ao7RAz0P+99Tc54bsF+lUQZf3/VG0aVihpzZ4AeWaKexyxa4kzH4w3jc=
-X-Received: by 2002:a17:907:934c:b0:9ae:64b4:18b3 with SMTP id
- bv12-20020a170907934c00b009ae64b418b3mr9805577ejc.37.1698198983263; Tue, 24
- Oct 2023 18:56:23 -0700 (PDT)
+        Tue, 24 Oct 2023 22:02:51 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F5F10D7;
+        Tue, 24 Oct 2023 19:02:49 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9a398f411fso4712942276.3;
+        Tue, 24 Oct 2023 19:02:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698199369; x=1698804169; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UzyWXBCmC4hzArGvKMooFXAHa8LrB8TP9psqece/XB0=;
+        b=G1Q3XJ0jx0FSzeuMoaHwO0F5EWii4c8N+DRbYJ+IOkg2AITSToaV+k+K3mcYb13Wx+
+         lxVemfbKeoqBRQas6tNj84TCd3fsbirM3h/kMvfg+QsGMHQB0phNg1aenaK8TpLvW2MX
+         vNHG2uFytfLyJOwpJ+lNtoZ27BLywzdjuXLTOIr8ex6Z4YL6MKg6rjlYXgxfU6dpl8Fw
+         MZ5Qq9qjJYBYPV564eLO/ELuCyo7ZF5Sm58CFXxqHZzeXBDUt0vZbcl1PUZcmOxiIRpG
+         ff0NmkpWCB+e0ddsBPOAinZUiXfCKsb5RUUZb7yTsdsr4KsDN0jqwmLwjIR0lO1Kkw7o
+         obkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698199369; x=1698804169;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UzyWXBCmC4hzArGvKMooFXAHa8LrB8TP9psqece/XB0=;
+        b=D3gUAnasC202Pp19JBslzYRH5XCxihRha+XyfH6NDU7KUn4QDl0W83DvazePLJ71DA
+         W2bwPehKHhxaS3rN3r+5Um7gPvPiPC/zMMAEemvVi5VVaI/CuOGg+MMj980pQvhclV3g
+         yqK8XsmNH4pmeVX5wY2w90LznMcXUdrObQevTkyuKWD6A2bCW1QRJXgwUe4EO00z0wKZ
+         fPd5WdV+RkbxW6820113fZqIJ8GLntlBAXaECzYVgIivGTZszxS3KDSiapbVspnkX+xW
+         l+MZt7YdPVmt0c+scL5JI+paApVRyK2F/yJmBhYTwMkwch+iLM8v7qbozZXVYvUSwVNM
+         RQqw==
+X-Gm-Message-State: AOJu0YyJIA0FdZeQrY9BS2ll6p3NywYbXAYqu5fdzp9Cc4k7NXwGuNZJ
+        UyV9VE7HnQKM158jLMmbZto=
+X-Google-Smtp-Source: AGHT+IH0ytejPRDM/KrWMr6ZjDK3z09hNvU4eo70YB+WQSeAks7/x7cG6b6uIarfWfY+P2kZ76zxPA==
+X-Received: by 2002:a5b:9d2:0:b0:da0:5585:c00a with SMTP id y18-20020a5b09d2000000b00da05585c00amr2663910ybq.52.1698199368679;
+        Tue, 24 Oct 2023 19:02:48 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w31-20020a25ac1f000000b00d9ab86bdaffsm4054992ybi.12.2023.10.24.19.02.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 19:02:47 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 24 Oct 2023 19:02:46 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 4.14 00/65] 4.14.328-rc2 review
+Message-ID: <d06ceb71-52d9-4f03-ae46-4373d6175241@roeck-us.net>
+References: <20231024083251.452724764@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
- <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org> <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
- <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org> <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
- <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org> <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
- <86wmxcejav.wl-maz@kernel.org> <c7898abf-34ca-d0b4-fd0c-935100dcd3f2@flygoat.com>
- <86pm2ye2si.wl-maz@kernel.org> <CAMpQs4LjePLy5RFMz2S=1sa9Zme_UrJmKKRog0LAg_ZhA07TMA@mail.gmail.com>
- <CAOiHx=mq3hw-LFerb9UzU7VSnLypnvPuo1GomCnN=p0u3xN1Ug@mail.gmail.com>
- <CAMpQs4+neiaJKp93UcemJbPPbhmf1B7WYNqKh=qx0avrbwW2cQ@mail.gmail.com>
- <CAOiHx==uSQrO6+Ob1qe3NaRdXoGTwLYSS8S7YYMwQ4zhSbX75g@mail.gmail.com>
- <CAAhV-H4yZ7DKx865M1RN+0L8CZjua=wBMsuXT0ekNANRN+RWAg@mail.gmail.com>
- <CAMpQs4Kug8dOWHD+nqAbGkmqkWU=y=k6+VwojETn8PEwf+MSPA@mail.gmail.com> <87wmvh5vyb.wl-maz@kernel.org>
-In-Reply-To: <87wmvh5vyb.wl-maz@kernel.org>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Wed, 25 Oct 2023 09:56:10 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6g+eCj6B2S6HWhv-9AqWZkf9gaN-=TUmhHDe3Qx9_o+A@mail.gmail.com>
-Message-ID: <CAAhV-H6g+eCj6B2S6HWhv-9AqWZkf9gaN-=TUmhHDe3Qx9_o+A@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
- Fix warnings about liointc-2.0
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Binbin Zhou <zhoubb.aaron@gmail.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Binbin Zhou <zhoubinbin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
-        linux-kernel@vger.kernel.org, frowand.list@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024083251.452724764@linuxfoundation.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,33 +78,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Krzysztof,
+On Tue, Oct 24, 2023 at 10:36:27AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.328 release.
+> There are 65 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 26 Oct 2023 08:32:31 +0000.
+> Anything received after that time might be too late.
+> 
 
-On Fri, Oct 20, 2023 at 8:18=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrote=
-:
->
-> On Fri, 20 Oct 2023 10:51:35 +0100,
-> Binbin Zhou <zhoubb.aaron@gmail.com> wrote:
-> >
-> > Hi Krzysztof & Marc:
-> >
-> > Sorry for the interruption.
-> > As said before, we tried to use the 'interrupt-map attribute' in our
-> > Loongson liointc dts(i), but there are some unfriendly points.
-> > Do you have any other different suggestions?
->
-> I don't have any suggestion, but if you are still thinking of adding
-> some extra crap to the of_irq_imap_abusers[] array, the answer is a
-> firm 'NO'.
-Excuse me, but as described before, 'interrupt-map' cannot be used for
-liointc unless adding it to of_irq_imap_abusers[], can we still use
-'parent_int_map' in this case? Or just change it to 'parent-int-map'
-to satisfy the naming style?
+Build results:
+	total: 139 pass: 139 fail: 0
+Qemu test results:
+	total: 440 pass: 440 fail: 0
 
-Huacai
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+Guenter
