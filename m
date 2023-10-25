@@ -2,188 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFB97D698B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BED7D698D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbjJYKxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 06:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56178 "EHLO
+        id S234875AbjJYKx2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 06:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbjJYKxK (ORCPT
+        with ESMTP id S232926AbjJYKxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 06:53:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5A78F;
-        Wed, 25 Oct 2023 03:53:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698231188; x=1729767188;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=m/Y0aFVGcqZhvuRZA6upPo6yyOECscOmEoJCrsx/B18=;
-  b=DfwYjkIZcHgd+CRtR5o4tE/++wcGOw1zWBLfAHA4X2aXrGMsH3ncqC1c
-   jvT0Q//u14Ygl2KEjwmOnuxPyu/z4S1iT/pTibeYCs3jK3f2Suvac9Dh5
-   8mQ1od2p9Tgdr4sRjtTWE8+ks76O7O0sq33QPR3EKFKd4en+IjYPLOa9g
-   7AmXnJXanrJipB0xvIE+diOnU8NxTZ/NruqpKomxhb5AHhQImnmmTPPby
-   bxU4zmH6Ikp76mdFfZ/bM/dN9tYQLNwWv3bbPcBBvtxErbX08x5Iq0biM
-   B3A8xsMX+1kbQ2918+pSD4pMSs2r77U5t6tZYJAuMjYYMeEah386Ljhn2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="390136000"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="390136000"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 03:53:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="52501"
-Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 25 Oct 2023 03:52:29 -0700
-Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qvbVV-0008pp-1a;
-        Wed, 25 Oct 2023 10:53:01 +0000
-Date:   Wed, 25 Oct 2023 18:52:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Karan Tilak Kumar <kartilak@cisco.com>, sebaddel@cisco.com
-Cc:     oe-kbuild-all@lists.linux.dev, arulponn@cisco.com,
-        djhawar@cisco.com, gcboffa@cisco.com, mkai2@cisco.com,
-        satishkh@cisco.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Karan Tilak Kumar <kartilak@cisco.com>
-Subject: Re: [PATCH 07/13] scsi: fnic: Modify ISRs to support multiqueue(MQ)
-Message-ID: <202310251847.4T8BVZAZ-lkp@intel.com>
-References: <20231020190629.338623-8-kartilak@cisco.com>
+        Wed, 25 Oct 2023 06:53:22 -0400
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0DAAC;
+        Wed, 25 Oct 2023 03:53:20 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5a7fb84f6ceso51984277b3.1;
+        Wed, 25 Oct 2023 03:53:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698231200; x=1698836000;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lp/P/2ckLQAwz9y7c2Caj6foLZ4doNpN7qmvBqweg0I=;
+        b=LIOO24fVLKFzpCM2ctyAhaN1FBZ1m8VjU+6OurJUIM7PXi8NYgSKGd8PnpPxOVrOAq
+         w8G+mkWjpfyOBLur5buTF4xJnRL1/zhrTTSzlvFFryz/mm8z7R4sM8YdXQRk335QylUA
+         gNSFwZXGYR/nENjRzkUakCpUS+OwbjMNrFe7lIHpVS8WsXbE3W/4+KRPJyslxXoDbO7F
+         zgRIhE1fA7/4FqgnnfJNDSiKqFRO+XrY3yz+0HL/u2BILshcrwSedwJg/Gi3Lj13UkLK
+         KAgtfuC9UCI/Ya5DUl2KF4ePTj9svlcwzTTrXOL8UNk7RbOF7cw0Mjtn78j+v3p+deT/
+         SKlw==
+X-Gm-Message-State: AOJu0YxN4VzW1RddGtx1TK7KtoMRpOHDhDmvL6Iaz25+yOsRNMRZw5bd
+        iYSAgiZ2y9YVBkFdWxX4YsUgbq4v8yz29g==
+X-Google-Smtp-Source: AGHT+IFweTPsNeJDvPm/y9iUXYFCC770Yy09hearldogKxJnrRDDXMwHtQGx+talx+Nf0L2YhUxt5w==
+X-Received: by 2002:a05:690c:f05:b0:59b:f899:7bd6 with SMTP id dc5-20020a05690c0f0500b0059bf8997bd6mr17107179ywb.36.1698231199667;
+        Wed, 25 Oct 2023 03:53:19 -0700 (PDT)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id s124-20020a817782000000b00565271801b6sm4920951ywc.59.2023.10.25.03.53.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 03:53:18 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5a7c95b8d14so51752317b3.3;
+        Wed, 25 Oct 2023 03:53:18 -0700 (PDT)
+X-Received: by 2002:a0d:d752:0:b0:5a7:c01d:268 with SMTP id
+ z79-20020a0dd752000000b005a7c01d0268mr15876069ywd.18.1698231198298; Wed, 25
+ Oct 2023 03:53:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231020190629.338623-8-kartilak@cisco.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231009130126.697995596@linuxfoundation.org> <ZSRVgj5AqJbDXqZU@duo.ucw.cz>
+ <ZSRe78MAQwbBdyFP@duo.ucw.cz> <ZSUy+zA0+Chm6dFb@duo.ucw.cz>
+ <ZSU+GHl1q7T/TBp5@duo.ucw.cz> <ZSWg1fv3gOyV5t+h@shikoro> <2023101057-runny-pellet-8952@gregkh>
+ <ZTgZa1ic1iFbdaTM@duo.ucw.cz> <CAMuHMdXQApuOPfU1zNKcHKN5=fCuLBSDiLtF06U7e4Tx0+noyA@mail.gmail.com>
+In-Reply-To: <CAMuHMdXQApuOPfU1zNKcHKN5=fCuLBSDiLtF06U7e4Tx0+noyA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 25 Oct 2023 12:53:06 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVrdmBgopnPnJK_ij52wz2WVBdYRHur2KfosFnT945ULw@mail.gmail.com>
+Message-ID: <CAMuHMdVrdmBgopnPnJK_ij52wz2WVBdYRHur2KfosFnT945ULw@mail.gmail.com>
+Subject: Re: renesas_sdhi problems in 5.10-stable was Re: [PATCH 5.10 000/226]
+ 5.10.198-rc1 review
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        niklas.soderlund+renesas@ragnatech.se,
+        yoshihiro.shimoda.uh@renesas.com, geert+renesas@glider.be,
+        biju.das.jz@bp.renesas.com, Chris.Paterson2@renesas.com,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Karan,
+Hi Pavel,
 
-kernel test robot noticed the following build warnings:
+On Wed, Oct 25, 2023 at 12:47 PM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Tue, Oct 24, 2023 at 9:22 PM Pavel Machek <pavel@denx.de> wrote:
+> > > > > And testing failed. So
+> > > > >
+> > > > > commit f5799b4e142884c2e7aa99f813113af4a3395ffb
+> > > > > Author: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> > > > > Date:   Tue Nov 10 15:20:57 2020 +0100
+> > > > >
+> > > > >     mmc: renesas_sdhi: populate SCC pointer at the proper place
+> > > > >
+> > > > >     [ Upstream commit d14ac691bb6f6ebaa7eeec21ca04dd47300ff5b6 ]
+> > > > >
+> > > > > seems to be the buggy commit that breaks renesas boards in 5.10.
+> > > >
+> > > > This patch was part of a series. Did the other two patches come with it?
+> > > >
+> > > > b161d87dfd3d ("mmc: renesas_sdhi: probe into TMIO after SCC parameters have been setup")
+> > >
+> > > Yes.
+> > >
+> > > > 45bffc371fef ("mmc: renesas_sdhi: only reset SCC when its pointer is populated")
+> > >
+> > > No :(
+> > >
+> > > > If not, I could imagine that could lead to a crash. No idea why only
+> > > > with 5.10, though.
+> > >
+> > > The above commit is only in 5.11, so newer kernels should be fine.
+> > >
+> > > I'll go queue up the one missing patch now, thanks.
+> >
+> > Thank you. Patch indeed appears to be in 5.10.199.
+> >
+> > But we still have failures on Renesas with 5.10.199-rc2:
+> >
+> > https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/1047368849
+> >
+> > And they still happed during MMC init:
+> >
+> >     2.638013] renesas_sdhi_internal_dmac ee100000.mmc: Got CD GPIO
+> > [    2.638846] INFO: trying to register non-static key.
+> > [    2.644192] ledtrig-cpu: registered to indicate activity on CPUs
+> > [    2.649066] The code is fine but needs lockdep annotation, or maybe
+> > [    2.649069] you didn't initialize this object before use?
+> > [    2.649071] turning off the locking correctness validator.
+> > [    2.649080] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.199-rc2-arm64-renesas-ge31b6513c43d #1
+> > [    2.649082] Hardware name: HopeRun HiHope RZ/G2M with sub board (DT)
+> > [    2.649086] Call trace:
+> > [    2.655106] SMCCC: SOC_ID: ARCH_SOC_ID not implemented, skipping ....
+> > [    2.661354]  dump_backtrace+0x0/0x194
+> > [    2.661361]  show_stack+0x14/0x20
+> > [    2.667430] usbcore: registered new interface driver usbhid
+> > [    2.672230]  dump_stack+0xe8/0x130
+> > [    2.672238]  register_lock_class+0x480/0x514
+> > [    2.672244]  __lock_acquire+0x74/0x20ec
+> > [    2.681113] usbhid: USB HID core driver
+> > [    2.687450]  lock_acquire+0x218/0x350
+> > [    2.687456]  _raw_spin_lock+0x58/0x80
+> > [    2.687464]  tmio_mmc_irq+0x410/0x9ac
+> > [    2.688556] renesas_sdhi_internal_dmac ee160000.mmc: mmc0 base at 0x00000000ee160000, max clock rate 200 MHz
+> > [    2.744936]  __handle_irq_event_percpu+0xbc/0x340
+> > [    2.749635]  handle_irq_event+0x60/0x100
+> > [    2.753553]  handle_fasteoi_irq+0xa0/0x1ec
+> > [    2.757644]  __handle_domain_irq+0x7c/0xdc
+> > [    2.761736]  efi_header_end+0x4c/0xd0
+> > [    2.765393]  el1_irq+0xcc/0x180
+> > [    2.768530]  arch_cpu_idle+0x14/0x2c
+> > [    2.772100]  default_idle_call+0x58/0xe4
+> > [    2.776019]  do_idle+0x244/0x2c0
+> > [    2.779242]  cpu_startup_entry+0x20/0x6c
+> > [    2.783160]  rest_init+0x164/0x28c
+> > [    2.786561]  arch_call_rest_init+0xc/0x14
+> > [    2.790565]  start_kernel+0x4c4/0x4f8
+> > [    2.794233] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000014
+> > [    2.803011] Mem abort info:
+> >
+> > from https://lava.ciplatform.org/scheduler/job/1025535
+> > from
+> > https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/5360973735 .
+> >
+> > Is there something else missing?
+>
+> I don't have a HopeRun HiHope RZ/G2M, but both v5.10.198 and v5.10.199
+> seem to work fine on Salvator-XS with R-Car H3 ES2.0 and Salvator-X
+> with R-Car M3-W ES1.0, using a config based on latest renesas_defconfig.
 
-[auto build test WARNING on mkp-scsi/for-next]
-[also build test WARNING on jejb-scsi/for-next next-20231025]
-[cannot apply to linus/master v6.6-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Sorry, I looked at the wrong log on R-Car M3-W.
+I do see the issue with v5.10.198, but not with v5.10.199.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Karan-Tilak-Kumar/scsi-fnic-Modify-definitions-to-sync-with-VIC-firmware/20231021-031259
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git for-next
-patch link:    https://lore.kernel.org/r/20231020190629.338623-8-kartilak%40cisco.com
-patch subject: [PATCH 07/13] scsi: fnic: Modify ISRs to support multiqueue(MQ)
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231025/202310251847.4T8BVZAZ-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231025/202310251847.4T8BVZAZ-lkp@intel.com/reproduce)
+Gr{oetje,eeting}s,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310251847.4T8BVZAZ-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/scsi/fnic/fnic_isr.c:242:5: warning: no previous prototype for 'fnic_set_intr_mode_msix' [-Wmissing-prototypes]
-     242 | int fnic_set_intr_mode_msix(struct fnic *fnic)
-         |     ^~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/fnic_set_intr_mode_msix +242 drivers/scsi/fnic/fnic_isr.c
-
-   241	
- > 242	int fnic_set_intr_mode_msix(struct fnic *fnic)
-   243	{
-   244		unsigned int n = ARRAY_SIZE(fnic->rq);
-   245		unsigned int m = ARRAY_SIZE(fnic->wq);
-   246		unsigned int o = ARRAY_SIZE(fnic->hw_copy_wq);
-   247		unsigned int min_irqs = n + m + 1 + 1; /*rq, raw wq, wq, err*/
-   248	
-   249		/*
-   250		 * We need n RQs, m WQs, o Copy WQs, n+m+o CQs, and n+m+o+1 INTRs
-   251		 * (last INTR is used for WQ/RQ errors and notification area)
-   252		 */
-   253		FNIC_ISR_DBG(KERN_INFO, fnic->lport->host,
-   254			"fnic<%d>: %s: %d: rq-array size: %d wq-array size: %d copy-wq array size: %d\n",
-   255			fnic->fnic_num, __func__, __LINE__, n, m, o);
-   256		FNIC_ISR_DBG(KERN_INFO, fnic->lport->host,
-   257			"fnic<%d>: %s: %d: rq_count: %d raw_wq_count: %d wq_copy_count: %d cq_count: %d\n",
-   258			fnic->fnic_num, __func__, __LINE__, fnic->rq_count, fnic->raw_wq_count,
-   259			fnic->wq_copy_count, fnic->cq_count);
-   260	
-   261		if (fnic->rq_count <= n && fnic->raw_wq_count <= m &&
-   262			fnic->wq_copy_count <= o) {
-   263			int vec_count = 0;
-   264			int vecs = fnic->rq_count + fnic->raw_wq_count + fnic->wq_copy_count + 1;
-   265	
-   266			vec_count = pci_alloc_irq_vectors(fnic->pdev, min_irqs, vecs,
-   267						PCI_IRQ_MSIX | PCI_IRQ_AFFINITY);
-   268			FNIC_ISR_DBG(KERN_INFO, fnic->lport->host,
-   269						"fnic<%d>: %s: %d: allocated %d MSI-X vectors\n",
-   270						fnic->fnic_num, __func__, __LINE__, vec_count);
-   271	
-   272			if (vec_count > 0) {
-   273				if (vec_count < vecs) {
-   274					FNIC_ISR_DBG(KERN_ERR, fnic->lport->host,
-   275					"fnic<%d>: %s: %d: interrupts number mismatch: vec_count: %d vecs: %d\n",
-   276					fnic->fnic_num, __func__, __LINE__, vec_count, vecs);
-   277					if (vec_count < min_irqs) {
-   278						FNIC_ISR_DBG(KERN_ERR, fnic->lport->host,
-   279									"fnic<%d>: %s: %d: no interrupts for copy wq\n",
-   280									fnic->fnic_num, __func__, __LINE__);
-   281						return 1;
-   282					}
-   283				}
-   284	
-   285				fnic->rq_count = n;
-   286				fnic->raw_wq_count = m;
-   287				fnic->cpy_wq_base = fnic->rq_count + fnic->raw_wq_count;
-   288				fnic->wq_copy_count = vec_count - n - m - 1;
-   289				fnic->wq_count = fnic->raw_wq_count + fnic->wq_copy_count;
-   290				if (fnic->cq_count != vec_count - 1) {
-   291					FNIC_ISR_DBG(KERN_ERR, fnic->lport->host,
-   292					"fnic<%d>: %s: %d: CQ count: %d does not match MSI-X vector count: %d\n",
-   293					fnic->fnic_num, __func__, __LINE__, fnic->cq_count, vec_count);
-   294					fnic->cq_count = vec_count - 1;
-   295				}
-   296				fnic->intr_count = vec_count;
-   297				fnic->err_intr_offset = fnic->rq_count + fnic->wq_count;
-   298	
-   299				FNIC_ISR_DBG(KERN_INFO, fnic->lport->host,
-   300					"fnic<%d>: %s: %d: rq_count: %d raw_wq_count: %d cpy_wq_base: %d\n",
-   301					fnic->fnic_num, __func__, __LINE__, fnic->rq_count,
-   302					fnic->raw_wq_count, fnic->cpy_wq_base);
-   303	
-   304				FNIC_ISR_DBG(KERN_INFO, fnic->lport->host,
-   305					"fnic<%d>: %s: %d: wq_copy_count: %d wq_count: %d cq_count: %d\n",
-   306					fnic->fnic_num, __func__, __LINE__, fnic->wq_copy_count,
-   307					fnic->wq_count, fnic->cq_count);
-   308	
-   309				FNIC_ISR_DBG(KERN_INFO, fnic->lport->host,
-   310					"fnic<%d>: %s: %d: intr_count: %d err_intr_offset: %u",
-   311					fnic->fnic_num, __func__, __LINE__, fnic->intr_count,
-   312					fnic->err_intr_offset);
-   313	
-   314				vnic_dev_set_intr_mode(fnic->vdev, VNIC_DEV_INTR_MODE_MSIX);
-   315				FNIC_ISR_DBG(KERN_INFO, fnic->lport->host,
-   316						"fnic<%d>: %s: %d: fnic using MSI-X\n", fnic->fnic_num,
-   317						__func__, __LINE__);
-   318				return 0;
-   319			}
-   320		}
-   321		return 1;
-   322	} //fnic_set_intr_mode_msix
-   323	
+                        Geert
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
