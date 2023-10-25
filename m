@@ -2,91 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9736E7D60D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 06:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED03C7D60DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 06:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbjJYEXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 00:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
+        id S231553AbjJYE0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 00:26:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbjJYEXr (ORCPT
+        with ESMTP id S231984AbjJYE0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 00:23:47 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B35229F;
-        Tue, 24 Oct 2023 21:23:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698207824;
-        bh=Nzk79lMPx1nolPvm6LlGPmfa8Zxn4EI8caIB70tC7Yk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sOtQ3v0sGqdeVbEGtT/WoTHLhZbaVtuDvqoWWUAZYde7Uxgi6SvtP6MbMNC7Cr3YM
-         g+H7OWjPunVWtsWws6mJrfPnahBQ1Y4UEWJ75hkqnHLaok4x6rEE3GXLRV+d+QO8nE
-         6WFLnu/jtpSomy3Z3yqnCI4n/1ACQ+KXnN89cn2QnlqiTUQ207adhwoqJnM4iEnU7m
-         na/qimFUAsswonzbiMFjqPpwoodJTy50zbnwNf7vYEf3ch7i05p2uuhiAcI9fMO0Jl
-         rrakig2bJ6qdO8yaih863QZ4AKRiN5+cfnxrak5HdBWjDfHHlSdq0q81xzkPil1TfC
-         tyRLrhJ/B94UQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SFbQl4SyRz4wd2;
-        Wed, 25 Oct 2023 15:23:43 +1100 (AEDT)
-Date:   Wed, 25 Oct 2023 15:23:42 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the nvmem tree
-Message-ID: <20231025152342.4be7be25@canb.auug.org.au>
+        Wed, 25 Oct 2023 00:26:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1901134;
+        Tue, 24 Oct 2023 21:26:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698207988; x=1729743988;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1zdjDP3Z0zigG3iX/C6RuVgtRdw2cSJlDEcn/F65EtA=;
+  b=D9pp20sD6t2AB975mzbaA0hpYc5O6ITZUcH8NNDt9MzPAk66Ffuv6zfd
+   K8jQnmfMI6gQixaGfTZZTHKcibvlMLbv57dQXpodFvOTVIkY+t7Cga3vD
+   EzjuqVLWi7FYgWn0HnC7npZnZn3nMZ0ZOsWjsMBkr0iYKNcBxGjNe+w/p
+   wdaVRBnOltxzt6kw5cWCVBNmYlf7pbUT66Rpi55Lm70dPWAKmjjQEZjDK
+   MTrczSX2PPPlZeAZ7S+BqP3pzvYrFKxX1HfTHLSXWem6XrOttHh1mjtB8
+   IQsJsQs3fMGj/ZSZtz9/wSkk8RlOV6BokVObCvTnRkmo0orB4aA9c9cUx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="451459479"
+X-IronPort-AV: E=Sophos;i="6.03,249,1694761200"; 
+   d="scan'208";a="451459479"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 21:26:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="932243175"
+X-IronPort-AV: E=Sophos;i="6.03,249,1694761200"; 
+   d="scan'208";a="932243175"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orsmga005.jf.intel.com with ESMTP; 24 Oct 2023 21:26:25 -0700
+Date:   Wed, 25 Oct 2023 12:25:11 +0800
+From:   Xu Yilun <yilun.xu@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        David Matlack <dmatlack@google.com>
+Subject: Re: [PATCH 2/3] KVM: Always flush async #PF workqueue when vCPU is
+ being destroyed
+Message-ID: <ZTiYp8nMGImoWzBZ@yilunxu-OptiPlex-7050>
+References: <20231018204624.1905300-1-seanjc@google.com>
+ <20231018204624.1905300-3-seanjc@google.com>
+ <ZTd+i2I5n0NyzuuT@yilunxu-OptiPlex-7050>
+ <ZTfnhEocglG1AsO8@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/MsMgbuzlUSqTLVSxTKyhFq=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTfnhEocglG1AsO8@google.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/MsMgbuzlUSqTLVSxTKyhFq=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Oct 24, 2023 at 08:49:24AM -0700, Sean Christopherson wrote:
+> On Tue, Oct 24, 2023, Xu Yilun wrote:
+> > On Wed, Oct 18, 2023 at 01:46:23PM -0700, Sean Christopherson wrote:
+> > > @@ -126,7 +124,19 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
+> > >  			list_first_entry(&vcpu->async_pf.done,
+> > >  					 typeof(*work), link);
+> > >  		list_del(&work->link);
+> > > +
+> > > +		spin_unlock(&vcpu->async_pf.lock);
+> > > +
+> > > +		/*
+> > > +		 * The async #PF is "done", but KVM must wait for the work item
+> > > +		 * itself, i.e. async_pf_execute(), to run to completion.  If
+> > > +		 * KVM is a module, KVM must ensure *no* code owned by the KVM
+> > > +		 * (the module) can be run after the last call to module_put(),
+> > > +		 * i.e. after the last reference to the last vCPU's file is put.
+> > > +		 */
+> > > +		flush_work(&work->work);
+> > 
+> > I see the flush_work() is inside the check:
+> > 
+> >   while (!list_empty(&vcpu->async_pf.done))
+> > 
+> > Is it possible all async_pf are already completed but the work item,
+> > i.e. async_pf_execute, is not completed before this check? That the
+> > work is scheduled out after kvm_arch_async_page_present_queued() and
+> > all APF_READY requests have been handled. In this case the work
+> > synchronization will be skipped...
+> 
+> Good gravy.  Yes, I assumed KVM wouldn't be so crazy to delete the work before it
+> completed, but I obviously didn't see this comment in async_pf_execute():
+> 
+> 	/*
+> 	 * apf may be freed by kvm_check_async_pf_completion() after
+> 	 * this point
+> 	 */
+> 
+> The most straightforward fix I see is to also flush the work in
+> kvm_check_async_pf_completion(), and then delete the comment.  The downside is
+> that there's a small chance a vCPU could be delayed waiting for the work to
+> complete, but that's a very, very small chance, and likely a very small delay.
+> kvm_arch_async_page_present_queued() unconditionaly makes a new request, i.e. will
+> effectively delay entering the guest, so the remaining work is really just:
+> 
+>  	trace_kvm_async_pf_completed(addr, cr2_or_gpa);
+> 
+> 	__kvm_vcpu_wake_up(vcpu);
+> 
+> 	mmput(mm);
+> 
+> Since mmput() can't drop the last reference to the page tables if the vCPU is
+> still alive.
 
-Hi all,
+OK, seems the impact is minor. I'm good to it.
 
-The following commits are also in the char-misc tree as different
-commits (but the same patches):
+Thanks,
+Yilun
 
-  24bd074c417b ("nvmem: Use device_get_match_data()")
-  8beb2ec54b65 ("dt-bindings: nvmem: u-boot,env: Add missing additionalProp=
-erties on child node schemas")
-  6d25308bb9de ("dt-bindings: nvmem: move deprecated cells binding to its o=
-wn file")
-  ee73a9fae540 ("nvmem: add explicit config option to read old syntax fixed=
- OF cells")
-  c52b640214d7 ("nvmem: qfprom: Mark core clk as optional")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/MsMgbuzlUSqTLVSxTKyhFq=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU4mE4ACgkQAVBC80lX
-0GzsMwgAnnjDGbn6fyZorZMepTlmfvQdaGyd4C5jQXVwzqko8yeKS/EKC/Kuj4Jy
-kMLTbQIKfM6aBaa79HAFY/yPXpmTQbImsJ2u29KjAQQjEmveAGmID2dX7Ociby6j
-gPaykJQFbOVRHTUp54GW4cNWK//mTznv1Kp5JFRWQONWpsCnDyPOgTwU1Sgt9DfR
-ky6XLVV0Tt2FrXtIfhJCzzSn9V8VOccSzC43rqeM6aoik6CbPH6SwXNLFopI/q7I
-R2mIClp8MCwOz1RkASyZZtkTUJQvUcfUzKqRAeahVls4Dfvws3w/h/OaIbY0B62c
-FGpGTWU7lYouMnyixRgX2G9d7zDoTw==
-=v1+p
------END PGP SIGNATURE-----
-
---Sig_/MsMgbuzlUSqTLVSxTKyhFq=--
+> 
+> I think I'll spin off the async #PF fix to a separate series.  There's are other
+> tangetially related cleanups that can be done, e.g. there's no reason to pin the
+> page tables while work is queued, async_pf_execute() can do mmget_not_zero() and
+> then bail if the process is dying.  Then there's no need to do mmput() when
+> canceling work.
