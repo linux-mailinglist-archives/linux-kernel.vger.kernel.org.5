@@ -2,62 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B927D77B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 00:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2917D77B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 00:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbjJYWSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 18:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59116 "EHLO
+        id S229709AbjJYWV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 18:21:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjJYWSk (ORCPT
+        with ESMTP id S229583AbjJYWV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 18:18:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C99183
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 15:18:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62861C433C8;
-        Wed, 25 Oct 2023 22:18:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698272315;
-        bh=7wceXJu0kfijNOlBso72VednjzjibjvHan7ExujoI/w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DWmVxAWREBOhru7p4LdfDFUEzEY6ZYaeaV757ksoVIEBozJ+Kv1pg8R+b1CwIlnux
-         jaLSj+BcoG5IN4SeI0Yj/YrIjgFAD6I/XkPirB2C98pNbPcGD3yQHmGNDgxEp/iRuJ
-         3TKCiJeAf8hwCPlNLrhZ2rXSc4LzaFFlqRzIjTpalm8V2YbjNFGBQV0wK0BNaqiNZU
-         XOy9gnDK7HGyUDDyCYELCOT9/Ie3shC8KjdVwSaXyJGvW+mHkqFO4R8Rnbwl+g6eds
-         /iuUbmRTNosvWBL1FjQpWBwKRb7OBrnebv7zl08/Eyu/wpM3CDhnPuz6QW+sEneCxq
-         6IrG4B45UCHyA==
-Date:   Wed, 25 Oct 2023 15:18:34 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Radu Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     sd@queasysnail.net, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, richardcochran@gmail.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        sebastian.tobuschat@oss.nxp.com
-Subject: Re: [PATCH net-next v8 0/7] Add MACsec support for TJA11XX C45 PHYs
-Message-ID: <20231025151834.7e114208@kernel.org>
-In-Reply-To: <5d7021cd-71b1-4786-9beb-1a4fe084945c@oss.nxp.com>
-References: <20231023094327.565297-1-radu-nicolae.pirea@oss.nxp.com>
-        <5d7021cd-71b1-4786-9beb-1a4fe084945c@oss.nxp.com>
+        Wed, 25 Oct 2023 18:21:26 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283C8137;
+        Wed, 25 Oct 2023 15:21:24 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PMBhSt011435;
+        Wed, 25 Oct 2023 22:21:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=frd7X+b4+QqkmgA1UT/vTe4tnMvePCr2JwVMf31XUok=;
+ b=cB2uTwODOxmgZw2DZwdojT2lNNCRSV0zPqLb+HosHK6D8TFu+wRUS1DNdoT5rp12CTyw
+ 5DZMmjdHJuuSd0Uei4Ju8G0kdzu/xo7FPgXum35ShQUw0lVgP1uXtzwsXPZ6g8QLPIDY
+ ftb4LRgtNflP10HpNiA8LZM+W6gXE9+pHXMR8vioMDxQiVR0qYDh+XDGemc6GdqMeBgr
+ sELUtxbFcwV14eqtUfzhd4vYX5Zp17lULDOnwQtTb++cu7gtQcboMK1bw9riVor6UmcB
+ AFLlZqA8brzKgaRisniAJAa4cZTyHX5/QCcr7Qe50+zErpeUwWJJsK0+HhO2FjoPOvvv Pg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ty5wdrub5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 22:21:17 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39PMLHRk012370
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 22:21:17 GMT
+Received: from [10.110.113.199] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 25 Oct
+ 2023 15:21:16 -0700
+Message-ID: <c7fc7bc2-1a84-e6b5-5198-1b8cc602d738@quicinc.com>
+Date:   Wed, 25 Oct 2023 15:21:15 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v4 3/3] usb: dwc3: Modify runtime pm ops to handle bus
+ suspend
+Content-Language: en-US
+To:     Roger Quadros <rogerq@kernel.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
+References: <20230814185043.9252-1-quic_eserrao@quicinc.com>
+ <20230814185043.9252-4-quic_eserrao@quicinc.com>
+ <9be9fae5-f6f2-42fe-bd81-78ab50aafa06@kernel.org>
+ <cd294a89-33e7-0569-81b3-df77a255f061@quicinc.com>
+ <0dee3bec-d49f-4808-a2f8-7a4205303e1f@kernel.org>
+From:   Elson Serrao <quic_eserrao@quicinc.com>
+In-Reply-To: <0dee3bec-d49f-4808-a2f8-7a4205303e1f@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Mf4O9_ePsbzvPaMKt_MargIae0JXDtBK
+X-Proofpoint-ORIG-GUID: Mf4O9_ePsbzvPaMKt_MargIae0JXDtBK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_12,2023-10-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 clxscore=1015 spamscore=0 mlxscore=0 bulkscore=0
+ impostorscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310170001 definitions=main-2310250192
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Oct 2023 19:21:24 +0300 Radu Pirea (OSS) wrote:
-> The state of this patch series was set to "Changes Requested", but no 
-> change was requested in V8 and I addressed the changes requested in V7. 
-> Am I missing something or is it a mistake?
 
-Another series got silently discarded because of a conflict.
-This one IDK. Everything looks fine. So let me bring it back, sorry.
--- 
-pw-bot: under-review
+
+On 10/25/2023 1:02 AM, Roger Quadros wrote:
+> 
+> 
+> On 24/10/2023 21:41, Elson Serrao wrote:
+>>
+>>
+>> On 10/24/2023 3:14 AM, Roger Quadros wrote:
+>>> Hi Elson,
+>>>
+>>> On 14/08/2023 21:50, Elson Roy Serrao wrote:
+>>>> The current implementation blocks the runtime pm operations when cable
+>>>> is connected. This would block dwc3 to enter a low power state during
+>>>> bus suspend scenario. Modify the runtime pm ops to handle bus suspend
+>>>> case for such platforms where the controller low power mode entry/exit
+>>>> is handled by the glue driver. This enablement is controlled through a
+>>>> dt property and platforms capable of detecting bus resume can benefit
+>>>> from this feature. Also modify the remote wakeup operations to trigger
+>>>> runtime resume before sending wakeup signal.
+>>>>
+>>>> Signed-off-by: Elson Roy Serrao <quic_eserrao@quicinc.com>
+>>>> ---
+>>>>    drivers/usb/dwc3/core.c   | 28 ++++++++++++++++++++++++++--
+>>>>    drivers/usb/dwc3/core.h   |  3 +++
+>>>>    drivers/usb/dwc3/gadget.c | 32 +++++++++++++++++++++++++-------
+>>>>    3 files changed, 54 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+>>>> index 9c6bf054f15d..9bfd9bb18caf 100644
+>>>> --- a/drivers/usb/dwc3/core.c
+>>>> +++ b/drivers/usb/dwc3/core.c
+>>>> @@ -1518,6 +1518,9 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>>>>        dwc->dis_split_quirk = device_property_read_bool(dev,
+>>>>                    "snps,dis-split-quirk");
+>>>>    +    dwc->runtime_suspend_on_usb_suspend = device_property_read_bool(dev,
+>>>> +                "snps,runtime-suspend-on-usb-suspend");
+>>>> +
+>>>>        dwc->lpm_nyet_threshold = lpm_nyet_threshold;
+>>>>        dwc->tx_de_emphasis = tx_de_emphasis;
+>>>>    @@ -2029,6 +2032,9 @@ static int dwc3_resume_common(struct dwc3 *dwc, pm_message_t msg)
+>>>>          switch (dwc->current_dr_role) {
+>>>>        case DWC3_GCTL_PRTCAP_DEVICE:
+>>>> +        /* runtime resume on bus resume scenario */
+>>>> +        if (PMSG_IS_AUTO(msg) && dwc->connected)
+>>>> +            break;
+>>>>            ret = dwc3_core_init_for_resume(dwc);
+>>>>            if (ret)
+>>>>                return ret;
+>>>> @@ -2090,8 +2096,13 @@ static int dwc3_runtime_checks(struct dwc3 *dwc)
+>>>>    {
+>>>>        switch (dwc->current_dr_role) {
+>>>>        case DWC3_GCTL_PRTCAP_DEVICE:
+>>>> -        if (dwc->connected)
+>>>> +        if (dwc->connected) {
+>>>> +            /* bus suspend scenario */
+>>>> +            if (dwc->runtime_suspend_on_usb_suspend &&
+>>>> +                dwc->suspended)
+>>>
+>>> If dwc is already suspended why do we return -EBUSY?
+>>> Should this be !dwc->suspended?
+>>>
+>>
+>> Hi Roger
+>>
+>> Thank you for reviewing.
+>> If dwc->suspended is true (i.e suspend event due to U3/L2 is received), I am actually breaking from this switch statement and returning 0.
+> 
+> Of course. I missed the break :)
+> 
+>>
+>>>> +                break;
+>>>>                return -EBUSY;
+>>>> +        }
+>>>>            break;
+>>>>        case DWC3_GCTL_PRTCAP_HOST:
+>>>>        default:
+>>>> @@ -2107,9 +2118,22 @@ static int dwc3_runtime_suspend(struct device *dev)
+>>>>        struct dwc3     *dwc = dev_get_drvdata(dev);
+>>>>        int        ret;
+>>>>    -    if (dwc3_runtime_checks(dwc))
+>>>> +    ret = dwc3_runtime_checks(dwc);
+>>>> +    if (ret)
+>>>>            return -EBUSY;
+>>>>    +    switch (dwc->current_dr_role) {
+>>>> +    case DWC3_GCTL_PRTCAP_DEVICE:
+>>>> +        /* bus suspend case */
+>>>> +        if (!ret && dwc->connected)
+>>>
+>>> No need to check !ret again as it will never happen because
+>>> we are returning -EBUSY earlier if (ret);
+>>>
+>> Thanks for this catch. I will remove !ret check in v5.
+>>
+>>>> +            return 0;
+>>>> +        break;
+>>>> +    case DWC3_GCTL_PRTCAP_HOST:
+>>>> +    default:
+>>>> +        /* do nothing */
+>>>> +        break;
+>>>> +    }
+>>>> +
+>>>
+>>> While this takes care of runtime suspend case, what about system_suspend?
+>>> Should this check be moved to dwc3_suspend_common() instead?
+>>>
+>>
+>> Sure I can move these checks to dwc3_suspend_common to make it generic.
+> 
+> Before you do that let's first decide how we want the gadget driver to behave
+> in system_suspend case.
+> 
+> Current behavior is to Disconnect from the Host.
+> 
+> Earlier I was thinking on the lines that we prevent system suspend if
+> we are not already in USB suspend. But I'm not sure if that is the right
+> thing to do anymore. Mainly because, system suspend is a result of user
+> request and it may not be nice to not to meet his/her request.
+
+Agree. Irrespective of whether USB is suspended or not it is better to 
+honor the system suspend request from user.
+
+> Maybe best to leave this policy handling to user space?
+> i.e. if user wants USB gadget operation to be alive, he will not issue
+> system suspend?
+> 
+
+Sure. So below two cases
+
+Case1: User doesn't care if gadget operation is alive and triggers 
+system suspend irrespective of USB suspend. Like you mentioned, current 
+behavior already takes care of this and initiates a DISCONNECT
+
+Case2:  User wants gadget to stay alive and hence can trigger system 
+suspend only when USB is suspended (there are already user space hooks 
+that read cdev->suspended bit to tell whether USB is suspended or not 
+for user to decide). Attempts to request system suspend when USB is not 
+suspended, would result in a DISCONNECT.
+
+For supporting Case2 from gadget driver point of view, we need to extend 
+this series by having relevant checks in suspend_common()
+
+Also, is it better to provide separate flags to control the gadget 
+driver behavior for runtime suspend Vs system suspend when USB is 
+suspended ? For example, what if we want to enable bus suspend handling 
+for runtime suspend only and not for system suspend (Case1).
+
+Thanks
+Elson
+
+
+
+> 
+>> Will rename this patch to "Modify pm ops to handle bus suspend" since this is now not limited to only runtime suspend/resume. Will also rename dwc->runtime_suspend_on_usb_suspend to dwc->delegate_wakeup_interrupt based on earlier feedback.
+>>
+>> I am still working on a clean way to enable/disable this feature (i.e set dwc->delegate_wakeup_interrupt flag) from the glue driver based on Thinh's feedback .
+>> I will accommodate above feedback as well and upload v5.
+>>
+>> Thanks
+>> Elson
+> 
