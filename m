@@ -2,184 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9257D732A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D8A7D7336
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 20:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbjJYSZ7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 14:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33986 "EHLO
+        id S232363AbjJYS0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 14:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjJYSZ6 (ORCPT
+        with ESMTP id S229598AbjJYS0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 14:25:58 -0400
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4030AB;
-        Wed, 25 Oct 2023 11:25:55 -0700 (PDT)
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so84461a12.1;
-        Wed, 25 Oct 2023 11:25:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698258355; x=1698863155;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WJAKpnqddCDWndjCGlgQHJV2XSPFHdKSadNoAg1lWyE=;
-        b=Tu2uzjQST82b/x5Uo0QC1cwz3vfcxo8UYq96MU3AIf2YlCOZ/qpXoFXPHQzcHzZP/z
-         yTrj1YqnDTQ0PLceNVqKmVyuDYxwuHyC0XZECnrNTyxaw8TzPCllo40JUlY26DIlIYYc
-         uA/9Ja61pyKt/EIo53yqTL2d2tqUpPkGZp/hB3c+iMSdLTf8LkjQAGR5FtNWCcoRIhoM
-         pHtm5y2mxEZSJWymc6cCPrJX9jEq17Fdxyjw4f4I6f6Duwz9wCGPyi0uyDudG8a5QdVF
-         7JxIEI/+hdY43KFVGczpCJ6bytxpR+etZ/jc3YrmBPVaE4rvR4/yPC0vq/DEOfRKrBod
-         Uitw==
-X-Gm-Message-State: AOJu0YzQlubwt9uBA2XWLXpmJTFuBGSLZZHZ6guPAtM1HRP7B7+Cl747
-        uIHCtzhgOELFcartdW7P3MEZUysVAq1EK32qv6c=
-X-Google-Smtp-Source: AGHT+IHJl9pymaNhSNcYRv2DAsEDNddUbZBvz07Ph18QQz0O8YZ8KSpy04NUH9oEykuBhOmrJGaOQVsN53Qct+5CCzQ=
-X-Received: by 2002:a17:90b:f10:b0:27d:12e1:7e20 with SMTP id
- br16-20020a17090b0f1000b0027d12e17e20mr15200810pjb.12.1698258355242; Wed, 25
- Oct 2023 11:25:55 -0700 (PDT)
+        Wed, 25 Oct 2023 14:26:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9B1E5
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 11:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698258365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jBilnSzSQmWzzYAbkn8SOYsuYBp/vvr53lwEvJHaCik=;
+        b=iA/AmhPBujtgVa6ciDxbdv3lw5d9oIL1a/aMQL/h7jAVRckXzAMtaWXuLdKCti+6sWok/K
+        InFzadj5VkW2JCM35EkaoJpPnGIP+Xxd6bMBTD8sw+BetPTzVqrYUFC7kE61tZuKrbv/xl
+        Bg1LsbQNCnkXGvujcXV/Iv6iReGRbMA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-591-BoSsxMLzNvOV2ZntGf3G_Q-1; Wed, 25 Oct 2023 14:26:02 -0400
+X-MC-Unique: BoSsxMLzNvOV2ZntGf3G_Q-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7AFCF857CE9;
+        Wed, 25 Oct 2023 18:26:01 +0000 (UTC)
+Received: from llong.com (unknown [10.22.32.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 68D32492BFC;
+        Wed, 25 Oct 2023 18:26:00 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Peter Hunt <pehunt@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v2 0/4] cgroup/cpuset: Improve CPU isolation in isolated partitions
+Date:   Wed, 25 Oct 2023 14:25:51 -0400
+Message-Id: <20231025182555.4155614-1-longman@redhat.com>
 MIME-Version: 1.0
-References: <20231024222353.3024098-1-irogers@google.com> <20231024222353.3024098-13-irogers@google.com>
-In-Reply-To: <20231024222353.3024098-13-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 25 Oct 2023 11:25:44 -0700
-Message-ID: <CAM9d7cjsnEQ5Ns45HbFfDbOtFerAhFnzasyRP2Qow-=vOAJTwQ@mail.gmail.com>
-Subject: Re: [PATCH v3 12/50] perf record: Lazy load kernel symbols
-To:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-        Song Liu <song@kernel.org>,
-        Sandipan Das <sandipan.das@amd.com>,
-        James Clark <james.clark@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+v2:
+ - Add 2 read-only workqueue sysfs files to expose the user requested
+   cpumask as well as the isolated CPUs to be excluded from
+   wq_unbound_cpumask.
+ - Ensure that caller of the new workqueue_unbound_exclude_cpumask()
+   hold cpus_read_lock.
+ - Update the cpuset code to make sure the cpus_read_lock is held
+   whenever workqueue_unbound_exclude_cpumask() may be called.
 
-On Tue, Oct 24, 2023 at 3:24 PM Ian Rogers <irogers@google.com> wrote:
->
-> Commit 5b7ba82a7591 ("perf symbols: Load kernel maps before using")
-> changed it so that loading a kernel dso would cause the symbols for
-> the dso to be eagerly loaded. For perf record this is overhead as the
-> symbols won't be used. Add a symbol_conf to control the behavior and
-> disable it for perf record and perf inject.
+Isolated cpuset partition can currently be created to contain an
+exclusive set of CPUs not used in other cgroups and with load balancing
+disabled to reduce interference from the scheduler.
 
-I'm curious if it can simply move to lazy loading unconditionally.
-In most cases, the code calls machine__resolve() which calls
-thread__find_map() and map__find_symbol() to load symbols.
+The main purpose of this isolated partition type is to dynamically
+emulate what can be done via the "isolcpus" boot command line option,
+specifically the default domain flag. One effect of the "isolcpus" option
+is to remove the isolated CPUs from the cpumasks of unbound workqueues
+since running work functions in an isolated CPU can be a major source
+of interference. Changing the unbound workqueue cpumasks can be done at
+run time by writing an appropriate cpumask without the isolated CPUs to
+/sys/devices/virtual/workqueue/cpumask. So one can set up an isolated
+cpuset partition and then write to the cpumask sysfs file to achieve
+similar level of CPU isolation. However, this manual process can be
+error prone.
 
-So I think it's unnecessary to do it in the thread__find_map().
-If it needs a symbol, it should call map__find_symbol() first
-and it'll load the symbol table.
+This patch series implements automatic exclusion of isolated CPUs from
+unbound workqueue cpumasks when an isolated cpuset partition is created
+and then adds those CPUs back when the isolated partition is destroyed.
 
-Adrian, what's special in inject or Intel-PT on this?
+There are also other places in the kernel that look at the HK_FLAG_DOMAIN
+cpumask or other HK_FLAG_* cpumasks and exclude the isolated CPUs from
+certain actions to further reduce interference. CPUs in an isolated
+cpuset partition will not be able to avoid those interferences yet. That
+may change in the future as the need arises.
 
-Thanks,
-Namhyung
+Waiman Long (4):
+  workqueue: Add workqueue_unbound_exclude_cpumask() to exclude CPUs
+    from wq_unbound_cpumask
+  selftests/cgroup: Minor code cleanup and reorganization of
+    test_cpuset_prs.sh
+  cgroup/cpuset: Keep track of CPUs in isolated partitions
+  cgroup/cpuset: Take isolated CPUs out of workqueue unbound cpumask
 
+ Documentation/admin-guide/cgroup-v2.rst       |  10 +-
+ include/linux/workqueue.h                     |   2 +-
+ kernel/cgroup/cpuset.c                        | 286 +++++++++++++-----
+ kernel/workqueue.c                            |  91 +++++-
+ .../selftests/cgroup/test_cpuset_prs.sh       | 216 ++++++++-----
+ 5 files changed, 438 insertions(+), 167 deletions(-)
 
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-inject.c   | 6 ++++++
->  tools/perf/builtin-record.c   | 2 ++
->  tools/perf/util/event.c       | 4 ++--
->  tools/perf/util/symbol_conf.h | 3 ++-
->  4 files changed, 12 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index c8cf2fdd9cff..eb3ef5c24b66 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -2265,6 +2265,12 @@ int cmd_inject(int argc, const char **argv)
->                 "perf inject [<options>]",
->                 NULL
->         };
-> +
-> +       if (!inject.itrace_synth_opts.set) {
-> +               /* Disable eager loading of kernel symbols that adds overhead to perf inject. */
-> +               symbol_conf.lazy_load_kernel_maps = true;
-> +       }
-> +
->  #ifndef HAVE_JITDUMP
->         set_option_nobuild(options, 'j', "jit", "NO_LIBELF=1", true);
->  #endif
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index dcf288a4fb9a..8ec818568662 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -3989,6 +3989,8 @@ int cmd_record(int argc, const char **argv)
->  # undef set_nobuild
->  #endif
->
-> +       /* Disable eager loading of kernel symbols that adds overhead to perf record. */
-> +       symbol_conf.lazy_load_kernel_maps = true;
->         rec->opts.affinity = PERF_AFFINITY_SYS;
->
->         rec->evlist = evlist__new();
-> diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
-> index 923c0fb15122..68f45e9e63b6 100644
-> --- a/tools/perf/util/event.c
-> +++ b/tools/perf/util/event.c
-> @@ -617,13 +617,13 @@ struct map *thread__find_map(struct thread *thread, u8 cpumode, u64 addr,
->         if (cpumode == PERF_RECORD_MISC_KERNEL && perf_host) {
->                 al->level = 'k';
->                 maps = machine__kernel_maps(machine);
-> -               load_map = true;
-> +               load_map = !symbol_conf.lazy_load_kernel_maps;
->         } else if (cpumode == PERF_RECORD_MISC_USER && perf_host) {
->                 al->level = '.';
->         } else if (cpumode == PERF_RECORD_MISC_GUEST_KERNEL && perf_guest) {
->                 al->level = 'g';
->                 maps = machine__kernel_maps(machine);
-> -               load_map = true;
-> +               load_map = !symbol_conf.lazy_load_kernel_maps;
->         } else if (cpumode == PERF_RECORD_MISC_GUEST_USER && perf_guest) {
->                 al->level = 'u';
->         } else {
-> diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
-> index 0b589570d1d0..2b2fb9e224b0 100644
-> --- a/tools/perf/util/symbol_conf.h
-> +++ b/tools/perf/util/symbol_conf.h
-> @@ -42,7 +42,8 @@ struct symbol_conf {
->                         inline_name,
->                         disable_add2line_warn,
->                         buildid_mmap2,
-> -                       guest_code;
-> +                       guest_code,
-> +                       lazy_load_kernel_maps;
->         const char      *vmlinux_name,
->                         *kallsyms_name,
->                         *source_prefix,
-> --
-> 2.42.0.758.gaed0368e0e-goog
->
+-- 
+2.39.3
+
