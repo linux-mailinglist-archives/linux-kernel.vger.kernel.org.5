@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2087D6F24
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBC27D6F6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344429AbjJYOf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
+        id S235015AbjJYOjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234863AbjJYOf0 (ORCPT
+        with ESMTP id S234548AbjJYOjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:35:26 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A068137;
-        Wed, 25 Oct 2023 07:35:21 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9adca291f99so850289866b.2;
-        Wed, 25 Oct 2023 07:35:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698244520; x=1698849320; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wa2G+lxO+loR/ZXT0iDtzSScXiPVh25VRSHqQvCFhZA=;
-        b=f0Spdrci34wXz5639Gl8cg+bcFP6JqSbWh5EyzPZZ6oIjIdRKW6aWhZ6Yfi1R7kS39
-         sYBc7DUuejjFgxq3qcJ55i74ihpFU99pTsN83/bLqjwJZa22wrQjN9A5PqEHiYMpNj1r
-         sAMWJTm5po9zU5MlJ+28XT9kZYpe/jBP/WWWavR6Vya3ErPtRR58IJvtMNddSy++EDR5
-         bKlkUuld07/cqgDUXQRjEqt6OeyAuSFkuFgtS4ZmN+KlXALwYZwBQNOwySL09prsVurj
-         cBkaO+w/kCSfYBPyWg3PzlfXeYxQt1PYcYWxSkevLXPPvT9Jh7HCOhVlk0z4J1YfPNko
-         7Aag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698244520; x=1698849320;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wa2G+lxO+loR/ZXT0iDtzSScXiPVh25VRSHqQvCFhZA=;
-        b=o6A+H3D79zhFh5Z5pdnFPP/Uhk41Icp3UDWK38kTcP87f9u9d8V6CGImHaUibrcOtx
-         CRU71vteEsuKaC79HkbrTEyxu0gX5Gr4qyz9vOVbOCk8DjS+mKFOSt2lTMruqlK1PIvp
-         GHji7YhyzkpTcksFCFgNjf+0Qcu8D6iLznVp7xOfVvAJEVPktQb21z11b1rp9pOeGw8W
-         Bosqc82ddTbvbpa5cUgoJ156G7O7mlY/Ut4kvVpMQe/YRVQaUQYpiKZvtqfJi2XOZYqo
-         PuJVS9j1uhcscX2P+oxxGQxZmy3XBkn/nmLnC9bAS2t4gjO+/Pl1uyxqCIXIGe2zvvkq
-         9ONQ==
-X-Gm-Message-State: AOJu0Yz614E6bvNOfB4haghEbKTTzjJnLLPO+cTnrQ/WULHs9bMcrfEp
-        nXMHNc4Q0h0/59OioeblldM=
-X-Google-Smtp-Source: AGHT+IEJqDsloM/YroQyh74Z7dfLKajJ+dw1JlaYJw2anzB5FtuM1hIRt2JDymqT07lazEOdUQv3Fg==
-X-Received: by 2002:a17:906:9fc1:b0:9b2:b15b:383f with SMTP id hj1-20020a1709069fc100b009b2b15b383fmr13571020ejc.43.1698244519276;
-        Wed, 25 Oct 2023 07:35:19 -0700 (PDT)
-Received: from ?IPv6:2003:f6:ef1b:2000:4423:d503:bf11:e8c6? (p200300f6ef1b20004423d503bf11e8c6.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:4423:d503:bf11:e8c6])
-        by smtp.gmail.com with ESMTPSA id vg18-20020a170907d31200b009adc77fe164sm10005667ejc.66.2023.10.25.07.35.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 07:35:18 -0700 (PDT)
-Message-ID: <d914069815f76245ef91b6b7b0c6b382b054b562.camel@gmail.com>
-Subject: Re: [PATCH v2 2/2] iio: adc: adding support for pac193x
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     marius.cristea@microchip.com, jic23@kernel.org, lars@metafoo.de,
-        robh+dt@kernel.org
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 25 Oct 2023 16:38:10 +0200
-In-Reply-To: <20231025134404.131485-3-marius.cristea@microchip.com>
-References: <20231025134404.131485-1-marius.cristea@microchip.com>
-         <20231025134404.131485-3-marius.cristea@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+        Wed, 25 Oct 2023 10:39:15 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B10293;
+        Wed, 25 Oct 2023 07:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=fGgD8013IWJzC9g3lyDR/0S2jUyGHlXejI04gVHijo8=; b=s9h0pOStb6hRhOzt8N5sl8Ryj7
+        CqcLL2yo/K7WxqpGSaQ6ZVj7LxcgYFbagaPI6a2VD5Bpx+xrYw0hgbbTkf3d0tLEfXsxEOF0bnOfS
+        58cy2P5x0VmVGZf8DCdAuh+mE9XQuooE43kmZTxid3FkPFKH8RRqFMYZmJ2w4FluOBUk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qvf2F-000BDT-4i; Wed, 25 Oct 2023 16:39:03 +0200
+Date:   Wed, 25 Oct 2023 16:39:03 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Elad Nachman <enachman@marvell.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, pali@kernel.org,
+        mrkiko.rs@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] arm64: dts: cn913x: add device trees for COM
+ Express boards
+Message-ID: <b0c7e6af-f1f1-4bd2-b8e3-a4b3e3346ee7@lunn.ch>
+References: <20231025073150.2826130-2-enachman@marvell.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025073150.2826130-2-enachman@marvell.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-10-25 at 16:44 +0300, marius.cristea@microchip.com wrote:
-> From: Marius Cristea <marius.cristea@microchip.com>
->=20
-> This is the iio driver for Microchip
-> PAC193X series of Power Monitor with Accumulator chip family.
->=20
-> Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
-> ---
+> diff --git a/arch/arm64/boot/dts/marvell/ac5x_rd_carrier.dts b/arch/arm64/boot/dts/marvell/ac5x_rd_carrier.dts
+> new file mode 100644
+> index 000000000000..4b2cf417332f
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/marvell/ac5x_rd_carrier.dts
+> @@ -0,0 +1,23 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (C) 2023 Marvell International Ltd.
+> + *
+> + * Device tree for the AC5X RD Type 7 Com Express carrier board,
+> + * Utilizing the CN913x COM Express SOM board.
+> + * This specific board only maintains a PCIe link with the CPU SOM
+> + * module, which does not require any special DTS definitions.
+> + */
+> +
+> +#include "cn9131-db-comexpress.dtsi"
+> +
+> +/ {
+> +	model = "Marvell Armada AC5X RD COM EXPRESS type 7 carrier board";
+> +	compatible = "marvell,cn9131", "marvell,cn9130",
+> +		     "marvell,armada-ap807-quad", "marvell,armada-ap807";
+> +
+> +	memory@0 {
+> +		device_type = "memory";
+> +		reg = <0x0 0x0 0x2 0x00000000>;
+> +	};
 
-Hi Marius,
+The memory is on the carrier? Not the ComExpress Module? That seems
+wrong. If you look at the Congatec COM Express Type 7 Modules, they
+all have a socket for the memory. Which ComExpress connector is used
+for the memory between the Module and the Carrier?
 
-I'll be honest and I just looked at this for 5min. But I'm seeing things li=
-ke
-shunt resistors, vsense, power, energy... This seems to me that it belong t=
-o
-drivers/hwmon. Any special reason for IIO?
+> diff --git a/arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi b/arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
 
-- Nuno S=C3=A1
+Just for my understanding....
 
+> +&cp0_eth1 {
+> +	status = "okay";
+> +	phy = <&phy0>;
+> +	phy-mode = "rgmii-id";
+> +};
 
+This is the 1G Ethernet on the A connector. And the PHY is on the
+module, not the carrier?
+
+I just wanted to check because the 4x 10G PHY are -KR, not copper, so
+the PHYs would be on the carrier.
+
+    Andrew
