@@ -2,164 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBBE7D6F53
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52417D6F73
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344516AbjJYOVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
+        id S1344639AbjJYOUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:20:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbjJYOVH (ORCPT
+        with ESMTP id S232846AbjJYOUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:21:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7671B9
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:20:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698243623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S1yh9aFBXnB/uUDqIchESZqamQpwZAPHQV0zqqMljjg=;
-        b=KPW6x6rVg7rgOsqO8KUx/BD1X22FUcAV5tt2tTyWxHS7nXLrBOXmMFy/lNu4jxc2dhIVaB
-        xFFUmi93uYgWoazqOB7ku5Qgfr3WnPTLxjCv2owQ18RKI5WMQY8wEqBhR5ugKurqwlno1U
-        RFXPd7bG6f+sgl3IQU6xn07xEprsWas=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-392-JUp5NiC9M6yxak6uV_XpCw-1; Wed, 25 Oct 2023 10:20:22 -0400
-X-MC-Unique: JUp5NiC9M6yxak6uV_XpCw-1
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7a9985d56a8so70346139f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:20:22 -0700 (PDT)
+        Wed, 25 Oct 2023 10:20:14 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BB399;
+        Wed, 25 Oct 2023 07:20:12 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507cee17b00so8441948e87.2;
+        Wed, 25 Oct 2023 07:20:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698243611; x=1698848411; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KXdFX0UY5tniJLRDcl1ufSs5c/hl+EfLWW5bDdsq8SA=;
+        b=WemKRxkbCgLhSmp6vTOqZfbOnC1Ume8v/AP9mdV6ky5315lfssgVvsk9/O4UA3dtf5
+         zTIcCvlzFA8+wiB0OzCbzG3bvIkt7tVI0+jamk5iXO30Koup6w2ug0aBcV+66MFmiCpp
+         lny0FiAseXqcw79Na2A8X8QGqr+33mt15gBcajIn+0vcFU392TlGR/Zm7NJWXuaXQSS1
+         DWcCVyVka/K57VbziPgYxSuLX9zYNt14X3IXKFGp2pNlF7ScGh3ze1i+xySyX6Qk6PtK
+         2OSb+gH8AeFs53B99+2bdBTekfB05AEBWECnrKzVHQ1RXbR/Qz+mxSeF0Oq6udHzxZJu
+         mtAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698243621; x=1698848421;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S1yh9aFBXnB/uUDqIchESZqamQpwZAPHQV0zqqMljjg=;
-        b=eSr1j86pAUpQHBTSf7EiGwUEBDLDhE83chdX0jPqT1CWsa8aRhJ/svJ4LNvfb/RKAc
-         z9pmDIpdXnMEsgUP5kw5U3hpPcSa19fTQm+TXjEak38Cl97nDvIfjLs+e8sUwK3t6YUD
-         b5LFDcNN4Dc8yFGN3kEFskYpPnlnJvRH1665Yz44QlsxrzWRvNSOnNu8bZ8lANNeaJwr
-         W2EEuqlSP0J6mH+sc/iy9ZS0n2nZ51pxUdKi3lm2HmF9DbzTjsKvreU8i41AyNmoM/Sx
-         x5Ptwyim1kUjaBIjshRaxkEweouGA74cQISaexLLSpKib8816g6lgjNouITSqC/zeMRG
-         8GGQ==
-X-Gm-Message-State: AOJu0YyNlhhGeOCMSY6zmUei+j6p1CeUaogeIfxjiYnPdImo+Y2G1Unc
-        b1uG+ruf4SjSreEkP3BVUdgY+UbwPGwTIRpsfXBLGm/Arb7W8prPLuCRe7Zosu10BUPPs9Pw0P0
-        M3klgjoA98Zqx6/99e6QCqyZI
-X-Received: by 2002:a05:6e02:12c6:b0:357:a04c:31d2 with SMTP id i6-20020a056e0212c600b00357a04c31d2mr20557624ilm.16.1698243621710;
-        Wed, 25 Oct 2023 07:20:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHKwcXNmgBx56Nwj0CHsxsSuQrL5I2Rqp2efJfKlsiSWqJhSMRfzxIfmT0Id8DMwf8cHqeybw==
-X-Received: by 2002:a05:6e02:12c6:b0:357:a04c:31d2 with SMTP id i6-20020a056e0212c600b00357a04c31d2mr20557588ilm.16.1698243621425;
-        Wed, 25 Oct 2023 07:20:21 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id a18-20020a92d352000000b0035742971dd3sm3769998ilh.16.2023.10.25.07.20.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 07:20:20 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 08:20:19 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Ankit Agrawal <ankita@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
-        Vikram Sethi <vsethi@nvidia.com>,
-        Andy Currid <acurrid@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <danw@nvidia.com>,
-        "Anuj Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v12 1/1] vfio/nvgpu: Add vfio pci variant module for
- grace hopper
-Message-ID: <20231025082019.14575863.alex.williamson@redhat.com>
-In-Reply-To: <BY5PR12MB376386DD53954BC3233AF595B0DEA@BY5PR12MB3763.namprd12.prod.outlook.com>
-References: <20231015163047.20391-1-ankita@nvidia.com>
-        <20231017165437.69a84f0c.alex.williamson@redhat.com>
-        <BY5PR12MB3763356FC8CD2A7B307BD9AAB0D8A@BY5PR12MB3763.namprd12.prod.outlook.com>
-        <20231023084312.15b8e37e.alex.williamson@redhat.com>
-        <BY5PR12MB37636C06DED20856CF604A86B0DFA@BY5PR12MB3763.namprd12.prod.outlook.com>
-        <20231024082854.0b767d74.alex.williamson@redhat.com>
-        <BN9PR11MB5276A59033E514C051E9E4618CDEA@BN9PR11MB5276.namprd11.prod.outlook.com>
-        <BY5PR12MB376386DD53954BC3233AF595B0DEA@BY5PR12MB3763.namprd12.prod.outlook.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
+        d=1e100.net; s=20230601; t=1698243611; x=1698848411;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KXdFX0UY5tniJLRDcl1ufSs5c/hl+EfLWW5bDdsq8SA=;
+        b=R3ZlUxyD2zh+JpYOB7HMCrAqMHN75z5QCmTCnonkYz9z1Ca702MrExC77psAwRyu6a
+         F98hLgA6uTmvYKIAtmeKyvJ1WX2kWgppmzlHMoP3Emqv1neim51vN0FAMqDU9KYfRNV6
+         5dIUv4BMq+94pGoQxYfdl+hedgEGgGkAxOATOuDpyV6zrtlepiL3vKWL80DMc5l+FlrG
+         W1+Q0qVBThey78b6Vkt+Iu5LusemWg3/YyCagttIwWnCQV2nb2U0mbNAQURVrobp7vtD
+         poitG53P4qaJCp5MlKjZPDZj6FgYHJDPCE7ZyRa+QeoF/EoDk0BcHT4+Ka+EibCWOtds
+         Rg2w==
+X-Gm-Message-State: AOJu0Yy52ICEV5JT68A6Ug/MMGDEVLsQaDM5s8NKGr9mOp7z3OkX+oML
+        OE1CjydG7GqeUiHtNb/QyKc=
+X-Google-Smtp-Source: AGHT+IHCJiQ2e6pDH3+U3/wVqmKSJcAM0uK7m8zA5flWq6iZTKh/qG9TOso4O1h1Ce74ljz0EvAsIw==
+X-Received: by 2002:ac2:5550:0:b0:503:258f:fd1b with SMTP id l16-20020ac25550000000b00503258ffd1bmr11409838lfk.18.1698243610440;
+        Wed, 25 Oct 2023 07:20:10 -0700 (PDT)
+Received: from [192.168.76.157] (85-76-164-65-nat.elisa-mobile.fi. [85.76.164.65])
+        by smtp.gmail.com with ESMTPSA id x13-20020ac25dcd000000b005041ce44bbdsm2568600lfq.5.2023.10.25.07.20.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 07:20:09 -0700 (PDT)
+Message-ID: <a0db9dbb-df0e-406a-9a88-2a6968ec1469@gmail.com>
+Date:   Wed, 25 Oct 2023 17:21:12 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] ASoC: ti: omap-mcbsp: Ignore errors for getting
+ fck_src
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Tony Lindgren <tony@atomide.com>, bcousson@baylibre.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, jarkko.nikula@bitmer.com,
+        dmitry.torokhov@gmail.com, linux-omap@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+References: <20230705190324.355282-1-andreas@kemnade.info>
+ <20230705190324.355282-2-andreas@kemnade.info>
+ <7d58d52d-2087-45af-b29e-2515b63ead13@gmail.com>
+ <20230920063353.GQ5285@atomide.com>
+ <dac768d2-2c66-4d6b-b3d3-d1ef69103c76@gmail.com>
+ <20230921121626.GT5285@atomide.com> <20231006102348.GK34982@atomide.com>
+ <20231006213003.0fbac87a@aktux> <20231007062518.GM34982@atomide.com>
+ <20231007091156.588d7ba1@aktux>
+ <db511d14-f2fe-4b4e-bd13-223e7a33f933@gmail.com>
+ <20231013132503.25d63933@aktux>
+Content-Language: en-US
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20231013132503.25d63933@aktux>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Oct 2023 12:43:24 +0000
-Ankit Agrawal <ankita@nvidia.com> wrote:
 
-> While the physical BAR is present on the device, it is not being used on =
-the host
-> system. The access to the device memory region on the host occur through =
-the
-> C2C interconnect link (not the PCIe) and is present for access as a separ=
-ate memory
-> region in the physical address space on the host. The variant driver quer=
-ies this range
-> from the host ACPI DSD tables.
+On 13/10/2023 14:25, Andreas Kemnade wrote:
+>> I guess it is because of the pm_runtime_put_sync() in the
+>> omap2_mcbsp_set_clks_src() around the fclk re-parenting.
+>> That is a bit dubious thing for sure. We need to disable the device to
+>> be able to re-parent the fclk but if we disable the device it is going
+>> to be powered down, right? I think we have appropriate context handling,
+>> so it might work, but it is certainly not a rock solid code... If you
+>> have a stream running already, you don't really want to kill the McBSP.
+>>
+> Ok, so if the device is powered of at omap2_mcbsp_set_clks_src() 
+> we get the usage count underflow, and the counter is incremented
+> immediately again in the runtime put function. So things get out of balance...
+> I'll check Tony's fix here.
+> 
+>> The problem is that this mux is outside of the McBSP IP, so we need a
+>> system level (iow, clk API) way to change it runtime.
+>>
+>> What is the machine driver where this happens? If you set the sysclk in
+>> hw_params of the machine driver, it will be OK, but if you do that in
+>> probe time then it is likely going to fail as you experienced
+>>
+> As you see in the other patches of this series,
+> it is a simple-audio-card with a tlv320aic3x codec
+> in combination with the mcbsp.
 
-BTW, it's still never been answered why the latest QEMU series dropped
-the _DSD support.
+To be honest I would be happier if we can just remove the whole
+omap2_mcbsp_set_clks_src() and leave the CLKS source selection outside
+of the driver.
+But omap3pandora is selecting external clock as parent
+(OMAP_MCBSP_SYSCLK_CLKS_EXT - in hw_params, so it actually works) and I
+don't know what happens if this functionality is removed. Likely going
+to break Pandora.
+That is fixable, but what worries me is this comment and code:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/soc/ti/omap-mcbsp.c#n388
 
-> Now, this device memory region on the host is exposed as a device BAR in =
-the VM.
-> So the device BAR in the VM is actually mapped to the device memory regio=
-n in the
-> physical address space (and not to the physical BAR) on the host. The con=
-fig space
-> accesses to the device however, are still going to the physical BAR on th=
-e host.
->=20
-> > Does this BAR2 size match the size we're reporting for the region?=C2=
-=A0 Now
-> > I'm confused why we need to intercept the BAR2 region info if there's
-> > physically a real BAR behind it.=C2=A0 Thanks, =20
->=20
-> Yes, it does match the size being reported through region info. But the r=
-egion
-> info ioctl is still intercepted to provide additional cap to establish th=
-e sparse
-> mapping. Why we do sparse mapping? The actual device memory size is not
-> power-of-2 aligned (a requirement for a BAR). So we roundup to the next
-> power-of-2 value and report the size as such. Then we utilize sparse mapp=
-ing
-> to show only the actual size of the device memory as mappable.
+Which is added by me a long time ago:
+e386615c01d37 ("ASoC: omap-mcbsp: When closing the port select PRCM
+source for CLKS signal")
 
-Yes, it's clear to me why we need the sparse mapping and why we
-intercept the accesses, but the fact that there's an underlying
-physical BAR of the same size in config space has been completely
-absent in any previous discussions.
+I'm not sure if this is possible to do in any other way.
 
-In light of that, I don't think we should be independently calculating
-the BAR2 region size using roundup_pow_of_two(nvdev->memlength).
-Instead we should be using pci_resource_len() of the physical BAR2 to
-make it evident that this relationship exists.
-
-The comments throughout should also be updated to reflect this as
-currently they're written as if there is no physical BAR2 and we're
-making a completely independent decision relative to BAR2 sizing.  A
-comment should also be added to nvgrace_gpu_vfio_pci_read/write()
-explaining that the physical BAR2 provides the correct behavior
-relative to config space accesses.
-
-The probe function should also fail if pci_resource_len() for BAR2 is
-not sufficient for the coherent memory region.  Thanks,
-
-Alex
-
+-- 
+Péter
