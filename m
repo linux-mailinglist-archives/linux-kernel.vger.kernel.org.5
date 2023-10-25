@@ -2,93 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCCD7D6210
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467F77D6213
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232553AbjJYHDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48612 "EHLO
+        id S232513AbjJYHET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbjJYHDN (ORCPT
+        with ESMTP id S232082AbjJYHEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:03:13 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391D7CE
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:03:11 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9b9faf05f51so762535266b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:03:11 -0700 (PDT)
+        Wed, 25 Oct 2023 03:04:16 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19080CE
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:04:13 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso777528466b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:04:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698217389; x=1698822189; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698217451; x=1698822251; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xHpuJC4KgncbTnsWB4mHH6PpjZeiPTQ6BhQqKXvyuiA=;
-        b=i3kK1bGZd/EOxsySRjPe/AvJ6kctzL/DhTKGdlU8C9v2A6IvMqsxqcDg3a9xnMUIBo
-         f7SDArdW4pAuAu1eZX8nyOtnfNWquwbPC64qJbtj9gKbSwuwZrYu3/Kmu9zDC0hQlriQ
-         3CusiiOTSkSlSKXuVdPk7V4VSHq2PJYFldqviUq5oZjy3waog/QGhw9dH/HLuKthaT2x
-         wHyag8wuHLVktHE7rwxbNgykJ5g+feEANEvSJN84QUUmOyUyCBaD4kwP1pYMFL/bTKuz
-         ENIgJC79VGPMYXUIMrV53sqHZMIpFYzZY2cZpQlTpghYUh5DF56DqPJCrdd2tcYrnG/H
-         AWGw==
+        bh=ISx9XF0jymKJbKBV7VQC9cj9x5oOl7s9JRVjqaQ3WiA=;
+        b=hOSlbCHg2gQRWRlb8LnsRu9j7r5uKTSOvVvhw4bjIpxnAuX+GWvGzyu4BzhU8sGUCg
+         fWAwemftRa1EjjUQmQTaJeGLifAq5AAWhdbik7lJx8vqVua2G9gIvUu5aSKXSjsrK6OI
+         x6atel5BXlil0vDha+qzohA+lx8s6F+VZAJrjIeBWhctwWnox+jLHwXctXtERDk7mPAS
+         o4/wqUN3o2n9P0LGFAXRJHZqiEOOUGRLz2Xa8CrJJeA5ax6F6U5mljJkoXwFv+1R/Nlf
+         tLiXHKD2fwOLU934asZdYSqiLWouyR+oAbiG7EXiVd+1o4LXUIXgRZ4T8HGHWaToQXsW
+         3Dzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698217389; x=1698822189;
+        d=1e100.net; s=20230601; t=1698217451; x=1698822251;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xHpuJC4KgncbTnsWB4mHH6PpjZeiPTQ6BhQqKXvyuiA=;
-        b=srL+75A7uKpXaYTbc7zFXZ1AqvRQWbgdvq4HxvOkRMBG/QDKfnubc350lFSiYrRgug
-         MZwp3pE5tPgB3AoW65qRNW5cpBYQ3JBxwBOP+XBlLTYzWebC1L7ejJm4aHkNefXuYp7D
-         wj4oyJm8Ljw7BLorpEKDM3B3x8D2mUvM/mpRteWnng2tJiTwed0jmh91GS3btDY7eS/c
-         KQQrikWV9ju7fBgzm95HEfBxHMlmPaYj3ICfwvMk5QfzAh8DYZbJFaOdYn72GhkDACQT
-         MsvWDJzVPsd8zPz18c+SBXj6VPLM0U9nlUvX3ofhoT3l4hVQqGAXM7Ky5/wyenjjf8Jv
-         nvMw==
-X-Gm-Message-State: AOJu0YwQXejqF5ISKKqzueE42KpNnrVjHL9TIYMfaK6D2TtKn3UIKtOg
-        oxbkWrC0CuIT5/20lUdhIx7zRA==
-X-Google-Smtp-Source: AGHT+IFUxATVYWFN3qO7Bliy7ziR/WMZTEq4tllbr3spD1f1gG3joZOBgiVTFreXZQChyPhT4sTruw==
-X-Received: by 2002:a17:907:ea7:b0:9b2:8c37:eb2b with SMTP id ho39-20020a1709070ea700b009b28c37eb2bmr10991861ejc.58.1698217389658;
-        Wed, 25 Oct 2023 00:03:09 -0700 (PDT)
+        bh=ISx9XF0jymKJbKBV7VQC9cj9x5oOl7s9JRVjqaQ3WiA=;
+        b=hbAJMv9c2S6KX+TUwzTiW1u5oKpBbbegww6zwcnTqvnmU8oUIlkv/3nY6LCinmq6zq
+         iXPOLYEXMdHQ+OV16D+/nT5Ixi3TFCmLOYxnWUiGaZo/46TiOzh3pJxug9BABkiWD4R2
+         n5Tu+fTF1Ok043PAZMgpo7tYr3W+db6tpXPKmlnohC62YH3RBJ2TcrvFO1U7V8tSwcU9
+         Sz0aZOpXQp9AkrhK1A7pIxpYSsY4xNxFLzDkHWXdaWNVo9i3BBxWGVce5oJ8cjjZtobC
+         SjZ68OCNUblguqsWGgYwth7BN5LYCEctej3wb4sjGrotD4BPH3H1M8yIYsxhGxeWKOpF
+         1M5A==
+X-Gm-Message-State: AOJu0YzI3/B+zlASByWRiC3SlmwDGjKOHYY0RnH3WnLCeqTwhNHjRmxU
+        K+cZbCCciLUKlSNZzTAKzMQGeg==
+X-Google-Smtp-Source: AGHT+IHl7TXiNgbxL/lFXemZ/HH/QB5tELiJpzblrf3+E9x+fD02+qxXiz919I3FzUwr8d30ZQD50w==
+X-Received: by 2002:a17:906:4784:b0:9ae:4f9e:7813 with SMTP id cw4-20020a170906478400b009ae4f9e7813mr10078085ejc.73.1698217451553;
+        Wed, 25 Oct 2023 00:04:11 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id l20-20020a1709065a9400b009786c8249d6sm9576921ejq.175.2023.10.25.00.03.07
+        by smtp.gmail.com with ESMTPSA id l20-20020a1709065a9400b009786c8249d6sm9576921ejq.175.2023.10.25.00.04.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 00:03:09 -0700 (PDT)
-Message-ID: <1ecf2bb2-6f3e-41e1-b01d-988f0a9f2846@linaro.org>
-Date:   Wed, 25 Oct 2023 09:03:07 +0200
+        Wed, 25 Oct 2023 00:04:10 -0700 (PDT)
+Message-ID: <2a715a8a-c4c1-42ea-9159-15f25338d36c@linaro.org>
+Date:   Wed, 25 Oct 2023 09:04:08 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/9] dt-bindings: gce: mt8195: Add
- CMDQ_SYNC_TOKEN_SECURE_THR_EOF event id
+Subject: Re: [PATCH v13 6/8] media: dt-bindings: wave5: add Chips&Media 521c
+ codec IP support
 Content-Language: en-US
-To:     =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        =?UTF-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
-        <Singo.Chang@mediatek.com>,
-        =?UTF-8?B?Sm9obnNvbiBXYW5nICjnjovogZbpkasp?= 
-        <Johnson.Wang@mediatek.com>,
-        =?UTF-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?= 
-        <Jason-ch.Chen@mediatek.com>,
-        =?UTF-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
-        <Shawn.Sung@mediatek.com>,
-        =?UTF-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
-        "jkardatzke@google.com" <jkardatzke@google.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-References: <20231023043751.17114-1-jason-jh.lin@mediatek.com>
- <20231023043751.17114-2-jason-jh.lin@mediatek.com>
- <d93ff8f4-984a-4a20-9b81-5c088baf12e8@linaro.org>
- <53d8f44f485cbcd45a1910418dc0049909371682.camel@mediatek.com>
+To:     Sebastian Fricke <sebastian.fricke@collabora.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Nas Chung <nas.chung@chipsnmedia.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        kernel@collabora.com, Robert Beckett <bob.beckett@collabora.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Darren Etheridge <detheridge@ti.com>
+References: <20230929-wave5_v13_media_master-v13-0-5ac60ccbf2ce@collabora.com>
+ <20230929-wave5_v13_media_master-v13-6-5ac60ccbf2ce@collabora.com>
+ <b94e3561-f5ef-443f-98c7-9b79a8bbceec@linaro.org>
+ <20231016134720.GA2650973-robh@kernel.org>
+ <20231021120526.eqe3esyxyi5b3e5d@basti-XPS-13-9310>
+ <3d465d3c-386d-467b-87e9-806962464ac5@linaro.org>
+ <20231024051745.d663ekj7klrl4yzj@basti-XPS-13-9310>
+ <7240fa39-1a8f-4338-b5ae-b469dfaeb7e1@linaro.org>
+ <20231025061713.kmmu432q76t32iv6@basti-XPS-13-9310>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -134,71 +131,58 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <53d8f44f485cbcd45a1910418dc0049909371682.camel@mediatek.com>
+In-Reply-To: <20231025061713.kmmu432q76t32iv6@basti-XPS-13-9310>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 08:26, Jason-JH Lin (林睿祥) wrote:
-> Hi Krzysztof,
+On 25/10/2023 08:17, Sebastian Fricke wrote:
+> Hey Krzysztof,
 > 
-> Thanks for the reviews.
-> 
-> On Mon, 2023-10-23 at 09:47 +0200, Krzysztof Kozlowski wrote:
->>  	 
->> External email : Please do not click links or open attachments until
->> you have verified the sender or the content.
->>  On 23/10/2023 06:37, Jason-JH.Lin wrote:
->>> CMDQ_SYNC_TOKEN_SECURE_THR_EOF is used as secure irq to notify CMDQ
->>> driver in the normal world that GCE secure thread has completed a
->> task
->>> in thee secure world.
+> On 24.10.2023 09:24, Krzysztof Kozlowski wrote:
+>> On 24/10/2023 07:17, Sebastian Fricke wrote:
 >>
->> s/thee/the/
->>
+>>>>>> It needs an SoC specific compatible (TI something...) as well (or
+>>>>>> instead). Unless there's a public spec with details on how many
+>>>>>> clocks, resets, interrupts, etc. there are.
+>>>>>
+>>>>> Okay so how about this, a bit similar to the Coda driver supplying both
+>>>>> a general option and a SoC specific version:
+>>>>
+>>>> Can generic compatible be used alone in board designs? If it is licensed
+>>>> block, then most likely you want a fallback.
 >>>
->>> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->>> ---
->>
->> This is a new patch, so you must mention it in the changelog. There
->> is
->> nothing in the changelog saying about this new patch.
->>
->>
->>>  include/dt-bindings/gce/mt8195-gce.h | 6 ++++++
->>>  1 file changed, 6 insertions(+)
+>>> Alright, so a fallback seems appropriate, how do you like this?
 >>>
->>> diff --git a/include/dt-bindings/gce/mt8195-gce.h b/include/dt-
->> bindings/gce/mt8195-gce.h
->>> index dcfb302b8a5b..9f99da3363b9 100644
->>> --- a/include/dt-bindings/gce/mt8195-gce.h
->>> +++ b/include/dt-bindings/gce/mt8195-gce.h
->>> @@ -809,4 +809,10 @@
->>>  /* end of hw event */
->>>  #define CMDQ_MAX_HW_EVENT1019
->>>  
->>> +/*
->>> + * Notify normal CMDQ there are some secure task done,
->>> + * this token sync with secure world.
->>> + */
->>> +#define CMDQ_SYNC_TOKEN_SECURE_THR_EOF980
+>>> properties:
+>>>    compatible:
+>>>      items:
+>>>        - enum:
+>>>            - const: ti,k3-j721sX-wave521c
+>>>        - const: cnm,wave521c
+>>>
+>>> Providing a fallback and adding a enum which can be extended later on.
 >>
->> Why is this below 1019? Your driver calls it also even, so is this an
->> event or not?
->>
->> Your driver does not use this value, so does it mean FW uses it?
+>> This looks almost good. I wonder what is "j721sX" - Google does not find
+>> it. There is thouhg j721se.
 > 
-> I just want to separate this kind of event (sw token) from the HW
-> event. So I define it after CMDQ_MAX_HW_EVENT.
+> Well that was a misunderstanding from my side I thought that both j721se
+> and j721s2 have the Wave5 IP block and wanted to describe both with
+> j721sX. But as it turns out the IP block isn't present on j721se.
 
-SW event? Then why is it in the bindings?
+It does not matter. You must not have wildcards in compatibles.
+
+> Additionally, I was only able to test the codec on j721s2 for now and so
+> I would opt for calling it: `ti,k3-j721s2-wave521c`
+
 
 Best regards,
 Krzysztof
