@@ -2,134 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFC07D615A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 07:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA2C7D615C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 07:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbjJYF6W convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 01:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
+        id S231648AbjJYF7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 01:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJYF6V (ORCPT
+        with ESMTP id S229498AbjJYF7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 01:58:21 -0400
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CEB7AC;
-        Tue, 24 Oct 2023 22:58:17 -0700 (PDT)
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-27d3c886671so4634592a91.3;
-        Tue, 24 Oct 2023 22:58:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698213496; x=1698818296;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V05i2ECvWgChxk8nStR6mE0WuTD+NL192RARRKjFwM4=;
-        b=KdKhdXrJbHwks4dDUY5wugqHfzHx2H2YrHU5uE132pdi8CdmzT8dqlXklw/jdwbkI1
-         bwhP9Vyaic8cFgJghFxDCrSz+lEYgXwHtXeKVDz9HDQ1+rGTwHVaM3OpqQSrpQCPmB72
-         O95BiQyRmns8yxrVSGXbsz3skrx65ZqvZs5EZ3SRI08s1OO6q7Awhc7NkV/4QGa+IDWy
-         sZ0XdaWSIDSr1PxEw6jMM88L0bLStscDFDJNY24KYQ8Vic8z4/tJ40mSEK62SNl4qB+Y
-         v9nhQFkFPP52a3XL4dVKRuZQyyg8Sw86wpYFymYZ0EqTHhK2lNNSiIPDbUevKSmQ8sC/
-         puHg==
-X-Gm-Message-State: AOJu0YwAijsFzLkYRbTwFILNVE2F780e15PyxkA/ocSfA3UHdIweBuW9
-        UYS7uYzx9QOuUNe6PiUZe9Btt9SDlYUtJbqS3vo=
-X-Google-Smtp-Source: AGHT+IG+vHgzKghvsoVyNwhQEBIST83HNK3dp1eKEgC/ffGx+TKBO/S/DFDh2BcIfu5GbvxcbPLsGTgjzwQGyyDK7Gc=
-X-Received: by 2002:a17:90a:4b0f:b0:27d:ed83:fdff with SMTP id
- g15-20020a17090a4b0f00b0027ded83fdffmr478973pjh.16.1698213496543; Tue, 24 Oct
- 2023 22:58:16 -0700 (PDT)
+        Wed, 25 Oct 2023 01:59:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB5812F;
+        Tue, 24 Oct 2023 22:59:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698213561; x=1729749561;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=sl7Ov3shGCR6/Lo9HN950tbCO7I47zj+Y3uAuM/GEeI=;
+  b=K6UV0ywqfu//UyPgQoX4jLicMrerhVcg0XdCzM07MQqLcLDUeAbDho2R
+   Cv8sewl0rMN9SWPxtS3XDYiY5xvXqGi6R1gHErwoJVPBueGVGYR2OIjox
+   HrtYQt6dvNNrNgJXDDz+qhfRsHddR5uZikHZecsBTtqUPzQ0zIhoSNgtQ
+   dZCWvRDTXC38LEfaO89AC5huDcX7GhfLYKvmSSproo2ZdC9w77HrBQsL3
+   ZbA+asm/dr/WSsVoq+eYKDeQ7BPhFzFpRe5l0X8umEKl+T7DE1u+qPi3g
+   Uj0FuNJeIxpcX2Y6If86zk52Zovw1utrdtlAsWbMh4bYGfQGNTiYS4gFS
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="473479208"
+X-IronPort-AV: E=Sophos;i="6.03,249,1694761200"; 
+   d="scan'208";a="473479208"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 22:59:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="788021746"
+X-IronPort-AV: E=Sophos;i="6.03,249,1694761200"; 
+   d="scan'208";a="788021746"
+Received: from lxy-clx-4s.sh.intel.com ([10.239.48.52])
+  by orsmga008.jf.intel.com with ESMTP; 24 Oct 2023 22:59:17 -0700
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Subject: [PATCH v2 0/2] x86/asyncpf: Fixes the size of asyncpf PV data and related docs
+Date:   Wed, 25 Oct 2023 01:59:12 -0400
+Message-Id: <20231025055914.1201792-1-xiaoyao.li@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231012035111.676789-1-namhyung@kernel.org> <20231012091128.GL6307@noisy.programming.kicks-ass.net>
- <CAM9d7cgcFCidNamZm+O-89N-Jf4EYF263f1GbxYf0xEbkwwE6Q@mail.gmail.com> <CADzB+2mu98v9EUsA1Y-wVDSrXT2kznKi87Tb6QdN5y4mMFNsyg@mail.gmail.com>
-In-Reply-To: <CADzB+2mu98v9EUsA1Y-wVDSrXT2kznKi87Tb6QdN5y4mMFNsyg@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 24 Oct 2023 22:58:05 -0700
-Message-ID: <CAM9d7ciTKe4O-23j10wC8DUbX_cmNewbLwZq99kMh_1ZA+5e0w@mail.gmail.com>
-Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
-To:     Jason Merrill <jason@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Ben Woodard <woodard@redhat.com>,
-        Joe Mario <jmario@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Blaikie <blaikie@google.com>,
-        Xu Liu <xliuprof@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+First patch tries to make the size of 'struct kvm_vcpu_pv_apf_data'
+matched with its documentation.
 
-On Tue, Oct 24, 2023 at 8:07 PM Jason Merrill <jason@redhat.com> wrote:
->
-> On Thu, Oct 12, 2023 at 12:44 PM Namhyung Kim <namhyung@kernel.org> wrote:
->>
->> On Thu, Oct 12, 2023 at 2:13 AM Peter Zijlstra <peterz@infradead.org> wrote:
->>
->> > > This can generate instructions like below.
->> > >
->> > >     ...
->> > >     0x123456:  mov    0x18(%rdi), %rcx
->> > >     0x12345a:  mov    0x10(%rcx), %rax     <=== sample
->> > >     0x12345e:  test   %rax, %rax
->> > >     0x123461:  je     <...>
->> > >     ...
->> > >
->> > > And imagine we have a sample at 0x12345a.  Then it cannot find a
->> > > variable for %rcx since DWARF didn't generate one (it only knows about
->> > > 'bar').  Without compiler support, all it can do is to track the code
->> > > execution in each instruction and propagate the type info in each
->> > > register and stack location by following the memory access.
->> >
->> > Right, this has more or less been the 'excuse' for why doing this has
->> > been 'difficult' for the past 10+ years :/
->>
->> I'm sure I missed some cases, but I managed to make it work on
->> usual cases.  We can improve it by handling it more cases and
->> instructions but it'd be great if we have a better support from the
->> toolchains.
->
->
-> How helpful would it be for the compiler to generate an unnamed DW_TAG_variable for the temporary in %rcx?
+Second patch fixes the wrong description of the MSR_KVM_ASYNC_PF_EN
+documentation and some minor improvement.
 
-That'd be fantastic, and that's exactly what I'm asking. :)
+v1: https://lore.kernel.org/all/ZS7ERnnRqs8Fl0ZF@google.com/T/#m0e12562199923ab58975d4ae9abaeb4a57597893
 
->
->>
->> > > Actually I found a discussion in the DWARF mailing list to support
->> > > "inverted location lists" and it seems a perfect fit for this project.
->> > > It'd be great if new DWARF would provide a way to lookup variable and
->> > > type info using a concrete location info (like a register number).
->> > >
->> > >   https://lists.dwarfstd.org/pipermail/dwarf-discuss/2023-June/002278.html
->> >
->> > Stephane was going to talk to tools people about this over 10 years ago
->> > :-)
->>
->> Hope that they would make some progress.
->
->
-> This seems expensive in debug info size for a lookup optimization; better IMO to construct the reverse lookup table from the existing information, as it sounds like you are doing.  Though it would be good to cache that table between runs, and ideally share it with other interested tools.
+Xiaoyao Li (2):
+  x86/kvm/async_pf: Use separate percpu variable to track the enabling
+    of asyncpf
+  KVM: x86: Improve documentation of MSR_KVM_ASYNC_PF_EN
 
-Probably.  Then it still needs a standard way to express such data.
-Maybe we can have an option to generate the table.
+ Documentation/virt/kvm/x86/msr.rst   | 19 +++++++++----------
+ arch/x86/include/uapi/asm/kvm_para.h |  1 -
+ arch/x86/kernel/kvm.c                | 11 ++++++-----
+ 3 files changed, 15 insertions(+), 16 deletions(-)
 
-Thanks,
-Namhyung
+
+base-commit: 2b3f2325e71f09098723727d665e2e8003d455dc
+-- 
+2.34.1
+
