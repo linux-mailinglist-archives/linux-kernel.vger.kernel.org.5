@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D857D74EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDFA7D74F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229971AbjJYT4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 15:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33040 "EHLO
+        id S234031AbjJYT4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 15:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJYT4p (ORCPT
+        with ESMTP id S232329AbjJYT4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 15:56:45 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D3DE5
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 12:56:43 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d9ad67058fcso89198276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 12:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698263802; x=1698868602; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3XFWueEfiw2bQQie01J9PQDSlZE4Y5T3Z8ssKqoKnFg=;
-        b=Ghe4xlz7glUos1/u3uBIlRZfHGRuHPtIH2qxGf15SrKXpx6VgLi6b/449MHmR8v1Ri
-         2IoQeCPjSfULapuWbxBwHLUAosuCWJRlzo6V31km557GUXKBpqQUuaLBt/djqxdi+ejd
-         jwe78yZgtQOAW2Q+si7ETjFBA2sBOqJAlyqzEcNxoRnJeP2+vs2VSGHlBV0bZtUSDSjm
-         +dfpetrK/CgDiZWULIvQ0t7pH0pXnGRTNjhakRfV+zLwRgfJbUvKm3ePIvD7gNCU/S1y
-         gKaom4HAFOKhjphkQJnSSh1zg6NjB6GYSkrNI8FmCCH0nNbrurbqKkPlzRFULpdJjeZB
-         LnEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698263802; x=1698868602;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3XFWueEfiw2bQQie01J9PQDSlZE4Y5T3Z8ssKqoKnFg=;
-        b=mOjM6v3dLpOAT0DCCE3DY5sfFhIDqv/NwLhs7xV05xXhjTK4leaNK+YYjua9oEosgF
-         3WD5WyM3kizr+Clc6BFYF//QqlgNIJGMt1IDVYS5iUF02vumJaGFhjo4Vqo+3o/Ec+Iv
-         iTUHaTCbqx9s2sVBkflElAk6e/rrrA/HP716uxeYOexh+z+Q/uAuLYXWYC5cRmEHdE4Y
-         ihPGxXznJ108kH6I0WkaA0dVd0iTH1cUn4ZXEgNflfJ2dJ111uLBsL7aK1iROZ9SfVAt
-         E0XHwuMW1jC8ByWeYbpO8G0g70kJgSf3NcEEYhW4eHe/0vOTto414t/BQNw+crM9wz0O
-         DSTg==
-X-Gm-Message-State: AOJu0Yy9ramqcQfj6HkQVQYymj9yEm2PnnqSc7XzWRiB61NWD9LTJPeM
-        TXUwEm0l6xoLuEV5gmM9MlML2YwRZMHXl5jfs95xOgn/oO3S5dOc
-X-Google-Smtp-Source: AGHT+IFJkZOHWlTMDfZ6ny4sx9Gcul7tbovkfov6ZFVIneYanJF4VBjexpZoal2wlEsZeHUtz+szrVzhkR5QuVTyJQQ=
-X-Received: by 2002:a25:cf14:0:b0:da0:3475:c5e9 with SMTP id
- f20-20020a25cf14000000b00da03475c5e9mr7623910ybg.18.1698263802406; Wed, 25
- Oct 2023 12:56:42 -0700 (PDT)
+        Wed, 25 Oct 2023 15:56:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B0D185;
+        Wed, 25 Oct 2023 12:56:49 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698263808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Y76BTvDL8fMtXIIKTEWVYaf4r3Jy1wak2WgowyW9Fw=;
+        b=esCpCbSf/cGVbPuyJtSR/0shnIZx4AEsHhsuEwZxlDbnnT0pQnNCb03npVRR/WhzSfjUhx
+        Xpt9WvqkcG2JGqu1Seh1gjDkPBHQ7OWDw4/TuryeGH6Vg4d8JlVwLLJh0jehwL10F1M1MO
+        JvNMBIwld2eUpyFwYp4wLTYBqnr1C6d6ShrtrPMiDzwuBR71FSxDey1udLojgTOxynWYqb
+        uQK2pY/kDLAoripSvgpJ/Hq72zxU4svuQijQMK79oXtPPi6Y30GoKPzagA/4VOSVJ8cHRE
+        aXWHTUO79O38JrTYJ8ZJxZCcHDKpZE+elp4ZGtKMU0c1RHf2ja0YVtFOyN8mqw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698263808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Y76BTvDL8fMtXIIKTEWVYaf4r3Jy1wak2WgowyW9Fw=;
+        b=f3nWV8Kv0BmZV5MMqx2/zHJSBaiOlu6tmCwUSQPXD2tXDy2idlMko8ZhhVUvoLvflaC8KH
+        RAURu2cNz+Woq5Bg==
+To:     Anup Patel <apatel@ventanamicro.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>
+Subject: Re: [PATCH v11 08/14] irqchip/riscv-imsic: Add support for platform
+ MSI irqdomain
+In-Reply-To: <20231023172800.315343-9-apatel@ventanamicro.com>
+References: <20231023172800.315343-1-apatel@ventanamicro.com>
+ <20231023172800.315343-9-apatel@ventanamicro.com>
+Date:   Wed, 25 Oct 2023 21:56:47 +0200
+Message-ID: <87edhi5vcw.ffs@tglx>
 MIME-Version: 1.0
-References: <20231025190619.881090-2-robh@kernel.org>
-In-Reply-To: <20231025190619.881090-2-robh@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 25 Oct 2023 21:56:31 +0200
-Message-ID: <CACRpkdZ9PPnGybvf2eBqBTS8o1QRat3n2SCjSPc0=ZKv3AvGyg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2] leds: syscon: Support 'reg' in addition to
- 'offset' for register address
-To:     Rob Herring <robh@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -69,19 +69,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 9:09=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
+On Mon, Oct 23 2023 at 22:57, Anup Patel wrote:
+> The Linux platform MSI support requires a platform MSI irqdomain so
+> let us add a platform irqchip driver for RISC-V IMSIC which provides
+> a base IRQ domain and platform MSI domain. This driver assumes that
+> the IMSIC state is already initialized by the IMSIC early driver.
 
-> The register-bit-led binding now also supports 'reg' in addition to
-> 'offset' for the register address. Add support to the driver to get the
-> address from 'reg'.
->
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: linux-leds@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Please no. The platform MSI cruft is really a horrible concept and there
+is ongoing work (sadly mightily delayed) to convert the main (ab)user
+ARM over to per device MSI domains.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+  https://lore.kernel.org/r/20221121135653.208611233@linutronix.de
