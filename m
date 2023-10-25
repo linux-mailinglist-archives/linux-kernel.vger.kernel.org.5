@@ -2,50 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A809D7D6C2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7838A7D6C2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234863AbjJYMlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
+        id S234823AbjJYMmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233850AbjJYMlv (ORCPT
+        with ESMTP id S231648AbjJYMmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:41:51 -0400
+        Wed, 25 Oct 2023 08:42:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BB98F
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:41:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EC46C433C8;
-        Wed, 25 Oct 2023 12:41:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFACC8F
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:42:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92C1EC433C8;
+        Wed, 25 Oct 2023 12:42:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698237710;
-        bh=5+h7ezmQDA0zbyiqtBxqtLVD/G6sYN3hQR1nL+mJvYo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tw7jDvWzStRa9vIMes2r/55HPXDJXg/3P5xPf3CoTCO1SkbRZt7yp/XbIBacaacSp
-         ZpGyfgR12LjeIXhsOC2SkhSrbXdDrRN8uP3CtFu/Mw57WXiqFdgrM37IY6m8aX1eSc
-         ionkcn2TG758Fu2PP7sMY0wXM5odDKFOEwL09sSf7eAh5jqJinIGSR9geJerWYyCml
-         0fTC7m+gSpvUReiLGGTVxDOsaswjuddzy1EEia4qeIsl5JJReEYf3mzBwW0QS7N3VS
-         nIXz5HgR6+SgYZwPHeHOvjAswR24Wjku13u0dxu4J3c+eldLJyRrgK6nHnk/OvuSUj
-         EtYcEpTfSyQ0A==
-Date:   Wed, 25 Oct 2023 13:41:45 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 4/7] regulator: dt-bindings: whitelist
- system-critical-regulator property for fixed-regulator
-Message-ID: <e2ae68a5-b6fc-4b0f-b198-e635435c33ce@sirena.org.uk>
-References: <20231025084614.3092295-1-o.rempel@pengutronix.de>
- <20231025084614.3092295-5-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="snUpAOfYIdGu4zP7"
-Content-Disposition: inline
-In-Reply-To: <20231025084614.3092295-5-o.rempel@pengutronix.de>
-X-Cookie: There's no time like the pleasant.
+        s=k20201202; t=1698237753;
+        bh=yzeS0gUSkHVygnq8OBWI5G21PAVnebjTnO/tgesGvY4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aTHVLM06ImMeTx5eBRFuUsk+lpLtp2AmANegiS100h0WJMrcqkmiH5TE+ISfV2oup
+         qqBmFAfFfdShDPXmVPcGF4xrFj8/4CfOUIUNGKUsD7kO2K5mJ8awHlpOQk1dkOcH9x
+         Tp5FsC0makMBovsRWQPIydexLyem0/Fn9AQ8KilDeIUPqtfZWNqgXAvhpCkchqw5mT
+         rnGgNkehZWCaopERZ0+nbdMHuaG4M9YJZ/Kz9Zl8CfxzaMOWdBN7CkS7qrcjeRZAsR
+         OrnYyObxWM2cyN17Dy0OuYjopi/3jfPQtW+vEVGV7whzPzSYK2cqQQVi8B4InjB6p5
+         8a7wKr2YzZaYQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qvdDS-007YoD-RZ;
+        Wed, 25 Oct 2023 13:42:31 +0100
+Date:   Wed, 25 Oct 2023 13:42:30 +0100
+Message-ID: <86cyx250w9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jan Henrik Weinstock <jan@mwa.re>
+Cc:     oliver.upton@linux.dev, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Lukas =?UTF-8?B?SsO8bmdlcg==?= <lukas@mwa.re>
+Subject: Re: KVM exit to userspace on WFI
+In-Reply-To: <CANi1PHieGooO0DK=6BPwq0UknHzsn9QM3rFQkh3HLMfWxDseUQ@mail.gmail.com>
+References: <CANi1PHhzk80HvwQbBM46gpJ6_AA_P6+m5Jo0Nuy_MAdA4C2BhQ@mail.gmail.com>
+        <87ttql5aq7.wl-maz@kernel.org>
+        <CANi1PHieGooO0DK=6BPwq0UknHzsn9QM3rFQkh3HLMfWxDseUQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jan@mwa.re, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, lukas@mwa.re
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -55,41 +66,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 25 Oct 2023 13:12:14 +0100,
+Jan Henrik Weinstock <jan@mwa.re> wrote:
+> 
+> Hi Marc,
+> 
+> Thanks for your feedback. I understand that request_interrupt_window
+> is not to be used. I assume a setting a flag is a better way,
+> something similar to KVM_ARCH_FLAG_RETURN_NISV_IO_ABORT_TO_USER, e.g.
+> KVM_ARCH_FLAG_WFX_EXIT_TO_USER.
+> 
+> I will also check that WFx traps are always enabled while this mode is
+> active to make sure userspace does not get blocked/scheduled out.
 
---snUpAOfYIdGu4zP7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Why would that be an acceptable behaviour?
 
-On Wed, Oct 25, 2023 at 10:46:11AM +0200, Oleksij Rempel wrote:
-> Allow fixed-regulator to be marked as system-critical by whitelisting
-> the 'system-critical-regulator' property.
->=20
-> This property indicating that the fixed-regulator is critical to system
-> stability or functionality, aligning with the recent changes in the
-> regulator core handling of under-voltage events for system-critical
-> regulators.
+> The reason for this is that we cannot have the thread that executes
+> KVM_RUN to be blocked or scheduled out whenever it hits a WFI.
 
-Why would this need to be something we explicitly enable for a given
-regulator?  Surely this is a property of the creativity of hardware
-engineers rather than the regulator itself.
+Why? If that's not acceptable, how do you even cope with the basic
+preemption?
 
-Also please avoid the use of the outdated terms whitelist and blacklist,
-pass and block lists are often a good alternative.
+> Nop-WFIs are not a problem, since the PE will just continue executing
+> instructions, which is fine. We are currently using a timeout signal
+> that kicks KVM_RUN back into userspace, but we are seeing a lot of
+> time wasted because our KVM thread hangs in WFI/WFEs. It would be
+> better if we could just return from KVM_RUN immediately if the thread
+> would otherwise be blocked.
 
---snUpAOfYIdGu4zP7
-Content-Type: application/pgp-signature; name="signature.asc"
+On the face of it, this makes little sense:
 
------BEGIN PGP SIGNATURE-----
+- While in userspace, no interrupt source that normally delivered
+  without any userpsace intervention will be blocked (timers,
+  VLPIs...). I cannot how this can be a good idea.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU5DQgACgkQJNaLcl1U
-h9AdYggAhZQKEysbWfpHAlugx8AivAUbYgLyylR9UaQWeuqprdjhZheLHYMK8zsB
-OY6KCpgqc4CETsiBQNtJxKDKrckLqPNJPtEbz12ntgjpTRZEMO92A31iYsfR2xAe
-W7R0VmxFeUOJnzQ0fXMgnvSkS9aRF8HfuRIEH+hh8nYr5+Z9+LHPRNlm7qMk8KH0
-GuW1jn3o9dQ1TgZy2RHDSSTrUZoGiDrmGyyqjWeburUFG63NHFAhm/p69WpNWf4N
-VjbQilSJYiDeNq9k+7bBy+/Bk63oBZAowt7vAsJGoPxqw+G2vJhP1GneqAQD1zVh
-34arlTX8Bt081igWxEk0mKg6b2bacw==
-=zJKI
------END PGP SIGNATURE-----
+- Trapping WFE is an important scheduling hint, and returning to
+  userspace defeats it. Contended spinlocks, for example, will be even
+  slower to acquire.
 
---snUpAOfYIdGu4zP7--
+I'm sure you have a particular use case for such a degraded behaviour,
+but since you are not describing it, I'm not at all inclined to
+actively break KVM's performance and scalability.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
