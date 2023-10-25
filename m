@@ -2,69 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 530E97D7293
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A16757D7296
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbjJYRpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44408 "EHLO
+        id S232105AbjJYRrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJYRpe (ORCPT
+        with ESMTP id S229453AbjJYRrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:45:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E1ACC;
-        Wed, 25 Oct 2023 10:45:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7044AC433C8;
-        Wed, 25 Oct 2023 17:45:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698255932;
-        bh=qTeZ6U7qAakYJ5XSVziQjOqbVXvEjhzJrKi9js8BYMM=;
-        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-        b=JA2vsm3KZDI7mSCKzD2QFZOytcyrITQhbUSA8OHuHI/8/zTl2A9PYdIF3stYRtwZh
-         xKwPOeFfoYD8YNsNvT1trJ48+eEc43CJ8Bus6D7FI+76l9d3qRCr79uziGgAErH55Z
-         KKpXeKu98GSAvncDZjrIktu1Sb//Ey5ztRnlgv0UdN6/uoD4SNIKMs4BY16d8G9Wev
-         vkCx9lQXIFlJrzbzDaV35nJ0BZg5fDgONqfjkvsAGPEnGBfhsg8WcyBL39QTHQM0hr
-         jy5u4fEcl0gxnwOOYiQAY8XzFduA3wicrMm/yfZoLIXPU6ywMNzzOvvmvgkUY/Kha5
-         zxhiFru7sCMyw==
-Content-Type: text/plain; charset="utf-8"
+        Wed, 25 Oct 2023 13:47:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC32CC;
+        Wed, 25 Oct 2023 10:47:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698256031; x=1729792031;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=y51ew40oLjwa3836YhR+S3DSxiZGQ240PtjmogMYv8s=;
+  b=cAf7mHYKTfu+ZBqa/ipE2E48e+yFyY3ce3p3jX+zS5xSz3PaQgxmRtTT
+   BnDgTNQTOD0bMXH8vRJXsamRqKKvnzKutcnaH479I2i0PTFJ85/jcfIk8
+   +m6L3PayoFKUPLhB3/hZ0+rJYTVZbEfuGgjN8ZtsR/lmKY0oTsSbb23b8
+   h4Gh6Or4/LUfnWfQFBvT4PsgYZzkgLfyA+Yx8V4N814K/UVbUlW8vybn4
+   5tRAhidR5pgGMnZqNwxPoIGgztEQCzT++i6eC7+q142wXkGswJYjZc6eE
+   elFbeGQVTJf1rnpVoICIh/4ya5a3fzQ8HRHP/1H0edkYzB4xGPL3PBDYJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="386247418"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="386247418"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 10:46:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="793909382"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="793909382"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 25 Oct 2023 10:46:21 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qvhxS-00094f-2p;
+        Wed, 25 Oct 2023 17:46:18 +0000
+Date:   Thu, 26 Oct 2023 01:46:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kaiwei Liu <kaiwei.liu@unisoc.com>, Vinod Koul <vkoul@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kaiwei liu <liukaiwei086@gmail.com>,
+        Wenming Wu <wenming.wu@unisoc.com>
+Subject: Re: [PATCH 1/3] dmaengine: sprd: support dma device suspend/resume
+Message-ID: <202310260136.yDATuOfv-lkp@intel.com>
+References: <20231025120500.8914-1-kaiwei.liu@unisoc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH wireless-next 1/2] wifi: ray_cs: Remove unnecessary
- (void*)
- conversions
-From:   Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20231020093432.214001-1-yunchuan@nfschina.com>
-References: <20231020093432.214001-1-yunchuan@nfschina.com>
-To:     Wu Yunchuan <yunchuan@nfschina.com>
-Cc:     Wu Yunchuan <yunchuan@nfschina.com>, dzm91@hust.edu.cn,
-        christophe.jaillet@wanadoo.fr, horms@kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <169825592825.1275256.15739613451588018012.kvalo@kernel.org>
-Date:   Wed, 25 Oct 2023 17:45:30 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025120500.8914-1-kaiwei.liu@unisoc.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wu Yunchuan <yunchuan@nfschina.com> wrote:
+Hi Kaiwei,
 
-> No need cast (void *) to (struct net_device *).
-> 
-> Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+kernel test robot noticed the following build warnings:
 
-Patch applied to wireless-next.git, thanks.
+[auto build test WARNING on vkoul-dmaengine/next]
+[also build test WARNING on linus/master v6.6-rc7 next-20231025]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-1002f8171d96 wifi: ray_cs: Remove unnecessary (void*) conversions
+url:    https://github.com/intel-lab-lkp/linux/commits/Kaiwei-Liu/dmaengine-sprd-delete-enable-opreation-in-probe/20231025-201524
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git next
+patch link:    https://lore.kernel.org/r/20231025120500.8914-1-kaiwei.liu%40unisoc.com
+patch subject: [PATCH 1/3] dmaengine: sprd: support dma device suspend/resume
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231026/202310260136.yDATuOfv-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231026/202310260136.yDATuOfv-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310260136.yDATuOfv-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/dma/sprd-dma.c: In function 'sprd_dma_suspend_noirq':
+   drivers/dma/sprd-dma.c:1296:38: error: 'struct dev_pm_info' has no member named 'usage_count'
+    1296 |             (atomic_read(&(dev->power.usage_count)) > 1))
+         |                                      ^
+   drivers/dma/sprd-dma.c: In function 'sprd_dma_resume_early':
+   drivers/dma/sprd-dma.c:1305:38: error: 'struct dev_pm_info' has no member named 'usage_count'
+    1305 |             (atomic_read(&(dev->power.usage_count)) > 1))
+         |                                      ^
+   drivers/dma/sprd-dma.c: At top level:
+>> drivers/dma/sprd-dma.c:1302:12: warning: 'sprd_dma_resume_early' defined but not used [-Wunused-function]
+    1302 | static int sprd_dma_resume_early(struct device *dev)
+         |            ^~~~~~~~~~~~~~~~~~~~~
+>> drivers/dma/sprd-dma.c:1293:12: warning: 'sprd_dma_suspend_noirq' defined but not used [-Wunused-function]
+    1293 | static int sprd_dma_suspend_noirq(struct device *dev)
+         |            ^~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/sprd_dma_resume_early +1302 drivers/dma/sprd-dma.c
+
+  1292	
+> 1293	static int sprd_dma_suspend_noirq(struct device *dev)
+  1294	{
+  1295		if ((pm_runtime_status_suspended(dev)) ||
+  1296		    (atomic_read(&(dev->power.usage_count)) > 1))
+  1297			return 0;
+  1298	
+  1299		return sprd_dma_runtime_suspend(dev);
+  1300	}
+  1301	
+> 1302	static int sprd_dma_resume_early(struct device *dev)
+  1303	{
+  1304		if ((pm_runtime_status_suspended(dev)) ||
+  1305		    (atomic_read(&(dev->power.usage_count)) > 1))
+  1306			return 0;
+  1307	
+  1308		return sprd_dma_runtime_resume(dev);
+  1309	}
+  1310	
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20231020093432.214001-1-yunchuan@nfschina.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
