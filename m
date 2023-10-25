@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDFA7D74F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B63B7D74FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234031AbjJYT4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 15:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
+        id S230037AbjJYT7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 15:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232329AbjJYT4w (ORCPT
+        with ESMTP id S229441AbjJYT7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 15:56:52 -0400
+        Wed, 25 Oct 2023 15:59:19 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B0D185;
-        Wed, 25 Oct 2023 12:56:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C705F93;
+        Wed, 25 Oct 2023 12:59:17 -0700 (PDT)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698263808;
+        s=2020; t=1698263956;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6Y76BTvDL8fMtXIIKTEWVYaf4r3Jy1wak2WgowyW9Fw=;
-        b=esCpCbSf/cGVbPuyJtSR/0shnIZx4AEsHhsuEwZxlDbnnT0pQnNCb03npVRR/WhzSfjUhx
-        Xpt9WvqkcG2JGqu1Seh1gjDkPBHQ7OWDw4/TuryeGH6Vg4d8JlVwLLJh0jehwL10F1M1MO
-        JvNMBIwld2eUpyFwYp4wLTYBqnr1C6d6ShrtrPMiDzwuBR71FSxDey1udLojgTOxynWYqb
-        uQK2pY/kDLAoripSvgpJ/Hq72zxU4svuQijQMK79oXtPPi6Y30GoKPzagA/4VOSVJ8cHRE
-        aXWHTUO79O38JrTYJ8ZJxZCcHDKpZE+elp4ZGtKMU0c1RHf2ja0YVtFOyN8mqw==
+        bh=sT6BK5Z8FPdXb0R3Y4NYE9GeqC6Wv7eahDU+D60e1Ps=;
+        b=UfFMIM7eQiozcUjqpRZh5qaxkLEq8/25fz8PmjlZuV6PIoFovao2Bbs1sW3O6KSyMaSrGK
+        YZGvmLN3vsXfmUYzVQ6BV1J674CzA1EDPI1HwadW711XopPlJD2r2UmR0G3a313p3h9l19
+        IZYw4JC/qYr0vkr0mwcrKY+gW5ZmopG2f1htxgsLdH/O5PadMrsoCiT4c7SXFw79gqTios
+        YV9lR8jbxXDjU3KhWoNYZy0dj5Es19ds0W3hoOHQMb8ll/4qLnZyKrJTzggDTqG83UARCI
+        MjbvIPxf3DCmqYONVcFQFnJUM6wSAKq8p+Gx83HGq/ybjtRGujc4q3EeQ3aKqA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698263808;
+        s=2020e; t=1698263956;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=6Y76BTvDL8fMtXIIKTEWVYaf4r3Jy1wak2WgowyW9Fw=;
-        b=f3nWV8Kv0BmZV5MMqx2/zHJSBaiOlu6tmCwUSQPXD2tXDy2idlMko8ZhhVUvoLvflaC8KH
-        RAURu2cNz+Woq5Bg==
+        bh=sT6BK5Z8FPdXb0R3Y4NYE9GeqC6Wv7eahDU+D60e1Ps=;
+        b=UAS7JqC/0l/WnQ7ztOlbqaFHo826mHKYl/aPVpUn6S9Ppdw/RBzfQ1kws4/1EYbO9PUovO
+        rJ/FsqYvfBY4irBQ==
 To:     Anup Patel <apatel@ventanamicro.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
@@ -51,13 +51,13 @@ Cc:     Marc Zyngier <maz@kernel.org>,
         Anup Patel <anup@brainfault.org>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>
-Subject: Re: [PATCH v11 08/14] irqchip/riscv-imsic: Add support for platform
- MSI irqdomain
-In-Reply-To: <20231023172800.315343-9-apatel@ventanamicro.com>
+Subject: Re: [PATCH v11 09/14] irqchip/riscv-imsic: Add support for PCI MSI
+ irqdomain
+In-Reply-To: <20231023172800.315343-10-apatel@ventanamicro.com>
 References: <20231023172800.315343-1-apatel@ventanamicro.com>
- <20231023172800.315343-9-apatel@ventanamicro.com>
-Date:   Wed, 25 Oct 2023 21:56:47 +0200
-Message-ID: <87edhi5vcw.ffs@tglx>
+ <20231023172800.315343-10-apatel@ventanamicro.com>
+Date:   Wed, 25 Oct 2023 21:59:15 +0200
+Message-ID: <87bkcm5v8s.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -70,13 +70,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Oct 23 2023 at 22:57, Anup Patel wrote:
-> The Linux platform MSI support requires a platform MSI irqdomain so
-> let us add a platform irqchip driver for RISC-V IMSIC which provides
-> a base IRQ domain and platform MSI domain. This driver assumes that
-> the IMSIC state is already initialized by the IMSIC early driver.
+> The Linux PCI framework requires it's own dedicated MSI irqdomain so
+> let us create PCI MSI irqdomain as child of the IMSIC base irqdomain.
 
-Please no. The platform MSI cruft is really a horrible concept and there
-is ongoing work (sadly mightily delayed) to convert the main (ab)user
-ARM over to per device MSI domains.
+Same here. Please don't add new incarnations of that and switch over to
+per device MSI domains which is the most future proof mechanism.
 
-  https://lore.kernel.org/r/20221121135653.208611233@linutronix.de
+Thanks,
+
+        tglx
+
