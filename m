@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1541E7D70D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFED7D7098
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344946AbjJYP1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 11:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44552 "EHLO
+        id S234812AbjJYPQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 11:16:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344878AbjJYP0y (ORCPT
+        with ESMTP id S234992AbjJYPQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 11:26:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305EE1FCE
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:25:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 120C1C433C7;
-        Wed, 25 Oct 2023 15:25:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698247557;
-        bh=XNtqmjzlGoaxXATR3hfkSbSFqAPY5X6MkYdWKvJljr4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jIrWXIAj85SXqAP4C2Dj4+engdAvrNekV9ljm3XKOtePy1hwdO0o9VP+bsRJqORKU
-         QKl2HohkReBC82jPccVy+9BMut/SzwcXVin5kZfm3Jtj3Nk+KSrnBH2Cfp4bhwANZW
-         NirYI/ePMwf/Qkdc9+OxfABKlFuQe087xarez2hpsvDCoiggpoAjXBX8QjUGKrM6SM
-         rYp6S7MJxBtBgphivsAxMga7Kx/8+09G6NesVDoBT2gNj98bE5InuOja7XGqU6LSyu
-         c6HhMfQOAXYjGYSRISPo+cytz7GELTtK7WHHBLpz7FEIpHPBSim+ud/QRv+ON1P0Zs
-         CnD8TAb41TYQw==
-Date:   Wed, 25 Oct 2023 23:13:39 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Chen Wang <unicorn_wang@outlook.com>
-Cc:     Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Chao Wei <chao.wei@sophgo.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] riscv: dts: sophgo: remove address-cells from intc
- node
-Message-ID: <ZTkwo/u6S9Atp2u3@xhacker>
-References: <20231024-maternity-slang-fd3dcfb211c0@spud>
- <MA0P287MB0332C00AB091FD7139560E25FEDEA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+        Wed, 25 Oct 2023 11:16:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6440A128;
+        Wed, 25 Oct 2023 08:16:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698246978; x=1729782978;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=m+Ej6NHPrhm+wYMnczhpaBZL2+SGa4xutIPZCENtxjw=;
+  b=WItkXpwDxMTZCDHl9I12MvKKmI9dCDAIOZh/PDZO0oFwSpFFl32mKfVE
+   LkR+UuLOxT3PIPK4JVo711o9hA/MU5idD4sR2W1FUmTR5/hajSr9w4Btz
+   5IJN2X1RDDJ59eAOcJD9chCXVWBjTQS+670mkwrjawLGU9DYBL2f6gmU7
+   Pr8MdgrlfXSU06McI5EXYcOwHqP8bgELoh8oWrvxzm1jWUnsoP/azXvy7
+   yhvbvJUWA4xe195shtEivXLMvjrCRh2lP15kdybWxr31GqQ7IwURrB+ZN
+   h8O7cSRWWxVOMeVY6c8L0uG+aGzQDXbfrrg02z5lhFTZUk5vtpNsHdtxz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="377695015"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="377695015"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 08:15:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="875541085"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="875541085"
+Received: from mhans-mobl3.amr.corp.intel.com (HELO desk) ([10.252.132.200])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 08:15:54 -0700
+Date:   Wed, 25 Oct 2023 08:15:46 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Chao Gao <chao.gao@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com
+Subject: Re: [PATCH  v2 6/6] KVM: VMX: Move VERW closer to VMentry for MDS
+ mitigation
+Message-ID: <20231025151546.dwnlovtbjurqvjsw@desk>
+References: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com>
+ <20231024-delay-verw-v2-6-f1881340c807@linux.intel.com>
+ <ZTjIGVE3o4K7O9kW@chao-email>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <MA0P287MB0332C00AB091FD7139560E25FEDEA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZTjIGVE3o4K7O9kW@chao-email>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 08:48:57AM +0800, Chen Wang wrote:
+On Wed, Oct 25, 2023 at 03:47:37PM +0800, Chao Gao wrote:
+> >diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+> >index b3b13ec04bac..c566035938cc 100644
+> >--- a/arch/x86/kvm/vmx/vmenter.S
+> >+++ b/arch/x86/kvm/vmx/vmenter.S
+> >@@ -1,6 +1,7 @@
+> > /* SPDX-License-Identifier: GPL-2.0 */
+> > #include <linux/linkage.h>
+> > #include <asm/asm.h>
+> >+#include <asm/segment.h>
 > 
-> On 2023/10/24 16:20, Conor Dooley wrote:
-> > From: Conor Dooley <conor.dooley@microchip.com>
-> > 
-> > A recent submission [1] from Rob has added additionalProperties: false
-> > to the interrupt-controller child node of RISC-V cpus, highlighting that
-> > the new cv1800b DT has been incorrectly using #address-cells.
-> > It has no child nodes, so #address-cells is not needed. Remove it.
-> > 
-> > Link: https://patchwork.kernel.org/project/linux-riscv/patch/20230915201946.4184468-1-robh@kernel.org/ [1]
-> > Fixes: c3dffa879cca ("riscv: dts: sophgo: add initial CV1800B SoC device tree")
-> > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> This header is already included a few lines below:
 
-Nice catch!
-
-Reviewed-by: Jisheng Zhang <jszhang@kernel.org>
-
-
-> > ---
-> > CC: Chao Wei <chao.wei@sophgo.com>
-> > CC: Chen Wang <unicorn_wang@outlook.com>
-> > CC: Rob Herring <robh+dt@kernel.org>
-> > CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> > CC: Paul Walmsley <paul.walmsley@sifive.com>
-> > CC: Palmer Dabbelt <palmer@dabbelt.com>
-> > CC: Albert Ou <aou@eecs.berkeley.edu>
-> > CC: devicetree@vger.kernel.org
-> > CC: linux-riscv@lists.infradead.org
-> > CC: linux-kernel@vger.kernel.org
-> > ---
-> >   arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 1 -
-> >   1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > index df40e87ee063..aec6401a467b 100644
-> > --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > @@ -34,7 +34,6 @@ cpu0: cpu@0 {
-> >   			cpu0_intc: interrupt-controller {
-> >   				compatible = "riscv,cpu-intc";
-> >   				interrupt-controller;
-> > -				#address-cells = <0>;
-> >   				#interrupt-cells = <1>;
-> >   			};
-> >   		};
-> 
-> Acked-by: Chen Wang <unicorn_wang@outlook.com>
-> 
-> Thanks，btw, will it be merged in 6.7?
-
-Don't worry, this is a fix, I think Conor will submit fix PR once rc1 is out.
-
-> 
-> Looping Jisheng who is working on Duo/cv1800b.
-> 
+Thanks, will remove it.
