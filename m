@@ -2,212 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDD67D7401
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D447D7400
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbjJYTMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 15:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
+        id S229875AbjJYTMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 15:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjJYTMG (ORCPT
+        with ESMTP id S229498AbjJYTMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 15:12:06 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4ABBB
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 12:12:03 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-41cb7720579so46261cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 12:12:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698261123; x=1698865923; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MQsXRm/26AnMKfle1hOvoePNzv6mvpNR6kguNEXwq5g=;
-        b=3MBCiFOXBQj7wLOmbS4x3qZZQb8H6SPc+jS2JYxiytH0qB+pfxgDN9gs6/uCDwtDum
-         46hwBK21ij+DeVZpoZIEapJzInF4p6Un/J8A+ywl+VjQKjRMsJlkNPjMpHnoPhxVCB0Z
-         wMSctz0Mqm8kxp/YFjBKPDv4RsKlrt5dEIWRrnPO4btOlTLy5FeIxPxiXugZVCF3MAeC
-         BnFeQBR2fxe7jSjuSUpWrJjNBXJEEXz0ANZN8vLSxR34K8NycVC4Yy8QSvxwylt1mI73
-         9aA3dvqd+yHVU4ISwZD17b7wftEJfv8qD151EcWxz8BgQ9BZR/Vr34Kyo2mLBsjIyxvY
-         jDoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698261123; x=1698865923;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MQsXRm/26AnMKfle1hOvoePNzv6mvpNR6kguNEXwq5g=;
-        b=FDhQDknGgcyF0x4G6xzTPUNvS2lZjzSKod9bGWEx7IduwEcHOWXGVA8+CMHPT50Lz1
-         9lJnKzqq0nYG7c2ipUg97brF0zX34a34TFqS9+YAAE8jle+XFn/n+Q2C4JlY+2d3C9O8
-         WFcAglujPyHYmsg5gGi6iwgTiZ6ZngPF8ftH96C0KsYGi3jQdzre9gLU1ywnrknTLoUx
-         xjxPw/lelSHIBvDcKEqSBjd+9l7wUeNLh89vvF9L3XAtkTvYjC6Z3nvA+Rz0an4E08hZ
-         Pom0BsnT6KbG9OhGjtk3H4faIQCKMHtD7hpjYcQwfoKmbkpO8+/LdQHSJMHPuBVdfh0l
-         +prw==
-X-Gm-Message-State: AOJu0Yzq5/NrFLkvRDlDX+W8pgrdmQ/ZUZIf+Q9+V2VJzClTDSjHEWxS
-        dShBYswAAZoLg+V2OZONrJ7HlB0i0KwzLbdQRy3O2A==
-X-Google-Smtp-Source: AGHT+IG6KDiuxywIZwUVL3S8gGg9WWokTQZh8SEtNeM0/s7tsiam2k4ilI1Lup8w7V77HEhKysK+YikM3ctquirsU/o=
-X-Received: by 2002:ac8:7cad:0:b0:41e:2984:6dba with SMTP id
- z13-20020ac87cad000000b0041e29846dbamr257820qtv.3.1698261122754; Wed, 25 Oct
- 2023 12:12:02 -0700 (PDT)
+        Wed, 25 Oct 2023 15:12:01 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2063.outbound.protection.outlook.com [40.107.92.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40468BB;
+        Wed, 25 Oct 2023 12:11:59 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MCUe75/u/8MYrhig/3pKr/HD4a2sR0OE+T+0lkbbVATnJVr45rm8nHsdGBsRJYIdtzfE7JV+oLr9pUijUbGt0bZ0dmsGAzghlRcVVFDl1UOQ/mQcfWvEoZUmrKsjpZkM9i6JZWHolaDmT0pW4MX4P1Fj3hOga1LGnV4Kbo1INJ8zqer51RSvR1pMdtmlnBaU5/NbfIx6NGTp0UmmclGVzuQV8oJWDRat20Jsd7m/D2Xe+/dotVuEV0P0aEiEhAux2hZJDLKD32LQgGR7sIYVyLTacJl1kCAEz/wHeTOla0X3dZr8KA5oHlebd2cjkfsrakWtM9/3Baby4GE4pE20YA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BGZTWbe16FlEM8eEjP0poL7KwuGV9hnSbvKJqqdWZv0=;
+ b=CaJZ5gTrEeT2TdQ35eN9y3zlq8UWI3X7p7373pGyLgTdHGwQ5qs2QjIm6MCncO+ZG9lGTpsrXxHIxvD8vKKeFfzjXnlH24ryvtraQS88pwvegWCTdZnFndDXcg+U+4acKBOd5ZxnSpZ5GBIrzgWrWTv6hlBJVdt50LdZIflc4N3eJH2e922QMfrSqEzfv/hooR8p6Dnx4XDJKQWuTqjmC/UvyIiu/re+VYa7MnJe5gzth+i+n//yV4UFa6hVmAJxuRm9m79/FCb0D59GuyOcVETevpsWW8TPBrOzNGcPXBRZSk/NrMeExvmfqt7nciZoGfyj4Ogin8hUHqXnaoRkEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BGZTWbe16FlEM8eEjP0poL7KwuGV9hnSbvKJqqdWZv0=;
+ b=tgOepSRBocs4Omav8eRzWUr05eh7KA+/CZMnyfe0LSKGEFHoBPR58FhWGACsX8zyal8qT28OpLTAlLpWiDGZWZux9XxKZ+1HaD7FvW9KzwzsNIg/6VDWqluEwBEmZg4mqA59XnIrxbmpQug0K7659mHQKB5EKQiOX++bEtxHHfyyA4JUbSQM8w0JFseTNplindijbFRLAs9C+gGHPVb4hqlLk9ggM8NraH4dnH8DVOwmJk/mPFHtaX8AMEz+DJPmD0Q3ZLszkVUTVffiF/3aSsc9jM1lXzwwxOF76JwLIqjoTGdZAh9j9iIzqsSQJwZGSxUqLEspOZ0Sb7A2frBFdg==
+Received: from CY5P221CA0143.NAMP221.PROD.OUTLOOK.COM (2603:10b6:930:6a::13)
+ by BN9PR12MB5196.namprd12.prod.outlook.com (2603:10b6:408:11d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Wed, 25 Oct
+ 2023 19:11:57 +0000
+Received: from CY4PEPF0000E9D2.namprd03.prod.outlook.com
+ (2603:10b6:930:6a:cafe::27) by CY5P221CA0143.outlook.office365.com
+ (2603:10b6:930:6a::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19 via Frontend
+ Transport; Wed, 25 Oct 2023 19:11:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CY4PEPF0000E9D2.mail.protection.outlook.com (10.167.241.145) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.19 via Frontend Transport; Wed, 25 Oct 2023 19:11:56 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 25 Oct
+ 2023 12:11:47 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 25 Oct
+ 2023 12:11:47 -0700
+Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Wed, 25 Oct 2023 12:11:47 -0700
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>,
+        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH 6.1 000/131] 6.1.59-rc1 review
+In-Reply-To: <20231016084000.050926073@linuxfoundation.org>
+References: <20231016084000.050926073@linuxfoundation.org>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com> <a7781f13-21ca-48c7-99c4-22beef0400f9@arm.com>
- <fcbe9179-dcd9-4bf8-b1d1-82201880527e@arm.com> <a2e11353-fad8-475c-a4d1-dc1de22dde11@redhat.com>
-In-Reply-To: <a2e11353-fad8-475c-a4d1-dc1de22dde11@redhat.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Wed, 25 Oct 2023 13:11:24 -0600
-Message-ID: <CAOUHufa9CyfRaMFXWtFWPG22Z9Zf9hZZWbZdTke6THimtbPzRQ@mail.gmail.com>
-Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
-To:     David Hildenbrand <david@redhat.com>,
-        Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <2928ebcd-7bc5-4efb-8a4d-7de219df02a8@rnnvmail201.nvidia.com>
+Date:   Wed, 25 Oct 2023 12:11:47 -0700
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D2:EE_|BN9PR12MB5196:EE_
+X-MS-Office365-Filtering-Correlation-Id: c8ac8d28-ce0a-4238-cf8c-08dbd58e41d9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vdO2gwKF/+j5lCqv5f+HeWa98gES2x+Ae3VX6LaQo8El3Pv9ptMlwUPll3t+b/z2skX6gpy7qZ93pBjLb1aVzfC2gcp7omnL328MBfgEgjtJxNHgtmlSLduJ0kxZ9P/DMx8Kk7LyZkm8zY4+4SqKArDQ3QWmS7IJH6c1oe1lDYiM4M+C6ec2o6j5GsWk/E4pAG5lNPrFPrYcGSiaobPvsx4CkxTP9N9RH9gl7h6PSQ9UBR/XeY4QzI3gdKkzd63a+a5UWcmD0O8Da9FzCgwk/FvE3vva1RMxUcPJ/uTd5G7QdFJL118BFDs5QrKnkVmIQEhNduAnIuWnr0ioktVZddr6KCuI3+lp8uYLhJoBzVnUB5GbZkjeDls35R1UmZx0rtfeshxUuIdptYbQH+HafjdzVIy/EusJ+VO/+EN4EctcdM3qBk/9udQZGtyQgpYr7JWiPUoaRES/422M4OOlrSFMgENzN//dGkcds+86uJxM+vohO0m5d8lRO2BIG2vRSZP6WNFRjFpTkk4JYVuju+mtmyvZm7Oiuy/+jwnxkBL49BL9Wzca4BMBjhkdLUwY5XsqjNTbRD0hP0KAvSYZ9Rql00+aAV4sGpsCDiIvQf51At4Le8YSRXA3lb5UOkp8jW4eqaCL9U8B2fi9zP4wEowty2UB8PyFkzztFO804hY+h1rSa2oIMBctSXEn+Q7p3BZnxsehYc3G2SH5E8VwSEAjwecwtIOC95SsNVIzZGF5HpdhKskjjuJh4rIDFpXw03/6GMLqF4unXqJ6cIuQHajWRmKLj5lqnmTRSFLPtl0=
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(39860400002)(376002)(346002)(230922051799003)(451199024)(64100799003)(82310400011)(1800799009)(186009)(40470700004)(46966006)(36840700001)(7636003)(31696002)(40480700001)(82740400003)(426003)(336012)(26005)(356005)(36860700001)(47076005)(7416002)(2906002)(316002)(966005)(41300700001)(4326008)(478600001)(70206006)(8676002)(8936002)(70586007)(6916009)(5660300002)(54906003)(86362001)(40460700003)(31686004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 19:11:56.8829
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8ac8d28-ce0a-4238-cf8c-08dbd58e41d9
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D2.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5196
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 12:47=E2=80=AFPM David Hildenbrand <david@redhat.co=
-m> wrote:
->
-> On 25.10.23 18:24, Ryan Roberts wrote:
-> > On 20/10/2023 13:33, Ryan Roberts wrote:
-> >> On 06/10/2023 21:06, David Hildenbrand wrote:
-> >>> On 29.09.23 13:44, Ryan Roberts wrote:
-> >>>> Hi All,
-> >>>
-> >>
-> >> [...]
-> >>
-> >>>> NOTE: These changes should not be merged until the prerequisites are=
- complete.
-> >>>> These are in progress and tracked at [7].
-> >>>
-> >>> We should probably list them here, and classify which one we see as s=
-trict a
-> >>> requirement, which ones might be an optimization.
-> >>>
-> >>
-> >> Bringing back the discussion of prerequistes to this thread following =
-the
-> >> discussion at the mm-alignment meeting on Wednesday.
-> >>
-> >> Slides, updated following discussion to reflect all the agreed items t=
-hat are
-> >> prerequisites and enhancements, are at [1].
-> >>
-> >> I've taken a closer look at the situation with khugepaged, and can con=
-firm that
-> >> it does correctly collapse anon small-sized THP into PMD-sized THP. I =
-did notice
-> >> though, that one of the khugepaged selftests (collapse_max_ptes_none) =
-fails when
-> >> small-sized THP is enabled+always. So I've fixed that test up and will=
- add the
-> >> patch to the next version of my series.
-> >>
-> >> So I believe the khugepaged prerequisite can be marked as done.
-> >>
-> >> [1]
-> >> https://drive.google.com/file/d/1GnfYFpr7_c1kA41liRUW5YtCb8Cj18Ud/view=
-?usp=3Dsharing&resourcekey=3D0-U1Mj3-RhLD1JV6EThpyPyA
-> >
-> > Hi All,
->
-> Hi,
->
-> I wanted to remind people in the THP cabal meeting, but that either
-> didn't happen or zoomed decided to not let me join :)
->
-> >
-> > It's been a week since the mm alignment meeting discussion we had aroun=
-d
-> > prerequisites and the ABI. I haven't heard any further feedback on the =
-ABI
-> > proposal, so I'm going to be optimistic and assume that nobody has foun=
-d any
-> > fatal flaws in it :).
->
-> After saying in the call probably 10 times that people should comment
-> here if there are reasonable alternatives worth discussing, call me
-> "optimistic" as well; but, it's only been a week and people might still
-> be thinking about this/
->
-> There were two things discussed in the call:
->
-> * Yu brought up "lists" so we can have priorities. As briefly discussed
->    in the  call, this (a) might not be needed right now in an initial
->    version;  (b) the kernel might be able to handle that (or many cases)
->    automatically, TBD. Adding lists now would kind-of set the semantics
->    of that interface in stone. As you describe below, the approach
->    discussed here could easily be extended to cover priorities, if need
->    be.
+On Mon, 16 Oct 2023 10:39:43 +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.59 release.
+> There are 131 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 18 Oct 2023 08:39:40 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.59-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-I want to expand on this: the argument that "if you could allocate a
-higher order you should use it" is too simplistic. There are many
-reasons in addition to the one above that we want to "fall back" to
-higher orders, e.g., those higher orders are not on PCP or from the
-local node. When we consider the sequence of orders to try, user
-preference is just one of the parameters to the cost function. The
-bottom line is that I think we should all agree that there needs to be
-a cost function down the road, whatever it looks like. Otherwise I
-don't know how we can make "auto" happen.
+All tests passing for Tegra ...
 
-> * Hugh raised the point that "bitmap of orders" could be replaced by
->    "added THP sizes", which really is "bitmap of orders" shifted to the
->    left. To configure 2 MiB +  64Kib, one would get "2097152 + 65536" =3D
->    "2162688" or in KiB "2112". Hm.
+Test results for stable-v6.1:
+    10 builds:	10 pass, 0 fail
+    26 boots:	26 pass, 0 fail
+    116 tests:	116 pass, 0 fail
 
-I'm not a big fan of the "bitmap of orders" approach, because it
-doesn't address my concern above.
+Linux version:	6.1.59-rc1-g9b707223d2e9
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+                tegra20-ventana, tegra210-p2371-2180,
+                tegra210-p3450-0000, tegra30-cardhu-a04
 
-> Both approaches would require single-option files like "enable_always",
-> "enable_madvise" ... which I don't particularly like, but who am I to jud=
-ge.
->
->
-> >
-> > Certainly, I think it held up to the potential future policies that Yu =
-Zhou
-> > cited on the call - the possibility of preferring a smaller size over a=
- bigger
-> > one, if the smaller size can be allocated without splitting a contiguou=
-s block.
-> > I think the suggestion of adding a per-size priority file would solve i=
-t. And in
-> > general because we have a per-size directory, that gives us lots of fle=
-xibility
-> > for growth.
->
-> Jup, same opinion here. But again, I'm very happy to hear other
-> alternatives and why they are better.
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
 
-I'm not against David's proposal but I want to hear a lot more about
-"lots of flexibility for growth" before I'm fully convinced. Why do I
-need more convincing? When I brought up that we need to consider the
-priority of each order and the potential need to fall back to higher
-orders during the meeting, I got the impression people were surprised
-why we want to fall back to higher orders. TBH, I was surprised too
-that this possibility was never considered. I missed today's THP
-meeting too but I'll join next time and if anyone has more ideas on
-this, we can spend some time discussing it, especially on how LAF
-should cooperate with the page allocator to make better decisions.
+Jon
