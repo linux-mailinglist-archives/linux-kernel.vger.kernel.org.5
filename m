@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 363B57D7557
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5BA7D7558
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234854AbjJYUQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
+        id S230139AbjJYUQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234759AbjJYUQ3 (ORCPT
+        with ESMTP id S234315AbjJYUQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:16:29 -0400
+        Wed, 25 Oct 2023 16:16:27 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08D112A
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65AF181
         for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:16:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1698264985; x=1729800985;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=r/DQcAr9eF4A8cw7Q4AVKZucnDBAWDvyFkE8IVl/se4=;
-  b=QQ+hil9zNkDva3WAaOzFsAZLH4KYt6hrhShVnHr5ifTnLhBNPHJZqPgR
-   I4xf3YX+n36HO/0qhBZI0HYRubpXJMTJap1MeUVJ4f0I7mfgiffqrowT1
-   LQOAYnYZcAcqS6jE9PEZBr+7NWmOxcPDsCXHicbi8v7O/E8a5AAECvO/n
-   rpdkAMec1HEavYHe1Z8FDwlKF0geO1Vn5EaY6F9HbJvObqRuYkyvqz8m/
-   y1NxGtHwKLUO4kJTTB2wBSqF2Tj1yQN1DteqF4IqjWJSHbUvnUjnDbL2v
-   PpkyQrjHEASPZhjnTJjtRx4DF81WyiZF/PWBekjgl/M/oGoLmbu3J85dM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="377758222"
+  bh=NQDKu6N6x46M6QZQn4YFr/nofxFMJHrDOYlY3ozSJ9k=;
+  b=mZ99mlvJ3E9oCInQbN3MqFstEAdbhJNK7nr5aQYz7GCTDGz7Lwpg8tNB
+   VYLT9UvtabC5dN0BsvNLDoSrDIzC+PHHVfn7L6sX22m1o5OVxd4B6ONXd
+   oFnYjf8dpXS9XeeubPwUosgyAsKCtdXLVkvkmoVorsJgq+Bykig96YYEt
+   qAQdOCQXHBYE65HGL4UB/PZDAhS8EMgxvg238e6ALZf1Ale/QsEgpGTxC
+   3oJaveKljPSoX26oHQPmk72uambWqPb+F0qbFuZij4F93OVfIPMLyGKKG
+   W5xlk97zokvXwmyHlCmSeI50CzqrnsZ+LyqIt25ULu/uHjKcoVR0eGHBb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="377758229"
 X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="377758222"
+   d="scan'208";a="377758229"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:16:23 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:16:25 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="752459078"
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="752459090"
 X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="752459078"
+   d="scan'208";a="752459090"
 Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by orsmga007.jf.intel.com with ESMTP; 25 Oct 2023 13:16:22 -0700
+  by orsmga007.jf.intel.com with ESMTP; 25 Oct 2023 13:16:23 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         linux-kernel@vger.kernel.org
@@ -47,9 +47,9 @@ Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
         alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V5 5/8] perf/x86/intel: Support branch counters logging
-Date:   Wed, 25 Oct 2023 13:16:23 -0700
-Message-Id: <20231025201626.3000228-5-kan.liang@linux.intel.com>
+Subject: [PATCH V5 6/8] tools headers UAPI: Sync include/uapi/linux/perf_event.h header with the kernel
+Date:   Wed, 25 Oct 2023 13:16:24 -0700
+Message-Id: <20231025201626.3000228-6-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20231025201626.3000228-1-kan.liang@linux.intel.com>
 References: <20231025201626.3000228-1-kan.liang@linux.intel.com>
@@ -67,492 +67,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-The branch counters logging (A.K.A LBR event logging) introduces a
-per-counter indication of precise event occurrences in LBRs. It can
-provide a means to attribute exposed retirement latency to combinations
-of events across a block of instructions. It also provides a means of
-attributing Timed LBR latencies to events.
-
-The feature is first introduced on SRF/GRR. It is an enhancement of the
-ARCH LBR. It adds new fields in the LBR_INFO MSRs to log the occurrences
-of events on the GP counters. The information is displayed by the order
-of counters.
-
-The design proposed in this patch requires that the events which are
-logged must be in a group with the event that has LBR. If there are
-more than one LBR group, the counters logging information only from the
-current group (overflowed) are stored for the perf tool, otherwise the
-perf tool cannot know which and when other groups are scheduled
-especially when multiplexing is triggered. The user can ensure it uses
-the maximum number of counters that support LBR info (4 by now) by
-making the group large enough.
-
-The HW only logs events by the order of counters. The order may be
-different from the order of enabling which the perf tool can understand.
-When parsing the information of each branch entry, convert the counter
-order to the enabled order, and store the enabled order in the extension
-space.
-
-Unconditionally reset LBRs for an LBR event group when it's deleted. The
-logged counter information is only valid for the current LBR group. If
-another LBR group is scheduled later, the information from the stale
-LBRs would be otherwise wrongly interpreted.
-
-Add a sanity check in intel_pmu_hw_config(). Disable the feature if other
-counter filters (inv, cmask, edge, in_tx) are set or LBR call stack mode
-is enabled. (For the LBR call stack mode, we cannot simply flush the
-LBR, since it will break the call stack. Also, there is no obvious usage
-with the call stack mode for now.)
-
-Only applying the PERF_SAMPLE_BRANCH_COUNTERS doesn't require any branch
-stack setup.
-
-Expose the maximum number of supported counters and the width of the
-counters into the sysfs. The perf tool can use the information to parse
-the logged counters in each branch.
+Sync the new sample type for the branch counters feature.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
 
-Changes since V4:
-- Only reset LBR once for a branch counter group when the group is
-  deleted. Force the leader event of a branch counter group a LBR event.
-- Use the name "branch counters" to replace "event logging"
-- Use the suggested code from PeterZ for branch counter reordering
-- Check the max number for a branch counter group in hw_config
-- Use the reserved field to store the temporary branch counters
-  information
+Changes since V4
+- Add PERF_BRANCH_ENTRY_INFO_BITS_MAX
 
- arch/x86/events/intel/core.c       | 103 +++++++++++++++++++++++++++--
- arch/x86/events/intel/ds.c         |   2 +-
- arch/x86/events/intel/lbr.c        |  85 +++++++++++++++++++++++-
- arch/x86/events/perf_event.h       |  12 ++++
- arch/x86/events/perf_event_flags.h |   1 +
- arch/x86/include/asm/msr-index.h   |   5 ++
- arch/x86/include/asm/perf_event.h  |   4 ++
- include/uapi/linux/perf_event.h    |   3 +
- 8 files changed, 207 insertions(+), 8 deletions(-)
+ tools/include/uapi/linux/perf_event.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 584b58df7bf6..3a249b026d5c 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2792,6 +2792,7 @@ static void intel_pmu_enable_fixed(struct perf_event *event)
+diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
+index 39c6a250dd1b..3a64499b0f5d 100644
+--- a/tools/include/uapi/linux/perf_event.h
++++ b/tools/include/uapi/linux/perf_event.h
+@@ -204,6 +204,8 @@ enum perf_branch_sample_type_shift {
  
- static void intel_pmu_enable_event(struct perf_event *event)
- {
-+	u64 enable_mask = ARCH_PERFMON_EVENTSEL_ENABLE;
- 	struct hw_perf_event *hwc = &event->hw;
- 	int idx = hwc->idx;
+ 	PERF_SAMPLE_BRANCH_PRIV_SAVE_SHIFT	= 18, /* save privilege mode */
  
-@@ -2800,8 +2801,10 @@ static void intel_pmu_enable_event(struct perf_event *event)
- 
- 	switch (idx) {
- 	case 0 ... INTEL_PMC_IDX_FIXED - 1:
-+		if (branch_sample_counters(event))
-+			enable_mask |= ARCH_PERFMON_EVENTSEL_BR_CNTR;
- 		intel_set_masks(event, idx);
--		__x86_pmu_enable_event(hwc, ARCH_PERFMON_EVENTSEL_ENABLE);
-+		__x86_pmu_enable_event(hwc, enable_mask);
- 		break;
- 	case INTEL_PMC_IDX_FIXED ... INTEL_PMC_IDX_FIXED_BTS - 1:
- 	case INTEL_PMC_IDX_METRIC_BASE ... INTEL_PMC_IDX_METRIC_END:
-@@ -3052,7 +3055,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
- 		perf_sample_data_init(&data, 0, event->hw.last_period);
- 
- 		if (has_branch_stack(event))
--			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, NULL);
-+			intel_pmu_lbr_save_brstack(&data, cpuc, event);
- 
- 		if (perf_event_overflow(event, &data, regs))
- 			x86_pmu_stop(event, 0);
-@@ -3617,6 +3620,13 @@ intel_get_event_constraints(struct cpu_hw_events *cpuc, int idx,
- 	if (cpuc->excl_cntrs)
- 		return intel_get_excl_constraints(cpuc, event, idx, c2);
- 
-+	/* Not all counters support the branch counter feature. */
-+	if (branch_sample_counters(event)) {
-+		c2 = dyn_constraint(cpuc, c2, idx);
-+		c2->idxmsk64 &= x86_pmu.lbr_counters;
-+		c2->weight = hweight64(c2->idxmsk64);
-+	}
++	PERF_SAMPLE_BRANCH_COUNTERS_SHIFT	= 19, /* save occurrences of events on a branch */
 +
- 	return c2;
- }
- 
-@@ -3905,6 +3915,58 @@ static int intel_pmu_hw_config(struct perf_event *event)
- 	if (needs_branch_stack(event) && is_sampling_event(event))
- 		event->hw.flags  |= PERF_X86_EVENT_NEEDS_BRANCH_STACK;
- 
-+	if (branch_sample_counters(event)) {
-+		struct perf_event *leader, *sibling;
-+		int num = 0;
-+
-+		if (!(x86_pmu.flags & PMU_FL_BR_CNTR) ||
-+		    (event->attr.config & ~INTEL_ARCH_EVENT_MASK))
-+			return -EINVAL;
-+
-+		/*
-+		 * The branch counter logging is not supported in the call stack
-+		 * mode yet, since we cannot simply flush the LBR during e.g.,
-+		 * multiplexing. Also, there is no obvious usage with the call
-+		 * stack mode. Simply forbids it for now.
-+		 *
-+		 * If any events in the group enable the branch counter logging
-+		 * feature, the group is treated as a branch counter logging
-+		 * group, which requires the extra space to store the counters.
-+		 */
-+		leader = event->group_leader;
-+		if (branch_sample_call_stack(leader))
-+			return -EINVAL;
-+		if (branch_sample_counters(leader))
-+			num++;
-+		leader->hw.flags |= PERF_X86_EVENT_BRANCH_COUNTERS;
-+
-+		for_each_sibling_event(sibling, leader) {
-+			if (branch_sample_call_stack(sibling))
-+				return -EINVAL;
-+			if (branch_sample_counters(sibling))
-+				num++;
-+		}
-+
-+		if (num > fls(x86_pmu.lbr_counters))
-+			return -EINVAL;
-+		/*
-+		 * Only applying the PERF_SAMPLE_BRANCH_COUNTERS doesn't
-+		 * require any branch stack setup.
-+		 * Clear the bit to avoid unnecessary branch stack setup.
-+		 */
-+		if (0 == (event->attr.branch_sample_type &
-+			  ~(PERF_SAMPLE_BRANCH_PLM_ALL |
-+			    PERF_SAMPLE_BRANCH_COUNTERS)))
-+			event->hw.flags  &= ~PERF_X86_EVENT_NEEDS_BRANCH_STACK;
-+
-+		/*
-+		 * Force the leader to be a LBR event. So LBRs can be reset
-+		 * with the leader event. See intel_pmu_lbr_del() for details.
-+		 */
-+		if (!intel_pmu_needs_branch_stack(leader))
-+			return -EINVAL;
-+	}
-+
- 	if (intel_pmu_needs_branch_stack(event)) {
- 		ret = intel_pmu_setup_lbr_filter(event);
- 		if (ret)
-@@ -4383,8 +4445,13 @@ cmt_get_event_constraints(struct cpu_hw_events *cpuc, int idx,
- 	 */
- 	if (event->attr.precise_ip == 3) {
- 		/* Force instruction:ppp on PMC0, 1 and Fixed counter 0 */
--		if (constraint_match(&fixed0_constraint, event->hw.config))
--			return &fixed0_counter0_1_constraint;
-+		if (constraint_match(&fixed0_constraint, event->hw.config)) {
-+			/* The fixed counter 0 doesn't support LBR event logging. */
-+			if (branch_sample_counters(event))
-+				return &counter0_1_constraint;
-+			else
-+				return &fixed0_counter0_1_constraint;
-+		}
- 
- 		switch (c->idxmsk64 & 0x3ull) {
- 		case 0x1:
-@@ -4563,7 +4630,7 @@ int intel_cpuc_prepare(struct cpu_hw_events *cpuc, int cpu)
- 			goto err;
- 	}
- 
--	if (x86_pmu.flags & (PMU_FL_EXCL_CNTRS | PMU_FL_TFA)) {
-+	if (x86_pmu.flags & (PMU_FL_EXCL_CNTRS | PMU_FL_TFA | PMU_FL_BR_CNTR)) {
- 		size_t sz = X86_PMC_IDX_MAX * sizeof(struct event_constraint);
- 
- 		cpuc->constraint_list = kzalloc_node(sz, GFP_KERNEL, cpu_to_node(cpu));
-@@ -5535,15 +5602,39 @@ static ssize_t branches_show(struct device *cdev,
- 
- static DEVICE_ATTR_RO(branches);
- 
-+static ssize_t branch_counter_nr_show(struct device *cdev,
-+				      struct device_attribute *attr,
-+				      char *buf)
-+{
-+	return snprintf(buf, PAGE_SIZE, "%d\n", fls(x86_pmu.lbr_counters));
-+}
-+
-+static DEVICE_ATTR_RO(branch_counter_nr);
-+
-+static ssize_t branch_counter_width_show(struct device *cdev,
-+					 struct device_attribute *attr,
-+					 char *buf)
-+{
-+	return snprintf(buf, PAGE_SIZE, "2\n");
-+}
-+
-+static DEVICE_ATTR_RO(branch_counter_width);
-+
- static struct attribute *lbr_attrs[] = {
- 	&dev_attr_branches.attr,
-+	&dev_attr_branch_counter_nr.attr,
-+	&dev_attr_branch_counter_width.attr,
- 	NULL
+ 	PERF_SAMPLE_BRANCH_MAX_SHIFT		/* non-ABI */
  };
  
- static umode_t
- lbr_is_visible(struct kobject *kobj, struct attribute *attr, int i)
- {
--	return x86_pmu.lbr_nr ? attr->mode : 0;
-+	/* branches */
-+	if (i == 0)
-+		return x86_pmu.lbr_nr ? attr->mode : 0;
+@@ -235,6 +237,8 @@ enum perf_branch_sample_type {
+ 
+ 	PERF_SAMPLE_BRANCH_PRIV_SAVE	= 1U << PERF_SAMPLE_BRANCH_PRIV_SAVE_SHIFT,
+ 
++	PERF_SAMPLE_BRANCH_COUNTERS	= 1U << PERF_SAMPLE_BRANCH_COUNTERS_SHIFT,
 +
-+	return (x86_pmu.flags & PMU_FL_BR_CNTR) ? attr->mode : 0;
- }
- 
- static char pmu_name_str[30];
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index 1d309e97a629..98bda9796a28 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -1912,7 +1912,7 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
- 
- 		if (has_branch_stack(event)) {
- 			intel_pmu_store_pebs_lbrs(lbr);
--			perf_sample_save_brstack(data, event, &cpuc->lbr_stack, NULL);
-+			intel_pmu_lbr_save_brstack(data, cpuc, event);
- 		}
- 	}
- 
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index c3b0d15a9841..78cd5084104e 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -676,6 +676,25 @@ void intel_pmu_lbr_del(struct perf_event *event)
- 	WARN_ON_ONCE(cpuc->lbr_users < 0);
- 	WARN_ON_ONCE(cpuc->lbr_pebs_users < 0);
- 	perf_sched_cb_dec(event->pmu);
-+
-+	/*
-+	 * The logged occurrences information is only valid for the
-+	 * current LBR group. If another LBR group is scheduled in
-+	 * later, the information from the stale LBRs will be wrongly
-+	 * interpreted. Reset the LBRs here.
-+	 *
-+	 * Only clear once for a branch counter group with the leader
-+	 * event. Because
-+	 * - Cannot simply reset the LBRs with the !cpuc->lbr_users.
-+	 *   Because it's possible that the last LBR user is not in a
-+	 *   branch counter group, e.g., a branch_counters group +
-+	 *   several normal LBR events.
-+	 * - The LBR reset can be done with any one of the events in a
-+	 *   branch counter group, since they are always scheduled together.
-+	 *   It's easy to force the leader event an LBR event.
-+	 */
-+	if (is_branch_counters_group(event) && event == event->group_leader)
-+		intel_pmu_lbr_reset();
- }
- 
- static inline bool vlbr_exclude_host(void)
-@@ -866,6 +885,8 @@ static __always_inline u16 get_lbr_cycles(u64 info)
- 	return cycles;
- }
- 
-+static_assert((64 - PERF_BRANCH_ENTRY_INFO_BITS_MAX) > LBR_INFO_BR_CNTR_NUM * LBR_INFO_BR_CNTR_BITS);
-+
- static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
- 				struct lbr_entry *entries)
- {
-@@ -898,11 +919,67 @@ static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
- 		e->abort	= !!(info & LBR_INFO_ABORT);
- 		e->cycles	= get_lbr_cycles(info);
- 		e->type		= get_lbr_br_type(info);
-+
-+		/*
-+		 * Leverage the reserved field of cpuc->lbr_entries[i] to
-+		 * temporarily store the branch counters information.
-+		 * The later code will decide what content can be disclosed
-+		 * to the perf tool. Pleae see intel_pmu_lbr_counters_reorder().
-+		 */
-+		e->reserved	= (info >> LBR_INFO_BR_CNTR_OFFSET) & LBR_INFO_BR_CNTR_FULL_MASK;
- 	}
- 
- 	cpuc->lbr_stack.nr = i;
- }
- 
-+/*
-+ * The enabled order may be different from the counter order.
-+ * Update the lbr_counters with the enabled order.
-+ */
-+static void intel_pmu_lbr_counters_reorder(struct cpu_hw_events *cpuc,
-+					   struct perf_event *event)
-+{
-+	int i, j, pos = 0, order[X86_PMC_IDX_MAX];
-+	struct perf_event *leader, *sibling;
-+	u64 src, dst, cnt;
-+
-+	leader = event->group_leader;
-+	if (branch_sample_counters(leader))
-+		order[pos++] = leader->hw.idx;
-+
-+	for_each_sibling_event(sibling, leader) {
-+		if (!branch_sample_counters(sibling))
-+			continue;
-+		order[pos++] = sibling->hw.idx;
-+	}
-+
-+	WARN_ON_ONCE(!pos);
-+
-+	for (i = 0; i < cpuc->lbr_stack.nr; i++) {
-+		src = cpuc->lbr_entries[i].reserved;
-+		dst = 0;
-+		for (j = 0; j < pos; j++) {
-+			cnt = (src >> (order[j] * LBR_INFO_BR_CNTR_BITS)) & LBR_INFO_BR_CNTR_MASK;
-+			dst |= cnt << j * LBR_INFO_BR_CNTR_BITS;
-+		}
-+		cpuc->lbr_counters[i] = dst;
-+		cpuc->lbr_entries[i].reserved = 0;
-+	}
-+}
-+
-+void intel_pmu_lbr_save_brstack(struct perf_sample_data *data,
-+				struct cpu_hw_events *cpuc,
-+				struct perf_event *event)
-+{
-+	if (is_branch_counters_group(event)) {
-+		intel_pmu_lbr_counters_reorder(cpuc, event);
-+		perf_sample_save_brstack(data, event, &cpuc->lbr_stack, cpuc->lbr_counters);
-+		return;
-+	}
-+
-+	perf_sample_save_brstack(data, event, &cpuc->lbr_stack, NULL);
-+}
-+
- static void intel_pmu_arch_lbr_read(struct cpu_hw_events *cpuc)
- {
- 	intel_pmu_store_lbr(cpuc, NULL);
-@@ -1173,8 +1250,10 @@ intel_pmu_lbr_filter(struct cpu_hw_events *cpuc)
- 	for (i = 0; i < cpuc->lbr_stack.nr; ) {
- 		if (!cpuc->lbr_entries[i].from) {
- 			j = i;
--			while (++j < cpuc->lbr_stack.nr)
-+			while (++j < cpuc->lbr_stack.nr) {
- 				cpuc->lbr_entries[j-1] = cpuc->lbr_entries[j];
-+				cpuc->lbr_counters[j-1] = cpuc->lbr_counters[j];
-+			}
- 			cpuc->lbr_stack.nr--;
- 			if (!cpuc->lbr_entries[i].from)
- 				continue;
-@@ -1525,8 +1604,12 @@ void __init intel_pmu_arch_lbr_init(void)
- 	x86_pmu.lbr_mispred = ecx.split.lbr_mispred;
- 	x86_pmu.lbr_timed_lbr = ecx.split.lbr_timed_lbr;
- 	x86_pmu.lbr_br_type = ecx.split.lbr_br_type;
-+	x86_pmu.lbr_counters = ecx.split.lbr_counters;
- 	x86_pmu.lbr_nr = lbr_nr;
- 
-+	if (!!x86_pmu.lbr_counters)
-+		x86_pmu.flags |= PMU_FL_BR_CNTR;
-+
- 	if (x86_pmu.lbr_mispred)
- 		static_branch_enable(&x86_lbr_mispred);
- 	if (x86_pmu.lbr_timed_lbr)
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 53dd5d495ba6..fb56518356ec 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -110,6 +110,11 @@ static inline bool is_topdown_event(struct perf_event *event)
- 	return is_metric_event(event) || is_slots_event(event);
- }
- 
-+static inline bool is_branch_counters_group(struct perf_event *event)
-+{
-+	return event->group_leader->hw.flags & PERF_X86_EVENT_BRANCH_COUNTERS;
-+}
-+
- struct amd_nb {
- 	int nb_id;  /* NorthBridge id */
- 	int refcnt; /* reference count */
-@@ -283,6 +288,7 @@ struct cpu_hw_events {
- 	int				lbr_pebs_users;
- 	struct perf_branch_stack	lbr_stack;
- 	struct perf_branch_entry	lbr_entries[MAX_LBR_ENTRIES];
-+	u64				lbr_counters[MAX_LBR_ENTRIES]; /* branch stack extra */
- 	union {
- 		struct er_account		*lbr_sel;
- 		struct er_account		*lbr_ctl;
-@@ -888,6 +894,7 @@ struct x86_pmu {
- 	unsigned int	lbr_mispred:1;
- 	unsigned int	lbr_timed_lbr:1;
- 	unsigned int	lbr_br_type:1;
-+	unsigned int	lbr_counters:4;
- 
- 	void		(*lbr_reset)(void);
- 	void		(*lbr_read)(struct cpu_hw_events *cpuc);
-@@ -1012,6 +1019,7 @@ do {									\
- #define PMU_FL_INSTR_LATENCY	0x80 /* Support Instruction Latency in PEBS Memory Info Record */
- #define PMU_FL_MEM_LOADS_AUX	0x100 /* Require an auxiliary event for the complete memory info */
- #define PMU_FL_RETIRE_LATENCY	0x200 /* Support Retire Latency in PEBS */
-+#define PMU_FL_BR_CNTR		0x400 /* Support branch counter logging */
- 
- #define EVENT_VAR(_id)  event_attr_##_id
- #define EVENT_PTR(_id) &event_attr_##_id.attr.attr
-@@ -1552,6 +1560,10 @@ void intel_pmu_store_pebs_lbrs(struct lbr_entry *lbr);
- 
- void intel_ds_init(void);
- 
-+void intel_pmu_lbr_save_brstack(struct perf_sample_data *data,
-+				struct cpu_hw_events *cpuc,
-+				struct perf_event *event);
-+
- void intel_pmu_lbr_swap_task_ctx(struct perf_event_pmu_context *prev_epc,
- 				 struct perf_event_pmu_context *next_epc);
- 
-diff --git a/arch/x86/events/perf_event_flags.h b/arch/x86/events/perf_event_flags.h
-index a1685981c520..6c977c19f2cd 100644
---- a/arch/x86/events/perf_event_flags.h
-+++ b/arch/x86/events/perf_event_flags.h
-@@ -21,3 +21,4 @@ PERF_ARCH(PEBS_STLAT,		0x08000) /* st+stlat data address sampling */
- PERF_ARCH(AMD_BRS,		0x10000) /* AMD Branch Sampling */
- PERF_ARCH(PEBS_LAT_HYBRID,	0x20000) /* ld and st lat for hybrid */
- PERF_ARCH(NEEDS_BRANCH_STACK,	0x40000) /* require branch stack setup */
-+PERF_ARCH(BRANCH_COUNTERS,	0x80000) /* logs the counters in the extra space of each branch */
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index dc159acb350a..27e6f1c89fbf 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -236,6 +236,11 @@
- #define LBR_INFO_CYCLES			0xffff
- #define LBR_INFO_BR_TYPE_OFFSET		56
- #define LBR_INFO_BR_TYPE		(0xfull << LBR_INFO_BR_TYPE_OFFSET)
-+#define LBR_INFO_BR_CNTR_OFFSET		32
-+#define LBR_INFO_BR_CNTR_NUM		4
-+#define LBR_INFO_BR_CNTR_BITS		2
-+#define LBR_INFO_BR_CNTR_MASK		GENMASK_ULL(LBR_INFO_BR_CNTR_BITS - 1, 0)
-+#define LBR_INFO_BR_CNTR_FULL_MASK	GENMASK_ULL(LBR_INFO_BR_CNTR_NUM * LBR_INFO_BR_CNTR_BITS - 1, 0)
- 
- #define MSR_ARCH_LBR_CTL		0x000014ce
- #define ARCH_LBR_CTL_LBREN		BIT(0)
-diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
-index 2618ec7c3d1d..3736b8a46c04 100644
---- a/arch/x86/include/asm/perf_event.h
-+++ b/arch/x86/include/asm/perf_event.h
-@@ -31,6 +31,7 @@
- #define ARCH_PERFMON_EVENTSEL_ENABLE			(1ULL << 22)
- #define ARCH_PERFMON_EVENTSEL_INV			(1ULL << 23)
- #define ARCH_PERFMON_EVENTSEL_CMASK			0xFF000000ULL
-+#define ARCH_PERFMON_EVENTSEL_BR_CNTR			(1ULL << 35)
- 
- #define INTEL_FIXED_BITS_MASK				0xFULL
- #define INTEL_FIXED_BITS_STRIDE			4
-@@ -223,6 +224,9 @@ union cpuid28_ecx {
- 		unsigned int    lbr_timed_lbr:1;
- 		/* Branch Type Field Supported */
- 		unsigned int    lbr_br_type:1;
-+		unsigned int	reserved:13;
-+		/* Branch counters (Event Logging) Supported */
-+		unsigned int	lbr_counters:4;
- 	} split;
- 	unsigned int            full;
+ 	PERF_SAMPLE_BRANCH_MAX		= 1U << PERF_SAMPLE_BRANCH_MAX_SHIFT,
  };
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index 4461f380425b..3a64499b0f5d 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -1437,6 +1437,9 @@ struct perf_branch_entry {
+ 
+@@ -982,6 +986,12 @@ enum perf_event_type {
+ 	 *	{ u64                   nr;
+ 	 *	  { u64	hw_idx; } && PERF_SAMPLE_BRANCH_HW_INDEX
+ 	 *        { u64 from, to, flags } lbr[nr];
++	 *        #
++	 *        # The format of the counters is decided by the
++	 *        # "branch_counter_nr" and "branch_counter_width",
++	 *        # which are defined in the ABI.
++	 *        #
++	 *        { u64 counters; } cntr[nr] && PERF_SAMPLE_BRANCH_COUNTERS
+ 	 *      } && PERF_SAMPLE_BRANCH_STACK
+ 	 *
+ 	 * 	{ u64			abi; # enum perf_sample_regs_abi
+@@ -1427,6 +1437,9 @@ struct perf_branch_entry {
  		reserved:31;
  };
  
