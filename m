@@ -2,124 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6267D699B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190617D699D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232775AbjJYK4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 06:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
+        id S233303AbjJYK5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 06:57:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbjJYK4p (ORCPT
+        with ESMTP id S232272AbjJYK5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 06:56:45 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2EBAC
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 03:56:43 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0B4FF21DA9;
-        Wed, 25 Oct 2023 10:56:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1698231402; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zeDWim+JScQgSjn6RlSH0KxhQY+Tl4p6+kd8bxOPMlY=;
-        b=NXnheQZXRctRq2m3ZlyuWmkmoLDpA+qf06DJJuynTTtgtq+EDmb1eph14FuwoRMIhoqcfF
-        a7MLqTF3hRYZqtSjhtLegBBFCN3B2KrP4HA4dP1HkMrrO29pQW2LmGlJZmVMUlxcNaUpLe
-        0eYMBpZCGQf6mAOtl1hA/2yeG9xi82M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1698231402;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zeDWim+JScQgSjn6RlSH0KxhQY+Tl4p6+kd8bxOPMlY=;
-        b=BAukHQ5a4vx/UD9JbN9yEXKEZACAjqqhFIAKD0uHEtu8bKWjkF4jkDLUCemLRHWKuuLPyf
-        ZE4pzjFKIS9dfIDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DC40C13524;
-        Wed, 25 Oct 2023 10:56:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id SAINNWn0OGVfSgAAMHmgww
-        (envelope-from <hare@suse.de>); Wed, 25 Oct 2023 10:56:41 +0000
-Message-ID: <70ec751d-8aba-42b4-861c-e7e17c4a7476@suse.de>
-Date:   Wed, 25 Oct 2023 12:56:41 +0200
+        Wed, 25 Oct 2023 06:57:36 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823C4BB
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 03:57:31 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so820552566b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 03:57:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1698231450; x=1698836250; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R5GXEjEuiD6mlb1HkOp16QUm9TOrY8LB9EQXmZOtIkI=;
+        b=YuxgknuUxuP9OHDk7r9JN9qjmH88pRkWJE+kM7sw2fuxlwVz2neSpTifhYGZcL2Lys
+         oAcTrTrwkpNdGwgdlHbcGeroMx/BiIFmrRh95AjkQcIfNywhaBCiHUeoyY1tGkyr5tvr
+         yM9CdSyXfFX06wcbYS0TLrD6ROjdbbsGWuxMw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698231450; x=1698836250;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R5GXEjEuiD6mlb1HkOp16QUm9TOrY8LB9EQXmZOtIkI=;
+        b=O7NmCbydT4abOGKWK5mcMSqubx6EldJRGD0nVTvFBj/yT0YAfn/KCMbLFzZ4mKKmh8
+         sWS5fRRmcTZkXAP/wrpwrboFPEwMmpkY4P9na9ELImcNvSevx7GWDXCI/KYjzHbl0qCX
+         Ctk1yar7W6RufHCieGYZBEo88ZQlHOJKJ8HSDqWxfAoIIdYY7KH3d3Zo7hpd0airAE2F
+         1JyWDN62C3qwg00PJhCGT0WRpB2n8PyioW6sHVPbdnok9LfPD290nhDe65tboKBwPRAT
+         UtIp3Tn4trseKpSlWcOnqUc8r7U2S3jtYT4JPmMN12pLGIKoT2YVoy2wRdJV4OT5HLgg
+         vWOA==
+X-Gm-Message-State: AOJu0YwUGh1hpIwB9+Dgl7tGVGPDVt+Fe1rfK2F4QJCZxIdN6/fXFO6n
+        4fl+aTIIYTJRjbPUylrtTb9h45GByOTd7cVheJtmOA==
+X-Google-Smtp-Source: AGHT+IFWIo3GvRRy1FheTbUdue0eXLi2jgouUjHp4q4cAKPEdiMrloqNFOv3nhESsGUp5NdMknfTjA==
+X-Received: by 2002:a17:907:c21:b0:9bf:80f0:7813 with SMTP id ga33-20020a1709070c2100b009bf80f07813mr12624049ejc.16.1698231449769;
+        Wed, 25 Oct 2023 03:57:29 -0700 (PDT)
+Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-82-50-51-252.retail.telecomitalia.it. [82.50.51.252])
+        by smtp.gmail.com with ESMTPSA id xa17-20020a170907b9d100b009b913aa7cdasm9741317ejc.92.2023.10.25.03.57.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 03:57:29 -0700 (PDT)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org
+Subject: [PATCH] pktcdvd: fix error checking for debugfs_create_dir()
+Date:   Wed, 25 Oct 2023 12:57:12 +0200
+Message-ID: <20231025105725.2033975-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] nvme-auth: always set valid seq_num in dhchap
- reply
-Content-Language: en-US
-To:     Mark O'Donovan <shiftee@posteo.net>, linux-kernel@vger.kernel.org
-Cc:     linux-nvme@lists.infradead.org, sagi@grimberg.me, hch@lst.de,
-        axboe@kernel.dk, kbusch@kernel.org
-References: <20231025105125.134443-1-shiftee@posteo.net>
- <20231025105125.134443-4-shiftee@posteo.net>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20231025105125.134443-4-shiftee@posteo.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -11.04
-X-Spamd-Result: default: False [-11.04 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         XM_UA_NO_VERSION(0.01)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         BAYES_HAM(-2.95)[99.80%];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/23 12:51, Mark O'Donovan wrote:
-> Currently a seqnum of zero is sent during uni-directional
-> authentication. The zero value is reserved for the secure channel
-> feature which is not yet implemented.
-> 
-> Relevant extract from the spec:
-> The value 0h is used to indicate that bidirectional authentication
-> is not performed, but a challenge value C2 is carried in order to
-> generate a pre-shared key (PSK) for subsequent establishment of a
-> secure channel
-> 
-> Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
-> ---
-> v1: used incorrect prefix nvme-tcp
-> v2: added spec extract to commit message
-> v3: read the seq-num in nvme-target code
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+The return value of debugfs_create_dir() should be checked using the
+IS_ERR() function.
 
-Cheers,
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+---
 
-Hannes
+ drivers/block/pktcdvd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/block/pktcdvd.c b/drivers/block/pktcdvd.c
+index a1428538bda5..6a9decb04ac1 100644
+--- a/drivers/block/pktcdvd.c
++++ b/drivers/block/pktcdvd.c
+@@ -497,7 +497,7 @@ static void pkt_debugfs_dev_new(struct pktcdvd_device *pd)
+ 	if (!pkt_debugfs_root)
+ 		return;
+ 	pd->dfs_d_root = debugfs_create_dir(pd->disk->disk_name, pkt_debugfs_root);
+-	if (!pd->dfs_d_root)
++	if (IS_ERR(pd->dfs_d_root))
+ 		return;
+ 
+ 	pd->dfs_f_info = debugfs_create_file("info", 0444, pd->dfs_d_root,
+@@ -517,6 +517,8 @@ static void pkt_debugfs_dev_remove(struct pktcdvd_device *pd)
+ static void pkt_debugfs_init(void)
+ {
+ 	pkt_debugfs_root = debugfs_create_dir(DRIVER_NAME, NULL);
++	if (IS_ERR(pkt_debugfs_root))
++		pkt_debugfs_root = NULL;
+ }
+ 
+ static void pkt_debugfs_cleanup(void)
+-- 
+2.42.0
 
