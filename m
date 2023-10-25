@@ -2,126 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5838B7D6E17
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495617D6E21
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344062AbjJYN4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
+        id S232072AbjJYN4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344519AbjJYN4b (ORCPT
+        with ESMTP id S234713AbjJYN4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:56:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FAF6194
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:56:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pdPNIyANO+IrtJhwgqRTlWVT66WVymm6d1ZLZ8No5pU=; b=aC4u6wbbvkQWIu9A2bWwLTxi8K
-        jDQLhhmdQd8BTiGEsdp/IAULoyEEnpDcrxV7HneAFou72KYGNKxBQ8Yc/XHDvyaKkNb6McWVn8Jxf
-        AthweahAtCTx0fMgd35KJZJ51fkwxKyDOdPtyFycMlVFiQMzdjxkIHrK7+f9tciuPEZ4J4ICFmZR0
-        Jxun1pR8dWgF49nfwTlLwG9ugsAKkVhmerleZxUPI7Rzl203d815oV9jpgRYEs+767PbFC/IIPLPC
-        VUXA2XOdQHCWE9dxAZygi6xHLykhYleF5dsvN7PgadhTAhd8YTFMSJsW9J8unChgiQFc5VUXghTIW
-        gAEm4lSA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qveMM-0097TQ-5k; Wed, 25 Oct 2023 13:55:46 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CE67B30047C; Wed, 25 Oct 2023 15:55:45 +0200 (CEST)
-Date:   Wed, 25 Oct 2023 15:55:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>
-Subject: Re: [POC][RFC][PATCH] sched: Extended Scheduler Time Slice
-Message-ID: <20231025135545.GG31201@noisy.programming.kicks-ass.net>
-References: <20231025054219.1acaa3dd@gandalf.local.home>
- <20231025102952.GG37471@noisy.programming.kicks-ass.net>
- <20231025085434.35d5f9e0@gandalf.local.home>
+        Wed, 25 Oct 2023 09:56:19 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996B0182;
+        Wed, 25 Oct 2023 06:56:16 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PDuCK6012009;
+        Wed, 25 Oct 2023 13:56:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=hJqqXJ+nQXwKYzzn1uZmYc7vEPBjCdWsjE2YvQrr75U=;
+ b=ozTYfSPLWCHiZ8EEM2GSC77tpdeKeqWUEsWVgVoXx5Qah0eLGXcIx12XhzedC/J60TT7
+ vN0zqaMo9BpKBXt8vxwYfblUJWORNkwfslvx/JqRGcNNPw05Gsiud+pOdOBKTaUeoB8C
+ jAJTqHMXjWeKp3AG1/uF5xwhCEM/Mx2bd3biJwWd6d+wgO5IVVO8fuB5P95/KmGcKCYG
+ Z1wW1kGofenm/zOBEdnXwpsvE3ArWGaJltVXPbUfSmTzcBa+tYGIDmEcL9APrXtVzRMx
+ D+3YwEovEDuWJz1oLgz+ykPpWMsXW7oVRM0ynZ85F+SDWq3bQH6STDMuQuZdXIsQ7SFS 5Q== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3txumsh23s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 13:56:12 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39PDuB18017656
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 13:56:11 GMT
+Received: from blr-ubuntu-87.ap.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Wed, 25 Oct 2023 06:56:06 -0700
+From:   Sibi Sankar <quic_sibis@quicinc.com>
+To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
+        <quic_rjendra@quicinc.com>, <abel.vesa@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_tsoni@quicinc.com>,
+        <neil.armstrong@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>
+Subject: [PATCH 0/2] regulator: qcom-rpmh: Add regulator support for SC8380XP
+Date:   Wed, 25 Oct 2023 19:25:48 +0530
+Message-ID: <20231025135550.13162-1-quic_sibis@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025085434.35d5f9e0@gandalf.local.home>
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: luhppdcX97cV-4vjJfdiRX2M6iBJ-rI8
+X-Proofpoint-ORIG-GUID: luhppdcX97cV-4vjJfdiRX2M6iBJ-rI8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_03,2023-10-25_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 bulkscore=0 priorityscore=1501 mlxlogscore=700 spamscore=0
+ adultscore=0 clxscore=1011 phishscore=0 suspectscore=0 lowpriorityscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310250120
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 08:54:34AM -0400, Steven Rostedt wrote:
+This series adds regulator support for the Qualcomm SC8380XP platform, aka Snapdragon X Elite.
 
-> I didn't want to overload that for something completely different. This is
-> not a "restartable sequence".
+Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
 
-Your hack is arguably worse. At least rseq already exists and most
-threads will already have it set up if you have a recent enough glibc.
+Rajendra Nayak (2):
+  dt-bindings: regulator: qcom,rpmh: Add PMC8380 compatible
+  regulator: qcom-rpmh: Add regulators support for PMC8380
 
-> > So what if it doesn't ? Can we kill it for not playing nice ?
-> 
-> No, it's no different than a system call running for a long time. You could
+ .../regulator/qcom,rpmh-regulator.yaml        | 12 ++++++++++++
+ drivers/regulator/qcom-rpmh-regulator.c       | 19 +++++++++++++++++++
+ 2 files changed, 31 insertions(+)
 
-Then why ask for it? What's the point. Also, did you define
-sched_yield() semantics for OTHER to something useful? Because if you
-didn't you just invoked UB :-) We could be setting your pets on fire.
-
-> set this bit and leave it there for as long as you want, and it should not
-> affect anything.
-
-It would affect the worst case interference terms of the system at the
-very least.
-
-> If you look at what Thomas's PREEMPT_AUTO.patch
-
-I know what it does, it also means your thing doesn't work the moment
-you set things up to have the old full-preempt semantics back. It
-doesn't work in the presence of RT/DL tasks, etc..
-
-More importantly, it doesn't work for RT/DL tasks, so having the bit set
-and not having OTHER policy is an error.
-
-Do you want an interface that randomly doesn't work ?
-
-> We could possibly make it adjustable. 
-
-Tunables are not a good thing.
-
-> The reason I've been told over the last few decades of why people implement
-> 100% user space spin locks is because the overhead of going int the kernel
-> is way too high.
-
-Over the last few decades that has been a blatant falsehood. At some
-point (right before the whole meltdown trainwreck) amluto had syscall
-overhead down to less than 150 cycles.
-
-Then of course meltdown happened and it all went to shit.
-
-But even today (on good hardware or with mitigations=off):
-
-gettid-1m:	179,650,423      cycles
-xadd-1m:	 23,036,564      cycles
-
-syscall is the cost of roughly 8 atomic ops. More expensive, sure. But
-not insanely so. I've seen atomic ops go up to >1000 cycles if you
-contend them hard enough.
-
+-- 
+2.17.1
 
