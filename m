@@ -2,246 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC347D6655
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE1B7D663C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbjJYJLQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 05:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
+        id S233692AbjJYJHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 05:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbjJYJLN (ORCPT
+        with ESMTP id S232428AbjJYJHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 05:11:13 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF13B9;
-        Wed, 25 Oct 2023 02:11:08 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id CFD9B24E203;
-        Wed, 25 Oct 2023 17:10:59 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 25 Oct
- 2023 17:10:59 +0800
-Received: from [192.168.125.131] (183.27.99.126) by EXMBX061.cuchost.com
- (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 25 Oct
- 2023 17:10:58 +0800
-Message-ID: <bb819333-52d3-49fc-9bb9-1a227bd5ca8f@starfivetech.com>
-Date:   Wed, 25 Oct 2023 17:04:42 +0800
-MIME-Version: 1.0
+        Wed, 25 Oct 2023 05:07:40 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Oct 2023 02:07:37 PDT
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904D1E5;
+        Wed, 25 Oct 2023 02:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698224857; x=1729760857;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=8pHZdhqGfZOMo78SvmR8BMgTwMV+ZtUxUM3NR8vwxQA=;
+  b=itLFOdJTzcasjZ6EGwf8fSM6n9sFPdqAq7cIk7SbxLKS99ui00H3JoQf
+   GOXGObcxWZ4qKfiyVyhl7DgrL7Gd30xFHqaxvnZgbDdhXYV4kqqCjfIyK
+   4FjRO4lJmfl0uRY6a+e5kXdY1irpKPa3qLWVnJZK8DjpWBA0mWkd3g37a
+   APclkjTzX8cOlvFowaUQb08natbKer/Vv3DrgrN0eXeyhvfZUfaL+boS/
+   LGnZ5Mc/0EwZBd1YxtZDowavu7MC9pXXFlOk0LdSpr3Aq1dGRdoWVyC43
+   8cgnOa9mu8TbGj1x/O5q8PsVx8LUHxtsO4Swo6M/YIC0R9782wTIM88aR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="25109"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="25109"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 02:06:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="735319171"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="735319171"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Oct 2023 02:06:34 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 25 Oct 2023 02:06:34 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 25 Oct 2023 02:06:34 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 25 Oct 2023 02:06:34 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nPwePkA4d/SGhsOQGHlwcV4HumpQRgsOEYDgxUBhxJPOzyyHml+RFYRE/jNjs5iNaEqehJan4qp60LAyZT2mzyDZn2MQE+HYJXY+vbTAvOZt2kGwW442dpfvxukfjcBQgjPgCGJRpc5EZSgsdBZwGMa3T3TXrxKAB8wJhlMkddQ7gofwCUYnXw5nRQWuu0jI6Ox5ga6pVV8sQW27ryXApH+8z+walnSXajCMze92dD+Y03QxSs86fznPIorvfpp1/HO0J2Rz2TOBPrBxFK+RJOUCOvkvo/PQgLXD80QFBvUM5b9xPbA9GioIPgrMSlYq7Ky7VL68l7VkBNfSYLXBQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vMawvH1UKxUTuw7ptSl5bdSFyyWoyWYlavsqC6uvB7Y=;
+ b=THHbYFxs1WWrcEkRUYodODsIZGLfYuPMrc1dQXH+e6JmJIsU1TZdfmrPqcnM/9q1rVLOtTtibnpco42fTWB3JrueCWe0DncLZzreucRwmRRrarnFALXwvIBYRd5rAVeA6X9wEg7AsAgd+nC+L9ZT5fIaFKYdt5bkaZ8YUshsoVMQ93/dhqTqDKi21vUKxKwb2G2hPvh6GPpv2eFdFYOCPKfvkcq43pnTVkE1CCG/2pyKg9so65fY8w88mn5R6DfrDddZAItESPs5Sa9AZidDC59J3iRcQrv0cnA3dPuoZFX5IVMRVjnxy7fUK/uc7kPaiQS6s2OSPqqbowYmzj2JNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MW4PR11MB5776.namprd11.prod.outlook.com (2603:10b6:303:183::9)
+ by PH7PR11MB8569.namprd11.prod.outlook.com (2603:10b6:510:304::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Wed, 25 Oct
+ 2023 09:06:31 +0000
+Received: from MW4PR11MB5776.namprd11.prod.outlook.com
+ ([fe80::71a7:70c4:9046:9b8a]) by MW4PR11MB5776.namprd11.prod.outlook.com
+ ([fe80::71a7:70c4:9046:9b8a%4]) with mapi id 15.20.6907.032; Wed, 25 Oct 2023
+ 09:06:31 +0000
+Message-ID: <5a89b15e-e4ca-4e06-9069-6f005c6884f2@intel.com>
+Date:   Wed, 25 Oct 2023 11:06:25 +0200
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/3] clocksource: Add JH7110 timer driver
+Subject: Re: [PATCH net] net/mlx5e: fix double free of encap_header
 Content-Language: en-US
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-CC:     <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        <linux-kernel@vger.kernel.org>, Conor Dooley <conor@kernel.org>
-References: <20231019053501.46899-1-xingyu.wu@starfivetech.com>
- <20231019053501.46899-3-xingyu.wu@starfivetech.com>
- <3f76f965-7c7b-109e-2ee0-3033e332e84b@linaro.org>
-From:   Xingyu Wu <xingyu.wu@starfivetech.com>
-In-Reply-To: <3f76f965-7c7b-109e-2ee0-3033e332e84b@linaro.org>
+To:     Dust Li <dust.li@linux.alibaba.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Paolo Abeni" <pabeni@redhat.com>
+CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Cruz Zhao <cruzzhao@linux.alibaba.com>,
+        Tianchen Ding <dtcccc@linux.alibaba.com>
+References: <20231025032712.79026-1-dust.li@linux.alibaba.com>
+From:   Wojciech Drewek <wojciech.drewek@intel.com>
+In-Reply-To: <20231025032712.79026-1-dust.li@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [183.27.99.126]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
- (172.16.6.61)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: WA2P291CA0037.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:1f::17) To MW4PR11MB5776.namprd11.prod.outlook.com
+ (2603:10b6:303:183::9)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR11MB5776:EE_|PH7PR11MB8569:EE_
+X-MS-Office365-Filtering-Correlation-Id: 084b59c2-dae8-438e-6ffb-08dbd539ade0
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: p19yrB0MyrUZVsDe+7O3RMMjsdNND7HF8iM/A5AAvvdnqxW6oO5Z3sAZZ2rIAWlAcGZgKtvMAoMQjGfd442w0JI1kUSxUuRDmrf6FsowYxoPdgzhZbNwzB2TlFMRMxQuhDghGjMLCY7JDKmq5a/x8WU8uxW1kZ66553D8/TPX4fc8nNI/p6QyNPn6Ht4kFkiuxu1WWxf1yUt/dTRfCYwuw+jScrjvkIPBVChGNzFfh2CBgXWpGVBIGE1jnMIMUHdszXFTeDXQ7KZXyaGSvLal+xVWZ9dESzIhRht0oBMwuEC0uW6BbtZinACIZGAaxm48sHvClhJjBSdhdeW86AQOmYTSooanNZ+ApPlIW9SzOQEUuawX101qpOqs0Zh6kPRXgpOjQ9G4SmJNxflyuX+zO4aqhMgXQ75YR7f65YjVht8qaLMOjUr5Aixt7MGwcswgSdyKlnBbxDFIV3T2lyIBnRBlgLinPdfE6jdJHHvzB1hHnPWXNW7pOio5iAAsbpzlbMaG8NuQVqh/ePsfo47xLa2/hdAW2LUUXu29onZwYKhzgIRJ6GwapmiWUE0zT60VuxXCJddGHZHotBHORzbhotu2EGHkkFzbZ0d6YxZ6CgKDghNMVRBXQ+A0vNzHgMMm77g2kHNILs0hJb220b0ww==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5776.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(136003)(376002)(346002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(6486002)(41300700001)(83380400001)(66946007)(54906003)(31686004)(66476007)(110136005)(7416002)(66556008)(8676002)(478600001)(4326008)(8936002)(316002)(5660300002)(53546011)(6506007)(82960400001)(2906002)(6512007)(38100700002)(26005)(36756003)(66899024)(6666004)(44832011)(31696002)(86362001)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L0lwSGRIbDdwVVQvSlZDbC9QbUZwZmN4bExYUzhHOFA3eWI5UGpVTjhMZ05O?=
+ =?utf-8?B?Qk53cjBGYUxZYVFtTlUyNTRaQmRKOTdoVmhBQm4xTE5RM3NMSTlTa2I0SGVs?=
+ =?utf-8?B?RWFxeEVaUWdSb3IzZFUrelpKdGJnMENGL241OWRjVzhrTVdrTlB1N2lkT3RS?=
+ =?utf-8?B?U1pjMjFRc3FmbWpreklFcXVGb2NpUHpaSGlOWmdCMXVlSnVic0J3U3dEb3RT?=
+ =?utf-8?B?S1hqcVUwOG14Q05rOXRMZm9zZm4vMG8raHh4OE1zcWVqWGlOVmh0TmxWN0Va?=
+ =?utf-8?B?M1Z4SEx5MnZ6VmttOW53aGpxL0dPMzhVd0ZQY2pwS3hlMHNZdXU1dU5zN0V1?=
+ =?utf-8?B?UjhvQzN1akU4bGJWQ05FT0tWaWNKTW1Gc0hrdEpCaEZNeFpHb1hWUVo2bW9h?=
+ =?utf-8?B?cTVrdDMvU0FaYk1EZlFkOVpKMnE4UEdIMEVBeGllWkVwRExqd280WC92L28y?=
+ =?utf-8?B?NVFLY1REcXNoUjJMVGVMdG0xWjFLeW9vWGNOUzZVMU9halRKUHR1cmRPeG1k?=
+ =?utf-8?B?SlFNazh6ZThDWnJaZG1Pb0tjMmZFcXlIT1U0QmNydUVMWWNLbFVDMHFBZnBi?=
+ =?utf-8?B?U1BoeU9nUGVOY3pvQUxUYTdOM041L3ovbHc1b3BTa3ZrRGI0WUFpenNKZXBk?=
+ =?utf-8?B?Kzg3NmNhYlhjN3dBeGdPTmJmclNSa0dodUpRR0VucTJMdjRKSmd0WUxXVmd1?=
+ =?utf-8?B?Ylo4aVRLd2ZmdTd1WmR1clZTVFBIUlluZFZ0U2tmdDlQSHpVb3dDdXhDNkpm?=
+ =?utf-8?B?b2NkRExjR0NNdmJxSEJQWVVhVm0zRUllR21RSDlLTlRHWklUZWNUVWN3N2tN?=
+ =?utf-8?B?RTlsNkJCd1RSQWhmcmRCV2dnc2dJMko0clhhcW92OFlWT3crRlVsWmNSdXVl?=
+ =?utf-8?B?MGZsUkVvV0c0V3ZLY2hnR1NJbVRVdytjbnhSUVdvZm9rWGIrdnRyam5hZEg5?=
+ =?utf-8?B?dW1zRnc2WFNsWGdNb2I5dXVyeUhLQ0wxQmN3V3lBWUNZeVZmQzJSeEJXN1dS?=
+ =?utf-8?B?Ni9mRyt1dlRCdTQ1bkFqbS8rSTBEcGY4M2t1V3BQYWFQYjhheVc5WmRSRStD?=
+ =?utf-8?B?UFgvMXQwdWhaSmd4Y1VhZmhYY3hEWUZjM3paWHNJUDAxSmE5bWpuWkovMEti?=
+ =?utf-8?B?UDFBNGVCSjVPbVB5c0JOU0pNcUkxaUxqQUpFbjZ1UERLNVZZSVhSSWVoNEJt?=
+ =?utf-8?B?QWM0WFJENGtxbXV6anp1aFFKNWJFRkI4azFCZTR4RXVrSDN1M3NtZUhuNGo1?=
+ =?utf-8?B?VHNlZnhmV203RzA1Z0cxbE1DTWFzS0xBdTJJVWtYVktMQ0FPQ1ZwMGorUDZi?=
+ =?utf-8?B?QVVsZXBER0dPdFRvSXB1NlBLcnZ4c0kxaTNmOUtSbmpib1VKbEVSMDdZR1J4?=
+ =?utf-8?B?b1RCcU1FaEVRQTk5MUpEdVN2SUs2T1FXYW10S3dUNHo0bmRtaGFFajBtN2px?=
+ =?utf-8?B?cjZndXhJTi93NkwwL1NmaXMxYnNoZ21rVlBEVDBOak1ka3JFT2kvYUxvR1h1?=
+ =?utf-8?B?aytqZ2o0eFEvNGdhVmg0YlZaY2lkNG0yVUdZZU9mWGV1Q3ExMkJscmRrZkJH?=
+ =?utf-8?B?RDBDalNjQ3JJUy9LTzc4L2pQb2F2RDl3WmliUk5mL01wTGNjbDE1MlJsNCsx?=
+ =?utf-8?B?T0ZwUWNxYlBjWDlBbmZoZnpDSDF3WUlsbDI4QzVscEdxQVVBUlIyVjIraWR3?=
+ =?utf-8?B?VDV4dW9VNXNBaXpQd0VKTytFdVZrOE4xWG1uZ0g3SG12SFM5RVhVc1g0S25K?=
+ =?utf-8?B?cWdVMjV2ejVvMkRlWDlodi9Vei9NSlp5Q0RhZ2RRVnQrWEZUODU2OUtvZnUr?=
+ =?utf-8?B?VGFtc2NtbHc5Zk1HZGJpWDRMQ0hWb3ZCc2tuemhSSmRKWDgxWm51QUhsaFFS?=
+ =?utf-8?B?dVZCOVVNbWZMOTJJZ1ZWSS9XQkpUNms5dGRYbWVjNE1FeWJpTnFIWlJCaHhy?=
+ =?utf-8?B?WDYxdWtLb2tBcUEybkp3UnFNVDkzZVNibnEwS1N4KzFmeU9CVG40NWtUeGtH?=
+ =?utf-8?B?M01Zemp3bThQQS8zUkFoNFBIN1BLOHQ5eHB5MHVSTDRDY01adHpHSUZFT05W?=
+ =?utf-8?B?bmkydVZGTGdQQ2ZmcEZHdVZBT2o2QkhwdmhDbmJDbVB6d3dDSXkvWDE2MG5H?=
+ =?utf-8?B?RnpCanFKd3lzRi9kUERNWVRvTko1YlV2TUpjZGU5ZFBkazY3NEhtTGRhS2hD?=
+ =?utf-8?B?dHc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 084b59c2-dae8-438e-6ffb-08dbd539ade0
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5776.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 09:06:31.3427
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dEmLX4ooPfLDoeLvrDd7zdvD7IRLnKPpgeERPt6K4BlzAm05dpVgtX6e+mrrfoJjmkNScxD2HFvxEpUSuT7k8VElRw+m0U2mRDF0PS8/bEE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8569
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/24 22:56, Daniel Lezcano wrote:
-> 
-> Hi Xingyu,
-> 
-> 
-> On 19/10/2023 07:35, Xingyu Wu wrote:
->> Add timer driver for the StarFive JH7110 SoC.
-> 
-> As it is a new timer, please add a proper nice description explaining the timer hardware, thanks.
 
-OK. Will add the description in next version.
 
+On 25.10.2023 05:27, Dust Li wrote:
+> When mlx5_packet_reformat_alloc() fails, the encap_header allocated in
+> mlx5e_tc_tun_create_header_ipv4{6} will be released within it. However,
+> e->encap_header is already set to the previously freed encap_header
+> before mlx5_packet_reformat_alloc(). As a result, the later
+> mlx5e_encap_put() will free e->encap_header again, causing a double free
+> issue.
 > 
->> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
->> ---
->>   MAINTAINERS                        |   7 +
->>   drivers/clocksource/Kconfig        |  11 +
->>   drivers/clocksource/Makefile       |   1 +
->>   drivers/clocksource/timer-jh7110.c | 380 +++++++++++++++++++++++++++++
->>   4 files changed, 399 insertions(+)
->>   create mode 100644 drivers/clocksource/timer-jh7110.c
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 7a7bd8bd80e9..91c09b399131 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -20473,6 +20473,13 @@ S:    Maintained
->>   F:    Documentation/devicetree/bindings/sound/starfive,jh7110-tdm.yaml
->>   F:    sound/soc/starfive/jh7110_tdm.c
->>   +STARFIVE JH7110 TIMER DRIVER
->> +M:    Samin Guo <samin.guo@starfivetech.com>
->> +M:    Xingyu Wu <xingyu.wu@starfivetech.com>
->> +S:    Supported
->> +F:    Documentation/devicetree/bindings/timer/starfive,jh7110-timer.yaml
->> +F:    drivers/clocksource/timer-jh7110.c
->> +
->>   STARFIVE JH71X0 CLOCK DRIVERS
->>   M:    Emil Renner Berthing <kernel@esmil.dk>
->>   M:    Hal Feng <hal.feng@starfivetech.com>
->> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
->> index 0ba0dc4ecf06..821abcc1e517 100644
->> --- a/drivers/clocksource/Kconfig
->> +++ b/drivers/clocksource/Kconfig
->> @@ -641,6 +641,17 @@ config RISCV_TIMER
->>         is accessed via both the SBI and the rdcycle instruction.  This is
->>         required for all RISC-V systems.
->>   +config STARFIVE_JH7110_TIMER
->> +    bool "Timer for the STARFIVE JH7110 SoC"
->> +    depends on ARCH_STARFIVE || COMPILE_TEST
-> 
-> You may want to use ARCH_STARFIVE only if the platform can make this timer optional. Otherwise, set the option from the platform Kconfig and put the bool "bla bla" if COMPILE_TEST
+> mlx5e_encap_put()
+>     --> mlx5e_encap_dealloc()
+>         --> kfree(e->encap_header)
 
-Yes, this timer only be used on the StarFive SoC. So I intend to modify to this:
-
-bool "Timer for the STARFIVE JH7110 SoC" if COMPILE_TEST
-depends on ARCH_STARFIVE
+nit: I think it should mlx5e_encap_put_locked not mlx5e_encap_put to be precise.
 
 > 
->> +    select TIMER_OF
->> +    select CLKSRC_MMIO
->> +    default ARCH_STARFIVE
+> This happens when cmd: MLX5_CMD_OP_ALLOC_PACKET_REFORMAT_CONTEXT fail.
 > 
-> no "default"
+> This patch fix it by not setting e->encap_header until
+> mlx5_packet_reformat_alloc() success.
+> 
+> Fixes: d589e785baf5e("net/mlx5e: Allow concurrent creation of encap entries")
+> Reported-by: Cruz Zhao <cruzzhao@linux.alibaba.com>
+> Reported-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+> Signed-off-by: Dust Li <dust.li@linux.alibaba.com>
+> ---
 
-Will drop it.
+Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
 
+>  drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
 > 
->> +    help
->> +      This enables the timer for StarFive JH7110 SoC. On RISC-V platform,
->> +      the system has started RISCV_TIMER, but you can also use this timer
->> +      which can provide four channels to do a lot more things on JH7110 SoC.
->> +
->>   config CLINT_TIMER
->>       bool "CLINT Timer for the RISC-V platform" if COMPILE_TEST
->>       depends on GENERIC_SCHED_CLOCK && RISCV
->> diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
->> index 368c3461dab8..b66ac05ec086 100644
->> --- a/drivers/clocksource/Makefile
->> +++ b/drivers/clocksource/Makefile
->> @@ -80,6 +80,7 @@ obj-$(CONFIG_INGENIC_TIMER)        += ingenic-timer.o
->>   obj-$(CONFIG_CLKSRC_ST_LPC)        += clksrc_st_lpc.o
->>   obj-$(CONFIG_X86_NUMACHIP)        += numachip.o
->>   obj-$(CONFIG_RISCV_TIMER)        += timer-riscv.o
->> +obj-$(CONFIG_STARFIVE_JH7110_TIMER)    += timer-jh7110.o
->>   obj-$(CONFIG_CLINT_TIMER)        += timer-clint.o
->>   obj-$(CONFIG_CSKY_MP_TIMER)        += timer-mp-csky.o
->>   obj-$(CONFIG_GX6605S_TIMER)        += timer-gx6605s.o
->> diff --git a/drivers/clocksource/timer-jh7110.c b/drivers/clocksource/timer-jh7110.c
->> new file mode 100644
->> index 000000000000..71de29a3ec91
->> --- /dev/null
->> +++ b/drivers/clocksource/timer-jh7110.c
->> @@ -0,0 +1,380 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Starfive JH7110 Timer driver
->> + *
->> + * Copyright (C) 2022-2023 StarFive Technology Co., Ltd.
->> + *
->> + * Author:
->> + * Xingyu Wu <xingyu.wu@starfivetech.com>
->> + * Samin Guo <samin.guo@starfivetech.com>
->> + */
->> +
->> +#include <linux/clk.h>
->> +#include <linux/clockchips.h>
->> +#include <linux/clocksource.h>
->> +#include <linux/err.h>
->> +#include <linux/interrupt.h>
->> +#include <linux/io.h>
->> +#include <linux/iopoll.h>
->> +#include <linux/irq.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/of.h>
->> +#include <linux/of_device.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/reset.h>
->> +#include <linux/sched_clock.h>
-> 
-> Please double check the headers and remove the pointless ones.
-
-Will fix.
-
-> 
-> 
->> +/* Bias: Ch0-0x0, Ch1-0x40, Ch2-0x80, and so on. */
->> +#define JH7110_TIMER_CH_LEN        0x40
->> +#define JH7110_TIMER_CH_BASE(x)        ((x) * JH7110_TIMER_CH_LEN)
->> +#define JH7110_TIMER_CH_MAX        4
->> +
->> +#define JH7110_CLOCK_SOURCE_RATING    200
->> +#define JH7110_VALID_BITS        32
->> +#define JH7110_DELAY_US            0
->> +#define JH7110_TIMEOUT_US        10000
->> +#define JH7110_CLOCKEVENT_RATING    300
->> +#define JH7110_TIMER_MAX_TICKS        0xffffffff
->> +#define JH7110_TIMER_MIN_TICKS        0xf
->> +#define JH7110_TIMER_RELOAD_VALUE    0
->> +
->> +#define JH7110_TIMER_INT_STATUS        0x00 /* RO[0:4]: Interrupt Status for channel0~4 */
->> +#define JH7110_TIMER_CTL        0x04 /* RW[0]: 0-continuous run, 1-single run */
->> +#define JH7110_TIMER_LOAD        0x08 /* RW: load value to counter */
->> +#define JH7110_TIMER_ENABLE        0x10 /* RW[0]: timer enable register */
->> +#define JH7110_TIMER_RELOAD        0x14 /* RW: write 1 or 0 both reload counter */
->> +#define JH7110_TIMER_VALUE        0x18 /* RO: timer value register */
->> +#define JH7110_TIMER_INT_CLR        0x20 /* RW: timer interrupt clear register */
->> +#define JH7110_TIMER_INT_MASK        0x24 /* RW[0]: timer interrupt mask register */
->> +
->> +#define JH7110_TIMER_INT_CLR_ENA    BIT(0)
->> +#define JH7110_TIMER_INT_CLR_AVA_MASK    BIT(1)
->> +
->> +struct jh7110_clkevt {
->> +    struct clock_event_device evt;
->> +    struct clocksource cs;
->> +    bool cs_is_valid;
->> +    struct clk *clk;
->> +    struct reset_control *rst;
->> +    u32 rate;
->> +    u32 reload_val;
->> +    void __iomem *base;
->> +    char name[sizeof("jh7110-timer.chX")];
->> +};
->> +
->> +struct jh7110_timer_priv {
->> +    struct clk *pclk;
->> +    struct reset_control *prst;
->> +    struct jh7110_clkevt clkevt[JH7110_TIMER_CH_MAX];
-> 
-> Why do you need several clock events and clock sources ?
-
-This timer has four counters (channels) which run independently. So each counter can have its own clock event and clock source to configure different settings.
-
-> 
-> [ ... ]
-> 
-> 
-
-Thanks,
-Xingyu Wu
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
+> index 00a04fdd756f..8bca696b6658 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
+> @@ -300,9 +300,6 @@ int mlx5e_tc_tun_create_header_ipv4(struct mlx5e_priv *priv,
+>  	if (err)
+>  		goto destroy_neigh_entry;
+>  
+> -	e->encap_size = ipv4_encap_size;
+> -	e->encap_header = encap_header;
+> -
+>  	if (!(nud_state & NUD_VALID)) {
+>  		neigh_event_send(attr.n, NULL);
+>  		/* the encap entry will be made valid on neigh update event
+> @@ -322,6 +319,8 @@ int mlx5e_tc_tun_create_header_ipv4(struct mlx5e_priv *priv,
+>  		goto destroy_neigh_entry;
+>  	}
+>  
+> +	e->encap_size = ipv4_encap_size;
+> +	e->encap_header = encap_header;
+>  	e->flags |= MLX5_ENCAP_ENTRY_VALID;
+>  	mlx5e_rep_queue_neigh_stats_work(netdev_priv(attr.out_dev));
+>  	mlx5e_route_lookup_ipv4_put(&attr);
+> @@ -568,9 +567,6 @@ int mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
+>  	if (err)
+>  		goto destroy_neigh_entry;
+>  
+> -	e->encap_size = ipv6_encap_size;
+> -	e->encap_header = encap_header;
+> -
+>  	if (!(nud_state & NUD_VALID)) {
+>  		neigh_event_send(attr.n, NULL);
+>  		/* the encap entry will be made valid on neigh update event
+> @@ -590,6 +586,8 @@ int mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
+>  		goto destroy_neigh_entry;
+>  	}
+>  
+> +	e->encap_size = ipv6_encap_size;
+> +	e->encap_header = encap_header;
+>  	e->flags |= MLX5_ENCAP_ENTRY_VALID;
+>  	mlx5e_rep_queue_neigh_stats_work(netdev_priv(attr.out_dev));
+>  	mlx5e_route_lookup_ipv6_put(&attr);
