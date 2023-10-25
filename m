@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3833B7D5F6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 03:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7D07D5F5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 03:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbjJYBOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 21:14:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37456 "EHLO
+        id S231341AbjJYBK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 21:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJYBOF (ORCPT
+        with ESMTP id S230469AbjJYBK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 21:14:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D66128;
-        Tue, 24 Oct 2023 18:14:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698196444; x=1729732444;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qpJjJRkBLu59n6lsEp+sa1jxDcxxSkX1crOOHG4/dVI=;
-  b=FNgkcvpWN4SLzxklZ6PQX/8g+06WDUDekbFXX0EeoiB5Z4ErLHU5k4xt
-   OjgiRsQ9L+inqUNt+nJ3vIz9sYzcDCtgtN4xTXQaKiPkWsNOC6fz6/Knq
-   1vxNciscIgFR07pgnAr0ZsOBiDj7UzHH0Tc16m9G+nS0veBYkhagJZlZk
-   q5uBAsDHo2jExOddx+oVQtNFCv10+MzAQHRK2V60ltBdnmwTQfrHDB83P
-   4Udf8BeT5l0m5I29pw6v+E58v5T9+vMqs9u4zT0BObqoSeFfZ2txvEJPh
-   v2OpwSCQbCmtxdkmBhKu8i0R5n/Tc+Cvu7KCrs7mKC9xAqYDIiQS9UV8P
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="391079010"
-X-IronPort-AV: E=Sophos;i="6.03,249,1694761200"; 
-   d="scan'208";a="391079010"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Oct 2023 18:14:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10873"; a="708528752"
-X-IronPort-AV: E=Sophos;i="6.03,249,1694761200"; 
-   d="scan'208";a="708528752"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orsmga003.jf.intel.com with ESMTP; 24 Oct 2023 18:13:57 -0700
-Message-ID: <62f396d4-f890-477f-b9ea-7b330fec35c2@linux.intel.com>
-Date:   Wed, 25 Oct 2023 09:10:08 +0800
+        Tue, 24 Oct 2023 21:10:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F137BD7D;
+        Tue, 24 Oct 2023 18:10:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8F5D8C433C7;
+        Wed, 25 Oct 2023 01:10:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698196223;
+        bh=jr94RxQWR4i7cYxL/lD+f8pdGurxi1ydHIq3R2P6ijc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KC0cDXJy1QF1yJ4i8slHHvvWYTwGg6xp0yY2QWfdAgx020uanyxzc+/RRmSwRA0gj
+         QaKBLZosAn+jUPvXpL/uGi1WBnx0qc42gCyZfyt2n5OEePpYrZkatrmac/excAtPDW
+         2xDQ/Il28liuR9oeC+NOtKTQQxpPQHfCyhyqE4WEVMDB+PlJ6nVI7A25+d7h2sIPlQ
+         0z9jEs8m1s0J8KNleYiGF5brztz8/LhrHijQFbEfmFMEqDOOZG0FC6rrELoK+A/5p2
+         /WM1Q+ZFEAYk0rlSYQGwRfnNH/R4c0MKjcEWo3fbpgPuwvXSXi3YIVpm5iBqoCWm1y
+         qcHbcMnuTBiUQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7254CC41620;
+        Wed, 25 Oct 2023 01:10:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com, cohuck@redhat.com, eric.auger@redhat.com,
-        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
-        peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com
-Subject: Re: [PATCH] iommu/vt-d: Enhance capability check for nested parent
- domain allocation
-Content-Language: en-US
-To:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
-        alex.williamson@redhat.com, jgg@nvidia.com, kevin.tian@intel.com,
-        robin.murphy@arm.com
-References: <20231024150011.44642-1-yi.l.liu@intel.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20231024150011.44642-1-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] s390/ctcm: replace deprecated strncpy with strscpy
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169819622346.20949.9173650120441533061.git-patchwork-notify@kernel.org>
+Date:   Wed, 25 Oct 2023 01:10:23 +0000
+References: <20231023-strncpy-drivers-s390-net-ctcm_main-c-v1-1-265db6e78165@google.com>
+In-Reply-To: <20231023-strncpy-drivers-s390-net-ctcm_main-c-v1-1-265db6e78165@google.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     wintera@linux.ibm.com, wenjia@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/24/23 11:00 PM, Yi Liu wrote:
-> This adds the scalable mode check before allocating the nested parent domain
-> as checking nested capability is not enough. User may turn off scalable mode
-> which also means no nested support even if the hardware supports it.
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon, 23 Oct 2023 19:35:07 +0000 you wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 > 
-> Fixes: c97d1b20d383 ("iommu/vt-d: Add domain_alloc_user op")
-> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
-> ---
-> v1: Based on Joao's dirty page tracking v6 https://github.com/jpemartins/linux/commits/iommufd-v6
-> ---
->   drivers/iommu/intel/iommu.c | 2 +-
->   drivers/iommu/intel/iommu.h | 2 ++
->   2 files changed, 3 insertions(+), 1 deletion(-)
+> We expect chid to be NUL-terminated based on its use with format
+> strings:
+> 
+> [...]
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Here is the summary with links:
+  - s390/ctcm: replace deprecated strncpy with strscpy
+    https://git.kernel.org/netdev/net-next/c/19d1c64b7741
 
-Hi Jason,
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Given that this fixes a commit in the iommufd tree, can you please pick
-this fix as well?
 
-Best regards,
-baolu
