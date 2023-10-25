@@ -2,206 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AFC7D76AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5AE7D76C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbjJYV0S convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 25 Oct 2023 17:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        id S230354AbjJYV0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbjJYV0O (ORCPT
+        with ESMTP id S232329AbjJYV0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:26:14 -0400
-Received: from smtprelay05.ispgateway.de (smtprelay05.ispgateway.de [80.67.18.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C6E186;
-        Wed, 25 Oct 2023 14:26:10 -0700 (PDT)
-Received: from [92.206.139.21] (helo=note-book.lan)
-        by smtprelay05.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96.1)
-        (envelope-from <git@apitzsch.eu>)
-        id 1qvlOA-0004pg-2F;
-        Wed, 25 Oct 2023 23:26:06 +0200
-Message-ID: <f5475c4f90e52817349e4842984bb3657b1e500d.camel@apitzsch.eu>
-Subject: Re: [PATCH 4/4] media: i2c: imx214: Add sensor's pixel matrix size
-From:   =?ISO-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>
-To:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-Cc:     Ricardo Ribalda <ribalda@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Date:   Wed, 25 Oct 2023 23:26:00 +0200
-In-Reply-To: <56kgwl7zehsxy2pp7nziwk2gt6joax42qpzs6eywufvcto7qxm@ts4i3ccdokjr>
-References: <20231023-imx214-v1-0-b33f1bbd1fcf@apitzsch.eu>
-         <20231023-imx214-v1-4-b33f1bbd1fcf@apitzsch.eu>
-         <56kgwl7zehsxy2pp7nziwk2gt6joax42qpzs6eywufvcto7qxm@ts4i3ccdokjr>
-Autocrypt: addr=git@apitzsch.eu; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.50.1 
+        Wed, 25 Oct 2023 17:26:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B331A6;
+        Wed, 25 Oct 2023 14:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698269200; x=1729805200;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QcRbBDBn8sT6LCxeJ7pPH2h7F8dhTxOz4sMgSXosL4c=;
+  b=UKTCnw2fK3L++u4iJojX0f6Hy/3wX293pc0R5Pwu9yrfaXHl4ayLB8J4
+   lLmI4YaKiR1SRezn31GpFTu23Y6HJxmk6EamO715UQ/Kh5v6KUlad9sae
+   7aUUbYR7jMOuUyL7gg/uFZcZdRMfAddS78BasuB+vWHh70gKIsvTN5okt
+   sHROKJLuFb3wMauLGaFv9VcTqlX2WrWwAJ7mwp+UlWJfjj3aqdqWsnVRW
+   aSEFyrPwRSZYqTGasyN99q91I5ugPosceHiXbJv7saQvW16BglQsxBmly
+   v5kzLkhNH75pHh7R1Rt8WRlGWGBfrhwHR8MAm/keE0sZai5KlX1bSqLjp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="366750725"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="366750725"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 14:26:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="902697016"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="902697016"
+Received: from lkp-server01.sh.intel.com (HELO 8917679a5d3e) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Oct 2023 14:24:12 -0700
+Received: from kbuild by 8917679a5d3e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qvlOc-0009D4-02;
+        Wed, 25 Oct 2023 21:26:34 +0000
+Date:   Thu, 26 Oct 2023 05:26:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     jeshwank <JESHWANTHKUMAR.NK@amd.com>, thomas.lendacky@amd.com,
+        john.allen@amd.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, jens.wiklander@linaro.org,
+        sumit.garg@linaro.org, jarkko.nikula@linux.intel.com,
+        mario.limonciello@amd.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org
+Cc:     oe-kbuild-all@lists.linux.dev, Mythri.Pandeshwarakrishna@amd.com,
+        Devaraj.Rangasamy@amd.com, Rijo-john.Thomas@amd.com,
+        nimesh.easow@amd.com, JESHWANTHKUMAR.NK@amd.com
+Subject: Re: [PATCH 2/3] crypto: ccp - Use psp_tee_alloc_buffer() and
+ psp_tee_free_buffer()
+Message-ID: <202310260529.GEey5HQc-lkp@intel.com>
+References: <20231025065700.1556152-3-JESHWANTHKUMAR.NK@amd.com>
 MIME-Version: 1.0
-X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,PDS_OTHER_BAD_TLD,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025065700.1556152-3-JESHWANTHKUMAR.NK@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+Hi jeshwank,
 
-Am Dienstag, dem 24.10.2023 um 09:52 +0200 schrieb Jacopo Mondi:
-> Hi Andre'
-> 
-> On Mon, Oct 23, 2023 at 11:47:53PM +0200, André Apitzsch wrote:
-> > Set effictive and active sensor pixel sizes as shown in product
-> 
-> s/effictive/effective
-> 
-> > brief[1].
-> > 
-> > [1]:
-> > https://www.mouser.com/datasheet/2/897/ProductBrief_IMX214_20150428-1289331.pdf
-> > 
-> > Signed-off-by: André Apitzsch <git@apitzsch.eu>
-> > ---
-> >  drivers/media/i2c/imx214.c | 39 ++++++++++++++++++++++++++++++++--
-> > -----
-> >  1 file changed, 32 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/media/i2c/imx214.c
-> > b/drivers/media/i2c/imx214.c
-> > index bef8dc36e2d0..a2d441cd8dcd 100644
-> > --- a/drivers/media/i2c/imx214.c
-> > +++ b/drivers/media/i2c/imx214.c
-> > @@ -36,6 +36,14 @@
-> >  #define IMX214_EXPOSURE_STEP		1
-> >  #define IMX214_EXPOSURE_DEFAULT		0x0c70
-> > 
-> > +/* IMX214 native and active pixel array size */
-> > +#define IMX214_NATIVE_WIDTH		4224U
-> > +#define IMX214_NATIVE_HEIGHT		3136U
-> > +#define IMX214_PIXEL_ARRAY_LEFT		8U
-> > +#define IMX214_PIXEL_ARRAY_TOP		8U
-> > +#define IMX214_PIXEL_ARRAY_WIDTH	4208U
-> > +#define IMX214_PIXEL_ARRAY_HEIGHT	3120U
-> > +
-> 
-> I do get slightly different numbers from the datasheet version I have
-> 
-> The sensor is said to have 4224x3208 total pixels of which 4208x3120
-> are active ones.
-> 
-> The pixel array diagram shows 64 "OPB" (optically black ?) lines,
-> followed by 8 dummy lines, followed by 3120 valid lines. There are 8
-> dummy columns at each side of the 4208 valid ones.
-> 
-> Now, NATIVE which represents the full pixel array size seems to be
-> 4224x3208 (other parts of the datasheet only report 3200 lines
-> though)
-> 
-> BOUNDS represents the readabale array area, which I presume
-> corresponds to what is named as 'effective area' by the datasheet. It
-> excludes the OPB lines at the top of the image and seems to be
-> represented by (0, 64, 4224, 3160).
-> 
-> CROP_DEFAULT represents the default crop rectangle which covers the
-> active pixel area, so it excludes 8 more lines of dummy pixels and 8
-> dummy columns, which gives a rectangle (8, 72, 4208, 3120)
-> 
-> Also note that the driver always reports a TGT_CROP rectangle with
-> top/left points set to 0. If my understanding is correct, V4L2
-> selection targets are defined from the most external target
-> (TGT_NATIVE in this case), and the driver should be corrected to
-> initialize the crop rectangle with a top-left corner at (8, 72).
-> 
-> Does this make sense ?
+kernel test robot noticed the following build warnings:
 
-As far as I understood, only the effective and active sizes of three
-sizes provided in the datasheet (total, effective and active) matter.
-By comparing the values used in imx219.c (and imx415.c) with the ones
-in the corresponding datasheets [1,2] I assume, that "effective"
-matches "NATIVE_SIZE", "active" matches "CROP_DEFAULT" and "total" is
-ignored.
-The commit message of 1ed36ecd1459b653cced8929bfb37dba94b64c5d ("media:
-i2c: imx219: Selection compliance fixes") seems to support me here:
+[auto build test WARNING on herbert-crypto-2.6/master]
+[also build test WARNING on linus/master v6.6-rc7]
+[cannot apply to herbert-cryptodev-2.6/master next-20231025]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> The top/left crop coordinates of the TGT_CROP rectangle were set to
-> (0, 0) instead of (8, 8) which is the offset from the larger physical
-> pixel array rectangle.
+url:    https://github.com/intel-lab-lkp/linux/commits/jeshwank/crypto-ccp-Add-function-to-allocate-and-free-memory-using-DMA-APIs/20231025-150420
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git master
+patch link:    https://lore.kernel.org/r/20231025065700.1556152-3-JESHWANTHKUMAR.NK%40amd.com
+patch subject: [PATCH 2/3] crypto: ccp - Use psp_tee_alloc_buffer() and psp_tee_free_buffer()
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231026/202310260529.GEey5HQc-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231026/202310260529.GEey5HQc-lkp@intel.com/reproduce)
 
-This (8, 8) is half the difference between number of effective and
-active pixels of imx219[1].
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310260529.GEey5HQc-lkp@intel.com/
 
-Together with the 8 dummy lines and 8 dummy columns you mentioned, I
-still think my values are right. But I've just started working with
-V4L2, so I might be wrong. 
+All warnings (new ones prefixed by >>):
 
-Could you share the imx214 datasheet with me?
+>> drivers/crypto/ccp/tee-dev.c:123:24: warning: no previous prototype for 'tee_alloc_cmd_buffer' [-Wmissing-prototypes]
+     123 | struct psp_tee_buffer *tee_alloc_cmd_buffer(struct psp_tee_device *tee)
+         |                        ^~~~~~~~~~~~~~~~~~~~
 
-Best regards,
-André
 
-[1] https://www.arducam.com/downloads/modules/RaspberryPi_camera/IMX219DS.PDF
-[2] https://www.sony-semicon.com/files/62/pdf/p-12_IMX415-AAQR_AAMR_Flyer.pdf
-> 
-> Thanks
->   j
-> 
-> 
-> >  static const char * const imx214_supply_name[] = {
-> >  	"vdda",
-> >  	"vddd",
-> > @@ -634,14 +642,31 @@ static int imx214_get_selection(struct
-> > v4l2_subdev *sd,
-> >  {
-> >  	struct imx214 *imx214 = to_imx214(sd);
-> > 
-> > -	if (sel->target != V4L2_SEL_TGT_CROP)
-> > -		return -EINVAL;
-> > +	switch (sel->target) {
-> > +	case V4L2_SEL_TGT_CROP:
-> > +		mutex_lock(&imx214->mutex);
-> > +		sel->r = *__imx214_get_pad_crop(imx214, sd_state,
-> > sel->pad,
-> > +						sel->which);
-> > +		mutex_unlock(&imx214->mutex);
-> > +		return 0;
-> > 
-> > -	mutex_lock(&imx214->mutex);
-> > -	sel->r = *__imx214_get_pad_crop(imx214, sd_state, sel-
-> > >pad,
-> > -					sel->which);
-> > -	mutex_unlock(&imx214->mutex);
-> > -	return 0;
-> > +	case V4L2_SEL_TGT_NATIVE_SIZE:
-> > +		sel->r.top = 0;
-> > +		sel->r.left = 0;
-> > +		sel->r.width = IMX214_NATIVE_WIDTH;
-> > +		sel->r.height = IMX214_NATIVE_HEIGHT;
-> > +		return 0;
-> > +
-> > +	case V4L2_SEL_TGT_CROP_DEFAULT:
-> > +	case V4L2_SEL_TGT_CROP_BOUNDS:
-> > +		sel->r.top = IMX214_PIXEL_ARRAY_TOP;
-> > +		sel->r.left = IMX214_PIXEL_ARRAY_LEFT;
-> > +		sel->r.width = IMX214_PIXEL_ARRAY_WIDTH;
-> > +		sel->r.height = IMX214_PIXEL_ARRAY_HEIGHT;
-> > +		return 0;
-> > +	}
-> > +
-> > +	return -EINVAL;
-> >  }
-> > 
-> >  static int imx214_entity_init_cfg(struct v4l2_subdev *subdev,
-> > 
-> > --
-> > 2.42.0
-> > 
+vim +/tee_alloc_cmd_buffer +123 drivers/crypto/ccp/tee-dev.c
 
+   122	
+ > 123	struct psp_tee_buffer *tee_alloc_cmd_buffer(struct psp_tee_device *tee)
+   124	{
+   125		struct tee_init_ring_cmd *cmd;
+   126		struct psp_tee_buffer *cmd_buffer;
+   127	
+   128		cmd_buffer = psp_tee_alloc_buffer(sizeof(*cmd),
+   129						  GFP_KERNEL | __GFP_ZERO);
+   130		if (!cmd_buffer)
+   131			return NULL;
+   132	
+   133		cmd = (struct tee_init_ring_cmd *)cmd_buffer->vaddr;
+   134		cmd->hi_addr = upper_32_bits(tee->rb_mgr.ring_buf->paddr);
+   135		cmd->low_addr = lower_32_bits(tee->rb_mgr.ring_buf->paddr);
+   136		cmd->size = tee->rb_mgr.ring_buf->size;
+   137	
+   138		dev_dbg(tee->dev, "tee: ring address: high = 0x%x low = 0x%x size = %u\n",
+   139			cmd->hi_addr, cmd->low_addr, cmd->size);
+   140	
+   141		return cmd_buffer;
+   142	}
+   143	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
