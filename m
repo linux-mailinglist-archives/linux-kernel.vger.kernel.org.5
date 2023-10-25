@@ -2,135 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 917E47D6BF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8567D6C0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344015AbjJYMgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
+        id S1343973AbjJYMgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344021AbjJYMgH (ORCPT
+        with ESMTP id S1344058AbjJYMgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:36:07 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56481CE
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:36:02 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53eeb28e8e5so9925a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:36:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698237361; x=1698842161; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LGOk0CnKeZPsdii6KIyKL0bEMGOZJembVuo8Q1dzylc=;
-        b=YBoQjRLw9+oHFDgYKkjzpB+K08IZRJAZ62luCZ2odV/Y8L9LLaQs/qMAi2CQFfzmMF
-         9zZfzIBkhFKDI/Mev26IL+S0yohinfDqzvYPsqrY/jvpi4fhfoT1XMLb7IFmB6DZYVOm
-         IolLVixIXL9YlT4JUpz/eQpl7MhysL/hVGf039lE9CyMaWU82KgIyncI81xR1n9PRAyd
-         RFbR3XqggLk8haLusZpMZ36QgXHAZV+VSso0J2H7h/fGNfCaNcWfDIlxoVZ+3u8N4kKP
-         BMO8h4Uo/l4d8IV6iF4GPj9YthZhQG+cWy7wLRverZ0mYB2lSe1qvjq8iGReWS1KNDuc
-         SOvQ==
+        Wed, 25 Oct 2023 08:36:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFDB182
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:36:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698237360;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vvU+ODlhbBzCksS16LHKl+sMj+DM+WDalvoXiTfFa+g=;
+        b=RYc5hthBKMJPZje1BHIm6mXvDJqiA6alVL7l5EySZ7WXEHLTmzHU7pe5pVUtiD/Te1apfv
+        aP44ByU0D/YuCflrQRfDC0FAhLDCYPDDHhS+tI3RPkv18lu05n1jLgPHm6HWjm6f30qaLT
+        2xddBcud3Jzx5d0BbW2RnzLQaSM0UvE=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-252-A6s7jHGRMh-yERqHpw417A-1; Wed, 25 Oct 2023 08:35:58 -0400
+X-MC-Unique: A6s7jHGRMh-yERqHpw417A-1
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1c5ff1ee155so58784825ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:35:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698237361; x=1698842161;
+        d=1e100.net; s=20230601; t=1698237357; x=1698842157;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LGOk0CnKeZPsdii6KIyKL0bEMGOZJembVuo8Q1dzylc=;
-        b=j2bNpxM/9v0XfpNr2ojYLWJ0DWIFPohO2eW3PWEtPC5imF9RjYXX7/H5gURq63NcwX
-         gvTSeyJlepZDt4i0kU0k9WP22TD/trNbOd9lbLpia5HZRNFGD4yaCQk2fOuYUAZRu9g6
-         x01B9jatrGgzv6QBPZ2Ajto+Kd+tV9IffntVjTkHmjL190uaVgxXRvIVeRAf/UBm972p
-         8VzqVRhX75+1SSM8NW1lJ3t1hwFPcYgoG8kvTdssorlH4neloopP3Lesui789Qii2twk
-         y8PsdRBJjN5rkc4WM3hE84iYLo35SwOtT0onEutJVjwcIKTycqB4JbTEPct/YSRahord
-         HzOg==
-X-Gm-Message-State: AOJu0YxzWdUorWCwD5KSbX3f0f7xmsnwfurpxsBylwe4v2FXLR+bmBPg
-        9XGpXpubZjoVIzuw5Ic/LwztMItv458fCkDNqtQjGQ==
-X-Google-Smtp-Source: AGHT+IFEpfxrI8CLUEQxg5JfpcGaKukYdSHtSjSmABmdlig6tD0vaaHz20rghsrGGrvjeWn8s+35DKPxd+teg+FQvl4=
-X-Received: by 2002:aa7:da95:0:b0:540:e46d:1ee8 with SMTP id
- q21-20020aa7da95000000b00540e46d1ee8mr80496eds.4.1698237360568; Wed, 25 Oct
- 2023 05:36:00 -0700 (PDT)
+        bh=vvU+ODlhbBzCksS16LHKl+sMj+DM+WDalvoXiTfFa+g=;
+        b=eh872cO9yEtfHAhZGZb8sbRDY8uRQffUBs4nolE3m4lAyKQovEnCXMECBzx57lT9HV
+         v/xXtzajAUAUc7nKDfJ0aB7a+3YD8o29wIIi3mVjkQq+JY0tUp9EL74qer8f/LmFoy+K
+         8b+i2xU/sUTXGCl+JjjszsoWeI5VwF9lAF0WjCRyJD72kikQmEAMOF9P09JZrQxb7vGP
+         s5KdLhPlOWvnUH9BIl8NTnxOY8USC7GG9UwQA3R38cNa7DOp6yGiobNJ69QpZ8ndYx+/
+         j0T4r1fnbQspu7FtlM98pU9KyVU2dI2EB6Ue1+r8jUW5S6eawi353hK++k4zvGasVoej
+         ueCQ==
+X-Gm-Message-State: AOJu0Yz4iZ0rogLpdZe4tKRnGlgSx2AEii0C++SfqS2A+qqeWLiM2fvZ
+        Fi+k64ULMXBxF4l6w1F6dTp7hBFwr+pLcWG5spVBn8F+UGtXO4nzSsS3OQuzWOieMNlFhRrLqEb
+        3pg6igQVdyG3plbxxYTqwxeBpkrqu+mSLo/z9PJ5P
+X-Received: by 2002:a17:902:e841:b0:1b6:6f12:502e with SMTP id t1-20020a170902e84100b001b66f12502emr17465922plg.49.1698237357772;
+        Wed, 25 Oct 2023 05:35:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH/lVpfMUNBBfWqBo8bfvljBYSBCHKzm8BaAaoys67eChIuLm8w5Asc6ul+K1gzocSNYltZL1dL0BrIqtcbXRQ=
+X-Received: by 2002:a17:902:e841:b0:1b6:6f12:502e with SMTP id
+ t1-20020a170902e84100b001b66f12502emr17465908plg.49.1698237357450; Wed, 25
+ Oct 2023 05:35:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231024075748.1675382-1-dapeng1.mi@linux.intel.com>
- <20231024075748.1675382-3-dapeng1.mi@linux.intel.com> <CALMp9eRqGr+5+C1OLhxv1i8Q=YVRmFxkZQJoh7HzWkPg2z=WoA@mail.gmail.com>
- <6132ba52-fdf1-4680-9e4e-5ea2fcb63b3c@linux.intel.com>
-In-Reply-To: <6132ba52-fdf1-4680-9e4e-5ea2fcb63b3c@linux.intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 25 Oct 2023 05:35:44 -0700
-Message-ID: <CALMp9eSX6OL9=9sgnKpNgRtuTV93A=G=u-5qT1_rpKFjL-dBNw@mail.gmail.com>
-Subject: Re: [kvm-unit-tests Patch 2/5] x86: pmu: Change the minimum value of
- llc_misses event to 0
-To:     "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>
+References: <0b9cb1ea-4656-4802-b7a7-811c1e9e118a@moroto.mountain>
+In-Reply-To: <0b9cb1ea-4656-4802-b7a7-811c1e9e118a@moroto.mountain>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Wed, 25 Oct 2023 14:35:45 +0200
+Message-ID: <CAHc6FU646Jj3iODoHoAYpps2PL732Feb_w+5p=8GfUOMfYTHhw@mail.gmail.com>
+Subject: Re: [PATCH] gfs2: uninitialized variable in __gfs2_iomap_get()
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Bob Peterson <rpeterso@redhat.com>, gfs2@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 4:23=E2=80=AFAM Mi, Dapeng <dapeng1.mi@linux.intel.=
-com> wrote:
->
->
-> On 10/24/2023 9:03 PM, Jim Mattson wrote:
-> > On Tue, Oct 24, 2023 at 12:51=E2=80=AFAM Dapeng Mi <dapeng1.mi@linux.in=
-tel.com> wrote:
-> >> Along with the CPU HW's upgrade and optimization, the count of LLC
-> >> misses event for running loop() helper could be 0 just like seen on
-> >> Sapphire Rapids.
-> >>
-> >> So modify the lower limit of possible count range for LLC misses
-> >> events to 0 to avoid LLC misses event test failure on Sapphire Rapids.
-> > I'm not convinced that these tests are really indicative of whether or
-> > not the PMU is working properly. If 0 is allowed for llc misses, for
-> > instance, doesn't this sub-test pass even when the PMU is disabled?
-> >
-> > Surely, we can do better.
->
->
-> Considering the testing workload is just a simple adding loop, it's
-> reasonable and possible that it gets a 0 result for LLC misses and
-> branch misses events. Yeah, I agree the 0 count makes the results not so
-> credible. If we want to avoid these 0 count values, we may have to
-> complicate the workload, such as adding flush cache instructions, or
-> something like that (I'm not sure if there are instructions which can
-> force branch misses). How's your idea about this?
+Dan,
 
-CLFLUSH is probably a good way to ensure cache misses. IBPB may be a
-good way to ensure branch mispredictions, or IBRS on parts without
-eIBRS.
-
+On Wed, Oct 25, 2023 at 1:57=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro=
+.org> wrote:
+> The "ret" variable is uninitialized when we goto out because
+> gfs2_is_stuffed(ip).
 >
-> >
-> >> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
-> >> ---
-> >>   x86/pmu.c | 2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/x86/pmu.c b/x86/pmu.c
-> >> index 0def28695c70..7443fdab5c8a 100644
-> >> --- a/x86/pmu.c
-> >> +++ b/x86/pmu.c
-> >> @@ -35,7 +35,7 @@ struct pmu_event {
-> >>          {"instructions", 0x00c0, 10*N, 10.2*N},
-> >>          {"ref cycles", 0x013c, 1*N, 30*N},
-> >>          {"llc references", 0x4f2e, 1, 2*N},
-> >> -       {"llc misses", 0x412e, 1, 1*N},
-> >> +       {"llc misses", 0x412e, 0, 1*N},
-> >>          {"branches", 0x00c4, 1*N, 1.1*N},
-> >>          {"branch misses", 0x00c5, 0, 0.1*N},
-> >>   }, amd_gp_events[] =3D {
-> >> --
-> >> 2.34.1
-> >>
+> Fixes: 2cd225820b91 ("gfs2: Initialize metapaths outside of __gfs2_iomap_=
+get")
+
+thanks for catching this. I've fixed that patch directly.
+
+Andreas
+
