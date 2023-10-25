@@ -2,128 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B63697D7665
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1B17D766C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbjJYVKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
+        id S230162AbjJYVLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJYVKr (ORCPT
+        with ESMTP id S229649AbjJYVLw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:10:47 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49AB133
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:10:44 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507a62d4788so251944e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:10:44 -0700 (PDT)
+        Wed, 25 Oct 2023 17:11:52 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1E112A
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:11:49 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6c7c2c428c1so650694a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 14:11:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1698268243; x=1698873043; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=3hbGAH2u7UanqA7JiF1FSpJgxoOcyqFnHxpWblYWTOA=;
-        b=iubvNXY8JO4iHihgpCiYUOSVhyXQ37cnlE8ygyyJPjV1kn1FPZE7j+3Ofk5lBPEHR1
-         uaB2wX08K3rXMvPr6kd0W6wNRScNNcVqs5znaXDHRsXi45UJIwlB5k74A2YW+G2XoN37
-         q8MWNV193XhXgUw/AAtu0xl7Rn2g+BCNj67YY=
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1698268309; x=1698873109; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vvbiAXR+3VKhNIamhbP5xxZpWhK78+hpTb+9JSqRlGg=;
+        b=nvQrVEzmmYXghmwAo0bUmrf14IegRxYqpJnacGqGbH462cekhTO7o31RAQcT1ySrhQ
+         o+cpU4aDhSkcIbldBOPj9os1C9UMs0pGk83LZ/slH7BMhS9GFX3EbCWauFCVdm9Gyz/x
+         6dPdecuBZ59Q6xywY2PseK1T4Jeo842pZdfMkTr4Jox5tbvVxSqLAfoWMxhn0M3akRxz
+         pGIXWysq1TtVBH70GaFpmWnQIKZKzlGQhLV6tGWyRPJJEyqGDMMB81BH8AwTG5l1FM83
+         mMGe3rdlPL3+2Nr3m1JYoY+whcT0KRTPagJoKoP8cfy3pGtbe2WfNx2zotbUYuofeaMb
+         Pusg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698268243; x=1698873043;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :content-language:subject:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3hbGAH2u7UanqA7JiF1FSpJgxoOcyqFnHxpWblYWTOA=;
-        b=sr6TePD8MT5NLxWSZDMaDCnJB5Jxc94Oigxay6d5rGYW0q1RSmOY3TIzS/7LPSM/7U
-         8LyIEoDeOS6PQzVcJYD7I8tmQ8ts2z5R5ZJkE7G6Fn5VEhnCPODi4K0N8S0StAE/ezaL
-         991mGlv79xvNXRBwGG9DVQrWpQsQQteGDeNDAbpTQIVJhsvlHk1H8jRSTuAgGSJmtomU
-         9MoYi1jmHSg1CKrbt7Q1ECfDti9Ez4D5vLUDosQ/Px94X/VSWKuX+AAJ6AZlnQlNEeaC
-         P7Ox1RfhbymOf8ZsRlCLWPLypgVIjmFkEma/A/92JU1TXyxzDskZmmbWZWfF5S2xoPBz
-         9PMQ==
-X-Gm-Message-State: AOJu0YyZLpYN7qm4gzsCBhILkNHYGOWWGzjVTokj8No/PMC4B6Nd5dUN
-        PL3VTRzMXvt8rnz4WvwSX2d0/Q==
-X-Google-Smtp-Source: AGHT+IFNq+J4mXYBXKxXJf8nBbQlLfxc7pcyxnm1nbbmBBvG+HwJT4NQz4A5XbaNBKIqJp3QeU/Bhw==
-X-Received: by 2002:ac2:46c4:0:b0:508:12f4:34dc with SMTP id p4-20020ac246c4000000b0050812f434dcmr3212357lfo.42.1698268242936;
-        Wed, 25 Oct 2023 14:10:42 -0700 (PDT)
-Received: from [10.80.67.28] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id fx4-20020a170906b74400b009b9a1714524sm10650205ejb.12.2023.10.25.14.10.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 14:10:42 -0700 (PDT)
-Message-ID: <8b6d857f-cbf6-4969-8285-f90254bdafc0@citrix.com>
-Date:   Wed, 25 Oct 2023 22:10:41 +0100
+        d=1e100.net; s=20230601; t=1698268309; x=1698873109;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vvbiAXR+3VKhNIamhbP5xxZpWhK78+hpTb+9JSqRlGg=;
+        b=b4iMglA/cz1TuI/Lkkge5kNG4O6GUGq+0Cy7qwfLc8G4tFUvhb5+v+046YjVq1QHzi
+         SmVtb/dqJvc7jQK//5cOg4Nea0rLfb7p82vsMO1Sq3euODRgXKOFo1DNFtrHbybiZRXA
+         aD3lWEtx1Dgqnx3H4GfJX4mHoXh99d0un3yifpp1U0Ir07VXBcUC7grtCfBcQguYV3sM
+         RpP/cIJgd3J0Q/UDE/isSzQWuukrRwu0N93FlSSaZu0ZzEYdAH9qFccWcjW7sP/9AFFu
+         VR6ibwLUYFElI8QW8qan8+tN8dafxgvQPymqnOa+sLF8CmgBmLApozFGU5uii0XCAVRT
+         PLIg==
+X-Gm-Message-State: AOJu0Ywx7KQI1mwCxhh1XeL2FYxiuBod4pSSuxFycp9EHJcjSBVvF20S
+        AsOA/8wlCdqHYeUtU3qhL33FaQ==
+X-Google-Smtp-Source: AGHT+IFoPbLj21nNX14WA1MId9RviICvQbQvwuMrq6I5HACQKpRbIKPLDice73bnzAn5gIazBDjylQ==
+X-Received: by 2002:a05:6808:10d6:b0:3af:63ac:2f96 with SMTP id s22-20020a05680810d600b003af63ac2f96mr532334ois.6.1698268309130;
+        Wed, 25 Oct 2023 14:11:49 -0700 (PDT)
+Received: from ghost ([208.116.208.98])
+        by smtp.gmail.com with ESMTPSA id bm23-20020a0568081a9700b003af638fd8e4sm2540029oib.55.2023.10.25.14.11.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 14:11:48 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 14:11:45 -0700
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "Wang, Xiao W" <xiao.w.wang@intel.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH v7 2/4] riscv: Checksum header
+Message-ID: <ZTmEkYn1NcUvL58n@ghost>
+References: <20230919-optimize_checksum-v7-0-06c7d0ddd5d6@rivosinc.com>
+ <20230919-optimize_checksum-v7-2-06c7d0ddd5d6@rivosinc.com>
+ <DM8PR11MB575134C301E7E17E72281CFAB8DEA@DM8PR11MB5751.namprd11.prod.outlook.com>
+ <ZTl8gauEst2NGrw6@ghost>
+ <059f17e6-e240-40fa-8742-7844ad3b3502@app.fastmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: [PATCH v3 1/6] x86/bugs: Add asm helpers for executing VERW
-Content-Language: en-GB
-To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Alyssa Milburn <alyssa.milburn@intel.com>
-References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
- <20231025-delay-verw-v3-1-52663677ee35@linux.intel.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <20231025-delay-verw-v3-1-52663677ee35@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <059f17e6-e240-40fa-8742-7844ad3b3502@app.fastmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,39 +81,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 9:52 pm, Pawan Gupta wrote:
-> diff --git a/arch/x86/entry/entry.S b/arch/x86/entry/entry.S
-> index bfb7bcb362bc..f8ba0c0b6e60 100644
-> --- a/arch/x86/entry/entry.S
-> +++ b/arch/x86/entry/entry.S
-> @@ -20,3 +23,16 @@ SYM_FUNC_END(entry_ibpb)
->  EXPORT_SYMBOL_GPL(entry_ibpb);
->  
->  .popsection
-> +
-> +.pushsection .entry.text, "ax"
-> +
-> +.align L1_CACHE_BYTES, 0xcc
-> +SYM_CODE_START_NOALIGN(mds_verw_sel)
-> +	UNWIND_HINT_UNDEFINED
-> +	ANNOTATE_NOENDBR
-> +	.word __KERNEL_DS
+On Wed, Oct 25, 2023 at 10:52:22PM +0200, Arnd Bergmann wrote:
+> On Wed, Oct 25, 2023, at 22:37, Charlie Jenkins wrote:
+> > On Wed, Oct 25, 2023 at 06:50:05AM +0000, Wang, Xiao W wrote:
+> 
+> >> > +
+> >> > +/*
+> >> > + * Quickly compute an IP checksum with the assumption that IPv4 headers
+> >> > will
+> >> > + * always be in multiples of 32-bits, and have an ihl of at least 5.
+> >> > + * @ihl is the number of 32 bit segments and must be greater than or equal
+> >> > to 5.
+> >> > + * @iph is assumed to be word aligned.
+> >> 
+> >> Not sure if the assumption is always true. It looks the implementation in "lib/checksum.c" doesn't take this assumption.
+> >> The ip header can comes after a 14-Byte ether header, which may start from a word-aligned or DMA friendly address.
+> >
+> > While lib/checksum.c does not make this assumption, other architectures
+> > (x86, ARM, powerpc, mips, arc) do make this assumption. Architectures
+> > seem to only align the header on a word boundary in do_csum. I worry
+> > that the benefit of aligning iph in this "fast" csum function would
+> > disproportionately impact hardware that has fast misaligned accesses.
+> 
+> Most architectures set NET_IP_ALIGN to '2', which is intended
+> to have the IP header at a 32-bit aligned address, though
+> some other targets don't bother:
+> 
+> arch/arm64/include/asm/processor.h:#define NET_IP_ALIGN 0
+> arch/powerpc/include/asm/processor.h:#define NET_IP_ALIGN       0
+> arch/x86/include/asm/processor.h:#define NET_IP_ALIGN   0
+> include/linux/skbuff.h:#define NET_IP_ALIGN     2
+> 
+> I think it's considered a driver bug if an SKB ends up
+> with a misaligned IP header, but it's also something that
+> some of the more obscure drivers get wrong.
+> 
+>     Arnd
 
-You need another .align here.  Otherwise subsequent code will still
-start in this cacheline and defeat the purpose of trying to keep it
-separate.
+Thank you for pointing that out, I had not realized that macro existed.
+Since riscv keeps NET_IP_ALIGN at 0 it should be expected that
+ip_fast_csum is only called with 32-bit aligned addresses. I will update
+the comment and refer to that macro. riscv supports misaligned accesses
+but there are no guarantees of speed.
 
-> +SYM_CODE_END(mds_verw_sel);
+- Charlie
 
-Thinking about it, should this really be CODE and not a data entry?
-
-It lives in .entry.text but it really is data and objtool shouldn't be
-writing ORC data for it at all.
-
-(Not to mention that if it's marked as STT_OBJECT, objdump -d will do
-the sensible thing and not even try to disassemble it).
-
-~Andrew
-
-P.S. Please CC on the full series.  Far less effort than fishing the
-rest off lore.
