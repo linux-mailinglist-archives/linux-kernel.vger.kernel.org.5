@@ -2,398 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D967D6C51
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CE37D6C5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343606AbjJYMuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39322 "EHLO
+        id S1343645AbjJYMvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234911AbjJYMui (ORCPT
+        with ESMTP id S234787AbjJYMvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:50:38 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BBDAC
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:50:32 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-540c54944c4so1818830a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:50:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698238230; x=1698843030; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fD2982vYZCUDmxVo5Px3lqGhkfxchv2yO6sZbRsOqSM=;
-        b=pi6dT2LxAJU4scyBrdGFd3xVODx6UjUfCwLgc8g+4vm2QFJVUd1ezv/n2tSBKrbk1G
-         VQooc3YXsbDBrZc+HEnRqphOvse5tcn6vL8IOkyaCtjRhPhmMvbPWF2ECAE+BV3V6KZh
-         h5jCZYgIbKDHhfnHBRA49QYUDcaj9ltXv3Avgx/AdtP+p1AHE8EzuN1djlBHrOCPBO4i
-         ao5nJI7Km/rh0VJhT6jTz1oqP2+lnU5xZSQqwJFog3EKcR8G/WkD93wuTO6B8D8ZLf9R
-         vDzwssfwvt8a5FJzbP7PAAvGf+zaJGU9wPQQPbCBxYTGNiIA1psYWU9iMr66QMbT4jDM
-         Y1Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698238230; x=1698843030;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fD2982vYZCUDmxVo5Px3lqGhkfxchv2yO6sZbRsOqSM=;
-        b=lNd2sNjXNJV+vGpBLy16axkr75Kj6F/8Kd48SG256avtIpxpJo0vtc2kC8A4PDV0kH
-         JCK20fkpHjd/+0/qjckb4fy2CKDjQN2uBBUJPECEPcX7P1tSgoE+KwPSZxD+KaxeFmVX
-         bwlFqj2JxP7wBZnYpphWqmpAWqC+t5UZogJWY4lRhfiTDOsOv2eGD+E4sXRz3HtHZ7Yt
-         4imdlU2GU28LBUpbUolo6JCWegUInsapcu+fwqiaW45aBu4Jxbu/ToPKbxCERvLPTXGP
-         wIE6CzVqa1E/1sV0X4VkQTTjNLyQztH9T8cvOHfaccg+tPhbXOOhEQMERdTk5uCAawLx
-         4CVA==
-X-Gm-Message-State: AOJu0YzMBph/Av8J2vQVa1FO/UeZBlo3yBbUFr+ZQa2Ww2V6IXNvP2WC
-        q0CJaMEWad4dCJJ/iXCW4E0uZQ==
-X-Google-Smtp-Source: AGHT+IFY+odEeWhpmWwdO9o/N+Sxf3TBtwjYsjMlFnwBohLaWPF4pJvsSJhPttwqS0MW8f/KvpgDQw==
-X-Received: by 2002:a05:6402:35c4:b0:540:911b:72b1 with SMTP id z4-20020a05640235c400b00540911b72b1mr6159231edc.7.1698238230380;
-        Wed, 25 Oct 2023 05:50:30 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id eh16-20020a0564020f9000b0054026e95beesm6184888edb.76.2023.10.25.05.50.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 05:50:28 -0700 (PDT)
-Message-ID: <cb7395a9-71e8-415e-90d5-866a2aeadf28@linaro.org>
-Date:   Wed, 25 Oct 2023 14:50:23 +0200
+        Wed, 25 Oct 2023 08:51:49 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2086.outbound.protection.outlook.com [40.107.243.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7701E90;
+        Wed, 25 Oct 2023 05:51:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DUtdaGsA+wKzGzJu2Wa6QddgvaGvIM9rFzO3Ud9CX5tTg3SLi+MCc2s0/RWqzJ2a0q0JCZ1jdJhnUG/33/F2E6BxaED028qRvG3VNmlbP+hkeLCCIYHj0l6QRKmUKS7QhZLLvJ8FWgv7QUnQ/NSSIHMmSlNHuqJzwrxU6NJG9Q3tIDiobtMM5zKMlH08fq+7xTMvIAIFtjmoTvsSRBDDpnL2i1G4GAh9T0KLjMpIZHv8qZQAL54TK0/J2iF4nxOq1d6i3emCuHoW37NmC6zUutnwwpJG1+gKL4Ai+FDlFoULyVRp2i/1zrDdezz7ztqqddkBPLRQe/NiG72B7Bf7/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hhNDAMBHBUAE9AgQLqC37belLm58JOb9FdF0rvzMK5s=;
+ b=Gm/zmkve+38id0yf7kdZ0XyuZjx7MxminMnRbvjHbcAHLwm3QVAlkS8MYA52WdwUwWaMd36q/J5SObaaw24P7V6h4Vo1gC+dpUxqvYs1jCznufUHHN5jp3FJFSneTyKwyayGmvzMAqPj7lxYs6G7SvxdO5/myVFsd7ldYADBECnBrPrcpybqjG5RFaHwpFAkAymMf1XdNXV/VhuiYickVBq46bo0DKLt7IP8zb9zJDLNlWkDgoyIfOxbzDOmH2CqGls+5/2nkTngsnHPjOwDKki1yZ2uB0ZmH9w54JCBynRoVFX/JnHtswSWVryoLeRr1+7OtgD4+2F+2wz9tM6+jQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hhNDAMBHBUAE9AgQLqC37belLm58JOb9FdF0rvzMK5s=;
+ b=c3HfrxNVbpnO8Ngul7p6D/caxhFlsppd4qdXy0MBnNN6NP9RjBLdUPfQ/7UA+8r+L/uo6kRN3w5LUOVLD5My1qiB6eRJ+Co4MW6RCdhNZz3dMHo6t1ZuGID5uwnxgh8F84rs4CHCIMMWwAty4fvkHFDpxN0IwtonYpHeTLys8m5pcrqjxvliOww76J+nX8YCqNuo5Xl/PHfI7N+B30jEw9xeuKkwttrYjdU1ilIjXJTI9WHxtzyUi3cQFLzeh2hGNpQaAct8MG2NWdoaGZrKiv50mt6UXnxHIWhzH0uL/5iMrYFq2yrXH28FUPywqc6tsks7vjulbXbvPl3qQPFb1Q==
+Received: from BL1PR13CA0150.namprd13.prod.outlook.com (2603:10b6:208:2bb::35)
+ by SN7PR12MB6766.namprd12.prod.outlook.com (2603:10b6:806:26a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Wed, 25 Oct
+ 2023 12:51:45 +0000
+Received: from BL6PEPF0001AB52.namprd02.prod.outlook.com
+ (2603:10b6:208:2bb:cafe::12) by BL1PR13CA0150.outlook.office365.com
+ (2603:10b6:208:2bb::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19 via Frontend
+ Transport; Wed, 25 Oct 2023 12:51:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BL6PEPF0001AB52.mail.protection.outlook.com (10.167.241.4) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6933.15 via Frontend Transport; Wed, 25 Oct 2023 12:51:44 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 25 Oct
+ 2023 05:51:31 -0700
+Received: from [10.41.21.79] (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 25 Oct
+ 2023 05:51:27 -0700
+Message-ID: <0e2b8fc9-a84d-2bf2-91b7-6556bad43ede@nvidia.com>
+Date:   Wed, 25 Oct 2023 18:21:25 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/6] dt-bindings: display: Add yamls for JH7110 display
- system
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [Patch v5 2/2] ACPI: processor: reduce CPUFREQ thermal reduction
+ pctg for Tegra241
 Content-Language: en-US
-To:     Keith Zhao <keith.zhao@starfivetech.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        christian.koenig@amd.com, Bjorn Andersson <andersson@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>, Jagan Teki <jagan@edgeble.ai>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        Shengyang Chen <shengyang.chen@starfivetech.com>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>
-References: <20231025103957.3776-1-keith.zhao@starfivetech.com>
- <20231025103957.3776-2-keith.zhao@starfivetech.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231025103957.3776-2-keith.zhao@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Sudeep Holla <sudeep.holla@arm.com>
+CC:     <rafael@kernel.org>, <rui.zhang@intel.com>, <lenb@kernel.org>,
+        <linux-acpi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <treding@nvidia.com>,
+        <jonathanh@nvidia.com>, <bbasu@nvidia.com>, <sanjayc@nvidia.com>,
+        <ksitaraman@nvidia.com>, <srikars@nvidia.com>,
+        <jbrasen@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
+References: <20231014105426.26389-1-sumitg@nvidia.com>
+ <20231014105426.26389-3-sumitg@nvidia.com> <ZTY0gMOAKbugxDIJ@bogus>
+From:   Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <ZTY0gMOAKbugxDIJ@bogus>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB52:EE_|SN7PR12MB6766:EE_
+X-MS-Office365-Filtering-Correlation-Id: 518cf3c4-46d0-4801-d5af-08dbd55924d0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: t8ThrPbXsYZ0SDdd3J3+e09Gif8JyFnk8XKeRpcteV9pqjaSf9mghh8uHcS1we/E2kH47Xzt/p/0owPoKD2Xt2xmlw4il7gYcfS7CQ/Bdic0EXyQoqEqj7CqXfaSQbykzdRbm5mZhc6ypAUR6rTSY0t43Rg3gjQMfqlp2t5CR3guAAPrVvoy2JK+wi3tKw28vyv3d8rtta9AAzXvyrzUVK41pe4lO7yribroJ7n1tQJaKcQbTSgwx1gIMg9L1L39pbUadLCHM0Nuc9tqfOTucdpwU++gfc5hbWp5MAdqKkHyF+cIwPdXgQHTthLTtBNb7V3lFEhr/fUfR8MZYKpEeJKk18WWaA20XAdjNzyeLqlTNZsGIB6Nfej3yNOGbGWKQp/6ZXZH5r4VVWYC9wBetJ9H+wNTNwt8yPjql9Jhv84oWbtUEyS/ZWqSHR4xDhd7010qb13YEl1PXOX+Nff/1fsBOuoUZeLXt1lJkNSkHjz4tXqkJPT5dYpK/cKjAlZ07+ck2uvqGLz2w/AUhj+XrN+VcJ1j8R88ggSPur8JTpyxo6ypTLx+hsOKWOmj0cr9U5NkcRjApm3jEGzOijzpNgJNlIBKkk9dc44/6BBiBJ8nkzzWj/Hfqfymc1ltWuyQl/42Tdd3971UDIr4NaICYJpShREzQQl+BX8GjxFnkPoQEMXmcVHqZB4no+nuKbrh0H+3BDnEBSRKm+8bNx00W6752CTj9iz+eOCCGFJ8DjVKpZianU7jHAY1XXYSWq1lxtsO4mW8r3Wyz44MTOhNrw==
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39860400002)(136003)(376002)(230922051799003)(82310400011)(451199024)(1800799009)(186009)(64100799003)(40470700004)(46966006)(36840700001)(53546011)(36860700001)(40480700001)(5660300002)(2906002)(40460700003)(26005)(16526019)(426003)(83380400001)(336012)(41300700001)(107886003)(36756003)(2616005)(82740400003)(356005)(7636003)(47076005)(86362001)(31696002)(478600001)(16576012)(54906003)(70586007)(6916009)(316002)(31686004)(70206006)(8936002)(8676002)(4326008)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 12:51:44.7497
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 518cf3c4-46d0-4801-d5af-08dbd55924d0
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB52.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6766
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 12:39, Keith Zhao wrote:
-> StarFive SoCs JH7110 display system:
 
-A nit, subject: drop second/last, redundant "yamls for". The
-"dt-bindings" prefix is already stating that these are bindings, so
-format is fixed.
 
-> lcd-controller bases verisilicon dc8200 IP,
-> and hdmi bases Innosilicon IP. Add bindings for them.
-
-Please make it a proper sentences, with proper wrapping.
-
+On 23/10/23 14:23, Sudeep Holla wrote:
+> External email: Use caution opening links or attachments
 > 
-> also update MAINTAINERS for dt-bindings
-
-Not a sentence, but also not really needed.
-
 > 
-> about this patch, I tested the dtbs_check and dt_binding_check
-> with the result pass.
-> Based on the feedback of the previous version, the corresponding arrangement is made
-
-Not relevant, so not really suitable for commit msg.
-
+> On Sat, Oct 14, 2023 at 04:24:26PM +0530, Sumit Gupta wrote:
+>> From: Srikar Srimath Tirumala <srikars@nvidia.com>
+>>
+>> Current implementation of processor_thermal performs software throttling
+>> in fixed steps of "20%" which can be too coarse for some platforms.
+>> We observed some performance gain after reducing the throttle percentage.
+>> Change the CPUFREQ thermal reduction percentage and maximum thermal steps
+>> to be configurable. Also, update the default values of both for Nvidia
+>> Tegra241 (Grace) SoC. The thermal reduction percentage is reduced to "5%"
+>> and accordingly the maximum number of thermal steps are increased as they
+>> are derived from the reduction percentage.
+>>
+>> Signed-off-by: Srikar Srimath Tirumala <srikars@nvidia.com>
+>> Co-developed-by: Sumit Gupta <sumitg@nvidia.com>
+>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>> ---
+>>   drivers/acpi/arm64/Makefile          |  1 +
+>>   drivers/acpi/arm64/thermal_cpufreq.c | 20 ++++++++++++++++
+>>   drivers/acpi/processor_thermal.c     | 35 +++++++++++++++++++++++++---
+>>   include/linux/acpi.h                 |  9 +++++++
+>>   4 files changed, 62 insertions(+), 3 deletions(-)
+>>   create mode 100644 drivers/acpi/arm64/thermal_cpufreq.c
+>>
+>> diff --git a/drivers/acpi/arm64/Makefile b/drivers/acpi/arm64/Makefile
+>> index 143debc1ba4a..3f181d8156cc 100644
+>> --- a/drivers/acpi/arm64/Makefile
+>> +++ b/drivers/acpi/arm64/Makefile
+>> @@ -5,3 +5,4 @@ obj-$(CONFIG_ACPI_GTDT)       += gtdt.o
+>>   obj-$(CONFIG_ACPI_APMT)      += apmt.o
+>>   obj-$(CONFIG_ARM_AMBA)               += amba.o
+>>   obj-y                                += dma.o init.o
+>> +obj-$(CONFIG_ACPI)           += thermal_cpufreq.o
 > 
-> Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
-> ---
->  .../starfive/starfive,display-subsystem.yaml  |  41 +++++++
->  .../starfive/starfive,jh7110-dc8200.yaml      | 109 ++++++++++++++++++
->  .../starfive/starfive,jh7110-inno-hdmi.yaml   |  85 ++++++++++++++
->  MAINTAINERS                                   |   7 ++
->  4 files changed, 242 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
+> Do we really need CONFIG_ACPI here ? We won't be building this if it
+> is not enabled.
 > 
-> diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
-> new file mode 100644
-> index 000000000..f45b97b08
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
-> @@ -0,0 +1,41 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/starfive/starfive,display-subsystem.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Starfive DRM master device
 
-What is DRM in hardware? I know Digital Rights Management, but then
-subsystem seems wrong. If you mean Linux DRM, then Linux is not a
-hardware, so drop all Linuxisms and describe hardware.
+I think we can remove the CONFIG_ACPI macro here and enable it by default.
 
+> If this is for some module building, then does it make sense to have
+> more specific config ? May be CONFIG_ACPI_THERMAL ?
+> 
+>> diff --git a/drivers/acpi/arm64/thermal_cpufreq.c b/drivers/acpi/arm64/thermal_cpufreq.c
+>> new file mode 100644
+>> index 000000000000..de834fb013e7
+>> --- /dev/null
+>> +++ b/drivers/acpi/arm64/thermal_cpufreq.c
+>> @@ -0,0 +1,20 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +#include <linux/acpi.h>
+>> +
+>> +#ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+>> +#define SMCCC_SOC_ID_T241      0x036b0241
+>> +
+>> +int acpi_thermal_cpufreq_pctg(void)
+>> +{
+>> +     s32 soc_id = arm_smccc_get_soc_id_version();
+>> +
+>> +     /*
+>> +      * Check JEP106 code for NVIDIA Tegra241 chip (036b:0241) and
+>> +      * reduce the CPUFREQ Thermal reduction percentage to 5%.
+>> +      */
+>> +     if (soc_id == SMCCC_SOC_ID_T241)
+>> +             return 5;
+>> +
+>> +     return 0;
+>> +}
+>> +#endif
+> 
+> Since this looks like arch specific hook/callback, not sure if it is good
+> idea to have "arch_" in the function name. But if Rafael is OK with the name
+> I am fine with this as well.
+> 
+> --
+> Regards,
+> Sudeep
 
-> +
-> +maintainers:
-> +  - Keith Zhao <keith.zhao@starfivetech.com>
-> +  - ShengYang Chen <shengyang.chen@starfivetech.com>
-> +
-> +description:
-> +  The Starfive DRM master device is a virtual device needed to list all
+Will change the name from acpi_thermal_cpufreq_* to 
+acpi_arch_thermal_cpufreq_* if this suits more.
 
-Virtual device? Then not suitable for bindings, sorry.
-
-> +  display controller or other display interface nodes that comprise the
-> +  graphics subsystem.
-> +
-> +properties:
-> +  compatible:
-> +    const: starfive,display-subsystem
-> +
-> +  ports:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-
-No, ports is not phandle-array. ports is object, always.
-
-> +    description:
-> +      Should contain a list of phandles pointing to display interface ports
-> +      of display controller devices. Display controller definitions as defined
-> +      in Documentation/devicetree/bindings/display/starfive/
-> +      starfive,jh7110-dc8200.yaml
-
-Use standard graph ports, not some own, custom property.
-
-Anyway, entire binding should be dropped. You do not need it even.
-
-> +
-> +required:
-> +  - compatible
-> +  - ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    display-subsystem {
-> +        compatible = "starfive,display-subsystem";
-> +        ports = <&dc_out>;
-> +    };
-> diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
-> new file mode 100644
-> index 000000000..87051cddf
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
-> @@ -0,0 +1,109 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/starfive/starfive,jh7110-dc8200.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: StarFive display controller
-> +
-> +description:
-> +  The StarFive SoC uses the display controller based on Verisilicon IP
-> +  to transfer the image data from a video memory buffer to an external
-> +  LCD interface.
-> +
-> +maintainers:
-> +  - Keith Zhao <keith.zhao@starfivetech.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: starfive,jh7110-dc8200
-> +
-> +  reg:
-> +    minItems: 1
-> +    items:
-> +      - description:
-> +          host interface
-
-In one line.
- - description: host interface
-
-> +      - description:
-> +          display physical base address and length.
-
-Drop redundant parts: base address and length. Everything in reg for
-MMIO would have it...
-
-> +
-> +  interrupts:
-> +    items:
-> +      - description: The interrupt will be generated when DC finish one frame
-> +
-> +  clocks:
-> +    items:
-> +      - description: Clock for display system noc bus.
-> +      - description: Pixel clock for display channel 0.
-> +      - description: Pixel clock for display channel 1.
-> +      - description: Core clock for display controller.
-> +      - description: Clock for axi bus to access ddr.
-> +      - description: Clock for ahb bus to R/W the phy regs.
-> +      - description: External HDMI pixel clock.
-> +      - description: Parent clock for pixel clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: noc_bus
-> +      - const: channel0
-> +      - const: channel1
-> +      - const: dc_core
-> +      - const: axi_core
-> +      - const: ahb
-> +      - const: hdmi_tx
-> +      - const: dc_parent
-> +
-> +  resets:
-> +    items:
-> +      - description: Reset for axi bus.
-> +      - description: Reset for ahb bus.
-> +      - description: Core reset of display controller.
-> +
-> +  reset-names:
-> +    items:
-> +      - const: axi
-> +      - const: ahb
-> +      - const: core
-> +
-> +  port:
-> +    $ref: /schemas/graph.yaml#/properties/port
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - resets
-> +  - reset-names
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    dc8200: lcd-controller@29400000 {
-> +        compatible = "starfive,jh7110-dc8200";
-> +        reg = <0x29400000 0x100>, <0x29400800 0x2000>;
-> +        interrupts = <95>;
-> +        clocks = <&syscrg 60>,
-> +               <&voutcrg 7>,
-> +               <&voutcrg 8>,
-> +               <&voutcrg 4>,
-> +               <&voutcrg 5>,
-> +               <&voutcrg 6>,
-> +               <&hdmitx0_pixelclk>,
-> +               <&voutcrg 1>;
-> +        clock-names = "noc_bus", "channel0", "channel1",
-> +                      "dc_core", "axi_core", "ahb",
-> +                      "hdmi_tx","dc_parent";
-> +        resets = <&voutcrg 0>, <&voutcrg 1>, <&voutcrg 2>;
-> +        reset-names = "axi", "ahb", "core";
-> +        dc_out: port {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            dc_out_hdmi: endpoint@0 {
-> +                reg = <0>;
-> +                remote-endpoint = <&hdmi_in_dc>;
-> +            };
-> +        };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
-> new file mode 100644
-> index 000000000..f6c473a10
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
-> @@ -0,0 +1,85 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/starfive/starfive,jh7110-inno-hdmi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Starfive JH7110 HDMI controller
-> +
-> +description:
-> +  The StarFive JH7110 SoC uses the HDMI signal transmiter based on innosilicon IP
-> +  to generate HDMI signal from its input and transmit the signal to the screen.
-> +
-> +maintainers:
-> +  - Keith Zhao <keith.zhao@starfivetech.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: "starfive,jh7110-inno-hdmi"
-
-It does not look like you tested the bindings, at least after quick
-look. Please run `make dt_binding_check` (see
-Documentation/devicetree/bindings/writing-schema.rst for instructions).
-Maybe you need to update your dtschema and yamllint.
-
-Best regards,
-Krzysztof
+Best Regards,
+Sumit Gupta
 
