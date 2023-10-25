@@ -2,67 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDD47D6E37
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931C87D6DFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343899AbjJYNw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 09:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
+        id S1343844AbjJYNwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 09:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235027AbjJYNw0 (ORCPT
+        with ESMTP id S235062AbjJYNwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 09:52:26 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D95119A
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:52:21 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6ce31c4a653so3534801a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:52:21 -0700 (PDT)
+        Wed, 25 Oct 2023 09:52:30 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDD819A
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:52:26 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53dfc28a2afso8610236a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 06:52:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698241940; x=1698846740; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mf/tOcZ/6jE6930UPVsDhW3+wB63K7ieLNSBZLgxFJI=;
-        b=ZPjEoxuS5R59F2zrlFA6WWCM974AtzUlOe0xRXViOjAc4pJwoGRHqXXvlMnXUiQO4s
-         74U4VMuansi8SsSh8Iu7pJx/VGMI5oplOX6TZS5MoN0lcLHYXhNlUuSq595IvH/FY/dP
-         1FbXWo1q8Zmp4NuFU2WvOtaLpr5WEzIctfS8A+vt1e20we1GRbB2h3W3aWeapXHngJp4
-         LzcAO3QsI5Z7ZPHYA8y04TivS/uQ0k+uGSKoNZ/J+BQnqQf6/v6ld7kLTLnbqJRteVmD
-         ddCZZIheF1Womisa65bb4QZ5yv0LWGfsqxpx8LCXSVPrmS6UbnV4IDxG0BGqt/dZehq3
-         28tg==
+        d=linaro.org; s=google; t=1698241944; x=1698846744; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hAkOKpILrYpS8jHlk8gSXtMq6g0OQA1rzT5MydVPTFY=;
+        b=qY2RxaYJbM4Qgc7oRVCGTiQMEaSkI5P1IFJFjHouWu13VVHrK2n+SsOrcnbkzzY2Qg
+         uDsvEL7hN8YiCMv5rBKkHEfTQ9Vn5/0luTssMn1A94+dpsXmy2G5vNXVnu0h6nX/0lpG
+         YoR7+W+1cd8iXqIb7YAveTl8MSQx9ra2MwzpWqqwxEmualYrZCQsJys8G3Paqjf8fZrB
+         lFIuCf1d3iVIfLoFOZ33ElNllVqiB+leDAr87rxuHnOFgYF45BJkVKiaaCJkE2dRL4VJ
+         zI+s5P5IrP3GMZktqeOgDOzwY7uAGz3ZxRUWsRnivlcJ1UxheqEwrL0S7cPnip9YIbMl
+         R2yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698241940; x=1698846740;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mf/tOcZ/6jE6930UPVsDhW3+wB63K7ieLNSBZLgxFJI=;
-        b=R3YISrNLTyBdBpTrNdUi9+jvhOYPCx2MNwnvtQZdOr3cshlVpCmElqqdv9kQaG2VBE
-         AkhcvAGrVhGEJwNfNSXHbCydAj+Ut84PkoPWTC3RbhaSIB9/ffQwv4M/9I7BN8yHMY5A
-         9FfXddCdORZm9dZHykcQOLa5KpU5Ofje9cGf/sqZLru0tB6LRFMzRIYB0PdDG8iSEz5A
-         OGQl+i6ogW28eRce09NhtfPF+qP5EMsNIIu40nBxT2pvmSJ0vuln/k/OSEPZA/FGYau+
-         IYL2IEITNlxDkZcWnPK2ugvxMYDrylTzmdBeN8rmCqrcctzekTtpC4bIpw9/cH8Uhm5z
-         GrUQ==
-X-Gm-Message-State: AOJu0YwSNk1cMROyiyMBmaaJmct36O0Au779SVfqz4WPXs1Yhcr9rWQ/
-        PYEhLNmYW2g7+nIhfwxd36gX9YGgn1GDTimDOe7Y8A==
-X-Google-Smtp-Source: AGHT+IFMoW8roXMXarWSypKnJrf/6MjvgsvKah8L+3caWOq7aUiIdJho9FtYtlh2vc095UiJNLahg6+nRgN6fJgYkUg=
-X-Received: by 2002:a05:6830:2693:b0:6bd:cf64:d105 with SMTP id
- l19-20020a056830269300b006bdcf64d105mr18356016otu.12.1698241940472; Wed, 25
- Oct 2023 06:52:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1698241944; x=1698846744;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hAkOKpILrYpS8jHlk8gSXtMq6g0OQA1rzT5MydVPTFY=;
+        b=PQzzr9Bfk+ZSmpbRMZmVL8O4fFyqz2JfZte4Zb7wjP8Aug0oikMT6JR2ejK8M5gVDX
+         Xf16SZgm/oY5C2VKUvLUG5wLFsxlJU53ao4+E1VEHCxXnMTZ/DdSLcorwSBR1WyE7gDL
+         91V6BfkFp7wdry786O8GpiZaOaV3Q5U3o9CnC2Gnv0eS0ueaA9ftg/S9FCZwW23ggPvY
+         3+JnBLkDr5f6UWIkI+TbRaCb1Ud9TlJFOouilXnxbLhQNeduCQ28HtZmWvic928k1qIR
+         4ijOzuHVdKy+wZ3jJNpCGvIz+gDBewU05S8ywkwtQoaSaJNDujh34mMgh3s5bqIsKE63
+         mEhw==
+X-Gm-Message-State: AOJu0YwQVA9hiF9ca1p4X8p8DaZ1diSq0Xy3Z9cOSIjVyRPUUo3wbwAm
+        uLJZ3RFPGHCtg4zm56wAhFZaQunquAWjOlrMcig=
+X-Google-Smtp-Source: AGHT+IFDKaJDHwRvVG34a23esZJ3422tDoOfMEvFxr3ahnNZO3QjugcETAa4voOfDlluxdez/zA8CQ==
+X-Received: by 2002:a17:907:3d9f:b0:9b2:b152:b0f2 with SMTP id he31-20020a1709073d9f00b009b2b152b0f2mr11433346ejc.10.1698241944486;
+        Wed, 25 Oct 2023 06:52:24 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id u2-20020a17090617c200b0098ce63e36e9sm10094961eje.16.2023.10.25.06.52.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 06:52:23 -0700 (PDT)
+Message-ID: <3796c227-c850-4772-82f5-606ef5c5dc07@linaro.org>
+Date:   Wed, 25 Oct 2023 15:52:22 +0200
 MIME-Version: 1.0
-References: <cover.1697710527.git.viresh.kumar@linaro.org> <6de4fcb5bb943a131d0cdf0a858bd35af02a2f88.1697710527.git.viresh.kumar@linaro.org>
-In-Reply-To: <6de4fcb5bb943a131d0cdf0a858bd35af02a2f88.1697710527.git.viresh.kumar@linaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 25 Oct 2023 15:51:44 +0200
-Message-ID: <CAPDyKFrxFmNZpNdwQs3CS0NzmDjtCaNSQWkT=zW1Tm+MommWkA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] OPP: Call dev_pm_opp_set_opp() for required OPPs
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: ipq5332: add missing properties to the
+ GPIO LED node
+Content-Language: en-US
+To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+References: <20231025-ipq5332-gpio-led-v1-1-0f0f52617648@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231025-ipq5332-gpio-led-v1-1-0f0f52617648@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -72,180 +124,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 19 Oct 2023 at 12:22, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> Configuring the required OPP was never properly implemented, we just
-> took an exception for genpds and configured them directly, while leaving
-> out all other required OPP types.
->
-> Now that a standard call to dev_pm_opp_set_opp() takes care of
-> configuring the opp->level too, the special handling for genpds can be
-> avoided by simply calling dev_pm_opp_set_opp() for the required OPPs,
-> which shall eventually configure the corresponding level for genpds.
->
-> This also makes it possible for us to configure other type of required
-> OPPs (no concrete users yet though), via the same path. This is how
-> other frameworks take care of parent nodes, like clock, regulators, etc,
-> where we recursively call the same helper.
->
-> In order to call dev_pm_opp_set_opp() for the virtual genpd devices,
-> they must share the OPP table of the genpd. Call _add_opp_dev() for them
-> to get that done.
->
-> This commit also extends the struct dev_pm_opp_config to pass required
-> devices, for non-genpd cases, which can be used to call
-> dev_pm_opp_set_opp() for the non-genpd required devices.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+On 25/10/2023 15:50, Kathiravan Thirumoorthy wrote:
+> Add the color and function property to the GPIO LED node, which are
+> missed out in the initial submission.
+> 
+> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
 > ---
->  drivers/opp/core.c     | 144 ++++++++++++++++++-----------------------
->  drivers/opp/of.c       |  12 ++--
->  drivers/opp/opp.h      |   8 +--
->  include/linux/pm_opp.h |   7 +-
->  4 files changed, 76 insertions(+), 95 deletions(-)
->
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index aab8c8e79146..056b51abc501 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
+>  arch/arm64/boot/dts/qcom/ipq5332-rdp-common.dtsi | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
 
-[...]
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> -static int _opp_set_required_opps_genpd(struct device *dev,
-> -       struct opp_table *opp_table, struct dev_pm_opp *opp, bool scaling_down)
-> +/* This is only called for PM domain for now */
-> +static int _set_required_opps(struct device *dev, struct opp_table *opp_table,
-> +                             struct dev_pm_opp *opp, bool up)
->  {
-> -       struct device **genpd_virt_devs = opp_table->genpd_virt_devs;
-> +       struct device **devs = opp_table->required_devs;
->         int index, target, delta, ret;
->
-> -       if (!genpd_virt_devs)
-> -               return 0;
+Best regards,
+Krzysztof
 
-Rather than continue the path below, wouldn't it be better to return 0
-"if (!devs)" here?
-
-If I understand correctly, the code below does manage this condition,
-so it's not strictly needed though.
-
-> +       /* required-opps not fully initialized yet */
-> +       if (lazy_linking_pending(opp_table))
-> +               return -EBUSY;
->
->         /* Scaling up? Set required OPPs in normal order, else reverse */
-> -       if (!scaling_down) {
-> +       if (up) {
->                 index = 0;
->                 target = opp_table->required_opp_count;
->                 delta = 1;
-> @@ -1092,9 +1069,11 @@ static int _opp_set_required_opps_genpd(struct device *dev,
->         }
->
->         while (index != target) {
-> -               ret = _set_performance_state(dev, genpd_virt_devs[index], opp, index);
-> -               if (ret)
-> -                       return ret;
-> +               if (devs[index]) {
-> +                       ret = dev_pm_opp_set_opp(devs[index], opp);
-> +                       if (ret)
-> +                               return ret;
-> +               }
->
->                 index += delta;
->         }
-
-[...]
-
->
->  /*
-> @@ -2429,15 +2374,10 @@ static int _opp_attach_genpd(struct opp_table *opp_table, struct device *dev,
->         int index = 0, ret = -EINVAL;
->         const char * const *name = names;
->
-> -       if (opp_table->genpd_virt_devs)
-> +       /* Checking only the first one is enough ? */
-> +       if (opp_table->required_devs[0])
-
-The allocation of opp_table->required_devs is being done from
-_opp_table_alloc_required_tables(), which doesn't necessarily
-allocate/assign the data for it.
-
-Maybe check "opp_table->required_devs" instead, to make that clear?
-
->                 return 0;
->
-> -       opp_table->genpd_virt_devs = kcalloc(opp_table->required_opp_count,
-> -                                            sizeof(*opp_table->genpd_virt_devs),
-> -                                            GFP_KERNEL);
-> -       if (!opp_table->genpd_virt_devs)
-> -               return -ENOMEM;
-> -
->         while (*name) {
->                 if (index >= opp_table->required_opp_count) {
->                         dev_err(dev, "Index can't be greater than required-opp-count - 1, %s (%d : %d)\n",
-> @@ -2452,13 +2392,25 @@ static int _opp_attach_genpd(struct opp_table *opp_table, struct device *dev,
->                         goto err;
->                 }
->
-> -               opp_table->genpd_virt_devs[index] = virt_dev;
-> +               /*
-> +                * Add the virtual genpd device as a user of the OPP table, so
-> +                * we can call dev_pm_opp_set_opp() on it directly.
-> +                *
-> +                * This will be automatically removed when the OPP table is
-> +                * removed, don't need to handle that here.
-> +                */
-> +               if (!_add_opp_dev(virt_dev, opp_table->required_opp_tables[index])) {
-> +                       ret = -ENOMEM;
-> +                       goto err;
-> +               }
-> +
-> +               opp_table->required_devs[index] = virt_dev;
->                 index++;
->                 name++;
->         }
->
->         if (virt_devs)
-> -               *virt_devs = opp_table->genpd_virt_devs;
-> +               *virt_devs = opp_table->required_devs;
->
->         return 0;
->
-> @@ -2468,10 +2420,34 @@ static int _opp_attach_genpd(struct opp_table *opp_table, struct device *dev,
->
->  }
->
-> +static void _opp_set_required_devs(struct opp_table *opp_table,
-> +                                  struct device **required_devs)
-> +{
-> +       int i;
-> +
-> +       /* Another CPU that shares the OPP table has set the required devs ? */
-
-Not sure I fully understand the above comment. Is this the only
-relevant use-case or could there be others too?
-
-> +       if (opp_table->required_devs[0])
-
-Maybe check opp_table->required_devs instead?
-
-> +               return;
-> +
-> +       for (i = 0; i < opp_table->required_opp_count; i++)
-> +               opp_table->required_devs[i] = required_devs[i];
-
-To be safe, don't we need to check the in-parameter required_devs?
-
-Or we should simply rely on the callers of dev_pm_opp_set_config() to
-do the right thing?
-
-[...]
-
-Besides the minor things above, this looks really great to me! Feel free to add:
-
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-
-Kind regards
-Uffe
