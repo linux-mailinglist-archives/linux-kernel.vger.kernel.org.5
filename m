@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 205D97D71E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8380A7D71F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbjJYQvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 12:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
+        id S229780AbjJYQ4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 12:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJYQu4 (ORCPT
+        with ESMTP id S229561AbjJYQ4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 12:50:56 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC021137
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 09:50:53 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32db188e254so4070200f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 09:50:53 -0700 (PDT)
+        Wed, 25 Oct 2023 12:56:08 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50954129;
+        Wed, 25 Oct 2023 09:56:06 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d9beb863816so5091308276.1;
+        Wed, 25 Oct 2023 09:56:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698252652; x=1698857452; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CZYImk/mXSSi+o4l71ADu1/FnBpFWcH0X2+sMWjIFRg=;
-        b=fqU0ebeOVrFibfPJP3j0RdJ+BWZ9RpRksNhJXIkjJi5xdbeGxAAaZBMokHGiTIl129
-         c6XXHHC2crBd0H/qbVKCvH7Y7wxWLu+6ek/IPrIU4+/oFZdhvdhZX3U68VdQGSiwS4Cl
-         7TNcaFlp5FNs8aWD2XTxDbPCugGUZaMXe2ujJnxvHWJ4XEEzDiMFA1Q2ymsQRS5sMbug
-         u85Vitqbm3mTodoLZ8qyVdCqcsUB2WLu7wsFl/+SkvY6huv5FLLXvggY7W8GXkYZbHf+
-         7tYA06jY97v1X+GjSVxdcRH5p61780TupB7cj/6DmWzANmCLvkaZRbzDVfe8bJgFiriE
-         p9KQ==
+        d=gmail.com; s=20230601; t=1698252965; x=1698857765; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ezNV1NENiP6KBX98JXvJ/eq70zrlc01gRGtk3N/fJGc=;
+        b=NxdO/QcPhLbXQVKIB2Ai46gvdkKGsF5fsVA0L874EZ9MLH1oEzF8OqkBC2riycjXqR
+         H6fsF/2GryxXhY3xp405joy9k7I0bGiBecfy31ZbTRFyBIm1z/a7rLUh3JoutL6LNVvc
+         NvMUsMevlWsdPyZxsYnixZTzpPeyq45sl1QlicthwulFr1jVz3EhIi1K05BNvfDCW361
+         +8A+moAeEZpFc0WjWBumUBB3pye9/AKQOjMssizykI0fGXQNhWHGpX7pFOiJirNsaR5k
+         2Yc3277SMrSZ34F518vUwZFHGGbfoGmKrNA1iRauNEGr5cuY25B2f5cA06XWyzNJX7jk
+         6b5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698252652; x=1698857452;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CZYImk/mXSSi+o4l71ADu1/FnBpFWcH0X2+sMWjIFRg=;
-        b=cnuzyoP7cO4Ifro3lkPSRc4Mq6qaGt25JMSnAhy3+ABlaLIIPtB4vFHgx3S/OE3+nU
-         4vYmD88ozTV88+d3Q3tel58sMbSECx4lpeHhgJexgMb56dMvdeRzgBPAI7GKHcRqbSw5
-         rBeArY0vDJLzvqPCSsxR0dNoKBQx1kesOg2iowG9r9XJh77YzEdrbcANA6V/KSKcdyZ2
-         nhx/y3A1xd4EHzgGaI0cxcgoOt2k1YfKCPBT1nVYM+ODZlGr3CsVwcPX7q+rvjspYfxu
-         D9YnDFB+kbCd2NOfDrf7/6QNOY08WU4oJu5VzF8ih22cdhb70UfJtWnlhbM696eBsnqt
-         0xVw==
-X-Gm-Message-State: AOJu0YwdXJ68hr//0/geHWiGXEv4ltQLdFM6S58vMGVdRsyPfIgAQgYf
-        ypxVAHoNi69kChXHdxs9LZl0ig==
-X-Google-Smtp-Source: AGHT+IEQCFBk5Dxw5dhzmiY5H20nvQe5QOzfRpA8EQpGFtUhVqOtnnudYdGdu3Qw92qf1Qf1whdYXg==
-X-Received: by 2002:adf:e58f:0:b0:31f:a0ab:26b5 with SMTP id l15-20020adfe58f000000b0031fa0ab26b5mr12193613wrm.8.1698252652187;
-        Wed, 25 Oct 2023 09:50:52 -0700 (PDT)
-Received: from [192.168.100.102] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id a3-20020a5d4d43000000b003196b1bb528sm12374109wru.64.2023.10.25.09.50.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 09:50:51 -0700 (PDT)
-Message-ID: <03f6d583-8324-4ea2-ac6d-5e20987133e9@linaro.org>
-Date:   Wed, 25 Oct 2023 17:50:50 +0100
+        d=1e100.net; s=20230601; t=1698252965; x=1698857765;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ezNV1NENiP6KBX98JXvJ/eq70zrlc01gRGtk3N/fJGc=;
+        b=Z+lN7YMf5DIiWPtlGp7APhtJB55y/nbgJ85b9SsTEcghHyHZHAdmTP1b2tBClo1kDA
+         z0RaXOOy1Y+Ni4vt0MzNXPvYMCtkZLiZ2QL2j5M+AaHcNQUdv3Wkzwu+rg7MwGcBqHsB
+         xtjq2XWy2RUFYWU1uZRXoSXPelmF5rwvb90R1s48pH73M6Q6m4dE7J4AR4QEzlldw+5U
+         Ywq7uO0Z3FhzCJ696vjsTTKxCCTNYNaqOxYxH0ZKmanjffS2LvAvPeKSvdix65XCXI1I
+         KNEaV4oo2RZTQ7c1IT0/1bP/NxwSiZdPEBHmwAsyBTKsq/QZHkHKMcYIC3qrPIBp+NQm
+         HSvg==
+X-Gm-Message-State: AOJu0Yx8kJviWk3Xezk1/AstkEXHNIWY2DRpipC8S2Q8i5NuIsyAx6qK
+        R14Z87Yk+Fg1R05lPRXFj8jurS1pYGTccTnUr60=
+X-Google-Smtp-Source: AGHT+IHyzol5ilHFal3eky2BDnngGqTplq7QvQFuTNt/cHcckhlsRBcb3ZdI/2OZ2gHb+8nVlcV+UY9Lsqa6vLfqPFs=
+X-Received: by 2002:a25:d281:0:b0:d9b:453a:5426 with SMTP id
+ j123-20020a25d281000000b00d9b453a5426mr15819811ybg.56.1698252965504; Wed, 25
+ Oct 2023 09:56:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] soc: qcom: llcc: Add configuration data for SC8380XP
-Content-Language: en-US
-To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     agross@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
-        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_tsoni@quicinc.com, neil.armstrong@linaro.org
-References: <20231025134632.10363-1-quic_sibis@quicinc.com>
- <20231025134632.10363-3-quic_sibis@quicinc.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20231025134632.10363-3-quic_sibis@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CAPDJoNv1HW-5uCj21PX3t23rJ+sbTL4Gm5pDis8HGJ-VTr4dug@mail.gmail.com>
+ <20230714140201.383439-1-aliceryhl@google.com> <CANiq72n8-b992D4RbwUtuEUxXfJYQLNwfibgWSyspx-HYJ8+8A@mail.gmail.com>
+ <hwqyfgbzbnquby5v6zby4u4pbyezzcsttt4ee5x7lw5etpv7se@kvarclpucc7w>
+In-Reply-To: <hwqyfgbzbnquby5v6zby4u4pbyezzcsttt4ee5x7lw5etpv7se@kvarclpucc7w>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 25 Oct 2023 18:55:54 +0200
+Message-ID: <CANiq72=h_NkDsXrd+6TF2fiBdo0nfCbvgwqZdDSnaCFwYEEP_w@mail.gmail.com>
+Subject: Re: [PATCH] rust: kernel: str: Implement Debug for CString
+To:     "Ariel Miculas (amiculas)" <amiculas@cisco.com>
+Cc:     Alice Ryhl <aliceryhl@google.com>,
+        "ariel.miculas@gmail.com" <ariel.miculas@gmail.com>,
+        "alex.gaynor@gmail.com" <alex.gaynor@gmail.com>,
+        "asahi@lists.linux.dev" <asahi@lists.linux.dev>,
+        "benno.lossin@proton.me" <benno.lossin@proton.me>,
+        "bjorn3_gh@protonmail.com" <bjorn3_gh@protonmail.com>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        "gary@garyguo.net" <gary@garyguo.net>,
+        "lina@asahilina.net" <lina@asahilina.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ojeda@kernel.org" <ojeda@kernel.org>,
+        "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
+        "wedsonaf@gmail.com" <wedsonaf@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 14:46, Sibi Sankar wrote:
-> From: Rajendra Nayak <quic_rjendra@quicinc.com>
-> 
-> Add LLCC configuration data for SC8380XP SoC.
-> 
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> ---
+On Wed, Oct 25, 2023 at 6:18=E2=80=AFPM Ariel Miculas (amiculas)
+<amiculas@cisco.com> wrote:
+>
+> Any follow-up on this? It sure would make my logging cleaner.
 
-LGTM
+We were expecting a new version, but I can pick it up with e.g. the
+message that Alice suggested (i.e. marking it as modified by me).
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-
+Cheers,
+Miguel
