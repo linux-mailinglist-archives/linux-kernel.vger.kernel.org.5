@@ -2,146 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A651F7D7873
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 01:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BF07D7877
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 01:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbjJYXQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 19:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
+        id S229709AbjJYXUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 19:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjJYXQK (ORCPT
+        with ESMTP id S229583AbjJYXUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 19:16:10 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84EF3BB;
-        Wed, 25 Oct 2023 16:16:07 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PLPwHS019306;
-        Wed, 25 Oct 2023 23:15:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2023-03-30;
- bh=YhogheplkOov6CtuctZ/3d9HRRT8CjStcBY8dqmxkp8=;
- b=YPNtUBboX2R2y8h6H9ms+P7TnCCvpqdKDAnXm17vwlGO/aBuh8E+bUU50vb9pfcfEKmk
- iTjlVFhCMlWBAESEI6Y6yxVemvhiKT6S58CMSIUyHsbDpEm9Umo6eWTyC0ghoHsi1UHX
- Ue87p1fXPH+o+2D0cNqvd5TRlH2Xb5GWNabRWZWmNCV+WeLDOcrMoJD5t4JOlhCqCd2i
- nUwV4wpK8UjQfmhnkiRJTSxeqKvqf/RLDfgHclve2ktJ3xZw9pIT/tIoheVZk+O2LV+d
- 5TfOkMYx8M/wHIJyNRrJLY3RlB61wWuTLnNsLNja74KMgAwgo18zeew4IjZAp6kRRUVb CA== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tv68thh08-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 25 Oct 2023 23:15:58 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 39PLKj1j001460;
-        Wed, 25 Oct 2023 23:15:57 GMT
-Received: from ban25x6uut24.us.oracle.com (ban25x6uut24.us.oracle.com [10.153.73.24])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3tv53dutnx-1;
-        Wed, 25 Oct 2023 23:15:57 +0000
-From:   Si-Wei Liu <si-wei.liu@oracle.com>
-To:     jasowang@redhat.com, mst@redhat.com,
-        virtualization@lists.linux-foundation.org, sfr@canb.auug.org.au
-Cc:     leiyang@redhat.com, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org
-Subject: [PATCH] vhost-vdpa: fix use-after-free in _compat_vdpa_reset
-Date:   Wed, 25 Oct 2023 16:13:14 -0700
-Message-Id: <1698275594-19204-1-git-send-email-si-wei.liu@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_13,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=807
- adultscore=0 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310170001 definitions=main-2310250198
-X-Proofpoint-ORIG-GUID: YZX4G4tlMob0ASMuBYR5Jy2w6eU9RXzk
-X-Proofpoint-GUID: YZX4G4tlMob0ASMuBYR5Jy2w6eU9RXzk
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Wed, 25 Oct 2023 19:20:17 -0400
+Received: from CY4PR02CU008.outbound.protection.outlook.com (mail-westcentralusazon11012006.outbound.protection.outlook.com [40.93.200.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EBFDE;
+        Wed, 25 Oct 2023 16:20:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JKD0Cz/7MOdVcKOBSUIwb6zT04/J/wuCpn6mGeYFtsQb2BqiadsIV4RcNiyIzPMAqWB6554bGAuAtAR5k6hCPXRFPGGUB1NDLFXALYmEyBOoZNR+Rf3kTeXUur0qWdQ8NXeC1WtH9dcQBiYOcnTsIO37mt66rmrbpEKw219zdpgO7MCUt2EkjnKgFOHLb6WHlYKjcb99PpK3jrb3MPLW4BKahly7agxXEWp6uhT/EIz0Gv9hTAgw8pU2NWKul1IyqnbpSe87a0Co4cIAYpBh3sf9bi1TFfvnvo4iXknP9ycWAHmebqCsrVW/sts9L6HOv1i4PD/nY1EfiMYaeJJFCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EVkIsCgEvW+/Kjnyv/a2pfewJ/gBjvEG37FVKA9qEck=;
+ b=lJDsji/nYnW/yQU0OKxG91XZmZ1dVnB5NIq6DDKpTw9HnzoNL8FMVRZdIIRiaa9bzs1Hdqqhi4QHgBakTwyheKJGWEh1RGWPyJCVl/+zLt+i7F/rvcxIBM2OlWuJNCUCaBPWRDvgpmjHzowuFwpEvi5feFOth3VVMvpRQxlECg/N91YBSfrdr2jgG3556Tl+g3Ihv4Z7b3vjB76z6Pk/W0mFg0kn9u+6jStZNGD9/qbyf7BMIdPD7t9JS3/CeQn+kzHRNTVE3jGO+C/yP6iUCs2uyE2DdJ4lUqmvYIpJOKlhb2EO3sFvQ2mh7WFm6aK0TKc0lQYAgsb+400fqtDnJw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EVkIsCgEvW+/Kjnyv/a2pfewJ/gBjvEG37FVKA9qEck=;
+ b=n19ZZTY9L52BKDKgh3aIUxwlmCTTw7mC4zJe9jT4FaJWaENDAMrm2S6Af3Wptaw35iabMeTmkVG0sP4jSfD3L6OuD9XvLC4MQPRubTJ243G3/DSsOLjuSKWyoDQ1f6WvWPw6+YadSkz1n3fhbciUgN4S0MjVleYv5heOs5sDHkQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+Received: from MWHPR05MB3648.namprd05.prod.outlook.com (2603:10b6:301:45::23)
+ by SJ0PR05MB7456.namprd05.prod.outlook.com (2603:10b6:a03:288::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Wed, 25 Oct
+ 2023 23:20:12 +0000
+Received: from MWHPR05MB3648.namprd05.prod.outlook.com
+ ([fe80::b1ad:1c54:64b2:a39d]) by MWHPR05MB3648.namprd05.prod.outlook.com
+ ([fe80::b1ad:1c54:64b2:a39d%6]) with mapi id 15.20.6907.030; Wed, 25 Oct 2023
+ 23:20:12 +0000
+From:   Alexey Makhalov <amakhalov@vmware.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     richardcochran@gmail.com, jsipek@vmware.com, akaher@vmware.com,
+        deep@dshah.net, pv-drivers@vmware.com,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        Deep Shah <sdeep@vmware.com>
+Subject: [PATCH] MAINTAINERS: Maintainer change for ptp_vmw driver
+Date:   Wed, 25 Oct 2023 16:19:31 -0700
+Message-Id: <20231025231931.76842-1-amakhalov@vmware.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR06CA0019.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::32) To MWHPR05MB3648.namprd05.prod.outlook.com
+ (2603:10b6:301:45::23)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWHPR05MB3648:EE_|SJ0PR05MB7456:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5742fcf3-b2a2-4490-9e7e-08dbd5b0efab
+X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XGqqRGMUwVlcYFJcH3GBBJSZgWtvYRWwBxSucg4qt8ERNjspwEsEmWvqbBrYxQBbGNe6aHCTCh8I1y+vS/dXU9c+Uz4/owvIdbD2O9hXcWmOQVpjsEKtuqj2oSW6Lll3WDLKiNSvA8ReolAwa87IZ8+XmeCcMEkU7TbzcCkXI0YohxT/WgL+IM5v7XFVTil4KcjSndC40OE32TRDPOJp1B4mSle78NUBBH7oQcvG15JSmnF3NSmfEmqkOk0+VvD8cc6DOJdwV9EByt/m7g77Wz4GCMKFk7qU1pg65pDe/qETn3wDCpfDTPLG3El3ZC7zmu6I+P6fOLlndr6q7gMbh3EmHOzSsECLqkFZQqXEDMxliBAJDf/gLJZdvoXxj+Ly563Iobeaf2jTJGG3p1qccBjy4YUBMLMjvlbJ+tt5zrU7QQCmri7lk/oCIzc3p3Jwnwh2MEi0fvg8oD+dcnhNzfciR2EnDZve9eCzONkCAKTznmQBtqnfo5feJ887N5WS8hwo657I080DVUYjA8Dtn8Z5KGFMsMaNbNRIDGimlWGHoUesDec+Xf71rVQcKWpxDKg4R6M1XL58UlChWK1qcXk1m6TM4nfyK2daayrtcX+37ykBcAK9YTj3RTkZaV6TPRS4YavBSWjktgpOccinnlu5FkXVB3UjodG+qPEfVys=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR05MB3648.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(396003)(346002)(376002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(316002)(66556008)(41300700001)(66476007)(38350700005)(8936002)(66946007)(4326008)(54906003)(6486002)(8676002)(4744005)(5660300002)(478600001)(1076003)(86362001)(52116002)(2906002)(6512007)(6506007)(107886003)(26005)(36756003)(2616005)(83380400001)(6666004)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EJRxQ0X4hMsiiD6ygEeIxMuaNGaALmV4NceNTxZcAN3BfZxZsjCqORjNoLDG?=
+ =?us-ascii?Q?kUkWz/GWduwRJf2PHoPQ3SyYHM9Ue9edrJUv7v4kGvrR+joipuOnRT93KnZn?=
+ =?us-ascii?Q?j/s+sZ0Wm/ur2+XOyMp+FH/ZZCg/cfgrK/ecivzcFyvobpt2O2i7AX86tu3A?=
+ =?us-ascii?Q?PCMYovkl+niPtnWAknWmRHYUyo5Fu9bGz8X/pv310o/Om7t++m0WUqM2/XI0?=
+ =?us-ascii?Q?fZseyGdczZZl1ylBZTCDiHGIO68nPJE555ZCVxQJaGk7X15ml3lcmugWR7TW?=
+ =?us-ascii?Q?0ytzDk9BFbTWUrznLNQB7+KAvwsv1wRc5/Cf7qpMA9sWKzCcWx8MUd4Phlhm?=
+ =?us-ascii?Q?A+djM9z3IGd9zVVRgC/KyKgXHmzjuTHVHaMSrKlMLU3ftcUQCDBXm3BgRdut?=
+ =?us-ascii?Q?vRxKcvY6ELe43bMQN5u6oloi/Le4hHniRW0JBNviw/TxjRmK3kCstGCOvSZn?=
+ =?us-ascii?Q?layCU5QH4MseOqSAHwKV0hDIorTvD8VyXpSYWLQ0PiZC9CHCQKh8i5tFF2co?=
+ =?us-ascii?Q?zKq6iz97GabusRA3mzSC1ShGE8wG9/z41stpz12km83ilMXSqH0XKG7Stazm?=
+ =?us-ascii?Q?fRIL7LBTJ6keHSUsbom3Vf+xM152V1DuJ5L/c1wHo50jUTkY3//BQ+rit+70?=
+ =?us-ascii?Q?YjYGXw2+8+4sebOhqS/btrDZGdGDW1vCauyEm0axLB8a7DuggGgndamMZq0K?=
+ =?us-ascii?Q?FWeoxSxGfkFtMOsCjYtwmllTaYDx+dUAA683MeX4dX0K2w17iqssWB1LG1hB?=
+ =?us-ascii?Q?wqU1c99PMM3UWxSekVs4sm0EzeDjtee03EB5AQ53+vHqUA+nqPQQp9Rc5p/E?=
+ =?us-ascii?Q?2Z6LusSjWdeC+ribxesCmrfbT+2o61DpncmezjVILDG9p2BDyMI18xeJQwVE?=
+ =?us-ascii?Q?8DKNzn6pPfSz7hWcO3gns4wORuZqEMyI0BfPQAO0+w/BQtHFJTr57qveHh/d?=
+ =?us-ascii?Q?/JGe2r8uxS/jC8ZcOtUW9TwZ1SWjMYh5cAeuyCSyiB4A6ZdGVKMKsNUEfSS3?=
+ =?us-ascii?Q?uy0prtQ+17wBednT8tksqNqwK9D1cEWho/vbA9GcLIlnIfqVeLdi5FhwAtmx?=
+ =?us-ascii?Q?NpJVYJ4qGN4ehGI1EQmZyyVBMVpKBcDO20wQmVubfGyZN6cRTpwrHcvoIApt?=
+ =?us-ascii?Q?ZNvXDwDQwrKfPd7SLJZ+RJCC8Lf1/NYiUViDrsFMUr/O8j0ta0xB4nwqx5Hp?=
+ =?us-ascii?Q?jaQPwnKfxRobzWmcVDLj1m8Ka4b+YToZ5YDRP4vz3L+PaTivIIDBriBpVNfD?=
+ =?us-ascii?Q?nPuO6KFLhDwFq8ye0o/WnBtC3jXvs9DMqGS1qtx7g0fxkGjLqoqvZVtZlAsE?=
+ =?us-ascii?Q?C8YG9IQZqREBK+07I5zWwcnFSQtwH8VlPucBjYZgzEOSopxlrNaHSaXBz3kY?=
+ =?us-ascii?Q?+CO4rGW79n7jijq03Vd3/NweP79FgXoIzUeJXH9/9HzxAUYzJPjzRb2b2at9?=
+ =?us-ascii?Q?L3CyPS637z3wbjBuTeRiC39CN99i4TX6ghumkRWSGYzOL2Hhg3wCtlcuqKss?=
+ =?us-ascii?Q?PYr6VkRKdZkTsddrlXJu1pTvHnazYLcIh6ohEHdJGdwDkYYGONW6guWfIxSL?=
+ =?us-ascii?Q?QtpyWAXMoiRmGVu2ghDl5tyk+JrR89ElhRJ4+XHw?=
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5742fcf3-b2a2-4490-9e7e-08dbd5b0efab
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR05MB3648.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 23:20:12.1302
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fiCDp9XzH+TnTCydarLiaAu7O/6xcONsdanrg2GS7L36hJ+wDaiN1Q1vGe/QvUjj+TcrOWEjwwUyvKdGEq3/LA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR05MB7456
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the vhost-vdpa device is being closed, vhost_vdpa_cleanup() doesn't
-clean up the vqs pointer after free. This could lead to use-after-tree
-when _compat_vdpa_reset() tries to access the vqs that are freed already.
-Fix is to set vqs pointer to NULL at the end of vhost_vdpa_cleanup()
-after getting freed, which is guarded by atomic opened state.
+Deep has decided to transfer the maintainership of the VMware virtual
+PTP clock driver (ptp_vmw) to Jeff. Update the MAINTAINERS file to
+reflect this change.
 
-  BUG: unable to handle page fault for address: 00000001005b4af4
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  PGD 16a80a067 P4D 0
-  Oops: 0000 [#1] PREEMPT SMP NOPTI
-  CPU: 4 PID: 40387 Comm: qemu-kvm Not tainted 6.6.0-rc7+ #3
-  Hardware name: Dell Inc. PowerEdge R750/0PJ80M, BIOS 1.8.2 09/14/2022
-  RIP: 0010:_compat_vdpa_reset.isra.0+0x27/0xb0 [vhost_vdpa]
-  Code: 90 90 90 0f 1f 44 00 00 41 55 4c 8d ae 08 03 00 00 41 54 55 48
-  89 f5 53 4c 8b a6 00 03 00 00 48 85 ff 74 49 48 8b 07 4c 89 ef <48> 8b
-  80 88 45 00 00 48 c1 e8 08 48 83 f0 01 89 c3 e8 73 5e 9b dc
-  RSP: 0018:ff73a85762073ba0 EFLAGS: 00010286
-  RAX: 00000001005b056c RBX: ff32b13ca6994c68 RCX: 0000000000000002
-  RDX: 0000000000000001 RSI: ff32b13c07559000 RDI: ff32b13c07559308
-  RBP: ff32b13c07559000 R08: 0000000000000000 R09: ff32b12ca497c0f0
-  R10: ff73a85762073c58 R11: 0000000c106f9de3 R12: ff32b12c95b1d050
-  R13: ff32b13c07559308 R14: ff32b12d0ddc5100 R15: 0000000000008002
-  FS:  00007fec5b8cbf80(0000) GS:ff32b13bbfc80000(0000)
-  knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00000001005b4af4 CR3: 000000015644a003 CR4: 0000000000773ee0
-  PKRU: 55555554
-  Call Trace:
-   <TASK>
-   ? __die+0x20/0x70
-   ? page_fault_oops+0x76/0x170
-   ? exc_page_fault+0x65/0x150
-   ? asm_exc_page_fault+0x22/0x30
-   ? _compat_vdpa_reset.isra.0+0x27/0xb0 [vhost_vdpa]
-   vhost_vdpa_open+0x57/0x280 [vhost_vdpa]
-   ? __pfx_chrdev_open+0x10/0x10
-   chrdev_open+0xc6/0x260
-   ? __pfx_chrdev_open+0x10/0x10
-   do_dentry_open+0x16e/0x530
-   do_open+0x21c/0x400
-   path_openat+0x111/0x290
-   do_filp_open+0xb2/0x160
-   ? __check_object_size.part.0+0x5e/0x140
-   do_sys_openat2+0x96/0xd0
-   __x64_sys_openat+0x53/0xa0
-   do_syscall_64+0x59/0x90
-   ? syscall_exit_to_user_mode+0x22/0x40
-   ? do_syscall_64+0x69/0x90
-   ? syscall_exit_to_user_mode+0x22/0x40
-   ? do_syscall_64+0x69/0x90
-   ? do_syscall_64+0x69/0x90
-   ? syscall_exit_to_user_mode+0x22/0x40
-   ? do_syscall_64+0x69/0x90
-   ? exc_page_fault+0x65/0x150
-   entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-
-Fixes: 10cbf8dfaf93 ("vhost-vdpa: clean iotlb map during reset for older userspace")
-Fixes: ac7e98c73c05 ("vhost-vdpa: fix NULL pointer deref in _compat_vdpa_reset")
-Reported-by: Lei Yang <leiyang@redhat.com>
-Closes: https://lore.kernel.org/all/CAPpAL=yHDqn1AztEcN3MpS8o4M+BL_HVy02FdpiHN7DWd91HwQ@mail.gmail.com/
-Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
+Acked-by: Deep Shah <sdeep@vmware.com>
+Acked-by: Jeff Sipek <jsipek@vmware.com>
 ---
- drivers/vhost/vdpa.c | 1 +
- 1 file changed, 1 insertion(+)
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 9a2343c45df0..30df5c58db73 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -1355,6 +1355,7 @@ static void vhost_vdpa_cleanup(struct vhost_vdpa *v)
- 	vhost_vdpa_free_domain(v);
- 	vhost_dev_cleanup(&v->vdev);
- 	kfree(v->vdev.vqs);
-+	v->vdev.vqs = NULL;
- }
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 668d1e24452d..d04a1794c804 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -23035,7 +23035,7 @@ F:	drivers/scsi/vmw_pvscsi.c
+ F:	drivers/scsi/vmw_pvscsi.h
  
- static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+ VMWARE VIRTUAL PTP CLOCK DRIVER
+-M:	Deep Shah <sdeep@vmware.com>
++M:	Jeff Sipek <jsipek@vmware.com>
+ R:	Ajay Kaher <akaher@vmware.com>
+ R:	Alexey Makhalov <amakhalov@vmware.com>
+ R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
 -- 
-2.39.3
+2.39.0
 
