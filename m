@@ -2,141 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD82B7D73F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDD67D7401
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 21:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbjJYTKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 15:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
+        id S234101AbjJYTMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 15:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjJYTKa (ORCPT
+        with ESMTP id S229498AbjJYTMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 15:10:30 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2086.outbound.protection.outlook.com [40.107.101.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCD3194
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 12:10:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LaI2qnqDlPSKeteB0VagiFiGckQ8u1upSOe7tVrkUtA4AhxnJkEErteLk9ccUd03vCu3vjwYryqmoUTOGXYeGR56zvE/F6xLmcsPuhI2T+KGuhTHYH41eQMK5bpWtBUelnkkfAcHAsac62YE2PjaxRePro2skzsP6sPW2Cy1MHXN3IYTmsgiKr7f8WweQQD6TknYBjOWqqh4HzKs5woe77Dh/1tHU2AhBVWdMj0Xpp8Mu4dgDgyb9sLSxhA20Bh1iehHbiSIAvNgbQJtvpBzZZpQ8hP8RfhLOddyKPQo5BupxPUnqwzfWBRetz2xrcqAXXYTWkVAIf2N/xa2dX7dgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PuTPu+aINgKmryMTaJbRTRbFTHGQcLtxUC44PrjuAaY=;
- b=lFKoqrZpd2Ie6ZHt0NmZce6LqNQ1/67g/7tKFQnrjWvq24xxa5n7KyvW9tJB9Iup9KiRlYot/dTwo6MoKkmFuzR8niM+W/M23hzody9kda8LKSeW6LCMow/PTGEahA6xzrbtf6YmGKZfhRlMPUqEysRncGRKx+6fY599riLoassqplR3OCre0fvy/C4idMo/jtEWPS7fo+7loOl6jp8nwJh+dbtFxISMHjXL2BJZtGtKuZEZPcGmEFayh0dqolGBzRDKr3XaMSXn/E/YUyKyjhMV2zKQsAvmIWTOW8oxFBVrMccZZUmDiQ8Zc+5rguanyBdU0+i6+gl9FeM7+P7yNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PuTPu+aINgKmryMTaJbRTRbFTHGQcLtxUC44PrjuAaY=;
- b=CGMCOI9ZDUJEIuHFgz0FtXfYekLMzqGHOxEwMLaIi4SQfOhXP66iYRgH24xYT1RDDF+0vAsu1ExuXA7q9Q+212//kaEs8qufnfLylVXf/Y4O+qpzFnlRyxGONEwLsYbgQ7ZR23FcjXtvhgkR0FMXYBgfO/CUldec6Lbpdh3jEFT3Smtlod4HoRvio0mx9v52DbbTKpQ4JzjxRviICdGDZBf4fBBRwYuZgeswXCpMsji8j0eKt8ZZuXnE6RKc/Wv/qoVQuvX5TEAMWHE/vfvx3YLKqOP7xNit9vc5fm8cL0iGYJNT+mOK7aCp0rLeJN8SwokvlUd1EZ9w9rSxWU8e/Q==
-Received: from CY5PR17CA0003.namprd17.prod.outlook.com (2603:10b6:930:17::11)
- by SA1PR12MB5670.namprd12.prod.outlook.com (2603:10b6:806:239::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Wed, 25 Oct
- 2023 19:10:24 +0000
-Received: from CY4PEPF0000E9CD.namprd03.prod.outlook.com
- (2603:10b6:930:17:cafe::9b) by CY5PR17CA0003.outlook.office365.com
- (2603:10b6:930:17::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19 via Frontend
- Transport; Wed, 25 Oct 2023 19:10:24 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000E9CD.mail.protection.outlook.com (10.167.241.140) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6933.15 via Frontend Transport; Wed, 25 Oct 2023 19:10:23 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 25 Oct
- 2023 12:10:13 -0700
-Received: from [10.110.48.28] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 25 Oct
- 2023 12:10:12 -0700
-Message-ID: <197819d2-d7fa-47ae-b893-ef2fce25b2be@nvidia.com>
-Date:   Wed, 25 Oct 2023 12:10:11 -0700
+        Wed, 25 Oct 2023 15:12:06 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4ABBB
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 12:12:03 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-41cb7720579so46261cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 12:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698261123; x=1698865923; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MQsXRm/26AnMKfle1hOvoePNzv6mvpNR6kguNEXwq5g=;
+        b=3MBCiFOXBQj7wLOmbS4x3qZZQb8H6SPc+jS2JYxiytH0qB+pfxgDN9gs6/uCDwtDum
+         46hwBK21ij+DeVZpoZIEapJzInF4p6Un/J8A+ywl+VjQKjRMsJlkNPjMpHnoPhxVCB0Z
+         wMSctz0Mqm8kxp/YFjBKPDv4RsKlrt5dEIWRrnPO4btOlTLy5FeIxPxiXugZVCF3MAeC
+         BnFeQBR2fxe7jSjuSUpWrJjNBXJEEXz0ANZN8vLSxR34K8NycVC4Yy8QSvxwylt1mI73
+         9aA3dvqd+yHVU4ISwZD17b7wftEJfv8qD151EcWxz8BgQ9BZR/Vr34Kyo2mLBsjIyxvY
+         jDoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698261123; x=1698865923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MQsXRm/26AnMKfle1hOvoePNzv6mvpNR6kguNEXwq5g=;
+        b=FDhQDknGgcyF0x4G6xzTPUNvS2lZjzSKod9bGWEx7IduwEcHOWXGVA8+CMHPT50Lz1
+         9lJnKzqq0nYG7c2ipUg97brF0zX34a34TFqS9+YAAE8jle+XFn/n+Q2C4JlY+2d3C9O8
+         WFcAglujPyHYmsg5gGi6iwgTiZ6ZngPF8ftH96C0KsYGi3jQdzre9gLU1ywnrknTLoUx
+         xjxPw/lelSHIBvDcKEqSBjd+9l7wUeNLh89vvF9L3XAtkTvYjC6Z3nvA+Rz0an4E08hZ
+         Pom0BsnT6KbG9OhGjtk3H4faIQCKMHtD7hpjYcQwfoKmbkpO8+/LdQHSJMHPuBVdfh0l
+         +prw==
+X-Gm-Message-State: AOJu0Yzq5/NrFLkvRDlDX+W8pgrdmQ/ZUZIf+Q9+V2VJzClTDSjHEWxS
+        dShBYswAAZoLg+V2OZONrJ7HlB0i0KwzLbdQRy3O2A==
+X-Google-Smtp-Source: AGHT+IG6KDiuxywIZwUVL3S8gGg9WWokTQZh8SEtNeM0/s7tsiam2k4ilI1Lup8w7V77HEhKysK+YikM3ctquirsU/o=
+X-Received: by 2002:ac8:7cad:0:b0:41e:2984:6dba with SMTP id
+ z13-20020ac87cad000000b0041e29846dbamr257820qtv.3.1698261122754; Wed, 25 Oct
+ 2023 12:12:02 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <20230929114421.3761121-1-ryan.roberts@arm.com>
+ <6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com> <a7781f13-21ca-48c7-99c4-22beef0400f9@arm.com>
+ <fcbe9179-dcd9-4bf8-b1d1-82201880527e@arm.com> <a2e11353-fad8-475c-a4d1-dc1de22dde11@redhat.com>
+In-Reply-To: <a2e11353-fad8-475c-a4d1-dc1de22dde11@redhat.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Wed, 25 Oct 2023 13:11:24 -0600
+Message-ID: <CAOUHufa9CyfRaMFXWtFWPG22Z9Zf9hZZWbZdTke6THimtbPzRQ@mail.gmail.com>
 Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+To:     David Hildenbrand <david@redhat.com>,
+        Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        "Anshuman Khandual" <anshuman.khandual@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
         Yang Shi <shy828301@gmail.com>,
         "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
         Luis Chamberlain <mcgrof@kernel.org>,
         Itaru Kitayama <itaru.kitayama@gmail.com>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
         David Rientjes <rientjes@google.com>,
         Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com>
- <a7781f13-21ca-48c7-99c4-22beef0400f9@arm.com>
- <fcbe9179-dcd9-4bf8-b1d1-82201880527e@arm.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <fcbe9179-dcd9-4bf8-b1d1-82201880527e@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CD:EE_|SA1PR12MB5670:EE_
-X-MS-Office365-Filtering-Correlation-Id: 360b3130-1c94-4245-a403-08dbd58e0a6d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kYsjyIz3VFnMW1EnGOoxNq9mplRZlFCbQzOZ0H6eiN8JpmYPBgR9V2uFyCnBmVzR2PP/tm7HWFN+CLcXR7q5x1kPx5gqXuVVXJCIDlYAqNkDDhQcNM6a+amMNUBP2Qy4aSCOj4OzGIeodLnfLoP7N3VPVTHd/VqBj+bj7HZFXaSYeFHobiKEIzCCIRvjrC95+h6KK4TxDhFdlvhKJ5PlG0x0OsX2zm30TrQVzPFo8Z+21W3KGHpzjcHzm0X4bw3YgVmGhmnUoYCvS86subgsNFRRxBKijkwgrtTrumIfdf+5/+yJYMW7GZhpWm2HaxbtKNeOq7vEgKHAPWHHuiFEyOdLslSR7ytUPjEfwQH94HuJHrskUJdux+OwzURGtUTKaw6HcDNZ3xDyA25OTHyd8nglDIDFm5wyywlUczAaHNZjxSDN3s/5fBeW901h7AspxN9KzKMScqRV6FShTG3vTBMcH6alWYEqy2z0Tj5hJgtUS2Y4EZDRBczJqEZvn+Z4Hk1PgMM0hRqvpWRozIMaqGG70R75WGjfd8ZDWY8tXByTj0rTjSujZMP+dBoAH/0a/geR9nT8gVXepIzQSAyavYXj5GVAJZt0udVgNILkkn8TPdXKNLP1n2TBHaczFx1IgovlHVLjH4FsSDzf5sVViwo6qC6ih/vmjdvcnheu617x5pDUuNzgjlo9A3MIwBKJh5qYrIpABC5736PEy6T9p13yvcyYe3CtdKl6dRSALXumauDIg8deBOVgJfgVV94t1iDXqj9ehVg0Xgoamdum+/bDURVIs75xJyHCpZlbrJE=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(346002)(39860400002)(136003)(230922051799003)(1800799009)(82310400011)(451199024)(186009)(64100799003)(36840700001)(40470700004)(46966006)(2906002)(4744005)(5660300002)(7416002)(31686004)(41300700001)(40480700001)(40460700003)(8676002)(8936002)(4326008)(2616005)(82740400003)(336012)(426003)(921008)(110136005)(54906003)(70586007)(70206006)(316002)(16526019)(16576012)(36756003)(53546011)(26005)(86362001)(31696002)(356005)(36860700001)(47076005)(478600001)(7636003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 19:10:23.8993
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 360b3130-1c94-4245-a403-08dbd58e0a6d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9CD.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB5670
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/23 09:24, Ryan Roberts wrote:
-> On the prerequisites front, we have 2 items still to land:
-> 
->    - compaction; Zi Yan is working on a v2
-> 
->    - numa balancing; A developer has signed up and is working on it (I'll leave
->      them to reveal themself as preferred).
-> 
+On Wed, Oct 25, 2023 at 12:47=E2=80=AFPM David Hildenbrand <david@redhat.co=
+m> wrote:
+>
+> On 25.10.23 18:24, Ryan Roberts wrote:
+> > On 20/10/2023 13:33, Ryan Roberts wrote:
+> >> On 06/10/2023 21:06, David Hildenbrand wrote:
+> >>> On 29.09.23 13:44, Ryan Roberts wrote:
+> >>>> Hi All,
+> >>>
+> >>
+> >> [...]
+> >>
+> >>>> NOTE: These changes should not be merged until the prerequisites are=
+ complete.
+> >>>> These are in progress and tracked at [7].
+> >>>
+> >>> We should probably list them here, and classify which one we see as s=
+trict a
+> >>> requirement, which ones might be an optimization.
+> >>>
+> >>
+> >> Bringing back the discussion of prerequistes to this thread following =
+the
+> >> discussion at the mm-alignment meeting on Wednesday.
+> >>
+> >> Slides, updated following discussion to reflect all the agreed items t=
+hat are
+> >> prerequisites and enhancements, are at [1].
+> >>
+> >> I've taken a closer look at the situation with khugepaged, and can con=
+firm that
+> >> it does correctly collapse anon small-sized THP into PMD-sized THP. I =
+did notice
+> >> though, that one of the khugepaged selftests (collapse_max_ptes_none) =
+fails when
+> >> small-sized THP is enabled+always. So I've fixed that test up and will=
+ add the
+> >> patch to the next version of my series.
+> >>
+> >> So I believe the khugepaged prerequisite can be marked as done.
+> >>
+> >> [1]
+> >> https://drive.google.com/file/d/1GnfYFpr7_c1kA41liRUW5YtCb8Cj18Ud/view=
+?usp=3Dsharing&resourcekey=3D0-U1Mj3-RhLD1JV6EThpyPyA
+> >
+> > Hi All,
+>
+> Hi,
+>
+> I wanted to remind people in the THP cabal meeting, but that either
+> didn't happen or zoomed decided to not let me join :)
+>
+> >
+> > It's been a week since the mm alignment meeting discussion we had aroun=
+d
+> > prerequisites and the ABI. I haven't heard any further feedback on the =
+ABI
+> > proposal, so I'm going to be optimistic and assume that nobody has foun=
+d any
+> > fatal flaws in it :).
+>
+> After saying in the call probably 10 times that people should comment
+> here if there are reasonable alternatives worth discussing, call me
+> "optimistic" as well; but, it's only been a week and people might still
+> be thinking about this/
+>
+> There were two things discussed in the call:
+>
+> * Yu brought up "lists" so we can have priorities. As briefly discussed
+>    in the  call, this (a) might not be needed right now in an initial
+>    version;  (b) the kernel might be able to handle that (or many cases)
+>    automatically, TBD. Adding lists now would kind-of set the semantics
+>    of that interface in stone. As you describe below, the approach
+>    discussed here could easily be extended to cover priorities, if need
+>    be.
 
-Oh yes, that's me, thanks for providing an easy place to reply-to, for that.
+I want to expand on this: the argument that "if you could allocate a
+higher order you should use it" is too simplistic. There are many
+reasons in addition to the one above that we want to "fall back" to
+higher orders, e.g., those higher orders are not on PCP or from the
+local node. When we consider the sequence of orders to try, user
+preference is just one of the parameters to the cost function. The
+bottom line is that I think we should all agree that there needs to be
+a cost function down the road, whatever it looks like. Otherwise I
+don't know how we can make "auto" happen.
 
+> * Hugh raised the point that "bitmap of orders" could be replaced by
+>    "added THP sizes", which really is "bitmap of orders" shifted to the
+>    left. To configure 2 MiB +  64Kib, one would get "2097152 + 65536" =3D
+>    "2162688" or in KiB "2112". Hm.
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+I'm not a big fan of the "bitmap of orders" approach, because it
+doesn't address my concern above.
 
+> Both approaches would require single-option files like "enable_always",
+> "enable_madvise" ... which I don't particularly like, but who am I to jud=
+ge.
+>
+>
+> >
+> > Certainly, I think it held up to the potential future policies that Yu =
+Zhou
+> > cited on the call - the possibility of preferring a smaller size over a=
+ bigger
+> > one, if the smaller size can be allocated without splitting a contiguou=
+s block.
+> > I think the suggestion of adding a per-size priority file would solve i=
+t. And in
+> > general because we have a per-size directory, that gives us lots of fle=
+xibility
+> > for growth.
+>
+> Jup, same opinion here. But again, I'm very happy to hear other
+> alternatives and why they are better.
+
+I'm not against David's proposal but I want to hear a lot more about
+"lots of flexibility for growth" before I'm fully convinced. Why do I
+need more convincing? When I brought up that we need to consider the
+priority of each order and the potential need to fall back to higher
+orders during the meeting, I got the impression people were surprised
+why we want to fall back to higher orders. TBH, I was surprised too
+that this possibility was never considered. I missed today's THP
+meeting too but I'll join next time and if anyone has more ideas on
+this, we can spend some time discussing it, especially on how LAF
+should cooperate with the page allocator to make better decisions.
