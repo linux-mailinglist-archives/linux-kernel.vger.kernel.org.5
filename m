@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6577D62E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2787D62EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233686AbjJYHcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:32:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
+        id S233918AbjJYHcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233687AbjJYHcO (ORCPT
+        with ESMTP id S233817AbjJYHcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:32:14 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A87010D9
+        Wed, 25 Oct 2023 03:32:16 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159ED10E4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:32:12 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c59a4dd14cso14518111fa.2
         for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:32:11 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c59a4dcdacso17013261fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:32:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698219129; x=1698823929; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+tC6JJTUdgNgXsjFp/FZzs/b7hvPtFbIGwQfQl3rDMI=;
-        b=T8s9W9U3izON7HinZWTeJxaeLlIS13In3dGKKNC8aehVg7GgcXNBHqugoOTKZhKn/u
-         Zb0tNpqP37MKp4Oy7fih7dWSqXvF4RNqIXWDT7jlpI+0wt2H3B21E2+Ea373j8HocK3z
-         wr4EM/eKH+CKlzlYwqZ1EhdTNpc/3XPHglUNjp78cyw0LLIBSSM3EK0brgGNzxINq6A4
-         4nxLhv9M+4mXXwCBZ1nPsx0TVubkdE5XmUNHuZspnphE8tG71mt9fvLG0h8F81JD5NZU
-         rrAnCXkvdj3cx1c+UHWlzetcHDWa0L7CCqeRYemlzwG1j5ACAKuofdojrTCAeW9rROUX
-         1lTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698219129; x=1698823929;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1698219130; x=1698823930; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=+tC6JJTUdgNgXsjFp/FZzs/b7hvPtFbIGwQfQl3rDMI=;
-        b=b12XtEhKdfRF2f+VauJX8Z1J0f7j53RUelDOxvxCjxt0yeNEXwf98pI+aGG6ylk2tl
-         bDEPSrbMipITyCGb5Aoq1HzX5t7TZADtj2VCI51ujQ/DOk7oJQslkT45kkelYIlbvTpM
-         szqzSZ8IqVZEb1itR730zDVfuhFNRps0Y+YmT+CIFZaY3u/4QnBD1GoJnf57slN+nlea
-         xshY4wIQ3GfJqcHJAECaIA/V6ynn2XuNioJIOjdLBQvNYzEO0RrEuj1M4JyFQua3AeLC
-         wfl9pXJuDlsOjAshJlgKoF0dJBFJBsAqIyDaR4QZS47l61Y4IXlFTL1Ghabj5vssceVm
-         Hy/A==
-X-Gm-Message-State: AOJu0YzVcqCCoeKJZdJdFpHl9670UM2zw7eP5gnQj5FyTQElvF31dWPZ
-        AKtwTF93dhnKi0ExZZA9gisHYw==
-X-Google-Smtp-Source: AGHT+IHV4C0uj5utoNwVjIbvugZqScUNEjbulP1A0yJeHSAbdpOzFPDZneIRIV/WWO1kfY194WV4SQ==
-X-Received: by 2002:a05:651c:152:b0:2b9:ecab:d924 with SMTP id c18-20020a05651c015200b002b9ecabd924mr10943814ljd.18.1698219129202;
-        Wed, 25 Oct 2023 00:32:09 -0700 (PDT)
+        bh=LkK06hkxzdwxK+868ZNfQOlrMKOnjIUgKDjw97JuG+E=;
+        b=CP6fAhQdNQHxbFCGvyNAig0lhqLQCpHazulAV2WIYg2LEV7xR9Bg2TG1wls42fO+W7
+         4rqwexrp0ImsZDIfhMz5hBxI43dtY6roRPtmznmnRtHdtbp3fUabCqoWxEEpuzkf/Ihb
+         BsY6CCZnsk6/FXc3dwtv95x9saEKdTNpKwjXcTrNFdcW99lyfi9cdUHMwgAFoDTJdD7G
+         s2Qa0oTflZCleCTA+oWcJaZzTCxxq5+B4uEUIGDF35UOd8q1HVyBFfVRs2J+TeVbzfCm
+         dlHMxaPZVwRAhZlxzfXuo+LNJn9eFNqpSTzVJ/UwuAwMcE10dURyCDfRrOkvRURDEDXp
+         DyHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698219130; x=1698823930;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LkK06hkxzdwxK+868ZNfQOlrMKOnjIUgKDjw97JuG+E=;
+        b=XZsHlroXWMH/ROg3CC1Lr3W9ypqXdXB0cLS5YuAuHH9Rxkr8/TwX/hquZZUp2StjO8
+         5wjLJWl0bWwpA9gtE5Cp7tZ25SIbfbh6S8raItTUkhpJq77vMoA19R3whZim6Xjq21jO
+         h6YQ4PuHSF7AWzhc3X6NoV9xJwk5e3CW434pAg/eVlIDw8pxzNAyjWK3yiZrTkR/M3UW
+         5F/qFDtE9cJOlI8q3/vgrCCUQwfK3guouCJhym88+QmrZ+sXJic8RqVagtIYyr6fUGas
+         Ik2EjhkbCV9syswJeuk56P0q5iLYLB8JZUw9HXCpFpsk8tHxvDG8KtQl9dN08bhY43sc
+         7Bug==
+X-Gm-Message-State: AOJu0YxtCZSlUh6wP/bNmTmjnwQ7XRqfUxj7/nGzVPrttlwnL9NFVXid
+        bgnhx75GpRFnhpDIK1g2wL/BpQ==
+X-Google-Smtp-Source: AGHT+IH+Yira0OYgCUa++PaIdfxYJvBb1lvUtqlD4An+snbTHt/sntEuCvgnEiScLvU95z7u0RShvg==
+X-Received: by 2002:a2e:b790:0:b0:2c2:a337:5ea with SMTP id n16-20020a2eb790000000b002c2a33705eamr10722063ljo.27.1698219130228;
+        Wed, 25 Oct 2023 00:32:10 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id m21-20020a05600c4f5500b0040841e79715sm14036237wmq.27.2023.10.25.00.32.08
+        by smtp.gmail.com with ESMTPSA id m21-20020a05600c4f5500b0040841e79715sm14036237wmq.27.2023.10.25.00.32.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 00:32:08 -0700 (PDT)
+        Wed, 25 Oct 2023 00:32:09 -0700 (PDT)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-Subject: [PATCH 0/2] pmdomain: qcom: rpmhpd: Introduce Power Domains
- support for SM8650
-Date:   Wed, 25 Oct 2023 09:32:01 +0200
-Message-Id: <20231025-topic-sm8650-upstream-rpmpd-v1-0-f25d313104c6@linaro.org>
+Date:   Wed, 25 Oct 2023 09:32:02 +0200
+Subject: [PATCH 1/2] dt-bindings: power: qcom,rpmpd: document the SM8650
+ RPMh Power Domains
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAHHEOGUC/x3MQQqDQAwAwK9Izg1sbKttvyIeZM3WHFZDoiKIf
- +/S41zmBGcTdvhUJxjv4rLMBXSrIE7D/GWUsRjqUN8pUIProhLR86t5BtzUV+Mho2nWER8phsR
- E7TtFKIMaJzn+e9df1w8mGpfvbQAAAA==
+Message-Id: <20231025-topic-sm8650-upstream-rpmpd-v1-1-f25d313104c6@linaro.org>
+References: <20231025-topic-sm8650-upstream-rpmpd-v1-0-f25d313104c6@linaro.org>
+In-Reply-To: <20231025-topic-sm8650-upstream-rpmpd-v1-0-f25d313104c6@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -71,20 +71,20 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=972;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1245;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=cGaLWTQO6nJhBxUsHrUG8AyvDT+o4s7oByi/6V8mpCo=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlOMR2FdB9iMly/tS4axw7w/12HTQ2uO9/MeDHojbF
- E8rv7lSJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZTjEdgAKCRB33NvayMhJ0WEnD/
- 9fBiWQ1PZiMgNJCIvhhuUxByqbO8PYZhciYu8bzJwC4n/b13HXBQc82cIsAdDV4QnNk2ZhJEfk+oBR
- tiEje27oUCle6aHmPEPVOhoROg4Db2WhIzVOJ1hbIRoqD8MhW2di7Zzvd3ePybUqmtMkVVlmti/fT+
- bILzVPaGjRbMVii/HmlCuupX1ba7nAS+hjB0lZn0qI96TkhtYBSmZJI9Ut/5RQEg+uG0BpyKN2bZ09
- W2o4icnRRLqPRfZOJ7/OZtTqegzjhzWLfXZuAvlrSEzq+yW63ZJEv4N44Vj34IZurH0VmHQH2Ajckz
- VjAZYdVZSrVRC3q+BI++NvBiQxCd9PV/6ZBRbhF7f72pktZit1n4MZH4wJaxLGpOmJmnmWWYYBr1YQ
- zrmrtvslJLsDUpdBiIlp8fzYgt9FulTT1MBay4OdTR1rwFgb4qNXJut0UESKZEd55pFN4g+f3lCI4Y
- uOS00Fp/p1ffXP6XCXoFp84zFbCvqRJ3i60Tl8y2/B/jkTSHrXdLJGg99qIGVgzXLKnrK5FiSj+yj0
- q5FHeOtrEZ5uo8Vdks6icefAaPLrhwg2hdMz9SXJ+LRVuORSO2FAhzqUnVrAVHHdHwONwWDc3Opq+0
- LuQmWr1mvxAgPunqNMVd4/vE9rLqFuLk9e9QXJnL5xnEG8PQrI3TsG+WBUTw==
+ bh=iyrV9MsmSRaFXNkt/CNnLJ+tmAlijZsh8rTitKBaq6g=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlOMR3jqfahPM5bx7B4kHScB4B7os/yKbaBRvnfuAh
+ 57/rSfiJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZTjEdwAKCRB33NvayMhJ0UtIEA
+ Cops3457fn46b3U7vAcShT+c9Ygo+mADKziI7dm1hbLr4QG4NGE+FIODg3wwZKokavLf0eFByaK/DX
+ qUJfNKjL5NRXTtzK47e1Qx4TNYk2bVZKAUgNf2exI2xDT+J7bXJViJefoXRMigdUstrFITmgXYlQrl
+ tFlnGOEZ/f/E0FnnsUrntmxqx/ItUkCTT1lSUBjjVzZYNeFYU+aJKbvJ+WUDCqZajTsoJrY92B1Sq7
+ S8LCfi/lBWrClR5HlKYXzMSizhDNt+SUG6gwJmtJmA2/8ASpd/t7Db6YCq9Mx5EsYyeh2z311IqROM
+ uiUEjEeXKxN5ViXMh0uW+NYcflAwAGF8ZpBl8lsSlRJn/M4WEfOdL8qmua9c5hnT7HcOXAVifjchIF
+ rPVTcr/d7u5TSKxBSfUBMaF3xsesYOwWMXzPbxXxPICaO5Fesl98sxoXvt2XDXr0pSCqHcTKg0ayM7
+ piTzkOU1ABgvx//823/PfXqyDl+hHrjLC6/1uUK4IVcupAwSmCAJ4JxaKbVxoXC5hEl41Vwp7tmvn2
+ nNtMfPam9ZE6vbFyk509Yt4tEnvBCHM0Yccze/ibipTa7l662LbhgoFZZpiGX/HbmavmOfriqljZB7
+ POm21Sw47PoozQbGOJhZKuwDZJrDOe1u3CJKgvjuChbkoXAzqwZEXJcU18vA==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -97,30 +97,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Power Domains and Bindings for SM8650 platform, it uses
-a new NSP2 power domain.
-
-Dependencies: None
-
-For convenience, a regularly refreshed linux-next based git tree containing
-all the SM8650 related work is available at:
-https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm85650/upstream/integ
+Document the RPMh Power Domains on the SM8650 Platform.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
-Neil Armstrong (2):
-      dt-bindings: power: qcom,rpmpd: document the SM8650 RPMh Power Domains
-      pmdomain: qcom: rpmhpd: Add SM8650 RPMh Power Domains
+ Documentation/devicetree/bindings/power/qcom,rpmpd.yaml | 1 +
+ include/dt-bindings/power/qcom,rpmhpd.h                 | 1 +
+ 2 files changed, 2 insertions(+)
 
- .../devicetree/bindings/power/qcom,rpmpd.yaml      |  1 +
- drivers/pmdomain/qcom/rpmhpd.c                     | 30 ++++++++++++++++++++++
- include/dt-bindings/power/qcom,rpmhpd.h            |  1 +
- 3 files changed, 32 insertions(+)
----
-base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
-change-id: 20231016-topic-sm8650-upstream-rpmpd-4fc0fe1179fc
+diff --git a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
+index d38c762e1280..2803f7d56821 100644
+--- a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
++++ b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
+@@ -55,6 +55,7 @@ properties:
+           - qcom,sm8350-rpmhpd
+           - qcom,sm8450-rpmhpd
+           - qcom,sm8550-rpmhpd
++          - qcom,sm8650-rpmhpd
+       - items:
+           - enum:
+               - qcom,msm8937-rpmpd
+diff --git a/include/dt-bindings/power/qcom,rpmhpd.h b/include/dt-bindings/power/qcom,rpmhpd.h
+index 7c201a66bc69..0f6a74e09970 100644
+--- a/include/dt-bindings/power/qcom,rpmhpd.h
++++ b/include/dt-bindings/power/qcom,rpmhpd.h
+@@ -26,5 +26,6 @@
+ #define RPMHPD_QPHY             16
+ #define RPMHPD_DDR              17
+ #define RPMHPD_XO               18
++#define RPMHPD_NSP2             19
+ 
+ #endif
 
-Best regards,
 -- 
-Neil Armstrong <neil.armstrong@linaro.org>
+2.34.1
 
