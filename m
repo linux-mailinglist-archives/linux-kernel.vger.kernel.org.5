@@ -2,114 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 455277D6990
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5188D7D6992
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbjJYKyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 06:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
+        id S234082AbjJYKyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 06:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234846AbjJYKxV (ORCPT
+        with ESMTP id S1343872AbjJYKyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 06:53:21 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A81C93;
-        Wed, 25 Oct 2023 03:53:19 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-32db188e254so3833081f8f.0;
-        Wed, 25 Oct 2023 03:53:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698231198; x=1698835998; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=E5LFOX0gmykKgdLOW/m7PRk1qIDkKpMeejYtgVYKiAg=;
-        b=F4nT09ndUMlwwWWbCVxY3wy02UbyC42jmTu3td70GsgxCueh+EKRU3frpzawEfpx5p
-         /NfeB05Ef1X1fih7+3Je1WiUVF/BMAo1Bt4f482cwh4ZHYBL/jNhpTf+ltWcoKl8ER4I
-         lvUnyLh9CdAeEuxZmwhHSv0ZpJgtMjPPbsl4hMg5nTQkwOOnTIxLxaqRMe0JShGo6G0w
-         R7YTq1spap76AusAs7s/UjfPhBuO/McBlB7eDwDXQY+WP1Cc40HDJ6Ii44wsqQWNgv8I
-         dB8vrhDwIj3lhmbOVhH9NiTkLU5F8qVKmvqDEKbF8BaNsCH/X+WTPTfkqYe3L6DL42cu
-         kCKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698231198; x=1698835998;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E5LFOX0gmykKgdLOW/m7PRk1qIDkKpMeejYtgVYKiAg=;
-        b=DOtzITtmCEA5WfEYFarh+fDd147R7CbiVClqAdm/HNQYp42CpcQxb/jXJbkQOyU2SV
-         qzQa7yCvnQQkCY6gcE1246AWCwoZnTfi4NLV97lCXs9byxn25Ju8ts6M8u6SSYIbCW3c
-         2kaVH5RnfIU2sjtaCGNFCw+ut2lnhNwaPaPwAgTbU0N+T+vECNgE54cCxBqcMuvU52/r
-         90YEq1JOB3ZtpGISPtD9Krm0270G02oyQ5Gr+yrjZX02maWq1Dpq5Hy7Z31bpQhDwQQ3
-         IQ9tWjVM/SBSYJkV5/6Mb6lnbaZ16mZhjN2JaPwguzUfaO4TDsE4TB0NxpCCafaIQE4H
-         YI1w==
-X-Gm-Message-State: AOJu0Yx3BX5LkzzUjRBL793eKmz4vnTDOWkFPlSsAV7Xx/09Bej1zNrN
-        TGJnaZFsvk3DRtEqucu97LY=
-X-Google-Smtp-Source: AGHT+IHm4rhFsIfSunj99etgP4L3hKz3Kf6mT85Ndo9cH1jm/mZT7VsHlOrM9UgiVd/BbfdlfX7xMw==
-X-Received: by 2002:a5d:660e:0:b0:32d:8872:aacb with SMTP id n14-20020a5d660e000000b0032d8872aacbmr10935716wru.53.1698231197566;
-        Wed, 25 Oct 2023 03:53:17 -0700 (PDT)
-Received: from debian ([167.98.27.226])
-        by smtp.gmail.com with ESMTPSA id f1-20020adff8c1000000b0032da75af3easm11793086wrq.80.2023.10.25.03.53.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 03:53:17 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 11:53:15 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 5.15 000/135] 5.15.137-rc2 review
-Message-ID: <ZTjzmw_pVK4eSOED@debian>
-References: <20231024083327.980887231@linuxfoundation.org>
+        Wed, 25 Oct 2023 06:54:03 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E346BC1;
+        Wed, 25 Oct 2023 03:53:59 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id EE01640E01B1;
+        Wed, 25 Oct 2023 10:53:57 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id UxMrYoXksK9l; Wed, 25 Oct 2023 10:53:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1698231236; bh=E1YroIZPP2LEFjZpjyLid5YBIHN+4MkpG+Icb9Gwcco=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LZkT0okAuJIU+zBKJLopKGvY2X1aBBPAB1sLylSYQ3tAKbHJAYcxtV0fnEBL6CKpl
+         v/f3YzVyhvGWTn67W3slNIKqlsEC/Q0fItCYMcU7DvGA/CLi2lHsfUMDq+XBV5Kn0n
+         ptzLlsbt7XqfZNWRrrYcR1DwTeScssl9V8rZMm3gaG9udFBVZhdDBU878Tuq8RjGQc
+         TKVVCvy4JKpJskHoTaem2gwyjs4epjqm/3xxPCcIOWIzMMWpflvgGPofbCWSqcDDW8
+         5b7bRlRlzwyuRHj2czSyRCnSu4r8iPcMJNMDXtG/lC3cPa2XdtNHUJ48RT8IknR7XO
+         F837qfgp4zBJJxFPvuRyIH6HzL+UtMBqGMInUkpIVQA2RR9jMI9KvL5TpCNJCD5mcZ
+         bA2KOwN8kCWedYTfeCRqpbnxtvvNdra5tO01ZH7TX0TxJdaWEqI3Nce7yyq5xF0RUj
+         0OJPtdxru8htfZy9yQ4mY4WiN+kZYrNqEZnpjiLZqx2BOp+PhXtNjBI2Si1x45HNew
+         nO0UI92pD6NEE6arxNto74cghh0j+fDejB1KXsU2yacE4rm67BxwOvFA30ApSt0Bbb
+         bYjth3owKglc1TAf4M6OwlNeBpjCjbrob23yosnb9N6vRE7RjmuT+V3Du9FNd/YYRl
+         8P2cNJuu+LNXEL83YPKPYEV4=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 31D5840E014B;
+        Wed, 25 Oct 2023 10:53:49 +0000 (UTC)
+Date:   Wed, 25 Oct 2023 12:53:43 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, tony.luck@intel.com,
+        linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+        john.allen@amd.com, william.roche@oracle.com
+Subject: Re: [PATCH v2 1/2] RAS: Introduce AMD Address Translation Library
+Message-ID: <20231025105343.GDZTjztyfNVT0ujOsS@fat_crate.local>
+References: <20231005173526.42831-1-yazen.ghannam@amd.com>
+ <20231005173526.42831-2-yazen.ghannam@amd.com>
+ <20231011173528.GUZSbc4Ag03d9Xastz@fat_crate.local>
+ <f65db953-ebf6-488b-94ac-2bf65d2a982d@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231024083327.980887231@linuxfoundation.org>
+In-Reply-To: <f65db953-ebf6-488b-94ac-2bf65d2a982d@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Tue, Oct 24, 2023 at 10:36:50AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.137 release.
-> There are 135 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Oct 16, 2023 at 09:47:09AM -0400, Yazen Ghannam wrote:
+> Of course not! :P
 > 
-> Responses should be made by Thu, 26 Oct 2023 08:32:55 +0000.
-> Anything received after that time might be too late.
+> I do mean "Supported" though. From the top of MAINTAINERS file:
+> 
+>         S: *Status*, one of the following:
+>            Supported:   Someone is actually paid to look after this.
 
-Build test (gcc version 12.2.1 20230511):
-mips: 62 configs -> no failure
-arm: 99 configs -> no failure
-arm64: 3 configs -> no failure
-x86_64: 4 configs -> no failure
-alpha allmodconfig -> no failure
-csky allmodconfig -> no failure
-powerpc allmodconfig -> no failure
-riscv allmodconfig -> no failure
-s390 allmodconfig -> no failure
-xtensa allmodconfig -> no failure
+Whatever - I'm not even going to ask why the distinction is being made.
+:-\
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-mips: Booted on ci20 board. No regression. [3]
+> 
+> >> +#define DF_BROADCAST		0xFF
+> >> +
+> >> +#define DF_FICAA_INST_EN	BIT(0)
+> >> +#define DF_FICAA_REG_NUM	GENMASK(10, 1)
+> >> +#define DF_FICAA_FUNC_NUM	GENMASK(13, 11)
+> >> +#define DF_FICAA_INST_ID	GENMASK(23, 16)
+> >> +
+> >> +/* Register field changed in new systems. */
+> > 
+> > I don't understand that comment.
+> 
+> I'll make it more explicit.
+> 
+> The "REG_NUM" field changed. Please note the slightly different
+> bitmasks.
 
-[1]. https://openqa.qa.codethink.co.uk/tests/5379
-[2]. https://openqa.qa.codethink.co.uk/tests/5381
-[3]. https://openqa.qa.codethink.co.uk/tests/5380
+Sure, but that belongs in the changelog - not in a static comment. "new
+systems" turns into old systems after a couple of years. :)
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+> Fair. It took some getting used to, but I've come to prefer the bitops.
+> I'd like to keep them if you don't mind.
+
+I guess. They haven't pissed me off that much yet and since you're going
+to be staring at that thing...
+
+> Is this so it loads independently?
+
+Yes.
+
+> I'm thinking it should only load as a dependency for other modules.
+
+Then you can express that dependency in those other modules' Kconfig
+stanzas. No need to check vendor here.
+
+> If it fails to load, wouldn't modules that depend on it fail to load?
+
+So if this fails loading, then you need to return an error from the
+loading routine and the other modules should not load.
+
+If the other modules should still load, then you need to make the
+translation lib optional and use the module device table thing so that
+the translation lib can exist independently.
+
+However, then you need to handle the case where the other module calls
+into the translation lib and at exactly the same time, that library
+module is removed. There must be a way to prevent this in the module
+code, ref counting perhaps, but you'll have to check how exactly.
+
+> Yes. The intention is to allow any code to use this "library" including
+> arch code like MCA.
+
+Ah, then it should be in asm/atl.h
+
+> Genoa is a public name for a particular Server model group. And the
+> quirk applies to that group. It doesn't apply to other Zen4 systems like
+> Client models, etc.
+
+So Zen4 server. Still better to have the generation and hw type than
+some italian name which we will forget.
+
+> Sure, but I don't understand.
+> 
+> Should these be moved to edac.rst? This code isn't part of EDAC.
+> 
+> Or are you suggesting that this new "library" should have a
+> Documentation/ entry?
+
+Documentation/ras/ I guess?
+
+> No, PA 0 is a valid address. The physical memory map (at least on x86)
+> starts at 0.
+> 
+> We can still get hardware errors for address 0 even though it's part of
+> a reserved space. These could be found by patrol scrubbers, etc.
+
+Oh fun.
+
+Thx.
 
 -- 
-Regards
-Sudip
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
