@@ -2,76 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD9B7D7805
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 00:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47577D7809
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 00:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbjJYWdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 18:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
+        id S230376AbjJYWeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 18:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjJYWdq (ORCPT
+        with ESMTP id S229596AbjJYWeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 18:33:46 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A65CAC
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 15:33:44 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-578b4997decso247362a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 15:33:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1698273224; x=1698878024; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=opwJbFfeZezmZEuzzSOhTaSQsmNEsDE8+V++KHmxwZU=;
-        b=Zw3Pa2e/3+U+nznqtw6EsgqekwKOZLCpgWcrIdIfIW361ngegMlGJERzrO5alHI5dI
-         jLq4udAqM9dnFbutIBzFOjmZJnW4iCVSWbf5WZYCZ322B+1l6Nte6LyYoIHENGf+yid3
-         Kpat33kudd0NZpR0Iu0Du8TRvk8zZ/F1JMFXA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698273224; x=1698878024;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=opwJbFfeZezmZEuzzSOhTaSQsmNEsDE8+V++KHmxwZU=;
-        b=tFx/IUnxdPWGX3RcCX5O5ADBggLVRC28HEPKN1RKbypd2S0EiiiGnpIlbIV8Sqvtah
-         pqvBDuZXQWR/dho0MKc3WmYeIvo/CBZ0ohZHMk9fkx3FmnK86ywucfGKFWDQgT9EDsfL
-         bV6xr7DeINsX5Dpm5rATIitKWyCK+ExzGNWhtWslpHEMW69Smzp9h1niD76a63yOq/rO
-         0P3C0XVM2O38howCU7eQT0KsycA9rtJYNVidEMxUBINxEJaKUWCB5Ki91Srr4pgp1XJ9
-         z7P9p+zBKS4OIP19hSOop5gW59qWwFiEF9AhnRG/u1SARLvxNSkxHHmgi4K04etcsKNB
-         ew5Q==
-X-Gm-Message-State: AOJu0Ywxg9X2G4kY9uqcl5BxXXiU5Z1Tq7YgeQQe8p8QN4qMilXi1F4o
-        U7ZuG4n4QZ7Ue8g+8gdNhdPfSw==
-X-Google-Smtp-Source: AGHT+IGxTFCX8xvKt6P4f2+i6TbGxj5yvVEoDiE/MOxfbaqndU4RC184AnRD+2msme7KJciUUZryGw==
-X-Received: by 2002:a17:90a:1996:b0:27d:2054:9641 with SMTP id 22-20020a17090a199600b0027d20549641mr16534515pji.36.1698273223913;
-        Wed, 25 Oct 2023 15:33:43 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n17-20020a17090aab9100b0027fccaa6a29sm372876pjq.15.2023.10.25.15.33.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 15:33:43 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 15:33:43 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>,
-        James Seo <james@equiv.tech>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        Wed, 25 Oct 2023 18:34:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D9EF8F;
+        Wed, 25 Oct 2023 15:34:16 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 22:34:12 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1698273253;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=uh2LMTXfXiNOLofXC1rXovR04R9Ky3sOHK9cYm/1H6A=;
+        b=ZpD3VcIyTRIKCp1XZd9e11t0+SIz5M2Iwf4fGwcABIcPCwRZeaVVaC/nAWZqM3bzAxF9Og
+        k0wOEtOeKruUjKNcxeqvSS+5U/QyHbqJ9VKLDlAbr8ZWTVm8oeO0iCxUd32y9RJqdNWtU/
+        ow7oSzbSJ1uKaW91rEVZWOM4QvhxP7ZEdelmhxr9v6Ok4GGAPkX45/nZvmu3hVVXeDQnI/
+        3AkFs7WRdTjyz5spYG2YWKX3A6Y3KTcrwLZDK5M1v7nTkV3+lvXhgRL8P0g2KWlyF0H6jL
+        Qf5Ysl+Fe8WPTOYbjRIg+mNTjh7pDl4vn9F6rkbat8wufls0G5tFGCpNPxEiww==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1698273253;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=uh2LMTXfXiNOLofXC1rXovR04R9Ky3sOHK9cYm/1H6A=;
+        b=KCRtM5j5TQDiU74jih6p6GWPH7M7a7OU+Vj0Dafo7M6x+GjfPlSW0dijLxp/JqPAu50K0F
+        xIH7nCkfVun3E9Dw==
+From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/cpu: Add model number for Intel Arrow Lake
+ mobile processor
+Cc:     Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] scsi: mpt3sas: Use flexible arrays and do a few
- cleanups
-Message-ID: <202310251533.1A27F79450@keescook>
-References: <20230806170604.16143-1-james@equiv.tech>
- <202310230929.494FD6E14E@keescook>
- <yq1il6vfoiu.fsf@ca-mkp.ca.oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yq1il6vfoiu.fsf@ca-mkp.ca.oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Message-ID: <169827325246.3135.11228248693373670513.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,18 +59,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 10:05:33PM -0400, Martin K. Petersen wrote:
-> 
-> Kees,
-> 
-> > Here's a tested-by: from Boris:
-> >
-> > https://lore.kernel.org/all/20231023135615.GBZTZ7fwRh48euq3ew@fat_crate.local
-> 
-> I'm a bit concerned bringing this in just before the merge window.
-> Please ping me if I forget to merge once -rc1 is out.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Sounds good; thanks!
+Commit-ID:     083efcfd1c31dcc395341b4f5aa5d0ae072ae329
+Gitweb:        https://git.kernel.org/tip/083efcfd1c31dcc395341b4f5aa5d0ae072ae329
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Wed, 25 Oct 2023 13:25:13 -07:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Wed, 25 Oct 2023 15:27:44 -07:00
 
--- 
-Kees Cook
+x86/cpu: Add model number for Intel Arrow Lake mobile processor
+
+For "reasons" Intel has code-named this CPU with a "_H" suffix.
+
+[ dhansen: As usual, apply this and send it upstream quickly to
+	   make it easier for anyone who is doing work that
+	   consumes this. ]
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://lore.kernel.org/all/20231025202513.12358-1-tony.luck%40intel.com
+---
+ arch/x86/include/asm/intel-family.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
+index 5fcd85f..1973161 100644
+--- a/arch/x86/include/asm/intel-family.h
++++ b/arch/x86/include/asm/intel-family.h
+@@ -27,6 +27,7 @@
+  *		_X	- regular server parts
+  *		_D	- micro server parts
+  *		_N,_P	- other mobile parts
++ *		_H	- premium mobile parts
+  *		_S	- other client parts
+  *
+  *		Historical OPTDIFFs:
+@@ -124,6 +125,7 @@
+ #define INTEL_FAM6_METEORLAKE		0xAC
+ #define INTEL_FAM6_METEORLAKE_L		0xAA
+ 
++#define INTEL_FAM6_ARROWLAKE_H		0xC5
+ #define INTEL_FAM6_ARROWLAKE		0xC6
+ 
+ #define INTEL_FAM6_LUNARLAKE_M		0xBD
