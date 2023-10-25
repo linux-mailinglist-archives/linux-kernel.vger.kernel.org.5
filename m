@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BDF7D767C
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BC07D7680
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbjJYVTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40144 "EHLO
+        id S230114AbjJYVTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:19:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJYVTD (ORCPT
+        with ESMTP id S229649AbjJYVTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:19:03 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B304D132;
-        Wed, 25 Oct 2023 14:19:01 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 217615C02D1;
-        Wed, 25 Oct 2023 17:19:01 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 25 Oct 2023 17:19:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1698268741; x=1698355141; bh=sB
-        bmzZrzS7uTnh17vfzRRsLGG5pya0cO071IzBgauVw=; b=cEGW65XAIPb/2izJgp
-        CDNL/6qj+dj9I6xTv077eqlR9F9W9CENmDXvCK5w3j0oBgdR7HbmVHLb/MrRWvHs
-        6fSWyu1V7USJiN7J/0oYHagyu11Opj2C6e6Jp1rGV5jOBVE8Ea4yqM09svL8kZCf
-        pjGGu4CWF4OAcZX1K7FTRNFl/BWFqQXgqkdVEPnGzJa6dVONdvbGDDKwdgCVlHsd
-        XMESC0iY7G2qWQgs3P+I7S1kHGTXSfZmvQrykBdFWoIz1qYWR95e7A1Vubgtrb4n
-        yNvh/rii5JKXOwmTwghXClJTe5VfJfXno1JEpnPWJ3bdKNMwlGIHc0rYeplYAcR4
-        mIsQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698268741; x=1698355141; bh=sBbmzZrzS7uTn
-        h17vfzRRsLGG5pya0cO071IzBgauVw=; b=B6qwFUmEMob+EA2+IiIud9rsZ2Djn
-        G3DTTilrXtsOAaKYdVplWsooJZj+Y2vbKCzWWNxY4Jfhe0di5qFyPcJ/4JQBQkZc
-        WYYFytP0NLIGXoUhGP2JoDeANt50t3TAsZla/iURUbw98UK6E1yw3tZcEDP3oCfI
-        7Lp2exF8FrfsqOWwhZ/ZYWdN0v3wUyedHltDhjdiw3dQiHiH4QZXP0XavdterzXa
-        F8hm2tsjWmUmXptrG1RIGPkVGDU0YyrnJ4XgyHIA2mWAcFRRvHjKrn6rs+GoT3fy
-        zX3bxaMerVMOQ3VhugI0tBEane6n35v6cbCNWFAVs2DF6rLy5xHOuV/7w==
-X-ME-Sender: <xms:RIY5Zea-J8aJlz7w6-2ldbaHADRfwZNlDp_xPHG4DN8jAUm2rizNTQ>
-    <xme:RIY5ZRYIbcw-LKwvoaMCqXDLngVtrU6PvSuCGiMyZnYgNxD9NgjKDjqNYY0s9v2ep
-    d5fe48BRg6u6kUsOBg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledtgdduheekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:RIY5ZY-NWH8RnQ3Ca-lO8LOcfcWcYxHfLEUraum6ie_cnzR3hq_VRQ>
-    <xmx:RIY5ZQosmo5MZQLr0SpZy4s_-fDI_twUf6tm2sZr_llBb7AIBQ9TAg>
-    <xmx:RIY5ZZqAsbzFIiWZYVkWTbWaKMVZeUoz2tQJCcG3CgYuhFWXRDTUhQ>
-    <xmx:RYY5ZdLDIJ6YFR1ttxQ7mh393Xhg_dl0wsQT0TIOOTuG5imRmN402g>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id BDBADB60089; Wed, 25 Oct 2023 17:19:00 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
+        Wed, 25 Oct 2023 17:19:39 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AA5132;
+        Wed, 25 Oct 2023 14:19:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1698268772;
+        bh=9i/tRfR1/MlpKccRuA2orgn+CMdJmbapG4NBmApW1Ig=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eFQ/CaUSrtMlyOHzS6n+RpShHQNlTig9xjqv/AGbXBNbvwvGQCPOHFeCjp2HZ3D+h
+         LzESavJ4XRniRslL/aQeE3mrOaPX+ZuPhyto3knP7RBLox+ncHhlWO42qrtvFbvPRs
+         cZ7ySRveBxmkrCmmNpOkjBa6JbB4qg8cCCIEgkzjXbPbsE5JHNAkZm8Zquk2bHjzRl
+         0oJsFzZk/2zAoZP2rBE17kd3Ds3ZG/8mObeuPg52tu/hTY2IxNgX6h0zGmAadaYUIe
+         XhumDUaK15n4qgZ98nmEdsYnoCUip2qhFmp3os7pqlqXa+b2TXL4pdEWWxb1HK2i0d
+         3hVRZu+zLyz/A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SG1yr2ZFnz4wxX;
+        Thu, 26 Oct 2023 08:19:32 +1100 (AEDT)
+Date:   Thu, 26 Oct 2023 08:19:30 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the devicetree tree
+Message-ID: <20231026081930.6b588920@canb.auug.org.au>
 MIME-Version: 1.0
-Message-Id: <571211a1-470a-43da-a603-fd12a640b7a8@app.fastmail.com>
-In-Reply-To: <ZTmEkYn1NcUvL58n@ghost>
-References: <20230919-optimize_checksum-v7-0-06c7d0ddd5d6@rivosinc.com>
- <20230919-optimize_checksum-v7-2-06c7d0ddd5d6@rivosinc.com>
- <DM8PR11MB575134C301E7E17E72281CFAB8DEA@DM8PR11MB5751.namprd11.prod.outlook.com>
- <ZTl8gauEst2NGrw6@ghost>
- <059f17e6-e240-40fa-8742-7844ad3b3502@app.fastmail.com>
- <ZTmEkYn1NcUvL58n@ghost>
-Date:   Wed, 25 Oct 2023 23:18:40 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Charlie Jenkins" <charlie@rivosinc.com>
-Cc:     "Wang, Xiao W" <xiao.w.wang@intel.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "Albert Ou" <aou@eecs.berkeley.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Conor Dooley" <conor@kernel.org>,
-        "David Laight" <David.Laight@aculab.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH v7 2/4] riscv: Checksum header
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/=NvWPYFzAhMvBTG6bLp1PJu";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023, at 23:11, Charlie Jenkins wrote:
->
-> Thank you for pointing that out, I had not realized that macro existed.
-> Since riscv keeps NET_IP_ALIGN at 0 it should be expected that
-> ip_fast_csum is only called with 32-bit aligned addresses. I will update
-> the comment and refer to that macro. riscv supports misaligned accesses
-> but there are no guarantees of speed.
+--Sig_/=NvWPYFzAhMvBTG6bLp1PJu
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Just to clarify for your comment: riscv gets the default value of '2',
-which is the one that makes the header aligned.
+Hi all,
 
-      Arnd
+The following commit is also in Linus Torvalds' tree as a different commit
+(but the same patch):
+
+  460babc96c13 ("dt-bindings: irqchip: renesas,irqc: Add r8a779f0 support")
+
+This is commit
+
+  977f7c2b2756 ("dt-bindings: interrupt-controller: renesas,irqc: Add r8a77=
+9f0 support")
+
+in Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=NvWPYFzAhMvBTG6bLp1PJu
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU5hmIACgkQAVBC80lX
+0GzhUAf/dGlwGTVxv2s5qCqwa2d3Fm5x8lOylJKMvopP/OlOaQN95w+8Q9Ss34ud
+qUBvepcUYlM3RU1l4vumMa/bK+j0rILI/mr5I5/LSFQWaXATUUgp0pr/OktjA7oR
+A51+S1+CHglpclqNps0c6/2qiC5xvQofcIKrro/HkfOMES7J6ASLFwFZwk7/Jvgj
+nZ7iOMPs9R5Kre2ACRuyyw3RGhsSWg2flTRkRcG+JFQdJB1HbuToG4T0dJMtGf1Q
+w6eGvTDB6BxSfgEy/M1Vcuo+0eIE470BjkQuCaejSWR16mWnvDGHU+dkoGkKbL6h
+mGF/1rUuznCsFoWag0FASq7AyRTu4A==
+=QgMm
+-----END PGP SIGNATURE-----
+
+--Sig_/=NvWPYFzAhMvBTG6bLp1PJu--
