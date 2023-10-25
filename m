@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2807D7298
+	by mail.lfdr.de (Postfix) with ESMTP id AEE7F7D7299
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233381AbjJYRsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
+        id S233876AbjJYRsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbjJYRsA (ORCPT
+        with ESMTP id S233387AbjJYRsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:48:00 -0400
+        Wed, 25 Oct 2023 13:48:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D59181
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:47:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4297AC433C7;
-        Wed, 25 Oct 2023 17:47:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 362D6CC
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:48:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2775C433CB;
+        Wed, 25 Oct 2023 17:47:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698256077;
-        bh=7vCImhAy/djrVdzvnhfX4P8W3qXogIjUQ+V/wfWi/00=;
+        s=k20201202; t=1698256079;
+        bh=IC6yiDX3Kjh1tzMkFWq00Eim5ssTBfQdN1nJyO1CAvA=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=kOQSU+3nk0dQ+Hv5JJT9gxQfFdsDCc052I4UmnMXP/WUt9BEXML1WQSC4wZKxO4Sn
-         GNG0djPn5j5iWGsJ7fEdWHqwf077bkM+Px4zywVbB3ONUgDYtb5vlMXjUlu45NXIB6
-         V9ESq38pxoZMf4aSYbf9sJLpy5QBwXCznwUg4tTG2DjMAAY90jdkk9k3FIQMPolZ+V
-         n4y3C6BSE4W5rqOzPKCFl3MBV9WmAd7KFUz83frwevbfGXaLnQQpUchJTtDkfCPYC8
-         p0ufRLVXncYf6JXYMIDCyHZIo8fr2T6RjWPqsb4FOioC4xxgGSLWSq5HKHc8DCXkzr
-         Y67YkHYaI1FRA==
+        b=mUeWrquFevWR3hn1l8bX9tf4vPYywaoVnvqlW88qhO66W3kYHK6amFmhho0/lLwhy
+         uQAeaXH9pcwoHiuZQmpU8pOgp5EvYh3CxVX5Qaf8GrYaJYzAlKuP6JtUGmEENpNGsi
+         /wRx/mf9QbPMriUoAXYS9NtfbuoJsf29AtjZ7WO+jFNbszP7clUUIEOJ1f8jnM1+Gl
+         jEHarE3xbWR2dDBKOZLdFGA21aZlA0FYO7gIOg07HeMuOUnh4JxpQbos4gwwVx1rTk
+         wQ4ZM2zkrnfujhRiS9TKujGDh0HauD8SklsQ8tjk4QlkaDVoVnivfGsAtZishcJH8U
+         T9/OUeDL/z2og==
 From:   Mark Brown <broonie@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -35,12 +35,11 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         Oleksij Rempel <linux@rempel-privat.de>
 Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
-In-Reply-To: <20231010085906.3440452-1-o.rempel@pengutronix.de>
-References: <20231010085906.3440452-1-o.rempel@pengutronix.de>
-Subject: Re: (subset) [PATCH v1 1/3] regulator: dt-bindings:
- fixed-regulator: Add under-voltage interrupt support
-Message-Id: <169825607496.44380.1474728681067592948.b4-ty@kernel.org>
-Date:   Wed, 25 Oct 2023 18:47:54 +0100
+In-Reply-To: <20231025084614.3092295-1-o.rempel@pengutronix.de>
+References: <20231025084614.3092295-1-o.rempel@pengutronix.de>
+Subject: Re: (subset) [PATCH v3 0/7] regulator: add under-voltage support
+Message-Id: <169825607763.44380.12067191932471513673.b4-ty@kernel.org>
+Date:   Wed, 25 Oct 2023 18:47:57 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -54,20 +53,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 10 Oct 2023 10:59:04 +0200, Oleksij Rempel wrote:
-> Add under-voltage interrupt support. This can be used with simple
-> regulators having no other way to communicate an under-voltage event
-> except as by toggling some GPIO line.
+On Wed, 25 Oct 2023 10:46:07 +0200, Oleksij Rempel wrote:
+> This series add under-voltage and emergency shutdown for system critical
+> regulators
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> 
-> diff --git a/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml b/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
-> index ac0281b1cceb..0f8760ed2fb1 100644
-> --- a/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
-> +++ b/Documentation/devicetree/bindings/regulator/fixed-regulator.yaml
-> @@ -100,6 +100,14 @@ properties:
->    vin-supply:
->      description: Input supply phandle.
+> changes v3:
+> - add system-critical-regulator property
+> - add regulator-uv-survival-time-ms property
+> - implement default policy for system critical uv events
 > 
 > [...]
 
@@ -77,9 +70,9 @@ Applied to
 
 Thanks!
 
-[1/3] regulator: dt-bindings: fixed-regulator: Add under-voltage interrupt support
+[3/7] regulator: dt-bindings: fixed-regulator: Add under-voltage interrupt support
       commit: 0ab1dc9c657f30434ca55a3dcc87e624af0b2116
-[2/3] regulator: fixed: add support for under-voltage IRQ
+[5/7] regulator: fixed: add support for under-voltage IRQ
       commit: ecb6f1f456144e9ade5a492192287decbeef4cfe
 
 All being well this means that it will be integrated into the linux-next
