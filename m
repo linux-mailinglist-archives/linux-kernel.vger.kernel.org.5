@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9D07D7553
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487507D755A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbjJYUQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52244 "EHLO
+        id S230286AbjJYUQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjJYUQ0 (ORCPT
+        with ESMTP id S234337AbjJYUQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:16:26 -0400
+        Wed, 25 Oct 2023 16:16:27 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A694C12A
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:16:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967B5136
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:16:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698264984; x=1729800984;
+  t=1698264985; x=1729800985;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=9gZSBMskh2hZ8fcjIkrsOhLkgVvk84ph0SNH00MJChU=;
-  b=KQNd9ANjtgEbPd+T3BhF6MIcJC17ThUxxp4ixMTNqE38w+LYtrsuDUdv
-   Vu9kYPR94samjN4R1yh8aO0xZZ5bcMfxPFs74/2p7xaOblhIav1pVsYxl
-   fE+9HDqIZ7taO7+HipHraiWehZGq+oTmNY4sBkDamTpk2GuRt/SzL3QMv
-   07bpmSYMcUtFNj8lWhGXz6xu6FRhjyuVvkMRUfcvCQcXXZhFOLg/6AQ7+
-   sKXqT8wq2v8OYQt5JgG4uqP9udm9YBoVwNZO5Y9OGQ7mcvny2/VMSKEb3
-   LLyqohm/j7VeeEnG1kRbqiGi6CCks+abiCmpJw4NuICWrbH/PPAvAbbMH
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="377758207"
+  bh=Cq41MKhmxSv+VmENwgWIgLLnJ6HE1k26gc7pRvVAMjw=;
+  b=jDNesEt/WbgZTaYdX2mO3cUxTfr4nwqbsV2dIWLtbgIPbX60chXdZ85g
+   aDgJQV+cc4nNjcx5485RUaX7loKGq13HdYo3VlXyEtTMREYxVVFfBByXH
+   bpzXelOKmAuBs7NAnU6Cp7rTadQ80FnK9buHeh8ooWTpWTu3mtDPDXCuU
+   vfzCnYfnifQwWWo+ZaPMVexGRxVRp4XkwEDdwJaBNU3VDhLHpvqhMKHnZ
+   fjeNHKSYXpEiOOrzCl0XtgEn0SK7BgUN1Yl7msTDHcuU26qtXfkfoCgps
+   3g/361KB9ocRabQiURXcF6kCdb43UkM0SSVxn38hI63wltjQXH8TE1+1r
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="377758213"
 X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="377758207"
+   d="scan'208";a="377758213"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:16:23 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="752459068"
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="752459071"
 X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="752459068"
+   d="scan'208";a="752459071"
 Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
   by orsmga007.jf.intel.com with ESMTP; 25 Oct 2023 13:16:22 -0700
 From:   kan.liang@linux.intel.com
@@ -47,9 +47,9 @@ Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
         alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V5 3/8] perf: Add branch_sample_call_stack
-Date:   Wed, 25 Oct 2023 13:16:21 -0700
-Message-Id: <20231025201626.3000228-3-kan.liang@linux.intel.com>
+Subject: [PATCH V5 4/8] perf/x86/intel: Reorganize attrs and is_visible
+Date:   Wed, 25 Oct 2023 13:16:22 -0700
+Message-Id: <20231025201626.3000228-4-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20231025201626.3000228-1-kan.liang@linux.intel.com>
 References: <20231025201626.3000228-1-kan.liang@linux.intel.com>
@@ -67,48 +67,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Add a helper function to check call stack sample type.
+Some attrs and is_visible implementations are rather far away from one
+another which makes the whole thing hard to interpret.
 
-The later patch will invoke the function in several places.
+There are only two attribute groups which have both .attrs and
+.is_visible, group_default and group_caps_lbr. Move them together.
 
+No functional changes.
+
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
 
-No changes since V4
+New patch
 
- arch/x86/events/core.c     | 2 +-
- include/linux/perf_event.h | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ arch/x86/events/intel/core.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 40c9af124128..09050641ce5d 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -601,7 +601,7 @@ int x86_pmu_hw_config(struct perf_event *event)
- 		}
- 	}
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index a99449c0d77c..584b58df7bf6 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -5540,6 +5540,12 @@ static struct attribute *lbr_attrs[] = {
+ 	NULL
+ };
  
--	if (event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_CALL_STACK)
-+	if (branch_sample_call_stack(event))
- 		event->attach_state |= PERF_ATTACH_TASK_DATA;
- 
- 	/*
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 7897ef066027..ac1a59c1f252 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1144,6 +1144,11 @@ static inline bool branch_sample_counters(const struct perf_event *event)
- 	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_COUNTERS;
- }
- 
-+static inline bool branch_sample_call_stack(const struct perf_event *event)
++static umode_t
++lbr_is_visible(struct kobject *kobj, struct attribute *attr, int i)
 +{
-+	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_CALL_STACK;
++	return x86_pmu.lbr_nr ? attr->mode : 0;
 +}
 +
- struct perf_sample_data {
- 	/*
- 	 * Fields set by perf_sample_data_init() unconditionally,
+ static char pmu_name_str[30];
+ 
+ static ssize_t pmu_name_show(struct device *cdev,
+@@ -5566,6 +5572,15 @@ static struct attribute *intel_pmu_attrs[] = {
+ 	NULL,
+ };
+ 
++static umode_t
++default_is_visible(struct kobject *kobj, struct attribute *attr, int i)
++{
++	if (attr == &dev_attr_allow_tsx_force_abort.attr)
++		return x86_pmu.flags & PMU_FL_TFA ? attr->mode : 0;
++
++	return attr->mode;
++}
++
+ static umode_t
+ tsx_is_visible(struct kobject *kobj, struct attribute *attr, int i)
+ {
+@@ -5587,27 +5602,12 @@ mem_is_visible(struct kobject *kobj, struct attribute *attr, int i)
+ 	return pebs_is_visible(kobj, attr, i);
+ }
+ 
+-static umode_t
+-lbr_is_visible(struct kobject *kobj, struct attribute *attr, int i)
+-{
+-	return x86_pmu.lbr_nr ? attr->mode : 0;
+-}
+-
+ static umode_t
+ exra_is_visible(struct kobject *kobj, struct attribute *attr, int i)
+ {
+ 	return x86_pmu.version >= 2 ? attr->mode : 0;
+ }
+ 
+-static umode_t
+-default_is_visible(struct kobject *kobj, struct attribute *attr, int i)
+-{
+-	if (attr == &dev_attr_allow_tsx_force_abort.attr)
+-		return x86_pmu.flags & PMU_FL_TFA ? attr->mode : 0;
+-
+-	return attr->mode;
+-}
+-
+ static struct attribute_group group_events_td  = {
+ 	.name = "events",
+ };
 -- 
 2.35.1
 
