@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D6C7D7248
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DFC7D724A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjJYRbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38124 "EHLO
+        id S229904AbjJYRce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJYRbb (ORCPT
+        with ESMTP id S229441AbjJYRcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:31:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8205211F
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:31:29 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1698255087;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vEG9DpJeXgBAYLPyeI14/+zK1L5qo7Es6YcPCDpDJqY=;
-        b=G0XHM7hHdxbzCd18a8TdD6oAVZlDR9vznRRxNa5bLv3uvf/5iAHlTUxpz+8Mh77YEphF9B
-        wYEpaoTyidseaQCL1n89dbgDTw/khh7jZrvAxTU1rhVbNqOUIO9exkd+sXhWsQ1w5kkfMG
-        j4bUf/I9mHxGhXlafrhvUH4ZVW+SpdZOXWIzkyzNAVT3ZqrptFvieBh4rNqlSTgKDzs+rp
-        I4OQESSpqDdQi5IamdKOGMWLu7jKD/ef+OYRFW9s3oQBAlSbpgdjhFWM0aAhG3IgtonRSY
-        /HycP95xQd0YWzG019UvTL0AtSDYAC9BD4lYHDqWuWOvcQYlZ05T0Pdv5Se4xA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1698255087;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vEG9DpJeXgBAYLPyeI14/+zK1L5qo7Es6YcPCDpDJqY=;
-        b=cXkzEnNrBP4t9sarFxPQ8Sr9WbRDVSrRoBBqHdJhQw5rdpgo7M4Ol1XT4VuAf2RER94VN+
-        Pvq2k779O4aNE1DQ==
-To:     David Lazar <dlazar@gmail.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, kys@microsoft.com,
-        hpa@linux.intel.com, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: PIC probing code from e179f6914152 failing
-In-Reply-To: <ZTkzYA3w2p3L4SVA@localhost>
-References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
- <878r7z4kb4.ffs@tglx> <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
- <87ttqhcotn.ffs@tglx> <87v8avawe0.ffs@tglx>
- <32bcaa8a-0413-4aa4-97a0-189830da8654@amd.com>
- <ZTkzYA3w2p3L4SVA@localhost>
-Date:   Wed, 25 Oct 2023 19:31:26 +0200
-Message-ID: <87jzra6235.ffs@tglx>
+        Wed, 25 Oct 2023 13:32:33 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147E2138
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:32:31 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b2b1af09c5so3521158b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 10:32:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698255150; x=1698859950; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2HVv1I+VHPYBmP2qyskHC3BNYGeZwM5VQdpXShNy2UU=;
+        b=zf5ACJgYBf0QnYXanrqJVYm+tkFt0XvZ82DuSfzFskWcUAIwsbM26e7W46k/ob7Cr8
+         jZ3wHVjD1KQtZj8S8IFhXBmNQMFG3BNwCgA3b7a5IWDASv0rVTFhO9ooqrYmLP/k9Ecf
+         kJ8hdMWlMXAq3E8NaGzUAVtGGMUmWqFWpeY1ww7pC6uSBQzCocpDInmLLMFabq7mPxy8
+         wCvxhG9G/1ELH86czQTeM7fqQQFMuCw78zXB9gWyIkay0k7XfqSZ3scfoKx14ddjLzJp
+         VgglAiuaKrlKogBp2g1BF+v8MIW9mm22zEPvLZoVV5LbRG1WvDqeU0u7vNG0MGPAB/HL
+         1WHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698255150; x=1698859950;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2HVv1I+VHPYBmP2qyskHC3BNYGeZwM5VQdpXShNy2UU=;
+        b=ZFUMZCUdgjLrg2dIpejteVgi01m9Ikc9aYlFZTfxHu7tH3q5d06XLen6T5MxscLzJr
+         4FhbR5Z46F+vWAMnOc7fXRnpw02yXhFbExyz2Lcw3+5OarLroaxoyiHwR4MuxMcbM1SN
+         Bt1ie8ATvevN6b7q6KJ0VD7Sog0FenAXBAiKP5CeIW7IRby2U5B1VWq5HhQyaSQZwzuA
+         MGdqYomBwaGaQwRkn3LyO++8gOS6QeQUcp6Nmp3o8GN3xJ2axVYsCmrfUAqCUnk2jkRC
+         KoDaKzHDgo65WfieR/gKBZGh4dC0lQD9T+FJ20ZDZHXcjRZ8DnwczlJFrT+q7Zzpz4Kr
+         PLvw==
+X-Gm-Message-State: AOJu0YyLXewEfSw1gvk6rEOViFe9a6zFbTPyuC27Mgw6b/ssEUArsCOs
+        V2D/QXGNLKVmnr3tFJxTfxF22uCwlsUj0xW+VoI5TfdFboajuv9aWzI=
+X-Google-Smtp-Source: AGHT+IHK3QW/LQO8x2wSrRAP38zFqCKcXAPmcxtAPrlTRDXOL59OgKdxwhV3/4We8G2bhIYvPQK38ep1jZnF3JLZbxA=
+X-Received: by 2002:a05:6808:bc1:b0:3a9:cfb5:462a with SMTP id
+ o1-20020a0568080bc100b003a9cfb5462amr17552310oik.36.1698255150350; Wed, 25
+ Oct 2023 10:32:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20231025135550.13162-1-quic_sibis@quicinc.com> <20231025135550.13162-3-quic_sibis@quicinc.com>
+In-Reply-To: <20231025135550.13162-3-quic_sibis@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 25 Oct 2023 20:32:19 +0300
+Message-ID: <CAA8EJpoRMW95hGrDCMAjVeC5Q-xvZovEr53A2UpXLppujDTFOQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] regulator: qcom-rpmh: Add regulators support for PMC8380
+To:     Sibi Sankar <quic_sibis@quicinc.com>
+Cc:     andersson@kernel.org, konrad.dybcio@linaro.org, broonie@kernel.org,
+        lgirdwood@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, agross@kernel.org,
+        conor+dt@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_tsoni@quicinc.com, neil.armstrong@linaro.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25 2023 at 17:25, David Lazar wrote:
-> --- On Wed, 25 Oct 2023, Mario Limonciello wrote:
->> David - can you see if the below helps your hardware?
+On Wed, 25 Oct 2023 at 16:57, Sibi Sankar <quic_sibis@quicinc.com> wrote:
 >
-> The keyboard and mouse work fine with Thomas' patch.
+> From: Rajendra Nayak <quic_rjendra@quicinc.com>
 >
-> I've uploaded the debug info to the bug:
+> Add support from RPMH regulators found in PMC8380 for SC8380XP platform.
 >
-> https://bugzilla.kernel.org/attachment.cgi?id=305291&action=edit
+> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
 
-Let me write a changelog then. Unless Rafael has any objections to that
-approach.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Thanks,
+>  drivers/regulator/qcom-rpmh-regulator.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
 
-        tglx
-
+-- 
+With best wishes
+Dmitry
