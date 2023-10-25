@@ -2,79 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2487D6799
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9157D679F
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbjJYJxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 05:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
+        id S234393AbjJYJy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 05:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234684AbjJYJxf (ORCPT
+        with ESMTP id S233736AbjJYJyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 05:53:35 -0400
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85B311F;
-        Wed, 25 Oct 2023 02:53:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1698227607; bh=H1wJkMmM3RLGtqBxcD2SkPsFMAkzEk6Lnx1q4pd00ZY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dp64/GGqXplxAhkDT3gedu+Sab+eb/+Hyj0bIZlSKcMYYtDGIKUDEQN6fzQa/xlWi
-         o9URUD2793P3Pd8XVPtqKqWTRAWhOiLBqiz+Xj3KOS85yfdWFhDot+7gzeuGebU2Zt
-         /vOhlmP3zxX9lj7KLBn6IJmZx0z20dln14S9n2x6Yzk09UxcjqI8woHLHXZemEA+ms
-         G8jMY417JT8CLRviQBvZbEnnBRm31/RRtknULdvrSajNWMWruQnWO0D1WntEXQ4bp8
-         kXnb1OiHoBPIJf1LDgFRQcbonrgHZyPUe6PZDp5u9XAfU2Yp3uI/3Mm8Uw7e0+5TWN
-         CKIORt/Tz/lNg==
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id DD4071000FC; Wed, 25 Oct 2023 10:53:27 +0100 (BST)
-Date:   Wed, 25 Oct 2023 10:53:27 +0100
-From:   Sean Young <sean@mess.org>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-media@vger.kernel.org,
-        linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] pwm: make it possible to apply pwm changes in
- atomic context
-Message-ID: <ZTjll7oTNVWqygbD@gofer.mess.org>
-References: <cover.1697534024.git.sean@mess.org>
- <a7fcd19938d5422abc59c968ff7b3d5c275577ed.1697534024.git.sean@mess.org>
- <90728c06-4c6c-b3d2-4723-c24711be2fa5@redhat.com>
- <20231019105118.64gdzzixwqrztjir@pengutronix.de>
- <01a505ac-320f-3819-a58d-2b82c1bf2a86@redhat.com>
- <ZTT9fvEF+lqfzGJ/@gofer.mess.org>
- <20231023133417.GE49511@aspen.lan>
+        Wed, 25 Oct 2023 05:54:24 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5369128;
+        Wed, 25 Oct 2023 02:54:21 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39P8s1gt005815;
+        Wed, 25 Oct 2023 09:54:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=7wMO74w/KQMo+4s9Z0A2HrX+bIjpx9iGlyOA0PG/ad4=;
+ b=fDalulYI2WuDlOyjB/RfQhy53FS3TMA6/rGNwiUHXMmV2ZeSdnzVb57XHSDLBioB1ixx
+ SFYaywyg3BGuYEctknE3SWmjKk8gNAVER/SfyW7wvu0KvfHMzFNv9/RtmeDGZX4li9np
+ mwzO9FbzM3rbzCHslVRLD2VOenErwtLWIyjVGb4/ts2ow6tB6MIqVVIgKgcFN8njtGif
+ SQUZz5kWt2lb95TOaA2Apsm821JxRFIs87+ZBU1GKS/o0LxP0EWB+a0scaH7iYcJGfJP
+ zF+GxaPP25tRSdCKZ70+qNMOHt2HI+RUlHndwahzd6H0woVFipMz6M5xA1fxh+dJY3vw +w== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3txuj7gkrr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 09:54:16 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39P9sFC7019754
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 09:54:15 GMT
+Received: from [10.233.19.96] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 25 Oct
+ 2023 02:54:12 -0700
+Message-ID: <060e80b9-e403-45b7-8627-e7b33b223688@quicinc.com>
+Date:   Wed, 25 Oct 2023 17:54:10 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v6 3/3] input: pm8xxx-vibrator: add new SPMI
+ vibrator support
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+CC:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        <linux-input@vger.kernel.org>, <quic_collinsd@quicinc.com>,
+        <quic_subbaram@quicinc.com>, <quic_kamalw@quicinc.com>,
+        <jestar@qti.qualcomm.com>, Luca Weiss <luca.weiss@fairphone.com>
+References: <20230922083801.3056724-1-quic_fenglinw@quicinc.com>
+ <20230922083801.3056724-4-quic_fenglinw@quicinc.com>
+ <CAA8EJpoW8DJOTVHBu9_+BQs5DtxyJu3xrCfDNyYHn2MeHZHV4w@mail.gmail.com>
+ <12887370-0ada-359b-8a4f-18a28495c69a@quicinc.com>
+ <ZRhKAWYBLcBZHc73@google.com>
+ <8697d115-9aa7-2a1c-4d96-25b15adb5cca@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <8697d115-9aa7-2a1c-4d96-25b15adb5cca@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231023133417.GE49511@aspen.lan>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 1q0bmqWI62j_b-3zaFjdSuN-lMjk9_TQ
+X-Proofpoint-GUID: 1q0bmqWI62j_b-3zaFjdSuN-lMjk9_TQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_01,2023-10-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ spamscore=0 malwarescore=0 clxscore=1011 suspectscore=0 lowpriorityscore=0
+ impostorscore=0 priorityscore=1501 mlxscore=0 adultscore=0 mlxlogscore=714
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
+ definitions=main-2310250084
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -84,55 +89,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 02:34:17PM +0100, Daniel Thompson wrote:
-> On Sun, Oct 22, 2023 at 11:46:22AM +0100, Sean Young wrote:
-> > On Sat, Oct 21, 2023 at 11:08:22AM +0200, Hans de Goede wrote:
-> > > On 10/19/23 12:51, Uwe Kleine-K�nig wrote:
-> > > > On Wed, Oct 18, 2023 at 03:57:48PM +0200, Hans de Goede wrote:
-> > > >> On 10/17/23 11:17, Sean Young wrote:
-> > > > I think it's very subjective if you consider this
-> > > > churn or not.
-> > >
-> > > I consider it churn because I don't think adding a postfix
-> > > for what is the default/expected behavior is a good idea
-> > > (with GPIOs not sleeping is the expected behavior).
-> > >
-> > > I agree that this is very subjective and very much goes
-> > > into the territory of bikeshedding. So please consider
-> > > the above my 2 cents on this and lets leave it at that.
-> >
-> > You have a valid point. Let's focus on having descriptive function names.
+
+
+On 10/9/2023 12:01 PM, Fenglin Wu wrote:
 > 
-> For a couple of days I've been trying to resist the bikeshedding (esp.
-> given the changes to backlight are tiny) so I'll try to keep it as
-> brief as I can:
 > 
-> 1. I dislike the do_it() and do_it_cansleep() pairing. It is
->    difficult to detect when a client driver calls do_it() by mistake.
->    In fact a latent bug of this nature can only be detected by runtime
->    testing with the small number of PWMs that do not support
->    configuration from an atomic context.
+> On 10/1/2023 12:17 AM, Dmitry Torokhov wrote:
+>> On Mon, Sep 25, 2023 at 10:54:45AM +0800, Fenglin Wu wrote:
+>>>
+>>>
+>>> On 9/24/2023 3:07 AM, Dmitry Baryshkov wrote:
+>>>>> +
+>>>>> +       switch (vib->data->hw_type) {
+>>>>> +       case SSBI_VIB:
+>>>>>                   mask = SSBI_VIB_DRV_LEVEL_MASK;
+>>>>>                   shift = SSBI_VIB_DRV_SHIFT;
+>>>>> +               break;
+>>>>> +       case SPMI_VIB:
+>>>>> +               mask = SPMI_VIB_DRV_LEVEL_MASK;
+>>>>> +               shift = SPMI_VIB_DRV_SHIFT;
+>>>>> +               break;
+>>>>> +       case SPMI_VIB_GEN2:
+>>>>> +               mask = SPMI_VIB_GEN2_DRV_MASK;
+>>>>> +               shift = SPMI_VIB_GEN2_DRV_SHIFT;
+>>>>> +               break;
+>>>>> +       default:
+>>>>> +               return -EINVAL;
+>>>> Could you please move the switch to the previous patch? Then it would
+>>>> be more obvious that you are just adding the SPMI_VIB_GEN2 here.
+>>>>
+>>>> Other than that LGTM.
+>>>
+>>> Sure, I can move the switch to the previous refactoring patch.
+>>
+>> Actually, the idea of having a const "reg" or "chip", etc. structure is
+>> to avoid this kind of runtime checks based on hardware type and instead
+>> use common computation. I believe you need to move mask and shift into
+>> the chip-specific structure and avoid defining hw_type.
+>>
 > 
->    In contrast do_it() and do_it_atomic()[*] means that although
->    incorrectly calling do_it() from an atomic context can be pretty
->    catastrophic it is also trivially detected (with any PWM driver)
->    simply by running with CONFIG_DEBUG_ATOMIC_SLEEP.
+> Actually, the main motivation for adding 'hw_type' is to avoid reading 
+> 'reg_base' from DT for SSBI_VIB. It can also help to simplify the 
+> 'pm8xxx_vib_data' structure and make following code logic more 
+> straightforward and easier to understand(check hw_type instead of 
+> checking specific constant reg/mask value), it has been used in 
+> following places:
 > 
->    No objections (beyond churn) to fully spelt out pairings such as
->    do_it_cansleep() and do_it_atomic()[*]!
+>    1) Avoid reading 'reg_base' from DT for SSBI_VIB.
+>    2) Only do manual-mode-mask-write for SSBI_VIB. Previously, it was 
+> achieved by giving a valid 'drv_en_manual_mask' value only for SSBI_VIB, 
+> having hw_type make it more straightforward.
+>    3) Not writing VIB_EN register for SSBI_VIB. A similar strategy was 
+> used previously, only write VIB_EN register when 'enable_mask' is valid, 
+>   checking hw_type make it more straightforward.
+>    4) To achieve different drive step size for SPMI_VIB （100mV per 
+> step) and SPMI_VIB_GEN2 (1mV per step).
+>    5) Do different VIB_DRV mask and shift assignment for SPMI_VIB and 
+> SPMI_VIB_GEN2
+>    6) Only write VIB_DRV2 for SPMI_VIB_GEN2.
+> 
 
-I must say I do like the look of this. Uwe, how do you feel about:
-pwm_apply_cansleep() and pwm_apply_atomic()? I know we've talked about
-pwm_apply_atomic in the past, however I think this this the best 
-option I've seen so far.
+Hi Dmitry,
 
-> 2. If there is an API rename can we make sure the patch contains no
->    other changes (e.g. don't introduce any new API in the same patch).
->    Seperating renames makes the patches easier to review!
->    It makes each one smaller and easier to review!
+Can you please help to comment if this looks good for you?
+I actually have pushed a V7 to address your last comment before you made 
+this one.
+V7 change: 
+https://lore.kernel.org/linux-arm-msm/20230927-pm8xxx-vibrator-v7-1-b5d8c92ce818@quicinc.com/, 
+just want to know how to move forward.
+Thanks
 
-Yes, this should have been separated out. Will fix for next version.
+Fenglin
 
-Thanks,
-
-Sean
+> 
+>> Thanks.
+>>
