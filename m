@@ -2,129 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B5F7D7606
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297E97D75F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbjJYUw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
+        id S229719AbjJYUwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJYUwt (ORCPT
+        with ESMTP id S229441AbjJYUwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:52:49 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E803181;
-        Wed, 25 Oct 2023 13:52:47 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1688C5C010D;
-        Wed, 25 Oct 2023 16:52:44 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 25 Oct 2023 16:52:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1698267164; x=1698353564; bh=Lw
-        km4by0Rki3JY+h6pP3hgKn84sTDYv48INvl6mOPx0=; b=EVs5SINrDuZyr+FdoB
-        /KT2yCpM/aCvcgrKTwKt82ffUgNjPCOaT4detltoHGvUR8aujlpORn8a0u8niErV
-        Zx2WyilaDcWVHGLVy2GheqlfE8XS3UyMlknBPkfqii2hcZtAwQrFhVe+7+LvngBI
-        eRt7qJoteMZvrkXivybaTeYAwBuCaZTLgeyDG89ptUzBsyt9jFo/Lsjg5oM4r7w+
-        mY36Bs5NZ1Bxxit7llkhrYpWRVYAxWbgAYvzfFcfeaYTe5bUe+BHmNeqH76hJhWQ
-        +9OwQXlH+KcAICkD4KApf7elWDkAPZjUvogsrmoW1nlZCJtIZ1Hzk7muoj3ihij8
-        oRPw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698267164; x=1698353564; bh=Lwkm4by0Rki3J
-        Y+h6pP3hgKn84sTDYv48INvl6mOPx0=; b=nYndhwyOjJwKekFfaJQ96GLSjBtgR
-        6KDIyg3YBnVEpIIWHoTtGVhJBmMyFqpXAmOoxOTQkS0al7c6R4xZh509P6ZSaBJt
-        g8heyn4Ke8YhmqvFsj/jtlyFLLYzul3dAnOqt1IVwjTThbDIut0ZfkYN+bYP8MxK
-        Aehus9MxE5cqcd0PKTXSjQe5j1PXtxMAHWySXaa8XRg7MZz9QVB9ogmv8gBkSjB3
-        qgmlBJNxxH7GmYhja5rTWgBz8TqahESrgLNmHAW7hhBWRSgcI3MyUf0cX6DFlWDE
-        ai7vFOv9anFePpue4GW5iPtM9AzmwqgVa5wnAPLhuzDcwETvbliU726fw==
-X-ME-Sender: <xms:G4A5ZTPvNocsC00WmySUy_U0FZgPnCwlQeegak5ez8YvXyxKts7Frg>
-    <xme:G4A5Zd_GRfIeCramOakSE5ulbqAFppoOwn-M2pZAAsxzo8u3UZKgypONYRhlT2Hxc
-    gDc-RFAKo8BF2GbZi4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrledtgdduheefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:G4A5ZSRfVof2wTyakLYZQ0JE-z6rYY5k6tc5niOEhzeB6vqFNMizKA>
-    <xmx:G4A5ZXtGVGtSLpJIHvDjGmgjahUu88W7EbAvuPYY9qoZ12IAbeWu9A>
-    <xmx:G4A5ZbdI3EktLJRSy1ZJQU7g0bK8iBLodDZDRFlKEKsoHbIUzRHbQw>
-    <xmx:HIA5ZdvGur4GYsps9tn6DzlV-YwTIkvIs02dVgRfO3yXqRbC21bHvQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 773ABB60089; Wed, 25 Oct 2023 16:52:43 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
+        Wed, 25 Oct 2023 16:52:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC81136;
+        Wed, 25 Oct 2023 13:52:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698267160; x=1729803160;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=XTbrElkU1MbX6ZrhPb1QYOzV1U9Co1VHsj67ZR6GG3g=;
+  b=TGq8NBDOml6EemXEi9z6ISE3nVI291MD184rYq3x5nMy8II6Rtc3wLc8
+   dqzEzUlUyooxAfoTwlze/vcXw3VWYMETeDKLtijq7NTkm6hl/QPhzbcjc
+   H6Hmjsz19ZJZsEvazEQPvGQiuDB7SXQ63bJA3hfQwD3itZiF62lv323gi
+   t8NhIT1/qb0aJW/U4ClFOeM6kbhzTvYwUD/FyFKAbOdiX+3cbYsx2UPB+
+   9InzzXxYCOsvVfU+cgZWNEx3MPzlvrhSJ2tkNDmmD+2IGTJVge7uK5CaU
+   /z5bc536Sa/KoiQdt6MrrMAwQC7I/qpqagxbX0LEiQLrV7ZZWoWO908K6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="387222339"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="387222339"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:52:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="708817429"
+X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
+   d="scan'208";a="708817429"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:52:38 -0700
+Date:   Wed, 25 Oct 2023 13:52:37 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     "Moger, Babu" <babu.moger@amd.com>
+Cc:     Peter Newman <peternewman@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH] x86/resctrl: mba_MBps: Fall back to total b/w if local
+ b/w unavailable
+Message-ID: <ZTmAFVuYlMuCbQHz@agluck-desk3>
+References: <20231024181600.8270-1-tony.luck@intel.com>
+ <CALPaoChftF-H6GauKq4-c_qBJP1GJbR3-ByE5krsaQF4y4y9oQ@mail.gmail.com>
+ <ZTluypa9bCWv4k2n@agluck-desk3>
+ <e4994218-a7a2-4505-868e-a5c825ca4db0@amd.com>
+ <b8ea0a74-347d-475f-a36d-8944ced16951@amd.com>
 MIME-Version: 1.0
-Message-Id: <059f17e6-e240-40fa-8742-7844ad3b3502@app.fastmail.com>
-In-Reply-To: <ZTl8gauEst2NGrw6@ghost>
-References: <20230919-optimize_checksum-v7-0-06c7d0ddd5d6@rivosinc.com>
- <20230919-optimize_checksum-v7-2-06c7d0ddd5d6@rivosinc.com>
- <DM8PR11MB575134C301E7E17E72281CFAB8DEA@DM8PR11MB5751.namprd11.prod.outlook.com>
- <ZTl8gauEst2NGrw6@ghost>
-Date:   Wed, 25 Oct 2023 22:52:22 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Charlie Jenkins" <charlie@rivosinc.com>,
-        "Wang, Xiao W" <xiao.w.wang@intel.com>
-Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
-        "Albert Ou" <aou@eecs.berkeley.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Conor Dooley" <conor@kernel.org>,
-        "David Laight" <David.Laight@aculab.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        "Paul Walmsley" <paul.walmsley@sifive.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH v7 2/4] riscv: Checksum header
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8ea0a74-347d-475f-a36d-8944ced16951@amd.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023, at 22:37, Charlie Jenkins wrote:
-> On Wed, Oct 25, 2023 at 06:50:05AM +0000, Wang, Xiao W wrote:
+On Wed, Oct 25, 2023 at 03:42:14PM -0500, Moger, Babu wrote:
+> I meant, I was thinking bit different.
+> 
+> > 
+> > You need these changes in only two functions, mbm_bw_count and
+> > update_mba_bw. You decide which event you want to use based on availability,
+> > 
+> > Something like this. I updated mbm_bw_count.
+> > 
+> > diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c
+> > b/arch/x86/kernel/cpu/resctrl/monitor.c
+> > index 0ad23475fe16..302993e4fbc3 100644
+> > --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> > +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> > @@ -436,8 +436,16 @@ static int __mon_event_count(u32 rmid, struct
+> > rmid_read *rr)
+> >   */
+> >  static void mbm_bw_count(u32 rmid, struct rmid_read *rr)
+> >  {
+> > -       struct mbm_state *m = &rr->d->mbm_local[rmid];
+> >         u64 cur_bw, bytes, cur_bytes;
+> > +       struct mbm_state *m;
+> > +       int evtid;
+> > +
+> > +       if (is_mbm_local_enabled())
+> > +               evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
+> > +       else
+> > +               evtid = QOS_L3_MBM_TOTAL_EVENT_ID;
+> > +
+> > +       m = get_mbm_state(rr->d, rmid, evtid);
 
->> > +
->> > +/*
->> > + * Quickly compute an IP checksum with the assumption that IPv4 headers
->> > will
->> > + * always be in multiples of 32-bits, and have an ihl of at least 5.
->> > + * @ihl is the number of 32 bit segments and must be greater than or equal
->> > to 5.
->> > + * @iph is assumed to be word aligned.
->> 
->> Not sure if the assumption is always true. It looks the implementation in "lib/checksum.c" doesn't take this assumption.
->> The ip header can comes after a 14-Byte ether header, which may start from a word-aligned or DMA friendly address.
->
-> While lib/checksum.c does not make this assumption, other architectures
-> (x86, ARM, powerpc, mips, arc) do make this assumption. Architectures
-> seem to only align the header on a word boundary in do_csum. I worry
-> that the benefit of aligning iph in this "fast" csum function would
-> disproportionately impact hardware that has fast misaligned accesses.
+Ok. Yes. That seems simpler.
 
-Most architectures set NET_IP_ALIGN to '2', which is intended
-to have the IP header at a 32-bit aligned address, though
-some other targets don't bother:
+Maybe I should just set a global "mbm_evtid" at mount
+time. No need to check every time to see if is_mbm_local_enabled()
+somehow changed and local b/w measurements were suddenly
+available!
 
-arch/arm64/include/asm/processor.h:#define NET_IP_ALIGN 0
-arch/powerpc/include/asm/processor.h:#define NET_IP_ALIGN       0
-arch/x86/include/asm/processor.h:#define NET_IP_ALIGN   0
-include/linux/skbuff.h:#define NET_IP_ALIGN     2
-
-I think it's considered a driver bug if an SKB ends up
-with a misaligned IP header, but it's also something that
-some of the more obscure drivers get wrong.
-
-    Arnd
+-Tony
