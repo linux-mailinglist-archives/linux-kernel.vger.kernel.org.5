@@ -2,152 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 058E57D64BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F547D64BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233797AbjJYIQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60488 "EHLO
+        id S233782AbjJYIRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233687AbjJYIQY (ORCPT
+        with ESMTP id S231542AbjJYIRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:16:24 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5911D123
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:16:22 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40850b244beso42659665e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:16:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698221781; x=1698826581; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FY0JWHmlhPx8MxvwZOUReB8mPKqDhX996EGqeMpXUoQ=;
-        b=mztN9BU47aFP5GlJVEv/+I9IFNECiCpncqMsYgPf3kJwi9YS650VZKM4VbXZD7UHLk
-         UU7iRY9X8UAVLYbtbdsIjZhVYTCMYKqoXF3xUWTXdka2Zau02ElHAgeWNZGmHw94zHKd
-         mfCJbHtAc0pbo7knxe0/JRg/DeSivRm7WhoUwUj0WohyXGKd0tPWx49Cv5A1EBfE6klx
-         qEu1r4zwhRMCOb0nAW+mK8A9R/H+5jSeGlB92pBpNL0AyNBE7xoCI9l9WCih/f54VR5c
-         KHWjtKq7BMsfGas6+c89dBA46mYYYsKlZU8sS/hmqjz2Mx/lR36LdYCe7R6d3ZRqYGEs
-         y8ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698221781; x=1698826581;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FY0JWHmlhPx8MxvwZOUReB8mPKqDhX996EGqeMpXUoQ=;
-        b=No1/OHh41qxmahkEtp3cs8Wwjp7ayhgGN9CPXRsnmt/O8xwWN4vGwyXUOZ1xkBkBrY
-         Ufp9LbZ6CXE/QPi2nSQBs7qh7mj7gFljRAGZ3OtYtyJk8NrFrCuPQzu0UkZBOXQ0s0j1
-         w9i6n4Dw3QwHYxfkL8SZkl0WVv1CfFzM932Ell75v6wRgPh2kHN/LYkb+Om/2p8w6u5B
-         3n00gwXShFCriN7v3yXCf/5+4KLfGhibtuHLT4XHlTwo0KpikXsRNB7Vbfxri8kSj13I
-         4No2I8dhbYuh8RtBZ36bqKmUpUrT1/c/JyP4zm2lAVdeLIR0VfINsqx1TIaduuLzw943
-         sZ6g==
-X-Gm-Message-State: AOJu0Yx1no68rhuIuEpum894QXcnMZBNJhnls4Ai/Udm8n+lT390J9UH
-        OrfhDPHZv0cHJ5+tZNRbfLOB3t0r0EK36pvYK8I=
-X-Google-Smtp-Source: AGHT+IFVoSCxq9swR1N/5XqhTWUhfrbXUNOovhzRD1ZDkCSxOrTlFyzNb+TQBLnB591ZYaLkmIvxMQ==
-X-Received: by 2002:a05:600c:1f85:b0:407:5a7d:45a8 with SMTP id je5-20020a05600c1f8500b004075a7d45a8mr11893507wmb.31.1698221780753;
-        Wed, 25 Oct 2023 01:16:20 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id b11-20020a05600010cb00b00324853fc8adsm11519714wrx.104.2023.10.25.01.16.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 01:16:20 -0700 (PDT)
-Message-ID: <13707da9-b28c-45cf-9288-af71558be57b@linaro.org>
-Date:   Wed, 25 Oct 2023 10:16:18 +0200
+        Wed, 25 Oct 2023 04:17:16 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF66EB0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:17:14 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39P89Wq1018370;
+        Wed, 25 Oct 2023 08:17:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=A2uw3UuwQ8KCnit9kWh7BpC0c08GN8NdE77ZiNSkcaw=;
+ b=YzkJeEBvUYMiE+OsFXUPniookCZGQVfluunI0YKTwQMn826NWAHKAjhwO3xNyWYskxg7
+ 2hjjn2LpnSh3R55dDLNj93miD50dLS9UyBdQuEuItZGT5wpfQ7RI1q6rOYQu826m8J2M
+ Ze8vrUfbvN55zbPwlpIlyBx0knv4bnh/g4aMyePwi2lYk0K10EF1JtFBFR6DsmujJjra
+ gNZQCdoNU4/bfDS94W2Ygw4eczLtp1E7m3vPlPrVz0w54MVCzXI5Em9TJvbKSPvxF+BZ
+ B1grGPhqX5WOe2y0H3h2sMfs2NAIxyDcWGEb574ezscIO1uhIrNygiD+QLatvavCGzQr YA== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3txy8u0fur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 08:17:03 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 39P73fTs010290;
+        Wed, 25 Oct 2023 08:16:58 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tvsbynepy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Oct 2023 08:16:58 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 39P8Gubb18940600
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Oct 2023 08:16:56 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 184EF20043;
+        Wed, 25 Oct 2023 08:16:56 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B330B20040;
+        Wed, 25 Oct 2023 08:16:55 +0000 (GMT)
+Received: from [9.171.32.46] (unknown [9.171.32.46])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 25 Oct 2023 08:16:55 +0000 (GMT)
+Message-ID: <9573ec63-a8d6-4c69-a70b-9095838d521d@linux.ibm.com>
+Date:   Wed, 25 Oct 2023 10:16:55 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] pinctrl: qcom: handle intr_target_reg
- wakeup_present/enable bits
+Subject: Re: [PATCH] cxl: make cxl_class constant
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <2023102434-haiku-uphill-0c11@gregkh>
 Content-Language: en-US
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231025-topic-sm8650-upstream-tlmm-v1-0-4e3d84a3a46b@linaro.org>
- <20231025-topic-sm8650-upstream-tlmm-v1-2-4e3d84a3a46b@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231025-topic-sm8650-upstream-tlmm-v1-2-4e3d84a3a46b@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+From:   Frederic Barrat <fbarrat@linux.ibm.com>
+In-Reply-To: <2023102434-haiku-uphill-0c11@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: DNlKNOt5L6DbWH-N_5lNSx63TUppcBK4
+X-Proofpoint-GUID: DNlKNOt5L6DbWH-N_5lNSx63TUppcBK4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-25_01,2023-10-24_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
+ mlxscore=0 bulkscore=0 spamscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 mlxlogscore=963 suspectscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310170001 definitions=main-2310250070
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 09:33, Neil Armstrong wrote:
-> New platforms uses a new set of bits to control the wakeirq
-> delivery to the PDC block.
+
+
+On 24/10/2023 13:48, Greg Kroah-Hartman wrote:
+> Now that the driver core allows for struct class to be in read-only
+> memory, we should make all 'class' structures declared at build time
+> placing them into read-only memory, instead of having to be dynamically
+> allocated at runtime.
 > 
-> The intr_wakeup_present_bit indicates if the GPIO supports
-> wakeirq and intr_wakeup_enable_bit enables wakeirq delivery
-> to the PDC block.
-> 
-> While the name seems to imply this only enables wakeup events,
-> it is required to allow interrupts events to the PDC block.
-> 
-> Enable this bit in the irq resource request/free if:
-> - gpio is in wakeirq map
-> - has the intr_wakeup_present_bit
-> - the intr_wakeup_enable_bit is set
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Cc: Frederic Barrat <fbarrat@linux.ibm.com>
+> Cc: Andrew Donnellan <ajd@linux.ibm.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Thanks!
+Acked-by: Frederic Barrat <fbarrat@linux.ibm.com>
 
-Best regards,
-Krzysztof
+   Fred
 
+
+>   drivers/misc/cxl/file.c | 21 ++++++++++-----------
+>   1 file changed, 10 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/misc/cxl/file.c b/drivers/misc/cxl/file.c
+> index 144d1f2d78ce..012e11b959bc 100644
+> --- a/drivers/misc/cxl/file.c
+> +++ b/drivers/misc/cxl/file.c
+> @@ -38,8 +38,6 @@
+>   
+>   static dev_t cxl_dev;
+>   
+> -static struct class *cxl_class;
+> -
+>   static int __afu_open(struct inode *inode, struct file *file, bool master)
+>   {
+>   	struct cxl *adapter;
+> @@ -559,7 +557,10 @@ static char *cxl_devnode(const struct device *dev, umode_t *mode)
+>   	return kasprintf(GFP_KERNEL, "cxl/%s", dev_name(dev));
+>   }
+>   
+> -extern struct class *cxl_class;
+> +static const struct class cxl_class = {
+> +	.name =		"cxl",
+> +	.devnode =	cxl_devnode,
+> +};
+>   
+>   static int cxl_add_chardev(struct cxl_afu *afu, dev_t devt, struct cdev *cdev,
+>   			   struct device **chardev, char *postfix, char *desc,
+> @@ -575,7 +576,7 @@ static int cxl_add_chardev(struct cxl_afu *afu, dev_t devt, struct cdev *cdev,
+>   		return rc;
+>   	}
+>   
+> -	dev = device_create(cxl_class, &afu->dev, devt, afu,
+> +	dev = device_create(&cxl_class, &afu->dev, devt, afu,
+>   			"afu%i.%i%s", afu->adapter->adapter_num, afu->slice, postfix);
+>   	if (IS_ERR(dev)) {
+>   		rc = PTR_ERR(dev);
+> @@ -633,14 +634,14 @@ void cxl_chardev_afu_remove(struct cxl_afu *afu)
+>   
+>   int cxl_register_afu(struct cxl_afu *afu)
+>   {
+> -	afu->dev.class = cxl_class;
+> +	afu->dev.class = &cxl_class;
+>   
+>   	return device_register(&afu->dev);
+>   }
+>   
+>   int cxl_register_adapter(struct cxl *adapter)
+>   {
+> -	adapter->dev.class = cxl_class;
+> +	adapter->dev.class = &cxl_class;
+>   
+>   	/*
+>   	 * Future: When we support dynamically reprogramming the PSL & AFU we
+> @@ -678,13 +679,11 @@ int __init cxl_file_init(void)
+>   
+>   	pr_devel("CXL device allocated, MAJOR %i\n", MAJOR(cxl_dev));
+>   
+> -	cxl_class = class_create("cxl");
+> -	if (IS_ERR(cxl_class)) {
+> +	rc = class_register(&cxl_class);
+> +	if (rc) {
+>   		pr_err("Unable to create CXL class\n");
+> -		rc = PTR_ERR(cxl_class);
+>   		goto err;
+>   	}
+> -	cxl_class->devnode = cxl_devnode;
+>   
+>   	return 0;
+>   
+> @@ -696,5 +695,5 @@ int __init cxl_file_init(void)
+>   void cxl_file_exit(void)
+>   {
+>   	unregister_chrdev_region(cxl_dev, CXL_NUM_MINORS);
+> -	class_destroy(cxl_class);
+> +	class_unregister(&cxl_class);
+>   }
