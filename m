@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 320B57D70E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00A97D70D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344765AbjJYP0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 11:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38466 "EHLO
+        id S1344555AbjJYP1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 11:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235224AbjJYP0Y (ORCPT
+        with ESMTP id S1344795AbjJYP1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 11:26:24 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1530D1985
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:25:24 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507a62d4788so9147618e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:25:23 -0700 (PDT)
+        Wed, 25 Oct 2023 11:27:18 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC301B6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:26:14 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9c603e235d1so893607466b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:26:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698247522; x=1698852322; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tsa45sh4cqXtyQ0fX38sVaI+3vtTh68MnktVz8dXRb0=;
-        b=Khg1/9Oul9iZ7OvI1dolfaj7S+OKMZ87/fvyhMIvhcrGWD2COcXoqH40HxQa8o5GX8
-         lk3M6e2xzbB75VzTH9yfrj18dZMIUEhy5e07iyqXONg6/ktNXAHcjXQ3X17oZwBDAWoy
-         zrtn9w+WbLZ2Z1cmPxkV4HQI/Hez3n2eKVqMN+8sM1y3hbanUfi3/QSQkJc48InelrmI
-         UG9nqStyoSwQg/Kd1DGltuBduwl8lGLsl6Kd018HQto7k9m8S47DvnjtakTgWgfz+qJC
-         +rS8IAfuu5qp25HSi944o21xFVYYrBZ0y98hdFzqY4kdbunmyohg7MKnzR8gSox0SMpL
-         l7tw==
+        d=amarulasolutions.com; s=google; t=1698247572; x=1698852372; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=N6kIXcR1VU3TM5nz+Od8WlpDMDBhPdIZjdnlTVp9UJg=;
+        b=ISrtjaY1JTvN7+81n9yRw1qgEnccwmIX9L5gOS0S5U8+uVbNcy36UuSpZn1k2gzq64
+         0KtaPfveXQZFPX1gJSWaBg3IcIlkvmBu0uE8DqaD5XBmxD/UNcGWHdhK9CFIrw+LvKCe
+         6dpDwOyGVdG8fjJnpLxiaoaSCxG76gvtCXf4c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698247522; x=1698852322;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tsa45sh4cqXtyQ0fX38sVaI+3vtTh68MnktVz8dXRb0=;
-        b=JEpRHLBYd9KUjDn/SX+3CZrfv6xJSTgrDraKo3LSCDTngkUODXc+NqHiRQfdAfsw18
-         rcWy8kAzbFI1ITqvRNr+d4L0nken0fBH9UhD7vxQSfqzAyA7EzZPMa7YehJed0Q7CA8f
-         izB5Fb38t5DmegVCTISDK9RsRBaH3Fl6olxcXbm5PG4K1jhYuhVaCEZUA1C8gGfS8Ngf
-         lpeqLNTp7+om9SewvIBXvsyuUvDyaLqHyBrhI2HsrkpLQL2Q3s7QIdBVTPgjMrLeK2iU
-         8KG0LkhI3fBsMUflWUvUOW0Ci/z8u57V48sBHb7CX0jsQitDzGy8SU3cT3lBVJ2GfrtK
-         YWNw==
-X-Gm-Message-State: AOJu0YwnDvFA4LyyB52BgwBlcOPHcy8TB73JU0sw4V55Kex+MGtXdFrG
-        AzFnMeQwO2obvABHFlRRNkbbtjcWXDFaTg==
-X-Google-Smtp-Source: AGHT+IEiBp9E2HtKgRFUjADpNprvPh7PSPSdlx6gbIxyVpoDz2R0r9mNytg/+FTSDQK6bObp6eOYmQ==
-X-Received: by 2002:ac2:4186:0:b0:508:1851:d29f with SMTP id z6-20020ac24186000000b005081851d29fmr1642578lfh.11.1698247521905;
-        Wed, 25 Oct 2023 08:25:21 -0700 (PDT)
-Received: from localhost ([2001:171b:c9bb:4130:c056:27ff:fec4:81cb])
-        by smtp.gmail.com with ESMTPSA id n15-20020adfe78f000000b003197869bcd7sm12344076wrm.13.2023.10.25.08.25.21
+        d=1e100.net; s=20230601; t=1698247572; x=1698852372;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N6kIXcR1VU3TM5nz+Od8WlpDMDBhPdIZjdnlTVp9UJg=;
+        b=mpdO99axGDBmM7TIiAaf/HrDu70sqfoXr8O/yXlwZiZ8AALtoiBtLX52luBfKvnddC
+         ypwJZlHl/kKxr6IA8edIPLIfOiHYFC4hMYhRHzBo8knwmarzWQIm4lLaRTG8pUBH6ePx
+         LiAMpjkf+flUUZQGP1W7s+Ef4mDQG/68v1u1uE6l51OtKoLU4OV3z14d/K1RzRLW4hAj
+         yAsHN7mGQS9c6SlE8jnK+jxpFdpM8QrGbS6pA0W8mMOius18q5bAKcDcJ9l6loTQXo4V
+         rZhKztF12EOBHwsu3ANIER3elJ0sbzrvRWyevv86AZcnKYXGCz5a2xDfNxyBCtTBLuPD
+         U6Dw==
+X-Gm-Message-State: AOJu0YxTCp7N8EiYAnSB8RDzT2Uhl5KfveMPpJ3IjH1LTME7cYHzYk3m
+        sJ2EHjXS01SfFSiHncc0BIOx7XAx+nNMFNpgPIoeKg==
+X-Google-Smtp-Source: AGHT+IFZHatwpLh7F13bXFgOd8oEvInM20j/qQ1kWD4VR3k0O98n3XUgnAuYWIfT5SXzA9vF7lpujw==
+X-Received: by 2002:a17:907:c386:b0:9c7:fd91:4309 with SMTP id tm6-20020a170907c38600b009c7fd914309mr8380498ejc.0.1698247572476;
+        Wed, 25 Oct 2023 08:26:12 -0700 (PDT)
+Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-82-50-51-252.retail.telecomitalia.it. [82.50.51.252])
+        by smtp.gmail.com with ESMTPSA id u24-20020a170906409800b009bf94de8971sm10110156ejj.70.2023.10.25.08.26.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 08:25:21 -0700 (PDT)
-Received: from localhost (localhost [local])
-        by localhost (OpenSMTPD) with ESMTPA id 4a32ea01;
-        Wed, 25 Oct 2023 15:25:20 +0000 (UTC)
-Date:   Wed, 25 Oct 2023 17:25:20 +0200
-From:   David Lazar <dlazar@gmail.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Hans de Goede <hdegoede@redhat.com>, kys@microsoft.com,
-        hpa@linux.intel.com, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: PIC probing code from e179f6914152 failing
-Message-ID: <ZTkzYA3w2p3L4SVA@localhost>
-References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
- <878r7z4kb4.ffs@tglx>
- <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
- <87ttqhcotn.ffs@tglx>
- <87v8avawe0.ffs@tglx>
- <32bcaa8a-0413-4aa4-97a0-189830da8654@amd.com>
+        Wed, 25 Oct 2023 08:26:12 -0700 (PDT)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Baolu Lu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v2] iommu/tegra-smmu: drop error checking for debugfs_create_dir()
+Date:   Wed, 25 Oct 2023 17:25:58 +0200
+Message-ID: <20231025152609.2042815-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <32bcaa8a-0413-4aa4-97a0-189830da8654@amd.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---- On Wed, 25 Oct 2023, Mario Limonciello wrote:
-> David - can you see if the below helps your hardware?
+The return value of debugfs_create_dir() should be checked using the
+IS_ERR() function. The patch, however, drops the check statement without
+fixing it because the subsequent functions (i. e. debugfs_create_file())
+can handle the case where `@parent` is an error pointer.
 
-The keyboard and mouse work fine with Thomas' patch.
+Suggested-by: Baolu Lu <baolu.lu@linux.intel.com>
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-I've uploaded the debug info to the bug:
+---
 
-https://bugzilla.kernel.org/attachment.cgi?id=305291&action=edit
+Changes in v2:
+ - drop the error checking statement
+
+ drivers/iommu/tegra-smmu.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+index e445f80d0226..3e573148d18c 100644
+--- a/drivers/iommu/tegra-smmu.c
++++ b/drivers/iommu/tegra-smmu.c
+@@ -1056,9 +1056,6 @@ DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
+ static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
+ {
+ 	smmu->debugfs = debugfs_create_dir("smmu", NULL);
+-	if (!smmu->debugfs)
+-		return;
+-
+ 	debugfs_create_file("swgroups", S_IRUGO, smmu->debugfs, smmu,
+ 			    &tegra_smmu_swgroups_fops);
+ 	debugfs_create_file("clients", S_IRUGO, smmu->debugfs, smmu,
+-- 
+2.42.0
+
