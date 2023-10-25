@@ -2,152 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 292C77D70C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC8D7D70DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344895AbjJYP1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 11:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
+        id S235139AbjJYP0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 11:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344785AbjJYP0o (ORCPT
+        with ESMTP id S235120AbjJYPZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 11:26:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB60619F
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698247473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JCE307w8DYtYzLu55wqwBWYbWWwCcRl3VdLWWJ4IDuA=;
-        b=ieSDagiSKO9GOp4/PNISwZYE3kURfWXJ1fsmGFLI41C6IEEmXgBTDFnazB5SxApIH5sP/f
-        OgBOAQFO3CBU9qzErZf5DXBt/k6ccRF1oprJr4KqMwz4EdCStjLi/2VwuxD/JWU1O/kj74
-        JQWUvROwaftfKwkagROxEMS2tRF3cWE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-620-HihJVEyBPzqMWpDA9xkrHg-1; Wed, 25 Oct 2023 11:24:24 -0400
-X-MC-Unique: HihJVEyBPzqMWpDA9xkrHg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 47F6B185A789;
-        Wed, 25 Oct 2023 15:24:24 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.45.226.101])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5AAF82166B26;
-        Wed, 25 Oct 2023 15:24:23 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 14/14] KVM: nSVM: hyper-v: Hide more stuff under CONFIG_KVM_HYPERV/CONFIG_HYPERV
-Date:   Wed, 25 Oct 2023 17:24:06 +0200
-Message-ID: <20231025152406.1879274-15-vkuznets@redhat.com>
-In-Reply-To: <20231025152406.1879274-1-vkuznets@redhat.com>
-References: <20231025152406.1879274-1-vkuznets@redhat.com>
+        Wed, 25 Oct 2023 11:25:55 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E941A2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:24:34 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c9d922c039so49467165ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698247474; x=1698852274; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7vZjLIO/B5y+VzrWSbSd7j37eEPFfuFTft2CL1N1rIc=;
+        b=aigjgpdaJVTvapQSOu+jqJbJnzI34GKjvzP9oMk8sXEZ8MDL8KfhdiYiDyBmgV1s71
+         +blV9hGL+7XOV/rNYEmhMYJuk43cs0jXGhxSKVU8C+3n2HlMx1rrNS1RzM1m4axqYWiR
+         wt90/pmfERTbLJMgWeQL2S8h79zCVawhdDaLZ4Ggp2H+i1COXBwga/0NKkh419usPvQL
+         Gzb+R4fjH66zTVW6e1CY55tcQYKWErnoKfL5FLNge3+/dpmkR4RnQtxwmx5VS7BqgxvH
+         AWhWiM7idtgD9DV4NgzN3zOVliA1AyHTrk2ydm4TWpBFZUD+Dy4IzMx4xi4wh0vifTsc
+         6HFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698247474; x=1698852274;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7vZjLIO/B5y+VzrWSbSd7j37eEPFfuFTft2CL1N1rIc=;
+        b=bAA84cbXbnB70Q4mdhXCkjxaeBEguv0Ju0/FUUfP4TVY7eMrP6M5dZM8wuqyCrtD+q
+         k6zsX5tzkp0j4Q37J53tHCcIUxvSNwPGchSFlL7oI+MTOiXNn+l8mTo73Ild9p5uhxW/
+         9WvDUyy6I3BuCTsngf3T3xsvlIX50glVr/WV4zA/2hqG2qMxgNnXxgAKxJRZG2gzkuCw
+         a7XzD347IEp/qjJJtT/h1Iq5FtLonE4xv/s+UCH0KuQaHare7GSi88rlhSRkrihA3yNC
+         Rpk/qAuo2ku0tSgrQA8xlurNqv1y6I+YQFZVpBW3kCnm/QJSoc8whxue0S42iQMnfAU5
+         BK1Q==
+X-Gm-Message-State: AOJu0Yw9J8arj2TD8R/nWWM8mdEXKn0MF/i70dejpzmd90Al7r2Aos1i
+        LopvgPXcYuNVgraWaqW2zePsnA==
+X-Google-Smtp-Source: AGHT+IGOH8yxX2TQRPmdnmOQ31wmTeOOWm8jyE86Ea52rjoYugP159wJW6o+gx9zasYHQG9Bq0s3Fw==
+X-Received: by 2002:a17:903:1112:b0:1c6:117b:7086 with SMTP id n18-20020a170903111200b001c6117b7086mr16982450plh.5.1698247473983;
+        Wed, 25 Oct 2023 08:24:33 -0700 (PDT)
+Received: from localhost ([122.172.80.14])
+        by smtp.gmail.com with ESMTPSA id ja13-20020a170902efcd00b001c59f23a3fesm9354069plb.251.2023.10.25.08.24.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 08:24:33 -0700 (PDT)
+Date:   Wed, 25 Oct 2023 20:54:31 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] OPP: Use _set_opp_level() for single genpd case
+Message-ID: <20231025152431.bhdv772dwbufocck@vireshk-i7>
+References: <cover.1697710527.git.viresh.kumar@linaro.org>
+ <f709e9e273004be43efe3a2854a7e7b51a777f99.1697710527.git.viresh.kumar@linaro.org>
+ <CAPDyKFqbnsdT0nqKwQhai875CwwpW_vepr816fL+i8yLh=YQhw@mail.gmail.com>
+ <20231025065458.z3klmhahrcqh6qyw@vireshk-i7>
+ <CAPDyKFr4vdsKVYEx0aF5k_a1bTjp3NzMpNgaXDJOJrvujT7iRg@mail.gmail.com>
+ <ZTkciw5AwufxQYnB@gerhold.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZTkciw5AwufxQYnB@gerhold.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'struct hv_vmcb_enlightenments' in VMCB only make sense when either
-CONFIG_KVM_HYPERV or CONFIG_HYPERV is enabled.
+On 25-10-23, 15:47, Stephan Gerhold wrote:
+> FWIW I'm hitting this WARNing when trying to set up the parent domain
+> setup for CPR->RPMPD(MX) on MSM8916 that I discussed with Uffe recently
+> [1]. I know, me and all my weird OPP setups. :'D
+> 
+> Basically, I have cpufreq voting for performance states of the CPR genpd
+> (via required-opps). CPR is supposed to have <&rpmpd MSM8916_VDDMX_AO>
+> as parent genpd and translates to the parent performance state using the
+> "required-opps" in the *CPR* OPP table:
+> 
+> 	cpr: power-controller@b018000 {
+> 		compatible = "qcom,msm8916-cpr", "qcom,cpr";
+> 		reg = <0x0b018000 0x1000>;
+> 		/* ... */
+> 		#power-domain-cells = <0>;
+> 		operating-points-v2 = <&cpr_opp_table>;
+> 		/* Supposed to be parent domain, not consumer */
+> 		power-domains = <&rpmpd MSM8916_VDDMX_AO>;
+> 
+> 		cpr_opp_table: opp-table {
+> 			compatible = "operating-points-v2-qcom-level";
+> 
+> 			cpr_opp1: opp1 {
+> 				opp-level = <1>;
+> 				qcom,opp-fuse-level = <1>;
+> 				required-opps = <&rpmpd_opp_svs_soc>;
+> 			};
+> 			cpr_opp2: opp2 {
+> 				opp-level = <2>;
+> 				qcom,opp-fuse-level = <2>;
+> 				required-opps = <&rpmpd_opp_nom>;
+> 			};
+> 			cpr_opp3: opp3 {
+> 				opp-level = <3>;
+> 				qcom,opp-fuse-level = <3>;
+> 				required-opps = <&rpmpd_opp_super_turbo>;
+> 			};
+> 		};
+> 	};
 
-No functional change intended.
+I have forgotten a bit about this usecase. How exactly does the
+configurations work currently for this ? I mean genpd core must be
+setting the vote finally for only one of them or something else ?
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 20 ++++++++++++++------
- arch/x86/kvm/svm/svm.h    |  2 ++
- 2 files changed, 16 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 74c04102ef01..20212aac050b 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -187,7 +187,6 @@ void recalc_intercepts(struct vcpu_svm *svm)
-  */
- static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
- {
--	struct hv_vmcb_enlightenments *hve = &svm->nested.ctl.hv_enlightenments;
- 	int i;
- 
- 	/*
-@@ -198,11 +197,16 @@ static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
- 	 * - Nested hypervisor (L1) is using Hyper-V emulation interface and
- 	 * tells KVM (L0) there were no changes in MSR bitmap for L2.
- 	 */
--	if (!svm->nested.force_msr_bitmap_recalc &&
--	    kvm_hv_hypercall_enabled(&svm->vcpu) &&
--	    hve->hv_enlightenments_control.msr_bitmap &&
--	    (svm->nested.ctl.clean & BIT(HV_VMCB_NESTED_ENLIGHTENMENTS)))
--		goto set_msrpm_base_pa;
-+#ifdef CONFIG_KVM_HYPERV
-+	if (!svm->nested.force_msr_bitmap_recalc) {
-+		struct hv_vmcb_enlightenments *hve = &svm->nested.ctl.hv_enlightenments;
-+
-+		if (kvm_hv_hypercall_enabled(&svm->vcpu) &&
-+		    hve->hv_enlightenments_control.msr_bitmap &&
-+		    (svm->nested.ctl.clean & BIT(HV_VMCB_NESTED_ENLIGHTENMENTS)))
-+			goto set_msrpm_base_pa;
-+	}
-+#endif
- 
- 	if (!(vmcb12_is_intercept(&svm->nested.ctl, INTERCEPT_MSR_PROT)))
- 		return true;
-@@ -230,7 +234,9 @@ static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
- 
- 	svm->nested.force_msr_bitmap_recalc = false;
- 
-+#ifdef CONFIG_KVM_HYPERV
- set_msrpm_base_pa:
-+#endif
- 	svm->vmcb->control.msrpm_base_pa = __sme_set(__pa(svm->nested.msrpm));
- 
- 	return true;
-@@ -378,12 +384,14 @@ void __nested_copy_vmcb_control_to_cache(struct kvm_vcpu *vcpu,
- 	to->msrpm_base_pa &= ~0x0fffULL;
- 	to->iopm_base_pa  &= ~0x0fffULL;
- 
-+#ifdef CONFIG_KVM_HYPERV
- 	/* Hyper-V extensions (Enlightened VMCB) */
- 	if (kvm_hv_hypercall_enabled(vcpu)) {
- 		to->clean = from->clean;
- 		memcpy(&to->hv_enlightenments, &from->hv_enlightenments,
- 		       sizeof(to->hv_enlightenments));
- 	}
-+#endif
- }
- 
- void nested_copy_vmcb_control_to_cache(struct vcpu_svm *svm,
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index be67ab7fdd10..59adff7bbf55 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -148,7 +148,9 @@ struct vmcb_ctrl_area_cached {
- 	u64 virt_ext;
- 	u32 clean;
- 	union {
-+#if IS_ENABLED(CONFIG_HYPERV) || IS_ENABLED(CONFIG_KVM_HYPERV)
- 		struct hv_vmcb_enlightenments hv_enlightenments;
-+#endif
- 		u8 reserved_sw[32];
- 	};
- };
 -- 
-2.41.0
-
+viresh
