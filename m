@@ -2,132 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7CE7D7002
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FE27D6FDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344318AbjJYOvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        id S1344411AbjJYOwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344176AbjJYOvN (ORCPT
+        with ESMTP id S235058AbjJYOwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:51:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C920136;
-        Wed, 25 Oct 2023 07:51:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698245471; x=1729781471;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=l/NJMRjSMo3od/OVoprgvRt/zRss9xwyAblrboJ/CAc=;
-  b=Ma6rDtha9Tp0RxAmrqD+n+Vp3tkBTBl2VSoLKahHS2cv7aegIPc6uQuG
-   QbNkcwndjOHWK/atibXlW/Kx5XoQUnZz1cHLFd1nwFpVmhlAFCiQwSpWw
-   K8JejvOCdkNtaHeGWxdl81/blVZqL4nZ/dfWUauTVgcDrpqNVQesD+c5r
-   B+KqSXEp8gQbc/uHTzMefFbPbJnkrWvbuRJ9bz2gc6dIltRU0xm8wPdvT
-   aDlUyws6KZhn2IwXeH29n15E8RrxxdY53OlshVocTN1lb6w9t8cIQwn9D
-   VhEuL2gr4Daqn8kNg4uMbdbcp21WTJC03jPim1OkxUyz4kmx2MI/Z3dt6
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="453789860"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="453789860"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 07:51:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="1090250352"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="1090250352"
-Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by fmsmga005.fm.intel.com with ESMTP; 25 Oct 2023 07:51:06 -0700
-Received: from pkitszel-desk.intel.com (unknown [10.255.194.221])
-        by irvmail002.ir.intel.com (Postfix) with ESMTP id EF9CD381BD;
-        Wed, 25 Oct 2023 15:51:01 +0100 (IST)
-From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
-To:     netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>
-Cc:     linux-kernel@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Danielle Ratson <danieller@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Aya Levin <ayal@mellanox.com>, Simon Horman <horms@kernel.org>,
-        Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH net-next] net/mlx5: fix uninit value use
-Date:   Wed, 25 Oct 2023 16:50:50 +0200
-Message-Id: <20231025145050.36114-1-przemyslaw.kitszel@intel.com>
-X-Mailer: git-send-email 2.38.1
+        Wed, 25 Oct 2023 10:52:41 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F6410C6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:52:13 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7b6cd2afaf2so2099717241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:52:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1698245531; x=1698850331; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QLjdKZ5k0mXVbD8bW7euvhzE58el0xEiaStx/smEM9o=;
+        b=L2zx2ZDUTUcNhjd/kQhBfl0X6zLoWnqtZftN5bvJLKV8MKaeH+LxAIiuNlaXBauLFe
+         olCtDxbH+t09Olwjiuwif1Oxm6GktIiG4Rwm3z6Gr/OnLSQAOE2T2K8QWLk/Bql4yTZ1
+         vEDW9Rc6LSkY2q7TqlAgLV5mvnni0yfndg8EZEkDGBsNVZAAm/67qXPnX4r21w9+r5s7
+         AMmr/QdCizQRiu51ynVZB0L+RecCDYSjd9/5pxqfrL9+4yPhG1kpfnrszGLdga3CA/uM
+         RDPeD+zQTRJxoaWGcdr2iodOWpIE65JKHQvoPhU5HCa6SIevFw7DlYjCirKVdqmJTHr/
+         yuUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698245531; x=1698850331;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QLjdKZ5k0mXVbD8bW7euvhzE58el0xEiaStx/smEM9o=;
+        b=Pv4NWM0R6k7QJXt3DHmurRUwls0UXQhbUyhlJEa1xpyZvCRjRvtrlSQzxlajX4aKl/
+         e+6TsEPxhDTGO9Zm1GQFGCYCWWY4K3sqDmzQ/BDhZXlXL4+NPLSyavT4hySRHGZY9SDZ
+         I6b0MMwPMS8FGgsZckhi1RBmwl8eBXgGgKw1BxoltE6QYG36s5Ssjzd3oYHBUpzkZiNh
+         jp8n/uhF0HwHijPyV026sM0/Tw1b6YONKcgfp8iNS0Ov9bJmJh7tmRTIgZL9BQCx3Dpu
+         p5cucxNC1QdHk0IQhE4k9oSXfJu0cJhnW+DPkWZvVvfrFvyhS5HMW1qk7wVFSU5isaL5
+         SRNg==
+X-Gm-Message-State: AOJu0YyEC4qX2R31t0d7f9ZSiwZFF3yFxTSzlCtVa/nkuBRE9Bubq6O3
+        oEoHTD+DHEg73iM1N48gbta2AqbQlqlL8jU1Vr6d6A==
+X-Google-Smtp-Source: AGHT+IH9eZcIeh5TypMu2DrELpqy3iFXVc5K2Hl5mUVraJmb0uVk6Ut6VGVvmn/692Isw5J2GiM90b5hEhQWssWFL90=
+X-Received: by 2002:a67:c295:0:b0:458:47e6:70e4 with SMTP id
+ k21-20020a67c295000000b0045847e670e4mr15925625vsj.19.1698245531279; Wed, 25
+ Oct 2023 07:52:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231024171253.19976-1-zajec5@gmail.com> <20231024171253.19976-2-zajec5@gmail.com>
+In-Reply-To: <20231024171253.19976-2-zajec5@gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 25 Oct 2023 16:52:00 +0200
+Message-ID: <CAMRc=Mdb7mjOLQSVVka4XTCuziB1DNj9kpgB=sE=fcJKvpk0_A@mail.gmail.com>
+Subject: Re: [PATCH 6.7 fix 2/2] dt-bindings: eeprom: at24: allow NVMEM cells
+ based on old syntax
+To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid use of uninitialized state variable.
+On Tue, Oct 24, 2023 at 7:13=E2=80=AFPM Rafa=C5=82 Mi=C5=82ecki <zajec5@gma=
+il.com> wrote:
+>
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>
+> This binding supported NVMEM cells as subnodes and that syntax is used
+> by few in-kenel DTS files. Modify binding to allow it.
+>
+> Reported-by: Rob Herring <robh@kernel.org>
+> Fixes: c5330723d5a0 ("dt-bindings: nvmem: move deprecated cells binding t=
+o its own file")
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> ---
+>  Documentation/devicetree/bindings/eeprom/at24.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/eeprom/at24.yaml b/Documen=
+tation/devicetree/bindings/eeprom/at24.yaml
+> index 6385b05a1e62..b6864d0ee81e 100644
+> --- a/Documentation/devicetree/bindings/eeprom/at24.yaml
+> +++ b/Documentation/devicetree/bindings/eeprom/at24.yaml
+> @@ -12,6 +12,7 @@ maintainers:
+>
+>  allOf:
+>    - $ref: /schemas/nvmem/nvmem.yaml
+> +  - $ref: /schemas/nvmem/nvmem-deprecated-cells.yaml
+>
+>  select:
+>    properties:
+> --
+> 2.35.3
+>
 
-In case of mlx5e_tx_reporter_build_diagnose_output_sq_common() it's better
-to still collect other data than bail out entirely.
+Do you want it to go through the at24 and subsequently i2c tree?
 
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Link: https://lore.kernel.org/netdev/8bd30131-c9f2-4075-a575-7fa2793a1760@moroto.mountain
-Fixes: d17f98bf7cc9 ("net/mlx5: devlink health: use retained error fmsg API")
-Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c | 6 +++++-
- drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c | 8 ++++++--
- 2 files changed, 11 insertions(+), 3 deletions(-)
+Otherwise if someone else will pick it up:
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-index fc5a9fdd06db..fea8c0a5fe89 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-@@ -263,8 +263,12 @@ mlx5e_rx_reporter_build_diagnose_output_rq_common(struct mlx5e_rq *rq,
- 	if (rq->icosq) {
- 		struct mlx5e_icosq *icosq = rq->icosq;
- 		u8 icosq_hw_state;
-+		int err;
-+
-+		err = mlx5_core_query_sq_state(rq->mdev, icosq->sqn, &icosq_hw_state);
-+		if (err)
-+			return err;
- 
--		mlx5_core_query_sq_state(rq->mdev, icosq->sqn, &icosq_hw_state);
- 		mlx5e_reporter_icosq_diagnose(icosq, icosq_hw_state, fmsg);
- 	}
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-index ccff7c26d6ac..6b44ddce14e9 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-@@ -221,12 +221,16 @@ mlx5e_tx_reporter_build_diagnose_output_sq_common(struct devlink_fmsg *fmsg,
- 	bool stopped = netif_xmit_stopped(sq->txq);
- 	struct mlx5e_priv *priv = sq->priv;
- 	u8 state;
-+	int err;
- 
--	mlx5_core_query_sq_state(priv->mdev, sq->sqn, &state);
- 	devlink_fmsg_u32_pair_put(fmsg, "tc", tc);
- 	devlink_fmsg_u32_pair_put(fmsg, "txq ix", sq->txq_ix);
- 	devlink_fmsg_u32_pair_put(fmsg, "sqn", sq->sqn);
--	devlink_fmsg_u8_pair_put(fmsg, "HW state", state);
-+
-+	err = mlx5_core_query_sq_state(priv->mdev, sq->sqn, &state);
-+	if (!err)
-+		devlink_fmsg_u8_pair_put(fmsg, "HW state", state);
-+
- 	devlink_fmsg_bool_pair_put(fmsg, "stopped", stopped);
- 	devlink_fmsg_u32_pair_put(fmsg, "cc", sq->cc);
- 	devlink_fmsg_u32_pair_put(fmsg, "pc", sq->pc);
--- 
-2.38.1
-
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
