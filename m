@@ -2,189 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E94F77D6458
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48AB67D645A
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234446AbjJYIAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
+        id S234088AbjJYICB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234337AbjJYIAn (ORCPT
+        with ESMTP id S232865AbjJYICA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:00:43 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB65BD44
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:00:39 -0700 (PDT)
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231025080036epoutp0109c4a8766cbce106ed02cc8d9cd608cd~RStpUsERT2150121501epoutp01h
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:00:36 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231025080036epoutp0109c4a8766cbce106ed02cc8d9cd608cd~RStpUsERT2150121501epoutp01h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1698220836;
-        bh=qten6g44rcD4Z466ZtreMwvzGHfddBYtd05ynQxp4mo=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=osPthvIkfP+xgs0ZpigmTvJWC5wfzIFGKGpK7aNit5r4Yku6Lq8Z69PvplTzlfIo9
-         mGgYlIIK/qCy0UnGWkAfbqwwyqvGknGDgp/vyCBHm5rgYXE5px/mQUzGYnVl9eLeiZ
-         qZEDQjmrhieBbSyWPJH4m4C7vIe9rbt4HsBYvxdk=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20231025080035epcas5p17f006a2281ec855c358c806f57b0e7b0~RStowMcCM1243312433epcas5p1r;
-        Wed, 25 Oct 2023 08:00:35 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.176]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4SFhDx44w0z4x9Pq; Wed, 25 Oct
-        2023 08:00:33 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        26.84.09634.12BC8356; Wed, 25 Oct 2023 17:00:33 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20231025080032epcas5p4c29c7c138e81982a2515c11d3db1f698~RStmWATeN2031420314epcas5p4I;
-        Wed, 25 Oct 2023 08:00:32 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231025080032epsmtrp11e7fa50801e55579c4bd431f14b7b71a~RStmT56xQ0672806728epsmtrp1E;
-        Wed, 25 Oct 2023 08:00:32 +0000 (GMT)
-X-AuditID: b6c32a49-159fd700000025a2-b5-6538cb210524
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        36.57.08817.02BC8356; Wed, 25 Oct 2023 17:00:32 +0900 (KST)
-Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231025080030epsmtip25175dbe6a227b6c66b4a4ad5797f8170~RStkZ8eDM1654716547epsmtip2B;
-        Wed, 25 Oct 2023 08:00:30 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Neil Armstrong'" <neil.armstrong@linaro.org>,
-        "'Andy Gross'" <agross@kernel.org>,
-        "'Bjorn Andersson'" <andersson@kernel.org>,
-        "'Konrad Dybcio'" <konrad.dybcio@linaro.org>,
-        "'Manivannan Sadhasivam'" <mani@kernel.org>,
-        "'Avri Altman'" <avri.altman@wdc.com>,
-        "'Bart Van Assche'" <bvanassche@acm.org>,
-        "'Rob Herring'" <robh+dt@kernel.org>,
-        "'Krzysztof Kozlowski'" <krzysztof.kozlowski+dt@linaro.org>,
-        "'Conor Dooley'" <conor+dt@kernel.org>
-Cc:     <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20231025-topic-sm8650-upstream-bindings-ufs-v1-1-a355e3556531@linaro.org>
-Subject: RE: [PATCH] dt-bindings: ufs: qcom-ufs: document the SM8560 UFS
- Controller
-Date:   Wed, 25 Oct 2023 13:30:29 +0530
-Message-ID: <10c701da0719$53fda6c0$fbf8f440$@samsung.com>
+        Wed, 25 Oct 2023 04:02:00 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39A599
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:01:56 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-66d87554434so37012546d6.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:01:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1698220916; x=1698825716; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U+aCPbYQpsJ2vXxRn0LtCcVnfgBZqdcqBZqMdP2WSpA=;
+        b=YfERVL37YFHigrESyOyCP+wtIlSwZSX8LiksG1y18vPSviwY/dppJkq7R9sRCf8Kej
+         u9IFqSD8aOnZG97yAPMJkknQtcvOO1Vnsg0ZXv6LuA94/biDk8ualXC05Cu3n8qePOoE
+         RmLuHUy3PSeTPTitoImCE56yZaiPN5jQqpcxg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698220916; x=1698825716;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U+aCPbYQpsJ2vXxRn0LtCcVnfgBZqdcqBZqMdP2WSpA=;
+        b=ooY1XsVKMFkEecjYUCP8cPNh0TzpYqqXH0ndeh9D9KXRtbsbIFzd8Z04Scn0Z1rXgp
+         C1AOIwWUkiifeoacZ38bXruyqOd+UtyG7h07Qe2EacGzjPBRnP1cpF4IMcuLaI2fNH7a
+         +OfZ8Ai71EMBP29+te8dmRQnYky2L9NHjxAUDU11A+24y8PDFMobXsSw1qKNz7zeQGRO
+         dwPfOK6Qz/NkbmIs7vJ6OrJ5uDgw1NVwIku8VjEktHfJ82U6Xi6f3mpuDMXbGvQ+l+5W
+         fPD/6WkBqf8kX2ORpJaVHVYKLzCPGztnfn3McUjw6HpZswe2Lo9pSGDlAcRjPaxerm5M
+         hLWw==
+X-Gm-Message-State: AOJu0YyPUFfXupnzB/4wQqWytLElXgst80zpd+yJHEVkfyXsL3asXHzn
+        iA45yF/sHQOpc3jcnIRpQyJPxugJDgPiu6PoWsYN+w==
+X-Google-Smtp-Source: AGHT+IEup/UJN80bbqR3UUc1G437duavyaltRA4CvsTWHDr6cCIAHtxUKTr/K49qoyM2cXjCU4INdOMaUo5MlGUBVLs=
+X-Received: by 2002:a05:6214:20ad:b0:66d:2852:6f17 with SMTP id
+ 13-20020a05621420ad00b0066d28526f17mr15178466qvd.14.1698220915877; Wed, 25
+ Oct 2023 01:01:55 -0700 (PDT)
 MIME-Version: 1.0
+References: <20231016095610.1095084-1-korneld@chromium.org>
+ <613c51f0-c32e-4de5-9627-525d92fb06ed@intel.com> <CAD=NsqybNrf-=9=5wvoj+9MT3xK3SbX7nDk3N3VLBMyA_u3KTQ@mail.gmail.com>
+ <78bb4ad2-853a-4ed4-9998-c4e1122545b6@intel.com>
+In-Reply-To: <78bb4ad2-853a-4ed4-9998-c4e1122545b6@intel.com>
+From:   =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>
+Date:   Wed, 25 Oct 2023 10:01:44 +0200
+Message-ID: <CAD=NsqxDA=usDRa-KV48RkeEROARsw8JqBF5vyJcEEV5r_Fg1w@mail.gmail.com>
+Subject: Re: [PATCH] mmc: cqhci: Be more verbose in error irq handler
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Asutosh Das <quic_asutoshd@quicinc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Radoslaw Biernacki <biernacki@google.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>, upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHnaXdSkn7Ry/Unx4XPRnM1kWnxVwJuJ/amsCvuSOA=
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFJsWRmVeSWpSXmKPExsWy7bCmhq7iaYtUg4atshbnHv9msdjWYWPx
-        8udVNotpH34yW6zZe47JYv6Rc6wWHZO3s1j0vXjIbDFx/1l2i8u75rBZdF/fwWZx4MMqRov3
-        O28xWrTuPcLuwOdx+Yq3x6ZVnWwed67tYfP4vEnOo/1AN1MAa1S2TUZqYkpqkUJqXnJ+SmZe
-        uq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QnUoKZYk5pUChgMTiYiV9O5ui/NKS
-        VIWM/OISW6XUgpScApMCveLE3OLSvHS9vNQSK0MDAyNToMKE7Iytv2+wFTQLVbzf/J+1gXEP
-        fxcjJ4eEgInEl9tbGbsYuTiEBHYzSnz/NZcdwvnEKLFw4jtmCOcbo8SPkxtZYVq+ndoIldjL
-        KDGrdRNUywtGibmfdoBVsQnoSuxY3MYGkhAROMoscfDtEnaQBLNAI6PE6nfmIDanQLjEj/3X
-        WUBsYYFQiQ07foHZLAKqEosX72AGsXkFLCWmP4dYzSsgKHFy5hMWiDnaEssWvmaGOElB4ufT
-        ZUA1HEDLrCSWLoqAKBGXeHn0CNhxEgJnOCQ2H58JViMh4CJx5hQ0AIQlXh3fwg5hS0m87G9j
-        hyjxkFj0RwoinCHxdvl6RgjbXuLAlTksICXMApoS63fpQ2zik+j9/YQJopNXoqNNCKJaVaL5
-        3VUWCFtaYmJ3NzQIPSSutm5nn8CoOAvJW7OQvDULyf2zEJYtYGRZxSiZWlCcm55abFpgmJda
-        Do/u5PzcTYzgRKzluYPx7oMPeocYmTgYDzFKcDArifBG+likCvGmJFZWpRblxxeV5qQWH2I0
-        BYb1RGYp0eR8YC7IK4k3NLE0MDEzMzOxNDYzVBLnfd06N0VIID2xJDU7NbUgtQimj4mDU6qB
-        qYE9sCtoc4mJyi5VwbN9kxVWrFGd3Ck1VfMld8y8JxUr34YWtq29ytyxQmfVnDUfEnncdNOu
-        3nv3yrX21TrWj3MkjF8u0IxbHnZKY/Oq02IffcqubT38e+fOlw9fr7NbJnNQJmL6A6Wrmg9v
-        eHzwDt65veXL/HkJiubl6Qu2Xfe07zw3aUH6bLctfy7f3tGw44adxMx6Q/kShjUpHxZx8+95
-        2ybQM9/ccsPfYAOvx5lftNzq0/+pi7E+rAvMmnptYbfNYe9XP1KCVM33Xdzn3VBg3afKfG/5
-        ohfvdPee0j2nsc/OQrPO7df5zbfO7GxWmx79LGt93v+NZ59xz6zvfqu0tKnng6DAydBpK1Ya
-        STQqsRRnJBpqMRcVJwIAYn6QA00EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCIsWRmVeSWpSXmKPExsWy7bCSvK7CaYtUg+er9SzOPf7NYrGtw8bi
-        5c+rbBbTPvxktliz9xyTxfwj51gtOiZvZ7Hoe/GQ2WLi/rPsFpd3zWGz6L6+g83iwIdVjBbv
-        d95itGjde4Tdgc/j8hVvj02rOtk87lzbw+bxeZOcR/uBbqYA1igum5TUnMyy1CJ9uwSujPb5
-        f1kKLglWfLrwjq2BsZO/i5GTQ0LAROLbqY3MILaQwG5GiZfflSDi0hLXN05gh7CFJVb+ew5k
-        cwHVPGOU6LjRyAiSYBPQldixuI0NJCEicJpZ4nvrVkYQh1mglVFixa1eqJYVjBL3p71kAmnh
-        FAiX+LH/OksXIweHsECwxIFLmSBhFgFVicWLd4CdwStgKTH9+UZWCFtQ4uTMJywgNrOAtsTT
-        m0/h7GULXzNDnKcg8fPpMlaQkSICVhJLF0VAlIhLvDx6hH0Co/AsJJNmIZk0C8mkWUhaFjCy
-        rGKUTC0ozk3PLTYsMMpLLdcrTswtLs1L10vOz93ECI5ILa0djHtWfdA7xMjEwXiIUYKDWUmE
-        N9LHIlWINyWxsiq1KD++qDQntfgQozQHi5I477fXvSlCAumJJanZqakFqUUwWSYOTqkGJrbM
-        R44/RR5feHUr8bH2ihszFnYemeLF9/b3yeZvdxcFH9e7v0DMaE/LObNP/WcmTOnc9meaxewP
-        bStZ/zbeD+yRTowwnx3KESzn2GldMe22lcIVoblSpZPif9yWTJJdUcazzjB9nXz25dtmW3Yy
-        GFtEZj04eKw8/cSyFWocryeXrzxYt0n8+IkrC2X+v9/zyy4o3zRg5a7mBW/UJO8V3Nm3aefr
-        W5MV58k01CxUWvDIUb1PRtjwvNJPVb8rLpZrg7U2e9pqHWFYJKn78+TVAs97dQd3B010EeWZ
-        tSf7ZZK2xz135fOHjd0sXpQ9PXv5m9LR+XHLGBaeS9A/dpfvzfMsZl/jM9mz5u+KfDM5nNlX
-        iaU4I9FQi7moOBEAobByujcDAAA=
-X-CMS-MailID: 20231025080032epcas5p4c29c7c138e81982a2515c11d3db1f698
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231025073056epcas5p3851ec51ba29dd2d8a311ba73c35d24a8
-References: <CGME20231025073056epcas5p3851ec51ba29dd2d8a311ba73c35d24a8@epcas5p3.samsung.com>
-        <20231025-topic-sm8650-upstream-bindings-ufs-v1-1-a355e3556531@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 23, 2023 at 1:38=E2=80=AFPM Adrian Hunter <adrian.hunter@intel.=
+com> wrote:
+>
+> On 20/10/23 11:53, Kornel Dul=C4=99ba wrote:
+> > On Fri, Oct 20, 2023 at 9:41=E2=80=AFAM Adrian Hunter <adrian.hunter@in=
+tel.com> wrote:
+> >>
+> >> On 16/10/23 12:56, Kornel Dul=C4=99ba wrote:
+> >>> There are several reasons for controller to generate an error interru=
+pt.
+> >>> They include controller<->card timeout, and CRC mismatch error.
+> >>> Right now we only get one line in the logs stating that CQE recovery =
+was
+> >>> triggered, but with no information about what caused it.
+> >>> To figure out what happened be more verbose and dump the registers fr=
+om
+> >>> irq error handler logic.
+> >>> This matches the behaviour of the software timeout logic, see
+> >>> cqhci_timeout.
+> >>>
+> >>> Signed-off-by: Kornel Dul=C4=99ba <korneld@chromium.org>
+> >>> ---
+> >>>  drivers/mmc/host/cqhci-core.c | 5 +++--
+> >>>  1 file changed, 3 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-c=
+ore.c
+> >>> index b3d7d6d8d654..33abb4bd53b5 100644
+> >>> --- a/drivers/mmc/host/cqhci-core.c
+> >>> +++ b/drivers/mmc/host/cqhci-core.c
+> >>> @@ -700,8 +700,9 @@ static void cqhci_error_irq(struct mmc_host *mmc,=
+ u32 status, int cmd_error,
+> >>>
+> >>>       terri =3D cqhci_readl(cq_host, CQHCI_TERRI);
+> >>>
+> >>> -     pr_debug("%s: cqhci: error IRQ status: 0x%08x cmd error %d data=
+ error %d TERRI: 0x%08x\n",
+> >>> -              mmc_hostname(mmc), status, cmd_error, data_error, terr=
+i);
+> >>> +     pr_warn("%s: cqhci: error IRQ status: 0x%08x cmd error %d data =
+error %d\n",
+> >>> +              mmc_hostname(mmc), status, cmd_error, data_error);
+> >>> +     cqhci_dumpregs(cq_host);
+> >>
+> >> For debugging, isn't dynamic debug seems more appropriate?
+> >
+> > Dynamic debug is an option, but my personal preference would be to
+> > just log more info in the error handler.
+>
+> Interrupt handlers can get called very rapidly, so some kind of rate
+> limiting should be used if the message is unconditional.  Also you need
+> to provide actual reasons for your preference.
+>
+> For dynamic debug of the register dump, something like below is
+> possible.
+>
+> #define cqhci_dynamic_dumpregs(cqhost) \
+>         _dynamic_func_call_no_desc("cqhci_dynamic_dumpregs", cqhci_dumpre=
+gs, cqhost)
+>
+Fair point.
+The reason I'm not a fan of using dynamic debug for this is that my
+goal here is to improve the warning/error logging information that we
+get from systems running in production.
+I.e. if we get a lot of "running CQE recovery" messages, at the very
+least I'd like to know what is causing them.
+> > To give you some background.
+> > We're seeing some "running CQE recovery" lines in the logs, followed
+> > by a dm_verity mismatch error.
+> > The reports come from the field, with no feasible way to reproduce the
+> > issue locally.
+>
+> If it is a software error, some kind of error injection may well
+> reproduce it.  Also if it is a hardware error that only happens
+> during recovery, error injection could increase the likelihood of
+> reproducing it.
 
+We tried software injection and it didn't yield any results.
+We're currently looking into "injecting" hw errors by using a small
+burst field generator to interfere with transfers on the data line
+directly.
+>
+> >
+> > I'd argue that logging only the info that CQE recovery was executed is
+> > not particularly helpful for someone looking into those logs.
+>
+> As the comment says, that message is there because recovery reduces
+> performance, it is not to aid debugging per se.
+>
+> > Ideally we would have more data about the state the controller was in
+> > when the error happened, or at least what caused the recovery to be
+> > triggered.
+> > The question here is how verbose should we be in this error scenario.
+> > Looking at other error scenarios, in the case of a software timeout
+> > we're dumping the controller registers. (cqhci_timeout)
+>
+> Timeout means something is broken - either the driver, the cq engine
+> or the card.  On the other hand, an error interrupt is most likely a
+> CRC error which is not unexpected occasionally, due to thermal drift
+> or perhaps interference.
 
-> -----Original Message-----
-> From: Neil Armstrong <neil.armstrong=40linaro.org>
-> Sent: Wednesday, October 25, 2023 1:01 PM
-> To: Andy Gross <agross=40kernel.org>; Bjorn Andersson
-> <andersson=40kernel.org>; Konrad Dybcio <konrad.dybcio=40linaro.org>;
-> Manivannan Sadhasivam <mani=40kernel.org>; Alim Akhtar
-> <alim.akhtar=40samsung.com>; Avri Altman <avri.altman=40wdc.com>; Bart
-> Van Assche <bvanassche=40acm.org>; Rob Herring <robh+dt=40kernel.org>;
-> Krzysztof Kozlowski <krzysztof.kozlowski+dt=40linaro.org>; Conor Dooley
-> <conor+dt=40kernel.org>
-> Cc: linux-arm-msm=40vger.kernel.org; linux-scsi=40vger.kernel.org;
-> devicetree=40vger.kernel.org; linux-kernel=40vger.kernel.org; Neil Armstr=
-ong
-> <neil.armstrong=40linaro.org>
-> Subject: =5BPATCH=5D dt-bindings: ufs: qcom-ufs: document the SM8560 UFS
-> Controller
->=20
-> Document the UFS Controller on the SM8650 Platform.
->=20
-> Signed-off-by: Neil Armstrong <neil.armstrong=40linaro.org>
-> ---
+Right, but my point is that we don't know what triggered CQE recovery.
 
-Reviewed-by: Alim Akhtar <alim.akhtar=40samsung.com>
+>
+> > Hence I thought that I'd be appropriate to match that and do the same
+> > in CQE recovery logic.
+>
+> It needs to be consistent. There are other pr_debugs, such as:
+>
+>                 pr_debug("%s: cqhci: Failed to clear tasks\n",
+>                 pr_debug("%s: cqhci: Failed to halt\n", mmc_hostname(mmc)=
+);
+>                 pr_debug("%s: cqhci: disable / re-enable\n", mmc_hostname=
+(mmc));
+>
+> which should perhaps be treated the same.
+>
+> And there are no messages for errors from the commands in
+> mmc_cqe_recovery().
 
-> For convenience, a regularly refreshed linux-next based git tree containi=
-ng all
-> the SM8650 related work is available at:
-> https://protect2.fireeye.com/v1/url?k=3Dd60dc63c-b786d30c-d60c4d73-
-> 000babffaa23-1167d5ba7fe13959&q=3D1&e=3Db9d38028-d43f-4463-959d-
-> 554468a2f421&u=3Dhttps%3A%2F%2Fgit.codelinaro.org%2Fneil.armstrong%2Fli
-> nux%2F-%2Ftree%2Ftopic%2Fsm85650%2Fupstream%2Finteg
-> ---
->  Documentation/devicetree/bindings/ufs/qcom,ufs.yaml =7C 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-> b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-> index 462ead5a1cec..0d136c047b8b 100644
-> --- a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-> +++ b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-> =40=40 -36,6 +36,7 =40=40 properties:
->            - qcom,sm8350-ufshc
->            - qcom,sm8450-ufshc
->            - qcom,sm8550-ufshc
-> +          - qcom,sm8650-ufshc
->        - const: qcom,ufshc
->        - const: jedec,ufs-2.0
->=20
->=20
-> ---
-> base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
-> change-id: 20231016-topic-sm8650-upstream-bindings-ufs-d03cf52d57d5
->=20
-> Best regards,
-> --
-> Neil Armstrong <neil.armstrong=40linaro.org>
-
-
+How about this.
+As a compromise would it be okay to just do a single pr_warn directly
+from cqhci_error_irq.
+We could simply promote the existing pr_debug to pr_warn at the
+beginning of that function.
+This would tell us what triggered the recovery. (controller timeout,
+CRC mismatch)
+We can also consider removing the "running CQE recovery" print for the
+sake of brevity.
+The only downside of this that I can see is that we'd be running the
+logic from the interrupt handler directly, but I can't see an easy way
+around that.
+What do you think?
+>
+> >
+> >>
+> >>>
+> >>>       /* Forget about errors when recovery has already been triggered=
+ */
+> >>>       if (cq_host->recovery_halt)
+> >>
+>
