@@ -2,124 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9717D61DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 08:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A37A7D61EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 08:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbjJYGzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 02:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58182 "EHLO
+        id S232376AbjJYG4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 02:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbjJYGzE (ORCPT
+        with ESMTP id S229498AbjJYG4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 02:55:04 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25288E5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 23:55:02 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6bee11456baso4394335b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 23:55:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698216901; x=1698821701; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y5dui3OIhxBVatDTTZ5Hf8HfCYDRD2Zxo6QlZVP8Vrc=;
-        b=yEoBY53H3+Qmi34C06XUKBnG3Ce6w3dfnKGolkF35zhFPnbtaszryWtfJFO7qHPwvT
-         irOjyc98eskUXHpoCoNm2ot/8va0oeRdr0gP4mqkb/FTdL2BjfepjQ9RDp8Sz9Tqh7X+
-         l33eGhFTNlfA8YGxwRsn2FKySpRgTKIqfyAUarY8qUBg4B0AtvOgS7kvWV8VBP6an5iW
-         rqGKpz9+ZvSyDxagdodptuTwhzwO2/Y1wz6kO0m60vqqgVElP2vlZWEmpPO8lp9yBOj3
-         I2zpBXr013xzha6XimQrN+WNLnH1y4iQvccevdaLHJE2/UCTDFX1YnVPtL+AIaCoIpPs
-         drbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698216901; x=1698821701;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y5dui3OIhxBVatDTTZ5Hf8HfCYDRD2Zxo6QlZVP8Vrc=;
-        b=UqOPrlFBGUCUNRJVEqpKqTPGJPfg4RBwpxe56YTrG5Lr156HjUwMkhjXki8O0fKYko
-         hk1AEY7NRjbhmQ+Prs5Mw8egblOHeMpZLZG3bOtMvq2yyxX08XkAJ75gz/r//kGrxyA1
-         LN0jiFJ1DgJhIzlGSa3wypATaGijDjnER0bNLF4uoG1+y6MsZJL6v5q47RT1IuCBr+IY
-         Mbu6Mc2t60z3er27cPOain4u2YbVPkPfcE9zy8dzWnkpWDtw2HhlRkuebX0/RNX9INcX
-         ypoSJfXTT64Yxx8eCPKU6zBoj4UJPhZPHZy6u5LQX0epd/Xn3nh25Jtb0dTSDYgnULix
-         4cqw==
-X-Gm-Message-State: AOJu0Yx37Zr8QEEEjgkqYVIHn9xK5TOLR5MllwBTE7TnjECnsTWJsRWy
-        xNOJCGobnOQy+uilreNMIyXkUQ==
-X-Google-Smtp-Source: AGHT+IGiBGcFTbqUF8uqCvsX/8xoVFFIwZb+WJMflR1Tq9mvTNDjmFTBuZ/uNMHY47fdPzOHlkBrgA==
-X-Received: by 2002:a05:6a00:1389:b0:68f:d35d:217e with SMTP id t9-20020a056a00138900b0068fd35d217emr13140695pfg.2.1698216901494;
-        Tue, 24 Oct 2023 23:55:01 -0700 (PDT)
-Received: from localhost ([122.172.80.14])
-        by smtp.gmail.com with ESMTPSA id o67-20020a634146000000b005742092c211sm8119201pga.64.2023.10.24.23.54.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 23:55:00 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 12:24:58 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] OPP: Use _set_opp_level() for single genpd case
-Message-ID: <20231025065458.z3klmhahrcqh6qyw@vireshk-i7>
-References: <cover.1697710527.git.viresh.kumar@linaro.org>
- <f709e9e273004be43efe3a2854a7e7b51a777f99.1697710527.git.viresh.kumar@linaro.org>
- <CAPDyKFqbnsdT0nqKwQhai875CwwpW_vepr816fL+i8yLh=YQhw@mail.gmail.com>
+        Wed, 25 Oct 2023 02:56:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59598A6;
+        Tue, 24 Oct 2023 23:56:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XACVKlQsgeevIRCx4krJ3Cs67Y3XIWvenl6gIVkrFAA=; b=Dl0ig3Z3i4kQ3aDi44pJMQ9FKl
+        PCrkZd6wuLQSa17a34c/FzdT9XHqUgCSzaRtk1bGKuEh133gYfFWBeDy6miBnVRoYyrFxWa1Lb3MI
+        rFl+zBLgTpfKfxxxs9I2N+GR0ZQ/aw7viJvLa5iE3nCLwJjGHr3GGs7gxIOJZgFxAft++PHPIMv+k
+        OlUtvvyu97Ok3V8htIMXtHLoCc65AR/jcJqhRlov7BDaMLZZuRxKsfxpjIqCdCXE9eyiq5IBst6Lj
+        pyhehYOt7PZxYk2sA6RLJ51O/ooeChtfDvo1XSERaiSbaqwJehBYCxczRr/O1ru2tzJYUbyI3ip87
+        omGYtmwQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qvXoJ-007H0F-3E; Wed, 25 Oct 2023 06:56:11 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 601FA30047C; Wed, 25 Oct 2023 08:56:10 +0200 (CEST)
+Date:   Wed, 25 Oct 2023 08:56:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
+        ak@linux.intel.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        antonio.gomez.iglesias@linux.intel.com,
+        Alyssa Milburn <alyssa.milburn@intel.com>
+Subject: Re: [PATCH  v2 1/6] x86/bugs: Add asm helpers for executing VERW
+Message-ID: <20231025065610.GA31201@noisy.programming.kicks-ass.net>
+References: <20231024-delay-verw-v2-0-f1881340c807@linux.intel.com>
+ <20231024-delay-verw-v2-1-f1881340c807@linux.intel.com>
+ <20231024103601.GH31411@noisy.programming.kicks-ass.net>
+ <20231025040029.uglv4dwmlnfhcjde@desk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFqbnsdT0nqKwQhai875CwwpW_vepr816fL+i8yLh=YQhw@mail.gmail.com>
+In-Reply-To: <20231025040029.uglv4dwmlnfhcjde@desk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-10-23, 13:16, Ulf Hansson wrote:
-> On Thu, 19 Oct 2023 at 12:22, Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > +static int _link_required_opps(struct dev_pm_opp *opp, struct opp_table *opp_table,
-> >                                struct opp_table *required_table, int index)
-> >  {
-> >         struct device_node *np;
-> > @@ -314,6 +314,25 @@ static int _link_required_opps(struct dev_pm_opp *opp,
-> >                 return -ENODEV;
-> >         }
-> >
-> > +       /*
-> > +        * There are two genpd (as required-opp) cases that we need to handle,
-> > +        * devices with a single genpd and ones with multiple genpds.
-> > +        *
-> > +        * The single genpd case requires special handling as we need to use the
-> > +        * same `dev` structure (instead of a virtual one provided by genpd
-> > +        * core) for setting the performance state. Lets treat this as a case
-> > +        * where the OPP's level is directly available without required genpd
-> > +        * link in the DT.
-> > +        *
-> > +        * Just update the `level` with the right value, which
-> > +        * dev_pm_opp_set_opp() will take care of in the normal path itself.
-> > +        */
-> > +       if (required_table->is_genpd && opp_table->required_opp_count == 1 &&
-> > +           !opp_table->genpd_virt_devs) {
-> > +               if (!WARN_ON(opp->level))
+On Tue, Oct 24, 2023 at 09:00:29PM -0700, Pawan Gupta wrote:
+
+> config1: mitigations=on, 32-bit mode, post-boot
 > 
-> Hmm. Doesn't this introduce an unnecessary limitation?
+> entry_SYSENTER_32:
+>    ...
+>    0xc1a3748e <+222>:   pop    %eax
+>    0xc1a3748f <+223>:   verw   0xc1a38240
+>    0xc1a37496 <+230>:   sti
+>    0xc1a37497 <+231>:   sysexit
 > 
-> An opp node that has a required-opps phande, may have "opp-hz",
-> "opp-microvolt", etc. Why would we not allow the "opp-level" to be
-> used too?
+> ---------------------------------------------
+> 
+> config2: mitigations=off, 32-bit mode, post-boot
+> 
+> entry_SYSENTER_32:
+>    ...
+>    0xc1a3748e <+222>:   pop    %eax
+>    0xc1a3748f <+223>:   lea    0x0(%esi,%eiz,1),%esi   <---- Doesn't look right
+>    0xc1a37496 <+230>:   sti
+>    0xc1a37497 <+231>:   sysexit
+> 
+> ---------------------------------------------
+> 
+> config3: 32-bit mode, pre-boot objdump
+> 
+> entry_SYSENTER_32:
+>    ...
+>    c8e:       58                      pop    %eax
+>    c8f:       90                      nop
+>    c90:       90                      nop
+>    c91:       90                      nop
+>    c92:       90                      nop
+>    c93:       90                      nop
+>    c94:       90                      nop
+>    c95:       90                      nop
+>    c96:       fb                      sti
+>    c97:       0f 35                   sysexit
+> 
 
-Coming back to this, why would we ever want a device to have "opp-level" and
-"required-opp" (set to genpd's table) ? That would mean we will call:
+If you look at arch/x86/include/asm/nops.h, you'll find (for 32bit):
 
-dev_pm_domain_set_performance_state() twice to set different level values.
+ * 7: leal 0x0(%esi,%eiz,1),%esi
 
-And so it should be safe to force that if required-opp table is set to a genpd,
-then opp-level shouldn't be set. Maybe we should fail in that case, which isn't
-happening currently.
+Which reads as:
 
--- 
-viresh
+	load-effective-address of %esi[0] into %esi
+
+which is, of course, just %esi.
+
+You can also get this from GAS using:
+
+	.nops 7
+
+which results in:
+
+   0:   8d b4 26 00 00 00 00    lea    0x0(%esi,%eiz,1),%esi
+
+It is basically abusing bizarro x86 instruction encoding rules to create
+a 7 byte nop without using NOPL. If you really want to know, volume 2
+of the SDM has a ton of stuff on instruction encoding, also the interweb
+:-)
