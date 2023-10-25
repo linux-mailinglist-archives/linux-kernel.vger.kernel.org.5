@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C790D7D75A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A628C7D75AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235120AbjJYU1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
+        id S235008AbjJYU1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343747AbjJYU0h (ORCPT
+        with ESMTP id S234913AbjJYU05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:26:37 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2760D1BEA
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:25:54 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6b36e1fcee9so130422b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:25:54 -0700 (PDT)
+        Wed, 25 Oct 2023 16:26:57 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1310110E3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:26:00 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6b5af4662b7so121689b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:26:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1698265553; x=1698870353; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1698265559; x=1698870359; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VwZ9IOYC0gRC/owt7RZ2EBdGuffYJiDuVuQ5+XRLwVw=;
-        b=gni9otB/RxqkdQcBtDhkGtxYXI1WhO6/nBa5LuP10/nNencAljOkoEGMmIzHInY/ky
-         oDlR4aIa6BOWPeVwvMeutGJ5V6ffVJCjq9yAVxUgQJ2NWKDBS7IHFKiQ+l6fFBvSh15A
-         mZC/WjARqRxm2wTMlRiEvP5OHITXIqMDoeYIdAubOwiSoJbWpW6qqgDG3R3ijHPWgG3l
-         RZ7TnvwKTmJTwhe02+58gFnl2LR1WgjHj440rGe69OikbaJsYYesrFvKharIMMus1Hog
-         QqV5S9f6vTbimWXy/i5vLDf/0GQKcbKhCidzew7Kz1qBK6XcaGk99AbAHyc/PlHte0Xp
-         EzEg==
+        bh=6iZbx/IhbkeIBI8+FFzeu8yqPtMDZXtB3E1NSIPmMj8=;
+        b=QEHaA3wcgswZPYvKtFvfe/69k4FY46ERnR8WMgXV1IMqoelcM4rz2XqdzfkYCJXcHA
+         AZeXQv7QoKGxqZ8ztRXRHR9/meSUBV06R56NGZ0Bg4afony776+cS/GP0IMhMqcGOPeR
+         BXmQXbwU0ap+UQ2w4s/WYEtaHQZTbJ+E9qp0/JBGXAVRiliE31C9a2pEb9jGPqDb//5F
+         i7Gi+IZmFLPOhb5//zueDpHn2Gg8GUHChn2TdeHDV+4lyzpfvEf+quAO5gN25dyGVvVN
+         XDNQQ+hvzvrwbpVPDQpk/iwr8m3MuhroNohrJ9lv6idIL4D5Op4XIlq/P3lu0wHBCkvV
+         CU2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698265553; x=1698870353;
+        d=1e100.net; s=20230601; t=1698265559; x=1698870359;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VwZ9IOYC0gRC/owt7RZ2EBdGuffYJiDuVuQ5+XRLwVw=;
-        b=eBWvE420c6c8QG4Cd4k2vme4j6DjYZ0aqHLwMEEaunIfFg3fqHMeAz5+xSjy65xEL8
-         IpGgJHZml1T7STdIYckmh2Zc7kpWC0g8zZN0LQp6BSOAlLBVwzjITTBvgk9Ly2XiZwOy
-         6QFh7xYOqkOnk5vcXB6zgGkIzu823S/7wWD9MqvLgmBrvn4G4uszp8/satEC6WMpnxr7
-         nyKWAMT0pSucM2X6SIDqL3Ep2nwZwoPTMoyJesj4cV+5DDSkd5hDsXP5W+v1gJnK/5yo
-         djnNmn2tI51hm3Tsky8rkg9q0S2x+OXJiKkt/ztpjVGlvrD04mi9vph2n/f1VbRWoX7H
-         9CMg==
-X-Gm-Message-State: AOJu0Yw4/0YiUeDBmfVcje2UwgvzhSIyqI/ia/yBn/tALSkiRoz5SuXi
-        mMc0QngFXPIBH2fFhLCtneIlLw==
-X-Google-Smtp-Source: AGHT+IHkn2z1G+Hl0DvKFF4S04ijeypy9mwQD0HYMK+syY66BONzs/0zW1LpSVQhK3aml5xBfnLnBg==
-X-Received: by 2002:a05:6a00:17a1:b0:6be:265:1bf6 with SMTP id s33-20020a056a0017a100b006be02651bf6mr14834736pfg.32.1698265553494;
-        Wed, 25 Oct 2023 13:25:53 -0700 (PDT)
+        bh=6iZbx/IhbkeIBI8+FFzeu8yqPtMDZXtB3E1NSIPmMj8=;
+        b=B6PxOIRlnhcYk7q0KGVtSPsjzwcohCKidUougLWrkkCzT82CJpyeWJIt4ODjtIV7iP
+         bsMgsbAAqjeUYWWw9uTd+WMY+7+04xnDVvdCF04bIhv3Nm/6lPRKrj5UtgT1OiNRSy5q
+         oRVJ615CR0FAemXGhdwzMZfdak3hqiFoI3cyvxMcg5hm/SrK/maQZJlcTSgkBZMQsKOp
+         5c75ifU+b8/Wx5V0MmxSOcOsd5+mGxbNRkLqWE4P5+ATSztDb24SF1govaYC8DCUQBsB
+         K1LVWpjrGA2SDdH1OrV1csle0INii57ZrdIdh/+PKUD287DPM6BdaChCMQFiSOs6mj7D
+         NT2g==
+X-Gm-Message-State: AOJu0YwKwrnHFTJjKhUGf+QwgKbn2dCOOEXqdLiZ/7hP3263TOm983rK
+        t5UQ3Y8USTe9eXxjS5IKyu6ALg==
+X-Google-Smtp-Source: AGHT+IFsNPal98bQ9F5MiljlxhKf86YWd9QVm8kQWxT7ZeiK3cahwXFdqVcGHEG00PzdPooHKx2sEg==
+X-Received: by 2002:a05:6a00:1798:b0:6ad:535e:6ed9 with SMTP id s24-20020a056a00179800b006ad535e6ed9mr16898802pfg.16.1698265559236;
+        Wed, 25 Oct 2023 13:25:59 -0700 (PDT)
 Received: from sunil-pc.Dlink ([106.51.188.78])
-        by smtp.gmail.com with ESMTPSA id y3-20020aa79423000000b006b84ed9371esm10079590pfo.177.2023.10.25.13.25.48
+        by smtp.gmail.com with ESMTPSA id y3-20020aa79423000000b006b84ed9371esm10079590pfo.177.2023.10.25.13.25.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 13:25:53 -0700 (PDT)
+        Wed, 25 Oct 2023 13:25:58 -0700 (PDT)
 From:   Sunil V L <sunilvl@ventanamicro.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
@@ -71,9 +71,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Atish Kumar Patra <atishp@rivosinc.com>,
         Haibo Xu <haibo1.xu@intel.com>,
         Sunil V L <sunilvl@ventanamicro.com>
-Subject: [RFC PATCH v2 18/21] irqchip: riscv-intc: Set ACPI irqmodel
-Date:   Thu, 26 Oct 2023 01:53:41 +0530
-Message-Id: <20231025202344.581132-19-sunilvl@ventanamicro.com>
+Subject: [RFC PATCH v2 19/21] ACPI: bus: Add acpi_riscv_init function
+Date:   Thu, 26 Oct 2023 01:53:42 +0530
+Message-Id: <20231025202344.581132-20-sunilvl@ventanamicro.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231025202344.581132-1-sunilvl@ventanamicro.com>
 References: <20231025202344.581132-1-sunilvl@ventanamicro.com>
@@ -90,44 +90,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-INTC being the root interrupt controller, set the ACPI irqmodel with
-callback function to get the GSI domain id.
+Add a new function for RISC-V to do any architecture specific
+initialization. This function will be used to create platform devices
+like APLIC, PLIC, RISC-V IOMMU etc. This is similar to acpi_arm_init().
 
 Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
 ---
- drivers/irqchip/irq-riscv-intc.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/acpi/bus.c          |  1 +
+ drivers/acpi/riscv/Makefile |  2 +-
+ drivers/acpi/riscv/init.c   | 12 ++++++++++++
+ include/linux/acpi.h        |  6 ++++++
+ 4 files changed, 20 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/acpi/riscv/init.c
 
-diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
-index f3aaecde12dd..627723d72b01 100644
---- a/drivers/irqchip/irq-riscv-intc.c
-+++ b/drivers/irqchip/irq-riscv-intc.c
-@@ -273,6 +273,17 @@ int acpi_get_imsic_mmio_info(u32 index, struct resource *res)
- 	return 0;
- }
- 
-+static struct fwnode_handle *riscv_get_gsi_domain_id(u32 gsi)
+diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+index 9eace6c7042e..f7ac0caf04cf 100644
+--- a/drivers/acpi/bus.c
++++ b/drivers/acpi/bus.c
+@@ -1417,6 +1417,7 @@ static int __init acpi_init(void)
+ 	acpi_hest_init();
+ 	acpi_ghes_init();
+ 	acpi_arm_init();
++	acpi_riscv_init();
+ 	acpi_scan_init();
+ 	acpi_ec_init();
+ 	acpi_debugfs_init();
+diff --git a/drivers/acpi/riscv/Makefile b/drivers/acpi/riscv/Makefile
+index f80b3da230e9..c4d679b1359e 100644
+--- a/drivers/acpi/riscv/Makefile
++++ b/drivers/acpi/riscv/Makefile
+@@ -1,2 +1,2 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-obj-y 	+= rhct.o irq.o
++obj-y 	+= rhct.o irq.o init.o
+diff --git a/drivers/acpi/riscv/init.c b/drivers/acpi/riscv/init.c
+new file mode 100644
+index 000000000000..b5807bbdb171
+--- /dev/null
++++ b/drivers/acpi/riscv/init.c
+@@ -0,0 +1,12 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2023, Ventana Micro Systems Inc
++ *	Author: Sunil V L <sunilvl@ventanamicro.com>
++ *
++ */
++
++#include <linux/acpi.h>
++
++void __init acpi_riscv_init(void)
 +{
-+	struct fwnode_handle *gsi_fwnode = NULL;
-+
-+	gsi_fwnode = aplic_get_gsi_domain_id(gsi);
-+	if (!gsi_fwnode)
-+		gsi_fwnode = plic_get_gsi_domain_id(gsi);
-+
-+	return gsi_fwnode;
 +}
-+
- static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
- 				       const unsigned long end)
- {
-@@ -318,6 +329,7 @@ static int __init riscv_intc_acpi_init(union acpi_subtable_headers *header,
- 	 * unsupported. Once IMSIC is probed, MSI support will be set.
- 	 */
- 	pci_no_msi();
-+	acpi_set_irq_model(ACPI_IRQ_MODEL_RINTC, riscv_get_gsi_domain_id);
- 	return 0;
- }
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 19c3dda9c2ed..c408070ac52e 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -1527,6 +1527,12 @@ void acpi_arm_init(void);
+ static inline void acpi_arm_init(void) { }
+ #endif
  
++#ifdef CONFIG_RISCV
++void acpi_riscv_init(void);
++#else
++static inline void acpi_riscv_init(void) { }
++#endif
++
+ #ifdef CONFIG_ACPI_PCC
+ void acpi_init_pcc(void);
+ #else
 -- 
 2.39.2
 
