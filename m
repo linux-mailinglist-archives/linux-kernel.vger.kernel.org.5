@@ -2,154 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 057F27D65B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20EF47D65B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234414AbjJYIsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
+        id S233496AbjJYItD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234537AbjJYIsS (ORCPT
+        with ESMTP id S234582AbjJYIsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:48:18 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C1010D1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:48:15 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-507b96095abso8044600e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:48:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698223693; x=1698828493; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FkqJduOzXjPNoXLYlUx0HTE0sa8mKdyOyNN/qLkGEQk=;
-        b=uHLZudRhJNy45uXTBSwoB+3N9oz3hBHE6SB/irewveJL6hV6N8qVkwq2/LDHqZXcGl
-         BywboyCQb2YT3TA49+hJJJWhJwmrkLr1B7ZtGbr32PTR0BJ1weYIx1CwFnZLiLHT8g8L
-         AuozNoJ5wBrfEMiGVZeGdrmJHHZzQSYzizVXaS7WLbYtL9tUvQ21Aq+/VOhMHFLzq3No
-         q60r14HRKUvscEE9x9AK/SCvJTSg95EjEsdS5MCNHoMceBkoZdts/bhchma3Yezb3OkM
-         QHBpLfRFlpKixrsFNyFQS7cueZnfW5qZHHwq4zhpiPKx3xJO1UYxnNU93kDHcz8akDFW
-         6hfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698223693; x=1698828493;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FkqJduOzXjPNoXLYlUx0HTE0sa8mKdyOyNN/qLkGEQk=;
-        b=orWYfBDMZeGTfBJgDHbQAYK2pqs9+KT+d3qTlVLPVR618yyyX4QbM67flBMhRfB2gd
-         O4CdOUc3+Y/o9JFDqlXyeOnYcS+5QrTEGn4QAWQ025SzMym/HeJO9CNT7ewUGWcC6hSq
-         ML2M5aHClNGDETpsDr7RQdrXie9/r/kqDZb308UgIMgEfPpnNmKUdq7SViijYVfXDvTt
-         laeWK8ENKqMl1vhQfxIjUfjm79szqRDZGt8gECZIkbxQRr22K7BZ2mNrjxYqftGzK6gB
-         zCPO8jNoRhfzo/Gwv4AMKWEqsKiva25HrjFkeD4QqlwBdTlmOkSJRmPUJSPDkX/XD0ux
-         Q02A==
-X-Gm-Message-State: AOJu0Yzid0CKRyc+AgXb2AANEt3LSjUO/Jf7QhOQn3WslQLx96dWV/aH
-        qkHtlwHHp4OuYYbVH4nJXwDmtg==
-X-Google-Smtp-Source: AGHT+IEzsioGuOlLUiHFaykpAmOanNYr48M8ck95W0xTGCJUWYPuW+XgpSTKCPhTiTwUZsf+kkCqKQ==
-X-Received: by 2002:ac2:522c:0:b0:503:3278:3225 with SMTP id i12-20020ac2522c000000b0050332783225mr9410863lfl.63.1698223693565;
-        Wed, 25 Oct 2023 01:48:13 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id q11-20020a056000136b00b0032dc74c093dsm11622009wrz.103.2023.10.25.01.48.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 01:48:13 -0700 (PDT)
-Message-ID: <8154fb11-c18f-4d22-a02f-7fe1a6c4f012@linaro.org>
-Date:   Wed, 25 Oct 2023 10:48:12 +0200
+        Wed, 25 Oct 2023 04:48:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88EE1BB;
+        Wed, 25 Oct 2023 01:48:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=F0PnvleoCLYlsWDIAZ9QRM9jwjwZHpt5kAYggTq8dSo=; b=Wexg2ZNPC1rEOENJ/ysbmrdopg
+        pzAAgfTFVUzYdpOZePb0gUzTz/hnc+XTqzneZpu4tXUs5yLz74QZyXxt4xWUGlkItlb3U3bJPtjxv
+        IQziYYBSoGy++TgHmKwqR0Up98GmdlMwLNTCMsrvRjgcjxjw2VTvqOIbDiDh+KQxgCMjveBe3gRqN
+        ARUDhybDMbWkfKj5e7SpcdN2Sk0Uy6u69rsb6kPL++cVZemf8vO2CaHS6kvXNwHZtdc92U1oAtpBB
+        HaWKOgOtXvybTDjcrVN9Ihwe2TZxZlWSHcIlL0Kn2iqvEA8bFLSW8dgfJ4jxCo0bEI9X61r/cpgKk
+        s3tyyYFA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qvZZ4-007krV-8v; Wed, 25 Oct 2023 08:48:34 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CF40430047C; Wed, 25 Oct 2023 10:48:33 +0200 (CEST)
+Date:   Wed, 25 Oct 2023 10:48:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>
+Subject: Re: [PATCH 4/4] sched: Exclude CPU boot code from PF_IDLE area
+Message-ID: <20231025084833.GE37471@noisy.programming.kicks-ass.net>
+References: <20231024214625.6483-1-frederic@kernel.org>
+ <20231024214625.6483-5-frederic@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] dt-bindings: arm: qcom: Add Samsung Galaxy Tab 4
- 10.1 LTE
-Content-Language: en-US
-To:     Stefan Hansson <newbyte@postmarketos.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-References: <20231025083952.12367-1-newbyte@postmarketos.org>
- <20231025083952.12367-3-newbyte@postmarketos.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231025083952.12367-3-newbyte@postmarketos.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231024214625.6483-5-frederic@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 10:37, Stefan Hansson wrote:
-> This documents Samsung Galaxy Tab 4 10.1 LTE (samsung,matisselte)
-> which is a tablet by Samsung based on the MSM8926 SoC.
-> 
-> Signed-off-by: Stefan Hansson <newbyte@postmarketos.org>
-> ---
+On Tue, Oct 24, 2023 at 11:46:25PM +0200, Frederic Weisbecker wrote:
 
-This is a friendly reminder during the review process.
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 8885be2c143e..ad18962b921d 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1945,7 +1945,7 @@ extern struct task_struct *idle_task(int cpu);
+>   */
+>  static __always_inline bool is_idle_task(const struct task_struct *p)
+>  {
+> -	return !!(p->flags & PF_IDLE);
+> +	return !!(READ_ONCE(p->flags) & PF_IDLE);
+>  }
+>  
+>  extern struct task_struct *curr_task(int cpu);
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 3b9d5c7eb4a2..3a1991010f4e 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -1394,7 +1394,9 @@ void cpuhp_report_idle_dead(void)
+>  {
+>  	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
+>  
+> +	WRITE_ONCE(current->flags, current->flags & ~PF_IDLE);
+>  	BUG_ON(st->state != CPUHP_AP_OFFLINE);
+> +
+>  	rcutree_report_cpu_dead();
+>  	st->state = CPUHP_AP_IDLE_DEAD;
+>  	/*
+> @@ -1642,6 +1644,8 @@ void cpuhp_online_idle(enum cpuhp_state state)
+>  {
+>  	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
+>  
+> +	WRITE_ONCE(current->flags, current->flags | PF_IDLE);
+> +
+>  	/* Happens for the boot cpu */
+>  	if (state != CPUHP_AP_ONLINE_IDLE)
+>  		return;
 
-It looks like you received a tag and forgot to add it.
+Without changing *ALL* ->flags stores to WRITE_ONCE() I don't see the
+point of this. Also, since we only care about a single bit, how does
+store tearing affect things?
 
-If you do not know the process, here is a short explanation:
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
+Not to mention if we're really paranoid, what are the SMP ordering
+considerations :-)
 
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-
-If a tag was not added on purpose, please state why and what changed.
-
-Best regards,
-Krzysztof
-
+[ also, PF_ is used for Protocol Family, Page Flag and Process Flag,
+  grepping is a pain in the arse :-( ]
