@@ -2,130 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC8D7D70DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9AA7D70C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 17:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235139AbjJYP0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 11:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51166 "EHLO
+        id S235169AbjJYP0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 11:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235120AbjJYPZz (ORCPT
+        with ESMTP id S235202AbjJYP0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 11:25:55 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E941A2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:24:34 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c9d922c039so49467165ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:24:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698247474; x=1698852274; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7vZjLIO/B5y+VzrWSbSd7j37eEPFfuFTft2CL1N1rIc=;
-        b=aigjgpdaJVTvapQSOu+jqJbJnzI34GKjvzP9oMk8sXEZ8MDL8KfhdiYiDyBmgV1s71
-         +blV9hGL+7XOV/rNYEmhMYJuk43cs0jXGhxSKVU8C+3n2HlMx1rrNS1RzM1m4axqYWiR
-         wt90/pmfERTbLJMgWeQL2S8h79zCVawhdDaLZ4Ggp2H+i1COXBwga/0NKkh419usPvQL
-         Gzb+R4fjH66zTVW6e1CY55tcQYKWErnoKfL5FLNge3+/dpmkR4RnQtxwmx5VS7BqgxvH
-         AWhWiM7idtgD9DV4NgzN3zOVliA1AyHTrk2ydm4TWpBFZUD+Dy4IzMx4xi4wh0vifTsc
-         6HFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698247474; x=1698852274;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7vZjLIO/B5y+VzrWSbSd7j37eEPFfuFTft2CL1N1rIc=;
-        b=bAA84cbXbnB70Q4mdhXCkjxaeBEguv0Ju0/FUUfP4TVY7eMrP6M5dZM8wuqyCrtD+q
-         k6zsX5tzkp0j4Q37J53tHCcIUxvSNwPGchSFlL7oI+MTOiXNn+l8mTo73Ild9p5uhxW/
-         9WvDUyy6I3BuCTsngf3T3xsvlIX50glVr/WV4zA/2hqG2qMxgNnXxgAKxJRZG2gzkuCw
-         a7XzD347IEp/qjJJtT/h1Iq5FtLonE4xv/s+UCH0KuQaHare7GSi88rlhSRkrihA3yNC
-         Rpk/qAuo2ku0tSgrQA8xlurNqv1y6I+YQFZVpBW3kCnm/QJSoc8whxue0S42iQMnfAU5
-         BK1Q==
-X-Gm-Message-State: AOJu0Yw9J8arj2TD8R/nWWM8mdEXKn0MF/i70dejpzmd90Al7r2Aos1i
-        LopvgPXcYuNVgraWaqW2zePsnA==
-X-Google-Smtp-Source: AGHT+IGOH8yxX2TQRPmdnmOQ31wmTeOOWm8jyE86Ea52rjoYugP159wJW6o+gx9zasYHQG9Bq0s3Fw==
-X-Received: by 2002:a17:903:1112:b0:1c6:117b:7086 with SMTP id n18-20020a170903111200b001c6117b7086mr16982450plh.5.1698247473983;
-        Wed, 25 Oct 2023 08:24:33 -0700 (PDT)
-Received: from localhost ([122.172.80.14])
-        by smtp.gmail.com with ESMTPSA id ja13-20020a170902efcd00b001c59f23a3fesm9354069plb.251.2023.10.25.08.24.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 08:24:33 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 20:54:31 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] OPP: Use _set_opp_level() for single genpd case
-Message-ID: <20231025152431.bhdv772dwbufocck@vireshk-i7>
-References: <cover.1697710527.git.viresh.kumar@linaro.org>
- <f709e9e273004be43efe3a2854a7e7b51a777f99.1697710527.git.viresh.kumar@linaro.org>
- <CAPDyKFqbnsdT0nqKwQhai875CwwpW_vepr816fL+i8yLh=YQhw@mail.gmail.com>
- <20231025065458.z3klmhahrcqh6qyw@vireshk-i7>
- <CAPDyKFr4vdsKVYEx0aF5k_a1bTjp3NzMpNgaXDJOJrvujT7iRg@mail.gmail.com>
- <ZTkciw5AwufxQYnB@gerhold.net>
+        Wed, 25 Oct 2023 11:26:22 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2088.outbound.protection.outlook.com [40.107.95.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A01171E
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 08:25:18 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FfkKPJEn/39fiQXyd0+lCnl3viMSEqiXNQ+VnkJBEZkIroBnDghSLb9/vUyRfKFKn6ffEBN97vDu462b7BulM2/4Z7sJk9pbOlF/QUhaDAVT5+Obln1X9EFEYW7v/1dRSbQa51jQYoFIrp3YPsVNUm++RaHkZYkNZRkp9KWdYWdXQEWVVtQ1d3U70GZteTpJhhniko2NJM1CiWeBpdXcZO2fSAHOkAkKdm5i3yLrTVFaA1+wUxOQbX19qoRIo9k4WMAjrX2vL8tG5LvKS8yZFF7O8Ev2ooTTERpWE8JBZDMrFa1pIIu+9KaSC65Olm7s1NDScuW1SThQ5jBqpVh1Fw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=H9gKZFbdEQsrXFZgkeQpf+Yf2wWxn2nvbRtTsxo+41I=;
+ b=BvHJaiOgXe/HqIcZ5KtySnryLfvOaNH1MXy1ICn9PNZa4sOAIV50XR9r1JtmW7Vr/ykTZ7QJRGG3MCaU0EftuEIzf3bNWDFCUeJYdXnk6+BIiSS14ulL/sYDIJklzFO1GcMOJkm2xxl3dtHbU/8Hp3wtN403P/bYkxqyNhwxfo92ceW2LbLujwi2Dd2I5HXwcymcA1/XIqia7tzikD7vv1cOUqyY26J4G6ayKGV686BzmPzN7btN+LF6TX6U1ckWDUjUGhdUNbjB8NKN9UQXsmkmncDjJbcERnvYXDwFl+OSrY9Cv+nzGxqlsGiM9/5xVqTOah4RL06LS/nwAUxeRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H9gKZFbdEQsrXFZgkeQpf+Yf2wWxn2nvbRtTsxo+41I=;
+ b=ESiwUWo2ZTVCh3M0kJmzDZB7zu7f451n4XsDJiI+98slXBi/DQOAKeQ0Y0HsSIv6lL7NJgy0iOBQJDa40hxGNcHWKzTGNFELsppx1DP422+Ppcu1HK0q035HfLIOEaH/Hkal096vYd9iNDzbbfNs1bOuEsOgn/USbo8WVEN9uQM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by CY8PR12MB8241.namprd12.prod.outlook.com (2603:10b6:930:76::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Wed, 25 Oct
+ 2023 15:25:14 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a%4]) with mapi id 15.20.6907.022; Wed, 25 Oct 2023
+ 15:25:13 +0000
+Message-ID: <af4a9f50-1c91-4f65-b0b8-1c5ae4a57637@amd.com>
+Date:   Wed, 25 Oct 2023 10:25:11 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: PIC probing code from e179f6914152 failing
+Content-Language: en-US
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Hans de Goede <hdegoede@redhat.com>, kys@microsoft.com,
+        hpa@linux.intel.com, dlazar@gmail.com
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+References: <c8d43894-7e66-4a01-88fc-10708dc53b6b@amd.com>
+ <878r7z4kb4.ffs@tglx> <e79dea49-0c07-4ca2-b359-97dd1bc579c8@amd.com>
+ <87ttqhcotn.ffs@tglx> <87v8avawe0.ffs@tglx>
+ <32bcaa8a-0413-4aa4-97a0-189830da8654@amd.com>
+In-Reply-To: <32bcaa8a-0413-4aa4-97a0-189830da8654@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: DM6PR07CA0055.namprd07.prod.outlook.com
+ (2603:10b6:5:74::32) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTkciw5AwufxQYnB@gerhold.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|CY8PR12MB8241:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0161c9f7-89b9-4472-7cf1-08dbd56e95a0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OA/0wjB3cPRnRkl1HjzZQK9a3kN/q+rCURIrt6s38ovhRyEUG5QuMBq8MgvGKNmrEd1IyBtNt4gdWycaO8UJrn0WP2x2XZriFEVtwThokvSbbUAmzP9maPEky9ouCsfeOZO3u1lRt186KqOipRilY04/hL24Vrgs2NCrDfB7QzJfSjHdZgbJAwvIENeV1n9QV9RgW4q8USoz3H6x7vuH2962ixXfDaYw8UBFTsqOo31N56A0WsfsIHEW6WdNutdVJ5O74nsx4BtM0TFeVkiyC39hMzqlFUZkiGRpJKzuoyP0d/evhdrO5yqxQY7eUkliKNIgBivBfNKmOnS2xErwjxrdMvPdEhqC9eEy78ZTaTAwC4TD6m/T3TB0H5Pq3Qdaoayviue161GqrwMj8ujBnz2aAH4s2AXERw1FKr51cxZUapMOytmhaxVDFEEvuD5F7A72V/EsLV9v7CaRBlItlf5nL1iXroNQ23u0Ecpz3MMuC7rojYWfJhi0YgYmeVPznfih+ZfGjB99nRqDx5B0gA0geLN6i9TvQOCqRpCDiC8pF2DWyiQJGUUg8TelJva3zWVywYUbd64yST12M2pZiXjZOp7J2D9nvBvkNivqid3CXRiE634Hg+kz+qi+yrpHnIaBKNXNEgswNMVsxAb3Iw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(366004)(396003)(39860400002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(83380400001)(53546011)(6506007)(6512007)(6486002)(966005)(26005)(478600001)(316002)(110136005)(54906003)(66946007)(66476007)(66556008)(38100700002)(86362001)(31686004)(2616005)(36756003)(31696002)(4326008)(8936002)(41300700001)(8676002)(44832011)(2906002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?THJQTXNmemtNdGtXWXpPNjdlSVZsTUl2cVh3WE9aMmN5Rk53cmVYbEZEaGFY?=
+ =?utf-8?B?WnNLeGJKZFlLdUU0cjNtOVY1YTErZGZCNWV4dDlHMGUzVm1Kdy81NnBhclMr?=
+ =?utf-8?B?czhINEpjMkNYTGxBd0F4NWJnUkdGK2pBMC9QaWxUSko3WVpGMWpGQTNack5P?=
+ =?utf-8?B?Qkc1SmFrL0R6dExCbHFCbjZwWXhWVVgwSEUzMVRXbE9yTWtYMW5wZmRSSE81?=
+ =?utf-8?B?SVlGcnVxN0dJU2Ria09uVWJiU3QzZFEyaCtpYU1PVXVUVGNzQlduR0hHT2Q4?=
+ =?utf-8?B?YUN1d2M3SGhWK2VQL2dPSDVLdkFmRjJQR3FKK0QyZ2dBVHVzTlllVTlEL0hM?=
+ =?utf-8?B?UUhiYU14aVFkSGMwZGVwZHBNWDQ2UmhJMm4rcFU0NHVrTlJkMXE3MEV0QmNU?=
+ =?utf-8?B?cXFaYWF6TGg0amhqbXB5VUJ6ZlpTRDdENW9sS05PZjYyc1I4dFNldU85Mlda?=
+ =?utf-8?B?ZW44amlPRG8weGdIR2lwZzQzVTRLeXoxZW5pWjNGYy9MWUg1TThzellYaml4?=
+ =?utf-8?B?VUdnMXdxUDJEenpYYnFTWFMvdkFNcU1ISkdwdS9ETGdwWGF4c1JhaE14cGJh?=
+ =?utf-8?B?b0szVWh4UlZXbnY0L1JacEdtUGhyTmJlS0ZsdzRwdWhPanVBQ0tKblpWTWVK?=
+ =?utf-8?B?am1xai9jYkNHc2NRK2x3Ui8zWWNXeVh2ZWtGQmdpZDFqbGt6WHgvdG03TmJl?=
+ =?utf-8?B?RVRkTFlqdlNDKzEwQkJoMnNSM3NIa3YrWDJPMlRsMEJVV3FPUkZJc0xlRnVD?=
+ =?utf-8?B?MEg3dXU2YXQyTlloMC9WT3FtOVh1bFZodzZYczFTYWYxYUU1MkY1MDlyRjF1?=
+ =?utf-8?B?L29sN1JUZElaYjJzWnlsWXlQRmZEOXgrcjQydnZWci8yVitXclhrVllxTmNs?=
+ =?utf-8?B?WjBPcTRjcHZLRVlmMVp0RTdjbmh3V3dadXhpWFBSV28ya2MxZTUrcDE5dkps?=
+ =?utf-8?B?OXZtV3hOcDIwNHhrWXVYcXIvbC95dVdCRjdja0s0SGpaV1FGWm9vUzlCQVBt?=
+ =?utf-8?B?RE1qSmpiVlZmYWpIZWFXS0xLdmczT0U1d1NmMUQvMkFERGd2d0lsaEYrN2Z1?=
+ =?utf-8?B?VnM1UFVGYktpdDdhb1hFbHBuaG5EZ05ZaFlHc2lNZ1k1Sm9XY3BvUVY2ZGw0?=
+ =?utf-8?B?WGdlTWU2Q204bnprTjA0dHJ2MWZsTStqRXBNQm1Ga08rbzRQR2hoTTQvbWpy?=
+ =?utf-8?B?M0hFMUtKK3c1ZlB6OW9MZG5Sb2hNMzBQNTlKRkdUMUM0b2pGMzhWU0hMTHk5?=
+ =?utf-8?B?TnowaHBjdUVrL0xDVzEraXlUYzN6OHBnRmhMOE9JK290Wjlndm5iVWZYY3dS?=
+ =?utf-8?B?ZHBJVjdYZ1pLbWZpRm91SFpwRGk5RzliU1BxZWhlWVp6T0cxOEhsK1N0S3Bu?=
+ =?utf-8?B?OCs3d2p4YnRxMFdpU2JUNW0vc0lIVERoRnNoeVVvYzhNbStUbzl3Zyt4cC9I?=
+ =?utf-8?B?Q3pDbUs0amtLSnpPQUczZlMzUVo1TjV3eDZORUJoV3dCOVo5b1M4YTErYXNB?=
+ =?utf-8?B?alFJME1qdnI5bVEwV1FMSWxTa0pkTTIvTWRBQ2FOVEgrK1R3S2NsN3lObysr?=
+ =?utf-8?B?ZkVFcjRKY2x4RzdrOCtHN1cwcGF4dU56MkhXYWhmNWY1eXAzVEpDU01Pemkw?=
+ =?utf-8?B?TXIvcEkralJ1ZFBLaFNlREtKU3kzd2JRL0Nuc09rcHRHZjh4Y1dhVXp4dHl0?=
+ =?utf-8?B?ODdLQXNOajhJNDRHM3N5dWMzRndIVXNJQXBsS0pJSEEvRitGRFNvM0xLdDVR?=
+ =?utf-8?B?M0ZEY0ttS1k3VG1OR3ViK2JuZGdiN2k2UGhWNWpieTBvSW1rTHArei9tQ3E2?=
+ =?utf-8?B?cUpLMG9lcnlzOFNsN1RvdE53dmxDYVFsRTNGdG5KVldJS2NTa2xVT25vdEJN?=
+ =?utf-8?B?WEhOTUpqVmdpZkdwVnFnRjFCUkg2dU1VUytaQ0k2Y3g0Zlp1YjBXWjFDM3dj?=
+ =?utf-8?B?QUFwdkd1RHlOQmMvNVhyVVBGZWUvTkh4ZU9WemdScGk1azJoeEZud3VRTWZy?=
+ =?utf-8?B?NUliWWc1cHlaRDNJTURhT01BbGVnVVUvMjVsano4eWhSbXNoL0dSVFByTmwv?=
+ =?utf-8?B?VkxCRGp2bHRZVk53R1JqeEUzSDVGeGRQUUZORElyZmQ4RXFRMzNnd2xzL1lW?=
+ =?utf-8?Q?SFKe6BIDuaRlJKgYean/9rjfY?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0161c9f7-89b9-4472-7cf1-08dbd56e95a0
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 15:25:13.8989
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yn5rrpukBoWmOsaqtFx1d5u+tDX3/E9XmA596bQiABfcq9pBTFZSuXzJmIVbLBbzBKUKj4D7vgTNS6IUZ4PDfw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8241
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-10-23, 15:47, Stephan Gerhold wrote:
-> FWIW I'm hitting this WARNing when trying to set up the parent domain
-> setup for CPR->RPMPD(MX) on MSM8916 that I discussed with Uffe recently
-> [1]. I know, me and all my weird OPP setups. :'D
+On 10/25/2023 09:41, Mario Limonciello wrote:
+> On 10/25/2023 04:23, Thomas Gleixner wrote:
+>> On Mon, Oct 23 2023 at 17:59, Thomas Gleixner wrote:
+>>> On Thu, Oct 19 2023 at 16:20, Mario Limonciello wrote:
+>>>>    struct legacy_pic null_legacy_pic = {
+>>>> -       .nr_legacy_irqs = 0,
+>>>> +       .nr_legacy_irqs = 1,
+>>>>           .chip = &dummy_irq_chip,
+>>>>           .mask = legacy_pic_uint_noop,
+>>>>           .unmask = legacy_pic_uint_noop,
+>>>>
+>>>> I think it's cleaner than changing all the places that use
+>>>> nr_legacy_irqs().
+>>>
+>>> No. It's not cleaner. It's a hack and you still need to audit all places
+>>> which depend on nr_legacy_irqs(). Also why '1'? You could as well use
+>>> '16', no?
+>>
+>> So I sat down and did a thorough analysis of legacy PIC dependencies.
+>>
+>> Unfortunately this is an unholy mess and sprinkled all over the place,
+>> so there is no trivial way to resolve this quickly. This needs a proper
+>> overhaul to decouple the actual PIC driver selection from the fact that
+>> the kernel runs on a i8259 equipped hardware and therefore needs to
+>> honour the legacy PNP overrides etc.
+>>
+>> The probing itself is to stay in order to avoid sprinkling weird
+>> conditions and NULL PIC selections all over the place.
+>>
+>> It could be argued that the probe function should try to initialize the
+>> PIC, but that's overkill for scenarios where the PIC does not exist.
+>>
+>> Though it turns out that ACPI/MADT is helpful here because the MADT
+>> header has a flags field which denotes in bit 0, whether the system has
+>> a 8259 setup or not.
+>>
+>> This allows to override the probe for now until we actually resolved the
+>> dependency problems in a clean way.
+>>
+>> Untested patch below.
 > 
-> Basically, I have cpufreq voting for performance states of the CPR genpd
-> (via required-opps). CPR is supposed to have <&rpmpd MSM8916_VDDMX_AO>
-> as parent genpd and translates to the parent performance state using the
-> "required-opps" in the *CPR* OPP table:
+> +David from the bugzilla.
 > 
-> 	cpr: power-controller@b018000 {
-> 		compatible = "qcom,msm8916-cpr", "qcom,cpr";
-> 		reg = <0x0b018000 0x1000>;
-> 		/* ... */
-> 		#power-domain-cells = <0>;
-> 		operating-points-v2 = <&cpr_opp_table>;
-> 		/* Supposed to be parent domain, not consumer */
-> 		power-domains = <&rpmpd MSM8916_VDDMX_AO>;
+> I checked his acpidump and I do think this will work for him.
 > 
-> 		cpr_opp_table: opp-table {
-> 			compatible = "operating-points-v2-qcom-level";
+> [024h 0036   4]           Local Apic Address : FEE00000
+> [028h 0040   4]        Flags (decoded below) : 00000001
+>                           PC-AT Compatibility : 1
 > 
-> 			cpr_opp1: opp1 {
-> 				opp-level = <1>;
-> 				qcom,opp-fuse-level = <1>;
-> 				required-opps = <&rpmpd_opp_svs_soc>;
-> 			};
-> 			cpr_opp2: opp2 {
-> 				opp-level = <2>;
-> 				qcom,opp-fuse-level = <2>;
-> 				required-opps = <&rpmpd_opp_nom>;
-> 			};
-> 			cpr_opp3: opp3 {
-> 				opp-level = <3>;
-> 				qcom,opp-fuse-level = <3>;
-> 				required-opps = <&rpmpd_opp_super_turbo>;
-> 			};
-> 		};
-> 	};
+> 
+> David - can you see if the below helps your hardware?
 
-I have forgotten a bit about this usecase. How exactly does the
-configurations work currently for this ? I mean genpd core must be
-setting the vote finally for only one of them or something else ?
+FYI, David confirmed this works for fixing his hardware, thanks.
 
--- 
-viresh
+https://bugzilla.kernel.org/show_bug.cgi?id=218003#c84
+
+> 
+>>
+>> Thanks,
+>>
+>>          tglx
+>> ---
+>> --- a/arch/x86/include/asm/i8259.h
+>> +++ b/arch/x86/include/asm/i8259.h
+>> @@ -69,6 +69,8 @@ struct legacy_pic {
+>>       void (*make_irq)(unsigned int irq);
+>>   };
+>> +void legacy_pic_pcat_compat(void);
+>> +
+>>   extern struct legacy_pic *legacy_pic;
+>>   extern struct legacy_pic null_legacy_pic;
+>> --- a/arch/x86/kernel/acpi/boot.c
+>> +++ b/arch/x86/kernel/acpi/boot.c
+>> @@ -148,6 +148,9 @@ static int __init acpi_parse_madt(struct
+>>           pr_debug("Local APIC address 0x%08x\n", madt->address);
+>>       }
+>> +    if (madt->flags & ACPI_MADT_PCAT_COMPAT)
+>> +        legacy_pic_pcat_compat();
+>> +
+>>       /* ACPI 6.3 and newer support the online capable bit. */
+>>       if (acpi_gbl_FADT.header.revision > 6 ||
+>>           (acpi_gbl_FADT.header.revision == 6 &&
+>> --- a/arch/x86/kernel/i8259.c
+>> +++ b/arch/x86/kernel/i8259.c
+>> @@ -32,6 +32,7 @@
+>>    */
+>>   static void init_8259A(int auto_eoi);
+>> +static bool pcat_compat __ro_after_init;
+>>   static int i8259A_auto_eoi;
+>>   DEFINE_RAW_SPINLOCK(i8259A_lock);
+>> @@ -299,15 +300,32 @@ static void unmask_8259A(void)
+>>   static int probe_8259A(void)
+>>   {
+>> +    unsigned char new_val, probe_val = ~(1 << PIC_CASCADE_IR);
+>>       unsigned long flags;
+>> -    unsigned char probe_val = ~(1 << PIC_CASCADE_IR);
+>> -    unsigned char new_val;
+>> +
+>> +    /*
+>> +     * If MADT has the PCAT_COMPAT flag set, then do not bother probing
+>> +     * for the PIC. Some BIOSes leave the PIC uninitialized and probing
+>> +     * fails.
+>> +     *
+>> +     * Right now this causes problems as quite some code depends on
+>> +     * nr_legacy_irqs() > 0 or has_legacy_pic() == true. This is silly
+>> +     * when the system has an IO/APIC because then PIC is not required
+>> +     * at all, except for really old machines where the timer interrupt
+>> +     * must be routed through the PIC. So just pretend that the PIC is
+>> +     * there and let legacy_pic->init() initialize it for nothing.
+>> +     *
+>> +     * Alternatively this could just try to initialize the PIC and
+>> +     * repeat the probe, but for cases where there is no PIC that's
+>> +     * just pointless.
+>> +     */
+>> +    if (pcat_compat)
+>> +        return nr_legacy_irqs();
+>> +
+>>       /*
+>> -     * Check to see if we have a PIC.
+>> -     * Mask all except the cascade and read
+>> -     * back the value we just wrote. If we don't
+>> -     * have a PIC, we will read 0xff as opposed to the
+>> -     * value we wrote.
+>> +     * Check to see if we have a PIC.  Mask all except the cascade and
+>> +     * read back the value we just wrote. If we don't have a PIC, we
+>> +     * will read 0xff as opposed to the value we wrote.
+>>        */
+>>       raw_spin_lock_irqsave(&i8259A_lock, flags);
+>> @@ -429,5 +447,9 @@ static int __init i8259A_init_ops(void)
+>>       return 0;
+>>   }
+>> -
+>>   device_initcall(i8259A_init_ops);
+>> +
+>> +void __init legacy_pic_pcat_compat(void)
+>> +{
+>> +    pcat_compat = true;
+>> +}
+>>
+> 
+
