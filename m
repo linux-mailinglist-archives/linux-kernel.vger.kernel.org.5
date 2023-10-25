@@ -2,324 +2,2779 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C137D641E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D3C7D6447
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbjJYHxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        id S234163AbjJYH7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233019AbjJYHxt (ORCPT
+        with ESMTP id S234537AbjJYH6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:53:49 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A0B1715;
-        Wed, 25 Oct 2023 00:47:17 -0700 (PDT)
-X-UUID: b3b3045e730a11ee8051498923ad61e6-20231025
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=QfVeiEf/ViJTagV7+DiP+KCJwqv0KQJrNP8wW7UyMbk=;
-        b=ZYQT3dQuApiWXWtvGXnmzcTX3k+8oh+uAhQ3mhmYMZDmLsYWSscSPD/4QbGYamlZhoqyrTnfO8HEJS+NjIaJzQnEZNlGPqD7Ckye7kC7EnEftw4TYYm43jViUtozY+j1IUAA4phR7gho28Bpi75U4pJNcBN1bFwFJ9DNJJanFfA=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:6b7803f6-deb1-451b-873b-71d8fff03a90,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:93a59c94-10ce-4e4b-85c2-c9b5229ff92b,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: b3b3045e730a11ee8051498923ad61e6-20231025
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
-        (envelope-from <jason-jh.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1947088042; Wed, 25 Oct 2023 15:47:09 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- MTKMBS14N2.mediatek.inc (172.21.101.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 25 Oct 2023 15:47:08 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 25 Oct 2023 15:47:07 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kInZfP0no9rjy2b+kCNQYCDp5GI/uhqdoc00qa1/tSJZv/Tg9Hz9UOrrHKZpOxNgptnIsuSwRHZzdTlIsh1mIDSqjJWdAUUQQnbj01CvrE1tKOkq7HGJAgxfYeiq19u2VPrZo9nuCJNfv5CEmX9fbJ51fenBYpWYuMajW2hWi4rDHWTHgzMGQY3qk+CRGlezFD6tVqOpfyMfRzSTDdxaxpglHz9UMsqD+t/tePkYlPpEHanVPEfJ+Xq0XxJvU1Y00ZopKO/rANAK3Qm+gWxiZNVo12RvU/02YLWEp7s8FC0TLQVx+SZhKlsuLDIb9pxI8QtZ/3H+Lu7SMKdPBF0lNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QfVeiEf/ViJTagV7+DiP+KCJwqv0KQJrNP8wW7UyMbk=;
- b=JZw///cUdmoxALY1laSYeqGTFZMA19F0Hl5S/cswBKGcc0+bBY4/5Bioj+VBJI5d26MFyd/DhG7k2JGyv7slWA/QcVFCWhSJ5rfiNhtCOd1AtG+293+mqAqovfJJOY9tdNXYoPYmmbG39Jyrhqr3dVX6030Mu6pVjOj6aM8HrtXftQRMsjzgN0hFhis4L2UXwyRhTJtGKfBdr3sswwEnqpZ08iMCOZr2aAxujeP9IHUbzGNXmKjJaL7V94/0hHgMi6tFjlnwqEdZGBa3CwB4idHMc/NyaIJPgBrQFqol87GtI8RO8Lgd97NgtGoFkzVoQUHlxpdXg7Jf0DPZiPsJ7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
+        Wed, 25 Oct 2023 03:58:53 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55581FD6
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:47:51 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c503da4fd6so79361611fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:47:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QfVeiEf/ViJTagV7+DiP+KCJwqv0KQJrNP8wW7UyMbk=;
- b=dgFPeOdJdZm/zKImX/Ra77cZs/gP8qELs531x02WE+qQnA5yuyciUeoSYXSTM2/zLGh7qHi0C++CAZ4SWAX+Yf5u98sIS5oBaFUQUeESKdZJ/Og/p7YCXzgAjfz04iPvzCjOoHopOn6Il2I5NSWaOWrpcpmJJUxRmUVK/hJu8t0=
-Received: from SEYPR03MB7682.apcprd03.prod.outlook.com (2603:1096:101:149::11)
- by KL1PR03MB7054.apcprd03.prod.outlook.com (2603:1096:820:dc::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26; Wed, 25 Oct
- 2023 07:47:05 +0000
-Received: from SEYPR03MB7682.apcprd03.prod.outlook.com
- ([fe80::8c0:a8fa:8e5:159d]) by SEYPR03MB7682.apcprd03.prod.outlook.com
- ([fe80::8c0:a8fa:8e5:159d%7]) with mapi id 15.20.6907.025; Wed, 25 Oct 2023
- 07:47:04 +0000
-From:   =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>
-To:     "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        =?utf-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
-        <Singo.Chang@mediatek.com>,
-        =?utf-8?B?Sm9obnNvbiBXYW5nICjnjovogZbpkasp?= 
-        <Johnson.Wang@mediatek.com>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?utf-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?= 
-        <Jason-ch.Chen@mediatek.com>,
-        "drinkcat@chromium.org" <drinkcat@chromium.org>,
-        =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
-        <Shawn.Sung@mediatek.com>,
-        =?utf-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "jkardatzke@google.com" <jkardatzke@google.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 01/11] drm/mediatek: Add interface to allocate MediaTek
- GEM buffer.
-Thread-Topic: [PATCH v2 01/11] drm/mediatek: Add interface to allocate
- MediaTek GEM buffer.
-Thread-Index: AQHaBWvjnbkIniVMNECGcb4zvfdwWLBYn+OAgAGEKIA=
-Date:   Wed, 25 Oct 2023 07:47:04 +0000
-Message-ID: <23c49f662f467c057914c47776f1041b3ed28a15.camel@mediatek.com>
-References: <20231023044549.21412-1-jason-jh.lin@mediatek.com>
-         <20231023044549.21412-2-jason-jh.lin@mediatek.com>
-         <654f22f8-5070-4064-bcc3-5259345e4ca8@collabora.com>
-In-Reply-To: <654f22f8-5070-4064-bcc3-5259345e4ca8@collabora.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SEYPR03MB7682:EE_|KL1PR03MB7054:EE_
-x-ms-office365-filtering-correlation-id: 2a9c043d-201f-40bc-c0f4-08dbd52e94a0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: T5qcC2MOqgVDarF92GoqauTEro74O/zYiwFA33WBAjQHSp5/4nvN7CHGZF7MBr6HP26CirbH/AeKzG21rWLUpxvyamyXwBvmUDo/lVGDkML7/XSt+x+q2dZxLW2+1GtqvK5vM5aWLLN6iCvJev7HiWejmqGYl31wnxTiSzMyj7qP1dvP+Mw0MlAiYJ/WZWbZBfYZkx4D/Yw7udwbEA0h+9RiBVZgZgYqVEKLBY5N7lUzcPV5pPzryn577yrWNTUx3IPY3xA0QN1Xc3gArZoVLeZGnkS43FBPYm9m/zQzR6WzO3oymUnbiiiske5xrdEYLTaixhcH/YToaiVvkWhZUFghuEF5dQ7MGrkUR0PEu4T3YANtQXdYk4i1pNLE0SydgXQhDWjZyJDvf4VPQmkJnyUaTA7wa1LC+mVUw5HQIA64n7o61GdcobRklMcImsk1VEoaAY2CrgBTQBQQcYGR586RRsDFSEvDO1fhl9/4mxrlsSYcsJLtXNHss2VT1CHiKRXy6G+Nn0189tU+6r6W723+r6zyvK9CRihF2LOhNlhXfNxTF81uZWlw9iyeuLUuF7dipCZpmWvqKM4ZABe0LQQ7A4BLDQ9scK6LvC5gxoY5UV/QZlKkbLnNaC91jl3ohZEeQWqzSt5SNxIiE2bLBqMixSjFlYOfoevuH3UBVKE=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR03MB7682.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(396003)(39860400002)(136003)(366004)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(36756003)(85182001)(110136005)(66476007)(66446008)(2616005)(66946007)(54906003)(316002)(66556008)(122000001)(38100700002)(91956017)(38070700009)(86362001)(6512007)(64756008)(83380400001)(2906002)(76116006)(26005)(71200400001)(6506007)(4001150100001)(966005)(8936002)(6486002)(4326008)(478600001)(7416002)(8676002)(5660300002)(41300700001)(2004002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dWwxRFhaUmpTdkp3ZXZkNmg2SzdWdkhGMTlRamlNbzFQUHo2Q0hrYTgzMk1U?=
- =?utf-8?B?SkhxSDdkQWxSY2hscldSdlNnRlBiMTdvQTZGNVFxY1Z5alhhZ0ZHWVBheWFz?=
- =?utf-8?B?eXlSQ3Rkejh4U3NNU2pvMjBaMmJmUHVySFdldzMzVGR6anAxaUlWb0l1L1p1?=
- =?utf-8?B?dlhxWjBwc2tOdkZibHJmdjVLZmhmUGQ0QXZ6U3Z6ZlYzS0xuRGJJV2V4bldX?=
- =?utf-8?B?WlBnT2xwRUdGbDE0QlVGeTVMZ2Z6VEJjaHdwRHRJV2pGbUlSL2JlWWxOY2FF?=
- =?utf-8?B?cXlNa2pzZmJZRysxSVZSdVArK3dVTXl3UzFLR1gyYlRXUUFRNVl5ZFNhUlhW?=
- =?utf-8?B?OFlrNW9GL0thWS95VXNJKzlhTStnV3BvK3k2K2N5MjAwTEFDQnVMZ29ZdFB1?=
- =?utf-8?B?UVJGaldFVTJLR3Z0dEYzN1JCcHhWNG95ejN6RHVnNnlBUEpHQlc5ZGpRT2sz?=
- =?utf-8?B?WUFIV2lRUDB3U01rRDUxNDF6MlRrVXZvNWJPdkR3Y0R0ZUNvN0FHdG9FdERx?=
- =?utf-8?B?R282cDU2NGVBUi9LQmF6VzhiNVhCWDZlZTRCNDk3VUF1YldoTW1sZEtocklC?=
- =?utf-8?B?RnpZNGRGL1NjeXVYWFF3MXRvSW5maFRuS1E2aEpjcWh4Z0lodU1TU2Jobjlw?=
- =?utf-8?B?cStHTHREMnRGb3FLTHMvQjRtK3NqUDVSWjRiakxMZFlPYVJFYlAzaWt4dFRE?=
- =?utf-8?B?NjkzY21Pc0R6OWJ4UmFZQ25EK3gyYU43b2V1c3Bzb2l6QzdueVpEOE1tVU4z?=
- =?utf-8?B?ZkRmUjRlM2NEaFBrM1RYc25tcm56Y1NhWkROMisyY2s5cytheTNNQkorV0Rj?=
- =?utf-8?B?L05WVDhoVlJwVnRpMFlFbDVxSUlIY1NRYWRJemIrblA0UkxzcVlGSTlDck8v?=
- =?utf-8?B?VUlXd2JYbGUxLytJL3RzaHljOVRUeTZJVEV4eWo3bENsek9aVEFJOGV5U2xp?=
- =?utf-8?B?NkZKVmJ4YlFZMDErOEZkZG9pUmRsZmphUjJQeDFlQTFHUmZvbVlaT0FQRCtz?=
- =?utf-8?B?Q1ExM2w3U2RXZUZHem1mZDdZVTNML2grQVJ2TVJmZ1YwQ0VHcWZVT1QyVkQx?=
- =?utf-8?B?eHBsVUoxdWs1QjNsRWIzV0dvTU5kN0VqQTFHd2d3ZnZMR2JYWkJtUzM1N3Yx?=
- =?utf-8?B?Um1BUkFWZVV6VWRsYTlXWFJLOGpTQ2hHcFJPL0F4Ti85ZU9VOTNKc0ZvQUJk?=
- =?utf-8?B?TW54ZS9HTnFDcjFKZVhiZnhRTlpub0dlNmljMDhyZ0VzeHMrSkxKZmxlbUx4?=
- =?utf-8?B?TmF3azd2aFV3VG1yOHRTblBRTWRwdmlXNHVCankwRllsOTk1OXZiYkt2WUFj?=
- =?utf-8?B?UlZ5eVkwb1RJUUw2YmlZK2wvOHFYRHk3NEJZbUpNdTBCNVZuKzR3Zm5USWtW?=
- =?utf-8?B?REdyY0ZESFdhRlF5bk11ZnY2SVFBTWxWN2R6WkNqNkpaWlVKamUvalhBQzhz?=
- =?utf-8?B?dGFmOVlZM1NHSzVRWm5DZzlrMDJQNVVSTmFpbkY4dFArdlY5WTlnUWJnaVYx?=
- =?utf-8?B?K1V2YnFjc1FXQjJiRG1qakFmMEsvVEl2OTJuSHdJNjU0ZHJZUklJZU1tNUZS?=
- =?utf-8?B?K3ptY2t0RFJ1ZTRCUjVqVGNLWEI3RE05S0RraVBraXRXM012clIrSkN5aitq?=
- =?utf-8?B?RjRpK0dkelVpZ3FXZFh0V1BYWC9uVnNIckpaVnFQZWY0ZVBzQ2FjQXlQczUz?=
- =?utf-8?B?Q2p4ZjNVOXNUd09KbEtvWDJHM25adDNxSTFjQUNqNVcvcDVBWmNGRG5haGhw?=
- =?utf-8?B?alU4bXJpYmtDQ2xoZ0srV3dSL3c2YVR0MGhVYnhEZlRYTVhzVmMyUy90eEVt?=
- =?utf-8?B?WnNQVU1hYis3VGNFOW9KZlNodjJEZ2l5MGYwMFFJczAwSE4zUFRFVjFkR0lr?=
- =?utf-8?B?RmEwUGNlYmI3R0RkN09BZjZQcFJYaUlVcWVyaGZUMEMzRVJnMXc2OFE3TEVM?=
- =?utf-8?B?ejQ0M041ckJMek5rbnNGNGs0V2poNm8yc1dJQnRQNGxqZmpsVWxFNy9FRCty?=
- =?utf-8?B?aU4rM2ZSY242YmF4citvZE5pQ2RIYnB3c0VaakxzZDVCQkJGdmhtRitrYzVs?=
- =?utf-8?B?ZnhvcEtJdXJYM0RlNUU3L3NYdDhYamNIUlB0ZktGb3RxellnTFowdmdBZ1dU?=
- =?utf-8?B?VmlMMGpOcTNHWTZqV3NvblJiMVZxMWpzNm8zbWNvVUwwTTR5RVJscVA4S2Fi?=
- =?utf-8?B?QWc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <86DFDFF92E624B4291D5D8F643F77D71@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google; t=1698220070; x=1698824870; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Swci1LrSSWMOD1trvZoopzM+GJb67j807szKQhSvhQo=;
+        b=YyiVquEP35XY9S7NfmLuoZvAji2NjIL4rbVcg5pOmj2yqNyUB5DtQrRObKxFSrsZap
+         SCkp5O8Y+J8CioLJaPldDNBZdK2dzW0Xk0Y+pVRN6UaNmmK26d3RI8Nmp2psKn9mgk40
+         q6A+dqUCXLv5jsBbz3zGNEyDBQTF4ei/8OpkBRlcR0LTmervEiHnjk9tKP0DkOZcOZQZ
+         GeqNSUTWVrICCmJ4DECp4wMsQBrTfbM5kW1Ck8mncQFD4+X1WQq/uDK6oF9bEJyksh+r
+         jGKsNP9EPulh+aMXTzTjRSgrnUwp4h9emGdYWrfqDITaQZwMuPm4Xgjqom1vcjUpde7w
+         EtFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698220070; x=1698824870;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Swci1LrSSWMOD1trvZoopzM+GJb67j807szKQhSvhQo=;
+        b=Tci7CT/Jp31Iaa8EqJtMT14INQ7kE0aJUK0AgaFXdU651T470wosFro+xW9++e4nhw
+         oUOUWIjQnaC06PK3e8JlAc4QpJAibkaHukT+jXTaGTo1stZyl/0gLYoIpro0PC8pfvPB
+         mL9sNJKyYQQ0SHZLvqb9WyjhOYb6Y9QgQ+ucRruvbFeUoid/b24gTA7M9HR4b2S8G2Pf
+         BwkDJCNNblYWlRRuKzs34X+LevfeCpcxu0CA6jz7sL4RvZx5cBhzUE3XPwq9QZUaiiOK
+         wYbrtH/q9rQI0IC3HIf8dymnn9qpJaPJOBoMbqn3dPdAtZEIUFnPWdkM/KrB3xUxBBBi
+         w3vQ==
+X-Gm-Message-State: AOJu0YwSXGAoB/yi9cJgj1RHmGtnARPRtMG6c0ovU2VyLqApClAHZr95
+        Rtsrm7UU/ltKO8d5CK2w2Bq+sw==
+X-Google-Smtp-Source: AGHT+IEcDQqjnRoHqO51qcHe09FylKWKZXhO8H714GJ/aMAeAAVbmBEbDw4mrzcjo6RdC7rpr0Hz2A==
+X-Received: by 2002:a2e:a4b7:0:b0:2c5:5926:de4c with SMTP id g23-20020a2ea4b7000000b002c55926de4cmr9059386ljm.32.1698220069761;
+        Wed, 25 Oct 2023 00:47:49 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id p5-20020a05600c358500b004053a6b8c41sm13900970wmq.12.2023.10.25.00.47.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 00:47:49 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Date:   Wed, 25 Oct 2023 09:47:42 +0200
+Subject: [PATCH RFC 2/8] arm64: dts: qcom: add initial SM8650 dtsi
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SEYPR03MB7682.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a9c043d-201f-40bc-c0f4-08dbd52e94a0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2023 07:47:04.1802
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VT/J0e/Y5V0JJckIMR4h/HKCmooZW7XnFAKknGj3C5t7O0J9+QHozQvflTAGvzPfA1ym1AMebPSsgzGtC0WtLAxYEKGQvqXYqmJPhzt57L4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB7054
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--19.152500-8.000000
-X-TMASE-MatchedRID: gjZGo2H/wj8NtKv7cnNXnSa1MaKuob8PofZV/2Xa0cJauByPtDzndaSx
-        VUPqsOdUc2ONnOZQCoo7lnT7GGj4zjOOxCxJsyambc297PAGtWYppGYMKZezN3fQXXfzsoI9Yrv
-        BhCuvH+0ZB0R4cFpbTUzyp2gK85W+PXdZx1sZHpDil2r2x2PwtQrefVId6fzVh5Q1ArtCPlwg3w
-        n1Y/Q9XNbjbddbaGl7uLDClqTzzJB1ZIBJvSVnHc5Scd0yVs+b42VVuo8awqK/wPtA9baOj8PnD
-        /CT46hFp+BYFzRa/NjcG5O48QE65DrH2ssNgKW2uIwLnB3Aqp3+yhO1yCoLfGPZr2NA6vZGc9rD
-        OIgOR4NMY5EyqZygDFYVJ4AHqj9GvpR6acywKCslcqT+ugT9ENMB70WyBtjHYW+sGGtOLh05lEB
-        NB9cFYrJVaLhP+2nCzWB62H+OPI3lW1X3S7HG13QEQEU5OIefEtdrY/Wb3fPagsZM0qVv1xeryc
-        HMRZtNay4EFy01sIPRSvo65H/LAmyeGFxbrq7lngIgpj8eDcDBa6VG2+9jFNZE3xJMmmXc+gtHj
-        7OwNO0CpgETeT0ynA==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--19.152500-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 153DE97EDBF6CA2F9E8FBA55BD61BEED25FF67B1CA446B63696100CF0197A5B42000:8
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231025-topic-sm8650-upstream-dt-v1-2-a821712af62f@linaro.org>
+References: <20231025-topic-sm8650-upstream-dt-v1-0-a821712af62f@linaro.org>
+In-Reply-To: <20231025-topic-sm8650-upstream-dt-v1-0-a821712af62f@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=60744;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=JhjHjid15bdlyBhYvrjianp7qDE7+tsSUh2gny4vb34=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlOMgfL+TFXHI3FkQ6f7x70bfn4/w422PbOrLZ905G
+ JJQeeYuJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZTjIHwAKCRB33NvayMhJ0VPhD/
+ 9YY69d8w0SJF8yrvSeitMNtX9ab8bS+1Dy3JI3/ej0IjOCgRl8sO93RnYtYho1cvlSNgL5mFEx+geY
+ WUcwx2tjha/0Pf1CKV/4yREpEz9iPoMn7j7kaKgyuoGEgcbtXM8oDVQtLSykxlbTERsycHiYghm/5q
+ 3bCWDidcDVrnLR7P0qn6GX8B2uVJujad8j0jJDDRlBbe9FK8RMEdMQefxlzKWAwdcJQwFhxRcR7NzI
+ xo5TzA4SADsDGWzOO6hJe7alag+J7Emal52/K86iEvTVTsJZ2w9F4YggscO25vWo9pTb4Vw5YCCJ5u
+ GstUWERnkepcKiM1qbrmQ9GWBnKJ7ffhiP5b74Nl63ddgIkqg6nFG+xYTLrLKhuz0eGtQciu/FGKOS
+ 1VCfSFK0RHnslSFXyhsfFI/0uaTDjr7IVtxdfywOdwZvnrZScVSHvW6oLQxxSKLnuC21NDV6ewnVZr
+ EbD9xuRFAhh8WUyg8uJcLzNA72iQRSIFnjIjp8gQKoadJBZR5v5cwGvTAK4QNKqWTAV4NQAz5Shz8+
+ jGxrW32anJKtM1Zy3+yYcPv+ia1bYPye5o4TBNmQ52U81uRODGw6B4uCMU2ICc5y0VgD1KS0QKKWxq
+ 2nHaitIPoplbZ6Cu5ugYfMpe3feRwAv++NGEGefZaCvkYEVYf8ix61nMhHXg==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTEwLTI0IGF0IDEwOjM3ICswMjAwLCBBbmdlbG9HaW9hY2NoaW5vIERlbCBS
-ZWdubyB3cm90ZToNCj4gSWwgMjMvMTAvMjMgMDY6NDUsIEphc29uLUpILkxpbiBoYSBzY3JpdHRv
-Og0KPiA+IEZyb206IENLIEh1IDxjay5odUBtZWRpYXRlay5jb20+DQo+ID4gDQo+ID4gQWRkIGFu
-IGludGVyZmFjZSB0byBhbGxvY2F0ZSBNZWRpYVRlayBHRU0gYnVmZmVycywgYWxsb3cgdGhlIElP
-Q1RMcw0KPiA+IHRvIGJlIHVzZWQgYnkgcmVuZGVyIG5vZGVzLg0KPiA+IFRoaXMgcGF0Y2ggYWxz
-byBzZXRzIHRoZSBSRU5ERVIgZHJpdmVyIGZlYXR1cmUuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1i
-eTogQ0sgSHUgPGNrLmh1QG1lZGlhdGVrLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBOaWNvbGFz
-IEJvaWNoYXQgPGRyaW5rY2F0QGNocm9taXVtLm9yZz4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBQaGls
-aXBwIFphYmVsIDxwLnphYmVsQHBlbmd1dHJvbml4LmRlPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEph
-c29uLUpILkxpbiA8amFzb24tamgubGluQG1lZGlhdGVrLmNvbT4NCj4gPiBSZXZpZXdlZC1ieTog
-RGFuaWVsIEt1cnR6IDxkamt1cnR6QGNocm9taXVtLm9yZz4NCj4gPiBSZXZpZXdlZC1ieTogTmlj
-b2xhcyBCb2ljaGF0IDxkcmlua2NhdEBjaHJvbWl1bS5vcmc+DQo+ID4gVGVzdGVkLWJ5OiBEYW5p
-ZWwgS3VydHogPGRqa3VydHpAY2hyb21pdW0ub3JnPg0KPiA+IFRlc3RlZC1ieTogUGktSHN1biBT
-aGloIDxwaWhzdW5AY2hyb21pdW0ub3JnPg0KPiA+IA0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9n
-cHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMgfCAxMyArKysrKysNCj4gPiAgIGRyaXZlcnMv
-Z3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2dlbS5jIHwgMzkgKysrKysrKysrKysrKysrKysNCj4g
-PiAgIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2dlbS5oIHwgMTIgKysrKysrDQo+
-ID4gICBpbmNsdWRlL3VhcGkvZHJtL21lZGlhdGVrX2RybS5oICAgICAgICB8IDU4DQo+ID4gKysr
-KysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAgIDQgZmlsZXMgY2hhbmdlZCwgMTIyIGluc2Vy
-dGlvbnMoKykNCj4gPiAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL3VhcGkvZHJtL21lZGlh
-dGVrX2RybS5oDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRl
-ay9tdGtfZHJtX2Rydi5jDQo+ID4gYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9k
-cnYuYw0KPiA+IGluZGV4IDkzNTUyZDc2YjZlNy4uZTNlOWRiZGYyNjViIDEwMDY0NA0KPiA+IC0t
-LSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rydi5jDQo+ID4gKysrIGIvZHJp
-dmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMNCj4gPiBAQCAtMjQsNiArMjQsNyBA
-QA0KPiA+ICAgI2luY2x1ZGUgPGRybS9kcm1fb2YuaD4NCj4gPiAgICNpbmNsdWRlIDxkcm0vZHJt
-X3Byb2JlX2hlbHBlci5oPg0KPiA+ICAgI2luY2x1ZGUgPGRybS9kcm1fdmJsYW5rLmg+DQo+ID4g
-KyNpbmNsdWRlIDxkcm0vbWVkaWF0ZWtfZHJtLmg+DQo+ID4gICANCj4gPiAgICNpbmNsdWRlICJt
-dGtfZHJtX2NydGMuaCINCj4gPiAgICNpbmNsdWRlICJtdGtfZHJtX2RkcF9jb21wLmgiDQo+ID4g
-QEAgLTU0MSw2ICs1NDIsMTQgQEAgc3RhdGljIHZvaWQgbXRrX2RybV9rbXNfZGVpbml0KHN0cnVj
-dA0KPiA+IGRybV9kZXZpY2UgKmRybSkNCj4gPiAgIAljb21wb25lbnRfdW5iaW5kX2FsbChkcm0t
-PmRldiwgZHJtKTsNCj4gPiAgIH0NCj4gPiAgIA0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGRy
-bV9pb2N0bF9kZXNjIG10a19pb2N0bHNbXSA9IHsNCj4gPiArCURSTV9JT0NUTF9ERUZfRFJWKE1U
-S19HRU1fQ1JFQVRFLCBtdGtfZ2VtX2NyZWF0ZV9pb2N0bCwNCj4gPiArCQkJICBEUk1fVU5MT0NL
-RUQgfCBEUk1fQVVUSCB8IERSTV9SRU5ERVJfQUxMT1cpLA0KPiA+ICsJRFJNX0lPQ1RMX0RFRl9E
-UlYoTVRLX0dFTV9NQVBfT0ZGU0VULA0KPiA+ICsJCQkgIG10a19nZW1fbWFwX29mZnNldF9pb2N0
-bCwNCj4gPiArCQkJICBEUk1fVU5MT0NLRUQgfCBEUk1fQVVUSCB8IERSTV9SRU5ERVJfQUxMT1cp
-LA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiAgIERFRklORV9EUk1fR0VNX0ZPUFMobXRrX2RybV9mb3Bz
-KTsNCj4gPiAgIA0KPiA+ICAgLyoNCj4gPiBAQCAtNTYyLDYgKzU3MSwxMCBAQCBzdGF0aWMgY29u
-c3Qgc3RydWN0IGRybV9kcml2ZXIgbXRrX2RybV9kcml2ZXINCj4gPiA9IHsNCj4gPiAgIA0KPiA+
-ICAgCS5nZW1fcHJpbWVfaW1wb3J0ID0gbXRrX2RybV9nZW1fcHJpbWVfaW1wb3J0LA0KPiA+ICAg
-CS5nZW1fcHJpbWVfaW1wb3J0X3NnX3RhYmxlID0gbXRrX2dlbV9wcmltZV9pbXBvcnRfc2dfdGFi
-bGUsDQo+ID4gKw0KPiA+ICsJLmlvY3RscyA9IG10a19pb2N0bHMsDQo+ID4gKwkubnVtX2lvY3Rs
-cyA9IEFSUkFZX1NJWkUobXRrX2lvY3RscyksDQo+ID4gKw0KPiA+ICAgCS5mb3BzID0gJm10a19k
-cm1fZm9wcywNCj4gPiAgIA0KPiA+ICAgCS5uYW1lID0gRFJJVkVSX05BTUUsDQo+ID4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2dlbS5jDQo+ID4gYi9kcml2
-ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9nZW0uYw0KPiA+IGluZGV4IDlmMzY0ZGY1MjQ3
-OC4uYmNjZTcyM2YyNTdkIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRl
-ay9tdGtfZHJtX2dlbS5jDQo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19k
-cm1fZ2VtLmMNCj4gPiBAQCAtNCw2ICs0LDcgQEANCj4gPiAgICAqLw0KPiA+ICAgDQo+ID4gICAj
-aW5jbHVkZSA8bGludXgvZG1hLWJ1Zi5oPg0KPiA+ICsjaW5jbHVkZSA8ZHJtL21lZGlhdGVrX2Ry
-bS5oPg0KPiA+ICAgDQo+ID4gICAjaW5jbHVkZSA8ZHJtL2RybS5oPg0KPiA+ICAgI2luY2x1ZGUg
-PGRybS9kcm1fZGV2aWNlLmg+DQo+ID4gQEAgLTI3MiwzICsyNzMsNDEgQEAgdm9pZCBtdGtfZHJt
-X2dlbV9wcmltZV92dW5tYXAoc3RydWN0DQo+ID4gZHJtX2dlbV9vYmplY3QgKm9iaiwNCj4gPiAg
-IAltdGtfZ2VtLT5rdmFkZHIgPSBOVUxMOw0KPiA+ICAgCWtmcmVlKG10a19nZW0tPnBhZ2VzKTsN
-Cj4gPiAgIH0NCj4gPiArDQo+ID4gK2ludCBtdGtfZ2VtX21hcF9vZmZzZXRfaW9jdGwoc3RydWN0
-IGRybV9kZXZpY2UgKmRybSwgdm9pZCAqZGF0YSwNCj4gPiArCQkJICAgICBzdHJ1Y3QgZHJtX2Zp
-bGUgKmZpbGVfcHJpdikNCj4gPiArew0KPiA+ICsJc3RydWN0IGRybV9tdGtfZ2VtX21hcF9vZmYg
-KmFyZ3MgPSBkYXRhOw0KPiA+ICsNCj4gPiArCXJldHVybiBkcm1fZ2VtX2R1bWJfbWFwX29mZnNl
-dChmaWxlX3ByaXYsIGRybSwgYXJncy0+aGFuZGxlLA0KPiA+ICsJCQkJICAgICAgICZhcmdzLT5v
-ZmZzZXQpOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtpbnQgbXRrX2dlbV9jcmVhdGVfaW9jdGwoc3Ry
-dWN0IGRybV9kZXZpY2UgKmRldiwgdm9pZCAqZGF0YSwNCj4gPiArCQkJIHN0cnVjdCBkcm1fZmls
-ZSAqZmlsZV9wcml2KQ0KPiA+ICt7DQo+ID4gKwlzdHJ1Y3QgbXRrX2RybV9nZW1fb2JqICptdGtf
-Z2VtOw0KPiA+ICsJc3RydWN0IGRybV9tdGtfZ2VtX2NyZWF0ZSAqYXJncyA9IGRhdGE7DQo+ID4g
-KwlpbnQgcmV0Ow0KPiA+ICsNCj4gPiArCW10a19nZW0gPSBtdGtfZHJtX2dlbV9jcmVhdGUoZGV2
-LCBhcmdzLT5zaXplLCBmYWxzZSk7DQo+ID4gKwlpZiAoSVNfRVJSKG10a19nZW0pKQ0KPiA+ICsJ
-CXJldHVybiBQVFJfRVJSKG10a19nZW0pOw0KPiA+ICsNCj4gPiArCS8qDQo+ID4gKwkgKiBhbGxv
-Y2F0ZSBhIGlkIG9mIGlkciB0YWJsZSB3aGVyZSB0aGUgb2JqIGlzIHJlZ2lzdGVyZWQNCj4gPiAr
-CSAqIGFuZCBoYW5kbGUgaGFzIHRoZSBpZCB3aGF0IHVzZXIgY2FuIHNlZS4NCj4gPiArCSAqLw0K
-PiA+ICsJcmV0ID0gZHJtX2dlbV9oYW5kbGVfY3JlYXRlKGZpbGVfcHJpdiwgJm10a19nZW0tPmJh
-c2UsICZhcmdzLQ0KPiA+ID5oYW5kbGUpOw0KPiA+ICsJaWYgKHJldCkNCj4gPiArCQlnb3RvIGVy
-cl9oYW5kbGVfY3JlYXRlOw0KPiA+ICsNCj4gPiArCS8qIGRyb3AgcmVmZXJlbmNlIGZyb20gYWxs
-b2NhdGUgLSBoYW5kbGUgaG9sZHMgaXQgbm93LiAqLw0KPiA+ICsJZHJtX2dlbV9vYmplY3RfcHV0
-KCZtdGtfZ2VtLT5iYXNlKTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gMDsNCj4gPiArDQo+ID4gK2Vy
-cl9oYW5kbGVfY3JlYXRlOg0KPiA+ICsJbXRrX2RybV9nZW1fZnJlZV9vYmplY3QoJm10a19nZW0t
-PmJhc2UpOw0KPiA+ICsJcmV0dXJuIHJldDsNCj4gPiArfQ0KPiA+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9nZW0uaA0KPiA+IGIvZHJpdmVycy9ncHUvZHJt
-L21lZGlhdGVrL210a19kcm1fZ2VtLmgNCj4gPiBpbmRleCA3OGYyM2IwN2EwMmUuLjkwZjNkMjkx
-NmVjNSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9n
-ZW0uaA0KPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2dlbS5oDQo+
-ID4gQEAgLTQ2LDQgKzQ2LDE2IEBAIGludCBtdGtfZHJtX2dlbV9wcmltZV92bWFwKHN0cnVjdCBk
-cm1fZ2VtX29iamVjdA0KPiA+ICpvYmosIHN0cnVjdCBpb3N5c19tYXAgKm1hcCk7DQo+ID4gICB2
-b2lkIG10a19kcm1fZ2VtX3ByaW1lX3Z1bm1hcChzdHJ1Y3QgZHJtX2dlbV9vYmplY3QgKm9iaiwN
-Cj4gPiAgIAkJCSAgICAgIHN0cnVjdCBpb3N5c19tYXAgKm1hcCk7DQo+ID4gICANCj4gPiArLyoN
-Cj4gPiArICogcmVxdWVzdCBnZW0gb2JqZWN0IGNyZWF0aW9uIGFuZCBidWZmZXIgYWxsb2NhdGlv
-biBhcyB0aGUgc2l6ZQ0KPiA+ICsgKiB0aGF0IGl0IGlzIGNhbGN1bGF0ZWQgd2l0aCBmcmFtZWJ1
-ZmZlciBpbmZvcm1hdGlvbiBzdWNoIGFzDQo+ID4gd2lkdGgsDQo+ID4gKyAqIGhlaWdodCBhbmQg
-YnBwLg0KPiA+ICsgKi8NCj4gPiAraW50IG10a19nZW1fY3JlYXRlX2lvY3RsKHN0cnVjdCBkcm1f
-ZGV2aWNlICpkZXYsIHZvaWQgKmRhdGEsDQo+ID4gKwkJCSBzdHJ1Y3QgZHJtX2ZpbGUgKmZpbGVf
-cHJpdik7DQo+ID4gKw0KPiA+ICsvKiBnZXQgYnVmZmVyIG9mZnNldCB0byBtYXAgdG8gdXNlciBz
-cGFjZS4gKi8NCj4gPiAraW50IG10a19nZW1fbWFwX29mZnNldF9pb2N0bChzdHJ1Y3QgZHJtX2Rl
-dmljZSAqZGV2LCB2b2lkICpkYXRhLA0KPiA+ICsJCQkgICAgIHN0cnVjdCBkcm1fZmlsZSAqZmls
-ZV9wcml2KTsNCj4gPiArDQo+ID4gICAjZW5kaWYNCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS91
-YXBpL2RybS9tZWRpYXRla19kcm0uaA0KPiA+IGIvaW5jbHVkZS91YXBpL2RybS9tZWRpYXRla19k
-cm0uaA0KPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+ID4gaW5kZXggMDAwMDAwMDAwMDAwLi5j
-MDUwZGUzMjBhODQNCj4gPiAtLS0gL2Rldi9udWxsDQo+ID4gKysrIGIvaW5jbHVkZS91YXBpL2Ry
-bS9tZWRpYXRla19kcm0uaA0KPiA+IEBAIC0wLDAgKzEsNTggQEANCj4gPiArLyogU1BEWC1MaWNl
-bnNlLUlkZW50aWZpZXI6IEdQTC0yLjArIFdJVEggTGludXgtc3lzY2FsbC1ub3RlICovDQo+ID4g
-Ky8qDQo+ID4gKyAqIENvcHlyaWdodCAoYykgMjAxNSBNZWRpYVRlayBJbmMuDQo+ID4gKyAqDQo+
-ID4gKyAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0
-ZSBpdCBhbmQvb3INCj4gPiBtb2RpZnkNCj4gPiArICogaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRo
-ZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSB2ZXJzaW9uIDINCj4gPiBhcw0KPiA+ICsgKiBw
-dWJsaXNoZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbi4NCj4gPiArICoNCj4gPiAr
-ICogVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBi
-ZSB1c2VmdWwsDQo+ID4gKyAqIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVu
-IHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mDQo+ID4gKyAqIE1FUkNIQU5UQUJJTElUWSBvciBGSVRO
-RVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUNCj4gPiArICogR05VIEdlbmVy
-YWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4NCj4gPiArICovDQo+ID4gKw0KPiA+
-ICsjaWZuZGVmIF9VQVBJX01FRElBVEVLX0RSTV9IDQo+ID4gKyNkZWZpbmUgX1VBUElfTUVESUFU
-RUtfRFJNX0gNCj4gPiArDQo+ID4gKyNpbmNsdWRlIDxkcm0vZHJtLmg+DQo+ID4gKw0KPiA+ICsv
-KioNCj4gPiArICogVXNlci1kZXNpcmVkIGJ1ZmZlciBjcmVhdGlvbiBpbmZvcm1hdGlvbiBzdHJ1
-Y3R1cmUuDQo+IA0KPiBZb3UncmUgYWxtb3N0IHRoZXJlLi4uLiBSZWFkOg0KPiANCj4gDQpodHRw
-czovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly9kb2NzLmtlcm5lbC5vcmcvZG9jLWd1aWRl
-L2tlcm5lbC1kb2MuaHRtbCpzdHJ1Y3R1cmUtdW5pb24tYW5kLWVudW1lcmF0aW9uLWRvY3VtZW50
-YXRpb25fXztJdyEhQ1RSTktBOXdNZzBBUmJ3IWtFUmxiODZWQXo4dWRfWEhRUXd2MWhITGIyRmZq
-ei1FQ2dQazc0U0U3UFV3T0l5SWJDaDhjSEtaajJ3MTJxT2VJS2t0VVFRQUlrbEJPOWFROF9XX0Ey
-VmFOSzA5dHk5SEJRJA0KPiAgDQoNCk9LLCBUaGFua3MgZm9yIHlvdXIgaGVscC4NCkkgY2FuIHVz
-ZSB0aGF0IGBzY3JpcHRzL2tlcm5lbC1kb2NgIHRvIHNjYW4gbXkgY29kZSBub3chDQoNCldpbGwg
-Zml4IHRoZW0gaW4gdGhlIG5leHQgdmVyc2lvbi4NCg0KUmVnYXJkcywNCkphc29uLUpILkxpbg0K
-DQo+IA0KPiBSZWdhcmRzLA0KPiBBbmdlbG8NCj4gDQo+IA0K
+Add initial DTSI for the Qualcomm SM8650 platform,
+only contains nodes which doesn't depend on interconnect.
+
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sm8650.dtsi | 2665 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 2665 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+new file mode 100644
+index 000000000000..bbebe15437aa
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+@@ -0,0 +1,2665 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * Copyright (c) 2023, Linaro Limited
++ */
++
++#include <dt-bindings/clock/qcom,rpmh.h>
++#include <dt-bindings/clock/qcom,sm8650-dispcc.h>
++#include <dt-bindings/clock/qcom,sm8650-gcc.h>
++#include <dt-bindings/clock/qcom,sm8650-gpucc.h>
++#include <dt-bindings/clock/qcom,sm8650-tcsr.h>
++#include <dt-bindings/dma/qcom-gpi.h>
++#include <dt-bindings/firmware/qcom,scm.h>
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/mailbox/qcom-ipcc.h>
++#include <dt-bindings/phy/phy-qcom-qmp.h>
++#include <dt-bindings/power/qcom,rpmhpd.h>
++#include <dt-bindings/power/qcom-rpmpd.h>
++#include <dt-bindings/reset/qcom,sm8650-gpucc.h>
++#include <dt-bindings/soc/qcom,gpr.h>
++#include <dt-bindings/soc/qcom,rpmh-rsc.h>
++#include <dt-bindings/thermal/thermal.h>
++
++/ {
++	interrupt-parent = <&intc>;
++
++	#address-cells = <2>;
++	#size-cells = <2>;
++
++	chosen { };
++
++	clocks {
++		xo_board: xo-board {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++		};
++
++		sleep_clk: sleep-clk {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++		};
++
++		bi_tcxo_div2: bi-tcxo-div2-clk {
++			compatible = "fixed-factor-clock";
++			#clock-cells = <0>;
++
++			clocks = <&rpmhcc RPMH_CXO_CLK>;
++			clock-mult = <1>;
++			clock-div = <2>;
++		};
++
++		bi_tcxo_ao_div2: bi-tcxo-ao-div2-clk {
++			compatible = "fixed-factor-clock";
++			#clock-cells = <0>;
++
++			clocks = <&rpmhcc RPMH_CXO_CLK_A>;
++			clock-mult = <1>;
++			clock-div = <2>;
++		};
++	};
++
++	cpus {
++		#address-cells = <2>;
++		#size-cells = <0>;
++
++		CPU0: cpu@0 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a520";
++			reg = <0 0>;
++
++			clocks = <&cpufreq_hw 0>;
++
++			power-domains = <&CPU_PD0>;
++			power-domain-names = "psci";
++
++			enable-method = "psci";
++			next-level-cache = <&L2_0>;
++			capacity-dmips-mhz = <1024>;
++			dynamic-power-coefficient = <100>;
++
++			qcom,freq-domain = <&cpufreq_hw 0>;
++
++			#cooling-cells = <2>;
++
++			L2_0: l2-cache {
++				compatible = "cache";
++				cache-level = <2>;
++				cache-unified;
++				next-level-cache = <&L3_0>;
++
++				L3_0: l3-cache {
++					compatible = "cache";
++					cache-level = <3>;
++					cache-unified;
++				};
++			};
++		};
++
++		CPU1: cpu@100 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a520";
++			reg = <0 0x100>;
++
++			clocks = <&cpufreq_hw 0>;
++
++			power-domains = <&CPU_PD1>;
++			power-domain-names = "psci";
++
++			enable-method = "psci";
++			next-level-cache = <&L2_0>;
++			capacity-dmips-mhz = <1024>;
++			dynamic-power-coefficient = <100>;
++
++			qcom,freq-domain = <&cpufreq_hw 0>;
++
++			#cooling-cells = <2>;
++		};
++
++		CPU2: cpu@200 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a720";
++			reg = <0 0x200>;
++
++			clocks = <&cpufreq_hw 3>;
++
++			power-domains = <&CPU_PD2>;
++			power-domain-names = "psci";
++
++			enable-method = "psci";
++			next-level-cache = <&L2_200>;
++			capacity-dmips-mhz = <1792>;
++			dynamic-power-coefficient = <238>;
++
++			qcom,freq-domain = <&cpufreq_hw 3>;
++
++			#cooling-cells = <2>;
++
++			L2_200: l2-cache {
++				compatible = "cache";
++				cache-level = <2>;
++				cache-unified;
++				next-level-cache = <&L3_0>;
++			};
++		};
++
++		CPU3: cpu@300 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a720";
++			reg = <0 0x300>;
++
++			clocks = <&cpufreq_hw 3>;
++
++			power-domains = <&CPU_PD3>;
++			power-domain-names = "psci";
++
++			enable-method = "psci";
++			next-level-cache = <&L2_200>;
++			capacity-dmips-mhz = <1792>;
++			dynamic-power-coefficient = <238>;
++
++			qcom,freq-domain = <&cpufreq_hw 3>;
++
++			#cooling-cells = <2>;
++		};
++
++		CPU4: cpu@400 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a720";
++			reg = <0 0x400>;
++
++			clocks = <&cpufreq_hw 3>;
++
++			power-domains = <&CPU_PD4>;
++			power-domain-names = "psci";
++
++			enable-method = "psci";
++			next-level-cache = <&L2_400>;
++			capacity-dmips-mhz = <1792>;
++			dynamic-power-coefficient = <238>;
++
++			qcom,freq-domain = <&cpufreq_hw 3>;
++
++			#cooling-cells = <2>;
++
++			L2_400: l2-cache {
++				compatible = "cache";
++				cache-level = <2>;
++				cache-unified;
++				next-level-cache = <&L3_0>;
++			};
++		};
++
++		CPU5: cpu@500 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a720";
++			reg = <0 0x500>;
++
++			clocks = <&cpufreq_hw 1>;
++
++			power-domains = <&CPU_PD5>;
++			power-domain-names = "psci";
++
++			enable-method = "psci";
++			next-level-cache = <&L2_500>;
++			capacity-dmips-mhz = <1792>;
++			dynamic-power-coefficient = <238>;
++
++			qcom,freq-domain = <&cpufreq_hw 1>;
++
++			#cooling-cells = <2>;
++
++			L2_500: l2-cache {
++				compatible = "cache";
++				cache-level = <2>;
++				cache-unified;
++				next-level-cache = <&L3_0>;
++			};
++		};
++
++		CPU6: cpu@600 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a720";
++			reg = <0 0x600>;
++
++			clocks = <&cpufreq_hw 1>;
++
++			power-domains = <&CPU_PD6>;
++			power-domain-names = "psci";
++
++			enable-method = "psci";
++			next-level-cache = <&L2_600>;
++			capacity-dmips-mhz = <1792>;
++			dynamic-power-coefficient = <238>;
++
++			qcom,freq-domain = <&cpufreq_hw 1>;
++
++			#cooling-cells = <2>;
++
++			L2_600: l2-cache {
++				compatible = "cache";
++				cache-level = <2>;
++				cache-unified;
++				next-level-cache = <&L3_0>;
++			};
++		};
++
++		CPU7: cpu@700 {
++			device_type = "cpu";
++			compatible = "arm,cortex-x4";
++			reg = <0 0x700>;
++
++			clocks = <&cpufreq_hw 2>;
++
++			power-domains = <&CPU_PD7>;
++			power-domain-names = "psci";
++
++			enable-method = "psci";
++			next-level-cache = <&L2_700>;
++			capacity-dmips-mhz = <1894>;
++			dynamic-power-coefficient = <588>;
++
++			qcom,freq-domain = <&cpufreq_hw 2>;
++
++			#cooling-cells = <2>;
++
++			L2_700: l2-cache {
++				compatible = "cache";
++				cache-level = <2>;
++				cache-unified;
++				next-level-cache = <&L3_0>;
++			};
++		};
++
++		cpu-map {
++			cluster0 {
++				core0 {
++					cpu = <&CPU0>;
++				};
++
++				core1 {
++					cpu = <&CPU1>;
++				};
++
++				core2 {
++					cpu = <&CPU2>;
++				};
++
++				core3 {
++					cpu = <&CPU3>;
++				};
++
++				core4 {
++					cpu = <&CPU4>;
++				};
++
++				core5 {
++					cpu = <&CPU5>;
++				};
++
++				core6 {
++					cpu = <&CPU6>;
++				};
++
++				core7 {
++					cpu = <&CPU7>;
++				};
++			};
++		};
++
++		idle-states {
++			entry-method = "psci";
++
++			SILVER_CPU_SLEEP_0: cpu-sleep-0-0 {
++				compatible = "arm,idle-state";
++				idle-state-name = "silver-rail-power-collapse";
++				arm,psci-suspend-param = <0x40000004>;
++				entry-latency-us = <550>;
++				exit-latency-us = <750>;
++				min-residency-us = <6700>;
++				local-timer-stop;
++			};
++
++			GOLD_CPU_SLEEP_0: cpu-sleep-1-0 {
++				compatible = "arm,idle-state";
++				idle-state-name = "gold-rail-power-collapse";
++				arm,psci-suspend-param = <0x40000004>;
++				entry-latency-us = <600>;
++				exit-latency-us = <1300>;
++				min-residency-us = <8136>;
++				local-timer-stop;
++			};
++
++			GOLD_PLUS_CPU_SLEEP_0: cpu-sleep-2-0 {
++				compatible = "arm,idle-state";
++				idle-state-name = "gold-plus-rail-power-collapse";
++				arm,psci-suspend-param = <0x40000004>;
++				entry-latency-us = <500>;
++				exit-latency-us = <1350>;
++				min-residency-us = <7480>;
++				local-timer-stop;
++			};
++		};
++
++		domain-idle-states {
++			CLUSTER_SLEEP_0: cluster-sleep-0 {
++				compatible = "domain-idle-state";
++				arm,psci-suspend-param = <0x41000044>;
++				entry-latency-us = <750>;
++				exit-latency-us = <2350>;
++				min-residency-us = <9144>;
++			};
++
++			CLUSTER_SLEEP_1: cluster-sleep-1 {
++				compatible = "domain-idle-state";
++				arm,psci-suspend-param = <0x4100c344>;
++				entry-latency-us = <2800>;
++				exit-latency-us = <4400>;
++				min-residency-us = <10150>;
++			};
++		};
++	};
++
++	firmware {
++		scm: scm {
++			compatible = "qcom,scm-sm8650", "qcom,scm";
++		};
++	};
++
++	memory@a0000000 {
++		device_type = "memory";
++		/* We expect the bootloader to fill in the size */
++		reg = <0 0xa0000000 0 0>;
++	};
++
++	pmu {
++		compatible = "arm,armv8-pmuv3";
++		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_LOW>;
++	};
++
++	psci {
++		compatible = "arm,psci-1.0";
++		method = "smc";
++
++		CPU_PD0: power-domain-cpu0 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&SILVER_CPU_SLEEP_0>;
++		};
++
++		CPU_PD1: power-domain-cpu1 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&SILVER_CPU_SLEEP_0>;
++		};
++
++		CPU_PD2: power-domain-cpu2 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&SILVER_CPU_SLEEP_0>;
++		};
++
++		CPU_PD3: power-domain-cpu3 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&GOLD_CPU_SLEEP_0>;
++		};
++
++		CPU_PD4: power-domain-cpu4 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&GOLD_CPU_SLEEP_0>;
++		};
++
++		CPU_PD5: power-domain-cpu5 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&GOLD_CPU_SLEEP_0>;
++		};
++
++		CPU_PD6: power-domain-cpu6 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&GOLD_CPU_SLEEP_0>;
++		};
++
++		CPU_PD7: power-domain-cpu7 {
++			#power-domain-cells = <0>;
++			power-domains = <&CLUSTER_PD>;
++			domain-idle-states = <&GOLD_PLUS_CPU_SLEEP_0>;
++		};
++
++		CLUSTER_PD: power-domain-cluster {
++			#power-domain-cells = <0>;
++			domain-idle-states = <&CLUSTER_SLEEP_0>,
++					     <&CLUSTER_SLEEP_1>;
++		};
++	};
++
++	reserved_memory: reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		hyp_mem: hyp@80000000 {
++			reg = <0 0x80000000 0 0xe00000>;
++			no-map;
++		};
++
++		cpusys_vm_mem: cpusys-vm@80e00000 {
++			reg = <0 0x80e00000 0 0x400000>;
++			no-map;
++		};
++
++		/* Merged xbl_dtlog, xbl_ramdump and aop_image regions */
++		xbl_dt_log_merged_mem: xbl-dt-log-merged@81a00000 {
++			reg = <0 0x81a00000 0 0x260000>;
++			no-map;
++		};
++
++		aop_cmd_db_mem: aop-cmd-db@81c60000 {
++			compatible = "qcom,cmd-db";
++			reg = <0 0x81c60000 0 0x20000>;
++			no-map;
++		};
++
++		/* Merged aop_config, tme_crash_dump, tme_log and uefi_log regions */
++		aop_tme_uefi_merged_mem: aop-tme-uefi-merged@81c80000 {
++			reg = <0 0x81c80000 0 0x74000>;
++			no-map;
++		};
++
++		/* Secdata region can be reused by apps */
++
++		smem: smem@81d00000 {
++			compatible = "qcom,smem";
++			reg = <0 0x81d00000 0 0x200000>;
++			hwlocks = <&tcsr_mutex 3>;
++			no-map;
++		};
++
++		adsp_mhi_mem: adsp-mhi@81f00000 {
++			reg = <0 0x81f00000 0 0x20000>;
++			no-map;
++		};
++
++		pvmfw_mem: pvmfw@824a0000 {
++			reg = <0 0x824a0000 0 0x100000>;
++			no-map;
++		};
++
++		global_sync_mem: global-sync@82600000 {
++			reg = <0 0x82600000 0 0x100000>;
++			no-map;
++		};
++
++		tz_stat_mem: tz-stat@82700000 {
++			reg = <0 0x82700000 0 0x100000>;
++			no-map;
++		};
++
++		qdss_mem: qdss@82800000 {
++			reg = <0 0x82800000 0 0x2000000>;
++			no-map;
++		};
++
++		mpss_dsm_mem: mpss-dsm@86b00000 {
++			reg = <0 0x86b00000 0 0x4900000>;
++			no-map;
++		};
++
++		mpss_dsm_mem_2: mpss-dsm-2@8b400000 {
++			reg = <0 0x8b400000 0 0x800000>;
++			no-map;
++		};
++
++		mpss_mem: mpss@8bc00000 {
++			reg = <0 0x8bc00000 0 0xf400000>;
++			no-map;
++		};
++
++		q6_mpss_dtb_mem: q6-mpss-dtb@9b000000 {
++			reg = <0 0x9b000000 0 0x80000>;
++			no-map;
++		};
++
++		ipa_fw_mem: ipa-fw@9b080000 {
++			reg = <0 0x9b080000 0 0x10000>;
++			no-map;
++		};
++
++		ipa_gsi_mem: ipa-gsi@9b090000 {
++			reg = <0 0x9b090000 0 0xa000>;
++			no-map;
++		};
++
++		gpu_micro_code_mem: gpu-micro-code@9b09a000 {
++			reg = <0 0x9b09a000 0 0x2000>;
++			no-map;
++		};
++
++		spss_region_mem: spss@9b0a0000 {
++			reg = <0 0x9b0a0000 0 0x1e0000>;
++			no-map;
++		};
++
++		/* First part of the "SPU secure shared memory" region */
++		spu_tz_shared_mem: spu-tz-shared@9b280000 {
++			reg = <0 0x9b280000 0 0x60000>;
++			no-map;
++		};
++
++		/* Second part of the "SPU secure shared memory" region */
++		spu_modem_shared_mem: spu-modem-shared@9b2e0000 {
++			reg = <0 0x9b2e0000 0 0x20000>;
++			no-map;
++		};
++
++		camera_mem: camera@9b300000 {
++			reg = <0 0x9b300000 0 0x800000>;
++			no-map;
++		};
++
++		video_mem: video@9bb00000 {
++			reg = <0 0x9bb00000 0 0x800000>;
++			no-map;
++		};
++
++		cvp_mem: cvp@9c300000 {
++			reg = <0 0x9c300000 0 0x700000>;
++			no-map;
++		};
++
++		cdsp_mem: cdsp@9ca00000 {
++			reg = <0 0x9ca00000 0 0x1400000>;
++			no-map;
++		};
++
++		q6_cdsp_dtb_mem: q6-cdsp-dtb@9de00000 {
++			reg = <0 0x9de00000 0 0x80000>;
++			no-map;
++		};
++
++		q6_adsp_dtb_mem: q6-adsp-dtb@9de80000 {
++			reg = <0 0x9de80000 0 0x80000>;
++			no-map;
++		};
++
++		adspslpi_mem: adspslpi@9df00000 {
++			reg = <0 0x9df00000 0 0x4080000>;
++			no-map;
++		};
++
++		rmtfs_mem: rmtfs@d7c00000 {
++			compatible = "qcom,rmtfs-mem";
++			reg = <0 0xd7c00000 0 0x400000>;
++			no-map;
++
++			qcom,client-id = <1>;
++			qcom,vmid = <QCOM_SCM_VMID_MSS_MSA>;
++		};
++
++		/* Merged tz_reserved, xbl_sc, cpucp_fw and qtee regions */
++		tz_merged_mem: tz-merged@d8000000 {
++			reg = <0 0xd8000000 0 0x800000>;
++			no-map;
++		};
++
++		hwfence_shbuf: hwfence-shbuf@e6440000 {
++			reg = <0 0xe6440000 0 0x2dd000>;
++			no-map;
++		};
++
++		trust_ui_vm_mem: trust-ui-vm@f3800000 {
++			reg = <0 0xf3800000 0 0x4400000>;
++			no-map;
++		};
++
++		oem_vm_mem: oem-vm@f7c00000 {
++			reg = <0 0xf7c00000 0 0x4c00000>;
++			no-map;
++		};
++
++		llcc_lpi_mem: llcc-lpi@ff800000 {
++			reg = <0 0xff800000 0 0x600000>;
++			no-map;
++		};
++	};
++
++	soc: soc@0 {
++		compatible = "simple-bus";
++
++		#address-cells = <2>;
++		#size-cells = <2>;
++		dma-ranges = <0 0 0 0 0x10 0>;
++		ranges = <0 0 0 0 0x10 0>;
++
++		gcc: clock-controller@100000 {
++			compatible = "qcom,sm8650-gcc";
++			reg = <0 0x00100000 0 0x1f4200>;
++
++			clocks = <&bi_tcxo_div2>,
++				 <&bi_tcxo_ao_div2>,
++				 <&sleep_clk>,
++				 <0>,
++				 <0>,
++				 <0>,
++				 <0>,
++				 <0>,
++				 <0>,
++				 <0>;
++
++			#clock-cells = <1>;
++			#reset-cells = <1>;
++			#power-domain-cells = <1>;
++		};
++
++		ipcc: mailbox@406000 {
++			compatible = "qcom,sm8650-ipcc", "qcom,ipcc";
++			reg = <0 0x00406000 0 0x1000>;
++
++			interrupts = <GIC_SPI 229 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-controller;
++			#interrupt-cells = <3>;
++
++			#mbox-cells = <2>;
++		};
++
++		gpi_dma2: dma-controller@800000 {
++			compatible = "qcom,sm8650-gpi-dma", "qcom,sm6350-gpi-dma";
++			reg = <0 0x00800000 0 0x60000>;
++
++			interrupts = <GIC_SPI 588 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 589 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 590 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 591 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 592 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 593 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 594 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 595 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 596 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 597 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 598 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 599 IRQ_TYPE_LEVEL_HIGH>;
++
++			dma-channels = <12>;
++			dma-channel-mask = <0x3f>;
++			#dma-cells = <3>;
++
++			iommus = <&apps_smmu 0x436 0>;
++
++			dma-coherent;
++
++			status = "disabled";
++		};
++
++		qupv3_id_1: geniqup@8c0000 {
++			compatible = "qcom,geni-se-qup";
++			reg = <0 0x008c0000 0 0x2000>;
++
++			clocks = <&gcc GCC_QUPV3_WRAP_2_M_AHB_CLK>,
++				 <&gcc GCC_QUPV3_WRAP_2_S_AHB_CLK>;
++			clock-names = "m-ahb",
++				      "s-ahb";
++
++			iommus = <&apps_smmu 0x423 0>;
++
++			dma-coherent;
++
++			#address-cells = <2>;
++			#size-cells = <2>;
++			ranges;
++
++			status = "disabled";
++
++			uart15: serial@89c000 {
++				compatible = "qcom,geni-debug-uart";
++				reg = <0 0x0089c000 0 0x4000>;
++
++				interrupts = <GIC_SPI 462 IRQ_TYPE_LEVEL_HIGH>;
++
++				clocks = <&gcc GCC_QUPV3_WRAP2_S7_CLK>;
++				clock-names = "se";
++
++				pinctrl-0 = <&qup_uart15_default>;
++				pinctrl-names = "default";
++
++				status = "disabled";
++			};
++		};
++
++		gpi_dma1: dma-controller@a00000 {
++			compatible = "qcom,sm8650-gpi-dma", "qcom,sm6350-gpi-dma";
++			reg = <0 0x00a00000 0 0x60000>;
++
++			interrupts = <GIC_SPI 279 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 280 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 281 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 293 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 294 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 295 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 296 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 297 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 298 IRQ_TYPE_LEVEL_HIGH>;
++
++			dma-channels = <12>;
++			dma-channel-mask = <0xc>;
++			#dma-cells = <3>;
++
++			iommus = <&apps_smmu 0xb6 0>;
++			dma-coherent;
++
++			status = "disabled";
++		};
++
++		rng: rng@10c3000 {
++			compatible = "qcom,sm8650-trng", "qcom,trng";
++			reg = <0 0x010c3000 0 0x1000>;
++		};
++
++		ice: crypto@1d88000 {
++			compatible = "qcom,sm8650-inline-crypto-engine",
++				     "qcom,inline-crypto-engine";
++			reg = <0 0x01d88000 0 0x8000>;
++
++			clocks = <&gcc GCC_UFS_PHY_ICE_CORE_CLK>;
++		};
++
++		tcsr_mutex: hwlock@1f40000 {
++			compatible = "qcom,tcsr-mutex";
++			reg = <0 0x01f40000 0 0x20000>;
++
++			#hwlock-cells = <1>;
++		};
++
++		tcsr: clock-controller@1fc0000 {
++			compatible = "qcom,sm8650-tcsr", "syscon";
++			reg = <0 0x01fc0000 0 0xa0000>;
++
++			clocks = <&rpmhcc RPMH_CXO_CLK>;
++
++			#clock-cells = <1>;
++			#reset-cells = <1>;
++		};
++
++		gpucc: clock-controller@3d90000 {
++			compatible = "qcom,sm8650-gpucc";
++			reg = <0 0x03d90000 0 0xa000>;
++
++			clocks = <&bi_tcxo_div2>,
++				 <&gcc GCC_GPU_GPLL0_CLK_SRC>,
++				 <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
++
++			#clock-cells = <1>;
++			#reset-cells = <1>;
++			#power-domain-cells = <1>;
++		};
++
++		dispcc: clock-controller@af00000 {
++			compatible = "qcom,sm8650-dispcc";
++			reg = <0 0x0af00000 0 0x20000>;
++
++			clocks = <&bi_tcxo_div2>,
++				 <&bi_tcxo_ao_div2>,
++				 <&gcc GCC_DISP_AHB_CLK>,
++				 <&sleep_clk>,
++				 <0>, /* dsi0 */
++				 <0>,
++				 <0>, /* dsi1 */
++				 <0>,
++				 <0>, /* dp0 */
++				 <0>,
++				 <0>, /* dp1 */
++				 <0>,
++				 <0>, /* dp2 */
++				 <0>,
++				 <0>, /* dp3 */
++				 <0>;
++
++			power-domains = <&rpmhpd RPMHPD_MMCX>;
++			required-opps = <&rpmhpd_opp_low_svs>;
++
++			#clock-cells = <1>;
++			#reset-cells = <1>;
++			#power-domain-cells = <1>;
++
++			status = "disabled";
++		};
++
++		usb_1_hsphy: phy@88e3000 {
++			compatible = "qcom,sm8650-snps-eusb2-phy",
++				     "qcom,sm8550-snps-eusb2-phy";
++			reg = <0 0x088e3000 0 0x154>;
++
++			clocks = <&tcsr TCSR_USB2_CLKREF_EN>;
++			clock-names = "ref";
++
++			resets = <&gcc GCC_QUSB2PHY_PRIM_BCR>;
++
++			#phy-cells = <0>;
++
++			status = "disabled";
++		};
++
++		usb_dp_qmpphy: phy@88e8000 {
++			compatible = "qcom,sm8650-qmp-usb3-dp-phy";
++			reg = <0 0x088e8000 0 0x3000>;
++
++			clocks = <&gcc GCC_USB3_PRIM_PHY_AUX_CLK>,
++				 <&rpmhcc RPMH_CXO_CLK>,
++				 <&gcc GCC_USB3_PRIM_PHY_COM_AUX_CLK>,
++				 <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
++			clock-names = "aux",
++				      "ref",
++				      "com_aux",
++				      "usb3_pipe";
++
++			resets = <&gcc GCC_USB3_PHY_PRIM_BCR>,
++				 <&gcc GCC_USB3_DP_PHY_PRIM_BCR>;
++			reset-names = "phy",
++				      "common";
++
++			power-domains = <&gcc USB3_PHY_GDSC>;
++
++			#clock-cells = <1>;
++			#phy-cells = <1>;
++
++			status = "disabled";
++		};
++
++		usb_1: usb@a6f8800 {
++			compatible = "qcom,sm8650-dwc3", "qcom,dwc3";
++			reg = <0 0x0a6f8800 0 0x400>;
++
++			interrupts-extended = <&intc GIC_SPI 130 IRQ_TYPE_LEVEL_HIGH>,
++					      <&pdc 17 IRQ_TYPE_LEVEL_HIGH>,
++					      <&pdc 15 IRQ_TYPE_EDGE_RISING>,
++					      <&pdc 14 IRQ_TYPE_EDGE_RISING>;
++			interrupt-names = "hs_phy_irq",
++					  "ss_phy_irq",
++					  "dm_hs_phy_irq",
++					  "dp_hs_phy_irq";
++
++			clocks = <&gcc GCC_CFG_NOC_USB3_PRIM_AXI_CLK>,
++				 <&gcc GCC_USB30_PRIM_MASTER_CLK>,
++				 <&gcc GCC_AGGRE_USB3_PRIM_AXI_CLK>,
++				 <&gcc GCC_USB30_PRIM_SLEEP_CLK>,
++				 <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
++				 <&tcsr TCSR_USB3_CLKREF_EN>;
++			clock-names = "cfg_noc",
++				      "core",
++				      "iface",
++				      "sleep",
++				      "mock_utmi",
++				      "xo";
++
++			assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
++					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
++			assigned-clock-rates = <19200000>, <200000000>;
++
++			resets = <&gcc GCC_USB30_PRIM_BCR>;
++
++			power-domains = <&gcc USB30_PRIM_GDSC>;
++			required-opps = <&rpmhpd_opp_nom>;
++
++			#address-cells = <2>;
++			#size-cells = <2>;
++			ranges;
++
++			status = "disabled";
++
++			usb_1_dwc3: usb@a600000 {
++				compatible = "snps,dwc3";
++				reg = <0 0x0a600000 0 0xcd00>;
++
++				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
++
++				iommus = <&apps_smmu 0x40 0>;
++
++				phys = <&usb_1_hsphy>,
++				       <&usb_dp_qmpphy QMP_USB43DP_USB3_PHY>;
++				phy-names = "usb2-phy",
++					    "usb3-phy";
++
++				snps,hird-threshold = /bits/ 8 <0x0>;
++				snps,usb2-gadget-lpm-disable;
++				snps,dis_u2_susphy_quirk;
++				snps,dis_enblslpm_quirk;
++				snps,dis-u1-entry-quirk;
++				snps,dis-u2-entry-quirk;
++				snps,is-utmi-l1-suspend;
++				snps,usb3_lpm_capable;
++				snps,usb2-lpm-disable;
++				snps,has-lpm-erratum;
++				tx-fifo-resize;
++
++				dma-coherent;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++
++						usb_1_dwc3_hs: endpoint {
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++
++						usb_1_dwc3_ss: endpoint {
++						};
++					};
++				};
++			};
++		};
++
++		pdc: interrupt-controller@b220000 {
++			compatible = "qcom,sm8650-pdc", "qcom,pdc";
++			reg = <0 0x0b220000 0 0x30000>, <0 0x174000f0 0 0x64>;
++
++			interrupt-parent = <&intc>;
++
++			qcom,pdc-ranges = <0 480 94>, <94 609 31>,
++					  <125 63 1>, <126 716 12>,
++					  <138 251 5>, <143 244 4>;
++
++			#interrupt-cells = <2>;
++			interrupt-controller;
++		};
++
++		tsens0: thermal-sensor@c228000 {
++			compatible = "qcom,sm8650-tsens", "qcom,tsens-v2";
++			reg = <0 0x0c228000 0 0x1000>, /* TM */
++			      <0 0x0c222000 0 0x1000>; /* SROT */
++
++			interrupts = <GIC_SPI 506 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 640 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "uplow",
++					  "critical";
++
++			#qcom,sensors = <15>;
++
++			#thermal-sensor-cells = <1>;
++		};
++
++		tsens1: thermal-sensor@c229000 {
++			compatible = "qcom,sm8650-tsens", "qcom,tsens-v2";
++			reg = <0 0x0c229000 0 0x1000>, /* TM */
++			      <0 0x0c223000 0 0x1000>; /* SROT */
++
++			interrupts = <GIC_SPI 507 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 641 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "uplow",
++					  "critical";
++
++			#qcom,sensors = <16>;
++
++			#thermal-sensor-cells = <1>;
++		};
++
++		tsens2: thermal-sensor@c22a000 {
++			compatible = "qcom,sm8650-tsens", "qcom,tsens-v2";
++			reg = <0 0x0c22a000 0 0x1000>, /* TM */
++			      <0 0x0c224000 0 0x1000>; /* SROT */
++
++			interrupts = <GIC_SPI 508 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 642 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "uplow",
++					  "critical";
++
++			#qcom,sensors = <13>;
++
++			#thermal-sensor-cells = <1>;
++		};
++
++		aoss_qmp: power-management@c300000 {
++			compatible = "qcom,sm8650-aoss-qmp", "qcom,aoss-qmp";
++			reg = <0 0x0c300000 0 0x400>;
++
++			interrupt-parent = <&ipcc>;
++			interrupts-extended = <&ipcc IPCC_CLIENT_AOP IPCC_MPROC_SIGNAL_GLINK_QMP
++						     IRQ_TYPE_EDGE_RISING>;
++
++			mboxes = <&ipcc IPCC_CLIENT_AOP IPCC_MPROC_SIGNAL_GLINK_QMP>;
++
++			#clock-cells = <0>;
++		};
++
++		sram@c3f0000 {
++			compatible = "qcom,rpmh-stats";
++			reg = <0 0x0c3f0000 0 0x400>;
++		};
++
++		spmi_bus: spmi@c400000 {
++			compatible = "qcom,spmi-pmic-arb";
++			reg = <0 0x0c400000 0 0x3000>,
++			      <0 0x0c500000 0 0x4000000>,
++			      <0 0x0c440000 0 0x80000>,
++			      <0 0x0c4c0000 0 0x20000>,
++			      <0 0x0c42d000 0 0x4000>;
++			reg-names = "core",
++				    "chnls",
++				    "obsrvr",
++				    "intr",
++				    "cnfg";
++
++			interrupts-extended = <&pdc 1 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "periph_irq";
++
++			qcom,ee = <0>;
++			qcom,channel = <0>;
++			qcom,bus-id = <0>;
++
++			interrupt-controller;
++			#interrupt-cells = <4>;
++
++			#address-cells = <2>;
++			#size-cells = <0>;
++		};
++
++		tlmm: pinctrl@f100000 {
++			compatible = "qcom,sm8650-tlmm";
++			reg = <0 0x0f100000 0 0x300000>;
++
++			interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
++
++			gpio-controller;
++			#gpio-cells = <2>;
++
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			gpio-ranges = <&tlmm 0 0 211>;
++
++			wakeup-parent = <&pdc>;
++
++			qup_uart15_default: qup-uart15-default-state {
++				/* TX, RX */
++				pins = "gpio30", "gpio31";
++				function = "qup2_se7";
++				drive-strength = <2>;
++				bias-disable;
++			};
++		};
++
++		apps_smmu: iommu@15000000 {
++			compatible = "qcom,sm8650-smmu-500", "qcom,smmu-500", "arm,mmu-500";
++			reg = <0 0x15000000 0 0x100000>;
++
++			interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 107 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 181 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 182 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 185 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 189 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 190 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 192 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 315 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 316 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 317 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 318 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 319 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 320 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 321 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 322 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 323 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 324 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 325 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 326 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 327 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 328 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 329 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 330 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 331 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 332 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 333 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 334 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 335 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 336 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 337 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 338 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 339 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 340 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 341 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 342 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 343 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 344 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 345 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 395 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 396 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 397 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 398 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 399 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 400 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 401 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 402 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 403 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 404 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 405 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 406 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 407 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 408 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 409 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 418 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 419 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 412 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 421 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 706 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 423 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 689 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 690 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 691 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 692 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 693 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 694 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 695 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 696 IRQ_TYPE_LEVEL_HIGH>;
++
++			#iommu-cells = <2>;
++			#global-interrupts = <1>;
++
++			dma-coherent;
++		};
++
++		intc: interrupt-controller@17100000 {
++			compatible = "arm,gic-v3";
++			reg = <0 0x17100000 0 0x10000>,		/* GICD */
++			      <0 0x17180000 0 0x200000>;	/* GICR * 8 */
++
++			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_LOW>;
++
++			#interrupt-cells = <3>;
++			interrupt-controller;
++
++			#redistributor-regions = <1>;
++			redistributor-stride = <0 0x40000>;
++
++			#address-cells = <2>;
++			#size-cells = <2>;
++			ranges;
++
++			gic_its: msi-controller@17140000 {
++				compatible = "arm,gic-v3-its";
++				reg = <0 0x17140000 0 0x20000>;
++
++				msi-controller;
++				#msi-cells = <1>;
++			};
++		};
++
++		timer@17420000 {
++			compatible = "arm,armv7-timer-mem";
++			reg = <0 0x17420000 0 0x1000>;
++
++			ranges = <0 0 0 0x20000000>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			frame@17421000 {
++				reg = <0x17421000 0x1000>,
++				      <0x17422000 0x1000>;
++
++				interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
++					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
++
++				frame-number = <0>;
++			};
++
++			frame@17423000 {
++				reg = <0x17423000 0x1000>;
++
++				interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
++
++				frame-number = <1>;
++
++				status = "disabled";
++			};
++
++			frame@17425000 {
++				reg = <0x17425000 0x1000>;
++
++				interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
++
++				frame-number = <2>;
++
++				status = "disabled";
++			};
++
++			frame@17427000 {
++				reg = <0x17427000 0x1000>;
++
++				interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
++
++				frame-number = <3>;
++
++				status = "disabled";
++			};
++
++			frame@17429000 {
++				reg = <0x17429000 0x1000>;
++
++				interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
++
++				frame-number = <4>;
++
++				status = "disabled";
++			};
++
++			frame@1742b000 {
++				reg = <0x1742b000 0x1000>;
++
++				interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
++
++				frame-number = <5>;
++
++				status = "disabled";
++			};
++
++			frame@1742d000 {
++				reg = <0x1742d000 0x1000>;
++
++				interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
++
++				frame-number = <6>;
++
++				status = "disabled";
++			};
++		};
++
++		apps_rsc: rsc@17a00000 {
++			compatible = "qcom,rpmh-rsc";
++			reg = <0 0x17a00000 0 0x10000>,
++			      <0 0x17a10000 0 0x10000>,
++			      <0 0x17a20000 0 0x10000>,
++			      <0 0x17a30000 0 0x10000>;
++			reg-names = "drv-0",
++				    "drv-1",
++				    "drv-2";
++
++			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
++
++			power-domains = <&CLUSTER_PD>;
++
++			qcom,tcs-offset = <0xd00>;
++			qcom,drv-id = <2>;
++			qcom,tcs-config = <ACTIVE_TCS    3>, <SLEEP_TCS     2>,
++					  <WAKE_TCS      2>, <CONTROL_TCS   0>;
++
++			label = "apps_rsc";
++
++			apps_bcm_voter: bcm-voter {
++				compatible = "qcom,bcm-voter";
++			};
++
++			rpmhcc: clock-controller {
++				compatible = "qcom,sm8650-rpmh-clk";
++
++				clocks = <&xo_board>;
++				clock-names = "xo";
++
++				#clock-cells = <1>;
++			};
++
++			rpmhpd: power-controller {
++				compatible = "qcom,sm8650-rpmhpd";
++
++				operating-points-v2 = <&rpmhpd_opp_table>;
++
++				#power-domain-cells = <1>;
++
++				rpmhpd_opp_table: opp-table {
++					compatible = "operating-points-v2";
++
++					rpmhpd_opp_ret: opp-16 {
++						opp-level = <RPMH_REGULATOR_LEVEL_RETENTION>;
++					};
++
++					rpmhpd_opp_min_svs: opp-48 {
++						opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
++					};
++
++					rpmhpd_opp_low_svs_d2: opp-52 {
++						opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_D2>;
++					};
++
++					rpmhpd_opp_low_svs_d1: opp-56 {
++						opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_D1>;
++					};
++
++					rpmhpd_opp_low_svs_d0: opp-60 {
++						opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_D0>;
++					};
++
++					rpmhpd_opp_low_svs: opp-64 {
++						opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
++					};
++
++					rpmhpd_opp_low_svs_l1: opp-80 {
++						opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_L1>;
++					};
++
++					rpmhpd_opp_svs: opp-128 {
++						opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
++					};
++
++					rpmhpd_opp_svs_l0: opp-144 {
++						opp-level = <RPMH_REGULATOR_LEVEL_SVS_L0>;
++					};
++
++					rpmhpd_opp_svs_l1: opp-192 {
++						opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
++					};
++
++					rpmhpd_opp_nom: opp-256 {
++						opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
++					};
++
++					rpmhpd_opp_nom_l1: opp-320 {
++						opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
++					};
++
++					rpmhpd_opp_nom_l2: opp-336 {
++						opp-level = <RPMH_REGULATOR_LEVEL_NOM_L2>;
++					};
++
++					rpmhpd_opp_turbo: opp-384 {
++						opp-level = <RPMH_REGULATOR_LEVEL_TURBO>;
++					};
++
++					rpmhpd_opp_turbo_l1: opp-416 {
++						opp-level = <RPMH_REGULATOR_LEVEL_TURBO_L1>;
++					};
++				};
++			};
++		};
++
++		cpufreq_hw: cpufreq@17d91000 {
++			compatible = "qcom,sm8650-cpufreq-epss", "qcom,cpufreq-epss";
++			reg = <0 0x17d91000 0 0x1000>,
++			      <0 0x17d92000 0 0x1000>,
++			      <0 0x17d93000 0 0x1000>,
++			      <0 0x17d94000 0 0x1000>;
++			reg-names = "freq-domain0",
++				    "freq-domain1",
++				    "freq-domain2",
++				    "freq-domain3";
++
++			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 738 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "dcvsh-irq-0",
++					  "dcvsh-irq-1",
++					  "dcvsh-irq-2",
++					  "dcvsh-irq-3";
++
++			clocks = <&bi_tcxo_div2>, <&gcc GCC_GPLL0>;
++			clock-names = "xo", "alternate";
++
++			#freq-domain-cells = <1>;
++			#clock-cells = <1>;
++		};
++
++		system-cache-controller@25000000 {
++			compatible = "qcom,sm8650-llcc";
++			reg = <0 0x25000000 0 0x200000>,
++			      <0 0x25400000 0 0x200000>,
++			      <0 0x25200000 0 0x200000>,
++			      <0 0x25600000 0 0x200000>,
++			      <0 0x25800000 0 0x200000>;
++			reg-names = "llcc0_base",
++				    "llcc1_base",
++				    "llcc2_base",
++				    "llcc3_base",
++				    "llcc_broadcast_base";
++
++			interrupts = <GIC_SPI 266 IRQ_TYPE_LEVEL_HIGH>;
++		};
++	};
++
++	thermal-zones {
++		aoss0-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 0>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		cpuss0-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 1>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		cpuss1-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 2>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		cpuss2-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 3>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		cpuss3-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 4>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		cpu2-top-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 5>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu2-bottom-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 6>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				 cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu3-top-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 7>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu3-bottom-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 8>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu4-top-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 9>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu4-bottom-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 10>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu5-top-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 11>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu5-bottom-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 12>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu6-top-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 13>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu6-bottom-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens0 14>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		aoss1-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens1 0>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		cpu7-top-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens1 1>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu7-middle-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens1 2>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu7-bottom-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens1 3>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu0-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens1 4>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		cpu1-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens1 5>;
++
++			trips {
++				trip-point0 {
++					temperature = <90000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				trip-point1 {
++					temperature = <95000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu-critical {
++					temperature = <110000>;
++					hysteresis = <1000>;
++					type = "critical";
++				};
++			};
++		};
++
++		nsphvx-0-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 6>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		nsphvx-1-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 7>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		nsphmx-0-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 8>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		nsphmx-1-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 9>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		nsphmx-2-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 10>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		nsphmx-3-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 11>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		video-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens1 12>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				ddr0-config {
++					temperature = <90000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		ddr-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens1 13>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				ddr0-config {
++					temperature = <90000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		camera0-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens1 14>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		camera1-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens1 15>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		aoss2-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 0>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		gpuss-0-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 1>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		gpuss-1-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 2>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		gpuss-2-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 3>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		gpuss-3-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 4>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		gpuss-4-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 5>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		gpuss-5-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 6>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		gpuss-6-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 7>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		gpuss-7-thermal {
++			polling-delay-passive = <10>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 8>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				thermal-hal-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++
++				junction-config {
++					temperature = <95000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		modem0-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 9>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				mdmss0-config0 {
++					temperature = <102000>;
++					hysteresis = <3000>;
++					type = "passive";
++				};
++
++				mdmss0-config1 {
++					temperature = <105000>;
++					hysteresis = <3000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		modem1-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 10>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				mdmss1-config0 {
++					temperature = <102000>;
++					hysteresis = <3000>;
++					type = "passive";
++				};
++
++				mdmss1-config1 {
++					temperature = <105000>;
++					hysteresis = <3000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		modem2-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 11>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				mdmss2-config0 {
++					temperature = <102000>;
++					hysteresis = <3000>;
++					type = "passive";
++				};
++
++				mdmss2-config1 {
++					temperature = <105000>;
++					hysteresis = <3000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++
++		modem3-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&tsens2 12>;
++
++			trips {
++				thermal-engine-config {
++					temperature = <125000>;
++					hysteresis = <1000>;
++					type = "passive";
++				};
++
++				mdmss3-config0 {
++					temperature = <102000>;
++					hysteresis = <3000>;
++					type = "passive";
++				};
++
++				mdmss3-config1 {
++					temperature = <105000>;
++					hysteresis = <3000>;
++					type = "passive";
++				};
++
++				reset-mon-config {
++					temperature = <115000>;
++					hysteresis = <5000>;
++					type = "passive";
++				};
++			};
++		};
++	};
++
++	timer {
++		compatible = "arm,armv8-timer";
++
++		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
++	};
++};
+
+-- 
+2.34.1
+
