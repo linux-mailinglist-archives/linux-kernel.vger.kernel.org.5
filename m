@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D502D7D5EEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 02:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AE07D5EEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 02:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344685AbjJYABe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 20:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
+        id S1344716AbjJYACH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 20:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344663AbjJYABa (ORCPT
+        with ESMTP id S1344663AbjJYACF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 20:01:30 -0400
-Received: from out-197.mta1.migadu.com (out-197.mta1.migadu.com [95.215.58.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D641910D0
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 17:01:27 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698192085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gulJryeOiAII7rRti1FgpAMjLmQKWyqOB8guMGZkbTk=;
-        b=LOm2g80fdK+Zk5MnmgUOQet8LgbtP/tQYKA6OMIXPTBEC7vrNUPmgB628GHUI7I8ZaII4i
-        IVDHYLJXyoM8876962oTh9j+WU1EHNo9f+EOR5vArflelhg6qZzgZ6T5Ntt8db+kZ9N0zf
-        gLQ6XHnz90rwmGJ9eyd1uB2fX6JeIWA=
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Jing Zhang <jingzhangos@google.com>, kvm@vger.kernel.org,
-        Reiji Watanabe <reijiw@google.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.linux.dev, James Morse <james.morse@arm.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>
-Subject: Re: [PATCH v8 00/13] KVM: arm64: PMU: Allow userspace to limit the number of PMCs on vCPU
-Date:   Wed, 25 Oct 2023 00:01:12 +0000
-Message-ID: <169819197647.2014901.5722928932912558103.b4-ty@linux.dev>
-In-Reply-To: <20231020214053.2144305-1-rananta@google.com>
-References: <20231020214053.2144305-1-rananta@google.com>
+        Tue, 24 Oct 2023 20:02:05 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F016ADA;
+        Tue, 24 Oct 2023 17:02:03 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-27db9fdec16so3887181a91.2;
+        Tue, 24 Oct 2023 17:02:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698192123; x=1698796923; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2Q7n7eEoCIAK2rGAN6IyglN3NhntUutFp1NL35nDz+g=;
+        b=m0XB9JBwT8uEhqUPfRW+sSbzbJ7Pocj9QnLs6iOLBfo7WDpDM+LRmh9LnIGe+dKhES
+         PPvuI5QdDBNXJJR1hw3EMHoEIe6awV865f6nxNIxKmF54RV+uLAlkSTfDxEIGOiuKPwm
+         8bzUJJSahyRoZoDsi45ZJY+U12T3sXXbDjCLq/xUaMr/edmw4wTgBpS/Vdpvy6lu2oQy
+         x9Dt4Sw8dlW8K7/OOx9XLOO5mJ39RVOfcuEnl86IG4aO2vHCZGmIwBSAQM34fF+I3ooc
+         LLzIR5WlukFmPzU9jQV/JZrWPaQer/YNB0lCuv0Q+ZPbuYBqIF6VcN6Advx399QW6n7R
+         qPDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698192123; x=1698796923;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Q7n7eEoCIAK2rGAN6IyglN3NhntUutFp1NL35nDz+g=;
+        b=FKSDmqG4ItfTIBmZS1EHZqOxMAvYN9CK1l5xp2bofk4FIRLvKBkUEAbhGRi96/UWZ2
+         cR17leQMrXX3F+U5F7NUbMML9ZxGIZODUTHeoj1RkyBSOSSu/KcueoLVuUmxRexGLGbV
+         PviDH0XEkH3GSVGfYxVzNcJTEmQJi+DvBxt1nIZSFhagsvtmavNeBTikLn/GRgM9dslp
+         XdLRDjaVXmuedpqugIugykE5yywKQceXQCKqZ5U/ypuQHM3XQDX7PIfVIDLVDfMaTpQV
+         Figdh9mnxPv6pHGJ78WrSpDkmYTQoFyOn8Njnud9l02nGlrTDwP3VvQp75CrP7XOzKQO
+         bJsA==
+X-Gm-Message-State: AOJu0YzarhOvfKTy31X5HwJeO6mXO9fhBDcgijrd23fTlFL/YFIERymJ
+        WyK95keY0uTMRgBYjTqFzdDUf/n6dQg=
+X-Google-Smtp-Source: AGHT+IHqp0fgXno/O+LMjdsIA9+MhoOLdZSecl/wbg0PuSHBIWNGSfBx3I4yfchMij2mH/s+AytZgA==
+X-Received: by 2002:a17:90a:df8f:b0:27d:237b:558b with SMTP id p15-20020a17090adf8f00b0027d237b558bmr11985553pjv.5.1698192123380;
+        Tue, 24 Oct 2023 17:02:03 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id 21-20020a17090a01d500b0027732eb24bbsm10501271pjd.4.2023.10.24.17.02.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 17:02:02 -0700 (PDT)
+Message-ID: <04c51182-97b7-4a10-a6f7-195da19358be@gmail.com>
+Date:   Wed, 25 Oct 2023 07:01:56 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: Memleaks in offset_ctx->xa (shmem)
+To:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Filesystem Development <linux-fsdevel@vger.kernel.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, vladbu@nvidia.com
+References: <429b452c-2211-436a-9af7-21332f68db7d@gmail.com>
+ <f21c7064-dac1-4667-96c6-0d85368300ca@leemhuis.info>
+Content-Language: en-US
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <f21c7064-dac1-4667-96c6-0d85368300ca@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 21:40:40 +0000, Raghavendra Rao Ananta wrote:
-> The goal of this series is to allow userspace to limit the number
-> of PMU event counters on the vCPU.  We need this to support migration
-> across systems that implement different numbers of counters.
+On 24/10/2023 21:18, Linux regression tracking (Thorsten Leemhuis) wrote:
+> Bagas, FWIW, before doing so you in the future might want to search lore
+> for an abbreviated commit-id with a wildcard (e.g.
+> https://lore.kernel.org/all/?q=6faddda6* ) and the bugzilla url (e.g.
+> https://lore.kernel.org/all/?q=https%3A%2F%2Fbugzilla.kernel.org%2Fshow_bug.cgi%3Fid%3D218039).
+> Because then in this case you would have noticed that this was already
+> discussed on the lists and Chuck asked to bring it to bugzilla for
+> further tracking, so forwarding this likely was not worth it:
+> https://lore.kernel.org/all/87ttqhq0i7.fsf@nvidia.com/
 > 
-> The number of PMU event counters is indicated in PMCR_EL0.N.
-> For a vCPU with PMUv3 configured, its value will be the same as
-> the current PE by default.  Userspace can set PMCR_EL0.N for the
-> vCPU to any value even with the current KVM using KVM_SET_ONE_REG.
-> However, it is practically unsupported, as KVM resets PMCR_EL0.N
-> to the host value on vCPU reset and some KVM code uses the host
-> value to identify (un)implemented event counters on the vCPU.
-> 
-> [...]
 
-I've applied this with Marc + I's fixes. I'm happy to toss any fixes
-on top of this series if folks spot issues.
+Thanks for the tip reminder! I always forget it then...
 
-[01/13] KVM: arm64: PMU: Introduce helpers to set the guest's PMU
-        https://git.kernel.org/kvmarm/kvmarm/c/1616ca6f3c10
-[02/13] KVM: arm64: PMU: Set the default PMU for the guest before vCPU reset
-        https://git.kernel.org/kvmarm/kvmarm/c/427733579744
-[03/13] KVM: arm64: PMU: Add a helper to read a vCPU's PMCR_EL0
-        https://git.kernel.org/kvmarm/kvmarm/c/57fc267f1b5c
-[04/13] KVM: arm64: PMU: Set PMCR_EL0.N for vCPU based on the associated PMU
-        https://git.kernel.org/kvmarm/kvmarm/c/4d20debf9ca1
-[05/13] KVM: arm64: Add {get,set}_user for PM{C,I}NTEN{SET,CLR}, PMOVS{SET,CLR}
-        https://git.kernel.org/kvmarm/kvmarm/c/a45f41d754e0
-[06/13] KVM: arm64: Sanitize PM{C,I}NTEN{SET,CLR}, PMOVS{SET,CLR} before first run
-        https://git.kernel.org/kvmarm/kvmarm/c/27131b199f9f
-[07/13] KVM: arm64: PMU: Allow userspace to limit PMCR_EL0.N for the guest
-        https://git.kernel.org/kvmarm/kvmarm/c/ea9ca904d24f
-[08/13] tools: Import arm_pmuv3.h
-        https://git.kernel.org/kvmarm/kvmarm/c/9f4b3273dfbe
-[09/13] KVM: selftests: aarch64: Introduce vpmu_counter_access test
-        https://git.kernel.org/kvmarm/kvmarm/c/8d0aebe1ca2b
-[10/13] KVM: selftests: aarch64: vPMU register test for implemented counters
-        https://git.kernel.org/kvmarm/kvmarm/c/ada1ae68262d
-[11/13] KVM: selftests: aarch64: vPMU register test for unimplemented counters
-        https://git.kernel.org/kvmarm/kvmarm/c/e1cc87206348
-[12/13] KVM: selftests: aarch64: vPMU test for validating user accesses
-        https://git.kernel.org/kvmarm/kvmarm/c/62708be351fe
+-- 
+An old man doll... just what I always wanted! - Clara
 
---
-Best,
-Oliver
