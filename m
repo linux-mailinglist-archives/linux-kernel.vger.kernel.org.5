@@ -2,93 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BA37D5F1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 02:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505137D5F21
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 02:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbjJYAiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 20:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
+        id S231551AbjJYAkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 20:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbjJYAiI (ORCPT
+        with ESMTP id S229548AbjJYAkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 20:38:08 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C60B10E3;
-        Tue, 24 Oct 2023 17:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698194279;
-        bh=rQ2n3vaXvoxlfkwkAH5WFbjgcSuMcTxbu+XtzHZZmho=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LbztQwO3SbPIUtHt8p3udHIuESMeiOkdEWZrUeKmA2PuhbqG9ejh6pL7i5nA2AETO
-         EU39yRLFnWEXWdjp8Rab+SvdGSLW8vssHA5OdY5iKkEoBp6zEHfCdIT3bIBNQGh/Tc
-         aZod+szJMZBXtNIpQ3rVOf3MPk+GTUb0DMPVxEwb7lgkivOhL/rg9hvZpy9J/UXePv
-         +uR9YJpt2mhcwhV8/PJRcZ4zDSwo2qWA6z1AzA57GIHlGcLbGEo6MF2P5x7sABuxeP
-         kyNdNq03EdP+TtCcCFXj2vNX1cmzVZcwK0pMmkWgl54CNHiFTp9wY9Rn361bV8GmKH
-         lz4Jznpy9WTlg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SFVQG2vh1z4wd4;
-        Wed, 25 Oct 2023 11:37:58 +1100 (AEDT)
-Date:   Wed, 25 Oct 2023 11:37:57 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Greg KH <greg@kroah.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the fpga-fixes tree
-Message-ID: <20231025113757.61688e0d@canb.auug.org.au>
+        Tue, 24 Oct 2023 20:40:20 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CC5B9;
+        Tue, 24 Oct 2023 17:40:18 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5ac865d1358so3301291a12.3;
+        Tue, 24 Oct 2023 17:40:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698194417; x=1698799217; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Oy3ZCxUaOTBccOyYOfscwNqRTq+2Vm1/fUY8yV/tkg8=;
+        b=W+Nc25dhOf2YX+DRj8QkD0QqO36prwVZnR7YOrbIssk+kjOZEJn6YrO1sEGaRQhcZz
+         ItXaYLnVWdqrW6yx0TtfhSluUWmbQXLBptifDVOvC216B1lLK1zSU30yKO5sekUAsyF7
+         AFih/nN8ilPHbTUVseY3bRukHkkGYTSHUdP1anS+6hqam/G9hqcVjdyLQUQtZ/uf7k1L
+         v5Bqlc2eOcylg1GA5GXtW9+TIzea/FfYYfdOk7r1UFM7hxWGL5r4H4Mt4Td0dADY7iaU
+         6qAX3GrtIaSESXcCcnYd0l4r4hOyoe7FSmCr5MwuPV/OwagZtDROKqMVPWUpmFqzQt6u
+         eMvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698194417; x=1698799217;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Oy3ZCxUaOTBccOyYOfscwNqRTq+2Vm1/fUY8yV/tkg8=;
+        b=uc0p4lCKIjcYb5vWJ1+cKUlACgepVfDd/4Tk7Qe+HQYpX4HAFfPPraeWcKkty49KF/
+         jCMYeAco10NDuQA3E2t7m2sHCVPudkGv7IGJW7SX1+OAwrsusFgWakI3FDkZZke5Br+6
+         J48fJKN5JvC4/OWN3QzhLt6dAkLNk3bFwWKm11x1wJS/bJDMBK5O4Zp/OUw2rPiS73NP
+         o58id4Kuru3gJeCLDfVj+tnyMBXA5SMY2lQV7Go6WfC8OCqrxCXJdXYgLDL0xzTAQlIS
+         wsjyvNSInDwA8wSPNlCKvclB/an3FAmyhUzt3u6rXDt71esdNAtwojWws1xIoS3I16hc
+         CU+Q==
+X-Gm-Message-State: AOJu0Ywb7VSnC9r2hVpos8u2ySMxe4W9z1no2WCdEKcRMNILjTtV3vjS
+        N5i9YI9f95kheUF1naFLFAD+pSPJjY4=
+X-Google-Smtp-Source: AGHT+IGNKaEZC7W8MQaC26f2qUIAnpX/xebK0G7PQ8bDsxQN4pRfDpZ3iswNsTR1vE87PzfChReSdg==
+X-Received: by 2002:a05:6a21:7182:b0:17d:ed85:541e with SMTP id wq2-20020a056a21718200b0017ded85541emr4333239pzb.45.1698194417473;
+        Tue, 24 Oct 2023 17:40:17 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id ji18-20020a170903325200b001c99b3a1e45sm8024928plb.84.2023.10.24.17.40.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Oct 2023 17:40:17 -0700 (PDT)
+Message-ID: <cd397c88-bf53-4768-9ab8-9d107df9e613@gmail.com>
+Date:   Wed, 25 Oct 2023 07:40:11 +0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mnSsjN3oTgLkcDI_PksycAq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux IDE and libata <linux-ide@vger.kernel.org>
+Cc:     Damien Le Moal <dlemoal@kernel.org>,
+        Hannes Reinecke <hare@suse.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Tejun Heo <tj@kernel.org>,
+        Totallyreal Name <kotversuchung@gmail.com>,
+        loqs <kernel_bugzilla@entropy-collector.net>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: bbbf096ea227607cbb348155eeda7af71af1a35b results in "dirty"
+ shutdown
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mnSsjN3oTgLkcDI_PksycAq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+I notice a regression report on Bugzilla that seems to have been
+handled already there [1]. Quoting from it:
 
-The following commits are also in the cha-misc.current tree as different
-commits (but the same patches):
+> I have noticed that after each shutdown SMART would log +1 on each raw_value of drives that count power related issues.
+> 
+> Here are some of the smart values where i noticed increase among different drives
+> 
+> POR_Recovery_Count 
+> Unexpect_Power_Loss_Ct  
+> Power-Off_Retract_Count 
+> 
+> That doesn't happen on previous Kernels.. and it stops as soon as i switch back to LTS.
+> I seeked through the Bug Reports but couldn't really find the issue. So i don't know if this has been reported or patched already.
 
-  03d4bf9ff34a ("fpga: Fix memory leak for fpga_region_test_class_find()")
-  9221d5ecebf0 ("fpga: m10bmc-sec: Change contact for secure update driver")
+Another reporter had found the culprit:
 
-These are commits
+> 
+> 
+> This has been reported as being introduced in stable 6.5.8 [1].  Reverting commit 	bbbf096ea227607cbb348155eeda7af71af1a35b is reported to solve the issue [2]. bbbf096ea227607cbb348155eeda7af71af1a35b [3] is mainline commit aa3998dbeb3abce63653b7f6d4542e7dcd022590 [4] which was introduced in 6.6-rc4 which matches the original report.
+> 
+> [1]: https://bugs.archlinux.org/task/80064
+> [2]: https://bugs.archlinux.org/task/80064#comment223100
+> [3]: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=bbbf096ea227607cbb348155eeda7af71af1a35b
+> [4]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=aa3998dbeb3abce63653b7f6d4542e7dcd022590
 
-  28926daf731f ("fpga: Fix memory leak for fpga_region_test_class_find()")
-  1e55c5200dc7 ("fpga: m10bmc-sec: Change contact for secure update driver")
+See Bugzilla for the full thread.
 
-in the char-misc.current tree.
+Anyway, I'm adding this regression to regzbot:
 
---=20
-Cheers,
-Stephen Rothwell
+#regzbot introduced: aa3998dbeb3abc https://bugzilla.kernel.org/show_bug.cgi?id=218038
+#regzbot title: dirty shutdown due to disabling manage_system_start_stop on SCSI devices
+#regzbot link: https://bugs.archlinux.org/task/80064
 
---Sig_/mnSsjN3oTgLkcDI_PksycAq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thanks.
 
------BEGIN PGP SIGNATURE-----
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218038
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmU4Y2UACgkQAVBC80lX
-0GyLbgf+PhR+iVDVeTDNYqTUD27WSXDMJTKm1kMy+zC/tdOJx5OPw/JY+ujWJXdn
-dODaI/7sGefHRtLTCldaJAwtOy4MZMC3xPy9nNaFtZrG5dR+5ziy1Wo7UCr6Ng0k
-7WAyPO8kB+0KOBp/hvNmO8Z48a9lTU7v8wXa4edF2gGjnWtnWBtP69Kwj8X1Xnk9
-Em3MyVyY/RaQQMDooESyGkXZLJtVpBEBoahEsxnYzwQGJ346zUSo7qnv7tP9SpxH
-K8RlDKw84mU6ldFWHCqgTllU5POGO7uDVdAucGRBOJJkrno178icbkVvBs34Cy5n
-z/dHt4oBYkyQJ1vwVYrC4vbFM4SVRA==
-=OpJ3
------END PGP SIGNATURE-----
-
---Sig_/mnSsjN3oTgLkcDI_PksycAq--
+-- 
+An old man doll... just what I always wanted! - Clara
