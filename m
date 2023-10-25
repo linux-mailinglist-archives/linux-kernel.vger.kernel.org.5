@@ -2,63 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 676AB7D7710
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024C17D7714
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 23:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbjJYVtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 17:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
+        id S229738AbjJYVvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 17:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229682AbjJYVtO (ORCPT
+        with ESMTP id S229573AbjJYVvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 17:49:14 -0400
+        Wed, 25 Oct 2023 17:51:21 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1ABB9;
-        Wed, 25 Oct 2023 14:49:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3004DC433C8;
-        Wed, 25 Oct 2023 21:49:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37456A3;
+        Wed, 25 Oct 2023 14:51:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 721F3C433C7;
+        Wed, 25 Oct 2023 21:51:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698270552;
-        bh=UBlwui6JXaWM1dHC4n9599bjvvRTpUdWTM8kRxLfVA0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DlIKAJg5/J0kp89aSFTWjntfSUCBR8JmJ/nwvzDR1KOa/xQXGRYf1n4+D1EmF5wZi
-         moo6yCTKlRUpYxfsrsJ7RnHmzq6MsQx+jIu91Ten/GYPUEiyh+OZ6jtBX3e7dSL6w1
-         NYth1Y8dP0HwwuUjYpStlSYygiCcvb3435jdcIYm4DrWN9UWdHZvpPlK82tDtzSS/d
-         LqkPaNJiIMqtJ4qwkj3TpsHq9FrLUb5FNZO1Uwytm00qeRftaeDX3BK61Snem/Z97/
-         vxfeLM0+EG9M5VV2nch8gdDO6532a2mPe31wDo2dSFZMovqRGuhHRUH8MQ2/ZHLhzE
-         KD+OpBf8Qg2dQ==
-Date:   Wed, 25 Oct 2023 14:49:09 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Alyssa Milburn <alyssa.milburn@intel.com>
-Subject: Re: [PATCH v3 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20231025214909.yxcldnporsnicrdi@treble>
-References: <20231025-delay-verw-v3-0-52663677ee35@linux.intel.com>
- <20231025-delay-verw-v3-1-52663677ee35@linux.intel.com>
- <8b6d857f-cbf6-4969-8285-f90254bdafc0@citrix.com>
- <20231025212806.pgykrxzcmbhrhix5@treble>
- <da782a61-e7f6-45fa-88e9-9d974dcc1a87@citrix.com>
+        s=k20201202; t=1698270678;
+        bh=PjnBP9jEL2AWQ7PbVvmJXlUUowLNSpEaOjN6Erdxx7o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=FH+c+m7NzeG/KQdNL0oyOj3P67+XqkQYe2XINJfANb1L6Wes0YQDDBHBr5QRIYFDH
+         SUFy3znctK02yBQVQmZjbAyhh/kkcO86o3Ff7qa3CXvSjrt3O050Y9Z87fAGnCn8oQ
+         BoJEgM/lYyWvAFMCz7vcuZHZoUQD53EIKW76vf3PUrXaZkAKcYnlUqraudTMPoQUyp
+         40fcVkjYc5eUZoHUUVs+djiljw0atPNJa9QMHinzvUD2tvRbLW6Wf8gyoJqbWPD5+y
+         5AYZOZQC6IQixB+sjP59SFTJyTJa7VWuZ3XdBVAToHZj20q/LtRfUFcWpHmWYAzpi2
+         bHll+1Euz7XNw==
+Date:   Wed, 25 Oct 2023 16:51:16 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     sharath.kumar.d.m@intel.com, Joyce Ooi <joyce.ooi@intel.com>
+Cc:     bhelgaas@google.com, dinguyen@kernel.org, kw@linux.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lpieralisi@kernel.org, robh@kernel.org
+Subject: Re: [PATCH v4 0/2] PCI: altera: add support to agilex family
+Message-ID: <20231025215116.GA1768116@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <da782a61-e7f6-45fa-88e9-9d974dcc1a87@citrix.com>
+In-Reply-To: <20230917170546.2097352-1-sharath.kumar.d.m@intel.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -68,49 +48,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 10:30:52PM +0100, Andrew Cooper wrote:
-> On 25/10/2023 10:28 pm, Josh Poimboeuf wrote:
-> > On Wed, Oct 25, 2023 at 10:10:41PM +0100, Andrew Cooper wrote:
-> >> On 25/10/2023 9:52 pm, Pawan Gupta wrote:
-> >>> diff --git a/arch/x86/entry/entry.S b/arch/x86/entry/entry.S
-> >>> index bfb7bcb362bc..f8ba0c0b6e60 100644
-> >>> --- a/arch/x86/entry/entry.S
-> >>> +++ b/arch/x86/entry/entry.S
-> >>> @@ -20,3 +23,16 @@ SYM_FUNC_END(entry_ibpb)
-> >>>  EXPORT_SYMBOL_GPL(entry_ibpb);
-> >>>  
-> >>>  .popsection
-> >>> +
-> >>> +.pushsection .entry.text, "ax"
-> >>> +
-> >>> +.align L1_CACHE_BYTES, 0xcc
-> >>> +SYM_CODE_START_NOALIGN(mds_verw_sel)
-> >>> +	UNWIND_HINT_UNDEFINED
-> >>> +	ANNOTATE_NOENDBR
-> >>> +	.word __KERNEL_DS
-> >> You need another .align here.  Otherwise subsequent code will still
-> >> start in this cacheline and defeat the purpose of trying to keep it
-> >> separate.
-> >>
-> >>> +SYM_CODE_END(mds_verw_sel);
-> >> Thinking about it, should this really be CODE and not a data entry?
-> >>
-> >> It lives in .entry.text but it really is data and objtool shouldn't be
-> >> writing ORC data for it at all.
-> >>
-> >> (Not to mention that if it's marked as STT_OBJECT, objdump -d will do
-> >> the sensible thing and not even try to disassemble it).
-> >>
-> >> ~Andrew
-> >>
-> >> P.S. Please CC on the full series.  Far less effort than fishing the
-> >> rest off lore.
-> > +1 to putting it in .rodata or so.
+[+to Joyce, Altera PCIe maintainer]
+
+On Sun, Sep 17, 2023 at 10:35:44PM +0530, sharath.kumar.d.m@intel.com wrote:
+> From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
 > 
-> It's necessarily in .entry.text so it doesn't explode with KPTI active.
+> added new callback for
+> 1) read,write to root port configuration registers
+> 2) read,write to endpoint configuration registers
+> 3) root port interrupt handler
+> 
+> agilex and newer platforms need to implemant the callback and generic root
+> port driver should work ( without much changes ) , legacy platforms (arria
+>  and startix) implement configuration read,write directly in wrapper
+> api _altera_pcie_cfg_read/_altera_pcie_cfg_write
 
-Ah, right.  In general tooling doesn't take too kindly to putting data
-in a text section.  But it might be ok.
+Do these patches make the driver work on some new platform?  Has it
+been tested?  Please include the name of the new platform.
 
--- 
-Josh
+Saying this "... driver should work (without much changes)" does not
+sound like anything has actually been tested on hardware.
+
+> changelog v2:
+> saperated into two patches
+> 1.refactored the driver for easily portability to future Altera FPGA
+> platforms
+> 2.added support for "Agilex" FPGA
+> 
+> this driver supports PCI RP IP on Agilex FPGA, as these are FPGA its up
+> to the user to add PCI RP or not ( as per his needs). we are not adding
+> the device tree as part of this commit. we are expecting the add device
+> tree changes only if he is adding PCI RP IP in his design
+
+Please cc: Joyce on any future postings, since she's listed as the
+maintainer for pcie-altera.c.
+
+Joyce, please comment on these.  We don't like to merge things
+affecting your file unless you approve.
+
+> changelog v3:
+> incorporate review comments from Bjorn Helgaas
+> 
+> changelog v4:
+> added below callback for root bus
+> alt_read/write_own_cfg
+> added below callback for non-root buses
+> alt_read/write_other_cfg
+> 
+> D M Sharath Kumar (2):
+>   PCI: altera: refactor driver for supporting new platform
+>   PCI: altera: add support for agilex family fpga
+> 
+>  drivers/pci/controller/pcie-altera.c | 313 ++++++++++++++++++++++++---
+>  1 file changed, 280 insertions(+), 33 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
