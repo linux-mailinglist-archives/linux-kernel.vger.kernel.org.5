@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF627D69DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627837D69EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 13:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbjJYLS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 07:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
+        id S233850AbjJYLVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 07:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjJYLS0 (ORCPT
+        with ESMTP id S229456AbjJYLVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 07:18:26 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D85AC
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 04:18:24 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-581edcde26cso3520832eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 04:18:24 -0700 (PDT)
+        Wed, 25 Oct 2023 07:21:49 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E84AC;
+        Wed, 25 Oct 2023 04:21:46 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-53f6ccea1eeso8602373a12.3;
+        Wed, 25 Oct 2023 04:21:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698232704; x=1698837504; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O/w4iA+oDuPu231sTcNOTsdxeUTQplFVmErJTH5H3OY=;
-        b=FNhRtMkzNUGu9nr012wAESpAYD14IgE1GJDYNLP2tSxQDxj5xTGVvFnsE/2Yh6odcz
-         TJU8tbadSvgxSRJBLHyJDMAnGQXD8gF9djmyolWmJZoZ6HE9jjVXNfE1oruGUCP2sB8u
-         EgfH2SYFH1jqBnb9i2DuNdUTSsKdv4peG7U7szgqGg96TDf/Y2z4TdBgoA3zTiPbWloQ
-         JlglPjphJ4MMe01t23iZ2DHNLAdU7MboV+lPJu08XOu1XY2oIcKEa7Z7DSIUDLIcciyH
-         9CjVAtWIISgrv8k5iWe3zZZWZDKzMi2emZVew5Uv004SEtlUzw5rUtYoOgwCO4NAVBo0
-         IYww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698232704; x=1698837504;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1698232905; x=1698837705; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O/w4iA+oDuPu231sTcNOTsdxeUTQplFVmErJTH5H3OY=;
-        b=hgRG/uUT9ZkstE9qF4o8wuur/d962ycmmi0osYEmOE+YuJlCXFua5OgeKSky1OE2n6
-         GmV3XJwsfNTolk46G5uW6Jf/IUjNClu1TMSO+/XhpkAQN+mzsnQh7B48oSqHYy/REdEV
-         Ff6Lql6YF+oatw8Dh3poaq6EJzihipahwHxG6QAfNVGw97/T9obN7the314hE13uXF97
-         mvnceV1DSsAs+oMxiTT3IOsN/wkk/D2w8UWoS/n+YFHLkXOG4dYD5eOpcZKB78MqG6Wz
-         I9dPEsVWTFAh+iRCtULX2Ouwntypx6P4GpHpn+yQfgYu0uI7MLBO6Kh1a6xO6vMrIMh1
-         MWfg==
-X-Gm-Message-State: AOJu0Yz9OpaxDTDCunGJt4AY6NrrXGvmD0Tj3AWVF6nt4keR3QsSLgOy
-        pN0yocQqSpKjVZ48KZ8FADw4rA==
-X-Google-Smtp-Source: AGHT+IEtGdAVdFkWJnngM50vrzWN38KyMloiqcaozZu5lVIF2ZqigYk3JwzyX/TjX6djJ/Fg/wCdow==
-X-Received: by 2002:a05:6870:9d96:b0:1ea:2c8b:e18e with SMTP id pv22-20020a0568709d9600b001ea2c8be18emr18928096oab.8.1698232703744;
-        Wed, 25 Oct 2023 04:18:23 -0700 (PDT)
-Received: from localhost ([122.172.80.14])
-        by smtp.gmail.com with ESMTPSA id 202-20020a6301d3000000b005b7e3eddb87sm8640826pgb.61.2023.10.25.04.18.22
+        bh=E2rHfcsjlV4rlBGbf4CfwSEr1+dgsfk+VxIq/saYt7A=;
+        b=QH0zn8AfCu8yLe24O97F19CUDfYyn+D7LnEY0TkkmKEz5V/1ZTA2X+oFxl7IIUytjG
+         qeuTimXeMYhkcZxvvonlb26y2shQbxQSXEZvHWg26eB2xbgBLGJaSS30UVc3xcswD/Ru
+         +mMPx8ewrIo9Itjt1wwLwpOLrNq2MrFICSE/ufd/Y6n81bu6NIq5U1uzR8l1frnc9eFu
+         5t6HGUDogPpbaIC5ubC/U/Hqk6YGFJ0koPIiljYGgT3wpNcrxFlrKDy4pDfszp02vtfX
+         KouhZHXlCpAC50EgERnsVae3WU/MP3xUBygq/t/a2CBg0OJHfB8jQx8lgqmZ4pyMciCJ
+         cMPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698232905; x=1698837705;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E2rHfcsjlV4rlBGbf4CfwSEr1+dgsfk+VxIq/saYt7A=;
+        b=ogyiRrtICWbTri2PLWhU7dpLbXnGyz4kUuPvBpEbTeNW6Yd2y6TuiYJYH+6lI9yTrK
+         prtMCC8DGsHlkay2Km/rNinscgg6SU9HBiWw7AMmkHhwO5d/GY+DW3LaX/p8oFU83QED
+         oP3hAg0zD0O0htKMIvQcX0nonWtN9xLWolkZfE562LOQfnC8b1OJFWdsHRZHkVmqpGsj
+         1RlYWxX8pL1i6ldp1H5IYZcLAbf2H1UyeYgT+q13huPeYUtJB/qoSY9Q6TYjohzJKzz7
+         wINFf8rbI/ytnQDP4rGqfx0F5yajyjaGa7LsN4WOlJDfdfSiryGs0n0d3EB3aDwiCacL
+         KcYA==
+X-Gm-Message-State: AOJu0YzrL7lLR71sumFjbMAR+c8uz12FsLJQDk8b/05e0KgJaxoLdq+b
+        MMNQ8lO7neMZJPmXRexcGu4tX0D0VVg=
+X-Google-Smtp-Source: AGHT+IGPuYW/6V1UmkcJQL53Gndt5qS6mrifdkq1FD6CQye3uPK1nErdTXZVKKpQwX3DZ2hm9yT2yA==
+X-Received: by 2002:a17:906:6a0e:b0:9be:45b3:1c3d with SMTP id qw14-20020a1709066a0e00b009be45b31c3dmr9871645ejc.48.1698232904750;
+        Wed, 25 Oct 2023 04:21:44 -0700 (PDT)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:2cbd:f9ec:f035:ebea])
+        by smtp.gmail.com with ESMTPSA id xa22-20020a170907b9d600b0099bd1ce18fesm9841288ejc.10.2023.10.25.04.21.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 04:18:23 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 16:48:21 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Zeng Heng <zengheng4@huawei.com>
-Cc:     rafael@kernel.org, liwei391@huawei.com, linux-pm@vger.kernel.org,
-        xiexiuqi@huawei.com, wangxiongfeng2@huawei.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] cpufreq: userspace: Keep the current frequency
- when set userspace policy
-Message-ID: <20231025111821.pp3hdpilddbx4yzr@vireshk-i7>
-References: <20231025080910.3245690-1-zengheng4@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025080910.3245690-1-zengheng4@huawei.com>
+        Wed, 25 Oct 2023 04:21:44 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>, soc@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] arm: debug: reuse the config DEBUG_OMAP2UART{1,2} for OMAP{3,4,5}
+Date:   Wed, 25 Oct 2023 13:21:36 +0200
+Message-Id: <20231025112136.3445-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-10-23, 16:09, Zeng Heng wrote:
-> When switching to the userspace policy, if the current frequency is within
-> the range of policy's min and max values, the current frequency value
-> should be remained. The .limit() function is called when changing governor
-> or updating governor limits, so in both cases, there is no need to update
-> frequency if the current frequency does not exceed the threshold.
-> 
-> Additionally, when changing to userspace governor, the default value of
-> set_speed is set by reading the current frequency of the CPU, but there
-> is inevitable error between the frequency coming from .get_rate() interface
-> and the actual working frequency. Consequently, when switching to userspace
-> policy, keeping the current frequency can avoid unexpected changes.
-> 
-> Signed-off-by: Zeng Heng <zengheng4@huawei.com>
-> ---
->  drivers/cpufreq/cpufreq_userspace.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/cpufreq_userspace.c b/drivers/cpufreq/cpufreq_userspace.c
-> index 2c42fee76daa..fe55a7bb663c 100644
-> --- a/drivers/cpufreq/cpufreq_userspace.c
-> +++ b/drivers/cpufreq/cpufreq_userspace.c
-> @@ -117,9 +117,7 @@ static void cpufreq_userspace_policy_limits(struct cpufreq_policy *policy)
->  	else if (policy->min > userspace->setspeed)
->  		__cpufreq_driver_target(policy, policy->min,
->  					CPUFREQ_RELATION_L);
-> -	else
-> -		__cpufreq_driver_target(policy, userspace->setspeed,
-> -					CPUFREQ_RELATION_L);
-> +	/* Otherwise, keep the current frequency. */
-> 
->  	mutex_unlock(&userspace->mutex);
->  }
+Commit d2b310b0234c ("ARM: debug: Use generic 8250 debug_ll for omap2 and
+omap3/4/5 common uarts") adds address definitions of DEBUG_UART_PHYS for
+OMAP2, OMAP3, OMAP4 and OMAP5 in ./arch/arm/Kconfig.debug.
 
-Here is some reasoning why it should be done the way it is:
+These definitions depend on DEBUG_OMAP{2,3,4,5}UART{1,2}; however, only
+DEBUG_OMAP2UART{1,2} are defined in ./arch/arm/Kconfig.debug, and
+DEBUG_OMAP{3,4,5}UART{1,2} are not defined. Hence, the script
+./scripts/checkkconfigsymbols.py warns here on non-existing symbols.
+Simply reuse the config DEBUG_OMAP2UART{1,2}; there is no need to define
+separate config symbols for OMAP{3,4,5}. So, just delete the dead
+references to DEBUG_OMAP{3,4,5}UART{1,2}.
 
-commit e43e94c1eda7 ("cpufreq: Fix GOV_LIMITS handling for the userspace governor")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ arch/arm/Kconfig.debug | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
+diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
+index b407b7b9b715..fc2b41d41447 100644
+--- a/arch/arm/Kconfig.debug
++++ b/arch/arm/Kconfig.debug
+@@ -1593,10 +1593,8 @@ config DEBUG_UART_PHYS
+ 	default 0x48020000 if DEBUG_OMAP4UART3 || DEBUG_TI81XXUART1
+ 	default 0x48022000 if DEBUG_TI81XXUART2
+ 	default 0x48024000 if DEBUG_TI81XXUART3
+-	default 0x4806a000 if DEBUG_OMAP2UART1 || DEBUG_OMAP3UART1 || \
+-				DEBUG_OMAP4UART1 || DEBUG_OMAP5UART1
+-	default 0x4806c000 if DEBUG_OMAP2UART2 || DEBUG_OMAP3UART2 || \
+-				DEBUG_OMAP4UART2 || DEBUG_OMAP5UART2
++	default 0x4806a000 if DEBUG_OMAP2UART1
++	default 0x4806c000 if DEBUG_OMAP2UART2
+ 	default 0x4806e000 if DEBUG_OMAP2UART3 || DEBUG_OMAP4UART4
+ 	default 0x49020000 if DEBUG_OMAP3UART3
+ 	default 0x49042000 if DEBUG_OMAP3UART4
+@@ -1719,10 +1717,8 @@ config DEBUG_UART_VIRT
+ 	default 0xfa020000 if DEBUG_OMAP4UART3 || DEBUG_TI81XXUART1
+ 	default 0xfa022000 if DEBUG_TI81XXUART2
+ 	default 0xfa024000 if DEBUG_TI81XXUART3
+-	default 0xfa06a000 if DEBUG_OMAP2UART1 || DEBUG_OMAP3UART1 || \
+-				DEBUG_OMAP4UART1 || DEBUG_OMAP5UART1
+-	default 0xfa06c000 if DEBUG_OMAP2UART2 || DEBUG_OMAP3UART2 || \
+-				DEBUG_OMAP4UART2 || DEBUG_OMAP5UART2
++	default 0xfa06a000 if DEBUG_OMAP2UART1
++	default 0xfa06c000 if DEBUG_OMAP2UART2
+ 	default 0xfa06e000 if DEBUG_OMAP2UART3 || DEBUG_OMAP4UART4
+ 	default 0xfa71e000 if DEBUG_QCOM_UARTDM
+ 	default 0xfb009000 if DEBUG_REALVIEW_STD_PORT
 -- 
-viresh
+2.17.1
+
