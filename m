@@ -2,106 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1C07D6460
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF767D645B
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbjJYICv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35392 "EHLO
+        id S233026AbjJYICr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233065AbjJYICs (ORCPT
+        with ESMTP id S230147AbjJYICq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:02:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437DFB0;
-        Wed, 25 Oct 2023 01:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bWZHBY0qveKBPw5XOi4+cbTA2/t5IHaThFqzSpaE5Tw=; b=UfvCywBmjAti4OdilR/Rwo4i99
-        igUDFtD+Y+ABTD/Hi6zS7leerHPG2AjtuIUIE8kQyJ4cwA16JsXv80Y49lXEvo7tRbxyzsFcg64PT
-        VyooRo+HI16LGRAeZqU9tYlYWRB3qeVrdL2zzO53mFz617JXqIvaEsQkrsjkft+LJqkbul693JNeu
-        hpSUxy64iSwqSSskcMXWtqrEpDRt/WpGFiArea8eaiUBgsUkCX4h78ylsUGiF8E6O1IGcFQ7Z0YCB
-        HIgtifIV1npaDVcBNbR8yfGBsqbUSEbYA9+LYcS9QBtR+uZqVl1avKUw52H6XeHUwktwzCB51D3TH
-        dgOU5wfg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qvYqE-007ZnC-1S; Wed, 25 Oct 2023 08:02:14 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9E49230047C; Wed, 25 Oct 2023 10:02:13 +0200 (CEST)
-Date:   Wed, 25 Oct 2023 10:02:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, tony.luck@intel.com,
-        ak@linux.intel.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org,
-        Alyssa Milburn <alyssa.milburn@linux.intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        antonio.gomez.iglesias@linux.intel.com,
-        Alyssa Milburn <alyssa.milburn@intel.com>
-Subject: Re: [RESEND][PATCH 1/6] x86/bugs: Add asm helpers for executing VERW
-Message-ID: <20231025080213.GC37471@noisy.programming.kicks-ass.net>
-References: <20231020-delay-verw-v1-0-cff54096326d@linux.intel.com>
- <20231020-delay-verw-v1-1-cff54096326d@linux.intel.com>
- <f620c7d4-6345-4ad0-8a45-c8089e3c34df@citrix.com>
- <20231025062818.7kaerqklaut7dg5r@desk>
- <20231025072255.GA37471@noisy.programming.kicks-ass.net>
- <654468cf-1563-4c1c-8c7c-076bc6dfbabf@citrix.com>
+        Wed, 25 Oct 2023 04:02:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C179899
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:02:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD7CFC433C9;
+        Wed, 25 Oct 2023 08:02:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698220962;
+        bh=jQc7NqI/yKjks8Vc9GC6S3bk6T8WV+i0v/+4jkcKVwo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Jb1iyz1KC38E0Q355lenhDghCvpYJXOEQWWFzT1di4TLfSm3Y0fWQh+BuGwHKymEi
+         MHoX68UU1FjZK5VfuRkcF60v+Yc8CYFsMs6ox7OrXfsP1H3frwlW2+5drXu1+M+n/5
+         xkdQlYdvjOxK4iaq+acHv9oh+WSLumYjojZLeTUT9Ml1TZYUQdNYoM6Lf1z37r8ZzP
+         vNaPz58MLgyvjQmtqTzh+mvLUlAiI4df/vDLbNEBG2hJIkgx2oHrz4ig1LHe6FPfgi
+         mAzaWjQVT2VRAiguPbTN4UtR5chnBrLBfvNhLev6ZgOshxN7axRTuSDRKj5Y4cVzOw
+         n2wnb5R0JBz3w==
+Message-ID: <0dee3bec-d49f-4808-a2f8-7a4205303e1f@kernel.org>
+Date:   Wed, 25 Oct 2023 11:02:36 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <654468cf-1563-4c1c-8c7c-076bc6dfbabf@citrix.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/3] usb: dwc3: Modify runtime pm ops to handle bus
+ suspend
+To:     Elson Serrao <quic_eserrao@quicinc.com>,
+        gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20230814185043.9252-1-quic_eserrao@quicinc.com>
+ <20230814185043.9252-4-quic_eserrao@quicinc.com>
+ <9be9fae5-f6f2-42fe-bd81-78ab50aafa06@kernel.org>
+ <cd294a89-33e7-0569-81b3-df77a255f061@quicinc.com>
+Content-Language: en-US
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <cd294a89-33e7-0569-81b3-df77a255f061@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 08:52:50AM +0100, Andrew Cooper wrote:
 
-> > +.pushsection .entry.text, "ax"
-> > +
-> > +.align 64
-> > +SYM_CODE_START_NOALIGN(mds_verw_sel)
-> > +	UNWIND_HINT_UNDEFINED
-> > +	ANNOTATE_NOENDBR
-> > +1:
-> > +	.word __KERNEL_DS
-> > +	.skip 64 - (. - 1b), 0xcc
+
+On 24/10/2023 21:41, Elson Serrao wrote:
 > 
-> The 1 label aliases mds_verw_sel and this must remain like this for the
-> construct to work.
 > 
-> So instead of .skip, why not simply .align 64, 0xcc and get rid of the
-> 1: label?
+> On 10/24/2023 3:14 AM, Roger Quadros wrote:
+>> Hi Elson,
+>>
+>> On 14/08/2023 21:50, Elson Roy Serrao wrote:
+>>> The current implementation blocks the runtime pm operations when cable
+>>> is connected. This would block dwc3 to enter a low power state during
+>>> bus suspend scenario. Modify the runtime pm ops to handle bus suspend
+>>> case for such platforms where the controller low power mode entry/exit
+>>> is handled by the glue driver. This enablement is controlled through a
+>>> dt property and platforms capable of detecting bus resume can benefit
+>>> from this feature. Also modify the remote wakeup operations to trigger
+>>> runtime resume before sending wakeup signal.
+>>>
+>>> Signed-off-by: Elson Roy Serrao <quic_eserrao@quicinc.com>
+>>> ---
+>>>   drivers/usb/dwc3/core.c   | 28 ++++++++++++++++++++++++++--
+>>>   drivers/usb/dwc3/core.h   |  3 +++
+>>>   drivers/usb/dwc3/gadget.c | 32 +++++++++++++++++++++++++-------
+>>>   3 files changed, 54 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+>>> index 9c6bf054f15d..9bfd9bb18caf 100644
+>>> --- a/drivers/usb/dwc3/core.c
+>>> +++ b/drivers/usb/dwc3/core.c
+>>> @@ -1518,6 +1518,9 @@ static void dwc3_get_properties(struct dwc3 *dwc)
+>>>       dwc->dis_split_quirk = device_property_read_bool(dev,
+>>>                   "snps,dis-split-quirk");
+>>>   +    dwc->runtime_suspend_on_usb_suspend = device_property_read_bool(dev,
+>>> +                "snps,runtime-suspend-on-usb-suspend");
+>>> +
+>>>       dwc->lpm_nyet_threshold = lpm_nyet_threshold;
+>>>       dwc->tx_de_emphasis = tx_de_emphasis;
+>>>   @@ -2029,6 +2032,9 @@ static int dwc3_resume_common(struct dwc3 *dwc, pm_message_t msg)
+>>>         switch (dwc->current_dr_role) {
+>>>       case DWC3_GCTL_PRTCAP_DEVICE:
+>>> +        /* runtime resume on bus resume scenario */
+>>> +        if (PMSG_IS_AUTO(msg) && dwc->connected)
+>>> +            break;
+>>>           ret = dwc3_core_init_for_resume(dwc);
+>>>           if (ret)
+>>>               return ret;
+>>> @@ -2090,8 +2096,13 @@ static int dwc3_runtime_checks(struct dwc3 *dwc)
+>>>   {
+>>>       switch (dwc->current_dr_role) {
+>>>       case DWC3_GCTL_PRTCAP_DEVICE:
+>>> -        if (dwc->connected)
+>>> +        if (dwc->connected) {
+>>> +            /* bus suspend scenario */
+>>> +            if (dwc->runtime_suspend_on_usb_suspend &&
+>>> +                dwc->suspended)
+>>
+>> If dwc is already suspended why do we return -EBUSY?
+>> Should this be !dwc->suspended?
+>>
+> 
+> Hi Roger
+> 
+> Thank you for reviewing.
+> If dwc->suspended is true (i.e suspend event due to U3/L2 is received), I am actually breaking from this switch statement and returning 0.
 
-Because I forgot you can add a filler byte to .align :/ Yes, that's much
-saner.
-
-> Do we have a suitably named constant cacheline size, rather than
-> opencoding 64?
-
-L1_CACHE_BYTES probably.
+Of course. I missed the break :)
 
 > 
-> > +SYM_CODE_END(mds_verw_sel);
+>>> +                break;
+>>>               return -EBUSY;
+>>> +        }
+>>>           break;
+>>>       case DWC3_GCTL_PRTCAP_HOST:
+>>>       default:
+>>> @@ -2107,9 +2118,22 @@ static int dwc3_runtime_suspend(struct device *dev)
+>>>       struct dwc3     *dwc = dev_get_drvdata(dev);
+>>>       int        ret;
+>>>   -    if (dwc3_runtime_checks(dwc))
+>>> +    ret = dwc3_runtime_checks(dwc);
+>>> +    if (ret)
+>>>           return -EBUSY;
+>>>   +    switch (dwc->current_dr_role) {
+>>> +    case DWC3_GCTL_PRTCAP_DEVICE:
+>>> +        /* bus suspend case */
+>>> +        if (!ret && dwc->connected)
+>>
+>> No need to check !ret again as it will never happen because
+>> we are returning -EBUSY earlier if (ret);
+>>
+> Thanks for this catch. I will remove !ret check in v5.
 > 
-> Given that KVM needs it, this probably needs an EXPORT_SYMBOL_GPL() on it.
+>>> +            return 0;
+>>> +        break;
+>>> +    case DWC3_GCTL_PRTCAP_HOST:
+>>> +    default:
+>>> +        /* do nothing */
+>>> +        break;
+>>> +    }
+>>> +
+>>
+>> While this takes care of runtime suspend case, what about system_suspend?
+>> Should this check be moved to dwc3_suspend_common() instead?
+>>
+> 
+> Sure I can move these checks to dwc3_suspend_common to make it generic.
 
-localyesconfig ftw ;-)
+Before you do that let's first decide how we want the gadget driver to behave
+in system_suspend case.
 
-/me runs
+Current behavior is to Disconnect from the Host.
+
+Earlier I was thinking on the lines that we prevent system suspend if
+we are not already in USB suspend. But I'm not sure if that is the right
+thing to do anymore. Mainly because, system suspend is a result of user
+request and it may not be nice to not to meet his/her request.
+Maybe best to leave this policy handling to user space?
+i.e. if user wants USB gadget operation to be alive, he will not issue
+system suspend?
+
+
+> Will rename this patch to "Modify pm ops to handle bus suspend" since this is now not limited to only runtime suspend/resume. Will also rename dwc->runtime_suspend_on_usb_suspend to dwc->delegate_wakeup_interrupt based on earlier feedback.
+> 
+> I am still working on a clean way to enable/disable this feature (i.e set dwc->delegate_wakeup_interrupt flag) from the glue driver based on Thinh's feedback .
+> I will accommodate above feedback as well and upload v5.
+> 
+> Thanks
+> Elson
+
+-- 
+cheers,
+-roger
