@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C161E7D6C41
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AD07D6C45
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234883AbjJYMqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
+        id S1343851AbjJYMrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232807AbjJYMqw (ORCPT
+        with ESMTP id S232807AbjJYMrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:46:52 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3687990;
-        Wed, 25 Oct 2023 05:46:50 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39PCHP8x021586;
-        Wed, 25 Oct 2023 12:46:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=wjjSc92I5htECHlaVs3tEF9HxPxzvbqzSuF+P/5AcNk=;
- b=UrgpKYmI+IiU4Z8zwBRdY6aAzfQpz8F+p9lh927cRnwT42NTVHfvlB7KBa7v1OY7eXcV
- OJhvjPz+0bsEzq2W4XNy2vqpQopsXfZErrgqime/PDvYulCvze2UzlnPPwzLy+R39wZM
- GGrTnuQEc057+B/zqWU9F51x+Yz58gCEmioHIEt6ST++AAqAL9TYXQsJnafjcIB8j/Ul
- Q7dipmHUQvsMP1Xv9nPSbkasxicAQ0wgEdxy4tbFiHY9anAa7iB7qRHeYTqNzgiANwMb
- 2Fj0uIHWb3dvlZEqa/vq4XhBhU2jh2/PrkLNpiIdBCmELU9yFqhSk0XBafyep+9lctY5 1Q== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3txk9k9vk8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 12:46:41 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39PCkftv001619
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 12:46:41 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 25 Oct
- 2023 05:46:38 -0700
-Message-ID: <be86eca9-1bdb-eae9-6d00-8349de2c6166@quicinc.com>
-Date:   Wed, 25 Oct 2023 18:16:34 +0530
+        Wed, 25 Oct 2023 08:47:09 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47DD181
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:47:05 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-3575826ba20so94755ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:47:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698238025; x=1698842825; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XJxjqRLgdOTokPI2dBdsj6G6P4onvQmQvzd+w/Pmuro=;
+        b=hOFem64/vgX5LavBOq/2LuRISUF2itHIKMYRE8wZEsXK1l17uTcwvP0lnnCjVRJnpw
+         /2UiLdBV7ejqSl13fTIZArgZqGJZFnhZCcuaUYtqU6Gpa6BzAByCPJVy5Z8sENoNm2/f
+         0MztQPo5M441WU9uDwnQC9rgP7k5kdiqKh2fkVAhJg3Twt8FA7ufxlrAqrQSaj0JsbNz
+         EtNsrmQAXZz5vkOIFMrh6QEInBU2QhmTUkih3XlN29cPUkBCY3ba7pDa8MHFFDqdFx4D
+         XwJ3EJVxqhI3EFuo1N+TsPf49s7BmNi4R3iJx5a6U8/LD2rn93lzjYUo9IF8wzTUsMut
+         Wo1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698238025; x=1698842825;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XJxjqRLgdOTokPI2dBdsj6G6P4onvQmQvzd+w/Pmuro=;
+        b=kK63BQ4Ha/hzTzKsIH/ntegE4AtMLmsIvy6iW0ABXTLq6zmdTq7bQRyODWefBOfOlu
+         3NFENtQL4G2JHGy+47nubSvr5wpSULblN518n20vW4N38vlhIfIibAGbvPNa+lySLjOG
+         z1wDYGLaKU2eHAXXevx6HOftgIpRSjgURbPHJchGBR7XHd44Qy//d68QB/SlTVXbwz7w
+         /uo7nFolHpiVMVBRTusX5NkvzXK4VKkfpaZC32SKMAjvP+tn5TU/f4iQLaUw7fQSk0b+
+         71o+1/DWTR4RofIrwi6rqfOIiPaVmTJZXJVIxDpiWo+xCdpB0CycLPMmkynu1XSGJJVD
+         dJ+w==
+X-Gm-Message-State: AOJu0Yz4x2EyX8abbjLAEz1RBGOcYJ/FFMY3zzfzwxSBNSmPvmIXG40B
+        BW5XYjfcXeJ+fOiD6RAIEostWmLcEmOAlNbeA4RAuw==
+X-Google-Smtp-Source: AGHT+IFGpxrkAvVp6+0E7/WqwAn933CD5Xj0OXEGjguHzqWRxId8NLFOVha5htsC5vsrifflo+7QyGx0F73yiS9Alzs=
+X-Received: by 2002:a05:6e02:b24:b0:357:cb1a:9621 with SMTP id
+ e4-20020a056e020b2400b00357cb1a9621mr218988ilu.10.1698238024990; Wed, 25 Oct
+ 2023 05:47:04 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/3 v7] Misc SCM changes
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <p.zabel@pengutronix.de>,
-        <linus.walleij@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1696440338-12561-1-git-send-email-quic_mojha@quicinc.com>
- <CAA8EJprTCWevfRNdVDV5xpgNu-Fh21HGM_eS2pOUuZJesgCD6Q@mail.gmail.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <CAA8EJprTCWevfRNdVDV5xpgNu-Fh21HGM_eS2pOUuZJesgCD6Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: NYW7NGkWaH3C1u7jzM7rcJTHBIF5rPHi
-X-Proofpoint-ORIG-GUID: NYW7NGkWaH3C1u7jzM7rcJTHBIF5rPHi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_01,2023-10-25_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- adultscore=0 impostorscore=0 malwarescore=0 priorityscore=1501 spamscore=0
- mlxlogscore=763 phishscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310170001
- definitions=main-2310250110
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231024181600.8270-1-tony.luck@intel.com>
+In-Reply-To: <20231024181600.8270-1-tony.luck@intel.com>
+From:   Peter Newman <peternewman@google.com>
+Date:   Wed, 25 Oct 2023 14:46:53 +0200
+Message-ID: <CALPaoChftF-H6GauKq4-c_qBJP1GJbR3-ByE5krsaQF4y4y9oQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/resctrl: mba_MBps: Fall back to total b/w if local
+ b/w unavailable
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,30 +80,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tony,
 
+On Tue, Oct 24, 2023 at 8:16=E2=80=AFPM Tony Luck <tony.luck@intel.com> wro=
+te:
+> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> @@ -418,6 +418,14 @@ static int __mon_event_count(u32 rmid, struct rmid_r=
+ead *rr)
+>         return 0;
+>  }
+>
+> +static struct mbm_state *get_mbm_data(struct rdt_domain *dom_mbm, int rm=
+id)
+> +{
+> +       if (is_mbm_local_enabled())
+> +               return &dom_mbm->mbm_local[rmid];
+> +
+> +       return &dom_mbm->mbm_total[rmid];
+> +}
 
-On 10/25/2023 1:37 AM, Dmitry Baryshkov wrote:
-> On Wed, 4 Oct 2023 at 20:26, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
->>
->> I have given version to this series as v7 as it has already
->> gone through v6 and later got added to minidump patch series
->> However, these 3 patches can go independently and has no
->> relation with minidump hence, separated it from minidump series.
-> 
-> Please describe the merge strategy, since these patches cross the
-> subsystem boundary. Linusw has acked patch2, which might mean that he
-> is fine for it to be merged via the arm-soc? tree. However as nothing
-> was mentioned in the cover letter, Bjorn has marked patch2 as not
-> applicable (as it is outside of the usual subsystem area).
+That looks very similar to the get_mbm_state() function I added to
+this same file recently:
 
-Thanks for your time in reviewing this series.
+https://lore.kernel.org/all/20221220164132.443083-2-peternewman%40google.co=
+m
 
-Sent another version here after addressing the comments.
+I think the name you picked is misleadingly general. "local if
+available, otherwise total" seems to be a choice specific to the mbps
+controller. I think these functions should be reconciled a little
+better.
 
-https://lore.kernel.org/lkml/1698235506-16993-1-git-send-email-quic_mojha@quicinc.com/
+Other than that, looks good.
 
--Mukesh
-
-
-
-> 
+Reviewed-by: Peter Newman <peternewman@google.com>
