@@ -2,365 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 901CF7D62EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6577D62E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233761AbjJYHco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55750 "EHLO
+        id S233686AbjJYHcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233724AbjJYHcR (ORCPT
+        with ESMTP id S233687AbjJYHcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:32:17 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5034E10F5;
-        Wed, 25 Oct 2023 00:32:13 -0700 (PDT)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 39P4ATlQ018168;
-        Wed, 25 Oct 2023 00:32:04 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=Xr9kvsNSm59ln45btLZVLldETpoB3W6jjrS0xU1tyZY=;
- b=XZzxVi4BfY+2gprFQMkf04B8BPhzmivXRXtn4Og67/0RmAyoiFMoCi5K2zmmIQGdog5B
- h54YjgV4m+isBKot8bQvcHMikbAurv4/QHM7RwG5SG7bLT+PrQ6fVIMoB1EALMCbXJMw
- J1d8vu7XE6kbfQToeAVDaiNKMP/ImVGHKslRWaY0WnJja4Aj52RpG5AlZF4Z9kgh24O+
- WMyHFPED8etezjmDQmMuxYH9anL1L2X41nTTf9fgauLriU2Df4w/oWlpOgUXOvpXYzeo
- XwLTaY3A8c/YtDHbHSJO1fWeU7kePLlH2leKO7OweQgwsscgjbTPHA9Z7Q+I7orwC8lw Yg== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3txgp02yw0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 25 Oct 2023 00:32:03 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 25 Oct
- 2023 00:32:02 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Wed, 25 Oct 2023 00:32:02 -0700
-Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
-        by maili.marvell.com (Postfix) with ESMTP id 15DE53F7045;
-        Wed, 25 Oct 2023 00:31:58 -0700 (PDT)
-From:   Elad Nachman <enachman@marvell.com>
-To:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andrew@lunn.ch>,
-        <gregory.clement@bootlin.com>, <sebastian.hesselbarth@gmail.com>,
-        <pali@kernel.org>, <mrkiko.rs@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <enachman@marvell.com>
-Subject: [PATCH v2 1/1] arm64: dts: cn913x: add device trees for COM Express boards
-Date:   Wed, 25 Oct 2023 10:31:50 +0300
-Message-ID: <20231025073150.2826130-2-enachman@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 25 Oct 2023 03:32:14 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A87010D9
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:32:11 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c59a4dcdacso17013261fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:32:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1698219129; x=1698823929; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+tC6JJTUdgNgXsjFp/FZzs/b7hvPtFbIGwQfQl3rDMI=;
+        b=T8s9W9U3izON7HinZWTeJxaeLlIS13In3dGKKNC8aehVg7GgcXNBHqugoOTKZhKn/u
+         Zb0tNpqP37MKp4Oy7fih7dWSqXvF4RNqIXWDT7jlpI+0wt2H3B21E2+Ea373j8HocK3z
+         wr4EM/eKH+CKlzlYwqZ1EhdTNpc/3XPHglUNjp78cyw0LLIBSSM3EK0brgGNzxINq6A4
+         4nxLhv9M+4mXXwCBZ1nPsx0TVubkdE5XmUNHuZspnphE8tG71mt9fvLG0h8F81JD5NZU
+         rrAnCXkvdj3cx1c+UHWlzetcHDWa0L7CCqeRYemlzwG1j5ACAKuofdojrTCAeW9rROUX
+         1lTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698219129; x=1698823929;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+tC6JJTUdgNgXsjFp/FZzs/b7hvPtFbIGwQfQl3rDMI=;
+        b=b12XtEhKdfRF2f+VauJX8Z1J0f7j53RUelDOxvxCjxt0yeNEXwf98pI+aGG6ylk2tl
+         bDEPSrbMipITyCGb5Aoq1HzX5t7TZADtj2VCI51ujQ/DOk7oJQslkT45kkelYIlbvTpM
+         szqzSZ8IqVZEb1itR730zDVfuhFNRps0Y+YmT+CIFZaY3u/4QnBD1GoJnf57slN+nlea
+         xshY4wIQ3GfJqcHJAECaIA/V6ynn2XuNioJIOjdLBQvNYzEO0RrEuj1M4JyFQua3AeLC
+         wfl9pXJuDlsOjAshJlgKoF0dJBFJBsAqIyDaR4QZS47l61Y4IXlFTL1Ghabj5vssceVm
+         Hy/A==
+X-Gm-Message-State: AOJu0YzVcqCCoeKJZdJdFpHl9670UM2zw7eP5gnQj5FyTQElvF31dWPZ
+        AKtwTF93dhnKi0ExZZA9gisHYw==
+X-Google-Smtp-Source: AGHT+IHV4C0uj5utoNwVjIbvugZqScUNEjbulP1A0yJeHSAbdpOzFPDZneIRIV/WWO1kfY194WV4SQ==
+X-Received: by 2002:a05:651c:152:b0:2b9:ecab:d924 with SMTP id c18-20020a05651c015200b002b9ecabd924mr10943814ljd.18.1698219129202;
+        Wed, 25 Oct 2023 00:32:09 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id m21-20020a05600c4f5500b0040841e79715sm14036237wmq.27.2023.10.25.00.32.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 00:32:08 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH 0/2] pmdomain: qcom: rpmhpd: Introduce Power Domains
+ support for SM8650
+Date:   Wed, 25 Oct 2023 09:32:01 +0200
+Message-Id: <20231025-topic-sm8650-upstream-rpmpd-v1-0-f25d313104c6@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: MtfVe3oJcq05zomhmKgM6hS-YTWZ0hHJ
-X-Proofpoint-ORIG-GUID: MtfVe3oJcq05zomhmKgM6hS-YTWZ0hHJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-25_01,2023-10-24_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHHEOGUC/x3MQQqDQAwAwK9Izg1sbKttvyIeZM3WHFZDoiKIf
+ +/S41zmBGcTdvhUJxjv4rLMBXSrIE7D/GWUsRjqUN8pUIProhLR86t5BtzUV+Mho2nWER8phsR
+ E7TtFKIMaJzn+e9df1w8mGpfvbQAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=972;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=cGaLWTQO6nJhBxUsHrUG8AyvDT+o4s7oByi/6V8mpCo=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlOMR2FdB9iMly/tS4axw7w/12HTQ2uO9/MeDHojbF
+ E8rv7lSJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZTjEdgAKCRB33NvayMhJ0WEnD/
+ 9fBiWQ1PZiMgNJCIvhhuUxByqbO8PYZhciYu8bzJwC4n/b13HXBQc82cIsAdDV4QnNk2ZhJEfk+oBR
+ tiEje27oUCle6aHmPEPVOhoROg4Db2WhIzVOJ1hbIRoqD8MhW2di7Zzvd3ePybUqmtMkVVlmti/fT+
+ bILzVPaGjRbMVii/HmlCuupX1ba7nAS+hjB0lZn0qI96TkhtYBSmZJI9Ut/5RQEg+uG0BpyKN2bZ09
+ W2o4icnRRLqPRfZOJ7/OZtTqegzjhzWLfXZuAvlrSEzq+yW63ZJEv4N44Vj34IZurH0VmHQH2Ajckz
+ VjAZYdVZSrVRC3q+BI++NvBiQxCd9PV/6ZBRbhF7f72pktZit1n4MZH4wJaxLGpOmJmnmWWYYBr1YQ
+ zrmrtvslJLsDUpdBiIlp8fzYgt9FulTT1MBay4OdTR1rwFgb4qNXJut0UESKZEd55pFN4g+f3lCI4Y
+ uOS00Fp/p1ffXP6XCXoFp84zFbCvqRJ3i60Tl8y2/B/jkTSHrXdLJGg99qIGVgzXLKnrK5FiSj+yj0
+ q5FHeOtrEZ5uo8Vdks6icefAaPLrhwg2hdMz9SXJ+LRVuORSO2FAhzqUnVrAVHHdHwONwWDc3Opq+0
+ LuQmWr1mvxAgPunqNMVd4/vE9rLqFuLk9e9QXJnL5xnEG8PQrI3TsG+WBUTw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elad Nachman <enachman@marvell.com>
+Add Power Domains and Bindings for SM8650 platform, it uses
+a new NSP2 power domain.
 
-Add support for CN9130 and CN9131 COM Express Type 7 CPU
-module boards (SOM boards) by Marvell.
-Define these COM Express CPU modules / SOMs as dtsi, and
-provide a dts file for a carrier board (Marvell AC5X RD
-COM Express type 7 carrier board).
-This Carrier board only utilizes the PCIe link, hence no
-special device / driver support is provided by this dts file.
+Dependencies: None
 
-These boards differ from the existing CN913x DB boards by the type
-of ethernet connection (RGMII), the type of voltage regulators
-(not i2c expander based) and the USB phy (not UTMI based).
-CN9131 COM Express board is basically CN9130 COM Express board
-with an additional CP115 I/O co-processor, which in this case
-provides an additional USB host controller on the board.
+For convenience, a regularly refreshed linux-next based git tree containing
+all the SM8650 related work is available at:
+https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm85650/upstream/integ
 
-Signed-off-by: Elad Nachman <enachman@marvell.com>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- arch/arm64/boot/dts/marvell/Makefile          |   1 +
- .../boot/dts/marvell/ac5x_rd_carrier.dts      |  23 ++++
- .../dts/marvell/cn9130-db-comexpress.dtsi     | 101 ++++++++++++++++
- .../dts/marvell/cn9131-db-comexpress.dtsi     | 113 ++++++++++++++++++
- 4 files changed, 238 insertions(+)
- create mode 100644 arch/arm64/boot/dts/marvell/ac5x_rd_carrier.dts
- create mode 100644 arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi
- create mode 100644 arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
+Neil Armstrong (2):
+      dt-bindings: power: qcom,rpmpd: document the SM8650 RPMh Power Domains
+      pmdomain: qcom: rpmhpd: Add SM8650 RPMh Power Domains
 
-diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-index 79ac09b58a89..b0a2347200ef 100644
---- a/arch/arm64/boot/dts/marvell/Makefile
-+++ b/arch/arm64/boot/dts/marvell/Makefile
-@@ -26,4 +26,5 @@ dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db-B.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-A.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-B.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += ac5x_rd_carrier.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += ac5-98dx35xx-rd.dtb
-diff --git a/arch/arm64/boot/dts/marvell/ac5x_rd_carrier.dts b/arch/arm64/boot/dts/marvell/ac5x_rd_carrier.dts
-new file mode 100644
-index 000000000000..4b2cf417332f
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/ac5x_rd_carrier.dts
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2023 Marvell International Ltd.
-+ *
-+ * Device tree for the AC5X RD Type 7 Com Express carrier board,
-+ * Utilizing the CN913x COM Express SOM board.
-+ * This specific board only maintains a PCIe link with the CPU SOM
-+ * module, which does not require any special DTS definitions.
-+ */
-+
-+#include "cn9131-db-comexpress.dtsi"
-+
-+/ {
-+	model = "Marvell Armada AC5X RD COM EXPRESS type 7 carrier board";
-+	compatible = "marvell,cn9131", "marvell,cn9130",
-+		     "marvell,armada-ap807-quad", "marvell,armada-ap807";
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x2 0x00000000>;
-+	};
-+
-+};
-diff --git a/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi b/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi
-new file mode 100644
-index 000000000000..10fe527bb7a8
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/cn9130-db-comexpress.dtsi
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2023 Marvell International Ltd.
-+ *
-+ * Device tree for the CN9130-DB Com Express SOM board.
-+ */
-+
-+#include "cn9130-db.dtsi"
-+
-+/ {
-+	model = "Marvell Armada CN9130-DB COM EXPRESS type 7 SOM board";
-+	compatible = "marvell,cn9130",
-+		     "marvell,armada-ap807-quad", "marvell,armada-ap807";
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x2 0x00000000>;
-+	};
-+
-+};
-+
-+&ap0_reg_sd_vccq {
-+	regulator-max-microvolt = <1800000>;
-+	states = <1800000 0x1 1800000 0x0>;
-+	/delete-property/ gpios;
-+};
-+
-+&cp0_reg_usb3_vbus0 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_usb3_vbus1 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_sd_vcc {
-+	status = "disabled";
-+};
-+
-+&cp0_reg_sd_vccq {
-+	status = "disabled";
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth1 {
-+	status = "okay";
-+	phy = <&phy0>;
-+	phy-mode = "rgmii-id";
-+};
-+
-+&cp0_eth2 {
-+	status = "disabled";
-+};
-+
-+&cp0_mdio {
-+	status = "okay";
-+	pinctrl-0 = <&cp0_ge_mdio_pins>;
-+	phy0: ethernet-phy@0 {
-+		status = "okay";
-+	};
-+};
-+
-+&cp0_syscon0 {
-+	cp0_pinctrl: pinctrl {
-+		compatible = "marvell,cp115-standalone-pinctrl";
-+
-+		cp0_ge_mdio_pins: ge-mdio-pins {
-+			marvell,pins = "mpp40", "mpp41";
-+			marvell,function = "ge";
-+		};
-+	};
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_spi1 {
-+	status = "okay";
-+};
-+
-+&cp0_usb3_0 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy0>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-+
-+&cp0_usb3_1 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy1>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-diff --git a/arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi b/arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
-new file mode 100644
-index 000000000000..855cd163234c
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/cn9131-db-comexpress.dtsi
-@@ -0,0 +1,113 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2023 Marvell International Ltd.
-+ *
-+ * Device tree for the CN9131-DB Com Express SOM board.
-+ */
-+
-+#include "cn9131-db.dtsi"
-+
-+/ {
-+	model = "Marvell Armada CN9131-DB COM EXPRESS type 7 SOM board";
-+	compatible = "marvell,cn9131", "marvell,cn9130",
-+		     "marvell,armada-ap807-quad", "marvell,armada-ap807";
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x2 0x00000000>;
-+	};
-+
-+};
-+
-+&ap0_reg_sd_vccq {
-+	regulator-max-microvolt = <1800000>;
-+	states = <1800000 0x1 1800000 0x0>;
-+	/delete-property/ gpios;
-+};
-+
-+&cp0_reg_usb3_vbus0 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_usb3_vbus1 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp1_reg_usb3_vbus0 {
-+	/delete-property/ gpio;
-+};
-+
-+&cp0_reg_sd_vcc {
-+	status = "disabled";
-+};
-+
-+&cp0_reg_sd_vccq {
-+	status = "disabled";
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth0 {
-+	status = "disabled";
-+};
-+
-+&cp0_eth1 {
-+	status = "okay";
-+	phy = <&phy0>;
-+	phy-mode = "rgmii-id";
-+};
-+
-+&cp0_eth2 {
-+	status = "disabled";
-+};
-+
-+&cp0_mdio {
-+	status = "okay";
-+	pinctrl-0 = <&cp0_ge_mdio_pins>;
-+	phy0: ethernet-phy@0 {
-+		status = "okay";
-+	};
-+};
-+
-+&cp0_syscon0 {
-+	cp0_pinctrl: pinctrl {
-+		compatible = "marvell,cp115-standalone-pinctrl";
-+
-+		cp0_ge_mdio_pins: ge-mdio-pins {
-+			marvell,pins = "mpp40", "mpp41";
-+			marvell,function = "ge";
-+		};
-+	};
-+};
-+
-+&cp0_sdhci0 {
-+	status = "disabled";
-+};
-+
-+&cp0_spi1 {
-+	status = "okay";
-+};
-+
-+&cp0_usb3_0 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy0>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-+
-+&cp0_usb3_1 {
-+	status = "okay";
-+	usb-phy = <&cp0_usb3_0_phy1>;
-+	phy-names = "usb";
-+	/delete-property/ phys;
-+};
-+
-+&cp1_usb3_1 {
-+	status = "okay";
-+	usb-phy = <&cp1_usb3_0_phy0>;
-+	/* Generic PHY, providing serdes lanes */
-+	phys = <&cp1_comphy3 1>;
-+	phy-names = "usb";
-+};
+ .../devicetree/bindings/power/qcom,rpmpd.yaml      |  1 +
+ drivers/pmdomain/qcom/rpmhpd.c                     | 30 ++++++++++++++++++++++
+ include/dt-bindings/power/qcom,rpmhpd.h            |  1 +
+ 3 files changed, 32 insertions(+)
+---
+base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
+change-id: 20231016-topic-sm8650-upstream-rpmpd-4fc0fe1179fc
+
+Best regards,
 -- 
-2.25.1
+Neil Armstrong <neil.armstrong@linaro.org>
 
