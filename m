@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1087D6883
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0687D6886
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 12:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbjJYKad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 06:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35432 "EHLO
+        id S233782AbjJYKb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 06:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbjJYKa3 (ORCPT
+        with ESMTP id S232584AbjJYKb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 06:30:29 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B44D4BB;
-        Wed, 25 Oct 2023 03:30:26 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED2332F4;
-        Wed, 25 Oct 2023 03:31:07 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.69.205])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F31B23F738;
-        Wed, 25 Oct 2023 03:30:24 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 11:30:20 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "wuqiang . matt" <wuqiang.matt@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] locking/atomic: sh: Use generic_cmpxchg_local for
- arch_cmpxchg_local()
-Message-ID: <ZTjuH074CJuLh7Zw@FVFF77S0Q05N>
-References: <169815917362.8695.13904684741526725648.stgit@devnote2>
- <ZTfd3A3Unz6SWFD3@FVFF77S0Q05N.cambridge.arm.com>
- <20231025084255.bc70b9d0e5af9f6f3d2d4735@kernel.org>
+        Wed, 25 Oct 2023 06:31:27 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D48DD;
+        Wed, 25 Oct 2023 03:31:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D9DAC433C7;
+        Wed, 25 Oct 2023 10:31:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698229884;
+        bh=ktyjSOfOy84unE9g8h9qhxF+s92i7rfaj74PUcCQn+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HZO4TWTkEfsZWrQQqCe8G1cDNhWa8MLeNEEXXleaM6vunTr1kyPJQyUio08XSsp6U
+         YwRs7DSimAj297a/fa6tuqv2EEEES1224I8292TPYQpluDViR/zd5G49SthvRLE+Jb
+         tqWovsGRTgdSx18x4rM65jjuVUrrKmbNfaLg1buKIcdAq61WlLvrcG6sDJvXVAW4X+
+         HanuYOJynCWYaNTkXDTZVSNGREgzUteY4AcNpH3kyvBfy7oIKkHa5ytZCgiuABCYXA
+         Re5OWdwpycNVWxgWb7kJ5J9geWy82cYPTV2ZTpMY772O6muPwY82X9KcxiORd0BnAO
+         /kEfHWprkLSoA==
+Date:   Wed, 25 Oct 2023 12:31:18 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>
+Subject: Re: [PATCH 2/4] rcu/tasks: Handle new PF_IDLE semantics
+Message-ID: <ZTjudk5mV8PVYsS-@localhost.localdomain>
+References: <20231024214625.6483-1-frederic@kernel.org>
+ <20231024214625.6483-3-frederic@kernel.org>
+ <20231025084008.GD37471@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231025084255.bc70b9d0e5af9f6f3d2d4735@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231025084008.GD37471@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 08:42:55AM +0900, Masami Hiramatsu wrote:
-> On Tue, 24 Oct 2023 16:08:12 +0100
-> Mark Rutland <mark.rutland@arm.com> wrote:
+Le Wed, Oct 25, 2023 at 10:40:08AM +0200, Peter Zijlstra a écrit :
+> On Tue, Oct 24, 2023 at 11:46:23PM +0200, Frederic Weisbecker wrote:
 > 
-> > On Tue, Oct 24, 2023 at 11:52:54PM +0900, Masami Hiramatsu (Google) wrote:
-> > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > 
-> > > Use generic_cmpxchg_local() for arch_cmpxchg_local() implementation
-> > > in SH architecture because it does not implement arch_cmpxchg_local().
-> > 
-> > I do not think this is correct.
-> > 
-> > The implementation in <asm-generic/cmpxchg-local.h> is UP-only (and it only
-> > disables interrupts), whereas arch/sh can be built SMP. We should probably add
-> > some guards into <asm-generic/cmpxchg-local.h> for that as we have in
-> > <asm-generic/cmpxchg.h>.
+> > +/* Check for quiescent states since the pregp's synchronize_rcu() */
+> > +static bool rcu_tasks_is_holdout(struct task_struct *t)
+> > +{
+> > +	int cpu;
+> > +
+> > +	/* Has the task been seen voluntarily sleeping? */
+> > +	if (!READ_ONCE(t->on_rq))
+> > +		return false;
+> > +
+> > +	cpu = task_cpu(t);
+> > +
+> > +	/*
+> > +	 * Idle tasks within the idle loop or offline CPUs are RCU-tasks
+> > +	 * quiescent states. But CPU boot code performed by the idle task
+> > +	 * isn't a quiescent state.
+> > +	 */
+> > +	if (t == idle_task(cpu)) {
+> > +		if (is_idle_task(t))
+> > +			return false;
+> > +
+> > +		if (!rcu_cpu_online(cpu))
+> > +			return false;
+> > +	}
 > 
-> Isn't cmpxchg_local for the data which only needs to ensure to do cmpxchg
-> on local CPU?
-> So I think it doesn't care about the other CPUs (IOW, it should not touched by
-> other CPUs), so it only considers UP case. E.g. on x86, arch_cmpxchg_local() is
-> defined as raw "cmpxchg" without lock prefix.
+> Hmm, why is this guarded by t == idle_task() ?
 > 
-> #define __cmpxchg_local(ptr, old, new, size)                            \
->         __raw_cmpxchg((ptr), (old), (new), (size), "")
-> 
+> Notably, there is the idle-injection thing that uses FIFO tasks to run
+> 'idle', see play_idle_precise(). This will (temporarily) get PF_IDLE on
+> tasks that are not idle_task().
 
-Yes, you're right; sorry for the noise.
+Ah good point. So indeed the is_idle_task() test doesn't musn't be
+guarded by t == idle_task(cpu). But rcu_cpu_online() has to, otherwise
+if it's not an idle task, there is a risk that the task gets migrated out
+by the time we observe the old CPU offline.
 
-For your original patch:
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Mark.
+Thanks.
 
 > 
-> Thank you,
+> > +
+> > +	return true;
+> > +}
+> > +
+> >  /* Per-task initial processing. */
+> >  static void rcu_tasks_pertask(struct task_struct *t, struct list_head *hop)
+> >  {
+> > -	if (t != current && READ_ONCE(t->on_rq) && !is_idle_task(t)) {
+> > +	if (t != current && rcu_tasks_is_holdout(t)) {
 > 
 > 
-> > 
-> > I think the right thing to do here is to define arch_cmpxchg_local() in terms
-> > of arch_cmpxchg(), i.e. at the bottom of arch/sh's <asm/cmpxchg.h> add:
-> > 
-> > #define arch_cmpxchg_local              arch_cmpxchg
-> > 
-> > Mark.
-> > 
-> > > 
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Closes: https://lore.kernel.org/oe-kbuild-all/202310241310.Ir5uukOG-lkp@intel.com/
-> > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > ---
-> > >  arch/sh/include/asm/cmpxchg.h |    2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/arch/sh/include/asm/cmpxchg.h b/arch/sh/include/asm/cmpxchg.h
-> > > index 288f6f38d98f..e920e61fb817 100644
-> > > --- a/arch/sh/include/asm/cmpxchg.h
-> > > +++ b/arch/sh/include/asm/cmpxchg.h
-> > > @@ -71,4 +71,6 @@ static inline unsigned long __cmpxchg(volatile void * ptr, unsigned long old,
-> > >  				    (unsigned long)_n_, sizeof(*(ptr))); \
-> > >    })
-> > >  
-> > > +#include <asm-generic/cmpxchg-local.h>
-> > > +
-> > >  #endif /* __ASM_SH_CMPXCHG_H */
-> > > 
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
