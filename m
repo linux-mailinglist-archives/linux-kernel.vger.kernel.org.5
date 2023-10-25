@@ -2,153 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D227D78C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 01:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9D97D78CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 26 Oct 2023 01:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbjJYXkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 19:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
+        id S230264AbjJYXmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 19:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbjJYXkl (ORCPT
+        with ESMTP id S230190AbjJYXmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 19:40:41 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DDB186
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 16:40:38 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9b9aeb4962so214971276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 16:40:38 -0700 (PDT)
+        Wed, 25 Oct 2023 19:42:04 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B57185
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 16:41:58 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-508126afb9bso353848e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 16:41:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698277238; x=1698882038; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z2yHYpXdKX/Z1PdTHNHNNkO8SEsjgfSsadT9YDZgRP0=;
-        b=yuNRk8MjDZbUgkyEXvhp8IFsMSFPdDawqVt/qjaG/V4774b1i51mkRGMoUqRRrreD0
-         Wn+wVCtzu84N5sZW9tr8mfcGdk3049NBuU8VHVJLGXDBKqOUg3iS42iP3Kq7Vm/oSmct
-         mfvD+aeKe04dW8ZPm8PJgNdlP2ki5nO3p4rIyN5FSHckl5ZIkmx2xzemwtpttcXw2m3w
-         Tg9ejQ5LhGlwOwO96Rcv4Yx4O9DWf/C+wlCuKoLGeTDcmAYZy8oTj8zU7LSfIFxw4PDI
-         U/WNvPGVS9HH0wzO8BbeIxix0Tv8aeRRM056khxKjJOZlcO1zq3Lg7r/OWpVF5MEkUQW
-         38lQ==
+        d=google.com; s=20230601; t=1698277317; x=1698882117; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n8VIiqLkglYqJ+Q19MxelXV/EJXHtj9elKsbPyNgJFE=;
+        b=X4iZxpwW9noy6PCl7Fek6l3YBr1XUibRBJzDmAgzP82lCayz5gergKKAzLCpu/Kq6o
+         DtfuzkoO0yo4/vuZRPQcNn4YL5P/DJJ7u/C0IpZRCTohn+pqVr68KgK+zeWZjh5b24rm
+         1tQOfnDf16ZjAs3diwlNVYQPZ9ySH2PkAoFAbilPzGQ69pxx9KidtW3mV9hc1h13tK0q
+         krp2qZD2+8mn/zePSDw4fmw9665OgUIVOnqUHF+GHy/qc4VzsLBOHIywuTWF/o2lWhNL
+         4Y2KiGLsEtyo6EP6dbyJ3gp13vxn8wUd4YOMTTZw2ue97ytaTPbrGWuBb/dCIr3QzHt6
+         ZNwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698277238; x=1698882038;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z2yHYpXdKX/Z1PdTHNHNNkO8SEsjgfSsadT9YDZgRP0=;
-        b=ePDZDO4940HAMOIxrVyN8DCyBgKFmdPW6tZhbo0+DQMYMyHdHT0kHBRA1/A2Naz61J
-         DgRFEnNlMP1STwMrcWLFgt1J2Uv2n5SsTlDgRqtuj6GBNuSTLSHPKU2pHRgBlbiRkti8
-         OpwpULLhkTJBgNlDqiZ35gA9U1yN6katr9YLGeOQ0iu5MXVh7Cjowo5ENAHYOJ8uWNyL
-         Kh5N/VXreWMDuCKLX3kvUC4NaSCvjWjsx6+vnxvl6IDAggl3Ai5mG5Lfkax9+fBGpGwA
-         9/9h2Unbh2e3qn/u2d/6Cu2d+5g6OaflowUqx0d3JBgkOjI+gK5LIpAIDLNciMYenlxr
-         mH2w==
-X-Gm-Message-State: AOJu0YwF4r8yWDdTslUIHNm5/WS9BSJ3LTBY34vT3PiiS1v3F1zg/B9y
-        ptleljdJt7UqHasF5T+6QN4ztu3iHczalACNMw==
-X-Google-Smtp-Source: AGHT+IEPHaIkN8H3iGQWkKfJ5NpCYcT3yYMmFh0PPi0IcMzsA3hF9JA14tymNgt30lyJsEwk/WiGn6lEwEr2E4Dzgg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:bccc:0:b0:d9a:c218:8177 with SMTP
- id l12-20020a25bccc000000b00d9ac2188177mr365329ybm.8.1698277238101; Wed, 25
- Oct 2023 16:40:38 -0700 (PDT)
-Date:   Wed, 25 Oct 2023 23:40:34 +0000
-In-Reply-To: <20231025-ethtool_puts_impl-v1-0-6a53a93d3b72@google.com>
-Mime-Version: 1.0
-References: <20231025-ethtool_puts_impl-v1-0-6a53a93d3b72@google.com>
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1698277232; l=1707;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=n1veWIcKxGb7fuzlMSTmPKoEQaWG96C9Cgb9YzocQ5U=; b=W+dlkHRgIJMungJ97d0DNn75PwsHcGQp6OJdyQzjetsUzkUF+C5MUA4sHBdGuuzJqLmwBu8XE
- 4b6P70t8H6LCSr0S2uDYGUmJBTSTiZLZFgaH2y2gkECIo+QpVCuuHfV
-X-Mailer: b4 0.12.3
-Message-ID: <20231025-ethtool_puts_impl-v1-3-6a53a93d3b72@google.com>
-Subject: [PATCH 3/3] checkpatch: add ethtool_sprintf rules
+        d=1e100.net; s=20230601; t=1698277317; x=1698882117;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n8VIiqLkglYqJ+Q19MxelXV/EJXHtj9elKsbPyNgJFE=;
+        b=PXa7p8/XLlMstXKIvCfyAJPGrARLUhSzsR04C8UoSNdQnKrlPCmV1yQwWmYEJFqTRf
+         ni5HbB6bc2UNXSdI6yaF/7+ZFAlH/etZtoRglDOPMYF5/cnip5dtrXwM7m8/CDBLGG+i
+         xNgz3wdmEJltIA7gMVWbW+sW4wC2C7rgIx4aeuMEuiYdL6YG3w/kfmv4+u7hGjufaI+f
+         5rYIHLyZCpTflbRrGZ3kmlOssA9dsVSmV1/TCFAp/40XkJ2LKwZEpey+t3bGkvOnP9zz
+         C8QMFt4nCY7x60dhjC+LprU9igmYvppwzrfk2/0wv1oQBrJ8QtU+ah9cxRYxUhrhWHnf
+         QKsA==
+X-Gm-Message-State: AOJu0YxIsDyESUBOCk2XmsRkBgtdwwgMEDAIrPGU833JeMqwcHrLFEoN
+        zUSGdYhA4fc7hg5LF9jVyH+UZqRcJzcgXT2LkhkFQg==
+X-Google-Smtp-Source: AGHT+IFvspkBVEQcaXlvdiXLBc5/Nnce7QqmAyRawMvbFwO+bR8RKg0bupAzqNCymHeTUjheo+zdDooay+3N3QXOwCg=
+X-Received: by 2002:a19:6716:0:b0:500:9a29:bcb8 with SMTP id
+ b22-20020a196716000000b005009a29bcb8mr11657885lfc.4.1698277316604; Wed, 25
+ Oct 2023 16:41:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231012-strncpy-drivers-net-phy-nxp-tja11xx-c-v1-1-5ad6c9dff5c4@google.com>
+ <15af4bc4-2066-44bc-8d2e-839ff3945663@lunn.ch> <CAFhGd8pmq3UKBE_6ZbLyvRRhXJzaWMQ2GfosvcEEeAS-n7M4aQ@mail.gmail.com>
+ <0c401bcb-70a8-47a5-bca0-0b9e8e0439a8@lunn.ch> <CAFhGd8p3WzqQu7kT0Pt8Axuv5sKdHJQOLZVEg5x8S_QNwT6bjQ@mail.gmail.com>
+ <CAFhGd8qcLARQ4GEabEvcD=HmLdikgP6J82VdT=A9hLTDNru0LQ@mail.gmail.com>
+ <202310131630.5E435AD@keescook> <a958d35e-98b6-4a95-b505-776482d1150c@lunn.ch>
+ <202310141935.B326C9E@keescook>
+In-Reply-To: <202310141935.B326C9E@keescook>
 From:   Justin Stitt <justinstitt@google.com>
-To:     "David S. Miller" <davem@davemloft.net>,
+Date:   Wed, 25 Oct 2023 16:41:43 -0700
+Message-ID: <CAFhGd8r3=ndtYgjK3O5KV_wrd5OL+0hP6RjqBwhJXgc0jr1hDw@mail.gmail.com>
+Subject: Re: [PATCH] net: phy: tja11xx: replace deprecated strncpy with ethtool_sprintf
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Dimitris Michailidis <dmichail@fungible.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Louis Peens <louis.peens@corigine.com>,
-        Shannon Nelson <shannon.nelson@amd.com>,
-        Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        intel-wired-lan@lists.osuosl.org, oss-drivers@corigine.com,
-        linux-hyperv@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some warnings for using ethtool_sprintf() where a simple
-ethtool_puts() would suffice.
+On Sat, Oct 14, 2023 at 7:36=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Sat, Oct 14, 2023 at 03:55:41AM +0200, Andrew Lunn wrote:
+> > > I've been told that this whole ethtool API area is considered
+> > > deprecated. If that holds, then I don't think it's worth adding new
+> > > helpers to support it when ethtool_sprintf() is sufficient.
+> >
+> > I think deprecated is too strong. The current API is not great, so
+> > maybe with time a new API will emerge. But given there are around 160
+> > users of the API, probably over 100 drivers, it will be 20 years or
+> > more before all that hardware becomes obsolete and the drivers are
+> > removed.
+> >
+> > > Once you're done with the strncpy->ethtool_sprintf conversions I thin=
+k
+> > > it would be nice to have a single patch that fixes all of these
+> > > "%s"-less instances to use "%s". (Doing per-driver fixes for that cas=
+e
+> > > seems just overly painful.)
+> >
+> > I guess it is the same amount of effort to replace them with
+> > ethtool_puts()?
+>
+> Yup, right. If adding ethtool_puts() makes sense, then I totally agree.
 
-The two cases are:
+Thanks for the discussion here.
 
-1) Use ethtool_sprintf() with just two arguments:
-|       ethtool_sprintf(&data, driver[i].name);
-or
-2) Use ethtool_sprintf() with a standalone "%s" fmt string:
-|       ethtool_sprintf(&data, "%s", driver[i].name);
+I've sent a series [1] implementing ethtool_puts() and sending out a
+wave of replacements.
 
-The former may cause -Wformat-security warnings while the latter is just
-not preferred. Both are safely in the category of warnings, not errors.
+[1]: https://lore.kernel.org/all/20231025-ethtool_puts_impl-v1-0-6a53a93d3b=
+72@google.com/
+>
+> --
+> Kees Cook
 
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
- scripts/checkpatch.pl | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7d16f863edf1..1ba9ce778746 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -7020,6 +7020,19 @@ sub process {
- 			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
- 		}
- 
-+# ethtool_sprintf uses that should likely be ethtool_puts
-+		if (   $line =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*$FuncArg\s*\)/   ) {
-+			WARN("ETHTOOL_SPRINTF",
-+			     "Prefer ethtool_puts over ethtool_sprintf with only two arguments" . $herecurr);
-+		}
-+
-+		# use $rawline because $line loses %s via sanitization and thus we can't match against it.
-+		if (   $rawline =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*\"\%s\"\s*,\s*$FuncArg\s*\)/   ) {
-+			WARN("ETHTOOL_SPRINTF2",
-+			     "Prefer ethtool_puts over ethtool_sprintf with standalone \"%s\" specifier" . $herecurr);
-+		}
-+
-+
- # typecasts on min/max could be min_t/max_t
- 		if ($perl_version_ok &&
- 		    defined $stat &&
-
--- 
-2.42.0.758.gaed0368e0e-goog
-
+Thanks
+Justin
