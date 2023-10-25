@@ -2,157 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E16E7D6FF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684867D7004
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344125AbjJYOti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
+        id S1343719AbjJYOud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344054AbjJYOtg (ORCPT
+        with ESMTP id S1343667AbjJYOub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:49:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA85B0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:49:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E5ECC433C8;
-        Wed, 25 Oct 2023 14:49:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698245374;
-        bh=g8c0ZqXEd+5miVwaaQEwfnrYYAhfuPmdWpJQcdlsakE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZvuYL0CkCqKmU8kEiF8yK/BtZZR7hOAaiJ2a2gYPUHteYQ6YOZey5rLFET4OueViT
-         MXbzzmDscQU5O6f+R/kV3rfcUCJxQJHV1ElJF56953GXqTyfBJ0XHzbXValfLXc5Ql
-         FB2R8+PzCtwp4y7awD1H26vEjCodXSR3GTmsrpPQOc52bf5US7wNT/ZztcsSn9P2/4
-         r2bypPZVFR+vZTWi9RAbRdy4Cam+I1HGY6+BFiQlxeW9ee1PASJy7FTAlT68VPW1tN
-         R3TpuzqoyoLi3j+PdSt7cczRvR3YQR7TUkZck/pm0lyXxjNdz26xnm97uYXPBDgf48
-         MystXecyzwGXg==
-Date:   Wed, 25 Oct 2023 15:49:28 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado 
-        <nfraprado@collabora.com>,
-        Bernhard =?iso-8859-1?Q?Rosenkr=E4nzer?= <bero@baylibre.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 3/6] dt-bindings: arm64: dts: mediatek: Add
- mt8183-kukui-jacuzzi-makomo
-Message-ID: <20231025-charity-replica-9c9b03380d7f@spud>
-References: <20231024000724.57714-1-hsinyi@chromium.org>
- <20231024000724.57714-4-hsinyi@chromium.org>
- <20231024-bobbed-although-06f341259ebb@spud>
- <CAJMQK-hvhjNGFUfgqb7pm=pAYjJ0wZAhkPGXxDCUJ5cnUDh2gw@mail.gmail.com>
+        Wed, 25 Oct 2023 10:50:31 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2064.outbound.protection.outlook.com [40.107.94.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D33DC
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:50:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k6MRSS5j5P2exEoq9JAIG6gWqpVaDQ+lLtphLejNSUqYSrgkYdaDRX8sL8Qax7Hfzm1HMLETyOzpp+XFguNlyiBRYVEF5HN+x0+xwGlvdZScyQ1BUo2u36FVN8R6x6N0hUTE08hX9j0WHtx2XKk73HRVJC704FlCl8oYiDWlG7kSaYZuagBrOVxQD6ZTW+1PjPdqsZcjjsTGm+LD+5r9FgyVmIBa2trv9veTq7JJ6ru/Pj4+lsbP09qOdMFU2VNpotVX3I37c4VMvoZBlyzPh3fRnUe/gH2+RIsCYEHvksKl6n4+a44JNTpACi47gPDhUqG0Rh1UjQ78sdEMzc1Z4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aRiJzmhT4IJklyDw6Ayq/LdYxtTuiZj3Ve1URv8TQaI=;
+ b=R99xOswjU1Akle0dzDZTfKVn0vOx+VaRkeUqZSgtsgqEFmQKzZEkyKnUsUc5Rrp0BAcMaw6QA3K1fuq/nT0nqseFdr1tmMwONLPlCfCEmhMupnKtrXmvCRB4643IYYkxQpuUf/P6LawxjHSD1A+iiBokruNLDuJxEDrN4X9sPKzC+lxi55y4DChs3KVUH+M3H3Xe/h0Z1jt5PTJEDMemEu2SHhIjXbdrFNPmh/vdUHWQq3gNKEAiWx3LgTDSEyAJv8nMHbTTjY8DoH/WoMTMzClqHZYzxmbDIiPDv6dXOe42XptdE0bM5/DetKZqFI+ex+mnVxDnYj3llG3fcuMrhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aRiJzmhT4IJklyDw6Ayq/LdYxtTuiZj3Ve1URv8TQaI=;
+ b=IwW4N0HoaqqqlNVBOcJNzlkuiSdYK9CO8r/QxqxTfC2oCU+5hcGajC/FRHYqBjQTp5mt3sfPXg/ydU9t780jHd/NHJYYzKSRGifmlJoHtYR+FnOWvqr9/p4E+PLoZJIPA2X/MGAoMJ3CO3S9V/WUh1AK9piug2v+HaSakeUvjgs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
+ IA0PR12MB7556.namprd12.prod.outlook.com (2603:10b6:208:43c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Wed, 25 Oct
+ 2023 14:50:24 +0000
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::5588:7117:d54e:9466]) by DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::5588:7117:d54e:9466%6]) with mapi id 15.20.6907.028; Wed, 25 Oct 2023
+ 14:50:24 +0000
+Message-ID: <d4ebae36-265b-4537-ac1b-ae878d236151@amd.com>
+Date:   Wed, 25 Oct 2023 10:50:20 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/atomic: Spelling fix in comments
+To:     Kunwu Chan <chentao@kylinos.cn>, daniel@ffwll.ch,
+        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
+        maarten.lankhorst@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        kunwu.chan@hotmail.com
+References: <20231025082634.34038-1-chentao@kylinos.cn>
+Content-Language: en-US
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+In-Reply-To: <20231025082634.34038-1-chentao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR0101CA0327.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:6c::7) To DM4PR12MB6280.namprd12.prod.outlook.com
+ (2603:10b6:8:a2::11)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ZJFVlm9+Zn/c9yF1"
-Content-Disposition: inline
-In-Reply-To: <CAJMQK-hvhjNGFUfgqb7pm=pAYjJ0wZAhkPGXxDCUJ5cnUDh2gw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|IA0PR12MB7556:EE_
+X-MS-Office365-Filtering-Correlation-Id: d26831c1-a068-4999-3002-08dbd569b7ef
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CCRXo6xtJegfdxekAp+rcIltfQ/eT3YA+4MXcLUF8KpfpG08/ZiuEPJExGFnWuhNqTGCckqwN4f2vY+OQyjVLEtPHlYhVnEkO4kX5JYVqSShZ+p1t0+akDFCgpBR7jGXPfio222GXkq5PwYdePjBlARWcTP7vG/aSc8PqWeZdLy46msgmfD7xAYLyATQWmS8+oaHMtnKiBFpymmzEDChrIeJnGxS9ayEglLYljJ+QyG3GsPJMXqXw6ID811KRqql229KxeHWsb84ZEUpJk3v9N0WgYnXbXIoTcFbyJQHikU6kSF84J+T0BklGGz+9zhERrrANexUs/zLddrZnJJC/hXxJoT8UOG1A0sdMumtA/H4v8j9DpN7kAVU9HrBh52Aew7TfuEjtvaNVQRICWSaYO7OXFdEI3tR5pBD+zanEEMffclCBCpUYvO/OztzZKNC+uZXs9Z90tENw2wkx57jlCjdohQlTWX7c4rsn3FDRZJNb5xwcAYgjKFltBF6E71Udssxo+YpsNXSayK13di6knyDLsMUc+cz8SCbZ8b8+cvgZiCGkpO5lPLzB8TwbpKeaLeV6080EiXn9UBc2sTS9yz7cxv7b3Hd+1rfniU5LtOSOzdaZG4HjN+ugyo8O6zFA15RBZetGQ3GbyTnsgK5lQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(376002)(366004)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(2906002)(31686004)(5660300002)(41300700001)(44832011)(83380400001)(26005)(38100700002)(4326008)(8676002)(8936002)(2616005)(6512007)(66556008)(66476007)(36756003)(316002)(66946007)(6506007)(6666004)(53546011)(478600001)(86362001)(31696002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YlBSQ1FIOUJ0bitNNTZMeHhWMUhSTXpka25DM2FWZ0kvSkM1dWp3NURaUHBu?=
+ =?utf-8?B?bHYrTXcrMEFZVnNtQkJ3cisrWXBrM05tcGw0MGJvYWxsQ2VPZ1N6Mm9kMXll?=
+ =?utf-8?B?WlovVDRaalJPMllRMlNnSXpKYU9tK0JDZ2NSdncrMEdMNVc2alFCWlhtdGRo?=
+ =?utf-8?B?bzE2WDlqTHkrQnJIeTFyZjIyb2NlQ0dLc3lyUFV3VWNEMGtJM1BKRDNKQXBa?=
+ =?utf-8?B?U2NYSTRISlBzaDR0cjNlWHYzSzd1aHhzSkwzV1ZHVTI4R1lvWVM5cGZUM3JY?=
+ =?utf-8?B?c29CUCt5UTNHTW91ekgvdXBYYTNuUDhnVm1iUjcybUFjRHFvRTBYWXl5cy8r?=
+ =?utf-8?B?OVpJMW1qRHhxYmt4ZUhPeWZWdEE3SmpYS3k1aEVwRzNLc1dlTHkzYlBMUWg3?=
+ =?utf-8?B?aU1JTDFUcTM2aWRqZkJVT2toZ2FoWU9IbTRPQ3Q2Z1NPcVM0TnI4VGwwTGw3?=
+ =?utf-8?B?dGRKK0tQdjdxVnJRWlB5K1g3bk9oR2U2STJNRUxMbXo3WmVDeFRmaHc1WXIr?=
+ =?utf-8?B?azVOazRqWUxveGRHanNtVDhSeURDNUhmK3llU0JzbnZpOWgxNFJqZ0IzU09G?=
+ =?utf-8?B?b043ckxyckJJYk5BcDlPMGNtS3ZwVEp6ZFBBaFNPMEppU24yK0VzRGJzVmYw?=
+ =?utf-8?B?SCtpZHdpT2t0R1NTSFhyLzJGcXhmbzNMRVB3S2k2OWtKdHIzeGN6THlRZkdq?=
+ =?utf-8?B?K244MGxPZnU3bVpwa1RyTWw4T2dZV3ZhMzBlcmRNSWQwRTNSekZHeWJYRnJJ?=
+ =?utf-8?B?bm1OZENoYmlhZG9EVmxWTWNDMHFyQ2lZTVVrUnp3RUdmRnNTb0grRERWcFc0?=
+ =?utf-8?B?Y1BMOEk5c2pTMkxFN0xYWndsL2taM25wTDdKQ2d4b0cyRUxpK0N3QVlOcmQr?=
+ =?utf-8?B?anJHYmoyR3kvbEZJZFF3TklKR29kRUwyQ0oxNjBzNXptazB1bzdXUWNuUG5N?=
+ =?utf-8?B?WTE5SzN3bkdyQU5PdmV1cFBXazBxc0pmbUc2aUNDRmx2WHZSWmliekZpVFBo?=
+ =?utf-8?B?Y3J1NlRQdDdxdjZ3N1lJdlZZOGU4WkVOVFlhNmtoWDZoY1pMZkFMQWtGQXdC?=
+ =?utf-8?B?b2Y5S20wRkJrdE5TdEw1bVVVMVVhTGhBRG9qcmRFd2ovVVlGbjdoTHRCc1l0?=
+ =?utf-8?B?R0pFQTY2dXluOHk2Y2ZiNHg5eDZzNDQ4cmc4SlR1alFFeTRTa2FidEZ2T2Ns?=
+ =?utf-8?B?RmdPVjdYTnBsVWE5L0NYZW9TZzRGamxPR3BHcHluNUo0TWN2TUZ2NEhaU1lG?=
+ =?utf-8?B?QmgvSjd2eEU1ek1NcENZYmhXR1VWSWhBaVlwNmFUWGhvTVI1ZVJlVjd3Wk5I?=
+ =?utf-8?B?Z3hXakxJNnptMWJFMjRRaDZLSlFMd05jTm5IV3hNNURiamh2ZDFSS1UzaFVX?=
+ =?utf-8?B?dXUzQklidmxvRHVWeHd1SS84L1dTTGdCVzBTK1NKS0hsbzg4THBTVWhhTkhS?=
+ =?utf-8?B?bVM3SUJOSG5lMjFjV3d6cGxwZWFxOWdTMksxaGdNMEtaelRJUHlTT2tsRGw3?=
+ =?utf-8?B?K0VRazVzSXJ0VFFGd3VpTjFrcWVQbkZuNnhNZTBhckxPSk11RWZLeEdhQ09z?=
+ =?utf-8?B?SnRHYmtaYXl4ekxHT2tnN3hjMHZPVjVTdnJocUZxdGtkR1h2Wi9teGVJbU8v?=
+ =?utf-8?B?TkFYL3owQmZQelZYWG1haVl3OGlsSllRRmZ4U1RvUTFlZUlrOFMwaUZPWWJU?=
+ =?utf-8?B?N1RiQjc0TFk4TktwNE4zNWRnbmE2Q09qemtlREJrWkpBOWVBMTdMNzdUKzJz?=
+ =?utf-8?B?OTFycm93bCtCSk1ZUUkwc2hxUHFrTDBJemxGaXJVMnFNTE5oekF2NTJoVkE3?=
+ =?utf-8?B?czhQMzlVNnJmd2lrVmtjZjUrL2pzL21laG5MclIzaEtGaGwxUUZGeTg3RzhD?=
+ =?utf-8?B?dC9aMTNXZE1tU2VzSi9sWVRNeTdVSjdyTG80c3Fzd1NEVkFuc0dkVlNFYkJt?=
+ =?utf-8?B?Ny9BVEhRRzdNM1NhNUN6U1hHVUl3UFg1MzQ4ZmwzbjBwMUh0ZUFodE1FTTlO?=
+ =?utf-8?B?T1dSaE1aNGNRY2xwYWRuaCtNdDg0Y2YvL0dSTFJFWFVXTjQrOUZnY2liMno1?=
+ =?utf-8?B?akd2R3hZNUtnMFZFRWJ3YnpPZi9TelBEdzZHQ3V5d3dWZzA5b2VSZ2l2bWxE?=
+ =?utf-8?Q?Zb21q1wPz3nhDsRoNHI/VmpWk?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d26831c1-a068-4999-3002-08dbd569b7ef
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Oct 2023 14:50:23.8972
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Fo/YD/pG9l2/WNU19s+O4sMOeRTA2TtYe+jqCukA/u3xOGxfcukSuv2E6QJDX4JQHepHQNweF6KCJh3e4qUXvQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7556
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kunwu,
 
---ZJFVlm9+Zn/c9yF1
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Can you make the tagline something along the lines of `drm/atomic
+helper: fix spelling mistake "preceeding" -> "preceding"`, in general to
+determine an appropriate prefix, you can see what previous commits used
+when making changes to files in your particular patch, e.g. using the
+following:
 
-On Tue, Oct 24, 2023 at 11:22:00AM -0700, Hsin-Yi Wang wrote:
-> On Tue, Oct 24, 2023 at 8:17=E2=80=AFAM Conor Dooley <conor@kernel.org> w=
-rote:
-> >
-> > On Mon, Oct 23, 2023 at 05:02:26PM -0700, Hsin-Yi Wang wrote:
-> > > Add makomo sku0 and sku1 which uses different audio codec.
-> > >
-> > > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/arm/mediatek.yaml | 12 ++++++++++++
-> > >  1 file changed, 12 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Do=
-cumentation/devicetree/bindings/arm/mediatek.yaml
-> > > index fe8c488a3207..b131e0bdbf01 100644
-> > > --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-> > > +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> > > @@ -250,6 +250,18 @@ properties:
-> > >                - google,kodama-sku32
-> > >            - const: google,kodama
-> > >            - const: mediatek,mt8183
-> > > +      - description: Google Makomo (Lenovo 100e Chromebook 2nd Gen M=
-TK 2)
-> > > +        items:
-> > > +          - const: google,makomo-rev4-sku0
-> > > +          - const: google,makomo-rev5-sku0
-> >
-> > With these bindings, how does one describe a makomo-rev5-sku0?
-> > What you have here is only suitable for describing the makomo-rev4-sku0.
-> >
-> makomo-rev5-sku0 and makomo-rev4-sku0 uses the same dts:
->=20
-> compatible =3D "google,makomo-rev4-sku0", "google,makomo-rev5-sku0",
->                       "google,makomo", "mediatek,mt8183";
->=20
-> In this case, can bindings be listed like that?
+$ git log drivers/gpu/drm/drm_atomic_helper.c
+On 10/25/23 04:26, Kunwu Chan wrote:
+> fix a typo in a comments.
 
-On a rev5-sku0, the first compatible should be the most specific one,
-which would mean:
+For patch descriptions you should try to more descriptive.
 
-compatible =3D "google,makomo-rev5-sku0", "google,makomo", "mediatek,mt8183=
-";
+So, something like "There is a spelling mistake in 
 
-I said the same on other google laptop bindings before, but I'm not
-really happy with these compatible configurations, that seem conjured up
-to suit your firmware. It'd make far more sense to me to have a setup
-that permitted:
-compatible =3D "google,makomo-sku0-rev5", "google,makomo-sku0", "google,mak=
-omo", "mediatek,mt8183";
-and
-compatible =3D "google,makomo-sku0-rev4", "google,makomo-sku0", "google,mak=
-omo", "mediatek,mt8183";
+drm_atomic_helper_wait_for_dependencies()'s kernel doc. Fix it." would
+be better.
 
-Cheers,
-Conor.
+> 
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+> ---
+>   drivers/gpu/drm/drm_atomic_helper.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> index 2444fc33dd7c..c3f677130def 100644
+> --- a/drivers/gpu/drm/drm_atomic_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> @@ -2382,10 +2382,10 @@ int drm_atomic_helper_setup_commit(struct drm_atomic_state *state,
+>   EXPORT_SYMBOL(drm_atomic_helper_setup_commit);
+>   
+>   /**
+> - * drm_atomic_helper_wait_for_dependencies - wait for required preceeding commits
+> + * drm_atomic_helper_wait_for_dependencies - wait for required preceding commits
+>    * @old_state: atomic state object with old state structures
+>    *
+> - * This function waits for all preceeding commits that touch the same CRTC as
+> + * This function waits for all preceding commits that touch the same CRTC as
+>    * @old_state to both be committed to the hardware (as signalled by
+>    * drm_atomic_helper_commit_hw_done()) and executed by the hardware (as signalled
+>    * by calling drm_crtc_send_vblank_event() on the &drm_crtc_state.event).
+-- 
+Hamza
 
-> > > +          - const: google,makomo
-> > > +          - const: mediatek,mt8183
-> > > +      - description: Google Makomo (Lenovo 100e Chromebook 2nd Gen M=
-TK 2)
-> > > +        items:
-> > > +          - const: google,makomo-rev4-sku1
-> > > +          - const: google,makomo-rev5-sku1
-> > > +          - const: google,makomo
-> > > +          - const: mediatek,mt8183
-> > >        - description: Google Willow (Acer Chromebook 311 C722/C722T)
-> > >          items:
-> > >            - enum:
-> > > --
-> > > 2.42.0.758.gaed0368e0e-goog
-> > >
-
---ZJFVlm9+Zn/c9yF1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZTkq+AAKCRB4tDGHoIJi
-0rnGAP9ZabySIiA8SVpNMYulGM3x3bCMQhPDIuSRdNFrqvuBKgEApPdAFGmmDMNE
-Pqyn5ngRg4/wRf9xVNi8zaqOYEf2ug0=
-=ShOI
------END PGP SIGNATURE-----
-
---ZJFVlm9+Zn/c9yF1--
