@@ -2,113 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 644747D700F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48B87D6FE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 16:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234446AbjJYOop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 10:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
+        id S234709AbjJYOqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 10:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbjJYOoo (ORCPT
+        with ESMTP id S234655AbjJYOp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 10:44:44 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 79140B0
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:44:42 -0700 (PDT)
-Received: (qmail 496317 invoked by uid 1000); 25 Oct 2023 10:44:41 -0400
-Date:   Wed, 25 Oct 2023 10:44:41 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Hardik Gajjar <hgajjar@de.adit-jv.com>
-Cc:     gregkh@linuxfoundation.org, mathias.nyman@intel.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erosca@de.adit-jv.com
-Subject: Re: [PATCH v5] usb: Reduce 'set_address' command timeout with a new
- quirk
-Message-ID: <2345e113-71cd-4cf2-b910-45dd1bca3f13@rowland.harvard.edu>
-References: <de2ed64a-363a-464c-95be-584ce1a7a4ad@rowland.harvard.edu>
- <20231025141316.117514-1-hgajjar@de.adit-jv.com>
+        Wed, 25 Oct 2023 10:45:59 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 881CADC
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 07:45:56 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7C432F4;
+        Wed, 25 Oct 2023 07:46:37 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 896F53F64C;
+        Wed, 25 Oct 2023 07:45:54 -0700 (PDT)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v3 0/4] Swap-out small-sized THP without splitting
+Date:   Wed, 25 Oct 2023 15:45:42 +0100
+Message-Id: <20231025144546.577640-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025141316.117514-1-hgajjar@de.adit-jv.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 04:13:16PM +0200, Hardik Gajjar wrote:
-> This patch introduces a new USB quirk, USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT,
-> which modifies the timeout value for the 'set_address' command. The
-> standard timeout for this command is 5000 ms, as recommended in the USB
-> 3.2 specification (section 9.2.6.1).
-> 
-> However, certain scenarios, such as connecting devices through an APTIV hub,
-> can lead to timeout errors when the device enumerates as full speed initially
-> and later switches to high speed during chirp negotiation.
-> 
-> In such cases, USB analyzer logs reveal that the bus suspends for 5 seconds
-> due to incorrect chirp parsing and resumes only after two consecutive
-> timeout errors trigger a hub driver reset.
-> 
-> Packet(54) Dir(?) Full Speed J(997.100 us) Idle(  2.850 us)
-> _______| Time Stamp(28 . 105 910 682)
-> _______|_________________________________________________________________Ch0
-> Packet(55) Dir(?) Full Speed J(997.118 us) Idle(  2.850 us)
-> _______| Time Stamp(28 . 106 910 632)
-> _______|_________________________________________________________________Ch0
-> Packet(56) Dir(?) Full Speed J(399.650 us) Idle(222.582 us)
-> _______| Time Stamp(28 . 107 910 600)
-> _______|_________________________________________________________________Ch0
-> Packet(57) Dir Chirp J( 23.955 ms) Idle(115.169 ms)
-> _______| Time Stamp(28 . 108 532 832)
-> _______|_________________________________________________________________Ch0
-> Packet(58) Dir(?) Full Speed J (Suspend)( 5.347 sec) Idle(  5.366 us)
-> _______| Time Stamp(28 . 247 657 600)
-> _______|_________________________________________________________________Ch0
-> 
-> This 5-second delay in device enumeration is undesirable, particularly in
-> automotive applications where quick enumeration is crucial
-> (ideally within 3 seconds).
-> 
-> The newly introduced quirks provide the flexibility to align with a
-> 3-second time limit, as required in specific contexts like automotive
-> applications.
-> 
-> By reducing the 'set_address' command timeout to 500 ms, the
-> system can respond more swiftly to errors, initiate rapid recovery, and
-> ensure efficient device enumeration. This change is vital for scenarios
-> where rapid smartphone enumeration and screen projection are essential.
-> To use the quirk, please write "vendor_id:product_id:p" to
-> /sys/bus/usb/drivers/hub/module/parameter/quirks
-> 
-> For example,
-> echo "0x2c48:0x0132:p" > /sys/bus/usb/drivers/hub/module/parameter/quirks"
-> 
-> Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
-> ---
+Hi All,
 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 0a1731a0f0ef..3c03f23bd5d5 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -6817,6 +6817,9 @@
->  					pause after every control message);
->  				o = USB_QUIRK_HUB_SLOW_RESET (Hub needs extra
->  					delay after resetting its port);
-> +				p = USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT (Timeout
-> +					of set_address command reducing from
-> +					5000 ms to 500 ms)
+This is v3 of a series to add support for swapping out small-sized THP without
+needing to first split the large folio via __split_huge_page(). It closely
+follows the approach already used by PMD-sized THP.
 
-As a matter of grammatical style, it would be better to rephrase this as:
+"Small-sized THP" is an upcoming feature that enables performance improvements
+by allocating large folios for anonymous memory, where the large folio size is
+smaller than the traditional PMD-size. See [3].
 
-	Reduce timeout of set_address command from 5000 ms to 500 ms
+In some circumstances I've observed a performance regression (see patch 2 for
+details), and this series is an attempt to fix the regression in advance of
+merging small-sized THP support.
 
-Apart from that one little nit, for the usbcore portions of the patch:
+I've done what I thought was the smallest change possible, and as a result, this
+approach is only employed when the swap is backed by a non-rotating block device
+(just as PMD-sized THP is supported today). Discussion against the RFC concluded
+that this is probably sufficient.
 
-Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
+The series applies against mm-unstable (1a3c85fa684a)
 
-Alan Stern
+
+Changes since v2 [2]
+====================
+
+ - Reuse scan_swap_map_try_ssd_cluster() between order-0 and order > 0
+   allocation. This required some refactoring to make everything work nicely
+   (new patches 2 and 3).
+ - Fix bug where nr_swap_pages would say there are pages available but the
+   scanner would not be able to allocate them because they were reserved for the
+   per-cpu allocator. We now allow stealing of order-0 entries from the high
+   order per-cpu clusters (in addition to exisiting stealing from order-0
+   per-cpu clusters).
+
+Thanks to Huang, Ying for the review feedback and suggestions!
+
+
+Changes since v1 [1]
+====================
+
+ - patch 1:
+    - Use cluster_set_count() instead of cluster_set_count_flag() in
+      swap_alloc_cluster() since we no longer have any flag to set. I was unable
+      to kill cluster_set_count_flag() as proposed against v1 as other call
+      sites depend explicitly setting flags to 0.
+ - patch 2:
+    - Moved large_next[] array into percpu_cluster to make it per-cpu
+      (recommended by Huang, Ying).
+    - large_next[] array is dynamically allocated because PMD_ORDER is not
+      compile-time constant for powerpc (fixes build error).
+
+
+Thanks,
+Ryan
+
+P.S. I know we agreed this is not a prerequisite for merging small-sized THP,
+but given Huang Ying had provided some review feedback, I wanted to progress it.
+All the actual prerequisites are either complete or being worked on by others.
+
+
+[1] https://lore.kernel.org/linux-mm/20231010142111.3997780-1-ryan.roberts@arm.com/
+[2] https://lore.kernel.org/linux-mm/20231017161302.2518826-1-ryan.roberts@arm.com/
+[3] https://lore.kernel.org/linux-mm/15a52c3d-9584-449b-8228-1335e0753b04@arm.com/
+
+
+Ryan Roberts (4):
+  mm: swap: Remove CLUSTER_FLAG_HUGE from swap_cluster_info:flags
+  mm: swap: Remove struct percpu_cluster
+  mm: swap: Simplify ssd behavior when scanner steals entry
+  mm: swap: Swap-out small-sized THP without splitting
+
+ include/linux/swap.h |  31 +++---
+ mm/huge_memory.c     |   3 -
+ mm/swapfile.c        | 232 ++++++++++++++++++++++++-------------------
+ mm/vmscan.c          |  10 +-
+ 4 files changed, 149 insertions(+), 127 deletions(-)
+
+--
+2.25.1
+
