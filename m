@@ -2,273 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 630EE7D6B67
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AC57D6B8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 14:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343904AbjJYMZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 08:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
+        id S1343945AbjJYM1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 08:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343791AbjJYMZo (ORCPT
+        with ESMTP id S234863AbjJYM1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 08:25:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DD419A;
-        Wed, 25 Oct 2023 05:25:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DCB4C433C7;
-        Wed, 25 Oct 2023 12:25:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698236739;
-        bh=CPfbQfAM1itjWCIx0nw3DPeg3BGsp7SHrr2xBrG+Ips=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ch094CrQN1hvWHJzxzq0IS9uCUYQiHYjKqCOkuwf4HlKsyJ2HZiCCxOkwAmYD4odl
-         qU39q/+5YQ9Jr14/taFrQ3L4M5PsQ4Hz+zO8fS2DDSTRPt3CEZ6KwdhSiyQLCVeOiH
-         RF9LRyGj9F9mr+PRazMgZ2g3+yBA+1FPMyTHo+wZGsBzOyZF2KhuTUFy+8BruFeIvn
-         Dne7XJuj38EA0kEHqAtmp0iW40c2AYLb5ZTPsxoUu1lsZHmzbAOOw+A8gBvPbArZFG
-         QJPDTq++2IQoHaUqYhyEMeZQku3OZ+hmiHdNkYVCjm2Xe309kQXDCFT4E5ZaojbH29
-         3Ye+PQ3PI6l7w==
-Message-ID: <2ef9ac6180e47bc9cc8edef20648a000367c4ed2.camel@kernel.org>
-Subject: Re: [PATCH RFC 2/9] timekeeping: new interfaces for multigrain
- timestamp handing
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.de>, David Howells <dhowells@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org
-Date:   Wed, 25 Oct 2023 08:25:35 -0400
-In-Reply-To: <ZTjMRRqmlJ+fTys2@dread.disaster.area>
-References: <0a1a847af4372e62000b259e992850527f587205.camel@kernel.org>
-         <ZTGncMVw19QVJzI6@dread.disaster.area>
-         <eb3b9e71ee9c6d8e228b0927dec3ac9177b06ec6.camel@kernel.org>
-         <ZTWfX3CqPy9yCddQ@dread.disaster.area>
-         <61b32a4093948ae1ae8603688793f07de764430f.camel@kernel.org>
-         <ZTcBI2xaZz1GdMjX@dread.disaster.area>
-         <CAHk-=whphyjjLwDcEthOOFXXfgwGrtrMnW2iyjdQioV6YSMEPw@mail.gmail.com>
-         <ZTc8tClCRkfX3kD7@dread.disaster.area>
-         <CAOQ4uxhJGkZrUdUJ72vjRuLec0g8VqgRXRH=x7W9ogMU6rBxcQ@mail.gmail.com>
-         <d539804a2a73ad70265c5fa599ecd663cd235843.camel@kernel.org>
-         <ZTjMRRqmlJ+fTys2@dread.disaster.area>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 25 Oct 2023 08:27:32 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653D8C1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:27:30 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cace3e142eso37249615ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 05:27:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698236850; x=1698841650;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wG0ZUl3gifsade13W7t1FoQuB4FnC3hvjN14YAls8W8=;
+        b=I16se2PyjeUFHVVOmxV4LaG1wS9TjN31n6uTxQwsWXshj918Q5DpcUel2QSWzoQ1RV
+         JALxtLE6j6KARK1WDgkuLME6K4v0Blf18t5faPoCTCaq6GfWKyZjiTiV0uFmZnynClTz
+         tZMUoemFfNdKDqBBSmsKeibp1EQmR5VCMSZm7KiTJErU0PgZbcwpWZOOWoD8zswHEDie
+         f/yJn//B1lsQ/xzKYGwJRIzrUL0iMpNljNMbUv/1Db+fMpulOFTuWOsSLyCPtXCK9Fds
+         eo6vm5wDKAhrhqpgQ+bR6btz2uXZ59gb7nRWsgv4dhKwno33QRXg3xz1moM61B+pYVAz
+         m0Gg==
+X-Gm-Message-State: AOJu0YwsZyiO75Sl8LkMtzVS743I7eS3QJwtKpCmNKXKLVmP6dHKyus/
+        bBoJU4x0tJTjZnhuC+eKC0Q=
+X-Google-Smtp-Source: AGHT+IE9tQK1viHVcwtIECPzpdaqlTjg12DIHJKqddhEn0ApTz8dcZuBMoyynsaPPV5aSo8wTScCuw==
+X-Received: by 2002:a17:903:3093:b0:1c3:749f:6a5d with SMTP id u19-20020a170903309300b001c3749f6a5dmr9969948plc.4.1698236849721;
+        Wed, 25 Oct 2023 05:27:29 -0700 (PDT)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id w17-20020a1709029a9100b001b89466a5f4sm9019669plp.105.2023.10.25.05.27.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Oct 2023 05:27:29 -0700 (PDT)
+From:   "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+        s=2023; t=1698236845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wG0ZUl3gifsade13W7t1FoQuB4FnC3hvjN14YAls8W8=;
+        b=inmdc+0K5wrUGW0jTTWmP30k8xL5pojISO2gfCEDgPacAcdySlLksFrrXJCPmcgd2OHuKQ
+        IDnTVbt+oh9o88OMujxbSlHMtaYwrYB8hV12qV102WqDh+cbqWjGicpXFrm6jJQQBe4LKL
+        izey6X3Msy+iTvA0tgfH8EcBPQmfMdTl8Jr2b29Ey5JmAB6CSYI+TTevDA7ZoUyWqw+TpQ
+        FeSV9P8eCm/u8DPp00K+MxI2ePz42gJp+N2SPXjcDomRGPRfcgX0wIjpoAy/tnoCqH3YHC
+        UGN1zxCfnPBpzItU1QLYfgz1E1feylSyorF6MnMQirNBStQct9NhRkmIHqwwuw==
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Umang Jain <umang.jain@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-staging@lists.linux.dev,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "Ricardo B. Marliere" <ricardo@marliere.net>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: [PATCH] staging: vc04_services: use snprintf instead of sprintf
+Date:   Wed, 25 Oct 2023 09:26:34 -0300
+Message-ID: <20231025122632.307385-4-ricardo@marliere.net>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-10-25 at 19:05 +1100, Dave Chinner wrote:
-> On Tue, Oct 24, 2023 at 02:40:06PM -0400, Jeff Layton wrote:
-> > On Tue, 2023-10-24 at 10:08 +0300, Amir Goldstein wrote:
-> > > On Tue, Oct 24, 2023 at 6:40=E2=80=AFAM Dave Chinner <david@fromorbit=
-.com> wrote:
-> > > >=20
-> > > > On Mon, Oct 23, 2023 at 02:18:12PM -1000, Linus Torvalds wrote:
-> > > > > On Mon, 23 Oct 2023 at 13:26, Dave Chinner <david@fromorbit.com> =
-wrote:
-> > > > > >=20
-> > > > > > The problem is the first read request after a modification has =
-been
-> > > > > > made. That is causing relatime to see mtime > atime and trigger=
-ing
-> > > > > > an atime update. XFS sees this, does an atime update, and in
-> > > > > > committing that persistent inode metadata update, it calls
-> > > > > > inode_maybe_inc_iversion(force =3D false) to check if an iversi=
-on
-> > > > > > update is necessary. The VFS sees I_VERSION_QUERIED, and so it =
-bumps
-> > > > > > i_version and tells XFS to persist it.
-> > > > >=20
-> > > > > Could we perhaps just have a mode where we don't increment i_vers=
-ion
-> > > > > for just atime updates?
-> > > > >=20
-> > > > > Maybe we don't even need a mode, and could just decide that atime
-> > > > > updates aren't i_version updates at all?
-> > > >=20
-> > > > We do that already - in memory atime updates don't bump i_version a=
-t
-> > > > all. The issue is the rare persistent atime update requests that
-> > > > still happen - they are the ones that trigger an i_version bump on
-> > > > XFS, and one of the relatime heuristics tickle this specific issue.
-> > > >=20
-> > > > If we push the problematic persistent atime updates to be in-memory
-> > > > updates only, then the whole problem with i_version goes away....
-> > > >=20
-> > > > > Yes, yes, it's obviously technically a "inode modification", but =
-does
-> > > > > anybody actually *want* atime updates with no actual other change=
-s to
-> > > > > be version events?
-> > > >=20
-> > > > Well, yes, there was. That's why we defined i_version in the on dis=
-k
-> > > > format this way well over a decade ago. It was part of some deep
-> > > > dark magical HSM beans that allowed the application to combine
-> > > > multiple scans for different inode metadata changes into a single
-> > > > pass. atime changes was one of the things it needed to know about
-> > > > for tiering and space scavenging purposes....
-> > > >=20
-> > >=20
-> > > But if this is such an ancient mystical program, why do we have to
-> > > keep this XFS behavior in the present?
-> > > BTW, is this the same HSM whose DMAPI ioctls were deprecated
-> > > a few years back?
->=20
-> Drop the attitude, Amir.
->=20
-> That "ancient mystical program" is this:
->=20
-> https://buy.hpe.com/us/en/enterprise-solutions/high-performance-computing=
--solutions/high-performance-computing-storage-solutions/hpc-storage-solutio=
-ns/hpe-data-management-framework-7/p/1010144088
->=20
-> Yup, that product is backed by a proprietary descendent of the Irix
-> XFS code base XFS that is DMAPI enabled and still in use today. It's
-> called HPE XFS these days....
->=20
-> > > I mean, I understand that you do not want to change the behavior of
-> > > i_version update without an opt-in config or mount option - let the d=
-istro
-> > > make that choice.
-> > > But calling this an "on-disk format change" is a very long stretch.
->=20
-> Telling the person who created, defined and implemented the on disk
-> format that they don't know what constitutes a change of that
-> on-disk format seems kinda Dunning-Kruger to me....
->=20
-> There are *lots* of ways that di_changecount is now incompatible
-> with the VFS change counter. That's now defined as "i_version should
-> only change when [cm]time is changed".
->=20
-> di_changecount is defined to be a count of the number of changes
-> made to the attributes of the inode.  It's not just atime at issue
-> here - we bump di_changecount when make any inode change, including
-> background work that does not otherwise change timestamps. e.g.
-> allocation at writeback time, unwritten extent conversion, on-disk
-> EOF extension at IO completion, removal of speculative
-> pre-allocation beyond EOF, etc.
->=20
-> IOWs, di_changecount was never defined as a linux "i_version"
-> counter, regardless of the fact we originally we able to implement
-> i_version with it - all extra bumps to di_changecount were not
-> important to the users of i_version for about a decade.
->=20
-> Unfortunately, the new i_version definition is very much
-> incompatible with the existing di_changecount definition and that's
-> the underlying problem here. i.e. the problem is not that we bump
-> i_version on atime, it's that di_changecount is now completely
-> incompatible with the new i_version change semantics.
->=20
-> To implement the new i_version semantics exactly, we need to add a
-> new field to the inode to hold this information.
-> If we change the on disk format like this, then the atime
-> problems go away because the new field would not get updated on
-> atime updates. We'd still be bumping di_changecount on atime
-> updates, though, because that's what is required by the on-disk
-> format.
->=20
-> I'm really trying to avoid changing the on-disk format unless it
-> is absolutely necessary. If we can get the in-memory timestamp
-> updates to avoid tripping di_changecount updates then the atime
-> problems go away.
->=20
-> If we can get [cm]time sufficiently fine grained that we don't need
-> i_version, then we can turn off i_version in XFS and di_changecount
-> ends up being entirely internal. That's what was attempted with
-> generic multi-grain timestamps, but that hasn't worked.
->=20
-> Another options is for XFS to play it's own internal tricks with
-> [cm]time granularity and turn off i_version. e.g. limit external
-> timestamp visibility to 1us and use the remaining dozen bits of the
-> ns field to hold a change counter for updates within a single coarse
-> timer tick. This guarantees the timestamp changes within a coarse
-> tick for the purposes of change detection, but we don't expose those
-> bits to applications so applications that compare timestamps across
-> inodes won't get things back to front like was happening with the
-> multi-grain timestamps....
->=20
-> Another option is to work around the visible symptoms of the
-> semantic mismatch between i_version and di_changecount. The only
-> visible symptom we currently know about is the atime vs i_version
-> issue.  If people are happy for us to simply ignore VFS atime
-> guidelines (i.e. ignore realtime/lazytime) and do completely our own
-> stuff with timestamp update deferal, then that also solve the
-> immediate issues.
->=20
-> > > Does xfs_repair guarantee that changes of atime, or any inode changes
-> > > for that matter, update i_version? No, it does not.
-> > > So IMO, "atime does not update i_version" is not an "on-disk format c=
-hange",
-> > > it is a runtime behavior change, just like lazytime is.
-> >=20
-> > This would certainly be my preference. I don't want to break any
-> > existing users though.
->=20
-> That's why I'm trying to get some kind of consensus on what
-> rules and/or atime configurations people are happy for me to break
-> to make it look to users like there's a viable working change
-> attribute being supplied by XFS without needing to change the on
-> disk format.
->=20
+All the occurrences of sprintf usage under vc04_services can be safely
+replaced by snprintf, so as to avoid any possible overflow.
 
-I agree that the only bone of contention is whether to count atime
-updates against the change attribute. I think we have consensus that all
-in-kernel users do _not_ want atime updates counted against the change
-attribute. The only real question is these "legacy" users of
-di_changecount.
+Suggested-by: Dan Carpenter <dan.carpenter@linaro.org>
+Suggested-by: Umang Jain <umang.jain@ideasonboard.com>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ .../bcm2835-camera/bcm2835-camera.c              |  2 +-
+ .../interface/vchiq_arm/vchiq_arm.c              | 16 ++++++++--------
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-> > Perhaps this ought to be a mkfs option? Existing XFS filesystems could
-> > still behave with the legacy behavior, but we could make mkfs.xfs build
-> > filesystems by default that work like NFS requires.
->=20
-> If we require mkfs to set a flag to change behaviour, then we're
-> talking about making an explicit on-disk format change to select the
-> optional behaviour. That's precisely what I want to avoid.
->=20
+diff --git a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
+index e860fb89d42e..e6e89784d84b 100644
+--- a/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
++++ b/drivers/staging/vc04_services/bcm2835-camera/bcm2835-camera.c
+@@ -855,7 +855,7 @@ static int vidioc_enum_input(struct file *file, void *priv,
+ 		return -EINVAL;
+ 
+ 	inp->type = V4L2_INPUT_TYPE_CAMERA;
+-	sprintf((char *)inp->name, "Camera %u", inp->index);
++	snprintf((char *)inp->name, sizeof(inp->name), "Camera %u", inp->index);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+index de6a24304a4d..9fb8f657cc78 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+@@ -1451,12 +1451,12 @@ vchiq_use_internal(struct vchiq_state *state, struct vchiq_service *service,
+ 	}
+ 
+ 	if (use_type == USE_TYPE_VCHIQ) {
+-		sprintf(entity, "VCHIQ:   ");
++		snprintf(entity, sizeof(entity), "VCHIQ:   ");
+ 		entity_uc = &arm_state->peer_use_count;
+ 	} else if (service) {
+-		sprintf(entity, "%p4cc:%03d",
+-			&service->base.fourcc,
+-			service->client_id);
++		snprintf(entity, sizeof(entity), "%p4cc:%03d",
++			 &service->base.fourcc,
++			 service->client_id);
+ 		entity_uc = &service->service_use_count;
+ 	} else {
+ 		vchiq_log_error(state->dev, VCHIQ_SUSPEND, "%s null service ptr", __func__);
+@@ -1506,12 +1506,12 @@ vchiq_release_internal(struct vchiq_state *state, struct vchiq_service *service)
+ 	}
+ 
+ 	if (service) {
+-		sprintf(entity, "%p4cc:%03d",
+-			&service->base.fourcc,
+-			service->client_id);
++		snprintf(entity, sizeof(entity), "%p4cc:%03d",
++			 &service->base.fourcc,
++			 service->client_id);
+ 		entity_uc = &service->service_use_count;
+ 	} else {
+-		sprintf(entity, "PEER:   ");
++		snprintf(entity, sizeof(entity), "PEER:   ");
+ 		entity_uc = &arm_state->peer_use_count;
+ 	}
+ 
+-- 
+2.42.0
 
-Right. The on-disk di_changecount would have a (subtly) different
-meaning at that point.
-
-It's not a change that requires drastic retooling though. If we were to
-do this, we wouldn't need to grow the on-disk inode. Booting to an older
-kernel would cause the behavior to revert. That's sub-optimal, but not
-fatal.
-
-What I don't quite understand is how these tools are accessing
-di_changecount?
-
-XFS only accesses the di_changecount to propagate the value to and from
-the i_version, and there is nothing besides NFSD and IMA that queries
-the i_version value in-kernel. So, this must be done via some sort of
-userland tool that is directly accessing the block device (or some 3rd
-party kernel module).
-
-In earlier discussions you alluded to some repair and/or analysis tools
-that depended on this counter. I took a quick look in xfsprogs, but I
-didn't see anything there. Is there a library or something that these
-tools use to get at this value?
---=20
-Jeff Layton <jlayton@kernel.org>
