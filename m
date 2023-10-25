@@ -2,149 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2917D718A
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AA17D718C
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 18:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234055AbjJYQQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 12:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
+        id S233808AbjJYQQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 12:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233452AbjJYQQO (ORCPT
+        with ESMTP id S229655AbjJYQQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 12:16:14 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2EC12F;
-        Wed, 25 Oct 2023 09:16:11 -0700 (PDT)
-Received: from [192.168.1.103] (31.173.84.85) by msexch01.omp.ru (10.188.4.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Wed, 25 Oct
- 2023 19:16:06 +0300
-Subject: Re: [PATCH v5] usb: Reduce 'set_address' command timeout with a new
- quirk
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-To:     Hardik Gajjar <hgajjar@de.adit-jv.com>,
-        <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>,
-        <mathias.nyman@intel.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <erosca@de.adit-jv.com>
-References: <de2ed64a-363a-464c-95be-584ce1a7a4ad@rowland.harvard.edu>
- <20231025141316.117514-1-hgajjar@de.adit-jv.com>
- <41e22c23-07b3-5fd9-5fb1-935ab42fa83e@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <032f236a-e212-fa28-ecf4-b5b585ba7ac2@omp.ru>
-Date:   Wed, 25 Oct 2023 19:16:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Wed, 25 Oct 2023 12:16:43 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A3C123;
+        Wed, 25 Oct 2023 09:16:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1698250597; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=gLCa3+5gsMBsLqkGJnPgYTo9DQhiS7UtiJkO2w3onvNgyUgu3c+UJZQ3WpkkqmFgio
+    +Ct7THBgNSn3VDUuUpcVeneLcWyhb+DmA8n/s+Ay/MVc4WkK5zHCczdfdiX5dd2A7EiP
+    XBpQgv0+4YgqIdHNn/7LSgZ3EU2Ffx25IPwgRAhSS9Gf3i5C1fYxiOTpKWuXuJoLm3Xd
+    0OiajtKpow2ysGTWHJzGqMqrOOj68JHrk30al6dAsT1fhySbcqV8beUvjX/iLHoQbxg4
+    0zktsFkusnzeGNJ0hpSpU6YRvBXvpWpHyiWcTL0ByIPljwLpY6k0Tz8OXYbqjTV7F/ac
+    9+VA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1698250597;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=YZSlPhYXy89WILkt7DEnTutEx64M5HjQplPlI7eKTlA=;
+    b=oUTBczkl/Z7j569z4b/Z0RHpvRxywVU19DkVeadQv7SUhAjCYIzcEDztpPpqx619rj
+    yJAPo4V1jNVgAxI2dYGR5wKMJx18hVOhQ9nNLvx/ebS8sB5JTYYwhGHsemaFXKJYhPKk
+    qdnP/gmh8fmV14DjMN3wxGAJWFee15KFyk3rI2XqwXVL0sZaI4tCImU0NXFstGj3RvdD
+    gSmEADSfpAagbNt+7hoOTI98IIs3mVyLYndP+XNTrGKI/1201AMGiJo58CNUI7aveXLq
+    Hc4kmTwONS6a9GjShx7T9trWf/AYVeDSVn+rUV2qCDp4sSWcX1KaGD3ZocT3s+RWqZvl
+    RjOg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1698250597;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=YZSlPhYXy89WILkt7DEnTutEx64M5HjQplPlI7eKTlA=;
+    b=ni1H2Tg09k9Yx2+vqmEr50MShI56zElzEEX4DfMGrezSaDxXlHpj25BYnJIJsd4yE7
+    4ga3lJ6nIEdJS4dPlPT0Hgs/s0ODvGie2pk+ASEkX937nlFva8nQXrsAwm7jEqmyyBJL
+    kRZZasD8X5oCIe+hcBfRW/3Xi4VoAtI6WEVfUBEKK7mIm4CMSdizoueO7Y9wmzuSRkmi
+    xGLGT13I4qIHtpNVtVMBPhIXVCJzHcDOiLWQIMDn4AxAndeG99cssnrtj6iWPkeRc1ga
+    353YrVKMbtoPXOAaZTOZ/DSfFcq1qYybF3Zl8YDZkJai/UUO615QWl42I+gxtQehESBL
+    DUsA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1698250597;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=YZSlPhYXy89WILkt7DEnTutEx64M5HjQplPlI7eKTlA=;
+    b=FYXRoN4r3jY0yJQhpSLkzm7eQDw7/04cE0FHFwuJBobq+KjWBXissAbCSoLxt5ipbg
+    fmvq8AEAo4lGvomcXvDQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8Z2L1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.9.1 DYNA|AUTH)
+    with ESMTPSA id Lbb8e2z9PGGb0iQ
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 25 Oct 2023 18:16:37 +0200 (CEST)
+Date:   Wed, 25 Oct 2023 18:16:23 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] OPP: Use _set_opp_level() for single genpd case
+Message-ID: <ZTk_M0JFdAg7FR7E@gerhold.net>
+References: <cover.1697710527.git.viresh.kumar@linaro.org>
+ <f709e9e273004be43efe3a2854a7e7b51a777f99.1697710527.git.viresh.kumar@linaro.org>
+ <CAPDyKFqbnsdT0nqKwQhai875CwwpW_vepr816fL+i8yLh=YQhw@mail.gmail.com>
+ <20231025065458.z3klmhahrcqh6qyw@vireshk-i7>
+ <CAPDyKFr4vdsKVYEx0aF5k_a1bTjp3NzMpNgaXDJOJrvujT7iRg@mail.gmail.com>
+ <ZTkciw5AwufxQYnB@gerhold.net>
+ <20231025152431.bhdv772dwbufocck@vireshk-i7>
 MIME-Version: 1.0
-In-Reply-To: <41e22c23-07b3-5fd9-5fb1-935ab42fa83e@omp.ru>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231025152431.bhdv772dwbufocck@vireshk-i7>
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [31.173.84.85]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 10/25/2023 16:01:13
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 180896 [Oct 25 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.85 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.85 in (user) dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;31.173.84.85:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: FromAlignment: s
-X-KSE-AntiSpam-Info: {rdns complete}
-X-KSE-AntiSpam-Info: {fromrtbl complete}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.84.85
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/25/2023 16:07:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 10/25/2023 2:47:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/23 7:00 PM, Sergey Shtylyov wrote:
-
-[...]
->    Sorry to be PITA but... (-:
-
-   I just had to speak up after Alan's ACK. :-)
-
->> This patch introduces a new USB quirk, USB_QUIRK_SHORT_DEVICE_ADDR_TIMEOUT,
->> which modifies the timeout value for the 'set_address' command. The
+On Wed, Oct 25, 2023 at 08:54:31PM +0530, Viresh Kumar wrote:
+> On 25-10-23, 15:47, Stephan Gerhold wrote:
+> > FWIW I'm hitting this WARNing when trying to set up the parent domain
+> > setup for CPR->RPMPD(MX) on MSM8916 that I discussed with Uffe recently
+> > [1]. I know, me and all my weird OPP setups. :'D
+> > 
+> > Basically, I have cpufreq voting for performance states of the CPR genpd
+> > (via required-opps). CPR is supposed to have <&rpmpd MSM8916_VDDMX_AO>
+> > as parent genpd and translates to the parent performance state using the
+> > "required-opps" in the *CPR* OPP table:
+> > 
+> > 	cpr: power-controller@b018000 {
+> > 		compatible = "qcom,msm8916-cpr", "qcom,cpr";
+> > 		reg = <0x0b018000 0x1000>;
+> > 		/* ... */
+> > 		#power-domain-cells = <0>;
+> > 		operating-points-v2 = <&cpr_opp_table>;
+> > 		/* Supposed to be parent domain, not consumer */
+> > 		power-domains = <&rpmpd MSM8916_VDDMX_AO>;
+> > 
+> > 		cpr_opp_table: opp-table {
+> > 			compatible = "operating-points-v2-qcom-level";
+> > 
+> > 			cpr_opp1: opp1 {
+> > 				opp-level = <1>;
+> > 				qcom,opp-fuse-level = <1>;
+> > 				required-opps = <&rpmpd_opp_svs_soc>;
+> > 			};
+> > 			cpr_opp2: opp2 {
+> > 				opp-level = <2>;
+> > 				qcom,opp-fuse-level = <2>;
+> > 				required-opps = <&rpmpd_opp_nom>;
+> > 			};
+> > 			cpr_opp3: opp3 {
+> > 				opp-level = <3>;
+> > 				qcom,opp-fuse-level = <3>;
+> > 				required-opps = <&rpmpd_opp_super_turbo>;
+> > 			};
+> > 		};
+> > 	};
 > 
->    This is called a request, not a command by the spec. And the USB spec
-> names the requests in all uppercase, e.g. SET_ADDRESS...
+> I have forgotten a bit about this usecase. How exactly does the
+> configurations work currently for this ? I mean genpd core must be
+> setting the vote finally for only one of them or something else ?
 > 
->> standard timeout for this command is 5000 ms, as recommended in the USB
->> 3.2 specification (section 9.2.6.1).
-> 
->    This section in the USB specs 1.1/2.0/3.0 talks about _all_ requests.
-> I don't have USB 3.2 but It believe it has the same wording.
-> 
-> [...]
-> 
->> Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
-[...]
 
->> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
->> index e1b1b64a0723..0c610a853aef 100644
->> --- a/drivers/usb/host/xhci.c
->> +++ b/drivers/usb/host/xhci.c
->> @@ -3998,11 +3998,17 @@ int xhci_alloc_dev(struct usb_hcd *hcd, struct usb_device *udev)
->>  }
->>  
->>  /*
-> 
->    You seem to be converting the existing comment to a kernel-doc one
-> but you miss changing from /* /** at the start and adding colons after
+I'm not sure if I understand your question correctly. Basically, setting
+<&rpmpd MSM8916_VDDMX_AO> as "parent genpd" of <&cpr> is supposed to
+describe that there is a direct relationship between the performance
+states of CPR and VDDMX. When changing the CPR performance state, VDDMX
+should also be adjusted accordingly.
 
-   From /* to /**, I meant to type...
+This is implemented in the genpd core in _genpd_set_performance_state().
+It loops over the parent genpds, and re-evaluates the performance states
+of each of them. Translation happens using genpd_xlate_performance_state()
+which is just a direct call to dev_pm_opp_xlate_performance_state().
+This will look up the required-opps from the OPP table above. However,
+the genpd core calls ->set_performance_state() on the parent genpd
+directly, so dev_pm_opp_set_opp() isn't involved in this case.
 
-> the param names below...
+Overall the call sequence for a CPUfreq switch will look something like:
 
-   This comment update also looks like a meterial for a separate patch...
+ - cpu0: dev_pm_opp_set_rate(998.4 MHz)
+  - cpu0: _set_required_opps(opp-998400000)
+   - genpd:1:cpu0: dev_pm_opp_set_opp(&cpr_opp3)
+    - genpd:1:cpu0: _set_opp_level(&cpr_opp3)
+     - cpr: _genpd_set_performance_state(3)
 
->> - * Issue an Address Device command and optionally send a corresponding
->> - * SetAddress request to the device.
->> + * xhci_setup_device - issues an Address Device command to assign a unique
->> + *			USB bus address.
->> + * @hcd USB host controller data structure.
->> + * @udev USB dev structure representing the connected device.
->> + * @setup Enum specifying setup mode: address only or with context.
->> + * @timeout_ms Max wait time (ms) for the command operation to complete.
->> + *
->> + * Return: 0 if successful; otherwise, negative error code.
->>   */
->>  static int xhci_setup_device(struct usb_hcd *hcd, struct usb_device *udev,
->> -			     enum xhci_setup_dev setup)
->> +			     enum xhci_setup_dev setup, unsigned int timeout_ms)
-> [...]
+      # genpd: translate & adjust parent performance states
+      - cpr: genpd_xlate_performance_state(parent=VDDMX_AO)
+             => &rpmpd_opp_super_turbo = 6
+       - VDDMX_AO: _genpd_set_performance_state(6)
+        - rpmpd: ->set_performance_state(VDDMX_AO, 6)
 
-MBR, Sergey
+      # genpd: change actual performance state
+      - cpr: ->set_performance_state(cpr, 3)
+
+Before the discussion with Uffe I did not describe this relationship
+between CPR<->VDDMX as parent-child, I just had them as two separate
+power domains in the CPU OPP table. That worked fine too but Uffe
+suggested the parent-child representation might be better.
+   
+Does that help or were you looking for something else? :D
+
+Thanks,
+Stephan
