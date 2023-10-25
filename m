@@ -2,72 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8674D7D6236
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B927D623D
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 09:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbjJYHN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 03:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
+        id S232376AbjJYHQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 03:16:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232224AbjJYHNZ (ORCPT
+        with ESMTP id S231648AbjJYHQy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 03:13:25 -0400
+        Wed, 25 Oct 2023 03:16:54 -0400
 Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0152D116
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:13:23 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so8327613a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:13:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D37B4
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:16:51 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53f9af41444so8657855a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 00:16:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698218001; x=1698822801; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698218210; x=1698823010; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=TqIYVjbVykHDBWsSbBXqeLIv64N31yMqWYJySIvQSyM=;
-        b=S0texffng6An1nT4djjqJ24zKDR7717eI4peASAWoAKhBIgaD7ZKzE00Dgbj/9Fovs
-         LdINTqY785hRAIfnmgoTv5BuAdfxYjpckAEr8g/bA3KVyFXvE6XQuE6d+EMIcfE0lApM
-         G1/jyJ9cjy6Ju1xnOpxHDlTv118laUn+8Su84kFr4huvzl0SYCMzKb1yVVAZ6M+Eb7eR
-         9kvE5ADKhVODEnnw5GYLTSy/qDcxynLsw4iyrGcklALCypiDUPeUAYz8Rkl2qP3P0QKG
-         PA1LM4+cqEqIzNNBP9SU0uYXbuNg6MQNkTnCOIiDz2v26PgkYcDjkj6YBeuVlELuVyCH
-         srsQ==
+        bh=r33juuDhxpRv3fs4picW8W/vWVmFXWxdVuweemqS2vM=;
+        b=MOmMFLFEYUAiwcnj1L9ZyRwKC7OfyvhFlm4UnyI7IkUw6awtZGGUftFBdRs+SRqwyO
+         JG6Nqq8s2255IC9p22ljcd7OsWWG5Ru2NCFbKghlX7BUtmX4JIMWC7ILGpux019lJMup
+         3fAgR3szQ4IfmllWOqFqZjOTiYd2WsZjnfp5A+sJJa7eg2GRIhE3myWOjqP7vqi013ni
+         4N1312G4oYwgXwI/zZl4sK97j0+87nCpTaSBCLLeu6U0Rhehq7twlhUZOZoHZCxr5cMc
+         QX9Xm1XiwPQ4BfzFzzM84v8aJ5dFfwgRLj1dgcZs/LQbfloK3Pn+iCbmALWkrX6rbCHS
+         0Y6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698218001; x=1698822801;
+        d=1e100.net; s=20230601; t=1698218210; x=1698823010;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TqIYVjbVykHDBWsSbBXqeLIv64N31yMqWYJySIvQSyM=;
-        b=HhJpiU1oMCFjXoBus5ZDfKaNfG9Dm9NUsRG+QURwoxguw2rX4wqqyYy65jn0NZVSHU
-         BKetFLCMSeX8gxDiBo+dfcYYTU+NqiKSB9Wl3Mnmp2cmsWRBbi+i/3lpE7Yo55rwAuHe
-         lJBt+4+LCLL/l45xyOtNA/v13aJ3i3KVsO1x2PU/kV3CNLgSvj8Ycm4VMsOc2CzGjPvU
-         1jraLDjQwHXaqvlt532YwCW7penb0Mp3NBwmhcm0ql4wNm/VWanZQoCT1V45QT4mf/vo
-         kiPcfFcNPlVsI95DGSbCAPJQTuqDNPoWbHwCROnZSt/D3TNJVimK8L+Dvn74cOzrL6KM
-         OBQw==
-X-Gm-Message-State: AOJu0YzwnhbKBIwa3lA6DTw61zGeyOP88iqmO+4aQ/MK64I/kv+GadYy
-        zdJnKcYjeYLuWxK7hghuUChTHg==
-X-Google-Smtp-Source: AGHT+IH71pXZEevZ3Xy+2cXpER+HyjfzY+scn/BYMVNFIEL+pxCkSy/PWX75BazUjS66C4yF1x0Rmg==
-X-Received: by 2002:a50:9994:0:b0:53e:781c:da3d with SMTP id m20-20020a509994000000b0053e781cda3dmr10556315edb.25.1698218001328;
-        Wed, 25 Oct 2023 00:13:21 -0700 (PDT)
+        bh=r33juuDhxpRv3fs4picW8W/vWVmFXWxdVuweemqS2vM=;
+        b=mSbHPXCJzzOx446u6BfFhFcjK12QZ+iCorE0kflTfNwXX9cw+ck2Zz2SBYNs2PPBxQ
+         mDEY4FC/VlPX88dnJ517VadpbFN8GMjLwAMa2OGGed0LIx8breE6ULZsDAWsjSLlWcxA
+         iqgAtQ3DotNJELAKOLE93N6GUTZrn9Rf5eDCoLij11DwuhfXRaAFq/Z1EfQ8UuGrWchx
+         S+smXzgVOgV8sJrOnJIw2O6Z7EcpkkjZp+LOKA+Jdoi37RUeQv7oLxbeOsrZUwi2Os7T
+         NgOKpU/kvpGhPxfNrRSfrP8pWn1zoUY1quJeF5i3WiUHaX+UulqnbEwRVO1hA0vR2OtA
+         /2dQ==
+X-Gm-Message-State: AOJu0YwLwD+3SUS8qROUDu+Z3NdufRDJfZ3k7dZADE4nS4qw899uXkxJ
+        Jn+PG4tTvFKCuJVPez5rXFDNxw==
+X-Google-Smtp-Source: AGHT+IG2G5zks4s4CMfO5hLj05daZ1JwOS1hDPw3pcGVQyu3CwwVvVX7VPgkaAEl1gP5Tt1obv+Wjg==
+X-Received: by 2002:a17:906:fd8b:b0:9bd:e017:370e with SMTP id xa11-20020a170906fd8b00b009bde017370emr11319701ejb.54.1698218209991;
+        Wed, 25 Oct 2023 00:16:49 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id dm28-20020a05640222dc00b0053def18ee8bsm8943831edb.20.2023.10.25.00.13.19
+        by smtp.gmail.com with ESMTPSA id la5-20020a170906ad8500b009adce1c97ccsm9280236ejb.53.2023.10.25.00.16.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Oct 2023 00:13:20 -0700 (PDT)
-Message-ID: <d021834d-ed22-42b8-af68-e5b3c85a7f43@linaro.org>
-Date:   Wed, 25 Oct 2023 09:13:19 +0200
+        Wed, 25 Oct 2023 00:16:49 -0700 (PDT)
+Message-ID: <d0ab3e30-0b19-4a96-8fd5-c6937af1658f@linaro.org>
+Date:   Wed, 25 Oct 2023 09:16:47 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] ARM: dts: qcom: samsung-matisse-common: Add UART
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
 Content-Language: en-US
-To:     Stefan Hansson <newbyte@postmarketos.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+To:     Huacai Chen <chenhuacai@kernel.org>, Marc Zyngier <maz@kernel.org>
+Cc:     Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-References: <20231024204505.125813-1-newbyte@postmarketos.org>
- <20231024204505.125813-5-newbyte@postmarketos.org>
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org, frowand.list@gmail.com
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+ <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
+ <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
+ <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+ <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org>
+ <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+ <86wmxcejav.wl-maz@kernel.org>
+ <c7898abf-34ca-d0b4-fd0c-935100dcd3f2@flygoat.com>
+ <86pm2ye2si.wl-maz@kernel.org>
+ <CAMpQs4LjePLy5RFMz2S=1sa9Zme_UrJmKKRog0LAg_ZhA07TMA@mail.gmail.com>
+ <CAOiHx=mq3hw-LFerb9UzU7VSnLypnvPuo1GomCnN=p0u3xN1Ug@mail.gmail.com>
+ <CAMpQs4+neiaJKp93UcemJbPPbhmf1B7WYNqKh=qx0avrbwW2cQ@mail.gmail.com>
+ <CAOiHx==uSQrO6+Ob1qe3NaRdXoGTwLYSS8S7YYMwQ4zhSbX75g@mail.gmail.com>
+ <CAAhV-H4yZ7DKx865M1RN+0L8CZjua=wBMsuXT0ekNANRN+RWAg@mail.gmail.com>
+ <CAMpQs4Kug8dOWHD+nqAbGkmqkWU=y=k6+VwojETn8PEwf+MSPA@mail.gmail.com>
+ <87wmvh5vyb.wl-maz@kernel.org>
+ <CAAhV-H6g+eCj6B2S6HWhv-9AqWZkf9gaN-=TUmhHDe3Qx9_o+A@mail.gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -113,9 +133,9 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231024204505.125813-5-newbyte@postmarketos.org>
+In-Reply-To: <CAAhV-H6g+eCj6B2S6HWhv-9AqWZkf9gaN-=TUmhHDe3Qx9_o+A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -126,17 +146,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/10/2023 22:33, Stefan Hansson wrote:
-> This was not enabled in the matisse-wifi tree.
-
-Your commit msg should explain why this should be enabled.
-
+On 25/10/2023 03:56, Huacai Chen wrote:
+> Hi, Krzysztof,
 > 
-> Signed-off-by: Stefan Hansson <newbyte@postmarketos.org>
-> ---
->  .../boot/dts/qcom/qcom-msm8226-samsung-matisse-common.dtsi    | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
+> On Fri, Oct 20, 2023 at 8:18 PM Marc Zyngier <maz@kernel.org> wrote:
+>>
+>> On Fri, 20 Oct 2023 10:51:35 +0100,
+>> Binbin Zhou <zhoubb.aaron@gmail.com> wrote:
+>>>
+>>> Hi Krzysztof & Marc:
+>>>
+>>> Sorry for the interruption.
+>>> As said before, we tried to use the 'interrupt-map attribute' in our
+>>> Loongson liointc dts(i), but there are some unfriendly points.
+>>> Do you have any other different suggestions?
+>>
+>> I don't have any suggestion, but if you are still thinking of adding
+>> some extra crap to the of_irq_imap_abusers[] array, the answer is a
+>> firm 'NO'.
+> Excuse me, but as described before, 'interrupt-map' cannot be used for
+> liointc unless adding it to of_irq_imap_abusers[], can we still use
+> 'parent_int_map' in this case? Or just change it to 'parent-int-map'
+> to satisfy the naming style?
+
+Why do you respond to me? You received firm 'NO' about
+of_irq_imap_abusers, so how adhering to naming style or violating naming
+style has anything to do with it?
 
 Best regards,
 Krzysztof
