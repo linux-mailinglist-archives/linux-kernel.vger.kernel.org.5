@@ -2,131 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 605927D6682
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A17A7D6687
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 11:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbjJYJQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 05:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
+        id S234066AbjJYJRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 05:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234066AbjJYJQt (ORCPT
+        with ESMTP id S234128AbjJYJRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 05:16:49 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 220D7187;
-        Wed, 25 Oct 2023 02:16:47 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-457c441555cso1968473137.3;
-        Wed, 25 Oct 2023 02:16:47 -0700 (PDT)
+        Wed, 25 Oct 2023 05:17:07 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2419018A
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:17:04 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32dc918d454so3453931f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 02:17:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698225406; x=1698830206; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EXDj7UmqGpf4o1RnvyXyvt/9oEx9PkyWj6Qbo9+PLek=;
-        b=RLo5AZ+V65WxDT1DmOVZG0MHFkYlot8a8byJmMHaCM5H98JnaF2bEbJahnx/jX/cBx
-         eUTUenIL9eQOos7KpAisivxsckM+nD4EC5Zhq8PTx0+MS3AkGxFo00qURcM+dGX3x6PJ
-         mqZ5VRAsrrxuJ+Tai0/x5R6bn5Oq1VRMVcBrquXR8GJ3iuPa79X4Qv/Nq+lKqfMZFBrD
-         Ra9JRD9OjkVQwKu1S2NUxxhIC2xk+BSo1xNw7AVK8aCi+RmrvTPtdxtmis+fCsAhHrCG
-         0IM93DuC+worI4zqoj046A7neNqtyJ0YWVuO73ah8mTs5wfHwip6A20cLV4le1einc1f
-         QVPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698225406; x=1698830206;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+        d=linaro.org; s=google; t=1698225422; x=1698830222; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=EXDj7UmqGpf4o1RnvyXyvt/9oEx9PkyWj6Qbo9+PLek=;
-        b=vhvsbhI0BAwCpuy6+CZPJsoLkCF0BHey+10Hjlm4j57PrDUpP9OJ3ri0uBm2LcJ8Bx
-         Pour2U37PokpW1JWbCxDMlHuWvI2x3XxD1P4vZfEuDLQIiLqOzbIbzax+lhSgQKw+61W
-         jMF43Z67MM0Dcm7wFWYW7GYtkyhYfCU8xLGN1g7j8Dt31frhpZnSE1q/fPdIl9DxBlvr
-         LEDdjFdqu6FFEUA9mYvcdDJkVQDcz37tIuoOHUStkTVdKZ1Tii/XcNZQsj199iPfjzKL
-         lu5c/5A26fCCVzQm6qIvFlsUpIG/uxI64sMvlQbrIr7DWMZ2/Ljxqp0hSf/ks4sY/NB7
-         +2cg==
-X-Gm-Message-State: AOJu0YwCGkeYESyRZyq+UMCAtjIhGqJEO8YLbRPYgwz5F3Y+lpzwjE8H
-        961P9307KhcnDG8Srrj3b7pMjxRQUXou270zpmeqUdcgcQ==
-X-Google-Smtp-Source: AGHT+IExPU+oUaJs3JlxiDqGLrpRCbfCe5ZnpCMy/r8O1byNw0a4N+ZitImCLo429XQHmy/hd3SuSXM+uwivDKBHE9o=
-X-Received: by 2002:a05:6102:475c:b0:45a:d57c:36f9 with SMTP id
- ej28-20020a056102475c00b0045ad57c36f9mr807656vsb.22.1698225406013; Wed, 25
- Oct 2023 02:16:46 -0700 (PDT)
+        bh=AaovmCR+vKVsYRI0jLyRnywwMjKyU4XWYrWkt7hSV6c=;
+        b=zDcusO45QWs98GdDBBOKRJL1sghPdEoYLTG+GSCt5+WnXouhvjoTXEn34IkFZosovw
+         vMjH6hjpAPhwJjXompQF0FxiogSNH+739bopIU0aeh1f2zQ1FG/kHqhDPXK9UOFMAZ4M
+         uhthZaYdsSTHRld9kday5oG0scem/XM9gq5/mV+EQwjusJtdgo2XaIB6lCZzLMGLOqDI
+         35ObVE+z/AOF5WL4iU/F+DS7jR+uAju/x327DgB3ylHbv7sccEoRDdjK0+MQ1Lth9ehn
+         foc1H2xXfEAogdDDzthClktghbcBSBEWD4JjQBrG42kNyHEoNlSJYpO6MoykDY0S+gxL
+         CX6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698225422; x=1698830222;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AaovmCR+vKVsYRI0jLyRnywwMjKyU4XWYrWkt7hSV6c=;
+        b=Eu7BQbuZdWPvGTknk0ARcSTOVorH7eXWOOlicuBIq1Jk7hWEOWbWjuSKivqGWUCnhw
+         3vxKAvjKh0RcU8fEDpk0e+kNCy0z4CFXeHZso0Vjk677xCJqCF2GNQlwQooMQHX8YBHe
+         GBBTegl1BdpdxOuq+vRA2oUxsXY7D31SVutfSR8ttBfm1JCpiBGvAl7fN8HL0xZ/OmpV
+         iI4HQlkGMIcgD3SOTbGKWD/PV/LPcvP153hok+zAZ/1humzuGaZYxitXyUIXLY31bgxd
+         RsvQSh2wA0zHbPhAU9vBDH69k3NXG88mkz4gpLlftoGwRmybUZaCRorAEMdkRpYLWzlC
+         Qkcw==
+X-Gm-Message-State: AOJu0YzLQc8QTh2THXDaLr6SlHr5xzxzspXb5neFcfUALhUa/tr1U4mV
+        RKqdm+X6L4HrIz/beF94eBqs8Q==
+X-Google-Smtp-Source: AGHT+IEjtZWVx0fnTWeWaxNigQi1jnKYuL20xdDwdAmGbc4vAvF62ZKAU8kUC2ioJnwUUkTJm/6+4g==
+X-Received: by 2002:a5d:58ee:0:b0:32d:9850:9e01 with SMTP id f14-20020a5d58ee000000b0032d98509e01mr10613637wrd.61.1698225422345;
+        Wed, 25 Oct 2023 02:17:02 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id q6-20020adfb186000000b0032326908972sm11770913wra.17.2023.10.25.02.17.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 02:17:01 -0700 (PDT)
+Message-ID: <6cedd9fe-ae5b-4173-9a77-ef4d7813a071@linaro.org>
+Date:   Wed, 25 Oct 2023 11:17:00 +0200
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Wed, 25 Oct 2023 11:16:34 +0200
-Message-ID: <CACkBjsYXA8myxoP0Naz=ZxB0FWG-xS9e28CSFffGk1bA_n5RXw@mail.gmail.com>
-Subject: bpf: incorrect value spill in check_stack_write_fixed_off()
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 3/8] arm64: dts: qcom: pm8550ve: make PMK8550VE SID
+ configurable
+Content-Language: en-US
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231025-topic-sm8650-upstream-dt-v1-0-a821712af62f@linaro.org>
+ <20231025-topic-sm8650-upstream-dt-v1-3-a821712af62f@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231025-topic-sm8650-upstream-dt-v1-3-a821712af62f@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 25/10/2023 09:47, Neil Armstrong wrote:
+> The pm8550ve can be found with a different SID on SM8650 platforms,
+> make it configurable.
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/pm8550ve.dtsi | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/pm8550ve.dtsi b/arch/arm64/boot/dts/qcom/pm8550ve.dtsi
+> index c47646a467be..fbd8a386cef2 100644
+> --- a/arch/arm64/boot/dts/qcom/pm8550ve.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/pm8550ve.dtsi
+> @@ -6,6 +6,11 @@
+>  #include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/spmi/spmi.h>
+>  
+> +/* (Sadly) this PMIC can be configured to be at different SIDs */
+> +#ifndef PMK8550VE_SID
+> +	#define PMK8550VE_SID 5
+> +#endif
 
-In check_stack_write_fixed_off(), the verifier creates a fake reg to store the
-imm in a BPF_ST_MEM:
-...
-else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &&
-insn->imm != 0 && env->bpf_capable) {
-        struct bpf_reg_state fake_reg = {};
+My statement is still the same - NAK, for defines depending on ifndef. I
+believe outcome of our last discussion - including meeting in Amsterdam
+- was only to have defines in the board without any ifndef/ifdef.
 
-        __mark_reg_known(&fake_reg, (u32)insn->imm);
-        fake_reg.type = SCALAR_VALUE;
-        save_register_state(state, spi, &fake_reg, size);
+Best regards,
+Krzysztof
 
-Here, insn->imm is cast to u32, and used to mark fake_reg, which is incorrect
-and may lose sign information. Consider the following program:
-
-r2 = r10
-*(u64*)(r2 -40) = -44
-r0 = *(u64*)(r2 - 40)
-if r0 s<= 0xa goto +2
-r0 = 0
-exit
-r0  = 1
-exit
-
-The verifier gives the following log:
-
--------- Verifier Log --------
-func#0 @0
-0: R1=ctx(off=0,imm=0) R10=fp0
-0: (bf) r2 = r10                      ; R2_w=fp0 R10=fp0
-1: (7a) *(u64 *)(r2 -40) = -44        ; R2_w=fp0 fp-40_w=4294967252
-2: (79) r0 = *(u64 *)(r2 -40)         ; R0_w=4294967252 R2_w=fp0
-fp-40_w=4294967252
-3: (c5) if r0 s< 0xa goto pc+2
-mark_precise: frame0: last_idx 3 first_idx 0 subseq_idx -1
-mark_precise: frame0: regs=r0 stack= before 2: (79) r0 = *(u64 *)(r2 -40)
-3: R0_w=4294967252
-4: (b7) r0 = 1                        ; R0_w=1
-5: (95) exit
-verification time 7971 usec
-stack depth 40
-processed 6 insns (limit 1000000) max_states_per_insn 0 total_states 0
-peak_states 0 mark_read 0
-
-Here, the verifier incorrectly thinks R0 is 0xffffffd4, which should
-be 0xffffffffffffffd4,
-due to the u32 cast in check_stack_write_fixed_off(). This makes the verifier
-collect incorrect reg scalar range.
-
-Since insn->imm is i32, we should cast it to the signed integer with
-correct size
-according to BPF_MEM, then promoting the imm to u64 to mark fake reg as
-known, right?
-
-Best
-Hao
