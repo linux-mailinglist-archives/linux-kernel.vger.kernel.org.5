@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6F37D6565
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751537D65A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 10:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbjJYIls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 04:41:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
+        id S234532AbjJYIqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 04:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbjJYIlr (ORCPT
+        with ESMTP id S234163AbjJYIqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 04:41:47 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192C39C;
-        Wed, 25 Oct 2023 01:41:45 -0700 (PDT)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SFj8N0lhxz4f3prr;
-        Wed, 25 Oct 2023 16:41:40 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-        by mail.maildlp.com (Postfix) with ESMTP id 06C941A016E;
-        Wed, 25 Oct 2023 16:41:42 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP4 (Coremail) with SMTP id gCh0CgDHXd3E1DhlVE+YDw--.27079S4;
-        Wed, 25 Oct 2023 16:41:41 +0800 (CST)
-From:   Zhong Jinghua <zhongjinghua@huaweicloud.com>
-To:     axboe@kernel.dk, penguin-kernel@i-love.sakura.ne.jp
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhongjinghua@huawei.com, yi.zhang@huawei.com, yukuai3@huawei.com
-Subject: [PATCH] block: Fix minor range check in device_add_disk()
-Date:   Wed, 25 Oct 2023 16:46:21 +0800
-Message-Id: <20231025084621.2338604-1-zhongjinghua@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 25 Oct 2023 04:46:31 -0400
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B100D12D
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:46:29 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4083cd3917eso42504335e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 01:46:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698223588; x=1698828388;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m1ZjEHbTsHlHkXNSxUQ649cm4bB19yW91JTpETbgOUM=;
+        b=ow27Y9hWy9pmN3po3UWneO8tTEZfSK3Hkt7QoEsqJQJdPKLNbNLUqlnOTawS+98fHL
+         ztb3UYwAAhoMXsZMnPWqdDjQnLt5aB/FC6OMbncHDSrjYg3D+0F4lesMzuUjekP4KfrT
+         tOkLYwb3lblo3P94MIOcYi+yYVdxjNQKGPne06l8O4Eea5ANFulaIrn4ZfYDkokCtQGO
+         Z8f9qH0zFnKqhn5tN3m+fW9gzPcqZMur9CW4wxgm5g53FOFYt/a1OplrQTEZ1X13GZQY
+         oRY9YiDISwz1GEbcOwWJN3cs2U1TpssqZzLZoYYXZMoXD7d2oLqvAH5mOsG5e8qEWRQ2
+         7l+A==
+X-Gm-Message-State: AOJu0YzTxvPDR36lggPpGgreEH47KO7/p4B/g00t2xG0ux+zbUZRvxZH
+        Dmv+AdRR7x/dlTuNwhbJr0VucV8Pcao=
+X-Google-Smtp-Source: AGHT+IHfIYTtNkbRwxzdcqiOuKzqeWCiHc0iRD0aUgNd4LlPTuonfpAOQW2eZe/LHO0pvGVstAMIOw==
+X-Received: by 2002:a05:600c:4b96:b0:404:6ed9:98d1 with SMTP id e22-20020a05600c4b9600b004046ed998d1mr10967497wmp.41.1698223587695;
+        Wed, 25 Oct 2023 01:46:27 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id t10-20020a05600c198a00b00403b63e87f2sm14232859wmq.32.2023.10.25.01.46.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 25 Oct 2023 01:46:27 -0700 (PDT)
+Message-ID: <77bf1ff4-86ca-4fa1-a590-9860a5dcf04f@kernel.org>
+Date:   Wed, 25 Oct 2023 10:46:26 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHXd3E1DhlVE+YDw--.27079S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrur4rKF4kJw1rCF4rtFW3Awb_yoWDCFX_Gr
-        y5Xr95Wr1rWr1rCrn8urnFyry0yr95Way8CFy0vFZxXayxCF9Fq34DKr1FgF1DWFyjkFW5
-        ur1UZrn8tr4IkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbr8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
-        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
-        AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
-        IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WF
-        yUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIY
-        CTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: x2kr0wpmlqwxtxd6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] misc: phantom: make phantom_class constant
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>
+References: <2023102434-font-feast-98e3@gregkh>
+Content-Language: en-US
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <2023102434-font-feast-98e3@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhong Jinghua <zhongjinghua@huawei.com>
+On 24. 10. 23, 13:49, Greg Kroah-Hartman wrote:
+> Now that the driver core allows for struct class to be in read-only
+> memory, we should make all 'class' structures declared at build time
+> placing them into read-only memory, instead of having to be dynamically
+> allocated at runtime.
+> 
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
 
-Checks added in patch:
-commit e338924bd05d ("block: check minor range in device_add_disk()")
-ignore the problem of first_minore < 0 and disk->minors < 0.
+The code:
 
-Fix it by adding first_minore < 0 and disk->minors < 0 check.
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-Fixes: e338924bd05d ("block: check minor range in device_add_disk()")
-Signed-off-by: Zhong Jinghua <zhongjinghua@huawei.com>
----
- block/genhd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> igned-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 736215e9ddc3..8292a1e265cf 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -432,7 +432,9 @@ int __must_check device_add_disk(struct device *parent, struct gendisk *disk,
- 				DISK_MAX_PARTS);
- 			disk->minors = DISK_MAX_PARTS;
- 		}
--		if (disk->first_minor + disk->minors > MINORMASK + 1)
-+		if (disk->first_minor > MINORMASK ||
-+			disk->minors > (1U << MINORBITS) ||
-+			disk->first_minor + disk->minors > MINORMASK + 1)
- 			goto out_exit_elevator;
- 	} else {
- 		if (WARN_ON(disk->minors))
+But I am missing ^S here.
+
 -- 
-2.31.1
+js
 
