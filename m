@@ -2,74 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AA97D72A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AE07D72A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 19:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbjJYRti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 13:49:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48252 "EHLO
+        id S229978AbjJYRuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 13:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbjJYRtg (ORCPT
+        with ESMTP id S229854AbjJYRty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 13:49:36 -0400
+        Wed, 25 Oct 2023 13:49:54 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B990181;
-        Wed, 25 Oct 2023 10:49:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96A26C433C8;
-        Wed, 25 Oct 2023 17:49:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F7B137;
+        Wed, 25 Oct 2023 10:49:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FF2EC433C7;
+        Wed, 25 Oct 2023 17:49:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698256173;
-        bh=CeyTBZs2xeQb0TaJ5m+PpCM8nU28HSwaY1ik5tYD5o0=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=nadt9RxLEqdHQTzPCvB13pBQ1Ju+RhH3NuQ+TT+dsOEsLlKYWgzWmdZbyM7HjHxsG
-         R7PqnTwS5jDxcU0LCHA15oW67sHKbxeTFWDFsZkNjS6wPoDme83JMnIAkPZg+iMOiG
-         gvM89z6zDpLOCUhfgShobVv5NtRtt4igElnNjJJ596qVQ+FJAdlCIlJVfWw15kw+fH
-         f5I8rbfwXSh5SoR2cWdwEa/TzVEJcmGZb6bAlUNACxoItcxlsz1b14qIJ0v05LDXT/
-         /IOHbguBYqKOkVKZvQ+XVSmfCas70j1oqYv3vTtDp6JapFQpKWQ/rNR8apP0znKWAp
-         pOMIzfudAr/HA==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 25 Oct 2023 20:49:24 +0300
-Message-Id: <CWHPKFQIGWPM.B6IBLPXVBR1E@suppilovahvero>
-Cc:     "Shawn Guo" <shawnguo@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Sascha Hauer" <s.hauer@pengutronix.de>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        "Fabio Estevam" <festevam@gmail.com>,
-        "NXP Linux Team" <linux-imx@nxp.com>,
-        "Ahmad Fatoum" <a.fatoum@pengutronix.de>,
-        "sigma star Kernel Team" <upstream+dcp@sigma-star.at>,
-        "David Howells" <dhowells@redhat.com>,
-        "Li Yang" <leoyang.li@nxp.com>, "Paul Moore" <paul@paul-moore.com>,
-        "James Morris" <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Tejun Heo" <tj@kernel.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-integrity@vger.kernel.org>, <keyrings@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linuxppc-dev@lists.ozlabs.org>,
-        <linux-security-module@vger.kernel.org>,
-        "Richard Weinberger" <richard@nod.at>,
-        "David Oberhollenzer" <david.oberhollenzer@sigma-star.at>
-Subject: Re: [PATCH v4 2/5] KEYS: trusted: Introduce NXP DCP-backed trusted
- keys
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "David Gstir" <david@sigma-star.at>,
-        "Mimi Zohar" <zohar@linux.ibm.com>,
-        "James Bottomley" <jejb@linux.ibm.com>,
-        "Herbert Xu" <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-X-Mailer: aerc 0.15.2
-References: <20231024162024.51260-1-david@sigma-star.at>
- <20231024162024.51260-3-david@sigma-star.at>
-In-Reply-To: <20231024162024.51260-3-david@sigma-star.at>
+        s=k20201202; t=1698256192;
+        bh=GfTn7Xee+oCBAL1wjgkcyUybl3bF+IE0RYsaSIgCmWU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PVjQaFBLNuLj6tf0nMM9dkdTLSzQJ2nilbMLvi//5ZNnxBgCF498kCqxgeq5fD3TN
+         Q+SMDQ84yCAnOf9RSjnqhg4NJ3UNy9b5LG8biq8Snl6E9B0pi+HooxzgGXo7ZgEqim
+         rBKA79B7NH6YTf7G5Ens/K0U7uo9y0Skk6VNQkkZg6JPbUzA4LhSsP+T8EFfSd99cI
+         lhveiAZ99EFtzU2M1rudgc9xKYdXf+AsrFnshRSKjSa7cTPgA8sc4iZAlc+ixQQxQY
+         Qd5UwgADNsgp/qFmnaiPqPb1Ch6eJv9yeWGkq4JiivvSxHhcv4VB8TOUz2kZRv8OZG
+         h0MfQvqXaGdDA==
+Date:   Wed, 25 Oct 2023 18:49:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: Re: [PATCH RFC 1/2] regulator: core: Disable unused regulators with
+ unknown status
+Message-ID: <802e7f15-029c-4eb6-b0d8-53d16f7da37a@sirena.org.uk>
+References: <20231004-reg-smd-unused-v1-0-5d682493d555@kernkonzept.com>
+ <20231004-reg-smd-unused-v1-1-5d682493d555@kernkonzept.com>
+ <80307316-f55e-4540-9c5f-655844c3b3f4@sirena.org.uk>
+ <ZTeHAqL5QB2w33RN@kernkonzept.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2sywMGf7CHfsxokJ"
+Content-Disposition: inline
+In-Reply-To: <ZTeHAqL5QB2w33RN@kernkonzept.com>
+X-Cookie: There's no time like the pleasant.
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -79,129 +58,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Oct 24, 2023 at 7:20 PM EEST, David Gstir wrote:
-> DCP (Data Co-Processor) is the little brother of NXP's CAAM IP.
-> Beside of accelerated crypto operations, it also offers support for
-> hardware-bound keys. Using this feature it is possible to implement a blo=
-b
-> mechanism similar to what CAAM offers. Unlike on CAAM, constructing and
-> parsing the blob has to happen in software (i.e. the kernel).
->
-> The software-based blob format used by DCP trusted keys encrypts
-> the payload using AES-128-GCM with a freshly generated random key and non=
-ce.
-> The random key itself is AES-128-ECB encrypted using the DCP unique
-> or OTP key.
->
-> The DCP trusted key blob format is:
-> /*
->  * struct dcp_blob_fmt - DCP BLOB format.
->  *
->  * @fmt_version: Format version, currently being %1
->  * @blob_key: Random AES 128 key which is used to encrypt @payload,
->  *            @blob_key itself is encrypted with OTP or UNIQUE device key=
- in
->  *            AES-128-ECB mode by DCP.
->  * @nonce: Random nonce used for @payload encryption.
->  * @payload_len: Length of the plain text @payload.
->  * @payload: The payload itself, encrypted using AES-128-GCM and @blob_ke=
-y,
->  *           GCM auth tag of size AES_BLOCK_SIZE is attached at the end o=
-f it.
->  *
->  * The total size of a DCP BLOB is sizeof(struct dcp_blob_fmt) + @payload=
-_len +
->  * AES_BLOCK_SIZE.
->  */
-> struct dcp_blob_fmt {
-> 	__u8 fmt_version;
-> 	__u8 blob_key[AES_KEYSIZE_128];
-> 	__u8 nonce[AES_KEYSIZE_128];
-> 	__le32 payload_len;
-> 	__u8 payload[];
-> } __packed;
->
-> By default the unique key is used. It is also possible to use the
-> OTP key. While the unique key should be unique it is not documented how
-> this key is derived. Therefore selection the OTP key is supported as
-> well via the use_otp_key module parameter.
->
-> Co-developed-by: Richard Weinberger <richard@nod.at>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> Co-developed-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-> Signed-off-by: David Gstir <david@sigma-star.at>
-> ---
->  include/keys/trusted_dcp.h                |  11 +
->  security/keys/trusted-keys/Kconfig        |   9 +-
->  security/keys/trusted-keys/Makefile       |   2 +
->  security/keys/trusted-keys/trusted_core.c |   6 +-
->  security/keys/trusted-keys/trusted_dcp.c  | 311 ++++++++++++++++++++++
->  5 files changed, 337 insertions(+), 2 deletions(-)
->  create mode 100644 include/keys/trusted_dcp.h
->  create mode 100644 security/keys/trusted-keys/trusted_dcp.c
->
-> diff --git a/include/keys/trusted_dcp.h b/include/keys/trusted_dcp.h
-> new file mode 100644
-> index 000000000000..9aaa42075b40
-> --- /dev/null
-> +++ b/include/keys/trusted_dcp.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2021 sigma star gmbh
-> + */
-> +
-> +#ifndef TRUSTED_DCP_H
-> +#define TRUSTED_DCP_H
-> +
-> +extern struct trusted_key_ops dcp_trusted_key_ops;
-> +
-> +#endif
-> diff --git a/security/keys/trusted-keys/Kconfig b/security/keys/trusted-k=
-eys/Kconfig
-> index dbfdd8536468..c6b80b7e5c78 100644
-> --- a/security/keys/trusted-keys/Kconfig
-> +++ b/security/keys/trusted-keys/Kconfig
-> @@ -33,6 +33,13 @@ config TRUSTED_KEYS_CAAM
->  	  Enable use of NXP's Cryptographic Accelerator and Assurance Module
->  	  (CAAM) as trusted key backend.
-> =20
-> -if !TRUSTED_KEYS_TPM && !TRUSTED_KEYS_TEE && !TRUSTED_KEYS_CAAM
-> +config TRUSTED_KEYS_DCP
-> +	bool "DCP-based trusted keys"
-> +	depends on CRYPTO_DEV_MXS_DCP >=3D TRUSTED_KEYS
-> +	default y
-> +	help
-> +	  Enable use of NXP's DCP (Data Co-Processor) as trusted key backend.
-> +
-> +if !TRUSTED_KEYS_TPM && !TRUSTED_KEYS_TEE && !TRUSTED_KEYS_CAAM && !TRUS=
-TED_KEYS_DCP
 
-This does not scale tbh.
+--2sywMGf7CHfsxokJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I'd suggest to add additional patch before adding the new key type,
-which clears this up a little bit.
+On Tue, Oct 24, 2023 at 10:57:38AM +0200, Stephan Gerhold wrote:
 
-First:
+> I think it does not change much for this patch, though. Even when
+> implemented in the core we still need to represent this situation
+> somehow for regulator_is_enabled(). Simply returning 0 (disabled) or
+> 1 (enabled) would be wrong. Do you think returning -EBUSY would be
+> appropriate for that?
 
-config HAVE_TRUSTED_KEYS
-	bool
+In these cases where we simply can't read the expectation is that we'll
+always be using the logical state - one way of thinking about it is that
+the operation is mostly a bootstrapping helper to figure out what the
+initial state is.  A quick survey of users suggest they'll pretty much
+all be buggy if we start returning errors, and I frankly even if all the
+current users were fixed I'd expect that to continue to be a common
+error.  I suppose that the effect of ignoring the possibility of error
+is like the current behaviour though.
 
-And then following this pattern to all trusted key types:
+> The second challenge I see on a quick look is that both
+> qcom_smd-regulator.c and qcom-rpmh-regulator.c use their reference
+> counter internally in other function (e.g. to decide if a voltage change
+> should be sent, see "vreg->enabled" checks). I think we would also need
+> to add some rdev_is_enabled() function that would expose the core
+> reference counter to the driver?
 
-config TRUSTED_KEYS_DCP
-	bool "DCP-based trusted keys"
-	depends on CRYPTO_DEV_MXS_DCP >=3D TRUSTED_KEYS
-	default y
-	select HAVE_TRUSTED_KEYS
-	help
-	  Enable use of NXP's DCP (Data Co-Processor) as trusted key backend.
+> Tracking the enable state in the driver (the way it is right now) is not
+> that much code, so I'm not entirely sure if we might actually end up
+> with more code/complexity when moving this to the core.
 
-And finally:
+We have to do the reference count in the core anyway since it's a
+reference count not just a simple on/off so it doesn't really cost us
+anything to make it available to drivers.
 
-if !HAVE_TRUSTED_KEYS
-	comment "No trust source selected!"
-endif
+--2sywMGf7CHfsxokJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-BR, Jarkko
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmU5VToACgkQJNaLcl1U
+h9DB4wf7BiRuxxpXWmgvX+9voz3yXyMjnGHpDT7SedjySMwy6VoNAI4SRRINPF7y
+IEMTL/lgYq89V0yfyp2HzXZJrjJ6nn+93l6fVj/0ya//0blP6du/EIsSpL2/fADl
+FqFVPo4hd7Vx6XwJGFm7H1O1iPn84xq2muca1fdOvi58KVDbLTtV/ewWKh9IhGNs
+NDCVv87dqn3QfIblJUEfOJRR5KKFb4LNdq8DzIdqAg93Pg7FsRtWpOL8/IOxpp9a
+uUGESQA7gpqtIM9bZxAaA1XH4jV+g8mxEtScpoSfLQgRZruKY1lkarGU0mUmKrbh
+h0V/GWJOTgdVf8sFflAYrBQtw8KB0w==
+=GKpo
+-----END PGP SIGNATURE-----
+
+--2sywMGf7CHfsxokJ--
