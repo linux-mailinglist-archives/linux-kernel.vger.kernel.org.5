@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EB07D7593
+	by mail.lfdr.de (Postfix) with ESMTP id DC3887D7595
 	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235070AbjJYU0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
+        id S1343880AbjJYU0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343904AbjJYUZ2 (ORCPT
+        with ESMTP id S235045AbjJYUZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:25:28 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1ACB10F1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:25:13 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6b77ab73c6fso101444b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:25:13 -0700 (PDT)
+        Wed, 25 Oct 2023 16:25:42 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9C119AA
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:25:19 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6934202b8bdso143407b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:25:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1698265513; x=1698870313; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1698265519; x=1698870319; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ksJT9a6E7b+AgWOW+0QqZAQKxEPs+GfkSTk4Wygp/9k=;
-        b=JPtX39ivNbt4Wu54KHQbjp1dzqEbHENSrbcvDK7ihL8aouRjgAM1qBg0f08HtA9Epz
-         uqxhuOgJssIxhOx5Hdtxi2qNqGoiGAOTpJHtqhzM8/RCoJrrOyAWwNbj7WgPxnxdhNJ/
-         QUCcaLA6nIsojuBhfGSIcOAOGAS30PqwI+9t1tNo9RNydJmC8xkKN3pJEfZCXMfEY6XK
-         XXfnvzgLivw+nwMJOq+PVT3Azu/kavUkoHQdT5Fpb7im21YBKGATma9lx07I7CqEHUUh
-         g8ix8mJPToO7AYfDx1nMKi5QnmRiTuIVnEkjuyp+JOi8/WevGG0hM3Q0gsPDw916+c6y
-         jUGw==
+        bh=5kojFGf2ZSJMlibBdobzZmgsjyx4Ywkx3WkwDcrmlX4=;
+        b=bc4o5R2uRaA6wRDr326evH2qCIY9KhXBqmOap9Rh/as79Qpcg2Qicy4H+VVxFUknNu
+         k4xMf/iXntL0KNo4tITE354JEJ95D9q2fdE+TV7dvjkBac+pd2TI2xoPHFgeP5bmWlsy
+         u5bWElwny2aXk+K/OT1ttCkjs8jSk4H36BTZQrgZQ77cvpSmHm+va+WOAchlKFhdBxMa
+         d4aK1Bu9VaQt6GGDiueX/nis1P4GNpLukPI6x6P7cKWUz8xPut3EL/m9G1kNkWIniLXN
+         ylixWR1+htq/nm9vivn5WMHaHVBkEPwLuqJQfdIuoI6+ko3baX8+AqmTB0gvpHsd9pi1
+         Ddow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698265513; x=1698870313;
+        d=1e100.net; s=20230601; t=1698265519; x=1698870319;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ksJT9a6E7b+AgWOW+0QqZAQKxEPs+GfkSTk4Wygp/9k=;
-        b=NdXvqpD0In62gq/E5SpCyYors+XhjO0WxIFRTpDQlEu1nH7wllYuPeOXZ1ca27FJsR
-         UX1QKHwHdKOCm4f0PR/NlDSakV6x0aRnkoyymN55ic6bMYwECSD6GlSONAppFGcx+A6x
-         inl2xATiIUeLXArxNY/kEE9xbJvyYUbaezVvRsvGO+cXmj/yLrD0UEIxd604k/OX7c0B
-         jn/RNVk7RjCdUT/jnj/hIwqdQBexEGAjrqSmkHfRjE+y7kDLQp9wYmocZgZz22GwAMFO
-         o8dxhW7QcSmP7nzx5+xC0AW8V+D5bMtQl8jkVhPXLi0GtTkd0TmejS8VmQkAU4TpkA2t
-         eG6w==
-X-Gm-Message-State: AOJu0Ywl6mZRFSeaOB9sxSwotwCMcqkcTGn/byHgdiUwsNlCd5u2ctgA
-        ufosK/i7cb5RcFihf25Ya47M+P8xar0lVLgWfLtYig==
-X-Google-Smtp-Source: AGHT+IEV/ROdZJJDw08iKQqN+bmgqdHT2tEV8SRCTGnJc4fD81is4j8SLEFb3dBe1vSckHTdkPvdfA==
-X-Received: by 2002:a05:6a00:478c:b0:6b4:64ac:eab2 with SMTP id dh12-20020a056a00478c00b006b464aceab2mr801836pfb.1.1698265512788;
-        Wed, 25 Oct 2023 13:25:12 -0700 (PDT)
+        bh=5kojFGf2ZSJMlibBdobzZmgsjyx4Ywkx3WkwDcrmlX4=;
+        b=lcCEJqDxIl6KnhksGhxSK83EYjP2tWgE9IdDQXHvDpH+Mr83SGU0a2KvRxTRzoeIZZ
+         axipK66zTxcyVdORLMrT1WEcVfbtr0e543Q3FHytXz/zA2obJgLd8puZTeanysNz8PFd
+         pojSstXe2rOz3pptWO35ICzN3RjJDixSheej57MPCBVTxI26JJoa3NTpwEsOiNUeBcNM
+         M1D8DkJOY1hfzoS+4VQWmrb6jyc1807CC3Sspmi+IpShjR7Pcapill9xGjTTZ6aTPtoI
+         voCQXrat3dnwIZBSlCPZOcxglZDy5dfeKYK3VHcIn/iB+zSChTbPmOwYWaGUKEc8rG6n
+         nOiA==
+X-Gm-Message-State: AOJu0Yw/ih4WIjh2c2DCf+07MbscapLe6NK61whGB9B7CXtjFlQ91l7M
+        c6ArrNh+nmbh51yDMbSgBClzYw==
+X-Google-Smtp-Source: AGHT+IEA5VCpygjnJt29h1aUuFMuVqz64Qf8m3MJ6i95Ryf0OFy3qLoON8TOXsusky9X3JJetvXkcA==
+X-Received: by 2002:aa7:888b:0:b0:6bd:9281:9446 with SMTP id z11-20020aa7888b000000b006bd92819446mr19186279pfe.10.1698265518840;
+        Wed, 25 Oct 2023 13:25:18 -0700 (PDT)
 Received: from sunil-pc.Dlink ([106.51.188.78])
-        by smtp.gmail.com with ESMTPSA id y3-20020aa79423000000b006b84ed9371esm10079590pfo.177.2023.10.25.13.25.07
+        by smtp.gmail.com with ESMTPSA id y3-20020aa79423000000b006b84ed9371esm10079590pfo.177.2023.10.25.13.25.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Oct 2023 13:25:12 -0700 (PDT)
+        Wed, 25 Oct 2023 13:25:18 -0700 (PDT)
 From:   Sunil V L <sunilvl@ventanamicro.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
@@ -71,9 +71,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Atish Kumar Patra <atishp@rivosinc.com>,
         Haibo Xu <haibo1.xu@intel.com>,
         Sunil V L <sunilvl@ventanamicro.com>
-Subject: [RFC PATCH v2 11/21] PCI: MSI: Add helper function to set system wide MSI support
-Date:   Thu, 26 Oct 2023 01:53:34 +0530
-Message-Id: <20231025202344.581132-12-sunilvl@ventanamicro.com>
+Subject: [RFC PATCH v2 12/21] PCI: pci-acpi.c: Return correct value from pcibios_alloc_irq()
+Date:   Thu, 26 Oct 2023 01:53:35 +0530
+Message-Id: <20231025202344.581132-13-sunilvl@ventanamicro.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231025202344.581132-1-sunilvl@ventanamicro.com>
 References: <20231025202344.581132-1-sunilvl@ventanamicro.com>
@@ -90,43 +90,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like pci_no_msi() used to disable MSI support, add a function to enable
-system wide MSI support.
+Return the correct value from pcibios_alloc_irq().
 
 Signed-off-by: Sunil V L <sunilvl@ventanamicro.com>
 ---
- drivers/pci/msi/msi.c | 5 +++++
- drivers/pci/pci.h     | 2 ++
- 2 files changed, 7 insertions(+)
+ drivers/pci/pci-acpi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/msi/msi.c b/drivers/pci/msi/msi.c
-index ef1d8857a51b..e76ccb8b5f0b 100644
---- a/drivers/pci/msi/msi.c
-+++ b/drivers/pci/msi/msi.c
-@@ -913,3 +913,8 @@ void pci_no_msi(void)
+diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+index c8c3369fd69f..80dc0b290544 100644
+--- a/drivers/pci/pci-acpi.c
++++ b/drivers/pci/pci-acpi.c
+@@ -1528,7 +1528,7 @@ arch_initcall(acpi_pci_init);
+ int pcibios_alloc_irq(struct pci_dev *dev)
  {
- 	pci_msi_enable = 0;
+ 	if (!acpi_disabled)
+-		acpi_pci_irq_enable(dev);
++		return acpi_pci_irq_enable(dev);
+ 
+ 	return 0;
  }
-+
-+void pci_set_msi(void)
-+{
-+	pci_msi_enable = 1;
-+}
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 39a8932dc340..2f876c29f75c 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -167,8 +167,10 @@ extern unsigned int pci_pm_d3hot_delay;
- 
- #ifdef CONFIG_PCI_MSI
- void pci_no_msi(void);
-+void pci_set_msi(void);
- #else
- static inline void pci_no_msi(void) { }
-+static inline void pci_set_msi(void) { }
- #endif
- 
- void pci_realloc_get_opt(char *);
 -- 
 2.39.2
 
