@@ -2,121 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9844B7D5F2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 02:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37147D5F34
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 02:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbjJYAuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 24 Oct 2023 20:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
+        id S229583AbjJYAxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 24 Oct 2023 20:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjJYAuX (ORCPT
+        with ESMTP id S229456AbjJYAxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 24 Oct 2023 20:50:23 -0400
-Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7E4E5
-        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 17:50:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1698195018;
-        bh=45eCgoBDJWM1cLlzIrUFrDR5YahR8JmJM/HT9lRcsUI=;
-        h=Date:Subject:To:References:From:In-Reply-To;
-        b=n4mqCO0zvtrdC/Y95bAB/w3+Q6wRLkWD0AUslFreFg0XIriLX9Iktj+BPWWXHK6uj
-         ie367ZTU0jyU263L7znY0Wwy+wHGkTcQWXX2Acfbs6ECjNCVPyamIl3OWo0fW6rWZp
-         1zOCbUksU7Eo3+nmBrfunXqOEc59eKiE9eJW23Z8=
-Received: from [10.56.52.5] ([39.156.73.12])
-        by newxmesmtplogicsvrsza12-0.qq.com (NewEsmtp) with SMTP
-        id C90A145C; Wed, 25 Oct 2023 08:50:16 +0800
-X-QQ-mid: xmsmtpt1698195016tczu6fp14
-Message-ID: <tencent_8BA39A88B7064A427B59AF97B42A6EAFD808@qq.com>
-X-QQ-XMAILINFO: MmCmH9jyqHC2rX88bCSOHJrV8cQgBr8qe3/ubY+JnhXD9J1IZH7glBrlM5cK7r
-         SPdU5Ey3lx8a5AXXFrJ4Y78SGqvxm3PRliWLCn+V/tx5RC+aqqcBr45KdLiwtkimZ1LvPnOqYc3c
-         xgNkrUP9486LsqsRV6sy2wV6+NgYxxq34M/kwvhkzPWw4wMGJLXahB0/bcQHBwVj/pQaik2d0qnW
-         tQIml7/Z+MGYzoFYtH9yC26tsJdZR99OwNthITXY9IApnfCsB7h0zVhHp2TbtX+e8u9ndjbms4Pn
-         VgbY1ESJlx5P2c/p/iBsFEyiGDlVqxB4uRFjCxwOPIZGpy5pMsukZs/YAHSw49YT6mNJXFIMbyl+
-         Aa5ytd5btJoQE7QJAN+G2fIRpBt//GlnekpVNs88OP370AZ9Z5iDzAnkGRgEaubIUCnM2iwYU1JH
-         eedw4akOOvlIxL2KDqeaiXEE7+HcSne+7Etd0f/gM/fxqVRu7auwfTTlzjX/1KuyjMZw4qKh2UP2
-         ExSyhXQ26tyZHulgEY7xPB3TH/KBlDBF52bRs+jOyeH0wLUzOpMpMitCiFZ4GHiTI+bAVOUWfw2/
-         emS60F3w1DEW7DPRnS/srRApww+Uyr5tn1GK5QNHuoCNCOFP4Xj942Z+02V56NEeYOGlqDOZcM4k
-         /HwSh0ueR1x2DyfRdHoz2vMGTDmzVqs5is4H9TkQBadLRc0h2+f6MjOrnfMqmq+36tLGiSyQI25Y
-         svTSj0CIjAn76zezViXlbU/lU6g8Tfg9RJKddKH0C7z65UJDKOHz+Mwe9pzAVes9TOyPcze/MmLt
-         junLsg5cb7sLxn1RFH4H1OePOlICrgf6t9KBst5JRhFMn0oMyvhphftHxeIOB3EesxKCYu8+JAd2
-         F67Rij7XwX/QoaI2II/MhJXzO7nk/bXY9zuhZN8CqSMSB2m9FGDYKMCj47oKaOJY5Xqcz0J7/F80
-         gWUfH+SQQ5aLxAQDYndCGORjcfWNKvhSeaPeIs3gynMs7OtzDq7ft2Xe7C/G+N
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-X-OQ-MSGID: <cdf3d6f1-5cfb-4bea-a19c-f523ec80eb68@foxmail.com>
-Date:   Wed, 25 Oct 2023 08:50:16 +0800
+        Tue, 24 Oct 2023 20:53:43 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07E4E5
+        for <linux-kernel@vger.kernel.org>; Tue, 24 Oct 2023 17:53:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
+        Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=VnS1q2clKXLAKj9U3PxexRupTcDUxeTgMSxPQmKaBQc=; b=qnKRGVmhGbMsLeRQzYW6rb2Lr3
+        sYVnS0V5BYAgo1xgfIOSDCHItHzKHGJhFx6b7SOImuruAaOEdqfhV01RZEMrAZG5UyJ9p0uwdg5u9
+        I+KkZuplcT9oeHJh0IvwNImDHidlc7CVbZEd5BRBdfUu4NVEfv/910VCnMKIkg649L1r/OOOX/BN+
+        Xf9rfct32a/Z7BSEDrwDMsLpQkfpgRv/7neBuGutiRyMFPIMoAO6tnggEuAQXcbEBaCGTDc1Fb596
+        JXqUtnllh93aPQVMRufzGtU+jliW9oz0W5qCKEZn4HckDmkf8jDvi3VvehhDUlidZbIFFOPwFSnAx
+        nj/0DbWA==;
+Received: from [191.193.179.125] (helo=steammachine.lan)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1qvS9H-006qog-Vs; Wed, 25 Oct 2023 02:53:28 +0200
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, pierre-eric.pelloux-prayer@amd.com,
+        Simon Ser <contact@emersion.fr>,
+        Rob Clark <robdclark@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Stone <daniel@fooishbar.org>,
+        =?UTF-8?q?=27Marek=20Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
+        Dave Airlie <airlied@gmail.com>,
+        =?UTF-8?q?Michel=20D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+Subject: [PATCH v8 0/6] drm: Add support for atomic async page-flip
+Date:   Tue, 24 Oct 2023 21:53:12 -0300
+Message-ID: <20231025005318.293690-1-andrealmeid@igalia.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] stop_machine: pass curstate to ack_state()
-Content-Language: en-US
-To:     open list <linux-kernel@vger.kernel.org>,
-        Rong Tao <rongtao@cestc.cn>
-References: <e2b302f9-5840-49e8-8176-c6c5ea725895@foxmail.com>
-From:   Rong Tao <rtoax@foxmail.com>
-In-Reply-To: <e2b302f9-5840-49e8-8176-c6c5ea725895@foxmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 10/25/23 8:43 AM, Rong Tao wrote:
-> The multi_cpu_stop() state machine uses multi_stop_data::state to hold
-> the current state, and this is read and written atomically except in
-> ack_state(), which performs a non-atomic read.
->
-> As ack_state() only performs this non-atomic read when there is a single
-> writer, this is benign, but it makes reasoning about the state machine a
-> little harder.
->
-> Remove the non-atomic read and pass the (atomically read) curstate in
-> instead. This makes it clear that we do not expect any racy writes, and
-> avoids a redundant load.
+This work from me and Simon adds support for DRM_MODE_PAGE_FLIP_ASYNC through
+the atomic API. This feature is already available via the legacy API. The use
+case is to be able to present a new frame immediately (or as soon as
+possible), even if after missing a vblank. This might result in tearing, but
+it's useful when a high framerate is desired, such as for gaming.
 
-I'd prefer if we make this comment:
+Differently from earlier versions, this one refuses to flip if any prop changes
+for async flips. The idea is that the fast path of immediate page flips doesn't
+play well with modeset changes, so only the fb_id can be changed.
 
-stop_machine: pass curstate to ack_state()
+Thanks,
+	André
 
->
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
-> ---
->  kernel/stop_machine.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
-> index cedb17ba158a..268c2e581698 100644
-> --- a/kernel/stop_machine.c
-> +++ b/kernel/stop_machine.c
-> @@ -188,10 +188,11 @@ static void set_state(struct multi_stop_data 
-> *msdata,
->  }
->
->  /* Last one to ack a state moves to the next state. */
-> -static void ack_state(struct multi_stop_data *msdata)
-> +static void ack_state(struct multi_stop_data *msdata,
-> +              enum multi_stop_state curstate)
->  {
->      if (atomic_dec_and_test(&msdata->thread_ack))
-> -        set_state(msdata, msdata->state + 1);
-> +        set_state(msdata, curstate + 1);
->  }
->
->  notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
-> @@ -242,7 +243,7 @@ static int multi_cpu_stop(void *data)
->              default:
->                  break;
->              }
-> -            ack_state(msdata);
-> +            ack_state(msdata, curstate);
->          } else if (curstate > MULTI_STOP_PREPARE) {
->              /*
->               * At this stage all other CPUs we depend on must spin
+- User-space patch: https://github.com/Plagman/gamescope/pull/595
+- IGT tests: https://gitlab.freedesktop.org/andrealmeid/igt-gpu-tools/-/tree/atomic_async_page_flip
+
+Changes from v7:
+- Only accept flips to primary planes. If a driver support flips in different
+planes, support will be added  later.
+v7: https://lore.kernel.org/dri-devel/20231017092837.32428-1-andrealmeid@igalia.com/
+
+Changes from v6:
+- Dropped the exception to allow MODE_ID changes (Simon)
+- Clarify what happens when flipping with the same FB_ID (Pekka)
+
+v6: https://lore.kernel.org/dri-devel/20230815185710.159779-1-andrealmeid@igalia.com/
+
+Changes from v5:
+- Add note in the docs that not every redundant attribute will result in no-op,
+  some might cause oversynchronization issues.
+
+v5: https://lore.kernel.org/dri-devel/20230707224059.305474-1-andrealmeid@igalia.com/
+
+Changes from v4:
+ - Documentation rewrote by Pekka Paalanen
+
+v4: https://lore.kernel.org/dri-devel/20230701020917.143394-1-andrealmeid@igalia.com/
+
+Changes from v3:
+ - Add new patch to reject prop changes
+ - Add a documentation clarifying the KMS atomic state set
+
+v3: https://lore.kernel.org/dri-devel/20220929184307.258331-1-contact@emersion.fr/
+
+André Almeida (1):
+  drm: Refuse to async flip with atomic prop changes
+
+Pekka Paalanen (1):
+  drm/doc: Define KMS atomic state set
+
+Simon Ser (4):
+  drm: allow DRM_MODE_PAGE_FLIP_ASYNC for atomic commits
+  drm: introduce DRM_CAP_ATOMIC_ASYNC_PAGE_FLIP
+  drm: introduce drm_mode_config.atomic_async_page_flip_not_supported
+  amd/display: indicate support for atomic async page-flips on DC
+
+ Documentation/gpu/drm-uapi.rst                | 47 +++++++++++
+ drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c  |  1 +
+ drivers/gpu/drm/drm_atomic_uapi.c             | 82 +++++++++++++++++--
+ drivers/gpu/drm/drm_crtc_internal.h           |  2 +-
+ drivers/gpu/drm/drm_ioctl.c                   |  5 ++
+ drivers/gpu/drm/drm_mode_object.c             |  2 +-
+ .../drm/i915/display/intel_display_driver.c   |  1 +
+ drivers/gpu/drm/nouveau/nouveau_display.c     |  1 +
+ include/drm/drm_mode_config.h                 | 11 +++
+ include/uapi/drm/drm.h                        | 10 ++-
+ include/uapi/drm/drm_mode.h                   |  9 ++
+ 11 files changed, 162 insertions(+), 9 deletions(-)
+
+-- 
+2.42.0
 
