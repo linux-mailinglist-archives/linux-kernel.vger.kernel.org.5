@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 407687D7519
-	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7B87D7513
+	for <lists+linux-kernel@lfdr.de>; Wed, 25 Oct 2023 22:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbjJYUD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 25 Oct 2023 16:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
+        id S233876AbjJYUCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 25 Oct 2023 16:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234679AbjJYUDX (ORCPT
+        with ESMTP id S229441AbjJYUCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 25 Oct 2023 16:03:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D04183;
-        Wed, 25 Oct 2023 13:03:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698264202; x=1729800202;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=YLZGgBkznfjPx0x7i1mnmcfOOiepLxrJSAVTpEABg3I=;
-  b=KdrfpdGKHZzii6dq6/Njstq5GoQlhBH3oJQZrwmL9AP5KtqjEwYc9f/w
-   S75sMxRCMuUeoX+aToXqz4jFdf641drwhyTlaNFhxax/tOWJWXV8WEazp
-   gn1PIjdFvRT4xLLLFToJPOJ3zpgQtL32mDN6h98sN+W8O9TZscy5vKomc
-   kxx1Xqllgm2qCitCFcNt4ntzBHjd8LNSONVB4VSPDSCR8T8ZT4r3qKD+e
-   kjqzaNmwVcnt4rTjtW6aOvNYgPe7Y+mCyi58LHdA/H1XeFPgPEpurUT4y
-   lnC0W5ketLiAvQkZJC3sdJ2T0FtbBWK10QbTxg7gluo+KL+HmcRw3Ziu6
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="473624936"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="473624936"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 13:01:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10874"; a="902664878"
-X-IronPort-AV: E=Sophos;i="6.03,250,1694761200"; 
-   d="scan'208";a="902664878"
-Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2023 12:59:31 -0700
-Date:   Wed, 25 Oct 2023 13:01:53 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org,
-        Ben Woodard <woodard@redhat.com>,
-        Joe Mario <jmario@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Blaikie <blaikie@google.com>,
-        Xu Liu <xliuprof@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-Subject: Re: [RFC 00/48] perf tools: Introduce data type profiling (v1)
-Message-ID: <ZTl0MdKauLd21ahn@tassilo>
-References: <20231012035111.676789-1-namhyung@kernel.org>
- <87pm15vw5r.fsf@linux.intel.com>
- <CAM9d7ch504cnFzTL1qPh349uSrbEZop19kB-DbUsnoOKEvtFBQ@mail.gmail.com>
- <ZTh41epbjwGsMPaB@tassilo>
- <CAM9d7cgin9=dh-cypSzpvfZu_N7qv8Gxg0VVGdOm+VXB8i1FAQ@mail.gmail.com>
+        Wed, 25 Oct 2023 16:02:40 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776BD136
+        for <linux-kernel@vger.kernel.org>; Wed, 25 Oct 2023 13:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=djw/RRwrhOxPrgNjShiS6oN+TeWC1Dv3drvGlxrWCb0=;
+        t=1698264157; x=1699473757; b=SlfArgRyZWQBTEg4hcaxsS/v9ZJFFsZE8IKXqk212vAR+RR
+        WMiU6uoyAKaVj7ns0sOcKmNmQLHgMNOJoZzG5U0flbdFbjjfJnRclPEpnu+NVo7kxwl4esr8+BZrY
+        9/6jQr8VvAf/s4e2nd2o9Br1n4nl8JOJtip7ARsEfyBLFyJs8AVC6csxdnQ7K/Cr7qJ4zZ1D9xQx9
+        FCcyn9MqWHRuUU/77HEw06SUsVtF/R0co3LFAU0g9FsjHY3HQXH0ewtTWvtIxxTxC+oqRePol4TcO
+        D0mjNB8Q9h40m5zvHdP4vfYmvrDFuwGHtBahIStIQv5r3nftBHNlEtm0nioUp4hw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97-RC1)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1qvk5K-00000002hhp-36fu;
+        Wed, 25 Oct 2023 22:02:34 +0200
+Message-ID: <68b18065d8be905c25522bd3f5a9b46dbe3a976d.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: time-travel: fix time going backwards
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Vincent Whitchurch <Vincent.Whitchurch@axis.com>,
+        "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>,
+        "richard@nod.at" <richard@nod.at>
+Cc:     "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel <kernel@axis.com>
+Date:   Wed, 25 Oct 2023 22:02:33 +0200
+In-Reply-To: <a2f6e0cc8e498f72dfe1fcd5f2233ada8548a4d1.camel@sipsolutions.net>
+References: <20231020-uml-time-backwards-v1-1-90b776fc6dfd@axis.com>
+         <4a75c40636be267163dc30b5a6a2442089628e57.camel@axis.com>
+         <4dbed8896c94a347dcb58b3a83792c52fdc1c04a.camel@sipsolutions.net>
+         <cc7d340e4e06e42cd67b46bfa95da6129b0010cb.camel@axis.com>
+         <a2f6e0cc8e498f72dfe1fcd5f2233ada8548a4d1.camel@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7cgin9=dh-cypSzpvfZu_N7qv8Gxg0VVGdOm+VXB8i1FAQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 10:51:41PM -0700, Namhyung Kim wrote:
-> On Tue, Oct 24, 2023 at 7:09 PM Andi Kleen <ak@linux.intel.com> wrote:
-> >
-> > >
-> > > >
-> > > > The main difference seems to be that mine was more for perf script
-> > > > (e.g. i supported PT decoding), while you are more focused on sampling.
-> > > > I relied on the kprobes/uprobes engine, which unfortunately was always
-> > > > quite slow and had many limitations.
-> > >
-> > > Right, I think dealing with regular samples would be more useful.
-> >
-> > My code supported samples too, but only through perf script, not report.
-> >
-> > See
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/ak/linux-misc.git/commit/?h=perf/var-resolve-7&id=4775664750a6296acb732b7adfa224c6a06a126f
-> >
-> > for an example.
-> >
-> > My take was that i wasn't sure that perf report is the right interface
-> > to visualize the variables changing -- to be really usable you probably
-> > need some plots and likely something like an UI.
-> 
-> I see.  Your concern is to see how variables are changing.
-> But it seems you only displayed constant values.
+On Wed, 2023-10-25 at 21:51 +0200, Johannes Berg wrote:
+> On Wed, 2023-10-25 at 11:55 +0000, Vincent Whitchurch wrote:
+> > On Mon, 2023-10-23 at 09:33 +0200, Johannes Berg wrote:
+> > > Do you have a specific workload that tends to reproduce this?
+> >=20
+> > I've been seeing it when running roadtest, but it's easily reproducible
+> > without that by using the attached config and the following program as
+> > init.
+> >=20
+> >   cp repro.config .config
+> >   make ARCH=3Dum olddefconfig all
+> >   gcc -Wall -static -o repro repro.c
+> >   ./linux time-travel init=3D$PWD/repro rootfstype=3Dhostfs
 
-Yes the examples were not very good, but that was the intention.
-Values can be much more powerful than only types!
+Ohhh.
 
-For PT I also had special compiler patch that added suitable ptwrites
-(see [1]) that allowed to track any variable.
+Pure "time-travel" is actually something I hardly think about these
+days, we mostly use time-travel=3Dinf-cpu (or =3Dext).
 
--Andi
+That makes sense, here you actually *can* get interrupted. I'll need to
+dig into what happens though.
 
-[1] https://github.com/andikleen/gcc-old-svn/tree/ptwrite-18
+johannes
